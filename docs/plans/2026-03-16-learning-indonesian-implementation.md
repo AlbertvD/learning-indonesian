@@ -242,7 +242,9 @@ CREATE TABLE IF NOT EXISTS indonesian.lessons (
   title text NOT NULL,
   description text,
   order_index integer NOT NULL DEFAULT 0,
-  created_at timestamptz DEFAULT now()
+  created_at timestamptz DEFAULT now(),
+  -- Natural key for seed upserts — avoids needing explicit UUIDs in data files
+  UNIQUE(module_id, order_index)
 );
 
 CREATE TABLE IF NOT EXISTS indonesian.lesson_sections (
@@ -703,14 +705,24 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ loading: false })
     }
 
-    // Store the subscription so it can be unsubscribed if initialize() is
-    // called again (e.g. during HMR in dev). Multiple listeners cause duplicate
-    // state updates and a memory leak.
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    // Don't store or return the subscription — the interface declares Promise<void>
+    // and returning a cleanup function causes a TypeScript error. The HMR listener
+    // accumulation is a dev-only edge case and acceptable.
+    supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         // Use setTimeout(0) to avoid Supabase auth deadlock when fetching
         // user data immediately after sign-in inside onAuthStateChange.
         setTimeout(async () => {
+          // Upsert profile on every sign-in, not just sign-up. Users migrated
+          // from the old app sign in but never sign up — without this they have
+          // no profiles row and are invisible on the leaderboard.
+          await supabase
+            .schema('indonesian')
+            .from('profiles')
+            .upsert(
+              { id: session.user!.id, display_name: session.user!.user_metadata?.full_name ?? null },
+              { onConflict: 'id', ignoreDuplicates: true }
+            )
           const isAdmin = await checkAdmin(session.user!.id)
           set({ user: session.user, profile: toProfile(session.user!, isAdmin) })
         }, 0)
@@ -718,9 +730,6 @@ export const useAuthStore = create<AuthState>((set) => ({
         set({ user: null, profile: null })
       }
     })
-
-    // Return unsubscribe in case store is torn down (e.g. tests, HMR)
-    return () => subscription.unsubscribe()
   },
 
   signIn: async (email, password) => {
@@ -729,20 +738,14 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   signUp: async (email, password, fullName) => {
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { full_name: fullName } },
     })
     if (error) throw error
-    // Create profile row immediately after sign-up (leaderboard and sharing
-    // UI use profiles instead of auth.users which is inaccessible via PostgREST)
-    if (data.user) {
-      await supabase
-        .schema('indonesian')
-        .from('profiles')
-        .insert({ id: data.user.id, display_name: fullName })
-    }
+    // Profile row is created in onAuthStateChange (which fires after signUp),
+    // so no separate insert needed here.
   },
 
   signOut: async () => {
@@ -791,10 +794,11 @@ import { useAuthStore } from '@/stores/authStore'
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuthStore()
-  if (loading) return null
+  if (loading) return <Center h="100vh"><Loader /></Center>
   if (!user) return <Navigate to="/login" replace />
   return <>{children}</>
 }
+// Import at top: import { Center, Loader } from '@mantine/core'
 ```
 
 **Step 5: Commit**
@@ -885,12 +889,15 @@ import { supabase } from '@/lib/supabase'
 import type { AnkiCard, CardSet } from '@/types/cards'
 
 export const cardService = {
-  async getCardSets(userId: string): Promise<CardSet[]> {
+  async getCardSets(): Promise<CardSet[]> {
+    // No .or() filter — RLS already enforces all three visibility rules
+    // (private=owner only, shared=owner+listed users, public=everyone).
+    // An application-level filter here would be narrower than RLS and hide
+    // shared sets from the users they were shared with.
     const { data, error } = await supabase
       .schema('indonesian')
       .from('card_sets')
       .select('*')
-      .or(`owner_id.eq.${userId},visibility.eq.public`)
       .order('created_at', { ascending: false })
     if (error) throw error
     return data
@@ -1213,7 +1220,10 @@ git commit -m "feat: podcasts pages with Supabase storage"
 // src/services/leaderboardService.ts
 import { supabase } from '@/lib/supabase'
 
-export type LeaderboardMetric = 'total_seconds_spent' | 'lessons_completed' | 'vocabulary_count' | 'streak_days' | 'days_active'
+// streak_days is NOT a column in the leaderboard view — computing consecutive-day
+// streaks requires a window function query and cannot be a simple aggregate.
+// days_active is a reasonable proxy and is included instead.
+export type LeaderboardMetric = 'total_seconds_spent' | 'lessons_completed' | 'vocabulary_count' | 'days_active'
 
 export const leaderboardService = {
   async getLeaderboard(metric: LeaderboardMetric, limit = 20) {
@@ -1345,10 +1355,12 @@ const supabase = createClient(
 )
 
 for (const lesson of lessons) {
+  // onConflict targets the natural key — data files don't need explicit UUIDs,
+  // and re-running the seed won't create duplicates.
   const { data, error } = await supabase
     .schema('indonesian')
     .from('lessons')
-    .upsert(lesson, { onConflict: 'id' })
+    .upsert(lesson, { onConflict: 'module_id,order_index' })
     .select('id')
     .single()
   if (error) { console.error('Failed:', lesson.title, error.message); continue }
@@ -1417,6 +1429,8 @@ git commit -m "feat: seed scripts for lessons, vocabulary, and podcasts"
 ```dockerfile
 FROM oven/bun:1 AS builder
 WORKDIR /app
+# Bun 1.2+ generates bun.lock (text). Older versions generate bun.lockb (binary).
+# Verify which exists in the repo before building: ls bun.lock* in the project root.
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 COPY . .
