@@ -131,6 +131,17 @@ These two changes must be made in the `homelab-configs` repo before developing o
 
 **Data isolation:** The `indonesian` schema is completely invisible to family-hub. Once the two changes above are live, developing against the shared Supabase instance carries no risk of affecting family-hub data.
 
+## Email
+
+Email is **not configured** on the self-hosted Supabase instance. GoTrue has `GOTRUE_MAILER_AUTOCONFIRM: true` — users are auto-confirmed on signup, no verification email is sent.
+
+**Do not implement:**
+- Email confirmation flows
+- Password reset via email
+- Any email notifications
+
+Password resets are handled by an admin via Supabase Studio. If email is needed in the future it's a GoTrue SMTP config change — no app code changes required.
+
 ## Key Conventions
 
 - Path alias `@/` maps to `src/`
