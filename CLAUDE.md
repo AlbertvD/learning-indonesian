@@ -188,3 +188,15 @@ Card sets have three visibility levels:
 
 - `homelab-configs` — Traefik config, docker-compose for deployment, original app source in `Indonesian app/`
 - `family-hub` — shares the same Supabase instance; reference for Dockerfile pattern and Supabase client setup
+
+## Homelab Infrastructure
+
+This app runs on a self-hosted homelab. For infrastructure details see `/Users/albert/home/homelab-configs/`.
+
+Key facts relevant to this app:
+- **Reverse proxy:** Traefik — handles routing and TLS termination for all services
+- **TLS certificates:** Issued by Step-CA (internal CA); cert resolver name in Traefik labels is `stepca`. TLS fullchain must include leaf cert + Root CA (Safari fails with leaf-only)
+- **Docker network:** All services join the external `proxy` network — Traefik discovers them via container labels
+- **Supabase:** Self-hosted at `https://api.supabase.duin.home`. Kong is the API gateway in front of PostgREST, GoTrue, and Storage. CORS must include `Accept-Profile` and `Content-Profile` headers (required by supabase-js)
+- **Data persistence:** App data lives in the Supabase PostgreSQL instance. No local storage volumes needed for this app
+- **Internal networking:** Services communicate over internal Docker networks via HTTP. Only external-facing URLs use HTTPS via Traefik
