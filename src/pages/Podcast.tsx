@@ -30,7 +30,7 @@ export function Podcast() {
         sessionIdRef.current = sid
       } catch (err) {
         logError({ page: 'podcast', action: 'fetchData', error: err })
-        notifications.show({ color: 'red', title: 'Error', message: 'Failed to load podcast' })
+        notifications.show({ color: 'red', title: 'Failed to load podcast', message: 'Something went wrong. Please try again.' })
       } finally {
         setLoading(false)
       }

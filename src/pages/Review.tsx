@@ -39,6 +39,7 @@ export function Review() {
     async function init() {
       if (!user) return
       try {
+        // startSession must be first — sid is destructured from index [0]
         const [sid] = await Promise.all([
           startSession(user.id, 'review'),
           fetchDueCards(user.id),

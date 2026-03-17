@@ -15,6 +15,8 @@ import {
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { supabase } from '@/lib/supabase'
+import { startSession, endSession } from '@/lib/session'
+import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 
 interface VocabItem {
@@ -25,6 +27,7 @@ interface VocabItem {
 }
 
 export function Practice() {
+  const user = useAuthStore((state) => state.user)
   const [vocabulary, setVocabulary] = useState<VocabItem[]>([])
   const [loading, setLoading] = useState(true)
   const [currentItem, setCurrentItem] = useState<VocabItem | null>(null)
@@ -34,16 +37,21 @@ export function Practice() {
   const [correct, setCorrect] = useState(0)
   const [total, setTotal] = useState(0)
   const usedIndicesRef = useRef<Set<number>>(new Set())
+  const sessionIdRef = useRef<string | null>(null)
 
   useEffect(() => {
     async function fetchVocabulary() {
       try {
-        const { data, error } = await supabase
-          .schema('indonesian')
-          .from('vocabulary')
-          .select('id, indonesian, english, lesson_id')
-          .limit(100)
+        const [{ data, error }, sid] = await Promise.all([
+          supabase
+            .schema('indonesian')
+            .from('vocabulary')
+            .select('id, indonesian, english, lesson_id')
+            .limit(100),
+          user ? startSession(user.id, 'practice') : Promise.resolve(null),
+        ])
         if (error) throw error
+        sessionIdRef.current = sid
         setVocabulary(data ?? [])
         if (data && data.length > 0) {
           const idx = Math.floor(Math.random() * data.length)
@@ -62,7 +70,15 @@ export function Practice() {
       }
     }
     fetchVocabulary()
-  }, [])
+
+    return () => {
+      if (sessionIdRef.current) {
+        endSession(sessionIdRef.current).catch((err) =>
+          logError({ page: 'practice', action: 'endSession', error: err })
+        )
+      }
+    }
+  }, [user])
 
   function pickNextItem(vocab: VocabItem[]) {
     if (vocab.length === 0) return

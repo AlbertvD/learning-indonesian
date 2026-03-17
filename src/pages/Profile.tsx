@@ -32,9 +32,19 @@ export function Profile() {
     async function fetchData() {
       if (!user) return
       try {
-        const userProgress = await progressService.getUserProgress(user.id)
+        const [userProgress, profileRow] = await Promise.all([
+          progressService.getUserProgress(user.id),
+          supabase
+            .schema('indonesian')
+            .from('profiles')
+            .select('display_name')
+            .eq('id', user.id)
+            .maybeSingle(),
+        ])
         setProgress(userProgress)
-        setDisplayName(profile?.fullName ?? '')
+        // Use the saved display_name from indonesian.profiles, not the GoTrue metadata
+        // (user_metadata.full_name is set once at signup and never updated by this app)
+        setDisplayName(profileRow.data?.display_name ?? profile?.fullName ?? '')
       } catch (err) {
         logError({ page: 'profile', action: 'fetchData', error: err })
         notifications.show({
