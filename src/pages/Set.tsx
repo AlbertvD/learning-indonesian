@@ -1,0 +1,126 @@
+// src/pages/Set.tsx
+import { useEffect, useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Container, Title, Text, Button, Group, Badge, SegmentedControl, Paper, Stack, Center, Loader } from '@mantine/core'
+import { IconChevronLeft, IconShare, IconPlus } from '@tabler/icons-react'
+import { cardService } from '@/services/cardService'
+import { useAuthStore } from '@/stores/authStore'
+import { logError } from '@/lib/logger'
+import { notifications } from '@mantine/notifications'
+import { ShareCardSetModal } from '@/components/ShareCardSetModal'
+import type { CardSet } from '@/types/cards'
+
+export function Set() {
+  const { setId } = useParams<{ setId: string }>()
+  const navigate = useNavigate()
+  const user = useAuthStore((state) => state.user)
+  
+  const [set, setSet] = useState<CardSet | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [shareModalOpened, setShareModalOpened] = useState(false)
+
+  useEffect(() => {
+    async function fetchData() {
+      if (!setId) return
+      try {
+        const sets = await cardService.getCardSets()
+        const currentSet = sets.find(s => s.id === setId)
+        if (currentSet) {
+          setSet(currentSet)
+        } else {
+          notifications.show({ color: 'red', title: 'Error', message: 'Card set not found or access denied' })
+          navigate('/sets')
+        }
+      } catch (err) {
+        logError({ page: 'set', action: 'fetchData', error: err })
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [setId])
+
+  const handleVisibilityChange = async (value: string) => {
+    if (!set || !user || set.owner_id !== user.id) return
+    const newVisibility = value as 'private' | 'shared' | 'public'
+    try {
+      await cardService.updateCardSetVisibility(set.id, newVisibility)
+      setSet({ ...set, visibility: newVisibility })
+      notifications.show({ color: 'green', title: 'Success', message: `Visibility updated to ${newVisibility}` })
+    } catch (err) {
+      logError({ page: 'set', action: 'updateVisibility', error: err })
+      notifications.show({ color: 'red', title: 'Error', message: 'Failed to update visibility' })
+    }
+  }
+
+  if (loading || !set) {
+    return (
+      <Center h="50vh">
+        <Loader size="xl" />
+      </Center>
+    )
+  }
+
+  const isOwner = user?.id === set.owner_id
+
+  return (
+    <Container size="lg">
+      <Stack gap="xl">
+        <Group justify="space-between">
+          <Button variant="subtle" color="gray" leftSection={<IconChevronLeft size={16} />} onClick={() => navigate('/sets')}>
+            Back to sets
+          </Button>
+          {isOwner && (
+            <Button variant="light" leftSection={<IconShare size={16} />} onClick={() => setShareModalOpened(true)}>
+              Share
+            </Button>
+          )}
+        </Group>
+
+        <Paper withBorder p="xl" radius="md">
+          <Group justify="space-between" mb="md" align="flex-start">
+            <div>
+              <Title order={2}>{set.name}</Title>
+              <Text c="dimmed" mt="xs">{set.description || 'No description provided.'}</Text>
+            </div>
+            <Badge size="lg" variant="light" color={set.visibility === 'public' ? 'green' : set.visibility === 'shared' ? 'blue' : 'gray'}>
+              {set.visibility}
+            </Badge>
+          </Group>
+
+          {isOwner && (
+            <Group mt="xl">
+              <Text size="sm" fw={500}>Set Visibility:</Text>
+              <SegmentedControl
+                value={set.visibility}
+                onChange={handleVisibilityChange}
+                data={[
+                  { label: 'Private', value: 'private' },
+                  { label: 'Shared', value: 'shared' },
+                  { label: 'Public', value: 'public' },
+                ]}
+              />
+            </Group>
+          )}
+        </Paper>
+
+        <Group justify="space-between">
+          <Title order={3}>Cards</Title>
+          <Button leftSection={<IconPlus size={16} />} variant="outline">Add Card</Button>
+        </Group>
+
+        {/* Cards list will go here - for now just a placeholder */}
+        <Center h={100} style={{ border: '1px dashed #373A40', borderRadius: '8px' }}>
+          <Text c="dimmed">No cards in this set yet.</Text>
+        </Center>
+      </Stack>
+
+      <ShareCardSetModal
+        opened={shareModalOpened}
+        onClose={() => setShareModalOpened(false)}
+        setId={set.id}
+        setName={set.name}
+      />
+    </Container>
+  )
+}
