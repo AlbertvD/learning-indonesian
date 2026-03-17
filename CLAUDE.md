@@ -43,8 +43,33 @@ try {
     ? 'Incorrect email or password.'
     : 'Something went wrong. Please try again.'
   notifications.show({ color: 'red', title: 'Login failed', message: msg })
+  logError({ page: 'login', action: 'signIn', error: err })
 }
 ```
+
+## Logging
+
+Errors are logged to `indonesian.error_logs` in Supabase. This keeps logs in the self-hosted stack with no extra infrastructure — queryable from the Supabase dashboard.
+
+**Schema:**
+```sql
+indonesian.error_logs (
+  id, user_id, page, action, error_message, error_code, created_at
+)
+```
+
+**Usage:** Use the `logError` helper from `src/lib/logger.ts` whenever an error is caught. Always log the technical detail even when showing a friendly message to the user.
+
+```typescript
+import { logError } from '@/lib/logger'
+
+catch (err) {
+  notifications.show({ color: 'red', title: 'Failed', message: 'Something went wrong.' })
+  logError({ page: 'review', action: 'submitCard', error: err })
+}
+```
+
+The `logError` function is fire-and-forget — it never throws or blocks the UI. Logs are write-only for authenticated users (no user can read logs via the app — admin queries them directly in Supabase).
 
 ## Key Conventions
 

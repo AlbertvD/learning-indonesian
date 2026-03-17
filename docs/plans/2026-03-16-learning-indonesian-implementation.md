@@ -310,6 +310,19 @@ LEFT JOIN indonesian.lesson_progress lp ON lp.user_id = au.id
 LEFT JOIN indonesian.learning_sessions ls ON ls.user_id = au.id
 GROUP BY au.id, au.raw_user_meta_data, up.current_level, up.vocabulary_count, up.streak_days;
 
+-- Error logs (write-only for authenticated users)
+CREATE TABLE IF NOT EXISTS indonesian.error_logs (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
+  page text,
+  action text,
+  error_message text,
+  error_code text,
+  created_at timestamptz DEFAULT now()
+);
+ALTER TABLE indonesian.error_logs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "error_logs_insert" ON indonesian.error_logs FOR INSERT TO authenticated WITH CHECK (true);
+
 -- Grant schema usage to authenticated users
 GRANT USAGE ON SCHEMA indonesian TO authenticated, anon;
 GRANT SELECT ON indonesian.lessons TO authenticated;
@@ -441,6 +454,83 @@ Expected: `indonesian` schema with all tables visible in Supabase dashboard.
 ```bash
 git add src/lib/supabase.ts scripts/migrate.ts
 git commit -m "feat: supabase client and database schema migration"
+```
+
+---
+
+## Task 2b: Logger Utility
+
+**Files:**
+- Create: `src/lib/logger.ts`
+
+**Step 1: Create logger**
+
+```typescript
+// src/lib/logger.ts
+import { supabase } from '@/lib/supabase'
+
+interface LogErrorParams {
+  page: string
+  action: string
+  error: unknown
+}
+
+export async function logError({ page, action, error }: LogErrorParams): Promise<void> {
+  const message = error instanceof Error ? error.message : String(error)
+  const code = (error as { code?: string })?.code ?? null
+
+  // Fire-and-forget — never throws
+  supabase
+    .schema('indonesian')
+    .from('error_logs')
+    .insert({
+      user_id: (await supabase.auth.getUser()).data.user?.id ?? null,
+      page,
+      action,
+      error_message: message,
+      error_code: code,
+    })
+    .then(({ error: dbErr }) => {
+      if (dbErr) console.error('[logger] Failed to write error log:', dbErr.message)
+    })
+}
+```
+
+**Step 2: Write a unit test**
+
+```typescript
+// src/__tests__/logger.test.ts
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { logError } from '@/lib/logger'
+
+vi.mock('@/lib/supabase', () => ({
+  supabase: {
+    schema: vi.fn().mockReturnThis(),
+    from: vi.fn().mockReturnThis(),
+    insert: vi.fn().mockReturnValue({ then: vi.fn() }),
+    auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-1' } } }) },
+  },
+}))
+
+describe('logError', () => {
+  it('does not throw even if insert fails', async () => {
+    await expect(logError({ page: 'test', action: 'test', error: new Error('oops') })).resolves.not.toThrow()
+  })
+})
+```
+
+**Step 3: Run test**
+
+```bash
+bun run test
+```
+Expected: 1 test passing.
+
+**Step 4: Commit**
+
+```bash
+git add src/lib/logger.ts src/__tests__/logger.test.ts
+git commit -m "feat: add error logging utility to Supabase error_logs table"
 ```
 
 ---
@@ -1277,7 +1367,8 @@ INSERT INTO storage.buckets (id, name, public) VALUES
 |------|-------------|------------|
 | 1 | Repo + scaffold | — |
 | 2 | Supabase client + schema | 1 |
-| 3 | Auth store | 2 |
+| 2b | Logger utility | 2 |
+| 3 | Auth store | 2b |
 | 4 | App shell | 3 |
 | 5 | Cards + sets | 4 |
 | 6 | SM-2 algorithm | 5 |
