@@ -45,12 +45,34 @@ SUPABASE_SERVICE_KEY=<key> bun scripts/seed-podcasts.ts
 
 The service role key is NOT stored in the repo. Get it from the Supabase dashboard on the homelab.
 
+## Testing
+
+Write tests for every new feature where possible. The project uses **Vitest** + **@testing-library/react**.
+
+```bash
+bun run test         # run tests
+bun run test:ui      # Vitest UI
+```
+
+**What to test:**
+- Pure logic (SM-2 algorithm, formatters, helpers) — unit tests, always
+- Service functions (`src/services/`) — unit tests with Supabase client mocked
+- Zustand stores — unit tests for state transitions
+- React components — component tests for non-trivial UI behaviour (form validation, conditional rendering, user interactions)
+
+**What not to test:**
+- Simple presentational components with no logic
+- Direct Supabase query wiring (covered by the real DB in dev)
+
+Tests live alongside source files or in a `src/__tests__/` directory. Use `describe` + `it` blocks. Mock the Supabase client with `vi.mock('@/lib/supabase')`.
+
 ## Development
 
 ```bash
 bun install          # install dependencies
 bun run dev          # dev server at localhost:5173
 bun run build        # production build
+bun run test         # run tests
 bun run lint         # lint
 ```
 
