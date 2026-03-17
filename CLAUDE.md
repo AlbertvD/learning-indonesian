@@ -71,6 +71,40 @@ catch (err) {
 
 The `logError` function is fire-and-forget — it never throws or blocks the UI. Logs are write-only for authenticated users (no user can read logs via the app — admin queries them directly in Supabase).
 
+## Supabase Connection
+
+The client is initialized in `src/lib/supabase.ts` with `localStorage`, `persistSession: true`, and `autoRefreshToken: true` — same pattern as family-hub.
+
+**Auth store pattern (critical):** When fetching user data (e.g. `user_progress`) immediately after sign-in, always wrap the fetch in `setTimeout(0)` to avoid a Supabase auth deadlock:
+
+```typescript
+supabase.auth.onAuthStateChange(async (_event, session) => {
+  if (session?.user) {
+    setTimeout(() => fetchUserProgress(session.user.id), 0)
+  }
+})
+```
+
+**Required homelab-configs changes before this app works:**
+
+These two changes must be made in the `homelab-configs` repo before developing or deploying:
+
+1. **PostgREST schema exposure** — add `indonesian` to `PGRST_DB_SCHEMAS` in `services/supabase/docker-compose.yml`:
+   ```
+   PGRST_DB_SCHEMAS: public,storage,graphql_public,indonesian
+   ```
+   Requires PostgREST container restart (brief blip for family-hub).
+
+2. **Kong CORS origins** — add the Indonesian app's domains to `services/supabase/kong/kong.yml`:
+   ```yaml
+   origins:
+     - https://indonesian.duin.home
+     - http://indonesian.duin.home
+   ```
+   Requires Kong image rebuild + restart (brief blip for family-hub). The Kong image bakes in the ANON_KEY — rebuild is triggered by pushing to `homelab-configs` main.
+
+**Data isolation:** The `indonesian` schema is completely invisible to family-hub. Once the two changes above are live, developing against the shared Supabase instance carries no risk of affecting family-hub data.
+
 ## Key Conventions
 
 - Path alias `@/` maps to `src/`

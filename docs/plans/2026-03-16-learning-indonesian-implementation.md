@@ -10,6 +10,38 @@
 
 ---
 
+## Prerequisites (homelab-configs changes — do before Task 2)
+
+Two changes are required in the `homelab-configs` repo before the app can talk to Supabase. Both cause a brief restart of the Supabase stack — safe to do, family-hub recovers instantly.
+
+**1. Add `indonesian` schema to PostgREST**
+
+File: `services/supabase/docker-compose.yml`
+
+```yaml
+# Change:
+PGRST_DB_SCHEMAS: public,storage,graphql_public
+# To:
+PGRST_DB_SCHEMAS: public,storage,graphql_public,indonesian
+```
+
+Commit and push → Portainer restarts PostgREST automatically.
+
+**2. Add CORS origins for the Indonesian app to Kong**
+
+File: `services/supabase/kong/kong.yml` — add to the `origins` list:
+
+```yaml
+- https://indonesian.duin.home
+- http://indonesian.duin.home
+```
+
+Also add `http://localhost:5173` if not already present (for local dev).
+
+Commit and push → GitHub Actions rebuilds the Kong image → Portainer redeploys Kong.
+
+---
+
 ## Reference
 
 - Supabase URL: `https://api.supabase.duin.home`
