@@ -22,6 +22,30 @@ Indonesian language tutor app — React frontend connecting directly to a shared
 - vite-plugin-pwa (PWA / add to home screen)
 - Bun (package manager + script runner)
 
+## Error Handling
+
+Every error the user can encounter must have a meaningful, user-friendly message. Never show raw error strings, Supabase error codes, or technical details to the user.
+
+**Rules:**
+- All async operations (Supabase queries, auth, storage) must catch errors and display a notification via Mantine's `notifications.show()`
+- Error messages explain what went wrong in plain language and, where possible, what the user can do next
+- Use `notifications.show({ color: 'red', title: '...', message: '...' })` for errors
+- Map known Supabase/auth error codes to friendly messages (e.g. `invalid_credentials` → "Incorrect email or password")
+- Unknown errors fall back to: "Something went wrong. Please try again."
+- Never `console.error` as the only error handling — always surface it to the user
+
+**Example:**
+```typescript
+try {
+  await authStore.signIn(email, password)
+} catch (err) {
+  const msg = err instanceof AuthApiError && err.code === 'invalid_credentials'
+    ? 'Incorrect email or password.'
+    : 'Something went wrong. Please try again.'
+  notifications.show({ color: 'red', title: 'Login failed', message: msg })
+}
+```
+
 ## Key Conventions
 
 - Path alias `@/` maps to `src/`
