@@ -73,7 +73,33 @@ The `logError` function is fire-and-forget — it never throws or blocks the UI.
 
 ## Supabase Connection
 
-The client is initialized in `src/lib/supabase.ts` with `localStorage`, `persistSession: true`, and `autoRefreshToken: true` — same pattern as family-hub.
+The client uses **`@supabase/ssr`** (`createBrowserClient`) instead of the standard `@supabase/supabase-js` `createClient`. This stores the session in a cookie scoped to `.duin.home` instead of `localStorage`, enabling future SSO with other apps on the same domain (e.g. family-hub).
+
+```typescript
+// src/lib/supabase.ts
+import { createBrowserClient } from '@supabase/ssr'
+
+export const supabase = createBrowserClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY,
+  {
+    cookieOptions: {
+      domain: '.duin.home',
+      path: '/',
+      sameSite: 'lax',
+      secure: true,
+    },
+  }
+)
+```
+
+The API is identical to the standard supabase-js client — all queries, auth calls, and storage calls work the same way.
+
+**Reference implementation:** `/Users/albert/home/splinterlabs/homelab-ai/openbrain/ui/src/lib/supabase/client.ts` (uses same pattern on `.ntry.home`)
+
+**SSO status:**
+- learning-indonesian: cookie-based (`.duin.home`) ✅
+- family-hub: localStorage-based — session not shared yet, but same credentials work. Migrating family-hub to cookies is a separate future task.
 
 **Auth store pattern (critical):** When fetching user data (e.g. `user_progress`) immediately after sign-in, always wrap the fetch in `setTimeout(0)` to avoid a Supabase auth deadlock:
 

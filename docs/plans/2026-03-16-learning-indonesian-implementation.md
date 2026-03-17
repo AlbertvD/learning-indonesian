@@ -6,7 +6,7 @@
 
 **Architecture:** Frontend-only React app (no custom backend). All data goes directly to Supabase using the JS client. The `indonesian` Postgres schema isolates tables from other apps. Auth is shared with family-hub (same Supabase instance, same user accounts).
 
-**Tech Stack:** Bun, React 19, Vite, TypeScript, Mantine UI v8, Zustand 5, Supabase JS v2, vite-plugin-pwa, Tabler Icons
+**Tech Stack:** Bun, React 19, Vite, TypeScript, Mantine UI v8, Zustand 5, @supabase/ssr (cookie-based auth), vite-plugin-pwa, Tabler Icons
 
 ---
 
@@ -39,6 +39,18 @@ File: `services/supabase/kong/kong.yml` — add to the `origins` list:
 Also add `http://localhost:5173` if not already present (for local dev).
 
 Commit and push → GitHub Actions rebuilds the Kong image → Portainer redeploys Kong.
+
+**3. Allow redirect URIs for all duin.home subdomains in GoTrue**
+
+File: `services/supabase/docker-compose.yml` — add/update in the `supabase-auth` environment:
+
+```yaml
+GOTRUE_URI_ALLOW_LIST: "https://*.duin.home"
+```
+
+This allows auth redirects to land on any `*.duin.home` subdomain — required for the cookie-based SSO pattern. Reference: splinterlabs uses `GOTRUE_URI_ALLOW_LIST=https://*.ntry.home` for the same reason.
+
+Commit and push → Portainer restarts GoTrue.
 
 ---
 
@@ -156,25 +168,35 @@ Expected: repo visible on GitHub with initial scaffold.
 - Create: `src/lib/supabase.ts`
 - Create: `scripts/migrate.ts`
 
-**Step 1: Create Supabase client**
+**Step 1: Install @supabase/ssr**
+
+```bash
+bun add @supabase/ssr
+```
+
+Uses cookie-based session storage scoped to `.duin.home`, enabling future SSO with family-hub when it migrates to the same pattern. Reference: `/Users/albert/home/splinterlabs/homelab-ai/openbrain/ui/src/lib/supabase/client.ts`
+
+**Step 2: Create Supabase client**
 
 ```typescript
 // src/lib/supabase.ts
-import { createClient } from '@supabase/supabase-js'
+import { createBrowserClient } from '@supabase/ssr'
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
-
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    storage: localStorage,
-    persistSession: true,
-    autoRefreshToken: true,
-  },
-})
+export const supabase = createBrowserClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY,
+  {
+    cookieOptions: {
+      domain: '.duin.home',
+      path: '/',
+      sameSite: 'lax',
+      secure: true,
+    },
+  }
+)
 ```
 
-**Step 2: Create migration script**
+**Step 3: Create migration script**
 
 ```typescript
 // scripts/migrate.ts
