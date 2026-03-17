@@ -247,6 +247,7 @@ CREATE SCHEMA IF NOT EXISTS indonesian;
 CREATE TABLE IF NOT EXISTS indonesian.profiles (
   id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   display_name text,
+  created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
 
@@ -277,19 +278,24 @@ CREATE TABLE IF NOT EXISTS indonesian.lesson_sections (
   lesson_id uuid NOT NULL REFERENCES indonesian.lessons(id) ON DELETE CASCADE,
   title text NOT NULL,
   content jsonb NOT NULL DEFAULT '{}',
-  order_index integer NOT NULL DEFAULT 0
+  order_index integer NOT NULL DEFAULT 0,
+  -- Natural key for seed upserts
+  UNIQUE(lesson_id, order_index)
 );
 
 -- Vocabulary (admin-managed, public read)
 CREATE TABLE IF NOT EXISTS indonesian.vocabulary (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  lesson_id uuid REFERENCES indonesian.lessons(id) ON DELETE SET NULL,
   indonesian text NOT NULL,
   english text NOT NULL,
   dutch text,
   example_sentence text,
   module_id text,
   level text,
-  tags text[] DEFAULT '{}'
+  tags text[] DEFAULT '{}',
+  -- Natural key for seed upserts
+  UNIQUE(indonesian, lesson_id)
 );
 
 -- Podcasts (admin-managed, public read)
@@ -303,7 +309,9 @@ CREATE TABLE IF NOT EXISTS indonesian.podcasts (
   transcript_dutch text,
   level text CHECK (level IN ('A1','A2','B1','B2','C1','C2')),
   duration_seconds integer,
-  created_at timestamptz DEFAULT now()
+  created_at timestamptz DEFAULT now(),
+  -- Natural key for seed upserts (seed-podcasts.ts uses onConflict: 'title')
+  UNIQUE(title)
 );
 
 -- User progress (per-user write, all-user read for leaderboard)
@@ -381,6 +389,8 @@ CREATE TABLE IF NOT EXISTS indonesian.card_set_shares (
 
 -- anki_cards stores card content only. SM-2 review state lives in card_reviews
 -- so that shared cards work correctly — each user has their own review state.
+-- Note: owner_id is redundant with card_sets.owner_id but retained because RLS
+-- write policies use it directly. Would need policy rewrite to remove.
 CREATE TABLE IF NOT EXISTS indonesian.anki_cards (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   card_set_id uuid NOT NULL REFERENCES indonesian.card_sets(id) ON DELETE CASCADE,
@@ -475,6 +485,14 @@ ALTER TABLE indonesian.error_logs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "profiles_read" ON indonesian.profiles FOR SELECT TO authenticated USING (true);
 CREATE POLICY "profiles_write" ON indonesian.profiles FOR ALL TO authenticated
   USING (id = auth.uid()) WITH CHECK (id = auth.uid());
+
+-- RLS Policy: user_roles (self-read only)
+-- Without this policy, RLS blocks all reads — checkAdmin() always returns false
+-- and admin write RLS subqueries (EXISTS SELECT FROM user_roles) also return empty.
+-- Users can only read their own role — enough for checkAdmin() and policy subqueries.
+CREATE POLICY "user_roles_read" ON indonesian.user_roles
+  FOR SELECT TO authenticated USING (user_id = auth.uid());
+GRANT SELECT ON indonesian.user_roles TO authenticated;
 
 -- RLS Policies: admin content (public read, admin write)
 -- USING restricts SELECT/UPDATE/DELETE. WITH CHECK restricts INSERT. Both needed for FOR ALL.
@@ -912,14 +930,32 @@ git commit -m "feat: app shell with router and layout"
 
 **Step 1: Create card types**
 
-Copy `AnkiCard`, `CardSet` types from `/Users/albert/home/homelab-configs/Indonesian app/frontend/src/types/`. Remove any backend-specific fields.
+Copy `AnkiCard`, `CardSet` types from `/Users/albert/home/homelab-configs/Indonesian app/frontend/src/types/`. Remove any backend-specific fields. Also add a `DueCard` type for `getDueCards` — the query returns `card_reviews` rows with nested `anki_cards`, not plain `AnkiCard[]`:
+
+```typescript
+// In src/types/cards.ts — add alongside AnkiCard and CardSet
+
+export interface DueCard {
+  id: string
+  card_id: string
+  user_id: string
+  easiness_factor: number
+  interval_days: number
+  repetitions: number
+  next_review_at: string
+  last_reviewed_at: string | null
+  anki_cards: AnkiCard & {
+    card_sets: CardSet
+  }
+}
+```
 
 **Step 2: Create card service**
 
 ```typescript
 // src/services/cardService.ts
 import { supabase } from '@/lib/supabase'
-import type { AnkiCard, CardSet } from '@/types/cards'
+import type { AnkiCard, CardSet, DueCard } from '@/types/cards'
 
 export const cardService = {
   async getCardSets(): Promise<CardSet[]> {
@@ -947,9 +983,11 @@ export const cardService = {
     return data
   },
 
-  async getDueCards(userId: string): Promise<AnkiCard[]> {
+  async getDueCards(userId: string): Promise<DueCard[]> {
     // SM-2 state is in card_reviews (not anki_cards) so shared cards work correctly.
     // Each user has their own review state row per card.
+    // Returns DueCard[] (card_reviews rows with nested anki_cards) — NOT AnkiCard[].
+    // Callers must access card content via result[i].anki_cards.front, not result[i].front.
     const { data, error } = await supabase
       .schema('indonesian')
       .from('card_reviews')
@@ -958,7 +996,7 @@ export const cardService = {
       .lte('next_review_at', new Date().toISOString())
       .order('next_review_at')
     if (error) throw error
-    return data
+    return data as DueCard[]
   },
 
   async updateCardReview(cardId: string, userId: string, sm2: {
@@ -1061,15 +1099,32 @@ git commit -m "feat: SM-2 spaced repetition algorithm (client-side)"
 ## Task 7: Progress Tracking + Learning Sessions
 
 **Files:**
+- Create: `src/types/progress.ts`
 - Create: `src/services/progressService.ts`
 - Create: `src/stores/progressStore.ts`
 - Create: `src/lib/session.ts`
 
-**Step 1: Create progress service**
+**Step 1: Create progress types**
+
+```typescript
+// src/types/progress.ts
+export interface UserProgress {
+  id: string
+  user_id: string
+  current_module: number | null
+  current_level: string | null
+  grammar_mastery: Record<string, number> | null
+  created_at: string
+  updated_at: string | null
+}
+```
+
+**Step 2: Create progress service**
 
 ```typescript
 // src/services/progressService.ts
 import { supabase } from '@/lib/supabase'
+import type { UserProgress } from '@/types/progress'
 
 export const progressService = {
   async getUserProgress(userId: string) {
@@ -1106,7 +1161,7 @@ export const progressService = {
 }
 ```
 
-**Step 2: Create session tracker**
+**Step 3: Create session tracker**
 
 ```typescript
 // src/lib/session.ts
@@ -1139,10 +1194,10 @@ In the Review, Lesson, and Podcast pages: call `startSession()` on mount, `endSe
 
 **Important — session end reliability:** Tab close, browser crash, or hard navigation will not reliably trigger the `useEffect` cleanup, leaving `ended_at = NULL` for some sessions. The leaderboard view already handles this by excluding sessions where `ended_at IS NULL AND started_at < now() - interval '2 hours'`. Do not attempt to patch this with `beforeunload` — it is unreliable for async calls and the leaderboard exclusion is sufficient for a homelab app.
 
-**Step 4: Commit**
+**Step 5: Commit**
 
 ```bash
-git add src/services/progressService.ts src/stores/progressStore.ts src/lib/session.ts
+git add src/types/progress.ts src/services/progressService.ts src/stores/progressStore.ts src/lib/session.ts
 git commit -m "feat: progress tracking and learning session recording"
 ```
 
@@ -1357,6 +1412,23 @@ git commit -m "feat: card set sharing with visibility controls"
 
 ---
 
+## Storage Bucket Setup (one-time, manual — prerequisite for Task 12)
+
+Create buckets in Supabase dashboard > Storage **before running any seed scripts**. `seed-podcasts.ts` uploads audio to these buckets and will fail with `"Bucket not found"` if they don't exist.
+
+Create buckets in Supabase dashboard > Storage:
+- `indonesian-lessons` — public bucket
+- `indonesian-podcasts` — public bucket
+
+Or via SQL:
+```sql
+INSERT INTO storage.buckets (id, name, public) VALUES
+  ('indonesian-lessons', 'indonesian-lessons', true),
+  ('indonesian-podcasts', 'indonesian-podcasts', true);
+```
+
+---
+
 ## Task 12: Seed Scripts
 
 **Files:**
@@ -1387,10 +1459,13 @@ Remove Prisma-specific fields (userId, cardSetId, etc.) and reshape to match the
 import { createClient } from '@supabase/supabase-js'
 import { lessons } from './data/lessons'
 
-const supabase = createClient(
-  'https://api.supabase.duin.home',
-  process.env.SUPABASE_SERVICE_KEY!
-)
+const serviceKey = process.env.SUPABASE_SERVICE_KEY
+if (!serviceKey) {
+  console.error('Error: SUPABASE_SERVICE_KEY is required. Run: make seed-lessons SUPABASE_SERVICE_KEY=<key>')
+  process.exit(1)
+}
+
+const supabase = createClient('https://api.supabase.duin.home', serviceKey)
 
 for (const lesson of lessons) {
   // onConflict targets the natural key — data files don't need explicit UUIDs,
@@ -1398,44 +1473,109 @@ for (const lesson of lessons) {
   const { data, error } = await supabase
     .schema('indonesian')
     .from('lessons')
-    .upsert(lesson, { onConflict: 'module_id,order_index' })
+    .upsert(
+      { module_id: lesson.module_id, level: lesson.level, title: lesson.title, description: lesson.description, order_index: lesson.order_index },
+      { onConflict: 'module_id,order_index' }
+    )
     .select('id')
     .single()
   if (error) { console.error('Failed:', lesson.title, error.message); continue }
-  console.log('Upserted:', lesson.title, data.id)
+  console.log('Upserted lesson:', lesson.title, data.id)
+
+  // Seed lesson_sections using the lesson id returned above
+  for (const section of lesson.sections) {
+    const { error: sectionError } = await supabase
+      .schema('indonesian')
+      .from('lesson_sections')
+      .upsert(
+        { lesson_id: data.id, title: section.title, content: section.content, order_index: section.order_index },
+        { onConflict: 'lesson_id,order_index' }
+      )
+    if (sectionError) { console.error('  Section failed:', section.title, sectionError.message); continue }
+    console.log('  Upserted section:', section.title)
+  }
 }
 ```
 
-**Step 3: Create seed-podcasts.ts with storage upload**
+Note: `lesson_sections` also needs `UNIQUE(lesson_id, order_index)` — add this to the migration SQL alongside the `lessons` unique constraint.
+
+**Step 3: Create seed-vocabulary.ts**
+
+```typescript
+// scripts/seed-vocabulary.ts
+import { createClient } from '@supabase/supabase-js'
+import { vocabulary } from './data/vocabulary'
+
+const serviceKey = process.env.SUPABASE_SERVICE_KEY
+if (!serviceKey) {
+  console.error('Error: SUPABASE_SERVICE_KEY is required. Run: make seed-vocabulary SUPABASE_SERVICE_KEY=<key>')
+  process.exit(1)
+}
+
+const supabase = createClient('https://api.supabase.duin.home', serviceKey)
+
+for (const word of vocabulary) {
+  const { error } = await supabase
+    .schema('indonesian')
+    .from('vocabulary')
+    .upsert(word, { onConflict: 'indonesian,lesson_id' })
+  if (error) { console.error('Failed:', word.indonesian, error.message); continue }
+  console.log('Upserted:', word.indonesian)
+}
+```
+
+Note: `vocabulary` needs a `UNIQUE(indonesian, lesson_id)` constraint — add to the migration SQL.
+
+**Step 4: Create seed-podcasts.ts with storage upload**
 
 ```typescript
 // scripts/seed-podcasts.ts
-// Reads audio files from a local directory, uploads to Supabase storage, then inserts metadata
+// Uploads audio files to Supabase storage AND inserts podcast metadata rows
 import { createClient } from '@supabase/supabase-js'
-import { readdirSync, readFileSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
+import { podcasts } from './data/podcasts'
 
-const supabase = createClient(
-  'https://api.supabase.duin.home',
-  process.env.SUPABASE_SERVICE_KEY!
-)
+const serviceKey = process.env.SUPABASE_SERVICE_KEY
+if (!serviceKey) {
+  console.error('Error: SUPABASE_SERVICE_KEY is required. Run: make seed-podcasts SUPABASE_SERVICE_KEY=<key>')
+  process.exit(1)
+}
 
+const supabase = createClient('https://api.supabase.duin.home', serviceKey)
 const audioDir = process.env.AUDIO_DIR ?? 'content/podcasts'
 
-for (const file of readdirSync(audioDir)) {
-  if (!file.endsWith('.mp3')) continue
-  const buffer = readFileSync(`${audioDir}/${file}`)
-  const storagePath = `podcasts/${file}`
+for (const podcast of podcasts) {
+  const localPath = `${audioDir}/${podcast.audio_filename}`
+  const storagePath = `podcasts/${podcast.audio_filename}`
 
-  const { error: uploadError } = await supabase.storage
-    .from('indonesian-podcasts')
-    .upload(storagePath, buffer, { contentType: 'audio/mpeg', upsert: true })
+  // Upload audio if local file exists
+  if (existsSync(localPath)) {
+    const buffer = readFileSync(localPath)
+    const { error: uploadError } = await supabase.storage
+      .from('indonesian-podcasts')
+      .upload(storagePath, buffer, { contentType: 'audio/mpeg', upsert: true })
+    if (uploadError) { console.error('Upload failed:', podcast.audio_filename, uploadError.message); continue }
+    console.log('Uploaded:', storagePath)
+  } else {
+    console.warn('Audio file not found, skipping upload:', localPath)
+  }
 
-  if (uploadError) { console.error('Upload failed:', file, uploadError.message); continue }
-  console.log('Uploaded:', storagePath)
+  // Always upsert metadata (audio_path points to the storage path)
+  const { error: metaError } = await supabase
+    .schema('indonesian')
+    .from('podcasts')
+    .upsert(
+      { ...podcast, audio_path: storagePath },
+      { onConflict: 'title' }
+    )
+  if (metaError) { console.error('Metadata failed:', podcast.title, metaError.message); continue }
+  console.log('Upserted metadata:', podcast.title)
 }
 ```
 
-**Step 4: Add script to package.json**
+Note: `podcasts` also needs `UNIQUE(title)` — add to the migration SQL. The `podcasts` data objects in `scripts/data/podcasts.ts` should include all metadata fields (title, description, transcript fields, level, duration_seconds) plus an `audio_filename` field for the local file name.
+
+**Step 5: Add script to package.json**
 
 ```json
 "scripts": {
@@ -1446,12 +1586,14 @@ for (const file of readdirSync(audioDir)) {
 }
 ```
 
-**Step 5: Commit**
+**Step 6: Commit**
 
 ```bash
 git add scripts/ package.json
 git commit -m "feat: seed scripts for lessons, vocabulary, and podcasts"
 ```
+
+Note: `migrate.ts` is a SQL file writer — it never connects to Supabase directly, so no service key validation is needed there.
 
 ---
 
@@ -1569,21 +1711,6 @@ git commit -m "feat: add learning-indonesian service"
 
 ---
 
-## Storage Bucket Setup (one-time, manual)
-
-Create buckets in Supabase dashboard > Storage:
-- `indonesian-lessons` — public bucket
-- `indonesian-podcasts` — public bucket
-
-Or via SQL:
-```sql
-INSERT INTO storage.buckets (id, name, public) VALUES
-  ('indonesian-lessons', 'indonesian-lessons', true),
-  ('indonesian-podcasts', 'indonesian-podcasts', true);
-```
-
----
-
 ## Implementation Order Summary
 
 | Task | Description | Depends On |
@@ -1600,5 +1727,6 @@ INSERT INTO storage.buckets (id, name, public) VALUES
 | 9 | Podcasts | 4 |
 | 10 | Leaderboard | 7 |
 | 11 | Card set sharing | 5 |
-| 12 | Seed scripts | 2 |
+| — | Storage bucket setup | 2 (prerequisite for 12) |
+| 12 | Seed scripts | 2, storage buckets |
 | 13 | Docker + deployment | all |
