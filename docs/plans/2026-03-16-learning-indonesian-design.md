@@ -64,6 +64,14 @@ vocabulary        — standard vocabulary list
 podcasts          — podcast metadata, transcript, audio_path (Supabase Storage URL)
 ```
 
+### User profiles (readable by all authenticated users)
+
+```sql
+profiles         — display_name per user, created on signup via auth store
+                   used by leaderboard and sharing UI instead of auth.users
+                   (auth.users is not accessible to PostgREST)
+```
+
 ### User progress (readable by all users for leaderboard)
 
 ```sql
@@ -74,12 +82,17 @@ learning_sessions   — start_time, end_time, session_type (lesson/review/podcas
                       total time spent is derived from this table
 ```
 
+`vocabulary_count` and `streak_days` are **computed in the leaderboard view** from `user_vocabulary` and `learning_sessions` — not stored in `user_progress`. Storing them as denormalized counts would require a maintenance mechanism and drift immediately.
+
 ### User-created content (with sharing controls)
 
 ```sql
 card_sets        — name, owner_id, visibility: 'private' | 'public' | 'shared'
 card_set_shares  — card_set_id, shared_with_user_id  (for 'shared' visibility)
-anki_cards       — belongs to a card_set
+anki_cards       — belongs to a card_set; stores card content only (front/back/notes/tags)
+card_reviews     — per-user SM-2 state (easiness_factor, interval_days, repetitions,
+                   next_review_at); separate from anki_cards so shared sets work correctly —
+                   each user has their own review state for the same card
 ```
 
 ### Admin roles
@@ -99,14 +112,17 @@ indonesian-podcasts  — admin podcast audio files (public read)
 
 ## Leaderboard
 
-No separate table needed. A Supabase **view** over `user_progress`, `lesson_progress`, and `learning_sessions` exposes public stats per user:
+No separate table needed. A Supabase **view** over `profiles`, `user_progress`, `lesson_progress`, `user_vocabulary`, and `learning_sessions` exposes public stats per user:
 
-- Display name
-- Lessons completed
-- Words learned
-- Total time spent
-- Current module/level
-- Days active (streak)
+- Display name (from `profiles`, not `auth.users` — PostgREST cannot access `auth.users`)
+- Lessons completed (count from `lesson_progress`)
+- Words learned (count from `user_vocabulary` — computed in view, not stored)
+- Total time spent (sum of `duration_seconds` from completed sessions)
+- Current module/level (from `user_progress`)
+- Days active (count distinct dates from `learning_sessions`)
+- Streak days (computed from `learning_sessions` — consecutive days active)
+
+Sessions with no `ended_at` after 2+ hours are treated as abandoned and excluded from totals.
 
 Multiple leaderboards can be derived from the same data (most time this week, most words, most consistent, etc.) without schema changes.
 
@@ -129,6 +145,8 @@ Multiple leaderboards can be derived from the same data (most time this week, mo
 | card_sets (private) | Owner only | Owner only |
 | card_set_shares | Owner + shared user | Owner only |
 | anki_cards | Follows card_set visibility | Owner only |
+| card_reviews | Owner only (own review state) | Owner only |
+| profiles | Any authenticated user | Row owner only |
 
 ---
 

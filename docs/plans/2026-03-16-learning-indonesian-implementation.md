@@ -94,9 +94,15 @@ bun install
 **Step 3: Install dependencies**
 
 ```bash
-bun add @supabase/supabase-js @mantine/core @mantine/hooks @mantine/form @mantine/notifications @mantine/modals @tabler/icons-react zustand react-router-dom
+# Frontend dependencies (supabase/ssr for cookie-based auth, NOT supabase-js)
+bun add @supabase/ssr @mantine/core @mantine/hooks @mantine/form @mantine/notifications @mantine/modals @tabler/icons-react zustand react-router-dom
 bun add -d @types/node vite-plugin-pwa
+
+# Scripts-only dependency (service role, no cookie management needed)
+bun add @supabase/supabase-js
 ```
+
+Note: `@supabase/supabase-js` is only used by scripts in `scripts/`. The frontend client uses `@supabase/ssr` (`createBrowserClient`). Both packages will be installed — this is intentional.
 
 **Step 4: Configure `.gitignore`**
 
@@ -186,10 +192,12 @@ export const supabase = createBrowserClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY,
   {
-    cookieOptions: {
+    // In dev (localhost), omit cookieOptions entirely — browsers reject cookies
+    // with domain=.duin.home when the page is at localhost, silently dropping auth.
+    cookieOptions: import.meta.env.DEV ? undefined : {
       domain: '.duin.home',
       path: '/',
-      sameSite: 'lax',
+      sameSite: 'lax' as const,
       secure: true,
     },
   }
@@ -198,19 +206,24 @@ export const supabase = createBrowserClient(
 
 **Step 3: Create migration script**
 
+The migration script writes `scripts/migration.sql` and prints instructions. There is no `exec_sql` built-in RPC — the script is just a SQL writer.
+
 ```typescript
 // scripts/migrate.ts
-// Run with: SUPABASE_SERVICE_KEY=<key> bun scripts/migrate.ts
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  'https://api.supabase.duin.home',
-  process.env.SUPABASE_SERVICE_KEY!
-)
+// Run with: bun scripts/migrate.ts
+// Then execute scripts/migration.sql via psql or Supabase dashboard SQL editor
 
 const sql = `
 -- Create schema
 CREATE SCHEMA IF NOT EXISTS indonesian;
+
+-- User profiles (readable by all — used by leaderboard and sharing UI)
+-- Do NOT join auth.users in views — PostgREST cannot access the auth schema
+CREATE TABLE IF NOT EXISTS indonesian.profiles (
+  id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  display_name text,
+  updated_at timestamptz DEFAULT now()
+);
 
 -- Admin roles
 CREATE TABLE IF NOT EXISTS indonesian.user_roles (
@@ -267,14 +280,14 @@ CREATE TABLE IF NOT EXISTS indonesian.podcasts (
 );
 
 -- User progress (per-user write, all-user read for leaderboard)
+-- vocabulary_count and streak_days are NOT stored here — they are computed in the
+-- leaderboard view from user_vocabulary and learning_sessions to avoid staleness.
 CREATE TABLE IF NOT EXISTS indonesian.user_progress (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   current_level text NOT NULL DEFAULT 'A1',
   current_module_id text,
   grammar_mastery numeric DEFAULT 0,
-  vocabulary_count integer DEFAULT 0,
-  streak_days integer DEFAULT 0,
   last_active_date date,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now(),
@@ -297,8 +310,14 @@ CREATE TABLE IF NOT EXISTS indonesian.user_vocabulary (
   vocabulary_id uuid REFERENCES indonesian.vocabulary(id) ON DELETE SET NULL,
   custom_indonesian text,
   custom_english text,
+  -- custom_key prevents duplicate custom words (vocabulary_id is nullable,
+  -- and NULLs are never considered equal in UNIQUE constraints)
+  custom_key text GENERATED ALWAYS AS (
+    COALESCE(vocabulary_id::text, lower(trim(custom_indonesian || '|' || custom_english)))
+  ) STORED,
   learned_at timestamptz DEFAULT now(),
-  UNIQUE(user_id, vocabulary_id)
+  UNIQUE(user_id, vocabulary_id),
+  UNIQUE(user_id, custom_key)
 );
 
 CREATE TABLE IF NOT EXISTS indonesian.learning_sessions (
@@ -310,6 +329,9 @@ CREATE TABLE IF NOT EXISTS indonesian.learning_sessions (
   duration_seconds integer GENERATED ALWAYS AS (
     EXTRACT(EPOCH FROM (ended_at - started_at))::integer
   ) STORED
+  -- Note: duration_seconds is a generated column — cannot be set manually.
+  -- Sessions with no ended_at after 2+ hours are treated as abandoned and
+  -- excluded from leaderboard totals.
 );
 
 -- Flashcards (user-created, with sharing)
@@ -330,6 +352,8 @@ CREATE TABLE IF NOT EXISTS indonesian.card_set_shares (
   UNIQUE(card_set_id, shared_with_user_id)
 );
 
+-- anki_cards stores card content only. SM-2 review state lives in card_reviews
+-- so that shared cards work correctly — each user has their own review state.
 CREATE TABLE IF NOT EXISTS indonesian.anki_cards (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   card_set_id uuid NOT NULL REFERENCES indonesian.card_sets(id) ON DELETE CASCADE,
@@ -338,31 +362,40 @@ CREATE TABLE IF NOT EXISTS indonesian.anki_cards (
   back text NOT NULL,
   notes text,
   tags text[] DEFAULT '{}',
-  -- SM-2 fields
+  created_at timestamptz DEFAULT now()
+);
+
+-- Per-user SM-2 review state — one row per (card, user) pair
+CREATE TABLE IF NOT EXISTS indonesian.card_reviews (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  card_id uuid NOT NULL REFERENCES indonesian.anki_cards(id) ON DELETE CASCADE,
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   easiness_factor numeric NOT NULL DEFAULT 2.5,
   interval_days integer NOT NULL DEFAULT 1,
   repetitions integer NOT NULL DEFAULT 0,
   next_review_at timestamptz DEFAULT now(),
   last_reviewed_at timestamptz,
-  created_at timestamptz DEFAULT now()
+  UNIQUE(card_id, user_id)
 );
 
--- Leaderboard view
+-- Leaderboard view (anchored to profiles, not auth.users)
+-- Excludes abandoned sessions (ended_at IS NULL AND started_at < now() - interval '2 hours')
 CREATE OR REPLACE VIEW indonesian.leaderboard AS
 SELECT
-  au.id AS user_id,
-  au.raw_user_meta_data->>'full_name' AS display_name,
+  p.id AS user_id,
+  p.display_name,
   COALESCE(up.current_level, 'A1') AS current_level,
-  COALESCE(up.vocabulary_count, 0) AS vocabulary_count,
-  COALESCE(up.streak_days, 0) AS streak_days,
+  COUNT(DISTINCT uv.id) AS vocabulary_count,
   COUNT(DISTINCT lp.lesson_id) FILTER (WHERE lp.completed_at IS NOT NULL) AS lessons_completed,
-  COALESCE(SUM(ls.duration_seconds), 0) AS total_seconds_spent,
-  COUNT(DISTINCT DATE(ls.started_at)) AS days_active
-FROM auth.users au
-LEFT JOIN indonesian.user_progress up ON up.user_id = au.id
-LEFT JOIN indonesian.lesson_progress lp ON lp.user_id = au.id
-LEFT JOIN indonesian.learning_sessions ls ON ls.user_id = au.id
-GROUP BY au.id, au.raw_user_meta_data, up.current_level, up.vocabulary_count, up.streak_days;
+  COALESCE(SUM(ls.duration_seconds) FILTER (WHERE ls.duration_seconds IS NOT NULL), 0) AS total_seconds_spent,
+  COUNT(DISTINCT DATE(ls.started_at)) FILTER (WHERE ls.duration_seconds IS NOT NULL OR ls.started_at > now() - interval '2 hours') AS days_active
+FROM indonesian.profiles p
+LEFT JOIN indonesian.user_progress up ON up.user_id = p.id
+LEFT JOIN indonesian.user_vocabulary uv ON uv.user_id = p.id
+LEFT JOIN indonesian.lesson_progress lp ON lp.user_id = p.id
+LEFT JOIN indonesian.learning_sessions ls ON ls.user_id = p.id
+  AND (ls.ended_at IS NOT NULL OR ls.started_at > now() - interval '2 hours')
+GROUP BY p.id, p.display_name, up.current_level;
 
 -- Error logs (write-only for authenticated users)
 CREATE TABLE IF NOT EXISTS indonesian.error_logs (
@@ -374,19 +407,28 @@ CREATE TABLE IF NOT EXISTS indonesian.error_logs (
   error_code text,
   created_at timestamptz DEFAULT now()
 );
-ALTER TABLE indonesian.error_logs ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "error_logs_insert" ON indonesian.error_logs FOR INSERT TO authenticated WITH CHECK (true);
 
--- Grant schema usage to authenticated users
+-- Explicit grants — no GRANT ALL (would override selective grants and hide misconfigured RLS)
 GRANT USAGE ON SCHEMA indonesian TO authenticated, anon;
 GRANT SELECT ON indonesian.lessons TO authenticated;
 GRANT SELECT ON indonesian.lesson_sections TO authenticated;
 GRANT SELECT ON indonesian.vocabulary TO authenticated;
 GRANT SELECT ON indonesian.podcasts TO authenticated;
 GRANT SELECT ON indonesian.leaderboard TO authenticated;
-GRANT ALL ON ALL TABLES IN SCHEMA indonesian TO authenticated;
+GRANT SELECT ON indonesian.profiles TO authenticated;
+GRANT INSERT, UPDATE ON indonesian.profiles TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.user_progress TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.lesson_progress TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.user_vocabulary TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.learning_sessions TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.card_sets TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.card_set_shares TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.anki_cards TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.card_reviews TO authenticated;
+GRANT INSERT ON indonesian.error_logs TO authenticated;
 
 -- Enable RLS
+ALTER TABLE indonesian.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.user_roles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.lessons ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.lesson_sections ENABLE ROW LEVEL SECURITY;
@@ -399,23 +441,35 @@ ALTER TABLE indonesian.learning_sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.card_sets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.card_set_shares ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.anki_cards ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.card_reviews ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.error_logs ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policies: profiles (all read, own write)
+CREATE POLICY "profiles_read" ON indonesian.profiles FOR SELECT TO authenticated USING (true);
+CREATE POLICY "profiles_write" ON indonesian.profiles FOR ALL TO authenticated
+  USING (id = auth.uid()) WITH CHECK (id = auth.uid());
 
 -- RLS Policies: admin content (public read, admin write)
+-- USING restricts SELECT/UPDATE/DELETE. WITH CHECK restricts INSERT. Both needed for FOR ALL.
 CREATE POLICY "lessons_read" ON indonesian.lessons FOR SELECT TO authenticated USING (true);
 CREATE POLICY "lessons_admin_write" ON indonesian.lessons FOR ALL TO authenticated
-  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
 CREATE POLICY "lesson_sections_read" ON indonesian.lesson_sections FOR SELECT TO authenticated USING (true);
 CREATE POLICY "lesson_sections_admin_write" ON indonesian.lesson_sections FOR ALL TO authenticated
-  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
 CREATE POLICY "vocabulary_read" ON indonesian.vocabulary FOR SELECT TO authenticated USING (true);
 CREATE POLICY "vocabulary_admin_write" ON indonesian.vocabulary FOR ALL TO authenticated
-  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
 CREATE POLICY "podcasts_read" ON indonesian.podcasts FOR SELECT TO authenticated USING (true);
 CREATE POLICY "podcasts_admin_write" ON indonesian.podcasts FOR ALL TO authenticated
-  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
 -- RLS Policies: user progress (own write, all read)
 CREATE POLICY "user_progress_read" ON indonesian.user_progress FOR SELECT TO authenticated USING (true);
@@ -454,6 +508,9 @@ CREATE POLICY "card_set_shares_read" ON indonesian.card_set_shares FOR SELECT TO
 CREATE POLICY "card_set_shares_write" ON indonesian.card_set_shares FOR ALL TO authenticated
   USING (EXISTS (
     SELECT 1 FROM indonesian.card_sets WHERE id = card_set_id AND owner_id = auth.uid()
+  ))
+  WITH CHECK (EXISTS (
+    SELECT 1 FROM indonesian.card_sets WHERE id = card_set_id AND owner_id = auth.uid()
   ));
 
 CREATE POLICY "anki_cards_read" ON indonesian.anki_cards FOR SELECT TO authenticated
@@ -472,31 +529,33 @@ CREATE POLICY "anki_cards_read" ON indonesian.anki_cards FOR SELECT TO authentic
   );
 CREATE POLICY "anki_cards_write" ON indonesian.anki_cards FOR ALL TO authenticated
   USING (owner_id = auth.uid()) WITH CHECK (owner_id = auth.uid());
+
+-- card_reviews: own row only
+CREATE POLICY "card_reviews_read" ON indonesian.card_reviews FOR SELECT TO authenticated
+  USING (user_id = auth.uid());
+CREATE POLICY "card_reviews_write" ON indonesian.card_reviews FOR ALL TO authenticated
+  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
+
+-- error_logs: insert-only
+CREATE POLICY "error_logs_insert" ON indonesian.error_logs FOR INSERT TO authenticated WITH CHECK (true);
 `
 
-const { error } = await supabase.rpc('exec_sql', { sql })
-if (error) {
-  // Fall back to running statements via direct postgres connection
-  console.error('RPC not available, use Supabase SQL editor or psql to run the migration')
-  console.log('Migration SQL written to: scripts/migration.sql')
-  await Bun.write('scripts/migration.sql', sql)
-  process.exit(1)
-}
-
-console.log('Migration complete.')
-```
-
-**Step 3: Also write the SQL to a file for manual execution**
-
-```bash
-# scripts/migration.sql is auto-generated by the script above, or copy from the sql const
+await Bun.write('scripts/migration.sql', sql)
+console.log('Migration SQL written to scripts/migration.sql')
+console.log('')
+console.log('To run the migration, use one of:')
+console.log('  Option A (psql): PGPASSWORD=<pw> psql -h api.supabase.duin.home -U postgres -f scripts/migration.sql')
+console.log('  Option B: Paste scripts/migration.sql into Supabase dashboard > SQL Editor > Run')
 ```
 
 **Step 4: Run the migration**
 
 ```bash
-# Option A: via script (requires exec_sql RPC or direct DB access)
-SUPABASE_SERVICE_KEY=<service_key> bun scripts/migrate.ts
+# Generate migration.sql
+bun scripts/migrate.ts
+
+# Then run it — Option A (psql, recommended):
+PGPASSWORD=<postgres_password> psql -h api.supabase.duin.home -U postgres -f scripts/migration.sql
 
 # Option B: paste scripts/migration.sql into Supabase dashboard > SQL Editor
 ```
@@ -644,14 +703,24 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ loading: false })
     }
 
-    supabase.auth.onAuthStateChange(async (_event, session) => {
+    // Store the subscription so it can be unsubscribed if initialize() is
+    // called again (e.g. during HMR in dev). Multiple listeners cause duplicate
+    // state updates and a memory leak.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
-        const isAdmin = await checkAdmin(session.user.id)
-        set({ user: session.user, profile: toProfile(session.user, isAdmin) })
+        // Use setTimeout(0) to avoid Supabase auth deadlock when fetching
+        // user data immediately after sign-in inside onAuthStateChange.
+        setTimeout(async () => {
+          const isAdmin = await checkAdmin(session.user!.id)
+          set({ user: session.user, profile: toProfile(session.user!, isAdmin) })
+        }, 0)
       } else {
         set({ user: null, profile: null })
       }
     })
+
+    // Return unsubscribe in case store is torn down (e.g. tests, HMR)
+    return () => subscription.unsubscribe()
   },
 
   signIn: async (email, password) => {
@@ -660,12 +729,20 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   signUp: async (email, password, fullName) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { full_name: fullName } },
     })
     if (error) throw error
+    // Create profile row immediately after sign-up (leaderboard and sharing
+    // UI use profiles instead of auth.users which is inaccessible via PostgREST)
+    if (data.user) {
+      await supabase
+        .schema('indonesian')
+        .from('profiles')
+        .insert({ id: data.user.id, display_name: fullName })
+    }
   },
 
   signOut: async () => {
@@ -675,8 +752,12 @@ export const useAuthStore = create<AuthState>((set) => ({
 }))
 
 async function checkAdmin(userId: string): Promise<boolean> {
+  // Must use .schema('indonesian').from('user_roles') — NOT .from('indonesian.user_roles')
+  // The dot-notation form queries a table literally named "indonesian.user_roles" in
+  // the public schema, which doesn't exist and always returns null.
   const { data } = await supabase
-    .from('indonesian.user_roles')
+    .schema('indonesian')
+    .from('user_roles')
     .select('role')
     .eq('user_id', userId)
     .eq('role', 'admin')
@@ -827,23 +908,31 @@ export const cardService = {
   },
 
   async getDueCards(userId: string): Promise<AnkiCard[]> {
+    // SM-2 state is in card_reviews (not anki_cards) so shared cards work correctly.
+    // Each user has their own review state row per card.
     const { data, error } = await supabase
       .schema('indonesian')
-      .from('anki_cards')
-      .select('*, card_sets!inner(*)')
-      .eq('owner_id', userId)
+      .from('card_reviews')
+      .select('*, anki_cards!inner(*, card_sets!inner(*))')
+      .eq('user_id', userId)
       .lte('next_review_at', new Date().toISOString())
       .order('next_review_at')
     if (error) throw error
     return data
   },
 
-  async updateCard(cardId: string, updates: Partial<AnkiCard>): Promise<void> {
+  async updateCardReview(cardId: string, userId: string, sm2: {
+    easiness_factor: number
+    interval_days: number
+    repetitions: number
+    next_review_at: string
+    last_reviewed_at: string
+  }): Promise<void> {
+    // Upsert into card_reviews — creates the row on first review
     const { error } = await supabase
       .schema('indonesian')
-      .from('anki_cards')
-      .update(updates)
-      .eq('id', cardId)
+      .from('card_reviews')
+      .upsert({ card_id: cardId, user_id: userId, ...sm2 }, { onConflict: 'card_id,user_id' })
     if (error) throw error
   },
 }
@@ -918,7 +1007,7 @@ export function calculateNextReview(
 
 **Step 2: Wire into review page**
 
-In the review page, after a card is graded, call `calculateNextReview()` client-side and then `cardService.updateCard()` with the result.
+In the review page, after a card is graded, call `calculateNextReview()` client-side and then `cardService.updateCardReview()` with the result. SM-2 state lives in `card_reviews`, not `anki_cards` — this keeps shared card sets working correctly (each user has independent review progress).
 
 **Step 3: Commit**
 
@@ -1007,6 +1096,8 @@ export async function endSession(sessionId: string): Promise<void> {
 **Step 3: Integrate session tracking into pages**
 
 In the Review, Lesson, and Podcast pages: call `startSession()` on mount, `endSession()` on unmount (use `useEffect` cleanup).
+
+**Important — session end reliability:** Tab close, browser crash, or hard navigation will not reliably trigger the `useEffect` cleanup, leaving `ended_at = NULL` for some sessions. The leaderboard view already handles this by excluding sessions where `ended_at IS NULL AND started_at < now() - interval '2 hours'`. Do not attempt to patch this with `beforeunload` — it is unreliable for async calls and the leaderboard exclusion is sufficient for a homelab app.
 
 **Step 4: Commit**
 
@@ -1172,19 +1263,19 @@ Add a `SegmentedControl` with `Private | Shared | Public` options.
 // Queries auth.users via a Supabase function or admin-exposed view
 ```
 
-Note: querying users by email requires a Supabase Edge Function or an `indonesian.app_users` view that exposes `id` and `email` of users who have `user_progress` rows (i.e., have used the app). Add this view to the migration:
+Note: querying users to share with requires a way to find users by display name. Use the `profiles` table directly — it is already readable by all authenticated users and was created for exactly this purpose. No extra view needed.
 
-```sql
-CREATE OR REPLACE VIEW indonesian.app_users AS
-SELECT au.id, au.email, au.raw_user_meta_data->>'full_name' AS full_name
-FROM auth.users au
-WHERE EXISTS (SELECT 1 FROM indonesian.user_progress WHERE user_id = au.id);
-
-GRANT SELECT ON indonesian.app_users TO authenticated;
+```typescript
+// Find users to share with by display_name (fuzzy search)
+const { data } = await supabase
+  .schema('indonesian')
+  .from('profiles')
+  .select('id, display_name')
+  .ilike('display_name', `%${query}%`)
+  .limit(10)
 ```
 
-Add `CREATE POLICY "app_users_read" ON indonesian.app_users FOR SELECT TO authenticated USING (true);`
-(Views don't have RLS but inherit it from base tables — this view is safe.)
+Email-based lookup is not possible via PostgREST — `auth.users` is not accessible. Users must be found by display name. This is acceptable for a homelab app where all users are known.
 
 **Step 3: Wire share/unshare into card set service**
 
