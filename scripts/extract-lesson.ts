@@ -166,9 +166,8 @@ async function main() {
   console.log('Sending to Claude API...')
 
   const response = await client.messages.create({
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-5',
     max_tokens: 8192,
-    thinking: { type: 'adaptive' },
     system: SYSTEM_PROMPT,
     messages: [
       {

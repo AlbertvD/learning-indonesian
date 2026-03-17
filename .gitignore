@@ -2,6 +2,7 @@ node_modules/
 dist/
 .env.local
 .env
+.DS_Store
 
 # Local audio source files — not committed, upload via seed scripts
 content/lessons/

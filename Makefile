@@ -57,10 +57,9 @@ seed-vocabulary: ## Seed vocabulary list (requires SUPABASE_SERVICE_KEY)
 	SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-vocabulary.ts
 
 .PHONY: seed-podcasts
-seed-podcasts: ## Seed podcast metadata and upload audio (requires SUPABASE_SERVICE_KEY and AUDIO_DIR)
+seed-podcasts: ## Seed podcast metadata and upload audio from content/podcasts/ (requires SUPABASE_SERVICE_KEY)
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
-	@test -n "$(AUDIO_DIR)" || { echo "Error: AUDIO_DIR is required. Run: make seed-podcasts SUPABASE_SERVICE_KEY=<key> AUDIO_DIR=<path>"; exit 1; }
-	SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) AUDIO_DIR=$(AUDIO_DIR) bun scripts/seed-podcasts.ts
+	SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-podcasts.ts
 
 .PHONY: seed-all
 seed-all: seed-lessons seed-vocabulary ## Seed all non-audio content (requires SUPABASE_SERVICE_KEY)
