@@ -1229,7 +1229,17 @@ git commit -m "feat: card set sharing with visibility controls"
 
 **Step 1: Create data files from existing curriculum**
 
-Copy and transform `/Users/albert/home/homelab-configs/Indonesian app/backend/prisma/seed-*.ts` files into the new format. Convert Prisma model shapes to match the Supabase schema.
+Port content from the existing seed scripts in `/Users/albert/home/homelab-configs/Indonesian app/backend/prisma/`:
+
+| Source file | Target | Content |
+|-------------|--------|---------|
+| `seed-lesson1-cards.ts`, `seed-vocabulary.ts` | `scripts/data/vocabulary.ts` | ~199 vocabulary items across lessons 1-3 |
+| `seed-lesson.ts` | `scripts/data/lessons.ts` | 56 translation exercises, lesson structure |
+| `seed-lesson1-podcast.ts`, `seed-lesson3-podcast.ts`, `seed-podcast-hub.ts` | `scripts/data/podcasts.ts` | 3 podcast entries with transcripts |
+
+Remove Prisma-specific fields (userId, cardSetId, etc.) and reshape to match the Supabase `indonesian` schema.
+
+**Audio files:** The `.mp3` files are currently at `../course material source/` relative to the old backend. Copy them into `content/lessons/` and `content/podcasts/` in this repo (gitignored) before running `seed-podcasts.ts`.
 
 **Step 2: Create seed-lessons.ts**
 

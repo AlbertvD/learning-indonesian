@@ -154,13 +154,37 @@ Password resets are handled by an admin via Supabase Studio. If email is needed 
 
 ## Content Management
 
-All lesson, vocabulary, and podcast content (including audio files) is **deployed via scripts**, not through any UI. Scripts live in `scripts/` and use the Supabase service role key to bypass RLS.
+All lesson, vocabulary, and podcast content (including audio files) is **deployed via scripts**, not through any UI.
+
+### Text content (in repo)
+Lesson structure, vocabulary, and podcast metadata live as TypeScript data files in `scripts/data/` — version-controlled alongside the app. Source data migrated from the original seed scripts in `homelab-configs/Indonesian app/backend/prisma/`.
+
+```
+scripts/data/
+├── lessons.ts       — lesson structure and sections
+├── vocabulary.ts    — vocabulary per lesson (~199 words across 3 lessons so far)
+└── podcasts.ts      — podcast metadata and transcripts
+```
+
+### Audio files (local only, not in repo)
+Audio files (`.mp3`) live in `content/` — gitignored, local only. Copy files here before running seed scripts.
+
+```
+content/
+├── lessons/         — lesson audio files
+└── podcasts/        — podcast audio files
+```
+
+To add new audio: drop the `.mp3` into the appropriate `content/` subdirectory, add its metadata to `scripts/data/podcasts.ts` or `scripts/data/lessons.ts`, then run the seed script.
+
+### Deploying content
 
 ```bash
-SUPABASE_SERVICE_KEY=<key> bun scripts/migrate.ts       # one-time schema setup
-SUPABASE_SERVICE_KEY=<key> bun scripts/seed-lessons.ts
-SUPABASE_SERVICE_KEY=<key> bun scripts/seed-vocabulary.ts
-SUPABASE_SERVICE_KEY=<key> bun scripts/seed-podcasts.ts
+make migrate SUPABASE_SERVICE_KEY=<key>          # one-time schema setup
+make seed-lessons SUPABASE_SERVICE_KEY=<key>
+make seed-vocabulary SUPABASE_SERVICE_KEY=<key>
+make seed-podcasts SUPABASE_SERVICE_KEY=<key>    # uploads audio from content/podcasts/
+make seed-all SUPABASE_SERVICE_KEY=<key>         # lessons + vocabulary
 ```
 
 The service role key is NOT stored in the repo. Get it from the Supabase dashboard on the homelab.

@@ -2,3 +2,7 @@ node_modules/
 dist/
 .env.local
 .env
+
+# Local audio source files — not committed, upload via seed scripts
+content/lessons/
+content/podcasts/
