@@ -31,9 +31,8 @@ learning-indonesian/
 │   ├── stores/          — Zustand stores
 │   ├── services/        — Supabase queries (replaces Axios services)
 │   ├── types/
-│   ├── lib/
-│   │   └── supabase.ts  — shared Supabase client (mirrors family-hub pattern)
-│   └── data/            — curriculum.ts (static, unchanged)
+│   └── lib/
+│       └── supabase.ts  — shared Supabase client (mirrors family-hub pattern)
 ├── scripts/
 │   ├── migrate.ts       — creates indonesian schema + all tables in Supabase (run once)
 │   ├── seed-lessons.ts  — insert/update lesson content + audio to storage

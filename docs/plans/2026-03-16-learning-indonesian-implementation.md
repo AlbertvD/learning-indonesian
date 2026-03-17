@@ -100,9 +100,34 @@ bun add -d @types/node vite-plugin-pwa
 
 # Scripts-only dependency (service role, no cookie management needed)
 bun add @supabase/supabase-js
+
+# Test infrastructure
+bun add -d vitest @testing-library/react @testing-library/user-event @testing-library/jest-dom jsdom
 ```
 
 Note: `@supabase/supabase-js` is only used by scripts in `scripts/`. The frontend client uses `@supabase/ssr` (`createBrowserClient`). Both packages will be installed — this is intentional.
+
+**Step 3b: Configure test infrastructure**
+
+Add test config to `vite.config.ts` (import from `vitest/config`, not `vite`):
+
+```typescript
+import { defineConfig } from 'vitest/config'
+// ...
+test: {
+  globals: true,
+  environment: 'jsdom',
+  setupFiles: ['./src/test-setup.ts'],
+},
+```
+
+Create `src/test-setup.ts`:
+
+```typescript
+import '@testing-library/jest-dom'
+```
+
+Without this, `bun run test` in Task 2b fails with "unknown environment: jsdom".
 
 **Step 4: Configure `.gitignore`**
 
@@ -474,6 +499,11 @@ CREATE POLICY "podcasts_admin_write" ON indonesian.podcasts FOR ALL TO authentic
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
 -- RLS Policies: user progress (own write, all read)
+-- The read policies below expose individual rows (not just aggregates) to all
+-- authenticated users. This is intentional for a family homelab with known users —
+-- the leaderboard view requires cross-user reads. If tighter privacy is needed,
+-- change USING (true) to USING (user_id = auth.uid()) and make the leaderboard
+-- view SECURITY DEFINER so it can aggregate across rows despite RLS.
 CREATE POLICY "user_progress_read" ON indonesian.user_progress FOR SELECT TO authenticated USING (true);
 CREATE POLICY "user_progress_write" ON indonesian.user_progress FOR ALL TO authenticated
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
@@ -721,6 +751,9 @@ export const useAuthStore = create<AuthState>((set) => ({
             .from('profiles')
             .upsert(
               { id: session.user!.id, display_name: session.user!.user_metadata?.full_name ?? null },
+              // ignoreDuplicates: true means existing display_name is never overwritten by
+              // auth metadata on subsequent sign-ins. This is intentional — it allows
+              // display names to be manually corrected without being reset on next login.
               { onConflict: 'id', ignoreDuplicates: true }
             )
           const isAdmin = await checkAdmin(session.user!.id)
@@ -1050,7 +1083,7 @@ export const progressService = {
     return data
   },
 
-  async upsertProgress(userId: string, updates: Record<string, unknown>) {
+  async upsertProgress(userId: string, updates: Partial<Omit<UserProgress, 'id' | 'user_id' | 'created_at'>>) {
     const { error } = await supabase
       .schema('indonesian')
       .from('user_progress')
@@ -1135,6 +1168,9 @@ export const lessonService = {
       .from('lessons')
       .select('*, lesson_sections(*)')
       .order('order_index')
+      // Also order sections within each lesson — without referencedTable the
+      // first .order() applies to lessons only; sections come back unsorted.
+      .order('order_index', { referencedTable: 'lesson_sections' })
     if (error) throw error
     return data
   },
@@ -1241,7 +1277,9 @@ export const leaderboardService = {
 
 **Step 2: Create Leaderboard page**
 
-Tabs for each metric: Most Time Spent, Most Lessons, Most Words, Longest Streak, Most Consistent. Each tab shows a ranked list using Mantine's `Table` component.
+Tabs for each metric: Most Time Spent, Most Lessons, Most Words, Most Consistent (days active). Each tab shows a ranked list using Mantine's `Table` component.
+
+Note: "Longest Streak" (consecutive days) is not included — it is not a column in the leaderboard view and computing it requires a window function query. `days_active` is the proxy metric.
 
 Display time as `Xh Ym` (format from seconds).
 
@@ -1381,7 +1419,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY!
 )
 
-const audioDir = process.env.AUDIO_DIR! // path to local podcast audio files
+const audioDir = process.env.AUDIO_DIR ?? 'content/podcasts'
 
 for (const file of readdirSync(audioDir)) {
   if (!file.endsWith('.mp3')) continue
@@ -1469,7 +1507,7 @@ server {
 
 ```yaml
 # homelab-configs/services/learning-indonesian/docker-compose.yml
-version: "3.8"
+# Note: no "version:" field — Docker Compose v2 deprecated it and emits a warning
 
 services:
   learning-indonesian:
@@ -1502,11 +1540,27 @@ docker run -p 8080:80 learning-indonesian
 
 Open `http://localhost:8080` — app should load.
 
-**Step 5: Commit**
+**Step 5: Add GitHub Actions CI/CD workflow**
+
+The `docker-compose.yml` references `ghcr.io/<username>/learning-indonesian:latest`. Without a workflow to build and push this image, deployment requires manual `docker build && docker push` every time.
+
+Copy the CI workflow from family-hub and update the image name:
 
 ```bash
-git add Dockerfile nginx.conf
-git commit -m "feat: docker build for homelab deployment"
+cp /Users/albert/home/family-hub/.github/workflows/deploy.yml .github/workflows/deploy.yml
+# Update image name from family-hub to learning-indonesian
+```
+
+The workflow should: trigger on push to `main` → build Docker image with Supabase env vars from GitHub secrets → push to `ghcr.io/<username>/learning-indonesian:latest` → Portainer webhook triggers redeploy on homelab.
+
+Required GitHub secrets (same as family-hub, just add if not already present):
+- `VITE_SUPABASE_ANON_KEY`
+
+**Step 6: Commit**
+
+```bash
+git add Dockerfile nginx.conf .github/
+git commit -m "feat: docker build and CI/CD for homelab deployment"
 
 # In homelab-configs repo:
 git add services/learning-indonesian/
