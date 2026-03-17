@@ -47,24 +47,41 @@ The service role key is NOT stored in the repo. Get it from the Supabase dashboa
 
 ## Testing
 
-Write tests for every new feature where possible. The project uses **Vitest** + **@testing-library/react**.
+Write tests for every new feature where possible. The project uses **Vitest** + **@testing-library/react** + **@testing-library/user-event**.
 
 ```bash
-bun run test         # run tests
+bun run test         # run all tests
+bun run test:watch   # watch mode
 bun run test:ui      # Vitest UI
 ```
 
-**What to test:**
-- Pure logic (SM-2 algorithm, formatters, helpers) — unit tests, always
-- Service functions (`src/services/`) — unit tests with Supabase client mocked
-- Zustand stores — unit tests for state transitions
-- React components — component tests for non-trivial UI behaviour (form validation, conditional rendering, user interactions)
+**Core principle: test from the user's perspective.** Tests should simulate what a real user does — clicking buttons, filling in forms, navigating — not call service functions directly. The Supabase client is mocked so tests run without a real database.
+
+**Testing layers:**
+
+| Layer | Tool | Example |
+|-------|------|---------|
+| Pure logic (SM-2, formatters) | Vitest unit tests | `calculateNextReview('good', 2.5, 1, 0)` |
+| User interactions | RTL + userEvent | user types email, clicks login, sees dashboard |
+| Store behaviour | Vitest + store actions | login updates auth state, error clears on retry |
+
+**Example pattern:**
+```typescript
+it('lets a user log in and see the dashboard', async () => {
+  vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue({ data: mockSession, error: null })
+  render(<App />)
+  await userEvent.type(screen.getByLabelText('Email'), 'user@example.com')
+  await userEvent.type(screen.getByLabelText('Password'), 'password')
+  await userEvent.click(screen.getByRole('button', { name: /log in/i }))
+  expect(await screen.findByText('Dashboard')).toBeInTheDocument()
+})
+```
 
 **What not to test:**
 - Simple presentational components with no logic
-- Direct Supabase query wiring (covered by the real DB in dev)
+- The Supabase JS client itself
 
-Tests live alongside source files or in a `src/__tests__/` directory. Use `describe` + `it` blocks. Mock the Supabase client with `vi.mock('@/lib/supabase')`.
+Tests live in `src/__tests__/` or colocated as `*.test.tsx`. Mock the Supabase client with `vi.mock('@/lib/supabase')`.
 
 ## Development
 
