@@ -6,3 +6,9 @@ dist/
 # Local audio source files — not committed, upload via seed scripts
 content/lessons/
 content/podcasts/
+
+# Raw coursebook page images — not committed
+content/raw/
+
+# Intermediate extraction JSON — not committed
+content/extracted/

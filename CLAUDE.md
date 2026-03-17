@@ -156,6 +156,34 @@ Password resets are handled by an admin via Supabase Studio. If email is needed 
 
 All lesson, vocabulary, and podcast content (including audio files) is **deployed via scripts**, not through any UI.
 
+### Adding a new lesson — full workflow
+
+New lessons start as physical coursebook pages photographed with a phone. The full pipeline:
+
+**Step 1 — Photograph pages**
+Take photos of each coursebook page and place them in `content/raw/lesson-<N>/` as JPEGs or PNGs. File names don't matter.
+
+**Step 2 — Extract lesson content with AI**
+Run the extraction script. It sends all page images to Claude in one API call with structured output and saves the result to both an intermediate JSON file and a ready-to-use TypeScript data file:
+
+```bash
+make extract-lesson LESSON=<N> ANTHROPIC_API_KEY=<key>
+# Reads:   content/raw/lesson-<N>/*.{jpg,jpeg,png}
+# Writes:  content/extracted/lesson-<N>.json  (intermediate, gitignored)
+#          scripts/data/lesson-<N>.ts          (version-controlled)
+```
+
+Review `scripts/data/lesson-<N>.ts` and fix any extraction errors before proceeding.
+
+**Step 3 — Generate audio via NotebookLM**
+The extraction script also outputs a plain-text file (`content/extracted/lesson-<N>-text.txt`) containing the lesson content formatted for NotebookLM. Upload this file to NotebookLM as a source, generate a podcast episode, then download the `.mp3` and place it at `content/podcasts/lesson-<N>.mp3`.
+
+**Step 4 — Deploy**
+```bash
+make seed-lessons SUPABASE_SERVICE_KEY=<key>      # upserts lesson + vocabulary data
+make seed-podcasts SUPABASE_SERVICE_KEY=<key>      # uploads audio to Supabase Storage
+```
+
 ### Text content (in repo)
 Lesson structure, vocabulary, and podcast metadata live as TypeScript data files in `scripts/data/` — version-controlled alongside the app. Source data migrated from the original seed scripts in `homelab-configs/Indonesian app/backend/prisma/`.
 
@@ -166,16 +194,17 @@ scripts/data/
 └── podcasts.ts      — podcast metadata and transcripts
 ```
 
-### Audio files (local only, not in repo)
-Audio files (`.mp3`) live in `content/` — gitignored, local only. Copy files here before running seed scripts.
+### Local files (not in repo)
+All local content files are gitignored. Directories:
 
 ```
 content/
-├── lessons/         — lesson audio files
-└── podcasts/        — podcast audio files
+├── raw/             — source page images (gitignored)
+│   └── lesson-<N>/ — one subdirectory per lesson
+├── extracted/       — intermediate JSON + plain-text exports (gitignored)
+├── lessons/         — lesson audio files (gitignored)
+└── podcasts/        — NotebookLM-generated podcast audio (gitignored)
 ```
-
-To add new audio: drop the `.mp3` into the appropriate `content/` subdirectory, add its metadata to `scripts/data/podcasts.ts` or `scripts/data/lessons.ts`, then run the seed script.
 
 ### Deploying content
 

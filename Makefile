@@ -65,6 +65,12 @@ seed-podcasts: ## Seed podcast metadata and upload audio (requires SUPABASE_SERV
 .PHONY: seed-all
 seed-all: seed-lessons seed-vocabulary ## Seed all non-audio content (requires SUPABASE_SERVICE_KEY)
 
+.PHONY: extract-lesson
+extract-lesson: ## Extract lesson content from page photos (requires LESSON and ANTHROPIC_API_KEY)
+	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make extract-lesson LESSON=<N> ANTHROPIC_API_KEY=<key>"; exit 1; }
+	@test -n "$(ANTHROPIC_API_KEY)" || { echo "Error: ANTHROPIC_API_KEY is required. Run: make extract-lesson LESSON=<N> ANTHROPIC_API_KEY=<key>"; exit 1; }
+	ANTHROPIC_API_KEY=$(ANTHROPIC_API_KEY) bun scripts/extract-lesson.ts $(LESSON)
+
 # ============================================================================
 # DOCKER
 # ============================================================================
