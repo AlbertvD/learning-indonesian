@@ -5,7 +5,7 @@ import { useForm } from '@mantine/form'
 import { Link } from 'react-router-dom'
 import { useCardStore } from '@/stores/cardStore'
 import { useAuthStore } from '@/stores/authStore'
-import { IconPlus, IconCards } from '@tabler/icons-react'
+import { IconPlus } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
 import { logError } from '@/lib/logger'
 
@@ -90,10 +90,6 @@ export function Sets() {
                 {set.description || 'No description provided.'}
               </Text>
 
-              <Group gap="xs" mt="auto">
-                <IconCards size={14} color="gray" />
-                <Text size="xs" c="dimmed">Owner: {set.owner_id === user?.id ? 'You' : 'Others'}</Text>
-              </Group>
             </Card>
           ))}
         </SimpleGrid>

@@ -14,7 +14,8 @@ export function Set() {
   const { setId } = useParams<{ setId: string }>()
   const navigate = useNavigate()
   const user = useAuthStore((state) => state.user)
-  
+  const profile = useAuthStore((state) => state.profile)
+
   const [set, setSet] = useState<CardSet | null>(null)
   const [cards, setCards] = useState<AnkiCard[]>([])
   const [loading, setLoading] = useState(true)
@@ -83,6 +84,7 @@ export function Set() {
 
   const isOwner = user?.id === set.owner_id
   const isPublic = set.visibility === 'public'
+  const lang = profile?.language ?? 'nl'
 
   return (
     <Container size="lg">
@@ -152,29 +154,19 @@ export function Set() {
           <Table striped highlightOnHover withTableBorder withColumnBorders>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th>Indonesisch</Table.Th>
-                <Table.Th>Nederlands</Table.Th>
-                {cards.some(c => c.notes) && <Table.Th>Engels</Table.Th>}
-                {cards.some(c => c.tags?.length > 0) && <Table.Th>Tags</Table.Th>}
+                <Table.Th style={{ textAlign: 'left' }}>Indonesisch</Table.Th>
+                <Table.Th style={{ textAlign: 'left' }}>
+                  {lang === 'nl' ? 'Nederlands' : 'English'}
+                </Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
               {cards.map((card) => (
                 <Table.Tr key={card.id}>
-                  <Table.Td fw={500}>{card.front}</Table.Td>
-                  <Table.Td>{card.back}</Table.Td>
-                  {cards.some(c => c.notes) && (
-                    <Table.Td c="dimmed">{card.notes ?? ''}</Table.Td>
-                  )}
-                  {cards.some(c => c.tags?.length > 0) && (
-                    <Table.Td>
-                      <Group gap={4}>
-                        {card.tags?.map(tag => (
-                          <Badge key={tag} size="xs" variant="light">{tag}</Badge>
-                        ))}
-                      </Group>
-                    </Table.Td>
-                  )}
+                  <Table.Td fw={500} style={{ textAlign: 'left' }}>{card.front}</Table.Td>
+                  <Table.Td style={{ textAlign: 'left' }}>
+                    {lang === 'nl' ? card.back : (card.notes ?? card.back)}
+                  </Table.Td>
                 </Table.Tr>
               ))}
             </Table.Tbody>
