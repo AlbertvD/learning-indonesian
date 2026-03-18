@@ -41,7 +41,7 @@ export const podcastService = {
       .schema('indonesian')
       .from('podcasts')
       .select('*')
-      .ilike('audio_path', `lesson-${orderIndex}.%`)
+      .ilike('audio_path', `podcasts/lesson-${orderIndex}.%`)
       .maybeSingle()
     if (error) throw error
     return data as Podcast | null
