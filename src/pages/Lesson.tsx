@@ -17,6 +17,8 @@ type SimpleSentence = { indonesian: string; dutch: string }
 type GrammarCategory = { title: string; rules: string[] }
 type DialogueLine = { speaker: string; text: string }
 
+import { useT } from '@/hooks/useT'
+
 type SectionContentData =
   | { type: 'exercises'; items: ExerciseItem[] }
   | { type: 'text'; intro?: string; examples?: PhoneticExample[]; spelling?: SpellingRule[]; sentences?: SimpleSentence[] }
@@ -25,6 +27,7 @@ type SectionContentData =
 
 function SectionContent({ content }: { content: unknown }) {
   const data = content as SectionContentData
+  const T = useT()
 
   if (data?.type === 'exercises' && Array.isArray(data.items)) {
     const hasDutch = data.items.some((i) => i.dutch)
@@ -33,8 +36,8 @@ function SectionContent({ content }: { content: unknown }) {
       <Table striped highlightOnHover withTableBorder withColumnBorders>
         <Table.Thead>
           <Table.Tr>
-            {hasDutch && <Table.Th>Nederlands</Table.Th>}
-            {hasIndonesian && <Table.Th>Bahasa Indonesia</Table.Th>}
+            {hasDutch && <Table.Th>{T.lessons.dutch}</Table.Th>}
+            {hasIndonesian && <Table.Th>{T.lessons.indonesian}</Table.Th>}
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
@@ -55,13 +58,13 @@ function SectionContent({ content }: { content: unknown }) {
         {data.intro && <Text>{data.intro}</Text>}
         {data.examples && data.examples.length > 0 && (
           <Stack gap="xs">
-            <Text fw={600}>Voorbeelden</Text>
+            <Text fw={600}>{T.lessons.examples}</Text>
             <Table withTableBorder withColumnBorders>
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th>Indonesisch</Table.Th>
-                  <Table.Th>Uitspraak</Table.Th>
-                  <Table.Th>Nederlands</Table.Th>
+                  <Table.Th>{T.lessons.indonesian}</Table.Th>
+                  <Table.Th>{T.lessons.phonetic}</Table.Th>
+                  <Table.Th>{T.lessons.dutch}</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
@@ -78,13 +81,13 @@ function SectionContent({ content }: { content: unknown }) {
         )}
         {data.spelling && data.spelling.length > 0 && (
           <Stack gap="xs">
-            <Text fw={600}>Schrijfwijzen</Text>
+            <Text fw={600}>{T.lessons.spelling}</Text>
             <Table withTableBorder withColumnBorders>
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th>Regel</Table.Th>
-                  <Table.Th>Voorbeeld</Table.Th>
-                  <Table.Th>Nederlands</Table.Th>
+                  <Table.Th>{T.lessons.rule}</Table.Th>
+                  <Table.Th>{T.lessons.example}</Table.Th>
+                  <Table.Th>{T.lessons.dutch}</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
@@ -101,12 +104,12 @@ function SectionContent({ content }: { content: unknown }) {
         )}
         {data.sentences && data.sentences.length > 0 && (
           <Stack gap="xs">
-            <Text fw={600}>Eenvoudige zinnen</Text>
+            <Text fw={600}>{T.lessons.simpleSentences}</Text>
             <Table withTableBorder withColumnBorders>
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th>Bahasa Indonesia</Table.Th>
-                  <Table.Th>Nederlands</Table.Th>
+                  <Table.Th>{T.lessons.indonesian}</Table.Th>
+                  <Table.Th>{T.lessons.dutch}</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
@@ -169,6 +172,7 @@ function SectionContent({ content }: { content: unknown }) {
 export function Lesson() {
   const { lessonId } = useParams<{ lessonId: string }>()
   const navigate = useNavigate()
+  const T = useT()
   const user = useAuthStore((state) => state.user)
   
   const [lesson, setLesson] = useState<Lesson | null>(null)
@@ -196,7 +200,7 @@ export function Lesson() {
         }
       } catch (err) {
         logError({ page: 'lesson', action: 'fetchData', error: err })
-        notifications.show({ color: 'red', title: 'Error', message: 'Failed to load lesson' })
+        notifications.show({ color: 'red', title: T.common.error, message: T.lessons.failedToLoadLesson })
       } finally {
         setLoading(false)
       }
@@ -210,7 +214,7 @@ export function Lesson() {
         )
       }
     }
-  }, [lessonId, user])
+  }, [lessonId, user, T])
 
   const handleNext = async () => {
     if (!lesson || !user) return
@@ -224,7 +228,7 @@ export function Lesson() {
       await progressService.markLessonComplete(user.id, lesson.id, nextSections)
     } catch (err) {
       logError({ page: 'lesson', action: 'saveProgress', error: err })
-      notifications.show({ color: 'red', title: 'Error', message: 'Failed to save your progress. Please try again.' })
+      notifications.show({ color: 'red', title: T.common.error, message: T.lessons.failedToSaveProgress })
     }
 
     if (currentSectionIndex < lesson.lesson_sections.length - 1) {
@@ -234,8 +238,8 @@ export function Lesson() {
       // Final completion
       notifications.show({
         color: 'green',
-        title: 'Lesson complete!',
-        message: `You've finished ${lesson.title}`,
+        title: T.lessons.lessonComplete,
+        message: T.lessons.lessonCompleteMessage(lesson.title),
         icon: <IconCheck size={16} />
       })
       navigate('/lessons')
@@ -265,10 +269,10 @@ export function Lesson() {
       <Stack gap="xl" my="xl">
         <Group justify="space-between">
           <Button variant="subtle" color="gray" leftSection={<IconChevronLeft size={16} />} onClick={() => navigate('/lessons')}>
-            Back to list
+            {T.lessons.backToList}
           </Button>
           <Text size="sm" fw={500} c="dimmed">
-            Section {currentSectionIndex + 1} of {lesson.lesson_sections.length}
+            {T.lessons.section} {currentSectionIndex + 1} {T.lessons.of} {lesson.lesson_sections.length}
           </Text>
         </Group>
 
@@ -288,7 +292,7 @@ export function Lesson() {
             disabled={currentSectionIndex === 0}
             leftSection={<IconChevronLeft size={16} />}
           >
-            Previous
+            {T.lessons.previous}
           </Button>
           <Button 
             size="lg"
@@ -296,7 +300,7 @@ export function Lesson() {
             rightSection={currentSectionIndex === lesson.lesson_sections.length - 1 ? <IconCheck size={16} /> : <IconChevronRight size={16} />}
             color={currentSectionIndex === lesson.lesson_sections.length - 1 ? 'green' : 'blue'}
           >
-            {currentSectionIndex === lesson.lesson_sections.length - 1 ? 'Finish Lesson' : 'Next Section'}
+            {currentSectionIndex === lesson.lesson_sections.length - 1 ? T.lessons.finishLesson : T.lessons.nextSection}
           </Button>
         </Group>
       </Stack>

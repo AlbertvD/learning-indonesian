@@ -15,16 +15,18 @@ import {
   Loader,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconBook, IconCards, IconMicrophone, IconDatabase } from '@tabler/icons-react'
+import { IconBook, IconCards, IconMicrophone } from '@tabler/icons-react'
 import { progressService } from '@/services/progressService'
 import { cardService } from '@/services/cardService'
 import { lessonService } from '@/services/lessonService'
 import { useAuthStore } from '@/stores/authStore'
+import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
 import type { UserProgress } from '@/types/progress'
 
 export function Dashboard() {
   const navigate = useNavigate()
+  const T = useT()
   const user = useAuthStore((state) => state.user)
   const profile = useAuthStore((state) => state.profile)
 
@@ -50,15 +52,15 @@ export function Dashboard() {
         logError({ page: 'dashboard', action: 'fetchData', error: err })
         notifications.show({
           color: 'red',
-          title: 'Failed to load dashboard',
-          message: 'Something went wrong. Please try again.',
+          title: T.common.error,
+          message: T.common.somethingWentWrong,
         })
       } finally {
         setLoading(false)
       }
     }
     fetchData()
-  }, [user])
+  }, [user, T])
 
   if (loading) {
     return (
@@ -69,21 +71,24 @@ export function Dashboard() {
   }
 
   const level = progress?.current_level ?? 'Beginner'
+  const welcomeText = profile?.fullName 
+    ? `${T.dashboard.welcomeBack}, ${profile.fullName.split(' ')[0]}!`
+    : `${T.dashboard.welcomeBack}!`
 
   return (
     <Container size="md">
       <Stack gap="xl" my="xl">
         <div>
-          <Title order={1}>Selamat datang!</Title>
+          <Title order={1}>{welcomeText}</Title>
           <Text c="dimmed" mt="xs">
-            Welcome back. Here's your learning overview.
+            {T.dashboard.overview}
           </Text>
         </div>
 
         <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
           <Card withBorder radius="md" shadow="sm" p="lg">
             <Text size="sm" c="dimmed" fw={500} tt="uppercase">
-              Lessons Completed
+              {T.dashboard.lessonsCompleted}
             </Text>
             <Title order={2} mt="xs">
               {lessonsCompletedCount}
@@ -92,13 +97,13 @@ export function Dashboard() {
 
           <Card withBorder radius="md" shadow="sm" p="lg">
             <Text size="sm" c="dimmed" fw={500} tt="uppercase">
-              Cards Due
+              {T.dashboard.cardsDue}
             </Text>
             <Group gap="xs" mt="xs" align="center">
               <Title order={2}>{dueCardsCount}</Title>
               {dueCardsCount > 0 && (
                 <Badge color="orange" size="sm">
-                  Review now
+                  {T.dashboard.reviewNow}
                 </Badge>
               )}
             </Group>
@@ -106,7 +111,7 @@ export function Dashboard() {
 
           <Card withBorder radius="md" shadow="sm" p="lg">
             <Text size="sm" c="dimmed" fw={500} tt="uppercase">
-              Level
+              {T.dashboard.level}
             </Text>
             <Title order={2} mt="xs">
               {level}
@@ -115,40 +120,28 @@ export function Dashboard() {
         </SimpleGrid>
 
         <Stack gap="sm">
-          <Title order={3}>Quick Actions</Title>
+          <Title order={3}>{T.dashboard.quickActions}</Title>
           <Group gap="sm" wrap="wrap">
             <Button
               leftSection={<IconBook size={16} />}
               onClick={() => navigate('/lessons')}
             >
-              Continue Learning
+              {T.dashboard.continueLearning}
             </Button>
             <Button
               variant="outline"
               leftSection={<IconCards size={16} />}
               onClick={() => navigate('/review')}
             >
-              Review Cards
+              {T.dashboard.reviewCards}
             </Button>
             <Button
               variant="subtle"
               leftSection={<IconMicrophone size={16} />}
               onClick={() => navigate('/podcasts')}
             >
-              Browse Podcasts
+              {T.dashboard.browsePodcasts}
             </Button>
-            {profile?.isAdmin && (
-              <Button
-                variant="subtle"
-                leftSection={<IconDatabase size={16} />}
-                component="a"
-                href="https://db.supabase.duin.home"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Supabase Studio
-              </Button>
-            )}
           </Group>
         </Stack>
       </Stack>

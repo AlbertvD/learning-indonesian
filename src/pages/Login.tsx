@@ -8,7 +8,10 @@ import { notifications } from '@mantine/notifications'
 import { logError } from '@/lib/logger'
 import { AuthApiError } from '@supabase/supabase-js'
 
+import { useT } from '@/hooks/useT'
+
 export function Login() {
+  const T = useT()
   const [loading, setLoading] = useState(false)
   const signIn = useAuthStore((state) => state.signIn)
   const navigate = useNavigate()
@@ -31,12 +34,12 @@ export function Login() {
       navigate('/')
     } catch (err) {
       const msg = err instanceof AuthApiError && err.code === 'invalid_credentials'
-        ? 'Incorrect email or password.'
-        : 'Something went wrong. Please try again.'
+        ? T.login.incorrectCredentials
+        : T.login.somethingWentWrong
       
       notifications.show({
         color: 'red',
-        title: 'Login failed',
+        title: T.login.loginFailed,
         message: msg,
       })
       
@@ -49,32 +52,32 @@ export function Login() {
   return (
     <Container size={420} my={40}>
       <Title ta="center" fw={900}>
-        Welcome back!
+        {T.login.title}
       </Title>
       <Text c="dimmed" size="sm" ta="center" mt={5}>
-        Do not have an account yet?{' '}
+        {T.login.noAccount}{' '}
         <Anchor size="sm" component={Link} to="/register">
-          Create account
+          {T.login.createOne}
         </Anchor>
       </Text>
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
-            label="Email"
-            placeholder="you@example.com"
+            label={T.login.email}
+            placeholder={T.login.emailPlaceholder}
             required
             {...form.getInputProps('email')}
           />
           <PasswordInput
-            label="Password"
-            placeholder="Your password"
+            label={T.login.password}
+            placeholder={T.login.passwordPlaceholder}
             required
             mt="md"
             {...form.getInputProps('password')}
           />
           <Button fullWidth mt="xl" type="submit" loading={loading}>
-            Sign in
+            {T.login.logIn}
           </Button>
         </form>
       </Paper>

@@ -7,7 +7,10 @@ import { useAuthStore } from '@/stores/authStore'
 import { notifications } from '@mantine/notifications'
 import { logError } from '@/lib/logger'
 
+import { useT } from '@/hooks/useT'
+
 export function Register() {
+  const T = useT()
   const [loading, setLoading] = useState(false)
   const signUp = useAuthStore((state) => state.signUp)
   const navigate = useNavigate()
@@ -31,15 +34,15 @@ export function Register() {
       await signUp(values.email, values.password, values.fullName)
       notifications.show({
         color: 'green',
-        title: 'Registration successful',
-        message: 'Your account has been created. You can now log in.',
+        title: T.register.registrationSuccess,
+        message: T.register.accountCreated,
       })
       navigate('/login')
     } catch (err) {
       notifications.show({
         color: 'red',
-        title: 'Registration failed',
-        message: 'Something went wrong. Please try again.',
+        title: T.register.registrationFailed,
+        message: T.register.somethingWentWrong,
       })
       logError({ page: 'register', action: 'signUp', error: err })
     } finally {
@@ -50,39 +53,39 @@ export function Register() {
   return (
     <Container size={420} my={40}>
       <Title ta="center" fw={900}>
-        Create account
+        {T.register.title}
       </Title>
       <Text c="dimmed" size="sm" ta="center" mt={5}>
-        Already have an account?{' '}
+        {T.register.alreadyHaveAccount}{' '}
         <Anchor size="sm" component={Link} to="/login">
-          Log in
+          {T.register.logIn}
         </Anchor>
       </Text>
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
-            label="Full Name"
-            placeholder="John Doe"
+            label={T.register.fullName}
+            placeholder={T.register.fullNamePlaceholder}
             required
             {...form.getInputProps('fullName')}
           />
           <TextInput
-            label="Email"
-            placeholder="you@example.com"
+            label={T.register.email}
+            placeholder={T.register.emailPlaceholder}
             required
             mt="md"
             {...form.getInputProps('email')}
           />
           <PasswordInput
-            label="Password"
-            placeholder="Your password"
+            label={T.register.password}
+            placeholder={T.register.passwordPlaceholder}
             required
             mt="md"
             {...form.getInputProps('password')}
           />
           <Button fullWidth mt="xl" type="submit" loading={loading}>
-            Create account
+            {T.register.createAccount}
           </Button>
         </form>
       </Paper>
