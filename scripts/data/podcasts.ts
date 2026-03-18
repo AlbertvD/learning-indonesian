@@ -15,7 +15,7 @@ export const podcasts: PodcastData[] = [
     description: 'Audio uitleg bij Les 1 - Inleiding tot het Indonesisch. Leer over de eenvoudige grammatica van het Indonesisch.',
     level: 'A1',
     duration_seconds: 780,
-    audio_filename: 'lesson-1.mp3',
+    audio_filename: 'lesson-1.m4a',
     transcript_dutch: `Welkom bij Les 1 van de Indonesische taalcursus!
 
 In deze les leer je de basis van het Indonesisch (Bahasa Indonesia), de officiële taal van Indonesië, gesproken door meer dan 270 miljoen mensen.

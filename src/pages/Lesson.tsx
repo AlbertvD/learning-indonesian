@@ -1,7 +1,7 @@
 // src/pages/Lesson.tsx
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Container, Title, Text, Button, Paper, Group, Progress, Stack, Center, Loader, Table } from '@mantine/core'
+import { Container, Title, Text, Button, Paper, Group, Progress, Stack, Center, Loader, Table, List, Badge, Divider } from '@mantine/core'
 import { IconChevronLeft, IconChevronRight, IconCheck } from '@tabler/icons-react'
 import { lessonService, type Lesson } from '@/services/lessonService'
 import { progressService } from '@/services/progressService'
@@ -11,11 +11,22 @@ import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
 
 type ExerciseItem = { dutch?: string; indonesian?: string }
-type SectionContentData = { type: string; items?: ExerciseItem[] }
+type PhoneticExample = { indonesian: string; phonetic: string; dutch: string }
+type SpellingRule = { rule: string; example: string; dutch: string }
+type SimpleSentence = { indonesian: string; dutch: string }
+type GrammarCategory = { title: string; rules: string[] }
+type DialogueLine = { speaker: string; text: string }
+
+type SectionContentData =
+  | { type: 'exercises'; items: ExerciseItem[] }
+  | { type: 'text'; intro?: string; examples?: PhoneticExample[]; spelling?: SpellingRule[]; sentences?: SimpleSentence[] }
+  | { type: 'grammar'; intro?: string; categories: GrammarCategory[] }
+  | { type: 'dialogue'; setup?: string; lines: DialogueLine[] }
 
 function SectionContent({ content }: { content: unknown }) {
   const data = content as SectionContentData
-  if (data?.type === 'exercises' && Array.isArray(data.items)) {
+
+  if (data?.type === 'exercises') {
     const hasDutch = data.items.some((i) => i.dutch)
     const hasIndonesian = data.items.some((i) => i.indonesian)
     return (
@@ -37,6 +48,117 @@ function SectionContent({ content }: { content: unknown }) {
       </Table>
     )
   }
+
+  if (data?.type === 'text') {
+    return (
+      <Stack gap="lg">
+        {data.intro && <Text>{data.intro}</Text>}
+        {data.examples && data.examples.length > 0 && (
+          <Stack gap="xs">
+            <Text fw={600}>Voorbeelden</Text>
+            <Table withTableBorder withColumnBorders>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Indonesisch</Table.Th>
+                  <Table.Th>Uitspraak</Table.Th>
+                  <Table.Th>Nederlands</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {data.examples.map((ex, i) => (
+                  <Table.Tr key={i}>
+                    <Table.Td fw={500}>{ex.indonesian}</Table.Td>
+                    <Table.Td c="dimmed">{ex.phonetic}</Table.Td>
+                    <Table.Td>{ex.dutch}</Table.Td>
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+          </Stack>
+        )}
+        {data.spelling && data.spelling.length > 0 && (
+          <Stack gap="xs">
+            <Text fw={600}>Schrijfwijzen</Text>
+            <Table withTableBorder withColumnBorders>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Regel</Table.Th>
+                  <Table.Th>Voorbeeld</Table.Th>
+                  <Table.Th>Nederlands</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {data.spelling.map((s, i) => (
+                  <Table.Tr key={i}>
+                    <Table.Td fw={600}>{s.rule}</Table.Td>
+                    <Table.Td>{s.example}</Table.Td>
+                    <Table.Td>{s.dutch}</Table.Td>
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+          </Stack>
+        )}
+        {data.sentences && data.sentences.length > 0 && (
+          <Stack gap="xs">
+            <Text fw={600}>Eenvoudige zinnen</Text>
+            <Table withTableBorder withColumnBorders>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Bahasa Indonesia</Table.Th>
+                  <Table.Th>Nederlands</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {data.sentences.map((s, i) => (
+                  <Table.Tr key={i}>
+                    <Table.Td fw={500}>{s.indonesian}</Table.Td>
+                    <Table.Td>{s.dutch}</Table.Td>
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+          </Stack>
+        )}
+      </Stack>
+    )
+  }
+
+  if (data?.type === 'grammar') {
+    return (
+      <Stack gap="lg">
+        {data.intro && <Text>{data.intro}</Text>}
+        {data.categories.map((cat, i) => (
+          <Stack key={i} gap="xs">
+            {i > 0 && <Divider />}
+            <Text fw={600} size="lg">{cat.title}</Text>
+            <List spacing="xs">
+              {cat.rules.map((rule, j) => (
+                <List.Item key={j}>{rule}</List.Item>
+              ))}
+            </List>
+          </Stack>
+        ))}
+      </Stack>
+    )
+  }
+
+  if (data?.type === 'dialogue') {
+    return (
+      <Stack gap="md">
+        {data.setup && (
+          <Text fs="italic" c="dimmed">{data.setup}</Text>
+        )}
+        {data.lines.map((line, i) => (
+          <Group key={i} align="flex-start" gap="sm">
+            <Badge variant="light" miw={80} ta="center">{line.speaker}</Badge>
+            <Text style={{ flex: 1 }}>{line.text}</Text>
+          </Group>
+        ))}
+      </Stack>
+    )
+  }
+
   return (
     <Text size="lg" style={{ whiteSpace: 'pre-wrap' }}>
       {typeof content === 'string' ? content : JSON.stringify(content, null, 2)}

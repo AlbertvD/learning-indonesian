@@ -20,6 +20,83 @@ export const lessons: LessonData[] = [
     order_index: 1,
     sections: [
       {
+        title: 'Uitspraak (Pronunciation)',
+        content: {
+          type: 'text',
+          intro: 'De Indonesische woorden kan men in het begin het best rustig en zonder klemtoon uitspreken. Van belang bij de uitspraak is een gelijkmatig ritme. Hierbij worden we geholpen door het feit dat de woorden over het algemeen niet lang zijn en een indeling in lettergrepen makkelijk te maken is.',
+          examples: [
+            { indonesian: 'Selamat datang', phonetic: 'Se-la-mat da-tang', dutch: 'Welkom' },
+            { indonesian: 'Apa kabar?', phonetic: 'A-pa ka-bar?', dutch: 'Hoe is het ermee?' },
+            { indonesian: 'Baik, terima kasih', phonetic: 'Ba-ik, te-ri-ma ka-sih', dutch: 'Goed, dank u wel' },
+            { indonesian: 'Bapak ke Bandung?', phonetic: 'Ba-pak ke Ban-dung?', dutch: 'Gaat u naar Bandung?' },
+          ],
+          spelling: [
+            { rule: 'c = tj', example: 'cukup (tjoekoep)', dutch: 'voldoende' },
+            { rule: 'j = dj', example: 'Jakarta (Djakarta)', dutch: 'Jakarta' },
+            { rule: 'u = oe', example: 'Ibu (Iboe)', dutch: 'mevrouw, u' },
+            { rule: 'y = j', example: 'Surabaya (Soerabaja)', dutch: 'Surabaya' },
+            { rule: 'ny = nj', example: 'nyonya (njonja)', dutch: 'mevrouw, u' },
+            { rule: 'kh = ch', example: 'akhir (achir)', dutch: 'einde' },
+          ],
+          sentences: [
+            { indonesian: 'Saya ke pasar', dutch: 'Ik ga/ging naar de/een markt' },
+            { indonesian: 'Saya beli buah', dutch: 'Ik koop/kocht een vrucht/vruchten' },
+            { indonesian: 'Bapak beli buah-buahan', dutch: 'Meneer koopt/kocht fruit' },
+            { indonesian: 'Bapak dan Ibu beli nanas', dutch: 'Meneer en mevrouw kopen/kochten een ananas' },
+            { indonesian: 'Saya mau beli rumah besar', dutch: 'Ik wil/wilde een groot huis kopen' },
+          ],
+        },
+        order_index: 0,
+      },
+      {
+        title: 'Grammatica (Grammar)',
+        content: {
+          type: 'grammar',
+          intro: 'In de voorgaande Indonesische zinnen zijn enkele bijzonderheden op te merken.',
+          categories: [
+            {
+              title: 'Werkwoord',
+              rules: [
+                'Zinnen zonder een werkwoord zijn heel gewoon.',
+                'Werkwoorden worden niet vervoegd naar enkel- of meervoud.',
+                'Werkwoorden worden niet vervoegd naar tegenwoordige of verleden tijd. Tenzij uit de context anders blijkt, vertaalt men het werkwoord in de tegenwoordige tijd.',
+                'Werkwoorden worden bij elkaar gezet.',
+              ],
+            },
+            {
+              title: 'Zelfstandig naamwoord',
+              rules: [
+                'Zelfstandige naamwoorden hebben geen lidwoord (de, het, een).',
+                'Er wordt bij zelfstandige naamwoorden geen onderscheid gemaakt tussen enkelvoud en meervoud.',
+                'Herhaling van een zelfstandig naamwoord geeft meervoud of verscheidenheid aan.',
+                'Als uit de context blijkt dat er sprake is van meervoud of verscheidenheid, wordt een zelfstandig naamwoord niet verdubbeld (2 huizen = dua rumah en niet dua rumah-rumah).',
+              ],
+            },
+            {
+              title: 'Bijvoeglijk naamwoord',
+              rules: [
+                'Het bijvoeglijk naamwoord wordt achter het zelfstandig naamwoord geplaatst.',
+              ],
+            },
+          ],
+        },
+        order_index: 1,
+      },
+      {
+        title: 'Di Pasar (At the Market)',
+        content: {
+          type: 'dialogue',
+          setup: 'Ibu mau ke pasar. Mau beli pisang.',
+          lines: [
+            { speaker: 'Ibu', text: 'Pak, saya mau beli 3 (tiga) buah pisang. Berapa harganya?' },
+            { speaker: 'Penjual', text: 'Harganya murah Bu, 8 (delapan) rupiah.' },
+            { speaker: 'Ibu', text: 'Itu mahal ya! 4 (empat) rupiah boleh?' },
+            { speaker: 'Penjual', text: 'Belum bisa Bu. Tetapi kalau mau 5 (lima) buah, bisa 9 (sembilan) rupiah.' },
+          ],
+        },
+        order_index: 2,
+      },
+      {
         title: 'Vertaal naar het Indonesisch (Translate to Indonesian)',
         content: {
           type: 'exercises',
@@ -36,7 +113,7 @@ export const lessons: LessonData[] = [
             { dutch: 'Twee dames kopen negen vruchten', indonesian: 'Dua ibu beli sembilan buah' },
           ],
         },
-        order_index: 0,
+        order_index: 3,
       },
       {
         title: 'Vertaal naar het Nederlands (Translate to Dutch)',
@@ -55,7 +132,7 @@ export const lessons: LessonData[] = [
             { indonesian: 'Sembilan buah mahal saya mau enam buah', dutch: 'Negen vruchten zijn duur ik wil zes vruchten' },
           ],
         },
-        order_index: 1,
+        order_index: 4,
       },
       {
         title: 'Schrijf de getallen (Write the numbers)',
@@ -70,7 +147,7 @@ export const lessons: LessonData[] = [
             { dutch: '3 winkels', indonesian: 'tiga toko' },
           ],
         },
-        order_index: 2,
+        order_index: 5,
       },
     ],
   },

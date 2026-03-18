@@ -18,9 +18,11 @@ for (const podcast of podcasts) {
 
   if (existsSync(localPath)) {
     const buffer = readFileSync(localPath)
+    const ext = podcast.audio_filename.split('.').pop()?.toLowerCase()
+    const contentType = ext === 'm4a' ? 'audio/mp4' : 'audio/mpeg'
     const { error: uploadError } = await supabase.storage
       .from('indonesian-podcasts')
-      .upload(storagePath, buffer, { contentType: 'audio/mpeg', upsert: true })
+      .upload(storagePath, buffer, { contentType, upsert: true })
     if (uploadError) {
       console.error('Upload failed:', podcast.audio_filename, uploadError.message)
     } else {
