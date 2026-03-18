@@ -58,6 +58,8 @@ git commit -m "feat: add language preference column to profiles"
 - Modify: `src/stores/authStore.ts`
 - Modify: `src/types/auth.ts`
 
+**Prerequisite:** `create<AuthState>((set, get) => ...)` — add `get` as the second parameter before writing any of the steps below. Without it, `updateDisplayName` and `updateLanguage` will fail at runtime.
+
 **Step 1: Update `UserProfile` type**
 
 ```typescript
@@ -100,7 +102,7 @@ async function loadProfileData(userId: string): Promise<{ displayName: string | 
     .from('profiles')
     .select('display_name, language')
     .eq('id', userId)
-    .single()
+    .maybeSingle() // .single() throws PGRST116 on zero rows; .maybeSingle() returns null data with no error
   return {
     displayName: data?.display_name ?? null,
     language: (data?.language as 'nl' | 'en') ?? 'nl',
@@ -133,6 +135,10 @@ setTimeout(async () => {
     .upsert(
       { id: session.user!.id, display_name: session.user!.user_metadata?.full_name ?? null },
       { onConflict: 'id', ignoreDuplicates: true }
+      // ignoreDuplicates: true → ON CONFLICT DO NOTHING
+      // If a row with this id already exists, the ENTIRE upsert payload is ignored —
+      // both display_name and language remain exactly as the user last set them.
+      // Removing this flag would silently revert both fields to GoTrue values on every token refresh.
     )
   const [{ displayName, language }, isAdmin] = await Promise.all([
     loadProfileData(session.user!.id),
@@ -142,7 +148,22 @@ setTimeout(async () => {
 }, 0)
 ```
 
-Also update the `initialize` function's session block similarly (same pattern — load profile data after getting session).
+Also update the `initialize` function's session block to call `loadProfileData` before `set()`:
+
+```typescript
+initialize: async () => {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (session?.user) {
+    const [{ displayName, language }, isAdmin] = await Promise.all([
+      loadProfileData(session.user.id),
+      checkAdmin(session.user.id),
+    ])
+    set({ user: session.user, profile: toProfile(session.user, isAdmin, displayName, language), loading: false })
+  } else {
+    set({ loading: false })
+  }
+},
+```
 
 **Step 4: Add `updateDisplayName` and `updateLanguage` actions**
 
@@ -153,7 +174,7 @@ updateDisplayName: async (name) => {
   const { error } = await supabase
     .schema('indonesian')
     .from('profiles')
-    .upsert({ id: user.id, display_name: name.trim() || null }, { onConflict: 'id' })
+    .upsert({ id: user.id, display_name: name.trim() || null, updated_at: new Date().toISOString() }, { onConflict: 'id' })
   if (error) throw error
   set((state) => ({
     profile: state.profile ? { ...state.profile, fullName: name.trim() || null } : null,
@@ -166,15 +187,13 @@ updateLanguage: async (lang) => {
   const { error } = await supabase
     .schema('indonesian')
     .from('profiles')
-    .upsert({ id: user.id, language: lang }, { onConflict: 'id' })
+    .upsert({ id: user.id, language: lang, updated_at: new Date().toISOString() }, { onConflict: 'id' })
   if (error) throw error
   set((state) => ({
     profile: state.profile ? { ...state.profile, language: lang } : null,
   }))
 },
 ```
-
-Note: `create<AuthState>((set, get) => ...)` — add `get` parameter.
 
 **Step 5: Update `Profile.tsx` to use `authStore.updateDisplayName`**
 
@@ -218,12 +237,40 @@ useEffect(() => {
 }, [user, profile])
 ```
 
-**Step 6: Write failing test**
+**Step 6: Update the existing breaking test and write the new test**
 
+The existing `'initialize sets user if session exists'` test at `src/__tests__/authStore.test.ts` will fail after Task 2 because:
+1. `initialize` now calls `loadProfileData` which chains into the Supabase mock — the mock must be set up to return profile data
+2. `profile` now includes `language: 'nl'` but the `toEqual` assertion doesn't expect it
+
+Update that test:
+```typescript
+// Add to existing mock setup before calling initialize().
+// initialize() calls both loadProfileData and checkAdmin via Promise.all — both use .maybeSingle().
+// Queue both in order (Promise.all resolves left-to-right):
+vi.mocked((supabase as any).maybeSingle).mockResolvedValueOnce({
+  data: { display_name: 'Test User', language: 'nl' },
+  error: null,
+})
+// Second maybeSingle: checkAdmin (falls through to beforeEach default if not queued, but explicit is safer)
+vi.mocked((supabase as any).maybeSingle).mockResolvedValueOnce({ data: null })
+
+// Update the toEqual assertion to include language:
+expect(useAuthStore.getState().profile).toEqual({
+  id: 'user-1',
+  email: 'test@example.com',
+  fullName: 'Test User',
+  language: 'nl',
+  isAdmin: false,
+})
+```
+
+Also add the new test for `updateDisplayName`:
 ```typescript
 // src/__tests__/authStore.test.ts — add to existing test file
 it('updateDisplayName updates profile in store', async () => {
-  vi.mocked(supabase.schema('indonesian').from('profiles').upsert).mockResolvedValue({ error: null })
+  // vi.mocked(supabase.upsert) applies globally — the flat mock covers all tables on the mock object
+  vi.mocked(supabase.upsert).mockResolvedValue({ error: null })
   // set up initial state with a user and profile
   // call updateDisplayName('Albert')
   // assert profile.fullName === 'Albert'
@@ -338,7 +385,7 @@ export const nl = {
     nextSection: 'Volgende sectie',
     finishLesson: 'Les afronden',
     lessonComplete: 'Les afgerond!',
-    lessonCompleteMessage: (title: string) => `Je hebt ${title} afgerond`,
+    lessonCompleteMessage: (title: string) => `Je hebt ${title} afgerond`, // Note: function in translation object — call as T.lessons.lessonCompleteMessage(title), not via generic tooling
     failedToLoad: 'Laden mislukt',
     failedToLoadLesson: 'De les kon niet worden geladen.',
     failedToSaveProgress: 'Voortgang kon niet worden opgeslagen. Probeer het opnieuw.',
@@ -478,7 +525,7 @@ git commit -m "feat: add NL/EN translations and useT hook"
 
 Add `const T = useT()` and replace all hardcoded strings:
 
-- `"Selamat datang!"` → `\`${T.dashboard.welcomeBack}, ${profile?.fullName?.split(' ')[0] ?? ''}!\``
+- `"Selamat datang!"` → conditional: `profile?.fullName ? \`${T.dashboard.welcomeBack}, ${profile.fullName.split(' ')[0]}!\` : \`${T.dashboard.welcomeBack}!\`` (avoids `"Welkom terug, !"` when name is null)
 - `"Welcome back. Here's your learning overview."` → `T.dashboard.overview`
 - `"Lessons Completed"` → `T.dashboard.lessonsCompleted`
 - `"Cards Due"` → `T.dashboard.cardsDue`
@@ -488,7 +535,8 @@ Add `const T = useT()` and replace all hardcoded strings:
 - `"Continue Learning"` → `T.dashboard.continueLearning`
 - `"Review Cards"` → `T.dashboard.reviewCards`
 - `"Browse Podcasts"` → `T.dashboard.browsePodcasts`
-- Remove the Supabase Studio `<Button>` entirely
+- Remove the Supabase Studio `<Button>` entirely (admins should bookmark https://db.supabase.duin.home directly)
+- In the `catch` block, replace hardcoded error notification strings with `T.common.somethingWentWrong` (the key already exists in the translations object)
 
 **Step 2: Update `Login.tsx`**
 
@@ -498,7 +546,7 @@ Note: `useT()` reads from `authStore.profile?.language`. On the login page the u
 
 **Step 3: Update `Register.tsx`**
 
-Add `const T = useT()` and replace hardcoded strings using `T.register.*`.
+Add `const T = useT()` and replace hardcoded strings using `T.register.*`. Note: like Login, unauthenticated users will always see Dutch here — `profile` is null so `useT()` returns `'nl'`. This is intentional; do not add a localStorage fallback.
 
 **Step 4: Update `Lesson.tsx`**
 
@@ -518,6 +566,8 @@ Expected: all 27 tests pass (tests mock the store so language doesn't affect the
 git add src/pages/Dashboard.tsx src/pages/Login.tsx src/pages/Register.tsx src/pages/Lesson.tsx
 git commit -m "feat: apply translations to Dashboard, Login, Register, Lesson pages"
 ```
+
+**Scope note:** Flashcards, Leaderboard, and Podcasts pages are intentionally left with hardcoded English strings in this plan. They will respond partially to the language switcher (nav labels switch), but their page content will not. This is acceptable for now — document it as a follow-up task if needed.
 
 ---
 
@@ -644,6 +694,8 @@ git commit -m "feat: add light/dark mode toggle to header"
 
 ### Task 7: Redesign header and sidebar navigation
 
+**Depends on Task 6.** Task 6 adds `useMantineColorScheme`, `toggleColorScheme`, `colorScheme`, `IconSun`, `IconMoon`, and `ActionIcon` to `Layout.tsx`. Task 7 replaces the entire header — the code snippets below already include the dark/light toggle from Task 6. Do **not** re-apply Task 6 changes separately after completing Task 7; doing so would duplicate the imports and toggle button.
+
 **Files:**
 - Modify: `src/components/Layout.tsx`
 
@@ -652,7 +704,7 @@ This is the most significant UI change. The nav links move from the header to th
 **Step 1: Replace single `opened` disclosure with two disclosures**
 
 ```typescript
-import { useDisclosure, useMediaQuery } from '@mantine/hooks'
+import { useDisclosure } from '@mantine/hooks'
 
 const [mobileOpened, { toggle: toggleMobile }] = useDisclosure(false)
 const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true) // open by default on desktop
@@ -710,9 +762,10 @@ Remove the `<Group visibleFrom="sm">` nav links block entirely. The header becom
             <UnstyledButton>
               <Group gap={7}>
                 <Avatar color="blue" radius="xl" size={30}>
-                  <IconUser size={16} />
+                  {/* Intentionally keep initials from current code, not <IconUser> — initials degrade gracefully when fullName is null (falls back to first char of email) */}
+                  {profile.fullName?.[0]?.toUpperCase() ?? profile.email[0].toUpperCase()}
                 </Avatar>
-                <Text fw={500} size="sm" mr={3}>
+                <Text fw={500} size="sm" mr={3} visibleFrom="xs">
                   {profile.fullName?.split(' ')[0] ?? profile.email}
                 </Text>
                 <IconChevronDown size={12} stroke={1.5} />
@@ -753,7 +806,7 @@ Remove the `<Group visibleFrom="sm">` nav links block entirely. The header becom
         variant="subtle"
         leftSection={link.icon}
         onClick={() => {
-          toggleMobile() // close on mobile after navigation
+          if (mobileOpened) toggleMobile() // only close if currently open; avoids accidentally opening it
         }}
         fullWidth
         justify="flex-start"
@@ -765,17 +818,7 @@ Remove the `<Group visibleFrom="sm">` nav links block entirely. The header becom
 </AppShell.Navbar>
 ```
 
-Note: on mobile, clicking a nav link closes the drawer. On desktop, clicks do nothing to the open state (sidebar stays open/closed as the user left it).
-
-Actually, to avoid closing desktop sidebar on nav click, only close on mobile:
-
-```tsx
-onClick={() => {
-  if (window.innerWidth < 768) toggleMobile()
-}}
-```
-
-Or use a `useMediaQuery` check.
+Note: on mobile, clicking a nav link closes the drawer. On desktop, `mobileOpened` is always false so the guard prevents any toggle.
 
 **Step 5: Update nav labels to use `T.nav.*`**
 
@@ -812,6 +855,28 @@ git commit -m "feat: sidebar navigation with hamburger toggle, consistent header
 **Files:**
 - Create: `scripts/seed-flashcards.ts`
 - Modify: `Makefile`
+
+**Step 0a: Verify `card_sets` unique constraint exists**
+
+The seed script upserts card sets on `{ onConflict: 'owner_id,name' }`. Check `scripts/migrate.ts` for `UNIQUE(owner_id, name)` on `card_sets`. If missing, run in Supabase Studio:
+
+```sql
+ALTER TABLE indonesian.card_sets
+  ADD CONSTRAINT IF NOT EXISTS card_sets_owner_name_key UNIQUE (owner_id, name);
+```
+
+And add it to `scripts/migrate.ts`.
+
+**Step 0b: Add `anki_cards` unique constraint in Supabase Studio (one-time)**
+
+Run in SQL Editor before the first seed:
+
+```sql
+ALTER TABLE indonesian.anki_cards
+  ADD CONSTRAINT anki_cards_set_front_key UNIQUE (card_set_id, front);
+```
+
+This enables safe re-seeding via upsert without destroying user review history. Also add it to `scripts/migrate.ts` so future schema recreations include it.
 
 **Step 1: Create `scripts/seed-flashcards.ts`**
 
@@ -884,29 +949,33 @@ for (const lesson of lessons) {
   }
   console.log('Upserted card set:', setName)
 
-  // Delete existing cards for this set and re-insert
-  await supabase.schema('indonesian').from('anki_cards').delete().eq('card_set_id', cardSet.id)
-
   // Get vocabulary for this lesson
   const lessonVocab = vocabulary.filter((v) => v.lesson_order_index === lesson.order_index)
 
+  // Upsert cards using (card_set_id, front) as the stable key.
+  // This requires a UNIQUE constraint: ALTER TABLE indonesian.anki_cards ADD CONSTRAINT anki_cards_set_front_key UNIQUE (card_set_id, front);
+  // Run this once in Supabase Studio before the first seed.
+  // Do NOT delete+insert: that wipes card_reviews (ON DELETE CASCADE) and destroys all user SM-2 progress.
   for (const word of lessonVocab) {
     const back = word.dutch ?? word.english
     const { error: cardError } = await supabase
       .schema('indonesian')
       .from('anki_cards')
-      .insert({
-        card_set_id: cardSet.id,
-        owner_id: ownerId,
-        front: word.indonesian,
-        back,
-        notes: word.dutch && word.english !== word.dutch ? word.english : null,
-        tags: word.tags,
-      })
+      .upsert(
+        {
+          card_set_id: cardSet.id,
+          owner_id: ownerId,
+          front: word.indonesian,
+          back,
+          notes: word.dutch && word.english !== word.dutch ? word.english : null,
+          tags: word.tags,
+        },
+        { onConflict: 'card_set_id,front' }
+      )
     if (cardError) {
       console.error('  Failed card:', word.indonesian, cardError.message)
     } else {
-      console.log('  Added card:', word.indonesian, '→', back)
+      console.log('  Upserted card:', word.indonesian, '→', back)
     }
   }
 }
@@ -925,12 +994,14 @@ seed-flashcards: ## Seed public flashcard decks from lesson vocabulary (requires
 	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-flashcards.ts
 ```
 
-Also update `seed-all` to include flashcards:
+Do **not** add `seed-flashcards` to `seed-all`. `seed-flashcards` requires an admin user row in `indonesian.user_roles` — a prerequisite that `seed-lessons` and `seed-vocabulary` don't have. Including it in `seed-all` would cause a partial failure on fresh-database setups, silently skipping flashcards. Run it separately after admin setup:
 
-```makefile
-.PHONY: seed-all
-seed-all: seed-lessons seed-vocabulary seed-flashcards ## Seed all non-audio content (requires SUPABASE_SERVICE_KEY)
+```bash
+# After seed-all and admin user creation:
+make seed-flashcards SUPABASE_SERVICE_KEY=<key>
 ```
+
+Update CLAUDE.md to document this two-step flow.
 
 **Step 3: Run seed**
 
