@@ -214,7 +214,7 @@ export function Lesson() {
         )
       }
     }
-  }, [lessonId, user, T])
+  }, [lessonId, user])
 
   const handleNext = async () => {
     if (!lesson || !user) return

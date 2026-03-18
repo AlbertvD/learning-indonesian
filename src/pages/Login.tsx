@@ -11,6 +11,9 @@ import { AuthApiError } from '@supabase/supabase-js'
 import { useT } from '@/hooks/useT'
 
 export function Login() {
+  // useT() returns 'nl' here because profile is null for unauthenticated users.
+  // This is intentional — login/register pages are always in Dutch.
+  // Do not add a localStorage fallback; language preference is a per-account setting.
   const T = useT()
   const [loading, setLoading] = useState(false)
   const signIn = useAuthStore((state) => state.signIn)

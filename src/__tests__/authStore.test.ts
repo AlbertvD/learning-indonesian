@@ -93,4 +93,20 @@ describe('authStore', () => {
     )
     expect(useAuthStore.getState().profile?.fullName).toBe('New Name')
   })
+
+  it('updateLanguage updates language in store', async () => {
+    useAuthStore.setState({
+      user: { id: 'user-1' } as any,
+      profile: { id: 'user-1', fullName: 'Test User', language: 'nl', isAdmin: false } as any,
+    })
+    vi.mocked((supabase as any).upsert).mockResolvedValue({ error: null })
+
+    await useAuthStore.getState().updateLanguage('en')
+
+    expect((supabase as any).upsert).toHaveBeenCalledWith(
+      expect.objectContaining({ language: 'en' }),
+      { onConflict: 'id' }
+    )
+    expect(useAuthStore.getState().profile?.language).toBe('en')
+  })
 })

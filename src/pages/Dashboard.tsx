@@ -60,7 +60,7 @@ export function Dashboard() {
       }
     }
     fetchData()
-  }, [user, T])
+  }, [user])
 
   if (loading) {
     return (

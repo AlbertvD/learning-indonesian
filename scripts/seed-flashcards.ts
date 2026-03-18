@@ -30,7 +30,10 @@ async function seed() {
     console.log('Using admin user:', ownerId)
 
     for (const lesson of lessons) {
-      // Get the lesson ID from the database
+      // Verify the lesson exists before creating a card set for it.
+      // lessonRow.id is intentionally unused — card_sets has no lesson_id FK.
+      // This is a fast-fail guard: if seed-lessons hasn't been run, we skip
+      // rather than creating an orphaned card set with no corresponding lesson.
       const { data: lessonRow, error: lessonError } = await supabase
         .schema('indonesian')
         .from('lessons')

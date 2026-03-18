@@ -17,6 +17,7 @@ import { notifications } from '@mantine/notifications'
 import { progressService } from '@/services/progressService'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
+import { translations } from '@/lib/i18n'
 import { logError } from '@/lib/logger'
 import type { UserProgress } from '@/types/progress'
 
@@ -81,10 +82,14 @@ export function Profile() {
     setSavingLang(true)
     try {
       await updateLanguage(lang)
+      // Use the new language's translations directly — T is captured at render
+      // time in the old language, so the toast would appear in the wrong language
+      // if we used T here.
+      const newT = translations[lang]
       notifications.show({
         color: 'green',
-        title: T.profile.profileUpdated,
-        message: T.profile.languageSaved,
+        title: newT.profile.profileUpdated,
+        message: newT.profile.languageSaved,
       })
     } catch (err) {
       logError({ page: 'profile', action: 'updateLanguage', error: err })

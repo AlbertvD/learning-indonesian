@@ -10,6 +10,9 @@ import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
 
 export function Register() {
+  // useT() returns 'nl' here because profile is null for unauthenticated users.
+  // This is intentional — login/register pages are always in Dutch.
+  // Do not add a localStorage fallback; language preference is a per-account setting.
   const T = useT()
   const [loading, setLoading] = useState(false)
   const signUp = useAuthStore((state) => state.signUp)
