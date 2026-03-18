@@ -442,3 +442,16 @@ if (exitCode !== 0) {
   process.exit(1)
 }
 console.log('Migration applied successfully.')
+
+// Reload PostgREST schema cache so new tables/functions are immediately available
+console.log('Reloading PostgREST schema cache...')
+const notify = Bun.spawn(
+  [
+    'ssh', '-i', `${process.env.HOME}/.ssh/id_ed25519`, '-o', 'StrictHostKeyChecking=no',
+    HOMELAB_SSH,
+    `PGPASSWORD=${DB_PASSWORD} sudo docker exec ${DB_CONTAINER} psql -U postgres -c "NOTIFY pgrst, 'reload schema';"`,
+  ],
+  { stdout: 'pipe', stderr: 'pipe' }
+)
+await notify.exited
+console.log('Done.')
