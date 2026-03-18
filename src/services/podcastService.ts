@@ -36,6 +36,17 @@ export const podcastService = {
     return data as Podcast
   },
 
+  async getPodcastForLesson(orderIndex: number): Promise<Podcast | null> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('podcasts')
+      .select('*')
+      .ilike('audio_path', `lesson-${orderIndex}.%`)
+      .maybeSingle()
+    if (error) throw error
+    return data as Podcast | null
+  },
+
   getAudioUrl(audioPath: string): string {
     const { data } = supabase.storage
       .from('indonesian-podcasts')
