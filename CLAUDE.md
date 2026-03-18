@@ -16,6 +16,9 @@ Indonesian language tutor app — React frontend connecting directly to a shared
 
 - React 19 + TypeScript + Vite (SWC)
 - Mantine UI v8 + Tabler Icons
+- Dark/Light mode support (persisted via localStorage)
+- NL/EN language switching (persisted in user profile)
+- Collapsible sidebar navigation
 - Zustand 5 (state management)
 - React Router 7
 - Supabase JS v2
@@ -213,6 +216,7 @@ make migrate SUPABASE_SERVICE_KEY=<key>          # one-time schema setup
 make seed-lessons SUPABASE_SERVICE_KEY=<key>
 make seed-vocabulary SUPABASE_SERVICE_KEY=<key>
 make seed-podcasts SUPABASE_SERVICE_KEY=<key>    # uploads audio from content/podcasts/
+make seed-flashcards SUPABASE_SERVICE_KEY=<key> # seeds public decks from vocabulary
 make seed-all SUPABASE_SERVICE_KEY=<key>         # lessons + vocabulary
 ```
 
