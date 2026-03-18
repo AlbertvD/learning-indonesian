@@ -35,7 +35,19 @@ Indonesian language tutor app — React frontend connecting directly to a shared
 - Use `createBrowserClient` from `@supabase/ssr` for the Supabase client.
 - When fetching data immediately after auth state changes, use `setTimeout(0)` to avoid deadlocks.
 
-### 5. Git & Husky Hooks
+### 5. Supabase Infrastructure Fixes
+
+When encountering Supabase permission errors, auth errors, or API errors (e.g. `password authentication failed`, CORS rejections, missing schema exposure), **do not fix these by making changes directly inside the running container or database**. Those changes are lost on container recreate or volume wipe.
+
+Instead, fix them by modifying the relevant config files in the `homelab-configs` repo so the fix survives redeployment:
+
+- **PostgreSQL auth errors** (`pg_hba.conf`) → edit `services/supabase/postgres/init.sh` in `homelab-configs`
+- **Kong CORS / routing issues** → edit `services/supabase/kong/kong.yml` and rebuild the Kong image
+- **PostgREST schema exposure** → edit `PGRST_DB_SCHEMAS` in `services/supabase/docker-compose.yml`
+
+After committing the fix to `homelab-configs`, apply it to the live container manually (e.g. `docker exec` + reload, or rebuild + redeploy) so it takes effect immediately without waiting for the next full redeploy.
+
+### 6. Git & Husky Hooks
 - **Pre-commit:** Automatically runs type checking (`tsc`) and linting (`eslint`). Fix all issues before committing.
 - **Pre-push:** Automatically runs tests (`vitest`). Ensure all tests pass before pushing.
 
