@@ -1,6 +1,6 @@
 // src/services/cardService.ts
 import { supabase } from '@/lib/supabase'
-import type { CardSet, CardSetShare, DueCard, ProfileSearchResult } from '@/types/cards'
+import type { AnkiCard, CardSet, CardSetShare, DueCard, ProfileSearchResult } from '@/types/cards'
 
 export const cardService = {
   async getCardSets(): Promise<CardSet[]> {
@@ -9,6 +9,17 @@ export const cardService = {
       .from('card_sets')
       .select('*')
       .order('name', { ascending: true })
+    if (error) throw error
+    return data
+  },
+
+  async getCards(setId: string): Promise<AnkiCard[]> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('anki_cards')
+      .select('*')
+      .eq('card_set_id', setId)
+      .order('front', { ascending: true })
     if (error) throw error
     return data
   },

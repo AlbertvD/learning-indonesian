@@ -1,14 +1,14 @@
 // src/pages/Set.tsx
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Container, Title, Text, Button, Group, Badge, SegmentedControl, Paper, Stack, Center, Loader } from '@mantine/core'
+import { Container, Title, Text, Button, Group, Badge, SegmentedControl, Paper, Stack, Center, Loader, Table } from '@mantine/core'
 import { IconChevronLeft, IconShare, IconPlus } from '@tabler/icons-react'
 import { cardService } from '@/services/cardService'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
 import { ShareCardSetModal } from '@/components/ShareCardSetModal'
-import type { CardSet } from '@/types/cards'
+import type { AnkiCard, CardSet } from '@/types/cards'
 
 export function Set() {
   const { setId } = useParams<{ setId: string }>()
@@ -16,6 +16,7 @@ export function Set() {
   const user = useAuthStore((state) => state.user)
   
   const [set, setSet] = useState<CardSet | null>(null)
+  const [cards, setCards] = useState<AnkiCard[]>([])
   const [loading, setLoading] = useState(true)
   const [shareModalOpened, setShareModalOpened] = useState(false)
 
@@ -23,16 +24,21 @@ export function Set() {
     async function fetchData() {
       if (!setId) return
       try {
-        const sets = await cardService.getCardSets()
+        const [sets, fetchedCards] = await Promise.all([
+          cardService.getCardSets(),
+          cardService.getCards(setId),
+        ])
         const currentSet = sets.find(s => s.id === setId)
         if (currentSet) {
           setSet(currentSet)
+          setCards(fetchedCards)
         } else {
           notifications.show({ color: 'red', title: 'Error', message: 'Card set not found or access denied' })
           navigate('/sets')
         }
       } catch (err) {
         logError({ page: 'set', action: 'fetchData', error: err })
+        notifications.show({ color: 'red', title: 'Error', message: 'Failed to load card set' })
       } finally {
         setLoading(false)
       }
@@ -105,14 +111,48 @@ export function Set() {
         </Paper>
 
         <Group justify="space-between">
-          <Title order={3}>Cards</Title>
-          <Button leftSection={<IconPlus size={16} />} variant="outline">Add Card</Button>
+          <Title order={3}>Cards ({cards.length})</Title>
+          {isOwner && (
+            <Button leftSection={<IconPlus size={16} />} variant="outline">Add Card</Button>
+          )}
         </Group>
 
-        {/* Cards list will go here - for now just a placeholder */}
-        <Center h={100} style={{ border: '1px dashed #373A40', borderRadius: '8px' }}>
-          <Text c="dimmed">No cards in this set yet.</Text>
-        </Center>
+        {cards.length === 0 ? (
+          <Center h={100} style={{ border: '1px dashed #373A40', borderRadius: '8px' }}>
+            <Text c="dimmed">No cards in this set yet.</Text>
+          </Center>
+        ) : (
+          <Table striped highlightOnHover withTableBorder withColumnBorders>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Indonesisch</Table.Th>
+                <Table.Th>Nederlands</Table.Th>
+                {cards.some(c => c.notes) && <Table.Th>Engels</Table.Th>}
+                {cards.some(c => c.tags?.length > 0) && <Table.Th>Tags</Table.Th>}
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {cards.map((card) => (
+                <Table.Tr key={card.id}>
+                  <Table.Td fw={500}>{card.front}</Table.Td>
+                  <Table.Td>{card.back}</Table.Td>
+                  {cards.some(c => c.notes) && (
+                    <Table.Td c="dimmed">{card.notes ?? ''}</Table.Td>
+                  )}
+                  {cards.some(c => c.tags?.length > 0) && (
+                    <Table.Td>
+                      <Group gap={4}>
+                        {card.tags?.map(tag => (
+                          <Badge key={tag} size="xs" variant="light">{tag}</Badge>
+                        ))}
+                      </Group>
+                    </Table.Td>
+                  )}
+                </Table.Tr>
+              ))}
+            </Table.Tbody>
+          </Table>
+        )}
       </Stack>
 
       <ShareCardSetModal
