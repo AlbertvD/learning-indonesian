@@ -12,13 +12,15 @@ interface AuthState {
   signIn: (email: string, password: string) => Promise<void>
   signUp: (email: string, password: string, fullName: string) => Promise<void>
   signOut: () => Promise<void>
+  updateDisplayName: (name: string) => Promise<void>
+  updateLanguage: (lang: 'nl' | 'en') => Promise<void>
 }
 
 // Stored outside the store so initialize() can be called multiple times safely
 // (e.g. in tests) without leaking duplicate listeners.
 let authSubscription: { unsubscribe: () => void } | null = null
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   profile: null,
   loading: true,
@@ -29,10 +31,13 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     const { data: { session } } = await supabase.auth.getSession()
     if (session?.user) {
-      const isAdmin = await checkAdmin(session.user.id)
+      const [{ displayName, language }, isAdmin] = await Promise.all([
+        loadProfileData(session.user.id),
+        checkAdmin(session.user.id),
+      ])
       set({
         user: session.user,
-        profile: toProfile(session.user, isAdmin),
+        profile: toProfile(session.user, isAdmin, displayName, language),
         loading: false,
       })
     } else {
@@ -44,18 +49,21 @@ export const useAuthStore = create<AuthState>((set) => ({
         // Use setTimeout(0) to avoid Supabase auth deadlock when fetching
         // user data immediately after sign-in inside onAuthStateChange.
         setTimeout(async () => {
-          // Upsert profile on every sign-in so display_name stays current.
-          // This also handles users migrated from the old app who sign in
-          // but never signed up through this app.
+          // Insert only — do NOT overwrite existing display_name or language.
+          // ignoreDuplicates: true means existing data is never overwritten by
+          // auth metadata on subsequent sign-ins.
           await supabase
             .schema('indonesian')
             .from('profiles')
             .upsert(
               { id: session.user!.id, display_name: session.user!.user_metadata?.full_name ?? null },
-              { onConflict: 'id' }
+              { onConflict: 'id', ignoreDuplicates: true }
             )
-          const isAdmin = await checkAdmin(session.user!.id)
-          set({ user: session.user, profile: toProfile(session.user!, isAdmin) })
+          const [{ displayName, language }, isAdmin] = await Promise.all([
+            loadProfileData(session.user!.id),
+            checkAdmin(session.user!.id),
+          ])
+          set({ user: session.user, profile: toProfile(session.user!, isAdmin, displayName, language) })
         }, 0)
       } else {
         set({ user: null, profile: null })
@@ -82,6 +90,32 @@ export const useAuthStore = create<AuthState>((set) => ({
     await supabase.auth.signOut()
     set({ user: null, profile: null })
   },
+
+  updateDisplayName: async (name) => {
+    const user = get().user
+    if (!user) return
+    const { error } = await supabase
+      .schema('indonesian')
+      .from('profiles')
+      .upsert({ id: user.id, display_name: name.trim() || null, updated_at: new Date().toISOString() }, { onConflict: 'id' })
+    if (error) throw error
+    set((state) => ({
+      profile: state.profile ? { ...state.profile, fullName: name.trim() || null } : null,
+    }))
+  },
+
+  updateLanguage: async (lang) => {
+    const user = get().user
+    if (!user) return
+    const { error } = await supabase
+      .schema('indonesian')
+      .from('profiles')
+      .upsert({ id: user.id, language: lang, updated_at: new Date().toISOString() }, { onConflict: 'id' })
+    if (error) throw error
+    set((state) => ({
+      profile: state.profile ? { ...state.profile, language: lang } : null,
+    }))
+  },
 }))
 
 async function checkAdmin(userId: string): Promise<boolean> {
@@ -95,11 +129,25 @@ async function checkAdmin(userId: string): Promise<boolean> {
   return !!data
 }
 
-function toProfile(user: User, isAdmin: boolean): UserProfile {
+async function loadProfileData(userId: string): Promise<{ displayName: string | null; language: 'nl' | 'en' }> {
+  const { data } = await supabase
+    .schema('indonesian')
+    .from('profiles')
+    .select('display_name, language')
+    .eq('id', userId)
+    .maybeSingle()
+  return {
+    displayName: data?.display_name ?? null,
+    language: (data?.language as 'nl' | 'en') ?? 'nl',
+  }
+}
+
+function toProfile(user: User, isAdmin: boolean, displayName: string | null, language: 'nl' | 'en'): UserProfile {
   return {
     id: user.id,
     email: user.email!,
-    fullName: user.user_metadata?.full_name ?? null,
+    fullName: displayName,
+    language,
     isAdmin,
   }
 }

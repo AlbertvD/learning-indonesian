@@ -56,7 +56,14 @@ describe('authStore', () => {
     vi.mocked(supabase.from).mockReturnThis()
     vi.mocked((supabase as any).select).mockReturnThis()
     vi.mocked((supabase as any).eq).mockReturnThis()
-    vi.mocked((supabase as any).maybeSingle).mockResolvedValue({ data: null }) // Not an admin
+    
+    // First maybeSingle: loadProfileData
+    vi.mocked((supabase as any).maybeSingle).mockResolvedValueOnce({
+      data: { display_name: 'Test User', language: 'nl' },
+      error: null,
+    })
+    // Second maybeSingle: checkAdmin
+    vi.mocked((supabase as any).maybeSingle).mockResolvedValueOnce({ data: null })
 
     await useAuthStore.getState().initialize()
 
@@ -65,8 +72,25 @@ describe('authStore', () => {
       id: 'user-1',
       email: 'test@example.com',
       fullName: 'Test User',
+      language: 'nl',
       isAdmin: false,
     })
     expect(useAuthStore.getState().loading).toBe(false)
+  })
+
+  it('updateDisplayName updates profile in store', async () => {
+    useAuthStore.setState({ 
+      user: { id: 'user-1' } as any, 
+      profile: { id: 'user-1', fullName: 'Old Name', language: 'nl', isAdmin: false } as any 
+    })
+    vi.mocked((supabase as any).upsert).mockResolvedValue({ error: null })
+
+    await useAuthStore.getState().updateDisplayName('New Name')
+
+    expect((supabase as any).upsert).toHaveBeenCalledWith(
+      expect.objectContaining({ display_name: 'New Name' }),
+      { onConflict: 'id' }
+    )
+    expect(useAuthStore.getState().profile?.fullName).toBe('New Name')
   })
 })

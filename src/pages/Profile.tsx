@@ -11,77 +11,90 @@ import {
   Group,
   Center,
   Loader,
+  SegmentedControl,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { supabase } from '@/lib/supabase'
 import { progressService } from '@/services/progressService'
 import { useAuthStore } from '@/stores/authStore'
+import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
 import type { UserProgress } from '@/types/progress'
 
 export function Profile() {
+  const T = useT()
   const user = useAuthStore((state) => state.user)
   const profile = useAuthStore((state) => state.profile)
+  const updateDisplayName = useAuthStore((state) => state.updateDisplayName)
+  const updateLanguage = useAuthStore((state) => state.updateLanguage)
 
   const [loading, setLoading] = useState(true)
   const [progress, setProgress] = useState<UserProgress | null>(null)
   const [displayName, setDisplayName] = useState('')
   const [saving, setSaving] = useState(false)
+  const [savingLang, setSavingLang] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
       if (!user) return
       try {
-        const [userProgress, profileRow] = await Promise.all([
-          progressService.getUserProgress(user.id),
-          supabase
-            .schema('indonesian')
-            .from('profiles')
-            .select('display_name')
-            .eq('id', user.id)
-            .maybeSingle(),
-        ])
+        const userProgress = await progressService.getUserProgress(user.id)
         setProgress(userProgress)
-        // Use the saved display_name from indonesian.profiles, not the GoTrue metadata
-        // (user_metadata.full_name is set once at signup and never updated by this app)
-        setDisplayName(profileRow.data?.display_name ?? profile?.fullName ?? '')
+        // Use the saved display_name from the auth store profile
+        setDisplayName(profile?.fullName ?? '')
       } catch (err) {
         logError({ page: 'profile', action: 'fetchData', error: err })
         notifications.show({
           color: 'red',
-          title: 'Failed to load profile',
-          message: 'Something went wrong. Please try again.',
+          title: T.profile.failedToLoad,
+          message: T.profile.somethingWentWrong,
         })
       } finally {
         setLoading(false)
       }
     }
     fetchData()
-  }, [user, profile])
+  }, [user, profile, T])
 
   async function handleSave() {
     if (!user) return
     setSaving(true)
     try {
-      const { error } = await supabase
-        .schema('indonesian')
-        .from('profiles')
-        .upsert({ id: user.id, display_name: displayName.trim() || null }, { onConflict: 'id' })
-      if (error) throw error
+      await updateDisplayName(displayName)
       notifications.show({
         color: 'green',
-        title: 'Profile updated',
-        message: 'Your display name has been saved.',
+        title: T.profile.profileUpdated,
+        message: T.profile.displayNameSaved,
       })
     } catch (err) {
       logError({ page: 'profile', action: 'saveDisplayName', error: err })
       notifications.show({
         color: 'red',
-        title: 'Failed to save profile',
-        message: 'Something went wrong. Please try again.',
+        title: T.profile.failedToSave,
+        message: T.profile.somethingWentWrong,
       })
     } finally {
       setSaving(false)
+    }
+  }
+
+  async function handleLanguageChange(lang: 'nl' | 'en') {
+    setSavingLang(true)
+    try {
+      await updateLanguage(lang)
+      notifications.show({
+        color: 'green',
+        title: T.profile.profileUpdated,
+        message: T.profile.languageSaved,
+      })
+    } catch (err) {
+      logError({ page: 'profile', action: 'updateLanguage', error: err })
+      notifications.show({
+        color: 'red',
+        title: T.profile.failedToSave,
+        message: T.profile.somethingWentWrong,
+      })
+    } finally {
+      setSavingLang(false)
     }
   }
 
@@ -106,21 +119,21 @@ export function Profile() {
   return (
     <Container size="sm">
       <Stack gap="xl" my="xl">
-        <Title order={2}>Profile</Title>
+        <Title order={2}>{T.profile.title}</Title>
 
         <Paper withBorder p="xl" radius="md" shadow="sm">
           <Stack gap="md">
-            <Title order={4}>Account</Title>
+            <Title order={4}>{T.profile.account}</Title>
             <Group gap="sm">
-              <Text fw={500} w={120}>Email</Text>
+              <Text fw={500} w={120}>{T.profile.email}</Text>
               <Text c="dimmed">{user?.email ?? '—'}</Text>
             </Group>
             <Group gap="sm">
-              <Text fw={500} w={120}>Member since</Text>
+              <Text fw={500} w={120}>{T.profile.memberSince}</Text>
               <Text c="dimmed">{memberSince}</Text>
             </Group>
             <Group gap="sm">
-              <Text fw={500} w={120}>Level</Text>
+              <Text fw={500} w={120}>{T.profile.level}</Text>
               <Text c="dimmed">{level}</Text>
             </Group>
           </Stack>
@@ -128,18 +141,33 @@ export function Profile() {
 
         <Paper withBorder p="xl" radius="md" shadow="sm">
           <Stack gap="md">
-            <Title order={4}>Display Name</Title>
+            <Title order={4}>{T.profile.displayName}</Title>
             <TextInput
-              label="Display name"
-              placeholder="Enter your display name"
+              label={T.profile.displayName}
+              placeholder={T.profile.displayNamePlaceholder}
               value={displayName}
               onChange={(e) => setDisplayName(e.currentTarget.value)}
             />
             <Group justify="flex-end">
               <Button onClick={handleSave} loading={saving}>
-                Save
+                {T.profile.save}
               </Button>
             </Group>
+          </Stack>
+        </Paper>
+
+        <Paper withBorder p="xl" radius="md" shadow="sm">
+          <Stack gap="md">
+            <Title order={4}>{T.profile.language}</Title>
+            <SegmentedControl
+              value={profile?.language ?? 'nl'}
+              onChange={(val) => handleLanguageChange(val as 'nl' | 'en')}
+              disabled={savingLang}
+              data={[
+                { label: T.profile.dutch, value: 'nl' },
+                { label: T.profile.english, value: 'en' },
+              ]}
+            />
           </Stack>
         </Paper>
       </Stack>
