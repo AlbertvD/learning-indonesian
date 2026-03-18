@@ -13,6 +13,21 @@ export const cardService = {
     return data
   },
 
+  async initializeCardReviews(cardIds: string[], userId: string): Promise<void> {
+    // Insert a review row for each card that doesn't have one yet.
+    // ignoreDuplicates: true means existing review state is never overwritten.
+    const rows = cardIds.map((cardId) => ({
+      card_id: cardId,
+      user_id: userId,
+      next_review_at: new Date().toISOString(),
+    }))
+    const { error } = await supabase
+      .schema('indonesian')
+      .from('card_reviews')
+      .upsert(rows, { onConflict: 'card_id,user_id', ignoreDuplicates: true })
+    if (error) throw error
+  },
+
   async getCards(setId: string): Promise<AnkiCard[]> {
     const { data, error } = await supabase
       .schema('indonesian')

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Container, Title, Text, Button, Group, Badge, SegmentedControl, Paper, Stack, Center, Loader, Table } from '@mantine/core'
-import { IconChevronLeft, IconShare, IconPlus } from '@tabler/icons-react'
+import { IconChevronLeft, IconShare, IconPlus, IconCards } from '@tabler/icons-react'
 import { cardService } from '@/services/cardService'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
@@ -18,6 +18,7 @@ export function Set() {
   const [set, setSet] = useState<CardSet | null>(null)
   const [cards, setCards] = useState<AnkiCard[]>([])
   const [loading, setLoading] = useState(true)
+  const [studying, setStudying] = useState(false)
   const [shareModalOpened, setShareModalOpened] = useState(false)
 
   useEffect(() => {
@@ -46,6 +47,19 @@ export function Set() {
     fetchData()
   }, [setId])
 
+  const handleStudy = async () => {
+    if (!user || cards.length === 0) return
+    setStudying(true)
+    try {
+      await cardService.initializeCardReviews(cards.map(c => c.id), user.id)
+      navigate('/review')
+    } catch (err) {
+      logError({ page: 'set', action: 'study', error: err })
+      notifications.show({ color: 'red', title: 'Error', message: 'Failed to start study session. Please try again.' })
+      setStudying(false)
+    }
+  }
+
   const handleVisibilityChange = async (value: string) => {
     if (!set || !user || set.owner_id !== user.id) return
     const newVisibility = value as 'private' | 'shared' | 'public'
@@ -68,6 +82,7 @@ export function Set() {
   }
 
   const isOwner = user?.id === set.owner_id
+  const isPublic = set.visibility === 'public'
 
   return (
     <Container size="lg">
@@ -76,11 +91,21 @@ export function Set() {
           <Button variant="subtle" color="gray" leftSection={<IconChevronLeft size={16} />} onClick={() => navigate('/sets')}>
             Back to sets
           </Button>
-          {isOwner && (
-            <Button variant="light" leftSection={<IconShare size={16} />} onClick={() => setShareModalOpened(true)}>
-              Share
+          <Group gap="sm">
+            {isOwner && !isPublic && (
+              <Button variant="light" leftSection={<IconShare size={16} />} onClick={() => setShareModalOpened(true)}>
+                Share
+              </Button>
+            )}
+            <Button
+              leftSection={<IconCards size={16} />}
+              onClick={handleStudy}
+              loading={studying}
+              disabled={cards.length === 0}
+            >
+              Study
             </Button>
-          )}
+          </Group>
         </Group>
 
         <Paper withBorder p="xl" radius="md">
@@ -89,12 +114,14 @@ export function Set() {
               <Title order={2}>{set.name}</Title>
               <Text c="dimmed" mt="xs">{set.description || 'No description provided.'}</Text>
             </div>
-            <Badge size="lg" variant="light" color={set.visibility === 'public' ? 'green' : set.visibility === 'shared' ? 'blue' : 'gray'}>
-              {set.visibility}
-            </Badge>
+            {!isPublic && (
+              <Badge size="lg" variant="light" color={set.visibility === 'shared' ? 'blue' : 'gray'}>
+                {set.visibility}
+              </Badge>
+            )}
           </Group>
 
-          {isOwner && (
+          {isOwner && !isPublic && (
             <Group mt="xl">
               <Text size="sm" fw={500}>Set Visibility:</Text>
               <SegmentedControl
@@ -112,7 +139,7 @@ export function Set() {
 
         <Group justify="space-between">
           <Title order={3}>Cards ({cards.length})</Title>
-          {isOwner && (
+          {isOwner && !isPublic && (
             <Button leftSection={<IconPlus size={16} />} variant="outline">Add Card</Button>
           )}
         </Group>
