@@ -212,7 +212,7 @@ content/
 ### Deploying content
 
 ```bash
-make migrate SUPABASE_SERVICE_KEY=<key>          # one-time schema setup
+make migrate                                     # apply schema via SSH → docker exec (idempotent, re-runnable)
 make seed-lessons SUPABASE_SERVICE_KEY=<key>
 make seed-vocabulary SUPABASE_SERVICE_KEY=<key>
 make seed-podcasts SUPABASE_SERVICE_KEY=<key>    # uploads audio from content/podcasts/
@@ -220,7 +220,18 @@ make seed-flashcards SUPABASE_SERVICE_KEY=<key> # seeds public decks from vocabu
 make seed-all SUPABASE_SERVICE_KEY=<key>         # lessons + vocabulary
 ```
 
+`make migrate` requires `POSTGRES_PASSWORD` in `.env.local`. It SSHes into the homelab (`mrblond@192.168.2.51`), runs the SQL via `docker exec supabase-db`, and automatically reloads the PostgREST schema cache. Safe to re-run after any container recreation.
+
 The service role key is NOT stored in the repo. Get it from the Supabase dashboard on the homelab.
+
+### Health checks
+
+```bash
+make check-supabase       # tier 1: API, CORS, schema exposure, auth, storage (uses .env.local)
+make check-supabase-deep  # tier 2: tables, RLS, grants via schema_health() RPC (uses SUPABASE_SERVICE_KEY from .env.local)
+```
+
+Run `check-supabase` any time you suspect infrastructure issues. Run `check-supabase-deep` after migrations to verify schema state. Both scripts print actionable fix instructions on failure.
 
 ## Testing
 
@@ -274,6 +285,8 @@ bun run lint         # lint
 ```
 VITE_SUPABASE_URL=https://api.supabase.duin.home
 VITE_SUPABASE_ANON_KEY=<anon key>
+SUPABASE_SERVICE_KEY=<service role key>   # for make check-supabase-deep
+POSTGRES_PASSWORD=<postgres password>     # for make migrate
 ```
 
 ## Deployment
