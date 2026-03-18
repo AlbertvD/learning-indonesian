@@ -307,6 +307,29 @@ Card sets have three visibility levels:
 - `shared` — owner + specific users listed in `card_set_shares`
 - `public` — all authenticated users
 
+## Feature Design Rule: Supabase Requirements
+
+Every design document MUST include a **"Supabase Requirements"** section. No feature design is complete without it. If a line item does not apply, mark it `N/A` with a one-line reason — never omit the section.
+
+```markdown
+## Supabase Requirements
+
+### Schema changes
+- New tables / columns (add to `scripts/migration.sql` and `scripts/migrate.ts`)
+- RLS policies needed — who can read/write each table (anon, authenticated, owner-only)
+- Grants needed (anon SELECT, authenticated INSERT/UPDATE/DELETE)
+
+### homelab-configs changes
+- [ ] PostgREST: new schema exposure needed? (edit `PGRST_DB_SCHEMAS` in `services/supabase/docker-compose.yml`)
+- [ ] Kong: new CORS headers or origins needed? (edit `services/supabase/kong/kong.yml`, rebuild image)
+- [ ] GoTrue: auth config changes? (edit `services/supabase/docker-compose.yml`)
+- [ ] Storage: new buckets needed? Public or private? (create via Studio or seed script)
+
+### Health check additions
+- New checks to add to `scripts/check-supabase.ts` (functional, anon key)
+- New checks to add to `scripts/check-supabase-deep.ts` (structural, service key)
+```
+
 ## Docs
 
 - Design: `docs/plans/2026-03-16-learning-indonesian-design.md`
