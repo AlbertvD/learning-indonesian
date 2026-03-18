@@ -9,6 +9,11 @@ export interface Lesson {
   description: string | null
   order_index: number
   created_at: string
+  audio_path: string | null
+  duration_seconds: number | null
+  transcript_dutch: string | null
+  transcript_indonesian: string | null
+  transcript_english: string | null
   lesson_sections: LessonSection[]
 }
 
@@ -42,6 +47,13 @@ export const lessonService = {
       .single()
     if (error) throw error
     return data as Lesson
+  },
+
+  getAudioUrl(audioPath: string): string {
+    const { data } = supabase.storage
+      .from('indonesian-lessons')
+      .getPublicUrl(audioPath)
+    return data.publicUrl
   },
 
   async getUserLessonProgress(userId: string): Promise<import('@/types/progress').LessonProgress[]> {

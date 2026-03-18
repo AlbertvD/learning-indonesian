@@ -4,7 +4,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Container, Title, Text, Button, Paper, Group, Progress, Stack, Center, Loader, Table, List, Badge, Divider } from '@mantine/core'
 import { IconChevronLeft, IconChevronRight, IconCheck, IconMicrophone } from '@tabler/icons-react'
 import { lessonService, type Lesson } from '@/services/lessonService'
-import { podcastService, type Podcast } from '@/services/podcastService'
 import { progressService } from '@/services/progressService'
 import { startSession, endSession } from '@/lib/session'
 import { useAuthStore } from '@/stores/authStore'
@@ -177,7 +176,6 @@ export function Lesson() {
   const user = useAuthStore((state) => state.user)
   
   const [lesson, setLesson] = useState<Lesson | null>(null)
-  const [podcast, setPodcast] = useState<Podcast | null>(null)
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0)
   const [loading, setLoading] = useState(true)
   const sessionIdRef = useRef<string | null>(null)
@@ -191,13 +189,15 @@ export function Lesson() {
           lessonService.getLesson(lessonId),
           startSession(user.id, 'lesson')
         ])
-        setLesson(lessonData)
-        sessionIdRef.current = sid
 
-        // Fetch associated podcast (fire-and-forget, non-blocking)
-        podcastService.getPodcastForLesson(lessonData.order_index)
-          .then((p) => setPodcast(p))
-          .catch(() => {/* no podcast is fine */})
+        // Reorder sections so grammar comes first
+        const sections = [...lessonData.lesson_sections].sort((a, b) => {
+          const aIsGrammar = (a.content as { type?: string }).type === 'grammar' ? -1 : 0
+          const bIsGrammar = (b.content as { type?: string }).type === 'grammar' ? -1 : 0
+          return aIsGrammar - bIsGrammar
+        })
+        setLesson({ ...lessonData, lesson_sections: sections })
+        sessionIdRef.current = sid
 
         // Fetch existing progress
         const progress = await lessonService.getUserLessonProgress(user.id)
@@ -270,7 +270,7 @@ export function Lesson() {
 
   const currentSection = lesson.lesson_sections[currentSectionIndex]
   const progress = ((currentSectionIndex + 1) / lesson.lesson_sections.length) * 100
-  const audioUrl = podcast ? podcastService.getAudioUrl(podcast.audio_path) : null
+  const audioUrl = lesson.audio_path ? lessonService.getAudioUrl(lesson.audio_path) : null
 
   return (
     <Container size="md">
@@ -290,7 +290,7 @@ export function Lesson() {
           <Paper withBorder p="md" radius="md">
             <Group gap="sm">
               <IconMicrophone size={18} />
-              <Text fw={500} size="sm" style={{ flex: 1 }}>{podcast!.title}</Text>
+              <Text fw={500} size="sm" style={{ flex: 1 }}>{lesson.title}</Text>
             </Group>
             <audio controls style={{ width: '100%', marginTop: '8px' }} src={audioUrl}>
               Your browser does not support the audio element.
