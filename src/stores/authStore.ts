@@ -94,11 +94,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   updateDisplayName: async (name) => {
     const user = get().user
     if (!user) return
-    const { error } = await supabase
+    const { data, error } = await supabase
       .schema('indonesian')
       .from('profiles')
-      .upsert({ id: user.id, display_name: name.trim() || null, updated_at: new Date().toISOString() }, { onConflict: 'id' })
+      .update({ display_name: name.trim() || null, updated_at: new Date().toISOString() })
+      .eq('id', user.id)
+      .select('id')
     if (error) throw error
+    if (!data || data.length === 0) throw new Error('Profile not found or update blocked')
     set((state) => ({
       profile: state.profile ? { ...state.profile, fullName: name.trim() || null } : null,
     }))
@@ -107,11 +110,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   updateLanguage: async (lang) => {
     const user = get().user
     if (!user) return
-    const { error } = await supabase
+    const { data, error } = await supabase
       .schema('indonesian')
       .from('profiles')
-      .upsert({ id: user.id, language: lang, updated_at: new Date().toISOString() }, { onConflict: 'id' })
+      .update({ language: lang, updated_at: new Date().toISOString() })
+      .eq('id', user.id)
+      .select('id')
     if (error) throw error
+    if (!data || data.length === 0) throw new Error('Profile not found or update blocked')
     set((state) => ({
       profile: state.profile ? { ...state.profile, language: lang } : null,
     }))

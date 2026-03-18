@@ -18,6 +18,7 @@ vi.mock('@/lib/supabase', () => ({
     eq: vi.fn().mockReturnThis(),
     maybeSingle: vi.fn().mockResolvedValue({ data: null }),
     upsert: vi.fn().mockResolvedValue({ error: null }),
+    update: vi.fn().mockReturnThis(),
   },
 }))
 
@@ -79,17 +80,16 @@ describe('authStore', () => {
   })
 
   it('updateDisplayName updates profile in store', async () => {
-    useAuthStore.setState({ 
-      user: { id: 'user-1' } as any, 
-      profile: { id: 'user-1', fullName: 'Old Name', language: 'nl', isAdmin: false } as any 
+    useAuthStore.setState({
+      user: { id: 'user-1' } as any,
+      profile: { id: 'user-1', fullName: 'Old Name', language: 'nl', isAdmin: false } as any
     })
-    vi.mocked((supabase as any).upsert).mockResolvedValue({ error: null })
+    vi.mocked((supabase as any).select).mockResolvedValue({ data: [{ id: 'user-1' }], error: null })
 
     await useAuthStore.getState().updateDisplayName('New Name')
 
-    expect((supabase as any).upsert).toHaveBeenCalledWith(
-      expect.objectContaining({ display_name: 'New Name' }),
-      { onConflict: 'id' }
+    expect((supabase as any).update).toHaveBeenCalledWith(
+      expect.objectContaining({ display_name: 'New Name' })
     )
     expect(useAuthStore.getState().profile?.fullName).toBe('New Name')
   })
@@ -99,13 +99,12 @@ describe('authStore', () => {
       user: { id: 'user-1' } as any,
       profile: { id: 'user-1', fullName: 'Test User', language: 'nl', isAdmin: false } as any,
     })
-    vi.mocked((supabase as any).upsert).mockResolvedValue({ error: null })
+    vi.mocked((supabase as any).select).mockResolvedValue({ data: [{ id: 'user-1' }], error: null })
 
     await useAuthStore.getState().updateLanguage('en')
 
-    expect((supabase as any).upsert).toHaveBeenCalledWith(
-      expect.objectContaining({ language: 'en' }),
-      { onConflict: 'id' }
+    expect((supabase as any).update).toHaveBeenCalledWith(
+      expect.objectContaining({ language: 'en' })
     )
     expect(useAuthStore.getState().profile?.language).toBe('en')
   })
