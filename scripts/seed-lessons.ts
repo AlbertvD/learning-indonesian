@@ -21,6 +21,11 @@ for (const lesson of lessons) {
         title: lesson.title,
         description: lesson.description,
         order_index: lesson.order_index,
+        audio_path: lesson.audio_filename ? `lessons/${lesson.audio_filename}` : null,
+        duration_seconds: lesson.duration_seconds ?? null,
+        transcript_dutch: lesson.transcript_dutch ?? null,
+        transcript_indonesian: lesson.transcript_indonesian ?? null,
+        transcript_english: lesson.transcript_english ?? null,
       },
       { onConflict: 'module_id,order_index' },
     )

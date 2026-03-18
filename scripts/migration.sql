@@ -323,3 +323,10 @@ CREATE POLICY "card_reviews_write" ON indonesian.card_reviews FOR ALL TO authent
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
 CREATE POLICY "error_logs_insert" ON indonesian.error_logs FOR INSERT TO authenticated WITH CHECK (true);
+
+-- Add audio columns to lessons (ALTER TABLE for live DB — CREATE TABLE IF NOT EXISTS above is a no-op for existing tables)
+ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS audio_path text;
+ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS duration_seconds integer;
+ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_dutch text;
+ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_indonesian text;
+ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_english text;
