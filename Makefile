@@ -80,6 +80,19 @@ extract-lesson: ## Extract lesson content from page photos (requires LESSON and 
 	ANTHROPIC_API_KEY=$(ANTHROPIC_API_KEY) bun scripts/extract-lesson.ts $(LESSON)
 
 # ============================================================================
+# HEALTH CHECKS
+# ============================================================================
+
+.PHONY: check-supabase
+check-supabase: ## Check Supabase connectivity, CORS, schema, auth, and storage (uses .env.local)
+	NODE_TLS_REJECT_UNAUTHORIZED=0 bun scripts/check-supabase.ts
+
+.PHONY: check-supabase-deep
+check-supabase-deep: ## Deep structural check: tables, RLS, grants (requires SUPABASE_SERVICE_KEY)
+	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required. Run: make check-supabase-deep SUPABASE_SERVICE_KEY=<key>"; exit 1; }
+	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/check-supabase-deep.ts
+
+# ============================================================================
 # DOCKER
 # ============================================================================
 
