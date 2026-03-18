@@ -396,6 +396,13 @@ RETURNS jsonb LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian 
 $$;
 
 GRANT EXECUTE ON FUNCTION indonesian.schema_health() TO authenticated;
+
+-- Storage buckets (idempotent — ON CONFLICT DO NOTHING)
+INSERT INTO storage.buckets (id, name, public)
+VALUES
+  ('indonesian-lessons', 'indonesian-lessons', true),
+  ('indonesian-podcasts', 'indonesian-podcasts', true)
+ON CONFLICT (id) DO NOTHING;
 `
 
 await Bun.write('scripts/migration.sql', sql)
