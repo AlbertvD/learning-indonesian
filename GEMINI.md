@@ -41,7 +41,7 @@ When encountering Supabase permission errors, auth errors, or API errors (e.g. `
 
 Instead, fix them by modifying the relevant config files in the `homelab-configs` repo so the fix survives redeployment:
 
-- **PostgreSQL auth errors** (`pg_hba.conf`) → edit `services/supabase/postgres/init.sh` in `homelab-configs`
+- **PostgreSQL auth errors** (`pg_hba.conf`) → edit the Dockerfile at `services/supabase/postgres/Dockerfile` in `homelab-configs` (Postgres reads `/etc/postgresql/pg_hba.conf`, baked into the image — not the data dir file)
 - **Kong CORS / routing issues** → edit `services/supabase/kong/kong.yml` and rebuild the Kong image
 - **PostgREST schema exposure** → edit `PGRST_DB_SCHEMAS` in `services/supabase/docker-compose.yml`
 
