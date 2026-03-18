@@ -79,9 +79,11 @@ export function Sets() {
             >
               <Group justify="space-between" mb="xs">
                 <Text fw={700}>{set.name}</Text>
-                <Badge color={getVisibilityColor(set.visibility)} variant="light" size="xs">
-                  {set.visibility}
-                </Badge>
+                {set.visibility !== 'public' && (
+                  <Badge color={getVisibilityColor(set.visibility)} variant="light" size="xs">
+                    {set.visibility}
+                  </Badge>
+                )}
               </Group>
 
               <Text size="sm" c="dimmed" lineClamp={2} mb="md">
