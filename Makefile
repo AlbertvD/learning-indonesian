@@ -5,6 +5,10 @@
 
 SUPABASE_URL = https://api.supabase.duin.home
 
+# Load .env.local if present
+-include .env.local
+export
+
 .PHONY: help
 help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -44,22 +48,22 @@ typecheck: ## Run TypeScript type checker
 .PHONY: migrate
 migrate: ## Run the Supabase schema migration (requires SUPABASE_SERVICE_KEY)
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required. Run: make migrate SUPABASE_SERVICE_KEY=<key>"; exit 1; }
-	SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/migrate.ts
+	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/migrate.ts
 
 .PHONY: seed-lessons
 seed-lessons: ## Seed lesson content (requires SUPABASE_SERVICE_KEY)
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
-	SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-lessons.ts
+	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-lessons.ts
 
 .PHONY: seed-vocabulary
 seed-vocabulary: ## Seed vocabulary list (requires SUPABASE_SERVICE_KEY)
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
-	SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-vocabulary.ts
+	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-vocabulary.ts
 
 .PHONY: seed-podcasts
 seed-podcasts: ## Seed podcast metadata and upload audio from content/podcasts/ (requires SUPABASE_SERVICE_KEY)
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
-	SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-podcasts.ts
+	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-podcasts.ts
 
 .PHONY: seed-all
 seed-all: seed-lessons seed-vocabulary ## Seed all non-audio content (requires SUPABASE_SERVICE_KEY)

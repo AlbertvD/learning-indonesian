@@ -1,7 +1,7 @@
 // src/pages/Lesson.tsx
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Container, Title, Text, Button, Paper, Group, Progress, Stack, Center, Loader } from '@mantine/core'
+import { Container, Title, Text, Button, Paper, Group, Progress, Stack, Center, Loader, Table } from '@mantine/core'
 import { IconChevronLeft, IconChevronRight, IconCheck } from '@tabler/icons-react'
 import { lessonService, type Lesson } from '@/services/lessonService'
 import { progressService } from '@/services/progressService'
@@ -9,6 +9,40 @@ import { startSession, endSession } from '@/lib/session'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
+
+type ExerciseItem = { dutch?: string; indonesian?: string }
+type SectionContentData = { type: string; items?: ExerciseItem[] }
+
+function SectionContent({ content }: { content: unknown }) {
+  const data = content as SectionContentData
+  if (data?.type === 'exercises' && Array.isArray(data.items)) {
+    const hasDutch = data.items.some((i) => i.dutch)
+    const hasIndonesian = data.items.some((i) => i.indonesian)
+    return (
+      <Table striped highlightOnHover withTableBorder withColumnBorders>
+        <Table.Thead>
+          <Table.Tr>
+            {hasDutch && <Table.Th>Nederlands</Table.Th>}
+            {hasIndonesian && <Table.Th>Bahasa Indonesia</Table.Th>}
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {data.items.map((item, i) => (
+            <Table.Tr key={i}>
+              {hasDutch && <Table.Td>{item.dutch ?? ''}</Table.Td>}
+              {hasIndonesian && <Table.Td>{item.indonesian ?? ''}</Table.Td>}
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+      </Table>
+    )
+  }
+  return (
+    <Text size="lg" style={{ whiteSpace: 'pre-wrap' }}>
+      {typeof content === 'string' ? content : JSON.stringify(content, null, 2)}
+    </Text>
+  )
+}
 
 export function Lesson() {
   const { lessonId } = useParams<{ lessonId: string }>()
@@ -121,12 +155,7 @@ export function Lesson() {
         <Paper withBorder p="xl" radius="md" shadow="sm">
           <Title order={2} mb="lg">{currentSection.title}</Title>
           <div style={{ minHeight: '200px' }}>
-            {/* Content rendering depends on schema structure - assuming JSON for now */}
-            <Text size="lg" style={{ whiteSpace: 'pre-wrap' }}>
-              {typeof currentSection.content === 'string' 
-                ? currentSection.content 
-                : JSON.stringify(currentSection.content, null, 2)}
-            </Text>
+            <SectionContent content={currentSection.content} />
           </div>
         </Paper>
 

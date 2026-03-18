@@ -15,7 +15,7 @@ import {
   Loader,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconBook, IconCards, IconMicrophone } from '@tabler/icons-react'
+import { IconBook, IconCards, IconMicrophone, IconDatabase } from '@tabler/icons-react'
 import { progressService } from '@/services/progressService'
 import { cardService } from '@/services/cardService'
 import { lessonService } from '@/services/lessonService'
@@ -135,6 +135,16 @@ export function Dashboard() {
               onClick={() => navigate('/podcasts')}
             >
               Browse Podcasts
+            </Button>
+            <Button
+              variant="subtle"
+              leftSection={<IconDatabase size={16} />}
+              component="a"
+              href="https://db.supabase.duin.home"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Supabase Studio
             </Button>
           </Group>
         </Stack>
