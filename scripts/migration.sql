@@ -219,6 +219,13 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.anki_cards TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.card_reviews TO authenticated;
 GRANT INSERT ON indonesian.error_logs TO authenticated;
 
+-- Drop all existing policies before recreating (makes this script fully idempotent)
+DO $$ DECLARE r record; BEGIN
+  FOR r IN SELECT tablename, policyname FROM pg_policies WHERE schemaname = 'indonesian' LOOP
+    EXECUTE 'DROP POLICY IF EXISTS ' || quote_ident(r.policyname) || ' ON indonesian.' || quote_ident(r.tablename);
+  END LOOP;
+END $$;
+
 -- RLS Policy: user_roles (self-read only)
 CREATE POLICY "user_roles_read" ON indonesian.user_roles
   FOR SELECT TO authenticated USING (user_id = auth.uid());

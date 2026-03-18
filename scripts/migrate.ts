@@ -223,6 +223,13 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.anki_cards TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.card_reviews TO authenticated;
 GRANT INSERT ON indonesian.error_logs TO authenticated;
 
+-- Drop all existing policies before recreating (makes this script fully idempotent)
+DO $$ DECLARE r record; BEGIN
+  FOR r IN SELECT tablename, policyname FROM pg_policies WHERE schemaname = 'indonesian' LOOP
+    EXECUTE 'DROP POLICY IF EXISTS ' || quote_ident(r.policyname) || ' ON indonesian.' || quote_ident(r.tablename);
+  END LOOP;
+END $$;
+
 -- RLS Policy: user_roles (self-read only)
 CREATE POLICY "user_roles_read" ON indonesian.user_roles
   FOR SELECT TO authenticated USING (user_id = auth.uid());
@@ -393,7 +400,45 @@ GRANT EXECUTE ON FUNCTION indonesian.schema_health() TO authenticated;
 
 await Bun.write('scripts/migration.sql', sql)
 console.log('Migration SQL written to scripts/migration.sql')
-console.log('')
-console.log('To run the migration, use one of:')
-console.log('  Option A (psql): PGPASSWORD=<pw> psql -h api.supabase.duin.home -U postgres -f scripts/migration.sql')
-console.log('  Option B: Paste scripts/migration.sql into Supabase dashboard > SQL Editor > Run')
+
+const DB_PASSWORD = process.env.SUPABASE_DB_PASSWORD
+
+if (!DB_PASSWORD) {
+  console.log('')
+  console.log('To apply the migration, run: make migrate SUPABASE_DB_PASSWORD=<postgres-password>')
+  console.log('Or paste scripts/migration.sql into Supabase Studio > SQL Editor > Run')
+  process.exit(0)
+}
+
+const HOMELAB_SSH = process.env.HOMELAB_SSH ?? 'mrblond@192.168.2.51'
+const DB_CONTAINER = process.env.SUPABASE_DB_CONTAINER ?? 'supabase-db'
+
+console.log(`\nApplying migration via ${HOMELAB_SSH} → docker exec ${DB_CONTAINER}...`)
+
+const migrationSql = await Bun.file('scripts/migration.sql').text()
+
+const proc = Bun.spawn(
+  [
+    'ssh', '-i', `${process.env.HOME}/.ssh/id_ed25519`, '-o', 'StrictHostKeyChecking=no',
+    HOMELAB_SSH,
+    `PGPASSWORD=${DB_PASSWORD} sudo docker exec -i ${DB_CONTAINER} psql -U postgres -d postgres -v ON_ERROR_STOP=1`,
+  ],
+  { stdin: 'pipe', stdout: 'pipe', stderr: 'pipe' }
+)
+
+proc.stdin.write(migrationSql)
+proc.stdin.end()
+
+const [exitCode, stdout, stderr] = await Promise.all([
+  proc.exited,
+  new Response(proc.stdout).text(),
+  new Response(proc.stderr).text(),
+])
+
+if (stdout) console.log(stdout)
+if (exitCode !== 0) {
+  console.error(stderr)
+  console.error('\nMigration failed.')
+  process.exit(1)
+}
+console.log('Migration applied successfully.')

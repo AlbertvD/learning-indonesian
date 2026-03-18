@@ -46,9 +46,9 @@ typecheck: ## Run TypeScript type checker
 # ============================================================================
 
 .PHONY: migrate
-migrate: ## Run the Supabase schema migration (requires SUPABASE_SERVICE_KEY)
-	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required. Run: make migrate SUPABASE_SERVICE_KEY=<key>"; exit 1; }
-	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/migrate.ts
+migrate: ## Apply Supabase schema migration via psql (requires POSTGRES_PASSWORD in .env.local)
+	@test -n "$(POSTGRES_PASSWORD)" || { echo "Error: POSTGRES_PASSWORD is required (add to .env.local)"; exit 1; }
+	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_DB_PASSWORD=$(POSTGRES_PASSWORD) bun scripts/migrate.ts
 
 .PHONY: seed-lessons
 seed-lessons: ## Seed lesson content (requires SUPABASE_SERVICE_KEY)
