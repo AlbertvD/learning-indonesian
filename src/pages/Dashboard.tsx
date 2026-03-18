@@ -26,6 +26,7 @@ import type { UserProgress } from '@/types/progress'
 export function Dashboard() {
   const navigate = useNavigate()
   const user = useAuthStore((state) => state.user)
+  const profile = useAuthStore((state) => state.profile)
 
   const [loading, setLoading] = useState(true)
   const [progress, setProgress] = useState<UserProgress | null>(null)
@@ -136,16 +137,18 @@ export function Dashboard() {
             >
               Browse Podcasts
             </Button>
-            <Button
-              variant="subtle"
-              leftSection={<IconDatabase size={16} />}
-              component="a"
-              href="https://db.supabase.duin.home"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Supabase Studio
-            </Button>
+            {profile?.isAdmin && (
+              <Button
+                variant="subtle"
+                leftSection={<IconDatabase size={16} />}
+                component="a"
+                href="https://db.supabase.duin.home"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Supabase Studio
+              </Button>
+            )}
           </Group>
         </Stack>
       </Stack>

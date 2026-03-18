@@ -26,7 +26,7 @@ type SectionContentData =
 function SectionContent({ content }: { content: unknown }) {
   const data = content as SectionContentData
 
-  if (data?.type === 'exercises') {
+  if (data?.type === 'exercises' && Array.isArray(data.items)) {
     const hasDutch = data.items.some((i) => i.dutch)
     const hasIndonesian = data.items.some((i) => i.indonesian)
     return (
@@ -124,7 +124,7 @@ function SectionContent({ content }: { content: unknown }) {
     )
   }
 
-  if (data?.type === 'grammar') {
+  if (data?.type === 'grammar' && Array.isArray(data.categories)) {
     return (
       <Stack gap="lg">
         {data.intro && <Text>{data.intro}</Text>}
@@ -143,7 +143,7 @@ function SectionContent({ content }: { content: unknown }) {
     )
   }
 
-  if (data?.type === 'dialogue') {
+  if (data?.type === 'dialogue' && Array.isArray(data.lines)) {
     return (
       <Stack gap="md">
         {data.setup && (
