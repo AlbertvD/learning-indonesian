@@ -132,6 +132,55 @@ for (const table of EXPECTED_TABLES) {
   }
 }
 
+// ── Check: lessons have audio_path populated ──────────────────────────────
+{
+  const { data: lessons, error } = await supabase
+    .schema('indonesian')
+    .from('lessons')
+    .select('title, audio_path')
+  if (error) {
+    fail('Lesson audio_path seeded', error.message)
+  } else if (!lessons || lessons.length === 0) {
+    fail('Lesson audio_path seeded', 'No lessons found — run: make seed-lessons SUPABASE_SERVICE_KEY=<key>')
+  } else {
+    const missing = lessons.filter((l: any) => !l.audio_path).map((l: any) => l.title)
+    if (missing.length > 0) {
+      fail('Lesson audio_path seeded', `Missing audio_path on: ${missing.join(', ')} — run: make seed-lessons SUPABASE_SERVICE_KEY=<key>`)
+    } else {
+      pass(`Lesson audio_path seeded (${lessons.length} lesson${lessons.length > 1 ? 's' : ''})`)
+    }
+  }
+}
+
+// ── Check: lesson audio files exist in storage ────────────────────────────
+{
+  const { data: lessons, error: lessonErr } = await supabase
+    .schema('indonesian')
+    .from('lessons')
+    .select('title, audio_path')
+    .not('audio_path', 'is', null)
+
+  if (lessonErr) {
+    fail('Lesson audio files in storage', lessonErr.message)
+  } else if (!lessons || lessons.length === 0) {
+    fail('Lesson audio files in storage', 'No lessons with audio_path found — run: make seed-lessons SUPABASE_SERVICE_KEY=<key>')
+  } else {
+    for (const lesson of lessons as { title: string; audio_path: string }[]) {
+      const { data } = supabase.storage.from('indonesian-lessons').getPublicUrl(lesson.audio_path)
+      try {
+        const res = await fetch(data.publicUrl, { method: 'HEAD' })
+        if (res.ok) {
+          pass(`Audio file accessible: ${lesson.audio_path}`)
+        } else {
+          fail(`Audio file accessible: ${lesson.audio_path}`, `HTTP ${res.status} — run: make seed-lesson-audio SUPABASE_SERVICE_KEY=<key>`)
+        }
+      } catch (err) {
+        fail(`Audio file accessible: ${lesson.audio_path}`, `Request failed: ${(err as Error).message}`)
+      }
+    }
+  }
+}
+
 // ── Output ─────────────────────────────────────────────────────────────────
 console.log(`\nSupabase deep structural check — ${SUPABASE_URL}\n`)
 let failures = 0
