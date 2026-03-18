@@ -357,6 +357,38 @@ ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS duration_seconds integer
 ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_dutch text;
 ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_indonesian text;
 ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_english text;
+
+-- Health check RPC — callable by service role to inspect schema state
+-- Returns JSON with tables, RLS status, and grants for the indonesian schema
+CREATE OR REPLACE FUNCTION indonesian.schema_health()
+RETURNS jsonb LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian AS $$
+  SELECT jsonb_build_object(
+    'tables', (
+      SELECT jsonb_agg(jsonb_build_object(
+        'name', t.table_name,
+        'rls_enabled', c.relrowsecurity,
+        'rls_forced', c.relforcerowsecurity
+      ) ORDER BY t.table_name)
+      FROM information_schema.tables t
+      JOIN pg_catalog.pg_class c ON c.relname = t.table_name
+      JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace AND n.nspname = 'indonesian'
+      WHERE t.table_schema = 'indonesian'
+        AND t.table_type = 'BASE TABLE'
+    ),
+    'grants', (
+      SELECT jsonb_agg(jsonb_build_object(
+        'table', table_name,
+        'grantee', grantee,
+        'privilege', privilege_type
+      ) ORDER BY table_name, grantee, privilege_type)
+      FROM information_schema.role_table_grants
+      WHERE table_schema = 'indonesian'
+        AND grantee IN ('anon', 'authenticated')
+    )
+  )
+$$;
+
+GRANT EXECUTE ON FUNCTION indonesian.schema_health() TO authenticated;
 `
 
 await Bun.write('scripts/migration.sql', sql)

@@ -29,6 +29,11 @@ CREATE TABLE IF NOT EXISTS indonesian.lessons (
   title text NOT NULL,
   description text,
   order_index integer NOT NULL DEFAULT 0,
+  audio_path text,
+  duration_seconds integer,
+  transcript_dutch text,
+  transcript_indonesian text,
+  transcript_english text,
   created_at timestamptz DEFAULT now(),
   -- Natural key for seed upserts — avoids needing explicit UUIDs in data files
   UNIQUE(module_id, order_index)
@@ -149,7 +154,8 @@ CREATE TABLE IF NOT EXISTS indonesian.anki_cards (
   back text NOT NULL,
   notes text,
   tags text[] DEFAULT '{}',
-  created_at timestamptz DEFAULT now()
+  created_at timestamptz DEFAULT now(),
+  UNIQUE(card_set_id, front)
 );
 
 -- Per-user SM-2 review state — one row per (card, user) pair
@@ -276,22 +282,39 @@ CREATE POLICY "learning_sessions_read" ON indonesian.learning_sessions FOR SELEC
 CREATE POLICY "learning_sessions_write" ON indonesian.learning_sessions FOR ALL TO authenticated
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
+-- Security definer helpers break the mutual recursion between card_sets_read and
+-- card_set_shares_read (each policy would otherwise query the other table under RLS,
+-- causing 42P17 infinite_recursion on any query that touches anki_cards or card_sets).
+CREATE OR REPLACE FUNCTION indonesian.is_shared_with_current_user(p_card_set_id uuid)
+RETURNS boolean LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM indonesian.card_set_shares
+    WHERE card_set_id = p_card_set_id AND shared_with_user_id = auth.uid()
+  )
+$$;
+
+CREATE OR REPLACE FUNCTION indonesian.current_user_owns_card_set(p_card_set_id uuid)
+RETURNS boolean LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM indonesian.card_sets
+    WHERE id = p_card_set_id AND owner_id = auth.uid()
+  )
+$$;
+
 CREATE POLICY "card_sets_read" ON indonesian.card_sets FOR SELECT TO authenticated
   USING (
     owner_id = auth.uid()
     OR visibility = 'public'
-    OR (visibility = 'shared' AND EXISTS (
-      SELECT 1 FROM indonesian.card_set_shares
-      WHERE card_set_id = id AND shared_with_user_id = auth.uid()
-    ))
+    OR (visibility = 'shared' AND indonesian.is_shared_with_current_user(id))
   );
 CREATE POLICY "card_sets_write" ON indonesian.card_sets FOR ALL TO authenticated
   USING (owner_id = auth.uid()) WITH CHECK (owner_id = auth.uid());
 
 CREATE POLICY "card_set_shares_read" ON indonesian.card_set_shares FOR SELECT TO authenticated
-  USING (shared_with_user_id = auth.uid() OR EXISTS (
-    SELECT 1 FROM indonesian.card_sets WHERE id = card_set_id AND owner_id = auth.uid()
-  ));
+  USING (
+    shared_with_user_id = auth.uid()
+    OR indonesian.current_user_owns_card_set(card_set_id)
+  );
 CREATE POLICY "card_set_shares_write" ON indonesian.card_set_shares FOR ALL TO authenticated
   USING (EXISTS (
     SELECT 1 FROM indonesian.card_sets WHERE id = card_set_id AND owner_id = auth.uid()
@@ -330,3 +353,35 @@ ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS duration_seconds integer
 ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_dutch text;
 ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_indonesian text;
 ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_english text;
+
+-- Health check RPC — callable by service role to inspect schema state
+-- Returns JSON with tables, RLS status, and grants for the indonesian schema
+CREATE OR REPLACE FUNCTION indonesian.schema_health()
+RETURNS jsonb LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian AS $$
+  SELECT jsonb_build_object(
+    'tables', (
+      SELECT jsonb_agg(jsonb_build_object(
+        'name', t.table_name,
+        'rls_enabled', c.relrowsecurity,
+        'rls_forced', c.relforcerowsecurity
+      ) ORDER BY t.table_name)
+      FROM information_schema.tables t
+      JOIN pg_catalog.pg_class c ON c.relname = t.table_name
+      JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace AND n.nspname = 'indonesian'
+      WHERE t.table_schema = 'indonesian'
+        AND t.table_type = 'BASE TABLE'
+    ),
+    'grants', (
+      SELECT jsonb_agg(jsonb_build_object(
+        'table', table_name,
+        'grantee', grantee,
+        'privilege', privilege_type
+      ) ORDER BY table_name, grantee, privilege_type)
+      FROM information_schema.role_table_grants
+      WHERE table_schema = 'indonesian'
+        AND grantee IN ('anon', 'authenticated')
+    )
+  )
+$$;
+
+GRANT EXECUTE ON FUNCTION indonesian.schema_health() TO authenticated;
