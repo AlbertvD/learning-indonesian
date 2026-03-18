@@ -7,6 +7,7 @@ CREATE SCHEMA IF NOT EXISTS indonesian;
 CREATE TABLE IF NOT EXISTS indonesian.profiles (
   id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   display_name text,
+  language text NOT NULL DEFAULT 'nl' CHECK (language IN ('nl', 'en')),
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );

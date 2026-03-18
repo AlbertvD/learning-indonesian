@@ -11,6 +11,7 @@ CREATE SCHEMA IF NOT EXISTS indonesian;
 CREATE TABLE IF NOT EXISTS indonesian.profiles (
   id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   display_name text,
+  language text NOT NULL DEFAULT 'nl' CHECK (language IN ('nl', 'en')),
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
@@ -152,7 +153,8 @@ CREATE TABLE IF NOT EXISTS indonesian.anki_cards (
   back text NOT NULL,
   notes text,
   tags text[] DEFAULT '{}',
-  created_at timestamptz DEFAULT now()
+  created_at timestamptz DEFAULT now(),
+  UNIQUE(card_set_id, front)
 );
 
 -- Per-user SM-2 review state — one row per (card, user) pair
