@@ -281,22 +281,39 @@ CREATE POLICY "learning_sessions_read" ON indonesian.learning_sessions FOR SELEC
 CREATE POLICY "learning_sessions_write" ON indonesian.learning_sessions FOR ALL TO authenticated
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
+-- Security definer helpers break the mutual recursion between card_sets_read and
+-- card_set_shares_read (each policy would otherwise query the other table under RLS,
+-- causing 42P17 infinite_recursion on any query that touches anki_cards or card_sets).
+CREATE OR REPLACE FUNCTION indonesian.is_shared_with_current_user(p_card_set_id uuid)
+RETURNS boolean LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM indonesian.card_set_shares
+    WHERE card_set_id = p_card_set_id AND shared_with_user_id = auth.uid()
+  )
+$$;
+
+CREATE OR REPLACE FUNCTION indonesian.current_user_owns_card_set(p_card_set_id uuid)
+RETURNS boolean LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM indonesian.card_sets
+    WHERE id = p_card_set_id AND owner_id = auth.uid()
+  )
+$$;
+
 CREATE POLICY "card_sets_read" ON indonesian.card_sets FOR SELECT TO authenticated
   USING (
     owner_id = auth.uid()
     OR visibility = 'public'
-    OR (visibility = 'shared' AND EXISTS (
-      SELECT 1 FROM indonesian.card_set_shares
-      WHERE card_set_id = id AND shared_with_user_id = auth.uid()
-    ))
+    OR (visibility = 'shared' AND indonesian.is_shared_with_current_user(id))
   );
 CREATE POLICY "card_sets_write" ON indonesian.card_sets FOR ALL TO authenticated
   USING (owner_id = auth.uid()) WITH CHECK (owner_id = auth.uid());
 
 CREATE POLICY "card_set_shares_read" ON indonesian.card_set_shares FOR SELECT TO authenticated
-  USING (shared_with_user_id = auth.uid() OR EXISTS (
-    SELECT 1 FROM indonesian.card_sets WHERE id = card_set_id AND owner_id = auth.uid()
-  ));
+  USING (
+    shared_with_user_id = auth.uid()
+    OR indonesian.current_user_owns_card_set(card_set_id)
+  );
 CREATE POLICY "card_set_shares_write" ON indonesian.card_set_shares FOR ALL TO authenticated
   USING (EXISTS (
     SELECT 1 FROM indonesian.card_sets WHERE id = card_set_id AND owner_id = auth.uid()

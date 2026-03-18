@@ -8,7 +8,11 @@ interface LogErrorParams {
 }
 
 export async function logError({ page, action, error }: LogErrorParams): Promise<void> {
-  const message = error instanceof Error ? error.message : String(error)
+  const message = error instanceof Error
+    ? error.message
+    : (error as any)?.message
+      ? String((error as any).message)
+      : String(error)
   const code = (error as { code?: string })?.code ?? null
 
   // Fire-and-forget — never throws
