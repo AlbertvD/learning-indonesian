@@ -317,6 +317,18 @@ Card sets have three visibility levels:
 - `homelab-configs` — Traefik config, docker-compose for deployment, original app source in `Indonesian app/`
 - `family-hub` — shares the same Supabase instance; reference for Dockerfile pattern and Supabase client setup
 
+## Supabase Infrastructure Fixes
+
+When encountering Supabase permission errors, auth errors, or API errors (e.g. `password authentication failed`, CORS rejections, missing schema exposure), **do not fix these by making changes directly inside the running container or database**. Those changes are lost on container recreate or volume wipe.
+
+Instead, fix them by modifying the relevant config files in the `homelab-configs` repo so the fix survives redeployment:
+
+- **PostgreSQL auth errors** (`pg_hba.conf`) → edit `services/supabase/postgres/init.sh` in `homelab-configs`
+- **Kong CORS / routing issues** → edit `services/supabase/kong/kong.yml` and rebuild the Kong image
+- **PostgREST schema exposure** → edit `PGRST_DB_SCHEMAS` in `services/supabase/docker-compose.yml`
+
+After committing the fix to `homelab-configs`, apply it to the live container manually (e.g. `docker exec` + reload, or rebuild + redeploy) so it takes effect immediately without waiting for the next full redeploy.
+
 ## Homelab Infrastructure
 
 This app runs on a self-hosted homelab. For infrastructure details see `/Users/albert/home/homelab-configs/`.
