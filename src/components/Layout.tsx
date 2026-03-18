@@ -1,13 +1,27 @@
 // src/components/Layout.tsx
-import { AppShell, Burger, Group, Button, Text, Menu, UnstyledButton, Avatar } from '@mantine/core'
+import { AppShell, Burger, Group, Button, Text, Menu, UnstyledButton, Avatar, ActionIcon, useMantineColorScheme, Stack } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Outlet, useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
-import { IconChevronDown, IconLogout, IconUser, IconTrophy, IconBook, IconCards, IconHeadphones } from '@tabler/icons-react'
+import { useT } from '@/hooks/useT'
+import { 
+  IconChevronDown, 
+  IconLogout, 
+  IconUser, 
+  IconTrophy, 
+  IconBook, 
+  IconCards, 
+  IconHeadphones,
+  IconSun,
+  IconMoon
+} from '@tabler/icons-react'
 
 export function Layout() {
-  const [opened, { toggle }] = useDisclosure()
+  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure(false)
+  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true)
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const { profile, signOut } = useAuthStore()
+  const T = useT()
   const navigate = useNavigate()
 
   const handleLogout = async () => {
@@ -16,26 +30,29 @@ export function Layout() {
   }
 
   const navLinks = [
-    { label: 'Lessons', icon: <IconBook size={18} />, path: '/lessons' },
-    { label: 'Podcasts', icon: <IconHeadphones size={18} />, path: '/podcasts' },
-    { label: 'Flashcards', icon: <IconCards size={18} />, path: '/cards' },
-    { label: 'Leaderboard', icon: <IconTrophy size={18} />, path: '/leaderboard' },
+    { label: T.nav.lessons, icon: <IconBook size={18} />, path: '/lessons' },
+    { label: T.nav.podcasts, icon: <IconHeadphones size={18} />, path: '/podcasts' },
+    { label: T.nav.flashcards, icon: <IconCards size={18} />, path: '/cards' },
+    { label: T.nav.leaderboard, icon: <IconTrophy size={18} />, path: '/leaderboard' },
   ]
 
   return (
     <AppShell
       header={{ height: 60 }}
       navbar={{
-        width: 300,
+        width: 250,
         breakpoint: 'sm',
-        collapsed: { desktop: true, mobile: !opened },
+        collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
       }}
       padding="md"
     >
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
           <Group>
-            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+            {/* Mobile burger */}
+            <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
+            {/* Desktop burger */}
+            <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
             <Text
               component={Link}
               to="/"
@@ -49,31 +66,26 @@ export function Layout() {
             </Text>
           </Group>
 
-          <Group visibleFrom="sm" gap="xs">
-            {navLinks.map((link) => (
-              <Button
-                key={link.path}
-                component={Link}
-                to={link.path}
-                variant="subtle"
-                leftSection={link.icon}
-              >
-                {link.label}
-              </Button>
-            ))}
-          </Group>
+          <Group gap="xs">
+            <ActionIcon
+              variant="subtle"
+              onClick={toggleColorScheme}
+              aria-label="Toggle color scheme"
+              size="lg"
+            >
+              {colorScheme === 'dark' ? <IconSun size={18} /> : <IconMoon size={18} />}
+            </ActionIcon>
 
-          <Group>
             {profile ? (
               <Menu shadow="md" width={200}>
                 <Menu.Target>
                   <UnstyledButton>
                     <Group gap={7}>
                       <Avatar color="blue" radius="xl" size={30}>
-                        {profile.fullName?.[0] || profile.email[0].toUpperCase()}
+                        {profile.fullName?.[0]?.toUpperCase() ?? profile.email[0].toUpperCase()}
                       </Avatar>
                       <Text fw={500} size="sm" mr={3} visibleFrom="xs">
-                        {profile.fullName || profile.email}
+                        {profile.fullName?.split(' ')[0] ?? profile.email}
                       </Text>
                       <IconChevronDown size={12} stroke={1.5} />
                     </Group>
@@ -81,13 +93,13 @@ export function Layout() {
                 </Menu.Target>
 
                 <Menu.Dropdown>
-                  <Menu.Label>Settings</Menu.Label>
+                  <Menu.Label>{T.nav.settings}</Menu.Label>
                   <Menu.Item
                     component={Link}
                     to="/profile"
                     leftSection={<IconUser size={14} stroke={1.5} />}
                   >
-                    Profile
+                    {T.nav.profile}
                   </Menu.Item>
                   <Menu.Divider />
                   <Menu.Item
@@ -95,7 +107,7 @@ export function Layout() {
                     leftSection={<IconLogout size={14} stroke={1.5} />}
                     onClick={handleLogout}
                   >
-                    Logout
+                    {T.nav.logout}
                   </Menu.Item>
                 </Menu.Dropdown>
               </Menu>
@@ -109,21 +121,24 @@ export function Layout() {
       </AppShell.Header>
 
       <AppShell.Navbar p="md">
-        {navLinks.map((link) => (
-          <Button
-            key={link.path}
-            component={Link}
-            to={link.path}
-            variant="subtle"
-            leftSection={link.icon}
-            onClick={toggle}
-            fullWidth
-            justify="flex-start"
-            mb="xs"
-          >
-            {link.label}
-          </Button>
-        ))}
+        <Stack gap="xs">
+          {navLinks.map((link) => (
+            <Button
+              key={link.path}
+              component={Link}
+              to={link.path}
+              variant="subtle"
+              leftSection={link.icon}
+              onClick={() => {
+                if (mobileOpened) toggleMobile()
+              }}
+              fullWidth
+              justify="flex-start"
+            >
+              {link.label}
+            </Button>
+          ))}
+        </Stack>
       </AppShell.Navbar>
 
       <AppShell.Main>
