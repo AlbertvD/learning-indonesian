@@ -57,14 +57,8 @@
 
 .lessonGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 12px;
-}
-
-@media (max-width: 768px) {
-  .lessonGrid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .lessonCard {
@@ -108,18 +102,18 @@
   font-family: var(--display);
   font-size: 60px;
   font-weight: 300;
-  color: var(--surf-4);
+  color: rgba(255,255,255,0.22);
   line-height: 1;
   letter-spacing: -.04em;
   user-select: none;
 }
 
 .lessonCard:hover .lessonNum {
-  color: var(--border-light);
+  color: rgba(255,255,255,0.38);
 }
 
 .lessonCard.done .lessonNum {
-  color: rgba(78,202,122,.12);
+  color: rgba(78,202,122,.18);
 }
 
 .lessonTitle {

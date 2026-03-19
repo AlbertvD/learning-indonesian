@@ -80,9 +80,12 @@ export function Layout() {
       <main style={{
         flex: 1,
         marginLeft: locked ? 230 : 0,
-        transition: 'margin-left .22s cubic-bezier(.4,0,.2,1)',
+        paddingLeft: locked ? 0 : 64,
+        paddingRight: 24,
+        transition: 'margin-left .22s cubic-bezier(.4,0,.2,1), padding-left .22s cubic-bezier(.4,0,.2,1)',
         overflowY: 'auto',
         height: '100vh',
+        boxSizing: 'border-box',
       }}>
         <Outlet />
       </main>
