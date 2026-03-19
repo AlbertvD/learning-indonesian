@@ -1,0 +1,222 @@
+.lessons {
+  padding: 36px 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.displaySm {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+  color: var(--text-1);
+}
+
+.bodySm {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-family: var(--display);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.badgeGreen {
+  background: var(--success-subtle);
+  color: var(--success);
+  border: 1px solid rgba(78,202,122,.2);
+}
+
+.badgePurple {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.75);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.badgeOrange {
+  background: var(--warning-subtle);
+  color: var(--warning);
+  border: 1px solid rgba(240,169,64,.2);
+}
+
+.lessonGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .lessonGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lessonCard {
+  background: rgba(24,24,31,0.30);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--r-lg);
+  padding: 22px 22px;
+  cursor: pointer;
+  transition: all .2s;
+  text-decoration: none;
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+
+.lessonCard:hover {
+  border-color: rgba(139,108,245,.3);
+  background: rgba(31,31,41,0.65);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px rgba(0,0,0,.4);
+}
+
+.lessonCard.done {
+  border-color: rgba(78,202,122,.15);
+}
+
+.lessonCard.done::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--success);
+  border-radius: 3px 0 0 3px;
+}
+
+.lessonNum {
+  font-family: var(--display);
+  font-size: 60px;
+  font-weight: 300;
+  color: var(--surf-4);
+  line-height: 1;
+  letter-spacing: -.04em;
+  user-select: none;
+}
+
+.lessonCard:hover .lessonNum {
+  color: var(--border-light);
+}
+
+.lessonCard.done .lessonNum {
+  color: rgba(78,202,122,.12);
+}
+
+.lessonTitle {
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-1);
+  line-height: 1.3;
+  letter-spacing: -.01em;
+  margin-top: 4px;
+}
+
+.lessonSubtitle {
+  font-size: 13px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.lessonMeta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.lessonSections {
+  font-size: 12px;
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+.lessonArrow {
+  margin-left: auto;
+  color: var(--text-3);
+  transition: transform .15s, color .15s;
+}
+
+.lessonCard:hover .lessonArrow {
+  transform: translateX(3px);
+  color: var(--purple);
+}
+
+/* Light theme overrides */
+:global(html[data-mantine-color-scheme="light"]) .lessonCard {
+  background: rgba(255,255,255,0.75);
+  border-color: var(--border);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .lessonCard:hover {
+  background: rgba(255,255,255,0.95);
+  border-color: var(--purple);
+  box-shadow: 0 8px 40px rgba(91,110,245,0.12);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .lessonCard.done {
+  border-color: rgba(31,168,90,.25);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .lessonNum {
+  color: var(--surf-3);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .lessonCard:hover .lessonNum {
+  color: var(--border-light);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .lessonCard.done .lessonNum {
+  color: rgba(31,168,90,.15);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .lessonArrow {
+  color: var(--text-3);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .lessonCard:hover .lessonArrow {
+  color: var(--purple);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .badgePurple {
+  background: rgba(91,110,245,0.10);
+  color: var(--purple);
+  border-color: rgba(91,110,245,0.2);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .displaySm,
+:global(html[data-mantine-color-scheme="light"]) .lessonTitle {
+  color: var(--text-1);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .bodySm,
+:global(html[data-mantine-color-scheme="light"]) .lessonSubtitle,
+:global(html[data-mantine-color-scheme="light"]) .lessonSections,
+:global(html[data-mantine-color-scheme="light"]) .lessonArrow {
+  color: var(--text-2);
+}
+:global(html[data-mantine-color-scheme="light"]) .lessonSubtitle,
+:global(html[data-mantine-color-scheme="light"]) .lessonSections {
+  color: var(--text-3);
+}

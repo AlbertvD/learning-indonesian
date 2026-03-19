@@ -1,13 +1,17 @@
 // src/pages/Lessons.tsx
 import { useEffect, useState } from 'react'
-import { Container, Title, Text, Card, Group, Badge, SimpleGrid, Loader, Center } from '@mantine/core'
+import { Container, Loader, Center } from '@mantine/core'
 import { Link } from 'react-router-dom'
+import { IconChevronRight } from '@tabler/icons-react'
 import { lessonService, type Lesson } from '@/services/lessonService'
 import { useAuthStore } from '@/stores/authStore'
+import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
+import classes from './Lessons.module.css'
 
 export function Lessons() {
+  const T = useT()
   const [lessons, setLessons] = useState<Lesson[]>([])
   const [progress, setProgress] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -25,18 +29,18 @@ export function Lessons() {
         setProgress(progressData)
       } catch (err) {
         logError({ page: 'lessons', action: 'fetchData', error: err })
-        notifications.show({ color: 'red', title: 'Error', message: 'Failed to load lessons. Please try again.' })
+        notifications.show({ color: 'red', title: T.common.error, message: T.common.somethingWentWrong })
       } finally {
         setLoading(false)
       }
     }
     fetchData()
-  }, [user])
+  }, [user, T.common.error, T.common.somethingWentWrong])
 
   if (loading) {
     return (
       <Center h="50vh">
-        <Loader size="xl" />
+        <Loader size="xl" color="violet" />
       </Center>
     )
   }
@@ -44,42 +48,50 @@ export function Lessons() {
   const isCompleted = (lessonId: string) => 
     progress.some(p => p.lesson_id === lessonId && p.completed_at)
 
-  return (
-    <Container size="lg">
-      <Title order={1} mb="xl">Lessons</Title>
-      
-      <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="lg">
-        {lessons.map((lesson) => (
-          <Card
-            key={lesson.id}
-            shadow="sm"
-            padding="lg"
-            radius="md"
-            withBorder
-            component={Link}
-            to={`/lesson/${lesson.id}`}
-            style={{ textDecoration: 'none' }}
-          >
-            <Group justify="space-between" mb="xs">
-              <Text fw={700} size="lg">{lesson.title}</Text>
-              <Group gap="xs">
-                <Badge color="blue" variant="light">{lesson.level}</Badge>
-                {isCompleted(lesson.id) && (
-                  <Badge color="green" variant="filled">Completed</Badge>
-                )}
-              </Group>
-            </Group>
+  const completedCount = lessons.filter(l => isCompleted(l.id)).length
 
-            <Text size="sm" c="dimmed" lineClamp={2}>
-              {lesson.description || 'Start learning Indonesian through this interactive lesson.'}
-            </Text>
-            
-            <Text size="xs" mt="md" fw={500} c="blue">
-              {lesson.lesson_sections?.length || 0} sections
-            </Text>
-          </Card>
-        ))}
-      </SimpleGrid>
+  return (
+    <Container size="lg" className={classes.lessons}>
+      <div className={classes.header}>
+        <div>
+          <div className={classes.displaySm}>{T.nav.lessons}</div>
+          <div className={classes.bodySm} style={{ marginTop: 6 }}>
+            Module 1 · A1 Beginner · {lessons.length} lessons
+          </div>
+        </div>
+        <span className={`${classes.badge} ${classes.badgeGreen}`}>
+          {completedCount} {T.lessons.completed}
+        </span>
+      </div>
+      
+      <div className={classes.lessonGrid}>
+        {lessons.map((lesson, i) => {
+          const done = isCompleted(lesson.id)
+          return (
+            <Link
+              key={lesson.id}
+              to={`/lesson/${lesson.id}`}
+              className={`${classes.lessonCard} ${done ? classes.done : ''}`}
+            >
+              <div className={classes.lessonNum}>{String(i + 1).padStart(2, '0')}</div>
+              <div className={classes.lessonTitle}>{lesson.title}</div>
+              <div className={classes.lessonSubtitle}>{lesson.description || 'Interactive Indonesian lesson'}</div>
+              <div className={classes.lessonMeta}>
+                <span className={`${classes.badge} ${classes.badgePurple}`}>{lesson.level}</span>
+                {done && (
+                  <span className={`${classes.badge} ${classes.badgeGreen}`}>{T.lessons.completed}</span>
+                )}
+                <span className={classes.lessonSections}>
+                  {lesson.lesson_sections?.length || 0} sections
+                </span>
+                <span className={classes.lessonArrow}>
+                  <IconChevronRight size={15} />
+                </span>
+              </div>
+            </Link>
+          )
+        })}
+      </div>
     </Container>
   )
 }
