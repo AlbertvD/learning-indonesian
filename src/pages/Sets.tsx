@@ -1,6 +1,6 @@
 // src/pages/Sets.tsx
 import { useEffect, useState } from 'react'
-import { Container, Title, Text, Card, Group, Badge, SimpleGrid, Button, Modal, TextInput, Textarea, Loader, Center, Stack } from '@mantine/core'
+import { Container, Modal, TextInput, Textarea, Loader, Center, Stack } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { Link } from 'react-router-dom'
 import { useCardStore } from '@/stores/cardStore'
@@ -8,6 +8,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { IconPlus } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
 import { logError } from '@/lib/logger'
+import classes from './Sets.module.css'
 
 export function Sets() {
   const { cardSets, fetchCardSets, addCardSet, loading } = useCardStore()
@@ -17,7 +18,7 @@ export function Sets() {
 
   useEffect(() => {
     fetchCardSets()
-  }, [])
+  }, [fetchCardSets])
 
   const form = useForm({
     initialValues: {
@@ -45,66 +46,44 @@ export function Sets() {
     }
   }
 
-  const getVisibilityColor = (v: string) => {
-    switch (v) {
-      case 'public': return 'green'
-      case 'shared': return 'blue'
-      default: return 'gray'
-    }
-  }
-
   return (
-    <Container size="lg">
-      <Group justify="space-between" mb="xl">
-        <Title order={1}>Card Sets</Title>
-        <Button leftSection={<IconPlus size={16} />} onClick={() => setModalOpened(true)}>
-          Create new set
-        </Button>
-      </Group>
+    <Container size="lg" className={classes.sets}>
+      <div className={classes.header}>
+        <div className={classes.displaySm}>Card Sets</div>
+        <button className={classes.btn} onClick={() => setModalOpened(true)}>
+          <IconPlus size={15} />
+          Create set
+        </button>
+      </div>
 
       {loading && cardSets.length === 0 ? (
-        <Center h="30vh"><Loader /></Center>
+        <Center h="30vh"><Loader color="violet" /></Center>
       ) : (
-        <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="lg">
+        <div className={classes.setGrid}>
           {cardSets.map((set) => (
-            <Card
-              key={set.id}
-              shadow="sm"
-              padding="lg"
-              radius="md"
-              withBorder
-              component={Link}
-              to={`/sets/${set.id}`}
-              style={{ textDecoration: 'none' }}
-            >
-              <Group justify="space-between" mb="xs">
-                <Text fw={700}>{set.name}</Text>
-                {set.visibility !== 'public' && (
-                  <Badge color={getVisibilityColor(set.visibility)} variant="light" size="xs">
-                    {set.visibility}
-                  </Badge>
-                )}
-              </Group>
-
-              <Text size="sm" c="dimmed" lineClamp={2} mb="md">
+            <Link key={set.id} to={`/sets/${set.id}`} className={classes.setCard}>
+              <div className={classes.setName}>{set.name}</div>
+              <div className={classes.setDescription}>
                 {set.description || 'No description provided.'}
-              </Text>
-
-            </Card>
+              </div>
+              <div className={`${classes.badge} ${classes.badgeGray}`}>
+                {set.visibility}
+              </div>
+            </Link>
           ))}
-        </SimpleGrid>
+        </div>
       )}
 
       {cardSets.length === 0 && !loading && (
         <Center h="20vh">
           <Stack align="center" gap="xs">
-            <Text c="dimmed">No card sets found.</Text>
-            <Button variant="subtle" size="sm" onClick={() => setModalOpened(true)}>Create your first set</Button>
+            <div className={classes.setDescription}>No card sets found.</div>
+            <button className={classes.btn} onClick={() => setModalOpened(true)}>Create your first set</button>
           </Stack>
         </Center>
       )}
 
-      <Modal opened={modalOpened} onClose={() => setModalOpened(false)} title="Create New Card Set">
+      <Modal opened={modalOpened} onClose={() => setModalOpened(false)} title="Create New Card Set" radius="lg">
         <form onSubmit={form.onSubmit(handleCreate)}>
           <TextInput
             label="Name"
@@ -118,9 +97,9 @@ export function Sets() {
             mt="md"
             {...form.getInputProps('description')}
           />
-          <Button fullWidth mt="xl" type="submit" loading={creating}>
-            Create Set
-          </Button>
+          <button className={classes.btn} style={{ width: '100%', marginTop: 24, height: 44 }} type="submit" disabled={creating}>
+            {creating ? 'Creating...' : 'Create Set'}
+          </button>
         </form>
       </Modal>
     </Container>
