@@ -1,19 +1,16 @@
 // src/pages/Login.tsx
 import { useState } from 'react'
-import { TextInput, PasswordInput, Button, Paper, Title, Text, Container, Anchor } from '@mantine/core'
+import { TextInput, PasswordInput, Anchor } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { notifications } from '@mantine/notifications'
 import { logError } from '@/lib/logger'
 import { AuthApiError } from '@supabase/supabase-js'
-
 import { useT } from '@/hooks/useT'
+import classes from './Auth.module.css'
 
 export function Login() {
-  // useT() returns 'nl' here because profile is null for unauthenticated users.
-  // This is intentional — login/register pages are always in Dutch.
-  // Do not add a localStorage fallback; language preference is a per-account setting.
   const T = useT()
   const [loading, setLoading] = useState(false)
   const signIn = useAuthStore((state) => state.signIn)
@@ -53,37 +50,41 @@ export function Login() {
   }
 
   return (
-    <Container size={420} my={40}>
-      <Title ta="center" fw={900}>
-        {T.login.title}
-      </Title>
-      <Text c="dimmed" size="sm" ta="center" mt={5}>
-        {T.login.noAccount}{' '}
-        <Anchor size="sm" component={Link} to="/register">
-          {T.login.createOne}
-        </Anchor>
-      </Text>
+    <div className={classes.wrapper}>
+      <div className={classes.authCard}>
+        <div className={classes.logo}>
+          <div className={classes.logoIcon}>BI</div>
+        </div>
+        <h1 className={classes.title}>{T.login.title}</h1>
+        <p className={classes.subtitle}>
+          {T.login.noAccount}{' '}
+          <Anchor component={Link} to="/register">
+            {T.login.createOne}
+          </Anchor>
+        </p>
 
-      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         <form onSubmit={form.onSubmit(handleSubmit)}>
-          <TextInput
-            label={T.login.email}
-            placeholder={T.login.emailPlaceholder}
-            required
-            {...form.getInputProps('email')}
-          />
-          <PasswordInput
-            label={T.login.password}
-            placeholder={T.login.passwordPlaceholder}
-            required
-            mt="md"
-            {...form.getInputProps('password')}
-          />
-          <Button fullWidth mt="xl" type="submit" loading={loading}>
-            {T.login.logIn}
-          </Button>
+          <div className={classes.inputGroup}>
+            <TextInput
+              label={T.login.email}
+              placeholder={T.login.emailPlaceholder}
+              required
+              {...form.getInputProps('email')}
+            />
+          </div>
+          <div className={classes.inputGroup}>
+            <PasswordInput
+              label={T.login.password}
+              placeholder={T.login.passwordPlaceholder}
+              required
+              {...form.getInputProps('password')}
+            />
+          </div>
+          <button className={classes.btn} type="submit" disabled={loading}>
+            {loading ? 'Logging in...' : T.login.logIn}
+          </button>
         </form>
-      </Paper>
-    </Container>
+      </div>
+    </div>
   )
 }
