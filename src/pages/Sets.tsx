@@ -72,9 +72,6 @@ export function Sets() {
                 <div className={classes.setDescription}>
                   {set.description || 'No description provided.'}
                 </div>
-                <div className={classes.setMeta}>
-                  <span className={`${classes.badge} ${classes.badgeGray}`}>{set.visibility}</span>
-                </div>
               </div>
               <span className={classes.setArrow}><IconChevronRight size={15} /></span>
             </Link>

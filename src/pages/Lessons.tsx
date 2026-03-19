@@ -78,7 +78,6 @@ export function Lessons() {
                 <div className={classes.lessonTitle}>{lesson.title}</div>
                 <div className={classes.lessonSubtitle}>{lesson.description || 'Interactive Indonesian lesson'}</div>
                 <div className={classes.lessonMeta}>
-                  <span className={`${classes.badge} ${classes.badgePurple}`}>{lesson.level}</span>
                   {done && (
                     <span className={`${classes.badge} ${classes.badgeGreen}`}>{T.lessons.completed}</span>
                   )}
