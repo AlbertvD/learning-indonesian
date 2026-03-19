@@ -3,15 +3,8 @@ import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Container,
-  Title,
-  Text,
-  Button,
-  Group,
-  Stack,
-  Card,
   Center,
   Loader,
-  Paper,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { calculateNextReview, type ReviewQuality } from '@/lib/sm2'
@@ -21,6 +14,7 @@ import { useCardStore } from '@/stores/cardStore'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import type { DueCard } from '@/types/cards'
+import classes from './Review.module.css'
 
 export function Review() {
   const navigate = useNavigate()
@@ -39,7 +33,6 @@ export function Review() {
     async function init() {
       if (!user) return
       try {
-        // startSession must be first — sid is destructured from index [0]
         const [sid] = await Promise.all([
           startSession(user.id, 'review'),
           fetchDueCards(user.id),
@@ -65,7 +58,7 @@ export function Review() {
         )
       }
     }
-  }, [user])
+  }, [user, fetchDueCards])
 
   async function handleRating(quality: ReviewQuality, card: DueCard) {
     if (!user || submitting) return
@@ -86,6 +79,7 @@ export function Review() {
       })
       const nextReviewed = reviewedCount + 1
       setReviewedCount(nextReviewed)
+      
       if (currentIndex + 1 >= dueCards.length) {
         setSessionDone(true)
         if (sessionIdRef.current) {
@@ -113,42 +107,40 @@ export function Review() {
   if (loading) {
     return (
       <Center h="50vh">
-        <Loader size="xl" />
+        <Loader size="xl" color="violet" />
       </Center>
     )
   }
 
   if (dueCards.length === 0) {
     return (
-      <Container size="sm">
-        <Center h="50vh">
-          <Stack align="center" gap="md">
-            <Title order={2}>No cards due for review</Title>
-            <Text c="dimmed">You're all caught up! Check back later.</Text>
-            <Button onClick={() => navigate('/sets')}>Browse Card Sets</Button>
-          </Stack>
-        </Center>
+      <Container size="sm" className={classes.review}>
+        <div className={classes.doneCard}>
+          <div className={classes.doneTitle}>All caught up!</div>
+          <div className={classes.doneText}>No cards due for review. Check back later.</div>
+          <button className={classes.showBtn} onClick={() => navigate('/cards')}>
+            Browse Card Sets
+          </button>
+        </div>
       </Container>
     )
   }
 
   if (sessionDone) {
     return (
-      <Container size="sm">
-        <Center h="50vh">
-          <Stack align="center" gap="md">
-            <Title order={2}>Session Complete!</Title>
-            <Text c="dimmed">
-              You reviewed {reviewedCount} card{reviewedCount !== 1 ? 's' : ''}.
-            </Text>
-            <Group gap="sm">
-              <Button onClick={() => navigate('/')}>Back to Dashboard</Button>
-              <Button variant="outline" onClick={() => navigate('/sets')}>
-                Browse Card Sets
-              </Button>
-            </Group>
-          </Stack>
-        </Center>
+      <Container size="sm" className={classes.review}>
+        <div className={classes.doneCard}>
+          <div className={classes.doneTitle}>Session Complete!</div>
+          <div className={classes.doneText}>You reviewed {reviewedCount} cards today. Keep it up!</div>
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+            <button className={classes.showBtn} onClick={() => navigate('/')}>
+              Dashboard
+            </button>
+            <button className={`${classes.showBtn}`} style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--text-1)', boxShadow: 'none' }} onClick={() => navigate('/cards')}>
+              Flashcards
+            </button>
+          </div>
+        </div>
       </Container>
     )
   }
@@ -156,80 +148,57 @@ export function Review() {
   const card = dueCards[currentIndex]
 
   return (
-    <Container size="sm">
-      <Stack gap="xl" my="xl">
-        <Group justify="space-between">
-          <Title order={2}>Review</Title>
-          <Text c="dimmed">
-            {currentIndex + 1} / {dueCards.length}
-          </Text>
-        </Group>
+    <Container size="sm" className={classes.review}>
+      <div className={classes.reviewHeader}>
+        <div className={classes.reviewTitle}>Daily Review</div>
+        <div className={classes.reviewProgress}>
+          {currentIndex + 1} / {dueCards.length}
+        </div>
+      </div>
 
-        <Paper withBorder p="xl" radius="md" shadow="sm" mih={200}>
-          <Stack gap="md">
-            <Text size="xs" c="dimmed" tt="uppercase" fw={500}>
-              {card.anki_cards.card_sets.name}
-            </Text>
-            <Title order={3} ta="center" py="xl">
-              {card.anki_cards.front}
-            </Title>
+      <div className={classes.cardContainer}>
+        <div className={`${classes.cardInner} ${showAnswer ? classes.cardFlipped : ''}`}>
+          {/* Front */}
+          <div className={classes.cardFace}>
+            <div className={classes.setName}>{card.anki_cards.card_sets.name}</div>
+            <div className={classes.cardText}>{card.anki_cards.front}</div>
+            <div className={classes.cardTranslation}>Tap to show answer</div>
+          </div>
+          {/* Back */}
+          <div className={`${classes.cardFace} ${classes.cardBack}`}>
+            <div className={classes.setName}>{card.anki_cards.card_sets.name}</div>
+            <div className={classes.cardText}>{card.anki_cards.back}</div>
+            <div className={classes.cardTranslation}>How well did you know this?</div>
+          </div>
+        </div>
+      </div>
 
-            {showAnswer && (
-              <>
-                <Card withBorder radius="md" p="md" bg="gray.0">
-                  <Text ta="center" size="lg">
-                    {card.anki_cards.back}
-                  </Text>
-                </Card>
-              </>
-            )}
-          </Stack>
-        </Paper>
-
+      <div className={classes.actions}>
         {!showAnswer ? (
-          <Center>
-            <Button size="md" onClick={() => setShowAnswer(true)}>
-              Show Answer
-            </Button>
-          </Center>
+          <button className={classes.showBtn} onClick={() => setShowAnswer(true)}>
+            Show Answer
+          </button>
         ) : (
-          <Stack gap="xs">
-            <Text size="sm" c="dimmed" ta="center">
-              How well did you know this?
-            </Text>
-            <Group justify="center" gap="sm">
-              <Button
-                color="red"
-                disabled={submitting}
-                onClick={() => handleRating('again', card)}
-              >
-                Again
-              </Button>
-              <Button
-                color="orange"
-                disabled={submitting}
-                onClick={() => handleRating('hard', card)}
-              >
-                Hard
-              </Button>
-              <Button
-                color="blue"
-                disabled={submitting}
-                onClick={() => handleRating('good', card)}
-              >
-                Good
-              </Button>
-              <Button
-                color="green"
-                disabled={submitting}
-                onClick={() => handleRating('easy', card)}
-              >
-                Easy
-              </Button>
-            </Group>
-          </Stack>
+          <div className={classes.ratingGrid}>
+            <button className={`${classes.ratingBtn} ${classes.again}`} onClick={() => handleRating('again', card)} disabled={submitting}>
+              <div className={classes.ratingLabel}>Again</div>
+              <div className={classes.ratingSub}>&lt; 1m</div>
+            </button>
+            <button className={`${classes.ratingBtn} ${classes.hard}`} onClick={() => handleRating('hard', card)} disabled={submitting}>
+              <div className={classes.ratingLabel}>Hard</div>
+              <div className={classes.ratingSub}>2d</div>
+            </button>
+            <button className={`${classes.ratingBtn} ${classes.good}`} onClick={() => handleRating('good', card)} disabled={submitting}>
+              <div className={classes.ratingLabel}>Good</div>
+              <div className={classes.ratingSub}>4d</div>
+            </button>
+            <button className={`${classes.ratingBtn} ${classes.easy}`} onClick={() => handleRating('easy', card)} disabled={submitting}>
+              <div className={classes.ratingLabel}>Easy</div>
+              <div className={classes.ratingSub}>7d</div>
+            </button>
+          </div>
         )}
-      </Stack>
+      </div>
     </Container>
   )
 }
