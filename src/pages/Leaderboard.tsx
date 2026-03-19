@@ -4,9 +4,11 @@ import { Container, Title, Tabs, Table, Text, Center, Loader, Badge, Group } fro
 import { leaderboardService, type LeaderboardEntry, type LeaderboardMetric } from '@/services/leaderboardService'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
+import { useT } from '@/hooks/useT'
 import { IconClock, IconBook, IconVocabulary, IconCalendar } from '@tabler/icons-react'
 
 export function Leaderboard() {
+  const T = useT()
   const [activeTab, setActiveTab] = useState<string | null>('total_seconds_spent')
   const [entries, setEntries] = useState<LeaderboardEntry[]>([])
   const [loading, setLoading] = useState(true)
@@ -20,26 +22,27 @@ export function Leaderboard() {
         setEntries(data)
       } catch (err) {
         logError({ page: 'leaderboard', action: 'fetchData', error: err })
-        notifications.show({ color: 'red', title: 'Error', message: 'Failed to load leaderboard. Please try again.' })
+        notifications.show({ color: 'red', title: T.common.error, message: T.leaderboard.failedToLoad })
       } finally {
         setLoading(false)
       }
     }
     fetchData()
-  }, [activeTab])
+  }, [activeTab, T.common.error, T.leaderboard.failedToLoad])
 
   const formatValue = (entry: LeaderboardEntry, metric: string) => {
     switch (metric) {
-      case 'total_seconds_spent':
+      case 'total_seconds_spent': {
         const hours = Math.floor(entry.total_seconds_spent / 3600)
         const mins = Math.floor((entry.total_seconds_spent % 3600) / 60)
-        return `${hours}h ${mins}m`
+        return `${hours}${T.leaderboard.hours} ${mins}m`
+      }
       case 'lessons_completed':
         return entry.lessons_completed
       case 'vocabulary_count':
         return entry.vocabulary_count
       case 'days_active':
-        return `${entry.days_active} days`
+        return `${entry.days_active} ${T.leaderboard.days}`
       default:
         return 0
     }
@@ -49,10 +52,10 @@ export function Leaderboard() {
     <Table mt="md" highlightOnHover withTableBorder>
       <Table.Thead>
         <Table.Tr>
-          <Table.Th w={60}>Rank</Table.Th>
-          <Table.Th>User</Table.Th>
-          <Table.Th>Level</Table.Th>
-          <Table.Th ta="right">Value</Table.Th>
+          <Table.Th w={60}>{T.leaderboard.rank}</Table.Th>
+          <Table.Th>{T.leaderboard.user}</Table.Th>
+          <Table.Th>{T.leaderboard.level}</Table.Th>
+          <Table.Th ta="right">{T.leaderboard.value}</Table.Th>
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
@@ -66,7 +69,7 @@ export function Leaderboard() {
                 {index > 2 && index + 1}
               </Group>
             </Table.Td>
-            <Table.Td fw={500}>{entry.display_name || 'Anonymous'}</Table.Td>
+            <Table.Td fw={500}>{entry.display_name || T.leaderboard.anonymous}</Table.Td>
             <Table.Td>
               <Badge variant="light" size="sm">{entry.current_level}</Badge>
             </Table.Td>
@@ -81,21 +84,21 @@ export function Leaderboard() {
 
   return (
     <Container size="md" pt={14}>
-      <Title order={1} mb="xl">Leaderboard</Title>
+      <Title order={1} mb="xl">{T.leaderboard.title}</Title>
 
       <Tabs value={activeTab} onChange={setActiveTab}>
         <Tabs.List grow>
           <Tabs.Tab value="total_seconds_spent" leftSection={<IconClock size={16} />}>
-            Time Spent
+            {T.leaderboard.timeSpent}
           </Tabs.Tab>
           <Tabs.Tab value="lessons_completed" leftSection={<IconBook size={16} />}>
-            Lessons
+            {T.leaderboard.lessons}
           </Tabs.Tab>
           <Tabs.Tab value="vocabulary_count" leftSection={<IconVocabulary size={16} />}>
-            Words
+            {T.leaderboard.words}
           </Tabs.Tab>
           <Tabs.Tab value="days_active" leftSection={<IconCalendar size={16} />}>
-            Consistency
+            {T.leaderboard.consistency}
           </Tabs.Tab>
         </Tabs.List>
 
@@ -112,10 +115,10 @@ export function Leaderboard() {
           {loading ? <Center h="30vh"><Loader /></Center> : renderTable()}
         </Tabs.Panel>
       </Tabs>
-      
+
       {!loading && entries.length === 0 && (
         <Center h="20vh">
-          <Text c="dimmed">No entries found for this metric yet.</Text>
+          <Text c="dimmed">{T.leaderboard.noEntries}</Text>
         </Center>
       )}
     </Container>

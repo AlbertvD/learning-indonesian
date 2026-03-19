@@ -83,7 +83,7 @@ export function Dashboard() {
         <div className={`${classes.statCard} ${classes.statCardPurple}`}>
           <div className={classes.statLabel}>{T.dashboard.lessonsCompleted}</div>
           <div className={classes.statValue}>{lessonsCompletedCount}</div>
-          <div className={classes.statSub}>of 12 in module 1</div>
+          <div className={classes.statSub}>{T.dashboard.ofModuleOne}</div>
         </div>
         <div className={`${classes.statCard} ${classes.statCardOrange}`}>
           <div className={classes.statLabel}>{T.dashboard.cardsDue}</div>
@@ -95,17 +95,17 @@ export function Dashboard() {
               </span>
             )}
           </div>
-          <div className={classes.statSub}>next due in 2 hours</div>
+          <div className={classes.statSub}>{T.dashboard.nextDueIn2Hours}</div>
         </div>
         <div className={`${classes.statCard} ${classes.statCardTeal}`}>
-          <div className={classes.statLabel}>Day Streak</div>
+          <div className={classes.statLabel}>{T.dashboard.dayStreak}</div>
           <div className={classes.statValue}>7</div>
-          <div className={classes.statSub}>days in a row</div>
+          <div className={classes.statSub}>{T.dashboard.daysInARow}</div>
         </div>
       </div>
 
       <div className={classes.continueSection}>
-        <span className={classes.sectionLabel}>Continue where you left off</span>
+        <span className={classes.sectionLabel}>{T.dashboard.continueWhereYouLeftOff}</span>
         <Link to="/lessons" className={classes.continueCard}>
           <div className={classes.continueIcon}>
             <IconBook size={20} style={{ opacity: 0.7 }} />

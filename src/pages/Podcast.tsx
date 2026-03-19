@@ -8,12 +8,14 @@ import { startSession, endSession } from '@/lib/session'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
+import { useT } from '@/hooks/useT'
 
 export function Podcast() {
   const { podcastId } = useParams<{ podcastId: string }>()
   const navigate = useNavigate()
+  const T = useT()
   const user = useAuthStore((state) => state.user)
-  
+
   const [podcast, setPodcast] = useState<Podcast | null>(null)
   const [loading, setLoading] = useState(true)
   const sessionIdRef = useRef<string | null>(null)
@@ -30,7 +32,7 @@ export function Podcast() {
         sessionIdRef.current = sid
       } catch (err) {
         logError({ page: 'podcast', action: 'fetchData', error: err })
-        notifications.show({ color: 'red', title: 'Failed to load podcast', message: 'Something went wrong. Please try again.' })
+        notifications.show({ color: 'red', title: T.common.error, message: T.podcast.failedToLoad })
       } finally {
         setLoading(false)
       }
@@ -44,7 +46,7 @@ export function Podcast() {
         )
       }
     }
-  }, [podcastId, user])
+  }, [podcastId, user, T.common.error, T.podcast.failedToLoad])
 
   if (loading || !podcast) {
     return (
@@ -61,7 +63,7 @@ export function Podcast() {
       <Stack gap="xl" my="xl">
         <Group justify="space-between">
           <Button variant="subtle" color="gray" leftSection={<IconChevronLeft size={16} />} onClick={() => navigate('/podcasts')}>
-            Back to list
+            {T.podcast.backToList}
           </Button>
         </Group>
 
@@ -74,36 +76,34 @@ export function Podcast() {
             </div>
           </Group>
 
-          <audio 
-            controls 
+          <audio
+            controls
             style={{ width: '100%', marginBottom: '20px' }}
             src={audioUrl}
-          >
-            Your browser does not support the audio element.
-          </audio>
+          />
 
           <Tabs defaultValue="indonesian">
             <Tabs.List>
-              <Tabs.Tab value="indonesian">Indonesian</Tabs.Tab>
-              <Tabs.Tab value="english">English</Tabs.Tab>
-              <Tabs.Tab value="dutch">Dutch</Tabs.Tab>
+              <Tabs.Tab value="indonesian">{T.podcast.transcriptIndonesian}</Tabs.Tab>
+              <Tabs.Tab value="english">{T.podcast.transcriptEnglish}</Tabs.Tab>
+              <Tabs.Tab value="dutch">{T.podcast.transcriptDutch}</Tabs.Tab>
             </Tabs.List>
 
             <Tabs.Panel value="indonesian" pt="md">
               <Text style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
-                {podcast.transcript_indonesian || 'No Indonesian transcript available.'}
+                {podcast.transcript_indonesian || T.podcast.noTranscriptIndonesian}
               </Text>
             </Tabs.Panel>
 
             <Tabs.Panel value="english" pt="md">
               <Text style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
-                {podcast.transcript_english || 'No English transcript available.'}
+                {podcast.transcript_english || T.podcast.noTranscriptEnglish}
               </Text>
             </Tabs.Panel>
 
             <Tabs.Panel value="dutch" pt="md">
               <Text style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
-                {podcast.transcript_dutch || 'No Dutch transcript available.'}
+                {podcast.transcript_dutch || T.podcast.noTranscriptDutch}
               </Text>
             </Tabs.Panel>
           </Tabs>

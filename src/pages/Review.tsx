@@ -118,10 +118,10 @@ export function Review() {
     return (
       <Container size="sm" className={classes.review}>
         <div className={classes.doneCard}>
-          <div className={classes.doneTitle}>All caught up!</div>
-          <div className={classes.doneText}>No cards due for review. Check back later.</div>
+          <div className={classes.doneTitle}>{T.review.allCaughtUp}</div>
+          <div className={classes.doneText}>{T.review.noCardsDue}</div>
           <button className={classes.showBtn} onClick={() => navigate('/cards')}>
-            Browse Card Sets
+            {T.review.browseCardSets}
           </button>
         </div>
       </Container>
@@ -132,14 +132,14 @@ export function Review() {
     return (
       <Container size="sm" className={classes.review}>
         <div className={classes.doneCard}>
-          <div className={classes.doneTitle}>Session Complete!</div>
-          <div className={classes.doneText}>You reviewed {reviewedCount} cards today. Keep it up!</div>
+          <div className={classes.doneTitle}>{T.review.sessionComplete}</div>
+          <div className={classes.doneText}>{T.review.sessionCompleteMsg(reviewedCount)}</div>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
             <button className={classes.showBtn} onClick={() => navigate('/')}>
-              Dashboard
+              {T.review.dashboard}
             </button>
             <button className={`${classes.showBtn}`} style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--text-1)', boxShadow: 'none' }} onClick={() => navigate('/cards')}>
-              Flashcards
+              {T.review.flashcards}
             </button>
           </div>
         </div>
@@ -152,7 +152,7 @@ export function Review() {
   return (
     <Container size="sm" className={classes.review}>
       <div className={classes.reviewHeader}>
-        <div className={classes.reviewTitle}>Daily Review</div>
+        <div className={classes.reviewTitle}>{T.review.dailyReview}</div>
         <div className={classes.reviewProgress}>
           {currentIndex + 1} / {dueCards.length}
         </div>
@@ -164,13 +164,13 @@ export function Review() {
           <div className={classes.cardFace}>
             <div className={classes.setName}>{card.anki_cards.card_sets.name}</div>
             <div className={classes.cardText}>{card.anki_cards.front}</div>
-            <div className={classes.cardTranslation}>Tap to show answer</div>
+            <div className={classes.cardTranslation}>{T.review.tapToShowAnswer}</div>
           </div>
           {/* Back */}
           <div className={`${classes.cardFace} ${classes.cardBack}`}>
             <div className={classes.setName}>{card.anki_cards.card_sets.name}</div>
             <div className={classes.cardText}>{card.anki_cards.back}</div>
-            <div className={classes.cardTranslation}>How well did you know this?</div>
+            <div className={classes.cardTranslation}>{T.review.howWellDidYouKnow}</div>
           </div>
         </div>
       </div>
@@ -178,24 +178,24 @@ export function Review() {
       <div className={classes.actions}>
         {!showAnswer ? (
           <button className={classes.showBtn} onClick={() => setShowAnswer(true)}>
-            Show Answer
+            {T.review.showAnswer}
           </button>
         ) : (
           <div className={classes.ratingGrid}>
             <button className={`${classes.ratingBtn} ${classes.again}`} onClick={() => handleRating('again', card)} disabled={submitting}>
-              <div className={classes.ratingLabel}>Again</div>
+              <div className={classes.ratingLabel}>{T.review.again}</div>
               <div className={classes.ratingSub}>&lt; 1m</div>
             </button>
             <button className={`${classes.ratingBtn} ${classes.hard}`} onClick={() => handleRating('hard', card)} disabled={submitting}>
-              <div className={classes.ratingLabel}>Hard</div>
+              <div className={classes.ratingLabel}>{T.review.hard}</div>
               <div className={classes.ratingSub}>2d</div>
             </button>
             <button className={`${classes.ratingBtn} ${classes.good}`} onClick={() => handleRating('good', card)} disabled={submitting}>
-              <div className={classes.ratingLabel}>Good</div>
+              <div className={classes.ratingLabel}>{T.review.good}</div>
               <div className={classes.ratingSub}>4d</div>
             </button>
             <button className={`${classes.ratingBtn} ${classes.easy}`} onClick={() => handleRating('easy', card)} disabled={submitting}>
-              <div className={classes.ratingLabel}>Easy</div>
+              <div className={classes.ratingLabel}>{T.review.easy}</div>
               <div className={classes.ratingSub}>7d</div>
             </button>
           </div>

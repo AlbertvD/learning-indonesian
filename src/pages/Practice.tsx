@@ -18,6 +18,7 @@ import { supabase } from '@/lib/supabase'
 import { startSession, endSession } from '@/lib/session'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
+import { useT } from '@/hooks/useT'
 
 interface VocabItem {
   id: string
@@ -27,6 +28,7 @@ interface VocabItem {
 }
 
 export function Practice() {
+  const T = useT()
   const user = useAuthStore((state) => state.user)
   const [vocabulary, setVocabulary] = useState<VocabItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -62,8 +64,8 @@ export function Practice() {
         logError({ page: 'practice', action: 'fetchVocabulary', error: err })
         notifications.show({
           color: 'red',
-          title: 'Failed to load vocabulary',
-          message: 'Something went wrong. Please try again.',
+          title: T.common.error,
+          message: T.practice.failedToLoad,
         })
       } finally {
         setLoading(false)
@@ -78,11 +80,10 @@ export function Practice() {
         )
       }
     }
-  }, [user])
+  }, [user, T.common.error, T.practice.failedToLoad])
 
   function pickNextItem(vocab: VocabItem[]) {
     if (vocab.length === 0) return
-    // Reset used indices if all have been used
     if (usedIndicesRef.current.size >= vocab.length) {
       usedIndicesRef.current.clear()
     }
@@ -98,11 +99,11 @@ export function Practice() {
     if (!currentItem || !answer.trim()) return
     const correct_answer = currentItem.english.trim().toLowerCase()
     const user_answer = answer.trim().toLowerCase()
-    const correct = user_answer === correct_answer
-    setIsCorrect(correct)
+    const isRight = user_answer === correct_answer
+    setIsCorrect(isRight)
     setSubmitted(true)
     setTotal((t) => t + 1)
-    if (correct) setCorrect((c) => c + 1)
+    if (isRight) setCorrect((c) => c + 1)
   }
 
   function handleNext() {
@@ -125,8 +126,8 @@ export function Practice() {
       <Container size="sm">
         <Center h="50vh">
           <Stack align="center" gap="md">
-            <Title order={2}>No vocabulary available yet</Title>
-            <Text c="dimmed">Check back after lessons have been added.</Text>
+            <Title order={2}>{T.practice.noVocabulary}</Title>
+            <Text c="dimmed">{T.practice.noVocabularyMsg}</Text>
           </Stack>
         </Center>
       </Container>
@@ -137,10 +138,10 @@ export function Practice() {
     <Container size="sm">
       <Stack gap="xl" my="xl">
         <Group justify="space-between" align="center">
-          <Title order={2}>Vocabulary Practice</Title>
+          <Title order={2}>{T.practice.title}</Title>
           {total > 0 && (
             <Badge color="blue" size="lg">
-              {correct} / {total} correct
+              {T.practice.score(correct, total)}
             </Badge>
           )}
         </Group>
@@ -150,14 +151,14 @@ export function Practice() {
             <Stack gap="lg">
               <Stack gap="xs" align="center">
                 <Text size="sm" c="dimmed" tt="uppercase" fw={500}>
-                  Translate to English
+                  {T.practice.translateToEnglish}
                 </Text>
                 <Title order={2}>{currentItem.indonesian}</Title>
               </Stack>
 
               <TextInput
-                label="Your answer"
-                placeholder="Type the English translation..."
+                label={T.practice.yourAnswer}
+                placeholder={T.practice.typeTranslation}
                 value={answer}
                 onChange={(e) => setAnswer(e.currentTarget.value)}
                 onKeyDown={(e) => {
@@ -165,11 +166,7 @@ export function Practice() {
                   if (e.key === 'Enter' && submitted) handleNext()
                 }}
                 disabled={submitted}
-                error={
-                  submitted && !isCorrect
-                    ? `Correct answer: ${currentItem.english}`
-                    : undefined
-                }
+                error={submitted && !isCorrect ? T.practice.correctAnswer(currentItem.english) : undefined}
                 styles={
                   submitted && isCorrect
                     ? { input: { borderColor: 'var(--mantine-color-green-6)', color: 'var(--mantine-color-green-7)' } }
@@ -178,22 +175,18 @@ export function Practice() {
               />
 
               {submitted && (
-                <Text
-                  fw={600}
-                  c={isCorrect ? 'green' : 'red'}
-                  ta="center"
-                >
-                  {isCorrect ? 'Correct!' : `Incorrect — the answer is: ${currentItem.english}`}
+                <Text fw={600} c={isCorrect ? 'green' : 'red'} ta="center">
+                  {isCorrect ? T.practice.correct : T.practice.incorrect(currentItem.english)}
                 </Text>
               )}
 
               <Group justify="center">
                 {!submitted ? (
                   <Button onClick={handleSubmit} disabled={!answer.trim()}>
-                    Check Answer
+                    {T.practice.checkAnswer}
                   </Button>
                 ) : (
-                  <Button onClick={handleNext}>Next</Button>
+                  <Button onClick={handleNext}>{T.practice.next}</Button>
                 )}
               </Group>
             </Stack>

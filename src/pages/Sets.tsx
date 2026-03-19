@@ -28,7 +28,7 @@ export function Sets() {
       description: '',
     },
     validate: {
-      name: (value) => (value.length < 2 ? 'Name is too short' : null),
+      name: (value) => (value.length < 2 ? T.sets.nameTooShort : null),
     },
   })
 
@@ -51,10 +51,10 @@ export function Sets() {
   return (
     <Container size="lg" className={classes.sets}>
       <div className={classes.header}>
-        <div className={classes.displaySm}>Card Sets</div>
+        <div className={classes.displaySm}>{T.sets.title}</div>
         <button className={classes.btn} onClick={() => setModalOpened(true)}>
           <IconPlus size={15} />
-          Create set
+          {T.sets.createSet}
         </button>
       </div>
 
@@ -79,28 +79,28 @@ export function Sets() {
       {cardSets.length === 0 && !loading && (
         <Center h="20vh">
           <Stack align="center" gap="xs">
-            <div className={classes.setDescription}>No card sets found.</div>
-            <button className={classes.btn} onClick={() => setModalOpened(true)}>Create your first set</button>
+            <div className={classes.setDescription}>{T.sets.noSetsFound}</div>
+            <button className={classes.btn} onClick={() => setModalOpened(true)}>{T.sets.createFirstSet}</button>
           </Stack>
         </Center>
       )}
 
-      <Modal opened={modalOpened} onClose={() => setModalOpened(false)} title="Create New Card Set" radius="lg">
+      <Modal opened={modalOpened} onClose={() => setModalOpened(false)} title={T.sets.createNew} radius="lg">
         <form onSubmit={form.onSubmit(handleCreate)}>
           <TextInput
-            label="Name"
-            placeholder="Common phrases"
+            label={T.sets.name}
+            placeholder={T.sets.namePlaceholder}
             required
             {...form.getInputProps('name')}
           />
           <Textarea
-            label="Description"
-            placeholder="Basic vocabulary for daily life"
+            label={T.sets.description}
+            placeholder={T.sets.descriptionPlaceholder}
             mt="md"
             {...form.getInputProps('description')}
           />
           <button className={classes.btn} style={{ width: '100%', marginTop: 24, height: 44 }} type="submit" disabled={creating}>
-            {creating ? 'Creating...' : 'Create Set'}
+            {creating ? T.sets.creating : T.sets.createSet}
           </button>
         </form>
       </Modal>

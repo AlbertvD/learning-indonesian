@@ -7,12 +7,14 @@ import { cardService } from '@/services/cardService'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
+import { useT } from '@/hooks/useT'
 import { ShareCardSetModal } from '@/components/ShareCardSetModal'
 import type { AnkiCard, CardSet } from '@/types/cards'
 
 export function Set() {
   const { setId } = useParams<{ setId: string }>()
   const navigate = useNavigate()
+  const T = useT()
   const user = useAuthStore((state) => state.user)
   const profile = useAuthStore((state) => state.profile)
 
@@ -35,18 +37,18 @@ export function Set() {
           setSet(currentSet)
           setCards(fetchedCards)
         } else {
-          notifications.show({ color: 'red', title: 'Error', message: 'Card set not found or access denied' })
+          notifications.show({ color: 'red', title: T.common.error, message: T.sets.notFound })
           navigate('/sets')
         }
       } catch (err) {
         logError({ page: 'set', action: 'fetchData', error: err })
-        notifications.show({ color: 'red', title: 'Error', message: 'Failed to load card set' })
+        notifications.show({ color: 'red', title: T.common.error, message: T.sets.failedToLoad })
       } finally {
         setLoading(false)
       }
     }
     fetchData()
-  }, [setId])
+  }, [setId, navigate, T.common.error, T.sets.notFound, T.sets.failedToLoad])
 
   const handleStudy = async () => {
     if (!user || cards.length === 0) return
@@ -56,7 +58,7 @@ export function Set() {
       navigate('/review')
     } catch (err) {
       logError({ page: 'set', action: 'study', error: err })
-      notifications.show({ color: 'red', title: 'Error', message: 'Failed to start study session. Please try again.' })
+      notifications.show({ color: 'red', title: T.common.error, message: T.sets.failedToStudy })
       setStudying(false)
     }
   }
@@ -67,10 +69,10 @@ export function Set() {
     try {
       await cardService.updateCardSetVisibility(set.id, newVisibility)
       setSet({ ...set, visibility: newVisibility })
-      notifications.show({ color: 'green', title: 'Success', message: `Visibility updated to ${newVisibility}` })
+      notifications.show({ color: 'green', title: T.sets.shared, message: T.sets.visibilityUpdated(newVisibility) })
     } catch (err) {
       logError({ page: 'set', action: 'updateVisibility', error: err })
-      notifications.show({ color: 'red', title: 'Error', message: 'Failed to update visibility' })
+      notifications.show({ color: 'red', title: T.common.error, message: T.sets.failedToUpdateVisibility })
     }
   }
 
@@ -91,12 +93,12 @@ export function Set() {
       <Stack gap="xl">
         <Group justify="space-between">
           <Button variant="subtle" color="gray" leftSection={<IconChevronLeft size={16} />} onClick={() => navigate('/sets')}>
-            Back to sets
+            {T.sets.backToSets}
           </Button>
           <Group gap="sm">
             {isOwner && !isPublic && (
               <Button variant="light" leftSection={<IconShare size={16} />} onClick={() => setShareModalOpened(true)}>
-                Share
+                {T.sets.share}
               </Button>
             )}
             <Button
@@ -105,7 +107,7 @@ export function Set() {
               loading={studying}
               disabled={cards.length === 0}
             >
-              Study
+              {T.sets.study}
             </Button>
           </Group>
         </Group>
@@ -114,25 +116,25 @@ export function Set() {
           <Group justify="space-between" mb="md" align="flex-start">
             <div>
               <Title order={2}>{set.name}</Title>
-              <Text c="dimmed" mt="xs">{set.description || 'No description provided.'}</Text>
+              <Text c="dimmed" mt="xs">{set.description || T.sets.noDescription}</Text>
             </div>
             {!isPublic && (
               <Badge size="lg" variant="light" color={set.visibility === 'shared' ? 'blue' : 'gray'}>
-                {set.visibility}
+                {set.visibility === 'private' ? T.sets.private : set.visibility === 'shared' ? T.sets.shared : T.sets.public}
               </Badge>
             )}
           </Group>
 
           {isOwner && !isPublic && (
             <Group mt="xl">
-              <Text size="sm" fw={500}>Set Visibility:</Text>
+              <Text size="sm" fw={500}>{T.sets.setVisibility}</Text>
               <SegmentedControl
                 value={set.visibility}
                 onChange={handleVisibilityChange}
                 data={[
-                  { label: 'Private', value: 'private' },
-                  { label: 'Shared', value: 'shared' },
-                  { label: 'Public', value: 'public' },
+                  { label: T.sets.private, value: 'private' },
+                  { label: T.sets.shared, value: 'shared' },
+                  { label: T.sets.public, value: 'public' },
                 ]}
               />
             </Group>
@@ -140,23 +142,23 @@ export function Set() {
         </Paper>
 
         <Group justify="space-between">
-          <Title order={3}>Cards ({cards.length})</Title>
+          <Title order={3}>{T.sets.cards(cards.length)}</Title>
           {isOwner && !isPublic && (
-            <Button leftSection={<IconPlus size={16} />} variant="outline">Add Card</Button>
+            <Button leftSection={<IconPlus size={16} />} variant="outline">{T.sets.addCard}</Button>
           )}
         </Group>
 
         {cards.length === 0 ? (
           <Center h={100} style={{ border: '1px dashed #373A40', borderRadius: '8px' }}>
-            <Text c="dimmed">No cards in this set yet.</Text>
+            <Text c="dimmed">{T.sets.noCards}</Text>
           </Center>
         ) : (
           <Table striped highlightOnHover withTableBorder withColumnBorders>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th style={{ textAlign: 'left' }}>Indonesisch</Table.Th>
+                <Table.Th style={{ textAlign: 'left' }}>{T.sets.indonesian}</Table.Th>
                 <Table.Th style={{ textAlign: 'left' }}>
-                  {lang === 'nl' ? 'Nederlands' : 'English'}
+                  {lang === 'nl' ? T.sets.dutch : T.sets.english}
                 </Table.Th>
               </Table.Tr>
             </Table.Thead>

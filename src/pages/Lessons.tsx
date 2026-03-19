@@ -56,7 +56,7 @@ export function Lessons() {
         <div>
           <div className={classes.displaySm}>{T.nav.lessons}</div>
           <div className={classes.bodySm} style={{ marginTop: 6 }}>
-            Module 1 · A1 Beginner · {lessons.length} lessons
+            Module 1 · A1 Beginner · {lessons.length} {T.lessons.lessonsCount}
           </div>
         </div>
         <span className={`${classes.badge} ${classes.badgeGreen}`}>
@@ -81,7 +81,7 @@ export function Lessons() {
                     <span className={`${classes.badge} ${classes.badgeGreen}`}>{T.lessons.completed}</span>
                   )}
                   <span className={classes.lessonSections}>
-                    {lesson.lesson_sections?.length || 0} sections
+                    {lesson.lesson_sections?.length || 0} {T.lessons.sections}
                   </span>
                 </div>
               </div>

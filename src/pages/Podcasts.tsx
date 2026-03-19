@@ -48,7 +48,7 @@ export function Podcasts() {
     <Container size="lg" className={classes.podcasts}>
       <div className={classes.header}>
         <div className={classes.displaySm}>{T.nav.podcasts}</div>
-        <div className={classes.bodySm}>{podcasts.length} episodes</div>
+        <div className={classes.bodySm}>{T.podcast.episodes(podcasts.length)}</div>
       </div>
 
       <div className={classes.podcastList}>
@@ -76,7 +76,7 @@ export function Podcasts() {
 
         {podcasts.length === 0 && (
           <Center h="20vh">
-            <div className={classes.bodySm}>No podcasts available yet.</div>
+            <div className={classes.bodySm}>{T.podcast.noPodcasts}</div>
           </Center>
         )}
       </div>
