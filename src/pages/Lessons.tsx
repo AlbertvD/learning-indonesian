@@ -74,20 +74,20 @@ export function Lessons() {
               className={`${classes.lessonCard} ${done ? classes.done : ''}`}
             >
               <div className={classes.lessonNum}>{String(i + 1).padStart(2, '0')}</div>
-              <div className={classes.lessonTitle}>{lesson.title}</div>
-              <div className={classes.lessonSubtitle}>{lesson.description || 'Interactive Indonesian lesson'}</div>
-              <div className={classes.lessonMeta}>
-                <span className={`${classes.badge} ${classes.badgePurple}`}>{lesson.level}</span>
-                {done && (
-                  <span className={`${classes.badge} ${classes.badgeGreen}`}>{T.lessons.completed}</span>
-                )}
-                <span className={classes.lessonSections}>
-                  {lesson.lesson_sections?.length || 0} sections
-                </span>
-                <span className={classes.lessonArrow}>
-                  <IconChevronRight size={15} />
-                </span>
+              <div className={classes.lessonInfo}>
+                <div className={classes.lessonTitle}>{lesson.title}</div>
+                <div className={classes.lessonSubtitle}>{lesson.description || 'Interactive Indonesian lesson'}</div>
+                <div className={classes.lessonMeta}>
+                  <span className={`${classes.badge} ${classes.badgePurple}`}>{lesson.level}</span>
+                  {done && (
+                    <span className={`${classes.badge} ${classes.badgeGreen}`}>{T.lessons.completed}</span>
+                  )}
+                  <span className={classes.lessonSections}>
+                    {lesson.lesson_sections?.length || 0} sections
+                  </span>
+                </div>
               </div>
+              <span className={classes.lessonArrow}><IconChevronRight size={15} /></span>
             </Link>
           )
         })}

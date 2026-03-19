@@ -5,7 +5,7 @@ import { useForm } from '@mantine/form'
 import { Link } from 'react-router-dom'
 import { useCardStore } from '@/stores/cardStore'
 import { useAuthStore } from '@/stores/authStore'
-import { IconPlus } from '@tabler/icons-react'
+import { IconPlus, IconChevronRight, IconCards } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
@@ -64,13 +64,19 @@ export function Sets() {
         <div className={classes.setGrid}>
           {cardSets.map((set) => (
             <Link key={set.id} to={`/sets/${set.id}`} className={classes.setCard}>
-              <div className={classes.setName}>{set.name}</div>
-              <div className={classes.setDescription}>
-                {set.description || 'No description provided.'}
+              <div className={classes.setIcon}>
+                <IconCards size={16} />
               </div>
-              <div className={`${classes.badge} ${classes.badgeGray}`}>
-                {set.visibility}
+              <div className={classes.setInfo}>
+                <div className={classes.setName}>{set.name}</div>
+                <div className={classes.setDescription}>
+                  {set.description || 'No description provided.'}
+                </div>
+                <div className={classes.setMeta}>
+                  <span className={`${classes.badge} ${classes.badgeGray}`}>{set.visibility}</span>
+                </div>
               </div>
+              <span className={classes.setArrow}><IconChevronRight size={15} /></span>
             </Link>
           ))}
         </div>
