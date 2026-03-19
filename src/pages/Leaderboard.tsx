@@ -80,7 +80,7 @@ export function Leaderboard() {
   )
 
   return (
-    <Container size="md">
+    <Container size="md" pt={14}>
       <Title order={1} mb="xl">Leaderboard</Title>
 
       <Tabs value={activeTab} onChange={setActiveTab}>
