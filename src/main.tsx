@@ -12,8 +12,11 @@ import '@mantine/notifications/styles.css'
 import './index.css'
 
 const theme = createTheme({
-  primaryColor: 'blue',
+  primaryColor: 'violet',
   defaultRadius: 'md',
+  fontFamily: "'Open Sans', system-ui, sans-serif",
+  fontFamilyMonospace: "'Courier New', monospace",
+  headings: { fontFamily: "'Poppins', system-ui, sans-serif" },
 })
 
 const colorSchemeManager = localStorageColorSchemeManager({ key: 'indonesian-color-scheme' })
