@@ -8,9 +8,11 @@ import { useAuthStore } from '@/stores/authStore'
 import { IconPlus } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
 import { logError } from '@/lib/logger'
+import { useT } from '@/hooks/useT'
 import classes from './Sets.module.css'
 
 export function Sets() {
+  const T = useT()
   const { cardSets, fetchCardSets, addCardSet, loading } = useCardStore()
   const user = useAuthStore((state) => state.user)
   const [modalOpened, setModalOpened] = useState(false)
@@ -35,12 +37,12 @@ export function Sets() {
     setCreating(true)
     try {
       await addCardSet(values.name, values.description, user.id)
-      notifications.show({ color: 'green', title: 'Success', message: 'Card set created' })
+      notifications.show({ color: 'green', title: T.sets.created, message: T.sets.createSuccess })
       setModalOpened(false)
       form.reset()
     } catch (err) {
       logError({ page: 'sets', action: 'createCardSet', error: err })
-      notifications.show({ color: 'red', title: 'Error', message: 'Failed to create card set' })
+      notifications.show({ color: 'red', title: T.sets.createFailed, message: T.sets.createError })
     } finally {
       setCreating(false)
     }

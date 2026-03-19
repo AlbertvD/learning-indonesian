@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Container, Center, Loader } from '@mantine/core'
-import { IconChevronLeft, IconChevronRight, IconCheck, IconPlayerPlay } from '@tabler/icons-react'
+import { IconChevronLeft, IconChevronRight, IconCheck, IconPlayerPlay, IconPlayerPause } from '@tabler/icons-react'
 import { lessonService, type Lesson } from '@/services/lessonService'
 import { progressService } from '@/services/progressService'
 import { startSession, endSession } from '@/lib/session'
@@ -292,7 +292,7 @@ export function Lesson() {
       {audioUrl && (
         <div className={classes.audioPlayer}>
           <button className={classes.audioPlayBtn} onClick={togglePlay}>
-            {isPlaying ? <IconCheck size={13} /> : <IconPlayerPlay size={13} />}
+            {isPlaying ? <IconPlayerPause size={13} /> : <IconPlayerPlay size={13} />}
           </button>
           <div style={{ flex: 1 }}>
             <div className={classes.audioTitle}>{lesson.title}</div>

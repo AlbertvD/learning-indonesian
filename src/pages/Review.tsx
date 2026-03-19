@@ -13,11 +13,13 @@ import { cardService } from '@/services/cardService'
 import { useCardStore } from '@/stores/cardStore'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
+import { useT } from '@/hooks/useT'
 import type { DueCard } from '@/types/cards'
 import classes from './Review.module.css'
 
 export function Review() {
   const navigate = useNavigate()
+  const T = useT()
   const user = useAuthStore((state) => state.user)
   const { dueCards, fetchDueCards } = useCardStore()
 
@@ -42,8 +44,8 @@ export function Review() {
         logError({ page: 'review', action: 'init', error: err })
         notifications.show({
           color: 'red',
-          title: 'Failed to load review',
-          message: 'Something went wrong. Please try again.',
+          title: T.common.error,
+          message: T.common.somethingWentWrong,
         })
       } finally {
         setLoading(false)
@@ -96,8 +98,8 @@ export function Review() {
       logError({ page: 'review', action: 'submitCard', error: err })
       notifications.show({
         color: 'red',
-        title: 'Failed to save review',
-        message: 'Something went wrong. Please try again.',
+        title: T.common.error,
+        message: T.common.somethingWentWrong,
       })
     } finally {
       setSubmitting(false)

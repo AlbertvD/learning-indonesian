@@ -99,6 +99,12 @@ export const nl = {
     error: 'Fout',
     somethingWentWrong: 'Er ging iets mis. Probeer het opnieuw.',
   },
+  sets: {
+    created: 'Kaartset aangemaakt',
+    createSuccess: 'De kaartset is aangemaakt.',
+    createFailed: 'Kaartset aanmaken mislukt',
+    createError: 'De kaartset kon niet worden aangemaakt. Probeer het opnieuw.',
+  },
 }
 
 export const en: typeof nl = {
@@ -198,6 +204,12 @@ export const en: typeof nl = {
     loading: 'Loading...',
     error: 'Error',
     somethingWentWrong: 'Something went wrong. Please try again.',
+  },
+  sets: {
+    created: 'Card set created',
+    createSuccess: 'The card set has been created.',
+    createFailed: 'Failed to create card set',
+    createError: 'The card set could not be created. Please try again.',
   },
 }
 
