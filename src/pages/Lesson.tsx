@@ -1,23 +1,23 @@
 // src/pages/Lesson.tsx
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Container, Title, Text, Button, Paper, Group, Progress, Stack, Center, Loader, Table, List, Badge, Divider } from '@mantine/core'
-import { IconChevronLeft, IconChevronRight, IconCheck, IconMicrophone } from '@tabler/icons-react'
+import { Container, Center, Loader } from '@mantine/core'
+import { IconChevronLeft, IconChevronRight, IconCheck, IconPlayerPlay } from '@tabler/icons-react'
 import { lessonService, type Lesson } from '@/services/lessonService'
 import { progressService } from '@/services/progressService'
 import { startSession, endSession } from '@/lib/session'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
+import { useT } from '@/hooks/useT'
+import classes from './Lesson.module.css'
 
 type ExerciseItem = { dutch?: string; indonesian?: string }
 type PhoneticExample = { indonesian: string; phonetic: string; dutch: string }
 type SpellingRule = { rule: string; example: string; dutch: string }
 type SimpleSentence = { indonesian: string; dutch: string }
 type GrammarCategory = { title: string; rules: string[] }
-type DialogueLine = { speaker: string; text: string }
-
-import { useT } from '@/hooks/useT'
+type DialogueLine = { speaker: string; text: string; translation?: string }
 
 type SectionContentData =
   | { type: 'exercises'; items: ExerciseItem[] }
@@ -30,142 +30,127 @@ function SectionContent({ content }: { content: unknown }) {
   const T = useT()
 
   if (data?.type === 'exercises' && Array.isArray(data.items)) {
-    const hasDutch = data.items.some((i) => i.dutch)
-    const hasIndonesian = data.items.some((i) => i.indonesian)
     return (
-      <Table striped highlightOnHover withTableBorder withColumnBorders>
-        <Table.Thead>
-          <Table.Tr>
-            {hasDutch && <Table.Th>{T.lessons.dutch}</Table.Th>}
-            {hasIndonesian && <Table.Th>{T.lessons.indonesian}</Table.Th>}
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
+      <div className={classes.contentCard}>
+        <div className={classes.phraseList}>
           {data.items.map((item, i) => (
-            <Table.Tr key={i}>
-              {hasDutch && <Table.Td>{item.dutch ?? ''}</Table.Td>}
-              {hasIndonesian && <Table.Td>{item.indonesian ?? ''}</Table.Td>}
-            </Table.Tr>
+            <div key={i} className={classes.phraseRow}>
+              <div>
+                <div className={classes.phraseIndo}>{item.indonesian}</div>
+              </div>
+              <div className={classes.phraseDutch}>{item.dutch}</div>
+            </div>
           ))}
-        </Table.Tbody>
-      </Table>
+        </div>
+      </div>
     )
   }
 
   if (data?.type === 'text') {
     return (
-      <Stack gap="lg">
-        {data.intro && <Text>{data.intro}</Text>}
+      <>
+        {data.intro && <div className={classes.lessonIntro}>{data.intro}</div>}
+        
         {data.examples && data.examples.length > 0 && (
-          <Stack gap="xs">
-            <Text fw={600}>{T.lessons.examples}</Text>
-            <Table withTableBorder withColumnBorders>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>{T.lessons.indonesian}</Table.Th>
-                  <Table.Th>{T.lessons.phonetic}</Table.Th>
-                  <Table.Th>{T.lessons.dutch}</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
+          <>
+            <div className={classes.contentSectionLabel}>{T.lessons.examples}</div>
+            <div className={classes.contentCard} style={{ marginBottom: 32 }}>
+              <div className={classes.phraseList}>
                 {data.examples.map((ex, i) => (
-                  <Table.Tr key={i}>
-                    <Table.Td fw={500}>{ex.indonesian}</Table.Td>
-                    <Table.Td c="dimmed">{ex.phonetic}</Table.Td>
-                    <Table.Td>{ex.dutch}</Table.Td>
-                  </Table.Tr>
+                  <div key={i} className={classes.phraseRow}>
+                    <div>
+                      <div className={classes.phraseIndo}>{ex.indonesian}</div>
+                      <div className={classes.phrasePhonetic}>{ex.phonetic}</div>
+                    </div>
+                    <div className={classes.phraseDutch}>{ex.dutch}</div>
+                  </div>
                 ))}
-              </Table.Tbody>
-            </Table>
-          </Stack>
+              </div>
+            </div>
+          </>
         )}
+
         {data.spelling && data.spelling.length > 0 && (
-          <Stack gap="xs">
-            <Text fw={600}>{T.lessons.spelling}</Text>
-            <Table withTableBorder withColumnBorders>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>{T.lessons.rule}</Table.Th>
-                  <Table.Th>{T.lessons.example}</Table.Th>
-                  <Table.Th>{T.lessons.dutch}</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {data.spelling.map((s, i) => (
-                  <Table.Tr key={i}>
-                    <Table.Td fw={600}>{s.rule}</Table.Td>
-                    <Table.Td>{s.example}</Table.Td>
-                    <Table.Td>{s.dutch}</Table.Td>
-                  </Table.Tr>
-                ))}
-              </Table.Tbody>
-            </Table>
-          </Stack>
+          <>
+            <div className={classes.contentSectionLabel}>{T.lessons.spelling}</div>
+            <div className={classes.spellingGrid} style={{ marginBottom: 32 }}>
+              {data.spelling.map((s, i) => (
+                <div key={i} className={classes.spellingChip}>
+                  <div className={classes.spellingRule}>{s.rule}</div>
+                  <div className={classes.spellingExample}>{s.example}</div>
+                  <div className={classes.spellingMeaning}>{s.dutch}</div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
+
         {data.sentences && data.sentences.length > 0 && (
-          <Stack gap="xs">
-            <Text fw={600}>{T.lessons.simpleSentences}</Text>
-            <Table withTableBorder withColumnBorders>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>{T.lessons.indonesian}</Table.Th>
-                  <Table.Th>{T.lessons.dutch}</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
+          <>
+            <div className={classes.contentSectionLabel}>{T.lessons.simpleSentences}</div>
+            <div className={classes.contentCard}>
+              <div className={classes.sentenceList}>
                 {data.sentences.map((s, i) => (
-                  <Table.Tr key={i}>
-                    <Table.Td fw={500}>{s.indonesian}</Table.Td>
-                    <Table.Td>{s.dutch}</Table.Td>
-                  </Table.Tr>
+                  <div key={i} className={classes.sentenceRow}>
+                    <div className={classes.sentenceIndo}>{s.indonesian}</div>
+                    <div className={classes.sentenceDutch}>{s.dutch}</div>
+                  </div>
                 ))}
-              </Table.Tbody>
-            </Table>
-          </Stack>
+              </div>
+            </div>
+          </>
         )}
-      </Stack>
+      </>
     )
   }
 
   if (data?.type === 'grammar' && Array.isArray(data.categories)) {
     return (
-      <Stack gap="lg">
-        {data.intro && <Text>{data.intro}</Text>}
-        {data.categories.map((cat, i) => (
-          <Stack key={i} gap="xs">
-            {i > 0 && <Divider />}
-            <Text fw={600} size="lg">{cat.title}</Text>
-            <List spacing="xs">
-              {cat.rules.map((rule, j) => (
-                <List.Item key={j}>{rule}</List.Item>
-              ))}
-            </List>
-          </Stack>
-        ))}
-      </Stack>
+      <>
+        {data.intro && <div className={classes.lessonIntro}>{data.intro}</div>}
+        <div className={`${classes.contentCard} ${classes.grammarCard}`} style={{ padding: '26px 28px' }}>
+          {data.categories.map((cat, i) => (
+            <div key={i} className={classes.grammarCategory}>
+              <div className={classes.grammarTitle}>{cat.title}</div>
+              <div className={classes.grammarRules}>
+                {cat.rules.map((rule, j) => (
+                  <div key={j} className={classes.grammarRule}>{rule}</div>
+                ))}
+              </div>
+              {i < data.categories.length - 1 && <div className={classes.divider} />}
+            </div>
+          ))}
+        </div>
+      </>
     )
   }
 
   if (data?.type === 'dialogue' && Array.isArray(data.lines)) {
     return (
-      <Stack gap="md">
+      <div className={`${classes.contentCard}`} style={{ padding: '26px 28px' }}>
         {data.setup && (
-          <Text fs="italic" c="dimmed">{data.setup}</Text>
+          <div className={classes.dialogueSetup}>{data.setup}</div>
         )}
-        {data.lines.map((line, i) => (
-          <Group key={i} align="flex-start" gap="sm">
-            <Badge variant="light" miw={80} ta="center">{line.speaker}</Badge>
-            <Text style={{ flex: 1 }}>{line.text}</Text>
-          </Group>
-        ))}
-      </Stack>
+        <div className={classes.dialogueLines}>
+          {data.lines.map((line, i) => (
+            <div key={i} className={classes.dialogueLine}>
+              <div className={classes.dialogueSpeaker}>{line.speaker}</div>
+              <div>
+                <div className={classes.dialogueText}>{line.text}</div>
+                <div className={classes.dialogueTranslation}>{line.translation}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     )
   }
 
   return (
-    <Text size="lg" style={{ whiteSpace: 'pre-wrap' }}>
+    <div className={classes.bodySm} style={{ whiteSpace: 'pre-wrap' }}>
+      {/* Fallback for unknown content types */}
       {typeof content === 'string' ? content : JSON.stringify(content, null, 2)}
-    </Text>
+    </div>
   )
 }
 
@@ -180,6 +165,8 @@ export function Lesson() {
   const [loading, setLoading] = useState(true)
   const sessionIdRef = useRef<string | null>(null)
   const [completedSections, setCompletedSections] = useState<string[]>([])
+  const audioRef = useRef<HTMLAudioElement>(null)
+  const [isPlaying, setIsPlaying] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
@@ -221,7 +208,7 @@ export function Lesson() {
         )
       }
     }
-  }, [lessonId, user])
+  }, [lessonId, user, T.common.error, T.lessons.failedToLoadLesson])
 
   const handleNext = async () => {
     if (!lesson || !user) return
@@ -260,70 +247,91 @@ export function Lesson() {
     }
   }
 
+  const togglePlay = () => {
+    if (!audioRef.current) return
+    if (isPlaying) {
+      audioRef.current.pause()
+    } else {
+      audioRef.current.play()
+    }
+    setIsPlaying(!isPlaying)
+  }
+
   if (loading || !lesson) {
     return (
       <Center h="50vh">
-        <Loader size="xl" />
+        <Loader size="xl" color="violet" />
       </Center>
     )
   }
 
   const currentSection = lesson.lesson_sections[currentSectionIndex]
-  const progress = ((currentSectionIndex + 1) / lesson.lesson_sections.length) * 100
   const audioUrl = lesson.audio_path ? lessonService.getAudioUrl(lesson.audio_path) : null
 
   return (
-    <Container size="md">
-      <Stack gap="xl" my="xl">
-        <Group justify="space-between">
-          <Button variant="subtle" color="gray" leftSection={<IconChevronLeft size={16} />} onClick={() => navigate('/lessons')}>
-            {T.lessons.backToList}
-          </Button>
-          <Text size="sm" fw={500} c="dimmed">
-            {T.lessons.section} {currentSectionIndex + 1} {T.lessons.of} {lesson.lesson_sections.length}
-          </Text>
-        </Group>
-
-        <Progress value={progress} size="sm" radius="xl" animated />
-
-        {audioUrl && (
-          <Paper withBorder p="md" radius="md">
-            <Group gap="sm">
-              <IconMicrophone size={18} />
-              <Text fw={500} size="sm" style={{ flex: 1 }}>{lesson.title}</Text>
-            </Group>
-            <audio controls style={{ width: '100%', marginTop: '8px' }} src={audioUrl}>
-              Your browser does not support the audio element.
-            </audio>
-          </Paper>
-        )}
-
-        <Paper withBorder p="xl" radius="md" shadow="sm">
-          <Title order={2} mb="lg">{currentSection.title}</Title>
-          <div style={{ minHeight: '200px' }}>
-            <SectionContent content={currentSection.content} />
+    <Container size="md" className={classes.lesson}>
+      {/* Back + progress — inline, no bar */}
+      <div className={classes.lessonSubnav}>
+        <button className={`${classes.btn} ${classes.btnGhost}`} style={{ paddingLeft: 2, color: 'var(--text-3)' }} onClick={() => navigate('/lessons')}>
+          <IconChevronLeft size={15} />
+          {lesson.title}
+        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div className={classes.progressDots}>
+            {lesson.lesson_sections.map((_, i) => (
+              <div 
+                key={i} 
+                className={`${classes.dot} ${i < currentSectionIndex ? classes.dotDone : ''} ${i === currentSectionIndex ? classes.dotCurr : ''}`} 
+              />
+            ))}
           </div>
-        </Paper>
+          <span className={classes.caption}>{currentSectionIndex + 1} {T.lessons.of} {lesson.lesson_sections.length}</span>
+        </div>
+      </div>
 
-        <Group justify="space-between">
-          <Button 
-            variant="light" 
-            onClick={handleBack} 
-            disabled={currentSectionIndex === 0}
-            leftSection={<IconChevronLeft size={16} />}
-          >
-            {T.lessons.previous}
-          </Button>
-          <Button 
-            size="lg"
-            onClick={handleNext}
-            rightSection={currentSectionIndex === lesson.lesson_sections.length - 1 ? <IconCheck size={16} /> : <IconChevronRight size={16} />}
-            color={currentSectionIndex === lesson.lesson_sections.length - 1 ? 'green' : 'blue'}
-          >
-            {currentSectionIndex === lesson.lesson_sections.length - 1 ? T.lessons.finishLesson : T.lessons.nextSection}
-          </Button>
-        </Group>
-      </Stack>
+      {audioUrl && (
+        <div className={classes.audioPlayer}>
+          <button className={classes.audioPlayBtn} onClick={togglePlay}>
+            {isPlaying ? <IconCheck size={13} /> : <IconPlayerPlay size={13} />}
+          </button>
+          <div style={{ flex: 1 }}>
+            <div className={classes.audioTitle}>{lesson.title}</div>
+            <div className={classes.audioProgress}>
+              <div className={classes.audioProgressFill} style={{ width: '0%' }} />
+            </div>
+            {/* hidden native audio */}
+            <audio ref={audioRef} src={audioUrl} onEnded={() => setIsPlaying(false)} style={{ display: 'none' }} />
+          </div>
+        </div>
+      )}
+
+      <div className={classes.sectionHeader} style={{ marginBottom: 24 }}>
+        <span className={classes.label}>{T.lessons.section} {currentSectionIndex + 1}</span>
+        <div className={classes.displaySm}>{currentSection.title}</div>
+      </div>
+
+      <div style={{ minHeight: '200px', marginBottom: 40 }}>
+        <SectionContent content={currentSection.content} />
+      </div>
+
+      <div className={classes.lessonNav}>
+        <button 
+          className={`${classes.btn} ${classes.btnGhost}`} 
+          onClick={handleBack} 
+          disabled={currentSectionIndex === 0}
+          style={{ opacity: currentSectionIndex === 0 ? 0.3 : 1 }}
+        >
+          <IconChevronLeft size={16} />
+          {T.lessons.previous}
+        </button>
+        <button 
+          className={`${classes.btn} ${classes.btnPrimary} ${classes.btnLg}`}
+          onClick={handleNext}
+        >
+          {currentSectionIndex === lesson.lesson_sections.length - 1 ? T.lessons.finishLesson : T.lessons.nextSection}
+          {currentSectionIndex === lesson.lesson_sections.length - 1 ? <IconCheck size={16} style={{ marginLeft: 8 }} /> : <IconChevronRight size={16} style={{ marginLeft: 8 }} />}
+        </button>
+      </div>
     </Container>
   )
 }
