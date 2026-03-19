@@ -69,9 +69,6 @@ export function Sets() {
               </div>
               <div className={classes.setInfo}>
                 <div className={classes.setName}>{set.name}</div>
-                <div className={classes.setDescription}>
-                  {set.description || 'No description provided.'}
-                </div>
               </div>
               <span className={classes.setArrow}><IconChevronRight size={15} /></span>
             </Link>

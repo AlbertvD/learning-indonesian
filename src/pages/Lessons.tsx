@@ -75,8 +75,7 @@ export function Lessons() {
             >
               <div className={classes.lessonNum}>{String(i + 1).padStart(2, '0')}</div>
               <div className={classes.lessonInfo}>
-                <div className={classes.lessonTitle}>{lesson.title}</div>
-                <div className={classes.lessonSubtitle}>{lesson.description || 'Interactive Indonesian lesson'}</div>
+                <div className={classes.lessonTitle}>{lesson.title.replace(/\s*\([^)]*\)\s*$/, '')}</div>
                 <div className={classes.lessonMeta}>
                   {done && (
                     <span className={`${classes.badge} ${classes.badgeGreen}`}>{T.lessons.completed}</span>
