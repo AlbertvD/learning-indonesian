@@ -1,21 +1,13 @@
 // src/pages/Dashboard.tsx
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import {
   Container,
-  Title,
-  Text,
-  SimpleGrid,
-  Card,
-  Group,
-  Button,
-  Stack,
-  Badge,
   Center,
   Loader,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconBook, IconCards, IconMicrophone } from '@tabler/icons-react'
+import { IconBook, IconCards, IconMicrophone, IconChevronRight } from '@tabler/icons-react'
 import { progressService } from '@/services/progressService'
 import { cardService } from '@/services/cardService'
 import { lessonService } from '@/services/lessonService'
@@ -23,6 +15,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
 import type { UserProgress } from '@/types/progress'
+import classes from './Dashboard.module.css'
 
 export function Dashboard() {
   const navigate = useNavigate()
@@ -60,91 +53,98 @@ export function Dashboard() {
       }
     }
     fetchData()
-  }, [user])
+  }, [user, T.common.error, T.common.somethingWentWrong])
 
   if (loading) {
     return (
       <Center h="50vh">
-        <Loader size="xl" />
+        <Loader size="xl" color="violet" />
       </Center>
     )
   }
 
   const level = progress?.current_level ?? 'Beginner'
-  const welcomeText = profile?.fullName 
-    ? `${T.dashboard.welcomeBack}, ${profile.fullName.split(' ')[0]}!`
-    : `${T.dashboard.welcomeBack}!`
+  const name = profile?.fullName?.split(' ')[0] ?? profile?.email ?? 'User'
 
   return (
-    <Container size="md">
-      <Stack gap="xl" my="xl">
-        <div>
-          <Title order={1}>{welcomeText}</Title>
-          <Text c="dimmed" mt="xs">
-            {T.dashboard.overview}
-          </Text>
+    <Container size="md" className={classes.dashboard}>
+      <div className={classes.welcome}>
+        <div className={classes.display}>
+          {T.dashboard.welcomeBack},<br />
+          {name}.
         </div>
+        <div className={classes.badges}>
+          <span className={`${classes.badge} ${classes.badgePurple}`}>A1 · {level}</span>
+          <span className={classes.bodySm}>Bahasa Indonesia</span>
+        </div>
+      </div>
 
-        <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="md">
-          <Card withBorder radius="md" shadow="sm" p="lg">
-            <Text size="sm" c="dimmed" fw={500} tt="uppercase">
-              {T.dashboard.lessonsCompleted}
-            </Text>
-            <Title order={2} mt="xs">
-              {lessonsCompletedCount}
-            </Title>
-          </Card>
+      <div className={classes.statGrid}>
+        <div className={`${classes.statCard} ${classes.statCardPurple}`}>
+          <div className={classes.statLabel}>{T.dashboard.lessonsCompleted}</div>
+          <div className={classes.statValue}>{lessonsCompletedCount}</div>
+          <div className={classes.statSub}>of 12 in module 1</div>
+        </div>
+        <div className={`${classes.statCard} ${classes.statCardOrange}`}>
+          <div className={classes.statLabel}>{T.dashboard.cardsDue}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div className={classes.statValue}>{dueCardsCount}</div>
+            {dueCardsCount > 0 && (
+              <span className={`${classes.badge} ${classes.badgeOrange}`} style={{ marginTop: 10 }}>
+                {T.dashboard.reviewNow}
+              </span>
+            )}
+          </div>
+          <div className={classes.statSub}>next due in 2 hours</div>
+        </div>
+        <div className={`${classes.statCard} ${classes.statCardTeal}`}>
+          <div className={classes.statLabel}>Day Streak</div>
+          <div className={classes.statValue}>7</div>
+          <div className={classes.statSub}>days in a row</div>
+        </div>
+      </div>
 
-          <Card withBorder radius="md" shadow="sm" p="lg">
-            <Text size="sm" c="dimmed" fw={500} tt="uppercase">
-              {T.dashboard.cardsDue}
-            </Text>
-            <Group gap="xs" mt="xs" align="center">
-              <Title order={2}>{dueCardsCount}</Title>
-              {dueCardsCount > 0 && (
-                <Badge color="orange" size="sm">
-                  {T.dashboard.reviewNow}
-                </Badge>
-              )}
-            </Group>
-          </Card>
+      <div className={classes.continueSection}>
+        <span className={classes.sectionLabel}>Continue where you left off</span>
+        <Link to="/lessons" className={classes.continueCard}>
+          <div className={classes.continueIcon}>
+            <IconBook size={20} style={{ opacity: 0.7 }} />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className={classes.continueTitle}>Les 1 — Di Pasar</div>
+            <div className={classes.continueSub}>Section 3 of 5 · Grammar</div>
+            <div className={classes.continueProg}>
+              <div className={classes.progressBarWrap}>
+                <div className={classes.progressBarFill} style={{ width: '60%' }} />
+              </div>
+            </div>
+          </div>
+          <IconChevronRight size={16} className={classes.continueArrow} />
+        </Link>
+      </div>
 
-          <Card withBorder radius="md" shadow="sm" p="lg">
-            <Text size="sm" c="dimmed" fw={500} tt="uppercase">
-              {T.dashboard.level}
-            </Text>
-            <Title order={2} mt="xs">
-              {level}
-            </Title>
-          </Card>
-        </SimpleGrid>
-
-        <Stack gap="sm">
-          <Title order={3}>{T.dashboard.quickActions}</Title>
-          <Group gap="sm" wrap="wrap">
-            <Button
-              leftSection={<IconBook size={16} />}
-              onClick={() => navigate('/lessons')}
-            >
-              {T.dashboard.continueLearning}
-            </Button>
-            <Button
-              variant="outline"
-              leftSection={<IconCards size={16} />}
-              onClick={() => navigate('/review')}
-            >
-              {T.dashboard.reviewCards}
-            </Button>
-            <Button
-              variant="subtle"
-              leftSection={<IconMicrophone size={16} />}
-              onClick={() => navigate('/podcasts')}
-            >
-              {T.dashboard.browsePodcasts}
-            </Button>
-          </Group>
-        </Stack>
-      </Stack>
+      <div className={classes.actionsSection}>
+        <span className={classes.sectionLabel}>{T.dashboard.quickActions}</span>
+        <div className={classes.actions}>
+          <button className={`${classes.btn} ${classes.btnPrimary}`} onClick={() => navigate('/lessons')}>
+            <IconBook size={16} />
+            {T.dashboard.continueLearning}
+          </button>
+          <button className={`${classes.btn} ${classes.btnOutline}`} onClick={() => navigate('/review')}>
+            <IconCards size={16} />
+            {T.dashboard.reviewCards}
+            {dueCardsCount > 0 && (
+              <span className={`${classes.badge} ${classes.badgeOrange}`} style={{ marginLeft: 2 }}>
+                {dueCardsCount}
+              </span>
+            )}
+          </button>
+          <button className={`${classes.btn} ${classes.btnGhost}`} onClick={() => navigate('/podcasts')}>
+            <IconMicrophone size={16} />
+            {T.dashboard.browsePodcasts}
+          </button>
+        </div>
+      </div>
     </Container>
   )
 }
