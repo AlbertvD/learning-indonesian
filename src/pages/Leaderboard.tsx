@@ -1,6 +1,7 @@
 // src/pages/Leaderboard.tsx
 import { useEffect, useState } from 'react'
-import { Container, Title, Tabs, Table, Text, Center, Loader, Badge, Group } from '@mantine/core'
+import { Container, Tabs, Table, Text, Center, Loader, Badge, Group } from '@mantine/core'
+import classes from './Leaderboard.module.css'
 import { leaderboardService, type LeaderboardEntry, type LeaderboardMetric } from '@/services/leaderboardService'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
@@ -83,8 +84,10 @@ export function Leaderboard() {
   )
 
   return (
-    <Container size="md" pt={14}>
-      <Title order={1} mb="xl">{T.leaderboard.title}</Title>
+    <Container size="md" className={classes.leaderboard}>
+      <div className={classes.header}>
+        <div className={classes.displaySm}>{T.leaderboard.title}</div>
+      </div>
 
       <Tabs value={activeTab} onChange={setActiveTab}>
         <Tabs.List grow>
