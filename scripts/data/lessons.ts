@@ -194,7 +194,7 @@ Veel succes met leren!`,
     title: 'Les 2 - Di Indonesia (In Indonesië)',
     description: 'Learn the SE- prefix, ini/itu (this/that), negation with tidak, and adjectives.',
     order_index: 2,
-    audio_filename: 'lesson-2.mp3',
+    audio_filename: 'lesson-2.m4a',
     duration_seconds: 600,
     transcript_dutch: `Welkom bij Les 2 van de Indonesische taalcursus!
 
@@ -273,7 +273,7 @@ Veel succes met leren!`,
     title: 'Les 3 - Di Bandar Udara (Op het vliegveld)',
     description: 'Learn ada (there is/are), question words, sekali (very), and place words (dari, di, ke).',
     order_index: 3,
-    audio_filename: 'lesson-3.mp3',
+    audio_filename: 'lesson-3.m4a',
     duration_seconds: 600,
     transcript_dutch: `Welkom bij Les 3 van de Indonesische taalcursus!
 
