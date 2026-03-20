@@ -1,13 +1,15 @@
 // src/components/ProtectedRoute.tsx
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useAuthStore } from '@/stores/authStore'
 import { Center, Loader } from '@mantine/core'
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuthStore()
 
+  const redirectedRef = React.useRef(false)
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !user && !redirectedRef.current) {
+      redirectedRef.current = true
       window.location.href = `https://auth.duin.home/login?next=${encodeURIComponent(window.location.href)}`
     }
   }, [user, loading])
