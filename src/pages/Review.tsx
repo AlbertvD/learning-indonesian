@@ -163,7 +163,7 @@ export function Review() {
           {/* Front */}
           <div className={classes.cardFace}>
             <div className={classes.setName}>{card.anki_cards.card_sets.name}</div>
-            <div className={classes.cardText}>{card.anki_cards.front}</div>
+            <div className={classes.cardText}>{card.anki_cards.front.replace(/\s*\([^)]*\)\s*$/, '')}</div>
             <div className={classes.cardTranslation}>{T.review.tapToShowAnswer}</div>
           </div>
           {/* Back */}

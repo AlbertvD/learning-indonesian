@@ -165,7 +165,7 @@ export function Set() {
             <Table.Tbody>
               {cards.map((card) => (
                 <Table.Tr key={card.id}>
-                  <Table.Td fw={500} style={{ textAlign: 'left' }}>{card.front}</Table.Td>
+                  <Table.Td fw={500} style={{ textAlign: 'left' }}>{card.front.replace(/\s*\([^)]*\)\s*$/, '')}</Table.Td>
                   <Table.Td style={{ textAlign: 'left' }}>
                     {lang === 'nl' ? card.back : (card.notes ?? card.back)}
                   </Table.Td>
