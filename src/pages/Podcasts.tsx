@@ -48,7 +48,6 @@ export function Podcasts() {
     <Container size="lg" className={classes.podcasts}>
       <div className={classes.header}>
         <div className={classes.displaySm}>{T.nav.podcasts}</div>
-        <div className={classes.bodySm}>{T.podcast.episodes(podcasts.length)}</div>
       </div>
 
       <div className={classes.podcastList}>

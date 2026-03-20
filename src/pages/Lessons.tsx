@@ -48,20 +48,11 @@ export function Lessons() {
   const isCompleted = (lessonId: string) => 
     progress.some(p => p.lesson_id === lessonId && p.completed_at)
 
-  const completedCount = lessons.filter(l => isCompleted(l.id)).length
 
   return (
     <Container size="lg" className={classes.lessons}>
       <div className={classes.header}>
-        <div>
-          <div className={classes.displaySm}>{T.nav.lessons}</div>
-          <div className={classes.bodySm} style={{ marginTop: 6 }}>
-            Module 1 · A1 Beginner · {lessons.length} {T.lessons.lessonsCount}
-          </div>
-        </div>
-        <span className={`${classes.badge} ${classes.badgeGreen}`}>
-          {completedCount} {T.lessons.completed}
-        </span>
+        <div className={classes.displaySm}>{T.nav.lessons}</div>
       </div>
       
       <div className={classes.lessonGrid}>
