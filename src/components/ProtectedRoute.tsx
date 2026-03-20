@@ -1,10 +1,16 @@
 // src/components/ProtectedRoute.tsx
-import { Navigate } from 'react-router-dom'
+import { useEffect } from 'react'
 import { useAuthStore } from '@/stores/authStore'
 import { Center, Loader } from '@mantine/core'
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuthStore()
+
+  useEffect(() => {
+    if (!loading && !user) {
+      window.location.href = `https://auth.duin.home/login?next=${encodeURIComponent(window.location.href)}`
+    }
+  }, [user, loading])
 
   if (loading) {
     return (
@@ -15,7 +21,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />
+    return null
   }
 
   return <>{children}</>
