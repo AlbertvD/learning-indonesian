@@ -127,12 +127,22 @@ export function Profile() {
 
   const level = progress?.current_level ?? 'Beginner'
 
+  const paperProps = isMobile ? {
+    style: {
+      background: colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.60)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      border: colorScheme === 'dark' ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.07)',
+      boxShadow: 'none',
+    },
+  } : { withBorder: true, shadow: 'sm' as const }
+
   return (
     <Container size="sm">
       <Stack gap="xl" my="xl">
         <Title order={2}>{T.profile.title}</Title>
 
-        <Paper withBorder p="xl" radius="md" shadow="sm">
+        <Paper p="xl" radius="md" {...paperProps}>
           <Stack gap="md">
             <Title order={4}>{T.profile.account}</Title>
             <Group gap="sm">
@@ -150,7 +160,7 @@ export function Profile() {
           </Stack>
         </Paper>
 
-        <Paper withBorder p="xl" radius="md" shadow="sm">
+        <Paper p="xl" radius="md" {...paperProps}>
           <Stack gap="md">
             <Title order={4}>{T.profile.displayName}</Title>
             <TextInput
@@ -168,7 +178,7 @@ export function Profile() {
         </Paper>
 
         {isMobile && (
-          <Paper withBorder p="xl" radius="md" shadow="sm">
+          <Paper p="xl" radius="md" {...paperProps}>
             <Stack gap="md">
               <Title order={4}>{T.profile.appearance}</Title>
               <Group justify="space-between">
@@ -186,7 +196,7 @@ export function Profile() {
           </Paper>
         )}
 
-        <Paper withBorder p="xl" radius="md" shadow="sm">
+        <Paper p="xl" radius="md" {...paperProps}>
           <Stack gap="md">
             <Title order={4}>{T.profile.language}</Title>
             <SegmentedControl
