@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { Container, Loader, Center } from '@mantine/core'
 import { Link } from 'react-router-dom'
-import { IconChevronRight } from '@tabler/icons-react'
+import { IconChevronRight, IconBook } from '@tabler/icons-react'
 import { lessonService, type Lesson } from '@/services/lessonService'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
@@ -65,7 +65,7 @@ export function Lessons() {
       </div>
       
       <div className={classes.lessonGrid}>
-        {lessons.map((lesson, i) => {
+        {lessons.map((lesson) => {
           const done = isCompleted(lesson.id)
           return (
             <Link
@@ -73,17 +73,11 @@ export function Lessons() {
               to={`/lesson/${lesson.id}`}
               className={`${classes.lessonCard} ${done ? classes.done : ''}`}
             >
-              <div className={classes.lessonNum}>{String(i + 1).padStart(2, '0')}</div>
+              <div className={classes.lessonIcon}>
+                <IconBook size={16} />
+              </div>
               <div className={classes.lessonInfo}>
-                <div className={classes.lessonTitle}>{lesson.title.replace(/\s*\([^)]*\)\s*$/, '')}</div>
-                <div className={classes.lessonMeta}>
-                  {done && (
-                    <span className={`${classes.badge} ${classes.badgeGreen}`}>{T.lessons.completed}</span>
-                  )}
-                  <span className={classes.lessonSections}>
-                    {lesson.lesson_sections?.length || 0} {T.lessons.sections}
-                  </span>
-                </div>
+                <div className={classes.lessonTitle}>{lesson.title.replace(/\s*\([^)]*\)/g, '')}</div>
               </div>
               <span className={classes.lessonArrow}><IconChevronRight size={15} /></span>
             </Link>

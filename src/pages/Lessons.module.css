@@ -100,25 +100,18 @@
   border-radius: 3px 0 0 3px;
 }
 
-.lessonNum {
-  font-family: var(--display);
-  font-size: 22px;
-  font-weight: 300;
-  color: rgba(255,255,255,0.35);
+.lessonIcon {
   width: 32px;
-  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   flex-shrink: 0;
-  line-height: 1;
-  letter-spacing: -.02em;
-  user-select: none;
+  color: rgba(255,255,255,0.35);
+  transition: color .15s;
 }
 
-.lessonCard:hover .lessonNum {
+.lessonCard:hover .lessonIcon {
   color: rgba(255,255,255,0.55);
-}
-
-.lessonCard.done .lessonNum {
-  color: rgba(78,202,122,.4);
 }
 
 .lessonInfo {
@@ -128,9 +121,9 @@
 
 .lessonTitle {
   font-family: var(--display);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--text-1);
+  color: var(--text-2);
   line-height: 1.3;
   letter-spacing: -.01em;
 }
@@ -182,16 +175,12 @@
   border-color: rgba(31,168,90,.25);
 }
 
-:global(html[data-mantine-color-scheme="light"]) .lessonNum {
+:global(html[data-mantine-color-scheme="light"]) .lessonIcon {
   color: rgba(0,0,0,0.22);
 }
 
-:global(html[data-mantine-color-scheme="light"]) .lessonCard:hover .lessonNum {
+:global(html[data-mantine-color-scheme="light"]) .lessonCard:hover .lessonIcon {
   color: rgba(91,110,245,0.55);
-}
-
-:global(html[data-mantine-color-scheme="light"]) .lessonCard.done .lessonNum {
-  color: rgba(31,168,90,.45);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .lessonArrow {
@@ -208,10 +197,8 @@
   border-color: rgba(91,110,245,0.2);
 }
 
-:global(html[data-mantine-color-scheme="light"]) .displaySm,
-:global(html[data-mantine-color-scheme="light"]) .lessonTitle {
-  color: var(--text-1);
-}
+:global(html[data-mantine-color-scheme="light"]) .displaySm { color: var(--text-1); }
+:global(html[data-mantine-color-scheme="light"]) .lessonTitle { color: var(--text-2); }
 
 :global(html[data-mantine-color-scheme="light"]) .bodySm,
 :global(html[data-mantine-color-scheme="light"]) .lessonSubtitle,
