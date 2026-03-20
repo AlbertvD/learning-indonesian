@@ -2,11 +2,14 @@
 import { useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useMantineColorScheme } from '@mantine/core'
+import { useMediaQuery } from '@mantine/hooks'
 import { Sidebar } from './Sidebar'
+import { MobileLayout } from './MobileLayout'
 
 const SIDEBAR_LOCKED_KEY = 'sidebar-locked'
 
 export function Layout() {
+  const isMobile = useMediaQuery('(max-width: 768px)') ?? false
   const { colorScheme } = useMantineColorScheme()
   const [locked, setLocked] = useState(
     () => localStorage.getItem(SIDEBAR_LOCKED_KEY) !== 'false'
@@ -17,20 +20,20 @@ export function Layout() {
     setLocked(prev => {
       const next = !prev
       localStorage.setItem(SIDEBAR_LOCKED_KEY, String(next))
-      if (next) setOpen(false) // overlay no longer needed
+      if (next) setOpen(false)
       return next
     })
   }
 
-  // Close overlay when clicking backdrop
   const closeOverlay = () => setOpen(false)
 
-  // Close on Escape
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
   }, [])
+
+  if (isMobile) return <MobileLayout />
 
   const sidebarVisible = locked || open
 
