@@ -1,7 +1,7 @@
 // src/pages/Set.tsx
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Container, Title, Text, Button, Group, Badge, SegmentedControl, Paper, Stack, Center, Loader, Table } from '@mantine/core'
+import { Container, Title, Text, Button, Group, Badge, SegmentedControl, Paper, Stack, Center, Loader, Table, Modal, TextInput } from '@mantine/core'
 import { IconChevronLeft, IconShare, IconPlus, IconCards } from '@tabler/icons-react'
 import { cardService } from '@/services/cardService'
 import { useAuthStore } from '@/stores/authStore'
@@ -21,8 +21,13 @@ export function Set() {
   const [set, setSet] = useState<CardSet | null>(null)
   const [cards, setCards] = useState<AnkiCard[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
   const [studying, setStudying] = useState(false)
   const [shareModalOpened, setShareModalOpened] = useState(false)
+  const [addCardOpened, setAddCardOpened] = useState(false)
+  const [newFront, setNewFront] = useState('')
+  const [newBack, setNewBack] = useState('')
+  const [addingCard, setAddingCard] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
@@ -43,6 +48,7 @@ export function Set() {
       } catch (err) {
         logError({ page: 'set', action: 'fetchData', error: err })
         notifications.show({ color: 'red', title: T.common.error, message: T.sets.failedToLoad })
+        setError(true)
       } finally {
         setLoading(false)
       }
@@ -76,10 +82,36 @@ export function Set() {
     }
   }
 
-  if (loading || !set) {
+  const handleAddCard = async () => {
+    if (!set || !newFront.trim() || !newBack.trim()) return
+    setAddingCard(true)
+    try {
+      const card = await cardService.createCard(set.id, newFront.trim(), newBack.trim())
+      setCards(prev => [...prev, card])
+      setNewFront('')
+      setNewBack('')
+      setAddCardOpened(false)
+      notifications.show({ color: 'green', title: T.sets.cardAdded, message: T.sets.cardAddedMsg })
+    } catch (err) {
+      logError({ page: 'set', action: 'addCard', error: err })
+      notifications.show({ color: 'red', title: T.common.error, message: T.sets.cardAddFailed })
+    } finally {
+      setAddingCard(false)
+    }
+  }
+
+  if (loading) {
     return (
       <Center h="50vh">
         <Loader size="xl" />
+      </Center>
+    )
+  }
+
+  if (error || !set) {
+    return (
+      <Center h="50vh">
+        <Text c="dimmed">Failed to load card set. <Button variant="subtle" onClick={() => navigate('/sets')}>Back to sets</Button></Text>
       </Center>
     )
   }
@@ -144,7 +176,7 @@ export function Set() {
         <Group justify="space-between">
           <Title order={3}>{T.sets.cards(cards.length)}</Title>
           {isOwner && !isPublic && (
-            <Button leftSection={<IconPlus size={16} />} variant="outline">{T.sets.addCard}</Button>
+            <Button leftSection={<IconPlus size={16} />} variant="outline" onClick={() => setAddCardOpened(true)}>{T.sets.addCard}</Button>
           )}
         </Group>
 
@@ -175,6 +207,27 @@ export function Set() {
           </Table>
         )}
       </Stack>
+
+      <Modal opened={addCardOpened} onClose={() => { setAddCardOpened(false); setNewFront(''); setNewBack('') }} title={T.sets.addCardTitle}>
+        <Stack gap="md">
+          <TextInput
+            label={T.sets.front}
+            placeholder={T.sets.frontPlaceholder}
+            value={newFront}
+            onChange={(e) => setNewFront(e.target.value)}
+          />
+          <TextInput
+            label={T.sets.back}
+            placeholder={T.sets.backPlaceholder}
+            value={newBack}
+            onChange={(e) => setNewBack(e.target.value)}
+          />
+          <Group justify="flex-end" mt="md">
+            <Button variant="subtle" onClick={() => { setAddCardOpened(false); setNewFront(''); setNewBack('') }}>{T.sets.cancel}</Button>
+            <Button onClick={handleAddCard} loading={addingCard} disabled={!newFront.trim() || !newBack.trim()}>{T.sets.addCard}</Button>
+          </Group>
+        </Stack>
+      </Modal>
 
       <ShareCardSetModal
         opened={shareModalOpened}

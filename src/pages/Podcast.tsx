@@ -18,6 +18,7 @@ export function Podcast() {
 
   const [podcast, setPodcast] = useState<Podcast | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
   const sessionIdRef = useRef<string | null>(null)
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export function Podcast() {
       } catch (err) {
         logError({ page: 'podcast', action: 'fetchData', error: err })
         notifications.show({ color: 'red', title: T.common.error, message: T.podcast.failedToLoad })
+        setError(true)
       } finally {
         setLoading(false)
       }
@@ -48,10 +50,18 @@ export function Podcast() {
     }
   }, [podcastId, user, T.common.error, T.podcast.failedToLoad])
 
-  if (loading || !podcast) {
+  if (loading) {
     return (
       <Center h="50vh">
         <Loader size="xl" />
+      </Center>
+    )
+  }
+
+  if (error || !podcast) {
+    return (
+      <Center h="50vh">
+        <Text c="dimmed">Failed to load podcast.</Text>
       </Center>
     )
   }

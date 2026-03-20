@@ -68,7 +68,7 @@ export function Sets() {
                 <IconCards size={16} />
               </div>
               <div className={classes.setInfo}>
-                <div className={classes.setName}>{set.name}</div>
+                <div className={classes.setName}>{set.name.replace(/\s*\([^)]*\)\s*$/, '')}</div>
               </div>
               <span className={classes.setArrow}><IconChevronRight size={15} /></span>
             </Link>

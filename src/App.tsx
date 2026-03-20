@@ -1,5 +1,6 @@
 // src/App.tsx
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Link } from 'react-router-dom'
+import { Container, Title, Text, Button } from '@mantine/core'
 import { Layout } from '@/components/Layout'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { Login } from '@/pages/Login'
@@ -16,6 +17,16 @@ import { Cards } from '@/pages/Cards'
 import { Review } from '@/pages/Review'
 import { Practice } from '@/pages/Practice'
 import { Profile } from '@/pages/Profile'
+
+function NotFound() {
+  return (
+    <Container size="sm" style={{ textAlign: 'center', paddingTop: '4rem' }}>
+      <Title order={2} mb="md">Page not found</Title>
+      <Text c="dimmed" mb="xl">The page you're looking for doesn't exist.</Text>
+      <Button component={Link} to="/">Go to Dashboard</Button>
+    </Container>
+  )
+}
 
 function App() {
   return (
@@ -117,6 +128,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <ProtectedRoute>
+              <NotFound />
             </ProtectedRoute>
           }
         />

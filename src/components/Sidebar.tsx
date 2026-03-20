@@ -45,11 +45,7 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
       {/* Logo + pin */}
       <div className={classes.logo}>
         <div className={classes.logoMark}>
-          <div className={classes.logoIcon}>BI</div>
-          <div>
-            <div className={classes.logoName}>Bahasa Indonesia</div>
-            <div className={classes.logoSub}>Language Course</div>
-          </div>
+          <div className={classes.logoName}>Bahasa Indonesia</div>
           <button
             className={`${classes.pinBtn} ${locked ? classes.pinLocked : ''}`}
             onClick={onToggleLock}

@@ -50,6 +50,17 @@ export const cardService = {
     return data
   },
 
+  async createCard(setId: string, front: string, back: string, notes?: string): Promise<AnkiCard> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('anki_cards')
+      .insert({ card_set_id: setId, front, back, notes: notes || null })
+      .select()
+      .single()
+    if (error) throw error
+    return data
+  },
+
   async getDueCards(userId: string): Promise<DueCard[]> {
     const { data, error } = await supabase
       .schema('indonesian')

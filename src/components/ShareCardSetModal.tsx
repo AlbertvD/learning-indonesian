@@ -29,6 +29,7 @@ export function ShareCardSetModal({ opened, onClose, setId, setName }: ShareCard
       setShares(data)
     } catch (err) {
       logError({ page: 'ShareModal', action: 'fetchShares', error: err })
+      notifications.show({ color: 'red', title: T.common.error, message: T.common.somethingWentWrong })
     } finally {
       setLoading(false)
     }
@@ -96,7 +97,10 @@ export function ShareCardSetModal({ opened, onClose, setId, setName }: ShareCard
           data={searchResults}
           value={search}
           onChange={setSearch}
-          onOptionSubmit={(item) => handleShare(item as any)}
+          onOptionSubmit={(value) => {
+            const profile = searchResults.find(r => r.value === value)
+            if (profile) handleShare(profile)
+          }}
           leftSection={searching ? <Loader size="xs" /> : <IconSearch size={16} />}
           rightSection={<IconUserPlus size={16} color="gray" />}
         />

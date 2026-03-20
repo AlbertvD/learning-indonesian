@@ -1,7 +1,7 @@
 // src/pages/Lesson.tsx
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Container, Center, Loader } from '@mantine/core'
+import { Container, Center, Loader, Text } from '@mantine/core'
 import { IconChevronLeft, IconChevronRight, IconCheck, IconPlayerPlay, IconPlayerPause, IconVolume, IconVolume2, IconVolumeOff, IconDownload } from '@tabler/icons-react'
 import { lessonService, type Lesson } from '@/services/lessonService'
 import { progressService } from '@/services/progressService'
@@ -163,6 +163,7 @@ export function Lesson() {
   const [lesson, setLesson] = useState<Lesson | null>(null)
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
   const sessionIdRef = useRef<string | null>(null)
   const [completedSections, setCompletedSections] = useState<string[]>([])
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -199,6 +200,7 @@ export function Lesson() {
       } catch (err) {
         logError({ page: 'lesson', action: 'fetchData', error: err })
         notifications.show({ color: 'red', title: T.common.error, message: T.lessons.failedToLoadLesson })
+        setError(true)
       } finally {
         setLoading(false)
       }
@@ -227,6 +229,7 @@ export function Lesson() {
     } catch (err) {
       logError({ page: 'lesson', action: 'saveProgress', error: err })
       notifications.show({ color: 'red', title: T.common.error, message: T.lessons.failedToSaveProgress })
+      return
     }
 
     if (currentSectionIndex < lesson.lesson_sections.length - 1) {
@@ -284,10 +287,18 @@ export function Lesson() {
     return `${m}:${Math.floor(s % 60).toString().padStart(2, '0')}`
   }
 
-  if (loading || !lesson) {
+  if (loading) {
     return (
       <Center h="50vh">
         <Loader size="xl" color="violet" />
+      </Center>
+    )
+  }
+
+  if (error || !lesson) {
+    return (
+      <Center h="50vh">
+        <Text c="dimmed">Failed to load lesson.</Text>
       </Center>
     )
   }

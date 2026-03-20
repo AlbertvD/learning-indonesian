@@ -95,12 +95,6 @@ export function Dashboard() {
               </span>
             )}
           </div>
-          <div className={classes.statSub}>{T.dashboard.nextDueIn2Hours}</div>
-        </div>
-        <div className={`${classes.statCard} ${classes.statCardTeal}`}>
-          <div className={classes.statLabel}>{T.dashboard.dayStreak}</div>
-          <div className={classes.statValue}>7</div>
-          <div className={classes.statSub}>{T.dashboard.daysInARow}</div>
         </div>
       </div>
 
@@ -111,13 +105,8 @@ export function Dashboard() {
             <IconBook size={20} style={{ opacity: 0.7 }} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div className={classes.continueTitle}>Les 1 — Di Pasar</div>
-            <div className={classes.continueSub}>Section 3 of 5 · Grammar</div>
-            <div className={classes.continueProg}>
-              <div className={classes.progressBarWrap}>
-                <div className={classes.progressBarFill} style={{ width: '60%' }} />
-              </div>
-            </div>
+            <div className={classes.continueTitle}>{T.dashboard.continueLearning}</div>
+            <div className={classes.continueSub}>{lessonsCompletedCount} {T.dashboard.ofModuleOne}</div>
           </div>
           <IconChevronRight size={16} className={classes.continueArrow} />
         </Link>

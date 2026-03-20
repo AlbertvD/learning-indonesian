@@ -29,18 +29,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     // Unsubscribe any existing listener before registering a new one.
     authSubscription?.unsubscribe()
 
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session?.user) {
-      const [{ displayName, language }, isAdmin] = await Promise.all([
-        loadProfileData(session.user.id),
-        checkAdmin(session.user.id),
-      ])
-      set({
-        user: session.user,
-        profile: toProfile(session.user, isAdmin, displayName, language),
-        loading: false,
-      })
-    } else {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session?.user) {
+        const [{ displayName, language }, isAdmin] = await Promise.all([
+          loadProfileData(session.user.id),
+          checkAdmin(session.user.id),
+        ])
+        set({
+          user: session.user,
+          profile: toProfile(session.user, isAdmin, displayName, language),
+          loading: false,
+        })
+      } else {
+        set({ loading: false })
+      }
+    } catch {
       set({ loading: false })
     }
 

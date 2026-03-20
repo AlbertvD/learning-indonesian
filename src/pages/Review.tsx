@@ -35,11 +35,12 @@ export function Review() {
     async function init() {
       if (!user) return
       try {
-        const [sid] = await Promise.all([
-          startSession(user.id, 'review'),
-          fetchDueCards(user.id),
-        ])
-        sessionIdRef.current = sid
+        // Run session tracking in the background — don't let it block card loading
+        startSession(user.id, 'review')
+          .then((sid) => { sessionIdRef.current = sid })
+          .catch((err) => logError({ page: 'review', action: 'startSession', error: err }))
+
+        await fetchDueCards(user.id)
       } catch (err) {
         logError({ page: 'review', action: 'init', error: err })
         notifications.show({
