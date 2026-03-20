@@ -46,6 +46,9 @@ export const nl = {
     failedToLoad: 'Laden mislukt',
     failedToSave: 'Opslaan mislukt',
     somethingWentWrong: 'Er ging iets mis. Probeer het opnieuw.',
+    appearance: 'Weergave',
+    darkMode: 'Donkere modus',
+    lightMode: 'Lichte modus',
   },
   register: {
     title: 'Account aanmaken',
@@ -279,6 +282,9 @@ export const en: typeof nl = {
     failedToLoad: 'Failed to load profile',
     failedToSave: 'Failed to save profile',
     somethingWentWrong: 'Something went wrong. Please try again.',
+    appearance: 'Appearance',
+    darkMode: 'Dark mode',
+    lightMode: 'Light mode',
   },
   register: {
     title: 'Create account',

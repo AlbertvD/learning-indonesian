@@ -12,7 +12,11 @@ import {
   Center,
   Loader,
   SegmentedControl,
+  Switch,
 } from '@mantine/core'
+import { useMantineColorScheme } from '@mantine/core'
+import { IconMoon, IconSun } from '@tabler/icons-react'
+import { useMediaQuery } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
 import { progressService } from '@/services/progressService'
 import { useAuthStore } from '@/stores/authStore'
@@ -23,6 +27,8 @@ import type { UserProgress } from '@/types/progress'
 
 export function Profile() {
   const T = useT()
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme()
+  const isMobile = useMediaQuery('(max-width: 768px)') ?? false
   const user = useAuthStore((state) => state.user)
   const profile = useAuthStore((state) => state.profile)
   const updateDisplayName = useAuthStore((state) => state.updateDisplayName)
@@ -160,6 +166,25 @@ export function Profile() {
             </Group>
           </Stack>
         </Paper>
+
+        {isMobile && (
+          <Paper withBorder p="xl" radius="md" shadow="sm">
+            <Stack gap="md">
+              <Title order={4}>{T.profile.appearance}</Title>
+              <Group justify="space-between">
+                <Group gap="xs">
+                  {colorScheme === 'dark' ? <IconMoon size={16} /> : <IconSun size={16} />}
+                  <Text size="sm">{colorScheme === 'dark' ? T.profile.darkMode : T.profile.lightMode}</Text>
+                </Group>
+                <Switch
+                  checked={colorScheme === 'dark'}
+                  onChange={toggleColorScheme}
+                  size="md"
+                />
+              </Group>
+            </Stack>
+          </Paper>
+        )}
 
         <Paper withBorder p="xl" radius="md" shadow="sm">
           <Stack gap="md">
