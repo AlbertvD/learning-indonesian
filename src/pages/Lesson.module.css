@@ -184,7 +184,7 @@
 
 .displaySm {
   font-family: var(--display);
-  font-size: 28px;
+  font-size: 17px;
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -.01em;
@@ -260,7 +260,7 @@
 
 .phraseIndo {
   font-family: var(--display);
-  font-size: 19px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-1);
   line-height: 1.3;

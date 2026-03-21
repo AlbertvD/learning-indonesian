@@ -375,7 +375,7 @@ export function Lesson() {
 
       <div className={classes.sectionHeader} style={{ marginBottom: 24 }}>
         <span className={classes.label}>{T.lessons.section} {currentSectionIndex + 1}</span>
-        <div className={classes.displaySm}>{currentSection.title}</div>
+        <div className={classes.displaySm}>{currentSection.title.replace(/\s*\(.*?\)\s*$/, '')}</div>
       </div>
 
       <div style={{ minHeight: '200px', marginBottom: 40 }}>
