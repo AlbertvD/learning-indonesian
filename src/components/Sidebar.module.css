@@ -45,7 +45,7 @@
   color: var(--text-2); font-family: var(--display); font-size: 14px; font-weight: 600;
   text-decoration: none; transition: all .15s;
 }
-.navItem:hover { background: rgba(255,255,255,0.05); color: var(--text-1); }
+.navItem:hover { background: rgba(255,255,255,0.10); color: #fff; }
 .navActive { background: rgba(255,255,255,0.08); color: #fff; }
 .navItem svg { width: 17px; height: 17px; flex-shrink: 0; opacity: .45; }
 .navActive svg { opacity: 1; }

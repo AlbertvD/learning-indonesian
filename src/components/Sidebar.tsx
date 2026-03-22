@@ -34,7 +34,7 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
   const navItems = [
     { label: T.nav.lessons,      icon: <IconBook size={17} />,       path: '/lessons' },
     { label: T.nav.podcasts,     icon: <IconHeadphones size={17} />, path: '/podcasts' },
-    { label: T.nav.flashcards,   icon: <IconCards size={17} />,      path: '/cards' },
+    { label: T.nav.flashcards,   icon: <IconCards size={17} />,      path: '/sets' },
     { label: T.nav.leaderboard,  icon: <IconTrophy size={17} />,     path: '/leaderboard' },
   ]
 
