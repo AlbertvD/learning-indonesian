@@ -1,5 +1,5 @@
 // src/components/MobileLayout.tsx
-import { Outlet, Link, useLocation } from 'react-router-dom'
+import { Outlet, NavLink } from 'react-router-dom'
 import { useMantineColorScheme } from '@mantine/core'
 import { IconBook, IconHeadphones, IconCards, IconTrophy, IconUser } from '@tabler/icons-react'
 import classes from './MobileLayout.module.css'
@@ -14,7 +14,6 @@ const navItems = [
 
 export function MobileLayout() {
   const { colorScheme } = useMantineColorScheme()
-  const location = useLocation()
 
   return (
     <div className={`${classes.root} ${colorScheme === 'light' ? classes.light : ''}`}>
@@ -27,18 +26,15 @@ export function MobileLayout() {
       </main>
 
       <nav className={classes.bottomNav}>
-        {navItems.map((item) => {
-          const active = location.pathname.startsWith(item.path)
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`${classes.navBtn} ${active ? classes.navActive : ''}`}
-            >
-              {item.icon}
-            </Link>
-          )
-        })}
+        {navItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            className={({ isActive }) => `${classes.navBtn} ${isActive ? classes.navActive : ''}`}
+          >
+            {item.icon}
+          </NavLink>
+        ))}
       </nav>
     </div>
   )

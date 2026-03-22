@@ -1,5 +1,5 @@
 // src/components/Sidebar.tsx
-import { useLocation, Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { useMantineColorScheme } from '@mantine/core'
 import {
   IconBook, IconHeadphones, IconCards, IconTrophy,
@@ -26,7 +26,6 @@ interface SidebarProps {
 }
 
 export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps) {
-  const location = useLocation()
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const profile = useAuthStore(s => s.profile)
   const T = useT()
@@ -58,20 +57,17 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
 
       {/* Nav */}
       <div className={classes.nav}>
-        {navItems.map(item => {
-          const active = location.pathname.startsWith(item.path)
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`${classes.navItem} ${active ? classes.navActive : ''}`}
-              onClick={() => { if (!locked) onClose() }}
-            >
-              {item.icon}
-              {item.label}
-            </Link>
-          )
-        })}
+        {navItems.map(item => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            className={({ isActive }) => `${classes.navItem} ${isActive ? classes.navActive : ''}`}
+            onClick={() => { if (!locked) onClose() }}
+          >
+            {item.icon}
+            {item.label}
+          </NavLink>
+        ))}
       </div>
 
       {/* User footer */}
