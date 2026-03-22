@@ -312,7 +312,7 @@ export function Lesson() {
       <div className={classes.lessonSubnav}>
         <button className={`${classes.btn} ${classes.btnGhost}`} style={{ paddingLeft: 2, color: 'var(--text-3)' }} onClick={() => navigate('/lessons')}>
           <IconChevronLeft size={15} />
-          {lesson.title}
+          {lesson.title.replace(/\s*\([^)]*\)/g, '')}
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div className={classes.progressDots}>
@@ -334,7 +334,7 @@ export function Lesson() {
           </button>
           <div style={{ flex: 1 }}>
             <div className={classes.audioTopRow}>
-              <div className={classes.audioTitle}>{lesson.title}</div>
+              <div className={classes.audioTitle}>{lesson.title.replace(/\s*\([^)]*\)/g, '')}</div>
               <div className={classes.audioActions}>
                 <button className={classes.audioControlBtn} onClick={cycleSpeed}>
                   {playbackRate}x
