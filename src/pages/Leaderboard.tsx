@@ -84,7 +84,7 @@ export function Leaderboard() {
   )
 
   return (
-    <Container size="md" className={classes.leaderboard}>
+    <Container size="lg" className={classes.leaderboard}>
       <div className={classes.header}>
         <div className={classes.displaySm}>{T.leaderboard.title}</div>
       </div>
