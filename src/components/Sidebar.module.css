@@ -46,7 +46,7 @@
   text-decoration: none; transition: all .15s;
 }
 .navItem:hover { background: rgba(255,255,255,0.10); color: #fff; }
-.navActive { background: rgba(255,255,255,0.08); color: #fff; }
+.navActive { background: rgba(139,108,245,0.25); color: #fff; }
 .navItem svg { width: 17px; height: 17px; flex-shrink: 0; opacity: .45; }
 .navActive svg { opacity: 1; }
 
