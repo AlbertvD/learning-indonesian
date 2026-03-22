@@ -8,7 +8,7 @@ const navItems = [
   { icon: <IconUser size={22} />,       path: '/profile' },
   { icon: <IconBook size={22} />,        path: '/lessons' },
   { icon: <IconHeadphones size={22} />, path: '/podcasts' },
-  { icon: <IconCards size={22} />,      path: '/cards' },
+  { icon: <IconCards size={22} />,      path: '/sets' },
   { icon: <IconTrophy size={22} />,     path: '/leaderboard' },
 ]
 
