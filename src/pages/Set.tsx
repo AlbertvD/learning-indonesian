@@ -147,7 +147,7 @@ export function Set() {
         <Paper withBorder p="xl" radius="md">
           <Group justify="space-between" mb="md" align="flex-start">
             <div>
-              <Title order={2}>{set.name}</Title>
+              <Title order={2}>{set.name.replace(/\s*\([^)]*\)/g, '')}</Title>
               <Text c="dimmed" mt="xs">{set.description || T.sets.noDescription}</Text>
             </div>
             {!isPublic && (

@@ -163,13 +163,13 @@ export function Review() {
         <div className={`${classes.cardInner} ${showAnswer ? classes.cardFlipped : ''}`}>
           {/* Front */}
           <div className={classes.cardFace}>
-            <div className={classes.setName}>{card.anki_cards.card_sets.name}</div>
+            <div className={classes.setName}>{card.anki_cards.card_sets.name.replace(/\s*\([^)]*\)/g, '')}</div>
             <div className={classes.cardText}>{card.anki_cards.front.replace(/\s*\([^)]*\)\s*$/, '')}</div>
             <div className={classes.cardTranslation}>{T.review.tapToShowAnswer}</div>
           </div>
           {/* Back */}
           <div className={`${classes.cardFace} ${classes.cardBack}`}>
-            <div className={classes.setName}>{card.anki_cards.card_sets.name}</div>
+            <div className={classes.setName}>{card.anki_cards.card_sets.name.replace(/\s*\([^)]*\)/g, '')}</div>
             <div className={classes.cardText}>{card.anki_cards.back}</div>
             <div className={classes.cardTranslation}>{T.review.howWellDidYouKnow}</div>
           </div>
