@@ -8,13 +8,11 @@ import {
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconBook, IconCards, IconMicrophone, IconChevronRight } from '@tabler/icons-react'
-import { progressService } from '@/services/progressService'
 import { cardService } from '@/services/cardService'
 import { lessonService } from '@/services/lessonService'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
-import type { UserProgress } from '@/types/progress'
 import classes from './Dashboard.module.css'
 
 export function Dashboard() {
@@ -24,7 +22,6 @@ export function Dashboard() {
   const profile = useAuthStore((state) => state.profile)
 
   const [loading, setLoading] = useState(true)
-  const [progress, setProgress] = useState<UserProgress | null>(null)
   const [dueCardsCount, setDueCardsCount] = useState(0)
   const [lessonsCompletedCount, setLessonsCompletedCount] = useState(0)
 
@@ -32,12 +29,10 @@ export function Dashboard() {
     async function fetchData() {
       if (!user) return
       try {
-        const [userProgress, dueCards, lessonProgress] = await Promise.all([
-          progressService.getUserProgress(user.id),
+        const [dueCards, lessonProgress] = await Promise.all([
           cardService.getDueCards(user.id),
           lessonService.getUserLessonProgress(user.id),
         ])
-        setProgress(userProgress)
         setDueCardsCount(dueCards.length)
         const completed = lessonProgress.filter((lp) => lp.completed_at != null)
         setLessonsCompletedCount(completed.length)
@@ -63,7 +58,6 @@ export function Dashboard() {
     )
   }
 
-  const level = progress?.current_level ?? 'Beginner'
   const name = profile?.fullName?.split(' ')[0] ?? profile?.email ?? 'User'
 
   return (
@@ -71,10 +65,6 @@ export function Dashboard() {
       <div className={classes.welcome}>
         <div className={classes.display}>
           {T.dashboard.welcomeBack}, {name}.
-        </div>
-        <div className={classes.badges}>
-          <span className={`${classes.badge} ${classes.badgePurple}`}>A1 · {level}</span>
-          <span className={classes.bodySm}>Bahasa Indonesia</span>
         </div>
       </div>
 
