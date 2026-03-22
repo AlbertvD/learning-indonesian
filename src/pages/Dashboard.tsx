@@ -70,8 +70,7 @@ export function Dashboard() {
     <Container size="md" className={classes.dashboard}>
       <div className={classes.welcome}>
         <div className={classes.display}>
-          {T.dashboard.welcomeBack},<br />
-          {name}.
+          {T.dashboard.welcomeBack}, {name}.
         </div>
         <div className={classes.badges}>
           <span className={`${classes.badge} ${classes.badgePurple}`}>A1 · {level}</span>
