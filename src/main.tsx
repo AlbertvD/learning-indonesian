@@ -12,24 +12,24 @@ import '@mantine/notifications/styles.css'
 import './index.css'
 
 const theme = createTheme({
-  primaryColor: 'violet',
+  primaryColor: 'cyan',
   defaultRadius: 'md',
   fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
   fontFamilyMonospace: "'Courier New', monospace",
   headings: { fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" },
 
   colors: {
-    violet: [
-      '#F3E8FF',
-      '#E9D5FF',
-      '#D8B4FE',
-      '#C084FC',
-      '#A855F7',
-      '#9333EA',
-      '#7E22CE',
-      '#6B21A8',
-      '#581C87',
-      '#3F0F5C',
+    cyan: [
+      '#E0FFFE',
+      '#B3FBFF',
+      '#80F9FF',
+      '#4DF6FF',
+      '#1AF4FF',
+      '#00ECFF',
+      '#00E5FF',
+      '#00C4DB',
+      '#009DB3',
+      '#00778C',
     ],
   },
 })

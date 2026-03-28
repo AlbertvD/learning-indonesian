@@ -10,7 +10,7 @@
   --bg-hover:     #2C2C2E;     /* Active states or dividers */
 
   /* Accent & Interactive */
-  --accent-primary: #8E55FF;   /* Progress, active icons, branding */
+  --accent-primary: #00E5FF;   /* Progress, active icons, branding */
 
   /* Text */
   --text-primary:   #FFFFFF;   /* Headlines and main content */
@@ -56,11 +56,7 @@
 }
 
 html, body {
-  background:
-    radial-gradient(ellipse 75% 55% at 85% 5%,  rgba(142,85,255,0.12) 0%, transparent 55%),
-    radial-gradient(ellipse 55% 45% at 5%  90%,  rgba(0,199,190,0.08)  0%, transparent 55%),
-    radial-gradient(ellipse 90% 50% at 50% 115%, rgba(142,85,255,0.10) 0%, transparent 60%),
-    var(--bg-main);
+  background: var(--bg-main);
   color: var(--text-primary);
   font-family: var(--sans);
   font-size: 14px;
@@ -75,7 +71,7 @@ html[data-mantine-color-scheme="light"] {
   --bg-surface:   #F5F5F7;
   --bg-hover:     #E8E8ED;
 
-  --accent-primary: #8E55FF;
+  --accent-primary: #0099B8;
 
   --text-primary:   #000000;
   --text-secondary: #86868B;
@@ -108,11 +104,7 @@ html[data-mantine-color-scheme="light"] {
 }
 
 html[data-mantine-color-scheme="light"] body {
-  background:
-    radial-gradient(ellipse 70% 50% at 85% 5%,  rgba(142,85,255,0.10) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 5%  90%,  rgba(0,199,190,0.08)  0%, transparent 55%),
-    radial-gradient(ellipse 80% 45% at 50% 120%, rgba(142,85,255,0.08) 0%, transparent 60%),
-    var(--bg-main);
+  background: var(--bg-main);
 }
 
 #root {

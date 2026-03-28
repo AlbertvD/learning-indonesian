@@ -56,7 +56,7 @@ function SectionContent({ content }: { content: unknown }) {
         {data.examples && data.examples.length > 0 && (
           <>
             <div className={classes.contentSectionLabel}>{T.lessons.examples}</div>
-            <div className={classes.contentCard} style={{ marginBottom: 32 }}>
+            <div style={{ marginBottom: 32 }}>
               <div className={classes.phraseList}>
                 {data.examples.map((ex, i) => (
                   <div key={i} className={classes.phraseRow}>
@@ -90,7 +90,7 @@ function SectionContent({ content }: { content: unknown }) {
         {data.sentences && data.sentences.length > 0 && (
           <>
             <div className={classes.contentSectionLabel}>{T.lessons.simpleSentences}</div>
-            <div className={classes.contentCard}>
+            <div>
               <div className={classes.sentenceList}>
                 {data.sentences.map((s, i) => (
                   <div key={i} className={classes.sentenceRow}>
@@ -110,7 +110,7 @@ function SectionContent({ content }: { content: unknown }) {
     return (
       <>
         {data.intro && <div className={classes.lessonIntro}>{data.intro}</div>}
-        <div className={`${classes.contentCard} ${classes.grammarCard}`}>
+        <div className={classes.grammarCard}>
           {data.categories.map((cat, i) => (
             <div key={i} className={classes.grammarCategory}>
               <div className={classes.grammarTitle}>{cat.title}</div>
@@ -131,7 +131,7 @@ function SectionContent({ content }: { content: unknown }) {
 
   if (data?.type === 'dialogue' && Array.isArray(data.lines)) {
     return (
-      <div className={`${classes.contentCard}`} style={{ padding: '26px 28px' }}>
+      <div>
         {data.setup && (
           <div className={classes.dialogueSetup}>{data.setup}</div>
         )}
@@ -289,7 +289,7 @@ export function Lesson() {
   if (loading) {
     return (
       <Center h="50vh">
-        <Loader size="xl" color="violet" />
+        <Loader size="xl" color="cyan" />
       </Center>
     )
   }
