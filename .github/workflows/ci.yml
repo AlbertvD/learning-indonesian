@@ -21,7 +21,6 @@ jobs:
   #   Add secrets: API_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY (staging instance)
   #   Then flip run_unit / run_api / run_auth to true.
   test:
-    needs: safety
     uses: AlbertvD/homelab-platform/.github/workflows/test.yml@main
     with:
       run_unit: false
