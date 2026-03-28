@@ -239,7 +239,7 @@
 
 .phraseRow {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 16px;
   align-items: start;
   padding: 16px 0;
@@ -272,7 +272,6 @@
   color: var(--text-2);
   font-weight: 400;
   padding-top: 3px;
-  white-space: nowrap;
 }
 
 .spellingGrid {
