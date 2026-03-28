@@ -11,6 +11,7 @@ jobs:
   # semgrep (SAST), OpenBrain lesson check.
   # Requires: PLATFORM_TOKEN secret (fine-grained PAT, contents:read on homelab-platform)
   # Optional: OPENBRAIN_KEY secret + OPENBRAIN_URL variable — lesson gate skips gracefully if absent
+# OPENBRAIN_KEY and OPENBRAIN_URL are now configured
   safety:
     uses: AlbertvD/homelab-platform/.github/workflows/safety.yml@v1
     secrets: inherit
