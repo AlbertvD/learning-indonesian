@@ -734,7 +734,7 @@ export const lessons: LessonData[] = [
       {
         title: 'Woordenlijst',
         content: {
-          type: 'vocabulary',
+          type: 'exercises',
           items: [
             { indonesian: 'ada', dutch: 'is, zijn' },
             { indonesian: 'bandar', dutch: 'haven' },
@@ -785,7 +785,14 @@ export const lessons: LessonData[] = [
             { indonesian: 'tolong', dutch: 'helpen' },
             { indonesian: 'udara', dutch: 'lucht, luchtruim' },
           ],
-          expressions: [
+        },
+        order_index: 1,
+      },
+      {
+        title: 'Uitdrukkingen',
+        content: {
+          type: 'exercises',
+          items: [
             { indonesian: 'bandar udara / lapangan terbang', dutch: 'vliegveld' },
             { indonesian: 'Minta tolong', dutch: 'kunt u me helpen?; hulp vragen' },
             { indonesian: 'naik sepeda/bus/mobil', dutch: 'met de fiets/bus/auto gaan' },
@@ -793,22 +800,29 @@ export const lessons: LessonData[] = [
             { indonesian: 'sama-sama', dutch: 'geen dank, van hetzelfde' },
             { indonesian: 'terima kasih kembali', dutch: 'geen dank, graag gedaan' },
           ],
-          numbers: [
-            { number: 10, indonesian: 'sepuluh' },
-            { number: 20, indonesian: 'dua puluh' },
-            { number: 21, indonesian: 'dua puluh satu' },
-            { number: 30, indonesian: 'tiga puluh' },
-            { number: 32, indonesian: 'tiga puluh dua' },
-            { number: 40, indonesian: 'empat puluh' },
-            { number: 50, indonesian: 'lima puluh' },
-            { number: 60, indonesian: 'enam puluh' },
-            { number: 70, indonesian: 'tujuh puluh' },
-            { number: 80, indonesian: 'delapan puluh' },
-            { number: 90, indonesian: 'sembilan puluh' },
-            { number: 100, indonesian: 'seratus' },
+        },
+        order_index: 2,
+      },
+      {
+        title: 'Telwoorden',
+        content: {
+          type: 'exercises',
+          items: [
+            { indonesian: 'sepuluh', dutch: '10' },
+            { indonesian: 'dua puluh', dutch: '20' },
+            { indonesian: 'dua puluh satu', dutch: '21' },
+            { indonesian: 'tiga puluh', dutch: '30' },
+            { indonesian: 'tiga puluh dua', dutch: '32' },
+            { indonesian: 'empat puluh', dutch: '40' },
+            { indonesian: 'lima puluh', dutch: '50' },
+            { indonesian: 'enam puluh', dutch: '60' },
+            { indonesian: 'tujuh puluh', dutch: '70' },
+            { indonesian: 'delapan puluh', dutch: '80' },
+            { indonesian: 'sembilan puluh', dutch: '90' },
+            { indonesian: 'seratus', dutch: '100' },
           ],
         },
-        order_index: 1,
+        order_index: 3,
       },
       {
         title: 'Grammatica: Ada',
@@ -830,7 +844,7 @@ export const lessons: LessonData[] = [
             },
           ],
         },
-        order_index: 2,
+        order_index: 7,
       },
       {
         title: 'Grammatica: Vraagwoorden',
@@ -871,21 +885,13 @@ export const lessons: LessonData[] = [
           ],
           note: 'Apa kan ook worden gebruikt om een vraag in te leiden.',
         },
-        order_index: 3,
+        order_index: 5,
       },
       {
-        title: 'Grammatica: Sekali en woorden van plaats',
+        title: 'Grammatica: Woorden van plaats',
         content: {
           type: 'grammar',
-          intro: "sekali = 'erg, zeer, heel' — komt achter het bijvoeglijk naamwoord.",
           categories: [
-            {
-              title: 'Sekali',
-              rules: [
-                'Hotel itu mahal sekali — Dat hotel is erg duur',
-                'Sepeda ini bagus sekali — Deze fiets is erg mooi',
-              ],
-            },
             {
               title: 'Woorden van plaats: dari, di, ke',
               rules: [
@@ -918,6 +924,23 @@ export const lessons: LessonData[] = [
           ],
         },
         order_index: 4,
+      },
+      {
+        title: 'Grammatica: Sekali',
+        content: {
+          type: 'grammar',
+          intro: "sekali = 'erg, zeer, heel' — komt achter het bijvoeglijk naamwoord.",
+          categories: [
+            {
+              title: 'Sekali',
+              rules: [
+                'Hotel itu mahal sekali — Dat hotel is erg duur',
+                'Sepeda ini bagus sekali — Deze fiets is erg mooi',
+              ],
+            },
+          ],
+        },
+        order_index: 6,
       },
       {
         title: 'Oefeningen',
@@ -1008,7 +1031,7 @@ export const lessons: LessonData[] = [
             },
           ],
         },
-        order_index: 5,
+        order_index: 8,
       },
     ],
   },
