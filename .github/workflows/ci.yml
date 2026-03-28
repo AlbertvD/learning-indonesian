@@ -13,7 +13,7 @@ jobs:
   # Optional: OPENBRAIN_KEY secret + OPENBRAIN_URL variable — lesson gate skips gracefully if absent
 # OPENBRAIN_KEY and OPENBRAIN_URL are now configured
   safety:
-    uses: AlbertvD/homelab-platform/.github/workflows/safety.yml@v1
+    uses: AlbertvD/homelab-platform/.github/workflows/safety.yml@main
     secrets: inherit
 
   # 4-layer test suite: unit, API contract, auth/RLS, E2E.
@@ -22,7 +22,7 @@ jobs:
   #   Then flip run_unit / run_api / run_auth to true.
   test:
     needs: safety
-    uses: AlbertvD/homelab-platform/.github/workflows/test.yml@v1
+    uses: AlbertvD/homelab-platform/.github/workflows/test.yml@main
     with:
       run_unit: false
       run_api: false
