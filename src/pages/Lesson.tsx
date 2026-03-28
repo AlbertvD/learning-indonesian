@@ -113,7 +113,6 @@ function SectionContent({ content }: { content: unknown }) {
 
         {data.sentences && data.sentences.length > 0 && (
           <>
-            <div className={classes.contentSectionLabel}>{T.lessons.simpleSentences}</div>
             <div>
               <div className={classes.sentenceList}>
                 {data.sentences.map((s, i) => (
