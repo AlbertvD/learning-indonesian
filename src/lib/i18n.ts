@@ -3,6 +3,7 @@ export type Lang = 'nl' | 'en'
 
 export const nl = {
   nav: {
+    home: 'Home',
     lessons: 'Lessen',
     podcasts: 'Podcasts',
     flashcards: 'Flashkaarten',
@@ -239,6 +240,7 @@ export const nl = {
 
 export const en: typeof nl = {
   nav: {
+    home: 'Home',
     lessons: 'Lessons',
     podcasts: 'Podcasts',
     flashcards: 'Flashcards',
