@@ -206,11 +206,9 @@
 
 .contentSectionLabel {
   font-family: var(--display);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--text-3);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-2);
   margin-bottom: 14px;
   display: flex;
   align-items: center;
@@ -270,9 +268,9 @@
 }
 
 .phraseDutch {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-2);
-  font-weight: 500;
+  font-weight: 400;
   padding-top: 3px;
   white-space: nowrap;
 }
