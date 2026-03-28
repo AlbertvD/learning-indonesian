@@ -1,8 +1,9 @@
 // src/components/Layout.tsx
 import { useEffect, useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, Link } from 'react-router-dom'
 import { useMantineColorScheme } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
+import { IconHome, IconMenu2 } from '@tabler/icons-react'
 import { Sidebar } from './Sidebar'
 import { MobileLayout } from './MobileLayout'
 
@@ -49,28 +50,45 @@ export function Layout() {
         }} />
       )}
 
-      {/* Hamburger (shown when not locked) */}
-      {!locked && (
-        <button
-          onClick={() => setOpen(o => !o)}
+      {/* Left sidebar buttons (home + hamburger) */}
+      <div style={{ position: 'fixed', left: 14, top: 14, zIndex: 198, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {/* Home button */}
+        <Link
+          to="/"
           style={{
-            position: 'fixed', top: 14, left: 14, zIndex: 198,
             width: 36, height: 36, borderRadius: 'var(--r-md)',
             background: colorScheme === 'light' ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.08)',
             border: colorScheme === 'light' ? '1px solid var(--border)' : '1px solid rgba(255,255,255,0.1)',
             color: colorScheme === 'light' ? 'var(--text-2)' : 'rgba(255,255,255,0.6)',
             boxShadow: colorScheme === 'light' ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
-            display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center', gap: 4,
+            display: 'flex',
+            alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer',
+            textDecoration: 'none',
+          }}
+          aria-label="Go to home"
+        >
+          <IconHome size={20} />
+        </Link>
+
+        {/* Hamburger button (toggle sidebar lock) */}
+        <button
+          onClick={toggleLock}
+          style={{
+            width: 36, height: 36, borderRadius: 'var(--r-md)',
+            background: colorScheme === 'light' ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.08)',
+            border: colorScheme === 'light' ? '1px solid var(--border)' : '1px solid rgba(255,255,255,0.1)',
+            color: colorScheme === 'light' ? 'var(--text-2)' : 'rgba(255,255,255,0.6)',
+            boxShadow: colorScheme === 'light' ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
+            display: 'flex',
+            alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer',
           }}
-          aria-label="Open menu"
+          aria-label="Toggle sidebar"
         >
-          {[0,1,2].map(i => (
-            <span key={i} style={{ display: 'block', width: 16, height: 1.5, background: 'currentColor', borderRadius: 2 }} />
-          ))}
+          <IconMenu2 size={20} />
         </button>
-      )}
+      </div>
 
       <Sidebar
         visible={sidebarVisible}
