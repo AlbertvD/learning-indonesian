@@ -1,16 +1,16 @@
 // src/components/MobileLayout.tsx
 import { Outlet, NavLink } from 'react-router-dom'
 import { useMantineColorScheme } from '@mantine/core'
-import { IconBook, IconHeadphones, IconCards, IconTrophy, IconUser, IconHome } from '@tabler/icons-react'
+import { IconUser, IconUserFilled, IconHome, IconHomeFilled, IconBook, IconBookFilled, IconHeadphones, IconHeadphonesFilled, IconCards, IconCardsFilled, IconTrophy, IconTrophyFilled } from '@tabler/icons-react'
 import classes from './MobileLayout.module.css'
 
 const navItems = [
-  { icon: <IconUser size={22} />,       path: '/profile' },
-  { icon: <IconHome size={22} />,       path: '/' },
-  { icon: <IconBook size={22} />,        path: '/lessons' },
-  { icon: <IconHeadphones size={22} />, path: '/podcasts' },
-  { icon: <IconCards size={22} />,      path: '/sets' },
-  { icon: <IconTrophy size={22} />,     path: '/leaderboard' },
+  { label: 'Profile', iconOutline: <IconUser size={22} />, iconFilled: <IconUserFilled size={22} />, path: '/profile' },
+  { label: 'Home', iconOutline: <IconHome size={22} />, iconFilled: <IconHomeFilled size={22} />, path: '/' },
+  { label: 'Lessons', iconOutline: <IconBook size={22} />, iconFilled: <IconBookFilled size={22} />, path: '/lessons' },
+  { label: 'Podcasts', iconOutline: <IconHeadphones size={22} />, iconFilled: <IconHeadphonesFilled size={22} />, path: '/podcasts' },
+  { label: 'Sets', iconOutline: <IconCards size={22} />, iconFilled: <IconCardsFilled size={22} />, path: '/sets' },
+  { label: 'Leaderboard', iconOutline: <IconTrophy size={22} />, iconFilled: <IconTrophyFilled size={22} />, path: '/leaderboard' },
 ]
 
 export function MobileLayout() {
@@ -33,7 +33,12 @@ export function MobileLayout() {
             to={item.path}
             className={({ isActive }) => `${classes.navBtn} ${isActive ? classes.navActive : ''}`}
           >
-            {item.icon}
+            {({ isActive }) => (
+              <div className={classes.navBtnContent}>
+                {isActive ? item.iconFilled : item.iconOutline}
+                <span className={classes.navLabel}>{item.label}</span>
+              </div>
+            )}
           </NavLink>
         ))}
       </nav>

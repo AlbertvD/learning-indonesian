@@ -1,0 +1,81 @@
+.miniPlayer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  padding: 8px 16px;
+  background: rgba(24,24,31,0.30);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--r-lg);
+  margin-bottom: 20px;
+}
+
+.playBtn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  transition: all .15s;
+}
+
+.playBtn:hover {
+  background: rgba(255,255,255,0.25);
+  border-color: rgba(255,255,255,0.3);
+}
+
+.progressContainer {
+  flex: 1;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.progressBar {
+  width: 100%;
+  height: 2px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--purple);
+  border-radius: 2px;
+  transition: width .1s linear;
+}
+
+/* Light theme */
+:global(html[data-mantine-color-scheme="light"]) .miniPlayer {
+  background: rgba(255,255,255,0.75);
+  border-color: var(--border);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .playBtn {
+  background: rgba(91,110,245,0.12);
+  border-color: rgba(91,110,245,0.25);
+  color: var(--purple);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .playBtn:hover {
+  background: rgba(91,110,245,0.18);
+  border-color: rgba(91,110,245,0.35);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .progressBar {
+  background: rgba(91,110,245,0.15);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .progressFill {
+  background: var(--purple);
+}

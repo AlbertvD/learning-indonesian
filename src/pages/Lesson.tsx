@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Container, Center, Loader, Text } from '@mantine/core'
-import { IconChevronLeft, IconChevronRight, IconCheck, IconPlayerPlay, IconPlayerPause, IconVolume, IconVolume2, IconVolumeOff, IconDownload } from '@tabler/icons-react'
+import { IconChevronLeft, IconChevronRight, IconCheck } from '@tabler/icons-react'
 import { lessonService, type Lesson } from '@/services/lessonService'
 import { progressService } from '@/services/progressService'
 import { startSession, endSession } from '@/lib/session'
@@ -11,6 +11,7 @@ import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
 import { useT } from '@/hooks/useT'
 import { highlightPrefixes } from '@/lib/highlightPrefixes'
+import { MiniAudioPlayer } from '@/components/MiniAudioPlayer'
 import classes from './Lesson.module.css'
 
 type ExerciseItem = { dutch?: string; indonesian?: string }
@@ -169,8 +170,6 @@ export function Lesson() {
   const [completedSections, setCompletedSections] = useState<string[]>([])
   const audioRef = useRef<HTMLAudioElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [volume, setVolume] = useState(1)
-  const [playbackRate, setPlaybackRate] = useState(1)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
 
@@ -265,27 +264,10 @@ export function Lesson() {
     setIsPlaying(!isPlaying)
   }
 
-  const handleVolumeChange = (v: number) => {
-    setVolume(v)
-    if (audioRef.current) audioRef.current.volume = v
-  }
-
-  const cycleSpeed = () => {
-    const speeds = [0.75, 1, 1.25, 1.5, 2]
-    const next = speeds[(speeds.indexOf(playbackRate) + 1) % speeds.length]
-    setPlaybackRate(next)
-    if (audioRef.current) audioRef.current.playbackRate = next
-  }
-
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!audioRef.current || !duration) return
     const rect = e.currentTarget.getBoundingClientRect()
     audioRef.current.currentTime = ((e.clientX - rect.left) / rect.width) * duration
-  }
-
-  const formatTime = (s: number) => {
-    const m = Math.floor(s / 60)
-    return `${m}:${Math.floor(s % 60).toString().padStart(2, '0')}`
   }
 
   if (loading) {
@@ -329,49 +311,23 @@ export function Lesson() {
       </div>
 
       {audioUrl && (
-        <div className={classes.audioPlayer}>
-          <button className={classes.audioPlayBtn} onClick={togglePlay}>
-            {isPlaying ? <IconPlayerPause size={13} /> : <IconPlayerPlay size={13} />}
-          </button>
-          <div style={{ flex: 1 }}>
-            <div className={classes.audioTopRow}>
-              <div className={classes.audioTitle}>{lesson.title.replace(/\s*\([^)]*\)/g, '')}</div>
-              <div className={classes.audioActions}>
-                <button className={classes.audioControlBtn} onClick={cycleSpeed}>
-                  {playbackRate}x
-                </button>
-                <a className={classes.audioControlBtn} href={audioUrl} download target="_blank" rel="noreferrer">
-                  <IconDownload size={12} />
-                </a>
-              </div>
-            </div>
-            <div className={classes.audioProgress} onClick={handleSeek} style={{ cursor: 'pointer' }}>
-              <div className={classes.audioProgressFill} style={{ width: duration ? `${(currentTime / duration) * 100}%` : '0%' }} />
-            </div>
-            <div className={classes.audioBottomRow}>
-              <div className={classes.audioTime}>{formatTime(currentTime)} / {formatTime(duration)}</div>
-              <div className={classes.audioVolumeRow}>
-                <button className={classes.audioControlBtn} onClick={() => handleVolumeChange(volume > 0 ? 0 : 1)}>
-                  {volume === 0 ? <IconVolumeOff size={12} /> : volume < 0.5 ? <IconVolume size={12} /> : <IconVolume2 size={12} />}
-                </button>
-                <input
-                  type="range" min={0} max={1} step={0.05}
-                  value={volume}
-                  onChange={(e) => handleVolumeChange(Number(e.target.value))}
-                  className={classes.audioVolumeSlider}
-                />
-              </div>
-            </div>
-            <audio
-              ref={audioRef}
-              src={audioUrl}
-              onEnded={() => setIsPlaying(false)}
-              onTimeUpdate={() => audioRef.current && setCurrentTime(audioRef.current.currentTime)}
-              onLoadedMetadata={() => audioRef.current && setDuration(audioRef.current.duration)}
-              style={{ display: 'none' }}
-            />
-          </div>
-        </div>
+        <>
+          <MiniAudioPlayer
+            isPlaying={isPlaying}
+            onTogglePlay={togglePlay}
+            currentTime={currentTime}
+            duration={duration}
+            onSeek={handleSeek}
+          />
+          <audio
+            ref={audioRef}
+            src={audioUrl}
+            onEnded={() => setIsPlaying(false)}
+            onTimeUpdate={() => audioRef.current && setCurrentTime(audioRef.current.currentTime)}
+            onLoadedMetadata={() => audioRef.current && setDuration(audioRef.current.duration)}
+            style={{ display: 'none' }}
+          />
+        </>
       )}
 
       <div className={classes.sectionHeader} style={{ marginBottom: 24 }}>

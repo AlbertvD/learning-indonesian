@@ -31,7 +31,7 @@
 .content {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 72px;
+  padding-bottom: 100px;
 }
 
 /* Bottom nav */
@@ -40,9 +40,8 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 60px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-around;
   background: rgba(11,11,18,0.85);
   backdrop-filter: blur(24px);
@@ -51,18 +50,22 @@
   z-index: 200;
   /* safe area for phones with home indicator */
   padding-bottom: env(safe-area-inset-bottom);
+  padding-top: 8px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  gap: 4px;
 }
 
 .navBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  flex: 1;
+  padding: 0;
   border-radius: var(--r-md);
   color: rgba(255,255,255,0.35);
   text-decoration: none;
   transition: color .15s;
+  aspect-ratio: 1;
 }
 
 .navBtn:hover {
@@ -71,6 +74,22 @@
 
 .navActive {
   color: var(--purple);
+}
+
+.navBtnContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.navLabel {
+  font-family: var(--display);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  color: currentColor;
 }
 
 /* Light theme */
