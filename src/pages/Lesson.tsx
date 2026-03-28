@@ -186,13 +186,7 @@ export function Lesson() {
           startSession(user.id, 'lesson')
         ])
 
-        // Reorder sections so grammar comes first
-        const sections = [...lessonData.lesson_sections].sort((a, b) => {
-          const aIsGrammar = (a.content as { type?: string }).type === 'grammar' ? -1 : 0
-          const bIsGrammar = (b.content as { type?: string }).type === 'grammar' ? -1 : 0
-          return aIsGrammar - bIsGrammar
-        })
-        setLesson({ ...lessonData, lesson_sections: sections })
+        setLesson(lessonData)
         sessionIdRef.current = sid
 
         // Fetch existing progress
