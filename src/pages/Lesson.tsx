@@ -314,14 +314,31 @@ export function Lesson() {
           {lesson.title.replace(/\s*\([^)]*\)/g, '')}
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button
+            className={`${classes.btn} ${classes.btnGhost}`}
+            onClick={handleBack}
+            disabled={currentSectionIndex === 0}
+            style={{ opacity: currentSectionIndex === 0 ? 0.3 : 1, padding: '6px 10px' }}
+          >
+            <IconChevronLeft size={14} />
+            {T.lessons.previous}
+          </button>
           <div className={classes.progressDots}>
             {lesson.lesson_sections.map((_, i) => (
-              <div 
-                key={i} 
-                className={`${classes.dot} ${i < currentSectionIndex ? classes.dotDone : ''} ${i === currentSectionIndex ? classes.dotCurr : ''}`} 
+              <div
+                key={i}
+                className={`${classes.dot} ${i < currentSectionIndex ? classes.dotDone : ''} ${i === currentSectionIndex ? classes.dotCurr : ''}`}
               />
             ))}
           </div>
+          <button
+            className={`${classes.btn} ${classes.btnGhost}`}
+            onClick={handleNext}
+            style={{ padding: '6px 10px' }}
+          >
+            {currentSectionIndex === lesson.lesson_sections.length - 1 ? T.lessons.finishLesson : T.lessons.nextSection}
+            <IconChevronRight size={14} />
+          </button>
           <span className={classes.caption}>{currentSectionIndex + 1} {T.lessons.of} {lesson.lesson_sections.length}</span>
         </div>
       </div>
@@ -369,8 +386,8 @@ export function Lesson() {
           <IconChevronLeft size={16} />
           {T.lessons.previous}
         </button>
-        <button 
-          className={`${classes.btn} ${classes.btnPrimary} ${classes.btnLg}`}
+        <button
+          className={`${classes.btn} ${classes.btnGhost}`}
           onClick={handleNext}
         >
           {currentSectionIndex === lesson.lesson_sections.length - 1 ? T.lessons.finishLesson : T.lessons.nextSection}
