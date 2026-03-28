@@ -309,26 +309,6 @@ export const lessons: LessonData[] = [
     transcript_english: null,
     sections: [
       {
-        title: 'Cultuur: Boeddhisme en de Borobudur',
-        content: {
-          type: 'text',
-          intro: 'Het boeddhisme ontstond in de 6e eeuw voor Christus en verspreidde zich van Noord-India over heel Azië. Het is een verlossingsleer die ervan uitgaat dat de mens na de dood telkens herboren wordt (reïncarnatie). Tijdens het leven ondervindt de mens keer op keer leed: teleurstellingen, liefdesverdriet, ziekte of dood. Om zichzelf van deze lijdensweg te verlossen, kan men proberen zich volledig te onthechten van al het aardse (zowel materieel als geestelijk). Heeft men volledige onthechting bereikt dan gaat men op in het Nirwana. Het Nirwana is een toestand waarin absolute stilte heerst en van waaruit men nooit meer wordt herboren.',
-          paragraphs: [
-            'Om deze onthechting te bereiken, heeft Boeddha een leerproces van diverse stadia uitgewerkt. Deze stadia worden onder andere in de bouwvorm van de Borobudur weerspiegeld.',
-            'Het boeddhisme kent twee hoofdstromingen: het Hinayana, de leer van het "Kleine Wiel", en het Mahayana, de leer van het "Grote Wiel". Het wiel is het symbool van het boeddhisme en staat voor de wijsheid van Boeddha. Het Hinayana houdt zich zo veel mogelijk aan de leer van Boeddha en wordt beschouwd als een strenge leer. Bij het Mahayana zijn lokale opvattingen en gebruiken toegestaan. Het Mahayana stelt het welzijn van de maatschappij boven dat van de enkeling (in tegenstelling tot het Hinayana waar individuele onthechting centraal staat).',
-            'Het boeddhisme werd vermoedelijk in de 4e eeuw na Christus in Indonesië geïntroduceerd. In het rijk van Srivijaya (7e–8e eeuw), dat naar men aanneemt gevestigd was op Sumatra, ontstond zelfs een bekend boeddhistisch-religieus centrum.',
-            'Bij de Borobudur, in Midden-Java, moeten vroeger op het grote open veld rondom het complex vele houten gebouwen voor monniken en pelgrims hebben gestaan. De Borobudur werd gebouwd in de 8e eeuw na Christus. Het bouwen ervan wordt gerekend tot een van de grootste prestaties van de mensheid. Voor de bouw zijn vermoedelijk gedurende tientallen jaren meer dan 50.000 vakbekwame werklieden ingeschakeld.',
-            'Elke galerij is versierd met beeldhouwwerk tot aan het hoogste terras waar de sfeer van de vormloosheid heerst en de punt van de stupa het oog leidt naar de onmetelijke wereld boven ons.',
-          ],
-          borobudur_levels: [
-            { code: 'A', name: 'Kamadhatu', dutch: 'sfeer van de begeerte' },
-            { code: 'B', name: 'Rupadhatu', dutch: 'sfeer van de vorm' },
-            { code: 'C', name: 'Arupadhatu', dutch: 'sfeer van de vormloosheid' },
-          ],
-        },
-        order_index: 0,
-      },
-      {
         title: 'Di Indonesia (dialoog)',
         content: {
           type: 'dialogue',
@@ -348,12 +328,12 @@ export const lessons: LessonData[] = [
             { speaker: 'Bapak Barends', text: 'Sampai bertemu lagi, Pak.' },
           ],
         },
-        order_index: 1,
+        order_index: 0,
       },
       {
         title: 'Woordenlijst',
         content: {
-          type: 'vocabulary',
+          type: 'exercises',
           items: [
             { indonesian: 'ada', dutch: 'er is, er zijn; hebben' },
             { indonesian: 'apel', dutch: 'appel' },
@@ -408,29 +388,42 @@ export const lessons: LessonData[] = [
             { indonesian: 'tomat', dutch: 'tomaat' },
             { indonesian: 'turis', dutch: 'toerist' },
           ],
-          expressions: [
+        },
+        order_index: 1,
+      },
+      {
+        title: 'Uitdrukkingen',
+        content: {
+          type: 'exercises',
+          items: [
             { indonesian: 'sampai bertemu lagi', dutch: 'tot (weer)ziens' },
             { indonesian: 'saya pulang dulu', dutch: 'dan ga ik maar (naar huis)' },
             { indonesian: 'selamat siang', dutch: 'goedendag, goedemiddag' },
           ],
-          numbers: [
-            { number: 11, indonesian: 'sebelas' },
-            { number: 12, indonesian: 'dua belas' },
-            { number: 13, indonesian: 'tiga belas' },
-            { number: 14, indonesian: 'empat belas' },
-            { number: 15, indonesian: 'lima belas' },
-            { number: 16, indonesian: 'enam belas' },
-            { number: 17, indonesian: 'tujuh belas' },
-            { number: 18, indonesian: 'delapan belas' },
-            { number: 19, indonesian: 'sembilan belas' },
-            { number: 20, indonesian: 'dua puluh' },
-          ],
-          numbers_note: 'De telwoorden boven de 11 worden in losse eenheden geschreven.',
         },
         order_index: 2,
       },
       {
-        title: 'Telwoorden: het voorvoegsel SE-',
+        title: 'Telwoorden',
+        content: {
+          type: 'exercises',
+          items: [
+            { indonesian: 'sebelas', dutch: '11' },
+            { indonesian: 'dua belas', dutch: '12' },
+            { indonesian: 'tiga belas', dutch: '13' },
+            { indonesian: 'empat belas', dutch: '14' },
+            { indonesian: 'lima belas', dutch: '15' },
+            { indonesian: 'enam belas', dutch: '16' },
+            { indonesian: 'tujuh belas', dutch: '17' },
+            { indonesian: 'delapan belas', dutch: '18' },
+            { indonesian: 'sembilan belas', dutch: '19' },
+            { indonesian: 'dua puluh', dutch: '20' },
+          ],
+        },
+        order_index: 3,
+      },
+      {
+        title: 'Het voorvoegsel SE-',
         content: {
           type: 'grammar',
           intro: 'Bij andere woorden dan telwoorden heeft SE- de betekenis van het onbepaald lidwoord "een" (\'n). Dikwijls wordt SE- gebruikt in combinatie met een classificeerwoord. Dit woord deelt het zelfstandig naamwoord in bij een bepaalde groep (bijvoorbeeld mensen, dieren, voorwerpen).',
@@ -446,7 +439,7 @@ export const lessons: LessonData[] = [
             },
           ],
         },
-        order_index: 3,
+        order_index: 4,
       },
       {
         title: 'Grammatica: Zinsbouw en woordgroepen',
@@ -475,7 +468,7 @@ export const lessons: LessonData[] = [
             { indonesian: '/Taksi ini/ /murah/', dutch: 'Deze taxi is goedkoop' },
           ],
         },
-        order_index: 4,
+        order_index: 5,
       },
       {
         title: 'Grammatica: ini & itu',
@@ -523,7 +516,7 @@ export const lessons: LessonData[] = [
             },
           ],
         },
-        order_index: 5,
+        order_index: 6,
       },
       {
         title: 'Grammatica: Ontkenning met tidak',
@@ -543,7 +536,7 @@ export const lessons: LessonData[] = [
             },
           ],
         },
-        order_index: 6,
+        order_index: 7,
       },
       {
         title: 'Grammatica: Bijvoeglijk naamwoord',
@@ -583,7 +576,7 @@ export const lessons: LessonData[] = [
             },
           ],
         },
-        order_index: 7,
+        order_index: 8,
       },
       {
         title: 'Oefeningen',
@@ -669,7 +662,27 @@ export const lessons: LessonData[] = [
             },
           ],
         },
-        order_index: 8,
+        order_index: 9,
+      },
+      {
+        title: 'Cultuur: Boeddhisme en de Borobudur',
+        content: {
+          type: 'text',
+          intro: 'Het boeddhisme ontstond in de 6e eeuw voor Christus en verspreidde zich van Noord-India over heel Azië. Het is een verlossingsleer die ervan uitgaat dat de mens na de dood telkens herboren wordt (reïncarnatie). Tijdens het leven ondervindt de mens keer op keer leed: teleurstellingen, liefdesverdriet, ziekte of dood. Om zichzelf van deze lijdensweg te verlossen, kan men proberen zich volledig te onthechten van al het aardse (zowel materieel als geestelijk). Heeft men volledige onthechting bereikt dan gaat men op in het Nirwana. Het Nirwana is een toestand waarin absolute stilte heerst en van waaruit men nooit meer wordt herboren.',
+          paragraphs: [
+            'Om deze onthechting te bereiken, heeft Boeddha een leerproces van diverse stadia uitgewerkt. Deze stadia worden onder andere in de bouwvorm van de Borobudur weerspiegeld.',
+            'Het boeddhisme kent twee hoofdstromingen: het Hinayana, de leer van het "Kleine Wiel", en het Mahayana, de leer van het "Grote Wiel". Het wiel is het symbool van het boeddhisme en staat voor de wijsheid van Boeddha. Het Hinayana houdt zich zo veel mogelijk aan de leer van Boeddha en wordt beschouwd als een strenge leer. Bij het Mahayana zijn lokale opvattingen en gebruiken toegestaan. Het Mahayana stelt het welzijn van de maatschappij boven dat van de enkeling (in tegenstelling tot het Hinayana waar individuele onthechting centraal staat).',
+            'Het boeddhisme werd vermoedelijk in de 4e eeuw na Christus in Indonesië geïntroduceerd. In het rijk van Srivijaya (7e–8e eeuw), dat naar men aanneemt gevestigd was op Sumatra, ontstond zelfs een bekend boeddhistisch-religieus centrum.',
+            'Bij de Borobudur, in Midden-Java, moeten vroeger op het grote open veld rondom het complex vele houten gebouwen voor monniken en pelgrims hebben gestaan. De Borobudur werd gebouwd in de 8e eeuw na Christus. Het bouwen ervan wordt gerekend tot een van de grootste prestaties van de mensheid. Voor de bouw zijn vermoedelijk gedurende tientallen jaren meer dan 50.000 vakbekwame werklieden ingeschakeld.',
+            'Elke galerij is versierd met beeldhouwwerk tot aan het hoogste terras waar de sfeer van de vormloosheid heerst en de punt van de stupa het oog leidt naar de onmetelijke wereld boven ons.',
+          ],
+          borobudur_levels: [
+            { code: 'A', name: 'Kamadhatu', dutch: 'sfeer van de begeerte' },
+            { code: 'B', name: 'Rupadhatu', dutch: 'sfeer van de vorm' },
+            { code: 'C', name: 'Arupadhatu', dutch: 'sfeer van de vormloosheid' },
+          ],
+        },
+        order_index: 10,
       },
     ],
   },
