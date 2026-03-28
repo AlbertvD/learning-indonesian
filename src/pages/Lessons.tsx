@@ -65,12 +65,13 @@ export function Lessons() {
               className={`${classes.lessonCard} ${done ? classes.done : ''}`}
             >
               <div className={classes.lessonIcon}>
-                <IconBook size={16} />
+                <IconBook size={18} />
               </div>
               <div className={classes.lessonInfo}>
                 <div className={classes.lessonTitle}>{lesson.title.replace(/\s*\([^)]*\)/g, '')}</div>
               </div>
               <span className={classes.lessonArrow}><IconChevronRight size={15} /></span>
+              <div className={classes.progressBar} />
             </Link>
           )
         })}
