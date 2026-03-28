@@ -1,6 +1,6 @@
 // src/pages/Lesson.tsx
 import { useEffect, useRef, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Container, Center, Loader, Text } from '@mantine/core'
 import { IconChevronLeft, IconChevronRight, IconCheck } from '@tabler/icons-react'
 import { lessonService, type Lesson } from '@/services/lessonService'
@@ -19,7 +19,9 @@ type ExerciseSection = { title: string; items: ExerciseItem[] }
 type PhoneticExample = { indonesian: string; phonetic: string; dutch: string }
 type SpellingRule = { rule: string; example: string; dutch: string }
 type SimpleSentence = { indonesian: string; dutch: string }
-type GrammarCategory = { title: string; rules: string[] }
+type TextData = { type: 'text'; intro?: string; paragraphs?: string[]; examples?: PhoneticExample[]; spelling?: SpellingRule[]; sentences?: SimpleSentence[] }
+type GrammarTableRow = { word: string; asks?: string; dutch?: string; example?: string; combinations?: string[] }
+type GrammarCategory = { title: string; rules?: string[]; table?: GrammarTableRow[] }
 type DialogueLine = { speaker: string; text: string; translation?: string }
 type PronunciationLetter = { letter: string; rule: string; examples: string[] }
 
@@ -73,16 +75,24 @@ function SectionContent({ content }: { content: unknown }) {
   }
 
   if (data?.type === 'text') {
+    const textData = data as unknown as TextData
     return (
       <>
-        {data.intro && <div className={classes.lessonIntro}>{data.intro}</div>}
+        {textData.intro && <div className={classes.lessonIntro}>{textData.intro}</div>}
+        {textData.paragraphs && textData.paragraphs.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 24 }}>
+            {textData.paragraphs.map((p, i) => (
+              <div key={i} className={classes.lessonIntro} style={{ marginBottom: 0 }}>{p}</div>
+            ))}
+          </div>
+        )}
         
-        {data.examples && data.examples.length > 0 && (
+        {textData.examples && textData.examples.length > 0 && (
           <>
             <div className={classes.contentSectionLabel}>{T.lessons.examples}</div>
             <div style={{ marginBottom: 32 }}>
               <div className={classes.phraseList}>
-                {data.examples.map((ex, i) => (
+                {textData.examples.map((ex, i) => (
                   <div key={i} className={classes.phraseRow}>
                     <div>
                       <div className={classes.phraseIndo} style={{ fontWeight: 400 }}>{ex.indonesian}</div>
@@ -96,11 +106,11 @@ function SectionContent({ content }: { content: unknown }) {
           </>
         )}
 
-        {data.spelling && data.spelling.length > 0 && (
+        {textData.spelling && textData.spelling.length > 0 && (
           <>
             <div className={classes.contentSectionLabel}>{T.lessons.spelling}</div>
             <div className={classes.spellingGrid} style={{ marginBottom: 32 }}>
-              {data.spelling.map((s, i) => (
+              {textData.spelling.map((s, i) => (
                 <div key={i} className={classes.spellingChip}>
                   <div className={classes.spellingRule}>{s.rule}</div>
                   <div className={classes.spellingExample}>{s.example}</div>
@@ -111,11 +121,11 @@ function SectionContent({ content }: { content: unknown }) {
           </>
         )}
 
-        {data.sentences && data.sentences.length > 0 && (
+        {textData.sentences && textData.sentences.length > 0 && (
           <>
             <div>
               <div className={classes.sentenceList}>
-                {data.sentences.map((s, i) => (
+                {textData.sentences.map((s, i) => (
                   <div key={i} className={classes.sentenceRow}>
                     <div className={classes.sentenceIndo}>{s.indonesian}</div>
                     <div className={classes.sentenceDutch}>{s.dutch}</div>
@@ -137,13 +147,37 @@ function SectionContent({ content }: { content: unknown }) {
           {data.categories.map((cat, i) => (
             <div key={i} className={classes.grammarCategory}>
               <div className={classes.grammarTitle}>{cat.title}</div>
-              <div className={classes.grammarRules}>
-                {cat.rules.map((rule, j) => (
-                  <div key={j} className={classes.grammarRule}>
-                    <IndoText text={rule} />
-                  </div>
-                ))}
-              </div>
+              {cat.rules && cat.rules.length > 0 && (
+                <div className={classes.grammarRules}>
+                  {cat.rules.map((rule, j) => (
+                    <div key={j} className={classes.grammarRule}>
+                      <IndoText text={rule} />
+                    </div>
+                  ))}
+                </div>
+              )}
+              {cat.table && cat.table.length > 0 && (
+                <div className={classes.phraseList}>
+                  {cat.table.map((row, j) => (
+                    <div key={j}>
+                      <div className={classes.phraseRow}>
+                        <div className={classes.phraseIndo}>{row.word}</div>
+                        <div className={classes.phraseDutch}>{row.asks ?? row.dutch}</div>
+                      </div>
+                      {row.combinations && row.combinations.length > 0 && (
+                        <div style={{ paddingLeft: 16, marginBottom: 4 }}>
+                          {row.combinations.map((c, k) => (
+                            <div key={k} className={classes.phrasePhonetic}>{c}</div>
+                          ))}
+                        </div>
+                      )}
+                      {row.example && (
+                        <div style={{ paddingLeft: 16, marginBottom: 8 }} className={classes.phrasePhonetic}>{row.example}</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
               {i < data.categories.length - 1 && <div className={classes.divider} />}
             </div>
           ))}
@@ -198,11 +232,13 @@ function SectionContent({ content }: { content: unknown }) {
 export function Lesson() {
   const { lessonId } = useParams<{ lessonId: string }>()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const T = useT()
   const user = useAuthStore((state) => state.user)
   
   const [lesson, setLesson] = useState<Lesson | null>(null)
-  const [currentSectionIndex, setCurrentSectionIndex] = useState(0)
+  const initialSection = Math.max(0, parseInt(searchParams.get('section') ?? '0', 10) || 0)
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(initialSection)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const sessionIdRef = useRef<string | null>(null)
@@ -225,6 +261,7 @@ export function Lesson() {
 
         setLesson(lessonData)
         sessionIdRef.current = sid
+        setCurrentSectionIndex((prev) => Math.min(prev, lessonData.lesson_sections.length - 1))
 
         // Fetch existing progress
         const progress = await lessonService.getUserLessonProgress(user.id)

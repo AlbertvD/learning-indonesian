@@ -83,7 +83,7 @@
   height: 2px;
 }
 
-.statCardPurple::after { background: linear-gradient(90deg, var(--purple), transparent); }
+.statCardPurple::after { background: linear-gradient(90deg, var(--accent-primary), transparent); }
 .statCardOrange::after { background: linear-gradient(90deg, var(--warning), transparent); }
 .statCardTeal::after   { background: linear-gradient(90deg, var(--teal), transparent); }
 

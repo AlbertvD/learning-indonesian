@@ -56,6 +56,16 @@ export const lessonService = {
     return data.publicUrl
   },
 
+  async getLessonsBasic(): Promise<{ id: string; order_index: number }[]> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('lessons')
+      .select('id, order_index')
+      .order('order_index')
+    if (error) throw error
+    return (data ?? []) as { id: string; order_index: number }[]
+  },
+
   async getUserLessonProgress(userId: string): Promise<import('@/types/progress').LessonProgress[]> {
     const { data, error } = await supabase
       .schema('indonesian')

@@ -1,13 +1,13 @@
 // src/pages/Dashboard.tsx
 import { useEffect, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import {
   Container,
   Center,
   Loader,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconBook, IconCards, IconMicrophone, IconChevronRight } from '@tabler/icons-react'
+import { IconBook, IconChevronRight } from '@tabler/icons-react'
 import { cardService } from '@/services/cardService'
 import { lessonService } from '@/services/lessonService'
 import { useAuthStore } from '@/stores/authStore'
@@ -16,7 +16,6 @@ import { logError } from '@/lib/logger'
 import classes from './Dashboard.module.css'
 
 export function Dashboard() {
-  const navigate = useNavigate()
   const T = useT()
   const user = useAuthStore((state) => state.user)
   const profile = useAuthStore((state) => state.profile)
@@ -24,18 +23,35 @@ export function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [dueCardsCount, setDueCardsCount] = useState(0)
   const [lessonsCompletedCount, setLessonsCompletedCount] = useState(0)
+  const [continueUrl, setContinueUrl] = useState('/lessons')
 
   useEffect(() => {
     async function fetchData() {
       if (!user) return
       try {
-        const [dueCards, lessonProgress] = await Promise.all([
+        const [dueCards, lessonProgress, lessons] = await Promise.all([
           cardService.getDueCards(user.id),
           lessonService.getUserLessonProgress(user.id),
+          lessonService.getLessonsBasic(),
         ])
         setDueCardsCount(dueCards.length)
         const completed = lessonProgress.filter((lp) => lp.completed_at != null)
         setLessonsCompletedCount(completed.length)
+
+        // Find the lesson to continue: first in-progress (started but not done), else first not started
+        const inProgress = lessons.find((l) => {
+          const p = lessonProgress.find((lp) => lp.lesson_id === l.id)
+          return p && p.completed_at == null && p.sections_completed.length > 0
+        })
+        const notStarted = lessons.find((l) =>
+          !lessonProgress.find((lp) => lp.lesson_id === l.id)
+        )
+        const target = inProgress ?? notStarted
+        if (target) {
+          const progress = lessonProgress.find((lp) => lp.lesson_id === target.id)
+          const sectionIndex = progress?.sections_completed.length ?? 0
+          setContinueUrl(`/lessons/${target.id}?section=${sectionIndex}`)
+        }
       } catch (err) {
         logError({ page: 'dashboard', action: 'fetchData', error: err })
         notifications.show({
@@ -53,7 +69,7 @@ export function Dashboard() {
   if (loading) {
     return (
       <Center h="50vh">
-        <Loader size="xl" color="violet" />
+        <Loader size="xl" color="cyan" />
       </Center>
     )
   }
@@ -89,7 +105,7 @@ export function Dashboard() {
 
       <div className={classes.continueSection}>
         <span className={classes.sectionLabel}>{T.dashboard.continueWhereYouLeftOff}</span>
-        <Link to="/lessons" className={classes.continueCard}>
+        <Link to={continueUrl} className={classes.continueCard}>
           <div className={classes.continueIcon}>
             <IconBook size={20} style={{ opacity: 0.7 }} />
           </div>
@@ -101,28 +117,6 @@ export function Dashboard() {
         </Link>
       </div>
 
-      <div className={classes.actionsSection}>
-        <span className={classes.sectionLabel}>{T.dashboard.quickActions}</span>
-        <div className={classes.actions}>
-          <button className={`${classes.btn} ${classes.btnPrimary}`} onClick={() => navigate('/lessons')}>
-            <IconBook size={16} />
-            {T.dashboard.continueLearning}
-          </button>
-          <button className={`${classes.btn} ${classes.btnOutline}`} onClick={() => navigate('/review')}>
-            <IconCards size={16} />
-            {T.dashboard.reviewCards}
-            {dueCardsCount > 0 && (
-              <span className={`${classes.badge} ${classes.badgeOrange}`} style={{ marginLeft: 2 }}>
-                {dueCardsCount}
-              </span>
-            )}
-          </button>
-          <button className={`${classes.btn} ${classes.btnGhost}`} onClick={() => navigate('/podcasts')}>
-            <IconMicrophone size={16} />
-            {T.dashboard.browsePodcasts}
-          </button>
-        </div>
-      </div>
     </Container>
   )
 }
