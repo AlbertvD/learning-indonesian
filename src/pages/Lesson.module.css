@@ -201,8 +201,6 @@
   font-size: 14px;
   color: var(--text-2);
   line-height: 1.6;
-  padding: 16px 18px;
-  border-left: 3px solid var(--accent-primary);
   margin-bottom: 32px;
 }
 
@@ -527,9 +525,6 @@
   border-color: rgba(0,0,0,0.05);
 }
 
-:global(html[data-mantine-color-scheme="light"]) .lessonIntro {
-  border-left-color: var(--accent-primary);
-}
 
 :global(html[data-mantine-color-scheme="light"]) .contentSectionLabel::after {
   background: var(--border);
