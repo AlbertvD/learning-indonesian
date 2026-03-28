@@ -7,24 +7,6 @@ on:
     branches: [main]
 
 jobs:
-  # Safety evals: destructive-op-check, gitleaks (secret detection),
-  # semgrep (SAST), OpenBrain lesson check.
-  # Requires: PLATFORM_TOKEN secret (fine-grained PAT, contents:read on homelab-platform)
-  # Optional: OPENBRAIN_KEY secret + OPENBRAIN_URL variable — lesson gate skips gracefully if absent
-# OPENBRAIN_KEY and OPENBRAIN_URL are now configured
   safety:
     uses: AlbertvD/homelab-platform/.github/workflows/safety.yml@main
-    secrets: inherit
-
-  # 4-layer test suite: unit, API contract, auth/RLS, E2E.
-  # Currently disabled — enable layers as staging credentials are added:
-  #   Add secrets: API_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY (staging instance)
-  #   Then flip run_unit / run_api / run_auth to true.
-  test:
-    uses: AlbertvD/homelab-platform/.github/workflows/test.yml@main
-    with:
-      run_unit: false
-      run_api: false
-      run_auth: false
-      run_e2e: false
     secrets: inherit
