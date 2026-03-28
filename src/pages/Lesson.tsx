@@ -85,7 +85,7 @@ function SectionContent({ content }: { content: unknown }) {
                 {data.examples.map((ex, i) => (
                   <div key={i} className={classes.phraseRow}>
                     <div>
-                      <div className={classes.phraseIndo}>{ex.indonesian}</div>
+                      <div className={classes.phraseIndo} style={{ fontWeight: 400 }}>{ex.indonesian}</div>
                       <div className={classes.phrasePhonetic}>{ex.phonetic}</div>
                     </div>
                     <div className={classes.phraseDutch}>{ex.dutch}</div>
