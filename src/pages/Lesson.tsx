@@ -10,7 +10,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
 import { useT } from '@/hooks/useT'
-import { highlightPrefixes } from '@/lib/highlightPrefixes'
+import { IndoText } from '@/components/IndoText'
 import { MiniAudioPlayer } from '@/components/MiniAudioPlayer'
 import classes from './Lesson.module.css'
 
@@ -116,7 +116,9 @@ function SectionContent({ content }: { content: unknown }) {
               <div className={classes.grammarTitle}>{cat.title}</div>
               <div className={classes.grammarRules}>
                 {cat.rules.map((rule, j) => (
-                  <div key={j} className={classes.grammarRule}>{highlightPrefixes(rule)}</div>
+                  <div key={j} className={classes.grammarRule}>
+                    <IndoText text={rule} />
+                  </div>
                 ))}
               </div>
               {i < data.categories.length - 1 && <div className={classes.divider} />}

@@ -1,49 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* Dark theme (default) */
-  --bg:     #0b0b10;
-  --surf-1: #111118;
-  --surf-2: #18181f;
-  --surf-3: #1f1f29;
-  --surf-4: #28283c;
-  --border:       #28283c;
-  --border-light: #34344e;
+  /* Design System Color Tokens (Dark Theme) */
+  /* Backgrounds - News App Depth Layering */
+  --bg-main:      #000000;     /* Deepest layer */
+  --bg-surface:   #1C1C1E;     /* Cards, list items, input fields */
+  --bg-hover:     #2C2C2E;     /* Active states or dividers */
 
-  --purple:        #8b6cf5;
-  --purple-dim:    #6b50cc;
-  --purple-bright: #a78bfa;
-  --purple-glow:   rgba(139,108,245,0.16);
-  --purple-subtle: rgba(139,108,245,0.09);
-  --teal:         #3ecfbf;
-  --teal-subtle:  rgba(62,207,191,0.10);
-  --success:         #4eca7a;
-  --success-subtle:  rgba(78,202,122,0.10);
-  --danger:          #f06969;
-  --danger-subtle:   rgba(240,105,105,0.10);
-  --warning:         #f0a940;
-  --warning-subtle:  rgba(240,169,64,0.10);
+  /* Accent & Interactive */
+  --accent-primary: #8E55FF;   /* Progress, active icons, branding */
 
-  --text-1: #eeedf6;
-  --text-2: #9490aa;
-  --text-3: #55517a;
+  /* Text */
+  --text-primary:   #FFFFFF;   /* Headlines and main content */
+  --text-secondary: #8E8E93;   /* Metadata, labels, and hints */
 
-  --display: 'Poppins', system-ui, sans-serif;
-  --sans:    'Open Sans', system-ui, sans-serif;
+  /* Status */
+  --status-success: #32D74B;   /* Completed tasks */
+
+  /* Legacy mappings (kept for compatibility) */
+  --bg:     #000000;
+  --surf-1: #1C1C1E;
+  --surf-2: #2C2C2E;
+  --surf-3: #2C2C2E;
+  --surf-4: #3C3C3E;
+  --border:       #2C2C2E;
+  --border-light: #3C3C3E;
+
+  --purple:        #8E55FF;
+  --purple-dim:    #6E42CC;
+  --purple-bright: #A973FF;
+  --purple-glow:   rgba(142,85,255,0.16);
+  --purple-subtle: rgba(142,85,255,0.09);
+  --teal:         #00C7BE;
+  --teal-subtle:  rgba(0,199,190,0.10);
+  --success:         #32D74B;
+  --success-subtle:  rgba(50,215,75,0.10);
+  --danger:          #FF453A;
+  --danger-subtle:   rgba(255,69,58,0.10);
+  --warning:         #FF9500;
+  --warning-subtle:  rgba(255,149,0,0.10);
+
+  --text-1: #FFFFFF;
+  --text-2: #8E8E93;
+  --text-3: #55525C;
+
+  --display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --sans:    'Plus Jakarta Sans', system-ui, sans-serif;
 
   --r-sm: 6px;
   --r-md: 10px;
-  --r-lg: 16px;
+  --r-lg: 12px;
   --r-xl: 24px;
 }
 
 html, body {
   background:
-    radial-gradient(ellipse 75% 55% at 85% 5%,  rgba(139,108,245,0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 55% 45% at 5%  90%,  rgba(62,207,191,0.10)  0%, transparent 55%),
-    radial-gradient(ellipse 90% 50% at 50% 115%, rgba(90,30,140,0.25)   0%, transparent 60%),
-    var(--bg);
-  color: var(--text-1);
+    radial-gradient(ellipse 75% 55% at 85% 5%,  rgba(142,85,255,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 5%  90%,  rgba(0,199,190,0.08)  0%, transparent 55%),
+    radial-gradient(ellipse 90% 50% at 50% 115%, rgba(142,85,255,0.10) 0%, transparent 60%),
+    var(--bg-main);
+  color: var(--text-primary);
   font-family: var(--sans);
   font-size: 14px;
   line-height: 1.65;
@@ -52,36 +70,49 @@ html, body {
 
 /* Light theme — toggled via html[data-mantine-color-scheme="light"] */
 html[data-mantine-color-scheme="light"] {
-  --bg:           #eef5ff;
-  --surf-1:       #ffffff;
-  --surf-2:       #e4f0ff;
-  --surf-3:       #d5e8ff;
-  --surf-4:       #c2d9f8;
-  --border:       #ccdff5;
-  --border-light: #b5cff0;
-  --text-1:       #0d1f3c;
-  --text-2:       #3a5882;
-  --text-3:       #7a99c0;
-  --purple:       #5b6ef5;
-  --purple-dim:   #4a5be0;
-  --purple-bright:#6e80ff;
-  --purple-subtle: rgba(91,110,245,0.08);
-  --teal:         #1ab8a8;
-  --teal-subtle:  rgba(26,184,168,0.10);
-  --success:      #1fa85a;
-  --success-subtle: rgba(31,168,90,0.10);
-  --danger:       #d94040;
-  --danger-subtle: rgba(217,64,64,0.10);
-  --warning:      #d48a10;
-  --warning-subtle: rgba(212,138,16,0.10);
+  /* Light mode adapts design tokens for readability */
+  --bg-main:      #FFFFFF;
+  --bg-surface:   #F5F5F7;
+  --bg-hover:     #E8E8ED;
+
+  --accent-primary: #8E55FF;
+
+  --text-primary:   #000000;
+  --text-secondary: #86868B;
+
+  --status-success: #32D74B;
+
+  /* Legacy mappings */
+  --bg:           #FFFFFF;
+  --surf-1:       #F5F5F7;
+  --surf-2:       #E8E8ED;
+  --surf-3:       #E0E0E5;
+  --surf-4:       #D1D1D9;
+  --border:       #D1D1D9;
+  --border-light: #E5E5EA;
+  --text-1:       #000000;
+  --text-2:       #86868B;
+  --text-3:       #A2A2A7;
+  --purple:       #8E55FF;
+  --purple-dim:   #6E42CC;
+  --purple-bright:#A973FF;
+  --purple-subtle: rgba(142,85,255,0.08);
+  --teal:         #00C7BE;
+  --teal-subtle:  rgba(0,199,190,0.10);
+  --success:      #32D74B;
+  --success-subtle: rgba(50,215,75,0.10);
+  --danger:       #FF453A;
+  --danger-subtle: rgba(255,69,58,0.10);
+  --warning:      #FF9500;
+  --warning-subtle: rgba(255,149,0,0.10);
 }
 
 html[data-mantine-color-scheme="light"] body {
   background:
-    radial-gradient(ellipse 70% 50% at 85% 5%,  rgba(120,160,255,0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 5%  90%,  rgba(26,184,168,0.10)  0%, transparent 55%),
-    radial-gradient(ellipse 80% 45% at 50% 120%, rgba(91,110,245,0.12)  0%, transparent 60%),
-    var(--bg);
+    radial-gradient(ellipse 70% 50% at 85% 5%,  rgba(142,85,255,0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 5%  90%,  rgba(0,199,190,0.08)  0%, transparent 55%),
+    radial-gradient(ellipse 80% 45% at 50% 120%, rgba(142,85,255,0.08) 0%, transparent 60%),
+    var(--bg-main);
 }
 
 #root {

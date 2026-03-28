@@ -14,9 +14,24 @@ import './index.css'
 const theme = createTheme({
   primaryColor: 'violet',
   defaultRadius: 'md',
-  fontFamily: "'Open Sans', system-ui, sans-serif",
+  fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
   fontFamilyMonospace: "'Courier New', monospace",
-  headings: { fontFamily: "'Poppins', system-ui, sans-serif" },
+  headings: { fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" },
+
+  colors: {
+    violet: [
+      '#F3E8FF',
+      '#E9D5FF',
+      '#D8B4FE',
+      '#C084FC',
+      '#A855F7',
+      '#9333EA',
+      '#7E22CE',
+      '#6B21A8',
+      '#581C87',
+      '#3F0F5C',
+    ],
+  },
 })
 
 const colorSchemeManager = localStorageColorSchemeManager({ key: 'indonesian-color-scheme' })

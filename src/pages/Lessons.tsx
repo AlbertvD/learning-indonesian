@@ -45,19 +45,32 @@ export function Lessons() {
     )
   }
 
-  const isCompleted = (lessonId: string) => 
-    progress.some(p => p.lesson_id === lessonId && p.completed_at)
+  const getCompletionPercentage = (lessonId: string) => {
+    const lessonData = lessons.find(l => l.id === lessonId)
+    const lessonProgress = progress.find(p => p.lesson_id === lessonId)
 
+    if (!lessonData || !lessonProgress) return 0
+
+    const totalSections = lessonData.lesson_sections?.length || 0
+    const completedSections = lessonProgress.sections_completed?.length || 0
+
+    if (totalSections === 0) return 0
+    return Math.round((completedSections / totalSections) * 100)
+  }
+
+  const isCompleted = (lessonId: string) =>
+    progress.some(p => p.lesson_id === lessonId && p.completed_at)
 
   return (
     <Container size="lg" className={classes.lessons}>
       <div className={classes.header}>
         <div className={classes.displaySm}>{T.nav.lessons}</div>
       </div>
-      
+
       <div className={classes.lessonGrid}>
         {lessons.map((lesson) => {
           const done = isCompleted(lesson.id)
+          const completionPercent = getCompletionPercentage(lesson.id)
           return (
             <Link
               key={lesson.id}
@@ -71,7 +84,13 @@ export function Lessons() {
                 <div className={classes.lessonTitle}>{lesson.title.replace(/\s*\([^)]*\)/g, '')}</div>
               </div>
               <span className={classes.lessonArrow}><IconChevronRight size={15} /></span>
-              <div className={classes.progressBar} />
+              <div className={classes.progressBarWrapper}>
+                <div className={classes.progressBarBackground} />
+                <div
+                  className={classes.progressBarFill}
+                  style={{ width: `${completionPercent}%` }}
+                />
+              </div>
             </Link>
           )
         })}

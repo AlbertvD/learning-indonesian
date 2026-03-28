@@ -12,10 +12,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(11,11,18,0.75);
+  background: rgba(0,0,0,0.75);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid var(--bg-hover);
   z-index: 10;
 }
 
@@ -23,7 +23,7 @@
   font-family: var(--display);
   font-size: 15px;
   font-weight: 800;
-  color: var(--text-1);
+  color: var(--text-primary);
   letter-spacing: -.01em;
 }
 
@@ -31,10 +31,10 @@
 .content {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 100px;
+  padding-bottom: 130px;
 }
 
-/* Bottom nav */
+/* Bottom nav - 83pt height (110px) */
 .bottomNav {
   position: fixed;
   bottom: 0;
@@ -43,15 +43,16 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-around;
-  background: rgba(11,11,18,0.85);
+  background: var(--bg-main);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border-top: 1px solid rgba(255,255,255,0.05);
+  border-top: 1px solid var(--bg-hover);
   z-index: 200;
+  height: 110px;
   /* safe area for phones with home indicator */
   padding-bottom: env(safe-area-inset-bottom);
-  padding-top: 8px;
-  padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  padding-top: 12px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
   gap: 4px;
 }
 
@@ -62,18 +63,18 @@
   flex: 1;
   padding: 0;
   border-radius: var(--r-md);
-  color: rgba(255,255,255,0.35);
+  color: var(--text-secondary);
   text-decoration: none;
   transition: color .15s;
-  aspect-ratio: 1;
+  height: 72px;
 }
 
 .navBtn:hover {
-  color: rgba(255,255,255,0.65);
+  color: var(--text-primary);
 }
 
 .navActive {
-  color: var(--purple);
+  color: var(--accent-primary);
 }
 
 .navBtnContent {
@@ -81,7 +82,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
 }
 
 .navLabel {
@@ -90,27 +91,28 @@
   font-weight: 500;
   line-height: 1;
   color: currentColor;
+  letter-spacing: 0.02em;
 }
 
 /* Light theme */
 .light .topBar {
-  background: rgba(255,255,255,0.90);
+  background: var(--bg-surface);
   border-bottom-color: var(--border);
 }
 
 .light .bottomNav {
-  background: rgba(255,255,255,0.92);
+  background: var(--bg-surface);
   border-top-color: var(--border);
 }
 
 .light .navBtn {
-  color: var(--text-3);
+  color: var(--text-secondary);
 }
 
 .light .navBtn:hover {
-  color: var(--text-2);
+  color: var(--text-primary);
 }
 
 .light .navActive {
-  color: var(--purple);
+  color: var(--accent-primary);
 }
