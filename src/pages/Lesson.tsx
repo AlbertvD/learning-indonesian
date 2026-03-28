@@ -174,6 +174,8 @@ export function Lesson() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
+  const [volume, setVolume] = useState(1)
+  const [playbackRate, setPlaybackRate] = useState(1)
 
   useEffect(() => {
     async function fetchData() {
@@ -272,6 +274,18 @@ export function Lesson() {
     audioRef.current.currentTime = ((e.clientX - rect.left) / rect.width) * duration
   }
 
+  const handleVolumeChange = (v: number) => {
+    setVolume(v)
+    if (audioRef.current) audioRef.current.volume = v
+  }
+
+  const handlePlaybackRateChange = () => {
+    const speeds = [0.75, 1, 1.25, 1.5, 2]
+    const next = speeds[(speeds.indexOf(playbackRate) + 1) % speeds.length]
+    setPlaybackRate(next)
+    if (audioRef.current) audioRef.current.playbackRate = next
+  }
+
   if (loading) {
     return (
       <Center h="50vh">
@@ -320,6 +334,10 @@ export function Lesson() {
             currentTime={currentTime}
             duration={duration}
             onSeek={handleSeek}
+            volume={volume}
+            onVolumeChange={handleVolumeChange}
+            playbackRate={playbackRate}
+            onPlaybackRateChange={handlePlaybackRateChange}
           />
           <audio
             ref={audioRef}

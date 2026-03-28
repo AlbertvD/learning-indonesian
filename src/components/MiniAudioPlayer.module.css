@@ -50,9 +50,86 @@
 
 .progressFill {
   height: 100%;
-  background: var(--purple);
+  background: var(--accent-primary);
   border-radius: 2px;
   transition: width .1s linear;
+}
+
+.speedBtn {
+  flex-shrink: 0;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.7);
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+
+.speedBtn:hover {
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+}
+
+.volumeGroup {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.volumeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: color .15s;
+  flex-shrink: 0;
+}
+
+.volumeBtn:hover {
+  color: #fff;
+}
+
+.volumeSlider {
+  width: 64px;
+  height: 3px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255,255,255,0.2);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.volumeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  cursor: pointer;
+}
+
+.volumeSlider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  border: none;
+  cursor: pointer;
 }
 
 /* Light theme */
@@ -77,5 +154,27 @@
 }
 
 :global(html[data-mantine-color-scheme="light"]) .progressFill {
-  background: var(--purple);
+  background: var(--accent-primary);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .speedBtn {
+  background: rgba(142,85,255,0.08);
+  border-color: rgba(142,85,255,0.2);
+  color: var(--accent-primary);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .speedBtn:hover {
+  background: rgba(142,85,255,0.15);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .volumeBtn {
+  color: var(--text-secondary);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .volumeBtn:hover {
+  color: var(--accent-primary);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .volumeSlider {
+  background: rgba(142,85,255,0.2);
 }
