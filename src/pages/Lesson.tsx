@@ -110,7 +110,7 @@ function SectionContent({ content }: { content: unknown }) {
     return (
       <>
         {data.intro && <div className={classes.lessonIntro}>{data.intro}</div>}
-        <div className={`${classes.contentCard} ${classes.grammarCard}`} style={{ padding: '26px 28px' }}>
+        <div className={`${classes.contentCard} ${classes.grammarCard}`}>
           {data.categories.map((cat, i) => (
             <div key={i} className={classes.grammarCategory}>
               <div className={classes.grammarTitle}>{cat.title}</div>

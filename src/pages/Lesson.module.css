@@ -353,6 +353,12 @@
   color: var(--text-2);
 }
 
+.grammarCard {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
 .grammarCategory {
   margin-bottom: 28px;
 }
@@ -363,14 +369,14 @@
 
 .grammarTitle {
   font-family: var(--display);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: .08em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--text-2);
+  color: var(--text-secondary);
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid var(--bg-hover);
 }
 
 .grammarRules {
@@ -383,21 +389,21 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--display);
   font-size: 16px;
   font-weight: 400;
-  color: var(--text-1);
+  color: var(--text-primary);
   line-height: 1.6;
 }
 
 .grammarRule::before {
-  content: '';
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--purple-dim);
+  content: '›';
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent-primary);
   flex-shrink: 0;
-  margin-top: 9px;
+  margin-top: 1px;
+  line-height: 1.6;
 }
 
 .dialogueSetup {

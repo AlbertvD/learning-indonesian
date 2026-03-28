@@ -1,7 +1,7 @@
 // src/pages/Set.tsx
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Container, Title, Text, Button, Group, Badge, SegmentedControl, Paper, Stack, Center, Loader, Table, Modal, TextInput } from '@mantine/core'
+import { Container, Center, Loader, Text, Modal, TextInput, Stack, Group, Button, SegmentedControl, Badge } from '@mantine/core'
 import { IconChevronLeft, IconShare, IconPlus, IconCards } from '@tabler/icons-react'
 import { cardService } from '@/services/cardService'
 import { useAuthStore } from '@/stores/authStore'
@@ -10,6 +10,7 @@ import { notifications } from '@mantine/notifications'
 import { useT } from '@/hooks/useT'
 import { ShareCardSetModal } from '@/components/ShareCardSetModal'
 import type { AnkiCard, CardSet } from '@/types/cards'
+import classes from './Set.module.css'
 
 export function Set() {
   const { setId } = useParams<{ setId: string }>()
@@ -101,11 +102,7 @@ export function Set() {
   }
 
   if (loading) {
-    return (
-      <Center h="50vh">
-        <Loader size="xl" />
-      </Center>
-    )
+    return <Center h="50vh"><Loader size="xl" /></Center>
   }
 
   if (error || !set) {
@@ -119,96 +116,103 @@ export function Set() {
   const isOwner = user?.id === set.owner_id
   const isPublic = set.visibility === 'public'
   const lang = profile?.language ?? 'nl'
+  const title = set.name.replace(/\s*\([^)]*\)/g, '')
+  const description = set.description || T.sets.noDescription
 
   return (
-    <Container size="lg">
-      <Stack gap="xl">
-        <Group justify="space-between">
-          <Button variant="subtle" color="gray" leftSection={<IconChevronLeft size={16} />} onClick={() => navigate('/sets')}>
-            {T.sets.backToSets}
-          </Button>
-          <Group gap="sm">
-            {isOwner && !isPublic && (
-              <Button variant="light" leftSection={<IconShare size={16} />} onClick={() => setShareModalOpened(true)}>
-                {T.sets.share}
-              </Button>
-            )}
-            <Button
-              leftSection={<IconCards size={16} />}
-              onClick={handleStudy}
-              loading={studying}
-              disabled={cards.length === 0}
-            >
-              {T.sets.study}
-            </Button>
-          </Group>
-        </Group>
+    <Container size="lg" className={classes.page}>
 
-        <Paper withBorder p="xl" radius="md">
-          <Group justify="space-between" mb="md" align="flex-start">
-            <div>
-              <Title order={2}>{set.name.replace(/\s*\([^)]*\)/g, '')}</Title>
-              <Text c="dimmed" mt="xs">{set.description || T.sets.noDescription}</Text>
-            </div>
-            {!isPublic && (
-              <Badge size="lg" variant="light" color={set.visibility === 'shared' ? 'blue' : 'gray'}>
-                {set.visibility === 'private' ? T.sets.private : set.visibility === 'shared' ? T.sets.shared : T.sets.public}
-              </Badge>
-            )}
-          </Group>
+      {/* ── Header nav ── */}
+      <div className={classes.headerNav}>
+        <button className={classes.backBtn} onClick={() => navigate('/sets')}>
+          <IconChevronLeft size={15} />
+          {T.sets.backToSets}
+        </button>
 
+        <div className={classes.headerCenter}>
+          <div className={classes.headerTitle}>{title}</div>
+          <div className={classes.headerDesc}>{description}</div>
+        </div>
+
+        <div className={classes.headerActions}>
           {isOwner && !isPublic && (
-            <Group mt="xl">
-              <Text size="sm" fw={500}>{T.sets.setVisibility}</Text>
-              <SegmentedControl
-                value={set.visibility}
-                onChange={handleVisibilityChange}
-                data={[
-                  { label: T.sets.private, value: 'private' },
-                  { label: T.sets.shared, value: 'shared' },
-                  { label: T.sets.public, value: 'public' },
-                ]}
-              />
-            </Group>
+            <button className={classes.shareBtn} onClick={() => setShareModalOpened(true)}>
+              <IconShare size={14} />
+              {T.sets.share}
+            </button>
           )}
-        </Paper>
+          <button
+            className={classes.studyBtn}
+            onClick={handleStudy}
+            disabled={cards.length === 0 || studying}
+          >
+            <IconCards size={14} />
+            {T.sets.study}
+          </button>
+        </div>
+      </div>
 
-        <Group justify="space-between">
-          <Title order={3}>{T.sets.cards(cards.length)}</Title>
+      {/* ── Visibility + card count ── */}
+      <div className={classes.metaRow}>
+        <span className={classes.cardCount}>{T.sets.cards(cards.length)}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {!isPublic && (
+            <Badge size="sm" variant="light" color={set.visibility === 'shared' ? 'blue' : 'gray'}>
+              {set.visibility === 'private' ? T.sets.private : set.visibility === 'shared' ? T.sets.shared : T.sets.public}
+            </Badge>
+          )}
           {isOwner && !isPublic && (
-            <Button leftSection={<IconPlus size={16} />} variant="outline" onClick={() => setAddCardOpened(true)}>{T.sets.addCard}</Button>
+            <SegmentedControl
+              size="xs"
+              value={set.visibility}
+              onChange={handleVisibilityChange}
+              data={[
+                { label: T.sets.private, value: 'private' },
+                { label: T.sets.shared, value: 'shared' },
+                { label: T.sets.public, value: 'public' },
+              ]}
+            />
           )}
-        </Group>
+        </div>
+      </div>
 
-        {cards.length === 0 ? (
-          <Center h={100} style={{ border: '1px dashed #373A40', borderRadius: '8px' }}>
-            <Text c="dimmed">{T.sets.noCards}</Text>
-          </Center>
-        ) : (
-          <Table striped highlightOnHover withTableBorder withColumnBorders>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th style={{ textAlign: 'left' }}>{T.sets.indonesian}</Table.Th>
-                <Table.Th style={{ textAlign: 'left' }}>
-                  {lang === 'nl' ? T.sets.dutch : T.sets.english}
-                </Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {cards.map((card) => (
-                <Table.Tr key={card.id}>
-                  <Table.Td fw={500} style={{ textAlign: 'left' }}>{card.front.replace(/\s*\([^)]*\)\s*$/, '')}</Table.Td>
-                  <Table.Td style={{ textAlign: 'left' }}>
-                    {lang === 'nl' ? card.back : (card.notes ?? card.back)}
-                  </Table.Td>
-                </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
-        )}
-      </Stack>
+      {/* ── Add card ── */}
+      {isOwner && !isPublic && (
+        <div className={classes.addCardRow}>
+          <button className={classes.addBtn} onClick={() => setAddCardOpened(true)}>
+            <IconPlus size={14} />
+            {T.sets.addCard}
+          </button>
+        </div>
+      )}
 
-      <Modal opened={addCardOpened} onClose={() => { setAddCardOpened(false); setNewFront(''); setNewBack('') }} title={T.sets.addCardTitle}>
+      {/* ── Vocab list ── */}
+      {cards.length === 0 ? (
+        <div className={classes.emptyState}>{T.sets.noCards}</div>
+      ) : (
+        <div className={classes.vocabList}>
+          {cards.map((card) => {
+            const translation = lang === 'nl' ? card.back : (card.notes ?? card.back)
+            return (
+              <div key={card.id} className={classes.vocabRow}>
+                <div className={classes.vocabIndo}>
+                  {card.front.replace(/\s*\([^)]*\)\s*$/, '')}
+                </div>
+                <div className={classes.vocabDutch}>
+                  {translation || <span className={classes.vocabEmpty}>–</span>}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* ── Modals ── */}
+      <Modal
+        opened={addCardOpened}
+        onClose={() => { setAddCardOpened(false); setNewFront(''); setNewBack('') }}
+        title={T.sets.addCardTitle}
+      >
         <Stack gap="md">
           <TextInput
             label={T.sets.front}
