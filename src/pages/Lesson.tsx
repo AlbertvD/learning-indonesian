@@ -14,8 +14,8 @@ import { IndoText } from '@/components/IndoText'
 import { MiniAudioPlayer } from '@/components/MiniAudioPlayer'
 import classes from './Lesson.module.css'
 
-type ExerciseItem = { dutch?: string; indonesian?: string }
-type ExerciseSection = { title: string; items: ExerciseItem[] }
+type ExerciseItem = { dutch?: string; indonesian?: string; phrase?: string; text?: string; question?: string }
+type ExerciseSection = { title: string; instruction?: string; items?: ExerciseItem[] }
 type PhoneticExample = { indonesian: string; phonetic: string; dutch: string }
 type SpellingRule = { rule: string; example: string; dutch: string }
 type SimpleSentence = { indonesian: string; dutch: string }
@@ -43,14 +43,19 @@ function SectionContent({ content }: { content: unknown }) {
         {data.sections.map((section, i) => (
           <div key={i} style={{ marginBottom: i < data.sections!.length - 1 ? 40 : 0 }}>
             <div className={classes.contentSectionLabel}>{section.title}</div>
-            <div className={classes.phraseList}>
-              {section.items.map((item, j) => (
-                <div key={j} className={classes.phraseRow}>
-                  <div className={classes.phraseIndo}>{item.indonesian ?? item.dutch}</div>
-                  <div className={classes.phraseDutch}>{item.indonesian && item.dutch ? item.dutch : ''}</div>
-                </div>
-              ))}
-            </div>
+            {section.instruction && (
+              <div className={classes.phrasePhonetic} style={{ marginBottom: 8 }}>{section.instruction}</div>
+            )}
+            {section.items && (
+              <div className={classes.phraseList}>
+                {section.items.map((item, j) => (
+                  <div key={j} className={classes.phraseRow}>
+                    <div className={classes.phraseIndo}>{item.indonesian ?? item.dutch ?? item.phrase ?? item.text ?? item.question}</div>
+                    <div className={classes.phraseDutch}>{item.indonesian && item.dutch ? item.dutch : ''}</div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </>
