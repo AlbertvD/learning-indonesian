@@ -231,10 +231,10 @@
 }
 
 .contentCard {
-  background: rgba(24,24,31,0.30);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: transparent;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  border: 1px solid rgba(255,255,255,0.05);
   border-radius: var(--r-lg);
   overflow: hidden;
 }
@@ -383,9 +383,11 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  font-size: 14px;
-  color: var(--text-2);
-  line-height: 1.65;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-1);
+  line-height: 1.6;
 }
 
 .grammarRule::before {
@@ -513,10 +515,14 @@
 
 /* Light theme overrides */
 :global(html[data-mantine-color-scheme="light"]) .audioPlayer,
-:global(html[data-mantine-color-scheme="light"]) .contentCard,
 :global(html[data-mantine-color-scheme="light"]) .spellingChip {
   background: rgba(255,255,255,0.75);
   border-color: var(--border);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .contentCard {
+  background: transparent;
+  border-color: rgba(0,0,0,0.05);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .lessonIntro {
@@ -621,9 +627,12 @@
 :global(html[data-mantine-color-scheme="light"]) .bodySm,
 :global(html[data-mantine-color-scheme="light"]) .phraseDutch,
 :global(html[data-mantine-color-scheme="light"]) .sentenceDutch,
-:global(html[data-mantine-color-scheme="light"]) .grammarTitle,
-:global(html[data-mantine-color-scheme="light"]) .grammarRule {
+:global(html[data-mantine-color-scheme="light"]) .grammarTitle {
   color: var(--text-2);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .grammarRule {
+  color: var(--text-1);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .label,
