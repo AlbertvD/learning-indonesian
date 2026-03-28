@@ -15,21 +15,45 @@ import { MiniAudioPlayer } from '@/components/MiniAudioPlayer'
 import classes from './Lesson.module.css'
 
 type ExerciseItem = { dutch?: string; indonesian?: string }
+type ExerciseSection = { title: string; items: ExerciseItem[] }
 type PhoneticExample = { indonesian: string; phonetic: string; dutch: string }
 type SpellingRule = { rule: string; example: string; dutch: string }
 type SimpleSentence = { indonesian: string; dutch: string }
 type GrammarCategory = { title: string; rules: string[] }
 type DialogueLine = { speaker: string; text: string; translation?: string }
+type PronunciationLetter = { letter: string; rule: string; examples: string[] }
 
 type SectionContentData =
-  | { type: 'exercises'; items: ExerciseItem[] }
+  | { type: 'exercises'; items: ExerciseItem[]; sections?: never }
+  | { type: 'exercises'; sections: ExerciseSection[]; items?: never }
   | { type: 'text'; intro?: string; examples?: PhoneticExample[]; spelling?: SpellingRule[]; sentences?: SimpleSentence[] }
   | { type: 'grammar'; intro?: string; categories: GrammarCategory[] }
   | { type: 'dialogue'; setup?: string; lines: DialogueLine[] }
+  | { type: 'pronunciation'; letters: PronunciationLetter[] }
 
 function SectionContent({ content }: { content: unknown }) {
   const data = content as SectionContentData
   const T = useT()
+
+  if (data?.type === 'exercises' && Array.isArray(data.sections)) {
+    return (
+      <>
+        {data.sections.map((section, i) => (
+          <div key={i} style={{ marginBottom: i < data.sections!.length - 1 ? 40 : 0 }}>
+            <div className={classes.contentSectionLabel}>{section.title}</div>
+            <div className={classes.phraseList}>
+              {section.items.map((item, j) => (
+                <div key={j} className={classes.phraseRow}>
+                  <div className={classes.phraseIndo}>{item.indonesian ?? item.dutch}</div>
+                  <div className={classes.phraseDutch}>{item.indonesian && item.dutch ? item.dutch : ''}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </>
+    )
+  }
 
   if (data?.type === 'exercises' && Array.isArray(data.items)) {
     return (
@@ -146,6 +170,20 @@ function SectionContent({ content }: { content: unknown }) {
             </div>
           ))}
         </div>
+      </div>
+    )
+  }
+
+  if (data?.type === 'pronunciation' && Array.isArray(data.letters)) {
+    return (
+      <div className={classes.pronunciationList}>
+        {data.letters.map((item, i) => (
+          <div key={i} className={classes.pronunciationRow}>
+            <div className={classes.pronunciationLetter}>{item.letter}</div>
+            <div className={classes.pronunciationRule}>{item.rule}</div>
+            <div className={classes.pronunciationExamples}>{item.examples.join(', ')}</div>
+          </div>
+        ))}
       </div>
     )
   }
