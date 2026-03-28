@@ -529,12 +529,12 @@
 }
 
 .pronunciationRule {
-  font-size: 13px;
+  font-size: 16px;
   color: var(--text-1);
 }
 
 .pronunciationExamples {
-  font-size: 12px;
+  font-size: 16px;
   color: var(--text-3);
   font-style: italic;
 }
