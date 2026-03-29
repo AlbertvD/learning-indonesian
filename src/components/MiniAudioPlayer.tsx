@@ -1,5 +1,8 @@
-import { IconPlayerPlay, IconPlayerPause, IconVolume, IconVolume2, IconVolumeOff } from '@tabler/icons-react'
+import { Menu } from '@mantine/core'
+import { IconPlayerPlay, IconPlayerPause, IconVolumeOff, IconVolume, IconGauge } from '@tabler/icons-react'
 import classes from './MiniAudioPlayer.module.css'
+
+const SPEEDS = [0.75, 1, 1.25, 1.5]
 
 interface MiniAudioPlayerProps {
   isPlaying: boolean
@@ -10,7 +13,7 @@ interface MiniAudioPlayerProps {
   volume: number
   onVolumeChange: (v: number) => void
   playbackRate: number
-  onPlaybackRateChange: () => void
+  onPlaybackRateChange: (rate: number) => void
 }
 
 export function MiniAudioPlayer({
@@ -24,12 +27,10 @@ export function MiniAudioPlayer({
   playbackRate,
   onPlaybackRateChange,
 }: MiniAudioPlayerProps) {
-  const VolumeIcon = volume === 0 ? IconVolumeOff : volume < 0.5 ? IconVolume : IconVolume2
-
   return (
     <div className={classes.miniPlayer}>
       <button className={classes.playBtn} onClick={onTogglePlay} aria-label="Play/Pause">
-        {isPlaying ? <IconPlayerPause size={16} /> : <IconPlayerPlay size={16} />}
+        {isPlaying ? <IconPlayerPause size={18} /> : <IconPlayerPlay size={18} />}
       </button>
 
       <div className={classes.progressContainer} onClick={onSeek}>
@@ -41,34 +42,32 @@ export function MiniAudioPlayer({
         </div>
       </div>
 
-      <button
-        className={classes.speedBtn}
-        onClick={onPlaybackRateChange}
-        aria-label="Playback speed"
-        title={`Speed: ${playbackRate}x`}
-      >
-        {playbackRate}x
-      </button>
+      <Menu shadow="md" width={120}>
+        <Menu.Target>
+          <button className={classes.iconBtn} aria-label="Playback speed">
+            <IconGauge size={16} />
+          </button>
+        </Menu.Target>
+        <Menu.Dropdown>
+          {SPEEDS.map((s) => (
+            <Menu.Item
+              key={s}
+              onClick={() => onPlaybackRateChange(s)}
+              style={{ fontWeight: playbackRate === s ? 700 : 400 }}
+            >
+              {s}x
+            </Menu.Item>
+          ))}
+        </Menu.Dropdown>
+      </Menu>
 
-      <div className={classes.volumeGroup}>
-        <button
-          className={classes.volumeBtn}
-          onClick={() => onVolumeChange(volume > 0 ? 0 : 1)}
-          aria-label="Toggle mute"
-        >
-          <VolumeIcon size={14} />
-        </button>
-        <input
-          type="range"
-          className={classes.volumeSlider}
-          min={0}
-          max={1}
-          step={0.05}
-          value={volume}
-          onChange={e => onVolumeChange(parseFloat(e.target.value))}
-          aria-label="Volume"
-        />
-      </div>
+      <button
+        className={classes.iconBtn}
+        onClick={() => onVolumeChange(volume > 0 ? 0 : 1)}
+        aria-label="Toggle mute"
+      >
+        {volume === 0 ? <IconVolumeOff size={16} /> : <IconVolume size={16} />}
+      </button>
     </div>
   )
 }

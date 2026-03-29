@@ -1,35 +1,27 @@
 .miniPlayer {
   display: flex;
   align-items: center;
-  gap: 12px;
-  height: 48px;
-  padding: 8px 16px;
-  background: rgba(24,24,31,0.30);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: var(--r-lg);
+  gap: 10px;
+  height: 40px;
+  padding: 0 4px;
   margin-bottom: 20px;
 }
 
 .playBtn {
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--accent-primary);
   cursor: pointer;
-  color: #fff;
-  transition: all .15s;
+  padding: 4px;
+  transition: opacity .15s;
 }
 
 .playBtn:hover {
-  background: rgba(255,255,255,0.25);
-  border-color: rgba(255,255,255,0.3);
+  opacity: 0.75;
 }
 
 .progressContainer {
@@ -43,7 +35,7 @@
 .progressBar {
   width: 100%;
   height: 2px;
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.12);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -55,126 +47,32 @@
   transition: width .1s linear;
 }
 
-.speedBtn {
+.iconBtn {
   flex-shrink: 0;
-  height: 26px;
-  padding: 0 8px;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.7);
-  font-family: var(--display);
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all .15s;
-  white-space: nowrap;
-}
-
-.speedBtn:hover {
-  background: rgba(255,255,255,0.14);
-  color: #fff;
-}
-
-.volumeGroup {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.volumeBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 4px;
   background: transparent;
   border: none;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.45);
   cursor: pointer;
+  padding: 4px;
   transition: color .15s;
-  flex-shrink: 0;
 }
 
-.volumeBtn:hover {
-  color: #fff;
-}
-
-.volumeSlider {
-  width: 64px;
-  height: 3px;
-  -webkit-appearance: none;
-  appearance: none;
-  background: rgba(255,255,255,0.2);
-  border-radius: 2px;
-  outline: none;
-  cursor: pointer;
-}
-
-.volumeSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--accent-primary);
-  cursor: pointer;
-}
-
-.volumeSlider::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--accent-primary);
-  border: none;
-  cursor: pointer;
+.iconBtn:hover {
+  color: rgba(255,255,255,0.85);
 }
 
 /* Light theme */
-:global(html[data-mantine-color-scheme="light"]) .miniPlayer {
-  background: rgba(255,255,255,0.75);
-  border-color: var(--border);
-}
-
-:global(html[data-mantine-color-scheme="light"]) .playBtn {
-  background: rgba(91,110,245,0.12);
-  border-color: rgba(91,110,245,0.25);
-  color: var(--purple);
-}
-
-:global(html[data-mantine-color-scheme="light"]) .playBtn:hover {
-  background: rgba(91,110,245,0.18);
-  border-color: rgba(91,110,245,0.35);
-}
-
 :global(html[data-mantine-color-scheme="light"]) .progressBar {
-  background: rgba(91,110,245,0.15);
+  background: rgba(0,153,184,0.15);
 }
 
-:global(html[data-mantine-color-scheme="light"]) .progressFill {
-  background: var(--accent-primary);
-}
-
-:global(html[data-mantine-color-scheme="light"]) .speedBtn {
-  background: rgba(142,85,255,0.08);
-  border-color: rgba(142,85,255,0.2);
-  color: var(--accent-primary);
-}
-
-:global(html[data-mantine-color-scheme="light"]) .speedBtn:hover {
-  background: rgba(142,85,255,0.15);
-}
-
-:global(html[data-mantine-color-scheme="light"]) .volumeBtn {
+:global(html[data-mantine-color-scheme="light"]) .iconBtn {
   color: var(--text-secondary);
 }
 
-:global(html[data-mantine-color-scheme="light"]) .volumeBtn:hover {
+:global(html[data-mantine-color-scheme="light"]) .iconBtn:hover {
   color: var(--accent-primary);
-}
-
-:global(html[data-mantine-color-scheme="light"]) .volumeSlider {
-  background: rgba(142,85,255,0.2);
 }

@@ -352,11 +352,9 @@ export function Lesson() {
     if (audioRef.current) audioRef.current.volume = v
   }
 
-  const handlePlaybackRateChange = () => {
-    const speeds = [0.75, 1, 1.25, 1.5, 2]
-    const next = speeds[(speeds.indexOf(playbackRate) + 1) % speeds.length]
-    setPlaybackRate(next)
-    if (audioRef.current) audioRef.current.playbackRate = next
+  const handlePlaybackRateChange = (rate: number) => {
+    setPlaybackRate(rate)
+    if (audioRef.current) audioRef.current.playbackRate = rate
   }
 
   if (loading) {
@@ -386,7 +384,7 @@ export function Lesson() {
           <IconChevronLeft size={15} />
           {lesson.title.replace(/\s*\([^)]*\)/g, '')}
         </button>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div className={classes.lessonSectionNav}>
           <button
             className={`${classes.btn} ${classes.btnGhost}`}
             onClick={handleBack}
@@ -412,7 +410,6 @@ export function Lesson() {
             {currentSectionIndex === lesson.lesson_sections.length - 1 ? T.lessons.finishLesson : T.lessons.nextSection}
             <IconChevronRight size={14} />
           </button>
-          <span className={classes.caption}>{currentSectionIndex + 1} {T.lessons.of} {lesson.lesson_sections.length}</span>
         </div>
       </div>
 
