@@ -192,6 +192,8 @@ export const nl = {
     hard: 'Moeilijk',
     good: 'Goed',
     easy: 'Makkelijk',
+    forward: 'ID → NL',
+    reverse: 'NL → ID',
   },
   leaderboard: {
     title: 'Ranglijst',
@@ -425,6 +427,8 @@ export const en: typeof nl = {
     hard: 'Hard',
     good: 'Good',
     easy: 'Easy',
+    forward: 'ID → EN',
+    reverse: 'EN → ID',
   },
   leaderboard: {
     title: 'Leaderboard',

@@ -399,3 +399,16 @@ VALUES
   ('indonesian-lessons', 'indonesian-lessons', true),
   ('indonesian-podcasts', 'indonesian-podcasts', true)
 ON CONFLICT (id) DO NOTHING;
+
+-- Bidirectional review: add direction column to card_reviews
+ALTER TABLE indonesian.card_reviews
+  ADD COLUMN IF NOT EXISTS direction text NOT NULL DEFAULT 'forward'
+    CHECK (direction IN ('forward', 'reverse'));
+
+-- Replace unique constraint to include direction
+ALTER TABLE indonesian.card_reviews
+  DROP CONSTRAINT IF EXISTS card_reviews_card_id_user_id_key;
+
+ALTER TABLE indonesian.card_reviews
+  ADD CONSTRAINT card_reviews_card_id_user_id_direction_key
+    UNIQUE (card_id, user_id, direction);

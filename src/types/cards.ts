@@ -34,10 +34,13 @@ export interface AnkiCard {
   created_at: string
 }
 
+export type ReviewDirection = 'forward' | 'reverse'
+
 export interface DueCard {
   id: string
   card_id: string
   user_id: string
+  direction: ReviewDirection
   easiness_factor: number
   interval_days: number
   repetitions: number

@@ -1,11 +1,12 @@
 // src/pages/Review.tsx
 import { useEffect, useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import {
   Container,
   Center,
   Loader,
 } from '@mantine/core'
+import { IconChevronLeft } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
 import { calculateNextReview, type ReviewQuality } from '@/lib/sm2'
 import { startSession, endSession } from '@/lib/session'
@@ -14,15 +15,18 @@ import { useCardStore } from '@/stores/cardStore'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
-import type { DueCard } from '@/types/cards'
+import type { DueCard, ReviewDirection } from '@/types/cards'
 import classes from './Review.module.css'
 
 export function Review() {
   const navigate = useNavigate()
+  const location = useLocation()
   const T = useT()
+  const backUrl = (location.state as { from?: string } | null)?.from ?? '/sets'
   const user = useAuthStore((state) => state.user)
   const { dueCards, fetchDueCards } = useCardStore()
 
+  const [direction, setDirection] = useState<ReviewDirection>('forward')
   const [loading, setLoading] = useState(true)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [showAnswer, setShowAnswer] = useState(false)
@@ -30,17 +34,31 @@ export function Review() {
   const [sessionDone, setSessionDone] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const sessionIdRef = useRef<string | null>(null)
+  const reverseInitializedRef = useRef(false)
 
+  // Session tracking — runs once
   useEffect(() => {
-    async function init() {
-      if (!user) return
-      try {
-        // Run session tracking in the background — don't let it block card loading
-        startSession(user.id, 'review')
-          .then((sid) => { sessionIdRef.current = sid })
-          .catch((err) => logError({ page: 'review', action: 'startSession', error: err }))
+    if (!user) return
+    startSession(user.id, 'review')
+      .then((sid) => { sessionIdRef.current = sid })
+      .catch((err) => logError({ page: 'review', action: 'startSession', error: err }))
 
-        await fetchDueCards(user.id)
+    return () => {
+      if (sessionIdRef.current) {
+        endSession(sessionIdRef.current).catch((err) =>
+          logError({ page: 'review', action: 'endSession', error: err })
+        )
+      }
+    }
+  }, [user])
+
+  // Fetch due cards — re-runs when direction changes
+  useEffect(() => {
+    async function fetchCards() {
+      if (!user) return
+      setLoading(true)
+      try {
+        await fetchDueCards(user.id, direction)
       } catch (err) {
         logError({ page: 'review', action: 'init', error: err })
         notifications.show({
@@ -52,16 +70,28 @@ export function Review() {
         setLoading(false)
       }
     }
-    init()
+    fetchCards()
+  }, [user, direction, fetchDueCards])
 
-    return () => {
-      if (sessionIdRef.current) {
-        endSession(sessionIdRef.current).catch((err) =>
-          logError({ page: 'review', action: 'endSession', error: err })
-        )
+  const handleDirectionChange = async (newDirection: ReviewDirection) => {
+    if (newDirection === direction) return
+    if (newDirection === 'reverse' && !reverseInitializedRef.current && user) {
+      try {
+        const cardIds = dueCards.map(c => c.card_id)
+        if (cardIds.length > 0) {
+          await cardService.initializeCardReviews(cardIds, user.id, 'reverse')
+        }
+        reverseInitializedRef.current = true
+      } catch (err) {
+        logError({ page: 'review', action: 'initReverse', error: err })
       }
     }
-  }, [user, fetchDueCards])
+    setDirection(newDirection)
+    setCurrentIndex(0)
+    setShowAnswer(false)
+    setReviewedCount(0)
+    setSessionDone(false)
+  }
 
   async function handleRating(quality: ReviewQuality, card: DueCard) {
     if (!user || submitting) return
@@ -73,7 +103,7 @@ export function Review() {
         card.interval_days,
         card.repetitions
       )
-      await cardService.updateCardReview(card.card_id, user.id, {
+      await cardService.updateCardReview(card.card_id, user.id, direction, {
         easiness_factor: result.easinessFactor,
         interval_days: result.intervalDays,
         repetitions: result.repetitions,
@@ -115,9 +145,33 @@ export function Review() {
     )
   }
 
+  const directionToggle = (
+    <div className={classes.reviewSubnav}>
+      <button className={classes.backBtn} onClick={() => navigate(backUrl)}>
+        <IconChevronLeft size={15} />
+        {T.sets.title}
+      </button>
+      <div className={classes.directionToggle}>
+        <button
+          className={`${classes.dirBtn} ${direction === 'forward' ? classes.dirBtnActive : ''}`}
+          onClick={() => handleDirectionChange('forward')}
+        >
+          {T.review.forward}
+        </button>
+        <button
+          className={`${classes.dirBtn} ${direction === 'reverse' ? classes.dirBtnActive : ''}`}
+          onClick={() => handleDirectionChange('reverse')}
+        >
+          {T.review.reverse}
+        </button>
+      </div>
+    </div>
+  )
+
   if (dueCards.length === 0) {
     return (
       <Container size="sm" className={classes.review}>
+        {directionToggle}
         <div className={classes.doneCard}>
           <div className={classes.doneTitle}>{T.review.allCaughtUp}</div>
           <div className={classes.doneText}>{T.review.noCardsDue}</div>
@@ -132,6 +186,7 @@ export function Review() {
   if (sessionDone) {
     return (
       <Container size="sm" className={classes.review}>
+        {directionToggle}
         <div className={classes.doneCard}>
           <div className={classes.doneTitle}>{T.review.sessionComplete}</div>
           <div className={classes.doneText}>{T.review.sessionCompleteMsg(reviewedCount)}</div>
@@ -149,9 +204,16 @@ export function Review() {
   }
 
   const card = dueCards[currentIndex]
+  const question = direction === 'forward'
+    ? card.anki_cards.front.replace(/\s*\([^)]*\)\s*$/, '')
+    : card.anki_cards.back
+  const answer = direction === 'forward'
+    ? card.anki_cards.back
+    : card.anki_cards.front.replace(/\s*\([^)]*\)\s*$/, '')
 
   return (
     <Container size="sm" className={classes.review}>
+      {directionToggle}
       <div className={classes.reviewHeader}>
         <div className={classes.reviewTitle}>{T.review.dailyReview}</div>
         <div className={classes.reviewProgress}>
@@ -160,17 +222,17 @@ export function Review() {
       </div>
 
       <div className={classes.cardContainer}>
-        <div className={`${classes.cardInner} ${showAnswer ? classes.cardFlipped : ''}`}>
+        <div key={currentIndex} className={`${classes.cardInner} ${showAnswer ? classes.cardFlipped : ''}`}>
           {/* Front */}
           <div className={classes.cardFace}>
             <div className={classes.setName}>{card.anki_cards.card_sets.name.replace(/\s*\([^)]*\)/g, '')}</div>
-            <div className={classes.cardText}>{card.anki_cards.front.replace(/\s*\([^)]*\)\s*$/, '')}</div>
+            <div className={classes.cardText}>{question}</div>
             <div className={classes.cardTranslation}>{T.review.tapToShowAnswer}</div>
           </div>
           {/* Back */}
           <div className={`${classes.cardFace} ${classes.cardBack}`}>
             <div className={classes.setName}>{card.anki_cards.card_sets.name.replace(/\s*\([^)]*\)/g, '')}</div>
-            <div className={classes.cardText}>{card.anki_cards.back}</div>
+            <div className={classes.cardText}>{answer}</div>
             <div className={classes.cardTranslation}>{T.review.howWellDidYouKnow}</div>
           </div>
         </div>

@@ -61,7 +61,7 @@ export function Set() {
     if (!user || cards.length === 0) return
     setStudying(true)
     try {
-      await cardService.initializeCardReviews(cards.map(c => c.id), user.id)
+      await cardService.initializeCardReviews(cards.map(c => c.id), user.id, 'forward')
       navigate('/review')
     } catch (err) {
       logError({ page: 'set', action: 'study', error: err })

@@ -1,7 +1,7 @@
 // src/stores/cardStore.ts
 import { create } from 'zustand'
 import { cardService } from '@/services/cardService'
-import type { CardSet, DueCard } from '@/types/cards'
+import type { CardSet, DueCard, ReviewDirection } from '@/types/cards'
 
 interface CardState {
   cardSets: CardSet[]
@@ -9,7 +9,7 @@ interface CardState {
   loading: boolean
   fetchCardSets: () => Promise<void>
   addCardSet: (name: string, description: string, userId: string) => Promise<void>
-  fetchDueCards: (userId: string) => Promise<void>
+  fetchDueCards: (userId: string, direction?: ReviewDirection) => Promise<void>
 }
 
 export const useCardStore = create<CardState>((set) => ({
@@ -33,10 +33,10 @@ export const useCardStore = create<CardState>((set) => ({
     set((state) => ({ cardSets: [newSet, ...state.cardSets] }))
   },
 
-  fetchDueCards: async (userId) => {
+  fetchDueCards: async (userId, direction = 'forward') => {
     set({ loading: true })
     try {
-      const dueCards = await cardService.getDueCards(userId)
+      const dueCards = await cardService.getDueCards(userId, direction)
       set({ dueCards, loading: false })
     } catch (error) {
       set({ loading: false })

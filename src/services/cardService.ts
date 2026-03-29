@@ -1,6 +1,6 @@
 // src/services/cardService.ts
 import { supabase } from '@/lib/supabase'
-import type { AnkiCard, CardSet, CardSetShare, DueCard, ProfileSearchResult } from '@/types/cards'
+import type { AnkiCard, CardSet, CardSetShare, DueCard, ProfileSearchResult, ReviewDirection } from '@/types/cards'
 
 export const cardService = {
   async getCardSets(): Promise<CardSet[]> {
@@ -13,18 +13,19 @@ export const cardService = {
     return data
   },
 
-  async initializeCardReviews(cardIds: string[], userId: string): Promise<void> {
+  async initializeCardReviews(cardIds: string[], userId: string, direction: ReviewDirection = 'forward'): Promise<void> {
     // Insert a review row for each card that doesn't have one yet.
     // ignoreDuplicates: true means existing review state is never overwritten.
     const rows = cardIds.map((cardId) => ({
       card_id: cardId,
       user_id: userId,
+      direction,
       next_review_at: new Date().toISOString(),
     }))
     const { error } = await supabase
       .schema('indonesian')
       .from('card_reviews')
-      .upsert(rows, { onConflict: 'card_id,user_id', ignoreDuplicates: true })
+      .upsert(rows, { onConflict: 'card_id,user_id,direction', ignoreDuplicates: true })
     if (error) throw error
   },
 
@@ -61,19 +62,20 @@ export const cardService = {
     return data
   },
 
-  async getDueCards(userId: string): Promise<DueCard[]> {
+  async getDueCards(userId: string, direction: ReviewDirection = 'forward'): Promise<DueCard[]> {
     const { data, error } = await supabase
       .schema('indonesian')
       .from('card_reviews')
       .select('*, anki_cards!inner(*, card_sets!inner(*))')
       .eq('user_id', userId)
+      .eq('direction', direction)
       .lte('next_review_at', new Date().toISOString())
       .order('next_review_at')
     if (error) throw error
     return data as unknown as DueCard[]
   },
 
-  async updateCardReview(cardId: string, userId: string, sm2: {
+  async updateCardReview(cardId: string, userId: string, direction: ReviewDirection, sm2: {
     easiness_factor: number
     interval_days: number
     repetitions: number
@@ -83,7 +85,7 @@ export const cardService = {
     const { error } = await supabase
       .schema('indonesian')
       .from('card_reviews')
-      .upsert({ card_id: cardId, user_id: userId, ...sm2 }, { onConflict: 'card_id,user_id' })
+      .upsert({ card_id: cardId, user_id: userId, direction, ...sm2 }, { onConflict: 'card_id,user_id,direction' })
     if (error) throw error
   },
 

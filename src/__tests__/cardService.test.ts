@@ -75,4 +75,38 @@ describe('cardService', () => {
     expect(getMock().eq).toHaveBeenCalledWith('user_id', 'user-1')
     expect(getMock().lte).toHaveBeenCalledWith('next_review_at', expect.any(String))
   })
+
+  it('getDueCards filters by direction', async () => {
+    await cardService.getDueCards('user-1', 'reverse')
+
+    expect(getMock().eq).toHaveBeenCalledWith('user_id', 'user-1')
+    expect(getMock().eq).toHaveBeenCalledWith('direction', 'reverse')
+  })
+
+  it('initializeCardReviews inserts rows with direction', async () => {
+    await cardService.initializeCardReviews(['card-1'], 'user-1', 'reverse')
+
+    expect(getMock().upsert).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ card_id: 'card-1', user_id: 'user-1', direction: 'reverse' })
+      ]),
+      { onConflict: 'card_id,user_id,direction', ignoreDuplicates: true }
+    )
+  })
+
+  it('updateCardReview upserts with direction', async () => {
+    const sm2 = {
+      easiness_factor: 2.5,
+      interval_days: 1,
+      repetitions: 0,
+      next_review_at: '2026-04-01T00:00:00Z',
+      last_reviewed_at: '2026-03-29T00:00:00Z',
+    }
+    await cardService.updateCardReview('card-1', 'user-1', 'forward', sm2)
+
+    expect(getMock().upsert).toHaveBeenCalledWith(
+      { card_id: 'card-1', user_id: 'user-1', direction: 'forward', ...sm2 },
+      { onConflict: 'card_id,user_id,direction' }
+    )
+  })
 })
