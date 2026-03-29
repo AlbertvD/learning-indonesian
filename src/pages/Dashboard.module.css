@@ -123,6 +123,10 @@
   display: block;
 }
 
+.continueSection {
+  margin-top: 40px;
+}
+
 .continueCard {
   background: var(--bg-surface);
   backdrop-filter: blur(16px);
@@ -136,7 +140,6 @@
   cursor: pointer;
   transition: all .2s;
   text-decoration: none;
-  margin-top: 40px;
 }
 
 .continueCard:hover {

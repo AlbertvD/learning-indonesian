@@ -6,7 +6,7 @@
   /* Design System Color Tokens (Dark Theme) */
   /* Backgrounds - News App Depth Layering */
   --bg-main:      #000000;     /* Deepest layer */
-  --bg-surface:   #1C1C1E;     /* Cards, list items, input fields */
+  --bg-surface:   #0C0C0E;     /* Cards, list items, input fields */
   --bg-hover:     #2C2C2E;     /* Active states or dividers */
 
   /* Accent & Interactive */
@@ -21,7 +21,7 @@
 
   /* Legacy mappings (kept for compatibility) */
   --bg:     #000000;
-  --surf-1: #1C1C1E;
+  --surf-1: #0C0C0E;
   --surf-2: #2C2C2E;
   --surf-3: #2C2C2E;
   --surf-4: #3C3C3E;
@@ -69,7 +69,7 @@ html, body {
 html[data-mantine-color-scheme="light"] {
   /* Light mode adapts design tokens for readability */
   --bg-main:      #FFFFFF;
-  --bg-surface:   #F5F5F7;
+  --bg-surface:   #E1E1E3;
   --bg-hover:     #E8E8ED;
 
   --accent-primary: #0099B8;
@@ -81,7 +81,7 @@ html[data-mantine-color-scheme="light"] {
 
   /* Legacy mappings */
   --bg:           #FFFFFF;
-  --surf-1:       #F5F5F7;
+  --surf-1:       #E1E1E3;
   --surf-2:       #E8E8ED;
   --surf-3:       #E0E0E5;
   --surf-4:       #D1D1D9;
