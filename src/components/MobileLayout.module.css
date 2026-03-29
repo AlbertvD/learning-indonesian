@@ -31,28 +31,25 @@
 .content {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 130px;
+  padding-bottom: 90px;
 }
 
-/* Bottom nav - 83pt height (110px) */
+/* Bottom nav */
 .bottomNav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-around;
   background: var(--bg-main);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid var(--bg-hover);
   z-index: 200;
-  height: 110px;
-  /* safe area for phones with home indicator */
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-top: 12px;
-  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  padding-top: 8px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
   gap: 4px;
 }
 
@@ -66,7 +63,7 @@
   color: var(--text-secondary);
   text-decoration: none;
   transition: color .15s;
-  height: 72px;
+  height: 52px;
 }
 
 .navBtn:hover {
