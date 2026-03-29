@@ -75,14 +75,14 @@
 }
 :global(html[data-mantine-color-scheme="light"]) .logo { border-bottom-color: var(--border); }
 :global(html[data-mantine-color-scheme="light"]) .logoSub { color: var(--text-3); }
-:global(html[data-mantine-color-scheme="light"]) .logoIcon { background: rgba(91,110,245,0.10); border-color: rgba(91,110,245,0.2); color: var(--purple); }
+:global(html[data-mantine-color-scheme="light"]) .logoIcon { background: rgba(0,153,184,0.10); border-color: rgba(0,153,184,0.2); color: var(--purple); }
 :global(html[data-mantine-color-scheme="light"]) .navItem { color: var(--text-2); }
-:global(html[data-mantine-color-scheme="light"]) .navItem:hover { background: rgba(91,110,245,0.07); color: var(--text-1); }
-:global(html[data-mantine-color-scheme="light"]) .navActive { background: rgba(91,110,245,0.12); color: var(--purple); }
+:global(html[data-mantine-color-scheme="light"]) .navItem:hover { background: rgba(0,153,184,0.07); color: var(--text-1); }
+:global(html[data-mantine-color-scheme="light"]) .navActive { background: rgba(0,153,184,0.12); color: var(--purple); }
 :global(html[data-mantine-color-scheme="light"]) .navActive svg { opacity: 1; }
 :global(html[data-mantine-color-scheme="light"]) .pinBtn { border-color: var(--border); color: var(--text-3); }
-:global(html[data-mantine-color-scheme="light"]) .pinBtn:hover { background: rgba(91,110,245,0.08); color: var(--purple); border-color: rgba(91,110,245,0.2); }
-:global(html[data-mantine-color-scheme="light"]) .pinLocked { color: var(--purple); border-color: rgba(91,110,245,0.25); }
+:global(html[data-mantine-color-scheme="light"]) .pinBtn:hover { background: rgba(0,153,184,0.08); color: var(--purple); border-color: rgba(0,153,184,0.2); }
+:global(html[data-mantine-color-scheme="light"]) .pinLocked { color: var(--purple); border-color: rgba(0,153,184,0.25); }
 :global(html[data-mantine-color-scheme="light"]) .userFooter { border-top-color: var(--border); }
 :global(html[data-mantine-color-scheme="light"]) .themeBtn { border-color: var(--border); color: var(--text-3); }
-:global(html[data-mantine-color-scheme="light"]) .themeBtn:hover { background: rgba(91,110,245,0.08); color: var(--purple); }
+:global(html[data-mantine-color-scheme="light"]) .themeBtn:hover { background: rgba(0,153,184,0.08); color: var(--purple); }

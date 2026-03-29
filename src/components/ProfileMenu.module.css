@@ -76,9 +76,9 @@
 .menuItem svg { opacity: .7; flex-shrink: 0; }
 
 /* Light theme */
-:global(html[data-mantine-color-scheme="light"]) .trigger:hover { background: rgba(91,110,245,0.06); }
-:global(html[data-mantine-color-scheme="light"]) .avatar { background: rgba(91,110,245,0.12); border-color: rgba(91,110,245,0.2); color: var(--purple); }
-:global(html[data-mantine-color-scheme="light"]) .avatarLg { background: rgba(91,110,245,0.12); border-color: rgba(91,110,245,0.2); color: var(--purple); }
+:global(html[data-mantine-color-scheme="light"]) .trigger:hover { background: rgba(0,153,184,0.06); }
+:global(html[data-mantine-color-scheme="light"]) .avatar { background: rgba(0,153,184,0.12); border-color: rgba(0,153,184,0.2); color: var(--purple); }
+:global(html[data-mantine-color-scheme="light"]) .avatarLg { background: rgba(0,153,184,0.12); border-color: rgba(0,153,184,0.2); color: var(--purple); }
 :global(html[data-mantine-color-scheme="light"]) .dropdown {
   background: rgba(255,255,255,0.97) !important;
   border-color: var(--border) !important;
@@ -86,7 +86,7 @@
 }
 :global(html[data-mantine-color-scheme="light"]) .header { border-bottom-color: var(--border); }
 :global(html[data-mantine-color-scheme="light"]) .divider { background: var(--border); }
-:global(html[data-mantine-color-scheme="light"]) .langSwitch { background: rgba(91,110,245,0.06); border-color: var(--border); }
+:global(html[data-mantine-color-scheme="light"]) .langSwitch { background: rgba(0,153,184,0.06); border-color: var(--border); }
 :global(html[data-mantine-color-scheme="light"]) .langBtn { color: var(--text-3); }
-:global(html[data-mantine-color-scheme="light"]) .langActive { background: rgba(91,110,245,0.14); color: var(--purple); }
-:global(html[data-mantine-color-scheme="light"]) .menuItem:hover { background: rgba(91,110,245,0.06); }
+:global(html[data-mantine-color-scheme="light"]) .langActive { background: rgba(0,153,184,0.14); color: var(--purple); }
+:global(html[data-mantine-color-scheme="light"]) .menuItem:hover { background: rgba(0,153,184,0.06); }
