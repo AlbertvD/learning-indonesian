@@ -162,7 +162,7 @@
 }
 
 .showBtn {
-  background: var(--purple);
+  background: var(--accent-primary);
   color: #fff;
   border: none;
   padding: 12px 40px;
@@ -172,13 +172,13 @@
   font-weight: 700;
   cursor: pointer;
   transition: all .2s;
-  box-shadow: 0 4px 20px var(--purple-subtle);
+  box-shadow: 0 4px 20px rgba(0, 229, 255, 0.2);
 }
 
 .showBtn:hover {
-  background: var(--purple-bright);
+  background: rgba(0, 229, 255, 0.8);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--purple-glow);
+  box-shadow: 0 8px 24px rgba(0, 229, 255, 0.4);
 }
 
 .ratingGrid {

@@ -313,10 +313,7 @@ CREATE POLICY "card_sets_read" ON indonesian.card_sets FOR SELECT TO authenticat
   USING (
     owner_id = auth.uid()
     OR visibility = 'public'
-    OR (visibility = 'shared' AND EXISTS (
-      SELECT 1 FROM indonesian.card_set_shares
-      WHERE card_set_id = id AND shared_with_user_id = auth.uid()
-    ))
+    OR (visibility = 'shared' AND indonesian.is_shared_with_current_user(id))
   );
 CREATE POLICY "card_sets_write" ON indonesian.card_sets FOR ALL TO authenticated
   USING (owner_id = auth.uid()) WITH CHECK (owner_id = auth.uid());
@@ -324,18 +321,11 @@ CREATE POLICY "card_sets_write" ON indonesian.card_sets FOR ALL TO authenticated
 CREATE POLICY "card_set_shares_read" ON indonesian.card_set_shares FOR SELECT TO authenticated
   USING (
     shared_with_user_id = auth.uid()
-    OR EXISTS (
-      SELECT 1 FROM indonesian.card_sets
-      WHERE id = card_set_id AND owner_id = auth.uid()
-    )
+    OR indonesian.current_user_owns_card_set(card_set_id)
   );
 CREATE POLICY "card_set_shares_write" ON indonesian.card_set_shares FOR ALL TO authenticated
-  USING (EXISTS (
-    SELECT 1 FROM indonesian.card_sets WHERE id = card_set_id AND owner_id = auth.uid()
-  ))
-  WITH CHECK (EXISTS (
-    SELECT 1 FROM indonesian.card_sets WHERE id = card_set_id AND owner_id = auth.uid()
-  ));
+  USING (indonesian.current_user_owns_card_set(card_set_id))
+  WITH CHECK (indonesian.current_user_owns_card_set(card_set_id));
 
 CREATE POLICY "anki_cards_read" ON indonesian.anki_cards FOR SELECT TO authenticated
   USING (
@@ -344,10 +334,7 @@ CREATE POLICY "anki_cards_read" ON indonesian.anki_cards FOR SELECT TO authentic
       SELECT 1 FROM indonesian.card_sets cs
       WHERE cs.id = card_set_id AND (
         cs.visibility = 'public'
-        OR (cs.visibility = 'shared' AND EXISTS (
-          SELECT 1 FROM indonesian.card_set_shares
-          WHERE card_set_id = cs.id AND shared_with_user_id = auth.uid()
-        ))
+        OR (cs.visibility = 'shared' AND indonesian.is_shared_with_current_user(cs.id))
       )
     )
   );
@@ -367,6 +354,29 @@ ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS duration_seconds integer
 ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_dutch text;
 ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_indonesian text;
 ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_english text;
+
+-- Bidirectional review: add direction column to card_reviews
+ALTER TABLE indonesian.card_reviews
+  ADD COLUMN IF NOT EXISTS direction text NOT NULL DEFAULT 'forward'
+    CHECK (direction IN ('forward', 'reverse'));
+
+-- Replace unique constraint to include direction
+ALTER TABLE indonesian.card_reviews
+  DROP CONSTRAINT IF EXISTS card_reviews_card_id_user_id_key;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints
+    WHERE table_schema = 'indonesian'
+      AND table_name = 'card_reviews'
+      AND constraint_name = 'card_reviews_card_id_user_id_direction_key'
+  ) THEN
+    ALTER TABLE indonesian.card_reviews
+      ADD CONSTRAINT card_reviews_card_id_user_id_direction_key
+        UNIQUE (card_id, user_id, direction);
+  END IF;
+END $$;
 
 -- Health check RPC — callable by service role to inspect schema state
 -- Returns JSON with tables, RLS status, and grants for the indonesian schema
@@ -406,16 +416,3 @@ VALUES
   ('indonesian-lessons', 'indonesian-lessons', true),
   ('indonesian-podcasts', 'indonesian-podcasts', true)
 ON CONFLICT (id) DO NOTHING;
-
--- Bidirectional review: add direction column to card_reviews
-ALTER TABLE indonesian.card_reviews
-  ADD COLUMN IF NOT EXISTS direction text NOT NULL DEFAULT 'forward'
-    CHECK (direction IN ('forward', 'reverse'));
-
--- Replace unique constraint to include direction
-ALTER TABLE indonesian.card_reviews
-  DROP CONSTRAINT IF EXISTS card_reviews_card_id_user_id_key;
-
-ALTER TABLE indonesian.card_reviews
-  ADD CONSTRAINT card_reviews_card_id_user_id_direction_key
-    UNIQUE (card_id, user_id, direction);
