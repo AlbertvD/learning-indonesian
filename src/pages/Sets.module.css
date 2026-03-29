@@ -37,7 +37,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  height: 68px;
+  height: 48px;
   position: relative;
   overflow: hidden;
 }
@@ -71,7 +71,7 @@
 
 .setName {
   font-family: var(--display);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text-primary);
   line-height: 1.2;

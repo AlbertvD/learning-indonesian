@@ -88,7 +88,7 @@ export function Lessons() {
                 <div className={classes.progressBarBackground} />
                 <div
                   className={classes.progressBarFill}
-                  style={{ width: `${completionPercent}%` }}
+                  style={{ height: `${completionPercent}%` }}
                 />
               </div>
             </Link>
