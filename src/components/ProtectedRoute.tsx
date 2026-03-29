@@ -6,13 +6,35 @@ import { Center, Loader } from '@mantine/core'
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuthStore()
 
+  // Dev-only bypass: append `?bypassAuth=1` to any URL to view pages without signing in.
+  // This is safe because it's only enabled during `vite` dev mode.
+  const devBypass = import.meta.env.DEV && new URL(window.location.href).searchParams.get('bypassAuth') === '1'
+  const devInitializedRef = React.useRef(false)
+
+  // If devBypass is active, populate the auth store with a lightweight
+  // fake user/profile so pages that read `useAuthStore().user` can fetch data
+  // (or skip early-returns) instead of hanging on loaders.
+  useEffect(() => {
+    if (!devBypass || devInitializedRef.current) return
+    devInitializedRef.current = true
+    try {
+      useAuthStore.setState({
+        user: { id: 'dev-user', email: 'dev@local' } as any,
+        profile: { id: 'dev-user', email: 'dev@local', fullName: 'Dev User', language: 'en', isAdmin: true },
+        loading: false,
+      } as any)
+    } catch {
+      // ignore — dev helper only
+    }
+  }, [devBypass])
+
   const redirectedRef = React.useRef(false)
   useEffect(() => {
-    if (!loading && !user && !redirectedRef.current) {
+    if (!loading && !user && !redirectedRef.current && !devBypass) {
       redirectedRef.current = true
       window.location.href = `https://auth.duin.home/login?next=${encodeURIComponent(window.location.href)}`
     }
-  }, [user, loading])
+  }, [user, loading, devBypass])
 
   if (loading) {
     return (
@@ -23,6 +45,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (!user) {
+    if (devBypass) return <>{children}</>
     return null
   }
 

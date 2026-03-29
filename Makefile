@@ -76,7 +76,7 @@ seed-flashcards: ## Seed public flashcard decks from lesson vocabulary (requires
 	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-flashcards.ts
 
 .PHONY: seed-all
-seed-all: seed-lessons seed-vocabulary ## Seed all non-audio content (requires SUPABASE_SERVICE_KEY)
+seed-all: seed-lessons seed-vocabulary seed-flashcards ## Seed all non-audio content (requires SUPABASE_SERVICE_KEY)
 
 .PHONY: extract-lesson
 extract-lesson: ## Extract lesson content from page photos (requires LESSON and ANTHROPIC_API_KEY)

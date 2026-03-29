@@ -71,7 +71,7 @@ export function Review() {
       }
     }
     fetchCards()
-  }, [user, direction, fetchDueCards])
+  }, [user, direction, fetchDueCards, T.common.error, T.common.somethingWentWrong])
 
   const handleDirectionChange = async (newDirection: ReviewDirection) => {
     if (newDirection === direction) return

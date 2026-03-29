@@ -1,5 +1,5 @@
 // src/components/ShareCardSetModal.tsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Modal, Autocomplete, Button, Stack, Group, Text, ActionIcon, Loader, Center } from '@mantine/core'
 import { cardService } from '@/services/cardService'
 import { IconTrash, IconUserPlus, IconSearch } from '@tabler/icons-react'
@@ -22,7 +22,7 @@ export function ShareCardSetModal({ opened, onClose, setId, setName }: ShareCard
   const [loading, setLoading] = useState(false)
   const [searching, setSearching] = useState(false)
 
-  const fetchShares = async () => {
+  const fetchShares = useCallback(async () => {
     setLoading(true)
     try {
       const data = await cardService.getCardSetShares(setId)
@@ -33,13 +33,13 @@ export function ShareCardSetModal({ opened, onClose, setId, setName }: ShareCard
     } finally {
       setLoading(false)
     }
-  }
+  }, [setId, T.common.error, T.common.somethingWentWrong])
 
   useEffect(() => {
     if (opened) {
       fetchShares()
     }
-  }, [opened, setId])
+  }, [opened, fetchShares])
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
