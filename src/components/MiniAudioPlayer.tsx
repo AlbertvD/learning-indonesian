@@ -1,8 +1,10 @@
 import { Menu } from '@mantine/core'
-import { IconPlayerPlay, IconPlayerPause, IconVolumeOff, IconVolume, IconGauge } from '@tabler/icons-react'
+import { IconPlayerPlay, IconPlayerPause, IconVolumeOff, IconVolume, IconVolume2, IconGauge } from '@tabler/icons-react'
 import classes from './MiniAudioPlayer.module.css'
 
 const SPEEDS = [0.75, 1, 1.25, 1.5]
+const VOLUMES = [0, 0.25, 0.5, 0.75, 1]
+const VOLUME_LABELS: Record<number, string> = { 0: 'Mute', 0.25: '25%', 0.5: '50%', 0.75: '75%', 1: '100%' }
 
 interface MiniAudioPlayerProps {
   isPlaying: boolean
@@ -61,13 +63,24 @@ export function MiniAudioPlayer({
         </Menu.Dropdown>
       </Menu>
 
-      <button
-        className={classes.iconBtn}
-        onClick={() => onVolumeChange(volume > 0 ? 0 : 1)}
-        aria-label="Toggle mute"
-      >
-        {volume === 0 ? <IconVolumeOff size={16} /> : <IconVolume size={16} />}
-      </button>
+      <Menu shadow="md" width={100}>
+        <Menu.Target>
+          <button className={classes.iconBtn} aria-label="Volume">
+            {volume === 0 ? <IconVolumeOff size={16} /> : volume < 0.5 ? <IconVolume size={16} /> : <IconVolume2 size={16} />}
+          </button>
+        </Menu.Target>
+        <Menu.Dropdown>
+          {VOLUMES.map((v) => (
+            <Menu.Item
+              key={v}
+              onClick={() => onVolumeChange(v)}
+              style={{ fontWeight: volume === v ? 700 : 400 }}
+            >
+              {VOLUME_LABELS[v]}
+            </Menu.Item>
+          ))}
+        </Menu.Dropdown>
+      </Menu>
     </div>
   )
 }
