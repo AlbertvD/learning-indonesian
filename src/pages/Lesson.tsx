@@ -331,6 +331,19 @@ export function Lesson() {
     }
   }
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      // Don't intercept if user is typing in an input/textarea
+      const tag = (e.target as HTMLElement).tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+
+      if (e.key === 'ArrowRight') handleNext()
+      if (e.key === 'ArrowLeft') handleBack()
+    }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  })
+
   const togglePlay = () => {
     if (!audioRef.current) return
     if (isPlaying) {
