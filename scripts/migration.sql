@@ -1,16 +1,43 @@
 
+-- V2 migration: complete indonesian schema target state
+
 -- Create schema
 CREATE SCHEMA IF NOT EXISTS indonesian;
 
+-- V2 migration: drop old tables/views first
+DROP VIEW IF EXISTS indonesian.leaderboard;
+DROP FUNCTION IF EXISTS indonesian.is_shared_with_current_user(uuid) CASCADE;
+DROP FUNCTION IF EXISTS indonesian.current_user_owns_card_set(uuid) CASCADE;
+
+-- Migrate existing review sessions before constraint change
+-- DO NOT fail if table doesn't exist yet (for fresh installs)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'indonesian' AND table_name = 'learning_sessions') THEN
+    UPDATE indonesian.learning_sessions SET session_type = 'practice' WHERE session_type = 'review';
+  END IF;
+END $$;
+
+DROP TABLE IF EXISTS indonesian.card_reviews CASCADE;
+DROP TABLE IF EXISTS indonesian.anki_cards CASCADE;
+DROP TABLE IF EXISTS indonesian.card_set_shares CASCADE;
+DROP TABLE IF EXISTS indonesian.card_sets CASCADE;
+DROP TABLE IF EXISTS indonesian.user_vocabulary CASCADE;
+DROP TABLE IF EXISTS indonesian.user_progress CASCADE;
+DROP TABLE IF EXISTS indonesian.vocabulary CASCADE;
+
 -- User profiles (readable by all — used by leaderboard and sharing UI)
--- Do NOT join auth.users in views — PostgREST cannot access the auth schema
 CREATE TABLE IF NOT EXISTS indonesian.profiles (
   id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   display_name text,
   language text NOT NULL DEFAULT 'nl' CHECK (language IN ('nl', 'en')),
+  preferred_session_size integer NOT NULL DEFAULT 15,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
+
+-- Ensure preferred_session_size exists if table was already there
+ALTER TABLE indonesian.profiles ADD COLUMN IF NOT EXISTS preferred_session_size integer NOT NULL DEFAULT 15;
 
 -- Admin roles
 CREATE TABLE IF NOT EXISTS indonesian.user_roles (
@@ -35,7 +62,6 @@ CREATE TABLE IF NOT EXISTS indonesian.lessons (
   transcript_indonesian text,
   transcript_english text,
   created_at timestamptz DEFAULT now(),
-  -- Natural key for seed upserts — avoids needing explicit UUIDs in data files
   UNIQUE(module_id, order_index)
 );
 
@@ -45,23 +71,7 @@ CREATE TABLE IF NOT EXISTS indonesian.lesson_sections (
   title text NOT NULL,
   content jsonb NOT NULL DEFAULT '{}',
   order_index integer NOT NULL DEFAULT 0,
-  -- Natural key for seed upserts
   UNIQUE(lesson_id, order_index)
-);
-
--- Vocabulary (admin-managed, public read)
-CREATE TABLE IF NOT EXISTS indonesian.vocabulary (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  lesson_id uuid REFERENCES indonesian.lessons(id) ON DELETE SET NULL,
-  indonesian text NOT NULL,
-  english text NOT NULL,
-  dutch text,
-  example_sentence text,
-  module_id text,
-  level text,
-  tags text[] DEFAULT '{}',
-  -- Natural key for seed upserts
-  UNIQUE(indonesian, lesson_id)
 );
 
 -- Podcasts (admin-managed, public read)
@@ -76,21 +86,120 @@ CREATE TABLE IF NOT EXISTS indonesian.podcasts (
   level text CHECK (level IN ('A1','A2','B1','B2','C1','C2')),
   duration_seconds integer,
   created_at timestamptz DEFAULT now(),
-  -- Natural key for seed upserts
   UNIQUE(title)
 );
 
--- User progress (per-user write, all-user read for leaderboard)
-CREATE TABLE IF NOT EXISTS indonesian.user_progress (
+-- Learning items (canonical teachable unit)
+CREATE TABLE IF NOT EXISTS indonesian.learning_items (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  current_level text NOT NULL DEFAULT 'A1',
-  current_module_id text,
-  grammar_mastery numeric DEFAULT 0,
-  last_active_date date,
+  item_type text NOT NULL CHECK (item_type IN ('word', 'phrase', 'sentence', 'dialogue_chunk')),
+  base_text text NOT NULL,
+  normalized_text text NOT NULL,
+  language text NOT NULL DEFAULT 'id',
+  level text NOT NULL DEFAULT 'A1',
+  source_type text NOT NULL DEFAULT 'lesson' CHECK (source_type IN ('lesson', 'podcast', 'flashcard', 'manual')),
+  source_vocabulary_id uuid,
+  source_card_id uuid,
+  notes text,
+  is_active boolean NOT NULL DEFAULT true,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now(),
-  UNIQUE(user_id)
+  UNIQUE(normalized_text, item_type)
+);
+
+-- Translations per item
+CREATE TABLE IF NOT EXISTS indonesian.item_meanings (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
+  translation_language text NOT NULL CHECK (translation_language IN ('en', 'nl')),
+  translation_text text NOT NULL,
+  sense_label text,
+  usage_note text,
+  is_primary boolean NOT NULL DEFAULT false
+);
+
+-- Example sentences and dialogue snippets
+CREATE TABLE IF NOT EXISTS indonesian.item_contexts (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
+  context_type text NOT NULL CHECK (context_type IN ('example_sentence', 'dialogue', 'cloze', 'lesson_snippet')),
+  source_text text NOT NULL,
+  translation_text text,
+  difficulty text,
+  topic_tag text,
+  is_anchor_context boolean NOT NULL DEFAULT false,
+  source_lesson_id uuid REFERENCES indonesian.lessons(id) ON DELETE SET NULL,
+  source_section_id uuid REFERENCES indonesian.lesson_sections(id) ON DELETE SET NULL
+);
+
+-- Accepted alternative answers for typed recall
+CREATE TABLE IF NOT EXISTS indonesian.item_answer_variants (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
+  variant_text text NOT NULL,
+  variant_type text NOT NULL CHECK (variant_type IN ('alternative_translation', 'informal', 'with_prefix', 'without_prefix')),
+  language text NOT NULL DEFAULT 'id',
+  is_accepted boolean NOT NULL DEFAULT true,
+  notes text
+);
+
+-- Learner item lifecycle state
+CREATE TABLE IF NOT EXISTS indonesian.learner_item_state (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
+  stage text NOT NULL DEFAULT 'new' CHECK (stage IN ('new', 'anchoring', 'retrieving', 'productive', 'maintenance')),
+  introduced_at timestamptz,
+  last_seen_at timestamptz,
+  priority integer,
+  origin text,
+  times_seen integer NOT NULL DEFAULT 0,
+  is_leech boolean NOT NULL DEFAULT false,
+  suspended boolean NOT NULL DEFAULT false,
+  gate_check_passed boolean,
+  updated_at timestamptz DEFAULT now(),
+  UNIQUE(user_id, learning_item_id)
+);
+
+-- Per-skill FSRS state per user per item
+CREATE TABLE IF NOT EXISTS indonesian.learner_skill_state (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
+  skill_type text NOT NULL CHECK (skill_type IN ('recognition', 'recall')),
+  stability numeric NOT NULL DEFAULT 0,
+  difficulty numeric NOT NULL DEFAULT 0,
+  retrievability numeric,
+  last_reviewed_at timestamptz,
+  next_due_at timestamptz,
+  success_count integer NOT NULL DEFAULT 0,
+  failure_count integer NOT NULL DEFAULT 0,
+  lapse_count integer NOT NULL DEFAULT 0,
+  consecutive_failures integer NOT NULL DEFAULT 0,
+  mean_latency_ms integer,
+  hint_rate numeric,
+  updated_at timestamptz DEFAULT now(),
+  UNIQUE(user_id, learning_item_id, skill_type)
+);
+
+-- Immutable review event log
+CREATE TABLE IF NOT EXISTS indonesian.review_events (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
+  skill_type text NOT NULL CHECK (skill_type IN ('recognition', 'recall')),
+  exercise_type text NOT NULL CHECK (exercise_type IN ('recognition_mcq', 'typed_recall', 'cloze')),
+  session_id uuid, -- FK added after learning_sessions check
+  was_correct boolean NOT NULL,
+  score numeric,
+  latency_ms integer,
+  hint_used boolean NOT NULL DEFAULT false,
+  attempt_number integer NOT NULL DEFAULT 1,
+  raw_response text,
+  normalized_response text,
+  feedback_type text,
+  scheduler_snapshot jsonb,
+  created_at timestamptz DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS indonesian.lesson_progress (
@@ -103,24 +212,10 @@ CREATE TABLE IF NOT EXISTS indonesian.lesson_progress (
   UNIQUE(user_id, lesson_id)
 );
 
-CREATE TABLE IF NOT EXISTS indonesian.user_vocabulary (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  vocabulary_id uuid REFERENCES indonesian.vocabulary(id) ON DELETE SET NULL,
-  custom_indonesian text,
-  custom_english text,
-  custom_key text GENERATED ALWAYS AS (
-    COALESCE(vocabulary_id::text, lower(trim(custom_indonesian || '|' || custom_english)))
-  ) STORED,
-  learned_at timestamptz DEFAULT now(),
-  UNIQUE(user_id, vocabulary_id),
-  UNIQUE(user_id, custom_key)
-);
-
 CREATE TABLE IF NOT EXISTS indonesian.learning_sessions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  session_type text NOT NULL CHECK (session_type IN ('lesson','review','podcast','practice')),
+  session_type text NOT NULL,
   started_at timestamptz NOT NULL DEFAULT now(),
   ended_at timestamptz,
   duration_seconds integer GENERATED ALWAYS AS (
@@ -128,66 +223,15 @@ CREATE TABLE IF NOT EXISTS indonesian.learning_sessions (
   ) STORED
 );
 
--- Flashcards (user-created, with sharing)
-CREATE TABLE IF NOT EXISTS indonesian.card_sets (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  owner_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  name text NOT NULL,
-  description text,
-  visibility text NOT NULL DEFAULT 'private' CHECK (visibility IN ('private','shared','public')),
-  created_at timestamptz DEFAULT now(),
-  UNIQUE(owner_id, name)
-);
+-- Add CHECK constraint to learning_sessions
+ALTER TABLE indonesian.learning_sessions DROP CONSTRAINT IF EXISTS learning_sessions_session_type_check;
+ALTER TABLE indonesian.learning_sessions ADD CONSTRAINT learning_sessions_session_type_check
+  CHECK (session_type IN ('lesson', 'learning', 'podcast', 'practice'));
 
-CREATE TABLE IF NOT EXISTS indonesian.card_set_shares (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  card_set_id uuid NOT NULL REFERENCES indonesian.card_sets(id) ON DELETE CASCADE,
-  shared_with_user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  UNIQUE(card_set_id, shared_with_user_id)
-);
-
-CREATE TABLE IF NOT EXISTS indonesian.anki_cards (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  card_set_id uuid NOT NULL REFERENCES indonesian.card_sets(id) ON DELETE CASCADE,
-  owner_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  front text NOT NULL,
-  back text NOT NULL,
-  notes text,
-  tags text[] DEFAULT '{}',
-  created_at timestamptz DEFAULT now(),
-  UNIQUE(card_set_id, front)
-);
-
--- Per-user SM-2 review state — one row per (card, user) pair
-CREATE TABLE IF NOT EXISTS indonesian.card_reviews (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  card_id uuid NOT NULL REFERENCES indonesian.anki_cards(id) ON DELETE CASCADE,
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  easiness_factor numeric NOT NULL DEFAULT 2.5,
-  interval_days integer NOT NULL DEFAULT 1,
-  repetitions integer NOT NULL DEFAULT 0,
-  next_review_at timestamptz DEFAULT now(),
-  last_reviewed_at timestamptz,
-  UNIQUE(card_id, user_id)
-);
-
--- Leaderboard view
-CREATE OR REPLACE VIEW indonesian.leaderboard AS
-SELECT
-  p.id AS user_id,
-  p.display_name,
-  COALESCE(up.current_level, 'A1') AS current_level,
-  COUNT(DISTINCT uv.id) AS vocabulary_count,
-  COUNT(DISTINCT lp.lesson_id) FILTER (WHERE lp.completed_at IS NOT NULL) AS lessons_completed,
-  COALESCE(SUM(ls.duration_seconds) FILTER (WHERE ls.duration_seconds IS NOT NULL), 0) AS total_seconds_spent,
-  COUNT(DISTINCT DATE(ls.started_at)) FILTER (WHERE ls.duration_seconds IS NOT NULL OR ls.started_at > now() - interval '2 hours') AS days_active
-FROM indonesian.profiles p
-LEFT JOIN indonesian.user_progress up ON up.user_id = p.id
-LEFT JOIN indonesian.user_vocabulary uv ON uv.user_id = p.id
-LEFT JOIN indonesian.lesson_progress lp ON lp.user_id = p.id
-LEFT JOIN indonesian.learning_sessions ls ON ls.user_id = p.id
-  AND (ls.ended_at IS NOT NULL OR ls.started_at > now() - interval '2 hours')
-GROUP BY p.id, p.display_name, up.current_level;
+-- Add FK from review_events to learning_sessions
+ALTER TABLE indonesian.review_events DROP CONSTRAINT IF EXISTS review_events_session_id_fkey;
+ALTER TABLE indonesian.review_events ADD CONSTRAINT review_events_session_id_fkey
+  FOREIGN KEY (session_id) REFERENCES indonesian.learning_sessions(id) ON DELETE SET NULL;
 
 -- Error logs
 CREATE TABLE IF NOT EXISTS indonesian.error_logs (
@@ -200,58 +244,89 @@ CREATE TABLE IF NOT EXISTS indonesian.error_logs (
   created_at timestamptz DEFAULT now()
 );
 
--- Explicit grants
+-- Leaderboard view
+CREATE OR REPLACE VIEW indonesian.leaderboard AS
+SELECT
+  p.id AS user_id,
+  p.display_name,
+  COALESCE(lis.items_learned, 0) AS items_learned,
+  COUNT(DISTINCT lp.lesson_id) FILTER (WHERE lp.completed_at IS NOT NULL) AS lessons_completed,
+  COALESCE(SUM(ls.duration_seconds) FILTER (WHERE ls.duration_seconds IS NOT NULL), 0) AS total_seconds_spent,
+  COUNT(DISTINCT DATE(ls.started_at)) FILTER (WHERE ls.duration_seconds IS NOT NULL OR ls.started_at > now() - interval '2 hours') AS days_active
+FROM indonesian.profiles p
+LEFT JOIN (
+  SELECT user_id, COUNT(*) AS items_learned
+  FROM indonesian.learner_item_state
+  WHERE stage IN ('retrieving', 'productive', 'maintenance')
+  GROUP BY user_id
+) lis ON lis.user_id = p.id
+LEFT JOIN indonesian.lesson_progress lp ON lp.user_id = p.id
+LEFT JOIN indonesian.learning_sessions ls ON ls.user_id = p.id
+  AND (ls.ended_at IS NOT NULL OR ls.started_at > now() - interval '2 hours')
+GROUP BY p.id, p.display_name, lis.items_learned;
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_item_contexts_lesson ON indonesian.item_contexts(source_lesson_id);
+CREATE INDEX IF NOT EXISTS idx_item_contexts_item_anchor ON indonesian.item_contexts(learning_item_id, is_anchor_context);
+CREATE INDEX IF NOT EXISTS idx_learner_item_state_stage ON indonesian.learner_item_state(user_id, stage);
+CREATE INDEX IF NOT EXISTS idx_learner_skill_state_due ON indonesian.learner_skill_state(user_id, next_due_at);
+CREATE INDEX IF NOT EXISTS idx_review_events_user_time ON indonesian.review_events(user_id, created_at);
+
+-- RLS and Grants
 GRANT USAGE ON SCHEMA indonesian TO authenticated, anon;
-GRANT SELECT ON indonesian.lessons TO authenticated;
-GRANT SELECT ON indonesian.lesson_sections TO authenticated;
-GRANT SELECT ON indonesian.vocabulary TO authenticated;
-GRANT SELECT ON indonesian.podcasts TO authenticated;
-GRANT SELECT ON indonesian.leaderboard TO authenticated;
 GRANT SELECT ON indonesian.profiles TO authenticated;
 GRANT INSERT, UPDATE ON indonesian.profiles TO authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.user_progress TO authenticated;
+GRANT SELECT ON indonesian.lessons TO authenticated;
+GRANT SELECT ON indonesian.lesson_sections TO authenticated;
+GRANT SELECT ON indonesian.podcasts TO authenticated;
+GRANT SELECT ON indonesian.learning_items TO authenticated;
+GRANT SELECT ON indonesian.item_meanings TO authenticated;
+GRANT SELECT ON indonesian.item_contexts TO authenticated;
+GRANT SELECT ON indonesian.item_answer_variants TO authenticated;
+GRANT SELECT, INSERT, UPDATE ON indonesian.learner_item_state TO authenticated;
+GRANT SELECT, INSERT, UPDATE ON indonesian.learner_skill_state TO authenticated;
+GRANT SELECT, INSERT ON indonesian.review_events TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.lesson_progress TO authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.user_vocabulary TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.learning_sessions TO authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.card_sets TO authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.card_set_shares TO authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.anki_cards TO authenticated;
-GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.card_reviews TO authenticated;
 GRANT INSERT ON indonesian.error_logs TO authenticated;
+GRANT SELECT ON indonesian.leaderboard TO authenticated;
+GRANT SELECT ON indonesian.user_roles TO authenticated;
 
--- Drop all existing policies before recreating (makes this script fully idempotent)
+-- Service role permissions (for health checks and scripts)
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA indonesian TO service_role;
+GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA indonesian TO service_role;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA indonesian TO service_role;
+
+-- Enable RLS on all tables
+ALTER TABLE indonesian.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.user_roles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.lessons ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.lesson_sections ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.podcasts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.learning_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.item_meanings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.item_contexts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.item_answer_variants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.learner_item_state ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.learner_skill_state ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.review_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.lesson_progress ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.learning_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.error_logs ENABLE ROW LEVEL SECURITY;
+
+-- Drop and recreate policies
 DO $$ DECLARE r record; BEGIN
   FOR r IN SELECT tablename, policyname FROM pg_policies WHERE schemaname = 'indonesian' LOOP
     EXECUTE 'DROP POLICY IF EXISTS ' || quote_ident(r.policyname) || ' ON indonesian.' || quote_ident(r.tablename);
   END LOOP;
 END $$;
 
--- RLS Policy: user_roles (self-read only)
-CREATE POLICY "user_roles_read" ON indonesian.user_roles
-  FOR SELECT TO authenticated USING (user_id = auth.uid());
-GRANT SELECT ON indonesian.user_roles TO authenticated;
-
--- Enable RLS
-ALTER TABLE indonesian.profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.user_roles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.lessons ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.lesson_sections ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.vocabulary ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.podcasts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.user_progress ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.lesson_progress ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.user_vocabulary ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.learning_sessions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.card_sets ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.card_set_shares ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.anki_cards ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.card_reviews ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.error_logs ENABLE ROW LEVEL SECURITY;
-
--- RLS Policies
+-- Policies
 CREATE POLICY "profiles_read" ON indonesian.profiles FOR SELECT TO authenticated USING (true);
 CREATE POLICY "profiles_write" ON indonesian.profiles FOR ALL TO authenticated
   USING (id = auth.uid()) WITH CHECK (id = auth.uid());
+
+CREATE POLICY "user_roles_read" ON indonesian.user_roles FOR SELECT TO authenticated USING (user_id = auth.uid());
 
 CREATE POLICY "lessons_read" ON indonesian.lessons FOR SELECT TO authenticated USING (true);
 CREATE POLICY "lessons_admin_write" ON indonesian.lessons FOR ALL TO authenticated
@@ -263,123 +338,53 @@ CREATE POLICY "lesson_sections_admin_write" ON indonesian.lesson_sections FOR AL
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
-CREATE POLICY "vocabulary_read" ON indonesian.vocabulary FOR SELECT TO authenticated USING (true);
-CREATE POLICY "vocabulary_admin_write" ON indonesian.vocabulary FOR ALL TO authenticated
-  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
-  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
-
 CREATE POLICY "podcasts_read" ON indonesian.podcasts FOR SELECT TO authenticated USING (true);
 CREATE POLICY "podcasts_admin_write" ON indonesian.podcasts FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
-CREATE POLICY "user_progress_read" ON indonesian.user_progress FOR SELECT TO authenticated USING (true);
-CREATE POLICY "user_progress_write" ON indonesian.user_progress FOR ALL TO authenticated
+CREATE POLICY "learning_items_read" ON indonesian.learning_items FOR SELECT TO authenticated USING (true);
+CREATE POLICY "learning_items_admin_write" ON indonesian.learning_items FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "item_meanings_read" ON indonesian.item_meanings FOR SELECT TO authenticated USING (true);
+CREATE POLICY "item_meanings_admin_write" ON indonesian.item_meanings FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "item_contexts_read" ON indonesian.item_contexts FOR SELECT TO authenticated USING (true);
+CREATE POLICY "item_contexts_admin_write" ON indonesian.item_contexts FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "item_answer_variants_read" ON indonesian.item_answer_variants FOR SELECT TO authenticated USING (true);
+CREATE POLICY "item_answer_variants_admin_write" ON indonesian.item_answer_variants FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "learner_item_state_owner" ON indonesian.learner_item_state FOR ALL TO authenticated
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
+
+CREATE POLICY "learner_skill_state_owner" ON indonesian.learner_skill_state FOR ALL TO authenticated
+  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
+
+CREATE POLICY "review_events_read" ON indonesian.review_events FOR SELECT TO authenticated
+  USING (user_id = auth.uid());
+CREATE POLICY "review_events_insert" ON indonesian.review_events FOR INSERT TO authenticated
+  WITH CHECK (user_id = auth.uid());
 
 CREATE POLICY "lesson_progress_read" ON indonesian.lesson_progress FOR SELECT TO authenticated USING (true);
 CREATE POLICY "lesson_progress_write" ON indonesian.lesson_progress FOR ALL TO authenticated
-  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
-
-CREATE POLICY "user_vocabulary_read" ON indonesian.user_vocabulary FOR SELECT TO authenticated USING (true);
-CREATE POLICY "user_vocabulary_write" ON indonesian.user_vocabulary FOR ALL TO authenticated
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
 CREATE POLICY "learning_sessions_read" ON indonesian.learning_sessions FOR SELECT TO authenticated USING (true);
 CREATE POLICY "learning_sessions_write" ON indonesian.learning_sessions FOR ALL TO authenticated
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
--- Security definer helpers break the mutual recursion between card_sets_read and
--- card_set_shares_read (each policy would otherwise query the other table under RLS,
--- causing 42P17 infinite_recursion on any query that touches anki_cards or card_sets).
--- Using SECURITY DEFINER and explicit schema names allows bypassing RLS for these lookups.
-CREATE OR REPLACE FUNCTION indonesian.is_shared_with_current_user(p_card_set_id uuid)
-RETURNS boolean LANGUAGE sql SECURITY DEFINER STABLE AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM indonesian.card_set_shares
-    WHERE card_set_id = p_card_set_id AND shared_with_user_id = auth.uid()
-  )
-$$;
-
-CREATE OR REPLACE FUNCTION indonesian.current_user_owns_card_set(p_card_set_id uuid)
-RETURNS boolean LANGUAGE sql SECURITY DEFINER STABLE AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM indonesian.card_sets
-    WHERE id = p_card_set_id AND owner_id = auth.uid()
-  )
-$$;
-
-CREATE POLICY "card_sets_read" ON indonesian.card_sets FOR SELECT TO authenticated
-  USING (
-    owner_id = auth.uid()
-    OR visibility = 'public'
-    OR (visibility = 'shared' AND indonesian.is_shared_with_current_user(id))
-  );
-CREATE POLICY "card_sets_write" ON indonesian.card_sets FOR ALL TO authenticated
-  USING (owner_id = auth.uid()) WITH CHECK (owner_id = auth.uid());
-
-CREATE POLICY "card_set_shares_read" ON indonesian.card_set_shares FOR SELECT TO authenticated
-  USING (
-    shared_with_user_id = auth.uid()
-    OR indonesian.current_user_owns_card_set(card_set_id)
-  );
-CREATE POLICY "card_set_shares_write" ON indonesian.card_set_shares FOR ALL TO authenticated
-  USING (indonesian.current_user_owns_card_set(card_set_id))
-  WITH CHECK (indonesian.current_user_owns_card_set(card_set_id));
-
-CREATE POLICY "anki_cards_read" ON indonesian.anki_cards FOR SELECT TO authenticated
-  USING (
-    owner_id = auth.uid()
-    OR EXISTS (
-      SELECT 1 FROM indonesian.card_sets cs
-      WHERE cs.id = card_set_id AND (
-        cs.visibility = 'public'
-        OR (cs.visibility = 'shared' AND indonesian.is_shared_with_current_user(cs.id))
-      )
-    )
-  );
-CREATE POLICY "anki_cards_write" ON indonesian.anki_cards FOR ALL TO authenticated
-  USING (owner_id = auth.uid()) WITH CHECK (owner_id = auth.uid());
-
-CREATE POLICY "card_reviews_read" ON indonesian.card_reviews FOR SELECT TO authenticated
-  USING (user_id = auth.uid());
-CREATE POLICY "card_reviews_write" ON indonesian.card_reviews FOR ALL TO authenticated
-  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
-
 CREATE POLICY "error_logs_insert" ON indonesian.error_logs FOR INSERT TO authenticated WITH CHECK (true);
 
--- Add audio columns to lessons (ALTER TABLE for live DB — CREATE TABLE IF NOT EXISTS above is a no-op for existing tables)
-ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS audio_path text;
-ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS duration_seconds integer;
-ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_dutch text;
-ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_indonesian text;
-ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS transcript_english text;
-
--- Bidirectional review: add direction column to card_reviews
-ALTER TABLE indonesian.card_reviews
-  ADD COLUMN IF NOT EXISTS direction text NOT NULL DEFAULT 'forward'
-    CHECK (direction IN ('forward', 'reverse'));
-
--- Replace unique constraint to include direction
-ALTER TABLE indonesian.card_reviews
-  DROP CONSTRAINT IF EXISTS card_reviews_card_id_user_id_key;
-
-DO $$
-BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.table_constraints
-    WHERE table_schema = 'indonesian'
-      AND table_name = 'card_reviews'
-      AND constraint_name = 'card_reviews_card_id_user_id_direction_key'
-  ) THEN
-    ALTER TABLE indonesian.card_reviews
-      ADD CONSTRAINT card_reviews_card_id_user_id_direction_key
-        UNIQUE (card_id, user_id, direction);
-  END IF;
-END $$;
-
--- Health check RPC — callable by service role to inspect schema state
--- Returns JSON with tables, RLS status, and grants for the indonesian schema
+-- Health check RPC
 CREATE OR REPLACE FUNCTION indonesian.schema_health()
 RETURNS jsonb LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian AS $$
   SELECT jsonb_build_object(
@@ -410,7 +415,7 @@ $$;
 
 GRANT EXECUTE ON FUNCTION indonesian.schema_health() TO authenticated;
 
--- Storage buckets (idempotent — ON CONFLICT DO NOTHING)
+-- Storage buckets
 INSERT INTO storage.buckets (id, name, public)
 VALUES
   ('indonesian-lessons', 'indonesian-lessons', true),

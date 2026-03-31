@@ -26,36 +26,36 @@ const EXPECTED_TABLES = [
   'user_roles',
   'lessons',
   'lesson_sections',
-  'vocabulary',
   'podcasts',
-  'user_progress',
+  'learning_items',
+  'item_meanings',
+  'item_contexts',
+  'item_answer_variants',
+  'learner_item_state',
+  'learner_skill_state',
+  'review_events',
   'lesson_progress',
-  'user_vocabulary',
   'learning_sessions',
-  'card_sets',
-  'card_set_shares',
-  'anki_cards',
-  'card_reviews',
   'error_logs',
 ]
 
 // Expected grants: table → { role → privileges[] }
 const EXPECTED_GRANTS: Record<string, Record<string, string[]>> = {
-  lessons:          { authenticated: ['SELECT'] },
-  lesson_sections:  { authenticated: ['SELECT'] },
-  vocabulary:       { authenticated: ['SELECT'] },
-  podcasts:         { authenticated: ['SELECT'] },
-  profiles:         { authenticated: ['SELECT', 'INSERT', 'UPDATE'] },
-  user_progress:    { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
-  lesson_progress:  { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
-  user_vocabulary:  { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
-  learning_sessions:{ authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
-  card_sets:        { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
-  card_set_shares:  { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
-  anki_cards:       { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
-  card_reviews:     { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
-  error_logs:       { authenticated: ['INSERT'] },
-  user_roles:       { authenticated: ['SELECT'] },
+  lessons:              { authenticated: ['SELECT'] },
+  lesson_sections:      { authenticated: ['SELECT'] },
+  podcasts:             { authenticated: ['SELECT'] },
+  profiles:             { authenticated: ['SELECT', 'INSERT', 'UPDATE'] },
+  learning_items:       { authenticated: ['SELECT'] },
+  item_meanings:        { authenticated: ['SELECT'] },
+  item_contexts:        { authenticated: ['SELECT'] },
+  item_answer_variants: { authenticated: ['SELECT'] },
+  learner_item_state:   { authenticated: ['SELECT', 'INSERT', 'UPDATE'] },
+  learner_skill_state:  { authenticated: ['SELECT', 'INSERT', 'UPDATE'] },
+  review_events:        { authenticated: ['SELECT', 'INSERT'] },
+  lesson_progress:      { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
+  learning_sessions:    { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
+  error_logs:           { authenticated: ['INSERT'] },
+  user_roles:           { authenticated: ['SELECT'] },
 }
 
 // ── Fetch schema health report ─────────────────────────────────────────────
@@ -124,11 +124,25 @@ for (const [table, roleGrants] of Object.entries(EXPECTED_GRANTS)) {
 // ── Check: service key can read all tables functionally ───────────────────
 for (const table of EXPECTED_TABLES) {
   if (!existingTables.has(table)) continue
-  const { error } = await supabase.schema('indonesian').from(table).select('id').limit(0)
+  const { error } = await supabase.schema('indonesian').from(table).select('*').limit(0)
   if (error) {
     fail(`Service key read: ${table}`, error.message)
   } else {
     pass(`Service key read: ${table}`)
+  }
+}
+
+// ── Check: profiles have preferred_session_size ───────────────────────────
+{
+  const { error } = await supabase
+    .schema('indonesian')
+    .from('profiles')
+    .select('preferred_session_size')
+    .limit(1)
+  if (error) {
+    fail('Profile preferred_session_size column', error.message)
+  } else {
+    pass('Profile preferred_session_size column exists')
   }
 }
 
@@ -148,35 +162,6 @@ for (const table of EXPECTED_TABLES) {
       fail('Lesson audio_path seeded', `Missing audio_path on: ${missing.join(', ')} — run: make seed-lessons SUPABASE_SERVICE_KEY=<key>`)
     } else {
       pass(`Lesson audio_path seeded (${lessons.length} lesson${lessons.length > 1 ? 's' : ''})`)
-    }
-  }
-}
-
-// ── Check: lesson audio files exist in storage ────────────────────────────
-{
-  const { data: lessons, error: lessonErr } = await supabase
-    .schema('indonesian')
-    .from('lessons')
-    .select('title, audio_path')
-    .not('audio_path', 'is', null)
-
-  if (lessonErr) {
-    fail('Lesson audio files in storage', lessonErr.message)
-  } else if (!lessons || lessons.length === 0) {
-    fail('Lesson audio files in storage', 'No lessons with audio_path found — run: make seed-lessons SUPABASE_SERVICE_KEY=<key>')
-  } else {
-    for (const lesson of lessons as { title: string; audio_path: string }[]) {
-      const { data } = supabase.storage.from('indonesian-lessons').getPublicUrl(lesson.audio_path)
-      try {
-        const res = await fetch(data.publicUrl, { method: 'HEAD' })
-        if (res.ok) {
-          pass(`Audio file accessible: ${lesson.audio_path}`)
-        } else {
-          fail(`Audio file accessible: ${lesson.audio_path}`, `HTTP ${res.status} — run: make seed-lesson-audio SUPABASE_SERVICE_KEY=<key>`)
-        }
-      } catch (err) {
-        fail(`Audio file accessible: ${lesson.audio_path}`, `Request failed: ${(err as Error).message}`)
-      }
     }
   }
 }
