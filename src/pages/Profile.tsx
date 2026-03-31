@@ -18,12 +18,10 @@ import { useMantineColorScheme } from '@mantine/core'
 import { IconMoon, IconSun } from '@tabler/icons-react'
 import { useMediaQuery } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
-import { progressService } from '@/services/progressService'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { translations } from '@/lib/i18n'
 import { logError } from '@/lib/logger'
-import type { UserProgress } from '@/types/progress'
 
 export function Profile() {
   const T = useT()
@@ -35,7 +33,6 @@ export function Profile() {
   const updateLanguage = useAuthStore((state) => state.updateLanguage)
 
   const [loading, setLoading] = useState(true)
-  const [progress, setProgress] = useState<UserProgress | null>(null)
   const [displayName, setDisplayName] = useState('')
   const [saving, setSaving] = useState(false)
   const [savingLang, setSavingLang] = useState(false)
@@ -44,8 +41,6 @@ export function Profile() {
     async function fetchData() {
       if (!user) return
       try {
-        const userProgress = await progressService.getUserProgress(user.id)
-        setProgress(userProgress)
         // Use the saved display_name from the auth store profile
         setDisplayName(profile?.fullName ?? '')
       } catch (err) {
@@ -125,8 +120,6 @@ export function Profile() {
       })
     : '—'
 
-  const level = progress?.current_level ?? 'Beginner'
-
   const paperProps = isMobile ? {
     style: {
       background: colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.60)',
@@ -152,10 +145,6 @@ export function Profile() {
             <Group gap="sm">
               <Text fw={500} w={120}>{T.profile.memberSince}</Text>
               <Text c="dimmed">{memberSince}</Text>
-            </Group>
-            <Group gap="sm">
-              <Text fw={500} w={120}>{T.profile.level}</Text>
-              <Text c="dimmed">{level}</Text>
             </Group>
           </Stack>
         </Paper>
