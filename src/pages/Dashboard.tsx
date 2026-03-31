@@ -8,7 +8,6 @@ import {
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconBook, IconChevronRight } from '@tabler/icons-react'
-import { cardService } from '@/services/cardService'
 import { lessonService } from '@/services/lessonService'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
@@ -21,7 +20,6 @@ export function Dashboard() {
   const profile = useAuthStore((state) => state.profile)
 
   const [loading, setLoading] = useState(true)
-  const [dueCardsCount, setDueCardsCount] = useState(0)
   const [lessonsCompletedCount, setLessonsCompletedCount] = useState(0)
   const [continueUrl, setContinueUrl] = useState('/lessons')
 
@@ -29,12 +27,10 @@ export function Dashboard() {
     async function fetchData() {
       if (!user) return
       try {
-        const [dueCards, lessonProgress, lessons] = await Promise.all([
-          cardService.getDueCards(user.id),
+        const [lessonProgress, lessons] = await Promise.all([
           lessonService.getUserLessonProgress(user.id),
           lessonService.getLessonsBasic(),
         ])
-        setDueCardsCount(dueCards.length)
         const completed = lessonProgress.filter((lp) => lp.completed_at != null)
         setLessonsCompletedCount(completed.length)
 
@@ -89,17 +85,6 @@ export function Dashboard() {
           <div className={classes.statLabel}>{T.dashboard.lessonsCompleted}</div>
           <div className={classes.statValue}>{lessonsCompletedCount}</div>
           <div className={classes.statSub}>{T.dashboard.ofModuleOne}</div>
-        </div>
-        <div className={`${classes.statCard} ${classes.statCardOrange}`}>
-          <div className={classes.statLabel}>{T.dashboard.cardsDue}</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div className={classes.statValue}>{dueCardsCount}</div>
-            {dueCardsCount > 0 && (
-              <span className={`${classes.badge} ${classes.badgeOrange}`} style={{ marginTop: 10 }}>
-                {T.dashboard.reviewNow}
-              </span>
-            )}
-          </div>
         </div>
       </div>
 

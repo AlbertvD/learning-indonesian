@@ -10,11 +10,7 @@ import { Lesson } from '@/pages/Lesson'
 import { Podcasts } from '@/pages/Podcasts'
 import { Podcast } from '@/pages/Podcast'
 import { Leaderboard } from '@/pages/Leaderboard'
-import { Sets } from '@/pages/Sets'
-import { Set } from '@/pages/Set'
 import { Dashboard } from '@/pages/Dashboard'
-import { Cards } from '@/pages/Cards'
-import { Review } from '@/pages/Review'
 import { Practice } from '@/pages/Practice'
 import { Profile } from '@/pages/Profile'
 
@@ -76,42 +72,10 @@ function App() {
           }
         />
         <Route
-          path="/cards"
-          element={
-            <ProtectedRoute>
-              <Cards />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/review"
-          element={
-            <ProtectedRoute>
-              <Review />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/practice"
           element={
             <ProtectedRoute>
               <Practice />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/sets"
-          element={
-            <ProtectedRoute>
-              <Sets />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/sets/:setId"
-          element={
-            <ProtectedRoute>
-              <Set />
             </ProtectedRoute>
           }
         />
