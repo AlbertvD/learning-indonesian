@@ -119,6 +119,10 @@ export const nl = {
     simpleSentences: 'Eenvoudige zinnen',
     sections: 'secties',
     lessonsCount: 'lessen',
+    learn: 'Leren',
+    vocabulary: 'Woordenschat',
+    noVocabulary: 'Geen woordenschat beschikbaar voor deze les.',
+    practiceThisLesson: 'Oefen deze les',
   },
   common: {
     loading: 'Laden...',
@@ -373,6 +377,10 @@ export const en: typeof nl = {
     simpleSentences: 'Simple Sentences',
     sections: 'sections',
     lessonsCount: 'lessons',
+    learn: 'Learn',
+    vocabulary: 'Vocabulary',
+    noVocabulary: 'No vocabulary available for this lesson.',
+    practiceThisLesson: 'Practice this lesson',
   },
   common: {
     loading: 'Loading...',
