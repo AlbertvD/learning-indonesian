@@ -2,7 +2,7 @@
 import { NavLink } from 'react-router-dom'
 import { useMantineColorScheme } from '@mantine/core'
 import {
-  IconHome, IconBook, IconHeadphones, IconTrophy,
+  IconHome, IconBook, IconHeadphones, IconTrophy, IconChartBar,
   IconSun, IconMoon,
 } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
@@ -34,6 +34,7 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
     { label: T.nav.home,         icon: <IconHome size={17} />,       path: '/' },
     { label: T.nav.lessons,      icon: <IconBook size={17} />,       path: '/lessons' },
     { label: T.nav.podcasts,     icon: <IconHeadphones size={17} />, path: '/podcasts' },
+    { label: T.nav.progress,     icon: <IconChartBar size={17} />,   path: '/progress' },
     { label: T.nav.leaderboard,  icon: <IconTrophy size={17} />,     path: '/leaderboard' },
   ]
 
