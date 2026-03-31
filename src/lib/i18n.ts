@@ -65,6 +65,10 @@ export const nl = {
     appearance: 'Weergave',
     darkMode: 'Donkere modus',
     lightMode: 'Lichte modus',
+    sessionSize: 'Sessiegrote',
+    sessionSizeDescription: 'Hoeveel items per sessie',
+    sessionSizeSaved: 'Je sessiegrote is opgeslagen.',
+    items: 'items',
   },
   register: {
     title: 'Account aanmaken',
@@ -323,6 +327,10 @@ export const en: typeof nl = {
     appearance: 'Appearance',
     darkMode: 'Dark mode',
     lightMode: 'Light mode',
+    sessionSize: 'Session size',
+    sessionSizeDescription: 'How many items per session',
+    sessionSizeSaved: 'Your session size has been saved.',
+    items: 'items',
   },
   register: {
     title: 'Create account',

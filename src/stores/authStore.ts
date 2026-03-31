@@ -14,6 +14,7 @@ interface AuthState {
   signOut: () => Promise<void>
   updateDisplayName: (name: string) => Promise<void>
   updateLanguage: (lang: 'nl' | 'en') => Promise<void>
+  updatePreferredSessionSize: (size: number) => Promise<void>
 }
 
 // Stored outside the store so initialize() can be called multiple times safely
@@ -124,6 +125,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (!data || data.length === 0) throw new Error('Profile not found or update blocked')
     set((state) => ({
       profile: state.profile ? { ...state.profile, language: lang } : null,
+    }))
+  },
+
+  updatePreferredSessionSize: async (size) => {
+    const user = get().user
+    if (!user) return
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('profiles')
+      .update({ preferred_session_size: size, updated_at: new Date().toISOString() })
+      .eq('id', user.id)
+      .select('id')
+    if (error) throw error
+    if (!data || data.length === 0) throw new Error('Profile not found or update blocked')
+    set((state) => ({
+      profile: state.profile ? { ...state.profile, preferredSessionSize: size } : null,
     }))
   },
 }))

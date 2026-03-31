@@ -13,6 +13,8 @@ import {
   Loader,
   SegmentedControl,
   Switch,
+  Slider,
+  Box,
 } from '@mantine/core'
 import { useMantineColorScheme } from '@mantine/core'
 import { IconMoon, IconSun } from '@tabler/icons-react'
@@ -31,11 +33,14 @@ export function Profile() {
   const profile = useAuthStore((state) => state.profile)
   const updateDisplayName = useAuthStore((state) => state.updateDisplayName)
   const updateLanguage = useAuthStore((state) => state.updateLanguage)
+  const updatePreferredSessionSize = useAuthStore((state) => state.updatePreferredSessionSize)
 
   const [loading, setLoading] = useState(true)
   const [displayName, setDisplayName] = useState('')
+  const [sessionSize, setSessionSize] = useState(15)
   const [saving, setSaving] = useState(false)
   const [savingLang, setSavingLang] = useState(false)
+  const [savingSessionSize, setSavingSessionSize] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
@@ -43,6 +48,7 @@ export function Profile() {
       try {
         // Use the saved display_name from the auth store profile
         setDisplayName(profile?.fullName ?? '')
+        setSessionSize(profile?.preferredSessionSize ?? 15)
       } catch (err) {
         logError({ page: 'profile', action: 'fetchData', error: err })
         notifications.show({
@@ -101,6 +107,29 @@ export function Profile() {
       })
     } finally {
       setSavingLang(false)
+    }
+  }
+
+  async function handleSessionSizeChange(size: number) {
+    setSavingSessionSize(true)
+    try {
+      await updatePreferredSessionSize(size)
+      notifications.show({
+        color: 'green',
+        title: T.profile.profileUpdated,
+        message: T.profile.sessionSizeSaved,
+      })
+    } catch (err) {
+      logError({ page: 'profile', action: 'updateSessionSize', error: err })
+      notifications.show({
+        color: 'red',
+        title: T.profile.failedToSave,
+        message: T.profile.somethingWentWrong,
+      })
+      // Reset to previous value on error
+      setSessionSize(profile?.preferredSessionSize ?? 15)
+    } finally {
+      setSavingSessionSize(false)
     }
   }
 
@@ -196,6 +225,33 @@ export function Profile() {
                 { label: T.profile.dutch, value: 'nl' },
                 { label: T.profile.english, value: 'en' },
               ]}
+            />
+          </Stack>
+        </Paper>
+
+        <Paper p="xl" radius="md" {...paperProps}>
+          <Stack gap="md">
+            <Box>
+              <Title order={4} mb="xs">{T.profile.sessionSize}</Title>
+              <Group justify="space-between">
+                <Text size="sm" c="dimmed">{T.profile.sessionSizeDescription}</Text>
+                <Text fw={600}>{sessionSize}</Text>
+              </Group>
+            </Box>
+            <Slider
+              value={sessionSize}
+              onChange={setSessionSize}
+              onChangeEnd={handleSessionSizeChange}
+              min={5}
+              max={30}
+              step={1}
+              disabled={savingSessionSize}
+              marks={[
+                { value: 5, label: '5' },
+                { value: 15, label: '15' },
+                { value: 30, label: '30' },
+              ]}
+              label={(value) => `${value} ${T.profile.items}`}
             />
           </Stack>
         </Paper>
