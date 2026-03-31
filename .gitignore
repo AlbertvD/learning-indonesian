@@ -13,3 +13,4 @@ content/raw/
 
 # Intermediate extraction JSON — not committed
 content/extracted/
+.worktrees/
