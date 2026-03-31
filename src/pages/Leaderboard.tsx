@@ -1,8 +1,9 @@
 // src/pages/Leaderboard.tsx
 import { useEffect, useState } from 'react'
-import { Container, Tabs, Table, Text, Center, Loader, Badge, Group } from '@mantine/core'
+import { Container, Tabs, Table, Text, Center, Loader, Group } from '@mantine/core'
 import classes from './Leaderboard.module.css'
-import { leaderboardService, type LeaderboardEntry, type LeaderboardMetric } from '@/services/leaderboardService'
+import { leaderboardService } from '@/services/leaderboardService'
+import type { LeaderboardEntry, LeaderboardMetric } from '@/types/learning'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
 import { useT } from '@/hooks/useT'
@@ -40,8 +41,8 @@ export function Leaderboard() {
       }
       case 'lessons_completed':
         return entry.lessons_completed
-      case 'vocabulary_count':
-        return entry.vocabulary_count
+      case 'items_learned':
+        return entry.items_learned
       case 'days_active':
         return `${entry.days_active} ${T.leaderboard.days}`
       default:
@@ -55,7 +56,6 @@ export function Leaderboard() {
         <Table.Tr>
           <Table.Th w={60}>{T.leaderboard.rank}</Table.Th>
           <Table.Th>{T.leaderboard.user}</Table.Th>
-          <Table.Th>{T.leaderboard.level}</Table.Th>
           <Table.Th ta="right">{T.leaderboard.value}</Table.Th>
         </Table.Tr>
       </Table.Thead>
@@ -71,9 +71,6 @@ export function Leaderboard() {
               </Group>
             </Table.Td>
             <Table.Td fw={500}>{entry.display_name || T.leaderboard.anonymous}</Table.Td>
-            <Table.Td>
-              <Badge variant="light" size="sm">{entry.current_level}</Badge>
-            </Table.Td>
             <Table.Td ta="right" fw={700}>
               {formatValue(entry, activeTab!)}
             </Table.Td>
@@ -97,7 +94,7 @@ export function Leaderboard() {
           <Tabs.Tab value="lessons_completed" leftSection={<IconBook size={16} />}>
             {T.leaderboard.lessons}
           </Tabs.Tab>
-          <Tabs.Tab value="vocabulary_count" leftSection={<IconVocabulary size={16} />}>
+          <Tabs.Tab value="items_learned" leftSection={<IconVocabulary size={16} />}>
             {T.leaderboard.words}
           </Tabs.Tab>
           <Tabs.Tab value="days_active" leftSection={<IconCalendar size={16} />}>
@@ -111,7 +108,7 @@ export function Leaderboard() {
         <Tabs.Panel value="lessons_completed">
           {loading ? <Center h="30vh"><Loader /></Center> : renderTable()}
         </Tabs.Panel>
-        <Tabs.Panel value="vocabulary_count">
+        <Tabs.Panel value="items_learned">
           {loading ? <Center h="30vh"><Loader /></Center> : renderTable()}
         </Tabs.Panel>
         <Tabs.Panel value="days_active">
