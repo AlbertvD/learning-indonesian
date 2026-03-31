@@ -11,6 +11,7 @@ import { Podcasts } from '@/pages/Podcasts'
 import { Podcast } from '@/pages/Podcast'
 import { Leaderboard } from '@/pages/Leaderboard'
 import { Dashboard } from '@/pages/Dashboard'
+import { Session } from '@/pages/Session'
 import { Practice } from '@/pages/Practice'
 import { Profile } from '@/pages/Profile'
 
@@ -76,6 +77,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Practice />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/session"
+          element={
+            <ProtectedRoute>
+              <Session />
             </ProtectedRoute>
           }
         />
