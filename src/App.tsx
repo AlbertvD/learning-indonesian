@@ -14,6 +14,7 @@ import { Dashboard } from '@/pages/Dashboard'
 import { Session } from '@/pages/Session'
 import { Practice } from '@/pages/Practice'
 import { Profile } from '@/pages/Profile'
+import { Progress } from '@/pages/Progress'
 
 function NotFound() {
   return (
@@ -101,6 +102,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/progress"
+          element={
+            <ProtectedRoute>
+              <Progress />
             </ProtectedRoute>
           }
         />
