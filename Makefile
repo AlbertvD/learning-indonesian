@@ -75,8 +75,13 @@ seed-flashcards: ## Seed public flashcard decks from lesson vocabulary (requires
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
 	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-flashcards.ts
 
+.PHONY: seed-learning-items
+seed-learning-items: ## Seed learning items from data files (requires SUPABASE_SERVICE_KEY)
+	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
+	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-learning-items.ts
+
 .PHONY: seed-all
-seed-all: seed-lessons seed-vocabulary seed-flashcards ## Seed all non-audio content (requires SUPABASE_SERVICE_KEY)
+seed-all: seed-lessons seed-podcasts seed-learning-items ## Seed all non-audio content (requires SUPABASE_SERVICE_KEY)
 
 .PHONY: extract-lesson
 extract-lesson: ## Extract lesson content from page photos (requires LESSON and ANTHROPIC_API_KEY)
