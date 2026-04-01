@@ -202,12 +202,16 @@ CREATE TABLE IF NOT EXISTS indonesian.error_logs (
 
 -- Explicit grants
 GRANT USAGE ON SCHEMA indonesian TO authenticated, anon;
-GRANT SELECT ON indonesian.lessons TO authenticated;
-GRANT SELECT ON indonesian.lesson_sections TO authenticated;
-GRANT SELECT ON indonesian.vocabulary TO authenticated;
-GRANT SELECT ON indonesian.podcasts TO authenticated;
-GRANT SELECT ON indonesian.leaderboard TO authenticated;
-GRANT SELECT ON indonesian.profiles TO authenticated;
+GRANT SELECT ON indonesian.lessons TO authenticated, anon;
+GRANT SELECT ON indonesian.lesson_sections TO authenticated, anon;
+GRANT SELECT ON indonesian.learning_items TO authenticated, anon;
+GRANT SELECT ON indonesian.item_meanings TO authenticated, anon;
+GRANT SELECT ON indonesian.item_contexts TO authenticated, anon;
+GRANT SELECT ON indonesian.item_answer_variants TO authenticated, anon;
+GRANT SELECT ON indonesian.vocabulary TO authenticated, anon;
+GRANT SELECT ON indonesian.podcasts TO authenticated, anon;
+GRANT SELECT ON indonesian.leaderboard TO authenticated, anon;
+GRANT SELECT ON indonesian.profiles TO authenticated, anon;
 GRANT INSERT, UPDATE ON indonesian.profiles TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.user_progress TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.lesson_progress TO authenticated;
