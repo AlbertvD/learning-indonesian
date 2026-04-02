@@ -25,6 +25,18 @@ Indonesian language tutor app — React frontend connecting directly to a shared
 - vite-plugin-pwa (PWA / add to home screen)
 - Bun (package manager + script runner)
 
+## Implementation Autonomy
+
+When implementing architectural plans (e.g., retention-v2, feature designs):
+
+- **Execute batches independently** — Complete tasks without asking for permission between each one
+- **Commit after each logical task** — Each commit represents a completed step from the plan
+- **Report progress periodically** — Summarize what was implemented at the end of a work session rather than after each task
+- **Stop only for blockers** — Pause if you hit a dependency issue, need clarification on requirements, or tests fail unexpectedly
+- **Use the executing-plans skill** — Follow it directly when implementing multi-step plans; the skill guidance overrides default checkpoint behavior
+
+This keeps momentum high while maintaining code quality through testing and pre-commit checks.
+
 ## Error Handling
 
 Every error the user can encounter must have a meaningful, user-friendly message. Never show raw error strings, Supabase error codes, or technical details to the user.
