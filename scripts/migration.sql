@@ -1,13 +1,8 @@
 
--- V2 migration: complete indonesian schema target state
+-- V2 migration: complete indonesian schema target state (additive only, no drops)
 
 -- Create schema
 CREATE SCHEMA IF NOT EXISTS indonesian;
-
--- V2 migration: drop old tables/views first
-DROP VIEW IF EXISTS indonesian.leaderboard;
-DROP FUNCTION IF EXISTS indonesian.is_shared_with_current_user(uuid) CASCADE;
-DROP FUNCTION IF EXISTS indonesian.current_user_owns_card_set(uuid) CASCADE;
 
 -- Migrate existing review sessions before constraint change
 -- DO NOT fail if table doesn't exist yet (for fresh installs)
@@ -17,14 +12,6 @@ BEGIN
     UPDATE indonesian.learning_sessions SET session_type = 'practice' WHERE session_type = 'review';
   END IF;
 END $$;
-
-DROP TABLE IF EXISTS indonesian.card_reviews CASCADE;
-DROP TABLE IF EXISTS indonesian.anki_cards CASCADE;
-DROP TABLE IF EXISTS indonesian.card_set_shares CASCADE;
-DROP TABLE IF EXISTS indonesian.card_sets CASCADE;
-DROP TABLE IF EXISTS indonesian.user_vocabulary CASCADE;
-DROP TABLE IF EXISTS indonesian.user_progress CASCADE;
-DROP TABLE IF EXISTS indonesian.vocabulary CASCADE;
 
 -- User profiles (readable by all — used by leaderboard and sharing UI)
 CREATE TABLE IF NOT EXISTS indonesian.profiles (

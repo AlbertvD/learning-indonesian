@@ -37,12 +37,29 @@ export const learnerStateService = {
   },
 
   async getSkillStatesBatch(userId: string, itemIds: string[]): Promise<LearnerSkillState[]> {
+    // Batch into chunks to avoid URL length limits with large in() filters
+    const chunkSize = 20
+    const results: LearnerSkillState[] = []
+    for (let i = 0; i < itemIds.length; i += chunkSize) {
+      const chunk = itemIds.slice(i, i + chunkSize)
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('learner_skill_state')
+        .select('*')
+        .eq('user_id', userId)
+        .in('learning_item_id', chunk)
+      if (error) throw error
+      results.push(...data)
+    }
+    return results
+  },
+
+  async getAllSkillStates(userId: string): Promise<LearnerSkillState[]> {
     const { data, error } = await supabase
       .schema('indonesian')
       .from('learner_skill_state')
       .select('*')
       .eq('user_id', userId)
-      .in('learning_item_id', itemIds)
     if (error) throw error
     return data
   },

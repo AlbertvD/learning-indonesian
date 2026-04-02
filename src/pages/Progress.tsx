@@ -51,8 +51,7 @@ export function Progress() {
 
         // Fetch skill states for strength comparison
         if (itemStates.length > 0) {
-          const itemIds = itemStates.map(s => s.learning_item_id)
-          const skillStates = await learnerStateService.getSkillStatesBatch(user.id, itemIds)
+          const skillStates = await learnerStateService.getAllSkillStates(user.id)
 
           // Separate by skill type and calculate average stability
           const recognitionStabilities: number[] = []
