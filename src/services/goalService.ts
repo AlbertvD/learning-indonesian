@@ -4,11 +4,9 @@ import type {
   WeeklyGoalSet, 
   WeeklyGoal, 
   WeeklyGoalResponse, 
-  WeeklyGoalType,
   GoalStatus,
   TodayPlan
 } from '@/types/learning'
-import { learnerStateService } from './learnerStateService'
 
 export const goalService = {
   /**
@@ -207,7 +205,7 @@ export const goalService = {
     if (healthGoal) targets.review_health = healthGoal.target_value_numeric
 
     // 1. Protective reduction rule
-    if (healthGoal?.status === 'missed') {
+    if (healthGoal && (healthGoal.status as string) === 'missed') {
       targets.consistency = Math.max(targets.consistency - 1, 4)
       targets.recall_quality = Math.max(targets.recall_quality - 0.02, 0.80)
       targets.usable_vocabulary = Math.max(targets.usable_vocabulary - 2, 6)
@@ -436,8 +434,12 @@ export const goalService = {
     const formatter = new Intl.DateTimeFormat('en-US', { timeZone: timezone, year: 'numeric', month: 'numeric', day: 'numeric' })
     const parts = formatter.formatToParts(new Date())
     const partMap = Object.fromEntries(parts.map(p => [p.type, p.value])) as any
-    const startOfTodayLocal = new Date(`${partMap.year}-${partMap.month}-${partMap.day}T00:00:00`)
-    const startOfTodayUtc = this.getUtcForLocalTime(startOfTodayLocal, timezone)
+    
+    const y = parseInt(partMap.year)
+    const m = parseInt(partMap.month)
+    const d = parseInt(partMap.day)
+
+    const startOfTodayUtc = this.getUtcForLocalTimeParts(y, m, d, timezone)
 
     const { count, error } = await supabase
       .schema('indonesian')
@@ -518,7 +520,7 @@ export const goalService = {
       .eq('id', goalSetId)
   },
 
-  async computeTodayPlan(userId: string, preferredSize: number, goalSet: WeeklyGoalSet, goals: WeeklyGoal[]): Promise<TodayPlan> {
+  async computeTodayPlan(userId: string, preferredSize: number, _goalSet: WeeklyGoalSet, goals: WeeklyGoal[]): Promise<TodayPlan> {
     const { data: skills, error } = await supabase
       .schema('indonesian')
       .from('learner_skill_state')

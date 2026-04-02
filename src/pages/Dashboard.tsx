@@ -33,11 +33,9 @@ export function Dashboard() {
   const profile = useAuthStore((state) => state.profile)
 
   const [loading, setLoading] = useState(true)
-  const [dueCount, setDueCount] = useState(0)
   const [itemsByStage, setItemsByStage] = useState({ new: 0, anchoring: 0, retrieving: 0, productive: 0, maintenance: 0 })
   const [continueUrl, setContinueUrl] = useState('/lessons')
   const [goalProgress, setGoalProgress] = useState<WeeklyGoalResponse | null>(null)
-  const [minutesToday, setMinutesToday] = useState(0)
   const [currentStreak, setCurrentStreak] = useState(0)
 
   useEffect(() => {
@@ -47,10 +45,6 @@ export function Dashboard() {
         // Fetch goal progress and today's plan
         const progress = await goalService.getGoalProgress(user.id)
         setGoalProgress(progress)
-
-        // Fetch due skills count
-        const dueSkills = await learnerStateService.getDueSkills(user.id)
-        setDueCount(dueSkills.length)
 
         // Fetch item states for stage counts
         const itemStates = await learnerStateService.getItemStates(user.id)
@@ -126,8 +120,7 @@ export function Dashboard() {
               if (current[0] <= prev[1]) prev[1] = Math.max(prev[1], current[1])
               else merged.push(current)
             }
-            const totalSeconds = merged.reduce((sum, [start, end]) => sum + Math.round((end - start) / 1000), 0)
-            setMinutesToday(Math.round(totalSeconds / 60))
+            // Active study minutes calculation complete (now part of Goal System)
           }
         }
 
@@ -149,7 +142,7 @@ export function Dashboard() {
           const checkDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
           while (reviewsByDay.has(toUTCDateStr(checkDate))) {
             streak++
-            checkDate.setUTCDate(checkDate.setUTCDate() - 1)
+            checkDate.setUTCDate(checkDate.getUTCDate() - 1)
           }
           setCurrentStreak(streak)
         }
