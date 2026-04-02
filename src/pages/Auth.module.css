@@ -9,10 +9,10 @@
 .authCard {
   width: 100%;
   max-width: 400px;
-  background: rgba(24,24,31,0.30);
+  background: var(--card-bg);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid var(--card-border);
   border-radius: var(--r-xl);
   padding: 40px 32px;
   box-shadow: 0 20px 80px rgba(0,0,0,0.4);

@@ -47,10 +47,10 @@
 }
 
 .audioPlayer {
-  background: rgba(24,24,31,0.30);
+  background: var(--card-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid var(--card-border);
   border-radius: var(--r-lg);
   padding: 14px 18px;
   display: flex;
@@ -233,7 +233,7 @@
   background: transparent;
   backdrop-filter: blur(0px);
   -webkit-backdrop-filter: blur(0px);
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid var(--card-border);
   border-radius: var(--r-lg);
   overflow: hidden;
 }
@@ -289,10 +289,10 @@
 }
 
 .spellingChip {
-  background: rgba(31,31,41,0.30);
+  background: var(--card-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid var(--card-border);
   border-radius: var(--r-md);
   padding: 14px 15px;
 }
@@ -554,8 +554,8 @@
 }
 
 .vocabItem {
-  background: var(--bg-surface);
-  border: 1px solid rgba(255,255,255,0.07);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: var(--mantine-radius-md);
   padding: var(--mantine-spacing-md);
   transition: border-color 0.2s;

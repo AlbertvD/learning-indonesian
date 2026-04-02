@@ -19,6 +19,10 @@
   /* Status */
   --status-success: #32D74B;   /* Completed tasks */
 
+  /* Card styling (used by dashboard, lessons, podcasts, sets) */
+  --card-bg:     var(--bg-surface);
+  --card-border: rgba(255,255,255,0.07);
+
   /* Legacy mappings (kept for compatibility) */
   --bg:     #000000;
   --surf-1: #0C0C0E;
@@ -78,6 +82,10 @@ html[data-mantine-color-scheme="light"] {
   --text-secondary: #86868B;
 
   --status-success: #32D74B;
+
+  /* Card styling - light theme */
+  --card-bg:     var(--bg-surface);
+  --card-border: var(--border);
 
   /* Legacy mappings */
   --bg:           #FFFFFF;
