@@ -553,6 +553,18 @@
   margin: 22px 0;
 }
 
+.vocabItem {
+  background: var(--bg-surface);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--mantine-radius-md);
+  padding: var(--mantine-spacing-md);
+  transition: border-color 0.2s;
+}
+
+.vocabItem:hover {
+  border-color: rgba(142, 85, 255, 0.2);
+}
+
 /* Light theme overrides */
 :global(html[data-mantine-color-scheme="light"]) .audioPlayer,
 :global(html[data-mantine-color-scheme="light"]) .spellingChip {
@@ -679,4 +691,13 @@
 
 :global(html[data-mantine-color-scheme="light"]) .divider {
   background: var(--border);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .vocabItem {
+  background: var(--bg-surface);
+  border-color: var(--border);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .vocabItem:hover {
+  border-color: rgba(142, 85, 255, 0.3);
 }

@@ -60,7 +60,7 @@ describe('authStore', () => {
     
     // First maybeSingle: loadProfileData
     vi.mocked((supabase as any).maybeSingle).mockResolvedValueOnce({
-      data: { display_name: 'Test User', language: 'nl' },
+      data: { display_name: 'Test User', language: 'nl', preferred_session_size: 15 },
       error: null,
     })
     // Second maybeSingle: checkAdmin
@@ -74,6 +74,7 @@ describe('authStore', () => {
       email: 'test@example.com',
       fullName: 'Test User',
       language: 'nl',
+      preferredSessionSize: 15,
       isAdmin: false,
     })
     expect(useAuthStore.getState().loading).toBe(false)
@@ -82,7 +83,7 @@ describe('authStore', () => {
   it('updateDisplayName updates profile in store', async () => {
     useAuthStore.setState({
       user: { id: 'user-1' } as any,
-      profile: { id: 'user-1', fullName: 'Old Name', language: 'nl', isAdmin: false } as any
+      profile: { id: 'user-1', fullName: 'Old Name', language: 'nl', preferredSessionSize: 15, isAdmin: false } as any
     })
     vi.mocked((supabase as any).select).mockResolvedValue({ data: [{ id: 'user-1' }], error: null })
 
@@ -97,7 +98,7 @@ describe('authStore', () => {
   it('updateLanguage updates language in store', async () => {
     useAuthStore.setState({
       user: { id: 'user-1' } as any,
-      profile: { id: 'user-1', fullName: 'Test User', language: 'nl', isAdmin: false } as any,
+      profile: { id: 'user-1', fullName: 'Test User', language: 'nl', preferredSessionSize: 15, isAdmin: false } as any,
     })
     vi.mocked((supabase as any).select).mockResolvedValue({ data: [{ id: 'user-1' }], error: null })
 

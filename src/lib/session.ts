@@ -1,7 +1,6 @@
 // src/lib/session.ts
 import { supabase } from '@/lib/supabase'
-
-export type SessionType = 'lesson' | 'review' | 'podcast' | 'practice'
+import type { SessionType } from '@/types/learning'
 
 export async function startSession(userId: string, type: SessionType): Promise<string> {
   const { data, error } = await supabase

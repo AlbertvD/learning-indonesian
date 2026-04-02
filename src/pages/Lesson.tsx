@@ -1,9 +1,11 @@
 // src/pages/Lesson.tsx
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { Container, Center, Loader, Text } from '@mantine/core'
+import { Container, Center, Loader, Text, Tabs, Badge, Progress, Button, Stack, Group, Box } from '@mantine/core'
 import { IconChevronLeft, IconChevronRight, IconCheck } from '@tabler/icons-react'
 import { lessonService, type Lesson } from '@/services/lessonService'
+import { learningItemService } from '@/services/learningItemService'
+import { learnerStateService } from '@/services/learnerStateService'
 import { progressService } from '@/services/progressService'
 import { startSession, endSession } from '@/lib/session'
 import { useAuthStore } from '@/stores/authStore'
@@ -12,6 +14,7 @@ import { notifications } from '@mantine/notifications'
 import { useT } from '@/hooks/useT'
 import { IndoText } from '@/components/IndoText'
 import { MiniAudioPlayer } from '@/components/MiniAudioPlayer'
+import type { LearningItem, ItemMeaning, LearnerItemState, LearnerSkillState } from '@/types/learning'
 import classes from './Lesson.module.css'
 
 type ExerciseItem = { dutch?: string; indonesian?: string; phrase?: string; text?: string; question?: string }
@@ -234,13 +237,20 @@ function SectionContent({ content }: { content: unknown }) {
   )
 }
 
+interface VocabularyItem {
+  item: LearningItem
+  meaning: ItemMeaning | null
+  itemState: LearnerItemState | null
+  skillStates: LearnerSkillState[]
+}
+
 export function Lesson() {
   const { lessonId } = useParams<{ lessonId: string }>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const T = useT()
   const user = useAuthStore((state) => state.user)
-  
+
   const [lesson, setLesson] = useState<Lesson | null>(null)
   const initialSection = Math.max(0, parseInt(searchParams.get('section') ?? '0', 10) || 0)
   const [currentSectionIndex, setCurrentSectionIndex] = useState(initialSection)
@@ -254,6 +264,48 @@ export function Lesson() {
   const [duration, setDuration] = useState(0)
   const [volume, setVolume] = useState(1)
   const [playbackRate, setPlaybackRate] = useState(1)
+  const [activeTab, setActiveTab] = useState<string | null>('learn')
+  const [vocabularyItems, setVocabularyItems] = useState<VocabularyItem[]>([])
+  const [vocabularyLoading, setVocabularyLoading] = useState(false)
+
+  const loadVocabulary = async () => {
+    if (!lessonId || !user || vocabularyLoading) return
+    try {
+      setVocabularyLoading(true)
+      // Get all item contexts for this lesson
+      const contexts = await learningItemService.getItemContextsByLesson(lessonId)
+      if (contexts.length === 0) {
+        setVocabularyItems([])
+        return
+      }
+
+      // Get unique learning item IDs
+      const itemIds = Array.from(new Set(contexts.map(c => c.learning_item_id)))
+
+      // Fetch learning items, meanings, and learner states in parallel
+      const items = await Promise.all(itemIds.map(id => learningItemService.getLearningItem(id)))
+      const meanings = await learningItemService.getMeaningsBatch(itemIds)
+      const itemStates = await learnerStateService.getItemStates(user.id)
+      const skillStates = await learnerStateService.getSkillStatesBatch(user.id, itemIds)
+
+      // Create vocabulary items with all data
+      const vocabItems: VocabularyItem[] = items.map(item => {
+        const meaning = meanings.find(m => m.learning_item_id === item.id && m.translation_language === 'nl') ||
+                       meanings.find(m => m.learning_item_id === item.id)
+        const itemState = itemStates.find(s => s.learning_item_id === item.id)
+        const itemSkills = skillStates.filter(s => s.learning_item_id === item.id)
+
+        return { item, meaning: meaning || null, itemState: itemState || null, skillStates: itemSkills }
+      })
+
+      setVocabularyItems(vocabItems)
+    } catch (err) {
+      logError({ page: 'lesson', action: 'loadVocabulary', error: err })
+      notifications.show({ color: 'red', title: T.common.error, message: T.common.somethingWentWrong })
+    } finally {
+      setVocabularyLoading(false)
+    }
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -437,13 +489,88 @@ export function Lesson() {
         </>
       )}
 
-      <div className={classes.sectionHeader} style={{ marginBottom: 24 }}>
-        <div className={classes.displaySm}>{currentSection.title.replace(/\s*\(.*?\)\s*$/, '')}</div>
-      </div>
+      <Tabs
+        value={activeTab}
+        onChange={(value: string | null) => {
+          setActiveTab(value)
+          if (value === 'vocabulary' && vocabularyItems.length === 0 && !vocabularyLoading) {
+            loadVocabulary()
+          }
+        }}
+        defaultValue="learn"
+      >
+        <Tabs.List>
+          <Tabs.Tab value="learn">{T.lessons.learn}</Tabs.Tab>
+          <Tabs.Tab value="vocabulary">{T.lessons.vocabulary}</Tabs.Tab>
+        </Tabs.List>
 
-      <div style={{ minHeight: '200px', marginBottom: 40 }}>
-        <SectionContent content={currentSection.content} />
-      </div>
+        <Tabs.Panel value="learn" py="md">
+          <div className={classes.sectionHeader} style={{ marginBottom: 24 }}>
+            <div className={classes.displaySm}>{currentSection.title.replace(/\s*\(.*?\)\s*$/, '')}</div>
+          </div>
+          <div style={{ minHeight: '200px', marginBottom: 40 }}>
+            <SectionContent content={currentSection.content} />
+          </div>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="vocabulary" py="md">
+          <Stack gap="lg">
+            {vocabularyLoading && <Center><Loader size="sm" /></Center>}
+            {!vocabularyLoading && vocabularyItems.length === 0 && (
+              <Text c="dimmed" ta="center">{T.lessons.noVocabulary}</Text>
+            )}
+            {!vocabularyLoading && vocabularyItems.length > 0 && (
+              <>
+                <div>
+                  {vocabularyItems.map((vocabItem) => {
+                    const stageColors: Record<string, string> = {
+                      new: 'gray',
+                      anchoring: 'yellow',
+                      retrieving: 'blue',
+                      productive: 'teal',
+                      maintenance: 'green',
+                    }
+                    const stage = vocabItem.itemState?.stage || 'new'
+                    const stageColor = stageColors[stage] || 'gray'
+
+                    // Calculate skill strength as average of recognition and recall stability
+                    const skillStrength = vocabItem.skillStates.length > 0
+                      ? vocabItem.skillStates.reduce((sum, s) => sum + (s.stability || 0), 0) / vocabItem.skillStates.length
+                      : 0
+                    const skillStrengthPercent = Math.min(100, Math.round((skillStrength / 10) * 100))
+
+                    return (
+                      <Box key={vocabItem.item.id} className={classes.vocabItem}>
+                        <Group justify="space-between" align="flex-start" mb="xs">
+                          <Box style={{ flex: 1 }}>
+                            <Text fw={500}>{vocabItem.item.base_text}</Text>
+                            {vocabItem.meaning && (
+                              <Text size="sm" c="dimmed">{vocabItem.meaning.translation_text}</Text>
+                            )}
+                          </Box>
+                          <Badge color={stageColor} size="sm">
+                            {stage}
+                          </Badge>
+                        </Group>
+                        {vocabItem.skillStates.length > 0 && (
+                          <Progress value={skillStrengthPercent} size="sm" radius="md" />
+                        )}
+                      </Box>
+                    )
+                  })}
+                </div>
+                <Button
+                  onClick={() => navigate(`/session?lesson=${lessonId}`)}
+                  fullWidth
+                  size="md"
+                >
+                  {T.lessons.practiceThisLesson}
+                </Button>
+              </>
+            )}
+          </Stack>
+        </Tabs.Panel>
+      </Tabs>
 
       <div className={classes.lessonNav}>
         <button 

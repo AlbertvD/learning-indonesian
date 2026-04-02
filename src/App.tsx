@@ -10,13 +10,11 @@ import { Lesson } from '@/pages/Lesson'
 import { Podcasts } from '@/pages/Podcasts'
 import { Podcast } from '@/pages/Podcast'
 import { Leaderboard } from '@/pages/Leaderboard'
-import { Sets } from '@/pages/Sets'
-import { Set } from '@/pages/Set'
 import { Dashboard } from '@/pages/Dashboard'
-import { Cards } from '@/pages/Cards'
-import { Review } from '@/pages/Review'
+import { Session } from '@/pages/Session'
 import { Practice } from '@/pages/Practice'
 import { Profile } from '@/pages/Profile'
+import { Progress } from '@/pages/Progress'
 
 function NotFound() {
   return (
@@ -76,22 +74,6 @@ function App() {
           }
         />
         <Route
-          path="/cards"
-          element={
-            <ProtectedRoute>
-              <Cards />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/review"
-          element={
-            <ProtectedRoute>
-              <Review />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/practice"
           element={
             <ProtectedRoute>
@@ -100,18 +82,10 @@ function App() {
           }
         />
         <Route
-          path="/sets"
+          path="/session"
           element={
             <ProtectedRoute>
-              <Sets />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/sets/:setId"
-          element={
-            <ProtectedRoute>
-              <Set />
+              <Session />
             </ProtectedRoute>
           }
         />
@@ -128,6 +102,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/progress"
+          element={
+            <ProtectedRoute>
+              <Progress />
             </ProtectedRoute>
           }
         />

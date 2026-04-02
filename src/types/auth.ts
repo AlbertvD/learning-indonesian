@@ -4,5 +4,6 @@ export interface UserProfile {
   email: string
   fullName: string | null
   language: 'nl' | 'en'
+  preferredSessionSize: number
   isAdmin: boolean
 }

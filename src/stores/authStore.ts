@@ -14,6 +14,7 @@ interface AuthState {
   signOut: () => Promise<void>
   updateDisplayName: (name: string) => Promise<void>
   updateLanguage: (lang: 'nl' | 'en') => Promise<void>
+  updatePreferredSessionSize: (size: number) => Promise<void>
 }
 
 // Stored outside the store so initialize() can be called multiple times safely
@@ -32,13 +33,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (session?.user) {
-        const [{ displayName, language }, isAdmin] = await Promise.all([
+        const [{ displayName, language, preferredSessionSize }, isAdmin] = await Promise.all([
           loadProfileData(session.user.id),
           checkAdmin(session.user.id),
         ])
         set({
           user: session.user,
-          profile: toProfile(session.user, isAdmin, displayName, language),
+          profile: toProfile(session.user, isAdmin, displayName, language, preferredSessionSize),
           loading: false,
         })
       } else {
@@ -63,11 +64,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
               { id: session.user!.id, display_name: session.user!.user_metadata?.full_name ?? null },
               { onConflict: 'id', ignoreDuplicates: true }
             )
-          const [{ displayName, language }, isAdmin] = await Promise.all([
+          const [{ displayName, language, preferredSessionSize }, isAdmin] = await Promise.all([
             loadProfileData(session.user!.id),
             checkAdmin(session.user!.id),
           ])
-          set({ user: session.user, profile: toProfile(session.user!, isAdmin, displayName, language) })
+          set({ user: session.user, profile: toProfile(session.user!, isAdmin, displayName, language, preferredSessionSize) })
         }, 0)
       } else {
         set({ user: null, profile: null })
@@ -126,6 +127,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       profile: state.profile ? { ...state.profile, language: lang } : null,
     }))
   },
+
+  updatePreferredSessionSize: async (size) => {
+    const user = get().user
+    if (!user) return
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('profiles')
+      .update({ preferred_session_size: size, updated_at: new Date().toISOString() })
+      .eq('id', user.id)
+      .select('id')
+    if (error) throw error
+    if (!data || data.length === 0) throw new Error('Profile not found or update blocked')
+    set((state) => ({
+      profile: state.profile ? { ...state.profile, preferredSessionSize: size } : null,
+    }))
+  },
 }))
 
 async function checkAdmin(userId: string): Promise<boolean> {
@@ -139,25 +156,27 @@ async function checkAdmin(userId: string): Promise<boolean> {
   return !!data
 }
 
-async function loadProfileData(userId: string): Promise<{ displayName: string | null; language: 'nl' | 'en' }> {
+async function loadProfileData(userId: string): Promise<{ displayName: string | null; language: 'nl' | 'en'; preferredSessionSize: number }> {
   const { data } = await supabase
     .schema('indonesian')
     .from('profiles')
-    .select('display_name, language')
+    .select('display_name, language, preferred_session_size')
     .eq('id', userId)
     .maybeSingle()
   return {
     displayName: data?.display_name ?? null,
     language: (data?.language as 'nl' | 'en') ?? 'nl',
+    preferredSessionSize: data?.preferred_session_size ?? 15,
   }
 }
 
-function toProfile(user: User, isAdmin: boolean, displayName: string | null, language: 'nl' | 'en'): UserProfile {
+function toProfile(user: User, isAdmin: boolean, displayName: string | null, language: 'nl' | 'en', preferredSessionSize: number): UserProfile {
   return {
     id: user.id,
     email: user.email!,
     fullName: displayName,
     language,
+    preferredSessionSize,
     isAdmin,
   }
 }
