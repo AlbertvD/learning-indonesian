@@ -5,5 +5,6 @@ export interface UserProfile {
   fullName: string | null
   language: 'nl' | 'en'
   preferredSessionSize: number
+  timezone: string | null
   isAdmin: boolean
 }

@@ -14,9 +14,11 @@ import {
   Card,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconChevronRight, IconFlame, IconClock, IconTrendingUp } from '@tabler/icons-react'
+import { IconChevronRight, IconFlame, IconClock, IconTrendingUp, IconTarget, IconCheck, IconAlertCircle } from '@tabler/icons-react'
 import { lessonService } from '@/services/lessonService'
 import { learnerStateService } from '@/services/learnerStateService'
+import { goalService } from '@/services/goalService'
+import type { WeeklyGoalResponse, WeeklyGoal } from '@/types/learning'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
@@ -33,14 +35,17 @@ export function Dashboard() {
   const [dueCount, setDueCount] = useState(0)
   const [itemsByStage, setItemsByStage] = useState({ new: 0, anchoring: 0, retrieving: 0, productive: 0, maintenance: 0 })
   const [continueUrl, setContinueUrl] = useState('/lessons')
-  const [minutesToday, setMinutesToday] = useState(0)
-  const [currentStreak, setCurrentStreak] = useState(0)
+  const [goalProgress, setGoalProgress] = useState<WeeklyGoalResponse | null>(null)
 
   useEffect(() => {
     async function fetchData() {
       if (!user) return
       try {
-        // Fetch due skills count
+        // Fetch goal progress and today's plan
+        const progress = await goalService.getGoalProgress(user.id)
+        setGoalProgress(progress)
+
+        // Fetch due skills count (also available in todayPlan, but we'll use it for the old metrics too)
         const dueSkills = await learnerStateService.getDueSkills(user.id)
         setDueCount(dueSkills.length)
 
@@ -78,50 +83,6 @@ export function Dashboard() {
           const sectionIndex = progress?.sections_completed.length ?? 0
           setContinueUrl(`/lessons/${target.id}?section=${sectionIndex}`)
         }
-
-        // Fetch learning sessions for today's minutes and streak
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-        const { data: todaySessions, error: sessionsError } = await supabase
-          .schema('indonesian')
-          .from('learning_sessions')
-          .select('duration_seconds')
-          .eq('user_id', user.id)
-          .gte('created_at', today.toISOString())
-
-        if (!sessionsError && todaySessions) {
-          const totalSeconds = todaySessions.reduce((sum, s) => sum + (s.duration_seconds || 0), 0)
-          setMinutesToday(Math.round(totalSeconds / 60))
-        }
-
-        // Calculate current streak (simplified: count consecutive days with sessions)
-        const { data: recentSessions, error: streakError } = await supabase
-          .schema('indonesian')
-          .from('learning_sessions')
-          .select('created_at')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(30)
-
-        if (!streakError && recentSessions) {
-          let streak = 0
-          const currentDate = new Date()
-          currentDate.setHours(0, 0, 0, 0)
-
-          const sessionsByDay = new Set<string>()
-          for (const session of recentSessions) {
-            const sessionDate = new Date(session.created_at)
-            sessionDate.setHours(0, 0, 0, 0)
-            sessionsByDay.add(sessionDate.toDateString())
-          }
-
-          const dateIterator = new Date(currentDate)
-          while (sessionsByDay.has(dateIterator.toDateString())) {
-            streak++
-            dateIterator.setDate(dateIterator.getDate() - 1)
-          }
-          setCurrentStreak(streak)
-        }
       } catch (err) {
         logError({ page: 'dashboard', action: 'fetchData', error: err })
         notifications.show({
@@ -147,6 +108,33 @@ export function Dashboard() {
   const name = profile?.fullName?.split(' ')[0] ?? profile?.email ?? 'User'
   const totalItems = Object.values(itemsByStage).reduce((a, b) => a + b, 0)
 
+  if (goalProgress?.state === 'timezone_required') {
+    return (
+      <Container size="md" className={classes.dashboard}>
+        <Stack gap="lg">
+          <Box>
+            <Text size="xl" fw={600}>{T.dashboard.welcomeBack}, {name}</Text>
+          </Box>
+          <Card withBorder padding="xl" radius="md">
+            <Stack align="center" gap="md">
+              <IconTarget size={48} color="var(--mantine-color-blue-filled)" />
+              <Title order={3}>{T.dashboard.setTimezone}</Title>
+              <Text c="dimmed" ta="center">
+                {T.dashboard.setTimezoneDesc}
+              </Text>
+              <Button onClick={() => navigate('/profile')} size="md">
+                {T.dashboard.goToProfile}
+              </Button>
+            </Stack>
+          </Card>
+        </Stack>
+      </Container>
+    )
+  }
+
+  const todayPlan = goalProgress?.todayPlan
+  const weeklyGoals = goalProgress?.weeklyGoals ?? []
+
   return (
     <Container size="md" className={classes.dashboard}>
       <Stack gap="lg">
@@ -157,60 +145,60 @@ export function Dashboard() {
           </Text>
         </Box>
 
-        {/* Header strip with metrics */}
-        <Group grow>
-          <Card withBorder padding="md" className={classes.metricCard}>
-            <Stack gap="xs">
-              <Group justify="space-between">
-                <Text size="sm" c="dimmed">{T.dashboard.itemsDue}</Text>
-                <IconTrendingUp size={16} />
-              </Group>
-              <Text size="xl" fw={700}>{dueCount}</Text>
-            </Stack>
-          </Card>
-
-          <Card withBorder padding="md" className={classes.metricCard}>
-            <Stack gap="xs">
-              <Group justify="space-between">
-                <Text size="sm" c="dimmed">{T.dashboard.minutesToday}</Text>
-                <IconClock size={16} />
-              </Group>
-              <Text size="xl" fw={700}>{minutesToday}</Text>
-            </Stack>
-          </Card>
-
-          <Card withBorder padding="md" className={classes.metricCard}>
-            <Stack gap="xs">
-              <Group justify="space-between">
-                <Text size="sm" c="dimmed">{T.dashboard.currentStreak}</Text>
-                <IconFlame size={16} color="orange" />
-              </Group>
-              <Text size="xl" fw={700}>{currentStreak}</Text>
-            </Stack>
-          </Card>
-        </Group>
-
-        {/* Hero card: Start Today's Session */}
-        <Card withBorder padding="lg" className={classes.heroCard}>
+        {/* Weekly Goals Module */}
+        <Card withBorder padding="lg" radius="md">
           <Stack gap="md">
-            <Box>
-              <Text size="lg" fw={600} mb="xs">
-                {T.dashboard.startTodaysSession}
-              </Text>
-              <Text size="sm" c="dimmed">
-                {dueCount} {dueCount === 1 ? 'review' : 'reviews'} due • Learn new items
-              </Text>
-            </Box>
-            <Button
-              onClick={() => navigate('/session')}
-              fullWidth
-              size="md"
-              variant="filled"
-            >
-              {T.dashboard.startSession}
-            </Button>
+            <Group justify="space-between">
+              <Text fw={600}>{T.dashboard.thisWeek}</Text>
+              <Text size="xs" c="dimmed">{T.dashboard.mondayStart}</Text>
+            </Group>
+            
+            <Stack gap="sm">
+              {weeklyGoals.map(goal => (
+                <GoalRow key={goal.id} goal={goal} T={T} />
+              ))}
+            </Stack>
           </Stack>
         </Card>
+
+        {/* Today's Adaptive Plan */}
+        {todayPlan && (
+          <Card withBorder padding="lg" className={classes.heroCard}>
+            <Stack gap="md">
+              <Box>
+                <Text size="lg" fw={600} mb="xs">
+                  {T.dashboard.todaysPlan}
+                </Text>
+                <Group gap="xl">
+                  <Stack gap={0}>
+                    <Text size="xs" c="dimmed" tt="uppercase">{T.dashboard.reviews}</Text>
+                    <Text fw={700}>{todayPlan.due_reviews_today_target}</Text>
+                  </Stack>
+                  <Stack gap={0}>
+                    <Text size="xs" c="dimmed" tt="uppercase">{T.dashboard.newItems}</Text>
+                    <Text fw={700}>{todayPlan.new_items_today_target}</Text>
+                  </Stack>
+                  <Stack gap={0}>
+                    <Text size="xs" c="dimmed" tt="uppercase">{T.dashboard.recallPrompts}</Text>
+                    <Text fw={700}>{todayPlan.recall_interactions_today_target}</Text>
+                  </Stack>
+                  <Stack gap={0}>
+                    <Text size="xs" c="dimmed" tt="uppercase">{T.dashboard.estTime}</Text>
+                    <Text fw={700}>{todayPlan.estimated_minutes_today} {T.dashboard.min}</Text>
+                  </Stack>
+                </Group>
+              </Box>
+              <Button
+                onClick={() => navigate('/session')}
+                fullWidth
+                size="md"
+                variant="filled"
+              >
+                {T.dashboard.startTodaysSession}
+              </Button>
+            </Stack>
+          </Card>
+        )}
 
         {/* Quick actions */}
         <Group grow>
@@ -268,5 +256,54 @@ export function Dashboard() {
         </Card>
       </Stack>
     </Container>
+  )
+}
+
+function GoalRow({ goal, T }: { goal: WeeklyGoal, T: any }) {
+  const titles: Record<string, string> = {
+    consistency: T.dashboard.studyDays,
+    recall_quality: T.dashboard.recallQuality,
+    usable_vocabulary: T.dashboard.usableWords,
+    review_health: T.dashboard.reviewHealth
+  }
+
+  const statusColors: Record<string, string> = {
+    achieved: 'green',
+    on_track: 'blue',
+    at_risk: 'orange',
+    missed: 'red'
+  }
+
+  const formatValue = (val: number, type: string) => {
+    if (type === 'recall_quality') return `${Math.round(val * 100)}%`
+    return Math.round(val)
+  }
+
+  return (
+    <Box>
+      <Group justify="space-between" mb={4}>
+        <Group gap="xs">
+          {goal.status === 'achieved' ? (
+            <IconCheck size={14} color="var(--mantine-color-green-filled)" />
+          ) : goal.status === 'at_risk' ? (
+            <IconAlertCircle size={14} color="var(--mantine-color-orange-filled)" />
+          ) : (
+            <IconTarget size={14} color="var(--mantine-color-blue-filled)" />
+          )}
+          <Text size="sm" fw={500}>{titles[goal.goal_type]}</Text>
+          {goal.is_provisional && (
+            <Text size="xs" c="dimmed">({T.dashboard.provisional})</Text>
+          )}
+        </Group>
+        <Text size="sm">
+          {formatValue(goal.current_value_numeric, goal.goal_type)} / {formatValue(goal.target_value_numeric, goal.goal_type)}
+        </Text>
+      </Group>
+      <Progress 
+        value={(goal.current_value_numeric / goal.target_value_numeric) * 100} 
+        color={statusColors[goal.status]} 
+        size="sm" 
+      />
+    </Box>
   )
 }

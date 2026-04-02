@@ -15,6 +15,7 @@ import {
   Switch,
   Slider,
   Box,
+  Select,
 } from '@mantine/core'
 import { useMantineColorScheme } from '@mantine/core'
 import { IconMoon, IconSun } from '@tabler/icons-react'
@@ -34,13 +35,16 @@ export function Profile() {
   const updateDisplayName = useAuthStore((state) => state.updateDisplayName)
   const updateLanguage = useAuthStore((state) => state.updateLanguage)
   const updatePreferredSessionSize = useAuthStore((state) => state.updatePreferredSessionSize)
+  const updateTimezone = useAuthStore((state) => state.updateTimezone)
 
   const [loading, setLoading] = useState(true)
   const [displayName, setDisplayName] = useState('')
   const [sessionSize, setSessionSize] = useState(15)
+  const [timezone, setTimezone] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [savingLang, setSavingLang] = useState(false)
   const [savingSessionSize, setSavingSessionSize] = useState(false)
+  const [savingTimezone, setSavingTimezone] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
@@ -49,6 +53,7 @@ export function Profile() {
         // Use the saved display_name from the auth store profile
         setDisplayName(profile?.fullName ?? '')
         setSessionSize(profile?.preferredSessionSize ?? 15)
+        setTimezone(profile?.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone)
       } catch (err) {
         logError({ page: 'profile', action: 'fetchData', error: err })
         notifications.show({
@@ -133,6 +138,30 @@ export function Profile() {
     }
   }
 
+  async function handleTimezoneChange(tz: string | null) {
+    if (!tz) return
+    setSavingTimezone(true)
+    try {
+      await updateTimezone(tz)
+      notifications.show({
+        color: 'green',
+        title: T.profile.profileUpdated,
+        message: 'Timezone saved successfully',
+      })
+    } catch (err) {
+      logError({ page: 'profile', action: 'updateTimezone', error: err })
+      notifications.show({
+        color: 'red',
+        title: T.profile.failedToSave,
+        message: T.profile.somethingWentWrong,
+      })
+      // Reset to previous value on error
+      setTimezone(profile?.timezone ?? null)
+    } finally {
+      setSavingTimezone(false)
+    }
+  }
+
   if (loading) {
     return (
       <Center h="50vh">
@@ -213,6 +242,27 @@ export function Profile() {
             </Stack>
           </Paper>
         )}
+
+        <Paper p="xl" radius="md" {...paperProps}>
+          <Stack gap="md">
+            <Box>
+              <Title order={4} mb="xs">Timezone</Title>
+              <Text size="sm" c="dimmed">Set your timezone for weekly goal tracking.</Text>
+            </Box>
+            <Select
+              searchable
+              label="Select your timezone"
+              placeholder="Pick one"
+              data={Intl.supportedValuesOf('timeZone')}
+              value={timezone}
+              onChange={(val) => {
+                setTimezone(val)
+                handleTimezoneChange(val)
+              }}
+              disabled={savingTimezone}
+            />
+          </Stack>
+        </Paper>
 
         <Paper p="xl" radius="md" {...paperProps}>
           <Stack gap="md">

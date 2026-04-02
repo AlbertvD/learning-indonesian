@@ -98,8 +98,8 @@ export async function processReview(input: ReviewInput): Promise<ReviewResult> {
   // 6. Persist item state
   const savedItem = await learnerStateService.upsertItemState(updatedItemState as any)
 
-  // 7. Log review event (fire and forget for scheduler_snapshot)
-  await reviewEventService.logReviewEvent({
+  // 7. Log review event
+  const reviewEvent = await reviewEventService.logReviewEvent({
     user_id: userId,
     learning_item_id: learningItem.id,
     skill_type: skillType,
@@ -120,6 +120,17 @@ export async function processReview(input: ReviewInput): Promise<ReviewResult> {
       next_due_at: nextFSRS.nextDueAt.toISOString(),
     },
   })
+
+  // 8. Log stage transition if changed
+  if (savedItem.stage !== previousStage) {
+    await learnerStateService.logStageEvent(
+      userId,
+      learningItem.id,
+      previousStage,
+      savedItem.stage,
+      reviewEvent.id
+    )
+  }
 
   return {
     updatedItemState: savedItem,

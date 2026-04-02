@@ -97,4 +97,19 @@ export const learnerStateService = {
     if (error) throw error
     return data
   },
+
+  async logStageEvent(userId: string, itemId: string, fromStage: string, toStage: string, reviewEventId: string): Promise<void> {
+    const { error } = await supabase
+      .schema('indonesian')
+      .from('learner_stage_events')
+      .insert({
+        user_id: userId,
+        learning_item_id: itemId,
+        from_stage: fromStage,
+        to_stage: toStage,
+        source_review_event_id: reviewEventId,
+        created_at: new Date().toISOString()
+      })
+    if (error) throw error
+  },
 }

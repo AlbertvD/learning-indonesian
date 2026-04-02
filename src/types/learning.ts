@@ -158,3 +158,76 @@ export interface LeaderboardEntry {
   total_seconds_spent: number
   days_active: number
 }
+
+// === Goal system types ===
+
+export type WeeklyGoalType = 'consistency' | 'recall_quality' | 'usable_vocabulary' | 'review_health'
+export type GoalDirection = 'at_least' | 'at_most'
+export type GoalUnit = 'count' | 'percent'
+export type GoalStatus = 'on_track' | 'at_risk' | 'achieved' | 'missed'
+
+export interface WeeklyGoalSet {
+  id: string
+  user_id: string
+  goal_timezone: string
+  week_start_date_local: string
+  week_end_date_local: string
+  week_starts_at_utc: string
+  week_ends_at_utc: string
+  generation_strategy_version: string
+  generated_at: string
+  closing_overdue_count: number | null
+  closed_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface WeeklyGoal {
+  id: string
+  goal_set_id: string
+  goal_type: WeeklyGoalType
+  goal_direction: GoalDirection
+  goal_unit: GoalUnit
+  target_value_numeric: number
+  current_value_numeric: number
+  status: GoalStatus
+  is_provisional: boolean
+  provisional_reason: string | null
+  sample_size: number
+  goal_config_jsonb: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}
+
+export interface DailyGoalRollup {
+  id: string
+  user_id: string
+  goal_timezone: string
+  local_date: string
+  study_day_completed: boolean
+  recall_accuracy: number | null
+  recall_sample_size: number
+  usable_items_gained_today: number
+  usable_items_total: number
+  overdue_count: number
+  created_at: string
+  updated_at: string
+}
+
+export interface TodayPlan {
+  due_reviews_today_target: number
+  new_items_today_target: number
+  recall_interactions_today_target: number
+  estimated_minutes_today: number
+  explanatory_text?: string
+}
+
+export type GoalState = 'active' | 'timezone_required'
+
+export interface WeeklyGoalResponse {
+  state: GoalState
+  weeklyGoalSet: WeeklyGoalSet | null
+  weeklyGoals: WeeklyGoal[]
+  todayPlan: TodayPlan | null
+  requiredProfileAction?: 'set_timezone'
+}
