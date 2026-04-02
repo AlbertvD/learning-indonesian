@@ -11,7 +11,7 @@ import {
   Button,
   Group,
   Progress,
-  Card,
+  Paper,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconChevronRight, IconFlame, IconClock, IconTrendingUp } from '@tabler/icons-react'
@@ -79,46 +79,103 @@ export function Dashboard() {
           setContinueUrl(`/lessons/${target.id}?section=${sectionIndex}`)
         }
 
-        // Fetch learning sessions for today's minutes and streak
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
+        const todayUTC = new Date()
+        todayUTC.setUTCHours(0, 0, 0, 0)
+        
         const { data: todaySessions, error: sessionsError } = await supabase
           .schema('indonesian')
           .from('learning_sessions')
-          .select('duration_seconds')
+          .select('started_at, ended_at, duration_seconds, id')
           .eq('user_id', user.id)
-          .gte('created_at', today.toISOString())
+          .gte('started_at', todayUTC.toISOString())
 
         if (!sessionsError && todaySessions) {
-          const totalSeconds = todaySessions.reduce((sum, s) => sum + (s.duration_seconds || 0), 0)
-          setMinutesToday(Math.round(totalSeconds / 60))
+          // Collect all session intervals [start, end]
+          const intervals: [number, number][] = []
+          
+          for (const session of todaySessions) {
+            const start = new Date(session.started_at).getTime()
+            let end: number | null = null
+
+            if (session.ended_at) {
+              end = new Date(session.ended_at).getTime()
+            } else {
+              // Active session: find latest review event
+              const { data: latestReview } = await supabase
+                .schema('indonesian')
+                .from('review_events')
+                .select('created_at')
+                .eq('session_id', session.id)
+                .order('created_at', { ascending: false })
+                .limit(1)
+              
+              if (latestReview && latestReview.length > 0) {
+                end = new Date(latestReview[0].created_at).getTime()
+              } else {
+                // If no reviews yet, count it as a 1-second interval at start
+                end = start + 1000
+              }
+            }
+
+            if (end && end >= start) {
+              intervals.push([start, end])
+            }
+          }
+
+          // Merge overlapping intervals
+          if (intervals.length > 0) {
+            intervals.sort((a, b) => a[0] - b[0])
+            
+            const merged: [number, number][] = [intervals[0]]
+            for (let i = 1; i < intervals.length; i++) {
+              const prev = merged[merged.length - 1]
+              const current = intervals[i]
+              
+              if (current[0] <= prev[1]) {
+                // Overlap: extend prev end if current end is further
+                prev[1] = Math.max(prev[1], current[1])
+              } else {
+                // No overlap: add new interval
+                merged.push(current)
+              }
+            }
+
+            // Sum durations of merged intervals
+            const totalSeconds = merged.reduce((sum, [start, end]) => 
+              sum + Math.round((end - start) / 1000), 0)
+            
+            setMinutesToday(Math.round(totalSeconds / 60))
+          } else {
+            setMinutesToday(0)
+          }
         }
 
-        // Calculate current streak (simplified: count consecutive days with sessions)
-        const { data: recentSessions, error: streakError } = await supabase
+        // Calculate current streak from review events (days with answered questions)
+        const { data: recentReviews, error: streakError } = await supabase
           .schema('indonesian')
-          .from('learning_sessions')
+          .from('review_events')
           .select('created_at')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
-          .limit(30)
+          .limit(1000)
 
-        if (!streakError && recentSessions) {
+        if (!streakError && recentReviews && recentReviews.length > 0) {
           let streak = 0
-          const currentDate = new Date()
-          currentDate.setHours(0, 0, 0, 0)
+          const toUTCDateStr = (d: Date) => d.toISOString().split('T')[0]
 
-          const sessionsByDay = new Set<string>()
-          for (const session of recentSessions) {
-            const sessionDate = new Date(session.created_at)
-            sessionDate.setHours(0, 0, 0, 0)
-            sessionsByDay.add(sessionDate.toDateString())
+          // Group reviews by day (UTC)
+          const reviewsByDay = new Set<string>()
+          for (const review of recentReviews) {
+            reviewsByDay.add(toUTCDateStr(new Date(review.created_at)))
           }
 
-          const dateIterator = new Date(currentDate)
-          while (sessionsByDay.has(dateIterator.toDateString())) {
+          // Count consecutive days backwards from today (UTC)
+          const now = new Date()
+          const checkDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+
+          while (reviewsByDay.has(toUTCDateStr(checkDate))) {
             streak++
-            dateIterator.setDate(dateIterator.getDate() - 1)
+            checkDate.setUTCDate(checkDate.getUTCDate() - 1)
           }
           setCurrentStreak(streak)
         }
@@ -159,7 +216,7 @@ export function Dashboard() {
 
         {/* Header strip with metrics */}
         <Group grow>
-          <Card withBorder padding="md" className={classes.metricCard}>
+          <Paper className="card-metric">
             <Stack gap="xs">
               <Group justify="space-between">
                 <Text size="sm" c="dimmed">{T.dashboard.itemsDue}</Text>
@@ -167,9 +224,9 @@ export function Dashboard() {
               </Group>
               <Text size="xl" fw={700}>{dueCount}</Text>
             </Stack>
-          </Card>
+          </Paper>
 
-          <Card withBorder padding="md" className={classes.metricCard}>
+          <Paper className="card-metric">
             <Stack gap="xs">
               <Group justify="space-between">
                 <Text size="sm" c="dimmed">{T.dashboard.minutesToday}</Text>
@@ -177,9 +234,9 @@ export function Dashboard() {
               </Group>
               <Text size="xl" fw={700}>{minutesToday}</Text>
             </Stack>
-          </Card>
+          </Paper>
 
-          <Card withBorder padding="md" className={classes.metricCard}>
+          <Paper className="card-metric">
             <Stack gap="xs">
               <Group justify="space-between">
                 <Text size="sm" c="dimmed">{T.dashboard.currentStreak}</Text>
@@ -187,11 +244,11 @@ export function Dashboard() {
               </Group>
               <Text size="xl" fw={700}>{currentStreak}</Text>
             </Stack>
-          </Card>
+          </Paper>
         </Group>
 
         {/* Hero card: Start Today's Session */}
-        <Card withBorder padding="lg" className={classes.heroCard}>
+        <Paper className="card-default">
           <Stack gap="md">
             <Box>
               <Text size="lg" fw={600} mb="xs">
@@ -210,11 +267,11 @@ export function Dashboard() {
               {T.dashboard.startSession}
             </Button>
           </Stack>
-        </Card>
+        </Paper>
 
         {/* Quick actions */}
         <Group grow>
-          <Link to={continueUrl} className={classes.actionCard}>
+          <Link to={continueUrl} className="card-action">
             <Group justify="space-between">
               <Box>
                 <Text size="sm" fw={500}>{T.dashboard.continueLesson}</Text>
@@ -224,7 +281,7 @@ export function Dashboard() {
             </Group>
           </Link>
 
-          <Link to="/session?weak=true" className={classes.actionCard}>
+          <Link to="/session?weak=true" className="card-action">
             <Group justify="space-between">
               <Box>
                 <Text size="sm" fw={500}>{T.dashboard.practiceWeak}</Text>
@@ -236,7 +293,7 @@ export function Dashboard() {
         </Group>
 
         {/* Progress snapshot */}
-        <Card withBorder padding="lg">
+        <Paper className="card-metric">
           <Stack gap="md">
             <Text size="sm" fw={600}>{T.dashboard.progressSnapshot}</Text>
 
@@ -265,7 +322,7 @@ export function Dashboard() {
               </Text>
             </Stack>
           </Stack>
-        </Card>
+        </Paper>
       </Stack>
     </Container>
   )

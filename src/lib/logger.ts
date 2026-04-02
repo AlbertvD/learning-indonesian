@@ -16,11 +16,18 @@ export async function logError({ page, action, error }: LogErrorParams): Promise
   const code = (error as { code?: string })?.code ?? null
 
   // Fire-and-forget — never throws
+  let userId: string | null = null
+  try {
+    userId = (await supabase.auth.getUser()).data.user?.id ?? null
+  } catch {
+    // Auth unavailable — log without user_id
+  }
+
   supabase
     .schema('indonesian')
     .from('error_logs')
     .insert({
-      user_id: (await supabase.auth.getUser()).data.user?.id ?? null,
+      user_id: userId,
       page,
       action,
       error_message: message,

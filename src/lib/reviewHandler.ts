@@ -73,13 +73,15 @@ export async function processReview(input: ReviewInput): Promise<ReviewResult> {
   }
 
   // 4. Persist skill state first (needed for promotion check)
-  const savedSkill = await learnerStateService.upsertSkillState(updatedSkillState as any)
+  const savedSkill = await learnerStateService.upsertSkillState(updatedSkillState)
 
   // 5. Check promotion/demotion
-  // Get all skill states for this item to check both facets
+  // Get all skill states for this item to check both facets.
+  // Use savedSkill for the skill we just updated (authoritative),
+  // fetch the other skill type from DB.
   const allSkills = await learnerStateService.getSkillStates(userId, learningItem.id)
-  const recognition = allSkills.find(s => s.skill_type === 'recognition') ?? (skillType === 'recognition' ? savedSkill : null)
-  const recall = allSkills.find(s => s.skill_type === 'recall') ?? (skillType === 'recall' ? savedSkill : null)
+  const recognition = skillType === 'recognition' ? savedSkill : (allSkills.find(s => s.skill_type === 'recognition') ?? null)
+  const recall = skillType === 'recall' ? savedSkill : (allSkills.find(s => s.skill_type === 'recall') ?? null)
 
   const itemStateForCheck = { ...updatedItemState, id: currentItemState?.id ?? '' } as LearnerItemState
 
@@ -96,7 +98,7 @@ export async function processReview(input: ReviewInput): Promise<ReviewResult> {
   }
 
   // 6. Persist item state
-  const savedItem = await learnerStateService.upsertItemState(updatedItemState as any)
+  const savedItem = await learnerStateService.upsertItemState(updatedItemState)
 
   // 7. Log review event (fire and forget for scheduler_snapshot)
   await reviewEventService.logReviewEvent({

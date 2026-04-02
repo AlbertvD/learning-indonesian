@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
 import { processReview } from '@/lib/reviewHandler'
 import type { ExerciseItem, LearnerSkillState } from '@/types/learning'
+import { learnerStateService } from '@/services/learnerStateService'
+import { reviewEventService } from '@/services/reviewEventService'
 
 // Mock all external services
 vi.mock('@/services/reviewEventService', () => ({
@@ -48,6 +50,55 @@ describe('processReview', () => {
     expect(result.updatedItemState.times_seen).toBe(1)
   })
 
+  it('persists skill state, item state, and logs review event', async () => {
+    await processReview({
+      userId: 'u1',
+      sessionId: 's1',
+      exerciseItem,
+      currentItemState: null,
+      currentSkillState: null,
+      wasCorrect: true,
+      isFuzzy: false,
+      hintUsed: false,
+      latencyMs: 1200,
+      rawResponse: 'house',
+      normalizedResponse: 'house',
+    })
+
+    // Verify skill state was persisted with correct fields
+    expect(learnerStateService.upsertSkillState).toHaveBeenCalledWith(
+      expect.objectContaining({
+        user_id: 'u1',
+        learning_item_id: 'li1',
+        skill_type: 'recognition',
+        success_count: 1,
+        failure_count: 0,
+      })
+    )
+
+    // Verify item state was persisted
+    expect(learnerStateService.upsertItemState).toHaveBeenCalledWith(
+      expect.objectContaining({
+        user_id: 'u1',
+        learning_item_id: 'li1',
+        stage: 'anchoring',
+        times_seen: 1,
+      })
+    )
+
+    // Verify review event was logged
+    expect(reviewEventService.logReviewEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        user_id: 'u1',
+        learning_item_id: 'li1',
+        session_id: 's1',
+        skill_type: 'recognition',
+        exercise_type: 'recognition_mcq',
+        was_correct: true,
+      })
+    )
+  })
+
   it('increments consecutive_failures on incorrect answer', async () => {
     const existingSkill: LearnerSkillState = {
       id: 'lss1', user_id: 'u1', learning_item_id: 'li1', skill_type: 'recognition',
@@ -73,5 +124,14 @@ describe('processReview', () => {
 
     expect(result.updatedSkillState.consecutive_failures).toBe(1)
     expect(result.updatedSkillState.failure_count).toBe(1)
+
+    // Verify incorrect answer was persisted correctly
+    expect(learnerStateService.upsertSkillState).toHaveBeenCalledWith(
+      expect.objectContaining({
+        consecutive_failures: 1,
+        failure_count: 1,
+        lapse_count: 1, // lapse because success_count > 0
+      })
+    )
   })
 })

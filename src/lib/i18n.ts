@@ -279,6 +279,34 @@ export const nl = {
     score: (correct: number, total: number) => `${correct} / ${total} correct`,
     failedToLoad: 'Woordenschat laden mislukt',
   },
+  session: {
+    title: 'Oefensessie',
+    exerciseOf: 'Oefening',
+    of: 'van',
+    correct: 'correct',
+    failedToLoadSession: 'Sessie kon niet worden geladen. Probeer het opnieuw.',
+    noExercises: 'Geen oefeningen beschikbaar voor deze sessie.',
+    recognition: {
+      question: 'Wat betekent dit woord?',
+    },
+    recall: {
+      question: 'Typ het Indonesische woord voor:',
+      placeholder: 'Voer je antwoord in...',
+      checkAnswer: 'Antwoord controleren',
+    },
+    cloze: {
+      placeholder: 'Voer je antwoord in...',
+      checkAnswer: 'Antwoord controleren',
+    },
+    feedback: {
+      correct: 'Correct!',
+      incorrect: 'Onjuist',
+      yourAnswer: 'Jouw antwoord:',
+      theWord: 'Het woord:',
+      example: 'Voorbeeld:',
+      continue: 'Doorgaan',
+    },
+  },
 }
 
 export const en: typeof nl = {
@@ -554,6 +582,34 @@ export const en: typeof nl = {
     next: 'Next',
     score: (correct: number, total: number) => `${correct} / ${total} correct`,
     failedToLoad: 'Failed to load vocabulary',
+  },
+  session: {
+    title: 'Practice Session',
+    exerciseOf: 'Exercise',
+    of: 'of',
+    correct: 'correct',
+    failedToLoadSession: 'Failed to load session. Please try again.',
+    noExercises: 'No exercises available for this session.',
+    recognition: {
+      question: 'What does this word mean?',
+    },
+    recall: {
+      question: 'Type the Indonesian word for:',
+      placeholder: 'Enter your answer...',
+      checkAnswer: 'Check Answer',
+    },
+    cloze: {
+      placeholder: 'Enter your answer...',
+      checkAnswer: 'Check Answer',
+    },
+    feedback: {
+      correct: 'Correct!',
+      incorrect: 'Incorrect',
+      yourAnswer: 'Your answer:',
+      theWord: 'The word:',
+      example: 'Example:',
+      continue: 'Continue',
+    },
   },
 }
 

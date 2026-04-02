@@ -54,21 +54,26 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         // Use setTimeout(0) to avoid Supabase auth deadlock when fetching
         // user data immediately after sign-in inside onAuthStateChange.
         setTimeout(async () => {
-          // Insert only — do NOT overwrite existing display_name or language.
-          // ignoreDuplicates: true means existing data is never overwritten by
-          // auth metadata on subsequent sign-ins.
-          await supabase
-            .schema('indonesian')
-            .from('profiles')
-            .upsert(
-              { id: session.user!.id, display_name: session.user!.user_metadata?.full_name ?? null },
-              { onConflict: 'id', ignoreDuplicates: true }
-            )
-          const [{ displayName, language, preferredSessionSize }, isAdmin] = await Promise.all([
-            loadProfileData(session.user!.id),
-            checkAdmin(session.user!.id),
-          ])
-          set({ user: session.user, profile: toProfile(session.user!, isAdmin, displayName, language, preferredSessionSize) })
+          try {
+            // Insert only — do NOT overwrite existing display_name or language.
+            // ignoreDuplicates: true means existing data is never overwritten by
+            // auth metadata on subsequent sign-ins.
+            await supabase
+              .schema('indonesian')
+              .from('profiles')
+              .upsert(
+                { id: session.user!.id, display_name: session.user!.user_metadata?.full_name ?? null },
+                { onConflict: 'id', ignoreDuplicates: true }
+              )
+            const [{ displayName, language, preferredSessionSize }, isAdmin] = await Promise.all([
+              loadProfileData(session.user!.id),
+              checkAdmin(session.user!.id),
+            ])
+            set({ user: session.user, profile: toProfile(session.user!, isAdmin, displayName, language, preferredSessionSize) })
+          } catch (err) {
+            console.error('[authStore] Failed to load profile after sign-in:', err)
+            set({ user: session.user, profile: null })
+          }
         }, 0)
       } else {
         set({ user: null, profile: null })
@@ -165,7 +170,7 @@ async function loadProfileData(userId: string): Promise<{ displayName: string | 
     .maybeSingle()
   return {
     displayName: data?.display_name ?? null,
-    language: (data?.language as 'nl' | 'en') ?? 'nl',
+    language: data?.language === 'en' ? 'en' : 'nl',
     preferredSessionSize: data?.preferred_session_size ?? 15,
   }
 }

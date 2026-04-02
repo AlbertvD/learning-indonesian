@@ -72,7 +72,7 @@ export function Leaderboard() {
             </Table.Td>
             <Table.Td fw={500}>{entry.display_name || T.leaderboard.anonymous}</Table.Td>
             <Table.Td ta="right" fw={700}>
-              {formatValue(entry, activeTab!)}
+              {formatValue(entry, activeTab ?? 'total_seconds_spent')}
             </Table.Td>
           </Table.Tr>
         ))}

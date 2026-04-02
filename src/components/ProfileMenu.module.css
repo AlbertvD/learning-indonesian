@@ -19,8 +19,8 @@
 /* Dropdown */
 .dropdown {
   background: rgba(20,20,28,0.96) !important;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(var(--blur-panel));
+  -webkit-backdrop-filter: blur(var(--blur-panel));
   border: 1px solid rgba(255,255,255,0.1) !important;
   border-radius: var(--r-lg) !important;
   padding: 6px !important;

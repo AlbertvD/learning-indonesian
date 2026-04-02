@@ -75,9 +75,10 @@ export function Practice() {
 
     return () => {
       if (sessionIdRef.current) {
-        endSession(sessionIdRef.current).catch((err) =>
+        endSession(sessionIdRef.current).catch((err) => {
           logError({ page: 'practice', action: 'endSession', error: err })
-        )
+          notifications.show({ color: 'red', title: T.common.error, message: T.common.somethingWentWrong })
+        })
       }
     }
   }, [user, T.common.error, T.practice.failedToLoad])

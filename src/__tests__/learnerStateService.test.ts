@@ -21,28 +21,50 @@ vi.mock('@/lib/supabase', () => {
   const mockSchema = vi.fn(() => ({ from: mockFrom }))
 
   return {
-    supabase: {
-      schema: mockSchema
-    },
+    supabase: { schema: mockSchema },
+    __mockQueryBuilder: mockQueryBuilder,
+    __mockFrom: mockFrom,
   }
 })
+
+// Access the shared mock query builder for assertions
+const { __mockQueryBuilder: mockQB, __mockFrom: mockFrom } = await import('@/lib/supabase') as any
 
 describe('learnerStateService', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  it('getItemStates returns array', async () => {
+  it('getItemStates queries indonesian schema with correct user filter', async () => {
     const states = await learnerStateService.getItemStates('user1')
     expect(Array.isArray(states)).toBe(true)
     expect(supabase.schema).toHaveBeenCalledWith('indonesian')
+    expect(mockFrom).toHaveBeenCalledWith('learner_item_state')
+    expect(mockQB.eq).toHaveBeenCalledWith('user_id', 'user1')
   })
 
-  it('getDueSkills queries by user and due date', async () => {
+  it('getDueSkills filters by user_id and next_due_at', async () => {
     await learnerStateService.getDueSkills('user1')
+
     expect(supabase.schema).toHaveBeenCalledWith('indonesian')
-    const mockSchema = vi.mocked(supabase.schema)
-    const indonesianSchema = mockSchema.mock.results[0].value
-    expect(indonesianSchema.from).toHaveBeenCalledWith('learner_skill_state')
+    expect(mockFrom).toHaveBeenCalledWith('learner_skill_state')
+    expect(mockQB.eq).toHaveBeenCalledWith('user_id', 'user1')
+    expect(mockQB.lte).toHaveBeenCalledWith('next_due_at', expect.any(String))
+    expect(mockQB.order).toHaveBeenCalledWith('next_due_at')
+  })
+
+  it('getSkillStates filters by user_id and learning_item_id', async () => {
+    await learnerStateService.getSkillStates('user1', 'item1')
+
+    expect(mockFrom).toHaveBeenCalledWith('learner_skill_state')
+    expect(mockQB.eq).toHaveBeenCalledWith('user_id', 'user1')
+    expect(mockQB.eq).toHaveBeenCalledWith('learning_item_id', 'item1')
+  })
+
+  it('getSkillStatesBatch fetches all skill states for user', async () => {
+    await learnerStateService.getSkillStatesBatch('user1', ['item1', 'item2'])
+
+    expect(mockFrom).toHaveBeenCalledWith('learner_skill_state')
+    expect(mockQB.eq).toHaveBeenCalledWith('user_id', 'user1')
   })
 })

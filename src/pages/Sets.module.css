@@ -24,29 +24,35 @@
   gap: 8px;
 }
 
+/* Sets cards - use centralized card system with additional visual effects */
 .setCard {
-  background: var(--bg-surface);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: 12px 16px;
-  cursor: pointer;
-  transition: all .2s;
-  text-decoration: none;
   display: flex;
   align-items: center;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 12px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  height: var(--card-compact-height);
   gap: 12px;
-  height: 48px;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(var(--blur-card));
+  -webkit-backdrop-filter: blur(var(--blur-card));
   position: relative;
   overflow: hidden;
 }
 
 .setCard:hover {
-  border-color: rgba(142,85,255,.3);
-  background: var(--bg-hover);
+  border-color: var(--card-hover-border);
+  background: var(--card-hover-bg);
   transform: translateY(-2px);
   box-shadow: 0 8px 40px rgba(0,0,0,.4);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .setCard:hover {
+  box-shadow: 0 8px 40px var(--purple-glow);
 }
 
 .setIcon {
@@ -61,6 +67,14 @@
 }
 
 .setCard:hover .setIcon {
+  color: var(--accent-primary);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .setIcon {
+  color: rgba(0,0,0,0.22);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .setCard:hover .setIcon {
   color: var(--accent-primary);
 }
 
@@ -100,6 +114,14 @@
   color: var(--accent-primary);
 }
 
+:global(html[data-mantine-color-scheme="light"]) .setArrow {
+  color: var(--text-secondary);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .setCard:hover .setArrow {
+  color: var(--accent-primary);
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
@@ -117,6 +139,12 @@
   background: rgba(255,255,255,0.07);
   color: rgba(255,255,255,0.5);
   border: 1px solid rgba(255,255,255,0.1);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .badgeGray {
+  background: var(--purple-subtle);
+  color: var(--text-secondary);
+  border-color: var(--border);
 }
 
 .btn {
@@ -140,35 +168,14 @@
   opacity: 0.9;
 }
 
-/* Light theme overrides */
-:global(html[data-mantine-color-scheme="light"]) .setCard {
-  background: var(--bg-surface);
-  border-color: var(--border);
+:global(html[data-mantine-color-scheme="light"]) .setName {
+  color: var(--text-primary);
 }
 
-:global(html[data-mantine-color-scheme="light"]) .setCard:hover {
-  background: var(--bg-hover);
-  border-color: var(--accent-primary);
-  box-shadow: 0 8px 40px rgba(142,85,255,0.12);
-}
-
-:global(html[data-mantine-color-scheme="light"]) .setIcon {
-  color: rgba(0,0,0,0.22);
-}
-
-:global(html[data-mantine-color-scheme="light"]) .setCard:hover .setIcon {
-  color: var(--accent-primary);
-}
-
-:global(html[data-mantine-color-scheme="light"]) .setArrow { color: var(--text-secondary); }
-
-:global(html[data-mantine-color-scheme="light"]) .setCard:hover .setArrow { color: var(--accent-primary); }
-
-:global(html[data-mantine-color-scheme="light"]) .setName { color: var(--text-primary); }
-:global(html[data-mantine-color-scheme="light"]) .setDescription { color: var(--text-secondary); }
-:global(html[data-mantine-color-scheme="light"]) .displaySm { color: var(--text-primary); }
-:global(html[data-mantine-color-scheme="light"]) .badgeGray {
-  background: rgba(142,85,255,0.06);
+:global(html[data-mantine-color-scheme="light"]) .setDescription {
   color: var(--text-secondary);
-  border-color: var(--border);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .displaySm {
+  color: var(--text-primary);
 }

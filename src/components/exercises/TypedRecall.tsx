@@ -3,6 +3,7 @@ import { Box, Button, TextInput, Stack, Text, Badge, Group } from '@mantine/core
 import { IconArrowRight } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
+import { translations } from '@/lib/i18n'
 import classes from './TypedRecall.module.css'
 
 interface TypedRecallProps {
@@ -12,6 +13,7 @@ interface TypedRecallProps {
 }
 
 export function TypedRecall({ exerciseItem, userLanguage, onAnswer }: TypedRecallProps) {
+  const t = translations[userLanguage]
   const { learningItem, meanings, contexts } = exerciseItem
   const [response, setResponse] = useState('')
   const [isAnswered, setIsAnswered] = useState(false)
@@ -42,11 +44,12 @@ export function TypedRecall({ exerciseItem, userLanguage, onAnswer }: TypedRecal
 
     setIsAnswered(true)
 
-    // Brief pause before calling onAnswer
+    // Brief pause to let user see correct/incorrect feedback
+    const FEEDBACK_DELAY_MS = 1500
     setTimeout(() => {
-      const latencyMs = Date.now() - startTime
+      const latencyMs = Date.now() - startTime - FEEDBACK_DELAY_MS
       onAnswer(isCorrect, isFuzzy, latencyMs, response)
-    }, 1500)
+    }, FEEDBACK_DELAY_MS)
   }
 
   // Allow Enter key to submit
@@ -65,7 +68,7 @@ export function TypedRecall({ exerciseItem, userLanguage, onAnswer }: TypedRecal
       <Stack gap="xl">
         {/* Translation prompt */}
         <Box className={classes.promptSection}>
-          <Text size="sm" c="dimmed" mb="xs">Type the Indonesian word for:</Text>
+          <Text size="sm" c="dimmed" mb="xs">{t.session.recall.question}</Text>
           <Box className={classes.translation}>{translation}</Box>
         </Box>
 
@@ -73,7 +76,7 @@ export function TypedRecall({ exerciseItem, userLanguage, onAnswer }: TypedRecal
         <Box>
           <TextInput
             ref={inputRef}
-            placeholder="Enter your answer..."
+            placeholder={t.session.recall.placeholder}
             value={response}
             onChange={(e) => setResponse(e.currentTarget.value)}
             onKeyDown={handleKeyDown}
@@ -93,7 +96,7 @@ export function TypedRecall({ exerciseItem, userLanguage, onAnswer }: TypedRecal
             fullWidth
             rightSection={<IconArrowRight size={18} />}
           >
-            Check Answer
+            {t.session.recall.checkAnswer}
           </Button>
         )}
 

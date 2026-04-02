@@ -1,153 +1,125 @@
+// src/components/exercises/Cloze.tsx
 import { useState, useRef, useEffect } from 'react'
-import { Box, Button, TextInput, Stack, Text, Badge, Group } from '@mantine/core'
-import { IconArrowRight } from '@tabler/icons-react'
-import type { ExerciseItem } from '@/types/learning'
+import { Box, Text, TextInput, Stack, Paper, Button, Group } from '@mantine/core'
+import { IconCheck, IconX, IconMessage2 } from '@tabler/icons-react'
 import { checkAnswer } from '@/lib/answerNormalization'
+import type { ExerciseItem } from '@/types/learning'
 import classes from './Cloze.module.css'
 
 interface ClozeProps {
   exerciseItem: ExerciseItem
+  userLanguage: string
   onAnswer: (wasCorrect: boolean, isFuzzy: boolean, latencyMs: number, rawResponse: string) => void
 }
 
 export function Cloze({ exerciseItem, onAnswer }: ClozeProps) {
-  const { learningItem } = exerciseItem
-  const [response, setResponse] = useState('')
-  const [isAnswered, setIsAnswered] = useState(false)
-  const [startTime] = useState(() => Date.now())
+  const { clozeContext, answerVariants } = exerciseItem
+  const [value, setValue] = useState('')
+  const [submitted, setShowFeedback] = useState(false)
+  const [isCorrect, setIsCorrect] = useState(false)
+  const [isFuzzy, setIsFuzzy] = useState(false)
+  const startTime = useRef(Date.now())
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Get cloze context
-  const clozeContext = exerciseItem.clozeContext
-
-  // Focus input on mount
-  useEffect(() => {
-    if (clozeContext) {
-      inputRef.current?.focus()
-    }
-  }, [clozeContext])
-
-  // Check the answer
-  const handleSubmit = () => {
-    if (isAnswered || !response.trim()) return
-
-    const variants = (exerciseItem.answerVariants ?? []).map(v => v.variant_text)
-    const result = checkAnswer(response, learningItem.base_text, variants)
-    const isCorrect = result.isCorrect
-    const isFuzzy = result.isFuzzy
-
-    setIsAnswered(true)
-
-    // Brief pause before calling onAnswer
-    setTimeout(() => {
-      const latencyMs = Date.now() - startTime
-      onAnswer(isCorrect, isFuzzy, latencyMs, response)
-    }, 1500)
-  }
-
-  // Allow Enter key to submit
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !isAnswered) {
-      handleSubmit()
-    }
-  }
-
-  const variants = (exerciseItem.answerVariants ?? []).map(v => v.variant_text)
-  const result = checkAnswer(response, learningItem.base_text, variants)
-  const isCorrect = result.isCorrect
-
   if (!clozeContext) {
-    return (
-      <Box className={classes.container}>
-        <Text c="red">Error: No cloze context available</Text>
-      </Box>
-    )
+    return <Text c="red">Error: Missing cloze context</Text>
   }
+
+  const { sentence, targetWord, translation } = clozeContext
+  const parts = sentence.split('___')
+
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault()
+    if (submitted || !value.trim()) return
+
+    const result = checkAnswer(
+      value,
+      targetWord,
+      answerVariants.map(v => v.variant_text)
+    )
+
+    const latency = Date.now() - startTime.current
+    setIsCorrect(result.isCorrect)
+    setIsFuzzy(result.isFuzzy)
+    setShowFeedback(true)
+    onAnswer(result.isCorrect, result.isFuzzy, latency, value)
+  }
+
+  // Auto-focus on mount
+  useEffect(() => {
+    inputRef.current?.focus()
+  }, [])
 
   return (
-    <Box className={classes.container}>
-      <Stack gap="xl">
-        {/* Cloze sentence */}
-        <Box className={classes.sentenceSection}>
-          <Box className={classes.sentence}>
-            <Text component="span" mr="xs">{clozeContext.sentence.split(learningItem.base_text)[0]}</Text>
-            <Text component="span" className={classes.blank}>___</Text>
-            {clozeContext.sentence.split(learningItem.base_text)[1] && (
-              <Text component="span" ml="xs">{clozeContext.sentence.split(learningItem.base_text)[1]}</Text>
-            )}
-          </Box>
-          <Text size="sm" c="dimmed" mt="md">{clozeContext.translation}</Text>
-        </Box>
-
-        {/* Input field */}
-        <Box>
+    <Stack gap="xl">
+      <Box ta="center" py="xl">
+        <Text size="xl" fw={600} mb="lg" style={{ lineHeight: 1.6 }}>
+          {parts[0]}
           <TextInput
             ref={inputRef}
-            placeholder="Fill in the blank..."
-            value={response}
-            onChange={(e) => setResponse(e.currentTarget.value)}
-            onKeyDown={handleKeyDown}
-            disabled={isAnswered}
-            size="lg"
-            className={classes.input}
-            aria-label="Answer input"
+            component="span"
+            value={value}
+            onChange={(e) => setValue(e.currentTarget.value)}
+            disabled={submitted}
+            variant="unstyled"
+            className={`${classes.input} ${submitted ? (isCorrect ? classes.correct : classes.incorrect) : ''}`}
+            placeholder="..."
+            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+            autoComplete="off"
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck={false}
+            style={{ 
+              display: 'inline-block', 
+              width: `${Math.max(3, targetWord.length)}ch`,
+              borderBottom: '2px solid var(--mantine-color-gray-4)',
+              textAlign: 'center',
+              margin: '0 8px',
+              fontSize: 'inherit',
+              fontWeight: 'inherit',
+              color: submitted ? (isCorrect ? 'var(--mantine-color-green-6)' : 'var(--mantine-color-red-6)') : 'inherit'
+            }}
           />
-        </Box>
+          {parts[1]}
+        </Text>
 
-        {/* Submit button */}
-        {!isAnswered && (
-          <Button
-            onClick={handleSubmit}
-            disabled={!response.trim()}
-            size="lg"
-            fullWidth
-            rightSection={<IconArrowRight size={18} />}
-          >
-            Check Answer
-          </Button>
-        )}
+        <Group justify="center" gap="xs" c="dimmed">
+          <IconMessage2 size={16} />
+          <Text size="sm" style={{ fontStyle: 'italic' }}>{translation}</Text>
+        </Group>
+      </Box>
 
-        {/* Feedback section */}
-        {isAnswered && (
-          <Box className={classes.feedback}>
-            <Group mb="md">
-              <Badge color={isCorrect ? 'green' : 'red'} size="lg">
-                {isCorrect ? '✓ Correct' : '✗ Incorrect'}
-              </Badge>
-              {!isCorrect && result.isFuzzy && (
-                <Badge variant="light" color="yellow">Close</Badge>
+      {!submitted ? (
+        <Button 
+          size="md" 
+          onClick={() => handleSubmit()} 
+          disabled={!value.trim()}
+          variant="filled"
+          color="cyan"
+        >
+          Check
+        </Button>
+      ) : (
+        <Paper withBorder p="md" radius="md" bg={isCorrect ? 'rgba(64, 192, 87, 0.1)' : 'rgba(250, 82, 82, 0.1)'}>
+          <Group justify="space-between">
+            <Group>
+              {isCorrect ? (
+                <IconCheck color="var(--mantine-color-green-6)" />
+              ) : (
+                <IconX color="var(--mantine-color-red-6)" />
               )}
-            </Group>
-
-            <Box mb="md">
-              <Text size="sm" c="dimmed" mb="xs">Your answer:</Text>
-              <Text fw={600} className={isCorrect ? classes.correctAnswer : classes.incorrectAnswer}>
-                {response}
-              </Text>
-            </Box>
-
-            {!isCorrect && (
-              <Box mb="md">
-                <Text size="sm" c="dimmed" mb="xs">The correct answer:</Text>
-                <Text fw={600} size="lg" className={classes.correctAnswer}>
-                  {learningItem.base_text}
+              <Box>
+                <Text fw={600} size="sm" c={isCorrect ? 'green.7' : 'red.7'}>
+                  {isCorrect ? (isFuzzy ? 'Close enough!' : 'Correct!') : 'Not quite'}
+                </Text>
+                <Text size="xs" c="dimmed">
+                  The answer was: <Text component="span" fw={700} c="dark">{targetWord}</Text>
                 </Text>
               </Box>
-            )}
-
-            {isCorrect && (
-              <Box className={classes.sentenceCorrect}>
-                <Text size="sm" c="dimmed" mb="xs">Complete sentence:</Text>
-                <Box className={classes.completeSentence}>
-                  {clozeContext.sentence.split(learningItem.base_text)[0]}
-                  <Text component="span" fw={600} c="green">{learningItem.base_text}</Text>
-                  {clozeContext.sentence.split(learningItem.base_text)[1]}
-                </Box>
-              </Box>
-            )}
-          </Box>
-        )}
-      </Stack>
-    </Box>
+            </Group>
+          </Group>
+        </Paper>
+      )}
+    </Stack>
   )
 }

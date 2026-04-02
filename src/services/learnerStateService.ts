@@ -36,13 +36,14 @@ export const learnerStateService = {
     return data
   },
 
-  async getSkillStatesBatch(userId: string, itemIds: string[]): Promise<LearnerSkillState[]> {
+  async getSkillStatesBatch(userId: string, _itemIds?: string[]): Promise<LearnerSkillState[]> {
+    // Fetch all skill states for the user instead of filtering by itemIds
+    // to avoid URL length limits when passing many UUIDs via .in()
     const { data, error } = await supabase
       .schema('indonesian')
       .from('learner_skill_state')
       .select('*')
       .eq('user_id', userId)
-      .in('learning_item_id', itemIds)
     if (error) throw error
     return data
   },

@@ -338,9 +338,10 @@ export function Lesson() {
 
     return () => {
       if (sessionIdRef.current) {
-        endSession(sessionIdRef.current).catch(err =>
+        endSession(sessionIdRef.current).catch(err => {
           logError({ page: 'lesson', action: 'endSession', error: err })
-        )
+          notifications.show({ color: 'red', title: T.common.error, message: T.common.somethingWentWrong })
+        })
       }
     }
   }, [lessonId, user, T.common.error, T.lessons.failedToLoadLesson])
@@ -383,18 +384,23 @@ export function Lesson() {
     }
   }
 
+  const handleNextRef = useRef(handleNext)
+  const handleBackRef = useRef(handleBack)
+  useEffect(() => { handleNextRef.current = handleNext }, [handleNext])
+  useEffect(() => { handleBackRef.current = handleBack }, [handleBack])
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       // Don't intercept if user is typing in an input/textarea
       const tag = (e.target as HTMLElement).tagName
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
 
-      if (e.key === 'ArrowRight') handleNext()
-      if (e.key === 'ArrowLeft') handleBack()
+      if (e.key === 'ArrowRight') handleNextRef.current()
+      if (e.key === 'ArrowLeft') handleBackRef.current()
     }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
-  })
+  }, [])
 
   const togglePlay = () => {
     if (!audioRef.current) return

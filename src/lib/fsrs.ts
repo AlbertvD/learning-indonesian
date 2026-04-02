@@ -61,7 +61,7 @@ export function computeNextState(currentState: FSRSState | null, rating: Grade):
   return {
     stability: scheduled.card.stability,
     difficulty: scheduled.card.difficulty,
-    retrievability: scheduled.card.last_review ? (scheduler as any).get_retrievability(scheduled.card, now) ?? 1 : 1,
+    retrievability: scheduled.card.last_review ? scheduler.get_retrievability(scheduled.card, now, false) ?? 1 : 1,
     nextDueAt: scheduled.card.due,
   }
 }
