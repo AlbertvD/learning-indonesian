@@ -1,0 +1,21 @@
+.leaderboard {
+  padding: 22px 0 36px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.displaySm {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+  color: var(--text-1);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .displaySm { color: var(--text-1); }

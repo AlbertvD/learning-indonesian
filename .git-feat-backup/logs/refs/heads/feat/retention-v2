@@ -1,0 +1,2 @@
+0000000000000000000000000000000000000000 b9c5ca9572eeb20bb8ee6694ba597c32f9ab7495 Claude Code <claude@anthropic.com> 1775063672 +0200	branch: Created from refs/remotes/origin/feat/retention-v2
+b9c5ca9572eeb20bb8ee6694ba597c32f9ab7495 68f1a5db5a690fa1dc89a8ae8e8ff339fef278f8 Claude Code <claude@anthropic.com> 1775063766 +0200	commit: style: harmonize card background and border colors with CSS variables

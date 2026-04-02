@@ -1,0 +1,241 @@
+.lessons {
+  padding: 22px 0 36px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.displaySm {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+  color: var(--text-primary);
+}
+
+.bodySm {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-family: var(--display);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.badgeGreen {
+  background: var(--success-subtle);
+  color: var(--success);
+  border: 1px solid rgba(78,202,122,.2);
+}
+
+.badgePurple {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.75);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.badgeOrange {
+  background: var(--warning-subtle);
+  color: var(--warning);
+  border: 1px solid rgba(240,169,64,.2);
+}
+
+.lessonGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.lessonCard {
+  background: var(--bg-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all .2s;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  height: 48px;
+}
+
+.lessonCard:hover {
+  border-color: rgba(142,85,255,.3);
+  background: var(--bg-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px rgba(0,0,0,.4);
+}
+
+.lessonCard.done {
+  border-color: rgba(142,85,255,.15);
+}
+
+.progressBarWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 3px;
+  background: transparent;
+  overflow: hidden;
+  border-radius: 12px 0 0 12px;
+}
+
+.progressBarBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 3px;
+  background: rgba(255,255,255,0.05);
+}
+
+.progressBarFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  background: var(--accent-primary);
+  transition: height 0.3s ease;
+  height: 0%;
+}
+
+.lessonIcon {
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: rgba(255,255,255,0.35);
+  transition: color .15s;
+  font-size: 18px;
+}
+
+.lessonCard:hover .lessonIcon {
+  color: var(--accent-primary);
+}
+
+.lessonInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.lessonTitle {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.2;
+  letter-spacing: -.01em;
+}
+
+.lessonSubtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.lessonMeta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 7px;
+  flex-wrap: wrap;
+}
+
+.lessonSections {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.lessonArrow {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  transition: transform .15s, color .15s;
+}
+
+.lessonCard:hover .lessonArrow {
+  transform: translateX(3px);
+  color: var(--accent-primary);
+}
+
+/* Light theme overrides */
+:global(html[data-mantine-color-scheme="light"]) .lessonCard {
+  background: var(--bg-surface);
+  border-color: var(--border);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .lessonCard:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-primary);
+  box-shadow: 0 8px 40px rgba(142,85,255,0.12);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .lessonCard.done {
+  border-color: rgba(142,85,255,.25);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .lessonIcon {
+  color: rgba(0,0,0,0.22);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .lessonCard:hover .lessonIcon {
+  color: var(--accent-primary);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .lessonArrow {
+  color: var(--text-secondary);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .lessonCard:hover .lessonArrow {
+  color: var(--accent-primary);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .badgePurple {
+  background: rgba(142,85,255,0.10);
+  color: var(--accent-primary);
+  border-color: rgba(142,85,255,0.2);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .displaySm { color: var(--text-primary); }
+:global(html[data-mantine-color-scheme="light"]) .lessonTitle { color: var(--text-primary); }
+
+:global(html[data-mantine-color-scheme="light"]) .bodySm,
+:global(html[data-mantine-color-scheme="light"]) .lessonSubtitle,
+:global(html[data-mantine-color-scheme="light"]) .lessonSections,
+:global(html[data-mantine-color-scheme="light"]) .lessonArrow {
+  color: var(--text-secondary);
+}
+:global(html[data-mantine-color-scheme="light"]) .lessonSubtitle,
+:global(html[data-mantine-color-scheme="light"]) .lessonSections {
+  color: var(--text-secondary);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .progressBarBackground {
+  background: rgba(142,85,255,0.08);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .progressBarFill {
+  background: var(--accent-primary);
+}

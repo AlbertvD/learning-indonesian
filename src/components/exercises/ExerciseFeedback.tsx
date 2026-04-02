@@ -1,6 +1,7 @@
 import { Box, Button, Stack, Text, Badge, Group } from '@mantine/core'
 import { IconCheck, IconX } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
+import { translations } from '@/lib/i18n'
 import classes from './ExerciseFeedback.module.css'
 
 interface ExerciseFeedbackProps {
@@ -24,7 +25,9 @@ export function ExerciseFeedback({
   userLanguage = 'en',
   onContinue,
 }: ExerciseFeedbackProps) {
-  const { learningItem, meanings, contexts } = exerciseItem
+  const t = translations[userLanguage]
+  const { learningItem, meanings, contexts, exerciseType } = exerciseItem
+  const isRecognitionMCQ = exerciseType === 'recognition_mcq'
 
   // Get the primary meaning for display
   const primaryMeaning = meanings.find(m => m.translation_language === userLanguage && m.is_primary)
@@ -44,7 +47,7 @@ export function ExerciseFeedback({
             color={wasCorrect ? 'green' : 'red'}
             leftSection={wasCorrect ? <IconCheck size={14} /> : <IconX size={14} />}
           >
-            {wasCorrect ? 'Correct!' : 'Incorrect'}
+            {wasCorrect ? t.session.feedback.correct : t.session.feedback.incorrect}
           </Badge>
           {isFuzzy && (
             <Badge variant="light" color="yellow">
@@ -56,28 +59,30 @@ export function ExerciseFeedback({
         {/* User's answer (for recall-type exercises) */}
         {userAnswer && (
           <Box>
-            <Text size="sm" c="dimmed">Your answer:</Text>
+            <Text size="sm" c="dimmed">{t.session.feedback.yourAnswer}</Text>
             <Text fw={600} className={wasCorrect ? classes.correct : classes.incorrect}>
               {userAnswer}
             </Text>
           </Box>
         )}
 
-        {/* Correct answer */}
-        <Box className={classes.answerBox}>
-          <Text size="sm" c="dimmed">The word:</Text>
-          <Group>
-            <Text fw={700} size="lg" className={classes.correctAnswer}>
-              {learningItem.base_text}
-            </Text>
-            <Text c="dimmed">{translation}</Text>
-          </Group>
-        </Box>
+        {/* Correct answer - only show for non-MCQ or if MCQ was wrong */}
+        {(!isRecognitionMCQ || !wasCorrect) && (
+          <Box className={classes.answerBox}>
+            <Text size="sm" c="dimmed">{t.session.feedback.theWord}</Text>
+            <Group>
+              <Text fw={700} size="lg" className={classes.correctAnswer}>
+                {learningItem.base_text}
+              </Text>
+              <Text c="dimmed">{translation}</Text>
+            </Group>
+          </Box>
+        )}
 
-        {/* Example context */}
-        {anchorContext && (
+        {/* Example context - only show for non-MCQ exercises */}
+        {!isRecognitionMCQ && anchorContext && (
           <Box className={classes.contextBox}>
-            <Text size="sm" c="dimmed" mb="xs">Example:</Text>
+            <Text size="sm" c="dimmed" mb="xs">{t.session.feedback.example}</Text>
             <Text size="sm" style={{ fontStyle: 'italic' }} mb="xs">
               {anchorContext.source_text}
             </Text>
@@ -92,7 +97,7 @@ export function ExerciseFeedback({
           fullWidth
           className={classes.continueButton}
         >
-          Continue
+          {t.session.feedback.continue}
         </Button>
       </Stack>
     </Box>

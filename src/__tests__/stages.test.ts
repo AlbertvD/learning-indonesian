@@ -60,6 +60,13 @@ describe('checkPromotion', () => {
     expect(checkPromotion(item, recognition, recall)).toBeNull()
   })
 
+  it('promotes retrieving → productive at exactly 5 successes when gate_check_passed=false', () => {
+    const item = makeItemState({ stage: 'retrieving', gate_check_passed: false })
+    const recognition = makeSkillState({ skill_type: 'recognition', stability: 6, success_count: 5 })
+    const recall = makeSkillState({ skill_type: 'recall', stability: 6, success_count: 5 })
+    expect(checkPromotion(item, recognition, recall)).toBe('productive')
+  })
+
   it('promotes productive → maintenance when stability high and no recent lapses', () => {
     const item = makeItemState({ stage: 'productive' })
     const recognition = makeSkillState({ skill_type: 'recognition', stability: 22, success_count: 10, lapse_count: 0 })

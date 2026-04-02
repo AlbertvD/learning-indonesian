@@ -11,10 +11,11 @@ import {
   Button,
   Group,
   Progress,
-  Card,
+  Paper,
+  Title,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconChevronRight, IconFlame, IconClock, IconTrendingUp, IconTarget, IconCheck, IconAlertCircle } from '@tabler/icons-react'
+import { IconChevronRight, IconFlame, IconTarget, IconCheck, IconAlertCircle } from '@tabler/icons-react'
 import { lessonService } from '@/services/lessonService'
 import { learnerStateService } from '@/services/learnerStateService'
 import { goalService } from '@/services/goalService'
@@ -36,6 +37,8 @@ export function Dashboard() {
   const [itemsByStage, setItemsByStage] = useState({ new: 0, anchoring: 0, retrieving: 0, productive: 0, maintenance: 0 })
   const [continueUrl, setContinueUrl] = useState('/lessons')
   const [goalProgress, setGoalProgress] = useState<WeeklyGoalResponse | null>(null)
+  const [minutesToday, setMinutesToday] = useState(0)
+  const [currentStreak, setCurrentStreak] = useState(0)
 
   useEffect(() => {
     async function fetchData() {
@@ -45,7 +48,7 @@ export function Dashboard() {
         const progress = await goalService.getGoalProgress(user.id)
         setGoalProgress(progress)
 
-        // Fetch due skills count (also available in todayPlan, but we'll use it for the old metrics too)
+        // Fetch due skills count
         const dueSkills = await learnerStateService.getDueSkills(user.id)
         setDueCount(dueSkills.length)
 
@@ -69,7 +72,7 @@ export function Dashboard() {
           lessonService.getLessonsBasic(),
         ])
 
-        // Find the lesson to continue: first in-progress, else first not started
+        // Find the lesson to continue
         const inProgress = lessons.find((l) => {
           const p = lessonProgress.find((lp) => lp.lesson_id === l.id)
           return p && p.completed_at == null && p.sections_completed.length > 0
@@ -82,6 +85,73 @@ export function Dashboard() {
           const progress = lessonProgress.find((lp) => lp.lesson_id === target.id)
           const sectionIndex = progress?.sections_completed.length ?? 0
           setContinueUrl(`/lessons/${target.id}?section=${sectionIndex}`)
+        }
+
+        // --- Sophisticated Minutes Today (merged from retention-v2) ---
+        const todayUTC = new Date()
+        todayUTC.setUTCHours(0, 0, 0, 0)
+        
+        const { data: todaySessions, error: sessionsError } = await supabase
+          .schema('indonesian')
+          .from('learning_sessions')
+          .select('started_at, ended_at, duration_seconds, id')
+          .eq('user_id', user.id)
+          .gte('started_at', todayUTC.toISOString())
+
+        if (!sessionsError && todaySessions) {
+          const intervals: [number, number][] = []
+          for (const session of todaySessions) {
+            const start = new Date(session.started_at).getTime()
+            let end: number | null = null
+            if (session.ended_at) {
+              end = new Date(session.ended_at).getTime()
+            } else {
+              const { data: latestReview } = await supabase
+                .schema('indonesian')
+                .from('review_events')
+                .select('created_at')
+                .eq('session_id', session.id)
+                .order('created_at', { ascending: false })
+                .limit(1)
+              end = (latestReview && latestReview.length > 0) ? new Date(latestReview[0].created_at).getTime() : start + 1000
+            }
+            if (end && end >= start) intervals.push([start, end])
+          }
+          if (intervals.length > 0) {
+            intervals.sort((a, b) => a[0] - b[0])
+            const merged: [number, number][] = [intervals[0]]
+            for (let i = 1; i < intervals.length; i++) {
+              const prev = merged[merged.length - 1]
+              const current = intervals[i]
+              if (current[0] <= prev[1]) prev[1] = Math.max(prev[1], current[1])
+              else merged.push(current)
+            }
+            const totalSeconds = merged.reduce((sum, [start, end]) => sum + Math.round((end - start) / 1000), 0)
+            setMinutesToday(Math.round(totalSeconds / 60))
+          }
+        }
+
+        // --- Sophisticated Streak (merged from retention-v2) ---
+        const { data: recentReviews, error: streakError } = await supabase
+          .schema('indonesian')
+          .from('review_events')
+          .select('created_at')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1000)
+
+        if (!streakError && recentReviews && recentReviews.length > 0) {
+          let streak = 0
+          const toUTCDateStr = (d: Date) => d.toISOString().split('T')[0]
+          const reviewsByDay = new Set<string>()
+          for (const review of recentReviews) reviewsByDay.add(toUTCDateStr(new Date(review.created_at)))
+          const now = new Date()
+          const checkDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+          while (reviewsByDay.has(toUTCDateStr(checkDate))) {
+            streak++
+            checkDate.setUTCDate(checkDate.setUTCDate() - 1)
+          }
+          setCurrentStreak(streak)
         }
       } catch (err) {
         logError({ page: 'dashboard', action: 'fetchData', error: err })
@@ -115,9 +185,9 @@ export function Dashboard() {
           <Box>
             <Text size="xl" fw={600}>{T.dashboard.welcomeBack}, {name}</Text>
           </Box>
-          <Card withBorder padding="xl" radius="md">
+          <Paper className="card-default" p="xl">
             <Stack align="center" gap="md">
-              <IconTarget size={48} color="var(--mantine-color-blue-filled)" />
+              <IconTarget size={48} color="var(--accent-primary)" />
               <Title order={3}>{T.dashboard.setTimezone}</Title>
               <Text c="dimmed" ta="center">
                 {T.dashboard.setTimezoneDesc}
@@ -126,7 +196,7 @@ export function Dashboard() {
                 {T.dashboard.goToProfile}
               </Button>
             </Stack>
-          </Card>
+          </Paper>
         </Stack>
       </Container>
     )
@@ -139,14 +209,20 @@ export function Dashboard() {
     <Container size="md" className={classes.dashboard}>
       <Stack gap="lg">
         {/* Welcome */}
-        <Box>
-          <Text size="xl" fw={600}>
-            {T.dashboard.welcomeBack}, {name}
-          </Text>
-        </Box>
+        <Group justify="space-between" align="flex-end">
+          <Box>
+            <Text size="xl" fw={600}>
+              {T.dashboard.welcomeBack}, {name}
+            </Text>
+          </Box>
+          <Group gap="xs">
+            <IconFlame size={18} color="orange" />
+            <Text size="sm" fw={600}>{currentStreak} {T.dashboard.daysInARow}</Text>
+          </Group>
+        </Group>
 
         {/* Weekly Goals Module */}
-        <Card withBorder padding="lg" radius="md">
+        <Paper className="card-default">
           <Stack gap="md">
             <Group justify="space-between">
               <Text fw={600}>{T.dashboard.thisWeek}</Text>
@@ -159,11 +235,11 @@ export function Dashboard() {
               ))}
             </Stack>
           </Stack>
-        </Card>
+        </Paper>
 
         {/* Today's Adaptive Plan */}
         {todayPlan && (
-          <Card withBorder padding="lg" className={classes.heroCard}>
+          <Paper className={classes.heroCard} p="lg">
             <Stack gap="md">
               <Box>
                 <Text size="lg" fw={600} mb="xs">
@@ -197,12 +273,12 @@ export function Dashboard() {
                 {T.dashboard.startTodaysSession}
               </Button>
             </Stack>
-          </Card>
+          </Paper>
         )}
 
         {/* Quick actions */}
         <Group grow>
-          <Link to={continueUrl} className={classes.actionCard}>
+          <Link to={continueUrl} className="card-action">
             <Group justify="space-between">
               <Box>
                 <Text size="sm" fw={500}>{T.dashboard.continueLesson}</Text>
@@ -212,7 +288,7 @@ export function Dashboard() {
             </Group>
           </Link>
 
-          <Link to="/session?weak=true" className={classes.actionCard}>
+          <Link to="/session?weak=true" className="card-action">
             <Group justify="space-between">
               <Box>
                 <Text size="sm" fw={500}>{T.dashboard.practiceWeak}</Text>
@@ -224,7 +300,7 @@ export function Dashboard() {
         </Group>
 
         {/* Progress snapshot */}
-        <Card withBorder padding="lg">
+        <Paper className="card-metric">
           <Stack gap="md">
             <Text size="sm" fw={600}>{T.dashboard.progressSnapshot}</Text>
 
@@ -253,7 +329,7 @@ export function Dashboard() {
               </Text>
             </Stack>
           </Stack>
-        </Card>
+        </Paper>
       </Stack>
     </Container>
   )
@@ -284,11 +360,11 @@ function GoalRow({ goal, T }: { goal: WeeklyGoal, T: any }) {
       <Group justify="space-between" mb={4}>
         <Group gap="xs">
           {goal.status === 'achieved' ? (
-            <IconCheck size={14} color="var(--mantine-color-green-filled)" />
+            <IconCheck size={14} color="var(--status-success)" />
           ) : goal.status === 'at_risk' ? (
-            <IconAlertCircle size={14} color="var(--mantine-color-orange-filled)" />
+            <IconAlertCircle size={14} color="var(--warning)" />
           ) : (
-            <IconTarget size={14} color="var(--mantine-color-blue-filled)" />
+            <IconTarget size={14} color="var(--accent-primary)" />
           )}
           <Text size="sm" fw={500}>{titles[goal.goal_type]}</Text>
           {goal.is_provisional && (
@@ -300,7 +376,7 @@ function GoalRow({ goal, T }: { goal: WeeklyGoal, T: any }) {
         </Text>
       </Group>
       <Progress 
-        value={(goal.current_value_numeric / goal.target_value_numeric) * 100} 
+        value={Math.min(100, (goal.current_value_numeric / goal.target_value_numeric) * 100)} 
         color={statusColors[goal.status]} 
         size="sm" 
       />

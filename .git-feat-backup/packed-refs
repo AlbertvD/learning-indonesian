@@ -1,0 +1,7 @@
+# pack-refs with: peeled fully-peeled sorted 
+36695012b8fc17f3bce683125a26b9da39e832e2 refs/remotes/origin/card-styling-fix
+b9c5ca9572eeb20bb8ee6694ba597c32f9ab7495 refs/remotes/origin/feat/retention-v2
+b9c5ca9572eeb20bb8ee6694ba597c32f9ab7495 refs/remotes/origin/feat/retention-v2-work
+36695012b8fc17f3bce683125a26b9da39e832e2 refs/remotes/origin/main
+36695012b8fc17f3bce683125a26b9da39e832e2 refs/remotes/origin/worktree-agent-a86e67d9
+36695012b8fc17f3bce683125a26b9da39e832e2 refs/remotes/origin/worktree-agent-a8ec36b6

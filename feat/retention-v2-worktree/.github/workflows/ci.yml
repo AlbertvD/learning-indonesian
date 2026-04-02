@@ -1,0 +1,12 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  safety:
+    uses: AlbertvD/homelab-platform/.github/workflows/safety.yml@main
+    secrets: inherit

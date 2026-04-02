@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bahasa Indonesia — UI Mockups</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #0b0b10;
+      --surf-1: #111118;
+      --surf-2: #18181f;
+      --surf-3: #1f1f29;
+      --surf-4: #28283c;
+
+      --border:       #28283c;
+      --border-light: #34344e;
+
+      --purple:        #8b6cf5;
+      --purple-dim:    #6b50cc;
+      --purple-bright: #a78bfa;
+      --purple-glow:   rgba(139,108,245,0.16);
+      --purple-subtle: rgba(139,108,245,0.09);
+
+      --teal:         #3ecfbf;
+      --teal-subtle:  rgba(62,207,191,0.10);
+
+      --success:         #4eca7a;
+      --success-subtle:  rgba(78,202,122,0.10);
+      --danger:          #f06969;
+      --danger-subtle:   rgba(240,105,105,0.10);
+      --warning:         #f0a940;
+      --warning-subtle:  rgba(240,169,64,0.10);
+
+      --text-1: #eeedf6;
+      --text-2: #9490aa;
+      --text-3: #55517a;
+
+      --display: 'Poppins', system-ui, sans-serif;
+      --sans:    'Open Sans', system-ui, sans-serif;
+
+      --r-sm: 6px;
+      --r-md: 10px;
+      --r-lg: 16px;
+      --r-xl: 24px;
+    }
+
+    html, body {
+      background:
+        radial-gradient(ellipse 75% 55% at 85% 5%,  rgba(139,108,245,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 45% at 5%  90%,  rgba(62,207,191,0.10)  0%, transparent 55%),
+        radial-gradient(ellipse 90% 50% at 50% 115%, rgba(90,30,140,0.25)   0%, transparent 60%),
+        var(--bg);
+      color: var(--text-1);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+
+    /* Subtle noise grain overlay on every page */
+    .page.active::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+    }
+    /* Everything inside a page sits above the grain */
+    .page.active > * { position: relative; z-index: 1; }
+
+    /* ─── APP SHELL ─── */
+    .page { display: none; }
+    .page.active { display: flex; height: 100vh; }
+
+    /* ─── SIDEBAR — fixed overlay, slides in/out ─── */
+    .sidebar {
+      position: fixed; left: 0; top: 0; bottom: 0; z-index: 200;
+      width: 230px;
+      background: rgba(11,11,18,0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-right: 1px solid rgba(255,255,255,0.05);
+      display: flex; flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform .22s cubic-bezier(.4,0,.2,1);
+    }
+    /* Locked — sidebar pushes content */
+    html.sb-locked .sidebar    { transform: translateX(0); }
+    html.sb-locked .main       { margin-left: 230px; }
+    /* Temporarily open (not locked) */
+    html.sb-open .sidebar      { transform: translateX(0); }
+
+    /* Backdrop — dims content when sidebar is open but not locked */
+    #sb-backdrop {
+      display: none; position: fixed; inset: 0; z-index: 199;
+      background: rgba(0,0,0,0.35); backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+    html.sb-open:not(.sb-locked) #sb-backdrop { display: block; }
+
+    /* Hamburger — shown when sidebar is not locked */
+    #hamburger {
+      position: fixed; top: 14px; left: 14px; z-index: 198;
+      width: 36px; height: 36px; border-radius: var(--r-md);
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.6); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 4px;
+      cursor: pointer; transition: all .15s; flex-shrink: 0;
+    }
+    #hamburger:hover { background: rgba(255,255,255,0.14); color: #fff; }
+    #hamburger span { display: block; width: 16px; height: 1.5px; background: currentColor; border-radius: 2px; transition: all .2s; }
+    html.sb-locked #hamburger { display: none; }
+    html.light-theme #hamburger {
+      background: rgba(255,255,255,0.75); border-color: var(--border);
+      color: var(--text-2); box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    html.light-theme #hamburger:hover { background: #fff; color: var(--purple); }
+
+    /* Pin button in logo header */
+    .sidebar-pin-btn {
+      margin-left: auto; flex-shrink: 0;
+      width: 28px; height: 28px; border-radius: var(--r-sm);
+      background: transparent; border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .15s;
+    }
+    .sidebar-pin-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.75); border-color: rgba(255,255,255,0.15); }
+    .sidebar-pin-btn svg  { transition: transform .2s; }
+    html.sb-locked .sidebar-pin-btn svg { transform: rotate(-45deg); }
+    html.sb-locked .sidebar-pin-btn { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.15); }
+    html.light-theme .sidebar-pin-btn { border-color: var(--border); color: var(--text-3); }
+    html.light-theme .sidebar-pin-btn:hover { background: rgba(91,110,245,0.08); color: var(--purple); border-color: rgba(91,110,245,0.2); }
+    html.light-theme.sb-locked .sidebar-pin-btn { color: var(--purple); border-color: rgba(91,110,245,0.25); }
+
+    /* Language switcher */
+    .lang-switch {
+      display: flex; align-items: center; flex-shrink: 0;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--r-sm); overflow: hidden;
+    }
+    .lang-btn {
+      padding: 4px 7px; font-family: var(--display); font-size: 10px; font-weight: 700;
+      letter-spacing: .04em; color: rgba(255,255,255,0.35);
+      background: transparent; border: none; cursor: pointer; transition: all .15s;
+    }
+    .lang-btn.active { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.9); }
+    .lang-btn:hover:not(.active) { color: rgba(255,255,255,0.65); }
+    html.light-theme .lang-switch { background: rgba(91,110,245,0.06); border-color: var(--border); }
+    html.light-theme .lang-btn { color: var(--text-3); }
+    html.light-theme .lang-btn.active { background: rgba(91,110,245,0.14); color: var(--purple); }
+    html.light-theme .lang-btn:hover:not(.active) { color: var(--text-2); }
+
+    /* Profile trigger */
+    .profile-trigger {
+      display: flex; align-items: center; gap: 10px; flex: 1;
+      cursor: pointer; border-radius: var(--r-md); padding: 2px 4px 2px 0;
+      transition: background .15s; min-width: 0;
+    }
+    .profile-trigger:hover { background: rgba(255,255,255,0.05); }
+    html.light-theme .profile-trigger:hover { background: rgba(91,110,245,0.06); }
+
+    /* Profile popup menu */
+    .profile-menu {
+      position: fixed; z-index: 300; width: 230px;
+      background: rgba(20,20,28,0.96);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--r-lg); padding: 6px;
+      box-shadow: 0 -8px 32px rgba(0,0,0,0.5);
+      display: none; flex-direction: column; gap: 2px;
+      transform-origin: bottom left;
+    }
+    .profile-menu.open { display: flex; }
+    html.light-theme .profile-menu {
+      background: rgba(255,255,255,0.96);
+      border-color: var(--border);
+      box-shadow: 0 -8px 32px rgba(0,0,0,0.10);
+    }
+
+    .profile-menu-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 4px;
+    }
+    html.light-theme .profile-menu-header { border-bottom-color: var(--border); }
+    .profile-menu-header .user-avatar { width: 36px; height: 36px; font-size: 15px; }
+    .profile-menu-fullname { font-family: var(--display); font-size: 13px; font-weight: 700; color: var(--text-1); }
+    .profile-menu-email    { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+    .profile-menu-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 10px; border-radius: var(--r-md);
+      font-family: var(--display); font-size: 13px; font-weight: 600; color: var(--text-2);
+    }
+    .profile-menu-label { font-size: 12px; color: var(--text-3); font-family: var(--sans); font-weight: 400; }
+
+    .profile-menu-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 4px 0; }
+    html.light-theme .profile-menu-divider { background: var(--border); }
+
+    .profile-menu-item {
+      display: flex; align-items: center; gap: 9px;
+      padding: 8px 10px; border-radius: var(--r-md);
+      font-family: var(--display); font-size: 13px; font-weight: 600; color: var(--text-2);
+      cursor: pointer; transition: background .12s;
+    }
+    .profile-menu-item:hover { background: rgba(255,255,255,0.06); color: var(--text-1); }
+    .profile-menu-item.danger { color: var(--danger); }
+    .profile-menu-item.danger:hover { background: var(--danger-subtle); }
+    .profile-menu-item svg { width: 15px; height: 15px; flex-shrink: 0; opacity: .7; }
+    html.light-theme .profile-menu-item:hover { background: rgba(91,110,245,0.06); color: var(--text-1); }
+    html.light-theme .profile-menu-item.danger:hover { background: var(--danger-subtle); }
+
+    .sidebar-logo { padding: 22px 18px 18px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .logo-mark { display: flex; align-items: center; gap: 10px; }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: var(--r-md);
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--display); font-size: 14px; font-weight: 900; color: #fff;
+    }
+    .logo-name { font-family: var(--display); font-size: 15px; font-weight: 800; color: var(--text-1); line-height: 1.2; }
+    .logo-sub  { font-family: var(--display); font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+    .sidebar-nav { padding: 10px 8px; flex: 1; }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 11px; border-radius: var(--r-md);
+      color: var(--text-2); font-family: var(--display); font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all .15s; margin-bottom: 2px; text-decoration: none;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text-1); }
+    .nav-item.active { background: rgba(255,255,255,0.08); color: #fff; }
+    .nav-item svg { width: 17px; height: 17px; flex-shrink: 0; opacity: .45; }
+    .nav-item.active svg { opacity: 1; }
+    .nav-badge { margin-left: auto; background: var(--danger); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; font-family: var(--display); }
+
+    .sidebar-user { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; position: relative; }
+    .sidebar-theme-btn {
+      margin-left: auto; flex-shrink: 0;
+      width: 30px; height: 30px; border-radius: var(--r-md);
+      background: transparent; border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .15s;
+    }
+    .sidebar-theme-btn:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.8); }
+
+    /* ═══════════════════════════════════════
+       LIGHT THEME — blue-on-white palette
+    ═══════════════════════════════════════ */
+    html.light-theme {
+      --bg:           #eef5ff;
+      --surf-1:       #ffffff;
+      --surf-2:       #e4f0ff;
+      --surf-3:       #d5e8ff;
+      --surf-4:       #c2d9f8;
+      --border:       #ccdff5;
+      --border-light: #b5cff0;
+      --text-1:       #0d1f3c;
+      --text-2:       #3a5882;
+      --text-3:       #7a99c0;
+      --purple:       #5b6ef5;
+      --purple-dim:   #4a5be0;
+      --purple-bright:#6e80ff;
+      --purple-subtle: rgba(91,110,245,0.08);
+      --teal:         #1ab8a8;
+      --teal-subtle:  rgba(26,184,168,0.10);
+      --success:      #1fa85a;
+      --success-subtle: rgba(31,168,90,0.10);
+      --danger:       #d94040;
+      --danger-subtle: rgba(217,64,64,0.10);
+      --warning:      #d48a10;
+      --warning-subtle: rgba(212,138,16,0.10);
+    }
+
+    /* Background gradient — airy blue */
+    html.light-theme body {
+      background:
+        radial-gradient(ellipse 70% 50% at 85% 5%,  rgba(120,160,255,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 5%  90%,  rgba(26,184,168,0.10)  0%, transparent 55%),
+        radial-gradient(ellipse 80% 45% at 50% 120%, rgba(91,110,245,0.12)  0%, transparent 60%),
+        var(--bg);
+      color: var(--text-1);
+    }
+
+    /* Sidebar */
+    html.light-theme .sidebar {
+      background: rgba(255,255,255,0.80);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-right-color: var(--border);
+    }
+    html.light-theme .sidebar-logo    { border-bottom-color: var(--border); }
+    html.light-theme .sidebar-user    { border-top-color: var(--border); }
+    html.light-theme .logo-sub        { color: var(--text-3); }
+    html.light-theme .logo-icon       { background: rgba(91,110,245,0.10); border-color: rgba(91,110,245,0.2); color: var(--purple); }
+    html.light-theme .nav-item        { color: var(--text-2); }
+    html.light-theme .nav-item:hover  { background: rgba(91,110,245,0.07); color: var(--text-1); }
+    html.light-theme .nav-item.active { background: rgba(91,110,245,0.12); color: var(--purple); }
+    html.light-theme .nav-item svg    { opacity: .55; }
+    html.light-theme .nav-item.active svg { opacity: 1; }
+    html.light-theme .user-name       { color: var(--text-1); }
+    html.light-theme .user-avatar     { background: rgba(91,110,245,0.12); border-color: rgba(91,110,245,0.2); color: var(--purple); }
+    html.light-theme .sidebar-theme-btn { border-color: rgba(0,0,0,0.14); color: var(--text-3); }
+    html.light-theme .sidebar-theme-btn:hover { background: rgba(91,110,245,0.08); color: var(--purple); }
+
+    /* Cards / glass surfaces */
+    html.light-theme .card,
+    html.light-theme .stat-card,
+    html.light-theme .continue-card,
+    html.light-theme .lesson-card,
+    html.light-theme .review-card,
+    html.light-theme .audio-player,
+    html.light-theme .spelling-chip {
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-color: var(--border);
+    }
+    html.light-theme .continue-card:hover { background: rgba(255,255,255,0.92); border-color: var(--purple); }
+    html.light-theme .lesson-card:hover   { background: rgba(255,255,255,0.95); border-color: var(--purple); box-shadow: 0 8px 40px rgba(91,110,245,0.12); }
+    html.light-theme .lesson-card.done    { border-color: rgba(31,168,90,.25); }
+
+    /* Lesson card number watermark */
+    html.light-theme .lesson-num { color: var(--surf-3); }
+    html.light-theme .lesson-card:hover .lesson-num { color: var(--border-light); }
+    html.light-theme .lesson-card.done  .lesson-num { color: rgba(31,168,90,.15); }
+    html.light-theme .lesson-arrow      { color: var(--text-3); }
+    html.light-theme .lesson-card:hover .lesson-arrow { color: var(--purple); }
+
+    /* Buttons — all need to be readable on white */
+    html.light-theme .btn-primary {
+      background: var(--purple); color: #fff; border-color: var(--purple-dim);
+    }
+    html.light-theme .btn-primary:hover {
+      background: var(--purple-bright); border-color: var(--purple);
+    }
+    html.light-theme .btn-outline {
+      color: var(--purple); border-color: var(--border-light);
+      background: rgba(255,255,255,0.6);
+    }
+    html.light-theme .btn-outline:hover { background: rgba(91,110,245,0.07); border-color: var(--purple); }
+    html.light-theme .btn-ghost  {
+      color: var(--text-2); border-color: transparent;
+    }
+    html.light-theme .btn-ghost:hover  { background: rgba(91,110,245,0.07); color: var(--purple); }
+
+    /* Progress */
+    html.light-theme .progress-bar-wrap { background: rgba(91,110,245,0.12); }
+    html.light-theme .progress-bar-fill { background: var(--purple); }
+    html.light-theme .dot              { background: rgba(91,110,245,0.18); }
+    html.light-theme .dot.done         { background: rgba(91,110,245,0.45); }
+    html.light-theme .dot.curr         { background: var(--purple); }
+
+    /* Badges */
+    html.light-theme .badge-purple { background: rgba(91,110,245,0.10); color: var(--purple); border-color: rgba(91,110,245,0.2); }
+    html.light-theme .badge-muted  { background: var(--surf-2); color: var(--text-2); border-color: var(--border); }
+
+    /* Divider */
+    html.light-theme .divider { background: var(--border); }
+
+    /* Lesson content */
+    html.light-theme .lesson-intro    { background: rgba(91,110,245,0.06); border-left-color: var(--purple); }
+    html.light-theme .content-section-label::after { background: var(--border); }
+    html.light-theme .phrase-row      { border-bottom-color: var(--border); }
+    html.light-theme .sentence-row    { border-bottom-color: var(--border); }
+    html.light-theme .grammar-title   { border-bottom-color: var(--border); color: var(--text-2); }
+    html.light-theme .grammar-rule::before { background: var(--purple); }
+    html.light-theme .dialogue-setup  { border-left-color: var(--border-light); }
+    html.light-theme .dialogue-speaker { color: var(--purple); background: rgba(91,110,245,0.10); border-color: rgba(91,110,245,0.2); }
+    html.light-theme .audio-play-btn  { background: rgba(91,110,245,0.12); border-color: rgba(91,110,245,0.25); color: var(--purple); }
+    html.light-theme .audio-progress  { background: var(--surf-3); }
+    html.light-theme .audio-progress-fill { background: var(--purple); }
+    html.light-theme .lesson-nav      { border-top-color: var(--border); }
+
+    /* Flashcard review */
+    html.light-theme .review-divider { background: var(--border-light); }
+
+    /* Leaderboard */
+    html.light-theme .lb-row:hover { background: var(--surf-2); }
+    html.light-theme .lb-row.top   { background: rgba(91,110,245,0.08); border-color: rgba(91,110,245,0.18); }
+
+    /* Tab nav */
+    html.light-theme .tab-btn        { color: var(--text-2); }
+    html.light-theme .tab-btn:hover  { color: var(--text-1); }
+    html.light-theme .tab-btn.active { color: var(--purple); border-bottom-color: var(--purple); }
+    html.light-theme .tab-nav        { border-bottom-color: var(--border); }
+
+    /* Stat card accent lines stay vivid */
+    html.light-theme .stat-card.purple::after { background: linear-gradient(90deg, var(--purple), transparent); }
+    html.light-theme .stat-card.teal::after   { background: linear-gradient(90deg, var(--teal),   transparent); }
+    html.light-theme .stat-card.orange::after { background: linear-gradient(90deg, var(--warning), transparent); }
+
+    .user-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--display); font-size: 13px; font-weight: 900; color: #fff; flex-shrink: 0;
+    }
+    .user-name { font-family: var(--display); font-size: 13px; font-weight: 700; color: var(--text-1); line-height: 1.3; }
+    .user-meta { font-size: 11px; color: var(--text-3); }
+
+    /* ─── MAIN ─── */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: transparent; transition: margin-left .22s cubic-bezier(.4,0,.2,1); }
+    .scroll-area { flex: 1; overflow-y: auto; padding: 36px 32px; }
+    .content-wrap { max-width: 780px; margin: 0 auto; }
+
+    /* ─── LESSON SUBNAV (replaces top bar) ─── */
+    .lesson-subnav {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 32px;
+    }
+
+    /* ─── TYPOGRAPHY ─── */
+    .display    { font-family: var(--display); font-size: 46px; font-weight: 500; line-height: 1.05; letter-spacing: -.02em; }
+    .display-sm { font-family: var(--display); font-size: 28px; font-weight: 600; line-height: 1.15; letter-spacing: -.01em; }
+    .label      { font-family: var(--display); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); }
+    .body-sm    { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+    .caption    { font-size: 11px; color: var(--text-3); font-family: var(--sans); }
+
+    /* ─── UTILITY ─── */
+    .flex{display:flex}.flex-col{flex-direction:column}
+    .items-center{align-items:center}.items-start{align-items:flex-start}
+    .justify-between{justify-content:space-between}.justify-center{justify-content:center}
+    .gap-4{gap:4px}.gap-6{gap:6px}.gap-8{gap:8px}.gap-10{gap:10px}.gap-12{gap:12px}
+    .gap-16{gap:16px}.gap-20{gap:20px}.gap-24{gap:24px}
+    .mt-4{margin-top:4px}.mt-6{margin-top:6px}.mt-8{margin-top:8px}.mt-12{margin-top:12px}
+    .mt-16{margin-top:16px}.mt-20{margin-top:20px}.mt-24{margin-top:24px}
+    .mt-28{margin-top:28px}.mt-32{margin-top:32px}.mt-40{margin-top:40px}
+    .mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}
+    .mb-20{margin-bottom:20px}.mb-24{margin-bottom:24px}.mb-32{margin-bottom:32px}
+    .ml-auto{margin-left:auto}
+    .text-center{text-align:center}
+    .c-purple{color:var(--purple)}.c-teal{color:var(--teal)}
+    .c-muted{color:var(--text-2)}.c-dim{color:var(--text-3)}
+    .c-success{color:var(--success)}.c-danger{color:var(--danger)}
+    .fw-600{font-weight:600}.fw-700{font-weight:700}.fw-800{font-weight:800}.fw-900{font-weight:900}
+
+    /* ─── BADGE ─── */
+    .badge {
+      display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px;
+      font-family: var(--display); font-size: 10px; font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase; line-height: 1;
+    }
+    .badge-purple { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.75); border: 1px solid rgba(255,255,255,0.12); }
+    .badge-green  { background: var(--success-subtle); color: var(--success); border: 1px solid rgba(78,202,122,.2); }
+    .badge-orange { background: var(--warning-subtle); color: var(--warning); border: 1px solid rgba(240,169,64,.2); }
+    .badge-muted  { background: var(--surf-3); color: var(--text-3); border: 1px solid var(--border); }
+    .badge-teal   { background: var(--teal-subtle); color: var(--teal); border: 1px solid rgba(62,207,191,.2); }
+
+    /* ─── BUTTON ─── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 20px; border-radius: var(--r-md);
+      font-family: var(--display); font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: all .15s;
+      border: 1px solid transparent; text-decoration: none; white-space: nowrap;
+    }
+    .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .btn-primary { background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.18); }
+    .btn-primary:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.25); }
+    .btn-outline { background: transparent; color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.12); }
+    .btn-outline:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.2); }
+    .btn-ghost { background: transparent; color: rgba(255,255,255,0.45); border-color: transparent; }
+    .btn-ghost:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.8); }
+    .btn-sm { padding: 6px 14px; font-size: 13px; }
+    .btn-lg { padding: 12px 28px; font-size: 15px; border-radius: var(--r-lg); }
+
+    /* ─── CARD ─── */
+    .card {
+      background: rgba(24,24,31,0.30);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--r-lg);
+    }
+    .card-p    { padding: 20px; }
+    .card-p-lg { padding: 26px 28px; }
+
+    /* ─── DIVIDER ─── */
+    .divider { width: 100%; height: 1px; background: var(--border); }
+
+    /* ─── PROGRESS DOTS ─── */
+    .progress-dots { display: flex; gap: 5px; align-items: center; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.15); transition: all .2s; }
+    .dot.done { background: rgba(255,255,255,0.5); }
+    .dot.curr { width: 20px; border-radius: 4px; background: #fff; }
+
+    /* ─── PROGRESS BAR ─── */
+    .progress-bar-wrap { height: 4px; border-radius: 4px; background: rgba(255,255,255,0.1); overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 4px; background: rgba(255,255,255,0.7); transition: width .3s ease; }
+
+    /* ─────────────────────────────────────────
+       STAT CARDS
+    ───────────────────────────────────────── */
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .stat-card {
+      background: rgba(24,24,31,0.30);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--r-lg); padding: 22px 20px;
+      position: relative; overflow: hidden;
+    }
+    .stat-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    }
+    .stat-card.purple::after { background: linear-gradient(90deg, var(--purple), transparent); }
+    .stat-card.teal::after   { background: linear-gradient(90deg, var(--teal),   transparent); }
+    .stat-card.orange::after { background: linear-gradient(90deg, var(--warning), transparent); }
+
+    .stat-label { font-family: var(--display); font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); }
+    .stat-value { font-family: var(--display); font-size: 52px; font-weight: 500; color: var(--text-1); line-height: 1; margin-top: 8px; letter-spacing: -.03em; }
+    .stat-sub   { font-size: 12px; color: var(--text-3); margin-top: 6px; }
+
+    /* ─── CONTINUE CARD ─── */
+    .continue-card {
+      background: rgba(24,24,31,0.30);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--r-lg);
+      padding: 18px 22px; display: flex; align-items: center; gap: 18px;
+      cursor: pointer; transition: all .2s; text-decoration: none;
+    }
+    .continue-card:hover { border-color: rgba(139,108,245,.3); background: rgba(31,31,41,0.65); }
+    .continue-icon {
+      width: 42px; height: 42px; border-radius: var(--r-md);
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .continue-title { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--text-1); }
+    .continue-sub   { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+    .continue-prog  { margin-top: 9px; }
+
+    /* ─────────────────────────────────────────
+       LESSON LIST
+    ───────────────────────────────────────── */
+    .lesson-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .lesson-card {
+      background: rgba(24,24,31,0.30);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--r-lg);
+      padding: 22px 22px; cursor: pointer; transition: all .2s; text-decoration: none; display: block;
+      position: relative; overflow: hidden;
+    }
+    .lesson-card:hover {
+      border-color: rgba(139,108,245,.3); background: rgba(31,31,41,0.65);
+      transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,0,0,.4);
+    }
+    .lesson-card.done { border-color: rgba(78,202,122,.15); }
+    .lesson-card.done::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--success); border-radius: 3px 0 0 3px;
+    }
+    .lesson-num {
+      font-family: var(--display); font-size: 60px; font-weight: 300;
+      color: var(--surf-4); line-height: 1; letter-spacing: -.04em; user-select: none;
+    }
+    .lesson-card:hover .lesson-num { color: var(--border-light); }
+    .lesson-card.done  .lesson-num { color: rgba(78,202,122,.12); }
+    .lesson-title    { font-family: var(--display); font-size: 16px; font-weight: 600; color: var(--text-1); line-height: 1.3; letter-spacing: -.01em; margin-top: 4px; }
+    .lesson-subtitle { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+    .lesson-meta     { display: flex; align-items: center; gap: 7px; margin-top: 14px; flex-wrap: wrap; }
+    .lesson-sections { font-size: 12px; color: var(--text-3); font-weight: 500; }
+    .lesson-arrow    { margin-left: auto; color: var(--text-3); transition: transform .15s, color .15s; }
+    .lesson-card:hover .lesson-arrow { transform: translateX(3px); color: var(--purple); }
+
+    /* ─────────────────────────────────────────
+       LESSON CONTENT
+    ───────────────────────────────────────── */
+
+    .lesson-intro {
+      font-size: 14px; color: var(--text-2); line-height: 1.8;
+      padding: 16px 18px;
+      background: rgba(31,31,41,0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--r-md);
+      border-left: 3px solid var(--purple-dim);
+    }
+
+    .content-section-label {
+      font-family: var(--display); font-size: 10px; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--text-3);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 10px;
+    }
+    .content-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* Phrase rows */
+    .phrase-list { display: flex; flex-direction: column; }
+    .phrase-row {
+      display: grid; grid-template-columns: 1fr auto; gap: 16px;
+      align-items: start; padding: 16px 0; border-bottom: 1px solid var(--border);
+    }
+    .phrase-row:last-child { border-bottom: none; }
+    .phrase-indo {
+      font-family: var(--display); font-size: 19px; font-weight: 600;
+      color: var(--text-1); line-height: 1.3; letter-spacing: -.01em;
+    }
+    .phrase-phonetic { font-size: 11px; color: var(--text-3); margin-top: 4px; letter-spacing: .04em; font-family: 'Courier New', monospace; }
+    .phrase-dutch    { font-size: 14px; color: var(--text-2); font-weight: 500; padding-top: 3px; white-space: nowrap; }
+
+    /* Sentence rows */
+    .sentence-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+      align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .sentence-row:last-child { border-bottom: none; }
+    .sentence-indo { font-family: var(--display); font-size: 16px; font-weight: 600; color: var(--text-1); letter-spacing: -.01em; }
+    .sentence-dutch { font-size: 14px; color: var(--text-2); }
+
+    /* Spelling chips */
+    .spelling-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 10px; }
+    .spelling-chip { background: rgba(31,31,41,0.30); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--r-md); padding: 14px 15px; }
+    .spelling-rule    { font-family: var(--display); font-size: 14px; font-weight: 700; color: var(--text-1); letter-spacing: .01em; }
+    .spelling-example { font-family: var(--display); font-size: 14px; font-weight: 700; color: var(--text-1); margin-top: 5px; }
+    .spelling-meaning { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+
+    /* Grammar */
+    .grammar-category { margin-bottom: 28px; }
+    .grammar-category:last-child { margin-bottom: 0; }
+    .grammar-title {
+      font-family: var(--display); font-size: 12px; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase; color: var(--text-2);
+      margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .grammar-rules { display: flex; flex-direction: column; gap: 8px; }
+    .grammar-rule {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--text-2); line-height: 1.65;
+    }
+    .grammar-rule::before {
+      content: ''; width: 4px; height: 4px; border-radius: 50%;
+      background: var(--purple-dim); flex-shrink: 0; margin-top: 9px;
+    }
+
+    /* Dialogue */
+    .dialogue-setup {
+      font-size: 13px; color: var(--text-3); font-style: italic;
+      margin-bottom: 24px; padding: 10px 14px;
+      border-left: 2px solid var(--border-light); line-height: 1.7;
+    }
+    .dialogue-lines { display: flex; flex-direction: column; gap: 20px; }
+    .dialogue-line { display: flex; align-items: flex-start; gap: 14px; }
+    .dialogue-speaker {
+      font-family: var(--display); font-size: 10px; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 6px;
+      padding: 4px 10px; white-space: nowrap; flex-shrink: 0; margin-top: 3px;
+    }
+    .dialogue-text { font-family: var(--display); font-size: 18px; font-weight: 500; color: var(--text-1); line-height: 1.4; letter-spacing: -.01em; }
+    .dialogue-translation { font-size: 13px; color: var(--text-3); margin-top: 5px; }
+
+    /* Lesson nav */
+    .lesson-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 24px; border-top: 1px solid var(--border);
+    }
+
+    /* Audio player */
+    .audio-player {
+      background: rgba(24,24,31,0.30);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.06); border-radius: var(--r-lg);
+      padding: 14px 18px; display: flex; align-items: center; gap: 14px;
+    }
+    .audio-play-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0; color: #fff;
+    }
+    .audio-title    { font-family: var(--display); font-size: 13px; font-weight: 700; color: var(--text-1); }
+    .audio-progress { height: 3px; background: var(--surf-4); border-radius: 2px; margin-top: 8px; cursor: pointer; }
+    .audio-progress-fill { width: 30%; height: 100%; background: var(--purple); border-radius: 2px; }
+    .audio-time     { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+
+    /* ─────────────────────────────────────────
+       FLASHCARD REVIEW
+    ───────────────────────────────────────── */
+    .review-card {
+      background: rgba(24,24,31,0.30);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.07); border-radius: var(--r-xl);
+      padding: 52px 44px; text-align: center; min-height: 260px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .review-card-set {
+      position: absolute; top: 20px; left: 24px;
+      font-family: var(--display); font-size: 10px; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase; color: var(--text-3);
+    }
+    .review-front { font-family: var(--display); font-size: 44px; font-weight: 500; color: var(--text-1); line-height: 1.1; letter-spacing: -.02em; }
+    .review-divider { width: 32px; height: 1px; background: var(--border-light); margin: 22px auto; }
+    .review-back  { font-family: var(--display); font-size: 24px; font-weight: 400; color: var(--text-2); letter-spacing: -.01em; }
+
+    .rating-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .rating-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      padding: 14px 10px; border-radius: var(--r-lg); border: 1px solid;
+      cursor: pointer; font-family: var(--display); font-size: 14px; font-weight: 800;
+      transition: all .15s;
+    }
+    .rating-btn .interval { font-family: var(--sans); font-size: 11px; font-weight: 400; opacity: .65; }
+    .rb-again { background: var(--danger-subtle);  color: var(--danger);  border-color: rgba(240,105,105,.2); }
+    .rb-again:hover { background: rgba(240,105,105,.16); }
+    .rb-hard  { background: var(--warning-subtle); color: var(--warning); border-color: rgba(240,169,64,.2);  }
+    .rb-hard:hover { background: rgba(240,169,64,.16); }
+    .rb-good  { background: var(--teal-subtle);    color: var(--teal);    border-color: rgba(62,207,191,.2);  }
+    .rb-good:hover { background: rgba(62,207,191,.16); }
+    .rb-easy  { background: var(--success-subtle); color: var(--success); border-color: rgba(78,202,122,.2);  }
+    .rb-easy:hover { background: rgba(78,202,122,.16); }
+
+    /* ─────────────────────────────────────────
+       LEADERBOARD
+    ───────────────────────────────────────── */
+    .lb-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 16px; border-radius: var(--r-md); transition: background .15s;
+    }
+    .lb-row:hover { background: var(--surf-3); }
+    .lb-row.top { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+    .lb-rank  { font-family: var(--display); font-size: 20px; font-weight: 900; color: var(--text-3); width: 28px; text-align: right; flex-shrink: 0; letter-spacing: -.02em; }
+    .lb-row.top .lb-rank { color: var(--text-1); }
+    .lb-name  { font-family: var(--display); font-size: 14px; font-weight: 700; color: var(--text-1); flex: 1; }
+    .lb-score { font-family: var(--display); font-size: 18px; font-weight: 500; color: var(--text-2); letter-spacing: -.01em; }
+    .lb-row.top .lb-score { color: var(--text-1); }
+
+    /* Tab underline nav */
+    .tab-nav { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+    .tab-btn {
+      background: transparent; border: none; border-bottom: 2px solid transparent;
+      color: var(--text-2); font-family: var(--display); font-size: 13px; font-weight: 700;
+      padding: 8px 14px 10px; cursor: pointer; transition: all .15s; margin-bottom: -1px;
+    }
+    .tab-btn:hover { color: var(--text-1); }
+    .tab-btn.active { color: #fff; border-bottom-color: rgba(255,255,255,0.6); }
+
+  </style>
+</head>
+<body>
+
+
+<!-- Global sidebar controls (single instance, works across all pages) -->
+<div id="sb-backdrop" onclick="closeSidebar()"></div>
+<button id="hamburger" onclick="openSidebar()" title="Open menu">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- Global profile menu (positioned via JS) -->
+<div id="profile-menu" class="profile-menu">
+  <div class="profile-menu-header">
+    <div class="user-avatar" style="width:36px;height:36px;font-size:15px;">A</div>
+    <div>
+      <div class="profile-menu-fullname">Albert Duin</div>
+      <div class="profile-menu-email">albert@duin.home</div>
+    </div>
+  </div>
+
+  <div class="profile-menu-row">
+    <span class="profile-menu-label">Language</span>
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLang('NL', this)">NL</button>
+      <button class="lang-btn" onclick="setLang('EN', this)">EN</button>
+    </div>
+  </div>
+
+  <div class="profile-menu-divider"></div>
+
+  <div class="profile-menu-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Profile settings
+  </div>
+  <div class="profile-menu-item danger">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    Sign out
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SHARED SIDEBAR SNIPPET (macro)
+     Inlined per page for static HTML
+═══════════════════════════════ -->
+
+<!-- ─── DASHBOARD ─── -->
+<div class="page active" id="pg-dashboard">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">BI</div>
+        <div><div class="logo-name">Bahasa Indonesia</div><div class="logo-sub">Language Course</div></div>
+        <button class="sidebar-pin-btn" onclick="togglePin()" title="Lock sidebar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-item active" data-goto="pg-dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" data-goto="pg-lessons">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Lessons
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+        Podcasts
+      </div>
+      <div class="nav-item" data-goto="pg-review">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Flashcards
+        <span class="nav-badge">12</span>
+      </div>
+      <div class="nav-item" data-goto="pg-leaderboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+        Leaderboard
+      </div>
+    </div>
+    <div class="sidebar-user">
+      <div class="profile-trigger" onclick="toggleProfileMenu(event)">
+        <div class="user-avatar">A</div>
+        <div><div class="user-name">Albert</div><div class="user-meta">A1 · Beginner</div></div>
+      </div>
+      <button class="sidebar-theme-btn" title="Toggle theme" onclick="toggleTheme()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="scroll-area">
+      <div class="content-wrap">
+
+        <div>
+          <div class="display">Selamat pagi,<br>Albert.</div>
+          <div class="flex items-center gap-8 mt-12">
+            <span class="badge badge-purple">A1 · Beginner</span>
+            <span class="body-sm">Bahasa Indonesia</span>
+          </div>
+        </div>
+
+        <div class="stat-grid mt-32">
+          <div class="stat-card purple">
+            <div class="stat-label">Lessons Done</div>
+            <div class="stat-value">3</div>
+            <div class="stat-sub">of 12 in module 1</div>
+          </div>
+          <div class="stat-card orange">
+            <div class="stat-label">Cards Due</div>
+            <div class="flex items-center gap-8"><div class="stat-value">12</div><span class="badge badge-orange" style="margin-top:10px">Now</span></div>
+            <div class="stat-sub">next due in 2 hours</div>
+          </div>
+          <div class="stat-card teal">
+            <div class="stat-label">Day Streak</div>
+            <div class="stat-value">7</div>
+            <div class="stat-sub">days in a row</div>
+          </div>
+        </div>
+
+        <div class="mt-40">
+          <div class="label mb-12">Continue where you left off</div>
+          <a class="continue-card" href="#">
+            <div class="continue-icon">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div class="continue-title">Les 1 — Di Pasar (Op de markt)</div>
+              <div class="continue-sub">Section 3 of 5 · Grammar</div>
+              <div class="continue-prog"><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:60%"></div></div></div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-3);flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+
+        <div class="mt-40">
+          <div class="label mb-12">Quick Actions</div>
+          <div class="flex gap-10" style="flex-wrap:wrap;">
+            <button class="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              Continue Learning
+            </button>
+            <button class="btn btn-outline">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              Review Cards
+              <span class="badge badge-orange" style="margin-left:2px;">12</span>
+            </button>
+            <button class="btn btn-ghost">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+              Browse Podcasts
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── LESSONS LIST ─── -->
+<div class="page" id="pg-lessons">
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-mark"><div class="logo-icon">BI</div><div><div class="logo-name">Bahasa Indonesia</div><div class="logo-sub">Language Course</div></div></div></div>
+    <div class="sidebar-nav">
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</div>
+      <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Lessons</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>Podcasts</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Flashcards<span class="nav-badge">12</span></div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>Leaderboard</div>
+    </div>
+    <div class="sidebar-user"><div class="user-avatar">A</div><div><div class="user-name">Albert</div><div class="user-meta">A1 · Beginner</div></div><button class="sidebar-theme-btn" title="Toggle theme" onclick="toggleTheme()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div>
+  </nav>
+  <div class="main">
+    <div class="scroll-area">
+      <div class="content-wrap">
+        <div class="flex items-center justify-between mb-28">
+          <div>
+            <div class="display-sm">Pelajaran</div>
+            <div class="body-sm mt-6">Module 1 · A1 Beginner · 12 lessons</div>
+          </div>
+          <span class="badge badge-green">3 Completed</span>
+        </div>
+        <div class="lesson-grid">
+          <a class="lesson-card done" href="#" onclick="goTo('pg-lesson-text');return false;">
+            <div class="lesson-num">01</div>
+            <div class="lesson-title">Di Pasar</div>
+            <div class="lesson-subtitle">Op de markt</div>
+            <div class="lesson-meta">
+              <span class="badge badge-purple">A1</span>
+              <span class="badge badge-green">Completed</span>
+              <span class="lesson-sections">5 sections</span>
+              <span class="lesson-arrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span>
+            </div>
+          </a>
+          <a class="lesson-card" href="#">
+            <div class="lesson-num">02</div>
+            <div class="lesson-title">Di Rumah</div>
+            <div class="lesson-subtitle">Thuis</div>
+            <div class="lesson-meta">
+              <span class="badge badge-purple">A1</span>
+              <span class="badge badge-orange">In Progress</span>
+              <span class="lesson-sections">4 sections</span>
+              <span class="lesson-arrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span>
+            </div>
+          </a>
+          <a class="lesson-card done" href="#">
+            <div class="lesson-num">03</div>
+            <div class="lesson-title">Keluarga</div>
+            <div class="lesson-subtitle">Familie</div>
+            <div class="lesson-meta">
+              <span class="badge badge-purple">A1</span>
+              <span class="badge badge-green">Completed</span>
+              <span class="lesson-sections">6 sections</span>
+              <span class="lesson-arrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span>
+            </div>
+          </a>
+          <a class="lesson-card" href="#">
+            <div class="lesson-num">04</div>
+            <div class="lesson-title">Makanan dan Minuman</div>
+            <div class="lesson-subtitle">Eten en drinken</div>
+            <div class="lesson-meta">
+              <span class="badge badge-purple">A1</span>
+              <span class="lesson-sections">5 sections</span>
+              <span class="lesson-arrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── LESSON · PRONUNCIATION ─── -->
+<div class="page" id="pg-lesson-text">
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-mark"><div class="logo-icon">BI</div><div><div class="logo-name">Bahasa Indonesia</div><div class="logo-sub">Language Course</div></div></div></div>
+    <div class="sidebar-nav">
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</div>
+      <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Lessons</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/></svg>Podcasts</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/></svg>Flashcards</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>Leaderboard</div>
+    </div>
+    <div class="sidebar-user"><div class="user-avatar">A</div><div><div class="user-name">Albert</div><div class="user-meta">A1 · Beginner</div></div><button class="sidebar-theme-btn" title="Toggle theme" onclick="toggleTheme()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div>
+  </nav>
+  <div class="main">
+    <div class="scroll-area">
+      <div class="content-wrap">
+
+        <!-- Back + progress — inline, no bar -->
+        <div class="lesson-subnav">
+          <button class="btn btn-ghost btn-sm" style="padding-left:2px; color:var(--text-3);" onclick="goTo('pg-lessons')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Les 1 — Di Pasar
+          </button>
+          <div class="flex items-center gap-10">
+            <div class="progress-dots">
+              <div class="dot done"></div>
+              <div class="dot curr"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+            <span class="caption">2 of 5</span>
+          </div>
+        </div>
+
+        <div class="audio-player mb-28">
+          <button class="audio-play-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </button>
+          <div style="flex:1;">
+            <div class="audio-title">Les 1 — Di Pasar (Op de markt)</div>
+            <div class="audio-progress"><div class="audio-progress-fill"></div></div>
+            <div class="audio-time">2:18 / 13:00</div>
+          </div>
+        </div>
+
+        <div class="mb-24">
+          <div class="label mb-8">Section 2</div>
+          <div class="display-sm">Uitspraak</div>
+          <div class="body-sm c-muted mt-4">Pronunciation</div>
+        </div>
+
+        <div class="lesson-intro mb-32">
+          De Indonesische woorden kan men in het begin het best rustig en zonder klemtoon uitspreken.
+          Van belang bij de uitspraak is een gelijkmatig ritme — de woorden zijn over het algemeen niet lang.
+        </div>
+
+        <div class="content-section-label">Pronunciation examples</div>
+        <div class="card">
+          <div class="phrase-list" style="padding:0 22px;">
+            <div class="phrase-row">
+              <div><div class="phrase-indo">Selamat datang</div><div class="phrase-phonetic">se-la-mat da-tang</div></div>
+              <div class="phrase-dutch">Welkom</div>
+            </div>
+            <div class="phrase-row">
+              <div><div class="phrase-indo">Apa kabar?</div><div class="phrase-phonetic">a-pa ka-bar</div></div>
+              <div class="phrase-dutch">Hoe is het ermee?</div>
+            </div>
+            <div class="phrase-row">
+              <div><div class="phrase-indo">Baik, terima kasih</div><div class="phrase-phonetic">ba-ik, te-ri-ma ka-sih</div></div>
+              <div class="phrase-dutch">Goed, dank u wel</div>
+            </div>
+            <div class="phrase-row">
+              <div><div class="phrase-indo">Bapak ke Bandung?</div><div class="phrase-phonetic">ba-pak ke ban-dung</div></div>
+              <div class="phrase-dutch">Gaat u naar Bandung?</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-section-label mt-32">Spelling rules</div>
+        <div class="spelling-grid">
+          <div class="spelling-chip"><div class="spelling-rule">c = tj</div><div class="spelling-example">cukup</div><div class="spelling-meaning">voldoende</div></div>
+          <div class="spelling-chip"><div class="spelling-rule">j = dj</div><div class="spelling-example">Jakarta</div><div class="spelling-meaning">Jakarta</div></div>
+          <div class="spelling-chip"><div class="spelling-rule">u = oe</div><div class="spelling-example">Ibu</div><div class="spelling-meaning">mevrouw</div></div>
+          <div class="spelling-chip"><div class="spelling-rule">y = j</div><div class="spelling-example">Surabaya</div><div class="spelling-meaning">Surabaya</div></div>
+          <div class="spelling-chip"><div class="spelling-rule">ny = nj</div><div class="spelling-example">nyonya</div><div class="spelling-meaning">mevrouw</div></div>
+          <div class="spelling-chip"><div class="spelling-rule">kh = ch</div><div class="spelling-example">akhir</div><div class="spelling-meaning">einde</div></div>
+        </div>
+
+        <div class="content-section-label mt-32">Simple sentences</div>
+        <div class="card">
+          <div style="padding:0 22px;">
+            <div class="sentence-row"><div class="sentence-indo">Saya ke pasar</div><div class="sentence-dutch">Ik ga naar de markt</div></div>
+            <div class="sentence-row"><div class="sentence-indo">Saya beli buah</div><div class="sentence-dutch">Ik koop een vrucht</div></div>
+            <div class="sentence-row"><div class="sentence-indo">Bapak beli buah-buahan</div><div class="sentence-dutch">Meneer koopt fruit</div></div>
+            <div class="sentence-row"><div class="sentence-indo">Bapak dan Ibu beli nanas</div><div class="sentence-dutch">Meneer en mevrouw kopen een ananas</div></div>
+            <div class="sentence-row"><div class="sentence-indo">Saya mau beli rumah besar</div><div class="sentence-dutch">Ik wil een groot huis kopen</div></div>
+          </div>
+        </div>
+
+        <div class="lesson-nav mt-32">
+          <button class="btn btn-ghost">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Previous
+          </button>
+          <button class="btn btn-primary btn-lg">
+            Next Section
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── LESSON · GRAMMAR ─── -->
+<div class="page" id="pg-lesson-grammar">
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-mark"><div class="logo-icon">BI</div><div><div class="logo-name">Bahasa Indonesia</div><div class="logo-sub">Language Course</div></div></div></div>
+    <div class="sidebar-nav">
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</div>
+      <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Lessons</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/></svg>Podcasts</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/></svg>Flashcards</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>Leaderboard</div>
+    </div>
+    <div class="sidebar-user"><div class="user-avatar">A</div><div><div class="user-name">Albert</div><div class="user-meta">A1 · Beginner</div></div><button class="sidebar-theme-btn" title="Toggle theme" onclick="toggleTheme()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div>
+  </nav>
+  <div class="main">
+    <div class="scroll-area">
+      <div class="content-wrap">
+        <div class="lesson-subnav">
+          <button class="btn btn-ghost btn-sm" style="padding-left:2px;color:var(--text-3);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Les 1 — Di Pasar</button>
+          <div class="flex items-center gap-10"><div class="progress-dots"><div class="dot curr"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="caption">1 of 5</span></div>
+        </div>
+        <div class="mb-24">
+          <div class="label mb-8">Section 1</div>
+          <div class="display-sm">Grammatica</div>
+          <div class="body-sm c-muted mt-4">Grammar</div>
+        </div>
+        <div class="lesson-intro mb-32">
+          In de voorgaande Indonesische zinnen zijn enkele bijzonderheden op te merken.
+          Indonesisch heeft een relatief eenvoudige grammatica — geen werkwoordvervoegingen, geen grammaticaal geslacht.
+        </div>
+        <div class="card card-p-lg">
+          <div class="grammar-category">
+            <div class="grammar-title">Werkwoord · Verb</div>
+            <div class="grammar-rules">
+              <div class="grammar-rule">Zinnen zonder een werkwoord zijn heel gewoon.</div>
+              <div class="grammar-rule">Werkwoorden worden niet vervoegd naar enkel- of meervoud.</div>
+              <div class="grammar-rule">Werkwoorden worden niet vervoegd naar tegenwoordige of verleden tijd. Tenzij uit de context anders blijkt, vertaalt men in de tegenwoordige tijd.</div>
+            </div>
+          </div>
+          <div class="divider" style="margin:22px 0;"></div>
+          <div class="grammar-category">
+            <div class="grammar-title">Zelfstandig naamwoord · Noun</div>
+            <div class="grammar-rules">
+              <div class="grammar-rule">Er zijn geen lidwoorden (de / het / een).</div>
+              <div class="grammar-rule">Zelfstandige naamwoorden kennen geen geslacht.</div>
+              <div class="grammar-rule">Meervoud door herhaling: <span style="font-family:var(--display);font-weight:700;color:var(--text-1);">buah-buahan</span> (fruit).</div>
+            </div>
+          </div>
+          <div class="divider" style="margin:22px 0;"></div>
+          <div class="grammar-category">
+            <div class="grammar-title">Bijvoeglijk naamwoord · Adjective</div>
+            <div class="grammar-rules">
+              <div class="grammar-rule">Bijvoeglijke naamwoorden komen <em>na</em> het zelfstandig naamwoord: <span style="font-family:var(--display);font-weight:700;color:var(--text-1);">rumah besar</span> (groot huis).</div>
+              <div class="grammar-rule">Er is geen verbuiging naar geslacht of getal.</div>
+            </div>
+          </div>
+        </div>
+        <div class="lesson-nav mt-32">
+          <button class="btn btn-ghost" disabled style="opacity:.3;cursor:not-allowed;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Previous</button>
+          <button class="btn btn-primary btn-lg">Next Section<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── LESSON · DIALOGUE ─── -->
+<div class="page" id="pg-lesson-dialogue">
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-mark"><div class="logo-icon">BI</div><div><div class="logo-name">Bahasa Indonesia</div><div class="logo-sub">Language Course</div></div></div></div>
+    <div class="sidebar-nav">
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</div>
+      <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Lessons</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/></svg>Podcasts</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/></svg>Flashcards</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>Leaderboard</div>
+    </div>
+    <div class="sidebar-user"><div class="user-avatar">A</div><div><div class="user-name">Albert</div><div class="user-meta">A1 · Beginner</div></div><button class="sidebar-theme-btn" title="Toggle theme" onclick="toggleTheme()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div>
+  </nav>
+  <div class="main">
+    <div class="scroll-area">
+      <div class="content-wrap">
+        <div class="lesson-subnav">
+          <button class="btn btn-ghost btn-sm" style="padding-left:2px;color:var(--text-3);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Les 1 — Di Pasar</button>
+          <div class="flex items-center gap-10"><div class="progress-dots"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot curr"></div></div><span class="caption">5 of 5</span></div>
+        </div>
+        <div class="mb-24">
+          <div class="label mb-8">Section 5</div>
+          <div class="display-sm">Dialoog</div>
+          <div class="body-sm c-muted mt-4">Dialogue — Di Pasar (At the market)</div>
+        </div>
+        <div class="card card-p-lg">
+          <div class="dialogue-setup">
+            Bapak Santoso ontmoet mevrouw Dewi op de markt in Bandung.<br>
+            <em>Mr. Santoso meets Mrs. Dewi at the market in Bandung.</em>
+          </div>
+          <div class="dialogue-lines">
+            <div class="dialogue-line">
+              <div class="dialogue-speaker">Santoso</div>
+              <div><div class="dialogue-text">Selamat pagi, Bu Dewi. Apa kabar?</div><div class="dialogue-translation">Good morning, Mrs. Dewi. How are you?</div></div>
+            </div>
+            <div class="dialogue-line">
+              <div class="dialogue-speaker">Dewi</div>
+              <div><div class="dialogue-text">Baik, terima kasih. Bapak ke pasar?</div><div class="dialogue-translation">Fine, thank you. Going to the market, Mr. Santoso?</div></div>
+            </div>
+            <div class="dialogue-line">
+              <div class="dialogue-speaker">Santoso</div>
+              <div><div class="dialogue-text">Ya, saya mau beli buah-buahan. Nanas dan mangga.</div><div class="dialogue-translation">Yes, I want to buy fruit. Pineapple and mango.</div></div>
+            </div>
+            <div class="dialogue-line">
+              <div class="dialogue-speaker">Dewi</div>
+              <div><div class="dialogue-text">Oh, saya juga beli buah. Ibu ada di sana.</div><div class="dialogue-translation">Oh, I'm also buying fruit. Mother is over there.</div></div>
+            </div>
+            <div class="dialogue-line">
+              <div class="dialogue-speaker">Santoso</div>
+              <div><div class="dialogue-text">Terima kasih, Bu Dewi. Sampai nanti!</div><div class="dialogue-translation">Thank you, Mrs. Dewi. See you later!</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="lesson-nav mt-32">
+          <button class="btn btn-ghost"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Previous</button>
+          <button class="btn btn-lg" style="background:var(--success);color:#0b0b10;border-color:var(--success);font-family:var(--display);font-weight:800;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Finish Lesson
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── FLASHCARD REVIEW ─── -->
+<div class="page" id="pg-review">
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-mark"><div class="logo-icon">BI</div><div><div class="logo-name">Bahasa Indonesia</div><div class="logo-sub">Language Course</div></div></div></div>
+    <div class="sidebar-nav">
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Lessons</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/></svg>Podcasts</div>
+      <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Flashcards</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>Leaderboard</div>
+    </div>
+    <div class="sidebar-user"><div class="user-avatar">A</div><div><div class="user-name">Albert</div><div class="user-meta">A1 · Beginner</div></div><button class="sidebar-theme-btn" title="Toggle theme" onclick="toggleTheme()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div>
+  </nav>
+  <div class="main">
+    <div class="scroll-area">
+      <div style="max-width:520px;margin:0 auto;padding:0 8px;">
+
+        <div class="flex justify-between items-center mb-8 mt-4">
+          <span class="label">Review Session</span>
+          <span class="caption c-muted">5 of 12</span>
+        </div>
+        <div class="progress-bar-wrap mb-28"><div class="progress-bar-fill" style="width:41.6%"></div></div>
+
+        <!-- Answer revealed -->
+        <div class="review-card">
+          <div class="review-card-set">Basic Phrases · Lesson 1</div>
+          <div class="review-front">Selamat datang</div>
+          <div class="review-divider"></div>
+          <div class="review-back">Welkom</div>
+        </div>
+
+        <div class="mt-20 mb-16 text-center"><span class="label">How well did you know this?</span></div>
+
+        <div class="rating-grid">
+          <button class="rating-btn rb-again">Again<span class="interval">&lt; 1 min</span></button>
+          <button class="rating-btn rb-hard">Hard<span class="interval">6 min</span></button>
+          <button class="rating-btn rb-good">Good<span class="interval">1 day</span></button>
+          <button class="rating-btn rb-easy">Easy<span class="interval">4 days</span></button>
+        </div>
+
+        <!-- Before reveal -->
+        <div class="mt-40">
+          <div class="divider mb-32"></div>
+          <p class="caption text-center mb-20" style="display:block;">↑ Answer revealed &nbsp;·&nbsp; Before reveal ↓</p>
+          <div class="review-card" style="min-height:220px;">
+            <div class="review-card-set">Basic Phrases · Lesson 1</div>
+            <div class="review-front">Terima kasih</div>
+          </div>
+          <div class="mt-20 text-center">
+            <button class="btn btn-outline btn-lg">Show Answer</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── LEADERBOARD ─── -->
+<div class="page" id="pg-leaderboard">
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-mark"><div class="logo-icon">BI</div><div><div class="logo-name">Bahasa Indonesia</div><div class="logo-sub">Language Course</div></div></div></div>
+    <div class="sidebar-nav">
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Lessons</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/></svg>Podcasts</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/></svg>Flashcards</div>
+      <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>Leaderboard</div>
+    </div>
+    <div class="sidebar-user"><div class="user-avatar">A</div><div><div class="user-name">Albert</div><div class="user-meta">A1 · Beginner</div></div><button class="sidebar-theme-btn" title="Toggle theme" onclick="toggleTheme()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div>
+  </nav>
+  <div class="main">
+    <div class="scroll-area">
+      <div class="content-wrap">
+        <div class="flex items-center justify-between mb-28">
+          <div>
+            <div class="display-sm">Rangking</div>
+            <div class="body-sm mt-6">This month's top learners</div>
+          </div>
+        </div>
+        <div class="tab-nav">
+          <button class="tab-btn active">Time Spent</button>
+          <button class="tab-btn">Lessons</button>
+          <button class="tab-btn">Words Learned</button>
+          <button class="tab-btn">Days Active</button>
+        </div>
+        <div class="card" style="padding:8px 0;">
+          <div class="lb-row top">
+            <div class="lb-rank">1</div>
+            <div class="user-avatar" style="width:28px;height:28px;font-size:11px;">S</div>
+            <div class="lb-name">Sandra</div>
+            <div class="lb-score">14h 32m</div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank">2</div>
+            <div class="user-avatar" style="width:28px;height:28px;font-size:11px;">A</div>
+            <div class="lb-name">Albert <span style="font-size:11px;color:var(--text-3);">(you)</span></div>
+            <div class="lb-score">11h 08m</div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank">3</div>
+            <div class="user-avatar" style="width:28px;height:28px;font-size:11px;">M</div>
+            <div class="lb-name">Marieke</div>
+            <div class="lb-score">8h 44m</div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank">4</div>
+            <div class="user-avatar" style="width:28px;height:28px;font-size:11px;">J</div>
+            <div class="lb-name">Jan</div>
+            <div class="lb-score">5h 15m</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const html = document.documentElement;
+
+  // ── Page navigation ──
+  function goTo(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    // Close sidebar if not locked when navigating
+    if (!html.classList.contains('sb-locked')) closeSidebar();
+  }
+  document.querySelectorAll('.nav-item[data-goto]').forEach(item => {
+    item.style.cursor = 'pointer';
+    item.addEventListener('click', () => goTo(item.dataset.goto));
+  });
+
+  // ── Sidebar open / close / pin ──
+  // Start locked (sidebar always visible)
+  html.classList.add('sb-locked');
+  document.querySelectorAll('.sidebar-pin-btn').forEach(btn => btn.title = 'Unlock sidebar');
+
+  function openSidebar() {
+    html.classList.add('sb-open');
+  }
+  function closeSidebar() {
+    html.classList.remove('sb-open');
+  }
+  function togglePin() {
+    const locked = html.classList.toggle('sb-locked');
+    if (locked) html.classList.remove('sb-open');
+    document.querySelectorAll('.sidebar-pin-btn').forEach(btn => {
+      btn.title = locked ? 'Unlock sidebar' : 'Lock sidebar';
+    });
+  }
+  // Close on Escape
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+  // ── Theme toggle ──
+  const moonIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+  const sunIcon  = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+
+  // Profile menu
+  const profileMenu = document.getElementById('profile-menu');
+
+  function toggleProfileMenu(e) {
+    e.stopPropagation();
+    const trigger = e.currentTarget.closest('.sidebar-user');
+    const rect = trigger.getBoundingClientRect();
+    profileMenu.style.left  = rect.left + 'px';
+    profileMenu.style.width = rect.width + 'px';
+    profileMenu.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+    profileMenu.style.top = 'auto';
+    profileMenu.classList.toggle('open');
+  }
+
+  document.addEventListener('click', () => profileMenu.classList.remove('open'));
+  profileMenu.addEventListener('click', e => e.stopPropagation());
+
+  // Language switcher
+  function setLang(lang) {
+    profileMenu.querySelectorAll('.lang-btn').forEach(b => {
+      b.classList.toggle('active', b.textContent.trim() === lang);
+    });
+  }
+
+  function toggleTheme() {
+    const isLight = html.classList.toggle('light-theme');
+    document.querySelectorAll('.sidebar-theme-btn').forEach(btn => {
+      btn.innerHTML = isLight ? moonIcon : sunIcon;
+    });
+  }
+</script>
+</body>
+</html>

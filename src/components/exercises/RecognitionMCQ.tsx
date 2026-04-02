@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Box, Button, Stack, Text, Badge, Group } from '@mantine/core'
 import type { ExerciseItem } from '@/types/learning'
+import { translations } from '@/lib/i18n'
 import classes from './RecognitionMCQ.module.css'
 
 interface RecognitionMCQProps {
@@ -10,6 +11,7 @@ interface RecognitionMCQProps {
 }
 
 export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: RecognitionMCQProps) {
+  const t = translations[userLanguage]
   const { learningItem, meanings, contexts, distractors } = exerciseItem
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
@@ -34,11 +36,12 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
 
     const isCorrect = option === correctAnswer
 
-    // Brief pause before calling onAnswer
+    // Brief pause to let user see correct/incorrect feedback
+    const FEEDBACK_DELAY_MS = 1500
     setTimeout(() => {
-      const latencyMs = Date.now() - startTime
+      const latencyMs = Date.now() - startTime - FEEDBACK_DELAY_MS
       onAnswer(isCorrect, latencyMs)
-    }, 1500)
+    }, FEEDBACK_DELAY_MS)
   }
 
   const isCorrect = selectedOption === correctAnswer
@@ -48,7 +51,7 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
       <Stack gap="xl">
         {/* Word to recognize */}
         <Box className={classes.wordSection}>
-          <Text size="sm" c="dimmed" mb="xs">What does this word mean?</Text>
+          <Text size="sm" c="dimmed" mb="xs">{t.session.recognition.question}</Text>
           <Box className={classes.word}>{learningItem.base_text}</Box>
         </Box>
 
@@ -81,21 +84,28 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
           })}
         </Stack>
 
-        {/* Feedback section */}
-        {isAnswered && (
+        {/* Correct badge - underneath options */}
+        {isAnswered && isCorrect && (
+          <Box style={{ textAlign: 'center', marginTop: '32px' }}>
+            <Badge color="green" size="xl" style={{ fontSize: '16px', padding: '12px 20px' }}>
+              ✓ Correct
+            </Badge>
+          </Box>
+        )}
+
+        {/* Feedback section - only for wrong answers */}
+        {isAnswered && !isCorrect && (
           <Box className={classes.feedback}>
             <Group mb="md">
-              <Badge color={isCorrect ? 'green' : 'red'} size="lg">
-                {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+              <Badge color="red" size="lg">
+                ✗ Incorrect
               </Badge>
             </Group>
 
-            {!isCorrect && (
-              <Box mb="md">
-                <Text size="sm" c="dimmed">The correct answer:</Text>
-                <Text fw={600} size="lg">{correctAnswer}</Text>
-              </Box>
-            )}
+            <Box mb="md">
+              <Text size="sm" c="dimmed">The correct answer:</Text>
+              <Text fw={600} size="lg">{correctAnswer}</Text>
+            </Box>
 
             {anchorContext && (
               <Box className={classes.context}>

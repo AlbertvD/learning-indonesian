@@ -1,100 +1,15 @@
-.container {
-  padding: var(--mantine-spacing-lg);
-  width: 100%;
-}
-
-.sentenceSection {
-  padding: var(--mantine-spacing-lg);
-  background: var(--mantine-color-gray-0);
-  border-radius: var(--mantine-radius-md);
-  border: 2px solid var(--mantine-color-cyan-6);
-}
-
-.sentence {
-  font-size: 1.25rem;
-  line-height: 1.8;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.blank {
-  font-weight: 700;
-  color: var(--mantine-color-gray-5);
-  font-size: 1.75rem;
-  display: inline-block;
-  margin: 0 0.5rem;
-}
-
 .input {
-  font-size: 1.1rem;
+  transition: all 0.2s ease;
 }
 
-.input input {
-  padding: var(--mantine-spacing-md);
-  border: 2px solid var(--mantine-color-gray-3);
-  border-radius: var(--mantine-radius-md);
-  transition: border-color 150ms ease;
+.input:focus {
+  border-bottom-color: var(--mantine-color-cyan-6) !important;
 }
 
-.input input:focus {
-  border-color: var(--mantine-color-cyan-6);
-  outline: none;
+.correct {
+  border-bottom-color: var(--mantine-color-green-6) !important;
 }
 
-.input input:disabled {
-  background-color: var(--mantine-color-gray-1);
-  cursor: not-allowed;
-}
-
-.feedback {
-  padding: var(--mantine-spacing-md);
-  background: var(--mantine-color-blue-0);
-  border-left: 4px solid var(--mantine-color-blue-6);
-  border-radius: var(--mantine-radius-md);
-  margin-top: var(--mantine-spacing-md);
-}
-
-.correctAnswer {
-  color: var(--mantine-color-green-7);
-}
-
-.incorrectAnswer {
-  color: var(--mantine-color-red-7);
-}
-
-.sentenceCorrect {
-  padding: var(--mantine-spacing-md);
-  background: var(--mantine-color-green-0);
-  border-left: 3px solid var(--mantine-color-green-6);
-  border-radius: var(--mantine-radius-md);
-}
-
-.completeSentence {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  word-break: break-word;
-}
-
-@media (max-width: 768px) {
-  .container {
-    padding: var(--mantine-spacing-md);
-  }
-
-  .sentenceSection {
-    padding: var(--mantine-spacing-md);
-  }
-
-  .sentence {
-    font-size: 1.1rem;
-  }
-
-  .blank {
-    font-size: 1.5rem;
-  }
-
-  .input {
-    font-size: 1rem;
-  }
+.incorrect {
+  border-bottom-color: var(--mantine-color-red-6) !important;
 }

@@ -62,8 +62,8 @@
 
 .statCard {
   background: var(--card-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(var(--blur-panel));
+  -webkit-backdrop-filter: blur(var(--blur-panel));
   border: 1px solid var(--card-border);
   border-radius: 12px;
   padding: 16px;
@@ -129,8 +129,8 @@
 
 .continueCard {
   background: var(--card-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(var(--blur-card));
+  -webkit-backdrop-filter: blur(var(--blur-card));
   border: 1px solid var(--card-border);
   border-radius: 12px;
   padding: 18px 22px;
@@ -143,8 +143,8 @@
 }
 
 .continueCard:hover {
-  border-color: rgba(142,85,255,.3);
-  background: var(--bg-hover);
+  border-color: var(--card-hover-border);
+  background: var(--card-hover-bg);
 }
 
 .continueIcon {
@@ -251,12 +251,12 @@
 
 /* Light theme overrides */
 :global(html[data-mantine-color-scheme="light"]) .statCard {
-  background: var(--bg-surface);
+  background: rgba(0,153,184,0.07);
   border-color: var(--border);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .continueCard {
-  background: var(--bg-surface);
+  background: rgba(0,153,184,0.07);
   border-color: var(--border);
 }
 
@@ -280,11 +280,11 @@
 :global(html[data-mantine-color-scheme="light"]) .btnOutline {
   color: var(--accent-primary);
   border-color: var(--border);
-  background: rgba(142,85,255,0.05);
+  background: var(--purple-subtle);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .btnOutline:hover {
-  background: rgba(142,85,255,0.10);
+  background: var(--bg-hover);
   border-color: var(--accent-primary);
 }
 
@@ -293,14 +293,14 @@
 }
 
 :global(html[data-mantine-color-scheme="light"]) .btnGhost:hover {
-  background: rgba(142,85,255,0.07);
+  background: var(--purple-subtle);
   color: var(--accent-primary);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .badgePurple {
-  background: rgba(142,85,255,0.10);
+  background: var(--purple-subtle);
   color: var(--accent-primary);
-  border-color: rgba(142,85,255,0.2);
+  border-color: var(--card-border);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .statLabel {
@@ -324,39 +324,39 @@
 }
 
 :global(html[data-mantine-color-scheme="light"]) .progressBarWrap {
-  background: rgba(142,85,255,0.12);
+  background: var(--purple-subtle);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .progressBarFill {
   background: var(--accent-primary);
 }
 
-/* New V2 dashboard styles */
+/* V2 dashboard styles - using centralized card system via global CSS variables */
 
 .metricCard {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
+  background: var(--card-bg) !important;
+  border: 1px solid var(--card-border) !important;
 }
 
 :global(html[data-mantine-color-scheme="light"]) .metricCard {
-  background: var(--bg-surface);
-  border-color: var(--border);
+  background: var(--card-bg) !important;
+  border-color: var(--card-border) !important;
 }
 
 .heroCard {
-  background: linear-gradient(135deg, rgba(142, 85, 255, 0.1), rgba(100, 200, 255, 0.05));
-  border: 1px solid rgba(142, 85, 255, 0.2);
+  background: linear-gradient(135deg, rgba(142, 85, 255, 0.1), rgba(100, 200, 255, 0.05)) !important;
+  border: 1px solid var(--card-border) !important;
 }
 
 :global(html[data-mantine-color-scheme="light"]) .heroCard {
-  background: linear-gradient(135deg, rgba(142, 85, 255, 0.08), rgba(100, 200, 255, 0.04));
-  border-color: rgba(142, 85, 255, 0.2);
+  background: linear-gradient(135deg, rgba(142, 85, 255, 0.08), rgba(100, 200, 255, 0.04)) !important;
+  border-color: var(--card-border) !important;
 }
 
 .actionCard {
   display: block;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
+  background: var(--card-bg) !important;
+  border: 1px solid var(--card-border) !important;
   border-radius: var(--mantine-radius-md);
   padding: var(--mantine-spacing-md);
   cursor: pointer;
@@ -366,17 +366,17 @@
 }
 
 .actionCard:hover {
-  border-color: rgba(142, 85, 255, 0.3);
-  background: var(--bg-hover);
+  border-color: var(--card-hover-border) !important;
+  background: var(--card-hover-bg) !important;
   transform: translateY(-2px);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .actionCard {
-  background: var(--bg-surface);
-  border-color: var(--border);
+  background: var(--card-bg) !important;
+  border-color: var(--card-border) !important;
 }
 
 :global(html[data-mantine-color-scheme="light"]) .actionCard:hover {
-  background: var(--bg-hover);
-  border-color: var(--accent-primary);
+  background: var(--card-hover-bg) !important;
+  border-color: var(--card-hover-border) !important;
 }

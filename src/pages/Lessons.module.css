@@ -63,10 +63,8 @@
 
 .lessonCard {
   background: var(--card-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--card-border);
-  border-radius: 12px;
+  border-radius: var(--r-md);
   padding: 12px 16px;
   cursor: pointer;
   transition: all .2s;
@@ -76,18 +74,13 @@
   gap: 12px;
   position: relative;
   overflow: hidden;
-  height: 48px;
+  height: var(--card-compact-height);
 }
 
 .lessonCard:hover {
-  border-color: rgba(142,85,255,.3);
-  background: var(--bg-hover);
+  border-color: var(--card-hover-border);
+  background: var(--card-hover-bg);
   transform: translateY(-2px);
-  box-shadow: 0 8px 40px rgba(0,0,0,.4);
-}
-
-.lessonCard.done {
-  border-color: rgba(142,85,255,.15);
 }
 
 .progressBarWrapper {
@@ -182,18 +175,13 @@
 
 /* Light theme overrides */
 :global(html[data-mantine-color-scheme="light"]) .lessonCard {
-  background: var(--bg-surface);
-  border-color: var(--border);
+  background: var(--card-bg);
+  border-color: var(--card-border);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .lessonCard:hover {
-  background: var(--bg-hover);
-  border-color: var(--accent-primary);
-  box-shadow: 0 8px 40px rgba(142,85,255,0.12);
-}
-
-:global(html[data-mantine-color-scheme="light"]) .lessonCard.done {
-  border-color: rgba(142,85,255,.25);
+  background: var(--card-hover-bg);
+  border-color: var(--card-hover-border);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .lessonIcon {
@@ -213,9 +201,9 @@
 }
 
 :global(html[data-mantine-color-scheme="light"]) .badgePurple {
-  background: rgba(142,85,255,0.10);
+  background: var(--purple-subtle);
   color: var(--accent-primary);
-  border-color: rgba(142,85,255,0.2);
+  border-color: rgba(0,153,184,0.2);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .displaySm { color: var(--text-primary); }
@@ -233,7 +221,7 @@
 }
 
 :global(html[data-mantine-color-scheme="light"]) .progressBarBackground {
-  background: rgba(142,85,255,0.08);
+  background: var(--purple-subtle);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .progressBarFill {

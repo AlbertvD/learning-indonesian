@@ -6,7 +6,7 @@
 .wordSection {
   text-align: center;
   padding: var(--mantine-spacing-lg);
-  background: var(--mantine-color-gray-0);
+  background: var(--mantine-color-body);
   border-radius: var(--mantine-radius-md);
   border: 2px solid var(--mantine-color-cyan-6);
 }
@@ -14,7 +14,7 @@
 .word {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--mantine-color-cyan-7);
+  color: var(--mantine-color-cyan-4);
   letter-spacing: 0.05em;
 }
 
@@ -31,31 +31,31 @@
 
 .optionButton:not(:disabled):hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .correct {
-  background-color: var(--mantine-color-green-1) !important;
-  color: var(--mantine-color-green-9) !important;
+  background-color: var(--mantine-color-green-9) !important;
+  color: var(--mantine-color-green-1) !important;
   border-color: var(--mantine-color-green-5) !important;
 }
 
 .incorrect {
-  background-color: var(--mantine-color-red-1) !important;
-  color: var(--mantine-color-red-9) !important;
+  background-color: var(--mantine-color-red-9) !important;
+  color: var(--mantine-color-red-1) !important;
   border-color: var(--mantine-color-red-5) !important;
 }
 
 .showCorrect {
-  background-color: var(--mantine-color-green-1) !important;
-  color: var(--mantine-color-green-9) !important;
+  background-color: var(--mantine-color-green-9) !important;
+  color: var(--mantine-color-green-1) !important;
   border-color: var(--mantine-color-green-5) !important;
   opacity: 0.7;
 }
 
 .feedback {
   padding: var(--mantine-spacing-md);
-  background: var(--mantine-color-blue-0);
+  background: light-dark(var(--mantine-color-blue-0), var(--mantine-color-dark-6));
   border-left: 4px solid var(--mantine-color-blue-6);
   border-radius: var(--mantine-radius-md);
   margin-top: var(--mantine-spacing-md);
@@ -63,9 +63,9 @@
 
 .context {
   padding: var(--mantine-spacing-md);
-  background: var(--mantine-color-gray-0);
+  background: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
   border-radius: var(--mantine-radius-md);
-  border-left: 3px solid var(--mantine-color-gray-4);
+  border-left: 3px solid light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));
 }
 
 @media (max-width: 768px) {

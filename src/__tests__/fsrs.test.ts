@@ -30,8 +30,7 @@ describe('computeNextState', () => {
 
   it('increases stability on Good rating', () => {
     const first = computeNextState(null, Rating.Good)
-    const tenDaysAgo = new Date()
-    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10)
+    const tenDaysAgo = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
     const second = computeNextState(
       { stability: first.stability, difficulty: first.difficulty, lastReviewedAt: tenDaysAgo },
       Rating.Good

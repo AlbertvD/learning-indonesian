@@ -1,0 +1,18 @@
+#!/bin/sh
+echo "Running pre-commit checks..."
+
+echo "→ Type checking..."
+bun run tsc -b --noEmit
+if [ $? -ne 0 ]; then
+  echo "✗ TypeScript errors found. Fix them before committing."
+  exit 1
+fi
+
+echo "→ Linting..."
+bun run lint
+if [ $? -ne 0 ]; then
+  echo "✗ Lint errors found. Fix them before committing."
+  exit 1
+fi
+
+echo "✓ Pre-commit checks passed."

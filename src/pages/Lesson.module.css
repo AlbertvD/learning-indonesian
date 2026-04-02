@@ -47,10 +47,10 @@
 }
 
 .audioPlayer {
-  background: var(--card-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--card-border);
+  background: rgba(24,24,31,0.30);
+  backdrop-filter: blur(var(--blur-card));
+  -webkit-backdrop-filter: blur(var(--blur-card));
+  border: 1px solid rgba(255,255,255,0.06);
   border-radius: var(--r-lg);
   padding: 14px 18px;
   display: flex;
@@ -289,10 +289,10 @@
 }
 
 .spellingChip {
-  background: var(--card-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--card-border);
+  background: rgba(31,31,41,0.30);
+  backdrop-filter: blur(var(--blur-card));
+  -webkit-backdrop-filter: blur(var(--blur-card));
+  border: 1px solid rgba(255,255,255,0.06);
   border-radius: var(--r-md);
   padding: 14px 15px;
 }
@@ -562,7 +562,7 @@
 }
 
 .vocabItem:hover {
-  border-color: rgba(142, 85, 255, 0.2);
+  border-color: var(--card-hover-border);
 }
 
 /* Light theme overrides */
@@ -699,5 +699,5 @@
 }
 
 :global(html[data-mantine-color-scheme="light"]) .vocabItem:hover {
-  border-color: rgba(142, 85, 255, 0.3);
+  border-color: var(--card-hover-border);
 }

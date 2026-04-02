@@ -1,0 +1,115 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* Top bar */
+.topBar {
+  flex-shrink: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--bg-hover);
+  z-index: 10;
+}
+
+.title {
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -.01em;
+}
+
+/* Scrollable content */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 90px;
+}
+
+/* Bottom nav */
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: var(--bg-main);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid var(--bg-hover);
+  z-index: 200;
+  padding-top: 8px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  gap: 4px;
+}
+
+.navBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 0;
+  border-radius: var(--r-md);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color .15s;
+  height: 52px;
+}
+
+.navBtn:hover {
+  color: var(--text-primary);
+}
+
+.navActive {
+  color: var(--accent-primary);
+}
+
+.navBtnContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.navLabel {
+  font-family: var(--display);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  color: currentColor;
+  letter-spacing: 0.02em;
+}
+
+/* Light theme */
+.light .topBar {
+  background: var(--bg-surface);
+  border-bottom-color: var(--border);
+}
+
+.light .bottomNav {
+  background: var(--bg-surface);
+  border-top-color: var(--border);
+}
+
+.light .navBtn {
+  color: var(--text-secondary);
+}
+
+.light .navBtn:hover {
+  color: var(--text-primary);
+}
+
+.light .navActive {
+  color: var(--accent-primary);
+}

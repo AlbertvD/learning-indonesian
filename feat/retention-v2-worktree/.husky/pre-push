@@ -1,0 +1,11 @@
+#!/bin/sh
+echo "Running pre-push checks..."
+
+echo "→ Tests..."
+bun run test
+if [ $? -ne 0 ]; then
+  echo "✗ Tests failed. Fix them before pushing."
+  exit 1
+fi
+
+echo "✓ Pre-push checks passed."

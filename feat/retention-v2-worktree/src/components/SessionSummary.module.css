@@ -1,0 +1,10 @@
+.container {
+  text-align: center;
+  padding: var(--mantine-spacing-xl);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: var(--mantine-spacing-md);
+  }
+}

@@ -32,7 +32,12 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!loading && !user && !redirectedRef.current && !devBypass) {
       redirectedRef.current = true
-      window.location.href = `https://auth.duin.home/login?next=${encodeURIComponent(window.location.href)}`
+      if (import.meta.env.DEV) {
+        // In dev mode, redirect to local login page instead of auth.duin.home
+        window.location.href = '/login'
+      } else {
+        window.location.href = `https://auth.duin.home/login?next=${encodeURIComponent(window.location.href)}`
+      }
     }
   }, [user, loading, devBypass])
 

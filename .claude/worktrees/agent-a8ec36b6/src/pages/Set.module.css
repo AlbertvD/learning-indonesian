@@ -1,0 +1,239 @@
+.page {
+  padding: 22px 0 48px;
+}
+
+/* ── Header nav bar ─────────────────────────────────────── */
+.headerNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 12px;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color .15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.backBtn:hover {
+  color: var(--text-primary);
+}
+
+.headerCenter {
+  flex: 1;
+  min-width: 0;
+}
+
+.headerTitle {
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerDesc {
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.studyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 8px;
+  background: var(--accent-primary);
+  border: none;
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+
+.studyBtn:hover {
+  opacity: 0.88;
+}
+
+.studyBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.shareBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.12);
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.shareBtn:hover {
+  border-color: rgba(255,255,255,0.25);
+  color: var(--text-primary);
+}
+
+/* ── Visibility + card count row ────────────────────────── */
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 12px;
+}
+
+.cardCount {
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* ── Vocab list ─────────────────────────────────────────── */
+.vocabList {
+  display: flex;
+  flex-direction: column;
+}
+
+.vocabRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--bg-hover);
+}
+
+.vocabRow:last-child {
+  border-bottom: none;
+}
+
+.vocabIndo {
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.vocabDutch {
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.vocabEmpty {
+  color: var(--text-secondary);
+}
+
+.emptyState {
+  padding: 48px 0;
+  text-align: center;
+  color: var(--text-secondary);
+  font-family: var(--display);
+  font-size: 14px;
+  border: 1px dashed var(--bg-hover);
+  border-radius: 12px;
+}
+
+/* ── Add card button row ────────────────────────────────── */
+.addCardRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.12);
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.addBtn:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+/* ── Light theme ────────────────────────────────────────── */
+:global(html[data-mantine-color-scheme="light"]) .backBtn {
+  color: var(--text-secondary);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .shareBtn,
+:global(html[data-mantine-color-scheme="light"]) .addBtn {
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .shareBtn:hover,
+:global(html[data-mantine-color-scheme="light"]) .addBtn:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .vocabRow {
+  border-bottom-color: var(--border);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .vocabIndo {
+  color: var(--text-primary);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .vocabDutch {
+  color: var(--text-secondary);
+}

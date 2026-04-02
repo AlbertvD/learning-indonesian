@@ -13,8 +13,8 @@
   align-items: center;
   justify-content: center;
   background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(var(--blur-nav));
+  -webkit-backdrop-filter: blur(var(--blur-nav));
   border-bottom: 1px solid var(--bg-hover);
   z-index: 10;
 }
@@ -44,8 +44,8 @@
   align-items: center;
   justify-content: space-around;
   background: var(--bg-main);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(var(--blur-nav));
+  -webkit-backdrop-filter: blur(var(--blur-nav));
   border-top: 1px solid var(--bg-hover);
   z-index: 200;
   padding-top: 8px;

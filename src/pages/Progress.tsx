@@ -20,6 +20,7 @@ import { learnerStateService } from '@/services/learnerStateService'
 import { lessonService } from '@/services/lessonService'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
+import classes from './Progress.module.css'
 
 export function Progress() {
   const T = useT()
@@ -139,7 +140,7 @@ export function Progress() {
         <Title order={2}>{T.progress.title}</Title>
 
         {/* Items by stage */}
-        <Paper p="xl" radius="md" withBorder>
+        <Paper p="xl" radius="md" className={classes.card}>
           <Stack gap="md">
             <Box>
               <Title order={4} mb="md">{T.progress.itemsByStage}</Title>
@@ -172,11 +173,11 @@ export function Progress() {
         </Paper>
 
         {/* Memory strength */}
-        <Paper p="xl" radius="md" withBorder>
+        <Paper p="xl" radius="md" className={classes.card} style={{ overflow: 'visible' }}>
           <Stack gap="md">
             <Title order={4}>{T.progress.memoryStrength}</Title>
             <SimpleGrid cols={{ base: 2, sm: 2 }} spacing="lg">
-              <Box style={{ textAlign: 'center' }}>
+              <Box ta="center" className={classes.ringWrap}>
                 <RingProgress
                   sections={[{ value: recognitionStrengthPercent, color: 'blue' }]}
                   label={(
@@ -187,7 +188,7 @@ export function Progress() {
                   )}
                 />
               </Box>
-              <Box style={{ textAlign: 'center' }}>
+              <Box ta="center" className={classes.ringWrap}>
                 <RingProgress
                   sections={[{ value: recallStrengthPercent, color: 'grape' }]}
                   label={(
@@ -203,7 +204,7 @@ export function Progress() {
         </Paper>
 
         {/* Lesson completion */}
-        <Paper p="xl" radius="md" withBorder>
+        <Paper p="xl" radius="md" className={classes.card}>
           <Stack gap="md">
             <Box>
               <Title order={4} mb="md">{T.progress.lessonCompletion}</Title>
@@ -224,7 +225,7 @@ export function Progress() {
         </Paper>
 
         {/* Due dates */}
-        <Paper p="xl" radius="md" withBorder>
+        <Paper p="xl" radius="md" className={classes.card}>
           <Stack gap="md">
             <Title order={4}>{T.progress.dueItems}</Title>
             <SimpleGrid cols={{ base: 2, sm: 2 }} spacing="lg">

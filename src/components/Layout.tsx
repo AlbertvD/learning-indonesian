@@ -39,7 +39,7 @@ export function Layout() {
   const sidebarVisible = locked || open
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', height: '100vh', width: '100vw' }}>
       {/* Backdrop (overlay mode only) */}
       {open && !locked && (
         <div onClick={closeOverlay} style={{
@@ -80,13 +80,13 @@ export function Layout() {
       {/* Main content */}
       <main style={{
         flex: 1,
-        marginLeft: locked ? 230 : 0,
-        paddingLeft: locked ? 0 : 64,
+        paddingLeft: locked ? 230 : 64,
         paddingRight: 24,
-        transition: 'margin-left .22s cubic-bezier(.4,0,.2,1), padding-left .22s cubic-bezier(.4,0,.2,1)',
-        overflowY: 'auto',
+        transition: 'padding-left .22s cubic-bezier(.4,0,.2,1)',
+        overflow: 'auto',
         height: '100vh',
         boxSizing: 'border-box',
+        minWidth: 0,
       }}>
         <Outlet />
       </main>

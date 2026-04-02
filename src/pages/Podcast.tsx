@@ -43,9 +43,10 @@ export function Podcast() {
 
     return () => {
       if (sessionIdRef.current) {
-        endSession(sessionIdRef.current).catch(err =>
+        endSession(sessionIdRef.current).catch(err => {
           logError({ page: 'podcast', action: 'endSession', error: err })
-        )
+          notifications.show({ color: 'red', title: T.common.error, message: T.common.somethingWentWrong })
+        })
       }
     }
   }, [podcastId, user, T.common.error, T.podcast.failedToLoad])

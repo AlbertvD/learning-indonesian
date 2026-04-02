@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Box, Container, Progress, Stack, Text, Loader, Center, Alert } from '@mantine/core'
 import { IconAlertCircle } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
+import { translations } from '@/lib/i18n'
 import { buildSessionQueue, type SessionBuildInput } from '@/lib/sessionEngine'
 import { processReview, type ReviewInput } from '@/lib/reviewHandler'
 import { learningItemService } from '@/services/learningItemService'
@@ -37,6 +38,7 @@ export function Session() {
 
   const lessonFilter = searchParams.get('lesson')
   const preferredSessionSize = profile?.preferredSessionSize ?? 15
+  const didInit = useRef(false)
 
   // Initialize session
   useEffect(() => {
@@ -45,27 +47,46 @@ export function Session() {
       return
     }
 
+    if (didInit.current) return
+    didInit.current = true
+
     const initSession = async () => {
       try {
         setLoading(true)
         setError(null)
 
         // Create session in DB
-        const sid = await startSession(user.id, 'learning')
+        let sid: string
+        try {
+          sid = await startSession(user.id, 'learning')
+        } catch (e) {
+          throw new Error(`startSession failed: ${JSON.stringify(e)}`)
+        }
         setSessionId(sid)
 
         // Load all necessary data
-        const items = await learningItemService.getLearningItems()
+        let items: Awaited<ReturnType<typeof learningItemService.getLearningItems>>
+        try {
+          items = await learningItemService.getLearningItems()
+        } catch (e) {
+          throw new Error(`getLearningItems failed: ${JSON.stringify(e)}`)
+        }
         if (!items || items.length === 0) {
           setError('No learning items available. Please contact administrator.')
           setLoading(false)
           return
         }
 
-        const [itemStatesArray, skillStatesArray] = await Promise.all([
-          learnerStateService.getItemStates(user.id),
-          learnerStateService.getSkillStatesBatch(user.id, items.map(i => i.id)),
-        ])
+        let itemStatesArray: Awaited<ReturnType<typeof learnerStateService.getItemStates>>
+        let skillStatesArray: Awaited<ReturnType<typeof learnerStateService.getSkillStatesBatch>>
+        try {
+          ;[itemStatesArray, skillStatesArray] = await Promise.all([
+            learnerStateService.getItemStates(user.id),
+            learnerStateService.getSkillStatesBatch(user.id, items.map(i => i.id)),
+          ])
+        } catch (e) {
+          throw new Error(`getStates failed: ${JSON.stringify(e)}`)
+        }
 
         // Convert arrays to maps
         const itemStates: Record<string, any> = {}
@@ -73,26 +94,30 @@ export function Session() {
           itemStates[state.learning_item_id] = state
         }
 
-        // Build meanings, contexts, variants maps
+        // Build meanings, contexts, variants maps (parallel individual queries)
         const meaningsByItem: Record<string, any> = {}
         const contextsByItem: Record<string, any> = {}
         const variantsByItem: Record<string, any> = {}
 
-        for (const item of items) {
-          // Get meanings
-          const meanings = await learningItemService.getMeanings(item.id)
+        // Run all queries in parallel to avoid URL length limits
+        const results = await Promise.all(
+          items.map(item =>
+            Promise.all([
+              learningItemService.getMeanings(item.id),
+              learningItemService.getContexts(item.id),
+              learningItemService.getAnswerVariants(item.id),
+            ]).then(([meanings, contexts, variants]) => ({ item, meanings, contexts, variants }))
+          )
+        )
+
+        // Group by item ID
+        for (const { item, meanings, contexts, variants } of results) {
           if (meanings.length > 0) {
             meaningsByItem[item.id] = meanings
           }
-
-          // Get contexts
-          const contexts = await learningItemService.getContexts(item.id)
           if (contexts.length > 0) {
             contextsByItem[item.id] = contexts
           }
-
-          // Get variants
-          const variants = await learningItemService.getAnswerVariants(item.id)
           if (variants.length > 0) {
             variantsByItem[item.id] = variants
           }
@@ -131,9 +156,10 @@ export function Session() {
         setResults({ correct: 0, total: builtQueue.length })
         setLoading(false)
       } catch (err) {
+        const errMsg = err instanceof Error ? err.message : JSON.stringify(err)
         console.error('Session init error:', err)
         logError({ page: 'session', action: 'initialize', error: err })
-        setError('Failed to load session. Please try again.')
+        setError(`Failed to load session: ${errMsg}`)
         setLoading(false)
       }
     }
@@ -153,6 +179,7 @@ export function Session() {
     try {
       const item = queue[currentIndex]
       const normalizedResponse = rawResponse ? rawResponse.toLowerCase().trim() : null
+      const isRecognitionMCQ = item.exerciseItem.exerciseType === 'recognition_mcq'
 
       const reviewInput: ReviewInput = {
         userId: user.id,
@@ -170,7 +197,16 @@ export function Session() {
 
       const result = await processReview(reviewInput)
       setLastResult(result)
-      setShowFeedback(true)
+
+      // For correct MCQ: skip feedback, go straight to next question
+      if (isRecognitionMCQ && wasCorrect) {
+        setLastWasCorrect(wasCorrect)
+        setCurrentIndex(i => i + 1)
+      } else {
+        // For wrong MCQ or other exercise types: show feedback
+        setLastWasCorrect(wasCorrect)
+        setShowFeedback(true)
+      }
 
       // Update results
       if (wasCorrect) {
@@ -193,6 +229,20 @@ export function Session() {
     setCurrentIndex(i => i + 1)
   }
 
+  // Auto-advance after wrong recognition MCQ answer
+  useEffect(() => {
+    const isRecognitionMCQ = queue[currentIndex]?.exerciseItem.exerciseType === 'recognition_mcq'
+
+    if (showFeedback && isRecognitionMCQ && !lastWasCorrect) {
+      // Wrong answer: show feedback briefly then advance
+      const timer = setTimeout(() => {
+        setShowFeedback(false)
+        setCurrentIndex(i => i + 1)
+      }, 800)
+      return () => clearTimeout(timer)
+    }
+  }, [showFeedback, lastWasCorrect, currentIndex, queue])
+
   // Handle session completion
   const handleSessionComplete = async () => {
     if (!sessionId) return
@@ -201,8 +251,10 @@ export function Session() {
       await endSession(sessionId)
       navigate('/')
     } catch (err) {
-      console.error('Session completion error:', err)
       logError({ page: 'session', action: 'complete', error: err })
+      const t = translations[profile?.language ?? 'en']
+      notifications.show({ color: 'red', title: t.common.error, message: t.common.somethingWentWrong })
+      navigate('/')
     }
   }
 
@@ -246,6 +298,8 @@ export function Session() {
   // Show exercise or feedback
   const currentItem = queue[currentIndex]
   const progress = (currentIndex / queue.length) * 100
+  const userLang = (profile?.language ?? 'en') as 'en' | 'nl'
+  const t = translations[userLang]
 
   // Wrap handleAnswer to track correctness
   const handleAnswerWrapper = async (
@@ -265,10 +319,10 @@ export function Session() {
         <Box mb="lg">
           <Box mb="xs" style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Text size="sm" fw={500}>
-              Exercise {currentIndex + 1} of {queue.length}
+              {t.session.exerciseOf} {currentIndex + 1} {t.session.of} {queue.length}
             </Text>
             <Text size="sm" c="dimmed">
-              {results.correct}/{results.total} correct
+              {results.correct}/{results.total} {t.session.correct}
             </Text>
           </Box>
           <Progress value={progress} size="md" radius="md" />
@@ -279,6 +333,7 @@ export function Session() {
           <Box className={classes.exercise}>
             {currentItem.exerciseItem.exerciseType === 'recognition_mcq' && (
               <RecognitionMCQ
+                key={currentIndex}
                 exerciseItem={currentItem.exerciseItem}
                 userLanguage={profile?.language ?? 'en'}
                 onAnswer={(wasCorrect, latencyMs) => {
@@ -289,6 +344,7 @@ export function Session() {
             )}
             {currentItem.exerciseItem.exerciseType === 'typed_recall' && (
               <TypedRecall
+                key={currentIndex}
                 exerciseItem={currentItem.exerciseItem}
                 userLanguage={profile?.language ?? 'en'}
                 onAnswer={handleAnswerWrapper}
@@ -296,7 +352,9 @@ export function Session() {
             )}
             {currentItem.exerciseItem.exerciseType === 'cloze' && (
               <Cloze
+                key={currentIndex}
                 exerciseItem={currentItem.exerciseItem}
+                userLanguage={profile?.language ?? 'en'}
                 onAnswer={handleAnswerWrapper}
               />
             )}

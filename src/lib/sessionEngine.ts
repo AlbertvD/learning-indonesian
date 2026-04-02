@@ -133,6 +133,9 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
 }
 
 function calculateNewSlots(dueCount: number, sessionSize: number): number {
+  // On first run with no due items, allow full session of new items
+  if (dueCount === 0) return sessionSize
+  // With few due items, limit new items to avoid overwhelming user
   if (dueCount > 40) return 0
   if (dueCount > 20) return Math.min(2, Math.round(sessionSize * 0.15))
   return Math.round(sessionSize * 0.15)
@@ -200,14 +203,18 @@ function makeRecognitionMCQ(
   const distractors = allItems
     .filter(i => i.id !== item.id && i.level === item.level)
     .map(i => {
-      const m = (meaningsByItem[i.id] ?? []).find(m => m.translation_language === userLanguage && m.is_primary)
-        ?? (meaningsByItem[i.id] ?? []).find(m => m.translation_language === userLanguage)
-      return m?.translation_text
+      const itemMeanings = meaningsByItem[i.id] ?? []
+      return (itemMeanings.find(m => m.translation_language === userLanguage && m.is_primary)
+        ?? itemMeanings.find(m => m.translation_language === userLanguage))?.translation_text
     })
     .filter((d): d is string => d != null && d !== correctAnswer)
 
-  // Shuffle and take 3
-  const shuffled = distractors.sort(() => Math.random() - 0.5).slice(0, 3)
+  // Fisher-Yates shuffle and take 3
+  for (let i = distractors.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [distractors[i], distractors[j]] = [distractors[j], distractors[i]]
+  }
+  const shuffled = distractors.slice(0, 3)
 
   return {
     learningItem: item,
