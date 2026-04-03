@@ -6,20 +6,16 @@ import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
 import { translations } from '@/lib/i18n'
 import { buildSessionQueue, type SessionBuildInput } from '@/lib/sessionEngine'
-import { processReview, type ReviewInput } from '@/lib/reviewHandler'
+import type { ReviewResult } from '@/lib/reviewHandler'
 import { learningItemService } from '@/services/learningItemService'
 import { learnerStateService } from '@/services/learnerStateService'
 import { goalService } from '@/services/goalService'
 import { analyticsService } from '@/services/analyticsService'
 import { sessionSummaryService, type SessionImpactMessages } from '@/services/sessionSummaryService'
-import { RecognitionMCQ } from '@/components/exercises/RecognitionMCQ'
-import { TypedRecall } from '@/components/exercises/TypedRecall'
-import { Cloze } from '@/components/exercises/Cloze'
-import { ExerciseFeedback } from '@/components/exercises/ExerciseFeedback'
+import { ExerciseShell } from '@/components/exercises/ExerciseShell'
 import { SessionSummary } from '@/components/SessionSummary'
 import { logError } from '@/lib/logger'
 import type { SessionQueueItem } from '@/types/learning'
-import type { ReviewResult } from '@/lib/reviewHandler'
 import { startSession, endSession } from '@/lib/session'
 import classes from './Session.module.css'
 
@@ -32,12 +28,9 @@ export function Session() {
   const [queue, setQueue] = useState<SessionQueueItem[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [sessionId, setSessionId] = useState<string | null>(null)
-  const [showFeedback, setShowFeedback] = useState(false)
-  const [lastResult, setLastResult] = useState<ReviewResult | null>(null)
   const [results, setResults] = useState({ correct: 0, total: 0 })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [lastWasCorrect, setLastWasCorrect] = useState(false)
   const [goalImpactMessages, setGoalImpactMessages] = useState<SessionImpactMessages | null>(null)
 
   const lessonFilter = searchParams.get('lesson')
@@ -175,81 +168,17 @@ export function Session() {
     initSession()
   }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter])
 
-  // Handle answer
-  const handleAnswer = async (
-    wasCorrect: boolean,
-    isFuzzy: boolean,
-    latencyMs: number,
-    rawResponse: string | null = null
-  ) => {
-    if (!sessionId || !user || currentIndex >= queue.length) return
-
-    try {
-      const item = queue[currentIndex]
-      const normalizedResponse = rawResponse ? rawResponse.toLowerCase().trim() : null
-      const isRecognitionMCQ = item.exerciseItem.exerciseType === 'recognition_mcq'
-
-      const reviewInput: ReviewInput = {
-        userId: user.id,
-        sessionId,
-        exerciseItem: item.exerciseItem,
-        currentItemState: item.learnerItemState,
-        currentSkillState: item.learnerSkillState,
-        wasCorrect,
-        isFuzzy,
-        hintUsed: false,
-        latencyMs,
-        rawResponse,
-        normalizedResponse,
-      }
-
-      const result = await processReview(reviewInput)
-      setLastResult(result)
-
-      // For correct MCQ: skip feedback, go straight to next question
-      if (isRecognitionMCQ && wasCorrect) {
-        setLastWasCorrect(wasCorrect)
-        setCurrentIndex(i => i + 1)
-      } else {
-        // For wrong MCQ or other exercise types: show feedback
-        setLastWasCorrect(wasCorrect)
-        setShowFeedback(true)
-      }
-
-      // Update results
-      if (wasCorrect) {
-        setResults(r => ({ ...r, correct: r.correct + 1 }))
-      }
-    } catch (err) {
-      console.error('Review error:', err)
-      logError({ page: 'session', action: 'processAnswer', error: err })
-      notifications.show({
-        color: 'red',
-        title: 'Error',
-        message: 'Failed to process answer. Please try again.',
-      })
+  // Handle answer from ExerciseShell
+  const handleExerciseAnswer = (_result: ReviewResult, wasCorrect: boolean) => {
+    if (wasCorrect) {
+      setResults(r => ({ ...r, correct: r.correct + 1 }))
     }
   }
 
-  // Handle continue from feedback
-  const handleContinue = () => {
-    setShowFeedback(false)
+  // Handle continue to next exercise
+  const handleContinueToNext = () => {
     setCurrentIndex(i => i + 1)
   }
-
-  // Auto-advance after wrong recognition MCQ answer
-  useEffect(() => {
-    const isRecognitionMCQ = queue[currentIndex]?.exerciseItem.exerciseType === 'recognition_mcq'
-
-    if (showFeedback && isRecognitionMCQ && !lastWasCorrect) {
-      // Wrong answer: show feedback briefly then advance
-      const timer = setTimeout(() => {
-        setShowFeedback(false)
-        setCurrentIndex(i => i + 1)
-      }, 800)
-      return () => clearTimeout(timer)
-    }
-  }, [showFeedback, lastWasCorrect, currentIndex, queue])
 
   // Fetch goal state before session ends
   useEffect(() => {
@@ -347,22 +276,11 @@ export function Session() {
     return <SessionSummary results={results} goalImpactMessages={goalImpactMessages ?? undefined} onComplete={handleSessionComplete} />
   }
 
-  // Show exercise or feedback
+  // Show exercise
   const currentItem = queue[currentIndex]
   const progress = (currentIndex / queue.length) * 100
   const userLang = (profile?.language ?? 'en') as 'en' | 'nl'
   const t = translations[userLang]
-
-  // Wrap handleAnswer to track correctness
-  const handleAnswerWrapper = async (
-    wasCorrect: boolean,
-    isFuzzy: boolean,
-    latencyMs: number,
-    rawResponse: string | null = null
-  ) => {
-    setLastWasCorrect(wasCorrect)
-    await handleAnswer(wasCorrect, isFuzzy, latencyMs, rawResponse)
-  }
 
   return (
     <Box className={classes.container}>
@@ -380,45 +298,20 @@ export function Session() {
           <Progress value={progress} size="md" radius="md" />
         </Box>
 
-        {/* Exercise or feedback */}
-        {!showFeedback ? (
+        {/* Exercise shell handles exercise rendering and feedback */}
+        {sessionId && user && (
           <Box className={classes.exercise}>
-            {currentItem.exerciseItem.exerciseType === 'recognition_mcq' && (
-              <RecognitionMCQ
-                key={currentIndex}
-                exerciseItem={currentItem.exerciseItem}
-                userLanguage={profile?.language ?? 'en'}
-                onAnswer={(wasCorrect, latencyMs) => {
-                  setLastWasCorrect(wasCorrect)
-                  handleAnswer(wasCorrect, false, latencyMs, null)
-                }}
-              />
-            )}
-            {currentItem.exerciseItem.exerciseType === 'typed_recall' && (
-              <TypedRecall
-                key={currentIndex}
-                exerciseItem={currentItem.exerciseItem}
-                userLanguage={profile?.language ?? 'en'}
-                onAnswer={handleAnswerWrapper}
-              />
-            )}
-            {currentItem.exerciseItem.exerciseType === 'cloze' && (
-              <Cloze
-                key={currentIndex}
-                exerciseItem={currentItem.exerciseItem}
-                userLanguage={profile?.language ?? 'en'}
-                onAnswer={handleAnswerWrapper}
-              />
-            )}
+            <ExerciseShell
+              key={currentIndex}
+              currentItem={currentItem}
+              sessionId={sessionId}
+              user={user}
+              userLanguage={userLang}
+              onAnswer={handleExerciseAnswer}
+              onContinueToNext={handleContinueToNext}
+            />
           </Box>
-        ) : lastResult ? (
-          <ExerciseFeedback
-            exerciseItem={currentItem.exerciseItem}
-            wasCorrect={lastWasCorrect}
-            userLanguage={profile?.language ?? 'en'}
-            onContinue={handleContinue}
-          />
-        ) : null}
+        )}
       </Container>
     </Box>
   )
