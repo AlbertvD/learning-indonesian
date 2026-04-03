@@ -1,5 +1,6 @@
 // src/lib/sessionPolicies.ts
 import type { SessionQueueItem, ExerciseTypeAvailability } from '@/types/learning'
+import { newLearnerDefaults } from './newLearnerDefaults'
 
 export interface SessionPoliciesContext {
   // User demographics
@@ -195,12 +196,17 @@ function applyConsecutiveTypeCap(queue: SessionQueueItem[]): SessionQueueItem[] 
  * Detect new learners and apply overload protection.
  * New learner: account_age_days < 30 AND stable_item_count < 50
  * Overload rule: Limit new items severely for new learners
+ *
+ * Also enforces early stage caps:
+ * - 0–30 days: no new items, max 20-day intervals (handled in fsrs.ts)
+ * - 30–60 days: reduced new items, max 30-day intervals
  */
 function applyNewLearnerRules(
   queue: SessionQueueItem[],
   context: SessionPoliciesContext,
 ): SessionQueueItem[] {
-  const isNewLearner = context.accountAgeDays < 30 && context.stableItemCount < 50
+  const { accountAgeDaysThreshold, stableItemCountThreshold } = newLearnerDefaults
+  const isNewLearner = context.accountAgeDays < accountAgeDaysThreshold && context.stableItemCount < stableItemCountThreshold
 
   if (!isNewLearner) {
     return queue

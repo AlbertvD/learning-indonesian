@@ -101,3 +101,59 @@ export function getRetrievability(stability: number, lastReviewedAt: Date): numb
   // FSRS power forgetting curve: R = (1 + t / (9 * s))^(-1)
   return Math.pow(1 + elapsedDays / (9 * stability), -1)
 }
+
+/**
+ * Apply grammar-based adjustments to stability growth.
+ * Used for items tagged with grammar patterns to slow down expansion
+ * and ensure deeper learning before moving to longer intervals.
+ *
+ * @param stability - Current stability value
+ * @param rating - FSRS rating (Again, Hard, Good, Easy)
+ * @param isConfusable - Whether this item is in a confusion group
+ * @returns Adjusted stability
+ */
+export function applyGrammarAdjustment(
+  stability: number,
+  rating: Grade,
+  isConfusable: boolean = false
+): number {
+  // No adjustment for Again/Hard ratings
+  if (rating === Rating.Again || rating === Rating.Hard) {
+    return stability
+  }
+
+  // For Good/Easy ratings:
+  // - Confusable items get 30% reduction
+  // - Normal grammar items get 20% reduction
+  const reductionFactor = isConfusable ? 0.7 : 0.8
+
+  return stability * reductionFactor
+}
+
+/**
+ * Cap early intervals for new learners to ensure frequent reviews
+ * during the crucial first month.
+ *
+ * New learner = first 30-60 days of account age
+ * Cap: 20–30 days max interval
+ *
+ * @param nextDueAt - Scheduled due date
+ * @param accountAgeDays - Days since account creation
+ * @returns Capped due date
+ */
+export function capEarlyIntervals(
+  nextDueAt: Date,
+  accountAgeDays: number
+): Date {
+  const isEarlyStage = accountAgeDays < 60
+  if (!isEarlyStage) {
+    return nextDueAt
+  }
+
+  const now = new Date()
+  const maxDaysFromNow = accountAgeDays < 30 ? 20 : 30
+  const maxDue = new Date(now.getTime() + maxDaysFromNow * 24 * 60 * 60 * 1000)
+
+  // Use whichever is earlier: scheduled or capped
+  return nextDueAt > maxDue ? maxDue : nextDueAt
+}
