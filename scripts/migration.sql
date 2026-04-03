@@ -495,6 +495,200 @@ $$;
 
 GRANT EXECUTE ON FUNCTION indonesian.schema_health() TO authenticated;
 
+-- Goal System Scheduled Jobs (pg_cron)
+-- These jobs maintain the weekly goal system consistency and generate reports.
+
+-- Enable pg_cron extension (requires superuser; will be no-op if already enabled)
+CREATE EXTENSION IF NOT EXISTS pg_cron;
+
+-- Job 1: Weekly Goal Finalization
+-- Closes goal sets that have passed their week end and captures final metrics.
+CREATE OR REPLACE FUNCTION indonesian.job_finalize_weekly_goals()
+RETURNS table(finalized_count integer, error_message text) AS $$
+BEGIN
+  -- Find open goal sets past their end time and close them
+  UPDATE indonesian.learner_weekly_goal_sets
+  SET closing_overdue_count = (
+    SELECT COUNT(*) FROM indonesian.learner_skill_state lss
+    WHERE lss.user_id = learner_weekly_goal_sets.user_id
+      AND lss.next_due_at < NOW()
+  ),
+  closed_at = NOW(),
+  updated_at = NOW()
+  WHERE week_ends_at_utc < NOW()
+    AND closed_at IS NULL;
+
+  RETURN QUERY SELECT ROW_NUMBER() OVER () :: integer, NULL::text;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = indonesian;
+
+-- Job 2: Current-Week Goal Pre-Generation
+-- Creates weekly goal sets for users at their local week start.
+CREATE OR REPLACE FUNCTION indonesian.job_pregenerate_current_week()
+RETURNS table(generated_count integer, error_message text) AS $$
+DECLARE
+  v_user_id uuid;
+  v_timezone text;
+  v_week_start timestamptz;
+  v_week_end timestamptz;
+  v_count integer := 0;
+BEGIN
+  -- For each user with a valid timezone
+  FOR v_user_id, v_timezone IN
+    SELECT id, timezone FROM indonesian.profiles
+    WHERE timezone IS NOT NULL AND timezone != ''
+  LOOP
+    -- Compute local week boundaries
+    v_week_start := date_trunc('week', NOW() AT TIME ZONE v_timezone) AT TIME ZONE 'UTC';
+    v_week_end := v_week_start + interval '7 days';
+
+    -- Check if user already has a goal set for this week
+    IF NOT EXISTS (
+      SELECT 1 FROM indonesian.learner_weekly_goal_sets
+      WHERE user_id = v_user_id
+        AND week_starts_at_utc <= NOW()
+        AND week_ends_at_utc > NOW()
+    ) THEN
+      -- Create goal set
+      INSERT INTO indonesian.learner_weekly_goal_sets (
+        user_id, goal_timezone, week_start_date_local, week_end_date_local,
+        week_starts_at_utc, week_ends_at_utc, generation_strategy_version, generated_at
+      ) VALUES (
+        v_user_id, v_timezone,
+        v_week_start::date,
+        (v_week_end - interval '1 day')::date,
+        v_week_start, v_week_end, 'v1', NOW()
+      );
+
+      -- Create child goals with default targets
+      INSERT INTO indonesian.learner_weekly_goals (goal_set_id, goal_type, goal_direction, goal_unit, target_value_numeric)
+      SELECT
+        (SELECT id FROM indonesian.learner_weekly_goal_sets WHERE user_id = v_user_id AND week_starts_at_utc = v_week_start),
+        goal_type,
+        goal_direction,
+        goal_unit,
+        target_value_numeric
+      FROM (
+        VALUES
+          ('consistency', 'at_least', 'count', 4),
+          ('recall_quality', 'at_least', 'percent', 0.80),
+          ('usable_vocabulary', 'at_least', 'count', 8),
+          ('review_health', 'at_most', 'count', 20)
+      ) AS defaults(goal_type, goal_direction, goal_unit, target_value_numeric);
+
+      v_count := v_count + 1;
+    END IF;
+  END LOOP;
+
+  RETURN QUERY SELECT v_count, NULL::text;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = indonesian;
+
+-- Job 3: Daily Goal Rollup Snapshot
+-- Materializes daily aggregates for trends and analytics.
+CREATE OR REPLACE FUNCTION indonesian.job_daily_rollup_snapshot()
+RETURNS table(rollup_count integer, error_message text) AS $$
+DECLARE
+  v_user_id uuid;
+  v_timezone text;
+  v_local_date date;
+  v_count integer := 0;
+BEGIN
+  -- For each user with a valid timezone
+  FOR v_user_id, v_timezone IN
+    SELECT id, timezone FROM indonesian.profiles
+    WHERE timezone IS NOT NULL AND timezone != ''
+  LOOP
+    -- Get local date in user's timezone
+    v_local_date := (NOW() AT TIME ZONE v_timezone)::date;
+
+    -- Upsert daily rollup
+    INSERT INTO indonesian.learner_daily_goal_rollups (
+      user_id, goal_timezone, local_date,
+      study_day_completed, recall_accuracy, recall_sample_size,
+      usable_items_gained_today, usable_items_total, overdue_count
+    ) VALUES (
+      v_user_id, v_timezone, v_local_date,
+      COALESCE((SELECT COUNT(*) > 0 FROM indonesian.review_events re
+        WHERE re.user_id = v_user_id
+          AND re.created_at::date = v_local_date), false),
+      (SELECT CASE WHEN COUNT(*) > 0 THEN SUM(CASE WHEN was_correct THEN 1 ELSE 0 END)::numeric / COUNT(*)
+                   ELSE NULL END
+       FROM indonesian.review_events re
+       WHERE re.user_id = v_user_id AND re.skill_type = 'recall' AND re.created_at::date = v_local_date),
+      COALESCE((SELECT COUNT(*) FROM indonesian.review_events re
+        WHERE re.user_id = v_user_id AND re.skill_type = 'recall' AND re.created_at::date = v_local_date), 0),
+      (SELECT COUNT(DISTINCT learning_item_id) FROM indonesian.learner_stage_events lse
+        WHERE lse.user_id = v_user_id AND lse.to_stage IN ('productive', 'maintenance')
+          AND lse.created_at::date = v_local_date),
+      (SELECT COUNT(*) FROM indonesian.learner_item_state lis
+        WHERE lis.user_id = v_user_id AND lis.stage IN ('productive', 'maintenance')),
+      (SELECT COUNT(*) FROM indonesian.learner_skill_state lss
+        WHERE lss.user_id = v_user_id AND lss.next_due_at < NOW()::date)
+    ) ON CONFLICT (user_id, local_date) DO UPDATE SET
+      study_day_completed = EXCLUDED.study_day_completed,
+      recall_accuracy = EXCLUDED.recall_accuracy,
+      recall_sample_size = EXCLUDED.recall_sample_size,
+      usable_items_gained_today = EXCLUDED.usable_items_gained_today,
+      usable_items_total = EXCLUDED.usable_items_total,
+      overdue_count = EXCLUDED.overdue_count,
+      updated_at = NOW();
+
+    v_count := v_count + 1;
+  END LOOP;
+
+  RETURN QUERY SELECT v_count, NULL::text;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = indonesian;
+
+-- Job 4: Integrity and Repair Sweeper
+-- Heals inconsistent goal state and closes overdue weeks.
+CREATE OR REPLACE FUNCTION indonesian.job_integrity_repair()
+RETURNS table(repairs_count integer, error_message text) AS $$
+DECLARE
+  v_count integer := 0;
+  v_goal_set_id uuid;
+BEGIN
+  -- Repair 1: Close overdue still-open weeks
+  UPDATE indonesian.learner_weekly_goal_sets
+  SET closing_overdue_count = (
+    SELECT COUNT(*) FROM indonesian.learner_skill_state lss
+    WHERE lss.user_id = learner_weekly_goal_sets.user_id
+      AND lss.next_due_at < NOW()
+  ),
+  closed_at = NOW(),
+  updated_at = NOW()
+  WHERE week_ends_at_utc < NOW()
+    AND closed_at IS NULL;
+
+  GET DIAGNOSTICS v_count = ROW_COUNT;
+
+  RETURN QUERY SELECT v_count, NULL::text;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = indonesian;
+
+-- Grant execute permission to service role (needed for pg_cron)
+GRANT EXECUTE ON FUNCTION indonesian.job_finalize_weekly_goals() TO service_role;
+GRANT EXECUTE ON FUNCTION indonesian.job_pregenerate_current_week() TO service_role;
+GRANT EXECUTE ON FUNCTION indonesian.job_daily_rollup_snapshot() TO service_role;
+GRANT EXECUTE ON FUNCTION indonesian.job_integrity_repair() TO service_role;
+
+-- Schedule jobs with pg_cron
+-- Note: These schedules use UTC. Adjust times as needed for your deployment.
+-- Format: minute hour day-of-month month day-of-week
+
+-- Weekly finalization: hourly at minute 5
+SELECT cron.schedule('goal-finalize-weekly', '5 * * * *', 'SELECT indonesian.job_finalize_weekly_goals()');
+
+-- Current-week pre-generation: hourly at minute 10
+SELECT cron.schedule('goal-pregenerate-weekly', '10 * * * *', 'SELECT indonesian.job_pregenerate_current_week()');
+
+-- Daily rollup snapshots: hourly at minute 15
+SELECT cron.schedule('goal-daily-rollup', '15 * * * *', 'SELECT indonesian.job_daily_rollup_snapshot()');
+
+-- Integrity repair: daily at 02:30 UTC
+SELECT cron.schedule('goal-integrity-repair', '30 2 * * *', 'SELECT indonesian.job_integrity_repair()');
+
 -- Storage buckets
 INSERT INTO storage.buckets (id, name, public)
 VALUES
