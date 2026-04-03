@@ -101,6 +101,11 @@ generate-candidates: ## Generate exercise candidates from extracted content (req
 	@test -n "$(ANTHROPIC_API_KEY)" || { echo "Error: ANTHROPIC_API_KEY is required. Run: make generate-candidates LESSON=<N> ANTHROPIC_API_KEY=<key>"; exit 1; }
 	ANTHROPIC_API_KEY=$(ANTHROPIC_API_KEY) bun scripts/generate-exercise-candidates.ts $(LESSON)
 
+.PHONY: publish-content
+publish-content: ## Publish approved candidates to Supabase (requires LESSON and SUPABASE_SERVICE_KEY in .env.local)
+	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make publish-content LESSON=<N>"; exit 1; }
+	SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/publish-approved-content.ts $(LESSON)
+
 # ============================================================================
 # HEALTH CHECKS
 # ============================================================================
