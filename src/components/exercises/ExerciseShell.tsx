@@ -8,6 +8,7 @@ import { SentenceTransformationExercise } from './SentenceTransformationExercise
 import { ConstrainedTranslationExercise } from './ConstrainedTranslationExercise'
 import { TypedRecall } from './TypedRecall'
 import { Cloze } from './Cloze'
+import { SpeakingExercise } from './SpeakingExercise'
 import { processReview, type ReviewInput } from '@/lib/reviewHandler'
 import { logError } from '@/lib/logger'
 import type { SessionQueueItem } from '@/types/learning'
@@ -213,6 +214,18 @@ export function ExerciseShell({
           userLanguage={userLanguage}
           onAnswer={(wasCorrect, isFuzzy, latencyMs, rawResponse) => {
             handleAnswerFromExercise(wasCorrect, isFuzzy, latencyMs, rawResponse)
+          }}
+        />
+      )
+
+    case 'speaking':
+      return (
+        <SpeakingExercise
+          key={`${currentItem.exerciseItem.learningItem.id}-${exerciseItem.exerciseType}`}
+          exerciseItem={exerciseItem}
+          userLanguage={userLanguage}
+          onAnswer={(wasCorrect, latencyMs) => {
+            handleAnswerFromExercise(wasCorrect, false, latencyMs, null)
           }}
         />
       )
