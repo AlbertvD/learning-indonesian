@@ -106,11 +106,13 @@ export function ExerciseShell({
 
     // Wrong MCQ: show feedback briefly then advance
     const timer = setTimeout(() => {
-      handleContinue()
+      setShowFeedback(false)
+      setLastResult(null)
+      onContinueToNext()
     }, 800)
 
     return () => clearTimeout(timer)
-  }, [showFeedback, wasCorrect, exerciseItem.exerciseType])
+  }, [showFeedback, wasCorrect, exerciseItem.exerciseType, onContinueToNext])
 
   // Render exercise or feedback
   if (showFeedback && lastResult) {
