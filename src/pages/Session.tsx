@@ -9,6 +9,8 @@ import { buildSessionQueue, type SessionBuildInput } from '@/lib/sessionEngine'
 import { processReview, type ReviewInput } from '@/lib/reviewHandler'
 import { learningItemService } from '@/services/learningItemService'
 import { learnerStateService } from '@/services/learnerStateService'
+import { goalService } from '@/services/goalService'
+import { sessionSummaryService, type SessionImpactMessages } from '@/services/sessionSummaryService'
 import { RecognitionMCQ } from '@/components/exercises/RecognitionMCQ'
 import { TypedRecall } from '@/components/exercises/TypedRecall'
 import { Cloze } from '@/components/exercises/Cloze'
@@ -35,10 +37,12 @@ export function Session() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [lastWasCorrect, setLastWasCorrect] = useState(false)
+  const [goalImpactMessages, setGoalImpactMessages] = useState<SessionImpactMessages | null>(null)
 
   const lessonFilter = searchParams.get('lesson')
   const preferredSessionSize = profile?.preferredSessionSize ?? 15
   const didInit = useRef(false)
+  const beforeGoalsRef = useRef<any>(null)
 
   // Initialize session
   useEffect(() => {
@@ -243,13 +247,57 @@ export function Session() {
     }
   }, [showFeedback, lastWasCorrect, currentIndex, queue])
 
+  // Fetch goal state before session ends
+  useEffect(() => {
+    if (!user || currentIndex < queue.length) return
+
+    const fetchBeforeGoals = async () => {
+      try {
+        const progress = await goalService.getGoalProgress(user.id)
+        if (progress.state === 'timezone_required') {
+          beforeGoalsRef.current = null
+        } else {
+          beforeGoalsRef.current = progress.weeklyGoals
+        }
+      } catch (err) {
+        console.error('[Session] Failed to fetch before goals:', err)
+        beforeGoalsRef.current = null
+      }
+    }
+
+    fetchBeforeGoals()
+  }, [user, currentIndex, queue.length])
+
   // Handle session completion
   const handleSessionComplete = async () => {
-    if (!sessionId) return
+    if (!sessionId || !user) return
 
     try {
+      // End the session first
       await endSession(sessionId)
-      navigate('/')
+
+      // Fetch after goal state and compute impact messages
+      try {
+        const progress = await goalService.getGoalProgress(user.id)
+        const afterGoals = progress.state === 'timezone_required' ? null : progress.weeklyGoals
+        const beforeGoals = beforeGoalsRef.current
+
+        const messages = await sessionSummaryService.computeSessionImpactMessages(
+          user.id,
+          sessionId,
+          beforeGoals,
+          afterGoals
+        )
+        setGoalImpactMessages(messages)
+      } catch (err) {
+        console.error('[Session] Failed to compute goal impact:', err)
+        // Don't block navigation if goal computation fails
+      }
+
+      // Navigate home after a short delay to allow messages to display
+      setTimeout(() => {
+        navigate('/')
+      }, 500)
     } catch (err) {
       logError({ page: 'session', action: 'complete', error: err })
       const t = translations[profile?.language ?? 'en']
@@ -292,7 +340,7 @@ export function Session() {
 
   // Session is complete
   if (currentIndex >= queue.length) {
-    return <SessionSummary results={results} onComplete={handleSessionComplete} />
+    return <SessionSummary results={results} goalImpactMessages={goalImpactMessages ?? undefined} onComplete={handleSessionComplete} />
   }
 
   // Show exercise or feedback
