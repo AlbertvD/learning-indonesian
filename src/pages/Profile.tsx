@@ -281,28 +281,30 @@ export function Profile() {
 
         <Paper p="xl" radius="md" {...paperProps}>
           <Stack gap="md">
-            <Box>
-              <Title order={4} mb="xs">{T.profile.sessionSize}</Title>
-              <Group justify="space-between">
-                <Text size="sm" c="dimmed">{T.profile.sessionSizeDescription}</Text>
-                <Text fw={600}>{sessionSize}</Text>
-              </Group>
+            <Group justify="center" gap="xs">
+              <Title order={4} mb={0}>{T.profile.sessionSize}</Title>
+              <Text size="xl" fw={700} mb={0}>
+                {sessionSize}
+              </Text>
+            </Group>
+            <Text size="sm" c="dimmed" ta="center">{T.profile.sessionSizeDescription}</Text>
+            <Box w="100%">
+              <Slider
+                value={sessionSize}
+                onChange={setSessionSize}
+                onChangeEnd={handleSessionSizeChange}
+                min={5}
+                max={30}
+                step={1}
+                disabled={savingSessionSize}
+                marks={[
+                  { value: 5, label: '5' },
+                  { value: 15, label: '15' },
+                  { value: 30, label: '30' },
+                ]}
+                label={(value) => `${value} ${T.profile.items}`}
+              />
             </Box>
-            <Slider
-              value={sessionSize}
-              onChange={setSessionSize}
-              onChangeEnd={handleSessionSizeChange}
-              min={5}
-              max={30}
-              step={1}
-              disabled={savingSessionSize}
-              marks={[
-                { value: 5, label: '5' },
-                { value: 15, label: '15' },
-                { value: 30, label: '30' },
-              ]}
-              label={(value) => `${value} ${T.profile.items}`}
-            />
           </Stack>
         </Paper>
       </Stack>
