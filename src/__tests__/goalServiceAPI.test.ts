@@ -16,11 +16,17 @@ describe('Goal and Recommendation API Response Shapes', () => {
         id: 'goal-1',
         goal_set_id: 'set-1',
         goal_type: 'consistency',
+        goal_direction: 'at_least',
+        goal_unit: 'count',
         status: 'on_track',
         current_value_numeric: 5,
         target_value_numeric: 7,
-        current_value_text: null,
-        target_value_text: null,
+        is_provisional: false,
+        provisional_reason: null,
+        sample_size: 5,
+        goal_config_jsonb: {},
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       }
 
       // Verify all required fields exist
@@ -38,9 +44,17 @@ describe('Goal and Recommendation API Response Shapes', () => {
         id: 'goal-1',
         goal_set_id: 'set-1',
         goal_type: 'consistency',
+        goal_direction: 'at_least',
+        goal_unit: 'count',
         status: 'on_track',
         current_value_numeric: 5,
         target_value_numeric: 7,
+        is_provisional: false,
+        provisional_reason: null,
+        sample_size: 5,
+        goal_config_jsonb: {},
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       }
 
       expect(validTypes).toContain(mockGoal.goal_type)
@@ -120,10 +134,18 @@ describe('Goal and Recommendation API Response Shapes', () => {
           id: '1',
           goal_set_id: '1',
           goal_type: 'consistency',
+          goal_direction: 'at_least',
+          goal_unit: 'count',
           status: 'on_track',
           current_value_numeric: 5,
           target_value_numeric: 7,
-        } as WeeklyGoal,
+          is_provisional: false,
+          provisional_reason: null,
+          sample_size: 5,
+          goal_config_jsonb: {},
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
       ]
 
       const rec = dailyRecommendationService.computeRecommendation({

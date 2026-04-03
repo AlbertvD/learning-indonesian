@@ -16,6 +16,7 @@ vi.mock('@/services/learnerStateService', () => ({
     upsertItemState: vi.fn(async (state: any) => ({ ...state, id: 'lis1', updated_at: new Date().toISOString() })),
     upsertSkillState: vi.fn(async (state: any) => ({ ...state, id: 'lss1', updated_at: new Date().toISOString() })),
     getSkillStates: vi.fn(async () => []),
+    logStageEvent: vi.fn(async () => {}),
   },
 }))
 

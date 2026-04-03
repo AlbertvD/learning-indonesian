@@ -90,7 +90,7 @@ export function Session() {
         try {
           ;[itemStatesArray, skillStatesArray] = await Promise.all([
             learnerStateService.getItemStates(user.id),
-            learnerStateService.getSkillStatesBatch(user.id, items.map(i => i.id)),
+            learnerStateService.getSkillStatesBatch(user.id),
           ])
         } catch (e) {
           throw new Error(`getStates failed: ${JSON.stringify(e)}`)

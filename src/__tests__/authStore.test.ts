@@ -65,7 +65,7 @@ describe('authStore', () => {
 
     // First maybeSingle: loadProfileData
     mockChain.maybeSingle.mockResolvedValueOnce({
-      data: { display_name: 'Test User', language: 'nl', preferred_session_size: 15 },
+      data: { display_name: 'Test User', language: 'nl', preferred_session_size: 15, timezone: null },
       error: null,
     })
     // Second maybeSingle: checkAdmin
@@ -83,6 +83,7 @@ describe('authStore', () => {
       language: 'nl',
       preferredSessionSize: 15,
       isAdmin: false,
+      timezone: null,
     })
     expect(useAuthStore.getState().loading).toBe(false)
   })
@@ -90,7 +91,7 @@ describe('authStore', () => {
   it('updateDisplayName updates profile in store and calls correct Supabase chain', async () => {
     useAuthStore.setState({
       user: { id: 'user-1' } as any,
-      profile: { id: 'user-1', fullName: 'Old Name', language: 'nl', preferredSessionSize: 15, isAdmin: false } as any
+      profile: { id: 'user-1', fullName: 'Old Name', language: 'nl', preferredSessionSize: 15, isAdmin: false, timezone: null } as any
     })
     // .update().eq().select() returns data
     mockChain.select.mockResolvedValueOnce({ data: [{ id: 'user-1' }], error: null })
@@ -109,7 +110,7 @@ describe('authStore', () => {
   it('updateLanguage updates language in store and verifies Supabase call', async () => {
     useAuthStore.setState({
       user: { id: 'user-1' } as any,
-      profile: { id: 'user-1', fullName: 'Test User', language: 'nl', preferredSessionSize: 15, isAdmin: false } as any,
+      profile: { id: 'user-1', fullName: 'Test User', language: 'nl', preferredSessionSize: 15, isAdmin: false, timezone: null } as any,
     })
     mockChain.select.mockResolvedValueOnce({ data: [{ id: 'user-1' }], error: null })
 

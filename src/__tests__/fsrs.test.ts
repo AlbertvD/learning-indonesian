@@ -40,8 +40,9 @@ describe('computeNextState', () => {
 
   it('decreases stability on Again rating', () => {
     const first = computeNextState(null, Rating.Good)
+    const tenDaysAgo = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
     const lapsed = computeNextState(
-      { stability: first.stability, difficulty: first.difficulty, lastReviewedAt: new Date() },
+      { stability: first.stability, difficulty: first.difficulty, lastReviewedAt: tenDaysAgo },
       Rating.Again
     )
     expect(lapsed.stability).toBeLessThan(first.stability)

@@ -62,7 +62,7 @@ describe('learnerStateService', () => {
   })
 
   it('getSkillStatesBatch fetches all skill states for user', async () => {
-    await learnerStateService.getSkillStatesBatch('user1', ['item1', 'item2'])
+    await learnerStateService.getSkillStatesBatch('user1')
 
     expect(mockFrom).toHaveBeenCalledWith('learner_skill_state')
     expect(mockQB.eq).toHaveBeenCalledWith('user_id', 'user1')

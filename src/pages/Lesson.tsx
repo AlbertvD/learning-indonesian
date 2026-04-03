@@ -286,7 +286,7 @@ export function Lesson() {
       const items = await Promise.all(itemIds.map(id => learningItemService.getLearningItem(id)))
       const meanings = await learningItemService.getMeaningsBatch(itemIds)
       const itemStates = await learnerStateService.getItemStates(user.id)
-      const skillStates = await learnerStateService.getSkillStatesBatch(user.id, itemIds)
+      const skillStates = await learnerStateService.getSkillStatesBatch(user.id)
 
       // Create vocabulary items with all data
       const vocabItems: VocabularyItem[] = items.map(item => {
