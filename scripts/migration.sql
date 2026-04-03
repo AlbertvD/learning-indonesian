@@ -831,6 +831,25 @@ CREATE POLICY learner_analytics_events_own ON indonesian.learner_analytics_event
 GRANT SELECT, INSERT ON indonesian.learner_analytics_events TO authenticated;
 GRANT SELECT ON indonesian.learner_analytics_events TO authenticated;
 
+-- Seed exercise type availability (runtime feature flags)
+INSERT INTO indonesian.exercise_type_availability (
+  exercise_type, session_enabled, authoring_enabled, requires_approved_content, rollout_phase, notes
+) VALUES
+  ('recognition_mcq', true, true, false, 'full', 'Core exercise type'),
+  ('cued_recall', true, true, false, 'full', 'Core exercise type'),
+  ('typed_recall', true, true, false, 'full', 'Core exercise type'),
+  ('cloze', true, true, false, 'full', 'Core exercise type'),
+  ('contrast_pair', true, true, true, 'beta', 'Grammar-aware, requires published content'),
+  ('sentence_transformation', true, true, true, 'beta', 'Grammar-aware, requires published content'),
+  ('constrained_translation', true, true, true, 'beta', 'Grammar-aware, requires published content'),
+  ('speaking', false, true, true, 'alpha', 'Not yet enabled in sessions')
+ON CONFLICT (exercise_type) DO UPDATE SET
+  session_enabled = EXCLUDED.session_enabled,
+  authoring_enabled = EXCLUDED.authoring_enabled,
+  requires_approved_content = EXCLUDED.requires_approved_content,
+  rollout_phase = EXCLUDED.rollout_phase,
+  notes = EXCLUDED.notes;
+
 -- Storage buckets
 INSERT INTO storage.buckets (id, name, public)
 VALUES
