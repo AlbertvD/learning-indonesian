@@ -231,3 +231,38 @@ export interface WeeklyGoalResponse {
   todayPlan: TodayPlan | null
   requiredProfileAction?: 'set_timezone'
 }
+
+// === Content generation and exercise variants ===
+
+export interface ItemContextGrammarPattern {
+  id: string
+  context_id: string
+  grammar_pattern_id: string
+  is_primary: boolean
+  created_at: string
+}
+
+export interface ExerciseVariant {
+  id: string
+  exercise_type: string
+  learning_item_id: string
+  context_id: string
+  grammar_pattern_id: string | null
+  payload_json: Record<string, any>
+  answer_key_json: Record<string, any>
+  source_candidate_id: string | null
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface ExerciseTypeAvailability {
+  exercise_type: string
+  session_enabled: boolean
+  authoring_enabled: boolean
+  requires_approved_content: boolean
+  rollout_phase: string
+  notes: string | null
+  created_at: string
+  updated_at: string
+}

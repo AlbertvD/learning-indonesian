@@ -717,6 +717,111 @@ CREATE INDEX IF NOT EXISTS learner_analytics_events_created_at_idx ON indonesian
 UPDATE indonesian.learner_skill_state SET skill_type = 'form_recall' WHERE skill_type = 'recall';
 UPDATE indonesian.review_events SET skill_type = 'form_recall' WHERE skill_type = 'recall';
 
+-- === Content Generation and Staging Tables ===
+
+-- Textbook source metadata
+CREATE TABLE IF NOT EXISTS indonesian.textbook_sources (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  source_name text NOT NULL,
+  source_type text NOT NULL DEFAULT 'paper_textbook' CHECK (source_type = 'paper_textbook'),
+  publisher text,
+  edition text,
+  language text,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- Staged textbook pages with OCR
+CREATE TABLE IF NOT EXISTS indonesian.textbook_pages (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  textbook_source_id uuid NOT NULL REFERENCES indonesian.textbook_sources(id) ON DELETE CASCADE,
+  page_number integer NOT NULL,
+  raw_ocr_text text NOT NULL,
+  ocr_confidence numeric,
+  import_batch_id text,
+  needs_manual_review boolean NOT NULL DEFAULT false,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now(),
+  UNIQUE(textbook_source_id, page_number)
+);
+
+-- Grammar pattern definitions
+CREATE TABLE IF NOT EXISTS indonesian.grammar_patterns (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug text NOT NULL UNIQUE,
+  name text NOT NULL,
+  short_explanation text NOT NULL,
+  complexity_score integer NOT NULL,
+  confusion_group text,
+  introduced_by_source_id uuid REFERENCES indonesian.textbook_sources(id) ON DELETE SET NULL,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- Grammar pattern links for live contexts
+CREATE TABLE IF NOT EXISTS indonesian.item_context_grammar_patterns (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  context_id uuid NOT NULL REFERENCES indonesian.item_contexts(id) ON DELETE CASCADE,
+  grammar_pattern_id uuid NOT NULL REFERENCES indonesian.grammar_patterns(id) ON DELETE CASCADE,
+  is_primary boolean NOT NULL DEFAULT false,
+  created_at timestamptz DEFAULT now(),
+  UNIQUE(context_id, grammar_pattern_id)
+);
+
+-- Exercise type availability registry
+CREATE TABLE IF NOT EXISTS indonesian.exercise_type_availability (
+  exercise_type text PRIMARY KEY,
+  session_enabled boolean NOT NULL DEFAULT false,
+  authoring_enabled boolean NOT NULL DEFAULT false,
+  requires_approved_content boolean NOT NULL DEFAULT false,
+  rollout_phase text,
+  notes text,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- Staged AI-generated exercise candidates
+CREATE TABLE IF NOT EXISTS indonesian.generated_exercise_candidates (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  textbook_source_id uuid NOT NULL REFERENCES indonesian.textbook_sources(id) ON DELETE CASCADE,
+  textbook_page_id uuid NOT NULL REFERENCES indonesian.textbook_pages(id) ON DELETE CASCADE,
+  candidate_type text NOT NULL CHECK (candidate_type IN ('context', 'exercise_variant', 'grammar_pattern')),
+  exercise_type text NOT NULL,
+  review_status text NOT NULL DEFAULT 'pending_review' CHECK (review_status IN ('pending_review', 'approved', 'rejected', 'published')),
+  prompt_version text NOT NULL,
+  model_name text NOT NULL,
+  generated_payload_json jsonb NOT NULL,
+  reviewer_notes text,
+  approved_publication_target text,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- Published exercise variants
+CREATE TABLE IF NOT EXISTS indonesian.exercise_variants (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  exercise_type text NOT NULL,
+  learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
+  context_id uuid NOT NULL REFERENCES indonesian.item_contexts(id) ON DELETE CASCADE,
+  grammar_pattern_id uuid REFERENCES indonesian.grammar_patterns(id) ON DELETE SET NULL,
+  payload_json jsonb NOT NULL,
+  answer_key_json jsonb NOT NULL,
+  source_candidate_id uuid REFERENCES indonesian.generated_exercise_candidates(id) ON DELETE SET NULL,
+  is_active boolean NOT NULL DEFAULT true,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- Derived view for content review
+CREATE OR REPLACE VIEW indonesian.content_review_queue AS
+SELECT
+  id, textbook_source_id, textbook_page_id, candidate_type,
+  exercise_type, review_status, prompt_version, model_name,
+  generated_payload_json, reviewer_notes, approved_publication_target,
+  created_at, updated_at
+FROM indonesian.generated_exercise_candidates
+WHERE review_status IN ('pending_review', 'approved', 'rejected');
+
 -- RLS: Users can only read their own analytics (if needed for future features)
 ALTER TABLE indonesian.learner_analytics_events ENABLE ROW LEVEL SECURITY;
 CREATE POLICY learner_analytics_events_own ON indonesian.learner_analytics_events
