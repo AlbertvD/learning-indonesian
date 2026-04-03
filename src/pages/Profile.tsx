@@ -293,7 +293,7 @@ export function Profile() {
 
         <Paper p="xl" radius="md" {...paperProps}>
           <Stack gap="md">
-            <Title order={4} ta="center">{T.profile.sessionSize}</Title>
+            <Title order={4}>{T.profile.sessionSize}</Title>
             <Group justify="center" gap="md">
               <Button
                 variant="default"
