@@ -4,6 +4,7 @@ import type {
   LearnerItemState, LearnerSkillState,
   ExerciseItem, SessionQueueItem,
 } from '@/types/learning'
+import type { ExerciseVariant } from '@/types/contentGeneration'
 import { getRetrievability } from '@/lib/fsrs'
 
 export interface SessionBuildInput {
@@ -11,6 +12,7 @@ export interface SessionBuildInput {
   meaningsByItem: Record<string, ItemMeaning[]>
   contextsByItem: Record<string, ItemContext[]>
   variantsByItem: Record<string, ItemAnswerVariant[]>
+  exerciseVariantsByContext?: Record<string, ExerciseVariant[]>
   itemStates: Record<string, LearnerItemState>
   skillStates: Record<string, LearnerSkillState[]>
   preferredSessionSize: number
@@ -30,7 +32,7 @@ interface CandidateItem {
  * Build a session queue from the learning item pool.
  */
 export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] {
-  const { allItems, meaningsByItem, contextsByItem, variantsByItem, itemStates, skillStates, preferredSessionSize, lessonFilter, userLanguage } = input
+  const { allItems, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, itemStates, skillStates, preferredSessionSize, lessonFilter, userLanguage } = input
 
   // Filter items by lesson if scoped
   let eligibleItems = allItems
@@ -104,7 +106,7 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   const queue: SessionQueueItem[] = []
 
   for (const candidate of [...pickedDue, ...pickedWeak]) {
-    const exercises = selectExercises(candidate, meaningsByItem, contextsByItem, variantsByItem, userLanguage, eligibleItems)
+    const exercises = selectExercises(candidate, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, userLanguage, eligibleItems)
     for (const exercise of exercises) {
       queue.push({
         exerciseItem: exercise,
@@ -115,7 +117,7 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   }
 
   for (const candidate of pickedNew) {
-    const exercises = selectExercises(candidate, meaningsByItem, contextsByItem, variantsByItem, userLanguage, eligibleItems)
+    const exercises = selectExercises(candidate, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, userLanguage, eligibleItems)
     for (const exercise of exercises) {
       queue.push({
         exerciseItem: exercise,
@@ -146,8 +148,9 @@ function selectExercises(
   meaningsByItem: Record<string, ItemMeaning[]>,
   contextsByItem: Record<string, ItemContext[]>,
   variantsByItem: Record<string, ItemAnswerVariant[]>,
-  userLanguage: 'en' | 'nl',
-  allItems: LearningItem[],
+  exerciseVariantsByContext?: Record<string, ExerciseVariant[]>,
+  userLanguage: 'en' | 'nl' = 'en',
+  allItems: LearningItem[] = [],
 ): ExerciseItem[] {
   const { item, state } = candidate
   const meanings = meaningsByItem[item.id] ?? []
@@ -170,15 +173,34 @@ function selectExercises(
     }
   } else {
     // productive / maintenance: any exercise type
+    // Try to use published variants for grammar-aware types
     if (isSentenceType) {
       exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
     } else {
-      // Alternate between recognition and recall for variety
-      const preferRecall = Math.random() > 0.4
-      if (preferRecall) {
-        exercises.push(makeTypedRecall(item, meanings, contexts, variants))
-      } else {
-        exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
+      // Check if there are published variants for this item's contexts
+      const hasPublishedVariants = contexts.some(ctx => (exerciseVariantsByContext?.[ctx.id] ?? []).length > 0)
+
+      if (hasPublishedVariants) {
+        // Prefer published variants (contrast_pair, sentence_transformation, constrained_translation)
+        // Pick a random published variant
+        for (const context of contexts) {
+          const publishedVariants = exerciseVariantsByContext?.[context.id] ?? []
+          if (publishedVariants.length > 0) {
+            const variant = publishedVariants[Math.floor(Math.random() * publishedVariants.length)]
+            exercises.push(makePublishedExercise(item, meanings, context, variant))
+            break // Use first context with variants
+          }
+        }
+      }
+
+      // Fall back to live content if no published variants
+      if (exercises.length === 0) {
+        const preferRecall = Math.random() > 0.4
+        if (preferRecall) {
+          exercises.push(makeTypedRecall(item, meanings, contexts, variants))
+        } else {
+          exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
+        }
       }
     }
   }
@@ -265,6 +287,85 @@ function makeClozeExercise(
       targetWord: item.base_text,
       translation: clozeContext.translation_text,
     } : undefined,
+  }
+}
+
+function makePublishedExercise(
+  item: LearningItem,
+  meanings: ItemMeaning[],
+  context: ItemContext,
+  variant: ExerciseVariant,
+): ExerciseItem {
+  const exerciseType = variant.exercise_type as
+    | 'contrast_pair'
+    | 'sentence_transformation'
+    | 'constrained_translation'
+    | 'speaking'
+
+  const payload = variant.payload_json
+
+  const baseExercise: ExerciseItem = {
+    learningItem: item,
+    meanings,
+    contexts: [context],
+    answerVariants: [],
+    skillType: 'form_recall', // Placeholder; actual will be determined by type
+    exerciseType: exerciseType,
+  }
+
+  // Map published variant payload to exercise-specific data
+  switch (exerciseType) {
+    case 'contrast_pair':
+      return {
+        ...baseExercise,
+        skillType: 'recognition',
+        contrastPairData: {
+          promptText: payload.promptText || '',
+          targetMeaning: payload.targetMeaning || '',
+          options: payload.options || ['', ''],
+          correctOptionId: payload.correctOptionId || '0',
+          explanationText: payload.explanationText || '',
+        },
+      }
+
+    case 'sentence_transformation':
+      return {
+        ...baseExercise,
+        skillType: 'form_recall',
+        sentenceTransformationData: {
+          sourceSentence: payload.sourceSentence || '',
+          transformationInstruction: payload.transformationInstruction || '',
+          acceptableAnswers: payload.acceptableAnswers || [],
+          hintText: payload.hintText,
+          explanationText: payload.explanationText || '',
+        },
+      }
+
+    case 'constrained_translation':
+      return {
+        ...baseExercise,
+        skillType: 'meaning_recall',
+        constrainedTranslationData: {
+          sourceLanguageSentence: payload.sourceLanguageSentence || '',
+          requiredTargetPattern: payload.requiredTargetPattern || '',
+          acceptableAnswers: payload.acceptableAnswers || [],
+          disallowedShortcutForms: payload.disallowedShortcutForms,
+          explanationText: payload.explanationText || '',
+        },
+      }
+
+    case 'speaking':
+      return {
+        ...baseExercise,
+        skillType: 'spoken_production',
+        speakingData: {
+          promptText: payload.promptText || '',
+          targetPatternOrScenario: payload.targetPatternOrScenario,
+        },
+      }
+
+    default:
+      return baseExercise
   }
 }
 

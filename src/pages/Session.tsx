@@ -100,6 +100,7 @@ export function Session() {
         const meaningsByItem: Record<string, any> = {}
         const contextsByItem: Record<string, any> = {}
         const variantsByItem: Record<string, any> = {}
+        const exerciseVariantsByContext: Record<string, any> = {}
 
         // Run all queries in parallel to avoid URL length limits
         const results = await Promise.all(
@@ -112,16 +113,34 @@ export function Session() {
           )
         )
 
-        // Group by item ID
+        // Group by item ID and collect all context IDs
+        const allContextIds: string[] = []
         for (const { item, meanings, contexts, variants } of results) {
           if (meanings.length > 0) {
             meaningsByItem[item.id] = meanings
           }
           if (contexts.length > 0) {
             contextsByItem[item.id] = contexts
+            allContextIds.push(...contexts.map(c => c.id))
           }
           if (variants.length > 0) {
             variantsByItem[item.id] = variants
+          }
+        }
+
+        // Load published exercise variants for all contexts
+        if (allContextIds.length > 0) {
+          try {
+            const publishedVariants = await learningItemService.getExerciseVariantsByContext(allContextIds)
+            for (const variant of publishedVariants) {
+              if (!exerciseVariantsByContext[variant.context_id]) {
+                exerciseVariantsByContext[variant.context_id] = []
+              }
+              exerciseVariantsByContext[variant.context_id].push(variant)
+            }
+          } catch (err) {
+            // Log but don't fail if exercise variants not available
+            console.warn('Failed to load exercise variants:', err)
           }
         }
 
@@ -140,6 +159,7 @@ export function Session() {
           meaningsByItem,
           contextsByItem,
           variantsByItem,
+          exerciseVariantsByContext,
           itemStates,
           skillStates: skillStatesMap,
           preferredSessionSize,

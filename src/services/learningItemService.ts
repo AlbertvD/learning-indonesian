@@ -1,6 +1,13 @@
 // src/services/learningItemService.ts
 import { supabase } from '@/lib/supabase'
 import type { LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant } from '@/types/learning'
+import type { ExerciseVariant } from '@/types/contentGeneration'
+
+export interface ItemContextGrammarPattern {
+  context_id: string
+  grammar_pattern_id: string
+  pattern_name?: string
+}
 
 export const learningItemService = {
   async getLearningItems(): Promise<LearningItem[]> {
@@ -93,6 +100,27 @@ export const learningItemService = {
       .select('*')
       .in('learning_item_id', itemIds)
       .eq('is_accepted', true)
+    if (error) throw error
+    return data
+  },
+
+  async getExerciseVariantsByContext(contextIds: string[]): Promise<ExerciseVariant[]> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('exercise_variants')
+      .select('*')
+      .in('context_id', contextIds)
+      .eq('is_active', true)
+    if (error) throw error
+    return data
+  },
+
+  async getItemContextGrammarPatterns(contextIds: string[]): Promise<ItemContextGrammarPattern[]> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('item_context_grammar_patterns')
+      .select('context_id, grammar_pattern_id')
+      .in('context_id', contextIds)
     if (error) throw error
     return data
   },
