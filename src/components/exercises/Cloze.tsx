@@ -18,8 +18,14 @@ export function Cloze({ exerciseItem, onAnswer }: ClozeProps) {
   const [submitted, setShowFeedback] = useState(false)
   const [isCorrect, setIsCorrect] = useState(false)
   const [isFuzzy, setIsFuzzy] = useState(false)
-  const startTime = useRef(Date.now())
+  const startTime = useRef(0)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // Auto-focus on mount and capture start time (must be before early return to satisfy rules-of-hooks)
+  useEffect(() => {
+    startTime.current = Date.now()
+    inputRef.current?.focus()
+  }, [])
 
   if (!clozeContext) {
     return <Text c="red">Error: Missing cloze context</Text>
@@ -44,11 +50,6 @@ export function Cloze({ exerciseItem, onAnswer }: ClozeProps) {
     setShowFeedback(true)
     onAnswer(result.isCorrect, result.isFuzzy, latency, value)
   }
-
-  // Auto-focus on mount
-  useEffect(() => {
-    inputRef.current?.focus()
-  }, [])
 
   return (
     <Stack gap="xl">
