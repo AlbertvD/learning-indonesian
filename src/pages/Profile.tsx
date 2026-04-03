@@ -293,12 +293,7 @@ export function Profile() {
 
         <Paper p="xl" radius="md" {...paperProps}>
           <Stack gap="md">
-            <Group justify="center" gap="xs">
-              <Title order={4} mb={0}>{T.profile.sessionSize}</Title>
-              <Text size="xl" fw={700} mb={0}>
-                {sessionSize}
-              </Text>
-            </Group>
+            <Title order={4} ta="center">{T.profile.sessionSize}</Title>
             <Group justify="center" gap="md">
               <Button
                 variant="default"
@@ -320,7 +315,6 @@ export function Profile() {
                 <IconChevronRight size={16} />
               </Button>
             </Group>
-            <Text size="sm" c="dimmed" ta="center">{T.profile.sessionSizeDescription}</Text>
             <Box w="100%">
               <Slider
                 value={sessionSize}
