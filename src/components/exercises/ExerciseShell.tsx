@@ -3,6 +3,9 @@ import { notifications } from '@mantine/notifications'
 import { ExerciseFeedback } from './ExerciseFeedback'
 import { RecognitionMCQ } from './RecognitionMCQ'
 import { CuedRecallExercise } from './CuedRecallExercise'
+import { ContrastPairExercise } from './ContrastPairExercise'
+import { SentenceTransformationExercise } from './SentenceTransformationExercise'
+import { ConstrainedTranslationExercise } from './ConstrainedTranslationExercise'
 import { TypedRecall } from './TypedRecall'
 import { Cloze } from './Cloze'
 import { processReview, type ReviewInput } from '@/lib/reviewHandler'
@@ -150,6 +153,42 @@ export function ExerciseShell({
           userLanguage={userLanguage}
           onAnswer={(wasCorrect, latencyMs) => {
             handleAnswerFromExercise(wasCorrect, false, latencyMs, null)
+          }}
+        />
+      )
+
+    case 'contrast_pair':
+      return (
+        <ContrastPairExercise
+          key={`${currentItem.exerciseItem.learningItem.id}-${exerciseItem.exerciseType}`}
+          exerciseItem={exerciseItem}
+          userLanguage={userLanguage}
+          onAnswer={(wasCorrect, latencyMs) => {
+            handleAnswerFromExercise(wasCorrect, false, latencyMs, null)
+          }}
+        />
+      )
+
+    case 'sentence_transformation':
+      return (
+        <SentenceTransformationExercise
+          key={`${currentItem.exerciseItem.learningItem.id}-${exerciseItem.exerciseType}`}
+          exerciseItem={exerciseItem}
+          userLanguage={userLanguage}
+          onAnswer={(wasCorrect, isFuzzy, latencyMs, rawResponse) => {
+            handleAnswerFromExercise(wasCorrect, isFuzzy, latencyMs, rawResponse)
+          }}
+        />
+      )
+
+    case 'constrained_translation':
+      return (
+        <ConstrainedTranslationExercise
+          key={`${currentItem.exerciseItem.learningItem.id}-${exerciseItem.exerciseType}`}
+          exerciseItem={exerciseItem}
+          userLanguage={userLanguage}
+          onAnswer={(wasCorrect, isFuzzy, latencyMs, rawResponse) => {
+            handleAnswerFromExercise(wasCorrect, isFuzzy, latencyMs, rawResponse)
           }}
         />
       )
