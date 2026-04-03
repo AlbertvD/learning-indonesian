@@ -169,7 +169,7 @@ export function Profile() {
   }
 
   function handleIncreaseSessionSize() {
-    const newSize = Math.min(30, sessionSize + 1)
+    const newSize = Math.min(50, sessionSize + 1)
     setSessionSize(newSize)
     handleSessionSizeChange(newSize)
   }
@@ -310,7 +310,7 @@ export function Profile() {
                 variant="default"
                 size="sm"
                 onClick={handleIncreaseSessionSize}
-                disabled={savingSessionSize || sessionSize >= 30}
+                disabled={savingSessionSize || sessionSize >= 50}
               >
                 <IconChevronRight size={16} />
               </Button>
@@ -321,13 +321,14 @@ export function Profile() {
                 onChange={setSessionSize}
                 onChangeEnd={handleSessionSizeChange}
                 min={5}
-                max={30}
+                max={50}
                 step={1}
                 disabled={savingSessionSize}
                 marks={[
                   { value: 5, label: '5' },
                   { value: 15, label: '15' },
                   { value: 30, label: '30' },
+                  { value: 50, label: '50' },
                 ]}
                 label={(value) => `${value} ${T.profile.items}`}
               />
