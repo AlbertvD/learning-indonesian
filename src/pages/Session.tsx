@@ -6,6 +6,7 @@ import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
 import { translations } from '@/lib/i18n'
 import { buildSessionQueue, type SessionBuildInput } from '@/lib/sessionEngine'
+import { applyPolicies, type SessionPoliciesContext } from '@/lib/sessionPolicies'
 import type { ReviewResult } from '@/lib/reviewHandler'
 import { learningItemService } from '@/services/learningItemService'
 import { learnerStateService } from '@/services/learnerStateService'
@@ -153,8 +154,38 @@ export function Session() {
           return
         }
 
-        setQueue(builtQueue)
-        setResults({ correct: 0, total: builtQueue.length })
+        // Calculate learner metrics for policies
+        // Account age: use earliest item introduction date or default to 0
+        let accountAgeDays = 0
+        if (itemStatesArray.length > 0) {
+          const earliestIntroducedDate = itemStatesArray
+            .filter(s => s.introduced_at)
+            .map(s => new Date(s.introduced_at!).getTime())
+            .reduce((min, time) => Math.min(min, time), Date.now())
+          accountAgeDays = Math.floor((Date.now() - earliestIntroducedDate) / (1000 * 60 * 60 * 24))
+        }
+
+        const stableItemCount = itemStatesArray.filter(
+          s => s.stage !== 'new' && !s.suspended,
+        ).length
+
+        // Apply session policies to shape the queue
+        const policyContext: SessionPoliciesContext = {
+          accountAgeDays,
+          stableItemCount,
+          sessionInteractionCap: preferredSessionSize,
+          // exerciseTypeAvailability and grammarPatterns will be loaded from DB in Phase 2+
+        }
+
+        const shapedQueue = applyPolicies(builtQueue, policyContext)
+        if (shapedQueue.length === 0) {
+          setError('No exercises available after applying session policies.')
+          setLoading(false)
+          return
+        }
+
+        setQueue(shapedQueue)
+        setResults({ correct: 0, total: shapedQueue.length })
         setLoading(false)
       } catch (err) {
         const errMsg = err instanceof Error ? err.message : JSON.stringify(err)
