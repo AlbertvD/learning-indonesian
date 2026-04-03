@@ -18,7 +18,7 @@ import {
   Select,
 } from '@mantine/core'
 import { useMantineColorScheme } from '@mantine/core'
-import { IconMoon, IconSun } from '@tabler/icons-react'
+import { IconMoon, IconSun, IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
 import { useMediaQuery } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
@@ -162,6 +162,18 @@ export function Profile() {
     }
   }
 
+  function handleDecreaseSessionSize() {
+    const newSize = Math.max(5, sessionSize - 1)
+    setSessionSize(newSize)
+    handleSessionSizeChange(newSize)
+  }
+
+  function handleIncreaseSessionSize() {
+    const newSize = Math.min(30, sessionSize + 1)
+    setSessionSize(newSize)
+    handleSessionSizeChange(newSize)
+  }
+
   if (loading) {
     return (
       <Center h="50vh">
@@ -286,6 +298,27 @@ export function Profile() {
               <Text size="xl" fw={700} mb={0}>
                 {sessionSize}
               </Text>
+            </Group>
+            <Group justify="center" gap="md">
+              <Button
+                variant="default"
+                size="sm"
+                onClick={handleDecreaseSessionSize}
+                disabled={savingSessionSize || sessionSize <= 5}
+              >
+                <IconChevronLeft size={16} />
+              </Button>
+              <Text size="lg" fw={700} w={40} ta="center">
+                {sessionSize}
+              </Text>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={handleIncreaseSessionSize}
+                disabled={savingSessionSize || sessionSize >= 30}
+              >
+                <IconChevronRight size={16} />
+              </Button>
             </Group>
             <Text size="sm" c="dimmed" ta="center">{T.profile.sessionSizeDescription}</Text>
             <Box w="100%">
