@@ -238,7 +238,7 @@ function makeTypedRecall(
     meanings,
     contexts,
     answerVariants: variants,
-    skillType: 'recall',
+    skillType: 'form_recall',
     exerciseType: 'typed_recall',
   }
 }
@@ -258,7 +258,7 @@ function makeClozeExercise(
     meanings,
     contexts,
     answerVariants: variants,
-    skillType: 'recall',
+    skillType: 'form_recall',
     exerciseType: 'cloze',
     clozeContext: clozeContext ? {
       sentence: clozeContext.source_text,

@@ -56,9 +56,9 @@ export const sessionSummaryService = {
 
       if (reviews && reviews.length > 0) {
         // Count recalls completed
-        const recallCount = reviews.filter(r => r.skill_type === 'recall').length
+        const recallCount = reviews.filter(r => r.skill_type === 'form_recall').length
         if (recallCount > 0) {
-          const recallCorrect = reviews.filter(r => r.skill_type === 'recall' && r.was_correct).length
+          const recallCorrect = reviews.filter(r => r.skill_type === 'form_recall' && r.was_correct).length
           facts.push(`You completed ${recallCorrect} of ${recallCount} recall prompts`)
         }
 

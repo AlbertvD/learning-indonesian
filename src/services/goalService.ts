@@ -400,7 +400,7 @@ export const goalService = {
       .from('review_events')
       .select('was_correct')
       .eq('user_id', userId)
-      .eq('skill_type', 'recall')
+      .eq('skill_type', 'form_recall')
       .gte('created_at', goalSet.week_starts_at_utc)
       .lt('created_at', goalSet.week_ends_at_utc)
 
@@ -578,7 +578,7 @@ export const goalService = {
     const desiredRecall = Math.max(8, Math.ceil(dueTarget * 0.4))
     // We don't have a full interaction supply count here without generating a session,
     // so we use a conservative estimate based on due count.
-    const recallSupply = skills.filter(s => s.skill_type === 'recall' && new Date(s.next_due_at) <= now).length
+    const recallSupply = skills.filter(s => s.skill_type === 'form_recall' && new Date(s.next_due_at) <= now).length
     const recallTargetToday = Math.min(desiredRecall, recallSupply + newTarget)
 
     return {

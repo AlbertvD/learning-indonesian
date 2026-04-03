@@ -48,14 +48,14 @@ describe('checkPromotion', () => {
   it('promotes retrieving → productive with gate_check_passed=true (lower threshold)', () => {
     const item = makeItemState({ stage: 'retrieving', gate_check_passed: true })
     const recognition = makeSkillState({ skill_type: 'recognition', stability: 6, success_count: 3 })
-    const recall = makeSkillState({ skill_type: 'recall', stability: 6, success_count: 3 })
+    const recall = makeSkillState({ skill_type: 'form_recall', stability: 6, success_count: 3 })
     expect(checkPromotion(item, recognition, recall)).toBe('productive')
   })
 
   it('requires higher threshold for retrieving → productive when gate_check_passed=false', () => {
     const item = makeItemState({ stage: 'retrieving', gate_check_passed: false })
     const recognition = makeSkillState({ skill_type: 'recognition', stability: 6, success_count: 4 })
-    const recall = makeSkillState({ skill_type: 'recall', stability: 6, success_count: 4 })
+    const recall = makeSkillState({ skill_type: 'form_recall', stability: 6, success_count: 4 })
     // 4 successes < 5 required when gate check failed
     expect(checkPromotion(item, recognition, recall)).toBeNull()
   })
@@ -63,14 +63,14 @@ describe('checkPromotion', () => {
   it('promotes retrieving → productive at exactly 5 successes when gate_check_passed=false', () => {
     const item = makeItemState({ stage: 'retrieving', gate_check_passed: false })
     const recognition = makeSkillState({ skill_type: 'recognition', stability: 6, success_count: 5 })
-    const recall = makeSkillState({ skill_type: 'recall', stability: 6, success_count: 5 })
+    const recall = makeSkillState({ skill_type: 'form_recall', stability: 6, success_count: 5 })
     expect(checkPromotion(item, recognition, recall)).toBe('productive')
   })
 
   it('promotes productive → maintenance when stability high and no recent lapses', () => {
     const item = makeItemState({ stage: 'productive' })
     const recognition = makeSkillState({ skill_type: 'recognition', stability: 22, success_count: 10, lapse_count: 0 })
-    const recall = makeSkillState({ skill_type: 'recall', stability: 22, success_count: 10, lapse_count: 0 })
+    const recall = makeSkillState({ skill_type: 'form_recall', stability: 22, success_count: 10, lapse_count: 0 })
     expect(checkPromotion(item, recognition, recall)).toBe('maintenance')
   })
 })

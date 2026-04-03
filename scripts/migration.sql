@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS indonesian.learner_skill_state (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
-  skill_type text NOT NULL CHECK (skill_type IN ('recognition', 'recall')),
+  skill_type text NOT NULL CHECK (skill_type IN ('recognition', 'form_recall', 'meaning_recall', 'spoken_production')),
   stability numeric NOT NULL DEFAULT 0,
   difficulty numeric NOT NULL DEFAULT 0,
   retrievability numeric,
@@ -177,7 +177,7 @@ CREATE TABLE IF NOT EXISTS indonesian.review_events (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
-  skill_type text NOT NULL CHECK (skill_type IN ('recognition', 'recall')),
+  skill_type text NOT NULL CHECK (skill_type IN ('recognition', 'form_recall', 'meaning_recall', 'spoken_production')),
   exercise_type text NOT NULL CHECK (exercise_type IN ('recognition_mcq', 'typed_recall', 'cloze')),
   session_id uuid, -- FK added after learning_sessions check
   was_correct boolean NOT NULL,
@@ -712,6 +712,10 @@ CREATE TABLE IF NOT EXISTS indonesian.learner_analytics_events (
 CREATE INDEX IF NOT EXISTS learner_analytics_events_user_id_idx ON indonesian.learner_analytics_events(user_id);
 CREATE INDEX IF NOT EXISTS learner_analytics_events_event_type_idx ON indonesian.learner_analytics_events(event_type);
 CREATE INDEX IF NOT EXISTS learner_analytics_events_created_at_idx ON indonesian.learner_analytics_events(created_at);
+
+-- Skill facet migration: rename 'recall' to 'form_recall'
+UPDATE indonesian.learner_skill_state SET skill_type = 'form_recall' WHERE skill_type = 'recall';
+UPDATE indonesian.review_events SET skill_type = 'form_recall' WHERE skill_type = 'recall';
 
 -- RLS: Users can only read their own analytics (if needed for future features)
 ALTER TABLE indonesian.learner_analytics_events ENABLE ROW LEVEL SECURITY;

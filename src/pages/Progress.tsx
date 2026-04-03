@@ -65,7 +65,7 @@ export function Progress() {
           for (const skill of skillStates) {
             if (skill.skill_type === 'recognition') {
               recognitionStabilities.push(skill.stability)
-            } else if (skill.skill_type === 'recall') {
+            } else if (skill.skill_type === 'form_recall') {
               recallStabilities.push(skill.stability)
             }
           }

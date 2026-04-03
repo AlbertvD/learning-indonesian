@@ -81,7 +81,7 @@ export async function processReview(input: ReviewInput): Promise<ReviewResult> {
   // fetch the other skill type from DB.
   const allSkills = await learnerStateService.getSkillStates(userId, learningItem.id)
   const recognition = skillType === 'recognition' ? savedSkill : (allSkills.find(s => s.skill_type === 'recognition') ?? null)
-  const recall = skillType === 'recall' ? savedSkill : (allSkills.find(s => s.skill_type === 'recall') ?? null)
+  const recall = skillType === 'form_recall' ? savedSkill : (allSkills.find(s => s.skill_type === 'form_recall') ?? null)
 
   const itemStateForCheck = { ...updatedItemState, id: currentItemState?.id ?? '' } as LearnerItemState
 

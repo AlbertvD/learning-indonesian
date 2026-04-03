@@ -54,7 +54,7 @@ describe('buildSessionQueue', () => {
         times_seen: 5, is_leech: false, suspended: false, gate_check_passed: true, updated_at: '',
       }
       dueSkillStates[item.id] = [{
-        id: `ss${item.id}`, user_id: 'u1', learning_item_id: item.id, skill_type: 'recall',
+        id: `ss${item.id}`, user_id: 'u1', learning_item_id: item.id, skill_type: 'form_recall',
         stability: 3, difficulty: 5, retrievability: 0.5,
         last_reviewed_at: new Date(Date.now() - 86400000).toISOString(),
         next_due_at: new Date(Date.now() - 3600000).toISOString(),

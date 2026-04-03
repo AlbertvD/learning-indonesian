@@ -170,7 +170,7 @@ export const goalJobService = {
             .from('review_events')
             .select('was_correct')
             .eq('user_id', user.id)
-            .eq('skill_type', 'recall')
+            .eq('skill_type', 'form_recall')
             .gte('created_at', startOfDay.toISOString())
             .lt('created_at', endOfDay.toISOString())
 
