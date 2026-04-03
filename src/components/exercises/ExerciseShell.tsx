@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { notifications } from '@mantine/notifications'
 import { ExerciseFeedback } from './ExerciseFeedback'
 import { RecognitionMCQ } from './RecognitionMCQ'
+import { CuedRecallExercise } from './CuedRecallExercise'
 import { TypedRecall } from './TypedRecall'
 import { Cloze } from './Cloze'
 import { processReview, type ReviewInput } from '@/lib/reviewHandler'
@@ -132,6 +133,18 @@ export function ExerciseShell({
     case 'recognition_mcq':
       return (
         <RecognitionMCQ
+          key={`${currentItem.exerciseItem.learningItem.id}-${exerciseItem.exerciseType}`}
+          exerciseItem={exerciseItem}
+          userLanguage={userLanguage}
+          onAnswer={(wasCorrect, latencyMs) => {
+            handleAnswerFromExercise(wasCorrect, false, latencyMs, null)
+          }}
+        />
+      )
+
+    case 'cued_recall':
+      return (
+        <CuedRecallExercise
           key={`${currentItem.exerciseItem.learningItem.id}-${exerciseItem.exerciseType}`}
           exerciseItem={exerciseItem}
           userLanguage={userLanguage}

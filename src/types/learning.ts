@@ -117,7 +117,15 @@ export interface ReviewEvent {
 
 // === Exercise types ===
 
-export type ExerciseType = 'recognition_mcq' | 'typed_recall' | 'cloze'
+export type ExerciseType =
+  | 'recognition_mcq'
+  | 'cued_recall'
+  | 'typed_recall'
+  | 'cloze'
+  | 'contrast_pair'
+  | 'sentence_transformation'
+  | 'constrained_translation'
+  | 'speaking'
 
 export interface ExerciseItem {
   learningItem: LearningItem
@@ -126,13 +134,53 @@ export interface ExerciseItem {
   answerVariants: ItemAnswerVariant[]
   skillType: SkillType
   exerciseType: ExerciseType
-  /** For MCQ: distractor options */
+  /** For MCQ exercises: distractor options */
   distractors?: string[]
   /** For cloze: the sentence with blank and the target word */
   clozeContext?: {
     sentence: string
     targetWord: string
     translation: string | null
+  }
+  /** For cued_recall: optional cue text and options */
+  cuedRecallData?: {
+    promptMeaningText: string
+    cueText?: string
+    options: string[]
+    correctOptionId: string
+    explanationText?: string
+  }
+  /** For contrast_pair: contrast options and metadata */
+  contrastPairData?: {
+    promptText: string
+    targetMeaning: string
+    options: [string, string]
+    correctOptionId: string
+    explanationText: string
+  }
+  /** For sentence_transformation: source and instruction */
+  sentenceTransformationData?: {
+    sourceSentence: string
+    transformationInstruction: string
+    acceptableAnswers: string[]
+    hintText?: string
+    explanationText: string
+  }
+  /** For constrained_translation: translation with constraints */
+  constrainedTranslationData?: {
+    sourceLanguageSentence: string
+    requiredTargetPattern: string
+    acceptableAnswers: string[]
+    disallowedShortcutForms?: string[]
+    explanationText: string
+  }
+  /** For speaking: prompt and scenario */
+  speakingData?: {
+    promptText: string
+    targetPatternOrScenario?: string
+    transcript?: string
+    selfRating?: number
+    confidenceScore?: number
   }
 }
 
