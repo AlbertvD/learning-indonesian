@@ -13,3 +13,6 @@ content/raw/
 
 # Intermediate extraction JSON — not committed
 content/extracted/
+
+# Git worktrees — isolated workspaces
+.worktrees/
