@@ -26,6 +26,9 @@ CREATE TABLE IF NOT EXISTS indonesian.profiles (
 -- Ensure preferred_session_size exists if table was already there
 ALTER TABLE indonesian.profiles ADD COLUMN IF NOT EXISTS preferred_session_size integer NOT NULL DEFAULT 15;
 
+-- Timezone for weekly goal system (IANA timezone name, e.g. 'Europe/Amsterdam')
+ALTER TABLE indonesian.profiles ADD COLUMN IF NOT EXISTS timezone text;
+
 -- Admin roles
 CREATE TABLE IF NOT EXISTS indonesian.user_roles (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -259,6 +262,75 @@ CREATE INDEX IF NOT EXISTS idx_learner_item_state_stage ON indonesian.learner_it
 CREATE INDEX IF NOT EXISTS idx_learner_skill_state_due ON indonesian.learner_skill_state(user_id, next_due_at);
 CREATE INDEX IF NOT EXISTS idx_review_events_user_time ON indonesian.review_events(user_id, created_at);
 
+-- Weekly goal system tables
+CREATE TABLE IF NOT EXISTS indonesian.learner_weekly_goal_sets (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  goal_timezone text NOT NULL,
+  week_start_date_local date NOT NULL,
+  week_end_date_local date NOT NULL,
+  week_starts_at_utc timestamptz NOT NULL,
+  week_ends_at_utc timestamptz NOT NULL,
+  generation_strategy_version text DEFAULT 'v1',
+  generated_at timestamptz DEFAULT now(),
+  closing_overdue_count integer,
+  closed_at timestamptz,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now(),
+  UNIQUE(user_id, week_starts_at_utc)
+);
+
+CREATE TABLE IF NOT EXISTS indonesian.learner_weekly_goals (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  goal_set_id uuid NOT NULL REFERENCES indonesian.learner_weekly_goal_sets(id) ON DELETE CASCADE,
+  goal_type text NOT NULL CHECK (goal_type IN ('consistency', 'recall_quality', 'usable_vocabulary', 'review_health')),
+  goal_direction text NOT NULL CHECK (goal_direction IN ('at_least', 'at_most')),
+  goal_unit text NOT NULL CHECK (goal_unit IN ('count', 'percent')),
+  target_value_numeric numeric NOT NULL,
+  current_value_numeric numeric DEFAULT 0,
+  status text NOT NULL DEFAULT 'on_track' CHECK (status IN ('on_track', 'at_risk', 'achieved', 'missed')),
+  is_provisional boolean DEFAULT false,
+  provisional_reason text,
+  sample_size integer DEFAULT 0,
+  goal_config_jsonb jsonb DEFAULT '{}',
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now(),
+  UNIQUE(goal_set_id, goal_type)
+);
+
+CREATE TABLE IF NOT EXISTS indonesian.learner_stage_events (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
+  from_stage text NOT NULL CHECK (from_stage IN ('new', 'anchoring', 'retrieving', 'productive', 'maintenance')),
+  to_stage text NOT NULL CHECK (to_stage IN ('new', 'anchoring', 'retrieving', 'productive', 'maintenance')),
+  source_review_event_id uuid UNIQUE,
+  created_at timestamptz DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS indonesian.learner_daily_goal_rollups (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  goal_timezone text NOT NULL,
+  local_date date NOT NULL,
+  study_day_completed boolean DEFAULT false,
+  recall_accuracy numeric,
+  recall_sample_size integer DEFAULT 0,
+  usable_items_gained_today integer DEFAULT 0,
+  usable_items_total integer DEFAULT 0,
+  overdue_count integer DEFAULT 0,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now(),
+  UNIQUE(user_id, local_date)
+);
+
+-- Indexes for weekly goal queries
+CREATE INDEX IF NOT EXISTS idx_weekly_goal_sets_user_week ON indonesian.learner_weekly_goal_sets(user_id, week_starts_at_utc);
+CREATE INDEX IF NOT EXISTS idx_weekly_goal_sets_finalization ON indonesian.learner_weekly_goal_sets(user_id, closed_at, week_ends_at_utc);
+CREATE INDEX IF NOT EXISTS idx_stage_events_user_time ON indonesian.learner_stage_events(user_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_stage_events_to_stage ON indonesian.learner_stage_events(user_id, to_stage, created_at);
+CREATE INDEX IF NOT EXISTS idx_daily_rollups_user_date ON indonesian.learner_daily_goal_rollups(user_id, local_date);
+
 -- RLS and Grants
 GRANT USAGE ON SCHEMA indonesian TO authenticated, anon;
 GRANT SELECT ON indonesian.profiles TO authenticated;
@@ -278,6 +350,10 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.learning_sessions TO authenti
 GRANT INSERT ON indonesian.error_logs TO authenticated;
 GRANT SELECT ON indonesian.leaderboard TO authenticated;
 GRANT SELECT ON indonesian.user_roles TO authenticated;
+GRANT SELECT, INSERT, UPDATE ON indonesian.learner_weekly_goal_sets TO authenticated;
+GRANT SELECT, INSERT, UPDATE ON indonesian.learner_weekly_goals TO authenticated;
+GRANT SELECT, INSERT ON indonesian.learner_stage_events TO authenticated;
+GRANT SELECT, INSERT, UPDATE ON indonesian.learner_daily_goal_rollups TO authenticated;
 
 -- Service role permissions (for health checks and scripts)
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA indonesian TO service_role;
@@ -300,6 +376,10 @@ ALTER TABLE indonesian.review_events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.lesson_progress ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.learning_sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.error_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.learner_weekly_goal_sets ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.learner_weekly_goals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.learner_stage_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.learner_daily_goal_rollups ENABLE ROW LEVEL SECURITY;
 
 -- Drop and recreate policies
 DO $$ DECLARE r record; BEGIN
@@ -370,6 +450,19 @@ CREATE POLICY "learning_sessions_write" ON indonesian.learning_sessions FOR ALL 
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
 CREATE POLICY "error_logs_insert" ON indonesian.error_logs FOR INSERT TO authenticated WITH CHECK (true);
+
+CREATE POLICY "learner_weekly_goal_sets_owner" ON indonesian.learner_weekly_goal_sets FOR ALL TO authenticated
+  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
+
+CREATE POLICY "learner_weekly_goals_via_goal_set" ON indonesian.learner_weekly_goals FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM indonesian.learner_weekly_goal_sets WHERE id = goal_set_id AND user_id = auth.uid()))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.learner_weekly_goal_sets WHERE id = goal_set_id AND user_id = auth.uid()));
+
+CREATE POLICY "learner_stage_events_owner" ON indonesian.learner_stage_events FOR ALL TO authenticated
+  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
+
+CREATE POLICY "learner_daily_goal_rollups_owner" ON indonesian.learner_daily_goal_rollups FOR ALL TO authenticated
+  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
 -- Health check RPC
 CREATE OR REPLACE FUNCTION indonesian.schema_health()
