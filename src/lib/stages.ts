@@ -1,12 +1,15 @@
 // src/lib/stages.ts
 import type { LearnerItemState, LearnerSkillState, LearnerStage } from '@/types/learning'
 
-// Promotion thresholds (tunable)
-const ANCHORING_RECOGNITION_STABILITY = 2.0
-const ANCHORING_RECOGNITION_SUCCESS = 3
-const RETRIEVING_STABILITY = 5.0
-const RETRIEVING_SUCCESS_GATE_PASSED = 3
-const RETRIEVING_SUCCESS_GATE_FAILED = 5
+// Promotion thresholds (tuned for language learning progression)
+// Anchoring → Retrieving: Recognition only, lower threshold for faster progression
+const ANCHORING_RECOGNITION_STABILITY = 1.8 // Lowered from 2.0 for quicker anchor phase
+const ANCHORING_RECOGNITION_SUCCESS = 3    // 3 correct reviews
+// Retrieving → Productive: Both recognition and recall needed
+const RETRIEVING_STABILITY = 4.5            // Lowered from 5.0 for natural progression
+const RETRIEVING_SUCCESS_GATE_PASSED = 3    // After passing first test
+const RETRIEVING_SUCCESS_GATE_FAILED = 5    // After failing first test
+// Productive → Maintenance: Very strong, no lapses
 const PRODUCTIVE_STABILITY = 21.0
 
 const STAGE_ORDER: LearnerStage[] = ['new', 'anchoring', 'retrieving', 'productive', 'maintenance']

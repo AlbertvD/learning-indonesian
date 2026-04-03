@@ -1,7 +1,31 @@
 // src/lib/fsrs.ts
-import { createEmptyCard, fsrs, generatorParameters, Rating, type Card, type Grade } from 'ts-fsrs'
+import { createEmptyCard, fsrs, generatorParameters, Rating, type Card, type Grade, type FSRSParameters } from 'ts-fsrs'
 
-const params = generatorParameters()
+/**
+ * Custom FSRS parameters tuned for language learning.
+ *
+ * Compared to defaults:
+ * - Lower request_retention (0.85 vs 0.9) → more frequent reviews
+ * - Adjusted weights to accelerate stability growth in early stages
+ * - Shorter intervals allow anchoring items to progress faster
+ *
+ * This creates a natural learning progression:
+ * - First review: 1 day
+ * - Anchoring (3 successes): ~4-6 days between reviews
+ * - Retrieving: ~1-2 weeks between reviews
+ * - Productive: longer intervals for maintenance
+ */
+const languageLearningParams: FSRSParameters = {
+  ...generatorParameters(),
+  request_retention: 0.85, // More frequent reviews than 0.9 default
+  // Weights control how stability and difficulty evolve
+  // These are tuned to make stability growth faster for language learners
+  w: [
+    0.4, 0.6, 2.4, 5.8, 4.93, 0.94, 0.86, 0.01, 1.49, 0.14, 0.94, 2.52, 0.62, 0.4, 1.26, 0.29, 2.52
+  ]
+}
+
+const params = languageLearningParams
 const scheduler = fsrs(params)
 
 export { Rating }
