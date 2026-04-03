@@ -18,8 +18,10 @@ import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
 import { learnerStateService } from '@/services/learnerStateService'
 import { lessonService } from '@/services/lessonService'
+import { goalService } from '@/services/goalService'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
+import type { WeeklyGoal } from '@/types/learning'
 import classes from './Progress.module.css'
 
 export function Progress() {
@@ -31,6 +33,8 @@ export function Progress() {
   const [skillStats, setSkillStats] = useState({ avgRecognition: 0, avgRecall: 0 })
   const [lessonsCompleted, setLessonsCompleted] = useState({ completed: 0, total: 0 })
   const [dueStats, setDueStats] = useState({ today: 0, thisWeek: 0 })
+  const [weeklyGoals, setWeeklyGoals] = useState<WeeklyGoal[] | null>(null)
+  const [dailyRollups, setDailyRollups] = useState<any[] | null>(null)
 
   useEffect(() => {
     async function fetchData() {
@@ -107,6 +111,35 @@ export function Progress() {
 
         const completed = lessonProgress.filter((lp: any) => lp.completed_at != null)
         setLessonsCompleted({ completed: completed.length, total: lessons.length })
+
+        // Fetch weekly goal data
+        try {
+          const goalProgress = await goalService.getGoalProgress(user.id)
+          if (goalProgress.state !== 'timezone_required' && goalProgress.weeklyGoals) {
+            setWeeklyGoals(goalProgress.weeklyGoals)
+          }
+        } catch (err) {
+          console.error('Failed to fetch weekly goals:', err)
+        }
+
+        // Fetch daily rollup data for trends (last 7 days)
+        try {
+          const { data: rollups } = await (async () => {
+            const supabase = (await import('@/lib/supabase')).supabase
+            return supabase
+              .schema('indonesian')
+              .from('learner_daily_goal_rollups')
+              .select('*')
+              .eq('user_id', user.id)
+              .order('local_date', { ascending: false })
+              .limit(7)
+          })()
+          if (rollups) {
+            setDailyRollups(rollups.reverse()) // Reverse to show oldest first
+          }
+        } catch (err) {
+          console.error('Failed to fetch daily rollups:', err)
+        }
       } catch (err) {
         logError({ page: 'progress', action: 'fetchData', error: err })
         notifications.show({
@@ -171,6 +204,93 @@ export function Progress() {
             </Stack>
           </Stack>
         </Paper>
+
+        {/* Weekly Goals Summary */}
+        {weeklyGoals && weeklyGoals.length > 0 && (
+          <Paper p="xl" radius="md" className={classes.card}>
+            <Stack gap="md">
+              <Title order={4}>This Week's Goals</Title>
+              <Stack gap="sm">
+                {weeklyGoals.map((goal) => {
+                  const statusColor = goal.status === 'achieved' ? 'green' : goal.status === 'on_track' ? 'blue' : goal.status === 'at_risk' ? 'yellow' : 'red'
+                  const goalLabel = {
+                    consistency: 'Study Consistency',
+                    recall_quality: 'Recall Quality',
+                    usable_vocabulary: 'Vocabulary Growth',
+                    review_health: 'Review Backlog'
+                  }[goal.goal_type] || goal.goal_type
+
+                  return (
+                    <Box key={goal.id}>
+                      <Group justify="space-between" mb="4">
+                        <Text size="sm">{goalLabel}</Text>
+                        <Text size="xs" c={statusColor} fw={600}>{goal.status.toUpperCase()}</Text>
+                      </Group>
+                      <MantineProgress
+                        value={Math.min(100, (goal.current_value_numeric / goal.target_value_numeric) * 100)}
+                        color={statusColor}
+                        size="sm"
+                        radius="md"
+                      />
+                      <Text size="xs" c="dimmed" mt="4">
+                        {goal.current_value_numeric} / {goal.target_value_numeric}
+                      </Text>
+                    </Box>
+                  )
+                })}
+              </Stack>
+            </Stack>
+          </Paper>
+        )}
+
+        {/* Daily Rollup Trends */}
+        {dailyRollups && dailyRollups.length > 0 && (
+          <>
+            <Paper p="xl" radius="md" className={classes.card}>
+              <Stack gap="md">
+                <Title order={4}>Productive Gains Trend</Title>
+                <Stack gap="sm">
+                  {dailyRollups.map((rollup, idx) => (
+                    <Box key={idx}>
+                      <Group justify="space-between" mb="4">
+                        <Text size="sm">{new Date(rollup.local_date).toLocaleDateString()}</Text>
+                        <Text size="sm" fw={500}>{rollup.usable_items_gained_today ?? 0} items</Text>
+                      </Group>
+                      <MantineProgress
+                        value={Math.min(100, ((rollup.usable_items_gained_today ?? 0) / 5) * 100)}
+                        color="teal"
+                        size="sm"
+                        radius="md"
+                      />
+                    </Box>
+                  ))}
+                </Stack>
+              </Stack>
+            </Paper>
+
+            <Paper p="xl" radius="md" className={classes.card}>
+              <Stack gap="md">
+                <Title order={4}>Backlog Trend</Title>
+                <Stack gap="sm">
+                  {dailyRollups.map((rollup, idx) => (
+                    <Box key={idx}>
+                      <Group justify="space-between" mb="4">
+                        <Text size="sm">{new Date(rollup.local_date).toLocaleDateString()}</Text>
+                        <Text size="sm" fw={500}>{rollup.overdue_count ?? 0} overdue</Text>
+                      </Group>
+                      <MantineProgress
+                        value={Math.min(100, ((rollup.overdue_count ?? 0) / 30) * 100)}
+                        color={rollup.overdue_count === 0 ? 'green' : rollup.overdue_count < 20 ? 'yellow' : 'red'}
+                        size="sm"
+                        radius="md"
+                      />
+                    </Box>
+                  ))}
+                </Stack>
+              </Stack>
+            </Paper>
+          </>
+        )}
 
         {/* Memory strength */}
         <Paper p="xl" radius="md" className={classes.card} style={{ overflow: 'visible' }}>
