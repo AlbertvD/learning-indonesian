@@ -689,6 +689,39 @@ SELECT cron.schedule('goal-daily-rollup', '15 * * * *', 'SELECT indonesian.job_d
 -- Integrity repair: daily at 02:30 UTC
 SELECT cron.schedule('goal-integrity-repair', '30 2 * * *', 'SELECT indonesian.job_integrity_repair()');
 
+-- Analytics: track user interactions with goal system and learning
+CREATE TABLE IF NOT EXISTS indonesian.learner_analytics_events (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  event_type text NOT NULL CHECK (event_type IN (
+    'goal_generated',
+    'goal_viewed',
+    'daily_plan_viewed',
+    'session_started_from_today',
+    'goal_achieved',
+    'goal_missed',
+    'session_summary_viewed'
+  )),
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  goal_id uuid,
+  goal_type text CHECK (goal_type IN ('consistency', 'recall_quality', 'usable_vocabulary', 'review_health')),
+  session_id uuid,
+  metadata jsonb DEFAULT '{}',
+  created_at timestamptz DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS learner_analytics_events_user_id_idx ON indonesian.learner_analytics_events(user_id);
+CREATE INDEX IF NOT EXISTS learner_analytics_events_event_type_idx ON indonesian.learner_analytics_events(event_type);
+CREATE INDEX IF NOT EXISTS learner_analytics_events_created_at_idx ON indonesian.learner_analytics_events(created_at);
+
+-- RLS: Users can only read their own analytics (if needed for future features)
+ALTER TABLE indonesian.learner_analytics_events ENABLE ROW LEVEL SECURITY;
+CREATE POLICY learner_analytics_events_own ON indonesian.learner_analytics_events
+  FOR SELECT USING (auth.uid() = user_id OR EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+
+-- Grants: Authenticated users can insert analytics events
+GRANT SELECT, INSERT ON indonesian.learner_analytics_events TO authenticated;
+GRANT SELECT ON indonesian.learner_analytics_events TO authenticated;
+
 -- Storage buckets
 INSERT INTO storage.buckets (id, name, public)
 VALUES

@@ -10,6 +10,7 @@ import { processReview, type ReviewInput } from '@/lib/reviewHandler'
 import { learningItemService } from '@/services/learningItemService'
 import { learnerStateService } from '@/services/learnerStateService'
 import { goalService } from '@/services/goalService'
+import { analyticsService } from '@/services/analyticsService'
 import { sessionSummaryService, type SessionImpactMessages } from '@/services/sessionSummaryService'
 import { RecognitionMCQ } from '@/components/exercises/RecognitionMCQ'
 import { TypedRecall } from '@/components/exercises/TypedRecall'
@@ -67,6 +68,9 @@ export function Session() {
           throw new Error(`startSession failed: ${JSON.stringify(e)}`)
         }
         setSessionId(sid)
+
+        // Track session started event
+        analyticsService.trackSessionStartedFromToday(user.id, sid)
 
         // Load all necessary data
         let items: Awaited<ReturnType<typeof learningItemService.getLearningItems>>

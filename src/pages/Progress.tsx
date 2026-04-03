@@ -19,6 +19,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { learnerStateService } from '@/services/learnerStateService'
 import { lessonService } from '@/services/lessonService'
 import { goalService } from '@/services/goalService'
+import { analyticsService } from '@/services/analyticsService'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
 import type { WeeklyGoal } from '@/types/learning'
@@ -166,6 +167,15 @@ export function Progress() {
   const recognitionStrengthPercent = Math.min(100, Math.round((skillStats.avgRecognition / 10) * 100))
   const recallStrengthPercent = Math.min(100, Math.round((skillStats.avgRecall / 10) * 100))
   const lessonProgressPercent = lessonsCompleted.total > 0 ? Math.round((lessonsCompleted.completed / lessonsCompleted.total) * 100) : 0
+
+  // Track goal views when goals are available
+  useEffect(() => {
+    if (user && weeklyGoals && weeklyGoals.length > 0) {
+      weeklyGoals.forEach(goal => {
+        analyticsService.trackGoalViewed(user.id, goal.id, goal.goal_type)
+      })
+    }
+  }, [user, weeklyGoals])
 
   return (
     <Container size="md">

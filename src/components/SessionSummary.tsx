@@ -1,5 +1,8 @@
+import { useEffect } from 'react'
 import { Box, Container, Stack, Text, Button, Group, Badge, ThemeIcon, rem } from '@mantine/core'
 import { IconCheck, IconTrendingUp } from '@tabler/icons-react'
+import { useAuthStore } from '@/stores/authStore'
+import { analyticsService } from '@/services/analyticsService'
 import classes from './SessionSummary.module.css'
 
 interface SessionSummaryProps {
@@ -15,7 +18,16 @@ interface SessionSummaryProps {
 }
 
 export function SessionSummary({ results, goalImpactMessages, onComplete }: SessionSummaryProps) {
+  const user = useAuthStore((state) => state.user)
   const percentage = Math.round((results.correct / results.total) * 100)
+
+  // Track session summary viewed event
+  useEffect(() => {
+    if (user && goalImpactMessages) {
+      const impactCount = (goalImpactMessages.sessionLocalFacts?.length || 0) + (goalImpactMessages.weeklyImpactChanges?.length || 0)
+      analyticsService.trackSessionSummaryViewed(user.id, '', impactCount)
+    }
+  }, [user, goalImpactMessages])
 
   return (
     <Container size="sm" py="xl">
