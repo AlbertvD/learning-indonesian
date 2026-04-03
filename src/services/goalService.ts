@@ -587,5 +587,24 @@ export const goalService = {
       recall_interactions_today_target: recallTargetToday,
       estimated_minutes_today: Math.ceil((dueTarget + newTarget) * 0.33)
     }
+  },
+
+  /**
+   * Helper for job service: get default target values for a goal type.
+   * Used by integrity repair sweeper to recreate missing goal rows.
+   */
+  getDefaultTargets(goalType: string): { direction: string; unit: string; target: number } {
+    switch (goalType) {
+      case 'consistency':
+        return { direction: 'at_least', unit: 'count', target: 4 }
+      case 'recall_quality':
+        return { direction: 'at_least', unit: 'percent', target: 0.80 }
+      case 'usable_vocabulary':
+        return { direction: 'at_least', unit: 'count', target: 8 }
+      case 'review_health':
+        return { direction: 'at_most', unit: 'count', target: 20 }
+      default:
+        throw new Error(`Unknown goal type: ${goalType}`)
+    }
   }
 }

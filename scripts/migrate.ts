@@ -2,7 +2,6 @@
 // Run with: bun scripts/migrate.ts
 // Then execute scripts/migration.sql via psql or Supabase dashboard SQL editor
 
-const sql = await Bun.file('scripts/migration.sql').text()
 console.log('Read migration SQL from scripts/migration.sql')
 
 const DB_PASSWORD = process.env.SUPABASE_DB_PASSWORD
