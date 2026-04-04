@@ -7,7 +7,7 @@ export const learningItems = [
     "translation_nl": "om vijf uur 's ochtends gonst het strand van de bedrijvigheid. Van",
     "translation_en": "",
     "source_page": 1,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "- nasi putih",
@@ -16,7 +16,7 @@ export const learningItems = [
     "translation_nl": "gekookte witte rijst",
     "translation_en": "",
     "source_page": 2,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "- nasi goreng",
@@ -25,7 +25,7 @@ export const learningItems = [
     "translation_nl": "gekookte rijst, daarna met kruiden gebakken",
     "translation_en": "",
     "source_page": 2,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "- nasi kuning",
@@ -34,7 +34,7 @@ export const learningItems = [
     "translation_nl": "met kruiden geel gekookte rijst",
     "translation_en": "",
     "source_page": 2,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "naar internationaal niveau getild",
@@ -43,7 +43,7 @@ export const learningItems = [
     "translation_nl": "vanaf Rp 80.000 tot Rp 150.000 of duurder.",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "Tips voor het zoeken naar accommodatie",
@@ -52,7 +52,7 @@ export const learningItems = [
     "translation_nl": "*_Laat je niet onmiddellijk door iemand meeslepen. Neem bij aankomst in een",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "DI HOTEL\n\nIbu Dewi",
@@ -61,7 +61,7 @@ export const learningItems = [
     "translation_nl": "Selamat siang, Mas. Kamar saya nomor berapa?",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "Mas Wawan",
@@ -70,7 +70,7 @@ export const learningItems = [
     "translation_nl": "Nomor 215, Bu. Di lantai 2.",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "Ibu Dewi",
@@ -79,7 +79,7 @@ export const learningItems = [
     "translation_nl": "Ini paspor saya. Kunci saya di mana?",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "Mas Wawan",
@@ -88,7 +88,7 @@ export const learningItems = [
     "translation_nl": "Kunci yang kecil dan kuning ini kunci Ibu, silakan!",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "Ibu Dewi",
@@ -97,7 +97,7 @@ export const learningItems = [
     "translation_nl": "Kamar saya bagus. Kamar mandi ada di mana?",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "Mas Wawan",
@@ -106,7 +106,7 @@ export const learningItems = [
     "translation_nl": "Di sini, Bu. Handuk, sabun dan sikat gigi ada. Di situ bak air.",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "Ibu Dewi",
@@ -115,7 +115,7 @@ export const learningItems = [
     "translation_nl": "Oke, terima kasih, ya Mas!",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "Ibu Dewi",
@@ -124,7 +124,7 @@ export const learningItems = [
     "translation_nl": "Mas, saya ingin makan. Apa makanan yang enak?",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "Mas Imran",
@@ -133,7 +133,7 @@ export const learningItems = [
     "translation_nl": "Oo, apa Ibu suka ayam pedas, nasi kuning dan lauk?",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "Ibu Dewi",
@@ -142,7 +142,7 @@ export const learningItems = [
     "translation_nl": "Eeh... suka, tetapi saya ingin makan sate kambing, gado-gado dan",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "Ibu Dewi : Eeh... suka, tetapi saya ingin makan sate kambing, gado",
@@ -151,7 +151,7 @@ export const learningItems = [
     "translation_nl": "gado dan",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "mas",
@@ -160,7 +160,7 @@ export const learningItems = [
     "translation_nl": "emas goud 400 empat ratus 900 sembilan ratus",
     "translation_en": "",
     "source_page": 4,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "nnen we het proces ais volgt voorstellen",
@@ -169,7 +169,7 @@ export const learningItems = [
     "translation_nl": "{woord of woordgroep / cawan | yang + woord/",
     "translation_en": "",
     "source_page": 5,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "Bij ongelijke nadruk is de volgorde",
@@ -178,7 +178,7 @@ export const learningItems = [
     "translation_nl": "(bijv.nw.) yang (bijv. nw.)",
     "translation_en": "",
     "source_page": 6,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "Bij gelijke nadruk gebruiken we",
@@ -187,7 +187,7 @@ export const learningItems = [
     "translation_nl": "yang (bijv. nw.) dan (bijv. nw.) 9. _ Waar is die nieuwe kast?",
     "translation_en": "",
     "source_page": 6,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "Contoh",
@@ -196,7 +196,7 @@ export const learningItems = [
     "translation_nl": "3 koffers Itu berapa koper? Itu tiga koper",
     "translation_en": "",
     "source_page": 6,
-    "review_status": "pending_review"
+    "review_status": "approved"
   },
   {
     "base_text": "ada pl 2. terlalu 7. dari 12. kiri 17. pelan",
@@ -205,6 +205,6 @@ export const learningItems = [
     "translation_nl": "pelan",
     "translation_en": "",
     "source_page": 6,
-    "review_status": "pending_review"
+    "review_status": "approved"
   }
 ]

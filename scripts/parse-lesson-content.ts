@@ -56,7 +56,8 @@ interface ExerciseCandidateStaging {
 /** Matches lines like "word = translation" or "word: translation" */
 function parseVocabularyLines(text: string, pageNum: number): LearningItemStaging[] {
   const items: LearningItemStaging[] = []
-  const vocabRegex = /^([A-Za-z\s'-]+(?:\([^)]*\))?)\s*[=:]\s*(.+)$/gm
+  // Updated regex to handle accented characters (á, é, í, ó, ú, à, è, ì, ò, ù, ä, ë, ï, ö, ü, etc.)
+  const vocabRegex = /^([A-Za-zÀ-ÿ\s'-]+(?:\([^)]*\))?)\s*[=:]\s*(.+)$/gm
   let match: RegExpExecArray | null
 
   while ((match = vocabRegex.exec(text)) !== null) {
@@ -66,7 +67,7 @@ function parseVocabularyLines(text: string, pageNum: number): LearningItemStagin
     // Skip if either side is too long (probably not a vocab entry)
     if (indonesian.length > 50 || dutch.length > 80) continue
     // Skip if indonesian side has no letters
-    if (!/[a-zA-Z]/.test(indonesian)) continue
+    if (!/[a-zA-ZÀ-ÿ]/.test(indonesian)) continue
 
     items.push({
       base_text: indonesian,
@@ -82,11 +83,12 @@ function parseVocabularyLines(text: string, pageNum: number): LearningItemStagin
   return items
 }
 
-/** Matches dialogue patterns like "A: text" or "Speaker: text" */
+/** Matches dialogue patterns like "A: text", "Speaker: text", or "Multi Word Speaker: text" */
 function parseDialogueLines(text: string, pageNum: number): { section: LessonSection | null; items: LearningItemStaging[] } {
   const items: LearningItemStaging[] = []
   const lines: { speaker: string; text: string; translation: string }[] = []
-  const dialogueRegex = /^([A-Z][a-zA-Z]*)\s*:\s*(.+)$/gm
+  // Updated regex to handle multi-word speaker names (e.g., "Pak Ahmad:", "Ibu Dewi:", "A:", "Speaker:")
+  const dialogueRegex = /^([A-Z][a-zA-ZÀ-ÿ\s]*?)\s*:\s*(.+)$/gm
   let match: RegExpExecArray | null
 
   while ((match = dialogueRegex.exec(text)) !== null) {

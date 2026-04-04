@@ -18,7 +18,9 @@ import {
   ActionIcon,
   ScrollArea,
   Title,
+  Modal,
 } from '@mantine/core'
+import { notifications } from '@mantine/notifications'
 import {
   IconAlertCircle,
   IconCheck,
@@ -87,6 +89,7 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [activeTab, setActiveTab] = useState<string | null>('items')
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false)
 
   // Load lessons on mount
   useEffect(() => {
@@ -94,13 +97,25 @@ function App() {
       try {
         const res = await axios.get('/api/lessons')
         setLessons(res.data)
-      } catch (err) {
-        setError('Failed to load lessons')
-        console.error(err)
+      } catch {
+        const message = 'Failed to load available lessons. Please check the server is running.'
+        setError(message)
+        notifications.show({
+          color: 'red',
+          title: 'Failed to load lessons',
+          message,
+        })
       }
     }
     fetchLessons()
   }, [])
+
+  // Auto-select if only one lesson
+  useEffect(() => {
+    if (lessons.length === 1 && !selectedLesson) {
+      setSelectedLesson(lessons[0].toString())
+    }
+  }, [lessons, selectedLesson])
 
   // Load pages and staging when lesson changes
   useEffect(() => {
@@ -120,9 +135,14 @@ function App() {
         if (pagesRes.data.length > 0) {
           setOcrText(pagesRes.data[0].ocr_text)
         }
-      } catch (err) {
-        setError('Failed to load content')
-        console.error(err)
+      } catch {
+        const message = 'Failed to load lesson content. Please check the server is running.'
+        setError(message)
+        notifications.show({
+          color: 'red',
+          title: 'Failed to load content',
+          message,
+        })
       } finally {
         setLoading(false)
       }
@@ -144,7 +164,7 @@ function App() {
     setSaving(true)
     try {
       await axios.post(`/api/pages/${selectedLesson}/${pageNum}`, { text: ocrText })
-      
+
       // Update local pages state
       const updatedPages = [...pages]
       updatedPages[currentPageIndex].ocr_text = ocrText
@@ -154,10 +174,26 @@ function App() {
         await axios.post(`/api/pages/${selectedLesson}/reparse`)
         const stagingRes = await axios.get(`/api/staging/${selectedLesson}`)
         setStaging(stagingRes.data)
+        notifications.show({
+          color: 'green',
+          title: 'Success',
+          message: 'OCR text saved and re-parsed.',
+        })
+      } else {
+        notifications.show({
+          color: 'green',
+          title: 'Success',
+          message: 'OCR text saved.',
+        })
       }
-    } catch (err) {
-      setError('Failed to save OCR text')
-      console.error(err)
+    } catch {
+      const message = 'Failed to save OCR text. Please check the server is running.'
+      setError(message)
+      notifications.show({
+        color: 'red',
+        title: 'Failed to save OCR',
+        message,
+      })
     } finally {
       setSaving(false)
     }
@@ -168,14 +204,28 @@ function App() {
     setSaving(true)
     try {
       await axios.post(`/api/staging/${selectedLesson}`, staging)
-      alert('All changes saved to staging files!')
-    } catch (err) {
-      setError('Failed to save staging data')
-      console.error(err)
+      setShowSaveConfirm(false)
+      notifications.show({
+        color: 'green',
+        title: 'Success',
+        message: 'All changes saved to staging files.',
+      })
+    } catch {
+      const message = 'Failed to save staging data. Please check the server is running.'
+      setError(message)
+      notifications.show({
+        color: 'red',
+        title: 'Failed to save changes',
+        message,
+      })
     } finally {
       setSaving(false)
     }
   }
+
+  const approvedCount = staging.learningItems.filter(i => i.review_status === 'approved').length
+  const pendingCount = staging.learningItems.filter(i => i.review_status === 'pending_review').length
+  const rejectedCount = staging.learningItems.filter(i => i.review_status === 'rejected').length
 
   const updateItem = (index: number, field: keyof LearningItem, value: any) => {
     const updated = [...staging.learningItems]
@@ -230,7 +280,7 @@ function App() {
             <Group>
               <Button
                 leftSection={<IconDeviceFloppy size={18} />}
-                onClick={handleSaveAll}
+                onClick={() => setShowSaveConfirm(true)}
                 loading={saving}
                 color="blue"
               >
@@ -276,12 +326,12 @@ function App() {
 
             <Grid gutter="md">
               {/* Left Panel: Image */}
-              <Grid.Col span={4}>
-                <Card withBorder h={600} p={0}>
+              <Grid.Col span={3}>
+                <Card withBorder h="calc(100vh - 180px)" p={0}>
                   <Card.Section withBorder inheritPadding py="xs">
                     <Text fw={500}>Page Image</Text>
                   </Card.Section>
-                  <ScrollArea h={560}>
+                  <ScrollArea h="calc(100vh - 220px)">
                     {currentPage && (
                       <img 
                         src={currentPage.image_url} 
@@ -294,8 +344,8 @@ function App() {
               </Grid.Col>
 
               {/* Middle Panel: OCR Text */}
-              <Grid.Col span={4}>
-                <Card withBorder h={600}>
+              <Grid.Col span={6}>
+                <Card withBorder h="calc(100vh - 180px)">
                   <Card.Section withBorder inheritPadding py="xs">
                     <Group justify="space-between">
                       <Text fw={500}>OCR Text (Correct here)</Text>
@@ -308,25 +358,25 @@ function App() {
                   <Textarea
                     value={ocrText}
                     onChange={(e) => setOcrText(e.currentTarget.value)}
-                    h={520}
-                    styles={{ input: { height: '100%', fontFamily: 'monospace' } }}
+                    h="calc(100vh - 250px)"
+                    styles={{ input: { height: '100%', fontFamily: 'monospace', fontSize: '14px' } }}
                     mt="sm"
                   />
                 </Card>
               </Grid.Col>
 
               {/* Right Panel: Structured Staging */}
-              <Grid.Col span={4}>
-                <Card withBorder h={600} p="xs">
+              <Grid.Col span={3}>
+                <Card withBorder h="calc(100vh - 180px)" p="xs">
                   <Tabs value={activeTab} onChange={setActiveTab}>
                     <Tabs.List>
-                      <Tabs.Tab value="items">Learning Items ({staging.learningItems.length})</Tabs.Tab>
-                      <Tabs.Tab value="sections">Sections ({staging.lesson?.sections.length || 0})</Tabs.Tab>
-                      <Tabs.Tab value="metadata">Lesson Meta</Tabs.Tab>
+                      <Tabs.Tab value="items">Items ({staging.learningItems.length})</Tabs.Tab>
+                      <Tabs.Tab value="sections">Secs ({staging.lesson?.sections.length || 0})</Tabs.Tab>
+                      <Tabs.Tab value="metadata">Meta</Tabs.Tab>
                     </Tabs.List>
 
                     <Tabs.Panel value="items" pt="xs">
-                      <ScrollArea h={500}>
+                      <ScrollArea h="calc(100vh - 280px)">
                         <Stack gap="xs">
                           <Button 
                             variant="light" 
@@ -466,6 +516,33 @@ function App() {
           </>
         )}
       </Stack>
+
+      <Modal
+        opened={showSaveConfirm}
+        onClose={() => setShowSaveConfirm(false)}
+        title="Save to Staging"
+        centered
+      >
+        <Stack gap="md">
+          <div>
+            <Text fw={500} mb="xs">Items Summary</Text>
+            <Text size="sm">✓ Approved: <Badge>{approvedCount}</Badge></Text>
+            <Text size="sm">⊘ Pending: <Badge color="yellow">{pendingCount}</Badge></Text>
+            <Text size="sm">✗ Rejected: <Badge color="red">{rejectedCount}</Badge></Text>
+          </div>
+          <Alert icon={<IconAlertCircle size={14} />} color="blue" title="Note">
+            Only approved items will be published to the lesson. Pending and rejected items are saved but won't be published.
+          </Alert>
+          <Group justify="flex-end">
+            <Button variant="default" onClick={() => setShowSaveConfirm(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveAll} loading={saving}>
+              Save to Staging
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
     </Container>
   )
 }

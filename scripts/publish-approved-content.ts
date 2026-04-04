@@ -90,8 +90,8 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
         lessonId = 'dry-run-lesson-id'
       } else {
         const { data: upsertedLesson, error: lessonError } = await supabase
-          .from('lessons')
           .schema('indonesian')
+          .from('lessons')
           .upsert({
             title: lesson.title,
             description: lesson.description,
@@ -110,8 +110,8 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
         console.log('   Publishing lesson sections...')
         for (const section of lesson.sections) {
           await supabase
-            .from('lesson_sections')
             .schema('indonesian')
+            .from('lesson_sections')
             .upsert({
               lesson_id: lessonId,
               title: section.title,
@@ -133,8 +133,8 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
           patternMap[pattern.pattern_name] = 'dry-run-pattern-id'
         } else {
           const { data: upsertedPattern, error: patternError } = await supabase
-            .from('grammar_patterns')
             .schema('indonesian')
+            .from('grammar_patterns')
             .upsert({
               pattern_name: pattern.pattern_name,
               description: pattern.description,
@@ -161,8 +161,8 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
         } else {
           // Upsert Learning Item
           const { data: upsertedItem, error: itemError } = await supabase
-            .from('learning_items')
             .schema('indonesian')
+            .from('learning_items')
             .upsert({
               base_text: item.base_text,
               item_type: item.item_type,
@@ -178,8 +178,8 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
 
           // Upsert Meaning (Dutch)
           await supabase
-            .from('item_meanings')
             .schema('indonesian')
+            .from('item_meanings')
             .upsert({
               learning_item_id: upsertedItem.id,
               translation_text: item.translation_nl,
@@ -188,8 +188,8 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
 
           // Upsert Context
           await supabase
-            .from('item_contexts')
             .schema('indonesian')
+            .from('item_contexts')
             .upsert({
               learning_item_id: upsertedItem.id,
               context_type: item.context_type,
@@ -224,8 +224,8 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
         } else {
           // Find context for the source text
           const { data: context, error: contextError } = await supabase
-            .from('item_contexts')
             .schema('indonesian')
+            .from('item_contexts')
             .select('id')
             .eq('source_text', candidate.source_text)
             .limit(1)
@@ -238,8 +238,8 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
 
           // Insert Variant
           await supabase
-            .from('exercise_variants')
             .schema('indonesian')
+            .from('exercise_variants')
             .insert({
               context_id: context.id,
               exercise_type: candidate.exercise_type,

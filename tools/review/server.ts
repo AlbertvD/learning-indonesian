@@ -10,9 +10,15 @@ import path from 'path'
 import { execSync } from 'child_process'
 
 const app = express()
-const PORT = 3001
+const PORT = parseInt(process.env.PORT || '3001', 10)
 
 app.use(express.json({ limit: '10mb' }))
+
+// Request logging
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} ${req.method} ${req.url}`)
+  next()
+})
 
 // CORS for local Vite dev server
 app.use((_req, res, next) => {
@@ -27,6 +33,18 @@ function getRepoRoot(): string {
     return path.join(process.cwd(), '..', '..')
   }
   return process.cwd()
+}
+
+// Validate lesson parameter is a positive integer
+function validateLesson(lesson: string): number | null {
+  const num = parseInt(lesson, 10)
+  return !isNaN(num) && num > 0 ? num : null
+}
+
+// Validate page parameter is a positive integer
+function validatePage(page: string): number | null {
+  const num = parseInt(page, 10)
+  return !isNaN(num) && num > 0 ? num : null
 }
 
 // GET /api/lessons — List available lessons (from content/raw/)
@@ -46,9 +64,14 @@ app.get('/api/lessons', (_req, res) => {
 // GET /api/pages/:lesson — List pages with OCR text and image paths
 app.get('/api/pages/:lesson', (req, res) => {
   const { lesson } = req.params
+  const lessonNum = validateLesson(lesson)
+  if (lessonNum === null) {
+    return res.status(400).json({ error: 'Invalid lesson parameter. Must be a positive integer.' })
+  }
+
   const root = getRepoRoot()
-  const rawDir = path.join(root, 'content', 'raw', `lesson-${lesson}`)
-  const extractedDir = path.join(root, 'content', 'extracted', `lesson-${lesson}`)
+  const rawDir = path.join(root, 'content', 'raw', `lesson-${lessonNum}`)
+  const extractedDir = path.join(root, 'content', 'extracted', `lesson-${lessonNum}`)
 
   if (!fs.existsSync(rawDir)) return res.status(404).json({ error: 'Lesson not found' })
 
@@ -64,7 +87,7 @@ app.get('/api/pages/:lesson', (req, res) => {
     return {
       page_number: pageNum,
       image_filename: img,
-      image_url: `/api/images/${lesson}/${encodeURIComponent(img)}`,
+      image_url: `/api/images/${lessonNum}/${encodeURIComponent(img)}`,
       ocr_text: ocrText,
       has_ocr: fs.existsSync(ocrPath),
     }
@@ -76,31 +99,34 @@ app.get('/api/pages/:lesson', (req, res) => {
 // GET /api/images/:lesson/:filename — Serve page images
 app.get('/api/images/:lesson/:filename', (req, res) => {
   const { lesson, filename } = req.params
-  const imagePath = path.join(getRepoRoot(), 'content', 'raw', `lesson-${lesson}`, decodeURIComponent(filename))
+  const lessonNum = validateLesson(lesson)
+  if (lessonNum === null) {
+    return res.status(400).json({ error: 'Invalid lesson parameter. Must be a positive integer.' })
+  }
+
+  // Validate filename doesn't contain path traversal attempts
+  const decodedFilename = decodeURIComponent(filename)
+  if (decodedFilename.includes('..') || decodedFilename.includes('/')) {
+    return res.status(400).json({ error: 'Invalid filename.' })
+  }
+
+  const imagePath = path.join(getRepoRoot(), 'content', 'raw', `lesson-${lessonNum}`, decodedFilename)
 
   if (!fs.existsSync(imagePath)) return res.status(404).json({ error: 'Image not found' })
 
   res.sendFile(imagePath)
 })
 
-// POST /api/pages/:lesson/:page — Save corrected OCR text
-app.post('/api/pages/:lesson/:page', (req, res) => {
-  const { lesson, page } = req.params
-  const { text } = req.body
-  if (typeof text !== 'string') return res.status(400).json({ error: 'text required' })
-
-  const extractedDir = path.join(getRepoRoot(), 'content', 'extracted', `lesson-${lesson}`)
-  fs.mkdirSync(extractedDir, { recursive: true })
-  fs.writeFileSync(path.join(extractedDir, `page-${page}.txt`), text)
-
-  res.json({ success: true })
-})
-
 // POST /api/pages/:lesson/reparse — Re-run parser after OCR corrections
 app.post('/api/pages/:lesson/reparse', (req, res) => {
   const { lesson } = req.params
+  const lessonNum = validateLesson(lesson)
+  if (lessonNum === null) {
+    return res.status(400).json({ error: 'Invalid lesson parameter. Must be a positive integer.' })
+  }
+
   try {
-    execSync(`bun scripts/parse-lesson-content.ts ${lesson}`, {
+    execSync(`bun scripts/parse-lesson-content.ts ${lessonNum}`, {
       cwd: getRepoRoot(),
       stdio: 'pipe',
     })
@@ -110,10 +136,34 @@ app.post('/api/pages/:lesson/reparse', (req, res) => {
   }
 })
 
+// POST /api/pages/:lesson/:page — Save corrected OCR text
+app.post('/api/pages/:lesson/:page', (req, res) => {
+  const { lesson, page } = req.params
+  const { text } = req.body
+  if (typeof text !== 'string') return res.status(400).json({ error: 'text required' })
+
+  const lessonNum = validateLesson(lesson)
+  const pageNum = validatePage(page)
+  if (lessonNum === null || pageNum === null) {
+    return res.status(400).json({ error: 'Invalid lesson or page parameter. Must be positive integers.' })
+  }
+
+  const extractedDir = path.join(getRepoRoot(), 'content', 'extracted', `lesson-${lessonNum}`)
+  fs.mkdirSync(extractedDir, { recursive: true })
+  fs.writeFileSync(path.join(extractedDir, `page-${pageNum}.txt`), text)
+
+  res.json({ success: true })
+})
+
 // GET /api/staging/:lesson — Load all staging files
 app.get('/api/staging/:lesson', (req, res) => {
   const { lesson } = req.params
-  const stagingDir = path.join(getRepoRoot(), 'scripts', 'data', 'staging', `lesson-${lesson}`)
+  const lessonNum = validateLesson(lesson)
+  if (lessonNum === null) {
+    return res.status(400).json({ error: 'Invalid lesson parameter. Must be a positive integer.' })
+  }
+
+  const stagingDir = path.join(getRepoRoot(), 'scripts', 'data', 'staging', `lesson-${lessonNum}`)
 
   if (!fs.existsSync(stagingDir)) return res.json({ lesson: null, learningItems: [], grammarPatterns: [], candidates: [] })
 
@@ -128,13 +178,9 @@ app.get('/api/staging/:lesson', (req, res) => {
       const jsonStr = match[1].trim().replace(/;$/, '')
       return JSON.parse(jsonStr)
     } catch {
-      // Try evaluating as JS object literal
-      try {
-        const jsStr = match[1].trim().replace(/;$/, '')
-        return new Function(`return ${jsStr}`)()
-      } catch {
-        return null
-      }
+      // If JSON.parse fails, log and return null instead of using new Function()
+      console.warn(`Failed to parse ${filename} as JSON`, jsonStr)
+      return null
     }
   }
 
@@ -149,8 +195,13 @@ app.get('/api/staging/:lesson', (req, res) => {
 // POST /api/staging/:lesson — Save staging data
 app.post('/api/staging/:lesson', (req, res) => {
   const { lesson } = req.params
+  const lessonNum = validateLesson(lesson)
+  if (lessonNum === null) {
+    return res.status(400).json({ error: 'Invalid lesson parameter. Must be a positive integer.' })
+  }
+
   const { lesson: lessonData, learningItems, grammarPatterns, candidates } = req.body
-  const stagingDir = path.join(getRepoRoot(), 'scripts', 'data', 'staging', `lesson-${lesson}`)
+  const stagingDir = path.join(getRepoRoot(), 'scripts', 'data', 'staging', `lesson-${lessonNum}`)
   fs.mkdirSync(stagingDir, { recursive: true })
 
   if (lessonData) {
@@ -183,5 +234,5 @@ app.post('/api/staging/:lesson', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Review server running on http://localhost:${PORT}`)
-  console.log(`Frontend: http://localhost:5173`)
+  console.log(`Frontend: http://localhost:5174`)
 })
