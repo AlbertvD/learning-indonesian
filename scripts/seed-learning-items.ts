@@ -1,4 +1,6 @@
 // Seed learning items from vocabulary data
+// Uses upsert — never touches learner progress tables (learner_item_state,
+// learner_skill_state, review_events). Safe to re-run at any time.
 import { createClient } from '@supabase/supabase-js'
 import { vocabulary } from './data/vocabulary'
 
@@ -36,15 +38,7 @@ function determineItemType(item: typeof vocabulary[0]): string {
 async function seedLearningItems() {
   console.log('🌱 Seeding learning items from vocabulary...')
   console.log(`   Found ${vocabulary.length} vocabulary items`)
-
-  // Clear existing data (idempotent re-run)
-  console.log('   Clearing existing data...')
-  await supabase.schema('indonesian').from('item_answer_variants').delete().neq('id', '00000000-0000-0000-0000-000000000000')
-  await supabase.schema('indonesian').from('item_contexts').delete().neq('id', '00000000-0000-0000-0000-000000000000')
-  await supabase.schema('indonesian').from('item_meanings').delete().neq('id', '00000000-0000-0000-0000-000000000000')
-  await supabase.schema('indonesian').from('learner_skill_state').delete().neq('id', '00000000-0000-0000-0000-000000000000')
-  await supabase.schema('indonesian').from('learner_item_state').delete().neq('id', '00000000-0000-0000-0000-000000000000')
-  await supabase.schema('indonesian').from('learning_items').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+  console.log('   Using upsert — learner progress is preserved')
 
   let created = 0
   let skipped = 0
@@ -54,29 +48,38 @@ async function seedLearningItems() {
     const itemType = determineItemType(vocab)
     const lessonId = LESSON_IDS[vocab.lesson_order_index]
 
-    // Insert learning_item
+    // Upsert learning_item on (normalized_text, item_type)
     const { data: item, error: itemError } = await supabase
       .schema('indonesian')
       .from('learning_items')
-      .insert({
-        item_type: itemType,
-        base_text: vocab.indonesian,
-        normalized_text: normalizedText,
-        language: 'id',
-        level: vocab.level,
-        source_type: 'lesson',
-        is_active: true,
-      })
+      .upsert(
+        {
+          item_type: itemType,
+          base_text: vocab.indonesian,
+          normalized_text: normalizedText,
+          language: 'id',
+          level: vocab.level,
+          source_type: 'lesson',
+          is_active: true,
+        },
+        { onConflict: 'normalized_text,item_type' }
+      )
       .select('id')
       .single()
 
-    if (itemError) {
-      console.error(`   ❌ Error inserting "${vocab.indonesian}":`, itemError.message)
+    if (itemError || !item) {
+      console.error(`   ❌ Error upserting "${vocab.indonesian}":`, itemError?.message)
       skipped++
       continue
     }
 
     const itemId = item.id
+
+    // Delete and re-insert meanings + variants + context for this item
+    // (safe — these have no learner FK dependencies)
+    await supabase.schema('indonesian').from('item_meanings').delete().eq('learning_item_id', itemId)
+    await supabase.schema('indonesian').from('item_answer_variants').delete().eq('learning_item_id', itemId)
+    await supabase.schema('indonesian').from('item_contexts').delete().eq('learning_item_id', itemId)
 
     // Insert English meaning
     const { error: enErr } = await supabase
@@ -104,7 +107,7 @@ async function seedLearningItems() {
       if (nlErr) console.error(`   ⚠️  Meaning (nl) for "${vocab.indonesian}":`, nlErr.message)
     }
 
-    // Answer variants for Indonesian text
+    // Indonesian answer variants
     const idVariants = new Set<string>()
     idVariants.add(normalizedText)
     if (vocab.indonesian.includes('?')) {
@@ -161,7 +164,7 @@ async function seedLearningItems() {
       }
     }
 
-    // Add lesson context (associates item with its lesson)
+    // Lesson context (associates item with its lesson)
     await supabase.schema('indonesian').from('item_contexts').insert({
       learning_item_id: itemId,
       context_type: 'lesson_snippet',
@@ -174,7 +177,7 @@ async function seedLearningItems() {
     created++
   }
 
-  console.log(`\n✅ Seeding complete: ${created} items created, ${skipped} skipped`)
+  console.log(`\n✅ Seeding complete: ${created} items upserted, ${skipped} skipped`)
 
   // Verify counts
   const { count: itemCount } = await supabase.schema('indonesian').from('learning_items').select('*', { count: 'exact', head: true })
