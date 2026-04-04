@@ -330,8 +330,12 @@ CREATE TABLE IF NOT EXISTS indonesian.learner_daily_goal_rollups (
 -- Indexes for weekly goal queries
 CREATE INDEX IF NOT EXISTS idx_weekly_goal_sets_user_week ON indonesian.learner_weekly_goal_sets(user_id, week_starts_at_utc);
 CREATE INDEX IF NOT EXISTS idx_weekly_goal_sets_finalization ON indonesian.learner_weekly_goal_sets(user_id, closed_at, week_ends_at_utc);
+-- Drop duplicate index created in an earlier migration (identical to idx_weekly_goal_sets_finalization)
+DROP INDEX IF EXISTS indonesian.idx_goal_sets_finalization;
 CREATE INDEX IF NOT EXISTS idx_stage_events_user_time ON indonesian.learner_stage_events(user_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_stage_events_to_stage ON indonesian.learner_stage_events(user_id, to_stage, created_at);
+-- Drop duplicate index created in an earlier migration (identical to idx_stage_events_to_stage)
+DROP INDEX IF EXISTS indonesian.idx_stage_events_user_target;
 CREATE INDEX IF NOT EXISTS idx_daily_rollups_user_date ON indonesian.learner_daily_goal_rollups(user_id, local_date);
 
 -- RLS and Grants
@@ -627,7 +631,7 @@ BEGIN
       (SELECT COUNT(*) FROM indonesian.learner_item_state lis
         WHERE lis.user_id = v_user_id AND lis.stage IN ('productive', 'maintenance')),
       (SELECT COUNT(*) FROM indonesian.learner_skill_state lss
-        WHERE lss.user_id = v_user_id AND lss.next_due_at < NOW()::date)
+        WHERE lss.user_id = v_user_id AND lss.next_due_at < NOW())
     ) ON CONFLICT (user_id, local_date) DO UPDATE SET
       study_day_completed = EXCLUDED.study_day_completed,
       recall_accuracy = EXCLUDED.recall_accuracy,
@@ -843,14 +847,19 @@ SELECT
 FROM indonesian.generated_exercise_candidates
 WHERE review_status IN ('pending_review', 'approved', 'rejected');
 
--- RLS: Users can only read their own analytics (if needed for future features)
+-- RLS: Users can only read their own analytics; all authenticated users can insert their own
 ALTER TABLE indonesian.learner_analytics_events ENABLE ROW LEVEL SECURITY;
 CREATE POLICY learner_analytics_events_own ON indonesian.learner_analytics_events
-  FOR SELECT USING (auth.uid() = user_id OR EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+  FOR SELECT TO authenticated USING (auth.uid() = user_id OR EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname = 'indonesian' AND tablename = 'learner_analytics_events' AND policyname = 'learner_analytics_events_insert') THEN
+    CREATE POLICY learner_analytics_events_insert ON indonesian.learner_analytics_events
+      FOR INSERT TO authenticated WITH CHECK (user_id = auth.uid());
+  END IF;
+END $$;
 
--- Grants: Authenticated users can insert analytics events
+-- Grants: Authenticated users can read and insert analytics events
 GRANT SELECT, INSERT ON indonesian.learner_analytics_events TO authenticated;
-GRANT SELECT ON indonesian.learner_analytics_events TO authenticated;
 
 -- Seed exercise type availability (runtime feature flags)
 INSERT INTO indonesian.exercise_type_availability (
