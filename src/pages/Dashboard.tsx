@@ -270,8 +270,8 @@ export function Dashboard() {
         )}
 
         {/* Quick actions */}
-        <Group grow>
-          <Link to={continueUrl} className="card-action">
+        <Group grow align="stretch">
+          <Link to={continueUrl} className="card-action" style={{ height: '100%' }}>
             <Group justify="space-between">
               <Box>
                 <Text size="sm" fw={500}>{T.dashboard.continueLesson}</Text>
@@ -281,7 +281,7 @@ export function Dashboard() {
             </Group>
           </Link>
 
-          <Link to="/session?weak=true" className="card-action">
+          <Link to="/session?weak=true" className="card-action" style={{ height: '100%' }}>
             <Group justify="space-between">
               <Box>
                 <Text size="sm" fw={500}>{T.dashboard.practiceWeak}</Text>
