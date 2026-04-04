@@ -19,6 +19,7 @@ const LESSON_IDS: Record<number, string> = {
   1: 'cb78cfa6-0146-4e65-89fd-da692642f6bf',
   2: '0dfebf04-2720-4ddf-a832-245d90f22a26',
   3: 'bb44d8ba-f5b1-48d6-83de-fb30f0425768',
+  4: '5b5c4be8-cf04-4f72-a818-c92519a4ed6a',
 }
 
 function normalizeText(text: string): string {
