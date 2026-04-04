@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS indonesian.item_meanings (
 CREATE TABLE IF NOT EXISTS indonesian.item_contexts (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
-  context_type text NOT NULL CHECK (context_type IN ('example_sentence', 'dialogue', 'cloze', 'lesson_snippet')),
+  context_type text NOT NULL CHECK (context_type IN ('example_sentence', 'dialogue', 'cloze', 'lesson_snippet', 'vocabulary_list', 'exercise_prompt')),
   source_text text NOT NULL,
   translation_text text,
   difficulty text,

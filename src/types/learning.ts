@@ -4,7 +4,7 @@
 
 export type ItemType = 'word' | 'phrase' | 'sentence' | 'dialogue_chunk'
 export type SourceType = 'lesson' | 'podcast' | 'flashcard' | 'manual'
-export type ContextType = 'example_sentence' | 'dialogue' | 'cloze' | 'lesson_snippet'
+export type ContextType = 'example_sentence' | 'dialogue' | 'cloze' | 'lesson_snippet' | 'vocabulary_list' | 'exercise_prompt'
 export type VariantType = 'alternative_translation' | 'informal' | 'with_prefix' | 'without_prefix'
 
 export interface LearningItem {
