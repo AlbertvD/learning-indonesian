@@ -95,6 +95,11 @@ ocr-pages: ## OCR textbook pages to text (requires LESSON, requires tesseract)
 	@which tesseract > /dev/null || { echo "Error: tesseract not found. Run: brew install tesseract tesseract-lang"; exit 1; }
 	bun scripts/ocr-pages.ts $(LESSON)
 
+.PHONY: parse-lesson
+parse-lesson: ## Parse OCR text into structured staging files (requires LESSON)
+	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make parse-lesson LESSON=<N>"; exit 1; }
+	bun scripts/parse-lesson-content.ts $(LESSON)
+
 .PHONY: generate-candidates
 generate-candidates: ## Generate exercise candidates from extracted content (requires LESSON and ANTHROPIC_API_KEY)
 	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make generate-candidates LESSON=<N> ANTHROPIC_API_KEY=<key>"; exit 1; }
