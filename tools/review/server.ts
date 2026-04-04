@@ -9,10 +9,6 @@
 import express from 'express'
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 const app = express()
 const PORT = 3001
@@ -27,15 +23,22 @@ app.use((_req, res, next) => {
   next()
 })
 
-// Helper: Get root directory (parent of tools/review)
+// Helper: Get root directory
 function getRepoRoot(): string {
-  return path.join(__dirname, '..', '..')
+  // Check if we're in tools/review/  and go up to project root
+  if (process.cwd().includes('tools/review')) {
+    return path.join(process.cwd(), '..', '..')
+  }
+  // Otherwise assume cwd is project root
+  return process.cwd()
 }
 
 // GET /api/lessons — List available lessons
 app.get('/api/lessons', (_req, res) => {
   try {
-    const stagingDir = path.join(getRepoRoot(), 'scripts', 'data', 'staging')
+    const repoRoot = getRepoRoot()
+    const stagingDir = path.join(repoRoot, 'scripts', 'data', 'staging')
+
     if (!fs.existsSync(stagingDir)) {
       return res.json([])
     }
@@ -72,14 +75,23 @@ app.get('/api/candidates/:lesson', (req, res) => {
     }
 
     const content = fs.readFileSync(candidatesPath, 'utf-8')
-    const jsonMatch = content.match(/\[\s*(?:\{[\s\S]*?\}(?:,\s*)?)*\]/)
 
-    if (!jsonMatch) {
+    // Extract JSON array: find first [ and last ]
+    const start = content.indexOf('[')
+    const end = content.lastIndexOf(']')
+
+    if (start === -1 || end === -1 || start >= end) {
       return res.status(400).json({ error: 'Invalid candidates file format' })
     }
 
-    const candidates = JSON.parse(jsonMatch[0])
-    res.json(candidates)
+    const jsonStr = content.substring(start, end + 1)
+
+    try {
+      const candidates = JSON.parse(jsonStr)
+      res.json(candidates)
+    } catch {
+      return res.status(400).json({ error: 'Invalid JSON in candidates file' })
+    }
   } catch (err) {
     console.error('Error loading candidates:', err)
     res.status(500).json({ error: 'Failed to load candidates' })
@@ -132,14 +144,23 @@ app.get('/api/pages/:lesson', (req, res) => {
     }
 
     const content = fs.readFileSync(pagesPath, 'utf-8')
-    const jsonMatch = content.match(/\[\s*(?:\{[\s\S]*?\}(?:,\s*)?)*\]/)
 
-    if (!jsonMatch) {
+    // Extract JSON array: find first [ and last ]
+    const start = content.indexOf('[')
+    const end = content.lastIndexOf(']')
+
+    if (start === -1 || end === -1 || start >= end) {
       return res.status(400).json({ error: 'Invalid pages file format' })
     }
 
-    const pages = JSON.parse(jsonMatch[0])
-    res.json(pages)
+    const jsonStr = content.substring(start, end + 1)
+
+    try {
+      const pages = JSON.parse(jsonStr)
+      res.json(pages)
+    } catch {
+      return res.status(400).json({ error: 'Invalid JSON in pages file' })
+    }
   } catch (err) {
     console.error('Error loading pages:', err)
     res.status(500).json({ error: 'Failed to load pages' })

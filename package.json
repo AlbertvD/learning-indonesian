@@ -14,6 +14,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.82.0",
     "@mantine/core": "^8.3.17",
     "@mantine/form": "^8.3.17",
     "@mantine/hooks": "^8.3.17",

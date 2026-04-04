@@ -23,10 +23,22 @@ interface GeneratedExerciseCandidate {
   page_reference: number
   grammar_pattern_id?: string
   source_text: string
-  prompt_text: string
+  prompt_text?: string
+  prompt_text_nl?: string
+  prompt_text_en?: string
+  transformationInstruction_nl?: string
+  transformationInstruction_en?: string
+  expected_answer_nl?: string
+  expected_answer_en?: string
   answer_key: string[]
-  explanation: string
+  explanation?: string
+  explanation_nl?: string
+  explanation_en?: string
   target_pattern?: string
+  requiredTargetPattern?: string
+  targetPatternOrScenario?: string
+  correctOptionId?: string
+  options?: string[]
   review_status: string
   created_at: string
   reviewer_notes?: string
@@ -243,10 +255,60 @@ function App() {
                           <Text size="sm" fw={500} mb="xs">
                             Prompt / Instruction
                           </Text>
-                          <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
-                            {candidate.prompt_text}
-                          </Text>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '12px' }}>
+                            {candidate.prompt_text_nl && (
+                              <div style={{ backgroundColor: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
+                                <Text size="xs" fw={500} c="dimmed" mb="4px">
+                                  🇳🇱 Dutch
+                                </Text>
+                                <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
+                                  {candidate.prompt_text_nl}
+                                </Text>
+                              </div>
+                            )}
+                            {candidate.prompt_text_en && (
+                              <div style={{ backgroundColor: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
+                                <Text size="xs" fw={500} c="dimmed" mb="4px">
+                                  🇬🇧 English
+                                </Text>
+                                <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
+                                  {candidate.prompt_text_en}
+                                </Text>
+                              </div>
+                            )}
+                            {!candidate.prompt_text_nl && !candidate.prompt_text_en && (
+                              <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
+                                {candidate.prompt_text}
+                              </Text>
+                            )}
+                          </div>
                         </div>
+
+                        {(candidate.expected_answer_nl || candidate.expected_answer_en) && (
+                          <div>
+                            <Text size="sm" fw={500} mb="xs">
+                              Expected Answer
+                            </Text>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                              {candidate.expected_answer_nl && (
+                                <div style={{ backgroundColor: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
+                                  <Text size="xs" fw={500} c="dimmed" mb="4px">
+                                    🇳🇱 Dutch
+                                  </Text>
+                                  <Text size="sm">{candidate.expected_answer_nl}</Text>
+                                </div>
+                              )}
+                              {candidate.expected_answer_en && (
+                                <div style={{ backgroundColor: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
+                                  <Text size="xs" fw={500} c="dimmed" mb="4px">
+                                    🇬🇧 English
+                                  </Text>
+                                  <Text size="sm">{candidate.expected_answer_en}</Text>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
 
                         {candidate.target_pattern && (
                           <div>
@@ -272,9 +334,33 @@ function App() {
                           <Text size="sm" fw={500} mb="xs">
                             Explanation
                           </Text>
-                          <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
-                            {candidate.explanation}
-                          </Text>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '12px' }}>
+                            {candidate.explanation_nl && (
+                              <div style={{ backgroundColor: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
+                                <Text size="xs" fw={500} c="dimmed" mb="4px">
+                                  🇳🇱 Dutch
+                                </Text>
+                                <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
+                                  {candidate.explanation_nl}
+                                </Text>
+                              </div>
+                            )}
+                            {candidate.explanation_en && (
+                              <div style={{ backgroundColor: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
+                                <Text size="xs" fw={500} c="dimmed" mb="4px">
+                                  🇬🇧 English
+                                </Text>
+                                <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
+                                  {candidate.explanation_en}
+                                </Text>
+                              </div>
+                            )}
+                            {!candidate.explanation_nl && !candidate.explanation_en && (
+                              <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
+                                {candidate.explanation}
+                              </Text>
+                            )}
+                          </div>
                         </div>
 
                         <Textarea
