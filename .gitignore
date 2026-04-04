@@ -16,3 +16,8 @@ content/extracted/
 
 # Git worktrees — isolated workspaces
 .worktrees/
+
+# TypeScript build artifacts
+*.tsbuildinfo
+*.d.ts
+vite.config.js
