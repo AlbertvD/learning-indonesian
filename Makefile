@@ -83,11 +83,14 @@ seed-learning-items: ## Seed learning items from data files (requires SUPABASE_S
 .PHONY: seed-all
 seed-all: seed-lessons seed-podcasts seed-learning-items ## Seed all non-audio content (requires SUPABASE_SERVICE_KEY)
 
-.PHONY: extract-lesson
-extract-lesson: ## Extract lesson content from page photos (requires LESSON and ANTHROPIC_API_KEY)
-	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make extract-lesson LESSON=<N> ANTHROPIC_API_KEY=<key>"; exit 1; }
-	@test -n "$(ANTHROPIC_API_KEY)" || { echo "Error: ANTHROPIC_API_KEY is required. Run: make extract-lesson LESSON=<N> ANTHROPIC_API_KEY=<key>"; exit 1; }
-	ANTHROPIC_API_KEY=$(ANTHROPIC_API_KEY) bun scripts/extract-lesson.ts $(LESSON)
+# ============================================================================
+# CONTENT PIPELINE
+# ============================================================================
+
+.PHONY: convert-heic
+convert-heic: ## Convert HEIC photos to JPG (requires LESSON)
+	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make convert-heic LESSON=<N>"; exit 1; }
+	bun scripts/convert-heic-to-jpg.ts $(LESSON)
 
 .PHONY: ocr-pages
 ocr-pages: ## OCR textbook pages to text (requires LESSON, requires tesseract)
@@ -100,14 +103,16 @@ parse-lesson: ## Parse OCR text into structured staging files (requires LESSON)
 	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make parse-lesson LESSON=<N>"; exit 1; }
 	bun scripts/parse-lesson-content.ts $(LESSON)
 
-.PHONY: generate-candidates
-generate-candidates: ## Generate exercise candidates from extracted content (requires LESSON and ANTHROPIC_API_KEY)
-	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make generate-candidates LESSON=<N> ANTHROPIC_API_KEY=<key>"; exit 1; }
-	@test -n "$(ANTHROPIC_API_KEY)" || { echo "Error: ANTHROPIC_API_KEY is required. Run: make generate-candidates LESSON=<N> ANTHROPIC_API_KEY=<key>"; exit 1; }
-	ANTHROPIC_API_KEY=$(ANTHROPIC_API_KEY) bun scripts/generate-exercise-candidates.ts $(LESSON)
+.PHONY: review
+review: ## Start the review UI (tools/review/)
+	cd tools/review && bun run dev
+
+.PHONY: pipeline
+pipeline: convert-heic ocr-pages parse-lesson ## Run full pipeline steps 1-3 (requires LESSON)
+	@echo "\n✓ Pipeline complete. Run 'make review' to review and edit content."
 
 .PHONY: publish-content
-publish-content: ## Publish approved candidates to Supabase (requires LESSON and SUPABASE_SERVICE_KEY in .env.local)
+publish-content: ## Publish approved content to Supabase (requires LESSON)
 	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make publish-content LESSON=<N>"; exit 1; }
 	SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/publish-approved-content.ts $(LESSON)
 
