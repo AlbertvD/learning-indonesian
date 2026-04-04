@@ -89,11 +89,11 @@ extract-lesson: ## Extract lesson content from page photos (requires LESSON and 
 	@test -n "$(ANTHROPIC_API_KEY)" || { echo "Error: ANTHROPIC_API_KEY is required. Run: make extract-lesson LESSON=<N> ANTHROPIC_API_KEY=<key>"; exit 1; }
 	ANTHROPIC_API_KEY=$(ANTHROPIC_API_KEY) bun scripts/extract-lesson.ts $(LESSON)
 
-.PHONY: extract-textbook
-extract-textbook: ## Extract textbook content into staging files (requires LESSON and ANTHROPIC_API_KEY)
-	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make extract-textbook LESSON=<N> ANTHROPIC_API_KEY=<key>"; exit 1; }
-	@test -n "$(ANTHROPIC_API_KEY)" || { echo "Error: ANTHROPIC_API_KEY is required. Run: make extract-textbook LESSON=<N> ANTHROPIC_API_KEY=<key>"; exit 1; }
-	ANTHROPIC_API_KEY=$(ANTHROPIC_API_KEY) bun scripts/extract-textbook-content.ts $(LESSON)
+.PHONY: ocr-pages
+ocr-pages: ## OCR textbook pages to text (requires LESSON, requires tesseract)
+	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make ocr-pages LESSON=<N>"; exit 1; }
+	@which tesseract > /dev/null || { echo "Error: tesseract not found. Run: brew install tesseract tesseract-lang"; exit 1; }
+	bun scripts/ocr-pages.ts $(LESSON)
 
 .PHONY: generate-candidates
 generate-candidates: ## Generate exercise candidates from extracted content (requires LESSON and ANTHROPIC_API_KEY)
