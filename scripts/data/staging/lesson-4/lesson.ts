@@ -1,6 +1,6 @@
 // Parsed by Claude from corrected OCR text (lesson-4 pages 1-6)
 export const lesson = {
-  "title": "Les 4",
+  "title": "Les 4 - Di Hotel",
   "description": "Accommodation and dining in Indonesia. Grammar focus: YANG constructie (relative pronouns and emphasis patterns)",
   "level": "A1",
   "module_id": "module-1",

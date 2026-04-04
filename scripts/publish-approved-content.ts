@@ -89,22 +89,49 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
         console.log(`   [DRY RUN] Would upsert lesson: ${lesson.title}`)
         lessonId = 'dry-run-lesson-id'
       } else {
-        const { data: upsertedLesson, error: lessonError } = await supabase
+        // First, try to find existing lesson by module_id and order_index (primary key constraint)
+        const { data: existingLesson } = await supabase
           .schema('indonesian')
           .from('lessons')
-          .upsert({
-            title: lesson.title,
-            description: lesson.description,
-            level: lesson.level,
-            module_id: lesson.module_id,
-            order_index: lesson.order_index,
-          }, { onConflict: 'title' })
           .select('id')
+          .eq('module_id', lesson.module_id)
+          .eq('order_index', lesson.order_index)
           .single()
 
-        if (lessonError) throw lessonError
-        lessonId = upsertedLesson.id
-        console.log(`   ✓ Lesson published: ${lessonId}`)
+        if (existingLesson) {
+          // Update existing lesson
+          const { error: updateError } = await supabase
+            .schema('indonesian')
+            .from('lessons')
+            .update({
+              title: lesson.title,
+              description: lesson.description,
+              level: lesson.level,
+            })
+            .eq('id', existingLesson.id)
+
+          if (updateError) throw updateError
+          lessonId = existingLesson.id
+          console.log(`   ✓ Lesson updated: ${lessonId}`)
+        } else {
+          // Insert new lesson
+          const { data: newLesson, error: insertError } = await supabase
+            .schema('indonesian')
+            .from('lessons')
+            .insert({
+              title: lesson.title,
+              description: lesson.description,
+              level: lesson.level,
+              module_id: lesson.module_id,
+              order_index: lesson.order_index,
+            })
+            .select('id')
+            .single()
+
+          if (insertError) throw insertError
+          lessonId = newLesson.id
+          console.log(`   ✓ Lesson published: ${lessonId}`)
+        }
 
         // Publish Sections
         console.log('   Publishing lesson sections...')
@@ -123,7 +150,7 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
       }
     }
 
-    // 2. Publish Grammar Patterns
+    // 2. Publish Grammar Patterns (if table exists)
     const patternMap: Record<string, string> = {}
     if (grammarPatterns.length > 0) {
       console.log('\n2. Publishing grammar patterns...')
@@ -144,11 +171,18 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
             .select('id')
             .single()
 
+          // Grammar patterns table may not exist yet, skip silently
+          if (patternError && patternError.code === 'PGRST205') {
+            console.log(`   ⓘ Grammar patterns table not yet in schema, skipping`)
+            break
+          }
           if (patternError) throw patternError
           patternMap[pattern.pattern_name] = upsertedPattern.id
         }
       }
-      console.log(`   ✓ ${grammarPatterns.length} grammar patterns processed`)
+      if (!dryRun) {
+        console.log(`   ✓ ${grammarPatterns.length} grammar patterns processed`)
+      }
     }
 
     // 3. Publish Learning Items

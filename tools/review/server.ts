@@ -174,12 +174,12 @@ app.get('/api/staging/:lesson', (req, res) => {
     // Extract the JSON/object from the TS file (after the = sign)
     const match = content.match(/=\s*([\s\S]*?)(?:\nexport|$)/)
     if (!match) return null
+    const jsonStr = match[1].trim().replace(/;$/, '')
     try {
-      const jsonStr = match[1].trim().replace(/;$/, '')
       return JSON.parse(jsonStr)
     } catch {
       // If JSON.parse fails, log and return null instead of using new Function()
-      console.warn(`Failed to parse ${filename} as JSON`, jsonStr)
+      console.warn(`Failed to parse ${filename} as JSON`)
       return null
     }
   }
