@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS indonesian.review_events (
   user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
   skill_type text NOT NULL CHECK (skill_type IN ('recognition', 'form_recall', 'meaning_recall', 'spoken_production')),
-  exercise_type text NOT NULL CHECK (exercise_type IN ('recognition_mcq', 'typed_recall', 'cloze')),
+  exercise_type text NOT NULL,
   session_id uuid, -- FK added after learning_sessions check
   was_correct boolean NOT NULL,
   score numeric,
@@ -217,6 +217,9 @@ CREATE TABLE IF NOT EXISTS indonesian.learning_sessions (
 ALTER TABLE indonesian.learning_sessions DROP CONSTRAINT IF EXISTS learning_sessions_session_type_check;
 ALTER TABLE indonesian.learning_sessions ADD CONSTRAINT learning_sessions_session_type_check
   CHECK (session_type IN ('lesson', 'learning', 'podcast', 'practice'));
+
+-- Drop stale exercise_type CHECK constraint from review_events (constraint name from original migration)
+ALTER TABLE indonesian.review_events DROP CONSTRAINT IF EXISTS review_events_exercise_type_check;
 
 -- Add FK from review_events to learning_sessions
 ALTER TABLE indonesian.review_events DROP CONSTRAINT IF EXISTS review_events_session_id_fkey;
@@ -615,9 +618,9 @@ BEGIN
       (SELECT CASE WHEN COUNT(*) > 0 THEN SUM(CASE WHEN was_correct THEN 1 ELSE 0 END)::numeric / COUNT(*)
                    ELSE NULL END
        FROM indonesian.review_events re
-       WHERE re.user_id = v_user_id AND re.skill_type = 'recall' AND re.created_at::date = v_local_date),
+       WHERE re.user_id = v_user_id AND re.skill_type = 'form_recall' AND re.created_at::date = v_local_date),
       COALESCE((SELECT COUNT(*) FROM indonesian.review_events re
-        WHERE re.user_id = v_user_id AND re.skill_type = 'recall' AND re.created_at::date = v_local_date), 0),
+        WHERE re.user_id = v_user_id AND re.skill_type = 'form_recall' AND re.created_at::date = v_local_date), 0),
       (SELECT COUNT(DISTINCT learning_item_id) FROM indonesian.learner_stage_events lse
         WHERE lse.user_id = v_user_id AND lse.to_stage IN ('productive', 'maintenance')
           AND lse.created_at::date = v_local_date),
@@ -714,8 +717,26 @@ CREATE INDEX IF NOT EXISTS learner_analytics_events_event_type_idx ON indonesian
 CREATE INDEX IF NOT EXISTS learner_analytics_events_created_at_idx ON indonesian.learner_analytics_events(created_at);
 
 -- Skill facet migration: rename 'recall' to 'form_recall'
+-- First widen constraints to allow both old and new values, then migrate data, then narrow
+ALTER TABLE indonesian.learner_skill_state DROP CONSTRAINT IF EXISTS learner_skill_state_skill_type_check;
+ALTER TABLE indonesian.learner_skill_state ADD CONSTRAINT learner_skill_state_skill_type_check
+  CHECK (skill_type IN ('recognition', 'recall', 'form_recall', 'meaning_recall', 'spoken_production'));
+
+ALTER TABLE indonesian.review_events DROP CONSTRAINT IF EXISTS review_events_skill_type_check;
+ALTER TABLE indonesian.review_events ADD CONSTRAINT review_events_skill_type_check
+  CHECK (skill_type IN ('recognition', 'recall', 'form_recall', 'meaning_recall', 'spoken_production'));
+
 UPDATE indonesian.learner_skill_state SET skill_type = 'form_recall' WHERE skill_type = 'recall';
 UPDATE indonesian.review_events SET skill_type = 'form_recall' WHERE skill_type = 'recall';
+
+-- Narrow constraints to final values only
+ALTER TABLE indonesian.learner_skill_state DROP CONSTRAINT IF EXISTS learner_skill_state_skill_type_check;
+ALTER TABLE indonesian.learner_skill_state ADD CONSTRAINT learner_skill_state_skill_type_check
+  CHECK (skill_type IN ('recognition', 'form_recall', 'meaning_recall', 'spoken_production'));
+
+ALTER TABLE indonesian.review_events DROP CONSTRAINT IF EXISTS review_events_skill_type_check;
+ALTER TABLE indonesian.review_events ADD CONSTRAINT review_events_skill_type_check
+  CHECK (skill_type IN ('recognition', 'form_recall', 'meaning_recall', 'spoken_production'));
 
 -- === Content Generation and Staging Tables ===
 
