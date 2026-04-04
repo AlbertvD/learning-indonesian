@@ -53,21 +53,34 @@ interface ExerciseCandidateStaging {
 
 // --- Pattern matchers ---
 
-/** Matches lines like "word = translation" or "word: translation" */
+/** Matches lines like "word = translation" or "word: translation" or "- word = translation" */
 function parseVocabularyLines(text: string, pageNum: number): LearningItemStaging[] {
   const items: LearningItemStaging[] = []
-  // Updated regex to handle accented characters (á, é, í, ó, ú, à, è, ì, ò, ù, ä, ë, ï, ö, ü, etc.)
-  const vocabRegex = /^([A-Za-zÀ-ÿ\s'-]+(?:\([^)]*\))?)\s*[=:]\s*(.+)$/gm
+  // Match vocabulary: optional dash + word = translation
+  const vocabRegex = /^-?\s*([A-Za-zÀ-ÿ\s'-]+(?:\([^)]*\))?)\s*[=:]\s*(.+)$/gm
   let match: RegExpExecArray | null
 
   while ((match = vocabRegex.exec(text)) !== null) {
-    const indonesian = match[1].trim()
+    const indonesian = match[1].trim().replace(/^-\s*/, '') // Remove any remaining leading dashes
     const dutch = match[2].trim()
+
+    // Skip section headers and dialogue lines
+    if (indonesian.includes(':') || /^(CULTUUR|GRAMMATICA|OEFENINGEN|Woordenlijst|Dialoog|DI HOTEL|YANG|Telwoorden)/i.test(indonesian)) {
+      continue
+    }
+
+    // Skip if this looks like a dialogue speaker (short, capitalized, not a vocab word)
+    if (/^[A-Z][a-z\s]+$/.test(indonesian) && indonesian.length < 20) {
+      continue
+    }
 
     // Skip if either side is too long (probably not a vocab entry)
     if (indonesian.length > 50 || dutch.length > 80) continue
     // Skip if indonesian side has no letters
     if (!/[a-zA-ZÀ-ÿ]/.test(indonesian)) continue
+
+    // Skip common header patterns
+    if (/^(Tips|Contoh|Schematisch|Bij|Aantal|Noten|Pagina|\d+\.)/.test(indonesian)) continue
 
     items.push({
       base_text: indonesian,
@@ -219,6 +232,21 @@ export { candidates } from './candidates'
   console.log(`  - candidates.ts (${data.candidates.length} candidates)`)
 }
 
+/** Detect grammar sections (GRAMMATICA, OEFENINGEN, etc.) */
+function detectGrammarSection(text: string): { isGrammar: boolean; sectionType: string; content: string } {
+  // Check for section headers
+  if (/^GRAMMATICA|^OEFENINGEN|^YANG\s*-/m.test(text)) {
+    if (/^GRAMMATICA/m.test(text)) {
+      return { isGrammar: true, sectionType: 'grammar', content: text }
+    } else if (/^OEFENINGEN|^Oefening/m.test(text)) {
+      return { isGrammar: true, sectionType: 'exercises', content: text }
+    } else if (/^YANG\s*-/m.test(text)) {
+      return { isGrammar: true, sectionType: 'grammar', content: text }
+    }
+  }
+  return { isGrammar: false, sectionType: '', content: text }
+}
+
 function main() {
   const lessonNumber = parseInt(process.argv[2], 10)
   if (isNaN(lessonNumber)) {
@@ -237,20 +265,37 @@ function main() {
   for (const { pageNum, text } of pages) {
     console.log(`[Page ${pageNum}] ${text.length} chars`)
 
-    // Extract vocabulary
-    const vocabItems = parseVocabularyLines(text, pageNum)
+    // Check for grammar/exercises sections first
+    const { isGrammar, sectionType } = detectGrammarSection(text)
+    let hasStructuredContent = false
+
+    if (isGrammar) {
+      allSections.push({
+        title: sectionType === 'grammar' ? `Grammatica (pagina ${pageNum})` : `Oefeningen (pagina ${pageNum})`,
+        content: { type: sectionType, body: text },
+        order_index: allSections.length,
+      })
+      console.log(`  → ${sectionType} section`)
+      hasStructuredContent = true
+    }
+
+    // Extract vocabulary (skip if contains dialogue markers)
+    const hasDialogue = /^[A-Z][a-z\s]+\s*:\s+/m.test(text)
+    const vocabItems = !hasDialogue && !isGrammar ? parseVocabularyLines(text, pageNum) : []
     allItems.push(...vocabItems)
     if (vocabItems.length > 0) {
       console.log(`  → ${vocabItems.length} vocabulary items`)
+      hasStructuredContent = true
     }
 
-    // Extract dialogues
+    // Extract dialogues (always check, even on grammar pages)
     const { section: dialogueSection, items: dialogueItems } = parseDialogueLines(text, pageNum)
     if (dialogueSection) {
       dialogueSection.order_index = allSections.length
       allSections.push(dialogueSection)
       allItems.push(...dialogueItems)
       console.log(`  → dialogue section (${dialogueItems.length} lines)`)
+      hasStructuredContent = true
     }
 
     // Extract sentence pairs
@@ -258,10 +303,11 @@ function main() {
     allItems.push(...sentenceItems)
     if (sentenceItems.length > 0) {
       console.log(`  → ${sentenceItems.length} sentence pairs`)
+      hasStructuredContent = true
     }
 
     // Add page as a text section if no structured content was found
-    if (vocabItems.length === 0 && !dialogueSection && sentenceItems.length === 0) {
+    if (!hasStructuredContent) {
       allSections.push({
         title: `Pagina ${pageNum}`,
         content: { type: 'text', paragraphs: text.split('\n\n').filter(p => p.trim()) },
