@@ -192,14 +192,21 @@ function applyConsecutiveTypeCap(queue: SessionQueueItem[]): SessionQueueItem[] 
   return reordered
 }
 
+// Maximum new items per session for a new learner when there are no due items to review
+const NEW_LEARNER_INTRO_CAP = 5
+
 /**
  * Detect new learners and apply overload protection.
  * New learner: account_age_days < 30 AND stable_item_count < 50
  * Overload rule: Limit new items severely for new learners
  *
  * Also enforces early stage caps:
- * - 0–30 days: no new items, max 20-day intervals (handled in fsrs.ts)
+ * - 0–30 days: prioritise due/weak items, cap new item introductions
  * - 30–60 days: reduced new items, max 30-day intervals
+ *
+ * Special case: if the learner has no due/weak items at all (fresh start or
+ * after a full reset), allow a small number of new items so the session can
+ * actually begin rather than returning an empty queue.
  */
 function applyNewLearnerRules(
   queue: SessionQueueItem[],
@@ -212,13 +219,20 @@ function applyNewLearnerRules(
     return queue
   }
 
-  // For new learners: keep only due and weak items, remove new items
-  return queue.filter(item => {
-    // Check if this is a new item (no learner state or stage === 'new')
+  // Separate due/weak items from brand-new items
+  const dueOrWeak = queue.filter(item => {
     const state = item.learnerItemState
-    const isNew = !state || state.stage === 'new'
-    return !isNew
+    return state && state.stage !== 'new'
   })
+
+  if (dueOrWeak.length > 0) {
+    // Normal new-learner session: only serve items already in progress
+    return dueOrWeak
+  }
+
+  // No due/weak items — learner is starting fresh (or was reset).
+  // Allow a small introduction batch so the session is not empty.
+  return queue.slice(0, NEW_LEARNER_INTRO_CAP)
 }
 
 /**
