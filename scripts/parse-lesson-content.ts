@@ -53,47 +53,90 @@ interface ExerciseCandidateStaging {
 
 // --- Pattern matchers ---
 
-/** Matches lines like "word = translation" or "word: translation" or "- word = translation" */
+/** Matches vocabulary lines with explicit separators (=, :, -) or from Woordenlijst sections */
 function parseVocabularyLines(text: string, pageNum: number): LearningItemStaging[] {
   const items: LearningItemStaging[] = []
-  // Match vocabulary: optional dash + word = translation
-  const vocabRegex = /^-?\s*([A-Za-zÀ-ÿ\s'-]+(?:\([^)]*\))?)\s*[=:]\s*(.+)$/gm
-  let match: RegExpExecArray | null
+  const lines = text.split('\n')
 
-  while ((match = vocabRegex.exec(text)) !== null) {
-    const indonesian = match[1].trim().replace(/^-\s*/, '') // Remove any remaining leading dashes
-    const dutch = match[2].trim()
+  // Detect if we're in a vocabulary list section (after "Woordenlijst" header)
+  let afterVocabListHeader = false
 
-    // Skip section headers and dialogue lines
-    if (indonesian.includes(':') || /^(CULTUUR|GRAMMATICA|OEFENINGEN|Woordenlijst|Dialoog|DI HOTEL|YANG|Telwoorden)/i.test(indonesian)) {
+  for (const line of lines) {
+    const trimmed = line.trim()
+
+    // Mark vocabulary list sections
+    if (/Woordenlijst|Telwoorden/i.test(trimmed)) {
+      afterVocabListHeader = true
       continue
     }
 
-    // Skip if this looks like a dialogue speaker (short, capitalized, not a vocab word)
-    if (/^[A-Z][a-z\s]+$/.test(indonesian) && indonesian.length < 20) {
+    // Exit vocabulary list on section headers or empty lines followed by headers
+    if (/^(CULTUUR|GRAMMATICA|OEFENINGEN|Dialoog|DI HOTEL|YANG)/i.test(trimmed)) {
+      afterVocabListHeader = false
       continue
     }
 
-    // Skip if either side is too long (probably not a vocab entry)
-    if (indonesian.length > 50 || dutch.length > 80) continue
-    // Skip if indonesian side has no letters
-    if (!/[a-zA-ZÀ-ÿ]/.test(indonesian)) continue
+    if (!trimmed) continue
 
-    // Skip common header patterns
-    if (/^(Tips|Contoh|Schematisch|Bij|Aantal|Noten|Pagina|\d+\.)/.test(indonesian)) continue
-
-    items.push({
-      base_text: indonesian,
-      item_type: 'word',
-      context_type: 'vocabulary_list',
-      translation_nl: dutch,
-      translation_en: '', // filled in review or by Claude Code
-      source_page: pageNum,
-      review_status: 'pending_review',
-    })
+    // Process vocabulary from dash-prefixed lines (explicit format)
+    if (line.startsWith('-')) {
+      const content = line.replace(/^-\s*/, '').trim()
+      const { indonesian, dutch } = parseVocabPair(content)
+      if (indonesian && dutch) {
+        if (isValidVocabEntry(indonesian, dutch)) {
+          items.push(createVocabItem(indonesian, dutch, pageNum))
+        }
+      }
+    }
+    // Process vocabulary from Woordenlijst sections (space-separated pairs)
+    // Only accept if it looks like two words separated by space
+    else if (afterVocabListHeader && /^[a-z][a-zÀ-ÿ\s'-]*\s+[a-z]/i.test(trimmed)) {
+      const parts = trimmed.split(/\s{2,}|\s+(?=[a-z]{3,})/i)
+      if (parts.length === 2) {
+        const indonesian = parts[0].trim()
+        const dutch = parts[1].trim()
+        if (isValidVocabEntry(indonesian, dutch)) {
+          items.push(createVocabItem(indonesian, dutch, pageNum))
+        }
+      }
+    }
   }
 
   return items
+}
+
+function parseVocabPair(content: string): { indonesian: string; dutch: string } {
+  // Try explicit separator first (=, :, -)
+  const separatorMatch = content.match(/^([A-Za-zÀ-ÿ\s'-]+(?:\([^)]*\))?)\s*[-=:]\s*(.+)$/)
+  if (separatorMatch) {
+    return { indonesian: separatorMatch[1].trim(), dutch: separatorMatch[2].trim() }
+  }
+  return { indonesian: '', dutch: '' }
+}
+
+function isValidVocabEntry(indonesian: string, dutch: string): boolean {
+  if (indonesian.includes(':') || /^(CULTUUR|GRAMMATICA|OEFENINGEN|Woordenlijst|Dialoog|DI HOTEL|YANG|Telwoorden)/i.test(indonesian)) {
+    return false
+  }
+  if (/^[A-Z][a-z\s]+$/.test(indonesian) && indonesian.length < 20) {
+    return false
+  }
+  if (indonesian.length > 50 || dutch.length > 80) return false
+  if (!/[a-zA-ZÀ-ÿ]/.test(indonesian)) return false
+  if (/^(Tips|Contoh|Schematisch|Bij|Aantal|Noten|Pagina|\d+\.)/.test(indonesian)) return false
+  return true
+}
+
+function createVocabItem(indonesian: string, dutch: string, pageNum: number): LearningItemStaging {
+  return {
+    base_text: indonesian,
+    item_type: 'word',
+    context_type: 'vocabulary_list',
+    translation_nl: dutch,
+    translation_en: '',
+    source_page: pageNum,
+    review_status: 'pending_review',
+  }
 }
 
 /** Matches dialogue patterns like "A: text", "Speaker: text", or "Multi Word Speaker: text" */
