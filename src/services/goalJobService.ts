@@ -14,6 +14,7 @@
 
 import { supabase } from '@/lib/supabase'
 import { goalService } from '@/services/goalService'
+import { logError } from '@/lib/logger'
 
 export const goalJobService = {
   /**
@@ -43,14 +44,14 @@ export const goalJobService = {
           await goalService.finalizeWeek(set.id)
           finalized++
         } catch (err) {
-          console.error(`[goalJobService] Failed to finalize goal set ${set.id}:`, err)
+          logError({ page: 'goalJobService', action: 'finalizeGoalSet', error: err })
           // Continue with next set even if one fails
         }
       }
 
       return finalized
     } catch (err) {
-      console.error('[goalJobService] Weekly finalization job failed:', err)
+      logError({ page: 'goalJobService', action: 'runWeeklyFinalization', error: err })
       throw err
     }
   },
@@ -98,14 +99,14 @@ export const goalJobService = {
           const goalSet = await goalService.generateWeeklyGoalSet(user.id, user.timezone, now)
           if (goalSet) generated++
         } catch (err) {
-          console.error(`[goalJobService] Failed to generate goal set for user ${user.id}:`, err)
+          logError({ page: 'goalJobService', action: 'generateGoalSetForUser', error: err })
           // Continue with next user
         }
       }
 
       return generated
     } catch (err) {
-      console.error('[goalJobService] Current-week pre-generation job failed:', err)
+      logError({ page: 'goalJobService', action: 'runCurrentWeekPreGeneration', error: err })
       throw err
     }
   },
@@ -251,14 +252,14 @@ export const goalJobService = {
 
           rollupCount++
         } catch (err) {
-          console.error(`[goalJobService] Failed to create rollup for user ${user.id}:`, err)
+          logError({ page: 'goalJobService', action: 'createDailyRollup', error: err })
           // Continue with next user
         }
       }
 
       return rollupCount
     } catch (err) {
-      console.error('[goalJobService] Daily rollup snapshot job failed:', err)
+      logError({ page: 'goalJobService', action: 'runDailyRollupSnapshot', error: err })
       throw err
     }
   },
@@ -343,7 +344,7 @@ export const goalJobService = {
               }
             }
           } catch (err) {
-            console.error(`[goalJobService] Failed to repair goal set ${set.id}:`, err)
+            logError({ page: 'goalJobService', action: 'repairGoalSet', error: err })
           }
         }
       }
@@ -362,12 +363,12 @@ export const goalJobService = {
             await goalService.finalizeWeek(set.id)
             repairsCount++
           } catch (err) {
-            console.error(`[goalJobService] Failed to close overdue goal set ${set.id}:`, err)
+            logError({ page: 'goalJobService', action: 'closeOverdueGoalSet', error: err })
           }
         }
       }
     } catch (err) {
-      console.error('[goalJobService] Integrity repair sweeper job failed:', err)
+      logError({ page: 'goalJobService', action: 'runIntegrityRepairSweeper', error: err })
       throw err
     }
 

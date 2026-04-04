@@ -6,6 +6,7 @@
  */
 
 import { supabase } from '@/lib/supabase'
+import { logError } from '@/lib/logger'
 
 export type AnalyticsEventType =
   | 'goal_generated'
@@ -45,7 +46,7 @@ export const analyticsService = {
         })
     } catch (err) {
       // Fire-and-forget: log but don't block
-      console.error('[analyticsService] Failed to track event:', { event, err })
+      logError({ page: 'analyticsService', action: 'trackEvent', error: err })
     }
   },
 

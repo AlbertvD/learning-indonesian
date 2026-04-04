@@ -24,9 +24,9 @@ export function SpeakingExercise({ exerciseItem, onAnswer }: SpeakingExercisePro
     if (isAnswered) return
     setIsAnswered(true)
 
-    // For now, speaking exercises are not scored automatically
-    // They would require transcription API integration
-    const wasCorrect = false
+    // Speaking exercises are not scored automatically yet (requires transcription API).
+    // Treat as acknowledged (correct) so FSRS state is not corrupted.
+    const wasCorrect = true
 
     const FEEDBACK_DELAY_MS = 1500
     setTimeout(() => {

@@ -850,6 +850,57 @@ ON CONFLICT (exercise_type) DO UPDATE SET
   rollout_phase = EXCLUDED.rollout_phase,
   notes = EXCLUDED.notes;
 
+-- RLS for content pipeline tables
+ALTER TABLE indonesian.textbook_sources ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.textbook_pages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.grammar_patterns ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.item_context_grammar_patterns ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.exercise_type_availability ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.generated_exercise_candidates ENABLE ROW LEVEL SECURITY;
+ALTER TABLE indonesian.exercise_variants ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "textbook_sources_read" ON indonesian.textbook_sources FOR SELECT TO authenticated USING (true);
+CREATE POLICY "textbook_sources_admin_write" ON indonesian.textbook_sources FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "textbook_pages_read" ON indonesian.textbook_pages FOR SELECT TO authenticated USING (true);
+CREATE POLICY "textbook_pages_admin_write" ON indonesian.textbook_pages FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "grammar_patterns_read" ON indonesian.grammar_patterns FOR SELECT TO authenticated USING (true);
+CREATE POLICY "grammar_patterns_admin_write" ON indonesian.grammar_patterns FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "item_context_grammar_patterns_read" ON indonesian.item_context_grammar_patterns FOR SELECT TO authenticated USING (true);
+CREATE POLICY "item_context_grammar_patterns_admin_write" ON indonesian.item_context_grammar_patterns FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "exercise_type_availability_read" ON indonesian.exercise_type_availability FOR SELECT TO authenticated USING (true);
+CREATE POLICY "exercise_type_availability_admin_write" ON indonesian.exercise_type_availability FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "generated_exercise_candidates_admin_only" ON indonesian.generated_exercise_candidates FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "exercise_variants_read" ON indonesian.exercise_variants FOR SELECT TO authenticated USING (true);
+CREATE POLICY "exercise_variants_admin_write" ON indonesian.exercise_variants FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+
+GRANT SELECT ON indonesian.textbook_sources TO authenticated;
+GRANT SELECT ON indonesian.textbook_pages TO authenticated;
+GRANT SELECT ON indonesian.grammar_patterns TO authenticated;
+GRANT SELECT ON indonesian.item_context_grammar_patterns TO authenticated;
+GRANT SELECT ON indonesian.exercise_type_availability TO authenticated;
+GRANT SELECT ON indonesian.exercise_variants TO authenticated;
+-- generated_exercise_candidates: no grant to authenticated — admin-only via service_role
+
 -- Storage buckets
 INSERT INTO storage.buckets (id, name, public)
 VALUES

@@ -9,6 +9,7 @@
 
 import { supabase } from '@/lib/supabase'
 import type { WeeklyGoal } from '@/types/learning'
+import { logError } from '@/lib/logger'
 
 export interface SessionImpactMessages {
   sessionLocalFacts: string[]
@@ -89,7 +90,7 @@ export const sessionSummaryService = {
         }
       }
     } catch (err) {
-      console.error('[sessionSummaryService] Failed to fetch session facts:', err)
+      logError({ page: 'sessionSummaryService', action: 'fetchSessionFacts', error: err })
     }
 
     return facts

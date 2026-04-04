@@ -70,12 +70,5 @@ export interface ContentReviewItem {
   updated_at: string
 }
 
-export interface ExerciseVariant {
-  id: string
-  context_id: string
-  exercise_type: string
-  payload_json: Record<string, any>
-  is_active: boolean
-  created_at: string
-  updated_at: string
-}
+// ExerciseVariant is defined in learning.ts (authoritative, matches DB schema)
+export type { ExerciseVariant } from '@/types/learning'

@@ -13,10 +13,11 @@ import { learnerStateService } from '@/services/learnerStateService'
 import { goalService } from '@/services/goalService'
 import { analyticsService } from '@/services/analyticsService'
 import { sessionSummaryService, type SessionImpactMessages } from '@/services/sessionSummaryService'
+import { exerciseAvailabilityService } from '@/services/exerciseAvailabilityService'
 import { ExerciseShell } from '@/components/exercises/ExerciseShell'
 import { SessionSummary } from '@/components/SessionSummary'
 import { logError } from '@/lib/logger'
-import type { SessionQueueItem } from '@/types/learning'
+import type { SessionQueueItem, LearnerItemState, LearnerSkillState, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant, WeeklyGoal } from '@/types/learning'
 import { startSession, endSession } from '@/lib/session'
 import classes from './Session.module.css'
 
@@ -33,11 +34,12 @@ export function Session() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [goalImpactMessages, setGoalImpactMessages] = useState<SessionImpactMessages | null>(null)
+  const [accountAgeDays, setAccountAgeDays] = useState(0)
 
   const lessonFilter = searchParams.get('lesson')
   const preferredSessionSize = profile?.preferredSessionSize ?? 15
   const didInit = useRef(false)
-  const beforeGoalsRef = useRef<any>(null)
+  const beforeGoalsRef = useRef<WeeklyGoal[] | null>(null)
 
   // Initialize session
   useEffect(() => {
@@ -91,16 +93,16 @@ export function Session() {
         }
 
         // Convert arrays to maps
-        const itemStates: Record<string, any> = {}
+        const itemStates: Record<string, LearnerItemState> = {}
         for (const state of itemStatesArray) {
           itemStates[state.learning_item_id] = state
         }
 
         // Build meanings, contexts, variants maps (parallel individual queries)
-        const meaningsByItem: Record<string, any> = {}
-        const contextsByItem: Record<string, any> = {}
-        const variantsByItem: Record<string, any> = {}
-        const exerciseVariantsByContext: Record<string, any> = {}
+        const meaningsByItem: Record<string, ItemMeaning[]> = {}
+        const contextsByItem: Record<string, ItemContext[]> = {}
+        const variantsByItem: Record<string, ItemAnswerVariant[]> = {}
+        const exerciseVariantsByContext: Record<string, ExerciseVariant[]> = {}
 
         // Run all queries in parallel to avoid URL length limits
         const results = await Promise.all(
@@ -145,7 +147,7 @@ export function Session() {
         }
 
         // Convert skill states to map
-        const skillStatesMap: Record<string, any[]> = {}
+        const skillStatesMap: Record<string, LearnerSkillState[]> = {}
         for (const state of skillStatesArray) {
           if (!skillStatesMap[state.learning_item_id]) {
             skillStatesMap[state.learning_item_id] = []
@@ -175,26 +177,32 @@ export function Session() {
         }
 
         // Calculate learner metrics for policies
-        // Account age: use earliest item introduction date or default to 0
-        let accountAgeDays = 0
-        if (itemStatesArray.length > 0) {
-          const earliestIntroducedDate = itemStatesArray
-            .filter(s => s.introduced_at)
-            .map(s => new Date(s.introduced_at!).getTime())
-            .reduce((min, time) => Math.min(min, time), Date.now())
-          accountAgeDays = Math.floor((Date.now() - earliestIntroducedDate) / (1000 * 60 * 60 * 24))
+        // Account age: use profile creation date (most reliable source)
+        let ageDays = 0
+        if (user.created_at) {
+          ageDays = Math.floor((Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24))
         }
+        setAccountAgeDays(ageDays)
 
         const stableItemCount = itemStatesArray.filter(
           s => s.stage !== 'new' && !s.suspended,
         ).length
 
+        // Load exercise type availability (cached, 1hr TTL)
+        let exerciseTypeAvailability: Record<string, import('@/types/learning').ExerciseTypeAvailability> | undefined
+        try {
+          exerciseTypeAvailability = await exerciseAvailabilityService.getAllAvailability()
+        } catch (err) {
+          // Non-fatal: if availability can't be loaded, all types pass through
+          console.warn('Failed to load exercise availability:', err)
+        }
+
         // Apply session policies to shape the queue
         const policyContext: SessionPoliciesContext = {
-          accountAgeDays,
+          accountAgeDays: ageDays,
           stableItemCount,
           sessionInteractionCap: preferredSessionSize,
-          // exerciseTypeAvailability and grammarPatterns will be loaded from DB in Phase 2+
+          exerciseTypeAvailability,
         }
 
         const shapedQueue = applyPolicies(builtQueue, policyContext)
@@ -358,6 +366,7 @@ export function Session() {
               sessionId={sessionId}
               user={user}
               userLanguage={userLang}
+              accountAgeDays={accountAgeDays}
               onAnswer={handleExerciseAnswer}
               onContinueToNext={handleContinueToNext}
             />

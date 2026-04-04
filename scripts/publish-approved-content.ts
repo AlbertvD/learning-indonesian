@@ -39,16 +39,20 @@ function readStagingFile(stagingDir: string, filename: string): any {
   if (!fs.existsSync(filePath)) return null
   const content = fs.readFileSync(filePath, 'utf-8')
   const match = content.match(/=\s*([\s\S]*?)(?:\nexport|$)/)
-  if (!match) return null
-  
+  if (!match) {
+    console.error(`Error: Could not extract data from ${filePath} — no assignment pattern found`)
+    process.exit(1)
+  }
+
   const jsStr = match[1].trim().replace(/;$/, '')
   try {
     return JSON.parse(jsStr)
   } catch {
     try {
       return new Function(`return ${jsStr}`)()
-    } catch {
-      return null
+    } catch (err) {
+      console.error(`Error: Failed to parse ${filePath}:`, err)
+      process.exit(1)
     }
   }
 }
