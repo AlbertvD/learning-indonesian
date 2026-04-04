@@ -56,8 +56,7 @@ export function ConstrainedTranslationExercise({
 
     setIsAnswered(true)
 
-    // Brief pause to let user see correct/incorrect feedback
-    const FEEDBACK_DELAY_MS = 1500
+    const FEEDBACK_DELAY_MS = isCorrect ? 1500 : 2000
     setTimeout(() => {
       const latencyMs = Date.now() - startTime - FEEDBACK_DELAY_MS
       onAnswer(isCorrect, isFuzzy, latencyMs, response)
@@ -116,12 +115,22 @@ export function ConstrainedTranslationExercise({
           </Button>
         )}
 
-        {/* Correct feedback */}
-        {isAnswered && isCorrect && (
+        {/* Result feedback */}
+        {isAnswered && (
           <Box style={{ textAlign: 'center', marginTop: '32px' }}>
-            <Badge color="green" size="xl" style={{ fontSize: '16px', padding: '12px 20px' }}>
-              ✓ Correct
+            <Badge
+              color={isCorrect ? 'green' : 'red'}
+              size="xl"
+              style={{ fontSize: '16px', padding: '12px 20px' }}
+            >
+              {isCorrect ? '✓ Correct' : '✗ Incorrect'}
             </Badge>
+            {!isCorrect && (
+              <Box mt="lg">
+                <Text size="sm" c="dimmed" mb="xs">Correct answer</Text>
+                <Text size="xl" fw={700}>{data.acceptableAnswers[0]}</Text>
+              </Box>
+            )}
           </Box>
         )}
       </Stack>

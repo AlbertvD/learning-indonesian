@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { notifications } from '@mantine/notifications'
-import { ExerciseFeedback } from './ExerciseFeedback'
 import { RecognitionMCQ } from './RecognitionMCQ'
 import { CuedRecallExercise } from './CuedRecallExercise'
 import { ContrastPairExercise } from './ContrastPairExercise'
@@ -34,15 +33,13 @@ export function ExerciseShell({
   onAnswer,
   onContinueToNext,
 }: ExerciseShellProps) {
-  const [showFeedback, setShowFeedback] = useState(false)
-  const [lastResult, setLastResult] = useState<ReviewResult | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
-  const [wasCorrect, setWasCorrect] = useState(false)
-  const [isFuzzy, setIsFuzzy] = useState(false)
 
   const exerciseItem = currentItem.exerciseItem
 
-  // Handle answer submission from exercise component
+  // Handle answer submission from exercise component.
+  // The exercise component shows inline feedback for its delay window,
+  // then calls this. We persist the review and advance immediately.
   const handleAnswerFromExercise = async (
     wasCorrect: boolean,
     isFuzzy: boolean,
@@ -71,22 +68,10 @@ export function ExerciseShell({
       }
 
       const result = await processReview(reviewInput)
-      setLastResult(result)
-      setWasCorrect(wasCorrect)
-      setIsFuzzy(isFuzzy)
       onAnswer(result, wasCorrect)
-
-      // All correct answers: skip feedback, go straight to next
-      if (wasCorrect) {
-        setIsProcessing(false)
-        onContinueToNext()
-      } else {
-        // Wrong answers: show feedback sheet
-        setShowFeedback(true)
-        setIsProcessing(false)
-      }
+      setIsProcessing(false)
+      onContinueToNext()
     } catch (err) {
-      console.error('Review error:', err)
       logError({ page: 'exercise-shell', action: 'processAnswer', error: err })
       notifications.show({
         color: 'red',
@@ -97,27 +82,6 @@ export function ExerciseShell({
     }
   }
 
-  // Handle continue from feedback
-  const handleContinue = () => {
-    setShowFeedback(false)
-    setLastResult(null)
-    onContinueToNext()
-  }
-
-// Render exercise or feedback
-  if (showFeedback && lastResult) {
-    return (
-      <ExerciseFeedback
-        exerciseItem={exerciseItem}
-        wasCorrect={wasCorrect}
-        isFuzzy={isFuzzy}
-        userLanguage={userLanguage}
-        onContinue={handleContinue}
-      />
-    )
-  }
-
-  // Dispatch to correct exercise component
   switch (exerciseItem.exerciseType) {
     case 'recognition_mcq':
       return (

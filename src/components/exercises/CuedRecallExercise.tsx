@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Button, Stack, Text, Badge, Group } from '@mantine/core'
+import { Box, Button, Stack, Text, Badge } from '@mantine/core'
 import type { ExerciseItem } from '@/types/learning'
 import classes from './RecognitionMCQ.module.css'
 
@@ -10,7 +10,7 @@ interface CuedRecallExerciseProps {
 }
 
 export function CuedRecallExercise({ exerciseItem, onAnswer }: CuedRecallExerciseProps) {
-  const { learningItem, contexts } = exerciseItem
+  const { learningItem } = exerciseItem
   const data = exerciseItem.cuedRecallData
 
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
@@ -21,9 +21,6 @@ export function CuedRecallExercise({ exerciseItem, onAnswer }: CuedRecallExercis
     return <div style={{ color: 'red' }}>Missing cued recall data</div>
   }
 
-  // Get anchor context for feedback
-  const anchorContext = contexts.find(c => c.is_anchor_context)
-
   // Handle option selection
   const handleSelectOption = (option: string) => {
     if (isAnswered) return
@@ -32,8 +29,7 @@ export function CuedRecallExercise({ exerciseItem, onAnswer }: CuedRecallExercis
 
     const isCorrect = option === data.correctOptionId
 
-    // Brief pause to let user see correct/incorrect feedback
-    const FEEDBACK_DELAY_MS = 1500
+    const FEEDBACK_DELAY_MS = isCorrect ? 1500 : 2000
     setTimeout(() => {
       const latencyMs = Date.now() - startTime - FEEDBACK_DELAY_MS
       onAnswer(isCorrect, latencyMs)
@@ -86,47 +82,20 @@ export function CuedRecallExercise({ exerciseItem, onAnswer }: CuedRecallExercis
           })}
         </Stack>
 
-        {/* Correct badge - underneath options */}
-        {isAnswered && isCorrect && (
+        {/* Result feedback */}
+        {isAnswered && (
           <Box style={{ textAlign: 'center', marginTop: '32px' }}>
-            <Badge color="green" size="xl" style={{ fontSize: '16px', padding: '12px 20px' }}>
-              ✓ Correct
+            <Badge
+              color={isCorrect ? 'green' : 'red'}
+              size="xl"
+              style={{ fontSize: '16px', padding: '12px 20px' }}
+            >
+              {isCorrect ? '✓ Correct' : '✗ Incorrect'}
             </Badge>
-          </Box>
-        )}
-
-        {/* Feedback section - only for wrong answers */}
-        {isAnswered && !isCorrect && (
-          <Box className={classes.feedback}>
-            <Group mb="md">
-              <Badge color="red" size="lg">
-                ✗ Incorrect
-              </Badge>
-            </Group>
-
-            <Box mb="md">
-              <Text size="sm" c="dimmed">The correct answer:</Text>
-              <Text fw={600} size="lg">
-                {learningItem.base_text}
-              </Text>
-            </Box>
-
-            {data.explanationText && (
-              <Box mb="md">
-                <Text size="sm" c="dimmed">Explanation:</Text>
-                <Text size="sm">{data.explanationText}</Text>
-              </Box>
-            )}
-
-            {anchorContext && (
-              <Box className={classes.context}>
-                <Text size="sm" c="dimmed" mb="xs">
-                  Example:
-                </Text>
-                <Text mb="xs" style={{ fontStyle: 'italic' }}>
-                  {anchorContext.source_text}
-                </Text>
-                <Text size="sm">{anchorContext.translation_text}</Text>
+            {!isCorrect && (
+              <Box mt="lg">
+                <Text size="sm" c="dimmed" mb="xs">Correct answer</Text>
+                <Text size="xl" fw={700}>{learningItem.base_text}</Text>
               </Box>
             )}
           </Box>
