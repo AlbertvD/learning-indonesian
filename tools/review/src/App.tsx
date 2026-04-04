@@ -3,62 +3,90 @@ import {
   Container,
   Stack,
   Select,
+  Grid,
   Card,
   Text,
   Group,
   Button,
   Badge,
-  Box,
   Textarea,
   Loader,
   Center,
   Alert,
+  Tabs,
+  TextInput,
+  ActionIcon,
+  ScrollArea,
+  Title,
 } from '@mantine/core'
-import { IconAlertCircle, IconCheck, IconX } from '@tabler/icons-react'
+import {
+  IconAlertCircle,
+  IconCheck,
+  IconX,
+  IconDeviceFloppy,
+  IconRefresh,
+  IconChevronLeft,
+  IconChevronRight,
+  IconPlus,
+  IconTrash,
+} from '@tabler/icons-react'
 import axios from 'axios'
 import './App.css'
 
-interface GeneratedExerciseCandidate {
-  exercise_type: string
-  page_reference: number
-  grammar_pattern_id?: string
-  source_text: string
-  prompt_text?: string
-  prompt_text_nl?: string
-  prompt_text_en?: string
-  transformationInstruction_nl?: string
-  transformationInstruction_en?: string
-  expected_answer_nl?: string
-  expected_answer_en?: string
-  answer_key: string[]
-  explanation?: string
-  explanation_nl?: string
-  explanation_en?: string
-  target_pattern?: string
-  requiredTargetPattern?: string
-  targetPatternOrScenario?: string
-  correctOptionId?: string
-  options?: string[]
-  review_status: string
-  created_at: string
-  reviewer_notes?: string
-}
-
 interface Page {
   page_number: number
-  raw_text: string
+  image_filename: string
+  image_url: string
+  ocr_text: string
+  has_ocr: boolean
+}
+
+interface LearningItem {
+  base_text: string
+  item_type: string
+  context_type: string
+  translation_nl: string
+  translation_en: string
+  source_page: number
+  review_status: 'pending_review' | 'approved' | 'rejected'
+}
+
+interface LessonSection {
+  title: string
+  content: any
+  order_index: number
+}
+
+interface StagingData {
+  lesson: {
+    title: string
+    description: string
+    level: string
+    module_id: string
+    order_index: number
+    sections: LessonSection[]
+  } | null
+  learningItems: LearningItem[]
+  grammarPatterns: any[]
+  candidates: any[]
 }
 
 function App() {
   const [lessons, setLessons] = useState<number[]>([])
   const [selectedLesson, setSelectedLesson] = useState<string | null>(null)
-  const [candidates, setCandidates] = useState<GeneratedExerciseCandidate[]>([])
   const [pages, setPages] = useState<Page[]>([])
+  const [currentPageIndex, setCurrentPageIndex] = useState(0)
+  const [ocrText, setOcrText] = useState('')
+  const [staging, setStaging] = useState<StagingData>({
+    lesson: null,
+    learningItems: [],
+    grammarPatterns: [],
+    candidates: [],
+  })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [reviewerNotes, setReviewerNotes] = useState<Record<number, string>>({})
+  const [activeTab, setActiveTab] = useState<string | null>('items')
 
   // Load lessons on mount
   useEffect(() => {
@@ -74,7 +102,7 @@ function App() {
     fetchLessons()
   }, [])
 
-  // Load candidates and pages when lesson changes
+  // Load pages and staging when lesson changes
   useEffect(() => {
     if (!selectedLesson) return
 
@@ -82,14 +110,16 @@ function App() {
       setLoading(true)
       setError(null)
       try {
-        const [candidatesRes, pagesRes] = await Promise.all([
-          axios.get(`/api/candidates/${selectedLesson}`),
+        const [pagesRes, stagingRes] = await Promise.all([
           axios.get(`/api/pages/${selectedLesson}`),
+          axios.get(`/api/staging/${selectedLesson}`),
         ])
-        setCandidates(candidatesRes.data)
         setPages(pagesRes.data)
-        setCurrentIndex(0)
-        setReviewerNotes({})
+        setStaging(stagingRes.data)
+        setCurrentPageIndex(0)
+        if (pagesRes.data.length > 0) {
+          setOcrText(pagesRes.data[0].ocr_text)
+        }
       } catch (err) {
         setError('Failed to load content')
         console.error(err)
@@ -101,311 +131,338 @@ function App() {
     fetchData()
   }, [selectedLesson])
 
-  const handleApprove = () => {
-    const updated = [...candidates]
-    updated[currentIndex].review_status = 'approved'
-    updated[currentIndex].reviewer_notes = reviewerNotes[currentIndex] || ''
-    setCandidates(updated)
-    nextCandidate()
-  }
-
-  const handleReject = () => {
-    const updated = [...candidates]
-    updated[currentIndex].review_status = 'rejected'
-    updated[currentIndex].reviewer_notes = reviewerNotes[currentIndex] || ''
-    setCandidates(updated)
-    nextCandidate()
-  }
-
-  const nextCandidate = () => {
-    if (currentIndex < candidates.length - 1) {
-      setCurrentIndex(currentIndex + 1)
-      setReviewerNotes({})
+  // Update OCR text when page index changes
+  useEffect(() => {
+    if (pages.length > 0 && currentPageIndex < pages.length) {
+      setOcrText(pages[currentPageIndex].ocr_text)
     }
-  }
+  }, [currentPageIndex, pages])
 
-  const prevCandidate = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1)
-      setReviewerNotes({})
-    }
-  }
-
-  const handleSave = async () => {
-    if (!selectedLesson) return
+  const handleSaveOcr = async (reparse = false) => {
+    if (!selectedLesson || pages.length === 0) return
+    const pageNum = pages[currentPageIndex].page_number
     setSaving(true)
     try {
-      await axios.post(`/api/candidates/${selectedLesson}/save`, { candidates })
-      setError(null)
-      alert('Candidates saved successfully!')
+      await axios.post(`/api/pages/${selectedLesson}/${pageNum}`, { text: ocrText })
+      
+      // Update local pages state
+      const updatedPages = [...pages]
+      updatedPages[currentPageIndex].ocr_text = ocrText
+      setPages(updatedPages)
+
+      if (reparse) {
+        await axios.post(`/api/pages/${selectedLesson}/reparse`)
+        const stagingRes = await axios.get(`/api/staging/${selectedLesson}`)
+        setStaging(stagingRes.data)
+      }
     } catch (err) {
-      setError('Failed to save candidates')
+      setError('Failed to save OCR text')
       console.error(err)
     } finally {
       setSaving(false)
     }
   }
 
-  const candidate = candidates[currentIndex]
-  const sourcePage = candidate ? pages.find(p => p.page_number === candidate.page_reference) : null
+  const handleSaveAll = async () => {
+    if (!selectedLesson) return
+    setSaving(true)
+    try {
+      await axios.post(`/api/staging/${selectedLesson}`, staging)
+      alert('All changes saved to staging files!')
+    } catch (err) {
+      setError('Failed to save staging data')
+      console.error(err)
+    } finally {
+      setSaving(false)
+    }
+  }
 
-  const approvedCount = candidates.filter(c => c.review_status === 'approved').length
-  const rejectedCount = candidates.filter(c => c.review_status === 'rejected').length
-  const pendingCount = candidates.filter(c => c.review_status === 'pending_review').length
+  const updateItem = (index: number, field: keyof LearningItem, value: any) => {
+    const updated = [...staging.learningItems]
+    updated[index] = { ...updated[index], [field]: value }
+    setStaging({ ...staging, learningItems: updated })
+  }
+
+  const removeItem = (index: number) => {
+    const updated = [...staging.learningItems]
+    updated.splice(index, 1)
+    setStaging({ ...staging, learningItems: updated })
+  }
+
+  const addItem = () => {
+    const newItem: LearningItem = {
+      base_text: '',
+      item_type: 'word',
+      context_type: 'vocabulary_list',
+      translation_nl: '',
+      translation_en: '',
+      source_page: pages[currentPageIndex]?.page_number || 1,
+      review_status: 'pending_review',
+    }
+    setStaging({ ...staging, learningItems: [newItem, ...staging.learningItems] })
+  }
+
+  const currentPage = pages[currentPageIndex]
+
+  if (loading) {
+    return (
+      <Center h="100vh">
+        <Loader size="xl" />
+      </Center>
+    )
+  }
 
   return (
-    <Container size="xl" py="xl">
-      <Stack gap="lg">
-        <div>
-          <h1>Exercise Candidate Review</h1>
-          <Text c="dimmed">Review and approve exercise candidates from textbook extractions</Text>
-        </div>
+    <Container size="100%" px="md" py="md">
+      <Stack gap="md">
+        <Group justify="space-between">
+          <Group gap="lg">
+            <Title order={2}>Content Pipeline Review</Title>
+            <Select
+              placeholder="Select Lesson"
+              data={lessons.map(l => ({ value: l.toString(), label: `Lesson ${l}` }))}
+              value={selectedLesson}
+              onChange={setSelectedLesson}
+              w={150}
+            />
+          </Group>
+          {selectedLesson && (
+            <Group>
+              <Button
+                leftSection={<IconDeviceFloppy size={18} />}
+                onClick={handleSaveAll}
+                loading={saving}
+                color="blue"
+              >
+                Save All Changes
+              </Button>
+            </Group>
+          )}
+        </Group>
 
-        {error && (
-          <Alert icon={<IconAlertCircle size={16} />} color="red" title="Error">
-            {error}
-          </Alert>
-        )}
-
-        <Select
-          label="Select Lesson"
-          placeholder="Choose a lesson"
-          data={lessons.map(l => ({ value: l.toString(), label: `Lesson ${l}` }))}
-          value={selectedLesson}
-          onChange={setSelectedLesson}
-        />
-
-        {selectedLesson && (
+        {!selectedLesson ? (
+          <Center h="50vh">
+            <Text c="dimmed" size="lg">Please select a lesson to begin review</Text>
+          </Center>
+        ) : (
           <>
-            <Card withBorder>
-              <Card.Section withBorder inheritPadding py="xs">
-                <Group justify="space-between">
-                  <div>
-                    <Text fw={500}>Progress: {currentIndex + 1} of {candidates.length}</Text>
-                    <Group gap="xs" mt="xs">
-                      <Badge color="blue">Pending: {pendingCount}</Badge>
-                      <Badge color="green">Approved: {approvedCount}</Badge>
-                      <Badge color="red">Rejected: {rejectedCount}</Badge>
-                    </Group>
-                  </div>
-                  <Button onClick={handleSave} loading={saving} disabled={candidates.length === 0}>
-                    Save All Changes
-                  </Button>
-                </Group>
-              </Card.Section>
+            {error && (
+              <Alert icon={<IconAlertCircle size={16} />} color="red" title="Error" withCloseButton onClose={() => setError(null)}>
+                {error}
+              </Alert>
+            )}
 
-              {loading ? (
-                <Center py="xl">
-                  <Loader />
-                </Center>
-              ) : candidates.length === 0 ? (
-                <Center py="xl">
-                  <Text c="dimmed">No candidates found for this lesson</Text>
-                </Center>
-              ) : candidate ? (
-                <Card.Section inheritPadding py="lg">
-                  <Stack gap="lg">
-                    {/* Source Page Context */}
-                    {sourcePage && (
-                      <Box style={{ backgroundColor: '#f5f5f5', padding: '12px', borderRadius: '4px' }}>
-                        <Text size="sm" fw={500} mb="xs">
-                          Source Page {sourcePage.page_number}:
-                        </Text>
-                        <Text size="sm" style={{ maxHeight: '150px', overflow: 'auto', whiteSpace: 'pre-wrap' }}>
-                          {sourcePage.raw_text.substring(0, 300)}...
-                        </Text>
-                      </Box>
-                    )}
-
-                    {/* Candidate Details */}
-                    <div>
-                      <Group justify="space-between" mb="md">
-                        <div>
-                          <Text fw={500}>Exercise Type</Text>
-                          <Badge mt="xs">{candidate.exercise_type}</Badge>
-                        </div>
-                        <div>
-                          <Text fw={500}>Status</Text>
-                          <Badge
-                            mt="xs"
-                            color={
-                              candidate.review_status === 'approved'
-                                ? 'green'
-                                : candidate.review_status === 'rejected'
-                                  ? 'red'
-                                  : 'blue'
-                            }
-                          >
-                            {candidate.review_status}
-                          </Badge>
-                        </div>
-                      </Group>
-
-                      <Stack gap="md">
-                        <div>
-                          <Text size="sm" fw={500} mb="xs">
-                            Source Text
-                          </Text>
-                          <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
-                            {candidate.source_text}
-                          </Text>
-                        </div>
-
-                        <div>
-                          <Text size="sm" fw={500} mb="xs">
-                            Prompt / Instruction
-                          </Text>
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '12px' }}>
-                            {candidate.prompt_text_nl && (
-                              <div style={{ backgroundColor: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
-                                <Text size="xs" fw={500} c="dimmed" mb="4px">
-                                  🇳🇱 Dutch
-                                </Text>
-                                <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
-                                  {candidate.prompt_text_nl}
-                                </Text>
-                              </div>
-                            )}
-                            {candidate.prompt_text_en && (
-                              <div style={{ backgroundColor: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
-                                <Text size="xs" fw={500} c="dimmed" mb="4px">
-                                  🇬🇧 English
-                                </Text>
-                                <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
-                                  {candidate.prompt_text_en}
-                                </Text>
-                              </div>
-                            )}
-                            {!candidate.prompt_text_nl && !candidate.prompt_text_en && (
-                              <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
-                                {candidate.prompt_text}
-                              </Text>
-                            )}
-                          </div>
-                        </div>
-
-                        {(candidate.expected_answer_nl || candidate.expected_answer_en) && (
-                          <div>
-                            <Text size="sm" fw={500} mb="xs">
-                              Expected Answer
-                            </Text>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                              {candidate.expected_answer_nl && (
-                                <div style={{ backgroundColor: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
-                                  <Text size="xs" fw={500} c="dimmed" mb="4px">
-                                    🇳🇱 Dutch
-                                  </Text>
-                                  <Text size="sm">{candidate.expected_answer_nl}</Text>
-                                </div>
-                              )}
-                              {candidate.expected_answer_en && (
-                                <div style={{ backgroundColor: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
-                                  <Text size="xs" fw={500} c="dimmed" mb="4px">
-                                    🇬🇧 English
-                                  </Text>
-                                  <Text size="sm">{candidate.expected_answer_en}</Text>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                        {candidate.target_pattern && (
-                          <div>
-                            <Text size="sm" fw={500} mb="xs">
-                              Target Pattern
-                            </Text>
-                            <Text size="sm">{candidate.target_pattern}</Text>
-                          </div>
-                        )}
-
-                        <div>
-                          <Text size="sm" fw={500} mb="xs">
-                            Answer Key
-                          </Text>
-                          {candidate.answer_key.map((ans, idx) => (
-                            <Text key={idx} size="sm" style={{ whiteSpace: 'pre-wrap' }}>
-                              {idx + 1}. {ans}
-                            </Text>
-                          ))}
-                        </div>
-
-                        <div>
-                          <Text size="sm" fw={500} mb="xs">
-                            Explanation
-                          </Text>
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '12px' }}>
-                            {candidate.explanation_nl && (
-                              <div style={{ backgroundColor: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
-                                <Text size="xs" fw={500} c="dimmed" mb="4px">
-                                  🇳🇱 Dutch
-                                </Text>
-                                <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
-                                  {candidate.explanation_nl}
-                                </Text>
-                              </div>
-                            )}
-                            {candidate.explanation_en && (
-                              <div style={{ backgroundColor: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
-                                <Text size="xs" fw={500} c="dimmed" mb="4px">
-                                  🇬🇧 English
-                                </Text>
-                                <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
-                                  {candidate.explanation_en}
-                                </Text>
-                              </div>
-                            )}
-                            {!candidate.explanation_nl && !candidate.explanation_en && (
-                              <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
-                                {candidate.explanation}
-                              </Text>
-                            )}
-                          </div>
-                        </div>
-
-                        <Textarea
-                          label="Reviewer Notes (optional)"
-                          placeholder="Add any feedback or corrections..."
-                          value={reviewerNotes[currentIndex] || ''}
-                          onChange={e => setReviewerNotes({ ...reviewerNotes, [currentIndex]: e.currentTarget.value })}
-                        />
-                      </Stack>
-                    </div>
-
-                    {/* Actions */}
-                    <Group justify="space-between" mt="lg">
-                      <Group>
-                        <Button variant="default" onClick={prevCandidate} disabled={currentIndex === 0}>
-                          ← Previous
-                        </Button>
-                        <Button variant="default" onClick={nextCandidate} disabled={currentIndex === candidates.length - 1}>
-                          Next →
-                        </Button>
-                      </Group>
-
-                      <Group>
-                        <Button
-                          color="red"
-                          leftSection={<IconX size={16} />}
-                          onClick={handleReject}
-                          variant={candidate.review_status === 'rejected' ? 'filled' : 'light'}
-                        >
-                          Reject
-                        </Button>
-                        <Button
-                          color="green"
-                          leftSection={<IconCheck size={16} />}
-                          onClick={handleApprove}
-                          variant={candidate.review_status === 'approved' ? 'filled' : 'light'}
-                        >
-                          Approve
-                        </Button>
-                      </Group>
-                    </Group>
-                  </Stack>
-                </Card.Section>
-              ) : null}
+            <Card withBorder p="xs">
+              <Group justify="center" gap="xl">
+                <ActionIcon 
+                  variant="subtle" 
+                  size="xl" 
+                  disabled={currentPageIndex === 0}
+                  onClick={() => setCurrentPageIndex(prev => prev - 1)}
+                >
+                  <IconChevronLeft />
+                </ActionIcon>
+                <Text fw={700}>Page {currentPageIndex + 1} of {pages.length}</Text>
+                <ActionIcon 
+                  variant="subtle" 
+                  size="xl" 
+                  disabled={currentPageIndex === pages.length - 1}
+                  onClick={() => setCurrentPageIndex(prev => prev + 1)}
+                >
+                  <IconChevronRight />
+                </ActionIcon>
+              </Group>
             </Card>
+
+            <Grid gutter="md">
+              {/* Left Panel: Image */}
+              <Grid.Col span={4}>
+                <Card withBorder h={600} p={0}>
+                  <Card.Section withBorder inheritPadding py="xs">
+                    <Text fw={500}>Page Image</Text>
+                  </Card.Section>
+                  <ScrollArea h={560}>
+                    {currentPage && (
+                      <img 
+                        src={currentPage.image_url} 
+                        alt={`Page ${currentPage.page_number}`} 
+                        style={{ width: '100%', display: 'block' }} 
+                      />
+                    )}
+                  </ScrollArea>
+                </Card>
+              </Grid.Col>
+
+              {/* Middle Panel: OCR Text */}
+              <Grid.Col span={4}>
+                <Card withBorder h={600}>
+                  <Card.Section withBorder inheritPadding py="xs">
+                    <Group justify="space-between">
+                      <Text fw={500}>OCR Text (Correct here)</Text>
+                      <Group gap="xs">
+                        <Button size="compact-xs" leftSection={<IconDeviceFloppy size={14} />} onClick={() => handleSaveOcr()} loading={saving}>Save</Button>
+                        <Button size="compact-xs" color="orange" leftSection={<IconRefresh size={14} />} onClick={() => handleSaveOcr(true)} loading={saving}>Save & Re-parse</Button>
+                      </Group>
+                    </Group>
+                  </Card.Section>
+                  <Textarea
+                    value={ocrText}
+                    onChange={(e) => setOcrText(e.currentTarget.value)}
+                    h={520}
+                    styles={{ input: { height: '100%', fontFamily: 'monospace' } }}
+                    mt="sm"
+                  />
+                </Card>
+              </Grid.Col>
+
+              {/* Right Panel: Structured Staging */}
+              <Grid.Col span={4}>
+                <Card withBorder h={600} p="xs">
+                  <Tabs value={activeTab} onChange={setActiveTab}>
+                    <Tabs.List>
+                      <Tabs.Tab value="items">Learning Items ({staging.learningItems.length})</Tabs.Tab>
+                      <Tabs.Tab value="sections">Sections ({staging.lesson?.sections.length || 0})</Tabs.Tab>
+                      <Tabs.Tab value="metadata">Lesson Meta</Tabs.Tab>
+                    </Tabs.List>
+
+                    <Tabs.Panel value="items" pt="xs">
+                      <ScrollArea h={500}>
+                        <Stack gap="xs">
+                          <Button 
+                            variant="light" 
+                            leftSection={<IconPlus size={16} />} 
+                            onClick={addItem}
+                            fullWidth
+                          >
+                            Add New Item
+                          </Button>
+                          {staging.learningItems.map((item, idx) => (
+                            <Card key={idx} withBorder p="xs" shadow="xs">
+                              <Stack gap="xs">
+                                <Group justify="space-between">
+                                  <Badge size="xs" color="blue">Page {item.source_page}</Badge>
+                                  <Group gap={4}>
+                                    <ActionIcon 
+                                      color="green" 
+                                      variant={item.review_status === 'approved' ? 'filled' : 'light'}
+                                      size="sm"
+                                      onClick={() => updateItem(idx, 'review_status', 'approved')}
+                                    >
+                                      <IconCheck size={14} />
+                                    </ActionIcon>
+                                    <ActionIcon 
+                                      color="red" 
+                                      variant={item.review_status === 'rejected' ? 'filled' : 'light'}
+                                      size="sm"
+                                      onClick={() => updateItem(idx, 'review_status', 'rejected')}
+                                    >
+                                      <IconX size={14} />
+                                    </ActionIcon>
+                                    <ActionIcon color="gray" variant="light" size="sm" onClick={() => removeItem(idx)}>
+                                      <IconTrash size={14} />
+                                    </ActionIcon>
+                                  </Group>
+                                </Group>
+                                <TextInput
+                                  label="Indonesian"
+                                  size="xs"
+                                  value={item.base_text}
+                                  onChange={(e) => updateItem(idx, 'base_text', e.currentTarget.value)}
+                                />
+                                <TextInput
+                                  label="Dutch"
+                                  size="xs"
+                                  value={item.translation_nl}
+                                  onChange={(e) => updateItem(idx, 'translation_nl', e.currentTarget.value)}
+                                />
+                                <Group grow>
+                                  <Select
+                                    label="Type"
+                                    size="xs"
+                                    data={['word', 'phrase', 'sentence', 'dialogue_chunk']}
+                                    value={item.item_type}
+                                    onChange={(val) => updateItem(idx, 'item_type', val)}
+                                  />
+                                  <Select
+                                    label="Context"
+                                    size="xs"
+                                    data={['vocabulary_list', 'example_sentence', 'dialogue', 'exercise_prompt']}
+                                    value={item.context_type}
+                                    onChange={(val) => updateItem(idx, 'context_type', val)}
+                                  />
+                                </Group>
+                              </Stack>
+                            </Card>
+                          ))}
+                        </Stack>
+                      </ScrollArea>
+                    </Tabs.Panel>
+
+                    <Tabs.Panel value="sections" pt="xs">
+                      <ScrollArea h={500}>
+                        <Stack gap="xs">
+                          {staging.lesson?.sections.map((section, idx) => (
+                            <Card key={idx} withBorder p="xs">
+                              <Text fw={700} size="sm">{section.title}</Text>
+                              <Text size="xs" c="dimmed">Type: {section.content.type}</Text>
+                              {section.content.type === 'dialogue' && (
+                                <Text size="xs">{section.content.lines.length} lines</Text>
+                              )}
+                              {section.content.type === 'text' && (
+                                <Text size="xs">{section.content.paragraphs.length} paragraphs</Text>
+                              )}
+                            </Card>
+                          ))}
+                        </Stack>
+                      </ScrollArea>
+                    </Tabs.Panel>
+
+                    <Tabs.Panel value="metadata" pt="xs">
+                      {staging.lesson && (
+                        <Stack gap="sm">
+                          <TextInput
+                            label="Lesson Title"
+                            value={staging.lesson.title}
+                            onChange={(e) => setStaging({
+                              ...staging,
+                              lesson: { ...staging.lesson!, title: e.currentTarget.value }
+                            })}
+                          />
+                          <Textarea
+                            label="Description"
+                            value={staging.lesson.description}
+                            onChange={(e) => setStaging({
+                              ...staging,
+                              lesson: { ...staging.lesson!, description: e.currentTarget.value }
+                            })}
+                          />
+                          <Group grow>
+                            <Select
+                              label="Level"
+                              data={['A1', 'A2', 'B1', 'B2']}
+                              value={staging.lesson.level}
+                              onChange={(val) => setStaging({
+                                ...staging,
+                                lesson: { ...staging.lesson!, level: val || 'A1' }
+                              })}
+                            />
+                            <TextInput
+                              label="Order Index"
+                              type="number"
+                              value={staging.lesson.order_index}
+                              onChange={(e) => setStaging({
+                                ...staging,
+                                lesson: { ...staging.lesson!, order_index: parseInt(e.currentTarget.value, 10) }
+                              })}
+                            />
+                          </Group>
+                        </Stack>
+                      )}
+                    </Tabs.Panel>
+                  </Tabs>
+                </Card>
+              </Grid.Col>
+            </Grid>
           </>
         )}
       </Stack>
