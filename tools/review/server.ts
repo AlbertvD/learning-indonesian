@@ -1,173 +1,187 @@
 #!/usr/bin/env tsx
 /**
- * server.ts
- *
- * Local Express server for the review UI to read/write staging files.
- * Runs on port 3001.
+ * Review UI server — reads/writes OCR text and staging files.
+ * Also serves page images from content/raw/.
  */
 
 import express from 'express'
 import fs from 'fs'
 import path from 'path'
+import { execSync } from 'child_process'
 
 const app = express()
 const PORT = 3001
 
-app.use(express.json())
+app.use(express.json({ limit: '10mb' }))
 
 // CORS for local Vite dev server
 app.use((_req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', 'Content-Type')
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT')
   next()
 })
 
-// Helper: Get root directory
 function getRepoRoot(): string {
-  // Check if we're in tools/review/  and go up to project root
   if (process.cwd().includes('tools/review')) {
     return path.join(process.cwd(), '..', '..')
   }
-  // Otherwise assume cwd is project root
   return process.cwd()
 }
 
-// GET /api/lessons — List available lessons
+// GET /api/lessons — List available lessons (from content/raw/)
 app.get('/api/lessons', (_req, res) => {
-  try {
-    const repoRoot = getRepoRoot()
-    const stagingDir = path.join(repoRoot, 'scripts', 'data', 'staging')
+  const rawDir = path.join(getRepoRoot(), 'content', 'raw')
+  if (!fs.existsSync(rawDir)) return res.json([])
 
-    if (!fs.existsSync(stagingDir)) {
-      return res.json([])
-    }
+  const lessons = fs.readdirSync(rawDir)
+    .filter(f => f.startsWith('lesson-') && fs.statSync(path.join(rawDir, f)).isDirectory())
+    .map(f => parseInt(f.replace('lesson-', ''), 10))
+    .filter(n => !isNaN(n))
+    .sort((a, b) => a - b)
 
-    const lessons = fs
-      .readdirSync(stagingDir)
-      .filter(f => f.startsWith('lesson-') && fs.statSync(path.join(stagingDir, f)).isDirectory())
-      .map(f => parseInt(f.replace('lesson-', ''), 10))
-      .filter(n => !isNaN(n))
-      .sort((a, b) => a - b)
-
-    res.json(lessons)
-  } catch (err) {
-    console.error('Error listing lessons:', err)
-    res.status(500).json({ error: 'Failed to list lessons' })
-  }
+  res.json(lessons)
 })
 
-// GET /api/candidates/:lesson — Load candidates for a lesson
-app.get('/api/candidates/:lesson', (req, res) => {
-  try {
-    const { lesson } = req.params
-    const candidatesPath = path.join(
-      getRepoRoot(),
-      'scripts',
-      'data',
-      'staging',
-      `lesson-${lesson}`,
-      'candidates.ts',
-    )
+// GET /api/pages/:lesson — List pages with OCR text and image paths
+app.get('/api/pages/:lesson', (req, res) => {
+  const { lesson } = req.params
+  const root = getRepoRoot()
+  const rawDir = path.join(root, 'content', 'raw', `lesson-${lesson}`)
+  const extractedDir = path.join(root, 'content', 'extracted', `lesson-${lesson}`)
 
-    if (!fs.existsSync(candidatesPath)) {
-      return res.status(404).json({ error: 'Candidates file not found' })
+  if (!fs.existsSync(rawDir)) return res.status(404).json({ error: 'Lesson not found' })
+
+  const images = fs.readdirSync(rawDir)
+    .filter(f => /\.(jpg|jpeg|png)$/i.test(f))
+    .sort()
+
+  const pages = images.map((img, i) => {
+    const pageNum = i + 1
+    const ocrPath = path.join(extractedDir, `page-${pageNum}.txt`)
+    const ocrText = fs.existsSync(ocrPath) ? fs.readFileSync(ocrPath, 'utf-8') : ''
+
+    return {
+      page_number: pageNum,
+      image_filename: img,
+      image_url: `/api/images/${lesson}/${encodeURIComponent(img)}`,
+      ocr_text: ocrText,
+      has_ocr: fs.existsSync(ocrPath),
     }
+  })
 
-    const content = fs.readFileSync(candidatesPath, 'utf-8')
-
-    // Extract JSON array: find first [ and last ]
-    const start = content.indexOf('[')
-    const end = content.lastIndexOf(']')
-
-    if (start === -1 || end === -1 || start >= end) {
-      return res.status(400).json({ error: 'Invalid candidates file format' })
-    }
-
-    const jsonStr = content.substring(start, end + 1)
-
-    try {
-      const candidates = JSON.parse(jsonStr)
-      res.json(candidates)
-    } catch {
-      return res.status(400).json({ error: 'Invalid JSON in candidates file' })
-    }
-  } catch (err) {
-    console.error('Error loading candidates:', err)
-    res.status(500).json({ error: 'Failed to load candidates' })
-  }
+  res.json(pages)
 })
 
-// POST /api/candidates/:lesson/save — Save candidates with updated review status
-app.post('/api/candidates/:lesson/save', (req, res) => {
+// GET /api/images/:lesson/:filename — Serve page images
+app.get('/api/images/:lesson/:filename', (req, res) => {
+  const { lesson, filename } = req.params
+  const imagePath = path.join(getRepoRoot(), 'content', 'raw', `lesson-${lesson}`, decodeURIComponent(filename))
+
+  if (!fs.existsSync(imagePath)) return res.status(404).json({ error: 'Image not found' })
+
+  res.sendFile(imagePath)
+})
+
+// POST /api/pages/:lesson/:page — Save corrected OCR text
+app.post('/api/pages/:lesson/:page', (req, res) => {
+  const { lesson, page } = req.params
+  const { text } = req.body
+  if (typeof text !== 'string') return res.status(400).json({ error: 'text required' })
+
+  const extractedDir = path.join(getRepoRoot(), 'content', 'extracted', `lesson-${lesson}`)
+  fs.mkdirSync(extractedDir, { recursive: true })
+  fs.writeFileSync(path.join(extractedDir, `page-${page}.txt`), text)
+
+  res.json({ success: true })
+})
+
+// POST /api/pages/:lesson/reparse — Re-run parser after OCR corrections
+app.post('/api/pages/:lesson/reparse', (req, res) => {
+  const { lesson } = req.params
   try {
-    const { lesson } = req.params
-    const { candidates } = req.body
-
-    if (!Array.isArray(candidates)) {
-      return res.status(400).json({ error: 'Invalid candidates format' })
-    }
-
-    const candidatesPath = path.join(
-      getRepoRoot(),
-      'scripts',
-      'data',
-      'staging',
-      `lesson-${lesson}`,
-      'candidates.ts',
-    )
-
-    const ts = `// Auto-generated by review UI
-// Do not edit manually
-
-import type { GeneratedExerciseCandidate } from '@/types/contentGeneration'
-
-export const candidates: GeneratedExerciseCandidate[] = ${JSON.stringify(candidates, null, 2)}
-`
-
-    fs.writeFileSync(candidatesPath, ts)
+    execSync(`bun scripts/parse-lesson-content.ts ${lesson}`, {
+      cwd: getRepoRoot(),
+      stdio: 'pipe',
+    })
     res.json({ success: true })
   } catch (err) {
-    console.error('Error saving candidates:', err)
-    res.status(500).json({ error: 'Failed to save candidates' })
+    res.status(500).json({ error: 'Parser failed', details: err instanceof Error ? err.message : String(err) })
   }
 })
 
-// GET /api/pages/:lesson — Load page content for preview
-app.get('/api/pages/:lesson', (req, res) => {
-  try {
-    const { lesson } = req.params
-    const pagesPath = path.join(getRepoRoot(), 'scripts', 'data', 'staging', `lesson-${lesson}`, 'pages.ts')
+// GET /api/staging/:lesson — Load all staging files
+app.get('/api/staging/:lesson', (req, res) => {
+  const { lesson } = req.params
+  const stagingDir = path.join(getRepoRoot(), 'scripts', 'data', 'staging', `lesson-${lesson}`)
 
-    if (!fs.existsSync(pagesPath)) {
-      return res.status(404).json({ error: 'Pages file not found' })
-    }
+  if (!fs.existsSync(stagingDir)) return res.json({ lesson: null, learningItems: [], grammarPatterns: [], candidates: [] })
 
-    const content = fs.readFileSync(pagesPath, 'utf-8')
-
-    // Extract JSON array: find first [ and last ]
-    const start = content.indexOf('[')
-    const end = content.lastIndexOf(']')
-
-    if (start === -1 || end === -1 || start >= end) {
-      return res.status(400).json({ error: 'Invalid pages file format' })
-    }
-
-    const jsonStr = content.substring(start, end + 1)
-
+  const readJson = (filename: string): any => {
+    const filePath = path.join(stagingDir, filename)
+    if (!fs.existsSync(filePath)) return null
+    const content = fs.readFileSync(filePath, 'utf-8')
+    // Extract the JSON/object from the TS file (after the = sign)
+    const match = content.match(/=\s*([\s\S]*?)(?:\nexport|$)/)
+    if (!match) return null
     try {
-      const pages = JSON.parse(jsonStr)
-      res.json(pages)
+      const jsonStr = match[1].trim().replace(/;$/, '')
+      return JSON.parse(jsonStr)
     } catch {
-      return res.status(400).json({ error: 'Invalid JSON in pages file' })
+      // Try evaluating as JS object literal
+      try {
+        const jsStr = match[1].trim().replace(/;$/, '')
+        return new Function(`return ${jsStr}`)()
+      } catch {
+        return null
+      }
     }
-  } catch (err) {
-    console.error('Error loading pages:', err)
-    res.status(500).json({ error: 'Failed to load pages' })
   }
+
+  res.json({
+    lesson: readJson('lesson.ts'),
+    learningItems: readJson('learning-items.ts') || [],
+    grammarPatterns: readJson('grammar-patterns.ts') || [],
+    candidates: readJson('candidates.ts') || [],
+  })
+})
+
+// POST /api/staging/:lesson — Save staging data
+app.post('/api/staging/:lesson', (req, res) => {
+  const { lesson } = req.params
+  const { lesson: lessonData, learningItems, grammarPatterns, candidates } = req.body
+  const stagingDir = path.join(getRepoRoot(), 'scripts', 'data', 'staging', `lesson-${lesson}`)
+  fs.mkdirSync(stagingDir, { recursive: true })
+
+  if (lessonData) {
+    fs.writeFileSync(
+      path.join(stagingDir, 'lesson.ts'),
+      `// Edited via review UI\nexport const lesson = ${JSON.stringify(lessonData, null, 2)}\n`
+    )
+  }
+  if (learningItems) {
+    fs.writeFileSync(
+      path.join(stagingDir, 'learning-items.ts'),
+      `// Edited via review UI\nexport const learningItems = ${JSON.stringify(learningItems, null, 2)}\n`
+    )
+  }
+  if (grammarPatterns) {
+    fs.writeFileSync(
+      path.join(stagingDir, 'grammar-patterns.ts'),
+      `// Edited via review UI\nexport const grammarPatterns = ${JSON.stringify(grammarPatterns, null, 2)}\n`
+    )
+  }
+  if (candidates) {
+    fs.writeFileSync(
+      path.join(stagingDir, 'candidates.ts'),
+      `// Edited via review UI\nexport const candidates = ${JSON.stringify(candidates, null, 2)}\n`
+    )
+  }
+
+  res.json({ success: true })
 })
 
 app.listen(PORT, () => {
   console.log(`Review server running on http://localhost:${PORT}`)
-  console.log(`Frontend will be at http://localhost:5173`)
+  console.log(`Frontend: http://localhost:5173`)
 })
