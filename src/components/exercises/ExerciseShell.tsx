@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { notifications } from '@mantine/notifications'
 import { ExerciseFeedback } from './ExerciseFeedback'
 import { RecognitionMCQ } from './RecognitionMCQ'
@@ -55,8 +55,6 @@ export function ExerciseShell({
 
     try {
       const normalizedResponse = rawResponse ? rawResponse.toLowerCase().trim() : null
-      const isRecognitionMCQ = exerciseItem.exerciseType === 'recognition_mcq'
-
       const reviewInput: ReviewInput = {
         userId: user.id,
         sessionId,
@@ -78,12 +76,12 @@ export function ExerciseShell({
       setIsFuzzy(isFuzzy)
       onAnswer(result, wasCorrect)
 
-      // For correct MCQ: skip feedback, go straight to next
-      if (isRecognitionMCQ && wasCorrect) {
+      // All correct answers: skip feedback, go straight to next
+      if (wasCorrect) {
         setIsProcessing(false)
         onContinueToNext()
       } else {
-        // For wrong MCQ or other types: show feedback
+        // Wrong answers: show feedback sheet
         setShowFeedback(true)
         setIsProcessing(false)
       }
@@ -106,23 +104,7 @@ export function ExerciseShell({
     onContinueToNext()
   }
 
-  // Auto-advance after wrong recognition MCQ answer
-  useEffect(() => {
-    if (!showFeedback || exerciseItem.exerciseType !== 'recognition_mcq' || wasCorrect) {
-      return
-    }
-
-    // Wrong MCQ: show feedback briefly then advance
-    const timer = setTimeout(() => {
-      setShowFeedback(false)
-      setLastResult(null)
-      onContinueToNext()
-    }, 800)
-
-    return () => clearTimeout(timer)
-  }, [showFeedback, wasCorrect, exerciseItem.exerciseType, onContinueToNext])
-
-  // Render exercise or feedback
+// Render exercise or feedback
   if (showFeedback && lastResult) {
     return (
       <ExerciseFeedback

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Box, Button, TextInput, Stack, Text, Badge, Group } from '@mantine/core'
+import { Box, Button, TextInput, Stack, Text, Badge } from '@mantine/core'
 import { IconArrowRight } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
@@ -25,15 +25,11 @@ export function ConstrainedTranslationExercise({
     inputRef.current?.focus()
   }, [])
 
-  const { contexts } = exerciseItem
   const data = exerciseItem.constrainedTranslationData
 
   if (!data) {
     return <div style={{ color: 'red' }}>Missing constrained translation data</div>
   }
-
-  // Get anchor context for feedback
-  const anchorContext = contexts.find(c => c.is_anchor_context)
 
   // Check the answer against acceptable answers
   const handleSubmit = () => {
@@ -120,54 +116,12 @@ export function ConstrainedTranslationExercise({
           </Button>
         )}
 
-        {/* Feedback section */}
-        {isAnswered && (
-          <Box className={classes.feedback}>
-            <Group mb="md">
-              <Badge color={isCorrect ? 'green' : 'red'} size="lg">
-                {isCorrect ? '✓ Correct' : '✗ Incorrect'}
-              </Badge>
-              {!isCorrect && result.isFuzzy && <Badge variant="light" color="yellow">Close</Badge>}
-            </Group>
-
-            <Box mb="md">
-              <Text size="sm" c="dimmed" mb="xs">
-                Your answer:
-              </Text>
-              <Text fw={600} className={isCorrect ? classes.correctAnswer : classes.incorrectAnswer}>
-                {response}
-              </Text>
-            </Box>
-
-            {!isCorrect && (
-              <Box mb="md">
-                <Text size="sm" c="dimmed" mb="xs">
-                  Accepted answer:
-                </Text>
-                <Text fw={600} size="lg" className={classes.correctAnswer}>
-                  {data.acceptableAnswers[0]}
-                </Text>
-              </Box>
-            )}
-
-            <Box mb="md">
-              <Text size="sm" c="dimmed" mb="xs">
-                Explanation:
-              </Text>
-              <Text size="sm">{data.explanationText}</Text>
-            </Box>
-
-            {anchorContext && (
-              <Box className={classes.context}>
-                <Text size="sm" c="dimmed" mb="xs">
-                  Example:
-                </Text>
-                <Text mb="xs" style={{ fontStyle: 'italic' }}>
-                  {anchorContext.source_text}
-                </Text>
-                <Text size="sm">{anchorContext.translation_text}</Text>
-              </Box>
-            )}
+        {/* Correct feedback */}
+        {isAnswered && isCorrect && (
+          <Box style={{ textAlign: 'center', marginTop: '32px' }}>
+            <Badge color="green" size="xl" style={{ fontSize: '16px', padding: '12px 20px' }}>
+              ✓ Correct
+            </Badge>
           </Box>
         )}
       </Stack>

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Box, Button, TextInput, Stack, Text, Badge, Group } from '@mantine/core'
+import { Box, Button, TextInput, Stack, Text, Badge } from '@mantine/core'
 import { IconArrowRight } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
@@ -14,7 +14,7 @@ interface TypedRecallProps {
 
 export function TypedRecall({ exerciseItem, userLanguage, onAnswer }: TypedRecallProps) {
   const t = translations[userLanguage]
-  const { learningItem, meanings, contexts } = exerciseItem
+  const { learningItem, meanings } = exerciseItem
   const [response, setResponse] = useState('')
   const [isAnswered, setIsAnswered] = useState(false)
   const [startTime] = useState(() => Date.now())
@@ -24,9 +24,6 @@ export function TypedRecall({ exerciseItem, userLanguage, onAnswer }: TypedRecal
   const primaryMeaning = meanings.find(m => m.translation_language === userLanguage && m.is_primary)
     ?? meanings.find(m => m.translation_language === userLanguage)
   const translation = primaryMeaning?.translation_text ?? ''
-
-  // Get anchor context for feedback
-  const anchorContext = contexts.find(c => c.is_anchor_context)
 
   // Focus input on mount
   useEffect(() => {
@@ -100,41 +97,12 @@ export function TypedRecall({ exerciseItem, userLanguage, onAnswer }: TypedRecal
           </Button>
         )}
 
-        {/* Feedback section */}
-        {isAnswered && (
-          <Box className={classes.feedback}>
-            <Group mb="md">
-              <Badge color={isCorrect ? 'green' : 'red'} size="lg">
-                {isCorrect ? '✓ Correct' : '✗ Incorrect'}
-              </Badge>
-              {!isCorrect && result.isFuzzy && (
-                <Badge variant="light" color="yellow">Close</Badge>
-              )}
-            </Group>
-
-            <Box mb="md">
-              <Text size="sm" c="dimmed" mb="xs">Your answer:</Text>
-              <Text fw={600} className={isCorrect ? classes.correctAnswer : classes.incorrectAnswer}>
-                {response}
-              </Text>
-            </Box>
-
-            {!isCorrect && (
-              <Box mb="md">
-                <Text size="sm" c="dimmed" mb="xs">The correct answer:</Text>
-                <Text fw={600} size="lg" className={classes.correctAnswer}>
-                  {learningItem.base_text}
-                </Text>
-              </Box>
-            )}
-
-            {anchorContext && (
-              <Box className={classes.context}>
-                <Text size="sm" c="dimmed" mb="xs">Example:</Text>
-                <Text mb="xs" style={{ fontStyle: 'italic' }}>{anchorContext.source_text}</Text>
-                <Text size="sm">{anchorContext.translation_text}</Text>
-              </Box>
-            )}
+        {/* Correct feedback */}
+        {isAnswered && isCorrect && (
+          <Box style={{ textAlign: 'center', marginTop: '32px' }}>
+            <Badge color="green" size="xl" style={{ fontSize: '16px', padding: '12px 20px' }}>
+              ✓ Correct
+            </Badge>
           </Box>
         )}
       </Stack>

@@ -1,7 +1,7 @@
 // src/components/exercises/Cloze.tsx
 import { useState, useRef, useEffect } from 'react'
-import { Box, Text, TextInput, Stack, Paper, Button, Group } from '@mantine/core'
-import { IconCheck, IconX, IconMessage2 } from '@tabler/icons-react'
+import { Box, Text, TextInput, Stack, Badge, Button, Group } from '@mantine/core'
+import { IconMessage2 } from '@tabler/icons-react'
 import { checkAnswer } from '@/lib/answerNormalization'
 import type { ExerciseItem } from '@/types/learning'
 import classes from './Cloze.module.css'
@@ -17,7 +17,6 @@ export function Cloze({ exerciseItem, onAnswer }: ClozeProps) {
   const [value, setValue] = useState('')
   const [submitted, setShowFeedback] = useState(false)
   const [isCorrect, setIsCorrect] = useState(false)
-  const [isFuzzy, setIsFuzzy] = useState(false)
   const startTime = useRef(0)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -44,11 +43,14 @@ export function Cloze({ exerciseItem, onAnswer }: ClozeProps) {
       answerVariants.map(v => v.variant_text)
     )
 
-    const latency = Date.now() - startTime.current
     setIsCorrect(result.isCorrect)
-    setIsFuzzy(result.isFuzzy)
     setShowFeedback(true)
-    onAnswer(result.isCorrect, result.isFuzzy, latency, value)
+
+    const FEEDBACK_DELAY_MS = 1500
+    setTimeout(() => {
+      const latency = Date.now() - startTime.current - FEEDBACK_DELAY_MS
+      onAnswer(result.isCorrect, result.isFuzzy, latency, value)
+    }, FEEDBACK_DELAY_MS)
   }
 
   return (
@@ -91,36 +93,22 @@ export function Cloze({ exerciseItem, onAnswer }: ClozeProps) {
       </Box>
 
       {!submitted ? (
-        <Button 
-          size="md" 
-          onClick={() => handleSubmit()} 
+        <Button
+          size="md"
+          onClick={() => handleSubmit()}
           disabled={!value.trim()}
           variant="filled"
           color="cyan"
         >
           Check
         </Button>
-      ) : (
-        <Paper withBorder p="md" radius="md" bg={isCorrect ? 'rgba(64, 192, 87, 0.1)' : 'rgba(250, 82, 82, 0.1)'}>
-          <Group justify="space-between">
-            <Group>
-              {isCorrect ? (
-                <IconCheck color="var(--mantine-color-green-6)" />
-              ) : (
-                <IconX color="var(--mantine-color-red-6)" />
-              )}
-              <Box>
-                <Text fw={600} size="sm" c={isCorrect ? 'green.7' : 'red.7'}>
-                  {isCorrect ? (isFuzzy ? 'Close enough!' : 'Correct!') : 'Not quite'}
-                </Text>
-                <Text size="xs" c="dimmed">
-                  The answer was: <Text component="span" fw={700} c="dark">{targetWord}</Text>
-                </Text>
-              </Box>
-            </Group>
-          </Group>
-        </Paper>
-      )}
+      ) : isCorrect ? (
+        <Box style={{ textAlign: 'center', marginTop: '32px' }}>
+          <Badge color="green" size="xl" style={{ fontSize: '16px', padding: '12px 20px' }}>
+            ✓ Correct
+          </Badge>
+        </Box>
+      ) : null}
     </Stack>
   )
 }
