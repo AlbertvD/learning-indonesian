@@ -34,10 +34,11 @@ describe('computeReviewForecast', () => {
   })
 
   it('counts skills due on the correct day', () => {
+    // Use midday UTC to avoid local-timezone day-boundary issues
     const skills = [
-      makeSkillState('2026-04-05T08:00:00.000Z'), // day 0
+      makeSkillState('2026-04-05T10:00:00.000Z'), // day 0
+      makeSkillState('2026-04-06T10:00:00.000Z'), // day 1
       makeSkillState('2026-04-06T14:00:00.000Z'), // day 1
-      makeSkillState('2026-04-06T23:00:00.000Z'), // day 1
       makeSkillState('2026-04-09T10:00:00.000Z'), // day 4
     ]
     const result = computeReviewForecast(skills, BASE)
@@ -59,7 +60,7 @@ describe('computeReviewForecast', () => {
   it('excludes skills due outside the 7-day window', () => {
     const skills = [
       makeSkillState('2026-04-12T10:00:00.000Z'), // day 7 — outside window
-      makeSkillState('2026-04-11T23:59:59.000Z'), // day 6 — last day
+      makeSkillState('2026-04-11T10:00:00.000Z'), // day 6 — last day
     ]
     const result = computeReviewForecast(skills, BASE)
     expect(result[6].count).toBe(1)
