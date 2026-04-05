@@ -127,7 +127,7 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
     : newItems
 
   // Slot allocation — adjusted by session mode
-  // backlog_clear: maximise due reviews, zero anchoring, zero new
+  // backlog_clear: maximise due reviews, zero anchoring, zero weak, zero new
   const dueSlots = (sessionMode === 'backlog_clear')
     ? preferredSessionSize
     : Math.round(preferredSessionSize * 0.55)
