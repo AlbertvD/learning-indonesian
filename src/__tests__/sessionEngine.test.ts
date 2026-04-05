@@ -170,4 +170,76 @@ describe('sessionMode', () => {
     // li1 must appear even though its skill is not yet due
     expect(queue.length).toBeGreaterThan(0)
   })
+
+  it('push_to_productive mode includes retrieving items that are not yet due', () => {
+    // li1: retrieving, has form_recall skill, NOT yet due — should be included
+    // li2: productive, overdue — can also appear (normal due-items flow)
+    // li3: new (no state) — excluded
+    const retrievingState = {
+      id: 'li1', user_id: 'u1', learning_item_id: 'li1', stage: 'retrieving' as const,
+      introduced_at: '', last_seen_at: '', priority: null, origin: null,
+      times_seen: 5, is_leech: false, suspended: false, gate_check_passed: true, updated_at: '',
+    }
+    const productiveState = {
+      id: 'li2', user_id: 'u1', learning_item_id: 'li2', stage: 'productive' as const,
+      introduced_at: '', last_seen_at: '', priority: null, origin: null,
+      times_seen: 10, is_leech: false, suspended: false, gate_check_passed: true, updated_at: '',
+    }
+    const retrievingSkill = {
+      id: 'ss1', user_id: 'u1', learning_item_id: 'li1', skill_type: 'form_recall' as const,
+      stability: 4, difficulty: 5, retrievability: 0.7,
+      last_reviewed_at: new Date(Date.now() - 3600000).toISOString(),
+      next_due_at: new Date(Date.now() + 86400000).toISOString(), // not yet due
+      success_count: 4, failure_count: 0, lapse_count: 0, consecutive_failures: 0,
+      mean_latency_ms: null, hint_rate: null, updated_at: '',
+    }
+    const productiveSkill = {
+      id: 'ss2', user_id: 'u1', learning_item_id: 'li2', skill_type: 'form_recall' as const,
+      stability: 8, difficulty: 5, retrievability: 0.5,
+      last_reviewed_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+      next_due_at: new Date(Date.now() - 3600000).toISOString(), // overdue
+      success_count: 8, failure_count: 0, lapse_count: 0, consecutive_failures: 0,
+      mean_latency_ms: null, hint_rate: null, updated_at: '',
+    }
+
+    const queue = buildSessionQueue(makeInput({
+      itemStates: { li1: retrievingState, li2: productiveState },
+      skillStates: { li1: [retrievingSkill], li2: [productiveSkill] },
+      preferredSessionSize: 5,
+      sessionMode: 'push_to_productive',
+    }))
+
+    // li1 must appear even though not yet due
+    expect(queue.some(q => q.exerciseItem.learningItem.id === 'li1')).toBe(true)
+    // No new items (li3 has no state)
+    const newInQueue = queue.filter(q => !['li1', 'li2'].includes(q.exerciseItem.learningItem.id))
+    expect(newInQueue.length).toBe(0)
+  })
+
+  it('push_to_productive skips retrieving items that have no form_recall skill yet', () => {
+    // A retrieving item with only a recognition skill — cannot be scored for recall
+    const retrievingState = {
+      id: 'li1', user_id: 'u1', learning_item_id: 'li1', stage: 'retrieving' as const,
+      introduced_at: '', last_seen_at: '', priority: null, origin: null,
+      times_seen: 3, is_leech: false, suspended: false, gate_check_passed: true, updated_at: '',
+    }
+    const recognitionOnlySkill = {
+      id: 'ss1', user_id: 'u1', learning_item_id: 'li1', skill_type: 'recognition' as const,
+      stability: 2, difficulty: 5, retrievability: 0.7,
+      last_reviewed_at: new Date(Date.now() - 3600000).toISOString(),
+      next_due_at: new Date(Date.now() + 86400000).toISOString(),
+      success_count: 3, failure_count: 0, lapse_count: 0, consecutive_failures: 0,
+      mean_latency_ms: null, hint_rate: null, updated_at: '',
+    }
+
+    const queue = buildSessionQueue(makeInput({
+      itemStates: { li1: retrievingState },
+      skillStates: { li1: [recognitionOnlySkill] },
+      preferredSessionSize: 5,
+      sessionMode: 'push_to_productive',
+    }))
+
+    // li1 must NOT appear — only recognition skill, typed_recall would have no matching learnerSkillState
+    expect(queue.filter(q => q.exerciseItem.learningItem.id === 'li1').length).toBe(0)
+  })
 })

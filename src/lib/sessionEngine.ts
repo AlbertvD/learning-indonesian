@@ -121,6 +121,18 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
       continue
     }
 
+    // push_to_productive: force retrieving-stage items that have a form_recall skill
+    // into dueItems regardless of due date. Higher stability = closer to graduating =
+    // higher priority. Items with only recognition skill are excluded — typed_recall
+    // exercises would have no matching learnerSkillState for scoring.
+    if (sessionMode === 'push_to_productive' && state.stage === 'retrieving') {
+      const hasRecallSkill = skills.some(s => s.skill_type === 'form_recall')
+      if (!hasRecallSkill) continue
+      const maxStability = Math.max(...skills.map(s => s.stability))
+      dueItems.push({ item, state, skills, category: 'due', priority: maxStability / 20 })
+      continue
+    }
+
     // Check if any skill is due
     const dueSkills = skills.filter(s => s.next_due_at && new Date(s.next_due_at) <= now)
     if (dueSkills.length > 0) {
