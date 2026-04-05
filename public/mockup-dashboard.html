@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Redesign — Bahasa Indonesia</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a1b1e;
+    --surface: #25262b;
+    --surface-hover: #2c2e33;
+    --border: #373a40;
+    --text-primary: #c1c2c5;
+    --text-secondary: #909296;
+    --accent: #15aabf;
+    --accent-dim: #0c8599;
+    --accent-subtle: rgba(21,170,191,0.09);
+    --success: #2f9e44;
+    --success-subtle: rgba(47,158,68,0.12);
+    --warning: #e67700;
+    --warning-subtle: rgba(230,119,0,0.12);
+    --danger: #c92a2a;
+    --danger-subtle: rgba(201,42,42,0.12);
+    --blue: #1971c2;
+    --blue-subtle: rgba(25,113,194,0.12);
+    --r-sm: 6px;
+    --r-md: 10px;
+    --r-lg: 12px;
+    --r-xl: 24px;
+    --fs-xs: 11px;
+    --fs-sm: 13px;
+    --fs-md: 14px;
+    --fs-lg: 16px;
+    --fs-xl: 18px;
+    --fs-2xl: 22px;
+    --fs-3xl: 28px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-size: var(--fs-md);
+    line-height: 1.5;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 220px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .sidebar-brand {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    padding: 0 16px 20px;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-radius: 0;
+    text-decoration: none;
+  }
+
+  .nav-item:hover { background: var(--surface-hover); color: var(--text-primary); }
+  .nav-item.active {
+    color: var(--accent);
+    background: var(--accent-subtle);
+    border-right: 3px solid var(--accent);
+  }
+
+  .nav-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    font-size: var(--fs-xs);
+    color: var(--text-secondary);
+  }
+
+  /* ── Main content ── */
+  .main {
+    flex: 1;
+    padding: 28px 36px;
+    max-width: 900px;
+    overflow-y: auto;
+  }
+
+  /* ── Section spacing ── */
+  .section { margin-bottom: 24px; }
+
+  /* ── 1. Welcome bar ── */
+  .welcome-bar {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .welcome-text {
+    font-size: var(--fs-2xl);
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .streak-badge .flame { color: var(--warning); font-size: 14px; }
+
+  /* ── 2. Weekly Scorecard ── */
+  .section-title {
+    font-size: var(--fs-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+  }
+
+  .scorecard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .ring-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  }
+
+  /* Ring progress (CSS only) */
+  .ring-wrapper {
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+
+  .ring-bg, .ring-fill {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+  }
+
+  .ring-bg {
+    background: conic-gradient(var(--border) 0deg, var(--border) 360deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 6px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 6px));
+  }
+
+  .ring-fill {
+    background: conic-gradient(var(--ring-color) 0deg, var(--ring-color) var(--ring-deg), transparent var(--ring-deg));
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 6px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 6px));
+  }
+
+  .ring-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .ring-label {
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    text-align: center;
+  }
+
+  .ring-value {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    text-align: center;
+  }
+
+  .status-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: var(--r-xl);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .status-pill[data-status="achieved"] { background: var(--success-subtle); color: var(--success); }
+  .status-pill[data-status="on_track"] { background: var(--blue-subtle); color: var(--blue); }
+  .status-pill[data-status="at_risk"] { background: var(--warning-subtle); color: var(--warning); }
+
+  /* ── Ring info tooltip ── */
+  .ring-info {
+    position: absolute;
+    bottom: 6px;
+    right: 8px;
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    opacity: 0.5;
+    cursor: help;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .ring-info:hover {
+    opacity: 1;
+  }
+
+  .ring-info::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    width: 200px;
+    padding: 6px 10px;
+    background: #1a1b1e;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    font-size: var(--fs-xs);
+    color: var(--text-primary);
+    line-height: 1.4;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    z-index: 10;
+    white-space: normal;
+  }
+
+  .ring-info:hover::after {
+    opacity: 1;
+  }
+
+  /* ── 3. Recommended Actions ── */
+  .actions-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .action-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .action-card:hover {
+    background: var(--surface-hover);
+    transform: translateY(-1px);
+  }
+
+  .action-card.amber {
+    border-left: 3px solid var(--warning);
+  }
+
+  .action-card.amber:hover {
+    border-color: var(--warning);
+    border-left: 3px solid var(--warning);
+  }
+
+  .action-card.teal {
+    border-left: 3px solid var(--accent);
+  }
+
+  .action-card.teal:hover {
+    border-color: var(--accent);
+    border-left: 3px solid var(--accent);
+  }
+
+  .action-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--r-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+  }
+
+  .action-card-icon.amber-bg { background: var(--warning-subtle); }
+  .action-card-icon.teal-bg { background: var(--accent-subtle); }
+
+  .action-card-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .action-card-title {
+    font-size: var(--fs-md);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .action-card-focus {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .action-card-reason {
+    font-size: var(--fs-xs);
+    color: var(--text-secondary);
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+
+  .action-card-chevron {
+    color: var(--text-secondary);
+    font-size: 18px;
+    opacity: 0.4;
+    flex-shrink: 0;
+  }
+
+  /* ── 4. Hero card ── */
+  .hero-card {
+    background: linear-gradient(135deg, #0c8599 0%, #1a2a3a 60%, var(--surface) 100%);
+    border: 1px solid rgba(21,170,191,0.25);
+    border-radius: var(--r-lg);
+    padding: 28px 24px;
+  }
+
+  .hero-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+
+  .hero-title {
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+
+  .hero-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-md);
+    color: rgba(255,255,255,0.85);
+  }
+
+  .hero-stat .icon { font-size: 16px; }
+
+  .hero-subtext {
+    font-size: var(--fs-xs);
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 16px;
+  }
+
+  /* ── Mix ratio bar ── */
+  .mix-ratio {
+    margin-bottom: 20px;
+  }
+
+  .mix-ratio-label {
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 8px;
+  }
+
+  .mix-bar {
+    display: flex;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .mix-bar-segment {
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  .mix-legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+
+  .mix-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: var(--fs-xs);
+    color: rgba(255,255,255,0.6);
+  }
+
+  .mix-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .mix-note {
+    font-size: var(--fs-xs);
+    font-style: italic;
+    color: rgba(255,255,255,0.35);
+  }
+
+  /* ── Hero CTA ── */
+  .hero-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    padding: 14px 0 12px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .hero-cta:hover { background: #12899c; }
+
+  .hero-cta-main {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--fs-lg);
+    font-weight: 700;
+  }
+
+  .hero-cta-main .clock { font-size: 18px; opacity: 0.9; }
+
+  .hero-cta-sub {
+    font-size: 0.75rem;
+    opacity: 0.75;
+    font-weight: 500;
+  }
+
+  /* ── 5. Secondary actions ── */
+  .secondary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .secondary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+  }
+
+  .secondary-card:hover {
+    border-color: var(--accent);
+    background: var(--surface-hover);
+    transform: translateY(-2px);
+  }
+
+  .secondary-card.rescue {
+    border-left: 3px solid var(--danger);
+    background: rgba(201, 42, 42, 0.06);
+  }
+
+  .secondary-card.rescue:hover {
+    border-color: var(--danger);
+    border-left: 3px solid var(--danger);
+    background: rgba(201, 42, 42, 0.12);
+  }
+
+  .lapse-badge {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: var(--r-xl);
+    background: var(--danger-subtle);
+    color: var(--danger);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+  }
+
+  .card-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+  }
+
+  .card-icon.accent { background: var(--accent-subtle); }
+  .card-icon.warn { background: var(--warning-subtle); }
+  .card-icon.danger { background: var(--danger-subtle); }
+
+  .card-title {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .card-subtitle {
+    font-size: var(--fs-xs);
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .chevron {
+    color: var(--text-secondary);
+    font-size: 16px;
+    opacity: 0.5;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <div class="sidebar-brand">Bahasa Indonesia</div>
+  <a class="nav-item active"><span class="nav-icon">&#x2302;</span> Home</a>
+  <a class="nav-item"><span class="nav-icon">&#x1F4DA;</span> Lessen</a>
+  <a class="nav-item"><span class="nav-icon">&#x1F3A7;</span> Podcasts</a>
+  <a class="nav-item"><span class="nav-icon">&#x1F4CA;</span> Voortgang</a>
+  <a class="nav-item"><span class="nav-icon">&#x1F0CF;</span> Kaarten</a>
+  <div class="sidebar-footer">testuser@duin.home</div>
+</aside>
+
+<!-- ── Main ── -->
+<main class="main">
+
+  <!-- 1. Welcome bar -->
+  <div class="welcome-bar">
+    <span class="welcome-text">Welkom terug, Albert</span>
+    <span class="streak-badge"><span class="flame">&#x1F525;</span> 3 dagen</span>
+  </div>
+
+  <!-- 2. Weekly Scorecard -->
+  <div class="section">
+    <div class="section-title">Deze week</div>
+    <div class="scorecard-grid">
+
+      <!-- Consistency: 1/4 = 25%, at_risk -->
+      <div class="ring-card">
+        <div class="ring-wrapper">
+          <div class="ring-bg"></div>
+          <div class="ring-fill" style="--ring-color: var(--warning); --ring-deg: 90deg;"></div>
+          <div class="ring-center">25%</div>
+        </div>
+        <div class="ring-label">Consistentie</div>
+        <div class="ring-value">1 / 4</div>
+        <span class="status-pill" data-status="at_risk">Risico</span>
+        <span class="ring-info" data-tooltip="Algoritme telt dagen met minstens 1 sessie deze week">&#x2139;&#xFE0F; Hoe werkt dit?</span>
+      </div>
+
+      <!-- Recall quality: 72/80 = 90%, on_track -->
+      <div class="ring-card">
+        <div class="ring-wrapper">
+          <div class="ring-bg"></div>
+          <div class="ring-fill" style="--ring-color: var(--blue); --ring-deg: 324deg;"></div>
+          <div class="ring-center">90%</div>
+        </div>
+        <div class="ring-label">Herinnering</div>
+        <div class="ring-value">72% / 80%</div>
+        <span class="status-pill" data-status="on_track">Op schema</span>
+        <span class="ring-info" data-tooltip="Je herkenning (meerkeuze) is 90%, maar je actieve recall (typen) is slechts 40%. De sessie van vandaag richt zich op recall om dit gat te dichten.">&#x2139;&#xFE0F; Hoe werkt dit?</span>
+      </div>
+
+      <!-- Review health: 3/20 overdue (at_most, so 85% good), achieved -->
+      <div class="ring-card">
+        <div class="ring-wrapper">
+          <div class="ring-bg"></div>
+          <div class="ring-fill" style="--ring-color: var(--success); --ring-deg: 306deg;"></div>
+          <div class="ring-center">85%</div>
+        </div>
+        <div class="ring-label">Achterstand</div>
+        <div class="ring-value">3 / 20</div>
+        <span class="status-pill" data-status="achieved">Behaald</span>
+        <span class="ring-info" data-tooltip="Aantal items dat langer dan gepland wacht op herhaling">&#x2139;&#xFE0F; Hoe werkt dit?</span>
+      </div>
+
+      <!-- Usable vocab: 18/25 = 72%, at_risk (broader: retrieving+productive+maintenance) -->
+      <div class="ring-card">
+        <div class="ring-wrapper">
+          <div class="ring-bg"></div>
+          <div class="ring-fill" style="--ring-color: var(--warning); --ring-deg: 259deg;"></div>
+          <div class="ring-center">72%</div>
+        </div>
+        <div class="ring-label">Woordenschat</div>
+        <div class="ring-value">18 / 25</div>
+        <span class="status-pill" data-status="at_risk">Risico</span>
+        <span class="ring-info" data-tooltip="Items die de 'Verankering' fase voorbij zijn (Ophalen, Productief of Stabiel). Je hebt 18 van de 25 woorden op dit niveau.">&#x2139;&#xFE0F; Hoe werkt dit?</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3. Recommended Actions (card-style with reasoning) -->
+  <div class="section">
+    <div class="section-title">Aanbevolen acties</div>
+    <div class="actions-row">
+
+      <a class="action-card amber" href="#">
+        <div class="action-card-icon amber-bg">&#x26A0;&#xFE0F;</div>
+        <div class="action-card-body">
+          <div class="action-card-title">Korte sessie</div>
+          <div class="action-card-focus">Focus op Herinnering</div>
+          <div class="action-card-reason">Je Recall score is 40% &mdash; onder doel van 80%</div>
+        </div>
+        <span class="action-card-chevron">&#x203A;</span>
+      </a>
+
+      <a class="action-card teal" href="#">
+        <div class="action-card-icon teal-bg">&#x2728;</div>
+        <div class="action-card-body">
+          <div class="action-card-title">Vergroot woordenschat</div>
+          <div class="action-card-focus">Nieuwe woorden toevoegen</div>
+          <div class="action-card-reason">5 van 8 woorden behaald &mdash; bijna op doel!</div>
+        </div>
+        <span class="action-card-chevron">&#x203A;</span>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- 4. Hero: Today's Plan -->
+  <div class="section">
+    <div class="hero-card">
+      <div class="hero-header">
+        <div class="hero-title">Planning van vandaag</div>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="icon">&#x1F504;</span> 12 herhalingen</div>
+        <div class="hero-stat"><span class="icon">&#x2728;</span> 3 nieuw</div>
+        <div class="hero-stat"><span class="icon">&#x2328;&#xFE0F;</span> 5 herinneringsvragen</div>
+      </div>
+      <div class="hero-subtext">op basis van 15 items per sessie</div>
+
+      <!-- Mix ratio bar -->
+      <div class="mix-ratio">
+        <div class="mix-ratio-label">Sessie samenstelling</div>
+        <div class="mix-bar">
+          <div class="mix-bar-segment" style="width: 55%; background: #1971c2;"></div>
+          <div class="mix-bar-segment" style="width: 20%; background: #2f9e44;"></div>
+          <div class="mix-bar-segment" style="width: 15%; background: #9c36b5;"></div>
+          <div class="mix-bar-segment" style="width: 10%; background: #e67700;"></div>
+        </div>
+        <div class="mix-legend">
+          <span class="mix-legend-item"><span class="mix-legend-dot" style="background: #1971c2;"></span> Herhalingen</span>
+          <span class="mix-legend-item"><span class="mix-legend-dot" style="background: #2f9e44;"></span> Nieuw</span>
+          <span class="mix-legend-item"><span class="mix-legend-dot" style="background: #9c36b5;"></span> Vragen</span>
+          <span class="mix-legend-item"><span class="mix-legend-dot" style="background: #e67700;"></span> Zwak</span>
+        </div>
+        <div class="mix-note">Nieuwe woorden gereduceerd &mdash; achterstand wordt weggewerkt</div>
+      </div>
+
+      <button class="hero-cta">
+        <span class="hero-cta-main">
+          <span class="clock">&#x1F552;</span>
+          Start vandaag je sessie &mdash; ~8 min
+        </span>
+        <span class="hero-cta-sub">Doel: +8% Herinnering &middot; Achterstand &rarr; 0</span>
+      </button>
+      <div style="text-align:center; margin-top:10px; font-size:var(--fs-xs); color:rgba(255,255,255,0.35); font-style:italic;">
+        &#x25CB; Na de sessie worden je doelenringen bijgewerkt
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Secondary Actions -->
+  <div class="section">
+    <div class="secondary-grid">
+
+      <!-- Continue Lesson -->
+      <a class="secondary-card" href="#">
+        <div class="card-left">
+          <div class="card-icon accent">&#x1F4D6;</div>
+          <div>
+            <div class="card-title">Doorgaan met les</div>
+            <div class="card-subtitle">Les 4: Op de markt</div>
+          </div>
+        </div>
+        <span class="chevron">&#x203A;</span>
+      </a>
+
+      <!-- Rescue Mission (was: Weak Words) -->
+      <a class="secondary-card rescue" href="#">
+        <span class="lapse-badge">4 lapses</span>
+        <div class="card-left">
+          <div class="card-icon danger">&#x26A0;&#xFE0F;</div>
+          <div>
+            <div class="card-title" style="color: var(--danger);">Red 4 woorden</div>
+            <div class="card-subtitle">Voor je ze vergeet &mdash; 4 woorden dreigen terug te vallen</div>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

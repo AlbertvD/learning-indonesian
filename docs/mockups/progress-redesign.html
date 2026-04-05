@@ -972,6 +972,59 @@
     text-align: right;
   }
 
+  /* ── Rescue badges (weak words saved) ──────────────────────── */
+  .rescue-badges { display:flex; gap:4px; }
+  .rescue-badge {
+    font-size: 14px;
+    color: var(--warning);
+    opacity: 0.85;
+    animation: badge-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  .rescue-badge:nth-child(2) { animation-delay: 0.08s; }
+  .rescue-badge:nth-child(3) { animation-delay: 0.16s; }
+  @keyframes badge-pop {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 0.85; }
+  }
+
+  /* ── Next milestone as clickable link ───────────────────────── */
+  .next-milestone-pill--link {
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .next-milestone-pill--link:hover {
+    background: rgba(0,229,255,0.18);
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(0,229,255,0.2);
+  }
+
+  /* ── Projected next-week mini bars ──────────────────────────── */
+  .proj-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 28px;
+  }
+  .proj-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 3px;
+  }
+  .proj-bar {
+    width: 100%;
+    background: rgba(78,202,122,0.35);
+    border: 1px solid rgba(78,202,122,0.5);
+    border-radius: 2px 2px 0 0;
+  }
+  .proj-label {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--text-tertiary);
+  }
+
   /* ── Responsive ─────────────────────────────────────────────── */
   @media (max-width: 600px) {
     .memory-hero-grid { grid-template-columns: 1fr; }
@@ -1143,9 +1196,9 @@
           <span>⚠️</span>
           <span>119 items wachten op hun eerste 'Poortcheck' om naar de Retrieving-fase te gaan.</span>
         </div>
-        <div class="next-milestone-pill">
-          <span style="color:var(--accent);">→</span> Volgende mijlpaal: 1 item naar Retrieving
-        </div>
+        <a href="/session?mode=gate_check" class="next-milestone-pill next-milestone-pill--link" title="Start een Poortcheck sessie">
+          <span>→</span> Volgende mijlpaal: 1 item naar Retrieving
+        </a>
       </div>
     </div>
   </div>
@@ -1286,6 +1339,25 @@
         <div style="margin-top:8px; font-size:11px; color:var(--text-tertiary); font-family:var(--font-mono);">
           <span style="color:var(--danger);">■</span> Woensdag: 47 kaarten vervallen — plan extra tijd in.
         </div>
+
+        <!-- Projected next week -->
+        <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--border);">
+          <div style="font-family:var(--font-mono); font-size:9px; color:var(--text-tertiary); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px;">
+            Volgende week (als je consistent blijft)
+          </div>
+          <div class="proj-bars">
+            <div class="proj-bar-col"><div class="proj-bar" style="height:18px;"></div><span class="proj-label">Ma</span></div>
+            <div class="proj-bar-col"><div class="proj-bar" style="height:14px;"></div><span class="proj-label">Di</span></div>
+            <div class="proj-bar-col"><div class="proj-bar" style="height:22px;"></div><span class="proj-label">Wo</span></div>
+            <div class="proj-bar-col"><div class="proj-bar" style="height:16px;"></div><span class="proj-label">Do</span></div>
+            <div class="proj-bar-col"><div class="proj-bar" style="height:12px;"></div><span class="proj-label">Vr</span></div>
+            <div class="proj-bar-col"><div class="proj-bar" style="height:10px;"></div><span class="proj-label">Za</span></div>
+            <div class="proj-bar-col"><div class="proj-bar" style="height:8px;"></div><span class="proj-label">Zo</span></div>
+          </div>
+          <div style="font-size:10px; color:var(--success); font-family:var(--font-mono); margin-top:4px;">
+            ✓ Max 22 kaarten/dag — geen spikes
+          </div>
+        </div>
       </div>
 
       <!-- Weekly goals -->
@@ -1366,9 +1438,19 @@
       <!-- Zwakke woorden gered -->
       <div class="stat-card">
         <div class="stat-label">Zwakke Woorden Gered</div>
-        <div class="stat-value" style="color:var(--success); text-shadow:0 0 10px rgba(78,202,122,0.4);">3</div>
-        <div class="stat-sub">deze week voor vergeten behoed</div>
-        <div style="margin-top:12px; height:2px; background:linear-gradient(90deg, var(--success) 0%, transparent 100%); border-radius:1px; opacity:0.4;"></div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div class="stat-value" style="color:var(--success); text-shadow:0 0 10px rgba(78,202,122,0.4);">3</div>
+          <div class="rescue-badges">
+            <span class="rescue-badge" title="rumah — gered">★</span>
+            <span class="rescue-badge" title="makan — gered">★</span>
+            <span class="rescue-badge" title="besar — gered">★</span>
+          </div>
+        </div>
+        <div class="stat-sub">woorden gered van terugval naar Anchoring</div>
+        <div style="margin-top:8px; font-size:10px; color:var(--success); font-family:var(--font-mono); opacity:0.8;">
+          ↑ rumah · makan · besar
+        </div>
+        <div style="margin-top:8px; height:2px; background:linear-gradient(90deg, var(--success) 0%, transparent 100%); border-radius:1px; opacity:0.4;"></div>
       </div>
 
       <!-- Nauwkeurigheid split -->
@@ -1398,6 +1480,7 @@
           <span style="font-family:var(--font-mono); font-size:13px; color:var(--text-secondary);">s/antwoord</span>
         </div>
         <div class="stat-sub">sneller dan vorige week (4.1s → 2.7s gem.)</div>
+        <div style="margin-top:6px; font-size:11px; color:var(--success); font-family:var(--font-mono);">≈ 3 min bespaard per dag</div>
         <div style="margin-top:10px; display:flex; align-items:center; gap:6px;">
           <span style="font-family:var(--font-mono); font-size:9px; color:var(--text-tertiary);">4.1s</span>
           <div style="flex:1; height:3px; background:var(--border); border-radius:2px; overflow:hidden; position:relative;">
