@@ -10,6 +10,7 @@ import {
   Text,
   Button,
   Group,
+  SimpleGrid,
   Progress,
   Paper,
   Title,
@@ -270,9 +271,9 @@ export function Dashboard() {
         )}
 
         {/* Quick actions */}
-        <Group grow align="stretch">
-          <Link to={continueUrl} className="card-action" style={{ height: '100%' }}>
-            <Group justify="space-between">
+        <SimpleGrid cols={2}>
+          <Link to={continueUrl} className="card-action">
+            <Group justify="space-between" h="100%">
               <Box>
                 <Text size="sm" fw={500}>{T.dashboard.continueLesson}</Text>
                 <Text size="xs" c="dimmed" mt="4">{T.dashboard.nextLesson}</Text>
@@ -281,8 +282,8 @@ export function Dashboard() {
             </Group>
           </Link>
 
-          <Link to="/session?weak=true" className="card-action" style={{ height: '100%' }}>
-            <Group justify="space-between">
+          <Link to="/session?weak=true" className="card-action">
+            <Group justify="space-between" h="100%">
               <Box>
                 <Text size="sm" fw={500}>{T.dashboard.practiceWeak}</Text>
                 <Text size="xs" c="dimmed" mt="4">{T.dashboard.reviewWeakItems}</Text>
@@ -290,7 +291,7 @@ export function Dashboard() {
               <IconChevronRight size={16} />
             </Group>
           </Link>
-        </Group>
+        </SimpleGrid>
 
         {/* Progress snapshot */}
         <Paper className="card-metric">

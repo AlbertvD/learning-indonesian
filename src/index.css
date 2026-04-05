@@ -162,7 +162,8 @@ html[data-mantine-color-scheme="light"] body {
 
 /* Action cards - clickable cards with hover lift effect */
 .card-action {
-  display: block;
+  display: flex;
+  flex-direction: column;
   background: var(--card-bg) !important;
   border: 1px solid var(--card-border) !important;
   border-radius: var(--r-md) !important;
