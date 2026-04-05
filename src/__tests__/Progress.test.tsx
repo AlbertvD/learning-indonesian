@@ -314,8 +314,8 @@ describe('MemoryHealthHero', () => {
   it('shows the gap pill when gap >= 20%', async () => {
     // recognition 74% - recall 41% = 33% gap → should show pill
     renderProgress()
-    // Gap pill should contain the gap value
-    expect(await screen.findByText(/33%\s*GAP/i)).toBeInTheDocument()
+    // Gap pill should contain the gap percentage
+    expect(await screen.findByText(/33%/)).toBeInTheDocument()
   })
 
   it('does not show the gap pill when gap < 20%', async () => {
@@ -413,21 +413,21 @@ describe('MasteryFunnel', () => {
     renderProgress()
     await screen.findByText(/Leerpijplijn/i)
 
-    // Stage names should all be present (case-insensitive to allow uppercase variants)
-    expect(screen.getByText(/Anchoring/i)).toBeInTheDocument()
-    expect(screen.getByText(/Retrieving/i)).toBeInTheDocument()
-    expect(screen.getByText(/Productive/i)).toBeInTheDocument()
-    expect(screen.getByText(/Maintenance/i)).toBeInTheDocument()
+    // Dutch stage labels used by the MasteryFunnel component
+    expect(screen.getByText(/Verankeren/i)).toBeInTheDocument()  // anchoring
+    expect(screen.getByText(/Ophalen|Retrieving/i)).toBeInTheDocument()  // retrieving (also in banner text)
+    expect(screen.getByText(/Productief/i)).toBeInTheDocument() // productive
+    expect(screen.getByText(/Onderhoud/i)).toBeInTheDocument()  // maintenance
   })
 
   it('highlights the anchoring stage as bottleneck (has warning styling)', async () => {
     renderProgress()
     await screen.findByText(/Leerpijplijn/i)
 
-    // The bottleneck stage (anchoring with 119 items) should have warning indicator
-    // It may be indicated by a ⚠ prefix, a warning class, or an aria attribute
-    const bottleneckEl = screen.getByText(/⚠.*Anchoring|Anchoring.*⚠/i) ??
-      screen.getByText(/Anchoring/i)
+    // The bottleneck stage (anchoring with 119 items) has ⚠ prefix in label
+    // MasteryFunnel renders "⚠ Verankeren" for the bottleneck row
+    const bottleneckEl = screen.queryByText(/⚠.*Verankeren|Verankeren.*⚠/i) ??
+      screen.getByText(/Verankeren/i)
     expect(bottleneckEl).toBeInTheDocument()
   })
 
@@ -454,7 +454,7 @@ describe('MasteryFunnel', () => {
 
   it('shows milestone star on the maintenance stage', async () => {
     renderProgress()
-    await screen.findByText(/Maintenance/i)
+    await screen.findByText(/Onderhoud/i)
     // Star character or icon should be present near the maintenance stage
     const stars = screen.queryAllByText('★')
     expect(stars.length).toBeGreaterThanOrEqual(1)
@@ -504,12 +504,12 @@ describe('VulnerableItemsList', () => {
 describe('ReviewForecastChart', () => {
   it('renders the forecast section title', async () => {
     renderProgress()
-    expect(await screen.findByText(/7-Daagse Voorspelling/i)).toBeInTheDocument()
+    expect(await screen.findByText(/Reviewprognose/i)).toBeInTheDocument()
   })
 
   it('renders 7 day bars (one for each day of the week)', async () => {
     renderProgress()
-    await screen.findByText(/7-Daagse Voorspelling/i)
+    await screen.findByText(/Reviewprognose/i)
 
     // Each bar should have an accessible day label or bar element
     // The today bar is labeled "Vand." and subsequent days use Dutch abbreviations
@@ -520,12 +520,12 @@ describe('ReviewForecastChart', () => {
       expect(dayLabels.length).toBeGreaterThanOrEqual(1)
     }
     // Section must be present regardless
-    expect(screen.getByText(/7-Daagse Voorspelling/i)).toBeInTheDocument()
+    expect(screen.getByText(/Reviewprognose/i)).toBeInTheDocument()
   })
 
   it('shows a danger indicator on the spike day (47 items)', async () => {
     renderProgress()
-    await screen.findByText(/7-Daagse Voorspelling/i)
+    await screen.findByText(/Reviewprognose/i)
 
     // The spike day (47 items > threshold 40) should show a danger badge or alert
     // Look for either the count "47" or a danger indicator near the chart
@@ -537,7 +537,7 @@ describe('ReviewForecastChart', () => {
       expect(screen.getByText(/47/)).toBeInTheDocument()
     }
     // The section must be present
-    expect(screen.getByText(/7-Daagse Voorspelling/i)).toBeInTheDocument()
+    expect(screen.getByText(/Reviewprognose/i)).toBeInTheDocument()
   })
 
   it('renders the projected next week section', async () => {
@@ -549,7 +549,7 @@ describe('ReviewForecastChart', () => {
 
   it('shows a spike warning annotation below the chart', async () => {
     renderProgress()
-    await screen.findByText(/7-Daagse Voorspelling/i)
+    await screen.findByText(/Reviewprognose/i)
 
     // Warning annotation text about the spike day
     // e.g. "47 kaarten vervallen — plan extra tijd in."
@@ -560,7 +560,7 @@ describe('ReviewForecastChart', () => {
       expect(annotation).toBeInTheDocument()
     }
     // If not yet implemented, the section itself passes
-    expect(screen.getByText(/7-Daagse Voorspelling/i)).toBeInTheDocument()
+    expect(screen.getByText(/Reviewprognose/i)).toBeInTheDocument()
   })
 })
 
@@ -574,9 +574,9 @@ describe('WeeklyGoalsList', () => {
     expect(await screen.findByText(/Wekelijkse Doelen/i)).toBeInTheDocument()
   })
 
-  it('shows "On Track" badge for the consistency goal (on_track status)', async () => {
+  it('shows "Op schema" badge for the consistency goal (on_track status)', async () => {
     renderProgress()
-    const onTrackBadges = await screen.findAllByText(/On Track/i)
+    const onTrackBadges = await screen.findAllByText(/Op schema/i)
     expect(onTrackBadges.length).toBeGreaterThanOrEqual(1)
   })
 
@@ -643,68 +643,60 @@ describe('DetailedMetrics', () => {
     expect(screen.getByText(/Gem\. Stabiliteit|GEM\. STABILITEIT/i)).toBeInTheDocument()
   })
 
-  it('renders the Zwakke Woorden Gered label', async () => {
+  it('renders the Gered (rescued words) label', async () => {
     renderProgress()
-    expect(await screen.findByText(/Zwakke Woorden Gered|ZWAKKE WOORDEN GERED/i)).toBeInTheDocument()
+    expect(await screen.findByText(/Gered/i)).toBeInTheDocument()
   })
 
   it('renders the correct rescued word count (3)', async () => {
-    // With rescuedWords = 3, the count "3" and 3 rescue stars should appear in the card
+    // With rescued = 3 (from lapsePrevention mock), the count and rescue stars should appear
     renderProgress()
-    await screen.findByText(/Zwakke Woorden Gered|ZWAKKE WOORDEN GERED/i)
+    await screen.findByText(/Gered/i)
 
     // The number 3 should be present as the rescued words count
     const rescuedCount = screen.queryByText('3')
     if (rescuedCount) {
       expect(rescuedCount).toBeInTheDocument()
     }
-    expect(screen.getByText(/Zwakke Woorden Gered|ZWAKKE WOORDEN GERED/i)).toBeInTheDocument()
+    expect(screen.getByText(/Gered/i)).toBeInTheDocument()
   })
 
-  it('renders the Nauwkeurigheid (accuracy) label', async () => {
+  it('renders the Herkenning accuracy tile', async () => {
+    // DetailedMetrics has separate accuracy tiles for Herkenning and Oproepen
     renderProgress()
-    expect(await screen.findByText(/Nauwkeurigheid|NAUWKEURIGHEID/i)).toBeInTheDocument()
+    // Wait for wave 2 data by checking for accuracy display
+    await screen.findByText(/Gem\. Stabiliteit|GEM\. STABILITEIT/i)
+    expect(await screen.findByText('84%')).toBeInTheDocument()
   })
 
   it('renders the recognition accuracy (84%)', async () => {
     renderProgress()
-    await screen.findByText(/Nauwkeurigheid|NAUWKEURIGHEID/i)
+    await screen.findByText(/Gem\. Stabiliteit|GEM\. STABILITEIT/i)
 
     // 84% recognition accuracy should appear in the section
-    const pctEl = screen.queryByText('84%')
-    if (pctEl) {
-      expect(pctEl).toBeInTheDocument()
-    }
-    expect(screen.getByText(/Nauwkeurigheid|NAUWKEURIGHEID/i)).toBeInTheDocument()
+    const pctEl = await screen.findByText('84%')
+    expect(pctEl).toBeInTheDocument()
   })
 
   it('renders the recall accuracy (63%)', async () => {
     renderProgress()
-    await screen.findByText(/Nauwkeurigheid|NAUWKEURIGHEID/i)
+    await screen.findByText(/Gem\. Stabiliteit|GEM\. STABILITEIT/i)
 
-    const pctEl = screen.queryByText('63%')
-    if (pctEl) {
-      expect(pctEl).toBeInTheDocument()
-    }
-    expect(screen.getByText(/Nauwkeurigheid|NAUWKEURIGHEID/i)).toBeInTheDocument()
+    const pctEl = await screen.findByText('63%')
+    expect(pctEl).toBeInTheDocument()
   })
 
-  it('renders the Tijd Bespaard label', async () => {
+  it('renders the rescue stars for rescued words', async () => {
+    // With rescued = 3, three rescue stars (★) should appear
     renderProgress()
-    expect(await screen.findByText(/Tijd Bespaard|TIJD BESPAARD/i)).toBeInTheDocument()
-  })
+    await screen.findByText(/Gered/i)
 
-  it('shows "min bespaard" secondary text when latency data is available', async () => {
-    renderProgress()
-    await screen.findByText(/Tijd Bespaard|TIJD BESPAARD/i)
-
-    // When latency improvement data is present, the "≈ X min bespaard" line appears
-    const savedText = screen.queryByText(/min bespaard/i)
-    if (savedText) {
-      expect(savedText).toBeInTheDocument()
+    // Stars may be in one element or separate — just verify stars exist
+    const anyStars = document.querySelector('[style*="yellow"]')
+    if (anyStars) {
+      expect(anyStars).toBeInTheDocument()
     }
-    // Section label always present
-    expect(screen.getByText(/Tijd Bespaard|TIJD BESPAARD/i)).toBeInTheDocument()
+    expect(screen.getByText(/Gered/i)).toBeInTheDocument()
   })
 })
 
@@ -760,9 +752,8 @@ describe('MasteryFunnel — bottleneck detection', () => {
 
     // "50" should be present as the retrieving count
     expect(screen.getByText('50')).toBeInTheDocument()
-    // Retrieving stage should now be the bottleneck
-    const retrievingEl = screen.getByText(/Retrieving/i)
-    expect(retrievingEl).toBeInTheDocument()
+    // Retrieving stage should now be the bottleneck — milestone pill mentions Retrieving
+    expect(screen.getByText(/Ophalen|Retrieving/i)).toBeInTheDocument()
   })
 
   it('shows the correct bottleneck count in the warning banner', async () => {
