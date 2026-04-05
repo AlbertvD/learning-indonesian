@@ -70,6 +70,18 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
     return meanings.some(m => m.translation_language === userLanguage)
   })
 
+  // recall_sprint: restrict to items that have a form_recall skill.
+  // New and anchoring items produce recognition-only exercises and cannot
+  // improve recall quality, so they are excluded.
+  if (sessionMode === 'recall_sprint') {
+    eligibleItems = eligibleItems.filter(item => {
+      const state = itemStates[item.id]
+      if (!state || state.stage === 'anchoring') return false
+      const skills = skillStates[item.id] ?? []
+      return skills.some(s => s.skill_type === 'form_recall')
+    })
+  }
+
   // Categorize items
   const now = new Date()
   const dueItems: CandidateItem[] = []
@@ -94,6 +106,18 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
     if (state.stage === 'anchoring') {
       const isOverdue = skills.some(s => s.next_due_at && new Date(s.next_due_at) <= now)
       anchoringItems.push({ item, state, skills, category: 'anchoring', priority: isOverdue ? 1 : 0.6 })
+      continue
+    }
+
+    // recall_sprint: force all eligible items into dueItems regardless of due date.
+    // The eligibleItems filter guarantees these items have a form_recall skill.
+    if (sessionMode === 'recall_sprint') {
+      const minRetrievability = skills.length > 0
+        ? Math.min(...skills.filter(s => s.skill_type === 'form_recall').map(s =>
+            s.last_reviewed_at ? getRetrievability(s.stability, new Date(s.last_reviewed_at)) : 1
+          ))
+        : 1
+      dueItems.push({ item, state, skills, category: 'due', priority: 1 - minRetrievability })
       continue
     }
 
@@ -152,7 +176,7 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   const queue: SessionQueueItem[] = []
 
   for (const candidate of [...pickedDue, ...pickedAnchoring, ...pickedWeak]) {
-    const exercises = selectExercises(candidate, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, userLanguage, eligibleItems)
+    const exercises = selectExercises(candidate, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, userLanguage, eligibleItems, sessionMode)
     for (const exercise of exercises) {
       queue.push({
         exerciseItem: exercise,
@@ -163,7 +187,7 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   }
 
   for (const candidate of pickedNew) {
-    const exercises = selectExercises(candidate, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, userLanguage, eligibleItems)
+    const exercises = selectExercises(candidate, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, userLanguage, eligibleItems, sessionMode)
     for (const exercise of exercises) {
       queue.push({
         exerciseItem: exercise,
@@ -273,6 +297,7 @@ function selectExercises(
   exerciseVariantsByContext?: Record<string, ExerciseVariant[]>,
   userLanguage: 'en' | 'nl' = 'en',
   allItems: LearningItem[] = [],
+  sessionMode: SessionMode = 'standard',
 ): ExerciseItem[] {
   const { item, state } = candidate
   const meanings = meaningsByItem[item.id] ?? []
@@ -282,6 +307,14 @@ function selectExercises(
 
   const exercises: ExerciseItem[] = []
   const isSentenceType = item.item_type === 'sentence' || item.item_type === 'dialogue_chunk'
+
+  // recall_sprint: force recall exercise type regardless of stage
+  if (sessionMode === 'recall_sprint') {
+    if (isSentenceType) {
+      return [makeClozeExercise(item, meanings, contexts, variants)]
+    }
+    return [makeTypedRecall(item, meanings, contexts, variants)]
+  }
 
   // Determine which exercises are appropriate for this stage
   if (stage === 'new' || stage === 'anchoring') {

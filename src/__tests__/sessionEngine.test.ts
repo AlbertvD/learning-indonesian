@@ -133,9 +133,41 @@ describe('sessionMode', () => {
     expect(queue.length).toBe(5)
   })
 
-  it('recall_sprint mode produces zero new items', () => {
-    // All items in base makeInput are new (no states) — sprint has nothing to work with
-    const queue = buildSessionQueue(makeInput({ sessionMode: 'recall_sprint' }))
-    expect(queue.length).toBe(0)
+  it('recall_sprint mode only includes items with a form_recall skill and forces recall exercises', () => {
+    // li1: retrieving, has form_recall skill — eligible
+    // li2: anchoring, no recall skill — excluded
+    // li3: no state (new) — excluded
+    const retrievingState = {
+      id: 'li1', user_id: 'u1', learning_item_id: 'li1', stage: 'retrieving' as const,
+      introduced_at: '', last_seen_at: '', priority: null, origin: null,
+      times_seen: 5, is_leech: false, suspended: false, gate_check_passed: true, updated_at: '',
+    }
+    const anchoringState = {
+      id: 'li2', user_id: 'u1', learning_item_id: 'li2', stage: 'anchoring' as const,
+      introduced_at: '', last_seen_at: '', priority: null, origin: null,
+      times_seen: 2, is_leech: false, suspended: false, gate_check_passed: true, updated_at: '',
+    }
+    // Form_recall skill that is NOT yet due — verifies non-due eligible items still surface
+    const recallSkill = {
+      id: 'ss1', user_id: 'u1', learning_item_id: 'li1', skill_type: 'form_recall' as const,
+      stability: 2, difficulty: 5, retrievability: 0.8,
+      last_reviewed_at: new Date(Date.now() - 3600000).toISOString(),
+      next_due_at: new Date(Date.now() + 86400000).toISOString(), // not yet due
+      success_count: 2, failure_count: 0, lapse_count: 0, consecutive_failures: 0,
+      mean_latency_ms: null, hint_rate: null, updated_at: '',
+    }
+
+    const queue = buildSessionQueue(makeInput({
+      itemStates: { li1: retrievingState, li2: anchoringState },
+      skillStates: { li1: [recallSkill] },
+      sessionMode: 'recall_sprint',
+    }))
+
+    // Only li1 should appear (has form_recall skill)
+    expect(queue.every(q => q.exerciseItem.learningItem.id === 'li1')).toBe(true)
+    // Exercises must be recall type (not recognition_mcq)
+    expect(queue.every(q => q.exerciseItem.exerciseType !== 'recognition_mcq')).toBe(true)
+    // li1 must appear even though its skill is not yet due
+    expect(queue.length).toBeGreaterThan(0)
   })
 })
