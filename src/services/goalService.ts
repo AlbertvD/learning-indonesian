@@ -347,6 +347,7 @@ export const goalService = {
           recognition_accuracy: stats.recognitionAccuracy,
           recall_accuracy: stats.recallAccuracy,
           recognition_sample_size: stats.recognitionSampleSize,
+          recall_sample_size: stats.recallSampleSize,
         }
       }
       else if (goal.goal_type === 'usable_vocabulary') {
@@ -432,26 +433,6 @@ export const goalService = {
         ? recognition.filter(e => e.was_correct).length / recognition.length
         : 0,
       recognitionSampleSize: recognition.length,
-    }
-  },
-
-  async getRecallStats(userId: string, goalSet: WeeklyGoalSet) {
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('review_events')
-      .select('was_correct')
-      .eq('user_id', userId)
-      .eq('skill_type', 'form_recall')
-      .gte('created_at', goalSet.week_starts_at_utc)
-      .lt('created_at', goalSet.week_ends_at_utc)
-
-    if (error) throw error
-    if (data.length === 0) return { accuracy: 0, sampleSize: 0 }
-
-    const correct = data.filter(e => e.was_correct).length
-    return {
-      accuracy: correct / data.length,
-      sampleSize: data.length
     }
   },
 
