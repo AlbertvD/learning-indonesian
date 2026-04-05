@@ -86,6 +86,9 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--warning':        '#FF9500',
     '--warning-subtle': 'rgba(255,149,0,0.10)',
 
+    // Mix ratio bar
+    '--mix-recall': '#9c36b5',
+
     // Layout
     '--card-compact-height': '48px',
     '--sidebar-width':       '220px',
