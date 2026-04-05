@@ -209,9 +209,10 @@ export function ExerciseShell({
           style={{
             position: 'fixed',
             top: '50%',
-            left: '16px',
-            right: '16px',
-            transform: 'translateY(-50%)',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 'calc(100% - 32px)',
+            maxWidth: '736px',  // Container size="md" (768px) minus 2×16px padding
             zIndex: 200,
           }}
         >
