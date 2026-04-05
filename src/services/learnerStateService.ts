@@ -1,6 +1,6 @@
 // src/services/learnerStateService.ts
 import { supabase } from '@/lib/supabase'
-import type { LearnerItemState, LearnerSkillState } from '@/types/learning'
+import type { DailyGoalRollup, LearnerItemState, LearnerSkillState } from '@/types/learning'
 
 export const learnerStateService = {
   async getItemStates(userId: string): Promise<LearnerItemState[]> {
@@ -108,5 +108,17 @@ export const learnerStateService = {
     if (error) throw error
     const unique = new Set(data.map((d: { learning_item_id: string }) => d.learning_item_id))
     return { count: unique.size }
+  },
+
+  async getDailyRollups(userId: string, limit = 7): Promise<DailyGoalRollup[]> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('learner_daily_goal_rollups')
+      .select('*')
+      .eq('user_id', userId)
+      .order('local_date', { ascending: false })
+      .limit(limit)
+    if (error) throw error
+    return (data ?? []).reverse()  // oldest-first for chart rendering
   },
 }
