@@ -365,7 +365,7 @@ function SecondaryCard({
 function RescueCard({ count, T }: { count: number; T: any }) {
   if (count === 0) return null
   return (
-    <Link to="/session?weak=true" className={classes.rescueCard}>
+    <Link to="/session?mode=backlog_clear" className={classes.rescueCard}>
       <span className={classes.lapseBadge}>{count} {T.dashboard.lapsesLabel}</span>
       <div className={classes.cardLeft}>
         <div className={`${classes.cardIconBox} ${classes.cardIconDanger}`}>
@@ -404,15 +404,13 @@ export function Dashboard() {
         const progress = await goalService.getGoalProgress(user.id)
         setGoalProgress(progress)
 
-        // Fetch lapsing items count
-        const lapsingResult = await learnerStateService.getLapsingItems(user.id)
-        setLapsingCount(lapsingResult.count)
-
-        // Fetch lesson progress
-        const [lessonProgress, lessons] = await Promise.all([
+        // Fetch lapsing items, lesson progress, and lessons in parallel
+        const [lapsingResult, lessonProgress, lessons] = await Promise.all([
+          learnerStateService.getLapsingItems(user.id),
           lessonService.getUserLessonProgress(user.id),
           lessonService.getLessonsBasic(),
         ])
+        setLapsingCount(lapsingResult.count)
 
         // Find the lesson to continue
         const inProgress = lessons.find((l) => {
@@ -424,8 +422,8 @@ export function Dashboard() {
         )
         const target = inProgress ?? notStarted
         if (target) {
-          const progress = lessonProgress.find((lp) => lp.lesson_id === target.id)
-          const sectionIndex = progress?.sections_completed.length ?? 0
+          const lessonEntry = lessonProgress.find((lp) => lp.lesson_id === target.id)
+          const sectionIndex = lessonEntry?.sections_completed.length ?? 0
           setContinueUrl(`/lessons/${target.id}?section=${sectionIndex}`)
         }
 
@@ -563,7 +561,7 @@ export function Dashboard() {
           {lapsingCount > 0
             ? <RescueCard count={lapsingCount} T={T} />
             : (
-              <Link to="/session?weak=true" className={classes.secondaryCard}>
+              <Link to="/session?mode=backlog_clear" className={classes.secondaryCard}>
                 <Group justify="space-between" h="100%">
                   <Box>
                     <Text size="sm" fw={500}>{T.dashboard.practiceWeak}</Text>
