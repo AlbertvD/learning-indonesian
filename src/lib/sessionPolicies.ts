@@ -192,21 +192,15 @@ function applyConsecutiveTypeCap(queue: SessionQueueItem[]): SessionQueueItem[] 
   return reordered
 }
 
-// Maximum new items per session for a new learner when there are no due items to review
-const NEW_LEARNER_INTRO_CAP = 5
-
 /**
  * Detect new learners and apply overload protection.
  * New learner: account_age_days < 30 AND stable_item_count < 50
- * Overload rule: Limit new items severely for new learners
  *
- * Also enforces early stage caps:
- * - 0–30 days: prioritise due/weak items, cap new item introductions
- * - 30–60 days: reduced new items, max 30-day intervals
- *
- * Special case: if the learner has no due/weak items at all (fresh start or
- * after a full reset), allow a small number of new items so the session can
- * actually begin rather than returning an empty queue.
+ * When reviews exist: serve only items already in progress (no new words on top
+ * of pending reviews — avoid overload).
+ * When nothing is in review yet (fresh start / full reset): pass the full queue
+ * through unchanged — the session engine already sized it correctly for the
+ * user's session preference.
  */
 function applyNewLearnerRules(
   queue: SessionQueueItem[],
@@ -219,20 +213,20 @@ function applyNewLearnerRules(
     return queue
   }
 
-  // Separate due/weak items from brand-new items
-  const dueOrWeak = queue.filter(item => {
+  // Separate items already in progress from brand-new items
+  const inProgress = queue.filter(item => {
     const state = item.learnerItemState
     return state && state.stage !== 'new'
   })
 
-  if (dueOrWeak.length > 0) {
-    // Normal new-learner session: only serve items already in progress
-    return dueOrWeak
+  if (inProgress.length > 0) {
+    // Reviews are pending: serve only in-progress items to avoid overload
+    return inProgress
   }
 
-  // No due/weak items — learner is starting fresh (or was reset).
-  // Allow a small introduction batch so the session is not empty.
-  return queue.slice(0, NEW_LEARNER_INTRO_CAP)
+  // Nothing in progress — fresh start or full reset.
+  // The engine already sized this queue correctly; pass it through.
+  return queue
 }
 
 /**

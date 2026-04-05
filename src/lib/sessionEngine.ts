@@ -37,10 +37,10 @@ interface CandidateItem {
   priority: number
 }
 
-// Maximum new items introduced per session regardless of how many are due.
-// Keeping this low ensures recently-introduced items get reinforced before
-// new vocabulary is piled on top.
-const MAX_NEW_ITEMS_PER_SESSION = 3
+// Fraction of the session that can be new items when reviews are present.
+// Scales with session size so a user who wants 25 words gets more new items
+// than one who wants 10.
+const NEW_ITEMS_FRACTION = 0.25  // e.g. 6 new items in a 25-word session
 
 /**
  * Build a session queue from the learning item pool.
@@ -122,19 +122,24 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
     ? applyLessonGate(newItems, eligibleItems, itemStates, contextsByItem, lessonOrder)
     : newItems
 
-  // Slot allocation for a session:
-  //   55% due reviews  (FSRS-scheduled)
-  //   20% anchoring    (recently introduced, always reinforce)
-  //   10% weak         (high lapses or recognition-only)
-  //   ≤3  new items    (hard cap — don't pile on before old items are stable)
+  // Slot allocation — priority order: due → anchoring → weak → new
+  // New items fill remaining capacity up to their cap so the session
+  // approaches preferredSessionSize rather than stopping at 3 items.
   const dueSlots = Math.round(preferredSessionSize * 0.55)
   const anchoringSlots = Math.round(preferredSessionSize * 0.20)
   const weakSlots = Math.round(preferredSessionSize * 0.10)
-  const newSlots = calculateNewSlots(dueItems.length, anchoringItems.length, preferredSessionSize)
 
   const pickedDue = dueItems.slice(0, dueSlots)
   const pickedAnchoring = anchoringItems.slice(0, anchoringSlots)
   const pickedWeak = weakItems.slice(0, weakSlots)
+
+  const reviewsFilled = pickedDue.length + pickedAnchoring.length + pickedWeak.length
+  const newSlots = calculateNewSlots(
+    dueItems.length,
+    anchoringItems.length,
+    reviewsFilled,
+    preferredSessionSize,
+  )
   const pickedNew = gatedNewItems.slice(0, newSlots)
 
   // Build exercise items from picked candidates
@@ -232,13 +237,26 @@ function applyLessonGate(
     .sort((a, b) => itemLessonOrder(a.item.id) - itemLessonOrder(b.item.id))
 }
 
-function calculateNewSlots(dueCount: number, anchoringCount: number, sessionSize: number): number {
-  // If there's nothing at all (truly first session), allow a small intro batch
-  if (dueCount === 0 && anchoringCount === 0) return Math.min(MAX_NEW_ITEMS_PER_SESSION, sessionSize)
-  // When already carrying many due items, don't introduce new ones
+function calculateNewSlots(
+  dueCount: number,
+  anchoringCount: number,
+  reviewsFilled: number,
+  sessionSize: number,
+): number {
+  // Heavy review load: skip new items entirely
   if (dueCount > 40) return 0
-  // Otherwise hard cap: never introduce more than MAX_NEW_ITEMS_PER_SESSION at once
-  return MAX_NEW_ITEMS_PER_SESSION
+
+  const remainingCapacity = sessionSize - reviewsFilled
+
+  // Nothing to review at all (fresh start or full reset): fill the session
+  // with new items so the user gets their target number of items.
+  if (dueCount === 0 && anchoringCount === 0) return remainingCapacity
+
+  // Reviews are present: cap new items as a fraction of the session size
+  // (scales with preference — 6 new items for 25-word session vs 3 for 10-word)
+  // but never exceed remaining capacity.
+  const cap = Math.max(3, Math.round(sessionSize * NEW_ITEMS_FRACTION))
+  return Math.min(cap, remainingCapacity)
 }
 
 function selectExercises(
