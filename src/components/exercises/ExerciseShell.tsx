@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Box, Button } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { RecognitionMCQ } from './RecognitionMCQ'
@@ -36,6 +36,21 @@ export function ExerciseShell({
 }: ExerciseShellProps) {
   const [isProcessing, setIsProcessing] = useState(false)
   const [waitingForContinue, setWaitingForContinue] = useState(false)
+  const exerciseContainerRef = useRef<HTMLDivElement>(null)
+  const [overlayInsets, setOverlayInsets] = useState<{ left: number; right: number }>({ left: 64, right: 64 })
+
+  // When the continue overlay appears, measure the first interactive button inside
+  // the exercise component to align the overlay with actual answer box edges.
+  useEffect(() => {
+    if (!waitingForContinue || !exerciseContainerRef.current) return
+    const btn = exerciseContainerRef.current.querySelector('button')
+    if (!btn) return
+    const rect = btn.getBoundingClientRect()
+    setOverlayInsets({
+      left: rect.left,
+      right: window.innerWidth - rect.right,
+    })
+  }, [waitingForContinue])
 
   const exerciseItem = currentItem.exerciseItem
 
@@ -203,16 +218,16 @@ export function ExerciseShell({
 
   return (
     <>
-      {exerciseNode}
+      <div ref={exerciseContainerRef}>
+        {exerciseNode}
+      </div>
       {waitingForContinue && (
         <Box
           style={{
             position: 'fixed',
             top: '50%',
-            // 4 padding layers × 16px = 64px per side:
-            // Session.container + Mantine Container + Session.exercise + exercise component container
-            left: 64,
-            right: 64,
+            left: overlayInsets.left,
+            right: overlayInsets.right,
             transform: 'translateY(-50%)',
             zIndex: 200,
             borderRadius: 'var(--mantine-radius-md)',
