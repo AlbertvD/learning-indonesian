@@ -198,9 +198,9 @@ export function GoalRingCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
         </Tooltip>
       </div>
       <div className={classes.ringLabel}>{label}</div>
-      {goal.goal_unit === 'count' && (
-        <div className={classes.ringValue}>{goalCountLabel(goal)}</div>
-      )}
+      <div className={classes.ringValue}>
+        {goal.goal_unit === 'count' ? goalCountLabel(goal) : '\u00A0'}
+      </div>
       <span className={getStatusPillClass(goal.status, classes)}>
         {statusLabel}
         {goal.is_provisional && (

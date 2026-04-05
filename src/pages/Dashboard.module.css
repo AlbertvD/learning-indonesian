@@ -81,10 +81,11 @@
 .ringTargetMarker {
   position: absolute;
   bottom: calc(50% + 31px);
-  left: calc(50% - 1.5px);
-  width: 3px;
+  left: calc(50% - 2px);
+  width: 4px;
   height: 8px;
-  background: rgba(255, 255, 255, 0.9);
+  background: #fcc419;
+  box-shadow: 0 0 4px rgba(252, 196, 25, 0.7);
   transform-origin: center calc(100% + 31px);
   transform: rotate(var(--target-deg));
   border-radius: 2px;
