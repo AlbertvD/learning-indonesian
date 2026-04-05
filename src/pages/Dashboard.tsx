@@ -11,13 +11,12 @@ import {
   Button,
   Group,
   SimpleGrid,
-  Progress,
   Paper,
   Title,
   Tooltip,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconChevronRight, IconFlame, IconTarget, IconCheck, IconAlertCircle, IconInfoCircle, IconAlertTriangle, IconSparkles } from '@tabler/icons-react'
+import { IconChevronRight, IconFlame, IconTarget, IconInfoCircle, IconAlertTriangle, IconSparkles, IconRefresh, IconKeyboard, IconClock, IconBook } from '@tabler/icons-react'
 import { lessonService } from '@/services/lessonService'
 import { learnerStateService } from '@/services/learnerStateService'
 import { goalService } from '@/services/goalService'
@@ -261,6 +260,130 @@ export function ActionCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
   )
 }
 
+function HeroCard({
+  plan,
+  weeklyGoals,
+  onStart,
+  T,
+}: {
+  plan: TodayPlan
+  weeklyGoals: WeeklyGoal[]
+  onStart: () => void
+  T: any
+}) {
+  const mixSegments = computeMixSegments(plan, T)
+  const total = mixSegments.reduce((s, seg) => s + seg.value, 0)
+  const ctaSubtitle = getCtaSubtitle(weeklyGoals, T)
+  const showMixNote = plan.weak_items_target > 0 && plan.new_items_today_target < 3
+
+  return (
+    <div className={classes.heroCardV2}>
+      <div className={classes.heroV2Title}>{T.dashboard.todaysPlan}</div>
+
+      <div className={classes.heroV2Stats}>
+        <span className={classes.heroV2Stat}>
+          <IconRefresh size={16} /> {plan.due_reviews_today_target} {T.dashboard.reviewsLabel}
+        </span>
+        <span className={classes.heroV2Stat}>
+          <IconSparkles size={16} /> {plan.new_items_today_target} {T.dashboard.newLabel}
+        </span>
+        <span className={classes.heroV2Stat}>
+          <IconKeyboard size={16} /> {plan.recall_interactions_today_target} {T.dashboard.recallLabel}
+        </span>
+      </div>
+
+      <div className={classes.heroV2Subtext}>
+        {T.dashboard.basedOnSessionSize.replace('{size}', `${plan.preferred_session_size}`)}
+      </div>
+
+      {mixSegments.length > 0 && (
+        <div className={classes.mixRatioSection}>
+          <div className={classes.mixRatioLabel}>{T.dashboard.sessionComposition}</div>
+          <div className={classes.mixBar}>
+            {mixSegments.map((seg) => (
+              <div
+                key={seg.label}
+                className={classes.mixBarSegment}
+                style={{ width: `${(seg.value / total) * 100}%`, background: seg.color }}
+              />
+            ))}
+          </div>
+          <div className={classes.mixLegend}>
+            {mixSegments.map((seg) => (
+              <span key={seg.label} className={classes.mixLegendItem}>
+                <span className={classes.mixLegendDot} style={{ background: seg.color }} />
+                {seg.label}
+              </span>
+            ))}
+          </div>
+          {showMixNote && (
+            <div className={classes.mixNote}>{T.dashboard.mixNoteBacklog}</div>
+          )}
+        </div>
+      )}
+
+      <button className={classes.heroCta} onClick={onStart}>
+        <span className={classes.heroCtaMain}>
+          <IconClock size={18} />
+          {T.dashboard.startTodaysSession} — ~{plan.estimated_minutes_today} min
+        </span>
+        {ctaSubtitle && (
+          <span className={classes.heroCtaSub}>{ctaSubtitle}</span>
+        )}
+      </button>
+
+      <div className={classes.heroPostNote}>{T.dashboard.postSessionNote}</div>
+    </div>
+  )
+}
+
+function SecondaryCard({
+  href,
+  icon,
+  title,
+  subtitle,
+}: {
+  href: string
+  icon: React.ReactNode
+  title: string
+  subtitle: string
+}) {
+  return (
+    <Link to={href} className={classes.secondaryCard}>
+      <div className={classes.cardLeft}>
+        <div className={`${classes.cardIconBox} ${classes.cardIconAccent}`}>{icon}</div>
+        <div>
+          <div className={classes.cardTitle}>{title}</div>
+          <div className={classes.cardSubtitle}>{subtitle}</div>
+        </div>
+      </div>
+      <IconChevronRight size={16} style={{ color: 'var(--text-secondary)', opacity: 0.5 }} />
+    </Link>
+  )
+}
+
+function RescueCard({ count, T }: { count: number; T: any }) {
+  if (count === 0) return null
+  return (
+    <Link to="/session?weak=true" className={classes.rescueCard}>
+      <span className={classes.lapseBadge}>{count} {T.dashboard.lapsesLabel}</span>
+      <div className={classes.cardLeft}>
+        <div className={`${classes.cardIconBox} ${classes.cardIconDanger}`}>
+          <IconAlertTriangle size={18} color="var(--danger)" />
+        </div>
+        <div>
+          <div className={`${classes.cardTitle} ${classes.cardTitleDanger}`}>
+            {T.dashboard.rescueTitle.replace('{count}', `${count}`)}
+          </div>
+          <div className={classes.cardSubtitle}>
+            {T.dashboard.rescueSubtitle.replace(/\{count\}/g, `${count}`)}
+          </div>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
 export function Dashboard() {
   const T = useT()
   const navigate = useNavigate()
@@ -268,10 +391,10 @@ export function Dashboard() {
   const profile = useAuthStore((state) => state.profile)
 
   const [loading, setLoading] = useState(true)
-  const [itemsByStage, setItemsByStage] = useState({ new: 0, anchoring: 0, retrieving: 0, productive: 0, maintenance: 0 })
   const [continueUrl, setContinueUrl] = useState('/lessons')
   const [goalProgress, setGoalProgress] = useState<WeeklyGoalResponse | null>(null)
   const [currentStreak, setCurrentStreak] = useState(0)
+  const [lapsingCount, setLapsingCount] = useState(0)
 
   useEffect(() => {
     async function fetchData() {
@@ -281,19 +404,9 @@ export function Dashboard() {
         const progress = await goalService.getGoalProgress(user.id)
         setGoalProgress(progress)
 
-        // Fetch item states for stage counts
-        const itemStates = await learnerStateService.getItemStates(user.id)
-        const stageCounts = {
-          new: 0,
-          anchoring: 0,
-          retrieving: 0,
-          productive: 0,
-          maintenance: 0,
-        }
-        for (const state of itemStates) {
-          stageCounts[state.stage]++
-        }
-        setItemsByStage(stageCounts)
+        // Fetch lapsing items count
+        const lapsingResult = await learnerStateService.getLapsingItems(user.id)
+        setLapsingCount(lapsingResult.count)
 
         // Fetch lesson progress
         const [lessonProgress, lessons] = await Promise.all([
@@ -361,7 +474,6 @@ export function Dashboard() {
   }
 
   const name = profile?.fullName?.split(' ')[0] ?? profile?.email ?? 'User'
-  const totalItems = Object.values(itemsByStage).reduce((a, b) => a + b, 0)
 
   if (goalProgress?.state === 'timezone_required') {
     return (
@@ -390,194 +502,80 @@ export function Dashboard() {
   const todayPlan = goalProgress?.todayPlan
   const weeklyGoals = goalProgress?.weeklyGoals ?? []
 
+  const atRiskGoals = weeklyGoals.filter(g =>
+    ['at_risk', 'off_track', 'missed'].includes(g.status)
+  )
+
   return (
     <Container size="md" className={classes.dashboard}>
       <Stack gap="lg">
-        {/* Welcome */}
+        {/* 1. Welcome bar */}
         <Group justify="space-between" align="flex-end">
-          <Box>
-            <Text size="xl" fw={600}>
-              {T.dashboard.welcomeBack}, {name}
-            </Text>
-          </Box>
+          <Text size="xl" fw={600}>
+            {T.dashboard.welcomeBack}, {name}
+          </Text>
           <Group gap="xs">
             <IconFlame size={18} color="orange" />
             <Text size="sm" fw={600}>{currentStreak} {T.dashboard.daysInARow}</Text>
           </Group>
         </Group>
 
-        {/* Weekly Goals Module */}
-        <Paper className="card-default">
-          <Stack gap="md">
-            <Group justify="space-between">
-              <Text fw={600}>{T.dashboard.thisWeek}</Text>
-              <Text size="xs" c="dimmed">{T.dashboard.mondayStart}</Text>
-            </Group>
-            
-            <Stack gap="sm">
-              {weeklyGoals.map(goal => (
-                <GoalRow key={goal.id} goal={goal} T={T} />
-              ))}
-            </Stack>
-          </Stack>
-        </Paper>
+        {/* 2. Weekly Scorecard — ring charts */}
+        <div>
+          <Text fw={600} mb="sm">{T.dashboard.thisWeek}</Text>
+          <div className={classes.scorecardGrid}>
+            {weeklyGoals.map(goal => (
+              <GoalRingCard key={goal.id} goal={goal} T={T} />
+            ))}
+          </div>
+        </div>
 
-        {/* Today's Adaptive Plan */}
-        {todayPlan && (
-          <Paper className={classes.heroCard} p="lg">
-            <Stack gap="md">
-              <Box>
-                <Text size="lg" fw={600} mb="xs">
-                  {T.dashboard.todaysPlan}
-                </Text>
-                <Group gap="xl">
-                  <Stack gap={0}>
-                    <Text size="xs" c="dimmed" tt="uppercase">{T.dashboard.reviews}</Text>
-                    <Text fw={700}>{todayPlan.due_reviews_today_target}</Text>
-                  </Stack>
-                  <Stack gap={0}>
-                    <Text size="xs" c="dimmed" tt="uppercase">{T.dashboard.newItems}</Text>
-                    <Text fw={700}>{todayPlan.new_items_today_target}</Text>
-                  </Stack>
-                  <Stack gap={0}>
-                    <Text size="xs" c="dimmed" tt="uppercase">{T.dashboard.recallPrompts}</Text>
-                    <Text fw={700}>{todayPlan.recall_interactions_today_target}</Text>
-                  </Stack>
-                  <Stack gap={0}>
-                    <Text size="xs" c="dimmed" tt="uppercase">{T.dashboard.estTime}</Text>
-                    <Text fw={700}>{todayPlan.estimated_minutes_today} {T.dashboard.min}</Text>
-                  </Stack>
-                </Group>
-              </Box>
-              <Button
-                onClick={() => navigate('/session')}
-                fullWidth
-                size="md"
-                variant="filled"
-              >
-                {T.dashboard.startTodaysSession}
-              </Button>
-            </Stack>
-          </Paper>
+        {/* 3. Recommended Actions — only when goals are at risk */}
+        {atRiskGoals.length > 0 && (
+          <div>
+            <Text fw={600} mb="sm">{T.dashboard.recommendedActions}</Text>
+            <div className={classes.actionCardList}>
+              {atRiskGoals.map(goal => (
+                <ActionCard key={goal.id} goal={goal} T={T} />
+              ))}
+            </div>
+          </div>
         )}
 
-        {/* Quick actions */}
+        {/* 4. Hero card — today's plan */}
+        {todayPlan && (
+          <HeroCard
+            plan={todayPlan}
+            weeklyGoals={weeklyGoals}
+            onStart={() => navigate('/session')}
+            T={T}
+          />
+        )}
+
+        {/* 5. Secondary cards */}
         <SimpleGrid cols={2}>
-          <Link to={continueUrl} className="card-action">
-            <Group justify="space-between" h="100%">
-              <Box>
-                <Text size="sm" fw={500}>{T.dashboard.continueLesson}</Text>
-                <Text size="xs" c="dimmed" mt="4">{T.dashboard.nextLesson}</Text>
-              </Box>
-              <IconChevronRight size={16} />
-            </Group>
-          </Link>
-
-          <Link to="/session?weak=true" className="card-action">
-            <Group justify="space-between" h="100%">
-              <Box>
-                <Text size="sm" fw={500}>{T.dashboard.practiceWeak}</Text>
-                <Text size="xs" c="dimmed" mt="4">{T.dashboard.reviewWeakItems}</Text>
-              </Box>
-              <IconChevronRight size={16} />
-            </Group>
-          </Link>
+          <SecondaryCard
+            href={continueUrl}
+            icon={<IconBook size={18} color="var(--accent-primary)" />}
+            title={T.dashboard.continueLesson}
+            subtitle={T.dashboard.nextLesson}
+          />
+          {lapsingCount > 0
+            ? <RescueCard count={lapsingCount} T={T} />
+            : (
+              <Link to="/session?weak=true" className={classes.secondaryCard}>
+                <Group justify="space-between" h="100%">
+                  <Box>
+                    <Text size="sm" fw={500}>{T.dashboard.practiceWeak}</Text>
+                    <Text size="xs" c="dimmed" mt="4">{T.dashboard.reviewWeakItems}</Text>
+                  </Box>
+                  <IconChevronRight size={16} />
+                </Group>
+              </Link>
+            )
+          }
         </SimpleGrid>
-
-        {/* Progress snapshot */}
-        <Paper className="card-metric">
-          <Stack gap="md">
-            <Text size="sm" fw={600}>{T.dashboard.progressSnapshot}</Text>
-
-            {/* Stage breakdown */}
-            <Stack gap="sm">
-              {[
-                { stage: 'maintenance', label: T.dashboard.stable, count: itemsByStage.maintenance, color: 'green' },
-                { stage: 'productive', label: T.dashboard.productive, count: itemsByStage.productive, color: 'blue' },
-                { stage: 'retrieving', label: T.dashboard.learning, count: itemsByStage.retrieving + itemsByStage.anchoring, color: 'yellow' },
-                { stage: 'new', label: T.dashboard.new, count: itemsByStage.new, color: 'gray' },
-              ].map((item) => (
-                <Box key={item.stage}>
-                  <Group justify="space-between" mb="4">
-                    <Text size="sm">{item.label}</Text>
-                    <Text size="sm" fw={500}>{item.count}</Text>
-                  </Group>
-                  <Progress
-                    value={totalItems > 0 ? (item.count / totalItems) * 100 : 0}
-                    color={item.color}
-                    size="sm"
-                  />
-                </Box>
-              ))}
-              <Text size="xs" c="dimmed" mt="md">
-                {T.dashboard.totalItems}: {totalItems}
-              </Text>
-            </Stack>
-          </Stack>
-        </Paper>
       </Stack>
     </Container>
-  )
-}
-
-function GoalRow({ goal, T }: { goal: WeeklyGoal, T: any }) {
-  const titles: Record<string, string> = {
-    consistency: T.dashboard.studyDays,
-    recall_quality: T.dashboard.recallQuality,
-    usable_vocabulary: T.dashboard.usableWords,
-    review_health: T.dashboard.reviewHealth
-  }
-
-  const statusColors: Record<string, string> = {
-    achieved: 'green',
-    on_track: 'blue',
-    at_risk: 'orange',
-    missed: 'red'
-  }
-
-  const formatValue = (val: number, type: string) => {
-    if (type === 'recall_quality') return `${Math.round(val * 100)}%`
-    return Math.round(val)
-  }
-
-  return (
-    <Box>
-      <Group justify="space-between" mb={4}>
-        <Group gap="xs">
-          {goal.status === 'achieved' ? (
-            <IconCheck size={14} color="var(--status-success)" />
-          ) : goal.status === 'at_risk' ? (
-            <IconAlertCircle size={14} color="var(--warning)" />
-          ) : (
-            <IconTarget size={14} color="var(--accent-primary)" />
-          )}
-          <Text size="sm" fw={500}>{titles[goal.goal_type]}</Text>
-          {goal.is_provisional && (
-            <Text size="xs" c="dimmed">({T.dashboard.provisional})</Text>
-          )}
-        </Group>
-        <Text size="sm">
-          {formatValue(goal.current_value_numeric, goal.goal_type)} / {formatValue(goal.target_value_numeric, goal.goal_type)}
-        </Text>
-      </Group>
-      <Progress
-        value={Math.min(100, (goal.current_value_numeric / goal.target_value_numeric) * 100)}
-        color={statusColors[goal.status]}
-        size="sm"
-      />
-      {(['at_risk', 'off_track', 'missed'] as string[]).includes(goal.status) && GOAL_ACTION_CONFIG[goal.goal_type] && (
-        <Button
-          component={Link}
-          to={`/session?mode=${GOAL_ACTION_CONFIG[goal.goal_type].mode}`}
-          variant="light"
-          color={goal.status === 'at_risk' ? 'orange' : 'red'}
-          size="xs"
-          mt={4}
-          fullWidth
-        >
-          {GOAL_ACTION_CONFIG[goal.goal_type].title(T)}
-        </Button>
-      )}
-    </Box>
   )
 }
