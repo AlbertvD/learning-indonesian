@@ -1,0 +1,130 @@
+/* src/components/progress/ReviewForecastChart.module.css */
+
+@keyframes bar-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* Main bar chart row */
+.chartRow {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 4px;
+  height: 120px;
+  padding-bottom: 0;
+}
+
+/* Individual column wrapper */
+.barColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+/* Count label above bar */
+.countLabel {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: 1.2;
+  color: var(--text-secondary);
+  text-align: center;
+  min-height: 14px;
+}
+
+/* The bar itself */
+.bar {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  transform-origin: bottom;
+  animation: bar-grow 0.4s var(--ease-smooth) both;
+  min-height: 0;
+}
+
+/* Day label below bar */
+.dayLabel {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Legend row */
+.legend {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  font-size: var(--fs-xs);
+}
+
+/* Projected mini chart title */
+.projectedTitle {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  margin-bottom: 8px;
+}
+
+/* Mini chart row */
+.miniChartRow {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 4px;
+  height: 48px;
+}
+
+/* Mini bar column */
+.miniBarColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+/* Mini bar */
+.miniBar {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  background-color: rgba(64, 192, 87, 0.4); /* Mantine green-6 at 40% opacity */
+  transform-origin: bottom;
+  animation: bar-grow 0.4s var(--ease-smooth) both;
+  min-height: 0;
+}
+
+/* Mini day label */
+.miniDayLabel {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-align: center;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Success message below mini chart */
+.successText {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--success);
+  margin-top: 6px;
+}
