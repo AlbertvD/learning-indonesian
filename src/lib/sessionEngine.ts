@@ -24,9 +24,14 @@ interface CandidateItem {
   item: LearningItem
   state: LearnerItemState | null
   skills: LearnerSkillState[]
-  category: 'due' | 'weak' | 'new'
+  category: 'due' | 'anchoring' | 'weak' | 'new'
   priority: number
 }
+
+// Maximum new items introduced per session regardless of how many are due.
+// Keeping this low ensures recently-introduced items get reinforced before
+// new vocabulary is piled on top.
+const MAX_NEW_ITEMS_PER_SESSION = 3
 
 /**
  * Build a session queue from the learning item pool.
@@ -55,6 +60,7 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   // Categorize items
   const now = new Date()
   const dueItems: CandidateItem[] = []
+  const anchoringItems: CandidateItem[] = []  // seen but not yet stable — always reinforce
   const weakItems: CandidateItem[] = []
   const newItems: CandidateItem[] = []
 
@@ -69,6 +75,15 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
 
     if (state.suspended) continue
 
+    // Anchoring items: just introduced, not yet stable.
+    // Always reinforce regardless of FSRS due date — they haven't been seen
+    // enough times to survive a gap. Overdue anchoring items get higher priority.
+    if (state.stage === 'anchoring') {
+      const isOverdue = skills.some(s => s.next_due_at && new Date(s.next_due_at) <= now)
+      anchoringItems.push({ item, state, skills, category: 'anchoring', priority: isOverdue ? 1 : 0.6 })
+      continue
+    }
+
     // Check if any skill is due
     const dueSkills = skills.filter(s => s.next_due_at && new Date(s.next_due_at) <= now)
     if (dueSkills.length > 0) {
@@ -81,7 +96,7 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
 
     // Weak items: high lapse count or only recognition (no recall skill yet)
     const hasHighLapses = skills.some(s => s.lapse_count >= 3)
-    const hasOnlyRecognition = skills.length === 1 && skills[0].skill_type === 'recognition' && state.stage !== 'anchoring'
+    const hasOnlyRecognition = skills.length === 1 && skills[0].skill_type === 'recognition'
     if (hasHighLapses || hasOnlyRecognition) {
       weakItems.push({ item, state, skills, category: 'weak', priority: hasHighLapses ? 1 : 0.5 })
     }
@@ -89,23 +104,28 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
 
   // Sort by priority (highest first)
   dueItems.sort((a, b) => b.priority - a.priority)
+  anchoringItems.sort((a, b) => b.priority - a.priority)
   weakItems.sort((a, b) => b.priority - a.priority)
 
-  // Calculate slot allocation
-  const dueCount = dueItems.length
+  // Slot allocation for a session:
+  //   55% due reviews  (FSRS-scheduled)
+  //   20% anchoring    (recently introduced, always reinforce)
+  //   10% weak         (high lapses or recognition-only)
+  //   ≤3  new items    (hard cap — don't pile on before old items are stable)
   const dueSlots = Math.round(preferredSessionSize * 0.55)
-  const weakSlots = Math.round(preferredSessionSize * 0.15)
-  const newSlots = calculateNewSlots(dueCount, preferredSessionSize)
+  const anchoringSlots = Math.round(preferredSessionSize * 0.20)
+  const weakSlots = Math.round(preferredSessionSize * 0.10)
+  const newSlots = calculateNewSlots(dueItems.length, anchoringItems.length, preferredSessionSize)
 
-  // Pick items for each category
   const pickedDue = dueItems.slice(0, dueSlots)
+  const pickedAnchoring = anchoringItems.slice(0, anchoringSlots)
   const pickedWeak = weakItems.slice(0, weakSlots)
   const pickedNew = newItems.slice(0, newSlots)
 
   // Build exercise items from picked candidates
   const queue: SessionQueueItem[] = []
 
-  for (const candidate of [...pickedDue, ...pickedWeak]) {
+  for (const candidate of [...pickedDue, ...pickedAnchoring, ...pickedWeak]) {
     const exercises = selectExercises(candidate, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, userLanguage, eligibleItems)
     for (const exercise of exercises) {
       queue.push({
@@ -134,13 +154,13 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   return orderQueue(trimmed)
 }
 
-function calculateNewSlots(dueCount: number, sessionSize: number): number {
-  // On first run with no due items, allow full session of new items
-  if (dueCount === 0) return sessionSize
-  // With few due items, limit new items to avoid overwhelming user
+function calculateNewSlots(dueCount: number, anchoringCount: number, sessionSize: number): number {
+  // If there's nothing at all (truly first session), allow a small intro batch
+  if (dueCount === 0 && anchoringCount === 0) return Math.min(MAX_NEW_ITEMS_PER_SESSION, sessionSize)
+  // When already carrying many due items, don't introduce new ones
   if (dueCount > 40) return 0
-  if (dueCount > 20) return Math.min(2, Math.round(sessionSize * 0.15))
-  return Math.round(sessionSize * 0.15)
+  // Otherwise hard cap: never introduce more than MAX_NEW_ITEMS_PER_SESSION at once
+  return MAX_NEW_ITEMS_PER_SESSION
 }
 
 function selectExercises(
@@ -372,18 +392,14 @@ function makePublishedExercise(
 function orderQueue(queue: SessionQueueItem[]): SessionQueueItem[] {
   if (queue.length <= 1) return queue
 
-  // Simple ordering: put recognition MCQ first (easy wins), then interleave
+  // Put 1-2 recognition MCQs first for an easy start, then shuffle the rest
   const recognition = queue.filter(q => q.exerciseItem.exerciseType === 'recognition_mcq')
-  const recall = queue.filter(q => q.exerciseItem.exerciseType === 'typed_recall')
-  const cloze = queue.filter(q => q.exerciseItem.exerciseType === 'cloze')
+  const rest = queue.filter(q => q.exerciseItem.exerciseType !== 'recognition_mcq')
 
   const ordered: SessionQueueItem[] = []
-
-  // Start with 1-2 recognition items for momentum
   ordered.push(...recognition.splice(0, Math.min(2, recognition.length)))
 
-  // Interleave remaining
-  const remaining = [...recognition, ...recall, ...cloze].sort(() => Math.random() - 0.5)
+  const remaining = [...recognition, ...rest].sort(() => Math.random() - 0.5)
   ordered.push(...remaining)
 
   return ordered
