@@ -141,9 +141,6 @@
 .actionCardTealBorder { border-left: 3px solid var(--accent-primary); }
 .actionCardTealBorder:hover { border-left: 3px solid var(--accent-primary); }
 
-.actionCardRedBorder { border-left: 3px solid var(--danger); }
-.actionCardRedBorder:hover { border-left: 3px solid var(--danger); }
-
 .actionCardIconBox {
   width: 40px;
   height: 40px;
@@ -156,7 +153,6 @@
 
 .actionCardIconAmber { background: var(--warning-subtle); }
 .actionCardIconTeal  { background: var(--accent-primary-subtle); }
-.actionCardIconRed   { background: var(--danger-subtle); }
 
 .actionCardBody { flex: 1; min-width: 0; }
 

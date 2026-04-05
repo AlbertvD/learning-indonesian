@@ -212,7 +212,7 @@ export interface LeaderboardEntry {
 export type WeeklyGoalType = 'consistency' | 'recall_quality' | 'usable_vocabulary' | 'review_health'
 export type GoalDirection = 'at_least' | 'at_most'
 export type GoalUnit = 'count' | 'percent'
-export type GoalStatus = 'on_track' | 'at_risk' | 'achieved' | 'missed'
+export type GoalStatus = 'on_track' | 'at_risk' | 'off_track' | 'achieved' | 'missed'
 
 export interface WeeklyGoalSet {
   id: string
