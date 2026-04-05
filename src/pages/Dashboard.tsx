@@ -170,6 +170,9 @@ export function GoalRingCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
   const label = getRingLabel(goal, T)
   const valueText = formatGoalValue(goal)
   const statusLabel = getStatusLabel(goal.status, T)
+  const centerDisplay = goal.goal_unit === 'percent'
+    ? `${Math.round(goal.current_value_numeric * 100)}%`
+    : `${percent}%`
 
   return (
     <div className={classes.ringCard}>
@@ -180,7 +183,7 @@ export function GoalRingCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
           style={{ '--ring-color': ringColor, '--ring-deg': `${ringDeg}deg` } as React.CSSProperties}
         />
         <Tooltip label={tooltipText} multiline w={260} withArrow>
-          <div className={classes.ringCenter} style={{ cursor: 'help' }}>{percent}%</div>
+          <div className={classes.ringCenter} style={{ cursor: 'help' }}>{centerDisplay}</div>
         </Tooltip>
       </div>
       <div className={classes.ringLabel}>{label}</div>
