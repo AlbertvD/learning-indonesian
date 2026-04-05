@@ -209,11 +209,14 @@ export function ExerciseShell({
           style={{
             position: 'fixed',
             top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 'calc(100% - 32px)',
-            maxWidth: '736px',  // Container size="md" (768px) minus 2×16px padding
+            // 4 padding layers × 16px = 64px per side:
+            // Session.container + Mantine Container + Session.exercise + exercise component container
+            left: 64,
+            right: 64,
+            transform: 'translateY(-50%)',
             zIndex: 200,
+            borderRadius: 'var(--mantine-radius-md)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.3)',
           }}
         >
           <Button
@@ -221,6 +224,7 @@ export function ExerciseShell({
             size="lg"
             fullWidth
             variant="filled"
+            style={{ minHeight: 50 }}
           >
             Doorgaan
           </Button>
