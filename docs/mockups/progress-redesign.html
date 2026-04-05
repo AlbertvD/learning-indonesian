@@ -688,7 +688,7 @@
   /* ═══════════════════════════════════════════════════════════ */
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: var(--gap);
   }
 
@@ -798,11 +798,187 @@
   .section:nth-child(4) { animation-delay: 0.22s; }
   .section:nth-child(5) { animation-delay: 0.28s; }
 
+  /* ── Gap Analysis Pill + Tooltip ───────────────────────────── */
+  .gap-pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--warning-dim);
+    border: 1px solid rgba(240,169,64,0.25);
+    border-radius: 20px;
+    padding: 4px 10px;
+    cursor: default;
+  }
+  .gap-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hover);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 10;
+    white-space: normal;
+  }
+  .gap-pill:hover .gap-tooltip { opacity: 1; }
+
+  /* ── Milestone Marker ───────────────────────────────────────── */
+  .milestone-marker {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    cursor: default;
+  }
+  .milestone-star {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    opacity: 0.5;
+    transition: opacity 0.2s, color 0.2s;
+  }
+  .milestone-marker:hover .milestone-star {
+    opacity: 1;
+    color: var(--warning);
+  }
+  .milestone-tooltip {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    width: 220px;
+    background: var(--bg-surface);
+    border: 1px solid rgba(240,169,64,0.35);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 10;
+    white-space: normal;
+  }
+  .milestone-marker:hover .milestone-tooltip { opacity: 1; }
+
+  /* ── Next Milestone Pill ────────────────────────────────────── */
+  .next-milestone-pill {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 20px;
+    padding: 4px 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── What-If Tooltip (bar chart) ───────────────────────────── */
+  .whatif-col { position: relative; }
+  .whatif-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px;
+    background: var(--bg-surface);
+    border: 1px solid rgba(255,69,58,0.4);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 10;
+    white-space: normal;
+    text-align: left;
+  }
+  .whatif-col:hover .whatif-tooltip { opacity: 1; }
+
+  /* ── Most Vulnerable Items ──────────────────────────────────── */
+  .vuln-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .vuln-item {
+    display: grid;
+    grid-template-columns: 90px 80px 80px 1fr 36px;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: border-color 0.2s;
+  }
+  .vuln-item:hover { border-color: rgba(255,255,255,0.12); }
+  .vuln-word {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .vuln-meaning {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .vuln-lapse {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .lapse-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    background: var(--danger-dim);
+    border: 1px solid rgba(255,69,58,0.3);
+    border-radius: 50%;
+    color: var(--danger);
+    font-size: 8px;
+    font-weight: 700;
+  }
+  .vuln-bar-wrap {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .vuln-bar {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+  .vuln-pct {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-align: right;
+  }
+
   /* ── Responsive ─────────────────────────────────────────────── */
   @media (max-width: 600px) {
     .memory-hero-grid { grid-template-columns: 1fr; }
     .two-col { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: 1fr; }
+    .vuln-item { grid-template-columns: 1fr 1fr; }
+    .vuln-item .vuln-bar-wrap, .vuln-item .vuln-pct { display: none; }
     .pipeline-row { flex-direction: column; gap: 0; }
     .pipeline-stage { border-left: 1px solid var(--border) !important; border-right: 1px solid var(--border) !important; }
     .pipeline-stage:first-child { border-radius: var(--radius) var(--radius) 0 0; }
@@ -901,6 +1077,17 @@
 
     </div>
 
+    <!-- Gap analysis tooltip row -->
+    <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:12px; margin-bottom:4px;">
+      <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-tertiary); letter-spacing:0.08em;">KLOOF ANALYSE</span>
+      <div class="gap-pill">
+        <span style="font-family:var(--font-mono); font-weight:700; font-size:12px; color:var(--warning);">33% GAP</span>
+        <div class="gap-tooltip">
+          Je herkenning (74%) is 33 procentpunten sterker dan je oproepen (41%). Dit is normaal in vroege leerfasen — productiefvaardigheid volgt altijd later. Het algoritme compenseert dit automatisch.
+        </div>
+      </div>
+    </div>
+
     <!-- Insight box -->
     <div class="insight-box">
       <span class="insight-icon">💡</span>
@@ -939,17 +1126,71 @@
         </div>
 
         <!-- Maintenance -->
-        <div class="pipeline-stage">
+        <div class="pipeline-stage" style="position:relative;">
           <div class="pipeline-stage-name">Maintenance</div>
           <div class="pipeline-stage-count" style="color:var(--text-tertiary)">0</div>
           <div class="pipeline-stage-unit">items</div>
+          <div class="milestone-marker">
+            <span class="milestone-star">★</span>
+            <div class="milestone-tooltip">Doel: Eerste 10 stabiele items. Items in Productive &amp; Maintenance verhogen je rang op het scorebord.</div>
+          </div>
         </div>
 
       </div>
 
-      <div class="pipeline-warning">
-        <span>⚠️</span>
-        <span>119 items wachten op hun eerste 'Poortcheck' om naar de Retrieving-fase te gaan.</span>
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-top:12px;">
+        <div class="pipeline-warning" style="margin-top:0; flex:1; min-width:200px;">
+          <span>⚠️</span>
+          <span>119 items wachten op hun eerste 'Poortcheck' om naar de Retrieving-fase te gaan.</span>
+        </div>
+        <div class="next-milestone-pill">
+          <span style="color:var(--accent);">→</span> Volgende mijlpaal: 1 item naar Retrieving
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Most Vulnerable Items ────────────────────────────────── -->
+  <div class="section">
+    <div class="section-label">Meest Kwetsbare Woorden</div>
+    <div class="card" style="padding:16px 20px;">
+      <div style="font-size:11px; color:var(--text-secondary); margin-bottom:12px;">De 5 woorden die de <em>Oproepen</em>-kloof het meest beïnvloeden op basis van herhaalde fouten.</div>
+      <div class="vuln-list">
+        <div class="vuln-item">
+          <span class="vuln-word">rumah</span>
+          <span class="vuln-meaning">huis</span>
+          <span class="vuln-lapse"><span class="lapse-icon">!</span> 3 lapses</span>
+          <div class="vuln-bar-wrap"><div class="vuln-bar" style="width:28%; background:var(--danger);"></div></div>
+          <span class="vuln-pct" style="color:var(--danger);">28%</span>
+        </div>
+        <div class="vuln-item">
+          <span class="vuln-word">makan</span>
+          <span class="vuln-meaning">eten</span>
+          <span class="vuln-lapse"><span class="lapse-icon">!</span> 2 lapses</span>
+          <div class="vuln-bar-wrap"><div class="vuln-bar" style="width:41%; background:var(--warning);"></div></div>
+          <span class="vuln-pct" style="color:var(--warning);">41%</span>
+        </div>
+        <div class="vuln-item">
+          <span class="vuln-word">besar</span>
+          <span class="vuln-meaning">groot</span>
+          <span class="vuln-lapse"><span class="lapse-icon">!</span> 2 lapses</span>
+          <div class="vuln-bar-wrap"><div class="vuln-bar" style="width:45%; background:var(--warning);"></div></div>
+          <span class="vuln-pct" style="color:var(--warning);">45%</span>
+        </div>
+        <div class="vuln-item">
+          <span class="vuln-word">pergi</span>
+          <span class="vuln-meaning">gaan</span>
+          <span class="vuln-lapse" style="opacity:0.4;">0 lapses</span>
+          <div class="vuln-bar-wrap"><div class="vuln-bar" style="width:52%; background:var(--accent); opacity:0.6;"></div></div>
+          <span class="vuln-pct" style="color:var(--text-secondary);">52%</span>
+        </div>
+        <div class="vuln-item">
+          <span class="vuln-word">tidur</span>
+          <span class="vuln-meaning">slapen</span>
+          <span class="vuln-lapse" style="opacity:0.4;">0 lapses</span>
+          <div class="vuln-bar-wrap"><div class="vuln-bar" style="width:57%; background:var(--accent); opacity:0.6;"></div></div>
+          <span class="vuln-pct" style="color:var(--text-secondary);">57%</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1006,13 +1247,17 @@
             <div class="bar-xlabel">Di</div>
           </div>
 
-          <!-- Wo → 47 DANGER -->
-          <div class="bar-col">
+          <!-- Wo → 47 DANGER with what-if tooltip -->
+          <div class="bar-col whatif-col">
             <div class="bar-value">47</div>
             <div class="bar bar--danger" style="height: calc(140px * 47/50 - 24px); position:relative;">
               <div class="bar-danger-badge">!</div>
             </div>
             <div class="bar-xlabel bar-xlabel--danger">Wo</div>
+            <div class="whatif-tooltip">
+              <strong>Als je deze dag overslaat:</strong><br>
+              Deze 47 items schuiven door naar Do, waardoor je backlog stijgt naar <span style="color:var(--danger); font-weight:700;">62 items</span> — een dag achterstand die moeilijk in te halen is.
+            </div>
           </div>
 
           <!-- Do → 11 -->
@@ -1096,12 +1341,26 @@
 
     <div class="stats-grid">
 
-      <!-- Gem. Stabiliteit -->
+      <!-- Gem. Stabiliteit with forgetting curve -->
       <div class="stat-card">
         <div class="stat-label">Gem. Stabiliteit</div>
-        <div class="stat-value" style="color:var(--accent); text-shadow:0 0 10px var(--accent-glow);">6.2</div>
-        <div class="stat-sub">dagen in geheugen</div>
-        <div style="margin-top:12px; height:2px; background:linear-gradient(90deg, var(--accent) 0%, transparent 100%); border-radius:1px; opacity:0.4;"></div>
+        <div style="display:flex; align-items:flex-end; gap:12px;">
+          <div class="stat-value" style="color:var(--accent); text-shadow:0 0 10px var(--accent-glow);">6.2</div>
+          <div style="flex:1; padding-bottom:4px;">
+            <!-- Mini forgetting curve SVG -->
+            <svg viewBox="0 0 80 36" style="width:100%; display:block;" xmlns="http://www.w3.org/2000/svg">
+              <!-- 90% threshold line -->
+              <line x1="0" y1="7.2" x2="80" y2="7.2" stroke="rgba(255,255,255,0.1)" stroke-width="0.5" stroke-dasharray="2,2"/>
+              <text x="1" y="6" fill="rgba(255,255,255,0.25)" font-size="4" font-family="'JetBrains Mono',monospace">90%</text>
+              <!-- Forgetting curve: exponential decay from 100% to ~70% over 10 days -->
+              <path d="M0,2 C12,4 22,8 30,13 C40,19 50,24 62,28 C68,30 74,31.5 80,34" fill="none" stroke="rgba(0,229,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Stability marker at 6.2 days (≈ x=49.6) -->
+              <line x1="49.6" y1="0" x2="49.6" y2="36" stroke="rgba(0,229,255,0.35)" stroke-width="0.8" stroke-dasharray="1.5,1.5"/>
+              <circle cx="49.6" cy="24.2" r="2" fill="var(--accent)"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-sub">dagen — na 6.2 dagen daalt de ophaalbaarheidnaar &lt;90% zonder herhaling</div>
       </div>
 
       <!-- Zwakke woorden gered -->
@@ -1128,6 +1387,24 @@
         </div>
         <div style="margin-top:12px; height:3px; background:var(--border); border-radius:2px; overflow:hidden;">
           <div style="width:84%; height:100%; background:linear-gradient(90deg, var(--success), var(--warning)); border-radius:2px;"></div>
+        </div>
+      </div>
+
+      <!-- Tijd Bespaard -->
+      <div class="stat-card">
+        <div class="stat-label">Tijd Bespaard</div>
+        <div style="display:flex; align-items:baseline; gap:4px;">
+          <div class="stat-value" style="color:var(--success); text-shadow:0 0 10px rgba(78,202,122,0.4);">1.4</div>
+          <span style="font-family:var(--font-mono); font-size:13px; color:var(--text-secondary);">s/antwoord</span>
+        </div>
+        <div class="stat-sub">sneller dan vorige week (4.1s → 2.7s gem.)</div>
+        <div style="margin-top:10px; display:flex; align-items:center; gap:6px;">
+          <span style="font-family:var(--font-mono); font-size:9px; color:var(--text-tertiary);">4.1s</span>
+          <div style="flex:1; height:3px; background:var(--border); border-radius:2px; overflow:hidden; position:relative;">
+            <div style="position:absolute; left:0; top:0; height:100%; width:100%; background:rgba(255,255,255,0.08);"></div>
+            <div style="position:absolute; left:0; top:0; height:100%; width:66%; background:linear-gradient(90deg, var(--warning), var(--success)); border-radius:2px;"></div>
+          </div>
+          <span style="font-family:var(--font-mono); font-size:9px; color:var(--success);">2.7s</span>
         </div>
       </div>
 

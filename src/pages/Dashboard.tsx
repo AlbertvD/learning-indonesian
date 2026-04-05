@@ -14,19 +14,253 @@ import {
   Progress,
   Paper,
   Title,
+  Tooltip,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconChevronRight, IconFlame, IconTarget, IconCheck, IconAlertCircle } from '@tabler/icons-react'
+import { IconChevronRight, IconFlame, IconTarget, IconCheck, IconAlertCircle, IconInfoCircle, IconAlertTriangle, IconSparkles } from '@tabler/icons-react'
 import type { SessionMode } from '@/lib/sessionEngine'
 import { lessonService } from '@/services/lessonService'
 import { learnerStateService } from '@/services/learnerStateService'
 import { goalService } from '@/services/goalService'
-import type { WeeklyGoalResponse, WeeklyGoal } from '@/types/learning'
+import type { WeeklyGoalResponse, WeeklyGoal, TodayPlan } from '@/types/learning'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
 import { supabase } from '@/lib/supabase'
 import classes from './Dashboard.module.css'
+
+// ── Ring chart helpers ──
+
+function goalToRingPercent(goal: WeeklyGoal): number {
+  if (goal.goal_type === 'review_health') {
+    if (goal.target_value_numeric === 0) return goal.current_value_numeric === 0 ? 100 : 0
+    return Math.max(0, Math.min(100, Math.round(
+      ((goal.target_value_numeric - goal.current_value_numeric) / goal.target_value_numeric) * 100
+    )))
+  }
+  if (goal.target_value_numeric === 0) return 0
+  return Math.min(100, Math.round((goal.current_value_numeric / goal.target_value_numeric) * 100))
+}
+
+const RING_COLOR: Record<string, string> = {
+  achieved: 'var(--success)',
+  on_track: 'var(--accent-primary)',
+  at_risk:  'var(--warning)',
+  off_track: 'var(--warning)',
+  missed:   'var(--danger)',
+}
+
+function formatGoalValue(goal: WeeklyGoal): string {
+  const fmt = (v: number) =>
+    goal.goal_unit === 'percent' ? `${Math.round(v * 100)}%` : `${Math.round(v)}`
+  return `${fmt(goal.current_value_numeric)} / ${fmt(goal.target_value_numeric)}`
+}
+
+interface MixSegment { label: string; value: number; color: string }
+
+// eslint-disable-next-line react-refresh/only-export-components
+export function computeMixSegments(plan: TodayPlan, T: any): MixSegment[] {
+  const reviewCount = Math.max(0, plan.due_reviews_today_target - plan.weak_items_target)
+  const segments: MixSegment[] = [
+    { label: T.dashboard.mixReviews, value: reviewCount,                           color: 'var(--accent-primary)' },
+    { label: T.dashboard.mixNew,     value: plan.new_items_today_target,            color: 'var(--success)' },
+    { label: T.dashboard.mixRecall,  value: plan.recall_interactions_today_target,  color: 'var(--mix-recall)' },
+    { label: T.dashboard.mixWeak,    value: plan.weak_items_target,                 color: 'var(--warning)' },
+  ]
+  return segments.filter(s => s.value > 0)
+}
+
+function getActionReason(goal: WeeklyGoal, T: any): string {
+  const fmt = (v: number) =>
+    goal.goal_unit === 'percent' ? `${Math.round(v * 100)}%` : `${Math.round(v)}`
+  switch (goal.goal_type) {
+    case 'recall_quality':
+      return T.dashboard.actionReasonRecall
+        .replace('{current}', fmt(goal.current_value_numeric))
+        .replace('{target}', fmt(goal.target_value_numeric))
+    case 'usable_vocabulary':
+      return T.dashboard.actionReasonVocab
+        .replace('{current}', `${Math.round(goal.current_value_numeric)}`)
+        .replace('{target}', `${Math.round(goal.target_value_numeric)}`)
+    case 'review_health':
+      return T.dashboard.actionReasonBacklog
+        .replace('{current}', `${Math.round(goal.current_value_numeric)}`)
+    case 'consistency':
+      return T.dashboard.actionReasonConsistency
+        .replace('{current}', `${Math.round(goal.current_value_numeric)}`)
+        .replace('{target}', `${Math.round(goal.target_value_numeric)}`)
+    default:
+      return ''
+  }
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+export function getCtaSubtitle(weeklyGoals: WeeklyGoal[], T: any): string {
+  const recall = weeklyGoals.find(g => g.goal_type === 'recall_quality')
+  const health = weeklyGoals.find(g => g.goal_type === 'review_health')
+  const parts: string[] = []
+  if (recall && recall.status !== 'achieved') {
+    const gap = Math.round((recall.target_value_numeric - recall.current_value_numeric) * 100)
+    if (gap > 0) parts.push(`+${gap}% ${T.dashboard.recallQualityShort}`)
+  }
+  if (health && health.current_value_numeric > 0) {
+    parts.push(`${T.dashboard.reviewHealthLabel} → 0`)
+  }
+  return parts.length > 0 ? `${T.dashboard.goalLabel}: ${parts.join(' · ')}` : ''
+}
+
+function getRecallTooltip(goal: WeeklyGoal, T: any): string {
+  const cfg = goal.goal_config_jsonb as Record<string, number> | null
+  if (cfg?.recognition_accuracy != null && cfg?.recall_accuracy != null) {
+    return T.dashboard.tooltipRecall
+      .replace('{recognition}', Math.round(cfg.recognition_accuracy * 100).toString())
+      .replace('{recall}', Math.round(cfg.recall_accuracy * 100).toString())
+  }
+  return T.dashboard.tooltipRecallBalanced
+}
+
+function getRingTooltip(goal: WeeklyGoal, T: any): string {
+  switch (goal.goal_type) {
+    case 'consistency': return T.dashboard.tooltipConsistency
+    case 'recall_quality': return getRecallTooltip(goal, T)
+    case 'review_health': return T.dashboard.tooltipBacklog
+    case 'usable_vocabulary': return T.dashboard.tooltipVocab
+      .replace('{current}', `${Math.round(goal.current_value_numeric)}`)
+      .replace('{target}', `${Math.round(goal.target_value_numeric)}`)
+    default: return ''
+  }
+}
+
+function getRingLabel(goal: WeeklyGoal, T: any): string {
+  switch (goal.goal_type) {
+    case 'consistency': return T.dashboard.consistencyLabel
+    case 'recall_quality': return T.dashboard.recallQualityLabel
+    case 'review_health': return T.dashboard.reviewHealthLabel
+    case 'usable_vocabulary': return T.dashboard.vocabGrowthLabel
+    default: return goal.goal_type
+  }
+}
+
+function getStatusPillClass(status: string, classes: Record<string, string>): string {
+  switch (status) {
+    case 'achieved': return `${classes.statusPill} ${classes.statusPillAchieved}`
+    case 'on_track': return `${classes.statusPill} ${classes.statusPillOnTrack}`
+    case 'at_risk':
+    case 'off_track': return `${classes.statusPill} ${classes.statusPillAtRisk}`
+    case 'missed': return `${classes.statusPill} ${classes.statusPillMissed}`
+    default: return classes.statusPill
+  }
+}
+
+function getStatusLabel(status: string, T: any): string {
+  switch (status) {
+    case 'achieved': return T.dashboard.statusAchieved
+    case 'on_track': return T.dashboard.statusOnTrack
+    case 'at_risk':
+    case 'off_track': return T.dashboard.statusAtRisk
+    case 'missed': return T.dashboard.statusMissed
+    default: return status
+  }
+}
+
+export function GoalRingCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
+  const percent = goalToRingPercent(goal)
+  const ringDeg = Math.round((percent / 100) * 360)
+  const ringColor = RING_COLOR[goal.status] ?? 'var(--accent-primary)'
+  const tooltipText = getRingTooltip(goal, T)
+  const label = getRingLabel(goal, T)
+  const valueText = formatGoalValue(goal)
+  const statusLabel = getStatusLabel(goal.status, T)
+
+  return (
+    <div className={classes.ringCard}>
+      <div className={classes.ringWrapper}>
+        <div className={classes.ringBg} />
+        <div
+          className={classes.ringFill}
+          style={{ '--ring-color': ringColor, '--ring-deg': `${ringDeg}deg` } as React.CSSProperties}
+        />
+        <div className={classes.ringCenter}>{percent}%</div>
+      </div>
+      <div className={classes.ringLabel}>{label}</div>
+      <div className={classes.ringValue}>{valueText}</div>
+      <span className={getStatusPillClass(goal.status, classes)}>
+        {statusLabel}
+        {goal.is_provisional && (
+          <Text span size="xs" c="dimmed" ml={4}>({T.dashboard.statusProvisional})</Text>
+        )}
+      </span>
+      <Tooltip label={tooltipText} multiline w={220} withArrow>
+        <span className={classes.ringInfoTrigger}>
+          <IconInfoCircle size={12} />
+          {T.dashboard.howDoesThisWork}
+        </span>
+      </Tooltip>
+    </div>
+  )
+}
+
+const GOAL_ACTION_CONFIG: Record<string, {
+  title: (T: any) => string
+  focus: (T: any) => string
+  mode: string
+  variant: 'amber' | 'teal'
+}> = {
+  recall_quality: {
+    title: (T) => T.dashboard.focusRecall,
+    focus: (T) => T.dashboard.focusRecall,
+    mode: 'recall_sprint',
+    variant: 'amber',
+  },
+  usable_vocabulary: {
+    title: (T) => T.dashboard.focusVocab,
+    focus: (T) => T.dashboard.focusVocab,
+    mode: 'push_to_productive',
+    variant: 'teal',
+  },
+  review_health: {
+    title: (T) => T.dashboard.focusBacklog,
+    focus: (T) => T.dashboard.focusBacklog,
+    mode: 'backlog_clear',
+    variant: 'amber',
+  },
+  consistency: {
+    title: (T) => T.dashboard.focusConsistency,
+    focus: (T) => T.dashboard.focusConsistency,
+    mode: 'quick',
+    variant: 'amber',
+  },
+}
+
+export function ActionCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
+  const config = GOAL_ACTION_CONFIG[goal.goal_type]
+  if (!config) return null
+  const reason = getActionReason(goal, T)
+  const isAmber = config.variant === 'amber'
+  const borderClass = isAmber ? classes.actionCardAmberBorder : classes.actionCardTealBorder
+  const iconBgClass = isAmber ? classes.actionCardIconAmber : classes.actionCardIconTeal
+  const iconColor = isAmber ? 'var(--warning)' : 'var(--accent-primary)'
+
+  return (
+    <Link
+      to={`/session?mode=${config.mode}`}
+      className={`${classes.actionCardBase} ${borderClass}`}
+    >
+      <div className={`${classes.actionCardIconBox} ${iconBgClass}`}>
+        {isAmber
+          ? <IconAlertTriangle size={20} color={iconColor} />
+          : <IconSparkles size={20} color={iconColor} />
+        }
+      </div>
+      <div className={classes.actionCardBody}>
+        <div className={classes.actionCardTitle}>{config.title(T)}</div>
+        <div className={classes.actionCardFocus}>{config.focus(T)}</div>
+        {reason && <div className={classes.actionCardReason}>{reason}</div>}
+      </div>
+      <IconChevronRight size={18} className={classes.actionCardChevron} />
+    </Link>
+  )
+}
 
 export function Dashboard() {
   const T = useT()
