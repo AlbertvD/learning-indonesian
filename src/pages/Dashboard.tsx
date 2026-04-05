@@ -128,6 +128,7 @@ function getRingTooltip(goal: WeeklyGoal, T: any): string {
       .replace('{target}', `${Math.round(goal.target_value_numeric)}`)
     case 'recall_quality': return getRecallTooltip(goal, T)
     case 'review_health': return T.dashboard.tooltipBacklog
+      .replace('{target}', `${Math.round(goal.target_value_numeric)}`)
     case 'usable_vocabulary': return T.dashboard.tooltipVocab
       .replace('{current}', `${Math.round(goal.current_value_numeric)}`)
       .replace('{target}', `${Math.round(goal.target_value_numeric)}`)
