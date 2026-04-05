@@ -267,6 +267,8 @@ export interface TodayPlan {
   new_items_today_target: number
   recall_interactions_today_target: number
   estimated_minutes_today: number
+  weak_items_target: number       // items with lapse_count >= 3 included in today's session
+  preferred_session_size: number  // echoed from profile, used for "op basis van N" subtext
   explanatory_text?: string
 }
 

@@ -524,7 +524,7 @@ export const goalService = {
     const { data: skills, error } = await supabase
       .schema('indonesian')
       .from('learner_skill_state')
-      .select('next_due_at, skill_type, mean_latency_ms')
+      .select('next_due_at, skill_type, mean_latency_ms, lapse_count, learning_item_id')
       .eq('user_id', userId)
 
     if (error) throw error
@@ -588,11 +588,20 @@ export const goalService = {
       : 20_000
     const estimatedMinutes = Math.max(1, Math.ceil((dueTarget + newTarget) * meanLatencyMs / 60_000))
 
+    // Weak items: due skills with lapse_count >= 3, capped at 20% of due target
+    const weakDue = skills.filter(s =>
+      new Date(s.next_due_at) <= now && (s.lapse_count ?? 0) >= 3
+    )
+    const weakUniqueItems = new Set(weakDue.map(s => s.learning_item_id))
+    const weakTarget = Math.min(weakUniqueItems.size, Math.ceil(dueTarget * 0.2))
+
     return {
       due_reviews_today_target: dueTarget,
       new_items_today_target: newTarget,
       recall_interactions_today_target: recallTargetToday,
-      estimated_minutes_today: estimatedMinutes
+      estimated_minutes_today: estimatedMinutes,
+      weak_items_target: weakTarget,
+      preferred_session_size: preferredSize,
     }
   },
 

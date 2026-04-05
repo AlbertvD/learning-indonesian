@@ -96,4 +96,17 @@ export const learnerStateService = {
       })
     if (error) throw error
   },
+
+  async getLapsingItems(userId: string): Promise<{ count: number }> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('learner_skill_state')
+      .select('learning_item_id')
+      .eq('user_id', userId)
+      .gte('lapse_count', 3)
+
+    if (error) throw error
+    const unique = new Set(data.map((d: { learning_item_id: string }) => d.learning_item_id))
+    return { count: unique.size }
+  },
 }
