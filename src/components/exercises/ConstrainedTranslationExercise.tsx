@@ -56,7 +56,7 @@ export function ConstrainedTranslationExercise({
 
     setIsAnswered(true)
 
-    const FEEDBACK_DELAY_MS = isCorrect ? 1500 : 2000
+    const FEEDBACK_DELAY_MS = isCorrect ? 1500 : 0
     setTimeout(() => {
       const latencyMs = Date.now() - startTime - FEEDBACK_DELAY_MS
       onAnswer(isCorrect, isFuzzy, latencyMs, response)

@@ -46,7 +46,7 @@ export function Cloze({ exerciseItem, onAnswer }: ClozeProps) {
     setIsCorrect(result.isCorrect)
     setShowFeedback(true)
 
-    const FEEDBACK_DELAY_MS = result.isCorrect ? 1500 : 2000
+    const FEEDBACK_DELAY_MS = result.isCorrect ? 1500 : 0
     setTimeout(() => {
       const latency = Date.now() - startTime.current - FEEDBACK_DELAY_MS
       onAnswer(result.isCorrect, result.isFuzzy, latency, value)

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Box, Button } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { RecognitionMCQ } from './RecognitionMCQ'
 import { CuedRecallExercise } from './CuedRecallExercise'
@@ -34,6 +35,7 @@ export function ExerciseShell({
   onContinueToNext,
 }: ExerciseShellProps) {
   const [isProcessing, setIsProcessing] = useState(false)
+  const [waitingForContinue, setWaitingForContinue] = useState(false)
 
   const exerciseItem = currentItem.exerciseItem
 
@@ -70,7 +72,14 @@ export function ExerciseShell({
       const result = await processReview(reviewInput)
       onAnswer(result, wasCorrect)
       setIsProcessing(false)
-      onContinueToNext()
+
+      if (wasCorrect) {
+        onContinueToNext()
+      } else {
+        // Wrong answer: show the Continue button so the user can absorb
+        // the correct answer before moving on.
+        setWaitingForContinue(true)
+      }
     } catch (err) {
       logError({ page: 'exercise-shell', action: 'processAnswer', error: err })
       notifications.show({
@@ -82,7 +91,12 @@ export function ExerciseShell({
     }
   }
 
-  switch (exerciseItem.exerciseType) {
+  const handleContinue = () => {
+    setWaitingForContinue(false)
+    onContinueToNext()
+  }
+
+  const exerciseNode = (() => { switch (exerciseItem.exerciseType) {
     case 'recognition_mcq':
       return (
         <RecognitionMCQ
@@ -185,5 +199,23 @@ export function ExerciseShell({
           Unsupported exercise type: {exerciseItem.exerciseType}
         </div>
       )
-  }
+  } })()
+
+  return (
+    <>
+      {exerciseNode}
+      {waitingForContinue && (
+        <Box mt="xl">
+          <Button
+            onClick={handleContinue}
+            size="lg"
+            fullWidth
+            variant="filled"
+          >
+            Doorgaan
+          </Button>
+        </Box>
+      )}
+    </>
+  )
 }
