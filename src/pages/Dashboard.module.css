@@ -1,5 +1,14 @@
 .dashboard {
-  padding: 36px 0;
+  padding: 22px 0 36px;
+}
+
+.pageTitle {
+  font-family: var(--font-sans);
+  font-size: var(--fs-3xl);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+  color: var(--text-primary);
 }
 
 /* ─── Ring Scorecard ─── */

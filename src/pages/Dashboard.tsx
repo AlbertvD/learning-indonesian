@@ -490,10 +490,10 @@ export function Dashboard() {
 
   if (goalProgress?.state === 'timezone_required') {
     return (
-      <Container size="md" className={classes.dashboard}>
+      <Container size="lg" className={classes.dashboard}>
         <Stack gap="lg">
           <Box>
-            <Text size="xl" fw={600}>{T.dashboard.welcomeBack}, {name}</Text>
+            <div className={classes.pageTitle}>{T.dashboard.welcomeBack}, {name}</div>
           </Box>
           <Paper className="card-default" p="xl">
             <Stack align="center" gap="md">
@@ -520,13 +520,13 @@ export function Dashboard() {
   )
 
   return (
-    <Container size="md" className={classes.dashboard}>
+    <Container size="lg" className={classes.dashboard}>
       <Stack gap="lg">
         {/* 1. Welcome bar */}
         <Group justify="space-between" align="flex-end">
-          <Text size="xl" fw={600}>
+          <div className={classes.pageTitle}>
             {T.dashboard.welcomeBack}, {name}
-          </Text>
+          </div>
           <Group gap="xs">
             <IconFlame size={18} color="orange" />
             <Text size="sm" fw={600}>{currentStreak} {T.dashboard.daysInARow}</Text>
