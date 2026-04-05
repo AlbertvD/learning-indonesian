@@ -36,6 +36,11 @@ function goalToRingPercent(goal: WeeklyGoal): number {
       ((goal.target_value_numeric - goal.current_value_numeric) / goal.target_value_numeric) * 100
     )))
   }
+  // For percent-unit goals, show actual value on the full 0-100% arc so the
+  // target marker sits at a meaningful position even when the goal is exceeded.
+  if (goal.goal_unit === 'percent') {
+    return Math.round(goal.current_value_numeric * 100)
+  }
   if (goal.target_value_numeric === 0) return 0
   return Math.min(100, Math.round((goal.current_value_numeric / goal.target_value_numeric) * 100))
 }
@@ -48,10 +53,8 @@ const RING_COLOR: Record<string, string> = {
   missed:   'var(--danger)',
 }
 
-function formatGoalValue(goal: WeeklyGoal): string {
-  const fmt = (v: number) =>
-    goal.goal_unit === 'percent' ? `${Math.round(v * 100)}%` : `${Math.round(v)}`
-  return `${fmt(goal.current_value_numeric)} / ${fmt(goal.target_value_numeric)}`
+function goalCountLabel(goal: WeeklyGoal): string {
+  return `${Math.round(goal.current_value_numeric)} / ${Math.round(goal.target_value_numeric)}`
 }
 
 interface MixSegment { label: string; value: number; color: string }
@@ -168,11 +171,13 @@ export function GoalRingCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
   const ringColor = RING_COLOR[goal.status] ?? 'var(--accent-primary)'
   const tooltipText = getRingTooltip(goal, T)
   const label = getRingLabel(goal, T)
-  const valueText = formatGoalValue(goal)
   const statusLabel = getStatusLabel(goal.status, T)
   const centerDisplay = goal.goal_unit === 'percent'
     ? `${Math.round(goal.current_value_numeric * 100)}%`
     : `${percent}%`
+  const targetMarkerDeg = goal.goal_unit === 'percent'
+    ? Math.round(goal.target_value_numeric * 360)
+    : null
 
   return (
     <div className={classes.ringCard}>
@@ -182,12 +187,20 @@ export function GoalRingCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
           className={classes.ringFill}
           style={{ '--ring-color': ringColor, '--ring-deg': `${ringDeg}deg` } as React.CSSProperties}
         />
+        {targetMarkerDeg !== null && (
+          <div
+            className={classes.ringTargetMarker}
+            style={{ '--target-deg': `${targetMarkerDeg}deg` } as React.CSSProperties}
+          />
+        )}
         <Tooltip label={tooltipText} multiline w={260} withArrow>
           <div className={classes.ringCenter} style={{ cursor: 'help' }}>{centerDisplay}</div>
         </Tooltip>
       </div>
       <div className={classes.ringLabel}>{label}</div>
-      <div className={classes.ringValue}>{valueText}</div>
+      {goal.goal_unit === 'count' && (
+        <div className={classes.ringValue}>{goalCountLabel(goal)}</div>
+      )}
       <span className={getStatusPillClass(goal.status, classes)}>
         {statusLabel}
         {goal.is_provisional && (
