@@ -337,7 +337,7 @@ export function Dashboard() {
   )
 }
 
-function GoalRow({ goal, T, goalActionConfig }: { goal: WeeklyGoal, T: any, goalActionConfig: Record<string, { label: string; mode: string }> }) {
+function GoalRow({ goal, T, goalActionConfig }: { goal: WeeklyGoal, T: any, goalActionConfig: Record<string, { label: string; mode: SessionMode }> }) {
   const titles: Record<string, string> = {
     consistency: T.dashboard.studyDays,
     recall_quality: T.dashboard.recallQuality,
