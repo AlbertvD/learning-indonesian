@@ -10,6 +10,7 @@ import { applyPolicies, type SessionPoliciesContext } from '@/lib/sessionPolicie
 import type { ReviewResult } from '@/lib/reviewHandler'
 import { learningItemService } from '@/services/learningItemService'
 import { learnerStateService } from '@/services/learnerStateService'
+import { lessonService } from '@/services/lessonService'
 import { goalService } from '@/services/goalService'
 import { analyticsService } from '@/services/analyticsService'
 import { sessionSummaryService, type SessionImpactMessages } from '@/services/sessionSummaryService'
@@ -83,13 +84,21 @@ export function Session() {
 
         let itemStatesArray: Awaited<ReturnType<typeof learnerStateService.getItemStates>>
         let skillStatesArray: Awaited<ReturnType<typeof learnerStateService.getSkillStatesBatch>>
+        let lessonsBasic: { id: string; order_index: number }[]
         try {
-          ;[itemStatesArray, skillStatesArray] = await Promise.all([
+          ;[itemStatesArray, skillStatesArray, lessonsBasic] = await Promise.all([
             learnerStateService.getItemStates(user.id),
             learnerStateService.getSkillStatesBatch(user.id),
+            lessonService.getLessonsBasic(),
           ])
         } catch (e) {
           throw new Error(`getStates failed: ${JSON.stringify(e)}`)
+        }
+
+        // lessonId → order_index for lesson-gated new item introduction
+        const lessonOrder: Record<string, number> = {}
+        for (const l of lessonsBasic) {
+          lessonOrder[l.id] = l.order_index
         }
 
         // Convert arrays to maps
@@ -167,6 +176,7 @@ export function Session() {
           preferredSessionSize,
           lessonFilter,
           userLanguage: profile?.language ?? 'en',
+          lessonOrder,
         }
 
         const builtQueue = buildSessionQueue(input)

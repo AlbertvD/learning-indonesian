@@ -18,7 +18,16 @@ export interface SessionBuildInput {
   preferredSessionSize: number
   lessonFilter: string | null
   userLanguage: 'en' | 'nl'
+  // lessonId → order_index; when provided, new items are gated by lesson mastery
+  lessonOrder?: Record<string, number>
 }
+
+// Fraction of a lesson's items that must reach 'retrieving' (or higher) before
+// new items from the next lesson are introduced.
+const LESSON_MASTERY_THRESHOLD = 0.70
+
+// Stages considered "mastered" for the purpose of lesson gating.
+const MASTERED_STAGES = new Set(['retrieving', 'productive', 'maintenance'])
 
 interface CandidateItem {
   item: LearningItem
@@ -37,7 +46,7 @@ const MAX_NEW_ITEMS_PER_SESSION = 3
  * Build a session queue from the learning item pool.
  */
 export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] {
-  const { allItems, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, itemStates, skillStates, preferredSessionSize, lessonFilter, userLanguage } = input
+  const { allItems, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, itemStates, skillStates, preferredSessionSize, lessonFilter, userLanguage, lessonOrder } = input
 
   // Filter items by lesson if scoped
   let eligibleItems = allItems
@@ -107,6 +116,12 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   anchoringItems.sort((a, b) => b.priority - a.priority)
   weakItems.sort((a, b) => b.priority - a.priority)
 
+  // Gate new items by lesson mastery: sort by lesson order and drop items from
+  // lessons that haven't been unlocked yet.
+  const gatedNewItems = lessonOrder
+    ? applyLessonGate(newItems, eligibleItems, itemStates, contextsByItem, lessonOrder)
+    : newItems
+
   // Slot allocation for a session:
   //   55% due reviews  (FSRS-scheduled)
   //   20% anchoring    (recently introduced, always reinforce)
@@ -120,7 +135,7 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   const pickedDue = dueItems.slice(0, dueSlots)
   const pickedAnchoring = anchoringItems.slice(0, anchoringSlots)
   const pickedWeak = weakItems.slice(0, weakSlots)
-  const pickedNew = newItems.slice(0, newSlots)
+  const pickedNew = gatedNewItems.slice(0, newSlots)
 
   // Build exercise items from picked candidates
   const queue: SessionQueueItem[] = []
@@ -152,6 +167,69 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
 
   // Apply ordering rules: interleave types, start with easy, delay new items
   return orderQueue(trimmed)
+}
+
+/**
+ * Filter and sort new items so that:
+ * 1. Items from lower-order lessons come first.
+ * 2. Items from lesson N+1 are only included once lesson N has reached
+ *    LESSON_MASTERY_THRESHOLD (fraction of its items at 'retrieving' or higher).
+ *
+ * Items already in progress (anchoring/retrieving/etc.) from any lesson are
+ * never filtered — the gate only controls NEW item introduction.
+ */
+function applyLessonGate(
+  newItems: CandidateItem[],
+  allEligibleItems: LearningItem[],
+  itemStates: Record<string, LearnerItemState>,
+  contextsByItem: Record<string, ItemContext[]>,
+  lessonOrder: Record<string, number>,
+): CandidateItem[] {
+  // Build itemId → lesson order_index (use lowest order if item spans lessons)
+  const itemLessonOrder = (itemId: string): number => {
+    const contexts = contextsByItem[itemId] ?? []
+    const orders = contexts
+      .map(c => c.source_lesson_id ? (lessonOrder[c.source_lesson_id] ?? 9999) : 9999)
+    return orders.length > 0 ? Math.min(...orders) : 9999
+  }
+
+  // Compute mastery for each lesson: fraction of eligible items at a mastered stage
+  const lessonItems: Record<number, string[]> = {}  // orderIndex → itemIds
+  for (const item of allEligibleItems) {
+    const order = itemLessonOrder(item.id)
+    if (!lessonItems[order]) lessonItems[order] = []
+    lessonItems[order].push(item.id)
+  }
+
+  const masteryByOrder: Record<number, number> = {}
+  for (const [orderStr, itemIds] of Object.entries(lessonItems)) {
+    const order = Number(orderStr)
+    if (itemIds.length === 0) { masteryByOrder[order] = 1; continue }
+    const mastered = itemIds.filter(id => {
+      const stage = itemStates[id]?.stage
+      return stage ? MASTERED_STAGES.has(stage) : false
+    }).length
+    masteryByOrder[order] = mastered / itemIds.length
+  }
+
+  // Determine the highest lesson order whose new items are unlocked.
+  // Lesson 1 is always unlocked. Each subsequent lesson requires the previous
+  // one to have reached LESSON_MASTERY_THRESHOLD.
+  const sortedOrders = Object.keys(lessonItems).map(Number).sort((a, b) => a - b)
+  let maxUnlockedOrder = sortedOrders[0] ?? 1  // always unlock the first lesson
+  for (let i = 1; i < sortedOrders.length; i++) {
+    const prev = sortedOrders[i - 1]
+    if ((masteryByOrder[prev] ?? 0) >= LESSON_MASTERY_THRESHOLD) {
+      maxUnlockedOrder = sortedOrders[i]
+    } else {
+      break  // stop at first locked lesson
+    }
+  }
+
+  // Filter to items from unlocked lessons, sorted by lesson order then original order
+  return newItems
+    .filter(c => itemLessonOrder(c.item.id) <= maxUnlockedOrder)
+    .sort((a, b) => itemLessonOrder(a.item.id) - itemLessonOrder(b.item.id))
 }
 
 function calculateNewSlots(dueCount: number, anchoringCount: number, sessionSize: number): number {
