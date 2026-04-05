@@ -1,32 +1,78 @@
-/* Progress page — design token aliases + fade-up entrance animation */
+/* Progress.module.css */
 
-/* Shared card base used by all section components via global .card class */
-:global(.progress-card) {
-  background: var(--card-bg) !important;
-  border: 1px solid var(--card-border) !important;
-  border-radius: var(--r-md) !important;
+/* ── Page wrapper ────────────────────────────────────── */
+
+.page {
+  padding: 40px 0 80px;
 }
 
-/* Fade-up entrance for each section as it enters the viewport */
+/* ── Header ──────────────────────────────────────────── */
+
+.header {
+  margin-bottom: 36px;
+  position: relative;
+  padding-left: 20px;
+}
+
+/* Cyan accent bar on the left */
+.header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 3px;
+  height: 44px;
+  background: var(--accent-primary);
+  border-radius: 0 2px 2px 0;
+  box-shadow: 0 0 12px var(--accent-primary-glow);
+}
+
+.headerBadge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 4px;
+  padding: 3px 8px;
+  margin-bottom: 8px;
+}
+
+.headerTitle {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  line-height: 1.15;
+  margin: 0;
+}
+
+.headerSub {
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* ── Sections ────────────────────────────────────────── */
+
+.section {
+  margin-bottom: 32px;
+  animation: fadeUp 0.5s ease both;
+}
+
+.section:nth-child(2)  { animation-delay: 0ms; }
+.section:nth-child(3)  { animation-delay: 80ms; }
+.section:nth-child(4)  { animation-delay: 160ms; }
+.section:nth-child(5)  { animation-delay: 240ms; }
+.section:nth-child(6)  { animation-delay: 320ms; }
+
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
-.stack > * {
-  animation: fadeUp 0.35s ease both;
-}
-
-.stack > *:nth-child(1) { animation-delay: 0ms; }
-.stack > *:nth-child(2) { animation-delay: 60ms; }
-.stack > *:nth-child(3) { animation-delay: 120ms; }
-.stack > *:nth-child(4) { animation-delay: 180ms; }
-.stack > *:nth-child(5) { animation-delay: 240ms; }
-.stack > *:nth-child(6) { animation-delay: 300ms; }
-.stack > *:nth-child(7) { animation-delay: 360ms; }

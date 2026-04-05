@@ -1,5 +1,206 @@
-/* src/components/progress/DetailedMetrics.module.css */
+/* DetailedMetrics.module.css */
 
-.stabilityValue {
-  text-shadow: 0 0 10px var(--mantine-color-cyan-4);
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.tile {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 18px 16px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.tile:hover {
+  border-color: rgba(0, 229, 255, 0.2);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.tile::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-primary-subtle), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tile:hover::before {
+  opacity: 1;
+}
+
+.tileLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+}
+
+.tileRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.bigNum {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.tileUnit {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  padding-bottom: 2px;
+}
+
+.tileSub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* ── Forgetting curve ───────────────────────────────── */
+
+.curvesvg {
+  width: 100%;
+  flex: 1;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* ── Rescue stars ────────────────────────────────────── */
+
+.rescueBadges {
+  display: flex;
+  gap: 2px;
+}
+
+@keyframes badgePop {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 0.85; }
+}
+
+.rescueBadge {
+  font-size: 14px;
+  color: var(--warning);
+  opacity: 0.85;
+  animation: badgePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.rescueBar {
+  margin-top: 8px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--success) 0%, transparent 100%);
+  border-radius: 1px;
+  opacity: 0.4;
+}
+
+/* ── Accuracy split ──────────────────────────────────── */
+
+.accuracySplit {
+  display: flex;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+.accuracyItem {
+  flex: 1;
+}
+
+.accuracyNum {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.accuracyLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.accuracyDivider {
+  width: 1px;
+  background: var(--card-border);
+  align-self: stretch;
+}
+
+.accuracyTrack {
+  margin-top: 12px;
+  height: 3px;
+  background: var(--card-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.accuracyFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--success), var(--warning));
+  border-radius: 2px;
+  transition: width 0.8s ease;
+}
+
+/* ── Speed bar ───────────────────────────────────────── */
+
+.speedBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.speedBarLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.speedTrack {
+  flex: 1;
+  height: 3px;
+  background: var(--card-border);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.speedFill {
+  position: absolute;
+  left: 0; top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--warning), var(--success));
+  border-radius: 2px;
+  transition: width 0.8s ease;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }

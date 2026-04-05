@@ -1,7 +1,22 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { sessionSummaryService } from '@/services/sessionSummaryService'
 import { analyticsService } from '@/services/analyticsService'
 import type { WeeklyGoal } from '@/types/learning'
+
+// Prevent real HTTP requests to the Supabase instance during tests
+vi.mock('@/lib/supabase', () => ({
+  supabase: {
+    schema: vi.fn().mockReturnValue({
+      from: vi.fn().mockReturnValue({
+        insert: vi.fn().mockResolvedValue({ data: null, error: null }),
+      }),
+    }),
+  },
+}))
+
+beforeEach(() => {
+  vi.clearAllMocks()
+})
 
 describe('Goal System Integration', () => {
   describe('Session impact messaging flow', () => {

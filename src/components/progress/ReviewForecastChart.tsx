@@ -1,5 +1,4 @@
 // src/components/progress/ReviewForecastChart.tsx
-import { Paper, Box, Text, Badge, Divider, Tooltip } from '@mantine/core'
 import classes from './ReviewForecastChart.module.css'
 
 interface ReviewForecastChartProps {
@@ -7,15 +6,7 @@ interface ReviewForecastChartProps {
 }
 
 function capitalize(s: string): string {
-  if (!s) return s
-  return s.charAt(0).toUpperCase() + s.slice(1)
-}
-
-function getBarColor(count: number, isToday: boolean): string {
-  if (count > 40) return 'var(--mantine-color-red-6)'
-  if (count > 20) return 'var(--mantine-color-orange-5)'
-  if (isToday) return 'var(--mantine-color-cyan-6)'
-  return 'var(--mantine-color-cyan-3)'
+  return s ? s.charAt(0).toUpperCase() + s.slice(1) : s
 }
 
 export function ReviewForecastChart({ forecast }: ReviewForecastChartProps) {
@@ -23,173 +14,122 @@ export function ReviewForecastChart({ forecast }: ReviewForecastChartProps) {
 
   if (allEmpty) {
     return (
-      <Box>
-        <Text
-          size="sm"
-          c="dimmed"
-          tt="uppercase"
-          mb="sm"
-          style={{ letterSpacing: '0.1em', fontWeight: 500 }}
-        >
-          Reviewprognose (7 dagen)
-        </Text>
-        <Paper withBorder p="md">
-          <Text c="dimmed" ta="center" py="xl">
-            Geen reviews gepland de komende 7 dagen
-          </Text>
-        </Paper>
-      </Box>
+      <div className={classes.card}>
+        <div className={classes.cardTitle}>7-Daagse Voorspelling</div>
+        <p className={classes.empty}>Geen reviews gepland de komende 7 dagen</p>
+      </div>
     )
   }
 
   const maxCount = Math.max(...forecast.map((d) => d.count), 1)
+  const chartMax = Math.ceil(maxCount / 10) * 10 + 10
 
   const projectedValues = forecast.map((d) => Math.round(d.count * 0.5))
   const maxProjected = Math.max(...projectedValues, 1)
 
+  const yLabels: number[] = []
+  const steps = 5
+  for (let i = steps; i >= 0; i--) {
+    yLabels.push(Math.round((chartMax / steps) * i))
+  }
+
+  const spikeDay = forecast.reduce<number | null>((best, d, i) => {
+    if (d.count > 40 && (best === null || d.count > forecast[best].count)) return i
+    return best
+  }, null)
+
   return (
-    <Box>
-      <Text
-        size="sm"
-        c="dimmed"
-        tt="uppercase"
-        mb="sm"
-        style={{ letterSpacing: '0.1em', fontWeight: 500 }}
-      >
-        Reviewprognose (7 dagen)
-      </Text>
+    <div className={classes.card}>
+      <div className={classes.cardTitle}>7-Daagse Voorspelling</div>
 
-      <Paper withBorder p="md">
-        {/* Main bar chart */}
-        <Box className={classes.chartRow}>
-          {forecast.map((day, i) => {
-            const isToday = i === 0
-            const barHeightPx =
-              day.count > 0 ? Math.max(4, Math.round((day.count / maxCount) * 90)) : 0
-            const barColor = getBarColor(day.count, isToday)
-            const isSpike = day.count > 40
+      {/* Bar chart with y-axis */}
+      <div className={classes.chartArea}>
+        {/* Y-axis */}
+        <div className={classes.yAxis}>
+          {yLabels.map((v) => (
+            <span key={v} className={classes.yLabel}>{v}</span>
+          ))}
+        </div>
 
-            const dayLabel = isToday
-              ? 'Vand.'
-              : capitalize(
-                  day.date.toLocaleDateString('nl-NL', { weekday: 'short' })
-                )
+        {/* Grid + bars */}
+        <div className={classes.chartBody}>
+          {/* Gridlines */}
+          <div className={classes.gridlines}>
+            {yLabels.map((v) => (
+              <div key={v} className={classes.gridline} />
+            ))}
+          </div>
 
-            const column = (
-              <Box
-                key={i}
-                className={classes.barColumn}
-                style={{ animationDelay: `${0.05 * i}s` }}
-              >
-                {/* Spike badge */}
-                {isSpike && (
-                  <Badge size="xs" color="red" mb={2}>
-                    !
-                  </Badge>
-                )}
+          {/* Bars */}
+          <div className={classes.barsRow}>
+            {forecast.map((day, i) => {
+              const isToday = i === 0
+              const isSpike = day.count > 40
+              const barHeightPct = day.count > 0 ? (day.count / chartMax) * 100 : 0
 
-                {/* Count label */}
-                <Text
-                  className={classes.countLabel}
-                  style={{
-                    opacity: day.count === 0 ? 0.4 : 1,
-                  }}
-                >
-                  {day.count}
-                </Text>
+              const dayLabel = isToday
+                ? 'Vand.'
+                : capitalize(day.date.toLocaleDateString('nl-NL', { weekday: 'short' }))
 
-                {/* Bar */}
-                <Box
-                  className={classes.bar}
-                  style={{
-                    height: barHeightPx,
-                    backgroundColor: barColor,
-                    opacity: !isToday && day.count <= 20 && day.count > 0 ? 0.6 : 1,
-                    animationDelay: `${0.05 * i}s`,
-                  }}
-                />
-
-                {/* Day label */}
-                <Text
-                  className={classes.dayLabel}
-                  style={{
-                    fontWeight: isToday ? 700 : 400,
-                    textDecoration: isToday ? 'underline' : 'none',
-                  }}
-                >
-                  {dayLabel}
-                </Text>
-              </Box>
-            )
-
-            if (isSpike) {
               return (
-                <Tooltip
-                  key={i}
-                  label={`Overslaan kost je ${day.count} extra items morgen — backlog loopt op naar ${day.count + 15}`}
-                  withArrow
-                >
-                  {column}
-                </Tooltip>
+                <div key={i} className={`${classes.barCol} ${isSpike ? classes.barColSpike : ''}`}>
+                  {isSpike && (
+                    <div className={classes.spikeBadge}>!</div>
+                  )}
+                  <div
+                    className={`${classes.bar} ${isSpike ? classes.barDanger : classes.barAccent}`}
+                    style={{
+                      height: `${barHeightPct}%`,
+                      animationDelay: `${0.05 * i}s`,
+                    }}
+                  />
+                  <div className={`${classes.dayLabel} ${isToday ? classes.dayLabelToday : ''} ${isSpike ? classes.dayLabelDanger : ''}`}>
+                    {dayLabel}
+                  </div>
+                  {isSpike && (
+                    <div className={classes.whatifTooltip}>
+                      <strong>Als je deze dag overslaat:</strong><br />
+                      {day.count} items schuiven door — backlog stijgt naar{' '}
+                      <span style={{ color: 'var(--danger)', fontWeight: 700 }}>{day.count + 15} items</span>.
+                    </div>
+                  )}
+                </div>
               )
-            }
+            })}
+          </div>
+        </div>
+      </div>
 
-            return column
-          })}
-        </Box>
+      {spikeDay !== null && (
+        <p className={classes.spikeNote}>
+          <span style={{ color: 'var(--danger)' }}>■</span>{' '}
+          {capitalize(forecast[spikeDay].date.toLocaleDateString('nl-NL', { weekday: 'long' }))}: {forecast[spikeDay].count} kaarten vervallen — plan extra tijd in.
+        </p>
+      )}
 
-        {/* Legend */}
-        <Box className={classes.legend}>
-          <Text className={classes.legendItem} style={{ color: 'var(--mantine-color-cyan-6)' }}>
-            ■ Vandaag
-          </Text>
-          <Text className={classes.legendItem} style={{ color: 'var(--mantine-color-red-6)' }}>
-            ■ Piek (&gt;40)
-          </Text>
-          <Text className={classes.legendItem} style={{ color: 'var(--mantine-color-cyan-3)' }}>
-            ■ Normaal
-          </Text>
-        </Box>
-
-        <Divider my="md" />
-
-        {/* Projected mini chart */}
-        <Text className={classes.projectedTitle} c="dimmed">
-          Volgende week (als je consistent blijft)
-        </Text>
-
-        <Box className={classes.miniChartRow}>
+      {/* Projected next week */}
+      <div className={classes.projSection}>
+        <div className={classes.projLabel}>Volgende week (als je consistent blijft)</div>
+        <div className={classes.projBars}>
           {forecast.map((day, i) => {
             const projCount = projectedValues[i]
-            const barHeightPx =
-              projCount > 0 ? Math.max(2, Math.round((projCount / maxProjected) * 32)) : 0
-
-            const dayLabel =
-              i === 0
-                ? 'Vand.'
-                : capitalize(
-                    day.date.toLocaleDateString('nl-NL', { weekday: 'short' })
-                  )
+            const heightPct = projCount > 0 ? (projCount / maxProjected) * 100 : 0
+            const dayLabel = i === 0
+              ? 'Vand.'
+              : capitalize(day.date.toLocaleDateString('nl-NL', { weekday: 'short' }))
 
             return (
-              <Box key={i} className={classes.miniBarColumn}>
-                <Box
-                  className={classes.miniBar}
-                  style={{
-                    height: barHeightPx,
-                    animationDelay: `${0.05 * i + 0.4}s`,
-                  }}
-                />
-                <Text className={classes.miniDayLabel}>{dayLabel}</Text>
-              </Box>
+              <div key={i} className={classes.projBarCol}>
+                <div className={classes.projBar} style={{ height: `${heightPct}%` }} />
+                <span className={classes.projDayLabel}>{dayLabel}</span>
+              </div>
             )
           })}
-        </Box>
-
-        <Text className={classes.successText}>
-          ✓ Max {Math.max(...projectedValues)}/dag — geen spikes
-        </Text>
-      </Paper>
-    </Box>
+        </div>
+        <div className={classes.projSuccess}>
+          ✓ Max {Math.max(...projectedValues)} kaarten/dag — geen spikes
+        </div>
+      </div>
+    </div>
   )
 }

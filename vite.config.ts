@@ -32,9 +32,22 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    // Pure logic/service tests (.test.ts) run in node — much lighter than jsdom.
+    // React component tests (.test.tsx) keep the default jsdom environment.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error — environmentMatchGlobs was removed from Vitest 4 types but still works at runtime
+    environmentMatchGlobs: [['**/*.test.ts', 'node']],
     setupFiles: ['./src/test-setup.ts'],
+    // Limit discovery to our test directory — avoids scanning node_modules paths.
+    include: ['src/__tests__/**/*.test.{ts,tsx}'],
     // Progress.test.tsx tests require completed implementation work on the
     // redesigned Progress page — re-enable as implementation catches up.
     exclude: ['**/node_modules/**', 'src/__tests__/Progress.test.tsx'],
+    // Cap parallel workers. Default is one fork per CPU core; on an 8-core MBA
+    // that means ~8 Node processes each loading React/Mantine/Supabase simultaneously.
+    // maxForks: 2 keeps peak RSS to ~2× a single process (~400–600 MB total).
+    // (In Vitest 4, pool options are top-level — poolOptions was removed.)
+    pool: 'forks',
+    maxForks: 2,
   },
 })

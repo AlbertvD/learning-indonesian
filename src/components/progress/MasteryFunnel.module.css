@@ -1,109 +1,219 @@
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+/* MasteryFunnel.module.css — horizontal chevron pipeline */
 
-.sectionTitle {
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-secondary);
-}
-
-.summary {
+.empty {
   font-size: var(--fs-sm);
   color: var(--text-secondary);
-  margin-bottom: 4px;
 }
 
-.funnel {
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 20px;
+  transition: var(--transition-base);
+}
+
+/* ── Pipeline row ──────────────────────────────────── */
+
+.pipelineRow {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: stretch;
+  gap: 0;
 }
 
-.row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 8px;
-  border-radius: var(--r-sm);
-  transition: background-color 0.2s ease;
-}
-
-.rowBottleneck {
-  background-color: rgba(255, 149, 0, 0.08);
-}
-
-.stageLabel {
-  width: 100px;
-  min-width: 100px;
-  font-size: var(--fs-sm);
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.countBadge {
-  min-width: 32px;
-  flex-shrink: 0;
-}
-
-.barTrack {
+.stage {
   flex: 1;
-  height: 20px;
   position: relative;
+  padding: 14px 20px 14px 24px;
+  background: var(--card-bg);
+  border-top: 1px solid var(--card-border);
+  border-bottom: 1px solid var(--card-border);
+  transition: background 0.2s;
+  z-index: 0;
+}
+
+.stageFirst {
+  border-left: 1px solid var(--card-border);
+  border-radius: var(--r-md) 0 0 var(--r-md);
+  padding-left: 16px;
+}
+
+.stageLast {
+  border-right: 1px solid var(--card-border);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+}
+
+/* Chevron fill — sits on top of border pseudo */
+.stage:not(.stageLast)::after {
+  content: '';
+  position: absolute;
+  right: -14px;
+  top: 0;
+  width: 28px;
+  height: 100%;
+  background: var(--card-bg);
+  clip-path: polygon(0 0, 60% 0, 100% 50%, 60% 100%, 0 100%, 40% 50%);
+  z-index: 2;
+  transition: background 0.2s;
+}
+
+/* Chevron border outline */
+.stage:not(.stageLast)::before {
+  content: '';
+  position: absolute;
+  right: -16px;
+  top: 0;
+  width: 30px;
+  height: 100%;
+  background: var(--card-border);
+  clip-path: polygon(0 0, 60% 0, 100% 50%, 60% 100%, 0 100%, 40% 50%);
+  z-index: 1;
+}
+
+/* Bottleneck stage */
+.stageBottleneck {
+  background: rgba(255, 149, 0, 0.08);
+  border-color: rgba(255, 149, 0, 0.3);
+  animation: bottleneckPulse 3s ease-in-out infinite;
+}
+
+.stageBottleneck:not(.stageLast)::after {
+  background: rgba(255, 149, 0, 0.08);
+}
+
+.stageBottleneck:not(.stageLast)::before {
+  background: rgba(255, 149, 0, 0.3);
+}
+
+@keyframes bottleneckPulse {
+  0%, 100% { box-shadow: inset 0 0 0 0 rgba(255, 149, 0, 0); }
+  50%       { box-shadow: inset 0 0 20px 0 rgba(255, 149, 0, 0.08); }
+}
+
+/* ── Stage content ──────────────────────────────────── */
+
+.stageName {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
   display: flex;
   align-items: center;
+  gap: 4px;
 }
 
-.bar {
-  height: 20px;
-  border-radius: 4px;
-  min-width: 0;
-  transition: width 0.4s var(--ease-smooth);
-}
-
-.milestoneStar {
-  position: absolute;
-  left: 4px;
-  font-size: 16px;
-  opacity: 0.25;
-  cursor: default;
-  user-select: none;
+.stageBottleneck .stageName {
   color: var(--warning);
+}
+
+.warningIcon {
+  font-size: 11px;
+}
+
+.stageCount {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
   line-height: 1;
 }
 
-.warningBanner {
-  font-size: var(--fs-sm);
+.stageCountBottleneck {
   color: var(--warning);
-  padding: 6px 8px;
-  background-color: var(--warning-subtle);
-  border-radius: var(--r-sm);
-  margin-top: 4px;
+  text-shadow: 0 0 12px rgba(255, 149, 0, 0.4);
+}
+
+.stageCountZero {
+  color: var(--text-tertiary);
+}
+
+.stageUnit {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.stageBottleneck .stageUnit {
+  color: rgba(255, 149, 0, 0.6);
+}
+
+/* ── Footer ──────────────────────────────────────────── */
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.warningBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-xs);
+  color: var(--warning);
+  background: var(--warning-subtle);
+  border: 1px solid rgba(255, 149, 0, 0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  flex: 1;
+  min-width: 200px;
 }
 
 .milestonePill {
   display: inline-flex;
   align-items: center;
-  align-self: flex-start;
-  margin-top: 4px;
+  flex-shrink: 0;
   padding: 4px 12px;
-  border-radius: var(--r-xl);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   color: var(--accent-primary);
-  border: 1px solid var(--accent-primary);
-  background-color: var(--accent-primary-subtle);
-  transition: background-color 0.2s ease, opacity 0.2s ease;
-  cursor: pointer;
+  background: var(--accent-primary-subtle);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  text-decoration: none;
+  transition: var(--transition-base);
+  white-space: nowrap;
 }
 
 .milestonePill:hover {
-  background-color: var(--accent-primary-glow);
-  opacity: 0.9;
+  background: rgba(0, 229, 255, 0.18);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+}
+
+@media (max-width: 600px) {
+  .pipelineRow {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .stage {
+    border-left: 1px solid var(--card-border) !important;
+    border-right: 1px solid var(--card-border) !important;
+    padding: 12px 16px;
+  }
+
+  .stageFirst {
+    border-radius: var(--r-md) var(--r-md) 0 0;
+  }
+
+  .stageLast {
+    border-radius: 0 0 var(--r-md) var(--r-md);
+  }
+
+  .stage::after,
+  .stage::before {
+    display: none;
+  }
 }

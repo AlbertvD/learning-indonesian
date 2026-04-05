@@ -1,1 +1,108 @@
-/* WeeklyGoalsList — minimal styles, mostly Mantine */
+/* WeeklyGoalsList.module.css */
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 20px;
+  height: 100%;
+}
+
+.cardTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+  margin-bottom: 14px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.empty {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+/* ── Goal item ───────────────────────────────────────── */
+
+.goalItem {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s;
+}
+
+.goalItem:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.goalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.goalName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.goalStatus {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+
+.statusOk {
+  color: var(--success);
+  background: var(--success-subtle);
+  border: 1px solid rgba(50, 215, 75, 0.2);
+}
+
+.statusRisk {
+  color: var(--warning);
+  background: var(--warning-subtle);
+  border: 1px solid rgba(255, 149, 0, 0.2);
+}
+
+.goalDetail {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.goalTrack {
+  height: 3px;
+  background: var(--card-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.goalFill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
+}
+
+.goalFillOk {
+  background: var(--success);
+  box-shadow: 0 0 6px rgba(50, 215, 75, 0.4);
+}
+
+.goalFillRisk {
+  background: var(--warning);
+  box-shadow: 0 0 6px rgba(255, 149, 0, 0.4);
+}

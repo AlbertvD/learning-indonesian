@@ -1,130 +1,254 @@
-/* src/components/progress/ReviewForecastChart.module.css */
+/* ReviewForecastChart.module.css */
 
-@keyframes bar-grow {
-  from {
-    transform: scaleY(0);
-  }
-  to {
-    transform: scaleY(1);
-  }
+@keyframes barGrow {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
 }
 
-/* Main bar chart row */
-.chartRow {
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 20px;
+  height: 100%;
+}
+
+.cardTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+  margin-bottom: 14px;
+}
+
+.empty {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 40px 0;
+}
+
+/* ── Chart layout ────────────────────────────────────── */
+
+.chartArea {
   display: flex;
-  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+  height: 140px;
+  position: relative;
+}
+
+.yAxis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-right: 4px;
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.yLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-tertiary);
+  line-height: 1;
+}
+
+.chartBody {
+  flex: 1;
+  position: relative;
+  padding-bottom: 20px; /* room for day labels */
+}
+
+/* Gridlines */
+.gridlines {
+  position: absolute;
+  left: 0; right: 0;
+  top: 0;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.gridline {
+  width: 100%;
+  height: 1px;
+  background: var(--card-border);
+}
+
+/* Bars row */
+.barsRow {
+  position: absolute;
+  left: 0; right: 0;
+  top: 0;
+  bottom: 20px;
+  display: flex;
   align-items: flex-end;
   gap: 4px;
-  height: 120px;
-  padding-bottom: 0;
 }
 
-/* Individual column wrapper */
-.barColumn {
+/* ── Individual bar column ───────────────────────────── */
+
+.barCol {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
   height: 100%;
+  position: relative;
 }
 
-/* Count label above bar */
-.countLabel {
+.barColSpike {
+  cursor: default;
+}
+
+.spikeBadge {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
   font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  line-height: 1.2;
-  color: var(--text-secondary);
-  text-align: center;
-  min-height: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--danger);
+  background: var(--danger-subtle);
+  border: 1px solid rgba(255, 69, 58, 0.3);
+  border-radius: 3px;
+  padding: 1px 4px;
 }
 
-/* The bar itself */
 .bar {
   width: 100%;
   border-radius: 3px 3px 0 0;
   transform-origin: bottom;
-  animation: bar-grow 0.4s var(--ease-smooth) both;
-  min-height: 0;
+  animation: barGrow 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+  min-height: 3px;
+  transition: filter 0.2s;
 }
 
-/* Day label below bar */
+.bar:hover {
+  filter: brightness(1.3);
+}
+
+.barAccent {
+  background: linear-gradient(180deg, var(--accent-primary) 0%, rgba(0, 229, 255, 0.6) 100%);
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.2);
+}
+
+.barDanger {
+  background: linear-gradient(180deg, var(--danger) 0%, rgba(255, 69, 58, 0.7) 100%);
+  box-shadow: 0 0 12px rgba(255, 69, 58, 0.35);
+}
+
 .dayLabel {
-  font-size: var(--fs-xs);
-  color: var(--text-secondary);
-  text-align: center;
-  margin-top: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-/* Legend row */
-.legend {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
-
-.legendItem {
-  font-size: var(--fs-xs);
-}
-
-/* Projected mini chart title */
-.projectedTitle {
+  position: absolute;
+  bottom: -20px;
   font-family: var(--font-mono);
-  font-size: var(--fs-xs);
+  font-size: 9px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.dayLabelToday {
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+.dayLabelDanger {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+/* What-if tooltip */
+.whatifTooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  background: var(--card-bg);
+  border: 1px solid rgba(255, 69, 58, 0.4);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 10;
+  white-space: normal;
+  text-align: left;
+}
+
+.barColSpike:hover .whatifTooltip {
+  opacity: 1;
+}
+
+/* ── Spike note ──────────────────────────────────────── */
+
+.spikeNote {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+}
+
+/* ── Projected next week ─────────────────────────────── */
+
+.projSection {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--card-border);
+}
+
+.projLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   margin-bottom: 8px;
 }
 
-/* Mini chart row */
-.miniChartRow {
+.projBars {
   display: flex;
-  flex-direction: row;
   align-items: flex-end;
   gap: 4px;
-  height: 48px;
+  height: 28px;
 }
 
-/* Mini bar column */
-.miniBarColumn {
+.projBarCol {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
+  gap: 3px;
   height: 100%;
 }
 
-/* Mini bar */
-.miniBar {
+.projBar {
   width: 100%;
+  background: rgba(50, 215, 75, 0.35);
+  border: 1px solid rgba(50, 215, 75, 0.5);
   border-radius: 2px 2px 0 0;
-  background-color: rgba(64, 192, 87, 0.4); /* Mantine green-6 at 40% opacity */
-  transform-origin: bottom;
-  animation: bar-grow 0.4s var(--ease-smooth) both;
-  min-height: 0;
+  min-height: 2px;
 }
 
-/* Mini day label */
-.miniDayLabel {
-  font-size: 10px;
-  color: var(--text-tertiary);
-  text-align: center;
-  margin-top: 3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-/* Success message below mini chart */
-.successText {
+.projDayLabel {
   font-family: var(--font-mono);
-  font-size: var(--fs-xs);
+  font-size: 8px;
+  color: var(--text-tertiary);
+}
+
+.projSuccess {
+  font-size: 10px;
   color: var(--success);
-  margin-top: 6px;
+  font-family: var(--font-mono);
+  margin-top: 4px;
 }

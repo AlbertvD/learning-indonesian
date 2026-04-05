@@ -1,22 +1,108 @@
-.row {
+/* VulnerableItemsList.module.css */
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 16px 20px;
+  transition: var(--transition-base);
+}
+
+.subtitle {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+.list {
   display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 90px 80px 90px 1fr 40px;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+
+.item:hover {
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .word {
-  flex: 0 0 auto;
-  min-width: 120px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.badges {
+.meaning {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lapseCount {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex: 0 0 auto;
+  gap: 4px;
 }
 
-.progressWrapper {
-  flex: 1 1 auto;
-  min-width: 60px;
+.lapseIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border: 1px solid;
+  border-radius: 50%;
+  font-size: 8px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.barWrap {
+  height: 4px;
+  background: var(--card-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s ease;
+  opacity: 0.8;
+}
+
+.pct {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: right;
+}
+
+@media (max-width: 600px) {
+  .item {
+    grid-template-columns: 1fr 1fr;
+  }
+  .lapseCount, .barWrap, .pct {
+    display: none;
+  }
 }

@@ -123,7 +123,7 @@ describe('progressService.getVulnerableItems', () => {
           learning_item_id: 'item-1',
           lapse_count: 5,
           consecutive_failures: 2,
-          learning_items: { base_text: 'selamat' },
+          learning_items: { base_text: 'selamat', item_meanings: [{ translation_text: 'gegroet', is_primary: true, translation_language: 'nl' }] },
         },
       ],
       error: null,
@@ -135,6 +135,7 @@ describe('progressService.getVulnerableItems', () => {
     expect(result[0]).toEqual({
       id: 'item-1',
       indonesianText: 'selamat',
+      meaning: 'gegroet',
       lapseCount: 5,
       consecutiveFailures: 2,
     })

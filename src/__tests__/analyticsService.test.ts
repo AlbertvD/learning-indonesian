@@ -1,126 +1,122 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { analyticsService } from '@/services/analyticsService'
+import { supabase } from '@/lib/supabase'
 
-// Mock supabase
+// vi.mock is hoisted above imports, so outer variables aren't initialised yet.
+// Use vi.hoisted() to declare mocks that are safe to reference inside the factory.
+const { mockInsert } = vi.hoisted(() => ({
+  mockInsert: vi.fn().mockResolvedValue({ data: null, error: null }),
+}))
+
 vi.mock('@/lib/supabase', () => ({
   supabase: {
-    schema: vi.fn().mockReturnThis(),
-    from: vi.fn().mockReturnThis(),
-    insert: vi.fn().mockResolvedValue({}),
+    schema: vi.fn().mockReturnValue({
+      from: vi.fn().mockReturnValue({
+        insert: mockInsert,
+      }),
+    }),
   },
 }))
 
 describe('analyticsService', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockInsert.mockResolvedValue({ data: null, error: null })
   })
 
   describe('trackEvent', () => {
-    it('emits a generic analytics event', async () => {
-      const event = {
-        event_type: 'goal_viewed' as const,
+    it('inserts an analytics event row', async () => {
+      await analyticsService.trackEvent({
+        event_type: 'goal_viewed',
         user_id: 'user-1',
         goal_id: 'goal-1',
         goal_type: 'consistency',
-      }
-
-      await analyticsService.trackEvent(event)
-      // Event was processed (no error thrown)
-      expect(true).toBe(true)
+      })
+      expect(vi.mocked(supabase.schema)).toHaveBeenCalledWith('indonesian')
+      expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
+        event_type: 'goal_viewed',
+        user_id: 'user-1',
+      }))
     })
 
-    it('handles errors gracefully and does not throw', async () => {
-      const event = {
-        event_type: 'goal_viewed' as const,
+    it('does not throw when insert fails', async () => {
+      mockInsert.mockRejectedValueOnce(new Error('network error'))
+      await expect(analyticsService.trackEvent({
+        event_type: 'goal_viewed',
         user_id: 'user-1',
-        goal_id: 'goal-1',
-      }
-
-      // trackEvent should not throw even if insert fails
-      await analyticsService.trackEvent(event)
-      expect(true).toBe(true)
+      })).resolves.toBeUndefined()
     })
   })
 
   describe('trackGoalGenerated', () => {
-    it('tracks goal generated events for multiple goals', async () => {
-      const userId = 'user-1'
-      const goalIds = ['goal-1', 'goal-2', 'goal-3']
-
-      await analyticsService.trackGoalGenerated(userId, goalIds)
-      // Events were processed (no error thrown)
-      expect(true).toBe(true)
+    it('inserts one event per goal id', async () => {
+      await analyticsService.trackGoalGenerated('user-1', ['goal-1', 'goal-2', 'goal-3'])
+      expect(mockInsert).toHaveBeenCalledTimes(3)
     })
 
-    it('handles empty goal list', async () => {
-      const userId = 'user-1'
-      const goalIds: string[] = []
-
-      await analyticsService.trackGoalGenerated(userId, goalIds)
-      expect(true).toBe(true)
+    it('is a no-op for an empty goal list', async () => {
+      await analyticsService.trackGoalGenerated('user-1', [])
+      expect(mockInsert).not.toHaveBeenCalled()
     })
   })
 
   describe('trackGoalViewed', () => {
-    it('tracks goal viewed event with goal type', async () => {
-      const userId = 'user-1'
-      const goalId = 'goal-1'
-      const goalType = 'recall_quality'
-
-      await analyticsService.trackGoalViewed(userId, goalId, goalType)
-      expect(true).toBe(true)
+    it('inserts a goal_viewed event with the correct goal_type', async () => {
+      await analyticsService.trackGoalViewed('user-1', 'goal-1', 'recall_quality')
+      expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
+        event_type: 'goal_viewed',
+        goal_type: 'recall_quality',
+      }))
     })
   })
 
   describe('trackDailyPlanViewed', () => {
-    it('tracks daily plan viewed event', async () => {
-      const userId = 'user-1'
-
-      await analyticsService.trackDailyPlanViewed(userId)
-      expect(true).toBe(true)
+    it('inserts a daily_plan_viewed event', async () => {
+      await analyticsService.trackDailyPlanViewed('user-1')
+      expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
+        event_type: 'daily_plan_viewed',
+        user_id: 'user-1',
+      }))
     })
   })
 
   describe('trackSessionStartedFromToday', () => {
-    it('tracks session started from Today card event', async () => {
-      const userId = 'user-1'
-      const sessionId = 'session-1'
-
-      await analyticsService.trackSessionStartedFromToday(userId, sessionId)
-      expect(true).toBe(true)
+    it('inserts a session_started_from_today event with session_id', async () => {
+      await analyticsService.trackSessionStartedFromToday('user-1', 'session-1')
+      expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
+        event_type: 'session_started_from_today',
+        session_id: 'session-1',
+      }))
     })
   })
 
   describe('trackGoalAchieved', () => {
-    it('tracks goal achieved event', async () => {
-      const userId = 'user-1'
-      const goalId = 'goal-1'
-      const goalType = 'consistency'
-
-      await analyticsService.trackGoalAchieved(userId, goalId, goalType)
-      expect(true).toBe(true)
+    it('inserts a goal_achieved event', async () => {
+      await analyticsService.trackGoalAchieved('user-1', 'goal-1', 'consistency')
+      expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
+        event_type: 'goal_achieved',
+        goal_type: 'consistency',
+      }))
     })
   })
 
   describe('trackGoalMissed', () => {
-    it('tracks goal missed event', async () => {
-      const userId = 'user-1'
-      const goalId = 'goal-1'
-      const goalType = 'usable_vocabulary'
-
-      await analyticsService.trackGoalMissed(userId, goalId, goalType)
-      expect(true).toBe(true)
+    it('inserts a goal_missed event', async () => {
+      await analyticsService.trackGoalMissed('user-1', 'goal-1', 'usable_vocabulary')
+      expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
+        event_type: 'goal_missed',
+        goal_type: 'usable_vocabulary',
+      }))
     })
   })
 
   describe('trackSessionSummaryViewed', () => {
-    it('tracks session summary viewed event with impact count', async () => {
-      const userId = 'user-1'
-      const sessionId = 'session-1'
-      const goalImpactCount = 2
-
-      await analyticsService.trackSessionSummaryViewed(userId, sessionId, goalImpactCount)
-      expect(true).toBe(true)
+    it('inserts a session_summary_viewed event with impact count in metadata', async () => {
+      await analyticsService.trackSessionSummaryViewed('user-1', 'session-1', 2)
+      expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
+        event_type: 'session_summary_viewed',
+        session_id: 'session-1',
+      }))
     })
   })
 })

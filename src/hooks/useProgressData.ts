@@ -32,11 +32,12 @@ export interface ProgressData {
   } | null
   lapsePrevention: { atRisk: number; rescued: number } | null
   weeklyGoals: WeeklyGoal[] | null
-  vulnerableItems: { id: string; indonesianText: string; lapseCount: number; consecutiveFailures: number }[] | null
+  vulnerableItems: { id: string; indonesianText: string; meaning: string; lapseCount: number; consecutiveFailures: number }[] | null
+  avgLatencyMs: { currentWeekMs: number | null; priorWeekMs: number | null } | null
 }
 
 type Wave1State = Pick<ProgressData, 'wave1Loading' | 'wave1Error' | 'itemsByStage' | 'skillStats' | 'lessonsCompleted' | 'skillStates' | 'forecast'>
-type Wave2State = Pick<ProgressData, 'wave2Loading' | 'wave2Error' | 'dailyRollups' | 'accuracyBySkillType' | 'lapsePrevention' | 'weeklyGoals' | 'vulnerableItems'>
+type Wave2State = Pick<ProgressData, 'wave2Loading' | 'wave2Error' | 'dailyRollups' | 'accuracyBySkillType' | 'lapsePrevention' | 'weeklyGoals' | 'vulnerableItems' | 'avgLatencyMs'>
 
 const defaultWave1: Wave1State = {
   wave1Loading: true,
@@ -56,6 +57,7 @@ const defaultWave2: Wave2State = {
   lapsePrevention: null,
   weeklyGoals: null,
   vulnerableItems: null,
+  avgLatencyMs: null,
 }
 
 function avg(nums: number[]): number {
@@ -81,13 +83,11 @@ export function useProgressData(): ProgressData {
           lessonService.getLessonsBasic(),
         ])
 
-        // itemsByStage
         const itemsByStage = { new: 0, anchoring: 0, retrieving: 0, productive: 0, maintenance: 0 }
         for (const state of itemStates) {
           itemsByStage[state.stage]++
         }
 
-        // skillStats
         const recognitionStabilities = skillStatesData
           .filter((s) => s.skill_type === 'recognition')
           .map((s) => s.stability)
@@ -102,11 +102,8 @@ export function useProgressData(): ProgressData {
           avgStability: avg(allStabilities),
         }
 
-        // lessonsCompleted
         const completed = lessonProgressData.filter((lp) => lp.completed_at != null).length
         const lessonsCompleted = { completed, total: lessonsData.length }
-
-        // forecast (derived synchronously)
         const forecast = computeReviewForecast(skillStatesData)
 
         setWave1State({
@@ -130,16 +127,17 @@ export function useProgressData(): ProgressData {
         return
       }
 
-      // --- Wave 2 (fires after wave 1 sets state) ---
+      // --- Wave 2 ---
       setWave2State((prev) => ({ ...prev, wave2Loading: true }))
 
-      const [rollupsResult, accuracyResult, lapseResult, goalsResult, vulnerableResult] =
+      const [rollupsResult, accuracyResult, lapseResult, goalsResult, vulnerableResult, latencyResult] =
         await Promise.allSettled([
           learnerStateService.getDailyRollups(user!.id, 7),
           progressService.getAccuracyBySkillType(user!.id),
           progressService.getLapsePrevention(user!.id),
           goalService.getGoalProgress(user!.id),
           progressService.getVulnerableItems(user!.id),
+          progressService.getAvgLatencyMs(user!.id),
         ])
 
       const nextWave2: Wave2State = {
@@ -150,6 +148,7 @@ export function useProgressData(): ProgressData {
         lapsePrevention: null,
         weeklyGoals: null,
         vulnerableItems: null,
+        avgLatencyMs: null,
       }
 
       if (rollupsResult.status === 'fulfilled') {
@@ -181,6 +180,12 @@ export function useProgressData(): ProgressData {
         nextWave2.vulnerableItems = vulnerableResult.value
       } else {
         logError({ page: 'progress', action: 'wave2FetchVulnerableItems', error: vulnerableResult.reason })
+      }
+
+      if (latencyResult.status === 'fulfilled') {
+        nextWave2.avgLatencyMs = latencyResult.value
+      } else {
+        logError({ page: 'progress', action: 'wave2FetchLatency', error: latencyResult.reason })
       }
 
       setWave2State(nextWave2)

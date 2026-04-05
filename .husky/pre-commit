@@ -16,3 +16,9 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "✓ Pre-commit checks passed."
+
+# homelab-platform: destructive operation guard
+_evals_dir="$(git rev-parse --show-toplevel)/evals"
+if [ -f "$_evals_dir/destructive-op-check.sh" ]; then
+  bash "$_evals_dir/destructive-op-check.sh" || exit 1
+fi

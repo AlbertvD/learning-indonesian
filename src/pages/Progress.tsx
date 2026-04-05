@@ -1,6 +1,6 @@
 // src/pages/Progress.tsx
 import { useEffect } from 'react'
-import { Container, Title, Text, Badge, Stack, Group, Center, Loader } from '@mantine/core'
+import { Container, SimpleGrid, Center, Loader } from '@mantine/core'
 import { useAuthStore } from '@/stores/authStore'
 import { analyticsService } from '@/services/analyticsService'
 import { useProgressData } from '@/hooks/useProgressData'
@@ -16,7 +16,6 @@ export function Progress() {
   const user = useAuthStore((s) => s.user)
   const data = useProgressData()
 
-  // Track goal views when goals become available
   useEffect(() => {
     if (user && data.weeklyGoals && data.weeklyGoals.length > 0) {
       data.weeklyGoals.forEach((goal) => {
@@ -35,38 +34,57 @@ export function Progress() {
 
   return (
     <Container size="md">
-      <Stack gap="xl" my="xl" className={classes.stack}>
-        <div>
-          <Group gap="sm" mb={4}>
-            <Title order={2}>Geheugenoverzicht</Title>
-            <Badge variant="light" color="cyan" size="sm">INDONESISCH · GEHEUGEN</Badge>
-          </Group>
-          <Text size="sm" c="dimmed">Leervoortgang en geheugengezondheid</Text>
+      <div className={classes.page}>
+
+        {/* Page header */}
+        <div className={classes.header}>
+          <span className={classes.headerBadge}>INDONESISCH · GEHEUGEN</span>
+          <h1 className={classes.headerTitle}>Geheugenoverzicht</h1>
+          <p className={classes.headerSub}>Jouw leervoortgang en geheugengezondheid</p>
         </div>
 
-        <MemoryHealthHero
-          avgRecognitionDays={data.skillStats.avgRecognition}
-          avgRecallDays={data.skillStats.avgRecall}
-        />
+        {/* Section 1 — Memory Health */}
+        <section className={classes.section}>
+          <MemoryHealthHero
+            avgRecognitionDays={data.skillStats.avgRecognition}
+            avgRecallDays={data.skillStats.avgRecall}
+          />
+        </section>
 
-        <MasteryFunnel itemsByStage={data.itemsByStage} />
+        {/* Section 2 — Mastery Pipeline */}
+        <section className={classes.section}>
+          <MasteryFunnel itemsByStage={data.itemsByStage} />
+        </section>
 
-        <VulnerableItemsList
-          items={data.vulnerableItems}
-          loading={data.wave2Loading}
-        />
+        {/* Section 3 — Vulnerable Words */}
+        <section className={classes.section}>
+          <VulnerableItemsList
+            items={data.vulnerableItems}
+            loading={data.wave2Loading}
+          />
+        </section>
 
-        <ReviewForecastChart forecast={data.forecast} />
+        {/* Section 4 — Forecast + Goals (two-column) */}
+        <section className={classes.section}>
+          <div className="section-label">Plannen &amp; Doelen</div>
+          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+            <ReviewForecastChart forecast={data.forecast} />
+            <WeeklyGoalsList goals={data.weeklyGoals} loading={data.wave2Loading} />
+          </SimpleGrid>
+        </section>
 
-        <WeeklyGoalsList goals={data.weeklyGoals} loading={data.wave2Loading} />
+        {/* Section 5 — Detail Stats */}
+        <section className={classes.section}>
+          <DetailedMetrics
+            avgStability={data.skillStats.avgStability}
+            accuracyBySkillType={data.accuracyBySkillType}
+            lapsePrevention={data.lapsePrevention}
+            avgLatencyMs={data.avgLatencyMs}
+            wave2Loading={data.wave2Loading}
+          />
+        </section>
 
-        <DetailedMetrics
-          avgStability={data.skillStats.avgStability}
-          accuracyBySkillType={data.accuracyBySkillType}
-          lapsePrevention={data.lapsePrevention}
-          wave2Loading={data.wave2Loading}
-        />
-      </Stack>
+      </div>
     </Container>
   )
 }

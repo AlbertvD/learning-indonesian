@@ -1,5 +1,5 @@
 // src/components/progress/MasteryFunnel.tsx
-import { Anchor, Badge, Box, Text, Tooltip } from '@mantine/core'
+import { Anchor } from '@mantine/core'
 import { Link } from 'react-router-dom'
 import classes from './MasteryFunnel.module.css'
 
@@ -13,123 +13,87 @@ interface MasteryFunnelProps {
   }
 }
 
-const STAGE_ORDER = ['maintenance', 'productive', 'retrieving', 'anchoring', 'new'] as const
-type Stage = (typeof STAGE_ORDER)[number]
-
-const DUTCH_LABELS: Record<Stage, string> = {
-  maintenance: 'Onderhoud',
-  productive: 'Productief',
-  retrieving: 'Ophalen',
-  anchoring: 'Verankeren',
-  new: 'Nieuw',
-}
-
-const BAR_COLORS: Record<Stage, string> = {
-  maintenance: 'var(--success)',       // #32D74B green
-  productive:  '#30D5C8',              // teal
-  retrieving:  'var(--accent-primary)', // cyan
-  anchoring:   'var(--warning)',        // #FF9500 orange
-  new:         'var(--text-secondary)', // dimmed gray
-}
+const PIPELINE_STAGES = [
+  { key: 'anchoring' as const,   label: 'Anchoring' },
+  { key: 'retrieving' as const,  label: 'Retrieving' },
+  { key: 'productive' as const,  label: 'Productive' },
+  { key: 'maintenance' as const, label: 'Maintenance' },
+]
 
 export function MasteryFunnel({ itemsByStage }: MasteryFunnelProps) {
   const totalItems = Object.values(itemsByStage).reduce((a, b) => a + b, 0)
 
-  // Bottleneck: highest count among non-new stages (only if > 0)
-  const nonNewStages: Stage[] = ['anchoring', 'retrieving', 'productive', 'maintenance']
-  const bottleneckStage = nonNewStages.reduce<Stage | null>((best, stage) => {
-    if (itemsByStage[stage] === 0) return best
-    if (best === null) return stage
-    return itemsByStage[stage] > itemsByStage[best] ? stage : best
-  }, null)
+  // Bottleneck: the non-new stage with the most items (only if meaningful count)
+  const bottleneckKey = PIPELINE_STAGES.reduce<typeof PIPELINE_STAGES[number] | null>((best, stage) => {
+    if (itemsByStage[stage.key] === 0) return best
+    if (!best) return stage
+    return itemsByStage[stage.key] > itemsByStage[best.key] ? stage : best
+  }, null)?.key ?? null
 
   const anchoringCount = itemsByStage.anchoring
-  const showWarningBanner = totalItems > 0 && anchoringCount / totalItems > 0.5
+  const showWarning = totalItems > 0 && anchoringCount / totalItems > 0.5
+
+  if (totalItems === 0) {
+    return (
+      <div>
+        <div className="section-label">Leerpijplijn</div>
+        <p className={classes.empty}>Nog geen woorden geleerd.</p>
+      </div>
+    )
+  }
 
   return (
-    <Box className={classes.root}>
-      <Text className={classes.sectionTitle}>Leerpijplijn</Text>
+    <div>
+      <div className="section-label">Leerpijplijn</div>
 
-      {totalItems === 0 ? (
-        <Text c="dimmed" size="sm" mt="xs">
-          Nog geen woorden geleerd.
-        </Text>
-      ) : (
-        <>
-          <Text className={classes.summary}>
-            {totalItems} woorden in het systeem
-          </Text>
+      <div className={classes.card}>
+        <div className={classes.pipelineRow}>
+          {PIPELINE_STAGES.map((stage, i) => {
+            const count = itemsByStage[stage.key]
+            const isBottleneck = stage.key === bottleneckKey
+            const isLast = i === PIPELINE_STAGES.length - 1
+            const isFirst = i === 0
 
-          <Box className={classes.funnel}>
-            {STAGE_ORDER.map((stage) => {
-              const count = itemsByStage[stage]
-              const isBottleneck = stage === bottleneckStage
-              const barWidth = totalItems > 0 ? `${(count / totalItems) * 100}%` : '0%'
-              const label = isBottleneck ? `⚠ ${DUTCH_LABELS[stage]}` : DUTCH_LABELS[stage]
+            return (
+              <div
+                key={stage.key}
+                className={[
+                  classes.stage,
+                  isBottleneck ? classes.stageBottleneck : '',
+                  isFirst ? classes.stageFirst : '',
+                  isLast ? classes.stageLast : '',
+                ].filter(Boolean).join(' ')}
+              >
+                <div className={classes.stageName}>
+                  {isBottleneck && <span className={classes.warningIcon}>⚠</span>}
+                  {stage.label}
+                </div>
+                <div className={[classes.stageCount, isBottleneck ? classes.stageCountBottleneck : count === 0 ? classes.stageCountZero : ''].filter(Boolean).join(' ')}>
+                  {count}
+                </div>
+                <div className={classes.stageUnit}>items</div>
+              </div>
+            )
+          })}
+        </div>
 
-              return (
-                <Box
-                  key={stage}
-                  className={`${classes.row} ${isBottleneck ? classes.rowBottleneck : ''}`}
-                >
-                  <Text className={classes.stageLabel} title={DUTCH_LABELS[stage]}>
-                    {label}
-                  </Text>
-
-                  <Badge
-                    size="sm"
-                    variant="light"
-                    className={classes.countBadge}
-                  >
-                    {count}
-                  </Badge>
-
-                  <Box className={classes.barTrack}>
-                    <Box
-                      className={classes.bar}
-                      style={{
-                        width: barWidth,
-                        backgroundColor: BAR_COLORS[stage],
-                      }}
-                    />
-
-                    {/* Milestone star on maintenance row when count is 0 */}
-                    {stage === 'maintenance' && count === 0 && (
-                      <Tooltip
-                        label="Doel: Eerste 10 stabiele items. Items in Productive & Maintenance verhogen je rang."
-                        multiline
-                        w={260}
-                        withArrow
-                      >
-                        <Text component="span" className={classes.milestoneStar}>
-                          ★
-                        </Text>
-                      </Tooltip>
-                    )}
-                  </Box>
-                </Box>
-              )
-            })}
-          </Box>
-
-          {/* Warning banner */}
-          {showWarningBanner && (
-            <Text className={classes.warningBanner}>
-              ⚠ {anchoringCount} items wachten op hun eerste 'Poortcheck' om naar de Retrieving-fase te gaan.
-            </Text>
+        <div className={classes.footer}>
+          {showWarning && (
+            <div className={classes.warningBanner}>
+              <span>⚠️</span>
+              <span>{anchoringCount} items wachten op hun eerste poortcheck om naar Retrieving te gaan.</span>
+            </div>
           )}
-
-          {/* Next milestone pill */}
           <Anchor
             component={Link}
             to="/session?mode=gate_check"
             className={classes.milestonePill}
             underline="never"
           >
-            → Volgende mijlpaal: {Math.max(anchoringCount, 1)} item(s) naar Retrieving
+            → Volgende mijlpaal: item naar Retrieving
           </Anchor>
-        </>
-      )}
-    </Box>
+        </div>
+      </div>
+    </div>
   )
 }

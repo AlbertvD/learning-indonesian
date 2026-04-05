@@ -89,3 +89,28 @@ html[data-mantine-color-scheme="light"] body {
   border-color: var(--card-hover-border) !important;
   background:   var(--card-hover-bg) !important;
 }
+
+/* ── Section label ───────────────────────────────────────────────────────────
+   Usage: <div className="section-label">Geheugensterkte</div>
+   Renders as: GEHEUGENSTERKTE ─────────────────────────────────────────────
+─────────────────────────────────────────────────────────────────────────── */
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--card-border);
+}

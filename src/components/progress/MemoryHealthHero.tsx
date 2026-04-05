@@ -1,6 +1,5 @@
 // src/components/progress/MemoryHealthHero.tsx
 import { useState, useEffect } from 'react'
-import { SimpleGrid, Paper, Text, Badge, Box } from '@mantine/core'
 import classes from './MemoryHealthHero.module.css'
 
 interface MemoryHealthHeroProps {
@@ -12,10 +11,10 @@ function daysToPct(days: number): number {
   return Math.min(100, Math.round((days / 10) * 100))
 }
 
-function strengthLabel(pct: number): { label: string; color: string } {
-  if (pct >= 70) return { label: 'Sterk', color: 'var(--success)' }
-  if (pct >= 40) return { label: 'Ontwikkelen', color: 'var(--mantine-color-cyan-4)' }
-  return { label: 'Zwak', color: 'var(--warning)' }
+function strengthLabel(pct: number): { label: string; color: string; cls: string } {
+  if (pct >= 70) return { label: 'Sterk', color: 'var(--success)', cls: classes.sublabelStrong }
+  if (pct >= 40) return { label: 'Ontwikkelen', color: 'var(--warning)', cls: classes.sublabelDeveloping }
+  return { label: 'Zwak', color: 'var(--danger)', cls: classes.sublabelWeak }
 }
 
 const HALF_CIRCUMFERENCE = Math.PI * 62 // ≈ 194.779
@@ -25,9 +24,11 @@ interface GaugeCardProps {
   label: string
   directionLabel: string
   strokeColor: string
+  glowColor: string
+  valueClass: string
 }
 
-function GaugeCard({ pct, label, directionLabel, strokeColor }: GaugeCardProps) {
+function GaugeCard({ pct, label, directionLabel, strokeColor, glowColor, valueClass }: GaugeCardProps) {
   const [offset, setOffset] = useState(HALF_CIRCUMFERENCE)
   const strength = strengthLabel(pct)
 
@@ -39,54 +40,55 @@ function GaugeCard({ pct, label, directionLabel, strokeColor }: GaugeCardProps) 
   }, [pct])
 
   return (
-    <Paper withBorder p="lg" className={classes.gaugeCard}>
-      <div className={classes.svgContainer}>
-        <svg viewBox="0 0 160 88" className={classes.gaugeSvg} aria-hidden="true">
-          {/* Track */}
+    <div className={classes.gaugeCard}>
+      {/* Scanline texture */}
+      <div className={classes.scanline} aria-hidden="true" />
+
+      <div className={classes.gaugeWrap}>
+        <svg viewBox="0 0 160 160" className={classes.gaugeSvg} aria-hidden="true">
+          {/* Track — top half only */}
           <circle
-            cx={80}
-            cy={80}
-            r={62}
+            cx={80} cy={80} r={62}
             fill="none"
-            stroke="rgba(255,255,255,0.08)"
-            strokeWidth={10}
-            strokeDasharray={HALF_CIRCUMFERENCE}
+            stroke="var(--card-border)"
+            strokeWidth={12}
+            strokeDasharray={`${HALF_CIRCUMFERENCE} ${HALF_CIRCUMFERENCE}`}
             strokeDashoffset={0}
             strokeLinecap="round"
             transform="rotate(-180 80 80)"
           />
           {/* Fill */}
           <circle
-            cx={80}
-            cy={80}
-            r={62}
+            cx={80} cy={80} r={62}
             fill="none"
             stroke={strokeColor}
-            strokeWidth={10}
-            strokeDasharray={HALF_CIRCUMFERENCE}
+            strokeWidth={12}
+            strokeDasharray={`${HALF_CIRCUMFERENCE} ${HALF_CIRCUMFERENCE}`}
             strokeDashoffset={offset}
             strokeLinecap="round"
             transform="rotate(-180 80 80)"
             className={classes.arcFill}
+            style={{ filter: `drop-shadow(0 0 6px ${glowColor})` }}
           />
+          {/* Tick marks */}
+          <line x1="12" y1="80" x2="20" y2="80" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+          <line x1="78" y1="8" x2="78" y2="16" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+          <line x1="140" y1="80" x2="148" y2="80" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+          <text x="5" y="84" fill="var(--text-tertiary)" fontSize="8" fontFamily="monospace">0</text>
+          <text x="69" y="13" fill="var(--text-tertiary)" fontSize="8" fontFamily="monospace">50</text>
+          <text x="131" y="84" fill="var(--text-tertiary)" fontSize="8" fontFamily="monospace">100</text>
         </svg>
-        <div className={classes.gaugeCenter}>
-          <Text className={classes.pctText} fw={700}>
-            {pct}%
-          </Text>
+
+        {/* Value overlaid at bottom center */}
+        <div className={`${classes.gaugeValue} ${valueClass}`} style={{ color: strokeColor }}>
+          {pct}%
         </div>
       </div>
 
-      <Text ta="center" fw={600} size="sm" mt="xs">
-        {label}
-      </Text>
-      <Text ta="center" size="xs" style={{ color: strength.color }} fw={500} mt={2}>
-        {strength.label}
-      </Text>
-      <Text ta="center" size="xs" c="dimmed" mt={4}>
-        {directionLabel}
-      </Text>
-    </Paper>
+      <div className={classes.gaugeLabel}>{label}</div>
+      <div className={`${classes.gaugeSublabel} ${strength.cls}`}>{strength.label}</div>
+      <div className={classes.gaugeDirection}>{directionLabel}</div>
+    </div>
   )
 }
 
@@ -94,7 +96,7 @@ export function MemoryHealthHero({ avgRecognitionDays, avgRecallDays }: MemoryHe
   const recognitionPct = daysToPct(avgRecognitionDays)
   const recallPct = daysToPct(avgRecallDays)
   const gap = recognitionPct - recallPct
-  const showGapPill = Math.abs(gap) >= 20
+  const showGapPill = gap >= 20
 
   const insightText =
     gap >= 20
@@ -102,45 +104,41 @@ export function MemoryHealthHero({ avgRecognitionDays, avgRecallDays }: MemoryHe
       : 'Je geheugenbalans ziet er goed uit. Blijf consistent oefenen.'
 
   return (
-    <Box>
-      <Text
-        size="sm"
-        c="dimmed"
-        tt="uppercase"
-        mb="sm"
-        style={{ letterSpacing: '0.1em', fontWeight: 500 }}
-      >
-        Geheugensterkte
-      </Text>
+    <div>
+      <div className="section-label">Geheugensterkte</div>
 
-      <SimpleGrid cols={{ base: 1, sm: 2 }}>
+      <div className={classes.heroGrid}>
         <GaugeCard
           pct={recognitionPct}
           label="Herkenning"
           directionLabel="Indonesisch → NL/EN"
           strokeColor="var(--accent-primary)"
+          glowColor="var(--accent-primary-glow)"
+          valueClass={classes.valueRecognition}
         />
         <GaugeCard
           pct={recallPct}
           label="Oproepen"
           directionLabel="NL/EN → Indonesisch"
-          strokeColor="#BF5AF2"
+          strokeColor="var(--warning)"
+          glowColor="rgba(255,149,0,0.5)"
+          valueClass={classes.valueRecall}
         />
-      </SimpleGrid>
+      </div>
 
       {showGapPill && (
-        <Box mt="sm">
-          <Badge color={gap > 0 ? 'orange' : 'teal'} variant="light">
-            {gap > 0
-              ? `Oproepen loopt ${gap}% achter`
-              : 'Oproepen is sterk'}
-          </Badge>
-        </Box>
+        <div className={classes.gapRow}>
+          <span className={classes.gapRowLabel}>KLOOF ANALYSE</span>
+          <div className={classes.gapPill}>
+            <span className={classes.gapPillText}>{gap}% GAP</span>
+          </div>
+        </div>
       )}
 
-      <Box className={classes.insightBox} mt="sm">
-        <Text size="sm">{insightText}</Text>
-      </Box>
-    </Box>
+      <div className={classes.insightBox}>
+        <span className={classes.insightIcon}>💡</span>
+        <p className={classes.insightText}>{insightText}</p>
+      </div>
+    </div>
   )
 }

@@ -1,85 +1,74 @@
-import { Badge, Paper, Progress, Skeleton, Text } from '@mantine/core'
-import { IconAlertCircle } from '@tabler/icons-react'
+// src/components/progress/VulnerableItemsList.tsx
+import { Skeleton } from '@mantine/core'
 import classes from './VulnerableItemsList.module.css'
 
 interface VulnerableItemsListProps {
-  items: { id: string; indonesianText: string; lapseCount: number; consecutiveFailures: number }[] | null
+  items: { id: string; indonesianText: string; meaning: string; lapseCount: number; consecutiveFailures: number }[] | null
   loading: boolean
 }
 
-function getProgressColor(strength: number): string {
-  if (strength < 40) return 'red'
-  if (strength <= 60) return 'orange'
-  return 'cyan'
+function strengthColor(lapseCount: number): string {
+  if (lapseCount >= 3) return 'var(--danger)'
+  if (lapseCount >= 2) return 'var(--warning)'
+  return 'var(--text-secondary)'
+}
+
+function strengthPct(lapseCount: number): number {
+  return Math.max(10, 100 - lapseCount * 18)
 }
 
 export function VulnerableItemsList({ items, loading }: VulnerableItemsListProps) {
+  if (!loading && (items === null || items.length === 0)) return null
+
   return (
     <div>
-      <Text fw={600} size="sm" mb={2}>
-        Kwetsbare Woorden
-      </Text>
-      <Text c="dimmed" size="xs" mb="sm">
-        Woorden die de meeste aandacht nodig hebben
-      </Text>
+      <div className="section-label">Meest Kwetsbare Woorden</div>
 
-      {loading && (
-        <>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} height={36} mb="xs" />
-          ))}
-        </>
-      )}
+      <div className={classes.card}>
+        <p className={classes.subtitle}>
+          Woorden die het meest aandacht nodig hebben op basis van herhaalde fouten.
+        </p>
 
-      {!loading && items === null && (
-        <Text c="dimmed" size="sm">
-          Kon kwetsbare woorden niet laden.
-        </Text>
-      )}
+        {loading && (
+          <div className={classes.list}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} height={36} radius={6} />
+            ))}
+          </div>
+        )}
 
-      {!loading && items !== null && items.length === 0 && (
-        <Text c="dimmed" size="sm">
-          Geen kwetsbare woorden — goed gedaan! 🎉
-        </Text>
-      )}
+        {!loading && items !== null && items.length > 0 && (
+          <div className={classes.list}>
+            {items.slice(0, 5).map((item) => {
+              const pct = strengthPct(item.lapseCount)
+              const color = strengthColor(item.lapseCount)
+              const showLapseIcon = item.lapseCount > 0
 
-      {!loading && items !== null && items.length > 0 && (
-        <>
-          {items.slice(0, 5).map((item) => {
-            const strength = Math.max(0, 100 - item.lapseCount * 20)
-            const progressColor = getProgressColor(strength)
-            const lapseBadgeColor = item.lapseCount > 2 ? 'red' : 'orange'
-
-            return (
-              <Paper key={item.id} withBorder p="sm" mb="xs">
-                <div className={classes.row}>
-                  <Text fw={700} ff="monospace" size="sm" className={classes.word}>
-                    {item.indonesianText}
-                  </Text>
-
-                  <div className={classes.badges}>
-                    <Badge color={lapseBadgeColor} size="sm">
-                      {item.lapseCount}x
-                    </Badge>
-
-                    {item.consecutiveFailures > 0 && (
-                      <Badge color="red" variant="dot" size="sm" leftSection={
-                        <IconAlertCircle size={14} />
-                      }>
-                        !
-                      </Badge>
+              return (
+                <div key={item.id} className={classes.item}>
+                  <span className={classes.word}>{item.indonesianText}</span>
+                  <span className={classes.meaning}>{item.meaning}</span>
+                  <span className={classes.lapseCount}>
+                    {showLapseIcon && (
+                      <span className={classes.lapseIcon} style={{ borderColor: color, color }}>!</span>
                     )}
+                    {item.lapseCount} {item.lapseCount === 1 ? 'lapse' : 'lapses'}
+                  </span>
+                  <div className={classes.barWrap}>
+                    <div
+                      className={classes.bar}
+                      style={{ width: `${pct}%`, background: color }}
+                    />
                   </div>
-
-                  <div className={classes.progressWrapper}>
-                    <Progress value={strength} color={progressColor} size="xs" />
-                  </div>
+                  <span className={classes.pct} style={{ color }}>
+                    {pct}%
+                  </span>
                 </div>
-              </Paper>
-            )
-          })}
-        </>
-      )}
+              )
+            })}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

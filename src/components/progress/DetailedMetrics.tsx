@@ -1,5 +1,5 @@
 // src/components/progress/DetailedMetrics.tsx
-import { SimpleGrid, Paper, Text, Skeleton, Box } from '@mantine/core'
+import { Skeleton } from '@mantine/core'
 import classes from './DetailedMetrics.module.css'
 
 interface DetailedMetricsProps {
@@ -11,216 +11,175 @@ interface DetailedMetricsProps {
     recallSampleSize: number
   } | null
   lapsePrevention: { atRisk: number; rescued: number } | null
+  avgLatencyMs: { currentWeekMs: number | null; priorWeekMs: number | null } | null
   wave2Loading: boolean
-}
-
-function accuracyColor(pct: number): string {
-  if (pct >= 70) return 'var(--success)'
-  if (pct >= 50) return 'var(--warning)'
-  return 'var(--danger)'
 }
 
 function ForgettingCurve({ avgStability }: { avgStability: number }) {
   const stabilityX = Math.min(95, (avgStability / 10) * 100)
-  // Estimated y along the curve: approximate from the bezier path
-  // At x=0 y≈2, at x=50 y≈18, at x=100 y≈34
   const estimatedY = 18 + (stabilityX / 100) * 16
 
   return (
-    <svg
-      viewBox="0 0 100 36"
-      width="100%"
-      height="36"
-      style={{ display: 'block', marginTop: 6 }}
-      aria-hidden="true"
-    >
-      {/* Decay curve */}
+    <svg viewBox="0 0 80 36" className={classes.curvesvg} aria-hidden="true">
+      <line x1="0" y1="7.2" x2="80" y2="7.2" stroke="rgba(0,229,255,0.15)" strokeWidth="0.5" strokeDasharray="2,2" />
+      <text x="1" y="6" fill="rgba(0,229,255,0.35)" fontSize="4" fontFamily="monospace">90%</text>
       <path
-        d="M0,2 C20,4 35,10 50,18 C65,26 78,30 100,34"
+        d="M0,2 C12,4 22,8 30,13 C40,19 50,24 62,28 C68,30 74,31.5 80,34"
         fill="none"
-        stroke="#00E5FF"
+        stroke="rgba(0,229,255,0.5)"
         strokeWidth="1.5"
-        strokeOpacity="0.5"
+        strokeLinecap="round"
       />
-      {/* 90% retention horizontal dashed line at y=3.6 (10% from top of 36) */}
       <line
-        x1="0"
-        y1="3.6"
-        x2="100"
-        y2="3.6"
-        stroke="#00E5FF"
+        x1={stabilityX} y1="0"
+        x2={stabilityX} y2="36"
+        stroke="rgba(0,229,255,0.35)"
         strokeWidth="0.8"
-        strokeOpacity="0.4"
-        strokeDasharray="3,2"
+        strokeDasharray="1.5,1.5"
       />
-      {/* "90%" label */}
-      <text
-        x="1"
-        y="2.8"
-        fontSize="3.5"
-        fill="#00E5FF"
-        fillOpacity="0.6"
-        fontFamily="monospace"
-      >
-        90%
-      </text>
-      {/* Stability marker vertical dashed line */}
-      <line
-        x1={stabilityX}
-        y1="0"
-        x2={stabilityX}
-        y2="36"
-        stroke="#00E5FF"
-        strokeWidth="0.8"
-        strokeOpacity="0.4"
-        strokeDasharray="3,2"
-      />
-      {/* Circle at intersection */}
-      <circle
-        cx={stabilityX}
-        cy={estimatedY}
-        r="2"
-        fill="#00E5FF"
-        fillOpacity="0.8"
-      />
+      <circle cx={stabilityX} cy={estimatedY} r="2" fill="var(--accent-primary)" />
     </svg>
   )
 }
 
 function TileLabel({ children }: { children: string }) {
-  return (
-    <Text
-      size="xs"
-      ff="monospace"
-      tt="uppercase"
-      c="dimmed"
-      fw={600}
-      mb={4}
-      style={{ letterSpacing: '0.06em' }}
-    >
-      {children}
-    </Text>
-  )
-}
-
-function TileSubtext({ children }: { children: React.ReactNode }) {
-  return (
-    <Text size="xs" c="dimmed" mt={4}>
-      {children}
-    </Text>
-  )
+  return <div className={classes.tileLabel}>{children}</div>
 }
 
 export function DetailedMetrics({
   avgStability,
   accuracyBySkillType,
   lapsePrevention,
+  avgLatencyMs,
   wave2Loading,
 }: DetailedMetricsProps) {
-  const recognitionPct = Math.round((accuracyBySkillType?.recognitionAccuracy ?? 0) * 100)
+  const recPct = Math.round((accuracyBySkillType?.recognitionAccuracy ?? 0) * 100)
   const recallPct = Math.round((accuracyBySkillType?.recallAccuracy ?? 0) * 100)
   const rescued = lapsePrevention?.rescued ?? 0
-  const atRisk = lapsePrevention?.atRisk ?? 0
   const starCount = Math.min(5, rescued)
 
+  const currentMs = avgLatencyMs?.currentWeekMs ?? null
+  const priorMs = avgLatencyMs?.priorWeekMs ?? null
+  const savedMs = currentMs !== null && priorMs !== null ? priorMs - currentMs : null
+  const savedSec = savedMs !== null ? (savedMs / 1000).toFixed(1) : null
+  const currentSec = currentMs !== null ? (currentMs / 1000).toFixed(1) : null
+  const priorSec = priorMs !== null ? (priorMs / 1000).toFixed(1) : null
+
   return (
-    <Box>
-      <Text size="sm" fw={600} c="dimmed" tt="uppercase" ff="monospace" mb="sm" style={{ letterSpacing: '0.08em' }}>
-        Details
-      </Text>
+    <div>
+      <div className="section-label">Details</div>
 
-      <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="md">
-        {/* Tile 1 — Gemiddelde Stabiliteit */}
-        <Paper withBorder p="md">
+      <div className={classes.grid}>
+
+        {/* Tile 1 — Gem. Stabiliteit */}
+        <div className={classes.tile}>
           <TileLabel>Gem. Stabiliteit</TileLabel>
-          <Text
-            size="xl"
-            fw={700}
-            c="cyan"
-            className={classes.stabilityValue}
-            style={{ lineHeight: 1.2 }}
-          >
-            {avgStability.toFixed(1)}
-          </Text>
-          <ForgettingCurve avgStability={avgStability} />
-          <TileSubtext>dagen in geheugen</TileSubtext>
-        </Paper>
+          <div className={classes.tileRow}>
+            <span className={classes.bigNum} style={{ color: 'var(--accent-primary)', textShadow: '0 0 10px var(--accent-primary-glow)' }}>
+              {avgStability.toFixed(1)}
+            </span>
+            <ForgettingCurve avgStability={avgStability} />
+          </div>
+          <div className={classes.tileSub}>
+            dagen — na {avgStability.toFixed(1)}d daalt retentie onder 90%
+          </div>
+        </div>
 
-        {/* Tile 2 — Herkenningsnauwkeurigheid */}
-        <Paper withBorder p="md">
-          <TileLabel>Herkenning</TileLabel>
-          {wave2Loading && accuracyBySkillType === null ? (
-            <>
-              <Skeleton height={28} width={64} mb={4} />
-              <Skeleton height={14} width={80} />
-            </>
-          ) : (
-            <>
-              <Text
-                size="xl"
-                fw={700}
-                style={{ color: accuracyColor(recognitionPct), lineHeight: 1.2 }}
-              >
-                {recognitionPct}%
-              </Text>
-              <TileSubtext>{accuracyBySkillType?.recognitionSampleSize ?? 0} reviews</TileSubtext>
-            </>
-          )}
-        </Paper>
-
-        {/* Tile 3 — Oproepnauwkeurigheid */}
-        <Paper withBorder p="md">
-          <TileLabel>Oproepen</TileLabel>
-          {wave2Loading && accuracyBySkillType === null ? (
-            <>
-              <Skeleton height={28} width={64} mb={4} />
-              <Skeleton height={14} width={80} />
-            </>
-          ) : (
-            <>
-              <Text
-                size="xl"
-                fw={700}
-                style={{ color: accuracyColor(recallPct), lineHeight: 1.2 }}
-              >
-                {recallPct}%
-              </Text>
-              <TileSubtext>{accuracyBySkillType?.recallSampleSize ?? 0} reviews</TileSubtext>
-            </>
-          )}
-        </Paper>
-
-        {/* Tile 4 — Gered deze week */}
-        <Paper withBorder p="md">
-          <TileLabel>Gered (7 dgn)</TileLabel>
+        {/* Tile 2 — Zwakke Woorden Gered */}
+        <div className={classes.tile}>
+          <TileLabel>Zwakke Woorden Gered</TileLabel>
           {wave2Loading && lapsePrevention === null ? (
+            <Skeleton height={28} width={48} mb={4} />
+          ) : (
             <>
-              <Skeleton height={28} width={48} mb={4} />
-              <Skeleton height={14} width={90} />
+              <div className={classes.tileRow} style={{ gap: 10 }}>
+                <span className={classes.bigNum} style={{ color: 'var(--success)', textShadow: '0 0 10px rgba(50,215,75,0.4)' }}>
+                  {rescued}
+                </span>
+                {starCount > 0 && (
+                  <div className={classes.rescueBadges}>
+                    {Array.from({ length: starCount }).map((_, i) => (
+                      <span key={i} className={classes.rescueBadge} style={{ animationDelay: `${i * 0.08}s` }}>★</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className={classes.tileSub}>woorden gered van terugval</div>
+              <div className={classes.rescueBar} />
+            </>
+          )}
+        </div>
+
+        {/* Tile 3 — Nauwkeurigheid split */}
+        <div className={classes.tile}>
+          <TileLabel>Nauwkeurigheid</TileLabel>
+          {wave2Loading && accuracyBySkillType === null ? (
+            <Skeleton height={28} width={100} mb={4} />
+          ) : (
+            <>
+              <div className={classes.accuracySplit}>
+                <div className={classes.accuracyItem}>
+                  <div className={classes.accuracyNum} style={{ color: recPct >= 70 ? 'var(--success)' : recPct >= 50 ? 'var(--warning)' : 'var(--danger)' }}>
+                    {recPct}%
+                  </div>
+                  <div className={classes.accuracyLabel}>MCQ</div>
+                </div>
+                <div className={classes.accuracyDivider} />
+                <div className={classes.accuracyItem}>
+                  <div className={classes.accuracyNum} style={{ color: recallPct >= 70 ? 'var(--success)' : recallPct >= 50 ? 'var(--warning)' : 'var(--danger)' }}>
+                    {recallPct}%
+                  </div>
+                  <div className={classes.accuracyLabel}>Recall</div>
+                </div>
+              </div>
+              <div className={classes.accuracyTrack}>
+                <div
+                  className={classes.accuracyFill}
+                  style={{ width: `${recPct}%` }}
+                />
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Tile 4 — Tijd Bespaard */}
+        <div className={classes.tile}>
+          <TileLabel>Reactietijd</TileLabel>
+          {wave2Loading && avgLatencyMs === null ? (
+            <Skeleton height={28} width={80} mb={4} />
+          ) : currentMs === null ? (
+            <div className={classes.tileSub} style={{ marginTop: 8 }}>Nog geen data</div>
+          ) : savedMs !== null && savedMs > 0 ? (
+            <>
+              <div className={classes.tileRow} style={{ alignItems: 'baseline', gap: 4 }}>
+                <span className={classes.bigNum} style={{ color: 'var(--success)', textShadow: '0 0 10px rgba(50,215,75,0.4)' }}>
+                  {savedSec}
+                </span>
+                <span className={classes.tileUnit}>s/antwoord sneller</span>
+              </div>
+              <div className={classes.tileSub}>{priorSec}s → {currentSec}s gem.</div>
+              <div className={classes.speedBar}>
+                <div className={classes.speedBarLabel}>{priorSec}s</div>
+                <div className={classes.speedTrack}>
+                  <div className={classes.speedFill} style={{ width: `${Math.min(100, (Number(savedMs) / Number(priorMs)) * 100)}%` }} />
+                </div>
+                <div className={classes.speedBarLabel} style={{ color: 'var(--success)' }}>{currentSec}s</div>
+              </div>
             </>
           ) : (
             <>
-              <Text
-                size="xl"
-                fw={700}
-                style={{ color: 'var(--success)', lineHeight: 1.2 }}
-              >
-                {rescued}
-              </Text>
-              {starCount > 0 && (
-                <Text
-                  size="sm"
-                  style={{ color: 'var(--mantine-color-yellow-5)', letterSpacing: 2 }}
-                  mt={2}
-                >
-                  {'★'.repeat(starCount)}
-                </Text>
-              )}
-              <TileSubtext>{atRisk} nog at risk</TileSubtext>
+              <div className={classes.tileRow} style={{ alignItems: 'baseline', gap: 4 }}>
+                <span className={classes.bigNum} style={{ color: 'var(--text-secondary)' }}>
+                  {currentSec}
+                </span>
+                <span className={classes.tileUnit}>s/antwoord</span>
+              </div>
+              <div className={classes.tileSub}>gem. reactietijd deze week</div>
             </>
           )}
-        </Paper>
-      </SimpleGrid>
-    </Box>
+        </div>
+
+      </div>
+    </div>
   )
 }

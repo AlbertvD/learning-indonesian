@@ -220,9 +220,9 @@ beforeEach(() => {
   })
   vi.mocked(progressService.getLapsePrevention).mockResolvedValue({ atRisk: 1, rescued: 3 })
   vi.mocked(progressService.getVulnerableItems).mockResolvedValue([
-    { id: 'item-1', indonesianText: 'rumah', lapseCount: 3, consecutiveFailures: 1 },
-    { id: 'item-2', indonesianText: 'makan', lapseCount: 2, consecutiveFailures: 0 },
-    { id: 'item-3', indonesianText: 'besar', lapseCount: 2, consecutiveFailures: 0 },
+    { id: 'item-1', indonesianText: 'rumah', meaning: 'huis', lapseCount: 3, consecutiveFailures: 1 },
+    { id: 'item-2', indonesianText: 'makan', meaning: 'eten', lapseCount: 2, consecutiveFailures: 0 },
+    { id: 'item-3', indonesianText: 'besar', meaning: 'groot', lapseCount: 2, consecutiveFailures: 0 },
   ])
 })
 
