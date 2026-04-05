@@ -50,6 +50,7 @@ const NEW_ITEMS_FRACTION = 0.25  // e.g. 6 new items in a 25-word session
  */
 export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] {
   const { allItems, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, itemStates, skillStates, preferredSessionSize, lessonFilter, userLanguage, lessonOrder } = input
+  const sessionMode = input.sessionMode ?? 'standard'
 
   // Filter items by lesson if scoped
   let eligibleItems = allItems
@@ -125,24 +126,26 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
     ? applyLessonGate(newItems, eligibleItems, itemStates, contextsByItem, lessonOrder)
     : newItems
 
-  // Slot allocation — priority order: due → anchoring → weak → new
-  // New items fill remaining capacity up to their cap so the session
-  // approaches preferredSessionSize rather than stopping at 3 items.
-  const dueSlots = Math.round(preferredSessionSize * 0.55)
-  const anchoringSlots = Math.round(preferredSessionSize * 0.20)
-  const weakSlots = Math.round(preferredSessionSize * 0.10)
+  // Slot allocation — adjusted by session mode
+  // backlog_clear: maximise due reviews, zero anchoring, zero new
+  const dueSlots = (sessionMode === 'backlog_clear')
+    ? preferredSessionSize
+    : Math.round(preferredSessionSize * 0.55)
+  const anchoringSlots = (sessionMode === 'backlog_clear')
+    ? 0
+    : Math.round(preferredSessionSize * 0.20)
+  const weakSlots = (sessionMode === 'backlog_clear')
+    ? 0
+    : Math.round(preferredSessionSize * 0.10)
 
   const pickedDue = dueItems.slice(0, dueSlots)
   const pickedAnchoring = anchoringItems.slice(0, anchoringSlots)
   const pickedWeak = weakItems.slice(0, weakSlots)
 
   const reviewsFilled = pickedDue.length + pickedAnchoring.length + pickedWeak.length
-  const newSlots = calculateNewSlots(
-    dueItems.length,
-    anchoringItems.length,
-    reviewsFilled,
-    preferredSessionSize,
-  )
+  const newSlots = (sessionMode === 'backlog_clear' || sessionMode === 'recall_sprint' || sessionMode === 'push_to_productive')
+    ? 0
+    : calculateNewSlots(dueItems.length, anchoringItems.length, reviewsFilled, preferredSessionSize)
   const pickedNew = gatedNewItems.slice(0, newSlots)
 
   // Build exercise items from picked candidates

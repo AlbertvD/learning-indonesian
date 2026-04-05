@@ -95,10 +95,42 @@ describe('buildSessionQueue', () => {
 })
 
 describe('sessionMode', () => {
-  it('backlog_clear mode produces zero new items when nothing is due', () => {
-    // makeInput has 3 items all with no state (new) — backlog_clear should return empty
-    const queue = buildSessionQueue(makeInput({ sessionMode: 'backlog_clear' }))
-    expect(queue.length).toBe(0)
+  it('backlog_clear mode skips new items and fills session with due items only', () => {
+    const dueItems = Array.from({ length: 5 }, (_, i) => ({
+      id: `due${i}`, item_type: 'word' as const, base_text: `word${i}`,
+      normalized_text: `word${i}`, language: 'id', level: 'A1',
+      source_type: 'lesson' as const, source_vocabulary_id: null,
+      source_card_id: null, notes: null, is_active: true, created_at: '', updated_at: '',
+    }))
+    const newItems = Array.from({ length: 3 }, (_, i) => ({
+      id: `new${i}`, item_type: 'word' as const, base_text: `newword${i}`,
+      normalized_text: `newword${i}`, language: 'id', level: 'A1',
+      source_type: 'lesson' as const, source_vocabulary_id: null,
+      source_card_id: null, notes: null, is_active: true, created_at: '', updated_at: '',
+    }))
+    const allItems = [...dueItems, ...newItems]
+    const meaningsByItem: Record<string, any[]> = {}
+    const itemStates: Record<string, any> = {}
+    const skillStates: Record<string, any[]> = {}
+    for (const item of dueItems) {
+      meaningsByItem[item.id] = [{ id: `m${item.id}`, learning_item_id: item.id, translation_language: 'en', translation_text: `t${item.id}`, sense_label: null, usage_note: null, is_primary: true }]
+      itemStates[item.id] = { id: item.id, user_id: 'u1', learning_item_id: item.id, stage: 'retrieving', introduced_at: '', last_seen_at: '', priority: null, origin: null, times_seen: 5, is_leech: false, suspended: false, gate_check_passed: true, updated_at: '' }
+      skillStates[item.id] = [{ id: `ss${item.id}`, user_id: 'u1', learning_item_id: item.id, skill_type: 'form_recall', stability: 3, difficulty: 5, retrievability: 0.5, last_reviewed_at: new Date(Date.now() - 86400000).toISOString(), next_due_at: new Date(Date.now() - 3600000).toISOString(), success_count: 3, failure_count: 1, lapse_count: 0, consecutive_failures: 0, mean_latency_ms: null, hint_rate: null, updated_at: '' }]
+    }
+    for (const item of newItems) {
+      meaningsByItem[item.id] = [{ id: `m${item.id}`, learning_item_id: item.id, translation_language: 'en', translation_text: `t${item.id}`, sense_label: null, usage_note: null, is_primary: true }]
+    }
+
+    const queue = buildSessionQueue(makeInput({
+      allItems, meaningsByItem, itemStates, skillStates,
+      preferredSessionSize: 10, sessionMode: 'backlog_clear',
+    }))
+
+    // No new items (items with no state are new)
+    const newInQueue = queue.filter(q => !itemStates[q.exerciseItem.learningItem.id])
+    expect(newInQueue.length).toBe(0)
+    // All 5 due items should appear
+    expect(queue.length).toBe(5)
   })
 
   it('recall_sprint mode produces zero new items', () => {
