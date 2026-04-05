@@ -18,7 +18,6 @@ import {
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconChevronRight, IconFlame, IconTarget, IconCheck, IconAlertCircle, IconInfoCircle, IconAlertTriangle, IconSparkles } from '@tabler/icons-react'
-import type { SessionMode } from '@/lib/sessionEngine'
 import { lessonService } from '@/services/lessonService'
 import { learnerStateService } from '@/services/learnerStateService'
 import { goalService } from '@/services/goalService'
@@ -317,49 +316,6 @@ export function Dashboard() {
           setContinueUrl(`/lessons/${target.id}?section=${sectionIndex}`)
         }
 
-        // --- Sophisticated Minutes Today (merged from retention-v2) ---
-        const todayUTC = new Date()
-        todayUTC.setUTCHours(0, 0, 0, 0)
-        
-        const { data: todaySessions, error: sessionsError } = await supabase
-          .schema('indonesian')
-          .from('learning_sessions')
-          .select('started_at, ended_at, duration_seconds, id')
-          .eq('user_id', user.id)
-          .gte('started_at', todayUTC.toISOString())
-
-        if (!sessionsError && todaySessions) {
-          const intervals: [number, number][] = []
-          for (const session of todaySessions) {
-            const start = new Date(session.started_at).getTime()
-            let end: number | null = null
-            if (session.ended_at) {
-              end = new Date(session.ended_at).getTime()
-            } else {
-              const { data: latestReview } = await supabase
-                .schema('indonesian')
-                .from('review_events')
-                .select('created_at')
-                .eq('session_id', session.id)
-                .order('created_at', { ascending: false })
-                .limit(1)
-              end = (latestReview && latestReview.length > 0) ? new Date(latestReview[0].created_at).getTime() : start + 1000
-            }
-            if (end && end >= start) intervals.push([start, end])
-          }
-          if (intervals.length > 0) {
-            intervals.sort((a, b) => a[0] - b[0])
-            const merged: [number, number][] = [intervals[0]]
-            for (let i = 1; i < intervals.length; i++) {
-              const prev = merged[merged.length - 1]
-              const current = intervals[i]
-              if (current[0] <= prev[1]) prev[1] = Math.max(prev[1], current[1])
-              else merged.push(current)
-            }
-            // Active study minutes calculation complete (now part of Goal System)
-          }
-        }
-
         // --- Sophisticated Streak (merged from retention-v2) ---
         const { data: recentReviews, error: streakError } = await supabase
           .schema('indonesian')
@@ -434,13 +390,6 @@ export function Dashboard() {
   const todayPlan = goalProgress?.todayPlan
   const weeklyGoals = goalProgress?.weeklyGoals ?? []
 
-  const goalActionConfig: Record<string, { label: string; mode: SessionMode }> = {
-    recall_quality:    { label: T.dashboard.improveRecall,  mode: 'recall_sprint' },
-    usable_vocabulary: { label: T.dashboard.improveVocab,   mode: 'push_to_productive' },
-    review_health:     { label: T.dashboard.improveBacklog, mode: 'backlog_clear' },
-    consistency:       { label: T.dashboard.quickSession,   mode: 'quick' },
-  }
-
   return (
     <Container size="md" className={classes.dashboard}>
       <Stack gap="lg">
@@ -467,7 +416,7 @@ export function Dashboard() {
             
             <Stack gap="sm">
               {weeklyGoals.map(goal => (
-                <GoalRow key={goal.id} goal={goal} T={T} goalActionConfig={goalActionConfig} />
+                <GoalRow key={goal.id} goal={goal} T={T} />
               ))}
             </Stack>
           </Stack>
@@ -571,7 +520,7 @@ export function Dashboard() {
   )
 }
 
-function GoalRow({ goal, T, goalActionConfig }: { goal: WeeklyGoal, T: any, goalActionConfig: Record<string, { label: string; mode: SessionMode }> }) {
+function GoalRow({ goal, T }: { goal: WeeklyGoal, T: any }) {
   const titles: Record<string, string> = {
     consistency: T.dashboard.studyDays,
     recall_quality: T.dashboard.recallQuality,
@@ -616,17 +565,17 @@ function GoalRow({ goal, T, goalActionConfig }: { goal: WeeklyGoal, T: any, goal
         color={statusColors[goal.status]}
         size="sm"
       />
-      {(['at_risk', 'off_track', 'missed'] as string[]).includes(goal.status) && goalActionConfig[goal.goal_type] && (
+      {(['at_risk', 'off_track', 'missed'] as string[]).includes(goal.status) && GOAL_ACTION_CONFIG[goal.goal_type] && (
         <Button
           component={Link}
-          to={`/session?mode=${goalActionConfig[goal.goal_type].mode}`}
+          to={`/session?mode=${GOAL_ACTION_CONFIG[goal.goal_type].mode}`}
           variant="light"
           color={goal.status === 'at_risk' ? 'orange' : 'red'}
           size="xs"
           mt={4}
           fullWidth
         >
-          {goalActionConfig[goal.goal_type].label}
+          {GOAL_ACTION_CONFIG[goal.goal_type].title(T)}
         </Button>
       )}
     </Box>
