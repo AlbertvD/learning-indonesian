@@ -189,7 +189,7 @@ export const goalJobService = {
             .from('learner_stage_events')
             .select('learning_item_id')
             .eq('user_id', user.id)
-            .in('to_stage', ['productive', 'maintenance'])
+            .in('to_stage', ['retrieving', 'productive', 'maintenance'])
             .gte('created_at', startOfDay.toISOString())
             .lt('created_at', endOfDay.toISOString())
 
@@ -211,7 +211,7 @@ export const goalJobService = {
             .from('learner_item_state')
             .select('id', { count: 'exact' })
             .eq('user_id', user.id)
-            .in('stage', ['productive', 'maintenance'])
+            .in('stage', ['retrieving', 'productive', 'maintenance'])
 
           const usableItemsTotal = allUsableItems?.length ?? 0
 

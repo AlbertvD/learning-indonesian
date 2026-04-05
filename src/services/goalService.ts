@@ -420,7 +420,7 @@ export const goalService = {
       .from('learner_stage_events')
       .select('learning_item_id')
       .eq('user_id', userId)
-      .in('to_stage', ['productive', 'maintenance'])
+      .in('to_stage', ['retrieving', 'productive', 'maintenance'])
       .gte('created_at', goalSet.week_starts_at_utc)
       .lt('created_at', goalSet.week_ends_at_utc)
 
@@ -524,7 +524,7 @@ export const goalService = {
     const { data: skills, error } = await supabase
       .schema('indonesian')
       .from('learner_skill_state')
-      .select('next_due_at, skill_type')
+      .select('next_due_at, skill_type, mean_latency_ms')
       .eq('user_id', userId)
 
     if (error) throw error
@@ -581,11 +581,18 @@ export const goalService = {
     const recallSupply = skills.filter(s => s.skill_type === 'form_recall' && new Date(s.next_due_at) <= now).length
     const recallTargetToday = Math.min(desiredRecall, recallSupply + newTarget)
 
+    // Compute mean latency from historical data; fall back to 20 s if no data yet
+    const latencies = skills.map(s => s.mean_latency_ms).filter((ms): ms is number => ms != null)
+    const meanLatencyMs = latencies.length > 0
+      ? latencies.reduce((a, b) => a + b, 0) / latencies.length
+      : 20_000
+    const estimatedMinutes = Math.max(1, Math.ceil((dueTarget + newTarget) * meanLatencyMs / 60_000))
+
     return {
       due_reviews_today_target: dueTarget,
       new_items_today_target: newTarget,
       recall_interactions_today_target: recallTargetToday,
-      estimated_minutes_today: Math.ceil((dueTarget + newTarget) * 0.33)
+      estimated_minutes_today: estimatedMinutes
     }
   },
 

@@ -323,8 +323,11 @@ function selectExercises(
   const exercises: ExerciseItem[] = []
   const isSentenceType = item.item_type === 'sentence' || item.item_type === 'dialogue_chunk'
 
-  // recall_sprint: force recall exercise type regardless of stage
-  if (sessionMode === 'recall_sprint') {
+  // recall_sprint / quick: force recall exercise type.
+  // quick mode only applies recall-biasing to items that already have a form_recall
+  // skill (retrieving+); new and anchoring items fall through to recognition MCQ.
+  const hasRecallSkill = candidate.skills.some(s => s.skill_type === 'form_recall')
+  if (sessionMode === 'recall_sprint' || (sessionMode === 'quick' && hasRecallSkill && stage !== 'new' && stage !== 'anchoring')) {
     if (isSentenceType) {
       return [makeClozeExercise(item, meanings, contexts, variants)]
     }
