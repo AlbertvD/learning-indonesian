@@ -23,13 +23,12 @@ vi.mock('@/services/learnerStateService')
 vi.mock('@/services/lessonService')
 vi.mock('@/services/goalService')
 vi.mock('@/services/progressService')
-vi.mock('@/lib/supabase')
 vi.mock('@/lib/logger')
 
 import { learnerStateService } from '@/services/learnerStateService'
 import { lessonService } from '@/services/lessonService'
 import { goalService } from '@/services/goalService'
-import { supabase } from '@/lib/supabase'
+import { progressService } from '@/services/progressService'
 import { Progress } from '@/pages/Progress'
 import type { WeeklyGoal } from '@/types/learning'
 
@@ -211,18 +210,20 @@ beforeEach(() => {
     todayPlan: null,
   })
 
-  // Supabase direct call for daily rollups returns empty (no trend data)
-  vi.mocked(supabase.schema).mockReturnValue({
-    from: () => ({
-      select: () => ({
-        eq: () => ({
-          order: () => ({
-            limit: () => Promise.resolve({ data: [], error: null }),
-          }),
-        }),
-      }),
-    }),
-  } as any)
+  // Wave 2 service mocks
+  vi.mocked(learnerStateService.getDailyRollups).mockResolvedValue([])
+  vi.mocked(progressService.getAccuracyBySkillType).mockResolvedValue({
+    recognitionAccuracy: 0.84,
+    recognitionSampleSize: 50,
+    recallAccuracy: 0.63,
+    recallSampleSize: 50,
+  })
+  vi.mocked(progressService.getLapsePrevention).mockResolvedValue({ atRisk: 1, rescued: 3 })
+  vi.mocked(progressService.getVulnerableItems).mockResolvedValue([
+    { id: 'item-1', indonesianText: 'rumah', lapseCount: 3, consecutiveFailures: 1 },
+    { id: 'item-2', indonesianText: 'makan', lapseCount: 2, consecutiveFailures: 0 },
+    { id: 'item-3', indonesianText: 'besar', lapseCount: 2, consecutiveFailures: 0 },
+  ])
 })
 
 // ─────────────────────────────────────────────────────────────────────────────
