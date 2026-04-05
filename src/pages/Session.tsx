@@ -5,7 +5,7 @@ import { IconAlertCircle } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
 import { translations } from '@/lib/i18n'
-import { buildSessionQueue, type SessionBuildInput } from '@/lib/sessionEngine'
+import { buildSessionQueue, type SessionBuildInput, type SessionMode } from '@/lib/sessionEngine'
 import { applyPolicies, type SessionPoliciesContext } from '@/lib/sessionPolicies'
 import type { ReviewResult } from '@/lib/reviewHandler'
 import { learningItemService } from '@/services/learningItemService'
@@ -38,6 +38,10 @@ export function Session() {
   const [accountAgeDays, setAccountAgeDays] = useState(0)
 
   const lessonFilter = searchParams.get('lesson')
+  const sessionModeParam = searchParams.get('mode')
+  const sessionMode: SessionMode = (['backlog_clear', 'recall_sprint', 'push_to_productive', 'quick'].includes(sessionModeParam ?? ''))
+    ? sessionModeParam as SessionMode
+    : 'standard'
   const preferredSessionSize = profile?.preferredSessionSize ?? 15
   const didInit = useRef(false)
   const beforeGoalsRef = useRef<WeeklyGoal[] | null>(null)
@@ -177,6 +181,7 @@ export function Session() {
           lessonFilter,
           userLanguage: profile?.language ?? 'en',
           lessonOrder,
+          sessionMode,
         }
 
         const builtQueue = buildSessionQueue(input)
