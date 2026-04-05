@@ -112,10 +112,12 @@ export function getCtaSubtitle(weeklyGoals: WeeklyGoal[], T: any): string {
 
 function getRecallTooltip(goal: WeeklyGoal, T: any): string {
   const cfg = goal.goal_config_jsonb as Record<string, number> | null
-  if (cfg?.recognition_accuracy != null && cfg?.recall_accuracy != null) {
+  const hasGap = cfg?.recognition_accuracy != null && cfg?.recall_accuracy != null
+    && (cfg.recognition_accuracy - cfg.recall_accuracy) > 0.10
+  if (hasGap) {
     return T.dashboard.tooltipRecall
-      .replace('{recognition}', Math.round(cfg.recognition_accuracy * 100).toString())
-      .replace('{recall}', Math.round(cfg.recall_accuracy * 100).toString())
+      .replace('{recognition}', Math.round(cfg!.recognition_accuracy * 100).toString())
+      .replace('{recall}', Math.round(cfg!.recall_accuracy * 100).toString())
   }
   return T.dashboard.tooltipRecallBalanced
 }
