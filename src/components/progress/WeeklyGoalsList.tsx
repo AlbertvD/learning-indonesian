@@ -33,7 +33,7 @@ function formatValue(goal: WeeklyGoal): string {
 }
 
 export function WeeklyGoalsList({ goals, loading }: WeeklyGoalsListProps) {
-  if (!loading && goals === null) {
+  if (!loading && (goals === null || goals.length === 0)) {
     return null
   }
 

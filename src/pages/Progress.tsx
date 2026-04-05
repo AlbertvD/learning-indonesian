@@ -1,6 +1,6 @@
 // src/pages/Progress.tsx
 import { useEffect } from 'react'
-import { Container, Title, Stack, Center, Loader } from '@mantine/core'
+import { Container, Title, Text, Badge, Stack, Group, Center, Loader } from '@mantine/core'
 import { useAuthStore } from '@/stores/authStore'
 import { analyticsService } from '@/services/analyticsService'
 import { useProgressData } from '@/hooks/useProgressData'
@@ -27,7 +27,7 @@ export function Progress() {
 
   if (data.wave1Loading) {
     return (
-      <Center h="50vh">
+      <Center h="50vh" data-loading="true">
         <Loader size="xl" color="cyan" />
       </Center>
     )
@@ -36,7 +36,13 @@ export function Progress() {
   return (
     <Container size="md">
       <Stack gap="xl" my="xl" className={classes.stack}>
-        <Title order={2}>Geheugenoverzicht</Title>
+        <div>
+          <Group gap="sm" mb={4}>
+            <Title order={2}>Geheugenoverzicht</Title>
+            <Badge variant="light" color="cyan" size="sm">INDONESISCH · GEHEUGEN</Badge>
+          </Group>
+          <Text size="sm" c="dimmed">Leervoortgang en geheugengezondheid</Text>
+        </div>
 
         <MemoryHealthHero
           avgRecognitionDays={data.skillStats.avgRecognition}
