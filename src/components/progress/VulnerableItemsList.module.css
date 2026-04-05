@@ -1,11 +1,8 @@
 /* VulnerableItemsList.module.css */
 
 .card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: var(--r-md);
+  composes: card-default from global;
   padding: 16px 20px;
-  transition: var(--transition-base);
 }
 
 .subtitle {
@@ -27,20 +24,20 @@
   align-items: center;
   gap: 8px;
   padding: 8px 10px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   transition: border-color 0.2s;
 }
 
 .item:hover {
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: var(--border-light);
 }
 
 .word {
   font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
@@ -57,7 +54,7 @@
 
 .lapseCount {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--text-tertiary);
   display: flex;
   align-items: center;
@@ -73,7 +70,7 @@
   border: 1px solid;
   border-radius: 50%;
   font-size: 8px;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   flex-shrink: 0;
 }
 
@@ -93,8 +90,8 @@
 
 .pct {
   font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
   text-align: right;
 }
 

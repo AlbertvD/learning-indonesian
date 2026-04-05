@@ -1,16 +1,14 @@
 /* WeeklyGoalsList.module.css */
 
 .card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: var(--r-md);
+  composes: card-default from global;
   padding: 20px;
   height: 100%;
 }
 
 .cardTitle {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
   color: var(--text-secondary);
   letter-spacing: 0.02em;
   margin-bottom: 14px;
@@ -30,9 +28,9 @@
 /* ── Goal item ───────────────────────────────────────── */
 
 .goalItem {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 10px;
+  border-radius: var(--r-md);
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
@@ -41,7 +39,7 @@
 }
 
 .goalItem:hover {
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: var(--border-light);
 }
 
 .goalRow {
@@ -51,35 +49,35 @@
 }
 
 .goalName {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
   color: var(--text-primary);
 }
 
 .goalStatus {
   font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 2px 7px;
-  border-radius: 3px;
+  border-radius: var(--r-sm);
 }
 
 .statusOk {
   color: var(--success);
   background: var(--success-subtle);
-  border: 1px solid rgba(50, 215, 75, 0.2);
+  border: 1px solid var(--success-border);
 }
 
 .statusRisk {
   color: var(--warning);
   background: var(--warning-subtle);
-  border: 1px solid rgba(255, 149, 0, 0.2);
+  border: 1px solid var(--warning-border);
 }
 
 .goalDetail {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-secondary);
   font-family: var(--font-mono);
 }
@@ -99,10 +97,10 @@
 
 .goalFillOk {
   background: var(--success);
-  box-shadow: 0 0 6px rgba(50, 215, 75, 0.4);
+  box-shadow: 0 0 6px var(--success-glow);
 }
 
 .goalFillRisk {
   background: var(--warning);
-  box-shadow: 0 0 6px rgba(255, 149, 0, 0.4);
+  box-shadow: 0 0 6px var(--warning-glow);
 }

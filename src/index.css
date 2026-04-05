@@ -97,8 +97,8 @@ html[data-mantine-color-scheme="light"] body {
 
 .section-label {
   font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-tertiary);

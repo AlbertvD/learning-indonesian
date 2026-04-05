@@ -21,19 +21,19 @@ function ForgettingCurve({ avgStability }: { avgStability: number }) {
 
   return (
     <svg viewBox="0 0 80 36" className={classes.curvesvg} aria-hidden="true">
-      <line x1="0" y1="7.2" x2="80" y2="7.2" stroke="rgba(0,229,255,0.15)" strokeWidth="0.5" strokeDasharray="2,2" />
-      <text x="1" y="6" fill="rgba(0,229,255,0.35)" fontSize="4" fontFamily="monospace">90%</text>
+      <line x1="0" y1="7.2" x2="80" y2="7.2" stroke="var(--accent-primary-border)" strokeWidth="0.5" strokeDasharray="2,2" />
+      <text x="1" y="6" fill="var(--accent-primary-border)" fontSize="4" fontFamily="var(--font-mono)">90%</text>
       <path
         d="M0,2 C12,4 22,8 30,13 C40,19 50,24 62,28 C68,30 74,31.5 80,34"
         fill="none"
-        stroke="rgba(0,229,255,0.5)"
+        stroke="var(--accent-primary-dim)"
         strokeWidth="1.5"
         strokeLinecap="round"
       />
       <line
         x1={stabilityX} y1="0"
         x2={stabilityX} y2="36"
-        stroke="rgba(0,229,255,0.35)"
+        stroke="var(--accent-primary-border)"
         strokeWidth="0.8"
         strokeDasharray="1.5,1.5"
       />
@@ -93,7 +93,7 @@ export function DetailedMetrics({
           ) : (
             <>
               <div className={classes.tileRow} style={{ gap: 10 }}>
-                <span className={classes.bigNum} style={{ color: 'var(--success)', textShadow: '0 0 10px rgba(50,215,75,0.4)' }}>
+                <span className={classes.bigNum} style={{ color: 'var(--success)', textShadow: '0 0 10px var(--success-glow)' }}>
                   {rescued}
                 </span>
                 {starCount > 0 && (
@@ -152,7 +152,7 @@ export function DetailedMetrics({
           ) : savedMs !== null && savedMs > 0 ? (
             <>
               <div className={classes.tileRow} style={{ alignItems: 'baseline', gap: 4 }}>
-                <span className={classes.bigNum} style={{ color: 'var(--success)', textShadow: '0 0 10px rgba(50,215,75,0.4)' }}>
+                <span className={classes.bigNum} style={{ color: 'var(--success)', textShadow: '0 0 10px var(--success-glow)' }}>
                   {savedSec}
                 </span>
                 <span className={classes.tileUnit}>s/antwoord sneller</span>

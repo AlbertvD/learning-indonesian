@@ -6,16 +6,14 @@
 }
 
 .card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: var(--r-md);
+  composes: card-default from global;
   padding: 20px;
   height: 100%;
 }
 
 .cardTitle {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
   color: var(--text-secondary);
   letter-spacing: 0.02em;
   margin-bottom: 14px;
@@ -50,7 +48,7 @@
 
 .yLabel {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   color: var(--text-tertiary);
   line-height: 1;
 }
@@ -112,11 +110,11 @@
   left: 50%;
   transform: translateX(-50%);
   font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
   color: var(--danger);
   background: var(--danger-subtle);
-  border: 1px solid rgba(255, 69, 58, 0.3);
+  border: 1px solid var(--danger-border);
   border-radius: 3px;
   padding: 1px 4px;
 }
@@ -135,32 +133,32 @@
 }
 
 .barAccent {
-  background: linear-gradient(180deg, var(--accent-primary) 0%, rgba(0, 229, 255, 0.6) 100%);
-  box-shadow: 0 0 8px rgba(0, 229, 255, 0.2);
+  background: linear-gradient(180deg, var(--accent-primary) 0%, var(--accent-primary-dim) 100%);
+  box-shadow: 0 0 8px var(--accent-primary-border);
 }
 
 .barDanger {
-  background: linear-gradient(180deg, var(--danger) 0%, rgba(255, 69, 58, 0.7) 100%);
-  box-shadow: 0 0 12px rgba(255, 69, 58, 0.35);
+  background: linear-gradient(180deg, var(--danger) 0%, var(--danger-glow) 100%);
+  box-shadow: 0 0 12px var(--danger-glow);
 }
 
 .dayLabel {
   position: absolute;
   bottom: -20px;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   color: var(--text-tertiary);
   white-space: nowrap;
 }
 
 .dayLabelToday {
   color: var(--accent-primary);
-  font-weight: 700;
+  font-weight: var(--fw-bold);
 }
 
 .dayLabelDanger {
   color: var(--danger);
-  font-weight: 700;
+  font-weight: var(--fw-bold);
 }
 
 /* What-if tooltip */
@@ -171,10 +169,10 @@
   transform: translateX(-50%);
   width: 200px;
   background: var(--card-bg);
-  border: 1px solid rgba(255, 69, 58, 0.4);
-  border-radius: 8px;
+  border: 1px solid var(--danger-glow);
+  border-radius: var(--r-sm);
   padding: 10px 12px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-secondary);
   line-height: 1.5;
   pointer-events: none;
@@ -193,7 +191,7 @@
 
 .spikeNote {
   margin-top: 8px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-tertiary);
   font-family: var(--font-mono);
 }
@@ -208,7 +206,7 @@
 
 .projLabel {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-xs);
   color: var(--text-tertiary);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -234,20 +232,20 @@
 
 .projBar {
   width: 100%;
-  background: rgba(50, 215, 75, 0.35);
-  border: 1px solid rgba(50, 215, 75, 0.5);
+  background: var(--success-glow);
+  border: 1px solid var(--success-border);
   border-radius: 2px 2px 0 0;
   min-height: 2px;
 }
 
 .projDayLabel {
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--fs-xs);
   color: var(--text-tertiary);
 }
 
 .projSuccess {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--success);
   font-family: var(--font-mono);
   margin-top: 4px;

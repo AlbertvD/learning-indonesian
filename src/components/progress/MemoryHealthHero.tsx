@@ -71,12 +71,12 @@ function GaugeCard({ pct, label, directionLabel, strokeColor, glowColor, valueCl
             style={{ filter: `drop-shadow(0 0 6px ${glowColor})` }}
           />
           {/* Tick marks */}
-          <line x1="12" y1="80" x2="20" y2="80" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
-          <line x1="78" y1="8" x2="78" y2="16" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
-          <line x1="140" y1="80" x2="148" y2="80" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
-          <text x="5" y="84" fill="var(--text-tertiary)" fontSize="8" fontFamily="monospace">0</text>
-          <text x="69" y="13" fill="var(--text-tertiary)" fontSize="8" fontFamily="monospace">50</text>
-          <text x="131" y="84" fill="var(--text-tertiary)" fontSize="8" fontFamily="monospace">100</text>
+          <line x1="12" y1="80" x2="20" y2="80" stroke="var(--card-border)" strokeWidth="1" />
+          <line x1="78" y1="8" x2="78" y2="16" stroke="var(--card-border)" strokeWidth="1" />
+          <line x1="140" y1="80" x2="148" y2="80" stroke="var(--card-border)" strokeWidth="1" />
+          <text x="5" y="84" fill="var(--text-tertiary)" fontSize="8" fontFamily="var(--font-mono)">0</text>
+          <text x="69" y="13" fill="var(--text-tertiary)" fontSize="8" fontFamily="var(--font-mono)">50</text>
+          <text x="131" y="84" fill="var(--text-tertiary)" fontSize="8" fontFamily="var(--font-mono)">100</text>
         </svg>
 
         {/* Value overlaid at bottom center */}
@@ -121,7 +121,7 @@ export function MemoryHealthHero({ avgRecognitionDays, avgRecallDays }: MemoryHe
           label="Oproepen"
           directionLabel="NL/EN → Indonesisch"
           strokeColor="var(--warning)"
-          glowColor="rgba(255,149,0,0.5)"
+          glowColor="var(--warning-glow)"
           valueClass={classes.valueRecall}
         />
       </div>

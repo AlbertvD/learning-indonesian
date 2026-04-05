@@ -81,10 +81,19 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     // Status colors (same in both themes)
     '--success':        '#32D74B',
     '--success-subtle': 'rgba(50,215,75,0.10)',
+    '--success-border': 'rgba(50,215,75,0.25)',
+    '--success-glow':   'rgba(50,215,75,0.40)',
     '--danger':         '#FF453A',
     '--danger-subtle':  'rgba(255,69,58,0.10)',
+    '--danger-border':  'rgba(255,69,58,0.25)',
+    '--danger-glow':    'rgba(255,69,58,0.40)',
     '--warning':        '#FF9500',
     '--warning-subtle': 'rgba(255,149,0,0.10)',
+    '--warning-border': 'rgba(255,149,0,0.25)',
+    '--warning-glow':   'rgba(255,149,0,0.40)',
+
+    // Accent border (for pills, badges)
+    '--accent-primary-border': 'rgba(0,229,255,0.20)',
 
     // Mix ratio bar
     '--mix-recall': '#9c36b5',
