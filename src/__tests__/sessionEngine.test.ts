@@ -93,3 +93,17 @@ describe('buildSessionQueue', () => {
     }
   })
 })
+
+describe('sessionMode', () => {
+  it('backlog_clear mode produces zero new items when nothing is due', () => {
+    // makeInput has 3 items all with no state (new) — backlog_clear should return empty
+    const queue = buildSessionQueue(makeInput({ sessionMode: 'backlog_clear' }))
+    expect(queue.length).toBe(0)
+  })
+
+  it('recall_sprint mode produces zero new items', () => {
+    // All items in base makeInput are new (no states) — sprint has nothing to work with
+    const queue = buildSessionQueue(makeInput({ sessionMode: 'recall_sprint' }))
+    expect(queue.length).toBe(0)
+  })
+})

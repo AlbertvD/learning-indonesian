@@ -7,6 +7,8 @@ import type {
 import type { ExerciseVariant } from '@/types/contentGeneration'
 import { getRetrievability } from '@/lib/fsrs'
 
+export type SessionMode = 'standard' | 'backlog_clear' | 'recall_sprint' | 'push_to_productive' | 'quick'
+
 export interface SessionBuildInput {
   allItems: LearningItem[]
   meaningsByItem: Record<string, ItemMeaning[]>
@@ -20,6 +22,7 @@ export interface SessionBuildInput {
   userLanguage: 'en' | 'nl'
   // lessonId → order_index; when provided, new items are gated by lesson mastery
   lessonOrder?: Record<string, number>
+  sessionMode?: SessionMode
 }
 
 // Fraction of a lesson's items that must reach 'retrieving' (or higher) before
