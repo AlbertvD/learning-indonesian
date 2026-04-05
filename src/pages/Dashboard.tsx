@@ -207,25 +207,25 @@ const GOAL_ACTION_CONFIG: Record<string, {
   variant: 'amber' | 'teal'
 }> = {
   recall_quality: {
-    title: (T) => T.dashboard.focusRecall,
+    title: (T) => T.dashboard.improveRecall,
     focus: (T) => T.dashboard.focusRecall,
     mode: 'recall_sprint',
     variant: 'amber',
   },
   usable_vocabulary: {
-    title: (T) => T.dashboard.focusVocab,
+    title: (T) => T.dashboard.improveVocab,
     focus: (T) => T.dashboard.focusVocab,
     mode: 'push_to_productive',
     variant: 'teal',
   },
   review_health: {
-    title: (T) => T.dashboard.focusBacklog,
+    title: (T) => T.dashboard.improveBacklog,
     focus: (T) => T.dashboard.focusBacklog,
     mode: 'backlog_clear',
     variant: 'amber',
   },
   consistency: {
-    title: (T) => T.dashboard.focusConsistency,
+    title: (T) => T.dashboard.quickSession,
     focus: (T) => T.dashboard.focusConsistency,
     mode: 'quick',
     variant: 'amber',
