@@ -375,3 +375,443 @@
   background: var(--card-hover-bg) !important;
   border-color: var(--card-hover-border) !important;
 }
+
+/* ─── Ring Scorecard ─── */
+
+.scorecardGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .scorecardGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.ringCard {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.ringWrapper {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.ringBg {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--card-border) 0deg, var(--card-border) 360deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 6px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 6px));
+}
+
+.ringFill {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--ring-color) 0deg, var(--ring-color) var(--ring-deg), transparent var(--ring-deg));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 6px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 6px));
+}
+
+.ringCenter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ringLabel {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  text-align: center;
+}
+
+.ringValue {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.statusPill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.statusPillAchieved { background: var(--success-subtle); color: var(--success); }
+.statusPillOnTrack  { background: var(--accent-primary-subtle); color: var(--accent-primary); }
+.statusPillAtRisk   { background: var(--warning-subtle); color: var(--warning); }
+.statusPillMissed   { background: var(--danger-subtle); color: var(--danger); }
+
+.ringInfoTrigger {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  opacity: 0.5;
+  cursor: help;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  transition: opacity 0.15s ease;
+}
+
+.ringInfoTrigger:hover { opacity: 1; }
+
+/* ─── Action Cards ─── */
+
+.actionCardList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.actionCardBase {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.actionCardBase:hover {
+  background: var(--card-hover-bg);
+  transform: translateY(-1px);
+}
+
+.actionCardAmberBorder { border-left: 3px solid var(--warning); }
+.actionCardAmberBorder:hover { border-left: 3px solid var(--warning); }
+
+.actionCardTealBorder { border-left: 3px solid var(--accent-primary); }
+.actionCardTealBorder:hover { border-left: 3px solid var(--accent-primary); }
+
+.actionCardRedBorder { border-left: 3px solid var(--danger); }
+.actionCardRedBorder:hover { border-left: 3px solid var(--danger); }
+
+.actionCardIconBox {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.actionCardIconAmber { background: var(--warning-subtle); }
+.actionCardIconTeal  { background: var(--accent-primary-subtle); }
+.actionCardIconRed   { background: var(--danger-subtle); }
+
+.actionCardBody { flex: 1; min-width: 0; }
+
+.actionCardTitle {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.actionCardFocus {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.actionCardReason {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+.actionCardChevron {
+  color: var(--text-secondary);
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+/* ─── Hero Card (gradient) ─── */
+
+.heroCardV2 {
+  background: linear-gradient(135deg, #0c8599 0%, #1a2a3a 60%, var(--card-bg) 100%);
+  border: 1px solid rgba(21, 170, 191, 0.25);
+  border-radius: var(--r-lg);
+  padding: 28px 24px;
+}
+
+:global(html[data-mantine-color-scheme="light"]) .heroCardV2 {
+  background: linear-gradient(135deg, var(--accent-primary-subtle) 0%, var(--card-bg) 60%, var(--bg-main) 100%);
+  border: 1px solid var(--card-border);
+}
+
+.heroV2Title {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 18px;
+}
+
+:global(html[data-mantine-color-scheme="light"]) .heroV2Title {
+  color: var(--text-primary);
+}
+
+.heroV2Stats {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.heroV2Stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .heroV2Stat {
+  color: var(--text-primary);
+}
+
+.heroV2Subtext {
+  font-size: var(--fs-xs);
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 16px;
+}
+
+:global(html[data-mantine-color-scheme="light"]) .heroV2Subtext {
+  color: var(--text-secondary);
+}
+
+.mixRatioSection { margin-bottom: 20px; }
+
+.mixRatioLabel {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 8px;
+}
+
+:global(html[data-mantine-color-scheme="light"]) .mixRatioLabel {
+  color: var(--text-secondary);
+}
+
+.mixBar {
+  display: flex;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.mixBarSegment {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.mixLegend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.mixLegendItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-xs);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .mixLegendItem {
+  color: var(--text-secondary);
+}
+
+.mixLegendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mixNote {
+  font-size: var(--fs-xs);
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .mixNote {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.heroCta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  padding: 14px 0 12px;
+  background: var(--accent-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.heroCta:hover { filter: brightness(0.9); }
+
+.heroCtaMain {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-lg);
+  font-weight: 700;
+}
+
+.heroCtaSub {
+  font-size: var(--fs-xs);
+  opacity: 0.75;
+  font-weight: 500;
+}
+
+.heroPostNote {
+  text-align: center;
+  margin-top: 10px;
+  font-size: var(--fs-xs);
+  color: rgba(255, 255, 255, 0.35);
+  font-style: italic;
+}
+
+:global(html[data-mantine-color-scheme="light"]) .heroPostNote {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+/* ─── Secondary + Rescue Cards ─── */
+
+.secondaryCard {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.secondaryCard:hover {
+  border-color: var(--accent-primary);
+  background: var(--card-hover-bg);
+  transform: translateY(-2px);
+}
+
+.rescueCard {
+  background: var(--danger-subtle);
+  border: 1px solid var(--card-border);
+  border-left: 3px solid var(--danger);
+  border-radius: var(--r-md);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.rescueCard:hover {
+  border-color: var(--danger);
+  border-left: 3px solid var(--danger);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  transform: translateY(-2px);
+}
+
+.lapseBadge {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--danger-subtle);
+  color: var(--danger);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+}
+
+.cardLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cardIconBox {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cardIconAccent  { background: var(--accent-primary-subtle); }
+.cardIconDanger  { background: var(--danger-subtle); }
+
+.cardTitle {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.cardTitleDanger { color: var(--danger); }
+
+.cardSubtitle {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
