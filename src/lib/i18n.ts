@@ -59,6 +59,10 @@ export const nl = {
     setTimezone: 'Tijdzone instellen',
     setTimezoneDesc: 'Stel je tijdzone in om je wekelijkse doelen bij te houden.',
     goToProfile: 'Ga naar profiel',
+    improveRecall: 'Oefen herinnering',
+    improveVocab: 'Vergroot woordenschat',
+    improveBacklog: 'Verminder achterstand',
+    quickSession: 'Korte sessie',
   },
   profile: {
     title: 'Profiel',
@@ -396,6 +400,10 @@ export const en: typeof nl = {
     setTimezone: 'Set your timezone',
     setTimezoneDesc: 'Set your timezone in your profile to track your weekly goals correctly.',
     goToProfile: 'Go to Profile',
+    improveRecall: 'Drill recall',
+    improveVocab: 'Push vocabulary',
+    improveBacklog: 'Clear backlog',
+    quickSession: 'Quick session',
   },
   profile: {
     title: 'Profile',

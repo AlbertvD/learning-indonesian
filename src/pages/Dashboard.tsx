@@ -17,6 +17,7 @@ import {
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconChevronRight, IconFlame, IconTarget, IconCheck, IconAlertCircle } from '@tabler/icons-react'
+import type { SessionMode } from '@/lib/sessionEngine'
 import { lessonService } from '@/services/lessonService'
 import { learnerStateService } from '@/services/learnerStateService'
 import { goalService } from '@/services/goalService'
@@ -199,6 +200,13 @@ export function Dashboard() {
   const todayPlan = goalProgress?.todayPlan
   const weeklyGoals = goalProgress?.weeklyGoals ?? []
 
+  const goalActionConfig: Record<string, { label: string; mode: SessionMode }> = {
+    recall_quality:    { label: T.dashboard.improveRecall,  mode: 'recall_sprint' },
+    usable_vocabulary: { label: T.dashboard.improveVocab,   mode: 'push_to_productive' },
+    review_health:     { label: T.dashboard.improveBacklog, mode: 'backlog_clear' },
+    consistency:       { label: T.dashboard.quickSession,   mode: 'quick' },
+  }
+
   return (
     <Container size="md" className={classes.dashboard}>
       <Stack gap="lg">
@@ -225,7 +233,7 @@ export function Dashboard() {
             
             <Stack gap="sm">
               {weeklyGoals.map(goal => (
-                <GoalRow key={goal.id} goal={goal} T={T} />
+                <GoalRow key={goal.id} goal={goal} T={T} goalActionConfig={goalActionConfig} />
               ))}
             </Stack>
           </Stack>
@@ -329,7 +337,7 @@ export function Dashboard() {
   )
 }
 
-function GoalRow({ goal, T }: { goal: WeeklyGoal, T: any }) {
+function GoalRow({ goal, T, goalActionConfig }: { goal: WeeklyGoal, T: any, goalActionConfig: Record<string, { label: string; mode: string }> }) {
   const titles: Record<string, string> = {
     consistency: T.dashboard.studyDays,
     recall_quality: T.dashboard.recallQuality,
@@ -369,11 +377,24 @@ function GoalRow({ goal, T }: { goal: WeeklyGoal, T: any }) {
           {formatValue(goal.current_value_numeric, goal.goal_type)} / {formatValue(goal.target_value_numeric, goal.goal_type)}
         </Text>
       </Group>
-      <Progress 
-        value={Math.min(100, (goal.current_value_numeric / goal.target_value_numeric) * 100)} 
-        color={statusColors[goal.status]} 
-        size="sm" 
+      <Progress
+        value={Math.min(100, (goal.current_value_numeric / goal.target_value_numeric) * 100)}
+        color={statusColors[goal.status]}
+        size="sm"
       />
+      {(['at_risk', 'off_track', 'missed'] as string[]).includes(goal.status) && goalActionConfig[goal.goal_type] && (
+        <Button
+          component={Link}
+          to={`/session?mode=${goalActionConfig[goal.goal_type].mode}`}
+          variant="light"
+          color={goal.status === 'at_risk' ? 'orange' : 'red'}
+          size="xs"
+          mt={4}
+          fullWidth
+        >
+          {goalActionConfig[goal.goal_type].label}
+        </Button>
+      )}
     </Box>
   )
 }
