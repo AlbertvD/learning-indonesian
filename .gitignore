@@ -17,6 +17,10 @@ content/extracted/
 # Git worktrees — isolated workspaces
 .worktrees/
 
+# Local tool config — not committed
+.claude/
+.playwright-mcp/
+
 # TypeScript build artifacts
 *.tsbuildinfo
 *.d.ts
