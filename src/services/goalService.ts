@@ -329,6 +329,7 @@ export const goalService = {
       let status: GoalStatus = 'on_track'
       let isProvisional = false
       let provisionalReason = null
+      let goalConfigJsonb: Record<string, unknown> | null = null
 
       if (goal.goal_type === 'consistency') {
         const studyDays = await this.getStudyDaysCount(userId, goalSet)
@@ -336,12 +337,17 @@ export const goalService = {
         status = this.computeConsistencyStatus(currentVal, goal.target_value_numeric, goalSet)
       } 
       else if (goal.goal_type === 'recall_quality') {
-        const stats = await this.getRecallStats(userId, goalSet)
-        currentVal = stats.accuracy
-        sampleSize = stats.sampleSize
+        const stats = await this.getRecallAndRecognitionStats(userId, goalSet)
+        currentVal = stats.recallAccuracy
+        sampleSize = stats.recallSampleSize
         isProvisional = sampleSize < 10
         if (isProvisional) provisionalReason = 'Low sample size'
         status = this.computeRecallStatus(currentVal, goal.target_value_numeric, sampleSize)
+        goalConfigJsonb = {
+          recognition_accuracy: stats.recognitionAccuracy,
+          recall_accuracy: stats.recallAccuracy,
+          recognition_sample_size: stats.recognitionSampleSize,
+        }
       }
       else if (goal.goal_type === 'usable_vocabulary') {
         currentVal = await this.getUsableVocabGain(userId, goalSet)
@@ -352,17 +358,20 @@ export const goalService = {
         status = this.computeHealthStatus(currentVal, goal.target_value_numeric)
       }
 
+      const updatePayload: Record<string, unknown> = {
+        current_value_numeric: currentVal,
+        status,
+        sample_size: sampleSize,
+        is_provisional: isProvisional,
+        provisional_reason: provisionalReason,
+        updated_at: new Date().toISOString(),
+      }
+      if (goalConfigJsonb !== null) updatePayload.goal_config_jsonb = goalConfigJsonb
+
       const { data: updatedGoal, error } = await supabase
         .schema('indonesian')
         .from('learner_weekly_goals')
-        .update({
-          current_value_numeric: currentVal,
-          status,
-          sample_size: sampleSize,
-          is_provisional: isProvisional,
-          provisional_reason: provisionalReason,
-          updated_at: new Date().toISOString()
-        })
+        .update(updatePayload)
         .eq('id', goal.id)
         .select()
         .single()
@@ -392,6 +401,38 @@ export const goalService = {
       days.add(dateStr)
     }
     return days.size
+  },
+
+  async getRecallAndRecognitionStats(userId: string, goalSet: WeeklyGoalSet): Promise<{
+    recallAccuracy: number
+    recallSampleSize: number
+    recognitionAccuracy: number
+    recognitionSampleSize: number
+  }> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('review_events')
+      .select('was_correct, skill_type')
+      .eq('user_id', userId)
+      .in('skill_type', ['form_recall', 'recognition'])
+      .gte('created_at', goalSet.week_starts_at_utc)
+      .lt('created_at', goalSet.week_ends_at_utc)
+
+    if (error) throw error
+
+    const recall = data.filter(e => e.skill_type === 'form_recall')
+    const recognition = data.filter(e => e.skill_type === 'recognition')
+
+    return {
+      recallAccuracy: recall.length > 0
+        ? recall.filter(e => e.was_correct).length / recall.length
+        : 0,
+      recallSampleSize: recall.length,
+      recognitionAccuracy: recognition.length > 0
+        ? recognition.filter(e => e.was_correct).length / recognition.length
+        : 0,
+      recognitionSampleSize: recognition.length,
+    }
   },
 
   async getRecallStats(userId: string, goalSet: WeeklyGoalSet) {
