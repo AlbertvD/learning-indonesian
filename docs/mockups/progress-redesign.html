@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="nl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geheugenoverzicht — Learning Indonesian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  /* ── CSS Variables ─────────────────────────────────────────── */
+  :root {
+    --bg-body:      #000000;
+    --bg-surface:   #0C0C0E;
+    --bg-card:      rgba(255,255,255,0.06);
+    --bg-card-hover:rgba(255,255,255,0.09);
+    --border:       rgba(255,255,255,0.07);
+    --border-hover: #00E5FF;
+
+    --accent:       #00E5FF;
+    --accent-dim:   rgba(0,229,255,0.12);
+    --accent-glow:  rgba(0,229,255,0.35);
+
+    --text-primary:   #FFFFFF;
+    --text-secondary: #8E8E93;
+    --text-tertiary:  #55525C;
+
+    --success:  #4ECA7A;
+    --warning:  #F0A940;
+    --danger:   #FF453A;
+
+    --success-dim: rgba(78,202,122,0.12);
+    --warning-dim: rgba(240,169,64,0.15);
+    --danger-dim:  rgba(255,69,58,0.12);
+
+    --radius: 12px;
+    --gap: 16px;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --font-display: 'Syne', system-ui, sans-serif;
+  }
+
+  [data-theme="light"] {
+    --bg-body:      #F0F0F2;
+    --bg-surface:   #E4E4E8;
+    --bg-card:      rgba(0,0,0,0.04);
+    --bg-card-hover:rgba(0,0,0,0.07);
+    --border:       rgba(0,0,0,0.08);
+    --border-hover: #0077AA;
+
+    --accent:       #0077AA;
+    --accent-dim:   rgba(0,119,170,0.10);
+    --accent-glow:  rgba(0,119,170,0.30);
+
+    --text-primary:   #0A0A0C;
+    --text-secondary: #5C5C62;
+    --text-tertiary:  #9E9EA3;
+
+    --success:  #22863A;
+    --warning:  #C47800;
+    --danger:   #D0211C;
+
+    --success-dim: rgba(34,134,58,0.10);
+    --warning-dim: rgba(196,120,0,0.12);
+    --danger-dim:  rgba(208,33,28,0.10);
+  }
+
+  /* ── Reset & Base ───────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-body);
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    /* subtle grain overlay */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  /* ── Layout ─────────────────────────────────────────────────── */
+  .page-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── Theme Toggle ───────────────────────────────────────────── */
+  .theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 24px;
+    z-index: 100;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    letter-spacing: 0.04em;
+    backdrop-filter: blur(8px);
+  }
+  .theme-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── Header ─────────────────────────────────────────────────── */
+  .header {
+    margin-bottom: 36px;
+    position: relative;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 6px;
+    width: 3px;
+    height: 42px;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+  .header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    line-height: 1.1;
+  }
+  .header .subtitle {
+    margin-top: 6px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+  .header .badge {
+    display: inline-block;
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 4px;
+    padding: 3px 8px;
+  }
+
+  /* ── Section label ──────────────────────────────────────────── */
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── Card ───────────────────────────────────────────────────── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card:hover {
+    border-color: rgba(0,229,255,0.25);
+    background: var(--bg-card-hover);
+    box-shadow: 0 0 24px rgba(0,229,255,0.06);
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.02em;
+    margin-bottom: 16px;
+  }
+
+  /* ── Section spacing ────────────────────────────────────────── */
+  .section { margin-bottom: 32px; }
+
+  /* ═══════════════════════════════════════════════════════════ */
+  /* Section 1: Memory Health Hero — Arc Gauges                  */
+  /* ═══════════════════════════════════════════════════════════ */
+  .memory-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+    margin-bottom: var(--gap);
+  }
+
+  .gauge-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .gauge-card:hover {
+    border-color: rgba(0,229,255,0.25);
+    box-shadow: 0 0 32px rgba(0,229,255,0.07);
+  }
+
+  .gauge-wrap {
+    position: relative;
+    width: 160px;
+    height: 88px; /* half-circle viewport */
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  /* SVG gauge — full circle rendered, clipped to top half */
+  .gauge-svg {
+    width: 160px;
+    height: 160px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotate(-90deg);
+  }
+
+  .gauge-track {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 12;
+  }
+  .gauge-fill {
+    fill: none;
+    stroke-width: 12;
+    stroke-linecap: round;
+    stroke-dasharray: 251.2; /* circumference of r=40, but we use r=62 for 160px */
+    stroke-dashoffset: 251.2;
+    transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+  }
+  .gauge-fill--recognition { stroke: var(--accent); filter: drop-shadow(0 0 6px var(--accent-glow)); }
+  .gauge-fill--recall { stroke: var(--warning); filter: drop-shadow(0 0 6px rgba(240,169,64,0.5)); }
+
+  .gauge-value {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .gauge-value--recognition { color: var(--accent); text-shadow: 0 0 16px var(--accent-glow); }
+  .gauge-value--recall { color: var(--warning); text-shadow: 0 0 16px rgba(240,169,64,0.4); }
+
+  .gauge-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text-primary);
+    margin-top: 4px;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+  }
+  .gauge-sublabel {
+    margin-top: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.06em;
+    font-family: var(--font-mono);
+  }
+  .gauge-sublabel--strong {
+    color: var(--success);
+    background: var(--success-dim);
+    border: 1px solid rgba(78,202,122,0.2);
+  }
+  .gauge-sublabel--developing {
+    color: var(--warning);
+    background: var(--warning-dim);
+    border: 1px solid rgba(240,169,64,0.2);
+  }
+
+  /* Scanline texture on gauge cards */
+  .gauge-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(255,255,255,0.012) 3px,
+      rgba(255,255,255,0.012) 4px
+    );
+    pointer-events: none;
+    border-radius: var(--radius);
+  }
+
+  /* Scale ticks on gauge */
+  .gauge-ticks {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 160px;
+    height: 88px;
+    pointer-events: none;
+  }
+
+  /* Insight box */
+  .insight-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .insight-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .insight-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* ═══════════════════════════════════════════════════════════ */
+  /* Section 2: Mastery Funnel / Pipeline                        */
+  /* ═══════════════════════════════════════════════════════════ */
+  .pipeline-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 14px;
+  }
+
+  .pipeline-stage {
+    flex: 1;
+    position: relative;
+    padding: 16px 20px 16px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .pipeline-stage:first-child {
+    border-left: 1px solid var(--border);
+    border-radius: var(--radius) 0 0 var(--radius);
+    padding-left: 20px;
+  }
+  .pipeline-stage:last-child {
+    border-right: 1px solid var(--border);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  /* Chevron arrow — right border via clip-path on a pseudo-element */
+  .pipeline-stage:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: -14px;
+    top: 0;
+    width: 28px;
+    height: 100%;
+    background: var(--bg-card);
+    clip-path: polygon(0 0, 60% 0, 100% 50%, 60% 100%, 0 100%, 40% 50%);
+    z-index: 2;
+    transition: background 0.2s;
+  }
+  /* Border for the chevron — two triangles with borders */
+  .pipeline-stage:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    right: -16px;
+    top: 0;
+    width: 30px;
+    height: 100%;
+    background: var(--border);
+    clip-path: polygon(0 0, 60% 0, 100% 50%, 60% 100%, 0 100%, 40% 50%);
+    z-index: 1;
+  }
+
+  .pipeline-stage--bottleneck {
+    background: rgba(240,169,64,0.08);
+    border-color: rgba(240,169,64,0.3);
+    animation: bottleneck-pulse 3s ease-in-out infinite;
+  }
+  .pipeline-stage--bottleneck::after {
+    background: rgba(240,169,64,0.08);
+  }
+  .pipeline-stage--bottleneck::before {
+    background: rgba(240,169,64,0.3);
+  }
+
+  @keyframes bottleneck-pulse {
+    0%, 100% { box-shadow: inset 0 0 0 0 rgba(240,169,64,0); }
+    50% { box-shadow: inset 0 0 20px 0 rgba(240,169,64,0.08); }
+  }
+
+  .pipeline-stage-name {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 4px;
+  }
+  .pipeline-stage--bottleneck .pipeline-stage-name {
+    color: var(--warning);
+  }
+
+  .pipeline-stage-count {
+    font-family: var(--font-mono);
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    line-height: 1;
+  }
+  .pipeline-stage--bottleneck .pipeline-stage-count {
+    color: var(--warning);
+    text-shadow: 0 0 12px rgba(240,169,64,0.4);
+  }
+  .pipeline-stage-unit {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+  }
+  .pipeline-stage--bottleneck .pipeline-stage-unit {
+    color: rgba(240,169,64,0.6);
+  }
+
+  .pipeline-warning {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--warning);
+    background: var(--warning-dim);
+    border: 1px solid rgba(240,169,64,0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: var(--font-mono);
+  }
+
+  /* ═══════════════════════════════════════════════════════════ */
+  /* Section 3: Two-column row                                   */
+  /* ═══════════════════════════════════════════════════════════ */
+  .two-col {
+    display: grid;
+    grid-template-columns: 60fr 40fr;
+    gap: var(--gap);
+  }
+
+  /* ── Bar Chart ──────────────────────────────────────────────── */
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 140px;
+    position: relative;
+    padding-left: 32px;
+    padding-bottom: 24px;
+  }
+
+  .bar-chart-yaxis {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 24px;
+    width: 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-right: 4px;
+  }
+  .bar-chart-ylabel {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-tertiary);
+    line-height: 1;
+  }
+
+  /* Gridlines */
+  .bar-chart-gridlines {
+    position: absolute;
+    left: 32px;
+    right: 0;
+    top: 0;
+    bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .bar-chart-gridline {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+    gap: 0;
+  }
+
+  .bar {
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transition: filter 0.2s, transform 0.2s;
+    cursor: default;
+    min-height: 4px;
+  }
+  .bar--accent {
+    background: linear-gradient(180deg, var(--accent) 0%, rgba(0,229,255,0.6) 100%);
+    box-shadow: 0 0 8px rgba(0,229,255,0.2);
+  }
+  .bar--danger {
+    background: linear-gradient(180deg, var(--danger) 0%, rgba(255,69,58,0.7) 100%);
+    box-shadow: 0 0 12px rgba(255,69,58,0.35);
+  }
+  .bar:hover {
+    filter: brightness(1.3);
+    transform: scaleY(1.02);
+    transform-origin: bottom;
+  }
+
+  .bar-danger-badge {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--danger);
+    background: var(--danger-dim);
+    border: 1px solid rgba(255,69,58,0.3);
+    border-radius: 3px;
+    padding: 1px 4px;
+    white-space: nowrap;
+  }
+
+  .bar-value {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .bar-col:hover .bar-value { opacity: 1; }
+
+  .bar-xlabel {
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-tertiary);
+    text-align: center;
+    white-space: nowrap;
+    position: absolute;
+    bottom: 0;
+  }
+  .bar-xlabel--today {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .bar-xlabel--danger {
+    color: var(--danger);
+    font-weight: 700;
+  }
+
+  /* ── Weekly Goals ───────────────────────────────────────────── */
+  .goals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .goal-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.2s;
+  }
+  .goal-item:hover { border-color: rgba(255,255,255,0.15); }
+
+  .goal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .goal-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .goal-status {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+  }
+  .goal-status--ok {
+    color: var(--success);
+    background: var(--success-dim);
+    border: 1px solid rgba(78,202,122,0.2);
+  }
+  .goal-status--risk {
+    color: var(--warning);
+    background: var(--warning-dim);
+    border: 1px solid rgba(240,169,64,0.2);
+  }
+
+  .goal-detail {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+  }
+  .goal-progress-track {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .goal-progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
+  }
+  .goal-progress-fill--ok { background: var(--success); box-shadow: 0 0 6px rgba(78,202,122,0.4); }
+  .goal-progress-fill--risk { background: var(--warning); box-shadow: 0 0 6px rgba(240,169,64,0.4); }
+
+  /* ═══════════════════════════════════════════════════════════ */
+  /* Section 4: Detail Stats Grid                                */
+  /* ═══════════════════════════════════════════════════════════ */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap);
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 16px;
+    transition: border-color 0.25s, box-shadow 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card:hover {
+    border-color: rgba(0,229,255,0.2);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .stat-card:hover::before { opacity: 1; }
+
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 10px;
+  }
+  .stat-value {
+    font-family: var(--font-mono);
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-sub {
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  /* Accuracy split card */
+  .accuracy-split {
+    display: flex;
+    gap: 12px;
+    margin-top: 2px;
+  }
+  .accuracy-item {
+    flex: 1;
+  }
+  .accuracy-num {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .accuracy-num--good { color: var(--success); }
+  .accuracy-num--mid  { color: var(--warning); }
+  .accuracy-divider {
+    width: 1px;
+    background: var(--border);
+    align-self: stretch;
+  }
+  .accuracy-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  /* ── Animated bar entrance ──────────────────────────────────── */
+  @keyframes bar-grow {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
+  }
+  .bar { transform-origin: bottom; animation: bar-grow 0.7s cubic-bezier(0.4, 0, 0.2, 1) both; }
+  .bar-col:nth-child(1) .bar { animation-delay: 0.1s; }
+  .bar-col:nth-child(2) .bar { animation-delay: 0.15s; }
+  .bar-col:nth-child(3) .bar { animation-delay: 0.2s; }
+  .bar-col:nth-child(4) .bar { animation-delay: 0.25s; }
+  .bar-col:nth-child(5) .bar { animation-delay: 0.3s; }
+  .bar-col:nth-child(6) .bar { animation-delay: 0.35s; }
+  .bar-col:nth-child(7) .bar { animation-delay: 0.4s; }
+
+  /* ── Staggered card fade-in ─────────────────────────────────── */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section { animation: fade-up 0.5s ease both; }
+  .section:nth-child(1) { animation-delay: 0s; }
+  .section:nth-child(2) { animation-delay: 0.08s; }
+  .section:nth-child(3) { animation-delay: 0.16s; }
+  .section:nth-child(4) { animation-delay: 0.22s; }
+  .section:nth-child(5) { animation-delay: 0.28s; }
+
+  /* ── Responsive ─────────────────────────────────────────────── */
+  @media (max-width: 600px) {
+    .memory-hero-grid { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .pipeline-row { flex-direction: column; gap: 0; }
+    .pipeline-stage { border-left: 1px solid var(--border) !important; border-right: 1px solid var(--border) !important; }
+    .pipeline-stage:first-child { border-radius: var(--radius) var(--radius) 0 0; }
+    .pipeline-stage:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+    .pipeline-stage::after,
+    .pipeline-stage::before { display: none; }
+    .header h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">
+  <span id="theme-icon">☀ LICHT</span>
+</button>
+
+<div class="page-wrapper">
+
+  <!-- ── Header ─────────────────────────────────────────────── -->
+  <div class="header section">
+    <div class="badge">INDONESISCH · GEHEUGEN</div>
+    <h1>Geheugenoverzicht</h1>
+    <p class="subtitle">Jouw leervoortgang en geheugengezondheid</p>
+  </div>
+
+  <!-- ── Section 1: Memory Health Hero ─────────────────────── -->
+  <div class="section">
+    <div class="section-label">Geheugensterkte</div>
+
+    <div class="memory-hero-grid">
+
+      <!-- Recognition gauge -->
+      <div class="gauge-card">
+        <div class="gauge-wrap">
+          <svg class="gauge-svg" viewBox="0 0 160 160" id="gauge-recognition">
+            <circle class="gauge-track" cx="80" cy="80" r="62" />
+            <!-- half-circle arc: only show top 180°, offset so starts at left -->
+            <circle
+              class="gauge-fill gauge-fill--recognition"
+              cx="80" cy="80" r="62"
+              stroke-dasharray="194.779"
+              stroke-dashoffset="194.779"
+              id="arc-recognition"
+            />
+          </svg>
+          <!-- tick marks overlay -->
+          <svg class="gauge-ticks" viewBox="0 0 160 88">
+            <!-- 0% mark -->
+            <line x1="12" y1="80" x2="20" y2="80" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <!-- 50% mark -->
+            <line x1="78" y1="8" x2="78" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <!-- 100% mark -->
+            <line x1="140" y1="80" x2="148" y2="80" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <text x="5" y="84" fill="#55525C" font-size="8" font-family="'JetBrains Mono',monospace">0</text>
+            <text x="69" y="13" fill="#55525C" font-size="8" font-family="'JetBrains Mono',monospace">50</text>
+            <text x="131" y="84" fill="#55525C" font-size="8" font-family="'JetBrains Mono',monospace">100</text>
+          </svg>
+          <div class="gauge-value gauge-value--recognition" id="val-recognition">74%</div>
+        </div>
+        <div class="gauge-label">Herkenning</div>
+        <div class="gauge-sublabel gauge-sublabel--strong">Sterk</div>
+        <div style="margin-top:10px; font-size:11px; color:var(--text-tertiary); text-align:center; font-family:var(--font-mono);">
+          Indonesisch → NL/EN
+        </div>
+      </div>
+
+      <!-- Recall gauge -->
+      <div class="gauge-card">
+        <div class="gauge-wrap">
+          <svg class="gauge-svg" viewBox="0 0 160 160" id="gauge-recall">
+            <circle class="gauge-track" cx="80" cy="80" r="62" />
+            <circle
+              class="gauge-fill gauge-fill--recall"
+              cx="80" cy="80" r="62"
+              stroke-dasharray="194.779"
+              stroke-dashoffset="194.779"
+              id="arc-recall"
+            />
+          </svg>
+          <svg class="gauge-ticks" viewBox="0 0 160 88">
+            <line x1="12" y1="80" x2="20" y2="80" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <line x1="78" y1="8" x2="78" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <line x1="140" y1="80" x2="148" y2="80" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <text x="5" y="84" fill="#55525C" font-size="8" font-family="'JetBrains Mono',monospace">0</text>
+            <text x="69" y="13" fill="#55525C" font-size="8" font-family="'JetBrains Mono',monospace">50</text>
+            <text x="131" y="84" fill="#55525C" font-size="8" font-family="'JetBrains Mono',monospace">100</text>
+          </svg>
+          <div class="gauge-value gauge-value--recall" id="val-recall">41%</div>
+        </div>
+        <div class="gauge-label">Oproepen</div>
+        <div class="gauge-sublabel gauge-sublabel--developing">Ontwikkelen</div>
+        <div style="margin-top:10px; font-size:11px; color:var(--text-tertiary); text-align:center; font-family:var(--font-mono);">
+          NL/EN → Indonesisch
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Insight box -->
+    <div class="insight-box">
+      <span class="insight-icon">💡</span>
+      <div class="insight-text">
+        Je herkenning is <strong>sterk</strong>, maar je oproepen loopt <strong>achter</strong>. Het algoritme geeft prioriteit aan <strong>'Typed Recall'</strong> oefeningen deze week om de kloof te overbruggen.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Section 2: Mastery Funnel ──────────────────────────── -->
+  <div class="section">
+    <div class="section-label">Leerpijplijn</div>
+
+    <div class="card" style="padding:20px;">
+      <div class="pipeline-row">
+
+        <!-- Anchoring — bottleneck -->
+        <div class="pipeline-stage pipeline-stage--bottleneck">
+          <div class="pipeline-stage-name">⚠ Anchoring</div>
+          <div class="pipeline-stage-count">119</div>
+          <div class="pipeline-stage-unit">items</div>
+        </div>
+
+        <!-- Retrieving -->
+        <div class="pipeline-stage">
+          <div class="pipeline-stage-name">Retrieving</div>
+          <div class="pipeline-stage-count" style="color:var(--accent); text-shadow:0 0 10px var(--accent-glow)">2</div>
+          <div class="pipeline-stage-unit">items</div>
+        </div>
+
+        <!-- Productive -->
+        <div class="pipeline-stage">
+          <div class="pipeline-stage-name">Productive</div>
+          <div class="pipeline-stage-count" style="color:var(--text-tertiary)">0</div>
+          <div class="pipeline-stage-unit">items</div>
+        </div>
+
+        <!-- Maintenance -->
+        <div class="pipeline-stage">
+          <div class="pipeline-stage-name">Maintenance</div>
+          <div class="pipeline-stage-count" style="color:var(--text-tertiary)">0</div>
+          <div class="pipeline-stage-unit">items</div>
+        </div>
+
+      </div>
+
+      <div class="pipeline-warning">
+        <span>⚠️</span>
+        <span>119 items wachten op hun eerste 'Poortcheck' om Productief te worden.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Section 3: Forecast + Goals ───────────────────────── -->
+  <div class="section">
+    <div class="section-label">Plannen &amp; Doelen</div>
+
+    <div class="two-col">
+
+      <!-- 7-day forecast bar chart -->
+      <div class="card">
+        <div class="card-title">7-Daagse Voorspelling</div>
+
+        <div class="bar-chart" id="bar-chart">
+          <!-- Y-axis -->
+          <div class="bar-chart-yaxis">
+            <span class="bar-chart-ylabel">50</span>
+            <span class="bar-chart-ylabel">40</span>
+            <span class="bar-chart-ylabel">30</span>
+            <span class="bar-chart-ylabel">20</span>
+            <span class="bar-chart-ylabel">10</span>
+            <span class="bar-chart-ylabel">0</span>
+          </div>
+
+          <!-- Gridlines -->
+          <div class="bar-chart-gridlines">
+            <div class="bar-chart-gridline"></div>
+            <div class="bar-chart-gridline"></div>
+            <div class="bar-chart-gridline"></div>
+            <div class="bar-chart-gridline"></div>
+            <div class="bar-chart-gridline"></div>
+            <div class="bar-chart-gridline"></div>
+          </div>
+
+          <!-- Day: Today → 12 -->
+          <div class="bar-col">
+            <div class="bar-value">12</div>
+            <div class="bar bar--accent" style="height: calc(140px * 12/50 - 24px);"></div>
+            <div class="bar-xlabel bar-xlabel--today">Vand.</div>
+          </div>
+
+          <!-- Ma → 8 -->
+          <div class="bar-col">
+            <div class="bar-value">8</div>
+            <div class="bar bar--accent" style="height: calc(140px * 8/50 - 24px);"></div>
+            <div class="bar-xlabel">Ma</div>
+          </div>
+
+          <!-- Di → 15 -->
+          <div class="bar-col">
+            <div class="bar-value">15</div>
+            <div class="bar bar--accent" style="height: calc(140px * 15/50 - 24px);"></div>
+            <div class="bar-xlabel">Di</div>
+          </div>
+
+          <!-- Wo → 47 DANGER -->
+          <div class="bar-col">
+            <div class="bar-value">47</div>
+            <div class="bar bar--danger" style="height: calc(140px * 47/50 - 24px); position:relative;">
+              <div class="bar-danger-badge">!</div>
+            </div>
+            <div class="bar-xlabel bar-xlabel--danger">Wo</div>
+          </div>
+
+          <!-- Do → 11 -->
+          <div class="bar-col">
+            <div class="bar-value">11</div>
+            <div class="bar bar--accent" style="height: calc(140px * 11/50 - 24px);"></div>
+            <div class="bar-xlabel">Do</div>
+          </div>
+
+          <!-- Vr → 6 -->
+          <div class="bar-col">
+            <div class="bar-value">6</div>
+            <div class="bar bar--accent" style="height: calc(140px * 6/50 - 24px);"></div>
+            <div class="bar-xlabel">Vr</div>
+          </div>
+
+          <!-- Za → 9 -->
+          <div class="bar-col">
+            <div class="bar-value">9</div>
+            <div class="bar bar--accent" style="height: calc(140px * 9/50 - 24px);"></div>
+            <div class="bar-xlabel">Za</div>
+          </div>
+
+        </div>
+
+        <div style="margin-top:8px; font-size:11px; color:var(--text-tertiary); font-family:var(--font-mono);">
+          <span style="color:var(--danger);">■</span> Woensdag: 47 kaarten vervallen — plan extra tijd in.
+        </div>
+      </div>
+
+      <!-- Weekly goals -->
+      <div class="card">
+        <div class="card-title">Wekelijkse Doelen</div>
+        <div class="goals-list">
+
+          <!-- Consistentie -->
+          <div class="goal-item">
+            <div class="goal-row">
+              <span class="goal-name">Consistentie</span>
+              <span class="goal-status goal-status--ok">On Track</span>
+            </div>
+            <div class="goal-detail">5 / 7 dagen</div>
+            <div class="goal-progress-track">
+              <div class="goal-progress-fill goal-progress-fill--ok" style="width: 71%"></div>
+            </div>
+          </div>
+
+          <!-- Kwaliteit -->
+          <div class="goal-item">
+            <div class="goal-row">
+              <span class="goal-name">Kwaliteit</span>
+              <span class="goal-status goal-status--risk">At Risk</span>
+            </div>
+            <div class="goal-detail">71% nauwkeurigheid</div>
+            <div class="goal-progress-track">
+              <div class="goal-progress-fill goal-progress-fill--risk" style="width: 71%"></div>
+            </div>
+          </div>
+
+          <!-- Groei -->
+          <div class="goal-item">
+            <div class="goal-row">
+              <span class="goal-name">Groei</span>
+              <span class="goal-status goal-status--ok">On Track</span>
+            </div>
+            <div class="goal-detail">8 / 15 nieuwe woorden</div>
+            <div class="goal-progress-track">
+              <div class="goal-progress-fill goal-progress-fill--ok" style="width: 53%"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Section 4: Detail Stats ────────────────────────────── -->
+  <div class="section">
+    <div class="section-label">Details</div>
+
+    <div class="stats-grid">
+
+      <!-- Gem. Stabiliteit -->
+      <div class="stat-card">
+        <div class="stat-label">Gem. Stabiliteit</div>
+        <div class="stat-value" style="color:var(--accent); text-shadow:0 0 10px var(--accent-glow);">6.2</div>
+        <div class="stat-sub">dagen in geheugen</div>
+        <div style="margin-top:12px; height:2px; background:linear-gradient(90deg, var(--accent) 0%, transparent 100%); border-radius:1px; opacity:0.4;"></div>
+      </div>
+
+      <!-- Zwakke woorden gered -->
+      <div class="stat-card">
+        <div class="stat-label">Zwakke Woorden Gered</div>
+        <div class="stat-value" style="color:var(--success); text-shadow:0 0 10px rgba(78,202,122,0.4);">3</div>
+        <div class="stat-sub">deze week voor vergeten behoed</div>
+        <div style="margin-top:12px; height:2px; background:linear-gradient(90deg, var(--success) 0%, transparent 100%); border-radius:1px; opacity:0.4;"></div>
+      </div>
+
+      <!-- Nauwkeurigheid split -->
+      <div class="stat-card">
+        <div class="stat-label">Nauwkeurigheid</div>
+        <div class="accuracy-split">
+          <div class="accuracy-item">
+            <div class="accuracy-num accuracy-num--good">84%</div>
+            <div class="accuracy-label">MCQ</div>
+          </div>
+          <div class="accuracy-divider"></div>
+          <div class="accuracy-item">
+            <div class="accuracy-num accuracy-num--mid">63%</div>
+            <div class="accuracy-label">Recall</div>
+          </div>
+        </div>
+        <div style="margin-top:12px; height:3px; background:var(--border); border-radius:2px; overflow:hidden;">
+          <div style="width:84%; height:100%; background:linear-gradient(90deg, var(--success), var(--warning)); border-radius:2px;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end page-wrapper -->
+
+<script>
+  /* ── Arc gauge animation ──────────────────────────────────── */
+  // The gauge is a full circle (circumference = 2π×62 ≈ 389.56)
+  // We only display the top half (180°), so the "full" arc for 100% = half circumference ≈ 194.78
+  // strokeDashoffset starts at 194.78 (invisible) and decreases to 194.78 * (1 - pct)
+
+  function animateGauge(arcId, pct) {
+    const el = document.getElementById(arcId);
+    if (!el) return;
+    const halfCirc = 194.779;
+    const targetOffset = halfCirc * (1 - pct);
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        el.style.strokeDashoffset = targetOffset;
+      }, 100);
+    });
+  }
+
+  // Trigger on load
+  window.addEventListener('load', () => {
+    animateGauge('arc-recognition', 0.74);
+    animateGauge('arc-recall', 0.41);
+  });
+
+  /* ── Theme toggle ─────────────────────────────────────────── */
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isLight = html.getAttribute('data-theme') === 'light';
+    html.setAttribute('data-theme', isLight ? 'dark' : 'light');
+    document.getElementById('theme-icon').textContent = isLight ? '☀ LICHT' : '🌙 DONKER';
+
+    // Re-trigger gauge animation after theme switch
+    // Reset first
+    const arcs = ['arc-recognition', 'arc-recall'];
+    arcs.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.strokeDashoffset = '194.779';
+    });
+    setTimeout(() => {
+      animateGauge('arc-recognition', 0.74);
+      animateGauge('arc-recall', 0.41);
+    }, 80);
+  }
+</script>
+</body>
+</html>
