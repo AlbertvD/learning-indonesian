@@ -38,9 +38,9 @@ export function computeNewLearnerDefaults(
     maxSessionMinutes: 20,
     estimatedBeginnerSecondsPerInteraction: 18,
     sessionInteractionCap,
-    // New learner thresholds (account age < 30 days, < 50 stable items)
-    accountAgeDaysThreshold: 30,
-    stableItemCountThreshold: 50,
+    // New learner thresholds (account age < 14 days, < 20 stable items)
+    accountAgeDaysThreshold: 14,
+    stableItemCountThreshold: 20,
   }
 }
 

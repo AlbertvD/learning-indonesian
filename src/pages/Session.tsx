@@ -217,6 +217,7 @@ export function Session() {
           accountAgeDays: ageDays,
           stableItemCount,
           sessionInteractionCap: preferredSessionSize,
+          preferredSessionSize,
           exerciseTypeAvailability,
         }
 

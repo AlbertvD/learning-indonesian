@@ -3,10 +3,13 @@ import react from '@vitejs/plugin-react-swc'
 import path from 'path'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const isTest = process.env.NODE_ENV === 'test' || !!process.env.VITEST
+
 export default defineConfig({
   plugins: [
     react(),
-    VitePWA({
+    // Skip PWA plugin during tests — it adds overhead and isn't needed
+    ...(!isTest ? [VitePWA({
       registerType: 'autoUpdate',
       manifest: {
         name: 'Learning Indonesian',
@@ -21,7 +24,7 @@ export default defineConfig({
           { src: '/pwa-icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
-    }),
+    })] : []),
   ],
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
@@ -30,8 +33,8 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
-    // Progress.test.tsx has 49 pre-existing failures (progressService mocks need rewrite)
-    // Excluded until those tests are fixed
+    // Progress.test.tsx tests require completed implementation work on the
+    // redesigned Progress page — re-enable as implementation catches up.
     exclude: ['**/node_modules/**', 'src/__tests__/Progress.test.tsx'],
   },
 })

@@ -160,7 +160,7 @@ describe('Session Policies', () => {
   })
 
   describe('applyPolicies - New learner detection', () => {
-    it('removes new items for new learners', () => {
+    it('limits new items (not removes) for new learners when reviews exist', () => {
       const queue: SessionQueueItem[] = [
         createQueueItem('recognition_mcq', 'item-1', false),
         createQueueItem('recognition_mcq', 'item-2', true), // new
@@ -169,16 +169,19 @@ describe('Session Policies', () => {
       ]
 
       const context: SessionPoliciesContext = {
-        accountAgeDays: 10, // < 30
-        stableItemCount: 30, // < 50
+        accountAgeDays: 5, // < 14
+        stableItemCount: 10, // < 20
         sessionInteractionCap: 20,
+        preferredSessionSize: 20,
       }
 
       const result = applyPolicies(queue, context)
 
-      // Should only have non-new items
-      expect(result).toHaveLength(2)
-      expect(result.every(i => i.learnerItemState !== null)).toBe(true)
+      // Should have 2 in-progress items + up to newCap (max(2, round(20*0.15))=3) new items
+      // Only 2 new items available so total = 4
+      expect(result).toHaveLength(4)
+      const inProgressCount = result.filter(i => i.learnerItemState !== null).length
+      expect(inProgressCount).toBe(2)
     })
 
     it('keeps all items for experienced learners', () => {
@@ -189,7 +192,7 @@ describe('Session Policies', () => {
       ]
 
       const context: SessionPoliciesContext = {
-        accountAgeDays: 40, // >= 30
+        accountAgeDays: 20, // >= 14
         stableItemCount: 100,
         sessionInteractionCap: 20,
       }
@@ -206,14 +209,14 @@ describe('Session Policies', () => {
       ]
 
       const context: SessionPoliciesContext = {
-        accountAgeDays: 10, // < 30
-        stableItemCount: 100, // >= 50
+        accountAgeDays: 10, // < 14
+        stableItemCount: 25, // >= 20
         sessionInteractionCap: 20,
       }
 
       const result = applyPolicies(queue, context)
 
-      // Not a new learner (one threshold is met)
+      // Not a new learner (stable count threshold met)
       expect(result).toHaveLength(2)
     })
   })
@@ -288,9 +291,10 @@ describe('Session Policies', () => {
       ]
 
       const context: SessionPoliciesContext = {
-        accountAgeDays: 10, // < 30
-        stableItemCount: 30, // < 50 (new learner)
+        accountAgeDays: 10, // < 14
+        stableItemCount: 10, // < 20 (new learner)
         sessionInteractionCap: 10,
+        preferredSessionSize: 10,
         exerciseTypeAvailability: {
           recognition_mcq: {
             exercise_type: 'recognition_mcq',
@@ -329,12 +333,14 @@ describe('Session Policies', () => {
 
       // Should:
       // 1. Filter disabled types (cloze out)
-      // 2. Apply new learner rules (remove new items)
+      // 2. Apply new learner rules (in-progress + small new item trickle)
       // 3. Apply consecutive cap
       // 4. Trim to cap (10)
       expect(result.length).toBeLessThanOrEqual(10)
       expect(result.every(i => i.exerciseItem.exerciseType !== 'cloze')).toBe(true)
-      expect(result.every(i => i.learnerItemState !== null)).toBe(true)
+      // In-progress items must be present; a small number of new items are now allowed
+      const inProgressInResult = result.filter(i => i.learnerItemState !== null)
+      expect(inProgressInResult.length).toBeGreaterThan(0)
     })
   })
 })

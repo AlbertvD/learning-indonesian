@@ -14,6 +14,9 @@ export interface SessionPoliciesContext {
   // Grammar patterns (confusion groups)
   grammarPatterns?: Record<string, { confusion_group?: string }>
 
+  // User's preferred session size (used to size new-item allowance in new learner mode)
+  preferredSessionSize?: number
+
   // Session progress tracking (for overload detection)
   sessionStarted?: boolean
 }
@@ -220,8 +223,15 @@ function applyNewLearnerRules(
   })
 
   if (inProgress.length > 0) {
-    // Reviews are pending: serve only in-progress items to avoid overload
-    return inProgress
+    // Reviews are pending: serve in-progress items plus a small trickle of new
+    // items so the learner keeps growing. Cap new items at 15% of session size
+    // (minimum 2) rather than cutting them entirely.
+    const sessionSize = context.preferredSessionSize ?? context.sessionInteractionCap
+    const newCap = Math.max(2, Math.round(sessionSize * 0.15))
+    const newItems = queue
+      .filter(q => !q.learnerItemState || q.learnerItemState.stage === 'new')
+      .slice(0, newCap)
+    return [...inProgress, ...newItems]
   }
 
   // Nothing in progress — fresh start or full reset.
