@@ -208,9 +208,10 @@ export function ExerciseShell({
         <Box
           style={{
             position: 'fixed',
-            bottom: 'calc(24px + env(safe-area-inset-bottom))',
+            top: '50%',
             left: '16px',
             right: '16px',
+            transform: 'translateY(-50%)',
             zIndex: 200,
           }}
         >
