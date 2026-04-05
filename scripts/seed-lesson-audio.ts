@@ -24,7 +24,18 @@ if (files.length === 0) {
   process.exit(0)
 }
 
+const { data: existing } = await supabase.storage
+  .from('indonesian-lessons')
+  .list('lessons')
+
+const existingNames = new Set((existing ?? []).map(f => f.name))
+
 for (const filename of files) {
+  if (existingNames.has(filename)) {
+    console.log('Skipped (already exists):', filename)
+    continue
+  }
+
   const localPath = join(audioDir, filename)
   const storagePath = `lessons/${filename}`
   const ext = filename.split('.').pop()?.toLowerCase()
@@ -33,7 +44,7 @@ for (const filename of files) {
   const buffer = readFileSync(localPath)
   const { error } = await supabase.storage
     .from('indonesian-lessons')
-    .upload(storagePath, buffer, { contentType, upsert: true })
+    .upload(storagePath, buffer, { contentType })
 
   if (error) {
     console.error('Upload failed:', filename, error.message)
