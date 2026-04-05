@@ -1,0 +1,4 @@
+# IPs that should be DNS names in compose files.
+# One IP per line. Comments start with #.
+# See NETWORK.md in homelab-configs for the full IP registry.
+# Populate this file when installing the platform into a project.
