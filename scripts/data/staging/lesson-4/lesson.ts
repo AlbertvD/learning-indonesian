@@ -5,6 +5,7 @@ export const lesson = {
   "level": "A1",
   "module_id": "module-1",
   "order_index": 4,
+  "audio_filename": "lesson-4.m4a",
   "sections": [
     {
       "title": "Accommodatie (Cultuur)",
