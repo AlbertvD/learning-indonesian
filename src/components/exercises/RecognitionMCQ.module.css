@@ -12,7 +12,7 @@
 }
 
 .word {
-  font-size: 2rem;
+  font-size: var(--fs-4xl);
   font-weight: 700;
   color: var(--mantine-color-cyan-4);
   letter-spacing: 0.05em;
@@ -31,7 +31,7 @@
 
 .optionButton:not(:disabled):hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-sm);
 }
 
 .correct {
@@ -78,7 +78,7 @@
   }
 
   .word {
-    font-size: 1.5rem;
+    font-size: var(--fs-2xl);
   }
 
   .optionButton {

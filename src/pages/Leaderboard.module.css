@@ -10,12 +10,11 @@
 }
 
 .displaySm {
-  font-family: var(--display);
-  font-size: 28px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-3xl);
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -.01em;
-  color: var(--text-1);
+  color: var(--text-primary);
 }
 
-:global(html[data-mantine-color-scheme="light"]) .displaySm { color: var(--text-1); }

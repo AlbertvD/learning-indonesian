@@ -17,8 +17,8 @@
   background: transparent;
   border: none;
   color: var(--accent-primary);
-  font-family: var(--display);
-  font-size: 14px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
   font-weight: 600;
   cursor: pointer;
   padding: 4px 2px;
@@ -41,8 +41,8 @@
   background: transparent;
   border: none;
   color: var(--text-secondary);
-  font-family: var(--display);
-  font-size: 12px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
   font-weight: 700;
   padding: 5px 12px;
   cursor: pointer;
@@ -67,16 +67,16 @@
 }
 
 .reviewTitle {
-  font-family: var(--display);
-  font-size: 24px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-2xl);
   font-weight: 600;
-  color: var(--text-1);
+  color: var(--text-primary);
 }
 
 .reviewProgress {
-  font-size: 13px;
-  color: var(--text-3);
-  font-family: var(--display);
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
+  font-family: var(--font-sans);
   font-weight: 700;
 }
 
@@ -114,42 +114,42 @@
   justify-content: center;
   padding: 40px;
   border-radius: var(--r-xl);
-  background: rgba(24,24,31,0.30);
+  background: var(--bg-scrim);
   backdrop-filter: blur(var(--blur-panel));
   -webkit-backdrop-filter: blur(var(--blur-panel));
   border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+  box-shadow: var(--shadow-lg);
 }
 
 .cardBack {
   transform: rotateY(180deg);
-  background: rgba(31,31,41,0.45);
-  border-color: rgba(139,108,245,0.2);
+  background: var(--bg-scrim);
+  border-color: var(--accent-primary-glow);
 }
 
 .setName {
-  font-family: var(--display);
-  font-size: 10px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--text-3);
+  color: var(--text-tertiary);
   position: absolute;
   top: 24px;
 }
 
 .cardText {
-  font-family: var(--display);
-  font-size: 32px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-4xl);
   font-weight: 500;
-  color: var(--text-1);
+  color: var(--text-primary);
   line-height: 1.25;
   letter-spacing: -.02em;
 }
 
 .cardTranslation {
-  font-size: 14px;
-  color: var(--text-3);
+  font-size: var(--fs-md);
+  color: var(--text-tertiary);
   margin-top: 12px;
 }
 
@@ -163,12 +163,12 @@
 
 .showBtn {
   background: var(--accent-primary);
-  color: #fff;
+  color: var(--text-on-accent);
   border: none;
   padding: 12px 40px;
   border-radius: var(--r-lg);
-  font-family: var(--display);
-  font-size: 16px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-lg);
   font-weight: 700;
   cursor: pointer;
   transition: all .2s;
@@ -213,29 +213,29 @@
 }
 
 .ratingLabel {
-  font-family: var(--display);
-  font-size: 11px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .05em;
-  color: var(--text-1);
+  color: var(--text-primary);
 }
 
 .ratingSub {
-  font-size: 10px;
-  color: var(--text-3);
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
 }
 
 .ratingBtn.again:hover:not(:disabled) { border-color: var(--danger); background: var(--danger-subtle); }
 .ratingBtn.hard:hover:not(:disabled) { border-color: var(--warning); background: var(--warning-subtle); }
-.ratingBtn.good:hover:not(:disabled) { border-color: var(--purple); background: var(--purple-subtle); }
+.ratingBtn.good:hover:not(:disabled) { border-color: var(--accent-primary); background: var(--accent-primary-subtle); }
 .ratingBtn.easy:hover:not(:disabled) { border-color: var(--success); background: var(--success-subtle); }
 
 /* Session done */
 .doneCard {
   text-align: center;
   padding: 60px 40px;
-  background: rgba(24,24,31,0.30);
+  background: var(--bg-scrim);
   backdrop-filter: blur(var(--blur-panel));
   -webkit-backdrop-filter: blur(var(--blur-panel));
   border: 1px solid rgba(255,255,255,0.08);
@@ -243,15 +243,15 @@
 }
 
 .doneTitle {
-  font-family: var(--display);
-  font-size: 32px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-4xl);
   font-weight: 600;
-  color: var(--text-1);
+  color: var(--text-primary);
   margin-bottom: 12px;
 }
 
 .doneText {
-  color: var(--text-3);
+  color: var(--text-tertiary);
   margin-bottom: 32px;
 }
 
@@ -260,12 +260,12 @@
 :global(html[data-mantine-color-scheme="light"]) .doneCard {
   background: rgba(255,255,255,0.8);
   border-color: var(--border);
-  box-shadow: 0 12px 48px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-lg);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .cardBack {
-  background: rgba(91,110,245,0.04);
-  border-color: rgba(91,110,245,0.2);
+  background: var(--accent-primary-subtle);
+  border-color: var(--accent-primary-glow);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .ratingBtn {
@@ -274,17 +274,8 @@
 }
 
 :global(html[data-mantine-color-scheme="light"]) .ratingBtn:hover:not(:disabled) {
-  background: #fff;
+  background: var(--bg-main);
 }
-
-:global(html[data-mantine-color-scheme="light"]) .ratingLabel { color: var(--text-1); }
-:global(html[data-mantine-color-scheme="light"]) .ratingSub { color: var(--text-3); }
-:global(html[data-mantine-color-scheme="light"]) .reviewTitle { color: var(--text-1); }
-:global(html[data-mantine-color-scheme="light"]) .cardText { color: var(--text-1); }
-:global(html[data-mantine-color-scheme="light"]) .doneTitle { color: var(--text-1); }
-:global(html[data-mantine-color-scheme="light"]) .doneText { color: var(--text-3); }
-:global(html[data-mantine-color-scheme="light"]) .setName { color: var(--text-3); }
-:global(html[data-mantine-color-scheme="light"]) .cardTranslation { color: var(--text-3); }
 
 :global(html[data-mantine-color-scheme="light"]) .directionToggle {
   border-color: var(--border);

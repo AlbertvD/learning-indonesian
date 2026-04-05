@@ -10,8 +10,8 @@
 }
 
 .displaySm {
-  font-family: var(--display);
-  font-size: 28px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-3xl);
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -.01em;
@@ -48,11 +48,11 @@
   border-color: var(--card-hover-border);
   background: var(--card-hover-bg);
   transform: translateY(-2px);
-  box-shadow: 0 8px 40px rgba(0,0,0,.4);
+  box-shadow: var(--shadow-md);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .setCard:hover {
-  box-shadow: 0 8px 40px var(--purple-glow);
+  box-shadow: 0 8px 40px var(--accent-primary-glow);
 }
 
 .setIcon {
@@ -63,7 +63,7 @@
   flex-shrink: 0;
   color: rgba(255,255,255,0.35);
   transition: color .15s;
-  font-size: 18px;
+  font-size: var(--fs-xl);
 }
 
 .setCard:hover .setIcon {
@@ -84,8 +84,8 @@
 }
 
 .setName {
-  font-family: var(--display);
-  font-size: 14px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
   font-weight: 500;
   color: var(--text-primary);
   line-height: 1.2;
@@ -93,7 +93,7 @@
 }
 
 .setDescription {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--text-secondary);
   line-height: 1.5;
   margin-top: 2px;
@@ -127,8 +127,8 @@
   align-items: center;
   padding: 3px 9px;
   border-radius: 20px;
-  font-family: var(--display);
-  font-size: 10px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -142,7 +142,7 @@
 }
 
 :global(html[data-mantine-color-scheme="light"]) .badgeGray {
-  background: var(--purple-subtle);
+  background: var(--accent-primary-subtle);
   color: var(--text-secondary);
   border-color: var(--border);
 }
@@ -153,18 +153,18 @@
   gap: 7px;
   padding: 8px 16px;
   border-radius: 10px;
-  font-family: var(--display);
-  font-size: 13px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
   font-weight: 700;
   cursor: pointer;
   transition: all .15s;
   border: 1px solid transparent;
   background: var(--accent-primary);
-  color: #fff;
+  color: var(--text-on-accent);
 }
 
 .btn:hover {
-  background: var(--purple-bright);
+  background: var(--accent-primary-dim);
   opacity: 0.9;
 }
 

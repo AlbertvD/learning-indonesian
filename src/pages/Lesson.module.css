@@ -41,13 +41,13 @@
 }
 
 .caption {
-  font-size: 11px;
-  color: var(--text-3);
-  font-family: var(--sans);
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
+  font-family: var(--font-sans);
 }
 
 .audioPlayer {
-  background: rgba(24,24,31,0.30);
+  background: var(--bg-scrim);
   backdrop-filter: blur(var(--blur-card));
   -webkit-backdrop-filter: blur(var(--blur-card));
   border: 1px solid rgba(255,255,255,0.06);
@@ -70,19 +70,19 @@
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  color: #fff;
+  color: var(--text-on-accent);
 }
 
 .audioTitle {
-  font-family: var(--display);
-  font-size: 13px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
   font-weight: 700;
-  color: var(--text-1);
+  color: var(--text-primary);
 }
 
 .audioProgress {
   height: 3px;
-  background: var(--surf-4);
+  background: var(--border);
   border-radius: 2px;
   margin-top: 8px;
 }
@@ -94,8 +94,8 @@
 }
 
 .audioTime {
-  font-size: 11px;
-  color: var(--text-3);
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
 }
 
 .audioTopRow {
@@ -130,13 +130,13 @@
 .audioControlBtn {
   background: none;
   border: none;
-  color: var(--text-3);
+  color: var(--text-tertiary);
   cursor: pointer;
   padding: 2px 5px;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
-  font-family: var(--display);
+  font-family: var(--font-sans);
   display: flex;
   align-items: center;
   transition: color 0.15s, background 0.15s;
@@ -144,7 +144,7 @@
 }
 
 .audioControlBtn:hover {
-  color: var(--text-1);
+  color: var(--text-primary);
   background: rgba(255,255,255,0.08);
 }
 
@@ -154,7 +154,7 @@
   width: 64px;
   height: 3px;
   border-radius: 2px;
-  background: var(--surf-4);
+  background: var(--border);
   outline: none;
   cursor: pointer;
 }
@@ -179,43 +179,43 @@
 }
 
 .label {
-  font-family: var(--display);
-  font-size: 11px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--text-3);
+  color: var(--text-tertiary);
   margin-bottom: 8px;
   display: block;
 }
 
 .displaySm {
-  font-family: var(--display);
-  font-size: 17px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xl);
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -.01em;
-  color: var(--text-1);
+  color: var(--text-primary);
 }
 
 .bodySm {
-  font-size: 13px;
-  color: var(--text-2);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
 .lessonIntro {
-  font-size: 14px;
-  color: var(--text-2);
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 32px;
 }
 
 .contentSectionLabel {
-  font-family: var(--display);
-  font-size: 15px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-lg);
   font-weight: 600;
-  color: var(--text-2);
+  color: var(--text-secondary);
   margin-bottom: 14px;
   display: flex;
   align-items: center;
@@ -258,25 +258,25 @@
 }
 
 .phraseIndo {
-  font-family: var(--display);
-  font-size: 16px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-lg);
   font-weight: 700;
-  color: var(--text-1);
+  color: var(--text-primary);
   line-height: 1.4;
   letter-spacing: -.01em;
 }
 
 .phrasePhonetic {
-  font-size: 15px;
-  color: var(--text-2);
+  font-size: var(--fs-lg);
+  color: var(--text-secondary);
   margin-top: 4px;
   letter-spacing: .04em;
   font-family: 'Courier New', monospace;
 }
 
 .phraseDutch {
-  font-size: 16px;
-  color: var(--text-2);
+  font-size: var(--fs-lg);
+  color: var(--text-secondary);
   font-weight: 400;
   padding-top: 3px;
 }
@@ -289,7 +289,7 @@
 }
 
 .spellingChip {
-  background: rgba(31,31,41,0.30);
+  background: var(--bg-scrim);
   backdrop-filter: blur(var(--blur-card));
   -webkit-backdrop-filter: blur(var(--blur-card));
   border: 1px solid rgba(255,255,255,0.06);
@@ -298,24 +298,24 @@
 }
 
 .spellingRule {
-  font-family: var(--display);
-  font-size: 14px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
   font-weight: 700;
-  color: var(--text-1);
+  color: var(--text-primary);
   letter-spacing: .01em;
 }
 
 .spellingExample {
-  font-family: var(--display);
-  font-size: 14px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
   font-weight: 700;
-  color: var(--text-1);
+  color: var(--text-primary);
   margin-top: 5px;
 }
 
 .spellingMeaning {
-  font-size: 13px;
-  color: var(--text-2);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
   margin-top: 3px;
 }
 
@@ -339,16 +339,16 @@
 }
 
 .sentenceIndo {
-  font-family: var(--display);
-  font-size: 16px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-lg);
   font-weight: 600;
-  color: var(--text-1);
+  color: var(--text-primary);
   letter-spacing: -.01em;
 }
 
 .sentenceDutch {
-  font-size: 14px;
-  color: var(--text-2);
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
 }
 
 .grammarCard {
@@ -366,8 +366,8 @@
 }
 
 .grammarTitle {
-  font-family: var(--display);
-  font-size: 11px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -387,8 +387,8 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  font-family: var(--display);
-  font-size: 16px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-lg);
   font-weight: 400;
   color: var(--text-primary);
   line-height: 1.6;
@@ -396,7 +396,7 @@
 
 .grammarRule::before {
   content: '›';
-  font-size: 14px;
+  font-size: var(--fs-md);
   font-weight: 700;
   color: var(--accent-primary);
   flex-shrink: 0;
@@ -405,8 +405,8 @@
 }
 
 .dialogueSetup {
-  font-size: 13px;
-  color: var(--text-3);
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
   font-style: italic;
   margin-bottom: 24px;
   padding: 10px 14px;
@@ -429,8 +429,8 @@
 }
 
 .dialogueSpeaker {
-  font-family: var(--display);
-  font-size: 10px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -442,17 +442,17 @@
 }
 
 .dialogueText {
-  font-family: var(--display);
-  font-size: 18px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xl);
   font-weight: 500;
-  color: var(--text-1);
+  color: var(--text-primary);
   line-height: 1.4;
   letter-spacing: -.01em;
 }
 
 .dialogueTranslation {
-  font-size: 13px;
-  color: var(--text-3);
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
   margin-top: 5px;
 }
 
@@ -471,8 +471,8 @@
   gap: 7px;
   padding: 9px 20px;
   border-radius: var(--r-md);
-  font-family: var(--display);
-  font-size: 14px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
   font-weight: 700;
   cursor: pointer;
   transition: all .15s;
@@ -494,7 +494,7 @@
 
 .btnLg {
   padding: 12px 28px;
-  font-size: 15px;
+  font-size: var(--fs-lg);
   border-radius: var(--r-lg);
 }
 
@@ -502,7 +502,7 @@
   background: transparent;
   color: rgba(255,255,255,0.65);
   border-color: transparent;
-  font-size: 15px;
+  font-size: var(--fs-lg);
 }
 
 .btnGhost:hover {
@@ -530,19 +530,19 @@
 
 .pronunciationLetter {
   font-family: 'Courier New', monospace;
-  font-size: 15px;
+  font-size: var(--fs-lg);
   font-weight: 700;
   color: var(--accent-primary);
 }
 
 .pronunciationRule {
-  font-size: 16px;
-  color: var(--text-1);
+  font-size: var(--fs-lg);
+  color: var(--text-primary);
 }
 
 .pronunciationExamples {
-  font-size: 16px;
-  color: var(--text-3);
+  font-size: var(--fs-lg);
+  color: var(--text-tertiary);
   font-style: italic;
 }
 
@@ -608,7 +608,7 @@
 }
 
 :global(html[data-mantine-color-scheme="light"]) .audioProgress {
-  background: var(--surf-3);
+  background: var(--bg-hover);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .audioProgressFill {
@@ -616,7 +616,7 @@
 }
 
 :global(html[data-mantine-color-scheme="light"]) .audioControlBtn {
-  color: var(--text-3);
+  color: var(--text-tertiary);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .audioControlBtn:hover {
@@ -625,7 +625,7 @@
 }
 
 :global(html[data-mantine-color-scheme="light"]) .audioVolumeSlider {
-  background: var(--surf-3);
+  background: var(--bg-hover);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .dot {
@@ -652,7 +652,7 @@
 }
 
 :global(html[data-mantine-color-scheme="light"]) .btnGhost {
-  color: var(--text-2);
+  color: var(--text-secondary);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .btnGhost:hover {
@@ -667,18 +667,18 @@
 :global(html[data-mantine-color-scheme="light"]) .spellingExample,
 :global(html[data-mantine-color-scheme="light"]) .sentenceIndo,
 :global(html[data-mantine-color-scheme="light"]) .dialogueText {
-  color: var(--text-1);
+  color: var(--text-primary);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .bodySm,
 :global(html[data-mantine-color-scheme="light"]) .phraseDutch,
 :global(html[data-mantine-color-scheme="light"]) .sentenceDutch,
 :global(html[data-mantine-color-scheme="light"]) .grammarTitle {
-  color: var(--text-2);
+  color: var(--text-secondary);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .grammarRule {
-  color: var(--text-1);
+  color: var(--text-primary);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .label,
@@ -686,7 +686,7 @@
 :global(html[data-mantine-color-scheme="light"]) .audioTime,
 :global(html[data-mantine-color-scheme="light"]) .dialogueSetup,
 :global(html[data-mantine-color-scheme="light"]) .dialogueTranslation {
-  color: var(--text-3);
+  color: var(--text-tertiary);
 }
 
 :global(html[data-mantine-color-scheme="light"]) .divider {

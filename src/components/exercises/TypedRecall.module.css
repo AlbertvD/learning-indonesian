@@ -12,13 +12,13 @@
 }
 
 .translation {
-  font-size: 1.75rem;
+  font-size: var(--fs-3xl);
   font-weight: 700;
   color: var(--mantine-color-cyan-4);
 }
 
 .input {
-  font-size: 1.1rem;
+  font-size: var(--fs-xl);
 }
 
 .input input {
@@ -71,10 +71,10 @@
   }
 
   .translation {
-    font-size: 1.5rem;
+    font-size: var(--fs-2xl);
   }
 
   .input {
-    font-size: 1rem;
+    font-size: var(--fs-lg);
   }
 }
