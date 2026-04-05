@@ -227,10 +227,25 @@ export function Session() {
     initSession()
   }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter])
 
+  // How many positions ahead to reinsert a wrong-answer item.
+  // 3 means the user sees 2 other items before the retry appears.
+  const REQUEUE_OFFSET = 3
+
   // Handle answer from ExerciseShell
   const handleExerciseAnswer = (_result: ReviewResult, wasCorrect: boolean) => {
     if (wasCorrect) {
       setResults(r => ({ ...r, correct: r.correct + 1 }))
+    } else {
+      // Requeue the item a few positions later so the user revisits it
+      // before the session ends. Increment total so the score reflects attempts.
+      setQueue(q => {
+        const item = q[currentIndex]
+        const insertAt = Math.min(currentIndex + REQUEUE_OFFSET, q.length)
+        const next = [...q]
+        next.splice(insertAt, 0, item)
+        return next
+      })
+      setResults(r => ({ ...r, total: r.total + 1 }))
     }
   }
 
