@@ -92,22 +92,6 @@
 .statusPillAtRisk   { background: var(--warning-subtle); color: var(--warning); }
 .statusPillMissed   { background: var(--danger-subtle); color: var(--danger); }
 
-.ringInfoTrigger {
-  position: absolute;
-  bottom: 6px;
-  right: 8px;
-  font-size: var(--fs-xs);
-  color: var(--text-secondary);
-  opacity: 0.5;
-  cursor: help;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  transition: opacity 0.15s ease;
-}
-
-.ringInfoTrigger:hover { opacity: 1; }
-
 /* ─── Action Cards ─── */
 
 .actionCardList {

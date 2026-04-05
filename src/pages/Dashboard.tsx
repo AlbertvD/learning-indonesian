@@ -16,7 +16,7 @@ import {
   Tooltip,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconChevronRight, IconFlame, IconTarget, IconInfoCircle, IconAlertTriangle, IconSparkles, IconRefresh, IconKeyboard, IconClock, IconBook } from '@tabler/icons-react'
+import { IconChevronRight, IconFlame, IconTarget, IconAlertTriangle, IconSparkles, IconRefresh, IconKeyboard, IconClock, IconBook } from '@tabler/icons-react'
 import { lessonService } from '@/services/lessonService'
 import { learnerStateService } from '@/services/learnerStateService'
 import { goalService } from '@/services/goalService'
@@ -120,6 +120,7 @@ function getRecallTooltip(goal: WeeklyGoal, T: any): string {
 function getRingTooltip(goal: WeeklyGoal, T: any): string {
   switch (goal.goal_type) {
     case 'consistency': return T.dashboard.tooltipConsistency
+      .replace('{target}', `${Math.round(goal.target_value_numeric)}`)
     case 'recall_quality': return getRecallTooltip(goal, T)
     case 'review_health': return T.dashboard.tooltipBacklog
     case 'usable_vocabulary': return T.dashboard.tooltipVocab
@@ -178,7 +179,9 @@ export function GoalRingCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
           className={classes.ringFill}
           style={{ '--ring-color': ringColor, '--ring-deg': `${ringDeg}deg` } as React.CSSProperties}
         />
-        <div className={classes.ringCenter}>{percent}%</div>
+        <Tooltip label={tooltipText} multiline w={260} withArrow>
+          <div className={classes.ringCenter} style={{ cursor: 'help' }}>{percent}%</div>
+        </Tooltip>
       </div>
       <div className={classes.ringLabel}>{label}</div>
       <div className={classes.ringValue}>{valueText}</div>
@@ -188,12 +191,6 @@ export function GoalRingCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
           <Text span size="xs" c="dimmed" ml={4}>({T.dashboard.statusProvisional})</Text>
         )}
       </span>
-      <Tooltip label={tooltipText} multiline w={220} withArrow>
-        <span className={classes.ringInfoTrigger}>
-          <IconInfoCircle size={12} />
-          {T.dashboard.howDoesThisWork}
-        </span>
-      </Tooltip>
     </div>
   )
 }

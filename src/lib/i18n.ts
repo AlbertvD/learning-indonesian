@@ -76,7 +76,7 @@ export const nl = {
     statusProvisional: 'Voorlopig',
     // Ring tooltips
     howDoesThisWork: 'Hoe werkt dit?',
-    tooltipConsistency: 'Algoritme telt dagen met minstens 1 sessie deze week',
+    tooltipConsistency: 'Onderzoek naar het leren van een tweede taal toont aan dat korte, regelmatige sessies veel effectiever zijn dan af en toe lang studeren. Elke dag dat je oefent versterkt de geheugenverbindingen — zelfs een sessie van 5 minuten telt. Consistentie is daarom je belangrijkste metric. Je doel van {target} dagen past zich wekelijks aan op basis van hoe het de vorige week ging.',
     tooltipRecall: 'Je herkenning (meerkeuze) is {recognition}%, maar je actieve recall (typen) is slechts {recall}%. De sessie van vandaag richt zich op recall om dit gat te dichten.',
     tooltipRecallBalanced: 'Gemiddelde nauwkeurigheid van herinnerings-oefeningen deze week',
     tooltipBacklog: 'Aantal items dat langer dan gepland wacht op herhaling',
@@ -463,7 +463,7 @@ export const en: typeof nl = {
     statusProvisional: 'Provisional',
     // Ring tooltips
     howDoesThisWork: 'How does this work?',
-    tooltipConsistency: 'Counts days with at least 1 session this week',
+    tooltipConsistency: 'Research into second language learning shows that short, regular sessions are far more effective than occasional long ones. Every day you practise strengthens the memory connections — even a 5-minute session counts. Consistency is therefore your most important metric. Your target of {target} days adapts each week based on how the previous week went.',
     tooltipRecall: "Your recognition (multiple choice) is {recognition}%, but your active recall (typing) is only {recall}%. Today's session focuses on recall to close this gap.",
     tooltipRecallBalanced: 'Average accuracy of recall exercises this week',
     tooltipBacklog: 'Number of items waiting longer than scheduled for review',
