@@ -1,0 +1,5 @@
+/* src/components/progress/DetailedMetrics.module.css */
+
+.stabilityValue {
+  text-shadow: 0 0 10px var(--mantine-color-cyan-4);
+}
