@@ -626,10 +626,10 @@ BEGIN
       COALESCE((SELECT COUNT(*) FROM indonesian.review_events re
         WHERE re.user_id = v_user_id AND re.skill_type = 'form_recall' AND re.created_at::date = v_local_date), 0),
       (SELECT COUNT(DISTINCT learning_item_id) FROM indonesian.learner_stage_events lse
-        WHERE lse.user_id = v_user_id AND lse.to_stage IN ('productive', 'maintenance')
+        WHERE lse.user_id = v_user_id AND lse.to_stage IN ('retrieving', 'productive', 'maintenance')
           AND lse.created_at::date = v_local_date),
       (SELECT COUNT(*) FROM indonesian.learner_item_state lis
-        WHERE lis.user_id = v_user_id AND lis.stage IN ('productive', 'maintenance')),
+        WHERE lis.user_id = v_user_id AND lis.stage IN ('retrieving', 'productive', 'maintenance')),
       (SELECT COUNT(*) FROM indonesian.learner_skill_state lss
         WHERE lss.user_id = v_user_id AND lss.next_due_at < NOW())
     ) ON CONFLICT (user_id, local_date) DO UPDATE SET
