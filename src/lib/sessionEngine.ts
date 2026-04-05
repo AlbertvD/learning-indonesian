@@ -52,6 +52,9 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   const { allItems, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, itemStates, skillStates, preferredSessionSize, lessonFilter, userLanguage, lessonOrder } = input
   const sessionMode = input.sessionMode ?? 'standard'
 
+  // quick mode uses a fixed small session size to reduce friction
+  const effectiveSessionSize = sessionMode === 'quick' ? 5 : preferredSessionSize
+
   // Filter items by lesson if scoped
   let eligibleItems = allItems
   if (lessonFilter) {
@@ -165,14 +168,14 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   // Slot allocation — adjusted by session mode
   // backlog_clear: maximise due reviews, zero anchoring, zero weak, zero new
   const dueSlots = (sessionMode === 'backlog_clear')
-    ? preferredSessionSize
-    : Math.round(preferredSessionSize * 0.55)
+    ? effectiveSessionSize
+    : Math.round(effectiveSessionSize * 0.55)
   const anchoringSlots = (sessionMode === 'backlog_clear')
     ? 0
-    : Math.round(preferredSessionSize * 0.20)
+    : Math.round(effectiveSessionSize * 0.20)
   const weakSlots = (sessionMode === 'backlog_clear')
     ? 0
-    : Math.round(preferredSessionSize * 0.10)
+    : Math.round(effectiveSessionSize * 0.10)
 
   const pickedDue = dueItems.slice(0, dueSlots)
   const pickedAnchoring = anchoringItems.slice(0, anchoringSlots)
@@ -181,7 +184,7 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   const reviewsFilled = pickedDue.length + pickedAnchoring.length + pickedWeak.length
   const newSlots = (sessionMode === 'backlog_clear' || sessionMode === 'recall_sprint' || sessionMode === 'push_to_productive')
     ? 0
-    : calculateNewSlots(dueItems.length, anchoringItems.length, reviewsFilled, preferredSessionSize)
+    : calculateNewSlots(dueItems.length, anchoringItems.length, reviewsFilled, effectiveSessionSize)
   const pickedNew = gatedNewItems.slice(0, newSlots)
 
   // Build exercise items from picked candidates
@@ -210,7 +213,7 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   }
 
   // Trim to session size
-  const trimmed = queue.slice(0, preferredSessionSize)
+  const trimmed = queue.slice(0, effectiveSessionSize)
 
   // Apply ordering rules: interleave types, start with easy, delay new items
   return orderQueue(trimmed)

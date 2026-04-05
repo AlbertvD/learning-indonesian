@@ -216,6 +216,26 @@ describe('sessionMode', () => {
     expect(newInQueue.length).toBe(0)
   })
 
+  it('quick mode caps session at 5 items', () => {
+    const items = Array.from({ length: 20 }, (_, i) => ({
+      id: `li${i}`, item_type: 'word' as const, base_text: `word${i}`,
+      normalized_text: `word${i}`, language: 'id', level: 'A1',
+      source_type: 'lesson' as const, source_vocabulary_id: null,
+      source_card_id: null, notes: null, is_active: true, created_at: '', updated_at: '',
+    }))
+    const meanings: Record<string, any[]> = {}
+    for (const item of items) {
+      meanings[item.id] = [{ id: `m${item.id}`, learning_item_id: item.id, translation_language: 'en', translation_text: `t${item.id}`, sense_label: null, usage_note: null, is_primary: true }]
+    }
+
+    const queue = buildSessionQueue(makeInput({
+      allItems: items, meaningsByItem: meanings,
+      preferredSessionSize: 15, sessionMode: 'quick',
+    }))
+
+    expect(queue.length).toBeLessThanOrEqual(5)
+  })
+
   it('push_to_productive skips retrieving items that have no form_recall skill yet', () => {
     // A retrieving item with only a recognition skill — cannot be scored for recall
     const retrievingState = {
