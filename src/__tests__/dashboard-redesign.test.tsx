@@ -256,8 +256,6 @@ describe('Recommended Actions section', () => {
   })
 
   it('shows data-driven reason text for at_risk recall goal', async () => {
-    renderDashboard()
-    // Default fixture: recall is on_track but consistency is at_risk
     // Change to make recall at_risk for this test
     vi.mocked(goalService.getGoalProgress).mockResolvedValue(
       makeGoalResponse({
@@ -270,8 +268,9 @@ describe('Recommended Actions section', () => {
       })
     )
     renderDashboard()
-    expect(await screen.findByText(/40%/)).toBeInTheDocument()
-    expect(screen.getByText(/80%/)).toBeInTheDocument()
+    // Multiple elements may contain 40%/80% (ring value, action reason, CTA subtitle)
+    expect(await screen.findAllByText(/40%/)).not.toHaveLength(0)
+    expect(screen.getAllByText(/80%/)).not.toHaveLength(0)
   })
 
   it('links action cards to the correct session mode URL', async () => {
@@ -287,10 +286,22 @@ describe('Recommended Actions section', () => {
 
 describe('Hero Card (Today\'s Plan)', () => {
   it('shows stat row with review, new, and recall counts', async () => {
+    // Override review_health to current=0 so "3 / 20" ring value doesn't collide with "3 nieuw"
+    vi.mocked(goalService.getGoalProgress).mockResolvedValue(
+      makeGoalResponse({
+        weeklyGoals: [
+          makeGoal({ goal_type: 'consistency', current_value_numeric: 1, target_value_numeric: 4, status: 'at_risk' }),
+          makeGoal({ goal_type: 'recall_quality', current_value_numeric: 0.72, target_value_numeric: 0.80, status: 'on_track', goal_unit: 'percent' }),
+          makeGoal({ goal_type: 'review_health', current_value_numeric: 0, target_value_numeric: 20, status: 'achieved', goal_direction: 'at_most' }),
+          makeGoal({ goal_type: 'usable_vocabulary', current_value_numeric: 18, target_value_numeric: 25, status: 'at_risk' }),
+        ],
+      })
+    )
     renderDashboard()
-    expect(await screen.findByText(/12/)).toBeInTheDocument()  // reviews
-    expect(screen.getByText(/3/)).toBeInTheDocument()          // new
-    expect(screen.getByText(/5/)).toBeInTheDocument()          // recall
+    // Multiple elements may contain these numbers (rings, stats, subtext)
+    expect(await screen.findAllByText(/12/)).not.toHaveLength(0)  // reviews
+    expect(screen.getAllByText(/3/)).not.toHaveLength(0)           // new
+    expect(screen.getAllByText(/5/)).not.toHaveLength(0)           // recall
   })
 
   it('shows "op basis van N items per sessie" subtext', async () => {
@@ -396,7 +407,7 @@ describe('Secondary Cards', () => {
     vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([
       { lesson_id: 'lesson-4', completed_at: null, sections_completed: ['s1', 's2'] } as any,
     ])
-    vi.mocked(lessonService.getLessons ?? lessonService.getLessonsBasic).mockResolvedValue([
+    vi.mocked(lessonService.getLessonsBasic).mockResolvedValue([
       { id: 'lesson-4', title: 'Les 4: Op de markt', order_index: 4 } as any,
     ])
     renderDashboard()
