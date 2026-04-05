@@ -219,22 +219,29 @@ export function Progress() {
         {weeklyGoals && weeklyGoals.length > 0 && (
           <Paper p="xl" radius="md" className={classes.card}>
             <Stack gap="md">
-              <Title order={4}>This Week's Goals</Title>
+              <Title order={4}>{T.progress.thisWeeksGoals}</Title>
               <Stack gap="sm">
                 {weeklyGoals.map((goal) => {
                   const statusColor = goal.status === 'achieved' ? 'green' : goal.status === 'on_track' ? 'blue' : goal.status === 'at_risk' ? 'yellow' : 'red'
                   const goalLabel = {
-                    consistency: 'Study Consistency',
-                    recall_quality: 'Recall Quality',
-                    usable_vocabulary: 'Vocabulary Growth',
-                    review_health: 'Review Backlog'
+                    consistency: T.progress.studyConsistency,
+                    recall_quality: T.progress.recallQualityGoal,
+                    usable_vocabulary: T.progress.vocabularyGrowth,
+                    review_health: T.progress.reviewBacklog,
                   }[goal.goal_type] || goal.goal_type
+                  const statusLabel = {
+                    achieved: T.progress.achieved,
+                    on_track: T.progress.onTrack,
+                    at_risk: T.progress.atRisk,
+                    off_track: T.progress.offTrack,
+                    missed: T.progress.missed,
+                  }[goal.status] || goal.status.toUpperCase()
 
                   return (
                     <Box key={goal.id}>
                       <Group justify="space-between" mb="4">
                         <Text size="sm">{goalLabel}</Text>
-                        <Text size="xs" c={statusColor} fw={600}>{goal.status.toUpperCase()}</Text>
+                        <Text size="xs" c={statusColor} fw={600}>{statusLabel.toUpperCase()}</Text>
                       </Group>
                       <MantineProgress
                         value={Math.min(100, (goal.current_value_numeric / goal.target_value_numeric) * 100)}
@@ -258,7 +265,7 @@ export function Progress() {
           <>
             <Paper p="xl" radius="md" className={classes.card}>
               <Stack gap="md">
-                <Title order={4}>Productive Gains Trend</Title>
+                <Title order={4}>{T.progress.productiveGainsTrend}</Title>
                 <Stack gap="sm">
                   {dailyRollups.map((rollup, idx) => (
                     <Box key={idx}>
@@ -280,13 +287,13 @@ export function Progress() {
 
             <Paper p="xl" radius="md" className={classes.card}>
               <Stack gap="md">
-                <Title order={4}>Backlog Trend</Title>
+                <Title order={4}>{T.progress.backlogTrend}</Title>
                 <Stack gap="sm">
                   {dailyRollups.map((rollup, idx) => (
                     <Box key={idx}>
                       <Group justify="space-between" mb="4">
                         <Text size="sm">{new Date(rollup.local_date).toLocaleDateString()}</Text>
-                        <Text size="sm" fw={500}>{rollup.overdue_count ?? 0} overdue</Text>
+                        <Text size="sm" fw={500}>{rollup.overdue_count ?? 0} {T.progress.overdueItems}</Text>
                       </Group>
                       <MantineProgress
                         value={Math.min(100, ((rollup.overdue_count ?? 0) / 30) * 100)}

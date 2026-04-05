@@ -105,14 +105,22 @@ export const learningItemService = {
   },
 
   async getExerciseVariantsByContext(contextIds: string[]): Promise<ExerciseVariant[]> {
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('exercise_variants')
-      .select('*')
-      .in('context_id', contextIds)
-      .eq('is_active', true)
-    if (error) throw error
-    return data
+    // Batch into chunks of 50 to avoid Kong's URL length limit, which drops CORS headers
+    // on very long GET requests containing hundreds of UUIDs in the IN clause.
+    const CHUNK_SIZE = 50
+    const results: ExerciseVariant[] = []
+    for (let i = 0; i < contextIds.length; i += CHUNK_SIZE) {
+      const chunk = contextIds.slice(i, i + CHUNK_SIZE)
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('exercise_variants')
+        .select('*')
+        .in('context_id', chunk)
+        .eq('is_active', true)
+      if (error) throw error
+      results.push(...data)
+    }
+    return results
   },
 
   async getItemContextGrammarPatterns(contextIds: string[]): Promise<ItemContextGrammarPattern[]> {

@@ -567,7 +567,7 @@ export const goalService = {
       .from('learning_sessions')
       .select('id')
       .eq('user_id', userId)
-      .gte('created_at', new Date(now.setHours(0,0,0,0)).toISOString())
+      .gte('started_at', new Date(now.setHours(0,0,0,0)).toISOString())
       .limit(1)
 
     if (todaySessions && todaySessions.length > 0) {
