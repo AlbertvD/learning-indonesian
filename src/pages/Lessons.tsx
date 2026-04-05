@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { Container, Loader, Center } from '@mantine/core'
 import { Link } from 'react-router-dom'
-import { IconChevronRight, IconBook } from '@tabler/icons-react'
+import { IconChevronRight, IconBook, IconBarbell } from '@tabler/icons-react'
 import { lessonService, type Lesson } from '@/services/lessonService'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
@@ -72,26 +72,35 @@ export function Lessons() {
           const done = isCompleted(lesson.id)
           const completionPercent = getCompletionPercentage(lesson.id)
           return (
-            <Link
-              key={lesson.id}
-              to={`/lesson/${lesson.id}`}
-              className={`${classes.lessonCard} ${done ? classes.done : ''}`}
-            >
-              <div className={classes.lessonIcon}>
-                <IconBook size={18} />
-              </div>
-              <div className={classes.lessonInfo}>
-                <div className={classes.lessonTitle}>{lesson.title.replace(/\s*\([^)]*\)/g, '')}</div>
-              </div>
-              <span className={classes.lessonArrow}><IconChevronRight size={15} /></span>
-              <div className={classes.progressBarWrapper}>
-                <div className={classes.progressBarBackground} />
-                <div
-                  className={classes.progressBarFill}
-                  style={{ height: `${completionPercent}%` }}
-                />
-              </div>
-            </Link>
+            <div key={lesson.id} className={classes.lessonRow}>
+              <Link
+                to={`/lesson/${lesson.id}`}
+                className={`${classes.lessonCard} ${done ? classes.done : ''}`}
+              >
+                <div className={classes.lessonIcon}>
+                  <IconBook size={18} />
+                </div>
+                <div className={classes.lessonInfo}>
+                  <div className={classes.lessonTitle}>{lesson.title.replace(/\s*\([^)]*\)/g, '')}</div>
+                </div>
+                <span className={classes.lessonArrow}><IconChevronRight size={15} /></span>
+                <div className={classes.progressBarWrapper}>
+                  <div className={classes.progressBarBackground} />
+                  <div
+                    className={classes.progressBarFill}
+                    style={{ height: `${completionPercent}%` }}
+                  />
+                </div>
+              </Link>
+              <Link
+                to={`/session?lesson=${lesson.id}`}
+                className={classes.practiceCard}
+                title="Oefen deze les"
+              >
+                <IconBarbell size={18} />
+                <span className={classes.practiceLabel}>Oefen</span>
+              </Link>
+            </div>
           )
         })}
       </div>

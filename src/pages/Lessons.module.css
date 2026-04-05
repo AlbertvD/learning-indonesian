@@ -56,9 +56,49 @@
 }
 
 .lessonGrid {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
+}
+
+.lessonRow {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.lessonRow .lessonCard {
+  flex: 1;
+  min-width: 0;
+}
+
+.practiceCard {
+  flex-shrink: 0;
+  width: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  text-decoration: none;
+  color: var(--accent-primary);
+  transition: all .2s;
+  height: var(--card-compact-height);
+}
+
+.practiceCard:hover {
+  border-color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+  transform: translateY(-2px);
+}
+
+.practiceLabel {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .02em;
 }
 
 .lessonCard {
@@ -174,6 +214,16 @@
 }
 
 /* Light theme overrides */
+:global(html[data-mantine-color-scheme="light"]) .practiceCard {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .practiceCard:hover {
+  background: var(--accent-primary-subtle);
+  border-color: var(--accent-primary);
+}
+
 :global(html[data-mantine-color-scheme="light"]) .lessonCard {
   background: var(--card-bg);
   border-color: var(--card-border);
