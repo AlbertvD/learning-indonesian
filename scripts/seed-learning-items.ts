@@ -16,14 +16,6 @@ const supabase = createClient(supabaseUrl, serviceKey, {
   auth: { persistSession: false },
 })
 
-// Lesson order_index → lesson UUID mapping
-const LESSON_IDS: Record<number, string> = {
-  1: 'cb78cfa6-0146-4e65-89fd-da692642f6bf',
-  2: '0dfebf04-2720-4ddf-a832-245d90f22a26',
-  3: 'bb44d8ba-f5b1-48d6-83de-fb30f0425768',
-  4: '5b5c4be8-cf04-4f72-a818-c92519a4ed6a',
-}
-
 function normalizeText(text: string): string {
   return text.toLowerCase().replace(/[?!.,;:'"]/g, '').trim()
 }
@@ -40,13 +32,34 @@ async function seedLearningItems() {
   console.log(`   Found ${vocabulary.length} vocabulary items`)
   console.log('   Using upsert — learner progress is preserved')
 
+  // Build order_index → UUID map dynamically from DB so this script works
+  // regardless of how many lessons exist.
+  const { data: lessons, error: lessonsError } = await supabase
+    .schema('indonesian')
+    .from('lessons')
+    .select('id, order_index')
+  if (lessonsError || !lessons) {
+    console.error('❌ Failed to fetch lessons:', lessonsError?.message)
+    process.exit(1)
+  }
+  const lessonIds: Record<number, string> = {}
+  for (const lesson of lessons) {
+    lessonIds[lesson.order_index] = lesson.id
+  }
+  console.log(`   Lesson map: ${Object.entries(lessonIds).map(([k, v]) => `${k}→${v.slice(0, 8)}…`).join(', ')}`)
+
   let created = 0
   let skipped = 0
 
   for (const vocab of vocabulary) {
     const normalizedText = normalizeText(vocab.indonesian)
     const itemType = determineItemType(vocab)
-    const lessonId = LESSON_IDS[vocab.lesson_order_index]
+    const lessonId = lessonIds[vocab.lesson_order_index]
+    if (!lessonId) {
+      console.warn(`   ⚠️  No lesson in DB for order_index ${vocab.lesson_order_index} ("${vocab.indonesian}") — skipped`)
+      skipped++
+      continue
+    }
 
     // Upsert learning_item on (normalized_text, item_type)
     const { data: item, error: itemError } = await supabase
