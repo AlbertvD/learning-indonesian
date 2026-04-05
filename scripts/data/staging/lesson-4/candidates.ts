@@ -11,7 +11,7 @@ export const candidates = [
     exercise_type: 'contrast_pair',
     grammar_pattern_slug: 'yang-two-adj-unequal',
     source_page: 6,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       promptText: 'Pilih yang benar: "Het gele grote huis" (nadruk op geel)',
@@ -28,7 +28,7 @@ export const candidates = [
     exercise_type: 'contrast_pair',
     grammar_pattern_slug: 'yang-two-adj-equal',
     source_page: 6,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       promptText: 'Pilih yang benar: "De schone kleine lepel" (beide even belangrijk)',
@@ -45,7 +45,7 @@ export const candidates = [
     exercise_type: 'contrast_pair',
     grammar_pattern_slug: 'yang-two-adj-unequal',
     source_page: 6,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       promptText: 'Pilih yang benar: "De witte kleine stoel" (nadruk op wit)',
@@ -62,7 +62,7 @@ export const candidates = [
     exercise_type: 'contrast_pair',
     grammar_pattern_slug: 'yang-relative-pronoun',
     source_page: 5,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       promptText: 'Pilih yang benar: "Eten dat lekker is"',
@@ -79,7 +79,7 @@ export const candidates = [
     exercise_type: 'contrast_pair',
     grammar_pattern_slug: 'yang-nominalization',
     source_page: 5,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       promptText: 'Pilih yang benar: "De dure zijn mooi" (nominalisatie)',
@@ -100,7 +100,7 @@ export const candidates = [
     exercise_type: 'sentence_transformation',
     grammar_pattern_slug: 'yang-two-adj-equal',
     source_page: 6,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       sourceSentence: 'Rumah besar yang kuning',
@@ -116,7 +116,7 @@ export const candidates = [
     exercise_type: 'sentence_transformation',
     grammar_pattern_slug: 'yang-two-adj-unequal',
     source_page: 6,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       sourceSentence: 'Sendok yang kecil dan bersih',
@@ -132,7 +132,7 @@ export const candidates = [
     exercise_type: 'sentence_transformation',
     grammar_pattern_slug: 'yang-relative-pronoun',
     source_page: 5,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       sourceSentence: 'Pisang itu terlalu tua.',
@@ -148,7 +148,7 @@ export const candidates = [
     exercise_type: 'sentence_transformation',
     grammar_pattern_slug: 'yang-single-adjective-emphasis',
     source_page: 5,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       sourceSentence: 'Kunci kecil ini kunci Ibu.',
@@ -169,7 +169,7 @@ export const candidates = [
     exercise_type: 'constrained_translation',
     grammar_pattern_slug: 'yang-relative-pronoun',
     source_page: 5,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       sourceLanguageSentence: 'De kamer die schoon is',
@@ -185,7 +185,7 @@ export const candidates = [
     exercise_type: 'constrained_translation',
     grammar_pattern_slug: 'yang-nominalization',
     source_page: 5,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       sourceLanguageSentence: 'Degenen die slapen zijn talrijk.',
@@ -202,7 +202,7 @@ export const candidates = [
     exercise_type: 'constrained_translation',
     grammar_pattern_slug: 'yang-two-adj-equal',
     source_page: 6,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       sourceLanguageSentence: 'De kleine en gele sleutel',
@@ -218,7 +218,7 @@ export const candidates = [
     exercise_type: 'constrained_translation',
     grammar_pattern_slug: 'ada-yang-existential',
     source_page: 6,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       sourceLanguageSentence: 'Er zijn er die uit Nederland komen en er zijn er die uit Duitsland komen.',
@@ -237,7 +237,7 @@ export const candidates = [
     exercise_type: 'constrained_translation',
     grammar_pattern_slug: 'yang-relative-pronoun',
     source_page: 5,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       sourceLanguageSentence: 'Eten dat lekker is',
@@ -257,7 +257,7 @@ export const candidates = [
     exercise_type: 'contrast_pair',
     grammar_pattern_slug: 'yang-single-adjective-emphasis',
     source_page: 5,
-    review_status: 'approved' as const,
+    review_status: 'published' as const,
     requiresManualApproval: true,
     payload: {
       promptText: 'Welke zin benadrukt dat het huis GROOT is (in tegenstelling tot klein)?',

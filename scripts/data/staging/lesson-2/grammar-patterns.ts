@@ -1,0 +1,60 @@
+// Enriched by linguist from lesson 2 content: "Di Indonesia (In Indonesie)"
+// Grammar focus: se- prefix, ini/itu, tidak negation, adjective placement, belas numbers
+export const grammarPatterns = [
+  {
+    pattern_name: 'SE- prefix met classificeerwoorden',
+    description: 'SE- als onbepaald lidwoord "een" met classificeerwoorden: seorang (persoon), seekor (dier), sebuah (voorwerp). Woordvolgorde: telwoord - classificeerwoord - znw - bijv.nw. Voorbeeld: seekor ayam kecil (een kleine kip)',
+    confusion_group: 'se-prefix',
+    page_reference: 2,
+    slug: 'se-classifier',
+    complexity_score: 4,
+  },
+  {
+    pattern_name: 'ini/itu als aanwijzend voornaamwoord',
+    description: 'ini (dit/deze) en itu (dat/die) na het zelfstandig naamwoord of na znw + bijv.nw. Met nadruk uitgesproken. Voorbeeld: Rumah ini kecil (Dit huis is klein), Rumah besar ini mahal (Dit grote huis is duur)',
+    confusion_group: 'ini-itu-functions',
+    page_reference: 2,
+    slug: 'ini-itu-demonstrative',
+    complexity_score: 2,
+  },
+  {
+    pattern_name: 'ini/itu als woordgroepmarkeerder',
+    description: 'itu zonder nadruk markeert het einde van een woordgroep en kan vertaald worden als lidwoord (de/het). Na ini/itu volgt een korte pauze. Voorbeeld: Jalan itu bagus (De weg is mooi)',
+    confusion_group: 'ini-itu-functions',
+    page_reference: 2,
+    slug: 'ini-itu-group-marker',
+    complexity_score: 3,
+  },
+  {
+    pattern_name: 'ini/itu als centrale woordgroep',
+    description: 'ini en itu kunnen zelfstandig als onderwerp optreden. Voorbeeld: Itu bagus (Dat is mooi), Ini pisang (Dit is een banaan)',
+    confusion_group: 'ini-itu-functions',
+    page_reference: 2,
+    slug: 'ini-itu-central',
+    complexity_score: 1,
+  },
+  {
+    pattern_name: 'Ontkenning met tidak',
+    description: 'tidak (niet/nee) wordt geplaatst voor het woord dat ontkend wordt. Werkt bij bijvoeglijke naamwoorden en werkwoorden. Voorbeeld: Taksi ini tidak baru (Deze taxi is niet nieuw)',
+    confusion_group: null,
+    page_reference: 2,
+    slug: 'tidak-negation',
+    complexity_score: 2,
+  },
+  {
+    pattern_name: 'Bijvoeglijk naamwoord na zelfstandig naamwoord',
+    description: 'Het bijvoeglijk naamwoord staat binnen de woordgroep achter het znw (omgekeerd aan Nederlands). Zonder pauze samen uitgesproken. Voorbeeld: tas besar (grote tas), rumah kecil (klein huis)',
+    confusion_group: null,
+    page_reference: 2,
+    slug: 'adjective-after-noun',
+    complexity_score: 2,
+  },
+  {
+    pattern_name: 'Telwoorden 11-20 met belas',
+    description: 'Getallen 11-19 worden gevormd met eenheden + belas: sebelas (11), dua belas (12), etc. 20 = dua puluh. Let op: sebelas (niet satu belas) door se- prefix.',
+    confusion_group: 'number-system',
+    page_reference: 2,
+    slug: 'belas-numbers',
+    complexity_score: 3,
+  },
+]
