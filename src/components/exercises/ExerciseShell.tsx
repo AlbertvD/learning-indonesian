@@ -205,7 +205,15 @@ export function ExerciseShell({
     <>
       {exerciseNode}
       {waitingForContinue && (
-        <Box mt="xl">
+        <Box
+          style={{
+            position: 'fixed',
+            bottom: 'calc(24px + env(safe-area-inset-bottom))',
+            left: '16px',
+            right: '16px',
+            zIndex: 200,
+          }}
+        >
           <Button
             onClick={handleContinue}
             size="lg"
