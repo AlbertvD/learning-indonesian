@@ -35,17 +35,20 @@ export interface ProgressData {
   vulnerableItems: { id: string; indonesianText: string; lapseCount: number; consecutiveFailures: number }[] | null
 }
 
-const defaultWave1 = {
+type Wave1State = Pick<ProgressData, 'wave1Loading' | 'wave1Error' | 'itemsByStage' | 'skillStats' | 'lessonsCompleted' | 'skillStates' | 'forecast'>
+type Wave2State = Pick<ProgressData, 'wave2Loading' | 'wave2Error' | 'dailyRollups' | 'accuracyBySkillType' | 'lapsePrevention' | 'weeklyGoals' | 'vulnerableItems'>
+
+const defaultWave1: Wave1State = {
   wave1Loading: true,
   wave1Error: null,
   itemsByStage: { new: 0, anchoring: 0, retrieving: 0, productive: 0, maintenance: 0 },
   skillStats: { avgRecognition: 0, avgRecall: 0, avgStability: 0 },
   lessonsCompleted: { completed: 0, total: 0 },
-  skillStates: [] as LearnerSkillState[],
-  forecast: [] as { date: Date; count: number }[],
+  skillStates: [],
+  forecast: [],
 }
 
-const defaultWave2 = {
+const defaultWave2: Wave2State = {
   wave2Loading: false,
   wave2Error: null,
   dailyRollups: null,
@@ -123,7 +126,7 @@ export function useProgressData(): ProgressData {
           title: 'Failed to load progress',
           message: 'Could not load your progress data. Please try again.',
         })
-        setWave1State((prev) => ({ ...prev, wave1Loading: false, wave1Error: error }))
+        setWave1State((prev) => ({ ...prev, wave1Loading: false, wave1Error: error as Error | null }))
         return
       }
 
@@ -139,7 +142,7 @@ export function useProgressData(): ProgressData {
           progressService.getVulnerableItems(user!.id),
         ])
 
-      const nextWave2: typeof defaultWave2 = {
+      const nextWave2: Wave2State = {
         wave2Loading: false,
         wave2Error: null,
         dailyRollups: null,
