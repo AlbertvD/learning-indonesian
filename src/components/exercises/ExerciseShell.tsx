@@ -233,12 +233,14 @@ export function ExerciseShell({
           borderLeft: '3px solid var(--accent-primary)',
         }}>
           <Text size="sm" c="dimmed" mb={8}>Het juiste antwoord</Text>
-          <Text fw={700} size="xl" style={{ color: 'var(--accent-primary)' }}>
-            {learningItem.base_text}
-          </Text>
-          {translation && (
-            <Text size="sm" c="dimmed" mt={4}>{translation}</Text>
-          )}
+          <Box style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
+            <Text fw={700} size="xl" style={{ color: 'var(--accent-primary)' }}>
+              {learningItem.base_text}
+            </Text>
+            {translation && (
+              <Text fw={700} size="xl" c="dimmed">{translation}</Text>
+            )}
+          </Box>
         </Box>
 
         {/* Continue */}
