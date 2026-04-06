@@ -14,10 +14,10 @@ interface MasteryFunnelProps {
 }
 
 const PIPELINE_STAGES = [
-  { key: 'anchoring' as const,   label: 'Anchoring' },
-  { key: 'retrieving' as const,  label: 'Retrieving' },
-  { key: 'productive' as const,  label: 'Productive' },
-  { key: 'maintenance' as const, label: 'Maintenance' },
+  { key: 'anchoring' as const,   label: 'Inprenten' },
+  { key: 'retrieving' as const,  label: 'Oproepen' },
+  { key: 'productive' as const,  label: 'Productief' },
+  { key: 'maintenance' as const, label: 'Onderhoud' },
 ]
 
 export function MasteryFunnel({ itemsByStage }: MasteryFunnelProps) {
@@ -81,7 +81,7 @@ export function MasteryFunnel({ itemsByStage }: MasteryFunnelProps) {
           {showWarning && (
             <div className={classes.warningBanner}>
               <span>⚠️</span>
-              <span>{anchoringCount} items wachten op hun eerste poortcheck om naar Retrieving te gaan.</span>
+              <span>{anchoringCount} items wachten op hun eerste poortcheck om naar Oproepen te gaan.</span>
             </div>
           )}
           <Anchor
@@ -90,7 +90,7 @@ export function MasteryFunnel({ itemsByStage }: MasteryFunnelProps) {
             className={classes.milestonePill}
             underline="never"
           >
-            → Volgende mijlpaal: item naar Retrieving
+            → Volgende mijlpaal: item naar Oproepen
           </Anchor>
         </div>
       </div>
