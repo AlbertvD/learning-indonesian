@@ -66,10 +66,15 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
     eligibleItems = allItems.filter(i => lessonItemIds.has(i.id))
   }
 
-  // Filter to items that have meanings in the user's language
+  // Filter to items that have meanings in the user's language.
+  // Exception: items with published exercise variants (grammar exercises) carry
+  // all content in their payload — they don't need meanings to render.
   eligibleItems = eligibleItems.filter(i => {
     const meanings = meaningsByItem[i.id] ?? []
-    return meanings.some(m => m.translation_language === userLanguage)
+    if (meanings.some(m => m.translation_language === userLanguage)) return true
+    // Check if any context has a published exercise variant
+    const contexts = contextsByItem[i.id] ?? []
+    return contexts.some(ctx => (exerciseVariantsByContext?.[ctx.id] ?? []).length > 0)
   })
 
   // recall_sprint: restrict to items that have a form_recall skill.
