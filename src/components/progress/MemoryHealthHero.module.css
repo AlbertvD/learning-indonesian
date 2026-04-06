@@ -85,7 +85,7 @@
 /* ── Labels ──────────────────────────────────────────── */
 
 .gaugeLabel {
-  font-size: var(--fs-xs);
+  font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   letter-spacing: 0.3px;
   color: var(--text-secondary);
