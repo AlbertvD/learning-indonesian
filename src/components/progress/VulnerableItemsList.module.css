@@ -49,7 +49,6 @@
 }
 
 .lapseCount {
-  font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--text-tertiary);
   display: flex;
