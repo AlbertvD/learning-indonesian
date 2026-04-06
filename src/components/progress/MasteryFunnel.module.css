@@ -94,7 +94,7 @@
   font-weight: var(--fw-bold);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--text-tertiary);
+  color: var(--text-primary);
   margin-bottom: 4px;
   display: flex;
   align-items: center;
@@ -124,12 +124,12 @@
 }
 
 .stageCountZero {
-  color: var(--text-tertiary);
+  color: var(--text-primary);
 }
 
 .stageUnit {
   font-size: var(--fs-xs);
-  color: var(--text-tertiary);
+  color: var(--text-primary);
   margin-top: 2px;
 }
 
