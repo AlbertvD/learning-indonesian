@@ -43,12 +43,11 @@ export function CuedRecallExercise({ exerciseItem, onAnswer }: CuedRecallExercis
       <Stack gap="xl">
         {/* Prompt section */}
         <Box className={classes.wordSection}>
-          <Text size="sm" c="dimmed" mb="xs">
-            {data.promptMeaningText}
-          </Text>
+          <Text size="sm" c="dimmed" mb="xs">Kies het juiste Indonesische woord</Text>
+          <Box className={classes.word}>{data.promptMeaningText}</Box>
           {data.cueText && (
-            <Text size="sm" c="dimmed" mb="xs" style={{ fontStyle: 'italic' }}>
-              Cue: {data.cueText}
+            <Text size="sm" c="dimmed" mt="xs" style={{ fontStyle: 'italic' }}>
+              {data.cueText}
             </Text>
           )}
         </Box>
