@@ -230,7 +230,7 @@ export function ExerciseShell({
             <Text size="xs" c="dimmed" style={{ textTransform: 'uppercase', letterSpacing: '0.06em' }} mb={8}>Gevraagd</Text>
             <Text fw={600} size="lg">{translation}</Text>
           </Box>
-          <Box style={{ padding: '16px', border: '1px solid var(--accent-primary-border)', borderRadius: 'var(--r-md)' }}>
+          <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)' }}>
             <Text size="xs" c="dimmed" style={{ textTransform: 'uppercase', letterSpacing: '0.06em' }} mb={8}>Correct antwoord</Text>
             <Text fw={700} size="lg" style={{ color: 'var(--accent-primary)' }}>{learningItem.base_text}</Text>
           </Box>
