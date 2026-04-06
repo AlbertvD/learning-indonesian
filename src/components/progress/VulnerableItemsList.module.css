@@ -23,15 +23,12 @@
   grid-template-columns: 90px 80px 90px 1fr 40px;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: var(--r-sm);
-  transition: border-color 0.2s;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--card-border);
 }
 
-.item:hover {
-  border-color: var(--border-light);
+.item:last-child {
+  border-bottom: none;
 }
 
 .word {

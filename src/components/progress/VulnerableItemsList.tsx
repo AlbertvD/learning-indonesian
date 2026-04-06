@@ -24,7 +24,7 @@ export function VulnerableItemsList({ items, loading }: VulnerableItemsListProps
     <div>
       <div className="section-label">Meest Kwetsbare Woorden</div>
 
-      <div>
+      <div className={classes.card}>
         <p className={classes.subtitle}>
           Woorden die het meest aandacht nodig hebben op basis van herhaalde fouten.
         </p>
