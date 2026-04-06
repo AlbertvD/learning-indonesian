@@ -227,11 +227,11 @@ export function ExerciseShell({
         {/* Two cards */}
         <Box style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
           <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)' }}>
-            <Text size="xs" c="dimmed" style={{ textTransform: 'uppercase', letterSpacing: '0.06em' }} mb={8}>Gevraagd</Text>
+            <Text size="xs" style={{ textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }} mb={8}>Gevraagd</Text>
             <Text fw={600} size="lg">{translation}</Text>
           </Box>
           <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)' }}>
-            <Text size="xs" c="dimmed" style={{ textTransform: 'uppercase', letterSpacing: '0.06em' }} mb={8}>Correct antwoord</Text>
+            <Text size="xs" style={{ textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }} mb={8}>Correct antwoord</Text>
             <Text fw={700} size="lg" style={{ color: 'var(--accent-primary)' }}>{learningItem.base_text}</Text>
           </Box>
         </Box>
