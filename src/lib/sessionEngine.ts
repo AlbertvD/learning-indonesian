@@ -334,19 +334,31 @@ function selectExercises(
     return [makeTypedRecall(item, meanings, contexts, variants)]
   }
 
+  // Whether the item has a usable context sentence for cloze (anchor context counts)
+  const hasAnchorContext = contexts.some(c => c.is_anchor_context || c.context_type === 'cloze')
+
   // Determine which exercises are appropriate for this stage
   if (stage === 'new' || stage === 'anchoring') {
-    // Recognition MCQ only
-    exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
+    // New items: always start with forward recognition (Indonesian → translation).
+    // Anchoring items: mix in cued_recall (translation → pick Indonesian) ~35% of
+    // the time so the reverse direction gets tested before the item graduates.
+    if (stage === 'anchoring' && Math.random() < 0.35) {
+      exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems))
+    } else {
+      exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
+    }
   } else if (stage === 'retrieving') {
     if (isSentenceType) {
+      exercises.push(makeClozeExercise(item, meanings, contexts, variants))
+    } else if (hasAnchorContext && Math.random() > 0.5) {
+      // Word items with a context sentence: alternate between cloze and typed recall
+      // to vary the recall surface without changing the skill being scored.
       exercises.push(makeClozeExercise(item, meanings, contexts, variants))
     } else {
       exercises.push(makeTypedRecall(item, meanings, contexts, variants))
     }
   } else {
-    // productive / maintenance: any exercise type
-    // Try to use published variants for grammar-aware types
+    // productive / maintenance: rotate across all available exercise types.
     if (isSentenceType) {
       exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
     } else {
@@ -355,22 +367,26 @@ function selectExercises(
 
       if (hasPublishedVariants) {
         // Prefer published variants (contrast_pair, sentence_transformation, constrained_translation)
-        // Pick a random published variant
         for (const context of contexts) {
           const publishedVariants = exerciseVariantsByContext?.[context.id] ?? []
           if (publishedVariants.length > 0) {
             const variant = publishedVariants[Math.floor(Math.random() * publishedVariants.length)]
             exercises.push(makePublishedExercise(item, meanings, context, variant))
-            break // Use first context with variants
+            break
           }
         }
       }
 
-      // Fall back to live content if no published variants
+      // Fallback: rotate between typed_recall, cloze, cued_recall, and recognition_mcq
+      // so productive/maintenance sessions stay varied without published variants.
       if (exercises.length === 0) {
-        const preferRecall = Math.random() > 0.4
-        if (preferRecall) {
+        const roll = Math.random()
+        if (roll < 0.35) {
           exercises.push(makeTypedRecall(item, meanings, contexts, variants))
+        } else if (roll < 0.60 && hasAnchorContext) {
+          exercises.push(makeClozeExercise(item, meanings, contexts, variants))
+        } else if (roll < 0.80) {
+          exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems))
         } else {
           exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
         }
@@ -409,7 +425,6 @@ function makeRecognitionMCQ(
     const j = Math.floor(Math.random() * (i + 1));
     [distractors[i], distractors[j]] = [distractors[j], distractors[i]]
   }
-  const shuffled = distractors.slice(0, 3)
 
   return {
     learningItem: item,
@@ -418,7 +433,7 @@ function makeRecognitionMCQ(
     answerVariants: variants,
     skillType: 'recognition',
     exerciseType: 'recognition_mcq',
-    distractors: shuffled,
+    distractors: distractors.slice(0, 3),
   }
 }
 
@@ -435,6 +450,48 @@ function makeTypedRecall(
     answerVariants: variants,
     skillType: 'form_recall',
     exerciseType: 'typed_recall',
+  }
+}
+
+function makeCuedRecall(
+  item: LearningItem,
+  meanings: ItemMeaning[],
+  contexts: ItemContext[],
+  variants: ItemAnswerVariant[],
+  userLanguage: 'en' | 'nl',
+  allItems: LearningItem[],
+): ExerciseItem {
+  const primaryMeaning = meanings.find(m => m.translation_language === userLanguage && m.is_primary)
+    ?? meanings.find(m => m.translation_language === userLanguage)
+  const promptMeaningText = primaryMeaning?.translation_text ?? ''
+
+  // Distractors: Indonesian base_text from other items at the same level
+  const distractors = allItems
+    .filter(i => i.id !== item.id && i.level === item.level)
+    .map(i => i.base_text)
+    .filter(Boolean)
+
+  // Fisher-Yates shuffle and take 3
+  for (let i = distractors.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [distractors[i], distractors[j]] = [distractors[j], distractors[i]]
+  }
+
+  // Include the correct answer among 4 shuffled options
+  const options = [item.base_text, ...distractors.slice(0, 3)].sort(() => Math.random() - 0.5)
+
+  return {
+    learningItem: item,
+    meanings,
+    contexts,
+    answerVariants: variants,
+    skillType: 'recognition',
+    exerciseType: 'cued_recall',
+    cuedRecallData: {
+      promptMeaningText,
+      options,
+      correctOptionId: item.base_text,
+    },
   }
 }
 

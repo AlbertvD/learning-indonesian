@@ -95,6 +95,10 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     // Accent border (for pills, badges)
     '--accent-primary-border': 'rgba(0,229,255,0.20)',
 
+    // Ring chart target marker (goal marker — yellow, same in both themes)
+    '--ring-target':      '#fcc419',
+    '--ring-target-glow': 'rgba(252, 196, 25, 0.70)',
+
     // Mix ratio bar
     '--mix-recall': '#9c36b5',
 
@@ -144,6 +148,15 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     // Secondary accent
     '--teal':        '#00C7BE',
     '--teal-subtle': 'rgba(0,199,190,0.10)',
+
+    // Hero card (gradient planning card)
+    '--hero-gradient':    'linear-gradient(135deg, #0c8599 0%, #1a2a3a 60%, rgba(255,255,255,0.10) 100%)',
+    '--hero-border':      'rgba(21, 170, 191, 0.25)',
+    '--hero-text':        '#ffffff',
+    '--hero-text-dim':    'rgba(255, 255, 255, 0.85)',
+    '--hero-text-muted':  'rgba(255, 255, 255, 0.45)',
+    '--hero-text-subtle': 'rgba(255, 255, 255, 0.35)',
+    '--hero-label':       'rgba(255, 255, 255, 0.60)',
 
     // ── Legacy aliases (backward compat — do not use in new code) ──
     '--bg':     '#000000',
@@ -205,6 +218,15 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     // Secondary accent
     '--teal':        '#00C7BE',
     '--teal-subtle': 'rgba(0,199,190,0.10)',
+
+    // Hero card (gradient planning card)
+    '--hero-gradient':    'linear-gradient(135deg, var(--accent-primary-subtle) 0%, var(--card-bg) 60%, var(--bg-main) 100%)',
+    '--hero-border':      'var(--card-border)',
+    '--hero-text':        'var(--text-primary)',
+    '--hero-text-dim':    'var(--text-primary)',
+    '--hero-text-muted':  'var(--text-secondary)',
+    '--hero-text-subtle': 'var(--text-tertiary)',
+    '--hero-label':       'var(--text-secondary)',
 
     // ── Legacy aliases (backward compat — do not use in new code) ──
     '--bg':     '#FFFFFF',

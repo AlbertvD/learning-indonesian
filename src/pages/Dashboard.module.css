@@ -5,7 +5,7 @@
 .pageTitle {
   font-family: var(--font-sans);
   font-size: var(--fs-3xl);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   line-height: 1.15;
   letter-spacing: -.01em;
   color: var(--text-primary);
@@ -68,13 +68,13 @@
   align-items: center;
   justify-content: center;
   font-size: var(--fs-lg);
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   color: var(--text-primary);
 }
 
 .ringLabel {
   font-size: var(--fs-xs);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -93,8 +93,8 @@
   left: calc(50% - 2px);
   width: 4px;
   height: 8px;
-  background: #fcc419;
-  box-shadow: 0 0 4px rgba(252, 196, 25, 0.7);
+  background: var(--ring-target);
+  box-shadow: 0 0 4px var(--ring-target-glow);
   transform-origin: center calc(100% + 31px);
   transform: rotate(var(--target-deg));
   border-radius: 2px;
@@ -106,7 +106,7 @@
   padding: 2px 8px;
   border-radius: 20px;
   font-size: var(--fs-xs);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   line-height: 1.4;
 }
 
@@ -166,14 +166,14 @@
 
 .actionCardTitle {
   font-size: var(--fs-md);
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   color: var(--text-primary);
   margin-bottom: 2px;
 }
 
 .actionCardFocus {
   font-size: var(--fs-sm);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   color: var(--text-secondary);
 }
 
@@ -193,26 +193,17 @@
 /* ─── Hero Card (gradient) ─── */
 
 .heroCardV2 {
-  background: linear-gradient(135deg, #0c8599 0%, #1a2a3a 60%, var(--card-bg) 100%);
-  border: 1px solid rgba(21, 170, 191, 0.25);
+  background: var(--hero-gradient);
+  border: 1px solid var(--hero-border);
   border-radius: var(--r-lg);
   padding: 28px 24px;
 }
 
-:global(html[data-mantine-color-scheme="light"]) .heroCardV2 {
-  background: linear-gradient(135deg, var(--accent-primary-subtle) 0%, var(--card-bg) 60%, var(--bg-main) 100%);
-  border: 1px solid var(--card-border);
-}
-
 .heroV2Title {
   font-size: var(--fs-xl);
-  font-weight: 700;
-  color: #fff;
+  font-weight: var(--fw-bold);
+  color: var(--hero-text);
   margin-bottom: 18px;
-}
-
-:global(html[data-mantine-color-scheme="light"]) .heroV2Title {
-  color: var(--text-primary);
 }
 
 .heroV2Stats {
@@ -227,36 +218,24 @@
   align-items: center;
   gap: 6px;
   font-size: var(--fs-md);
-  color: rgba(255, 255, 255, 0.85);
-}
-
-:global(html[data-mantine-color-scheme="light"]) .heroV2Stat {
-  color: var(--text-primary);
+  color: var(--hero-text-dim);
 }
 
 .heroV2Subtext {
   font-size: var(--fs-xs);
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--hero-text-muted);
   margin-bottom: 16px;
-}
-
-:global(html[data-mantine-color-scheme="light"]) .heroV2Subtext {
-  color: var(--text-secondary);
 }
 
 .mixRatioSection { margin-bottom: 20px; }
 
 .mixRatioLabel {
   font-size: var(--fs-xs);
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.6);
+  font-weight: var(--fw-semibold);
+  color: var(--hero-label);
   text-transform: uppercase;
   letter-spacing: 0.3px;
   margin-bottom: 8px;
-}
-
-:global(html[data-mantine-color-scheme="light"]) .mixRatioLabel {
-  color: var(--text-secondary);
 }
 
 .mixBar {
@@ -285,11 +264,7 @@
   align-items: center;
   gap: 5px;
   font-size: var(--fs-xs);
-  color: rgba(255, 255, 255, 0.6);
-}
-
-:global(html[data-mantine-color-scheme="light"]) .mixLegendItem {
-  color: var(--text-secondary);
+  color: var(--hero-label);
 }
 
 .mixLegendDot {
@@ -302,12 +277,7 @@
 .mixNote {
   font-size: var(--fs-xs);
   font-style: italic;
-  color: rgba(255, 255, 255, 0.35);
-}
-
-:global(html[data-mantine-color-scheme="light"]) .mixNote {
-  color: var(--text-secondary);
-  opacity: 0.7;
+  color: var(--hero-text-subtle);
 }
 
 .heroCta {
@@ -319,7 +289,7 @@
   width: 100%;
   padding: 14px 0 12px;
   background: var(--accent-primary);
-  color: #fff;
+  color: var(--text-on-accent);
   border: none;
   border-radius: var(--r-md);
   cursor: pointer;
@@ -333,26 +303,21 @@
   align-items: center;
   gap: 8px;
   font-size: var(--fs-lg);
-  font-weight: 700;
+  font-weight: var(--fw-bold);
 }
 
 .heroCtaSub {
   font-size: var(--fs-xs);
   opacity: 0.75;
-  font-weight: 500;
+  font-weight: var(--fw-medium);
 }
 
 .heroPostNote {
   text-align: center;
   margin-top: 10px;
   font-size: var(--fs-xs);
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--hero-text-subtle);
   font-style: italic;
-}
-
-:global(html[data-mantine-color-scheme="light"]) .heroPostNote {
-  color: var(--text-secondary);
-  opacity: 0.6;
 }
 
 /* ─── Secondary + Rescue Cards ─── */
@@ -410,7 +375,7 @@
   background: var(--danger-subtle);
   color: var(--danger);
   font-size: var(--fs-xs);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
 }
 
 .cardLeft {
@@ -434,7 +399,7 @@
 
 .cardTitle {
   font-size: var(--fs-sm);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   color: var(--text-primary);
 }
 
