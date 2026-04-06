@@ -10,21 +10,6 @@
 
 .header {
   margin-bottom: 36px;
-  position: relative;
-  padding-left: 20px;
-}
-
-/* Cyan accent bar on the left */
-.header::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 4px;
-  width: 3px;
-  height: 44px;
-  background: var(--accent-primary);
-  border-radius: 0 2px 2px 0;
-  box-shadow: 0 0 12px var(--accent-primary-glow);
 }
 
 .headerBadge {
