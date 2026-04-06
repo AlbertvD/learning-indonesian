@@ -97,11 +97,11 @@ html[data-mantine-color-scheme="light"] body {
 
 .section-label {
   font-family: var(--font-sans);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-sm);
   font-weight: var(--fw-bold);
-  letter-spacing: 0.10em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-tertiary);
+  color: var(--text-primary);
   margin-bottom: 12px;
   display: flex;
   align-items: center;
