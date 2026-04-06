@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { Box, Button } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { RecognitionMCQ } from './RecognitionMCQ'
@@ -36,21 +36,6 @@ export function ExerciseShell({
 }: ExerciseShellProps) {
   const [isProcessing, setIsProcessing] = useState(false)
   const [waitingForContinue, setWaitingForContinue] = useState(false)
-  const exerciseContainerRef = useRef<HTMLDivElement>(null)
-  const [overlayInsets, setOverlayInsets] = useState<{ left: number; right: number }>({ left: 64, right: 64 })
-
-  // When the continue overlay appears, measure the first interactive button inside
-  // the exercise component to align the overlay with actual answer box edges.
-  useEffect(() => {
-    if (!waitingForContinue || !exerciseContainerRef.current) return
-    const btn = exerciseContainerRef.current.querySelector('button')
-    if (!btn) return
-    const rect = btn.getBoundingClientRect()
-    setOverlayInsets({
-      left: rect.left,
-      right: window.innerWidth - rect.right,
-    })
-  }, [waitingForContinue])
 
   const exerciseItem = currentItem.exerciseItem
 
@@ -218,20 +203,19 @@ export function ExerciseShell({
 
   return (
     <>
-      <div ref={exerciseContainerRef}>
+      <Box style={{ paddingBottom: waitingForContinue ? 100 : 0 }}>
         {exerciseNode}
-      </div>
+      </Box>
       {waitingForContinue && (
         <Box
           style={{
             position: 'fixed',
-            top: '50%',
-            left: overlayInsets.left,
-            right: overlayInsets.right,
-            transform: 'translateY(-50%)',
+            bottom: 0,
+            left: 0,
+            right: 0,
             zIndex: 200,
-            borderRadius: 'var(--mantine-radius-md)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.3)',
+            padding: '12px 16px 24px',
+            background: 'linear-gradient(to bottom, transparent, var(--bg-main) 40%)',
           }}
         >
           <Button
@@ -239,7 +223,7 @@ export function ExerciseShell({
             size="lg"
             fullWidth
             variant="filled"
-            style={{ minHeight: 50 }}
+            style={{ minHeight: 50, maxWidth: 480, margin: '0 auto', display: 'block' }}
           >
             Doorgaan
           </Button>
