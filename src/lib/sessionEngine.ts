@@ -536,6 +536,7 @@ function makePublishedExercise(
     | 'speaking'
 
   const payload = variant.payload_json
+  const answerKey = variant.answer_key_json
 
   const baseExercise: ExerciseItem = {
     learningItem: item,
@@ -556,7 +557,7 @@ function makePublishedExercise(
           promptText: payload.promptText || '',
           targetMeaning: payload.targetMeaning || '',
           options: payload.options || ['', ''],
-          correctOptionId: payload.correctOptionId || '0',
+          correctOptionId: (answerKey?.correctOptionId as string) || (payload.correctOptionId as string) || '',
           explanationText: payload.explanationText || '',
         },
       }
@@ -568,8 +569,8 @@ function makePublishedExercise(
         sentenceTransformationData: {
           sourceSentence: payload.sourceSentence || '',
           transformationInstruction: payload.transformationInstruction || '',
-          acceptableAnswers: payload.acceptableAnswers || [],
-          hintText: payload.hintText,
+          acceptableAnswers: (answerKey?.acceptableAnswers as string[]) || (payload.acceptableAnswers as string[]) || [],
+          hintText: payload.hintText as string | undefined,
           explanationText: payload.explanationText || '',
         },
       }
@@ -581,8 +582,8 @@ function makePublishedExercise(
         constrainedTranslationData: {
           sourceLanguageSentence: payload.sourceLanguageSentence || '',
           requiredTargetPattern: payload.requiredTargetPattern || '',
-          acceptableAnswers: payload.acceptableAnswers || [],
-          disallowedShortcutForms: payload.disallowedShortcutForms,
+          acceptableAnswers: (answerKey?.acceptableAnswers as string[]) || (payload.acceptableAnswers as string[]) || [],
+          disallowedShortcutForms: (answerKey?.disallowedShortcutForms as string[] | undefined) ?? (payload.disallowedShortcutForms as string[] | undefined),
           explanationText: payload.explanationText || '',
         },
       }
