@@ -335,8 +335,10 @@ function selectExercises(
     return [makeTypedRecall(item, meanings, contexts, variants)]
   }
 
-  // Whether the item has a usable context sentence for cloze (anchor context counts)
-  const hasAnchorContext = contexts.some(c => c.is_anchor_context || c.context_type === 'cloze')
+  // Whether the item has a cloze-eligible context: must be context_type 'cloze' specifically.
+  // lesson_snippet contexts with is_anchor_context=true only contain the bare word as
+  // source_text and are not suitable for generating cloze blanks.
+  const hasAnchorContext = contexts.some(c => c.context_type === 'cloze')
 
   // Determine which exercises are appropriate for this stage
   if (stage === 'new' || stage === 'anchoring') {
