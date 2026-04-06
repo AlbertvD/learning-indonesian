@@ -1,6 +1,6 @@
 // src/pages/Progress.tsx
 import { useEffect } from 'react'
-import { Container, SimpleGrid, Center, Loader } from '@mantine/core'
+import { Container, Center, Loader } from '@mantine/core'
 import { useAuthStore } from '@/stores/authStore'
 import { analyticsService } from '@/services/analyticsService'
 import { useProgressData } from '@/hooks/useProgressData'
@@ -8,7 +8,6 @@ import { MemoryHealthHero } from '@/components/progress/MemoryHealthHero'
 import { MasteryFunnel } from '@/components/progress/MasteryFunnel'
 import { VulnerableItemsList } from '@/components/progress/VulnerableItemsList'
 import { ReviewForecastChart } from '@/components/progress/ReviewForecastChart'
-import { WeeklyGoalsList } from '@/components/progress/WeeklyGoalsList'
 import { DetailedMetrics } from '@/components/progress/DetailedMetrics'
 import classes from './Progress.module.css'
 
@@ -63,13 +62,9 @@ export function Progress() {
           />
         </section>
 
-        {/* Section 4 — Forecast + Goals (two-column) */}
+        {/* Section 4 — Forecast */}
         <section className={classes.section}>
-          <div className="section-label">Plannen &amp; Doelen</div>
-          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-            <ReviewForecastChart forecast={data.forecast} />
-            <WeeklyGoalsList goals={data.weeklyGoals} loading={data.wave2Loading} />
-          </SimpleGrid>
+          <ReviewForecastChart forecast={data.forecast} />
         </section>
 
         {/* Section 5 — Detail Stats */}
