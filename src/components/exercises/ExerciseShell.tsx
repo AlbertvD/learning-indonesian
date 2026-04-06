@@ -224,22 +224,15 @@ export function ExerciseShell({
           <Text fw={600} style={{ color: 'var(--danger)' }}>Fout</Text>
         </Box>
 
-        {/* Correct answer */}
-        <Box style={{
-          padding: '20px',
-          background: 'var(--card-bg)',
-          border: '1px solid var(--card-border)',
-          borderRadius: 'var(--r-md)',
-          borderLeft: '3px solid var(--accent-primary)',
-        }}>
-          <Text size="md" fw={600} style={{ color: 'var(--text-primary)' }} mb={8}>Het juiste antwoord</Text>
-          <Box style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
-            <Text fw={700} size="xl" style={{ color: 'var(--accent-primary)' }}>
-              {learningItem.base_text}
-            </Text>
-            {translation && (
-              <Text fw={700} size="xl" c="dimmed">{translation}</Text>
-            )}
+        {/* Two cards */}
+        <Box style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)' }}>
+            <Text size="xs" c="dimmed" style={{ textTransform: 'uppercase', letterSpacing: '0.06em' }} mb={8}>Gevraagd</Text>
+            <Text fw={600} size="lg">{translation}</Text>
+          </Box>
+          <Box style={{ padding: '16px', border: '1px solid var(--accent-primary-border)', borderRadius: 'var(--r-md)' }}>
+            <Text size="xs" c="dimmed" style={{ textTransform: 'uppercase', letterSpacing: '0.06em' }} mb={8}>Correct antwoord</Text>
+            <Text fw={700} size="lg" style={{ color: 'var(--accent-primary)' }}>{learningItem.base_text}</Text>
           </Box>
         </Box>
 
