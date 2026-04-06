@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Box, Button } from '@mantine/core'
+import { Box, Button, Stack, Text } from '@mantine/core'
+import { IconX } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
 import { RecognitionMCQ } from './RecognitionMCQ'
 import { CuedRecallExercise } from './CuedRecallExercise'
@@ -201,34 +202,52 @@ export function ExerciseShell({
       )
   } })()
 
-  return (
-    <>
-      <Box style={{ paddingBottom: waitingForContinue ? 100 : 0 }}>
-        {exerciseNode}
-      </Box>
-      {waitingForContinue && (
-        <Box
-          style={{
-            position: 'fixed',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            zIndex: 200,
-            padding: '12px 16px 24px',
-            background: 'linear-gradient(to bottom, transparent, var(--bg-main) 40%)',
-          }}
-        >
-          <Button
-            onClick={handleContinue}
-            size="lg"
-            fullWidth
-            variant="filled"
-            style={{ minHeight: 50, maxWidth: 480, margin: '0 auto', display: 'block' }}
-          >
-            Doorgaan
-          </Button>
+  if (waitingForContinue) {
+    const { learningItem, meanings } = exerciseItem
+    const primaryMeaning = meanings.find(m => m.translation_language === userLanguage && m.is_primary)
+      ?? meanings.find(m => m.translation_language === userLanguage)
+    const translation = primaryMeaning?.translation_text ?? ''
+
+    return (
+      <Stack gap="xl" style={{ padding: '24px 0' }}>
+        {/* Wrong answer banner */}
+        <Box style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          padding: '12px 16px',
+          background: 'var(--danger-subtle)',
+          border: '1px solid var(--danger-border)',
+          borderRadius: 'var(--r-md)',
+        }}>
+          <IconX size={18} color="var(--danger)" />
+          <Text fw={600} style={{ color: 'var(--danger)' }}>Fout</Text>
         </Box>
-      )}
-    </>
-  )
+
+        {/* Correct answer */}
+        <Box style={{
+          padding: '20px',
+          background: 'var(--card-bg)',
+          border: '1px solid var(--card-border)',
+          borderRadius: 'var(--r-md)',
+          borderLeft: '3px solid var(--accent-primary)',
+        }}>
+          <Text size="sm" c="dimmed" mb={8}>Het juiste antwoord</Text>
+          <Text fw={700} size="xl" style={{ color: 'var(--accent-primary)' }}>
+            {learningItem.base_text}
+          </Text>
+          {translation && (
+            <Text size="sm" c="dimmed" mt={4}>{translation}</Text>
+          )}
+        </Box>
+
+        {/* Continue */}
+        <Button onClick={handleContinue} size="lg" fullWidth variant="filled">
+          Doorgaan
+        </Button>
+      </Stack>
+    )
+  }
+
+  return <>{exerciseNode}</>
 }
