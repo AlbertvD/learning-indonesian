@@ -76,8 +76,9 @@ function deriveBaseText(candidate: any): string {
   const p = candidate.payload
   // sentence_transformation: use the source sentence being transformed
   if (p.sourceSentence) return p.sourceSentence
-  // constrained_translation: use the Dutch source sentence
-  if (p.sourceLanguageSentence) return p.sourceLanguageSentence
+  // constrained_translation: use the first acceptable Indonesian answer as base_text
+  // (sourceLanguageSentence is Dutch — wrong language for an Indonesian learning item)
+  if (p.sourceLanguageSentence) return p.acceptableAnswers?.[0] ?? p.sourceLanguageSentence
   // contrast_pair: use the promptText
   if (p.promptText) return p.promptText
   throw new Error(`Cannot derive base_text from candidate: ${JSON.stringify(candidate).slice(0, 120)}`)

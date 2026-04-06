@@ -212,6 +212,14 @@ export function Session() {
           console.warn('Failed to load exercise availability:', err)
         }
 
+        // Load grammar patterns for confusion-group interleaving
+        let grammarPatterns: Record<string, { confusion_group?: string }> | undefined
+        try {
+          grammarPatterns = await learningItemService.getGrammarPatternsByItem(items.map(i => i.id))
+        } catch (err) {
+          console.warn('Failed to load grammar patterns:', err)
+        }
+
         // Apply session policies to shape the queue
         const policyContext: SessionPoliciesContext = {
           accountAgeDays: ageDays,
@@ -219,6 +227,7 @@ export function Session() {
           sessionInteractionCap: preferredSessionSize,
           preferredSessionSize,
           exerciseTypeAvailability,
+          grammarPatterns,
         }
 
         const shapedQueue = applyPolicies(builtQueue, policyContext)

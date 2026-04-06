@@ -43,7 +43,6 @@ interface CandidateItem {
 // Fraction of the session that can be new items when reviews are present.
 // Scales with session size so a user who wants 25 words gets more new items
 // than one who wants 10.
-const NEW_ITEMS_FRACTION = 0.25  // e.g. 6 new items in a 25-word session
 
 /**
  * Build a session queue from the learning item pool.
@@ -288,19 +287,21 @@ function calculateNewSlots(
   reviewsFilled: number,
   sessionSize: number,
 ): number {
-  // Heavy review load: skip new items entirely
-  if (dueCount > 40) return 0
-
   const remainingCapacity = sessionSize - reviewsFilled
 
   // Nothing to review at all (fresh start or full reset): fill the session
   // with new items so the user gets their target number of items.
   if (dueCount === 0 && anchoringCount === 0) return remainingCapacity
 
-  // Reviews are present: cap new items as a fraction of the session size
-  // (scales with preference — 6 new items for 25-word session vs 3 for 10-word)
-  // but never exceed remaining capacity.
-  const cap = Math.max(3, Math.round(sessionSize * NEW_ITEMS_FRACTION))
+  // Spec-defined new-item caps based on due count:
+  // due > 40 → 0 new (heavy backlog, clear it first)
+  // due > 20 → 2 new (moderate backlog, trickle new items)
+  // else     → 8 new (light backlog, normal introduction pace)
+  let cap: number
+  if (dueCount > 40) cap = 0
+  else if (dueCount > 20) cap = 2
+  else cap = 8
+
   return Math.min(cap, remainingCapacity)
 }
 
@@ -485,7 +486,7 @@ function makeCuedRecall(
     meanings,
     contexts,
     answerVariants: variants,
-    skillType: 'recognition',
+    skillType: 'meaning_recall',
     exerciseType: 'cued_recall',
     cuedRecallData: {
       promptMeaningText,

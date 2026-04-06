@@ -17,7 +17,6 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
   const [isAnswered, setIsAnswered] = useState(false)
   const [startTime] = useState(() => Date.now())
 
-  // Get correct answer and build shuffled options
   const correctMeaning = meanings.find(m => m.translation_language === userLanguage && m.is_primary)
     ?? meanings.find(m => m.translation_language === userLanguage)
   const correctAnswer = correctMeaning?.translation_text ?? ''

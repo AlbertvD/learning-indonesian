@@ -475,6 +475,7 @@ Schema, types, and minimal component. Not scheduled.
 - Open conversation exercises
 - Fully automated publishing (no reviewer)
 - Grammar-specific scheduling / dedicated grammar state
+- Approved-content gate enforcement: `sessionPolicies.ts` step 2 (`filterByApprovedContent`) is currently commented out. Once published `exercise_variants` exist for lessons 1–4, enable it so that `requires_approved_content=true` types (contrast_pair, sentence_transformation, constrained_translation) are only served when a published variant exists for the item's context.
 
 ---
 

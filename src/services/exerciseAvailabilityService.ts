@@ -41,6 +41,10 @@ export const exerciseAvailabilityService = {
 
   async isSessionEnabled(exerciseType: string): Promise<boolean> {
     const availability = await exerciseAvailabilityService.getAvailability(exerciseType)
+    // Fail-closed: if no DB record exists for this type, treat it as disabled.
+    // Note: sessionPolicies.ts filterByExerciseAvailability uses the raw map and
+    // passes through on missing records (fail-open). The two are consistent because
+    // the policy reads the map directly and never calls this method.
     return availability?.session_enabled ?? false
   },
 

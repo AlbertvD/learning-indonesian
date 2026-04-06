@@ -3,322 +3,358 @@
 // All grammar exercises require manual approval before seeding
 
 export const candidates = [
-  // ============================================================
-  // CONTRAST PAIR — ini-itu-functions confusion group
-  // Discriminate between demonstrative pronoun vs group marker vs central
-  // ============================================================
   {
-    exercise_type: 'contrast_pair',
-    grammar_pattern_slug: 'ini-itu-demonstrative',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      promptText: 'Pilih yang benar: "Dit huis is klein" (aanwijzend voornaamwoord)',
-      targetMeaning: 'Dit huis is klein (ini als aanwijzend voornaamwoord)',
-      options: [
-        { id: 'cp1-a', text: 'Ini rumah kecil' },
-        { id: 'cp1-b', text: 'Rumah ini kecil' },
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "ini-itu-demonstrative",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "promptText": "Pilih yang benar: \"Dit huis is klein\" (aanwijzend voornaamwoord)",
+      "targetMeaning": "Dit huis is klein (ini als aanwijzend voornaamwoord)",
+      "options": [
+        {
+          "id": "cp1-a",
+          "text": "Ini rumah kecil"
+        },
+        {
+          "id": "cp1-b",
+          "text": "Rumah ini kecil"
+        }
       ],
-      correctOptionId: 'cp1-b',
-      explanationText: 'Als aanwijzend voornaamwoord staat "ini" achter het zelfstandig naamwoord: "Rumah ini kecil" = dit huis is klein. "Ini rumah kecil" zou betekenen: dit is een klein huis (ini als centraal onderwerp).',
-    },
+      "correctOptionId": "cp1-b",
+      "explanationText": "Als aanwijzend voornaamwoord staat \"ini\" achter het zelfstandig naamwoord: \"Rumah ini kecil\" = dit huis is klein. \"Ini rumah kecil\" zou betekenen: dit is een klein huis (ini als centraal onderwerp)."
+    }
   },
   {
-    exercise_type: 'contrast_pair',
-    grammar_pattern_slug: 'ini-itu-central',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      promptText: 'Pilih yang benar: "Dat is mooi" (itu als zelfstandig onderwerp)',
-      targetMeaning: 'Dat is mooi (itu als centrale woordgroep)',
-      options: [
-        { id: 'cp2-a', text: 'Itu bagus' },
-        { id: 'cp2-b', text: 'Bagus itu' },
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "ini-itu-central",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "promptText": "Pilih yang benar: \"Dat is mooi\" (itu als zelfstandig onderwerp)",
+      "targetMeaning": "Dat is mooi (itu als centrale woordgroep)",
+      "options": [
+        {
+          "id": "cp2-a",
+          "text": "Itu bagus"
+        },
+        {
+          "id": "cp2-b",
+          "text": "Bagus itu"
+        }
       ],
-      correctOptionId: 'cp2-a',
-      explanationText: 'Als "itu" zelf het onderwerp is, staat het vooraan: "Itu bagus" = dat is mooi. In het Indonesisch staat het onderwerp altijd voor het gezegde, net als in het Nederlands.',
-    },
+      "correctOptionId": "cp2-a",
+      "explanationText": "Als \"itu\" zelf het onderwerp is, staat het vooraan: \"Itu bagus\" = dat is mooi. In het Indonesisch staat het onderwerp altijd voor het gezegde, net als in het Nederlands."
+    }
   },
   {
-    exercise_type: 'contrast_pair',
-    grammar_pattern_slug: 'ini-itu-demonstrative',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      promptText: 'Pilih yang benar: "Dat kleine huis is goedkoop"',
-      targetMeaning: 'Dat kleine huis is goedkoop (itu na znw + bijv.nw.)',
-      options: [
-        { id: 'cp3-a', text: 'Rumah kecil itu murah' },
-        { id: 'cp3-b', text: 'Rumah itu kecil murah' },
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "ini-itu-demonstrative",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "promptText": "Pilih yang benar: \"Dat kleine huis is goedkoop\"",
+      "targetMeaning": "Dat kleine huis is goedkoop (itu na znw + bijv.nw.)",
+      "options": [
+        {
+          "id": "cp3-a",
+          "text": "Rumah kecil itu murah"
+        },
+        {
+          "id": "cp3-b",
+          "text": "Rumah itu kecil murah"
+        }
       ],
-      correctOptionId: 'cp3-a',
-      explanationText: 'Bij een zelfstandig naamwoord met bijvoeglijk naamwoord komt "itu" na beide: [znw] [bijv.nw.] itu. "Rumah kecil itu murah" = dat kleine huis is goedkoop.',
-    },
+      "correctOptionId": "cp3-a",
+      "explanationText": "Bij een zelfstandig naamwoord met bijvoeglijk naamwoord komt \"itu\" na beide: [znw] [bijv.nw.] itu. \"Rumah kecil itu murah\" = dat kleine huis is goedkoop."
+    }
   },
   {
-    exercise_type: 'contrast_pair',
-    grammar_pattern_slug: 'tidak-negation',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      promptText: 'Pilih yang benar: "Deze taxi is niet nieuw"',
-      targetMeaning: 'Deze taxi is niet nieuw (ontkenning met tidak)',
-      options: [
-        { id: 'cp4-a', text: 'Taksi ini tidak baru' },
-        { id: 'cp4-b', text: 'Taksi ini baru tidak' },
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "tidak-negation",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "promptText": "Pilih yang benar: \"Deze taxi is niet nieuw\"",
+      "targetMeaning": "Deze taxi is niet nieuw (ontkenning met tidak)",
+      "options": [
+        {
+          "id": "cp4-a",
+          "text": "Taksi ini tidak baru"
+        },
+        {
+          "id": "cp4-b",
+          "text": "Taksi ini baru tidak"
+        }
       ],
-      correctOptionId: 'cp4-a',
-      explanationText: '"Tidak" staat altijd VOOR het woord dat ontkend wordt, net als "niet" in het Nederlands: "Taksi ini tidak baru". In het Indonesisch komt de ontkenning nooit na het bijvoeglijk naamwoord.',
-    },
+      "correctOptionId": "cp4-a",
+      "explanationText": "\"Tidak\" staat altijd VOOR het woord dat ontkend wordt, net als \"niet\" in het Nederlands: \"Taksi ini tidak baru\". In het Indonesisch komt de ontkenning nooit na het bijvoeglijk naamwoord."
+    }
   },
   {
-    exercise_type: 'contrast_pair',
-    grammar_pattern_slug: 'adjective-after-noun',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      promptText: 'Pilih yang benar: "een grote tas"',
-      targetMeaning: 'Een grote tas (bijv.nw. na znw)',
-      options: [
-        { id: 'cp5-a', text: 'besar tas' },
-        { id: 'cp5-b', text: 'tas besar' },
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "adjective-after-noun",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "promptText": "Pilih yang benar: \"een grote tas\"",
+      "targetMeaning": "Een grote tas (bijv.nw. na znw)",
+      "options": [
+        {
+          "id": "cp5-a",
+          "text": "besar tas"
+        },
+        {
+          "id": "cp5-b",
+          "text": "tas besar"
+        }
       ],
-      correctOptionId: 'cp5-b',
-      explanationText: 'In het Indonesisch staat het bijvoeglijk naamwoord ACHTER het zelfstandig naamwoord: "tas besar" = grote tas. Dit is omgekeerd aan het Nederlands, waar je zegt "grote tas".',
-    },
+      "correctOptionId": "cp5-b",
+      "explanationText": "In het Indonesisch staat het bijvoeglijk naamwoord ACHTER het zelfstandig naamwoord: \"tas besar\" = grote tas. Dit is omgekeerd aan het Nederlands, waar je zegt \"grote tas\"."
+    }
   },
   {
-    exercise_type: 'contrast_pair',
-    grammar_pattern_slug: 'se-classifier',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      promptText: 'Pilih yang benar: "een kleine kip" (classificeerwoord voor dieren)',
-      targetMeaning: 'Een kleine kip (seekor voor dieren)',
-      options: [
-        { id: 'cp6-a', text: 'seekor ayam kecil' },
-        { id: 'cp6-b', text: 'sebuah ayam kecil' },
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "se-classifier",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "promptText": "Pilih yang benar: \"een kleine kip\" (classificeerwoord voor dieren)",
+      "targetMeaning": "Een kleine kip (seekor voor dieren)",
+      "options": [
+        {
+          "id": "cp6-a",
+          "text": "seekor ayam kecil"
+        },
+        {
+          "id": "cp6-b",
+          "text": "sebuah ayam kecil"
+        }
       ],
-      correctOptionId: 'cp6-a',
-      explanationText: 'Het classificeerwoord voor dieren is "ekor" (staart). Met se-: "seekor ayam kecil" = een kleine kip. "Sebuah" is voor voorwerpen, niet voor dieren.',
-    },
+      "correctOptionId": "cp6-a",
+      "explanationText": "Het classificeerwoord voor dieren is \"ekor\" (staart). Met se-: \"seekor ayam kecil\" = een kleine kip. \"Sebuah\" is voor voorwerpen, niet voor dieren."
+    }
   },
   {
-    exercise_type: 'contrast_pair',
-    grammar_pattern_slug: 'se-classifier',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      promptText: 'Pilih yang benar: "een Nederlander" (classificeerwoord voor personen)',
-      targetMeaning: 'Een Nederlander (seorang voor personen)',
-      options: [
-        { id: 'cp7-a', text: 'sebuah Belanda' },
-        { id: 'cp7-b', text: 'seorang Belanda' },
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "se-classifier",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "promptText": "Pilih yang benar: \"een Nederlander\" (classificeerwoord voor personen)",
+      "targetMeaning": "Een Nederlander (seorang voor personen)",
+      "options": [
+        {
+          "id": "cp7-a",
+          "text": "sebuah Belanda"
+        },
+        {
+          "id": "cp7-b",
+          "text": "seorang Belanda"
+        }
       ],
-      correctOptionId: 'cp7-b',
-      explanationText: 'Het classificeerwoord voor mensen is "orang" (mens/persoon). Met se-: "seorang Belanda" = een Nederlander. "Sebuah" is voor voorwerpen.',
-    },
-  },
-
-  // ============================================================
-  // SENTENCE TRANSFORMATION — manipulate ini/itu and tidak
-  // ============================================================
-  {
-    exercise_type: 'sentence_transformation',
-    grammar_pattern_slug: 'tidak-negation',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      sourceSentence: 'Kamar ini baik.',
-      transformationInstruction: 'Maak de zin ontkennend (niet)',
-      acceptableAnswers: [
-        'Kamar ini tidak baik.',
-        'Kamar ini tidak baik',
-      ],
-      hintText: 'Plaats "tidak" voor het woord dat ontkend wordt',
-      explanationText: '"Tidak" wordt geplaatst direct voor het bijvoeglijk naamwoord: "Kamar ini tidak baik" = deze kamer is niet goed. De rest van de zin blijft ongewijzigd.',
-    },
+      "correctOptionId": "cp7-b",
+      "explanationText": "Het classificeerwoord voor mensen is \"orang\" (mens/persoon). Met se-: \"seorang Belanda\" = een Nederlander. \"Sebuah\" is voor voorwerpen."
+    }
   },
   {
-    exercise_type: 'sentence_transformation',
-    grammar_pattern_slug: 'tidak-negation',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      sourceSentence: 'Hasan tinggal di hotel.',
-      transformationInstruction: 'Maak de zin ontkennend (niet)',
-      acceptableAnswers: [
-        'Hasan tidak tinggal di hotel.',
-        'Hasan tidak tinggal di hotel',
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "tidak-negation",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "sourceSentence": "Kamar ini baik.",
+      "transformationInstruction": "Maak de zin ontkennend (niet)",
+      "acceptableAnswers": [
+        "Kamar ini tidak baik.",
+        "Kamar ini tidak baik"
       ],
-      hintText: 'Plaats "tidak" voor het werkwoord',
-      explanationText: 'Bij werkwoorden staat "tidak" ook direct voor het werkwoord: "Hasan tidak tinggal di hotel" = Hasan verblijft niet in het hotel.',
-    },
+      "hintText": "Plaats \"tidak\" voor het woord dat ontkend wordt",
+      "explanationText": "\"Tidak\" wordt geplaatst direct voor het bijvoeglijk naamwoord: \"Kamar ini tidak baik\" = deze kamer is niet goed. De rest van de zin blijft ongewijzigd."
+    }
   },
   {
-    exercise_type: 'sentence_transformation',
-    grammar_pattern_slug: 'ini-itu-demonstrative',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      sourceSentence: 'Itu bagus.',
-      transformationInstruction: 'Verander naar: "Dat hotel is mooi" (gebruik itu als aanwijzend voornaamwoord)',
-      acceptableAnswers: [
-        'Hotel itu bagus.',
-        'Hotel itu bagus',
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "tidak-negation",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "sourceSentence": "Hasan tinggal di hotel.",
+      "transformationInstruction": "Maak de zin ontkennend (niet)",
+      "acceptableAnswers": [
+        "Hasan tidak tinggal di hotel.",
+        "Hasan tidak tinggal di hotel"
       ],
-      hintText: 'Verplaats "itu" van centrale positie naar achter het zelfstandig naamwoord',
-      explanationText: 'Als centraal onderwerp staat "itu" alleen: "Itu bagus" (dat is mooi). Als aanwijzend voornaamwoord komt het na het znw: "Hotel itu bagus" (dat hotel is mooi).',
-    },
+      "hintText": "Plaats \"tidak\" voor het werkwoord",
+      "explanationText": "Bij werkwoorden staat \"tidak\" ook direct voor het werkwoord: \"Hasan tidak tinggal di hotel\" = Hasan verblijft niet in het hotel."
+    }
   },
   {
-    exercise_type: 'sentence_transformation',
-    grammar_pattern_slug: 'adjective-after-noun',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      sourceSentence: 'Rumah itu mahal.',
-      transformationInstruction: 'Voeg "besar" (groot) toe als bijvoeglijk naamwoord bij "rumah"',
-      acceptableAnswers: [
-        'Rumah besar itu mahal.',
-        'Rumah besar itu mahal',
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "ini-itu-demonstrative",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "sourceSentence": "Itu bagus.",
+      "transformationInstruction": "Verander naar: \"Dat hotel is mooi\" (gebruik itu als aanwijzend voornaamwoord)",
+      "acceptableAnswers": [
+        "Hotel itu bagus.",
+        "Hotel itu bagus"
       ],
-      hintText: 'Het bijvoeglijk naamwoord staat direct na het zelfstandig naamwoord, voor "itu"',
-      explanationText: 'Het bijvoeglijk naamwoord komt direct na het znw en voor itu: "Rumah besar itu mahal" = dat grote huis is duur. Volgorde: [znw] [bijv.nw.] [itu] [gezegde].',
-    },
-  },
-
-  // ============================================================
-  // CONSTRAINED TRANSLATION — translate Dutch to Indonesian
-  // ============================================================
-  {
-    exercise_type: 'constrained_translation',
-    grammar_pattern_slug: 'ini-itu-demonstrative',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      sourceLanguageSentence: 'Deze deur is zwaar.',
-      requiredTargetPattern: 'ini-itu-demonstrative',
-      acceptableAnswers: [
-        'Pintu ini berat.',
-        'Pintu ini berat',
-      ],
-      disallowedShortcutForms: ['Ini pintu berat'],
-      explanationText: '"Deze" vertaalt als "ini" achter het zelfstandig naamwoord: "Pintu ini berat". Let op: "Ini pintu berat" zou betekenen "dit is een zware deur" (andere constructie).',
-    },
+      "hintText": "Verplaats \"itu\" van centrale positie naar achter het zelfstandig naamwoord",
+      "explanationText": "Als centraal onderwerp staat \"itu\" alleen: \"Itu bagus\" (dat is mooi). Als aanwijzend voornaamwoord komt het na het znw: \"Hotel itu bagus\" (dat hotel is mooi)."
+    }
   },
   {
-    exercise_type: 'constrained_translation',
-    grammar_pattern_slug: 'ini-itu-central',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      sourceLanguageSentence: 'Dit is een banaan.',
-      requiredTargetPattern: 'ini-itu-central',
-      acceptableAnswers: [
-        'Ini pisang.',
-        'Ini pisang',
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "adjective-after-noun",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "sourceSentence": "Rumah itu mahal.",
+      "transformationInstruction": "Voeg \"besar\" (groot) toe als bijvoeglijk naamwoord bij \"rumah\"",
+      "acceptableAnswers": [
+        "Rumah besar itu mahal.",
+        "Rumah besar itu mahal"
       ],
-      disallowedShortcutForms: null,
-      explanationText: '"Ini" als zelfstandig onderwerp: "Ini pisang" = dit is een banaan. Er is geen lidwoord nodig in het Indonesisch.',
-    },
+      "hintText": "Het bijvoeglijk naamwoord staat direct na het zelfstandig naamwoord, voor \"itu\"",
+      "explanationText": "Het bijvoeglijk naamwoord komt direct na het znw en voor itu: \"Rumah besar itu mahal\" = dat grote huis is duur. Volgorde: [znw] [bijv.nw.] [itu] [gezegde]."
+    }
   },
   {
-    exercise_type: 'constrained_translation',
-    grammar_pattern_slug: 'tidak-negation',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      sourceLanguageSentence: 'Die persoon is niet ziek.',
-      requiredTargetPattern: 'tidak-negation',
-      acceptableAnswers: [
-        'Orang itu tidak sakit.',
-        'Orang itu tidak sakit',
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ini-itu-demonstrative",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "sourceLanguageSentence": "Deze deur is zwaar.",
+      "requiredTargetPattern": "ini-itu-demonstrative",
+      "acceptableAnswers": [
+        "Pintu ini berat.",
+        "Pintu ini berat"
       ],
-      disallowedShortcutForms: null,
-      explanationText: '"Tidak" voor "sakit": "Orang itu tidak sakit". "Itu" hier als aanwijzend voornaamwoord (die), "tidak" ontkent het bijvoeglijk naamwoord.',
-    },
+      "disallowedShortcutForms": [
+        "Ini pintu berat"
+      ],
+      "explanationText": "\"Deze\" vertaalt als \"ini\" achter het zelfstandig naamwoord: \"Pintu ini berat\". Let op: \"Ini pintu berat\" zou betekenen \"dit is een zware deur\" (andere constructie)."
+    }
   },
   {
-    exercise_type: 'constrained_translation',
-    grammar_pattern_slug: 'se-classifier',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      sourceLanguageSentence: 'Twee grote bananen.',
-      requiredTargetPattern: 'se-classifier',
-      acceptableAnswers: [
-        'Dua buah pisang besar.',
-        'Dua buah pisang besar',
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ini-itu-central",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "sourceLanguageSentence": "Dit is een banaan.",
+      "requiredTargetPattern": "ini-itu-central",
+      "acceptableAnswers": [
+        "Ini pisang.",
+        "Ini pisang"
       ],
-      disallowedShortcutForms: ['Dua pisang besar'],
-      explanationText: 'Woordvolgorde bij classificeerwoorden: [telwoord] [classificeerwoord] [znw] [bijv.nw.]. "Buah" is het classificeerwoord voor vruchten/voorwerpen. "Dua buah pisang besar" = twee grote bananen.',
-    },
+      "disallowedShortcutForms": null,
+      "explanationText": "\"Ini\" als zelfstandig onderwerp: \"Ini pisang\" = dit is een banaan. Er is geen lidwoord nodig in het Indonesisch."
+    }
   },
   {
-    exercise_type: 'constrained_translation',
-    grammar_pattern_slug: 'adjective-after-noun',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      sourceLanguageSentence: 'Deze twee toeristen zijn rijk.',
-      requiredTargetPattern: 'adjective-after-noun',
-      acceptableAnswers: [
-        'Dua orang turis ini kaya.',
-        'Dua orang turis ini kaya',
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "tidak-negation",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "sourceLanguageSentence": "Die persoon is niet ziek.",
+      "requiredTargetPattern": "tidak-negation",
+      "acceptableAnswers": [
+        "Orang itu tidak sakit.",
+        "Orang itu tidak sakit"
       ],
-      disallowedShortcutForms: null,
-      explanationText: 'Volledige woordgroep: [telwoord] [classif.] [znw] [aanw.vnw.] [bijv.nw.]. "Dua orang turis ini kaya" = deze twee toeristen zijn rijk. Het bijvoeglijk naamwoord "kaya" vormt het gezegde.',
-    },
+      "disallowedShortcutForms": null,
+      "explanationText": "\"Tidak\" voor \"sakit\": \"Orang itu tidak sakit\". \"Itu\" hier als aanwijzend voornaamwoord (die), \"tidak\" ontkent het bijvoeglijk naamwoord."
+    }
   },
   {
-    exercise_type: 'constrained_translation',
-    grammar_pattern_slug: 'tidak-negation',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      sourceLanguageSentence: 'Ik eet geen banaan.',
-      requiredTargetPattern: 'tidak-negation',
-      acceptableAnswers: [
-        'Saya tidak makan pisang.',
-        'Saya tidak makan pisang',
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "se-classifier",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "sourceLanguageSentence": "Twee grote bananen.",
+      "requiredTargetPattern": "se-classifier",
+      "acceptableAnswers": [
+        "Dua buah pisang besar.",
+        "Dua buah pisang besar"
       ],
-      disallowedShortcutForms: null,
-      explanationText: '"Tidak" voor het werkwoord "makan": "Saya tidak makan pisang". Het Nederlandse "geen" wordt in het Indonesisch uitgedrukt als "tidak" + werkwoord.',
-    },
+      "disallowedShortcutForms": [
+        "Dua pisang besar"
+      ],
+      "explanationText": "Woordvolgorde bij classificeerwoorden: [telwoord] [classificeerwoord] [znw] [bijv.nw.]. \"Buah\" is het classificeerwoord voor vruchten/voorwerpen. \"Dua buah pisang besar\" = twee grote bananen."
+    }
   },
   {
-    exercise_type: 'constrained_translation',
-    grammar_pattern_slug: 'belas-numbers',
-    source_page: 2,
-    review_status: 'pending_review' as const,
-    requiresManualApproval: true,
-    payload: {
-      sourceLanguageSentence: 'Daar zijn elf taxi\'s.',
-      requiredTargetPattern: 'belas-numbers',
-      acceptableAnswers: [
-        'Di sana ada sebelas taksi.',
-        'Di sana ada sebelas taksi',
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "adjective-after-noun",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "sourceLanguageSentence": "Deze twee toeristen zijn rijk.",
+      "requiredTargetPattern": "adjective-after-noun",
+      "acceptableAnswers": [
+        "Dua orang turis ini kaya.",
+        "Dua orang turis ini kaya"
       ],
-      disallowedShortcutForms: ['Di sana ada satu belas taksi'],
-      explanationText: '11 = "sebelas" (niet "satu belas"). Het voorvoegsel se- vervangt "satu" bij belas. Vergelijk: twaalf = "dua belas" (hier geen se-, want het is niet "satu").',
-    },
+      "disallowedShortcutForms": null,
+      "explanationText": "Volledige woordgroep: [telwoord] [classif.] [znw] [aanw.vnw.] [bijv.nw.]. \"Dua orang turis ini kaya\" = deze twee toeristen zijn rijk. Het bijvoeglijk naamwoord \"kaya\" vormt het gezegde."
+    }
   },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "tidak-negation",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "sourceLanguageSentence": "Ik eet geen banaan.",
+      "requiredTargetPattern": "tidak-negation",
+      "acceptableAnswers": [
+        "Saya tidak makan pisang.",
+        "Saya tidak makan pisang"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "\"Tidak\" voor het werkwoord \"makan\": \"Saya tidak makan pisang\". Het Nederlandse \"geen\" wordt in het Indonesisch uitgedrukt als \"tidak\" + werkwoord."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "belas-numbers",
+    "source_page": 2,
+    "review_status": "published",
+    "requiresManualApproval": true,
+    "payload": {
+      "sourceLanguageSentence": "Daar zijn elf taxi's.",
+      "requiredTargetPattern": "belas-numbers",
+      "acceptableAnswers": [
+        "Di sana ada sebelas taksi.",
+        "Di sana ada sebelas taksi"
+      ],
+      "disallowedShortcutForms": [
+        "Di sana ada satu belas taksi"
+      ],
+      "explanationText": "11 = \"sebelas\" (niet \"satu belas\"). Het voorvoegsel se- vervangt \"satu\" bij belas. Vergelijk: twaalf = \"dua belas\" (hier geen se-, want het is niet \"satu\")."
+    }
+  }
 ]

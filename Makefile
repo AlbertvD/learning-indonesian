@@ -80,8 +80,13 @@ seed-learning-items: ## Seed learning items from data files (requires SUPABASE_S
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
 	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-learning-items.ts
 
+.PHONY: seed-sentences
+seed-sentences: ## Seed sentence/cloze learning items (requires SUPABASE_SERVICE_KEY)
+	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
+	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/extract-cloze-items.ts
+
 .PHONY: seed-all
-seed-all: seed-lessons seed-podcasts seed-learning-items ## Seed all non-audio content (requires SUPABASE_SERVICE_KEY)
+seed-all: seed-lessons seed-podcasts seed-learning-items seed-sentences ## Seed all non-audio content (requires SUPABASE_SERVICE_KEY)
 
 # ============================================================================
 # CONTENT PIPELINE

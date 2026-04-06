@@ -132,4 +132,36 @@ export const learningItemService = {
     if (error) throw error
     return data
   },
+
+  /**
+   * Returns a map of learning_item_id → { confusion_group } for use in
+   * grammar-aware session interleaving. Joins item_contexts →
+   * item_context_grammar_patterns → grammar_patterns.
+   */
+  async getGrammarPatternsByItem(
+    itemIds: string[],
+  ): Promise<Record<string, { confusion_group?: string }>> {
+    if (itemIds.length === 0) return {}
+
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('item_contexts')
+      .select('learning_item_id, item_context_grammar_patterns(grammar_pattern_id, grammar_patterns(confusion_group))')
+      .in('learning_item_id', itemIds)
+
+    if (error) throw error
+
+    const result: Record<string, { confusion_group?: string }> = {}
+    for (const row of data ?? []) {
+      const links = (row as any).item_context_grammar_patterns ?? []
+      for (const link of links) {
+        const group = link.grammar_patterns?.confusion_group
+        if (group) {
+          result[row.learning_item_id] = { confusion_group: group }
+          break // one confusion group per item is enough
+        }
+      }
+    }
+    return result
+  },
 }

@@ -1,6 +1,7 @@
 // src/lib/sessionPolicies.ts
 import type { SessionQueueItem, ExerciseTypeAvailability } from '@/types/learning'
 import { newLearnerDefaults } from './newLearnerDefaults'
+import { isExerciseTypeEnabled } from './featureFlags'
 
 export interface SessionPoliciesContext {
   // User demographics
@@ -74,10 +75,16 @@ function filterByExerciseAvailability(
   }
 
   return queue.filter(item => {
-    const availability = context.exerciseTypeAvailability?.[item.exerciseItem.exerciseType]
-    if (!availability) {
-      return true // No availability data, keep item
-    }
+    const exerciseType = item.exerciseItem.exerciseType
+    // Feature flag gate (env var) — takes precedence
+    if (!isExerciseTypeEnabled(exerciseType)) return false
+    // DB availability gate
+    const availability = context.exerciseTypeAvailability?.[exerciseType]
+    // Fail-open: if availability data couldn't be loaded (service error), pass through
+    // so a transient DB failure doesn't break the entire session. Compare to
+    // exerciseAvailabilityService.isSessionEnabled which is fail-closed — that
+    // method is used for explicit checks, not bulk session filtering.
+    if (!availability) return true
     return availability.session_enabled !== false
   })
 }
@@ -222,6 +229,8 @@ function applyNewLearnerRules(
     return state && state.stage !== 'new'
   })
 
+  let result: SessionQueueItem[]
+
   if (inProgress.length > 0) {
     // Reviews are pending: serve in-progress items plus a small trickle of new
     // items so the learner keeps growing. Cap new items at 15% of session size
@@ -231,12 +240,35 @@ function applyNewLearnerRules(
     const newItems = queue
       .filter(q => !q.learnerItemState || q.learnerItemState.stage === 'new')
       .slice(0, newCap)
-    return [...inProgress, ...newItems]
+    result = [...inProgress, ...newItems]
+  } else {
+    // Nothing in progress — fresh start or full reset.
+    // The engine already sized this queue correctly; pass it through.
+    result = queue
   }
 
-  // Nothing in progress — fresh start or full reset.
-  // The engine already sized this queue correctly; pass it through.
-  return queue
+  // Grammar cap: new learners should not get too many grammar-tagged exercises
+  // per session. Cap = min(2, max(1, floor(new_items_target / 4))).
+  // "Grammar-tagged" = item has a known confusion_group in grammarPatterns.
+  if (context.grammarPatterns && Object.keys(context.grammarPatterns).length > 0) {
+    const sessionSize = context.preferredSessionSize ?? context.sessionInteractionCap
+    const newItemsTarget = Math.min(8, Math.max(2, Math.round(sessionSize * 0.15)))
+    const grammarCap = Math.min(2, Math.max(1, Math.floor(newItemsTarget / 4)))
+
+    let grammarCount = 0
+    result = result.filter(item => {
+      const itemId = item.exerciseItem.learningItem.id
+      const isGrammarTagged = !!context.grammarPatterns?.[itemId]?.confusion_group
+      if (!isGrammarTagged) return true
+      if (grammarCount < grammarCap) {
+        grammarCount++
+        return true
+      }
+      return false
+    })
+  }
+
+  return result
 }
 
 /**

@@ -13,12 +13,6 @@ const supabase = createClient(supabaseUrl, serviceKey, {
   auth: { persistSession: false },
 })
 
-const LESSON_IDS: Record<number, string> = {
-  1: 'cb78cfa6-0146-4e65-89fd-da692642f6bf',
-  2: '0dfebf04-2720-4ddf-a832-245d90f22a26',
-  3: 'bb44d8ba-f5b1-48d6-83de-fb30f0425768',
-}
-
 interface ClozeItem {
   lessonNumber: number
   sentence: string
@@ -176,10 +170,30 @@ const clozeItems: ClozeItem[] = [
 async function seedClozeItems() {
   console.log('🌱 Seeding cloze items for Lessons 1, 2, and 3...')
 
+  // Resolve lesson order_index → UUID dynamically so this script works regardless
+  // of which UUIDs the DB assigned on creation.
+  const { data: lessons, error: lessonsError } = await supabase
+    .schema('indonesian')
+    .from('lessons')
+    .select('id, order_index')
+  if (lessonsError || !lessons) {
+    console.error('❌ Failed to fetch lessons:', lessonsError?.message)
+    process.exit(1)
+  }
+  const LESSON_IDS: Record<number, string> = {}
+  for (const lesson of lessons) {
+    LESSON_IDS[lesson.order_index] = lesson.id
+  }
+  console.log(`   Lesson map: ${Object.entries(LESSON_IDS).map(([k, v]) => `${k}→${v.slice(0, 8)}…`).join(', ')}`)
+
   for (const item of clozeItems) {
     const baseText = item.sentence.replace('___', item.targetWord)
     const normalizedText = baseText.toLowerCase().replace(/[?!.,;:'"]/g, '').trim()
     const lessonId = LESSON_IDS[item.lessonNumber]
+    if (!lessonId) {
+      console.warn(`   ⚠️  No lesson in DB for order_index ${item.lessonNumber} ("${item.sentence}") — skipped`)
+      continue
+    }
 
     // 1. Create learning_item
     const { data: learningItem, error: itemErr } = await supabase

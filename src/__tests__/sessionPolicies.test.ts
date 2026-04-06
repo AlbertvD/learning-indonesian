@@ -169,8 +169,8 @@ describe('Session Policies', () => {
       ]
 
       const context: SessionPoliciesContext = {
-        accountAgeDays: 5, // < 14
-        stableItemCount: 10, // < 20
+        accountAgeDays: 5, // < 30 (new learner threshold)
+        stableItemCount: 10, // < 50 (new learner threshold)
         sessionInteractionCap: 20,
         preferredSessionSize: 20,
       }
@@ -192,7 +192,7 @@ describe('Session Policies', () => {
       ]
 
       const context: SessionPoliciesContext = {
-        accountAgeDays: 20, // >= 14
+        accountAgeDays: 35, // >= 30 (above new learner threshold)
         stableItemCount: 100,
         sessionInteractionCap: 20,
       }
@@ -202,22 +202,78 @@ describe('Session Policies', () => {
       expect(result).toHaveLength(3)
     })
 
-    it('keeps items if stable count threshold met despite low account age', () => {
+    it('keeps all items if stable count threshold met despite low account age', () => {
       const queue: SessionQueueItem[] = [
         createQueueItem('recognition_mcq', 'item-1', false),
         createQueueItem('recognition_mcq', 'item-2', true), // new
       ]
 
       const context: SessionPoliciesContext = {
-        accountAgeDays: 10, // < 14
-        stableItemCount: 25, // >= 20
+        accountAgeDays: 10, // < 30 (low account age)
+        stableItemCount: 55, // >= 50 (stable count threshold met — not a new learner)
         sessionInteractionCap: 20,
       }
 
       const result = applyPolicies(queue, context)
 
-      // Not a new learner (stable count threshold met)
+      // Not a new learner (stable count threshold met) — full queue passes through
       expect(result).toHaveLength(2)
+    })
+
+    it('treats learner as new when both age and stable count are below thresholds', () => {
+      const queue: SessionQueueItem[] = [
+        createQueueItem('recognition_mcq', 'item-1', false),
+        createQueueItem('recognition_mcq', 'item-2', true), // new
+      ]
+
+      const context: SessionPoliciesContext = {
+        accountAgeDays: 10, // < 30
+        stableItemCount: 25, // < 50 — both below thresholds = new learner
+        sessionInteractionCap: 20,
+        preferredSessionSize: 20,
+      }
+
+      const result = applyPolicies(queue, context)
+
+      // Is a new learner — 1 in-progress item kept, new items trickled
+      const inProgressCount = result.filter(i => i.learnerItemState !== null).length
+      expect(inProgressCount).toBe(1)
+    })
+
+    it('caps grammar-tagged items for new learners', () => {
+      // 4 grammar-tagged items + 2 regular items; grammar cap = min(2, max(1, floor(8/4))) = 2
+      const queue: SessionQueueItem[] = [
+        createQueueItem('contrast_pair', 'grammar-1', false),
+        createQueueItem('contrast_pair', 'grammar-2', false),
+        createQueueItem('contrast_pair', 'grammar-3', false),
+        createQueueItem('contrast_pair', 'grammar-4', false),
+        createQueueItem('recognition_mcq', 'vocab-1', false),
+        createQueueItem('recognition_mcq', 'vocab-2', false),
+      ]
+
+      const context: SessionPoliciesContext = {
+        accountAgeDays: 5,   // < 30
+        stableItemCount: 10, // < 50 — new learner
+        sessionInteractionCap: 20,
+        preferredSessionSize: 20,
+        grammarPatterns: {
+          'grammar-1': { confusion_group: 'adjective-placement' },
+          'grammar-2': { confusion_group: 'adjective-placement' },
+          'grammar-3': { confusion_group: 'ini-itu-functions' },
+          'grammar-4': { confusion_group: 'ini-itu-functions' },
+        },
+      }
+
+      const result = applyPolicies(queue, context)
+
+      const grammarItems = result.filter(i =>
+        context.grammarPatterns?.[i.exerciseItem.learningItem.id]?.confusion_group,
+      )
+      // Grammar cap = min(2, max(1, floor(8/4))) = min(2, max(1, 2)) = 2
+      expect(grammarItems.length).toBeLessThanOrEqual(2)
+      // Regular vocab items pass through
+      const vocabItems = result.filter(i => i.exerciseItem.learningItem.id.startsWith('vocab'))
+      expect(vocabItems).toHaveLength(2)
     })
   })
 
