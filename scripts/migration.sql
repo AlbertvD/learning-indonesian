@@ -29,6 +29,9 @@ ALTER TABLE indonesian.profiles ADD COLUMN IF NOT EXISTS preferred_session_size 
 -- Timezone for weekly goal system (IANA timezone name, e.g. 'Europe/Amsterdam')
 ALTER TABLE indonesian.profiles ADD COLUMN IF NOT EXISTS timezone text;
 
+-- Daily new items limit: how many new vocabulary items to introduce per session (default 10)
+ALTER TABLE indonesian.profiles ADD COLUMN IF NOT EXISTS daily_new_items_limit integer NOT NULL DEFAULT 10;
+
 -- Admin roles
 CREATE TABLE IF NOT EXISTS indonesian.user_roles (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

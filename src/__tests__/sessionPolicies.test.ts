@@ -67,8 +67,6 @@ describe('Session Policies', () => {
       ]
 
       const context: SessionPoliciesContext = {
-        accountAgeDays: 5,
-        stableItemCount: 10,
         sessionInteractionCap: 15,
         exerciseTypeAvailability: {
           recognition_mcq: {
@@ -117,8 +115,6 @@ describe('Session Policies', () => {
       ]
 
       const context: SessionPoliciesContext = {
-        accountAgeDays: 5,
-        stableItemCount: 10,
         sessionInteractionCap: 15,
       }
 
@@ -139,8 +135,6 @@ describe('Session Policies', () => {
       ]
 
       const context: SessionPoliciesContext = {
-        accountAgeDays: 100,
-        stableItemCount: 100,
         sessionInteractionCap: 20,
       }
 
@@ -159,124 +153,6 @@ describe('Session Policies', () => {
     })
   })
 
-  describe('applyPolicies - New learner detection', () => {
-    it('limits new items (not removes) for new learners when reviews exist', () => {
-      const queue: SessionQueueItem[] = [
-        createQueueItem('recognition_mcq', 'item-1', false),
-        createQueueItem('recognition_mcq', 'item-2', true), // new
-        createQueueItem('recognition_mcq', 'item-3', true), // new
-        createQueueItem('typed_recall', 'item-4', false),
-      ]
-
-      const context: SessionPoliciesContext = {
-        accountAgeDays: 5, // < 30 (new learner threshold)
-        stableItemCount: 10, // < 50 (new learner threshold)
-        sessionInteractionCap: 20,
-        preferredSessionSize: 20,
-      }
-
-      const result = applyPolicies(queue, context)
-
-      // Should have 2 in-progress items + up to newCap (max(2, round(20*0.15))=3) new items
-      // Only 2 new items available so total = 4
-      expect(result).toHaveLength(4)
-      const inProgressCount = result.filter(i => i.learnerItemState !== null).length
-      expect(inProgressCount).toBe(2)
-    })
-
-    it('keeps all items for experienced learners', () => {
-      const queue: SessionQueueItem[] = [
-        createQueueItem('recognition_mcq', 'item-1', false),
-        createQueueItem('recognition_mcq', 'item-2', true), // new
-        createQueueItem('recognition_mcq', 'item-3', true), // new
-      ]
-
-      const context: SessionPoliciesContext = {
-        accountAgeDays: 35, // >= 30 (above new learner threshold)
-        stableItemCount: 100,
-        sessionInteractionCap: 20,
-      }
-
-      const result = applyPolicies(queue, context)
-
-      expect(result).toHaveLength(3)
-    })
-
-    it('keeps all items if stable count threshold met despite low account age', () => {
-      const queue: SessionQueueItem[] = [
-        createQueueItem('recognition_mcq', 'item-1', false),
-        createQueueItem('recognition_mcq', 'item-2', true), // new
-      ]
-
-      const context: SessionPoliciesContext = {
-        accountAgeDays: 10, // < 30 (low account age)
-        stableItemCount: 55, // >= 50 (stable count threshold met — not a new learner)
-        sessionInteractionCap: 20,
-      }
-
-      const result = applyPolicies(queue, context)
-
-      // Not a new learner (stable count threshold met) — full queue passes through
-      expect(result).toHaveLength(2)
-    })
-
-    it('treats learner as new when both age and stable count are below thresholds', () => {
-      const queue: SessionQueueItem[] = [
-        createQueueItem('recognition_mcq', 'item-1', false),
-        createQueueItem('recognition_mcq', 'item-2', true), // new
-      ]
-
-      const context: SessionPoliciesContext = {
-        accountAgeDays: 10, // < 30
-        stableItemCount: 25, // < 50 — both below thresholds = new learner
-        sessionInteractionCap: 20,
-        preferredSessionSize: 20,
-      }
-
-      const result = applyPolicies(queue, context)
-
-      // Is a new learner — 1 in-progress item kept, new items trickled
-      const inProgressCount = result.filter(i => i.learnerItemState !== null).length
-      expect(inProgressCount).toBe(1)
-    })
-
-    it('caps grammar-tagged items for new learners', () => {
-      // 4 grammar-tagged items + 2 regular items; grammar cap = min(2, max(1, floor(8/4))) = 2
-      const queue: SessionQueueItem[] = [
-        createQueueItem('contrast_pair', 'grammar-1', false),
-        createQueueItem('contrast_pair', 'grammar-2', false),
-        createQueueItem('contrast_pair', 'grammar-3', false),
-        createQueueItem('contrast_pair', 'grammar-4', false),
-        createQueueItem('recognition_mcq', 'vocab-1', false),
-        createQueueItem('recognition_mcq', 'vocab-2', false),
-      ]
-
-      const context: SessionPoliciesContext = {
-        accountAgeDays: 5,   // < 30
-        stableItemCount: 10, // < 50 — new learner
-        sessionInteractionCap: 20,
-        preferredSessionSize: 20,
-        grammarPatterns: {
-          'grammar-1': { confusion_group: 'adjective-placement' },
-          'grammar-2': { confusion_group: 'adjective-placement' },
-          'grammar-3': { confusion_group: 'ini-itu-functions' },
-          'grammar-4': { confusion_group: 'ini-itu-functions' },
-        },
-      }
-
-      const result = applyPolicies(queue, context)
-
-      const grammarItems = result.filter(i =>
-        context.grammarPatterns?.[i.exerciseItem.learningItem.id]?.confusion_group,
-      )
-      // Grammar cap = min(2, max(1, floor(8/4))) = min(2, max(1, 2)) = 2
-      expect(grammarItems.length).toBeLessThanOrEqual(2)
-      // Regular vocab items pass through
-      const vocabItems = result.filter(i => i.exerciseItem.learningItem.id.startsWith('vocab'))
-      expect(vocabItems).toHaveLength(2)
-    })
-  })
-
   describe('applyPolicies - Queue trimming', () => {
     it('trims queue to session interaction cap', () => {
       const queue: SessionQueueItem[] = Array.from({ length: 25 }, (_, i) =>
@@ -284,8 +160,6 @@ describe('Session Policies', () => {
       )
 
       const context: SessionPoliciesContext = {
-        accountAgeDays: 100,
-        stableItemCount: 100,
         sessionInteractionCap: 15,
       }
 
@@ -294,26 +168,26 @@ describe('Session Policies', () => {
       expect(result).toHaveLength(15)
     })
 
-    it('prioritizes due items when trimming', () => {
-      // Create mixed items: some due, some weak, some new
+    it('preserves queue order when trimming (engine already prioritized)', () => {
+      // Engine outputs: due items first, then new items
+      // trimQueueToCapacity is a simple slice that respects this order
       const queue: SessionQueueItem[] = [
-        ...Array.from({ length: 10 }, (_, i) => createQueueItem('recognition_mcq', `item-new-${i}`, true)),
         ...Array.from({ length: 10 }, (_, i) => createQueueItem('recognition_mcq', `item-due-${i}`, false)),
+        ...Array.from({ length: 10 }, (_, i) => createQueueItem('recognition_mcq', `item-new-${i}`, true)),
       ]
 
       const context: SessionPoliciesContext = {
-        accountAgeDays: 100,
-        stableItemCount: 100,
         sessionInteractionCap: 12,
       }
 
       const result = applyPolicies(queue, context)
 
       expect(result).toHaveLength(12)
-      // Due items (non-new) should be prioritized
-      const newCount = result.filter(i => !i.learnerItemState).length
-      const dueCount = result.filter(i => i.learnerItemState).length
-      expect(dueCount).toBeGreaterThanOrEqual(newCount)
+      // Due items (non-new) come first, so all 10 due items appear and only 2 new items
+      const dueCount = result.filter(i => i.learnerItemState !== null).length
+      const newCount = result.filter(i => i.learnerItemState === null).length
+      expect(dueCount).toBe(10)
+      expect(newCount).toBe(2)
     })
 
     it('does not trim if queue is under cap', () => {
@@ -324,8 +198,6 @@ describe('Session Policies', () => {
       ]
 
       const context: SessionPoliciesContext = {
-        accountAgeDays: 100,
-        stableItemCount: 100,
         sessionInteractionCap: 15,
       }
 
@@ -336,21 +208,18 @@ describe('Session Policies', () => {
   })
 
   describe('applyPolicies - Combined policies', () => {
-    it('applies all policies in correct order', () => {
+    it('applies availability gating, consecutive cap, and trimming together', () => {
       const queue: SessionQueueItem[] = [
-        createQueueItem('recognition_mcq', 'item-1', true),
-        createQueueItem('recognition_mcq', 'item-2', true),
-        createQueueItem('recognition_mcq', 'item-3', true),
+        createQueueItem('recognition_mcq', 'item-1', false),
+        createQueueItem('recognition_mcq', 'item-2', false),
+        createQueueItem('recognition_mcq', 'item-3', false),
         createQueueItem('typed_recall', 'item-4', false),
         createQueueItem('typed_recall', 'item-5', false),
         createQueueItem('cloze', 'item-6', false),
       ]
 
       const context: SessionPoliciesContext = {
-        accountAgeDays: 10, // < 14
-        stableItemCount: 10, // < 20 (new learner)
         sessionInteractionCap: 10,
-        preferredSessionSize: 10,
         exerciseTypeAvailability: {
           recognition_mcq: {
             exercise_type: 'recognition_mcq',
@@ -387,16 +256,9 @@ describe('Session Policies', () => {
 
       const result = applyPolicies(queue, context)
 
-      // Should:
-      // 1. Filter disabled types (cloze out)
-      // 2. Apply new learner rules (in-progress + small new item trickle)
-      // 3. Apply consecutive cap
-      // 4. Trim to cap (10)
+      // cloze filtered out, result ≤ cap, no cloze items in output
       expect(result.length).toBeLessThanOrEqual(10)
       expect(result.every(i => i.exerciseItem.exerciseType !== 'cloze')).toBe(true)
-      // In-progress items must be present; a small number of new items are now allowed
-      const inProgressInResult = result.filter(i => i.learnerItemState !== null)
-      expect(inProgressInResult.length).toBeGreaterThan(0)
     })
   })
 })

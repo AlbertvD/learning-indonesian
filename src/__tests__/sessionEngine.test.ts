@@ -18,6 +18,7 @@ function makeInput(overrides: Partial<SessionBuildInput> = {}): SessionBuildInpu
     itemStates: {},
     skillStates: {},
     preferredSessionSize: 5,
+    dailyNewItemsLimit: 10,
     lessonFilter: null,
     userLanguage: 'en',
     ...overrides,

@@ -18,6 +18,7 @@ export interface SessionBuildInput {
   itemStates: Record<string, LearnerItemState>
   skillStates: Record<string, LearnerSkillState[]>
   preferredSessionSize: number
+  dailyNewItemsLimit: number
   lessonFilter: string | null
   userLanguage: 'en' | 'nl'
   // lessonId → order_index; when provided, new items are gated by lesson mastery
@@ -36,19 +37,15 @@ interface CandidateItem {
   item: LearningItem
   state: LearnerItemState | null
   skills: LearnerSkillState[]
-  category: 'due' | 'anchoring' | 'weak' | 'new'
+  category: 'due' | 'anchoring' | 'new'
   priority: number
 }
-
-// Fraction of the session that can be new items when reviews are present.
-// Scales with session size so a user who wants 25 words gets more new items
-// than one who wants 10.
 
 /**
  * Build a session queue from the learning item pool.
  */
 export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] {
-  const { allItems, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, itemStates, skillStates, preferredSessionSize, lessonFilter, userLanguage, lessonOrder } = input
+  const { allItems, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, itemStates, skillStates, preferredSessionSize, dailyNewItemsLimit, lessonFilter, userLanguage, lessonOrder } = input
   const sessionMode = input.sessionMode ?? 'standard'
 
   // quick mode uses a fixed small session size to reduce friction
@@ -93,7 +90,6 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   const now = new Date()
   const dueItems: CandidateItem[] = []
   const anchoringItems: CandidateItem[] = []  // seen but not yet stable — always reinforce
-  const weakItems: CandidateItem[] = []
   const newItems: CandidateItem[] = []
 
   for (const item of eligibleItems) {
@@ -149,19 +145,11 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
       ))
       dueItems.push({ item, state, skills, category: 'due', priority: 1 - minRetrievability })
     }
-
-    // Weak items: high lapse count or only recognition (no recall skill yet)
-    const hasHighLapses = skills.some(s => s.lapse_count >= 3)
-    const hasOnlyRecognition = skills.length === 1 && skills[0].skill_type === 'recognition'
-    if (hasHighLapses || hasOnlyRecognition) {
-      weakItems.push({ item, state, skills, category: 'weak', priority: hasHighLapses ? 1 : 0.5 })
-    }
   }
 
   // Sort by priority (highest first)
   dueItems.sort((a, b) => b.priority - a.priority)
   anchoringItems.sort((a, b) => b.priority - a.priority)
-  weakItems.sort((a, b) => b.priority - a.priority)
 
   // Gate new items by lesson mastery: sort by lesson order and drop items from
   // lessons that haven't been unlocked yet.
@@ -169,49 +157,36 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
     ? applyLessonGate(newItems, eligibleItems, itemStates, contextsByItem, lessonOrder)
     : newItems
 
-  // Slot allocation — adjusted by session mode
-  // backlog_clear: maximise due reviews, zero anchoring, zero weak, zero new
-  const dueSlots = (sessionMode === 'backlog_clear')
-    ? effectiveSessionSize
-    : Math.round(effectiveSessionSize * 0.55)
-  const anchoringSlots = (sessionMode === 'backlog_clear')
-    ? 0
-    : Math.round(effectiveSessionSize * 0.20)
-  const weakSlots = (sessionMode === 'backlog_clear')
-    ? 0
-    : Math.round(effectiveSessionSize * 0.10)
+  // Session composition — FSRS-aligned priority order:
+  //   1. Anchoring items always appear (pre-FSRS reinforcement, like learning steps)
+  //   2. All FSRS-due items (trust the algorithm's scheduling)
+  //   3. New items up to dailyNewItemsLimit
+  // Trim to effectiveSessionSize at the end, in priority order.
+  //
+  // Special modes:
+  //   backlog_clear: due reviews only, clears overdue backlog without introducing new items
+  //   recall_sprint / push_to_productive: no new items (dueItems already filtered to eligible set)
 
-  const pickedDue = dueItems.slice(0, dueSlots)
-  const pickedAnchoring = anchoringItems.slice(0, anchoringSlots)
-  const pickedWeak = weakItems.slice(0, weakSlots)
+  let sessionCandidates: CandidateItem[]
+  if (sessionMode === 'backlog_clear') {
+    sessionCandidates = dueItems
+  } else if (sessionMode === 'recall_sprint' || sessionMode === 'push_to_productive') {
+    sessionCandidates = dueItems
+  } else {
+    const pickedNew = gatedNewItems.slice(0, dailyNewItemsLimit)
+    sessionCandidates = [...anchoringItems, ...dueItems, ...pickedNew]
+  }
 
-  const reviewsFilled = pickedDue.length + pickedAnchoring.length + pickedWeak.length
-  const newSlots = (sessionMode === 'backlog_clear' || sessionMode === 'recall_sprint' || sessionMode === 'push_to_productive')
-    ? 0
-    : calculateNewSlots(dueItems.length, anchoringItems.length, reviewsFilled, effectiveSessionSize)
-  const pickedNew = gatedNewItems.slice(0, newSlots)
-
-  // Build exercise items from picked candidates
+  // Build exercise items from all candidates
   const queue: SessionQueueItem[] = []
 
-  for (const candidate of [...pickedDue, ...pickedAnchoring, ...pickedWeak]) {
+  for (const candidate of sessionCandidates) {
     const exercises = selectExercises(candidate, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, userLanguage, eligibleItems, sessionMode)
     for (const exercise of exercises) {
       queue.push({
         exerciseItem: exercise,
         learnerItemState: candidate.state,
         learnerSkillState: candidate.skills.find(s => s.skill_type === exercise.skillType) ?? null,
-      })
-    }
-  }
-
-  for (const candidate of pickedNew) {
-    const exercises = selectExercises(candidate, meaningsByItem, contextsByItem, variantsByItem, exerciseVariantsByContext, userLanguage, eligibleItems, sessionMode)
-    for (const exercise of exercises) {
-      queue.push({
-        exerciseItem: exercise,
-        learnerItemState: candidate.state,
-        learnerSkillState: null,
       })
     }
   }
@@ -286,29 +261,6 @@ function applyLessonGate(
     .sort((a, b) => itemLessonOrder(a.item.id) - itemLessonOrder(b.item.id))
 }
 
-function calculateNewSlots(
-  dueCount: number,
-  anchoringCount: number,
-  reviewsFilled: number,
-  sessionSize: number,
-): number {
-  const remainingCapacity = sessionSize - reviewsFilled
-
-  // Nothing to review at all (fresh start or full reset): fill the session
-  // with new items so the user gets their target number of items.
-  if (dueCount === 0 && anchoringCount === 0) return remainingCapacity
-
-  // Spec-defined new-item caps based on due count:
-  // due > 40 → 0 new (heavy backlog, clear it first)
-  // due > 20 → 2 new (moderate backlog, trickle new items)
-  // else     → 8 new (light backlog, normal introduction pace)
-  let cap: number
-  if (dueCount > 40) cap = 0
-  else if (dueCount > 20) cap = 2
-  else cap = 8
-
-  return Math.min(cap, remainingCapacity)
-}
 
 function selectExercises(
   candidate: CandidateItem,

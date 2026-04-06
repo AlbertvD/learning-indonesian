@@ -34,13 +34,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (session?.user) {
-        const [{ displayName, language, preferredSessionSize, timezone }, isAdmin] = await Promise.all([
+        const [{ displayName, language, preferredSessionSize, dailyNewItemsLimit, timezone }, isAdmin] = await Promise.all([
           loadProfileData(session.user.id),
           checkAdmin(session.user.id),
         ])
         set({
           user: session.user,
-          profile: toProfile(session.user, isAdmin, displayName, language, preferredSessionSize, timezone),
+          profile: toProfile(session.user, isAdmin, displayName, language, preferredSessionSize, dailyNewItemsLimit, timezone),
           loading: false,
         })
       } else {
@@ -70,11 +70,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
                 },
                 { onConflict: 'id', ignoreDuplicates: true }
               )
-            const [{ displayName, language, preferredSessionSize, timezone }, isAdmin] = await Promise.all([
+            const [{ displayName, language, preferredSessionSize, dailyNewItemsLimit, timezone }, isAdmin] = await Promise.all([
               loadProfileData(session.user!.id),
               checkAdmin(session.user!.id),
             ])
-            set({ user: session.user, profile: toProfile(session.user!, isAdmin, displayName, language, preferredSessionSize, timezone) })
+            set({ user: session.user, profile: toProfile(session.user!, isAdmin, displayName, language, preferredSessionSize, dailyNewItemsLimit, timezone) })
           } catch (err) {
             console.error('[authStore] Failed to load profile after sign-in:', err)
             set({ user: session.user, profile: null })
@@ -182,28 +182,30 @@ async function checkAdmin(userId: string): Promise<boolean> {
   return !!data
 }
 
-async function loadProfileData(userId: string): Promise<{ displayName: string | null; language: 'nl' | 'en'; preferredSessionSize: number; timezone: string | null }> {
+async function loadProfileData(userId: string): Promise<{ displayName: string | null; language: 'nl' | 'en'; preferredSessionSize: number; dailyNewItemsLimit: number; timezone: string | null }> {
   const { data } = await supabase
     .schema('indonesian')
     .from('profiles')
-    .select('display_name, language, preferred_session_size, timezone')
+    .select('display_name, language, preferred_session_size, daily_new_items_limit, timezone')
     .eq('id', userId)
     .maybeSingle()
   return {
     displayName: data?.display_name ?? null,
     language: data?.language === 'en' ? 'en' : 'nl',
     preferredSessionSize: data?.preferred_session_size ?? 15,
+    dailyNewItemsLimit: data?.daily_new_items_limit ?? 10,
     timezone: data?.timezone ?? null,
   }
 }
 
-function toProfile(user: User, isAdmin: boolean, displayName: string | null, language: 'nl' | 'en', preferredSessionSize: number, timezone: string | null): UserProfile {
+function toProfile(user: User, isAdmin: boolean, displayName: string | null, language: 'nl' | 'en', preferredSessionSize: number, dailyNewItemsLimit: number, timezone: string | null): UserProfile {
   return {
     id: user.id,
     email: user.email!,
     fullName: displayName,
     language,
     preferredSessionSize,
+    dailyNewItemsLimit,
     timezone,
     isAdmin,
   }

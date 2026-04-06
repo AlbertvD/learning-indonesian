@@ -1,12 +1,8 @@
 // src/lib/sessionPolicies.ts
 import type { SessionQueueItem, ExerciseTypeAvailability } from '@/types/learning'
-import { newLearnerDefaults } from './newLearnerDefaults'
 import { isExerciseTypeEnabled } from './featureFlags'
 
 export interface SessionPoliciesContext {
-  // User demographics
-  accountAgeDays: number
-  stableItemCount: number
   sessionInteractionCap: number
 
   // Exercise type availability
@@ -14,24 +10,16 @@ export interface SessionPoliciesContext {
 
   // Grammar patterns (confusion groups)
   grammarPatterns?: Record<string, { confusion_group?: string }>
-
-  // User's preferred session size (used to size new-item allowance in new learner mode)
-  preferredSessionSize?: number
-
-  // Session progress tracking (for overload detection)
-  sessionStarted?: boolean
 }
 
 /**
  * Apply policy layers on top of the raw session queue.
  * Policies are applied in order:
  * 1. Exercise availability gating
- * 2. Approved content check
+ * 2. Approved content check (deferred — Phase 2+)
  * 3. Grammar-aware interleaving
  * 4. Consecutive type cap
- * 5. New learner overload protection
- * 6. Mid-session overload detection
- * 7. Queue trimming
+ * 5. Queue trimming
  */
 export function applyPolicies(
   queue: SessionQueueItem[],
@@ -51,13 +39,7 @@ export function applyPolicies(
   // 4. Consecutive type cap
   shaped = applyConsecutiveTypeCap(shaped)
 
-  // 5. New learner detection + overload protection
-  shaped = applyNewLearnerRules(shaped, context)
-
-  // 6. Mid-session overload detection (not applicable during initial queue build)
-  // This will be applied by Session.tsx during the session
-
-  // 7. Queue trimming
+  // 5. Queue trimming
   shaped = trimQueueToCapacity(shaped, context.sessionInteractionCap)
 
   return shaped
@@ -203,122 +185,13 @@ function applyConsecutiveTypeCap(queue: SessionQueueItem[]): SessionQueueItem[] 
 }
 
 /**
- * Detect new learners and apply overload protection.
- * New learner: account_age_days < 30 AND stable_item_count < 50
- *
- * When reviews exist: serve only items already in progress (no new words on top
- * of pending reviews — avoid overload).
- * When nothing is in review yet (fresh start / full reset): pass the full queue
- * through unchanged — the session engine already sized it correctly for the
- * user's session preference.
- */
-function applyNewLearnerRules(
-  queue: SessionQueueItem[],
-  context: SessionPoliciesContext,
-): SessionQueueItem[] {
-  const { accountAgeDaysThreshold, stableItemCountThreshold } = newLearnerDefaults
-  const isNewLearner = context.accountAgeDays < accountAgeDaysThreshold && context.stableItemCount < stableItemCountThreshold
-
-  if (!isNewLearner) {
-    return queue
-  }
-
-  // Separate items already in progress from brand-new items
-  const inProgress = queue.filter(item => {
-    const state = item.learnerItemState
-    return state && state.stage !== 'new'
-  })
-
-  let result: SessionQueueItem[]
-
-  if (inProgress.length > 0) {
-    // Reviews are pending: serve in-progress items plus a small trickle of new
-    // items so the learner keeps growing. Cap new items at 15% of session size
-    // (minimum 2) rather than cutting them entirely.
-    const sessionSize = context.preferredSessionSize ?? context.sessionInteractionCap
-    const newCap = Math.max(2, Math.round(sessionSize * 0.15))
-    const newItems = queue
-      .filter(q => !q.learnerItemState || q.learnerItemState.stage === 'new')
-      .slice(0, newCap)
-    result = [...inProgress, ...newItems]
-  } else {
-    // Nothing in progress — fresh start or full reset.
-    // The engine already sized this queue correctly; pass it through.
-    result = queue
-  }
-
-  // Grammar cap: new learners should not get too many grammar-tagged exercises
-  // per session. Cap = min(2, max(1, floor(new_items_target / 4))).
-  // "Grammar-tagged" = item has a known confusion_group in grammarPatterns.
-  if (context.grammarPatterns && Object.keys(context.grammarPatterns).length > 0) {
-    const sessionSize = context.preferredSessionSize ?? context.sessionInteractionCap
-    const newItemsTarget = Math.min(8, Math.max(2, Math.round(sessionSize * 0.15)))
-    const grammarCap = Math.min(2, Math.max(1, Math.floor(newItemsTarget / 4)))
-
-    let grammarCount = 0
-    result = result.filter(item => {
-      const itemId = item.exerciseItem.learningItem.id
-      const isGrammarTagged = !!context.grammarPatterns?.[itemId]?.confusion_group
-      if (!isGrammarTagged) return true
-      if (grammarCount < grammarCap) {
-        grammarCount++
-        return true
-      }
-      return false
-    })
-  }
-
-  return result
-}
-
-/**
  * Trim queue to session interaction cap.
- * Priority order: keep due > weak > new
+ * The engine already orders the queue by priority (anchoring > due > new),
+ * so a simple slice preserves the correct priority ordering.
  */
 function trimQueueToCapacity(
   queue: SessionQueueItem[],
   sessionInteractionCap: number,
 ): SessionQueueItem[] {
-  if (queue.length <= sessionInteractionCap) {
-    return queue
-  }
-
-  // Categorize by item state
-  const due: SessionQueueItem[] = []
-  const weak: SessionQueueItem[] = []
-  const newItems: SessionQueueItem[] = []
-
-  for (const item of queue) {
-    const state = item.learnerItemState
-    const isNew = !state || state.stage === 'new'
-
-    if (isNew) {
-      newItems.push(item)
-    } else {
-      // Check if weak: high lapse count or only recognition
-      const skills = item.learnerSkillState ? [item.learnerSkillState] : []
-      const hasHighLapses = skills.some(s => s.lapse_count >= 3)
-      const hasOnlyRecognition = skills.length === 1 && skills[0].skill_type === 'recognition'
-
-      if (hasHighLapses || hasOnlyRecognition) {
-        weak.push(item)
-      } else {
-        due.push(item)
-      }
-    }
-  }
-
-  // Build trimmed queue in priority order
-  const trimmed: SessionQueueItem[] = []
-  trimmed.push(...due.slice(0, sessionInteractionCap))
-
-  if (trimmed.length < sessionInteractionCap) {
-    trimmed.push(...weak.slice(0, sessionInteractionCap - trimmed.length))
-  }
-
-  if (trimmed.length < sessionInteractionCap) {
-    trimmed.push(...newItems.slice(0, sessionInteractionCap - trimmed.length))
-  }
-
-  return trimmed
+  return queue.slice(0, sessionInteractionCap)
 }

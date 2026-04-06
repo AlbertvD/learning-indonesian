@@ -43,6 +43,7 @@ export function Session() {
     ? sessionModeParam as SessionMode
     : 'standard'
   const preferredSessionSize = profile?.preferredSessionSize ?? 15
+  const dailyNewItemsLimit = profile?.dailyNewItemsLimit ?? 10
   const didInit = useRef(false)
   const beforeGoalsRef = useRef<WeeklyGoal[] | null>(null)
 
@@ -178,6 +179,7 @@ export function Session() {
           itemStates,
           skillStates: skillStatesMap,
           preferredSessionSize,
+          dailyNewItemsLimit,
           lessonFilter,
           userLanguage: profile?.language ?? 'en',
           lessonOrder,
@@ -191,17 +193,12 @@ export function Session() {
           return
         }
 
-        // Calculate learner metrics for policies
-        // Account age: use profile creation date (most reliable source)
+        // Account age: used by reviewHandler to cap early FSRS intervals
         let ageDays = 0
         if (user.created_at) {
           ageDays = Math.floor((Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24))
         }
         setAccountAgeDays(ageDays)
-
-        const stableItemCount = itemStatesArray.filter(
-          s => s.stage !== 'new' && !s.suspended,
-        ).length
 
         // Load exercise type availability (cached, 1hr TTL)
         let exerciseTypeAvailability: Record<string, import('@/types/learning').ExerciseTypeAvailability> | undefined
@@ -222,10 +219,7 @@ export function Session() {
 
         // Apply session policies to shape the queue
         const policyContext: SessionPoliciesContext = {
-          accountAgeDays: ageDays,
-          stableItemCount,
           sessionInteractionCap: preferredSessionSize,
-          preferredSessionSize,
           exerciseTypeAvailability,
           grammarPatterns,
         }
