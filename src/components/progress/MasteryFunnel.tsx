@@ -1,6 +1,4 @@
 // src/components/progress/MasteryFunnel.tsx
-import { Anchor } from '@mantine/core'
-import { Link } from 'react-router-dom'
 import classes from './MasteryFunnel.module.css'
 
 interface MasteryFunnelProps {
@@ -29,9 +27,6 @@ export function MasteryFunnel({ itemsByStage }: MasteryFunnelProps) {
     if (!best) return stage
     return itemsByStage[stage.key] > itemsByStage[best.key] ? stage : best
   }, null)?.key ?? null
-
-  const anchoringCount = itemsByStage.anchoring
-  const showWarning = totalItems > 0 && anchoringCount / totalItems > 0.5
 
   if (totalItems === 0) {
     return (
@@ -77,22 +72,6 @@ export function MasteryFunnel({ itemsByStage }: MasteryFunnelProps) {
           })}
         </div>
 
-        <div className={classes.footer}>
-          {showWarning && (
-            <div className={classes.warningBanner}>
-              <span>⚠️</span>
-              <span>{anchoringCount} items wachten op hun eerste poortcheck om naar Oproepen te gaan.</span>
-            </div>
-          )}
-          <Anchor
-            component={Link}
-            to="/session?mode=gate_check"
-            className={classes.milestonePill}
-            underline="never"
-          >
-            → Volgende mijlpaal: item naar Oproepen
-          </Anchor>
-        </div>
       </div>
     </div>
   )
