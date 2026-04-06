@@ -96,10 +96,10 @@ html[data-mantine-color-scheme="light"] body {
 ─────────────────────────────────────────────────────────────────────────── */
 
 .section-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: var(--fs-xs);
   font-weight: var(--fw-bold);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
   color: var(--text-tertiary);
   margin-bottom: 12px;

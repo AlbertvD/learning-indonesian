@@ -55,10 +55,9 @@
 }
 
 .goalStatus {
-  font-family: var(--font-mono);
   font-size: var(--fs-xs);
   font-weight: var(--fw-bold);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 2px 7px;
   border-radius: var(--r-sm);
@@ -79,7 +78,6 @@
 .goalDetail {
   font-size: var(--fs-xs);
   color: var(--text-secondary);
-  font-family: var(--font-mono);
 }
 
 .goalTrack {

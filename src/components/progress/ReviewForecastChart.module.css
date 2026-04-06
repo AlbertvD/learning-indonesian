@@ -193,7 +193,6 @@
   margin-top: 8px;
   font-size: var(--fs-xs);
   color: var(--text-tertiary);
-  font-family: var(--font-mono);
 }
 
 /* ── Projected next week ─────────────────────────────── */
@@ -205,11 +204,11 @@
 }
 
 .projLabel {
-  font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--text-tertiary);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  font-weight: var(--fw-semibold);
   margin-bottom: 8px;
 }
 
