@@ -33,7 +33,7 @@ export function Progress() {
   }
 
   return (
-    <Container size="md">
+    <Container size="lg">
       <div className={classes.page}>
 
         {/* Page header */}
