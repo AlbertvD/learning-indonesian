@@ -38,7 +38,6 @@ export function Progress() {
 
         {/* Page header */}
         <div className={classes.header}>
-          <span className={classes.headerBadge}>INDONESISCH · GEHEUGEN</span>
           <h1 className={classes.headerTitle}>Geheugenoverzicht</h1>
           <p className={classes.headerSub}>Jouw leervoortgang en geheugengezondheid</p>
         </div>
