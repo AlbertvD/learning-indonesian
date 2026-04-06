@@ -92,9 +92,10 @@
 
 @media (max-width: 600px) {
   .item {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 90px 1fr 70px;
+    flex-wrap: wrap;
   }
-  .lapseCount, .barWrap, .pct {
+  .barWrap, .pct {
     display: none;
   }
 }
