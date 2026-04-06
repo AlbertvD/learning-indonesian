@@ -232,7 +232,7 @@ export function ExerciseShell({
           borderRadius: 'var(--r-md)',
           borderLeft: '3px solid var(--accent-primary)',
         }}>
-          <Text size="sm" c="dimmed" mb={8}>Het juiste antwoord</Text>
+          <Text size="md" fw={600} style={{ color: 'var(--text-primary)' }} mb={8}>Het juiste antwoord</Text>
           <Box style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
             <Text fw={700} size="xl" style={{ color: 'var(--accent-primary)' }}>
               {learningItem.base_text}
