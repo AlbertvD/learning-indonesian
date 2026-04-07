@@ -202,7 +202,7 @@ Promotion requires **both facets** to meet the threshold (all values are initial
 | Transition | Criteria |
 |---|---|
 | new → anchoring | Automatic on first presentation |
-| anchoring → retrieving | Recognition: stability ≥ 2.0 AND success_count ≥ 3. At least one recall attempt (gate check — see below). Result does not block promotion but affects retrieving threshold. |
+| anchoring → retrieving | Recognition: stability ≥ 1.8 AND success_count ≥ 3. At least one recall attempt (gate check — see below). Result does not block promotion but affects retrieving threshold. |
 | retrieving → productive | Both facets: stability ≥ 5.0 AND success_count ≥ 3 (if gate check passed) or success_count ≥ 5 (if gate check failed) |
 | productive → maintenance | Both facets: stability ≥ 21.0 AND zero lapses in last 5 reviews per facet |
 
@@ -263,54 +263,59 @@ After every exercise:
 
 Keep it brief. No long grammar explanations inside the session shell.
 
-## 8. Session Engine
+## 8. Session Queue (`src/lib/sessionQueue.ts`)
+
+The session engine was replaced in April 2026 with a simpler FSRS-driven due queue. The old stage-based priority logic caused anchoring items to be reviewed multiple times per day at R≈1, which drove stability to zero instead of growing it. The fix: trust `next_due_at` completely.
 
 ### Flow
 
-1. **User opens app** → Dashboard shows due count, weak items, current lesson, "Start Today's Session"
-2. **Start session** → INSERT a `learning_sessions` row, use its ID as `session_id` on all `review_events`. Session builder assembles a queue:
-   - Pull due items from `learner_skill_state` (cross-lesson)
-   - Pull weak items (high lapse count, recognition-only)
-   - Optionally pull new items from current lesson (capped based on due load)
-   - Rank and trim to fit `preferred_session_size`
+1. **User opens app** → Dashboard shows due count, current lesson, "Start Today's Session"
+2. **Start session** → INSERT a `learning_sessions` row. `buildSessionQueue` assembles a queue:
+   - **Due items:** any item where any skill has `next_due_at ≤ now`, sorted most-overdue first
+   - **New items:** gated by lesson mastery (70% of prior lesson's items must be past anchoring), capped by `dailyNewItemsLimit`
+   - Due items fill the queue first, then new items, trimmed to `preferredSessionSize`
 3. **Exercise delivery** → One item at a time:
-   - Exercise type chosen by item stage and item type
+   - Exercise type chosen by item stage and item type (new/anchoring → recognition MCQ; retrieving+ → typed recall or cloze)
    - User answers → immediate feedback
    - Result logged to `review_events`
    - `learner_skill_state` updated via FSRS
    - `learner_item_state` stage promoted/demoted if threshold met
-4. **Session complete** → UPDATE `learning_sessions.duration_seconds`, show summary screen with stats
-5. **Continue or Done** → "Continue" builds another queue from remaining pools
+4. **Session complete** → summary screen with stats; session row closed
+5. **Wrong answer requeue:** Incorrect items are reinserted 3 positions ahead so the user revisits them before the session ends
 
 ### Session size
 
-Users set their preferred session size via a slider in their profile (stored as `profiles.preferred_session_size`, default 15). The session engine uses this as the target interaction count.
+Users set their preferred session size via a slider in their profile (stored as `profiles.preferred_session_size`, default 15). The queue is trimmed to this count.
 
-Mix ratios scale with session size:
-- Due items: ~55%
-- Weak items (high lapse count, recognition-only): ~15%
-- New items: ~15%
-- Context exercises (cloze, dialogue): ~15%
+### Session modes
+
+| Mode | Behavior |
+|------|----------|
+| `standard` | Due items + new items, up to `preferredSessionSize` |
+| `backlog_clear` | Due items only — no new items introduced |
+| `quick` | Capped at 5 items regardless of profile setting |
+
+Unknown or removed mode values (e.g. old `recall_sprint`, `push_to_productive`) fall back to `standard` silently.
 
 ### Queue assembly rules
 
-- Start with a winnable task
-- No more than 2 demanding tasks in a row
-- Interleave exercise types
-- Introduce new items after early momentum, not at the start
-- Cap new items when due load is high (due > 20: max 2 new; due > 40: max 0 new)
+- No stage-based priority — `next_due_at` is the sole scheduling signal
+- Most overdue items appear first
+- Up to 2 recognition MCQ items placed at the front of the ordered queue
+- New items appear after all due items
+- Lesson gate: new items from lesson N are only introduced once ≥70% of lesson N−1 items are past anchoring
 
 ### Edge cases
 
-- **Nothing due, nothing new:** Offer an extra practice session weighted toward weakest stability items. No empty state.
-- **Overloaded queue (e.g., 200 due, small session):** Prioritize a mix of most overdue (lowest retrievability) and most at-risk of lapsing (high lapse_count).
-- **Insufficient MCQ distractors:** Pull distractors from other lessons, preferring same level > same module > any lesson.
-- **Mid-session quit:** Review events are saved as they happen. Completed items within the session are preserved — no all-or-nothing.
-- **Same item due for both recognition and recall:** Appears twice in the queue, spaced apart.
+- **Nothing due, nothing new:** Session returns empty; UI shows "no exercises available"
+- **Overloaded queue (many due items):** Most-overdue first; trimmed to session size. No items are skipped in favour of stage-based priority
+- **Insufficient MCQ distractors:** Pulled from other lessons, preferring same level > any lesson
+- **Mid-session quit:** Review events are saved as they happen — no all-or-nothing
+- **Same item due for both recognition and recall:** Appears twice in the queue, spaced apart
 
 ### Scoped sessions
 
-"Practice This Lesson" uses the same engine filtered to items that have an `item_contexts` row with `source_lesson_id = <lesson>`. Same exercises, same FSRS tracking, just scoped.
+"Practice This Lesson" passes `lessonFilter=<lessonId>` to `buildSessionQueue`, which restricts eligible items to those with an `item_contexts` row linking to that lesson. Same FSRS scheduling, just scoped.
 
 ## 9. Navigation & Pages
 
