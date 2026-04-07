@@ -21,7 +21,6 @@ interface ExerciseShellProps {
   sessionId: string
   user: User | null
   userLanguage: 'en' | 'nl'
-  accountAgeDays?: number
   onAnswer: (result: ReviewResult, wasCorrect: boolean) => void
   onContinueToNext: () => void
 }
@@ -31,7 +30,6 @@ export function ExerciseShell({
   sessionId,
   user,
   userLanguage,
-  accountAgeDays = 0,
   onAnswer,
   onContinueToNext,
 }: ExerciseShellProps) {
@@ -67,7 +65,6 @@ export function ExerciseShell({
         latencyMs,
         rawResponse,
         normalizedResponse,
-        accountAgeDays,
       }
 
       const result = await processReview(reviewInput)

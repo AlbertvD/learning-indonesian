@@ -130,30 +130,3 @@ export function applyGrammarAdjustment(
   return stability * reductionFactor
 }
 
-/**
- * Cap early intervals for new learners to ensure frequent reviews
- * during the crucial first month.
- *
- * New learner = first 30-60 days of account age
- * Cap: 20–30 days max interval
- *
- * @param nextDueAt - Scheduled due date
- * @param accountAgeDays - Days since account creation
- * @returns Capped due date
- */
-export function capEarlyIntervals(
-  nextDueAt: Date,
-  accountAgeDays: number
-): Date {
-  const isEarlyStage = accountAgeDays < 60
-  if (!isEarlyStage) {
-    return nextDueAt
-  }
-
-  const now = new Date()
-  const maxDaysFromNow = accountAgeDays < 30 ? 20 : 30
-  const maxDue = new Date(now.getTime() + maxDaysFromNow * 24 * 60 * 60 * 1000)
-
-  // Use whichever is earlier: scheduled or capped
-  return nextDueAt > maxDue ? maxDue : nextDueAt
-}

@@ -35,7 +35,6 @@ export function Session() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [goalImpactMessages, setGoalImpactMessages] = useState<SessionImpactMessages | null>(null)
-  const [accountAgeDays, setAccountAgeDays] = useState(0)
 
   const lessonFilter = searchParams.get('lesson')
   const sessionModeParam = searchParams.get('mode')
@@ -192,13 +191,6 @@ export function Session() {
           setLoading(false)
           return
         }
-
-        // Account age: used by reviewHandler to cap early FSRS intervals
-        let ageDays = 0
-        if (user.created_at) {
-          ageDays = Math.floor((Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24))
-        }
-        setAccountAgeDays(ageDays)
 
         // Load exercise type availability (cached, 1hr TTL)
         let exerciseTypeAvailability: Record<string, import('@/types/learning').ExerciseTypeAvailability> | undefined
@@ -400,7 +392,6 @@ export function Session() {
               sessionId={sessionId}
               user={user}
               userLanguage={userLang}
-              accountAgeDays={accountAgeDays}
               onAnswer={handleExerciseAnswer}
               onContinueToNext={handleContinueToNext}
             />

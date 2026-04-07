@@ -1,6 +1,6 @@
 // src/lib/reviewHandler.ts
 import type { ExerciseItem, LearnerItemState, LearnerSkillState } from '@/types/learning'
-import { inferRating, computeNextState, capEarlyIntervals, applyGrammarAdjustment } from '@/lib/fsrs'
+import { inferRating, computeNextState, applyGrammarAdjustment } from '@/lib/fsrs'
 import { checkPromotion, checkDemotion } from '@/lib/stages'
 import { reviewEventService } from '@/services/reviewEventService'
 import { learnerStateService } from '@/services/learnerStateService'
@@ -17,7 +17,6 @@ export interface ReviewInput {
   latencyMs: number | null
   rawResponse: string | null
   normalizedResponse: string | null
-  accountAgeDays?: number
   isConfusable?: boolean
 }
 
@@ -29,7 +28,7 @@ export interface ReviewResult {
 }
 
 export async function processReview(input: ReviewInput): Promise<ReviewResult> {
-  const { userId, sessionId, exerciseItem, currentItemState, currentSkillState, wasCorrect, isFuzzy, hintUsed, latencyMs, rawResponse, normalizedResponse, accountAgeDays = 0, isConfusable = false } = input
+  const { userId, sessionId, exerciseItem, currentItemState, currentSkillState, wasCorrect, isFuzzy, hintUsed, latencyMs, rawResponse, normalizedResponse, isConfusable = false } = input
   const { learningItem, skillType, exerciseType } = exerciseItem
 
   // 1. Compute FSRS rating and next state
@@ -41,8 +40,6 @@ export async function processReview(input: ReviewInput): Promise<ReviewResult> {
 
   // Apply grammar-based stability adjustment for confusable items
   const adjustedStability = applyGrammarAdjustment(nextFSRS.stability, rating, isConfusable)
-  // Cap early intervals for new learners (0–60 days)
-  const cappedDueAt = capEarlyIntervals(nextFSRS.nextDueAt, accountAgeDays)
 
   // 2. Build updated skill state
   const now = new Date().toISOString()
@@ -54,7 +51,7 @@ export async function processReview(input: ReviewInput): Promise<ReviewResult> {
     difficulty: nextFSRS.difficulty,
     retrievability: nextFSRS.retrievability,
     last_reviewed_at: now,
-    next_due_at: cappedDueAt.toISOString(),
+    next_due_at: nextFSRS.nextDueAt.toISOString(),
     success_count: (currentSkillState?.success_count ?? 0) + (wasCorrect ? 1 : 0),
     failure_count: (currentSkillState?.failure_count ?? 0) + (wasCorrect ? 0 : 1),
     lapse_count: (currentSkillState?.lapse_count ?? 0) + (!wasCorrect && (currentSkillState?.success_count ?? 0) > 0 ? 1 : 0),

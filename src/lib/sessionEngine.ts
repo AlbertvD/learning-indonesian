@@ -103,12 +103,16 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
 
     if (state.suspended) continue
 
-    // Anchoring items: just introduced, not yet stable.
-    // Always reinforce regardless of FSRS due date — they haven't been seen
-    // enough times to survive a gap. Overdue anchoring items get higher priority.
+    // Anchoring items: just introduced, not yet stable (analogous to FSRS learning steps).
+    // Respect next_due_at — only include when due, same as any other item.
+    // Priority by retrievability so the most-forgotten anchoring items come first.
     if (state.stage === 'anchoring') {
-      const isOverdue = skills.some(s => s.next_due_at && new Date(s.next_due_at) <= now)
-      anchoringItems.push({ item, state, skills, category: 'anchoring', priority: isOverdue ? 1 : 0.6 })
+      const dueSkills = skills.filter(s => s.next_due_at && new Date(s.next_due_at) <= now)
+      if (dueSkills.length === 0) continue
+      const minRetrievability = Math.min(...dueSkills.map(s =>
+        s.last_reviewed_at ? getRetrievability(s.stability, new Date(s.last_reviewed_at)) : 1
+      ))
+      anchoringItems.push({ item, state, skills, category: 'anchoring', priority: 1 - minRetrievability })
       continue
     }
 
