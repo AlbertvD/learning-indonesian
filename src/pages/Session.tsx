@@ -5,7 +5,7 @@ import { IconAlertCircle } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
 import { translations } from '@/lib/i18n'
-import { buildSessionQueue, type SessionBuildInput, type SessionMode } from '@/lib/sessionEngine'
+import { buildSessionQueue, type SessionBuildInput, type SessionMode } from '@/lib/sessionQueue'
 import { applyPolicies, type SessionPoliciesContext } from '@/lib/sessionPolicies'
 import type { ReviewResult } from '@/lib/reviewHandler'
 import { learningItemService } from '@/services/learningItemService'
@@ -38,7 +38,7 @@ export function Session() {
 
   const lessonFilter = searchParams.get('lesson')
   const sessionModeParam = searchParams.get('mode')
-  const sessionMode: SessionMode = (['backlog_clear', 'recall_sprint', 'push_to_productive', 'quick'].includes(sessionModeParam ?? ''))
+  const sessionMode: SessionMode = (['backlog_clear', 'quick'].includes(sessionModeParam ?? ''))
     ? sessionModeParam as SessionMode
     : 'standard'
   const preferredSessionSize = profile?.preferredSessionSize ?? 15
