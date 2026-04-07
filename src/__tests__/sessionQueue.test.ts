@@ -44,6 +44,10 @@ function futureDate(days = 5): string {
   return new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString()
 }
 
+function pastDate(days: number): string {
+  return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString()
+}
+
 function baseInput(overrides: Partial<SessionBuildInput> = {}): SessionBuildInput {
   return {
     allItems: [],
@@ -75,7 +79,7 @@ describe('buildSessionQueue — core', () => {
       itemStates: { i1: makeItemState('i1', 'anchoring') },
       skillStates: { i1: [makeSkillState('i1')] }, // due 2 days ago
     }))
-    expect(result.length).toBeGreaterThan(0)
+    expect(result).toHaveLength(1)
   })
 
   it('excludes items not yet due', () => {
@@ -134,7 +138,7 @@ describe('buildSessionQueue — FSRS scheduling (the core fix)', () => {
       itemStates: { anchor1: makeItemState('anchor1', 'anchoring') },
       skillStates: { anchor1: [makeSkillState('anchor1')] }, // due 2 days ago
     }))
-    expect(result.length).toBeGreaterThan(0)
+    expect(result).toHaveLength(1)
   })
 
   it('suspended items are excluded regardless of due date', () => {
@@ -157,8 +161,8 @@ describe('buildSessionQueue — FSRS scheduling (the core fix)', () => {
       meaningsByItem: Object.fromEntries(items.map(it => [it.id, [makeMeaning(it.id)]])),
       itemStates: Object.fromEntries(items.map(it => [it.id, makeItemState(it.id, 'retrieving')])),
       skillStates: {
-        overdue10: [makeSkillState('overdue10', { next_due_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString() })],
-        overdue1: [makeSkillState('overdue1', { next_due_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() })],
+        overdue10: [makeSkillState('overdue10', { next_due_at: pastDate(10) })],
+        overdue1: [makeSkillState('overdue1', { next_due_at: pastDate(1) })],
       },
     }))
     // overdue10 should come before overdue1 in the queue
