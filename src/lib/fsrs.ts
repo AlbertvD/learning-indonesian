@@ -66,6 +66,13 @@ export function inferRating(outcome: ReviewOutcome): Grade {
 export function computeNextState(currentState: FSRSState | null, rating: Grade): FSRSResult {
   const now = new Date()
 
+  // Compute pre-review retrievability from old state (before scheduling).
+  // This records how well the learner remembered the item at review time.
+  // A new item has no prior state, so retrievability is 1 (never been forgotten).
+  const preReviewRetrievability = currentState?.lastReviewedAt
+    ? getRetrievability(currentState.stability, currentState.lastReviewedAt)
+    : 1
+
   let card: Card
   if (currentState) {
     card = {
@@ -85,7 +92,7 @@ export function computeNextState(currentState: FSRSState | null, rating: Grade):
   return {
     stability: scheduled.card.stability,
     difficulty: scheduled.card.difficulty,
-    retrievability: scheduled.card.last_review ? scheduler.get_retrievability(scheduled.card, now, false) ?? 1 : 1,
+    retrievability: preReviewRetrievability,
     nextDueAt: scheduled.card.due,
   }
 }
@@ -117,16 +124,14 @@ export function applyGrammarAdjustment(
   rating: Grade,
   isConfusable: boolean = false
 ): number {
-  // No adjustment for Again/Hard ratings
-  if (rating === Rating.Again || rating === Rating.Hard) {
+  // Only apply adjustment for explicitly confusable items.
+  // Non-confusable items get no reduction — applying a blanket penalty to all
+  // items causes stability to decay even on consecutive correct answers.
+  if (!isConfusable || rating === Rating.Again || rating === Rating.Hard) {
     return stability
   }
 
-  // For Good/Easy ratings:
-  // - Confusable items get 30% reduction
-  // - Normal grammar items get 20% reduction
-  const reductionFactor = isConfusable ? 0.7 : 0.8
-
-  return stability * reductionFactor
+  // Confusable items with Good/Easy ratings: 30% reduction to slow interval growth
+  return stability * 0.7
 }
 
