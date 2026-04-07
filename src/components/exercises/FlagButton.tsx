@@ -13,6 +13,7 @@ interface FlagButtonProps {
   exerciseVariantId?: string | null
   existingFlag?: ContentFlag | null
   onFlagged?: (flag: ContentFlag) => void
+  onUnflagged?: () => void
 }
 
 const FLAG_OPTIONS: { value: FlagType; label: string }[] = [
@@ -30,12 +31,32 @@ export function FlagButton({
   exerciseVariantId = null,
   existingFlag = null,
   onFlagged,
+  onUnflagged,
 }: FlagButtonProps) {
   const [opened, setOpened] = useState(false)
   const [flagType, setFlagType] = useState<FlagType>(existingFlag?.flagType ?? 'wrong_translation')
   const [comment, setComment] = useState(existingFlag?.comment ?? '')
   const [saving, setSaving] = useState(false)
-  const isFlagged = existingFlag != null
+  const [removing, setRemoving] = useState(false)
+  const isFlagged = existingFlag != null || comment.trim().length > 0
+
+  const handleRemove = async () => {
+    if (!existingFlag) return
+    setRemoving(true)
+    try {
+      await contentFlagService.resolveFlag(existingFlag.id)
+      setComment('')
+      setFlagType('wrong_translation')
+      onUnflagged?.()
+      setOpened(false)
+      notifications.show({ color: 'gray', message: 'Markering verwijderd.' })
+    } catch (err) {
+      logError({ page: 'flag-button', action: 'resolveFlag', error: err })
+      notifications.show({ color: 'red', title: 'Fout', message: 'Kon markering niet verwijderen.' })
+    } finally {
+      setRemoving(false)
+    }
+  }
 
   const handleSave = async () => {
     setSaving(true)
@@ -93,10 +114,20 @@ export function FlagButton({
             rows={2}
             autosize
           />
-          <Group justify="flex-end" gap="xs">
-            <Button size="xs" variant="subtle" color="gray" onClick={() => setOpened(false)}>
-              Annuleer
-            </Button>
+          <Group justify="space-between" gap="xs">
+            {existingFlag ? (
+              <Button size="xs" variant="subtle" color="red" onClick={handleRemove} loading={removing}>
+                Verwijder markering
+              </Button>
+            ) : (
+              <Button size="xs" variant="subtle" color="gray" onClick={() => {
+                setComment('')
+                setFlagType('wrong_translation')
+                setOpened(false)
+              }}>
+                Annuleer
+              </Button>
+            )}
             <Button size="xs" color="orange" onClick={handleSave} loading={saving}>
               Opslaan
             </Button>

@@ -292,6 +292,7 @@ export function ExerciseShell({
         exerciseVariantId={null}
         existingFlag={currentFlag}
         onFlagged={setCurrentFlag}
+        onUnflagged={() => setCurrentFlag(null)}
       />
     </Box>
   )
