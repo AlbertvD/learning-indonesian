@@ -304,31 +304,48 @@ function selectExercises(
   // Determine which exercises are appropriate for this stage
   if (stage === 'new' || stage === 'anchoring') {
     // New items: always start with forward recognition (Indonesian → translation).
-    // Anchoring items: rotate across three formats to test both directions before graduation:
-    //   45% recognition_mcq (Indonesian → pick translation)
-    //   30% cued_recall (translation → pick Indonesian)
-    //   25% meaning_recall (Indonesian → type translation)
+    // Anchoring items: rotate across all MCQ formats. When a cloze context exists,
+    // include cloze_mcq so learners see the word in sentence context early.
+    //   With cloze context:    30% recognition_mcq | 25% cued_recall | 25% meaning_recall | 20% cloze_mcq
+    //   Without cloze context: 45% recognition_mcq | 30% cued_recall | 25% meaning_recall
     if (stage === 'anchoring') {
       const roll = Math.random()
-      if (roll < 0.30) {
-        exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems))
-      } else if (roll < 0.55) {
-        exercises.push(makeMeaningRecall(item, meanings, contexts, variants))
+      if (hasAnchorContext) {
+        if (roll < 0.25) {
+          exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems))
+        } else if (roll < 0.50) {
+          exercises.push(makeMeaningRecall(item, meanings, contexts, variants))
+        } else if (roll < 0.70) {
+          exercises.push(makeClozeMcq(item, meanings, contexts, variants, allItems))
+        } else {
+          exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
+        }
       } else {
-        exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
+        if (roll < 0.30) {
+          exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems))
+        } else if (roll < 0.55) {
+          exercises.push(makeMeaningRecall(item, meanings, contexts, variants))
+        } else {
+          exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
+        }
       }
     } else {
       exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
     }
   } else if (stage === 'retrieving') {
     if (isSentenceType) {
-      exercises.push(makeClozeExercise(item, meanings, contexts, variants))
+      // Sentences: lead with cloze_mcq, then progress to typed cloze
+      exercises.push(Math.random() < 0.6
+        ? makeClozeMcq(item, meanings, contexts, variants, allItems)
+        : makeClozeExercise(item, meanings, contexts, variants))
     } else {
-      // Rotate across three recall formats
+      // Words: cloze_mcq leads (if context exists), typed formats follow
       const roll = Math.random()
-      if (roll < 0.35) {
+      if (hasAnchorContext && roll < 0.40) {
+        exercises.push(makeClozeMcq(item, meanings, contexts, variants, allItems))
+      } else if (roll < 0.65) {
         exercises.push(makeMeaningRecall(item, meanings, contexts, variants))
-      } else if (roll < 0.65 && hasAnchorContext) {
+      } else if (hasAnchorContext && roll < 0.82) {
         exercises.push(makeClozeExercise(item, meanings, contexts, variants))
       } else {
         exercises.push(makeTypedRecall(item, meanings, contexts, variants))
@@ -488,6 +505,45 @@ function makeCuedRecall(
   }
 }
 
+function makeClozeMcq(
+  item: LearningItem,
+  meanings: ItemMeaning[],
+  contexts: ItemContext[],
+  variants: ItemAnswerVariant[],
+  allItems: LearningItem[],
+): ExerciseItem {
+  const clozeContext = contexts.find(c => c.context_type === 'cloze')
+    ?? contexts.find(c => c.is_anchor_context)
+
+  // Distractors: base_text from other same-level items
+  const distractors = allItems
+    .filter(i => i.id !== item.id && i.level === item.level)
+    .map(i => i.base_text)
+    .filter(Boolean)
+
+  for (let i = distractors.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [distractors[i], distractors[j]] = [distractors[j], distractors[i]]
+  }
+
+  const options = [item.base_text, ...distractors.slice(0, 3)].sort(() => Math.random() - 0.5)
+
+  return {
+    learningItem: item,
+    meanings,
+    contexts,
+    answerVariants: variants,
+    skillType: 'recognition',
+    exerciseType: 'cloze_mcq',
+    clozeMcqData: clozeContext ? {
+      sentence: clozeContext.source_text,
+      translation: clozeContext.translation_text,
+      options,
+      correctOptionId: item.base_text,
+    } : undefined,
+  }
+}
+
 function makeClozeExercise(
   item: LearningItem,
   meanings: ItemMeaning[],
@@ -520,6 +576,7 @@ function makePublishedExercise(
   variant: ExerciseVariant,
 ): ExerciseItem {
   const exerciseType = variant.exercise_type as
+    | 'cloze_mcq'
     | 'contrast_pair'
     | 'sentence_transformation'
     | 'constrained_translation'
@@ -539,6 +596,18 @@ function makePublishedExercise(
 
   // Map published variant payload to exercise-specific data
   switch (exerciseType) {
+    case 'cloze_mcq':
+      return {
+        ...baseExercise,
+        skillType: 'recognition',
+        clozeMcqData: {
+          sentence: payload.sentence || context.source_text || '',
+          translation: (payload.translation as string | null) ?? null,
+          options: (payload.options as string[]) || [],
+          correctOptionId: (answerKey?.correctOptionId as string) || (payload.correctOptionId as string) || '',
+        },
+      }
+
     case 'contrast_pair':
       return {
         ...baseExercise,

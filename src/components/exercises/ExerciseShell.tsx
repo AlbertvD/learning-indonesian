@@ -9,6 +9,7 @@ import { SentenceTransformationExercise } from './SentenceTransformationExercise
 import { ConstrainedTranslationExercise } from './ConstrainedTranslationExercise'
 import { TypedRecall } from './TypedRecall'
 import { Cloze } from './Cloze'
+import { ClozeMcq } from './ClozeMcq'
 import { MeaningRecall } from './MeaningRecall'
 import { SpeakingExercise } from './SpeakingExercise'
 import { processReview, type ReviewInput } from '@/lib/reviewHandler'
@@ -176,6 +177,18 @@ export function ExerciseShell({
           userLanguage={userLanguage}
           onAnswer={(wasCorrect, isFuzzy, latencyMs, rawResponse) => {
             handleAnswerFromExercise(wasCorrect, isFuzzy, latencyMs, rawResponse)
+          }}
+        />
+      )
+
+    case 'cloze_mcq':
+      return (
+        <ClozeMcq
+          key={`${currentItem.exerciseItem.learningItem.id}-${exerciseItem.exerciseType}`}
+          exerciseItem={exerciseItem}
+          userLanguage={userLanguage}
+          onAnswer={(wasCorrect, latencyMs) => {
+            handleAnswerFromExercise(wasCorrect, false, latencyMs, null)
           }}
         />
       )

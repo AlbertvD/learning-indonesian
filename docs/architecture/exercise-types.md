@@ -10,14 +10,16 @@ Exercise types fall into two fundamentally different categories based on how the
 
 | Category | Types | Origin | Answer key location |
 |---|---|---|---|
-| **Vocabulary** | `recognition_mcq`, `typed_recall`, `cued_recall`, `cloze` | Generated on-the-fly by `selectExercises` | Derived from `item_meanings` / `item.base_text` at runtime |
-| **Grammar** | `contrast_pair`, `sentence_transformation`, `constrained_translation`, `speaking` | Loaded from `exercise_variants` table, published by content pipeline | Stored in `answer_key_json` column |
+| **Vocabulary** | `recognition_mcq`, `cued_recall`, `meaning_recall`, `typed_recall`, `cloze_mcq`, `cloze` | Generated on-the-fly by `selectExercises` | Derived from `item_meanings` / `item.base_text` at runtime |
+| **Grammar** | `cloze_mcq` (authored), `contrast_pair`, `sentence_transformation`, `constrained_translation`, `speaking` | Loaded from `exercise_variants` table, published by content pipeline | Stored in `answer_key_json` column |
+
+Note: `cloze_mcq` appears in both categories — it can be generated at runtime for vocabulary (distractors from same-level items) or authored as a grammar variant (distractors are confusable grammar forms).
 
 ---
 
 ## Vocabulary exercise types
 
-These four types are generated in `sessionEngine.ts` at session-build time. No pre-authored content rows are needed. Distractors for MCQ types are drawn from other items at the same CEFR level.
+These types are generated in `sessionEngine.ts` at session-build time. No pre-authored content rows are needed. Distractors for MCQ types are drawn from other items at the same CEFR level.
 
 ### `recognition_mcq`
 
@@ -83,13 +85,60 @@ Graded by matching `item.base_text` or any `ItemAnswerVariant.variant_text`. Not
 
 Distractors are `base_text` values from other items at the same level, Fisher-Yates shuffled. This type can be disabled via `VITE_FEATURE_CUED_RECALL=false`.
 
+### `meaning_recall`
+
+**Skill:** `meaning_recall`
+
+**Direction:** Indonesian word → type the translation
+
+**Stage usage:** `anchoring` (25% of rotation), `retrieving` (alongside `cloze_mcq` and `typed_recall`), `productive`/`maintenance` rotation.
+
+**Structure:**
+```ts
+{
+  exerciseType: 'meaning_recall',
+  skillType: 'meaning_recall',
+  // correct answer = primary meaning in userLanguage; all meanings in that language accepted as variants
+}
+```
+
+Graded against all `ItemMeaning` rows for the user's language. The primary meaning is canonical; others are accepted variants. Uses the same fuzzy matching as `typed_recall`.
+
+---
+
+### `cloze_mcq`
+
+**Skill:** `recognition`
+
+**Direction:** Sentence with blank → choose the correct Indonesian word from 4 options
+
+**Stage usage:** `anchoring` (20% when a cloze context exists), `retrieving` (40% for words with context, 60% for sentence-type items), `productive`/`maintenance` rotation.
+
+**Dual use:** Generated at runtime for vocabulary (same-level item distractors), or authored as a grammar variant targeting confusable forms (e.g. `bukan`/`tidak`, `sudah`/`belum`, `yang` usage). Grammar-authored `cloze_mcq` variants are published via the content pipeline and surface at `retrieving`+ via `makePublishedExercise`.
+
+**Structure:**
+```ts
+{
+  exerciseType: 'cloze_mcq',
+  skillType: 'recognition',
+  clozeMcqData: {
+    sentence: string        // Indonesian sentence with ___ placeholder
+    translation: string | null
+    options: string[]       // 4 Indonesian options (1 correct + 3 distractors)
+    correctOptionId: string // the correct Indonesian word
+  }
+}
+```
+
+---
+
 ### `cloze`
 
 **Skill:** `form_recall`
 
-**Direction:** Complete the sentence by filling in the blank
+**Direction:** Complete the sentence by filling in the blank (typed)
 
-**Stage usage:** `retrieving` for sentence-type items (always), words with a `cloze`-type context (~50% at retrieving stage), `recall_sprint` mode.
+**Stage usage:** `retrieving` for sentence-type items (40%), words with a `cloze`-type context (~18% at retrieving stage), `recall_sprint` mode.
 
 **Structure:**
 ```ts
@@ -222,6 +271,8 @@ Wrong-answer feedback is handled by `ExerciseShell.tsx`, which renders a hardcod
 | `recognition_mcq` | — | Yes — cannot be disabled |
 | `typed_recall` | — | Yes — cannot be disabled |
 | `cloze` | — | Yes — cannot be disabled |
+| `cloze_mcq` | — | Yes — cannot be disabled |
+| `meaning_recall` | — | Yes — cannot be disabled |
 | `cued_recall` | `VITE_FEATURE_CUED_RECALL` | No |
 | `contrast_pair` | `VITE_FEATURE_CONTRAST_PAIR` | No |
 | `sentence_transformation` | `VITE_FEATURE_SENTENCE_TRANSFORMATION` | No |

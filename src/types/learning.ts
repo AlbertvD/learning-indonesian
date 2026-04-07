@@ -123,6 +123,7 @@ export type ExerciseType =
   | 'typed_recall'
   | 'meaning_recall'
   | 'cloze'
+  | 'cloze_mcq'
   | 'contrast_pair'
   | 'sentence_transformation'
   | 'constrained_translation'
@@ -142,6 +143,13 @@ export interface ExerciseItem {
     sentence: string
     targetWord: string
     translation: string | null
+  }
+  /** For cloze_mcq: sentence with blank and 4 options to pick from */
+  clozeMcqData?: {
+    sentence: string
+    translation: string | null
+    options: string[]
+    correctOptionId: string
   }
   /** For cued_recall: optional cue text and options */
   cuedRecallData?: {
