@@ -519,3 +519,21 @@ After each phase:
 1. `bun run test` — full suite
 2. `bun run build` — production build
 3. Manual smoke test of session flow
+
+---
+
+## Outstanding Content Gaps
+
+### Cloze coverage (20 of ~271 vocabulary words)
+
+`extract-cloze-items.ts` seeds `context_type: 'cloze'` contexts for 5 hand-picked words per lesson (20 total across lessons 1–3). The remaining ~250 vocabulary words have no cloze context and will never produce a cloze exercise.
+
+Note: every vocabulary word also has a `lesson_snippet` context (271 total) whose sole purpose is carrying `source_lesson_id` for lesson-scoped session filtering. The `source_text` on those records is just the bare word — a required-field placeholder. `ExerciseFeedback.tsx` previously displayed this as an example sentence but that component is no longer in use, so the placeholder content is harmless.
+
+**Path forward:** Extend `extract-cloze-items.ts` or run a linguist agent pass per lesson to generate cloze sentences for remaining vocabulary items.
+
+**Priority:** Low — vocabulary exercises (recognition_mcq, typed_recall, cued_recall) work fine without cloze contexts. This only affects exercise variety.
+
+### Approved-content gate (filterByApprovedContent)
+
+The `filterByApprovedContent` policy in `sessionPolicies.ts` is commented out (Task 3.6). All published content currently passes through regardless of `requires_approved_content` flag. Enable once content pipeline is stable and all exercise variants have been reviewed.
