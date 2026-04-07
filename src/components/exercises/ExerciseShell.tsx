@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Box, Button, Stack, Text } from '@mantine/core'
 import { IconX } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
@@ -12,9 +12,12 @@ import { Cloze } from './Cloze'
 import { ClozeMcq } from './ClozeMcq'
 import { MeaningRecall } from './MeaningRecall'
 import { SpeakingExercise } from './SpeakingExercise'
+import { FlagButton } from '@/components/exercises/FlagButton'
+import { contentFlagService } from '@/services/contentFlagService'
+import { useAuthStore } from '@/stores/authStore'
 import { processReview, type ReviewInput } from '@/lib/reviewHandler'
 import { logError } from '@/lib/logger'
-import type { SessionQueueItem } from '@/types/learning'
+import type { SessionQueueItem, ContentFlag } from '@/types/learning'
 import type { ReviewResult } from '@/lib/reviewHandler'
 import type { User } from '@supabase/supabase-js'
 
@@ -35,10 +38,20 @@ export function ExerciseShell({
   onAnswer,
   onContinueToNext,
 }: ExerciseShellProps) {
+  const { user: authUser, profile } = useAuthStore()
   const [isProcessing, setIsProcessing] = useState(false)
   const [waitingForContinue, setWaitingForContinue] = useState(false)
+  const [currentFlag, setCurrentFlag] = useState<ContentFlag | null>(null)
 
   const exerciseItem = currentItem.exerciseItem
+
+  useEffect(() => {
+    if (!profile?.isAdmin || !authUser) return
+    contentFlagService
+      .getFlagForItem(authUser.id, exerciseItem.learningItem.id, exerciseItem.exerciseType)
+      .then(flag => setCurrentFlag(flag))
+      .catch(() => {})
+  }, [profile?.isAdmin, authUser, exerciseItem.learningItem.id, exerciseItem.exerciseType])
 
   // Handle answer submission from exercise component.
   // The exercise component shows inline feedback for its delay window,
@@ -267,5 +280,19 @@ export function ExerciseShell({
     )
   }
 
-  return <>{exerciseNode}</>
+  if (!profile?.isAdmin || !authUser) return <>{exerciseNode}</>
+
+  return (
+    <Box style={{ position: 'relative' }}>
+      {exerciseNode}
+      <FlagButton
+        userId={authUser.id}
+        learningItemId={exerciseItem.learningItem.id}
+        exerciseType={exerciseItem.exerciseType}
+        exerciseVariantId={null}
+        existingFlag={currentFlag}
+        onFlagged={setCurrentFlag}
+      />
+    </Box>
+  )
 }
