@@ -129,6 +129,22 @@ export type ExerciseType =
   | 'constrained_translation'
   | 'speaking'
 
+export type FlagType = 'wrong_translation' | 'bad_sentence' | 'confusing' | 'sunset' | 'other'
+export type FlagStatus = 'open' | 'resolved'
+
+export interface ContentFlag {
+  id: string
+  userId: string
+  learningItemId: string
+  exerciseType: ExerciseType
+  exerciseVariantId: string | null
+  flagType: FlagType
+  comment: string | null
+  status: FlagStatus
+  createdAt: string
+  updatedAt: string
+}
+
 export interface ExerciseItem {
   learningItem: LearningItem
   meanings: ItemMeaning[]
