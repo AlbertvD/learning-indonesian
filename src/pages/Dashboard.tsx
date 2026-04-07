@@ -222,13 +222,13 @@ const GOAL_ACTION_CONFIG: Record<string, {
   recall_quality: {
     title: (T) => T.dashboard.improveRecall,
     focus: (T) => T.dashboard.focusRecall,
-    mode: 'recall_sprint',
+    mode: 'standard',
     variant: 'amber',
   },
   usable_vocabulary: {
     title: (T) => T.dashboard.improveVocab,
     focus: (T) => T.dashboard.focusVocab,
-    mode: 'push_to_productive',
+    mode: 'standard',
     variant: 'teal',
   },
   review_health: {
