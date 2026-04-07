@@ -90,7 +90,15 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   // 6. Build exercises and order
   const queue: SessionQueueItem[] = []
   for (const candidate of candidates) {
-    const exercises = selectExercises(candidate, input.meaningsByItem, input.contextsByItem, input.variantsByItem, input.exerciseVariantsByContext, input.userLanguage, eligibleItems)
+    const exercises = selectExercises(
+      candidate,
+      input.meaningsByItem,
+      input.contextsByItem,
+      input.variantsByItem,
+      input.exerciseVariantsByContext,
+      input.userLanguage,
+      eligibleItems,
+    )
     for (const exercise of exercises) {
       queue.push({
         exerciseItem: exercise,
@@ -426,7 +434,7 @@ function makeCuedRecall(
     [distractors[i], distractors[j]] = [distractors[j], distractors[i]]
   }
 
-  const options = [item.base_text, ...distractors.slice(0, 3)].sort(() => Math.random() - 0.5)
+  const options = shuffle([item.base_text, ...distractors.slice(0, 3)])
 
   return {
     learningItem: item,
@@ -463,7 +471,7 @@ function makeClozeMcq(
     [distractors[i], distractors[j]] = [distractors[j], distractors[i]]
   }
 
-  const options = [item.base_text, ...distractors.slice(0, 3)].sort(() => Math.random() - 0.5)
+  const options = shuffle([item.base_text, ...distractors.slice(0, 3)])
 
   return {
     learningItem: item,
@@ -609,7 +617,7 @@ function orderQueue(queue: SessionQueueItem[]): SessionQueueItem[] {
   ordered.push(...leadRecognition)
 
   // Preserve the relative order of remaining items (due-date order is already set upstream)
-  // Interleave any remaining recognition items back into rest at random positions
+  // Append remaining recognition items followed by the rest in their original order
   const remaining = [...recognition, ...rest]
   ordered.push(...remaining)
 
