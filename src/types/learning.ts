@@ -121,6 +121,7 @@ export type ExerciseType =
   | 'recognition_mcq'
   | 'cued_recall'
   | 'typed_recall'
+  | 'meaning_recall'
   | 'cloze'
   | 'contrast_pair'
   | 'sentence_transformation'

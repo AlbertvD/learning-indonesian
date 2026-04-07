@@ -304,22 +304,35 @@ function selectExercises(
   // Determine which exercises are appropriate for this stage
   if (stage === 'new' || stage === 'anchoring') {
     // New items: always start with forward recognition (Indonesian → translation).
-    // Anchoring items: mix in cued_recall (translation → pick Indonesian) ~35% of
-    // the time so the reverse direction gets tested before the item graduates.
-    if (stage === 'anchoring' && Math.random() < 0.35) {
-      exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems))
+    // Anchoring items: rotate across three formats to test both directions before graduation:
+    //   45% recognition_mcq (Indonesian → pick translation)
+    //   30% cued_recall (translation → pick Indonesian)
+    //   25% meaning_recall (Indonesian → type translation)
+    if (stage === 'anchoring') {
+      const roll = Math.random()
+      if (roll < 0.30) {
+        exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems))
+      } else if (roll < 0.55) {
+        exercises.push(makeMeaningRecall(item, meanings, contexts, variants))
+      } else {
+        exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
+      }
     } else {
       exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
     }
   } else if (stage === 'retrieving') {
     if (isSentenceType) {
       exercises.push(makeClozeExercise(item, meanings, contexts, variants))
-    } else if (hasAnchorContext && Math.random() > 0.5) {
-      // Word items with a context sentence: alternate between cloze and typed recall
-      // to vary the recall surface without changing the skill being scored.
-      exercises.push(makeClozeExercise(item, meanings, contexts, variants))
     } else {
-      exercises.push(makeTypedRecall(item, meanings, contexts, variants))
+      // Rotate across three recall formats
+      const roll = Math.random()
+      if (roll < 0.35) {
+        exercises.push(makeMeaningRecall(item, meanings, contexts, variants))
+      } else if (roll < 0.65 && hasAnchorContext) {
+        exercises.push(makeClozeExercise(item, meanings, contexts, variants))
+      } else {
+        exercises.push(makeTypedRecall(item, meanings, contexts, variants))
+      }
     }
   } else {
     // productive / maintenance: rotate across all available exercise types.
@@ -414,6 +427,22 @@ function makeTypedRecall(
     answerVariants: variants,
     skillType: 'form_recall',
     exerciseType: 'typed_recall',
+  }
+}
+
+function makeMeaningRecall(
+  item: LearningItem,
+  meanings: ItemMeaning[],
+  contexts: ItemContext[],
+  variants: ItemAnswerVariant[],
+): ExerciseItem {
+  return {
+    learningItem: item,
+    meanings,
+    contexts,
+    answerVariants: variants,
+    skillType: 'meaning_recall',
+    exerciseType: 'meaning_recall',
   }
 }
 

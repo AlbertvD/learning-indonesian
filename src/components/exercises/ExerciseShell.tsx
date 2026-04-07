@@ -9,6 +9,7 @@ import { SentenceTransformationExercise } from './SentenceTransformationExercise
 import { ConstrainedTranslationExercise } from './ConstrainedTranslationExercise'
 import { TypedRecall } from './TypedRecall'
 import { Cloze } from './Cloze'
+import { MeaningRecall } from './MeaningRecall'
 import { SpeakingExercise } from './SpeakingExercise'
 import { processReview, type ReviewInput } from '@/lib/reviewHandler'
 import { logError } from '@/lib/logger'
@@ -158,6 +159,18 @@ export function ExerciseShell({
     case 'typed_recall':
       return (
         <TypedRecall
+          key={`${currentItem.exerciseItem.learningItem.id}-${exerciseItem.exerciseType}`}
+          exerciseItem={exerciseItem}
+          userLanguage={userLanguage}
+          onAnswer={(wasCorrect, isFuzzy, latencyMs, rawResponse) => {
+            handleAnswerFromExercise(wasCorrect, isFuzzy, latencyMs, rawResponse)
+          }}
+        />
+      )
+
+    case 'meaning_recall':
+      return (
+        <MeaningRecall
           key={`${currentItem.exerciseItem.learningItem.id}-${exerciseItem.exerciseType}`}
           exerciseItem={exerciseItem}
           userLanguage={userLanguage}
