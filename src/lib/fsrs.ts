@@ -18,6 +18,12 @@ import { createEmptyCard, fsrs, generatorParameters, Rating, type Card, type Gra
 const languageLearningParams: FSRSParameters = {
   ...generatorParameters(),
   request_retention: 0.85, // More frequent reviews than 0.9 default
+  // Disable short-term learning steps (1 min, 10 min) — users study once or
+  // twice a day, not every 10 minutes. Without this, first-reviewed items get
+  // next_due_at = 10 minutes, become permanently overdue, and clog every session.
+  // With enable_short_term: false, all cards schedule at day-level intervals
+  // from the very first review (matching the "First review: 1 day" design intent).
+  enable_short_term: false,
   // Weights control how stability and difficulty evolve
   // These are tuned to make stability growth faster for language learners
   w: [
