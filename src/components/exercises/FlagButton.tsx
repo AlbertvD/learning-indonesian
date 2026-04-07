@@ -81,7 +81,7 @@ export function FlagButton({
   }
 
   return (
-    <Popover opened={opened} onChange={setOpened} position="top-end" withArrow shadow="md" width={280}>
+    <Popover opened={opened} onChange={setOpened} position="top-end" withArrow shadow="md" width={280} closeOnClickOutside={false} trapFocus>
       <Popover.Target>
         <ActionIcon
           variant="subtle"
