@@ -265,7 +265,7 @@ export function Session() {
     setCurrentIndex(i => i + 1)
   }
 
-  // Fetch goal state before session ends
+  // Fetch goal state before session ends (captured just before the last exercise)
   useEffect(() => {
     if (!user || currentIndex < queue.length) return
 
@@ -286,43 +286,43 @@ export function Session() {
     fetchBeforeGoals()
   }, [user, currentIndex, queue.length])
 
-  // Handle session completion
-  const handleSessionComplete = async () => {
-    if (!sessionId || !user) return
+  const sessionEndedRef = useRef(false)
 
-    try {
-      // End the session first
-      await endSession(sessionId)
+  // End session and compute goal impact automatically when all exercises are done.
+  // The summary screen stays visible until the user explicitly navigates away.
+  useEffect(() => {
+    if (!user || !sessionId || currentIndex < queue.length || queue.length === 0) return
+    if (sessionEndedRef.current) return
+    sessionEndedRef.current = true
 
-      // Fetch after goal state and compute impact messages
+    const finishSession = async () => {
       try {
-        const progress = await goalService.getGoalProgress(user.id)
-        const afterGoals = progress.state === 'timezone_required' ? null : progress.weeklyGoals
-        const beforeGoals = beforeGoalsRef.current
+        await endSession(sessionId)
 
-        const messages = await sessionSummaryService.computeSessionImpactMessages(
-          user.id,
-          sessionId,
-          beforeGoals,
-          afterGoals
-        )
-        setGoalImpactMessages(messages)
+        try {
+          const progress = await goalService.getGoalProgress(user.id)
+          const afterGoals = progress.state === 'timezone_required' ? null : progress.weeklyGoals
+          const messages = await sessionSummaryService.computeSessionImpactMessages(
+            user.id,
+            sessionId,
+            beforeGoalsRef.current,
+            afterGoals
+          )
+          setGoalImpactMessages(messages)
+        } catch (err) {
+          console.error('[Session] Failed to compute goal impact:', err)
+        }
       } catch (err) {
-        console.error('[Session] Failed to compute goal impact:', err)
-        // Don't block navigation if goal computation fails
+        logError({ page: 'session', action: 'complete', error: err })
+        const t = translations[profile?.language ?? 'en']
+        notifications.show({ color: 'red', title: t.common.error, message: t.common.somethingWentWrong })
       }
-
-      // Navigate home after a short delay to allow messages to display
-      setTimeout(() => {
-        navigate('/')
-      }, 500)
-    } catch (err) {
-      logError({ page: 'session', action: 'complete', error: err })
-      const t = translations[profile?.language ?? 'en']
-      notifications.show({ color: 'red', title: t.common.error, message: t.common.somethingWentWrong })
-      navigate('/')
     }
-  }
+
+    finishSession()
+  }, [user, sessionId, currentIndex, queue.length, profile?.language])
+
+  const handleNavigateHome = () => navigate('/')
 
   // Render states
   if (loading) {
@@ -356,9 +356,9 @@ export function Session() {
     )
   }
 
-  // Session is complete
+  // Session is complete — stay on summary until user navigates away
   if (currentIndex >= queue.length) {
-    return <SessionSummary results={results} goalImpactMessages={goalImpactMessages ?? undefined} onComplete={handleSessionComplete} />
+    return <SessionSummary results={results} goalImpactMessages={goalImpactMessages ?? undefined} onComplete={handleNavigateHome} />
   }
 
   // Show exercise

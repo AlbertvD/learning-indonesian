@@ -109,7 +109,7 @@ export function SessionSummary({ results, goalImpactMessages, onComplete }: Sess
           )}
 
           <Button onClick={onComplete} size="lg" fullWidth>
-            Continue
+            Terug naar dashboard
           </Button>
         </Stack>
       </Box>
