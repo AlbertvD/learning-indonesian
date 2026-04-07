@@ -85,6 +85,12 @@ seed-sentences: ## Seed sentence/cloze learning items (requires SUPABASE_SERVICE
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
 	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/extract-cloze-items.ts
 
+.PHONY: seed-cloze-contexts
+seed-cloze-contexts: ## Seed cloze contexts from staging (requires SUPABASE_SERVICE_KEY and LESSON=<n>)
+	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
+	@test -n "$(LESSON)" || { echo "Error: LESSON=<number> is required."; exit 1; }
+	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-cloze-contexts.ts $(LESSON)
+
 .PHONY: seed-all
 seed-all: seed-lessons seed-podcasts seed-learning-items seed-sentences ## Seed all non-audio content (requires SUPABASE_SERVICE_KEY)
 
