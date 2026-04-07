@@ -1,6 +1,6 @@
 # FSRS Simplification Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Status:** Implemented 2026-04-07. Task 1 (repair-stability script) was skipped — data heals naturally as FSRS runs correctly. Tasks 2–7 completed; all 201 tests pass.
 
 **Goal:** Replace `sessionEngine.ts` with a simple FSRS-driven due-queue, removing the anchoring-priority logic that caused stability to converge toward zero.
 

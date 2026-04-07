@@ -1,7 +1,7 @@
 # FSRS Simplification: Remove Session Engine, Trust the Scheduler
 
 **Date:** 2026-04-07
-**Status:** Proposed
+**Status:** Implemented (2026-04-07)
 **Depends On:** Retention-First V2 (`2026-03-30`), FSRS Goal System (`2026-04-02`), Session Refactor (`2026-04-02`)
 
 ---
