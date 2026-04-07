@@ -385,6 +385,17 @@ export const nl = {
       example: 'Voorbeeld:',
       continue: 'Doorgaan',
     },
+    summary: {
+      title: 'Sessie afgerond!',
+      subtitle: 'Goed gedaan met je oefensessie.',
+      correct: 'Correct',
+      toReview: 'Herhalen',
+      accuracy: 'Nauwkeurigheid',
+      excellent: 'Uitstekend',
+      good: 'Goed',
+      keepPracticing: 'Blijf oefenen',
+      backToDashboard: 'Terug naar dashboard',
+    },
   },
 }
 
@@ -767,6 +778,17 @@ export const en: typeof nl = {
       theWord: 'The word:',
       example: 'Example:',
       continue: 'Continue',
+    },
+    summary: {
+      title: 'Session Complete!',
+      subtitle: 'Great job on your practice session.',
+      correct: 'Correct',
+      toReview: 'To review',
+      accuracy: 'Accuracy',
+      excellent: 'Excellent',
+      good: 'Good',
+      keepPracticing: 'Keep practicing',
+      backToDashboard: 'Back to dashboard',
     },
   },
 }

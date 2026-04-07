@@ -31,7 +31,7 @@ describe('Goal System Integration', () => {
         { id: '2', goal_set_id: '1', goal_type: 'recall_quality', status: 'on_track', current_value_numeric: 72, target_value_numeric: 70 } as WeeklyGoal,
       ]
 
-      const changes = sessionSummaryService.getWeeklyImpactChanges(beforeGoals, afterGoals)
+      const changes = sessionSummaryService.getWeeklyImpactChanges(beforeGoals, afterGoals, 'en')
 
       expect(changes.length).toBe(2)
       expect(changes).toContain('🎉 Study consistency goal achieved!')
@@ -54,7 +54,7 @@ describe('Goal System Integration', () => {
           { id: '1', goal_set_id: '1', goal_type: 'consistency', status: scenario.after as any } as WeeklyGoal,
         ]
 
-        const changes = sessionSummaryService.getWeeklyImpactChanges(before, after)
+        const changes = sessionSummaryService.getWeeklyImpactChanges(before, after, 'en')
         expect(changes.some(msg => msg.includes(scenario.expectedMessage))).toBe(true)
       }
     })
@@ -88,7 +88,7 @@ describe('Goal System Integration', () => {
   })
 
   describe('Goal label formatting', () => {
-    it('provides consistent goal labels for all goal types', () => {
+    it('provides consistent English goal labels for all goal types', () => {
       const goalTypes = ['consistency', 'recall_quality', 'usable_vocabulary', 'review_health']
       const labels: Record<string, string> = {
         consistency: 'Study consistency',
@@ -97,9 +97,12 @@ describe('Goal System Integration', () => {
         review_health: 'Review backlog'
       }
 
+      // Verify labels appear in English goal achievement messages
       for (const goalType of goalTypes) {
-        const label = sessionSummaryService.getGoalLabel(goalType)
-        expect(label).toBe(labels[goalType])
+        const before = [{ id: '1', goal_set_id: '1', goal_type: goalType, status: 'on_track' }] as WeeklyGoal[]
+        const after = [{ id: '1', goal_set_id: '1', goal_type: goalType, status: 'achieved' }] as WeeklyGoal[]
+        const changes = sessionSummaryService.getWeeklyImpactChanges(before, after, 'en')
+        expect(changes[0]).toContain(labels[goalType])
       }
     })
   })
@@ -118,7 +121,7 @@ describe('Goal System Integration', () => {
         { id: '1', goal_set_id: '1', goal_type: 'consistency', status: 'on_track', current_value_numeric: 6, target_value_numeric: 7 } as WeeklyGoal,
       ]
 
-      const changes = sessionSummaryService.getWeeklyImpactChanges(beforeGoals, afterGoals)
+      const changes = sessionSummaryService.getWeeklyImpactChanges(beforeGoals, afterGoals, 'en')
       expect(changes).toEqual([]) // No status change = no message
     })
 
@@ -130,7 +133,7 @@ describe('Goal System Integration', () => {
         { id: '1', goal_set_id: '1', goal_type: 'review_health', status: 'on_track', current_value_numeric: 18, target_value_numeric: 20 } as WeeklyGoal,
       ]
 
-      const changes = sessionSummaryService.getWeeklyImpactChanges(beforeGoals, afterGoals)
+      const changes = sessionSummaryService.getWeeklyImpactChanges(beforeGoals, afterGoals, 'en')
       expect(changes).toContain('Review backlog is back on track')
     })
   })

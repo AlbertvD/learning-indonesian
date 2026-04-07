@@ -306,7 +306,8 @@ export function Session() {
             user.id,
             sessionId,
             beforeGoalsRef.current,
-            afterGoals
+            afterGoals,
+            (profile?.language ?? 'nl') as 'en' | 'nl'
           )
           setGoalImpactMessages(messages)
         } catch (err) {
@@ -358,7 +359,7 @@ export function Session() {
 
   // Session is complete — stay on summary until user navigates away
   if (currentIndex >= queue.length) {
-    return <SessionSummary results={results} goalImpactMessages={goalImpactMessages ?? undefined} onComplete={handleNavigateHome} />
+    return <SessionSummary results={results} goalImpactMessages={goalImpactMessages ?? undefined} userLanguage={(profile?.language ?? 'nl') as 'en' | 'nl'} onComplete={handleNavigateHome} />
   }
 
   // Show exercise

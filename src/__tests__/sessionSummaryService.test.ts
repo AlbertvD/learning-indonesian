@@ -3,22 +3,9 @@ import { sessionSummaryService } from '@/services/sessionSummaryService'
 import type { WeeklyGoal } from '@/types/learning'
 
 describe('sessionSummaryService', () => {
-  describe('getGoalLabel', () => {
-    it('returns human-readable labels for goal types', () => {
-      expect(sessionSummaryService.getGoalLabel('consistency')).toBe('Study consistency')
-      expect(sessionSummaryService.getGoalLabel('recall_quality')).toBe('Recall quality')
-      expect(sessionSummaryService.getGoalLabel('usable_vocabulary')).toBe('Vocabulary growth')
-      expect(sessionSummaryService.getGoalLabel('review_health')).toBe('Review backlog')
-    })
-
-    it('returns the goal type as fallback for unknown types', () => {
-      expect(sessionSummaryService.getGoalLabel('unknown_goal')).toBe('unknown_goal')
-    })
-  })
-
-  describe('getWeeklyImpactChanges', () => {
+  describe('getWeeklyImpactChanges (English)', () => {
     it('returns empty array when before/after goals are null', () => {
-      const changes = sessionSummaryService.getWeeklyImpactChanges(null, null)
+      const changes = sessionSummaryService.getWeeklyImpactChanges(null, null, 'en')
       expect(changes).toEqual([])
     })
 
@@ -28,7 +15,7 @@ describe('sessionSummaryService', () => {
         { id: '2', goal_set_id: '1', goal_type: 'recall_quality', status: 'on_track' } as WeeklyGoal
       ]
 
-      const changes = sessionSummaryService.getWeeklyImpactChanges(goals, goals)
+      const changes = sessionSummaryService.getWeeklyImpactChanges(goals, goals, 'en')
       expect(changes).toEqual([])
     })
 
@@ -40,7 +27,7 @@ describe('sessionSummaryService', () => {
         { id: '1', goal_set_id: '1', goal_type: 'consistency', status: 'achieved' } as WeeklyGoal
       ]
 
-      const changes = sessionSummaryService.getWeeklyImpactChanges(before, after)
+      const changes = sessionSummaryService.getWeeklyImpactChanges(before, after, 'en')
       expect(changes).toContain('🎉 Study consistency goal achieved!')
     })
 
@@ -52,7 +39,7 @@ describe('sessionSummaryService', () => {
         { id: '1', goal_set_id: '1', goal_type: 'recall_quality', status: 'on_track' } as WeeklyGoal
       ]
 
-      const changes = sessionSummaryService.getWeeklyImpactChanges(before, after)
+      const changes = sessionSummaryService.getWeeklyImpactChanges(before, after, 'en')
       expect(changes).toContain('Recall quality is back on track')
     })
 
@@ -64,7 +51,7 @@ describe('sessionSummaryService', () => {
         { id: '1', goal_set_id: '1', goal_type: 'usable_vocabulary', status: 'at_risk' } as WeeklyGoal
       ]
 
-      const changes = sessionSummaryService.getWeeklyImpactChanges(before, after)
+      const changes = sessionSummaryService.getWeeklyImpactChanges(before, after, 'en')
       expect(changes).toContain('Vocabulary growth is now at risk')
     })
 
@@ -76,7 +63,7 @@ describe('sessionSummaryService', () => {
         { id: '1', goal_set_id: '1', goal_type: 'review_health', status: 'missed' } as WeeklyGoal
       ]
 
-      const changes = sessionSummaryService.getWeeklyImpactChanges(before, after)
+      const changes = sessionSummaryService.getWeeklyImpactChanges(before, after, 'en')
       expect(changes).toContain('Review backlog goal missed for the week')
     })
 
@@ -90,10 +77,24 @@ describe('sessionSummaryService', () => {
         { id: '2', goal_set_id: '1', goal_type: 'recall_quality', status: 'on_track' } as WeeklyGoal
       ]
 
-      const changes = sessionSummaryService.getWeeklyImpactChanges(before, after)
+      const changes = sessionSummaryService.getWeeklyImpactChanges(before, after, 'en')
       expect(changes).toContain('🎉 Study consistency goal achieved!')
       expect(changes).toContain('Recall quality is back on track')
       expect(changes).toHaveLength(2)
+    })
+  })
+
+  describe('getWeeklyImpactChanges (Dutch)', () => {
+    it('detects goal achievement in Dutch', () => {
+      const before: WeeklyGoal[] = [
+        { id: '1', goal_set_id: '1', goal_type: 'consistency', status: 'on_track' } as WeeklyGoal
+      ]
+      const after: WeeklyGoal[] = [
+        { id: '1', goal_set_id: '1', goal_type: 'consistency', status: 'achieved' } as WeeklyGoal
+      ]
+
+      const changes = sessionSummaryService.getWeeklyImpactChanges(before, after, 'nl')
+      expect(changes).toContain('🎉 Studieconsistentie doel behaald!')
     })
   })
 
@@ -122,7 +123,8 @@ describe('sessionSummaryService', () => {
         'user-1',
         'session-1',
         before,
-        after
+        after,
+        'en'
       )
 
       expect(messages.sessionLocalFacts).toBeDefined()

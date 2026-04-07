@@ -16,6 +16,43 @@ export interface SessionImpactMessages {
   weeklyImpactChanges: string[]
 }
 
+type Lang = 'en' | 'nl'
+
+const msg = {
+  en: {
+    recallCompleted: (correct: number, total: number) => `You completed ${correct} of ${total} recall prompts`,
+    recognitionPracticed: (count: number) => `You practiced ${count} recognition question${count > 1 ? 's' : ''}`,
+    becameProductive: (count: number) => `${count} item${count > 1 ? 's' : ''} became productive`,
+    reachedMaintenance: (count: number) => `${count} item${count > 1 ? 's' : ''} reached maintenance`,
+    goalAchieved: (label: string) => `🎉 ${label} goal achieved!`,
+    goalBackOnTrack: (label: string) => `${label} is back on track`,
+    goalAtRisk: (label: string) => `${label} is now at risk`,
+    goalMissed: (label: string) => `${label} goal missed for the week`,
+    goalLabels: {
+      consistency: 'Study consistency',
+      recall_quality: 'Recall quality',
+      usable_vocabulary: 'Vocabulary growth',
+      review_health: 'Review backlog',
+    } as Record<string, string>,
+  },
+  nl: {
+    recallCompleted: (correct: number, total: number) => `Je voltooide ${correct} van ${total} herhaalprompts`,
+    recognitionPracticed: (count: number) => `Je oefende ${count} herkenningsvragen`,
+    becameProductive: (count: number) => `${count} item${count > 1 ? 's' : ''} werd productief`,
+    reachedMaintenance: (count: number) => `${count} item${count > 1 ? 's' : ''} bereikte onderhoud`,
+    goalAchieved: (label: string) => `🎉 ${label} doel behaald!`,
+    goalBackOnTrack: (label: string) => `${label} is weer op schema`,
+    goalAtRisk: (label: string) => `${label} loopt risico`,
+    goalMissed: (label: string) => `${label} doel gemist deze week`,
+    goalLabels: {
+      consistency: 'Studieconsistentie',
+      recall_quality: 'Herinnerkwaliteit',
+      usable_vocabulary: 'Woordenschatgroei',
+      review_health: 'Herhalingsachterstand',
+    } as Record<string, string>,
+  },
+}
+
 export const sessionSummaryService = {
   /**
    * Compute goal impact messages for a completed session.
@@ -28,10 +65,11 @@ export const sessionSummaryService = {
     userId: string,
     sessionId: string,
     beforeGoals: WeeklyGoal[] | null,
-    afterGoals: WeeklyGoal[] | null
+    afterGoals: WeeklyGoal[] | null,
+    language: Lang = 'nl'
   ): Promise<SessionImpactMessages> {
-    const sessionLocalFacts = await this.getSessionLocalFacts(userId, sessionId)
-    const weeklyImpactChanges = this.getWeeklyImpactChanges(beforeGoals, afterGoals)
+    const sessionLocalFacts = await this.getSessionLocalFacts(userId, sessionId, language)
+    const weeklyImpactChanges = this.getWeeklyImpactChanges(beforeGoals, afterGoals, language)
 
     return {
       sessionLocalFacts,
@@ -43,8 +81,9 @@ export const sessionSummaryService = {
    * Get session-local fact messages from review events and stage transitions.
    * These facts are specific to what happened in this session.
    */
-  async getSessionLocalFacts(userId: string, sessionId: string): Promise<string[]> {
+  async getSessionLocalFacts(userId: string, sessionId: string, language: Lang = 'nl'): Promise<string[]> {
     const facts: string[] = []
+    const t = msg[language]
 
     try {
       // Fetch review events from this session
@@ -56,17 +95,15 @@ export const sessionSummaryService = {
         .eq('session_id', sessionId)
 
       if (reviews && reviews.length > 0) {
-        // Count recalls completed
         const recallCount = reviews.filter(r => r.skill_type === 'form_recall').length
         if (recallCount > 0) {
           const recallCorrect = reviews.filter(r => r.skill_type === 'form_recall' && r.was_correct).length
-          facts.push(`You completed ${recallCorrect} of ${recallCount} recall prompts`)
+          facts.push(t.recallCompleted(recallCorrect, recallCount))
         }
 
-        // Count recognition completed
         const recognitionCount = reviews.filter(r => r.skill_type === 'recognition').length
         if (recognitionCount > 0) {
-          facts.push(`You practiced ${recognitionCount} recognition questions`)
+          facts.push(t.recognitionPracticed(recognitionCount))
         }
       }
 
@@ -82,12 +119,8 @@ export const sessionSummaryService = {
         const productiveCount = stageEvents.filter(e => e.to_stage === 'productive').length
         const maintenanceCount = stageEvents.filter(e => e.to_stage === 'maintenance').length
 
-        if (productiveCount > 0) {
-          facts.push(`${productiveCount} item${productiveCount > 1 ? 's' : ''} became productive`)
-        }
-        if (maintenanceCount > 0) {
-          facts.push(`${maintenanceCount} item${maintenanceCount > 1 ? 's' : ''} reached maintenance`)
-        }
+        if (productiveCount > 0) facts.push(t.becameProductive(productiveCount))
+        if (maintenanceCount > 0) facts.push(t.reachedMaintenance(maintenanceCount))
       }
     } catch (err) {
       logError({ page: 'sessionSummaryService', action: 'fetchSessionFacts', error: err })
@@ -100,14 +133,14 @@ export const sessionSummaryService = {
    * Get weekly goal impact messages by comparing before/after goal state.
    * These messages show progress toward weekly targets.
    */
-  getWeeklyImpactChanges(beforeGoals: WeeklyGoal[] | null, afterGoals: WeeklyGoal[] | null): string[] {
+  getWeeklyImpactChanges(beforeGoals: WeeklyGoal[] | null, afterGoals: WeeklyGoal[] | null, language: Lang = 'nl'): string[] {
     const messages: string[] = []
+    const t = msg[language]
 
     if (!beforeGoals || !afterGoals || beforeGoals.length === 0 || afterGoals.length === 0) {
       return messages
     }
 
-    // Compare each goal type
     const goalTypes = ['consistency', 'recall_quality', 'usable_vocabulary', 'review_health']
 
     for (const goalType of goalTypes) {
@@ -118,34 +151,21 @@ export const sessionSummaryService = {
 
       const beforeStatus = beforeGoal.status
       const afterStatus = afterGoal.status
+      const label = t.goalLabels[goalType] ?? goalType
 
-      // Message 1: Status transitions (e.g., at_risk → on_track)
       if (beforeStatus !== afterStatus) {
         if (afterStatus === 'achieved') {
-          messages.push(`🎉 ${this.getGoalLabel(goalType)} goal achieved!`)
+          messages.push(t.goalAchieved(label))
         } else if (afterStatus === 'on_track' && beforeStatus === 'at_risk') {
-          messages.push(`${this.getGoalLabel(goalType)} is back on track`)
+          messages.push(t.goalBackOnTrack(label))
         } else if (afterStatus === 'at_risk') {
-          messages.push(`${this.getGoalLabel(goalType)} is now at risk`)
+          messages.push(t.goalAtRisk(label))
         } else if (afterStatus === 'missed') {
-          messages.push(`${this.getGoalLabel(goalType)} goal missed for the week`)
+          messages.push(t.goalMissed(label))
         }
       }
     }
 
     return messages
   },
-
-  /**
-   * User-friendly label for a goal type.
-   */
-  getGoalLabel(goalType: string): string {
-    const labels: Record<string, string> = {
-      consistency: 'Study consistency',
-      recall_quality: 'Recall quality',
-      usable_vocabulary: 'Vocabulary growth',
-      review_health: 'Review backlog'
-    }
-    return labels[goalType] ?? goalType
-  }
 }

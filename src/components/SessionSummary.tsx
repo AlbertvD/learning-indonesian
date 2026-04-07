@@ -3,6 +3,7 @@ import { Box, Container, Stack, Text, Button, Group, Badge, ThemeIcon, rem } fro
 import { IconCheck, IconTrendingUp } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
 import { analyticsService } from '@/services/analyticsService'
+import { translations } from '@/lib/i18n'
 import classes from './SessionSummary.module.css'
 
 interface SessionSummaryProps {
@@ -14,12 +15,14 @@ interface SessionSummaryProps {
     sessionLocalFacts: string[]
     weeklyImpactChanges: string[]
   }
+  userLanguage?: 'en' | 'nl'
   onComplete: () => void
 }
 
-export function SessionSummary({ results, goalImpactMessages, onComplete }: SessionSummaryProps) {
+export function SessionSummary({ results, goalImpactMessages, userLanguage = 'nl', onComplete }: SessionSummaryProps) {
   const user = useAuthStore((state) => state.user)
   const percentage = Math.round((results.correct / results.total) * 100)
+  const t = translations[userLanguage].session.summary
 
   // Track session summary viewed event
   useEffect(() => {
@@ -37,10 +40,10 @@ export function SessionSummary({ results, goalImpactMessages, onComplete }: Sess
 
           <div>
             <Text size="lg" fw={500}>
-              Session Complete!
+              {t.title}
             </Text>
             <Text c="dimmed" mt="xs">
-              Great job on your practice session.
+              {t.subtitle}
             </Text>
           </div>
 
@@ -50,7 +53,7 @@ export function SessionSummary({ results, goalImpactMessages, onComplete }: Sess
                 {results.correct}
               </Text>
               <Text size="sm" c="dimmed">
-                Correct
+                {t.correct}
               </Text>
             </Box>
             <Box style={{ textAlign: 'center' }}>
@@ -58,7 +61,7 @@ export function SessionSummary({ results, goalImpactMessages, onComplete }: Sess
                 {results.total - results.correct}
               </Text>
               <Text size="sm" c="dimmed">
-                To review
+                {t.toReview}
               </Text>
             </Box>
             <Box style={{ textAlign: 'center' }}>
@@ -66,13 +69,13 @@ export function SessionSummary({ results, goalImpactMessages, onComplete }: Sess
                 {percentage}%
               </Text>
               <Text size="sm" c="dimmed">
-                Accuracy
+                {t.accuracy}
               </Text>
             </Box>
           </Group>
 
           <Badge size="lg" color={percentage >= 70 ? 'green' : percentage >= 50 ? 'yellow' : 'red'}>
-            {percentage >= 70 ? 'Excellent' : percentage >= 50 ? 'Good' : 'Keep practicing'}
+            {percentage >= 70 ? t.excellent : percentage >= 50 ? t.good : t.keepPracticing}
           </Badge>
 
           {/* Goal Impact Messages */}
@@ -109,7 +112,7 @@ export function SessionSummary({ results, goalImpactMessages, onComplete }: Sess
           )}
 
           <Button onClick={onComplete} size="lg" fullWidth>
-            Terug naar dashboard
+            {t.backToDashboard}
           </Button>
         </Stack>
       </Box>
