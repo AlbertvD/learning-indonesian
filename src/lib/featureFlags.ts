@@ -55,6 +55,7 @@ export function isExerciseTypeEnabled(exerciseType: string): boolean {
     case 'recognition_mcq':
     case 'typed_recall':
     case 'cloze':
+    case 'meaning_recall':
       return true
     default:
       return false

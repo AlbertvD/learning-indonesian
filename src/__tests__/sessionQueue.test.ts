@@ -214,3 +214,60 @@ describe('buildSessionQueue — session modes', () => {
     expect(() => buildSessionQueue(baseInput({ sessionMode: 'push_to_productive' as never }))).not.toThrow()
   })
 })
+
+describe('buildSessionQueue — skill-type targeting (FSRS contract)', () => {
+  it('due recognition skill produces a recognition_mcq exercise', () => {
+    const item = makeItem('i1')
+    const result = buildSessionQueue(baseInput({
+      allItems: [item],
+      meaningsByItem: { i1: [makeMeaning('i1')] },
+      itemStates: { i1: makeItemState('i1', 'anchoring') },
+      skillStates: { i1: [makeSkillState('i1', { skill_type: 'recognition' })] },
+    }))
+    expect(result).toHaveLength(1)
+    expect(result[0].exerciseItem.skillType).toBe('recognition')
+    expect(result[0].exerciseItem.exerciseType).toBe('recognition_mcq')
+  })
+
+  it('due meaning_recall skill produces a meaning_recall exercise', () => {
+    const item = makeItem('i1')
+    const result = buildSessionQueue(baseInput({
+      allItems: [item],
+      meaningsByItem: { i1: [makeMeaning('i1')] },
+      itemStates: { i1: makeItemState('i1', 'retrieving') },
+      skillStates: { i1: [makeSkillState('i1', { skill_type: 'meaning_recall' })] },
+    }))
+    expect(result).toHaveLength(1)
+    expect(result[0].exerciseItem.skillType).toBe('meaning_recall')
+  })
+
+  it('due form_recall skill produces a form_recall exercise', () => {
+    const item = makeItem('i1')
+    const result = buildSessionQueue(baseInput({
+      allItems: [item],
+      meaningsByItem: { i1: [makeMeaning('i1')] },
+      itemStates: { i1: makeItemState('i1', 'retrieving') },
+      skillStates: { i1: [makeSkillState('i1', { skill_type: 'form_recall' })] },
+    }))
+    expect(result).toHaveLength(1)
+    expect(result[0].exerciseItem.skillType).toBe('form_recall')
+  })
+
+  it('item with two due skills produces two queue entries — one per skill', () => {
+    const item = makeItem('i1')
+    const result = buildSessionQueue(baseInput({
+      allItems: [item],
+      meaningsByItem: { i1: [makeMeaning('i1')] },
+      itemStates: { i1: makeItemState('i1', 'retrieving') },
+      skillStates: { i1: [
+        makeSkillState('i1', { skill_type: 'recognition' }),
+        makeSkillState('i1', { skill_type: 'form_recall', id: 'skill-i1-form' }),
+      ]},
+      preferredSessionSize: 25,
+    }))
+    expect(result).toHaveLength(2)
+    const skillTypes = result.map(r => r.exerciseItem.skillType)
+    expect(skillTypes).toContain('recognition')
+    expect(skillTypes).toContain('form_recall')
+  })
+})

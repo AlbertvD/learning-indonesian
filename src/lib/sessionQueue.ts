@@ -35,6 +35,10 @@ interface CandidateItem {
   item: LearningItem
   state: LearnerItemState | null
   skills: LearnerSkillState[]
+  // Set for due items: the specific skill that triggered inclusion.
+  // selectExercises uses this to serve the matching exercise instead of randomising,
+  // so the due skill is always what gets reviewed.
+  targetSkillType?: string
 }
 
 export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] {
@@ -62,18 +66,22 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
       continue
     }
 
-    // Trust FSRS: only include if any skill is due
-    const isDue = skills.some(s => s.next_due_at && new Date(s.next_due_at) <= now)
-    if (isDue) dueItems.push({ item, state, skills })
+    // Trust FSRS: one candidate per due skill — ensures the due skill is actually reviewed.
+    // Grouping all due skills under one item (old behaviour) let selectExercises serve
+    // a non-due skill, leaving the due skill unreviewed and the item stuck.
+    const dueSkills = skills.filter(s => s.next_due_at && new Date(s.next_due_at) <= now)
+    for (const dueSkill of dueSkills) {
+      dueItems.push({ item, state, skills, targetSkillType: dueSkill.skill_type })
+    }
   }
 
-  // 3. Sort due items: most overdue first (smallest next_due_at timestamp)
+  // 3. Sort due items: most overdue first, using the specific due skill's next_due_at
   dueItems.sort((a, b) => {
-    const earliest = (c: CandidateItem) =>
-      Math.min(...c.skills
-        .filter(s => s.next_due_at && new Date(s.next_due_at) <= now)
-        .map(s => new Date(s.next_due_at!).getTime()))
-    return earliest(a) - earliest(b)
+    const dueTime = (c: CandidateItem) => {
+      const skill = c.skills.find(s => s.skill_type === c.targetSkillType)
+      return skill?.next_due_at ? new Date(skill.next_due_at).getTime() : Infinity
+    }
+    return dueTime(a) - dueTime(b)
   })
 
   // 4. Gate and cap new items
@@ -190,7 +198,7 @@ function selectExercises(
   userLanguage: 'en' | 'nl' = 'en',
   allItems: LearningItem[] = [],
 ): ExerciseItem[] {
-  const { item, state } = candidate
+  const { item, state, targetSkillType } = candidate
   const meanings = meaningsByItem[item.id] ?? []
   const contexts = contextsByItem[item.id] ?? []
   const variants = variantsByItem[item.id] ?? []
@@ -200,7 +208,28 @@ function selectExercises(
   const isSentenceType = item.item_type === 'sentence' || item.item_type === 'dialogue_chunk'
 
   // Whether the item has a cloze-eligible context: must be context_type 'cloze' specifically.
+
   const hasAnchorContext = contexts.some(c => c.context_type === 'cloze')
+
+  // If a specific skill is targeted (due items), serve the matching exercise directly.
+  // This is the FSRS contract: if the scheduler says skill X is due, we review skill X —
+  // not a randomly chosen skill that happens to share the same item.
+  if (targetSkillType) {
+    switch (targetSkillType) {
+      case 'recognition':
+        return [makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem)]
+      case 'meaning_recall':
+        return [makeMeaningRecall(item, meanings, contexts, variants)]
+      case 'form_recall':
+        if (hasAnchorContext && Math.random() < 0.5) {
+          return [makeClozeExercise(item, meanings, contexts, variants)]
+        }
+        return [makeTypedRecall(item, meanings, contexts, variants)]
+      default:
+        // Unknown skill type — fall through to stage-based selection
+        break
+    }
+  }
 
   // Determine which exercises are appropriate for this stage
   if (stage === 'new' || stage === 'anchoring') {
