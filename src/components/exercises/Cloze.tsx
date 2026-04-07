@@ -1,6 +1,6 @@
 // src/components/exercises/Cloze.tsx
 import { useState, useRef, useEffect } from 'react'
-import { Box, Text, TextInput, Stack, Badge, Button, Group } from '@mantine/core'
+import { Box, Text, Stack, Badge, Button, Group } from '@mantine/core'
 import { IconMessage2 } from '@tabler/icons-react'
 import { checkAnswer } from '@/lib/answerNormalization'
 import type { ExerciseItem } from '@/types/learning'
@@ -58,13 +58,11 @@ export function Cloze({ exerciseItem, onAnswer }: ClozeProps) {
       <Box ta="center" py="xl">
         <Text size="xl" fw={600} mb="lg" style={{ lineHeight: 1.6 }}>
           {parts[0]}
-          <TextInput
+          <input
             ref={inputRef}
-            component="span"
             value={value}
             onChange={(e) => setValue(e.currentTarget.value)}
             disabled={submitted}
-            variant="unstyled"
             className={`${classes.input} ${submitted ? (isCorrect ? classes.correct : classes.incorrect) : ''}`}
             placeholder="..."
             onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
@@ -72,14 +70,18 @@ export function Cloze({ exerciseItem, onAnswer }: ClozeProps) {
             autoCapitalize="off"
             autoCorrect="off"
             spellCheck={false}
-            style={{ 
-              display: 'inline-block', 
+            style={{
+              display: 'inline-block',
               width: `${Math.max(3, targetWord.length)}ch`,
+              background: 'transparent',
+              border: 'none',
               borderBottom: '2px solid var(--mantine-color-gray-4)',
+              outline: 'none',
               textAlign: 'center',
               margin: '0 8px',
               fontSize: 'inherit',
               fontWeight: 'inherit',
+              fontFamily: 'inherit',
               color: submitted ? (isCorrect ? 'var(--mantine-color-green-6)' : 'var(--mantine-color-red-6)') : 'inherit'
             }}
           />
