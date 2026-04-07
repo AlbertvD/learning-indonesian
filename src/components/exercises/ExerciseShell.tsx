@@ -54,8 +54,9 @@ export function ExerciseShell({
   }, [profile?.isAdmin, authUser, exerciseItem.learningItem.id, exerciseItem.exerciseType])
 
   // Handle answer submission from exercise component.
-  // The exercise component shows inline feedback for its delay window,
-  // then calls this. We persist the review and advance immediately.
+  // For wrong answers: immediately show the wrong-answer screen so the user
+  // sees the correct answer right away, while processReview runs in the background.
+  // For correct answers: advance immediately after processReview completes.
   const handleAnswerFromExercise = async (
     wasCorrect: boolean,
     isFuzzy: boolean,
@@ -65,6 +66,12 @@ export function ExerciseShell({
     if (isProcessing || !sessionId || !user) return
 
     setIsProcessing(true)
+
+    // Show wrong-answer screen immediately — don't wait for the network call.
+    // Doorgaan button stays disabled (isProcessing=true) until save completes.
+    if (!wasCorrect) {
+      setWaitingForContinue(true)
+    }
 
     try {
       const normalizedResponse = rawResponse ? rawResponse.toLowerCase().trim() : null
@@ -88,11 +95,8 @@ export function ExerciseShell({
 
       if (wasCorrect) {
         onContinueToNext()
-      } else {
-        // Wrong answer: show the Continue button so the user can absorb
-        // the correct answer before moving on.
-        setWaitingForContinue(true)
       }
+      // Wrong answer: waitingForContinue is already true; Doorgaan is now enabled.
     } catch (err) {
       logError({ page: 'exercise-shell', action: 'processAnswer', error: err })
       notifications.show({
@@ -101,10 +105,12 @@ export function ExerciseShell({
         message: 'Failed to process answer. Please try again.',
       })
       setIsProcessing(false)
+      setWaitingForContinue(false)
     }
   }
 
   const handleContinue = () => {
+    if (isProcessing) return
     setWaitingForContinue(false)
     onContinueToNext()
   }
@@ -273,7 +279,7 @@ export function ExerciseShell({
         </Box>
 
         {/* Continue */}
-        <Button onClick={handleContinue} size="lg" fullWidth variant="filled">
+        <Button onClick={handleContinue} size="lg" fullWidth variant="filled" loading={isProcessing}>
           Doorgaan
         </Button>
       </Stack>
