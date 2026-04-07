@@ -940,3 +940,34 @@ VALUES
   ('indonesian-lessons', 'indonesian-lessons', true),
   ('indonesian-podcasts', 'indonesian-podcasts', true)
 ON CONFLICT (id) DO NOTHING;
+
+-- Content flags: admin-only exercise review annotations
+CREATE TABLE IF NOT EXISTS indonesian.content_flags (
+  id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id             uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  learning_item_id    uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
+  exercise_type       text NOT NULL,
+  exercise_variant_id uuid REFERENCES indonesian.exercise_variants(id) ON DELETE SET NULL,
+  flag_type           text NOT NULL CHECK (flag_type IN ('wrong_translation', 'bad_sentence', 'confusing', 'sunset', 'other')),
+  comment             text,
+  status              text NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'resolved')),
+  created_at          timestamptz NOT NULL DEFAULT now(),
+  updated_at          timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(user_id, learning_item_id, exercise_type)
+);
+
+ALTER TABLE indonesian.content_flags ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies WHERE schemaname = 'indonesian' AND tablename = 'content_flags' AND policyname = 'content_flags_owner'
+  ) THEN
+    CREATE POLICY "content_flags_owner" ON indonesian.content_flags
+      FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+  END IF;
+END $$;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.content_flags TO authenticated;
+
+CREATE INDEX IF NOT EXISTS idx_content_flags_user_status
+  ON indonesian.content_flags(user_id, status);
