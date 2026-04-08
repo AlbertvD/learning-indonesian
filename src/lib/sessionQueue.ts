@@ -85,9 +85,12 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   })
 
   // 4. Gate and cap new items
+  // Lesson gate is skipped when the user explicitly selected a lesson — they chose to practice
+  // it, so blocking new items from that lesson would just produce an empty session.
+  // The gate only applies to the global cross-lesson queue where it prevents pacing issues.
   const gatedNew = sessionMode === 'backlog_clear'
     ? []
-    : (input.lessonOrder
+    : (input.lessonOrder && !input.lessonFilter
         ? applyLessonGate(newItems, eligibleItems, input.itemStates, input.contextsByItem, input.lessonOrder)
         : newItems
       ).slice(0, input.dailyNewItemsLimit)

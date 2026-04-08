@@ -209,6 +209,25 @@ describe('buildSessionQueue — session modes', () => {
     expect(ids).toContain('new1')
   })
 
+  it('lesson-filtered session bypasses lesson gate — user explicitly chose the lesson', () => {
+    const item = makeItem('new1')
+    // Simulate: item is new, lessonOrder present (gate would normally block it),
+    // but lessonFilter is set → gate is skipped
+    const result = buildSessionQueue(baseInput({
+      allItems: [item],
+      meaningsByItem: { new1: [makeMeaning('new1')] },
+      contextsByItem: {
+        new1: [{ id: 'ctx1', learning_item_id: 'new1', context_type: 'example_sentence',
+          source_text: 'test', translation_text: 'test', difficulty: null, topic_tag: null,
+          is_anchor_context: false, source_lesson_id: 'lesson-abc', source_section_id: null }],
+      },
+      lessonFilter: 'lesson-abc',
+      lessonOrder: { 'lesson-abc': 2 },
+      // No itemStates → stage 'new', would be blocked by gate in global session
+    }))
+    expect(result.length).toBeGreaterThan(0)
+  })
+
   it('unknown/removed modes fall back to standard without crashing', () => {
     expect(() => buildSessionQueue(baseInput({ sessionMode: 'recall_sprint' as never }))).not.toThrow()
     expect(() => buildSessionQueue(baseInput({ sessionMode: 'push_to_productive' as never }))).not.toThrow()
