@@ -98,12 +98,16 @@ export const learnerStateService = {
   },
 
   async getLapsingItems(userId: string): Promise<{ count: number }> {
+    // Only show items that are currently weak (stability < 2.0), not just historically troubled.
+    // lapse_count is cumulative and never decreases, so without the stability filter
+    // a recovered word would show as at-risk forever.
     const { data, error } = await supabase
       .schema('indonesian')
       .from('learner_skill_state')
       .select('learning_item_id')
       .eq('user_id', userId)
       .gte('lapse_count', 3)
+      .lt('stability', 2.0)
 
     if (error) throw error
     const unique = new Set(data.map((d: { learning_item_id: string }) => d.learning_item_id))
