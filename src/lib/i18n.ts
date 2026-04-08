@@ -106,8 +106,8 @@ export const nl = {
     newLabel: 'nieuw',
     recallLabel: 'herinneringsvragen',
     // Rescue card
-    rescueTitle: 'Red {count} woorden',
-    rescueSubtitle: 'Voor je ze vergeet — {count} woorden dreigen terug te vallen',
+    rescueTitle: '{count} zwakke woorden',
+    rescueSubtitle: 'Verschijnen automatisch in je volgende sessie',
     lapsesLabel: 'lapses',
   },
   profile: {
@@ -504,8 +504,8 @@ export const en: typeof nl = {
     newLabel: 'new',
     recallLabel: 'recall prompts',
     // Rescue card
-    rescueTitle: 'Rescue {count} words',
-    rescueSubtitle: 'Before you forget — {count} words at risk of falling back',
+    rescueTitle: '{count} weak words',
+    rescueSubtitle: 'Will appear automatically in your next session',
     lapsesLabel: 'lapses',
   },
   profile: {

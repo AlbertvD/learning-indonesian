@@ -380,7 +380,7 @@ function SecondaryCard({
 function RescueCard({ count, T }: { count: number; T: any }) {
   if (count === 0) return null
   return (
-    <Link to="/session?mode=backlog_clear" className={classes.rescueCard}>
+    <div className={classes.rescueCard}>
       <span className={classes.lapseBadge}>{count} {T.dashboard.lapsesLabel}</span>
       <div className={classes.cardLeft}>
         <div className={`${classes.cardIconBox} ${classes.cardIconDanger}`}>
@@ -391,11 +391,11 @@ function RescueCard({ count, T }: { count: number; T: any }) {
             {T.dashboard.rescueTitle.replace('{count}', `${count}`)}
           </div>
           <div className={classes.cardSubtitle}>
-            {T.dashboard.rescueSubtitle.replace(/\{count\}/g, `${count}`)}
+            {T.dashboard.rescueSubtitle}
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   )
 }
 

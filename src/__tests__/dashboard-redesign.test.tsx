@@ -380,7 +380,7 @@ describe('Rescue Card', () => {
   it('shows rescue card when lapse count > 0', async () => {
     vi.mocked(learnerStateService.getLapsingItems).mockResolvedValue({ count: 4 })
     renderDashboard()
-    expect(await screen.findByText(/Red 4 woorden/i)).toBeInTheDocument()
+    expect(await screen.findByText(/4 zwakke woorden/i)).toBeInTheDocument()
   })
 
   it('shows lapse badge with count', async () => {
