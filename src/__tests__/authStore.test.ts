@@ -82,7 +82,6 @@ describe('authStore', () => {
       fullName: 'Test User',
       language: 'nl',
       preferredSessionSize: 15,
-      dailyNewItemsLimit: 10,
       isAdmin: false,
       timezone: null,
     })

@@ -57,7 +57,6 @@ function baseInput(overrides: Partial<SessionBuildInput> = {}): SessionBuildInpu
     itemStates: {},
     skillStates: {},
     preferredSessionSize: 20,
-    dailyNewItemsLimit: 5,
     lessonFilter: null,
     userLanguage: 'en',
     ...overrides,
@@ -105,13 +104,12 @@ describe('buildSessionQueue — core', () => {
     expect(result.length).toBeLessThanOrEqual(10)
   })
 
-  it('respects dailyNewItemsLimit for new items', () => {
+  it('new items are capped by preferredSessionSize', () => {
     const items = Array.from({ length: 10 }, (_, i) => makeItem(`new${i}`))
     const result = buildSessionQueue(baseInput({
       allItems: items,
       meaningsByItem: Object.fromEntries(items.map(it => [it.id, [makeMeaning(it.id)]])),
-      dailyNewItemsLimit: 3,
-      preferredSessionSize: 20,
+      preferredSessionSize: 3,
     }))
     expect(result.length).toBeLessThanOrEqual(3)
   })

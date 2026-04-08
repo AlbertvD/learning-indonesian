@@ -17,7 +17,6 @@ export interface SessionBuildInput {
   itemStates: Record<string, LearnerItemState>
   skillStates: Record<string, LearnerSkillState[]>
   preferredSessionSize: number
-  dailyNewItemsLimit: number
   lessonFilter: string | null
   userLanguage: 'en' | 'nl'
   lessonOrder?: Record<string, number>
@@ -77,11 +76,12 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
     return dueTime(a) - dueTime(b)
   })
 
-  // 4. Order and cap new items by lesson order — no mastery gate.
-  // Items from earlier lessons come first; dailyNewItemsLimit caps how many are introduced.
+  // 4. Order new items by lesson order — earlier lessons first.
+  // The combined slice at step 5 naturally limits new items to whatever space remains
+  // after due items fill their slots, up to effectiveSessionSize total.
   const gatedNew = sessionMode === 'backlog_clear'
     ? []
-    : sortByLessonOrder(newItems, input.contextsByItem, input.lessonOrder).slice(0, input.dailyNewItemsLimit)
+    : sortByLessonOrder(newItems, input.contextsByItem, input.lessonOrder)
 
   // 5. Compose and trim
   const candidates = [...dueItems, ...gatedNew].slice(0, effectiveSessionSize)

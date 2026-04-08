@@ -42,7 +42,6 @@ export function Session() {
     ? sessionModeParam as SessionMode
     : 'standard'
   const preferredSessionSize = profile?.preferredSessionSize ?? 15
-  const dailyNewItemsLimit = profile?.dailyNewItemsLimit ?? 10
   const didInit = useRef(false)
   const beforeGoalsRef = useRef<WeeklyGoal[] | null>(null)
 
@@ -178,7 +177,6 @@ export function Session() {
           itemStates,
           skillStates: skillStatesMap,
           preferredSessionSize,
-          dailyNewItemsLimit,
           lessonFilter,
           userLanguage: profile?.language ?? 'en',
           lessonOrder,
