@@ -24,13 +24,6 @@ export interface SessionBuildInput {
   sessionMode?: SessionMode
 }
 
-// Fraction of a lesson's items that must reach 'retrieving' (or higher) before
-// new items from the next lesson are introduced.
-const LESSON_MASTERY_THRESHOLD = 0.70
-
-// Stages considered "mastered" for the purpose of lesson gating.
-const MASTERED_STAGES = new Set(['retrieving', 'productive', 'maintenance'])
-
 interface CandidateItem {
   item: LearningItem
   state: LearnerItemState | null
@@ -84,16 +77,11 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
     return dueTime(a) - dueTime(b)
   })
 
-  // 4. Gate and cap new items
-  // Lesson gate is skipped when the user explicitly selected a lesson — they chose to practice
-  // it, so blocking new items from that lesson would just produce an empty session.
-  // The gate only applies to the global cross-lesson queue where it prevents pacing issues.
+  // 4. Order and cap new items by lesson order — no mastery gate.
+  // Items from earlier lessons come first; dailyNewItemsLimit caps how many are introduced.
   const gatedNew = sessionMode === 'backlog_clear'
     ? []
-    : (input.lessonOrder && !input.lessonFilter
-        ? applyLessonGate(newItems, eligibleItems, input.itemStates, input.contextsByItem, input.lessonOrder)
-        : newItems
-      ).slice(0, input.dailyNewItemsLimit)
+    : sortByLessonOrder(newItems, input.contextsByItem, input.lessonOrder).slice(0, input.dailyNewItemsLimit)
 
   // 5. Compose and trim
   const candidates = [...dueItems, ...gatedNew].slice(0, effectiveSessionSize)
@@ -139,56 +127,18 @@ function filterEligible(input: SessionBuildInput): LearningItem[] {
   })
 }
 
-function applyLessonGate(
-  newItems: CandidateItem[],
-  allEligibleItems: LearningItem[],
-  itemStates: Record<string, LearnerItemState>,
+function sortByLessonOrder(
+  items: CandidateItem[],
   contextsByItem: Record<string, ItemContext[]>,
-  lessonOrder: Record<string, number>,
+  lessonOrder?: Record<string, number>,
 ): CandidateItem[] {
-  // Build itemId → lesson order_index (use lowest order if item spans lessons)
-  const itemLessonOrder = (itemId: string): number => {
+  if (!lessonOrder) return items
+  const itemOrder = (itemId: string): number => {
     const contexts = contextsByItem[itemId] ?? []
-    const orders = contexts
-      .map(c => c.source_lesson_id ? (lessonOrder[c.source_lesson_id] ?? 9999) : 9999)
+    const orders = contexts.map(c => c.source_lesson_id ? (lessonOrder[c.source_lesson_id] ?? 9999) : 9999)
     return orders.length > 0 ? Math.min(...orders) : 9999
   }
-
-  // Compute mastery for each lesson: fraction of eligible items at a mastered stage
-  const lessonItems: Record<number, string[]> = {}  // orderIndex → itemIds
-  for (const item of allEligibleItems) {
-    const order = itemLessonOrder(item.id)
-    if (!lessonItems[order]) lessonItems[order] = []
-    lessonItems[order].push(item.id)
-  }
-
-  const masteryByOrder: Record<number, number> = {}
-  for (const [orderStr, itemIds] of Object.entries(lessonItems)) {
-    const order = Number(orderStr)
-    if (itemIds.length === 0) { masteryByOrder[order] = 1; continue }
-    const mastered = itemIds.filter(id => {
-      const stage = itemStates[id]?.stage
-      return stage ? MASTERED_STAGES.has(stage) : false
-    }).length
-    masteryByOrder[order] = mastered / itemIds.length
-  }
-
-  // Determine the highest lesson order whose new items are unlocked.
-  const sortedOrders = Object.keys(lessonItems).map(Number).sort((a, b) => a - b)
-  let maxUnlockedOrder = sortedOrders[0] ?? 1  // always unlock the first lesson
-  for (let i = 1; i < sortedOrders.length; i++) {
-    const prev = sortedOrders[i - 1]
-    if ((masteryByOrder[prev] ?? 0) >= LESSON_MASTERY_THRESHOLD) {
-      maxUnlockedOrder = sortedOrders[i]
-    } else {
-      break  // stop at first locked lesson
-    }
-  }
-
-  // Filter to items from unlocked lessons, sorted by lesson order then original order
-  return newItems
-    .filter(c => itemLessonOrder(c.item.id) <= maxUnlockedOrder)
-    .sort((a, b) => itemLessonOrder(a.item.id) - itemLessonOrder(b.item.id))
+  return [...items].sort((a, b) => itemOrder(a.item.id) - itemOrder(b.item.id))
 }
 
 
