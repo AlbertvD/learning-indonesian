@@ -140,6 +140,10 @@ check-supabase-deep: ## Deep structural check: tables, RLS, grants (requires SUP
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required. Run: make check-supabase-deep SUPABASE_SERVICE_KEY=<key>"; exit 1; }
 	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/check-supabase-deep.ts
 
+.PHONY: check-exercise-coverage
+check-exercise-coverage: ## Check that every grammar pattern has all required exercise types in staging
+	bun scripts/check-exercise-coverage.ts
+
 # ============================================================================
 # DOCKER
 # ============================================================================

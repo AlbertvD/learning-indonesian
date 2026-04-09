@@ -1,0 +1,21 @@
+{
+  "lesson": 5,
+  "revision": 2,
+  "reviewedAt": "2026-04-09T12:00:00.000Z",
+  "status": "approved",
+  "issues": [
+    {
+      "severity": "WARNING",
+      "file": "cloze-contexts.ts",
+      "item": "hari rabu / taman mini",
+      "issue": "learning_item_slug uses lowercase ('hari rabu', 'taman mini') but learning-items.ts base_text uses mixed case ('hari Rabu', 'Taman Mini') — seeder may fail to match if slug resolution is case-sensitive",
+      "fix": "Update cloze context slugs to match base_text casing: 'hari Rabu', 'Taman Mini'"
+    }
+  ],
+  "summary": {
+    "total": 1,
+    "critical": 0,
+    "warning": 1
+  },
+  "notes": "Revision 2: re-reviewed after adding constrained_translation for kami-vs-kita, sentence_transformation and constrained_translation for pronoun-register-levels. Grammar section structured into 7 categories. Exercises structured into 4 sections. 3 grammar patterns — all slugs already in DB (published from lesson 5). 16 candidates: 5 contrast_pair, 5 cloze_mcq, 3 sentence_transformation, 3 constrained_translation. All 3 patterns now have all 4 exercise types. 53 cloze contexts covering all 53 vocabulary items. All source_text contain exactly one ___. No speaking candidates. No slug duplication across lessons."
+}

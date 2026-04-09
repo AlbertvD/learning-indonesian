@@ -786,6 +786,9 @@ CREATE TABLE IF NOT EXISTS indonesian.grammar_patterns (
   updated_at timestamptz DEFAULT now()
 );
 
+ALTER TABLE indonesian.grammar_patterns
+  ADD COLUMN IF NOT EXISTS introduced_by_lesson_id uuid REFERENCES indonesian.lessons(id) ON DELETE SET NULL;
+
 -- Grammar pattern links for live contexts
 CREATE TABLE IF NOT EXISTS indonesian.item_context_grammar_patterns (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -971,3 +974,48 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.content_flags TO authenticate
 
 CREATE INDEX IF NOT EXISTS idx_content_flags_user_status
   ON indonesian.content_flags(user_id, status);
+
+-- Grammar exercises do not belong to a vocabulary item context — make both FKs nullable
+-- and add lesson_id as an alternative anchor. At least one of context_id or lesson_id must be set.
+DO $$ BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'indonesian' AND table_name = 'exercise_variants'
+    AND column_name = 'context_id' AND is_nullable = 'NO'
+  ) THEN
+    ALTER TABLE indonesian.exercise_variants ALTER COLUMN context_id DROP NOT NULL;
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'indonesian' AND table_name = 'exercise_variants'
+    AND column_name = 'learning_item_id' AND is_nullable = 'NO'
+  ) THEN
+    ALTER TABLE indonesian.exercise_variants ALTER COLUMN learning_item_id DROP NOT NULL;
+  END IF;
+END $$;
+
+ALTER TABLE indonesian.exercise_variants
+  ADD COLUMN IF NOT EXISTS lesson_id uuid REFERENCES indonesian.lessons(id) ON DELETE CASCADE;
+
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'exercise_variants_anchor_check'
+    AND conrelid = 'indonesian.exercise_variants'::regclass
+  ) THEN
+    ALTER TABLE indonesian.exercise_variants
+      ADD CONSTRAINT exercise_variants_anchor_check
+      CHECK (context_id IS NOT NULL OR lesson_id IS NOT NULL);
+  END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS idx_exercise_variants_lesson
+  ON indonesian.exercise_variants(lesson_id)
+  WHERE lesson_id IS NOT NULL;
+
+CREATE INDEX IF NOT EXISTS idx_exercise_variants_grammar
+  ON indonesian.exercise_variants(grammar_pattern_id)
+  WHERE grammar_pattern_id IS NOT NULL;

@@ -15,6 +15,8 @@ import { Session } from '@/pages/Session'
 import { Practice } from '@/pages/Practice'
 import { Profile } from '@/pages/Profile'
 import { Progress } from '@/pages/Progress'
+import { SectionCoverage } from '@/pages/SectionCoverage'
+import { ExerciseCoverage } from '@/pages/ExerciseCoverage'
 
 function NotFound() {
   return (
@@ -110,6 +112,22 @@ function App() {
           element={
             <ProtectedRoute>
               <Progress />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/content/sections"
+          element={
+            <ProtectedRoute>
+              <SectionCoverage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/content/exercises"
+          element={
+            <ProtectedRoute>
+              <ExerciseCoverage />
             </ProtectedRoute>
           }
         />

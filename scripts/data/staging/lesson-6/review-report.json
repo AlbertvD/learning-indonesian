@@ -1,0 +1,63 @@
+{
+  "lesson": 6,
+  "revision": 3,
+  "reviewedAt": "2026-04-09T15:00:00Z",
+  "status": "approved",
+  "issues": [
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "sentence_transformation (indonesian-day-parts) — \"Jam tiga sore.\"",
+      "issue": "Ambiguous acceptableAnswers: both \"Jam tiga pagi.\" and \"Jam tiga malam.\" accepted. 03.00 falls in the transition between malam (18.30-03.00) and pagi (05.00-11.00), making either answer arguably wrong depending on the exact time. The transformation instruction says \"'s ochtends om drie uur\" but 03.00 is technically still malam.",
+      "fix": "Admin review: consider narrowing to one correct answer or adjusting the time to an unambiguous hour (e.g. 08.00 pagi)."
+    },
+    {
+      "severity": "WARNING",
+      "file": "grammar-patterns.ts",
+      "item": "confusion_group coherence",
+      "issue": "DB patterns 'belum-vs-tidak' (lesson 1) and 'tidak-negation' (lesson 2) are not in confusion_group 'negation-types', while this lesson's bukan-negation and jangan-prohibition are. All four form one confusable set.",
+      "fix": "Consider a migration to update the confusion_group on the older DB patterns for coherent grouping."
+    }
+  ],
+  "summary": {
+    "total": 2,
+    "critical": 0,
+    "warning": 2
+  },
+  "counts": {
+    "grammar_patterns": 7,
+    "grammar_patterns_reused_from_db": 2,
+    "learning_items_total": 49,
+    "cloze_contexts": 47,
+    "cloze_contexts_missing": 0,
+    "cloze_contexts_skipped_particles": 2,
+    "candidates_total": 35,
+    "candidates_by_type": {
+      "cloze_mcq": 11,
+      "contrast_pair": 8,
+      "sentence_transformation": 8,
+      "constrained_translation": 8
+    },
+    "exercise_type_coverage": {
+      "bukan-negation": ["cloze_mcq", "contrast_pair", "sentence_transformation", "constrained_translation"],
+      "bukan-tag-question": ["cloze_mcq", "contrast_pair", "sentence_transformation", "constrained_translation"],
+      "jangan-prohibition": ["cloze_mcq", "contrast_pair", "sentence_transformation", "constrained_translation"],
+      "imperative-lah-suffix": ["cloze_mcq", "contrast_pair", "sentence_transformation", "constrained_translation"],
+      "kah-question-suffix": ["cloze_mcq", "contrast_pair", "sentence_transformation", "constrained_translation"],
+      "indonesian-day-parts": ["cloze_mcq", "contrast_pair", "sentence_transformation", "constrained_translation"],
+      "clock-time-telling": ["cloze_mcq", "contrast_pair", "sentence_transformation", "constrained_translation"]
+    }
+  },
+  "checks": {
+    "lesson_ts_structure": "PASS — all grammar sections use categories array, exercise section uses sections array",
+    "grammar_patterns_fields": "PASS — all 7 patterns have pattern_name, description, slug, complexity_score (1-10), kebab-case slugs",
+    "slug_duplication": "PASS — no duplicate slugs in staging; 2 DB slugs (belum-vs-tidak, tidak-negation) reused without re-adding",
+    "candidate_payloads": "PASS — all 35 candidates have correct payload fields per type contract",
+    "candidate_slug_refs": "PASS — all grammar_pattern_slug values exist in grammar-patterns.ts or DB",
+    "cloze_context_blanks": "PASS — all 47 contexts have exactly one ___",
+    "cloze_context_coverage": "PASS — 47 contexts cover 47 of 49 items; 2 discourse particles (deh!/sih!) appropriately skipped",
+    "cloze_context_naturalistic": "PASS — all sentences embed the target word in a real sentence",
+    "exercise_type_coverage": "PASS — all 7 lesson-6 grammar patterns have all 4 required exercise types",
+    "no_speaking_candidates": "PASS"
+  }
+}

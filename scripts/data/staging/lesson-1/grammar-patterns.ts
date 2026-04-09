@@ -51,14 +51,6 @@ export const grammarPatterns = [
     "complexity_score": 3
   },
   {
-    "pattern_name": "Bijvoeglijk naamwoord NA zelfstandig naamwoord",
-    "description": "Het bijvoeglijk naamwoord wordt achter het zelfstandig naamwoord geplaatst: 'rumah besar' (groot huis). Omgekeerde volgorde ten opzichte van het Nederlands.",
-    "confusion_group": "adjective-placement",
-    "page_reference": 1,
-    "slug": "adjective-after-noun",
-    "complexity_score": 2
-  },
-  {
     "pattern_name": "Belum vs tidak — ontkenning",
     "description": "'Tidak' = niet/nee (definitieve ontkenning). 'Belum' = nog niet (tijdelijke ontkenning, iets kan nog veranderen). 'Belum bisa' = nog niet mogelijk. Voor Nederlandse leerlingen: 'belum' impliceert dat het later wel kan.",
     "confusion_group": "negation-belum-tidak",

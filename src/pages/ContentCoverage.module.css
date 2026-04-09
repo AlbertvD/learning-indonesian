@@ -1,0 +1,79 @@
+.tableWrapper {
+  overflow-x: auto;
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+
+.table thead tr {
+  background: var(--card-bg);
+  border-bottom: 2px solid var(--card-border);
+}
+
+.labelCol {
+  width: 380px;
+  min-width: 280px;
+  padding: 10px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lessonCol {
+  width: 90px;
+  min-width: 70px;
+  text-align: center;
+  padding: 10px 8px;
+}
+
+.lessonLabel {
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+}
+
+.row {
+  border-bottom: 1px solid var(--card-border);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:nth-child(even) {
+  background: color-mix(in srgb, var(--card-bg) 60%, var(--bg-main) 40%);
+}
+
+.rowLabel {
+  padding: 10px 16px;
+  font-family: var(--font-mono, monospace);
+  font-size: 16px;
+  color: white;
+  white-space: nowrap;
+}
+
+.cell {
+  text-align: center;
+  padding: 10px 8px;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.cellOk {
+  color: var(--success);
+  background: color-mix(in srgb, var(--success) 8%, transparent);
+}
+
+.cellFail {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 6%, transparent);
+}

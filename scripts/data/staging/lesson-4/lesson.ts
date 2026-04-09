@@ -61,7 +61,72 @@ export const lesson = {
       "title": "Grammatica: YANG - Constructie",
       "content": {
         "type": "grammar",
-        "body": "YANG - constructie\n\nIn Indonesische zinnen komt het woord yang regelmatig voor. Het is niet altijd eenvoudig yang goed in het Nederlands te vertalen omdat het diverse functies vervult.\n\nYang kan op de volgende wijzen worden gebruikt:\n1. Als betrekkelijk voornaamwoord: die/dat\n2. Om van sommige woordsoorten zelfstandige naamwoorden te maken\n3. In combinatie met een of twee bijvoeglijke naamwoorden\n4. In de uitdrukking: ada yang... ('er zijn er die...')\n\nIn principe koppelt yang het woord dat erop volgt of de woordgroep die aan yang voorafgaat (behalve bij punt 2).\n\nAd 1. Yang als betrekkelijk voornaamwoord (die/dat):\n- Pisang yang terlalu tua tidak enak = Een banaan die te oud is, is niet lekker\n- Ini orang Belanda yang tinggal di Bogor = Dit is de Nederlander die in Bogor woont\n\nAd 2. YANG maakt zelfstandige naamwoorden:\n- Yang mahal bagus = De dure (dingen) zijn mooi\n- Yang besar enak = De grote is lekker\n- Yang tidur banyak = Degenen die slapen zijn talrijk\n- Yang mau ke toko harus naik taksi = Degenen die naar de winkel willen gaan moeten een taxi nemen\n- Yang dua ini bersih = Deze twee zijn schoon\n\nAd 3. YANG bij één bijvoeglijk naamwoord (nadruk):\n- Rumah yang besar = Het gróte huis\n- Sendok yang bersih = De schóne lepel\n- Kursi yang kecil = De kléine stoel\n- Kamar mandi yang putih = De witte badkamer\n- Tempat tidur yang besar = Het grote bed\n- Sepeda saya yang kecil hilang = Mijn kleine fiets is verdwenen\n\nLet op: Na samengestelde zelfstandige naamwoorden (kamar mandi, tempat tidur) is yang verplicht. Na een bezittelijk voornaamwoord dient een bijvoeglijk naamwoord ook voorafgegaan te worden door yang.\n\nAd 3b. YANG bij twee bijvoeglijke naamwoorden:\nBij ongelijke nadruk: (adjective) yang (adjective)\n- Rumah besar yang kuning = Het gele grote huis\n- Sendok kecil yang bersih = De schone kleine lepel\n- Kursi kecil yang putih = De witte kleine stoel\n\nBij gelijke nadruk: yang (adjective) dan (adjective)\n- Rumah yang besar dan kuning = Het gele, grote huis\n- Pintu kamar yang putih dan berat = De zware, witte kamerdeur\n- Kamar kecil yang bersih dan rapi = De nette, schone wc\n\nAd 4. Ada yang... = 'er zijn er die...' / 'sommigen...anderen...'\n- Ada yang dari negeri Belanda en ada yang dari negeri Jerman = Er zijn er die uit Nederland komen en er zijn er die uit Duitsland komen."
+        "categories": [
+          {
+            "title": "Yang als betrekkelijk voornaamwoord (die/dat)",
+            "rules": [
+              "Yang koppelt als betrekkelijk voornaamwoord een bijzin aan het voorgaande zelfstandig naamwoord.",
+              "Yang staat altijd direct na het woord of de woordgroep waarnaar verwezen wordt.",
+              "Na samengestelde zelfstandige naamwoorden (kamar mandi, tempat tidur) is yang verplicht.",
+              "Na een bezittelijk voornaamwoord dient een bijvoeglijk naamwoord ook voorafgegaan te worden door yang."
+            ],
+            "examples": [
+              { "indonesian": "Pisang yang terlalu tua tidak enak", "dutch": "Een banaan die te oud is, is niet lekker" },
+              { "indonesian": "Ini orang Belanda yang tinggal di Bogor", "dutch": "Dit is de Nederlander die in Bogor woont" },
+              { "indonesian": "Sepeda saya yang kecil hilang", "dutch": "Mijn kleine fiets is verdwenen" }
+            ]
+          },
+          {
+            "title": "Yang maakt zelfstandige naamwoorden (nominalisering)",
+            "rules": [
+              "Yang kan bijvoeglijke naamwoorden, werkwoorden en andere woordsoorten omzetten naar zelfstandige naamwoorden.",
+              "Vergelijkbaar met het Nederlandse 'de...' of 'degenen die...'."
+            ],
+            "examples": [
+              { "indonesian": "Yang mahal bagus", "dutch": "De dure (dingen) zijn mooi" },
+              { "indonesian": "Yang besar enak", "dutch": "De grote is lekker" },
+              { "indonesian": "Yang tidur banyak", "dutch": "Degenen die slapen zijn talrijk" },
+              { "indonesian": "Yang mau ke toko harus naik taksi", "dutch": "Degenen die naar de winkel willen moeten een taxi nemen" },
+              { "indonesian": "Yang dua ini bersih", "dutch": "Deze twee zijn schoon" }
+            ]
+          },
+          {
+            "title": "Yang bij één bijvoeglijk naamwoord (nadruk)",
+            "rules": [
+              "Yang vóór één bijvoeglijk naamwoord geeft nadruk aan dat eigenschap.",
+              "Vergelijkbaar met het cursief zetten van een woord in het Nederlands."
+            ],
+            "examples": [
+              { "indonesian": "Rumah yang besar", "dutch": "Het GROTE huis (nadruk op groot)" },
+              { "indonesian": "Sendok yang bersih", "dutch": "De SCHONE lepel" },
+              { "indonesian": "Kursi yang kecil", "dutch": "De KLEINE stoel" },
+              { "indonesian": "Kamar mandi yang putih", "dutch": "De WITTE badkamer" }
+            ]
+          },
+          {
+            "title": "Yang bij twee bijvoeglijke naamwoorden",
+            "rules": [
+              "Bij ongelijke nadruk (één eigenschap benadrukt): [znw] [bijv.nw.] yang [benadrukt bijv.nw.]",
+              "Bij gelijke nadruk (beide eigenschappen even belangrijk): [znw] yang [bijv.nw.] dan [bijv.nw.]"
+            ],
+            "examples": [
+              { "indonesian": "Rumah besar yang kuning", "dutch": "Het GELE grote huis (geel benadrukt)" },
+              { "indonesian": "Sendok kecil yang bersih", "dutch": "De schone kleine lepel (schoon benadrukt)" },
+              { "indonesian": "Rumah yang besar dan kuning", "dutch": "Het grote en gele huis (gelijke nadruk)" },
+              { "indonesian": "Pintu kamar yang putih dan berat", "dutch": "De witte, zware kamerdeur (gelijke nadruk)" }
+            ]
+          },
+          {
+            "title": "Ada yang... — er zijn er die...",
+            "rules": [
+              "Ada yang... betekent 'er zijn er die...' of 'sommigen..., anderen...'.",
+              "Wordt gebruikt om een groep te verdelen of een deel aan te duiden."
+            ],
+            "examples": [
+              { "indonesian": "Ada yang dari negeri Belanda dan ada yang dari negeri Jerman", "dutch": "Er zijn er die uit Nederland komen en er zijn er die uit Duitsland komen" }
+            ]
+          }
+        ]
       },
       "order_index": 3
     },
@@ -69,9 +134,186 @@ export const lesson = {
       "title": "Oefeningen",
       "content": {
         "type": "exercises",
-        "body": "OEFENINGEN\n\nOefening 1. Vertaal en gebruik in elke zin yang.\n1. Het huis van Jan dat groot is, is mooi\n2. De fiets van Fedi die nieuw is, is schoon\n3. Waar is de nieuwe school?\n4. Welke vruchten heeft moeder op de markt gekocht?\n5. Waarom is de grote badkamer nog niet schoon?\n6. Die lekkere kroepoek heb ik op de markt gekocht\n7. De kleine auto is snel\n8. Hoeveel witte handdoeken zijn er?\n9. Waar is die nieuwe kast?\n\nOefening II. Vertaal.\n1. Dat zijn nieuwe koffers. De grote is zwaar, maar de kleine is licht\n2. Daar staan huizen. De nieuwe zijn groot, maar de oude zijn klein\n3. Hier is de nieuwe kast. De oude is in de slaapkamer\n4. Waar zijn de kinderen? De kinderen zijn daar, de kleintjes zijn in de badkamer, de groten zijn in de eetkamer\n5. Op de markt zijn veel mensen. Er zijn er die fruit kopen en er zijn er die groenten kopen\n\nOefening III. Vraag en antwoord.\nContoh: 3 koffers   Itu berapa koper? Itu tiga koper\n1. 4 fietsen           9. 23.675.890 kinderen\n2. 1.563 huizen       10. 11.100 auto's\n3. 2.690 kippen       11. 1.789 bananen\n4. 187 vorken         12. 257 gasten\n5. 1.259 lepels       13. 4.687 borden\n6. 375 vrienden       14. 5.900 stoelen\n7. 193 kasten         15. 31.342 borstels\n8. 352 tafels         16. 1.878 steden\n\nOefening IV. Maak zinnen waarin het opgegeven woord voorkomt.\n1. keatas     11. buka\n2. terlalu    12. kiri\n3. piring     13. cari\n4. ini        14. siapa\n5. apa        15. cukup\n6. tidak      16. sekarang\n7. dari       17. pelan-pelan\n8. berapa     18. turun\n9. meja       19. naik\n10. dengan    20. tempat duduk"
+        "sections": [
+          {
+            "title": "Oefening I",
+            "instruction": "Vertaal en gebruik in elke zin yang.",
+            "type": "grammar_drill",
+            "items": [
+              { "prompt": "Het huis van Jan dat groot is, is mooi", "answer": "Rumah Jan yang besar bagus" },
+              { "prompt": "De fiets van Fedi die nieuw is, is schoon", "answer": "Sepeda Fedi yang baru bersih" },
+              { "prompt": "Waar is de nieuwe school?", "answer": "Di mana sekolah yang baru?" },
+              { "prompt": "Welke vruchten heeft moeder op de markt gekocht?", "answer": "Buah yang mana ibu beli di pasar?" },
+              { "prompt": "Waarom is de grote badkamer nog niet schoon?", "answer": "Mengapa kamar mandi yang besar belum bersih?" },
+              { "prompt": "Die lekkere kroepoek heb ik op de markt gekocht", "answer": "Krupuk yang enak itu saya beli di pasar" },
+              { "prompt": "De kleine auto is snel", "answer": "Mobil yang kecil cepat" },
+              { "prompt": "Hoeveel witte handdoeken zijn er?", "answer": "Berapa handuk yang putih?" },
+              { "prompt": "Waar is die nieuwe kast?", "answer": "Di mana lemari yang baru itu?" }
+            ]
+          },
+          {
+            "title": "Oefening II",
+            "instruction": "Vertaal.",
+            "type": "translation",
+            "items": [
+              { "prompt": "Dat zijn nieuwe koffers. De grote is zwaar, maar de kleine is licht", "answer": "Itu koper baru. Yang besar berat, tapi yang kecil ringan" },
+              { "prompt": "Daar staan huizen. De nieuwe zijn groot, maar de oude zijn klein", "answer": "Di sana ada rumah. Yang baru besar, tapi yang lama kecil" },
+              { "prompt": "Hier is de nieuwe kast. De oude is in de slaapkamer", "answer": "Ini lemari yang baru. Yang lama ada di kamar tidur" },
+              { "prompt": "Waar zijn de kinderen? De kleintjes zijn in de badkamer, de groten zijn in de eetkamer", "answer": "Di mana anak-anak? Yang kecil ada di kamar mandi, yang besar ada di kamar makan" },
+              { "prompt": "Op de markt zijn veel mensen. Er zijn er die fruit kopen en er zijn er die groenten kopen", "answer": "Di pasar banyak orang. Ada yang beli buah dan ada yang beli sayur" }
+            ]
+          },
+          {
+            "title": "Oefening III",
+            "instruction": "Vraag en antwoord. Contoh: 3 koffers → Itu berapa koper? Itu tiga koper.",
+            "type": "grammar_drill",
+            "items": [
+              { "prompt": "4 fietsen" },
+              { "prompt": "1.563 huizen" },
+              { "prompt": "2.690 kippen" },
+              { "prompt": "187 vorken" },
+              { "prompt": "1.259 lepels" },
+              { "prompt": "375 vrienden" },
+              { "prompt": "193 kasten" },
+              { "prompt": "352 tafels" },
+              { "prompt": "23.675.890 kinderen" },
+              { "prompt": "11.100 auto's" }
+            ]
+          },
+          {
+            "title": "Oefening IV",
+            "instruction": "Maak zinnen waarin het opgegeven woord voorkomt.",
+            "type": "grammar_drill",
+            "items": [
+              { "prompt": "keatas" }, { "prompt": "terlalu" }, { "prompt": "piring" },
+              { "prompt": "ini" }, { "prompt": "apa" }, { "prompt": "tidak" },
+              { "prompt": "dari" }, { "prompt": "berapa" }, { "prompt": "meja" },
+              { "prompt": "dengan" }, { "prompt": "buka" }, { "prompt": "kiri" },
+              { "prompt": "cari" }, { "prompt": "siapa" }, { "prompt": "cukup" },
+              { "prompt": "sekarang" }, { "prompt": "pelan-pelan" }, { "prompt": "turun" },
+              { "prompt": "naik" }, { "prompt": "tempat duduk" }
+            ]
+          }
+        ]
       },
       "order_index": 4
+    },
+    {
+      "title": "Woordenlijst",
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          { "indonesian": "bibit padi", "dutch": "de jonge rijstplant" },
+          { "indonesian": "padi", "dutch": "volgroeide rijstplant met volle rijstaar, ongepelde rijst" },
+          { "indonesian": "gabah", "dutch": "ongepelde rijst" },
+          { "indonesian": "beras", "dutch": "gepelde ongekookte rijst" },
+          { "indonesian": "nasi", "dutch": "gekookte rijst" },
+          { "indonesian": "nasi putih", "dutch": "gekookte witte rijst" },
+          { "indonesian": "nasi goreng", "dutch": "gekookte rijst, daarna met kruiden gebakken" },
+          { "indonesian": "nasi kuning", "dutch": "met kruiden geel gekookte rijst" },
+          { "indonesian": "mengantar", "dutch": "begeleiden" },
+          { "indonesian": "air", "dutch": "water" },
+          { "indonesian": "minum", "dutch": "drinken" },
+          { "indonesian": "air putih", "dutch": "drinkwater" },
+          { "indonesian": "minuman", "dutch": "drank" },
+          { "indonesian": "tetapi", "dutch": "maar, echter" },
+          { "indonesian": "anak", "dutch": "kind" },
+          { "indonesian": "bak air", "dutch": "waterbak" },
+          { "indonesian": "pedas", "dutch": "heet (van smaak)" },
+          { "indonesian": "bersih", "dutch": "schoon" },
+          { "indonesian": "pelan-pelan", "dutch": "langzaam (aan)" },
+          { "indonesian": "duduk", "dutch": "zitten" },
+          { "indonesian": "pesan", "dutch": "bestellen" },
+          { "indonesian": "formulir", "dutch": "formulier" },
+          { "indonesian": "piring", "dutch": "bord" },
+          { "indonesian": "gado-gado", "dutch": "groentegerecht" },
+          { "indonesian": "ingin", "dutch": "verlangen, willen" },
+          { "indonesian": "pisau", "dutch": "mes" },
+          { "indonesian": "garpu", "dutch": "vork" },
+          { "indonesian": "putih", "dutch": "wit" },
+          { "indonesian": "gelas", "dutch": "glas" },
+          { "indonesian": "rapi", "dutch": "netjes" },
+          { "indonesian": "gigi", "dutch": "tand" },
+          { "indonesian": "restoran", "dutch": "restaurant" },
+          { "indonesian": "goreng", "dutch": "bakken, braden" },
+          { "indonesian": "handuk", "dutch": "handdoek" },
+          { "indonesian": "sabun", "dutch": "zeep" },
+          { "indonesian": "hilang", "dutch": "weg, verdwenen (kwijt)" },
+          { "indonesian": "sambal", "dutch": "pasta van Spaanse pepers" },
+          { "indonesian": "sate", "dutch": "sate" },
+          { "indonesian": "isi", "dutch": "inhoud, (in)vullen" },
+          { "indonesian": "sayur", "dutch": "groente" },
+          { "indonesian": "jambu air", "dutch": "een bepaalde vrucht" },
+          { "indonesian": "sekolah", "dutch": "school" },
+          { "indonesian": "Jerman", "dutch": "Duitsland, Duits" },
+          { "indonesian": "selamat tinggal", "dutch": "vaarwel" },
+          { "indonesian": "juga", "dutch": "ook" },
+          { "indonesian": "sendok", "dutch": "lepel" },
+          { "indonesian": "kamar kecil", "dutch": "toilet, w.c." },
+          { "indonesian": "setelah", "dutch": "na(dat), vervolgens" },
+          { "indonesian": "kamar makan", "dutch": "eetkamer" },
+          { "indonesian": "sikat", "dutch": "borstel" },
+          { "indonesian": "kamar mandi", "dutch": "badkamer" },
+          { "indonesian": "sikat gigi", "dutch": "tandenborstel" },
+          { "indonesian": "kambing", "dutch": "geit" },
+          { "indonesian": "suka", "dutch": "houden van (lekker vinden)" },
+          { "indonesian": "kecap", "dutch": "sojasaus" },
+          { "indonesian": "tamu", "dutch": "gast" },
+          { "indonesian": "kenyang", "dutch": "genoeg, voldaan" },
+          { "indonesian": "teh", "dutch": "thee" },
+          { "indonesian": "kopi", "dutch": "koffie" },
+          { "indonesian": "tempat", "dutch": "plaats" },
+          { "indonesian": "kopi pahit", "dutch": "zwarte koffie" },
+          { "indonesian": "tempat duduk", "dutch": "zitplaats" },
+          { "indonesian": "kopi tubruk", "dutch": "zwarte koffie met suiker" },
+          { "indonesian": "tempat tidur", "dutch": "bed" },
+          { "indonesian": "terlalu", "dutch": "te" },
+          { "indonesian": "krupuk", "dutch": "kroepoek" },
+          { "indonesian": "tersedia", "dutch": "klaar staan, gereed" },
+          { "indonesian": "kunci", "dutch": "sleutel" },
+          { "indonesian": "tidur", "dutch": "slapen" },
+          { "indonesian": "kuning", "dutch": "geel" },
+          { "indonesian": "tubruk", "dutch": "botsen" },
+          { "indonesian": "kurang", "dutch": "tekort, minder" },
+          { "indonesian": "turun", "dutch": "afdalen, uitstappen" },
+          { "indonesian": "yang", "dutch": "die, dat" },
+          { "indonesian": "kursi", "dutch": "stoel" },
+          { "indonesian": "lantai", "dutch": "vloer, verdieping" },
+          { "indonesian": "lauk", "dutch": "bijgerechten" },
+          { "indonesian": "lemari", "dutch": "kast" },
+          { "indonesian": "makanan", "dutch": "voedsel" },
+          { "indonesian": "mandi", "dutch": "baden" },
+          { "indonesian": "mas", "dutch": "goud (emas)" },
+          { "indonesian": "masih", "dutch": "nog" },
+          { "indonesian": "meja", "dutch": "tafel" }
+        ]
+      },
+      "order_index": 5
+    },
+    {
+      "title": "Telwoorden",
+      "content": {
+        "type": "numbers",
+        "items": [
+          { "indonesian": "seratus", "dutch": "100" },
+          { "indonesian": "dua ratus", "dutch": "200" },
+          { "indonesian": "tiga ratus", "dutch": "300" },
+          { "indonesian": "empat ratus", "dutch": "400" },
+          { "indonesian": "lima ratus", "dutch": "500" },
+          { "indonesian": "enam ratus", "dutch": "600" },
+          { "indonesian": "tujuh ratus", "dutch": "700" },
+          { "indonesian": "delapan ratus", "dutch": "800" },
+          { "indonesian": "sembilan ratus", "dutch": "900" },
+          { "indonesian": "seribu", "dutch": "1.000" },
+          { "indonesian": "dua ribu", "dutch": "2.000" },
+          { "indonesian": "sembilan ribu", "dutch": "9.000" },
+          { "indonesian": "sepuluh ribu", "dutch": "10.000" },
+          { "indonesian": "sejuta", "dutch": "1.000.000" },
+          { "indonesian": "semiliar", "dutch": "1.000.000.000" },
+          { "indonesian": "setriliun", "dutch": "1.000.000.000.000" }
+        ]
+      },
+      "order_index": 6
     }
   ]
 }

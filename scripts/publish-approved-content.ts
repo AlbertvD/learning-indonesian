@@ -13,6 +13,10 @@ import { createClient } from '@supabase/supabase-js'
 import fs from 'fs'
 import path from 'path'
 
+// Homelab uses an internal Step-CA certificate that Node/Bun does not trust by default.
+// This is safe — we're connecting to our own internal Supabase instance.
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+
 // ---------------------------------------------------------------------------
 // Supabase Client
 // ---------------------------------------------------------------------------
@@ -34,30 +38,18 @@ function createSupabaseClient() {
 // Load Staging Data
 // ---------------------------------------------------------------------------
 
-function readStagingFile(stagingDir: string, filename: string): any {
-  const filePath = path.join(stagingDir, filename)
+// Use dynamic import so Bun handles TypeScript syntax (as const, type annotations, etc.)
+// without relying on JSON.parse or new Function which can't handle TS.
+async function readStagingFile(filePath: string): Promise<any> {
   if (!fs.existsSync(filePath)) return null
-  const content = fs.readFileSync(filePath, 'utf-8')
-  const match = content.match(/=\s*([\s\S]*?)(?:\nexport|$)/)
-  if (!match) {
-    console.error(`Error: Could not extract data from ${filePath} — no assignment pattern found`)
-    process.exit(1)
-  }
-
-  const jsStr = match[1].trim().replace(/;$/, '')
-  try {
-    return JSON.parse(jsStr)
-  } catch {
-    try {
-      return new Function(`return ${jsStr}`)()
-    } catch (err) {
-      console.error(`Error: Failed to parse ${filePath}:`, err)
-      process.exit(1)
-    }
-  }
+  // Bun resolves absolute file paths directly; file:// prefix handles cross-platform edge cases
+  const module = await import(`file://${filePath}`)
+  // Return the first export value (lesson, learningItems, grammarPatterns, candidates, clozeContexts)
+  const values = Object.values(module)
+  return values.length > 0 ? values[0] : null
 }
 
-function loadStagingData(lessonNumber: number) {
+async function loadStagingData(lessonNumber: number) {
   const stagingDir = path.join(process.cwd(), 'scripts', 'data', 'staging', `lesson-${lessonNumber}`)
 
   if (!fs.existsSync(stagingDir)) {
@@ -65,13 +57,59 @@ function loadStagingData(lessonNumber: number) {
     process.exit(1)
   }
 
+  const [lesson, learningItems, grammarPatterns, candidates, clozeContexts] = await Promise.all([
+    readStagingFile(path.join(stagingDir, 'lesson.ts')),
+    readStagingFile(path.join(stagingDir, 'learning-items.ts')),
+    readStagingFile(path.join(stagingDir, 'grammar-patterns.ts')),
+    readStagingFile(path.join(stagingDir, 'candidates.ts')),
+    readStagingFile(path.join(stagingDir, 'cloze-contexts.ts')),
+  ])
+
   return {
-    lesson: readStagingFile(stagingDir, 'lesson.ts'),
-    learningItems: readStagingFile(stagingDir, 'learning-items.ts') || [],
-    grammarPatterns: readStagingFile(stagingDir, 'grammar-patterns.ts') || [],
-    candidates: readStagingFile(stagingDir, 'candidates.ts') || [],
-    stagingDir
+    lesson,
+    learningItems: learningItems || [],
+    grammarPatterns: grammarPatterns || [],
+    candidates: candidates || [],
+    clozeContexts: clozeContexts || [],
+    stagingDir,
   }
+}
+
+// ---------------------------------------------------------------------------
+// Validation
+// ---------------------------------------------------------------------------
+
+const VALID_SECTION_TYPES = new Set([
+  'vocabulary', 'expressions', 'numbers', 'dialogue', 'text',
+  'grammar', 'exercises', 'pronunciation', 'reference_table',
+])
+
+function validateSections(sections: any[], lessonNumber: number) {
+  const errors: string[] = []
+  for (const section of sections) {
+    if (!VALID_SECTION_TYPES.has(section.content?.type)) {
+      errors.push(
+        `  Section order_index=${section.order_index} has invalid type: "${section.content?.type}". ` +
+        `Must be one of: ${[...VALID_SECTION_TYPES].join(', ')}`
+      )
+    }
+  }
+  if (errors.length > 0) {
+    console.error(`\n✗ Invalid section type(s) in lesson ${lessonNumber}:`)
+    errors.forEach(e => console.error(e))
+    console.error('\nFix the section type(s) in lesson.ts before publishing.')
+    process.exit(1)
+  }
+}
+
+// Normalise a cloze context slug to match normalized_text in the DB.
+// normalized_text = base_text.toLowerCase().trim().
+// NOTE: do NOT replace hyphens with spaces — Indonesian has legitimately hyphenated
+// words (oleh-oleh, sama-sama, baik-baik) where the hyphen is part of the word.
+// The slug in cloze-contexts.ts must exactly match base_text.toLowerCase().trim().
+// A mismatch warning is emitted so the staging file can be corrected at source.
+function normaliseClozeSlug(slug: string): string {
+  return slug.toLowerCase().trim()
 }
 
 // ---------------------------------------------------------------------------
@@ -80,7 +118,7 @@ function loadStagingData(lessonNumber: number) {
 
 async function publishContent(lessonNumber: number, dryRun: boolean) {
   const supabase = createSupabaseClient()
-  const { lesson, learningItems, grammarPatterns, candidates, stagingDir } = loadStagingData(lessonNumber)
+  const { lesson, learningItems, grammarPatterns, candidates, clozeContexts, stagingDir } = await loadStagingData(lessonNumber)
 
   console.log(`\n${dryRun ? '[DRY RUN] ' : ''}Publishing lesson ${lessonNumber}...`)
 
@@ -100,7 +138,7 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
           .select('id')
           .eq('module_id', lesson.module_id)
           .eq('order_index', lesson.order_index)
-          .single()
+          .maybeSingle()
 
         if (existingLesson) {
           // Update existing lesson
@@ -139,6 +177,9 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
 
         // Publish Sections
         console.log('   Publishing lesson sections...')
+        if (lesson.sections.length > 0) {
+          validateSections(lesson.sections, lessonNumber)
+        }
         for (const section of lesson.sections) {
           await supabase
             .schema('indonesian')
@@ -167,11 +208,13 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
             .schema('indonesian')
             .from('grammar_patterns')
             .upsert({
-              pattern_name: pattern.pattern_name,
-              description: pattern.description,
-              confusion_group: pattern.confusion_group,
-              is_active: true,
-            }, { onConflict: 'pattern_name' })
+              slug: pattern.slug,
+              name: pattern.pattern_name,
+              short_explanation: pattern.description,
+              complexity_score: pattern.complexity_score,
+              confusion_group: pattern.confusion_group ?? null,
+              introduced_by_lesson_id: lessonId,
+            }, { onConflict: 'slug' })
             .select('id')
             .single()
 
@@ -181,7 +224,7 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
             break
           }
           if (patternError) throw patternError
-          patternMap[pattern.pattern_name] = upsertedPattern.id
+          patternMap[pattern.slug] = upsertedPattern.id
         }
       }
       if (!dryRun) {
@@ -190,9 +233,13 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
     }
 
     // 3. Publish Learning Items
-    const approvedItems = learningItems.filter((item: any) => item.review_status === 'approved')
+    // Everything publishes immediately — review happens live in the app via admin account.
+    // Only rejected and already-published items are excluded.
+    const approvedItems = learningItems.filter((item: any) =>
+      item.review_status === 'pending_review' || item.review_status === 'approved'
+    )
     if (approvedItems.length > 0) {
-      console.log(`\n3. Publishing ${approvedItems.length} approved learning items...`)
+      console.log(`\n3. Publishing ${approvedItems.length} learning items...`)
       for (const item of approvedItems) {
         if (dryRun) {
           console.log(`   [DRY RUN] Would publish item: ${item.base_text} -> ${item.translation_nl}`)
@@ -208,7 +255,7 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
               language: 'id',
               level: lesson?.level || 'A1',
               source_type: 'lesson',
-            }, { onConflict: 'base_text' })
+            }, { onConflict: 'normalized_text,item_type' })
             .select('id')
             .single()
 
@@ -241,8 +288,10 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
       
       if (!dryRun) {
         // Mark as published in staging
-        const updatedItems = learningItems.map((item: any) => 
-          item.review_status === 'approved' ? { ...item, review_status: 'published' } : item
+        const updatedItems = learningItems.map((item: any) =>
+          (item.review_status === 'pending_review' || item.review_status === 'approved')
+            ? { ...item, review_status: 'published' }
+            : item
         )
         fs.writeFileSync(
           path.join(stagingDir, 'learning-items.ts'),
@@ -253,54 +302,218 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
     }
 
     // 4. Publish Exercise Candidates
-    const approvedCandidates = candidates.filter((c: any) => c.review_status === 'approved')
+    // Candidates fall into two categories:
+    //   - Grammar exercises (contrast_pair, sentence_transformation, constrained_translation, cloze_mcq):
+    //     linked via lesson_id + grammar_pattern_id — no vocabulary context needed
+    //   - Vocabulary exercises (cloze, recognition_mcq, etc.):
+    //     linked via context_id (looked up by source_text)
+    const GRAMMAR_EXERCISE_TYPES = new Set([
+      'contrast_pair', 'sentence_transformation', 'constrained_translation', 'cloze_mcq',
+    ])
+
+    // Everything publishes immediately — review happens live in the app.
+    const approvedCandidates = candidates.filter((c: any) =>
+      c.review_status === 'pending_review' || c.review_status === 'approved'
+    )
     if (approvedCandidates.length > 0) {
       console.log(`\n4. Publishing ${approvedCandidates.length} approved exercise candidates...`)
+
+      // Build slug → grammar_pattern_id map from what we just published
+      const grammarPatternIdMap: Record<string, string> = {}
+      if (grammarPatterns.length > 0 && !dryRun) {
+        const { data: dbPatterns } = await supabase
+          .schema('indonesian')
+          .from('grammar_patterns')
+          .select('id, slug')
+        for (const p of dbPatterns || []) {
+          grammarPatternIdMap[p.slug] = p.id
+        }
+      }
+
+      let published = 0
+      let skipped = 0
       for (const candidate of approvedCandidates) {
+        const { exercise_type, grammar_pattern_slug, payload } = candidate
+
+        if (!payload) {
+          console.warn(`   ⚠️ Candidate missing payload field (exercise_type: ${exercise_type}) — skipping`)
+          skipped++
+          continue
+        }
+
         if (dryRun) {
-          console.log(`   [DRY RUN] Would publish exercise: ${candidate.exercise_type} for ${candidate.source_text}`)
+          console.log(`   [DRY RUN] Would publish ${exercise_type} (grammar_pattern: ${grammar_pattern_slug ?? 'none'})`)
+          published++
+          continue
+        }
+
+        // Extract answer_key from payload based on exercise type
+        let answerKeyJson: Record<string, unknown> = {}
+        if (exercise_type === 'contrast_pair' || exercise_type === 'cloze_mcq') {
+          answerKeyJson = { correctOptionId: payload.correctOptionId }
+        } else if (exercise_type === 'sentence_transformation' || exercise_type === 'constrained_translation') {
+          answerKeyJson = { acceptableAnswers: payload.acceptableAnswers ?? [] }
+        }
+
+        if (GRAMMAR_EXERCISE_TYPES.has(exercise_type)) {
+          // Grammar exercise: link via lesson_id + grammar_pattern_id
+          if (!lessonId) {
+            console.warn(`   ⚠️ Cannot publish grammar exercise — lessonId not available. Skipping.`)
+            skipped++
+            continue
+          }
+
+          const grammarPatternId = grammar_pattern_slug
+            ? grammarPatternIdMap[grammar_pattern_slug]
+            : undefined
+
+          if (grammar_pattern_slug && !grammarPatternId) {
+            console.warn(`   ⚠️ grammar_pattern_slug "${grammar_pattern_slug}" not found in DB — skipping`)
+            skipped++
+            continue
+          }
+
+          const { error } = await supabase
+            .schema('indonesian')
+            .from('exercise_variants')
+            .insert({
+              lesson_id: lessonId,
+              exercise_type,
+              grammar_pattern_id: grammarPatternId ?? null,
+              payload_json: payload,
+              answer_key_json: answerKeyJson,
+              is_active: true,
+            })
+
+          if (error) {
+            console.warn(`   ⚠️ Failed to insert grammar exercise variant: ${error.message}`)
+            skipped++
+          } else {
+            published++
+          }
         } else {
-          // Find context for the source text
+          // Vocabulary exercise: link via item_context (source_text lookup)
+          const sourceText = payload.sentence ?? payload.sourceSentence ?? payload.sourceLanguageSentence
+          if (!sourceText) {
+            console.warn(`   ⚠️ Vocabulary exercise missing source text in payload — skipping`)
+            skipped++
+            continue
+          }
+
           const { data: context, error: contextError } = await supabase
             .schema('indonesian')
             .from('item_contexts')
             .select('id')
-            .eq('source_text', candidate.source_text)
+            .eq('source_text', sourceText)
             .limit(1)
-            .single()
+            .maybeSingle()
 
-          if (contextError) {
-            console.warn(`   ⚠️ Could not find context for exercise: ${candidate.source_text}. Skipping.`)
+          if (contextError || !context) {
+            console.warn(`   ⚠️ Could not find context for source_text: "${sourceText}" — skipping`)
+            skipped++
             continue
           }
 
-          // Insert Variant
-          await supabase
+          const { error } = await supabase
             .schema('indonesian')
             .from('exercise_variants')
             .insert({
               context_id: context.id,
-              exercise_type: candidate.exercise_type,
-              payload_json: {
-                promptText: candidate.prompt_text,
-                answerKey: candidate.answer_key,
-                explanation: candidate.explanation,
-              },
+              exercise_type,
+              grammar_pattern_id: grammar_pattern_slug ? grammarPatternIdMap[grammar_pattern_slug] ?? null : null,
+              payload_json: payload,
+              answer_key_json: answerKeyJson,
               is_active: true,
             })
+
+          if (error) {
+            console.warn(`   ⚠️ Failed to insert exercise variant: ${error.message}`)
+            skipped++
+          } else {
+            published++
+          }
         }
       }
 
       if (!dryRun) {
-        // Mark as published in staging
-        const updatedCandidates = candidates.map((c: any) => 
-          c.review_status === 'approved' ? { ...c, review_status: 'published' } : c
-        )
-        fs.writeFileSync(
-          path.join(stagingDir, 'candidates.ts'),
-          `// Published via script\nexport const candidates = ${JSON.stringify(updatedCandidates, null, 2)}\n`
-        )
-        console.log('   ✓ Candidates marked as published in staging')
+        // Verify the exercise_variants rows actually landed before marking staging as published
+        const { count: variantCount } = await supabase
+          .schema('indonesian')
+          .from('exercise_variants')
+          .select('*', { count: 'exact', head: true })
+          .eq('lesson_id', lessonId!)
+
+        if ((variantCount ?? 0) < published) {
+          console.warn(`   ⚠️ Expected ${published} exercise_variants for lesson ${lessonNumber} but DB has ${variantCount} — staging NOT marked published`)
+        } else {
+          console.log(`   ✓ ${published} candidates published, ${skipped} skipped`)
+          // Mark as published in staging only after DB confirmation
+          const updatedCandidates = candidates.map((c: any) =>
+            (c.review_status === 'pending_review' || c.review_status === 'approved')
+              ? { ...c, review_status: 'published' }
+              : c
+          )
+          fs.writeFileSync(
+            path.join(stagingDir, 'candidates.ts'),
+            `// Published via script\nexport const candidates = ${JSON.stringify(updatedCandidates, null, 2)}\n`
+          )
+          console.log('   ✓ Candidates marked as published in staging')
+        }
+      }
+    }
+
+    // 5. Publish Cloze Contexts
+    if (clozeContexts.length > 0) {
+      if (!lessonId) {
+        console.warn('\n5. Skipping cloze contexts — lessonId not available (lesson publish may have failed or been skipped)')
+      } else {
+        console.log(`\n5. Publishing ${clozeContexts.length} cloze contexts...`)
+        for (const ctx of clozeContexts) {
+          if (dryRun) {
+            console.log(`   [DRY RUN] Would publish cloze context for: ${ctx.learning_item_slug}`)
+            continue
+          }
+          // Resolve learning_item_id from normalized_text.
+          // learning_item_slug must equal base_text.toLowerCase().trim() (spaces, not hyphens).
+          // normaliseClozeSlug() converts hyphens to spaces as a safety net — but the staging
+          // file should already use the correct form (e.g. "bandar udara", not "bandar-udara").
+          const normalisedSlug = normaliseClozeSlug(ctx.learning_item_slug)
+          if (normalisedSlug !== ctx.learning_item_slug) {
+            console.warn(`   ⚠️ Cloze slug "${ctx.learning_item_slug}" was normalised to "${normalisedSlug}" — fix the staging file`)
+          }
+
+          const { data: item, error: itemError } = await supabase
+            .schema('indonesian')
+            .from('learning_items')
+            .select('id')
+            .eq('normalized_text', normalisedSlug)
+            .limit(1)
+            .maybeSingle()
+
+          if (itemError || !item) {
+            console.warn(`   ⚠️ Could not find learning item for slug: ${ctx.learning_item_slug} — skipping`)
+            continue
+          }
+
+          const { error: ctxError } = await supabase
+            .schema('indonesian')
+            .from('item_contexts')
+            .upsert({
+              learning_item_id: item.id,
+              context_type: 'cloze',
+              source_text: ctx.source_text,
+              translation_text: ctx.translation_text,
+              is_anchor_context: false,
+              difficulty: ctx.difficulty ?? null,
+              topic_tag: ctx.topic_tag ?? null,
+              source_lesson_id: lessonId,
+            }, { onConflict: 'learning_item_id,source_text' })
+
+          if (ctxError) {
+            console.warn(`   ⚠️ Failed to upsert cloze context for ${ctx.learning_item_slug}: ${ctxError.message}`)
+          }
+        }
+        if (!dryRun) console.log('   ✓ Cloze contexts published')
       }
     }
 

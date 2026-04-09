@@ -1,5 +1,5 @@
 // src/pages/Lesson.tsx
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Container, Center, Loader, Text, Tabs, Badge, Progress, Button, Stack, Group, Box } from '@mantine/core'
 import { IconChevronLeft, IconChevronRight, IconCheck } from '@tabler/icons-react'
@@ -17,28 +17,69 @@ import { MiniAudioPlayer } from '@/components/MiniAudioPlayer'
 import type { LearningItem, ItemMeaning, LearnerItemState, LearnerSkillState } from '@/types/learning'
 import classes from './Lesson.module.css'
 
-type ExerciseItem = { dutch?: string; indonesian?: string; phrase?: string; text?: string; question?: string }
+type ExerciseItem = { dutch?: string; indonesian?: string; phrase?: string; text?: string; question?: string; prompt?: string; answer?: string }
 type ExerciseSection = { title: string; instruction?: string; items?: ExerciseItem[] }
 type PhoneticExample = { indonesian: string; phonetic: string; dutch: string }
 type SpellingRule = { rule: string; example: string; dutch: string }
 type SimpleSentence = { indonesian: string; dutch: string }
 type TextData = { type: 'text'; intro?: string; paragraphs?: string[]; examples?: PhoneticExample[]; spelling?: SpellingRule[]; sentences?: SimpleSentence[] }
 type GrammarTableRow = { word: string; asks?: string; dutch?: string; example?: string; combinations?: string[] }
-type GrammarCategory = { title: string; rules?: string[]; table?: GrammarTableRow[] }
+type GrammarCategory = { title: string; rules?: string[]; examples?: { indonesian: string; dutch: string }[]; table?: GrammarTableRow[] | string[][] }
 type DialogueLine = { speaker: string; text: string; translation?: string }
 type PronunciationLetter = { letter: string; rule: string; examples: string[] }
+type ReferenceTableRow = { label: string; cells: string[] }
+type ReferenceTableSection = { heading: string; rows: ReferenceTableRow[] }
 
 type SectionContentData =
-  | { type: 'exercises'; items: ExerciseItem[]; sections?: never }
-  | { type: 'exercises'; sections: ExerciseSection[]; items?: never }
+  | { type: 'vocabulary'; items: ExerciseItem[] }
+  | { type: 'expressions'; items: ExerciseItem[] }
+  | { type: 'numbers'; items: ExerciseItem[] }
+  | { type: 'exercises'; sections: ExerciseSection[] }
   | { type: 'text'; intro?: string; examples?: PhoneticExample[]; spelling?: SpellingRule[]; sentences?: SimpleSentence[] }
   | { type: 'grammar'; intro?: string; categories: GrammarCategory[] }
   | { type: 'dialogue'; setup?: string; lines: DialogueLine[] }
   | { type: 'pronunciation'; letters: PronunciationLetter[] }
+  | { type: 'reference_table'; intro?: string; examples?: SimpleSentence[]; tableTitle?: string; columns: string[]; sections: ReferenceTableSection[]; footnotes?: string[] }
+
+function renderBodyText(body: string) {
+  const paragraphs = body.split(/\n\n+/)
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      {paragraphs.map((para, i) => {
+        // Render **bold** inline
+        const parts = para.split(/(\*\*[^*]+\*\*)/)
+        return (
+          <div key={i} style={{ whiteSpace: 'pre-wrap' }}>
+            {parts.map((part, j) =>
+              part.startsWith('**') && part.endsWith('**')
+                ? <strong key={j}>{part.slice(2, -2)}</strong>
+                : <span key={j}>{part}</span>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
 
 function SectionContent({ content }: { content: unknown }) {
   const data = content as SectionContentData
   const T = useT()
+
+  if (data?.type === 'vocabulary' || data?.type === 'expressions' || data?.type === 'numbers') {
+    return (
+      <div className={classes.contentCard}>
+        <div className={classes.phraseList}>
+          {data.items.map((item, i) => (
+            <div key={i} className={classes.phraseRow}>
+              <div className={classes.phraseIndo}>{item.indonesian}</div>
+              <div className={classes.phraseDutch}>{item.dutch}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   if (data?.type === 'exercises' && Array.isArray(data.sections)) {
     return (
@@ -50,35 +91,22 @@ function SectionContent({ content }: { content: unknown }) {
               <div className={classes.phrasePhonetic} style={{ marginBottom: 8 }}>{section.instruction}</div>
             )}
             {section.items && (
-              <div className={classes.phraseList}>
-                {section.items.map((item, j) => (
-                  <div key={j} className={classes.phraseRow}>
-                    <div className={classes.phraseIndo}>{item.indonesian ?? item.dutch ?? item.phrase ?? item.text ?? item.question}</div>
-                    <div className={classes.phraseDutch}>{item.indonesian && item.dutch ? item.dutch : ''}</div>
-                  </div>
-                ))}
-              </div>
+              <ol className={classes.exerciseList}>
+                {section.items.map((item, j) => {
+                  const prompt = item.prompt ?? item.indonesian ?? item.dutch ?? item.phrase ?? item.text ?? item.question ?? ''
+                  const hint = item.answer ?? (item.indonesian && item.dutch ? item.dutch : undefined)
+                  return (
+                    <li key={j} className={classes.exerciseItem}>
+                      <span className={classes.exercisePrompt}>{prompt}</span>
+                      {hint && <span className={classes.exerciseHint}> — {hint}</span>}
+                    </li>
+                  )
+                })}
+              </ol>
             )}
           </div>
         ))}
       </>
-    )
-  }
-
-  if (data?.type === 'exercises' && Array.isArray(data.items)) {
-    return (
-      <div className={classes.contentCard}>
-        <div className={classes.phraseList}>
-          {data.items.map((item, i) => (
-            <div key={i} className={classes.phraseRow}>
-              <div>
-                <div className={classes.phraseIndo}>{item.indonesian}</div>
-              </div>
-              <div className={classes.phraseDutch}>{item.dutch}</div>
-            </div>
-          ))}
-        </div>
-      </div>
     )
   }
 
@@ -147,6 +175,14 @@ function SectionContent({ content }: { content: unknown }) {
     )
   }
 
+  if (data?.type === 'grammar' && typeof (data as unknown as { body?: string }).body === 'string') {
+    return renderBodyText((data as unknown as { body: string }).body)
+  }
+
+  if (data?.type === 'exercises' && typeof (data as unknown as { body?: string }).body === 'string') {
+    return renderBodyText((data as unknown as { body: string }).body)
+  }
+
   if (data?.type === 'grammar' && Array.isArray(data.categories)) {
     return (
       <>
@@ -164,27 +200,62 @@ function SectionContent({ content }: { content: unknown }) {
                   ))}
                 </div>
               )}
-              {cat.table && cat.table.length > 0 && (
+              {cat.examples && cat.examples.length > 0 && (
                 <div className={classes.phraseList}>
-                  {cat.table.map((row, j) => (
-                    <div key={j}>
-                      <div className={classes.phraseRow}>
-                        <div className={classes.phraseIndo}>{row.word}</div>
-                        <div className={classes.phraseDutch}>{row.asks ?? row.dutch}</div>
-                      </div>
-                      {row.combinations && row.combinations.length > 0 && (
-                        <div style={{ paddingLeft: 16, marginBottom: 4 }}>
-                          {row.combinations.map((c, k) => (
-                            <div key={k} className={classes.phrasePhonetic}>{c}</div>
-                          ))}
-                        </div>
-                      )}
-                      {row.example && (
-                        <div style={{ paddingLeft: 16, marginBottom: 8 }} className={classes.phrasePhonetic}>{row.example}</div>
-                      )}
+                  {(cat.examples as { indonesian: string; dutch: string }[]).map((ex, j) => (
+                    <div key={j} className={classes.phraseRow}>
+                      <div className={classes.phraseIndo}><IndoText text={ex.indonesian} /></div>
+                      <div className={classes.phraseDutch}>{ex.dutch}</div>
                     </div>
                   ))}
                 </div>
+              )}
+              {cat.table && cat.table.length > 0 && (
+                Array.isArray(cat.table[0])
+                  ? (
+                    // string[][] — header row + data rows
+                    <table className={classes.grammarTable}>
+                      <thead>
+                        <tr>
+                          {(cat.table[0] as string[]).map((h, k) => (
+                            <th key={k} className={classes.grammarTableHeader}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(cat.table as string[][]).slice(1).map((row, j) => (
+                          <tr key={j}>
+                            {row.map((cell, k) => (
+                              <td key={k} className={classes.grammarTableCell}>{cell}</td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )
+                  : (
+                    // GrammarTableRow[] — legacy format
+                    <div className={classes.phraseList}>
+                      {(cat.table as GrammarTableRow[]).map((row, j) => (
+                        <div key={j}>
+                          <div className={classes.phraseRow}>
+                            <div className={classes.phraseIndo}>{row.word}</div>
+                            <div className={classes.phraseDutch}>{row.asks ?? row.dutch}</div>
+                          </div>
+                          {row.combinations && row.combinations.length > 0 && (
+                            <div style={{ paddingLeft: 16, marginBottom: 4 }}>
+                              {row.combinations.map((c, k) => (
+                                <div key={k} className={classes.phrasePhonetic}>{c}</div>
+                              ))}
+                            </div>
+                          )}
+                          {row.example && (
+                            <div style={{ paddingLeft: 16, marginBottom: 8 }} className={classes.phrasePhonetic}>{row.example}</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )
               )}
               {i < data.categories.length - 1 && <div className={classes.divider} />}
             </div>
@@ -212,6 +283,65 @@ function SectionContent({ content }: { content: unknown }) {
           ))}
         </div>
       </div>
+    )
+  }
+
+  if (data?.type === 'reference_table') {
+    const d = data as unknown as {
+      type: 'reference_table'
+      intro?: string
+      examples?: SimpleSentence[]
+      tableTitle?: string
+      columns: string[]
+      sections: ReferenceTableSection[]
+      footnotes?: string[]
+    }
+    return (
+      <>
+        {d.intro && (
+          <div className={classes.lessonIntro} style={{ marginBottom: 24 }}>{d.intro}</div>
+        )}
+        {d.examples && d.examples.length > 0 && (
+          <div className={classes.sentenceList} style={{ marginBottom: 28 }}>
+            {d.examples.map((ex, i) => (
+              <div key={i} className={classes.sentenceRow}>
+                <div className={classes.sentenceIndo}>{ex.indonesian}</div>
+                <div className={classes.sentenceDutch}>{ex.dutch}</div>
+              </div>
+            ))}
+          </div>
+        )}
+        {d.tableTitle && (
+          <div className={classes.contentSectionLabel} style={{ marginBottom: 12 }}>{d.tableTitle}</div>
+        )}
+        <div className={classes.refTableWrap}>
+          <table className={classes.refTable}>
+            <thead>
+              <tr>
+                {d.columns.map((col, i) => <th key={i}>{col}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {d.sections.map((section, si) => (
+                <React.Fragment key={si}>
+                  <tr className={classes.refTableSectionHead}>
+                    <td colSpan={d.columns.length}>{section.heading}</td>
+                  </tr>
+                  {section.rows.map((row, ri) => (
+                    <tr key={`${si}-${ri}`}>
+                      <td className={classes.refTableLabelCell}>{row.label}</td>
+                      {row.cells.map((cell, ci) => <td key={ci}>{cell}</td>)}
+                    </tr>
+                  ))}
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {d.footnotes && d.footnotes.map((note, i) => (
+          <div key={i} className={classes.refTableFootnote}>{note}</div>
+        ))}
+      </>
     )
   }
 
@@ -364,7 +494,7 @@ export function Lesson() {
 
     if (currentSectionIndex < lesson.lesson_sections.length - 1) {
       setCurrentSectionIndex(currentSectionIndex + 1)
-      window.scrollTo(0, 0)
+      document.querySelector('main')?.scrollTo(0, 0)
     } else {
       // Final completion
       notifications.show({
@@ -380,7 +510,7 @@ export function Lesson() {
   const handleBack = () => {
     if (currentSectionIndex > 0) {
       setCurrentSectionIndex(currentSectionIndex - 1)
-      window.scrollTo(0, 0)
+      document.querySelector('main')?.scrollTo(0, 0)
     }
   }
 

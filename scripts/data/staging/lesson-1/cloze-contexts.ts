@@ -281,8 +281,8 @@ export const clozeContexts: ClozeContext[] = [
   // di — in, op, te
   {
     learning_item_slug: 'di',
-    source_text: '___ toko pisang mahal, ___ pasar murah.',
-    translation_text: 'In de winkel zijn bananen duur, op de markt zijn ze goedkoop.',
+    source_text: 'Pisang ___ pasar lebih murah daripada di toko.',
+    translation_text: 'Bananen op de markt zijn goedkoper dan in de winkel.',
     difficulty: 'A1',
     topic_tag: 'market',
   },
@@ -489,15 +489,15 @@ export const clozeContexts: ClozeContext[] = [
   // mau — willen
   {
     learning_item_slug: 'mau',
-    source_text: 'Ibu ___ ke pasar. ___ beli pisang.',
-    translation_text: 'Mevrouw wil naar de markt. Ze wil bananen kopen.',
+    source_text: 'Ibu ___ ke pasar untuk beli pisang.',
+    translation_text: 'Mevrouw wil naar de markt om bananen te kopen.',
     difficulty: 'A1',
     topic_tag: 'market',
   },
   {
     learning_item_slug: 'mau',
-    source_text: 'Saya tidak ___ pisang, saya ___ nanas.',
-    translation_text: 'Ik wil geen bananen, ik wil ananas.',
+    source_text: 'Saya tidak ___ pisang.',
+    translation_text: 'Ik wil geen bananen.',
     difficulty: 'A1',
     topic_tag: 'market',
   },
@@ -656,8 +656,8 @@ export const clozeContexts: ClozeContext[] = [
   },
   {
     learning_item_slug: 'saya',
-    source_text: '___ tidak mau pisang, ___ mau nanas.',
-    translation_text: 'Ik wil geen bananen, ik wil ananas.',
+    source_text: '___ tidak mau pisang, tetapi mau nanas.',
+    translation_text: 'Ik wil geen bananen, maar wel ananas.',
     difficulty: 'A1',
     topic_tag: 'market',
   },

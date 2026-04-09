@@ -11,6 +11,8 @@ export const nl = {
     profile: 'Profiel',
     logout: 'Uitloggen',
     settings: 'Instellingen',
+    sections: 'Secties',
+    exercises: 'Oefeningen',
   },
   dashboard: {
     welcomeBack: 'Welkom terug',
@@ -409,6 +411,8 @@ export const en: typeof nl = {
     profile: 'Profile',
     logout: 'Logout',
     settings: 'Settings',
+    sections: 'Sections',
+    exercises: 'Exercises',
   },
   dashboard: {
     welcomeBack: 'Welcome back',

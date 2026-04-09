@@ -1,0 +1,38 @@
+{
+  "lesson": 4,
+  "revision": 2,
+  "reviewedAt": "2026-04-09T00:00:00.000Z",
+  "status": "approved",
+  "issues": [
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "cloze_mcq (all 6 candidates)",
+      "issue": "5 of 6 cloze_mcq candidates have 'yang' as correctOptionId — pattern becomes predictable for the learner",
+      "fix": "Consider varying distractors or adding cloze_mcq where the correct answer is NOT 'yang' (e.g. choosing between 'dan' and 'yang' in equal-emphasis pattern)"
+    }
+  ],
+  "summary": {
+    "total": 1,
+    "critical": 0,
+    "warning": 1
+  },
+  "checks": {
+    "lesson_ts_structure": "PASS — grammar section has 5 categories with rules+examples; exercises section has 4 structured sections",
+    "grammar_patterns": "PASS — 6 patterns, all have slug + complexity_score (3-6), all kebab-case, no cross-lesson slug duplication (all 6 belong to lesson 4 in DB)",
+    "candidates_structural": "PASS — 22 candidates (8 contrast_pair, 6 sentence_transformation, 7 constrained_translation, 6 cloze_mcq), all payloads satisfy type contracts",
+    "candidates_slugs": "PASS — all grammar_pattern_slug values reference slugs in grammar-patterns.ts and DB",
+    "cloze_contexts": "PASS — 98 contexts covering all 82 vocabulary + 16 number items, all source_text contain exactly one ___",
+    "exercise_type_coverage": "PASS — all 6 grammar patterns have at least 1 candidate of each required type (contrast_pair, sentence_transformation, constrained_translation, cloze_mcq)",
+    "no_speaking_candidates": "PASS",
+    "review_status_flags": "PASS — all grammar exercise candidates have requiresManualApproval: true"
+  },
+  "candidateCountsBySlug": {
+    "yang-relative-pronoun": { "contrast_pair": 1, "sentence_transformation": 1, "constrained_translation": 2, "cloze_mcq": 1 },
+    "yang-nominalization": { "contrast_pair": 1, "sentence_transformation": 1, "constrained_translation": 1, "cloze_mcq": 1 },
+    "yang-single-adjective-emphasis": { "contrast_pair": 1, "sentence_transformation": 1, "constrained_translation": 1, "cloze_mcq": 1 },
+    "yang-two-adj-unequal": { "contrast_pair": 2, "sentence_transformation": 1, "constrained_translation": 1, "cloze_mcq": 1 },
+    "yang-two-adj-equal": { "contrast_pair": 1, "sentence_transformation": 1, "constrained_translation": 1, "cloze_mcq": 1 },
+    "ada-yang-existential": { "contrast_pair": 1, "sentence_transformation": 1, "constrained_translation": 1, "cloze_mcq": 1 }
+  }
+}

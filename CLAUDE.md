@@ -1,5 +1,16 @@
 # Learning Indonesian
 
+## Quality Over Speed
+
+Prefer depth and accuracy over fast answers. These rules are non-negotiable:
+
+- **Read code before describing it.** Never summarise how something works without reading the actual implementation. Cite file + line number for every behavioural claim.
+- **Never delegate research to subagents when the task is understanding how the code works.** Subagents produce volume, not verified depth. Use Read/Grep directly.
+- **For design and spec work: cover every edge case before writing.** An incomplete spec costs more to fix than a slow one costs to write.
+- **If a question spans multiple files, read all of them before answering.** Do not answer from memory or inference.
+- **When asked to be thorough, that means exhaustive — not "long."** Length is not thoroughness. Every claim must be grounded in what was actually read.
+- **Missed edge cases caught after implementation cost more time than taking longer upfront.** Always choose the slower, more careful path.
+
 Indonesian language tutor app — React frontend connecting directly to a shared self-hosted Supabase instance.
 
 ## Architecture
@@ -171,42 +182,108 @@ Password resets are handled by an admin via Supabase Studio. If email is needed 
 
 All lesson, vocabulary, and podcast content (including audio files) is **deployed via scripts**, not through any UI.
 
-### Adding a new lesson — full workflow
+### Two content paths — choose based on lesson number
 
-New lessons start as physical coursebook pages photographed with a phone. The full pipeline:
+> **Critical:** Lessons 1–3 and lessons 4+ use completely different pipelines. Mixing them up causes vocabulary to appear in the lesson reader but never be schedulable in review sessions.
+
+| | Lessons 1–3 (legacy) | Lessons 4+ (pipeline) |
+|---|---|---|
+| Source of truth | `scripts/data/lessons.ts` + `vocabulary.ts` | `scripts/data/staging/lesson-N/` |
+| Vocabulary seeding | `make seed-vocabulary` → `vocabulary` table | `publish-approved-content.ts` → `learning_items` table |
+| Exercise scheduling | Runtime from `vocabulary` table | Runtime from `learning_items` + `exercise_variants` |
+| Seed command | `make seed-lessons` + `make seed-vocabulary` | `bun scripts/publish-approved-content.ts <N>` |
+
+**Never add vocabulary to `lessons.ts` for lessons 4+.** `lessons.ts` only populates display content (`lesson_sections`) — vocabulary in it will never be schedulable in review sessions. For lessons 4+, vocabulary lives in staging files and is published via `publish-approved-content.ts`.
+
+---
+
+### Adding a new lesson (lessons 4+) — full pipeline
+
+New lessons start as physical coursebook pages photographed with a phone.
+
+**Publishing policy:** Everything publishes immediately. There is no manual approval gate. All content (`pending_review` and `approved`) is published as-is. Review and correction happens live in the app via the admin account.
 
 **Step 1 — Photograph pages**
-Take photos of each coursebook page and place them in `content/raw/lesson-<N>/` as JPEGs or PNGs. File names don't matter.
+Place photos in `content/raw/lesson-<N>/` as JPEGs or HEICs.
 
-**Step 2 — Extract lesson content with AI**
-Run the extraction script. It sends all page images to Claude in one API call with structured output and saves the result to both an intermediate JSON file and a ready-to-use TypeScript data file:
-
+**Step 2 — Convert and OCR**
 ```bash
-make extract-lesson LESSON=<N> ANTHROPIC_API_KEY=<key>
-# Reads:   content/raw/lesson-<N>/*.{jpg,jpeg,png}
-# Writes:  content/extracted/lesson-<N>.json  (intermediate, gitignored)
-#          scripts/data/lesson-<N>.ts          (version-controlled)
+bun scripts/convert-heic-to-jpg.ts <N>   # convert HEIC to JPG
+bun scripts/ocr-pages.ts <N>             # extract text via Tesseract → content/extracted/lesson-N/page-N.txt
 ```
 
-Review `scripts/data/lesson-<N>.ts` and fix any extraction errors before proceeding.
-
-**Step 3 — Generate audio via NotebookLM**
-The extraction script also outputs a plain-text file (`content/extracted/lesson-<N>-text.txt`) containing the lesson content formatted for NotebookLM. Upload this file to NotebookLM as a source, generate a podcast episode, then download the `.mp3` and place it at `content/podcasts/lesson-<N>.mp3`.
-
-**Step 4 — Deploy**
+**Step 3 — LLM section catalog** *(requires ANTHROPIC_API_KEY)*
 ```bash
-make seed-lessons SUPABASE_SERVICE_KEY=<key>      # upserts lesson + vocabulary data
+bun scripts/catalog-lesson-sections.ts <N> [--level A1] [--force]
+```
+Claude reads every extracted page, identifies section boundaries from Dutch headers, fully parses vocabulary/expressions/numbers/dialogue/text items, and captures grammar/exercises/pronunciation as raw text. Reviews photos alongside OCR text to recover content the OCR missed.
+Output: `scripts/data/staging/lesson-<N>/sections-catalog.json`
+
+**Step 4 — Generate staging files**
+```bash
+bun scripts/generate-staging-files.ts <N>
+```
+Deterministic. Reads catalog → writes `lesson.ts` (all display sections) and `learning-items.ts` (vocabulary/expressions/numbers/dialogue items). Scaffolds empty `grammar-patterns.ts`, `candidates.ts`, `cloze-contexts.ts` if absent.
+
+**Step 5 — Linguist Creator**
+Run the `linguist-creator` agent to structure grammar/exercise sections in `lesson.ts`, generate grammar patterns, exercise candidates, and cloze contexts.
+Output: updated `lesson.ts`, `grammar-patterns.ts`, `candidates.ts`, `cloze-contexts.ts`
+
+**Step 6 — Linguist Reviewer**
+Run the `linguist-reviewer` agent to validate creator output against payload contracts and slug uniqueness.
+Output: `scripts/data/staging/lesson-<N>/review-report.json`
+
+If `review-report.json` status is `needs_revision` (CRITICAL issues only): re-run creator, then reviewer. Repeat until `approved`. WARNINGs are flagged for admin review in the app and do not block publishing.
+
+**Step 7 — Publish**
+```bash
+bun scripts/publish-approved-content.ts <N> --dry-run   # preview
+bun scripts/publish-approved-content.ts <N>             # publish
+```
+Publishes everything in one shot: lesson sections, vocabulary items, grammar patterns, cloze contexts, and exercise variants. All `pending_review` content is included. The `NODE_TLS_REJECT_UNAUTHORIZED=0` flag is built into the script for the homelab's internal CA.
+
+### Staging files reference
+
+| File | Written by | Purpose |
+|---|---|---|
+| `sections-catalog.json` | `catalog-lesson-sections.ts` | LLM classification output — source of truth for lesson.ts and learning-items.ts |
+| `lesson.ts` | `generate-staging-files.ts` | Display sections for lesson reader |
+| `learning-items.ts` | `generate-staging-files.ts` | Schedulable FSRS items |
+| `grammar-patterns.ts` | `linguist-creator` | Grammar patterns with slug + complexity |
+| `candidates.ts` | `linguist-creator` | Authored exercise variants |
+| `cloze-contexts.ts` | `linguist-creator` | Cloze sentences per vocabulary item |
+| `review-report.json` | `linguist-reviewer` | Review status and flagged issues |
+| `index.ts` | `generate-staging-files.ts` | Barrel export |
+
+---
+
+### Adding a new lesson (legacy — lessons 1–3 only)
+
+These lessons predate the pipeline. Their content lives in `scripts/data/lessons.ts` and `vocabulary.ts`.
+
+**Do not use this path for lessons 4+.**
+
+```bash
+make seed-lessons SUPABASE_SERVICE_KEY=<key>
+make seed-vocabulary SUPABASE_SERVICE_KEY=<key>
 make seed-podcasts SUPABASE_SERVICE_KEY=<key>      # uploads audio to Supabase Storage
 ```
 
+---
+
 ### Text content (in repo)
-Lesson structure, vocabulary, and podcast metadata live as TypeScript data files in `scripts/data/` — version-controlled alongside the app. Source data migrated from the original seed scripts in `homelab-configs/Indonesian app/backend/prisma/`.
 
 ```
 scripts/data/
-├── lessons.ts       — lesson structure and sections
-├── vocabulary.ts    — vocabulary per lesson (~199 words across 3 lessons so far)
-└── podcasts.ts      — podcast metadata and transcripts
+├── lessons.ts              — LEGACY: display sections for lessons 1–3 only
+├── vocabulary.ts           — LEGACY: vocabulary for lessons 1–3 only
+├── podcasts.ts             — podcast metadata and transcripts (all lessons)
+└── staging/
+    └── lesson-N/           — PIPELINE: source of truth for lessons 4+
+        ├── lesson.ts       — lesson structure + sections
+        ├── learning-items.ts — vocabulary with review_status
+        ├── grammar-patterns.ts — grammar pattern enrichment
+        └── candidates.ts   — exercise candidates
 ```
 
 ### Local files (not in repo)
@@ -223,13 +300,20 @@ content/
 
 ### Deploying content
 
+**Lessons 4+ (pipeline):**
+```bash
+bun scripts/publish-approved-content.ts <N> --dry-run
+bun scripts/publish-approved-content.ts <N>
+```
+
+**Lessons 1–3 (legacy) and shared infrastructure:**
 ```bash
 make migrate                                     # apply schema via SSH → docker exec (idempotent, re-runnable)
 make seed-lessons SUPABASE_SERVICE_KEY=<key>
 make seed-vocabulary SUPABASE_SERVICE_KEY=<key>
 make seed-podcasts SUPABASE_SERVICE_KEY=<key>    # uploads audio from content/podcasts/
-make seed-flashcards SUPABASE_SERVICE_KEY=<key> # seeds public decks from vocabulary
-make seed-all SUPABASE_SERVICE_KEY=<key>         # lessons + vocabulary
+make seed-flashcards SUPABASE_SERVICE_KEY=<key>  # seeds public decks from vocabulary
+make seed-all SUPABASE_SERVICE_KEY=<key>         # lessons + vocabulary (legacy only)
 ```
 
 `make migrate` requires `POSTGRES_PASSWORD` in `.env.local`. It SSHes into the homelab (`mrblond@192.168.2.51`), runs the SQL via `docker exec supabase-db`, and automatically reloads the PostgREST schema cache. Safe to re-run after any container recreation.

@@ -1,0 +1,38 @@
+{
+  "lesson": 1,
+  "revision": 2,
+  "reviewedAt": "2026-04-09T00:00:00Z",
+  "status": "approved",
+  "issues": [
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "contrast_pair / sentence_transformation / constrained_translation (lines 385–593, review_status: approved)",
+      "issue": "11 candidates in the 'approved' batch are missing the source_page field. This is a convention for traceability, not required by the publish script.",
+      "fix": "Optionally add \"source_page\": 1 to each approved candidate for consistency."
+    }
+  ],
+  "summary": {
+    "total": 1,
+    "critical": 0,
+    "warning": 1
+  },
+  "resolvedSinceLastRevision": [
+    {
+      "severity": "CRITICAL",
+      "description": "4 candidates with grammar_pattern_slug 'adjective-after-noun' removed from candidates.ts (pattern belongs to lesson 2)"
+    },
+    {
+      "severity": "CRITICAL",
+      "description": "cloze context for 'di' (line 284) rewritten with single ___ placeholder"
+    },
+    {
+      "severity": "CRITICAL",
+      "description": "cloze context for 'saya' (line 659) rewritten with single ___ placeholder"
+    },
+    {
+      "severity": "CRITICAL",
+      "description": "cloze context for 'mau' (line 499) rewritten with single ___ placeholder — fixed in this review pass"
+    }
+  ]
+}

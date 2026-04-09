@@ -553,6 +553,87 @@
   margin: 22px 0;
 }
 
+/* Reference table (e.g. bezittelijk voornaamwoord) */
+.refTableWrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 20px;
+}
+
+.refTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+
+.refTable th {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 2px solid var(--border);
+}
+
+.refTable th:first-child {
+  min-width: 140px;
+}
+
+.refTableSectionHead td {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  padding: 14px 12px 6px;
+  border-bottom: 1px solid rgba(0,229,255,0.2);
+  background: transparent;
+}
+
+.refTable tbody tr:not(.refTableSectionHead) td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.refTable tbody tr:not(.refTableSectionHead):last-child td {
+  border-bottom: none;
+}
+
+.refTableLabelCell {
+  color: var(--text-primary) !important;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.refTableFootnote {
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin-top: 12px;
+  line-height: 1.6;
+}
+
+/* Light theme overrides for reference table */
+:global(html[data-mantine-color-scheme="light"]) .refTableSectionHead td {
+  color: var(--accent-primary);
+  border-bottom-color: rgba(0,153,184,0.25);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .refTable tbody tr:not(.refTableSectionHead) td {
+  border-bottom-color: var(--border);
+}
+
+:global(html[data-mantine-color-scheme="light"]) .refTable th {
+  border-bottom-color: var(--border);
+}
+
 .vocabItem {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -700,4 +781,54 @@
 
 :global(html[data-mantine-color-scheme="light"]) .vocabItem:hover {
   border-color: var(--card-hover-border);
+}
+
+/* Exercise items */
+.exerciseList {
+  margin: 0;
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exerciseItem {
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.exercisePrompt {
+  color: var(--text-primary);
+}
+
+.exerciseHint {
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+/* Grammar tables (string[][] format) */
+.grammarTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.grammarTableHeader {
+  text-align: left;
+  padding: 6px 12px;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--border);
+}
+
+.grammarTableCell {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+  line-height: 1.5;
 }

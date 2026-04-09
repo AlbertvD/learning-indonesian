@@ -1,3 +1,7 @@
+// LEGACY FILE — lessons 1–3 only.
+// For lessons 4+, use scripts/data/staging/lesson-N/ and publish-approved-content.ts.
+// Adding vocabulary here for lessons 4+ will make it display-only — never schedulable.
+
 export interface LessonData {
   module_id: string
   level: string
@@ -116,7 +120,7 @@ export const lessons: LessonData[] = [
       {
         title: 'Woordenlijst',
         content: {
-          type: 'exercises',
+          type: 'vocabulary',
           items: [
             { indonesian: 'akhir', dutch: 'einde' },
             { indonesian: 'apa?', dutch: 'wat?' },
@@ -169,7 +173,7 @@ export const lessons: LessonData[] = [
       {
         title: 'Uitdrukkingen',
         content: {
-          type: 'exercises',
+          type: 'expressions',
           items: [
             { indonesian: 'Apa kabar?', dutch: 'Hoe gaat het ermee?' },
             { indonesian: 'Baik-baik saja', dutch: 'Goed, dank u wel' },
@@ -184,7 +188,7 @@ export const lessons: LessonData[] = [
       {
         title: 'Telwoorden',
         content: {
-          type: 'exercises',
+          type: 'numbers',
           items: [
             { indonesian: 'nol, kosong', dutch: '0' },
             { indonesian: 'satu', dutch: '1' },
@@ -333,7 +337,7 @@ export const lessons: LessonData[] = [
       {
         title: 'Woordenlijst',
         content: {
-          type: 'exercises',
+          type: 'vocabulary',
           items: [
             { indonesian: 'ada', dutch: 'er is, er zijn; hebben' },
             { indonesian: 'apel', dutch: 'appel' },
@@ -394,7 +398,7 @@ export const lessons: LessonData[] = [
       {
         title: 'Uitdrukkingen',
         content: {
-          type: 'exercises',
+          type: 'expressions',
           items: [
             { indonesian: 'sampai bertemu lagi', dutch: 'tot (weer)ziens' },
             { indonesian: 'saya pulang dulu', dutch: 'dan ga ik maar (naar huis)' },
@@ -406,7 +410,7 @@ export const lessons: LessonData[] = [
       {
         title: 'Telwoorden',
         content: {
-          type: 'exercises',
+          type: 'numbers',
           items: [
             { indonesian: 'sebelas', dutch: '11' },
             { indonesian: 'dua belas', dutch: '12' },
@@ -734,7 +738,7 @@ export const lessons: LessonData[] = [
       {
         title: 'Woordenlijst',
         content: {
-          type: 'exercises',
+          type: 'vocabulary',
           items: [
             { indonesian: 'ada', dutch: 'is, zijn' },
             { indonesian: 'bandar', dutch: 'haven' },
@@ -791,7 +795,7 @@ export const lessons: LessonData[] = [
       {
         title: 'Uitdrukkingen',
         content: {
-          type: 'exercises',
+          type: 'expressions',
           items: [
             { indonesian: 'bandar udara / lapangan terbang', dutch: 'vliegveld' },
             { indonesian: 'Minta tolong', dutch: 'kunt u me helpen?; hulp vragen' },
@@ -806,7 +810,7 @@ export const lessons: LessonData[] = [
       {
         title: 'Telwoorden',
         content: {
-          type: 'exercises',
+          type: 'numbers',
           items: [
             { indonesian: 'sepuluh', dutch: '10' },
             { indonesian: 'dua puluh', dutch: '20' },
@@ -1032,6 +1036,621 @@ export const lessons: LessonData[] = [
           ],
         },
         order_index: 8,
+      },
+    ],
+  },
+  {
+    module_id: 'module-1',
+    level: 'A1',
+    title: 'Les 4 - Di Hotel',
+    description: 'Accommodatie en eten in Indonesië. Grammatica: de YANG-constructie (betrekkelijk voornaamwoord, nadruk, zelfstandig naamwoord vormen).',
+    order_index: 4,
+    audio_filename: 'lesson-4.m4a',
+    duration_seconds: null,
+    transcript_dutch: null,
+    transcript_indonesian: null,
+    transcript_english: null,
+    sections: [
+      {
+        title: 'Cultuur: Accommodatie in Indonesië',
+        content: {
+          type: 'text',
+          paragraphs: [
+            'Sommigen brengen de nacht door onder een flonkerende tropenhemel op het witte strand van Bali. Het is romantisch en goedkoop, al moet je de voortdurende nieuwsgierigheid van stekende muggen, blaffende hondjes en nachtelijke vissers op de koop toe nemen. Mocht je toch in slaap vallen, dan ben je bij deze gewaarschuwd: om vijf uur \'s ochtends gonst het strand van de bedrijvigheid.',
+            'Een andere mogelijkheid is het huren van een kamer in een "penginapan", vrij vertaald: "een plaats waar je kunt overnachten". Je krijgt er een slaapplaats aangewezen in een slaapzaal en wanneer je geluk hebt is er wellicht een afsluitbare tweepersoonskamer te huur. Ontbijt en andere maaltijden worden niet geserveerd. De kosten kunnen variëren van Rp 7.000 tot Rp 20.000.',
+            'De nettere slaapgelegenheden presenteren zich als "losmen" (van het Nederlandse "logement"). Het beheer is meestal in handen van een familie. Het zijn in feite goedkope hotels met dien verstande dat ze niet de daarbij behorende service verlenen. De prijzen liggen tussen de Rp 15.000 - Rp 30.000.',
+            'Van betere kwaliteit zijn de \'guesthouses\'. Over het algemeen is de hygiëne goed en zijn toilet en mandi-kamer schoon. Let op zaken zoals: de ligging van de kamer, netheid, de aanwezigheid van een ventilator of AC en voldoende verlichting.',
+          ],
+        },
+        order_index: 0,
+      },
+      {
+        title: 'Cultuur: Rijst in Indonesië',
+        content: {
+          type: 'text',
+          paragraphs: [
+            'Reeds voor het begin van de christelijke jaartelling verbouwden de volkeren van Indonesië rijst op zowel droge (lading) als natte (sawah) gronden. Natte rijstteelt geeft een hogere opbrengst maar is bijzonder arbeidsintensief. Dit heeft geleid tot de kenmerkende terrasbouw op onder andere Java en Bali.',
+            'Rijst is het basisvoedsel van de overgrote meerderheid van de Indonesiërs. Het Indonesisch kent verschillende termen voor rijst, al naar gelang de stadia van groei en verwerking.',
+            'Wil men aangeven dat de rijst op een bepaalde wijze is bereid, dan voegt men een woord toe: nasi putih (gekookte witte rijst), nasi goreng (gebakken rijst), nasi kuning (met kruiden geel gekookte rijst).',
+            'Een normale Indonesische maaltijd bestaat uit rijst en twee tot drie andere gerechten.',
+          ],
+        },
+        order_index: 1,
+      },
+      {
+        title: 'Dialoog: Di Hotel',
+        content: {
+          type: 'dialogue',
+          lines: [
+            { speaker: 'Ibu Dewi', text: 'Selamat siang, Mas. Kamar saya nomor berapa?' },
+            { speaker: 'Mas Wawan', text: 'Nomor 215, Bu. Di lantai 2.' },
+            { speaker: 'Mas Wawan', text: 'Paspor Ibu di mana? Saya harus isi formulir hotel.' },
+            { speaker: 'Ibu Dewi', text: 'Ini paspor saya. Kunci saya di mana?' },
+            { speaker: 'Mas Wawan', text: 'Kunci yang kecil dan kuning ini kunci Ibu, silakan!' },
+            { speaker: 'Ibu Dewi', text: 'Kamar saya bagus. Kamar mandi ada di mana?' },
+            { speaker: 'Mas Wawan', text: 'Di sini, Bu. Handuk, sabun dan sikat gigi ada. Di situ bak air.' },
+            { speaker: 'Mas Wawan', text: 'Air di bak untuk mandi.' },
+            { speaker: 'Ibu Dewi', text: 'Oke, terima kasih, ya Mas!' },
+            { speaker: 'Ibu Dewi', text: 'Mas, saya ingin makan. Apa makanan yang enak?' },
+            { speaker: 'Mas Imran', text: 'Oo, apa Ibu suka ayam pedas, nasi kuning dan lauk?' },
+            { speaker: 'Ibu Dewi', text: 'Eeh... suka, tetapi saya ingin makan sate kambing, gado-gado dan nasi putih.' },
+            { speaker: 'Ibu Dewi', text: 'Tambah krupuk juga dan segelas air putih, ya Mas.' },
+          ],
+        },
+        order_index: 2,
+      },
+      {
+        title: 'Grammatica: YANG - Constructie',
+        content: {
+          type: 'grammar',
+          intro: 'In Indonesische zinnen komt het woord yang regelmatig voor. Het is niet altijd eenvoudig yang goed in het Nederlands te vertalen omdat het diverse functies vervult. Yang koppelt het woord dat erop volgt of de woordgroep die eraan voorafgaat.',
+          categories: [
+            {
+              title: '1. Yang als betrekkelijk voornaamwoord (die / dat)',
+              rules: [
+                'Yang verbindt een bijzin aan het zelfstandig naamwoord waarnaar het verwijst.',
+              ],
+              examples: [
+                { indonesian: 'Pisang yang terlalu tua tidak enak', dutch: 'Een banaan die te oud is, is niet lekker' },
+                { indonesian: 'Ini orang Belanda yang tinggal di Bogor', dutch: 'Dit is de Nederlander die in Bogor woont' },
+              ],
+            },
+            {
+              title: '2. Yang maakt zelfstandige naamwoorden',
+              rules: [
+                'Yang vóór een bijvoeglijk naamwoord of werkwoord maakt er een zelfstandig naamwoord van: "de/het ... e", "degene die ...".',
+              ],
+              examples: [
+                { indonesian: 'Yang mahal bagus', dutch: 'De dure (dingen) zijn mooi' },
+                { indonesian: 'Yang besar enak', dutch: 'De grote is lekker' },
+                { indonesian: 'Yang tidur banyak', dutch: 'Degenen die slapen zijn talrijk' },
+                { indonesian: 'Yang mau ke toko harus naik taksi', dutch: 'Degenen die naar de winkel willen moeten een taxi nemen' },
+                { indonesian: 'Yang dua ini bersih', dutch: 'Deze twee zijn schoon' },
+              ],
+            },
+            {
+              title: '3a. Yang bij één bijvoeglijk naamwoord (nadruk)',
+              rules: [
+                'Yang tussen zelfstandig naamwoord en bijvoeglijk naamwoord geeft nadruk op het bijvoeglijk naamwoord.',
+                'Na samengestelde zelfstandige naamwoorden (kamar mandi, tempat tidur) is yang verplicht.',
+                'Na een bezittelijk voornaamwoord dient een bijvoeglijk naamwoord ook voorafgegaan te worden door yang.',
+              ],
+              examples: [
+                { indonesian: 'Rumah yang besar', dutch: 'Het gróte huis' },
+                { indonesian: 'Sendok yang bersih', dutch: 'De schóne lepel' },
+                { indonesian: 'Kamar mandi yang putih', dutch: 'De witte badkamer (samengesteld zn.)' },
+                { indonesian: 'Tempat tidur yang besar', dutch: 'Het grote bed (samengesteld zn.)' },
+                { indonesian: 'Sepeda saya yang kecil hilang', dutch: 'Mijn kleine fiets is verdwenen (na bezittelijk vnw.)' },
+              ],
+            },
+            {
+              title: '3b. Yang bij twee bijvoeglijke naamwoorden',
+              rules: [
+                'Ongelijke nadruk: (bijv. naamwoord) yang (bijv. naamwoord) — het tweede bijv. naamwoord krijgt nadruk.',
+                'Gelijke nadruk: yang (bijv. naamwoord) dan (bijv. naamwoord) — beide krijgen gelijke nadruk.',
+              ],
+              examples: [
+                { indonesian: 'Rumah besar yang kuning', dutch: 'Het gele grote huis (nadruk op geel)', note: 'ongelijke nadruk' },
+                { indonesian: 'Sendok kecil yang bersih', dutch: 'De schone kleine lepel', note: 'ongelijke nadruk' },
+                { indonesian: 'Rumah yang besar dan kuning', dutch: 'Het gele, grote huis (beide nadruk)', note: 'gelijke nadruk' },
+                { indonesian: 'Pintu kamar yang putih dan berat', dutch: 'De zware, witte kamerdeur', note: 'gelijke nadruk' },
+              ],
+            },
+            {
+              title: '4. Ada yang... (er zijn er die... / sommigen...)',
+              rules: [
+                'Ada yang... wordt gebruikt om aan te geven dat sommigen iets doen of zijn.',
+              ],
+              examples: [
+                { indonesian: 'Ada yang dari negeri Belanda en ada yang dari negeri Jerman', dutch: 'Er zijn er die uit Nederland komen en er zijn er die uit Duitsland komen' },
+              ],
+            },
+          ],
+        },
+        order_index: 3,
+      },
+      {
+        title: 'Oefeningen',
+        content: {
+          type: 'exercises',
+          sections: [
+            {
+              title: 'Oefening I — Vertaal en gebruik in elke zin yang.',
+              items: [
+                { dutch: 'Het huis van Jan dat groot is, is mooi' },
+                { dutch: 'De fiets van Fedi die nieuw is, is schoon' },
+                { dutch: 'Waar is de nieuwe school?' },
+                { dutch: 'Welke vruchten heeft moeder op de markt gekocht?' },
+                { dutch: 'Waarom is de grote badkamer nog niet schoon?' },
+                { dutch: 'Die lekkere kroepoek heb ik op de markt gekocht' },
+                { dutch: 'De kleine auto is snel' },
+                { dutch: 'Hoeveel witte handdoeken zijn er?' },
+                { dutch: 'Waar is die nieuwe kast?' },
+              ],
+            },
+            {
+              title: 'Oefening II — Vertaal.',
+              items: [
+                { dutch: 'Dat zijn nieuwe koffers. De grote is zwaar, maar de kleine is licht.' },
+                { dutch: 'Daar staan huizen. De nieuwe zijn groot, maar de oude zijn klein.' },
+                { dutch: 'Hier is de nieuwe kast. De oude is in de slaapkamer.' },
+                { dutch: 'Waar zijn de kinderen? De kleintjes zijn in de badkamer, de groten zijn in de eetkamer.' },
+                { dutch: 'Op de markt zijn veel mensen. Er zijn er die fruit kopen en er zijn er die groenten kopen.' },
+              ],
+            },
+            {
+              title: 'Oefening III — Vraag en antwoord.',
+              instruction: 'Contoh: 3 koffers → Itu berapa koper? → Itu tiga koper.',
+              items: [
+                { dutch: '4 fietsen' },
+                { dutch: '1.563 huizen' },
+                { dutch: '2.690 kippen' },
+                { dutch: '187 vorken' },
+                { dutch: '1.259 lepels' },
+                { dutch: '375 vrienden' },
+                { dutch: '193 kasten' },
+                { dutch: '352 tafels' },
+                { dutch: '23.675.890 kinderen' },
+                { dutch: '11.100 auto\'s' },
+                { dutch: '1.789 bananen' },
+                { dutch: '257 gasten' },
+                { dutch: '4.687 borden' },
+                { dutch: '5.900 stoelen' },
+                { dutch: '31.342 borstels' },
+                { dutch: '1.878 steden' },
+              ],
+            },
+            {
+              title: 'Oefening IV — Maak zinnen waarin het opgegeven woord voorkomt.',
+              items: [
+                { text: 'ke atas' },
+                { text: 'terlalu' },
+                { text: 'piring' },
+                { text: 'ini' },
+                { text: 'apa' },
+                { text: 'tidak' },
+                { text: 'dari' },
+                { text: 'berapa' },
+                { text: 'meja' },
+                { text: 'dengan' },
+                { text: 'buka' },
+                { text: 'kiri' },
+                { text: 'cari' },
+                { text: 'siapa' },
+                { text: 'cukup' },
+                { text: 'sekarang' },
+                { text: 'pelan-pelan' },
+                { text: 'turun' },
+                { text: 'naik' },
+                { text: 'tempat duduk' },
+              ],
+            },
+          ],
+        },
+        order_index: 4,
+      },
+      {
+        title: 'Woordenlijst',
+        content: {
+          type: 'vocabulary',
+          items: [
+            { indonesian: 'air', dutch: 'water' },
+            { indonesian: 'air putih', dutch: 'drinkwater' },
+            { indonesian: '(akan) tetapi', dutch: 'maar, echter' },
+            { indonesian: 'anak', dutch: 'kind' },
+            { indonesian: 'anak-anak', dutch: 'kinderen' },
+            { indonesian: 'bak / bak air', dutch: 'bak / waterbak' },
+            { indonesian: 'bersih', dutch: 'schoon' },
+            { indonesian: 'duduk', dutch: 'zitten' },
+            { indonesian: 'formulir', dutch: 'formulier' },
+            { indonesian: 'gado-gado', dutch: 'groentegerecht' },
+            { indonesian: 'garpu', dutch: 'vork' },
+            { indonesian: 'gelas', dutch: 'glas' },
+            { indonesian: 'gigi', dutch: 'tand' },
+            { indonesian: 'goreng', dutch: 'bakken, braden' },
+            { indonesian: 'ingin', dutch: 'verlangen, willen' },
+            { indonesian: 'isi', dutch: 'inhoud, (in)vullen' },
+            { indonesian: 'jambu air', dutch: 'een bepaalde vrucht' },
+            { indonesian: 'Jerman', dutch: 'Duitsland, Duits' },
+            { indonesian: 'juga', dutch: 'ook' },
+            { indonesian: 'kamar kecil', dutch: 'toilet, w.c.' },
+            { indonesian: 'kamar makan', dutch: 'eetkamer' },
+            { indonesian: 'kamar mandi', dutch: 'badkamer' },
+            { indonesian: 'kambing', dutch: 'geit' },
+            { indonesian: 'kecap', dutch: 'sojasaus' },
+            { indonesian: 'kenyang', dutch: 'genoeg, voldaan' },
+            { indonesian: 'kopi', dutch: 'koffie' },
+            { indonesian: 'kopi pahit', dutch: 'zwarte koffie' },
+            { indonesian: 'kopi tubruk', dutch: 'zwarte koffie met suiker' },
+            { indonesian: 'krupuk / kroepoek', dutch: 'kroepoek' },
+            { indonesian: 'kunci', dutch: 'sleutel' },
+            { indonesian: 'kursi', dutch: 'stoel' },
+            { indonesian: 'lantai', dutch: 'verdieping, vloer' },
+            { indonesian: 'lauk', dutch: 'bijgerechten' },
+            { indonesian: 'makanan', dutch: 'voedsel' },
+            { indonesian: 'meja', dutch: 'tafel' },
+            { indonesian: 'mengantar', dutch: 'begeleiden, brengen' },
+            { indonesian: 'minum', dutch: 'drinken' },
+            { indonesian: 'minuman', dutch: 'drank' },
+            { indonesian: 'pedas', dutch: 'heet (van smaak), scherp' },
+            { indonesian: 'pelan-pelan', dutch: 'langzaam (aan)' },
+            { indonesian: 'pesan', dutch: 'bestellen' },
+            { indonesian: 'piring', dutch: 'bord' },
+            { indonesian: 'sabun', dutch: 'zeep' },
+            { indonesian: 'sambal', dutch: 'pasta van Spaanse pepers' },
+            { indonesian: 'sate', dutch: 'saté' },
+            { indonesian: 'sikat gigi', dutch: 'tandenborstel' },
+            { indonesian: 'terlalu', dutch: 'te (bijwoord van graad)' },
+            { indonesian: 'tersedia', dutch: 'klaar staan, gereed' },
+            { indonesian: 'tidur', dutch: 'slapen' },
+            { indonesian: 'turun', dutch: 'afdalen, uitstappen' },
+          ],
+        },
+        order_index: 5,
+      },
+      {
+        title: 'Telwoorden',
+        content: {
+          type: 'numbers',
+          items: [
+            { indonesian: 'dua ratus', dutch: '200' },
+            { indonesian: 'tiga ratus', dutch: '300' },
+            { indonesian: 'empat ratus', dutch: '400' },
+            { indonesian: 'lima ratus', dutch: '500' },
+            { indonesian: 'enam ratus', dutch: '600' },
+            { indonesian: 'tujuh ratus', dutch: '700' },
+            { indonesian: 'delapan ratus', dutch: '800' },
+            { indonesian: 'sembilan ratus', dutch: '900' },
+            { indonesian: 'seribu / satu ribu', dutch: '1.000' },
+            { indonesian: 'dua ribu', dutch: '2.000' },
+            { indonesian: 'sepuluh ribu', dutch: '10.000' },
+            { indonesian: 'sejuta / satu juta', dutch: '1.000.000' },
+            { indonesian: 'semiliar / satu miliar', dutch: '1.000.000.000' },
+            { indonesian: 'setriliun / satu triliun', dutch: '1.000.000.000.000' },
+          ],
+        },
+        order_index: 6,
+      },
+    ],
+  },
+  {
+    module_id: 'module-1',
+    level: 'A1',
+    title: 'Les 5 - Belajar',
+    description: 'Family dialogue about studying at home. Grammar focus: personal pronouns (persoonlijk voornaamwoord) and possessive pronouns (bezittelijk voornaamwoord), including kami vs kita distinction.',
+    order_index: 5,
+    sections: [
+      {
+        title: 'Nasi gerechten',
+        content: {
+          type: 'text',
+          paragraphs: [
+            'Het koken van rijst kan op diverse manieren gebeuren. De aanwijzingen op de verpakking voor de behandeling van de betreffende rijst zijn meestal goed. Naast witte gekookte rijst kunt u wellicht eens onderstaande varianten proberen.',
+            'Nasi gurih',
+            'Nasi gurih wordt bereid met santan (het witte sap verkregen door het uitpersen van natte kokospulp). Het krijgt daardoor een volle smaak. Bij de nasi gurih kunt u twee tot drie andere gerechten maken, bijvoorbeeld een \'droog\' vleesgerecht, een groentegerecht en eventueel wat kroepoek.',
+            'Benodigdheden voor 4 personen: circa 400 gram rijst – 2 koppen dikke santan – snufje zout – 2-3 pandanbladeren.',
+            'Was de rijst en breng daarna in een pan de rijst aan de kook met een \'vingerkootje\' (niet meer dan 2,5 cm) water boven de rijst. Voeg dan toe de santan, een snufje zout en de pandanbladeren en meng ze door de rijst. Zodra het vocht begint te borrelen, zetten we het vuur zacht en gebruiken eventueel een vlamverdeler. Wanneer de rijst na 15 tot 20 minuten droog staat, kan het vuur uit. De rijst is dan half gaar. De rijst wordt vervolgens in een \'stomer\' (tweedelige pan) overgebracht en in 15-20 minuten gaar gestoomd.',
+            'Nasi kuning',
+            'Ook nasi kuning wordt met santan bereid. De gele kleur geeft de rijst een feestelijk aanzien. Het gerecht ligt vrij zwaar op de maag en men doet er goed aan een tikje bescheiden te zijn bij het opscheppen.',
+            'Benodigdheden voor 4 personen: circa 400 gram rijst – 2 koppen dikke santan – snufje zout – 2 mespunten kunyitpoeder (geelwortel = kurkuma) – 2 stukjes verse serehstengels of serehbladeren – 1 jeruk purutblad – eventueel een pandanblad.',
+            'Was de rijst en stoom hem in een vergiet gedurende 20 minuten (dus niet in het water). Intussen brengen we de santan met wat zout, kunyitpoeder, sereh, jeruk purut en pandanblad aan de kook. Zet het vuur laag en voeg de dampende rijst toe. Even goed doorroeren, het vuur uit doen, deksel op de pan en 5-7 minuten laten staan.',
+            'De lauwe, gele rijst overbrengen in een vergiet en nog 20 minuten stomen om hem gaar te laten worden. De nasi kuning overbrengen op een grote schaal en garneren met gebakken uitjes, schijfjes komkommer, kleine stukjes gebakken tempe, reepjes gebakken geklopt ei en lombok (Spaanse pepers).',
+          ],
+        },
+        order_index: 0,
+      },
+      {
+        title: 'Dialoog: Belajar',
+        content: {
+          type: 'dialogue',
+          setup: 'Hari Rabu Ibu dan bapak pergi ke Taman Mini. Mereka tidak pulang sampai sore. Anaknya, Titin dan Nanang, tidak boleh ikut ke Taman Mini. Mereka harus belajar.',
+          lines: [
+            { speaker: 'Titin', text: 'Ibu dan bapak enak saja ke Taman Mini. Kita harus belajar di rumah. Aku juga mau ke Taman Mini, dan kamu Nanang?' },
+            { speaker: 'Nanang', text: 'Aku tidak senang tinggal di rumah terus. Mari! Kita juga pergi saja, Tin.' },
+            { speaker: 'Titin', text: 'Kita harus kerja dulu sebentar. Nanti kita pergi.' },
+            { speaker: 'Pembantu', text: 'Ayo, kerja dulu anak-anak!' },
+            { speaker: 'Titin', text: 'Aduh, kami mau ke luar, jalan-jalan dan makan di restoran "Mi Enak" tetapi tidak ada uang.' },
+            { speaker: 'Pembantu', text: "Saya juga tidak punya uang. Jadi, tinggal di rumah saja Tin. Besok saja jalan-jalan dengan ayahmu. Mari! Sekarang kerja. Besok harus ke sekolah 'kan?" },
+            { speaker: 'Titin', text: 'Baiklah, tapi boleh minta setrop susu ya?' },
+          ],
+        },
+        order_index: 1,
+      },
+      {
+        title: 'Grammatica: Persoonlijk voornaamwoord',
+        content: {
+          type: 'grammar',
+          intro: 'Het Indonesisch kent een groot aantal persoonlijke voornaamwoorden. Welk voornaamwoord men kiest, is afhankelijk van de situatie (formeel, neutraal, informeel), de sexe, de leeftijd en de status.',
+          categories: [
+            {
+              title: 'IK — saya / aku',
+              rules: [
+                'In Indonesië verwijst men veelal naar zichzelf met de eigennaam: Awan mau ke kota = Ik (Awan) wil naar de stad.',
+                'Gebruik saya voor \'ik\' bij het kennismaken en in formele situaties. Aku is informeel: tussen broer en zus, onder schoolvrienden.',
+              ],
+              table: [
+                { word: 'saya', dutch: 'ik (formeel/neutraal)' },
+                { word: 'aku', dutch: 'ik (informeel)' },
+                { word: 'Saya dan teman saya', dutch: 'Mijn vriend en ik' },
+              ],
+            },
+            {
+              title: 'JIJ — kamu / engkau / naam',
+              rules: [
+                'Gebruik liefst de voornaam van de persoon. kamu en engkau zijn informeel en blijven beperkt tot de huiselijke kring of vrienden.',
+                'Spreek een onbekende volwassene nooit aan met kamu — dit is onbeleefd.',
+              ],
+              table: [
+                { word: 'Awan mau beli apa di kota?', dutch: 'Wat wil je (Awan) in de stad kopen?' },
+                { word: 'Siti naik mobil ke pasar?', dutch: 'Ga jij (Siti) met de auto naar de markt?' },
+                { word: 'kamu / engkau', dutch: 'jij (informeel)' },
+              ],
+            },
+            {
+              title: 'U — Tuan / Nyonya / Bapak / Ibu / Saudara / Anda',
+              rules: [
+                'Men maakt onderscheid naar sexe en status. Tuan / Nyonya is de meest formeel-nette aanspreekvorm voor een westerse vreemdeling.',
+                'In de dagelijkse omgang zijn Bapak (Meneer) en Ibu (Mevrouw) gebruikelijk, eventueel in combinatie met de naam.',
+                'Saudara = kameraad, neutraal onder gelijken. Anda = u/jij, sexe- en sociaal-neutraal, veel gebruikt in reclame.',
+              ],
+              table: [
+                { word: 'Tuan / Nyonya', dutch: 'meneer / mevrouw (formeel)' },
+                { word: 'Bapak / Ibu', dutch: 'meneer / mevrouw (neutraal)' },
+                { word: 'Saudara / Saudari', dutch: 'kameraad (neutraal, gelijken)' },
+                { word: 'Anda', dutch: 'u / jij (sexe-neutraal)' },
+                { word: 'Bapak Sahid dari mana?', dutch: 'Waar komt u (meneer Sahid) vandaan?' },
+              ],
+            },
+            {
+              title: 'BROERS EN ZUSTERS — kakak / adik',
+              rules: [
+                'Men onderscheidt \'oudere\' (kakak) en \'jongere\' (adik), dan pas de sexe. Afgekort tot kak en dik.',
+                'Deze termen worden ook informeel gebruikt voor bekenden buiten de familie. Echte ooms en tantes: paman en bibi.',
+              ],
+              table: [
+                { word: 'kakak laki-laki (abang)', dutch: 'broer (oudere)' },
+                { word: 'kakak perempuan', dutch: 'zus (oudere)' },
+                { word: 'adik laki-laki', dutch: 'broertje' },
+                { word: 'adik perempuan', dutch: 'zusje' },
+              ],
+            },
+            {
+              title: 'HIJ / ZIJ — dia / ia / beliau',
+              rules: [
+                'dia en ia zijn de standaardwoorden voor zowel \'hij\' als \'zij\'. beliau wordt gebruikt om met respect over iemand te spreken.',
+              ],
+              table: [
+                { word: 'dia / ia', dutch: 'hij / zij' },
+                { word: 'beliau', dutch: 'hij / zij (met respect)' },
+              ],
+            },
+            {
+              title: 'WIJ — kita vs kami',
+              rules: [
+                'kita = wij inclusief de aangesprokene. kami = wij exclusief de aangesprokene.',
+              ],
+              table: [
+                { word: 'Kita harus belajar di rumah', dutch: '\'wij\' incl. Nanang (Titin tegen Nanang)' },
+                { word: 'Kami mau ke luar', dutch: '\'wij\' excl. pembantu (Titin tegen de pembantu)' },
+                { word: 'Bapak, mari kita jalan-jalan', dutch: 'Pa, laten wij gaan wandelen (incl. vader)' },
+              ],
+            },
+            {
+              title: 'JULLIE / U (mv.) / ZIJ (mv.)',
+              rules: [
+                'kalian = jullie (neutraal). kamu semua = jullie (informeel).',
+                'Meervoud-u: Bapak-Bapak dan Ibu-Ibu / Saudara-Saudari / Anda (semua).',
+                'mereka = zij (meervoud) — het enige woord hiervoor.',
+              ],
+              table: [
+                { word: 'kalian', dutch: 'jullie (neutraal)' },
+                { word: 'Saudara-Saudari', dutch: 'Dames en Heren' },
+                { word: 'mereka', dutch: 'zij (meervoud)' },
+              ],
+            },
+          ],
+        },
+        order_index: 2,
+      },
+      {
+        title: 'Bezittelijk voornaamwoord',
+        content: {
+          type: 'reference_table',
+          intro: 'Het bezittelijk voornaamwoord wordt achter het zelfstandig naamwoord geplaatst. Bezittelijke voornaamwoorden zijn praktisch gelijk aan de persoonlijke voornaamwoorden, met dien verstande dat voor aku en kamu/engkau de afgekorte vormen -ku en -mu/-kau worden gebruikt. Bij de derde persoon enkelvoud wordt bij voorkeur -nya gebruikt; bij meervoud eveneens.',
+          examples: [
+            { indonesian: 'Di mana buku saya? / Di mana bukuku?', dutch: 'Waar is mijn boek?' },
+            { indonesian: 'Mobilmu rusak', dutch: 'Jouw auto is kapot' },
+            { indonesian: 'Pembantunya sakit', dutch: 'Zijn/haar hulpje is ziek' },
+            { indonesian: 'Pakaian kami belum kering', dutch: 'Onze kleding is nog niet droog' },
+            { indonesian: 'Uang kita sudah habis', dutch: 'Ons geld is al op' },
+            { indonesian: 'Rumah mereka bagus sekali / Rumahnya bagus sekali', dutch: 'Hun huis is erg mooi' },
+          ],
+          tableTitle: 'Schema bezittelijk voornaamwoord',
+          columns: ['', 'formeel', 'neutraal', 'informeel'],
+          sections: [
+            {
+              heading: 'Enkelvoud',
+              rows: [
+                { label: '(ik) mijn', cells: ['saya / eigennaam', 'saya / eigennaam', '-ku'] },
+                { label: '(jij) jouw', cells: ['-', '(voor)naam van de persoon', '-mu (-kau)'] },
+                { label: 'uw (man)', cells: ['Tuan', 'Bapak', 'oom, om'] },
+                { label: 'uw (vrouw)', cells: ['Nyonya', 'Ibu', 'tante'] },
+                { label: 'uw (jongeman)', cells: ['-', 'Mas, Saudara', 'kakak, abang'] },
+                { label: 'uw (jonge vrouw)', cells: ['-', 'Nona, Saudari', 'zus, sus'] },
+                { label: 'uw (sexe-neutraal)', cells: ['-', 'Anda, Saudara', '-'] },
+                { label: '(hij) zijn', cells: ['Beliau', 'dia, -nya *', '-'] },
+                { label: '(zij) haar', cells: ['Beliau', 'dia, -nya *', '-'] },
+              ],
+            },
+            {
+              heading: 'Meervoud',
+              rows: [
+                { label: '(wij) ons (incl.)', cells: ['-', 'kita', '-'] },
+                { label: '(wij) ons (excl.)', cells: ['-', 'kami', '-'] },
+                { label: '(jullie) jullie', cells: ['-', 'kalian', '-mu'] },
+                { label: 'uw (heren)', cells: ['Tuan-Tuan', 'Bapak-Bapak', '-'] },
+                { label: 'uw (dames)', cells: ['Nyonya-Nyonya', 'Ibu-Ibu', '-'] },
+                { label: 'uw (jongemannen)', cells: ['-', 'Saudara-Saudara', '-'] },
+                { label: 'uw (jonge vrouwen)', cells: ['-', 'Saudari-Saudari', '-'] },
+                { label: 'uw (sexe-neutraal)', cells: ['-', 'Saudara-Saudara / Anda', '-'] },
+                { label: '(zij) hun', cells: ['-', 'mereka, -nya *', '-'] },
+              ],
+            },
+          ],
+          footnotes: [
+            '* In geschreven taal wordt -nya voor de derde persoon enkelvoud en meervoud gebruikt. In gesproken taal wordt ook wel dia (enkelvoud) of mereka (meervoud) gebruikt.',
+          ],
+        },
+        order_index: 3,
+      },
+      {
+        title: 'Oefeningen',
+        content: {
+          type: 'exercises',
+          sections: [
+            {
+              title: 'Oefening I — Bezittelijk voornaamwoord',
+              instruction: 'Contoh: Itu buku siapa? (mijn) → Itu buku saya',
+              items: [
+                { text: 'Ini koper siapa? (onze)' },
+                { text: 'Itu kunci siapa? (jouw)' },
+                { text: 'Itu kamar siapa? (mijn)' },
+                { text: 'Ini handuk siapa? (zijn)' },
+                { text: 'Ini sendok siapa? (jouw)' },
+                { text: 'Itu meja siapa? (uw)' },
+                { text: 'Ini kursi siapa? (haar)' },
+                { text: 'Itu mobil siapa? (onze)' },
+                { text: 'Ini rumah siapa? (hun)' },
+                { text: 'Ini pakaian siapa? (mijn)' },
+              ],
+            },
+            {
+              title: 'Oefening II — Vertaal (Indonesisch → Nederlands)',
+              items: [
+                { text: 'Anda ingin ikut ke taman kota?' },
+                { text: 'Terima kasih, saya tidak mau ikut.' },
+                { text: 'Kalau kita naik taksi mau ikut?' },
+                { text: 'Wah! Ayo, kita ke sana saja!' },
+                { text: 'Besok dia pulang ke kota Ujungpandang di Sulawesi.' },
+                { text: 'Di situ ia beli dua ratus tiga puluh ekor ayam.' },
+                { text: 'Mereka punya restoran yang rapi dan bersih.' },
+                { text: 'Mas, minta segelas teh dan sendok ya!' },
+                { text: 'Ini teh, Bu. Apa Ibu juga mau makan?' },
+                { text: 'Halo Pak Suryo, duduk di sini saja, masih ada tempat duduk.' },
+              ],
+            },
+            {
+              title: 'Oefening III — Conversatie',
+              instruction: 'Beantwoord de vragen in het Indonesisch.',
+              items: [
+                { text: 'Apa Anda ingin makan?' },
+                { text: 'Anda ingin makan apa?' },
+                { text: 'Nama Anda siapa?' },
+                { text: 'Bagaimana datang ke sini?' },
+                { text: 'Naik bus ke sini berapa harganya?' },
+                { text: 'Bapak/Ibu tinggal di mana?' },
+                { text: 'Mengapa Bapak/Ibu datang ke sini?' },
+                { text: 'Kapan mau pulang ke rumah?' },
+                { text: 'Apa mau pulang sekarang?' },
+                { text: 'Kapan mau datang ke sini lagi?' },
+              ],
+            },
+            {
+              title: 'Oefening IV — Vertaal (Nederlands → Indonesisch)',
+              items: [
+                { text: 'Waar is Jan nu? → Hij is boven.' },
+                { text: 'Waar ga je heen? → Ik ga naar beneden.' },
+                { text: 'Hoeveel mensen zitten daar? → Daar zitten 24 mensen.' },
+                { text: 'Waar staan taxi\'s? → Achter het hotel staan taxi\'s.' },
+                { text: 'Waar is mijn tas? → Jouw tas staat onder de tafel.' },
+                { text: 'Hoeveel kost dit? → Het kost 364.000 rupiah.' },
+                { text: 'Hoe heet u, meneer? → Mijn naam is Hans.' },
+                { text: 'Hij woont hier, maar mijn vrouw en ik wonen ginds.' },
+                { text: 'Nee, wij gaan met de auto van mijn vader.' },
+              ],
+            },
+          ],
+        },
+        order_index: 4,
+      },
+      {
+        title: 'Woordenlijst',
+        content: {
+          type: 'vocabulary',
+          items: [
+            { indonesian: 'abang', dutch: 'oudere broer' },
+            { indonesian: 'adik', dutch: 'jongere broer/zus' },
+            { indonesian: 'aduh', dutch: 'hemel, goh, jemig (uitroep)' },
+            { indonesian: 'aku', dutch: 'ik (informeel)' },
+            { indonesian: 'ayah', dutch: 'vader' },
+            { indonesian: 'ayo!', dutch: 'komaan!' },
+            { indonesian: 'baiklah', dutch: 'goed dan (maar)' },
+            { indonesian: 'belajar', dutch: 'leren' },
+            { indonesian: 'enak saja', dutch: 'op z\'n gemak, naar believen' },
+            { indonesian: 'gabah', dutch: 'ongepelde rijst' },
+            { indonesian: 'gurih', dutch: 'vol van smaak' },
+            { indonesian: 'habis', dutch: 'op, afgelopen' },
+            { indonesian: 'halo', dutch: 'hallo' },
+            { indonesian: 'hari', dutch: 'dag' },
+            { indonesian: 'hari Rabu', dutch: 'woensdag' },
+            { indonesian: 'ikut', dutch: 'meegaan, meedoen' },
+            { indonesian: 'jadi', dutch: 'dus' },
+            { indonesian: 'jalan-jalan', dutch: 'een wandeling maken' },
+            { indonesian: 'kakak', dutch: 'oudere broer/zus' },
+            { indonesian: 'kami', dutch: 'wij (exclusief aangesprokene)' },
+            { indonesian: 'kamu', dutch: 'jij, jullie (informeel)' },
+            { indonesian: 'kering', dutch: 'droog' },
+            { indonesian: 'kerja', dutch: 'werken' },
+            { indonesian: 'kita', dutch: 'wij (inclusief aangesprokene)' },
+            { indonesian: 'ladang', dutch: 'rijstveld (droog)' },
+            { indonesian: 'laki-laki', dutch: 'man, mannelijk' },
+            { indonesian: 'mari!', dutch: 'kom!' },
+            { indonesian: 'mereka', dutch: 'zij (meervoud)' },
+            { indonesian: 'mi', dutch: 'bamie, noedels' },
+            { indonesian: 'mulai', dutch: 'beginnen' },
+            { indonesian: 'nanti', dutch: 'straks, zo meteen' },
+            { indonesian: 'nasi gurih', dutch: 'rijstgerecht met kokosmelk' },
+            { indonesian: 'padi', dutch: 'rijstplant' },
+            { indonesian: 'pembantu', dutch: 'hulp in de huishouding' },
+            { indonesian: 'perempuan', dutch: 'vrouw, vrouwelijk' },
+            { indonesian: 'pergi', dutch: '(weg)gaan' },
+            { indonesian: 'punya', dutch: 'bezitten, hebben' },
+            { indonesian: 'rusak', dutch: 'kapot, stuk' },
+            { indonesian: 'sawah', dutch: 'rijstveld (nat)' },
+            { indonesian: 'sebentar', dutch: 'een moment(je), even' },
+            { indonesian: 'senang', dutch: 'blij, leuk vinden' },
+            { indonesian: 'setrop susu', dutch: 'zoet melkdrankje (melk met siroop)' },
+            { indonesian: 'sore', dutch: 'namiddag, avond' },
+            { indonesian: 'susu', dutch: 'melk' },
+            { indonesian: 'taman', dutch: 'park, tuin' },
+            { indonesian: 'tapi / tetapi', dutch: 'maar, echter' },
+            { indonesian: 'terbang', dutch: 'vliegen' },
+            { indonesian: 'terus', dutch: 'voorts, steeds, maar door' },
+            { indonesian: 'uang', dutch: 'geld' },
+            { indonesian: 'wah!', dutch: 'goh! nou! (uitroep)' },
+          ],
+        },
+        order_index: 5,
       },
     ],
   },
