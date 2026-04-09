@@ -161,25 +161,31 @@ export const learningItemService = {
   ): Promise<Record<string, { confusion_group?: string }>> {
     if (itemIds.length === 0) return {}
 
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('item_contexts')
-      .select('learning_item_id, item_context_grammar_patterns(grammar_pattern_id, grammar_patterns(confusion_group))')
-      .in('learning_item_id', itemIds)
-
-    if (error) throw error
-
+    const CHUNK_SIZE = 50
     const result: Record<string, { confusion_group?: string }> = {}
-    for (const row of data ?? []) {
-      const links = (row as any).item_context_grammar_patterns ?? []
-      for (const link of links) {
-        const group = link.grammar_patterns?.confusion_group
-        if (group) {
-          result[row.learning_item_id] = { confusion_group: group }
-          break // one confusion group per item is enough
+
+    for (let i = 0; i < itemIds.length; i += CHUNK_SIZE) {
+      const chunk = itemIds.slice(i, i + CHUNK_SIZE)
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('item_contexts')
+        .select('learning_item_id, item_context_grammar_patterns(grammar_pattern_id, grammar_patterns(confusion_group))')
+        .in('learning_item_id', chunk)
+
+      if (error) throw error
+
+      for (const row of data ?? []) {
+        const links = (row as any).item_context_grammar_patterns ?? []
+        for (const link of links) {
+          const group = link.grammar_patterns?.confusion_group
+          if (group) {
+            result[row.learning_item_id] = { confusion_group: group }
+            break // one confusion group per item is enough
+          }
         }
       }
     }
+
     return result
   },
 }
