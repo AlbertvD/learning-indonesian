@@ -1,0 +1,18 @@
+{
+  "stage": "40_spoken",
+  "status": "complete",
+  "timestamp": "2026-04-09T20:00:00.000Z",
+  "sourceFile": "content/30_reviewed/lesson-1/transcript_verified.txt",
+  "outputFiles": [
+    "content/40_spoken/lesson-1/learner_spoken.txt",
+    "content/40_spoken/lesson-1/natural_spoken.txt",
+    "content/40_spoken/lesson-1/style_decisions.json",
+    "content/40_spoken/lesson-1/status.json"
+  ],
+  "stats": {
+    "totalLines": 36,
+    "transformedLines": 15,
+    "learnerTransformations": 12,
+    "naturalTransformations": 25
+  }
+}

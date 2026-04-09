@@ -1,0 +1,130 @@
+[
+  {
+    "lineNumber": 3,
+    "original": "Saya baik, terima kasih. Dan Anda?",
+    "transformations": [
+      { "rule": "pronoun-saya-to-aku-natural", "from": "Saya", "to": "aku", "track": "natural" },
+      { "rule": "pronoun-kamu-formal-to-anda-learner", "from": "Anda", "to": "kamu", "track": "natural" }
+    ]
+  },
+  {
+    "lineNumber": 5,
+    "original": "Saya juga baik. Saya mau ke pasar hari ini.",
+    "transformations": [
+      { "rule": "pronoun-saya-to-aku-natural", "from": "Saya", "to": "aku", "track": "natural" },
+      { "rule": "pronoun-saya-to-aku-natural", "from": "Saya", "to": "aku", "track": "natural" }
+    ]
+  },
+  {
+    "lineNumber": 7,
+    "original": "Oh, saya juga hendak ke pasar. Saya mau membeli buah.",
+    "transformations": [
+      { "rule": "pronoun-saya-to-aku-natural", "from": "saya", "to": "aku", "track": "natural" },
+      { "rule": "pronoun-saya-to-aku-natural", "from": "Saya", "to": "aku", "track": "natural" },
+      { "rule": "vocab-hendak-to-mau", "from": "hendak", "to": "mau", "track": "both" },
+      { "rule": "affix-membeli-to-beli-natural", "from": "membeli", "to": "beli", "track": "both" }
+    ]
+  },
+  {
+    "lineNumber": 9,
+    "original": "Bagaimana harganya di pasar? Apakah mahal?",
+    "transformations": [
+      { "rule": "vocab-bagaimana-to-gimana", "from": "Bagaimana", "to": "gimana", "track": "natural" }
+    ]
+  },
+  {
+    "lineNumber": 11,
+    "original": "Tidak, harganya tidak mahal. Harganya murah.",
+    "transformations": [
+      { "rule": "negation-tidak-learner", "from": "Tidak", "to": "nggak", "track": "natural" },
+      { "rule": "negation-tidak-learner", "from": "tidak", "to": "nggak", "track": "natural" }
+    ]
+  },
+  {
+    "lineNumber": 13,
+    "original": "Tetapi kalau membeli nanas, itu mahal.",
+    "transformations": [
+      { "rule": "vocab-tetapi-to-tapi", "from": "Tetapi", "to": "tapi", "track": "both" },
+      { "rule": "vocab-kalau-to-kalo-natural", "from": "kalau", "to": "kalo", "track": "natural" },
+      { "rule": "affix-membeli-to-beli-natural", "from": "membeli", "to": "beli", "track": "both" }
+    ]
+  },
+  {
+    "lineNumber": 15,
+    "original": "Saya melihat bapak dan ibu di pasar kemarin.",
+    "transformations": [
+      { "rule": "pronoun-saya-to-aku-natural", "from": "Saya", "to": "aku", "track": "natural" },
+      { "rule": "affix-me-drop-natural", "from": "melihat", "to": "liat", "track": "natural" }
+    ]
+  },
+  {
+    "lineNumber": 17,
+    "original": "Bapak membeli pisang. Ibu membeli nanas.",
+    "transformations": [
+      { "rule": "affix-membeli-to-beli-natural", "from": "membeli", "to": "beli", "track": "both" },
+      { "rule": "affix-membeli-to-beli-natural", "from": "membeli", "to": "beli", "track": "both" }
+    ]
+  },
+  {
+    "lineNumber": 19,
+    "original": "Mengapa ibu membeli nanas? Karena ibu suka nanas.",
+    "transformations": [
+      { "rule": "vocab-mengapa-to-kenapa", "from": "Mengapa", "to": "kenapa", "track": "both" },
+      { "rule": "affix-membeli-to-beli-natural", "from": "membeli", "to": "beli", "track": "both" }
+    ]
+  },
+  {
+    "lineNumber": 21,
+    "original": "Saya sudah makan. Sudah kenyang.",
+    "transformations": [
+      { "rule": "pronoun-saya-to-aku-natural", "from": "Saya", "to": "aku", "track": "natural" },
+      { "rule": "vocab-sudah-to-udah-natural", "from": "sudah", "to": "udah", "track": "natural" },
+      { "rule": "vocab-sudah-to-udah-natural", "from": "Sudah", "to": "udah", "track": "natural" }
+    ]
+  },
+  {
+    "lineNumber": 27,
+    "original": "Belum bisa, Bu. Tetapi kalau mau lima buah, bisa sembilan ribu.",
+    "transformations": [
+      { "rule": "vocab-tetapi-to-tapi", "from": "Tetapi", "to": "tapi", "track": "both" },
+      { "rule": "vocab-kalau-to-kalo-natural", "from": "kalau", "to": "kalo", "track": "natural" }
+    ]
+  },
+  {
+    "lineNumber": 29,
+    "original": "Baik, saya mau lima buah. Terima kasih.",
+    "transformations": [
+      { "rule": "pronoun-saya-to-aku-natural", "from": "saya", "to": "aku", "track": "natural" }
+    ]
+  },
+  {
+    "lineNumber": 31,
+    "original": "Tolong berbicara lebih pelan.",
+    "transformations": [
+      { "rule": "discourse-add-dong", "from": "Tolong", "to": "Tolong dong", "track": "natural" },
+      { "rule": "vocab-berbicara-to-bicara", "from": "berbicara", "to": "bicara", "track": "learner" },
+      { "rule": "vocab-berbicara-to-bicara", "from": "berbicara", "to": "ngomong", "track": "natural" }
+    ]
+  },
+  {
+    "lineNumber": 33,
+    "original": "Saya tidak mengatakan itu.",
+    "transformations": [
+      { "rule": "pronoun-saya-to-aku-natural", "from": "Saya", "to": "aku", "track": "natural" },
+      { "rule": "negation-tidak-learner", "from": "tidak", "to": "nggak", "track": "natural" },
+      { "rule": "vocab-mengatakan-to-bilang", "from": "mengatakan", "to": "bilang", "track": "both" }
+    ]
+  },
+  {
+    "lineNumber": 35,
+    "original": "Apabila Anda mau, saya bisa memberikan diskon.",
+    "transformations": [
+      { "rule": "pronoun-kamu-formal-to-anda-learner", "from": "Anda", "to": "kamu", "track": "natural" },
+      { "rule": "pronoun-saya-to-aku-natural", "from": "saya", "to": "aku", "track": "natural" },
+      { "rule": "vocab-apabila-to-kalau", "from": "Apabila", "to": "kalau", "track": "learner" },
+      { "rule": "vocab-apabila-to-kalau", "from": "Apabila", "to": "kalo", "track": "natural" },
+      { "rule": "affix-memberikan-to-kasih-natural", "from": "memberikan", "to": "memberi", "track": "learner" },
+      { "rule": "affix-memberikan-to-kasih-natural", "from": "memberikan", "to": "kasih", "track": "natural" }
+    ]
+  }
+]

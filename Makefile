@@ -122,6 +122,16 @@ review: ## Start the review UI (tools/review/)
 pipeline: convert-heic ocr-pages parse-lesson ## Run full pipeline steps 1-3 (requires LESSON)
 	@echo "\n✓ Pipeline complete. Run 'make review' to review and edit content."
 
+.PHONY: spoken-variants
+spoken-variants: ## Generate spoken variant tracks from verified transcript (requires LESSON)
+	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make spoken-variants LESSON=<N>"; exit 1; }
+	bun scripts/generate-spoken-variants.ts $(LESSON)
+
+.PHONY: spoken-variants-dry
+spoken-variants-dry: ## Preview spoken variants without writing files (requires LESSON)
+	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make spoken-variants-dry LESSON=<N>"; exit 1; }
+	bun scripts/generate-spoken-variants.ts $(LESSON) --dry-run
+
 .PHONY: generate-audio
 generate-audio: ## Generate per-section TTS audio (requires LESSON; optional: GOOGLE_TTS_API_KEY or --mock)
 	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make generate-audio LESSON=<N> [MOCK=1]"; exit 1; }
