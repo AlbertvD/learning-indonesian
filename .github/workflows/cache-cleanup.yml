@@ -1,0 +1,12 @@
+# Cache Cleanup — weekly prune of stale GitHub Actions caches
+
+name: Cache Cleanup
+
+on:
+  schedule:
+    - cron: '17 6 * * 0'  # Sunday 6:17am UTC
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    uses: AlbertvD/homelab-platform/.github/workflows/cache-cleanup.yml@v1

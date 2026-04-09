@@ -10,3 +10,8 @@ jobs:
   safety:
     uses: AlbertvD/homelab-platform/.github/workflows/safety.yml@main
     secrets: inherit
+
+  dependencies:
+    uses: AlbertvD/homelab-platform/.github/workflows/dependency-audit.yml@v1
+    with:
+      fail_on_vulnerabilities: false
