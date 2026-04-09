@@ -32,6 +32,25 @@ describe('checkAnswer', () => {
     expect(result.isFuzzy).toBe(false)
   })
 
+  it('accepts any slash-separated alternative in canonical', () => {
+    expect(checkAnswer('huis', 'huis / woning', []).isCorrect).toBe(true)
+    expect(checkAnswer('woning', 'huis / woning', []).isCorrect).toBe(true)
+  })
+
+  it('accepts any slash-separated alternative in a variant', () => {
+    expect(checkAnswer('gaan', 'lopen', ['gaan / rijden']).isCorrect).toBe(true)
+    expect(checkAnswer('rijden', 'lopen', ['gaan / rijden']).isCorrect).toBe(true)
+  })
+
+  it('accepts answer matching canonical stripped of parenthetical', () => {
+    expect(checkAnswer('huis', 'huis (gebouw)', []).isCorrect).toBe(true)
+  })
+
+  it('accepts slash alternative when canonical has parentheticals', () => {
+    expect(checkAnswer('huis', 'huis (gebouw) / woning', []).isCorrect).toBe(true)
+    expect(checkAnswer('woning', 'huis (gebouw) / woning', []).isCorrect).toBe(true)
+  })
+
   it('matches with normalization', () => {
     const result = checkAnswer('  Rumah  ', 'rumah', [])
     expect(result.isCorrect).toBe(true)

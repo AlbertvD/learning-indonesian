@@ -81,16 +81,20 @@ export function checkAnswer(
   acceptedVariants: string[]
 ): AnswerCheckResult {
   const normalized = normalizeAnswer(userAnswer)
-  const normalizedCanonical = normalizeAnswer(canonicalAnswer)
-  const normalizedVariants = acceptedVariants.map(normalizeAnswer)
 
-  // Exact match against canonical or any variant
-  if (normalized === normalizedCanonical || normalizedVariants.includes(normalized)) {
+  // Expand slash-separated alternatives in canonical and variants, then normalize each.
+  // This lets "huis / woning" accept either "huis" or "woning" as a correct answer.
+  const allTargets = [canonicalAnswer, ...acceptedVariants]
+    .flatMap(a => a.split('/').map(s => s.trim()))
+    .map(normalizeAnswer)
+    .filter(s => s.length > 0)
+
+  // Exact match
+  if (allTargets.includes(normalized)) {
     return { isCorrect: true, isFuzzy: false }
   }
 
   // Fuzzy match (Insertion/Deletion or Transposition)
-  const allTargets = [normalizedCanonical, ...normalizedVariants]
   for (const target of allTargets) {
     const dDist = damerauLevenshtein(normalized, target)
     const lDist = levenshtein(normalized, target)
