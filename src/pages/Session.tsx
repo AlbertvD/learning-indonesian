@@ -110,36 +110,33 @@ export function Session() {
           itemStates[state.learning_item_id] = state
         }
 
-        // Build meanings, contexts, variants maps (parallel individual queries)
+        // Build meanings, contexts, variants maps (chunked batch queries, 50 IDs at a time)
         const meaningsByItem: Record<string, ItemMeaning[]> = {}
         const contextsByItem: Record<string, ItemContext[]> = {}
         const variantsByItem: Record<string, ItemAnswerVariant[]> = {}
         const exerciseVariantsByContext: Record<string, ExerciseVariant[]> = {}
 
-        // Run all queries in parallel to avoid URL length limits
-        const results = await Promise.all(
-          items.map(item =>
-            Promise.all([
-              learningItemService.getMeanings(item.id),
-              learningItemService.getContexts(item.id),
-              learningItemService.getAnswerVariants(item.id),
-            ]).then(([meanings, contexts, variants]) => ({ item, meanings, contexts, variants }))
-          )
-        )
+        const itemIds = items.map(i => i.id)
+        const [allMeanings, allContexts, allVariants] = await Promise.all([
+          learningItemService.getMeaningsBatch(itemIds),
+          learningItemService.getContextsBatch(itemIds),
+          learningItemService.getAnswerVariantsBatch(itemIds),
+        ])
 
         // Group by item ID and collect all context IDs
         const allContextIds: string[] = []
-        for (const { item, meanings, contexts, variants } of results) {
-          if (meanings.length > 0) {
-            meaningsByItem[item.id] = meanings
-          }
-          if (contexts.length > 0) {
-            contextsByItem[item.id] = contexts
-            allContextIds.push(...contexts.map(c => c.id))
-          }
-          if (variants.length > 0) {
-            variantsByItem[item.id] = variants
-          }
+        for (const meaning of allMeanings) {
+          if (!meaningsByItem[meaning.learning_item_id]) meaningsByItem[meaning.learning_item_id] = []
+          meaningsByItem[meaning.learning_item_id].push(meaning)
+        }
+        for (const context of allContexts) {
+          if (!contextsByItem[context.learning_item_id]) contextsByItem[context.learning_item_id] = []
+          contextsByItem[context.learning_item_id].push(context)
+          allContextIds.push(context.id)
+        }
+        for (const variant of allVariants) {
+          if (!variantsByItem[variant.learning_item_id]) variantsByItem[variant.learning_item_id] = []
+          variantsByItem[variant.learning_item_id].push(variant)
         }
 
         // Load published exercise variants for all contexts

@@ -43,13 +43,19 @@ export const learningItemService = {
   },
 
   async getMeaningsBatch(itemIds: string[]): Promise<ItemMeaning[]> {
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('item_meanings')
-      .select('*')
-      .in('learning_item_id', itemIds)
-    if (error) throw error
-    return data
+    const CHUNK_SIZE = 50
+    const results: ItemMeaning[] = []
+    for (let i = 0; i < itemIds.length; i += CHUNK_SIZE) {
+      const chunk = itemIds.slice(i, i + CHUNK_SIZE)
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('item_meanings')
+        .select('*')
+        .in('learning_item_id', chunk)
+      if (error) throw error
+      results.push(...data)
+    }
+    return results
   },
 
   async getContexts(itemId: string): Promise<ItemContext[]> {
@@ -63,13 +69,19 @@ export const learningItemService = {
   },
 
   async getContextsBatch(itemIds: string[]): Promise<ItemContext[]> {
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('item_contexts')
-      .select('*')
-      .in('learning_item_id', itemIds)
-    if (error) throw error
-    return data
+    const CHUNK_SIZE = 50
+    const results: ItemContext[] = []
+    for (let i = 0; i < itemIds.length; i += CHUNK_SIZE) {
+      const chunk = itemIds.slice(i, i + CHUNK_SIZE)
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('item_contexts')
+        .select('*')
+        .in('learning_item_id', chunk)
+      if (error) throw error
+      results.push(...data)
+    }
+    return results
   },
 
   async getItemContextsByLesson(lessonId: string): Promise<ItemContext[]> {
@@ -94,14 +106,20 @@ export const learningItemService = {
   },
 
   async getAnswerVariantsBatch(itemIds: string[]): Promise<ItemAnswerVariant[]> {
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('item_answer_variants')
-      .select('*')
-      .in('learning_item_id', itemIds)
-      .eq('is_accepted', true)
-    if (error) throw error
-    return data
+    const CHUNK_SIZE = 50
+    const results: ItemAnswerVariant[] = []
+    for (let i = 0; i < itemIds.length; i += CHUNK_SIZE) {
+      const chunk = itemIds.slice(i, i + CHUNK_SIZE)
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('item_answer_variants')
+        .select('*')
+        .in('learning_item_id', chunk)
+        .eq('is_accepted', true)
+      if (error) throw error
+      results.push(...data)
+    }
+    return results
   },
 
   async getExerciseVariantsByContext(contextIds: string[]): Promise<ExerciseVariant[]> {
