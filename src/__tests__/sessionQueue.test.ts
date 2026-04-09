@@ -270,21 +270,23 @@ describe('buildSessionQueue — skill-type targeting (FSRS contract)', () => {
     expect(result[0].exerciseItem.skillType).toBe('form_recall')
   })
 
-  it('item with two due skills produces two queue entries — one per skill', () => {
+  it('item with two due skills produces only one queue entry — most-overdue skill wins', () => {
+    // An item with multiple due skills should appear at most once per session.
+    // Showing the same word multiple times violates spaced repetition intent.
+    // The remaining due skill carries over to the next session.
     const item = makeItem('i1')
     const result = buildSessionQueue(baseInput({
       allItems: [item],
       meaningsByItem: { i1: [makeMeaning('i1')] },
       itemStates: { i1: makeItemState('i1', 'retrieving') },
       skillStates: { i1: [
-        makeSkillState('i1', { skill_type: 'recognition' }),
-        makeSkillState('i1', { skill_type: 'form_recall', id: 'skill-i1-form' }),
+        makeSkillState('i1', { skill_type: 'recognition', next_due_at: pastDate(3) }), // more overdue
+        makeSkillState('i1', { skill_type: 'form_recall', id: 'skill-i1-form', next_due_at: pastDate(1) }),
       ]},
       preferredSessionSize: 25,
     }))
-    expect(result).toHaveLength(2)
-    const skillTypes = result.map(r => r.exerciseItem.skillType)
-    expect(skillTypes).toContain('recognition')
-    expect(skillTypes).toContain('form_recall')
+    expect(result).toHaveLength(1)
+    // The most overdue skill (recognition, 3 days ago) is served
+    expect(result[0].exerciseItem.skillType).toBe('recognition')
   })
 })

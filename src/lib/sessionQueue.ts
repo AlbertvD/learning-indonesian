@@ -76,6 +76,19 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
     return dueTime(a) - dueTime(b)
   })
 
+  // Deduplicate: one item per session. If an item has multiple due skills, keep only
+  // the most-overdue one (first after sort). Remaining due skills carry over to the
+  // next session — showing the same word 3× in a row violates spaced repetition intent.
+  const seenItemIds = new Set<string>()
+  const dedupedDueItems: CandidateItem[] = []
+  for (const candidate of dueItems) {
+    if (!seenItemIds.has(candidate.item.id)) {
+      seenItemIds.add(candidate.item.id)
+      dedupedDueItems.push(candidate)
+    }
+  }
+  dueItems.splice(0, dueItems.length, ...dedupedDueItems)
+
   // 4. Order new items by lesson order — earlier lessons first.
   // The combined slice at step 5 naturally limits new items to whatever space remains
   // after due items fill their slots, up to effectiveSessionSize total.
