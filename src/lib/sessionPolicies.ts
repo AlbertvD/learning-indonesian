@@ -103,31 +103,23 @@ function applyGrammarAwareInterleaving(
     }
   }
 
-  // Interleave groups to avoid adjacent items from same group
+  // Interleave groups to avoid adjacent items from same group.
+  // Round-robin: take one item per group per round until all groups are exhausted.
   const ordered: SessionQueueItem[] = []
   const groups = Array.from(grouped.values())
 
-  let groupIndex = 0
-  let itemIndex = 0
-
-  // Distribute items from each group
-  while (ordered.length < queue.length) {
-    let distributed = false
-
-    for (let i = 0; i < groups.length; i++) {
-      const group = groups[groupIndex % groups.length]
-      if (itemIndex < group.length) {
-        ordered.push(group[itemIndex])
-        distributed = true
-        break
+  let round = 0
+  let anyAddedThisRound = true
+  while (ordered.length < queue.length && anyAddedThisRound) {
+    anyAddedThisRound = false
+    for (const group of groups) {
+      if (ordered.length >= queue.length) break
+      if (round < group.length) {
+        ordered.push(group[round])
+        anyAddedThisRound = true
       }
-      groupIndex++
     }
-
-    if (!distributed) {
-      itemIndex++
-      groupIndex = 0
-    }
+    round++
   }
 
   // If we have ungrouped items, interleave them too

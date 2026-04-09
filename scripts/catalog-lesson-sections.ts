@@ -119,24 +119,53 @@ function readExtractedPages(lessonNumber: number): Array<{ page: number; text: s
 
 // ── Read raw page images ──────────────────────────────────────────────────────
 
+import { execSync } from 'child_process'
+import os from 'os'
+
 interface RawImage {
   filename: string
   data: string   // base64
   mediaType: 'image/jpeg' | 'image/png'
 }
 
+/**
+ * Resize an image to max 1200px on the longest side using macOS sips.
+ * Returns base64 of the resized image, or the original if sips fails.
+ */
+function resizeImageForApi(srcPath: string): string {
+  const tmpPath = path.join(os.tmpdir(), `lesson-img-${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`)
+  try {
+    execSync(`sips -Z 1200 "${srcPath}" --out "${tmpPath}" -s format jpeg`, { stdio: 'ignore' })
+    const data = fs.readFileSync(tmpPath).toString('base64')
+    fs.unlinkSync(tmpPath)
+    return data
+  } catch {
+    // Fall back to original if sips unavailable
+    if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath)
+    return fs.readFileSync(srcPath).toString('base64')
+  }
+}
+
 function readRawImages(lessonNumber: number): RawImage[] {
   const dir = path.join(process.cwd(), 'content', 'raw', `lesson-${lessonNumber}`)
   if (!fs.existsSync(dir)) return []
 
-  return fs.readdirSync(dir)
+  const files = fs.readdirSync(dir)
     .filter(f => /\.(jpg|jpeg|png)$/i.test(f))
     .sort()
-    .map(f => ({
+
+  if (files.length > 0) {
+    console.log(`  Resizing ${files.length} images to max 1200px for API...`)
+  }
+
+  return files.map(f => {
+    const srcPath = path.join(dir, f)
+    return {
       filename: f,
-      data: fs.readFileSync(path.join(dir, f)).toString('base64'),
-      mediaType: /\.png$/i.test(f) ? 'image/png' : 'image/jpeg',
-    }))
+      data: resizeImageForApi(srcPath),
+      mediaType: 'image/jpeg' as const,
+    }
+  })
 }
 
 // ── Build message content ─────────────────────────────────────────────────────
@@ -308,7 +337,7 @@ async function callClaude(
 
   const message = await client.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 8192,
+    max_tokens: 16000,
     system: SYSTEM_PROMPT,
     messages: [{
       role: 'user',

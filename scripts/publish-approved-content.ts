@@ -104,12 +104,32 @@ function validateSections(sections: any[], lessonNumber: number) {
 
 // Normalise a cloze context slug to match normalized_text in the DB.
 // normalized_text = base_text.toLowerCase().trim().
+//
 // NOTE: do NOT replace hyphens with spaces — Indonesian has legitimately hyphenated
 // words (oleh-oleh, sama-sama, baik-baik) where the hyphen is part of the word.
-// The slug in cloze-contexts.ts must exactly match base_text.toLowerCase().trim().
-// A mismatch warning is emitted so the staging file can be corrected at source.
-function normaliseClozeSlug(slug: string): string {
-  return slug.toLowerCase().trim()
+//
+// The slug in cloze-contexts.ts ideally matches base_text exactly, but the
+// linguist-creator often writes simplified slugs (e.g. "beres") while the
+// base_text — and therefore normalized_text in the DB — includes accent
+// annotations and passive markers (e.g. "beres (bèrès)", "dibawa*").
+//
+// candidateSlugs() returns the exact slug first, then fallback variants:
+//   1. exact: "beres (bèrès)"  →  matches DB directly
+//   2. strip trailing *: "dibawa*" → "dibawa"
+//   3. strip parenthetical: "beres (bèrès)" → "beres"
+//   4. both: "disetrika* (foo)" → "disetrika"
+// When the slug from the staging file lacks parentheticals/asterisks, variant 1
+// is tried first; if not found the DB is queried with a LIKE prefix match.
+function candidateSlugs(slug: string): string[] {
+  const exact = slug.toLowerCase().trim()
+  const stripped = exact
+    .replace(/\s*\([^)]*\)\s*$/, '') // remove trailing (...)
+    .replace(/\*$/, '')              // remove trailing *
+    .trim()
+  const noAsterisk = exact.replace(/\*$/, '').trim()
+  const noParens = exact.replace(/\s*\([^)]*\)\s*$/, '').trim()
+  // Deduplicate while preserving priority order
+  return [...new Set([exact, noAsterisk, noParens, stripped])]
 }
 
 // ---------------------------------------------------------------------------
@@ -474,23 +494,46 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
             continue
           }
           // Resolve learning_item_id from normalized_text.
-          // learning_item_slug must equal base_text.toLowerCase().trim() (spaces, not hyphens).
-          // normaliseClozeSlug() converts hyphens to spaces as a safety net — but the staging
-          // file should already use the correct form (e.g. "bandar udara", not "bandar-udara").
-          const normalisedSlug = normaliseClozeSlug(ctx.learning_item_slug)
-          if (normalisedSlug !== ctx.learning_item_slug) {
-            console.warn(`   ⚠️ Cloze slug "${ctx.learning_item_slug}" was normalised to "${normalisedSlug}" — fix the staging file`)
+          // Try each candidate slug in priority order until a match is found.
+          // This handles simplified slugs from the linguist-creator (e.g. "beres")
+          // matching DB entries that include accent annotations (e.g. "beres (bèrès)").
+          const slugCandidates = candidateSlugs(ctx.learning_item_slug)
+          let item: { id: string } | null = null
+          let matchedSlug: string | null = null
+          for (const candidate of slugCandidates) {
+            const { data, error } = await supabase
+              .schema('indonesian')
+              .from('learning_items')
+              .select('id')
+              .eq('normalized_text', candidate)
+              .limit(1)
+              .maybeSingle()
+            if (!error && data) {
+              item = data
+              matchedSlug = candidate
+              break
+            }
+          }
+          if (!item) {
+            // Last resort: prefix match to catch "beres" matching "beres (bèrès)"
+            const prefix = slugCandidates[slugCandidates.length - 1]
+            const { data } = await supabase
+              .schema('indonesian')
+              .from('learning_items')
+              .select('id, normalized_text')
+              .ilike('normalized_text', `${prefix}%`)
+              .limit(1)
+              .maybeSingle()
+            if (data) {
+              item = { id: data.id }
+              matchedSlug = data.normalized_text
+            }
+          }
+          if (matchedSlug && matchedSlug !== ctx.learning_item_slug.toLowerCase().trim()) {
+            console.log(`   ℹ️  Slug "${ctx.learning_item_slug}" resolved via fallback to "${matchedSlug}"`)
           }
 
-          const { data: item, error: itemError } = await supabase
-            .schema('indonesian')
-            .from('learning_items')
-            .select('id')
-            .eq('normalized_text', normalisedSlug)
-            .limit(1)
-            .maybeSingle()
-
-          if (itemError || !item) {
+          if (!item) {
             console.warn(`   ⚠️ Could not find learning item for slug: ${ctx.learning_item_slug} — skipping`)
             continue
           }
