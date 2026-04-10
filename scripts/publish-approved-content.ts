@@ -653,11 +653,11 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
       const vocabCandidateCount = approvedCandidates.filter(
         (c: any) => !GRAMMAR_EXERCISE_TYPES.has(c.exercise_type)
       ).length
-      if (vocabCandidateCount > 0) {
+      if (vocabCandidateCount > 0 && lessonId) {
         const { count: variantCount, error: variantErr } = await supabase
           .schema('indonesian').from('exercise_variants')
           .select('*', { count: 'exact', head: true })
-          .eq('lesson_id', lessonId!)
+          .eq('lesson_id', lessonId)
         if (variantErr) throw variantErr
         if ((variantCount ?? 0) === 0) {
           console.warn(`   ⚠️ ${vocabCandidateCount} vocab candidates were approved but 0 exercise_variants found for this lesson`)
