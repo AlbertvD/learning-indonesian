@@ -170,7 +170,6 @@ interface LearningItemsReport {
   totalGenerated: number
   droppedEmptyIndonesian: number
   droppedEmptyDutch: number
-  emptyEnglish: number  // expected but notable
 }
 
 function generateLearningItemsTs(catalog: SectionsCatalog): { content: string; report: LearningItemsReport } {
@@ -179,7 +178,6 @@ function generateLearningItemsTs(catalog: SectionsCatalog): { content: string; r
     totalGenerated: 0,
     droppedEmptyIndonesian: 0,
     droppedEmptyDutch: 0,
-    emptyEnglish: 0,
   }
 
   for (const section of catalog.sections) {
@@ -187,7 +185,6 @@ function generateLearningItemsTs(catalog: SectionsCatalog): { content: string; r
       for (const item of section.items) {
         if (!item.indonesian?.trim()) { report.droppedEmptyIndonesian++; continue }
         if (!item.dutch?.trim())      { report.droppedEmptyDutch++;      continue }
-        if (!item.translation_en?.trim()) report.emptyEnglish++
         items.push({
           base_text: item.indonesian.trim(),
           item_type: itemTypeFromSection(section.type as SectionType, item.indonesian),
@@ -301,9 +298,6 @@ function main() {
   }
   if (itemsReport.droppedEmptyDutch > 0) {
     console.warn(`  ⚠️  ${itemsReport.droppedEmptyDutch} catalog items dropped — missing dutch translation`)
-  }
-  if (itemsReport.emptyEnglish > 0) {
-    console.warn(`  ⓘ  ${itemsReport.emptyEnglish} items have no translation_en — EN users won't see these until filled in`)
   }
 
   const vocabSectionsInCatalog = catalog.sections.filter(s =>
