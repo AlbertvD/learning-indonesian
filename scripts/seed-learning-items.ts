@@ -50,6 +50,7 @@ async function seedLearningItems() {
 
   let created = 0
   let skipped = 0
+  let meaningErrors = 0
 
   for (const vocab of vocabulary) {
     const normalizedText = normalizeText(vocab.indonesian)
@@ -104,7 +105,13 @@ async function seedLearningItems() {
         translation_text: vocab.english,
         is_primary: true,
       })
-    if (enErr) console.error(`   ⚠️  Meaning (en) for "${vocab.indonesian}":`, enErr.message)
+    if (enErr) {
+      console.error(`   ❌ Meaning (en) for "${vocab.indonesian}":`, enErr.message)
+      meaningErrors++
+      // Do NOT `continue` here — the old meanings were already deleted above.
+      // Continuing to insert variants and context prevents an orphaned learning_item.
+      // The item will be usable for NL users but invisible to EN users until fixed.
+    }
 
     // Insert Dutch meaning if available
     if (vocab.dutch) {
@@ -117,7 +124,11 @@ async function seedLearningItems() {
           translation_text: vocab.dutch,
           is_primary: true,
         })
-      if (nlErr) console.error(`   ⚠️  Meaning (nl) for "${vocab.indonesian}":`, nlErr.message)
+      if (nlErr) {
+        console.error(`   ❌ Meaning (nl) for "${vocab.indonesian}":`, nlErr.message)
+        meaningErrors++
+        // Do NOT `continue` — see comment above.
+      }
     }
 
     // Indonesian answer variants
@@ -191,6 +202,10 @@ async function seedLearningItems() {
   }
 
   console.log(`\n✅ Seeding complete: ${created} items upserted, ${skipped} skipped`)
+  if (meaningErrors > 0) {
+    console.error(`\n✗ ${meaningErrors} meaning insert(s) failed. Items were seeded but may be missing NL or EN translations.`)
+    process.exit(1)
+  }
 
   // Verify counts
   const { count: itemCount } = await supabase.schema('indonesian').from('learning_items').select('*', { count: 'exact', head: true })
