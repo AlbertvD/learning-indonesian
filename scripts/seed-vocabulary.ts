@@ -23,6 +23,10 @@ if (lessonErr) {
 
 const lessonMap = new Map(lessonRows.map((l) => [`${l.module_id}:${l.order_index}`, l.id]))
 
+const { count: countBefore } = await supabase
+  .schema('indonesian').from('vocabulary').select('*', { count: 'exact', head: true })
+const preSeedCount = countBefore ?? 0
+
 for (const word of vocabulary) {
   const lessonId = lessonMap.get(`${word.module_id}:${word.lesson_order_index}`) ?? null
   const { error } = await supabase
@@ -48,4 +52,16 @@ for (const word of vocabulary) {
   console.log('Upserted:', word.indonesian)
 }
 
-console.log('Done!')
+const { count: countAfter, error: countErr } = await supabase
+  .schema('indonesian').from('vocabulary').select('*', { count: 'exact', head: true })
+if (countErr) {
+  console.error('Failed to verify seed count:', countErr.message)
+  process.exit(1)
+}
+const newRows = (countAfter ?? 0) - preSeedCount
+console.log(`\n✓ Done. ${newRows} new rows added (${countAfter} total in vocabulary table).`)
+if (newRows < 0) {
+  // Shouldn't happen — seed-vocabulary never deletes
+  console.error('✗ Row count decreased — unexpected deletion occurred.')
+  process.exit(1)
+}
