@@ -3,10 +3,15 @@ import type {
   LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant,
   LearnerItemState, LearnerSkillState,
   ExerciseItem, SessionQueueItem,
+  LearnerGrammarState, GrammarPatternWithLesson,
 } from '@/types/learning'
 import type { ExerciseVariant } from '@/types/contentGeneration'
 
 export type SessionMode = 'standard' | 'backlog_clear' | 'quick'
+
+// Fraction of the session filled with grammar exercises.
+// backlog_clear and quick modes exclude grammar entirely.
+const GRAMMAR_SESSION_RATIO = 0.15
 
 export interface SessionBuildInput {
   allItems: LearningItem[]
@@ -21,6 +26,10 @@ export interface SessionBuildInput {
   userLanguage: 'en' | 'nl'
   lessonOrder?: Record<string, number>
   sessionMode?: SessionMode
+  // Grammar scheduling inputs
+  grammarPatterns?: GrammarPatternWithLesson[]
+  grammarStates?: Record<string, LearnerGrammarState>        // keyed by grammar_pattern_id
+  grammarVariantsByPattern?: Record<string, ExerciseVariant[]> // keyed by grammar_pattern_id
 }
 
 interface CandidateItem {
@@ -96,11 +105,18 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
     ? []
     : sortByLessonOrder(newItems, input.contextsByItem, input.lessonOrder)
 
-  // 5. Compose and trim
-  const candidates = [...dueItems, ...gatedNew].slice(0, effectiveSessionSize)
+  // 5. Determine grammar slot count (0 for backlog_clear and quick)
+  const grammarSlots = (sessionMode === 'standard')
+    ? Math.max(1, Math.round(effectiveSessionSize * GRAMMAR_SESSION_RATIO))
+    : 0
 
-  // 6. Build exercises and order
-  const queue: SessionQueueItem[] = []
+  // Vocab slots are the remainder after grammar is allocated.
+  const vocabSlots = effectiveSessionSize - grammarSlots
+
+  // 6. Build vocab exercises
+  const candidates = [...dueItems, ...gatedNew].slice(0, vocabSlots)
+
+  const vocabQueue: SessionQueueItem[] = []
   for (const candidate of candidates) {
     const exercises = selectExercises(
       candidate,
@@ -112,7 +128,8 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
       eligibleItems,
     )
     for (const exercise of exercises) {
-      queue.push({
+      vocabQueue.push({
+        source: 'vocab',
         exerciseItem: exercise,
         learnerItemState: candidate.state,
         learnerSkillState: candidate.skills.find(s => s.skill_type === exercise.skillType) ?? null,
@@ -120,7 +137,181 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
     }
   }
 
-  return orderQueue(queue.slice(0, effectiveSessionSize))
+  // 7. Build grammar exercises
+  const grammarQueue: SessionQueueItem[] = grammarSlots > 0
+    ? buildGrammarQueue(input, grammarSlots, now)
+    : []
+
+  // 8. Interleave grammar evenly through the vocab queue
+  const interleaved = interleaveQueues(
+    orderQueue(vocabQueue.slice(0, vocabSlots)),
+    grammarQueue,
+  )
+
+  return interleaved.slice(0, effectiveSessionSize)
+}
+
+function buildGrammarQueue(
+  input: SessionBuildInput,
+  slots: number,
+  now: Date,
+): SessionQueueItem[] {
+  const { grammarPatterns = [], grammarStates = {}, grammarVariantsByPattern = {} } = input
+  if (grammarPatterns.length === 0) return []
+
+  // Partition into due, new, and not-yet-due patterns
+  const duePatterns: GrammarPatternWithLesson[] = []
+  const newPatterns: GrammarPatternWithLesson[] = []
+
+  for (const pattern of grammarPatterns) {
+    const state = grammarStates[pattern.id]
+    const variants = grammarVariantsByPattern[pattern.id] ?? []
+    if (variants.length === 0) continue  // skip patterns with no exercises
+
+    if (!state || state.stage === 'new') {
+      newPatterns.push(pattern)
+    } else if (state.due_at && new Date(state.due_at) <= now) {
+      duePatterns.push(pattern)
+    }
+  }
+
+  // Sort due patterns: most overdue first
+  duePatterns.sort((a, b) => {
+    const stateA = grammarStates[a.id]
+    const stateB = grammarStates[b.id]
+    const tA = stateA?.due_at ? new Date(stateA.due_at).getTime() : Infinity
+    const tB = stateB?.due_at ? new Date(stateB.due_at).getTime() : Infinity
+    return tA - tB
+  })
+
+  // Sort new patterns: lowest lesson order first (natural curriculum drip)
+  newPatterns.sort((a, b) => a.introduced_by_lesson_order - b.introduced_by_lesson_order)
+
+  const candidates = [...duePatterns, ...newPatterns].slice(0, slots)
+
+  const queue: SessionQueueItem[] = []
+  for (const pattern of candidates) {
+    const variants = grammarVariantsByPattern[pattern.id] ?? []
+    const variant = variants[Math.floor(Math.random() * variants.length)]
+    const exercise = makeGrammarExercise(pattern, variant)
+    queue.push({
+      source: 'grammar',
+      exerciseItem: exercise,
+      grammarState: grammarStates[pattern.id] ?? null,
+      grammarPatternId: pattern.id,
+    })
+  }
+
+  return queue
+}
+
+function makeGrammarExercise(
+  _pattern: GrammarPatternWithLesson,
+  variant: ExerciseVariant,
+): ExerciseItem {
+  const exerciseType = variant.exercise_type as ExerciseItem['exerciseType']
+  const payload = variant.payload_json
+  const answerKey = variant.answer_key_json
+
+  const base: ExerciseItem = {
+    learningItem: null,
+    meanings: [],
+    contexts: [],
+    answerVariants: [],
+    skillType: 'recognition',
+    exerciseType,
+  }
+
+  switch (exerciseType) {
+    case 'contrast_pair':
+      return {
+        ...base,
+        skillType: 'recognition',
+        contrastPairData: {
+          promptText: payload.promptText || '',
+          targetMeaning: payload.targetMeaning || '',
+          options: payload.options || ['', ''],
+          correctOptionId: (answerKey?.correctOptionId as string) || (payload.correctOptionId as string) || '',
+          explanationText: payload.explanationText || '',
+        },
+      }
+
+    case 'sentence_transformation':
+      return {
+        ...base,
+        skillType: 'form_recall',
+        sentenceTransformationData: {
+          sourceSentence: payload.sourceSentence || '',
+          transformationInstruction: payload.transformationInstruction || '',
+          acceptableAnswers: (answerKey?.acceptableAnswers as string[]) || (payload.acceptableAnswers as string[]) || [],
+          hintText: payload.hintText as string | undefined,
+          explanationText: payload.explanationText || '',
+        },
+      }
+
+    case 'constrained_translation':
+      return {
+        ...base,
+        skillType: 'meaning_recall',
+        constrainedTranslationData: {
+          sourceLanguageSentence: payload.sourceLanguageSentence || '',
+          requiredTargetPattern: payload.requiredTargetPattern || '',
+          acceptableAnswers: (answerKey?.acceptableAnswers as string[]) || (payload.acceptableAnswers as string[]) || [],
+          disallowedShortcutForms: (answerKey?.disallowedShortcutForms as string[] | undefined) ?? (payload.disallowedShortcutForms as string[] | undefined),
+          explanationText: payload.explanationText || '',
+        },
+      }
+
+    case 'cloze_mcq':
+      return {
+        ...base,
+        skillType: 'recognition',
+        clozeMcqData: {
+          sentence: payload.sentence || '',
+          translation: (payload.translation as string | null) ?? null,
+          options: (payload.options as string[]) || [],
+          correctOptionId: (answerKey?.correctOptionId as string) || (payload.correctOptionId as string) || '',
+        },
+      }
+
+    default:
+      return base
+  }
+}
+
+/**
+ * Interleave grammar items evenly through the vocab queue.
+ * Grammar items are placed at regular intervals so they feel natural, not bunched.
+ */
+function interleaveQueues(
+  vocabQueue: SessionQueueItem[],
+  grammarQueue: SessionQueueItem[],
+): SessionQueueItem[] {
+  if (grammarQueue.length === 0) return vocabQueue
+  if (vocabQueue.length === 0) return grammarQueue
+
+  const result: SessionQueueItem[] = []
+  const total = vocabQueue.length + grammarQueue.length
+  // Place grammar items at evenly spaced positions (1-indexed, at least position 2
+  // so we don't start with grammar).
+  const step = Math.floor(total / grammarQueue.length)
+
+  let vi = 0  // vocab index
+  let gi = 0  // grammar index
+
+  for (let pos = 0; pos < total; pos++) {
+    // Insert a grammar item every `step` positions, but never at position 0
+    const insertGrammarHere = gi < grammarQueue.length && pos > 0 && (pos % step === step - 1)
+    if (insertGrammarHere) {
+      result.push(grammarQueue[gi++])
+    } else if (vi < vocabQueue.length) {
+      result.push(vocabQueue[vi++])
+    } else {
+      result.push(grammarQueue[gi++])
+    }
+  }
+
+  return result
 }
 
 function filterEligible(input: SessionBuildInput): LearningItem[] {

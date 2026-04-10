@@ -14,7 +14,8 @@ interface TypedRecallProps {
 
 export function TypedRecall({ exerciseItem, userLanguage, onAnswer }: TypedRecallProps) {
   const t = translations[userLanguage]
-  const { learningItem, meanings } = exerciseItem
+  const { learningItem: learningItem_, meanings } = exerciseItem
+  const learningItem = learningItem_!
   const [response, setResponse] = useState('')
   const [isAnswered, setIsAnswered] = useState(false)
   const [startTime] = useState(() => Date.now())

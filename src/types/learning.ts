@@ -99,7 +99,8 @@ export interface LearnerSkillState {
 export interface ReviewEvent {
   id: string
   user_id: string
-  learning_item_id: string
+  learning_item_id: string | null      // null for grammar reviews
+  grammar_pattern_id: string | null    // null for vocab reviews; set for grammar reviews
   skill_type: SkillType
   exercise_type: ExerciseType
   session_id: string
@@ -113,6 +114,28 @@ export interface ReviewEvent {
   feedback_type: string | null
   scheduler_snapshot: Record<string, unknown> | null
   created_at: string
+}
+
+export interface LearnerGrammarState {
+  id: string
+  user_id: string
+  grammar_pattern_id: string
+  stage: LearnerStage
+  stability: number | null
+  difficulty: number | null
+  due_at: string | null
+  last_reviewed_at: string | null
+  review_count: number
+  lapse_count: number
+  consecutive_failures: number
+  updated_at: string
+}
+
+export interface GrammarPatternWithLesson {
+  id: string
+  slug: string
+  name: string
+  introduced_by_lesson_order: number
 }
 
 // === Exercise types ===
@@ -146,7 +169,7 @@ export interface ContentFlag {
 }
 
 export interface ExerciseItem {
-  learningItem: LearningItem
+  learningItem: LearningItem | null   // null for grammar exercises
   meanings: ItemMeaning[]
   contexts: ItemContext[]
   answerVariants: ItemAnswerVariant[]
@@ -209,11 +232,19 @@ export interface ExerciseItem {
   }
 }
 
-export interface SessionQueueItem {
-  exerciseItem: ExerciseItem
-  learnerItemState: LearnerItemState | null
-  learnerSkillState: LearnerSkillState | null
-}
+export type SessionQueueItem =
+  | {
+      source: 'vocab'
+      exerciseItem: ExerciseItem
+      learnerItemState: LearnerItemState | null
+      learnerSkillState: LearnerSkillState | null
+    }
+  | {
+      source: 'grammar'
+      exerciseItem: ExerciseItem
+      grammarState: LearnerGrammarState | null
+      grammarPatternId: string
+    }
 
 // === Session types ===
 
@@ -320,8 +351,8 @@ export interface ItemContextGrammarPattern {
 export interface ExerciseVariant {
   id: string
   exercise_type: string
-  learning_item_id: string
-  context_id: string
+  learning_item_id: string | null    // null for grammar exercises
+  context_id: string | null          // null for grammar exercises
   grammar_pattern_id: string | null
   payload_json: Record<string, any>
   answer_key_json: Record<string, any>

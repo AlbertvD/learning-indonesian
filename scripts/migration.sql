@@ -1019,3 +1019,60 @@ CREATE INDEX IF NOT EXISTS idx_exercise_variants_lesson
 CREATE INDEX IF NOT EXISTS idx_exercise_variants_grammar
   ON indonesian.exercise_variants(grammar_pattern_id)
   WHERE grammar_pattern_id IS NOT NULL;
+
+-- ============================================================
+-- Grammar Pattern Scheduling
+-- ============================================================
+
+-- Per-learner FSRS state for grammar patterns (parallel track to learner_skill_state)
+CREATE TABLE IF NOT EXISTS indonesian.learner_grammar_state (
+  id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id               UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  grammar_pattern_id    UUID NOT NULL REFERENCES indonesian.grammar_patterns(id) ON DELETE CASCADE,
+  stage                 TEXT NOT NULL DEFAULT 'new'
+                        CHECK (stage IN ('new', 'anchoring', 'retrieving', 'productive', 'maintenance')),
+  stability             NUMERIC,
+  difficulty            NUMERIC,
+  due_at                TIMESTAMPTZ,
+  last_reviewed_at      TIMESTAMPTZ,
+  review_count          INT NOT NULL DEFAULT 0,
+  lapse_count           INT NOT NULL DEFAULT 0,
+  consecutive_failures  INT NOT NULL DEFAULT 0,
+  created_at            TIMESTAMPTZ DEFAULT now(),
+  updated_at            TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (user_id, grammar_pattern_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_learner_grammar_state_due
+  ON indonesian.learner_grammar_state(user_id, due_at);
+
+ALTER TABLE indonesian.learner_grammar_state ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "learner_grammar_state_select" ON indonesian.learner_grammar_state
+  FOR SELECT TO authenticated USING (user_id = auth.uid());
+
+CREATE POLICY "learner_grammar_state_insert" ON indonesian.learner_grammar_state
+  FOR INSERT TO authenticated WITH CHECK (user_id = auth.uid());
+
+CREATE POLICY "learner_grammar_state_update" ON indonesian.learner_grammar_state
+  FOR UPDATE TO authenticated USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
+
+GRANT SELECT, INSERT, UPDATE ON indonesian.learner_grammar_state TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.learner_grammar_state TO service_role;
+
+-- Extend review_events to support grammar pattern reviews
+-- learning_item_id is relaxed to nullable; grammar reviews use grammar_pattern_id instead
+ALTER TABLE indonesian.review_events ALTER COLUMN learning_item_id DROP NOT NULL;
+
+ALTER TABLE indonesian.review_events ADD COLUMN IF NOT EXISTS
+  grammar_pattern_id UUID REFERENCES indonesian.grammar_patterns(id) ON DELETE SET NULL;
+
+-- Exactly one source must be set (vocab review XOR grammar review)
+DO $$ BEGIN
+  ALTER TABLE indonesian.review_events ADD CONSTRAINT review_events_source_check
+    CHECK (
+      (learning_item_id IS NOT NULL AND grammar_pattern_id IS NULL) OR
+      (learning_item_id IS NULL AND grammar_pattern_id IS NOT NULL)
+    );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;

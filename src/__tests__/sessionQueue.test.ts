@@ -164,7 +164,7 @@ describe('buildSessionQueue — FSRS scheduling (the core fix)', () => {
       },
     }))
     // overdue10 should come before overdue1 in the queue
-    const ids = result.map((r: SessionQueueItem) => r.exerciseItem.learningItem.id)
+    const ids = result.map((r: SessionQueueItem) => r.exerciseItem.learningItem?.id)
     expect(ids.indexOf('overdue10')).toBeLessThan(ids.indexOf('overdue1'))
   })
 })
@@ -202,7 +202,7 @@ describe('buildSessionQueue — session modes', () => {
       itemStates: { due1: makeItemState('due1', 'retrieving') },
       skillStates: { due1: [makeSkillState('due1')] },
     }))
-    const ids = result.map((r: SessionQueueItem) => r.exerciseItem.learningItem.id)
+    const ids = result.map((r: SessionQueueItem) => r.exerciseItem.learningItem?.id)
     expect(ids).toContain('due1')
     expect(ids).toContain('new1')
   })

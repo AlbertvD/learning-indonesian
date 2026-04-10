@@ -12,7 +12,8 @@ interface MeaningRecallProps {
 }
 
 export function MeaningRecall({ exerciseItem, userLanguage, onAnswer }: MeaningRecallProps) {
-  const { learningItem, meanings } = exerciseItem
+  const { meanings } = exerciseItem
+  const learningItem = exerciseItem.learningItem!
   const [response, setResponse] = useState('')
   const [isAnswered, setIsAnswered] = useState(false)
   const [startTime] = useState(() => Date.now())

@@ -10,7 +10,7 @@ interface CuedRecallExerciseProps {
 }
 
 export function CuedRecallExercise({ exerciseItem, onAnswer }: CuedRecallExerciseProps) {
-  const { learningItem } = exerciseItem
+  const learningItem = exerciseItem.learningItem!
   const data = exerciseItem.cuedRecallData
 
   const [selectedOption, setSelectedOption] = useState<string | null>(null)

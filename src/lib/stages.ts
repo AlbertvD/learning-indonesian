@@ -1,5 +1,5 @@
 // src/lib/stages.ts
-import type { LearnerItemState, LearnerSkillState, LearnerStage } from '@/types/learning'
+import type { LearnerItemState, LearnerSkillState, LearnerStage, LearnerGrammarState } from '@/types/learning'
 
 // Promotion thresholds (tuned for language learning progression)
 // Anchoring → Retrieving: Recognition only, lower threshold for faster progression
@@ -83,4 +83,59 @@ export function checkDemotion(
   if (currentIndex <= 1) return null
 
   return STAGE_ORDER[currentIndex - 1]
+}
+
+// ── Grammar pattern stage transitions ────────────────────────────────────────
+// Single FSRS state per pattern (no skill decomposition).
+
+const GRAMMAR_ANCHORING_STABILITY = 1.8
+const GRAMMAR_ANCHORING_REVIEWS = 3
+const GRAMMAR_RETRIEVING_STABILITY = 4.5
+const GRAMMAR_RETRIEVING_REVIEWS = 5
+const GRAMMAR_PRODUCTIVE_STABILITY = 21.0
+
+/**
+ * Check if a grammar pattern should be promoted.
+ * Returns the new stage, or null if no promotion.
+ */
+export function checkGrammarPromotion(state: LearnerGrammarState): LearnerStage | null {
+  switch (state.stage) {
+    case 'new':
+      return 'anchoring'
+
+    case 'anchoring':
+      if (
+        (state.stability ?? 0) >= GRAMMAR_ANCHORING_STABILITY &&
+        state.review_count >= GRAMMAR_ANCHORING_REVIEWS
+      ) return 'retrieving'
+      return null
+
+    case 'retrieving':
+      if (
+        (state.stability ?? 0) >= GRAMMAR_RETRIEVING_STABILITY &&
+        state.review_count >= GRAMMAR_RETRIEVING_REVIEWS
+      ) return 'productive'
+      return null
+
+    case 'productive':
+      if (
+        (state.stability ?? 0) >= GRAMMAR_PRODUCTIVE_STABILITY &&
+        state.lapse_count === 0
+      ) return 'maintenance'
+      return null
+
+    default:
+      return null
+  }
+}
+
+/**
+ * Check if a grammar pattern should be demoted due to consecutive failures.
+ * Mirrors vocab checkDemotion: trigger on consecutive_failures >= 2, floor at anchoring.
+ */
+export function checkGrammarDemotion(state: LearnerGrammarState): LearnerStage | null {
+  if (state.consecutive_failures < 2) return null
+  const idx = STAGE_ORDER.indexOf(state.stage)
+  if (idx <= 1) return null  // floor at anchoring
+  return STAGE_ORDER[idx - 1]
 }

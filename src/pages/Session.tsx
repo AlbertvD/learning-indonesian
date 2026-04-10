@@ -7,9 +7,10 @@ import { useAuthStore } from '@/stores/authStore'
 import { translations } from '@/lib/i18n'
 import { buildSessionQueue, type SessionBuildInput, type SessionMode } from '@/lib/sessionQueue'
 import { applyPolicies, type SessionPoliciesContext } from '@/lib/sessionPolicies'
-import type { ReviewResult } from '@/lib/reviewHandler'
+import type { ReviewResult, GrammarReviewResult } from '@/lib/reviewHandler'
 import { learningItemService } from '@/services/learningItemService'
 import { learnerStateService } from '@/services/learnerStateService'
+import { grammarStateService } from '@/services/grammarStateService'
 import { lessonService } from '@/services/lessonService'
 import { goalService } from '@/services/goalService'
 import { analyticsService } from '@/services/analyticsService'
@@ -18,7 +19,7 @@ import { exerciseAvailabilityService } from '@/services/exerciseAvailabilityServ
 import { ExerciseShell } from '@/components/exercises/ExerciseShell'
 import { SessionSummary } from '@/components/SessionSummary'
 import { logError } from '@/lib/logger'
-import type { SessionQueueItem, LearnerItemState, LearnerSkillState, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant, WeeklyGoal } from '@/types/learning'
+import type { SessionQueueItem, LearnerItemState, LearnerSkillState, LearnerGrammarState, GrammarPatternWithLesson, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant, WeeklyGoal } from '@/types/learning'
 import { startSession, endSession } from '@/lib/session'
 import classes from './Session.module.css'
 
@@ -135,6 +136,7 @@ export function Session() {
           allContextIds.push(context.id)
         }
         for (const variant of allVariants) {
+          if (!variant.learning_item_id) continue
           if (!variantsByItem[variant.learning_item_id]) variantsByItem[variant.learning_item_id] = []
           variantsByItem[variant.learning_item_id].push(variant)
         }
@@ -144,6 +146,7 @@ export function Session() {
           try {
             const publishedVariants = await learningItemService.getExerciseVariantsByContext(allContextIds)
             for (const variant of publishedVariants) {
+              if (!variant.context_id) continue
               if (!exerciseVariantsByContext[variant.context_id]) {
                 exerciseVariantsByContext[variant.context_id] = []
               }
@@ -164,6 +167,37 @@ export function Session() {
           skillStatesMap[state.learning_item_id].push(state)
         }
 
+        // Load grammar data (patterns, states, variants)
+        let grammarPatterns: GrammarPatternWithLesson[] = []
+        const grammarStatesMap: Record<string, LearnerGrammarState> = {}
+        const grammarVariantsByPattern: Record<string, ExerciseVariant[]> = {}
+        try {
+          grammarPatterns = await grammarStateService.getAllGrammarPatterns()
+          const patternIds = grammarPatterns.map(p => p.id)
+
+          // Seed grammar states idempotently (new patterns picked up automatically)
+          await grammarStateService.seedGrammarStates(user.id, patternIds)
+
+          const [grammarStatesArray, grammarVariants] = await Promise.all([
+            grammarStateService.getGrammarStates(user.id),
+            grammarStateService.getGrammarVariants(patternIds),
+          ])
+
+          for (const state of grammarStatesArray) {
+            grammarStatesMap[state.grammar_pattern_id] = state
+          }
+          for (const variant of grammarVariants) {
+            if (!variant.grammar_pattern_id) continue
+            if (!grammarVariantsByPattern[variant.grammar_pattern_id]) {
+              grammarVariantsByPattern[variant.grammar_pattern_id] = []
+            }
+            grammarVariantsByPattern[variant.grammar_pattern_id].push(variant)
+          }
+        } catch (err) {
+          // Non-fatal: if grammar data fails, session continues with vocab only
+          console.warn('Failed to load grammar data:', err)
+        }
+
         // Build session queue
         const input: SessionBuildInput = {
           allItems: items,
@@ -178,6 +212,9 @@ export function Session() {
           userLanguage: profile?.language ?? 'en',
           lessonOrder,
           sessionMode,
+          grammarPatterns,
+          grammarStates: grammarStatesMap,
+          grammarVariantsByPattern,
         }
 
         const builtQueue = buildSessionQueue(input)
@@ -196,10 +233,10 @@ export function Session() {
           console.warn('Failed to load exercise availability:', err)
         }
 
-        // Load grammar patterns for confusion-group interleaving
-        let grammarPatterns: Record<string, { confusion_group?: string }> | undefined
+        // Load grammar patterns for confusion-group interleaving (session policies)
+        let itemGrammarPatterns: Record<string, { confusion_group?: string }> | undefined
         try {
-          grammarPatterns = await learningItemService.getGrammarPatternsByItem(items.map(i => i.id))
+          itemGrammarPatterns = await learningItemService.getGrammarPatternsByItem(items.map(i => i.id))
         } catch (err) {
           console.warn('Failed to load grammar patterns:', err)
         }
@@ -208,7 +245,7 @@ export function Session() {
         const policyContext: SessionPoliciesContext = {
           sessionInteractionCap: preferredSessionSize,
           exerciseTypeAvailability,
-          grammarPatterns,
+          grammarPatterns: itemGrammarPatterns,
         }
 
         const shapedQueue = applyPolicies(builtQueue, policyContext)
@@ -237,8 +274,8 @@ export function Session() {
   // 3 means the user sees 2 other items before the retry appears.
   const REQUEUE_OFFSET = 3
 
-  // Handle answer from ExerciseShell
-  const handleExerciseAnswer = (_result: ReviewResult, wasCorrect: boolean) => {
+  // Handle answer from ExerciseShell (accepts both vocab and grammar review results)
+  const handleExerciseAnswer = (_result: ReviewResult | GrammarReviewResult, wasCorrect: boolean) => {
     if (wasCorrect) {
       setResults(r => ({ ...r, correct: r.correct + 1 }))
     } else {

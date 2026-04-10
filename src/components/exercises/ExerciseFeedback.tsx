@@ -26,7 +26,8 @@ export function ExerciseFeedback({
   onContinue,
 }: ExerciseFeedbackProps) {
   const t = translations[userLanguage]
-  const { learningItem, meanings, contexts, exerciseType } = exerciseItem
+  const { meanings, contexts, exerciseType } = exerciseItem
+  const learningItem = exerciseItem.learningItem!
   const isRecognitionMCQ = exerciseType === 'recognition_mcq'
 
   // Get the primary meaning for display

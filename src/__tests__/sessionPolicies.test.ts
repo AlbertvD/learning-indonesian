@@ -51,6 +51,7 @@ function createQueueItem(
   }
 
   return {
+    source: 'vocab' as const,
     exerciseItem,
     learnerItemState,
     learnerSkillState: null,
@@ -184,8 +185,8 @@ describe('Session Policies', () => {
 
       expect(result).toHaveLength(12)
       // Due items (non-new) come first, so all 10 due items appear and only 2 new items
-      const dueCount = result.filter(i => i.learnerItemState !== null).length
-      const newCount = result.filter(i => i.learnerItemState === null).length
+      const dueCount = result.filter(i => i.source === 'vocab' && i.learnerItemState !== null).length
+      const newCount = result.filter(i => i.source === 'vocab' && i.learnerItemState === null).length
       expect(dueCount).toBe(10)
       expect(newCount).toBe(2)
     })

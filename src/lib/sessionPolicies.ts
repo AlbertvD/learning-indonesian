@@ -89,7 +89,12 @@ function applyGrammarAwareInterleaving(
   const noGroup: SessionQueueItem[] = []
 
   for (const item of queue) {
-    const itemId = item.exerciseItem.learningItem.id
+    // Grammar exercises have no learningItem — skip confusion-group logic for them
+    const itemId = item.exerciseItem.learningItem?.id
+    if (!itemId) {
+      noGroup.push(item)
+      continue
+    }
     const pattern = context.grammarPatterns[itemId]
     const group = pattern?.confusion_group
 

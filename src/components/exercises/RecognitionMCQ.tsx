@@ -12,7 +12,8 @@ interface RecognitionMCQProps {
 
 export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: RecognitionMCQProps) {
   const t = translations[userLanguage]
-  const { learningItem, meanings, distractors } = exerciseItem
+  const { learningItem: learningItem_, meanings, distractors } = exerciseItem
+  const learningItem = learningItem_!
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
   const [startTime] = useState(() => Date.now())
