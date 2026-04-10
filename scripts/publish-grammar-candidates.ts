@@ -332,5 +332,11 @@ if (dryRun) {
   console.log(`  inserted: ${inserted}`)
   console.log(`  skipped (already published): ${skippedAlreadyPublished}`)
   if (pending.length > 0) console.log(`  WARNING: ${pending.length} skipped (pending_review)`)
+  const expectedNew = approved.length - skippedAlreadyPublished
+  if (inserted !== expectedNew) {
+    console.error(`✗ Expected ${expectedNew} new variants inserted but got ${inserted} — check errors above.`)
+    process.exit(1)
+  }
+  console.log(`✓ All ${inserted} expected variants inserted successfully.`)
 }
 console.log('\nDone.')
