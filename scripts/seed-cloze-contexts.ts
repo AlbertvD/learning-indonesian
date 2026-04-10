@@ -85,6 +85,7 @@ async function seedClozeContexts(lessonNumber: number) {
 
   let inserted = 0
   let notFound = 0
+  let failed = 0
 
   for (const ctx of clozeContexts) {
     const slug = ctx.learning_item_slug.toLowerCase().trim()
@@ -113,15 +114,29 @@ async function seedClozeContexts(lessonNumber: number) {
 
     if (error) {
       console.error(`  ❌ Failed for "${ctx.learning_item_slug}":`, error.message)
+      failed++
     } else {
       inserted++
     }
   }
 
-  console.log(`\n✓ Done: ${inserted} upserted, ${notFound} slugs not found`)
+  const total = clozeContexts.length
+  console.log(`\nResults: ${inserted} upserted, ${notFound} slugs not found, ${failed} upsert failures (total: ${total})`)
+
   if (notFound > 0) {
-    console.log('  Check that normalized_text matches learning_item_slug exactly.')
+    console.error(`✗ ${notFound} cloze context(s) could not be linked — learning item slugs not found in DB.`)
+    console.error('  Run publish-approved-content.ts <N> first if items are not yet seeded.')
   }
+  if (failed > 0) {
+    console.error(`✗ ${failed} cloze context upsert(s) failed — check errors above.`)
+  }
+  if (inserted + notFound + failed !== total) {
+    console.error(`✗ Count mismatch: ${inserted} + ${notFound} + ${failed} = ${inserted + notFound + failed} ≠ ${total} total`)
+  }
+  if (notFound > 0 || failed > 0) {
+    process.exit(1)
+  }
+  console.log('✓ All cloze contexts seeded successfully.')
 }
 
 const lessonNumber = parseInt(process.argv[2], 10)
