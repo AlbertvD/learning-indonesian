@@ -1,0 +1,27 @@
+{
+  "lesson": 4,
+  "generatedAt": "2026-04-09T12:00:00.000Z",
+  "mode": "mock",
+  "sections": {
+    "dialoog-di-hotel": {
+      "files": [
+        "dialoog-di-hotel_learner_normal.mp3",
+        "dialoog-di-hotel_learner_slow.mp3",
+        "dialoog-di-hotel_natural_normal.mp3",
+        "dialoog-di-hotel_natural_slow.mp3",
+        "dialoog-di-hotel.srt"
+      ],
+      "lineCount": 13
+    },
+    "woordenlijst-les-4": {
+      "files": [
+        "woordenlijst-les-4_learner_normal.mp3",
+        "woordenlijst-les-4_learner_slow.mp3",
+        "woordenlijst-les-4_natural_normal.mp3",
+        "woordenlijst-les-4_natural_slow.mp3",
+        "woordenlijst-les-4.srt"
+      ],
+      "lineCount": 24
+    }
+  }
+}

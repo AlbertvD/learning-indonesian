@@ -1,0 +1,35 @@
+{
+  "lesson": 4,
+  "generatedAt": "2026-04-09T12:00:00.000Z",
+  "threshold": 0.8,
+  "overallPass": true,
+  "totalSections": 3,
+  "passedSections": 3,
+  "failedSections": 0,
+  "results": [
+    {
+      "sectionSlug": "dialoog-di-hotel",
+      "originalText": "Selamat siang, Mas. Kamar saya nomor berapa? Nomor 215, Bu. Di lantai 2.",
+      "transcribedText": "Selamat siang Mas. Kamar saya nomor berapa? Nomor 215 Bu. Di lantai 2.",
+      "similarityScore": 0.972,
+      "meaningChanged": false,
+      "pass": true
+    },
+    {
+      "sectionSlug": "woordenlijst-les-4",
+      "originalText": "bibit padi padi gabah beras nasi",
+      "transcribedText": "bibit padi padi gabah beras nasi",
+      "similarityScore": 1.0,
+      "meaningChanged": false,
+      "pass": true
+    },
+    {
+      "sectionSlug": "grammatica-yang-constructie",
+      "originalText": "Kunci yang kecil dan kuning ini kunci Ibu",
+      "transcribedText": "Kunci yang kecil dan kuning ini kunci ibu",
+      "similarityScore": 0.976,
+      "meaningChanged": false,
+      "pass": true
+    }
+  ]
+}
