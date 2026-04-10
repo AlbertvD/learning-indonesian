@@ -399,6 +399,45 @@ function parseResponse(raw: string, lessonNumber: number, level: string, moduleI
   }
 }
 
+// ── Validation ────────────────────────────────────────────────────────────────
+
+function validateCatalog(catalog: SectionsCatalog): { errors: string[], warnings: string[] } {
+  const errors: string[] = []
+  const warnings: string[] = []
+
+  for (const section of catalog.sections) {
+    const loc = `Section "${section.title}" (${section.type})`
+
+    if (['vocabulary', 'expressions', 'numbers'].includes(section.type)) {
+      const items = section.items ?? []
+      if (items.length === 0) {
+        errors.push(`${loc}: no items extracted`)
+      }
+      for (const item of items) {
+        if (!item.indonesian?.trim()) errors.push(`${loc}: item missing indonesian text`)
+        if (!item.dutch?.trim())      errors.push(`${loc}: item missing dutch translation`)
+      }
+    }
+
+    if (section.type === 'dialogue') {
+      const lines = section.lines ?? []
+      if (lines.length === 0) {
+        errors.push(`${loc}: no dialogue lines extracted`)
+      }
+      for (const line of lines) {
+        if (!line.speaker?.trim()) errors.push(`${loc}: dialogue line missing speaker`)
+        if (!line.text?.trim())    errors.push(`${loc}: dialogue line missing text`)
+      }
+    }
+
+    if (section.confidence === 'low') {
+      warnings.push(`${loc}: low-confidence extraction — review manually before publishing`)
+    }
+  }
+
+  return { errors, warnings }
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -441,6 +480,16 @@ async function main() {
   const catalog = parseResponse(rawResponse, lessonNumber, level, moduleId)
   catalog.sourcePages = pages.length
   ;(catalog as any).sourceImages = images.length
+
+  const { errors: catalogErrors, warnings: catalogWarnings } = validateCatalog(catalog)
+  catalogWarnings.forEach(w => console.warn(`  ⚠️  ${w}`))
+  if (catalogErrors.length > 0) {
+    console.error(`\n✗ Catalog validation failed — ${catalogErrors.length} error(s):`)
+    catalogErrors.forEach(e => console.error(`  ✗ ${e}`))
+    console.error('\nFix the extraction issues above before proceeding to generate-staging-files.ts.')
+    process.exit(1)
+  }
+  console.log(`\n✓ Catalog validated (${catalog.sections.length} sections, ${catalogWarnings.length} warnings)`)
 
   // Ensure staging dir exists
   fs.mkdirSync(stagingDir, { recursive: true })
