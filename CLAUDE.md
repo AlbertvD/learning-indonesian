@@ -398,16 +398,50 @@ POSTGRES_PASSWORD=<postgres password>     # for make migrate
 
 ## Deployment
 
-Multi-stage Docker build → Nginx container → Traefik on homelab.
+The image is built automatically via **GitHub Actions** on every push to `main` (workflow: "Build and Push Docker Image"). The built image is pushed to `ghcr.io/albertvd/learning-indonesian:latest`.
 
-```bash
-docker build \
-  --build-arg VITE_SUPABASE_URL=https://api.supabase.duin.home \
-  --build-arg VITE_SUPABASE_ANON_KEY=<anon_key> \
-  -t learning-indonesian .
-```
+### Deploying a new version
 
-The `docker-compose.yml` for homelab deployment lives in the `homelab-configs` repo under `services/learning-indonesian/`.
+1. **Push to main** — GitHub Actions builds and pushes the image automatically.
+
+2. **Wait for the build** — monitor with:
+   ```bash
+   gh run list --repo AlbertvD/learning-indonesian --limit 5
+   gh run watch <run-id> --repo AlbertvD/learning-indonesian
+   ```
+
+3. **Pull the new image on the homelab** — ghcr.io is not reachable from the Portainer container, so pull via SSH:
+   ```bash
+   ssh mrblond@master-docker "sudo docker pull ghcr.io/albertvd/learning-indonesian:latest"
+   ```
+
+4. **Recreate the container** — stop, remove, and relaunch with the same labels:
+   ```bash
+   ssh mrblond@master-docker "sudo docker stop learning-indonesian && sudo docker rm learning-indonesian && sudo docker run -d \
+     --name learning-indonesian \
+     --restart unless-stopped \
+     --network proxy \
+     --label 'traefik.enable=true' \
+     --label 'traefik.http.routers.learning-indonesian.rule=Host(\`indonesian.duin.home\`)' \
+     --label 'traefik.http.routers.learning-indonesian.entrypoints=websecure' \
+     --label 'traefik.http.routers.learning-indonesian.tls.certresolver=stepca' \
+     --label 'traefik.http.routers.learning-indonesian.middlewares=duinhuis-auth@docker' \
+     --label 'traefik.http.services.learning-indonesian.loadbalancer.server.port=80' \
+     --label 'traefik.http.routers.learning-indonesian-static.rule=Host(\`indonesian.duin.home\`) && (Path(\`/manifest.webmanifest\`) || PathRegexp(\`^/pwa-icon\`))' \
+     --label 'traefik.http.routers.learning-indonesian-static.entrypoints=websecure' \
+     --label 'traefik.http.routers.learning-indonesian-static.tls.certresolver=stepca' \
+     --label 'traefik.http.routers.learning-indonesian-static.service=learning-indonesian' \
+     ghcr.io/albertvd/learning-indonesian:latest"
+   ```
+
+5. **Verify** — check the container is running:
+   ```bash
+   ssh mrblond@master-docker "sudo docker inspect learning-indonesian --format '{{.State.Status}} — image: {{.Config.Image}}'"
+   ```
+
+**Note:** Docker is not installed locally. All image operations happen on the homelab via SSH (`mrblond@master-docker`). The Portainer MCP can list containers (environment ID 3) but cannot pull images — ghcr.io is unreachable from the Portainer host network.
+
+The `docker-compose.yml` reference in `homelab-configs/services/learning-indonesian/` is kept for documentation but the container is managed directly via `docker run` as above.
 
 ## Data Model Overview
 
