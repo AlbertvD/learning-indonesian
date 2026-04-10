@@ -219,6 +219,12 @@ bun scripts/catalog-lesson-sections.ts <N> [--level A1] [--force]
 Claude reads every extracted page, identifies section boundaries from Dutch headers, fully parses vocabulary/expressions/numbers/dialogue/text items, and captures grammar/exercises/pronunciation as raw text. Reviews photos alongside OCR text to recover content the OCR missed.
 Output: `scripts/data/staging/lesson-<N>/sections-catalog.json`
 
+> **Legacy lessons (1–3) shortcut:** If the lesson content already lives in Supabase (lesson_sections + learning_items), skip steps 1–4 and run:
+> ```bash
+> bun scripts/reverse-engineer-staging.ts <N>
+> ```
+> This pulls lesson_sections and learning_items from the DB and writes sections-catalog.json, lesson.ts, and learning-items.ts directly. Grammar sections are already fully structured in the DB so no OCR or LLM catalog step is needed. Go straight to Step 5 (Linguist Creator).
+
 **Step 4 — Generate staging files**
 ```bash
 bun scripts/generate-staging-files.ts <N>
@@ -241,6 +247,11 @@ bun scripts/publish-approved-content.ts <N> --dry-run   # preview
 bun scripts/publish-approved-content.ts <N>             # publish
 ```
 Publishes everything in one shot: lesson sections, vocabulary items, grammar patterns, cloze contexts, and exercise variants. All `pending_review` content is included. The `NODE_TLS_REJECT_UNAUTHORIZED=0` flag is built into the script for the homelab's internal CA.
+
+The publish script runs quality gates at every step and exits non-zero on failure. If it fails, the `content-seeder` agent routes back to `linguist-creator` with the specific error. Common failure → agent mappings:
+- Invalid `context_type` or empty `translation_nl` in staging → **linguist-creator**
+- Unresolved cloze slugs → **linguist-creator**
+- Missing NL meanings after publish → re-run; if persistent → **linguist-creator**
 
 ### Staging files reference
 
