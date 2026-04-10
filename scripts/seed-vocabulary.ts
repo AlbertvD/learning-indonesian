@@ -23,8 +23,12 @@ if (lessonErr) {
 
 const lessonMap = new Map(lessonRows.map((l) => [`${l.module_id}:${l.order_index}`, l.id]))
 
-const { count: countBefore } = await supabase
+const { count: countBefore, error: preSeedErr } = await supabase
   .schema('indonesian').from('vocabulary').select('*', { count: 'exact', head: true })
+if (preSeedErr) {
+  console.error('Failed to fetch pre-seed count:', preSeedErr.message)
+  process.exit(1)
+}
 const preSeedCount = countBefore ?? 0
 
 for (const word of vocabulary) {
