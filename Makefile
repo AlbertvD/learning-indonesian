@@ -122,6 +122,19 @@ review: ## Start the review UI (tools/review/)
 pipeline: convert-heic ocr-pages parse-lesson ## Run full pipeline steps 1-3 (requires LESSON)
 	@echo "\n✓ Pipeline complete. Run 'make review' to review and edit content."
 
+.PHONY: generate-audio
+generate-audio: ## Generate per-section TTS audio (requires LESSON; optional: GOOGLE_TTS_API_KEY or --mock)
+	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make generate-audio LESSON=<N> [MOCK=1]"; exit 1; }
+	bun scripts/generate-section-audio.ts $(LESSON) $(if $(MOCK),--mock,)
+
+.PHONY: asr-qa
+asr-qa: ## Run ASR quality gate on generated audio (requires LESSON; optional: GOOGLE_STT_API_KEY or --mock)
+	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make asr-qa LESSON=<N> [MOCK=1]"; exit 1; }
+	bun scripts/asr-quality-gate.ts $(LESSON) $(if $(MOCK),--mock,)
+
+.PHONY: audio-pipeline
+audio-pipeline: generate-audio asr-qa ## Run full audio pipeline: TTS + ASR quality gate (requires LESSON)
+
 .PHONY: publish-content
 publish-content: ## Publish approved content to Supabase (requires LESSON)
 	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make publish-content LESSON=<N>"; exit 1; }
