@@ -223,18 +223,31 @@ function makeGrammarExercise(
   }
 
   switch (exerciseType) {
-    case 'contrast_pair':
+    case 'contrast_pair': {
+      // Grammar contrast_pair payloads store options as [{id, text}] objects.
+      // ContrastPairExercise compares option values directly to correctOptionId,
+      // so we normalise both to plain text strings here.
+      const rawOpts = payload.options as Array<{ id: string; text: string } | string>
+      const correctId = (answerKey?.correctOptionId as string) || (payload.correctOptionId as string) || ''
+      const optionTexts: [string, string] = (rawOpts ?? []).map(o =>
+        typeof o === 'string' ? o : o.text
+      ) as [string, string]
+      const correctText = (() => {
+        const match = rawOpts?.find(o => typeof o !== 'string' && o.id === correctId)
+        return match && typeof match !== 'string' ? match.text : correctId
+      })()
       return {
         ...base,
         skillType: 'recognition',
         contrastPairData: {
           promptText: payload.promptText || '',
           targetMeaning: payload.targetMeaning || '',
-          options: payload.options || ['', ''],
-          correctOptionId: (answerKey?.correctOptionId as string) || (payload.correctOptionId as string) || '',
+          options: optionTexts,
+          correctOptionId: correctText,
           explanationText: payload.explanationText || '',
         },
       }
+    }
 
     case 'sentence_transformation':
       return {
@@ -737,18 +750,28 @@ function makePublishedExercise(
         },
       }
 
-    case 'contrast_pair':
+    case 'contrast_pair': {
+      const rawOptsPublished = (payload.options ?? []) as Array<{ id: string; text: string } | string>
+      const correctIdPublished = (answerKey?.correctOptionId as string) || (payload.correctOptionId as string) || ''
+      const optionTextsPublished: [string, string] = rawOptsPublished.map(o =>
+        typeof o === 'string' ? o : o.text
+      ) as [string, string]
+      const correctTextPublished = (() => {
+        const match = rawOptsPublished.find(o => typeof o !== 'string' && o.id === correctIdPublished)
+        return match && typeof match !== 'string' ? match.text : correctIdPublished
+      })()
       return {
         ...baseExercise,
         skillType: 'recognition',
         contrastPairData: {
           promptText: payload.promptText || '',
           targetMeaning: payload.targetMeaning || '',
-          options: payload.options || ['', ''],
-          correctOptionId: (answerKey?.correctOptionId as string) || (payload.correctOptionId as string) || '',
+          options: optionTextsPublished,
+          correctOptionId: correctTextPublished,
           explanationText: payload.explanationText || '',
         },
       }
+    }
 
     case 'sentence_transformation':
       return {
