@@ -172,3 +172,43 @@ docker-build: ## Build the Docker image (requires VITE_SUPABASE_ANON_KEY)
 .PHONY: docker-run
 docker-run: ## Run the Docker image locally on port 8080
 	docker run --rm -p 8080:80 learning-indonesian
+
+# ============================================================================
+# AI CONTENT PIPELINE (lessons 4+)
+# ============================================================================
+
+.PHONY: build-sections
+build-sections: ## Structure raw grammar/exercise sections via Claude (requires LESSON and ANTHROPIC_API_KEY)
+	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make build-sections LESSON=<N>"; exit 1; }
+	@test -n "$(ANTHROPIC_API_KEY)" || { echo "Error: ANTHROPIC_API_KEY is required (add to .env.local)"; exit 1; }
+	bun scripts/build-sections.ts $(LESSON) $(if $(FORCE),--force,) $(if $(DRY_RUN),--dry-run,)
+
+.PHONY: generate-exercises
+generate-exercises: ## Generate exercise candidates via Claude (requires LESSON and ANTHROPIC_API_KEY)
+	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make generate-exercises LESSON=<N>"; exit 1; }
+	@test -n "$(ANTHROPIC_API_KEY)" || { echo "Error: ANTHROPIC_API_KEY is required (add to .env.local)"; exit 1; }
+	bun scripts/generate-exercises.ts $(LESSON) \
+		$(if $(PATTERN),--pattern $(PATTERN),) \
+		$(if $(TYPES),--types $(TYPES),) \
+		$(if $(FORCE),--force,) \
+		$(if $(DRY_RUN),--dry-run,)
+
+.PHONY: linguist
+linguist: build-sections generate-exercises ## Run full linguist-creator pass: structure sections then generate exercises (requires LESSON)
+
+.PHONY: catalog-sections
+catalog-sections: ## Catalog lesson sections via Claude OCR+vision (requires LESSON and ANTHROPIC_API_KEY)
+	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make catalog-sections LESSON=<N>"; exit 1; }
+	@test -n "$(ANTHROPIC_API_KEY)" || { echo "Error: ANTHROPIC_API_KEY is required (add to .env.local)"; exit 1; }
+	bun scripts/catalog-lesson-sections.ts $(LESSON) \
+		$(if $(LEVEL),--level $(LEVEL),) \
+		$(if $(MODULE),--module $(MODULE),) \
+		$(if $(FORCE),--force,)
+
+.PHONY: staging-files
+staging-files: ## Generate staging files from catalog (requires LESSON)
+	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make staging-files LESSON=<N>"; exit 1; }
+	bun scripts/generate-staging-files.ts $(LESSON) $(if $(FORCE),--force,)
+
+.PHONY: full-pipeline
+full-pipeline: catalog-sections staging-files linguist ## Run full AI content pipeline steps 3-5 (requires LESSON and ANTHROPIC_API_KEY)
