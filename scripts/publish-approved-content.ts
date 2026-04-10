@@ -649,22 +649,9 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
         console.log(`   ✓ All ${expectedCount} items have at least one context`)
       }
 
-      // Verify exercise_variants for vocab candidates
-      const vocabCandidateCount = approvedCandidates.filter(
-        (c: any) => !GRAMMAR_EXERCISE_TYPES.has(c.exercise_type)
-      ).length
-      if (vocabCandidateCount > 0 && lessonId) {
-        const { count: variantCount, error: variantErr } = await supabase
-          .schema('indonesian').from('exercise_variants')
-          .select('*', { count: 'exact', head: true })
-          .eq('lesson_id', lessonId)
-        if (variantErr) throw variantErr
-        if ((variantCount ?? 0) === 0) {
-          console.warn(`   ⚠️ ${vocabCandidateCount} vocab candidates were approved but 0 exercise_variants found for this lesson`)
-        } else {
-          console.log(`   ✓ ${variantCount} exercise_variants present for lesson`)
-        }
-      }
+      // Note: exercise_variant verification is handled in step 4's post-insert check.
+      // Vocab variants link via context_id (not lesson_id) — a lesson_id query would
+      // only count grammar variants and produce misleading results for vocab candidates.
     }
 
     console.log(`\n✓ ${dryRun ? '[DRY RUN] ' : ''}Successfully processed lesson ${lessonNumber}`)
