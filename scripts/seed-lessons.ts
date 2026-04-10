@@ -83,6 +83,9 @@ if (pipelineWarnings.length > 0) {
   console.warn('')
 }
 
+let lessonSuccessCount = 0
+let sectionSuccessCount = 0
+
 for (const lesson of lessons) {
   const { data, error } = await supabase
     .schema('indonesian')
@@ -109,6 +112,7 @@ for (const lesson of lessons) {
     continue
   }
   console.log('Upserted lesson:', lesson.title, data.id)
+  lessonSuccessCount++
 
   for (const section of lesson.sections) {
     const { error: sectionError } = await supabase
@@ -128,7 +132,17 @@ for (const lesson of lessons) {
       continue
     }
     console.log('  Upserted section:', section.title)
+    sectionSuccessCount++
   }
 }
 
-console.log('Done!')
+const expectedSections = lessons.reduce((n, l) => n + l.sections.length, 0)
+console.log(`\n✓ Done. ${lessonSuccessCount}/${lessons.length} lessons seeded, ${sectionSuccessCount}/${expectedSections} sections seeded.`)
+if (lessonSuccessCount < lessons.length) {
+  console.error(`✗ ${lessons.length - lessonSuccessCount} lesson(s) failed to seed — check errors above.`)
+  process.exit(1)
+}
+if (sectionSuccessCount < expectedSections) {
+  console.error(`✗ ${expectedSections - sectionSuccessCount} section(s) failed to seed — check errors above.`)
+  process.exit(1)
+}
