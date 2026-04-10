@@ -258,6 +258,9 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
     const approvedItems = learningItems.filter((item: any) =>
       item.review_status === 'pending_review' || item.review_status === 'approved'
     )
+    const VALID_LANGUAGES = new Set(['nl', 'en'])
+    const VALID_CONTEXT_TYPES = new Set(['example_sentence', 'dialogue', 'cloze', 'lesson_snippet', 'vocabulary_list', 'exercise_prompt'])
+    const publishedItemIds: string[] = []
     if (approvedItems.length > 0) {
       console.log(`\n3. Publishing ${approvedItems.length} learning items...`)
       for (const item of approvedItems) {
@@ -280,19 +283,45 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
             .single()
 
           if (itemError) throw itemError
+          publishedItemIds.push(upsertedItem.id)
 
-          // Upsert Meaning (Dutch)
+          // Pre-insert assertion: validate context_type (regression guard)
+          if (!VALID_CONTEXT_TYPES.has(item.context_type)) {
+            throw new Error(`Invalid context_type "${item.context_type}" for item "${item.base_text}". Must be one of: ${[...VALID_CONTEXT_TYPES].join(', ')}`)
+          }
+
+          // Delete existing meanings for this item and re-insert both languages.
+          // item_meanings has no unique constraint on (learning_item_id, language), so
+          // upsert-on-conflict is not available — delete+insert is the safe re-run strategy.
           await supabase
             .schema('indonesian')
             .from('item_meanings')
-            .upsert({
-              learning_item_id: upsertedItem.id,
-              translation_text: item.translation_nl,
-              is_primary: true,
-            }, { onConflict: 'learning_item_id,translation_text' })
+            .delete()
+            .eq('learning_item_id', upsertedItem.id)
+
+          const meaningInserts = [
+            { learning_item_id: upsertedItem.id, translation_language: 'nl', translation_text: item.translation_nl, is_primary: true },
+            ...(item.translation_en ? [{ learning_item_id: upsertedItem.id, translation_language: 'en', translation_text: item.translation_en, is_primary: true }] : []),
+          ]
+
+          // Assert translation_language and translation_text before inserting (regression guard)
+          for (const m of meaningInserts) {
+            if (!VALID_LANGUAGES.has(m.translation_language)) {
+              throw new Error(`Invalid translation_language "${m.translation_language}" — must be 'nl' or 'en'`)
+            }
+            if (!m.translation_text?.trim()) {
+              throw new Error(`Empty translation_text for language "${m.translation_language}" on item "${item.base_text}"`)
+            }
+          }
+
+          const { error: meaningError } = await supabase
+            .schema('indonesian')
+            .from('item_meanings')
+            .insert(meaningInserts)
+          if (meaningError) throw meaningError
 
           // Upsert Context
-          await supabase
+          const { error: ctxError } = await supabase
             .schema('indonesian')
             .from('item_contexts')
             .upsert({
@@ -303,6 +332,7 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
               is_anchor_context: true,
               source_lesson_id: lessonId,
             }, { onConflict: 'learning_item_id,source_text' })
+          if (ctxError) throw ctxError
         }
       }
       
@@ -557,6 +587,83 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
           }
         }
         if (!dryRun) console.log('   ✓ Cloze contexts published')
+      }
+    }
+
+    // 6. Post-seed verification (real runs only)
+    if (!dryRun && publishedItemIds.length > 0) {
+      console.log('\n6. Verifying seed integrity...')
+      const CHUNK_SIZE = 50
+      const expectedCount = publishedItemIds.length
+
+      // Verify meanings (chunked)
+      const nlCovered = new Set<string>()
+      const enCovered = new Set<string>()
+      for (let i = 0; i < publishedItemIds.length; i += CHUNK_SIZE) {
+        const chunk = publishedItemIds.slice(i, i + CHUNK_SIZE)
+        const { data: nlData, error: nlErr } = await supabase
+          .schema('indonesian').from('item_meanings').select('learning_item_id')
+          .in('learning_item_id', chunk).eq('translation_language', 'nl')
+        if (nlErr) throw nlErr
+        ;(nlData ?? []).forEach((r: any) => nlCovered.add(r.learning_item_id))
+
+        const { data: enData, error: enErr } = await supabase
+          .schema('indonesian').from('item_meanings').select('learning_item_id')
+          .in('learning_item_id', chunk).eq('translation_language', 'en')
+        if (enErr) throw enErr
+        ;(enData ?? []).forEach((r: any) => enCovered.add(r.learning_item_id))
+      }
+
+      const missingNl = publishedItemIds.filter(id => !nlCovered.has(id))
+      const missingEn = publishedItemIds.filter(id => !enCovered.has(id))
+
+      if (missingNl.length > 0) {
+        console.error(`   ✗ ${missingNl.length}/${expectedCount} items missing NL meaning`)
+        console.error('\n✗ Seed integrity check FAILED — missing NL meanings indicate a silent write error.')
+        console.error('  Re-run this script to retry.')
+        process.exit(1)
+      } else {
+        console.log(`   ✓ All ${expectedCount} items have NL meanings`)
+      }
+      if (missingEn.length > 0) {
+        console.warn(`   ⚠️ ${missingEn.length}/${expectedCount} items missing EN meaning (expected if no translation_en in staging)`)
+      } else {
+        console.log(`   ✓ All ${expectedCount} items have EN meanings`)
+      }
+
+      // Verify contexts (chunked) — using publishedItemIds, not a re-query of item_contexts
+      const ctxCovered = new Set<string>()
+      for (let i = 0; i < publishedItemIds.length; i += CHUNK_SIZE) {
+        const chunk = publishedItemIds.slice(i, i + CHUNK_SIZE)
+        const { data: ctxData, error: ctxErr } = await supabase
+          .schema('indonesian').from('item_contexts').select('learning_item_id')
+          .in('learning_item_id', chunk)
+        if (ctxErr) throw ctxErr
+        ;(ctxData ?? []).forEach((r: any) => ctxCovered.add(r.learning_item_id))
+      }
+      const missingCtx = publishedItemIds.filter(id => !ctxCovered.has(id))
+      if (missingCtx.length > 0) {
+        console.error(`   ✗ ${missingCtx.length}/${expectedCount} items have no context — they cannot appear in sessions`)
+        process.exit(1)
+      } else {
+        console.log(`   ✓ All ${expectedCount} items have at least one context`)
+      }
+
+      // Verify exercise_variants for vocab candidates
+      const vocabCandidateCount = approvedCandidates.filter(
+        (c: any) => !GRAMMAR_EXERCISE_TYPES.has(c.exercise_type)
+      ).length
+      if (vocabCandidateCount > 0) {
+        const { count: variantCount, error: variantErr } = await supabase
+          .schema('indonesian').from('exercise_variants')
+          .select('*', { count: 'exact', head: true })
+          .eq('lesson_id', lessonId!)
+        if (variantErr) throw variantErr
+        if ((variantCount ?? 0) === 0) {
+          console.warn(`   ⚠️ ${vocabCandidateCount} vocab candidates were approved but 0 exercise_variants found for this lesson`)
+        } else {
+          console.log(`   ✓ ${variantCount} exercise_variants present for lesson`)
+        }
       }
     }
 
