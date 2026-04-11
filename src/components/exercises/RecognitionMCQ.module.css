@@ -18,6 +18,15 @@
   letter-spacing: 0.05em;
 }
 
+/* Sentence / dialogue_chunk prompts — lower prominence, more readable */
+.wordSentence {
+  font-size: var(--fs-xl);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.6;
+  text-align: left;
+}
+
 .optionButton {
   text-align: left;
   height: auto;
@@ -27,6 +36,13 @@
   white-space: normal;
   transition: all 150ms ease;
   border: 2px solid transparent;
+}
+
+/* Options for sentence/dialogue_chunk items — smaller text, taller box */
+.optionButtonSentence {
+  font-size: var(--fs-md) !important;
+  min-height: 72px;
+  line-height: 1.5;
 }
 
 .optionButton:not(:disabled):hover {
@@ -81,7 +97,15 @@
     font-size: var(--fs-2xl);
   }
 
+  .wordSentence {
+    font-size: var(--fs-lg);
+  }
+
   .optionButton {
     min-height: 50px;
+  }
+
+  .optionButtonSentence {
+    min-height: 64px;
   }
 }

@@ -62,6 +62,7 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
   }
 
   const isCorrect = selectedOption === correctAnswer
+  const isSentenceType = learningItem.item_type === 'sentence' || learningItem.item_type === 'dialogue_chunk'
 
   return (
     <Box className={classes.container}>
@@ -69,7 +70,7 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
         {/* Word to recognize */}
         <Box className={classes.wordSection}>
           <Text size="sm" c="dimmed" mb="xs">{t.session.recognition.question}</Text>
-          <Box className={classes.word}>{learningItem.base_text}</Box>
+          <Box className={`${classes.word} ${isSentenceType ? classes.wordSentence : ''}`}>{learningItem.base_text}</Box>
         </Box>
 
         {/* Multiple choice options */}
@@ -92,10 +93,10 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
                 key={option}
                 onClick={() => handleSelectOption(option)}
                 disabled={isAnswered}
-                className={`${classes.optionButton} ${statusClass}`}
+                className={`${classes.optionButton} ${isSentenceType ? classes.optionButtonSentence : ''} ${statusClass}`}
                 variant={isSelected && !showWrong ? 'filled' : 'light'}
                 fullWidth
-                size="lg"
+                size={isSentenceType ? 'md' : 'lg'}
               >
                 {option}
               </Button>
