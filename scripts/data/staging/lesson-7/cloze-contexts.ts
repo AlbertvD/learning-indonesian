@@ -24,6 +24,13 @@ export const clozeContexts = [
     topic_tag: 'travel',
   },
   {
+    learning_item_slug: 'akhirnya',
+    source_text: '___ koper itu selesai juga.',
+    translation_text: 'Uiteindelijk was de koffer ook klaar.',
+    difficulty: 'A2',
+    topic_tag: 'daily_life',
+  },
+  {
     learning_item_slug: 'bawa',
     source_text: 'Jangan lupa ___ pakaian renang!',
     translation_text: 'Vergeet niet om zwemkleding mee te nemen!',
@@ -38,11 +45,18 @@ export const clozeContexts = [
     topic_tag: 'travel',
   },
   {
-    learning_item_slug: 'beres (bèrès)',
+    learning_item_slug: 'beres (b\u00e8r\u00e8s)',
     source_text: 'Barang saya sudah ___.',
     translation_text: 'Mijn spullen zijn al klaar.',
     difficulty: 'A2',
     topic_tag: 'daily_life',
+  },
+  {
+    learning_item_slug: 'beres (b\u00e8r\u00e8s)',
+    source_text: 'Semua sudah ___? Kita bisa berangkat sekarang.',
+    translation_text: 'Is alles al klaar? We kunnen nu vertrekken.',
+    difficulty: 'A2',
+    topic_tag: 'travel',
   },
   {
     learning_item_slug: 'betul-betul',
@@ -59,6 +73,13 @@ export const clozeContexts = [
     topic_tag: 'clothing',
   },
   {
+    learning_item_slug: 'celana',
+    source_text: 'Saya beli ___ baru di pasar.',
+    translation_text: 'Ik kocht een nieuwe broek op de markt.',
+    difficulty: 'A2',
+    topic_tag: 'shopping',
+  },
+  {
     learning_item_slug: 'cincin',
     source_text: 'Dia pakai ___ emas yang bagus.',
     translation_text: 'Zij draagt een mooie gouden ring.',
@@ -69,6 +90,13 @@ export const clozeContexts = [
     learning_item_slug: 'cocok',
     source_text: 'Rok itu ___ sekali untuk ke pesta.',
     translation_text: 'Die rok past heel goed bij een feestje.',
+    difficulty: 'A2',
+    topic_tag: 'clothing',
+  },
+  {
+    learning_item_slug: 'cocok',
+    source_text: 'Warna biru ___ dengan kemeja ini.',
+    translation_text: 'Blauw past bij dit overhemd.',
     difficulty: 'A2',
     topic_tag: 'clothing',
   },
@@ -150,6 +178,13 @@ export const clozeContexts = [
     topic_tag: 'shopping',
   },
   {
+    learning_item_slug: 'jual',
+    source_text: 'Di Bali banyak toko yang ___ sandal.',
+    translation_text: 'Op Bali zijn er veel winkels die sandalen verkopen.',
+    difficulty: 'A2',
+    topic_tag: 'shopping',
+  },
+  {
     learning_item_slug: 'kacamata',
     source_text: 'Di mana ___ saya?',
     translation_text: 'Waar is mijn bril?',
@@ -160,6 +195,13 @@ export const clozeContexts = [
     learning_item_slug: 'kacamata hitam',
     source_text: 'Jangan lupa bawa ___!',
     translation_text: 'Vergeet niet je zonnebril mee te nemen!',
+    difficulty: 'A2',
+    topic_tag: 'accessories',
+  },
+  {
+    learning_item_slug: 'kacamata hitam',
+    source_text: 'Pada siang hari dia perlu ___.',
+    translation_text: 'Overdag heeft hij een zonnebril nodig.',
     difficulty: 'A2',
     topic_tag: 'accessories',
   },
@@ -192,6 +234,13 @@ export const clozeContexts = [
     topic_tag: 'daily_life',
   },
   {
+    learning_item_slug: 'karena',
+    source_text: 'Ninik libur ___ sekolah tutup.',
+    translation_text: 'Ninik heeft vrij omdat de school dicht is.',
+    difficulty: 'A2',
+    topic_tag: 'education',
+  },
+  {
     learning_item_slug: 'kaus',
     source_text: 'Dia pakai ___ putih di bawah kemeja.',
     translation_text: 'Hij draagt een wit hemd onder zijn overhemd.',
@@ -206,14 +255,14 @@ export const clozeContexts = [
     topic_tag: 'clothing',
   },
   {
-    learning_item_slug: 'kemeja (keméja)',
+    learning_item_slug: 'kemeja (kem\u00e9ja)',
     source_text: 'Bapak beli ___ baru di toko.',
     translation_text: 'Vader kocht een nieuw overhemd in de winkel.',
     difficulty: 'A2',
     topic_tag: 'clothing',
   },
   {
-    learning_item_slug: 'keren (kerèn)',
+    learning_item_slug: 'keren (ker\u00e8n)',
     source_text: 'Saya harus ___ kalau mau ke disko.',
     translation_text: 'Ik moet er sjiek uitzien als ik naar de disco wil.',
     difficulty: 'A2',
@@ -241,6 +290,13 @@ export const clozeContexts = [
     topic_tag: 'daily_life',
   },
   {
+    learning_item_slug: 'libur',
+    source_text: 'Anak-anak sudah ___ selama dua minggu.',
+    translation_text: 'De kinderen hebben al twee weken vrij.',
+    difficulty: 'A2',
+    topic_tag: 'education',
+  },
+  {
     learning_item_slug: 'libur sekolah',
     source_text: 'Anak-anak senang karena sudah ___.',
     translation_text: 'De kinderen zijn blij omdat het al schoolvakantie is.',
@@ -255,7 +311,14 @@ export const clozeContexts = [
     topic_tag: 'travel',
   },
   {
-    learning_item_slug: 'mengantar',
+    learning_item_slug: 'lupa',
+    source_text: 'Saya ___ di mana kacamata saya.',
+    translation_text: 'Ik ben vergeten waar mijn bril is.',
+    difficulty: 'A2',
+    topic_tag: 'daily_life',
+  },
+  {
+    learning_item_slug: 'mengantar*',
     source_text: 'Bapak mau ___ kami ke bandara.',
     translation_text: 'Vader wil ons naar het vliegveld brengen.',
     difficulty: 'A2',
@@ -269,7 +332,7 @@ export const clozeContexts = [
     topic_tag: 'colors',
   },
   {
-    learning_item_slug: 'meter (mèter)',
+    learning_item_slug: 'meter (m\u00e8ter)',
     source_text: 'Pohon itu tingginya 18 ___.',
     translation_text: 'Die boom is 18 meter hoog.',
     difficulty: 'A2',
@@ -279,6 +342,13 @@ export const clozeContexts = [
     learning_item_slug: 'minggu',
     source_text: 'Kami mau tinggal di sana satu ___.',
     translation_text: 'Wij willen daar een week verblijven.',
+    difficulty: 'A2',
+    topic_tag: 'time',
+  },
+  {
+    learning_item_slug: 'minggu',
+    source_text: 'Seminggu lagi kita pergi ke Bali.',
+    translation_text: 'Over een week gaan we naar Bali.',
     difficulty: 'A2',
     topic_tag: 'time',
   },
@@ -311,6 +381,13 @@ export const clozeContexts = [
     topic_tag: 'weather',
   },
   {
+    learning_item_slug: 'pasti',
+    source_text: 'Di hotel ___ bisa setrika.',
+    translation_text: 'In het hotel kun je vast wel strijken.',
+    difficulty: 'A2',
+    topic_tag: 'travel',
+  },
+  {
     learning_item_slug: 'perlu',
     source_text: 'Kita ___ koper yang besar.',
     translation_text: 'We hebben een grote koffer nodig.',
@@ -326,8 +403,8 @@ export const clozeContexts = [
   },
   {
     learning_item_slug: 'rambut',
-    source_text: 'Sri ___nya hitam dan panjang.',
-    translation_text: 'Sri heeft zwart en lang haar.',
+    source_text: '___ Sri hitam dan panjang.',
+    translation_text: 'Het haar van Sri is zwart en lang.',
     difficulty: 'A2',
     topic_tag: 'description',
   },
@@ -342,6 +419,13 @@ export const clozeContexts = [
     learning_item_slug: 'rok',
     source_text: 'Jangan lupa ___mu yang merah muda.',
     translation_text: 'Vergeet je roze rok niet.',
+    difficulty: 'A2',
+    topic_tag: 'clothing',
+  },
+  {
+    learning_item_slug: 'rok',
+    source_text: '___ ini panjangnya satu meter.',
+    translation_text: 'De lengte van deze rok is een meter.',
     difficulty: 'A2',
     topic_tag: 'clothing',
   },
@@ -409,6 +493,13 @@ export const clozeContexts = [
     topic_tag: 'travel',
   },
   {
+    learning_item_slug: 'tiba',
+    source_text: 'Kapan kamu ___ di Jakarta?',
+    translation_text: 'Wanneer ben je in Jakarta aangekomen?',
+    difficulty: 'A2',
+    topic_tag: 'travel',
+  },
+  {
     learning_item_slug: 'tinggi',
     source_text: 'Gedung itu ___ sekali.',
     translation_text: 'Dat gebouw is heel hoog.',
@@ -436,6 +527,13 @@ export const clozeContexts = [
     difficulty: 'A2',
     topic_tag: 'colors',
   },
+  {
+    learning_item_slug: 'warna',
+    source_text: 'Apa ___ rok yang kamu mau?',
+    translation_text: 'Welke kleur rok wil je?',
+    difficulty: 'A2',
+    topic_tag: 'shopping',
+  },
 
   // === EXPRESSIONS ===
   {
@@ -444,6 +542,13 @@ export const clozeContexts = [
     translation_text: 'Ninik is blij omdat het al schoolvakantie is.',
     difficulty: 'A2',
     topic_tag: 'education',
+  },
+  {
+    learning_item_slug: 'libur sekolah',
+    source_text: 'Kami mau ke Bali karena ___.',
+    translation_text: 'We willen naar Bali vanwege de schoolvakantie.',
+    difficulty: 'A2',
+    topic_tag: 'travel',
   },
   {
     learning_item_slug: 'tidak apa-apa',

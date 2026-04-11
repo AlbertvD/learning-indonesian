@@ -1,5 +1,8 @@
 // Grammar patterns for Lesson 7 — Libur Sekolah
-// Focus: -nya construction (possessive & nominalizer), time expressions, time/place word order
+// Focus: -nya construction (possessive, nominalizer, topicalization), time expressions, time/place word order
+// Slugs verified unique against:
+//   - indonesian.grammar_patterns DB (27 rows)
+//   - staging lesson-1 through lesson-6 grammar-patterns.ts files
 export const grammarPatterns = [
   {
     pattern_name: '-nya als bezittelijk achtervoegsel',

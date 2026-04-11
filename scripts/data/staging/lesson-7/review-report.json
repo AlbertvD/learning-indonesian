@@ -1,76 +1,20 @@
 {
   "lesson": 7,
-  "revision": 2,
-  "reviewedAt": "2026-04-09T16:00:00.000Z",
+  "revision": 3,
+  "reviewedAt": "2026-04-10T14:30:00.000Z",
   "status": "approved",
   "issues": [
     {
       "severity": "WARNING",
-      "file": "candidates.ts",
-      "item": "grammar pattern 'nya-possessive-suffix'",
-      "issue": "grammar pattern 'nya-possessive-suffix' has no contrast_pair candidate",
-      "fix": "Add a contrast_pair distinguishing -nya possessive from -mu or -ku"
-    },
-    {
-      "severity": "WARNING",
-      "file": "candidates.ts",
-      "item": "grammar pattern 'nya-possessive-suffix'",
-      "issue": "grammar pattern 'nya-possessive-suffix' has no sentence_transformation candidate",
-      "fix": "Add a sentence_transformation asking to rewrite a sentence using -nya possessive"
-    },
-    {
-      "severity": "WARNING",
-      "file": "candidates.ts",
-      "item": "grammar pattern 'nya-possessive-suffix'",
-      "issue": "grammar pattern 'nya-possessive-suffix' has no constrained_translation candidate",
-      "fix": "Add a constrained_translation requiring use of -nya as possessive suffix"
-    },
-    {
-      "severity": "WARNING",
-      "file": "candidates.ts",
-      "item": "grammar pattern 'nya-adjective-nominalizer'",
-      "issue": "grammar pattern 'nya-adjective-nominalizer' has no contrast_pair candidate",
-      "fix": "Add a contrast_pair distinguishing -nya nominalizer from -nya possessive"
-    },
-    {
-      "severity": "WARNING",
-      "file": "candidates.ts",
-      "item": "grammar pattern 'nya-adjective-nominalizer'",
-      "issue": "grammar pattern 'nya-adjective-nominalizer' has no constrained_translation candidate",
-      "fix": "Add a constrained_translation requiring -nya as adjective nominalizer (e.g. translate 'the length of this road is 5 km')"
-    },
-    {
-      "severity": "WARNING",
-      "file": "candidates.ts",
-      "item": "grammar pattern 'time-adverbs-basic'",
-      "issue": "grammar pattern 'time-adverbs-basic' has no sentence_transformation candidate",
-      "fix": "Add a sentence_transformation changing tense via time adverb substitution"
-    },
-    {
-      "severity": "WARNING",
-      "file": "candidates.ts",
-      "item": "grammar pattern 'time-adverbs-basic'",
-      "issue": "grammar pattern 'time-adverbs-basic' has no constrained_translation candidate",
-      "fix": "Add a constrained_translation requiring a specific time adverb"
-    },
-    {
-      "severity": "WARNING",
-      "file": "candidates.ts",
-      "item": "grammar pattern 'time-place-word-order'",
-      "issue": "grammar pattern 'time-place-word-order' has no contrast_pair candidate",
-      "fix": "Add a contrast_pair with correct vs incorrect time/place positioning (e.g. 'Saya sekarang makan' vs 'Sekarang saya makan')"
-    },
-    {
-      "severity": "WARNING",
-      "file": "candidates.ts",
-      "item": "grammar pattern 'time-place-word-order'",
-      "issue": "grammar pattern 'time-place-word-order' has no sentence_transformation candidate",
-      "fix": "Add a sentence_transformation asking to move a misplaced time adverb to a correct position"
+      "file": "cloze-contexts.ts",
+      "item": "cloze context for 'hari kamis'",
+      "issue": "learning_item_slug case mismatch: cloze uses 'hari kamis' but learning-items.ts has base_text 'hari Kamis' (capital K). May cause linkage failure if publish script does not normalize case.",
+      "fix": "Change learning_item_slug to 'hari Kamis' to match learning item base_text exactly"
     }
   ],
   "summary": {
-    "total": 9,
+    "total": 1,
     "critical": 0,
-    "warning": 9
+    "warning": 1
   }
 }

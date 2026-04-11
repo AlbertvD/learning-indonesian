@@ -1,0 +1,655 @@
+{
+  "lesson_number": 5,
+  "lesson_title": "Les 5 - Belajar",
+  "level": "A1",
+  "source": "reverse_engineered_from_db",
+  "note": "Grammar and exercise sections are already fully structured (categories/sections arrays). The linguist-creator should use structured_categories / structured_sections directly — no re-parsing needed. raw_text is provided as a human-readable reference only.",
+  "sections": [
+    {
+      "section_type": "text",
+      "title": "Nasi gerechten",
+      "order_index": 0,
+      "confidence": 1,
+      "source": "db",
+      "raw_text": ""
+    },
+    {
+      "section_type": "dialogue",
+      "title": "Dialoog: Belajar",
+      "order_index": 1,
+      "confidence": 1,
+      "source": "db",
+      "lines": [
+        {
+          "text": "Ibu dan bapak enak saja ke Taman Mini. Kita harus belajar di rumah. Aku juga mau ke Taman Mini, dan kamu Nanang?",
+          "speaker": "Titin",
+          "translation": ""
+        },
+        {
+          "text": "Aku tidak senang tinggal di rumah terus. Mari! Kita juga pergi saja, Tin.",
+          "speaker": "Nanang",
+          "translation": ""
+        },
+        {
+          "text": "Kita harus kerja dulu sebentar. Nanti kita pergi.",
+          "speaker": "Titin",
+          "translation": ""
+        },
+        {
+          "text": "Ayo, kerja dulu anak-anak!",
+          "speaker": "Pembantu",
+          "translation": ""
+        },
+        {
+          "text": "Aduh, kami mau ke luar, jalan-jalan dan makan di restoran \"Mi Enak\" tetapi tidak ada uang.",
+          "speaker": "Titin",
+          "translation": ""
+        },
+        {
+          "text": "Saya juga tidak punya uang. Jadi, tinggal di rumah saja Tin. Besok saja jalan-jalan dengan ayahmu. Mari! Sekarang kerja. Besok harus ke sekolah 'kan?",
+          "speaker": "Pembantu",
+          "translation": ""
+        },
+        {
+          "text": "Baiklah, tapi boleh minta setrop susu ya?",
+          "speaker": "Titin",
+          "translation": ""
+        }
+      ]
+    },
+    {
+      "section_type": "grammar",
+      "title": "Grammatica: Persoonlijk voornaamwoord",
+      "order_index": 2,
+      "confidence": 1,
+      "source": "db",
+      "structured_categories": [
+        {
+          "rules": [
+            "Gebruik saya als neutraal-formele vorm van 'ik' bij kennismakingen en in formele situaties.",
+            "Aku is de informele vorm van 'ik', gebruikt in huiselijke kring en tussen vrienden.",
+            "Indonesiërs verwijzen vaak naar zichzelf met hun eigen naam in plaats van saya of aku."
+          ],
+          "title": "Ik — saya, aku en eigennaam",
+          "examples": [
+            {
+              "dutch": "Mijn vriend en ik",
+              "indonesian": "Saya dan teman saya"
+            },
+            {
+              "dutch": "Ik wil ook naar Taman Mini (informeel)",
+              "indonesian": "Aku juga mau ke Taman Mini"
+            },
+            {
+              "dutch": "Ik (Awan) wil naar de stad (eigennaam als 'ik')",
+              "indonesian": "Awan mau ke kota"
+            }
+          ]
+        },
+        {
+          "rules": [
+            "De beleefdste manier om 'jij' te zeggen is de eigen naam of voornaam van de ander te gebruiken.",
+            "Kamu en engkau zijn informele aanspreekvormen, beperkt tot huiselijke kring en vrienden.",
+            "Gebruik nooit kamu tegen een volwassen gast of onbekende — dat wordt als schokken ervaren."
+          ],
+          "title": "Jij — beleefd via naam of kamu/engkau",
+          "examples": [
+            {
+              "dutch": "Wat wil jij (Awan) in de stad kopen?",
+              "indonesian": "Awan mau beli apa di kota?"
+            },
+            {
+              "dutch": "Ga jij (Siti) met de auto naar de markt?",
+              "indonesian": "Siti naik mobil ke pasar?"
+            }
+          ]
+        },
+        {
+          "rules": [
+            "Formeel: Tuan (meneer) en Nyonya (mevrouw) voor westerlingen en officiele situaties.",
+            "Neutraal dagelijks gebruik: Bapak (meneer) en Ibu (mevrouw), ook met naam: Bapak Sahid.",
+            "Anda is sexe- en sociaal-neutraal 'u', populair in reclame en formele teksten.",
+            "Saudara (vriend/gelijke) voor collega's en gelijken in neutrale situaties."
+          ],
+          "title": "U — Tuan/Nyonya, Bapak/Ibu, Anda, Saudara",
+          "examples": [
+            {
+              "dutch": "Waar komt u (meneer Sahid) vandaan?",
+              "indonesian": "Bapak Sahid dari mana?"
+            },
+            {
+              "dutch": "Houdt u (mevrouw Sutrisno) van thee?",
+              "indonesian": "Ibu Sutrisno suka teh?"
+            },
+            {
+              "dutch": "Wat wilt u eten?",
+              "indonesian": "Anda ingin makan apa?"
+            }
+          ]
+        },
+        {
+          "rules": [
+            "Onderscheid: kakak (oudere broer/zus), adik (jongere broer/zus) — geslacht is secundair.",
+            "Abang (informeel: bang) = oudere broer; kakak perempuan = oudere zus.",
+            "Deze familietermen worden ook informeel gebruikt voor bekenden en buren."
+          ],
+          "title": "Broers en zusters — kakak, adik, abang",
+          "examples": [
+            {
+              "dutch": "oudere broer",
+              "indonesian": "kakak laki-laki (of: abang)"
+            },
+            {
+              "dutch": "oudere zus",
+              "indonesian": "kakak perempuan"
+            },
+            {
+              "dutch": "jongere broer",
+              "indonesian": "adik laki-laki"
+            },
+            {
+              "dutch": "jongere zus",
+              "indonesian": "adik perempuan"
+            }
+          ]
+        },
+        {
+          "rules": [
+            "Dia en ia zijn beide correct voor 'hij' en 'zij' — er is geen geslachtsverschil.",
+            "Beliau is de respectvolle vorm: wordt gebruikt om over iemand te spreken met ontzag."
+          ],
+          "title": "Hij/zij — dia, ia, beliau",
+          "examples": [
+            {
+              "dutch": "hij of zij (beide correct)",
+              "indonesian": "Dia atau ia"
+            },
+            {
+              "dutch": "Zij is mijn lerares (respectvol)",
+              "indonesian": "Beliau adalah guru saya"
+            }
+          ]
+        },
+        {
+          "rules": [
+            "Kita = 'wij' inclusief de aangesprokene (de persoon tot wie je spreekt telt mee).",
+            "Kami = 'wij' exclusief de aangesprokene (de persoon tot wie je spreekt is niet inbegrepen).",
+            "Dit onderscheid bestaat niet in het Nederlands — context bepaalt de keuze."
+          ],
+          "title": "Wij — kita (inclusief) versus kami (exclusief)",
+          "examples": [
+            {
+              "dutch": "Wij moeten thuis studeren (jij ook — Titin tegen Nanang)",
+              "indonesian": "Kita harus belajar di rumah"
+            },
+            {
+              "dutch": "Wij willen naar buiten (jij niet — Titin tegen pembantu)",
+              "indonesian": "Aduh, kami mau ke luar"
+            },
+            {
+              "dutch": "Ma, wij gaan alvast naar school! (jij gaat niet mee)",
+              "indonesian": "Bu, kami ke sekolah dulu ya!"
+            },
+            {
+              "dutch": "Pa, laten wij gaan wandelen (kom mee)",
+              "indonesian": "Bapak, mari kita jalan-jalan"
+            }
+          ]
+        },
+        {
+          "rules": [
+            "Kalian = 'jullie' (neutraal meervoud tweede persoon).",
+            "U meervoud: Bapak-Bapak / Ibu-Ibu / Saudara-Saudari / Anda (semua).",
+            "Zij meervoud: mereka (één woord, geen geslachtsverschil)."
+          ],
+          "title": "Jullie, U (meervoud) en Zij (meervoud)",
+          "examples": [
+            {
+              "dutch": "Waar gaan jullie naartoe?",
+              "indonesian": "Kalian mau ke mana?"
+            },
+            {
+              "dutch": "Dames en heren (formele aanspreekvorm)",
+              "indonesian": "Saudara-Saudari yang terhormat"
+            },
+            {
+              "dutch": "Zij hebben een net restaurant",
+              "indonesian": "Mereka punya restoran yang rapi"
+            }
+          ]
+        }
+      ],
+      "word_order": null,
+      "intro": null,
+      "raw_text": "### Ik — saya, aku en eigennaam\n- Gebruik saya als neutraal-formele vorm van 'ik' bij kennismakingen en in formele situaties.\n- Aku is de informele vorm van 'ik', gebruikt in huiselijke kring en tussen vrienden.\n- Indonesiërs verwijzen vaak naar zichzelf met hun eigen naam in plaats van saya of aku.\n  Saya dan teman saya — Mijn vriend en ik\n  Aku juga mau ke Taman Mini — Ik wil ook naar Taman Mini (informeel)\n  Awan mau ke kota — Ik (Awan) wil naar de stad (eigennaam als 'ik')\n\n### Jij — beleefd via naam of kamu/engkau\n- De beleefdste manier om 'jij' te zeggen is de eigen naam of voornaam van de ander te gebruiken.\n- Kamu en engkau zijn informele aanspreekvormen, beperkt tot huiselijke kring en vrienden.\n- Gebruik nooit kamu tegen een volwassen gast of onbekende — dat wordt als schokken ervaren.\n  Awan mau beli apa di kota? — Wat wil jij (Awan) in de stad kopen?\n  Siti naik mobil ke pasar? — Ga jij (Siti) met de auto naar de markt?\n\n### U — Tuan/Nyonya, Bapak/Ibu, Anda, Saudara\n- Formeel: Tuan (meneer) en Nyonya (mevrouw) voor westerlingen en officiele situaties.\n- Neutraal dagelijks gebruik: Bapak (meneer) en Ibu (mevrouw), ook met naam: Bapak Sahid.\n- Anda is sexe- en sociaal-neutraal 'u', populair in reclame en formele teksten.\n- Saudara (vriend/gelijke) voor collega's en gelijken in neutrale situaties.\n  Bapak Sahid dari mana? — Waar komt u (meneer Sahid) vandaan?\n  Ibu Sutrisno suka teh? — Houdt u (mevrouw Sutrisno) van thee?\n  Anda ingin makan apa? — Wat wilt u eten?\n\n### Broers en zusters — kakak, adik, abang\n- Onderscheid: kakak (oudere broer/zus), adik (jongere broer/zus) — geslacht is secundair.\n- Abang (informeel: bang) = oudere broer; kakak perempuan = oudere zus.\n- Deze familietermen worden ook informeel gebruikt voor bekenden en buren.\n  kakak laki-laki (of: abang) — oudere broer\n  kakak perempuan — oudere zus\n  adik laki-laki — jongere broer\n  adik perempuan — jongere zus\n\n### Hij/zij — dia, ia, beliau\n- Dia en ia zijn beide correct voor 'hij' en 'zij' — er is geen geslachtsverschil.\n- Beliau is de respectvolle vorm: wordt gebruikt om over iemand te spreken met ontzag.\n  Dia atau ia — hij of zij (beide correct)\n  Beliau adalah guru saya — Zij is mijn lerares (respectvol)\n\n### Wij — kita (inclusief) versus kami (exclusief)\n- Kita = 'wij' inclusief de aangesprokene (de persoon tot wie je spreekt telt mee).\n- Kami = 'wij' exclusief de aangesprokene (de persoon tot wie je spreekt is niet inbegrepen).\n- Dit onderscheid bestaat niet in het Nederlands — context bepaalt de keuze.\n  Kita harus belajar di rumah — Wij moeten thuis studeren (jij ook — Titin tegen Nanang)\n  Aduh, kami mau ke luar — Wij willen naar buiten (jij niet — Titin tegen pembantu)\n  Bu, kami ke sekolah dulu ya! — Ma, wij gaan alvast naar school! (jij gaat niet mee)\n  Bapak, mari kita jalan-jalan — Pa, laten wij gaan wandelen (kom mee)\n\n### Jullie, U (meervoud) en Zij (meervoud)\n- Kalian = 'jullie' (neutraal meervoud tweede persoon).\n- U meervoud: Bapak-Bapak / Ibu-Ibu / Saudara-Saudari / Anda (semua).\n- Zij meervoud: mereka (één woord, geen geslachtsverschil).\n  Kalian mau ke mana? — Waar gaan jullie naartoe?\n  Saudara-Saudari yang terhormat — Dames en heren (formele aanspreekvorm)\n  Mereka punya restoran yang rapi — Zij hebben een net restaurant"
+    },
+    {
+      "section_type": "reference_table",
+      "title": "Bezittelijk voornaamwoord",
+      "order_index": 3,
+      "confidence": 1,
+      "source": "db",
+      "structured_categories": [],
+      "word_order": null,
+      "intro": "Het bezittelijk voornaamwoord wordt achter het zelfstandig naamwoord geplaatst.\n\nBezittelijke voornaamwoorden zijn praktisch gelijk aan de persoonlijke voornaamwoorden, met dien verstande dat voor aku en kamu/engkau respectievelijk de afgekorte vormen -ku en -mu/-kau worden gebruikt. De afgekorte vorm wordt direct aan het woord gekoppeld.\n\nBij de derde persoon enkelvoud (zijn/haar) wordt bij voorkeur -nya gebruikt. Bij de derde persoon meervoud (hun) wordt -nya eveneens dikwijls gebruikt.",
+      "raw_text": "Het bezittelijk voornaamwoord wordt achter het zelfstandig naamwoord geplaatst.\n\nBezittelijke voornaamwoorden zijn praktisch gelijk aan de persoonlijke voornaamwoorden, met dien verstande dat voor aku en kamu/engkau respectievelijk de afgekorte vormen -ku en -mu/-kau worden gebruikt. De afgekorte vorm wordt direct aan het woord gekoppeld.\n\nBij de derde persoon enkelvoud (zijn/haar) wordt bij voorkeur -nya gebruikt. Bij de derde persoon meervoud (hun) wordt -nya eveneens dikwijls gebruikt."
+    },
+    {
+      "section_type": "exercises",
+      "title": "Oefeningen",
+      "order_index": 4,
+      "confidence": 1,
+      "source": "db",
+      "structured_sections": [
+        {
+          "type": "grammar_drill",
+          "items": [
+            {
+              "answer": "Ini koper kita",
+              "prompt": "Ini koper siapa? (onze — kita)"
+            },
+            {
+              "answer": "Itu kuncimu / kunci kamu",
+              "prompt": "Itu kunci siapa? (jouw)"
+            },
+            {
+              "answer": "Itu kamar saya / kamarku",
+              "prompt": "Itu kamar siapa? (mijn)"
+            },
+            {
+              "answer": "Ini handuknya / handuk dia",
+              "prompt": "Ini handuk siapa? (zijn)"
+            },
+            {
+              "answer": "Ini sendokmu",
+              "prompt": "Ini sendok siapa? (jouw)"
+            },
+            {
+              "answer": "Itu meja Bapak",
+              "prompt": "Itu meja siapa? (uw — Bapak)"
+            },
+            {
+              "answer": "Ini kursinya / kursi dia",
+              "prompt": "Ini kursi siapa? (haar)"
+            },
+            {
+              "answer": "Itu mobil kami",
+              "prompt": "Itu mobil siapa? (onze — kami)"
+            },
+            {
+              "answer": "Ini rumah mereka / rumahnya",
+              "prompt": "Ini rumah siapa? (hun)"
+            },
+            {
+              "answer": "Ini pakaian saya / pakaianku",
+              "prompt": "Ini pakaian siapa? (mijn)"
+            }
+          ],
+          "title": "Oefening I",
+          "instruction": "Bezittelijk voornaamwoord. Contoh: Itu buku siapa? (mijn) → Itu buku saya."
+        },
+        {
+          "type": "translation",
+          "items": [
+            {
+              "answer": "Wilt u meegaan naar het stadspark?",
+              "prompt": "Anda ingin ikut ke taman kota?"
+            },
+            {
+              "answer": "Dank u, ik wil niet meegaan.",
+              "prompt": "Terima kasih, saya tidak mau ikut."
+            },
+            {
+              "answer": "Als wij (inclusief jou) een taxi nemen, ga je dan mee?",
+              "prompt": "Kalau kita naik taksi mau ikut?"
+            },
+            {
+              "answer": "Wow! Kom, laten wij gewoon daarheen gaan!",
+              "prompt": "Wah! Ayo, kita ke sana saja!"
+            },
+            {
+              "answer": "Morgen gaat hij/zij terug naar de stad Ujungpandang in Sulawesi.",
+              "prompt": "Besok dia pulang ke kota Ujungpandang di Sulawesi."
+            },
+            {
+              "answer": "Daar koopt hij/zij tweehonderddertig kippen.",
+              "prompt": "Di situ ia beli dua ratus tiga puluh ekor ayam."
+            },
+            {
+              "answer": "Zij hebben een net en schoon restaurant.",
+              "prompt": "Mereka punya restoran yang rapi dan bersih."
+            },
+            {
+              "answer": "Mas, mag ik een glas thee en een lepel!",
+              "prompt": "Mas, minta segelas teh dan sendok ya!"
+            },
+            {
+              "answer": "Dit is uw thee, mevrouw. Wilt u ook eten?",
+              "prompt": "Ini teh, Bu. Apa Ibu juga mau makan?"
+            },
+            {
+              "answer": "Hallo meneer Suryo, gaat u hier zitten, er is nog een zitplaats.",
+              "prompt": "Halo Pak Suryo, duduk di sini saja, masih ada tempat duduk."
+            }
+          ],
+          "title": "Oefening II",
+          "instruction": "Vertaal."
+        },
+        {
+          "type": "conversation",
+          "items": [
+            {
+              "prompt": "Apa Anda ingin makan?"
+            },
+            {
+              "prompt": "Anda ingin makan apa?"
+            },
+            {
+              "prompt": "Nama Anda siapa?"
+            },
+            {
+              "prompt": "Bagaimana datang ke sini?"
+            },
+            {
+              "prompt": "Naik bus ke sini berapa harganya?"
+            },
+            {
+              "prompt": "Bapak/Ibu tinggal di mana?"
+            },
+            {
+              "prompt": "Mengapa Bapak/Ibu datang ke sini?"
+            },
+            {
+              "prompt": "Kapan mau pulang ke rumah?"
+            },
+            {
+              "prompt": "Apa mau pulang sekarang?"
+            },
+            {
+              "prompt": "Kapan mau datang ke sini lagi?"
+            }
+          ],
+          "title": "Oefening III",
+          "instruction": "Conversatie. Beantwoord de vragen in het Indonesisch."
+        },
+        {
+          "type": "translation",
+          "items": [
+            {
+              "answer": "Di mana Jan sekarang? — Dia ada di atas.",
+              "prompt": "Waar is Jan nu?"
+            },
+            {
+              "answer": "Kamu mau ke mana? — Saya mau ke bawah.",
+              "prompt": "Waar ga je heen?"
+            },
+            {
+              "answer": "Berapa orang yang duduk di sana? — Di sana duduk dua puluh empat orang.",
+              "prompt": "Hoeveel mensen zitten daar?"
+            },
+            {
+              "answer": "Taksi ada di mana? — Di belakang hotel ada taksi.",
+              "prompt": "Waar staan taxi's?"
+            },
+            {
+              "answer": "Tas saya di mana? — Tasmu ada di bawah meja.",
+              "prompt": "Waar is mijn tas?"
+            },
+            {
+              "answer": "Ini harganya berapa? — Harganya tiga ratus enam puluh empat ribu rupiah.",
+              "prompt": "Hoeveel kost dit?"
+            },
+            {
+              "answer": "Nama Bapak siapa? — Nama saya Hans.",
+              "prompt": "Hoe heet u, meneer?"
+            },
+            {
+              "answer": "Dia tinggal di sini, tapi istri saya dan saya tinggal di sana.",
+              "prompt": "Hij woont hier, maar mijn vrouw en ik wonen ginds."
+            },
+            {
+              "answer": "Tidak, kami pergi dengan mobil ayah saya.",
+              "prompt": "Nee, wij gaan met de auto van mijn vader."
+            },
+            {
+              "answer": "Mereka dari mana?",
+              "prompt": "Waar komen zij vandaan?"
+            }
+          ],
+          "title": "Oefening IV",
+          "instruction": "Vertaal. (Pagina deels scheef gefotografeerd — antwoorden 8-10 zijn gedeeltelijk.)"
+        }
+      ],
+      "raw_text": "## Oefening I\nBezittelijk voornaamwoord. Contoh: Itu buku siapa? (mijn) → Itu buku saya.\n  Ini koper siapa? (onze — kita) — Ini koper kita\n  Itu kunci siapa? (jouw) — Itu kuncimu / kunci kamu\n  Itu kamar siapa? (mijn) — Itu kamar saya / kamarku\n  Ini handuk siapa? (zijn) — Ini handuknya / handuk dia\n  Ini sendok siapa? (jouw) — Ini sendokmu\n  Itu meja siapa? (uw — Bapak) — Itu meja Bapak\n  Ini kursi siapa? (haar) — Ini kursinya / kursi dia\n  Itu mobil siapa? (onze — kami) — Itu mobil kami\n  Ini rumah siapa? (hun) — Ini rumah mereka / rumahnya\n  Ini pakaian siapa? (mijn) — Ini pakaian saya / pakaianku\n\n## Oefening II\nVertaal.\n  Anda ingin ikut ke taman kota? — Wilt u meegaan naar het stadspark?\n  Terima kasih, saya tidak mau ikut. — Dank u, ik wil niet meegaan.\n  Kalau kita naik taksi mau ikut? — Als wij (inclusief jou) een taxi nemen, ga je dan mee?\n  Wah! Ayo, kita ke sana saja! — Wow! Kom, laten wij gewoon daarheen gaan!\n  Besok dia pulang ke kota Ujungpandang di Sulawesi. — Morgen gaat hij/zij terug naar de stad Ujungpandang in Sulawesi.\n  Di situ ia beli dua ratus tiga puluh ekor ayam. — Daar koopt hij/zij tweehonderddertig kippen.\n  Mereka punya restoran yang rapi dan bersih. — Zij hebben een net en schoon restaurant.\n  Mas, minta segelas teh dan sendok ya! — Mas, mag ik een glas thee en een lepel!\n  Ini teh, Bu. Apa Ibu juga mau makan? — Dit is uw thee, mevrouw. Wilt u ook eten?\n  Halo Pak Suryo, duduk di sini saja, masih ada tempat duduk. — Hallo meneer Suryo, gaat u hier zitten, er is nog een zitplaats.\n\n## Oefening III\nConversatie. Beantwoord de vragen in het Indonesisch.\n  Apa Anda ingin makan?\n  Anda ingin makan apa?\n  Nama Anda siapa?\n  Bagaimana datang ke sini?\n  Naik bus ke sini berapa harganya?\n  Bapak/Ibu tinggal di mana?\n  Mengapa Bapak/Ibu datang ke sini?\n  Kapan mau pulang ke rumah?\n  Apa mau pulang sekarang?\n  Kapan mau datang ke sini lagi?\n\n## Oefening IV\nVertaal. (Pagina deels scheef gefotografeerd — antwoorden 8-10 zijn gedeeltelijk.)\n  Waar is Jan nu? — Di mana Jan sekarang? — Dia ada di atas.\n  Waar ga je heen? — Kamu mau ke mana? — Saya mau ke bawah.\n  Hoeveel mensen zitten daar? — Berapa orang yang duduk di sana? — Di sana duduk dua puluh empat orang.\n  Waar staan taxi's? — Taksi ada di mana? — Di belakang hotel ada taksi.\n  Waar is mijn tas? — Tas saya di mana? — Tasmu ada di bawah meja.\n  Hoeveel kost dit? — Ini harganya berapa? — Harganya tiga ratus enam puluh empat ribu rupiah.\n  Hoe heet u, meneer? — Nama Bapak siapa? — Nama saya Hans.\n  Hij woont hier, maar mijn vrouw en ik wonen ginds. — Dia tinggal di sini, tapi istri saya dan saya tinggal di sana.\n  Nee, wij gaan met de auto van mijn vader. — Tidak, kami pergi dengan mobil ayah saya.\n  Waar komen zij vandaan? — Mereka dari mana?"
+    },
+    {
+      "section_type": "text",
+      "title": "Cultuur: Jakarta",
+      "order_index": 5,
+      "confidence": 1,
+      "source": "db",
+      "raw_text": ""
+    },
+    {
+      "section_type": "vocabulary",
+      "title": "Woordenlijst",
+      "order_index": 6,
+      "confidence": 1,
+      "source": "db",
+      "items": [
+        {
+          "dutch": "oudere broer",
+          "indonesian": "abang"
+        },
+        {
+          "dutch": "jongere broer/zus",
+          "indonesian": "adik"
+        },
+        {
+          "dutch": "hemel, goh, jemig (uitroep)",
+          "indonesian": "aduh"
+        },
+        {
+          "dutch": "ik (informeel)",
+          "indonesian": "aku"
+        },
+        {
+          "dutch": "vader",
+          "indonesian": "ayah"
+        },
+        {
+          "dutch": "komaan!",
+          "indonesian": "ayo!"
+        },
+        {
+          "dutch": "goed dan (maar)",
+          "indonesian": "baiklah"
+        },
+        {
+          "dutch": "leren (zie ook Les 11)",
+          "indonesian": "belajar"
+        },
+        {
+          "dutch": "zaailing, jong rijstplantje",
+          "indonesian": "bibit padi"
+        },
+        {
+          "dutch": "op z'n gemak, naar believen",
+          "indonesian": "enak saja"
+        },
+        {
+          "dutch": "ongepelde rijst (rijst/vliesje)",
+          "indonesian": "gabah"
+        },
+        {
+          "dutch": "vol van smaak",
+          "indonesian": "gurih"
+        },
+        {
+          "dutch": "op, afgelopen",
+          "indonesian": "habis"
+        },
+        {
+          "dutch": "hallo",
+          "indonesian": "halo"
+        },
+        {
+          "dutch": "dag",
+          "indonesian": "hari"
+        },
+        {
+          "dutch": "woensdag",
+          "indonesian": "hari Rabu"
+        },
+        {
+          "dutch": "meegaan, meedoen",
+          "indonesian": "ikut"
+        },
+        {
+          "dutch": "dus",
+          "indonesian": "jadi"
+        },
+        {
+          "dutch": "een wandeling maken",
+          "indonesian": "jalan-jalan"
+        },
+        {
+          "dutch": "oudere broer/zus",
+          "indonesian": "kakak"
+        },
+        {
+          "dutch": "wij (exclusief aangesprokene)",
+          "indonesian": "kami"
+        },
+        {
+          "dutch": "jij, jullie (informeel)",
+          "indonesian": "kamu"
+        },
+        {
+          "dutch": "droog",
+          "indonesian": "kering"
+        },
+        {
+          "dutch": "werken",
+          "indonesian": "kerja"
+        },
+        {
+          "dutch": "wij (inclusief aangesprokene)",
+          "indonesian": "kita"
+        },
+        {
+          "dutch": "rijstveld (droog)",
+          "indonesian": "ladang"
+        },
+        {
+          "dutch": "man, mannelijk",
+          "indonesian": "laki-laki"
+        },
+        {
+          "dutch": "kom!",
+          "indonesian": "mari!"
+        },
+        {
+          "dutch": "zij (meervoud)",
+          "indonesian": "mereka"
+        },
+        {
+          "dutch": "bamie, noedels",
+          "indonesian": "mi"
+        },
+        {
+          "dutch": "beginnen",
+          "indonesian": "mulai"
+        },
+        {
+          "dutch": "straks, zo meteen",
+          "indonesian": "nanti"
+        },
+        {
+          "dutch": "rijstgerecht (met kokosmelk)",
+          "indonesian": "nasi gurih"
+        },
+        {
+          "dutch": "rijstplant",
+          "indonesian": "padi"
+        },
+        {
+          "dutch": "hulp in de huishouding",
+          "indonesian": "pembantu"
+        },
+        {
+          "dutch": "vrouw, vrouwelijk",
+          "indonesian": "perempuan"
+        },
+        {
+          "dutch": "(weg)gaan",
+          "indonesian": "pergi"
+        },
+        {
+          "dutch": "bezitten, hebben",
+          "indonesian": "punya"
+        },
+        {
+          "dutch": "kapot, stuk",
+          "indonesian": "rusak"
+        },
+        {
+          "dutch": "rijstveld (nat)",
+          "indonesian": "sawah"
+        },
+        {
+          "dutch": "een moment(je), even",
+          "indonesian": "sebentar"
+        },
+        {
+          "dutch": "zich prettig voelen, blij, leuk",
+          "indonesian": "senang"
+        },
+        {
+          "dutch": "siroop",
+          "indonesian": "setrop"
+        },
+        {
+          "dutch": "zoet drankje (melk met siroop)",
+          "indonesian": "setrop susu"
+        },
+        {
+          "dutch": "namiddag, avond",
+          "indonesian": "sore"
+        },
+        {
+          "dutch": "melk",
+          "indonesian": "susu"
+        },
+        {
+          "dutch": "park, tuin",
+          "indonesian": "taman"
+        },
+        {
+          "dutch": "Klein Indonesie - park met traditionele gebouwen in Jakarta",
+          "indonesian": "Taman Mini"
+        },
+        {
+          "dutch": "maar, echter",
+          "indonesian": "tapi / tetapi"
+        },
+        {
+          "dutch": "vliegen",
+          "indonesian": "terbang"
+        },
+        {
+          "dutch": "voorts, steeds, maar door",
+          "indonesian": "terus"
+        },
+        {
+          "dutch": "geld",
+          "indonesian": "uang"
+        },
+        {
+          "dutch": "goh! nou! (stopwoord/uitroep)",
+          "indonesian": "wah!"
+        }
+      ]
+    }
+  ]
+}

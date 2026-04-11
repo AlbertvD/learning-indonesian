@@ -1,4 +1,4 @@
-// Published via script
+// Learning items for Lesson 7 — EN translations added by fill-english-translations.ts
 export const learningItems = [
   {
     "base_text": "Ninik, di mana kopernya? Kita perlu koper sekarang, 'kan? Tas pasti terlalu kecil untuk semua barang kita.",
@@ -104,7 +104,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "zullen",
-    "translation_en": "",
+    "translation_en": "will",
     "source_page": 5,
     "review_status": "published"
   },
@@ -113,7 +113,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "tenslotte",
-    "translation_en": "",
+    "translation_en": "finally",
     "source_page": 5,
     "review_status": "published"
   },
@@ -122,7 +122,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "meebrengen, meenemen",
-    "translation_en": "",
+    "translation_en": "bring",
     "source_page": 5,
     "review_status": "published"
   },
@@ -131,7 +131,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "klaar",
-    "translation_en": "",
+    "translation_en": "ready",
     "source_page": 5,
     "review_status": "published"
   },
@@ -140,7 +140,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "écht",
-    "translation_en": "",
+    "translation_en": "really",
     "source_page": 5,
     "review_status": "published"
   },
@@ -149,7 +149,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "broek",
-    "translation_en": "",
+    "translation_en": "trousers",
     "source_page": 5,
     "review_status": "published"
   },
@@ -158,7 +158,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "ring",
-    "translation_en": "",
+    "translation_en": "ring",
     "source_page": 5,
     "review_status": "published"
   },
@@ -167,7 +167,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "passen bij",
-    "translation_en": "",
+    "translation_en": "match",
     "source_page": 5,
     "review_status": "published"
   },
@@ -176,7 +176,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "voorbeeld",
-    "translation_en": "",
+    "translation_en": "example",
     "source_page": 5,
     "review_status": "published"
   },
@@ -185,7 +185,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "meegenomen",
-    "translation_en": "",
+    "translation_en": "taken",
     "source_page": 5,
     "review_status": "published"
   },
@@ -194,7 +194,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "gestreken",
-    "translation_en": "",
+    "translation_en": "ironed",
     "source_page": 5,
     "review_status": "published"
   },
@@ -203,7 +203,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "disco",
-    "translation_en": "",
+    "translation_en": "disco",
     "source_page": 5,
     "review_status": "published"
   },
@@ -212,7 +212,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "armband",
-    "translation_en": "",
+    "translation_en": "bracelet",
     "source_page": 5,
     "review_status": "published"
   },
@@ -221,7 +221,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "opslagplaats",
-    "translation_en": "",
+    "translation_en": "storage",
     "source_page": 5,
     "review_status": "published"
   },
@@ -230,7 +230,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "versiering, sieraad",
-    "translation_en": "",
+    "translation_en": "ornament",
     "source_page": 5,
     "review_status": "published"
   },
@@ -239,7 +239,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "jeans, spijkerbroek",
-    "translation_en": "",
+    "translation_en": "jeans",
     "source_page": 5,
     "review_status": "published"
   },
@@ -248,7 +248,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "klemmen, knellen",
-    "translation_en": "",
+    "translation_en": "pinch",
     "source_page": 5,
     "review_status": "published"
   },
@@ -257,7 +257,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "haarpin(-speld)",
-    "translation_en": "",
+    "translation_en": "hair clip",
     "source_page": 5,
     "review_status": "published"
   },
@@ -266,7 +266,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "verkopen",
-    "translation_en": "",
+    "translation_en": "sell",
     "source_page": 5,
     "review_status": "published"
   },
@@ -275,7 +275,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "bril",
-    "translation_en": "",
+    "translation_en": "glasses",
     "source_page": 5,
     "review_status": "published"
   },
@@ -284,7 +284,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "zonnebril",
-    "translation_en": "",
+    "translation_en": "sunglasses",
     "source_page": 5,
     "review_status": "published"
   },
@@ -293,7 +293,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "halsketting",
-    "translation_en": "",
+    "translation_en": "necklace",
     "source_page": 5,
     "review_status": "published"
   },
@@ -302,7 +302,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "donderdag",
-    "translation_en": "",
+    "translation_en": "Thursday",
     "source_page": 5,
     "review_status": "published"
   },
@@ -311,7 +311,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "zak",
-    "translation_en": "",
+    "translation_en": "pocket",
     "source_page": 5,
     "review_status": "published"
   },
@@ -320,7 +320,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "omdat",
-    "translation_en": "",
+    "translation_en": "because",
     "source_page": 5,
     "review_status": "published"
   },
@@ -329,7 +329,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "(onder)hemd",
-    "translation_en": "",
+    "translation_en": "shirt",
     "source_page": 5,
     "review_status": "published"
   },
@@ -338,7 +338,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "T-shirt",
-    "translation_en": "",
+    "translation_en": "T-shirt",
     "source_page": 5,
     "review_status": "published"
   },
@@ -347,7 +347,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "overhemd, hemd",
-    "translation_en": "",
+    "translation_en": "shirt",
     "source_page": 5,
     "review_status": "published"
   },
@@ -356,7 +356,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "sjiek",
-    "translation_en": "",
+    "translation_en": "stylish",
     "source_page": 5,
     "review_status": "published"
   },
@@ -365,7 +365,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "kilometer",
-    "translation_en": "",
+    "translation_en": "kilometer",
     "source_page": 5,
     "review_status": "published"
   },
@@ -374,7 +374,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "goh! (stopwoord)",
-    "translation_en": "",
+    "translation_en": "gosh! (interjection)",
     "source_page": 5,
     "review_status": "published"
   },
@@ -383,7 +383,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "vrij (vakantie) hebben",
-    "translation_en": "",
+    "translation_en": "have a break",
     "source_page": 5,
     "review_status": "published"
   },
@@ -392,7 +392,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "schoolvakantie",
-    "translation_en": "",
+    "translation_en": "school holiday",
     "source_page": 5,
     "review_status": "published"
   },
@@ -401,7 +401,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "vergeten",
-    "translation_en": "",
+    "translation_en": "forget",
     "source_page": 5,
     "review_status": "published"
   },
@@ -410,7 +410,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "wegbrengen, begeleiden",
-    "translation_en": "",
+    "translation_en": "take, accompany",
     "source_page": 5,
     "review_status": "published"
   },
@@ -419,7 +419,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "lichtrood, roze",
-    "translation_en": "",
+    "translation_en": "light red, pink",
     "source_page": 5,
     "review_status": "published"
   },
@@ -428,7 +428,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "meter",
-    "translation_en": "",
+    "translation_en": "meter",
     "source_page": 5,
     "review_status": "published"
   },
@@ -437,7 +437,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "week",
-    "translation_en": "",
+    "translation_en": "week",
     "source_page": 5,
     "review_status": "published"
   },
@@ -446,7 +446,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "jong, licht (kleur)",
-    "translation_en": "",
+    "translation_en": "young, light (color)",
     "source_page": 5,
     "review_status": "published"
   },
@@ -455,7 +455,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "op, bij, in",
-    "translation_en": "",
+    "translation_en": "on, at, in",
     "source_page": 5,
     "review_status": "published"
   },
@@ -464,7 +464,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "strand, kust",
-    "translation_en": "",
+    "translation_en": "beach, coast",
     "source_page": 5,
     "review_status": "published"
   },
@@ -473,7 +473,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "zeker",
-    "translation_en": "",
+    "translation_en": "sure, certain",
     "source_page": 5,
     "review_status": "published"
   },
@@ -482,7 +482,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "nodig, noodzakelijk",
-    "translation_en": "",
+    "translation_en": "need, necessary",
     "source_page": 5,
     "review_status": "published"
   },
@@ -491,7 +491,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "dragen",
-    "translation_en": "",
+    "translation_en": "carry",
     "source_page": 5,
     "review_status": "published"
   },
@@ -500,7 +500,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "hoofdhaar",
-    "translation_en": "",
+    "translation_en": "hair",
     "source_page": 5,
     "review_status": "published"
   },
@@ -509,7 +509,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "zwemmen",
-    "translation_en": "",
+    "translation_en": "swim",
     "source_page": 5,
     "review_status": "published"
   },
@@ -518,7 +518,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "rok",
-    "translation_en": "",
+    "translation_en": "skirt",
     "source_page": 5,
     "review_status": "published"
   },
@@ -527,7 +527,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "sandaal",
-    "translation_en": "",
+    "translation_en": "sandal",
     "source_page": 5,
     "review_status": "published"
   },
@@ -536,7 +536,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "omdat, de reden is",
-    "translation_en": "",
+    "translation_en": "because, the reason is",
     "source_page": 5,
     "review_status": "published"
   },
@@ -545,7 +545,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "alle(n)",
-    "translation_en": "",
+    "translation_en": "all, everyone",
     "source_page": 5,
     "review_status": "published"
   },
@@ -554,7 +554,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "zelf, eigen",
-    "translation_en": "",
+    "translation_en": "self, own",
     "source_page": 5,
     "review_status": "published"
   },
@@ -563,7 +563,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "zoals",
-    "translation_en": "",
+    "translation_en": "like, as",
     "source_page": 5,
     "review_status": "published"
   },
@@ -572,7 +572,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "probleem, kwestie",
-    "translation_en": "",
+    "translation_en": "problem, matter",
     "source_page": 5,
     "review_status": "published"
   },
@@ -581,7 +581,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "gelukkig",
-    "translation_en": "",
+    "translation_en": "fortunately",
     "source_page": 5,
     "review_status": "published"
   },
@@ -590,7 +590,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "zeker, stellig",
-    "translation_en": "",
+    "translation_en": "certainly, definitely",
     "source_page": 5,
     "review_status": "published"
   },
@@ -599,7 +599,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "arriveren",
-    "translation_en": "",
+    "translation_en": "arrive",
     "source_page": 5,
     "review_status": "published"
   },
@@ -608,7 +608,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "hoog",
-    "translation_en": "",
+    "translation_en": "high, tall",
     "source_page": 5,
     "review_status": "published"
   },
@@ -617,7 +617,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "hoed",
-    "translation_en": "",
+    "translation_en": "hat",
     "source_page": 5,
     "review_status": "published"
   },
@@ -626,7 +626,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "tijd",
-    "translation_en": "",
+    "translation_en": "time",
     "source_page": 5,
     "review_status": "published"
   },
@@ -635,7 +635,7 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "kleur",
-    "translation_en": "",
+    "translation_en": "color",
     "source_page": 5,
     "review_status": "published"
   },
@@ -644,7 +644,7 @@ export const learningItems = [
     "item_type": "phrase",
     "context_type": "vocabulary_list",
     "translation_nl": "schoolvakantie",
-    "translation_en": "",
+    "translation_en": "school holiday",
     "source_page": 6,
     "review_status": "published"
   },
@@ -653,7 +653,7 @@ export const learningItems = [
     "item_type": "phrase",
     "context_type": "vocabulary_list",
     "translation_nl": "het geeft niets",
-    "translation_en": "",
+    "translation_en": "never mind",
     "source_page": 6,
     "review_status": "published"
   }

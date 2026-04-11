@@ -1,561 +1,570 @@
-// Published via script
+// Learning items for Lesson 3 — EN translations added by fill-english-translations.ts
 export const learningItems = [
-  {
-    "base_text": "ada",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "is, zijn; er is/zijn",
-    "translation_en": "is, are; there is/are",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "bandar",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "haven",
-    "translation_en": "port, harbor",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "bandar udara",
-    "item_type": "phrase",
-    "context_type": "vocabulary_list",
-    "translation_nl": "luchthaven",
-    "translation_en": "airport",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "banyak",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "veel",
-    "translation_en": "many, much, a lot",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "barang",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "spullen, bagage",
-    "translation_en": "goods, luggage, belongings",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "benar",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "echt, waar",
-    "translation_en": "true, correct, right",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "besok",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "morgen",
-    "translation_en": "tomorrow",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "buka",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "open(en)",
-    "translation_en": "to open",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "bus",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "bus",
-    "translation_en": "bus",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "cari",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "zoeken",
-    "translation_en": "to look for, to search",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "coklat",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "chocolade",
-    "translation_en": "chocolate",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "contoh",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "voorbeeld",
-    "translation_en": "example",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "depan",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "voorzijde",
-    "translation_en": "front",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "di depan",
-    "item_type": "phrase",
-    "context_type": "vocabulary_list",
-    "translation_nl": "voor (plaatsbep.)",
-    "translation_en": "in front of",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "di sebelah",
-    "item_type": "phrase",
-    "context_type": "vocabulary_list",
-    "translation_nl": "aan de (zij)kant",
-    "translation_en": "next to, beside",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "di sini",
-    "item_type": "phrase",
-    "context_type": "vocabulary_list",
-    "translation_nl": "hier",
-    "translation_en": "here",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "duduk",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "zitten",
-    "translation_en": "to sit",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "harus",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "moeten",
-    "translation_en": "must, have to",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "'kan?",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "is 't niet?",
-    "translation_en": "right? isn't it?",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "kanan",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "rechts",
-    "translation_en": "right (direction)",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "keju",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "kaas",
-    "translation_en": "cheese",
-    "source_page": 3,
-    "review_status": "published"
-  },
   {
     "base_text": "keluar",
     "item_type": "word",
-    "context_type": "vocabulary_list",
     "translation_nl": "naar buiten gaan",
-    "translation_en": "to go out, to exit",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "kembali",
-    "item_type": "word",
     "context_type": "vocabulary_list",
-    "translation_nl": "terugkeren, terug",
-    "translation_en": "to return, back",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "go out"
   },
   {
     "base_text": "ke mana?",
     "item_type": "phrase",
-    "context_type": "vocabulary_list",
     "translation_nl": "waarheen?",
-    "translation_en": "where to?",
+    "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "where?"
   },
   {
-    "base_text": "koper",
+    "base_text": "barang",
     "item_type": "word",
+    "translation_nl": "spullen/bagage",
     "context_type": "vocabulary_list",
-    "translation_nl": "koffer",
-    "translation_en": "suitcase",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "luggage"
+  },
+  {
+    "base_text": "bus",
+    "item_type": "word",
+    "translation_nl": "bus",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "bus"
+  },
+  {
+    "base_text": "depan",
+    "item_type": "word",
+    "translation_nl": "voorzijde",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "front"
+  },
+  {
+    "base_text": "di sebelah",
+    "item_type": "phrase",
+    "translation_nl": "aan de zijkant",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "beside"
+  },
+  {
+    "base_text": "duduk",
+    "item_type": "word",
+    "translation_nl": "zitten",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "sit"
   },
   {
     "base_text": "kota",
     "item_type": "word",
-    "context_type": "vocabulary_list",
     "translation_nl": "stad",
-    "translation_en": "city, town",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "lalu",
-    "item_type": "word",
     "context_type": "vocabulary_list",
-    "translation_nl": "vervolgens",
-    "translation_en": "then, after that",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "city"
   },
   {
     "base_text": "lapangan",
     "item_type": "word",
-    "context_type": "vocabulary_list",
     "translation_nl": "veld",
-    "translation_en": "field, open area",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "lapar",
-    "item_type": "word",
     "context_type": "vocabulary_list",
-    "translation_nl": "honger",
-    "translation_en": "hungry",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "field"
   },
   {
     "base_text": "laut",
     "item_type": "word",
-    "context_type": "vocabulary_list",
     "translation_nl": "zee",
-    "translation_en": "sea, ocean",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "mana?",
-    "item_type": "word",
     "context_type": "vocabulary_list",
-    "translation_nl": "welk, welke?",
-    "translation_en": "which? where?",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "sea"
   },
   {
     "base_text": "minta",
     "item_type": "word",
+    "translation_nl": "vragen om iets",
     "context_type": "vocabulary_list",
-    "translation_nl": "vragen om iets, verzoeken",
-    "translation_en": "to ask for, to request",
     "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "mobil",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "auto",
-    "translation_en": "car",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "oleh-oleh",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "cadeautje, souvenir",
-    "translation_en": "souvenir, gift from travels",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "pabean",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "douane",
-    "translation_en": "customs",
-    "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "ask for"
   },
   {
     "base_text": "pakaian",
     "item_type": "word",
-    "context_type": "vocabulary_list",
     "translation_nl": "kleding",
-    "translation_en": "clothing, clothes",
+    "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "clothing"
   },
   {
-    "base_text": "pengangkut",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "kruier",
-    "translation_en": "porter, carrier",
+    "base_text": "naik bus",
+    "item_type": "phrase",
+    "translation_nl": "met de bus gaan",
+    "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "take the bus"
   },
   {
-    "base_text": "saja",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "slechts, alleen maar",
-    "translation_en": "just, only",
+    "base_text": "enam puluh",
+    "item_type": "phrase",
+    "translation_nl": "zestig",
+    "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "sixty"
   },
   {
-    "base_text": "samudera",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "oceaan",
-    "translation_en": "ocean",
+    "base_text": "delapan puluh",
+    "item_type": "phrase",
+    "translation_nl": "tachtig",
+    "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "sebelah",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "zijkant, naast",
-    "translation_en": "side, next to",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "sekali",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "zeer, erg, heel",
-    "translation_en": "very, extremely",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "selesai",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "klaar, gereed, afgelopen",
-    "translation_en": "finished, done",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "sepeda",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "fiets",
-    "translation_en": "bicycle",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "silakan",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "alstublieft, gaat uw gang",
-    "translation_en": "please, go ahead",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "tahu",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "weten",
-    "translation_en": "to know",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "terbang",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "vliegen",
-    "translation_en": "to fly",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "tolong",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "helpen",
-    "translation_en": "to help; please",
-    "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "eighty"
   },
   {
     "base_text": "udara",
     "item_type": "word",
+    "translation_nl": "lucht/luchtruim",
     "context_type": "vocabulary_list",
-    "translation_nl": "lucht, luchtruim",
-    "translation_en": "air, atmosphere",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "air"
   },
   {
     "base_text": "minta tolong",
     "item_type": "phrase",
+    "translation_nl": "kunt u me helpen?",
     "context_type": "vocabulary_list",
-    "translation_nl": "kunt u me helpen?; hulp vragen",
-    "translation_en": "please help; asking for help",
     "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "pintu keluar",
-    "item_type": "phrase",
-    "context_type": "vocabulary_list",
-    "translation_nl": "uitgang",
-    "translation_en": "exit, way out",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "sama-sama",
-    "item_type": "phrase",
-    "context_type": "vocabulary_list",
-    "translation_nl": "geen dank, van hetzelfde",
-    "translation_en": "you're welcome, same to you",
-    "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "can you help me?"
   },
   {
     "base_text": "terima kasih kembali",
     "item_type": "phrase",
+    "translation_nl": "geen dank graag gedaan",
     "context_type": "vocabulary_list",
-    "translation_nl": "geen dank, graag gedaan",
-    "translation_en": "you're welcome",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "you're welcome"
   },
   {
-    "base_text": "lapangan terbang",
-    "item_type": "phrase",
-    "context_type": "vocabulary_list",
-    "translation_nl": "vliegveld",
-    "translation_en": "airfield, airport",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "dua puluh satu",
+    "base_text": "bandar",
     "item_type": "word",
+    "translation_nl": "haven",
     "context_type": "vocabulary_list",
-    "translation_nl": "21",
-    "translation_en": "twenty-one",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "harbor"
+  },
+  {
+    "base_text": "ada",
+    "item_type": "word",
+    "translation_nl": "er is/er zijn",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "there is/are"
+  },
+  {
+    "base_text": "cari",
+    "item_type": "word",
+    "translation_nl": "zoeken",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "search"
+  },
+  {
+    "base_text": "di depan",
+    "item_type": "phrase",
+    "translation_nl": "voor(plaatsbep.)",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "in front of"
+  },
+  {
+    "base_text": "harus",
+    "item_type": "word",
+    "translation_nl": "moeten",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "must"
+  },
+  {
+    "base_text": "kembali",
+    "item_type": "word",
+    "translation_nl": "terugkeren/terug",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "return"
+  },
+  {
+    "base_text": "koper",
+    "item_type": "word",
+    "translation_nl": "koffer",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "suitcase"
+  },
+  {
+    "base_text": "lapar",
+    "item_type": "word",
+    "translation_nl": "honger",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "hunger"
+  },
+  {
+    "base_text": "mobil",
+    "item_type": "word",
+    "translation_nl": "auto",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "car"
+  },
+  {
+    "base_text": "pabean",
+    "item_type": "word",
+    "translation_nl": "douane",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "customs"
+  },
+  {
+    "base_text": "pengangkut",
+    "item_type": "word",
+    "translation_nl": "kruier",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "porter"
+  },
+  {
+    "base_text": "samudera",
+    "item_type": "word",
+    "translation_nl": "oceaan",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "ocean"
+  },
+  {
+    "base_text": "sekali",
+    "item_type": "word",
+    "translation_nl": "zeer/erg/heel",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "very"
+  },
+  {
+    "base_text": "selesai",
+    "item_type": "word",
+    "translation_nl": "klaar/gereed/afgelopen",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "done"
+  },
+  {
+    "base_text": "sepeda",
+    "item_type": "word",
+    "translation_nl": "fiets",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "bicycle"
+  },
+  {
+    "base_text": "tahu",
+    "item_type": "word",
+    "translation_nl": "weten",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "know"
+  },
+  {
+    "base_text": "lah",
+    "item_type": "word",
+    "translation_nl": "vervolgens",
+    "context_type": "lesson_snippet",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "then"
+  },
+  {
+    "base_text": "mana?",
+    "item_type": "word",
+    "translation_nl": "welk/welke?",
+    "context_type": "lesson_snippet",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "which?"
+  },
+  {
+    "base_text": "naik sepeda",
+    "item_type": "phrase",
+    "translation_nl": "met de fiets gaan",
+    "context_type": "lesson_snippet",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "ride a bicycle"
+  },
+  {
+    "base_text": "naik mobil",
+    "item_type": "phrase",
+    "translation_nl": "met de auto gaan",
+    "context_type": "lesson_snippet",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "ride in a car"
   },
   {
     "base_text": "tiga puluh",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "30",
-    "translation_en": "thirty",
+    "item_type": "phrase",
+    "translation_nl": "dertig",
+    "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "empat puluh",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "40",
-    "translation_en": "forty",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "lima puluh",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "50",
-    "translation_en": "fifty",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "enam puluh",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "60",
-    "translation_en": "sixty",
-    "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "thirty"
   },
   {
     "base_text": "tujuh puluh",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "70",
-    "translation_en": "seventy",
+    "item_type": "phrase",
+    "translation_nl": "zeventig",
+    "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "delapan puluh",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "80",
-    "translation_en": "eighty",
-    "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "seventy"
   },
   {
     "base_text": "sembilan puluh",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "90",
-    "translation_en": "ninety",
+    "item_type": "phrase",
+    "translation_nl": "negentig",
+    "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "ninety"
+  },
+  {
+    "base_text": "silakan",
+    "item_type": "phrase",
+    "translation_nl": "alstublieft/gaat uw gang",
+    "context_type": "lesson_snippet",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "please"
+  },
+  {
+    "base_text": "pintu keluar",
+    "item_type": "phrase",
+    "translation_nl": "uitgang",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "exit"
+  },
+  {
+    "base_text": "empat puluh",
+    "item_type": "phrase",
+    "translation_nl": "veertig",
+    "context_type": "lesson_snippet",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "forty"
+  },
+  {
+    "base_text": "bandar udara",
+    "item_type": "phrase",
+    "translation_nl": "luchthaven",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "airport"
+  },
+  {
+    "base_text": "besok",
+    "item_type": "word",
+    "translation_nl": "morgen",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "tomorrow"
+  },
+  {
+    "base_text": "coklat",
+    "item_type": "word",
+    "translation_nl": "chocolade",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "chocolate"
+  },
+  {
+    "base_text": "kanan",
+    "item_type": "word",
+    "translation_nl": "rechts",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "right"
+  },
+  {
+    "base_text": "oleh-oleh",
+    "item_type": "word",
+    "translation_nl": "cadeautje/souvenir",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "souvenir"
+  },
+  {
+    "base_text": "saja",
+    "item_type": "word",
+    "translation_nl": "slechts/alleen maar",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "only"
+  },
+  {
+    "base_text": "sebelah",
+    "item_type": "word",
+    "translation_nl": "zijkant/naast",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "side"
+  },
+  {
+    "base_text": "terbang",
+    "item_type": "word",
+    "translation_nl": "vliegen",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "fly"
   },
   {
     "base_text": "seratus",
     "item_type": "word",
+    "translation_nl": "honderd",
     "context_type": "vocabulary_list",
-    "translation_nl": "100",
-    "translation_en": "one hundred",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "translation_en": "hundred"
+  },
+  {
+    "base_text": "lima puluh",
+    "item_type": "phrase",
+    "translation_nl": "vijftig",
+    "context_type": "lesson_snippet",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "fifty"
+  },
+  {
+    "base_text": "banyak",
+    "item_type": "word",
+    "translation_nl": "veel",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "many"
+  },
+  {
+    "base_text": "benar",
+    "item_type": "word",
+    "translation_nl": "echt/waar",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "real"
+  },
+  {
+    "base_text": "buka",
+    "item_type": "word",
+    "translation_nl": "openen",
+    "context_type": "cloze",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "open"
+  },
+  {
+    "base_text": "di sini",
+    "item_type": "phrase",
+    "translation_nl": "hier",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "here"
+  },
+  {
+    "base_text": "keju",
+    "item_type": "word",
+    "translation_nl": "kaas",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "cheese"
+  },
+  {
+    "base_text": "tolong",
+    "item_type": "word",
+    "translation_nl": "helpen",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "help"
+  },
+  {
+    "base_text": "sama-sama",
+    "item_type": "phrase",
+    "translation_nl": "geen dank",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "you're welcome"
+  },
+  {
+    "base_text": "lapangan terbang",
+    "item_type": "phrase",
+    "translation_nl": "vliegveld",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "airport"
+  },
+  {
+    "base_text": "contoh",
+    "item_type": "word",
+    "translation_nl": "voorbeeld",
+    "context_type": "cloze",
+    "source_page": 3,
+    "review_status": "published",
+    "translation_en": "example"
   }
 ]

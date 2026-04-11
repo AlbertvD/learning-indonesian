@@ -1,5 +1,6 @@
-// Enriched by linguist from lesson 2 content: "Di Indonesia (In Indonesie)"
-// Grammar focus: se- prefix, ini/itu, tidak negation, adjective placement, belas numbers
+// Grammar patterns for Lesson 2 — Di Indonesia (In Indonesie)
+// Slugs verified unique across lessons 1-7 staging files and indonesian.grammar_patterns DB table
+// Grammar focus: se- prefix + classifiers, ini/itu (3 functions), tidak negation, adjective placement, belas numbers
 export const grammarPatterns = [
   {
     pattern_name: 'SE- prefix met classificeerwoorden',
@@ -36,7 +37,7 @@ export const grammarPatterns = [
   {
     pattern_name: 'Ontkenning met tidak',
     description: 'tidak (niet/nee) wordt geplaatst voor het woord dat ontkend wordt. Werkt bij bijvoeglijke naamwoorden en werkwoorden. Voorbeeld: Taksi ini tidak baru (Deze taxi is niet nieuw)',
-    confusion_group: null,
+    confusion_group: 'negation',
     page_reference: 2,
     slug: 'tidak-negation',
     complexity_score: 2,

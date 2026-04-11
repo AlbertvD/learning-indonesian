@@ -1,0 +1,854 @@
+{
+  "lesson_number": 2,
+  "lesson_title": "Les 2 - Di Indonesia (In Indonesië)",
+  "level": "A1",
+  "source": "reverse_engineered_from_db",
+  "note": "Grammar and exercise sections are already fully structured (categories/sections arrays). The linguist-creator should use structured_categories / structured_sections directly — no re-parsing needed. raw_text is provided as a human-readable reference only.",
+  "sections": [
+    {
+      "section_type": "dialogue",
+      "title": "Di Indonesia (dialoog)",
+      "order_index": 0,
+      "confidence": 1,
+      "source": "db",
+      "lines": [
+        {
+          "text": "Selamat siang, apa kabar? Bapak dari mana?",
+          "speaker": "Bapak Mulyono"
+        },
+        {
+          "text": "Saya dari negeri Belanda.",
+          "speaker": "Bapak Barends"
+        },
+        {
+          "text": "Nama Bapak siapa?",
+          "speaker": "Bapak Mulyono"
+        },
+        {
+          "text": "Nama saya Barends.",
+          "speaker": "Bapak Barends"
+        },
+        {
+          "text": "Dan ini Ibu Barends?",
+          "speaker": "Bapak Mulyono"
+        },
+        {
+          "text": "Ya, ini istri saya.",
+          "speaker": "Bapak Barends"
+        },
+        {
+          "text": "Bapak menginap di mana? Sudah dapat hotel?",
+          "speaker": "Bapak Mulyono"
+        },
+        {
+          "text": "Sudah. Sekarang mau ke hotel. Di mana bisa naik taksi?",
+          "speaker": "Bapak Barends"
+        },
+        {
+          "text": "Di sana. Bapak dan Ibu tinggal di mana?",
+          "speaker": "Bapak Mulyono"
+        },
+        {
+          "text": "Saya dan suami saya tinggal di hotel Ramayana, Jalan Sinta nomor 11. Itu hotel bagus.",
+          "speaker": "Ibu Barends"
+        },
+        {
+          "text": "Nah, taksi sudah datang.",
+          "speaker": "Bapak Barends"
+        },
+        {
+          "text": "Ooh, ya, saya pulang dulu. Sampai bertemu lagi!",
+          "speaker": "Bapak Mulyono"
+        },
+        {
+          "text": "Sampai bertemu lagi, Pak.",
+          "speaker": "Bapak Barends"
+        }
+      ]
+    },
+    {
+      "section_type": "vocabulary",
+      "title": "Woordenlijst",
+      "order_index": 1,
+      "confidence": 1,
+      "source": "db",
+      "items": [
+        {
+          "dutch": "er is, er zijn; hebben",
+          "indonesian": "ada"
+        },
+        {
+          "dutch": "appel",
+          "indonesian": "apel"
+        },
+        {
+          "dutch": "kip",
+          "indonesian": "ayam"
+        },
+        {
+          "dutch": "mooi",
+          "indonesian": "bagus"
+        },
+        {
+          "dutch": "nieuw; pas",
+          "indonesian": "baru"
+        },
+        {
+          "dutch": "Nederland(s)",
+          "indonesian": "Belanda"
+        },
+        {
+          "dutch": "rijst (ongekookt)",
+          "indonesian": "beras"
+        },
+        {
+          "dutch": "zwaar",
+          "indonesian": "berat"
+        },
+        {
+          "dutch": "ontmoeten",
+          "indonesian": "bertemu"
+        },
+        {
+          "dutch": "korrel",
+          "indonesian": "butir"
+        },
+        {
+          "dutch": "hebben, krijgen",
+          "indonesian": "dapat"
+        },
+        {
+          "dutch": "waar vandaan?",
+          "indonesian": "dari mana?"
+        },
+        {
+          "dutch": "met",
+          "indonesian": "dengan"
+        },
+        {
+          "dutch": "waar?",
+          "indonesian": "di mana?"
+        },
+        {
+          "dutch": "ginds, daar",
+          "indonesian": "di sana"
+        },
+        {
+          "dutch": "dokter, arts",
+          "indonesian": "dokter"
+        },
+        {
+          "dutch": "eerst, vroeger",
+          "indonesian": "dulu"
+        },
+        {
+          "dutch": "staart (classificeerwoord voor dieren)",
+          "notes": "ékor",
+          "indonesian": "ekor"
+        },
+        {
+          "dutch": "onderwijzer, leraar",
+          "indonesian": "guru"
+        },
+        {
+          "dutch": "dit, deze",
+          "indonesian": "ini"
+        },
+        {
+          "dutch": "vrouw, echtgenote",
+          "indonesian": "istri"
+        },
+        {
+          "dutch": "straat, weg",
+          "indonesian": "jalan"
+        },
+        {
+          "dutch": "kamer",
+          "indonesian": "kamar"
+        },
+        {
+          "dutch": "kantoor",
+          "indonesian": "kantor"
+        },
+        {
+          "dutch": "rijk",
+          "indonesian": "kaya"
+        },
+        {
+          "dutch": "klein",
+          "indonesian": "kecil"
+        },
+        {
+          "dutch": "weer, wederom, nog",
+          "indonesian": "lagi"
+        },
+        {
+          "dutch": "logeren, overnachten",
+          "indonesian": "menginap"
+        },
+        {
+          "dutch": "wel (stopwoord)",
+          "indonesian": "nah"
+        },
+        {
+          "dutch": "gaan met, omhoog gaan",
+          "indonesian": "naik"
+        },
+        {
+          "dutch": "naam",
+          "indonesian": "nama"
+        },
+        {
+          "dutch": "land",
+          "indonesian": "negeri"
+        },
+        {
+          "dutch": "nummer",
+          "indonesian": "nomor"
+        },
+        {
+          "dutch": "deur",
+          "indonesian": "pintu"
+        },
+        {
+          "dutch": "terugkeren (naar huis)",
+          "indonesian": "pulang"
+        },
+        {
+          "dutch": "ziek; pijn",
+          "indonesian": "sakit"
+        },
+        {
+          "dutch": "gelijk, dezelfde, hetzelfde",
+          "indonesian": "sama"
+        },
+        {
+          "dutch": "gelijk aan",
+          "indonesian": "sama dengan"
+        },
+        {
+          "dutch": "tot, tot aan",
+          "indonesian": "sampai"
+        },
+        {
+          "dutch": "ginds",
+          "indonesian": "sana"
+        },
+        {
+          "dutch": "nu, tegenwoordig",
+          "indonesian": "sekarang"
+        },
+        {
+          "dutch": "overdag",
+          "indonesian": "siang"
+        },
+        {
+          "dutch": "wie? (voor persoon)",
+          "indonesian": "siapa?"
+        },
+        {
+          "dutch": "man, echtgenoot",
+          "indonesian": "suami"
+        },
+        {
+          "dutch": "al, reeds",
+          "indonesian": "sudah"
+        },
+        {
+          "dutch": "taxi",
+          "indonesian": "taksi"
+        },
+        {
+          "dutch": "toevoegen; optellen",
+          "indonesian": "tambah"
+        },
+        {
+          "dutch": "tas",
+          "indonesian": "tas"
+        },
+        {
+          "dutch": "vriend, vriendin",
+          "indonesian": "teman"
+        },
+        {
+          "dutch": "verblijven, wonen",
+          "indonesian": "tinggal"
+        },
+        {
+          "dutch": "tomaat",
+          "indonesian": "tomat"
+        },
+        {
+          "dutch": "toerist",
+          "indonesian": "turis"
+        }
+      ]
+    },
+    {
+      "section_type": "expressions",
+      "title": "Uitdrukkingen",
+      "order_index": 2,
+      "confidence": 1,
+      "source": "db",
+      "items": [
+        {
+          "dutch": "tot (weer)ziens",
+          "indonesian": "sampai bertemu lagi"
+        },
+        {
+          "dutch": "dan ga ik maar (naar huis)",
+          "indonesian": "saya pulang dulu"
+        },
+        {
+          "dutch": "goedendag, goedemiddag",
+          "indonesian": "selamat siang"
+        }
+      ]
+    },
+    {
+      "section_type": "numbers",
+      "title": "Telwoorden",
+      "order_index": 3,
+      "confidence": 1,
+      "source": "db",
+      "items": [
+        {
+          "dutch": "11",
+          "indonesian": "sebelas"
+        },
+        {
+          "dutch": "12",
+          "indonesian": "dua belas"
+        },
+        {
+          "dutch": "13",
+          "indonesian": "tiga belas"
+        },
+        {
+          "dutch": "14",
+          "indonesian": "empat belas"
+        },
+        {
+          "dutch": "15",
+          "indonesian": "lima belas"
+        },
+        {
+          "dutch": "16",
+          "indonesian": "enam belas"
+        },
+        {
+          "dutch": "17",
+          "indonesian": "tujuh belas"
+        },
+        {
+          "dutch": "18",
+          "indonesian": "delapan belas"
+        },
+        {
+          "dutch": "19",
+          "indonesian": "sembilan belas"
+        },
+        {
+          "dutch": "20",
+          "indonesian": "dua puluh"
+        }
+      ]
+    },
+    {
+      "section_type": "grammar",
+      "title": "Het voorvoegsel SE-",
+      "order_index": 4,
+      "confidence": 1,
+      "source": "db",
+      "structured_categories": [
+        {
+          "rules": [
+            "voor mensen: orang → seorang — een ('n) persoon, mens; seorang Belanda — een Nederlander",
+            "voor dieren: ekor → seekor ayam kecil — een ('n) kleine kip",
+            "voor voorwerpen: buah → sebuah tas — een tas; dua buah pisang besar — twee grote bananen"
+          ],
+          "title": "Classificeerwoorden"
+        }
+      ],
+      "word_order": "telwoord – classificeerwoord – zelfstandig naamwoord – bijvoeglijk naamwoord",
+      "intro": "Bij andere woorden dan telwoorden heeft SE- de betekenis van het onbepaald lidwoord \"een\" ('n). Dikwijls wordt SE- gebruikt in combinatie met een classificeerwoord. Dit woord deelt het zelfstandig naamwoord in bij een bepaalde groep (bijvoorbeeld mensen, dieren, voorwerpen).",
+      "raw_text": "Bij andere woorden dan telwoorden heeft SE- de betekenis van het onbepaald lidwoord \"een\" ('n). Dikwijls wordt SE- gebruikt in combinatie met een classificeerwoord. Dit woord deelt het zelfstandig naamwoord in bij een bepaalde groep (bijvoorbeeld mensen, dieren, voorwerpen).\n\n### Classificeerwoorden\n- voor mensen: orang → seorang — een ('n) persoon, mens; seorang Belanda — een Nederlander\n- voor dieren: ekor → seekor ayam kecil — een ('n) kleine kip\n- voor voorwerpen: buah → sebuah tas — een tas; dua buah pisang besar — twee grote bananen"
+    },
+    {
+      "section_type": "grammar",
+      "title": "Grammatica: Zinsbouw en woordgroepen",
+      "order_index": 5,
+      "confidence": 1,
+      "source": "db",
+      "structured_categories": [
+        {
+          "rules": [
+            "Een woordgroep kan uit één woord bestaan, maar bestaat meestal uit meerdere woorden.",
+            "Een Indonesische zin bestaat minimaal uit één, meestal uit twee of meer woordgroepen.",
+            "Er is altijd een centrale woordgroep. Andere woordgroepen voegen informatie toe aan deze centrale woordgroep.",
+            "Met behulp van een schuine streepje (/ /) wordt de indeling naar woordgroep aangegeven.",
+            "Probeer bij het uitspreken van een zin een korte pauze in te lassen tussen de woordgroepen."
+          ],
+          "title": "Woordgroepen"
+        }
+      ],
+      "word_order": null,
+      "intro": "Een Indonesische zin bestaat altijd uit groepen woorden die bij elkaar horen. Men kan de zin alleen begrijpen als men in staat is te bepalen wat bij wat hoort.",
+      "raw_text": "Een Indonesische zin bestaat altijd uit groepen woorden die bij elkaar horen. Men kan de zin alleen begrijpen als men in staat is te bepalen wat bij wat hoort.\n\n### Woordgroepen\n- Een woordgroep kan uit één woord bestaan, maar bestaat meestal uit meerdere woorden.\n- Een Indonesische zin bestaat minimaal uit één, meestal uit twee of meer woordgroepen.\n- Er is altijd een centrale woordgroep. Andere woordgroepen voegen informatie toe aan deze centrale woordgroep.\n- Met behulp van een schuine streepje (/ /) wordt de indeling naar woordgroep aangegeven.\n- Probeer bij het uitspreken van een zin een korte pauze in te lassen tussen de woordgroepen."
+    },
+    {
+      "section_type": "grammar",
+      "title": "Grammatica: ini & itu",
+      "order_index": 6,
+      "confidence": 1,
+      "source": "db",
+      "structured_categories": [
+        {
+          "rules": [
+            "Als aanwijzend voornaamwoord plaatst men ini of itu achter het zelfstandig naamwoord of achter het zelfstandig naamwoord + bijvoeglijk naamwoord.",
+            "Ze worden met nadruk uitgesproken."
+          ],
+          "title": "1. ini en itu als aanwijzend voornaamwoord",
+          "examples": [
+            {
+              "dutch": "Dit huis is klein",
+              "indonesian": "/Rumah ini/ kecil/"
+            },
+            {
+              "dutch": "Dat huis is duur",
+              "indonesian": "/Rumah itu/ mahal/"
+            },
+            {
+              "dutch": "Dit grote huis is duur",
+              "indonesian": "/Rumah besar ini/ mahal/"
+            },
+            {
+              "dutch": "Dat kleine huis is goedkoop",
+              "indonesian": "/Rumah kecil itu/ murah/"
+            }
+          ]
+        },
+        {
+          "rules": [
+            "Na elke ini of itu valt een korte pauze (einde woordgroep).",
+            "Als itu zonder nadruk wordt uitgesproken, kan het worden vertaald met een lidwoord (de, het)."
+          ],
+          "title": "2. ini en itu als woordgroepmarkeerder",
+          "examples": [
+            {
+              "dutch": "De weg is mooi",
+              "indonesian": "/Jalan itu/ bagus/"
+            },
+            {
+              "dutch": "Deze bananen zijn goedkoop",
+              "indonesian": "/Pisang ini/ murah/"
+            },
+            {
+              "dutch": "De mevrouw is thuis",
+              "indonesian": "/Ibu itu/ di rumah/"
+            },
+            {
+              "dutch": "Deze taxi is nieuw",
+              "indonesian": "/Taksi ini/ baru/"
+            }
+          ]
+        },
+        {
+          "rules": [
+            "Ini en itu kunnen zelf ook als centrale woordgroep optreden."
+          ],
+          "title": "3. ini en itu als centrale woordgroep",
+          "examples": [
+            {
+              "dutch": "Dat is mooi",
+              "indonesian": "/Itu/ /bagus/"
+            },
+            {
+              "dutch": "Dit is een banaan",
+              "indonesian": "/Ini/ /pisang/"
+            },
+            {
+              "dutch": "Dat is een huis",
+              "indonesian": "/Itu/ /rumah/"
+            },
+            {
+              "dutch": "Dit is een taxi",
+              "indonesian": "/Ini/ /taksi/"
+            }
+          ]
+        }
+      ],
+      "word_order": null,
+      "intro": "ini = dit, deze | itu = die, dat",
+      "raw_text": "ini = dit, deze | itu = die, dat\n\n### 1. ini en itu als aanwijzend voornaamwoord\n- Als aanwijzend voornaamwoord plaatst men ini of itu achter het zelfstandig naamwoord of achter het zelfstandig naamwoord + bijvoeglijk naamwoord.\n- Ze worden met nadruk uitgesproken.\n  /Rumah ini/ kecil/ — Dit huis is klein\n  /Rumah itu/ mahal/ — Dat huis is duur\n  /Rumah besar ini/ mahal/ — Dit grote huis is duur\n  /Rumah kecil itu/ murah/ — Dat kleine huis is goedkoop\n\n### 2. ini en itu als woordgroepmarkeerder\n- Na elke ini of itu valt een korte pauze (einde woordgroep).\n- Als itu zonder nadruk wordt uitgesproken, kan het worden vertaald met een lidwoord (de, het).\n  /Jalan itu/ bagus/ — De weg is mooi\n  /Pisang ini/ murah/ — Deze bananen zijn goedkoop\n  /Ibu itu/ di rumah/ — De mevrouw is thuis\n  /Taksi ini/ baru/ — Deze taxi is nieuw\n\n### 3. ini en itu als centrale woordgroep\n- Ini en itu kunnen zelf ook als centrale woordgroep optreden.\n  /Itu/ /bagus/ — Dat is mooi\n  /Ini/ /pisang/ — Dit is een banaan\n  /Itu/ /rumah/ — Dat is een huis\n  /Ini/ /taksi/ — Dit is een taxi"
+    },
+    {
+      "section_type": "grammar",
+      "title": "Grammatica: Ontkenning met tidak",
+      "order_index": 7,
+      "confidence": 1,
+      "source": "db",
+      "structured_categories": [
+        {
+          "rules": [
+            "Taksi ini baru → Taksi ini tidak baru (Deze taxi is nieuw → Deze taxi is niet nieuw)",
+            "Kamar ini baik → Kamar ini tidak baik (Deze kamer is goed → Deze kamer is niet goed)",
+            "Hasan tinggal di hotel → Hasan tidak tinggal di hotel (Hasan verblijft in het hotel → Hasan verblijft niet in het hotel)",
+            "Orang itu sakit → Orang itu tidak sakit (Die persoon is ziek → Die persoon is niet ziek)",
+            "Saya makan pisang → Saya tidak makan pisang (Ik eet een banaan → Ik eet geen banaan)"
+          ],
+          "title": "Ontkenning: tidak"
+        }
+      ],
+      "word_order": null,
+      "intro": "De ontkenning tidak = niet, nee. Tidak wordt geplaatst vóór het woord dat ontkend wordt.",
+      "raw_text": "De ontkenning tidak = niet, nee. Tidak wordt geplaatst vóór het woord dat ontkend wordt.\n\n### Ontkenning: tidak\n- Taksi ini baru → Taksi ini tidak baru (Deze taxi is nieuw → Deze taxi is niet nieuw)\n- Kamar ini baik → Kamar ini tidak baik (Deze kamer is goed → Deze kamer is niet goed)\n- Hasan tinggal di hotel → Hasan tidak tinggal di hotel (Hasan verblijft in het hotel → Hasan verblijft niet in het hotel)\n- Orang itu sakit → Orang itu tidak sakit (Die persoon is ziek → Die persoon is niet ziek)\n- Saya makan pisang → Saya tidak makan pisang (Ik eet een banaan → Ik eet geen banaan)"
+    },
+    {
+      "section_type": "grammar",
+      "title": "Grammatica: Bijvoeglijk naamwoord",
+      "order_index": 8,
+      "confidence": 1,
+      "source": "db",
+      "structured_categories": [
+        {
+          "rules": [
+            "/Tas besar ini/ mahal/ — Deze grote tas is duur",
+            "/Rumah kecil itu/ murah/ — Dat huisje is goedkoop",
+            "/Dua orang turis ini/ kaya/ — Deze twee toeristen zijn rijk",
+            "Opmerking: de regels voor de plaatsing van twee bijvoeglijke naamwoorden worden gegeven in Les 4."
+          ],
+          "title": "Plaatsing"
+        },
+        {
+          "notes": "barang lama = oude spullen die nog functioneren (bijv. antiek); barang tua = goederen die bijna zijn versleten (door gebruik)",
+          "pairs": [
+            {
+              "neg": "lama",
+              "pos": "baru",
+              "neg_dutch": "oud (van vroeger; lang geleden)",
+              "pos_dutch": "nieuw"
+            },
+            {
+              "neg": "buruk",
+              "pos": "baik",
+              "neg_dutch": "slecht, lelijk",
+              "pos_dutch": "goed"
+            },
+            {
+              "neg": "kotor",
+              "pos": "bersih",
+              "neg_dutch": "vuil",
+              "pos_dutch": "schoon"
+            },
+            {
+              "neg": "kecil",
+              "pos": "besar",
+              "neg_dutch": "klein",
+              "pos_dutch": "groot"
+            },
+            {
+              "neg": "ringan",
+              "pos": "berat",
+              "neg_dutch": "licht",
+              "pos_dutch": "zwaar"
+            },
+            {
+              "neg": "tidak enak",
+              "pos": "enak",
+              "notes": "ĕnak",
+              "neg_dutch": "niet lekker",
+              "pos_dutch": "lekker"
+            },
+            {
+              "neg": "dekat",
+              "pos": "jauh",
+              "neg_dutch": "dichtbij",
+              "pos_dutch": "ver"
+            },
+            {
+              "neg": "miskin",
+              "pos": "kaya",
+              "neg_dutch": "arm",
+              "pos_dutch": "rijk"
+            },
+            {
+              "neg": "murah",
+              "pos": "mahal",
+              "neg_dutch": "goedkoop",
+              "pos_dutch": "duur"
+            },
+            {
+              "neg": "pahit",
+              "pos": "manis",
+              "neg_dutch": "bitter",
+              "pos_dutch": "zoet"
+            },
+            {
+              "neg": "asam",
+              "pos": "",
+              "neg_dutch": "zuur",
+              "pos_dutch": ""
+            },
+            {
+              "neg": "mentah",
+              "pos": "matang",
+              "neg_dutch": "onrijp",
+              "pos_dutch": "rijp"
+            },
+            {
+              "neg": "tua",
+              "pos": "muda",
+              "neg_dutch": "oud",
+              "pos_dutch": "jong"
+            },
+            {
+              "neg": "kosong",
+              "pos": "penuh",
+              "neg_dutch": "leeg",
+              "pos_dutch": "vol"
+            },
+            {
+              "neg": "pendek",
+              "pos": "panjang",
+              "notes": "pĕndĕk",
+              "neg_dutch": "kort",
+              "pos_dutch": "lang"
+            }
+          ],
+          "title": "Tegengestelde bijvoeglijke naamwoorden"
+        }
+      ],
+      "word_order": null,
+      "intro": "Het bijvoeglijk naamwoord wordt binnen de woordgroep achter het zelfstandig naamwoord geplaatst en wordt zonder pauze, samen met het zelfstandig naamwoord, uitgesproken.",
+      "raw_text": "Het bijvoeglijk naamwoord wordt binnen de woordgroep achter het zelfstandig naamwoord geplaatst en wordt zonder pauze, samen met het zelfstandig naamwoord, uitgesproken.\n\n### Plaatsing\n- /Tas besar ini/ mahal/ — Deze grote tas is duur\n- /Rumah kecil itu/ murah/ — Dat huisje is goedkoop\n- /Dua orang turis ini/ kaya/ — Deze twee toeristen zijn rijk\n- Opmerking: de regels voor de plaatsing van twee bijvoeglijke naamwoorden worden gegeven in Les 4.\n\n### Tegengestelde bijvoeglijke naamwoorden\n  baru (nieuw) ↔ lama (oud (van vroeger; lang geleden))\n  baik (goed) ↔ buruk (slecht, lelijk)\n  bersih (schoon) ↔ kotor (vuil)\n  besar (groot) ↔ kecil (klein)\n  berat (zwaar) ↔ ringan (licht)\n  enak (lekker) ↔ tidak enak (niet lekker)\n  jauh (ver) ↔ dekat (dichtbij)\n  kaya (rijk) ↔ miskin (arm)\n  mahal (duur) ↔ murah (goedkoop)\n  manis (zoet) ↔ pahit (bitter)\n  matang (rijp) ↔ mentah (onrijp)\n  muda (jong) ↔ tua (oud)\n  penuh (vol) ↔ kosong (leeg)\n  panjang (lang) ↔ pendek (kort)"
+    },
+    {
+      "section_type": "exercises",
+      "title": "Oefeningen",
+      "order_index": 9,
+      "confidence": 1,
+      "source": "db",
+      "structured_sections": [
+        {
+          "items": [
+            {
+              "dutch": "Dit is meneer Jansen",
+              "indonesian": "Ini Bapak Jansen"
+            },
+            {
+              "dutch": "Dat is een banaan",
+              "indonesian": "Itu pisang"
+            },
+            {
+              "dutch": "Dit is een winkel",
+              "indonesian": "Ini toko"
+            },
+            {
+              "dutch": "Dat is een taxi",
+              "indonesian": "Itu taksi"
+            },
+            {
+              "dutch": "Dit is mevrouw De Wit",
+              "indonesian": "Ini Ibu De Wit"
+            },
+            {
+              "dutch": "Deze deur is zwaar",
+              "indonesian": "Pintu ini berat"
+            },
+            {
+              "dutch": "Dit huis is nieuw",
+              "indonesian": "Rumah ini baru"
+            },
+            {
+              "dutch": "Deze vrucht is zoet",
+              "indonesian": "Buah ini manis"
+            },
+            {
+              "dutch": "Deze kamer is vol",
+              "indonesian": "Kamar ini penuh"
+            },
+            {
+              "dutch": "Dat hotel is duur",
+              "indonesian": "Hotel itu mahal"
+            }
+          ],
+          "title": "Oefening I. Vertaal in het Indonesisch."
+        },
+        {
+          "items": [
+            {
+              "dutch": "Dat is goed nieuws",
+              "indonesian": "Itu kabar baik"
+            },
+            {
+              "dutch": "Dit is mijn vrouw",
+              "indonesian": "Ini istri saya"
+            },
+            {
+              "dutch": "Welkom in Indonesië",
+              "indonesian": "Selamat datang di Indonesia"
+            },
+            {
+              "dutch": "Heb je al een taxi?",
+              "indonesian": "Sudah dapat taksi?"
+            },
+            {
+              "dutch": "Ik en mijn vrouw overnachten in het hotel",
+              "indonesian": "Saya dan istri saya menginap di hotel"
+            },
+            {
+              "dutch": "Waar overnacht u, meneer?",
+              "indonesian": "Bapak menginap di mana?"
+            },
+            {
+              "dutch": "Ik overnacht in Hotel Rama",
+              "indonesian": "Saya menginap di Hotel Rama"
+            },
+            {
+              "dutch": "Ik wil niet overnachten",
+              "indonesian": "Saya tidak mau menginap"
+            },
+            {
+              "dutch": "Waar is de goedkope markt?",
+              "indonesian": "Pasar murah di mana?"
+            },
+            {
+              "dutch": "Hasan gaat niet terug naar Jakarta",
+              "indonesian": "Hasan tidak pulang ke Jakarta"
+            },
+            {
+              "dutch": "Daar is een oud huis met ...",
+              "indonesian": "Di sana ada rumah lama dengan …"
+            },
+            {
+              "dutch": "Hoeveel taxi's zijn er?",
+              "indonesian": "Ada berapa taksi?"
+            },
+            {
+              "dutch": "Daar zijn elf taxi's",
+              "indonesian": "Di sana ada sebelas taksi"
+            }
+          ],
+          "title": "Oefening II. Vertaal in het Nederlands."
+        },
+        {
+          "items": [
+            {
+              "sum": "1 + 4",
+              "answer": "satu tambah empat sama dengan lima"
+            },
+            {
+              "sum": "3 + 6",
+              "answer": "tiga tambah enam sama dengan sembilan"
+            },
+            {
+              "sum": "5 + 3",
+              "answer": "lima tambah tiga sama dengan delapan"
+            },
+            {
+              "sum": "7 + 3",
+              "answer": "tujuh tambah tiga sama dengan sepuluh"
+            },
+            {
+              "sum": "4 + 2",
+              "answer": "empat tambah dua sama dengan enam"
+            },
+            {
+              "sum": "9 + 1",
+              "answer": "sembilan tambah satu sama dengan sepuluh"
+            },
+            {
+              "sum": "1 + 7",
+              "answer": "satu tambah tujuh sama dengan delapan"
+            }
+          ],
+          "title": "Oefening III. Tel op.",
+          "instruction": "Voorbeeld: 4 + 5 = satu tambah lima sama dengan enam"
+        },
+        {
+          "items": [
+            {
+              "dutch": "grote deur"
+            },
+            {
+              "dutch": "goedkope markt"
+            },
+            {
+              "dutch": "lekker fruit"
+            },
+            {
+              "dutch": "groot land"
+            },
+            {
+              "dutch": "nieuw nummer"
+            },
+            {
+              "dutch": "zoete appels"
+            },
+            {
+              "dutch": "lege tas"
+            },
+            {
+              "dutch": "mooie kamer"
+            },
+            {
+              "dutch": "duur hotel"
+            },
+            {
+              "dutch": "lange weg"
+            },
+            {
+              "dutch": "appeltje"
+            }
+          ],
+          "title": "Oefening IV. Beantwoord de vraag in het Indonesisch: Ini / Itu apa?"
+        },
+        {
+          "items": [
+            {
+              "question": "Apa kabar?"
+            },
+            {
+              "question": "Bapak / Ibu dari mana?"
+            },
+            {
+              "question": "Bapak / Ibu menginap di mana?"
+            },
+            {
+              "question": "Nama Bapak / Ibu siapa?"
+            },
+            {
+              "question": "Bapak / Ibu mau ke mana?"
+            },
+            {
+              "question": "Bapak / Ibu tinggal di jalan apa?"
+            },
+            {
+              "question": "Bapak / Ibu baru datang dari mana?"
+            },
+            {
+              "question": "Toko besar ada di mana?"
+            },
+            {
+              "question": "Di mana ada dokter?"
+            },
+            {
+              "question": "Sebelas tambah enam berapa?"
+            }
+          ],
+          "title": "Oefening V. Conversatie: Vraag en antwoord."
+        }
+      ],
+      "raw_text": "## Oefening I. Vertaal in het Indonesisch.\n  Dit is meneer Jansen — Ini Bapak Jansen\n  Dat is een banaan — Itu pisang\n  Dit is een winkel — Ini toko\n  Dat is een taxi — Itu taksi\n  Dit is mevrouw De Wit — Ini Ibu De Wit\n  Deze deur is zwaar — Pintu ini berat\n  Dit huis is nieuw — Rumah ini baru\n  Deze vrucht is zoet — Buah ini manis\n  Deze kamer is vol — Kamar ini penuh\n  Dat hotel is duur — Hotel itu mahal\n\n## Oefening II. Vertaal in het Nederlands.\n  Dat is goed nieuws — Itu kabar baik\n  Dit is mijn vrouw — Ini istri saya\n  Welkom in Indonesië — Selamat datang di Indonesia\n  Heb je al een taxi? — Sudah dapat taksi?\n  Ik en mijn vrouw overnachten in het hotel — Saya dan istri saya menginap di hotel\n  Waar overnacht u, meneer? — Bapak menginap di mana?\n  Ik overnacht in Hotel Rama — Saya menginap di Hotel Rama\n  Ik wil niet overnachten — Saya tidak mau menginap\n  Waar is de goedkope markt? — Pasar murah di mana?\n  Hasan gaat niet terug naar Jakarta — Hasan tidak pulang ke Jakarta\n  Daar is een oud huis met ... — Di sana ada rumah lama dengan …\n  Hoeveel taxi's zijn er? — Ada berapa taksi?\n  Daar zijn elf taxi's — Di sana ada sebelas taksi\n\n## Oefening III. Tel op.\nVoorbeeld: 4 + 5 = satu tambah lima sama dengan enam\n  1 + 4 = satu tambah empat sama dengan lima\n  3 + 6 = tiga tambah enam sama dengan sembilan\n  5 + 3 = lima tambah tiga sama dengan delapan\n  7 + 3 = tujuh tambah tiga sama dengan sepuluh\n  4 + 2 = empat tambah dua sama dengan enam\n  9 + 1 = sembilan tambah satu sama dengan sepuluh\n  1 + 7 = satu tambah tujuh sama dengan delapan\n\n## Oefening IV. Beantwoord de vraag in het Indonesisch: Ini / Itu apa?\n  grote deur\n  goedkope markt\n  lekker fruit\n  groot land\n  nieuw nummer\n  zoete appels\n  lege tas\n  mooie kamer\n  duur hotel\n  lange weg\n  appeltje\n\n## Oefening V. Conversatie: Vraag en antwoord.\n  Apa kabar?\n  Bapak / Ibu dari mana?\n  Bapak / Ibu menginap di mana?\n  Nama Bapak / Ibu siapa?\n  Bapak / Ibu mau ke mana?\n  Bapak / Ibu tinggal di jalan apa?\n  Bapak / Ibu baru datang dari mana?\n  Toko besar ada di mana?\n  Di mana ada dokter?\n  Sebelas tambah enam berapa?"
+    },
+    {
+      "section_type": "text",
+      "title": "Cultuur: Boeddhisme en de Borobudur",
+      "order_index": 10,
+      "confidence": 1,
+      "source": "db",
+      "raw_text": "Het boeddhisme ontstond in de 6e eeuw voor Christus en verspreidde zich van Noord-India over heel Azië. Het is een verlossingsleer die ervan uitgaat dat de mens na de dood telkens herboren wordt (reïncarnatie). Tijdens het leven ondervindt de mens keer op keer leed: teleurstellingen, liefdesverdriet, ziekte of dood. Om zichzelf van deze lijdensweg te verlossen, kan men proberen zich volledig te onthechten van al het aardse (zowel materieel als geestelijk). Heeft men volledige onthechting bereikt dan gaat men op in het Nirwana. Het Nirwana is een toestand waarin absolute stilte heerst en van waaruit men nooit meer wordt herboren."
+    }
+  ]
+}

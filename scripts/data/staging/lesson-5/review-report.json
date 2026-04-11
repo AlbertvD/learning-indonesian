@@ -1,21 +1,13 @@
 {
   "lesson": 5,
-  "revision": 2,
-  "reviewedAt": "2026-04-09T12:00:00.000Z",
+  "revision": 3,
+  "reviewedAt": "2026-04-10T14:32:00Z",
   "status": "approved",
-  "issues": [
-    {
-      "severity": "WARNING",
-      "file": "cloze-contexts.ts",
-      "item": "hari rabu / taman mini",
-      "issue": "learning_item_slug uses lowercase ('hari rabu', 'taman mini') but learning-items.ts base_text uses mixed case ('hari Rabu', 'Taman Mini') — seeder may fail to match if slug resolution is case-sensitive",
-      "fix": "Update cloze context slugs to match base_text casing: 'hari Rabu', 'Taman Mini'"
-    }
-  ],
+  "issues": [],
   "summary": {
-    "total": 1,
+    "total": 0,
     "critical": 0,
-    "warning": 1
+    "warning": 0
   },
-  "notes": "Revision 2: re-reviewed after adding constrained_translation for kami-vs-kita, sentence_transformation and constrained_translation for pronoun-register-levels. Grammar section structured into 7 categories. Exercises structured into 4 sections. 3 grammar patterns — all slugs already in DB (published from lesson 5). 16 candidates: 5 contrast_pair, 5 cloze_mcq, 3 sentence_transformation, 3 constrained_translation. All 3 patterns now have all 4 exercise types. 53 cloze contexts covering all 53 vocabulary items. All source_text contain exactly one ___. No speaking candidates. No slug duplication across lessons."
+  "notes": "Revision 3: full re-review after candidate expansion. Grammar section structured into 7 categories with rules and examples. Exercises structured into 4 sections. 3 grammar patterns (kami-vs-kita, possessive-suffix-placement, pronoun-register-levels) — all slugs unique across staging lessons 1-7 and DB (24 rows). 30 candidates: 9 cloze_mcq, 9 contrast_pair, 6 sentence_transformation, 6 constrained_translation. All 3 patterns have all 4 required exercise types. All payload fields present and correctly structured. All cloze_mcq sentences contain exactly one ___. All contrast_pair options have length 2, all cloze_mcq options have length 4. No speaking candidates. 53 cloze contexts covering all 53 vocabulary items. All source_text contain exactly one ___. Previous WARNING about casing mismatch (hari Rabu, Taman Mini) has been resolved."
 }

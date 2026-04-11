@@ -1,61 +1,60 @@
 // Grammar patterns for Lesson 1 — Di Pasar (Op de markt)
-// Enriched by linguist: slugs, complexity_scores, confusion_groups added
-// Source: scripts/data/lessons.ts lesson 1 grammar section
+// Slugs verified unique across lessons 1-7 staging files and indonesian.grammar_patterns DB table
 export const grammarPatterns = [
   {
-    "pattern_name": "Werkwoord — geen vervoeging",
-    "description": "Indonesische werkwoorden worden niet vervoegd naar persoon, getal of tijd. 'Saya beli' = ik koop/kocht. Tenzij uit de context anders blijkt, vertaalt men in de tegenwoordige tijd.",
-    "confusion_group": null,
-    "page_reference": 1,
-    "slug": "verb-no-conjugation",
-    "complexity_score": 2
+    pattern_name: 'Werkwoord — geen vervoeging',
+    description: 'Indonesische werkwoorden worden niet vervoegd naar persoon, getal of tijd. De basisvorm blijft altijd hetzelfde. Tijd wordt uitgedrukt door context of tijdsaanduidingen (kemarin, besok). Voorbeeld: "Saya beli buah" = Ik koop/kocht fruit.',
+    confusion_group: null,
+    page_reference: 1,
+    slug: 'verb-no-conjugation',
+    complexity_score: 2,
   },
   {
-    "pattern_name": "Zinnen zonder werkwoord",
-    "description": "Zinnen zonder werkwoord zijn heel gewoon in het Indonesisch. Voorbeeld: 'Itu mahal' (Dat [is] duur). Het koppelwerkwoord 'zijn' wordt weggelaten.",
-    "confusion_group": "copula-omission",
-    "page_reference": 1,
-    "slug": "zero-copula",
-    "complexity_score": 2
+    pattern_name: 'Zinnen zonder koppelwerkwoord (nulkoppeling)',
+    description: 'Het koppelwerkwoord "zijn" (is/zijn/was) wordt weggelaten in het Indonesisch. Een bijvoeglijk naamwoord of zelfstandig naamwoord volgt direct op het onderwerp. Voorbeeld: "Itu mahal" = Dat [is] duur.',
+    confusion_group: 'copula-omission',
+    page_reference: 1,
+    slug: 'zero-copula',
+    complexity_score: 2,
   },
   {
-    "pattern_name": "Werkwoorden bij elkaar — serieel werkwoord",
-    "description": "Werkwoorden worden bij elkaar gezet zonder verbindingswoord. Voorbeeld: 'Saya mau beli rumah besar' (Ik wil een groot huis kopen). Vergelijk Nederlands: 'wil kopen' = 'mau beli'.",
-    "confusion_group": "serial-verbs",
-    "page_reference": 1,
-    "slug": "serial-verb-construction",
-    "complexity_score": 3
+    pattern_name: 'Serieel werkwoord — werkwoorden bij elkaar',
+    description: 'Werkwoorden worden direct na elkaar geplaatst zonder verbindingswoord. Geen "te" of "om te" zoals in het Nederlands. Voorbeeld: "Saya mau beli rumah" = Ik wil een huis kopen. Geldt voor mau, bisa, boleh + werkwoord.',
+    confusion_group: 'serial-verbs',
+    page_reference: 1,
+    slug: 'serial-verb-construction',
+    complexity_score: 3,
   },
   {
-    "pattern_name": "Geen lidwoorden",
-    "description": "Zelfstandige naamwoorden hebben geen lidwoord (de, het, een). 'Rumah' = huis / het huis / een huis. Context bepaalt de betekenis.",
-    "confusion_group": null,
-    "page_reference": 1,
-    "slug": "no-articles",
-    "complexity_score": 1
+    pattern_name: 'Geen lidwoorden',
+    description: 'Zelfstandige naamwoorden hebben geen lidwoord (de, het, een). "Rumah" = huis / het huis / een huis. Context bepaalt de betekenis.',
+    confusion_group: null,
+    page_reference: 1,
+    slug: 'no-articles',
+    complexity_score: 1,
   },
   {
-    "pattern_name": "Geen enkelvoud/meervoud onderscheid",
-    "description": "Bij zelfstandige naamwoorden wordt geen onderscheid gemaakt tussen enkelvoud en meervoud. 'Rumah' = huis of huizen.",
-    "confusion_group": "reduplication-plurality",
-    "page_reference": 1,
-    "slug": "no-singular-plural",
-    "complexity_score": 1
+    pattern_name: 'Geen enkelvoud/meervoud onderscheid',
+    description: 'Bij zelfstandige naamwoorden wordt geen onderscheid gemaakt tussen enkelvoud en meervoud. "Rumah" = huis of huizen. Bij een telwoord wordt het zelfstandig naamwoord NIET verdubbeld: "dua rumah" (niet "dua rumah-rumah").',
+    confusion_group: 'reduplication-plurality',
+    page_reference: 1,
+    slug: 'no-singular-plural',
+    complexity_score: 1,
   },
   {
-    "pattern_name": "Reduplicatie voor meervoud",
-    "description": "Herhaling van een zelfstandig naamwoord geeft meervoud of verscheidenheid aan: 'buah-buahan' (allerlei fruit). Maar: als uit context al meervoud blijkt, wordt NIET verdubbeld: 'dua rumah' (niet 'dua rumah-rumah').",
-    "confusion_group": "reduplication-plurality",
-    "page_reference": 1,
-    "slug": "reduplication-plural",
-    "complexity_score": 3
+    pattern_name: 'Reduplicatie voor meervoud/verscheidenheid',
+    description: 'Herhaling van een zelfstandig naamwoord geeft meervoud of verscheidenheid aan: "buah-buahan" (allerlei fruit). Maar: als uit context al meervoud blijkt (door telwoord), wordt NIET verdubbeld.',
+    confusion_group: 'reduplication-plurality',
+    page_reference: 1,
+    slug: 'reduplication-plural',
+    complexity_score: 3,
   },
   {
-    "pattern_name": "Belum vs tidak — ontkenning",
-    "description": "'Tidak' = niet/nee (definitieve ontkenning). 'Belum' = nog niet (tijdelijke ontkenning, iets kan nog veranderen). 'Belum bisa' = nog niet mogelijk. Voor Nederlandse leerlingen: 'belum' impliceert dat het later wel kan.",
-    "confusion_group": "negation-belum-tidak",
-    "page_reference": 1,
-    "slug": "belum-vs-tidak",
-    "complexity_score": 3
-  }
+    pattern_name: 'Belum vs tidak — ontkenning',
+    description: '"Tidak" = niet/nee (definitieve ontkenning). "Belum" = nog niet (tijdelijke ontkenning, iets kan nog veranderen). "Belum bisa" = nog niet mogelijk (maar misschien later wel). Voor Nederlandse leerlingen: "belum" impliceert dat het later wel kan.',
+    confusion_group: 'negation-belum-tidak',
+    page_reference: 1,
+    slug: 'belum-vs-tidak',
+    complexity_score: 3,
+  },
 ]

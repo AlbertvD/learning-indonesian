@@ -1,16 +1,9 @@
 {
   "lesson": 6,
-  "revision": 3,
-  "reviewedAt": "2026-04-09T15:00:00Z",
+  "revision": 4,
+  "reviewedAt": "2026-04-10T14:35:00Z",
   "status": "approved",
   "issues": [
-    {
-      "severity": "WARNING",
-      "file": "candidates.ts",
-      "item": "sentence_transformation (indonesian-day-parts) — \"Jam tiga sore.\"",
-      "issue": "Ambiguous acceptableAnswers: both \"Jam tiga pagi.\" and \"Jam tiga malam.\" accepted. 03.00 falls in the transition between malam (18.30-03.00) and pagi (05.00-11.00), making either answer arguably wrong depending on the exact time. The transformation instruction says \"'s ochtends om drie uur\" but 03.00 is technically still malam.",
-      "fix": "Admin review: consider narrowing to one correct answer or adjusting the time to an unambiguous hour (e.g. 08.00 pagi)."
-    },
     {
       "severity": "WARNING",
       "file": "grammar-patterns.ts",
@@ -20,9 +13,9 @@
     }
   ],
   "summary": {
-    "total": 2,
+    "total": 1,
     "critical": 0,
-    "warning": 2
+    "warning": 1
   },
   "counts": {
     "grammar_patterns": 7,
@@ -31,12 +24,16 @@
     "cloze_contexts": 47,
     "cloze_contexts_missing": 0,
     "cloze_contexts_skipped_particles": 2,
-    "candidates_total": 35,
+    "candidates_total": 75,
     "candidates_by_type": {
-      "cloze_mcq": 11,
-      "contrast_pair": 8,
-      "sentence_transformation": 8,
-      "constrained_translation": 8
+      "cloze_mcq": 25,
+      "contrast_pair": 18,
+      "sentence_transformation": 20,
+      "constrained_translation": 16
+    },
+    "cross_pattern_candidates": {
+      "belum-vs-tidak": 2,
+      "tidak-negation": 3
     },
     "exercise_type_coverage": {
       "bukan-negation": ["cloze_mcq", "contrast_pair", "sentence_transformation", "constrained_translation"],
@@ -49,15 +46,20 @@
     }
   },
   "checks": {
-    "lesson_ts_structure": "PASS — all grammar sections use categories array, exercise section uses sections array",
-    "grammar_patterns_fields": "PASS — all 7 patterns have pattern_name, description, slug, complexity_score (1-10), kebab-case slugs",
-    "slug_duplication": "PASS — no duplicate slugs in staging; 2 DB slugs (belum-vs-tidak, tidak-negation) reused without re-adding",
-    "candidate_payloads": "PASS — all 35 candidates have correct payload fields per type contract",
-    "candidate_slug_refs": "PASS — all grammar_pattern_slug values exist in grammar-patterns.ts or DB",
-    "cloze_context_blanks": "PASS — all 47 contexts have exactly one ___",
-    "cloze_context_coverage": "PASS — 47 contexts cover 47 of 49 items; 2 discourse particles (deh!/sih!) appropriately skipped",
-    "cloze_context_naturalistic": "PASS — all sentences embed the target word in a real sentence",
-    "exercise_type_coverage": "PASS — all 7 lesson-6 grammar patterns have all 4 required exercise types",
-    "no_speaking_candidates": "PASS"
+    "lesson_ts_structure": "PASS -- all grammar sections use categories array, exercise section uses sections array",
+    "grammar_patterns_fields": "PASS -- all 7 patterns have pattern_name, description, slug, complexity_score (2-5), kebab-case slugs",
+    "slug_uniqueness_staging": "PASS -- no duplicate slugs across lesson-1 through lesson-7 staging files",
+    "slug_uniqueness_db": "PASS -- no lesson-6 slugs found among 27 existing DB grammar_patterns rows",
+    "candidate_payloads": "PASS -- all 75 candidates have correct payload fields per exercise type contract",
+    "candidate_slug_refs": "PASS -- all grammar_pattern_slug values exist in grammar-patterns.ts (7) or DB (belum-vs-tidak, tidak-negation)",
+    "candidate_options_length": "PASS -- all cloze_mcq have 4 options, all contrast_pair have 2 options",
+    "cloze_mcq_blanks": "PASS -- all cloze_mcq sentences contain exactly one ___",
+    "cloze_context_blanks": "PASS -- all 47 cloze contexts have exactly one ___",
+    "cloze_context_coverage": "PASS -- 47 contexts cover 47 of 49 items; 2 discourse particles (deh!/sih!) appropriately skipped",
+    "cloze_context_naturalistic": "PASS -- all sentences embed the target word in a naturalistic A1-level sentence",
+    "monas_equals_item_cloze": "PASS -- 'Monas = Monumen Nasional' has 2 cloze contexts blanking the short form",
+    "exercise_type_coverage": "PASS -- all 7 lesson-6 grammar patterns have all 4 required exercise types",
+    "no_speaking_candidates": "PASS -- zero speaking-type candidates found",
+    "no_body_strings": "PASS -- no raw body strings in grammar or exercise sections"
   }
 }

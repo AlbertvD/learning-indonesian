@@ -1,12 +1,27 @@
 {
   "lesson": 3,
-  "revision": 2,
-  "reviewedAt": "2026-04-09T12:00:00Z",
+  "revision": 3,
+  "reviewedAt": "2026-04-10T14:30:00.000Z",
   "status": "approved",
-  "issues": [],
+  "issues": [
+    {
+      "severity": "WARNING",
+      "file": "cloze-contexts.ts",
+      "item": "cloze for 'kan? (line 143)",
+      "issue": "source_text 'Ini bandar udara Soekarno-Hatta, ___' ends without question mark, though the target answer is the tag question particle",
+      "fix": "Admin can review in app -- consider adding '?' after the blank or adjusting the sentence"
+    },
+    {
+      "severity": "WARNING",
+      "file": "cloze-contexts.ts",
+      "item": "cloze for mana? (line 227)",
+      "issue": "The slug 'mana?' includes a question mark, but the blank in the sentence expects just 'mana' as part of a larger question -- potential answer-matching issue",
+      "fix": "Admin can verify in app that the expected answer matches the learning_item_slug correctly"
+    }
+  ],
   "summary": {
-    "total": 0,
+    "total": 2,
     "critical": 0,
-    "warning": 0
+    "warning": 2
   }
 }
