@@ -8,7 +8,7 @@ on:
 
 jobs:
   safety:
-    uses: AlbertvD/homelab-platform/.github/workflows/safety.yml@main
+    uses: AlbertvD/homelab-platform/.github/workflows/safety.yml@v1
     secrets: inherit
 
   dependencies:
