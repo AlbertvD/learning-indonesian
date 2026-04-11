@@ -158,6 +158,7 @@ export function ContentReview() {
               data={lessonOptions}
               value={selectedLessonId}
               onChange={setSelectedLessonId}
+              maxDropdownHeight={400}
               style={{ flex: 1 }}
             />
             <Select
