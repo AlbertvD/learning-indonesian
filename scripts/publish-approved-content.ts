@@ -201,7 +201,7 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
           validateSections(lesson.sections, lessonNumber)
         }
         for (const section of lesson.sections) {
-          await supabase
+          const { error: sectionError } = await supabase
             .schema('indonesian')
             .from('lesson_sections')
             .upsert({
@@ -210,6 +210,7 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
               content: section.content,
               order_index: section.order_index,
             }, { onConflict: 'lesson_id,order_index' })
+          if (sectionError) throw sectionError
         }
         console.log(`   ✓ ${lesson.sections.length} sections published`)
       }
@@ -293,11 +294,12 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
           // Delete existing meanings for this item and re-insert both languages.
           // item_meanings has no unique constraint on (learning_item_id, language), so
           // upsert-on-conflict is not available — delete+insert is the safe re-run strategy.
-          await supabase
+          const { error: deleteError } = await supabase
             .schema('indonesian')
             .from('item_meanings')
             .delete()
             .eq('learning_item_id', upsertedItem.id)
+          if (deleteError) throw deleteError
 
           const meaningInserts = [
             { learning_item_id: upsertedItem.id, translation_language: 'nl', translation_text: item.translation_nl, is_primary: true },
@@ -336,19 +338,6 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
         }
       }
       
-      if (!dryRun) {
-        // Mark as published in staging
-        const updatedItems = learningItems.map((item: any) =>
-          (item.review_status === 'pending_review' || item.review_status === 'approved')
-            ? { ...item, review_status: 'published' }
-            : item
-        )
-        fs.writeFileSync(
-          path.join(stagingDir, 'learning-items.ts'),
-          `// Published via script\nexport const learningItems = ${JSON.stringify(updatedItems, null, 2)}\n`
-        )
-        console.log('   ✓ Learning items marked as published in staging')
-      }
     }
 
     // 4. Publish Exercise Candidates
@@ -648,6 +637,20 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
       } else {
         console.log(`   ✓ All ${expectedCount} items have at least one context`)
       }
+
+      // Mark as published in staging — only after step-6 integrity check passes.
+      // Writing this earlier would permanently mark items published even if the
+      // DB write failed, making re-runs silently skip the broken items.
+      const updatedItems = learningItems.map((item: any) =>
+        (item.review_status === 'pending_review' || item.review_status === 'approved')
+          ? { ...item, review_status: 'published' }
+          : item
+      )
+      fs.writeFileSync(
+        path.join(stagingDir, 'learning-items.ts'),
+        `// Published via script\nexport const learningItems = ${JSON.stringify(updatedItems, null, 2)}\n`
+      )
+      console.log('   ✓ Learning items marked as published in staging')
 
       // Note: exercise_variant verification is handled in step 4's post-insert check.
       // Vocab variants link via context_id (not lesson_id) — a lesson_id query would
