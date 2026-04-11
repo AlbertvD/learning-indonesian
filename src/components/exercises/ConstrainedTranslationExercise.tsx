@@ -176,7 +176,9 @@ export function ConstrainedTranslationExercise({
       <Stack gap="xl">
         <Box className={classes.promptSection}>
           <Text size="sm" c="dimmed" mb="xs">
-            {t.session.exercise.translateInstruction}
+            {data.sourceLanguageSentence.includes(' ')
+              ? t.session.exercise.translateInstruction
+              : t.session.exercise.translateWord}
           </Text>
           <Box className={classes.translation}>{data.sourceLanguageSentence}</Box>
         </Box>

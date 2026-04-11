@@ -401,6 +401,7 @@ export const nl = {
       chooseWord: 'Kies het juiste woord',
       chooseIndonesian: 'Kies het juiste Indonesische woord',
       translateInstruction: 'Vertaal deze zin:',
+      translateWord: 'Vertaal dit woord:',
       requiredPattern: 'Vereist patroon:',
     },
     speaking: {
@@ -817,6 +818,7 @@ export const en: typeof nl = {
       chooseWord: 'Choose the correct word',
       chooseIndonesian: 'Choose the correct Indonesian word',
       translateInstruction: 'Translate this sentence:',
+      translateWord: 'Translate this word:',
       requiredPattern: 'Required pattern:',
     },
     speaking: {
