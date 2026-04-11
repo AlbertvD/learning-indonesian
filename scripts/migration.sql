@@ -1067,6 +1067,50 @@ ALTER TABLE indonesian.review_events ALTER COLUMN learning_item_id DROP NOT NULL
 ALTER TABLE indonesian.review_events ADD COLUMN IF NOT EXISTS
   grammar_pattern_id UUID REFERENCES indonesian.grammar_patterns(id) ON DELETE SET NULL;
 
+-- Content review comments: admin-only per-variant annotations
+CREATE TABLE IF NOT EXISTS indonesian.exercise_review_comments (
+  id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id             uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  exercise_variant_id uuid NOT NULL REFERENCES indonesian.exercise_variants(id) ON DELETE CASCADE,
+  comment             text NOT NULL,
+  status              text NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'resolved')),
+  created_at          timestamptz NOT NULL DEFAULT now(),
+  updated_at          timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (user_id, exercise_variant_id)
+);
+
+ALTER TABLE indonesian.exercise_review_comments ENABLE ROW LEVEL SECURITY;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'indonesian'
+      AND tablename = 'exercise_review_comments'
+      AND policyname = 'review_comments_admin_only'
+  ) THEN
+    CREATE POLICY "review_comments_admin_only" ON indonesian.exercise_review_comments
+      FOR ALL TO authenticated
+      USING (
+        EXISTS (SELECT 1 FROM indonesian.user_roles
+                WHERE user_id = auth.uid() AND role = 'admin')
+      )
+      WITH CHECK (
+        EXISTS (SELECT 1 FROM indonesian.user_roles
+                WHERE user_id = auth.uid() AND role = 'admin')
+      );
+  END IF;
+END $$;
+
+GRANT SELECT, INSERT, UPDATE ON indonesian.exercise_review_comments TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.exercise_review_comments TO service_role;
+
+CREATE INDEX IF NOT EXISTS idx_exercise_review_comments_user_status
+  ON indonesian.exercise_review_comments(user_id, status);
+
+CREATE INDEX IF NOT EXISTS idx_exercise_review_comments_variant
+  ON indonesian.exercise_review_comments(exercise_variant_id);
+
 -- Exactly one source must be set (vocab review XOR grammar review)
 DO $$ BEGIN
   ALTER TABLE indonesian.review_events ADD CONSTRAINT review_events_source_check
