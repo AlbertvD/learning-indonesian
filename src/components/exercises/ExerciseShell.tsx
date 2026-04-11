@@ -16,6 +16,7 @@ import { FlagButton } from '@/components/exercises/FlagButton'
 import { contentFlagService } from '@/services/contentFlagService'
 import { useAuthStore } from '@/stores/authStore'
 import { processReview, processGrammarReview, type ReviewInput, type GrammarReviewInput } from '@/lib/reviewHandler'
+import { translations } from '@/lib/i18n'
 import { logError } from '@/lib/logger'
 import type { SessionQueueItem, ContentFlag } from '@/types/learning'
 import type { ReviewResult, GrammarReviewResult } from '@/lib/reviewHandler'
@@ -39,6 +40,7 @@ export function ExerciseShell({
   onContinueToNext,
 }: ExerciseShellProps) {
   const { user: authUser, profile } = useAuthStore()
+  const t = translations[userLanguage]
   const [isProcessing, setIsProcessing] = useState(false)
   const [waitingForContinue, setWaitingForContinue] = useState(false)
   const [currentFlag, setCurrentFlag] = useState<ContentFlag | null>(null)
@@ -126,8 +128,8 @@ export function ExerciseShell({
       logError({ page: 'exercise-shell', action: 'processAnswer', error: err })
       notifications.show({
         color: 'red',
-        title: 'Error',
-        message: 'Failed to process answer. Please try again.',
+        title: t.common.error,
+        message: t.common.somethingWentWrong,
       })
       setIsProcessing(false)
       setWaitingForContinue(false)

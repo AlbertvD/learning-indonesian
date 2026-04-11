@@ -3,6 +3,7 @@ import { Box, Button, TextInput, Stack, Text, Badge } from '@mantine/core'
 import { IconArrowRight } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
+import { translations } from '@/lib/i18n'
 import classes from './TypedRecall.module.css'
 
 interface SentenceTransformationExerciseProps {
@@ -13,8 +14,10 @@ interface SentenceTransformationExerciseProps {
 
 export function SentenceTransformationExercise({
   exerciseItem,
+  userLanguage,
   onAnswer,
 }: SentenceTransformationExerciseProps) {
+  const t = translations[userLanguage]
   const [response, setResponse] = useState('')
   const [isAnswered, setIsAnswered] = useState(false)
   const [startTime] = useState(() => Date.now())
@@ -64,15 +67,15 @@ export function SentenceTransformationExercise({
         {/* Prompt section */}
         <Box className={classes.promptSection}>
           <Text size="sm" c="dimmed" mb="xs">
-            Transform: {data.transformationInstruction}
+            {t.session.exercise.transformPrefix} {data.transformationInstruction}
           </Text>
           <Box className={classes.translation}>{data.sourceSentence}</Box>
         </Box>
 
         {/* Hint if provided */}
         {data.hintText && (
-          <Box style={{ padding: '8px 12px', backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
-            <Text size="sm">Hint: {data.hintText}</Text>
+          <Box style={{ padding: '8px 12px', backgroundColor: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: '4px' }}>
+            <Text size="sm" c="dimmed">{t.session.exercise.hintPrefix} {data.hintText}</Text>
           </Box>
         )}
 
@@ -80,7 +83,7 @@ export function SentenceTransformationExercise({
         <Box>
           <TextInput
             ref={inputRef}
-            placeholder="Type your answer"
+            placeholder={t.session.exercise.typeAnswer}
             value={response}
             onChange={(e) => setResponse(e.currentTarget.value)}
             onKeyDown={handleKeyDown}
@@ -100,7 +103,7 @@ export function SentenceTransformationExercise({
             fullWidth
             rightSection={<IconArrowRight size={18} />}
           >
-            Check Answer
+            {t.session.exercise.checkAnswer}
           </Button>
         )}
 
@@ -112,11 +115,11 @@ export function SentenceTransformationExercise({
               size="xl"
               style={{ fontSize: '16px', padding: '12px 20px' }}
             >
-              {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+              {isCorrect ? `✓ ${t.session.feedback.correct}` : `✗ ${t.session.feedback.incorrect}`}
             </Badge>
             {!isCorrect && (
               <Box mt="lg">
-                <Text size="sm" c="dimmed" mb="xs">Correct answer</Text>
+                <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.correctAnswerLabel}</Text>
                 <Text size="xl" fw={700}>{data.acceptableAnswers[0]}</Text>
               </Box>
             )}

@@ -87,11 +87,11 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
               size="xl"
               style={{ fontSize: '16px', padding: '12px 20px' }}
             >
-              {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+              {isCorrect ? `✓ ${t.session.feedback.correct}` : `✗ ${t.session.feedback.incorrect}`}
             </Badge>
             {!isCorrect && (
               <Box mt="lg">
-                <Text size="sm" c="dimmed" mb="xs">Correct answer</Text>
+                <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.correctAnswerLabel}</Text>
                 <Text size="xl" fw={700}>{correctAnswer}</Text>
               </Box>
             )}

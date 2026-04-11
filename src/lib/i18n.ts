@@ -387,6 +387,15 @@ export const nl = {
       example: 'Voorbeeld:',
       continue: 'Doorgaan',
     },
+    exercise: {
+      typeAnswer: 'Typ je antwoord...',
+      checkAnswer: 'Antwoord controleren',
+      correctAnswerLabel: 'Correct antwoord',
+      transformPrefix: 'Transformeer:',
+      hintPrefix: 'Hint:',
+      translateInstruction: 'Vertaal met het vereiste grammaticapatroon:',
+      requiredPattern: 'Vereist patroon:',
+    },
     summary: {
       title: 'Sessie afgerond!',
       subtitle: 'Goed gedaan met je oefensessie.',
@@ -782,6 +791,15 @@ export const en: typeof nl = {
       theWord: 'The word:',
       example: 'Example:',
       continue: 'Continue',
+    },
+    exercise: {
+      typeAnswer: 'Type your answer...',
+      checkAnswer: 'Check Answer',
+      correctAnswerLabel: 'Correct answer',
+      transformPrefix: 'Transform:',
+      hintPrefix: 'Hint:',
+      translateInstruction: 'Translate using the required grammar pattern:',
+      requiredPattern: 'Required pattern:',
     },
     summary: {
       title: 'Session Complete!',

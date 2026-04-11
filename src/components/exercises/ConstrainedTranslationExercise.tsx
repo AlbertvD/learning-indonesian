@@ -3,6 +3,7 @@ import { Box, Button, TextInput, Stack, Text, Badge } from '@mantine/core'
 import { IconArrowRight } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
+import { translations } from '@/lib/i18n'
 import classes from './TypedRecall.module.css'
 
 interface ConstrainedTranslationExerciseProps {
@@ -13,8 +14,10 @@ interface ConstrainedTranslationExerciseProps {
 
 export function ConstrainedTranslationExercise({
   exerciseItem,
+  userLanguage,
   onAnswer,
 }: ConstrainedTranslationExerciseProps) {
+  const t = translations[userLanguage]
   const [response, setResponse] = useState('')
   const [isAnswered, setIsAnswered] = useState(false)
   const [startTime] = useState(() => Date.now())
@@ -79,11 +82,11 @@ export function ConstrainedTranslationExercise({
         {/* Prompt section */}
         <Box className={classes.promptSection}>
           <Text size="sm" c="dimmed" mb="xs">
-            Translate using the required grammar pattern:
+            {t.session.exercise.translateInstruction}
           </Text>
           <Box className={classes.translation}>{data.sourceLanguageSentence}</Box>
           <Text size="sm" c="dimmed" mt="xs">
-            Required pattern: {data.requiredTargetPattern}
+            {t.session.exercise.requiredPattern} {data.requiredTargetPattern}
           </Text>
         </Box>
 
@@ -91,7 +94,7 @@ export function ConstrainedTranslationExercise({
         <Box>
           <TextInput
             ref={inputRef}
-            placeholder="Type your answer"
+            placeholder={t.session.exercise.typeAnswer}
             value={response}
             onChange={(e) => setResponse(e.currentTarget.value)}
             onKeyDown={handleKeyDown}
@@ -111,7 +114,7 @@ export function ConstrainedTranslationExercise({
             fullWidth
             rightSection={<IconArrowRight size={18} />}
           >
-            Check Answer
+            {t.session.exercise.checkAnswer}
           </Button>
         )}
 
@@ -123,11 +126,11 @@ export function ConstrainedTranslationExercise({
               size="xl"
               style={{ fontSize: '16px', padding: '12px 20px' }}
             >
-              {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+              {isCorrect ? `✓ ${t.session.feedback.correct}` : `✗ ${t.session.feedback.incorrect}`}
             </Badge>
             {!isCorrect && (
               <Box mt="lg">
-                <Text size="sm" c="dimmed" mb="xs">Correct answer</Text>
+                <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.correctAnswerLabel}</Text>
                 <Text size="xl" fw={700}>{data.acceptableAnswers[0]}</Text>
               </Box>
             )}
