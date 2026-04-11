@@ -168,6 +168,22 @@ export interface ContentFlag {
   updatedAt: string
 }
 
+export interface ReviewComment {
+  id: string
+  userId: string
+  exerciseVariantId: string
+  comment: string
+  status: 'open' | 'resolved'
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ReviewCommentWithContext extends ReviewComment {
+  lessonTitle: string
+  exerciseType: string
+  promptSummary: string   // first 80 chars of the main prompt field, derived client-side
+}
+
 export interface ExerciseItem {
   learningItem: LearningItem | null   // null for grammar exercises
   meanings: ItemMeaning[]
