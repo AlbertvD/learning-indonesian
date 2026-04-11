@@ -159,6 +159,46 @@ export const lesson = ${JSON.stringify({
 
 // ── learning-items.ts generation ─────────────────────────────────────────────
 
+// Normalise a Dutch translation field so multiple meanings are always separated by ' / '.
+// The LLM prompt instructs ' / ', but this is a safety net for other patterns.
+//
+// Converts:
+//   "meneer, vader"        → "meneer / vader"   (comma-separated short words)
+//   "bakken; braden"       → "bakken / braden"  (semicolon-separated)
+//   "kunnen of mogen"      → "kunnen / mogen"   ("of" = Dutch "or")
+//
+// Does NOT convert:
+//   Single sentences ("Goed, dank u wel") — too long to be a word list
+//   Items that already use ' / '
+//
+// Heuristic: treat as a list of alternatives only when each segment is short (≤4 words).
+function normaliseDutchTranslation(raw: string): string {
+  const t = raw.trim()
+  // Already uses ' / ' — leave as-is
+  if (t.includes(' / ')) return t
+  // "X of Y" — Dutch "or"
+  const ofMatch = t.match(/^(.+?)\s+of\s+(.+)$/i)
+  if (ofMatch) {
+    const parts = ofMatch.slice(1).map(p => p.trim())
+    if (parts.every(p => p.split(/\s+/).length <= 4)) {
+      return parts.join(' / ')
+    }
+  }
+  // Semicolons always indicate alternatives
+  if (t.includes(';')) {
+    return t.split(/\s*;\s*/).map(p => p.trim()).filter(Boolean).join(' / ')
+  }
+  // Commas only if every segment is ≤2 words — tighter threshold to avoid splitting
+  // phrases like "Goed, dank u wel" (3-word second segment = sentence, not a list)
+  if (t.includes(',')) {
+    const parts = t.split(/\s*,\s*/).map(p => p.trim()).filter(Boolean)
+    if (parts.length >= 2 && parts.every(p => p.split(/\s+/).length <= 2)) {
+      return parts.join(' / ')
+    }
+  }
+  return t
+}
+
 function itemTypeFromSection(sectionType: SectionType, indonesian: string): 'word' | 'phrase' {
   if (sectionType === 'expressions') return 'phrase'
   // Vocabulary/numbers: compound nouns (air putih, nasi goreng) stay 'word'.
@@ -189,7 +229,7 @@ function generateLearningItemsTs(catalog: SectionsCatalog): { content: string; r
           base_text: item.indonesian.trim(),
           item_type: itemTypeFromSection(section.type as SectionType, item.indonesian),
           context_type: 'vocabulary_list',
-          translation_nl: item.dutch.trim(),
+          translation_nl: normaliseDutchTranslation(item.dutch.trim()),
           translation_en: '',
           source_page: section.source_pages[0] ?? null,
           review_status: 'pending_review',

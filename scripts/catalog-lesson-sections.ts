@@ -199,6 +199,9 @@ Examples: "100 = seratus", "2.000 dua ribu", "1.000.000 sejuta, satu juta"
 Always extract as: { "indonesian": indonesian_number_word, "dutch": dutch_number }
 Items array: [{ "indonesian": "...", "dutch": "..." }]
 
+**Multiple Dutch translations:** When a word has more than one Dutch equivalent, always separate them with " / " (space-slash-space). Never use commas, semicolons, or "of" as separators.
+Examples: { "dutch": "meneer / vader" }, { "dutch": "bakken / braden" }, { "dutch": "kunnen / mogen" }
+
 **dialogue** — Identified by "Speaker: text" or "Speaker : text" patterns
 Speaker names are Indonesian names or family terms (Titin, Nanang, Pembantu, Ibu, Bapak, Mas, etc.)
 Any narrative scene-setting text before dialogue lines → { "speaker": "narrator", "text": "..." }
