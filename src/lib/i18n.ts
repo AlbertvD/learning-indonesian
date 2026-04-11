@@ -400,7 +400,7 @@ export const nl = {
       explanationLabel: 'Uitleg:',
       chooseWord: 'Kies het juiste woord',
       chooseIndonesian: 'Kies het juiste Indonesische woord',
-      translateInstruction: 'Vertaal met het vereiste grammaticapatroon:',
+      translateInstruction: 'Vertaal deze zin:',
       requiredPattern: 'Vereist patroon:',
     },
     speaking: {
@@ -816,7 +816,7 @@ export const en: typeof nl = {
       explanationLabel: 'Explanation:',
       chooseWord: 'Choose the correct word',
       chooseIndonesian: 'Choose the correct Indonesian word',
-      translateInstruction: 'Translate using the required grammar pattern:',
+      translateInstruction: 'Translate this sentence:',
       requiredPattern: 'Required pattern:',
     },
     speaking: {
