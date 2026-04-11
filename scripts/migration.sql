@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS indonesian.learning_items (
   is_active boolean NOT NULL DEFAULT true,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now(),
-  UNIQUE(normalized_text, item_type)
+  UNIQUE(normalized_text)
 );
 
 -- Translations per item

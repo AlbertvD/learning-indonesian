@@ -279,7 +279,7 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
               language: 'id',
               level: lesson?.level || 'A1',
               source_type: 'lesson',
-            }, { onConflict: 'normalized_text,item_type' })
+            }, { onConflict: 'normalized_text' })
             .select('id')
             .single()
 
