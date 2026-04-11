@@ -23,7 +23,6 @@ export function ConstrainedTranslationExercise({
   const [startTime] = useState(() => Date.now())
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Focus input on mount
   useEffect(() => {
     inputRef.current?.focus()
   }, [])
@@ -34,25 +33,31 @@ export function ConstrainedTranslationExercise({
     return <div style={{ color: 'red' }}>Missing constrained translation data</div>
   }
 
-  // Check the answer against acceptable answers
+  const isClozeMode = !!data.targetSentenceWithBlank && !!data.blankAcceptableAnswers?.length
+
   const handleSubmit = () => {
     if (isAnswered || !response.trim()) return
 
     let isCorrect = false
     let isFuzzy = false
 
-    // Check against acceptable answers
-    const result = checkAnswer(response, data.acceptableAnswers[0], data.acceptableAnswers)
-    isCorrect = result.isCorrect
-    isFuzzy = result.isFuzzy
+    if (isClozeMode) {
+      const answers = data.blankAcceptableAnswers!
+      const result = checkAnswer(response, answers[0], answers)
+      isCorrect = result.isCorrect
+      isFuzzy = result.isFuzzy
+    } else {
+      const result = checkAnswer(response, data.acceptableAnswers[0], data.acceptableAnswers)
+      isCorrect = result.isCorrect
+      isFuzzy = result.isFuzzy
 
-    // Check for disallowed shortcuts
-    if (isCorrect && data.disallowedShortcutForms) {
-      const normalized = response.toLowerCase().trim()
-      for (const shortcut of data.disallowedShortcutForms) {
-        if (normalized === shortcut.toLowerCase()) {
-          isCorrect = false
-          break
+      if (isCorrect && data.disallowedShortcutForms) {
+        const normalized = response.toLowerCase().trim()
+        for (const shortcut of data.disallowedShortcutForms) {
+          if (normalized === shortcut.toLowerCase()) {
+            isCorrect = false
+            break
+          }
         }
       }
     }
@@ -66,31 +71,116 @@ export function ConstrainedTranslationExercise({
     }, FEEDBACK_DELAY_MS)
   }
 
-  // Allow Enter key to submit
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !isAnswered) {
       handleSubmit()
     }
   }
 
-  const result = checkAnswer(response, data.acceptableAnswers[0], data.acceptableAnswers)
+  const result = isClozeMode
+    ? checkAnswer(response, data.blankAcceptableAnswers![0], data.blankAcceptableAnswers!)
+    : checkAnswer(response, data.acceptableAnswers[0], data.acceptableAnswers)
   const isCorrect = result.isCorrect
 
+  // Cloze mode: sentence with blank
+  if (isClozeMode) {
+    const parts = data.targetSentenceWithBlank!.split('___')
+    const correctWord = data.blankAcceptableAnswers![0]
+
+    return (
+      <Box className={classes.container}>
+        <Stack gap="xl">
+          {/* Sentence with blank */}
+          <Box className={classes.promptSection}>
+            <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.chooseWord}</Text>
+            <Box style={{ fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500 }}>
+              {parts[0]}
+              <Box
+                component="span"
+                style={{
+                  display: 'inline-block',
+                  minWidth: 80,
+                  borderBottom: '2px solid var(--accent-primary)',
+                  margin: '0 4px',
+                  verticalAlign: 'bottom',
+                  textAlign: 'center',
+                  color: isAnswered ? (isCorrect ? 'var(--success)' : 'var(--danger)') : 'inherit',
+                }}
+              >
+                {isAnswered ? (isCorrect ? response : correctWord) : (response || '\u00A0')}
+              </Box>
+              {parts[1] ?? ''}
+            </Box>
+            {isAnswered && (
+              <Text size="sm" c="dimmed" mt="xs" style={{ fontStyle: 'italic' }}>
+                {data.sourceLanguageSentence}
+              </Text>
+            )}
+          </Box>
+
+          {/* Input */}
+          {!isAnswered && (
+            <Box>
+              <TextInput
+                ref={inputRef}
+                placeholder={t.session.exercise.typeAnswer}
+                value={response}
+                onChange={(e) => setResponse(e.currentTarget.value)}
+                onKeyDown={handleKeyDown}
+                size="lg"
+                className={classes.input}
+                aria-label="Answer input"
+              />
+            </Box>
+          )}
+
+          {/* Submit */}
+          {!isAnswered && (
+            <Button
+              onClick={handleSubmit}
+              disabled={!response.trim()}
+              size="lg"
+              fullWidth
+              rightSection={<IconArrowRight size={18} />}
+            >
+              {t.session.exercise.checkAnswer}
+            </Button>
+          )}
+
+          {/* Result */}
+          {isAnswered && (
+            <Box style={{ textAlign: 'center', marginTop: '32px' }}>
+              <Badge
+                color={isCorrect ? 'green' : 'red'}
+                size="xl"
+                style={{ fontSize: '16px', padding: '12px 20px' }}
+              >
+                {isCorrect ? `✓ ${t.session.feedback.correct}` : `✗ ${t.session.feedback.incorrect}`}
+              </Badge>
+              {!isCorrect && (
+                <Box mt="lg">
+                  <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.correctAnswerLabel}</Text>
+                  <Text size="xl" fw={700}>{correctWord}</Text>
+                </Box>
+              )}
+            </Box>
+          )}
+        </Stack>
+      </Box>
+    )
+  }
+
+  // Full-sentence translation mode (legacy / structural patterns)
   return (
     <Box className={classes.container}>
       <Stack gap="xl">
-        {/* Prompt section */}
         <Box className={classes.promptSection}>
           <Text size="sm" c="dimmed" mb="xs">
             {t.session.exercise.translateInstruction}
           </Text>
           <Box className={classes.translation}>{data.sourceLanguageSentence}</Box>
-          <Text size="sm" c="dimmed" mt="xs">
-            {t.session.exercise.requiredPattern} {data.patternName || data.requiredTargetPattern.replace(/-/g, ' ')}
-          </Text>
         </Box>
 
-        {/* Input field */}
         <Box>
           <TextInput
             ref={inputRef}
@@ -105,7 +195,6 @@ export function ConstrainedTranslationExercise({
           />
         </Box>
 
-        {/* Submit button */}
         {!isAnswered && (
           <Button
             onClick={handleSubmit}
@@ -118,7 +207,6 @@ export function ConstrainedTranslationExercise({
           </Button>
         )}
 
-        {/* Result feedback */}
         {isAnswered && (
           <Box style={{ textAlign: 'center', marginTop: '32px' }}>
             <Badge

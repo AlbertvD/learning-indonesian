@@ -222,6 +222,10 @@ export interface ExerciseItem {
     acceptableAnswers: string[]
     disallowedShortcutForms?: string[]
     explanationText: string
+    /** Cloze mode: Indonesian sentence with ___ where the target word goes */
+    targetSentenceWithBlank?: string
+    /** Cloze mode: just the target word(s) to accept (e.g. ['belum', 'tidak']) */
+    blankAcceptableAnswers?: string[]
   }
   /** For speaking: prompt and scenario */
   speakingData?: {
