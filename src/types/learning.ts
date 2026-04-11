@@ -218,6 +218,7 @@ export interface ExerciseItem {
   constrainedTranslationData?: {
     sourceLanguageSentence: string
     requiredTargetPattern: string
+    patternName: string
     acceptableAnswers: string[]
     disallowedShortcutForms?: string[]
     explanationText: string

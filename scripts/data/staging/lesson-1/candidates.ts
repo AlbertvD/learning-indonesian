@@ -60,8 +60,8 @@ export const candidates = [
     "source_page": 1,
     "review_status": "published",
     "payload": {
-      "promptText": "\"Gisteren kocht ik fruit\" — welke vorm van het werkwoord is correct?",
-      "targetMeaning": "Gisteren kocht ik fruit",
+      "promptText": "\"Gisteren kocht ik fruit\" — welke Indonesische vorm is correct?",
+      "targetMeaning": "Basisvorm — werkwoord verandert niet voor verleden tijd",
       "options": [
         {
           "id": "a",
@@ -82,8 +82,8 @@ export const candidates = [
     "source_page": 1,
     "review_status": "published",
     "payload": {
-      "promptText": "\"Mevrouw eet bananen\" — welke werkwoordsvorm?",
-      "targetMeaning": "Mevrouw eet bananen",
+      "promptText": "\"Mevrouw eet bananen\" — welke Indonesische werkwoordsvorm?",
+      "targetMeaning": "Basisvorm — geen -s uitgang voor derde persoon",
       "options": [
         {
           "id": "a",
@@ -104,8 +104,8 @@ export const candidates = [
     "source_page": 1,
     "review_status": "published",
     "payload": {
-      "promptText": "\"Wij komen van de markt\" — welke vorm is correct?",
-      "targetMeaning": "Wij komen van de markt",
+      "promptText": "\"Wij komen van de markt\" — welke Indonesische vorm is correct?",
+      "targetMeaning": "Basisvorm — geen meervoudsvervoeging",
       "options": [
         {
           "id": "a",
@@ -251,7 +251,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"Dat is duur\" — hoe zeg je dit in het Indonesisch?",
-      "targetMeaning": "Dat is duur",
+      "targetMeaning": "Nul-copula — geen koppelwerkwoord 'adalah'",
       "options": [
         {
           "id": "a",
@@ -273,7 +273,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"De prijs is goedkoop\" — welke zin is correct?",
-      "targetMeaning": "De prijs is goedkoop",
+      "targetMeaning": "Nul-copula — znw + bijv.nw. direct",
       "options": [
         {
           "id": "a",
@@ -295,7 +295,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"Het huis is groot\" — welke vertaling klopt?",
-      "targetMeaning": "Het huis is groot",
+      "targetMeaning": "Nul-copula — geen 'is' in het Indonesisch",
       "options": [
         {
           "id": "a",
@@ -439,7 +439,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"Ik wil fruit kopen\" — welke volgorde is correct?",
-      "targetMeaning": "Ik wil fruit kopen",
+      "targetMeaning": "Seriële werkwoorden — geen 'te' of verbinding",
       "options": [
         {
           "id": "a",
@@ -461,7 +461,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"Mevrouw kan bananen eten\" — welke volgorde?",
-      "targetMeaning": "Mevrouw kan bananen eten",
+      "targetMeaning": "Modaal werkwoord + basisvorm",
       "options": [
         {
           "id": "a",
@@ -483,7 +483,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"Ik wil een groot huis kopen\" — wat is correct?",
-      "targetMeaning": "Ik wil een groot huis kopen",
+      "targetMeaning": "Seriële werkwoorden achter elkaar",
       "options": [
         {
           "id": "a",
@@ -623,7 +623,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"Ik koop fruit\" — welke vertaling is correct?",
-      "targetMeaning": "Ik koop fruit",
+      "targetMeaning": "Geen onbepaald lidwoord (geen 'een')",
       "options": [
         {
           "id": "a",
@@ -645,7 +645,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"De verkoper is op de markt\" — welke vertaling?",
-      "targetMeaning": "De verkoper is op de markt",
+      "targetMeaning": "Geen lidwoord — naamwoord staat alleen",
       "options": [
         {
           "id": "a",
@@ -667,7 +667,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"Meneer koopt een huis\" — wat is correct?",
-      "targetMeaning": "Meneer koopt een huis",
+      "targetMeaning": "Geen lidwoord — 'een' wordt niet vertaald",
       "options": [
         {
           "id": "a",
@@ -814,7 +814,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"Ik koop vijf bananen\" — welke vorm is correct?",
-      "targetMeaning": "Ik koop vijf bananen",
+      "targetMeaning": "Geen meervoudsvorm bij een telwoord",
       "options": [
         {
           "id": "a",
@@ -836,7 +836,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"Meneer koopt twee huizen\" — welke vorm?",
-      "targetMeaning": "Meneer koopt twee huizen",
+      "targetMeaning": "Geen meervoudsuitgang bij een telwoord",
       "options": [
         {
           "id": "a",
@@ -858,7 +858,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"Vier verkopers\" — hoe schrijf je dit?",
-      "targetMeaning": "Vier verkopers",
+      "targetMeaning": "Geen meervoudsuitgang bij een telwoord",
       "options": [
         {
           "id": "a",
@@ -1001,8 +1001,8 @@ export const candidates = [
     "source_page": 1,
     "review_status": "published",
     "payload": {
-      "promptText": "\"Meneer koopt allerlei fruit\" — welke vorm is correct?",
-      "targetMeaning": "Meneer koopt allerlei fruit",
+      "promptText": "\"Meneer koopt allerlei fruit\" — welke Indonesische vorm is correct?",
+      "targetMeaning": "Reduplicatie voor verscheidenheid (allerlei soorten)",
       "options": [
         {
           "id": "a",
@@ -1024,7 +1024,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"Meneer koopt twee huizen\" — met of zonder reduplicatie?",
-      "targetMeaning": "Meneer koopt twee huizen",
+      "targetMeaning": "Geen reduplicatie bij een telwoord",
       "options": [
         {
           "id": "a",
@@ -1046,7 +1046,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"Op de markt zijn allerlei vruchten\" — welke constructie?",
-      "targetMeaning": "Op de markt zijn allerlei vruchten",
+      "targetMeaning": "Reduplicatie + -an voor verscheidenheid",
       "options": [
         {
           "id": "a",
@@ -1189,8 +1189,8 @@ export const candidates = [
     "source_page": 1,
     "review_status": "published",
     "payload": {
-      "promptText": "De verkoper zegt: \"... bisa Bu\" (het kan NOG NIET, maar misschien later wel). Wat past?",
-      "targetMeaning": "Dat kan nog niet, mevrouw (maar er is een alternatief)",
+      "promptText": "De verkoper zegt: \"... bisa Bu.\" Welke ontkenning past?",
+      "targetMeaning": "Dat kan niet/nog niet, mevrouw",
       "options": [
         {
           "id": "a",
@@ -1211,8 +1211,8 @@ export const candidates = [
     "source_page": 1,
     "review_status": "published",
     "payload": {
-      "promptText": "\"Dat is NIET duur\" (definitief oordeel) — welke ontkenning past?",
-      "targetMeaning": "Dat is niet duur (definitief oordeel)",
+      "promptText": "\"Dat is niet duur.\" Welke ontkenning past?",
+      "targetMeaning": "Dat is niet duur",
       "options": [
         {
           "id": "a",
@@ -1233,8 +1233,8 @@ export const candidates = [
     "source_page": 1,
     "review_status": "published",
     "payload": {
-      "promptText": "\"Ik wil GEEN bananen\" (ik wil ze echt niet) — welke ontkenning?",
-      "targetMeaning": "Ik wil geen bananen",
+      "promptText": "\"Ik wil geen bananen.\" Welke ontkenning?",
+      "targetMeaning": "Negatieve wil — keuze, geen tijdelijk uitstel",
       "options": [
         {
           "id": "a",

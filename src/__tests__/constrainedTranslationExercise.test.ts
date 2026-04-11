@@ -27,6 +27,7 @@ describe('ConstrainedTranslationExercise types', () => {
       constrainedTranslationData: {
         sourceLanguageSentence: 'I eat rice using chopsticks',
         requiredTargetPattern: 'Use -dengan (with) for the instrument',
+        patternName: 'Dengan — instrument',
         acceptableAnswers: ['Saya makan nasi dengan sumpit'],
         disallowedShortcutForms: ['Saya makan nasi sumpit'],
         explanationText: 'The -dengan construction expresses instruments or accompaniment',

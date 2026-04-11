@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { Box, Button, Stack, Text, Badge } from '@mantine/core'
 import type { ExerciseItem } from '@/types/learning'
+import { translations } from '@/lib/i18n'
 import classes from './RecognitionMCQ.module.css'
+
+const MAX_FAILURES = 1  // allow one retry before finalizing as wrong
 
 interface CuedRecallExerciseProps {
   exerciseItem: ExerciseItem
@@ -9,31 +12,51 @@ interface CuedRecallExerciseProps {
   onAnswer: (wasCorrect: boolean, latencyMs: number) => void
 }
 
-export function CuedRecallExercise({ exerciseItem, onAnswer }: CuedRecallExerciseProps) {
+export function CuedRecallExercise({ exerciseItem, userLanguage, onAnswer }: CuedRecallExerciseProps) {
+  const t = translations[userLanguage]
   const learningItem = exerciseItem.learningItem!
   const data = exerciseItem.cuedRecallData
 
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
+  const [failureCount, setFailureCount] = useState(0)
+  const [showWrong, setShowWrong] = useState(false)
   const [startTime] = useState(() => Date.now())
 
   if (!data) {
     return <div style={{ color: 'red' }}>Missing cued recall data</div>
   }
 
-  // Handle option selection
   const handleSelectOption = (option: string) => {
-    if (isAnswered) return
-    setSelectedOption(option)
-    setIsAnswered(true)
-
+    if (isAnswered || showWrong) return
     const isCorrect = option === data.correctOptionId
 
-    const FEEDBACK_DELAY_MS = isCorrect ? 1500 : 0
+    if (isCorrect) {
+      setSelectedOption(option)
+      setIsAnswered(true)
+      setTimeout(() => {
+        const latencyMs = Date.now() - startTime - 1500
+        onAnswer(true, latencyMs)
+      }, 1500)
+      return
+    }
+
+    const newFailureCount = failureCount + 1
+    setFailureCount(newFailureCount)
+
+    if (newFailureCount > MAX_FAILURES) {
+      setSelectedOption(option)
+      setIsAnswered(true)
+      setTimeout(() => onAnswer(false, Date.now() - startTime), 0)
+      return
+    }
+
+    setSelectedOption(option)
+    setShowWrong(true)
     setTimeout(() => {
-      const latencyMs = Date.now() - startTime - FEEDBACK_DELAY_MS
-      onAnswer(isCorrect, latencyMs)
-    }, FEEDBACK_DELAY_MS)
+      setShowWrong(false)
+      setSelectedOption(null)
+    }, 800)
   }
 
   const isCorrect = selectedOption === data.correctOptionId
@@ -41,9 +64,9 @@ export function CuedRecallExercise({ exerciseItem, onAnswer }: CuedRecallExercis
   return (
     <Box className={classes.container}>
       <Stack gap="xl">
-        {/* Prompt section */}
+        {/* Prompt */}
         <Box className={classes.wordSection}>
-          <Text size="sm" c="dimmed" mb="xs">Kies het juiste Indonesische woord</Text>
+          <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.chooseIndonesian}</Text>
           <Box className={classes.word}>{data.promptMeaningText}</Box>
           {data.cueText && (
             <Text size="sm" c="dimmed" mt="xs" style={{ fontStyle: 'italic' }}>
@@ -59,7 +82,9 @@ export function CuedRecallExercise({ exerciseItem, onAnswer }: CuedRecallExercis
             const isCorrectOption = option === data.correctOptionId
 
             let statusClass = ''
-            if (isAnswered && isSelected) {
+            if (showWrong && isSelected) {
+              statusClass = classes.incorrect
+            } else if (isAnswered && isSelected) {
               statusClass = isCorrect ? classes.correct : classes.incorrect
             } else if (isAnswered && isCorrectOption) {
               statusClass = classes.showCorrect
@@ -71,7 +96,7 @@ export function CuedRecallExercise({ exerciseItem, onAnswer }: CuedRecallExercis
                 onClick={() => handleSelectOption(option)}
                 disabled={isAnswered}
                 className={`${classes.optionButton} ${statusClass}`}
-                variant={isSelected ? 'filled' : 'light'}
+                variant={isSelected && !showWrong ? 'filled' : 'light'}
                 fullWidth
                 size="lg"
               >
@@ -89,11 +114,11 @@ export function CuedRecallExercise({ exerciseItem, onAnswer }: CuedRecallExercis
               size="xl"
               style={{ fontSize: '16px', padding: '12px 20px' }}
             >
-              {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+              {isCorrect ? `✓ ${t.session.feedback.correct}` : `✗ ${t.session.feedback.incorrect}`}
             </Badge>
             {!isCorrect && (
               <Box mt="lg">
-                <Text size="sm" c="dimmed" mb="xs">Correct answer</Text>
+                <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.correctAnswerLabel}</Text>
                 <Text size="xl" fw={700}>{learningItem.base_text}</Text>
               </Box>
             )}

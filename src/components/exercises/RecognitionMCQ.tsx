@@ -4,6 +4,8 @@ import type { ExerciseItem } from '@/types/learning'
 import { translations } from '@/lib/i18n'
 import classes from './RecognitionMCQ.module.css'
 
+const MAX_FAILURES = 1  // allow one retry before finalizing as wrong
+
 interface RecognitionMCQProps {
   exerciseItem: ExerciseItem
   userLanguage: 'en' | 'nl'
@@ -16,6 +18,8 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
   const learningItem = learningItem_!
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
+  const [failureCount, setFailureCount] = useState(0)
+  const [showWrong, setShowWrong] = useState(false)
   const [startTime] = useState(() => Date.now())
 
   const correctMeaning = meanings.find(m => m.translation_language === userLanguage && m.is_primary)
@@ -25,18 +29,36 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
   const allOptions = [correctAnswer, ...(distractors ?? [])].slice(0, 4)
   const [shuffledOptions] = useState(() => allOptions.sort(() => Math.random() - 0.5))
 
-  // Handle option selection
   const handleSelectOption = (option: string) => {
-    if (isAnswered) return
-    setSelectedOption(option)
-    setIsAnswered(true)
-
+    if (isAnswered || showWrong) return
     const isCorrect = option === correctAnswer
-    const FEEDBACK_DELAY_MS = isCorrect ? 1500 : 0
+
+    if (isCorrect) {
+      setSelectedOption(option)
+      setIsAnswered(true)
+      setTimeout(() => {
+        const latencyMs = Date.now() - startTime - 1500
+        onAnswer(true, latencyMs)
+      }, 1500)
+      return
+    }
+
+    const newFailureCount = failureCount + 1
+    setFailureCount(newFailureCount)
+
+    if (newFailureCount > MAX_FAILURES) {
+      setSelectedOption(option)
+      setIsAnswered(true)
+      setTimeout(() => onAnswer(false, Date.now() - startTime), 0)
+      return
+    }
+
+    setSelectedOption(option)
+    setShowWrong(true)
     setTimeout(() => {
-      const latencyMs = Date.now() - startTime - FEEDBACK_DELAY_MS
-      onAnswer(isCorrect, latencyMs)
-    }, FEEDBACK_DELAY_MS)
+      setShowWrong(false)
+      setSelectedOption(null)
+    }, 800)
   }
 
   const isCorrect = selectedOption === correctAnswer
@@ -57,7 +79,9 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
             const isCorrectOption = option === correctAnswer
 
             let statusClass = ''
-            if (isAnswered && isSelected) {
+            if (showWrong && isSelected) {
+              statusClass = classes.incorrect
+            } else if (isAnswered && isSelected) {
               statusClass = isCorrect ? classes.correct : classes.incorrect
             } else if (isAnswered && isCorrectOption) {
               statusClass = classes.showCorrect
@@ -69,7 +93,7 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
                 onClick={() => handleSelectOption(option)}
                 disabled={isAnswered}
                 className={`${classes.optionButton} ${statusClass}`}
-                variant={isSelected ? 'filled' : 'light'}
+                variant={isSelected && !showWrong ? 'filled' : 'light'}
                 fullWidth
                 size="lg"
               >
@@ -79,7 +103,7 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
           })}
         </Stack>
 
-        {/* Result feedback - same layout for correct and incorrect */}
+        {/* Result feedback */}
         {isAnswered && (
           <Box style={{ textAlign: 'center', marginTop: '32px' }}>
             <Badge

@@ -61,7 +61,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "Welke zin betekent 'de fiets die nieuw is'?",
-      "targetMeaning": "De fiets die nieuw is",
+      "targetMeaning": "yang als betrekkelijk voornaamwoord (die/dat)",
       "options": [
         {
           "id": "rp-cp2-a",

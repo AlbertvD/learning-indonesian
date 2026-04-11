@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { Box, Stack, Text } from '@mantine/core'
 import type { ExerciseItem } from '@/types/learning'
+import { translations } from '@/lib/i18n'
 import classes from './RecognitionMCQ.module.css'
+
+const MAX_FAILURES = 1  // allow one retry before finalizing as wrong
 
 interface ClozeMcqProps {
   exerciseItem: ExerciseItem
@@ -10,9 +13,12 @@ interface ClozeMcqProps {
 }
 
 export function ClozeMcq({ exerciseItem, userLanguage, onAnswer }: ClozeMcqProps) {
+  const t = translations[userLanguage]
   const data = exerciseItem.clozeMcqData
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
+  const [failureCount, setFailureCount] = useState(0)
+  const [showWrong, setShowWrong] = useState(false)
   const [startTime] = useState(() => Date.now())
 
   if (!data) {
@@ -20,31 +26,47 @@ export function ClozeMcq({ exerciseItem, userLanguage, onAnswer }: ClozeMcqProps
   }
 
   const handleSelectOption = (option: string) => {
-    if (isAnswered) return
-    setSelectedOption(option)
-    setIsAnswered(true)
-
+    if (isAnswered || showWrong) return
     const isCorrect = option === data.correctOptionId
-    const FEEDBACK_DELAY_MS = isCorrect ? 1500 : 0
+
+    if (isCorrect) {
+      setSelectedOption(option)
+      setIsAnswered(true)
+      setTimeout(() => {
+        const latencyMs = Date.now() - startTime - 1500
+        onAnswer(true, latencyMs)
+      }, 1500)
+      return
+    }
+
+    const newFailureCount = failureCount + 1
+    setFailureCount(newFailureCount)
+
+    if (newFailureCount > MAX_FAILURES) {
+      setSelectedOption(option)
+      setIsAnswered(true)
+      setTimeout(() => onAnswer(false, Date.now() - startTime), 0)
+      return
+    }
+
+    // Brief wrong flash, then allow retry
+    setSelectedOption(option)
+    setShowWrong(true)
     setTimeout(() => {
-      const latencyMs = Date.now() - startTime - FEEDBACK_DELAY_MS
-      onAnswer(isCorrect, latencyMs)
-    }, FEEDBACK_DELAY_MS)
+      setShowWrong(false)
+      setSelectedOption(null)
+    }, 800)
   }
 
   const isCorrect = selectedOption === data.correctOptionId
-
-  // Split sentence on ___ to render the blank inline
   const parts = data.sentence.split('___')
 
   return (
     <Box className={classes.container}>
       <Stack gap="xl">
-        {/* Sentence with blank */}
+        {/* Sentence with blank — no translation before answering */}
         <Box className={classes.wordSection}>
-          <Text size="sm" c="dimmed" mb="xs">
-            {userLanguage === 'nl' ? 'Kies het juiste woord' : 'Choose the correct word'}
-          </Text>
+          <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.chooseWord}</Text>
           <Box className={classes.word} style={{ fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500 }}>
             {parts[0]}
             <Box
@@ -63,7 +85,8 @@ export function ClozeMcq({ exerciseItem, userLanguage, onAnswer }: ClozeMcqProps
             </Box>
             {parts[1] ?? ''}
           </Box>
-          {data.translation && (
+          {/* Translation shown only after answering */}
+          {isAnswered && data.translation && (
             <Text size="sm" c="dimmed" mt="xs" style={{ fontStyle: 'italic' }}>
               {data.translation}
             </Text>
@@ -77,7 +100,9 @@ export function ClozeMcq({ exerciseItem, userLanguage, onAnswer }: ClozeMcqProps
             const isCorrectOption = option === data.correctOptionId
 
             let statusClass = ''
-            if (isAnswered && isSelected) {
+            if (showWrong && isSelected) {
+              statusClass = classes.incorrect
+            } else if (isAnswered && isSelected) {
               statusClass = isCorrect ? classes.correct : classes.incorrect
             } else if (isAnswered && isCorrectOption) {
               statusClass = classes.correct

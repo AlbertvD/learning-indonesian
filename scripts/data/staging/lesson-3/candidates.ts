@@ -77,8 +77,8 @@ export const candidates = [
     "grammar_pattern_slug": "ada-existential",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Is er kaas?\" (aanwezigheid)",
-      "targetMeaning": "Is er kaas? (vraag naar aanwezigheid)",
+      "promptText": "Pilih yang benar: \"Is er kaas?\"",
+      "targetMeaning": "Vraag naar aanwezigheid met ada",
       "options": [
         {
           "id": "ada-cp2-a",
@@ -229,8 +229,8 @@ export const candidates = [
     "grammar_pattern_slug": "dari-di-ke-locative",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Ik ga naar Jakarta\" (beweging)",
-      "targetMeaning": "Ik ga naar Jakarta (beweging ergens naartoe)",
+      "promptText": "Pilih yang benar: \"Ik ga naar Jakarta\"",
+      "targetMeaning": "Beweging — ke voor bestemming",
       "options": [
         {
           "id": "ddk-cp1-a",
@@ -250,8 +250,8 @@ export const candidates = [
     "grammar_pattern_slug": "dari-di-ke-locative",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Tono komt van huis\" (herkomst)",
-      "targetMeaning": "Tono komt van huis (beweging vandaan)",
+      "promptText": "Pilih yang benar: \"Tono komt van huis\"",
+      "targetMeaning": "Herkomst — dari voor vertrekpunt",
       "options": [
         {
           "id": "ddk-cp2-a",
@@ -271,8 +271,8 @@ export const candidates = [
     "grammar_pattern_slug": "dari-di-ke-locative",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Vader is op kantoor\" (rust, geen beweging)",
-      "targetMeaning": "Vader is op kantoor (locatie)",
+      "promptText": "Pilih yang benar: \"Vader is op kantoor\"",
+      "targetMeaning": "Locatie — di voor verblijfplaats",
       "options": [
         {
           "id": "ddk-cp3-a",
@@ -400,8 +400,8 @@ export const candidates = [
     "grammar_pattern_slug": "question-words",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Waar gaat u heen?\" (richting)",
-      "targetMeaning": "Waar gaat u heen? (beweging naar een plaats)",
+      "promptText": "Welk vraagwoord past bij \"Waar gaat u heen?\"",
+      "targetMeaning": "ke mana — richting/bestemming",
       "options": [
         {
           "id": "qw-cp1-a",
@@ -421,8 +421,8 @@ export const candidates = [
     "grammar_pattern_slug": "question-words",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Waar komt u vandaan?\" (herkomst)",
-      "targetMeaning": "Waar komt u vandaan? (herkomst)",
+      "promptText": "Welk vraagwoord past bij \"Waar komt u vandaan?\"",
+      "targetMeaning": "dari mana — herkomst/oorsprong",
       "options": [
         {
           "id": "qw-cp2-a",
@@ -442,8 +442,8 @@ export const candidates = [
     "grammar_pattern_slug": "question-words",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Hoe is het eten?\" (manier/kwaliteit)",
-      "targetMeaning": "Hoe is het eten? (manier/kwaliteit)",
+      "promptText": "Welk vraagwoord past bij \"Hoe is het eten?\"",
+      "targetMeaning": "bagaimana — kwaliteit/wijze",
       "options": [
         {
           "id": "qw-cp3-a",

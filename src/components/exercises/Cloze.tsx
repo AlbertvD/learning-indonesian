@@ -4,6 +4,7 @@ import { Box, Text, Stack, Badge, Button, Group } from '@mantine/core'
 import { IconMessage2 } from '@tabler/icons-react'
 import { checkAnswer } from '@/lib/answerNormalization'
 import type { ExerciseItem } from '@/types/learning'
+import { translations } from '@/lib/i18n'
 import classes from './Cloze.module.css'
 
 interface ClozeProps {
@@ -12,7 +13,8 @@ interface ClozeProps {
   onAnswer: (wasCorrect: boolean, isFuzzy: boolean, latencyMs: number, rawResponse: string) => void
 }
 
-export function Cloze({ exerciseItem, onAnswer }: ClozeProps) {
+export function Cloze({ exerciseItem, userLanguage, onAnswer }: ClozeProps) {
+  const t = translations[userLanguage as 'en' | 'nl'] ?? translations['nl']
   const { clozeContext, answerVariants } = exerciseItem
   const [value, setValue] = useState('')
   const [submitted, setShowFeedback] = useState(false)
@@ -20,7 +22,6 @@ export function Cloze({ exerciseItem, onAnswer }: ClozeProps) {
   const startTime = useRef(0)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Auto-focus on mount and capture start time (must be before early return to satisfy rules-of-hooks)
   useEffect(() => {
     startTime.current = Date.now()
     inputRef.current?.focus()
@@ -88,10 +89,13 @@ export function Cloze({ exerciseItem, onAnswer }: ClozeProps) {
           {parts[1]}
         </Text>
 
-        <Group justify="center" gap="xs" c="dimmed">
-          <IconMessage2 size={16} />
-          <Text size="sm" style={{ fontStyle: 'italic' }}>{translation}</Text>
-        </Group>
+        {/* Translation shown only after answering */}
+        {submitted && translation && (
+          <Group justify="center" gap="xs" c="dimmed">
+            <IconMessage2 size={16} />
+            <Text size="sm" style={{ fontStyle: 'italic' }}>{translation}</Text>
+          </Group>
+        )}
       </Box>
 
       {!submitted ? (
@@ -102,7 +106,7 @@ export function Cloze({ exerciseItem, onAnswer }: ClozeProps) {
           variant="filled"
           color="cyan"
         >
-          Check
+          {t.session.feedback.check}
         </Button>
       ) : (
         <Box style={{ textAlign: 'center', marginTop: '32px' }}>
@@ -111,11 +115,11 @@ export function Cloze({ exerciseItem, onAnswer }: ClozeProps) {
             size="xl"
             style={{ fontSize: '16px', padding: '12px 20px' }}
           >
-            {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+            {isCorrect ? `✓ ${t.session.feedback.correct}` : `✗ ${t.session.feedback.incorrect}`}
           </Badge>
           {!isCorrect && (
             <Box mt="lg">
-              <Text size="sm" c="dimmed" mb="xs">Correct answer</Text>
+              <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.correctAnswerLabel}</Text>
               <Text size="xl" fw={700}>{targetWord}</Text>
             </Box>
           )}

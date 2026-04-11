@@ -61,7 +61,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "Welke zin betekent \"Zijn fiets is nieuw\"?",
-      "targetMeaning": "Zijn fiets is nieuw",
+      "targetMeaning": "-nya als bezittelijk voornaamwoord (derde persoon)",
       "options": [
         {
           "id": "a",
@@ -83,7 +83,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "Welke zin is correct voor \"Het huis van Tuti\"?",
-      "targetMeaning": "Het huis van Tuti",
+      "targetMeaning": "Bezit: naam direct achter het zelfstandig naamwoord",
       "options": [
         {
           "id": "a",
@@ -209,7 +209,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "Welke zin betekent \"Dit kind, Ali is zijn naam\"?",
-      "targetMeaning": "Dit kind, Ali is zijn naam",
+      "targetMeaning": "-nya als verwijzing naar het topic",
       "options": [
         {
           "id": "a",
@@ -500,8 +500,8 @@ export const candidates = [
     "source_page": 8,
     "review_status": "published",
     "payload": {
-      "promptText": "In welke zin is -nya een nominalisator (maakt een eigenschap van een bijvoeglijk naamwoord)?",
-      "targetMeaning": "-nya als nominalisator",
+      "promptText": "In welke zin nominaliseert -nya een bijvoeglijk naamwoord?",
+      "targetMeaning": "-nya als nominalisator (eigenschap → zelfstandig naamwoord)",
       "options": [
         {
           "id": "a",
@@ -523,7 +523,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "Welke zin drukt \"de breedte van die rivier is 50 meter\" correct uit?",
-      "targetMeaning": "De breedte van die rivier is 50 meter",
+      "targetMeaning": "lebarnya — -nya nominaliseert 'lebar'",
       "options": [
         {
           "id": "a",
@@ -679,7 +679,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "Welke zin betekent \"Morgen zal Rudi naar Bogor komen\"?",
-      "targetMeaning": "Morgen zal Rudi naar Bogor komen",
+      "targetMeaning": "Tijdsadverbium bepaalt toekomst — werkwoord verandert niet",
       "options": [
         {
           "id": "a",

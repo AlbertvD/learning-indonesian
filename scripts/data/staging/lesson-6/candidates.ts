@@ -252,7 +252,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "Welke zin betekent \"Vandaag komt hij terug, nietwaar?\"",
-      "targetMeaning": "Vandaag komt hij terug, nietwaar? (tag question)",
+      "targetMeaning": "Bevestigingsvraag (tag question)",
       "options": [
         {
           "id": "cp-tq1-a",
@@ -274,7 +274,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "Welke zin vraagt bevestiging: \"Jullie leren nog Indonesisch, is het niet?\"",
-      "targetMeaning": "Jullie leren nog Indonesisch, is het niet? (tag question)",
+      "targetMeaning": "Bevestigingsvraag (bukan / 'kan)",
       "options": [
         {
           "id": "cp-tq2-a",

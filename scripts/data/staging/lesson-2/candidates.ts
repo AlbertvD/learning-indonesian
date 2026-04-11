@@ -56,8 +56,8 @@ export const candidates = [
     "grammar_pattern_slug": "se-classifier",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"een kleine kip\" (classificeerwoord voor dieren)",
-      "targetMeaning": "Een kleine kip (seekor voor dieren)",
+      "promptText": "Pilih yang benar: \"een kleine kip\"",
+      "targetMeaning": "Classificeerwoord voor dieren",
       "options": [
         {
           "id": "a",
@@ -77,8 +77,8 @@ export const candidates = [
     "grammar_pattern_slug": "se-classifier",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"een Nederlander\" (classificeerwoord voor personen)",
-      "targetMeaning": "Een Nederlander (seorang voor personen)",
+      "promptText": "Pilih yang benar: \"een Nederlander\"",
+      "targetMeaning": "Classificeerwoord voor personen",
       "options": [
         {
           "id": "a",
@@ -236,8 +236,8 @@ export const candidates = [
     "grammar_pattern_slug": "ini-itu-demonstrative",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Dit huis is klein\" (ini als aanwijzend voornaamwoord)",
-      "targetMeaning": "Dit huis is klein (ini achter het znw)",
+      "promptText": "Pilih yang benar: \"Dit huis is klein\"",
+      "targetMeaning": "Aanwijzend voornaamwoord achter het zelfstandig naamwoord",
       "options": [
         {
           "id": "a",
@@ -592,8 +592,8 @@ export const candidates = [
     "grammar_pattern_slug": "ini-itu-central",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Dat is mooi\" (itu als zelfstandig onderwerp)",
-      "targetMeaning": "Dat is mooi (itu als centrale woordgroep)",
+      "promptText": "Pilih yang benar: \"Dat is mooi\"",
+      "targetMeaning": "Centraal onderwerp met itu",
       "options": [
         {
           "id": "a",
@@ -613,8 +613,8 @@ export const candidates = [
     "grammar_pattern_slug": "ini-itu-central",
     "review_status": "published",
     "payload": {
-      "promptText": "Welke zin betekent \"Dit is een banaan\" (ini als onderwerp)?",
-      "targetMeaning": "Dit is een banaan (ini als centraal onderwerp)",
+      "promptText": "Welke zin betekent \"Dit is een banaan\"?",
+      "targetMeaning": "Centraal onderwerp met ini",
       "options": [
         {
           "id": "a",

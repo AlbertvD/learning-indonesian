@@ -86,7 +86,7 @@ export function ConstrainedTranslationExercise({
           </Text>
           <Box className={classes.translation}>{data.sourceLanguageSentence}</Box>
           <Text size="sm" c="dimmed" mt="xs">
-            {t.session.exercise.requiredPattern} {data.requiredTargetPattern}
+            {t.session.exercise.requiredPattern} {data.patternName || data.requiredTargetPattern.replace(/-/g, ' ')}
           </Text>
         </Box>
 

@@ -3,6 +3,7 @@ import { Box, Button, TextInput, Stack, Text, Badge } from '@mantine/core'
 import { IconArrowRight } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
+import { translations } from '@/lib/i18n'
 import classes from './TypedRecall.module.css'
 
 interface MeaningRecallProps {
@@ -12,6 +13,7 @@ interface MeaningRecallProps {
 }
 
 export function MeaningRecall({ exerciseItem, userLanguage, onAnswer }: MeaningRecallProps) {
+  const t = translations[userLanguage]
   const { meanings } = exerciseItem
   const learningItem = exerciseItem.learningItem!
   const [response, setResponse] = useState('')
@@ -19,7 +21,6 @@ export function MeaningRecall({ exerciseItem, userLanguage, onAnswer }: MeaningR
   const [startTime] = useState(() => Date.now())
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // All meanings in the user's language — primary is canonical, rest are accepted variants
   const langMeanings = meanings.filter(m => m.translation_language === userLanguage)
   const primaryMeaning = langMeanings.find(m => m.is_primary) ?? langMeanings[0]
   const canonicalAnswer = primaryMeaning?.translation_text ?? ''
@@ -94,7 +95,7 @@ export function MeaningRecall({ exerciseItem, userLanguage, onAnswer }: MeaningR
               style={{ alignSelf: 'center' }}
             >
               {isCorrect
-                ? (result.isFuzzy ? (userLanguage === 'nl' ? 'Bijna goed!' : 'Close enough!') : (userLanguage === 'nl' ? 'Correct!' : 'Correct!'))
+                ? (result.isFuzzy ? t.session.feedback.almostCorrect : t.session.feedback.correct)
                 : canonicalAnswer}
             </Badge>
           )}
@@ -106,7 +107,7 @@ export function MeaningRecall({ exerciseItem, userLanguage, onAnswer }: MeaningR
               size="lg"
               rightSection={<IconArrowRight size={18} />}
             >
-              {userLanguage === 'nl' ? 'Controleer' : 'Check'}
+              {t.session.feedback.check}
             </Button>
           )}
         </Stack>

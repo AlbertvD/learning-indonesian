@@ -6,6 +6,9 @@ import { checkAnswer } from '@/lib/answerNormalization'
 import { translations } from '@/lib/i18n'
 import classes from './TypedRecall.module.css'
 
+const HINT_AFTER_FAILURES = 2  // hint appears after this many wrong attempts
+const MAX_FAILURES = 5         // give up and finalize as wrong after this many
+
 interface SentenceTransformationExerciseProps {
   exerciseItem: ExerciseItem
   userLanguage: 'en' | 'nl'
@@ -20,10 +23,11 @@ export function SentenceTransformationExercise({
   const t = translations[userLanguage]
   const [response, setResponse] = useState('')
   const [isAnswered, setIsAnswered] = useState(false)
+  const [failureCount, setFailureCount] = useState(0)
+  const [showWrong, setShowWrong] = useState(false)
   const [startTime] = useState(() => Date.now())
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Focus input on mount
   useEffect(() => {
     inputRef.current?.focus()
   }, [])
@@ -34,32 +38,45 @@ export function SentenceTransformationExercise({
     return <div style={{ color: 'red' }}>Missing sentence transformation data</div>
   }
 
-  // Check the answer against acceptable answers
   const handleSubmit = () => {
-    if (isAnswered || !response.trim()) return
+    if (isAnswered || showWrong || !response.trim()) return
 
     const result = checkAnswer(response, data.acceptableAnswers[0], data.acceptableAnswers)
-    const isCorrect = result.isCorrect
-    const isFuzzy = result.isFuzzy
+    const latencyMs = Date.now() - startTime
 
-    setIsAnswered(true)
+    if (result.isCorrect) {
+      setIsAnswered(true)
+      setTimeout(() => onAnswer(true, result.isFuzzy, latencyMs, response), 1500)
+      return
+    }
 
-    const FEEDBACK_DELAY_MS = isCorrect ? 1500 : 0
+    const newFailureCount = failureCount + 1
+    setFailureCount(newFailureCount)
+
+    if (newFailureCount >= MAX_FAILURES) {
+      setIsAnswered(true)
+      onAnswer(false, result.isFuzzy, latencyMs, response)
+      return
+    }
+
+    // Show brief wrong indicator, then reset for retry
+    setShowWrong(true)
     setTimeout(() => {
-      const latencyMs = Date.now() - startTime - FEEDBACK_DELAY_MS
-      onAnswer(isCorrect, isFuzzy, latencyMs, response)
-    }, FEEDBACK_DELAY_MS)
+      setShowWrong(false)
+      setResponse('')
+      inputRef.current?.focus()
+    }, 800)
   }
 
-  // Allow Enter key to submit
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !isAnswered) {
+    if (e.key === 'Enter' && !isAnswered && !showWrong) {
       handleSubmit()
     }
   }
 
   const result = checkAnswer(response, data.acceptableAnswers[0], data.acceptableAnswers)
   const isCorrect = result.isCorrect
+  const showHint = data.hintText && failureCount >= HINT_AFTER_FAILURES
 
   return (
     <Box className={classes.container}>
@@ -72,8 +89,8 @@ export function SentenceTransformationExercise({
           <Box className={classes.translation}>{data.sourceSentence}</Box>
         </Box>
 
-        {/* Hint if provided */}
-        {data.hintText && (
+        {/* Hint — only after HINT_AFTER_FAILURES wrong attempts */}
+        {showHint && (
           <Box style={{ padding: '8px 12px', backgroundColor: 'var(--card-bg)', border: '1px solid var(--card-border)', borderRadius: '4px' }}>
             <Text size="sm" c="dimmed">{t.session.exercise.hintPrefix} {data.hintText}</Text>
           </Box>
@@ -87,15 +104,24 @@ export function SentenceTransformationExercise({
             value={response}
             onChange={(e) => setResponse(e.currentTarget.value)}
             onKeyDown={handleKeyDown}
-            disabled={isAnswered}
+            disabled={isAnswered || showWrong}
             size="lg"
             className={classes.input}
             aria-label="Answer input"
           />
         </Box>
 
+        {/* Wrong-answer flash (retry mode) */}
+        {showWrong && (
+          <Box style={{ textAlign: 'center' }}>
+            <Badge color="red" size="xl" style={{ fontSize: '16px', padding: '12px 20px' }}>
+              ✗ {t.session.exercise.tryAgain}
+            </Badge>
+          </Box>
+        )}
+
         {/* Submit button */}
-        {!isAnswered && (
+        {!isAnswered && !showWrong && (
           <Button
             onClick={handleSubmit}
             disabled={!response.trim()}
@@ -107,7 +133,7 @@ export function SentenceTransformationExercise({
           </Button>
         )}
 
-        {/* Result feedback */}
+        {/* Final result feedback (correct, or max failures reached) */}
         {isAnswered && (
           <Box style={{ textAlign: 'center', marginTop: '32px' }}>
             <Badge

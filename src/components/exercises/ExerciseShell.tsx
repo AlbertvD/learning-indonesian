@@ -272,30 +272,14 @@ export function ExerciseShell({
   } })()
 
   if (waitingForContinue) {
-    // Derive what to show in the "correct answer" card, based on exercise type and source.
-    let correctAnswer = ''
-    if (isGrammar) {
-      switch (exerciseItem.exerciseType) {
-        case 'contrast_pair':
-          correctAnswer = exerciseItem.contrastPairData?.correctOptionId ?? ''
-          break
-        case 'sentence_transformation':
-          correctAnswer = exerciseItem.sentenceTransformationData?.acceptableAnswers[0] ?? ''
-          break
-        case 'constrained_translation':
-          correctAnswer = exerciseItem.constrainedTranslationData?.acceptableAnswers[0] ?? ''
-          break
-        case 'cloze_mcq':
-          correctAnswer = exerciseItem.clozeMcqData?.correctOptionId ?? ''
-          break
-        default:
-          correctAnswer = ''
-      }
-    } else {
+    const t = translations[userLanguage]
+
+    if (!isGrammar) {
+      // Vocab wrong-answer screen
       const primaryMeaning = exerciseItem.meanings.find(m => m.translation_language === userLanguage && m.is_primary)
         ?? exerciseItem.meanings.find(m => m.translation_language === userLanguage)
       const translation = primaryMeaning?.translation_text ?? ''
-      correctAnswer = exerciseItem.learningItem?.base_text ?? ''
+      const correctAnswer = exerciseItem.learningItem?.base_text ?? ''
 
       return (
         <Stack gap="xl" style={{ padding: '24px 0' }}>
@@ -309,26 +293,55 @@ export function ExerciseShell({
             borderRadius: 'var(--r-md)',
           }}>
             <IconX size={18} color="var(--danger)" />
-            <Text fw={600} style={{ color: 'var(--danger)' }}>Fout</Text>
+            <Text fw={600} style={{ color: 'var(--danger)' }}>{t.session.feedback.incorrect}</Text>
           </Box>
           <Box style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)' }}>
-              <Text size="xs" style={{ textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }} mb={8}>Gevraagd</Text>
+              <Text size="xs" style={{ textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }} mb={8}>
+                {userLanguage === 'nl' ? 'Gevraagd' : 'Asked'}
+              </Text>
               <Text fw={600} size="lg">{translation}</Text>
             </Box>
             <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)' }}>
-              <Text size="xs" style={{ textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }} mb={8}>Correct antwoord</Text>
+              <Text size="xs" style={{ textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }} mb={8}>
+                {t.session.exercise.correctAnswerLabel}
+              </Text>
               <Text fw={700} size="lg" style={{ color: 'var(--accent-primary)' }}>{correctAnswer}</Text>
             </Box>
           </Box>
           <Button onClick={handleContinue} size="lg" fullWidth variant="filled" loading={isProcessing}>
-            Doorgaan
+            {t.session.feedback.continue}
           </Button>
         </Stack>
       )
     }
 
-    // Grammar wrong-answer screen: single card with correct answer only
+    // Grammar wrong-answer screen — extract correct answer, explanation, and meaning
+    let correctAnswer = ''
+    let explanationText = ''
+    let targetMeaning = ''
+
+    switch (exerciseItem.exerciseType) {
+      case 'contrast_pair':
+        correctAnswer = exerciseItem.contrastPairData?.correctOptionId ?? ''
+        explanationText = exerciseItem.contrastPairData?.explanationText ?? ''
+        targetMeaning = exerciseItem.contrastPairData?.targetMeaning ?? ''
+        break
+      case 'sentence_transformation':
+        correctAnswer = exerciseItem.sentenceTransformationData?.acceptableAnswers[0] ?? ''
+        explanationText = exerciseItem.sentenceTransformationData?.explanationText ?? ''
+        break
+      case 'constrained_translation':
+        correctAnswer = exerciseItem.constrainedTranslationData?.acceptableAnswers[0] ?? ''
+        explanationText = exerciseItem.constrainedTranslationData?.explanationText ?? ''
+        break
+      case 'cloze_mcq':
+        correctAnswer = exerciseItem.clozeMcqData?.correctOptionId ?? ''
+        break
+      default:
+        correctAnswer = ''
+    }
+
     return (
       <Stack gap="xl" style={{ padding: '24px 0' }}>
         <Box style={{
@@ -341,14 +354,32 @@ export function ExerciseShell({
           borderRadius: 'var(--r-md)',
         }}>
           <IconX size={18} color="var(--danger)" />
-          <Text fw={600} style={{ color: 'var(--danger)' }}>Fout</Text>
+          <Text fw={600} style={{ color: 'var(--danger)' }}>{t.session.feedback.incorrect}</Text>
         </Box>
+
         <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)' }}>
-          <Text size="xs" style={{ textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }} mb={8}>Correct antwoord</Text>
+          <Text size="xs" style={{ textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }} mb={8}>
+            {t.session.exercise.correctAnswerLabel}
+          </Text>
           <Text fw={700} size="lg" style={{ color: 'var(--accent-primary)' }}>{correctAnswer}</Text>
+          {targetMeaning && (
+            <Text size="sm" c="dimmed" mt={6}>
+              {t.session.exercise.meaningLabel} {targetMeaning}
+            </Text>
+          )}
         </Box>
+
+        {explanationText && (
+          <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)', background: 'var(--card-bg)' }}>
+            <Text size="xs" style={{ textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }} mb={8}>
+              {t.session.exercise.explanationLabel}
+            </Text>
+            <Text size="sm">{explanationText}</Text>
+          </Box>
+        )}
+
         <Button onClick={handleContinue} size="lg" fullWidth variant="filled" loading={isProcessing}>
-          Doorgaan
+          {t.session.feedback.continue}
         </Button>
       </Stack>
     )

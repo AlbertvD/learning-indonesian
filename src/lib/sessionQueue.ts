@@ -269,6 +269,7 @@ function makeGrammarExercise(
         constrainedTranslationData: {
           sourceLanguageSentence: payload.sourceLanguageSentence || '',
           requiredTargetPattern: payload.requiredTargetPattern || '',
+          patternName: _pattern.name || '',
           acceptableAnswers: (answerKey?.acceptableAnswers as string[]) || (payload.acceptableAnswers as string[]) || [],
           disallowedShortcutForms: (answerKey?.disallowedShortcutForms as string[] | undefined) ?? (payload.disallowedShortcutForms as string[] | undefined),
           explanationText: payload.explanationText || '',
@@ -536,6 +537,17 @@ function shuffle<T>(arr: T[]): T[] {
   return arr
 }
 
+// Items that look structurally similar enough to be plausible distractors for each other.
+// sentence and dialogue_chunk are both multi-sentence/long forms.
+// word and phrase are both short forms — mixing them is fine.
+// Never mix short (word/phrase) with long (sentence/dialogue_chunk).
+const STRUCTURALLY_SIMILAR_TYPES: Record<string, string[]> = {
+  word: ['word', 'phrase'],
+  phrase: ['word', 'phrase'],
+  sentence: ['sentence', 'dialogue_chunk'],
+  dialogue_chunk: ['sentence', 'dialogue_chunk'],
+}
+
 function makeRecognitionMCQ(
   item: LearningItem,
   meanings: ItemMeaning[],
@@ -549,24 +561,33 @@ function makeRecognitionMCQ(
     ?? meanings.find(m => m.translation_language === userLanguage)
   const correctAnswer = primaryMeaning?.translation_text ?? ''
 
-  const otherTranslations: Array<{ translation: string; level: string }> = allItems
+  // Build candidate pool with type info for filtering
+  const otherTranslations: Array<{ translation: string; level: string; itemType: string }> = allItems
     .filter(i => i.id !== item.id)
     .flatMap(i => {
       const itemMeanings = meaningsByItem[i.id] ?? []
       const t = (itemMeanings.find(m => m.translation_language === userLanguage && m.is_primary)
         ?? itemMeanings.find(m => m.translation_language === userLanguage))?.translation_text
-      return t && t !== correctAnswer ? [{ translation: t, level: i.level }] : []
+      return t && t !== correctAnswer ? [{ translation: t, level: i.level, itemType: i.item_type }] : []
     })
+
+  const allowedTypes = STRUCTURALLY_SIMILAR_TYPES[item.item_type] ?? [item.item_type]
+  const structuralPool = otherTranslations.filter(d => allowedTypes.includes(d.itemType))
 
   const correctGroup = getSemanticGroup(correctAnswer, userLanguage)
 
+  // Priority 1: same structural shape + same semantic group
   const sameGroup = correctGroup
-    ? shuffle(otherTranslations.filter(d => getSemanticGroup(d.translation, userLanguage) === correctGroup).map(d => d.translation))
+    ? shuffle(structuralPool.filter(d => getSemanticGroup(d.translation, userLanguage) === correctGroup).map(d => d.translation))
     : []
-  const sameLevel = shuffle(otherTranslations.filter(d => d.level === item.level && !sameGroup.includes(d.translation)).map(d => d.translation))
-  const fallback = shuffle(otherTranslations.filter(d => !sameGroup.includes(d.translation) && !sameLevel.includes(d.translation)).map(d => d.translation))
+  // Priority 2: same structural shape + same level
+  const sameLevel = shuffle(structuralPool.filter(d => d.level === item.level && !sameGroup.includes(d.translation)).map(d => d.translation))
+  // Priority 3: same structural shape, any level
+  const sameShape = shuffle(structuralPool.filter(d => !sameGroup.includes(d.translation) && !sameLevel.includes(d.translation)).map(d => d.translation))
+  // Priority 4: full pool fallback (only reached if structural pool has fewer than 3 items)
+  const fullFallback = shuffle(otherTranslations.filter(d => !sameGroup.includes(d.translation) && !sameLevel.includes(d.translation) && !sameShape.includes(d.translation)).map(d => d.translation))
 
-  const distractors = [...sameGroup, ...sameLevel, ...fallback].slice(0, 3)
+  const distractors = [...sameGroup, ...sameLevel, ...sameShape, ...fullFallback].slice(0, 3)
 
   return {
     learningItem: item,
@@ -793,6 +814,7 @@ function makePublishedExercise(
         constrainedTranslationData: {
           sourceLanguageSentence: payload.sourceLanguageSentence || '',
           requiredTargetPattern: payload.requiredTargetPattern || '',
+          patternName: '',
           acceptableAnswers: (answerKey?.acceptableAnswers as string[]) || (payload.acceptableAnswers as string[]) || [],
           disallowedShortcutForms: (answerKey?.disallowedShortcutForms as string[] | undefined) ?? (payload.disallowedShortcutForms as string[] | undefined),
           explanationText: payload.explanationText || '',

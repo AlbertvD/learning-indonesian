@@ -57,7 +57,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "Titin zegt tegen Nanang: \"Wij moeten thuis studeren.\" Welk woord kiest Titin?",
-      "targetMeaning": "Kita — Nanang is inbegrepen in \"wij\"",
+      "targetMeaning": "Wij moeten thuis studeren",
       "options": [
         {
           "id": "a",
@@ -77,8 +77,8 @@ export const candidates = [
     "grammar_pattern_slug": "kami-vs-kita",
     "review_status": "published",
     "payload": {
-      "promptText": "Titin zegt tegen de pembantu: \"Wij willen naar buiten.\" De pembantu gaat niet mee. Welk woord kiest Titin?",
-      "targetMeaning": "Kami — de pembantu is NIET inbegrepen in \"wij\"",
+      "promptText": "Titin zegt tegen de pembantu: \"Wij willen naar buiten.\" Welk woord kiest Titin?",
+      "targetMeaning": "Wij willen naar buiten",
       "options": [
         {
           "id": "a",
@@ -98,8 +98,8 @@ export const candidates = [
     "grammar_pattern_slug": "kami-vs-kita",
     "review_status": "published",
     "payload": {
-      "promptText": "Een vader zegt tegen zijn gezin: \"Laten wij morgen naar het strand gaan.\" Hij gaat zelf ook mee. Welk woord?",
-      "targetMeaning": "Kita — iedereen gaat mee, inclusief de luisteraars",
+      "promptText": "Een vader zegt tegen zijn gezin: \"Laten wij morgen naar het strand gaan.\" Welk woord?",
+      "targetMeaning": "Laten wij naar het strand gaan",
       "options": [
         {
           "id": "a",

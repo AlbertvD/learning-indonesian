@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Box, Button, Stack, Text, Alert } from '@mantine/core'
 import { IconMicrophone } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
+import { translations } from '@/lib/i18n'
 import classes from './RecognitionMCQ.module.css'
 
 interface SpeakingExerciseProps {
@@ -10,7 +11,8 @@ interface SpeakingExerciseProps {
   onAnswer: (wasCorrect: boolean, latencyMs: number) => void
 }
 
-export function SpeakingExercise({ exerciseItem, onAnswer }: SpeakingExerciseProps) {
+export function SpeakingExercise({ exerciseItem, userLanguage, onAnswer }: SpeakingExerciseProps) {
+  const t = translations[userLanguage]
   const data = exerciseItem.speakingData
   const [isAnswered, setIsAnswered] = useState(false)
   const [startTime] = useState(() => Date.now())
@@ -19,43 +21,33 @@ export function SpeakingExercise({ exerciseItem, onAnswer }: SpeakingExercisePro
     return <div style={{ color: 'red' }}>Missing speaking data</div>
   }
 
-  // Handle answer submission (disabled for now)
   const handleSubmitAnswer = () => {
     if (isAnswered) return
     setIsAnswered(true)
 
     // Speaking exercises are not scored automatically yet (requires transcription API).
     // Treat as acknowledged (correct) so FSRS state is not corrupted.
-    const wasCorrect = true
-
     const FEEDBACK_DELAY_MS = 1500
     setTimeout(() => {
       const latencyMs = Date.now() - startTime - FEEDBACK_DELAY_MS
-      onAnswer(wasCorrect, latencyMs)
+      onAnswer(true, latencyMs)
     }, FEEDBACK_DELAY_MS)
   }
 
   return (
     <Box className={classes.container}>
       <Stack gap="xl">
-        {/* Alert: Speaking not yet available in sessions */}
-        <Alert color="blue" title="Speaking Exercises Coming Soon">
-          Speaking exercises are disabled for now but will be available in a future update.
-        </Alert>
+        <Alert color="blue" title={t.session.speaking.comingSoon} />
 
-        {/* Prompt section */}
         <Box className={classes.wordSection}>
-          <Text size="sm" c="dimmed" mb="xs">
-            {data.promptText}
-          </Text>
+          <Text size="sm" c="dimmed" mb="xs">{data.promptText}</Text>
           {data.targetPatternOrScenario && (
             <Text size="sm" c="dimmed">
-              Target: {data.targetPatternOrScenario}
+              {data.targetPatternOrScenario}
             </Text>
           )}
         </Box>
 
-        {/* Recording button (disabled) */}
         <Stack gap="md">
           <Button
             onClick={handleSubmitAnswer}
@@ -66,12 +58,8 @@ export function SpeakingExercise({ exerciseItem, onAnswer }: SpeakingExercisePro
             size="lg"
             leftSection={<IconMicrophone size={20} />}
           >
-            Record Answer
+            {t.session.speaking.recordButton}
           </Button>
-
-          <Text size="xs" c="dimmed" ta="center">
-            Click the button above to record your response.
-          </Text>
         </Stack>
       </Stack>
     </Box>

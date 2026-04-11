@@ -381,11 +381,13 @@ export const nl = {
     },
     feedback: {
       correct: 'Correct!',
+      almostCorrect: 'Bijna goed!',
       incorrect: 'Onjuist',
       yourAnswer: 'Jouw antwoord:',
       theWord: 'Het woord:',
       example: 'Voorbeeld:',
       continue: 'Doorgaan',
+      check: 'Controleer',
     },
     exercise: {
       typeAnswer: 'Typ je antwoord...',
@@ -393,8 +395,17 @@ export const nl = {
       correctAnswerLabel: 'Correct antwoord',
       transformPrefix: 'Transformeer:',
       hintPrefix: 'Hint:',
+      tryAgain: 'Probeer opnieuw',
+      meaningLabel: 'Betekenis:',
+      explanationLabel: 'Uitleg:',
+      chooseWord: 'Kies het juiste woord',
+      chooseIndonesian: 'Kies het juiste Indonesische woord',
       translateInstruction: 'Vertaal met het vereiste grammaticapatroon:',
       requiredPattern: 'Vereist patroon:',
+    },
+    speaking: {
+      comingSoon: 'Speaking-oefeningen komen binnenkort beschikbaar.',
+      recordButton: 'Antwoord opnemen',
     },
     summary: {
       title: 'Sessie afgerond!',
@@ -786,11 +797,13 @@ export const en: typeof nl = {
     },
     feedback: {
       correct: 'Correct!',
+      almostCorrect: 'Close enough!',
       incorrect: 'Incorrect',
       yourAnswer: 'Your answer:',
       theWord: 'The word:',
       example: 'Example:',
       continue: 'Continue',
+      check: 'Check',
     },
     exercise: {
       typeAnswer: 'Type your answer...',
@@ -798,8 +811,17 @@ export const en: typeof nl = {
       correctAnswerLabel: 'Correct answer',
       transformPrefix: 'Transform:',
       hintPrefix: 'Hint:',
+      tryAgain: 'Try again',
+      meaningLabel: 'Meaning:',
+      explanationLabel: 'Explanation:',
+      chooseWord: 'Choose the correct word',
+      chooseIndonesian: 'Choose the correct Indonesian word',
       translateInstruction: 'Translate using the required grammar pattern:',
       requiredPattern: 'Required pattern:',
+    },
+    speaking: {
+      comingSoon: 'Speaking exercises are coming soon.',
+      recordButton: 'Record answer',
     },
     summary: {
       title: 'Session Complete!',
