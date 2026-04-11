@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { useMantineColorScheme } from '@mantine/core'
 import {
   IconHome, IconBook, IconHeadphones, IconTrophy, IconChartBar,
-  IconLayoutList, IconBolt,
+  IconLayoutList, IconBolt, IconEye,
   IconSun, IconMoon,
 } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
@@ -41,6 +41,10 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
     { label: T.nav.exercises,    icon: <IconBolt size={17} />,        path: '/content/exercises' },
   ]
 
+  const adminItems = profile?.isAdmin
+    ? [{ label: 'Content Review', icon: <IconEye size={17} />, path: '/admin/content-review' }]
+    : []
+
   const initials = (profile?.fullName?.[0] ?? profile?.email?.[0] ?? 'A').toUpperCase()
 
   return (
@@ -72,6 +76,22 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
             {item.label}
           </NavLink>
         ))}
+        {adminItems.length > 0 && (
+          <>
+            <div className={classes.navDivider} />
+            {adminItems.map(item => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) => `${classes.navItem} ${isActive ? classes.navActive : ''}`}
+                onClick={() => { if (!locked) onClose() }}
+              >
+                {item.icon}
+                {item.label}
+              </NavLink>
+            ))}
+          </>
+        )}
       </div>
 
       {/* User footer */}

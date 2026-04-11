@@ -66,3 +66,10 @@
   cursor: pointer; transition: var(--transition-base);
 }
 .themeBtn:hover { background: var(--card-bg); color: var(--accent-primary); }
+
+.navDivider {
+  height: 1px;
+  background: var(--mantine-color-default-border);
+  margin: var(--mantine-spacing-xs) 0;
+  opacity: 0.5;
+}

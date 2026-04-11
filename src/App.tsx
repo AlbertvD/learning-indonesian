@@ -17,6 +17,7 @@ import { Profile } from '@/pages/Profile'
 import { Progress } from '@/pages/Progress'
 import { SectionCoverage } from '@/pages/SectionCoverage'
 import { ExerciseCoverage } from '@/pages/ExerciseCoverage'
+import { ContentReview } from '@/pages/ContentReview'
 
 function NotFound() {
   return (
@@ -128,6 +129,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ExerciseCoverage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/content-review"
+          element={
+            <ProtectedRoute>
+              <ContentReview />
             </ProtectedRoute>
           }
         />
