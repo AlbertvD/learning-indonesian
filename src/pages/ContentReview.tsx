@@ -133,16 +133,12 @@ export function ContentReview() {
     const p = variant.payload_json as Record<string, any>
     switch (variant.exercise_type) {
       case 'contrast_pair':
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return <ContrastPairExercise previewMode previewPayload={p} userLanguage="nl" onAnswer={(() => {}) as any} />
       case 'cloze_mcq':
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return <ClozeMcq previewMode previewPayload={p} userLanguage="nl" onAnswer={(() => {}) as any} />
       case 'sentence_transformation':
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return <SentenceTransformationExercise previewMode previewPayload={p} userLanguage="nl" onAnswer={(() => {}) as any} />
       case 'constrained_translation':
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return <ConstrainedTranslationExercise previewMode previewPayload={p} userLanguage="nl" onAnswer={(() => {}) as any} />
       default:
         return <ExerciseSummaryCard variant={variant} comment={commentMap.get(variant.id)} />
