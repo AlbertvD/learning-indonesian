@@ -9,13 +9,13 @@ export const candidates = [
       "sentence": "Kemarin ibu ___ pisang di pasar.",
       "translation": "Gisteren kocht moeder bananen op de markt.",
       "options": [
-        "belilah",
-        "membeli",
+        "makan",
+        "datang",
         "beli",
-        "dibeli"
+        "mau"
       ],
       "correctOptionId": "beli",
-      "explanationText": "Werkwoorden worden in het Indonesisch niet vervoegd voor tijd, persoon of getal. \"Beli\" blijft altijd \"beli\". De tijd wordt duidelijk uit context (kemarin = gisteren). Op A1-niveau gebruikt men de basisvorm."
+      "explanationText": "Werkwoorden worden in het Indonesisch niet vervoegd voor tijd, persoon of getal. \"Beli\" (kopen) past hier bij de context: moeder kocht bananen. \"Makan\" (eten), \"datang\" (komen) en \"mau\" (willen) passen niet bij de betekenis."
     }
   },
   {
@@ -28,12 +28,12 @@ export const candidates = [
       "translation": "Meneer en mevrouw kopen fruit op de markt.",
       "options": [
         "beli",
-        "belien",
-        "membeli-membeli",
-        "belinya"
+        "makan",
+        "datang",
+        "mau"
       ],
       "correctOptionId": "beli",
-      "explanationText": "Het werkwoord verandert niet bij meervoudig onderwerp. In het Nederlands: \"hij koopt\" vs. \"zij kopen\" — in het Indonesisch altijd \"beli\", ongeacht het aantal personen."
+      "explanationText": "Het werkwoord verandert niet bij meervoudig onderwerp. \"Beli\" (kopen) past bij de context: fruit kopen op de markt. \"Makan\" (eten), \"datang\" (komen) en \"mau\" (willen) passen niet bij de betekenis."
     }
   },
   {
@@ -46,12 +46,12 @@ export const candidates = [
       "translation": "Ik ga morgen naar de markt.",
       "options": [
         "pergi",
-        "zal pergi",
-        "akan pergikan",
-        "pergian"
+        "datang",
+        "beli",
+        "makan"
       ],
       "correctOptionId": "pergi",
-      "explanationText": "In het Indonesisch verandert het werkwoord niet voor toekomende tijd. \"Besok\" (morgen) geeft de toekomst aan. Het werkwoord \"pergi\" (gaan) blijft in de basisvorm — net als \"beli\" in andere voorbeeldzinnen uit deze les."
+      "explanationText": "In het Indonesisch verandert het werkwoord niet voor toekomende tijd. \"Besok\" (morgen) geeft de toekomst aan. \"Pergi\" (gaan) past bij de context: naar de markt gaan. \"Datang\" (komen), \"beli\" (kopen) en \"makan\" (eten) passen niet bij de richting \"ke pasar\"."
     }
   },
   {
@@ -199,13 +199,13 @@ export const candidates = [
       "sentence": "Pisang ini ___.",
       "translation": "Deze banaan is goedkoop.",
       "options": [
-        "is murah",
+        "mahal",
         "murah",
-        "adalah murah",
-        "itu murah"
+        "besar",
+        "baik"
       ],
       "correctOptionId": "murah",
-      "explanationText": "In het Indonesisch is er geen koppelwerkwoord \"is/zijn\" bij bijvoeglijke naamwoorden. \"Pisang ini murah\" = Deze banaan [is] goedkoop. \"Adalah\" wordt alleen bij naamwoordelijke gezegdes gebruikt, niet bij bijvoeglijke naamwoorden."
+      "explanationText": "In het Indonesisch is er geen koppelwerkwoord \"is/zijn\" — het bijvoeglijk naamwoord volgt direct op het onderwerp. \"Murah\" (goedkoop) past bij de vertaling. \"Mahal\" (duur), \"besar\" (groot) en \"baik\" (goed) zijn andere bijvoeglijke naamwoorden die hier niet passen."
     }
   },
   {
@@ -217,13 +217,13 @@ export const candidates = [
       "sentence": "Rumah itu ___.",
       "translation": "Dat huis is groot.",
       "options": [
-        "is besar",
+        "murah",
         "besar",
-        "ada besar",
-        "menjadi besar"
+        "mahal",
+        "baik"
       ],
       "correctOptionId": "besar",
-      "explanationText": "Het koppelwerkwoord \"is\" wordt weggelaten. \"Rumah itu besar\" = Dat huis [is] groot. \"Ada\" betekent \"er is/bestaat\" en is geen koppelwerkwoord. \"Menjadi\" betekent \"worden\", niet \"zijn\"."
+      "explanationText": "In het Indonesisch is er geen koppelwerkwoord \"is\" — het bijvoeglijk naamwoord volgt direct. \"Besar\" (groot) past bij de vertaling. \"Murah\" (goedkoop), \"mahal\" (duur) en \"baik\" (goed) passen hier niet bij de betekenis."
     }
   },
   {
@@ -236,12 +236,12 @@ export const candidates = [
       "translation": "De prijs van ananas is duur.",
       "options": [
         "mahal",
-        "is mahal",
-        "ada mahal",
-        "yang mahal"
+        "murah",
+        "besar",
+        "baik"
       ],
       "correctOptionId": "mahal",
-      "explanationText": "Geen koppelwerkwoord nodig. \"Harga nanas mahal\" = De prijs van ananas [is] duur. Het bijvoeglijk naamwoord volgt direct op het onderwerp. Dit is de standaardregel voor beschrijvende zinnen in het Indonesisch."
+      "explanationText": "Geen koppelwerkwoord nodig — het bijvoeglijk naamwoord volgt direct op het onderwerp. \"Mahal\" (duur) past bij de vertaling over de prijs. \"Murah\" (goedkoop) is het tegenovergestelde, \"besar\" (groot) en \"baik\" (goed) passen niet bij een prijs."
     }
   },
   {
@@ -571,13 +571,13 @@ export const candidates = [
       "sentence": "Saya beli ___ di pasar.",
       "translation": "Ik koop een banaan op de markt.",
       "options": [
-        "een pisang",
-        "sebuah pisang",
-        "de pisang",
-        "pisang"
+        "nanas",
+        "buah",
+        "pisang",
+        "rumah"
       ],
       "correctOptionId": "pisang",
-      "explanationText": "Het Indonesisch heeft geen lidwoorden (de/het/een). \"Saya beli pisang\" = Ik koop banaan. \"Sebuah\" is een classificeerwoord (niet een lidwoord) en is optioneel. \"Een pisang\" en \"de pisang\" bestaan niet in het Indonesisch."
+      "explanationText": "Het Indonesisch heeft geen lidwoorden (de/het/een). \"Saya beli pisang\" = Ik koop banaan. \"Pisang\" (banaan) past bij de vertaling. \"Nanas\" (ananas), \"buah\" (vrucht) en \"rumah\" (huis) passen niet bij de context."
     }
   },
   {
@@ -589,13 +589,13 @@ export const candidates = [
       "sentence": "Bapak mau beli ___ besar.",
       "translation": "Meneer wil een groot huis kopen.",
       "options": [
-        "een rumah",
-        "het rumah",
+        "pasar",
+        "hotel",
         "rumah",
-        "de rumah"
+        "pisang"
       ],
       "correctOptionId": "rumah",
-      "explanationText": "Geen lidwoord nodig. \"Rumah besar\" = [een] groot huis. Context bepaalt of het \"een huis\" of \"het huis\" betekent. Nederlandse lidwoorden (de/het/een) hebben geen equivalent in het Indonesisch."
+      "explanationText": "Geen lidwoord nodig in het Indonesisch. \"Rumah besar\" = [een] groot huis. \"Rumah\" (huis) past bij de vertaling. \"Pasar\" (markt), \"hotel\" en \"pisang\" (banaan) passen niet bij \"besar\" in deze context."
     }
   },
   {
@@ -607,13 +607,13 @@ export const candidates = [
       "sentence": "Ibu datang dari ___.",
       "translation": "Mevrouw komt van de markt.",
       "options": [
-        "de pasar",
-        "het pasar",
+        "rumah",
+        "hotel",
         "pasar",
-        "een pasar"
+        "Indonesia"
       ],
       "correctOptionId": "pasar",
-      "explanationText": "\"De markt\" wordt gewoon \"pasar\". Het Indonesisch heeft geen lidwoorden. Of het \"de markt\" of \"een markt\" is, blijkt uit de context. In deze zin is het duidelijk dat het om een specifieke markt gaat."
+      "explanationText": "Het Indonesisch heeft geen lidwoorden — \"de markt\" wordt gewoon \"pasar\". \"Pasar\" (markt) past bij de vertaling. \"Rumah\" (huis), \"hotel\" en \"Indonesia\" zijn andere plaatsen die hier niet passen."
     }
   },
   {
@@ -762,13 +762,13 @@ export const candidates = [
       "sentence": "Bapak beli tiga ___.",
       "translation": "Meneer koopt drie bananen.",
       "options": [
-        "pisang-pisang",
-        "pisangs",
+        "nanas",
+        "buah",
         "pisang",
-        "pisangan"
+        "rumah"
       ],
       "correctOptionId": "pisang",
-      "explanationText": "Als het getal al duidelijk is (\"tiga\" = drie), wordt het zelfstandig naamwoord NIET verdubbeld. \"Tiga pisang\" = drie bananen. \"Pisang-pisang\" bij een telwoord is fout. In het Nederlands: \"banaan\" wordt \"bananen\" — in het Indonesisch altijd \"pisang\"."
+      "explanationText": "Bij een telwoord (\"tiga\" = drie) verandert het zelfstandig naamwoord niet. \"Tiga pisang\" = drie bananen. \"Pisang\" (banaan) past bij de vertaling. \"Nanas\" (ananas), \"buah\" (vrucht) en \"rumah\" (huis) passen niet bij de context."
     }
   },
   {
@@ -780,13 +780,13 @@ export const candidates = [
       "sentence": "Lima ___ di pasar.",
       "translation": "Vijf verkopers op de markt.",
       "options": [
-        "penjual-penjual",
-        "penjuals",
+        "orang",
+        "pisang",
         "penjual",
-        "penjualan"
+        "rumah"
       ],
       "correctOptionId": "penjual",
-      "explanationText": "Bij een telwoord (\"lima\" = vijf) geen verdubbeling. \"Lima penjual\" = vijf verkopers. \"Penjual-penjual\" bij een telwoord is overbodig en fout. \"Penjualan\" betekent \"verkoop\" (een heel ander woord)."
+      "explanationText": "Bij een telwoord (\"lima\" = vijf) verandert het zelfstandig naamwoord niet. \"Lima penjual\" = vijf verkopers. \"Penjual\" (verkoper) past bij de vertaling. \"Orang\" (mens), \"pisang\" (banaan) en \"rumah\" (huis) passen niet."
     }
   },
   {
@@ -798,13 +798,13 @@ export const candidates = [
       "sentence": "Dua ___ datang dari Bali.",
       "translation": "Twee mensen komen uit Bali.",
       "options": [
-        "orang-orang",
+        "penjual",
         "orang",
-        "orangs",
-        "orang-orangan"
+        "pisang",
+        "rumah"
       ],
       "correctOptionId": "orang",
-      "explanationText": "\"Dua\" (twee) maakt al duidelijk dat het meervoud is. \"Dua orang\" = twee mensen. \"Orang-orang\" (verdubbeling) is onnodig bij een telwoord. Dit is het kernprincipe: het telwoord doet het werk, het zelfstandig naamwoord verandert niet."
+      "explanationText": "Bij een telwoord (\"dua\" = twee) verandert het zelfstandig naamwoord niet. \"Dua orang\" = twee mensen. \"Orang\" (mens/persoon) past bij de vertaling. \"Penjual\" (verkoper) zou \"twee verkopers\" zijn, \"pisang\" (banaan) en \"rumah\" (huis) passen niet bij \"datang dari Bali\"."
     }
   },
   {

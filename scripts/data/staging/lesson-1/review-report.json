@@ -1,41 +1,55 @@
 {
   "lesson": 1,
-  "revision": 3,
-  "reviewedAt": "2026-04-10T14:30:00.000Z",
+  "revision": 4,
+  "reviewedAt": "2026-04-11T10:00:00.000Z",
   "status": "approved",
   "issues": [
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "cloze_mcq #3 (verb-no-conjugation, line 44)",
+      "issue": "Option 'pergi' is not in lesson 1 vocabulary (learning-items.ts). The correct answer uses a word the learner has not been formally introduced to.",
+      "fix": "Replace 'pergi' with a lesson 1 verb (e.g. 'makan') and adjust sentence/translation accordingly, or add 'pergi' to learning-items.ts"
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "cloze_mcq #7-9 (serial-verb-construction, lines 386-433)",
+      "issue": "Distractors include Dutch words ('kunnen', 'te', 'om') mixed into Indonesian phrases. While pedagogically intentional (testing L1 interference), this differs from the vocabulary-based distractor approach used elsewhere.",
+      "fix": "Admin review: confirm this is the desired approach for serial-verb cloze_mcq items. These test construction rather than vocabulary, so phrase-level distractors may be appropriate."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "cloze_mcq #4-6 (zero-copula, lines 198-245)",
+      "issue": "All three zero-copula cloze_mcq candidates use the identical distractor set (mahal, murah, besar, baik) in different orders. Learner may memorise the option set rather than engage with each sentence.",
+      "fix": "Admin may want to vary distractors across the three items (e.g. substitute 'cukup' or 'kosong' for one item)"
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "cloze_mcq #10 (no-articles) and #13 (no-singular-plural)",
+      "issue": "Identical option sets: nanas, buah, pisang, rumah. When the learner encounters both exercises, they may feel repetitive.",
+      "fix": "Admin may want to swap one distractor in one of the two items for variety (e.g. 'harga' or 'hotel')"
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "cloze_mcq #19-21 (belum-vs-tidak, lines 1136-1184)",
+      "issue": "Distractors 'bukan' and 'jangan' are not in lesson 1 vocabulary. However, they are functionally appropriate negation particles that form a natural contrast set with 'tidak' and 'belum'.",
+      "fix": "No action needed if admin is comfortable introducing these as distractors before formal teaching. They serve as functional-category distractors which is pedagogically sound."
+    },
     {
       "severity": "WARNING",
       "file": "grammar-patterns.ts",
       "item": "verb-no-conjugation",
       "issue": "confusion_group is null despite conceptual overlap with serial-verb-construction (both deal with verb form invariance)",
       "fix": "Consider adding a shared confusion_group if learners confuse these patterns in practice"
-    },
-    {
-      "severity": "WARNING",
-      "file": "cloze-contexts.ts",
-      "item": "baik-baik saja (expression)",
-      "issue": "Only 1 cloze context provided; other expressions have 2",
-      "fix": "Admin may add a second cloze context in the app for more practice variety"
-    },
-    {
-      "severity": "WARNING",
-      "file": "cloze-contexts.ts",
-      "item": "selamat datang (expression)",
-      "issue": "Only 1 cloze context provided; other expressions have 2",
-      "fix": "Admin may add a second cloze context in the app for more practice variety"
-    },
-    {
-      "severity": "WARNING",
-      "file": "cloze-contexts.ts",
-      "item": "nol (number)",
-      "issue": "Only 1 cloze context provided; other numbers have 2",
-      "fix": "Admin may add a second cloze context in the app for more practice variety"
     }
   ],
   "summary": {
-    "total": 4,
+    "total": 6,
     "critical": 0,
-    "warning": 4
+    "warning": 6
   }
 }
