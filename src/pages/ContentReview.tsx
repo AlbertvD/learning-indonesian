@@ -4,7 +4,7 @@ import {
   Container, Title, Group, Select, Text, Tabs, Stack,
   Textarea, Button, Box, Center, Loader, Badge,
 } from '@mantine/core'
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
+import { IconChevronLeft, IconChevronRight, IconCheck } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/lib/supabase'
@@ -36,6 +36,7 @@ export function ContentReview() {
   const [loading, setLoading] = useState(false)
   const [draftComment, setDraftComment] = useState('')
   const [saving, setSaving] = useState(false)
+  const [savedId, setSavedId] = useState<string | null>(null)
   const [openComments, setOpenComments] = useState<ReviewCommentWithContext[]>([])
   const [commentsLoading, setCommentsLoading] = useState(false)
 
@@ -97,7 +98,9 @@ export function ContentReview() {
     try {
       const saved = await exerciseReviewService.upsertComment(user.id, current.id, draftComment.trim())
       setCommentMap(m => new Map(m).set(current.id, saved))
-      notifications.show({ color: 'green', message: 'Opmerking opgeslagen.' })
+      setSavedId(current.id)
+      setTimeout(() => setSavedId(null), 2500)
+      notifications.show({ color: 'green', title: 'Opgeslagen', message: 'Opmerking opgeslagen.' })
     } catch (err) {
       logError({ page: 'content-review', action: 'saveComment', error: err })
       notifications.show({ color: 'red', title: 'Fout', message: 'Opslaan mislukt.' })
@@ -233,8 +236,15 @@ export function ContentReview() {
                   autosize
                   mb="sm"
                 />
-                <Button size="sm" onClick={handleSaveComment} loading={saving} disabled={!draftComment.trim()}>
-                  Opslaan
+                <Button
+                  size="sm"
+                  onClick={handleSaveComment}
+                  loading={saving}
+                  disabled={!draftComment.trim()}
+                  color={savedId === current.id ? 'green' : undefined}
+                  leftSection={savedId === current.id ? <IconCheck size={14} /> : undefined}
+                >
+                  {savedId === current.id ? 'Opgeslagen' : 'Opslaan'}
                 </Button>
               </Box>
             </Stack>
