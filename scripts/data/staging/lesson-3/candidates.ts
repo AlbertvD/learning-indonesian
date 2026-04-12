@@ -56,7 +56,7 @@ export const candidates = [
     "grammar_pattern_slug": "ada-existential",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Dit huis is mooi\"",
+      "promptText": "\"Dit huis is mooi\"",
       "targetMeaning": "Dit huis is mooi (eigenschap, geen bestaan)",
       "options": [
         {
@@ -77,7 +77,7 @@ export const candidates = [
     "grammar_pattern_slug": "ada-existential",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Is er kaas?\"",
+      "promptText": "\"Is er kaas?\"",
       "targetMeaning": "Vraag naar aanwezigheid met ada",
       "options": [
         {
@@ -98,7 +98,7 @@ export const candidates = [
     "grammar_pattern_slug": "ada-existential",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Ik heb honger\"",
+      "promptText": "\"Ik heb honger\"",
       "targetMeaning": "Ik heb honger (toestand, geen bestaan)",
       "options": [
         {
@@ -229,7 +229,7 @@ export const candidates = [
     "grammar_pattern_slug": "dari-di-ke-locative",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Ik ga naar Jakarta\"",
+      "promptText": "\"Ik ga naar Jakarta\"",
       "targetMeaning": "Beweging — ke voor bestemming",
       "options": [
         {
@@ -250,7 +250,7 @@ export const candidates = [
     "grammar_pattern_slug": "dari-di-ke-locative",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Tono komt van huis\"",
+      "promptText": "\"Tono komt van huis\"",
       "targetMeaning": "Herkomst — dari voor vertrekpunt",
       "options": [
         {
@@ -271,7 +271,7 @@ export const candidates = [
     "grammar_pattern_slug": "dari-di-ke-locative",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Vader is op kantoor\"",
+      "promptText": "\"Vader is op kantoor\"",
       "targetMeaning": "Locatie — di voor verblijfplaats",
       "options": [
         {
@@ -575,7 +575,7 @@ export const candidates = [
     "grammar_pattern_slug": "sekali-intensifier",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Het eten is erg lekker\"",
+      "promptText": "\"Het eten is erg lekker\"",
       "targetMeaning": "Het eten is erg lekker (versterking met sekali)",
       "options": [
         {
@@ -596,7 +596,7 @@ export const candidates = [
     "grammar_pattern_slug": "sekali-intensifier",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"De fiets is heel mooi\"",
+      "promptText": "\"De fiets is heel mooi\"",
       "targetMeaning": "De fiets is heel mooi (versterking met sekali)",
       "options": [
         {
@@ -617,7 +617,7 @@ export const candidates = [
     "grammar_pattern_slug": "sekali-intensifier",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"De bagage is erg zwaar\"",
+      "promptText": "\"De bagage is erg zwaar\"",
       "targetMeaning": "De bagage is erg zwaar (versterkend)",
       "options": [
         {

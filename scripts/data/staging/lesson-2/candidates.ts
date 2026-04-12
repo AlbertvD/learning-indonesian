@@ -56,7 +56,7 @@ export const candidates = [
     "grammar_pattern_slug": "se-classifier",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"een kleine kip\"",
+      "promptText": "\"een kleine kip\"",
       "targetMeaning": "Classificeerwoord voor dieren",
       "options": [
         {
@@ -77,7 +77,7 @@ export const candidates = [
     "grammar_pattern_slug": "se-classifier",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"een Nederlander\"",
+      "promptText": "\"een Nederlander\"",
       "targetMeaning": "Classificeerwoord voor personen",
       "options": [
         {
@@ -236,7 +236,7 @@ export const candidates = [
     "grammar_pattern_slug": "ini-itu-demonstrative",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Dit huis is klein\"",
+      "promptText": "\"Dit huis is klein\"",
       "targetMeaning": "Aanwijzend voornaamwoord achter het zelfstandig naamwoord",
       "options": [
         {
@@ -257,7 +257,7 @@ export const candidates = [
     "grammar_pattern_slug": "ini-itu-demonstrative",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Dat kleine huis is goedkoop\"",
+      "promptText": "\"Dat kleine huis is goedkoop\"",
       "targetMeaning": "Dat kleine huis is goedkoop (itu na znw + bijv.nw.)",
       "options": [
         {
@@ -592,7 +592,7 @@ export const candidates = [
     "grammar_pattern_slug": "ini-itu-central",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Dat is mooi\"",
+      "promptText": "\"Dat is mooi\"",
       "targetMeaning": "Centraal onderwerp met itu",
       "options": [
         {
@@ -766,7 +766,7 @@ export const candidates = [
     "grammar_pattern_slug": "tidak-negation",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Deze taxi is niet nieuw\"",
+      "promptText": "\"Deze taxi is niet nieuw\"",
       "targetMeaning": "Deze taxi is niet nieuw (ontkenning met tidak)",
       "options": [
         {
@@ -787,7 +787,7 @@ export const candidates = [
     "grammar_pattern_slug": "tidak-negation",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"Hasan verblijft niet in het hotel\"",
+      "promptText": "\"Hasan verblijft niet in het hotel\"",
       "targetMeaning": "Hasan verblijft niet in het hotel (tidak voor het werkwoord)",
       "options": [
         {
@@ -940,7 +940,7 @@ export const candidates = [
     "grammar_pattern_slug": "adjective-after-noun",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: \"een grote tas\"",
+      "promptText": "\"een grote tas\"",
       "targetMeaning": "Een grote tas (bijv.nw. na znw)",
       "options": [
         {
@@ -1118,7 +1118,7 @@ export const candidates = [
     "grammar_pattern_slug": "belas-numbers",
     "review_status": "published",
     "payload": {
-      "promptText": "Pilih yang benar: hoe schrijf je 11 in het Indonesisch?",
+      "promptText": "hoe schrijf je 11 in het Indonesisch?",
       "targetMeaning": "Elf (11) -- se- vervangt satu bij belas",
       "options": [
         {

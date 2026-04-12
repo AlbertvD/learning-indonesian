@@ -112,12 +112,17 @@ export function ContrastPairExercise({ exerciseItem, userLanguage, onAnswer, pre
 
   const isCorrect = selectedOption === data.correctOptionId
 
+  // Strip legacy "Pilih yang benar: " prefix that was authored into promptText
+  // before the UI provided its own instruction label.
+  const displayPrompt = data.promptText.replace(/^Pilih yang benar:\s*/i, '')
+
   return (
     <Box className={classes.container}>
       <Stack gap="xl">
-        {/* Prompt */}
+        {/* Instruction + Prompt */}
         <Box className={classes.wordSection}>
-          <Text size="sm" c="dimmed" mb="xs">{data.promptText}</Text>
+          <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.chooseCorrect}</Text>
+          <Text fw={600} size="lg">{displayPrompt}</Text>
         </Box>
 
         {/* Options */}
