@@ -7,7 +7,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "sentence": "Kemarin ibu ___ pisang di pasar.",
-      "translation": "Gisteren kocht moeder bananen op de markt.",
+      "translation": "Wat deed moeder gisteren met de bananen op de markt?",
       "options": [
         "makan",
         "datang",
@@ -25,7 +25,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "sentence": "Bapak dan Ibu ___ buah di pasar.",
-      "translation": "Meneer en mevrouw kopen fruit op de markt.",
+      "translation": "Wat doen meneer en mevrouw met het fruit op de markt?",
       "options": [
         "beli",
         "makan",
@@ -43,7 +43,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "sentence": "Saya ___ ke pasar besok.",
-      "translation": "Ik ga morgen naar de markt.",
+      "translation": "Morgen, de markt -- wat doe ik?",
       "options": [
         "pergi",
         "datang",
@@ -197,7 +197,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "sentence": "Pisang ini ___.",
-      "translation": "Deze banaan is goedkoop.",
+      "translation": "Hoeveel kost deze banaan? Niet veel!",
       "options": [
         "mahal",
         "murah",
@@ -215,7 +215,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "sentence": "Rumah itu ___.",
-      "translation": "Dat huis is groot.",
+      "translation": "Hoe is dat huis? Het heeft veel kamers!",
       "options": [
         "murah",
         "besar",
@@ -233,7 +233,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "sentence": "Harga nanas ___.",
-      "translation": "De prijs van ananas is duur.",
+      "translation": "Wat vind je van de prijs van ananas? Ik wil het niet betalen!",
       "options": [
         "mahal",
         "murah",
@@ -385,7 +385,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "sentence": "Saya ___ pisang di pasar.",
-      "translation": "Ik wil bananen kopen op de markt.",
+      "translation": "Ik heb een plan voor de bananen op de markt.",
       "options": [
         "mau untuk beli",
         "mau beli",
@@ -403,7 +403,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "sentence": "Ibu ___ nanas di pasar.",
-      "translation": "Mevrouw kan ananas kopen op de markt.",
+      "translation": "Het is mogelijk voor mevrouw: ananas op de markt.",
       "options": [
         "bisa te beli",
         "bisa beli",
@@ -421,7 +421,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "sentence": "Bapak ___ buah di pasar.",
-      "translation": "Meneer mag fruit eten op de markt.",
+      "translation": "Het is meneer toegestaan: fruit op de markt.",
       "options": [
         "boleh makan",
         "makan boleh",

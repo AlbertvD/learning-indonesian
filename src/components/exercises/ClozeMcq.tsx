@@ -135,9 +135,14 @@ export function ClozeMcq({ exerciseItem, userLanguage, onAnswer, previewMode, pr
   return (
     <Box className={classes.container}>
       <Stack gap="xl">
-        {/* Sentence with blank — no translation before answering */}
+        {/* Sentence with blank + translation always visible */}
         <Box className={classes.wordSection}>
-          <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.chooseWord}</Text>
+          <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.completeSentence}</Text>
+          {data.translation && (
+            <Text size="sm" c="dimmed" mb="xs" style={{ fontStyle: 'italic' }}>
+              {data.translation}
+            </Text>
+          )}
           <Box className={classes.word} style={{ fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500 }}>
             {parts[0]}
             <Box
@@ -156,12 +161,6 @@ export function ClozeMcq({ exerciseItem, userLanguage, onAnswer, previewMode, pr
             </Box>
             {parts[1] ?? ''}
           </Box>
-          {/* Translation shown only after answering */}
-          {isAnswered && data.translation && (
-            <Text size="sm" c="dimmed" mt="xs" style={{ fontStyle: 'italic' }}>
-              {data.translation}
-            </Text>
-          )}
         </Box>
 
         {/* Options */}
