@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Button, Stack, Text, Badge } from '@mantine/core'
+import { Box, Button, Divider, Stack, Text, Badge } from '@mantine/core'
 import type { ExerciseItem } from '@/types/learning'
 import { translations } from '@/lib/i18n'
 import classes from './RecognitionMCQ.module.css'
@@ -7,20 +7,71 @@ import classes from './RecognitionMCQ.module.css'
 const MAX_FAILURES = 1  // allow one retry before finalizing as wrong
 
 interface ContrastPairExerciseProps {
-  exerciseItem: ExerciseItem
+  exerciseItem?: ExerciseItem
   userLanguage: 'en' | 'nl'
   onAnswer: (wasCorrect: boolean, latencyMs: number) => void
+  previewMode?: boolean
+  previewPayload?: Record<string, any>
 }
 
-export function ContrastPairExercise({ exerciseItem, userLanguage, onAnswer }: ContrastPairExerciseProps) {
+export function ContrastPairExercise({ exerciseItem, userLanguage, onAnswer, previewMode, previewPayload }: ContrastPairExerciseProps) {
   const t = translations[userLanguage]
-  const data = exerciseItem.contrastPairData
 
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
   const [failureCount, setFailureCount] = useState(0)
   const [showWrong, setShowWrong] = useState(false)
   const [startTime] = useState(() => Date.now())
+
+  if (previewMode && previewPayload) {
+    const p = previewPayload
+    const options = p.options as string[]
+    return (
+      <Box className={classes.container}>
+        <Stack gap="xl">
+          {/* Question half */}
+          <Box className={classes.wordSection}>
+            <Text size="sm" c="dimmed">{p.promptText}</Text>
+          </Box>
+          <Stack gap="md">
+            {options.map((option) => (
+              <Button key={option} className={classes.optionButton} variant="light" size="lg" fullWidth disabled>
+                {option}
+              </Button>
+            ))}
+          </Stack>
+
+          <Divider label="Antwoord" labelPosition="center" my="lg" />
+
+          {/* Answer half */}
+          <Stack gap="md">
+            {options.map((option) => (
+              <Button
+                key={option}
+                className={`${classes.optionButton} ${option === p.correctOptionId ? classes.showCorrect : ''}`}
+                variant="light"
+                size="lg"
+                fullWidth
+                disabled
+              >
+                {option}
+              </Button>
+            ))}
+          </Stack>
+          {p.targetMeaning && (
+            <Text size="sm" c="dimmed">{t.session.exercise.meaningLabel} {p.targetMeaning}</Text>
+          )}
+          {p.explanationText && (
+            <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)', background: 'var(--card-bg)' }}>
+              <Text size="sm">{p.explanationText}</Text>
+            </Box>
+          )}
+        </Stack>
+      </Box>
+    )
+  }
+
+  const data = exerciseItem!.contrastPairData
 
   if (!data) {
     return <div style={{ color: 'red' }}>Missing contrast pair data</div>

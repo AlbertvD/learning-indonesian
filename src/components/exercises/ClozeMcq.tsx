@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Stack, Text } from '@mantine/core'
+import { Box, Button, Divider, Stack, Text } from '@mantine/core'
 import type { ExerciseItem } from '@/types/learning'
 import { translations } from '@/lib/i18n'
 import classes from './RecognitionMCQ.module.css'
@@ -7,19 +7,90 @@ import classes from './RecognitionMCQ.module.css'
 const MAX_FAILURES = 1  // allow one retry before finalizing as wrong
 
 interface ClozeMcqProps {
-  exerciseItem: ExerciseItem
+  exerciseItem?: ExerciseItem
   userLanguage: 'en' | 'nl'
   onAnswer: (wasCorrect: boolean, latencyMs: number) => void
+  previewMode?: boolean
+  previewPayload?: Record<string, any>
 }
 
-export function ClozeMcq({ exerciseItem, userLanguage, onAnswer }: ClozeMcqProps) {
+export function ClozeMcq({ exerciseItem, userLanguage, onAnswer, previewMode, previewPayload }: ClozeMcqProps) {
   const t = translations[userLanguage]
-  const data = exerciseItem.clozeMcqData
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
   const [failureCount, setFailureCount] = useState(0)
   const [showWrong, setShowWrong] = useState(false)
   const [startTime] = useState(() => Date.now())
+
+  if (previewMode && previewPayload) {
+    const p = previewPayload
+    const options = p.options as string[]
+    const parts = (p.sentence as string).split('___')
+
+    const blankStyle = {
+      display: 'inline-block',
+      minWidth: 80,
+      borderBottom: '2px solid var(--accent-primary)',
+      margin: '0 4px',
+      verticalAlign: 'bottom',
+      textAlign: 'center' as const,
+    }
+
+    return (
+      <Box className={classes.container}>
+        <Stack gap="xl">
+          {/* Question half */}
+          <Text size="sm" c="dimmed">{t.session.exercise.chooseWord}</Text>
+          <Box className={classes.wordSection}>
+            <Box className={classes.word} style={{ fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500 }}>
+              {/* The inline style intentionally overrides classes.word's 4xl/bold defaults
+                  to match the cloze sentence rendering size — same as live component */}
+              {parts[0]}
+              <Box component="span" style={{ ...blankStyle, color: 'transparent' }}>_</Box>
+              {parts[1] ?? ''}
+            </Box>
+          </Box>
+          <Stack gap="md">
+            {options.map((option) => (
+              <Button key={option} className={classes.optionButton} variant="light" size="lg" fullWidth disabled>
+                {option}
+              </Button>
+            ))}
+          </Stack>
+
+          <Divider label="Antwoord" labelPosition="center" my="lg" />
+
+          {/* Answer half */}
+          <Box className={classes.wordSection}>
+            <Box className={classes.word} style={{ fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500 }}>
+              {parts[0]}
+              <Box component="span" style={{ ...blankStyle, color: 'var(--success)' }}>{p.correctOptionId}</Box>
+              {parts[1] ?? ''}
+            </Box>
+          </Box>
+          {p.translation && (
+            <Text size="sm" c="dimmed" style={{ fontStyle: 'italic' }}>{p.translation}</Text>
+          )}
+          <Stack gap="md">
+            {options.map((option) => (
+              <Button
+                key={option}
+                className={`${classes.optionButton} ${option === p.correctOptionId ? classes.showCorrect : ''}`}
+                variant="light"
+                size="lg"
+                fullWidth
+                disabled
+              >
+                {option}
+              </Button>
+            ))}
+          </Stack>
+        </Stack>
+      </Box>
+    )
+  }
+
+  const data = exerciseItem!.clozeMcqData
 
   if (!data) {
     return <div style={{ color: 'red' }}>Missing cloze MCQ data</div>
@@ -109,14 +180,17 @@ export function ClozeMcq({ exerciseItem, userLanguage, onAnswer }: ClozeMcqProps
             }
 
             return (
-              <button
+              <Button
                 key={option}
-                className={`${classes.option} ${statusClass}`}
+                className={`${classes.optionButton} ${statusClass}`}
+                variant={isSelected && !showWrong ? 'filled' : 'light'}
+                size="lg"
+                fullWidth
                 onClick={() => handleSelectOption(option)}
                 disabled={isAnswered}
               >
                 {option}
-              </button>
+              </Button>
             )
           })}
         </Stack>

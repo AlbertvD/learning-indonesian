@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Box, Button, TextInput, Stack, Text, Badge } from '@mantine/core'
+import { Box, Button, Divider, TextInput, Stack, Text, Badge } from '@mantine/core'
 import { IconArrowRight } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
@@ -7,15 +7,19 @@ import { translations } from '@/lib/i18n'
 import classes from './TypedRecall.module.css'
 
 interface ConstrainedTranslationExerciseProps {
-  exerciseItem: ExerciseItem
+  exerciseItem?: ExerciseItem
   userLanguage: 'en' | 'nl'
   onAnswer: (wasCorrect: boolean, isFuzzy: boolean, latencyMs: number, rawResponse: string) => void
+  previewMode?: boolean
+  previewPayload?: Record<string, any>
 }
 
 export function ConstrainedTranslationExercise({
   exerciseItem,
   userLanguage,
   onAnswer,
+  previewMode,
+  previewPayload,
 }: ConstrainedTranslationExerciseProps) {
   const t = translations[userLanguage]
   const [response, setResponse] = useState('')
@@ -24,10 +28,101 @@ export function ConstrainedTranslationExercise({
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    inputRef.current?.focus()
-  }, [])
+    if (!previewMode) inputRef.current?.focus()
+  }, [previewMode])
 
-  const data = exerciseItem.constrainedTranslationData
+  if (previewMode && previewPayload) {
+    const p = previewPayload
+    const isClozeMode = !!p.targetSentenceWithBlank && !!p.blankAcceptableAnswers?.length
+
+    const explanationCard = p.explanationText
+      ? (
+        <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)', background: 'var(--card-bg)' }}>
+          <Text size="sm">{p.explanationText}</Text>
+        </Box>
+      )
+      : null
+
+    if (isClozeMode) {
+      const parts = (p.targetSentenceWithBlank as string).split('___')
+      const blankAnswers = p.blankAcceptableAnswers as string[]
+
+      const blankStyle = {
+        display: 'inline-block',
+        minWidth: 80,
+        borderBottom: '2px solid var(--accent-primary)',
+        margin: '0 4px',
+        verticalAlign: 'bottom',
+        textAlign: 'center' as const,
+      }
+
+      return (
+        <Box className={classes.container}>
+          <Stack gap="xl">
+            {/* Question half */}
+            <Box className={classes.promptSection}>
+              <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.chooseWord}</Text>
+              <Box style={{ fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500 }}>
+                {parts[0]}
+                <Box component="span" style={{ ...blankStyle, color: 'transparent' }}>_</Box>
+                {parts[1] ?? ''}
+              </Box>
+              <Text size="sm" c="dimmed" mt="xs" style={{ fontStyle: 'italic' }}>{p.sourceLanguageSentence}</Text>
+            </Box>
+
+            <Divider label="Antwoord" labelPosition="center" my="lg" />
+
+            {/* Answer half */}
+            <Box className={classes.promptSection}>
+              <Box style={{ fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500 }}>
+                {parts[0]}
+                <Box component="span" style={{ ...blankStyle, color: 'var(--success)' }}>{blankAnswers[0]}</Box>
+                {parts[1] ?? ''}
+              </Box>
+            </Box>
+            {explanationCard}
+          </Stack>
+        </Box>
+      )
+    }
+
+    // Full-sentence mode
+    const acceptableAnswers = p.acceptableAnswers as string[]
+    return (
+      <Box className={classes.container}>
+        <Stack gap="xl">
+          {/* Question half */}
+          <Box className={classes.promptSection}>
+            <Text size="sm" c="dimmed" mb="xs">
+              {(p.sourceLanguageSentence as string).includes(' ')
+                ? t.session.exercise.translateInstruction
+                : t.session.exercise.translateWord}
+            </Text>
+            <Box className={classes.translation}>{p.sourceLanguageSentence}</Box>
+          </Box>
+          <TextInput
+            placeholder={t.session.exercise.typeAnswer}
+            size="lg"
+            className={classes.input}
+            disabled
+            value=""
+            readOnly
+          />
+
+          <Divider label="Antwoord" labelPosition="center" my="lg" />
+
+          {/* Answer half */}
+          <Text size="xl" fw={700} style={{ color: 'var(--accent-primary)' }}>{acceptableAnswers[0]}</Text>
+          {acceptableAnswers.length > 1 && (
+            <Text size="xs" c="dimmed">ook: {acceptableAnswers.slice(1).join(', ')}</Text>
+          )}
+          {explanationCard}
+        </Stack>
+      </Box>
+    )
+  }
+
+  const data = exerciseItem!.constrainedTranslationData
 
   if (!data) {
     return <div style={{ color: 'red' }}>Missing constrained translation data</div>

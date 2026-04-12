@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Container, Title, Group, Select, Text, Tabs, Stack,
-  Textarea, Button, Box, Center, Loader,
+  Textarea, Button, Box, Center, Loader, Badge,
 } from '@mantine/core'
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
@@ -11,6 +11,10 @@ import { supabase } from '@/lib/supabase'
 import { exerciseReviewService } from '@/services/exerciseReviewService'
 import { logError } from '@/lib/logger'
 import { ExerciseSummaryCard } from '@/components/admin/ExerciseSummaryCard'
+import { ContrastPairExercise } from '@/components/exercises/ContrastPairExercise'
+import { ClozeMcq } from '@/components/exercises/ClozeMcq'
+import { SentenceTransformationExercise } from '@/components/exercises/SentenceTransformationExercise'
+import { ConstrainedTranslationExercise } from '@/components/exercises/ConstrainedTranslationExercise'
 import type { ExerciseVariant, ReviewComment, ReviewCommentWithContext } from '@/types/learning'
 
 interface Lesson { id: string; title: string; order_index: number }
@@ -125,6 +129,26 @@ export function ContentReview() {
     }
   }
 
+  function renderExercisePreview(variant: ExerciseVariant) {
+    const p = variant.payload_json as Record<string, any>
+    switch (variant.exercise_type) {
+      case 'contrast_pair':
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return <ContrastPairExercise previewMode previewPayload={p} userLanguage="nl" onAnswer={(() => {}) as any} />
+      case 'cloze_mcq':
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return <ClozeMcq previewMode previewPayload={p} userLanguage="nl" onAnswer={(() => {}) as any} />
+      case 'sentence_transformation':
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return <SentenceTransformationExercise previewMode previewPayload={p} userLanguage="nl" onAnswer={(() => {}) as any} />
+      case 'constrained_translation':
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return <ConstrainedTranslationExercise previewMode previewPayload={p} userLanguage="nl" onAnswer={(() => {}) as any} />
+      default:
+        return <ExerciseSummaryCard variant={variant} comment={commentMap.get(variant.id)} />
+    }
+  }
+
   const lessonOptions = lessons.map(l => ({ value: l.id, label: l.title }))
   const typeOptions = [
     { value: '__all', label: 'Alle types' },
@@ -182,7 +206,12 @@ export function ContentReview() {
           {!loading && current && (
             <Stack gap="lg">
               <Group justify="space-between">
-                <Text size="sm" c="dimmed">{index + 1} / {filteredVariants.length}</Text>
+                <Group gap="xs">
+                  <Text size="sm" c="dimmed">{index + 1} / {filteredVariants.length}</Text>
+                  {commentMap.has(current.id) && (
+                    <Badge variant="light" color="orange" size="sm">💬 opmerking</Badge>
+                  )}
+                </Group>
                 <Group gap="xs">
                   <Button variant="subtle" size="sm" leftSection={<IconChevronLeft size={16} />}
                     onClick={() => setIndex(i => Math.max(0, i - 1))} disabled={index === 0}>
@@ -196,7 +225,7 @@ export function ContentReview() {
                 </Group>
               </Group>
 
-              <ExerciseSummaryCard variant={current} comment={commentMap.get(current.id)} />
+              {renderExercisePreview(current)}
 
               <Box p="lg" style={{ border: '1px solid var(--mantine-color-default-border)', borderRadius: 'var(--mantine-radius-md)' }}>
                 <Text size="sm" fw={600} mb="sm">Opmerking</Text>

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Box, Button, TextInput, Stack, Text, Badge } from '@mantine/core'
+import { Box, Button, Divider, TextInput, Stack, Text, Badge } from '@mantine/core'
 import { IconArrowRight } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
@@ -10,15 +10,19 @@ const HINT_AFTER_FAILURES = 2  // hint appears after this many wrong attempts
 const MAX_FAILURES = 5         // give up and finalize as wrong after this many
 
 interface SentenceTransformationExerciseProps {
-  exerciseItem: ExerciseItem
+  exerciseItem?: ExerciseItem
   userLanguage: 'en' | 'nl'
   onAnswer: (wasCorrect: boolean, isFuzzy: boolean, latencyMs: number, rawResponse: string) => void
+  previewMode?: boolean
+  previewPayload?: Record<string, any>
 }
 
 export function SentenceTransformationExercise({
   exerciseItem,
   userLanguage,
   onAnswer,
+  previewMode,
+  previewPayload,
 }: SentenceTransformationExerciseProps) {
   const t = translations[userLanguage]
   const [response, setResponse] = useState('')
@@ -29,10 +33,49 @@ export function SentenceTransformationExercise({
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    inputRef.current?.focus()
-  }, [])
+    if (!previewMode) inputRef.current?.focus()
+  }, [previewMode])
 
-  const data = exerciseItem.sentenceTransformationData
+  if (previewMode && previewPayload) {
+    const p = previewPayload
+    const acceptableAnswers = p.acceptableAnswers as string[]
+    return (
+      <Box className={classes.container}>
+        <Stack gap="xl">
+          {/* Question half */}
+          <Box className={classes.promptSection}>
+            <Text size="sm" c="dimmed" mb="xs">
+              {t.session.exercise.transformPrefix} {p.transformationInstruction}
+            </Text>
+            <Box className={classes.translation}>{p.sourceSentence}</Box>
+          </Box>
+          <TextInput
+            placeholder={t.session.exercise.typeAnswer}
+            size="lg"
+            className={classes.input}
+            disabled
+            value=""
+            readOnly
+          />
+
+          <Divider label="Antwoord" labelPosition="center" my="lg" />
+
+          {/* Answer half */}
+          <Text size="xl" fw={700} style={{ color: 'var(--accent-primary)' }}>{acceptableAnswers[0]}</Text>
+          {acceptableAnswers.length > 1 && (
+            <Text size="xs" c="dimmed">ook: {acceptableAnswers.slice(1).join(', ')}</Text>
+          )}
+          {p.explanationText && (
+            <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)', background: 'var(--card-bg)' }}>
+              <Text size="sm">{p.explanationText}</Text>
+            </Box>
+          )}
+        </Stack>
+      </Box>
+    )
+  }
+
+  const data = exerciseItem!.sentenceTransformationData
 
   if (!data) {
     return <div style={{ color: 'red' }}>Missing sentence transformation data</div>
