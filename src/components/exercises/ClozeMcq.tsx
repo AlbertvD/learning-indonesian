@@ -40,7 +40,10 @@ export function ClozeMcq({ exerciseItem, userLanguage, onAnswer, previewMode, pr
       <Box className={classes.container}>
         <Stack gap="xl">
           {/* Question half */}
-          <Text size="sm" c="dimmed">{t.session.exercise.chooseWord}</Text>
+          <Text size="sm" c="dimmed">{t.session.exercise.completeSentence}</Text>
+          {p.translation && (
+            <Text size="sm" c="dimmed" mb="xs" style={{ fontStyle: 'italic' }}>{p.translation}</Text>
+          )}
           <Box className={classes.wordSection}>
             <Box className={classes.word} style={{ fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500 }}>
               {/* The inline style intentionally overrides classes.word's 4xl/bold defaults
@@ -68,9 +71,6 @@ export function ClozeMcq({ exerciseItem, userLanguage, onAnswer, previewMode, pr
               {parts[1] ?? ''}
             </Box>
           </Box>
-          {p.translation && (
-            <Text size="sm" c="dimmed" style={{ fontStyle: 'italic' }}>{p.translation}</Text>
-          )}
           <Stack gap="md">
             {options.map((option) => (
               <Button
