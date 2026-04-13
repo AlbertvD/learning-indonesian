@@ -7,7 +7,7 @@ import { translations } from '@/lib/i18n'
 import classes from './TypedRecall.module.css'
 
 const HINT_AFTER_FAILURES = 2  // hint appears after this many wrong attempts
-const MAX_FAILURES = 5         // give up and finalize as wrong after this many
+const MAX_FAILURES = 0         // wrong answer finalises immediately — no retry
 
 interface SentenceTransformationExerciseProps {
   exerciseItem?: ExerciseItem

@@ -4,7 +4,7 @@ import type { ExerciseItem } from '@/types/learning'
 import { translations } from '@/lib/i18n'
 import classes from './RecognitionMCQ.module.css'
 
-const MAX_FAILURES = 1  // allow one retry before finalizing as wrong
+const MAX_FAILURES = 0  // wrong answer finalises immediately — no retry
 
 interface CuedRecallExerciseProps {
   exerciseItem: ExerciseItem
