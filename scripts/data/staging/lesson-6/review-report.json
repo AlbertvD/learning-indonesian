@@ -1,26 +1,18 @@
 {
   "lesson": 6,
-  "revision": 4,
-  "reviewedAt": "2026-04-10T14:35:00Z",
+  "revision": 6,
+  "reviewedAt": "2026-04-12T16:45:00Z",
   "status": "approved",
-  "issues": [
-    {
-      "severity": "WARNING",
-      "file": "grammar-patterns.ts",
-      "item": "confusion_group coherence",
-      "issue": "DB patterns 'belum-vs-tidak' (lesson 1) and 'tidak-negation' (lesson 2) are not in confusion_group 'negation-types', while this lesson's bukan-negation and jangan-prohibition are. All four form one confusable set.",
-      "fix": "Consider a migration to update the confusion_group on the older DB patterns for coherent grouping."
-    }
-  ],
+  "issues": [],
   "summary": {
-    "total": 1,
+    "total": 0,
     "critical": 0,
-    "warning": 1
+    "warning": 0
   },
   "counts": {
     "grammar_patterns": 7,
     "grammar_patterns_reused_from_db": 2,
-    "learning_items_total": 49,
+    "learning_items_total": 48,
     "cloze_contexts": 47,
     "cloze_contexts_missing": 0,
     "cloze_contexts_skipped_particles": 2,
@@ -28,8 +20,8 @@
     "candidates_by_type": {
       "cloze_mcq": 25,
       "contrast_pair": 18,
-      "sentence_transformation": 20,
-      "constrained_translation": 16
+      "sentence_transformation": 22,
+      "constrained_translation": 14
     },
     "cross_pattern_candidates": {
       "belum-vs-tidak": 2,
@@ -46,20 +38,30 @@
     }
   },
   "checks": {
-    "lesson_ts_structure": "PASS -- all grammar sections use categories array, exercise section uses sections array",
-    "grammar_patterns_fields": "PASS -- all 7 patterns have pattern_name, description, slug, complexity_score (2-5), kebab-case slugs",
+    "lesson_ts_structure": "PASS -- all grammar sections use categories array with rules/examples/table, exercise section uses sections array",
+    "grammar_patterns_fields": "PASS -- all 7 patterns have pattern_name, description, slug (kebab-case), complexity_score (2-5)",
     "slug_uniqueness_staging": "PASS -- no duplicate slugs across lesson-1 through lesson-7 staging files",
-    "slug_uniqueness_db": "PASS -- no lesson-6 slugs found among 27 existing DB grammar_patterns rows",
+    "slug_uniqueness_db": "PASS -- lesson-6 slugs exist in DB (39 rows) as already-published; no conflicts with other lessons",
     "candidate_payloads": "PASS -- all 75 candidates have correct payload fields per exercise type contract",
     "candidate_slug_refs": "PASS -- all grammar_pattern_slug values exist in grammar-patterns.ts (7) or DB (belum-vs-tidak, tidak-negation)",
     "candidate_options_length": "PASS -- all cloze_mcq have 4 options, all contrast_pair have 2 options",
     "cloze_mcq_blanks": "PASS -- all cloze_mcq sentences contain exactly one ___",
     "cloze_context_blanks": "PASS -- all 47 cloze contexts have exactly one ___",
-    "cloze_context_coverage": "PASS -- 47 contexts cover 47 of 49 items; 2 discourse particles (deh!/sih!) appropriately skipped",
+    "cloze_context_coverage": "PASS -- 47 contexts cover all non-particle items; 2 discourse particles (deh!/sih!) appropriately skipped",
     "cloze_context_naturalistic": "PASS -- all sentences embed the target word in a naturalistic A1-level sentence",
     "monas_equals_item_cloze": "PASS -- 'Monas = Monumen Nasional' has 2 cloze contexts blanking the short form",
-    "exercise_type_coverage": "PASS -- all 7 lesson-6 grammar patterns have all 4 required exercise types",
+    "exercise_type_coverage": "PASS -- all 7 lesson-6 grammar patterns have all 4 required exercise types with 10 candidates each",
     "no_speaking_candidates": "PASS -- zero speaking-type candidates found",
-    "no_body_strings": "PASS -- no raw body strings in grammar or exercise sections"
+    "no_body_strings": "PASS -- no raw body strings in grammar or exercise sections",
+    "translation_answers": "PASS -- all 35 translation items in Oefening I/II/III have answer fields populated",
+    "grammar_drill_answers": "PASS -- all grammar_drill items in Oefening IV/V have answer fields",
+    "confusion_groups_coherent": "PASS -- negation group (bukan-negation, jangan-prohibition) aligns with belum-vs-tidak (lesson 1) and tidak-negation (lesson 2); sentence-suffix-lah-kah group covers imperative-lah-suffix and kah-question-suffix",
+    "contrast_pair_quality": "PASS -- cp-lah2 now tests 'Minumlah!' vs 'Minum!' directly testing the -lah suffix"
+  },
+  "revision_5_fixes_verified": {
+    "translation_answers_added": "VERIFIED -- Oefening I (10), II (10), III (15) all have answer fields",
+    "confusion_groups_aligned": "VERIFIED -- bukan-negation and jangan-prohibition now 'negation'; imperative-lah-suffix and kah-question-suffix now 'sentence-suffix-lah-kah'",
+    "cp_lah2_rewritten": "VERIFIED -- now contrasts 'Minumlah!' vs 'Minum!' (polite vs direct command)",
+    "lesson_1_belum_vs_tidak": "VERIFIED -- confusion_group changed to 'negation' in lesson-1/grammar-patterns.ts (correct, aligns with lesson-6 negation group)"
   }
 }

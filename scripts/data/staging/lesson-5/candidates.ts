@@ -232,20 +232,20 @@ export const candidates = [
     "grammar_pattern_slug": "possessive-suffix-placement",
     "review_status": "published",
     "payload": {
-      "promptText": "Hoe zeg je \"mijn boek\" in het Indonesisch?",
-      "targetMeaning": "bezittelijk voornaamwoord staat ACHTER het zelfstandig naamwoord",
+      "promptText": "Titin praat informeel tegen Nanang over haar boek. Welke vorm past bij het informele register?",
+      "targetMeaning": "Informele bezitsvorm met suffix -ku",
       "options": [
         {
           "id": "a",
-          "text": "buku saya"
+          "text": "bukuku"
         },
         {
           "id": "b",
-          "text": "saya buku"
+          "text": "buku saya"
         }
       ],
       "correctOptionId": "a",
-      "explanationText": "In het Indonesisch staat het bezittelijk voornaamwoord altijd ACHTER het zelfstandig naamwoord: [znw] + [bez. vnw.]. \"Saya buku\" is geen correcte Indonesische woordvolgorde."
+      "explanationText": "In een informeel gesprek tussen broer en zus is het suffix -ku de natuurlijke keuze: bukuku. 'Buku saya' is grammaticaal correct maar te formeel voor dit register — een veelgemaakte fout van Nederlandse leerders die standaard de volledige vorm gebruiken."
     }
   },
   {
@@ -253,8 +253,8 @@ export const candidates = [
     "grammar_pattern_slug": "possessive-suffix-placement",
     "review_status": "published",
     "payload": {
-      "promptText": "Titin zegt informeel \"mijn sleutel\" tegen Nanang. Welke vorm is correct?",
-      "targetMeaning": "De afgekorte vorm -ku wordt direct aan het zelfstandig naamwoord geplakt",
+      "promptText": "Nanang zoekt zijn sleutel en zegt tegen Titin: \"Waar is ___ sleutel?\" Welk suffix hoort bij Nanang (= de spreker)?",
+      "targetMeaning": "-ku voor eerste persoon bezit, -mu voor tweede persoon bezit",
       "options": [
         {
           "id": "a",
@@ -262,11 +262,11 @@ export const candidates = [
         },
         {
           "id": "b",
-          "text": "ku kunci"
+          "text": "kuncimu"
         }
       ],
       "correctOptionId": "a",
-      "explanationText": "De afgekorte possessieve vorm -ku wordt als suffix achter het zelfstandig naamwoord geplakt: kunci + -ku = kunciku. Het staat nooit ervoor."
+      "explanationText": "-ku is het bezittelijk suffix voor de eerste persoon (ik/mijn): kunci + -ku = kunciku. -mu is voor de tweede persoon (jij/jouw). Nederlandse leerders verwarren deze soms omdat beide kort zijn en op elkaar lijken."
     }
   },
   {
@@ -274,20 +274,20 @@ export const candidates = [
     "grammar_pattern_slug": "possessive-suffix-placement",
     "review_status": "published",
     "payload": {
-      "promptText": "Hoe zeg je \"hun huis\" met het suffix -nya?",
-      "targetMeaning": "-nya kan ook de derde persoon meervoud (hun) uitdrukken",
+      "promptText": "De buurkinderen zijn weg. Je vertelt: \"Hun huis is groot.\" Welke vorm is correct?",
+      "targetMeaning": "-nya drukt ook meervoudig bezit (hun) uit, niet alleen zijn/haar",
       "options": [
         {
           "id": "a",
-          "text": "rumahnya"
+          "text": "Rumahnya besar."
         },
         {
           "id": "b",
-          "text": "nyarumah"
+          "text": "Rumah mereka besar."
         }
       ],
       "correctOptionId": "a",
-      "explanationText": "-nya staat altijd achter het zelfstandig naamwoord: rumah + -nya = rumahnya. Het kan zowel \"zijn/haar\" als \"hun\" betekenen."
+      "explanationText": "-nya kan zowel \"zijn\", \"haar\" als \"hun\" betekenen. Nederlandse leerders denken vaak dat -nya alleen enkelvoud is en grijpen naar 'rumah mereka' voor meervoud bezit. Beide vormen zijn grammaticaal correct, maar rumahnya is de meest natuurlijke keuze in gesproken Indonesisch — context maakt duidelijk dat het om meervoud gaat."
     }
   },
   {
@@ -471,10 +471,11 @@ export const candidates = [
       "sourceSentence": "Kamu mau makan apa? (informeel)",
       "transformationInstruction": "Maak de zin beleefd — gebruik de neutrale aanspreekvorm voor een volwassen vrouw.",
       "acceptableAnswers": [
-        "Ibu mau makan apa?"
+        "Ibu mau makan apa?",
+        "Bu mau makan apa?"
       ],
       "hintText": "Welke beleefde aanspreekvorm gebruik je voor een vrouw?",
-      "explanationText": "Ibu is de neutrale, beleefde aanspreekvorm voor een volwassen vrouw. Kamu is te informeel in een beleefde context."
+      "explanationText": "Ibu (of de verkorte vorm Bu) is de neutrale, beleefde aanspreekvorm voor een volwassen vrouw. Kamu is te informeel in een beleefde context."
     }
   },
   {

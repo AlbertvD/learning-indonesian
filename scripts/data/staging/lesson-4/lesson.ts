@@ -312,34 +312,44 @@ export const lesson = {
             "type": "grammar_drill",
             "items": [
               {
-                "prompt": "4 fietsen"
+                "prompt": "4 fietsen",
+                "answer": "Itu berapa sepeda? Itu empat sepeda."
               },
               {
-                "prompt": "1.563 huizen"
+                "prompt": "1.563 huizen",
+                "answer": "Itu berapa rumah? Itu seribu lima ratus enam puluh tiga rumah."
               },
               {
-                "prompt": "2.690 kippen"
+                "prompt": "2.690 kippen",
+                "answer": "Itu berapa ayam? Itu dua ribu enam ratus sembilan puluh ayam."
               },
               {
-                "prompt": "187 vorken"
+                "prompt": "187 vorken",
+                "answer": "Itu berapa garpu? Itu seratus delapan puluh tujuh garpu."
               },
               {
-                "prompt": "1.259 lepels"
+                "prompt": "1.259 lepels",
+                "answer": "Itu berapa sendok? Itu seribu dua ratus lima puluh sembilan sendok."
               },
               {
-                "prompt": "375 vrienden"
+                "prompt": "375 vrienden",
+                "answer": "Itu berapa teman? Itu tiga ratus tujuh puluh lima teman."
               },
               {
-                "prompt": "193 kasten"
+                "prompt": "193 kasten",
+                "answer": "Itu berapa lemari? Itu seratus sembilan puluh tiga lemari."
               },
               {
-                "prompt": "352 tafels"
+                "prompt": "352 tafels",
+                "answer": "Itu berapa meja? Itu tiga ratus lima puluh dua meja."
               },
               {
-                "prompt": "23.675.890 kinderen"
+                "prompt": "23.675.890 kinderen",
+                "answer": "Itu berapa anak? Itu dua puluh tiga juta enam ratus tujuh puluh lima ribu delapan ratus sembilan puluh anak."
               },
               {
-                "prompt": "11.100 auto's"
+                "prompt": "11.100 auto's",
+                "answer": "Itu berapa mobil? Itu sebelas ribu seratus mobil."
               }
             ],
             "title": "Oefening III",

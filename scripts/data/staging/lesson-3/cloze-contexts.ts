@@ -140,7 +140,7 @@ export const clozeContexts = [
   },
   {
     learning_item_slug: "'kan?",
-    source_text: "Ini bandar udara Soekarno-Hatta, ___",
+    source_text: "Ini bandar udara Soekarno-Hatta, ___?",
     translation_text: 'Dit is luchthaven Soekarno-Hatta, toch?',
     difficulty: 'A1',
     topic_tag: 'dagelijks',

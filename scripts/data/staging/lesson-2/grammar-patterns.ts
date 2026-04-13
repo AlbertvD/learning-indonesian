@@ -45,7 +45,7 @@ export const grammarPatterns = [
   {
     pattern_name: 'Bijvoeglijk naamwoord na zelfstandig naamwoord',
     description: 'Het bijvoeglijk naamwoord staat binnen de woordgroep achter het znw (omgekeerd aan Nederlands). Zonder pauze samen uitgesproken. Voorbeeld: tas besar (grote tas), rumah kecil (klein huis)',
-    confusion_group: null,
+    confusion_group: 'adjective-position',
     page_reference: 2,
     slug: 'adjective-after-noun',
     complexity_score: 2,

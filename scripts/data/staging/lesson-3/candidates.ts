@@ -122,7 +122,8 @@ export const candidates = [
       "sourceSentence": "Di sana banyak mobil.",
       "transformationInstruction": "Voeg \"ada\" toe om het bestaan van de auto's te benadrukken",
       "acceptableAnswers": [
-        "Di sana ada banyak mobil."
+        "Di sana ada banyak mobil.",
+        "Ada banyak mobil di sana."
       ],
       "hintText": "'Ada' komt voor het onderwerp om bestaan uit te drukken",
       "explanationText": "'Ada' drukt bestaan/aanwezigheid uit: 'Di sana ada banyak mobil' = er zijn daar veel auto's. Het werkwoord 'ada' staat voor het zelfstandig naamwoord."
@@ -306,13 +307,14 @@ export const candidates = [
     "grammar_pattern_slug": "dari-di-ke-locative",
     "review_status": "published",
     "payload": {
-      "sourceSentence": "Ibu duduk di depan rumah.",
-      "transformationInstruction": "Verander \"voor het huis\" naar \"achter het huis\"",
+      "sourceSentence": "Saya duduk di kota Jakarta.",
+      "transformationInstruction": "Verander de zin: je vertrekt nu UIT Jakarta (herkomst, niet locatie)",
       "acceptableAnswers": [
-        "Ibu duduk di belakang rumah."
+        "Saya dari kota Jakarta.",
+        "Saya datang dari kota Jakarta."
       ],
-      "hintText": "Het tegenovergestelde van 'depan' (voor) is...",
-      "explanationText": "'Di depan' (voor) wordt 'di belakang' (achter). De structuur 'di + plaatswoord' blijft hetzelfde, alleen het richtingswoord verandert."
+      "hintText": "Vervang 'di' (locatie/rust) door het voorzetsel voor herkomst",
+      "explanationText": "'Di' duidt locatie/rust aan (in/op Jakarta). 'Dari' duidt herkomst aan (uit/van Jakarta). Door 'di' te vervangen door 'dari' verschuift de betekenis van 'ik zit in Jakarta' naar 'ik kom uit Jakarta'."
     }
   },
   {
@@ -528,9 +530,9 @@ export const candidates = [
       "translation": "Dit vliegveld is heel groot.",
       "options": [
         "sekali",
-        "sangat",
-        "sekali besar",
-        "erg"
+        "saja",
+        "banyak",
+        "benar"
       ],
       "correctOptionId": "sekali",
       "explanationText": "'Sekali' = erg/heel, staat NA het bijvoeglijk naamwoord. 'Besar sekali' = heel groot. 'Sangat' bestaat ook maar staat VOOR het bijvoeglijk naamwoord."

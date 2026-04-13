@@ -10,12 +10,12 @@ export const candidates = [
       "translation": "Zijn/haar fiets is zwart.",
       "options": [
         "-nya",
-        "-mu",
-        "-ku",
-        "-kau"
+        "itu",
+        "dia",
+        "-mu"
       ],
       "correctOptionId": "-nya",
-      "explanationText": "Het achtervoegsel -nya drukt bezit uit in de derde persoon (zijn/haar/hun). -mu = jouw, -ku = mijn."
+      "explanationText": "Het achtervoegsel -nya drukt bezit uit in de derde persoon (zijn/haar/hun). \"itu\" is een aanwijzend voornaamwoord (die), \"dia\" is een los persoonlijk voornaamwoord dat niet als suffix werkt. -mu = jouw."
     }
   },
   {
@@ -28,12 +28,12 @@ export const candidates = [
       "translation": "Waar is de koffer (van hem/haar)?",
       "options": [
         "-nya",
-        "-mu",
-        "-ku",
-        "itu"
+        "ini",
+        "yang",
+        "-ku"
       ],
       "correctOptionId": "-nya",
-      "explanationText": "-nya achter het zelfstandig naamwoord \"koper\" geeft bezit aan: zijn/haar koffer."
+      "explanationText": "-nya achter het zelfstandig naamwoord \"koper\" geeft bezit aan: zijn/haar koffer. \"ini\" (deze) en \"yang\" (die/dat) zijn geen bezittelijke achtervoegsels."
     }
   },
   {
@@ -47,11 +47,11 @@ export const candidates = [
       "options": [
         "-nya",
         "-mu",
-        "-ku",
-        "dia"
+        "punya",
+        "dari"
       ],
       "correctOptionId": "-nya",
-      "explanationText": "-nya achter \"mobil\" geeft bezit aan in de derde persoon. \"itu\" verwijst naar een specifieke auto."
+      "explanationText": "-nya als suffix achter \"mobil\" drukt bezit uit (zijn/haar auto). \"punya\" (bezitten) en \"dari\" (van) zijn geen bezittelijke suffixen. -mu = jouw."
     }
   },
   {
@@ -96,6 +96,28 @@ export const candidates = [
       ],
       "correctOptionId": "a",
       "explanationText": "-nya wordt nooit aan eigennamen gehecht. \"Rumah Tuti\" is correct, niet \"Tutinya rumah\"."
+    }
+  },
+  {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "nya-possessive-suffix",
+    "source_page": 6,
+    "review_status": "published",
+    "payload": {
+      "promptText": "Welke zin betekent \"Zijn koffer is zwaar\"?",
+      "targetMeaning": "-nya als bezittelijk voornaamwoord (derde persoon)",
+      "options": [
+        {
+          "id": "a",
+          "text": "Kopernya berat"
+        },
+        {
+          "id": "b",
+          "text": "Koper itu berat"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanationText": "\"Kopernya berat\" = zijn/haar koffer is zwaar (-nya duidt bezit aan). \"Koper itu berat\" = die koffer is zwaar (aanwijzend, geen bezit). Een veelgemaakte fout is \"itu\" gebruiken waar -nya nodig is."
     }
   },
   {
@@ -176,12 +198,12 @@ export const candidates = [
       "translation": "Die auto, de kleur is wit.",
       "options": [
         "-nya",
-        "-mu",
-        "-ku",
-        "ini"
+        "yang",
+        "itu",
+        "dari"
       ],
       "correctOptionId": "-nya",
-      "explanationText": "In de topicalisatieconstructie B A-nya C wordt -nya aan het oorspronkelijke onderwerp gehecht: warna + -nya = warnanya."
+      "explanationText": "In de topicalisatieconstructie B A-nya C wordt -nya aan het oorspronkelijke onderwerp gehecht: warna + -nya = warnanya. \"yang\" maakt een bijzin, \"itu\" is aanwijzend, \"dari\" drukt herkomst uit -- geen van deze werkt hier als topicalisatiemarker."
     }
   },
   {
@@ -195,11 +217,11 @@ export const candidates = [
       "options": [
         "-nya",
         "-mu",
-        "-ku",
-        "itu"
+        "ini",
+        "dia"
       ],
       "correctOptionId": "-nya",
-      "explanationText": "Topicalisatie: \"Berapa harga rok itu?\" wordt \"Rok itu harganya berapa?\" -- -nya bindt harga aan rok itu."
+      "explanationText": "Topicalisatie: \"Berapa harga rok itu?\" wordt \"Rok itu harganya berapa?\" -- -nya bindt \"harga\" terug aan het topic \"rok itu\". \"ini\" is een aanwijzend voornaamwoord, \"dia\" een persoonlijk voornaamwoord -- geen van beide werkt als topicalisatiesuffix."
     }
   },
   {
@@ -208,20 +230,20 @@ export const candidates = [
     "source_page": 7,
     "review_status": "published",
     "payload": {
-      "promptText": "Welke zin betekent \"Dit kind, Ali is zijn naam\"?",
-      "targetMeaning": "-nya als verwijzing naar het topic",
+      "promptText": "Welke zin is correct voor \"Dit kind, zijn naam is Ali\"?",
+      "targetMeaning": "-nya als topicalisatiemarker bij het oorspronkelijke onderwerp",
       "options": [
         {
           "id": "a",
-          "text": "Anak ini Ali namanya"
+          "text": "Anak ini namanya Ali"
         },
         {
           "id": "b",
-          "text": "Anak ini namanya Ali"
+          "text": "Anak ini nama Ali"
         }
       ],
       "correctOptionId": "a",
-      "explanationText": "Constructie 3 (B C A-nya): \"Anak ini Ali namanya\" -- Ali staat op de C-positie, namanya op A-nya. \"Anak ini namanya Ali\" is constructie 2 (B A-nya C), wat \"Dit kind, zijn naam is Ali\" betekent."
+      "explanationText": "Bij topicalisatie (constructie 2: B A-nya C) moet -nya aan het oorspronkelijke onderwerp \"nama\" worden gehecht: namanya. Zonder -nya mist de zin de verwijzing naar het topic \"anak ini\". \"Anak ini nama Ali\" is grammaticaal incorrect."
     }
   },
   {
@@ -450,12 +472,12 @@ export const candidates = [
       "translation": "De hoogte van die boom is 18 meter.",
       "options": [
         "-nya",
-        "-mu",
-        "-ku",
-        "itu"
+        "sekali",
+        "yang",
+        "ada"
       ],
       "correctOptionId": "-nya",
-      "explanationText": "-nya achter het bijvoeglijk naamwoord \"tinggi\" maakt het tot een zelfstandig naamwoord: tingginya = de hoogte."
+      "explanationText": "-nya achter het bijvoeglijk naamwoord \"tinggi\" maakt het tot een zelfstandig naamwoord: tingginya = de hoogte. \"sekali\" zou een versterking zijn (heel hoog), \"yang\" start een bijzin, \"ada\" betekent 'er is' -- geen van deze past hier."
     }
   },
   {
@@ -468,12 +490,12 @@ export const candidates = [
       "translation": "De lengte van deze rok is 1 meter.",
       "options": [
         "-nya",
-        "-mu",
-        "-ku",
-        "ini"
+        "itu",
+        "betul",
+        "juga"
       ],
       "correctOptionId": "-nya",
-      "explanationText": "-nya achter \"panjang\" (lang) vormt \"panjangnya\" (de lengte). Dit is de nominalisatiefunctie van -nya bij bijvoeglijke naamwoorden."
+      "explanationText": "-nya achter \"panjang\" (lang) vormt \"panjangnya\" (de lengte). Dit is de nominalisatiefunctie van -nya bij bijvoeglijke naamwoorden. \"itu\" (die), \"betul\" (echt) en \"juga\" (ook) passen niet in deze meetconstructie."
     }
   },
   {
@@ -486,12 +508,12 @@ export const candidates = [
       "translation": "De afstand tot Jakarta is 350 kilometer.",
       "options": [
         "-nya",
-        "-mu",
-        "-ku",
-        "itu"
+        "dari",
+        "ke",
+        "sekali"
       ],
       "correctOptionId": "-nya",
-      "explanationText": "-nya achter \"jauh\" (ver) maakt \"jauhnya\" (de afstand). Dit is nominalisatie: het bijvoeglijk naamwoord wordt een zelfstandig naamwoord."
+      "explanationText": "-nya achter \"jauh\" (ver) maakt \"jauhnya\" (de afstand). Dit is nominalisatie: het bijvoeglijk naamwoord wordt een zelfstandig naamwoord. \"dari\" (van) en \"ke\" (naar) zijn voorzetsels, \"sekali\" (heel erg) zou een versterking zijn -- geen van deze nominaliseert het bijvoeglijk naamwoord."
     }
   },
   {
@@ -830,6 +852,24 @@ export const candidates = [
       ],
       "correctOptionId": "sekarang",
       "explanationText": "Als de zin met een plaatsbepaling begint (di Jakarta), staat de tijdsbepaling (sekarang) aan het eind."
+    }
+  },
+  {
+    "exercise_type": "cloze_mcq",
+    "grammar_pattern_slug": "time-place-word-order",
+    "source_page": 10,
+    "review_status": "published",
+    "payload": {
+      "sentence": "Ninik mau bawa pakaian ke Bali ___.",
+      "translation": "Ninik wil morgen kleding naar Bali meenemen.",
+      "options": [
+        "besok",
+        "Ninik besok",
+        "di besok",
+        "besok Ninik"
+      ],
+      "correctOptionId": "besok",
+      "explanationText": "De tijdsbepaling \"besok\" staat aan het eind van de zin als de plaatsbepaling (ke Bali) al eerder in de zin staat. Geen voorzetsel nodig bij besok, en de tijdsbepaling staat nooit tussen onderwerp en werkwoord."
     }
   },
   {

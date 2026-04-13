@@ -1,38 +1,35 @@
 {
   "lesson": 4,
-  "revision": 5,
-  "reviewedAt": "2026-04-10T15:10:00Z",
-  "status": "needs_revision",
-  "issues": [
-    {
-      "severity": "CRITICAL",
-      "file": "cloze-contexts.ts",
-      "item": "paspoort context #1 (line 113)",
-      "issue": "source_text contains zero ___: \"Paspor Ibu di mana? Saya harus isi formulir hotel.\" — must have exactly one blank",
-      "fix": "Replace source_text with a sentence that blanks the target word, e.g. \"___ Ibu di mana? Saya harus isi formulir hotel.\""
-    }
-  ],
+  "revision": 7,
+  "reviewedAt": "2026-04-12T16:45:00Z",
+  "status": "approved",
+  "issues": [],
   "summary": {
-    "total": 1,
-    "critical": 1,
+    "total": 0,
+    "critical": 0,
     "warning": 0
   },
   "checks": {
-    "lesson_ts_structure": "PASS — grammar section has 5 categories with rules+examples; exercises section has 4 structured sections",
-    "grammar_patterns": "PASS — 6 patterns, all have slug + complexity_score (3-6), all kebab-case, no slug duplication in DB (18 existing) or other staging files (lessons 1-3, 5-7)",
-    "candidates_structural": "PASS — 60 candidates across 6 patterns, all payloads satisfy type contracts, correct option counts (contrast_pair: 2, cloze_mcq: 4), no speaking candidates",
-    "candidates_slugs": "PASS — all grammar_pattern_slug values reference slugs in grammar-patterns.ts",
-    "cloze_contexts_format": "FAIL — 1 of 125 contexts has zero ___ in source_text (paspoort #1)",
-    "cloze_contexts_coverage": "PASS — all non-sentence learning items have at least one cloze context (previously missing 9 items now added)",
-    "exercise_type_coverage": "PASS — all 6 grammar patterns have at least 1 candidate of each required type (cloze_mcq, contrast_pair, sentence_transformation, constrained_translation)",
+    "lesson_ts_structure": "PASS -- grammar section has 5 categories with rules+examples; exercises section has 4 structured sections (no raw body strings); Oefening IV is open-ended (free composition) so no answer field required",
+    "grammar_patterns": "PASS -- 6 patterns, all have slug + complexity_score (3-6), all kebab-case, no slug duplication in other staging files (lessons 1-3, 5-7) or DB (39 rows; lesson 4 slugs already published)",
+    "candidates_structural": "PASS -- 60 candidates across 6 patterns, all payloads satisfy type contracts (contrast_pair options: 2, cloze_mcq options: 4), all have explanationText, no speaking candidates",
+    "candidates_slugs": "PASS -- all grammar_pattern_slug values reference slugs in grammar-patterns.ts",
+    "cloze_contexts_format": "PASS -- all contexts have exactly one ___ in source_text, all are embedded in naturalistic sentences",
+    "cloze_contexts_coverage": "PASS -- all non-sentence learning items have at least one cloze context",
+    "exercise_type_coverage": "PASS -- all 6 grammar patterns have at least 1 candidate of each required type (cloze_mcq, contrast_pair, sentence_transformation, constrained_translation)",
+    "vocabulary_integration": "PASS -- candidates use lesson 4 vocabulary extensively (kunci, handuk, sendok, kursi, rumah, kamar mandi, kopi, teh, lemari, etc.)",
     "no_speaking_candidates": "PASS"
   },
   "candidateCountsBySlug": {
-    "yang-relative-pronoun": { "cloze_mcq": 2, "contrast_pair": 2, "sentence_transformation": 2, "constrained_translation": 4 },
-    "yang-nominalization": { "cloze_mcq": 2, "contrast_pair": 2, "sentence_transformation": 2, "constrained_translation": 3 },
-    "yang-single-adjective-emphasis": { "cloze_mcq": 2, "contrast_pair": 2, "sentence_transformation": 2, "constrained_translation": 2 },
-    "yang-two-adj-unequal": { "cloze_mcq": 2, "contrast_pair": 2, "sentence_transformation": 2, "constrained_translation": 2 },
-    "yang-two-adj-equal": { "cloze_mcq": 2, "contrast_pair": 2, "sentence_transformation": 2, "constrained_translation": 2 },
-    "ada-yang-existential": { "cloze_mcq": 2, "contrast_pair": 2, "sentence_transformation": 2, "constrained_translation": 2 }
+    "yang-relative-pronoun": { "cloze_mcq": 2, "contrast_pair": 2, "sentence_transformation": 2, "constrained_translation": 4, "total": 10 },
+    "yang-nominalization": { "cloze_mcq": 3, "contrast_pair": 2, "sentence_transformation": 2, "constrained_translation": 3, "total": 10 },
+    "yang-single-adjective-emphasis": { "cloze_mcq": 2, "contrast_pair": 2, "sentence_transformation": 2, "constrained_translation": 2, "total": 8 },
+    "yang-two-adj-unequal": { "cloze_mcq": 2, "contrast_pair": 2, "sentence_transformation": 2, "constrained_translation": 2, "total": 8 },
+    "yang-two-adj-equal": { "cloze_mcq": 2, "contrast_pair": 2, "sentence_transformation": 2, "constrained_translation": 2, "total": 8 },
+    "ada-yang-existential": { "cloze_mcq": 2, "contrast_pair": 2, "sentence_transformation": 2, "constrained_translation": 2, "total": 8 }
+  },
+  "fixesVerified": {
+    "oefening_iii_answers": "FIXED -- all 10 counting drill items in Oefening III now have answer fields with the expected question-and-answer pairs",
+    "yang_nominalization_count": "FIXED -- yang-nominalization now has 10 candidates (was 9); new cloze_mcq added with pending_review status"
   }
 }

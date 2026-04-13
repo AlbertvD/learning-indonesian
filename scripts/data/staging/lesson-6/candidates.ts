@@ -644,12 +644,12 @@ export const candidates = [
     "source_page": 5,
     "review_status": "published",
     "payload": {
-      "promptText": "Welke zin is een beleefde uitnodiging om te drinken?",
-      "targetMeaning": "Ga uw gang, drink iets (uitnodiging)",
+      "promptText": "Welke zin is een beleefd verzoek om te drinken?",
+      "targetMeaning": "Drinkt u toch! (beleefd verzoek met -lah)",
       "options": [
         {
           "id": "cp-lah2-a",
-          "text": "Silakan minum!"
+          "text": "Minumlah!"
         },
         {
           "id": "cp-lah2-b",
@@ -657,7 +657,7 @@ export const candidates = [
         }
       ],
       "correctOptionId": "cp-lah2-a",
-      "explanationText": "\"Silakan\" introduceert een uitnodiging. \"Minum!\" is een direct bevel, \"Silakan minum!\" is een beleefde uitnodiging."
+      "explanationText": "Het achtervoegsel -lah maakt een bevel beleefd en verzachtend. \"Minum!\" is een direct bevel (\"Drink!\"), terwijl \"Minumlah!\" een beleefd verzoek is (\"Drinkt u toch!\"). Het verschil is puur in toon: -lah voegt hoffelijkheid toe."
     }
   },
   {

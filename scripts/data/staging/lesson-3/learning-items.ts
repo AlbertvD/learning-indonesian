@@ -307,7 +307,7 @@ export const learningItems = [
     "translation_en": "know"
   },
   {
-    "base_text": "lah",
+    "base_text": "lalu",
     "item_type": "word",
     "translation_nl": "vervolgens",
     "context_type": "lesson_snippet",

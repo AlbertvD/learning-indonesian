@@ -745,6 +745,13 @@ export const clozeContexts: ClozeContext[] = [
     difficulty: 'A1',
     topic_tag: 'greetings',
   },
+  {
+    learning_item_slug: 'baik-baik saja',
+    source_text: 'Saya ___, terima kasih, Pak.',
+    translation_text: 'Het gaat goed met mij, dank u wel, meneer.',
+    difficulty: 'A1',
+    topic_tag: 'greetings',
+  },
 
   // berapa harganya?
   {
@@ -786,6 +793,13 @@ export const clozeContexts: ClozeContext[] = [
     difficulty: 'A1',
     topic_tag: 'greetings',
   },
+  {
+    learning_item_slug: 'selamat datang',
+    source_text: '___ di pasar, Pak!',
+    translation_text: 'Welkom op de markt, meneer!',
+    difficulty: 'A1',
+    topic_tag: 'greetings',
+  },
 
   // terima kasih
   {
@@ -810,6 +824,13 @@ export const clozeContexts: ClozeContext[] = [
     learning_item_slug: 'nol',
     source_text: 'Berapa buah pisang? ___.',
     translation_text: 'Hoeveel bananen? Nul.',
+    difficulty: 'A1',
+    topic_tag: 'numbers',
+  },
+  {
+    learning_item_slug: 'nol',
+    source_text: 'Harga pisang ini ___ rupiah.',
+    translation_text: 'De prijs van deze banaan is nul rupiah.',
     difficulty: 'A1',
     topic_tag: 'numbers',
   },

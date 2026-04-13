@@ -1,55 +1,27 @@
 {
   "lesson": 1,
-  "revision": 4,
-  "reviewedAt": "2026-04-11T10:00:00.000Z",
+  "revision": 6,
+  "reviewedAt": "2026-04-12T16:45:00.000Z",
   "status": "approved",
   "issues": [
     {
       "severity": "WARNING",
       "file": "candidates.ts",
-      "item": "cloze_mcq #3 (verb-no-conjugation, line 44)",
-      "issue": "Option 'pergi' is not in lesson 1 vocabulary (learning-items.ts). The correct answer uses a word the learner has not been formally introduced to.",
-      "fix": "Replace 'pergi' with a lesson 1 verb (e.g. 'makan') and adjust sentence/translation accordingly, or add 'pergi' to learning-items.ts"
+      "item": "contrast_pair #2 (verb-no-conjugation, line ~85)",
+      "issue": "Both options are grammatically valid Indonesian -- 'Ibu makan pisang' and 'Ibu memakan pisang' are both correct. The distinction is register/formality, not correctness. Learner may feel tricked if they know the me- form.",
+      "fix": "Admin review: explanation is clear about A1 level expectation. Consider whether this tests the right thing (base form preference) vs. implying memakan is wrong."
     },
     {
       "severity": "WARNING",
       "file": "candidates.ts",
-      "item": "cloze_mcq #7-9 (serial-verb-construction, lines 386-433)",
-      "issue": "Distractors include Dutch words ('kunnen', 'te', 'om') mixed into Indonesian phrases. While pedagogically intentional (testing L1 interference), this differs from the vocabulary-based distractor approach used elsewhere.",
-      "fix": "Admin review: confirm this is the desired approach for serial-verb cloze_mcq items. These test construction rather than vocabulary, so phrase-level distractors may be appropriate."
-    },
-    {
-      "severity": "WARNING",
-      "file": "candidates.ts",
-      "item": "cloze_mcq #4-6 (zero-copula, lines 198-245)",
-      "issue": "All three zero-copula cloze_mcq candidates use the identical distractor set (mahal, murah, besar, baik) in different orders. Learner may memorise the option set rather than engage with each sentence.",
-      "fix": "Admin may want to vary distractors across the three items (e.g. substitute 'cukup' or 'kosong' for one item)"
-    },
-    {
-      "severity": "WARNING",
-      "file": "candidates.ts",
-      "item": "cloze_mcq #10 (no-articles) and #13 (no-singular-plural)",
-      "issue": "Identical option sets: nanas, buah, pisang, rumah. When the learner encounters both exercises, they may feel repetitive.",
-      "fix": "Admin may want to swap one distractor in one of the two items for variety (e.g. 'harga' or 'hotel')"
-    },
-    {
-      "severity": "WARNING",
-      "file": "candidates.ts",
-      "item": "cloze_mcq #19-21 (belum-vs-tidak, lines 1136-1184)",
-      "issue": "Distractors 'bukan' and 'jangan' are not in lesson 1 vocabulary. However, they are functionally appropriate negation particles that form a natural contrast set with 'tidak' and 'belum'.",
-      "fix": "No action needed if admin is comfortable introducing these as distractors before formal teaching. They serve as functional-category distractors which is pedagogically sound."
-    },
-    {
-      "severity": "WARNING",
-      "file": "grammar-patterns.ts",
-      "item": "verb-no-conjugation",
-      "issue": "confusion_group is null despite conceptual overlap with serial-verb-construction (both deal with verb form invariance)",
-      "fix": "Consider adding a shared confusion_group if learners confuse these patterns in practice"
+      "item": "cloze_mcq #19-21 (belum-vs-tidak, lines ~1134-1184)",
+      "issue": "Distractors (mau, boleh, bisa) are modal verbs, not negation particles. The functional category differs from the correct answers (belum/tidak are negations). This tests negation-identification rather than belum-vs-tidak discrimination.",
+      "fix": "Admin review: acceptable since only two negation forms exist at this level and having both as options + 2 modals is the best available design. The explanations clearly teach the belum/tidak contrast."
     }
   ],
   "summary": {
-    "total": 6,
+    "total": 2,
     "critical": 0,
-    "warning": 6
+    "warning": 2
   }
 }

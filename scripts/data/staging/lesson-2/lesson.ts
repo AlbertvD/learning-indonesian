@@ -374,17 +374,17 @@ export const lesson = {
           },
           {
             "items": [
-              { "dutch": "grote deur" },
-              { "dutch": "goedkope markt" },
-              { "dutch": "lekker fruit" },
-              { "dutch": "groot land" },
-              { "dutch": "nieuw nummer" },
-              { "dutch": "zoete appels" },
-              { "dutch": "lege tas" },
-              { "dutch": "mooie kamer" },
-              { "dutch": "duur hotel" },
-              { "dutch": "lange weg" },
-              { "dutch": "appeltje" }
+              { "dutch": "grote deur", "answer": "Ini pintu besar" },
+              { "dutch": "goedkope markt", "answer": "Ini pasar murah" },
+              { "dutch": "lekker fruit", "answer": "Ini buah enak" },
+              { "dutch": "groot land", "answer": "Ini negeri besar" },
+              { "dutch": "nieuw nummer", "answer": "Ini nomor baru" },
+              { "dutch": "zoete appels", "answer": "Ini apel manis" },
+              { "dutch": "lege tas", "answer": "Ini tas kosong" },
+              { "dutch": "mooie kamer", "answer": "Ini kamar bagus" },
+              { "dutch": "duur hotel", "answer": "Ini hotel mahal" },
+              { "dutch": "lange weg", "answer": "Ini jalan panjang" },
+              { "dutch": "appeltje", "answer": "Ini apel kecil" }
             ],
             "title": "Oefening IV. Beantwoord de vraag in het Indonesisch: Ini / Itu apa?",
             "type": "grammar_drill"

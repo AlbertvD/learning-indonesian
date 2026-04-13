@@ -1,13 +1,20 @@
 {
   "lesson": 5,
-  "revision": 3,
-  "reviewedAt": "2026-04-10T14:32:00Z",
+  "revision": 5,
+  "reviewedAt": "2026-04-12T19:45:00Z",
   "status": "approved",
-  "issues": [],
+  "issues": [
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "contrast_pair #6 (possessive-suffix-placement) — 'rumahnya' vs 'rumah mereka'",
+      "issue": "Prompt asks 'Welke vorm is correct?' but both options are grammatically correct. The explanation itself acknowledges this. The prompt should ask for the most natural/common form instead.",
+      "fix": "Admin may revise prompt in app to: 'Welke vorm is het meest natuurlijk in gesproken Indonesisch?' to match the intended test of -nya as default plural possessive."
+    }
+  ],
   "summary": {
-    "total": 0,
+    "total": 1,
     "critical": 0,
-    "warning": 0
-  },
-  "notes": "Revision 3: full re-review after candidate expansion. Grammar section structured into 7 categories with rules and examples. Exercises structured into 4 sections. 3 grammar patterns (kami-vs-kita, possessive-suffix-placement, pronoun-register-levels) — all slugs unique across staging lessons 1-7 and DB (24 rows). 30 candidates: 9 cloze_mcq, 9 contrast_pair, 6 sentence_transformation, 6 constrained_translation. All 3 patterns have all 4 required exercise types. All payload fields present and correctly structured. All cloze_mcq sentences contain exactly one ___. All contrast_pair options have length 2, all cloze_mcq options have length 4. No speaking candidates. 53 cloze contexts covering all 53 vocabulary items. All source_text contain exactly one ___. Previous WARNING about casing mismatch (hari Rabu, Taman Mini) has been resolved."
+    "warning": 1
+  }
 }

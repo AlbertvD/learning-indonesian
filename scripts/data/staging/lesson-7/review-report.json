@@ -1,20 +1,12 @@
 {
   "lesson": 7,
-  "revision": 3,
-  "reviewedAt": "2026-04-10T14:30:00.000Z",
+  "revision": 5,
+  "reviewedAt": "2026-04-12T17:45:00.000Z",
   "status": "approved",
-  "issues": [
-    {
-      "severity": "WARNING",
-      "file": "cloze-contexts.ts",
-      "item": "cloze context for 'hari kamis'",
-      "issue": "learning_item_slug case mismatch: cloze uses 'hari kamis' but learning-items.ts has base_text 'hari Kamis' (capital K). May cause linkage failure if publish script does not normalize case.",
-      "fix": "Change learning_item_slug to 'hari Kamis' to match learning item base_text exactly"
-    }
-  ],
+  "issues": [],
   "summary": {
-    "total": 1,
+    "total": 0,
     "critical": 0,
-    "warning": 1
+    "warning": 0
   }
 }

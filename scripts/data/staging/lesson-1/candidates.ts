@@ -42,16 +42,16 @@ export const candidates = [
     "source_page": 1,
     "review_status": "published",
     "payload": {
-      "sentence": "Saya ___ ke pasar besok.",
-      "translation": "Morgen, de markt -- wat doe ik?",
+      "sentence": "Ibu ___ dari pasar besok.",
+      "translation": "Mevrouw komt morgen van de markt.",
       "options": [
-        "pergi",
         "datang",
         "beli",
-        "makan"
+        "makan",
+        "mau"
       ],
-      "correctOptionId": "pergi",
-      "explanationText": "In het Indonesisch verandert het werkwoord niet voor toekomende tijd. \"Besok\" (morgen) geeft de toekomst aan. \"Pergi\" (gaan) past bij de context: naar de markt gaan. \"Datang\" (komen), \"beli\" (kopen) en \"makan\" (eten) passen niet bij de richting \"ke pasar\"."
+      "correctOptionId": "datang",
+      "explanationText": "In het Indonesisch verandert het werkwoord niet voor toekomende tijd. \"Besok\" (morgen) geeft de toekomst aan, het werkwoord \"datang\" (komen) blijft in de basisvorm. \"Datang dari\" (komen van) past bij de context. \"Beli\" (kopen), \"makan\" (eten) en \"mau\" (willen) passen niet bij \"dari pasar\"."
     }
   },
   {
@@ -83,7 +83,7 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "promptText": "\"Mevrouw eet bananen\" — welke Indonesische werkwoordsvorm?",
-      "targetMeaning": "Basisvorm — geen -s uitgang voor derde persoon",
+      "targetMeaning": "Basisvorm — geen me- prefix nodig bij gewone actieve zinnen",
       "options": [
         {
           "id": "a",
@@ -91,11 +91,11 @@ export const candidates = [
         },
         {
           "id": "b",
-          "text": "Ibu makans pisang"
+          "text": "Ibu memakan pisang"
         }
       ],
       "correctOptionId": "a",
-      "explanationText": "Het Indonesisch kent geen vervoeging door een -s of andere uitgang toe te voegen. Een Nederlandse leerling verwacht misschien een derde-persoonsvorm (zoals \"eet\" vs. \"eten\"), maar in het Indonesisch is het altijd \"makan\"."
+      "explanationText": "Op dit niveau gebruik je de basisvorm \"makan\" zonder prefix. \"Memakan\" (met me- prefix) is grammaticaal correct in formeel Indonesisch, maar op A1-niveau leer je eerst de basisvorm. In informele spreektaal wordt de basisvorm het meest gebruikt. De me- prefix komt in een latere les."
     }
   },
   {
@@ -104,20 +104,20 @@ export const candidates = [
     "source_page": 1,
     "review_status": "published",
     "payload": {
-      "promptText": "\"Wij komen van de markt\" — welke Indonesische vorm is correct?",
-      "targetMeaning": "Basisvorm — geen meervoudsvervoeging",
+      "promptText": "\"Ik kwam gisteren van de markt\" — welke Indonesische vorm is correct?",
+      "targetMeaning": "Basisvorm — werkwoord verandert niet voor verleden tijd",
       "options": [
         {
           "id": "a",
-          "text": "Saya datang dari pasar"
+          "text": "Kemarin saya datang dari pasar"
         },
         {
           "id": "b",
-          "text": "Saya datangan dari pasar"
+          "text": "Kemarin saya kedatangan dari pasar"
         }
       ],
       "correctOptionId": "a",
-      "explanationText": "Het werkwoord \"datang\" (komen) wordt niet vervoegd. Er bestaat geen meervoudsvorm \"datangan\". De basisvorm \"datang\" geldt voor alle personen en tijden. Nederlandse leerlingen zijn gewend aan \"kom/komt/komen\" — in het Indonesisch altijd dezelfde vorm."
+      "explanationText": "Het werkwoord \"datang\" verandert niet voor de verleden tijd — \"kemarin\" (gisteren) geeft de tijd aan. \"Kedatangan\" bestaat wel in het Indonesisch, maar het is een afgeleid zelfstandig naamwoord (\"komst/aankomst\"), geen vervoegde werkwoordsvorm. Nederlandse leerlingen zijn gewend aan \"kom/kwam\" — in het Indonesisch altijd \"datang\"."
     }
   },
   {
@@ -202,10 +202,10 @@ export const candidates = [
         "mahal",
         "murah",
         "besar",
-        "baik"
+        "cukup"
       ],
       "correctOptionId": "murah",
-      "explanationText": "In het Indonesisch is er geen koppelwerkwoord \"is/zijn\" — het bijvoeglijk naamwoord volgt direct op het onderwerp. \"Murah\" (goedkoop) past bij de vertaling. \"Mahal\" (duur), \"besar\" (groot) en \"baik\" (goed) zijn andere bijvoeglijke naamwoorden die hier niet passen."
+      "explanationText": "In het Indonesisch is er geen koppelwerkwoord \"is/zijn\" — het bijvoeglijk naamwoord volgt direct op het onderwerp. \"Murah\" (goedkoop) past bij de vertaling. \"Mahal\" (duur), \"besar\" (groot) en \"cukup\" (voldoende) passen hier niet bij de betekenis."
     }
   },
   {
@@ -217,13 +217,13 @@ export const candidates = [
       "sentence": "Rumah itu ___.",
       "translation": "Hoe is dat huis? Het heeft veel kamers!",
       "options": [
-        "murah",
+        "kosong",
         "besar",
-        "mahal",
+        "murah",
         "baik"
       ],
       "correctOptionId": "besar",
-      "explanationText": "In het Indonesisch is er geen koppelwerkwoord \"is\" — het bijvoeglijk naamwoord volgt direct. \"Besar\" (groot) past bij de vertaling. \"Murah\" (goedkoop), \"mahal\" (duur) en \"baik\" (goed) passen hier niet bij de betekenis."
+      "explanationText": "In het Indonesisch is er geen koppelwerkwoord \"is\" — het bijvoeglijk naamwoord volgt direct. \"Besar\" (groot) past bij de vertaling over veel kamers. \"Kosong\" (leeg), \"murah\" (goedkoop) en \"baik\" (goed) passen hier niet bij de betekenis."
     }
   },
   {
@@ -237,11 +237,11 @@ export const candidates = [
       "options": [
         "mahal",
         "murah",
-        "besar",
-        "baik"
+        "cukup",
+        "besar"
       ],
       "correctOptionId": "mahal",
-      "explanationText": "Geen koppelwerkwoord nodig — het bijvoeglijk naamwoord volgt direct op het onderwerp. \"Mahal\" (duur) past bij de vertaling over de prijs. \"Murah\" (goedkoop) is het tegenovergestelde, \"besar\" (groot) en \"baik\" (goed) passen niet bij een prijs."
+      "explanationText": "Geen koppelwerkwoord nodig — het bijvoeglijk naamwoord volgt direct op het onderwerp. \"Mahal\" (duur) past bij de vertaling over niet willen betalen. \"Murah\" (goedkoop) is het tegenovergestelde, \"cukup\" (voldoende) en \"besar\" (groot) passen niet bij een prijs die te hoog is."
     }
   },
   {
@@ -385,15 +385,15 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "sentence": "Saya ___ pisang di pasar.",
-      "translation": "Ik heb een plan voor de bananen op de markt.",
+      "translation": "Ik wil bananen kopen op de markt.",
       "options": [
         "mau untuk beli",
         "mau beli",
-        "ingin membeli untuk",
-        "beli mau"
+        "beli mau",
+        "mau dari beli"
       ],
       "correctOptionId": "mau beli",
-      "explanationText": "Serieel werkwoord: twee werkwoorden direct achter elkaar zonder voegwoord. \"Mau beli\" (willen kopen). In het Nederlands heb je soms \"te/om te\": \"willen kopen\". In het Indonesisch is \"untuk\" hier overbodig en fout bij mau/bisa/boleh."
+      "explanationText": "Serieel werkwoord: twee werkwoorden direct achter elkaar zonder voegwoord. \"Mau beli\" (willen kopen). In het Nederlands heb je soms \"te/om te\", maar in het Indonesisch is \"untuk\" overbodig bij mau/bisa/boleh. De volgorde is altijd hulpwerkwoord + hoofdwerkwoord, nooit andersom."
     }
   },
   {
@@ -403,15 +403,15 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "sentence": "Ibu ___ nanas di pasar.",
-      "translation": "Het is mogelijk voor mevrouw: ananas op de markt.",
+      "translation": "Mevrouw kan ananas kopen op de markt.",
       "options": [
-        "bisa te beli",
+        "bisa untuk beli",
         "bisa beli",
         "beli bisa",
-        "kunnen beli"
+        "bisa dari beli"
       ],
       "correctOptionId": "bisa beli",
-      "explanationText": "\"Bisa beli\" = kunnen kopen. De hulpwerkwoorden bisa, mau en boleh staan altijd VOOR het hoofdwerkwoord, direct aansluitend. Geen \"te\" of ander verbindingswoord nodig. De volgorde is altijd: hulpwerkwoord + hoofdwerkwoord."
+      "explanationText": "\"Bisa beli\" = kunnen kopen. De hulpwerkwoorden bisa, mau en boleh staan altijd VOOR het hoofdwerkwoord, direct aansluitend. Geen \"untuk\" of ander verbindingswoord nodig. De volgorde is altijd: hulpwerkwoord + hoofdwerkwoord, nooit andersom."
     }
   },
   {
@@ -421,15 +421,15 @@ export const candidates = [
     "review_status": "published",
     "payload": {
       "sentence": "Bapak ___ buah di pasar.",
-      "translation": "Het is meneer toegestaan: fruit op de markt.",
+      "translation": "Meneer mag fruit eten op de markt.",
       "options": [
         "boleh makan",
         "makan boleh",
-        "boleh om makan",
-        "boleh te makan"
+        "boleh untuk makan",
+        "boleh dan makan"
       ],
       "correctOptionId": "boleh makan",
-      "explanationText": "\"Boleh makan\" = mogen eten. Het hulpwerkwoord \"boleh\" (mogen) staat voor het hoofdwerkwoord \"makan\" (eten). Geen tussenvoegsel. Dit is dezelfde constructie als \"mau beli\" en \"bisa beli\" — werkwoorden rijgen zich aaneen."
+      "explanationText": "\"Boleh makan\" = mogen eten. Het hulpwerkwoord \"boleh\" (mogen) staat direct voor het hoofdwerkwoord \"makan\" (eten). Geen tussenvoegsel zoals \"untuk\" of \"dan\" nodig. Dit is dezelfde constructie als \"mau beli\" en \"bisa beli\" — werkwoorden rijgen zich direct aaneen."
     }
   },
   {
@@ -653,11 +653,11 @@ export const candidates = [
         },
         {
           "id": "b",
-          "text": "De penjual di de pasar"
+          "text": "Satu penjual di satu pasar"
         }
       ],
       "correctOptionId": "a",
-      "explanationText": "Nederlandse lidwoorden bestaan niet in het Indonesisch. \"De penjual\" en \"de pasar\" zijn fout. \"Penjual di pasar\" = [De] verkoper [is] op [de] markt. Twee regels tegelijk: geen lidwoorden en geen koppelwerkwoord."
+      "explanationText": "Het Indonesisch heeft geen lidwoorden. Een Nederlandse leerling wil misschien \"de\" vertalen met het telwoord \"satu\" (een/één), maar \"satu\" betekent specifiek het getal één — het is geen lidwoord. \"Penjual di pasar\" = [De] verkoper [is] op [de] markt. De context maakt duidelijk welke verkoper en welke markt bedoeld wordt."
     }
   },
   {
@@ -1140,11 +1140,11 @@ export const candidates = [
       "options": [
         "tidak",
         "belum",
-        "bukan",
-        "jangan"
+        "mau",
+        "boleh"
       ],
       "correctOptionId": "belum",
-      "explanationText": "\"Belum\" = nog niet (tijdelijk). De zin zegt \"morgen wel\" — er is dus toekomstige mogelijkheid. \"Tidak bisa\" zou permanent zijn: ik kan het niet en dat verandert niet. De sleutel is het woord \"besok\" (morgen) — dat wijst op tijdelijkheid."
+      "explanationText": "\"Belum\" = nog niet (tijdelijk). De zin zegt \"morgen wel\" — er is dus toekomstige mogelijkheid. \"Tidak bisa\" zou permanent zijn: ik kan het niet en dat verandert niet. \"Mau\" (willen) en \"boleh\" (mogen) zijn hulpwerkwoorden, geen ontkenningen. De sleutel is het woord \"besok\" (morgen) — dat wijst op tijdelijkheid."
     }
   },
   {
@@ -1158,11 +1158,11 @@ export const candidates = [
       "options": [
         "belum",
         "tidak",
-        "bukan",
-        "jangan"
+        "mau",
+        "bisa"
       ],
       "correctOptionId": "tidak",
-      "explanationText": "\"Tidak\" ontkent bijvoeglijke naamwoorden en werkwoorden voor een definitief oordeel. \"Belum mahal\" zou betekenen \"nog niet duur\" — alsof het later misschien wel duur wordt. \"Tidak mahal\" = is niet duur (definitief oordeel over de huidige staat)."
+      "explanationText": "\"Tidak\" ontkent bijvoeglijke naamwoorden en werkwoorden voor een definitief oordeel. \"Belum mahal\" zou betekenen \"nog niet duur\" — alsof het later misschien wel duur wordt. \"Mau\" (willen) en \"bisa\" (kunnen) zijn hulpwerkwoorden die niet voor bijvoeglijke naamwoorden staan. \"Tidak mahal\" = is niet duur (definitief oordeel)."
     }
   },
   {
@@ -1176,11 +1176,11 @@ export const candidates = [
       "options": [
         "Tidak",
         "Belum",
-        "Bukan",
-        "Jangan"
+        "Boleh",
+        "Mau"
       ],
       "correctOptionId": "Belum",
-      "explanationText": "De verkoper zegt \"belum bisa\" — nog niet mogelijk. Waarom \"belum\"? Omdat hij daarna een alternatief aanbiedt (vijf stuks voor negen rupiah). De deur blijft open. \"Tidak bisa\" zou definitief zijn: nee, dat kan niet, punt."
+      "explanationText": "De verkoper zegt \"belum bisa\" — nog niet mogelijk. Waarom \"belum\"? Omdat hij daarna een alternatief aanbiedt (vijf stuks voor negen rupiah). De deur blijft open. \"Tidak bisa\" zou definitief zijn: nee, dat kan niet, punt. \"Boleh\" (mogen) en \"Mau\" (willen) zijn hulpwerkwoorden en geen ontkenningen."
     }
   },
   {

@@ -4,7 +4,7 @@ export const grammarPatterns = [
   {
     pattern_name: 'Werkwoord — geen vervoeging',
     description: 'Indonesische werkwoorden worden niet vervoegd naar persoon, getal of tijd. De basisvorm blijft altijd hetzelfde. Tijd wordt uitgedrukt door context of tijdsaanduidingen (kemarin, besok). Voorbeeld: "Saya beli buah" = Ik koop/kocht fruit.',
-    confusion_group: null,
+    confusion_group: 'verb-forms',
     page_reference: 1,
     slug: 'verb-no-conjugation',
     complexity_score: 2,
@@ -52,7 +52,7 @@ export const grammarPatterns = [
   {
     pattern_name: 'Belum vs tidak — ontkenning',
     description: '"Tidak" = niet/nee (definitieve ontkenning). "Belum" = nog niet (tijdelijke ontkenning, iets kan nog veranderen). "Belum bisa" = nog niet mogelijk (maar misschien later wel). Voor Nederlandse leerlingen: "belum" impliceert dat het later wel kan.',
-    confusion_group: 'negation-belum-tidak',
+    confusion_group: 'negation',
     page_reference: 1,
     slug: 'belum-vs-tidak',
     complexity_score: 3,

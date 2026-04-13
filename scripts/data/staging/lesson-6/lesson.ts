@@ -338,16 +338,16 @@ export const lesson = {
             "instruction": "Vertaal.",
             "type": "translation",
             "items": [
-              { "prompt": "Hoe laat is het? Mijn bus vertrekt om 11.00 uur." },
-              { "prompt": "Is het niet zo dat u vandaag naar Medan vertrekt?" },
-              { "prompt": "Nee, ik ga 's ochtends om 05.10 uur naar het Nationaal Monument." },
-              { "prompt": "Heb je al gegeten? Het is nu al 20.15 uur!" },
-              { "prompt": "Wij hebben vijftien uur in de bus naar Solo gezeten." },
-              { "prompt": "Nee, hij houdt er niet van om met de bus te gaan." },
-              { "prompt": "Nee, hij kwam niet naar mijn, maar naar haar huis." },
-              { "prompt": "Ga niet zitten! Die kleine, rode stoel is stuk." },
-              { "prompt": "Vandaag werkt hij tot 21.00 uur." },
-              { "prompt": "Vooruit! Zeg maar dat we om 19.45 uur niet kunnen komen!" }
+              { "prompt": "Hoe laat is het? Mijn bus vertrekt om 11.00 uur.", "answer": "Jam berapa sekarang? Bus saya berangkat jam sebelas siang." },
+              { "prompt": "Is het niet zo dat u vandaag naar Medan vertrekt?", "answer": "Hari ini Anda berangkat ke Medan, bukan?" },
+              { "prompt": "Nee, ik ga 's ochtends om 05.10 uur naar het Nationaal Monument.", "answer": "Tidak, saya pergi jam lima pagi lewat sepuluh ke Monas." },
+              { "prompt": "Heb je al gegeten? Het is nu al 20.15 uur!", "answer": "Kamu sudah makan? Sekarang sudah jam delapan malam lewat seperempat!" },
+              { "prompt": "Wij hebben vijftien uur in de bus naar Solo gezeten.", "answer": "Kami duduk lima belas jam di bus ke Solo." },
+              { "prompt": "Nee, hij houdt er niet van om met de bus te gaan.", "answer": "Tidak, dia tidak suka naik bus." },
+              { "prompt": "Nee, hij kwam niet naar mijn, maar naar haar huis.", "answer": "Tidak, dia datang bukan ke rumah saya, tetapi ke rumahnya." },
+              { "prompt": "Ga niet zitten! Die kleine, rode stoel is stuk.", "answer": "Jangan duduk! Kursi kecil yang merah itu rusak." },
+              { "prompt": "Vandaag werkt hij tot 21.00 uur.", "answer": "Hari ini dia bekerja sampai jam sembilan malam." },
+              { "prompt": "Vooruit! Zeg maar dat we om 19.45 uur niet kunnen komen!", "answer": "Ayo! Bilang saja kami tidak bisa datang jam delapan malam kurang seperempat!" }
             ]
           },
           {
@@ -355,16 +355,16 @@ export const lesson = {
             "instruction": "Vertaal.",
             "type": "translation",
             "items": [
-              { "prompt": "Jullie leren nog Indonesisch, is het niet?" },
-              { "prompt": "Ik wil geen thee drinken. Ik hou van koffie." },
-              { "prompt": "Deze zeep is niet goed, mijn kleren zijn niet schoon." },
-              { "prompt": "Zij weet niet dat haar fiets nog voor het huis staat." },
-              { "prompt": "Dat weet ik niet! Hij is al vertrokken om vijf voor zeven." },
-              { "prompt": "Dit is de fiets van mijn vriendin niet!" },
-              { "prompt": "Is dit de auto van Krista? Nee, die auto is van ons." },
-              { "prompt": "Je bent om 21.30 uur uit Amsterdam gekomen, is 't niet?" },
-              { "prompt": "Eet niet van dat bord! Het is niet schoon." },
-              { "prompt": "Probeer het bord niet te vullen met water!" }
+              { "prompt": "Jullie leren nog Indonesisch, is het niet?", "answer": "Kalian masih belajar bahasa Indonesia, bukan?" },
+              { "prompt": "Ik wil geen thee drinken. Ik hou van koffie.", "answer": "Saya tidak mau minum teh. Saya suka kopi." },
+              { "prompt": "Deze zeep is niet goed, mijn kleren zijn niet schoon.", "answer": "Sabun ini tidak bagus, pakaian saya tidak bersih." },
+              { "prompt": "Zij weet niet dat haar fiets nog voor het huis staat.", "answer": "Dia tidak tahu bahwa sepedanya masih di depan rumah." },
+              { "prompt": "Dat weet ik niet! Hij is al vertrokken om vijf voor zeven.", "answer": "Saya tidak tahu! Dia sudah berangkat jam tujuh kurang lima." },
+              { "prompt": "Dit is de fiets van mijn vriendin niet!", "answer": "Ini bukan sepeda teman saya!" },
+              { "prompt": "Is dit de auto van Krista? Nee, die auto is van ons.", "answer": "Ini mobil Krista? Tidak, mobil itu mobil kami." },
+              { "prompt": "Je bent om 21.30 uur uit Amsterdam gekomen, is 't niet?", "answer": "Kamu datang dari Amsterdam jam setengah sepuluh malam, 'kan?" },
+              { "prompt": "Eet niet van dat bord! Het is niet schoon.", "answer": "Jangan makan dari piring itu! Tidak bersih." },
+              { "prompt": "Probeer het bord niet te vullen met water!", "answer": "Jangan coba mengisi piring itu dengan air!" }
             ]
           },
           {
@@ -372,21 +372,21 @@ export const lesson = {
             "instruction": "Vertaal in het Indonesisch.",
             "type": "translation",
             "items": [
-              { "prompt": "Ga niet slapen, je moet nog eten!" },
-              { "prompt": "Ga zitten en eet!" },
-              { "prompt": "Zeg maar dat wij om ongeveer 10.00 uur vertrekken." },
-              { "prompt": "Waar vliegen jullie naar toe?" },
-              { "prompt": "Wij kunnen proberen om van Medan te vertrekken." },
-              { "prompt": "Vanaf het hotel stappen wij in een taxi." },
-              { "prompt": "In welke straat stappen jullie uit?" },
-              { "prompt": "Dat weten wij nog niet." },
-              { "prompt": "Ga niet het grote, witte kantoor binnen." },
-              { "prompt": "Pak mijn koffer en loop naar de auto." },
-              { "prompt": "Wilt u a.u.b. daar betalen?" },
-              { "prompt": "Hoe laat heeft u een afspraak?" },
-              { "prompt": "Zij vinden het prettig om 's avonds naar het restaurant te gaan." },
-              { "prompt": "Houden jullie er ook van om in de stad te eten?" },
-              { "prompt": "Neen, wij hebben een groot huis en vinden het prettig om thuis te eten." }
+              { "prompt": "Ga niet slapen, je moet nog eten!", "answer": "Jangan tidur, kamu harus makan!" },
+              { "prompt": "Ga zitten en eet!", "answer": "Duduklah dan makan!" },
+              { "prompt": "Zeg maar dat wij om ongeveer 10.00 uur vertrekken.", "answer": "Bilang saja kami berangkat kira-kira jam sepuluh pagi." },
+              { "prompt": "Waar vliegen jullie naar toe?", "answer": "Kalian terbang ke mana?" },
+              { "prompt": "Wij kunnen proberen om van Medan te vertrekken.", "answer": "Kami bisa coba berangkat dari Medan." },
+              { "prompt": "Vanaf het hotel stappen wij in een taxi.", "answer": "Dari hotel kami naik taksi." },
+              { "prompt": "In welke straat stappen jullie uit?", "answer": "Di jalan mana kalian turun?" },
+              { "prompt": "Dat weten wij nog niet.", "answer": "Kami belum tahu." },
+              { "prompt": "Ga niet het grote, witte kantoor binnen.", "answer": "Jangan masuk kantor besar yang putih!" },
+              { "prompt": "Pak mijn koffer en loop naar de auto.", "answer": "Ambil koper saya dan jalan ke mobil." },
+              { "prompt": "Wilt u a.u.b. daar betalen?", "answer": "Silakan bayar di sana." },
+              { "prompt": "Hoe laat heeft u een afspraak?", "answer": "Jam berapa Anda punya janji?" },
+              { "prompt": "Zij vinden het prettig om 's avonds naar het restaurant te gaan.", "answer": "Mereka suka pergi ke restoran malam." },
+              { "prompt": "Houden jullie er ook van om in de stad te eten?", "answer": "Kalian juga suka makan di kota?" },
+              { "prompt": "Neen, wij hebben een groot huis en vinden het prettig om thuis te eten.", "answer": "Tidak, kami punya rumah besar dan suka makan di rumah." }
             ]
           },
           {

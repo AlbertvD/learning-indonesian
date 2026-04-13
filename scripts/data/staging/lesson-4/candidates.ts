@@ -319,6 +319,23 @@ export const candidates = [
   },
   {
     "exercise_type": "cloze_mcq",
+    "grammar_pattern_slug": "yang-nominalization",
+    "review_status": "published",
+    "payload": {
+      "sentence": "___ bersih ada di lemari, yang kotor ada di kamar mandi.",
+      "translation": "De schone (handdoeken) liggen in de kast, de vieze liggen in de badkamer.",
+      "options": [
+        "Itu",
+        "Yang",
+        "Ada",
+        "Di"
+      ],
+      "correctOptionId": "Yang",
+      "explanationText": "'Yang bersih' nominaliseert het bijvoeglijk naamwoord 'bersih' tot een zelfstandig naamwoord: 'de schone (dingen)'. Uit de context (lemari, kamar mandi) is duidelijk dat het over handdoeken of kleding gaat. Dit is hetzelfde patroon als 'yang mahal' = de dure, 'yang besar' = de grote."
+    }
+  },
+  {
+    "exercise_type": "cloze_mcq",
     "grammar_pattern_slug": "yang-single-adjective-emphasis",
     "review_status": "published",
     "payload": {

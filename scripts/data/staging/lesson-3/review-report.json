@@ -1,27 +1,28 @@
 {
   "lesson": 3,
-  "revision": 3,
-  "reviewedAt": "2026-04-10T14:30:00.000Z",
+  "revision": 5,
+  "reviewedAt": "2026-04-12T14:30:00Z",
   "status": "approved",
   "issues": [
     {
       "severity": "WARNING",
       "file": "cloze-contexts.ts",
-      "item": "cloze for 'kan? (line 143)",
-      "issue": "source_text 'Ini bandar udara Soekarno-Hatta, ___' ends without question mark, though the target answer is the tag question particle",
-      "fix": "Admin can review in app -- consider adding '?' after the blank or adjusting the sentence"
-    },
-    {
-      "severity": "WARNING",
-      "file": "cloze-contexts.ts",
-      "item": "cloze for mana? (line 227)",
-      "issue": "The slug 'mana?' includes a question mark, but the blank in the sentence expects just 'mana' as part of a larger question -- potential answer-matching issue",
-      "fix": "Admin can verify in app that the expected answer matches the learning_item_slug correctly"
+      "item": "ke mana? cloze context (line 178)",
+      "issue": "source_text 'Bapak mau pergi ___' is missing a trailing question mark -- the sentence is a question based on the translation",
+      "fix": "change source_text to 'Bapak mau pergi ___?'"
     }
   ],
   "summary": {
-    "total": 2,
+    "total": 1,
     "critical": 0,
-    "warning": 2
+    "warning": 1
+  },
+  "fixVerification": {
+    "rev4_fix1_lalu_base_text": "VERIFIED -- learning-items.ts line 311 has base_text 'lalu' with translation_nl 'vervolgens'",
+    "rev4_fix2_sekali_cloze_mcq_distractors": "VERIFIED -- candidates.ts sekali-intensifier cloze_mcq #1 options are ['sekali','saja','banyak','benar'], all Indonesian lesson vocabulary",
+    "rev4_fix3_ada_sentence_transformation_answers": "VERIFIED -- candidates.ts ada-existential sentence_transformation #1 acceptableAnswers has both word orders",
+    "rev4_fix4_dari_di_ke_sentence_transformation_2": "VERIFIED -- candidates.ts dari-di-ke-locative sentence_transformation #2 rewritten to test di->dari preposition contrast",
+    "rev4_fix5_kan_cloze_trailing_question_mark": "VERIFIED -- cloze-contexts.ts 'kan? source_text ends with '___?'",
+    "rev4_fix6_mana_slug_consistency": "VERIFIED -- learning-items.ts base_text 'mana?' matches cloze-contexts.ts learning_item_slug 'mana?'"
   }
 }
