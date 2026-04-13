@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Box, Button, Stack, Text } from '@mantine/core'
-import { IconX } from '@tabler/icons-react'
+import { IconX, IconCheck } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
 import { RecognitionMCQ } from './RecognitionMCQ'
 import { CuedRecallExercise } from './CuedRecallExercise'
@@ -43,6 +43,7 @@ export function ExerciseShell({
   const t = translations[userLanguage]
   const [isProcessing, setIsProcessing] = useState(false)
   const [waitingForContinue, setWaitingForContinue] = useState(false)
+  const [lastAnswerCorrect, setLastAnswerCorrect] = useState(false)
   const [currentFlag, setCurrentFlag] = useState<ContentFlag | null>(null)
 
   const exerciseItem = currentItem.exerciseItem
@@ -75,9 +76,11 @@ export function ExerciseShell({
 
     setIsProcessing(true)
 
-    // Show wrong-answer screen immediately — don't wait for the network call.
+    // Show feedback screen immediately for wrong answers — don't wait for the network call.
+    // For correct answers, show after processReview completes (button enabled immediately).
     // Doorgaan button stays disabled (isProcessing=true) until save completes.
     if (!wasCorrect) {
+      setLastAnswerCorrect(false)
       setWaitingForContinue(true)
     }
 
@@ -120,10 +123,10 @@ export function ExerciseShell({
       onAnswer(result, wasCorrect)
       setIsProcessing(false)
 
-      if (wasCorrect) {
-        onContinueToNext()
-      }
-      // Wrong answer: waitingForContinue is already true; Doorgaan is now enabled.
+      // Always show the feedback screen — correct answers too, with explanation.
+      setLastAnswerCorrect(wasCorrect)
+      setWaitingForContinue(true)
+      // Wrong answer: waitingForContinue was already set above; now Doorgaan is enabled.
     } catch (err) {
       logError({ page: 'exercise-shell', action: 'processAnswer', error: err })
       notifications.show({
@@ -273,9 +276,12 @@ export function ExerciseShell({
 
   if (waitingForContinue) {
     const t = translations[userLanguage]
+    const accentColor = lastAnswerCorrect ? 'var(--success)' : 'var(--danger)'
+    const subtleBg = lastAnswerCorrect ? 'var(--success-subtle)' : 'var(--danger-subtle)'
+    const borderColor = lastAnswerCorrect ? 'var(--success-border)' : 'var(--danger-border)'
 
     if (!isGrammar) {
-      // Vocab wrong-answer screen
+      // Vocab feedback screen (correct or wrong)
       const primaryMeaning = exerciseItem.meanings.find(m => m.translation_language === userLanguage && m.is_primary)
         ?? exerciseItem.meanings.find(m => m.translation_language === userLanguage)
       const translation = primaryMeaning?.translation_text ?? ''
@@ -288,12 +294,16 @@ export function ExerciseShell({
             alignItems: 'center',
             gap: 10,
             padding: '12px 16px',
-            background: 'var(--danger-subtle)',
-            border: '1px solid var(--danger-border)',
+            background: subtleBg,
+            border: `1px solid ${borderColor}`,
             borderRadius: 'var(--r-md)',
           }}>
-            <IconX size={18} color="var(--danger)" />
-            <Text fw={600} style={{ color: 'var(--danger)' }}>{t.session.feedback.incorrect}</Text>
+            {lastAnswerCorrect
+              ? <IconCheck size={18} color={accentColor} />
+              : <IconX size={18} color={accentColor} />}
+            <Text fw={600} style={{ color: accentColor }}>
+              {lastAnswerCorrect ? t.session.feedback.correct : t.session.feedback.incorrect}
+            </Text>
           </Box>
           <Box style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)' }}>
@@ -316,7 +326,7 @@ export function ExerciseShell({
       )
     }
 
-    // Grammar wrong-answer screen — extract correct answer, explanation, and meaning
+    // Grammar feedback screen (correct or wrong) — always show answer + explanation
     let correctAnswer = ''
     let explanationText = ''
     let targetMeaning = ''
@@ -337,6 +347,7 @@ export function ExerciseShell({
         break
       case 'cloze_mcq':
         correctAnswer = exerciseItem.clozeMcqData?.correctOptionId ?? ''
+        explanationText = ''
         break
       default:
         correctAnswer = ''
@@ -349,12 +360,16 @@ export function ExerciseShell({
           alignItems: 'center',
           gap: 10,
           padding: '12px 16px',
-          background: 'var(--danger-subtle)',
-          border: '1px solid var(--danger-border)',
+          background: subtleBg,
+          border: `1px solid ${borderColor}`,
           borderRadius: 'var(--r-md)',
         }}>
-          <IconX size={18} color="var(--danger)" />
-          <Text fw={600} style={{ color: 'var(--danger)' }}>{t.session.feedback.incorrect}</Text>
+          {lastAnswerCorrect
+            ? <IconCheck size={18} color={accentColor} />
+            : <IconX size={18} color={accentColor} />}
+          <Text fw={600} style={{ color: accentColor }}>
+            {lastAnswerCorrect ? t.session.feedback.correct : t.session.feedback.incorrect}
+          </Text>
         </Box>
 
         <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)' }}>
