@@ -132,10 +132,14 @@ export function ExerciseShell({
       onAnswer(result, wasCorrect)
       setIsProcessing(false)
 
-      // Always show the feedback screen — correct answers too, with explanation.
-      setLastAnswerCorrect(wasCorrect)
-      setWaitingForContinue(true)
-      // Wrong answer: waitingForContinue was already set above; now Doorgaan is enabled.
+      if (wasCorrect) {
+        // Correct answer: auto-advance, no separate feedback screen needed.
+        onContinueToNext()
+      } else {
+        // Wrong answer: waitingForContinue was already set above; now Doorgaan is enabled.
+        setLastAnswerCorrect(false)
+        setWaitingForContinue(true)
+      }
     } catch (err) {
       logError({ page: 'exercise-shell', action: 'processAnswer', error: err })
       notifications.show({
