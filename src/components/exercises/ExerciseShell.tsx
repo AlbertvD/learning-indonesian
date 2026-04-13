@@ -48,19 +48,28 @@ export function ExerciseShell({
 
   const exerciseItem = currentItem.exerciseItem
   const isGrammar = currentItem.source === 'grammar'
+  // Narrowed so TypeScript knows this is only set for grammar items
+  const grammarPatternId = currentItem.source === 'grammar' ? currentItem.grammarPatternId : null
 
   // Stable key for exercise components: grammar uses patternId, vocab uses itemId
   const exerciseKey = isGrammar
-    ? `grammar-${currentItem.grammarPatternId}-${exerciseItem.exerciseType}`
+    ? `grammar-${grammarPatternId}-${exerciseItem.exerciseType}`
     : `${exerciseItem.learningItem?.id ?? 'unknown'}-${exerciseItem.exerciseType}`
 
   useEffect(() => {
-    if (isGrammar || !profile?.isAdmin || !authUser || !exerciseItem.learningItem) return
-    contentFlagService
-      .getFlagForItem(authUser.id, exerciseItem.learningItem.id, exerciseItem.exerciseType)
-      .then(flag => setCurrentFlag(flag))
-      .catch(() => {})
-  }, [isGrammar, profile?.isAdmin, authUser, exerciseItem.learningItem?.id, exerciseItem.exerciseType])
+    if (!profile?.isAdmin || !authUser) return
+    if (grammarPatternId) {
+      contentFlagService
+        .getFlagForGrammarPattern(authUser.id, grammarPatternId, exerciseItem.exerciseType)
+        .then(flag => setCurrentFlag(flag))
+        .catch(() => {})
+    } else if (exerciseItem.learningItem) {
+      contentFlagService
+        .getFlagForItem(authUser.id, exerciseItem.learningItem.id, exerciseItem.exerciseType)
+        .then(flag => setCurrentFlag(flag))
+        .catch(() => {})
+    }
+  }, [grammarPatternId, profile?.isAdmin, authUser, exerciseItem.learningItem?.id, exerciseItem.exerciseType])
 
   // Handle answer submission from exercise component.
   // For wrong answers: immediately show the wrong-answer screen so the user
@@ -400,15 +409,17 @@ export function ExerciseShell({
     )
   }
 
-  // Grammar exercises don't have content flags — FlagButton is vocab-only
-  if (isGrammar || !profile?.isAdmin || !authUser || !exerciseItem.learningItem) return <>{exerciseNode}</>
+  if (!profile?.isAdmin || !authUser) return <>{exerciseNode}</>
+  // Vocab exercises require a learningItem; grammar exercises use grammarPatternId
+  if (!isGrammar && !exerciseItem.learningItem) return <>{exerciseNode}</>
 
   return (
     <Box style={{ position: 'relative' }}>
       {exerciseNode}
       <FlagButton
         userId={authUser.id}
-        learningItemId={exerciseItem.learningItem.id}
+        learningItemId={isGrammar ? null : exerciseItem.learningItem!.id}
+        grammarPatternId={grammarPatternId}
         exerciseType={exerciseItem.exerciseType}
         exerciseVariantId={null}
         existingFlag={currentFlag}

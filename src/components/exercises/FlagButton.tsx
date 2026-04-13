@@ -8,7 +8,8 @@ import type { ContentFlag, ExerciseType, FlagType } from '@/types/learning'
 
 interface FlagButtonProps {
   userId: string
-  learningItemId: string
+  learningItemId: string | null
+  grammarPatternId?: string | null
   exerciseType: ExerciseType
   exerciseVariantId?: string | null
   existingFlag?: ContentFlag | null
@@ -27,6 +28,7 @@ const FLAG_OPTIONS: { value: FlagType; label: string }[] = [
 export function FlagButton({
   userId,
   learningItemId,
+  grammarPatternId = null,
   exerciseType,
   exerciseVariantId = null,
   existingFlag = null,
@@ -64,6 +66,7 @@ export function FlagButton({
       const flag = await contentFlagService.upsertFlag({
         userId,
         learningItemId,
+        grammarPatternId,
         exerciseType,
         exerciseVariantId,
         flagType,

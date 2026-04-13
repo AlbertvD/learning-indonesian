@@ -1120,3 +1120,53 @@ DO $$ BEGIN
     );
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
+
+-- content_flags: extend to support grammar exercises (grammar_pattern_id)
+-- Make learning_item_id nullable so grammar flags have no vocab anchor
+DO $$ BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'indonesian' AND table_name = 'content_flags'
+    AND column_name = 'learning_item_id' AND is_nullable = 'NO'
+  ) THEN
+    ALTER TABLE indonesian.content_flags ALTER COLUMN learning_item_id DROP NOT NULL;
+  END IF;
+END $$;
+
+-- Add grammar_pattern_id FK column
+ALTER TABLE indonesian.content_flags
+  ADD COLUMN IF NOT EXISTS grammar_pattern_id uuid
+    REFERENCES indonesian.grammar_patterns(id) ON DELETE CASCADE;
+
+-- Replace the inline UNIQUE(user_id, learning_item_id, exercise_type) constraint
+-- with two partial unique indexes — one per entity type.
+DO $$ BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.table_constraints
+    WHERE constraint_schema = 'indonesian'
+    AND table_name = 'content_flags'
+    AND constraint_type = 'UNIQUE'
+    AND constraint_name = 'content_flags_user_id_learning_item_id_exercise_type_key'
+  ) THEN
+    ALTER TABLE indonesian.content_flags
+      DROP CONSTRAINT content_flags_user_id_learning_item_id_exercise_type_key;
+  END IF;
+END $$;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_content_flags_vocab_unique
+  ON indonesian.content_flags(user_id, learning_item_id, exercise_type)
+  WHERE learning_item_id IS NOT NULL;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_content_flags_grammar_unique
+  ON indonesian.content_flags(user_id, grammar_pattern_id, exercise_type)
+  WHERE grammar_pattern_id IS NOT NULL;
+
+-- Exactly one of learning_item_id / grammar_pattern_id must be set
+DO $$ BEGIN
+  ALTER TABLE indonesian.content_flags ADD CONSTRAINT content_flags_entity_check
+    CHECK (
+      (learning_item_id IS NOT NULL AND grammar_pattern_id IS NULL) OR
+      (learning_item_id IS NULL AND grammar_pattern_id IS NOT NULL)
+    );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;

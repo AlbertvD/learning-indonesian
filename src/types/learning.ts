@@ -158,7 +158,8 @@ export type FlagStatus = 'open' | 'resolved'
 export interface ContentFlag {
   id: string
   userId: string
-  learningItemId: string
+  learningItemId: string | null
+  grammarPatternId: string | null
   exerciseType: ExerciseType
   exerciseVariantId: string | null
   flagType: FlagType
