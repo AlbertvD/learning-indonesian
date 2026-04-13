@@ -28,7 +28,7 @@ export function SentenceTransformationExercise({
   const [response, setResponse] = useState('')
   const [isAnswered, setIsAnswered] = useState(false)
   const [failureCount, setFailureCount] = useState(0)
-  const [showWrong, setShowWrong] = useState(false)
+  const [lastAttemptWrong, setLastAttemptWrong] = useState(false)
   const [startTime] = useState(() => Date.now())
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -82,12 +82,13 @@ export function SentenceTransformationExercise({
   }
 
   const handleSubmit = () => {
-    if (isAnswered || showWrong || !response.trim()) return
+    if (isAnswered || !response.trim()) return
 
     const result = checkAnswer(response, data.acceptableAnswers[0], data.acceptableAnswers)
     const latencyMs = Date.now() - startTime
 
     if (result.isCorrect) {
+      setLastAttemptWrong(false)
       setIsAnswered(true)
       setTimeout(() => onAnswer(true, result.isFuzzy, latencyMs, response), 1500)
       return
@@ -97,22 +98,20 @@ export function SentenceTransformationExercise({
     setFailureCount(newFailureCount)
 
     if (newFailureCount >= MAX_FAILURES) {
+      setLastAttemptWrong(false)
       setIsAnswered(true)
       onAnswer(false, result.isFuzzy, latencyMs, response)
       return
     }
 
-    // Show brief wrong indicator, then reset for retry
-    setShowWrong(true)
-    setTimeout(() => {
-      setShowWrong(false)
-      setResponse('')
-      inputRef.current?.focus()
-    }, 800)
+    // Show persistent wrong indicator — input stays enabled so user can retry immediately
+    setLastAttemptWrong(true)
+    setResponse('')
+    setTimeout(() => inputRef.current?.focus(), 0)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !isAnswered && !showWrong) {
+    if (e.key === 'Enter' && !isAnswered) {
       handleSubmit()
     }
   }
@@ -120,6 +119,7 @@ export function SentenceTransformationExercise({
   const result = checkAnswer(response, data.acceptableAnswers[0], data.acceptableAnswers)
   const isCorrect = result.isCorrect
   const showHint = data.hintText && failureCount >= HINT_AFTER_FAILURES
+  const showWrong = lastAttemptWrong
 
   return (
     <Box className={classes.container}>
@@ -139,22 +139,7 @@ export function SentenceTransformationExercise({
           </Box>
         )}
 
-        {/* Input field */}
-        <Box>
-          <TextInput
-            ref={inputRef}
-            placeholder={t.session.exercise.typeAnswer}
-            value={response}
-            onChange={(e) => setResponse(e.currentTarget.value)}
-            onKeyDown={handleKeyDown}
-            disabled={isAnswered || showWrong}
-            size="lg"
-            className={classes.input}
-            aria-label="Answer input"
-          />
-        </Box>
-
-        {/* Wrong-answer flash (retry mode) */}
+        {/* Wrong-answer indicator — stays visible while user types their next attempt */}
         {showWrong && (
           <Box style={{ textAlign: 'center' }}>
             <Badge color="red" size="xl" style={{ fontSize: '16px', padding: '12px 20px' }}>
@@ -163,8 +148,23 @@ export function SentenceTransformationExercise({
           </Box>
         )}
 
+        {/* Input field */}
+        <Box>
+          <TextInput
+            ref={inputRef}
+            placeholder={t.session.exercise.typeAnswer}
+            value={response}
+            onChange={(e) => { setLastAttemptWrong(false); setResponse(e.currentTarget.value) }}
+            onKeyDown={handleKeyDown}
+            disabled={isAnswered}
+            size="lg"
+            className={classes.input}
+            aria-label="Answer input"
+          />
+        </Box>
+
         {/* Submit button */}
-        {!isAnswered && !showWrong && (
+        {!isAnswered && (
           <Button
             onClick={handleSubmit}
             disabled={!response.trim()}
