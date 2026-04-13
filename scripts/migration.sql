@@ -1138,10 +1138,9 @@ ALTER TABLE indonesian.content_flags
   ADD COLUMN IF NOT EXISTS grammar_pattern_id uuid
     REFERENCES indonesian.grammar_patterns(id) ON DELETE CASCADE;
 
--- Replace the inline UNIQUE(user_id, learning_item_id, exercise_type) constraint
--- with two partial unique indexes — one per entity type.
+-- Ensure vocab unique constraint exists (was the original inline UNIQUE)
 DO $$ BEGIN
-  IF EXISTS (
+  IF NOT EXISTS (
     SELECT 1 FROM information_schema.table_constraints
     WHERE constraint_schema = 'indonesian'
     AND table_name = 'content_flags'
@@ -1149,17 +1148,29 @@ DO $$ BEGIN
     AND constraint_name = 'content_flags_user_id_learning_item_id_exercise_type_key'
   ) THEN
     ALTER TABLE indonesian.content_flags
-      DROP CONSTRAINT content_flags_user_id_learning_item_id_exercise_type_key;
+      ADD CONSTRAINT content_flags_user_id_learning_item_id_exercise_type_key
+      UNIQUE(user_id, learning_item_id, exercise_type);
   END IF;
 END $$;
 
-CREATE UNIQUE INDEX IF NOT EXISTS idx_content_flags_vocab_unique
-  ON indonesian.content_flags(user_id, learning_item_id, exercise_type)
-  WHERE learning_item_id IS NOT NULL;
+-- Add grammar unique constraint (NULL grammar_pattern_id rows don't conflict — SQL NULL != NULL)
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints
+    WHERE constraint_schema = 'indonesian'
+    AND table_name = 'content_flags'
+    AND constraint_type = 'UNIQUE'
+    AND constraint_name = 'content_flags_user_id_grammar_pattern_id_exercise_type_key'
+  ) THEN
+    ALTER TABLE indonesian.content_flags
+      ADD CONSTRAINT content_flags_user_id_grammar_pattern_id_exercise_type_key
+      UNIQUE(user_id, grammar_pattern_id, exercise_type);
+  END IF;
+END $$;
 
-CREATE UNIQUE INDEX IF NOT EXISTS idx_content_flags_grammar_unique
-  ON indonesian.content_flags(user_id, grammar_pattern_id, exercise_type)
-  WHERE grammar_pattern_id IS NOT NULL;
+-- Clean up partial indexes if they were created by an earlier migration version
+DROP INDEX IF EXISTS indonesian.idx_content_flags_vocab_unique;
+DROP INDEX IF EXISTS indonesian.idx_content_flags_grammar_unique;
 
 -- Exactly one of learning_item_id / grammar_pattern_id must be set
 DO $$ BEGIN

@@ -57,6 +57,13 @@ export function Cloze({ exerciseItem, userLanguage, onAnswer }: ClozeProps) {
   return (
     <Stack gap="xl">
       <Box ta="center" py="xl">
+        {/* Translation shown pre-answer so the learner knows what meaning to express */}
+        {!submitted && translation && (
+          <Group justify="center" gap="xs" c="dimmed" mb="md">
+            <IconMessage2 size={16} />
+            <Text size="sm" style={{ fontStyle: 'italic' }}>{translation}</Text>
+          </Group>
+        )}
         <Text size="xl" fw={600} mb="lg" style={{ lineHeight: 1.6 }}>
           {parts[0]}
           <input
