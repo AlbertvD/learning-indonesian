@@ -118,6 +118,7 @@ export function ContrastPairExercise({ exerciseItem, userLanguage, onAnswer, pre
     .replace(/^Pilih yang benar:\s*/i, '')
     .replace(/^Welke zin betekent\s*/i, '')
     .replace(/^Welk woord betekent\s*/i, '')
+    .replace(/^Kies de juiste zin:\s*/i, '')
 
   return (
     <Box className={classes.container}>
