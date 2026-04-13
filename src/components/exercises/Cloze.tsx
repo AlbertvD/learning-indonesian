@@ -96,13 +96,6 @@ export function Cloze({ exerciseItem, userLanguage, onAnswer }: ClozeProps) {
           {parts[1]}
         </Text>
 
-        {/* Translation shown only after answering */}
-        {submitted && translation && (
-          <Group justify="center" gap="xs" c="dimmed">
-            <IconMessage2 size={16} />
-            <Text size="sm" style={{ fontStyle: 'italic' }}>{translation}</Text>
-          </Group>
-        )}
       </Box>
 
       {!submitted ? (
