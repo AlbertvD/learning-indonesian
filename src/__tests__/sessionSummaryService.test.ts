@@ -1,6 +1,19 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { sessionSummaryService } from '@/services/sessionSummaryService'
 import type { WeeklyGoal } from '@/types/learning'
+
+vi.mock('@/lib/supabase', () => {
+  const result = { data: [], error: null }
+  const self = (): any => Object.assign(Promise.resolve(result), {
+    select: self, eq: self, in: self, gte: self, lt: self, order: self, limit: self,
+    maybeSingle: self, single: self,
+  })
+  return {
+    supabase: {
+      schema: () => ({ from: self }),
+    },
+  }
+})
 
 describe('sessionSummaryService', () => {
   describe('getWeeklyImpactChanges (English)', () => {

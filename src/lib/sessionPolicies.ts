@@ -16,10 +16,9 @@ export interface SessionPoliciesContext {
  * Apply policy layers on top of the raw session queue.
  * Policies are applied in order:
  * 1. Exercise availability gating
- * 2. Approved content check (deferred — Phase 2+)
- * 3. Grammar-aware interleaving
- * 4. Consecutive type cap
- * 5. Queue trimming
+ * 2. Grammar-aware interleaving
+ * 3. Consecutive type cap
+ * 4. Queue trimming
  */
 export function applyPolicies(
   queue: SessionQueueItem[],
@@ -30,16 +29,13 @@ export function applyPolicies(
   // 1. Exercise availability gating
   shaped = filterByExerciseAvailability(shaped, context)
 
-  // 2. Approved content check (not filtering yet - content pipeline in Phase 2+)
-  // shaped = filterByApprovedContent(shaped, context)
-
-  // 3. Grammar-aware interleaving
+  // 2. Grammar-aware interleaving
   shaped = applyGrammarAwareInterleaving(shaped, context)
 
-  // 4. Consecutive type cap
+  // 3. Consecutive type cap
   shaped = applyConsecutiveTypeCap(shaped)
 
-  // 5. Queue trimming
+  // 4. Queue trimming
   shaped = trimQueueToCapacity(shaped, context.sessionInteractionCap)
 
   return shaped
