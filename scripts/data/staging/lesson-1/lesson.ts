@@ -1,5 +1,5 @@
 // Lesson 1 — Di Pasar (Op de markt)
-// Grammar/exercise sections structured by linguist-creator
+// Grammar/exercise sections structured by linguist-structurer
 // Vocabulary/expressions/numbers/dialogue/text/pronunciation sections live in the DB (seeded via legacy path)
 export const lesson = {
   "title": "Les 1 - Di Pasar (Op de markt)",

@@ -109,7 +109,7 @@ function validateSections(sections: any[], lessonNumber: number) {
 // words (oleh-oleh, sama-sama, baik-baik) where the hyphen is part of the word.
 //
 // The slug in cloze-contexts.ts ideally matches base_text exactly, but the
-// linguist-creator often writes simplified slugs (e.g. "beres") while the
+// linguist-structurer often writes simplified slugs (e.g. "beres") while the
 // base_text — and therefore normalized_text in the DB — includes accent
 // annotations and passive markers (e.g. "beres (bèrès)", "dibawa*").
 //
@@ -514,7 +514,7 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
           }
           // Resolve learning_item_id from normalized_text.
           // Try each candidate slug in priority order until a match is found.
-          // This handles simplified slugs from the linguist-creator (e.g. "beres")
+          // This handles simplified slugs from the linguist-structurer (e.g. "beres")
           // matching DB entries that include accent annotations (e.g. "beres (bèrès)").
           const slugCandidates = candidateSlugs(ctx.learning_item_slug)
           let item: { id: string } | null = null

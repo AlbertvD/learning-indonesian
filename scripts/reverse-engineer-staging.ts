@@ -7,7 +7,7 @@
  * lives in lesson_sections and learning_items.
  *
  * Writes:
- *   sections-catalog.json  — primary input for linguist-creator
+ *   sections-catalog.json  — primary input for linguist-structurer
  *   lesson.ts              — full lesson with all sections from DB
  *   learning-items.ts      — vocabulary items from DB (Dutch translations)
  *
@@ -183,7 +183,7 @@ async function main() {
   if (emptyNl.length > 0) {
     console.warn(`\n⚠️ ${emptyNl.length}/${learningItems.length} items have no NL translation in DB.`)
     console.warn('   These items will be invisible to NL users in sessions.')
-    console.warn('   Run repair-item-meanings.ts or re-seed before running linguist-creator.')
+    console.warn('   Run repair-item-meanings.ts or re-seed before running linguist-structurer.')
     // Warn but don't exit — the operator may want to proceed and fix afterwards
   }
   if (learningItems.length === 0) {
@@ -265,7 +265,7 @@ async function main() {
     lesson_title: lesson.title,
     level: lesson.level,
     source: 'reverse_engineered_from_db',
-    note: 'Grammar and exercise sections are already fully structured (categories/sections arrays). The linguist-creator should use structured_categories / structured_sections directly — no re-parsing needed. raw_text is provided as a human-readable reference only.',
+    note: 'Grammar and exercise sections are already fully structured (categories/sections arrays). The linguist-structurer should use structured_categories / structured_sections directly — no re-parsing needed. raw_text is provided as a human-readable reference only.',
     sections: catalogSections,
   }
 
@@ -307,7 +307,7 @@ async function main() {
   )
   console.log(`  ✓ learning-items.ts written (${learningItems.length} items)`)
 
-  console.log(`\nDone. Run linguist-creator on lesson ${lessonNumber} next.`)
+  console.log(`\nDone. Run linguist-structurer on lesson ${lessonNumber} next.`)
 }
 
 main().catch(err => {

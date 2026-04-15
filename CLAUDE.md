@@ -254,10 +254,11 @@ bun scripts/publish-approved-content.ts <N>             # publish
 ```
 Publishes everything in one shot: lesson sections, vocabulary items, grammar patterns, cloze contexts, and exercise variants. All `pending_review` content is included. The `NODE_TLS_REJECT_UNAUTHORIZED=0` flag is built into the script for the homelab's internal CA.
 
-The publish script runs quality gates at every step and exits non-zero on failure. If it fails, the `content-seeder` agent routes back to `linguist-creator` with the specific error. Common failure → agent mappings:
-- Invalid `context_type` or empty `translation_nl` in staging → **linguist-creator**
-- Unresolved cloze slugs → **linguist-creator**
-- Missing NL meanings after publish → re-run; if persistent → **linguist-creator**
+The publish script runs quality gates at every step and exits non-zero on failure. If it fails, the `content-seeder` agent routes back to the appropriate linguist agent. Common failure → agent mappings:
+- Invalid `context_type` or empty `translation_nl` in staging → **linguist-structurer** or **cloze-creator**
+- Unresolved cloze slugs → **cloze-creator**
+- Missing NL meanings after publish → re-run; if persistent → **linguist-structurer**
+- Broken candidate payloads → **grammar-exercise-creator**
 
 ### Staging files reference
 

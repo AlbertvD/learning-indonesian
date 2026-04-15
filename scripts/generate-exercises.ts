@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * generate-exercises.ts — Step 5b of content pipeline (linguist-creator)
+ * generate-exercises.ts — Step 5b of content pipeline (linguist-structurer)
  *
  * Reads grammar patterns and lesson vocabulary/dialogue from staging files and uses
  * Claude to generate exercise candidates for each grammar pattern. Writes (or merges
