@@ -231,15 +231,21 @@ bun scripts/generate-staging-files.ts <N>
 ```
 Deterministic. Reads catalog → writes `lesson.ts` (all display sections) and `learning-items.ts` (vocabulary/expressions/numbers/dialogue items). Scaffolds empty `grammar-patterns.ts`, `candidates.ts`, `cloze-contexts.ts` if absent.
 
-**Step 5 — Linguist Creator**
-Run the `linguist-creator` agent to structure grammar/exercise sections in `lesson.ts`, generate grammar patterns, exercise candidates, and cloze contexts.
-Output: updated `lesson.ts`, `grammar-patterns.ts`, `candidates.ts`, `cloze-contexts.ts`
+**Step 5 — Linguist Structurer**
+Run the `linguist-structurer` agent to structure grammar/exercise sections in `lesson.ts`, extract grammar patterns, do web research, and build the pattern brief.
+Output: updated `lesson.ts`, `grammar-patterns.ts`, `pattern-brief.json`
 
-**Step 6 — Linguist Reviewer**
-Run the `linguist-reviewer` agent to validate creator output against payload contracts and slug uniqueness.
+**Step 6 — Exercise & Cloze Creators** (can run in parallel)
+Run three agents:
+- `grammar-exercise-creator` — generates grammar exercise candidates. Output: `candidates.ts`
+- `vocab-exercise-creator` — authors curated distractors for vocab exercises. Output: `vocab-enrichments.ts`
+- `cloze-creator` — generates cloze context sentences. Output: `cloze-contexts.ts`
+
+**Step 7 — Linguist Reviewer**
+Run the `linguist-reviewer` agent to validate all pipeline output against payload contracts, slug uniqueness, and distractor quality.
 Output: `scripts/data/staging/lesson-<N>/review-report.json`
 
-If `review-report.json` status is `needs_revision` (CRITICAL issues only): re-run creator, then reviewer. Repeat until `approved`. WARNINGs are flagged for admin review in the app and do not block publishing.
+If `review-report.json` status is `needs_revision` (CRITICAL issues only): re-run the agent that produced the flagged file, then reviewer. Repeat until `approved`. WARNINGs are flagged for admin review in the app and do not block publishing.
 
 **Step 7 — Publish**
 ```bash
@@ -258,11 +264,13 @@ The publish script runs quality gates at every step and exits non-zero on failur
 | File | Written by | Purpose |
 |---|---|---|
 | `sections-catalog.json` | `catalog-lesson-sections.ts` | LLM classification output — source of truth for lesson.ts and learning-items.ts |
-| `lesson.ts` | `generate-staging-files.ts` | Display sections for lesson reader |
+| `lesson.ts` | `generate-staging-files.ts` + `linguist-structurer` | Display sections for lesson reader |
 | `learning-items.ts` | `generate-staging-files.ts` | Schedulable FSRS items |
-| `grammar-patterns.ts` | `linguist-creator` | Grammar patterns with slug + complexity |
-| `candidates.ts` | `linguist-creator` | Authored exercise variants |
-| `cloze-contexts.ts` | `linguist-creator` | Cloze sentences per vocabulary item |
+| `grammar-patterns.ts` | `linguist-structurer` | Grammar patterns with slug + complexity |
+| `pattern-brief.json` | `linguist-structurer` | Intermediate artifact: vocab pool, research notes, pattern list |
+| `candidates.ts` | `grammar-exercise-creator` | Authored grammar exercise variants |
+| `vocab-enrichments.ts` | `vocab-exercise-creator` | Curated distractors for vocab exercises |
+| `cloze-contexts.ts` | `cloze-creator` | Cloze sentences per vocabulary item |
 | `review-report.json` | `linguist-reviewer` | Review status and flagged issues |
 | `index.ts` | `generate-staging-files.ts` | Barrel export |
 
