@@ -10,6 +10,9 @@ export type ExerciseType =
   | 'sentence_transformation'
   | 'constrained_translation'
   | 'speaking'
+  | 'grammar_cloze'
+  | 'dialogue_shadowing'
+  | 'listening_comprehension'
 
 export type ImplementedExerciseType =
   | 'recognition'
@@ -19,8 +22,9 @@ export type ImplementedExerciseType =
   | 'contrast_pair'
   | 'sentence_transformation'
   | 'constrained_translation'
+  | 'grammar_cloze'
 
-export type PlannedExerciseType = 'speaking'
+export type PlannedExerciseType = 'speaking' | 'dialogue_shadowing' | 'listening_comprehension'
 
 export interface ExerciseMetadata {
   type: ExerciseType
@@ -92,6 +96,16 @@ const EXERCISE_CATALOG: Record<ExerciseType, ExerciseMetadata> = {
     primarySkillFacet: 'meaning_recall',
   },
 
+  // Grammar cloze — fill in the correct grammatical form
+  grammar_cloze: {
+    type: 'grammar_cloze',
+    contentFocus: 'grammar',
+    requiresAudio: false,
+    requiresGrammarPattern: true,
+    requiresManualApproval: true,
+    primarySkillFacet: 'form_recall',
+  },
+
   // Contract-ready but disabled at launch
   speaking: {
     type: 'speaking',
@@ -100,6 +114,26 @@ const EXERCISE_CATALOG: Record<ExerciseType, ExerciseMetadata> = {
     requiresGrammarPattern: false,
     requiresManualApproval: true,
     primarySkillFacet: 'spoken_production',
+  },
+
+  // Dialogue shadowing — repeat/produce turns in a conversation
+  dialogue_shadowing: {
+    type: 'dialogue_shadowing',
+    contentFocus: 'production',
+    requiresAudio: true,
+    requiresGrammarPattern: false,
+    requiresManualApproval: true,
+    primarySkillFacet: 'spoken_production',
+  },
+
+  // Listening comprehension — listen and answer questions
+  listening_comprehension: {
+    type: 'listening_comprehension',
+    contentFocus: 'mixed',
+    requiresAudio: true,
+    requiresGrammarPattern: false,
+    requiresManualApproval: true,
+    primarySkillFacet: 'recognition',
   },
 }
 
@@ -117,8 +151,10 @@ export function getExerciseMetadata(type: ExerciseType): ExerciseMetadata {
 /**
  * Check if an exercise type is implemented
  */
+const PLANNED_TYPES: Set<string> = new Set(['speaking', 'dialogue_shadowing', 'listening_comprehension'])
+
 export function isImplemented(type: ExerciseType): type is ImplementedExerciseType {
-  return type !== 'speaking'
+  return !PLANNED_TYPES.has(type)
 }
 
 /**

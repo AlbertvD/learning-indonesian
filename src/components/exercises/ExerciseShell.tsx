@@ -12,6 +12,9 @@ import { Cloze } from './Cloze'
 import { ClozeMcq } from './ClozeMcq'
 import { MeaningRecall } from './MeaningRecall'
 import { SpeakingExercise } from './SpeakingExercise'
+import { GrammarCloze } from './GrammarCloze'
+import { DialogueShadowing } from './DialogueShadowing'
+import { ListeningComprehension } from './ListeningComprehension'
 import { FlagButton } from '@/components/exercises/FlagButton'
 import { contentFlagService } from '@/services/contentFlagService'
 import { useAuthStore } from '@/stores/authStore'
@@ -279,6 +282,42 @@ export function ExerciseShell({
         />
       )
 
+    case 'grammar_cloze':
+      return (
+        <GrammarCloze
+          key={exerciseKey}
+          exerciseItem={exerciseItem}
+          userLanguage={userLanguage}
+          onAnswer={(wasCorrect, isFuzzy, latencyMs, rawResponse) => {
+            handleAnswerFromExercise(wasCorrect, isFuzzy, latencyMs, rawResponse)
+          }}
+        />
+      )
+
+    case 'dialogue_shadowing':
+      return (
+        <DialogueShadowing
+          key={exerciseKey}
+          exerciseItem={exerciseItem}
+          userLanguage={userLanguage}
+          onAnswer={(wasCorrect, isFuzzy, latencyMs, rawResponse) => {
+            handleAnswerFromExercise(wasCorrect, isFuzzy, latencyMs, rawResponse)
+          }}
+        />
+      )
+
+    case 'listening_comprehension':
+      return (
+        <ListeningComprehension
+          key={exerciseKey}
+          exerciseItem={exerciseItem}
+          userLanguage={userLanguage}
+          onAnswer={(wasCorrect, latencyMs) => {
+            handleAnswerFromExercise(wasCorrect, false, latencyMs, null)
+          }}
+        />
+      )
+
     default:
       return (
         <div style={{ padding: '20px', color: 'red' }}>
@@ -361,6 +400,10 @@ export function ExerciseShell({
       case 'cloze_mcq':
         correctAnswer = exerciseItem.clozeMcqData?.correctOptionId ?? ''
         explanationText = ''
+        break
+      case 'grammar_cloze':
+        correctAnswer = exerciseItem.grammarClozeData?.targetForm ?? ''
+        explanationText = exerciseItem.grammarClozeData?.explanationText ?? ''
         break
       default:
         correctAnswer = ''

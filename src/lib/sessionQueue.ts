@@ -288,6 +288,21 @@ function makeGrammarExercise(
         },
       }
 
+    case 'grammar_cloze':
+      return {
+        ...base,
+        skillType: 'form_recall',
+        grammarClozeData: {
+          sentence: payload.sentence || '',
+          targetForm: (answerKey?.targetForm as string) || (payload.targetForm as string) || '',
+          grammarPatternSlug: _pattern.slug || '',
+          patternName: _pattern.name || '',
+          translation: (payload.translation as string | null) ?? null,
+          acceptableAnswers: (answerKey?.acceptableAnswers as string[]) || (payload.acceptableAnswers as string[]) || [],
+          explanationText: payload.explanationText || '',
+        },
+      }
+
     default:
       return base
   }

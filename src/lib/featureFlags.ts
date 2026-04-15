@@ -13,6 +13,9 @@ interface FeatureFlags {
   sentenceTransformation: boolean
   constrainedTranslation: boolean
   speaking: boolean
+  grammarCloze: boolean
+  dialogueShadowing: boolean
+  listeningComprehension: boolean
 }
 
 function parseEnvFlag(key: string): boolean {
@@ -33,6 +36,9 @@ export const featureFlags: FeatureFlags = {
   sentenceTransformation: parseEnvFlag('VITE_FEATURE_SENTENCE_TRANSFORMATION'),
   constrainedTranslation: parseEnvFlag('VITE_FEATURE_CONSTRAINED_TRANSLATION'),
   speaking: parseEnvFlag('VITE_FEATURE_SPEAKING'),
+  grammarCloze: parseEnvFlag('VITE_FEATURE_GRAMMAR_CLOZE'),
+  dialogueShadowing: parseEnvFlag('VITE_FEATURE_DIALOGUE_SHADOWING'),
+  listeningComprehension: parseEnvFlag('VITE_FEATURE_LISTENING_COMPREHENSION'),
 }
 
 /**
@@ -51,10 +57,17 @@ export function isExerciseTypeEnabled(exerciseType: string): boolean {
       return featureFlags.constrainedTranslation
     case 'speaking':
       return featureFlags.speaking
+    case 'grammar_cloze':
+      return featureFlags.grammarCloze
+    case 'dialogue_shadowing':
+      return featureFlags.dialogueShadowing
+    case 'listening_comprehension':
+      return featureFlags.listeningComprehension
     // Core types cannot be disabled via feature flags
     case 'recognition_mcq':
     case 'typed_recall':
     case 'cloze':
+    case 'cloze_mcq':
     case 'meaning_recall':
       return true
     default:

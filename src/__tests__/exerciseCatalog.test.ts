@@ -22,6 +22,9 @@ describe('exerciseCatalog', () => {
       'sentence_transformation',
       'constrained_translation',
       'speaking',
+      'grammar_cloze',
+      'dialogue_shadowing',
+      'listening_comprehension',
     ]
 
     for (const type of exercises) {
@@ -41,20 +44,29 @@ describe('exerciseCatalog', () => {
     expect(isImplemented('contrast_pair')).toBe(true)
     expect(isImplemented('sentence_transformation')).toBe(true)
     expect(isImplemented('constrained_translation')).toBe(true)
+    expect(isImplemented('grammar_cloze')).toBe(true)
     expect(isImplemented('speaking')).toBe(false)
+    expect(isImplemented('dialogue_shadowing')).toBe(false)
+    expect(isImplemented('listening_comprehension')).toBe(false)
   })
 
   it('returns correct implemented exercises list', () => {
     const implemented = getImplementedExercises()
-    expect(implemented.length).toBe(7)
+    expect(implemented.length).toBe(8)
     expect(implemented).not.toContain('speaking')
+    expect(implemented).not.toContain('dialogue_shadowing')
+    expect(implemented).not.toContain('listening_comprehension')
     expect(implemented).toContain('recognition')
+    expect(implemented).toContain('grammar_cloze')
   })
 
   it('returns all exercises including planned', () => {
     const all = getAllExercises()
-    expect(all.length).toBe(8)
+    expect(all.length).toBe(11)
     expect(all).toContain('speaking')
+    expect(all).toContain('grammar_cloze')
+    expect(all).toContain('dialogue_shadowing')
+    expect(all).toContain('listening_comprehension')
   })
 
   it('filters exercises by content focus', () => {
@@ -77,6 +89,7 @@ describe('exerciseCatalog', () => {
     expect(types).toContain('contrast_pair')
     expect(types).toContain('sentence_transformation')
     expect(types).toContain('constrained_translation')
+    expect(types).toContain('grammar_cloze')
     expect(types).not.toContain('recognition')
     expect(types).not.toContain('cued_recall')
   })
@@ -89,6 +102,9 @@ describe('exerciseCatalog', () => {
     expect(types).toContain('sentence_transformation')
     expect(types).toContain('constrained_translation')
     expect(types).toContain('speaking')
+    expect(types).toContain('grammar_cloze')
+    expect(types).toContain('dialogue_shadowing')
+    expect(types).toContain('listening_comprehension')
     expect(types).not.toContain('recognition')
     expect(types).not.toContain('typed_recall')
   })
@@ -102,6 +118,9 @@ describe('exerciseCatalog', () => {
     expect(getPrimarySkillFacet('sentence_transformation')).toBe('form_recall')
     expect(getPrimarySkillFacet('constrained_translation')).toBe('meaning_recall')
     expect(getPrimarySkillFacet('speaking')).toBe('spoken_production')
+    expect(getPrimarySkillFacet('grammar_cloze')).toBe('form_recall')
+    expect(getPrimarySkillFacet('dialogue_shadowing')).toBe('spoken_production')
+    expect(getPrimarySkillFacet('listening_comprehension')).toBe('recognition')
   })
 
   it('throws on unknown exercise type', () => {

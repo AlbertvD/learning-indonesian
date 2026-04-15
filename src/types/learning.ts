@@ -151,6 +151,9 @@ export type ExerciseType =
   | 'sentence_transformation'
   | 'constrained_translation'
   | 'speaking'
+  | 'grammar_cloze'
+  | 'dialogue_shadowing'
+  | 'listening_comprehension'
 
 export type FlagType = 'wrong_translation' | 'bad_sentence' | 'confusing' | 'sunset' | 'other'
 export type FlagStatus = 'open' | 'resolved'
@@ -252,6 +255,47 @@ export interface ExerciseItem {
     selfRating?: number
     confidenceScore?: number
   }
+  /** For grammar_cloze: sentence with grammar pattern blank */
+  grammarClozeData?: {
+    sentence: string
+    targetForm: string
+    grammarPatternSlug: string
+    patternName: string
+    translation: string | null
+    acceptableAnswers: string[]
+    explanationText: string
+  }
+  /** For dialogue_shadowing: two-speaker conversational exercise */
+  dialogueShadowingData?: {
+    dialogueId: string
+    turns: DialogueTurn[]
+    /** Which turn the learner must produce (0-indexed) */
+    targetTurnIndex: number
+    /** Audio URL for the full dialogue (null if no audio available) */
+    audioUrl: string | null
+    scenarioDescription: string | null
+  }
+  /** For listening_comprehension: listen and answer */
+  listeningComprehensionData?: {
+    audioUrl: string
+    questionText: string
+    options: string[]
+    correctOptionId: string
+    transcriptText: string | null
+    explanationText: string | null
+  }
+}
+
+// ── Dialogue types ──────────────────────────────────────────────────────────────
+
+export type DialogueSpeaker = 'A' | 'B'
+
+export interface DialogueTurn {
+  speaker: DialogueSpeaker
+  text: string
+  translation: string | null
+  /** Audio URL for this specific turn (null if no per-turn audio) */
+  audioUrl: string | null
 }
 
 export type SessionQueueItem =
