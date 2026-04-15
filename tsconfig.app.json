@@ -26,6 +26,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"],
-  "exclude": ["src/hooks", "src/lib/hook-utils.ts"]
+  "include": ["src"]
 }

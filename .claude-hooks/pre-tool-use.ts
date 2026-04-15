@@ -8,7 +8,7 @@
  * 4. Portainer API redeployments (wipes UI-managed env vars)
  */
 
-import { appendLog, blockWithError, readStdinJson, rotateIfNeeded } from "../lib/hook-utils";
+import { appendLog, blockWithError, readStdinJson, rotateIfNeeded } from "./hook-utils";
 
 export interface CheckResult {
 	blocked: boolean;

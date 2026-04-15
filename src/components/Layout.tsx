@@ -58,7 +58,7 @@ export function Layout() {
             width: 36, height: 36, borderRadius: 'var(--r-md)',
             background: colorScheme === 'light' ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.08)',
             border: colorScheme === 'light' ? '1px solid var(--border)' : '1px solid rgba(255,255,255,0.1)',
-            color: colorScheme === 'light' ? 'var(--text-2)' : 'rgba(255,255,255,0.6)',
+            color: colorScheme === 'light' ? 'var(--text-secondary)' : 'rgba(255,255,255,0.6)',
             boxShadow: colorScheme === 'light' ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
             display: 'flex',
             alignItems: 'center', justifyContent: 'center',

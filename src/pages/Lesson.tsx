@@ -581,7 +581,7 @@ export function Lesson() {
     <Container size="md" className={classes.lesson}>
       {/* Back + progress — inline, no bar */}
       <div className={classes.lessonSubnav}>
-        <button className={`${classes.btn} ${classes.btnGhost}`} style={{ paddingLeft: 2, color: 'var(--text-3)' }} onClick={() => navigate('/lessons')}>
+        <button className={`${classes.btn} ${classes.btnGhost}`} style={{ paddingLeft: 2, color: 'var(--text-tertiary)' }} onClick={() => navigate('/lessons')}>
           <IconChevronLeft size={15} />
           {lesson.title.replace(/\s*\([^)]*\)/g, '')}
         </button>

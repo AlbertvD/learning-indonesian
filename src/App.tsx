@@ -1,23 +1,34 @@
 // src/App.tsx
+import { lazy, Suspense } from 'react'
 import { Routes, Route, Link } from 'react-router-dom'
-import { Container, Title, Text, Button } from '@mantine/core'
+import { Container, Title, Text, Button, Center, Loader } from '@mantine/core'
 import { Layout } from '@/components/Layout'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { Login } from '@/pages/Login'
 import { Register } from '@/pages/Register'
+import { Dashboard } from '@/pages/Dashboard'
 import { Lessons } from '@/pages/Lessons'
 import { Lesson } from '@/pages/Lesson'
-import { Podcasts } from '@/pages/Podcasts'
-import { Podcast } from '@/pages/Podcast'
-import { Leaderboard } from '@/pages/Leaderboard'
-import { Dashboard } from '@/pages/Dashboard'
 import { Session } from '@/pages/Session'
 import { Practice } from '@/pages/Practice'
-import { Profile } from '@/pages/Profile'
-import { Progress } from '@/pages/Progress'
-import { SectionCoverage } from '@/pages/SectionCoverage'
-import { ExerciseCoverage } from '@/pages/ExerciseCoverage'
-import { ContentReview } from '@/pages/ContentReview'
+
+// Lazy-loaded routes (less frequently visited pages)
+const Podcasts = lazy(() => import('@/pages/Podcasts').then(m => ({ default: m.Podcasts })))
+const Podcast = lazy(() => import('@/pages/Podcast').then(m => ({ default: m.Podcast })))
+const Leaderboard = lazy(() => import('@/pages/Leaderboard').then(m => ({ default: m.Leaderboard })))
+const Profile = lazy(() => import('@/pages/Profile').then(m => ({ default: m.Profile })))
+const Progress = lazy(() => import('@/pages/Progress').then(m => ({ default: m.Progress })))
+const SectionCoverage = lazy(() => import('@/pages/SectionCoverage').then(m => ({ default: m.SectionCoverage })))
+const ExerciseCoverage = lazy(() => import('@/pages/ExerciseCoverage').then(m => ({ default: m.ExerciseCoverage })))
+const ContentReview = lazy(() => import('@/pages/ContentReview').then(m => ({ default: m.ContentReview })))
+
+function LazyPage({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<Center h="60vh"><Loader size="lg" /></Center>}>
+      {children}
+    </Suspense>
+  )
+}
 
 function NotFound() {
   return (
@@ -34,7 +45,7 @@ function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      
+
       <Route element={<Layout />}>
         <Route
           path="/"
@@ -64,7 +75,7 @@ function App() {
           path="/podcasts"
           element={
             <ProtectedRoute>
-              <Podcasts />
+              <LazyPage><Podcasts /></LazyPage>
             </ProtectedRoute>
           }
         />
@@ -72,7 +83,7 @@ function App() {
           path="/podcast/:podcastId"
           element={
             <ProtectedRoute>
-              <Podcast />
+              <LazyPage><Podcast /></LazyPage>
             </ProtectedRoute>
           }
         />
@@ -96,7 +107,7 @@ function App() {
           path="/leaderboard"
           element={
             <ProtectedRoute>
-              <Leaderboard />
+              <LazyPage><Leaderboard /></LazyPage>
             </ProtectedRoute>
           }
         />
@@ -104,7 +115,7 @@ function App() {
           path="/profile"
           element={
             <ProtectedRoute>
-              <Profile />
+              <LazyPage><Profile /></LazyPage>
             </ProtectedRoute>
           }
         />
@@ -112,7 +123,7 @@ function App() {
           path="/progress"
           element={
             <ProtectedRoute>
-              <Progress />
+              <LazyPage><Progress /></LazyPage>
             </ProtectedRoute>
           }
         />
@@ -120,7 +131,7 @@ function App() {
           path="/content/sections"
           element={
             <ProtectedRoute>
-              <SectionCoverage />
+              <LazyPage><SectionCoverage /></LazyPage>
             </ProtectedRoute>
           }
         />
@@ -128,7 +139,7 @@ function App() {
           path="/content/exercises"
           element={
             <ProtectedRoute>
-              <ExerciseCoverage />
+              <LazyPage><ExerciseCoverage /></LazyPage>
             </ProtectedRoute>
           }
         />
@@ -136,7 +147,7 @@ function App() {
           path="/admin/content-review"
           element={
             <ProtectedRoute>
-              <ContentReview />
+              <LazyPage><ContentReview /></LazyPage>
             </ProtectedRoute>
           }
         />

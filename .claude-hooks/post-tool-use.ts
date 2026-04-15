@@ -8,7 +8,7 @@
  * Updates session state so the stop hook can enforce validation.
  */
 
-import { appendLog, readSessionState, readStdinJson, rotateIfNeeded, writeSessionState } from "../lib/hook-utils";
+import { appendLog, readSessionState, readStdinJson, rotateIfNeeded, writeSessionState } from "./hook-utils";
 
 const LOG_FILE = `${process.cwd()}/.claude/logs/post_tool_use.jsonl`;
 const STATE_FILE = `${process.cwd()}/.claude/data/session_state.json`;

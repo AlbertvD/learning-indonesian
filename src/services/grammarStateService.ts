@@ -1,5 +1,6 @@
 // src/services/grammarStateService.ts
 import { supabase } from '@/lib/supabase'
+import { chunkedIn } from '@/lib/chunkedQuery'
 import type { LearnerGrammarState, GrammarPatternWithLesson, ExerciseVariant } from '@/types/learning'
 
 const CHUNK_SIZE = 50
@@ -29,22 +30,9 @@ export const grammarStateService = {
     }))
   },
 
-  // Fetch active grammar exercise variants, chunked to avoid Kong URL length limit
   async getGrammarVariants(patternIds: string[]): Promise<ExerciseVariant[]> {
-    if (patternIds.length === 0) return []
-    const results: ExerciseVariant[] = []
-    for (let i = 0; i < patternIds.length; i += CHUNK_SIZE) {
-      const chunk = patternIds.slice(i, i + CHUNK_SIZE)
-      const { data, error } = await supabase
-        .schema('indonesian')
-        .from('exercise_variants')
-        .select('*')
-        .in('grammar_pattern_id', chunk)
-        .eq('is_active', true)
-      if (error) throw error
-      results.push(...(data ?? []))
-    }
-    return results
+    return chunkedIn<ExerciseVariant>('exercise_variants', 'grammar_pattern_id', patternIds,
+      (b) => b.eq('is_active', true))
   },
 
   // Idempotent — seeds all patterns as stage='new'. ON CONFLICT DO NOTHING.

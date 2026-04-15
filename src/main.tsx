@@ -158,22 +158,6 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--hero-text-subtle': 'rgba(255, 255, 255, 0.35)',
     '--hero-label':       'rgba(255, 255, 255, 0.60)',
 
-    // ── Legacy aliases (backward compat — do not use in new code) ──
-    '--bg':     '#000000',
-    '--surf-1': '#0C0C0E',
-    '--surf-2': '#2C2C2E',
-    '--surf-3': '#2C2C2E',
-    '--surf-4': '#3C3C3E',
-    '--text-1': '#FFFFFF',
-    '--text-2': '#8E8E93',
-    '--text-3': '#55525C',
-    '--display': "'Plus Jakarta Sans', system-ui, sans-serif",
-    '--sans':    "'Plus Jakarta Sans', system-ui, sans-serif",
-    '--purple':        '#00E5FF',
-    '--purple-dim':    '#00A8CC',
-    '--purple-bright': '#33F0FF',
-    '--purple-glow':   'rgba(0,229,255,0.16)',
-    '--purple-subtle': 'rgba(0,229,255,0.09)',
   },
 
   light: {
@@ -228,22 +212,6 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--hero-text-subtle': 'var(--text-tertiary)',
     '--hero-label':       'var(--text-secondary)',
 
-    // ── Legacy aliases (backward compat — do not use in new code) ──
-    '--bg':     '#FFFFFF',
-    '--surf-1': '#E1E1E3',
-    '--surf-2': '#E8E8ED',
-    '--surf-3': '#E0E0E5',
-    '--surf-4': '#D1D1D9',
-    '--text-1': '#000000',
-    '--text-2': '#86868B',
-    '--text-3': '#A2A2A7',
-    '--display': "'Plus Jakarta Sans', system-ui, sans-serif",
-    '--sans':    "'Plus Jakarta Sans', system-ui, sans-serif",
-    '--purple':        '#0099B8',
-    '--purple-dim':    '#006B88',
-    '--purple-bright': '#00BFD8',
-    '--purple-subtle': 'rgba(0,153,184,0.08)',
-    '--purple-glow':   'rgba(0,153,184,0.16)',
   },
 })
 

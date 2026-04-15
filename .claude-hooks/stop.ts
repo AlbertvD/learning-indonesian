@@ -6,7 +6,7 @@
  * - make check-compose was not run after the modification
  */
 
-import { appendLog, clearSessionState, readSessionState, readStdinJson } from "../lib/hook-utils";
+import { appendLog, clearSessionState, readSessionState, readStdinJson } from "./hook-utils";
 
 const LOG_FILE = `${process.cwd()}/.claude/logs/stop.jsonl`;
 const STATE_FILE = `${process.cwd()}/.claude/data/session_state.json`;

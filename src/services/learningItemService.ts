@@ -1,5 +1,6 @@
 // src/services/learningItemService.ts
 import { supabase } from '@/lib/supabase'
+import { chunkedIn } from '@/lib/chunkedQuery'
 import type { LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant } from '@/types/learning'
 import type { ExerciseVariant } from '@/types/contentGeneration'
 
@@ -43,19 +44,7 @@ export const learningItemService = {
   },
 
   async getMeaningsBatch(itemIds: string[]): Promise<ItemMeaning[]> {
-    const CHUNK_SIZE = 50
-    const results: ItemMeaning[] = []
-    for (let i = 0; i < itemIds.length; i += CHUNK_SIZE) {
-      const chunk = itemIds.slice(i, i + CHUNK_SIZE)
-      const { data, error } = await supabase
-        .schema('indonesian')
-        .from('item_meanings')
-        .select('*')
-        .in('learning_item_id', chunk)
-      if (error) throw error
-      results.push(...data)
-    }
-    return results
+    return chunkedIn<ItemMeaning>('item_meanings', 'learning_item_id', itemIds)
   },
 
   async getContexts(itemId: string): Promise<ItemContext[]> {
@@ -69,19 +58,7 @@ export const learningItemService = {
   },
 
   async getContextsBatch(itemIds: string[]): Promise<ItemContext[]> {
-    const CHUNK_SIZE = 50
-    const results: ItemContext[] = []
-    for (let i = 0; i < itemIds.length; i += CHUNK_SIZE) {
-      const chunk = itemIds.slice(i, i + CHUNK_SIZE)
-      const { data, error } = await supabase
-        .schema('indonesian')
-        .from('item_contexts')
-        .select('*')
-        .in('learning_item_id', chunk)
-      if (error) throw error
-      results.push(...data)
-    }
-    return results
+    return chunkedIn<ItemContext>('item_contexts', 'learning_item_id', itemIds)
   },
 
   async getItemContextsByLesson(lessonId: string): Promise<ItemContext[]> {
@@ -106,39 +83,13 @@ export const learningItemService = {
   },
 
   async getAnswerVariantsBatch(itemIds: string[]): Promise<ItemAnswerVariant[]> {
-    const CHUNK_SIZE = 50
-    const results: ItemAnswerVariant[] = []
-    for (let i = 0; i < itemIds.length; i += CHUNK_SIZE) {
-      const chunk = itemIds.slice(i, i + CHUNK_SIZE)
-      const { data, error } = await supabase
-        .schema('indonesian')
-        .from('item_answer_variants')
-        .select('*')
-        .in('learning_item_id', chunk)
-        .eq('is_accepted', true)
-      if (error) throw error
-      results.push(...data)
-    }
-    return results
+    return chunkedIn<ItemAnswerVariant>('item_answer_variants', 'learning_item_id', itemIds,
+      (b) => b.eq('is_accepted', true))
   },
 
   async getExerciseVariantsByContext(contextIds: string[]): Promise<ExerciseVariant[]> {
-    // Batch into chunks of 50 to avoid Kong's URL length limit, which drops CORS headers
-    // on very long GET requests containing hundreds of UUIDs in the IN clause.
-    const CHUNK_SIZE = 50
-    const results: ExerciseVariant[] = []
-    for (let i = 0; i < contextIds.length; i += CHUNK_SIZE) {
-      const chunk = contextIds.slice(i, i + CHUNK_SIZE)
-      const { data, error } = await supabase
-        .schema('indonesian')
-        .from('exercise_variants')
-        .select('*')
-        .in('context_id', chunk)
-        .eq('is_active', true)
-      if (error) throw error
-      results.push(...data)
-    }
-    return results
+    return chunkedIn<ExerciseVariant>('exercise_variants', 'context_id', contextIds,
+      (b) => b.eq('is_active', true))
   },
 
   async getItemContextGrammarPatterns(contextIds: string[]): Promise<ItemContextGrammarPattern[]> {
@@ -180,7 +131,7 @@ export const learningItemService = {
           const group = link.grammar_patterns?.confusion_group
           if (group) {
             result[row.learning_item_id] = { confusion_group: group }
-            break // one confusion group per item is enough
+            break
           }
         }
       }
