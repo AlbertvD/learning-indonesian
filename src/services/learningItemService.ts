@@ -1,8 +1,7 @@
 // src/services/learningItemService.ts
 import { supabase } from '@/lib/supabase'
 import { chunkedIn } from '@/lib/chunkedQuery'
-import type { LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant } from '@/types/learning'
-import type { ExerciseVariant } from '@/types/contentGeneration'
+import type { LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant } from '@/types/learning'
 
 export interface ItemContextGrammarPattern {
   context_id: string

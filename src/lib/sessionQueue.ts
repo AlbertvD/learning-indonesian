@@ -5,7 +5,7 @@ import type {
   ExerciseItem, SessionQueueItem,
   LearnerGrammarState, GrammarPatternWithLesson,
 } from '@/types/learning'
-import type { ExerciseVariant } from '@/types/contentGeneration'
+import type { ExerciseVariant } from '@/types/learning'
 
 export type SessionMode = 'standard' | 'backlog_clear' | 'quick'
 

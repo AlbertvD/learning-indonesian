@@ -107,69 +107,42 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   updateDisplayName: async (name) => {
-    const user = get().user
-    if (!user) return
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('profiles')
-      .update({ display_name: name.trim() || null, updated_at: new Date().toISOString() })
-      .eq('id', user.id)
-      .select('id')
-    if (error) throw error
-    if (!data || data.length === 0) throw new Error('Profile not found or update blocked')
-    set((state) => ({
-      profile: state.profile ? { ...state.profile, fullName: name.trim() || null } : null,
-    }))
+    await updateProfile(get, set, { display_name: name.trim() || null }, { fullName: name.trim() || null })
   },
 
   updateLanguage: async (lang) => {
-    const user = get().user
-    if (!user) return
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('profiles')
-      .update({ language: lang, updated_at: new Date().toISOString() })
-      .eq('id', user.id)
-      .select('id')
-    if (error) throw error
-    if (!data || data.length === 0) throw new Error('Profile not found or update blocked')
-    set((state) => ({
-      profile: state.profile ? { ...state.profile, language: lang } : null,
-    }))
+    await updateProfile(get, set, { language: lang }, { language: lang })
   },
 
   updatePreferredSessionSize: async (size) => {
-    const user = get().user
-    if (!user) return
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('profiles')
-      .update({ preferred_session_size: size, updated_at: new Date().toISOString() })
-      .eq('id', user.id)
-      .select('id')
-    if (error) throw error
-    if (!data || data.length === 0) throw new Error('Profile not found or update blocked')
-    set((state) => ({
-      profile: state.profile ? { ...state.profile, preferredSessionSize: size } : null,
-    }))
+    await updateProfile(get, set, { preferred_session_size: size }, { preferredSessionSize: size })
   },
 
   updateTimezone: async (timezone) => {
-    const user = get().user
-    if (!user) return
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('profiles')
-      .update({ timezone, updated_at: new Date().toISOString() })
-      .eq('id', user.id)
-      .select('id')
-    if (error) throw error
-    if (!data || data.length === 0) throw new Error('Profile not found or update blocked')
-    set((state) => ({
-      profile: state.profile ? { ...state.profile, timezone } : null,
-    }))
+    await updateProfile(get, set, { timezone }, { timezone })
   },
 }))
+
+async function updateProfile(
+  get: () => AuthState,
+  set: (partial: Partial<AuthState> | ((state: AuthState) => Partial<AuthState>)) => void,
+  dbFields: Record<string, unknown>,
+  profilePatch: Partial<UserProfile>,
+): Promise<void> {
+  const user = get().user
+  if (!user) return
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('profiles')
+    .update({ ...dbFields, updated_at: new Date().toISOString() })
+    .eq('id', user.id)
+    .select('id')
+  if (error) throw error
+  if (!data || data.length === 0) throw new Error('Profile not found or update blocked')
+  set((state) => ({
+    profile: state.profile ? { ...state.profile, ...profilePatch } : null,
+  }))
+}
 
 async function checkAdmin(userId: string): Promise<boolean> {
   const { data } = await supabase

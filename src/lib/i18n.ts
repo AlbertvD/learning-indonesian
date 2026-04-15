@@ -677,4 +677,5 @@ export const en: typeof nl = {
   },
 }
 
-export const translations: Record<Lang, typeof nl> = { nl, en }
+export type Translations = typeof nl
+export const translations: Record<Lang, Translations> = { nl, en }
