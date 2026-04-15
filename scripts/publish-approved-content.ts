@@ -262,6 +262,7 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
     const VALID_LANGUAGES = new Set(['nl', 'en'])
     const VALID_CONTEXT_TYPES = new Set(['example_sentence', 'dialogue', 'cloze', 'lesson_snippet', 'vocabulary_list', 'exercise_prompt'])
     const publishedItemIds: string[] = []
+    const dialogueItemIds = new Set<string>()
     if (approvedItems.length > 0) {
       console.log(`\n3. Publishing ${approvedItems.length} learning items...`)
       for (const item of approvedItems) {
@@ -285,6 +286,7 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
 
           if (itemError) throw itemError
           publishedItemIds.push(upsertedItem.id)
+          if (item.item_type === 'dialogue_chunk') dialogueItemIds.add(upsertedItem.id)
 
           // Pre-insert assertion: validate context_type (regression guard)
           if (!VALID_CONTEXT_TYPES.has(item.context_type)) {
@@ -302,8 +304,8 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
           if (deleteError) throw deleteError
 
           const meaningInserts = [
-            { learning_item_id: upsertedItem.id, translation_language: 'nl', translation_text: item.translation_nl, is_primary: true },
-            ...(item.translation_en ? [{ learning_item_id: upsertedItem.id, translation_language: 'en', translation_text: item.translation_en, is_primary: true }] : []),
+            ...(item.translation_nl?.trim() ? [{ learning_item_id: upsertedItem.id, translation_language: 'nl', translation_text: item.translation_nl, is_primary: true }] : []),
+            ...(item.translation_en?.trim() ? [{ learning_item_id: upsertedItem.id, translation_language: 'en', translation_text: item.translation_en, is_primary: true }] : []),
           ]
 
           // Assert translation_language and translation_text before inserting (regression guard)
@@ -316,11 +318,13 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
             }
           }
 
-          const { error: meaningError } = await supabase
-            .schema('indonesian')
-            .from('item_meanings')
-            .insert(meaningInserts)
-          if (meaningError) throw meaningError
+          if (meaningInserts.length > 0) {
+            const { error: meaningError } = await supabase
+              .schema('indonesian')
+              .from('item_meanings')
+              .insert(meaningInserts)
+            if (meaningError) throw meaningError
+          }
 
           // Upsert Context
           const { error: ctxError } = await supabase
@@ -603,16 +607,19 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
         ;(enData ?? []).forEach((r: any) => enCovered.add(r.learning_item_id))
       }
 
-      const missingNl = publishedItemIds.filter(id => !nlCovered.has(id))
+      // Dialogue chunks have no translations — exclude from NL meaning check
+      const itemsRequiringNl = publishedItemIds.filter(id => !dialogueItemIds.has(id))
+      const missingNl = itemsRequiringNl.filter(id => !nlCovered.has(id))
       const missingEn = publishedItemIds.filter(id => !enCovered.has(id))
 
       if (missingNl.length > 0) {
-        console.error(`   ✗ ${missingNl.length}/${expectedCount} items missing NL meaning`)
+        console.error(`   ✗ ${missingNl.length}/${itemsRequiringNl.length} items missing NL meaning`)
         console.error('\n✗ Seed integrity check FAILED — missing NL meanings indicate a silent write error.')
         console.error('  Re-run this script to retry.')
         process.exit(1)
       } else {
-        console.log(`   ✓ All ${expectedCount} items have NL meanings`)
+        const dialogueCount = publishedItemIds.length - itemsRequiringNl.length
+        console.log(`   ✓ All ${itemsRequiringNl.length} items have NL meanings${dialogueCount > 0 ? ` (${dialogueCount} dialogue chunks excluded)` : ''}`)
       }
       if (missingEn.length > 0) {
         console.warn(`   ⚠️ ${missingEn.length}/${expectedCount} items missing EN meaning (expected if no translation_en in staging)`)

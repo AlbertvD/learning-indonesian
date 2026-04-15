@@ -244,7 +244,7 @@ Flag if any of these contain content that reveals the answer before the learner 
 - Vocabulary pool is non-empty
 - Every vocabulary pool entry has `item_type` set (CRITICAL if missing)
 - Research notes exist for every pattern (WARNING if empty)
-- `example_sentences` array exists and has at least 2 entries per pattern (WARNING if fewer)
+- `example_sentences` array exists and has at least 3 entries per pattern (WARNING if fewer)
 
 ### 12. vocab-enrichments.ts (skip if file absent)
 

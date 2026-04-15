@@ -25,7 +25,7 @@ export function ContrastPairExercise({ exerciseItem, userLanguage, onAnswer, pre
 
   if (previewMode && previewPayload) {
     const p = previewPayload
-    const options = p.options as string[]
+    const options = p.options as { id: string; text: string }[]
     return (
       <Box className={classes.container}>
         <Stack gap="xl">
@@ -35,8 +35,8 @@ export function ContrastPairExercise({ exerciseItem, userLanguage, onAnswer, pre
           </Box>
           <Stack gap="md">
             {options.map((option) => (
-              <Button key={option} className={classes.optionButton} variant="light" size="lg" fullWidth disabled>
-                {option}
+              <Button key={option.id} className={classes.optionButton} variant="light" size="lg" fullWidth disabled>
+                {option.text}
               </Button>
             ))}
           </Stack>
@@ -47,14 +47,14 @@ export function ContrastPairExercise({ exerciseItem, userLanguage, onAnswer, pre
           <Stack gap="md">
             {options.map((option) => (
               <Button
-                key={option}
-                className={`${classes.optionButton} ${option === p.correctOptionId ? classes.showCorrect : ''}`}
+                key={option.id}
+                className={`${classes.optionButton} ${option.id === p.correctOptionId ? classes.showCorrect : ''}`}
                 variant="light"
                 size="lg"
                 fullWidth
                 disabled
               >
-                {option}
+                {option.text}
               </Button>
             ))}
           </Stack>
