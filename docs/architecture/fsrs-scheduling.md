@@ -33,15 +33,17 @@ Items progress through five stages tracked in `learner_item_state.stage`:
 new → anchoring → retrieving → productive → maintenance
 ```
 
-| Stage | Meaning | Session behavior |
-|---|---|---|
-| `new` | Not yet introduced | Always `recognition_mcq`; included via new-item slots |
-| `anchoring` | Introduced, not yet stable | `recognition_mcq` ~65% / `cued_recall` ~35%; always reinforced regardless of FSRS due date |
-| `retrieving` | Stable enough for spaced recall | FSRS-scheduled; exercises promote recall |
-| `productive` | Strong recall; ready for grammar exercises | Grammar variants preferred if available |
-| `maintenance` | Long-term maintenance | Normal FSRS scheduling |
+| Stage | Meaning | Session behavior | Promotion requires |
+|---|---|---|---|
+| `new` | Not yet introduced | Always `recognition_mcq`; included via new-item slots | Any review → anchoring |
+| `anchoring` | Introduced, not yet stable | Mix of recognition_mcq, cued_recall, meaning_recall, cloze_mcq | Recognition stability >= 1.8, 3 successes, AND at least 1 successful meaning_recall review |
+| `retrieving` | Stable enough for spaced recall | FSRS-scheduled; exercises promote recall | All 3 skills (recognition, form_recall, meaning_recall) at stability >= 4.5 |
+| `productive` | Strong recall; ready for grammar exercises | Grammar variants preferred if available | All 3 skills at stability >= 21.0, zero lapses |
+| `maintenance` | Long-term maintenance | Normal FSRS scheduling | — |
 
-**Anchoring bypass:** Items at `anchoring` stage are always included in the session regardless of `next_due_at`. The reasoning: they have not been seen enough times to survive a gap without regressing. Overdue anchoring items get priority 1.0; non-overdue get 0.6.
+**Anchoring bypass:** Items at `anchoring` stage are always included in the session regardless of `next_due_at`. The reasoning: they have not been seen enough times to survive a gap without regressing.
+
+**Meaning_recall gate (anchoring → retrieving):** Promotion requires at least 1 successful `meaning_recall` review (cued_recall or meaning_recall exercise). This ensures the learner has seen the word from the NL→ID direction before advancing. Based on the SLA acquisitional sequence (Laufer & Goldstein 2004): receptive recognition must precede productive recall.
 
 ---
 

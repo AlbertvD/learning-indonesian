@@ -14,14 +14,26 @@ const PRODUCTIVE_STABILITY = 21.0
 
 const STAGE_ORDER: LearnerStage[] = ['new', 'anchoring', 'retrieving', 'productive', 'maintenance']
 
+// Anchoring → Retrieving: Recognition + at least 1 successful meaning_recall review
+const ANCHORING_MEANING_RECALL_SUCCESS = 1  // Must have seen word from NL→ID direction at least once
+
 /**
  * Check if an item should be promoted to a higher stage.
  * Returns the new stage, or null if no promotion.
+ *
+ * Three skills are checked at different stages:
+ * - recognition: ID→NL passive knowledge (anchoring gate)
+ * - meaningRecall: NL→ID recognition/recall (anchoring gate + retrieving/productive)
+ * - formRecall: typed production (retrieving gate + productive/maintenance)
+ *
+ * This matches the SLA acquisitional sequence (Laufer & Goldstein 2004):
+ * receptive recognition → productive recognition → receptive recall → productive recall
  */
 export function checkPromotion(
   item: LearnerItemState,
   recognition: LearnerSkillState | null,
-  recall: LearnerSkillState | null,
+  formRecall: LearnerSkillState | null,
+  meaningRecall?: LearnerSkillState | null,
 ): LearnerStage | null {
   switch (item.stage) {
     case 'new':
@@ -29,20 +41,31 @@ export function checkPromotion(
 
     case 'anchoring': {
       if (!recognition) return null
-      if (recognition.stability >= ANCHORING_RECOGNITION_STABILITY && recognition.success_count >= ANCHORING_RECOGNITION_SUCCESS) {
-        return 'retrieving'
+      // Recognition must be stable
+      if (recognition.stability < ANCHORING_RECOGNITION_STABILITY || recognition.success_count < ANCHORING_RECOGNITION_SUCCESS) {
+        return null
       }
-      return null
+      // Must have at least 1 successful meaning_recall review (seen word from NL→ID direction).
+      // If no meaning_recall skill exists yet, the learner hasn't been tested in that direction.
+      if (!meaningRecall || meaningRecall.success_count < ANCHORING_MEANING_RECALL_SUCCESS) {
+        return null
+      }
+      return 'retrieving'
     }
 
     case 'retrieving': {
-      if (!recognition || !recall) return null
+      if (!recognition || !formRecall) return null
       const threshold = item.gate_check_passed ? RETRIEVING_SUCCESS_GATE_PASSED : RETRIEVING_SUCCESS_GATE_FAILED
+      // All three skills must meet the threshold for full bidirectional knowledge
+      const meaningOk = meaningRecall
+        ? meaningRecall.stability >= RETRIEVING_STABILITY && meaningRecall.success_count >= threshold
+        : false
       if (
         recognition.stability >= RETRIEVING_STABILITY &&
         recognition.success_count >= threshold &&
-        recall.stability >= RETRIEVING_STABILITY &&
-        recall.success_count >= threshold
+        formRecall.stability >= RETRIEVING_STABILITY &&
+        formRecall.success_count >= threshold &&
+        meaningOk
       ) {
         return 'productive'
       }
@@ -50,12 +73,16 @@ export function checkPromotion(
     }
 
     case 'productive': {
-      if (!recognition || !recall) return null
+      if (!recognition || !formRecall) return null
+      const meaningOk = meaningRecall
+        ? meaningRecall.stability >= PRODUCTIVE_STABILITY && meaningRecall.lapse_count === 0
+        : false
       if (
         recognition.stability >= PRODUCTIVE_STABILITY &&
         recognition.lapse_count === 0 &&
-        recall.stability >= PRODUCTIVE_STABILITY &&
-        recall.lapse_count === 0
+        formRecall.stability >= PRODUCTIVE_STABILITY &&
+        formRecall.lapse_count === 0 &&
+        meaningOk
       ) {
         return 'maintenance'
       }

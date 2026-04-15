@@ -83,12 +83,13 @@ export async function processReview(input: ReviewInput): Promise<ReviewResult> {
   const savedSkill = await learnerStateService.upsertSkillState(updatedSkillState)
 
   // 5. Check promotion/demotion
-  // Get all skill states for this item to check both facets.
+  // Get all skill states for this item to check all three facets.
   // Use savedSkill for the skill we just updated (authoritative),
-  // fetch the other skill type from DB.
+  // fetch other skill types from DB.
   const allSkills = await learnerStateService.getSkillStates(userId, learningItem.id)
   const recognition = skillType === 'recognition' ? savedSkill : (allSkills.find(s => s.skill_type === 'recognition') ?? null)
-  const recall = skillType === 'form_recall' ? savedSkill : (allSkills.find(s => s.skill_type === 'form_recall') ?? null)
+  const formRecall = skillType === 'form_recall' ? savedSkill : (allSkills.find(s => s.skill_type === 'form_recall') ?? null)
+  const meaningRecall = skillType === 'meaning_recall' ? savedSkill : (allSkills.find(s => s.skill_type === 'meaning_recall') ?? null)
 
   const itemStateForCheck = { ...updatedItemState, id: currentItemState?.id ?? '' } as LearnerItemState
 
@@ -97,8 +98,8 @@ export async function processReview(input: ReviewInput): Promise<ReviewResult> {
   if (demotionTarget) {
     updatedItemState.stage = demotionTarget
   } else {
-    // Check promotion
-    const promotionTarget = checkPromotion(itemStateForCheck, recognition, recall)
+    // Check promotion (all three skills considered)
+    const promotionTarget = checkPromotion(itemStateForCheck, recognition, formRecall, meaningRecall)
     if (promotionTarget) {
       updatedItemState.stage = promotionTarget
     }
