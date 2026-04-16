@@ -37,6 +37,7 @@ const EXPECTED_TABLES = [
   'lesson_progress',
   'learning_sessions',
   'error_logs',
+  'audio_clips',
 ]
 
 // Expected grants: table → { role → privileges[] }
@@ -56,6 +57,7 @@ const EXPECTED_GRANTS: Record<string, Record<string, string[]>> = {
   learning_sessions:    { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
   error_logs:           { authenticated: ['INSERT'] },
   user_roles:           { authenticated: ['SELECT'] },
+  audio_clips:          { authenticated: ['SELECT'] },
 }
 
 // ── Fetch schema health report ─────────────────────────────────────────────
@@ -212,6 +214,23 @@ for (const table of EXPECTED_TABLES) {
     } else {
       pass(`Lesson audio_path seeded (${lessons.length} lesson${lessons.length > 1 ? 's' : ''})`)
     }
+  }
+}
+
+// ── Check: get_audio_clips RPC function exists ────────────────────────────
+{
+  const { error } = await supabase
+    .schema('indonesian')
+    .rpc('get_audio_clips', { p_slugs: [] })
+  // An error about missing function arg types or "does not exist" means the function is absent.
+  // A successful call (empty result) or a type-mismatch error both indicate the function exists.
+  if (error && error.message.includes('does not exist')) {
+    fail(
+      'RPC function exists: get_audio_clips',
+      'Function indonesian.get_audio_clips not found — run: make migrate SUPABASE_SERVICE_KEY=<key>'
+    )
+  } else {
+    pass('RPC function exists: get_audio_clips')
   }
 }
 

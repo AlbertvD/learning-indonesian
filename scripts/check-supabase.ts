@@ -101,8 +101,8 @@ try {
   fail('Auth endpoint', `Request failed: ${(err as Error).message}`)
 }
 
-// ── Checks 5–6: Storage buckets ───────────────────────────────────────────
-for (const bucket of ['indonesian-lessons', 'indonesian-podcasts']) {
+// ── Checks 5–7: Storage buckets ───────────────────────────────────────────
+for (const bucket of ['indonesian-lessons', 'indonesian-podcasts', 'indonesian-tts']) {
   try {
     const res = await fetch(`${SUPABASE_URL}/storage/v1/bucket/${bucket}`, {
       headers: { apikey: ANON_KEY, authorization: `Bearer ${ANON_KEY}` },
