@@ -7,6 +7,7 @@ import { Notifications } from '@mantine/notifications'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { useAuthStore } from '@/stores/authStore'
+import { AutoplayProvider } from '@/contexts/AutoplayContext'
 
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css'
@@ -231,7 +232,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         defaultColorScheme="dark"
       >
         <Notifications position="top-right" />
-        <App />
+        <AutoplayProvider>
+          <App />
+        </AutoplayProvider>
       </MantineProvider>
     </BrowserRouter>
   </React.StrictMode>

@@ -25,10 +25,12 @@ import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { translations } from '@/lib/i18n'
 import { logError } from '@/lib/logger'
+import { useAutoplay } from '@/contexts/AutoplayContext'
 
 export function Profile() {
   const T = useT()
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
+  const { autoPlay, setAutoPlay } = useAutoplay()
   const isMobile = useMediaQuery('(max-width: 768px)') ?? false
   const user = useAuthStore((state) => state.user)
   const profile = useAuthStore((state) => state.profile)
@@ -287,6 +289,21 @@ export function Profile() {
                 { label: T.profile.dutch, value: 'nl' },
                 { label: T.profile.english, value: 'en' },
               ]}
+            />
+          </Stack>
+        </Paper>
+
+        <Paper p="xl" radius="md" {...paperProps}>
+          <Stack gap="md">
+            <Box>
+              <Title order={4} mb="xs">{T.profile.autoPlayAudio}</Title>
+              <Text size="sm" c="dimmed">{T.profile.autoPlayAudioDescription}</Text>
+            </Box>
+            <Switch
+              checked={autoPlay}
+              onChange={(e) => setAutoPlay(e.currentTarget.checked)}
+              size="md"
+              label={T.profile.autoPlayAudio}
             />
           </Stack>
         </Paper>

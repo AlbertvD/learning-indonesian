@@ -6,6 +6,7 @@ import { checkAnswer } from '@/lib/answerNormalization'
 import { translations } from '@/lib/i18n'
 import { PlayButton } from '@/components/PlayButton'
 import { useAudio } from '@/contexts/AudioContext'
+import { useAutoplay } from '@/contexts/AutoplayContext'
 import { resolveAudioUrl } from '@/services/audioService'
 import classes from './TypedRecall.module.css'
 
@@ -18,6 +19,7 @@ interface MeaningRecallProps {
 export function MeaningRecall({ exerciseItem, userLanguage, onAnswer }: MeaningRecallProps) {
   const t = translations[userLanguage]
   const { audioMap, voiceId } = useAudio()
+  const { autoPlay } = useAutoplay()
   const { meanings } = exerciseItem
   const learningItem = exerciseItem.learningItem!
   const [response, setResponse] = useState('')
@@ -69,7 +71,7 @@ export function MeaningRecall({ exerciseItem, userLanguage, onAnswer }: MeaningR
           </Text>
           <Box style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Box className={classes.word}>{learningItem.base_text}</Box>
-            <PlayButton audioUrl={voiceId ? resolveAudioUrl(audioMap, learningItem.base_text, voiceId) : undefined} size="sm" />
+            <PlayButton audioUrl={voiceId ? resolveAudioUrl(audioMap, learningItem.base_text, voiceId) : undefined} size="sm" autoPlay={autoPlay} />
           </Box>
         </Box>
 

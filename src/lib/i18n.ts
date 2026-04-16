@@ -137,6 +137,8 @@ export const nl = {
     sessionSizeDescription: 'Hoeveel items per sessie',
     sessionSizeSaved: 'Je sessiegrote is opgeslagen.',
     items: 'items',
+    autoPlayAudio: 'Automatisch audio afspelen',
+    autoPlayAudioDescription: 'Speelt automatisch de uitspraak af bij elke oefening.',
   },
   register: {
     title: 'Account aanmaken',
@@ -475,6 +477,8 @@ export const en: typeof nl = {
     sessionSizeDescription: 'How many items per session',
     sessionSizeSaved: 'Your session size has been saved.',
     items: 'items',
+    autoPlayAudio: 'Auto-play audio',
+    autoPlayAudioDescription: 'Automatically plays pronunciation audio during exercises.',
   },
   register: {
     title: 'Create account',

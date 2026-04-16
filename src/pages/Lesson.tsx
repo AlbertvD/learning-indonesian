@@ -14,6 +14,10 @@ import { notifications } from '@mantine/notifications'
 import { useT } from '@/hooks/useT'
 import { IndoText } from '@/components/IndoText'
 import { MiniAudioPlayer } from '@/components/MiniAudioPlayer'
+import { PlayButton } from '@/components/PlayButton'
+import { AudioProvider, useAudio } from '@/contexts/AudioContext'
+import { fetchAudioMap, resolveAudioUrl, type AudioMap } from '@/services/audioService'
+import { normalizeTtsText } from '@/lib/ttsNormalize'
 import type { LearningItem, ItemMeaning, LearnerItemState, LearnerSkillState } from '@/types/learning'
 import classes from './Lesson.module.css'
 
@@ -62,9 +66,10 @@ function renderBodyText(body: string) {
   )
 }
 
-function SectionContent({ content }: { content: unknown }) {
+function SectionContent({ content, lesson }: { content: unknown; lesson: Lesson | null }) {
   const data = content as SectionContentData
   const T = useT()
+  const { audioMap, voiceId } = useAudio()
 
   if (data?.type === 'vocabulary' || data?.type === 'expressions' || data?.type === 'numbers') {
     return (
@@ -72,7 +77,10 @@ function SectionContent({ content }: { content: unknown }) {
         <div className={classes.phraseList}>
           {data.items.map((item, i) => (
             <div key={i} className={classes.phraseRow}>
-              <div className={classes.phraseIndo}>{item.indonesian}</div>
+              <div className={classes.phraseIndo} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                {item.indonesian}
+                <PlayButton audioUrl={item.indonesian && voiceId ? resolveAudioUrl(audioMap, item.indonesian, voiceId) : undefined} />
+              </div>
               <div className={classes.phraseDutch}>{item.dutch}</div>
             </div>
           ))}
@@ -204,7 +212,10 @@ function SectionContent({ content }: { content: unknown }) {
                 <div className={classes.phraseList}>
                   {(cat.examples as { indonesian: string; dutch: string }[]).map((ex, j) => (
                     <div key={j} className={classes.phraseRow}>
-                      <div className={classes.phraseIndo}><IndoText text={ex.indonesian} /></div>
+                      <div className={classes.phraseIndo} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <IndoText text={ex.indonesian} />
+                        <PlayButton audioUrl={voiceId ? resolveAudioUrl(audioMap, ex.indonesian, voiceId) : undefined} />
+                      </div>
                       <div className={classes.phraseDutch}>{ex.dutch}</div>
                     </div>
                   ))}
@@ -272,15 +283,21 @@ function SectionContent({ content }: { content: unknown }) {
           <div className={classes.dialogueSetup}>{data.setup}</div>
         )}
         <div className={classes.dialogueLines}>
-          {data.lines.map((line, i) => (
-            <div key={i} className={classes.dialogueLine}>
-              <div className={classes.dialogueSpeaker}>{line.speaker}</div>
-              <div>
-                <div className={classes.dialogueText}>{line.text}</div>
-                <div className={classes.dialogueTranslation}>{line.translation}</div>
+          {data.lines.map((line, i) => {
+            const lineVoice = lesson?.dialogue_voices?.[line.speaker] ?? lesson?.primary_voice ?? null
+            return (
+              <div key={i} className={classes.dialogueLine}>
+                <div className={classes.dialogueSpeaker}>{line.speaker}</div>
+                <div>
+                  <div className={classes.dialogueText} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    {line.text}
+                    <PlayButton audioUrl={lineVoice ? resolveAudioUrl(audioMap, line.text, lineVoice) : undefined} />
+                  </div>
+                  <div className={classes.dialogueTranslation}>{line.translation}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     )
@@ -352,7 +369,15 @@ function SectionContent({ content }: { content: unknown }) {
           <div key={i} className={classes.pronunciationRow}>
             <div className={classes.pronunciationLetter}>{item.letter}</div>
             <div className={classes.pronunciationRule}>{item.rule}</div>
-            <div className={classes.pronunciationExamples}>{item.examples.join(', ')}</div>
+            <div className={classes.pronunciationExamples}>
+              {item.examples.map((ex, j) => (
+                <span key={j} style={{ display: 'inline-flex', alignItems: 'center', gap: 2, marginRight: j < item.examples.length - 1 ? 6 : 0 }}>
+                  {ex}
+                  <PlayButton audioUrl={voiceId ? resolveAudioUrl(audioMap, ex, voiceId) : undefined} size="xs" />
+                  {j < item.examples.length - 1 && <span>,</span>}
+                </span>
+              ))}
+            </div>
           </div>
         ))}
       </div>
@@ -397,6 +422,7 @@ export function Lesson() {
   const [activeTab, setActiveTab] = useState<string | null>('learn')
   const [vocabularyItems, setVocabularyItems] = useState<VocabularyItem[]>([])
   const [vocabularyLoading, setVocabularyLoading] = useState(false)
+  const [audioMap, setAudioMap] = useState<AudioMap>(new Map())
 
   const loadVocabulary = async () => {
     if (!lessonId || !user || vocabularyLoading) return
@@ -475,6 +501,52 @@ export function Lesson() {
       }
     }
   }, [lessonId, user, T.common.error, T.lessons.failedToLoadLesson])
+
+  // Fetch audio map whenever lesson loads
+  useEffect(() => {
+    if (!lesson) return
+    const primaryVoice = lesson.primary_voice
+    if (!primaryVoice) return
+
+    const allVoices = new Set<string>([primaryVoice])
+    if (lesson.dialogue_voices) {
+      Object.values(lesson.dialogue_voices).forEach(v => allVoices.add(v))
+    }
+
+    const allTexts = new Set<string>()
+    for (const section of lesson.lesson_sections) {
+      const c = section.content as SectionContentData
+      if (c?.type === 'vocabulary' || c?.type === 'expressions' || c?.type === 'numbers') {
+        for (const item of c.items) {
+          if (item.indonesian) allTexts.add(normalizeTtsText(item.indonesian))
+        }
+      } else if (c?.type === 'dialogue' && Array.isArray(c.lines)) {
+        for (const line of c.lines) {
+          allTexts.add(normalizeTtsText(line.text))
+        }
+      } else if (c?.type === 'grammar' && Array.isArray(c.categories)) {
+        for (const cat of c.categories) {
+          if (cat.examples) {
+            for (const ex of cat.examples) {
+              allTexts.add(normalizeTtsText(ex.indonesian))
+            }
+          }
+        }
+      } else if (c?.type === 'pronunciation' && Array.isArray((c as unknown as { letters: PronunciationLetter[] }).letters)) {
+        for (const item of (c as unknown as { letters: PronunciationLetter[] }).letters) {
+          for (const ex of item.examples) {
+            allTexts.add(normalizeTtsText(ex))
+          }
+        }
+      }
+    }
+
+    if (allTexts.size === 0) return
+
+    fetchAudioMap(Array.from(allTexts), Array.from(allVoices))
+      .then(map => setAudioMap(map))
+      .catch(err => logError({ page: 'lesson', action: 'fetchAudioMap', error: err }))
+  }, [lesson])
 
   const handleNext = async () => {
     if (!lesson || !user) return
@@ -658,7 +730,9 @@ export function Lesson() {
             <div className={classes.displaySm}>{currentSection.title.replace(/\s*\(.*?\)\s*$/, '')}</div>
           </div>
           <div style={{ minHeight: '200px', marginBottom: 40 }}>
-            <SectionContent content={currentSection.content} />
+            <AudioProvider audioMap={audioMap} voiceId={lesson.primary_voice ?? null}>
+              <SectionContent content={currentSection.content} lesson={lesson} />
+            </AudioProvider>
           </div>
         </Tabs.Panel>
 

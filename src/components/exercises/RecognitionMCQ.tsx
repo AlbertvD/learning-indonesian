@@ -4,6 +4,7 @@ import type { ExerciseItem } from '@/types/learning'
 import { translations } from '@/lib/i18n'
 import { PlayButton } from '@/components/PlayButton'
 import { useAudio } from '@/contexts/AudioContext'
+import { useAutoplay } from '@/contexts/AutoplayContext'
 import { resolveAudioUrl } from '@/services/audioService'
 import classes from './RecognitionMCQ.module.css'
 
@@ -20,6 +21,7 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
   const { learningItem: learningItem_, meanings, distractors } = exerciseItem
   const learningItem = learningItem_!
   const { audioMap, voiceId } = useAudio()
+  const { autoPlay } = useAutoplay()
   const promptAudioUrl = voiceId ? resolveAudioUrl(audioMap, learningItem.base_text, voiceId) : undefined
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
@@ -77,7 +79,7 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
           <Text size="sm" c="dimmed" mb="xs">{t.session.recognition.question}</Text>
           <Box style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Box className={`${classes.word} ${isSentenceType ? classes.wordSentence : ''}`}>{learningItem.base_text}</Box>
-            <PlayButton audioUrl={promptAudioUrl} size="sm" />
+            <PlayButton audioUrl={promptAudioUrl} size="sm" autoPlay={autoPlay} />
           </Box>
         </Box>
 

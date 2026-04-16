@@ -6,6 +6,7 @@ import { checkAnswer } from '@/lib/answerNormalization'
 import { translations } from '@/lib/i18n'
 import { PlayButton } from '@/components/PlayButton'
 import { useAudio } from '@/contexts/AudioContext'
+import { useAutoplay } from '@/contexts/AutoplayContext'
 import { resolveAudioUrl } from '@/services/audioService'
 import classes from './TypedRecall.module.css'
 
@@ -80,6 +81,7 @@ export function SentenceTransformationExercise({
 
   const data = exerciseItem!.sentenceTransformationData
   const { audioMap, voiceId } = useAudio()
+  const { autoPlay } = useAutoplay()
   const sourceAudioUrl = data && voiceId ? resolveAudioUrl(audioMap, data.sourceSentence, voiceId) : undefined
 
   if (!data) {
@@ -136,7 +138,7 @@ export function SentenceTransformationExercise({
           </Text>
           <Box style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Box className={classes.translation}>{data.sourceSentence}</Box>
-            <PlayButton audioUrl={sourceAudioUrl} size="sm" />
+            <PlayButton audioUrl={sourceAudioUrl} size="sm" autoPlay={autoPlay} />
           </Box>
         </Box>
 
