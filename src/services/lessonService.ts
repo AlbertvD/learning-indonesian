@@ -14,6 +14,8 @@ export interface Lesson {
   transcript_dutch: string | null
   transcript_indonesian: string | null
   transcript_english: string | null
+  primary_voice: string | null
+  dialogue_voices: Record<string, string> | null
   lesson_sections: LessonSection[]
 }
 
