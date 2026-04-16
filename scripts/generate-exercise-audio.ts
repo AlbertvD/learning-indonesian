@@ -325,30 +325,17 @@ async function generateAudio(lessonNumber: number, dryRun: boolean) {
     return
   }
 
-  // 5. Check existing clips
-  const normalizedTexts = [...uniqueMap.keys()].map(k => k.split('|')[0])
+  // 5. Check existing clips via RPC (avoids PostgREST URL-encoding issues with text)
+  const uniqueEntries = [...uniqueMap.entries()]
+  const allNormalizedTexts = [...new Set(uniqueEntries.map(([k]) => k.split('|')[0]))]
+  const allVoiceIds = [...new Set(uniqueEntries.map(([k]) => k.split('|')[1]))]
   const existingNormalized = new Set<string>()
 
-  // Chunk to avoid Kong buffer overflow
-  const CHUNK_SIZE = 20
-  const uniqueEntries = [...uniqueMap.entries()]
-  for (let i = 0; i < uniqueEntries.length; i += CHUNK_SIZE) {
-    const chunk = uniqueEntries.slice(i, i + CHUNK_SIZE)
-    const chunkTexts = chunk.map(([k]) => k.split('|')[0])
-    const chunkVoices = chunk.map(([k]) => k.split('|')[1])
-    // Build OR filter — one condition per (normalized_text, voice_id) pair
-    const filters = chunk.map(([k]) => {
-      const [norm, voice] = k.split('|')
-      return `and(normalized_text.eq.${norm},voice_id.eq.${voice})`
-    })
-    const { data: existing } = await supabase
-      .schema('indonesian')
-      .from('audio_clips')
-      .select('normalized_text, voice_id')
-      .or(filters.join(','))
-    for (const row of existing ?? []) {
-      existingNormalized.add(`${row.normalized_text}|${row.voice_id}`)
-    }
+  const { data: existing } = await supabase
+    .schema('indonesian')
+    .rpc('get_audio_clips', { p_texts: allNormalizedTexts, p_voice_ids: allVoiceIds })
+  for (const row of (existing ?? []) as Array<{ normalized_text: string; voice_id: string }>) {
+    existingNormalized.add(`${row.normalized_text}|${row.voice_id}`)
   }
 
   const toGenerate = uniqueEntries.filter(([key]) => !existingNormalized.has(key))
@@ -395,7 +382,8 @@ async function generateAudio(lessonNumber: number, dryRun: boolean) {
       process.stdout.write(`\r   Generated: ${generated}/${toGenerate.length}`)
     } catch (err) {
       failed++
-      console.error(`\n   Failed to generate clip for "${entry.text}" (${entry.voiceId}): ${err}`)
+      const errMsg = err instanceof Error ? err.message : JSON.stringify(err)
+      console.error(`\n   Failed to generate clip for "${entry.text}" (${entry.voiceId}): ${errMsg}`)
     }
   }
 
