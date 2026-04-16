@@ -1181,3 +1181,53 @@ DO $$ BEGIN
     );
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- Audio clips (TTS-generated Indonesian pronunciation)
+-- ═══════════════════════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS indonesian.audio_clips (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  text_content text NOT NULL,
+  normalized_text text NOT NULL,
+  voice_id text NOT NULL,
+  storage_path text NOT NULL,
+  duration_ms integer,
+  generated_for_lesson_id uuid REFERENCES indonesian.lessons(id) ON DELETE SET NULL,
+  created_at timestamptz DEFAULT now(),
+
+  UNIQUE(normalized_text, voice_id)
+);
+
+ALTER TABLE indonesian.audio_clips ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "audio_clips_read" ON indonesian.audio_clips
+  FOR SELECT TO authenticated USING (true);
+CREATE POLICY "audio_clips_admin_write" ON indonesian.audio_clips
+  FOR ALL TO authenticated
+  USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
+  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
+
+GRANT SELECT ON indonesian.audio_clips TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.audio_clips TO service_role;
+
+-- Voice config on lessons
+ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS primary_voice text;
+ALTER TABLE indonesian.lessons ADD COLUMN IF NOT EXISTS dialogue_voices jsonb;
+
+-- Batch retrieval RPC
+CREATE OR REPLACE FUNCTION indonesian.get_audio_clips(p_texts text[], p_voice_ids text[])
+RETURNS TABLE(text_content text, normalized_text text, voice_id text, storage_path text, duration_ms integer)
+LANGUAGE sql STABLE SET search_path = indonesian AS $$
+  SELECT ac.text_content, ac.normalized_text, ac.voice_id, ac.storage_path, ac.duration_ms
+  FROM audio_clips ac
+  WHERE ac.normalized_text = ANY(p_texts)
+  AND ac.voice_id = ANY(p_voice_ids);
+$$;
+
+GRANT EXECUTE ON FUNCTION indonesian.get_audio_clips(text[], text[]) TO authenticated;
+
+-- Storage bucket
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('indonesian-tts', 'indonesian-tts', true)
+ON CONFLICT (id) DO NOTHING;
