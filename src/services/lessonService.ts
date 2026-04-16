@@ -68,6 +68,16 @@ export const lessonService = {
     return (data ?? []) as { id: string; order_index: number }[]
   },
 
+  async getLessonsWithVoice(): Promise<{ id: string; order_index: number; primary_voice: string | null }[]> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('lessons')
+      .select('id, order_index, primary_voice')
+      .order('order_index')
+    if (error) throw error
+    return (data ?? []) as { id: string; order_index: number; primary_voice: string | null }[]
+  },
+
   async getUserLessonProgress(userId: string): Promise<import('@/types/progress').LessonProgress[]> {
     const { data, error } = await supabase
       .schema('indonesian')

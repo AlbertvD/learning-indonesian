@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { Box, Button, Stack, Text, Badge } from '@mantine/core'
 import type { ExerciseItem } from '@/types/learning'
 import { translations } from '@/lib/i18n'
+import { PlayButton } from '@/components/PlayButton'
+import { useAudio } from '@/contexts/AudioContext'
+import { resolveAudioUrl } from '@/services/audioService'
 import classes from './RecognitionMCQ.module.css'
 
 const MAX_FAILURES = 0  // wrong answer finalises immediately — no retry
@@ -14,6 +17,7 @@ interface CuedRecallExerciseProps {
 
 export function CuedRecallExercise({ exerciseItem, userLanguage, onAnswer }: CuedRecallExerciseProps) {
   const t = translations[userLanguage]
+  const { audioMap, voiceId } = useAudio()
   const learningItem = exerciseItem.learningItem!
   const data = exerciseItem.cuedRecallData
 
@@ -60,6 +64,7 @@ export function CuedRecallExercise({ exerciseItem, userLanguage, onAnswer }: Cue
   }
 
   const isCorrect = selectedOption === data.correctOptionId
+  const correctAudioUrl = isAnswered && voiceId ? resolveAudioUrl(audioMap, learningItem.base_text, voiceId) : undefined
 
   return (
     <Box className={classes.container}>
@@ -109,13 +114,16 @@ export function CuedRecallExercise({ exerciseItem, userLanguage, onAnswer }: Cue
         {/* Result feedback */}
         {isAnswered && (
           <Box style={{ textAlign: 'center', marginTop: '32px' }}>
-            <Badge
-              color={isCorrect ? 'green' : 'red'}
-              size="xl"
-              style={{ fontSize: '16px', padding: '12px 20px' }}
-            >
-              {isCorrect ? `✓ ${t.session.feedback.correct}` : `✗ ${t.session.feedback.incorrect}`}
-            </Badge>
+            <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <Badge
+                color={isCorrect ? 'green' : 'red'}
+                size="xl"
+                style={{ fontSize: '16px', padding: '12px 20px' }}
+              >
+                {isCorrect ? `✓ ${t.session.feedback.correct}` : `✗ ${t.session.feedback.incorrect}`}
+              </Badge>
+              <PlayButton audioUrl={correctAudioUrl} size="sm" />
+            </Box>
             {!isCorrect && (
               <Box mt="lg">
                 <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.correctAnswerLabel}</Text>

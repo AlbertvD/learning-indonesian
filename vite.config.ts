@@ -11,6 +11,16 @@ export default defineConfig({
     // Skip PWA plugin during tests — it adds overhead and isn't needed
     ...(!isTest ? [VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        runtimeCaching: [{
+          urlPattern: /\/storage\/v1\/object\/public\/indonesian-tts\//,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'tts-audio',
+            expiration: { maxEntries: 500 },
+          },
+        }],
+      },
       manifest: {
         name: 'Learning Indonesian',
         short_name: 'Indonesian',

@@ -4,6 +4,9 @@ import { IconArrowRight } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
 import { translations } from '@/lib/i18n'
+import { PlayButton } from '@/components/PlayButton'
+import { useAudio } from '@/contexts/AudioContext'
+import { resolveAudioUrl } from '@/services/audioService'
 import classes from './TypedRecall.module.css'
 
 const HINT_AFTER_FAILURES = 2  // hint appears after this many wrong attempts
@@ -76,6 +79,8 @@ export function SentenceTransformationExercise({
   }
 
   const data = exerciseItem!.sentenceTransformationData
+  const { audioMap, voiceId } = useAudio()
+  const sourceAudioUrl = data && voiceId ? resolveAudioUrl(audioMap, data.sourceSentence, voiceId) : undefined
 
   if (!data) {
     return <div style={{ color: 'red' }}>Missing sentence transformation data</div>
@@ -129,7 +134,10 @@ export function SentenceTransformationExercise({
           <Text size="sm" c="dimmed" mb="xs">
             {t.session.exercise.transformPrefix} {data.transformationInstruction}
           </Text>
-          <Box className={classes.translation}>{data.sourceSentence}</Box>
+          <Box style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Box className={classes.translation}>{data.sourceSentence}</Box>
+            <PlayButton audioUrl={sourceAudioUrl} size="sm" />
+          </Box>
         </Box>
 
         {/* Hint — only after HINT_AFTER_FAILURES wrong attempts */}

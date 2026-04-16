@@ -4,6 +4,9 @@ import { IconArrowRight } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
 import { translations } from '@/lib/i18n'
+import { PlayButton } from '@/components/PlayButton'
+import { useAudio } from '@/contexts/AudioContext'
+import { resolveAudioUrl } from '@/services/audioService'
 import classes from './TypedRecall.module.css'
 
 interface TypedRecallProps {
@@ -14,6 +17,7 @@ interface TypedRecallProps {
 
 export function TypedRecall({ exerciseItem, userLanguage, onAnswer }: TypedRecallProps) {
   const t = translations[userLanguage]
+  const { audioMap, voiceId } = useAudio()
   const { learningItem: learningItem_, meanings } = exerciseItem
   const learningItem = learningItem_!
   const [response, setResponse] = useState('')
@@ -100,13 +104,16 @@ export function TypedRecall({ exerciseItem, userLanguage, onAnswer }: TypedRecal
         {/* Result feedback */}
         {isAnswered && (
           <Box style={{ textAlign: 'center', marginTop: '32px' }}>
-            <Badge
-              color={isCorrect ? 'green' : 'red'}
-              size="xl"
-              style={{ fontSize: '16px', padding: '12px 20px' }}
-            >
-              {isCorrect ? '✓ Correct' : '✗ Incorrect'}
-            </Badge>
+            <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <Badge
+                color={isCorrect ? 'green' : 'red'}
+                size="xl"
+                style={{ fontSize: '16px', padding: '12px 20px' }}
+              >
+                {isCorrect ? '✓ Correct' : '✗ Incorrect'}
+              </Badge>
+              <PlayButton audioUrl={voiceId ? resolveAudioUrl(audioMap, learningItem.base_text, voiceId) : undefined} size="sm" />
+            </Box>
             {!isCorrect && (
               <Box mt="lg">
                 <Text size="sm" c="dimmed" mb="xs">Correct answer</Text>

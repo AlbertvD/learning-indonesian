@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { Box, Button, Divider, Stack, Text } from '@mantine/core'
 import type { ExerciseItem } from '@/types/learning'
 import { translations } from '@/lib/i18n'
+import { PlayButton } from '@/components/PlayButton'
+import { useAudio } from '@/contexts/AudioContext'
+import { resolveAudioUrl } from '@/services/audioService'
 import classes from './RecognitionMCQ.module.css'
 
 const MAX_FAILURES = 0  // wrong answer finalises immediately — no retry
@@ -16,6 +19,7 @@ interface ClozeMcqProps {
 
 export function ClozeMcq({ exerciseItem, userLanguage, onAnswer, previewMode, previewPayload }: ClozeMcqProps) {
   const t = translations[userLanguage]
+  const { audioMap, voiceId } = useAudio()
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
   const [failureCount, setFailureCount] = useState(0)
@@ -131,6 +135,8 @@ export function ClozeMcq({ exerciseItem, userLanguage, onAnswer, previewMode, pr
 
   const isCorrect = selectedOption === data.correctOptionId
   const parts = data.sentence.split('___')
+  const filledSentence = data.sentence.replace('___', data.correctOptionId)
+  const filledAudioUrl = isAnswered && voiceId ? resolveAudioUrl(audioMap, filledSentence, voiceId) : undefined
 
   return (
     <Box className={classes.container}>
@@ -143,23 +149,26 @@ export function ClozeMcq({ exerciseItem, userLanguage, onAnswer, previewMode, pr
               {data.translation}
             </Text>
           )}
-          <Box className={classes.word} style={{ fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500 }}>
-            {parts[0]}
-            <Box
-              component="span"
-              style={{
-                display: 'inline-block',
-                minWidth: 80,
-                borderBottom: '2px solid var(--accent-primary)',
-                margin: '0 4px',
-                verticalAlign: 'bottom',
-                textAlign: 'center',
-                color: isAnswered ? (isCorrect ? 'var(--success)' : 'var(--danger)') : 'transparent',
-              }}
-            >
-              {isAnswered ? selectedOption : '_'}
+          <Box style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Box className={classes.word} style={{ fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500 }}>
+              {parts[0]}
+              <Box
+                component="span"
+                style={{
+                  display: 'inline-block',
+                  minWidth: 80,
+                  borderBottom: '2px solid var(--accent-primary)',
+                  margin: '0 4px',
+                  verticalAlign: 'bottom',
+                  textAlign: 'center',
+                  color: isAnswered ? (isCorrect ? 'var(--success)' : 'var(--danger)') : 'transparent',
+                }}
+              >
+                {isAnswered ? selectedOption : '_'}
+              </Box>
+              {parts[1] ?? ''}
             </Box>
-            {parts[1] ?? ''}
+            {isAnswered && <PlayButton audioUrl={filledAudioUrl} size="sm" />}
           </Box>
         </Box>
 

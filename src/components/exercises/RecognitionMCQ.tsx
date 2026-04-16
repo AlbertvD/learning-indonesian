@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { Box, Button, Stack, Text, Badge } from '@mantine/core'
 import type { ExerciseItem } from '@/types/learning'
 import { translations } from '@/lib/i18n'
+import { PlayButton } from '@/components/PlayButton'
+import { useAudio } from '@/contexts/AudioContext'
+import { resolveAudioUrl } from '@/services/audioService'
 import classes from './RecognitionMCQ.module.css'
 
 const MAX_FAILURES = 0  // wrong answer finalises immediately — no retry
@@ -16,6 +19,8 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
   const t = translations[userLanguage]
   const { learningItem: learningItem_, meanings, distractors } = exerciseItem
   const learningItem = learningItem_!
+  const { audioMap, voiceId } = useAudio()
+  const promptAudioUrl = voiceId ? resolveAudioUrl(audioMap, learningItem.base_text, voiceId) : undefined
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
   const [failureCount, setFailureCount] = useState(0)
@@ -70,7 +75,10 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
         {/* Word to recognize */}
         <Box className={classes.wordSection}>
           <Text size="sm" c="dimmed" mb="xs">{t.session.recognition.question}</Text>
-          <Box className={`${classes.word} ${isSentenceType ? classes.wordSentence : ''}`}>{learningItem.base_text}</Box>
+          <Box style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Box className={`${classes.word} ${isSentenceType ? classes.wordSentence : ''}`}>{learningItem.base_text}</Box>
+            <PlayButton audioUrl={promptAudioUrl} size="sm" />
+          </Box>
         </Box>
 
         {/* Multiple choice options */}

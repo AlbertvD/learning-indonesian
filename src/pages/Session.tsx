@@ -12,6 +12,9 @@ import { learningItemService } from '@/services/learningItemService'
 import { learnerStateService } from '@/services/learnerStateService'
 import { grammarStateService } from '@/services/grammarStateService'
 import { lessonService } from '@/services/lessonService'
+import { fetchAudioMap, type AudioMap } from '@/services/audioService'
+import { normalizeTtsText } from '@/lib/ttsNormalize'
+import { AudioProvider } from '@/contexts/AudioContext'
 import { goalService } from '@/services/goalService'
 import { analyticsService } from '@/services/analyticsService'
 import { sessionSummaryService, type SessionImpactMessages } from '@/services/sessionSummaryService'
@@ -36,6 +39,8 @@ export function Session() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [goalImpactMessages, setGoalImpactMessages] = useState<SessionImpactMessages | null>(null)
+  const [audioMap, setAudioMap] = useState<AudioMap>(new Map())
+  const [sessionVoiceId, setSessionVoiceId] = useState<string | null>(null)
 
   const lessonFilter = searchParams.get('lesson')
   const sessionModeParam = searchParams.get('mode')
@@ -88,12 +93,12 @@ export function Session() {
 
         let itemStatesArray: Awaited<ReturnType<typeof learnerStateService.getItemStates>>
         let skillStatesArray: Awaited<ReturnType<typeof learnerStateService.getSkillStatesBatch>>
-        let lessonsBasic: { id: string; order_index: number }[]
+        let lessonsWithVoice: { id: string; order_index: number; primary_voice: string | null }[]
         try {
-          ;[itemStatesArray, skillStatesArray, lessonsBasic] = await Promise.all([
+          ;[itemStatesArray, skillStatesArray, lessonsWithVoice] = await Promise.all([
             learnerStateService.getItemStates(user.id),
             learnerStateService.getSkillStatesBatch(user.id),
-            lessonService.getLessonsBasic(),
+            lessonService.getLessonsWithVoice(),
           ])
         } catch (e) {
           throw new Error(`getStates failed: ${JSON.stringify(e)}`)
@@ -101,8 +106,10 @@ export function Session() {
 
         // lessonId → order_index for lesson-gated new item introduction
         const lessonOrder: Record<string, number> = {}
-        for (const l of lessonsBasic) {
+        const lessonVoiceMap: Record<string, string | null> = {}
+        for (const l of lessonsWithVoice) {
           lessonOrder[l.id] = l.order_index
+          lessonVoiceMap[l.id] = l.primary_voice
         }
 
         // Convert arrays to maps
@@ -258,6 +265,56 @@ export function Session() {
         setQueue(shapedQueue)
         setResults({ correct: 0, total: shapedQueue.length })
         setLoading(false)
+
+        // Fetch audio map for the session (non-blocking — audio degrades gracefully if absent)
+        try {
+          // Determine voice: prefer the lesson filter's voice, else first lesson with a voice
+          let resolvedVoice: string | null = null
+          if (lessonFilter && lessonVoiceMap[lessonFilter]) {
+            resolvedVoice = lessonVoiceMap[lessonFilter]
+          } else {
+            // Collect lesson IDs referenced by items in the queue via contexts
+            const lessonIds = new Set<string>()
+            for (const qItem of shapedQueue) {
+              for (const ctx of qItem.exerciseItem.contexts ?? []) {
+                if (ctx.source_lesson_id) lessonIds.add(ctx.source_lesson_id)
+              }
+            }
+            for (const lid of lessonIds) {
+              if (lessonVoiceMap[lid]) { resolvedVoice = lessonVoiceMap[lid]; break }
+            }
+          }
+
+          if (resolvedVoice) {
+            setSessionVoiceId(resolvedVoice)
+            // Collect all unique Indonesian texts from queue items
+            const textsSet = new Set<string>()
+            for (const qItem of shapedQueue) {
+              const item = qItem.exerciseItem
+              if (item.learningItem?.base_text) textsSet.add(normalizeTtsText(item.learningItem.base_text))
+              if (item.contrastPairData) {
+                item.contrastPairData.options.forEach(o => textsSet.add(normalizeTtsText(o)))
+              }
+              if (item.clozeMcqData) {
+                const filled = item.clozeMcqData.sentence.replace('___', item.clozeMcqData.correctOptionId)
+                textsSet.add(normalizeTtsText(filled))
+              }
+              if (item.sentenceTransformationData) {
+                textsSet.add(normalizeTtsText(item.sentenceTransformationData.sourceSentence))
+              }
+              if (item.constrainedTranslationData) {
+                item.constrainedTranslationData.acceptableAnswers.forEach(a => textsSet.add(normalizeTtsText(a)))
+              }
+              if (item.cuedRecallData) {
+                textsSet.add(normalizeTtsText(item.cuedRecallData.correctOptionId))
+              }
+            }
+            const map = await fetchAudioMap([...textsSet], [resolvedVoice])
+            setAudioMap(map)
+          }
+        } catch {
+          // Non-fatal: audio is purely additive, session continues without it
+        }
       } catch (err) {
         const errMsg = err instanceof Error ? err.message : JSON.stringify(err)
         console.error('Session init error:', err)
@@ -419,15 +476,17 @@ export function Session() {
         {/* Exercise shell handles exercise rendering and feedback */}
         {sessionId && user && (
           <Box className={classes.exercise}>
-            <ExerciseShell
-              key={currentIndex}
-              currentItem={currentItem}
-              sessionId={sessionId}
-              user={user}
-              userLanguage={userLang}
-              onAnswer={handleExerciseAnswer}
-              onContinueToNext={handleContinueToNext}
-            />
+            <AudioProvider audioMap={audioMap} voiceId={sessionVoiceId}>
+              <ExerciseShell
+                key={currentIndex}
+                currentItem={currentItem}
+                sessionId={sessionId}
+                user={user}
+                userLanguage={userLang}
+                onAnswer={handleExerciseAnswer}
+                onContinueToNext={handleContinueToNext}
+              />
+            </AudioProvider>
           </Box>
         )}
       </Container>

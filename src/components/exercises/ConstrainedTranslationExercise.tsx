@@ -4,6 +4,9 @@ import { IconArrowRight } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
 import { translations } from '@/lib/i18n'
+import { PlayButton } from '@/components/PlayButton'
+import { useAudio } from '@/contexts/AudioContext'
+import { resolveAudioUrl } from '@/services/audioService'
 import classes from './TypedRecall.module.css'
 
 interface ConstrainedTranslationExerciseProps {
@@ -22,6 +25,7 @@ export function ConstrainedTranslationExercise({
   previewPayload,
 }: ConstrainedTranslationExerciseProps) {
   const t = translations[userLanguage]
+  const { audioMap, voiceId } = useAudio()
   const [response, setResponse] = useState('')
   const [isAnswered, setIsAnswered] = useState(false)
   const [startTime] = useState(() => Date.now())
@@ -181,6 +185,8 @@ export function ConstrainedTranslationExercise({
   if (isClozeMode) {
     const parts = data.targetSentenceWithBlank!.split('___')
     const correctWord = data.blankAcceptableAnswers![0]
+    const clozeFilledSentence = data.targetSentenceWithBlank!.replace('___', correctWord)
+    const clozeAudioUrl = isAnswered && voiceId ? resolveAudioUrl(audioMap, clozeFilledSentence, voiceId) : undefined
 
     return (
       <Box className={classes.container}>
@@ -245,13 +251,16 @@ export function ConstrainedTranslationExercise({
           {/* Result */}
           {isAnswered && (
             <Box style={{ textAlign: 'center', marginTop: '32px' }}>
-              <Badge
-                color={isCorrect ? 'green' : 'red'}
-                size="xl"
-                style={{ fontSize: '16px', padding: '12px 20px' }}
-              >
-                {isCorrect ? `✓ ${t.session.feedback.correct}` : `✗ ${t.session.feedback.incorrect}`}
-              </Badge>
+              <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                <Badge
+                  color={isCorrect ? 'green' : 'red'}
+                  size="xl"
+                  style={{ fontSize: '16px', padding: '12px 20px' }}
+                >
+                  {isCorrect ? `✓ ${t.session.feedback.correct}` : `✗ ${t.session.feedback.incorrect}`}
+                </Badge>
+                <PlayButton audioUrl={clozeAudioUrl} size="sm" />
+              </Box>
               {!isCorrect && (
                 <Box mt="lg">
                   <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.correctAnswerLabel}</Text>
@@ -266,6 +275,7 @@ export function ConstrainedTranslationExercise({
   }
 
   // Full-sentence translation mode (legacy / structural patterns)
+  const fullAnswerAudioUrl = isAnswered && voiceId ? resolveAudioUrl(audioMap, data.acceptableAnswers[0], voiceId) : undefined
   return (
     <Box className={classes.container}>
       <Stack gap="xl">
@@ -306,13 +316,16 @@ export function ConstrainedTranslationExercise({
 
         {isAnswered && (
           <Box style={{ textAlign: 'center', marginTop: '32px' }}>
-            <Badge
-              color={isCorrect ? 'green' : 'red'}
-              size="xl"
-              style={{ fontSize: '16px', padding: '12px 20px' }}
-            >
-              {isCorrect ? `✓ ${t.session.feedback.correct}` : `✗ ${t.session.feedback.incorrect}`}
-            </Badge>
+            <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <Badge
+                color={isCorrect ? 'green' : 'red'}
+                size="xl"
+                style={{ fontSize: '16px', padding: '12px 20px' }}
+              >
+                {isCorrect ? `✓ ${t.session.feedback.correct}` : `✗ ${t.session.feedback.incorrect}`}
+              </Badge>
+              <PlayButton audioUrl={fullAnswerAudioUrl} size="sm" />
+            </Box>
             {!isCorrect && (
               <Box mt="lg">
                 <Text size="sm" c="dimmed" mb="xs">{t.session.exercise.correctAnswerLabel}</Text>
