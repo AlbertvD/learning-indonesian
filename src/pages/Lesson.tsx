@@ -1,8 +1,8 @@
 // src/pages/Lesson.tsx
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Container, Center, Loader, Text, Tabs, Badge, Progress, Button, Stack, Group, Box } from '@mantine/core'
-import { IconChevronLeft, IconChevronRight, IconCheck } from '@tabler/icons-react'
+import { IconChevronLeft, IconChevronRight, IconCheck, IconPlayerPlay, IconPlayerStop } from '@tabler/icons-react'
 import { lessonService, type Lesson } from '@/services/lessonService'
 import { learningItemService } from '@/services/learningItemService'
 import { learnerStateService } from '@/services/learnerStateService'
@@ -62,6 +62,111 @@ function renderBodyText(body: string) {
           </div>
         )
       })}
+    </div>
+  )
+}
+
+function DialogueSection({ lines, setup, lesson, audioMap }: {
+  lines: DialogueLine[]
+  setup?: string
+  lesson: Lesson | null
+  audioMap: AudioMap
+}) {
+  const [playingAll, setPlayingAll] = useState(false)
+  const [activeLine, setActiveLine] = useState<number | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const abortRef = useRef(false)
+
+  const playAll = useCallback(async () => {
+    if (playingAll) {
+      // Stop
+      abortRef.current = true
+      audioRef.current?.pause()
+      setPlayingAll(false)
+      setActiveLine(null)
+      return
+    }
+
+    abortRef.current = false
+    setPlayingAll(true)
+
+    for (let i = 0; i < lines.length; i++) {
+      if (abortRef.current) break
+
+      const line = lines[i]
+      const lineVoice = lesson?.dialogue_voices?.[line.speaker] ?? lesson?.primary_voice ?? null
+      const url = lineVoice ? resolveAudioUrl(audioMap, line.text, lineVoice) : null
+      if (!url) continue
+
+      setActiveLine(i)
+
+      await new Promise<void>((resolve) => {
+        const audio = new Audio(url)
+        audioRef.current = audio
+        audio.addEventListener('ended', () => resolve())
+        audio.addEventListener('error', () => resolve())
+        audio.play().catch(() => resolve())
+      })
+
+      // Brief pause between lines
+      if (!abortRef.current && i < lines.length - 1) {
+        await new Promise(r => setTimeout(r, 600))
+      }
+    }
+
+    setPlayingAll(false)
+    setActiveLine(null)
+    audioRef.current = null
+  }, [playingAll, lines, lesson, audioMap])
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      abortRef.current = true
+      audioRef.current?.pause()
+    }
+  }, [])
+
+  const hasAnyAudio = lines.some(line => {
+    const v = lesson?.dialogue_voices?.[line.speaker] ?? lesson?.primary_voice ?? null
+    return v ? !!resolveAudioUrl(audioMap, line.text, v) : false
+  })
+
+  return (
+    <div>
+      {setup && <div className={classes.dialogueSetup}>{setup}</div>}
+      {hasAnyAudio && (
+        <Button
+          variant={playingAll ? 'filled' : 'light'}
+          size="xs"
+          leftSection={playingAll ? <IconPlayerStop size={14} /> : <IconPlayerPlay size={14} />}
+          onClick={playAll}
+          mb="md"
+        >
+          {playingAll ? 'Stop' : 'Speel dialoog af'}
+        </Button>
+      )}
+      <div className={classes.dialogueLines}>
+        {lines.map((line, i) => {
+          const lineVoice = lesson?.dialogue_voices?.[line.speaker] ?? lesson?.primary_voice ?? null
+          return (
+            <div
+              key={i}
+              className={classes.dialogueLine}
+              style={activeLine === i ? { background: 'var(--card-bg)', borderRadius: 'var(--r-md)', padding: '8px', margin: '-8px', transition: 'background 0.2s' } : undefined}
+            >
+              <div className={classes.dialogueSpeaker}>{line.speaker}</div>
+              <div>
+                <div className={classes.dialogueText} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  {line.text}
+                  <PlayButton audioUrl={lineVoice ? resolveAudioUrl(audioMap, line.text, lineVoice) : undefined} />
+                </div>
+                <div className={classes.dialogueTranslation}>{line.translation}</div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -278,28 +383,12 @@ function SectionContent({ content, lesson }: { content: unknown; lesson: Lesson 
 
   if (data?.type === 'dialogue' && Array.isArray(data.lines)) {
     return (
-      <div>
-        {data.setup && (
-          <div className={classes.dialogueSetup}>{data.setup}</div>
-        )}
-        <div className={classes.dialogueLines}>
-          {data.lines.map((line, i) => {
-            const lineVoice = lesson?.dialogue_voices?.[line.speaker] ?? lesson?.primary_voice ?? null
-            return (
-              <div key={i} className={classes.dialogueLine}>
-                <div className={classes.dialogueSpeaker}>{line.speaker}</div>
-                <div>
-                  <div className={classes.dialogueText} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    {line.text}
-                    <PlayButton audioUrl={lineVoice ? resolveAudioUrl(audioMap, line.text, lineVoice) : undefined} />
-                  </div>
-                  <div className={classes.dialogueTranslation}>{line.translation}</div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </div>
+      <DialogueSection
+        lines={data.lines}
+        setup={data.setup}
+        lesson={lesson}
+        audioMap={audioMap}
+      />
     )
   }
 
