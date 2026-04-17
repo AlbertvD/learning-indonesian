@@ -205,7 +205,8 @@ function buildGrammarQueue(
   return queue
 }
 
-function makeGrammarExercise(
+/** @internal exported for tests */
+export function makeGrammarExercise(
   _pattern: GrammarPatternWithLesson,
   variant: ExerciseVariant,
 ): ExerciseItem {
@@ -285,6 +286,7 @@ function makeGrammarExercise(
           translation: (payload.translation as string | null) ?? null,
           options: (payload.options as string[]) || [],
           correctOptionId: (answerKey?.correctOptionId as string) || (payload.correctOptionId as string) || '',
+          explanationText: (payload.explanationText as string) || undefined,
         },
       }
 
@@ -733,7 +735,8 @@ function makeClozeExercise(
   }
 }
 
-function makePublishedExercise(
+/** @internal exported for tests */
+export function makePublishedExercise(
   item: LearningItem,
   meanings: ItemMeaning[],
   context: ItemContext,
@@ -768,6 +771,7 @@ function makePublishedExercise(
           translation: (payload.translation as string | null) ?? null,
           options: (payload.options as string[]) || [],
           correctOptionId: (answerKey?.correctOptionId as string) || (payload.correctOptionId as string) || '',
+          explanationText: (payload.explanationText as string) || undefined,
         },
       }
 

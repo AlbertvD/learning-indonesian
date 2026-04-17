@@ -360,7 +360,7 @@ export function ExerciseShell({
         break
       case 'cloze_mcq':
         correctAnswer = exerciseItem.clozeMcqData?.correctOptionId ?? ''
-        explanationText = ''
+        explanationText = exerciseItem.clozeMcqData?.explanationText ?? ''
         break
       default:
         correctAnswer = ''

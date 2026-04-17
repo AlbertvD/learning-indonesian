@@ -206,6 +206,7 @@ export interface ExerciseItem {
     translation: string | null
     options: string[]
     correctOptionId: string
+    explanationText?: string
   }
   /** For cued_recall: optional cue text and options */
   cuedRecallData?: {

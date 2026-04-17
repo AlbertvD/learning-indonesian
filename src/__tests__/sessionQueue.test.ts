@@ -290,3 +290,94 @@ describe('buildSessionQueue — skill-type targeting (FSRS contract)', () => {
     expect(result[0].exerciseItem.skillType).toBe('recognition')
   })
 })
+
+describe('makeGrammarExercise — cloze_mcq explanation plumb-through', () => {
+  it('populates clozeMcqData.explanationText when the variant payload contains it', async () => {
+    const { makeGrammarExercise } = await import('@/lib/sessionQueue')
+    const pattern = {
+      id: 'pat-1',
+      name: 'bukan vs tidak',
+      introduced_by_lesson_order: 3,
+    } as unknown as Parameters<typeof makeGrammarExercise>[0]
+    const variant = {
+      id: 'var-1',
+      grammar_pattern_id: 'pat-1',
+      context_id: null,
+      exercise_type: 'cloze_mcq',
+      payload_json: {
+        sentence: 'Ini ___ buku.',
+        translation: 'Dit is geen boek.',
+        options: ['bukan', 'tidak'],
+        explanationText: 'bukan negates nouns; tidak negates verbs/adjectives.',
+      },
+      answer_key_json: { correctOptionId: 'bukan' },
+      is_active: true,
+      created_at: '',
+      updated_at: '',
+    } as unknown as Parameters<typeof makeGrammarExercise>[1]
+
+    const exercise = makeGrammarExercise(pattern, variant)
+
+    expect(exercise.exerciseType).toBe('cloze_mcq')
+    expect(exercise.clozeMcqData?.explanationText).toBe(
+      'bukan negates nouns; tidak negates verbs/adjectives.'
+    )
+  })
+
+  it('leaves explanationText undefined when the payload omits it', async () => {
+    const { makeGrammarExercise } = await import('@/lib/sessionQueue')
+    const pattern = {
+      id: 'pat-2',
+      name: 'test',
+      introduced_by_lesson_order: 3,
+    } as unknown as Parameters<typeof makeGrammarExercise>[0]
+    const variant = {
+      id: 'var-2',
+      grammar_pattern_id: 'pat-2',
+      context_id: null,
+      exercise_type: 'cloze_mcq',
+      payload_json: {
+        sentence: 'Ini ___ buku.',
+        translation: 'Dit is geen boek.',
+        options: ['bukan', 'tidak'],
+      },
+      answer_key_json: { correctOptionId: 'bukan' },
+      is_active: true,
+      created_at: '',
+      updated_at: '',
+    } as unknown as Parameters<typeof makeGrammarExercise>[1]
+
+    const exercise = makeGrammarExercise(pattern, variant)
+    expect(exercise.clozeMcqData?.explanationText).toBeUndefined()
+  })
+
+  it('makePublishedExercise: populates clozeMcqData.explanationText from payload_json', async () => {
+    const { makePublishedExercise } = await import('@/lib/sessionQueue')
+    const item = {
+      id: 'item-1', item_type: 'word' as const, base_text: 'bukan', normalized_text: 'bukan',
+      language: 'id', level: 'A1', source_type: 'lesson' as const, source_vocabulary_id: null,
+      source_card_id: null, notes: null, is_active: true, created_at: '', updated_at: '',
+    }
+    const context = {
+      id: 'ctx-1', learning_item_id: 'item-1', context_type: 'example_sentence',
+      source_text: 'Ini bukan buku.', translation_text: 'Dit is geen boek.',
+      difficulty: null, topic_tag: null, is_anchor_context: false,
+      source_lesson_id: null, source_section_id: null,
+    } as unknown as Parameters<typeof makePublishedExercise>[2]
+    const variant = {
+      id: 'var-3', grammar_pattern_id: null, context_id: 'ctx-1',
+      exercise_type: 'cloze_mcq',
+      payload_json: {
+        sentence: 'Ini ___ buku.',
+        translation: 'Dit is geen boek.',
+        options: ['bukan', 'tidak'],
+        explanationText: 'Use bukan for nominal negation.',
+      },
+      answer_key_json: { correctOptionId: 'bukan' },
+      is_active: true, created_at: '', updated_at: '',
+    } as unknown as Parameters<typeof makePublishedExercise>[3]
+
+    const exercise = makePublishedExercise(item, [], context, variant)
+    expect(exercise.clozeMcqData?.explanationText).toBe('Use bukan for nominal negation.')
+  })
+})
