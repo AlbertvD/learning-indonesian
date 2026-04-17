@@ -7,12 +7,12 @@ import classes from './RecognitionMCQ.module.css'
 interface SpeakingExerciseProps {
   exerciseItem: ExerciseItem
   userLanguage: 'en' | 'nl'
-  // Kept in the signature so ExerciseShell's dispatch branch compiles;
-  // intentionally unused until ASR is wired.
+  // Kept in the interface so ExerciseShell's dispatch branch compiles;
+  // intentionally unused until ASR is wired (see handleSubmitAnswer below).
   onAnswer: (wasCorrect: boolean, latencyMs: number) => void
 }
 
-export function SpeakingExercise({ exerciseItem, userLanguage, onAnswer: _onAnswer }: SpeakingExerciseProps) {
+export function SpeakingExercise({ exerciseItem, userLanguage }: SpeakingExerciseProps) {
   const t = translations[userLanguage]
   const data = exerciseItem.speakingData
 
