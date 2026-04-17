@@ -681,7 +681,8 @@ function makeCuedRecall(
   }
 }
 
-function makeClozeMcq(
+/** @internal exported for tests */
+export function makeClozeMcq(
   item: LearningItem,
   meanings: ItemMeaning[],
   contexts: ItemContext[],
@@ -689,7 +690,6 @@ function makeClozeMcq(
   allItems: LearningItem[],
 ): ExerciseItem {
   const clozeContext = contexts.find(c => c.context_type === 'cloze')
-    ?? contexts.find(c => c.is_anchor_context)
 
   const distractors = allItems
     .filter(i => i.id !== item.id && i.level === item.level)
@@ -719,14 +719,14 @@ function makeClozeMcq(
   }
 }
 
-function makeClozeExercise(
+/** @internal exported for tests */
+export function makeClozeExercise(
   item: LearningItem,
   meanings: ItemMeaning[],
   contexts: ItemContext[],
   variants: ItemAnswerVariant[],
 ): ExerciseItem {
   const clozeContext = contexts.find(c => c.context_type === 'cloze')
-    ?? contexts.find(c => c.is_anchor_context)
 
   return {
     learningItem: item,

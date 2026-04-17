@@ -475,3 +475,65 @@ describe('speaking exercises gated from session selection', () => {
     }
   })
 })
+
+describe('cloze builders strictly require context_type === cloze', () => {
+  it('makeClozeMcq returns clozeMcqData: undefined when item has only lesson_snippet anchor contexts', async () => {
+    const { makeClozeMcq } = await import('@/lib/sessionQueue')
+    const item = makeItem('i1')
+    const lessonSnippetContext = {
+      id: 'ctx-snippet', learning_item_id: 'i1', context_type: 'lesson_snippet',
+      source_text: 'Full lesson paragraph text here.', translation_text: 'Vol lesparagrafe hier.',
+      difficulty: null, topic_tag: null, is_anchor_context: true,
+      source_lesson_id: null, source_section_id: null,
+    }
+    const result = makeClozeMcq(item, [], [lessonSnippetContext as never], [], [item])
+    expect(result.clozeMcqData).toBeUndefined()
+  })
+
+  it('makeClozeMcq returns valid clozeMcqData when a cloze context exists alongside lesson_snippet', async () => {
+    const { makeClozeMcq } = await import('@/lib/sessionQueue')
+    const item = makeItem('i1')
+    const lessonSnippetContext = {
+      id: 'ctx-snippet', learning_item_id: 'i1', context_type: 'lesson_snippet',
+      source_text: 'Paragraph.', translation_text: 'Paragraaf.',
+      difficulty: null, topic_tag: null, is_anchor_context: true,
+      source_lesson_id: null, source_section_id: null,
+    }
+    const clozeContext = {
+      id: 'ctx-cloze', learning_item_id: 'i1', context_type: 'cloze',
+      source_text: 'Saya ___ nasi.', translation_text: 'Ik eet rijst.',
+      difficulty: null, topic_tag: null, is_anchor_context: true,
+      source_lesson_id: null, source_section_id: null,
+    }
+    const result = makeClozeMcq(item, [], [lessonSnippetContext as never, clozeContext as never], [], [item])
+    expect(result.clozeMcqData).toBeDefined()
+    expect(result.clozeMcqData?.sentence).toBe('Saya ___ nasi.')
+  })
+
+  it('makeClozeExercise returns clozeContext: undefined when item has only lesson_snippet anchor contexts', async () => {
+    const { makeClozeExercise } = await import('@/lib/sessionQueue')
+    const item = makeItem('i1')
+    const lessonSnippetContext = {
+      id: 'ctx-snippet', learning_item_id: 'i1', context_type: 'lesson_snippet',
+      source_text: 'Paragraph.', translation_text: 'Paragraaf.',
+      difficulty: null, topic_tag: null, is_anchor_context: true,
+      source_lesson_id: null, source_section_id: null,
+    }
+    const result = makeClozeExercise(item, [], [lessonSnippetContext as never], [])
+    expect(result.clozeContext).toBeUndefined()
+  })
+
+  it('makeClozeExercise returns valid clozeContext when a cloze context exists', async () => {
+    const { makeClozeExercise } = await import('@/lib/sessionQueue')
+    const item = makeItem('i1')
+    const clozeContext = {
+      id: 'ctx-cloze', learning_item_id: 'i1', context_type: 'cloze',
+      source_text: 'Saya ___ nasi.', translation_text: 'Ik eet rijst.',
+      difficulty: null, topic_tag: null, is_anchor_context: true,
+      source_lesson_id: null, source_section_id: null,
+    }
+    const result = makeClozeExercise(item, [], [clozeContext as never], [])
+    expect(result.clozeContext).toBeDefined()
+    expect(result.clozeContext?.sentence).toBe('Saya ___ nasi.')
+  })
+})
