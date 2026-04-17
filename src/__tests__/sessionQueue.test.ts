@@ -381,3 +381,97 @@ describe('makeGrammarExercise — cloze_mcq explanation plumb-through', () => {
     expect(exercise.clozeMcqData?.explanationText).toBe('Use bukan for nominal negation.')
   })
 })
+
+describe('speaking exercises gated from session selection', () => {
+  it('buildGrammarQueue skips patterns whose only variants are speaking', () => {
+    const pattern = {
+      id: 'pat-speak',
+      name: 'speaking-only',
+      introduced_by_lesson_order: 1,
+    }
+    const speakingVariant = {
+      id: 'v1', grammar_pattern_id: 'pat-speak', context_id: null,
+      exercise_type: 'speaking',
+      payload_json: { promptText: 'Zeg iets' }, answer_key_json: {},
+      is_active: true, created_at: '', updated_at: '',
+    }
+    const result = buildSessionQueue(baseInput({
+      grammarPatterns: [pattern as never],
+      grammarStates: { 'pat-speak': { grammar_pattern_id: 'pat-speak', user_id: 'u1', stage: 'new' } as never },
+      grammarVariantsByPattern: { 'pat-speak': [speakingVariant as never] },
+      preferredSessionSize: 10,
+      sessionMode: 'standard',
+    }))
+    // No vocab items either → result should be empty (speaking-only pattern skipped)
+    expect(result.filter(r => r.source === 'grammar')).toHaveLength(0)
+  })
+
+  it('buildGrammarQueue only serves non-speaking variants when mixed', () => {
+    const pattern = {
+      id: 'pat-mixed',
+      name: 'mixed-variants',
+      introduced_by_lesson_order: 1,
+    }
+    const speakingVariant = {
+      id: 'v-speak', grammar_pattern_id: 'pat-mixed', context_id: null,
+      exercise_type: 'speaking',
+      payload_json: { promptText: 'Zeg iets' }, answer_key_json: {},
+      is_active: true, created_at: '', updated_at: '',
+    }
+    const contrastVariant = {
+      id: 'v-contrast', grammar_pattern_id: 'pat-mixed', context_id: null,
+      exercise_type: 'contrast_pair',
+      payload_json: {
+        promptText: 'Kies het goede woord',
+        targetMeaning: 'at',
+        options: [{ id: 'a', text: 'di' }, { id: 'b', text: 'ke' }],
+        explanationText: 'di = at, ke = to',
+      },
+      answer_key_json: { correctOptionId: 'a' },
+      is_active: true, created_at: '', updated_at: '',
+    }
+    // Run 30 times — speaking must never surface
+    for (let i = 0; i < 30; i++) {
+      const result = buildSessionQueue(baseInput({
+        grammarPatterns: [pattern as never],
+        grammarStates: { 'pat-mixed': { grammar_pattern_id: 'pat-mixed', user_id: 'u1', stage: 'new' } as never },
+        grammarVariantsByPattern: { 'pat-mixed': [speakingVariant as never, contrastVariant as never] },
+        preferredSessionSize: 10,
+        sessionMode: 'standard',
+      }))
+      const grammarItems = result.filter(r => r.source === 'grammar')
+      for (const item of grammarItems) {
+        expect(item.exerciseItem.exerciseType).not.toBe('speaking')
+      }
+    }
+  })
+
+  it('selectExercises at productive stage never returns a speaking exercise when speaking is the only published variant', () => {
+    const item = makeItem('i1')
+    const context = {
+      id: 'ctx-1', learning_item_id: 'i1', context_type: 'example_sentence',
+      source_text: 'test', translation_text: 'test', difficulty: null, topic_tag: null,
+      is_anchor_context: false, source_lesson_id: null, source_section_id: null,
+    }
+    const speakingVariant = {
+      id: 'v-speak', grammar_pattern_id: null, context_id: 'ctx-1',
+      exercise_type: 'speaking',
+      payload_json: { promptText: 'Zeg iets' }, answer_key_json: {},
+      is_active: true, created_at: '', updated_at: '',
+    }
+    const state = makeItemState('i1', 'productive')
+    for (let i = 0; i < 30; i++) {
+      const result = buildSessionQueue(baseInput({
+        allItems: [item],
+        meaningsByItem: { i1: [makeMeaning('i1')] },
+        contextsByItem: { i1: [context as never] },
+        exerciseVariantsByContext: { 'ctx-1': [speakingVariant as never] },
+        itemStates: { i1: state },
+        skillStates: { i1: [makeSkillState('i1', { skill_type: 'recognition' })] },
+      }))
+      for (const r of result) {
+        expect(r.exerciseItem.exerciseType).not.toBe('speaking')
+      }
+    }
+  })
+})

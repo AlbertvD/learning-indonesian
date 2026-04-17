@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Box, Button, Stack, Text, Alert } from '@mantine/core'
 import { IconMicrophone } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
@@ -8,30 +7,28 @@ import classes from './RecognitionMCQ.module.css'
 interface SpeakingExerciseProps {
   exerciseItem: ExerciseItem
   userLanguage: 'en' | 'nl'
+  // Kept in the signature so ExerciseShell's dispatch branch compiles;
+  // intentionally unused until ASR is wired.
   onAnswer: (wasCorrect: boolean, latencyMs: number) => void
 }
 
-export function SpeakingExercise({ exerciseItem, userLanguage, onAnswer }: SpeakingExerciseProps) {
+export function SpeakingExercise({ exerciseItem, userLanguage, onAnswer: _onAnswer }: SpeakingExerciseProps) {
   const t = translations[userLanguage]
   const data = exerciseItem.speakingData
-  const [isAnswered, setIsAnswered] = useState(false)
-  const [startTime] = useState(() => Date.now())
 
   if (!data) {
     return <div style={{ color: 'red' }}>Missing speaking data</div>
   }
 
+  // Defensive no-op: speaking is gated out of session selection in
+  // sessionQueue.ts (buildGrammarQueue and the productive-stage selectExercises
+  // path both filter it), but if the component is ever reached via a future
+  // call path, do NOT invoke onAnswer with wasCorrect=true — that would
+  // corrupt FSRS state for the spoken_production skill before ASR exists.
+  // The component remains visually functional for admin preview; the record
+  // button is a deliberate dead-end click until ASR is wired.
   const handleSubmitAnswer = () => {
-    if (isAnswered) return
-    setIsAnswered(true)
-
-    // Speaking exercises are not scored automatically yet (requires transcription API).
-    // Treat as acknowledged (correct) so FSRS state is not corrupted.
-    const FEEDBACK_DELAY_MS = 1500
-    setTimeout(() => {
-      const latencyMs = Date.now() - startTime - FEEDBACK_DELAY_MS
-      onAnswer(true, latencyMs)
-    }, FEEDBACK_DELAY_MS)
+    return
   }
 
   return (
@@ -51,7 +48,6 @@ export function SpeakingExercise({ exerciseItem, userLanguage, onAnswer }: Speak
         <Stack gap="md">
           <Button
             onClick={handleSubmitAnswer}
-            disabled={isAnswered}
             className={classes.optionButton}
             variant="light"
             fullWidth

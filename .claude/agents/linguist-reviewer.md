@@ -123,7 +123,7 @@ For each candidate, verify the required fields are present inside `payload`:
 | contrast_pair | promptText, targetMeaning, options (len 2), correctOptionId, explanationText |
 | sentence_transformation | sourceSentence, transformationInstruction, acceptableAnswers (non-empty), explanationText |
 | constrained_translation | sourceLanguageSentence, requiredTargetPattern, acceptableAnswers (non-empty), explanationText; for single-word/slot patterns (belum-vs-tidak, kami-vs-kita, dari-di-ke-locative, bukan-negation, tidak-negation, bukan-tag-question, jangan-prohibition, sekali-intensifier, kah-question-suffix, imperative-lah-suffix — i.e. patterns where the learner fills a specific slot with one word) also targetSentenceWithBlank (contains exactly one ___) and blankAcceptableAnswers (non-empty) |
-| cloze_mcq | sentence (contains ___), options (len 4), correctOptionId |
+| cloze_mcq | sentence (contains ___), options (len 4), correctOptionId, explanationText |
 
 Also check:
 - Every `grammar_pattern_slug` value matches a slug in this lesson's `grammar-patterns.ts` OR exists in DB

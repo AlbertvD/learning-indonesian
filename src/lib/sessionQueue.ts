@@ -192,7 +192,12 @@ function buildGrammarQueue(
   const queue: SessionQueueItem[] = []
   for (const pattern of candidates) {
     const variants = grammarVariantsByPattern[pattern.id] ?? []
-    const variant = variants[Math.floor(Math.random() * variants.length)]
+    // Defense in depth: never schedule speaking until ASR is wired — the
+    // DB gate (exercise_type_availability.session_enabled=false) is load-bearing;
+    // this filter ensures a flag flip can't silently corrupt FSRS state.
+    const nonSpeakingVariants = variants.filter(v => v.exercise_type !== 'speaking')
+    if (nonSpeakingVariants.length === 0) continue
+    const variant = nonSpeakingVariants[Math.floor(Math.random() * nonSpeakingVariants.length)]
     const exercise = makeGrammarExercise(pattern, variant)
     queue.push({
       source: 'grammar',
@@ -456,7 +461,10 @@ function selectExercises(
 
       if (hasPublishedVariants) {
         for (const context of contexts) {
-          const publishedVariants = exerciseVariantsByContext?.[context.id] ?? []
+          // Defense in depth: filter speaking at the pick site too, so a stale
+          // DB gate flip can't sneak a speaking variant through.
+          const publishedVariants = (exerciseVariantsByContext?.[context.id] ?? [])
+            .filter(v => v.exercise_type !== 'speaking')
           if (publishedVariants.length > 0) {
             const variant = publishedVariants[Math.floor(Math.random() * publishedVariants.length)]
             exercises.push(makePublishedExercise(item, meanings, context, variant))
