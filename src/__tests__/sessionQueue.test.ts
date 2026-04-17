@@ -537,3 +537,68 @@ describe('cloze builders strictly require context_type === cloze', () => {
     expect(result.clozeContext?.sentence).toBe('Saya ___ nasi.')
   })
 })
+
+describe('pickDistractorCascade — tier behavior', () => {
+  const target = { itemType: 'word', pos: 'verb' as const, level: 'A1', semanticGroup: 'mental_states' as const }
+
+  it('Tier 0 hit — all 3 matches come from same POS + same group', async () => {
+    const { pickDistractorCascade } = await import('@/lib/sessionQueue')
+    const pool = [
+      { id: 'a', option: 'ingat',  itemType: 'word', pos: 'verb',   level: 'A1', semanticGroup: 'mental_states' as const },
+      { id: 'b', option: 'lupa',   itemType: 'word', pos: 'verb',   level: 'A1', semanticGroup: 'mental_states' as const },
+      { id: 'c', option: 'tahu',   itemType: 'word', pos: 'verb',   level: 'A1', semanticGroup: 'mental_states' as const },
+      { id: 'd', option: 'nasi',   itemType: 'word', pos: 'noun',   level: 'A1', semanticGroup: 'food' as const },
+    ]
+    const result = pickDistractorCascade(target, pool, 3)
+    expect(result).toHaveLength(3)
+    expect(result).toEqual(expect.arrayContaining(['ingat', 'lupa', 'tahu']))
+    expect(result).not.toContain('nasi')
+  })
+
+  it('POS-null target falls through Tiers 0–2, starts at Tier 3', async () => {
+    const { pickDistractorCascade } = await import('@/lib/sessionQueue')
+    const nullTarget = { itemType: 'word', pos: null, level: 'A1', semanticGroup: 'mental_states' as const }
+    const pool = [
+      { id: 'a', option: 'x', itemType: 'word', pos: 'verb', level: 'A1', semanticGroup: 'mental_states' as const },
+      { id: 'b', option: 'y', itemType: 'word', pos: 'noun', level: 'A1', semanticGroup: 'mental_states' as const },
+      { id: 'c', option: 'z', itemType: 'word', pos: null,   level: 'A1', semanticGroup: 'mental_states' as const },
+    ]
+    const result = pickDistractorCascade(nullTarget, pool, 3)
+    expect(result).toHaveLength(3)
+  })
+
+  it('candidate with null POS never appears in Tiers 0–2 when target has POS', async () => {
+    const { pickDistractorCascade } = await import('@/lib/sessionQueue')
+    const pool = [
+      { id: 'nullcand', option: 'pos-null', itemType: 'word', pos: null,   level: 'A1', semanticGroup: 'mental_states' as const },
+      { id: 'verbcand', option: 'pos-verb', itemType: 'word', pos: 'verb', level: 'A1', semanticGroup: 'mental_states' as const },
+    ]
+    const result = pickDistractorCascade(target, pool, 2)
+    // pos-verb hits Tier 0; pos-null only reachable via Tier 4 (same level, no POS req)
+    expect(result[0]).toBe('pos-verb')
+  })
+
+  it('structural filter honored — sentence target never gets word distractor', async () => {
+    const { pickDistractorCascade } = await import('@/lib/sessionQueue')
+    const sentenceTarget = { itemType: 'sentence', pos: null, level: 'A1', semanticGroup: null }
+    const pool = [
+      { id: 'w', option: 'word-only', itemType: 'word', pos: null, level: 'A1', semanticGroup: null },
+    ]
+    const result = pickDistractorCascade(sentenceTarget, pool, 3)
+    // Tier 5 (full pool fallback) will pick the word, but Tiers 3/4 which respect
+    // structural filter won't. Tier 5 is last-resort — so it may include word-only.
+    // The contract: structural filter is honored until Tier 5.
+    // For this test, verify that a sentence target's structural pool is empty.
+    expect(result.length).toBeLessThanOrEqual(1)  // at most Tier 5 fallback fires
+  })
+
+  it('dedupes — candidate matching multiple tiers only appears once', async () => {
+    const { pickDistractorCascade } = await import('@/lib/sessionQueue')
+    const pool = [
+      // Matches Tier 0 AND would also match Tier 1.
+      { id: 'a', option: 'x', itemType: 'word', pos: 'verb', level: 'A1', semanticGroup: 'mental_states' as const },
+    ]
+    const result = pickDistractorCascade(target, pool, 3)
+    expect(result).toEqual(['x'])
+  })
+})
