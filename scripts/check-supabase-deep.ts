@@ -234,6 +234,47 @@ for (const table of EXPECTED_TABLES) {
   }
 }
 
+// ── Check: learning_items.pos column exists (read-only introspection) ──────
+{
+  // Query via information_schema — safe, no side effects. If the column
+  // is missing, the sample row below will lack `pos` in its keys.
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('learning_items')
+    .select('id, pos')
+    .limit(1)
+  if (error) {
+    if (error.message.includes('column') && error.message.includes('pos')) {
+      fail(
+        'learning_items.pos column exists',
+        'Column learning_items.pos not found — run: make migrate SUPABASE_SERVICE_KEY=<key>'
+      )
+    } else {
+      fail('learning_items.pos column exists', error.message)
+    }
+  } else {
+    pass('learning_items.pos column exists')
+    // Informational: per-POS distribution for word/phrase items
+    const { data: distRows, error: distErr } = await supabase
+      .schema('indonesian')
+      .from('learning_items')
+      .select('pos, item_type')
+      .in('item_type', ['word', 'phrase'])
+    if (!distErr && distRows) {
+      const counts: Record<string, number> = {}
+      for (const r of distRows as { pos: string | null; item_type: string }[]) {
+        counts[r.pos ?? 'null'] = (counts[r.pos ?? 'null'] ?? 0) + 1
+      }
+      console.log('  POS distribution (word/phrase):')
+      for (const [pos, count] of Object.entries(counts).sort()) {
+        console.log(`    ${pos}: ${count}`)
+      }
+      // suppress unused-var
+      void data
+    }
+  }
+}
+
 // ── Output ─────────────────────────────────────────────────────────────────
 console.log(`\nSupabase deep structural check — ${SUPABASE_URL}\n`)
 let failures = 0
