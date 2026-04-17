@@ -56,15 +56,31 @@ async function getAccessToken(): Promise<string> {
   return cachedToken.token
 }
 
+// Chirp3-HD produces broken audio for very short words (≤2 chars like "ke", "di").
+// Fall back to Wavenet for these — same gender, reliable for short utterances.
+const CHIRP3_TO_WAVENET_FALLBACK: Record<string, string> = {
+  'id-ID-Chirp3-HD-Despina': 'id-ID-Wavenet-A',   // female
+  'id-ID-Chirp3-HD-Sulafat': 'id-ID-Wavenet-D',   // female
+  'id-ID-Chirp3-HD-Gacrux': 'id-ID-Wavenet-A',    // female
+  'id-ID-Chirp3-HD-Achird': 'id-ID-Wavenet-B',    // male
+  'id-ID-Chirp3-HD-Algenib': 'id-ID-Wavenet-C',   // male
+  'id-ID-Chirp3-HD-Orus': 'id-ID-Wavenet-B',      // male
+}
+
 export async function synthesizeSpeech(text: string, voiceId: string): Promise<Buffer> {
   const token = await getAccessToken()
+
+  // Use Wavenet fallback for very short words where Chirp3 fails
+  const effectiveVoice = text.trim().length <= 2 && voiceId in CHIRP3_TO_WAVENET_FALLBACK
+    ? CHIRP3_TO_WAVENET_FALLBACK[voiceId]
+    : voiceId
 
   const res = await fetch(TTS_ENDPOINT, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       input: { text },
-      voice: { languageCode: 'id-ID', name: voiceId },
+      voice: { languageCode: 'id-ID', name: effectiveVoice },
       audioConfig: { audioEncoding: 'MP3', sampleRateHertz: 24000 },
     }),
   })

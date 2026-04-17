@@ -351,6 +351,12 @@ async function generateAudio(lessonNumber: number, dryRun: boolean) {
       if (generated > 0) await new Promise(res => setTimeout(res, 100))
 
       const audioBuffer = await synthesizeSpeech(entry.text, entry.voiceId)
+
+      // Quality gate: flag suspiciously small clips
+      if (audioBuffer.length < 1024) {
+        console.warn(`\n   ⚠️  Tiny clip (${audioBuffer.length}B) for "${entry.text}" — may be broken`)
+      }
+
       const storagePath = buildStoragePath(entry.text, entry.voiceId)
 
       // Upload to storage
