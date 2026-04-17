@@ -7,6 +7,16 @@ export type SourceType = 'lesson' | 'podcast' | 'flashcard' | 'manual'
 export type ContextType = 'example_sentence' | 'dialogue' | 'cloze' | 'lesson_snippet' | 'vocabulary_list' | 'exercise_prompt'
 export type VariantType = 'alternative_translation' | 'informal' | 'with_prefix' | 'without_prefix'
 
+/**
+ * Part of speech — 12-value UD-aligned taxonomy for distractor filtering
+ * in MCQ exercises. Null for sentence/dialogue_chunk items (POS is word-level).
+ * See docs/plans/2026-04-17-pos-aware-distractors-design.md.
+ */
+export type POS =
+  | 'verb' | 'noun' | 'adjective' | 'adverb' | 'pronoun'
+  | 'numeral' | 'classifier' | 'preposition' | 'conjunction'
+  | 'particle' | 'question_word' | 'greeting'
+
 export interface LearningItem {
   id: string
   item_type: ItemType
@@ -19,6 +29,7 @@ export interface LearningItem {
   source_card_id: string | null
   notes: string | null
   is_active: boolean
+  pos: POS | null
   created_at: string
   updated_at: string
 }

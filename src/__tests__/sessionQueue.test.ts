@@ -7,7 +7,7 @@ import type { LearningItem, LearnerItemState, LearnerSkillState, ItemMeaning, Se
 // ---- helpers ----
 
 function makeItem(id: string): LearningItem {
-  return { id, item_type: 'word', base_text: id, normalized_text: id, language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null, source_card_id: null, notes: null, is_active: true, created_at: '', updated_at: '' }
+  return { id, item_type: 'word', base_text: id, normalized_text: id, language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null, source_card_id: null, notes: null, is_active: true, pos: null, created_at: '', updated_at: '' }
 }
 
 function makeItemState(itemId: string, stage: LearnerItemState['stage']): LearnerItemState {
@@ -356,7 +356,7 @@ describe('makeGrammarExercise — cloze_mcq explanation plumb-through', () => {
     const item = {
       id: 'item-1', item_type: 'word' as const, base_text: 'bukan', normalized_text: 'bukan',
       language: 'id', level: 'A1', source_type: 'lesson' as const, source_vocabulary_id: null,
-      source_card_id: null, notes: null, is_active: true, created_at: '', updated_at: '',
+      source_card_id: null, notes: null, is_active: true, pos: null, created_at: '', updated_at: '',
     }
     const context = {
       id: 'ctx-1', learning_item_id: 'item-1', context_type: 'example_sentence',

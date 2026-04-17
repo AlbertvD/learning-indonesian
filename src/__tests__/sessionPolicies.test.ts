@@ -40,6 +40,7 @@ function createQueueItem(
       source_card_id: null,
       notes: null,
       is_active: true,
+      pos: null,
       created_at: '2024-01-01T00:00:00Z',
       updated_at: '2024-01-01T00:00:00Z',
     },

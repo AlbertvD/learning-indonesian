@@ -22,7 +22,7 @@ vi.mock('@/services/learnerStateService', () => ({
 
 describe('processReview', () => {
   const exerciseItem: ExerciseItem = {
-    learningItem: { id: 'li1', item_type: 'word', base_text: 'rumah', normalized_text: 'rumah', language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null, source_card_id: null, notes: null, is_active: true, created_at: '', updated_at: '' },
+    learningItem: { id: 'li1', item_type: 'word', base_text: 'rumah', normalized_text: 'rumah', language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null, source_card_id: null, notes: null, is_active: true, pos: null, created_at: '', updated_at: '' },
     meanings: [],
     contexts: [],
     answerVariants: [],
