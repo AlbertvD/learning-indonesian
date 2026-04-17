@@ -1231,3 +1231,22 @@ GRANT EXECUTE ON FUNCTION indonesian.get_audio_clips(text[], text[]) TO authenti
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('indonesian-tts', 'indonesian-tts', true)
 ON CONFLICT (id) DO NOTHING;
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- POS (part of speech) for distractor filtering in MCQ exercises.
+-- 12-value UD-aligned taxonomy. See docs/plans/2026-04-17-pos-aware-distractors-design.md.
+-- ═══════════════════════════════════════════════════════════════════════════
+
+ALTER TABLE indonesian.learning_items
+  ADD COLUMN IF NOT EXISTS pos text;
+
+ALTER TABLE indonesian.learning_items
+  DROP CONSTRAINT IF EXISTS learning_items_pos_check;
+ALTER TABLE indonesian.learning_items
+  ADD CONSTRAINT learning_items_pos_check CHECK (
+    pos IS NULL OR pos IN (
+      'verb', 'noun', 'adjective', 'adverb', 'pronoun', 'numeral',
+      'classifier', 'preposition', 'conjunction', 'particle',
+      'question_word', 'greeting'
+    )
+  );
