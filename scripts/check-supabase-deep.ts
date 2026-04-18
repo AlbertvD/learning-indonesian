@@ -234,6 +234,41 @@ for (const table of EXPECTED_TABLES) {
   }
 }
 
+// ── Check: listening_mcq registered in exercise_type_availability ────────
+{
+  const { data: availRow, error: availErr } = await supabase
+    .schema('indonesian')
+    .from('exercise_type_availability')
+    .select('exercise_type, session_enabled')
+    .eq('exercise_type', 'listening_mcq')
+    .maybeSingle()
+
+  if (availErr) {
+    fail('listening_mcq registered', availErr.message)
+  } else if (!availRow) {
+    fail('listening_mcq registered', 'Row missing from exercise_type_availability — run: make migrate')
+  } else if (!availRow.session_enabled) {
+    fail('listening_mcq registered', 'Row exists but session_enabled=false')
+  } else {
+    pass('listening_mcq registered and session_enabled')
+  }
+}
+
+// ── Check: audio coverage ────────────────────────────────────────────────
+{
+  const { data: coverage, error: covErr } = await supabase
+    .schema('indonesian')
+    .rpc('audio_coverage_report')
+  if (covErr) {
+    fail('Audio coverage RPC', covErr.message)
+  } else if (coverage && coverage[0]) {
+    const { total_word_phrase, with_audio, without_audio } = coverage[0]
+    pass(`Audio coverage: ${with_audio}/${total_word_phrase} word/phrase items (${without_audio} missing)`)
+  } else {
+    fail('Audio coverage RPC', 'Empty result')
+  }
+}
+
 // ── Check: learning_items.pos column exists (read-only introspection) ──────
 {
   // Query via information_schema — safe, no side effects. If the column

@@ -26,11 +26,13 @@ import { useT } from '@/hooks/useT'
 import { translations } from '@/lib/i18n'
 import { logError } from '@/lib/logger'
 import { useAutoplay } from '@/contexts/AutoplayContext'
+import { useListening } from '@/contexts/ListeningContext'
 
 export function Profile() {
   const T = useT()
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const { autoPlay, setAutoPlay } = useAutoplay()
+  const { listeningEnabled, setListeningEnabled } = useListening()
   const isMobile = useMediaQuery('(max-width: 768px)') ?? false
   const user = useAuthStore((state) => state.user)
   const profile = useAuthStore((state) => state.profile)
@@ -304,6 +306,27 @@ export function Profile() {
               onChange={(e) => setAutoPlay(e.currentTarget.checked)}
               size="md"
               label={T.profile.autoPlayAudio}
+            />
+          </Stack>
+        </Paper>
+
+        <Paper p="xl" radius="md" {...paperProps}>
+          <Stack gap="md">
+            <Box>
+              <Title order={4} mb="xs">
+                {(profile?.language ?? 'nl') === 'nl' ? 'Luisteroefeningen' : 'Listening exercises'}
+              </Title>
+              <Text size="sm" c="dimmed">
+                {(profile?.language ?? 'nl') === 'nl'
+                  ? 'Schakel uit als je geen audio kunt horen of alleen tekstgebaseerd wilt oefenen.'
+                  : 'Disable if you cannot hear audio or prefer text-only practice.'}
+              </Text>
+            </Box>
+            <Switch
+              checked={listeningEnabled}
+              onChange={(e) => setListeningEnabled(e.currentTarget.checked)}
+              size="md"
+              label={(profile?.language ?? 'nl') === 'nl' ? 'Luisteroefeningen inschakelen' : 'Enable listening exercises'}
             />
           </Stack>
         </Paper>

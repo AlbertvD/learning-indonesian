@@ -1258,3 +1258,25 @@ VALUES
   ('listening_mcq', true, false, false, 'alpha',
    'Audio-only Indonesian prompt, user-language MCQ. Runtime-built. No authored variants.')
 ON CONFLICT (exercise_type) DO NOTHING;
+
+-- Audio coverage report for check-supabase-deep
+CREATE OR REPLACE FUNCTION indonesian.audio_coverage_report()
+RETURNS TABLE(total_word_phrase bigint, with_audio bigint, without_audio bigint)
+LANGUAGE sql STABLE SET search_path = indonesian AS $$
+  WITH targets AS (
+    SELECT li.id, li.normalized_text
+    FROM learning_items li
+    WHERE li.item_type IN ('word', 'phrase')
+  ),
+  covered AS (
+    SELECT DISTINCT t.id
+    FROM targets t
+    JOIN audio_clips ac ON ac.normalized_text = t.normalized_text
+  )
+  SELECT
+    (SELECT count(*) FROM targets) AS total_word_phrase,
+    (SELECT count(*) FROM covered) AS with_audio,
+    (SELECT count(*) FROM targets) - (SELECT count(*) FROM covered) AS without_audio;
+$$;
+
+GRANT EXECUTE ON FUNCTION indonesian.audio_coverage_report() TO authenticated;
