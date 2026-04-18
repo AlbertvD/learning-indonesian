@@ -31,7 +31,7 @@ type SectionType =
   | 'grammar' | 'exercises' | 'dialogue'
   | 'text' | 'pronunciation' | 'reference_table'
 
-interface VocabItem { indonesian: string; dutch: string }
+interface VocabItem { indonesian: string; dutch: string; pos?: string | null }
 interface DialogueLine { speaker: string; text: string }
 
 interface CatalogSection {
@@ -225,7 +225,7 @@ function generateLearningItemsTs(catalog: SectionsCatalog): { content: string; r
       for (const item of section.items) {
         if (!item.indonesian?.trim()) { report.droppedEmptyIndonesian++; continue }
         if (!item.dutch?.trim())      { report.droppedEmptyDutch++;      continue }
-        items.push({
+        const stagingItem: Record<string, unknown> = {
           base_text: item.indonesian.trim(),
           item_type: itemTypeFromSection(section.type as SectionType, item.indonesian),
           context_type: 'vocabulary_list',
@@ -233,7 +233,11 @@ function generateLearningItemsTs(catalog: SectionsCatalog): { content: string; r
           translation_en: '',
           source_page: section.source_pages[0] ?? null,
           review_status: 'pending_review',
-        })
+        }
+        // Only include pos when set — keeps staging JSON tidy; publish defaults
+        // missing field to NULL in the DB.
+        if (item.pos) stagingItem.pos = item.pos
+        items.push(stagingItem as typeof items[number])
       }
     }
 
