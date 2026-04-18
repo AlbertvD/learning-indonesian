@@ -49,7 +49,7 @@ export default defineConfig({
     environmentMatchGlobs: [['**/*.test.ts', 'node']],
     setupFiles: ['./src/test-setup.ts'],
     // Limit discovery to our test directory — avoids scanning node_modules paths.
-    include: ['src/__tests__/**/*.test.{ts,tsx}'],
+    include: ['src/__tests__/**/*.test.{ts,tsx}', 'scripts/__tests__/**/*.test.ts'],
     // Progress.test.tsx tests require completed implementation work on the
     // redesigned Progress page — re-enable as implementation catches up.
     exclude: ['**/node_modules/**', 'src/__tests__/Progress.test.tsx'],

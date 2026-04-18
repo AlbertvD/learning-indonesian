@@ -1,129 +1,84 @@
 #!/usr/bin/env bun
 /**
- * check-vocab-coverage.ts
+ * check-vocab-coverage.ts — focused DB-side scanner.
  *
- * Flags grammar exercise variants whose Indonesian payload contains words the
- * learner has never been exposed to. Authoring rule (per
+ * Flags grammar exercise variants in the DB whose Indonesian payload contains
+ * words the learner has never been exposed to. Authoring rule (per
  * .claude/agents/grammar-exercise-creator.md:65): every candidate must use
- * vocabulary from the lesson pool; unknown words are not acceptable.
+ * vocabulary from the lesson pool.
  *
- * Known vocabulary = union of:
- *   - learning_items.normalized_text (every taught item)
- *   - item_contexts.source_text tokens (every Indonesian sentence the user has
- *     been exposed to as a vocab anchor — captures dialogue characters and
- *     place names that are repeatedly seen)
- *
- * lesson_sections.content is intentionally NOT included: it stores translation
- * drill answers verbatim, so an exercise answer like "Nama anjing itu Beng"
- * would mark "anjing" as known and mask the very bug we're trying to catch.
- *
- * Tokens are lowercased and stripped of common Indonesian morphological
- * suffixes (-nya, -lah, -kah, -ku, -mu, -kan, -i) and clitics so that an
- * unknown root is not masked by a known affix. Function words and tokens
- * shorter than 3 chars are ignored.
+ * For staging-side checks see scripts/lint-staging.ts. The two scripts share
+ * the affix module at scripts/lib/affix.ts.
  *
  * Usage:
- *   bun scripts/check-vocab-coverage.ts                # scan all variants in DB
- *   bun scripts/check-vocab-coverage.ts --lesson 7     # only patterns from lesson 7
- *   bun scripts/check-vocab-coverage.ts --json         # machine-readable output
+ *   bun scripts/check-vocab-coverage.ts                # scan all variants
+ *   bun scripts/check-vocab-coverage.ts --lesson 7     # one lesson
+ *   bun scripts/check-vocab-coverage.ts --json
  *
- * Exits 0 when clean, 1 when any unknowns are found.
+ * Exits 0 when clean, 1 when any unknowns are found, 2 on error.
  */
 
 import { createClient } from '@supabase/supabase-js'
+import { stripAffixes, tokenize, FUNCTION_WORDS } from './lib/affix'
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL ?? 'https://api.supabase.duin.home'
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY
 if (!SERVICE_KEY) {
   console.error('SUPABASE_SERVICE_KEY required')
-  process.exit(1)
+  process.exit(2)
 }
 
-// Disable cert check for the homelab's internal CA.
+// Internal Step-CA on the homelab. Scoped: only this script's HTTPS calls
+// (all to the homelab supabase) bypass cert validation.
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
+// NEVER log the supabase client object — service-role JWT lives in client.headers.
 const supabase = createClient(SUPABASE_URL, SERVICE_KEY, {
   db: { schema: 'indonesian' },
   auth: { persistSession: false },
 })
 
-// Indonesian function words, particles, pronouns, and other ultra-common
-// grammar that's pedagogically transparent — never flagged regardless of
-// whether they appear as standalone learning items.
-const FUNCTION_WORDS = new Set([
-  'itu','ini','di','ke','dari','yang','dan','atau','tapi','tetapi','dengan','untuk','pada','dalam','akan','sudah','belum','tidak','bukan','adalah','ada','saya','kamu','dia','kami','kita','mereka','anda','aku','ya','juga','saja','lagi','sangat','sekali','agar','supaya','karena','sebab','jika','kalau','maka','kemudian','lalu','setelah','sebelum','ketika','waktu','sambil','tanpa','tentang','seperti','sang','bahwa','bagi','oleh','sampai','hingga','baru','lebih','paling','suka','bisa','dapat','harus','mau','ingin','perlu','boleh','sedang','sini','sana','situ','kenapa','apa','siapa','mana','bagaimana','kapan','berapa','lah','kah','pun','nya','sebuah','seorang','para','semua','setiap','beberapa','banyak','sedikit',
-])
-
-// Indonesian affixes stripped before lookup so a known root combined with the
-// affix being taught (namanya, ambillah, bisakah, terbaik, selebar, berjalan)
-// doesn't register as unknown. Order matters for prefixes: longer ones first
-// so meng- isn't trimmed to me-.
-const SUFFIXES = ['nya','lah','kah','ku','mu','kan','i']
-const PREFIXES = ['meng','meny','memp','memb','memf','menj','mens','menc','meng','mem','men','peng','peny','pemp','pemb','penj','pens','penc','pem','pen','ber','ter','per','ke','se','di','me','pe','ku','mu']
-
-function stripAffixes(word: string): string {
-  let w = word
-  let changed = true
-  while (changed) {
-    changed = false
-    for (const suf of SUFFIXES) {
-      if (w.length > suf.length + 2 && w.endsWith(suf)) {
-        w = w.slice(0, -suf.length)
-        changed = true
-        break
-      }
-    }
-    for (const pre of PREFIXES) {
-      if (w.length > pre.length + 2 && w.startsWith(pre)) {
-        w = w.slice(pre.length)
-        changed = true
-        break
-      }
-    }
+// Supabase JS .select() defaults cap at 1000 rows. Beat the cap with
+// page-by-1000. Caller responsibility to wrap any wide table read.
+async function selectAllRows<T>(builder: any): Promise<T[]> {
+  const PAGE = 1000
+  const out: T[] = []
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await builder.range(from, from + PAGE - 1)
+    if (error) throw error
+    if (!data || data.length === 0) break
+    out.push(...(data as T[]))
+    if (data.length < PAGE) break
   }
-  return w
-}
-
-// Tokenize a free-text string into normalized Indonesian word candidates.
-// Hyphenated reduplications (anak-anak) split into their parts; the root form
-// is what matters for coverage.
-function tokenize(text: string): string[] {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z\s-]/g, ' ')
-    .split(/[\s-]+/)
-    .filter(Boolean)
+  return out
 }
 
 async function loadKnownVocab(): Promise<Set<string>> {
   const known = new Set<string>()
-
-  const { data: items, error: itemsErr } = await supabase
-    .from('learning_items')
-    .select('normalized_text')
-  if (itemsErr) throw itemsErr
-  for (const it of items ?? []) {
+  const items = await selectAllRows<{ normalized_text: string | null }>(
+    supabase.from('learning_items').select('normalized_text'),
+  )
+  for (const it of items) {
+    if (!it.normalized_text) continue
     for (const tok of tokenize(it.normalized_text)) {
       known.add(tok)
       known.add(stripAffixes(tok))
     }
   }
-
-  const { data: contexts, error: ctxErr } = await supabase
-    .from('item_contexts')
-    .select('source_text')
-  if (ctxErr) throw ctxErr
-  for (const ctx of contexts ?? []) {
+  const contexts = await selectAllRows<{ source_text: string | null }>(
+    supabase.from('item_contexts').select('source_text'),
+  )
+  for (const ctx of contexts) {
+    if (!ctx.source_text) continue
     for (const tok of tokenize(ctx.source_text)) {
       known.add(tok)
       known.add(stripAffixes(tok))
     }
   }
-
   return known
 }
 
-// The Indonesian-bearing fields of each grammar exercise payload. Other fields
+// Indonesian-bearing fields per exercise type. Other fields
 // (sourceLanguageSentence, explanationText, transformationInstruction,
 // promptText, targetMeaning) are Dutch and intentionally skipped.
 function extractIndonesianText(payload: Record<string, unknown>, exerciseType: string): string[] {
@@ -160,25 +115,43 @@ interface Finding {
   sample_text: string
 }
 
-async function main() {
-  const args = process.argv.slice(2)
+function parseArgs(args: string[]): { jsonOut: boolean; lessonFilter: number | null } {
   const jsonOut = args.includes('--json')
+  let lessonFilter: number | null = null
   const lessonIdx = args.indexOf('--lesson')
-  const lessonFilter = lessonIdx >= 0 ? parseInt(args[lessonIdx + 1], 10) : null
+  if (lessonIdx >= 0) {
+    const raw = args[lessonIdx + 1]
+    if (!raw) {
+      console.error('--lesson requires a number')
+      process.exit(2)
+    }
+    const n = parseInt(raw, 10)
+    if (Number.isNaN(n) || n < 1) {
+      console.error(`--lesson expects a positive integer, got "${raw}"`)
+      process.exit(2)
+    }
+    lessonFilter = n
+  }
+  return { jsonOut, lessonFilter }
+}
+
+async function main() {
+  const { jsonOut, lessonFilter } = parseArgs(process.argv.slice(2))
 
   if (!jsonOut) console.log('Loading known vocabulary from DB…')
   const known = await loadKnownVocab()
   if (!jsonOut) console.log(`Known vocabulary: ${known.size} unique tokens`)
 
-  const { data: variants, error } = await supabase
-    .from('exercise_variants')
-    .select('id, exercise_type, payload_json, grammar_pattern_id, grammar_patterns!inner(slug, introduced_by_lesson_id, lessons:introduced_by_lesson_id(order_index))')
-    .not('grammar_pattern_id', 'is', null)
-  if (error) throw error
+  const variants = await selectAllRows<any>(
+    supabase
+      .from('exercise_variants')
+      .select('id, exercise_type, payload_json, grammar_pattern_id, grammar_patterns!inner(slug, introduced_by_lesson_id, lessons:introduced_by_lesson_id(order_index))')
+      .not('grammar_pattern_id', 'is', null),
+  )
 
   const findings: Finding[] = []
-  for (const v of variants ?? []) {
-    const gp = (v as Record<string, unknown>).grammar_patterns as { slug?: string; lessons?: { order_index?: number } } | null
+  for (const v of variants) {
+    const gp = v.grammar_patterns as { slug?: string; lessons?: { order_index?: number } } | null
     const lessonOrder = gp?.lessons?.order_index ?? null
     if (lessonFilter !== null && lessonOrder !== lessonFilter) continue
 
@@ -211,18 +184,16 @@ async function main() {
 
   if (jsonOut) {
     console.log(JSON.stringify({ count: findings.length, findings }, null, 2))
+  } else if (findings.length === 0) {
+    console.log('\nClean: every grammar exercise uses only known vocabulary.')
   } else {
-    if (findings.length === 0) {
-      console.log('\nClean: every grammar exercise uses only known vocabulary.')
-    } else {
-      console.log(`\nFound ${findings.length} variant(s) with unknown vocabulary:\n`)
-      for (const f of findings) {
-        console.log(`Lesson ${f.lesson_order ?? '?'} · ${f.pattern_slug ?? '?'} · ${f.exercise_type}`)
-        console.log(`  variant_id: ${f.variant_id}`)
-        console.log(`  unknown:    ${f.unknown_words.join(', ')}`)
-        console.log(`  sample:     "${f.sample_text}"`)
-        console.log()
-      }
+    console.log(`\nFound ${findings.length} variant(s) with unknown vocabulary:\n`)
+    for (const f of findings) {
+      console.log(`Lesson ${f.lesson_order ?? '?'} · ${f.pattern_slug ?? '?'} · ${f.exercise_type}`)
+      console.log(`  variant_id: ${f.variant_id}`)
+      console.log(`  unknown:    ${f.unknown_words.join(', ')}`)
+      console.log(`  sample:     "${f.sample_text}"`)
+      console.log()
     }
   }
 
