@@ -423,8 +423,30 @@ function selectExercises(
   // not a randomly chosen skill that happens to share the same item.
   if (targetSkillType) {
     switch (targetSkillType) {
-      case 'recognition':
-        return [makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem)]
+      case 'recognition': {
+        const out: ExerciseItem[] = [makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem)]
+        // Form-recall introduction. The anchoring → retrieving promotion gate
+        // (src/lib/stages.ts:42-54) requires recognition + meaning_recall but
+        // not form_recall, so items can reach retrieving with only a
+        // recognition skill row. Once there, they have nothing form_recall-
+        // shaped that's ever due, so the queue keeps pulling them for
+        // recognition forever — they can never promote to productive
+        // (which gates on form_recall) and never contribute to recall_quality.
+        // When we serve recognition for such an item, append a one-time
+        // typed_recall (or cloze for sentence types with anchor context) so
+        // the first form_recall review creates the skill row and FSRS takes
+        // over from there.
+        const isMaturedStage = stage === 'retrieving' || stage === 'productive' || stage === 'maintenance'
+        const hasFormRecall = candidate.skills.some(s => s.skill_type === 'form_recall')
+        if (isMaturedStage && !hasFormRecall) {
+          if (isSentenceType && hasAnchorContext) {
+            out.push(makeClozeExercise(item, meanings, contexts, variants))
+          } else if (!isSentenceType) {
+            out.push(makeTypedRecall(item, meanings, contexts, variants))
+          }
+        }
+        return out
+      }
       case 'meaning_recall':
         return [makeMeaningRecall(item, meanings, contexts, variants)]
       case 'form_recall': {

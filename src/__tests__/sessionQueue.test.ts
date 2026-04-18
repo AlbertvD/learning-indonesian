@@ -270,6 +270,53 @@ describe('buildSessionQueue — skill-type targeting (FSRS contract)', () => {
     expect(result[0].exerciseItem.skillType).toBe('form_recall')
   })
 
+  it('retrieving item without form_recall skill gets a typed_recall introduction appended', () => {
+    // An item can reach 'retrieving' without ever having form_recall
+    // (the promotion gate requires recognition + meaning_recall but not
+    // form_recall). When recognition is due for such an item, the queue
+    // should serve recognition AND introduce form_recall via typed_recall
+    // so the skill row gets created and FSRS can schedule it from there.
+    const item = makeItem('i1')
+    const result = buildSessionQueue(baseInput({
+      allItems: [item],
+      meaningsByItem: { i1: [makeMeaning('i1')] },
+      itemStates: { i1: makeItemState('i1', 'retrieving') },
+      skillStates: { i1: [makeSkillState('i1', { skill_type: 'recognition' })] },
+      preferredSessionSize: 25,
+    }))
+    expect(result).toHaveLength(2)
+    expect(result.map((r: SessionQueueItem) => r.exerciseItem.exerciseType).sort()).toEqual(['recognition_mcq', 'typed_recall'])
+  })
+
+  it('retrieving item that already has form_recall does NOT get a duplicate introduction', () => {
+    const item = makeItem('i1')
+    const result = buildSessionQueue(baseInput({
+      allItems: [item],
+      meaningsByItem: { i1: [makeMeaning('i1')] },
+      itemStates: { i1: makeItemState('i1', 'retrieving') },
+      skillStates: { i1: [
+        makeSkillState('i1', { skill_type: 'recognition' }), // due
+        makeSkillState('i1', { skill_type: 'form_recall', id: 'skill-i1-form', next_due_at: futureDate(5) }),
+      ]},
+      preferredSessionSize: 25,
+    }))
+    // After dedup the recognition entry remains; no introduction needed.
+    expect(result).toHaveLength(1)
+    expect(result[0].exerciseItem.exerciseType).toBe('recognition_mcq')
+  })
+
+  it('anchoring item without form_recall does NOT get a typed_recall introduction (too early)', () => {
+    const item = makeItem('i1')
+    const result = buildSessionQueue(baseInput({
+      allItems: [item],
+      meaningsByItem: { i1: [makeMeaning('i1')] },
+      itemStates: { i1: makeItemState('i1', 'anchoring') },
+      skillStates: { i1: [makeSkillState('i1', { skill_type: 'recognition' })] },
+    }))
+    expect(result).toHaveLength(1)
+    expect(result[0].exerciseItem.exerciseType).toBe('recognition_mcq')
+  })
+
   it('item with two due skills produces only one queue entry — most-overdue skill wins', () => {
     // An item with multiple due skills should appear at most once per session.
     // Showing the same word multiple times violates spaced repetition intent.
