@@ -12,6 +12,7 @@
 import { createClient } from '@supabase/supabase-js'
 import fs from 'fs'
 import path from 'path'
+import { validatePOS } from './lib/validate-pos'
 
 // Homelab uses an internal Step-CA certificate that Node/Bun does not trust by default.
 // This is safe — we're connecting to our own internal Supabase instance.
@@ -263,6 +264,19 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
     const VALID_CONTEXT_TYPES = new Set(['example_sentence', 'dialogue', 'cloze', 'lesson_snippet', 'vocabulary_list', 'exercise_prompt'])
     const publishedItemIds: string[] = []
     const dialogueItemIds = new Set<string>()
+
+    // POS validation — WARNING for missing pos on word/phrase items,
+    // CRITICAL (abort publish) for invalid pos values, coverage report at the end.
+    if (approvedItems.length > 0) {
+      const posResult = validatePOS(approvedItems)
+      for (const w of posResult.warnings) console.warn(w)
+      if (posResult.criticalErrors.length > 0) {
+        for (const e of posResult.criticalErrors) console.error(e)
+        console.error('Aborting publish due to invalid POS values.')
+        process.exit(1)
+      }
+    }
+
     if (approvedItems.length > 0) {
       console.log(`\n3. Publishing ${approvedItems.length} learning items...`)
       for (const item of approvedItems) {
@@ -280,6 +294,7 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
               language: 'id',
               level: lesson?.level || 'A1',
               source_type: 'lesson',
+              pos: item.pos ?? null,
             }, { onConflict: 'normalized_text' })
             .select('id')
             .single()
@@ -665,6 +680,15 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
     }
 
     console.log(`\n✓ ${dryRun ? '[DRY RUN] ' : ''}Successfully processed lesson ${lessonNumber}`)
+
+    // POS coverage report — informational summary at the end
+    if (!dryRun && approvedItems.length > 0) {
+      const posResult = validatePOS(approvedItems)
+      console.log(`\n[POS-coverage] Lesson ${lessonNumber} word/phrase items by POS:`)
+      for (const [pos, count] of Object.entries(posResult.coverage).sort()) {
+        console.log(`  ${pos}: ${count}`)
+      }
+    }
 
   } catch (err) {
     console.error('\nPublish failed:', err)
