@@ -103,11 +103,16 @@ const CLOZE_EXEMPT_BASE_TEXTS = new Set([
 // Supabase JS .select() defaults cap at 1000 rows. Without this wrapper
 // learning_items / item_contexts truncate silently and known-vocab pools
 // collapse, producing false-positive "unknown" findings.
-async function selectAll<T = any>(builder: any): Promise<T[]> {
+//
+// Pages are stabilised with .order('id') so .range() slices a consistent
+// result set even if a write happens during the lint. Caller passes the
+// id-equivalent column for tables whose primary key isn't `id`.
+async function selectAll<T = any>(builder: any, orderColumn = 'id'): Promise<T[]> {
   const PAGE = 1000
   const out: T[] = []
+  const ordered = builder.order(orderColumn, { ascending: true })
   for (let from = 0; ; from += PAGE) {
-    const { data, error } = await builder.range(from, from + PAGE - 1)
+    const { data, error } = await ordered.range(from, from + PAGE - 1)
     if (error) throw error
     if (!data || data.length === 0) break
     out.push(...(data as T[]))
@@ -283,10 +288,18 @@ function checkGrammarPatterns(ctx: LessonCtx, slugToLessons: Map<string, number[
       out.push(mkFinding('CRITICAL', ctx.n, 'grammar-patterns.ts', 'complexity_score-out-of-range',
         String(p?.complexity_score), ref))
     }
-    const lessonsWith = slugToLessons.get(p.slug) ?? []
-    if (lessonsWith.length > 1) {
+    // Dedupe lesson numbers — a single grammar-patterns.ts file with the
+    // same slug listed twice is also a bug (intra-file collision), but the
+    // diagnostic should distinguish "appears in lessons N, M" from "appears
+    // in lesson N twice". A Set + size check handles both cleanly.
+    const occurrences = slugToLessons.get(p.slug) ?? []
+    const distinctLessons = [...new Set(occurrences)]
+    if (occurrences.length > 1 && distinctLessons.length === 1) {
+      out.push(mkFinding('CRITICAL', ctx.n, 'grammar-patterns.ts', 'slug-duplicate-within-lesson',
+        `slug appears ${occurrences.length} times in lesson-${distinctLessons[0]}/grammar-patterns.ts`, ref))
+    } else if (distinctLessons.length > 1) {
       out.push(mkFinding('CRITICAL', ctx.n, 'grammar-patterns.ts', 'slug-duplicate-cross-lesson',
-        `defined in lessons ${lessonsWith.join(', ')}`, ref))
+        `defined in lessons ${distinctLessons.sort((a, b) => a - b).join(', ')}`, ref))
     }
   }
   return out
@@ -551,13 +564,21 @@ function checkClozeContextsFile(ctx: LessonCtx): Finding[] {
 function checkClozeCoverage(ctx: LessonCtx): Finding[] {
   const out: Finding[] = []
   if (!ctx.learningItems?.length) return out
-  const slugsCovered = new Set((ctx.clozeContexts ?? []).map(c => c?.learning_item_slug).filter(Boolean))
+  // Compare lowercased+trimmed: cloze-contexts.ts slugs are typically
+  // lowercase (`'monas = monumen nasional'`) while learning-items.ts uses
+  // original casing (`'Monas = Monumen Nasional'`). Case-sensitive matching
+  // produced ~43% false positives.
+  const slugsCovered = new Set(
+    (ctx.clozeContexts ?? [])
+      .map(c => (typeof c?.learning_item_slug === 'string' ? c.learning_item_slug.toLowerCase().trim() : null))
+      .filter((s): s is string => Boolean(s)),
+  )
 
   for (const it of ctx.learningItems) {
     if (!['word', 'phrase'].includes(it?.item_type)) continue
     const slug: string = it.base_text
     if (!slug) continue
-    if (slugsCovered.has(slug)) continue
+    if (slugsCovered.has(slug.toLowerCase().trim())) continue
     const isExempt = CLOZE_EXEMPT_BASE_TEXTS.has(slug.toLowerCase().trim())
     const hasEqualsExpansion = slug.includes('=')
     if (hasEqualsExpansion) {

@@ -27,9 +27,11 @@ export const SUFFIXES = ['nya', 'lah', 'kah', 'ku', 'mu', 'kan'] as const
 // - 'menj'/'menc'/'mens'/'pemb'/'penj'/'pens'/'penc' (same — menjual → ual)
 //
 // Net effect: known meN-/peN- verb forms whose root starts with a non-morphed
-// letter strip cleanly (mengambil → ambil, mempelajari → pelajar). Forms whose
-// root letter IS morphed away (mempunyai → punya) won't fully reduce — they
-// still strip 'mem' to give 'punyai', which is close enough for fuzzy lookup.
+// letter strip the prefix cleanly (mengambil → ambil). Forms whose root letter
+// IS morphed away (mempunyai) don't fully reduce — we strip 'mem' giving
+// 'punyai' (vs canonical 'punya'). Verbal -i derivations (mempelajari) reduce
+// only to 'pelajari' (vs canonical 'pelajar') because '-i' is not in SUFFIXES.
+// Both are accepted false-positives — see test file for the full set.
 export const PREFIXES = [
   'meng', 'meny', 'peng', 'peny',
   'mem', 'men', 'pem', 'pen',

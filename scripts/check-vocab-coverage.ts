@@ -39,12 +39,14 @@ const supabase = createClient(SUPABASE_URL, SERVICE_KEY, {
 })
 
 // Supabase JS .select() defaults cap at 1000 rows. Beat the cap with
-// page-by-1000. Caller responsibility to wrap any wide table read.
-async function selectAllRows<T>(builder: any): Promise<T[]> {
+// page-by-1000. Pages are stabilised with .order('id') so .range() slices
+// a consistent result set if a write lands mid-lint.
+async function selectAllRows<T>(builder: any, orderColumn = 'id'): Promise<T[]> {
   const PAGE = 1000
   const out: T[] = []
+  const ordered = builder.order(orderColumn, { ascending: true })
   for (let from = 0; ; from += PAGE) {
-    const { data, error } = await builder.range(from, from + PAGE - 1)
+    const { data, error } = await ordered.range(from, from + PAGE - 1)
     if (error) throw error
     if (!data || data.length === 0) break
     out.push(...(data as T[]))
