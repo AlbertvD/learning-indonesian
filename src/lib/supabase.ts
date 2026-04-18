@@ -16,3 +16,15 @@ export const supabase = createBrowserClient(
     },
   }
 )
+
+// Sync access to the current JWT for pagehide/visibilitychange beacons that
+// can't await getSession(). Keep in sync via onAuthStateChange below.
+let currentAccessToken: string | null = null
+export const getAccessTokenSync = (): string | null => currentAccessToken
+
+supabase.auth.getSession().then(({ data }) => {
+  currentAccessToken = data.session?.access_token ?? null
+})
+supabase.auth.onAuthStateChange((_event, session) => {
+  currentAccessToken = session?.access_token ?? null
+})

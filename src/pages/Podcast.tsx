@@ -5,6 +5,7 @@ import { Container, Title, Text, Button, Paper, Group, Stack, Center, Loader, Ta
 import { IconChevronLeft, IconMicrophone } from '@tabler/icons-react'
 import { podcastService, type Podcast } from '@/services/podcastService'
 import { startSession, endSession } from '@/lib/session'
+import { useSessionBeacon } from '@/lib/useSessionBeacon'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
@@ -20,6 +21,7 @@ export function Podcast() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const sessionIdRef = useRef<string | null>(null)
+  useSessionBeacon(sessionIdRef)
 
   useEffect(() => {
     async function fetchData() {

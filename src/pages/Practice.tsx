@@ -16,6 +16,7 @@ import {
 import { notifications } from '@mantine/notifications'
 import { supabase } from '@/lib/supabase'
 import { startSession, endSession } from '@/lib/session'
+import { useSessionBeacon } from '@/lib/useSessionBeacon'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
@@ -40,6 +41,7 @@ export function Practice() {
   const [total, setTotal] = useState(0)
   const usedIndicesRef = useRef<Set<number>>(new Set())
   const sessionIdRef = useRef<string | null>(null)
+  useSessionBeacon(sessionIdRef)
 
   useEffect(() => {
     async function fetchVocabulary() {

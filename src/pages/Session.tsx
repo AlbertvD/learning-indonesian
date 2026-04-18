@@ -25,6 +25,7 @@ import { SessionSummary } from '@/components/SessionSummary'
 import { logError } from '@/lib/logger'
 import type { SessionQueueItem, LearnerItemState, LearnerSkillState, LearnerGrammarState, GrammarPatternWithLesson, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant, WeeklyGoal } from '@/types/learning'
 import { startSession, endSession } from '@/lib/session'
+import { useSessionBeacon } from '@/lib/useSessionBeacon'
 import classes from './Session.module.css'
 
 export function Session() {
@@ -52,6 +53,12 @@ export function Session() {
   const preferredSessionSize = profile?.preferredSessionSize ?? 15
   const didInit = useRef(false)
   const beforeGoalsRef = useRef<WeeklyGoal[] | null>(null)
+
+  // Mirror sessionId into a ref so the pagehide beacon (which can't depend on
+  // re-renders) reads the current value.
+  const sessionIdRef = useRef<string | null>(null)
+  useEffect(() => { sessionIdRef.current = sessionId }, [sessionId])
+  useSessionBeacon(sessionIdRef)
 
   // Initialize session
   useEffect(() => {

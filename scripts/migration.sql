@@ -1373,3 +1373,50 @@ $$;
 GRANT EXECUTE ON FUNCTION indonesian.apply_review_to_skill_state(
   uuid, uuid, text, boolean, numeric, numeric, numeric, timestamptz, timestamptz, integer
 ) TO authenticated;
+
+-- Sweep abandoned learning_sessions. Runs hourly. A session is considered
+-- abandoned when ended_at is null and it's older than 1 hour. We finalize
+-- with the latest review event timestamp if any (true last activity), else
+-- cap at started_at + 1h to avoid 7-hour ghost sessions from tabs left open
+-- overnight without any pagehide beacon reaching the server.
+CREATE OR REPLACE FUNCTION indonesian.job_finalize_stale_sessions()
+RETURNS TABLE(finalized_count integer)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'indonesian'
+AS $$
+DECLARE
+  v_count integer;
+BEGIN
+  WITH stale AS (
+    SELECT ls.id, ls.started_at,
+           (SELECT MAX(re.created_at) FROM indonesian.review_events re
+            WHERE re.session_id = ls.id) AS last_review_at
+    FROM indonesian.learning_sessions ls
+    WHERE ls.ended_at IS NULL
+      AND ls.started_at < NOW() - interval '1 hour'
+  ),
+  upd AS (
+    UPDATE indonesian.learning_sessions ls
+    SET ended_at = COALESCE(stale.last_review_at,
+                            LEAST(NOW(), stale.started_at + interval '1 hour'))
+    FROM stale
+    WHERE ls.id = stale.id
+    RETURNING ls.id
+  )
+  SELECT COUNT(*) INTO v_count FROM upd;
+
+  RETURN QUERY SELECT v_count;
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION indonesian.job_finalize_stale_sessions() TO service_role;
+
+-- Schedule the stale-session sweep hourly at minute 25 (offset from the other
+-- goal jobs so they don't pile up on the same minute).
+DO $$ BEGIN
+  PERFORM cron.unschedule('finalize-stale-sessions');
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+SELECT cron.schedule('finalize-stale-sessions', '25 * * * *',
+  'SELECT indonesian.job_finalize_stale_sessions()');

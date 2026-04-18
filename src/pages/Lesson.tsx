@@ -8,6 +8,7 @@ import { learningItemService } from '@/services/learningItemService'
 import { learnerStateService } from '@/services/learnerStateService'
 import { progressService } from '@/services/progressService'
 import { startSession, endSession } from '@/lib/session'
+import { useSessionBeacon } from '@/lib/useSessionBeacon'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
@@ -501,6 +502,7 @@ export function Lesson() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const sessionIdRef = useRef<string | null>(null)
+  useSessionBeacon(sessionIdRef)
   const [completedSections, setCompletedSections] = useState<string[]>([])
   const audioRef = useRef<HTMLAudioElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
