@@ -7,6 +7,8 @@ import type {
 } from '@/types/learning'
 import type { ExerciseVariant } from '@/types/learning'
 import { getSemanticGroup } from '@/lib/semanticGroups'
+import { normalizeTtsText } from '@/lib/ttsNormalize'
+import type { AudioMap } from '@/services/audioService'
 
 export type SessionMode = 'standard' | 'backlog_clear' | 'quick'
 
@@ -669,6 +671,78 @@ function makeMeaningRecall(
     answerVariants: variants,
     skillType: 'meaning_recall',
     exerciseType: 'meaning_recall',
+  }
+}
+
+/**
+ * True if the item has an audio clip for the given voice.
+ * Uses normalizeTtsText (not learning_items.normalized_text) per the
+ * audio infrastructure contract — see docs/plans/2026-04-16-exercise-audio-design.md.
+ *
+ * @internal exported for tests
+ */
+export function hasAudioFor(
+  item: LearningItem,
+  audioMap: AudioMap,
+  voiceId: string | null,
+): boolean {
+  if (!voiceId) return false
+  return !!audioMap.get(voiceId)?.get(normalizeTtsText(item.base_text))
+}
+
+/**
+ * Runtime builder for listening_mcq. Mirrors makeRecognitionMCQ exactly —
+ * the only difference from recognition_mcq is exerciseType, which the
+ * component reads to decide whether to hide the Indonesian text.
+ *
+ * @internal exported for tests
+ */
+export function makeListeningMcq(
+  item: LearningItem,
+  meanings: ItemMeaning[],
+  contexts: ItemContext[],
+  variants: ItemAnswerVariant[],
+  userLanguage: 'en' | 'nl',
+  allItems: LearningItem[],
+  meaningsByItem: Record<string, ItemMeaning[]>,
+): ExerciseItem {
+  const primaryMeaning = meanings.find(m => m.translation_language === userLanguage && m.is_primary)
+    ?? meanings.find(m => m.translation_language === userLanguage)
+  const correctAnswer = primaryMeaning?.translation_text ?? ''
+
+  const pool: DistractorCandidate[] = allItems
+    .filter(i => i.id !== item.id)
+    .flatMap(i => {
+      const itemMeanings = meaningsByItem[i.id] ?? []
+      const t = (itemMeanings.find(m => m.translation_language === userLanguage && m.is_primary)
+        ?? itemMeanings.find(m => m.translation_language === userLanguage))?.translation_text
+      if (!t || t === correctAnswer) return []
+      return [{
+        id: i.id,
+        option: t,
+        itemType: i.item_type,
+        pos: i.pos ?? null,
+        level: i.level,
+        semanticGroup: getSemanticGroup(t, userLanguage),
+      }]
+    })
+
+  const target = {
+    itemType: item.item_type,
+    pos: item.pos ?? null,
+    level: item.level,
+    semanticGroup: getSemanticGroup(correctAnswer, userLanguage),
+  }
+  const distractors = pickDistractorCascade(target, pool, 3)
+
+  return {
+    learningItem: item,
+    meanings,
+    contexts,
+    answerVariants: variants,
+    skillType: 'recognition',
+    exerciseType: 'listening_mcq',
+    distractors,
   }
 }
 

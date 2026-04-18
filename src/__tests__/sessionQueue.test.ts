@@ -538,6 +538,35 @@ describe('cloze builders strictly require context_type === cloze', () => {
   })
 })
 
+describe('makeListeningMcq + hasAudioFor', () => {
+  it('hasAudioFor returns true when audio exists for the target voice', async () => {
+    const { hasAudioFor } = await import('@/lib/sessionQueue')
+    const audioMap = new Map([['voice-1', new Map([['apa kabar', 'tts/voice-1/apa-xyz.mp3']])]])
+    const item = { ...makeItem('i1'), base_text: 'Apa Kabar' }
+    expect(hasAudioFor(item, audioMap, 'voice-1')).toBe(true)  // case-insensitive via normalizeTtsText
+  })
+
+  it('hasAudioFor returns false when voiceId is null', async () => {
+    const { hasAudioFor } = await import('@/lib/sessionQueue')
+    expect(hasAudioFor(makeItem('i1'), new Map(), null)).toBe(false)
+  })
+
+  it('hasAudioFor returns false when audio is missing', async () => {
+    const { hasAudioFor } = await import('@/lib/sessionQueue')
+    expect(hasAudioFor(makeItem('i1'), new Map(), 'voice-1')).toBe(false)
+  })
+
+  it('makeListeningMcq builds an ExerciseItem with exerciseType listening_mcq and skillType recognition', async () => {
+    const { makeListeningMcq } = await import('@/lib/sessionQueue')
+    const item = makeItem('i1')
+    const meanings = [makeMeaning('i1')]
+    const exercise = makeListeningMcq(item, meanings, [], [], 'en', [item], { i1: meanings })
+    expect(exercise.exerciseType).toBe('listening_mcq')
+    expect(exercise.skillType).toBe('recognition')
+    expect(exercise.learningItem).toBe(item)
+  })
+})
+
 describe('pickDistractorCascade — tier behavior', () => {
   const target = { itemType: 'word', pos: 'verb' as const, level: 'A1', semanticGroup: 'mental_states' as const }
 
