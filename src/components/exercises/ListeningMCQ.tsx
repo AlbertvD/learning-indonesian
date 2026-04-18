@@ -48,7 +48,9 @@ export function ListeningMCQ({ exerciseItem, userLanguage, onAnswer }: Listening
     if (result && typeof result.then === 'function') {
       result.then(() => setHasPlayedOnce(true)).catch(() => setAutoplayBlocked(true))
     } else {
-      setAutoplayBlocked(true)
+      // Engine returned undefined (older Safari, jsdom) — defer the state
+      // update to avoid the cascading-renders lint warning.
+      queueMicrotask(() => setAutoplayBlocked(true))
     }
   }, [audioUrl])
 

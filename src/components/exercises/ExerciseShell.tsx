@@ -13,6 +13,7 @@ import { ClozeMcq } from './ClozeMcq'
 import { MeaningRecall } from './MeaningRecall'
 import { SpeakingExercise } from './SpeakingExercise'
 import { ListeningMCQ } from './ListeningMCQ'
+import { Dictation } from './Dictation'
 import { FlagButton } from '@/components/exercises/FlagButton'
 import { contentFlagService } from '@/services/contentFlagService'
 import { useAuthStore } from '@/stores/authStore'
@@ -288,6 +289,18 @@ export function ExerciseShell({
           userLanguage={userLanguage}
           onAnswer={(wasCorrect, latencyMs) => {
             handleAnswerFromExercise(wasCorrect, false, latencyMs, null)
+          }}
+        />
+      )
+
+    case 'dictation':
+      return (
+        <Dictation
+          key={exerciseKey}
+          exerciseItem={exerciseItem}
+          userLanguage={userLanguage}
+          onAnswer={(wasCorrect, isFuzzy, latencyMs, rawResponse) => {
+            handleAnswerFromExercise(wasCorrect, isFuzzy, latencyMs, rawResponse)
           }}
         />
       )

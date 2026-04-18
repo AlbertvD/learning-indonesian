@@ -163,6 +163,7 @@ export type ExerciseType =
   | 'constrained_translation'
   | 'speaking'
   | 'listening_mcq'
+  | 'dictation'
 
 export type FlagType = 'wrong_translation' | 'bad_sentence' | 'confusing' | 'sunset' | 'other'
 export type FlagStatus = 'open' | 'resolved'

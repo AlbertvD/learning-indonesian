@@ -1280,3 +1280,11 @@ LANGUAGE sql STABLE SET search_path = indonesian AS $$
 $$;
 
 GRANT EXECUTE ON FUNCTION indonesian.audio_coverage_report() TO authenticated;
+
+-- Dictation (audio-only Indonesian prompt, typed Indonesian answer)
+INSERT INTO indonesian.exercise_type_availability
+  (exercise_type, session_enabled, authoring_enabled, requires_approved_content, rollout_phase, notes)
+VALUES
+  ('dictation', true, false, false, 'alpha',
+   'Audio-only Indonesian prompt, typed Indonesian answer. Runtime-built. Free text with fuzzy grading.')
+ON CONFLICT (exercise_type) DO NOTHING;

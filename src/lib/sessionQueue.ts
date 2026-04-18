@@ -407,6 +407,12 @@ function selectExercises(
     (item.item_type === 'word' || item.item_type === 'phrase') &&
     stage !== 'new' &&
     hasAudioFor(item, audioMap ?? new Map(), voiceId ?? null)
+  // Dictation: same gates as listening plus its own feature flag.
+  // Stage gate is stricter — only retrieving+ (form_recall is productive-skill).
+  const canDictate =
+    canListen &&
+    isExerciseTypeEnabled('dictation') &&
+    stage !== 'anchoring'
 
   // Whether the item has a cloze-eligible context: must be context_type 'cloze' specifically.
 
@@ -421,11 +427,17 @@ function selectExercises(
         return [makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem)]
       case 'meaning_recall':
         return [makeMeaningRecall(item, meanings, contexts, variants)]
-      case 'form_recall':
-        if (hasAnchorContext && Math.random() < 0.5) {
-          return [makeClozeExercise(item, meanings, contexts, variants)]
-        }
-        return [makeTypedRecall(item, meanings, contexts, variants)]
+      case 'form_recall': {
+        // Uniform pick over eligible options. typed_recall is always eligible;
+        // cloze and dictation join only if their preconditions hold. When all
+        // three eligible: 33/33/33. When two: 50/50. When one: always typed.
+        const formOptions: Array<() => ExerciseItem> = [
+          () => makeTypedRecall(item, meanings, contexts, variants),
+        ]
+        if (hasAnchorContext) formOptions.push(() => makeClozeExercise(item, meanings, contexts, variants))
+        if (canDictate) formOptions.push(() => makeDictation(item, meanings, contexts, variants))
+        return [formOptions[Math.floor(Math.random() * formOptions.length)]()]
+      }
       default:
         // Unknown skill type — fall through to stage-based selection
         break
@@ -479,7 +491,13 @@ function selectExercises(
       } else if (hasAnchorContext && roll < 0.82) {
         exercises.push(makeClozeExercise(item, meanings, contexts, variants))
       } else {
-        exercises.push(makeTypedRecall(item, meanings, contexts, variants))
+        // Retrieving typed_recall tail (~18%). Split 50/50 with dictation
+        // when canDictate → ~9% each. Preserves form-recall-via-typed budget.
+        exercises.push(
+          canDictate && Math.random() < 0.5
+            ? makeDictation(item, meanings, contexts, variants)
+            : makeTypedRecall(item, meanings, contexts, variants)
+        )
       }
     }
   } else {
@@ -506,7 +524,14 @@ function selectExercises(
       if (exercises.length === 0) {
         const roll = Math.random()
         if (roll < 0.35) {
-          exercises.push(makeTypedRecall(item, meanings, contexts, variants))
+          // Productive/maintenance typed_recall lead (35%). Split 50/50 with
+          // dictation when canDictate → ~17% each. Preserves form-recall
+          // budget while adding audio-form-recall practice.
+          exercises.push(
+            canDictate && Math.random() < 0.5
+              ? makeDictation(item, meanings, contexts, variants)
+              : makeTypedRecall(item, meanings, contexts, variants)
+          )
         } else if (roll < 0.60 && hasAnchorContext) {
           exercises.push(makeClozeExercise(item, meanings, contexts, variants))
         } else if (roll < 0.80) {
@@ -705,6 +730,29 @@ function makeMeaningRecall(
     answerVariants: variants,
     skillType: 'meaning_recall',
     exerciseType: 'meaning_recall',
+  }
+}
+
+/**
+ * Dictation — audio prompt, typed Indonesian answer. Structurally identical
+ * to typed_recall; only exerciseType differs so the component renders
+ * audio-only input.
+ *
+ * @internal exported for tests
+ */
+export function makeDictation(
+  item: LearningItem,
+  meanings: ItemMeaning[],
+  contexts: ItemContext[],
+  variants: ItemAnswerVariant[],
+): ExerciseItem {
+  return {
+    learningItem: item,
+    meanings,
+    contexts,
+    answerVariants: variants,
+    skillType: 'form_recall',
+    exerciseType: 'dictation',
   }
 }
 

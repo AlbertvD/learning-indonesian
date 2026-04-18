@@ -14,6 +14,7 @@ interface FeatureFlags {
   constrainedTranslation: boolean
   speaking: boolean
   listeningMcq: boolean
+  dictation: boolean
 }
 
 function parseEnvFlag(key: string): boolean {
@@ -35,6 +36,7 @@ export const featureFlags: FeatureFlags = {
   constrainedTranslation: parseEnvFlag('VITE_FEATURE_CONSTRAINED_TRANSLATION'),
   speaking: parseEnvFlag('VITE_FEATURE_SPEAKING'),
   listeningMcq: parseEnvFlag('VITE_FEATURE_LISTENING_MCQ'),
+  dictation: parseEnvFlag('VITE_FEATURE_DICTATION'),
 }
 
 /**
@@ -55,6 +57,8 @@ export function isExerciseTypeEnabled(exerciseType: string): boolean {
       return featureFlags.speaking
     case 'listening_mcq':
       return featureFlags.listeningMcq
+    case 'dictation':
+      return featureFlags.dictation
     // Core types cannot be disabled via feature flags
     case 'recognition_mcq':
     case 'typed_recall':

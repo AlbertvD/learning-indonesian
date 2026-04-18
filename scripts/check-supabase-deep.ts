@@ -234,23 +234,23 @@ for (const table of EXPECTED_TABLES) {
   }
 }
 
-// ── Check: listening_mcq registered in exercise_type_availability ────────
-{
+// ── Check: listening_mcq + dictation registered in exercise_type_availability ──
+for (const exerciseType of ['listening_mcq', 'dictation']) {
   const { data: availRow, error: availErr } = await supabase
     .schema('indonesian')
     .from('exercise_type_availability')
     .select('exercise_type, session_enabled')
-    .eq('exercise_type', 'listening_mcq')
+    .eq('exercise_type', exerciseType)
     .maybeSingle()
 
   if (availErr) {
-    fail('listening_mcq registered', availErr.message)
+    fail(`${exerciseType} registered`, availErr.message)
   } else if (!availRow) {
-    fail('listening_mcq registered', 'Row missing from exercise_type_availability — run: make migrate')
+    fail(`${exerciseType} registered`, `Row missing from exercise_type_availability — run: make migrate`)
   } else if (!availRow.session_enabled) {
-    fail('listening_mcq registered', 'Row exists but session_enabled=false')
+    fail(`${exerciseType} registered`, 'Row exists but session_enabled=false')
   } else {
-    pass('listening_mcq registered and session_enabled')
+    pass(`${exerciseType} registered and session_enabled`)
   }
 }
 

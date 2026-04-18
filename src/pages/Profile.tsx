@@ -314,7 +314,7 @@ export function Profile() {
           <Stack gap="md">
             <Box>
               <Title order={4} mb="xs">
-                {(profile?.language ?? 'nl') === 'nl' ? 'Luisteroefeningen' : 'Listening exercises'}
+                {(profile?.language ?? 'nl') === 'nl' ? 'Luister- en dicteeoefeningen' : 'Listening and dictation exercises'}
               </Title>
               <Text size="sm" c="dimmed">
                 {(profile?.language ?? 'nl') === 'nl'
@@ -326,7 +326,7 @@ export function Profile() {
               checked={listeningEnabled}
               onChange={(e) => setListeningEnabled(e.currentTarget.checked)}
               size="md"
-              label={(profile?.language ?? 'nl') === 'nl' ? 'Luisteroefeningen inschakelen' : 'Enable listening exercises'}
+              label={(profile?.language ?? 'nl') === 'nl' ? 'Luister- en dicteeoefeningen inschakelen' : 'Enable listening and dictation exercises'}
             />
           </Stack>
         </Paper>
