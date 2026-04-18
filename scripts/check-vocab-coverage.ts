@@ -10,10 +10,12 @@
  * Known vocabulary = union of:
  *   - learning_items.normalized_text (every taught item)
  *   - item_contexts.source_text tokens (every Indonesian sentence the user has
- *     been exposed to in lesson content — captures dialogue characters and
+ *     been exposed to as a vocab anchor — captures dialogue characters and
  *     place names that are repeatedly seen)
- *   - lesson_sections.content tokens (full lesson display content)
- *   - a small static allowlist of common particles and well-known proper nouns
+ *
+ * lesson_sections.content is intentionally NOT included: it stores translation
+ * drill answers verbatim, so an exercise answer like "Nama anjing itu Beng"
+ * would mark "anjing" as known and mask the very bug we're trying to catch.
  *
  * Tokens are lowercased and stripped of common Indonesian morphological
  * suffixes (-nya, -lah, -kah, -ku, -mu, -kan, -i) and clitics so that an
@@ -118,30 +120,7 @@ async function loadKnownVocab(): Promise<Set<string>> {
     }
   }
 
-  // Lesson section display content can be deeply nested JSON — flatten and
-  // tokenize any string we find. Cheap and catches dialogue lines / examples.
-  const { data: sections, error: secErr } = await supabase
-    .from('lesson_sections')
-    .select('content')
-  if (secErr) throw secErr
-  for (const sec of sections ?? []) {
-    walkStrings(sec.content, (s: string) => {
-      for (const tok of tokenize(s)) {
-        known.add(tok)
-        known.add(stripAffixes(tok))
-      }
-    })
-  }
-
   return known
-}
-
-function walkStrings(value: unknown, visit: (s: string) => void): void {
-  if (typeof value === 'string') visit(value)
-  else if (Array.isArray(value)) value.forEach(v => walkStrings(v, visit))
-  else if (value && typeof value === 'object') {
-    for (const v of Object.values(value as Record<string, unknown>)) walkStrings(v, visit)
-  }
 }
 
 // The Indonesian-bearing fields of each grammar exercise payload. Other fields

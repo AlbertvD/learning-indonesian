@@ -103,6 +103,23 @@ For lesson N, read all of these:
 
 **Note on cloze coverage:** The only items that may legitimately skip a cloze context are standalone discourse particles (`deh`, `sih`, `lah`) and purely metalinguistic entries. Items with `=` expansions (e.g. `Monas = Monumen Nasional`) MUST have a cloze — blank the short form. Everything else is CRITICAL.
 
+## Run the deterministic linter first
+
+Before doing any manual review, run `bun scripts/lint-staging.ts --lesson <N>` and treat its output as authoritative for every check it covers. The linter handles all structural checks (§1–§5, §11, §12, §13), the scriptable half of partially-scriptable checks (§6 substring/length, §7 length, §8 instruction reveal, §10 morphological-variant distractors, vocab coverage), and exits non-zero on any CRITICAL finding. Do NOT re-verify these by hand — your output for a check the linter covers should reference the linter's finding rather than re-walking the file.
+
+Your remaining job is the LLM-judgment checks the linter can't do:
+- Naturalness of cloze sentences (§10)
+- Distractor pedagogy: "is this a real Dutch-speaker error" (§10)
+- Whether explanationText teaches the WHY vs just confirming (§7)
+- CEFR-level appropriateness (§10)
+- Whether complexity_score matches the actual pattern (§2)
+- Confusion-group classification (§2)
+- Pre-answer spoiler detection at the semantic level (§9): the linter catches parenthetical hints by regex, but not subtle scenario-as-answer cases like "hij gaat zelf ook mee" for kami-vs-kita
+- Whether targetMeaning is a paraphrase (not just substring) of promptText (§6)
+- Pedagogically appropriate distractor type (function vs content blank) (§10)
+
+When you write `review-report.json`, include the linter findings verbatim under their existing rule names. Add your judgment-only findings as additional issues with a clear rule label so re-runs don't double-flag.
+
 ## Checks to run
 
 ### 1. lesson.ts structure

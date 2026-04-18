@@ -703,11 +703,26 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
 async function main() {
   const lessonNumber = parseInt(process.argv[2], 10)
   if (isNaN(lessonNumber)) {
-    console.error('Usage: bun scripts/publish-approved-content.ts <lesson-number> [--dry-run]')
+    console.error('Usage: bun scripts/publish-approved-content.ts <lesson-number> [--dry-run] [--skip-lint]')
     process.exit(1)
   }
 
   const dryRun = process.argv.includes('--dry-run')
+  const skipLint = process.argv.includes('--skip-lint')
+
+  if (!skipLint) {
+    // Run the deterministic linter as a pre-flight gate. Exit 1 from the
+    // linter means at least one CRITICAL finding — refuse to publish until
+    // it's clean. Use --skip-lint to override (e.g. when republishing
+    // already-shipped content during a migration).
+    const { spawnSync } = await import('child_process')
+    const lint = spawnSync('bun', ['scripts/lint-staging.ts', '--lesson', String(lessonNumber), '--severity', 'critical'], { stdio: 'inherit' })
+    if (lint.status !== 0) {
+      console.error(`\nlint-staging found CRITICAL issues for lesson ${lessonNumber} — fix them and rerun, or use --skip-lint to override.`)
+      process.exit(1)
+    }
+  }
+
   await publishContent(lessonNumber, dryRun)
 }
 
