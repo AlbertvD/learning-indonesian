@@ -416,7 +416,7 @@ function selectExercises(
       const roll = Math.random()
       if (hasAnchorContext) {
         if (roll < 0.25) {
-          exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems))
+          exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
         } else if (roll < 0.50) {
           exercises.push(makeMeaningRecall(item, meanings, contexts, variants))
         } else if (roll < 0.70) {
@@ -426,7 +426,7 @@ function selectExercises(
         }
       } else {
         if (roll < 0.30) {
-          exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems))
+          exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
         } else if (roll < 0.55) {
           exercises.push(makeMeaningRecall(item, meanings, contexts, variants))
         } else {
@@ -481,7 +481,7 @@ function selectExercises(
         } else if (roll < 0.60 && hasAnchorContext) {
           exercises.push(makeClozeExercise(item, meanings, contexts, variants))
         } else if (roll < 0.80) {
-          exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems))
+          exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
         } else {
           exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
         }
@@ -679,22 +679,39 @@ function makeCuedRecall(
   variants: ItemAnswerVariant[],
   userLanguage: 'en' | 'nl',
   allItems: LearningItem[],
+  meaningsByItem: Record<string, ItemMeaning[]>,
 ): ExerciseItem {
   const primaryMeaning = meanings.find(m => m.translation_language === userLanguage && m.is_primary)
     ?? meanings.find(m => m.translation_language === userLanguage)
   const promptMeaningText = primaryMeaning?.translation_text ?? ''
 
-  const distractors = allItems
-    .filter(i => i.id !== item.id && i.level === item.level)
-    .map(i => i.base_text)
-    .filter(Boolean)
+  // Candidate pool for cascade: option is base_text (the Indonesian form shown
+  // as the option). Semantic group is looked up via each candidate's own
+  // translation so the group filter works even though we render base_text.
+  const pool: DistractorCandidate[] = allItems
+    .filter(i => i.id !== item.id && i.base_text)
+    .map(i => {
+      const itemMeanings = meaningsByItem[i.id] ?? []
+      const t = (itemMeanings.find(m => m.translation_language === userLanguage && m.is_primary)
+        ?? itemMeanings.find(m => m.translation_language === userLanguage))?.translation_text
+      return {
+        id: i.id,
+        option: i.base_text,
+        itemType: i.item_type,
+        pos: i.pos ?? null,
+        level: i.level,
+        semanticGroup: t ? getSemanticGroup(t, userLanguage) : null,
+      }
+    })
 
-  for (let i = distractors.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [distractors[i], distractors[j]] = [distractors[j], distractors[i]]
+  const target = {
+    itemType: item.item_type,
+    pos: item.pos ?? null,
+    level: item.level,
+    semanticGroup: getSemanticGroup(promptMeaningText, userLanguage),
   }
-
-  const options = shuffle([item.base_text, ...distractors.slice(0, 3)])
+  const distractors = pickDistractorCascade(target, pool, 3)
+  const options = shuffle([item.base_text, ...distractors])
 
   return {
     learningItem: item,
