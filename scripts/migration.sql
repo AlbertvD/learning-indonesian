@@ -1301,3 +1301,75 @@ ON CONFLICT (exercise_type) DO NOTHING;
 -- never read. Drop the dead columns.
 ALTER TABLE indonesian.review_events DROP COLUMN IF EXISTS score;
 ALTER TABLE indonesian.review_events DROP COLUMN IF EXISTS feedback_type;
+
+-- Atomic skill-state mutation. The session queue snapshots learnerSkillState
+-- at session build time and reuses the same reference across multiple exercises
+-- for one item, so the JS-side `success_count + 1` from upsertSkillState
+-- produced stale writes (last write wins) when the same item+skill came up more
+-- than once. This function increments counters DB-side so concurrent or stale
+-- callers can't lose increments. FSRS-derived fields (stability/difficulty/
+-- retrievability/next_due_at) are still set from the caller's just-computed
+-- value because they require the algorithm input.
+CREATE OR REPLACE FUNCTION indonesian.apply_review_to_skill_state(
+  p_user_id            uuid,
+  p_learning_item_id   uuid,
+  p_skill_type         text,
+  p_was_correct        boolean,
+  p_stability          numeric,
+  p_difficulty         numeric,
+  p_retrievability     numeric,
+  p_last_reviewed_at   timestamptz,
+  p_next_due_at        timestamptz,
+  p_mean_latency_ms    integer
+) RETURNS indonesian.learner_skill_state
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'indonesian'
+AS $$
+DECLARE
+  v_row indonesian.learner_skill_state;
+BEGIN
+  INSERT INTO indonesian.learner_skill_state (
+    user_id, learning_item_id, skill_type,
+    stability, difficulty, retrievability,
+    last_reviewed_at, next_due_at,
+    success_count, failure_count, lapse_count, consecutive_failures,
+    mean_latency_ms, hint_rate, updated_at
+  ) VALUES (
+    p_user_id, p_learning_item_id, p_skill_type,
+    p_stability, p_difficulty, p_retrievability,
+    p_last_reviewed_at, p_next_due_at,
+    CASE WHEN p_was_correct THEN 1 ELSE 0 END,
+    CASE WHEN p_was_correct THEN 0 ELSE 1 END,
+    0,
+    CASE WHEN p_was_correct THEN 0 ELSE 1 END,
+    p_mean_latency_ms, NULL, NOW()
+  )
+  ON CONFLICT (user_id, learning_item_id, skill_type) DO UPDATE SET
+    stability            = EXCLUDED.stability,
+    difficulty           = EXCLUDED.difficulty,
+    retrievability       = EXCLUDED.retrievability,
+    last_reviewed_at     = EXCLUDED.last_reviewed_at,
+    next_due_at          = EXCLUDED.next_due_at,
+    success_count        = indonesian.learner_skill_state.success_count
+                           + CASE WHEN p_was_correct THEN 1 ELSE 0 END,
+    failure_count        = indonesian.learner_skill_state.failure_count
+                           + CASE WHEN p_was_correct THEN 0 ELSE 1 END,
+    lapse_count          = indonesian.learner_skill_state.lapse_count
+                           + CASE WHEN NOT p_was_correct
+                                       AND indonesian.learner_skill_state.success_count > 0
+                                  THEN 1 ELSE 0 END,
+    consecutive_failures = CASE WHEN p_was_correct THEN 0
+                                ELSE indonesian.learner_skill_state.consecutive_failures + 1 END,
+    mean_latency_ms      = COALESCE(EXCLUDED.mean_latency_ms,
+                                    indonesian.learner_skill_state.mean_latency_ms),
+    updated_at           = NOW()
+  RETURNING * INTO v_row;
+
+  RETURN v_row;
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION indonesian.apply_review_to_skill_state(
+  uuid, uuid, text, boolean, numeric, numeric, numeric, timestamptz, timestamptz, integer
+) TO authenticated;

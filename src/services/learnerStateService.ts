@@ -71,15 +71,37 @@ export const learnerStateService = {
     return data
   },
 
-  async upsertSkillState(state: Omit<LearnerSkillState, 'id' | 'updated_at'>): Promise<LearnerSkillState> {
+  // Atomic. Counters increment server-side so duplicate exercises in one
+  // session (which share a stale snapshot of LearnerSkillState) can't lose
+  // increments via last-write-wins.
+  async applyReviewToSkillState(input: {
+    userId: string
+    learningItemId: string
+    skillType: string
+    wasCorrect: boolean
+    stability: number
+    difficulty: number
+    retrievability: number | null
+    lastReviewedAt: string
+    nextDueAt: string
+    meanLatencyMs: number | null
+  }): Promise<LearnerSkillState> {
     const { data, error } = await supabase
       .schema('indonesian')
-      .from('learner_skill_state')
-      .upsert({ ...state, updated_at: new Date().toISOString() }, { onConflict: 'user_id,learning_item_id,skill_type' })
-      .select()
-      .single()
+      .rpc('apply_review_to_skill_state', {
+        p_user_id: input.userId,
+        p_learning_item_id: input.learningItemId,
+        p_skill_type: input.skillType,
+        p_was_correct: input.wasCorrect,
+        p_stability: input.stability,
+        p_difficulty: input.difficulty,
+        p_retrievability: input.retrievability,
+        p_last_reviewed_at: input.lastReviewedAt,
+        p_next_due_at: input.nextDueAt,
+        p_mean_latency_ms: input.meanLatencyMs,
+      })
     if (error) throw error
-    return data
+    return data as LearnerSkillState
   },
 
   async logStageEvent(userId: string, itemId: string, fromStage: string, toStage: string, reviewEventId: string): Promise<void> {

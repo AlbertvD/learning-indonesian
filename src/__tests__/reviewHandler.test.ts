@@ -11,10 +11,29 @@ vi.mock('@/services/reviewEventService', () => ({
   },
 }))
 
+// Mock atomic skill-state RPC so we can assert on the inputs and shape the
+// returned row to match what the DB function would compute.
 vi.mock('@/services/learnerStateService', () => ({
   learnerStateService: {
     upsertItemState: vi.fn(async (state: any) => ({ ...state, id: 'lis1', updated_at: new Date().toISOString() })),
-    upsertSkillState: vi.fn(async (state: any) => ({ ...state, id: 'lss1', updated_at: new Date().toISOString() })),
+    applyReviewToSkillState: vi.fn(async (input: any) => ({
+      id: 'lss1',
+      user_id: input.userId,
+      learning_item_id: input.learningItemId,
+      skill_type: input.skillType,
+      stability: input.stability,
+      difficulty: input.difficulty,
+      retrievability: input.retrievability,
+      last_reviewed_at: input.lastReviewedAt,
+      next_due_at: input.nextDueAt,
+      success_count: input.wasCorrect ? 1 : 0,
+      failure_count: input.wasCorrect ? 0 : 1,
+      lapse_count: 0,
+      consecutive_failures: input.wasCorrect ? 0 : 1,
+      mean_latency_ms: input.meanLatencyMs,
+      hint_rate: null,
+      updated_at: new Date().toISOString(),
+    })),
     getSkillStates: vi.fn(async () => []),
     logStageEvent: vi.fn(async () => {}),
   },
@@ -66,14 +85,14 @@ describe('processReview', () => {
       normalizedResponse: 'house',
     })
 
-    // Verify skill state was persisted with correct fields
-    expect(learnerStateService.upsertSkillState).toHaveBeenCalledWith(
+    // Verify skill state was persisted via the atomic RPC. Counters are
+    // computed DB-side now, so we assert on the inputs (wasCorrect) instead.
+    expect(learnerStateService.applyReviewToSkillState).toHaveBeenCalledWith(
       expect.objectContaining({
-        user_id: 'u1',
-        learning_item_id: 'li1',
-        skill_type: 'recognition',
-        success_count: 1,
-        failure_count: 0,
+        userId: 'u1',
+        learningItemId: 'li1',
+        skillType: 'recognition',
+        wasCorrect: true,
       })
     )
 
@@ -100,7 +119,7 @@ describe('processReview', () => {
     )
   })
 
-  it('increments consecutive_failures on incorrect answer', async () => {
+  it('passes wasCorrect=false to the atomic RPC for incorrect answers', async () => {
     const existingSkill: LearnerSkillState = {
       id: 'lss1', user_id: 'u1', learning_item_id: 'li1', skill_type: 'recognition',
       stability: 2, difficulty: 5, retrievability: 0.8,
@@ -123,15 +142,14 @@ describe('processReview', () => {
       normalizedResponse: 'wrong',
     })
 
-    expect(result.updatedSkillState.consecutive_failures).toBe(1)
+    // Mock returns 1 for failure_count when wasCorrect=false (DB does the actual increment in prod)
     expect(result.updatedSkillState.failure_count).toBe(1)
+    expect(result.updatedSkillState.consecutive_failures).toBe(1)
 
-    // Verify incorrect answer was persisted correctly
-    expect(learnerStateService.upsertSkillState).toHaveBeenCalledWith(
+    expect(learnerStateService.applyReviewToSkillState).toHaveBeenCalledWith(
       expect.objectContaining({
-        consecutive_failures: 1,
-        failure_count: 1,
-        lapse_count: 1, // lapse because success_count > 0
+        skillType: 'recognition',
+        wasCorrect: false,
       })
     )
   })

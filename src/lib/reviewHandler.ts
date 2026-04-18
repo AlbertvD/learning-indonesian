@@ -44,26 +44,25 @@ export async function processReview(input: ReviewInput): Promise<ReviewResult> {
   // Apply grammar-based stability adjustment for confusable items
   const adjustedStability = applyGrammarAdjustment(nextFSRS.stability, rating, isConfusable)
 
-  // 2. Build updated skill state
+  // 2. Persist skill state via atomic RPC so counters increment server-side.
+  // FSRS-derived fields come from the just-computed nextFSRS; counters and
+  // consecutive_failures are bumped by the DB regardless of stale JS state.
   const now = new Date().toISOString()
-  const updatedSkillState: Omit<LearnerSkillState, 'id' | 'updated_at'> = {
-    user_id: userId,
-    learning_item_id: learningItem.id,
-    skill_type: skillType,
+  const savedSkill = await learnerStateService.applyReviewToSkillState({
+    userId,
+    learningItemId: learningItem.id,
+    skillType,
+    wasCorrect,
     stability: adjustedStability,
     difficulty: nextFSRS.difficulty,
     retrievability: nextFSRS.retrievability,
-    last_reviewed_at: now,
-    next_due_at: nextFSRS.nextDueAt.toISOString(),
-    success_count: (currentSkillState?.success_count ?? 0) + (wasCorrect ? 1 : 0),
-    failure_count: (currentSkillState?.failure_count ?? 0) + (wasCorrect ? 0 : 1),
-    lapse_count: (currentSkillState?.lapse_count ?? 0) + (!wasCorrect && (currentSkillState?.success_count ?? 0) > 0 ? 1 : 0),
-    consecutive_failures: wasCorrect ? 0 : (currentSkillState?.consecutive_failures ?? 0) + 1,
-    mean_latency_ms: latencyMs ?? currentSkillState?.mean_latency_ms ?? null,
-    hint_rate: currentSkillState?.hint_rate ?? null,
-  }
+    lastReviewedAt: now,
+    nextDueAt: nextFSRS.nextDueAt.toISOString(),
+    meanLatencyMs: latencyMs,
+  })
 
-  // 3. Build updated item state
+  // 3. Build updated item state. is_leech reads from the freshly-saved skill
+  // (savedSkill.lapse_count) rather than the pre-review snapshot.
   const previousStage = currentItemState?.stage ?? 'new'
   const updatedItemState: Omit<LearnerItemState, 'id' | 'updated_at'> = {
     user_id: userId,
@@ -74,13 +73,10 @@ export async function processReview(input: ReviewInput): Promise<ReviewResult> {
     priority: currentItemState?.priority ?? null,
     origin: currentItemState?.origin ?? null,
     times_seen: (currentItemState?.times_seen ?? 0) + 1,
-    is_leech: (currentSkillState?.lapse_count ?? 0) >= 8,
+    is_leech: savedSkill.lapse_count >= 8,
     suspended: currentItemState?.suspended ?? false,
     gate_check_passed: currentItemState?.gate_check_passed ?? null,
   }
-
-  // 4. Persist skill state first (needed for promotion check)
-  const savedSkill = await learnerStateService.upsertSkillState(updatedSkillState)
 
   // 5. Check promotion/demotion
   // Get all skill states for this item to check all three facets.
