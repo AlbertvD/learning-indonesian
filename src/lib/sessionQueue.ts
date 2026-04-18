@@ -602,33 +602,32 @@ function makeRecognitionMCQ(
     ?? meanings.find(m => m.translation_language === userLanguage)
   const correctAnswer = primaryMeaning?.translation_text ?? ''
 
-  // Build candidate pool with type info for filtering
-  const otherTranslations: Array<{ translation: string; level: string; itemType: string }> = allItems
+  // Build candidate pool for the shared cascade. Each candidate's option is
+  // its user-language translation; POS + semantic group travel with it.
+  const pool: DistractorCandidate[] = allItems
     .filter(i => i.id !== item.id)
     .flatMap(i => {
       const itemMeanings = meaningsByItem[i.id] ?? []
       const t = (itemMeanings.find(m => m.translation_language === userLanguage && m.is_primary)
         ?? itemMeanings.find(m => m.translation_language === userLanguage))?.translation_text
-      return t && t !== correctAnswer ? [{ translation: t, level: i.level, itemType: i.item_type }] : []
+      if (!t || t === correctAnswer) return []
+      return [{
+        id: i.id,
+        option: t,
+        itemType: i.item_type,
+        pos: i.pos ?? null,
+        level: i.level,
+        semanticGroup: getSemanticGroup(t, userLanguage),
+      }]
     })
 
-  const allowedTypes = STRUCTURALLY_SIMILAR_TYPES[item.item_type] ?? [item.item_type]
-  const structuralPool = otherTranslations.filter(d => allowedTypes.includes(d.itemType))
-
-  const correctGroup = getSemanticGroup(correctAnswer, userLanguage)
-
-  // Priority 1: same structural shape + same semantic group
-  const sameGroup = correctGroup
-    ? shuffle(structuralPool.filter(d => getSemanticGroup(d.translation, userLanguage) === correctGroup).map(d => d.translation))
-    : []
-  // Priority 2: same structural shape + same level
-  const sameLevel = shuffle(structuralPool.filter(d => d.level === item.level && !sameGroup.includes(d.translation)).map(d => d.translation))
-  // Priority 3: same structural shape, any level
-  const sameShape = shuffle(structuralPool.filter(d => !sameGroup.includes(d.translation) && !sameLevel.includes(d.translation)).map(d => d.translation))
-  // Priority 4: full pool fallback (only reached if structural pool has fewer than 3 items)
-  const fullFallback = shuffle(otherTranslations.filter(d => !sameGroup.includes(d.translation) && !sameLevel.includes(d.translation) && !sameShape.includes(d.translation)).map(d => d.translation))
-
-  const distractors = [...sameGroup, ...sameLevel, ...sameShape, ...fullFallback].slice(0, 3)
+  const target = {
+    itemType: item.item_type,
+    pos: item.pos ?? null,
+    level: item.level,
+    semanticGroup: getSemanticGroup(correctAnswer, userLanguage),
+  }
+  const distractors = pickDistractorCascade(target, pool, 3)
 
   return {
     learningItem: item,
