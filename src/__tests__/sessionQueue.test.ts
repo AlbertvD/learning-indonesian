@@ -621,6 +621,48 @@ describe('pickDistractorCascade — tier behavior', () => {
     expect(result.length).toBeLessThanOrEqual(1)  // at most Tier 5 fallback fires
   })
 
+  it('rejects candidates whose option overlaps the correct answer as a substring', async () => {
+    const { pickDistractorCascade } = await import('@/lib/sessionQueue')
+    const t = { itemType: 'word', pos: 'conjunction' as const, level: 'A1', semanticGroup: null }
+    const pool = [
+      // karena/sebab case: candidate translation contains target translation as prefix
+      { id: 'sebab',   option: 'omdat, de reden is', itemType: 'word', pos: 'conjunction', level: 'A1', semanticGroup: null },
+      // unrelated candidate — should be picked
+      { id: 'lain',    option: 'anders',             itemType: 'word', pos: 'conjunction', level: 'A1', semanticGroup: null },
+      { id: 'andere',  option: 'ander',              itemType: 'word', pos: 'conjunction', level: 'A1', semanticGroup: null },
+      { id: 'nog',     option: 'toch',               itemType: 'word', pos: 'conjunction', level: 'A1', semanticGroup: null },
+    ]
+    const result = pickDistractorCascade(t, pool, 3, 'omdat')
+    expect(result).not.toContain('omdat, de reden is')
+  })
+
+  it('rejects candidates with slash-alternative overlap (fijn / mooi vs mooi)', async () => {
+    const { pickDistractorCascade } = await import('@/lib/sessionQueue')
+    const t = { itemType: 'word', pos: 'adjective' as const, level: 'A1', semanticGroup: null }
+    const pool = [
+      { id: 'halus',   option: 'fijn / mooi (kwaliteit)', itemType: 'word', pos: 'adjective', level: 'A1', semanticGroup: null },
+      { id: 'groot',   option: 'groot',                   itemType: 'word', pos: 'adjective', level: 'A1', semanticGroup: null },
+      { id: 'klein',   option: 'klein',                   itemType: 'word', pos: 'adjective', level: 'A1', semanticGroup: null },
+      { id: 'warm',    option: 'warm',                    itemType: 'word', pos: 'adjective', level: 'A1', semanticGroup: null },
+    ]
+    const result = pickDistractorCascade(t, pool, 3, 'mooi')
+    // halus translates as "fijn / mooi (kwaliteit)" which shares the component "mooi"
+    expect(result).not.toContain('fijn / mooi (kwaliteit)')
+  })
+
+  it('rejects whole-word substring overlap (bus ⊂ "met de bus gaan")', async () => {
+    const { pickDistractorCascade } = await import('@/lib/sessionQueue')
+    const t = { itemType: 'word', pos: 'noun' as const, level: 'A1', semanticGroup: null }
+    const pool = [
+      { id: 'naikbus', option: 'met de bus gaan', itemType: 'word', pos: 'noun', level: 'A1', semanticGroup: null },
+      { id: 'auto',    option: 'auto',            itemType: 'word', pos: 'noun', level: 'A1', semanticGroup: null },
+      { id: 'fiets',   option: 'fiets',           itemType: 'word', pos: 'noun', level: 'A1', semanticGroup: null },
+      { id: 'trein',   option: 'trein',           itemType: 'word', pos: 'noun', level: 'A1', semanticGroup: null },
+    ]
+    const result = pickDistractorCascade(t, pool, 3, 'bus')
+    expect(result).not.toContain('met de bus gaan')
+  })
+
   it('dedupes — candidate matching multiple tiers only appears once', async () => {
     const { pickDistractorCascade } = await import('@/lib/sessionQueue')
     const pool = [

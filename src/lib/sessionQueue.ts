@@ -585,6 +585,49 @@ export interface DistractorCandidate {
 }
 
 /**
+ * Split an option text into normalized component words for substring-overlap dedup.
+ * Strips parentheticals, splits on clause separators (, ; /), lowercases, trims.
+ * Components ≥ 3 chars are considered significant; shorter ones (de, en) skipped.
+ *
+ * Examples:
+ *   "omdat"                          → ["omdat"]
+ *   "omdat, de reden is"             → ["omdat", "de reden is"]
+ *   "fijn / mooi (kwaliteit)"        → ["fijn", "mooi"]
+ *   "met de bus gaan"                → ["met de bus gaan"]
+ */
+function optionComponents(s: string): string[] {
+  return s
+    .replace(/\s*\([^)]*\)\s*/g, ' ')
+    .split(/[,;/]/)
+    .map(t => t.trim().toLowerCase())
+    .filter(t => t.length >= 3)
+}
+
+/**
+ * True if the candidate's option shares meaningful text with any already-
+ * selected option — either as a whole component match or a whole-word
+ * substring. Used to prevent visual duplicates like
+ * [omdat, "omdat, de reden is"] from surfacing together.
+ */
+function sharesMeaningfulWord(candidate: string, selected: Set<string>): boolean {
+  const candParts = optionComponents(candidate)
+  if (candParts.length === 0) return false
+  for (const sel of selected) {
+    const selParts = optionComponents(sel)
+    for (const cp of candParts) {
+      for (const sp of selParts) {
+        if (cp === sp) return true
+        // whole-word substring match in either direction
+        const inCp = cp.length > sp.length && (cp.startsWith(`${sp} `) || cp.endsWith(` ${sp}`) || cp.includes(` ${sp} `))
+        const inSp = sp.length > cp.length && (sp.startsWith(`${cp} `) || sp.endsWith(` ${cp}`) || sp.includes(` ${cp} `))
+        if (inCp || inSp) return true
+      }
+    }
+  }
+  return false
+}
+
+/**
  * Shared 6-tier distractor cascade used by runtime MCQ builders
  * (makeRecognitionMCQ, makeCuedRecall, makeClozeMcq).
  *
@@ -598,7 +641,13 @@ export interface DistractorCandidate {
  *
  * Null POS on target skips Tiers 0–2 (they require target POS).
  * Candidate with null POS never appears in Tiers 0–2 when target has POS.
- * Dedupe by candidate id and option text.
+ * Dedupe by candidate id, exact option text, AND substring-overlap against
+ * already-selected options (prevents karena/sebab-style "omdat" / "omdat, de
+ * reden is" visual duplicates).
+ *
+ * @param targetOption  the correct answer's displayed option text — included
+ *                      in the selected-set for substring dedup so candidates
+ *                      whose option overlaps the correct answer get rejected.
  *
  * @internal exported for tests
  */
@@ -606,12 +655,14 @@ export function pickDistractorCascade(
   target: { itemType: string; pos: string | null; level: string; semanticGroup: string | null },
   pool: DistractorCandidate[],
   count: number,
+  targetOption: string = '',
 ): string[] {
   const allowedTypes = STRUCTURALLY_SIMILAR_TYPES[target.itemType] ?? [target.itemType]
   const structuralPool = pool.filter(c => allowedTypes.includes(c.itemType))
 
   const selectedIds = new Set<string>()
   const selectedOptions = new Set<string>()
+  if (targetOption) selectedOptions.add(targetOption)
   const result: string[] = []
 
   const addFromTier = (candidates: DistractorCandidate[]) => {
@@ -619,6 +670,7 @@ export function pickDistractorCascade(
       if (result.length >= count) return
       if (selectedIds.has(c.id)) continue
       if (selectedOptions.has(c.option)) continue
+      if (sharesMeaningfulWord(c.option, selectedOptions)) continue
       selectedIds.add(c.id)
       selectedOptions.add(c.option)
       result.push(c.option)
@@ -688,7 +740,7 @@ function makeRecognitionMCQ(
     level: item.level,
     semanticGroup: getSemanticGroup(correctAnswer, userLanguage),
   }
-  const distractors = pickDistractorCascade(target, pool, 3)
+  const distractors = pickDistractorCascade(target, pool, 3, correctAnswer)
 
   return {
     learningItem: item,
@@ -815,7 +867,7 @@ export function makeListeningMcq(
     level: item.level,
     semanticGroup: getSemanticGroup(correctAnswer, userLanguage),
   }
-  const distractors = pickDistractorCascade(target, pool, 3)
+  const distractors = pickDistractorCascade(target, pool, 3, correctAnswer)
 
   return {
     learningItem: item,
@@ -866,7 +918,7 @@ function makeCuedRecall(
     level: item.level,
     semanticGroup: getSemanticGroup(promptMeaningText, userLanguage),
   }
-  const distractors = pickDistractorCascade(target, pool, 3)
+  const distractors = pickDistractorCascade(target, pool, 3, item.base_text)
   const options = shuffle([item.base_text, ...distractors])
 
   return {
@@ -924,7 +976,7 @@ export function makeClozeMcq(
     level: item.level,
     semanticGroup: getSemanticGroup(targetTranslation, userLanguage),
   }
-  const distractors = pickDistractorCascade(target, pool, 3)
+  const distractors = pickDistractorCascade(target, pool, 3, item.base_text)
   const options = shuffle([item.base_text, ...distractors])
 
   return {
