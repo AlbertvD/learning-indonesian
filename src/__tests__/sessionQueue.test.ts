@@ -486,7 +486,7 @@ describe('cloze builders strictly require context_type === cloze', () => {
       difficulty: null, topic_tag: null, is_anchor_context: true,
       source_lesson_id: null, source_section_id: null,
     }
-    const result = makeClozeMcq(item, [], [lessonSnippetContext as never], [], [item])
+    const result = makeClozeMcq(item, [], [lessonSnippetContext as never], [], 'en', [item], { [item.id]: [] })
     expect(result.clozeMcqData).toBeUndefined()
   })
 
@@ -505,7 +505,7 @@ describe('cloze builders strictly require context_type === cloze', () => {
       difficulty: null, topic_tag: null, is_anchor_context: true,
       source_lesson_id: null, source_section_id: null,
     }
-    const result = makeClozeMcq(item, [], [lessonSnippetContext as never, clozeContext as never], [], [item])
+    const result = makeClozeMcq(item, [], [lessonSnippetContext as never, clozeContext as never], [], 'en', [item], { [item.id]: [] })
     expect(result.clozeMcqData).toBeDefined()
     expect(result.clozeMcqData?.sentence).toBe('Saya ___ nasi.')
   })
