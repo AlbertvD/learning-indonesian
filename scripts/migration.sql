@@ -612,7 +612,11 @@ BEGIN
     -- Get local date in user's timezone
     v_local_date := (NOW() AT TIME ZONE v_timezone)::date;
 
-    -- Upsert daily rollup
+    -- Upsert daily rollup. Date comparisons use the user's local timezone so
+    -- late-night reviews bucket into the correct day (without this, a review
+    -- at 01:00 Amsterdam — 23:00 UTC previous day — was attributed to the
+    -- wrong local date and could be dropped from both days).
+    -- recall_accuracy is intentionally form_recall-only per the goal spec.
     INSERT INTO indonesian.learner_daily_goal_rollups (
       user_id, goal_timezone, local_date,
       study_day_completed, recall_accuracy, recall_sample_size,
@@ -621,16 +625,20 @@ BEGIN
       v_user_id, v_timezone, v_local_date,
       COALESCE((SELECT COUNT(*) > 0 FROM indonesian.review_events re
         WHERE re.user_id = v_user_id
-          AND re.created_at::date = v_local_date), false),
+          AND (re.created_at AT TIME ZONE v_timezone)::date = v_local_date), false),
       (SELECT CASE WHEN COUNT(*) > 0 THEN SUM(CASE WHEN was_correct THEN 1 ELSE 0 END)::numeric / COUNT(*)
                    ELSE NULL END
        FROM indonesian.review_events re
-       WHERE re.user_id = v_user_id AND re.skill_type = 'form_recall' AND re.created_at::date = v_local_date),
+       WHERE re.user_id = v_user_id
+         AND re.skill_type = 'form_recall'
+         AND (re.created_at AT TIME ZONE v_timezone)::date = v_local_date),
       COALESCE((SELECT COUNT(*) FROM indonesian.review_events re
-        WHERE re.user_id = v_user_id AND re.skill_type = 'form_recall' AND re.created_at::date = v_local_date), 0),
+        WHERE re.user_id = v_user_id
+          AND re.skill_type = 'form_recall'
+          AND (re.created_at AT TIME ZONE v_timezone)::date = v_local_date), 0),
       (SELECT COUNT(DISTINCT learning_item_id) FROM indonesian.learner_stage_events lse
         WHERE lse.user_id = v_user_id AND lse.to_stage IN ('retrieving', 'productive', 'maintenance')
-          AND lse.created_at::date = v_local_date),
+          AND (lse.created_at AT TIME ZONE v_timezone)::date = v_local_date),
       (SELECT COUNT(*) FROM indonesian.learner_item_state lis
         WHERE lis.user_id = v_user_id AND lis.stage IN ('retrieving', 'productive', 'maintenance')),
       (SELECT COUNT(*) FROM indonesian.learner_skill_state lss
