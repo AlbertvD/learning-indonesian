@@ -116,13 +116,11 @@ export interface ReviewEvent {
   exercise_type: ExerciseType
   session_id: string
   was_correct: boolean
-  score: number | null
   latency_ms: number | null
   hint_used: boolean
   attempt_number: number
   raw_response: string | null
   normalized_response: string | null
-  feedback_type: string | null
   scheduler_snapshot: Record<string, unknown> | null
   created_at: string
 }

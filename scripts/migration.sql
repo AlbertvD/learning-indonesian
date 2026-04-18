@@ -1296,3 +1296,8 @@ VALUES
   ('dictation', true, false, false, 'alpha',
    'Audio-only Indonesian prompt, typed Indonesian answer. Runtime-built. Free text with fuzzy grading.')
 ON CONFLICT (exercise_type) DO NOTHING;
+
+-- review_events.score and feedback_type were never written (always null) and
+-- never read. Drop the dead columns.
+ALTER TABLE indonesian.review_events DROP COLUMN IF EXISTS score;
+ALTER TABLE indonesian.review_events DROP COLUMN IF EXISTS feedback_type;
