@@ -8,6 +8,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { useAuthStore } from '@/stores/authStore'
 import { AutoplayProvider } from '@/contexts/AutoplayContext'
+import { ListeningProvider } from '@/contexts/ListeningContext'
 
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css'
@@ -233,7 +234,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       >
         <Notifications position="top-right" />
         <AutoplayProvider>
-          <App />
+          <ListeningProvider>
+            <App />
+          </ListeningProvider>
         </AutoplayProvider>
       </MantineProvider>
     </BrowserRouter>

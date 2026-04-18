@@ -1250,3 +1250,11 @@ ALTER TABLE indonesian.learning_items
       'question_word', 'greeting'
     )
   );
+
+-- Listening MCQ (audio-only Indonesian prompt, user-language MCQ answer)
+INSERT INTO indonesian.exercise_type_availability
+  (exercise_type, session_enabled, authoring_enabled, requires_approved_content, rollout_phase, notes)
+VALUES
+  ('listening_mcq', true, false, false, 'alpha',
+   'Audio-only Indonesian prompt, user-language MCQ. Runtime-built. No authored variants.')
+ON CONFLICT (exercise_type) DO NOTHING;
