@@ -29,6 +29,7 @@ import fs from 'fs'
 import path from 'path'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { stripAffixes, tokenize, FUNCTION_WORDS } from './lib/affix'
+import { normalizeForClozeCompare, normalizeForExemptLookup } from './lib/normalize'
 import { VALID_POS } from './lib/validate-pos'
 
 // Internal Step-CA on the homelab. Scoped: only this script's HTTPS calls
@@ -97,6 +98,7 @@ const SLOT_PATTERNS = new Set([
 const CLOZE_EXEMPT_BASE_TEXTS = new Set([
   'deh', 'sih', 'lah', 'kah', 'pun', 'kok', 'dong', 'nih', 'tuh', 'ya', 'ah',
 ])
+
 
 // ---- Pagination wrapper ----
 
@@ -564,13 +566,11 @@ function checkClozeContextsFile(ctx: LessonCtx): Finding[] {
 function checkClozeCoverage(ctx: LessonCtx): Finding[] {
   const out: Finding[] = []
   if (!ctx.learningItems?.length) return out
-  // Compare lowercased+trimmed: cloze-contexts.ts slugs are typically
-  // lowercase (`'monas = monumen nasional'`) while learning-items.ts uses
-  // original casing (`'Monas = Monumen Nasional'`). Case-sensitive matching
-  // produced ~43% false positives.
+  // Both sides go through normalizeForClozeCompare so case, trailing
+  // punctuation, and pronunciation diacritics don't mask a real match.
   const slugsCovered = new Set(
     (ctx.clozeContexts ?? [])
-      .map(c => (typeof c?.learning_item_slug === 'string' ? c.learning_item_slug.toLowerCase().trim() : null))
+      .map(c => (typeof c?.learning_item_slug === 'string' ? normalizeForClozeCompare(c.learning_item_slug) : null))
       .filter((s): s is string => Boolean(s)),
   )
 
@@ -578,8 +578,11 @@ function checkClozeCoverage(ctx: LessonCtx): Finding[] {
     if (!['word', 'phrase'].includes(it?.item_type)) continue
     const slug: string = it.base_text
     if (!slug) continue
-    if (slugsCovered.has(slug.toLowerCase().trim())) continue
-    const isExempt = CLOZE_EXEMPT_BASE_TEXTS.has(slug.toLowerCase().trim())
+    const normalized = normalizeForClozeCompare(slug)
+    if (slugsCovered.has(normalized)) continue
+    // Exempt lookup is more aggressive — strips the trailing (pronunciation)
+    // parenthetical so 'deh! (dèh)' still matches the exempt entry 'deh'.
+    const isExempt = CLOZE_EXEMPT_BASE_TEXTS.has(normalizeForExemptLookup(slug))
     const hasEqualsExpansion = slug.includes('=')
     if (hasEqualsExpansion) {
       out.push(mkFinding('CRITICAL', ctx.n, 'cloze-contexts.ts', 'cloze-coverage-missing-equals',
