@@ -216,7 +216,7 @@ bun scripts/ocr-pages.ts <N>             # extract text via Tesseract → conten
 ```bash
 bun scripts/catalog-lesson-sections.ts <N> [--level A1] [--force]
 ```
-Claude reads every extracted page, identifies section boundaries from Dutch headers, fully parses vocabulary/expressions/numbers/dialogue/text items, and captures grammar/exercises/pronunciation as raw text. Reviews photos alongside OCR text to recover content the OCR missed.
+Claude reads every extracted page, identifies section boundaries from Dutch headers, fully parses vocabulary/expressions/numbers/dialogue/text items, and captures grammar/exercises/pronunciation as raw text. Each vocabulary/expression/number item is tagged with a part-of-speech value from the 12-value taxonomy (`verb, noun, adjective, adverb, pronoun, numeral, classifier, preposition, conjunction, particle, question_word, greeting`) for distractor filtering in runtime MCQ exercises. Reviews photos alongside OCR text to recover content the OCR missed.
 Output: `scripts/data/staging/lesson-<N>/sections-catalog.json`
 
 > **Legacy lessons (1–3) shortcut:** If the lesson content already lives in Supabase (lesson_sections + learning_items), skip steps 1–4 and run:
@@ -259,6 +259,8 @@ The publish script runs quality gates at every step and exits non-zero on failur
 - Unresolved cloze slugs → **cloze-creator**
 - Missing NL meanings after publish → re-run; if persistent → **linguist-structurer**
 - Broken candidate payloads → **grammar-exercise-creator**
+- Invalid POS value on a learning item → **linguist-structurer** (re-run catalog-lesson-sections.ts to retag)
+- Missing POS on word/phrase items → WARNING only; publish succeeds. Distractor quality degrades for affected items until POS is populated.
 
 ### Staging files reference
 
@@ -266,7 +268,7 @@ The publish script runs quality gates at every step and exits non-zero on failur
 |---|---|---|
 | `sections-catalog.json` | `catalog-lesson-sections.ts` | LLM classification output — source of truth for lesson.ts and learning-items.ts |
 | `lesson.ts` | `generate-staging-files.ts` + `linguist-structurer` | Display sections for lesson reader |
-| `learning-items.ts` | `generate-staging-files.ts` | Schedulable FSRS items |
+| `learning-items.ts` | `generate-staging-files.ts` | Schedulable FSRS items. Includes `pos` per word/phrase item (carried from catalog). |
 | `grammar-patterns.ts` | `linguist-structurer` | Grammar patterns with slug + complexity |
 | `pattern-brief.json` | `linguist-structurer` | Intermediate artifact: vocab pool, research notes, pattern list |
 | `candidates.ts` | `grammar-exercise-creator` | Authored grammar exercise variants |
