@@ -12,6 +12,7 @@ import { Cloze } from './Cloze'
 import { ClozeMcq } from './ClozeMcq'
 import { MeaningRecall } from './MeaningRecall'
 import { SpeakingExercise } from './SpeakingExercise'
+import { ListeningMCQ } from './ListeningMCQ'
 import { FlagButton } from '@/components/exercises/FlagButton'
 import { contentFlagService } from '@/services/contentFlagService'
 import { useAuthStore } from '@/stores/authStore'
@@ -270,6 +271,18 @@ export function ExerciseShell({
     case 'speaking':
       return (
         <SpeakingExercise
+          key={exerciseKey}
+          exerciseItem={exerciseItem}
+          userLanguage={userLanguage}
+          onAnswer={(wasCorrect, latencyMs) => {
+            handleAnswerFromExercise(wasCorrect, false, latencyMs, null)
+          }}
+        />
+      )
+
+    case 'listening_mcq':
+      return (
+        <ListeningMCQ
           key={exerciseKey}
           exerciseItem={exerciseItem}
           userLanguage={userLanguage}
