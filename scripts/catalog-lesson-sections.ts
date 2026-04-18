@@ -37,9 +37,17 @@ type SectionType =
   | 'pronunciation'
   | 'reference_table'
 
+const VALID_POS = [
+  'verb', 'noun', 'adjective', 'adverb', 'pronoun', 'numeral',
+  'classifier', 'preposition', 'conjunction', 'particle',
+  'question_word', 'greeting',
+] as const
+type POS = typeof VALID_POS[number]
+
 interface VocabItem {
   indonesian: string
   dutch: string
+  pos?: POS | null
 }
 
 interface DialogueLine {
@@ -187,17 +195,43 @@ Items follow the pattern: indonesian_word = dutch_translation
 Also accepts: word : translation or word – translation
 Extract every pair. Include compound words and words in parentheses as written.
 Use images to recover vocabulary items the OCR missed.
-Items array: [{ "indonesian": "...", "dutch": "..." }]
+Items array: [{ "indonesian": "...", "dutch": "...", "pos": "..." }]
 
 **expressions** — Header: "Uitdrukkingen"
 Same format as vocabulary. Multi-word phrases.
-Items array: [{ "indonesian": "...", "dutch": "..." }]
+Items array: [{ "indonesian": "...", "dutch": "...", "pos": "..." }]
 
 **numbers** — Header: "Telwoorden" or "Getallen"
 May appear as: dutch_number = indonesian OR dutch_number indonesian (no equals)
 Examples: "100 = seratus", "2.000 dua ribu", "1.000.000 sejuta, satu juta"
-Always extract as: { "indonesian": indonesian_number_word, "dutch": dutch_number }
-Items array: [{ "indonesian": "...", "dutch": "..." }]
+Always extract as: { "indonesian": indonesian_number_word, "dutch": dutch_number, "pos": "numeral" }
+Items array: [{ "indonesian": "...", "dutch": "...", "pos": "..." }]
+
+### Part-of-speech tagging for every vocabulary/expression/number item
+
+Tag each item with a "pos" field using exactly one of these 12 values:
+
+  verb, noun, adjective, adverb, pronoun, numeral,
+  classifier, preposition, conjunction, particle,
+  question_word, greeting
+
+Rules for choosing pos:
+- Use the POS of the primary Dutch translation's meaning. If "makan" is
+  taught as "to eat" (verb), pos is "verb". If the same form were taught
+  as "meal" (noun), pos would be "noun". POS is per-item, not per-word.
+- For phrase items, use the head-word's POS (e.g. "selamat pagi" → "greeting"
+  because it's an idiomatic greeting; "buah jeruk" → "noun" because jeruk
+  is the head).
+- Classifiers (orang, ekor, buah used as counters) are a distinct class —
+  use "classifier", not "noun".
+- Question words (apa, siapa, mana, kapan, bagaimana, berapa) are a
+  distinct class — use "question_word", not "pronoun" or "adverb".
+- Greetings and courteous formulas (halo, selamat pagi, terima kasih,
+  permisi, maaf, sampai jumpa) → "greeting".
+- Aspect/discourse particles (sudah, belum, akan, sedang, juga, saja,
+  pun, kah, lah) → "particle".
+- If you cannot confidently classify an item, set pos to null and the
+  post-processing step will flag it for manual review.
 
 **Multiple Dutch translations:** When a word has more than one Dutch equivalent, always separate them with " / " (space-slash-space). Never use commas, semicolons, or "of" as separators.
 Examples: { "dutch": "meneer / vader" }, { "dutch": "bakken / braden" }, { "dutch": "kunnen / mogen" }
@@ -258,8 +292,8 @@ Respond with ONLY valid JSON — no prose, no markdown fences:
       "source_pages": [4],
       "confidence": "high",
       "items": [
-        { "indonesian": "mengantar", "dutch": "begeleiden" },
-        { "indonesian": "air", "dutch": "water" }
+        { "indonesian": "mengantar", "dutch": "begeleiden", "pos": "verb" },
+        { "indonesian": "air", "dutch": "water", "pos": "noun" }
       ]
     },
     {
@@ -269,8 +303,8 @@ Respond with ONLY valid JSON — no prose, no markdown fences:
       "source_pages": [4, 5],
       "confidence": "high",
       "items": [
-        { "indonesian": "seratus", "dutch": "100" },
-        { "indonesian": "dua ratus", "dutch": "200" }
+        { "indonesian": "seratus", "dutch": "100", "pos": "numeral" },
+        { "indonesian": "dua ratus", "dutch": "200", "pos": "numeral" }
       ]
     },
     {
@@ -419,6 +453,15 @@ function validateCatalog(catalog: SectionsCatalog): { errors: string[], warnings
       for (const item of items) {
         if (!item.indonesian?.trim()) errors.push(`${loc}: item missing indonesian text`)
         if (!item.dutch?.trim())      errors.push(`${loc}: item missing dutch translation`)
+        // POS validation: reject values outside the taxonomy; set invalid to null
+        // so downstream gates catch the gap as a WARNING rather than a CHECK violation.
+        if (item.pos != null && !(VALID_POS as readonly string[]).includes(item.pos)) {
+          warnings.push(`${loc}: item "${item.indonesian}" has invalid pos="${item.pos}" — set to null`)
+          item.pos = null
+        }
+        if (item.pos == null) {
+          warnings.push(`${loc}: item "${item.indonesian}" missing pos — distractor quality will degrade`)
+        }
       }
     }
 
