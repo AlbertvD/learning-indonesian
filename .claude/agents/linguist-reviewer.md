@@ -67,6 +67,7 @@ For lesson N, read all of these:
 - `options` array wrong length (contrast_pair needs exactly 2, cloze_mcq needs exactly 4)
 - `contrast_pair` `correctOptionId` does not match any `option.id` in the options array — the exercise will never register a correct answer
 - `cloze_mcq` `correctOptionId` is not present in the `options` string array — exercise will never register a correct answer
+- `cloze_mcq` or `contrast_pair` options contain substring duplicates: one option is a whole-word prefix of another (e.g. `["sekali", "sekali besar"]` or `["besok", "besok Ninik"]`). Creates visual confusion; distractor fails its purpose. Flag as CRITICAL.
 - `cloze_mcq` or `cloze` context `source_text` contains zero or more than one `___`
 - Grammar section in `lesson.ts` still has `body: string` (not structured into categories)
 - Exercise section in `lesson.ts` still has `body: string` (not structured into sections array)
@@ -78,6 +79,7 @@ For lesson N, read all of these:
 - `vocab-enrichments.ts` distractor array has wrong length (must be exactly 3 per type)
 - `vocab-enrichments.ts` distractor equals the correct answer
 - Items with `=` in base_text (e.g. `Monas = Monumen Nasional`) missing a cloze context
+- `learning-items.ts` item with `pos` value outside the 12-value taxonomy: `verb, noun, adjective, adverb, pronoun, numeral, classifier, preposition, conjunction, particle, question_word, greeting`. A CHECK constraint will reject the publish; flag earlier to avoid mid-publish failure.
 
 **WARNING** — quality issues that do not block publishing. Flagged for admin review in the live app:
 - Confusion group not set on a pattern that is clearly confusable (e.g. me-/di- passive voice)
@@ -85,8 +87,10 @@ For lesson N, read all of these:
 - **Grammar pattern missing a required exercise type** — every grammar pattern must have at least one candidate of each type: `contrast_pair`, `sentence_transformation`, `constrained_translation`, `cloze_mcq`
 - **Grammar pattern has fewer than 8 total candidates** — target is 10 per pattern (3 cloze_mcq, 3 contrast_pair, 2 sentence_transformation, 2 constrained_translation)
 - **Fewer than half of candidates for a grammar pattern use lesson vocabulary** — at least half the candidates for a pattern must use words from the current or prior lesson vocabulary pool, not only abstract invented sentences
+- **Grammar exercise payload contains unknown Indonesian vocabulary** — every Indonesian word in `sourceSentence`, `acceptableAnswers`, `options.text`, `sentence`, or `correctOptionId` must appear in the lesson vocabulary pool (current or prior lessons), be a recognized proper noun (place name or recurring character), or be a transparent affixed form of a known root (e.g. `selebar` from known `lebar`). Flag any token that is none of these. Common subtypes to watch for: invented compounds (`satubelas`, `duapuluh` should be `sebelas`, `dua puluh`), Dutch words leaking into Indonesian fields (`uitgenodigd`, `studeert`, `afkorting`, `praat`), reversed clitics (`nyarumah`, `kubuku` should be `rumahnya`, `bukuku`), and entire Dutch sentences placed in `sourceSentence` instead of `sourceLanguageSentence`. Run `bun scripts/check-vocab-coverage.ts --lesson <N>` to surface these mechanically.
 - **Translation drill item in lesson.ts has no `answer` field** — translation and grammar_drill items must have `answer` populated unless the exercise is explicitly open-ended (conversation, free composition)
 - Cloze context sentence is unnatural or uses the target word as the entire sentence
+- `learning-items.ts` word/phrase item has `pos` field absent or set to null — distractor quality in runtime MCQ exercises degrades for this item until a POS tag is added. Non-blocking; publishable as-is.
 - `acceptableAnswers` array is empty on sentence_transformation or constrained_translation
 - Grammar pattern `complexity_score` appears mismatched with actual complexity
 - `translation` is null on a `cloze_mcq` — translation should be a direct Dutch sentence in almost all cases; null is only acceptable if genuinely no Dutch equivalent context exists (extremely rare at A1)
