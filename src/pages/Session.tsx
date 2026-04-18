@@ -15,6 +15,7 @@ import { lessonService } from '@/services/lessonService'
 import { fetchAudioMap, type AudioMap } from '@/services/audioService'
 import { normalizeTtsText } from '@/lib/ttsNormalize'
 import { AudioProvider } from '@/contexts/AudioContext'
+import { useListening } from '@/contexts/ListeningContext'
 import { goalService } from '@/services/goalService'
 import { analyticsService } from '@/services/analyticsService'
 import { sessionSummaryService, type SessionImpactMessages } from '@/services/sessionSummaryService'
@@ -30,6 +31,7 @@ export function Session() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user, profile } = useAuthStore()
+  const { listeningEnabled } = useListening()
 
   // State
   const [queue, setQueue] = useState<SessionQueueItem[]>([])
@@ -205,6 +207,41 @@ export function Session() {
           console.warn('Failed to load grammar data:', err)
         }
 
+        // Pre-fetch audio for all eligible word/phrase base_texts so listening_mcq
+        // can be considered during queue-build. Voice resolution: lesson filter's
+        // voice, else the first lesson with a voice from eligible items.
+        let preQueueAudioMap: AudioMap = new Map()
+        let preQueueVoiceId: string | null = null
+        try {
+          if (lessonFilter && lessonVoiceMap[lessonFilter]) {
+            preQueueVoiceId = lessonVoiceMap[lessonFilter]
+          } else {
+            const eligibleLessonIds = new Set<string>()
+            for (const item of items) {
+              for (const ctx of contextsByItem[item.id] ?? []) {
+                if (ctx.source_lesson_id) eligibleLessonIds.add(ctx.source_lesson_id)
+              }
+            }
+            for (const lid of eligibleLessonIds) {
+              if (lessonVoiceMap[lid]) { preQueueVoiceId = lessonVoiceMap[lid]; break }
+            }
+          }
+          if (preQueueVoiceId) {
+            const wordPhraseTexts = new Set<string>()
+            for (const item of items) {
+              if (item.item_type === 'word' || item.item_type === 'phrase') {
+                wordPhraseTexts.add(normalizeTtsText(item.base_text))
+              }
+            }
+            if (wordPhraseTexts.size > 0) {
+              preQueueAudioMap = await fetchAudioMap([...wordPhraseTexts], [preQueueVoiceId])
+            }
+          }
+        } catch {
+          // Non-fatal: without pre-queue audio, listening_mcq simply won't surface
+          // this session. Everything else continues.
+        }
+
         // Build session queue
         const input: SessionBuildInput = {
           allItems: items,
@@ -222,6 +259,9 @@ export function Session() {
           grammarPatterns,
           grammarStates: grammarStatesMap,
           grammarVariantsByPattern,
+          audioMap: preQueueAudioMap,
+          voiceId: preQueueVoiceId,
+          listeningEnabled,
         }
 
         const builtQueue = buildSessionQueue(input)

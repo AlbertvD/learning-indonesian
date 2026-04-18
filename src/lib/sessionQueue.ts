@@ -9,6 +9,7 @@ import type { ExerciseVariant } from '@/types/learning'
 import { getSemanticGroup } from '@/lib/semanticGroups'
 import { normalizeTtsText } from '@/lib/ttsNormalize'
 import type { AudioMap } from '@/services/audioService'
+import { isExerciseTypeEnabled } from '@/lib/featureFlags'
 
 export type SessionMode = 'standard' | 'backlog_clear' | 'quick'
 
@@ -33,6 +34,10 @@ export interface SessionBuildInput {
   grammarPatterns?: GrammarPatternWithLesson[]
   grammarStates?: Record<string, LearnerGrammarState>        // keyed by grammar_pattern_id
   grammarVariantsByPattern?: Record<string, ExerciseVariant[]> // keyed by grammar_pattern_id
+  // Audio-exercise inputs (listening_mcq, future dictation)
+  audioMap?: AudioMap
+  voiceId?: string | null
+  listeningEnabled?: boolean  // user setting; default true
 }
 
 interface CandidateItem {
@@ -129,6 +134,9 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
       input.exerciseVariantsByContext,
       input.userLanguage,
       eligibleItems,
+      input.audioMap,
+      input.voiceId ?? null,
+      input.listeningEnabled !== false,
     )
     for (const exercise of exercises) {
       vocabQueue.push({
@@ -378,6 +386,9 @@ function selectExercises(
   exerciseVariantsByContext?: Record<string, ExerciseVariant[]>,
   userLanguage: 'en' | 'nl' = 'en',
   allItems: LearningItem[] = [],
+  audioMap?: AudioMap,
+  voiceId?: string | null,
+  listeningEnabled: boolean = true,
 ): ExerciseItem[] {
   const { item, state, targetSkillType } = candidate
   const meanings = meaningsByItem[item.id] ?? []
@@ -387,6 +398,15 @@ function selectExercises(
 
   const exercises: ExerciseItem[] = []
   const isSentenceType = item.item_type === 'sentence' || item.item_type === 'dialogue_chunk'
+
+  // canListen: all gates passed for listening_mcq. Hoisted so D.2 stage
+  // branches + any future due-skill routing can share the same check.
+  const canListen =
+    isExerciseTypeEnabled('listening_mcq') &&
+    listeningEnabled &&
+    (item.item_type === 'word' || item.item_type === 'phrase') &&
+    stage !== 'new' &&
+    hasAudioFor(item, audioMap ?? new Map(), voiceId ?? null)
 
   // Whether the item has a cloze-eligible context: must be context_type 'cloze' specifically.
 
@@ -417,20 +437,27 @@ function selectExercises(
     if (stage === 'anchoring') {
       const roll = Math.random()
       if (hasAnchorContext) {
+        // Split the recognition_mcq tail (roll >= 0.70, 30% slice) 50/50
+        // with listening_mcq when canListen: ~15% listening, ~15% recognition.
         if (roll < 0.25) {
           exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
         } else if (roll < 0.50) {
           exercises.push(makeMeaningRecall(item, meanings, contexts, variants))
         } else if (roll < 0.70) {
           exercises.push(makeClozeMcq(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
+        } else if (canListen && roll < 0.85) {
+          exercises.push(makeListeningMcq(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
         } else {
           exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
         }
       } else {
+        // No-anchor anchoring: split recognition_mcq tail similarly.
         if (roll < 0.30) {
           exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
         } else if (roll < 0.55) {
           exercises.push(makeMeaningRecall(item, meanings, contexts, variants))
+        } else if (canListen && roll < 0.77) {
+          exercises.push(makeListeningMcq(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
         } else {
           exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
         }
@@ -485,7 +512,14 @@ function selectExercises(
         } else if (roll < 0.80) {
           exercises.push(makeCuedRecall(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
         } else {
-          exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
+          // Split the 20% recognition_mcq tail 50/50 with listening_mcq when
+          // canListen: ~10% listening, ~10% recognition — preserves the 20%
+          // recognition-skill budget while adding audio-recognition practice.
+          if (canListen && Math.random() < 0.5) {
+            exercises.push(makeListeningMcq(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
+          } else {
+            exercises.push(makeRecognitionMCQ(item, meanings, contexts, variants, userLanguage, allItems, meaningsByItem))
+          }
         }
       }
     }
