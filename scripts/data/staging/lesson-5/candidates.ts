@@ -527,5 +527,251 @@ export const candidates = [
       ],
       "explanationText": "Ibu (of Bu) + naam is de neutrale beleefde aanspreekvorm voor een volwassen vrouw. Gebruik altijd Ibu/Bu met de achternaam in dagelijks taalgebruik."
     }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "kami-vs-kita",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Kami mau makan di restoran. (Titin tegen de pembantu — pembantu eet niet mee)",
+      "transformationInstruction": "Verander de zin: nu nodigt Titin de pembantu uit om mee te gaan eten in het restaurant.",
+      "acceptableAnswers": [
+        "Kita mau makan di restoran."
+      ],
+      "hintText": "Eet de pembantu nu mee? Kies het wij dat de luisteraar insluit.",
+      "explanationText": "Kita (inclusief) — door de pembantu uit te nodigen mee te gaan eten, telt zij mee in \"wij\". Kami zou haar uitsluiten ondanks de uitnodiging."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "kami-vs-kita",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Mari kita beli oleh-oleh di pasar. (een toerist nodigt zijn vriend uit)",
+      "transformationInstruction": "Verander de zin: nu vertelt de toerist aan een onbekende meneer dat hij en zijn vriend (zonder die meneer) cadeautjes gaan kopen.",
+      "acceptableAnswers": [
+        "Kami beli oleh-oleh di pasar.",
+        "Kami mau beli oleh-oleh di pasar."
+      ],
+      "hintText": "Gaat de meneer mee naar de markt?",
+      "explanationText": "Kami (exclusief) — de onbekende meneer is geen onderdeel van de groep die de cadeautjes gaat kopen. Kita zou betekenen dat hij ook meegaat."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "kami-vs-kita",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Wij (jij ook erbij) gaan vandaag naar het hotel.",
+      "requiredTargetPattern": "kami-vs-kita",
+      "acceptableAnswers": [
+        "Kita ke hotel hari ini.",
+        "Kita pergi ke hotel hari ini.",
+        "Hari ini kita ke hotel."
+      ],
+      "disallowedShortcutForms": [
+        "Kami ke hotel hari ini.",
+        "Kami pergi ke hotel hari ini."
+      ],
+      "explanationText": "De luisteraar gaat ook mee naar het hotel, dus kita (inclusief). Kami zou de luisteraar uitsluiten en suggereren dat alleen de spreker en derden gaan."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "kami-vs-kita",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Wij (zonder u) hebben veel koffers.",
+      "requiredTargetPattern": "kami-vs-kita",
+      "acceptableAnswers": [
+        "Kami punya banyak koper.",
+        "Koper kami banyak."
+      ],
+      "disallowedShortcutForms": [
+        "Kita punya banyak koper.",
+        "Koper kita banyak."
+      ],
+      "explanationText": "De aangesproken persoon hoort niet tot de groep met de koffers, dus kami (exclusief). Kita zou impliceren dat de luisteraar ook koffers heeft."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "kami-vs-kita",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Laten wij (samen, jij ook) een taxi nemen naar het vliegveld.",
+      "requiredTargetPattern": "kami-vs-kita",
+      "acceptableAnswers": [
+        "Mari kita naik taksi ke lapangan terbang.",
+        "Ayo kita naik taksi ke lapangan terbang.",
+        "Kita naik taksi ke lapangan terbang."
+      ],
+      "disallowedShortcutForms": [
+        "Kami naik taksi ke lapangan terbang.",
+        "Mari kami naik taksi ke lapangan terbang."
+      ],
+      "explanationText": "De luisteraar wordt uitgenodigd mee te gaan naar het vliegveld, dus kita (inclusief). Mari/ayo + kita is de standaard uitnodigingsvorm; mari + kami is ongrammaticaal."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "possessive-suffix-placement",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Kamar kamu bersih.",
+      "transformationInstruction": "Gebruik de verkorte tweede-persoons bezitsvorm.",
+      "acceptableAnswers": [
+        "Kamarmu bersih."
+      ],
+      "hintText": "Welk suffix vervangt \"kamu\" achter het zelfstandig naamwoord?",
+      "explanationText": "kamar + -mu = kamarmu. Het suffix -mu is de informele afkorting van \"kamu\" als bezittelijk voornaamwoord en wordt direct vastgeplakt aan het zelfstandig naamwoord."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "possessive-suffix-placement",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Itu sepeda dia.",
+      "transformationInstruction": "Gebruik het bezittelijk suffix voor de derde persoon.",
+      "acceptableAnswers": [
+        "Itu sepedanya."
+      ],
+      "hintText": "Welk suffix vervangt \"dia\" achter het zelfstandig naamwoord?",
+      "explanationText": "sepeda + -nya = sepedanya. Het suffix -nya vervangt \"dia\" als bezittelijk voornaamwoord en is in spreektaal de meest gebruikelijke vorm voor zijn/haar/hun."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "possessive-suffix-placement",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Mijn hoed is nieuw. (informeel, tussen vrienden)",
+      "requiredTargetPattern": "possessive-suffix-placement",
+      "acceptableAnswers": [
+        "Topiku baru."
+      ],
+      "disallowedShortcutForms": [
+        "Topi saya baru."
+      ],
+      "explanationText": "Tussen vrienden is het suffix -ku natuurlijker dan \"saya\". topi + -ku = topiku. \"Topi saya\" zou grammaticaal correct zijn maar te formeel in een informele context."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "possessive-suffix-placement",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Waar is jouw paspoort? (informeel)",
+      "requiredTargetPattern": "possessive-suffix-placement",
+      "acceptableAnswers": [
+        "Paspormu di mana?",
+        "Di mana paspormu?"
+      ],
+      "disallowedShortcutForms": [
+        "Paspor kamu di mana?",
+        "Di mana paspor kamu?"
+      ],
+      "explanationText": "In een informele context (tussen vrienden of huisgenoten) is -mu de natuurlijke vorm voor \"jouw\". paspor + -mu = paspormu. \"Paspor kamu\" is grammaticaal maar te omslachtig voor dit register."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "possessive-suffix-placement",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Hun kantoor is groot. (gesproken Indonesisch — gebruik geen \"mereka\")",
+      "requiredTargetPattern": "possessive-suffix-placement",
+      "acceptableAnswers": [
+        "Kantornya besar."
+      ],
+      "disallowedShortcutForms": [
+        "Kantor mereka besar."
+      ],
+      "explanationText": "In gesproken Indonesisch dekt -nya ook \"hun\", niet alleen \"zijn/haar\". kantor + -nya = kantornya. Context maakt duidelijk dat het om meervoud gaat. \"Kantor mereka\" is correct maar minder natuurlijk in alledaagse spreektaal."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "pronoun-register-levels",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Aku mau beli batik di pasar. (informeel)",
+      "transformationInstruction": "Maak de zin beleefd-neutraal — je spreekt nu tegen een onbekende verkoper.",
+      "acceptableAnswers": [
+        "Saya mau beli batik di pasar."
+      ],
+      "hintText": "Welke \"ik\"-vorm past bij een onbekende volwassene?",
+      "explanationText": "Saya is de neutraal-beleefde \"ik\"-vorm en past bij een gesprek met een onbekende. Aku is te informeel en kan brutaal overkomen tegen iemand die je net ontmoet."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "pronoun-register-levels",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Kamu suka kopi atau teh? (informeel)",
+      "transformationInstruction": "Maak de zin beleefd — je spreekt nu een onbekende meneer aan in een hotel.",
+      "acceptableAnswers": [
+        "Bapak suka kopi atau teh?",
+        "Pak suka kopi atau teh?"
+      ],
+      "hintText": "Welke beleefde aanspreekvorm gebruik je voor een onbekende volwassen man?",
+      "explanationText": "Bapak (of de verkorte Pak) is de neutrale beleefde aanspreekvorm voor een volwassen man. Kamu is in deze context ongepast — het signaleert te veel intimiteit met een onbekende."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "pronoun-register-levels",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Meneer, naar welke kamer wilt u? (in een hotel — beleefd)",
+      "requiredTargetPattern": "pronoun-register-levels",
+      "acceptableAnswers": [
+        "Bapak mau ke kamar mana?",
+        "Pak mau ke kamar mana?"
+      ],
+      "disallowedShortcutForms": [
+        "Kamu mau ke kamar mana?",
+        "Anda mau ke kamar mana?"
+      ],
+      "explanationText": "Bapak (of Pak) is de standaard beleefde aanspreekvorm voor een volwassen man, vooral in dienstverlenende contexten zoals een hotel. Kamu is te informeel; Anda klinkt afstandelijk en wordt zelden gebruikt door personeel."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "pronoun-register-levels",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Mevrouw, wilt u sate of gado-gado? (in een restaurant — beleefd)",
+      "requiredTargetPattern": "pronoun-register-levels",
+      "acceptableAnswers": [
+        "Ibu mau sate atau gado-gado?",
+        "Bu mau sate atau gado-gado?"
+      ],
+      "disallowedShortcutForms": [
+        "Kamu mau sate atau gado-gado?",
+        "Anda mau sate atau gado-gado?"
+      ],
+      "explanationText": "Ibu (of Bu) is de neutraal-beleefde aanspreekvorm voor een volwassen vrouw, gepast voor obers en winkelpersoneel. Kamu is te informeel in dienstverlening; Anda is te afstandelijk."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "pronoun-register-levels",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Ik wil ook naar de markt gaan. (Titin praat met haar broer Nanang — informeel)",
+      "requiredTargetPattern": "pronoun-register-levels",
+      "acceptableAnswers": [
+        "Aku juga mau ke pasar.",
+        "Aku mau ke pasar juga."
+      ],
+      "disallowedShortcutForms": [
+        "Saya juga mau ke pasar.",
+        "Saya mau ke pasar juga."
+      ],
+      "explanationText": "Tussen broer en zus is aku de natuurlijke informele \"ik\"-vorm. Saya zou grammaticaal correct maar onnodig formeel zijn binnen het gezin — het zou afstand creëren waar geen afstand hoort te zijn."
+    }
   }
 ]

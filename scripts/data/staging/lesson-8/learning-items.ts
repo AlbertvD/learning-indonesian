@@ -1,0 +1,633 @@
+// Published via script
+export const learningItems = [
+  {
+    "base_text": "Mas, batik di lantai berapa, ya Mas?",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Di lantai empat, Bu.",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Aduh, kalau begitu, di mana lift?",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Lift di situ, Bu, di sebelah kiri tangga.",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Terima kasih, Mas.",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Tin, coba kita cari kain panjang yang bagus, ya. Kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Bu, kami cari kain panjang tetapi yang tidak terlalu modern. Kalau ada, kami ingin yang sedikit tradisional. Maksud saya harganya kira-kira Rp 25.000. Batik yang pakai warna banyak barangkali juga tidak cocok.",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Silakan, Bu, di sini banyak kain batik yang halus.",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Ini, Tin, yang ini bagus sekali.",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "O, iya, bagus sekali, tetapi yang ini lebih bagus dong!",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Betul, tetapi saya rasa warnanya terlalu banyak. Yang ini lebih bagus atau kamu kurang setuju?",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Bu, bagus betul, tetapi lihat dong! Harganya, kok, Rp 46.500. Jadi, amat mahal.",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Tin, Tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas Rp 25.000.",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Benar, bu. Kain ini warnanya paling bagus!",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Coba kita beli yang ini saja. Bu, kami mau beli kain ini. Di mana bisa membayar?",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Di sana, Bu. Ini bon untuk kasir.",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Terima kasih. Wah, saya senang, kita sudah dapat batik yang bagus sekali!",
+    "item_type": "dialogue_chunk",
+    "context_type": "dialogue",
+    "translation_nl": "",
+    "translation_en": "",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "adat",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "zeden en gewoonten",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "amat",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "zeer",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "atau",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "of",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "barangkali",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "misschien",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "batik",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "kleurtechniek voor stof / batik",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "begitu",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "zoals dat",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "bon",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "bon / rekening",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "cap",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "stempel / merk",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "coklat",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "bruin",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "daripada",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "... dan ... (vergelijking)",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "dong",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "hoor! (interjectie)",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "hadiah",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "cadeau",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "hal",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "kwestie / zaak",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "halus",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "fijn / mooi (kwaliteit)",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "hampir",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "bijna",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "hijau",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "groen",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "iya (ya)",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "ja",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "kain",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "doek / kleed",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "kasir",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "kassier",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "kepada",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "aan / tegen",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "keris",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "Javaans steekwapen",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "kira",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "denken / vinden",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "kok",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "warempel / goh (interjectie)",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "kurang lebih",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "plusminus",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "lantai",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "verdieping / vloer",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "lebih bagus",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "mooier",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "lebih banyak",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "meer",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "lift",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "lift",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "lihat",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "zien",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "maksud",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "bedoeling",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "membayar*",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "betalen",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "modern (modèrn)",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "modern",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "nenek (nènèk)",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "oma / grootmoeder",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "pakai",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "gebruiken / bevatten",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "paling",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "het meeste (overtreffende trap)",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "pikir",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "denken / vinden",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "pikiran",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "gedachten",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "pohon",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "boom",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "rasa",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "voelen / gevoelen",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Sarinah Jaya",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "staatswarenhuis",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "setuju",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "het ermee eens zijn",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "tangga",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "trap",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "tentang",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "over / betreffende",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "tradisional",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "traditioneel",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "Tuhan",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "God (christ. / moslim)",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "tulis",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "schrijven",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "ulang",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "herhalen",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "umur",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "leeftijd",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "warung",
+    "item_type": "word",
+    "context_type": "vocabulary_list",
+    "translation_nl": "eethuisje",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "harga pas",
+    "item_type": "phrase",
+    "context_type": "vocabulary_list",
+    "translation_nl": "vaste prijs",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "hari ulang tahun (H.U.T.)",
+    "item_type": "phrase",
+    "context_type": "vocabulary_list",
+    "translation_nl": "verjaardag",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "kain panjang",
+    "item_type": "phrase",
+    "context_type": "vocabulary_list",
+    "translation_nl": "gebatikte doek van speciaal formaat",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  },
+  {
+    "base_text": "kalau begitu",
+    "item_type": "phrase",
+    "context_type": "vocabulary_list",
+    "translation_nl": "indien dat zo is",
+    "translation_en": "",
+    "source_page": 4,
+    "review_status": "published"
+  }
+]

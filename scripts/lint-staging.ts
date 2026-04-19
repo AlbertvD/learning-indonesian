@@ -99,6 +99,24 @@ const CLOZE_EXEMPT_BASE_TEXTS = new Set([
   'deh', 'sih', 'lah', 'kah', 'pun', 'kok', 'dong', 'nih', 'tuh', 'ya', 'ah',
 ])
 
+// Grammar patterns where the lesson IS substring contrast — reduplication,
+// morphological derivation (ter-/se-/ke-/-an), comparison particles. The
+// `options-substring-duplicate` rule misfires on these because the substring
+// relationship is the pedagogical point (e.g. `buah` vs `buah-buah` for
+// reduplication-plural; `dari` vs `daripada` for lebih-comparative; `tua` vs
+// `setua` for se-sama-equality-comparison). Matched explicitly by slug or
+// by structural slug suffix that signals morphological-derivation pedagogy.
+const SUBSTRING_OK_PATTERN_SLUGS = new Set([
+  'no-singular-plural',
+  'ada-existential',
+])
+const SUBSTRING_OK_PATTERN_REGEX = /^reduplication-|-comparative$|-superlative$|-comparison$/
+
+export function isSubstringContrastPattern(slug: string | undefined | null): boolean {
+  if (!slug) return false
+  return SUBSTRING_OK_PATTERN_SLUGS.has(slug) || SUBSTRING_OK_PATTERN_REGEX.test(slug)
+}
+
 
 // ---- Pagination wrapper ----
 
@@ -328,15 +346,16 @@ function checkCandidatesStructural(ctx: LessonCtx, db: DbCtx): Finding[] {
       out.push(mkFinding('CRITICAL', ctx.n, 'candidates.ts', 'unresolved-grammar_pattern_slug', c.grammar_pattern_slug, ref))
     }
     const t = c.exercise_type
-    if (t === 'contrast_pair') checkContrastPair(c.payload, ctx, ref, out)
-    else if (t === 'cloze_mcq') checkClozeMcq(c.payload, ctx, ref, out)
+    const slug: string | undefined = c.grammar_pattern_slug
+    if (t === 'contrast_pair') checkContrastPair(c.payload, slug, ctx, ref, out)
+    else if (t === 'cloze_mcq') checkClozeMcq(c.payload, slug, ctx, ref, out)
     else if (t === 'sentence_transformation') checkSentenceTransformation(c.payload, ctx, ref, out)
-    else if (t === 'constrained_translation') checkConstrainedTranslation(c.payload, c.grammar_pattern_slug, localSlugs, db, ctx, ref, out)
+    else if (t === 'constrained_translation') checkConstrainedTranslation(c.payload, slug, localSlugs, db, ctx, ref, out)
   }
   return out
 }
 
-function checkContrastPair(p: any, ctx: LessonCtx, ref: string, out: Finding[]): void {
+function checkContrastPair(p: any, slug: string | undefined, ctx: LessonCtx, ref: string, out: Finding[]): void {
   for (const f of ['promptText', 'targetMeaning', 'correctOptionId', 'explanationText']) {
     if (typeof p[f] !== 'string' || !p[f].trim()) {
       out.push(mkFinding('CRITICAL', ctx.n, 'candidates.ts', `missing-${f}`, '', ref))
@@ -363,7 +382,7 @@ function checkContrastPair(p: any, ctx: LessonCtx, ref: string, out: Finding[]):
     out.push(mkFinding('CRITICAL', ctx.n, 'candidates.ts', 'correctOptionId-not-in-options',
       `correctOptionId="${p.correctOptionId}"`, ref))
   }
-  if (opts.length === 2) {
+  if (opts.length === 2 && !isSubstringContrastPattern(slug)) {
     const [a, b] = [String(opts[0]?.text ?? ''), String(opts[1]?.text ?? '')]
     if (a && b && a !== b && (a.includes(b) || b.includes(a))) {
       out.push(mkFinding('CRITICAL', ctx.n, 'candidates.ts', 'options-substring-duplicate',
@@ -405,7 +424,7 @@ function checkContrastPair(p: any, ctx: LessonCtx, ref: string, out: Finding[]):
   }
 }
 
-function checkClozeMcq(p: any, ctx: LessonCtx, ref: string, out: Finding[]): void {
+function checkClozeMcq(p: any, slug: string | undefined, ctx: LessonCtx, ref: string, out: Finding[]): void {
   for (const f of ['sentence', 'correctOptionId', 'explanationText']) {
     if (typeof p[f] !== 'string' || !p[f].trim()) {
       out.push(mkFinding('CRITICAL', ctx.n, 'candidates.ts', `missing-${f}`, '', ref))
@@ -427,13 +446,15 @@ function checkClozeMcq(p: any, ctx: LessonCtx, ref: string, out: Finding[]): voi
     out.push(mkFinding('CRITICAL', ctx.n, 'candidates.ts', 'correctOptionId-not-in-options',
       `correctOptionId="${p.correctOptionId}"`, ref))
   }
-  for (let i = 0; i < opts.length; i++) {
-    for (let j = i + 1; j < opts.length; j++) {
-      const a = String(opts[i] ?? ''), b = String(opts[j] ?? '')
-      if (a && b && a !== b && (a.includes(b) || b.includes(a))) {
-        out.push(mkFinding('CRITICAL', ctx.n, 'candidates.ts', 'options-substring-duplicate',
-          `"${a}" / "${b}"`, ref))
-        break
+  if (!isSubstringContrastPattern(slug)) {
+    for (let i = 0; i < opts.length; i++) {
+      for (let j = i + 1; j < opts.length; j++) {
+        const a = String(opts[i] ?? ''), b = String(opts[j] ?? '')
+        if (a && b && a !== b && (a.includes(b) || b.includes(a))) {
+          out.push(mkFinding('CRITICAL', ctx.n, 'candidates.ts', 'options-substring-duplicate',
+            `"${a}" / "${b}"`, ref))
+          break
+        }
       }
     }
   }

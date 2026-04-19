@@ -883,5 +883,639 @@ export const candidates = [
       "disallowedShortcutForms": null,
       "explanationText": "'Ada yang beli buah' = er zijn er die fruit kopen. De context (di pasar banyak orang) maakt duidelijk over welke groep het gaat."
     }
+  },
+  {
+    "exercise_type": "cloze_mcq",
+    "grammar_pattern_slug": "yang-relative-pronoun",
+    "review_status": "published",
+    "payload": {
+      "sentence": "Mobil ___ baru itu mahal sekali.",
+      "translation": "De auto die nieuw is, is heel duur.",
+      "options": [
+        "yang",
+        "itu",
+        "dan",
+        "di"
+      ],
+      "correctOptionId": "yang",
+      "explanationText": "'Yang' verbindt 'mobil' met de beschrijving 'baru' tot een bijzin: mobil yang baru = de auto die nieuw is. Zonder 'yang' zou 'mobil baru' gewoon 'een nieuwe auto' zijn (geen bijzin)."
+    }
+  },
+  {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "yang-relative-pronoun",
+    "review_status": "published",
+    "payload": {
+      "promptText": "Welke vorm betekent 'het hotel dat duur is' (bijzin)?",
+      "targetMeaning": "Het hotel dat duur is (betrekkelijk voornaamwoord)",
+      "options": [
+        {
+          "id": "Hotel mahal",
+          "text": "Hotel mahal"
+        },
+        {
+          "id": "Hotel yang mahal",
+          "text": "Hotel yang mahal"
+        }
+      ],
+      "correctOptionId": "Hotel yang mahal",
+      "explanationText": "'Hotel yang mahal' = het hotel dat duur is (bijzin met 'yang'). 'Hotel mahal' betekent gewoon 'een duur hotel' — een neutrale beschrijving zonder bijzin."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "yang-relative-pronoun",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Kursi itu tinggi.",
+      "transformationInstruction": "Maak een bijvoeglijke bijzin met 'yang': 'de stoel die hoog is'",
+      "acceptableAnswers": [
+        "Kursi yang tinggi"
+      ],
+      "hintText": "Vervang 'itu' door 'yang' + bijzin",
+      "explanationText": "'Yang' fungeert hier als betrekkelijk voornaamwoord (die/dat). 'Kursi yang tinggi' = de stoel die hoog is — geen complete zin meer, maar een naamwoordgroep met een bijzin."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "yang-relative-pronoun",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Lemari itu kosong.",
+      "transformationInstruction": "Herschrijf als naamwoordgroep met bijzin: 'de kast die leeg is'",
+      "acceptableAnswers": [
+        "Lemari yang kosong"
+      ],
+      "hintText": "Verwijder 'itu' en plaats 'yang' voor het bijvoeglijk naamwoord",
+      "explanationText": "'Yang' introduceert een bijzin die het zelfstandig naamwoord beschrijft: lemari yang kosong = de kast die leeg is. Het bijvoeglijk naamwoord 'kosong' wordt zo onderdeel van een bijzin in plaats van predicaat."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "yang-relative-pronoun",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De dokter die aardig is, woont in de stad.",
+      "requiredTargetPattern": "yang-relative-pronoun",
+      "acceptableAnswers": [
+        "Dokter yang baik tinggal di kota.",
+        "Dokter yang baik tinggal di kota"
+      ],
+      "disallowedShortcutForms": [
+        "Dokter baik tinggal di kota"
+      ],
+      "explanationText": "'Dokter yang baik' = de dokter die aardig is (bijzin). Zonder 'yang' zou het 'een aardige dokter' worden — geen bijzin maar een neutrale beschrijving. Hier is 'yang' nodig om de relatieve constructie te vormen."
+    }
+  },
+  {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "yang-nominalization",
+    "review_status": "published",
+    "payload": {
+      "promptText": "Welke zin betekent 'de zieken (mensen die ziek zijn) moeten medicijnen drinken'?",
+      "targetMeaning": "De zieken moeten medicijnen drinken (nominalisatie)",
+      "options": [
+        {
+          "id": "Yang sakit harus minum obat.",
+          "text": "Yang sakit harus minum obat."
+        },
+        {
+          "id": "Sakit orang harus minum obat.",
+          "text": "Sakit orang harus minum obat."
+        }
+      ],
+      "correctOptionId": "Yang sakit harus minum obat.",
+      "explanationText": "'Yang sakit' nominaliseert het bijvoeglijk naamwoord 'sakit' tot een zelfstandig naamwoord: 'de zieken' / 'degenen die ziek zijn'. Het hele 'yang'-construct fungeert als onderwerp van de zin."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "yang-nominalization",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Buah yang murah enak.",
+      "transformationInstruction": "Pas nominalisatie toe: laat het zelfstandig naamwoord weg",
+      "acceptableAnswers": [
+        "Yang murah enak.",
+        "Yang murah enak"
+      ],
+      "hintText": "Het zelfstandig naamwoord wordt vervangen door het 'yang'-construct zelf",
+      "explanationText": "Door 'buah' weg te laten wordt 'yang murah' het onderwerp: 'de goedkope (vruchten) zijn lekker'. De context maakt duidelijk waar 'yang' naar verwijst."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "yang-nominalization",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Anak yang muda tidur. Anak yang tua belajar.",
+      "transformationInstruction": "Pas nominalisatie toe in beide zinnen: laat het zelfstandig naamwoord weg",
+      "acceptableAnswers": [
+        "Yang muda tidur. Yang tua belajar.",
+        "Yang muda tidur. Yang tua belajar"
+      ],
+      "hintText": "In een contrasterende paar-constructie kan het zelfstandig naamwoord vaak verdwijnen",
+      "explanationText": "'Yang muda' = de jonge(n), 'yang tua' = de oude(n). Bij contrasten (jong vs oud) is nominalisatie bijzonder krachtig omdat de tegenstelling direct zichtbaar wordt."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "yang-nominalization",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De rode (handdoeken) zijn in de kast, de witte zijn in de badkamer.",
+      "requiredTargetPattern": "yang-nominalization",
+      "acceptableAnswers": [
+        "Yang merah ada di lemari, yang putih ada di kamar mandi.",
+        "Yang merah ada di lemari, yang putih ada di kamar mandi"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "'Yang merah' / 'yang putih' nominaliseren de kleuradjectieven tot zelfstandige naamwoorden: 'de rode' / 'de witte'. De Nederlandse zin laat het zelfstandig naamwoord ook impliciet — die parallel maakt nominalisatie hier de natuurlijke vertaling."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "yang-nominalization",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Degenen die honger hebben moeten eten.",
+      "requiredTargetPattern": "yang-nominalization",
+      "acceptableAnswers": [
+        "Yang lapar harus makan.",
+        "Yang lapar harus makan"
+      ],
+      "disallowedShortcutForms": [
+        "Orang yang lapar harus makan"
+      ],
+      "explanationText": "'Yang lapar' nominaliseert 'lapar' (hongerig): degenen die honger hebben. Het Nederlands gebruikt 'degenen die...' — Indonesisch lost dit elegant op met 'yang' + bijvoeglijk naamwoord, zonder 'orang' nodig te hebben."
+    }
+  },
+  {
+    "exercise_type": "cloze_mcq",
+    "grammar_pattern_slug": "yang-single-adjective-emphasis",
+    "review_status": "published",
+    "payload": {
+      "sentence": "Saya pakai kemeja ___ biru, bukan yang merah.",
+      "translation": "Ik draag het BLAUWE shirt, niet het rode.",
+      "options": [
+        "yang",
+        "itu",
+        "ini",
+        "dan"
+      ],
+      "correctOptionId": "yang",
+      "explanationText": "'Kemeja yang biru' benadrukt de kleur 'biru' in contrast met 'yang merah'. De parallelle constructie 'yang biru ... yang merah' maakt duidelijk dat 'yang' hier een contrastieve functie heeft."
+    }
+  },
+  {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "yang-single-adjective-emphasis",
+    "review_status": "published",
+    "payload": {
+      "promptText": "Welke zin benadrukt dat de tas DUUR is (in tegenstelling tot de goedkope)?",
+      "targetMeaning": "De DURE tas (nadruk in contrast)",
+      "options": [
+        {
+          "id": "Tas mahal",
+          "text": "Tas mahal"
+        },
+        {
+          "id": "Tas yang mahal",
+          "text": "Tas yang mahal"
+        }
+      ],
+      "correctOptionId": "Tas yang mahal",
+      "explanationText": "'Tas yang mahal' benadrukt 'mahal' — de DURE tas (niet de goedkope). 'Tas mahal' is een neutrale beschrijving 'een dure tas', zonder contrastieve nadruk."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "yang-single-adjective-emphasis",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Hotel besar ada di kota.",
+      "transformationInstruction": "Benadruk 'besar' met 'yang' (het GROTE hotel, niet de kleine)",
+      "acceptableAnswers": [
+        "Hotel yang besar ada di kota.",
+        "Hotel yang besar ada di kota"
+      ],
+      "hintText": "Voeg 'yang' toe voor het bijvoeglijk naamwoord",
+      "explanationText": "'Hotel yang besar' geeft contrastieve nadruk op 'besar': het GROTE hotel, niet de kleine. Zonder 'yang' is 'hotel besar' een neutrale beschrijving."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "yang-single-adjective-emphasis",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Kain tradisional cocok untuk nenek.",
+      "transformationInstruction": "Benadruk 'tradisional' met behulp van 'yang'",
+      "acceptableAnswers": [
+        "Kain yang tradisional cocok untuk nenek.",
+        "Kain yang tradisional cocok untuk nenek"
+      ],
+      "hintText": "Plaats 'yang' tussen het zelfstandig naamwoord en het bijvoeglijk naamwoord",
+      "explanationText": "'Kain yang tradisional' benadrukt 'tradisional': de TRADITIONELE stof (in contrast met moderne stof). 'Yang' is hier het signaal dat de spreker een specifieke eigenschap wil uitlichten."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "yang-single-adjective-emphasis",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Ik wil de NIEUWE rok, niet de oude.",
+      "requiredTargetPattern": "yang-single-adjective-emphasis",
+      "acceptableAnswers": [
+        "Saya mau rok yang baru, bukan yang lama.",
+        "Saya mau rok yang baru, bukan yang lama",
+        "Saya ingin rok yang baru, bukan yang lama.",
+        "Saya ingin rok yang baru, bukan yang lama"
+      ],
+      "disallowedShortcutForms": [
+        "Saya mau rok baru"
+      ],
+      "explanationText": "'Rok yang baru' benadrukt 'baru' in contrast met 'yang lama'. Het contrastieve patroon 'yang X ... bukan yang Y' is een typisch gebruik van 'yang' voor nadruk."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "yang-single-adjective-emphasis",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Hoeveel GELE bananen zijn er?",
+      "requiredTargetPattern": "yang-single-adjective-emphasis",
+      "acceptableAnswers": [
+        "Berapa pisang yang kuning?",
+        "Ada berapa pisang yang kuning?"
+      ],
+      "disallowedShortcutForms": [
+        "Berapa pisang kuning"
+      ],
+      "explanationText": "'Pisang yang kuning' benadrukt 'kuning' — hoeveel GELE bananen (in tegenstelling tot bananen van een andere kleur). Bij vraagzinnen over een specifieke deelgroep is 'yang' nodig voor die contrastieve nadruk."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "yang-single-adjective-emphasis",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Pak de GROENE koffer (niet de zwarte).",
+      "requiredTargetPattern": "yang-single-adjective-emphasis",
+      "acceptableAnswers": [
+        "Ambil koper yang hijau.",
+        "Ambil koper yang hijau"
+      ],
+      "disallowedShortcutForms": [
+        "Ambil koper hijau"
+      ],
+      "explanationText": "'Koper yang hijau' benadrukt 'hijau' in contrast met andere kleuren. De Nederlandse hoofdletter 'GROENE' signaleert die nadruk; in het Indonesisch maak je dat expliciet met 'yang'."
+    }
+  },
+  {
+    "exercise_type": "cloze_mcq",
+    "grammar_pattern_slug": "yang-two-adj-unequal",
+    "review_status": "published",
+    "payload": {
+      "sentence": "Saya beli tas besar ___ hitam.",
+      "translation": "Ik heb de ZWARTE grote tas gekocht (nadruk op zwart).",
+      "options": [
+        "yang",
+        "dan",
+        "itu",
+        "ini"
+      ],
+      "correctOptionId": "yang",
+      "explanationText": "Bij ongelijke nadruk: [znw] [neutraal bijv.nw.] yang [benadrukt bijv.nw.]. 'Tas besar yang hitam' = de grote tas die ZWART is. Met 'dan' zouden beide eigenschappen gelijke nadruk krijgen."
+    }
+  },
+  {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "yang-two-adj-unequal",
+    "review_status": "published",
+    "payload": {
+      "promptText": "Welke zin benadrukt LAMA (oud) bij 'de grote kast'?",
+      "targetMeaning": "De grote kast die OUD is (nadruk op oud)",
+      "options": [
+        {
+          "id": "Lemari yang besar dan lama",
+          "text": "Lemari yang besar dan lama"
+        },
+        {
+          "id": "Lemari besar yang lama",
+          "text": "Lemari besar yang lama"
+        }
+      ],
+      "correctOptionId": "Lemari besar yang lama",
+      "explanationText": "Bij ongelijke nadruk staat het benadrukte bijvoeglijk naamwoord NA 'yang': 'Lemari besar yang lama' benadrukt 'lama'. De versie met 'dan' geeft beide eigenschappen gelijke nadruk."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "yang-two-adj-unequal",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Mobil yang besar dan merah ada di depan.",
+      "transformationInstruction": "Verander naar ongelijke nadruk: leg de nadruk op 'merah'",
+      "acceptableAnswers": [
+        "Mobil besar yang merah ada di depan.",
+        "Mobil besar yang merah ada di depan"
+      ],
+      "hintText": "Het neutrale bijvoeglijk naamwoord komt direct na het zelfstandig naamwoord, het benadrukte na 'yang'",
+      "explanationText": "Door 'dan' te vervangen door de ongelijke-nadrukstructuur ([znw] [adj] yang [adj]) wordt de tweede eigenschap (merah) benadrukt: de grote auto die ROOD is — niet zomaar groot en rood, maar specifiek de rode."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "yang-two-adj-unequal",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Kemeja yang panjang dan biru cocok untuk bapak.",
+      "transformationInstruction": "Verander zodat 'biru' meer nadruk krijgt dan 'panjang'",
+      "acceptableAnswers": [
+        "Kemeja panjang yang biru cocok untuk bapak.",
+        "Kemeja panjang yang biru cocok untuk bapak"
+      ],
+      "hintText": "Verwijder 'yang' en 'dan' uit de oorspronkelijke positie en plaats 'yang' voor de te benadrukken eigenschap",
+      "explanationText": "'Kemeja panjang yang biru' benadrukt 'biru': het lange shirt dat BLAUW is. 'Panjang' staat neutraal direct na het zelfstandig naamwoord, terwijl 'biru' contrastieve nadruk krijgt door 'yang'."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "yang-two-adj-unequal",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De BLAUWE kleine sleutel (nadruk op blauw)",
+      "requiredTargetPattern": "yang-two-adj-unequal",
+      "acceptableAnswers": [
+        "Kunci kecil yang biru"
+      ],
+      "disallowedShortcutForms": [
+        "Kunci yang kecil dan biru",
+        "Kunci kecil biru"
+      ],
+      "explanationText": "Bij ongelijke nadruk: [znw] [bijv.nw.] yang [benadrukt bijv.nw.]. 'Kunci kecil yang biru' benadrukt de kleur 'biru' tegenover andere kleine sleutels. De vorm met 'dan' zou gelijke nadruk geven."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "yang-two-adj-unequal",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De GOEDKOPE traditionele stof (nadruk op goedkoop)",
+      "requiredTargetPattern": "yang-two-adj-unequal",
+      "acceptableAnswers": [
+        "Kain tradisional yang murah"
+      ],
+      "disallowedShortcutForms": [
+        "Kain yang tradisional dan murah"
+      ],
+      "explanationText": "'Kain tradisional yang murah' benadrukt 'murah': de traditionele stof die GOEDKOOP is. Het neutrale 'tradisional' komt direct na het zelfstandig naamwoord, het benadrukte 'murah' na 'yang'."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "yang-two-adj-unequal",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De ZWARE oude koffer (nadruk op zwaar)",
+      "requiredTargetPattern": "yang-two-adj-unequal",
+      "acceptableAnswers": [
+        "Koper lama yang berat"
+      ],
+      "disallowedShortcutForms": [
+        "Koper yang lama dan berat"
+      ],
+      "explanationText": "Het patroon [znw] [adj] yang [adj] benadrukt het tweede bijvoeglijk naamwoord. 'Koper lama yang berat' = de oude koffer die ZWAAR is — niet zomaar oud en zwaar, maar specifiek het feit dat hij zwaar is wordt uitgelicht."
+    }
+  },
+  {
+    "exercise_type": "cloze_mcq",
+    "grammar_pattern_slug": "yang-two-adj-equal",
+    "review_status": "published",
+    "payload": {
+      "sentence": "Saya beli mobil ___ baru dan murah.",
+      "translation": "Ik koop de auto die nieuw en goedkoop is (gelijke nadruk).",
+      "options": [
+        "yang",
+        "itu",
+        "ini",
+        "ada"
+      ],
+      "correctOptionId": "yang",
+      "explanationText": "Bij gelijke nadruk: [znw] yang [bijv.nw.] dan [bijv.nw.]. 'Yang' introduceert hier de bijzin met twee gelijkwaardige eigenschappen verbonden door 'dan'. 'Itu' of 'ini' zouden geen bijzin starten."
+    }
+  },
+  {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "yang-two-adj-equal",
+    "review_status": "published",
+    "payload": {
+      "promptText": "Welke zin geeft gelijke nadruk aan 'modern' en 'mahal' bij 'hotel'?",
+      "targetMeaning": "Het hotel dat modern en duur is (gelijke nadruk)",
+      "options": [
+        {
+          "id": "Hotel modern yang mahal",
+          "text": "Hotel modern yang mahal"
+        },
+        {
+          "id": "Hotel yang modern dan mahal",
+          "text": "Hotel yang modern dan mahal"
+        }
+      ],
+      "correctOptionId": "Hotel yang modern dan mahal",
+      "explanationText": "'Hotel yang modern dan mahal' geeft beide eigenschappen gelijke nadruk via 'dan'. 'Hotel modern yang mahal' zou alleen 'mahal' benadrukken (ongelijke nadruk-patroon)."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "yang-two-adj-equal",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Mobil besar yang merah",
+      "transformationInstruction": "Verander naar gelijke nadruk (beide eigenschappen even belangrijk)",
+      "acceptableAnswers": [
+        "Mobil yang besar dan merah"
+      ],
+      "hintText": "Bij gelijke nadruk: [znw] yang [adj] dan [adj]",
+      "explanationText": "Door 'yang' naar voren te verplaatsen en 'dan' tussen de bijvoeglijke naamwoorden te zetten, krijgen 'besar' en 'merah' gelijke nadruk. De oorspronkelijke vorm benadrukte alleen 'merah'."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "yang-two-adj-equal",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Tas kecil yang hijau",
+      "transformationInstruction": "Verander zodat 'kecil' en 'hijau' gelijke nadruk krijgen",
+      "acceptableAnswers": [
+        "Tas yang kecil dan hijau"
+      ],
+      "hintText": "Bij gelijke nadruk: [znw] yang [adj] dan [adj]",
+      "explanationText": "'Tas yang kecil dan hijau' geeft beide eigenschappen gelijke nadruk: de tas die klein en groen is. De oorspronkelijke vorm 'tas kecil yang hijau' benadrukte alleen de kleur."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "yang-two-adj-equal",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De nieuwe en goedkope kast",
+      "requiredTargetPattern": "yang-two-adj-equal",
+      "acceptableAnswers": [
+        "Lemari yang baru dan murah"
+      ],
+      "disallowedShortcutForms": [
+        "Lemari baru yang murah",
+        "Lemari baru dan murah"
+      ],
+      "explanationText": "Gelijke nadruk: [znw] yang [adj] dan [adj]. 'Lemari yang baru dan murah' = de kast die nieuw en goedkoop is — beide eigenschappen wegen even zwaar. Zonder 'yang' zou de structuur niet kloppen."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "yang-two-adj-equal",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De lange en zware lepel",
+      "requiredTargetPattern": "yang-two-adj-equal",
+      "acceptableAnswers": [
+        "Sendok yang panjang dan berat"
+      ],
+      "disallowedShortcutForms": [
+        "Sendok panjang yang berat"
+      ],
+      "explanationText": "'Sendok yang panjang dan berat' = de lepel die lang en zwaar is (gelijke nadruk). De Nederlandse 'lange en zware' geeft beide eigenschappen gelijk gewicht — de Indonesische tegenhanger gebruikt daarom de 'yang ... dan ...' structuur."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "yang-two-adj-equal",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De fijne en traditionele batik",
+      "requiredTargetPattern": "yang-two-adj-equal",
+      "acceptableAnswers": [
+        "Batik yang halus dan tradisional"
+      ],
+      "disallowedShortcutForms": [
+        "Batik halus yang tradisional"
+      ],
+      "explanationText": "'Batik yang halus dan tradisional' = de batik die fijn en traditioneel is (gelijke nadruk). De alternatieve vorm 'batik halus yang tradisional' zou 'tradisional' benadrukken — dat is hier niet de bedoeling."
+    }
+  },
+  {
+    "exercise_type": "cloze_mcq",
+    "grammar_pattern_slug": "ada-yang-existential",
+    "review_status": "published",
+    "payload": {
+      "sentence": "Tamu di hotel banyak. ___ tinggal lama dan ada yang tinggal sebentar.",
+      "translation": "Er zijn veel gasten in het hotel. Sommigen blijven lang en sommigen blijven kort.",
+      "options": [
+        "Ada yang",
+        "Yang ada",
+        "Ada ini",
+        "Ini ada"
+      ],
+      "correctOptionId": "Ada yang",
+      "explanationText": "'Ada yang tinggal lama' = sommigen blijven lang. Het patroon 'ada yang... dan ada yang...' verdeelt een groep (hier: tamu) in subgroepen. 'Yang ada' draait de woordvolgorde om en betekent iets anders ('die er zijn')."
+    }
+  },
+  {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "ada-yang-existential",
+    "review_status": "published",
+    "payload": {
+      "promptText": "Welke zin betekent 'sommigen kopen batik en sommigen kopen kain'?",
+      "targetMeaning": "Sommigen kopen batik, anderen kopen stof (existentieel)",
+      "options": [
+        {
+          "id": "Yang batik dan yang kain ada.",
+          "text": "Yang batik dan yang kain ada."
+        },
+        {
+          "id": "Ada yang beli batik dan ada yang beli kain.",
+          "text": "Ada yang beli batik dan ada yang beli kain."
+        }
+      ],
+      "correctOptionId": "Ada yang beli batik dan ada yang beli kain.",
+      "explanationText": "'Ada yang beli batik dan ada yang beli kain' = sommigen kopen batik en anderen kopen stof. Het patroon 'ada yang... dan ada yang...' is de standaardconstructie voor het verdelen van een impliciete groep mensen."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "ada-yang-existential",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Beberapa anak suka sate dan beberapa anak suka gado-gado.",
+      "transformationInstruction": "Herschrijf met de constructie 'ada yang... dan ada yang...'",
+      "acceptableAnswers": [
+        "Ada yang suka sate dan ada yang suka gado-gado.",
+        "Ada yang suka sate dan ada yang suka gado-gado"
+      ],
+      "hintText": "'Beberapa anak' wordt vervangen door één korte uitdrukking",
+      "explanationText": "'Ada yang' vervangt 'beberapa anak' en houdt de groep impliciet. Dit is een idiomatische manier om subgroepen te beschrijven zonder 'beberapa anak' herhaaldelijk te noemen."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "ada-yang-existential",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Beberapa turis pergi ke pantai dan beberapa turis pergi ke pasar.",
+      "transformationInstruction": "Herschrijf met de constructie 'ada yang... dan ada yang...'",
+      "acceptableAnswers": [
+        "Ada yang pergi ke pantai dan ada yang pergi ke pasar.",
+        "Ada yang pergi ke pantai dan ada yang pergi ke pasar"
+      ],
+      "hintText": "'Beberapa turis' wordt vervangen door één korte existentiële uitdrukking",
+      "explanationText": "'Ada yang pergi ke pantai' = sommigen gaan naar het strand. Het patroon laat de groep (turis) impliciet — uit context blijft duidelijk over wie het gaat. Dit is compacter en natuurlijker dan 'beberapa turis' tweemaal noemen."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ada-yang-existential",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Sommigen gaan naar Bali en sommigen gaan naar Jakarta.",
+      "requiredTargetPattern": "ada-yang-existential",
+      "acceptableAnswers": [
+        "Ada yang pergi ke Bali dan ada yang pergi ke Jakarta.",
+        "Ada yang pergi ke Bali dan ada yang pergi ke Jakarta"
+      ],
+      "disallowedShortcutForms": [
+        "Beberapa orang pergi ke Bali"
+      ],
+      "explanationText": "'Ada yang pergi ke Bali dan ada yang pergi ke Jakarta' is de idiomatische tegenhanger van 'sommigen... en sommigen...'. Het Nederlandse 'sommigen' wordt nooit met één woord vertaald — altijd met de 'ada yang' constructie."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ada-yang-existential",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Sommigen wonen in een hotel en sommigen wonen bij vrienden.",
+      "requiredTargetPattern": "ada-yang-existential",
+      "acceptableAnswers": [
+        "Ada yang tinggal di hotel dan ada yang tinggal di rumah teman.",
+        "Ada yang tinggal di hotel dan ada yang tinggal di rumah teman"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "Het patroon 'ada yang... dan ada yang...' verdeelt een impliciete groep in twee subgroepen. 'Tinggal di rumah teman' = bij vrienden wonen — letterlijk 'in het huis van een vriend wonen', omdat Indonesisch geen aparte preposities heeft voor 'bij'."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ada-yang-existential",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Sommigen zijn ziek en sommigen zijn al beter.",
+      "requiredTargetPattern": "ada-yang-existential",
+      "acceptableAnswers": [
+        "Ada yang sakit dan ada yang sudah sembuh.",
+        "Ada yang sakit dan ada yang sudah sembuh"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "'Ada yang sakit dan ada yang sudah sembuh' = sommigen zijn ziek en sommigen zijn al hersteld. 'Sudah sembuh' = al genezen. De constructie 'ada yang' werkt zowel met bijvoeglijke naamwoorden (sakit) als met werkwoordelijke uitdrukkingen (sudah sembuh)."
+    }
   }
 ]

@@ -544,10 +544,10 @@ export const candidates = [
       "sentence": "___ taksi baru.",
       "translation": "Dit is een nieuwe taxi.",
       "options": [
-        "Ada",
-        "Yang",
         "Ini",
-        "Adalah"
+        "Itu",
+        "Yang",
+        "Bukan"
       ],
       "correctOptionId": "Ini",
       "explanationText": "\"Ini\" als zelfstandig onderwerp: \"Ini taksi baru\" = dit is een nieuwe taxi. \"Ini\" staat centraal als pronomen."
@@ -927,12 +927,12 @@ export const candidates = [
       "translation": "Daar is een lange weg.",
       "options": [
         "panjang",
-        "besar panjang",
-        "yang lang",
-        "lang"
+        "besar",
+        "mahal",
+        "bagus"
       ],
       "correctOptionId": "panjang",
-      "explanationText": "Het bijv.nw. komt direct na het znw: \"jalan panjang\" = lange weg. Geen tussenvoegsel nodig."
+      "explanationText": "Het bijv.nw. komt direct na het znw: \"jalan panjang\" = lange weg. Geen tussenvoegsel nodig. \"besar\", \"mahal\" en \"bagus\" zijn ook bijv.nw. die na een znw kunnen, maar de Nederlandse vertaling vereist \"lang\" = panjang."
     }
   },
   {
@@ -1238,6 +1238,593 @@ export const candidates = [
       ],
       "disallowedShortcutForms": null,
       "explanationText": "17 = \"tujuh belas\". \"Ada tujuh belas turis di hotel\" = er zijn zeventien toeristen in het hotel."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "se-classifier",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Tiga orang anak datang.",
+      "transformationInstruction": "Verander het telwoord van drie naar een (gebruik se- + classificeerwoord)",
+      "acceptableAnswers": [
+        "Seorang anak datang.",
+        "Seorang anak datang"
+      ],
+      "hintText": "Bij \"een\" voor mensen smelt se- met orang samen.",
+      "explanationText": "Bij telwoord \"een\" wordt se- vastgehecht aan het classificeerwoord: \"seorang anak\" = een kind. Het losse \"satu orang\" vervalt; \"satu\" verschijnt nooit naast het classificeerwoord."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "se-classifier",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Lima ekor kambing kecil.",
+      "transformationInstruction": "Verander het telwoord van vijf naar een (gebruik se- + classificeerwoord)",
+      "acceptableAnswers": [
+        "Seekor kambing kecil.",
+        "Seekor kambing kecil"
+      ],
+      "hintText": "Voor dieren is het classificeerwoord ekor; bij \"een\" smelt se- daarmee samen.",
+      "explanationText": "Voor dieren is het classificeerwoord \"ekor\" (letterlijk staart). Bij telwoord \"een\" wordt het se-ekor = seekor. Volgorde blijft [classif.] [znw] [bijv.nw.]."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "se-classifier",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Een nieuwe koffer.",
+      "requiredTargetPattern": "se-classifier",
+      "acceptableAnswers": [
+        "Sebuah koper baru.",
+        "Sebuah koper baru"
+      ],
+      "disallowedShortcutForms": [
+        "Satu koper baru",
+        "Satu buah koper baru"
+      ],
+      "explanationText": "\"Een\" voor een voorwerp wordt se- + buah = sebuah. Een koffer is een voorwerp, dus \"sebuah koper baru\". Niet \"satu koper\" of \"satu buah koper\"."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "se-classifier",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Een vogel zit in de boom.",
+      "requiredTargetPattern": "se-classifier",
+      "acceptableAnswers": [
+        "Seekor burung di pohon.",
+        "Seekor burung di pohon",
+        "Seekor burung ada di pohon.",
+        "Seekor burung ada di pohon"
+      ],
+      "disallowedShortcutForms": [
+        "Satu burung di pohon"
+      ],
+      "explanationText": "Een vogel is een dier, dus het classificeerwoord is \"ekor\". Bij \"een\" smelt se- ermee samen: \"seekor burung\". \"Satu burung\" zonder classificeerwoord komt natuurlijke spraak nauwelijks voor."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "se-classifier",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Een Japanse chauffeur.",
+      "requiredTargetPattern": "se-classifier",
+      "acceptableAnswers": [
+        "Seorang sopir Jepang.",
+        "Seorang sopir Jepang"
+      ],
+      "disallowedShortcutForms": [
+        "Satu sopir Jepang",
+        "Satu orang sopir Jepang"
+      ],
+      "explanationText": "Een chauffeur is een persoon, dus het classificeerwoord is \"orang\". Bij \"een\" smelt se- ermee samen: \"seorang sopir\". Het herkomstwoord \"Jepang\" volgt het znw als bepaling."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "ini-itu-demonstrative",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Koper itu berat.",
+      "transformationInstruction": "Voeg het bijvoeglijk naamwoord \"besar\" (groot) toe binnen de woordgroep en behoud \"itu\"",
+      "acceptableAnswers": [
+        "Koper besar itu berat.",
+        "Koper besar itu berat"
+      ],
+      "hintText": "Volgorde binnen de woordgroep: znw + bijv.nw. + ini/itu.",
+      "explanationText": "Het bijv.nw. zit in de woordgroep, voor de aanwijzer: \"Koper besar itu berat\" = die grote koffer is zwaar. \"Itu\" sluit de woordgroep af, gevolgd door het gezegde."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "ini-itu-demonstrative",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Sepeda ini rusak.",
+      "transformationInstruction": "Voeg het bijvoeglijk naamwoord \"merah\" (rood) toe binnen de woordgroep en behoud \"ini\"",
+      "acceptableAnswers": [
+        "Sepeda merah ini rusak.",
+        "Sepeda merah ini rusak"
+      ],
+      "hintText": "Volgorde: znw + bijv.nw. + ini, dan het gezegde.",
+      "explanationText": "Een kleur als bijv.nw. zit in dezelfde woordgroep als de aanwijzer: \"Sepeda merah ini\" = deze rode fiets. \"Ini\" markeert het einde van de woordgroep; het gezegde \"rusak\" volgt buiten de groep."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ini-itu-demonstrative",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Deze sleutel is klein.",
+      "requiredTargetPattern": "ini-itu-demonstrative",
+      "acceptableAnswers": [
+        "Kunci ini kecil.",
+        "Kunci ini kecil"
+      ],
+      "disallowedShortcutForms": [
+        "Ini kunci kecil"
+      ],
+      "explanationText": "\"Deze\" als aanwijzing bij een specifieke sleutel: \"ini\" achter het znw. \"Kunci ini kecil\" = deze sleutel is klein. \"Ini kunci kecil\" zou betekenen \"dit is een kleine sleutel\" (centraal onderwerp)."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ini-itu-demonstrative",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Dat kind is moe.",
+      "requiredTargetPattern": "ini-itu-demonstrative",
+      "acceptableAnswers": [
+        "Anak itu capek.",
+        "Anak itu capek"
+      ],
+      "disallowedShortcutForms": [
+        "Itu anak capek"
+      ],
+      "explanationText": "\"Dat\" als aanwijzer bij een bepaald kind: \"itu\" achter het znw. \"Anak itu capek\" = dat kind is moe. \"Itu anak capek\" zou een centrale presentatie zijn (\"dat is een moe kind\")."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ini-itu-demonstrative",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Die gele stoel is nieuw.",
+      "requiredTargetPattern": "ini-itu-demonstrative",
+      "acceptableAnswers": [
+        "Kursi kuning itu baru.",
+        "Kursi kuning itu baru"
+      ],
+      "disallowedShortcutForms": [
+        "Kursi itu kuning baru"
+      ],
+      "explanationText": "Het bijv.nw. zit binnen de woordgroep, voor de aanwijzer: [znw] [bijv.nw.] itu = \"kursi kuning itu\" (die gele stoel). Daarna komt het gezegde \"baru\" buiten de woordgroep."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "ini-itu-group-marker",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Mobil baru.",
+      "transformationInstruction": "Maak een volledige zin waarin de woordgroep met \"itu\" wordt afgesloten (de/het) en eindig op \"mahal\"",
+      "acceptableAnswers": [
+        "Mobil baru itu mahal.",
+        "Mobil baru itu mahal"
+      ],
+      "hintText": "Volgorde: [znw] [bijv.nw.] itu [gezegde].",
+      "explanationText": "Zonder nadruk fungeert \"itu\" als woordgroepmarkeerder, vergelijkbaar met \"de\" in het Nederlands: \"Mobil baru itu mahal\" = de nieuwe auto is duur. \"Itu\" sluit de groep, daarna komt het gezegde."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "ini-itu-group-marker",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Pasar besar.",
+      "transformationInstruction": "Maak een volledige zin waarin de woordgroep met \"itu\" wordt afgesloten en eindig op \"jauh\"",
+      "acceptableAnswers": [
+        "Pasar besar itu jauh.",
+        "Pasar besar itu jauh"
+      ],
+      "hintText": "\"Itu\" zonder nadruk = de/het. Volgorde: znw + bijv.nw. + itu + gezegde.",
+      "explanationText": "\"Itu\" als woordgroepmarkeerder bakent de bepaalde groep af: \"Pasar besar itu jauh\" = de grote markt is ver. Zonder \"itu\" zou de groep onbepaald blijven."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ini-itu-group-marker",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Het kind eet rijst.",
+      "requiredTargetPattern": "ini-itu-group-marker",
+      "acceptableAnswers": [
+        "Anak itu makan nasi.",
+        "Anak itu makan nasi"
+      ],
+      "disallowedShortcutForms": [
+        "Anak makan nasi"
+      ],
+      "explanationText": "\"Het\" wijst op een specifiek kind in de context: \"itu\" zonder nadruk markeert dat als bepaald. Zonder \"itu\" wordt het algemeen (\"een kind / kinderen eten rijst\")."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ini-itu-group-marker",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De koffer is zwaar.",
+      "requiredTargetPattern": "ini-itu-group-marker",
+      "acceptableAnswers": [
+        "Koper itu berat.",
+        "Koper itu berat"
+      ],
+      "disallowedShortcutForms": [
+        "Koper berat"
+      ],
+      "explanationText": "Bepaalde lidwoord \"de\" wordt vertaald als \"itu\" achter het znw, zonder nadruk. \"Koper itu berat\" = de koffer is zwaar. Zonder \"itu\" wordt het generiek."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ini-itu-group-marker",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Het restaurant is dichtbij.",
+      "requiredTargetPattern": "ini-itu-group-marker",
+      "acceptableAnswers": [
+        "Restoran itu dekat.",
+        "Restoran itu dekat"
+      ],
+      "disallowedShortcutForms": [
+        "Restoran dekat"
+      ],
+      "explanationText": "\"Het\" als bepaald lidwoord = \"itu\" zonder nadruk achter het znw. \"Restoran itu dekat\" verwijst naar een eerder genoemd specifiek restaurant. Zonder \"itu\" zou het een algemene uitspraak zijn."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "ini-itu-central",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Kemeja itu murah.",
+      "transformationInstruction": "Verander naar een presentatieve zin: \"Dat is een goedkoop hemd\" (aanwijzer als zelfstandig onderwerp)",
+      "acceptableAnswers": [
+        "Itu kemeja murah.",
+        "Itu kemeja murah"
+      ],
+      "hintText": "Verplaats de aanwijzer naar het begin als zelfstandig onderwerp.",
+      "explanationText": "Vooraan fungeert \"itu\" als zelfstandig onderwerp (presentatief): \"Itu kemeja murah\" = dat is een goedkoop hemd. Achter het znw zou \"kemeja itu murah\" betekenen \"dat hemd is goedkoop\"."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "ini-itu-central",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Anak ini sakit.",
+      "transformationInstruction": "Verander naar een presentatieve zin: \"Dit is een ziek kind\" (aanwijzer als zelfstandig onderwerp)",
+      "acceptableAnswers": [
+        "Ini anak sakit.",
+        "Ini anak sakit"
+      ],
+      "hintText": "Verplaats de aanwijzer naar het begin van de zin.",
+      "explanationText": "Vooraan is \"ini\" zelf het onderwerp en presenteert: \"Ini anak sakit\" = dit is een ziek kind. Achter het znw is \"ini\" een aanwijzing bij het kind: \"Anak ini sakit\" = dit kind is ziek."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ini-itu-central",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Dit is een sleutel.",
+      "requiredTargetPattern": "ini-itu-central",
+      "acceptableAnswers": [
+        "Ini kunci.",
+        "Ini kunci"
+      ],
+      "disallowedShortcutForms": [
+        "Kunci ini"
+      ],
+      "explanationText": "Presentatief: \"ini\" is zelf het onderwerp en staat vooraan, daarna het gepresenteerde znw. Geen lidwoord nodig in het Indonesisch. \"Kunci ini\" zou betekenen \"deze sleutel\" (aanwijzing)."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ini-itu-central",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Dat is mijn vader.",
+      "requiredTargetPattern": "ini-itu-central",
+      "acceptableAnswers": [
+        "Itu bapak saya.",
+        "Itu bapak saya",
+        "Itu ayah saya.",
+        "Itu ayah saya"
+      ],
+      "disallowedShortcutForms": [
+        "Bapak saya itu"
+      ],
+      "explanationText": "Presentatieve zin: \"itu\" vooraan als zelfstandig onderwerp, gevolgd door het gepresenteerde znw met bezitter. \"Bapak saya itu\" zou een aanwijzing zijn (die vader van mij)."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ini-itu-central",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Dit is een glas water.",
+      "requiredTargetPattern": "ini-itu-central",
+      "acceptableAnswers": [
+        "Ini segelas air.",
+        "Ini segelas air",
+        "Ini segelas air putih.",
+        "Ini segelas air putih"
+      ],
+      "disallowedShortcutForms": [
+        "Segelas air ini"
+      ],
+      "explanationText": "Presentatief met \"ini\" vooraan: \"Ini segelas air\" = dit is een glas water. Het classificeerwoord \"gelas\" smelt met se- tot \"segelas\" (een glas). \"Segelas air ini\" zou \"dit glas water\" betekenen."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "tidak-negation",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Kopi ini dingin.",
+      "transformationInstruction": "Maak de zin ontkennend (niet)",
+      "acceptableAnswers": [
+        "Kopi ini tidak dingin.",
+        "Kopi ini tidak dingin"
+      ],
+      "hintText": "Plaats het negatiewoord direct voor het bijv.nw.",
+      "explanationText": "\"Tidak\" ontkent bijvoeglijke naamwoorden en staat altijd direct voor het ontkende woord: \"Kopi ini tidak dingin\" = deze koffie is niet koud. \"Bukan\" past hier niet, want dat is voor zelfstandige naamwoorden."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "tidak-negation",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Anak itu suka pisang.",
+      "transformationInstruction": "Maak de zin ontkennend (niet/houdt niet van)",
+      "acceptableAnswers": [
+        "Anak itu tidak suka pisang.",
+        "Anak itu tidak suka pisang"
+      ],
+      "hintText": "Plaats het negatiewoord direct voor het werkwoord.",
+      "explanationText": "\"Tidak\" ontkent werkwoorden door direct ervoor te staan: \"Anak itu tidak suka pisang\" = dat kind houdt niet van bananen. \"Bukan\" zou hier fout zijn (geen znw-ontkenning)."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "tidak-negation",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Het kind houdt niet van rijst.",
+      "requiredTargetPattern": "tidak-negation",
+      "acceptableAnswers": [
+        "Anak itu tidak suka nasi.",
+        "Anak itu tidak suka nasi"
+      ],
+      "disallowedShortcutForms": [
+        "Anak itu bukan suka nasi"
+      ],
+      "explanationText": "Werkwoorden zoals \"suka\" worden ontkend met \"tidak\", niet met \"bukan\". \"Bukan\" reserveer je voor de ontkenning van zelfstandige naamwoorden (\"bukan nasi\" = geen rijst)."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "tidak-negation",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De koffer is niet groot.",
+      "requiredTargetPattern": "tidak-negation",
+      "acceptableAnswers": [
+        "Koper itu tidak besar.",
+        "Koper itu tidak besar"
+      ],
+      "disallowedShortcutForms": [
+        "Koper itu bukan besar"
+      ],
+      "explanationText": "Bijvoeglijke naamwoorden zoals \"besar\" worden ontkend met \"tidak\", niet met \"bukan\". \"Itu\" markeert hier de bepaalde woordgroep (de koffer); \"tidak\" ontkent het gezegde."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "tidak-negation",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Ik kom vandaag niet.",
+      "requiredTargetPattern": "tidak-negation",
+      "acceptableAnswers": [
+        "Saya tidak datang hari ini.",
+        "Saya tidak datang hari ini",
+        "Hari ini saya tidak datang.",
+        "Hari ini saya tidak datang"
+      ],
+      "disallowedShortcutForms": [
+        "Saya bukan datang hari ini"
+      ],
+      "explanationText": "\"Tidak\" staat direct voor het werkwoord \"datang\". De tijdsbepaling \"hari ini\" kan voor of achter het zinsdeel staan. \"Bukan\" is hier ongeschikt omdat het een werkwoord ontkent."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "adjective-after-noun",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Anak ini baik.",
+      "transformationInstruction": "Voeg \"kecil\" (klein) toe als bijvoeglijk naamwoord bij \"anak\" en behoud de betekenis \"is goed\"",
+      "acceptableAnswers": [
+        "Anak kecil ini baik.",
+        "Anak kecil ini baik"
+      ],
+      "hintText": "Het bijv.nw. binnen de woordgroep komt direct na het znw, voor de aanwijzer.",
+      "explanationText": "Binnen een naamwoordgroep staat het bijv.nw. ACHTER het znw: anak kecil = klein kind. De aanwijzer \"ini\" sluit de groep af; daarna volgt het gezegde \"baik\". Volgorde: [znw] [bijv.nw.] [aanw.vnw.] [gezegde]."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "adjective-after-noun",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Kemeja itu murah.",
+      "transformationInstruction": "Verander \"murah\" (goedkoop) naar \"bersih\" (schoon) op dezelfde plek",
+      "acceptableAnswers": [
+        "Kemeja itu bersih.",
+        "Kemeja itu bersih"
+      ],
+      "hintText": "Vervang het bijv.nw. op dezelfde positie; de woordvolgorde verandert niet.",
+      "explanationText": "Het bijv.nw. blijft op dezelfde positie staan: \"Kemeja itu bersih\" = dat hemd is schoon. In het Indonesisch staat het bijv.nw. dat dient als gezegde achter de naamwoordgroep met aanwijzer."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "adjective-after-noun",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Een kleine sleutel.",
+      "requiredTargetPattern": "adjective-after-noun",
+      "acceptableAnswers": [
+        "Kunci kecil.",
+        "Kunci kecil",
+        "Sebuah kunci kecil.",
+        "Sebuah kunci kecil"
+      ],
+      "disallowedShortcutForms": [
+        "Kecil kunci"
+      ],
+      "explanationText": "Het bijv.nw. \"kecil\" volgt het znw \"kunci\". Omgekeerd aan het Nederlands. Eventueel met classificeerwoord (\"sebuah kunci kecil\"), maar de bijv.nw.-positie is altijd na het znw."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "adjective-after-noun",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Het schone hemd.",
+      "requiredTargetPattern": "adjective-after-noun",
+      "acceptableAnswers": [
+        "Kemeja bersih.",
+        "Kemeja bersih",
+        "Kemeja bersih itu.",
+        "Kemeja bersih itu"
+      ],
+      "disallowedShortcutForms": [
+        "Bersih kemeja"
+      ],
+      "explanationText": "Het bijv.nw. staat achter het znw: \"kemeja bersih\". Het bepaalde lidwoord \"het\" kan optioneel uitgedrukt worden met \"itu\" achter het bijv.nw.: \"kemeja bersih itu\". De volgorde znw + bijv.nw. blijft."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "adjective-after-noun",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Een witte stoel en een gele tafel.",
+      "requiredTargetPattern": "adjective-after-noun",
+      "acceptableAnswers": [
+        "Kursi putih dan meja kuning.",
+        "Kursi putih dan meja kuning",
+        "Sebuah kursi putih dan sebuah meja kuning.",
+        "Sebuah kursi putih dan sebuah meja kuning"
+      ],
+      "disallowedShortcutForms": [
+        "Putih kursi dan kuning meja"
+      ],
+      "explanationText": "Beide bijv.nw. (kleurnamen) volgen hun znw: \"kursi putih\", \"meja kuning\". De voegwoord-constructie verandert die volgorde niet. Eventuele classificeerwoorden (\"sebuah\") staan voor het znw."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "belas-numbers",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Ada empat belas orang di sana.",
+      "transformationInstruction": "Verander het getal van veertien naar negentien",
+      "acceptableAnswers": [
+        "Ada sembilan belas orang di sana.",
+        "Ada sembilan belas orang di sana"
+      ],
+      "hintText": "Sembilan = negen. Voor 12-19: [eenheid] + belas, los geschreven.",
+      "explanationText": "19 = \"sembilan belas\". Het patroon voor de tieners blijft [eenheid] + belas, losgeschreven. Alleen 11 is uitzondering (sebelas)."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "belas-numbers",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Ada sebelas sepeda di taman.",
+      "transformationInstruction": "Verander het getal van elf naar zestien",
+      "acceptableAnswers": [
+        "Ada enam belas sepeda di taman.",
+        "Ada enam belas sepeda di taman"
+      ],
+      "hintText": "Enam = zes. Vanaf 12 gebruik je het losse eenheidswoord + belas.",
+      "explanationText": "16 = \"enam belas\". Vanaf 12 wordt het eenheidswoord los geschreven voor \"belas\". Alleen bij 11 smelt se- met belas tot \"sebelas\"."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "belas-numbers",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Er zijn dertien koffers.",
+      "requiredTargetPattern": "belas-numbers",
+      "acceptableAnswers": [
+        "Ada tiga belas koper.",
+        "Ada tiga belas koper",
+        "Ada tiga belas buah koper.",
+        "Ada tiga belas buah koper"
+      ],
+      "disallowedShortcutForms": [
+        "Ada tiga puluh koper"
+      ],
+      "explanationText": "13 = \"tiga belas\" (tiener). \"Tiga puluh\" zou 30 zijn (tiental). Optioneel met classificeerwoord \"buah\" voor voorwerpen: \"tiga belas buah koper\"."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "belas-numbers",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Veertien kinderen wachten thuis.",
+      "requiredTargetPattern": "belas-numbers",
+      "acceptableAnswers": [
+        "Empat belas anak menunggu di rumah.",
+        "Empat belas anak menunggu di rumah",
+        "Empat belas orang anak menunggu di rumah.",
+        "Empat belas orang anak menunggu di rumah"
+      ],
+      "disallowedShortcutForms": [
+        "Empat puluh anak menunggu di rumah"
+      ],
+      "explanationText": "14 = \"empat belas\" (tiener). \"Empat puluh\" zou 40 zijn. Bij personen kun je het classificeerwoord \"orang\" toevoegen tussen telwoord en znw."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "belas-numbers",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Negentien dagen vakantie.",
+      "requiredTargetPattern": "belas-numbers",
+      "acceptableAnswers": [
+        "Sembilan belas hari libur.",
+        "Sembilan belas hari libur"
+      ],
+      "disallowedShortcutForms": [
+        "Sembilan puluh hari libur"
+      ],
+      "explanationText": "19 = \"sembilan belas\" (tiener). \"Sembilan puluh\" zou 90 zijn. Het zelfstandig naamwoord (hari) en de bepaling (libur) volgen het telwoord direct."
     }
   }
 ]

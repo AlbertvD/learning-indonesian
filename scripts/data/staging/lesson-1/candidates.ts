@@ -191,6 +191,87 @@ export const candidates = [
     }
   },
   {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "verb-no-conjugation",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Anak minum susu.",
+      "transformationInstruction": "Verander de zin naar de toekomende tijd (morgen)",
+      "acceptableAnswers": [
+        "Besok anak minum susu.",
+        "Besok anak minum susu",
+        "Anak minum susu besok.",
+        "Anak minum susu besok"
+      ],
+      "hintText": "Voeg een tijdsaanduiding toe — het werkwoord blijft hetzelfde",
+      "explanationText": "Het werkwoord \"minum\" (drinken) verandert niet voor de toekomende tijd. Je voegt alleen \"besok\" (morgen) toe. In het Nederlands zou je zeggen \"zal drinken\" of \"gaat drinken\" — in het Indonesisch blijft het \"minum\"."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "verb-no-conjugation",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Saya tinggal di hotel.",
+      "transformationInstruction": "Verander het onderwerp naar \"mereka\" (zij, meervoud)",
+      "acceptableAnswers": [
+        "Mereka tinggal di hotel.",
+        "Mereka tinggal di hotel"
+      ],
+      "hintText": "Wat gebeurt er met het werkwoord als het onderwerp verandert?",
+      "explanationText": "Het werkwoord \"tinggal\" (verblijven/wonen) verandert NIET, ook niet bij een meervoudig onderwerp. In het Nederlands: \"ik verblijf\" wordt \"zij verblijven\" — in het Indonesisch blijft het altijd \"tinggal\". Geen vervoeging voor persoon of getal."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "verb-no-conjugation",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De dokter werkt in het ziekenhuis.",
+      "requiredTargetPattern": "verb-no-conjugation",
+      "acceptableAnswers": [
+        "Dokter bekerja di rumah sakit.",
+        "Dokter bekerja di rumah sakit"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "\"Bekerja\" (werken) wordt niet vervoegd: \"ik werk, hij werkt\" worden allebei gewoon \"bekerja\". Het werkwoord verandert niet voor persoon of getal. \"Rumah sakit\" (letterlijk \"ziek huis\") = ziekenhuis."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "verb-no-conjugation",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Gisteren kwam de gast aan in het hotel.",
+      "requiredTargetPattern": "verb-no-conjugation",
+      "acceptableAnswers": [
+        "Kemarin tamu datang di hotel.",
+        "Kemarin tamu datang di hotel",
+        "Tamu datang di hotel kemarin.",
+        "Tamu datang di hotel kemarin"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "\"Datang\" (komen/aankomen) verandert niet voor de verleden tijd. \"Kemarin\" (gisteren) geeft de tijd aan, dus \"kwam\" wordt gewoon \"datang\". In het Nederlands wisselt \"kom/kwam\" — in het Indonesisch is er één vorm."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "verb-no-conjugation",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Morgen gaan wij naar het strand.",
+      "requiredTargetPattern": "verb-no-conjugation",
+      "acceptableAnswers": [
+        "Besok kami pergi ke pantai.",
+        "Besok kami pergi ke pantai",
+        "Kami pergi ke pantai besok.",
+        "Kami pergi ke pantai besok"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "\"Pergi\" (gaan) blijft \"pergi\" — geen toekomende vervoeging. \"Besok\" (morgen) signaleert de tijd. Nederlandse leerlingen denken vaak aan \"zullen gaan\" — in het Indonesisch is alleen het tijdwoord nodig."
+    }
+  },
+  {
     "exercise_type": "cloze_mcq",
     "grammar_pattern_slug": "zero-copula",
     "source_page": 1,
@@ -379,6 +460,85 @@ export const candidates = [
     }
   },
   {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "zero-copula",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Kopinya panas.",
+      "transformationInstruction": "Verander het bijvoeglijk naamwoord naar \"dingin\" (koud)",
+      "acceptableAnswers": [
+        "Kopinya dingin.",
+        "Kopinya dingin"
+      ],
+      "hintText": "Vervang alleen het bijvoeglijk naamwoord — er is geen koppelwerkwoord",
+      "explanationText": "Het bijvoeglijk naamwoord volgt direct op het onderwerp, zonder \"is\" ertussen. Je vervangt \"panas\" (heet) door \"dingin\" (koud) en de zin blijft grammaticaal correct: \"Kopinya dingin\" = De koffie [is] koud."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "zero-copula",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Saya lapar.",
+      "transformationInstruction": "Verander het onderwerp naar \"anak-anak\" (de kinderen)",
+      "acceptableAnswers": [
+        "Anak-anak lapar.",
+        "Anak-anak lapar"
+      ],
+      "hintText": "Geen koppelwerkwoord nodig in het Indonesisch",
+      "explanationText": "Bij het wisselen van onderwerp blijft de structuur gelijk: znw + bijv.nw. zonder \"is/zijn\". \"Anak-anak lapar\" = De kinderen [zijn] honger. In het Nederlands moet je \"zijn\" toevoegen, in het Indonesisch nooit."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "zero-copula",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Mijn koffer is zwaar.",
+      "requiredTargetPattern": "zero-copula",
+      "acceptableAnswers": [
+        "Koper saya berat.",
+        "Koper saya berat"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "Geen koppelwerkwoord \"is\" vertalen. \"Koper saya berat\" = Mijn koffer [is] zwaar. Het bezit \"mijn\" wordt aangegeven met \"saya\" achter het zelfstandig naamwoord. \"Berat\" (zwaar) volgt direct."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "zero-copula",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De kamer is schoon.",
+      "requiredTargetPattern": "zero-copula",
+      "acceptableAnswers": [
+        "Kamarnya bersih.",
+        "Kamarnya bersih",
+        "Kamar bersih.",
+        "Kamar bersih"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "\"Is\" wordt niet vertaald. \"Kamarnya bersih\" = De kamer [is] schoon. Het achtervoegsel \"-nya\" op \"kamar\" geeft bepaaldheid aan (de kamer). \"Bersih\" (schoon) volgt zonder verbindingswoord."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "zero-copula",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De auto is kapot.",
+      "requiredTargetPattern": "zero-copula",
+      "acceptableAnswers": [
+        "Mobilnya rusak.",
+        "Mobilnya rusak",
+        "Mobil rusak.",
+        "Mobil rusak"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "Geen \"is\" in het Indonesisch. \"Mobilnya rusak\" = De auto [is] kapot. Twee regels gecombineerd: geen koppelwerkwoord, en \"-nya\" als bepaaldheidsmarker. \"Rusak\" (kapot/stuk) is het bijvoeglijk naamwoord."
+    }
+  },
+  {
     "exercise_type": "cloze_mcq",
     "grammar_pattern_slug": "serial-verb-construction",
     "source_page": 1,
@@ -560,6 +720,83 @@ export const candidates = [
       ],
       "disallowedShortcutForms": null,
       "explanationText": "\"Boleh makan\" = mogen eten. Hetzelfde principe als \"mau beli\" en \"bisa beli\": hulpwerkwoord + hoofdwerkwoord, altijd in die volgorde, altijd zonder tussenvoegsel."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "serial-verb-construction",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Anak tidur di kamar.",
+      "transformationInstruction": "Voeg \"willen\" (mau) toe",
+      "acceptableAnswers": [
+        "Anak mau tidur di kamar.",
+        "Anak mau tidur di kamar"
+      ],
+      "hintText": "Het hulpwerkwoord komt direct voor het hoofdwerkwoord, zonder verbindingswoord",
+      "explanationText": "\"Mau tidur\" = willen slapen. \"Mau\" staat direct voor \"tidur\" — geen \"untuk\" of ander tussenvoegsel. In het Nederlands zou je geen \"te\" gebruiken (\"willen slapen\"), in het Indonesisch ook niet."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "serial-verb-construction",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Kami pulang sekarang.",
+      "transformationInstruction": "Voeg \"moeten\" (harus) toe",
+      "acceptableAnswers": [
+        "Kami harus pulang sekarang.",
+        "Kami harus pulang sekarang"
+      ],
+      "hintText": "Het hulpwerkwoord wordt direct voor het hoofdwerkwoord geplaatst",
+      "explanationText": "\"Harus\" (moeten) gedraagt zich net als mau/bisa/boleh: het komt direct voor het hoofdwerkwoord, zonder tussenvoegsel. \"Harus pulang\" = moeten teruggaan. Dezelfde seriële werkwoordconstructie."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "serial-verb-construction",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Ik kan Indonesisch leren.",
+      "requiredTargetPattern": "serial-verb-construction",
+      "acceptableAnswers": [
+        "Saya bisa belajar bahasa Indonesia.",
+        "Saya bisa belajar bahasa Indonesia"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "\"Bisa belajar\" = kunnen leren. Twee werkwoorden direct na elkaar zonder verbindingswoord. In het Nederlands zou je zeggen \"kan leren\" — in het Indonesisch ook geen \"te\" of \"om te\": gewoon \"bisa belajar\"."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "serial-verb-construction",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De gast wil koffie drinken.",
+      "requiredTargetPattern": "serial-verb-construction",
+      "acceptableAnswers": [
+        "Tamu mau minum kopi.",
+        "Tamu mau minum kopi"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "\"Mau minum\" = willen drinken. Hulpwerkwoord (mau) + hoofdwerkwoord (minum), direct na elkaar. Geen verbindingswoord. \"Tamu\" (gast) is het onderwerp, \"kopi\" (koffie) het lijdend voorwerp."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "serial-verb-construction",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Wij moeten morgen werken.",
+      "requiredTargetPattern": "serial-verb-construction",
+      "acceptableAnswers": [
+        "Kami harus bekerja besok.",
+        "Kami harus bekerja besok",
+        "Besok kami harus bekerja.",
+        "Besok kami harus bekerja"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "\"Harus bekerja\" = moeten werken. \"Harus\" gedraagt zich als mau/bisa/boleh in seriële werkwoordconstructies: direct voor het hoofdwerkwoord, geen tussenvoegsel. \"Besok\" (morgen) geeft de tijd aan — werkwoord verandert niet."
     }
   },
   {
@@ -754,6 +991,92 @@ export const candidates = [
     }
   },
   {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "no-articles",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "De koffer is bij de deur.",
+      "transformationInstruction": "Vertaal naar het Indonesisch (zonder lidwoorden)",
+      "acceptableAnswers": [
+        "Koper di pintu.",
+        "Koper di pintu",
+        "Kopernya di pintu.",
+        "Kopernya di pintu"
+      ],
+      "hintText": "\"De\" wordt niet vertaald — twee zelfstandige naamwoorden zonder lidwoord",
+      "explanationText": "Geen lidwoorden: \"de koffer\" wordt \"koper\" en \"de deur\" wordt \"pintu\". Combineer dit met de nul-copula regel (geen \"is\"): \"Koper di pintu\" = [De] koffer [is] bij [de] deur. \"Kopernya\" (met -nya) is ook correct voor bepaaldheid."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "no-articles",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Saya minum teh.",
+      "transformationInstruction": "Vertaal naar het Nederlands (toon dat meerdere lidwoorden mogelijk zijn)",
+      "acceptableAnswers": [
+        "Ik drink thee.",
+        "Ik drink een thee.",
+        "Ik drink de thee."
+      ],
+      "hintText": "Welke Nederlandse lidwoorden passen allemaal bij \"teh\" zonder context?",
+      "explanationText": "Omdat het Indonesisch geen lidwoorden heeft, kan \"teh\" vertaald worden als \"thee\" (algemeen), \"een thee\" (één kopje) of \"de thee\" (specifiek). De Nederlandse vertaling vraagt om een keuze die het Indonesisch zelf nooit hoeft te maken."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "no-articles",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De taxi staat voor het hotel.",
+      "requiredTargetPattern": "no-articles",
+      "acceptableAnswers": [
+        "Taksi di depan hotel.",
+        "Taksi di depan hotel",
+        "Taksinya di depan hotel.",
+        "Taksinya di depan hotel"
+      ],
+      "disallowedShortcutForms": [
+        "Satu taksi di depan satu hotel"
+      ],
+      "explanationText": "Geen lidwoorden: \"de taxi\" en \"het hotel\" verliezen allebei hun lidwoord. \"Taksi di depan hotel\" = [De] taxi [is] voor [het] hotel. Geen koppelwerkwoord nodig (\"is\" wordt weggelaten). \"Satu\" als vertaling van \"de\" is fout — dat zou \"één taxi\" betekenen."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "no-articles",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Het kind drinkt water.",
+      "requiredTargetPattern": "no-articles",
+      "acceptableAnswers": [
+        "Anak minum air.",
+        "Anak minum air"
+      ],
+      "disallowedShortcutForms": [
+        "Satu anak minum satu air"
+      ],
+      "explanationText": "Geen lidwoorden in het Indonesisch: \"het kind\" wordt gewoon \"anak\". \"Satu\" zou \"één kind\" betekenen, niet \"het kind\". Context bepaalt of het om één bepaald kind of een algemeen kind gaat."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "no-articles",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De toerist koopt een hoed.",
+      "requiredTargetPattern": "no-articles",
+      "acceptableAnswers": [
+        "Turis beli topi.",
+        "Turis beli topi"
+      ],
+      "disallowedShortcutForms": [
+        "Satu turis beli satu topi"
+      ],
+      "explanationText": "Lidwoorden \"de\" en \"een\" worden allebei niet vertaald. \"Turis beli topi\" = [De] toerist koopt [een] hoed. De Nederlandse leerling wil graag \"satu\" toevoegen voor \"een\" — maar dat zou nadruk leggen op het aantal (precies één hoed)."
+    }
+  },
+  {
     "exercise_type": "cloze_mcq",
     "grammar_pattern_slug": "no-singular-plural",
     "source_page": 1,
@@ -939,6 +1262,87 @@ export const candidates = [
         "Enam ibu-ibu beli nanas"
       ],
       "explanationText": "\"Enam ibu\" = zes dames. Het telwoord \"enam\" geeft het aantal al aan, dus \"ibu\" wordt niet verdubbeld. \"Ibu-ibu\" zonder telwoord kan wel (dan betekent het \"dames\" in het algemeen), maar met \"enam\" ervoor is het fout."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "no-singular-plural",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Saya bawa tas.",
+      "transformationInstruction": "Geef aan dat je zeven tassen draagt (gebruik een telwoord)",
+      "acceptableAnswers": [
+        "Saya bawa tujuh tas.",
+        "Saya bawa tujuh tas"
+      ],
+      "hintText": "Voeg het telwoord toe — het zelfstandig naamwoord blijft hetzelfde",
+      "explanationText": "Het zelfstandig naamwoord \"tas\" verandert niet voor meervoud. Voeg alleen het telwoord toe: \"tujuh tas\" = zeven tassen. Geen \"tas-tas\" en geen meervoudsuitgang. Het Indonesisch laat alle werk over aan het telwoord."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "no-singular-plural",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Delapan turis di hotel.",
+      "transformationInstruction": "Verander het aantal naar twintig",
+      "acceptableAnswers": [
+        "Dua puluh turis di hotel.",
+        "Dua puluh turis di hotel"
+      ],
+      "hintText": "Alleen het telwoord verandert; het zelfstandig naamwoord blijft enkelvoud",
+      "explanationText": "Of het nu \"delapan\" (acht) of \"dua puluh\" (twintig) is, \"turis\" (toerist) blijft hetzelfde. Het Indonesische zelfstandig naamwoord heeft geen meervoudsvorm, dus alleen het telwoord verandert: \"Dua puluh turis di hotel\" = Twintig toeristen in het hotel."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "no-singular-plural",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Tien stoelen in de kamer.",
+      "requiredTargetPattern": "no-singular-plural",
+      "acceptableAnswers": [
+        "Sepuluh kursi di kamar.",
+        "Sepuluh kursi di kamar"
+      ],
+      "disallowedShortcutForms": [
+        "Sepuluh kursi-kursi di kamar"
+      ],
+      "explanationText": "\"Sepuluh kursi\" = tien stoelen. Het telwoord \"sepuluh\" maakt meervoud al duidelijk, dus \"kursi\" blijft enkelvoudig. In het Nederlands wordt \"stoel\" → \"stoelen\", maar in het Indonesisch blijft \"kursi\" altijd \"kursi\"."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "no-singular-plural",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Vier kinderen drinken melk.",
+      "requiredTargetPattern": "no-singular-plural",
+      "acceptableAnswers": [
+        "Empat anak minum susu.",
+        "Empat anak minum susu"
+      ],
+      "disallowedShortcutForms": [
+        "Empat anak-anak minum susu"
+      ],
+      "explanationText": "\"Empat anak\" = vier kinderen. Het telwoord \"empat\" geeft het aantal aan, dus geen reduplicatie. \"Anak-anak\" zonder telwoord betekent \"kinderen in het algemeen\" — met een telwoord ervoor is het fout. \"Susu\" verandert ook niet."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "no-singular-plural",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Drie auto's voor het hotel.",
+      "requiredTargetPattern": "no-singular-plural",
+      "acceptableAnswers": [
+        "Tiga mobil di depan hotel.",
+        "Tiga mobil di depan hotel"
+      ],
+      "disallowedShortcutForms": [
+        "Tiga mobil-mobil di depan hotel"
+      ],
+      "explanationText": "\"Tiga mobil\" = drie auto's. Het telwoord doet het meervoudwerk, dus \"mobil\" blijft enkelvoudig — geen \"mobil-mobil\". Hetzelfde principe als \"dua rumah\": telwoord + enkelvoud is altijd correct."
     }
   },
   {
@@ -1130,6 +1534,87 @@ export const candidates = [
     }
   },
   {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "reduplication-plural",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Anak duduk di kursi.",
+      "transformationInstruction": "Geef aan dat de kinderen (in het algemeen, geen specifiek aantal) op de stoelen zitten",
+      "acceptableAnswers": [
+        "Anak-anak duduk di kursi.",
+        "Anak-anak duduk di kursi"
+      ],
+      "hintText": "Reduplicatie geeft onbepaald meervoud aan zonder telwoord",
+      "explanationText": "Zonder telwoord gebruik je reduplicatie om meervoud aan te geven: \"anak-anak\" = de kinderen (algemeen). Zonder reduplicatie zou \"anak\" enkelvoudig of dubbelzinnig zijn. Bij een telwoord (\"tiga anak\") gebruik je geen reduplicatie."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "reduplication-plural",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Saya beli sayuran.",
+      "transformationInstruction": "Geef aan dat het om allerlei soorten groenten gaat (verscheidenheid)",
+      "acceptableAnswers": [
+        "Saya beli sayur-sayuran.",
+        "Saya beli sayur-sayuran"
+      ],
+      "hintText": "Herhaling + uitgang -an benadrukt verscheidenheid",
+      "explanationText": "\"Sayur-sayuran\" (reduplicatie + -an) drukt verscheidenheid uit: allerlei soorten groenten. Zonder de reduplicatie heb je \"sayuran\" (groenten in het algemeen). De volledige reduplicatievorm benadrukt de variëteit, net als bij \"buah-buahan\"."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "reduplication-plural",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De toeristen (in het algemeen) komen naar Bali.",
+      "requiredTargetPattern": "reduplication-plural",
+      "acceptableAnswers": [
+        "Turis-turis datang ke Bali.",
+        "Turis-turis datang ke Bali"
+      ],
+      "disallowedShortcutForms": [
+        "Turis datang ke Bali"
+      ],
+      "explanationText": "Zonder telwoord gebruik je reduplicatie voor onbepaald meervoud: \"turis-turis\" = de toeristen (in het algemeen, geen specifiek aantal). Zonder verdubbeling zou de zin dubbelzinnig zijn (één of meerdere toeristen?)."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "reduplication-plural",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "In de winkel zijn allerlei kleren.",
+      "requiredTargetPattern": "reduplication-plural",
+      "acceptableAnswers": [
+        "Di toko ada pakaian-pakaian.",
+        "Di toko ada pakaian-pakaian"
+      ],
+      "disallowedShortcutForms": [
+        "Di toko ada pakaian"
+      ],
+      "explanationText": "Reduplicatie geeft verscheidenheid aan: \"pakaian-pakaian\" = allerlei kleren. Zonder verdubbeling zou \"pakaian\" gewoon \"kleding\" betekenen, zonder de nadruk op verscheidenheid van soorten."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "reduplication-plural",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De gasten zitten in het restaurant.",
+      "requiredTargetPattern": "reduplication-plural",
+      "acceptableAnswers": [
+        "Tamu-tamu duduk di restoran.",
+        "Tamu-tamu duduk di restoran"
+      ],
+      "disallowedShortcutForms": [
+        "Tamu duduk di restoran"
+      ],
+      "explanationText": "\"Tamu-tamu\" = de gasten (meervoud, geen specifiek aantal). Zonder telwoord is reduplicatie nodig om meervoud te markeren. \"Tamu\" alleen zou enkelvoudig zijn of dubbelzinnig. Bij een telwoord (\"lima tamu\") zou je geen reduplicatie gebruiken."
+    }
+  },
+  {
     "exercise_type": "cloze_mcq",
     "grammar_pattern_slug": "belum-vs-tidak",
     "source_page": 1,
@@ -1317,6 +1802,101 @@ export const candidates = [
         "Saya belum mau pisang"
       ],
       "explanationText": "\"Tidak mau\" = wil niet (definitief). Dit is geen tijdelijke situatie — de spreker wil echt geen bananen maar ananas. \"Belum mau\" (nog niet willen) past hier niet: het gaat om een keuze, niet om timing."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "belum-vs-tidak",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Anak tidak makan nasi.",
+      "transformationInstruction": "Verander naar \"het kind heeft nog niet gegeten\" (eet straks wel)",
+      "acceptableAnswers": [
+        "Anak belum makan nasi.",
+        "Anak belum makan nasi"
+      ],
+      "hintText": "Welke ontkenning past bij iets dat nog niet gebeurd is, maar wel gaat gebeuren?",
+      "explanationText": "\"Belum\" markeert iets dat nog niet voltooid is, maar verwacht wordt. \"Anak belum makan\" = Het kind heeft nog niet gegeten (maar gaat dat wel doen). \"Tidak makan\" zou betekenen: weigert te eten, eet niet (als beslissing of gewoonte)."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "belum-vs-tidak",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Tamu belum datang.",
+      "transformationInstruction": "Verander naar een definitieve ontkenning (komt helemaal niet)",
+      "acceptableAnswers": [
+        "Tamu tidak datang.",
+        "Tamu tidak datang"
+      ],
+      "hintText": "Welk woord drukt uit dat iets niet gebeurt, en ook niet gaat gebeuren?",
+      "explanationText": "\"Tidak datang\" = komt niet (definitief, geen verwachting van verandering). \"Belum datang\" = nog niet aangekomen (komt later wel). Het verschil zit in de verwachting: \"belum\" houdt de mogelijkheid open, \"tidak\" sluit haar af."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "belum-vs-tidak",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De kinderen hebben nog niet geslapen.",
+      "requiredTargetPattern": "belum-vs-tidak",
+      "acceptableAnswers": [
+        "Anak-anak belum tidur.",
+        "Anak-anak belum tidur"
+      ],
+      "disallowedShortcutForms": [
+        "Anak-anak tidak tidur"
+      ],
+      "targetSentenceWithBlank": "Anak-anak ___ tidur.",
+      "blankAcceptableAnswers": [
+        "belum"
+      ],
+      "explanationText": "\"Belum\" = nog niet (tijdelijk, gaan straks wel slapen). \"Tidak tidur\" zou betekenen: slapen niet (als feit of weigering). \"Belum\" houdt de verwachting open dat ze straks wel zullen slapen."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "belum-vs-tidak",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De toerist drinkt geen koffie, hij drinkt thee.",
+      "requiredTargetPattern": "belum-vs-tidak",
+      "acceptableAnswers": [
+        "Turis tidak minum kopi, dia minum teh.",
+        "Turis tidak minum kopi, dia minum teh"
+      ],
+      "disallowedShortcutForms": [
+        "Turis belum minum kopi"
+      ],
+      "targetSentenceWithBlank": "Turis ___ minum kopi, dia minum teh.",
+      "blankAcceptableAnswers": [
+        "tidak"
+      ],
+      "explanationText": "\"Tidak minum\" = drinkt niet (keuze, definitief). De toerist kiest thee in plaats van koffie — dat is geen tijdelijke situatie. \"Belum\" zou impliceren: nog niet maar straks misschien wel, en dat past niet bij een keuze."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "belum-vs-tidak",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Het eten is nog niet klaar.",
+      "requiredTargetPattern": "belum-vs-tidak",
+      "acceptableAnswers": [
+        "Makanan belum selesai.",
+        "Makanan belum selesai",
+        "Makanannya belum selesai.",
+        "Makanannya belum selesai"
+      ],
+      "disallowedShortcutForms": [
+        "Makanan tidak selesai"
+      ],
+      "targetSentenceWithBlank": "Makanan ___ selesai.",
+      "blankAcceptableAnswers": [
+        "belum"
+      ],
+      "explanationText": "\"Belum selesai\" = nog niet klaar (komt straks wel klaar). \"Tidak selesai\" zou betekenen: niet klaar (het wordt nooit klaar gemaakt). De verwachting van voltooiing maakt \"belum\" hier de juiste keuze."
     }
   }
 ]

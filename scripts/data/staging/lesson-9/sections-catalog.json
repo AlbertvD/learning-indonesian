@@ -1,0 +1,645 @@
+{
+  "lesson": 9,
+  "generatedAt": "2026-04-18T15:17:06.960Z",
+  "sourcePages": 9,
+  "lessonMeta": {
+    "title": "Les - Ke Puskesmas / Dukun en Jamu",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 9
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Cultuur - Dukun en Jamu",
+      "source_pages": [
+        1,
+        2
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Over de inheemse Indonesische geneeskunst hebben westerse geneeskundigen zich vroeger wel eens laatdunkend uitgelaten. Tegenwoordig echter is er in de medische wereld serieuze belangstelling voor geneeskrachtige stoffen uit de natuur. De populariteit van homeopatische middelen stijgt nog steeds en er begint zelfs een bepaalde mate van acceptatie bij sommige ziektekostenverzekeringen te komen, die ook deze middelen zijn gaan vergoeden.",
+        "In Indonesië is gezond zijn van groot belang. Voor de meeste Indonesiërs geldt, dat als men ziek is en niet kan werken, er ook geen geld binnenkomt. Bovendien moeten de kosten voor operaties, ziekenhuizen, artsen, medicijnen en geneeskrachtige kruiden (jamu, jejamu) door het gezin zelf worden opgebracht. Ziekte van één van de familieleden kan betekenen dat het hele gezin onder zware financiële druk komt te staan.",
+        "Het voorkomen van ziekte neemt dan ook, meer dan in Nederland, een belangrijke plaats in. Van dit gegeven profiteren zowel de farmaceutische industrie als de jamu-fabrikant die een overstelpend aanbod aan preventieve middelen op de markt brengen. Ook de markt voor middelen tegen 'kleine ongemakken' als hoofdpijn, maag- en darmstoornissen, verkoudheid en stijve spieren is bijzonder groot.",
+        "Uiteraard kent iedere Indonesiër naast de aangeboden geneesmiddelen en jamu zijn eigen huismiddel om bepaalde kwalen te voorkomen of te genezen.",
+        "Maar soms worden de problemen zo groot, dat specialistische hulp gewenst is. Naast consultatie van een huisarts en een bezoek aan een dorpskliniek of medisch centrum (ziekenhuis), bezoekt een Indonesiër vaak eveneens een dukun: een persoon die gespecialiseerd is in het op traditionele wijze behandelen van zowel lichamelijke als geestelijke klachten.",
+        "De dukun, de traditionele genezer, brengt ziektebeelden en symptomen in verband met de geestelijke conditie van de zieke. De traditionele behandelingswijze van ziektes is gestoeld op de Indonesische culturele opvattingen over het wezen van de mens.",
+        "Volgens deze opvatting bestaat de mens uit een stoffelijk en een niet-stoffelijk aspect. Beide aspecten bezitten een bepaalde goede 'kracht' (zie schema op de volgende pagina). Indien deze twee positieve krachten niet in evenwicht zijn, komt de gezondheid in gevaar en kan men ziek worden doordat men: zelf niet in evenwicht verkeert, of doordat het evenwicht makkelijk beïnvloed kan worden door kwade krachten van buitenaf.",
+        "De innerlijke kracht, op Java semangat genoemd, behoort bij elk persoon. De ene persoon heeft een wat kleinere semangat dan de andere, maar men kan deze innerlijke kracht versterken en gezond houden door de condities te verbeteren, zoals door beheersing van het lichaam middels de vechtsport pencak silat, het scherpen van de geest door het uit het hoofd reciteren van teksten uit de Koran en het aan zichzelf opleggen van restricties (taboes) vooral wat betreft de menselijke zwakheden als veel eten en drinken, sex, macht en financieel gewin.",
+        "Kwade krachten veroorzaken ziekte. De kwade krachten vinden we overal om ons heen in de natuur, in de vorm van hevige regen, droogte en slangebeten. Soms ook als niet-stoffelijke verschijningsvormen, zoals geesten, bovennatuurlijke wezens, spoken en soms door manipulatie van een dukun met zwarte magie.",
+        "Sommige dukun zijn gespecialiseerd. Dukun bayi (baby), bij voorbeeld, zijn vroedvrouwen die assistentie verlenen bij bevallingen. Daarnaast zijn er masseurs, specialisten voor botbreuken, slangebeten, kruidenmengsels, witte en zwarte magie, bezetenheid door geesten, enzovoorts.",
+        "Een dukun leert zijn vak over het algemeen niet via formele scholing. Het is daarnaast ook niet vanzelfsprekend dat de zoon van een dukun in de voetsporen van zijn vader treedt. Men gaat in de leer bij een dukun van aanzien of ontvangt de gave door bovennatuurlijke inspiratie. De meeste dukun hebben jarenlange ervaring op een bepaald gebied en sommigen leren hun leven lang door om hun kennis te vermeerderen en hun genezingskracht te vergroten.",
+        "Enkele eigenschappen die veel dukun bezitten zijn :\na. uitgebreide kennis van geneeskrachtige kruiden en kruidenmengsels (jamu, jejamu);\nb. het uit het hoofd kunnen reciteren van specifieke, bezwerende formules om een bepaalde ziekte uit te bannen;\nc. psychologisch inzicht;\nd. kennis van culturele taboes en sociale conventies die met de ziekte worden geassocieerd.",
+        "Door de behandeling tweeledig toe te passen, namelijk op het lichaam met kruidenmengsels en op de geest met behulp van culturele en psychologische codes, herstelt de dukun het evenwicht en versterkt daarmee de semangat. Juist vanwege het succes van deze gecombineerde aanpak is het onwaarschijnlijk dat het verschijnsel dukun in Indonesië snel zal verdwijnen."
+      ]
+    },
+    {
+      "id": 1,
+      "type": "dialogue",
+      "title": "Ke Puskesmas",
+      "source_pages": [
+        3
+      ],
+      "confidence": "high",
+      "lines": [
+        {
+          "speaker": "narrator",
+          "text": "Sekarang di Indonesia di mana-mana ada PUSKESMAS. PUSKESMAS itu adalah tempat orang desa cari dokter atau minta obat. Di desa-desa kecil tidak ada rumah sakit seperti di kota besar."
+        },
+        {
+          "speaker": "narrator",
+          "text": "Tina kakinya sakit sekali. Dia jatuh dari pohon. Ibunya betul-betul kaget waktu Tina jatuh. Barangkali kakinya patah. Maka ibu dengan Tina ke dokter di PUSKESMAS."
+        },
+        {
+          "speaker": "Dokter",
+          "text": "Ada apa?"
+        },
+        {
+          "speaker": "Tina",
+          "text": "Kaki saya sakit sekali dokter. Saya jatuh dari pohon."
+        },
+        {
+          "speaker": "Dokter",
+          "text": "Bagaimana bisa jatuh dari pohon?"
+        },
+        {
+          "speaker": "Tina",
+          "text": "Saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh."
+        },
+        {
+          "speaker": "Dokter",
+          "text": "Nah, coba, saya periksa kakimu dulu. Barangkali tidak apa-apa."
+        },
+        {
+          "speaker": "Tina",
+          "text": "Awas dokter, jangan sakit, ya."
+        },
+        {
+          "speaker": "Dokter",
+          "text": "Ini sakit atau tidak?"
+        },
+        {
+          "speaker": "Tina",
+          "text": "Tidak begitu sakit dokter, sedikit saja."
+        },
+        {
+          "speaker": "Dokter",
+          "text": "Kalau begitu, tidak ada yang patah. Pasti nanti cepat sekali sembuh, Tin."
+        },
+        {
+          "speaker": "Ibu",
+          "text": "Betul dokter? Tidak ada yang patah? Saya takut sekali!"
+        },
+        {
+          "speaker": "Dokter",
+          "text": "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "vocabulary",
+      "title": "Woordenlijst",
+      "source_pages": [
+        4
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "awas",
+          "dutch": "oppassen / uitkijken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "bakal",
+          "dutch": "zullen / om te",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "bekerja",
+          "dutch": "werken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "biar",
+          "dutch": "opdat / laat maar",
+          "pos": "conjunction"
+        },
+        {
+          "indonesian": "burung",
+          "dutch": "vogel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "di mana-mana",
+          "dutch": "overal",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "diam",
+          "dutch": "stil (zijn)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "dibawa*",
+          "dutch": "meegenomen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "hati-hati",
+          "dutch": "voorzichtig",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "hendak",
+          "dutch": "willen",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "henti",
+          "dutch": "stoppen / ophouden / stilstaan",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "jatuh",
+          "dutch": "vallen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kaget (kagèt)",
+          "dutch": "schrikken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kaki",
+          "dutch": "voet",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kapal",
+          "dutch": "schip / boot",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kepala",
+          "dutch": "hoofd",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kesehatan (keséhatan)",
+          "dutch": "gezondheid",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kumpul",
+          "dutch": "verzamelen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "lekas",
+          "dutch": "snel",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "letnan (lètnan)",
+          "dutch": "luitenant",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "loncat",
+          "dutch": "springen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "maka",
+          "dutch": "daarom",
+          "pos": "conjunction"
+        },
+        {
+          "indonesian": "masyarakat",
+          "dutch": "samenleving / maatschappij",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "obat",
+          "dutch": "medicijn",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "orang desa",
+          "dutch": "dorpeling",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "patah",
+          "dutch": "breken (botten)",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "periksa",
+          "dutch": "onderzoeken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "puas",
+          "dutch": "tevreden / voldaan",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "pusat",
+          "dutch": "centrum",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "PUSKESMAS",
+          "dutch": "volksgezondheidscentrum",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sedang",
+          "dutch": "bezig te … (iets aan het doen zijn)",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "sehingga",
+          "dutch": "zodat / totdat",
+          "pos": "conjunction"
+        },
+        {
+          "indonesian": "sembuh",
+          "dutch": "genezen / gezond worden",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "tak (tidak)",
+          "dutch": "niet",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "takut",
+          "dutch": "bang (zijn)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "telah",
+          "dutch": "al / reeds",
+          "pos": "particle"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "expressions",
+      "title": "Uitdrukkingen",
+      "source_pages": [
+        4
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "di mana-mana",
+          "dutch": "overal",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "rumah sakit",
+          "dutch": "ziekenhuis",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tidak (ada) apa-apa",
+          "dutch": "er is niets / 't geeft niet / er is niets aan de hand",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "tidak jadi",
+          "dutch": "niet lukken / niet doorgaan",
+          "pos": "verb"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "grammar",
+      "title": "Grammatica - Volgorde van werkwoorden",
+      "source_pages": [
+        5,
+        6
+      ],
+      "confidence": "high",
+      "raw_text": "GRAMMATICA\n\nVolgorde van werkwoorden\n\nZoals wij reeds hebben opgemerkt in Les 1, worden de werkwoorden bij elkaar geplaatst. Deze plaatsing geschiedt in de volgorde: A-B-C , waarin:\n\nA = fase v.d. handeling - B = aspect v.d. handeling - C = hoofdwerkwoordsvorm\n\nDe hoofdwerkwoordsvorm kan aangevuld worden met een woord uit groep B of A.\n\nVoorbeelden:\n\nSaya datang                    Onderwerp + C\nSaya tidak datang              Onderwerp + A + C\nSaya mau datang                Onderwerp + B + C\nSaya tidak mau datang          Onderwerp + A + B + C\n\nSaya juga harus pergi          Ik moet ook (weg)gaan\nDia tidak usah datang          Hij hoeft niet te komen\nSaudara baru makan?            Heeft U net gegeten?\nBeliau juga ingin mandi        Hij wil ook een bad nemen\n\nDe belangrijkste woorden die tot de groepen A, B, en C behoren zijn:\n\nGroep A          Groep B          Groep C\ntidak*           harus**          bekerja\nkurang           bisa             berangkat\nbelum            boleh            datang\n                 coba             duduk\nakan             dapat            mandi\nbakal            hendak           minum\n                 ingin            pergi\nmasih            kembali          pulang\nsedang/lagi      mau              tidur\n                 mulai            tinggal\nsudah/telah      perlu            turun\n                 senang           (enzovoorts)\njuga             suka\nbaru             usah\n\n* Tidak kan voor akan en bakal voorkomen.\n** Harus kan voor alle andere woorden uit groep B komen.\n\nGroep A\n\nDe woorden uit groep A geven aan in welke fase een handeling zich bevindt.\nGroep A is onder te verdelen in woorden die aanduiden:\n\nΔ ontkenning  : tidak, kurang, belum     de handeling start (nog) niet\nΔ toekomst    : akan, bakal              de handeling zal starten\nΔ voortduring : masih, sedang, lagi      de handeling is (nog) gaande\nΔ verleden    : telah, sudah             de handeling is voorbij\n\nWoorden uit groep A komen te staan vóór woorden uit groep B en/of groep C.\nVoorbeeld:\n\nSaya belum makan              Ik heb nog niet gegeten\nSaya tidak mau ikut           Ik wil niet meegaan\nKamu lagi cari kopermu?       Ben je je koffer aan het zoeken?\nSaya sudah belajar enam jam   Ik heb al zes uur gestudeerd\n\nGroep B\n\nDe woorden uit groep B geven het specifiek aspect aan van de handeling.\nBij 'willen drinken' is willen het specifiek aspect van de handeling,\nbij 'moeten vertrekken' is moeten het specifiek aspect.\nIndien ze in deze positie voorkomen krijgen ze nooit een voorvoegsel (zie tevens Les 11 en verder). Voorbeeldzinnen:\n\nSaya ingin minum teh           Ik wil thee drinken\nDia harus berangkat jam sepuluh  Hij moet om 10 uur vertrekken\nSaya coba tidur sekarang       Ik probeer nu te slapen\nIbu harus dapat duduk          Moeder moet kunnen zitten\n\nOpmerking: Deze woorden kunnen ook in positie C voorkomen als hoofdwerkwoordsvorm. In die positie (positie C) kunnen ze een voorvoegsel krijgen.\n\nGroep C\n\nOm een zin te maken hebben we een onderwerp en een hoofdwerkwoordsvorm uit groep C nodig. Voorbeeldzinnen met woorden uit groep A, B en C:\n\nDia akan coba cari hotel        Hij zal proberen een hotel te zoeken\nSaya masih harus masuk sekolah  Ik moet nog naar school gaan\nIbu belum bisa berangkat        Moeder kan nog niet vertrekken\nBapak sudah boleh bekerja       U mag (al) gaan werken"
+    },
+    {
+      "id": 5,
+      "type": "grammar",
+      "title": "Grammatica - Amat, sangat, benar, betul, sekali",
+      "source_pages": [
+        7
+      ],
+      "confidence": "high",
+      "raw_text": "Amat, sangat, benar, betul, sekali\n\nDe woorden amat, sangat, benar, betul, sekali betekenen in combinatie met een bijvoeglijk naamwoord: erg, zeer.\n\nLet op:\namat en sangat staan vóór het bijvoeglijk naamwoord\nbenar, betul, sekali staan áchter het bijvoeglijk naamwoord\n\nHarga pisang ini amat mahal       De prijs van deze banaan is erg hoog\nMobil itu sangat cepat            Die auto is zeer snel\nJeruk itu murah sekali harganya   De prijs van die sinaasappel is zeer laag\nKota ini besar betul              Deze stad is erg groot\nAnak itu takut benar              Dat kind is zeer bang\n\nbenar, betul\n\nDe woorden benar en betul kunnen ook optreden met de betekenis: 'echt, juist, echt waar'.\nZe staan dan niet meer achter een bijvoeglijk naamwoord. Voorbeeld:\n\nKata itu benar              Dat is juist\nItu benar, tetapi ....      Dat is juist, maar ....\nBetul, saya lupa            Dat is waar, ik ben het vergeten\n\nDia betul sakit sekali      Hij is echt erg ziek\nMaaf, saya betul-betul lupa            Sorry, ik ben het écht vergeten\nIbunya betul-betul kaget waktu dia pulang   Haar moeder schrok echt toen zij thuis kwam"
+    },
+    {
+      "id": 6,
+      "type": "exercises",
+      "title": "Oefeningen",
+      "source_pages": [
+        8,
+        9
+      ],
+      "confidence": "high",
+      "raw_text": "OEFENINGEN\n\nOefening I. Volgorde in een Indonesische zin.\n\nMaak 10 Indonesische zinnen waarin de volgorde van de groepen A, B en C goed te constateren valt.\n\nOefening II. Onderstaande zinnen zijn uit elkaar geknipt. Probeer van de woorden een complete zin te maken en vertaal deze zin.\n\n1. sekali - di - rumah - banyak - kota - ini\n2. taman - tinggi - pohon - di - itu - amat\n3. sini - benar - pasar - ke - jauh - dari\n4. akan - ke - bapak - pusat - mengantar - kota - kami\n5. terbang - besar - kapal - betul - itu\n6. naik - saya - murah - bus - kira - lebih\n7. cepat - ini - baru - amat - mobil\n8. enak - buah - paling - ini - yang\n9. harus - besok - kamu - tolong - oleh-oleh - cari\n10. kaki - bukan - tapi - saya - patah - nya - kaki\n\nOefening III. Contoh: Saudara lupa apa? Saya lupa..........\n\n1. mijn sleutel              9.  haar boek\n2. jouw naam                 10. uw tas\n3. ons nummer                11. hun kamernummer\n4. zijn fiets                12. mijn vaders tas\n5. uw formulier              13. het boek van mijn broertje\n6. mijn handdoek             14. de sleutel van mijn kast\n7. hun huisnummer            15. de naam van zijn vriend\n8. onze lepels\n\nOefening IV. Vertaal.\n\n1. Ik zal proberen morgen te komen\n2. Hij is nog aan het werk\n3. Vader is nog niet teruggekeerd\n4. Wie heeft al cendol gedronken?\n5. Zij wilde gisteren niet komen, misschien zal zij vandaag hierheen komen\n6. Moeder vindt het niet prettig om in de namiddag te slapen\n7. Meneer Usman gaat daar volgend jaar wonen\n8. Mevrouw Prapto zal proberen om 11.30 uur te komen\n9. Tina kan nog geen bad nemen, het water is al op\n10. Hij wil proberen op woensdag naar huis te gaan\n\nOefening V. Extra oefening voor de liefhebber.\n\nSchrijf een verhaal in het Indonesisch (maximaal tien zinnen) over de hieronder afgebeelde spotprent: de orang kota gaan tegenwoordig naar de dukun en de orang desa naar de dokter. De toegevoegde woordenlijst is ter ondersteuning.\n\n(Collectie Indoc, Leiden)"
+    },
+    {
+      "id": 7,
+      "type": "vocabulary",
+      "title": "Enkele lichaamsdelen",
+      "source_pages": [
+        9
+      ],
+      "confidence": "medium",
+      "items": [
+        {
+          "indonesian": "tubuh / badan",
+          "dutch": "lichaam",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "hati",
+          "dutch": "lever",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "mata",
+          "dutch": "oog",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "mulut",
+          "dutch": "mond",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dagu",
+          "dutch": "kin",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kerongkongan",
+          "dutch": "keel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "perut",
+          "dutch": "buik",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lengan",
+          "dutch": "arm",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kaki",
+          "dutch": "been",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pantat",
+          "dutch": "billen",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "rambut",
+          "dutch": "hoofdhaar",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bulu",
+          "dutch": "lichaamshaar",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "hidung",
+          "dutch": "neus",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bibir",
+          "dutch": "lip",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dahi",
+          "dutch": "voorhoofd",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jantung",
+          "dutch": "hart",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lambung",
+          "dutch": "maag",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tangan",
+          "dutch": "hand",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lutut",
+          "dutch": "knie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "usus",
+          "dutch": "darmen",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kepala",
+          "dutch": "hoofd",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lèhèr",
+          "dutch": "hals",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kumis",
+          "dutch": "snor",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "telinga",
+          "dutch": "oor",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dada",
+          "dutch": "borst(kas)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "rongga dada",
+          "dutch": "ribben",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jari tangan",
+          "dutch": "vinger",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kaki",
+          "dutch": "voet",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kuku",
+          "dutch": "nagel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jari kaki",
+          "dutch": "teen",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "vocabulary",
+      "title": "Pijnen & Medicijnen",
+      "source_pages": [
+        9
+      ],
+      "confidence": "medium",
+      "items": [
+        {
+          "indonesian": "sakit perut / mag",
+          "dutch": "buik/maagpijn",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pusing",
+          "dutch": "duizelig zijn",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "sakit kepala",
+          "dutch": "hoofdpijn",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pilek",
+          "dutch": "verkoudheid",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "flu",
+          "dutch": "griep",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "demam",
+          "dutch": "koorts",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "mual",
+          "dutch": "misselijk",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "plèster",
+          "dutch": "pleister",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pembalut",
+          "dutch": "verband",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pembalut wanita",
+          "dutch": "maandverband",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "capèk (na inspanning)",
+          "dutch": "moe",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "obat",
+          "dutch": "medicijn",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jamu",
+          "dutch": "kruidenmengsel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "racun",
+          "dutch": "vergif",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "obat batuk",
+          "dutch": "hoestdrank",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "diét",
+          "dutch": "dieet",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "minum obat",
+          "dutch": "medicijn innemen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "suntik",
+          "dutch": "prik",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "muntah",
+          "dutch": "overgeven",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "luka",
+          "dutch": "wond",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "nafsu makan",
+          "dutch": "eetlust",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lemah",
+          "dutch": "zwak (slap)",
+          "pos": "adjective"
+        }
+      ]
+    }
+  ],
+  "flags": [
+    "OCR page 1 missing sentence: 'Uiteraard kent iedere Indonesiër naast de aangeboden geneesmiddelen en jamu zijn eigen huismiddel om bepaalde kwalen te voorkomen of te genezen.' — recovered from image IMG_1113.jpg",
+    "OCR page 5 missing grammar section header 'GRAMMATICA' and subsection title 'Volgorde van werkwoorden' — recovered from image IMG_1117.jpg",
+    "Image IMG_1121.jpg shows 'lèhèr' for 'hals' where OCR had 'leher' — corrected from image",
+    "Image IMG_1121.jpg shows 'plèster' for 'pleister' and 'capèk' for 'capek' — corrected from image",
+    "Oefening V description recovered more fully from image IMG_1121.jpg: 'de orang kota gaan tegenwoordig naar de dukun en de orang desa naar de dokter'"
+  ],
+  "sourceImages": 9
+}

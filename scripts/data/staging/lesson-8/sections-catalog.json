@@ -1,0 +1,402 @@
+{
+  "lesson": 8,
+  "generatedAt": "2026-04-15T19:00:21.476Z",
+  "sourcePages": 8,
+  "lessonMeta": {
+    "title": "Les - Batik",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 8
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Cultuur - Batik",
+      "source_pages": [
+        1,
+        2
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Men neemt aan dat reeds in de 16e eeuw de batiktechniek op Java vervolmaakt was. Ofschoon ook elders in de wereld batikstoffen worden vervaardigd, behoren de batiks van Indonesië tot de meest verfijnde.",
+        "Door het gebruik van een handig instrumentje, de canting, kan de vloeibare was op een nauwkeurige manier op de stof worden aangebracht. Met deze batiktechniek heeft men op Java een veelheid aan prachtige motieven ontwikkeld.",
+        "De canting werkt als een vulpen: hij heeft een reservoir voor de warme was en een tuitje waarmee op de stof wordt 'geschreven' (tulis). Batik op deze manier vervaardigd, wordt batik tulis genoemd.",
+        "Een snellere en goedkopere manier om een motief op te brengen is het gebruik van stempels (cap). De op deze wijze verkregen batik heet batik cap.",
+        "Om kwalitatief goede batiks te maken, heeft men gedegen vakkennis en veel geduld nodig.",
+        "De samenstelling van de was, evenals die van de gebruikte kleurstoffen, is veelal geheim. Nog steeds worden natuurlijke gom-, hars- en wassoorten gebruikt die alleen maar lokaal te verkrijgen zijn. De kleurstoffen zijn tegenwoordig bijna allemaal synthetisch hetgeen de kleurechtheid ten goede komt en het verfproces vergemakkelijkt. In de beheersing van de diverse processen als het opbrengen van het motief, de samenstelling van was en verf en wisselende dompeltijden, tonen de Javanen zich meesters.",
+        "Schema batikproces: a) prepareren van de stof --> b) tekenen motief met potlood --> c) de stof afdekken met was --> d) indompelen eerste verfbad --> e) drogen en gedeeltelijk afkrabben was voor tweede kleur --> f) ander deel afdekken met was --> g) indompelen in tweede verfbad --> h) heetwater-bad om was te verwijderen --> i) verkoop",
+        "Vroeger mochten niet alle patronen en motieven door iedereen worden gedragen. Grote, opvallende en kleurige motieven waren voorbehouden voor de jeugd. Naarmate men in leeftijd vorderde werden er fijnere motieven en meer getemperde kleuren gekozen. Zo was vroeger aan de kleding af te lezen welke status iemand had, of hij gehuwd was en van welke leeftijdsklasse hij of zij deel uitmaakte. Een batikmotief met veel 'officiële' status is het zogenaamde parang rusak motief dat vroeger alleen door de adel aan het hof van Yogyakarta en Surakarta mocht worden gedragen.",
+        "Het dragen van traditionele batikstoffen komt tegenwoordig veel minder voor dan vroeger. Voor belangrijke gelegenheden als huwelijken en nationale feestdagen haalt men de zogenaamde adat-kleding nog wel uit de kast maar vooral in de grote steden zijn voor mannen een lange broek en overhemd - eventueel met das en colbert - en voor vrouwen een nette rok en gesloten blouse algemeen. Deze van oorsprong westerse kleding krijgt daarbij een typisch Indonesisch accent door het gebruik van batikstof met moderne batikmotieven.",
+        "De traditionele batikcentra op Java zijn ondermeer Ceribon, Surakarta, Yogyakarta, Banyumas, Pekalongan en Tasikmalaya.",
+        "In Yogyakarta is sinds de jaren zestig een nieuwe techniek ontwikkeld waarmee moderne batiks worden gemaakt: het batikschilderen. Door de synthetische kleurstoffen kan de batikkunstenaar vrijer met de batiktechniek omgaan. Enkele beroemde batikschilders van Yogyakarta zijn Bagong Kusudiardjo, Amri Yahya, Soemardjo en Harjiman.",
+        "De laatste jaren wordt bij het vervaardigen van batikmotieven in toenemende mate gebruik gemaakt van de zeefdruktechniek. Soms wordt deze techniek gebruikt in combinatie met batik cap."
+      ]
+    },
+    {
+      "id": 1,
+      "type": "dialogue",
+      "title": "Di Sarinah Jaya",
+      "source_pages": [
+        3
+      ],
+      "confidence": "high",
+      "lines": [
+        {
+          "speaker": "narrator",
+          "text": "Ibu Yati dan anaknya, Tin, mau beli batik di Sarinah Jaya. Sarinah Jaya kurang lebih V&D Indonesia."
+        },
+        {
+          "speaker": "Ibu Yati",
+          "text": "Mas, batik di lantai berapa, ya Mas?"
+        },
+        {
+          "speaker": "Mas Sarto",
+          "text": "Di lantai empat, Bu."
+        },
+        {
+          "speaker": "Ibu Yati",
+          "text": "Aduh, kalau begitu, di mana lift?"
+        },
+        {
+          "speaker": "Mas Sarto",
+          "text": "Lift di situ, Bu, di sebelah kiri tangga."
+        },
+        {
+          "speaker": "Ibu Yati",
+          "text": "Terima kasih, Mas."
+        },
+        {
+          "speaker": "narrator",
+          "text": "Di lantai empat ada batik cap 'Batik Keris' dari Solo."
+        },
+        {
+          "speaker": "Ibu Yati",
+          "text": "Tin, coba kita cari kain panjang yang bagus, ya. Kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!"
+        },
+        {
+          "speaker": "narrator",
+          "text": "Ibu Yati kepada ibu penjual:"
+        },
+        {
+          "speaker": "Ibu Yati",
+          "text": "Bu, kami cari kain panjang tetapi yang tidak terlalu modern. Kalau ada, kami ingin yang sedikit tradisional. Maksud saya harganya kira-kira Rp 25.000. Batik yang pakai warna banyak barangkali juga tidak cocok."
+        },
+        {
+          "speaker": "Ibu penjual",
+          "text": "Silakan, Bu, di sini banyak kain batik yang halus."
+        },
+        {
+          "speaker": "Ibu Yati",
+          "text": "Ini, Tin, yang ini bagus sekali."
+        },
+        {
+          "speaker": "Tin",
+          "text": "O, iya, bagus sekali, tetapi yang ini lebih bagus dong!"
+        },
+        {
+          "speaker": "Ibu Yati",
+          "text": "Betul, tetapi saya rasa warnanya terlalu banyak. Yang ini lebih bagus atau kamu kurang setuju?"
+        },
+        {
+          "speaker": "Tin",
+          "text": "Bu, bagus betul, tetapi lihat dong! Harganya, kok, Rp 46.500. Jadi, amat mahal."
+        },
+        {
+          "speaker": "Ibu Yati",
+          "text": "Tin, Tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas Rp 25.000."
+        },
+        {
+          "speaker": "Tin",
+          "text": "Benar, bu. Kain ini warnanya paling bagus!"
+        },
+        {
+          "speaker": "Ibu Yati",
+          "text": "Coba kita beli yang ini saja. Bu, kami mau beli kain ini. Di mana bisa membayar?"
+        },
+        {
+          "speaker": "Ibu penjual",
+          "text": "Di sana, Bu. Ini bon untuk kasir."
+        },
+        {
+          "speaker": "Ibu Yati",
+          "text": "Terima kasih. Wah, saya senang, kita sudah dapat batik yang bagus sekali!"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "vocabulary",
+      "title": "Woordenlijst",
+      "source_pages": [
+        4
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "adat",
+          "dutch": "zeden en gewoonten"
+        },
+        {
+          "indonesian": "amat",
+          "dutch": "zeer"
+        },
+        {
+          "indonesian": "atau",
+          "dutch": "of"
+        },
+        {
+          "indonesian": "barangkali",
+          "dutch": "misschien"
+        },
+        {
+          "indonesian": "batik",
+          "dutch": "kleurtechniek voor stof / batik"
+        },
+        {
+          "indonesian": "begitu",
+          "dutch": "zoals dat"
+        },
+        {
+          "indonesian": "bon",
+          "dutch": "bon / rekening"
+        },
+        {
+          "indonesian": "cap",
+          "dutch": "stempel / merk"
+        },
+        {
+          "indonesian": "coklat",
+          "dutch": "bruin"
+        },
+        {
+          "indonesian": "daripada",
+          "dutch": "... dan ... (vergelijking)"
+        },
+        {
+          "indonesian": "dong",
+          "dutch": "hoor! (interjectie)"
+        },
+        {
+          "indonesian": "hadiah",
+          "dutch": "cadeau"
+        },
+        {
+          "indonesian": "hal",
+          "dutch": "kwestie / zaak"
+        },
+        {
+          "indonesian": "halus",
+          "dutch": "fijn / mooi (kwaliteit)"
+        },
+        {
+          "indonesian": "hampir",
+          "dutch": "bijna"
+        },
+        {
+          "indonesian": "hijau",
+          "dutch": "groen"
+        },
+        {
+          "indonesian": "iya (ya)",
+          "dutch": "ja"
+        },
+        {
+          "indonesian": "kain",
+          "dutch": "doek / kleed"
+        },
+        {
+          "indonesian": "kasir",
+          "dutch": "kassier"
+        },
+        {
+          "indonesian": "kepada",
+          "dutch": "aan / tegen"
+        },
+        {
+          "indonesian": "keris",
+          "dutch": "Javaans steekwapen"
+        },
+        {
+          "indonesian": "kira",
+          "dutch": "denken / vinden"
+        },
+        {
+          "indonesian": "kok",
+          "dutch": "warempel / goh (interjectie)"
+        },
+        {
+          "indonesian": "kurang lebih",
+          "dutch": "plusminus"
+        },
+        {
+          "indonesian": "lantai",
+          "dutch": "verdieping / vloer"
+        },
+        {
+          "indonesian": "lebih bagus",
+          "dutch": "mooier"
+        },
+        {
+          "indonesian": "lebih banyak",
+          "dutch": "meer"
+        },
+        {
+          "indonesian": "lift",
+          "dutch": "lift"
+        },
+        {
+          "indonesian": "lihat",
+          "dutch": "zien"
+        },
+        {
+          "indonesian": "maksud",
+          "dutch": "bedoeling"
+        },
+        {
+          "indonesian": "membayar*",
+          "dutch": "betalen"
+        },
+        {
+          "indonesian": "modern (modèrn)",
+          "dutch": "modern"
+        },
+        {
+          "indonesian": "nenek (nènèk)",
+          "dutch": "oma / grootmoeder"
+        },
+        {
+          "indonesian": "pakai",
+          "dutch": "gebruiken / bevatten"
+        },
+        {
+          "indonesian": "paling",
+          "dutch": "het meeste (overtreffende trap)"
+        },
+        {
+          "indonesian": "pikir",
+          "dutch": "denken / vinden"
+        },
+        {
+          "indonesian": "pikiran",
+          "dutch": "gedachten"
+        },
+        {
+          "indonesian": "pohon",
+          "dutch": "boom"
+        },
+        {
+          "indonesian": "rasa",
+          "dutch": "voelen / gevoelen"
+        },
+        {
+          "indonesian": "Sarinah Jaya",
+          "dutch": "staatswarenhuis"
+        },
+        {
+          "indonesian": "setuju",
+          "dutch": "het ermee eens zijn"
+        },
+        {
+          "indonesian": "tangga",
+          "dutch": "trap"
+        },
+        {
+          "indonesian": "tentang",
+          "dutch": "over / betreffende"
+        },
+        {
+          "indonesian": "tradisional",
+          "dutch": "traditioneel"
+        },
+        {
+          "indonesian": "Tuhan",
+          "dutch": "God (christ.,moslim)"
+        },
+        {
+          "indonesian": "tulis",
+          "dutch": "schrijven"
+        },
+        {
+          "indonesian": "ulang",
+          "dutch": "herhalen"
+        },
+        {
+          "indonesian": "umur",
+          "dutch": "leeftijd"
+        },
+        {
+          "indonesian": "warung",
+          "dutch": "eethuisje"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "expressions",
+      "title": "Uitdrukkingen",
+      "source_pages": [
+        4
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "harga pas",
+          "dutch": "vaste prijs"
+        },
+        {
+          "indonesian": "hari ulang tahun (H.U.T.)",
+          "dutch": "verjaardag"
+        },
+        {
+          "indonesian": "kain panjang",
+          "dutch": "gebatikte doek van speciaal formaat"
+        },
+        {
+          "indonesian": "kalau begitu",
+          "dutch": "indien dat zo is"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "grammar",
+      "title": "Grammatica - Interjecties",
+      "source_pages": [
+        5
+      ],
+      "confidence": "high",
+      "raw_text": "Interjecties\n\nHet Indonesisch heeft een schat aan korte woordjes zoals ya (positief), wah (milde verbazing), nah (nadruk), dong (geeft nadruk en ook gebruikt bij gebiedende wijs - verzachtend), kok (verbazing), deh (afsluitend), lho (verbazing), nih (milde verbazing), sih (nadruk). Deze worden interjecties genoemd en komen voornamelijk voor in de spreektaal.\n\nDe interjecties vervullen de volgende functies:\n- geven uiting aan speciale gevoelens (vergelijk in het Nederlands bijv.: goh, ooh, eh, hé, nou ja);\n- verlenen nadruk aan het woord waar ze bij staan (mahal dong!);\n- markeren grenzen tussen verschillende woordgroepen, dikwijls in combinatie met een korte pauze tijdens het spreken. Ze dragen bij aan het staccato-effect, dat gesproken Indonesisch vaak voor ons heeft."
+    },
+    {
+      "id": 5,
+      "type": "grammar",
+      "title": "Grammatica - Trappen van vergelijking",
+      "source_pages": [
+        5,
+        6,
+        7
+      ],
+      "confidence": "high",
+      "raw_text": "Trappen van vergelijking\n\nStellende trap\n\nKain ini bagus                          Deze doek is mooi\nSusi punya mobil yang besar             Susi heeft een grote auto\nRinaldi lari cepat                      Rinaldi rent snel\n\nVergrotende trap    lebih ...\n\nKain ini lebih bagus                    Deze doek is mooier\nTuti punya mobil yang lebih besar       Tuti heeft een grotere auto\nRinaldi lari lebih cepat                Rinaldi rent sneller\n\nOvertreffende trap    paling + bijv. naamw. of werkwoord\n                      ter- + bijv. naamw.\n\nBij de overtreffende trap kan men of paling, voor het bijvoeglijk naamwoord plaatsen, of het voorvoegsel ter- voor een bijvoeglijk naamwoord voegen.\n\nKain ini paling bagus                   Deze doek is de mooiste\nKain ini terbagus\nYati punya mobil yang paling besar      Yati heeft de grootste auto\nYati punya mobil yang terbesar\n\nVoorbeelden van andere vormen die een 'overtreffende trap' uitdrukken.\nDe toepassing is beperkt.\n\nMAHA-                                   'allergrootste, meest verhevene' e.d.\nTuhan yang Mahakuasa                    God de Almachtige\nMaharaja Hayam Wuruk                    De vorst Hayam Wuruk\n\nSE- ... - ... -NYA\nDia kerja sebaik-baiknya                Hij deed z'n uiterste best\nMereka loncat setinggi-tingginya        Zij sprong zo hoog (op z'n hoogst)\nRinaldi lari secepat-cepatnya           Rinaldi rende zo hard als hij kon\n\nVergelijkingen\n\nGelijkheid                              se- .....\n                                        sama ..... dengan .....\n\nRumah sebesar kantor                    Een huis zo groot als een kantoor\nLemariku sama kecil dengan lemarimu     Mijn kast is even klein als jouw kast\n\nOngelijkheid, vergrotend                lebih ..... daripada *..... \n                                        jauh lebih ..... daripada .....\n                                        (* in spreektaal vaak: lebih ... dari ...)\n\nMeja itu lebih besar daripada kursi ini         Die tafel is groter dan deze stoel\nBuku ini jauh lebih mahal daripada buku itu     Dit boek is veel duurder dan dat boek\n\nOngelijkheid, verkleinend               kurang .....\n                                        kurang ..... daripada .....\n                                        tidak begitu .....\n\nMeja ini kurang* bagus                          Deze tafel is niet zo mooi\nMeja ini kurang bagus daripada meja itu         Deze tafel is minder mooi dan die tafel\nMeja ini tidak begitu bagus                     Deze tafel is niet zo mooi\n\n* Kurang wordt ook gebruikt in de betekenis van 'niet ... genoeg'.\nKurang besar = niet groot genoeg, met andere woorden: te klein.\n\nVoorbeelden van andere vormen die een 'ongelijkheid' uitdrukken.\nDe toepassing is beperkt.\n\nMAKIN: intensiteit\n\nPesawat terbang makin tinggi            Het vliegtuig vloog steeds hoger\nAyahnya makin lama makin kaya           Zijn vader werd hoe langer hoe rijker\n\nVaste uitdrukkingen met SE- ... -NYA\n\nSebaiknya kita berangkat                Het is het beste (het is beter) dat we vertrekken\nSebenarnya saya harus pulang            Eigenlijk moet ik naar huis\nSebetulnya saya sudah lapar             Eigenlijk heb ik al honger\nSetiap hari dia duduk seenaknya di bawah pohon itu    Elke dag zit hij op z'n dooie gemak onder die boom\nSetidak-tidaknya ia menjadi letnan      Op z'n minst wordt hij luitenant\n\nVaste uitdrukkingen met TAK ...-... -NYA    'on-....-lijk' of 'on-....-baar'\n\nBurung bersiul tak henti-hentinya       De vogels fluiten onophoudelijk\nKumpul uang tak puas-puasnya            Onverzadigbaar geld verzamelen"
+    },
+    {
+      "id": 6,
+      "type": "exercises",
+      "title": "Oefeningen",
+      "source_pages": [
+        7,
+        8
+      ],
+      "confidence": "high",
+      "raw_text": "Oefening I. Contoh : huis - groot    Rumah ini besar\n                                      Rumah ini lebih besar daripada rumah itu\n                                      Rumah ini paling besar (of: terbesar)\n\n1.  auto - snel             6.  koffer - vol\n2.  stoel - oud             7.  land - groot\n3.  boek - makkelijk        8.  banaan - rijp\n4.  hotel - duur            9.  bord - goedkoop\n5.  school - goed           10. kleur - licht\n\nOefening II. Spreekvaardigheid.\n\nVertel in het Indonesisch de route van uw huis naar het dichtstbijzijnde warenhuis. Gebruik termen als links, rechts, langs het water en dergelijke. Maak minimaal vijf en maximaal tien zinnen.\n\nOefening III. Vertaal.\n\n1.  Mijn koffer is even zwaar als jouw koffer\n2.  Mijn oudere broer is veel groter dan haar vriend\n3.  Zijn auto is even snel als onze auto\n4.  Dit oude hotel is goedkoper dan het nieuwe hotel\n5.  Deze trap is langer dan de trap aan de voorkant van onze school\n6.  Deze dame is even oud als mijn grootmoeder\n7.  Hoeveel jaren ben jij ouder dan jouw broertje?\n8.  Vroeger waren de mensen kleiner dan tegenwoordig\n9.  Ik ben van mening dat jullie morgen moeten komen\n10. Deze week zijn er meer feesten dan vorige week\n\nOefening IV. Vertaal.\n\n1.  In mei gaat Henk naar Indonesië. Hij vliegt met een vliegtuig van Garuda. In Jakarta verblijft hij in een nieuw, groot hotel. Na zes dagen gaat hij naar Surabaya. Daar woont een vriend van hem die Mardi heet.\n\n2.  Goedenavond! Hoe gaat het? Goed, dank u wel. Bent u al naar de kraton in Yogya geweest? Nog niet, morgen gaan we daarheen. Oh, in dat geval moet u niet vergeten ook naar het paleis te gaan.\n\n3.  Wij gaan vanavond eten in het eethuisje van Pak Hasan. Het eten is daar erg lekker. Het is daarom altijd erg druk. Het eethuisje van Pak Hasan is kleiner dan het nieuwe 'Satay House'.\n\n4.  Zij zijn vandaag naar de markt geweest. De spullen staan nu in de keuken. Ze hebben ook een verjaardagskado gekocht voor Susi. Woensdag is de verjaardag van Susi.\n\n5.  Meneer, wij zoeken het postkantoor. Het nieuwe of het oude? Het nieuwe postkantoor is het grootste in de stad, maar is erg ver hier vandaan. Het oude postkantoor is dichtbij. Eerst gaat u naar links tot aan de brug, daarna naar rechts. Het oude postkantoor ligt rechts van Pasar Senen. Dank u wel, meneer."
+    }
+  ],
+  "flags": [
+    "Image page 1 (IMG_1098.jpg): Schema batikproces recovered from image - OCR captured partial content only. Full schema: a) prepareren van de stof --> b) tekenen motief met potlood --> c) de stof afdekken met was --> d) indompelen eerste verfbad --> e) drogen en gedeeltelijk afkrabben was voor tweede kleur --> f) ander deel afdekken met was --> g) indompelen in tweede verfbad --> h) heetwater-bad om was te verwijderen --> i) verkoop",
+    "Image page 2 (IMG_1099.jpg): Full paragraph about zeefdruktechniek recovered from image: 'De laatste jaren wordt bij het vervaardigen van batikmotieven in toenemende mate gebruik gemaakt van de zeefdruktechniek. Soms wordt deze techniek gebruikt in combinatie met batik cap.' - OCR had truncated this.",
+    "Vocabulary note: 'membayar*' footnote reads '* membayar --> zie ook Les 13'",
+    "Lesson number not explicitly visible in OCR or images; lesson theme is Batik / Di Sarinah Jaya"
+  ],
+  "sourceImages": 8
+}

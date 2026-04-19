@@ -756,5 +756,283 @@ export const candidates = [
       "correctOptionId": "di",
       "explanationText": "'Di bawah' = onder (locatie, rust). De kat ligt daar -- geen beweging. 'Ke bawah' zou beweging naar beneden zijn. Uit Oefening VI."
     }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "ada-existential",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Pisang di pasar.",
+      "transformationInstruction": "Voeg het werkwoord van bestaan toe vooraan om te benadrukken dat er bananen op de markt zijn",
+      "acceptableAnswers": [
+        "Ada pisang di pasar.",
+        "Pisang ada di pasar."
+      ],
+      "hintText": "Het bestaanswoord begint met 'a-'",
+      "explanationText": "'Ada' drukt bestaan/aanwezigheid uit. 'Ada pisang di pasar' = er zijn bananen op de markt. Het bestaanswoord komt typisch vooraan om de aanwezigheid te benadrukken; 'pisang ada di pasar' is ook correct maar legt de nadruk meer op de plaats."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "ada-existential",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Ada ayam di restoran itu.",
+      "transformationInstruction": "Ontken de zin: er is GEEN kip in dat restaurant",
+      "acceptableAnswers": [
+        "Tidak ada ayam di restoran itu."
+      ],
+      "hintText": "Plaats de algemene ontkenning direct voor het bestaanswerkwoord",
+      "explanationText": "'Tidak ada' = er is/zijn geen. De ontkenning 'tidak' staat direct voor 'ada' om bestaan te ontkennen. 'Bukan' werkt hier niet -- die ontkent zelfstandige naamwoorden, niet werkwoorden zoals 'ada'."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ada-existential",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Er zijn drie kinderen op straat.",
+      "requiredTargetPattern": "ada-existential",
+      "acceptableAnswers": [
+        "Ada tiga anak di jalan.",
+        "Di jalan ada tiga anak."
+      ],
+      "disallowedShortcutForms": [
+        "Tiga anak di jalan."
+      ],
+      "explanationText": "'Ada' is nodig om bestaan/aanwezigheid uit te drukken: 'Ada tiga anak' = er zijn drie kinderen. Zonder 'ada' wordt het slechts een naamwoordgroep ('drie kinderen op straat') zonder predicaat van bestaan."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ada-existential",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Er is geen rijst in het hotel.",
+      "requiredTargetPattern": "ada-existential",
+      "acceptableAnswers": [
+        "Tidak ada nasi di hotel.",
+        "Di hotel tidak ada nasi."
+      ],
+      "disallowedShortcutForms": [
+        "Bukan ada nasi di hotel."
+      ],
+      "explanationText": "'Tidak ada' = er is/zijn geen. 'Tidak' (niet 'bukan') ontkent het werkwoord 'ada'. 'Bukan' is voorbehouden aan het ontkennen van zelfstandige naamwoorden en past niet voor 'ada'."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "ada-existential",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Heeft u een sleutel, meneer?",
+      "requiredTargetPattern": "ada-existential",
+      "acceptableAnswers": [
+        "Ada kunci, Pak?",
+        "Bapak ada kunci?"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "'Ada' wordt gebruikt voor 'hebben' in de zin van 'beschikken over / aanwezig hebben'. 'Ada kunci?' = is er een sleutel / heeft u een sleutel? Indonesisch heeft geen apart werkwoord 'hebben' -- 'ada' vervult die rol bij bezit/beschikbaarheid."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "dari-di-ke-locative",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Saya ke pasar.",
+      "transformationInstruction": "Verander de richting: je komt nu juist VAN de markt (herkomst, niet bestemming)",
+      "acceptableAnswers": [
+        "Saya dari pasar."
+      ],
+      "hintText": "Het voorzetsel voor herkomst begint met 'da-'",
+      "explanationText": "'Ke' duidt beweging naar een bestemming aan; 'dari' duidt herkomst/vandaan aan. Door 'ke' te vervangen door 'dari' draait de richting om: 'naar de markt' wordt 'van de markt'."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "dari-di-ke-locative",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Teman saya di sekolah.",
+      "transformationInstruction": "Verander de zin: je vriend gaat NU naar school (beweging naartoe in plaats van locatie)",
+      "acceptableAnswers": [
+        "Teman saya ke sekolah."
+      ],
+      "hintText": "Het voorzetsel voor beweging-naartoe is een korte tweeletter",
+      "explanationText": "'Di' duidt locatie aan (op/in een plaats, zonder beweging); 'ke' duidt beweging naar een bestemming aan. 'Teman saya di sekolah' = mijn vriend is op school. 'Teman saya ke sekolah' = mijn vriend gaat naar school."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "dari-di-ke-locative",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De kamer is naast de keuken.",
+      "requiredTargetPattern": "dari-di-ke-locative",
+      "acceptableAnswers": [
+        "Kamar di sebelah kamar makan.",
+        "Kamar ada di sebelah kamar makan."
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "'Di sebelah' = naast (locatie, rust). 'Di' wordt gecombineerd met positiewoorden zoals 'sebelah' (zijkant), 'depan' (voorkant), 'belakang' (achterkant). Hier is geen beweging dus 'di' (niet 'ke' of 'dari')."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "question-words",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Mobil itu seratus juta rupiah.",
+      "transformationInstruction": "Maak een vraag: vraag HOEVEEL die auto kost",
+      "acceptableAnswers": [
+        "Mobil itu berapa?",
+        "Berapa harga mobil itu?",
+        "Mobil itu berapa harganya?"
+      ],
+      "hintText": "Het vraagwoord voor aantallen/prijzen begint met 'be-'",
+      "explanationText": "'Berapa' = hoeveel? (aantal of prijs). Het vraagwoord vervangt het bedrag 'seratus juta rupiah' en kan vooraan of achteraan staan. Bij prijzen wordt vaak 'harga' (prijs) toegevoegd: 'Berapa harga mobil itu?'"
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "question-words",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Saya beli buah hari ini.",
+      "transformationInstruction": "Maak een vraag: vraag op WELK MOMENT (tijdstip) je fruit koopt",
+      "acceptableAnswers": [
+        "Kapan saya beli buah?",
+        "Saya beli buah kapan?",
+        "Kapan beli buah?"
+      ],
+      "hintText": "Het vraagwoord voor tijdstip begint met 'ka-'",
+      "explanationText": "'Kapan' = wanneer? Vraagt naar een tijdstip. Het vervangt de tijdsbepaling 'hari ini' (vandaag). Het vraagwoord kan vooraan of achteraan staan -- in de spreektaal komt 'kapan' vaak vooraan."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "question-words",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Hoeveel kost dit?",
+      "requiredTargetPattern": "question-words",
+      "acceptableAnswers": [
+        "Berapa harganya?",
+        "Berapa harga ini?",
+        "Ini berapa?"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "'Berapa' = hoeveel? Wordt gebruikt voor aantallen en prijzen. 'Berapa harganya?' (letterlijk: hoeveel de-prijs) is de standaarduitdrukking om naar een prijs te vragen. 'Ini berapa?' is informeler maar correct."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "question-words",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Wat wilt u kopen, mevrouw?",
+      "requiredTargetPattern": "question-words",
+      "acceptableAnswers": [
+        "Ibu mau beli apa?",
+        "Apa yang mau Ibu beli?"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "'Apa' = wat? Vraagt naar een ding/voorwerp. Standaardvolgorde: subject + werkwoord + 'apa' achteraan. Met 'yang' (die/dat) kan het vraagwoord ook vooraan: 'Apa yang mau Ibu beli?' (wat is het dat u wilt kopen)."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "question-words",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Wie is uw vriend?",
+      "requiredTargetPattern": "question-words",
+      "acceptableAnswers": [
+        "Siapa teman Bapak?",
+        "Siapa teman Ibu?",
+        "Teman Bapak siapa?",
+        "Teman Ibu siapa?"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "'Siapa' = wie? Vraagt naar een persoon. Net als bij 'nama' (naam) kan 'siapa' vooraan of achteraan staan: 'Siapa teman Bapak?' of 'Teman Bapak siapa?' Beide zijn correct in het Indonesisch."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "sekali-intensifier",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Pisang itu murah.",
+      "transformationInstruction": "Maak de zin sterker: die bananen zijn ERG goedkoop",
+      "acceptableAnswers": [
+        "Pisang itu murah sekali."
+      ],
+      "hintText": "Voeg het versterkingswoord toe NA het bijvoeglijk naamwoord",
+      "explanationText": "'Sekali' (erg/zeer) wordt altijd NA het bijvoeglijk naamwoord geplaatst: 'murah sekali' = erg goedkoop. Vergelijk met het Nederlands waar 'erg' VOOR komt -- in het Indonesisch is de volgorde omgekeerd."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "sekali-intensifier",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Ayam itu pedas.",
+      "transformationInstruction": "Maak de zin sterker: die kip is ERG pittig",
+      "acceptableAnswers": [
+        "Ayam itu pedas sekali."
+      ],
+      "hintText": "Voeg het versterkingswoord toe NA het bijvoeglijk naamwoord",
+      "explanationText": "'Pedas sekali' = erg pittig. 'Sekali' versterkt het bijvoeglijk naamwoord en staat er altijd achter. 'Sekali pedas' is fout -- de versterker kan in het Indonesisch niet voor het bijvoeglijk naamwoord staan."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "sekali-intensifier",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Die kamer is heel schoon.",
+      "requiredTargetPattern": "sekali-intensifier",
+      "acceptableAnswers": [
+        "Kamar itu bersih sekali."
+      ],
+      "disallowedShortcutForms": [
+        "Kamar itu sangat bersih"
+      ],
+      "explanationText": "'Sekali' (heel/erg) komt NA het bijvoeglijk naamwoord: 'bersih sekali' = heel schoon. 'Sangat' is een alternatieve versterker maar komt VOOR het bijvoeglijk naamwoord -- hier oefenen we de typische 'sekali'-volgorde achteraan."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "sekali-intensifier",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Mijn kind is heel braaf.",
+      "requiredTargetPattern": "sekali-intensifier",
+      "acceptableAnswers": [
+        "Anak saya baik sekali."
+      ],
+      "disallowedShortcutForms": [
+        "Anak saya sangat baik"
+      ],
+      "explanationText": "'Baik sekali' = heel braaf/heel goed. 'Sekali' komt achter het bijvoeglijk naamwoord 'baik'. 'Anak saya' = mijn kind (bezit zonder bezittelijk voornaamwoord; 'saya' achter het naamwoord)."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "sekali-intensifier",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De prijs is erg laag.",
+      "requiredTargetPattern": "sekali-intensifier",
+      "acceptableAnswers": [
+        "Harganya murah sekali.",
+        "Harga itu murah sekali."
+      ],
+      "disallowedShortcutForms": [
+        "Harganya sangat murah"
+      ],
+      "explanationText": "'Murah sekali' = erg laag/goedkoop. 'Sekali' staat NA het bijvoeglijk naamwoord. In het Indonesisch wordt voor prijzen vaak 'murah' (goedkoop) gebruikt waar het Nederlands 'laag' zegt. 'Harganya' = de prijs (met -nya als bepaald lidwoord)."
+    }
   }
 ]

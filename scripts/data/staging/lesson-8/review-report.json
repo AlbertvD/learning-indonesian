@@ -1,0 +1,91 @@
+{
+  "lesson": 8,
+  "revision": 2,
+  "reviewedAt": "2026-04-15T23:15:00.000Z",
+  "status": "approved",
+  "issues": [
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "sentence_transformation #1 for paling-ter-superlative (line 448)",
+      "issue": "Transformation instruction reveals the Indonesian answer: 'Verander de vergrotende trap naar de overtreffende trap met paling' names the target word 'paling'",
+      "fix": "Rewrite to describe the transformation without naming the Indonesian form, e.g. 'Verander de vergrotende trap naar de overtreffende trap.'"
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "sentence_transformation #2 for paling-ter-superlative (line 465)",
+      "issue": "Transformation instruction reveals the Indonesian answer: 'Herschrijf de zin met het voorvoegsel ter- in plaats van paling' names both 'ter-' and 'paling'",
+      "fix": "Rewrite to e.g. 'Herschrijf de zin met het voorvoegsel voor de overtreffende trap.'"
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "sentence_transformation #1 for se-sama-equality-comparison (line 617)",
+      "issue": "Transformation instruction reveals the Indonesian answer: 'Combineer tot een zin die gelijkheid uitdrukt met de compacte se- vorm' names the 'se-' prefix",
+      "fix": "Rewrite to e.g. 'Combineer tot een zin die gelijkheid uitdrukt met de compacte voorvoegsel-vorm.'"
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "sentence_transformation #2 for se-sama-equality-comparison (line 632)",
+      "issue": "Transformation instruction reveals the Indonesian answer: 'Herschrijf de zin met de analytische vorm sama ... dengan' names the Indonesian construction",
+      "fix": "Rewrite to e.g. 'Herschrijf de zin met de analytische gelijkheidsvorm (even ... als).'"
+    },
+    {
+      "severity": "WARNING",
+      "file": "vocab-enrichments.ts",
+      "item": "dong (cloze_distractors_id)",
+      "issue": "Cloze distractors for particle 'dong' include aspect markers 'sudah' and 'belum' which are a different word class than discourse particles",
+      "fix": "Replace with other discourse particles or short function words from the lesson (e.g. 'deh', 'wah', 'sih')"
+    },
+    {
+      "severity": "WARNING",
+      "file": "vocab-enrichments.ts",
+      "item": "kok (cloze_distractors_id)",
+      "issue": "Cloze distractors for particle 'kok' include aspect markers 'sudah' and 'belum' which are a different word class than discourse particles",
+      "fix": "Replace with other discourse particles or short function words from the lesson (e.g. 'deh', 'wah', 'sih')"
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "critical": 0,
+    "warning": 6
+  },
+  "counts": {
+    "grammar_patterns": 5,
+    "learning_items_total": 65,
+    "learning_items_by_type": {
+      "dialogue_chunk": 17,
+      "word": 44,
+      "phrase": 4
+    },
+    "cloze_contexts": 96,
+    "candidates_total": 50,
+    "candidates_by_type": {
+      "cloze_mcq": 15,
+      "contrast_pair": 15,
+      "sentence_transformation": 10,
+      "constrained_translation": 10
+    },
+    "vocab_enrichments": 65
+  },
+  "checks": {
+    "lesson_ts_structure": "PASS -- grammar sections (order_index 4, 5) have categories arrays with rules/tables/examples; exercises section (order_index 6) has sections array with typed items; all translation/grammar_drill items have answer fields; conversation exercise correctly omits answer (open-ended)",
+    "grammar_patterns_fields": "PASS -- all 5 patterns have pattern_name, description, slug, complexity_score; all slugs kebab-case; complexity_score range 3-4",
+    "slug_uniqueness_staging": "PASS -- no lesson-8 slugs found in lesson-1 through lesson-7 staging grammar-patterns.ts files",
+    "slug_uniqueness_db": "PASS -- no lesson-8 slugs found in indonesian.grammar_patterns (39 rows checked)",
+    "candidate_payloads": "PASS -- all 50 candidates have correctly nested payload fields; all required fields present per exercise type; no speaking candidates; all grammar_pattern_slug references resolve to grammar-patterns.ts slugs; all requiredTargetPattern values resolve to valid slugs",
+    "contrast_pair_option_ids": "PASS -- all 15 contrast_pair correctOptionId values match an option.id; all option.id values equal option.text (no abstract IDs)",
+    "cloze_mcq_blanks": "PASS -- all 15 cloze_mcq sentences contain exactly one ___; all correctOptionId values present in options arrays; all options arrays have exactly 4 items",
+    "cloze_context_coverage": "PASS -- all 48 vocabulary/expression items (44 words + 4 phrases) have 2 cloze contexts each (96 total); all slugs match learning-items.ts exactly (case-sensitive); 17 dialogue chunks correctly excluded; all source_text fields contain exactly one ___; no trivial sentences",
+    "exercise_coverage_per_pattern": "PASS -- all 5 patterns have 10 candidates each (3 cloze_mcq, 3 contrast_pair, 2 sentence_transformation, 2 constrained_translation); all 4 exercise types covered per pattern; vocabulary integration good (majority of candidates use lesson/prior vocabulary)",
+    "pattern_brief_integrity": "PASS -- all 5 slugs match grammar-patterns.ts; vocabulary pool has 86 items all with item_type; research notes non-empty for all patterns; all patterns have 4-5 example sentences",
+    "vocab_enrichments_coverage": "PASS -- all 65 learning items have entries; all 3 distractor arrays present per entry; all arrays have exactly 3 items; no distractor equals correct answer; no duplicates within arrays",
+    "contrast_pair_prompt_quality": "PASS -- no prompts contain parenthetical hints, bracketed labels, or direct answer reveals; targetMeaning fields are short glosses (not prompt restatements)",
+    "explanation_text_quality": "PASS -- all explanations teach the rule and contrast, name both options, and exceed 15 words; all name the linguistic distinction",
+    "sentence_transformation_instructions": "WARN -- 4 instructions still reveal Indonesian target forms (paling, ter-, se-, sama...dengan); flagged as WARNINGs for admin review",
+    "pre_answer_spoiler_check": "PASS -- no cloze_mcq translations reveal answers inappropriately; hintText fields provide vocabulary glosses only; no promptText/sourceLanguageSentence fields contain answer spoilers",
+    "cloze_mcq_distractor_quality": "PASS -- function-word blanks use same-category distractors (comparison markers, discourse particles); content not tested in grammar cloze_mcq"
+  }
+}

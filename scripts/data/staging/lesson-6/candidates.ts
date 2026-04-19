@@ -192,6 +192,104 @@ export const candidates = [
     }
   },
   {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "bukan-negation",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Itu kursi.",
+      "transformationInstruction": "Ontken met \"bukan\" en voeg toe: \"tetapi meja\"",
+      "acceptableAnswers": [
+        "Itu bukan kursi, tetapi meja.",
+        "Itu bukan kursi tetapi meja."
+      ],
+      "hintText": "Plaats \"bukan\" voor het zelfstandig naamwoord en gebruik \"tetapi\" voor de tegenstelling",
+      "explanationText": "\"Kursi\" en \"meja\" zijn beide zelfstandige naamwoorden, dus ontken je met \"bukan\". Het patroon \"bukan X, tetapi Y\" maakt duidelijk wat het wel is."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "bukan-negation",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Ini kalung ibu.",
+      "transformationInstruction": "Ontken met \"bukan\" en voeg toe: \"tetapi gelang nenek\"",
+      "acceptableAnswers": [
+        "Ini bukan kalung ibu, tetapi gelang nenek.",
+        "Ini bukan kalung ibu tetapi gelang nenek."
+      ],
+      "hintText": "Bukan staat voor \"kalung\" (zelfstandig naamwoord). \"Tetapi\" introduceert het juiste sieraad.",
+      "explanationText": "Sieraden als \"kalung\" (ketting) en \"gelang\" (armband) zijn zelfstandige naamwoorden, dus de ontkenning vraagt \"bukan\". \"Tidak\" past alleen bij werkwoorden en bijvoeglijke naamwoorden."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "bukan-negation",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Dat is geen ananas, maar een appel.",
+      "requiredTargetPattern": "bukan-negation",
+      "acceptableAnswers": [
+        "Itu bukan nanas, tetapi apel.",
+        "Itu bukan nanas tetapi apel."
+      ],
+      "disallowedShortcutForms": [
+        "Itu tidak nanas",
+        "Itu tidak nanas, tetapi apel"
+      ],
+      "targetSentenceWithBlank": "Itu ___ nanas, tetapi apel.",
+      "blankAcceptableAnswers": [
+        "bukan"
+      ],
+      "explanationText": "Vruchten als \"nanas\" en \"apel\" zijn zelfstandige naamwoorden, dus de ontkenning is altijd \"bukan\". \"Tidak\" past alleen bij werkwoorden en bijvoeglijke naamwoorden."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "bukan-negation",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Niet de chauffeur is moe, maar de toerist.",
+      "requiredTargetPattern": "bukan-negation",
+      "acceptableAnswers": [
+        "Bukan sopir yang capek, tetapi turis.",
+        "Bukan sopir yang capek tetapi turis.",
+        "Bukan sopirnya yang capek, tetapi turisnya."
+      ],
+      "disallowedShortcutForms": [
+        "Tidak sopir yang capek",
+        "Sopir tidak capek, tetapi turis"
+      ],
+      "targetSentenceWithBlank": "___ sopir yang capek, tetapi turis.",
+      "blankAcceptableAnswers": [
+        "Bukan"
+      ],
+      "explanationText": "\"Sopir\" (chauffeur) is een zelfstandig naamwoord, dus voor de tegenstellings-ontkenning gebruik je \"bukan\". Het patroon \"bukan X yang ..., tetapi Y\" benadrukt wie het wel is."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "bukan-negation",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Het is geen ziekenhuis, maar een hotel.",
+      "requiredTargetPattern": "bukan-negation",
+      "acceptableAnswers": [
+        "Itu bukan rumah sakit, tetapi hotel.",
+        "Itu bukan rumah sakit tetapi hotel.",
+        "Ini bukan rumah sakit, tetapi hotel."
+      ],
+      "disallowedShortcutForms": [
+        "Itu tidak rumah sakit",
+        "Bukan tidak rumah sakit"
+      ],
+      "targetSentenceWithBlank": "Itu ___ rumah sakit, tetapi hotel.",
+      "blankAcceptableAnswers": [
+        "bukan"
+      ],
+      "explanationText": "\"Rumah sakit\" (ziekenhuis) en \"hotel\" zijn zelfstandige naamwoorden, dus ontken je met \"bukan\", nooit met \"tidak\". Het tegenstellingspatroon \"bukan X, tetapi Y\" verduidelijkt wat het wel is."
+    }
+  },
+  {
     "exercise_type": "cloze_mcq",
     "grammar_pattern_slug": "bukan-tag-question",
     "source_page": 4,
@@ -380,6 +478,101 @@ export const candidates = [
     }
   },
   {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "bukan-tag-question",
+    "review_status": "published",
+    "payload": {
+      "promptText": "Welke zin vraagt bevestiging dat de tas zwaar is?",
+      "targetMeaning": "Bevestigingsvraag met tag question achteraan",
+      "options": [
+        {
+          "id": "Tas itu berat, 'kan?",
+          "text": "Tas itu berat, 'kan?"
+        },
+        {
+          "id": "Tas itu tidak berat?",
+          "text": "Tas itu tidak berat?"
+        }
+      ],
+      "correctOptionId": "Tas itu berat, 'kan?",
+      "explanationText": "''Kan' achteraan vraagt bevestiging van iets dat de spreker al denkt: 'die tas is zwaar, hè?'. 'Tidak berat?' zou juist twijfelen of de tas zwaar is."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "bukan-tag-question",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Mereka tinggal di hotel mahal.",
+      "transformationInstruction": "Voeg een tag question toe (\"hè?\")",
+      "acceptableAnswers": [
+        "Mereka tinggal di hotel mahal, bukan?",
+        "Mereka tinggal di hotel mahal, 'kan?",
+        "Mereka tinggal di hotel mahal bukan?",
+        "Mereka tinggal di hotel mahal 'kan?"
+      ],
+      "hintText": "Plaats bukan of 'kan achteraan de zin",
+      "explanationText": "De tag question achteraan vraagt bevestiging van iets dat de spreker al verwacht. \"Bukan\" en \"'kan\" zijn beide correct; ''kan' is informeler en typisch voor gesproken taal."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "bukan-tag-question",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Dit restaurant is duur, hè?",
+      "requiredTargetPattern": "bukan-tag-question",
+      "acceptableAnswers": [
+        "Restoran ini mahal, 'kan?",
+        "Restoran ini mahal, bukan?",
+        "Restoran ini mahal 'kan?",
+        "Restoran ini mahal bukan?"
+      ],
+      "disallowedShortcutForms": [
+        "Restoran ini tidak mahal?"
+      ],
+      "explanationText": "''Kan?' (of bukan?) achteraan vraagt bevestiging van iets dat de spreker al denkt te weten. Een gewone ontkenning met 'tidak' zou juist twijfel uitdrukken in plaats van bevestiging."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "bukan-tag-question",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Je vader vertrekt morgen, nietwaar?",
+      "requiredTargetPattern": "bukan-tag-question",
+      "acceptableAnswers": [
+        "Ayahmu besok berangkat, bukan?",
+        "Ayahmu besok berangkat, 'kan?",
+        "Ayah kamu besok berangkat, bukan?",
+        "Ayah kamu besok berangkat, 'kan?",
+        "Besok ayahmu berangkat, bukan?",
+        "Besok ayahmu berangkat, 'kan?"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "De tag question achteraan bevestigt wat de spreker al verwacht. Het possessief-suffix '-mu' (of 'kamu' apart) drukt 'jouw vader' uit zonder werkwoord van bezit."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "bukan-tag-question",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Dit is jouw fiets, hè?",
+      "requiredTargetPattern": "bukan-tag-question",
+      "acceptableAnswers": [
+        "Ini sepeda kamu, 'kan?",
+        "Ini sepeda kamu, bukan?",
+        "Ini sepedamu, 'kan?",
+        "Ini sepedamu, bukan?"
+      ],
+      "disallowedShortcutForms": [
+        "Ini bukan sepeda kamu?"
+      ],
+      "explanationText": "Achteraan staat 'kan/bukan als tag question. Vooraan 'bukan' (zoals in 'Ini bukan sepeda...') zou juist een ontkenning zijn -- de positie bepaalt de functie."
+    }
+  },
+  {
     "exercise_type": "cloze_mcq",
     "grammar_pattern_slug": "jangan-prohibition",
     "source_page": 5,
@@ -560,6 +753,109 @@ export const candidates = [
         "Tidak tidur"
       ],
       "explanationText": "\"Jangan tidur\" = ga niet slapen. Het verbod met jangan combineert met de verplichting \"harus makan\" (moet eten)."
+    }
+  },
+  {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "jangan-prohibition",
+    "review_status": "published",
+    "payload": {
+      "promptText": "Welke zin verbiedt om bang te zijn?",
+      "targetMeaning": "Wees niet bang! (verbod)",
+      "options": [
+        {
+          "id": "Jangan takut!",
+          "text": "Jangan takut!"
+        },
+        {
+          "id": "Tidak takut!",
+          "text": "Tidak takut!"
+        }
+      ],
+      "correctOptionId": "Jangan takut!",
+      "explanationText": "\"Jangan\" voor een werkwoord of bijvoeglijk naamwoord drukt een verbod uit (\"wees niet bang!\"). \"Tidak takut\" zou alleen beschrijvend betekenen \"niet bang\", zonder de aansporing om dat te zijn."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "jangan-prohibition",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Bawa koper itu!",
+      "transformationInstruction": "Maak een verbod",
+      "acceptableAnswers": [
+        "Jangan bawa koper itu!",
+        "Jangan bawa koper itu"
+      ],
+      "hintText": "Plaats \"jangan\" voor het werkwoord",
+      "explanationText": "\"Bawa\" (dragen/meenemen) wordt door \"jangan\" ervoor een verbod: 'neem die koffer niet mee!'. Een gewone ontkenning met \"tidak\" is geen aansporing en past hier niet."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "jangan-prohibition",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Vergeet je paspoort niet!",
+      "requiredTargetPattern": "jangan-prohibition",
+      "acceptableAnswers": [
+        "Jangan lupa paspormu!",
+        "Jangan lupa paspor kamu!",
+        "Jangan lupa paspormu",
+        "Jangan lupa paspor kamu"
+      ],
+      "disallowedShortcutForms": [
+        "Tidak lupa paspor"
+      ],
+      "targetSentenceWithBlank": "___ lupa paspormu!",
+      "blankAcceptableAnswers": [
+        "Jangan"
+      ],
+      "explanationText": "Een waarschuwing in de gebiedende wijs gebruikt \"jangan\" voor het werkwoord. \"Tidak lupa\" zou alleen beschrijven dat iemand niet vergeet -- geen waarschuwing of aansporing."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "jangan-prohibition",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Koop niet teveel souvenirs!",
+      "requiredTargetPattern": "jangan-prohibition",
+      "acceptableAnswers": [
+        "Jangan beli oleh-oleh terlalu banyak!",
+        "Jangan beli terlalu banyak oleh-oleh!",
+        "Jangan beli oleh-oleh terlalu banyak"
+      ],
+      "disallowedShortcutForms": [
+        "Tidak beli oleh-oleh banyak"
+      ],
+      "targetSentenceWithBlank": "___ beli oleh-oleh terlalu banyak!",
+      "blankAcceptableAnswers": [
+        "Jangan"
+      ],
+      "explanationText": "Een verbod richting de luisteraar gebruikt \"jangan\" voor het werkwoord \"beli\". \"Terlalu banyak\" (te veel) drukt de mate uit. \"Tidak beli\" zou alleen beschrijvend zijn, geen advies."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "jangan-prohibition",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Pak die zware koffer niet!",
+      "requiredTargetPattern": "jangan-prohibition",
+      "acceptableAnswers": [
+        "Jangan ambil koper yang berat itu!",
+        "Jangan ambil koper berat itu!",
+        "Jangan ambil koper yang berat itu"
+      ],
+      "disallowedShortcutForms": [
+        "Tidak ambil koper berat"
+      ],
+      "targetSentenceWithBlank": "___ ambil koper yang berat itu!",
+      "blankAcceptableAnswers": [
+        "Jangan"
+      ],
+      "explanationText": "Het verbod \"ambil niet\" wordt in het Indonesisch \"jangan ambil\". Het yang-patroon (\"yang berat\") maakt van het bijvoeglijk naamwoord een nadrukkelijke kwalificatie van \"koper\"."
     }
   },
   {
@@ -746,6 +1042,107 @@ export const candidates = [
     }
   },
   {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "imperative-lah-suffix",
+    "review_status": "published",
+    "payload": {
+      "promptText": "Welke zin is een beleefd verzoek om binnen te komen?",
+      "targetMeaning": "Komt u toch binnen! (beleefd)",
+      "options": [
+        {
+          "id": "Masuklah!",
+          "text": "Masuklah!"
+        },
+        {
+          "id": "Masuk!",
+          "text": "Masuk!"
+        }
+      ],
+      "correctOptionId": "Masuklah!",
+      "explanationText": "\"Masuk!\" zonder achtervoegsel klinkt als een direct bevel. Door \"-lah\" toe te voegen verzacht het tot een beleefde uitnodiging: \"komt u toch binnen!\"."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "imperative-lah-suffix",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Periksa formulir ini!",
+      "transformationInstruction": "Maak beleefd met -lah",
+      "acceptableAnswers": [
+        "Periksalah formulir ini!",
+        "Periksalah formulir ini"
+      ],
+      "hintText": "Voeg -lah toe aan het eerste werkwoord",
+      "explanationText": "\"Periksa\" (controleer) krijgt het achtervoegsel -lah om een beleefd verzoek te worden: \"controleert u toch dit formulier!\". Het object \"formulir ini\" blijft ongewijzigd."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "imperative-lah-suffix",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Komt u toch! (beleefd verzoek)",
+      "requiredTargetPattern": "imperative-lah-suffix",
+      "acceptableAnswers": [
+        "Datanglah!",
+        "Datanglah"
+      ],
+      "disallowedShortcutForms": [
+        "Datang"
+      ],
+      "targetSentenceWithBlank": "Datang___!",
+      "blankAcceptableAnswers": [
+        "lah"
+      ],
+      "explanationText": "Een beleefd verzoek voegt -lah aan het werkwoord toe: \"datang\" (komen) wordt \"datanglah\" (komt u toch). Zonder -lah klinkt het als een direct bevel."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "imperative-lah-suffix",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Gaat u toch naar huis! (beleefd)",
+      "requiredTargetPattern": "imperative-lah-suffix",
+      "acceptableAnswers": [
+        "Pulanglah!",
+        "Pulanglah"
+      ],
+      "disallowedShortcutForms": [
+        "Pulang"
+      ],
+      "targetSentenceWithBlank": "Pulang___!",
+      "blankAcceptableAnswers": [
+        "lah"
+      ],
+      "explanationText": "\"Pulang\" (naar huis gaan) wordt door -lah een beleefde aansporing: \"pulanglah!\" = \"gaat u toch naar huis!\". Het achtervoegsel verzacht de toon van bevel naar verzoek."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "imperative-lah-suffix",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Vult u toch het formulier in! (beleefd)",
+      "requiredTargetPattern": "imperative-lah-suffix",
+      "acceptableAnswers": [
+        "Isilah formulir!",
+        "Isilah formulirnya!",
+        "Isilah formulir ini!",
+        "Isilah formulir"
+      ],
+      "disallowedShortcutForms": [
+        "Isi formulir"
+      ],
+      "targetSentenceWithBlank": "Isi___ formulir!",
+      "blankAcceptableAnswers": [
+        "lah"
+      ],
+      "explanationText": "\"Isi\" (vullen/invullen) krijgt -lah voor de beleefde gebiedende wijs: \"isilah formulir!\" = \"vult u toch het formulier in!\". Zonder -lah blijft het een hard bevel."
+    }
+  },
+  {
     "exercise_type": "cloze_mcq",
     "grammar_pattern_slug": "kah-question-suffix",
     "source_page": 6,
@@ -926,6 +1323,109 @@ export const candidates = [
         "Ada pisang di pasar?"
       ],
       "explanationText": "\"Adakah\" geeft nadruk: zijn er werkelijk bananen? Zonder -kah is het een gewone vraag."
+    }
+  },
+  {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "kah-question-suffix",
+    "review_status": "published",
+    "payload": {
+      "promptText": "Welke vraag klinkt formeler: 'Bent u al gekomen?'",
+      "targetMeaning": "Bent u al gekomen? (formeel/nadrukkelijk)",
+      "options": [
+        {
+          "id": "Sudahkah datang?",
+          "text": "Sudahkah datang?"
+        },
+        {
+          "id": "Sudah datang?",
+          "text": "Sudah datang?"
+        }
+      ],
+      "correctOptionId": "Sudahkah datang?",
+      "explanationText": "Het achtervoegsel -kah aan \"sudah\" maakt de vraag formeel en nadrukkelijk. \"Sudah datang?\" is de neutrale spreektaalvariant en wordt het meest gebruikt in informele conversaties."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "kah-question-suffix",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Mau ikut ke pasar?",
+      "transformationInstruction": "Maak nadrukkelijker met -kah",
+      "acceptableAnswers": [
+        "Maukah ikut ke pasar?",
+        "Maukah ikut ke pasar"
+      ],
+      "hintText": "Voeg -kah toe aan het eerste woord van de vraag",
+      "explanationText": "\"Mau\" (willen) krijgt -kah om de vraag formeler en nadrukkelijker te maken: \"wilt u werkelijk mee naar de markt?\". In gesproken taal wordt -kah meestal weggelaten."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "kah-question-suffix",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Komt u (echt) vandaag terug? (nadrukkelijk)",
+      "requiredTargetPattern": "kah-question-suffix",
+      "acceptableAnswers": [
+        "Pulangkah hari ini?",
+        "Datangkah hari ini?",
+        "Pulangkah hari ini",
+        "Datangkah hari ini"
+      ],
+      "disallowedShortcutForms": [
+        "Pulang hari ini?",
+        "Datang hari ini?"
+      ],
+      "targetSentenceWithBlank": "Pulang___ hari ini?",
+      "blankAcceptableAnswers": [
+        "kah"
+      ],
+      "explanationText": "Het achtervoegsel -kah aan het werkwoord vooraan maakt de vraag nadrukkelijk en formeel. Zonder -kah is het een neutrale vraag, met -kah benadruk je twijfel of bevestiging."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "kah-question-suffix",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Heeft u deze sleutel (eigenlijk) nodig? (nadrukkelijk)",
+      "requiredTargetPattern": "kah-question-suffix",
+      "acceptableAnswers": [
+        "Perlukah kunci ini?",
+        "Perlukah kunci ini"
+      ],
+      "disallowedShortcutForms": [
+        "Perlu kunci ini?"
+      ],
+      "targetSentenceWithBlank": "Perlu___ kunci ini?",
+      "blankAcceptableAnswers": [
+        "kah"
+      ],
+      "explanationText": "\"Perlu\" (nodig hebben) krijgt -kah voor een nadrukkelijkere vraag. \"Perlukah kunci ini?\" benadrukt twijfel: heeft u deze sleutel werkelijk nodig? Zonder -kah klinkt het neutraler."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "kah-question-suffix",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Houdt u (echt) van koffie? (nadrukkelijk)",
+      "requiredTargetPattern": "kah-question-suffix",
+      "acceptableAnswers": [
+        "Sukakah kopi?",
+        "Sukakah anda kopi?",
+        "Sukakah kopi"
+      ],
+      "disallowedShortcutForms": [
+        "Suka kopi?"
+      ],
+      "targetSentenceWithBlank": "Suka___ kopi?",
+      "blankAcceptableAnswers": [
+        "kah"
+      ],
+      "explanationText": "Het achtervoegsel -kah aan \"suka\" (houden van) maakt de vraag formeler en benadrukt: \"houdt u werkelijk van koffie?\". In informele spreektaal blijft het achtervoegsel meestal weg."
     }
   },
   {
@@ -1112,6 +1612,100 @@ export const candidates = [
     }
   },
   {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "indonesian-day-parts",
+    "review_status": "published",
+    "payload": {
+      "promptText": "Het is dinsdagochtend 06.30 uur. Welke begroeting past?",
+      "targetMeaning": "Goedemorgen rond zonsopgang = selamat pagi",
+      "options": [
+        {
+          "id": "Selamat pagi!",
+          "text": "Selamat pagi!"
+        },
+        {
+          "id": "Selamat malam!",
+          "text": "Selamat malam!"
+        }
+      ],
+      "correctOptionId": "Selamat pagi!",
+      "explanationText": "Om 06.30 uur valt het tijdstip in \"pagi\" (05.00-11.00), de Indonesische ochtend. \"Malam\" loopt tot ongeveer 03.00; daarna komt geen aparte vroeg-ochtendbegroeting voor in dit systeem."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "indonesian-day-parts",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Jam tujuh malam.",
+      "transformationInstruction": "Verander het dagdeel: het is nu 's middags om twee uur",
+      "acceptableAnswers": [
+        "Jam dua siang.",
+        "Jam dua siang"
+      ],
+      "hintText": "14.00 uur valt onder \"siang\" (11.00-16.00)",
+      "explanationText": "\"Malam\" (18.30-03.00) moet vervangen worden door \"siang\" (11.00-16.00) en het uur verandert van zeven naar twee. Het dagdeel komt na het uur in de standaardconstructie."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "indonesian-day-parts",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Goedenavond! (het is 19.00 uur)",
+      "requiredTargetPattern": "indonesian-day-parts",
+      "acceptableAnswers": [
+        "Selamat malam!",
+        "Selamat malam"
+      ],
+      "disallowedShortcutForms": [
+        "Selamat sore",
+        "Selamat siang"
+      ],
+      "explanationText": "Vanaf ongeveer 18.30 uur begint \"malam\" in het Indonesische systeem -- 19.00 valt daar dus al onder. \"Sore\" eindigt om 18.30, dus die begroeting past niet meer."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "indonesian-day-parts",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Om negen uur 's ochtends komen we aan in Jakarta.",
+      "requiredTargetPattern": "indonesian-day-parts",
+      "acceptableAnswers": [
+        "Jam sembilan pagi kami tiba di Jakarta.",
+        "Jam sembilan pagi kami datang di Jakarta.",
+        "Kami tiba di Jakarta jam sembilan pagi.",
+        "Kami datang di Jakarta jam sembilan pagi."
+      ],
+      "disallowedShortcutForms": [
+        "Jam sembilan siang",
+        "Jam sembilan malam"
+      ],
+      "explanationText": "09.00 uur valt onder \"pagi\" (05.00-11.00), niet \"siang\" (die begint pas om 11.00). Het dagdeel komt direct na het uur. \"Tiba\" en \"datang\" zijn allebei aanvaardbare werkwoorden voor 'aankomen'."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "indonesian-day-parts",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "'s Middags drink ik koffie in een restaurant.",
+      "requiredTargetPattern": "indonesian-day-parts",
+      "acceptableAnswers": [
+        "Siang hari saya minum kopi di restoran.",
+        "Pada siang hari saya minum kopi di restoran.",
+        "Saya minum kopi di restoran siang hari.",
+        "Saya minum kopi di restoran pada siang hari."
+      ],
+      "disallowedShortcutForms": [
+        "Sore hari saya minum kopi",
+        "Malam hari saya minum kopi"
+      ],
+      "explanationText": "\"'s Middags\" valt onder \"siang\" (11.00-16.00). \"Pada siang hari\" of \"siang hari\" zijn beide gangbaar; \"pada\" maakt de tijdsbepaling iets formeler maar verandert de betekenis niet."
+    }
+  },
+  {
     "exercise_type": "cloze_mcq",
     "grammar_pattern_slug": "clock-time-telling",
     "source_page": 7,
@@ -1290,6 +1884,101 @@ export const candidates = [
       ],
       "disallowedShortcutForms": null,
       "explanationText": "\"Kira-kira\" (ongeveer) staat voor de tijdsaanduiding. \"Jam sepuluh\" = tien uur. Het dagdeel is optioneel als de context duidelijk is."
+    }
+  },
+  {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "clock-time-telling",
+    "review_status": "published",
+    "payload": {
+      "promptText": "Hoe zeg je \"half negen\" in het Indonesisch?",
+      "targetMeaning": "Half negen (08.30)",
+      "options": [
+        {
+          "id": "setengah sembilan",
+          "text": "setengah sembilan"
+        },
+        {
+          "id": "setengah delapan",
+          "text": "setengah delapan"
+        }
+      ],
+      "correctOptionId": "setengah sembilan",
+      "explanationText": "Bij het halve uur telt het Indonesisch vooruit naar het volgende hele uur, net als het Nederlands. \"Setengah sembilan\" = half op weg naar negen = 08.30; \"setengah delapan\" zou 07.30 zijn."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "clock-time-telling",
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Jam tiga sore.",
+      "transformationInstruction": "Voeg toe: vijf voor drie ('s middags)",
+      "acceptableAnswers": [
+        "Jam tiga sore kurang lima.",
+        "Jam tiga sore kurang lima menit.",
+        "Jam tiga kurang lima sore.",
+        "Jam tiga kurang lima menit sore."
+      ],
+      "hintText": "\"Kurang\" = voor (bij kloktijd)",
+      "explanationText": "\"Kurang\" geeft aan dat de minuten van het volgende uur worden afgetrokken. \"Jam tiga kurang lima\" = vijf voor drie = 14.55. \"Sore\" benoemt het dagdeel (16.00-18.30)... let op: 14.55 valt feitelijk onder \"siang\", maar de bron wijst sore aan."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "clock-time-telling",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Het is half elf 's avonds.",
+      "requiredTargetPattern": "clock-time-telling",
+      "acceptableAnswers": [
+        "Jam setengah sebelas malam.",
+        "Sekarang jam setengah sebelas malam.",
+        "Sekarang setengah sebelas malam."
+      ],
+      "disallowedShortcutForms": [
+        "Jam setengah sepuluh malam",
+        "Setengah sepuluh malam"
+      ],
+      "explanationText": "Bij het halve uur telt men vooruit: \"setengah sebelas\" = half op weg naar elf = 10.30. \"Malam\" (18.30-03.00) verduidelijkt dat het 's avonds is, dus 22.30 in plaats van 10.30 's ochtends."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "clock-time-telling",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "We komen om kwart voor twaalf aan.",
+      "requiredTargetPattern": "clock-time-telling",
+      "acceptableAnswers": [
+        "Kami tiba jam dua belas kurang seperempat.",
+        "Kami datang jam dua belas kurang seperempat.",
+        "Kami tiba jam dua belas kurang seperempat siang.",
+        "Kami datang jam dua belas kurang seperempat siang."
+      ],
+      "disallowedShortcutForms": [
+        "Kami tiba jam sebelas lewat seperempat"
+      ],
+      "explanationText": "\"Kurang seperempat\" = een kwart minder = kwart voor. \"Jam dua belas kurang seperempat\" = 11.45. \"Lewat\" zou hier de verkeerde richting geven (kwart over)."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "clock-time-telling",
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De taxi vertrekt om twintig over drie.",
+      "requiredTargetPattern": "clock-time-telling",
+      "acceptableAnswers": [
+        "Taksi berangkat jam tiga lewat dua puluh.",
+        "Taksi berangkat jam tiga lewat dua puluh menit.",
+        "Taksi berangkat jam tiga sore lewat dua puluh.",
+        "Taksi berangkat jam tiga siang lewat dua puluh."
+      ],
+      "disallowedShortcutForms": [
+        "Taksi berangkat jam tiga kurang dua puluh"
+      ],
+      "explanationText": "\"Lewat dua puluh\" = twintig minuten over het hele uur. \"Jam tiga lewat dua puluh\" = 15.20. \"Kurang\" zou de tegenovergestelde richting aanduiden (twintig voor) en hoort hier dus niet."
     }
   },
   {

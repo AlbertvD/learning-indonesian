@@ -85,7 +85,8 @@ For lesson N, read all of these:
 - Confusion group not set on a pattern that is clearly confusable (e.g. me-/di- passive voice)
 - No `contrast_pair` candidates despite grammar section covering confusable forms
 - **Grammar pattern missing a required exercise type** — every grammar pattern must have at least one candidate of each type: `contrast_pair`, `sentence_transformation`, `constrained_translation`, `cloze_mcq`
-- **Grammar pattern has fewer than 8 total candidates** — target is 10 per pattern (3 cloze_mcq, 3 contrast_pair, 2 sentence_transformation, 2 constrained_translation)
+- **Grammar pattern has fewer than 12 total candidates** — target is 15 per pattern (3 cloze_mcq, 3 contrast_pair, 4 sentence_transformation, 5 constrained_translation). Production-heavy split because typed-recall production is what FSRS uses to gate retrieving → productive promotion.
+- **Grammar pattern uses fewer than 12 distinct content-word roots across its candidates** — repetition of the same 2-3 nouns or verbs flattens the lexical signature and lets the learner pattern-match the surface form instead of the rule. Compute distinct content-word roots by tokenizing all Indonesian payload fields (sourceSentence, acceptableAnswers, options, sentence) and applying scripts/lib/affix.ts:stripAffixes, then dropping FUNCTION_WORDS.
 - **Fewer than half of candidates for a grammar pattern use lesson vocabulary** — at least half the candidates for a pattern must use words from the current or prior lesson vocabulary pool, not only abstract invented sentences
 - **Grammar exercise payload contains unknown Indonesian vocabulary** — every Indonesian word in `sourceSentence`, `acceptableAnswers`, `options.text`, `sentence`, or `correctOptionId` must appear in the lesson vocabulary pool (current or prior lessons), be a recognized proper noun (place name or recurring character), or be a transparent affixed form of a known root (e.g. `selebar` from known `lebar`). Flag any token that is none of these. Common subtypes to watch for: invented compounds (`satubelas`, `duapuluh` should be `sebelas`, `dua puluh`), Dutch words leaking into Indonesian fields (`uitgenodigd`, `studeert`, `afkorting`, `praat`), reversed clitics (`nyarumah`, `kubuku` should be `rumahnya`, `bukuku`), and entire Dutch sentences placed in `sourceSentence` instead of `sourceLanguageSentence`. Run `bun scripts/check-vocab-coverage.ts --lesson <N>` to surface these mechanically.
 - **Translation drill item in lesson.ts has no `answer` field** — translation and grammar_drill items must have `answer` populated unless the exercise is explicitly open-ended (conversation, free composition)
@@ -172,11 +173,15 @@ For each grammar pattern slug in `grammar-patterns.ts`:
 
 Flag each missing type individually: `"grammar pattern '<slug>' has no <exercise_type> candidate"`
 
-**Count** — count total candidates per grammar pattern. Flag if fewer than 8:
-`"grammar pattern '<slug>' has only N candidates (target: 10)"`
+**Count** — count total candidates per grammar pattern. Flag if fewer than 12:
+`"grammar pattern '<slug>' has only N candidates (target: 15)"`
 
-**Vocabulary integration** — for each grammar pattern, build a word list from `sections-catalog.json` vocabulary/expressions/numbers items and `learning-items.ts` base_text values (current lesson) plus prior-lesson vocabulary from the DB query. Then check each candidate: does the Indonesian sentence contain at least one word from the pool? Flag if fewer than half (5 out of 10, or 4 out of 8) of a pattern's candidates use recognisable lesson vocabulary:
-`"grammar pattern '<slug>' fewer than half of candidates use lesson vocabulary (N/M)"`
+**Lexical breadth** — grammar exercises teach a pattern, not vocabulary. The cumulative-pool constraint exists only so learners aren't surprised by unknown words; it is not a vocab-review opportunity. The reviewer's job here is to ensure the agent didn't cluster every candidate around the same 2-3 nouns/verbs (which would let the learner pattern-match the surface form instead of internalising the rule).
+
+Two checks:
+1. **Pool-membership constraint** (structural, handled by `lint-staging.ts unknown-vocabulary`): every Indonesian word in the payload must already exist in the cumulative pool. Don't flag here unless the linter missed something.
+2. **Lexical breadth** (pedagogical): across all candidates for one pattern, count distinct content-word roots after `scripts/lib/affix.ts:stripAffixes` and dropping `FUNCTION_WORDS`. If fewer than 12, flag:
+`"grammar pattern '<slug>' uses only N distinct content roots across M candidates (target: 12+) — exercise narrowness lets learners pattern-match surface forms"`
 
 ### 6. contrast_pair prompt quality (WARNING level)
 

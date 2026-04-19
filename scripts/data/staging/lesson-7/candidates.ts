@@ -864,9 +864,9 @@ export const candidates = [
       "translation": "Ninik wil morgen kleding naar Bali meenemen.",
       "options": [
         "besok",
-        "Ninik besok",
-        "di besok",
-        "besok Ninik"
+        "kemarin",
+        "tadi",
+        "lusa"
       ],
       "correctOptionId": "besok",
       "explanationText": "De tijdsbepaling \"besok\" staat aan het eind van de zin als de plaatsbepaling (ke Bali) al eerder in de zin staat. Geen voorzetsel nodig bij besok, en de tijdsbepaling staat nooit tussen onderwerp en werkwoord."
@@ -1052,6 +1052,362 @@ export const candidates = [
       ],
       "disallowedShortcutForms": null,
       "explanationText": "Drie constructies met topicalisatie. In constructie 2 en 3 wordt \"hotel itu\" het topic en \"harga kamar\" krijgt -nya."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "nya-possessive-suffix",
+    "source_page": 6,
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Kunci dia hilang.",
+      "transformationInstruction": "Herschrijf met het achtervoegsel -nya in plaats van \"dia\".",
+      "acceptableAnswers": [
+        "Kuncinya hilang.",
+        "Kuncinya hilang"
+      ],
+      "hintText": "Vervang \"dia\" door -nya achter het zelfstandig naamwoord.",
+      "explanationText": "\"Kunci dia\" wordt \"kuncinya\" — het bezittelijk voornaamwoord -nya vervangt het losse woord \"dia\". Functie: bezit derde persoon."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "nya-possessive-suffix",
+    "source_page": 6,
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Topi dia bagus.",
+      "transformationInstruction": "Herschrijf met -nya in plaats van \"dia\".",
+      "acceptableAnswers": [
+        "Topinya bagus.",
+        "Topinya bagus"
+      ],
+      "hintText": "Voeg -nya toe aan \"topi\" en verwijder \"dia\".",
+      "explanationText": "\"Topi dia\" wordt \"topinya\" — -nya als bezittelijk achtervoegsel (zijn/haar hoed)."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "nya-possessive-suffix",
+    "source_page": 6,
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Zijn overhemd is wit.",
+      "requiredTargetPattern": "nya-possessive-suffix",
+      "acceptableAnswers": [
+        "Kemejanya putih.",
+        "Kemejanya putih"
+      ],
+      "disallowedShortcutForms": [
+        "Kemeja dia putih"
+      ],
+      "explanationText": "Gebruik -nya achter \"kemeja\" voor bezit: kemejanya = zijn overhemd. De vorm met los \"dia\" is in geschreven Indonesisch ongebruikelijk."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "nya-possessive-suffix",
+    "source_page": 6,
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Haar armband is van goud.",
+      "requiredTargetPattern": "nya-possessive-suffix",
+      "acceptableAnswers": [
+        "Gelangnya dari emas.",
+        "Gelangnya dari emas"
+      ],
+      "disallowedShortcutForms": [
+        "Gelang dia dari emas"
+      ],
+      "explanationText": "-nya achter \"gelang\" drukt bezit uit (haar armband). \"dari emas\" = van goud."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "nya-possessive-suffix",
+    "source_page": 6,
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Zijn slippers zijn nieuw.",
+      "requiredTargetPattern": "nya-possessive-suffix",
+      "acceptableAnswers": [
+        "Sandalnya baru.",
+        "Sandalnya baru"
+      ],
+      "disallowedShortcutForms": [
+        "Sandal dia baru"
+      ],
+      "explanationText": "-nya achter \"sandal\" geeft bezit aan: sandalnya = zijn slippers. -nya is de gebruikelijke schrijftaalvorm."
+    }
+  },
+  {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "nya-adjective-nominalizer",
+    "source_page": 8,
+    "review_status": "published",
+    "payload": {
+      "promptText": "Welke zin drukt \"het gewicht van die koffer is 20 kilo\" correct uit?",
+      "targetMeaning": "beratnya — -nya nominaliseert 'berat' tot zelfstandig naamwoord",
+      "options": [
+        {
+          "id": "a",
+          "text": "Koper itu beratnya 20 kilo"
+        },
+        {
+          "id": "b",
+          "text": "Koper itu berat 20 kilo"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanationText": "\"beratnya\" (het gewicht) is de genominaliseerde vorm van \"berat\" (zwaar). Bij metingen is de -nya-vorm vereist; zonder -nya leest het als \"de koffer is zwaar 20 kilo\" — grammaticaal onvolledig."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "nya-adjective-nominalizer",
+    "source_page": 8,
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "De leeftijd van oma is bijna 76 jaar.",
+      "transformationInstruction": "Vertaal naar het Indonesisch met -nya als nominalisator op het tijds-/eigenschapwoord.",
+      "acceptableAnswers": [
+        "Umur nenek hampir 76 tahun",
+        "Umur nenek hampir tujuh puluh enam tahun",
+        "Nenek umurnya hampir 76 tahun",
+        "Nenek umurnya hampir tujuh puluh enam tahun"
+      ],
+      "hintText": "umur + -nya = umurnya (de leeftijd)",
+      "explanationText": "\"umur\" + -nya = \"umurnya\" (zijn/haar leeftijd, als topicalisatie). De variant \"Umur nenek hampir 76 tahun\" gebruikt geen -nya maar is ook correct. De -nya-vorm benadrukt nenek als topic."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "nya-adjective-nominalizer",
+    "source_page": 8,
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Het gewicht van mijn koffer is 25 kilo.",
+      "requiredTargetPattern": "nya-adjective-nominalizer",
+      "acceptableAnswers": [
+        "Koper saya beratnya 25 kilo",
+        "Koper saya beratnya dua puluh lima kilo"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "\"berat\" (zwaar) + -nya = \"beratnya\" (het gewicht). De -nya-vorm zet het bijvoeglijk naamwoord om in een zelfstandig naamwoord."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "nya-adjective-nominalizer",
+    "source_page": 8,
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De prijs van deze batik is 25.000 roepia.",
+      "requiredTargetPattern": "nya-adjective-nominalizer",
+      "acceptableAnswers": [
+        "Batik ini harganya 25.000 rupiah",
+        "Batik ini harganya dua puluh lima ribu rupiah"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "\"harga\" (prijs) + -nya = \"harganya\" (de prijs). Hoewel \"harga\" zelf al een zelfstandig naamwoord is, fungeert -nya hier als nominaliserende koppeling met het topic \"batik ini\"."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "nya-adjective-nominalizer",
+    "source_page": 8,
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "De grootte van die kamer is 4 bij 5 meter.",
+      "requiredTargetPattern": "nya-adjective-nominalizer",
+      "acceptableAnswers": [
+        "Kamar itu besarnya 4 kali 5 meter",
+        "Kamar itu besarnya empat kali lima meter"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "\"besar\" (groot) + -nya = \"besarnya\" (de grootte). \"kali\" = bij/x in afmetingen."
+    }
+  },
+  {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "time-adverbs-basic",
+    "source_page": 9,
+    "review_status": "published",
+    "payload": {
+      "promptText": "Welke zin betekent \"Straks ga ik douchen\"?",
+      "targetMeaning": "Tijdsadverbium voor de nabije toekomst",
+      "options": [
+        {
+          "id": "a",
+          "text": "Nanti saya mandi"
+        },
+        {
+          "id": "b",
+          "text": "Tadi saya mandi"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanationText": "Nanti = straks (toekomst, kort), tadi = zoeven (verleden, kort geleden). Beide zijn relatief aan het heden, maar wijzen in tegengestelde richting."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "time-adverbs-basic",
+    "source_page": 9,
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Besok saya mau cari hotel.",
+      "transformationInstruction": "Verander naar het verleden (gisteren): gebruik \"kemarin\" en verwijder \"mau\".",
+      "acceptableAnswers": [
+        "Kemarin saya cari hotel.",
+        "Kemarin saya cari hotel"
+      ],
+      "hintText": "\"mau\" hoort bij toekomst en past niet bij \"kemarin\".",
+      "explanationText": "\"mau\" markeert intentie/toekomst en wordt gewoonlijk weggelaten in een verleden-zin. Kemarin = gisteren."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "time-adverbs-basic",
+    "source_page": 9,
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Hari ini anak-anak belajar di rumah.",
+      "transformationInstruction": "Verander de tijdsaanduiding naar overmorgen (\"lusa\").",
+      "acceptableAnswers": [
+        "Lusa anak-anak belajar di rumah.",
+        "Lusa anak-anak mau belajar di rumah."
+      ],
+      "hintText": "Vervang \"hari ini\" door \"lusa\" (overmorgen).",
+      "explanationText": "Lusa = overmorgen. Het werkwoord verandert niet; alleen het tijdsadverbium verschuift de tijdsreferentie. Optioneel \"mau\" toevoegen voor expliciete toekomst."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "time-adverbs-basic",
+    "source_page": 9,
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Eergisteren heb ik een vriend ontmoet.",
+      "requiredTargetPattern": "time-adverbs-basic",
+      "acceptableAnswers": [
+        "Kemarin dulu saya bertemu teman.",
+        "Kemarin dulu saya bertemu teman"
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "Kemarin dulu = eergisteren (letterlijk: gisteren-vroeger). \"bertemu teman\" = een vriend ontmoeten."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "time-adverbs-basic",
+    "source_page": 9,
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Overmorgen vliegen wij naar Bali.",
+      "requiredTargetPattern": "time-adverbs-basic",
+      "acceptableAnswers": [
+        "Lusa kami terbang ke Bali.",
+        "Lusa kami mau terbang ke Bali.",
+        "Lusa kita terbang ke Bali.",
+        "Lusa kita mau terbang ke Bali."
+      ],
+      "disallowedShortcutForms": null,
+      "explanationText": "Lusa = overmorgen. Het tijdsadverbium staat aan het begin; \"mau\" is optioneel om intentie/toekomst te markeren."
+    }
+  },
+  {
+    "exercise_type": "contrast_pair",
+    "grammar_pattern_slug": "time-place-word-order",
+    "source_page": 10,
+    "review_status": "published",
+    "payload": {
+      "promptText": "Welke zin is grammaticaal correct?",
+      "targetMeaning": "Vandaag gaat moeder naar de markt",
+      "options": [
+        {
+          "id": "a",
+          "text": "Hari ini ibu pergi ke pasar"
+        },
+        {
+          "id": "b",
+          "text": "Ibu hari ini pergi ke pasar"
+        }
+      ],
+      "correctOptionId": "a",
+      "explanationText": "De tijdsbepaling mag nooit tussen onderwerp (ibu) en werkwoord (pergi) staan. Correct: \"Hari ini ibu pergi ke pasar\" of \"Ibu pergi ke pasar hari ini\". Fout: \"Ibu hari ini pergi ke pasar\"."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "time-place-word-order",
+    "source_page": 10,
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Saya kemarin makan di restoran.",
+      "transformationInstruction": "Corrigeer de woordvolgorde. De tijdsbepaling mag niet tussen onderwerp en werkwoord staan.",
+      "acceptableAnswers": [
+        "Kemarin saya makan di restoran.",
+        "Kemarin saya makan di restoran",
+        "Saya makan di restoran kemarin.",
+        "Saya makan di restoran kemarin"
+      ],
+      "hintText": "Verplaats \"kemarin\" naar het begin of het eind van de zin.",
+      "explanationText": "\"Saya kemarin makan\" is fout omdat de tijdsbepaling tussen subject en werkwoord staat. Correct: vooraan (nadruk op tijd) of achteraan (neutraal)."
+    }
+  },
+  {
+    "exercise_type": "sentence_transformation",
+    "grammar_pattern_slug": "time-place-word-order",
+    "source_page": 10,
+    "review_status": "published",
+    "payload": {
+      "sourceSentence": "Bapak besok pergi ke kantor.",
+      "transformationInstruction": "Corrigeer de woordvolgorde door de tijdsbepaling naar de juiste positie te verplaatsen.",
+      "acceptableAnswers": [
+        "Besok bapak pergi ke kantor.",
+        "Besok bapak pergi ke kantor",
+        "Bapak pergi ke kantor besok.",
+        "Bapak pergi ke kantor besok"
+      ],
+      "hintText": "De tijdsbepaling \"besok\" hoort aan het begin of einde — niet tussen onderwerp en werkwoord.",
+      "explanationText": "\"Bapak besok pergi\" plaatst de tijdsbepaling tussen subject en werkwoord, wat ongrammaticaal is. Vooraan = nadruk op tijd, achteraan = neutrale positie."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "time-place-word-order",
+    "source_page": 10,
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "Vanmiddag wil ik in een hotel verblijven",
+      "requiredTargetPattern": "time-place-word-order",
+      "acceptableAnswers": [
+        "Sore ini saya mau menginap di hotel",
+        "Saya mau menginap di hotel sore ini"
+      ],
+      "disallowedShortcutForms": [
+        "Saya sore ini mau menginap di hotel"
+      ],
+      "explanationText": "Tijdsbepaling \"sore ini\" staat vooraan (nadruk op tijd) of achteraan (neutraal). Nooit tussen onderwerp en werkwoord."
+    }
+  },
+  {
+    "exercise_type": "constrained_translation",
+    "grammar_pattern_slug": "time-place-word-order",
+    "source_page": 10,
+    "review_status": "published",
+    "payload": {
+      "sourceLanguageSentence": "In de winkel kunnen we vandaag een batik kopen",
+      "requiredTargetPattern": "time-place-word-order",
+      "acceptableAnswers": [
+        "Di toko kita bisa beli batik hari ini",
+        "Di toko kita bisa membeli batik hari ini"
+      ],
+      "disallowedShortcutForms": [
+        "Kita di toko hari ini bisa beli batik"
+      ],
+      "explanationText": "Plaatsbepaling \"di toko\" vooraan, tijdsbepaling \"hari ini\" achteraan. Bij combinatie staan plaats en tijd nooit tussen onderwerp en werkwoord."
     }
   }
 ]

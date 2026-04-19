@@ -347,7 +347,7 @@ export const clozeContexts = [
   },
   {
     learning_item_slug: 'minggu',
-    source_text: 'Seminggu lagi kita pergi ke Bali.',
+    source_text: 'Satu ___ lagi kita pergi ke Bali.',
     translation_text: 'Over een week gaan we naar Bali.',
     difficulty: 'A2',
     topic_tag: 'time',

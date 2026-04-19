@@ -1,0 +1,131 @@
+{
+  "lesson": 9,
+  "revision": 1,
+  "reviewedAt": "2026-04-18T16:00:00Z",
+  "status": "approved",
+  "note": "Linter clean (0 CRITICAL). The 289 distractor-not-in-id-pool warnings from the linter are expected pre-publish state (lesson-9 distractors reference lesson-9 vocab not yet in DB) and are not re-flagged here. This review focuses on pedagogical quality that the linter cannot judge.",
+  "issues": [
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "verb-ordering-abc cloze_mcq #1 (Saya ___ mau datang ke rumah sakit.)",
+      "issue": "Distractors `mau` and `datang` are already visible in the sentence. Selecting them would produce nonsensical duplicates (`Saya mau mau datang`). Distractors should be other Group-A words the learner could plausibly misorder (e.g. `akan`, `belum`, `sudah`, `masih`).",
+      "fix": "Replace `mau` and `datang` with other Group-A/B/C words not already in the sentence."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "verb-ordering-abc cloze_mcq #2 (Ibu ___ bisa berangkat karena masih sakit.)",
+      "issue": "Distractors `bisa` and `berangkat` are already visible in the sentence. Same duplication problem as cloze #1.",
+      "fix": "Replace with other Group-A negation/phase words (e.g. `tidak`, `akan`, `sudah`, `telah`)."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "verb-ordering-abc cloze_mcq #3 (Dia akan ___ cari obat di pasar.)",
+      "issue": "Distractor `akan` is already visible in the sentence. Selecting it would give `Dia akan akan cari`.",
+      "fix": "Replace `akan` with another Group-A word not already in the sentence (e.g. `masih`, `baru`)."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "all contrast_pair candidates (9 items across 3 patterns)",
+      "issue": "Every `targetMeaning` field includes the Indonesian answer verbatim plus a rule label (e.g. `'Bapak mag al gaan werken — A-B-C volgorde.'`, `'Pohon itu tinggi sekali — POST-intensifier sekali.'`, `'Saya betul-betul lupa — ik ben het werkelijk vergeten.'`). `targetMeaning` is shown before the learner answers and should be a short Dutch gloss of the correct option's meaning, not a restatement containing the Indonesian form with its grammatical label.",
+      "fix": "Rewrite each targetMeaning as a short Dutch gloss only, without the Indonesian form or rule label. Examples: 'Vader mag nu al werken.', 'Die boom is heel hoog.', 'Ik ben het werkelijk vergeten.'"
+    },
+    {
+      "severity": "WARNING",
+      "file": "vocab-enrichments.ts",
+      "item": "dibawa* cloze_distractors_id contains `dibawa`",
+      "issue": "The base_text is `dibawa*` (the asterisk is a note marker, not a word feature). Distractor `dibawa` strips the asterisk and is effectively identical to the correct answer. Learner sees two visually-indistinguishable options.",
+      "fix": "Replace `dibawa` with another me-/di- passive verb from lesson 1-9 pool (e.g. `dibeli`, `dipakai`, `dicari`, `dibuka`)."
+    },
+    {
+      "severity": "WARNING",
+      "file": "vocab-enrichments.ts",
+      "item": "kaget (kagèt) cued_recall_distractors_id contains `kaget`",
+      "issue": "Distractor `kaget` is the unparenthesized form of the correct answer `kaget (kagèt)` — semantically and phonetically identical. Learner reading the options sees two forms of the same word.",
+      "fix": "Replace `kaget` with another verb from the lesson pool (e.g. `senang`, `lupa`, `habis`)."
+    },
+    {
+      "severity": "WARNING",
+      "file": "vocab-enrichments.ts",
+      "item": "cued_recall sets using phonetic-neighbour strategy with mixed POS",
+      "issue": "Several cued_recall_distractors_id arrays rely on phonetic neighbours that have mismatched POS: `puas` [adj] → `pusat` [n], `pusing` [adj], `panas` [adj] (OK mix); `takut` [adj] → `takar` [v], `tahu` [v], `tangan` [n]; `lemah` [adj] → `lemak` [n], `lekas` [adv], `lebih` [adv]; `kumpul` [v] → `kumis` [n], `periksa` [v], `kunci` [n]; `jatuh` [v] → `jauh` [adj], `jadi` [v], `jalan` [v]; `kepala` [n] → `kaki` [n], `kuku` [n], `kain` [n-not-in-pool]. Phonetic distraction is a valid strategy for recall, but mismatched POS lets learners eliminate wrong answers purely by syntactic category rather than by meaning.",
+      "fix": "For each of these items, replace POS-mismatched phonetic neighbours with same-POS lesson words. Keep one phonetic distractor at most; the other two should match POS and be from the vocabulary pool."
+    },
+    {
+      "severity": "WARNING",
+      "file": "cloze-contexts.ts",
+      "item": "bulu context #2 (Burung itu memiliki ___ yang sangat indah.)",
+      "issue": "The item is taught as `lichaamshaar` (body hair), but the context uses `bulu` to mean bird plumage/verenkleed. The Dutch translation_text explicitly says 'verenkleed'. This is correct Indonesian (`bulu` covers both senses) but contradicts the single-gloss taught — learner scheduling review will see 'lichaamshaar' as target yet the sentence hints at plumage.",
+      "fix": "Replace with a context that uses `bulu` in the body-hair sense (e.g. the first context which already does this), or change translation_text to 'lichaamshaar' and pick a different sentence."
+    },
+    {
+      "severity": "WARNING",
+      "file": "cloze-contexts.ts",
+      "item": "hati context #2 (___ yang sehat penting untuk kesehatan tubuh.)",
+      "issue": "`hati` is taught here as 'lever'. The sentence '___ that is healthy is important for body health' works for lever but is more naturally read as heart in Indonesian everyday usage. Ambiguous context for an already-polysemous body-part item.",
+      "fix": "Replace with a more anatomy-explicit context (e.g. 'Dokter memeriksa ___ saya untuk mencari infeksi.') or accept the current context as good enough — admin can decide in-app."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "benar-betul-truth-adverb cloze_mcq #1 (Saya ___ lupa.)",
+      "issue": "Distractor `sangat` before a verb like `lupa` is actually grammatical in colloquial Indonesian (`saya sangat lupa` ≈ 'I really forgot'). Explanation claims sangat only modifies adjectives, but that is a prescriptive overstatement. The contrast with `betul-betul` as truth adverb vs `sangat` as intensifier is real, but the distractor is not unambiguously wrong.",
+      "fix": "Either strengthen the explanationText to acknowledge the overlap and point to register/nuance, or swap `sangat` for a distractor that is clearly ungrammatical in that slot (e.g. `paling` already present, `lebih`, `cukup`)."
+    },
+    {
+      "severity": "WARNING",
+      "file": "lesson.ts / pattern-brief.json",
+      "item": "cefr_level tagged A1",
+      "issue": "User noted the lesson is A2. Content (modal-verb stacking, register-sensitive intensifiers, polysemic truth adverbs, complex subordination in the dialogue) is A2-appropriate. lesson.ts line 5 and pattern-brief.json line 3 both say A1.",
+      "fix": "Consider updating to A2 if the coursebook's chapter progression warrants it. Non-blocking — admin can adjust post-publish in the app."
+    }
+  ],
+  "summary": {
+    "total": 11,
+    "critical": 0,
+    "warning": 11
+  },
+  "counts": {
+    "grammar_patterns": 3,
+    "learning_items_total": 103,
+    "learning_items_dialogue_chunks": 11,
+    "learning_items_vocab": 92,
+    "cloze_contexts": 176,
+    "cloze_contexts_unique_slugs": 87,
+    "candidates_total": 30,
+    "candidates_by_type": {
+      "cloze_mcq": 9,
+      "contrast_pair": 9,
+      "sentence_transformation": 6,
+      "constrained_translation": 6
+    },
+    "candidates_by_pattern": {
+      "verb-ordering-abc": 10,
+      "intensifier-position": 10,
+      "benar-betul-truth-adverb": 10
+    },
+    "vocab_enrichments": 91
+  },
+  "checks": {
+    "lesson_ts_structure": "PASS -- grammar sections use categories[] with rules/examples/table; exercises use sections[] with typed items",
+    "grammar_patterns_fields": "PASS -- all 3 patterns have pattern_name, description, slug, complexity_score, confusion_group",
+    "slug_uniqueness_staging": "PASS -- verb-ordering-abc, intensifier-position, benar-betul-truth-adverb are unique across lesson-1 through lesson-8 staging files per linter",
+    "slug_uniqueness_db": "PASS -- verified via SELECT slug FROM indonesian.grammar_patterns; none of the 3 new slugs conflict with existing DB slugs (sekali-intensifier and serial-verb-construction exist at scores 2 and 3 respectively; new slugs coexist and extend them)",
+    "candidate_payloads": "PASS -- all 30 candidates have content nested under payload{}; all required fields present per exercise_type contract",
+    "contrast_pair_option_ids": "PASS -- all 9 contrast pairs use option.id === option.text with the full Indonesian sentence",
+    "cloze_mcq_option_consistency": "PASS -- all cloze_mcq options arrays have length 4 and correctOptionId is present in options",
+    "cloze_context_coverage": "PASS -- 87 unique slugs covered; 11 dialogue_chunk items correctly excluded from cloze; all word/phrase items have at least one context",
+    "pattern_brief_integrity": "PASS -- vocabulary_pool non-empty (~150 prior entries + 80+ current), every pool entry has item_type, every pattern has research_notes and 7 example_sentences",
+    "vocab_enrichments_coverage": "PASS -- 91 enrichments for 92 non-dialogue vocab items + 11 dialogue chunks; distractor arrays all length 3; no distractor equals correct answer verbatim (two near-duplicates flagged as WARNING)",
+    "type_coverage_per_pattern": "PASS -- each of 3 patterns has 3 cloze_mcq + 3 contrast_pair + 2 sentence_transformation + 2 constrained_translation = 10 candidates each",
+    "vocabulary_integration_in_candidates": "PASS -- every candidate uses current-lesson vocabulary (dokter, pasar, kota, pisang, pohon, kaki, sakit, obat, rumah sakit, PUSKESMAS, takut, kaget, lupa, etc.) or prior-lesson vocabulary",
+    "pre_answer_spoilers_promptText": "PASS -- promptText fields describe scenarios without naming Indonesian target words; register cues in formele/alledaags prompts are acceptable when both options share the cued category",
+    "pre_answer_spoilers_targetMeaning": "FAIL -- all 9 contrast_pair targetMeaning fields contain the Indonesian answer verbatim plus a rule label (flagged as WARNING for admin to address in-app; not CRITICAL because contrast_pair is a 2-choice recognition task where the spoiler effect is softened but still present)",
+    "explanationText_quality": "PASS -- all 30 explanationText fields teach the contrast (e.g. belum vs tidak, PRE vs POST, intensifier vs waarheidsbijwoord), not merely confirming the correct answer; substantive >40 words typical",
+    "sentence_transformation_instruction_quality": "PASS -- instructions describe the transformation via semantic cue or group name (Group-A, Group-B, POST-intensifier) without giving the Indonesian target word; for ST items with multiple valid answers (3 POST-intensifiers), listing the category members is appropriate and does not uniquely identify one answer",
+    "cefr_level_consistency": "WARNING -- tagged A1 but user indicates A2; content leans A2. Admin to adjust if needed"
+  }
+}
