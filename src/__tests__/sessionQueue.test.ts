@@ -586,21 +586,16 @@ describe('cloze builders strictly require context_type === cloze', () => {
 })
 
 describe('makeListeningMcq + hasAudioFor', () => {
-  it('hasAudioFor returns true when audio exists for the target voice', async () => {
+  it('hasAudioFor returns true when audio exists for the normalized text', async () => {
     const { hasAudioFor } = await import('@/lib/sessionQueue')
-    const audioMap = new Map([['voice-1', new Map([['apa kabar', 'tts/voice-1/apa-xyz.mp3']])]])
+    const audioMap = new Map([['apa kabar', 'tts/voice-1/apa-xyz.mp3']])
     const item = { ...makeItem('i1'), base_text: 'Apa Kabar' }
-    expect(hasAudioFor(item, audioMap, 'voice-1')).toBe(true)  // case-insensitive via normalizeTtsText
-  })
-
-  it('hasAudioFor returns false when voiceId is null', async () => {
-    const { hasAudioFor } = await import('@/lib/sessionQueue')
-    expect(hasAudioFor(makeItem('i1'), new Map(), null)).toBe(false)
+    expect(hasAudioFor(item, audioMap)).toBe(true)  // case-insensitive via normalizeTtsText
   })
 
   it('hasAudioFor returns false when audio is missing', async () => {
     const { hasAudioFor } = await import('@/lib/sessionQueue')
-    expect(hasAudioFor(makeItem('i1'), new Map(), 'voice-1')).toBe(false)
+    expect(hasAudioFor(makeItem('i1'), new Map())).toBe(false)
   })
 
   it('makeListeningMcq builds an ExerciseItem with exerciseType listening_mcq and skillType recognition', async () => {

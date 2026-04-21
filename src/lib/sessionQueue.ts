@@ -8,7 +8,7 @@ import type {
 import type { ExerciseVariant } from '@/types/learning'
 import { getSemanticGroup } from '@/lib/semanticGroups'
 import { normalizeTtsText } from '@/lib/ttsNormalize'
-import type { AudioMap } from '@/services/audioService'
+import type { SessionAudioMap } from '@/services/audioService'
 import { isExerciseTypeEnabled } from '@/lib/featureFlags'
 
 export type SessionMode = 'standard' | 'backlog_clear' | 'quick'
@@ -35,8 +35,7 @@ export interface SessionBuildInput {
   grammarStates?: Record<string, LearnerGrammarState>        // keyed by grammar_pattern_id
   grammarVariantsByPattern?: Record<string, ExerciseVariant[]> // keyed by grammar_pattern_id
   // Audio-exercise inputs (listening_mcq, future dictation)
-  audioMap?: AudioMap
-  voiceId?: string | null
+  audioMap?: SessionAudioMap
   listeningEnabled?: boolean  // user setting; default true
 }
 
@@ -135,7 +134,6 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
       input.userLanguage,
       eligibleItems,
       input.audioMap,
-      input.voiceId ?? null,
       input.listeningEnabled !== false,
     )
     for (const exercise of exercises) {
@@ -386,8 +384,7 @@ function selectExercises(
   exerciseVariantsByContext?: Record<string, ExerciseVariant[]>,
   userLanguage: 'en' | 'nl' = 'en',
   allItems: LearningItem[] = [],
-  audioMap?: AudioMap,
-  voiceId?: string | null,
+  audioMap?: SessionAudioMap,
   listeningEnabled: boolean = true,
 ): ExerciseItem[] {
   const { item, state, targetSkillType } = candidate
@@ -406,7 +403,7 @@ function selectExercises(
     listeningEnabled &&
     (item.item_type === 'word' || item.item_type === 'phrase') &&
     stage !== 'new' &&
-    hasAudioFor(item, audioMap ?? new Map(), voiceId ?? null)
+    hasAudioFor(item, audioMap ?? new Map())
   // Dictation: same gates as listening plus its own feature flag.
   // Stage gate is stricter — only retrieving+ (form_recall is productive-skill).
   const canDictate =
@@ -839,11 +836,9 @@ export function makeDictation(
  */
 export function hasAudioFor(
   item: LearningItem,
-  audioMap: AudioMap,
-  voiceId: string | null,
+  audioMap: SessionAudioMap,
 ): boolean {
-  if (!voiceId) return false
-  return !!audioMap.get(voiceId)?.get(normalizeTtsText(item.base_text))
+  return audioMap.has(normalizeTtsText(item.base_text))
 }
 
 /**
