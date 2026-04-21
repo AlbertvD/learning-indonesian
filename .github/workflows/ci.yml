@@ -6,6 +6,14 @@ on:
   pull_request:
     branches: [main]
 
+# Reusable workflows from homelab-platform@v1 declare their own permissions
+# (notably semgrep.yml: `security-events: write` for SARIF upload). GitHub
+# rejects the run at startup if the caller's permissions are narrower than
+# the callee's declared permissions. This block grants the superset.
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   safety:
     uses: AlbertvD/homelab-platform/.github/workflows/safety.yml@v1
