@@ -3,8 +3,8 @@ import { Box, Button, Divider, Stack, Text, Badge } from '@mantine/core'
 import type { ExerciseItem } from '@/types/learning'
 import { translations } from '@/lib/i18n'
 import { PlayButton } from '@/components/PlayButton'
-import { useAudio } from '@/contexts/AudioContext'
-import { resolveAudioUrl } from '@/services/audioService'
+import { useSessionAudio } from '@/contexts/SessionAudioContext'
+import { resolveSessionAudioUrl } from '@/services/audioService'
 import classes from './RecognitionMCQ.module.css'
 
 const MAX_FAILURES = 0  // wrong answer finalises immediately — no retry
@@ -19,7 +19,7 @@ interface ContrastPairExerciseProps {
 
 export function ContrastPairExercise({ exerciseItem, userLanguage, onAnswer, previewMode, previewPayload }: ContrastPairExerciseProps) {
   const t = translations[userLanguage]
-  const { audioMap, voiceId } = useAudio()
+  const { audioMap } = useSessionAudio()
 
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
@@ -138,7 +138,7 @@ export function ContrastPairExercise({ exerciseItem, userLanguage, onAnswer, pre
           {data.options.map((option) => {
             const isSelected = selectedOption === option
             const isCorrectOption = option === data.correctOptionId
-            const optionAudioUrl = voiceId ? resolveAudioUrl(audioMap, option, voiceId) : undefined
+            const optionAudioUrl = resolveSessionAudioUrl(audioMap, option)
 
             let statusClass = ''
             if (showWrong && isSelected) {

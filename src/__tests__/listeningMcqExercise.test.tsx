@@ -1,17 +1,17 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { MantineProvider } from '@mantine/core'
-import { AudioProvider } from '@/contexts/AudioContext'
+import { SessionAudioProvider } from '@/contexts/SessionAudioContext'
 import { ListeningMCQ } from '@/components/exercises/ListeningMCQ'
 import type { ExerciseItem } from '@/types/learning'
-import type { AudioMap } from '@/services/audioService'
+import type { SessionAudioMap } from '@/services/audioService'
 
-function wrap(ui: React.ReactElement, audioMap: AudioMap = new Map(), voiceId: string | null = 'voice-1') {
+function wrap(ui: React.ReactElement, audioMap: SessionAudioMap = new Map()) {
   return render(
     <MantineProvider>
-      <AudioProvider audioMap={audioMap} voiceId={voiceId}>
+      <SessionAudioProvider audioMap={audioMap}>
         {ui}
-      </AudioProvider>
+      </SessionAudioProvider>
     </MantineProvider>
   )
 }
@@ -37,7 +37,7 @@ const baseExercise: ExerciseItem = {
 describe('ListeningMCQ', () => {
   it('renders the listen instruction when audio is available', () => {
     // Pass a full audioMap so the "audio not available" branch doesn't fire.
-    const audioMap: AudioMap = new Map([['voice-1', new Map([['makan', 'tts/voice-1/makan-xyz.mp3']])]])
+    const audioMap: SessionAudioMap = new Map([['makan', 'tts/voice-1/makan-xyz.mp3']])
     // Autoplay will reject (jsdom has no real audio) → overlay shows.
     // Either way, the 4 Dutch options do not render the Indonesian text inline.
     wrap(<ListeningMCQ exerciseItem={baseExercise} userLanguage="nl" onAnswer={vi.fn()} />, audioMap)
@@ -53,7 +53,7 @@ describe('ListeningMCQ', () => {
   it('autoplay rejection path: renders Tap to play overlay', async () => {
     // In jsdom, HTMLAudioElement.play returns a Promise that rejects by default
     // (no actual audio subsystem). Assert the overlay renders.
-    const audioMap: AudioMap = new Map([['voice-1', new Map([['makan', 'tts/voice-1/makan-xyz.mp3']])]])
+    const audioMap: SessionAudioMap = new Map([['makan', 'tts/voice-1/makan-xyz.mp3']])
     wrap(<ListeningMCQ exerciseItem={baseExercise} userLanguage="nl" onAnswer={vi.fn()} />, audioMap)
     await waitFor(() => {
       expect(screen.getByText(/klik om af te spelen/i)).toBeInTheDocument()

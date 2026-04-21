@@ -4,8 +4,8 @@ import { IconVolume, IconPlayerPlay, IconArrowRight } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
 import { translations } from '@/lib/i18n'
-import { useAudio } from '@/contexts/AudioContext'
-import { resolveAudioUrl } from '@/services/audioService'
+import { useSessionAudio } from '@/contexts/SessionAudioContext'
+import { resolveSessionAudioUrl } from '@/services/audioService'
 import classes from './TypedRecall.module.css'
 
 interface DictationProps {
@@ -17,8 +17,8 @@ interface DictationProps {
 export function Dictation({ exerciseItem, userLanguage, onAnswer }: DictationProps) {
   const t = translations[userLanguage]
   const learningItem = exerciseItem.learningItem!
-  const { audioMap, voiceId } = useAudio()
-  const audioUrl = voiceId ? resolveAudioUrl(audioMap, learningItem.base_text, voiceId) : undefined
+  const { audioMap } = useSessionAudio()
+  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text)
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)

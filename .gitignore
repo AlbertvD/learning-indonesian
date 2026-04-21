@@ -21,6 +21,10 @@ content/extracted/
 .claude/
 .playwright-mcp/
 
+# Forge state — per-task ephemeral, not committed
+.forge-state.json
+.forge-check-pending
+
 # TypeScript build artifacts
 *.tsbuildinfo
 *.d.ts

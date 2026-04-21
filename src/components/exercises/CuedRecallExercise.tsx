@@ -3,8 +3,8 @@ import { Box, Button, Stack, Text, Badge } from '@mantine/core'
 import type { ExerciseItem } from '@/types/learning'
 import { translations } from '@/lib/i18n'
 import { PlayButton } from '@/components/PlayButton'
-import { useAudio } from '@/contexts/AudioContext'
-import { resolveAudioUrl } from '@/services/audioService'
+import { useSessionAudio } from '@/contexts/SessionAudioContext'
+import { resolveSessionAudioUrl } from '@/services/audioService'
 import classes from './RecognitionMCQ.module.css'
 
 const MAX_FAILURES = 0  // wrong answer finalises immediately — no retry
@@ -17,7 +17,7 @@ interface CuedRecallExerciseProps {
 
 export function CuedRecallExercise({ exerciseItem, userLanguage, onAnswer }: CuedRecallExerciseProps) {
   const t = translations[userLanguage]
-  const { audioMap, voiceId } = useAudio()
+  const { audioMap } = useSessionAudio()
   const learningItem = exerciseItem.learningItem!
   const data = exerciseItem.cuedRecallData
 
@@ -64,7 +64,7 @@ export function CuedRecallExercise({ exerciseItem, userLanguage, onAnswer }: Cue
   }
 
   const isCorrect = selectedOption === data.correctOptionId
-  const correctAudioUrl = isAnswered && voiceId ? resolveAudioUrl(audioMap, learningItem.base_text, voiceId) : undefined
+  const correctAudioUrl = isAnswered ? resolveSessionAudioUrl(audioMap, learningItem.base_text) : undefined
 
   return (
     <Box className={classes.container}>

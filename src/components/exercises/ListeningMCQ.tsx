@@ -3,8 +3,8 @@ import { Box, Button, Stack, Text, Badge, ActionIcon } from '@mantine/core'
 import { IconVolume, IconPlayerPlay } from '@tabler/icons-react'
 import type { ExerciseItem } from '@/types/learning'
 import { translations } from '@/lib/i18n'
-import { useAudio } from '@/contexts/AudioContext'
-import { resolveAudioUrl } from '@/services/audioService'
+import { useSessionAudio } from '@/contexts/SessionAudioContext'
+import { resolveSessionAudioUrl } from '@/services/audioService'
 import classes from './RecognitionMCQ.module.css'
 
 const MAX_FAILURES = 0
@@ -19,8 +19,8 @@ export function ListeningMCQ({ exerciseItem, userLanguage, onAnswer }: Listening
   const t = translations[userLanguage]
   const learningItem = exerciseItem.learningItem!
   const { meanings, distractors } = exerciseItem
-  const { audioMap, voiceId } = useAudio()
-  const audioUrl = voiceId ? resolveAudioUrl(audioMap, learningItem.base_text, voiceId) : undefined
+  const { audioMap } = useSessionAudio()
+  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text)
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [selectedOption, setSelectedOption] = useState<string | null>(null)

@@ -5,8 +5,8 @@ import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
 import { translations } from '@/lib/i18n'
 import { PlayButton } from '@/components/PlayButton'
-import { useAudio } from '@/contexts/AudioContext'
-import { resolveAudioUrl } from '@/services/audioService'
+import { useSessionAudio } from '@/contexts/SessionAudioContext'
+import { resolveSessionAudioUrl } from '@/services/audioService'
 import classes from './TypedRecall.module.css'
 
 interface ConstrainedTranslationExerciseProps {
@@ -25,7 +25,7 @@ export function ConstrainedTranslationExercise({
   previewPayload,
 }: ConstrainedTranslationExerciseProps) {
   const t = translations[userLanguage]
-  const { audioMap, voiceId } = useAudio()
+  const { audioMap } = useSessionAudio()
   const [response, setResponse] = useState('')
   const [isAnswered, setIsAnswered] = useState(false)
   const [startTime] = useState(() => Date.now())
@@ -186,7 +186,7 @@ export function ConstrainedTranslationExercise({
     const parts = data.targetSentenceWithBlank!.split('___')
     const correctWord = data.blankAcceptableAnswers![0]
     const clozeFilledSentence = data.targetSentenceWithBlank!.replace('___', correctWord)
-    const clozeAudioUrl = isAnswered && voiceId ? resolveAudioUrl(audioMap, clozeFilledSentence, voiceId) : undefined
+    const clozeAudioUrl = isAnswered ? resolveSessionAudioUrl(audioMap, clozeFilledSentence) : undefined
 
     return (
       <Box className={classes.container}>
@@ -275,7 +275,7 @@ export function ConstrainedTranslationExercise({
   }
 
   // Full-sentence translation mode (legacy / structural patterns)
-  const fullAnswerAudioUrl = isAnswered && voiceId ? resolveAudioUrl(audioMap, data.acceptableAnswers[0], voiceId) : undefined
+  const fullAnswerAudioUrl = isAnswered ? resolveSessionAudioUrl(audioMap, data.acceptableAnswers[0]) : undefined
   return (
     <Box className={classes.container}>
       <Stack gap="xl">

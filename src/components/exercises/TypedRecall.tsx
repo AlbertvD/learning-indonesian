@@ -5,8 +5,8 @@ import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
 import { translations } from '@/lib/i18n'
 import { PlayButton } from '@/components/PlayButton'
-import { useAudio } from '@/contexts/AudioContext'
-import { resolveAudioUrl } from '@/services/audioService'
+import { useSessionAudio } from '@/contexts/SessionAudioContext'
+import { resolveSessionAudioUrl } from '@/services/audioService'
 import classes from './TypedRecall.module.css'
 
 interface TypedRecallProps {
@@ -17,7 +17,7 @@ interface TypedRecallProps {
 
 export function TypedRecall({ exerciseItem, userLanguage, onAnswer }: TypedRecallProps) {
   const t = translations[userLanguage]
-  const { audioMap, voiceId } = useAudio()
+  const { audioMap } = useSessionAudio()
   const { learningItem: learningItem_, meanings } = exerciseItem
   const learningItem = learningItem_!
   const [response, setResponse] = useState('')
@@ -112,7 +112,7 @@ export function TypedRecall({ exerciseItem, userLanguage, onAnswer }: TypedRecal
               >
                 {isCorrect ? '✓ Correct' : '✗ Incorrect'}
               </Badge>
-              <PlayButton audioUrl={voiceId ? resolveAudioUrl(audioMap, learningItem.base_text, voiceId) : undefined} size="sm" />
+              <PlayButton audioUrl={resolveSessionAudioUrl(audioMap, learningItem.base_text)} size="sm" />
             </Box>
             {!isCorrect && (
               <Box mt="lg">

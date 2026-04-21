@@ -5,9 +5,9 @@ import type { ExerciseItem } from '@/types/learning'
 import { checkAnswer } from '@/lib/answerNormalization'
 import { translations } from '@/lib/i18n'
 import { PlayButton } from '@/components/PlayButton'
-import { useAudio } from '@/contexts/AudioContext'
+import { useSessionAudio } from '@/contexts/SessionAudioContext'
 import { useAutoplay } from '@/contexts/AutoplayContext'
-import { resolveAudioUrl } from '@/services/audioService'
+import { resolveSessionAudioUrl } from '@/services/audioService'
 import classes from './TypedRecall.module.css'
 
 const HINT_AFTER_FAILURES = 2  // hint appears after this many wrong attempts
@@ -80,9 +80,9 @@ export function SentenceTransformationExercise({
   }
 
   const data = exerciseItem!.sentenceTransformationData
-  const { audioMap, voiceId } = useAudio()
+  const { audioMap } = useSessionAudio()
   const { autoPlay } = useAutoplay()
-  const sourceAudioUrl = data && voiceId ? resolveAudioUrl(audioMap, data.sourceSentence, voiceId) : undefined
+  const sourceAudioUrl = data ? resolveSessionAudioUrl(audioMap, data.sourceSentence) : undefined
 
   if (!data) {
     return <div style={{ color: 'red' }}>Missing sentence transformation data</div>

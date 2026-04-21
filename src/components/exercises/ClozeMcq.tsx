@@ -3,8 +3,8 @@ import { Box, Button, Divider, Stack, Text } from '@mantine/core'
 import type { ExerciseItem } from '@/types/learning'
 import { translations } from '@/lib/i18n'
 import { PlayButton } from '@/components/PlayButton'
-import { useAudio } from '@/contexts/AudioContext'
-import { resolveAudioUrl } from '@/services/audioService'
+import { useSessionAudio } from '@/contexts/SessionAudioContext'
+import { resolveSessionAudioUrl } from '@/services/audioService'
 import classes from './RecognitionMCQ.module.css'
 
 const MAX_FAILURES = 0  // wrong answer finalises immediately — no retry
@@ -19,7 +19,7 @@ interface ClozeMcqProps {
 
 export function ClozeMcq({ exerciseItem, userLanguage, onAnswer, previewMode, previewPayload }: ClozeMcqProps) {
   const t = translations[userLanguage]
-  const { audioMap, voiceId } = useAudio()
+  const { audioMap } = useSessionAudio()
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
   const [failureCount, setFailureCount] = useState(0)
@@ -136,7 +136,7 @@ export function ClozeMcq({ exerciseItem, userLanguage, onAnswer, previewMode, pr
   const isCorrect = selectedOption === data.correctOptionId
   const parts = data.sentence.split('___')
   const filledSentence = data.sentence.replace('___', data.correctOptionId)
-  const filledAudioUrl = isAnswered && voiceId ? resolveAudioUrl(audioMap, filledSentence, voiceId) : undefined
+  const filledAudioUrl = isAnswered ? resolveSessionAudioUrl(audioMap, filledSentence) : undefined
 
   return (
     <Box className={classes.container}>

@@ -1,17 +1,17 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { MantineProvider } from '@mantine/core'
-import { AudioProvider } from '@/contexts/AudioContext'
+import { SessionAudioProvider } from '@/contexts/SessionAudioContext'
 import { Dictation } from '@/components/exercises/Dictation'
 import type { ExerciseItem } from '@/types/learning'
-import type { AudioMap } from '@/services/audioService'
+import type { SessionAudioMap } from '@/services/audioService'
 
-function wrap(ui: React.ReactElement, audioMap: AudioMap = new Map(), voiceId: string | null = 'voice-1') {
+function wrap(ui: React.ReactElement, audioMap: SessionAudioMap = new Map()) {
   return render(
     <MantineProvider>
-      <AudioProvider audioMap={audioMap} voiceId={voiceId}>
+      <SessionAudioProvider audioMap={audioMap}>
         {ui}
-      </AudioProvider>
+      </SessionAudioProvider>
     </MantineProvider>
   )
 }
@@ -35,7 +35,7 @@ const baseExercise: ExerciseItem = {
 
 describe('Dictation', () => {
   it('does not display the Indonesian base_text before answering', () => {
-    const audioMap: AudioMap = new Map([['voice-1', new Map([['apa kabar?', 'tts/voice-1/apa-xyz.mp3']])]])
+    const audioMap: SessionAudioMap = new Map([['apa kabar?', 'tts/voice-1/apa-xyz.mp3']])
     wrap(<Dictation exerciseItem={baseExercise} userLanguage="nl" onAnswer={vi.fn()} />, audioMap)
     expect(screen.queryByText('Apa kabar?')).toBeNull()
   })
@@ -46,7 +46,7 @@ describe('Dictation', () => {
   })
 
   it('autoplay rejection path: renders Tap to play overlay + disabled input', async () => {
-    const audioMap: AudioMap = new Map([['voice-1', new Map([['apa kabar?', 'tts/voice-1/apa-xyz.mp3']])]])
+    const audioMap: SessionAudioMap = new Map([['apa kabar?', 'tts/voice-1/apa-xyz.mp3']])
     wrap(<Dictation exerciseItem={baseExercise} userLanguage="nl" onAnswer={vi.fn()} />, audioMap)
     await waitFor(() => {
       expect(screen.getByText(/klik om af te spelen/i)).toBeInTheDocument()
@@ -57,7 +57,7 @@ describe('Dictation', () => {
   })
 
   it('disables mobile input behaviors (autocorrect, autocapitalize, spellcheck)', async () => {
-    const audioMap: AudioMap = new Map([['voice-1', new Map([['apa kabar?', 'tts/voice-1/apa-xyz.mp3']])]])
+    const audioMap: SessionAudioMap = new Map([['apa kabar?', 'tts/voice-1/apa-xyz.mp3']])
     wrap(<Dictation exerciseItem={baseExercise} userLanguage="nl" onAnswer={vi.fn()} />, audioMap)
     // In autoplay-blocked state the input is still rendered — just disabled.
     // Verify the attributes are present regardless of enabled state.
