@@ -1235,6 +1235,21 @@ $$;
 
 GRANT EXECUTE ON FUNCTION indonesian.get_audio_clips(text[], text[]) TO authenticated;
 
+-- Session audio resolution: one clip per text, preferring earliest lesson.
+-- See docs/plans/2026-04-21-session-audio-voice-resolution.md for rationale.
+CREATE OR REPLACE FUNCTION indonesian.get_audio_clip_per_text(p_texts text[])
+RETURNS TABLE(normalized_text text, storage_path text)
+LANGUAGE sql STABLE SET search_path = indonesian AS $$
+  SELECT DISTINCT ON (ac.normalized_text)
+    ac.normalized_text, ac.storage_path
+  FROM audio_clips ac
+  LEFT JOIN lessons l ON l.id = ac.generated_for_lesson_id
+  WHERE ac.normalized_text = ANY(p_texts)
+  ORDER BY ac.normalized_text, l.order_index NULLS LAST, ac.created_at, ac.id;
+$$;
+
+GRANT EXECUTE ON FUNCTION indonesian.get_audio_clip_per_text(text[]) TO authenticated;
+
 -- Storage bucket
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('indonesian-tts', 'indonesian-tts', true)
