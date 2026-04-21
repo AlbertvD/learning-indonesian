@@ -92,7 +92,6 @@ vi.mock('@/services/grammarStateService', () => ({
 vi.mock('@/services/lessonService', () => ({
   lessonService: {
     getLessonsBasic: vi.fn().mockResolvedValue([{ id: 'lesson-1', order_index: 1 }]),
-    getLessonsWithVoice: vi.fn().mockResolvedValue([{ id: 'lesson-1', order_index: 1, primary_voice: null }]),
   },
 }))
 
