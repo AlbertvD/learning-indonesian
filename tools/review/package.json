@@ -9,9 +9,9 @@
     "server": "tsx server.ts"
   },
   "dependencies": {
-    "@mantine/core": "^8.0.0",
-    "@mantine/hooks": "^8.0.0",
-    "@mantine/notifications": "8",
+    "@mantine/core": "^9.0.0",
+    "@mantine/hooks": "^9.0.0",
+    "@mantine/notifications": "9",
     "@tabler/icons-react": "^3.0.0",
     "axios": "^1.6.0",
     "react": "^19.0.0",
