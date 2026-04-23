@@ -1,0 +1,80 @@
+@layer exercises {
+  .root {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--ex-card-border);
+    background: transparent;
+    color: var(--ex-fg);
+    border-radius: 50%;
+    cursor: pointer;
+    transform-origin: center;
+    transition:
+      background-color var(--ex-motion-fast) var(--ex-ease),
+      border-color var(--ex-motion-fast) var(--ex-ease),
+      transform var(--ex-motion-fast) var(--ex-ease);
+  }
+
+  .root:hover:not(:disabled) {
+    background: var(--ex-option-bg-hover);
+    border-color: var(--accent-primary);
+  }
+
+  .root:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+
+  .root:focus-visible {
+    outline: 2px solid var(--ex-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .primary {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
+  }
+
+  .decorative {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .playing {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    animation: exerciseAudioWave 1200ms ease-in-out infinite;
+  }
+
+  .error {
+    color: var(--ex-wrong-fg);
+    border-color: var(--ex-wrong-border);
+  }
+
+  .blocked {
+    animation: exerciseAudioBlockedPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes exerciseAudioWave {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+    50%      { box-shadow: 0 0 0 3px var(--accent-primary-glow); }
+  }
+
+  @keyframes exerciseAudioBlockedPulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.55; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .root,
+    .root:active {
+      transform: none;
+    }
+    .playing, .blocked {
+      animation: none;
+    }
+  }
+}

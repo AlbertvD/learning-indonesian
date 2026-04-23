@@ -1,0 +1,37 @@
+@layer exercises {
+  .root {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ex-opt-gap);
+  }
+
+  /* Mount stagger — each child animates in with a 40ms delay. Opacity-only. */
+  .root > * {
+    animation: exerciseOptionGroupFadeIn 240ms var(--ex-ease) both;
+  }
+
+  .root > *:nth-child(1) { animation-delay: 0ms; }
+  .root > *:nth-child(2) { animation-delay: 40ms; }
+  .root > *:nth-child(3) { animation-delay: 80ms; }
+  .root > *:nth-child(4) { animation-delay: 120ms; }
+  .root > *:nth-child(5) { animation-delay: 160ms; }
+  .root > *:nth-child(6) { animation-delay: 200ms; }
+
+  @keyframes exerciseOptionGroupFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .root > * {
+      animation-duration: 0ms;
+      animation-delay: 0ms !important;
+    }
+  }
+
+  @container exercise (min-width: 769px) {
+    .root {
+      gap: var(--ex-opt-gap);
+    }
+  }
+}

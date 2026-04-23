@@ -1,0 +1,23 @@
+@layer exercises {
+  .trigger {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .sheet {
+    /* Keyboard-safe: Drawer body already scrolls internally. */
+  }
+
+  .sheetBody {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  /* Textarea gets .exerciseInput class from primitives/global.css for
+     font-size: max(16px, --fs-lg) — kills iOS zoom. No additional styling
+     needed here beyond Mantine defaults. */
+  .textarea {
+    /* reserved */
+  }
+}

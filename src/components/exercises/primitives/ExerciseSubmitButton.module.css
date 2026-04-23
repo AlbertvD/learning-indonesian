@@ -1,0 +1,57 @@
+@layer exercises {
+  .root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 56px;
+    width: 100%;
+    padding: 16px 20px;
+    font-family: inherit;
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-semibold);
+    background: var(--accent-primary);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transform-origin: center;
+    transition: transform var(--ex-motion-fast) var(--ex-ease), opacity var(--ex-motion-fast);
+  }
+
+  .root:hover:not(:disabled) {
+    background: var(--accent-primary-dim);
+  }
+
+  .root:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  .root:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .root:focus-visible {
+    outline: 2px solid var(--ex-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .label {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .icon {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .root,
+    .root:active {
+      transform: none;
+      transition: opacity 120ms;
+    }
+  }
+}

@@ -1,0 +1,138 @@
+@layer exercises {
+  .root {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    padding: var(--ex-opt-pad-y) var(--ex-opt-pad-x);
+    font-family: inherit;
+    text-align: left;
+    background: var(--ex-option-bg);
+    color: var(--ex-fg);
+    border: 2px solid transparent;
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transform-origin: center;
+    transition:
+      background-color var(--ex-motion-fast) var(--ex-ease),
+      border-color var(--ex-motion-fast) var(--ex-ease),
+      color var(--ex-motion-fast) var(--ex-ease),
+      transform var(--ex-motion-fast) var(--ex-ease),
+      opacity var(--ex-motion-fast);
+  }
+
+  .word {
+    min-height: 64px;
+    font-size: var(--fs-md);
+  }
+
+  .sentence {
+    min-height: 88px;
+    font-size: var(--fs-lg);
+    line-height: 1.45;
+  }
+
+  @container exercise (min-width: 769px) {
+    .word {
+      min-height: 56px;
+    }
+    .sentence {
+      min-height: 72px;
+    }
+  }
+
+  /* Hover is a pseudo-class — never set via state prop */
+  .root:hover:not(:disabled):not(.correct):not(.wrong):not(.answer) {
+    background: var(--ex-option-bg-hover);
+  }
+
+  .root:active:not(:disabled):not(.correct):not(.wrong):not(.answer) {
+    transform: scale(0.98);
+  }
+
+  .root:focus-visible,
+  .focused {
+    outline: 2px solid var(--ex-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* Commit states — use token triplets, not raw colors */
+  .correct {
+    background: var(--ex-correct-bg);
+    color: var(--ex-correct-fg);
+    border-color: var(--ex-correct-border);
+    animation: exerciseOptionCorrectPulse var(--ex-motion-correct) var(--ex-ease);
+  }
+
+  .wrong {
+    background: var(--ex-wrong-bg);
+    color: var(--ex-wrong-fg);
+    border-color: var(--ex-wrong-border);
+    animation: exerciseOptionWrongShake var(--ex-motion-wrong) var(--ex-ease);
+  }
+
+  .answer {
+    background: var(--ex-option-bg);
+    color: var(--ex-fg);
+    border-color: var(--ex-correct-border);
+  }
+
+  .glyph {
+    flex-shrink: 0;
+  }
+
+  .glyphMuted {
+    opacity: 0.5;
+  }
+
+  .content {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Row-attached audio button (contrast_pair) */
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .row > .root {
+    flex: 1;
+  }
+
+  /* Motion keyframes. Reduced-motion kills transforms but keeps opacity. */
+  @keyframes exerciseOptionCorrectPulse {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes exerciseOptionWrongShake {
+    0%, 100% { transform: translateX(0); }
+    25%      { transform: translateX(-4px); }
+    50%      { transform: translateX(4px); }
+    75%      { transform: translateX(-4px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .root,
+    .correct,
+    .wrong {
+      animation: none;
+      transform: none;
+    }
+    .root:active {
+      transform: none;
+    }
+  }
+}

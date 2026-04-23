@@ -1,0 +1,89 @@
+@layer exercises {
+  .root {
+    container-name: exercise;
+    container-type: inline-size;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: var(--ex-pad-y) var(--ex-pad-x);
+    width: 100%;
+  }
+
+  .live {
+    min-height: 100dvh;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ex-zone-gap);
+    flex: 1;
+    padding-bottom: var(--ex-footer-h);
+  }
+
+  .root:not(:has(.footer)) .content {
+    padding-bottom: 0;
+  }
+
+  .adminOverlay {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+  }
+
+  .footer {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px var(--ex-pad-x) max(16px, env(safe-area-inset-bottom));
+    background: var(--bg-main);
+    z-index: 1;
+  }
+
+  /* Fade from transparent to solid bg above the footer so content scrolling
+     behind it doesn't abut the button sharply. */
+  .footerFade {
+    position: absolute;
+    top: -12px;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: linear-gradient(to bottom, transparent, var(--bg-main));
+    pointer-events: none;
+  }
+
+  /* Preview mode — admin-facing. Question + answer halves laid out side-by-side
+     on tablet+ by consumers rendering two <ExerciseFrame> instances; the
+     styling here just normalizes padding and kills sticky footer. */
+  .preview {
+    min-height: auto;
+  }
+
+  .preview .content {
+    padding-bottom: 0;
+  }
+
+  .preview .footer {
+    display: none;
+  }
+
+  @container exercise (min-width: 769px) {
+    .root {
+      padding: var(--ex-pad-y) var(--ex-pad-x);
+      /* Desktop padding bump handled via token overrides if needed later. */
+    }
+    .content {
+      gap: 40px;
+    }
+    .footer {
+      position: relative;
+      background: transparent;
+      padding: 0;
+    }
+    .footerFade {
+      display: none;
+    }
+  }
+}

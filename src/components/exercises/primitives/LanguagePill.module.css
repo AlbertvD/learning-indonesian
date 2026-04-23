@@ -1,0 +1,15 @@
+@layer exercises {
+  .root {
+    display: inline-block;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border: 1px solid var(--ex-card-border);
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--ex-fg-muted);
+    line-height: 1;
+  }
+}

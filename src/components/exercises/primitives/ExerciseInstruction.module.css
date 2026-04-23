@@ -1,0 +1,31 @@
+@layer exercises {
+  .root {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-medium);
+    line-height: 1.4;
+    color: var(--ex-fg-muted);
+    text-align: left;
+    /* Suppress visible focus ring for pointer users; :focus-visible paints it
+       only for keyboard focus. Auto-focus on exercise mount doesn't flash. */
+  }
+
+  .root:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  .root:focus-visible {
+    outline: 2px solid var(--ex-focus-ring);
+    outline-offset: 2px;
+    border-radius: var(--r-sm);
+  }
+
+  .icon {
+    display: inline-flex;
+    align-items: center;
+    color: var(--accent-primary);
+  }
+}

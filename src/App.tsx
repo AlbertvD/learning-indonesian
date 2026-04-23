@@ -21,6 +21,7 @@ const Progress = lazy(() => import('@/pages/Progress').then(m => ({ default: m.P
 const SectionCoverage = lazy(() => import('@/pages/SectionCoverage').then(m => ({ default: m.SectionCoverage })))
 const ExerciseCoverage = lazy(() => import('@/pages/ExerciseCoverage').then(m => ({ default: m.ExerciseCoverage })))
 const ContentReview = lazy(() => import('@/pages/ContentReview').then(m => ({ default: m.ContentReview })))
+const DesignLab = lazy(() => import('@/pages/admin/DesignLab').then(m => ({ default: m.DesignLab })))
 
 function LazyPage({ children }: { children: React.ReactNode }) {
   return (
@@ -148,6 +149,14 @@ function App() {
           element={
             <ProtectedRoute>
               <LazyPage><ContentReview /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/design-lab"
+          element={
+            <ProtectedRoute>
+              <LazyPage><DesignLab /></LazyPage>
             </ProtectedRoute>
           }
         />
