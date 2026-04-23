@@ -10,6 +10,9 @@ import { useAuthStore } from '@/stores/authStore'
 import { AutoplayProvider } from '@/contexts/AutoplayContext'
 import { ListeningProvider } from '@/contexts/ListeningContext'
 
+// Layer declaration must load FIRST — before any layered stylesheet — so the
+// declared order (`@layer mantine, exercises;`) governs the cascade.
+import './styles/layers.css'
 import '@mantine/core/styles.css'
 import '@mantine/notifications/styles.css'
 import './index.css'
@@ -50,17 +53,19 @@ const theme = createTheme({
 
 const cssVariablesResolver: CSSVariablesResolver = () => ({
   variables: {
-    // Typography scale
+    // Typography scale — mobile-first, 16px body baseline per exercise framework design.
+    // Desktop overrides for --fs-3xl/4xl live in primitive CSS via @container queries
+    // (the resolver can't emit @media rules).
     '--font-sans': "'Plus Jakarta Sans', system-ui, sans-serif",
     '--font-mono': "'Courier New', monospace",
-    '--fs-xs':    '11px',
-    '--fs-sm':    '13px',
-    '--fs-md':    '14px',
-    '--fs-lg':    '16px',
-    '--fs-xl':    '18px',
-    '--fs-2xl':   '22px',
-    '--fs-3xl':   '28px',
-    '--fs-4xl':   '32px',
+    '--fs-xs':    '12px',
+    '--fs-sm':    '14px',
+    '--fs-md':    '16px',
+    '--fs-lg':    '18px',
+    '--fs-xl':    '20px',
+    '--fs-2xl':   '24px',
+    '--fs-3xl':   '30px',
+    '--fs-4xl':   '36px',
     '--fw-normal':   '400',
     '--fw-medium':   '500',
     '--fw-semibold': '600',
@@ -76,6 +81,24 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     // Motion
     '--ease-smooth': 'cubic-bezier(.4, 0, .2, 1)',
     '--transition-base': 'all 0.2s ease',
+
+    // Exercise framework — spacing tokens (mobile values; desktop via @container in primitives)
+    '--ex-pad-x':      '16px',
+    '--ex-pad-y':      '24px',
+    '--ex-zone-gap':   '28px',
+    '--ex-card-pad':   '20px',
+    '--ex-opt-pad-y':  '20px',
+    '--ex-opt-pad-x':  '16px',
+    '--ex-opt-gap':    '12px',
+    '--ex-footer-h':   '88px',
+
+    // Exercise framework — motion tokens (transforms zeroed under prefers-reduced-motion
+    // in primitive CSS; opacity fades survive)
+    '--ex-motion-fast':     '80ms',
+    '--ex-motion-correct':  '180ms',
+    '--ex-motion-wrong':    '200ms',
+    '--ex-motion-feedback': '120ms',
+    '--ex-ease':            'cubic-bezier(.4, 0, .2, 1)',
 
     // Text on colored backgrounds (always white — accent is bright in both themes)
     '--text-on-accent': '#FFFFFF',
@@ -160,6 +183,20 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--hero-text-subtle': 'rgba(255, 255, 255, 0.35)',
     '--hero-label':       'rgba(255, 255, 255, 0.60)',
 
+    // Exercise framework — semantic color triplets (dark)
+    '--ex-correct-bg':     'rgba(50,215,75,0.10)',
+    '--ex-correct-fg':     '#32D74B',
+    '--ex-correct-border': 'rgba(50,215,75,0.30)',
+    '--ex-wrong-bg':       'rgba(255,69,58,0.10)',
+    '--ex-wrong-fg':       '#FF453A',
+    '--ex-wrong-border':   'rgba(255,69,58,0.30)',
+    '--ex-option-bg':        'rgba(255,255,255,0.04)',
+    '--ex-option-bg-hover':  'rgba(255,255,255,0.08)',
+    '--ex-option-border':    'rgba(255,255,255,0.10)',
+    '--ex-card-border':      'rgba(255,255,255,0.10)',
+    '--ex-focus-ring':       'rgba(0,229,255,0.80)',
+    '--ex-fg':               '#FFFFFF',
+    '--ex-fg-muted':         '#8E8E93',
   },
 
   light: {
@@ -214,6 +251,22 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--hero-text-subtle': 'var(--text-tertiary)',
     '--hero-label':       'var(--text-secondary)',
 
+    // Exercise framework — semantic color triplets (light, WCAG-AA audited)
+    // correct-fg #1B6B27 → 6.2:1 on white, 5.78:1 on rgba(34,150,50,.10) tinted bg
+    // wrong-fg   #C8281F → 6.0:1 on white, 5.44:1 on rgba(200,40,31,.08) tinted bg
+    '--ex-correct-bg':     'rgba(34,150,50,0.10)',
+    '--ex-correct-fg':     '#1B6B27',
+    '--ex-correct-border': 'rgba(27,107,39,0.25)',
+    '--ex-wrong-bg':       'rgba(200,40,31,0.08)',
+    '--ex-wrong-fg':       '#C8281F',
+    '--ex-wrong-border':   'rgba(200,40,31,0.25)',
+    '--ex-option-bg':        'rgba(0,0,0,0.03)',
+    '--ex-option-bg-hover':  'rgba(0,0,0,0.06)',
+    '--ex-option-border':    'rgba(0,0,0,0.08)',
+    '--ex-card-border':      'rgba(0,0,0,0.08)',
+    '--ex-focus-ring':       'rgba(0,153,184,0.80)',
+    '--ex-fg':               '#000000',
+    '--ex-fg-muted':         '#86868B',
   },
 })
 
