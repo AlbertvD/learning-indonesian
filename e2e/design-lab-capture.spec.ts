@@ -40,3 +40,43 @@ for (const theme of THEMES) {
     })
   }
 }
+
+// Focused per-section captures at mobile (390px) in both themes — easier to
+// review individual primitives than scrolling a 9000px full-page image.
+const FOCUSED_SECTIONS = [
+  'Tokens',
+  'ExerciseInstruction',
+  'ExercisePromptCard — 5 variants',
+  'ExerciseOption — 6 states × 2 variants',
+  'ExerciseOptionGroup',
+  'ExerciseTextInput — 5 states',
+  'ExerciseSubmitButton',
+  'LanguagePill',
+  'ExerciseHint',
+  'ExerciseAudioButton',
+  'ExerciseFeedback',
+  'FlagButton (admin)',
+] as const
+
+for (const theme of THEMES) {
+  for (const sectionName of FOCUSED_SECTIONS) {
+    const slug = sectionName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+    test(`capture section "${sectionName}" @ ${theme} / 390px`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 900 })
+      await setTheme(page, theme)
+      await page.goto('/admin/design-lab?bypassAuth=1', { waitUntil: 'networkidle' })
+      await page.waitForTimeout(500)
+      const heading = page.getByRole('heading', { name: sectionName, level: 2 })
+      await heading.scrollIntoViewIfNeeded()
+      await page.waitForTimeout(200)
+      // Capture the heading + its content by screenshotting a viewport-height
+      // region starting at the heading's top.
+      await page.screenshot({
+        path: join(OUT_DIR, `section-${theme}-390-${slug}.png`),
+        clip: await heading.boundingBox().then(bb => bb
+          ? { x: 0, y: Math.max(0, bb.y - 20), width: 390, height: Math.min(900, 900) }
+          : { x: 0, y: 0, width: 390, height: 900 }),
+      })
+    })
+  }
+}
