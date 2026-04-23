@@ -65,7 +65,11 @@ export const exerciseRegistry: Partial<Record<ExerciseType, LazyExercise>> = {
   contrast_pair:   lazy(() => import('./implementations/ContrastPairExercise')),
   recognition_mcq: lazy(() => import('./implementations/RecognitionMCQ')),
   cued_recall:     lazy(() => import('./implementations/CuedRecallExercise')),
-  // PR #4b — Tier 2 (typed): ClozeMcq, ListeningMCQ, TypedRecall, MeaningRecall
+  // PR #4b — Tier 2 (typed + audio MCQ)
+  typed_recall:    lazy(() => import('./implementations/TypedRecall')),
+  meaning_recall:  lazy(() => import('./implementations/MeaningRecall')),
+  listening_mcq:   lazy(() => import('./implementations/ListeningMCQ')),
+  cloze_mcq:       lazy(() => import('./implementations/ClozeMcq')),
   // PR #4c — Tier 3 (complex): ConstrainedTranslation, SentenceTransformation, Cloze, Dictation
 }
 
