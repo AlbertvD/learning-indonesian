@@ -17,9 +17,12 @@ permissions:
 jobs:
   safety:
     uses: AlbertvD/homelab-platform/.github/workflows/safety.yml@v1
+    with:
+      runner: self-hosted
     secrets: inherit
 
   dependencies:
     uses: AlbertvD/homelab-platform/.github/workflows/dependency-audit.yml@v1
     with:
       fail_on_vulnerabilities: false
+      runner: self-hosted
