@@ -1,22 +1,21 @@
+// src/components/exercises/ExerciseShell.tsx
+// Post-migration shell — dispatches to the registered exercise via React.lazy
+// wrapped in ExerciseErrorBoundary + Suspense(Skeleton), then renders
+// <ExerciseFeedback> on wrong/fuzzy commits. Legacy switch + legacy feedback
+// block removed in PR #7; legacy exercise components remain in the repo for
+// tests + ContentReview's admin preview (separate concern).
+
 import { Suspense, useMemo, useState, useEffect } from 'react'
-import { Box, Button, Stack, Text } from '@mantine/core'
-import { IconX, IconCheck } from '@tabler/icons-react'
-import { RecognitionMCQ } from './RecognitionMCQ'
-import { CuedRecallExercise } from './CuedRecallExercise'
-import { ContrastPairExercise } from './ContrastPairExercise'
-import { SentenceTransformationExercise } from './SentenceTransformationExercise'
-import { ConstrainedTranslationExercise } from './ConstrainedTranslationExercise'
-import { TypedRecall } from './TypedRecall'
-import { Cloze } from './Cloze'
-import { ClozeMcq } from './ClozeMcq'
-import { MeaningRecall } from './MeaningRecall'
-import { SpeakingExercise } from './SpeakingExercise'
-import { ListeningMCQ } from './ListeningMCQ'
-import { Dictation } from './Dictation'
+import { Box } from '@mantine/core'
 import { FlagButton } from '@/components/exercises/primitives'
 import { contentFlagService } from '@/services/contentFlagService'
 import { useAuthStore } from '@/stores/authStore'
-import { processReview, processGrammarReview, type ReviewInput, type GrammarReviewInput } from '@/lib/reviewHandler'
+import {
+  processReview,
+  processGrammarReview,
+  type ReviewInput,
+  type GrammarReviewInput,
+} from '@/lib/reviewHandler'
 import { translations } from '@/lib/i18n'
 import { logError } from '@/lib/logger'
 import type { SessionQueueItem, ContentFlag } from '@/types/learning'
@@ -29,7 +28,6 @@ import {
 } from './registry'
 import { ExerciseErrorBoundary } from './ExerciseErrorBoundary'
 import { ExerciseSkeleton } from './ExerciseSkeleton'
-import { usesNewFeedback } from './registryMeta'
 import { feedbackPropsFor } from './feedbackMapping'
 import { ExerciseFeedback, type FeedbackCopy } from './primitives'
 import { useSessionAudio } from '@/contexts/SessionAudioContext'
@@ -43,10 +41,10 @@ interface ExerciseShellProps {
   onAnswer: (result: ReviewResult | GrammarReviewResult, wasCorrect: boolean) => void
   onContinueToNext: () => void
   /**
-   * Called when the registry-path <ExerciseErrorBoundary> catches an error.
-   * Session increments session-length counter without re-queuing and without
-   * writing a review_events row (FSRS untouched). Optional for back-compat —
-   * if omitted, skip falls back to a no-op plus onContinueToNext().
+   * Called when the <ExerciseErrorBoundary> catches an error. Session
+   * increments session-length counter without re-queuing and without writing
+   * a review_events row (FSRS untouched). Optional; default is a no-op +
+   * onContinueToNext().
    */
   onSkip?: () => void
 }
@@ -72,10 +70,8 @@ export function ExerciseShell({
 
   const exerciseItem = currentItem.exerciseItem
   const isGrammar = currentItem.source === 'grammar'
-  // Narrowed so TypeScript knows this is only set for grammar items
   const grammarPatternId = currentItem.source === 'grammar' ? currentItem.grammarPatternId : null
 
-  // Stable key for exercise components: grammar uses patternId, vocab uses itemId
   const exerciseKey = isGrammar
     ? `grammar-${grammarPatternId}-${exerciseItem.exerciseType}`
     : `${exerciseItem.learningItem?.id ?? 'unknown'}-${exerciseItem.exerciseType}`
@@ -95,15 +91,14 @@ export function ExerciseShell({
     }
   }, [grammarPatternId, profile?.isAdmin, authUser, exerciseItem.learningItem?.id, exerciseItem.exerciseType])
 
-  // Handle answer submission from exercise component.
-  // For wrong answers: immediately show the wrong-answer screen so the user
-  // sees the correct answer right away, while processReview runs in the background.
-  // For correct answers: advance immediately after processReview completes.
+  // Core commit flow — translates the thin wrapper's ExerciseAnswerReport into
+  // a processReview call, routes the result to Session, and decides between
+  // auto-advance (exact correct) vs show-feedback (fuzzy / wrong).
   const handleAnswerFromExercise = async (
     wasCorrect: boolean,
     isFuzzy: boolean,
     latencyMs: number,
-    rawResponse: string | null = null
+    rawResponse: string | null = null,
   ) => {
     if (isProcessing || !sessionId || !user) return
 
@@ -112,9 +107,6 @@ export function ExerciseShell({
     setLastFuzzy(isFuzzy)
     setLastCommitFailed(false)
 
-    // Show feedback screen immediately for wrong answers — don't wait for the network call.
-    // For correct answers, show after processReview completes (button enabled immediately).
-    // Doorgaan button stays disabled (isProcessing=true) until save completes.
     if (!wasCorrect) {
       setLastAnswerCorrect(false)
       setWaitingForContinue(true)
@@ -122,7 +114,6 @@ export function ExerciseShell({
 
     try {
       const normalizedResponse = rawResponse ? rawResponse.toLowerCase().trim() : null
-
       let result: ReviewResult | GrammarReviewResult
 
       if (currentItem.source === 'grammar') {
@@ -160,22 +151,18 @@ export function ExerciseShell({
       setIsProcessing(false)
 
       if (wasCorrect && !isFuzzy) {
-        // Exact-match correct: auto-advance, no feedback screen.
         onContinueToNext()
       } else if (wasCorrect && isFuzzy) {
-        // Fuzzy — always show feedback (design §6.9: learner must see the diff).
+        // Fuzzy always shows feedback (design §6.9).
         setLastAnswerCorrect(true)
         setWaitingForContinue(true)
       } else {
-        // Wrong answer: waitingForContinue was already set above.
         setLastAnswerCorrect(false)
         setWaitingForContinue(true)
       }
     } catch (err) {
       logError({ page: 'exercise-shell', action: 'processAnswer', error: err })
       setLastCommitFailed(true)
-      // Don't show a notification — the feedback screen's warning chip is the
-      // user-facing surface (§6.9). Session still advances.
       setIsProcessing(false)
       if (!wasCorrect || isFuzzy) {
         setLastAnswerCorrect(wasCorrect)
@@ -190,24 +177,14 @@ export function ExerciseShell({
     onContinueToNext()
   }
 
-  // Registry-backed path — routes registered types through the new primitive
-  // library via Suspense + ErrorBoundary. Thin wrappers report an
-  // `AnswerOutcome` shape that's translated into the existing processReview
-  // flow via handleAnswerFromExercise below. Unregistered types fall through
-  // to the legacy switch.
   const handleAnswerOutcome = (outcome: AnswerOutcome) => {
     if ('skipped' in outcome) {
-      // Error-recovery path from <ExerciseErrorBoundary>. No processReview
-      // (no review_events row). Session increments session length via onSkip;
-      // we explicitly don't re-queue (the exercise just crashed — re-showing
-      // would crash again).
       onSkip?.()
       setLastAnswerCorrect(false)
       setWaitingForContinue(false)
       onContinueToNext()
       return
     }
-    // TypeScript now knows outcome is ExerciseAnswerReport.
     handleAnswerFromExercise(
       outcome.wasCorrect,
       outcome.isFuzzy,
@@ -216,15 +193,67 @@ export function ExerciseShell({
     )
   }
 
-  // Memoize to keep the component reference stable across renders (React 19
-  // compiler flags inline `resolveExerciseComponent(...)` calls in JSX).
+  // Stabilize the lazy reference across renders — React 19 compiler flags
+  // inline `resolveExerciseComponent(...)` calls in JSX as component-created-
+  // during-render, even though the registry is static.
   const LazyExercise = useMemo(
     () => resolveExerciseComponent(exerciseItem.exerciseType),
     [exerciseItem.exerciseType],
   )
 
-  // Registry-path exercises short-circuit the legacy switch. Only one path
-  // runs per render (no wasted IIFE).
+  // Feedback screen takes over the surface on fuzzy/wrong commits.
+  if (waitingForContinue) {
+    const t = translations[userLanguage]
+    const outcome: 'correct' | 'fuzzy' | 'wrong' =
+      lastAnswerCorrect && !lastFuzzy ? 'correct' :
+      lastAnswerCorrect && lastFuzzy ? 'fuzzy' :
+      'wrong'
+    const promptAudioUrl = exerciseItem.learningItem?.base_text
+      ? resolveSessionAudioUrl(audioMap, exerciseItem.learningItem.base_text)
+      : undefined
+    const feedbackProps = feedbackPropsFor({
+      item: exerciseItem,
+      response: lastResponse,
+      outcome,
+      userLanguage,
+      isGrammar,
+      promptAudioUrl,
+      commitFailed: lastCommitFailed,
+    })
+    const copy: FeedbackCopy = {
+      outcomeCorrect:      t.session.feedback.correct,
+      outcomeAlmost:       t.session.feedback.almostCorrect ?? t.session.feedback.correct,
+      outcomeWrong:        t.session.feedback.incorrect,
+      announceCorrect:     t.session.feedback.correct,
+      announceWrong:       `${t.session.feedback.incorrect}. ${t.session.exercise.correctAnswerLabel}: {x}.`,
+      announceFuzzy:       `${t.session.feedback.almostCorrect ?? t.session.feedback.correct} — {x}.`,
+      roleLabelHeard:      userLanguage === 'nl' ? 'Je hoorde' : 'You heard',
+      roleLabelShown:      userLanguage === 'nl' ? 'Je zag' : 'You saw',
+      roleLabelSaid:       userLanguage === 'nl' ? 'Het woord was' : 'The word was',
+      roleLabelTarget:     t.session.exercise.correctAnswerLabel,
+      roleLabelYourAnswer: userLanguage === 'nl' ? 'Jouw antwoord' : 'Your answer',
+      roleLabelMeaning:    t.session.exercise.meaningLabel,
+      roleLabelExplanation: t.session.exercise.explanationLabel,
+      alsoAccepted:        userLanguage === 'nl' ? 'Ook goed' : 'Also accepted',
+      replayAudio:         userLanguage === 'nl' ? 'Herhaal audio' : 'Replay audio',
+      commitFailed:        userLanguage === 'nl'
+        ? 'Kon beoordeling niet opslaan — we gaan toch door.'
+        : "Couldn't save review — continuing anyway.",
+      emptyAnswer:         userLanguage === 'nl' ? '(geen antwoord)' : '(no answer)',
+    }
+    return (
+      <ExerciseFeedback
+        {...feedbackProps}
+        onContinue={handleContinue}
+        continueLabel={t.session.feedback.continue}
+        copy={copy}
+      />
+    )
+  }
+
+  // Defensive fallback — only reachable if a new ExerciseType is added to the
+  // union without a corresponding registry entry. The check is TypeScript-
+  // enforceable later by converting exerciseRegistry to Record<> (vs Partial<>).
   const exerciseNode: React.ReactNode = LazyExercise ? (
     <ExerciseErrorBoundary
       exerciseType={exerciseItem.exerciseType}
@@ -240,349 +269,24 @@ export function ExerciseShell({
           exerciseItem={exerciseItem}
           userLanguage={userLanguage}
           onAnswer={handleAnswerOutcome}
-          // onEvent wiring deferred to PR #5 when analytics sink exists.
         />
       </Suspense>
     </ExerciseErrorBoundary>
-  ) : (() => { switch (exerciseItem.exerciseType) {
-    case 'recognition_mcq':
-      return (
-        <RecognitionMCQ
-          key={exerciseKey}
-          exerciseItem={exerciseItem}
-          userLanguage={userLanguage}
-          onAnswer={(wasCorrect, latencyMs) => {
-            handleAnswerFromExercise(wasCorrect, false, latencyMs, null)
-          }}
-        />
-      )
-
-    case 'cued_recall':
-      return (
-        <CuedRecallExercise
-          key={exerciseKey}
-          exerciseItem={exerciseItem}
-          userLanguage={userLanguage}
-          onAnswer={(wasCorrect, latencyMs) => {
-            handleAnswerFromExercise(wasCorrect, false, latencyMs, null)
-          }}
-        />
-      )
-
-    case 'contrast_pair':
-      return (
-        <ContrastPairExercise
-          key={exerciseKey}
-          exerciseItem={exerciseItem}
-          userLanguage={userLanguage}
-          onAnswer={(wasCorrect, latencyMs) => {
-            handleAnswerFromExercise(wasCorrect, false, latencyMs, null)
-          }}
-        />
-      )
-
-    case 'sentence_transformation':
-      return (
-        <SentenceTransformationExercise
-          key={exerciseKey}
-          exerciseItem={exerciseItem}
-          userLanguage={userLanguage}
-          onAnswer={(wasCorrect, isFuzzy, latencyMs, rawResponse) => {
-            handleAnswerFromExercise(wasCorrect, isFuzzy, latencyMs, rawResponse)
-          }}
-        />
-      )
-
-    case 'constrained_translation':
-      return (
-        <ConstrainedTranslationExercise
-          key={exerciseKey}
-          exerciseItem={exerciseItem}
-          userLanguage={userLanguage}
-          onAnswer={(wasCorrect, isFuzzy, latencyMs, rawResponse) => {
-            handleAnswerFromExercise(wasCorrect, isFuzzy, latencyMs, rawResponse)
-          }}
-        />
-      )
-
-    case 'typed_recall':
-      return (
-        <TypedRecall
-          key={exerciseKey}
-          exerciseItem={exerciseItem}
-          userLanguage={userLanguage}
-          onAnswer={(wasCorrect, isFuzzy, latencyMs, rawResponse) => {
-            handleAnswerFromExercise(wasCorrect, isFuzzy, latencyMs, rawResponse)
-          }}
-        />
-      )
-
-    case 'meaning_recall':
-      return (
-        <MeaningRecall
-          key={exerciseKey}
-          exerciseItem={exerciseItem}
-          userLanguage={userLanguage}
-          onAnswer={(wasCorrect, isFuzzy, latencyMs, rawResponse) => {
-            handleAnswerFromExercise(wasCorrect, isFuzzy, latencyMs, rawResponse)
-          }}
-        />
-      )
-
-    case 'cloze_mcq':
-      return (
-        <ClozeMcq
-          key={exerciseKey}
-          exerciseItem={exerciseItem}
-          userLanguage={userLanguage}
-          onAnswer={(wasCorrect, latencyMs) => {
-            handleAnswerFromExercise(wasCorrect, false, latencyMs, null)
-          }}
-        />
-      )
-
-    case 'cloze':
-      return (
-        <Cloze
-          key={exerciseKey}
-          exerciseItem={exerciseItem}
-          userLanguage={userLanguage}
-          onAnswer={(wasCorrect, isFuzzy, latencyMs, rawResponse) => {
-            handleAnswerFromExercise(wasCorrect, isFuzzy, latencyMs, rawResponse)
-          }}
-        />
-      )
-
-    case 'speaking':
-      return (
-        <SpeakingExercise
-          key={exerciseKey}
-          exerciseItem={exerciseItem}
-          userLanguage={userLanguage}
-          onAnswer={(wasCorrect, latencyMs) => {
-            handleAnswerFromExercise(wasCorrect, false, latencyMs, null)
-          }}
-        />
-      )
-
-    case 'listening_mcq':
-      return (
-        <ListeningMCQ
-          key={exerciseKey}
-          exerciseItem={exerciseItem}
-          userLanguage={userLanguage}
-          onAnswer={(wasCorrect, latencyMs) => {
-            handleAnswerFromExercise(wasCorrect, false, latencyMs, null)
-          }}
-        />
-      )
-
-    case 'dictation':
-      return (
-        <Dictation
-          key={exerciseKey}
-          exerciseItem={exerciseItem}
-          userLanguage={userLanguage}
-          onAnswer={(wasCorrect, isFuzzy, latencyMs, rawResponse) => {
-            handleAnswerFromExercise(wasCorrect, isFuzzy, latencyMs, rawResponse)
-          }}
-        />
-      )
-
-    default:
-      return (
-        <div style={{ padding: '20px', color: 'red' }}>
-          Unsupported exercise type: {exerciseItem.exerciseType}
-        </div>
-      )
-  } })()
-
-  if (waitingForContinue) {
-    const t = translations[userLanguage]
-    const accentColor = lastAnswerCorrect ? 'var(--success)' : 'var(--danger)'
-    const subtleBg = lastAnswerCorrect ? 'var(--success-subtle)' : 'var(--danger-subtle)'
-    const borderColor = lastAnswerCorrect ? 'var(--success-border)' : 'var(--danger-border)'
-
-    // PR #5 cutover: route registered types through <ExerciseFeedback>.
-    // Legacy block below handles any type still marked unmigrated.
-    if (usesNewFeedback[exerciseItem.exerciseType]) {
-      const outcome: 'correct' | 'fuzzy' | 'wrong' =
-        lastAnswerCorrect && !lastFuzzy ? 'correct' :
-        lastAnswerCorrect && lastFuzzy ? 'fuzzy' :
-        'wrong'
-      const promptAudioUrl = exerciseItem.learningItem?.base_text
-        ? resolveSessionAudioUrl(audioMap, exerciseItem.learningItem.base_text)
-        : undefined
-      const feedbackProps = feedbackPropsFor({
-        item: exerciseItem,
-        response: lastResponse,
-        outcome,
-        userLanguage,
-        isGrammar,
-        promptAudioUrl,
-        commitFailed: lastCommitFailed,
-      })
-      const copy: FeedbackCopy = {
-        outcomeCorrect:     t.session.feedback.correct,
-        outcomeAlmost:      t.session.feedback.almostCorrect ?? t.session.feedback.correct,
-        outcomeWrong:       t.session.feedback.incorrect,
-        announceCorrect:    t.session.feedback.correct,
-        announceWrong:      `${t.session.feedback.incorrect}. ${t.session.exercise.correctAnswerLabel}: {x}.`,
-        announceFuzzy:      `${t.session.feedback.almostCorrect ?? t.session.feedback.correct} — {x}.`,
-        roleLabelHeard:     userLanguage === 'nl' ? 'Je hoorde' : 'You heard',
-        roleLabelShown:     userLanguage === 'nl' ? 'Je zag' : 'You saw',
-        roleLabelSaid:      userLanguage === 'nl' ? 'Het woord was' : 'The word was',
-        roleLabelTarget:    t.session.exercise.correctAnswerLabel,
-        roleLabelYourAnswer: userLanguage === 'nl' ? 'Jouw antwoord' : 'Your answer',
-        roleLabelMeaning:   t.session.exercise.meaningLabel,
-        roleLabelExplanation: t.session.exercise.explanationLabel,
-        alsoAccepted:       userLanguage === 'nl' ? 'Ook goed' : 'Also accepted',
-        replayAudio:        userLanguage === 'nl' ? 'Herhaal audio' : 'Replay audio',
-        commitFailed:       userLanguage === 'nl'
-          ? 'Kon beoordeling niet opslaan — we gaan toch door.'
-          : "Couldn't save review — continuing anyway.",
-        emptyAnswer:        userLanguage === 'nl' ? '(geen antwoord)' : '(no answer)',
-      }
-      return (
-        <ExerciseFeedback
-          {...feedbackProps}
-          onContinue={handleContinue}
-          continueLabel={t.session.feedback.continue}
-          copy={copy}
-        />
-      )
-    }
-
-    if (!isGrammar) {
-      // Vocab feedback screen (correct or wrong)
-      const primaryMeaning = exerciseItem.meanings.find(m => m.translation_language === userLanguage && m.is_primary)
-        ?? exerciseItem.meanings.find(m => m.translation_language === userLanguage)
-      const translation = primaryMeaning?.translation_text ?? ''
-      const correctAnswer = exerciseItem.learningItem?.base_text ?? ''
-
-      return (
-        <Stack gap="xl" style={{ padding: '24px 0' }}>
-          <Box style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            padding: '12px 16px',
-            background: subtleBg,
-            border: `1px solid ${borderColor}`,
-            borderRadius: 'var(--r-md)',
-          }}>
-            {lastAnswerCorrect
-              ? <IconCheck size={18} color={accentColor} />
-              : <IconX size={18} color={accentColor} />}
-            <Text fw={600} style={{ color: accentColor }}>
-              {lastAnswerCorrect ? t.session.feedback.correct : t.session.feedback.incorrect}
-            </Text>
-          </Box>
-          <Box style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-            <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)' }}>
-              <Text size="xs" style={{ textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }} mb={8}>
-                {userLanguage === 'nl' ? 'Gevraagd' : 'Asked'}
-              </Text>
-              <Text fw={600} size="lg">{translation}</Text>
-            </Box>
-            <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)' }}>
-              <Text size="xs" style={{ textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }} mb={8}>
-                {t.session.exercise.correctAnswerLabel}
-              </Text>
-              <Text fw={700} size="lg" style={{ color: 'var(--accent-primary)' }}>{correctAnswer}</Text>
-            </Box>
-          </Box>
-          <Button onClick={handleContinue} size="lg" fullWidth variant="filled" loading={isProcessing}>
-            {t.session.feedback.continue}
-          </Button>
-        </Stack>
-      )
-    }
-
-    // Grammar feedback screen (correct or wrong) — always show answer + explanation
-    let correctAnswer: string
-    let explanationText = ''
-    let targetMeaning = ''
-
-    switch (exerciseItem.exerciseType) {
-      case 'contrast_pair':
-        correctAnswer = exerciseItem.contrastPairData?.correctOptionId ?? ''
-        explanationText = exerciseItem.contrastPairData?.explanationText ?? ''
-        targetMeaning = exerciseItem.contrastPairData?.targetMeaning ?? ''
-        break
-      case 'sentence_transformation':
-        correctAnswer = exerciseItem.sentenceTransformationData?.acceptableAnswers[0] ?? ''
-        explanationText = exerciseItem.sentenceTransformationData?.explanationText ?? ''
-        break
-      case 'constrained_translation':
-        correctAnswer = exerciseItem.constrainedTranslationData?.acceptableAnswers[0] ?? ''
-        explanationText = exerciseItem.constrainedTranslationData?.explanationText ?? ''
-        break
-      case 'cloze_mcq':
-        correctAnswer = exerciseItem.clozeMcqData?.correctOptionId ?? ''
-        explanationText = exerciseItem.clozeMcqData?.explanationText ?? ''
-        break
-      default:
-        correctAnswer = ''
-    }
-
-    return (
-      <Stack gap="xl" style={{ padding: '24px 0' }}>
-        <Box style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 10,
-          padding: '12px 16px',
-          background: subtleBg,
-          border: `1px solid ${borderColor}`,
-          borderRadius: 'var(--r-md)',
-        }}>
-          {lastAnswerCorrect
-            ? <IconCheck size={18} color={accentColor} />
-            : <IconX size={18} color={accentColor} />}
-          <Text fw={600} style={{ color: accentColor }}>
-            {lastAnswerCorrect ? t.session.feedback.correct : t.session.feedback.incorrect}
-          </Text>
-        </Box>
-
-        <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)' }}>
-          <Text size="xs" style={{ textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }} mb={8}>
-            {t.session.exercise.correctAnswerLabel}
-          </Text>
-          <Text fw={700} size="lg" style={{ color: 'var(--accent-primary)' }}>{correctAnswer}</Text>
-          {targetMeaning && (
-            <Text size="sm" c="dimmed" mt={6}>
-              {t.session.exercise.meaningLabel} {targetMeaning}
-            </Text>
-          )}
-        </Box>
-
-        {explanationText && (
-          <Box style={{ padding: '16px', border: '1px solid var(--card-border)', borderRadius: 'var(--r-md)', background: 'var(--card-bg)' }}>
-            <Text size="xs" style={{ textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }} mb={8}>
-              {t.session.exercise.explanationLabel}
-            </Text>
-            <Text size="sm">{explanationText}</Text>
-          </Box>
-        )}
-
-        <Button onClick={handleContinue} size="lg" fullWidth variant="filled" loading={isProcessing}>
-          {t.session.feedback.continue}
-        </Button>
-      </Stack>
-    )
-  }
+  ) : (
+    <div style={{ padding: '20px', color: 'red' }}>
+      Unsupported exercise type: {exerciseItem.exerciseType}. Add an entry to
+      src/components/exercises/registry.ts.
+    </div>
+  )
 
   if (!profile?.isAdmin || !authUser) return <>{exerciseNode}</>
-  // Vocab exercises require a learningItem; grammar exercises use grammarPatternId
-  if (!isGrammar && !exerciseItem.learningItem) return <>{exerciseNode}</>
 
   return (
     <Box style={{ position: 'relative' }}>
       {exerciseNode}
       <FlagButton
         userId={authUser.id}
-        learningItemId={isGrammar ? null : exerciseItem.learningItem!.id}
+        learningItemId={isGrammar ? null : exerciseItem.learningItem?.id ?? null}
         grammarPatternId={grammarPatternId}
         exerciseType={exerciseItem.exerciseType}
         exerciseVariantId={null}
