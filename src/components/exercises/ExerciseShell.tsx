@@ -38,6 +38,13 @@ interface ExerciseShellProps {
   userLanguage: 'en' | 'nl'
   onAnswer: (result: ReviewResult | GrammarReviewResult, wasCorrect: boolean) => void
   onContinueToNext: () => void
+  /**
+   * Called when the registry-path <ExerciseErrorBoundary> catches an error.
+   * Session increments session-length counter without re-queuing and without
+   * writing a review_events row (FSRS untouched). Optional for back-compat —
+   * if omitted, skip falls back to a no-op plus onContinueToNext().
+   */
+  onSkip?: () => void
 }
 
 export function ExerciseShell({
@@ -47,6 +54,7 @@ export function ExerciseShell({
   userLanguage,
   onAnswer,
   onContinueToNext,
+  onSkip,
 }: ExerciseShellProps) {
   const { user: authUser, profile } = useAuthStore()
   const t = translations[userLanguage]
@@ -174,12 +182,11 @@ export function ExerciseShell({
   // to the legacy switch.
   const handleAnswerOutcome = (outcome: AnswerOutcome) => {
     if ('skipped' in outcome) {
-      // Error-recovery path from <ExerciseErrorBoundary>. Synthesize a wrong
-      // result just enough to keep session progressing — does NOT call
-      // processReview (no review_events row written for skipped items).
-      // Session's handleExerciseAnswer will increment total; re-queue is
-      // acceptable because the next attempt may succeed if the underlying
-      // data race resolves.
+      // Error-recovery path from <ExerciseErrorBoundary>. No processReview
+      // (no review_events row). Session increments session length via onSkip;
+      // we explicitly don't re-queue (the exercise just crashed — re-showing
+      // would crash again).
+      onSkip?.()
       setLastAnswerCorrect(false)
       setWaitingForContinue(false)
       onContinueToNext()
@@ -200,50 +207,29 @@ export function ExerciseShell({
     () => resolveExerciseComponent(exerciseItem.exerciseType),
     [exerciseItem.exerciseType],
   )
-  if (LazyExercise) {
-    const registryNode = (
-      <ExerciseErrorBoundary
-        exerciseType={exerciseItem.exerciseType}
-        onAnswer={handleAnswerOutcome}
-        userLanguage={userLanguage}
-      >
-        <Suspense fallback={<ExerciseSkeleton variant={exerciseSkeletonVariant[exerciseItem.exerciseType]} />}>
-          {/* eslint-disable-next-line react-hooks/static-components -- LazyExercise
-              is a React.lazy reference stable per exerciseType via useMemo above;
-              the compiler can't statically verify this. */}
-          <LazyExercise
-            key={exerciseKey}
-            exerciseItem={exerciseItem}
-            userLanguage={userLanguage}
-            onAnswer={handleAnswerOutcome}
-          />
-        </Suspense>
-      </ExerciseErrorBoundary>
-    )
-    // Short-circuit registry path straight through the feedback-gate logic
-    // below. We still want the legacy feedback screen for now (PR #5 will
-    // cut it over to <ExerciseFeedback>).
-    if (!waitingForContinue) {
-      if (!profile?.isAdmin || !authUser) return <>{registryNode}</>
-      return (
-        <Box style={{ position: 'relative' }}>
-          {registryNode}
-          <FlagButton
-            userId={authUser.id}
-            learningItemId={isGrammar ? null : exerciseItem.learningItem?.id ?? null}
-            grammarPatternId={grammarPatternId}
-            exerciseType={exerciseItem.exerciseType}
-            exerciseVariantId={null}
-            existingFlag={currentFlag}
-            onFlagged={setCurrentFlag}
-            onUnflagged={() => setCurrentFlag(null)}
-          />
-        </Box>
-      )
-    }
-  }
 
-  const exerciseNode = (() => { switch (exerciseItem.exerciseType) {
+  // Registry-path exercises short-circuit the legacy switch. Only one path
+  // runs per render (no wasted IIFE).
+  const exerciseNode: React.ReactNode = LazyExercise ? (
+    <ExerciseErrorBoundary
+      exerciseType={exerciseItem.exerciseType}
+      onAnswer={handleAnswerOutcome}
+      userLanguage={userLanguage}
+    >
+      <Suspense fallback={<ExerciseSkeleton variant={exerciseSkeletonVariant[exerciseItem.exerciseType]} />}>
+        {/* eslint-disable-next-line react-hooks/static-components -- LazyExercise
+            is a React.lazy reference stable per exerciseType via useMemo above;
+            the compiler can't statically verify this. */}
+        <LazyExercise
+          key={exerciseKey}
+          exerciseItem={exerciseItem}
+          userLanguage={userLanguage}
+          onAnswer={handleAnswerOutcome}
+          // onEvent wiring deferred to PR #5 when analytics sink exists.
+        />
+      </Suspense>
+    </ExerciseErrorBoundary>
+  ) : (() => { switch (exerciseItem.exerciseType) {
     case 'recognition_mcq':
       return (
         <RecognitionMCQ

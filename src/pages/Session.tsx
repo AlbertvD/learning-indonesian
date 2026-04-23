@@ -363,6 +363,13 @@ export function Session() {
     setCurrentIndex(i => i + 1)
   }
 
+  // Handle exercise skip (registry-path ErrorBoundary). Increments session
+  // length without re-queuing (re-showing a broken exercise will crash again).
+  // Does NOT call processReview — FSRS state untouched.
+  const handleExerciseSkipped = () => {
+    setResults(r => ({ ...r, total: r.total + 1 }))
+  }
+
   // Fetch goal state before session ends (captured just before the last exercise)
   useEffect(() => {
     if (!user || currentIndex < queue.length) return
@@ -494,6 +501,7 @@ export function Session() {
                 userLanguage={userLang}
                 onAnswer={handleExerciseAnswer}
                 onContinueToNext={handleContinueToNext}
+                onSkip={handleExerciseSkipped}
               />
             </SessionAudioProvider>
           </Box>
