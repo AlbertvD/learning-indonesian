@@ -489,7 +489,7 @@ function checkSentenceTransformation(p: any, ctx: LessonCtx, ref: string, out: F
     out.push(mkFinding('CRITICAL', ctx.n, 'candidates.ts', 'acceptableAnswers-empty', '', ref))
   }
   if (typeof p.transformationInstruction === 'string' && Array.isArray(p.acceptableAnswers)) {
-    const m = p.transformationInstruction.match(/vervang\s+['"]?([^'"]+?)['"]?\s+door\s+['"]?([^'"]+?)['"]?(?:[\.\s]|$)/i)
+    const m = p.transformationInstruction.match(/vervang\s+['"]?([^'"]+?)['"]?\s+door\s+['"]?([^'"]+?)['"]?(?:[.\s]|$)/i)
     if (m) {
       const target = m[2].toLowerCase().trim()
       const ansTokens = new Set(p.acceptableAnswers.flatMap((a: string) => tokenize(a)))

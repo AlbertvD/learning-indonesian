@@ -74,7 +74,6 @@ for (const type of allTypes) {
   console.log(`  ✓ ${type}`)
 }
 
-let passed = 0
 console.log()
 
 // Test 2: Feature flag gating
@@ -111,7 +110,7 @@ console.log('\n═════════════════════�
 console.log('Test 3: Exercise Candidate Validation')
 console.log('═══════════════════════════════════════\n')
 
-passed = 0
+let passed = 0
 
 for (const candidate of mockCandidates) {
   const isValid = isExerciseTypeEnabled(candidate.exercise_type)

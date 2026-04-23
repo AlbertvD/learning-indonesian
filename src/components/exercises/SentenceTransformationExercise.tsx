@@ -35,6 +35,9 @@ export function SentenceTransformationExercise({
   const [lastAttemptWrong, setLastAttemptWrong] = useState(false)
   const [startTime] = useState(() => Date.now())
   const inputRef = useRef<HTMLInputElement>(null)
+  // Hooks must be called unconditionally — hoisted above the preview-mode early return.
+  const { audioMap } = useSessionAudio()
+  const { autoPlay } = useAutoplay()
 
   useEffect(() => {
     if (!previewMode) inputRef.current?.focus()
@@ -80,8 +83,6 @@ export function SentenceTransformationExercise({
   }
 
   const data = exerciseItem!.sentenceTransformationData
-  const { audioMap } = useSessionAudio()
-  const { autoPlay } = useAutoplay()
   const sourceAudioUrl = data ? resolveSessionAudioUrl(audioMap, data.sourceSentence) : undefined
 
   if (!data) {

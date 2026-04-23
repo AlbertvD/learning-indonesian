@@ -20,6 +20,7 @@ export function SessionAudioProvider({
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useSessionAudio(): SessionAudioContextValue {
   return useContext(SessionAudioContext)
 }

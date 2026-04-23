@@ -22,8 +22,9 @@ export function PlayButton({ audioUrl, autoPlay = false, size = 'sm' }: PlayButt
     audio.addEventListener('ended', onEnded)
 
     if (autoPlay) {
-      audio.play().catch(() => {})
-      setPlaying(true)
+      // Drive `playing` from the play() promise — avoids a synchronous setState
+      // inside the effect, which React 19's compiler flags as a cascading-render risk.
+      audio.play().then(() => setPlaying(true)).catch(() => {})
     }
 
     return () => {

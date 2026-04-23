@@ -31,12 +31,6 @@ const supabase = createClient('https://api.supabase.duin.home', serviceKey)
 const dryRun = process.argv.includes('--dry-run')
 
 // ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-let skipped = 0
-
-// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -86,7 +80,7 @@ console.log(`  approved:       ${approvedCandidates.length}`)
 console.log(`  pending_review: ${pendingCandidates.length}  <-- skipped`)
 console.log(`  rejected:       ${rejectedCandidates.length}  <-- skipped`)
 
-skipped = pendingCandidates.length + rejectedCandidates.length
+const skipped = pendingCandidates.length + rejectedCandidates.length
 
 if (approvedCandidates.length === 0) {
   console.log('\n  No approved candidates to seed.')

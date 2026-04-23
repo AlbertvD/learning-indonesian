@@ -35,6 +35,7 @@ export function ListeningProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useListening(): ListeningContextValue {
   return useContext(ListeningContext)
 }

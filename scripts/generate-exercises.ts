@@ -165,7 +165,8 @@ Generate one exercise of each of these types: ${exerciseTypes.join(', ')}`
     }
   } catch (err) {
     throw new Error(
-      `Invalid JSON from Claude for pattern "${pattern.slug}": ${err instanceof Error ? err.message : err}\nRaw: ${block.text.slice(0, 400)}`
+      `Invalid JSON from Claude for pattern "${pattern.slug}": ${err instanceof Error ? err.message : err}\nRaw: ${block.text.slice(0, 400)}`,
+      { cause: err }
     )
   }
 

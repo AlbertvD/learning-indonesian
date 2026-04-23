@@ -517,12 +517,9 @@ export const goalService = {
     
     // Resolve final statuses
     for (const goal of goals) {
-      let finalStatus: GoalStatus = 'missed'
-      if (goal.goal_type === 'review_health') {
-        finalStatus = closingOverdue <= goal.target_value_numeric ? 'achieved' : 'missed'
-      } else {
-        finalStatus = goal.current_value_numeric >= goal.target_value_numeric ? 'achieved' : 'missed'
-      }
+      const finalStatus: GoalStatus = goal.goal_type === 'review_health'
+        ? (closingOverdue <= goal.target_value_numeric ? 'achieved' : 'missed')
+        : (goal.current_value_numeric >= goal.target_value_numeric ? 'achieved' : 'missed')
 
       await supabase
         .schema('indonesian')
@@ -568,7 +565,7 @@ export const goalService = {
 
     // New items target
     const vocabTarget = vocabGoal?.target_value_numeric ?? 8
-    let newBase = 4
+    let newBase: number
     if (vocabTarget <= 6) newBase = 3
     else if (vocabTarget <= 10) newBase = 4
     else if (vocabTarget <= 14) newBase = 5

@@ -79,7 +79,7 @@ export function Session() {
         try {
           sid = await startSession(user.id, 'learning')
         } catch (e) {
-          throw new Error(`startSession failed: ${JSON.stringify(e)}`)
+          throw new Error(`startSession failed: ${JSON.stringify(e)}`, { cause: e })
         }
         setSessionId(sid)
 
@@ -91,7 +91,7 @@ export function Session() {
         try {
           items = await learningItemService.getLearningItems()
         } catch (e) {
-          throw new Error(`getLearningItems failed: ${JSON.stringify(e)}`)
+          throw new Error(`getLearningItems failed: ${JSON.stringify(e)}`, { cause: e })
         }
         if (!items || items.length === 0) {
           setError('No learning items available. Please contact administrator.')
@@ -109,7 +109,7 @@ export function Session() {
             lessonService.getLessonsBasic(),
           ])
         } catch (e) {
-          throw new Error(`getStates failed: ${JSON.stringify(e)}`)
+          throw new Error(`getStates failed: ${JSON.stringify(e)}`, { cause: e })
         }
 
         // lessonId → order_index for lesson-gated new item introduction

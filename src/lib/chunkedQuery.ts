@@ -14,7 +14,7 @@ export async function chunkedIn<T>(
   table: string,
   column: string,
   ids: string[],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   queryFn?: (builder: any) => any,
 ): Promise<T[]> {
   if (ids.length === 0) return []

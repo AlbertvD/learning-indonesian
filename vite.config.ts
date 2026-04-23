@@ -44,7 +44,7 @@ export default defineConfig({
     environment: 'jsdom',
     // Pure logic/service tests (.test.ts) run in node — much lighter than jsdom.
     // React component tests (.test.tsx) keep the default jsdom environment.
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+     
     // @ts-expect-error — environmentMatchGlobs was removed from Vitest 4 types but still works at runtime
     environmentMatchGlobs: [['**/*.test.ts', 'node']],
     setupFiles: ['./src/test-setup.ts'],

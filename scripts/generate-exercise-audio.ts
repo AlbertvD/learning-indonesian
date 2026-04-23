@@ -318,7 +318,7 @@ async function generateAudio(lessonNumber: number, dryRun: boolean) {
 
   if (dryRun) {
     console.log('\n[DRY RUN] Texts that would be synthesized:')
-    for (const [key, entry] of uniqueMap) {
+    for (const [, entry] of uniqueMap) {
       console.log(`  [${entry.voiceId.split('-').pop()}] "${entry.text}" (source: ${entry.source})`)
     }
     console.log(`\n[DRY RUN] Summary: ${uniqueMap.size} clips would be generated (skipping existing check in dry-run)`)
@@ -345,7 +345,7 @@ async function generateAudio(lessonNumber: number, dryRun: boolean) {
   let generated = 0
   let failed = 0
 
-  for (const [key, entry] of toGenerate) {
+  for (const [, entry] of toGenerate) {
     try {
       // Rate limit: 100ms between calls
       if (generated > 0) await new Promise(res => setTimeout(res, 100))

@@ -366,7 +366,7 @@ export function ExerciseShell({
     }
 
     // Grammar feedback screen (correct or wrong) — always show answer + explanation
-    let correctAnswer = ''
+    let correctAnswer: string
     let explanationText = ''
     let targetMeaning = ''
 
