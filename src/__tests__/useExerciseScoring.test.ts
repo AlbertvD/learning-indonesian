@@ -144,7 +144,82 @@ describe('useExerciseScoring — analytics', () => {
     }))
     rerender()
     rerender()
-    const shownCalls = onEvent.mock.calls.filter(c => c[0]?.type === 'exercise_shown' && !c[0]?.payload)
+    const shownCalls = onEvent.mock.calls.filter(c => c[0]?.type === 'exercise_shown')
     expect(shownCalls.length).toBe(1)
+  })
+
+  it('fires answer_committed when onAnswer resolves', async () => {
+    vi.useFakeTimers()
+    const onEvent = vi.fn()
+    const onAnswer = vi.fn().mockResolvedValue(undefined)
+    const { result } = renderHook(() => useExerciseScoring<string>({
+      mode: 'tap',
+      checkCorrect: () => correct,
+      onAnswer,
+      onEvent,
+      correctDelayMs: 100,
+    }))
+    act(() => { result.current.selectOption('huis') })
+    await act(async () => { await vi.advanceTimersByTimeAsync(100) })
+    await act(async () => { await vi.advanceTimersByTimeAsync(0) })     // flush microtasks
+    const committed = onEvent.mock.calls.filter(c => c[0]?.type === 'answer_committed')
+    expect(committed.length).toBe(1)
+    vi.useRealTimers()
+  })
+
+  it('fires exercise_commit_failed when onAnswer rejects, UI still answered', async () => {
+    vi.useFakeTimers()
+    const onEvent = vi.fn()
+    const onAnswer = vi.fn().mockRejectedValue(new Error('network down'))
+    const { result } = renderHook(() => useExerciseScoring<string>({
+      mode: 'tap',
+      checkCorrect: () => correct,
+      onAnswer,
+      onEvent,
+      correctDelayMs: 100,
+    }))
+    act(() => { result.current.selectOption('huis') })
+    await act(async () => { await vi.advanceTimersByTimeAsync(100) })
+    await act(async () => { await vi.advanceTimersByTimeAsync(0) })
+    const failed = onEvent.mock.calls.filter(c => c[0]?.type === 'exercise_commit_failed')
+    expect(failed.length).toBe(1)
+    expect(result.current.phase).toBe('answered-correct')  // UI still advanced
+    vi.useRealTimers()
+  })
+})
+
+describe('useExerciseScoring — speaking no-op', () => {
+  it('typed mode with gate that never opens blocks submit indefinitely', () => {
+    const onAnswer = vi.fn()
+    const { result } = renderHook(() => useExerciseScoring<string>({
+      mode: 'typed',
+      checkCorrect: () => correct,
+      onAnswer,
+      gate: () => false,      // speaking: mic never active in this build
+    }))
+    act(() => { result.current.setResponse('rumah') })
+    expect(result.current.canSubmit).toBe(false)
+    act(() => { result.current.submit() })
+    expect(result.current.phase).toBe('gated')
+    expect(onAnswer).not.toHaveBeenCalled()
+  })
+})
+
+describe('useExerciseScoring — lifecycle', () => {
+  it('cancels pending correct-delay timer on unmount', () => {
+    vi.useFakeTimers()
+    const onAnswer = vi.fn().mockResolvedValue(undefined)
+    const { result, unmount } = renderHook(() => useExerciseScoring<string>({
+      mode: 'tap',
+      checkCorrect: () => correct,
+      onAnswer,
+      correctDelayMs: 500,
+    }))
+    act(() => { result.current.selectOption('huis') })
+    unmount()
+    // Timer should have been cleared — advancing past the delay must not call onAnswer.
+    vi.advanceTimersByTime(1000)
+    expect(onAnswer).not.toHaveBeenCalled()
+    vi.useRealTimers()
   })
 })

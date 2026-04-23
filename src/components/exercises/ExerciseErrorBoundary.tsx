@@ -45,23 +45,37 @@ export class ExerciseErrorBoundary extends Component<Props, State> {
       action: `render:${this.props.exerciseType}`,
       error,
     })
-    this.props.onEvent?.({
-      type: 'exercise_skipped',
-      payload: {
-        exerciseType: this.props.exerciseType,
-        reason: 'render-error',
-        error: error.message,
-      },
-    })
-    // FSRS consistency: treat as skip, not as a wrong answer. Session counts
-    // it toward session length but no review_events row is written.
-    this.props.onAnswer({ skipped: true, reviewRecorded: false })
+    // Defend against side-effect callbacks throwing during error handling —
+    // React would otherwise re-throw outside the boundary.
+    try {
+      this.props.onEvent?.({
+        type: 'exercise_skipped',
+        payload: {
+          exerciseType: this.props.exerciseType,
+          reason: 'render-error',
+          error: error.message,
+        },
+      })
+    } catch (err) {
+      logError({ page: 'exercise', action: 'boundary:onEvent', error: err })
+    }
+    try {
+      // FSRS consistency: treat as skip, not as a wrong answer. Session counts
+      // it toward session length but no review_events row is written.
+      this.props.onAnswer({ skipped: true, reviewRecorded: false })
+    } catch (err) {
+      logError({ page: 'exercise', action: 'boundary:onAnswer', error: err })
+    }
   }
 
   private handleSkip = () => {
-    // Second-tap path if the user is still on the fallback; idempotent at
-    // Session's reducer because the skip was already reported in catch.
-    this.props.onAnswer({ skipped: true, reviewRecorded: false })
+    try {
+      // Second-tap path if the user is still on the fallback; idempotent at
+      // Session's reducer because the skip was already reported in catch.
+      this.props.onAnswer({ skipped: true, reviewRecorded: false })
+    } catch (err) {
+      logError({ page: 'exercise', action: 'boundary:handleSkip', error: err })
+    }
   }
 
   render() {

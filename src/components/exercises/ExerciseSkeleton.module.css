@@ -1,4 +1,8 @@
 @layer exercises {
+  .instructionShimmer {
+    padding: 4px 0;
+  }
+
   .shimmer {
     background: var(--bg-surface);
     border-radius: var(--r-sm);

@@ -71,7 +71,6 @@ interface ScoringState<TResponse = string> {
   phase: ScoringPhase
   response: string                        // only meaningful in typed mode
   failureCount: number
-  hintShown: boolean
   startedAt: number
   committedResponse?: TResponse
   latencyMs?: number
@@ -154,7 +153,6 @@ function initialState<TResponse = string>(): ScoringState<TResponse> {
     phase: 'idle',
     response: '',
     failureCount: 0,
-    hintShown: false,
     startedAt: Date.now(),
   }
 }
@@ -243,6 +241,7 @@ export function useExerciseScoring<TResponse = string>(
     const { checkCorrect: check, onAnswer: onAns, onEvent: onEv } = configRef.current
     const result = check(response)
     const latencyMs = Date.now() - state.startedAt
+    const hintWasShown = hintAfter !== undefined && state.failureCount >= hintAfter
 
     const commit = (outcome: 'correct' | 'fuzzy' | 'wrong') => {
       const r: AnswerResult<TResponse> = {
@@ -250,8 +249,12 @@ export function useExerciseScoring<TResponse = string>(
         response,
         latencyMs,
         failureCount: outcome === 'wrong' ? state.failureCount + 1 : state.failureCount,
-        hintWasShown: state.hintShown,
+        hintWasShown,
       }
+      // Reducer dispatches commit synchronously; onAnswer runs as a microtask.
+      // answer_committed fires only if onAnswer resolves; exercise_commit_failed
+      // fires on rejection. UI is `answered-*` in both cases (commit succeeds
+      // optimistically; FSRS cache writes are gated on onAnswer success).
       Promise.resolve(onAns(r))
         .then(() => {
           onEv?.({ type: 'answer_committed', payload: {
@@ -259,10 +262,6 @@ export function useExerciseScoring<TResponse = string>(
           }})
         })
         .catch((err: unknown) => {
-          // onAnswer (which wraps processReview) threw — the UI-side commit
-          // below still dispatches; FSRS state is NOT updated because the
-          // Supabase write didn't happen. Emit commit_failed so feedback can
-          // render its warning chip.
           onEv?.({ type: 'exercise_commit_failed', payload: { error: String(err) } })
         })
       if (outcome === 'correct') {
@@ -299,18 +298,7 @@ export function useExerciseScoring<TResponse = string>(
       return
     }
     commit('wrong')
-  }, [state.startedAt, state.failureCount, state.hintShown, allowRetry, maxFailures, correctDelayMs])
-
-  // ─ hint_shown event — fires when hintAfter threshold hits
-  useEffect(() => {
-    if (hintAfter !== undefined && state.failureCount >= hintAfter && !state.hintShown) {
-      // The reducer doesn't track hintShown directly; it's derived from failureCount.
-      configRef.current.onEvent?.({
-        type: 'exercise_shown', // intentional placeholder — no distinct hint_shown in the pruned 8-event list
-        payload: { subevent: 'hint_after_threshold' },
-      })
-    }
-  }, [state.failureCount, state.hintShown, hintAfter])
+  }, [state.startedAt, state.failureCount, allowRetry, maxFailures, correctDelayMs, hintAfter])
 
   // ─ Public handlers
   const setResponse = useCallback((v: string) => {
@@ -381,7 +369,7 @@ export function useExerciseScoring<TResponse = string>(
         response: state.committedResponse,
         latencyMs: state.latencyMs,
         failureCount: state.failureCount,
-        hintWasShown: state.hintShown,
+        hintWasShown: hintAfter !== undefined && state.failureCount >= hintAfter,
       }
     : null
 
