@@ -65,9 +65,12 @@ export function FlagButton({
         grammarPatternId,
         exerciseType,
         exerciseVariantId,
-        // After PR #6 DB migration, flag_type is nullable. Pre-migration this
-        // would fail — the primitive is design-lab-only until PR #6 lands.
-        flagType: null as unknown as 'other',
+        // Chips were cut from the UI per design §6.12; every flag is
+        // uncategorized. We send 'other' (the existing fallback enum value)
+        // so the write succeeds whether the DB schema has the flag_type
+        // NOT NULL + CHECK constraint (pre-migration) or not (post-migration,
+        // per §12.1). Admin review can keyword-extract from comments.
+        flagType: 'other',
         comment: trimmed,
       })
       onFlagged?.(flag)

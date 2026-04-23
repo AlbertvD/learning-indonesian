@@ -1190,6 +1190,19 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
+-- content_flags: make flag_type nullable + drop CHECK constraint
+-- Part of the exercise UI redesign (docs/plans/2026-04-23-exercise-framework-design.md §12.1)
+-- The new FlagButton drops the category chip UI; uncategorized flags store
+-- 'other' today. The nullable + constraint-free column lets future admin UI
+-- extensions add new categories without schema changes.
+-- Both statements are inherently idempotent in Postgres:
+--   - DROP NOT NULL is a no-op when already nullable.
+--   - DROP CONSTRAINT IF EXISTS does nothing when the constraint is gone.
+ALTER TABLE indonesian.content_flags
+  ALTER COLUMN flag_type DROP NOT NULL;
+ALTER TABLE indonesian.content_flags
+  DROP CONSTRAINT IF EXISTS content_flags_flag_type_check;
+
 -- ═══════════════════════════════════════════════════════════════════════════
 -- Audio clips (TTS-generated Indonesian pronunciation)
 -- ═══════════════════════════════════════════════════════════════════════════
