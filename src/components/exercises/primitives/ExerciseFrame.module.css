@@ -9,8 +9,13 @@
     width: 100%;
   }
 
+  /* Frame sizes to its content. Previously `min-height: 100dvh`, which
+     stretched the frame to viewport height on top of the session page's
+     own header + the app's bottom tab bar, pushing content below the fold.
+     `position: sticky` on the footer still works when content overflows;
+     when it doesn't, the footer just sits at the end of content. */
   .live {
-    min-height: 100dvh;
+    min-height: 0;
   }
 
   .content {
