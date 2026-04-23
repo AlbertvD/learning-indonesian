@@ -30,13 +30,16 @@ interface Props {
 interface State {
   hasError: boolean
   errorMessage: string | null
+  /** Prevents `componentDidCatch` + manual Skip-button tap from both firing
+   *  onAnswer — which would double-advance Session's currentIndex. */
+  skipReported: boolean
 }
 
 export class ExerciseErrorBoundary extends Component<Props, State> {
-  state: State = { hasError: false, errorMessage: null }
+  state: State = { hasError: false, errorMessage: null, skipReported: false }
 
   static getDerivedStateFromError(err: Error): State {
-    return { hasError: true, errorMessage: err.message }
+    return { hasError: true, errorMessage: err.message, skipReported: false }
   }
 
   componentDidCatch(error: Error): void {
@@ -63,16 +66,18 @@ export class ExerciseErrorBoundary extends Component<Props, State> {
       // FSRS consistency: treat as skip, not as a wrong answer. Session counts
       // it toward session length but no review_events row is written.
       this.props.onAnswer({ skipped: true, reviewRecorded: false })
+      this.setState({ skipReported: true })
     } catch (err) {
       logError({ page: 'exercise', action: 'boundary:onAnswer', error: err })
     }
   }
 
   private handleSkip = () => {
+    // Idempotent — if componentDidCatch already reported, don't double-advance.
+    if (this.state.skipReported) return
     try {
-      // Second-tap path if the user is still on the fallback; idempotent at
-      // Session's reducer because the skip was already reported in catch.
       this.props.onAnswer({ skipped: true, reviewRecorded: false })
+      this.setState({ skipReported: true })
     } catch (err) {
       logError({ page: 'exercise', action: 'boundary:handleSkip', error: err })
     }

@@ -261,6 +261,9 @@ export function ExerciseShell({
       userLanguage={userLanguage}
     >
       <Suspense fallback={<ExerciseSkeleton variant={exerciseSkeletonVariant[exerciseItem.exerciseType]} />}>
+        {/* TODO: wire `onEvent` to analyticsService.trackExerciseEvent once a
+            sink exists. Hook events (exercise_shown, answer_committed,
+            exercise_commit_failed) are currently dropped. */}
         {/* eslint-disable-next-line react-hooks/static-components -- LazyExercise
             is a React.lazy reference stable per exerciseType via useMemo above;
             the compiler can't statically verify this. */}
