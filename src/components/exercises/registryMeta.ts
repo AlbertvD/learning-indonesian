@@ -12,18 +12,18 @@
 import type { ExerciseType } from '@/types/learning'
 
 export const usesNewFeedback: Record<ExerciseType, boolean> = {
-  recognition_mcq:         false,
-  cued_recall:             false,
-  contrast_pair:           false,
-  sentence_transformation: false,
-  constrained_translation: false,
-  typed_recall:            false,
-  meaning_recall:          false,
-  cloze:                   false,
-  cloze_mcq:               false,
-  speaking:                false,
-  listening_mcq:           false,
-  dictation:               false,
+  recognition_mcq:         true,
+  cued_recall:             true,
+  contrast_pair:           true,
+  sentence_transformation: true,
+  constrained_translation: true,
+  typed_recall:            true,
+  meaning_recall:          true,
+  cloze:                   true,
+  cloze_mcq:               true,
+  speaking:                true,
+  listening_mcq:           true,
+  dictation:               true,
 }
 
 /**

@@ -1,7 +1,6 @@
 import { Suspense, useMemo, useState, useEffect } from 'react'
 import { Box, Button, Stack, Text } from '@mantine/core'
 import { IconX, IconCheck } from '@tabler/icons-react'
-import { notifications } from '@mantine/notifications'
 import { RecognitionMCQ } from './RecognitionMCQ'
 import { CuedRecallExercise } from './CuedRecallExercise'
 import { ContrastPairExercise } from './ContrastPairExercise'
@@ -30,6 +29,11 @@ import {
 } from './registry'
 import { ExerciseErrorBoundary } from './ExerciseErrorBoundary'
 import { ExerciseSkeleton } from './ExerciseSkeleton'
+import { usesNewFeedback } from './registryMeta'
+import { feedbackPropsFor } from './feedbackMapping'
+import { ExerciseFeedback, type FeedbackCopy } from './primitives'
+import { useSessionAudio } from '@/contexts/SessionAudioContext'
+import { resolveSessionAudioUrl } from '@/services/audioService'
 
 interface ExerciseShellProps {
   currentItem: SessionQueueItem
@@ -57,11 +61,14 @@ export function ExerciseShell({
   onSkip,
 }: ExerciseShellProps) {
   const { user: authUser, profile } = useAuthStore()
-  const t = translations[userLanguage]
   const [isProcessing, setIsProcessing] = useState(false)
   const [waitingForContinue, setWaitingForContinue] = useState(false)
   const [lastAnswerCorrect, setLastAnswerCorrect] = useState(false)
+  const [lastFuzzy, setLastFuzzy] = useState(false)
+  const [lastResponse, setLastResponse] = useState<string | null>(null)
+  const [lastCommitFailed, setLastCommitFailed] = useState(false)
   const [currentFlag, setCurrentFlag] = useState<ContentFlag | null>(null)
+  const { audioMap } = useSessionAudio()
 
   const exerciseItem = currentItem.exerciseItem
   const isGrammar = currentItem.source === 'grammar'
@@ -101,6 +108,9 @@ export function ExerciseShell({
     if (isProcessing || !sessionId || !user) return
 
     setIsProcessing(true)
+    setLastResponse(rawResponse)
+    setLastFuzzy(isFuzzy)
+    setLastCommitFailed(false)
 
     // Show feedback screen immediately for wrong answers — don't wait for the network call.
     // For correct answers, show after processReview completes (button enabled immediately).
@@ -149,23 +159,28 @@ export function ExerciseShell({
       onAnswer(result, wasCorrect)
       setIsProcessing(false)
 
-      if (wasCorrect) {
-        // Correct answer: auto-advance, no separate feedback screen needed.
+      if (wasCorrect && !isFuzzy) {
+        // Exact-match correct: auto-advance, no feedback screen.
         onContinueToNext()
+      } else if (wasCorrect && isFuzzy) {
+        // Fuzzy — always show feedback (design §6.9: learner must see the diff).
+        setLastAnswerCorrect(true)
+        setWaitingForContinue(true)
       } else {
-        // Wrong answer: waitingForContinue was already set above; now Doorgaan is enabled.
+        // Wrong answer: waitingForContinue was already set above.
         setLastAnswerCorrect(false)
         setWaitingForContinue(true)
       }
     } catch (err) {
       logError({ page: 'exercise-shell', action: 'processAnswer', error: err })
-      notifications.show({
-        color: 'red',
-        title: t.common.error,
-        message: t.common.somethingWentWrong,
-      })
+      setLastCommitFailed(true)
+      // Don't show a notification — the feedback screen's warning chip is the
+      // user-facing surface (§6.9). Session still advances.
       setIsProcessing(false)
-      setWaitingForContinue(false)
+      if (!wasCorrect || isFuzzy) {
+        setLastAnswerCorrect(wasCorrect)
+        setWaitingForContinue(true)
+      }
     }
   }
 
@@ -387,6 +402,56 @@ export function ExerciseShell({
     const accentColor = lastAnswerCorrect ? 'var(--success)' : 'var(--danger)'
     const subtleBg = lastAnswerCorrect ? 'var(--success-subtle)' : 'var(--danger-subtle)'
     const borderColor = lastAnswerCorrect ? 'var(--success-border)' : 'var(--danger-border)'
+
+    // PR #5 cutover: route registered types through <ExerciseFeedback>.
+    // Legacy block below handles any type still marked unmigrated.
+    if (usesNewFeedback[exerciseItem.exerciseType]) {
+      const outcome: 'correct' | 'fuzzy' | 'wrong' =
+        lastAnswerCorrect && !lastFuzzy ? 'correct' :
+        lastAnswerCorrect && lastFuzzy ? 'fuzzy' :
+        'wrong'
+      const promptAudioUrl = exerciseItem.learningItem?.base_text
+        ? resolveSessionAudioUrl(audioMap, exerciseItem.learningItem.base_text)
+        : undefined
+      const feedbackProps = feedbackPropsFor({
+        item: exerciseItem,
+        response: lastResponse,
+        outcome,
+        userLanguage,
+        isGrammar,
+        promptAudioUrl,
+        commitFailed: lastCommitFailed,
+      })
+      const copy: FeedbackCopy = {
+        outcomeCorrect:     t.session.feedback.correct,
+        outcomeAlmost:      t.session.feedback.almostCorrect ?? t.session.feedback.correct,
+        outcomeWrong:       t.session.feedback.incorrect,
+        announceCorrect:    t.session.feedback.correct,
+        announceWrong:      `${t.session.feedback.incorrect}. ${t.session.exercise.correctAnswerLabel}: {x}.`,
+        announceFuzzy:      `${t.session.feedback.almostCorrect ?? t.session.feedback.correct} — {x}.`,
+        roleLabelHeard:     userLanguage === 'nl' ? 'Je hoorde' : 'You heard',
+        roleLabelShown:     userLanguage === 'nl' ? 'Je zag' : 'You saw',
+        roleLabelSaid:      userLanguage === 'nl' ? 'Het woord was' : 'The word was',
+        roleLabelTarget:    t.session.exercise.correctAnswerLabel,
+        roleLabelYourAnswer: userLanguage === 'nl' ? 'Jouw antwoord' : 'Your answer',
+        roleLabelMeaning:   t.session.exercise.meaningLabel,
+        roleLabelExplanation: t.session.exercise.explanationLabel,
+        alsoAccepted:       userLanguage === 'nl' ? 'Ook goed' : 'Also accepted',
+        replayAudio:        userLanguage === 'nl' ? 'Herhaal audio' : 'Replay audio',
+        commitFailed:       userLanguage === 'nl'
+          ? 'Kon beoordeling niet opslaan — we gaan toch door.'
+          : "Couldn't save review — continuing anyway.",
+        emptyAnswer:        userLanguage === 'nl' ? '(geen antwoord)' : '(no answer)',
+      }
+      return (
+        <ExerciseFeedback
+          {...feedbackProps}
+          onContinue={handleContinue}
+          continueLabel={t.session.feedback.continue}
+          copy={copy}
+        />
+      )
+    }
 
     if (!isGrammar) {
       // Vocab feedback screen (correct or wrong)
