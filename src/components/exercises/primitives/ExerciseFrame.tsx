@@ -51,7 +51,7 @@ export function ExerciseFrame({
           {adminOverlay && (
             <div className={classes.adminOverlay}>{adminOverlay}</div>
           )}
-          <div className={classes.content}>
+          <div className={`${classes.content} ${footer ? classes.contentWithFooter : ''}`}>
             {children}
           </div>
           {footer && (

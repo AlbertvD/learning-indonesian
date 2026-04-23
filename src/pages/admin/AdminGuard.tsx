@@ -4,7 +4,6 @@
 // / once loading is done AND profile is confirmed non-admin.
 // See docs/plans/2026-04-23-exercise-framework-design.md §9.1
 
-import { useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
 import { Center, Loader } from '@mantine/core'
 import { useAuthStore } from '@/stores/authStore'
@@ -14,12 +13,22 @@ interface AdminGuardProps {
   children: ReactNode
 }
 
+/**
+ * Dev-only bypass: `?bypassAuth=1` mirrors <ProtectedRoute>'s bypass. Enabled
+ * only in Vite dev mode; a no-op in production builds.
+ */
+function isDevBypass(): boolean {
+  if (!import.meta.env.DEV) return false
+  if (typeof window === 'undefined') return false
+  return new URL(window.location.href).searchParams.get('bypassAuth') === '1'
+}
+
 export function AdminGuard({ children }: AdminGuardProps) {
   const { profile, loading } = useAuthStore()
 
-  useEffect(() => {
-    // Redirect happens via <Navigate> below for SR correctness.
-  }, [profile, loading])
+  if (isDevBypass()) {
+    return <>{children}</>
+  }
 
   if (loading) {
     return (

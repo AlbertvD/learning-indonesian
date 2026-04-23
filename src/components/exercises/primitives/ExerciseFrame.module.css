@@ -18,11 +18,10 @@
     flex-direction: column;
     gap: var(--ex-zone-gap);
     flex: 1;
-    padding-bottom: var(--ex-footer-h);
   }
 
-  .root:not(:has(.footer)) .content {
-    padding-bottom: 0;
+  .contentWithFooter {
+    padding-bottom: var(--ex-footer-h);
   }
 
   .adminOverlay {
