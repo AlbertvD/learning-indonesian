@@ -84,13 +84,13 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
 
     // Exercise framework — spacing tokens (mobile values; desktop via @container in primitives)
     '--ex-pad-x':      '16px',
-    '--ex-pad-y':      '24px',
-    '--ex-zone-gap':   '28px',
+    '--ex-pad-y':      '16px',
+    '--ex-zone-gap':   '20px',
     '--ex-card-pad':   '20px',
     '--ex-opt-pad-y':  '20px',
     '--ex-opt-pad-x':  '16px',
     '--ex-opt-gap':    '12px',
-    '--ex-footer-h':   '88px',
+    '--ex-footer-h':   '76px',
 
     // Exercise framework — motion tokens (transforms zeroed under prefers-reduced-motion
     // in primitive CSS; opacity fades survive)

@@ -1,13 +1,16 @@
 @layer exercises {
   .root {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
     width: 100%;
-    padding: var(--ex-opt-pad-y) var(--ex-opt-pad-x);
+    /* !important defeats the unlayered reset `*{padding:0}` and Mantine's
+       unlayered `button{font:inherit}`. Same pattern as primitives/global.css
+       .exerciseInput — @layer-scoped !important preserves the layer model. */
+    padding: var(--ex-opt-pad-y) var(--ex-opt-pad-x) !important;
     font-family: inherit;
-    text-align: left;
     background: var(--ex-option-bg);
     color: var(--ex-fg);
     border: 2px solid transparent;
@@ -22,21 +25,39 @@
       opacity var(--ex-motion-fast);
   }
 
+  /* Word variant: centered text, glyph docks right absolutely so centering
+     doesn't shift when state changes to correct/wrong/answer. Padding stays
+     symmetric — keeping truly-centered text matters more than the rare case
+     of a long word brushing the glyph in a committed state. */
   .word {
-    min-height: 64px;
-    font-size: var(--fs-md);
+    min-height: 56px;
+    /* !important beats Mantine's unlayered `button { font: inherit }`. */
+    font-size: var(--fs-xl) !important;
+    justify-content: center;
+    text-align: center;
   }
 
+  .word .content {
+    flex: 0 1 auto;
+  }
+
+  .word .glyph {
+    position: absolute;
+    right: var(--ex-opt-pad-x);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* Sentence variant: left-aligned with the existing pill padding. */
   .sentence {
     min-height: 88px;
-    font-size: var(--fs-lg);
+    /* !important beats Mantine's unlayered `button { font: inherit }`. */
+    font-size: var(--fs-lg) !important;
     line-height: 1.45;
+    text-align: left;
   }
 
   @container exercise (min-width: 769px) {
-    .word {
-      min-height: 56px;
-    }
     .sentence {
       min-height: 72px;
     }

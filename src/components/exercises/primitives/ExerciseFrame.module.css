@@ -70,8 +70,8 @@
 
   @container exercise (min-width: 769px) {
     .root {
-      padding: var(--ex-pad-y) var(--ex-pad-x);
-      /* Desktop padding bump handled via token overrides if needed later. */
+      padding: 24px var(--ex-pad-x);
+      /* Mobile pad-y is tighter via token; desktop keeps its original breathing. */
     }
     .content {
       gap: 40px;
