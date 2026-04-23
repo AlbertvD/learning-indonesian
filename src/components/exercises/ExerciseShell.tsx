@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { Suspense, useMemo, useState, useEffect } from 'react'
 import { Box, Button, Stack, Text } from '@mantine/core'
 import { IconX, IconCheck } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
@@ -23,6 +23,13 @@ import { logError } from '@/lib/logger'
 import type { SessionQueueItem, ContentFlag } from '@/types/learning'
 import type { ReviewResult, GrammarReviewResult } from '@/lib/reviewHandler'
 import type { User } from '@supabase/supabase-js'
+import {
+  resolveExerciseComponent,
+  exerciseSkeletonVariant,
+  type AnswerOutcome,
+} from './registry'
+import { ExerciseErrorBoundary } from './ExerciseErrorBoundary'
+import { ExerciseSkeleton } from './ExerciseSkeleton'
 
 interface ExerciseShellProps {
   currentItem: SessionQueueItem
@@ -158,6 +165,82 @@ export function ExerciseShell({
     if (isProcessing) return
     setWaitingForContinue(false)
     onContinueToNext()
+  }
+
+  // Registry-backed path — routes registered types through the new primitive
+  // library via Suspense + ErrorBoundary. Thin wrappers report an
+  // `AnswerOutcome` shape that's translated into the existing processReview
+  // flow via handleAnswerFromExercise below. Unregistered types fall through
+  // to the legacy switch.
+  const handleAnswerOutcome = (outcome: AnswerOutcome) => {
+    if ('skipped' in outcome) {
+      // Error-recovery path from <ExerciseErrorBoundary>. Synthesize a wrong
+      // result just enough to keep session progressing — does NOT call
+      // processReview (no review_events row written for skipped items).
+      // Session's handleExerciseAnswer will increment total; re-queue is
+      // acceptable because the next attempt may succeed if the underlying
+      // data race resolves.
+      setLastAnswerCorrect(false)
+      setWaitingForContinue(false)
+      onContinueToNext()
+      return
+    }
+    // TypeScript now knows outcome is ExerciseAnswerReport.
+    handleAnswerFromExercise(
+      outcome.wasCorrect,
+      outcome.isFuzzy,
+      outcome.latencyMs,
+      outcome.rawResponse,
+    )
+  }
+
+  // Memoize to keep the component reference stable across renders (React 19
+  // compiler flags inline `resolveExerciseComponent(...)` calls in JSX).
+  const LazyExercise = useMemo(
+    () => resolveExerciseComponent(exerciseItem.exerciseType),
+    [exerciseItem.exerciseType],
+  )
+  if (LazyExercise) {
+    const registryNode = (
+      <ExerciseErrorBoundary
+        exerciseType={exerciseItem.exerciseType}
+        onAnswer={handleAnswerOutcome}
+        userLanguage={userLanguage}
+      >
+        <Suspense fallback={<ExerciseSkeleton variant={exerciseSkeletonVariant[exerciseItem.exerciseType]} />}>
+          {/* eslint-disable-next-line react-hooks/static-components -- LazyExercise
+              is a React.lazy reference stable per exerciseType via useMemo above;
+              the compiler can't statically verify this. */}
+          <LazyExercise
+            key={exerciseKey}
+            exerciseItem={exerciseItem}
+            userLanguage={userLanguage}
+            onAnswer={handleAnswerOutcome}
+          />
+        </Suspense>
+      </ExerciseErrorBoundary>
+    )
+    // Short-circuit registry path straight through the feedback-gate logic
+    // below. We still want the legacy feedback screen for now (PR #5 will
+    // cut it over to <ExerciseFeedback>).
+    if (!waitingForContinue) {
+      if (!profile?.isAdmin || !authUser) return <>{registryNode}</>
+      return (
+        <Box style={{ position: 'relative' }}>
+          {registryNode}
+          <FlagButton
+            userId={authUser.id}
+            learningItemId={isGrammar ? null : exerciseItem.learningItem?.id ?? null}
+            grammarPatternId={grammarPatternId}
+            exerciseType={exerciseItem.exerciseType}
+            exerciseVariantId={null}
+            existingFlag={currentFlag}
+            onFlagged={setCurrentFlag}
+            onUnflagged={() => setCurrentFlag(null)}
+          />
+        </Box>
+      )
+    }
   }
 
   const exerciseNode = (() => { switch (exerciseItem.exerciseType) {

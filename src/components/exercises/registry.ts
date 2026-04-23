@@ -7,20 +7,34 @@
 
 import { lazy, type LazyExoticComponent, type ComponentType } from 'react'
 import type { ExerciseType, ExerciseItem } from '@/types/learning'
-import type { ReviewResult, GrammarReviewResult } from '@/lib/reviewHandler'
 
 // ─── Public types ────────────────────────────────────────────────────────────
 
 /**
+ * Raw answer data that thin exercise wrappers report. ExerciseShell translates
+ * this into a processReview(...) call — processReview needs session context
+ * (userId, sessionId, learner states) that doesn't live in the exercise.
+ *
+ * Deviation from design §7.2 (which said AnswerOutcome = ReviewResult): keeping
+ * the existing separation of concerns where the shell owns the FSRS write.
+ * Thin wrappers stay thin (~40 lines) and don't import reviewHandler directly.
+ */
+export interface ExerciseAnswerReport {
+  wasCorrect: boolean
+  isFuzzy: boolean
+  latencyMs: number
+  rawResponse: string | null
+}
+
+/**
  * Discriminated union returned by exercise components. The `{skipped: true}`
  * branch lets <ExerciseErrorBoundary> report a skip without fabricating a
- * ReviewResult. Session reads `outcome.skipped` to distinguish session-length
+ * ReviewResult. Shell reads `outcome.skipped` to distinguish session-length
  * accounting from FSRS write paths.
  */
 export type AnswerOutcome =
   | { skipped: true, reviewRecorded: false }
-  | ReviewResult
-  | GrammarReviewResult
+  | ExerciseAnswerReport
 
 export interface ExerciseEventPayload {
   type: string
@@ -46,7 +60,11 @@ export type LazyExercise = LazyExoticComponent<ComponentType<ExerciseComponentPr
  * exercise type.
  */
 export const exerciseRegistry: Partial<Record<ExerciseType, LazyExercise>> = {
-  // PR #4a — Tier 1 (simplest): Speaking, ContrastPair, RecognitionMCQ, CuedRecall
+  // PR #4a — Tier 1 (simplest)
+  speaking:        lazy(() => import('./implementations/SpeakingExercise')),
+  contrast_pair:   lazy(() => import('./implementations/ContrastPairExercise')),
+  recognition_mcq: lazy(() => import('./implementations/RecognitionMCQ')),
+  cued_recall:     lazy(() => import('./implementations/CuedRecallExercise')),
   // PR #4b — Tier 2 (typed): ClozeMcq, ListeningMCQ, TypedRecall, MeaningRecall
   // PR #4c — Tier 3 (complex): ConstrainedTranslation, SentenceTransformation, Cloze, Dictation
 }
