@@ -70,7 +70,11 @@ export const exerciseRegistry: Partial<Record<ExerciseType, LazyExercise>> = {
   meaning_recall:  lazy(() => import('./implementations/MeaningRecall')),
   listening_mcq:   lazy(() => import('./implementations/ListeningMCQ')),
   cloze_mcq:       lazy(() => import('./implementations/ClozeMcq')),
-  // PR #4c — Tier 3 (complex): ConstrainedTranslation, SentenceTransformation, Cloze, Dictation
+  // PR #4c — Tier 3 (complex configs)
+  cloze:                   lazy(() => import('./implementations/Cloze')),
+  sentence_transformation: lazy(() => import('./implementations/SentenceTransformationExercise')),
+  constrained_translation: lazy(() => import('./implementations/ConstrainedTranslationExercise')),
+  dictation:               lazy(() => import('./implementations/Dictation')),
 }
 
 /**
