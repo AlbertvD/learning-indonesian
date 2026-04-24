@@ -6,6 +6,7 @@ import { useMediaQuery } from '@mantine/hooks'
 import { IconMenu2 } from '@tabler/icons-react'
 import { Sidebar } from './Sidebar'
 import { MobileLayout } from './MobileLayout'
+import classes from './Layout.module.css'
 
 const SIDEBAR_LOCKED_KEY = 'sidebar-locked'
 
@@ -39,7 +40,7 @@ export function Layout() {
   const sidebarVisible = locked || open
 
   return (
-    <div style={{ display: 'flex', height: '100vh', width: '100vw' }}>
+    <div className={classes.root}>
       {/* Backdrop (overlay mode only) */}
       {open && !locked && (
         <div onClick={closeOverlay} style={{
@@ -78,16 +79,7 @@ export function Layout() {
       />
 
       {/* Main content */}
-      <main style={{
-        flex: 1,
-        paddingLeft: locked ? 230 : 64,
-        paddingRight: 24,
-        transition: 'padding-left .22s cubic-bezier(.4,0,.2,1)',
-        overflow: 'auto',
-        height: '100vh',
-        boxSizing: 'border-box',
-        minWidth: 0,
-      }}>
+      <main className={`${classes.main} ${locked ? classes.mainLocked : classes.mainUnlocked}`}>
         <Outlet />
       </main>
     </div>
