@@ -1,0 +1,129 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   ActionCard.module.css — prominent CTA variant of ListCard.
+
+   Absorbs the Dashboard "Action Cards" cluster + the danger "Rescue" card:
+     • Dashboard.module.css:118-191 — .actionCardBase + .actionCardAmberBorder
+       + .actionCardTealBorder + .actionCardIconBox + .actionCardIconAmber
+       + .actionCardIconTeal + .actionCardBody + .actionCardTitle
+       + .actionCardFocus + .actionCardReason + .actionCardChevron
+     • Dashboard.module.css:345-378 — .rescueCard (danger-tinted variant with
+       subtle background tint)
+
+   Differences from ListCard:
+     • 3px solid tone-driven left border (accent / warning / danger)
+     • 40×40 tinted icon box (vs ListCard's 36×36) — larger affordance for CTA
+     • Three-line body: title + focus + optional reason (vs title + subtitle)
+     • Danger tone also tints the background per .rescueCard
+
+   The root uses the same <Link>/<div> switch as ListCard so the whole card is
+   a single clickable surface when navigational.
+
+   No @container / @media / @layer / !important — the card keeps its shape on
+   every viewport; responsive tweaks belong in token values.
+
+   See docs/plans/2026-04-24-page-framework-design.md §3 (item 7).
+───────────────────────────────────────────────────────────────────────────── */
+
+.root {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.root:hover {
+  background: var(--card-hover-bg);
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+}
+
+/* ─── Tone: accent ─── */
+
+.toneAccent {
+  border-left: 3px solid var(--accent-primary);
+}
+
+/* ─── Tone: warning ─── */
+
+.toneWarning {
+  border-left: 3px solid var(--warning);
+}
+
+/* ─── Tone: danger (also tints the background per .rescueCard) ─── */
+
+.toneDanger {
+  background: var(--danger-subtle);
+  border-left: 3px solid var(--danger);
+}
+
+.toneDanger:hover {
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+}
+
+/* ─── Icon box (40×40 tinted square) ─── */
+
+.iconBox {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconBoxAccent {
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+}
+
+.iconBoxWarning {
+  background: var(--warning-subtle);
+  color: var(--warning);
+}
+
+.iconBoxDanger {
+  background: var(--danger-subtle);
+  color: var(--danger);
+}
+
+/* ─── Body stack ─── */
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.focus {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+}
+
+.reason {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+.chevron {
+  color: var(--text-secondary);
+  opacity: 0.4;
+  flex-shrink: 0;
+}
