@@ -257,9 +257,48 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
     // 3. Publish Learning Items
     // Everything publishes immediately — review happens live in the app via admin account.
     // Only rejected and already-published items are excluded.
+    // 'deferred_dialogue' is included so that adding artifacts (translations or a cloze
+    // context) on a re-run automatically lifts the deferral.
     const approvedItems = learningItems.filter((item: any) =>
-      item.review_status === 'pending_review' || item.review_status === 'approved'
+      item.review_status === 'pending_review' ||
+      item.review_status === 'approved' ||
+      item.review_status === 'deferred_dialogue'
     )
+
+    // Defer dialogue_chunk items that lack reviewability artifacts.
+    // Per C-1 in docs/plans/2026-04-24-dialogue-pipeline-completion.md, a
+    // dialogue_chunk is reviewable iff it has BOTH translation_nl (for
+    // productive-stage recognition_mcq) AND a cloze context keyed on the
+    // dialogue line's normalized slug (for retrieving-stage cloze, which is
+    // the only path session-engine.md:125 routes to at that stage).
+    //
+    // Cloze contexts authored by cloze-creator for dialogue_chunks use
+    // learning_item_slug = base_text.toLowerCase().trim() — match on that, not
+    // on source_text (which carries the `___` blank).
+    const dialogueSlugsWithCloze = new Set(
+      clozeContexts
+        .filter((c: any) => typeof c?.learning_item_slug === 'string')
+        .map((c: any) => String(c.learning_item_slug).toLowerCase().trim())
+    )
+    const deferredDialogueChunks = approvedItems.filter((item: any) => {
+      if (item.item_type !== 'dialogue_chunk') return false
+      const hasTranslation = Boolean(item.translation_nl?.trim())
+      const slug = String(item.base_text ?? '').toLowerCase().trim()
+      const hasCloze = dialogueSlugsWithCloze.has(slug)
+      return !(hasTranslation && hasCloze)
+    })
+    const deferredKeys = new Set(deferredDialogueChunks.map((d: any) => d.base_text))
+    const publishableItems = approvedItems.filter((item: any) => !deferredKeys.has(item.base_text))
+
+    if (deferredDialogueChunks.length > 0) {
+      console.warn(`\n⚠️  Deferring ${deferredDialogueChunks.length} dialogue_chunk item(s) — no translation_nl and no cloze context:`)
+      for (const d of deferredDialogueChunks) {
+        const t = d.base_text.length > 80 ? `${d.base_text.slice(0, 80)}…` : d.base_text
+        console.warn(`     - "${t}"`)
+      }
+      console.warn(`   Marked review_status='deferred_dialogue' in staging — re-run after adding translations or cloze contexts.\n`)
+    }
+
     const VALID_LANGUAGES = new Set(['nl', 'en'])
     const VALID_CONTEXT_TYPES = new Set(['example_sentence', 'dialogue', 'cloze', 'lesson_snippet', 'vocabulary_list', 'exercise_prompt'])
     const publishedItemIds: string[] = []
@@ -267,8 +306,8 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
 
     // POS validation — WARNING for missing pos on word/phrase items,
     // CRITICAL (abort publish) for invalid pos values, coverage report at the end.
-    if (approvedItems.length > 0) {
-      const posResult = validatePOS(approvedItems)
+    if (publishableItems.length > 0) {
+      const posResult = validatePOS(publishableItems)
       for (const w of posResult.warnings) console.warn(w)
       if (posResult.criticalErrors.length > 0) {
         for (const e of posResult.criticalErrors) console.error(e)
@@ -277,9 +316,9 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
       }
     }
 
-    if (approvedItems.length > 0) {
-      console.log(`\n3. Publishing ${approvedItems.length} learning items...`)
-      for (const item of approvedItems) {
+    if (publishableItems.length > 0) {
+      console.log(`\n3. Publishing ${publishableItems.length} learning items...`)
+      for (const item of publishableItems) {
         if (dryRun) {
           console.log(`   [DRY RUN] Would publish item: ${item.base_text} -> ${item.translation_nl}`)
         } else {
@@ -622,19 +661,29 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
         ;(enData ?? []).forEach((r: any) => enCovered.add(r.learning_item_id))
       }
 
-      // Dialogue chunks have no translations — exclude from NL meaning check
-      const itemsRequiringNl = publishedItemIds.filter(id => !dialogueItemIds.has(id))
-      const missingNl = itemsRequiringNl.filter(id => !nlCovered.has(id))
+      // Dialogue chunks are already reviewability-gated pre-write (see the
+      // deferredDialogueChunks pre-publish gate earlier in this script). Step 6
+      // enforces reviewability for EVERYTHING ELSE — catches the original
+      // 2026-04-24 incident's non-dialogue orphan pattern (the 65 `sentence`
+      // items + 20 no-context items that landed without meanings or variants).
+      //
+      // Non-dialogue reviewability: item has NL meaning OR item has at least one
+      // item_contexts row with an active exercise_variant. "Either" is correct
+      // here (unlike dialogue_chunks which require BOTH): recognition_mcq needs
+      // the NL meaning; cloze/listening needs a context+variant; any one of the
+      // two render paths satisfies filterEligible.
+      const nonDialogueIds = publishedItemIds.filter(id => !dialogueItemIds.has(id))
+      const missingNl = nonDialogueIds.filter(id => !nlCovered.has(id))
       const missingEn = publishedItemIds.filter(id => !enCovered.has(id))
 
       if (missingNl.length > 0) {
-        console.error(`   ✗ ${missingNl.length}/${itemsRequiringNl.length} items missing NL meaning`)
+        console.error(`   ✗ ${missingNl.length}/${nonDialogueIds.length} non-dialogue items missing NL meaning`)
         console.error('\n✗ Seed integrity check FAILED — missing NL meanings indicate a silent write error.')
         console.error('  Re-run this script to retry.')
         process.exit(1)
       } else {
-        const dialogueCount = publishedItemIds.length - itemsRequiringNl.length
-        console.log(`   ✓ All ${itemsRequiringNl.length} items have NL meanings${dialogueCount > 0 ? ` (${dialogueCount} dialogue chunks excluded)` : ''}`)
+        const dialogueCount = publishedItemIds.length - nonDialogueIds.length
+        console.log(`   ✓ All ${nonDialogueIds.length} non-dialogue items have NL meanings${dialogueCount > 0 ? ` (${dialogueCount} dialogue chunks excluded — verified separately)` : ''}`)
       }
       if (missingEn.length > 0) {
         console.warn(`   ⚠️ ${missingEn.length}/${expectedCount} items missing EN meaning (expected if no translation_en in staging)`)
@@ -644,13 +693,20 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
 
       // Verify contexts (chunked) — using publishedItemIds, not a re-query of item_contexts
       const ctxCovered = new Set<string>()
+      const ctxIdsByItem = new Map<string, string[]>()
       for (let i = 0; i < publishedItemIds.length; i += CHUNK_SIZE) {
         const chunk = publishedItemIds.slice(i, i + CHUNK_SIZE)
         const { data: ctxData, error: ctxErr } = await supabase
-          .schema('indonesian').from('item_contexts').select('learning_item_id')
+          .schema('indonesian').from('item_contexts').select('id, learning_item_id')
           .in('learning_item_id', chunk)
         if (ctxErr) throw ctxErr
-        ;(ctxData ?? []).forEach((r: any) => ctxCovered.add(r.learning_item_id))
+        for (const r of ctxData ?? []) {
+          const row = r as { id: string; learning_item_id: string }
+          ctxCovered.add(row.learning_item_id)
+          const list = ctxIdsByItem.get(row.learning_item_id) ?? []
+          list.push(row.id)
+          ctxIdsByItem.set(row.learning_item_id, list)
+        }
       }
       const missingCtx = publishedItemIds.filter(id => !ctxCovered.has(id))
       if (missingCtx.length > 0) {
@@ -660,14 +716,60 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
         console.log(`   ✓ All ${expectedCount} items have at least one context`)
       }
 
+      // Cross-check: every non-dialogue published item is "reviewable" (has NL
+      // meaning OR has at least one context with an active exercise_variant).
+      // The NL-meaning branch is already verified above (missingNl empty). This
+      // catches the corner case where an item has neither NL meaning nor a
+      // context with a live variant — i.e. the 65 `sentence` orphan pattern
+      // from the 2026-04-24 incident. Dialogue_chunks are skipped here: they're
+      // reviewability-checked pre-write by the deferredDialogueChunks gate
+      // (stricter AND-contract) so they can't enter this step without artifacts.
+      const allCtxIds = [...ctxIdsByItem.values()].flat()
+      const ctxIdsWithActiveVariant = new Set<string>()
+      if (allCtxIds.length > 0) {
+        for (let i = 0; i < allCtxIds.length; i += CHUNK_SIZE) {
+          const chunk = allCtxIds.slice(i, i + CHUNK_SIZE)
+          const { data: varData, error: varErr } = await supabase
+            .schema('indonesian').from('exercise_variants').select('context_id')
+            .in('context_id', chunk).eq('is_active', true)
+          if (varErr) throw varErr
+          for (const r of varData ?? []) {
+            const row = r as { context_id: string }
+            if (row.context_id) ctxIdsWithActiveVariant.add(row.context_id)
+          }
+        }
+      }
+      const unreviewable: string[] = []
+      for (const id of nonDialogueIds) {
+        if (nlCovered.has(id)) continue   // NL-path satisfied
+        const itemCtxIds = ctxIdsByItem.get(id) ?? []
+        if (itemCtxIds.some(cid => ctxIdsWithActiveVariant.has(cid))) continue   // variant-path satisfied
+        unreviewable.push(id)
+      }
+      if (unreviewable.length > 0) {
+        console.error(`   ✗ ${unreviewable.length}/${nonDialogueIds.length} non-dialogue items are unreviewable — they have neither an NL meaning nor any context with an active exercise_variant`)
+        console.error('     Affected item IDs:')
+        for (const id of unreviewable.slice(0, 10)) console.error(`       ${id}`)
+        if (unreviewable.length > 10) console.error(`       … and ${unreviewable.length - 10} more`)
+        console.error('\n✗ Seed integrity check FAILED — items will be scheduled by FSRS but no exercise can render them (lesson 9 orphan pattern).')
+        process.exit(1)
+      } else {
+        console.log(`   ✓ All ${nonDialogueIds.length} non-dialogue items are reviewable (NL meaning or active variant)`)
+      }
+
       // Mark as published in staging — only after step-6 integrity check passes.
       // Writing this earlier would permanently mark items published even if the
       // DB write failed, making re-runs silently skip the broken items.
-      const updatedItems = learningItems.map((item: any) =>
-        (item.review_status === 'pending_review' || item.review_status === 'approved')
-          ? { ...item, review_status: 'published' }
-          : item
-      )
+      // Deferred dialogue chunks get review_status='deferred_dialogue' so they're
+      // visible as TODO; re-running the script after artifacts land auto-publishes them.
+      const updatedItems = learningItems.map((item: any) => {
+        const wasCandidate = item.review_status === 'pending_review' ||
+                             item.review_status === 'approved' ||
+                             item.review_status === 'deferred_dialogue'
+        if (!wasCandidate) return item
+        if (deferredKeys.has(item.base_text)) return { ...item, review_status: 'deferred_dialogue' }
+        return { ...item, review_status: 'published' }
+      })
       fs.writeFileSync(
         path.join(stagingDir, 'learning-items.ts'),
         `// Published via script\nexport const learningItems = ${JSON.stringify(updatedItems, null, 2)}\n`
@@ -677,13 +779,31 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
       // Note: exercise_variant verification is handled in step 4's post-insert check.
       // Vocab variants link via context_id (not lesson_id) — a lesson_id query would
       // only count grammar variants and produce misleading results for vocab candidates.
+    } else if (!dryRun && deferredDialogueChunks.length > 0) {
+      // No items were published, but there are deferrals. Still write the staging
+      // back so the deferred markers persist (otherwise items stay 'pending_review'
+      // and the deferral list is recomputed every run with no record of intent).
+      const updatedItems = learningItems.map((item: any) => {
+        const wasCandidate = item.review_status === 'pending_review' ||
+                             item.review_status === 'approved' ||
+                             item.review_status === 'deferred_dialogue'
+        if (!wasCandidate) return item
+        if (deferredKeys.has(item.base_text)) return { ...item, review_status: 'deferred_dialogue' }
+        return item
+      })
+      fs.writeFileSync(
+        path.join(stagingDir, 'learning-items.ts'),
+        `// Published via script\nexport const learningItems = ${JSON.stringify(updatedItems, null, 2)}\n`
+      )
+      console.log(`\n✓ ${deferredDialogueChunks.length} dialogue chunks marked deferred in staging (nothing else to publish)`)
     }
 
     console.log(`\n✓ ${dryRun ? '[DRY RUN] ' : ''}Successfully processed lesson ${lessonNumber}`)
 
-    // POS coverage report — informational summary at the end
-    if (!dryRun && approvedItems.length > 0) {
-      const posResult = validatePOS(approvedItems)
+    // POS coverage report — informational summary at the end.
+    // Uses publishableItems (excludes deferred dialogue chunks, which have no POS).
+    if (!dryRun && publishableItems.length > 0) {
+      const posResult = validatePOS(publishableItems)
       console.log(`\n[POS-coverage] Lesson ${lessonNumber} word/phrase items by POS:`)
       for (const [pos, count] of Object.entries(posResult.coverage).sort()) {
         console.log(`  ${pos}: ${count}`)

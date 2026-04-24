@@ -31,3 +31,18 @@ export function normalizeForExemptLookup(s: string): string {
   const withoutParen = s.replace(/\s*\([^)]*\)\s*$/, '').trim()
   return normalizeForClozeCompare(withoutParen)
 }
+
+// Normalize a token extracted from a sentence when cross-referencing it against
+// learning_items.normalized_text in the DB or staging files.
+// Matches publish-approved-content.ts:293 derivation (.toLowerCase().trim())
+// plus strips adjacent trailing ASCII punctuation (`pohon.` → `pohon`) so a
+// word adjacent to a period/comma/etc. in a sentence still matches its vocab
+// entry. Diacritics are preserved (unlike normalizeForClozeCompare) because
+// authored sentences and vocab entries both retain them.
+export function normalizeDialogueToken(token: string): string {
+  return token
+    .toLowerCase()
+    .trim()
+    .replace(/^[.,!?;:"'(]+/, '')
+    .replace(/[.,!?;:"')]+$/, '')
+}

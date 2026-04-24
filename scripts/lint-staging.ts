@@ -29,7 +29,7 @@ import fs from 'fs'
 import path from 'path'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { stripAffixes, tokenize, FUNCTION_WORDS } from './lib/affix'
-import { normalizeForClozeCompare, normalizeForExemptLookup } from './lib/normalize'
+import { normalizeForClozeCompare, normalizeForExemptLookup, normalizeDialogueToken } from './lib/normalize'
 import { VALID_POS } from './lib/validate-pos'
 
 // Internal Step-CA on the homelab. Scoped: only this script's HTTPS calls
@@ -68,10 +68,12 @@ interface LessonCtx {
   grammarPatterns?: any[]
   candidates?: any[]
   clozeContexts?: any[]
+  clozeSkips?: any[]
   patternBrief?: any
   learningItems?: any[]
   vocabEnrichments?: any[] | null
   sectionsCatalog?: any
+  priorLearningItems?: any[]   // vocabulary from lessons with lower order_index (flattened)
 }
 
 interface DbCtx {
@@ -152,6 +154,15 @@ async function readTsExport(filePath: string): Promise<any> {
   return exports.length > 0 ? exports[0] : null
 }
 
+// Read a specific named export from a TS module (unlike readTsExport which
+// returns the first export). Needed for files that expose multiple exports,
+// e.g. cloze-contexts.ts → { clozeContexts, clozeSkips }.
+async function readTsNamedExport(filePath: string, name: string): Promise<any> {
+  if (!fs.existsSync(filePath)) return null
+  const m = await import(`file://${filePath}?t=${Date.now()}`)
+  return (m as Record<string, unknown>)[name] ?? null
+}
+
 function readJson(filePath: string): any {
   if (!fs.existsSync(filePath)) return null
   return JSON.parse(fs.readFileSync(filePath, 'utf-8'))
@@ -167,12 +178,34 @@ async function loadLesson(n: number): Promise<LessonCtx> {
     lesson: await readTsExport(path.join(dir, 'lesson.ts')),
     grammarPatterns: (await readTsExport(path.join(dir, 'grammar-patterns.ts'))) ?? [],
     candidates: (await readTsExport(path.join(dir, 'candidates.ts'))) ?? [],
-    clozeContexts: (await readTsExport(path.join(dir, 'cloze-contexts.ts'))) ?? [],
+    clozeContexts: (await readTsNamedExport(path.join(dir, 'cloze-contexts.ts'), 'clozeContexts'))
+      ?? (await readTsExport(path.join(dir, 'cloze-contexts.ts'))) ?? [],
+    clozeSkips: (await readTsNamedExport(path.join(dir, 'cloze-contexts.ts'), 'clozeSkips')) ?? [],
     learningItems: (await readTsExport(path.join(dir, 'learning-items.ts'))) ?? [],
     vocabEnrichments: (await readTsExport(path.join(dir, 'vocab-enrichments.ts'))) ?? null,
     patternBrief: readJson(path.join(dir, 'pattern-brief.json')),
     sectionsCatalog: readJson(path.join(dir, 'sections-catalog.json')),
+    priorLearningItems: await loadPriorLearningItems(n),
   }
+}
+
+// Flatten learning-items.ts from every lesson dir with a lower number than `n`.
+// Used to cross-reference that a dialogue cloze's blanked word exists in the
+// current or a prior lesson's vocabulary.
+async function loadPriorLearningItems(n: number): Promise<any[]> {
+  const stagingBase = path.join(process.cwd(), 'scripts', 'data', 'staging')
+  if (!fs.existsSync(stagingBase)) return []
+  const dirs = fs.readdirSync(stagingBase)
+    .filter(d => /^lesson-\d+$/.test(d))
+    .map(d => parseInt(d.replace('lesson-', ''), 10))
+    .filter(x => !Number.isNaN(x) && x < n)
+    .sort((a, b) => a - b)
+  const out: any[] = []
+  for (const x of dirs) {
+    const items = await readTsExport(path.join(stagingBase, `lesson-${x}`, 'learning-items.ts'))
+    if (Array.isArray(items)) out.push(...items)
+  }
+  return out
 }
 
 async function loadDb(): Promise<DbCtx> {
@@ -616,6 +649,189 @@ function checkClozeCoverage(ctx: LessonCtx): Finding[] {
   return out
 }
 
+// §13 — dialogue cloze: every dialogue_chunk must be reviewable via either
+// an authored cloze context or an explicit skip in clozeSkips. Enforces the
+// structural half of the C-4 contract from the dialogue-pipeline plan:
+// ≥6 tokens, blanked word must be a current/prior-lesson vocab item, blanked
+// word must have ≥2 same-POS siblings in the lesson pool. Semantic uniqueness
+// (whether any other word could fit) is LLM judgment — linguist-reviewer
+// covers that.
+const DIALOGUE_CLOZE_MIN_TOKENS = 6
+const VALID_SKIP_REASONS = new Set([
+  'below_6_token_threshold',
+  'no_current_or_prior_vocab_in_line',
+  'no_same_pos_distractors_in_pool',
+])
+
+function checkDialogueClozes(ctx: LessonCtx): Finding[] {
+  const out: Finding[] = []
+  const dialogueItems = (ctx.learningItems ?? []).filter(it => it?.item_type === 'dialogue_chunk')
+  if (dialogueItems.length === 0) return out
+
+  const clozeContexts = ctx.clozeContexts ?? []
+  const clozeSkips = ctx.clozeSkips ?? []
+
+  // Build index of authored dialogue clozes by normalized slug (= dialogue
+  // line's normalized base_text). We match on normalizeForClozeCompare, same
+  // as checkClozeCoverage, so diacritic/punctuation variance doesn't mask.
+  const clozeBySlug = new Map<string, any>()
+  for (const c of clozeContexts) {
+    if (typeof c?.learning_item_slug !== 'string') continue
+    clozeBySlug.set(normalizeForClozeCompare(c.learning_item_slug), c)
+  }
+  const skipByBase = new Map<string, any>()
+  for (const s of clozeSkips) {
+    if (typeof s?.dialogue_chunk_base_text !== 'string') continue
+    skipByBase.set(normalizeForClozeCompare(s.dialogue_chunk_base_text), s)
+  }
+
+  // Duplicate normalized_text across dialogue lines in the same lesson.
+  // Expected empty set — two lines collapsing would break slug-based cloze
+  // lookup and let one cloze silently mask another.
+  const seen = new Map<string, string>()
+  for (const it of dialogueItems) {
+    const norm = normalizeForClozeCompare(String(it.base_text ?? ''))
+    if (!norm) continue
+    if (seen.has(norm)) {
+      out.push(mkFinding('CRITICAL', ctx.n, 'learning-items.ts', 'dialogue-duplicate-normalized-text',
+        `two dialogue_chunk items collapse to the same normalized_text ("${norm}") — one would mask the other in cloze lookup`,
+        it.base_text))
+    } else {
+      seen.set(norm, it.base_text)
+    }
+  }
+
+  // Build vocab pool for current + prior lessons. Used for both the
+  // vocab-membership check and the same-POS-distractor check.
+  // Key: normalizeDialogueToken(base_text). Value: { base_text, pos }.
+  const vocabPool = new Map<string, { base_text: string, pos: string | null }>()
+  const posToCount = new Map<string, number>()
+  for (const src of [ctx.learningItems ?? [], ctx.priorLearningItems ?? []]) {
+    for (const it of src) {
+      if (!['word', 'phrase'].includes(it?.item_type)) continue
+      if (typeof it?.base_text !== 'string') continue
+      const key = normalizeDialogueToken(it.base_text)
+      if (!key) continue
+      if (!vocabPool.has(key)) {
+        vocabPool.set(key, { base_text: it.base_text, pos: typeof it.pos === 'string' ? it.pos : null })
+      }
+      if (typeof it.pos === 'string') {
+        posToCount.set(it.pos, (posToCount.get(it.pos) ?? 0) + 1)
+      }
+    }
+  }
+
+  for (const it of dialogueItems) {
+    const baseText: string = String(it.base_text ?? '')
+    if (!baseText.trim()) continue
+    const ref = baseText.length > 60 ? baseText.slice(0, 60) + '…' : baseText
+    const normSlug = normalizeForClozeCompare(baseText)
+    const tokens = baseText.split(/\s+/).filter(Boolean)
+    const tokenCount = tokens.length
+
+    const hasCloze = clozeBySlug.has(normSlug)
+    const hasSkip = skipByBase.has(normSlug)
+
+    // 13a — translation_nl presence. Required whenever the item will be
+    // published (i.e. not in clozeSkips). Productive-stage recognition_mcq
+    // renders the NL translation as its Dutch prompt.
+    const translation = typeof it.translation_nl === 'string' ? it.translation_nl.trim() : ''
+    if (!translation && !hasSkip) {
+      out.push(mkFinding('CRITICAL', ctx.n, 'learning-items.ts', 'dialogue-translation-missing',
+        `dialogue_chunk has empty translation_nl — recognition_mcq at productive stage has no Dutch prompt to render`, ref))
+      // Don't continue; still run coverage check to surface multiple issues at once.
+    }
+
+    // 13b — coverage
+    if (!hasCloze && !hasSkip) {
+      out.push(mkFinding('CRITICAL', ctx.n, 'cloze-contexts.ts', 'dialogue-cloze-missing',
+        `dialogue_chunk has no cloze context and no clozeSkips entry`, ref))
+      continue
+    }
+    if (hasCloze && hasSkip) {
+      out.push(mkFinding('CRITICAL', ctx.n, 'cloze-contexts.ts', 'dialogue-cloze-and-skip',
+        `dialogue_chunk appears in BOTH clozeContexts and clozeSkips — pick one`, ref))
+      continue
+    }
+
+    if (hasCloze) {
+      const c = clozeBySlug.get(normSlug)
+      // 13c — eligibility on authored clozes
+      if (tokenCount < DIALOGUE_CLOZE_MIN_TOKENS) {
+        out.push(mkFinding('CRITICAL', ctx.n, 'cloze-contexts.ts', 'dialogue-cloze-below-token-threshold',
+          `dialogue line has ${tokenCount} tokens (<${DIALOGUE_CLOZE_MIN_TOKENS}) — should be in clozeSkips, not clozeContexts`, ref))
+        continue
+      }
+      // Extract the blanked word from source_text vs answer key.
+      // source_text has `___` where the word was; we need the word itself.
+      // Convention: cloze-creator blanks a single vocab token; we recover it
+      // from the difference between source_text (with ___) and base_text.
+      const blank = extractBlankedWord(baseText, typeof c.source_text === 'string' ? c.source_text : '')
+      if (!blank) {
+        out.push(mkFinding('CRITICAL', ctx.n, 'cloze-contexts.ts', 'dialogue-cloze-blank-unresolvable',
+          `cannot determine blanked word from source_text vs base_text (source_text must be the dialogue line with one token replaced by ___)`, ref))
+        continue
+      }
+      const blankKey = normalizeDialogueToken(blank)
+      // Vocab-membership
+      if (!vocabPool.has(blankKey)) {
+        out.push(mkFinding('CRITICAL', ctx.n, 'cloze-contexts.ts', 'dialogue-cloze-blank-not-in-pool',
+          `blanked word "${blank}" is not in current or prior lesson's learning-items.ts — user would face an unknown word in an unknown sentence`, ref))
+        continue
+      }
+      // Same-POS distractor pool
+      const entry = vocabPool.get(blankKey)!
+      if (!entry.pos) {
+        out.push(mkFinding('WARNING', ctx.n, 'cloze-contexts.ts', 'dialogue-cloze-blank-missing-pos',
+          `blanked word "${blank}" has no POS in learning-items.ts — distractor quality will degrade`, ref))
+      } else if ((posToCount.get(entry.pos) ?? 0) < 3) {
+        // < 3 because the answer itself counts in the tally; we need ≥2 OTHER same-POS siblings.
+        out.push(mkFinding('CRITICAL', ctx.n, 'cloze-contexts.ts', 'dialogue-cloze-blank-no-distractors',
+          `blanked word "${blank}" (pos=${entry.pos}) has fewer than 2 same-POS siblings in the lesson pool — runtime distractor cascade will degrade`, ref))
+      }
+    } else if (hasSkip) {
+      const s = skipByBase.get(normSlug)
+      const reason = typeof s?.reason === 'string' ? s.reason : ''
+      if (!VALID_SKIP_REASONS.has(reason)) {
+        out.push(mkFinding('CRITICAL', ctx.n, 'cloze-contexts.ts', 'dialogue-skip-invalid-reason',
+          `clozeSkips entry has missing or unrecognised reason "${reason}" — must be one of: ${[...VALID_SKIP_REASONS].join(', ')}`, ref))
+        continue
+      }
+      // Cross-verify the reason
+      if (reason === 'below_6_token_threshold' && tokenCount >= DIALOGUE_CLOZE_MIN_TOKENS) {
+        out.push(mkFinding('CRITICAL', ctx.n, 'cloze-contexts.ts', 'dialogue-skip-bogus-threshold',
+          `clozeSkips reason is "below_6_token_threshold" but line has ${tokenCount} tokens (≥${DIALOGUE_CLOZE_MIN_TOKENS}) — should have a cloze, not a skip`, ref))
+      }
+      if (reason === 'no_current_or_prior_vocab_in_line') {
+        const hasVocab = tokens.some(tok => vocabPool.has(normalizeDialogueToken(tok)))
+        if (hasVocab) {
+          out.push(mkFinding('CRITICAL', ctx.n, 'cloze-contexts.ts', 'dialogue-skip-bogus-no-vocab',
+            `clozeSkips reason is "no_current_or_prior_vocab_in_line" but at least one token IS a vocab item — creator should have written a cloze`, ref))
+        }
+      }
+      // 'no_same_pos_distractors_in_pool' is hard to cross-verify without the
+      // exact intended blank; accept the skip.
+    }
+  }
+
+  return out
+}
+
+// Given the full dialogue line and the source_text with `___`, return the
+// original token that was replaced. Does character-wise alignment around the
+// `___` marker. Returns null if the alignment can't be recovered (source_text
+// doesn't match base_text modulo the blank).
+function extractBlankedWord(baseText: string, sourceText: string): string | null {
+  const blankIdx = sourceText.indexOf('___')
+  if (blankIdx < 0) return null
+  const prefix = sourceText.slice(0, blankIdx)
+  const suffix = sourceText.slice(blankIdx + 3)
+  if (!baseText.startsWith(prefix)) return null
+  const blankPlusSuffix = baseText.slice(prefix.length)
+  if (!blankPlusSuffix.endsWith(suffix)) return null
+  return blankPlusSuffix.slice(0, blankPlusSuffix.length - suffix.length)
+}
+
 function checkExerciseCoverage(ctx: LessonCtx): Finding[] {
   const out: Finding[] = []
   if (!ctx.grammarPatterns?.length) return out
@@ -717,8 +933,12 @@ function checkLearningItemsPos(ctx: LessonCtx): Finding[] {
   return out
 }
 
-// §12 — vocab-enrichments. Coverage now matches what the creator agent
-// actually emits: word/phrase AND dialogue_chunk both get enrichments.
+// §12 — vocab-enrichments. Coverage is word/phrase only; dialogue_chunks are
+// reviewed via cloze contexts (see §13), not distractor enrichments. The
+// runtime distractor cascade covers recognition_mcq for dialogue at
+// productive+ by drawing same-POS siblings from the lesson pool — enrichments
+// are authored for words where per-item-curated distractors outperform the
+// cascade, which isn't the case for full sentence items.
 function checkVocabEnrichments(ctx: LessonCtx, db: DbCtx): Finding[] {
   const out: Finding[] = []
   if (!ctx.vocabEnrichments) return out
@@ -727,7 +947,7 @@ function checkVocabEnrichments(ctx: LessonCtx, db: DbCtx): Finding[] {
   for (const e of enrich) if (e?.learning_item_slug) enrichBySlug.set(e.learning_item_slug, e)
 
   for (const it of ctx.learningItems ?? []) {
-    if (!['word', 'phrase', 'dialogue_chunk'].includes(it?.item_type)) continue
+    if (!['word', 'phrase'].includes(it?.item_type)) continue
     if (!enrichBySlug.has(it?.base_text)) {
       out.push(mkFinding('CRITICAL', ctx.n, 'vocab-enrichments.ts', 'enrichment-missing',
         'learning-items.ts entry has no vocab-enrichment row', it.base_text))
@@ -860,6 +1080,7 @@ async function main() {
     findings.push(...checkCandidatesStructural(ctx, db))
     findings.push(...checkClozeContextsFile(ctx))
     findings.push(...checkClozeCoverage(ctx))
+    findings.push(...checkDialogueClozes(ctx))
     findings.push(...checkExerciseCoverage(ctx))
     findings.push(...checkVocabCoverage(ctx, db))
     findings.push(...checkPatternBrief(ctx))
