@@ -1,0 +1,46 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   EmptyState.module.css — centered icon + message + optional CTA for blank
+   slates (empty leaderboard, zero-review queue, no card sets yet, etc.).
+
+   Absorbs the recurring "center a dimmed line of text in a blank panel"
+   shape (Leaderboard.tsx:119-123: <Center h="20vh"><Text c="dimmed">…
+   </Text></Center>). The primitive adds an icon affordance and an optional
+   CTA so callers don't roll their own stack each time.
+
+   Layout axis is fixed — column stack, centered, 32px padding. Callers
+   control outer height (the parent panel sets that); this primitive only
+   owns its internal rhythm. Max-width caps the message at ~32ch so long
+   copy doesn't stretch edge-to-edge on wide containers.
+
+   No @container / @media / @layer / !important — the stack looks identical
+   on every viewport; the only thing that varies per-site is how much
+   vertical space the parent gives it.
+
+   See docs/plans/2026-04-24-page-framework-design.md §3 (item 11).
+───────────────────────────────────────────────────────────────────────────── */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+}
+
+.icon {
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.message {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  margin: 0 0 20px;
+  max-width: 32ch;
+}
+
+.cta {
+  margin-top: 4px;
+}
