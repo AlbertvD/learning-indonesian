@@ -8,9 +8,11 @@
 // detect (a) fit without a fit container ancestor and (b) nested PageBody.
 // See docs/plans/2026-04-24-page-framework-design.md §3 and §4.1.
 
+import { useRef } from 'react'
 import type { ReactNode } from 'react'
 import { cx } from './cx'
 import classes from './PageBody.module.css'
+import { useSeamContract } from './useSeamContract'
 
 export interface PageBodyProps {
   children: ReactNode
@@ -30,8 +32,11 @@ const VARIANT_CLASS: Record<NonNullable<PageBodyProps['variant']>, string> = {
 }
 
 export function PageBody({ children, variant = 'auto' }: PageBodyProps) {
+  const rootRef = useRef<HTMLDivElement>(null)
+  useSeamContract(variant, rootRef)
   return (
     <div
+      ref={rootRef}
       className={cx(classes.root, VARIANT_CLASS[variant])}
       data-page-body="true"
     >
