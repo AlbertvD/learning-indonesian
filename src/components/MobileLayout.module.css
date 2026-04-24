@@ -8,7 +8,7 @@
 /* Top bar */
 .topBar {
   flex-shrink: 0;
-  height: 52px;
+  height: var(--app-top-bar-h);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,7 +31,9 @@
 .content {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 90px;
+  /* Clear the bottom nav (60px intrinsic) + safe-area + 16px visual breathing room.
+     Previously hardcoded 90px — now tracks --app-bottom-nav-h token. */
+  padding-bottom: calc(var(--app-bottom-nav-h) + env(safe-area-inset-bottom) + 16px);
 }
 
 /* Bottom nav */
