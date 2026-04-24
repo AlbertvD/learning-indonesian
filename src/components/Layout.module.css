@@ -1,0 +1,27 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Layout.module.css — desktop outer chrome.
+
+   Allowlisted under docs/plans/2026-04-24-page-framework-design.md §4.3: this
+   file IS the desktop viewport shell, so it legitimately owns `height: 100vh`.
+   Do not re-implement viewport-height math outside this file (or
+   MobileLayout.module.css / PageContainer / PageBody / PageFormLayout).
+───────────────────────────────────────────────────────────────────────────── */
+
+.root {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.main {
+  flex: 1;
+  padding-right: 24px;
+  transition: padding-left .22s cubic-bezier(.4, 0, .2, 1);
+  overflow: auto;
+  height: 100vh;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.mainLocked   { padding-left: var(--sidebar-width); }
+.mainUnlocked { padding-left: var(--sidebar-width-closed); }
