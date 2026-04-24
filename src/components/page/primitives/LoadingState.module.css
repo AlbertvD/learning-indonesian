@@ -1,0 +1,42 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   LoadingState.module.css — centered Mantine Loader + optional caption.
+
+   Replaces the recurring `<Center h="50vh"><Loader size="xl" /></Center>`
+   shape scattered across page-level loading branches (Lessons.tsx:40-46,
+   Profile.tsx:181-187, Leaderboard.tsx:106, and ~6 more). Those callsites
+   re-derived the same "center a spinner in a big blank region" layout each
+   time; LoadingState owns it in one place.
+
+   WHY NO `min-height: 50vh` HERE:
+   The viewport-math lint rule (Phase 0 Task 35 / Task 36) treats any vh/vw
+   claim outside a small allowlist (PageContainer, PageBody, PageFormLayout,
+   Layout, MobileLayout) as a regression. LoadingState is a *primitive* — it
+   doesn't own viewport semantics, its parent does. So we use a fixed
+   `min-height: 240px` instead. It's big enough that the spinner feels like
+   "a loading region" rather than a stray icon, but small enough that it
+   doesn't dominate a tall container.
+
+   Callers that want the loader to fill an entire page wrap this in
+   `<PageBody variant="fit">` (or a `<Center h="…vh">` as a stop-gap) and
+   let flexbox take it from there.
+
+   No @container / @media / @layer / !important — layout is identical on
+   every viewport.
+
+   See docs/plans/2026-04-24-page-framework-design.md §3 (item 12).
+───────────────────────────────────────────────────────────────────────────── */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  gap: 16px;
+}
+
+.caption {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  margin: 0;
+}
