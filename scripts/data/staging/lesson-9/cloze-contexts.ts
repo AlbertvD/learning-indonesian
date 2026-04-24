@@ -1390,4 +1390,89 @@ export const clozeContexts = [
     difficulty: 'A1',
     topic_tag: 'body',
   },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Dialogue clozes — each source_text is a full dialogue line with one
+  // vocabulary word blanked. learning_item_slug is the normalized full line.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // ── "Kaki saya sakit sekali dokter. Saya jatuh dari pohon." ──────────────
+  // Blank: pohon (noun, from lesson 8). Unique semantic fit after "jatuh dari".
+  {
+    learning_item_slug: 'kaki saya sakit sekali dokter. saya jatuh dari pohon.',
+    source_text: 'Kaki saya sakit sekali dokter. Saya jatuh dari ___.',
+    translation_text: 'Mijn voet doet heel erg pijn, dokter. Ik ben uit de boom gevallen.',
+    difficulty: 'A1',
+    topic_tag: 'body',
+  },
+
+  // ── "Saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh." ──
+  // Blank: tinggi (adjective, from lesson 7). Unique fit after "lebih" (hoger).
+  {
+    learning_item_slug: 'saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.',
+    source_text: 'Saya mau naik lebih ___ lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.',
+    translation_text: 'Ik wilde nog hoger in die boom klimmen, maar dat lukte niet, zodat ik viel.',
+    difficulty: 'A1',
+    topic_tag: 'body',
+  },
+
+  // ── "Nah, coba, saya periksa kakimu dulu. Barangkali tidak apa-apa." ─────
+  // Blank: periksa (verb, from lesson 9). Unique fit — doctor examining leg.
+  {
+    learning_item_slug: 'nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.',
+    source_text: 'Nah, coba, saya ___ kakimu dulu. Barangkali tidak apa-apa.',
+    translation_text: 'Nou, kom, laat me eerst je voet onderzoeken. Misschien is er niets aan de hand.',
+    difficulty: 'A1',
+    topic_tag: 'body',
+  },
+
+  // ── "Kalau begitu, tidak ada yang patah. Pasti nanti cepat sekali sembuh, Tin." ──
+  // Blank: sembuh (verb, from lesson 9). Unique fit — "cepat sekali ___" = quickly heal.
+  {
+    learning_item_slug: 'kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.',
+    source_text: 'Kalau begitu, tidak ada yang patah. Pasti nanti cepat sekali ___, Tin.',
+    translation_text: 'In dat geval is er niets gebroken. Straks ben je vast heel snel weer beter, Tin.',
+    difficulty: 'A1',
+    topic_tag: 'body',
+  },
+
+  // ── "Betul dokter? Tidak ada yang patah? Saya takut sekali!" ─────────────
+  // Blank: takut (adjective, from lesson 9). Unique fit — mother's fear/worry.
+  {
+    learning_item_slug: 'betul dokter? tidak ada yang patah? saya takut sekali!',
+    source_text: 'Betul dokter? Tidak ada yang patah? Saya ___ sekali!',
+    translation_text: 'Echt waar, dokter? Is er niets gebroken? Ik was zo bang!',
+    difficulty: 'A1',
+    topic_tag: 'body',
+  },
+
+  // ── "Tidak begitu sakit dokter, sedikit saja." ───────────────────────────
+  // Blank: sakit (adjective, from lesson 2). Contextually primed by preceding
+  // "Ini sakit atau tidak?" — patient's direct response about pain level.
+  {
+    learning_item_slug: 'tidak begitu sakit dokter, sedikit saja.',
+    source_text: 'Tidak begitu ___ dokter, sedikit saja.',
+    translation_text: 'Niet zo erg pijn dokter, maar een beetje.',
+    difficulty: 'A1',
+    topic_tag: 'body',
+  },
+
+  // ── "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh." ──
+  // Blank: hati-hati (adjective, from lesson 9). Unique fit — "jalan ___" = walk carefully.
+  {
+    learning_item_slug: 'betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.',
+    source_text: 'Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan ___. Tina, jangan lagi naik pohon biar kakimu lekas sembuh.',
+    translation_text: 'Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt.',
+    difficulty: 'A1',
+    topic_tag: 'body',
+  },
+]
+
+// Dialogue lines that were intentionally skipped (not written as cloze contexts).
+// Lint reads this to confirm the skip is deliberate, not missed coverage.
+export const clozeSkips = [
+  { dialogue_chunk_base_text: 'Ada apa?', reason: 'below_6_token_threshold' },
+  { dialogue_chunk_base_text: 'Bagaimana bisa jatuh dari pohon?', reason: 'below_6_token_threshold' },
+  { dialogue_chunk_base_text: 'Awas dokter, jangan sakit, ya.', reason: 'below_6_token_threshold' },
+  { dialogue_chunk_base_text: 'Ini sakit atau tidak?', reason: 'below_6_token_threshold' },
 ]
