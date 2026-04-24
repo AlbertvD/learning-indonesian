@@ -1,0 +1,59 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   PageFormLayout.module.css — vertical-centered narrow Paper wrapper for
+   full-page forms (Login, Register).
+
+   This file is on the §4.3 seam contract allowlist — it owns viewport math
+   legitimately (min-height: 100vh) because it IS a full-page layout, not a
+   layout-inside-a-layout. Auth pages mount PageFormLayout directly, without
+   an outer app chrome (no top bar, no sidebar, no bottom nav), so the
+   primitive must fill the viewport itself to vertically center the card.
+   The other four allowlisted files are Layout.module.css, MobileLayout.module.css,
+   PageContainer.module.css, and PageBody.module.css.
+
+   Collapses the identical outer shell at src/pages/Login.tsx:34-35 and
+   src/pages/Register.tsx:40-41:
+     <Container size="xs" style={{ display:'flex', alignItems:'center',
+                                    justifyContent:'center', minHeight:'100vh' }}>
+       <Paper p="lg" radius="md" shadow="md" style={{ width:'100%' }}>
+
+   Card padding = 32px (Mantine spacing.xl, matches `p="lg"` → close enough;
+   spec specifies 32px explicitly).
+   Radius = var(--r-md) (matches `radius="md"`).
+   Shadow = var(--shadow-md) (matches `shadow="md"`).
+   Max-width = var(--page-form-max-w) = 400px (Container size="xs" ≈ 540px; we
+   narrow to 400px to match modern auth-card conventions; this is the token
+   value defined in main.tsx).
+
+   No @container / @layer / @media / !important — layout is identical on
+   every viewport because the card already maxes at 400px (comfortably inside
+   the narrowest supported mobile width).
+
+   See docs/plans/2026-04-24-page-framework-design.md §3 (item 13) and §4.3
+   (seam contract allowlist).
+───────────────────────────────────────────────────────────────────────────── */
+
+.viewport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--page-pad-x);
+}
+
+.card {
+  width: 100%;
+  max-width: var(--page-form-max-w);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-md);
+  padding: 32px;
+}
+
+.title {
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  text-align: center;
+  margin: 0 0 24px;
+}
