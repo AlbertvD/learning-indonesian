@@ -7,7 +7,7 @@ export const learningItems = [
     "translation_nl": "Wat is er aan de hand?",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "deferred_dialogue"
   },
   {
     "base_text": "Kaki saya sakit sekali dokter. Saya jatuh dari pohon.",
@@ -25,7 +25,7 @@ export const learningItems = [
     "translation_nl": "Hoe kun je nou uit een boom vallen?",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "deferred_dialogue"
   },
   {
     "base_text": "Saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.",
@@ -52,7 +52,7 @@ export const learningItems = [
     "translation_nl": "Voorzichtig dokter, niet pijn doen, hè.",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "deferred_dialogue"
   },
   {
     "base_text": "Ini sakit atau tidak?",
@@ -61,7 +61,7 @@ export const learningItems = [
     "translation_nl": "Doet dit pijn of niet?",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "deferred_dialogue"
   },
   {
     "base_text": "Tidak begitu sakit dokter, sedikit saja.",
