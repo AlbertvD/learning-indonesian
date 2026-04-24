@@ -283,12 +283,45 @@ Flag if any of these contain content that reveals the answer before the learner 
 - `cued_recall_distractors_id` does not contain morphological variants of the correct answer (WARNING — e.g. `membeli`/`dibeli` when correct answer is `beli`)
 - Distractors match word class of the target: check `item_type` in vocabulary pool (WARNING if mismatched)
 
-### 13. Cloze coverage with dialogue filtering
+### 13. Cloze coverage and quality
 
-Verify dialogue item filtering in cloze-contexts.ts:
-- Full dialogue turns (complete sentences with subject-verb structure) must NOT have cloze contexts
-- Individual words and short phrases from dialogue sections MUST have cloze contexts
-- Cross-reference with `sections-catalog.json` dialogue sections to verify correct classification
+`cloze-contexts.ts` has two classes of entry, each with its own contract. Verify both.
+
+#### 13a. Vocabulary cloze coverage
+
+- Every `word` / `phrase` / `expression` / `number` item in `learning-items.ts` has at least one entry in `clozeContexts` whose `learning_item_slug` matches the item's `normalized_text`. CRITICAL if missing.
+- The blanked token in the `source_text` matches the slug (vocab mode blanks its own target word). CRITICAL if mismatched.
+
+#### 13b. Dialogue cloze coverage
+
+- Every `dialogue_chunk` in `learning-items.ts` must appear in **exactly one of** `clozeContexts` (as an authored cloze) or `clozeSkips` (as a deliberate skip). CRITICAL if neither or both.
+
+#### 13c. Dialogue cloze eligibility (applies to authored dialogue clozes)
+
+Lint also enforces these structurally (Task 1.4 in the dialogue-pipeline plan). Reviewer catches them as a second line of defense.
+
+- The dialogue line (`base_text`) has ≥6 tokens when split on whitespace. CRITICAL if under threshold — those lines belong in `clozeSkips`, not `clozeContexts`.
+- The blanked word (token replaced by `___` in `source_text`) exists as a `learning_item.normalized_text` in the current or a prior lesson's `learning-items.ts`. Normalize the extracted token identically to publish-approved-content.ts:293 — `.toLowerCase().trim().replace(/[.,!?;:]+$/, '')`. CRITICAL if not found.
+- The blanked word's POS (from `learning_items.pos`) has ≥2 other items in the current lesson's vocab pool with matching POS. CRITICAL if pool lacks same-POS siblings (runtime distractor cascade would degrade).
+- The blanked word is not a grammar particle (`yang`, `itu`, `ini`, `di`, `ke`, `dari`, `dan`, `atau`), pronoun (`saya`, `anda`, `dia`), discourse particle (`deh`, `sih`, `lah`), or proper noun. CRITICAL.
+
+#### 13d. Dialogue cloze semantic uniqueness — REVIEWER JUDGMENT ONLY
+
+This check is not lintable; it requires LLM language judgment.
+
+- The blanked word must be the **unique natural fit** for the sentence. If another same-POS word from the lesson pool would be equally or more natural in the same slot, the cloze is ambiguous and under-tests vocabulary. CRITICAL.
+
+**Positive example:** `"Saya jatuh dari ___."` blanking `pohon` — narrative constrains the slot ("fell from a tall thing"); other pool nouns like `kaki` (foot), `dokter` (doctor), `mata` (eye) don't fit the causal frame. Unique enough. OK.
+
+**Negative example:** `"___ saya sakit sekali dokter."` blanking `kaki` — any body-part noun from the pool (`tangan`, `kepala`, `perut`, `mata`, `lutut`) fits equally. Ambiguous. CRITICAL; suggest blanking a different token or skipping the line.
+
+#### 13e. `clozeSkips` validity
+
+- Every entry has a `reason` field from the closed set `{below_6_token_threshold, no_current_or_prior_vocab_in_line, no_same_pos_distractors_in_pool}`. CRITICAL if reason is missing or unrecognised.
+- Cross-verify the reason against the line's properties:
+  - `below_6_token_threshold` → confirm the line has <6 tokens. CRITICAL if actually ≥6.
+  - `no_current_or_prior_vocab_in_line` → scan content words in the line against current + prior lessons' `learning-items.ts`. If any content word IS present as a vocab item, reject the skip (the creator should have written a cloze for it). CRITICAL.
+  - `no_same_pos_distractors_in_pool` → for each content word in the line that is a vocab item, verify the POS pool has <2 same-POS siblings. If any word passes the distractor rule, reject the skip. CRITICAL.
 
 ## Report format
 
@@ -305,7 +338,9 @@ Include `counts` and `checks` sections in every report (following lesson-6 model
   "counts": {
     "grammar_patterns": N,
     "learning_items_total": N,
-    "cloze_contexts": N,
+    "cloze_contexts_vocab": N,
+    "cloze_contexts_dialogue": N,
+    "cloze_skips_dialogue": N,
     "candidates_total": N,
     "candidates_by_type": { ... },
     "vocab_enrichments": N
@@ -317,6 +352,8 @@ Include `counts` and `checks` sections in every report (following lesson-6 model
     "slug_uniqueness_db": "PASS/FAIL -- details",
     "candidate_payloads": "PASS/FAIL -- details",
     "contrast_pair_option_ids": "PASS/FAIL -- details",
+    "dialogue_cloze_quality": "PASS/FAIL -- details",
+    "cloze_skips_validity": "PASS/FAIL -- details",
     "cloze_context_coverage": "PASS/FAIL -- details",
     "pattern_brief_integrity": "PASS/FAIL -- details",
     "vocab_enrichments_coverage": "PASS/FAIL/SKIP -- details"
