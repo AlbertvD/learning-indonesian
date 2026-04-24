@@ -1,0 +1,60 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   StatCard.module.css — metric display card.
+
+   Absorbs the shell-shape rules from `Dashboard.module.css:28-88` — the
+   `.ringCard` container, `.ringLabel`, and `.ringValue` typography. The
+   ring chart itself (conic-gradient fill, target marker, center glyph) is
+   NOT part of this primitive; StatCard exposes a `ring` slot instead so a
+   caller can inject any indicator (ring, icon, sparkline, nothing). The
+   coupled ring math stays in the caller (Dashboard's eventual RingChart
+   component) and this primitive stays generic.
+
+   Layout: vertical flex stack. `.ring` slot sits on top, followed by the
+   uppercase small-caps `.label`, the secondary-coloured `.value`, and an
+   optional `.trailing` slot (e.g. a StatusPill). The `.ring` default size
+   of 80×80 matches Dashboard's current scorecard rhythm; callers can
+   override via their ring component's own sizing if needed.
+
+   No @container / @media / @layer / !important by design — the card keeps
+   its shape on every viewport; responsive tweaks belong in the caller's
+   grid and in token values, not in this file.
+
+   See docs/plans/2026-04-24-page-framework-design.md §3 (item 5).
+───────────────────────────────────────────────────────────────────────────── */
+
+.root {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.ring {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  text-align: center;
+}
+
+.value {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.trailing {
+  /* No specific styles — caller's content (e.g. StatusPill) self-styles. */
+}
