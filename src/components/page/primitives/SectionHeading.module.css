@@ -1,0 +1,48 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   SectionHeading.module.css — mid-page subsection divider.
+
+   Absorbs the global `.section-label` rule previously declared in
+   `src/index.css:98-116` (uppercase small-caps label + trailing hairline
+   divider). Phase 9 cleanup deletes the global class once every call-site
+   has migrated to this primitive.
+
+   Layout: flex row with the <h2> label on the left, a 1px hairline divider
+   that `flex: 1`s to fill the remaining row width, and an optional trailing
+   action slot (link / small button). The divider is a real <div> sibling
+   rather than a `::after` pseudo-element so an action slot can sit AFTER it
+   in DOM order without being pushed off-canvas.
+
+   No @container / @media / @layer / !important by design — section headings
+   are always short and keep their shape on every viewport.
+
+   See docs/plans/2026-04-24-page-framework-design.md §3 (Layout chrome).
+───────────────────────────────────────────────────────────────────────────── */
+
+.root {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.divider {
+  flex: 1;
+  height: 1px;
+  background: var(--card-border);
+}
+
+.action {
+  flex-shrink: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
