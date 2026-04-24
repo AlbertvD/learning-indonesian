@@ -1,0 +1,36 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   HeroCard.module.css — gradient-background signature card shell.
+
+   Absorbs ONLY the outer shell rules from `Dashboard.module.css:195-207` —
+   the `.heroCardV2` background/border/radius/padding and the `.heroV2Title`
+   typography. The Dashboard-specific inner layout (stats row, mix ratio
+   bar + legend, CTA button, post-note) is NOT absorbed; those classes stay
+   in Dashboard.module.css and are composed as children at the callsite.
+   This keeps HeroCard a generic shell that any page can reuse, rather than
+   a Dashboard-specific composite.
+
+   No @container / @media / @layer / !important — the card scales visually
+   the same on mobile and desktop; responsive tweaks (if any are ever
+   needed) belong in token values or at the callsite, not in this file.
+
+   See docs/plans/2026-04-24-page-framework-design.md §3 (item 8).
+───────────────────────────────────────────────────────────────────────────── */
+
+.root {
+  background: var(--hero-gradient);
+  border: 1px solid var(--hero-border);
+  border-radius: var(--r-lg);
+  padding: 28px 24px;
+}
+
+.title {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--hero-text);
+  margin: 0 0 18px;
+}
+
+.body {
+  /* No specific styles — caller composes children (stats row, mix bar,
+     CTA, etc.) using their own classes. */
+}
