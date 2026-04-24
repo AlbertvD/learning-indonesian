@@ -1,0 +1,63 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   SettingsCard.module.css — titled card for settings / forms / grouped
+   controls. Absorbs the 8× `<Paper p="xl" radius="md">` + `<Stack gap="md">`
+   + `<Title order={4}>` pattern in `src/pages/Profile.tsx:197-380`.
+
+   Desktop (default) reproduces Mantine's `withBorder shadow="sm"` equivalent:
+   `var(--card-bg)` background + 1px `var(--card-border)` + `var(--shadow-sm)`.
+   Mobile flips to a frosted-glass treatment — background rgba + backdrop-filter
+   + 1px translucent border, no shadow — which is what Profile.tsx used to
+   compute inline via `paperProps = isMobile ? {...} : {...}`.
+
+   The frosted-glass rgba literals are preserved verbatim from Profile.tsx
+   (both dark and light mode values). Tokenising frosted-glass colours is a
+   future project; for now we keep the literals here so the visual output
+   matches exactly, and the spec explicitly allows it for this primitive.
+
+   Padding = Mantine spacing.xl = 32px (what `p="xl"` resolves to).
+   Radius = var(--r-md) (matches `radius="md"`).
+
+   No @container / @layer / !important.
+
+   See docs/plans/2026-04-24-page-framework-design.md §3 (item 9).
+───────────────────────────────────────────────────────────────────────────── */
+
+.root {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+}
+
+.title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  margin: 0 0 4px;
+}
+
+.description {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  margin: 0 0 16px;
+}
+
+.body {
+  /* No specific styles — caller composes form controls, groups, etc. */
+}
+
+@media (max-width: 768px) {
+  .root {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(var(--blur-card));
+    -webkit-backdrop-filter: blur(var(--blur-card));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+  }
+
+  :global([data-mantine-color-scheme='light']) .root {
+    background: rgba(255, 255, 255, 0.60);
+    border: 1px solid rgba(0, 0, 0, 0.07);
+  }
+}
