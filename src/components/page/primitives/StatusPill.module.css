@@ -1,0 +1,62 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   StatusPill.module.css — small colored badge for status communication.
+
+   Absorbs:
+     • Dashboard.module.css:104-116 — .statusPill + .statusPillAchieved
+       + .statusPillOnTrack + .statusPillAtRisk + .statusPillMissed
+     • Lessons.module.css:27-56 — .badge + .badgeGreen + .badgePurple
+       + .badgeOrange (same pill shape, mapped to tone semantics)
+
+   The shape is Dashboard's — 2px 8px padding, 20px radius, fs-xs
+   semibold, line-height 1.4 — which matches the visual weight in both the
+   week-goal card and lesson metadata rows. Lessons.module.css's `.badge`
+   variant (3px 9px, uppercase, letter-spaced) is NOT absorbed here; that
+   specific typography is a distinct "chip" treatment and will be a future
+   primitive if reused.
+
+   Tone mapping:
+     success → --success-subtle        / --success          (e.g. Achieved)
+     warning → --warning-subtle        / --warning          (e.g. At risk)
+     danger  → --danger-subtle         / --danger           (e.g. Missed)
+     accent  → --accent-primary-subtle / --accent-primary   (e.g. On track)
+     neutral → --card-bg               / --text-secondary   (inactive / meta)
+
+   No @container / @media / @layer / !important. Tone is the only axis of
+   variation — size/shape is fixed.
+
+   See docs/plans/2026-04-24-page-framework-design.md §3 (item 10).
+───────────────────────────────────────────────────────────────────────────── */
+
+.root {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  line-height: 1.4;
+}
+
+.toneSuccess {
+  background: var(--success-subtle);
+  color: var(--success);
+}
+
+.toneWarning {
+  background: var(--warning-subtle);
+  color: var(--warning);
+}
+
+.toneDanger {
+  background: var(--danger-subtle);
+  color: var(--danger);
+}
+
+.toneAccent {
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+}
+
+.toneNeutral {
+  background: var(--card-bg);
+  color: var(--text-secondary);
+}
