@@ -1,0 +1,82 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   ListCard.module.css — horizontal row card primitive.
+
+   Absorbs two near-identical shapes used across the app:
+     • Lessons.module.css `.lessonCard`   — icon + title + chevron list row
+     • Dashboard.module.css `.secondaryCard` — icon + label + trailing row
+
+   Both carried their own copy of the same card chrome (card-bg, card-border,
+   radius, hover lift) and minor divergence in padding/gap. ListCard picks
+   the slightly roomier Dashboard spacing (14px / 16px) so the primitive
+   works in both dense lists and spacious dashboards; Lessons will need a
+   one-line density tweak at the callsite if it wants to keep its compact
+   row height, but visually the shapes are already within a pixel.
+
+   Layout: flex row — icon (fixed) + body (flex: 1, min-width: 0 so long
+   titles truncate/wrap without pushing the trailing off-canvas) + trailing
+   (fixed). The root is either a <Link> or a <div>; both share this class
+   set, and `text-decoration: none; color: inherit` keeps the <Link> variant
+   visually identical to the <div> variant.
+
+   No @container / @media / @layer / !important by design — the card keeps
+   its shape on every viewport; responsive tweaks belong in token values,
+   not in this file.
+
+   See docs/plans/2026-04-24-page-framework-design.md §3 (item 6).
+───────────────────────────────────────────────────────────────────────────── */
+
+.root {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: var(--transition-base);
+  text-decoration: none;
+  color: inherit;
+}
+
+.root:hover {
+  background: var(--card-hover-bg);
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+}
+
+.icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.subtitle {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.trailing {
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
