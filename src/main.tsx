@@ -92,6 +92,13 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--ex-opt-gap':    '12px',
     '--ex-footer-h':   '76px',
 
+    // Page framework — layout tokens (mobile values; desktop via @container in primitives)
+    '--page-pad-x':         '16px',
+    '--page-pad-y-top':     '22px',
+    '--page-pad-y-bottom':  '36px',
+    '--page-header-gap':    '28px',
+    '--page-form-max-w':    '400px',
+
     // Exercise framework — motion tokens (transforms zeroed under prefers-reduced-motion
     // in primitive CSS; opacity fades survive)
     '--ex-motion-fast':     '80ms',
@@ -128,8 +135,13 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--mix-recall': '#9c36b5',
 
     // Layout
-    '--card-compact-height': '48px',
-    '--sidebar-width':       '220px',
+    '--card-compact-height':  '48px',
+    '--sidebar-width':        '230px',   // canonical — matches Layout.tsx:83 (fixes 220/230 drift)
+    '--sidebar-width-closed': '64px',    // overlay mode when sidebar is unlocked
+
+    // App chrome (consumed by PageContainer fit + MobileLayout)
+    '--app-top-bar-h':        '52px',
+    '--app-bottom-nav-h':     '60px',
   },
 
   dark: {
