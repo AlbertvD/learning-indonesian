@@ -715,3 +715,180 @@ describe('pickDistractorCascade — tier behavior', () => {
     expect(result).toEqual(['x'])
   })
 })
+
+// ---- dialogue_chunk routing — C-1 contract ----
+//
+// Contract (docs/plans/2026-04-24-dialogue-pipeline-completion.md §C-1):
+//   dialogue_chunk is reviewable iff it has BOTH a user-language meaning
+//   AND a cloze-typed context. filterEligible enforces this at runtime in
+//   addition to the publish-gate and lint enforcement upstream.
+//
+// Non-dialogue items (word/phrase/sentence) keep the existing lenient OR-logic
+// (meaning OR context-with-variant). These tests lock that distinction in so a
+// refactor that conflates the two trips CI.
+
+describe('filterEligible — dialogue_chunk C-1 contract', () => {
+  function dialogueItem(id: string): LearningItem {
+    return { ...makeItem(id), item_type: 'dialogue_chunk' as const, base_text: 'full dialogue line ' + id }
+  }
+  function nlMeaning(itemId: string): ItemMeaning {
+    return { id: 'm-' + itemId, learning_item_id: itemId, translation_language: 'nl', translation_text: 'dutch ' + itemId, is_primary: true, sense_label: null, usage_note: null }
+  }
+  function clozeContext(itemId: string, cid = 'ctx-' + itemId) {
+    return { id: cid, learning_item_id: itemId, context_type: 'cloze' as const, source_text: 'kalimat dengan ___.', translation_text: 'zin met ___.', difficulty: null, topic_tag: null, is_anchor_context: true, source_lesson_id: null, source_section_id: null }
+  }
+  function dialogueContext(itemId: string, cid = 'ctx-' + itemId) {
+    return { id: cid, learning_item_id: itemId, context_type: 'dialogue' as const, source_text: 'dialog line', translation_text: null, difficulty: null, topic_tag: null, is_anchor_context: true, source_lesson_id: null, source_section_id: null }
+  }
+
+  // Test 4: dialogue_chunk with translation_nl only → filterEligible drops.
+  it('drops dialogue_chunk with translation_nl but no cloze context', async () => {
+    const { filterEligible } = await import('@/lib/sessionQueue')
+    const item = dialogueItem('d1')
+    const result = filterEligible(baseInput({
+      allItems: [item],
+      userLanguage: 'nl',
+      meaningsByItem: { d1: [nlMeaning('d1')] },
+      contextsByItem: { d1: [dialogueContext('d1')] }, // dialogue, not cloze
+    }))
+    expect(result).toHaveLength(0)
+  })
+
+  // Test 5: dialogue_chunk with cloze context but no translation_nl → filterEligible drops.
+  it('drops dialogue_chunk with cloze context but no user-language meaning', async () => {
+    const { filterEligible } = await import('@/lib/sessionQueue')
+    const item = dialogueItem('d1')
+    const result = filterEligible(baseInput({
+      allItems: [item],
+      userLanguage: 'nl',
+      meaningsByItem: { d1: [] },
+      contextsByItem: { d1: [clozeContext('d1')] },
+    }))
+    expect(result).toHaveLength(0)
+  })
+
+  // Test 6: dialogue_chunk with neither → filterEligible drops.
+  it('drops dialogue_chunk with neither meaning nor cloze context', async () => {
+    const { filterEligible } = await import('@/lib/sessionQueue')
+    const item = dialogueItem('d1')
+    const result = filterEligible(baseInput({
+      allItems: [item],
+      userLanguage: 'nl',
+      meaningsByItem: { d1: [] },
+      contextsByItem: { d1: [] },
+    }))
+    expect(result).toHaveLength(0)
+  })
+
+  // Test 1,2,3 setup: dialogue_chunk with BOTH artifacts → filterEligible keeps.
+  // Individual test cases assert routing-per-stage below.
+  it('keeps dialogue_chunk with translation_nl AND cloze context', async () => {
+    const { filterEligible } = await import('@/lib/sessionQueue')
+    const item = dialogueItem('d1')
+    const result = filterEligible(baseInput({
+      allItems: [item],
+      userLanguage: 'nl',
+      meaningsByItem: { d1: [nlMeaning('d1')] },
+      contextsByItem: { d1: [clozeContext('d1')] },
+    }))
+    expect(result).toHaveLength(1)
+    expect(result[0].id).toBe('d1')
+  })
+
+  // Test 7: non-dialogue item with translation_nl only → filterEligible keeps.
+  // Guards against accidentally widening the AND-logic to all item types.
+  it('keeps non-dialogue sentence with translation_nl and no contexts (lenient OR-logic stays for non-dialogue)', async () => {
+    const { filterEligible } = await import('@/lib/sessionQueue')
+    const item: LearningItem = { ...makeItem('s1'), item_type: 'sentence' as const }
+    const result = filterEligible(baseInput({
+      allItems: [item],
+      userLanguage: 'nl',
+      meaningsByItem: { s1: [nlMeaning('s1')] },
+      contextsByItem: {},
+    }))
+    expect(result).toHaveLength(1)
+  })
+
+  // Test 8: non-dialogue word with no translation but context+variant → filterEligible keeps.
+  // Exercises the second branch of the lenient OR-logic for non-dialogue types.
+  it('keeps non-dialogue word without translation_nl but with context-having-active-variant', async () => {
+    const { filterEligible } = await import('@/lib/sessionQueue')
+    const item = makeItem('w1')
+    const ctx = { id: 'c1', learning_item_id: 'w1', context_type: 'vocabulary_list' as const, source_text: 'w1', translation_text: null, difficulty: null, topic_tag: null, is_anchor_context: false, source_lesson_id: null, source_section_id: null }
+    const variant = { id: 'v1', exercise_type: 'contrast_pair', learning_item_id: null, context_id: 'c1', grammar_pattern_id: null, payload_json: {}, answer_key_json: {}, source_candidate_id: null, is_active: true, created_at: '', updated_at: '' }
+    const result = filterEligible(baseInput({
+      allItems: [item],
+      userLanguage: 'nl',
+      meaningsByItem: { w1: [] },
+      contextsByItem: { w1: [ctx] },
+      exerciseVariantsByContext: { c1: [variant] },
+    }))
+    expect(result).toHaveLength(1)
+  })
+})
+
+describe('buildSessionQueue — dialogue_chunk routing', () => {
+  function dialogueItem(id: string): LearningItem {
+    return { ...makeItem(id), item_type: 'dialogue_chunk' as const, base_text: 'full dialogue line ' + id }
+  }
+  function nlMeaning(itemId: string): ItemMeaning {
+    return { id: 'm-' + itemId, learning_item_id: itemId, translation_language: 'nl', translation_text: 'dutch ' + itemId, is_primary: true, sense_label: null, usage_note: null }
+  }
+  function clozeContext(itemId: string, cid = 'ctx-' + itemId) {
+    return { id: cid, learning_item_id: itemId, context_type: 'cloze' as const, source_text: 'kalimat dengan ___.', translation_text: 'zin met ___.', difficulty: null, topic_tag: null, is_anchor_context: true, source_lesson_id: null, source_section_id: null }
+  }
+
+  // Test 1: retrieving-stage dialogue_chunk with a due form_recall skill
+  // routes through the targetSkillType='form_recall' branch (line 449-459),
+  // which for sentence/dialogue_chunk with hasAnchorContext picks randomly
+  // between typed_recall and cloze. The test doesn't try to control the RNG;
+  // it simply asserts the queue routes to one of the documented form_recall
+  // exercise types — typed_recall, cloze, or dictation — and that cloze
+  // renders with its context data when picked.
+  it('routes due-form_recall dialogue_chunk through form_recall branch', () => {
+    const item = dialogueItem('d1')
+    const queue: SessionQueueItem[] = buildSessionQueue(baseInput({
+      allItems: [item],
+      userLanguage: 'nl',
+      meaningsByItem: { d1: [nlMeaning('d1')] },
+      contextsByItem: { d1: [clozeContext('d1')] },
+      itemStates: { d1: makeItemState('d1', 'retrieving') },
+      skillStates: { d1: [makeSkillState('d1', { skill_type: 'form_recall', next_due_at: pastDate(1) })] },
+    }))
+    expect(queue).toHaveLength(1)
+    const et = queue[0].exerciseItem.exerciseType
+    expect(['cloze', 'typed_recall', 'dictation']).toContain(et)
+    if (et === 'cloze') {
+      // Confirms the cloze path uses the cloze context (not a no-data fallback).
+      expect(queue[0].exerciseItem.clozeContext).toBeDefined()
+    }
+  })
+
+  // Test 2: due-recognition skill at matured stage triggers the recognition
+  // branch — which for dialogue_chunk (sentence type) with no pre-existing
+  // form_recall skill appends a second bootstrap exercise (cloze, since
+  // hasAnchorContext). So the queue contains TWO entries:
+  //   [recognition_mcq, cloze]
+  // Assert both are present and both have clean data.
+  it('routes due-recognition dialogue_chunk to recognition_mcq + bootstrap cloze', () => {
+    const item = dialogueItem('d1')
+    const queue: SessionQueueItem[] = buildSessionQueue(baseInput({
+      allItems: [item],
+      userLanguage: 'nl',
+      meaningsByItem: { d1: [nlMeaning('d1')] },
+      contextsByItem: { d1: [clozeContext('d1')] },
+      itemStates: { d1: makeItemState('d1', 'productive') },
+      skillStates: { d1: [makeSkillState('d1', { skill_type: 'recognition', next_due_at: pastDate(1) })] },
+    }))
+    // Exactly one of each — recognition_mcq (primary) + cloze (bootstrap).
+    const types = queue.map(q => q.exerciseItem.exerciseType)
+    expect(types).toContain('recognition_mcq')
+    expect(types).toContain('cloze')
+    // The recognition_mcq entry must carry the NL meaning for render-time Dutch prompt.
+    const mcq = queue.find(q => q.exerciseItem.exerciseType === 'recognition_mcq')!
+    expect(mcq.exerciseItem.meanings.some(m => m.translation_language === 'nl' && m.translation_text)).toBe(true)
+    // The bootstrap cloze must have its cloze context wired.
+    const cloze = queue.find(q => q.exerciseItem.exerciseType === 'cloze')!
+    expect(cloze.exerciseItem.clozeContext).toBeDefined()
+  })
+})

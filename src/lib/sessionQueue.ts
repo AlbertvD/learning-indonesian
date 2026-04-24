@@ -344,7 +344,7 @@ function interleaveQueues(
   return result
 }
 
-function filterEligible(input: SessionBuildInput): LearningItem[] {
+export function filterEligible(input: SessionBuildInput): LearningItem[] {
   let items = input.allItems
   if (input.lessonFilter) {
     const lessonItemIds = new Set<string>()
@@ -355,8 +355,26 @@ function filterEligible(input: SessionBuildInput): LearningItem[] {
   }
   return items.filter(i => {
     const meanings = input.meaningsByItem[i.id] ?? []
-    if (meanings.some(m => m.translation_language === input.userLanguage)) return true
     const contexts = input.contextsByItem[i.id] ?? []
+
+    // dialogue_chunk requires BOTH a user-language meaning AND a cloze-typed
+    // context. Productive-stage routes to recognition_mcq (needs the Dutch
+    // prompt from the meaning); retrieving-stage routes to cloze (needs a
+    // cloze context). Without both, one stage or the other renders broken.
+    // This enforces the C-1 contract from
+    // docs/plans/2026-04-24-dialogue-pipeline-completion.md at runtime —
+    // defense in depth beyond the publish-time gate.
+    if (i.item_type === 'dialogue_chunk') {
+      const hasMeaning = meanings.some(m => m.translation_language === input.userLanguage)
+      const hasCloze = contexts.some(c => c.context_type === 'cloze')
+      return hasMeaning && hasCloze
+    }
+
+    // Non-dialogue items (word / phrase / sentence): lenient OR-logic — a
+    // user-language meaning covers recognition / meaning_recall / typed_recall;
+    // a context with a published exercise_variant covers published-variant
+    // rendering. Either path is sufficient.
+    if (meanings.some(m => m.translation_language === input.userLanguage)) return true
     return contexts.some(ctx => (input.exerciseVariantsByContext?.[ctx.id] ?? []).length > 0)
   })
 }
