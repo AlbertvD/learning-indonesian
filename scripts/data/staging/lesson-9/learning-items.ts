@@ -4,7 +4,7 @@ export const learningItems = [
     "base_text": "Ada apa?",
     "item_type": "dialogue_chunk",
     "context_type": "dialogue",
-    "translation_nl": "",
+    "translation_nl": "Wat is er aan de hand?",
     "translation_en": "",
     "source_page": 3,
     "review_status": "published"
@@ -13,7 +13,7 @@ export const learningItems = [
     "base_text": "Kaki saya sakit sekali dokter. Saya jatuh dari pohon.",
     "item_type": "dialogue_chunk",
     "context_type": "dialogue",
-    "translation_nl": "",
+    "translation_nl": "Mijn voet doet heel erg pijn, dokter. Ik ben uit de boom gevallen.",
     "translation_en": "",
     "source_page": 3,
     "review_status": "published"
@@ -22,7 +22,7 @@ export const learningItems = [
     "base_text": "Bagaimana bisa jatuh dari pohon?",
     "item_type": "dialogue_chunk",
     "context_type": "dialogue",
-    "translation_nl": "",
+    "translation_nl": "Hoe kun je nou uit een boom vallen?",
     "translation_en": "",
     "source_page": 3,
     "review_status": "published"
@@ -31,7 +31,7 @@ export const learningItems = [
     "base_text": "Saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.",
     "item_type": "dialogue_chunk",
     "context_type": "dialogue",
-    "translation_nl": "",
+    "translation_nl": "Ik wilde nog hoger in die boom klimmen, maar dat lukte niet, zodat ik viel.",
     "translation_en": "",
     "source_page": 3,
     "review_status": "published"
@@ -40,7 +40,7 @@ export const learningItems = [
     "base_text": "Nah, coba, saya periksa kakimu dulu. Barangkali tidak apa-apa.",
     "item_type": "dialogue_chunk",
     "context_type": "dialogue",
-    "translation_nl": "",
+    "translation_nl": "Nou, kom, laat me eerst je voet onderzoeken. Misschien is er niets aan de hand.",
     "translation_en": "",
     "source_page": 3,
     "review_status": "published"
@@ -49,7 +49,7 @@ export const learningItems = [
     "base_text": "Awas dokter, jangan sakit, ya.",
     "item_type": "dialogue_chunk",
     "context_type": "dialogue",
-    "translation_nl": "",
+    "translation_nl": "Voorzichtig dokter, niet pijn doen, hè.",
     "translation_en": "",
     "source_page": 3,
     "review_status": "published"
@@ -58,7 +58,7 @@ export const learningItems = [
     "base_text": "Ini sakit atau tidak?",
     "item_type": "dialogue_chunk",
     "context_type": "dialogue",
-    "translation_nl": "",
+    "translation_nl": "Doet dit pijn of niet?",
     "translation_en": "",
     "source_page": 3,
     "review_status": "published"
@@ -67,7 +67,7 @@ export const learningItems = [
     "base_text": "Tidak begitu sakit dokter, sedikit saja.",
     "item_type": "dialogue_chunk",
     "context_type": "dialogue",
-    "translation_nl": "",
+    "translation_nl": "Niet zo erg pijn dokter, maar een beetje.",
     "translation_en": "",
     "source_page": 3,
     "review_status": "published"
@@ -76,7 +76,7 @@ export const learningItems = [
     "base_text": "Kalau begitu, tidak ada yang patah. Pasti nanti cepat sekali sembuh, Tin.",
     "item_type": "dialogue_chunk",
     "context_type": "dialogue",
-    "translation_nl": "",
+    "translation_nl": "In dat geval is er niets gebroken. Straks ben je vast heel snel weer beter, Tin.",
     "translation_en": "",
     "source_page": 3,
     "review_status": "published"
@@ -85,7 +85,7 @@ export const learningItems = [
     "base_text": "Betul dokter? Tidak ada yang patah? Saya takut sekali!",
     "item_type": "dialogue_chunk",
     "context_type": "dialogue",
-    "translation_nl": "",
+    "translation_nl": "Echt waar, dokter? Is er niets gebroken? Ik was zo bang!",
     "translation_en": "",
     "source_page": 3,
     "review_status": "published"
@@ -94,7 +94,7 @@ export const learningItems = [
     "base_text": "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh.",
     "item_type": "dialogue_chunk",
     "context_type": "dialogue",
-    "translation_nl": "",
+    "translation_nl": "Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt.",
     "translation_en": "",
     "source_page": 3,
     "review_status": "published"
