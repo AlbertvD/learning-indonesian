@@ -1,3 +1,13 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   PageContainer.module.css — outer page wrapper.
+
+   Declares @container page so child primitives can do width-responsive queries
+   against the content column. Viewport-level decisions (desktop padding bump,
+   fit-mode height math) use @media queries — container queries resolve against
+   PageContainer's OWN width, which is capped by `size`, so `@container page
+   (min-width: 769px)` would silently miss on size="sm" (480) / size="md" (720).
+───────────────────────────────────────────────────────────────────────────── */
+
 .root {
   container-name: page;
   container-type: inline-size;
@@ -17,7 +27,8 @@
   padding-bottom: 0;
 }
 
-@container page (min-width: 769px) {
+/* Viewport-scoped overrides — not container-scoped. */
+@media (min-width: 769px) {
   .root {
     padding: 32px var(--page-pad-x) 48px;
   }
