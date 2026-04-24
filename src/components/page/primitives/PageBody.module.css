@@ -1,0 +1,34 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   PageBody.module.css — seam-contract primitive for page content area.
+
+   Two variants:
+     - .auto: normal block flow — whole page scrolls naturally. Declared
+       explicitly as `display: block` rather than left empty so the class is
+       visible when inspecting the DOM and debugging layout regressions.
+     - .fit: flex child that fills the remaining viewport height inside
+       <PageContainer fit>. `flex: 1` claims leftover space, `min-height: 0`
+       lets nested scroll containers actually scroll (without it, flex's
+       implicit min-height: auto prevents children from shrinking below their
+       content), and `display: flex; flex-direction: column` sets up a stack
+       for sticky regions + a scroll region to compose.
+
+   No @container or @media rules live here — viewport math is owned by
+   PageContainer's `.fit` (height calc + padding adjustments). PageBody only
+   declares "I am a flex column that fills my parent" and lets the parent
+   decide how tall that is.
+───────────────────────────────────────────────────────────────────────────── */
+
+.root {
+  /* Intentionally empty — variant classes carry the layout semantics. */
+}
+
+.auto {
+  display: block;
+}
+
+.fit {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
