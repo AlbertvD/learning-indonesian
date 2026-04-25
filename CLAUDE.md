@@ -454,6 +454,15 @@ The image is built automatically via **GitHub Actions** on every push to `main` 
 
 The `docker-compose.yml` reference in `homelab-configs/services/learning-indonesian/` is kept for documentation but the container is managed directly via `docker run` as above.
 
+## Admin design surfaces
+
+Two admin-gated routes render every primitive in isolation + composition for visual review. Both require an admin row in `indonesian.user_roles`.
+
+- **`/admin/design-lab`** — exercise framework primitives (`src/components/exercises/primitives/`). Established 2026-04-23.
+- **`/admin/page-lab`** — page framework primitives (`src/components/page/primitives/`) plus the seam-contract smoke test (PageContainer fit + PageBody variant=fit at iPhone 390×844). Established 2026-04-25.
+
+Use these when iterating on primitive visuals or validating that a refactor didn't regress the rendered output.
+
 ## Data Model Overview
 
 | Table | Who writes | Who reads |
