@@ -1,6 +1,6 @@
 .container {
   padding: var(--mantine-spacing-lg);
-  min-height: 100vh;
+  min-height: 100vh; /* skip-check: TODO Phase 5 — Session migrates to <PageContainer fit><PageBody variant="fit"> and this whole file is deleted */
 }
 
 .exercise {
