@@ -116,9 +116,9 @@ Per-primitive props, CSS module structure, and variants get finalized in `/admin
 - **Allowlist** — files permitted to own viewport math:
   - `src/components/page/primitives/PageContainer.module.css`
   - `src/components/page/primitives/PageBody.module.css`
+  - `src/components/page/primitives/PageFormLayout.module.css` (full-page form wrapper — IS the page on auth routes)
   - `src/components/MobileLayout.module.css` (mobile chrome root — legitimately owns `height: 100dvh` because it IS the outer shell, not a page)
-  - `src/components/Layout.module.css` (desktop chrome root, **created in Phase 0** — holds the `height: 100vh` math moved out of `Layout.tsx`)
-  - `src/components/Layout.tsx` — allowlisted transitionally until Phase 0 completes. Post-Phase 0, `Layout.tsx` carries no inline viewport-height styles and drops off the allowlist automatically (the `Layout.module.css` entry above replaces it).
+  - `src/components/Layout.module.css` (desktop chrome root — owns `height: 100vh` for the desktop outer shell; Layout.tsx delegates entirely to this module post-Phase 0)
 - Runs in pre-commit (after existing lint step) and in CI.
 - Exceptions beyond the allowlist: `# skip-check: <reason>` comment on the offending line, or `// eslint-disable-next-line no-restricted-syntax -- reason` for JSX. Reviewer-gated.
 
