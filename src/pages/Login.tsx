@@ -31,6 +31,7 @@ export function Login() {
   }
 
   return (
+    // eslint-disable-next-line no-restricted-syntax -- TODO(page-framework Phase 6): migrate to <PageFormLayout>
     <Container size="xs" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
       <Paper p="lg" radius="md" shadow="md" style={{ width: '100%' }}>
         <Stack gap="md">
