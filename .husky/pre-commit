@@ -15,6 +15,13 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+echo "→ Viewport-math seam contract..."
+bash scripts/check-viewport-math.sh
+if [ $? -ne 0 ]; then
+  echo "✗ Seam contract violation. See output above."
+  exit 1
+fi
+
 echo "✓ Pre-commit checks passed."
 
 # homelab-platform: destructive operation guard
