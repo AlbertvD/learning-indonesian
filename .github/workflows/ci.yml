@@ -26,3 +26,11 @@ jobs:
     with:
       fail_on_vulnerabilities: false
       runner: self-hosted
+
+  seam-contract:
+    name: Seam contract — viewport-math scan
+    runs-on: [self-hosted, master-docker]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run viewport-math scanner
+        run: bash scripts/check-viewport-math.sh
