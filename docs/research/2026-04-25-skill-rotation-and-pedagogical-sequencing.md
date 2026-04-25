@@ -291,6 +291,14 @@ The due-driven branch of `selectExercises` (`sessionQueue.ts:421-464`) routes:
 
 `cued_recall` (NL→ID MCQ) appears nowhere in the due-driven branch. It only fires in the stage-based random roll for `new`/`anchoring`-stage items (`:469-498`). Once items mature past anchoring, NL→ID MCQ exposure drops to zero.
 
+**Mismatch C — visual and listening recognition share one skill counter; typed and audio-typed production share another.**
+
+`listening_mcq` (`makeListeningMcq`, ID-audio → NL MCQ) writes `skill_type='recognition'`, the same counter as `recognition_mcq` (visual ID → NL MCQ). And `dictation` (`makeDictation`, ID-audio → ID typed) writes `skill_type='form_recall'`, the same counter as `typed_recall` (NL → ID typed).
+
+These pairs exercise different cognitive skills — visual recognition vs auditory comprehension; visual-prompted production vs audio-prompted production — but share an FSRS state per item. A learner who's done `recognition_mcq` 100 times for `rumah` and never heard it spoken has `recognition.success_count=100`; FSRS thinks the listening skill is fully built. It isn't. Same conflation pattern as Mismatch A; symmetric on the production side.
+
+Audio is therefore NOT just a render-time concern — it sits inside the same skill-taxonomy decision as bidirectionality. Any redesign of the skill model needs to choose deliberately whether to keep visual+listening conflated under `recognition` (and typed+audio-typed under `form_recall`) or split them out as additional first-class skill_types.
+
 ### 4.4 Net direction skew
 
 For Albert's current state (256 retrieving + 1 productive + 367 anchoring):
@@ -483,6 +491,25 @@ WHERE lis.stage IN ('retrieving', 'productive', 'maintenance')
 Each direction gets its own FSRS state. Promotion gates updated to include the new skill. Migration needed: rename existing rows or create new rows for items at retrieving+.
 
 **Recommendation:** Option 2B. It aligns the data model with the documented intent (`stages.ts:14`), produces independent FSRS trajectories per direction, and matches the Anki/Fluent Forever convention of one schedulable unit per direction. Option 2A is a tactical patch that leaves the underlying conflation in place.
+
+**Audio extension — split listening_recognition and audio-typed production too (per Mismatch C in Part 4.3).**
+
+Symmetric reasoning: `listening_mcq` should write a distinct `skill_type='listening_recognition'` rather than sharing `recognition`; `dictation` should write `skill_type='dictation'` rather than sharing `form_recall`. The fully decomposed skill_type taxonomy becomes 5–6 entries:
+
+- `recognition` (visual: ID → NL MCQ)
+- `listening_recognition` (audio: ID → NL MCQ)
+- `cued_recall` (NL → ID MCQ)
+- `meaning_recall` (ID → NL typed)
+- `form_recall` (NL → ID typed)
+- `dictation` (audio → ID typed)
+
+Each gets its own FSRS state per item. This is more skill_state rows per item (six instead of three), but it captures genuine multimodal learning: a learner can be strong in visual recognition and weak in listening simultaneously, and the scheduler responds accordingly.
+
+Implementation note: Layer 1's per-skill seeding then seeds 5–6 skill rows per item, not 3. The 24-hour delay (or stage-transition variant) applies symmetrically. `listening_recognition` and `dictation` skills should additionally be conditional on `hasAudioFor(item)` — no point seeding listening rows if no audio file exists.
+
+Whether to ship Layer 2's full 5–6 way split is an open design call (see Part 12) — the minimum viable split is 2 (cued_recall vs meaning_recall); the principled extension is 6.
+
+The promotion-gate definitions in `stages.ts` need to be updated to reflect whichever skill set is chosen. With 6 skills, the joint promotion threshold becomes substantially harder to meet — possibly a feature (truer measure of "productive bidirectional knowledge") or a bug (effectively unreachable for most items). Threshold tuning is part of the empirical work the redesign requires.
 
 ### Layer 3 — Content-prerequisite gate on new-item selection
 
@@ -707,7 +734,7 @@ The stage-transition variant is worth consideration: seed `recognition` on intro
 
 For the reviewer's awareness, the following are out of scope:
 
-1. **Audio for dialogue lines (listening_mcq).** Covered separately by `docs/plans/2026-04-16-exercise-audio-design.md`.
+1. **Audio *file* production (TTS pipeline).** The redesign assumes audio files exist for items that have them and uses them via `hasAudioFor(item, audioMap)` (`sessionQueue.ts:401-406`). Generating new audio files for items that lack them — TTS synthesis, storage in `indonesian-podcasts` bucket, delivery — is owned by `docs/plans/2026-04-16-exercise-audio-design.md`. Audio *exercises* themselves (`listening_mcq`, `dictation`) ARE in scope — see Part 4.2 for the type mapping and Part 4.3 Mismatch C + Part 6 Layer 2's audio extension for the skill-taxonomy implications.
 2. **Dialogue pipeline completion (Phase 2, 3 rollout).** Covered by `docs/plans/2026-04-24-dialogue-pipeline-completion.md`.
 3. **Grammar scheduler stall.** 47 patterns exist, none due/new. Separate investigation.
 4. **Dutch-grammar-prompts misclassified as `sentence` learning_items.** Catalog-agent classification rule fix; separate plan.
@@ -764,7 +791,7 @@ This is an implementation skeleton, not a finalized plan. Subject to architect/l
 
 3. **First-lesson grace period** — should lesson 1 sentences introduce sooner (lower threshold) to engage new learners?
 
-4. **Layer 2A (small) vs. 2B (split skills)** — is the cleaner data model worth a migration, or is the small patch sufficient?
+4. **Layer 2A (small) vs. 2B (split skills) vs. 2B-extended (5–6 skill types)** — is the cleaner data model worth a migration, or is the small patch sufficient? If splitting, do we go all the way to the audio-aware 6-skill decomposition, or stop at the bidirectional 4-skill version (`recognition`, `cued_recall`, `meaning_recall`, `form_recall`)? The 6-skill version is more honest about cognitive demands but increases skill_state row count per item proportionally, and tightens the joint promotion threshold (potentially making productive promotion harder to reach).
 
 5. **Stage-as-derived migration risk** — is Phase D worth the complexity, or should stage stay as a routing gate (with the deadlock fixed by Layer 1)?
 
