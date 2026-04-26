@@ -1,0 +1,113 @@
+import type { LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
+import type { SourceProgressState } from '@/services/sourceProgressService'
+import classes from '../LessonReader.module.css'
+
+interface LessonBlockRendererProps {
+  block: LessonExperienceBlock
+  progress?: SourceProgressState | null
+  onProgress: (block: LessonExperienceBlock) => void
+  onPractice: (block: LessonExperienceBlock) => void
+}
+
+function textFromPayload(payload: Record<string, unknown>): string {
+  if (typeof payload.body === 'string') return payload.body
+  if (Array.isArray(payload.paragraphs)) return payload.paragraphs.filter(item => typeof item === 'string').join('\n\n')
+  if (typeof payload.label === 'string') return payload.label
+  return ''
+}
+
+function itemsFromPayload(payload: Record<string, unknown>): Array<{ indonesian?: string; dutch?: string; text?: string; translation?: string }> {
+  if (Array.isArray(payload.items)) return payload.items as Array<{ indonesian?: string; dutch?: string }>
+  if (Array.isArray(payload.lines)) return payload.lines as Array<{ text?: string; translation?: string }>
+  return []
+}
+
+function labelForKind(kind: LessonExperienceBlock['kind']): string {
+  switch (kind) {
+    case 'vocab_strip': return 'Woordenschat'
+    case 'pattern_callout': return 'Patroon'
+    case 'noticing_prompt': return 'Opmerken'
+    case 'reading_section': return 'Lezen'
+    case 'lesson_hero': return 'Les'
+    case 'practice_bridge': return 'Oefenbrug'
+    case 'lesson_recap': return 'Samenvatting'
+    default: return kind.replaceAll('_', ' ')
+  }
+}
+
+function labelForStatus(status: string): string {
+  if (status === 'not_started') return 'Nog niet gestart'
+  if (status === 'seen') return 'Gezien'
+  if (status === 'completed') return 'Afgerond'
+  return status
+}
+
+export function LessonBlockRenderer({ block, progress, onProgress, onPractice }: LessonBlockRendererProps) {
+  const status = progress?.currentState ?? 'not_started'
+  const items = itemsFromPayload(block.payload)
+  const body = textFromPayload(block.payload)
+
+  if (block.kind === 'lesson_hero') {
+    return (
+      <section className={`${classes.block} ${classes.heroBlock}`} aria-labelledby={`${block.id}-title`}>
+        <p className={classes.kicker}>Moderne lesweergave</p>
+        <h1 id={`${block.id}-title`}>{block.title}</h1>
+        <p>Lees, merk patronen op, luister en ga daarna gericht oefenen zonder lesblootstelling direct als FSRS-herhaling te tellen.</p>
+        <button type="button" onClick={() => onProgress(block)}>Markeer als geopend</button>
+      </section>
+    )
+  }
+
+  if (block.kind === 'practice_bridge') {
+    return (
+      <section className={`${classes.block} ${classes.practiceBlock}`} aria-labelledby={`${block.id}-title`}>
+        <p className={classes.kicker}>Oefenbrug</p>
+        <h2 id={`${block.id}-title`}>{block.title}</h2>
+        <p>{body || 'Oefenen komt beschikbaar wanneer de planner en reviewverwerker aangeven dat de vaardigheid klaar is.'}</p>
+        <details className={classes.meta}>
+          <summary>{block.capabilityKeyRefs.length} vaardigheidsverwijzing(en)</summary>
+          <ul>
+            {block.capabilityKeyRefs.map(ref => <li key={ref}><code>{ref}</code></li>)}
+            {block.contentUnitSlugs.map(slug => <li key={slug}><code>{slug}</code></li>)}
+          </ul>
+        </details>
+        <button type="button" onClick={() => onPractice(block)}>Oefen deze inhoud</button>
+      </section>
+    )
+  }
+
+  if (block.kind === 'lesson_recap') {
+    return (
+      <section className={`${classes.block} ${classes.recapBlock}`} aria-labelledby={`${block.id}-title`}>
+        <p className={classes.kicker}>Samenvatting</p>
+        <h2 id={`${block.id}-title`}>{block.title}</h2>
+        <p>Rond af wanneer je de les hebt gezien en de opmerkvragen hebt gedaan. Dit registreert bronvoortgang, geen FSRS-beheersing.</p>
+        <button type="button" onClick={() => onProgress(block)}>Markeer les als afgerond</button>
+      </section>
+    )
+  }
+
+  return (
+    <section className={classes.block} aria-labelledby={`${block.id}-title`}>
+      <div className={classes.blockTopline}>
+        <p className={classes.kicker}>{labelForKind(block.kind)}</p>
+        <span>{labelForStatus(status)}</span>
+      </div>
+      <h2 id={`${block.id}-title`}>{block.title}</h2>
+      {body && <p className={classes.bodyText}>{body}</p>}
+      {items.length > 0 && (
+        <div className={classes.itemGrid}>
+          {items.slice(0, 12).map((item, index) => (
+            <article key={`${block.id}-${index}`} className={classes.itemCard}>
+              <strong>{item.indonesian ?? item.text}</strong>
+              <span>{item.dutch ?? item.translation}</span>
+            </article>
+          ))}
+        </div>
+      )}
+      <button type="button" onClick={() => onProgress(block)}>
+        {block.sourceProgressEvent === 'pattern_noticing_seen' ? 'Ik heb dit patroon opgemerkt' : 'Markeer sectie als gezien'}
+      </button>
+    </section>
+  )
+}

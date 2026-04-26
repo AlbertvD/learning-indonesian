@@ -65,7 +65,7 @@ export function Layout() {
             alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer',
           }}
-          aria-label="Toggle sidebar"
+          aria-label="Zijbalk wisselen"
         >
           <IconMenu2 size={20} />
         </button>

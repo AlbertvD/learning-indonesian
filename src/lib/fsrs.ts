@@ -63,30 +63,28 @@ export function inferRating(outcome: ReviewOutcome): Grade {
  * Compute next FSRS state after a review.
  * Pass null for currentState on first review of a new skill.
  */
-export function computeNextState(currentState: FSRSState | null, rating: Grade): FSRSResult {
-  const now = new Date()
-
+export function computeNextState(currentState: FSRSState | null, rating: Grade, reviewedAt: Date = new Date()): FSRSResult {
   // Compute pre-review retrievability from old state (before scheduling).
   // This records how well the learner remembered the item at review time.
   // A new item has no prior state, so retrievability is 1 (never been forgotten).
   const preReviewRetrievability = currentState?.lastReviewedAt
-    ? getRetrievability(currentState.stability, currentState.lastReviewedAt)
+    ? getRetrievability(currentState.stability, currentState.lastReviewedAt, reviewedAt)
     : 1
 
   let card: Card
   if (currentState) {
     card = {
-      ...createEmptyCard(now),
+      ...createEmptyCard(reviewedAt),
       stability: currentState.stability,
       difficulty: currentState.difficulty,
       last_review: currentState.lastReviewedAt ?? undefined,
       state: 2, // Assume Review state if it has been reviewed before
     } as Card
   } else {
-    card = createEmptyCard(now)
+    card = createEmptyCard(reviewedAt)
   }
 
-  const result = scheduler.next(card, now, rating)
+  const result = scheduler.next(card, reviewedAt, rating)
   const scheduled = result
 
   return {
@@ -101,8 +99,7 @@ export function computeNextState(currentState: FSRSState | null, rating: Grade):
  * Compute current retrievability for a skill state.
  * Returns a number between 0 and 1.
  */
-export function getRetrievability(stability: number, lastReviewedAt: Date): number {
-  const now = new Date()
+export function getRetrievability(stability: number, lastReviewedAt: Date, now: Date = new Date()): number {
   const elapsedDays = (now.getTime() - lastReviewedAt.getTime()) / (1000 * 60 * 60 * 24)
   if (elapsedDays <= 0) return 1
   // FSRS power forgetting curve: R = (1 + t / (9 * s))^(-1)

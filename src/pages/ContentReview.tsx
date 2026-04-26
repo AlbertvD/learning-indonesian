@@ -160,7 +160,7 @@ export function ContentReview() {
 
   return (
     <Container size="md" py="xl">
-      <Title order={2} mb="xl">Content Review</Title>
+      <Title order={2} mb="xl">Contentcontrole</Title>
 
       <Tabs
         defaultValue="browser"

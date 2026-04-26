@@ -27,6 +27,27 @@ export interface LessonSection {
   order_index: number
 }
 
+export interface LessonPageBlock {
+  id?: string
+  block_key: string
+  source_ref: string
+  source_refs: string[]
+  content_unit_slugs: string[]
+  block_kind: 'hero' | 'section' | 'exposure' | 'practice_bridge' | 'recap'
+  display_order: number
+  payload_json: Record<string, unknown>
+  source_progress_event: string | null
+  capability_key_refs: string[]
+}
+
+export interface LessonSourceProgressRow {
+  source_ref: string
+  source_section_ref: string
+  current_state: string
+  completed_event_types: string[]
+  last_event_at: string
+}
+
 export const lessonService = {
   async getLessons(): Promise<Lesson[]> {
     const { data, error } = await supabase
@@ -76,6 +97,29 @@ export const lessonService = {
       .order('order_index')
     if (error) throw error
     return (data ?? []) as { id: string; order_index: number; primary_voice: string | null }[]
+  },
+
+  async getLessonPageBlocks(sourceRef: string): Promise<LessonPageBlock[]> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('lesson_page_blocks')
+      .select('*')
+      .eq('source_ref', sourceRef)
+      .order('display_order')
+    if (error) throw error
+    return (data ?? []) as LessonPageBlock[]
+  },
+
+  async getLessonSourceProgress(userId: string, sourceRefs: string[]): Promise<LessonSourceProgressRow[]> {
+    if (sourceRefs.length === 0) return []
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('learner_source_progress_state')
+      .select('source_ref, source_section_ref, current_state, completed_event_types, last_event_at')
+      .eq('user_id', userId)
+      .in('source_ref', [...new Set(sourceRefs)])
+    if (error) throw error
+    return (data ?? []) as LessonSourceProgressRow[]
   },
 
   async getUserLessonProgress(userId: string): Promise<import('@/types/progress').LessonProgress[]> {

@@ -9,7 +9,8 @@ import type { ExerciseVariant } from '@/types/learning'
 import { getSemanticGroup } from '@/lib/semanticGroups'
 import { normalizeTtsText } from '@/lib/ttsNormalize'
 import type { SessionAudioMap } from '@/services/audioService'
-import { isExerciseTypeEnabled } from '@/lib/featureFlags'
+import { capabilityMigrationFlags, isExerciseTypeEnabled } from '@/lib/featureFlags'
+import { runSessionCapabilityDiagnosticsIfEnabled } from '@/lib/capabilities/sessionCapabilityDiagnostics'
 
 export type SessionMode = 'standard' | 'backlog_clear' | 'quick'
 
@@ -157,7 +158,12 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
     grammarQueue,
   )
 
-  return interleaved.slice(0, effectiveSessionSize)
+  const queue = interleaved.slice(0, effectiveSessionSize)
+  runSessionCapabilityDiagnosticsIfEnabled({
+    enabled: capabilityMigrationFlags.sessionDiagnostics,
+    items: queue,
+  })
+  return queue
 }
 
 function buildGrammarQueue(
@@ -400,7 +406,7 @@ function selectExercises(
   contextsByItem: Record<string, ItemContext[]>,
   variantsByItem: Record<string, ItemAnswerVariant[]>,
   exerciseVariantsByContext?: Record<string, ExerciseVariant[]>,
-  userLanguage: 'en' | 'nl' = 'en',
+  userLanguage: 'en' | 'nl' = 'nl',
   allItems: LearningItem[] = [],
   audioMap?: SessionAudioMap,
   listeningEnabled: boolean = true,

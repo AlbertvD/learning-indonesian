@@ -1,15 +1,19 @@
 // src/pages/Lesson.tsx
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { Container, Center, Loader, Text, Tabs, Badge, Progress, Button, Stack, Group, Box } from '@mantine/core'
 import { IconChevronLeft, IconChevronRight, IconCheck, IconPlayerPlay, IconPlayerStop } from '@tabler/icons-react'
-import { lessonService, type Lesson } from '@/services/lessonService'
+import { lessonService, type Lesson, type LessonPageBlock, type LessonSourceProgressRow } from '@/services/lessonService'
 import { learningItemService } from '@/services/learningItemService'
 import { learnerStateService } from '@/services/learnerStateService'
 import { progressService } from '@/services/progressService'
+import { sourceProgressService, type SourceProgressState } from '@/services/sourceProgressService'
 import { startSession, endSession } from '@/lib/session'
 import { useSessionBeacon } from '@/lib/useSessionBeacon'
 import { useAuthStore } from '@/stores/authStore'
+import { capabilityMigrationFlags } from '@/lib/featureFlags'
+import { buildLessonExperience, type LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
+import { LessonReader } from '@/components/lessons/LessonReader'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
 import { useT } from '@/hooks/useT'
@@ -502,6 +506,7 @@ export function Lesson() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const sessionIdRef = useRef<string | null>(null)
+  const readerOpenedRef = useRef<string | null>(null)
   useSessionBeacon(sessionIdRef)
   const [completedSections, setCompletedSections] = useState<string[]>([])
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -514,6 +519,8 @@ export function Lesson() {
   const [vocabularyItems, setVocabularyItems] = useState<VocabularyItem[]>([])
   const [vocabularyLoading, setVocabularyLoading] = useState(false)
   const [audioMap, setAudioMap] = useState<AudioMap>(new Map())
+  const [lessonPageBlocks, setLessonPageBlocks] = useState<LessonPageBlock[]>([])
+  const [lessonSourceProgress, setLessonSourceProgress] = useState<LessonSourceProgressRow[]>([])
 
   const loadVocabulary = async () => {
     if (!lessonId || !user || vocabularyLoading) return
@@ -566,6 +573,17 @@ export function Lesson() {
         setLesson(lessonData)
         sessionIdRef.current = sid
         setCurrentSectionIndex((prev) => Math.min(prev, lessonData.lesson_sections.length - 1))
+
+        if (capabilityMigrationFlags.lessonReaderV2) {
+          const sourceRef = `lesson-${lessonData.order_index}`
+          const pageBlocks = await lessonService.getLessonPageBlocks(sourceRef).catch(() => [])
+          const sourceRefs = pageBlocks.length > 0
+            ? [...new Set(pageBlocks.flatMap(block => block.source_refs?.length ? block.source_refs : [block.source_ref]))]
+            : [sourceRef]
+          const sourceProgressRows = await lessonService.getLessonSourceProgress(user.id, sourceRefs)
+          setLessonPageBlocks(pageBlocks)
+          setLessonSourceProgress(sourceProgressRows)
+        }
 
         // Fetch existing progress
         const progress = await lessonService.getUserLessonProgress(user.id)
@@ -721,6 +739,73 @@ export function Lesson() {
     if (audioRef.current) audioRef.current.playbackRate = rate
   }
 
+  const handleReaderSourceProgress = useCallback(async (
+    block: LessonExperienceBlock,
+    eventType: Parameters<typeof sourceProgressService.recordEvent>[0]['eventType'],
+  ) => {
+    if (!user || !lesson) return
+    const sourceRef = block.sourceRefs[0] ?? block.sourceRef
+    try {
+      const state = await sourceProgressService.recordEvent({
+        userId: user.id,
+        sourceRef,
+        sourceSectionRef: block.id,
+        eventType,
+        occurredAt: new Date().toISOString(),
+        metadataJson: {
+          lessonId: lesson.id,
+          blockId: block.id,
+          blockKind: block.kind,
+          capabilityKeyRefs: block.capabilityKeyRefs,
+        },
+        idempotencyKey: `lesson-reader:${user.id}:${sourceRef}:${block.id}:${eventType}`,
+      })
+      setLessonSourceProgress(rows => [
+        ...rows.filter(row => !(row.source_ref === state.sourceRef && row.source_section_ref === state.sourceSectionRef)),
+        {
+          source_ref: state.sourceRef,
+          source_section_ref: state.sourceSectionRef,
+          current_state: state.currentState,
+          completed_event_types: state.completedEventTypes,
+          last_event_at: state.lastEventAt,
+        },
+      ])
+    } catch (err) {
+      logError({ page: 'lesson-reader-v2', action: 'record-source-progress', error: err })
+      notifications.show({ color: 'red', title: T.common.error, message: T.lessons.failedToSaveProgress })
+    }
+  }, [lesson, user, T.common.error, T.lessons.failedToSaveProgress])
+
+  const readerExperience = useMemo(
+    () => lesson ? buildLessonExperience({ lesson, pageBlocks: lessonPageBlocks }) : null,
+    [lesson, lessonPageBlocks],
+  )
+
+  const readerProgressBySourceRef = useMemo(() => new Map<string, SourceProgressState>(
+    lessonSourceProgress.map(row => [`${row.source_ref}::${row.source_section_ref}`, {
+      userId: user?.id ?? '',
+      sourceRef: row.source_ref,
+      sourceSectionRef: row.source_section_ref,
+      currentState: row.current_state as SourceProgressState['currentState'],
+      completedEventTypes: row.completed_event_types as SourceProgressState['completedEventTypes'],
+      lastEventAt: row.last_event_at,
+    }])
+  ), [lessonSourceProgress, user?.id])
+
+  useEffect(() => {
+    if (!capabilityMigrationFlags.lessonReaderV2 || !user || !readerExperience) return
+    const heroBlock = readerExperience.blocks.find(block => block.kind === 'lesson_hero')
+    if (!heroBlock) return
+    const sourceRef = heroBlock.sourceRefs[0] ?? heroBlock.sourceRef
+    const progress = readerProgressBySourceRef.get(`${sourceRef}::${heroBlock.id}`)
+    if (progress?.completedEventTypes.includes('opened')) return
+
+    const openedKey = `${readerExperience.sourceRef}:${heroBlock.id}:opened`
+    if (readerOpenedRef.current === openedKey) return
+    readerOpenedRef.current = openedKey
+    void handleReaderSourceProgress(heroBlock, 'opened')
+  }, [handleReaderSourceProgress, readerExperience, readerProgressBySourceRef, user])
+
   if (loading) {
     return (
       <Center h="50vh">
@@ -734,6 +819,21 @@ export function Lesson() {
       <Center h="50vh">
         <Text c="dimmed">Failed to load lesson.</Text>
       </Center>
+    )
+  }
+
+  if (capabilityMigrationFlags.lessonReaderV2 && readerExperience) {
+    return (
+      <LessonReader
+        experience={readerExperience}
+        progressBySourceRef={readerProgressBySourceRef}
+        onBack={() => navigate('/lessons')}
+        onPractice={(block) => {
+          void handleReaderSourceProgress(block, 'intro_completed')
+          navigate(`/session?lesson=${lessonId}`)
+        }}
+        onSourceProgress={handleReaderSourceProgress}
+      />
     )
   }
 

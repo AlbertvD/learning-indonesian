@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Box, Container, Progress, Stack, Text, Loader, Center, Alert } from '@mantine/core'
+import { Box, Button, Container, Progress, Stack, Text, Loader, Center, Alert } from '@mantine/core'
 import { IconAlertCircle } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
@@ -21,8 +21,13 @@ import { analyticsService } from '@/services/analyticsService'
 import { sessionSummaryService, type SessionImpactMessages } from '@/services/sessionSummaryService'
 import { exerciseAvailabilityService } from '@/services/exerciseAvailabilityService'
 import { ExerciseShell } from '@/components/exercises/ExerciseShell'
+import { ExperiencePlayer, type SessionAnswerEvent } from '@/components/experience/ExperiencePlayer'
 import { SessionSummary } from '@/components/SessionSummary'
 import { logError } from '@/lib/logger'
+import { capabilityMigrationFlags } from '@/lib/featureFlags'
+import { loadCapabilitySessionPlanForUser } from '@/lib/session/capabilitySessionLoader'
+import { capabilitySessionDataService } from '@/services/capabilitySessionDataService'
+import type { SessionPlan } from '@/lib/session/sessionPlan'
 import type { SessionQueueItem, LearnerItemState, LearnerSkillState, LearnerGrammarState, GrammarPatternWithLesson, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant, WeeklyGoal } from '@/types/learning'
 import { startSession, endSession } from '@/lib/session'
 import { useSessionBeacon } from '@/lib/useSessionBeacon'
@@ -43,6 +48,7 @@ export function Session() {
   const [error, setError] = useState<string | null>(null)
   const [goalImpactMessages, setGoalImpactMessages] = useState<SessionImpactMessages | null>(null)
   const [audioMap, setAudioMap] = useState<SessionAudioMap>(new Map())
+  const [capabilityPlan, setCapabilityPlan] = useState<SessionPlan | null>(null)
 
   const lessonFilter = searchParams.get('lesson')
   const sessionModeParam = searchParams.get('mode')
@@ -81,6 +87,25 @@ export function Session() {
         } catch (e) {
           throw new Error(`startSession failed: ${JSON.stringify(e)}`, { cause: e })
         }
+        if (capabilityMigrationFlags.standardSession && sessionMode === 'standard') {
+          const capabilityPlan = await loadCapabilitySessionPlanForUser({
+            enabled: true,
+            sessionId: sid,
+            userId: user.id,
+            mode: 'standard',
+            now: new Date(),
+            limit: preferredSessionSize,
+            preferredSessionSize,
+            adapter: capabilitySessionDataService,
+          })
+          setSessionId(sid)
+          setCapabilityPlan(capabilityPlan)
+          setResults({ correct: 0, total: capabilityPlan.blocks.length })
+          analyticsService.trackSessionStartedFromToday(user.id, sid)
+          setLoading(false)
+          return
+        }
+
         setSessionId(sid)
 
         // Track session started event
@@ -94,7 +119,7 @@ export function Session() {
           throw new Error(`getLearningItems failed: ${JSON.stringify(e)}`, { cause: e })
         }
         if (!items || items.length === 0) {
-          setError('No learning items available. Please contact administrator.')
+          setError('Er zijn nog geen leeritems beschikbaar. Neem contact op met de beheerder.')
           setLoading(false)
           return
         }
@@ -241,7 +266,7 @@ export function Session() {
           skillStates: skillStatesMap,
           preferredSessionSize,
           lessonFilter,
-          userLanguage: profile?.language ?? 'en',
+          userLanguage: profile?.language ?? 'nl',
           lessonOrder,
           sessionMode,
           grammarPatterns,
@@ -253,7 +278,7 @@ export function Session() {
 
         const builtQueue = buildSessionQueue(input)
         if (builtQueue.length === 0) {
-          setError('No exercises available for this session.')
+          setError('Er zijn geen oefeningen beschikbaar voor deze sessie.')
           setLoading(false)
           return
         }
@@ -284,7 +309,7 @@ export function Session() {
 
         const shapedQueue = applyPolicies(builtQueue, policyContext)
         if (shapedQueue.length === 0) {
-          setError('No exercises available after applying session policies.')
+          setError('Er zijn geen oefeningen beschikbaar na het toepassen van de sessieregels.')
           setLoading(false)
           return
         }
@@ -328,7 +353,7 @@ export function Session() {
         const errMsg = err instanceof Error ? err.message : JSON.stringify(err)
         console.error('Session init error:', err)
         logError({ page: 'session', action: 'initialize', error: err })
-        setError(`Failed to load session: ${errMsg}`)
+        setError(`Sessie laden mislukt: ${errMsg}`)
         setLoading(false)
       }
     }
@@ -420,7 +445,7 @@ export function Session() {
         }
       } catch (err) {
         logError({ page: 'session', action: 'complete', error: err })
-        const t = translations[profile?.language ?? 'en']
+        const t = translations[profile?.language ?? 'nl']
         notifications.show({ color: 'red', title: t.common.error, message: t.common.somethingWentWrong })
       }
     }
@@ -430,13 +455,35 @@ export function Session() {
 
   const handleNavigateHome = () => navigate('/')
 
+  const handleCapabilityPlanComplete = async () => {
+    if (sessionId) {
+      try {
+        await endSession(sessionId)
+      } catch (err) {
+        logError({ page: 'session', action: 'complete-capability-plan', error: err })
+      }
+    }
+    handleNavigateHome()
+  }
+
+  const handleCapabilityAnswer = async (event: SessionAnswerEvent) => {
+    // The Experience Player emits answer reports only. Review validation,
+    // first-review activation, and FSRS writes remain owned by the Review
+    // Processor compatibility path once full capability exercise hydration
+    // provides scheduler/artifact snapshots.
+    setResults(r => ({
+      total: r.total,
+      correct: r.correct + (event.answerReport.wasCorrect ? 1 : 0),
+    }))
+  }
+
   // Render states
   if (loading) {
     return (
       <Center h="100vh">
         <Stack align="center" gap="md">
           <Loader />
-          <Text c="dimmed">Loading session...</Text>
+          <Text c="dimmed">Sessie laden...</Text>
         </Stack>
       </Center>
     )
@@ -445,9 +492,57 @@ export function Session() {
   if (error) {
     return (
       <Container size="sm" py="xl">
-        <Alert icon={<IconAlertCircle size={16} />} color="red" title="Session Error">
+        <Alert icon={<IconAlertCircle size={16} />} color="red" title="Sessiefout">
           {error}
         </Alert>
+      </Container>
+    )
+  }
+
+  if (capabilityPlan) {
+    if (capabilityMigrationFlags.experiencePlayerV1) {
+      return (
+        <ExperiencePlayer
+          plan={capabilityPlan}
+          onAnswer={handleCapabilityAnswer}
+          onComplete={handleCapabilityPlanComplete}
+        />
+      )
+    }
+
+    return (
+      <Container size="sm" py="xl">
+        <Stack gap="md">
+          <Alert color={capabilityPlan.blocks.length > 0 ? 'blue' : 'yellow'} title="Vaardigheidssessieplan">
+            {capabilityPlan.blocks.length > 0
+              ? `${capabilityPlan.blocks.length} vaardigheidsoefening(en) geladen via scheduler, pedagogische planner, resolver en composer.`
+              : `Er zijn geen renderbare vaardigheidsoefeningen gemaakt (${capabilityPlan.diagnostics.length} diagnoses).`}
+          </Alert>
+          {capabilityPlan.blocks.map(block => (
+            <Box
+              key={block.id}
+              p="md"
+              style={{
+                border: '1px solid var(--mantine-color-gray-3)',
+                borderRadius: 12,
+                background: 'var(--mantine-color-white)',
+              }}
+            >
+              <Text fw={700}>{block.kind === 'due_review' ? 'Nu te herhalen' : 'Nieuwe introductie'}</Text>
+              <Text size="sm" c="dimmed">{block.renderPlan.exerciseType} · {block.renderPlan.capabilityType}</Text>
+              <Text size="xs" c="dimmed">{block.canonicalKeySnapshot}</Text>
+            </Box>
+          ))}
+          {capabilityPlan.diagnostics.map((diagnostic, index) => (
+            <Alert key={`${diagnostic.reason}-${index}`} color="yellow" title={diagnostic.reason}>
+              {diagnostic.details}
+            </Alert>
+          ))}
+          <Text size="sm" c="dimmed">
+            De rijke antwoord- en reviewervaring hoort bij de Experience Player-slice; dit scherm controleert het echte vaardigheidscompositiepad zonder terug te vallen op legacy planning.
+          </Text>
+          <Button onClick={handleCapabilityPlanComplete}>Sessie afronden</Button>
+        </Stack>
       </Container>
     )
   }
@@ -455,8 +550,8 @@ export function Session() {
   if (queue.length === 0) {
     return (
       <Container size="sm" py="xl">
-        <Alert color="yellow" title="No Exercises">
-          No exercises available for this session. Please try another lesson or practice set.
+        <Alert color="yellow" title="Geen oefeningen">
+          Er zijn geen oefeningen beschikbaar voor deze sessie. Probeer een andere les of oefenset.
         </Alert>
       </Container>
     )
@@ -470,7 +565,7 @@ export function Session() {
   // Show exercise
   const currentItem = queue[currentIndex]
   const progress = (currentIndex / queue.length) * 100
-  const userLang = (profile?.language ?? 'en') as 'en' | 'nl'
+  const userLang = (profile?.language ?? 'nl') as 'en' | 'nl'
   const t = translations[userLang]
 
   return (

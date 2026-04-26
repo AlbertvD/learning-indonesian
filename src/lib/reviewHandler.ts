@@ -5,6 +5,7 @@ import { checkPromotion, checkDemotion, checkGrammarPromotion, checkGrammarDemot
 import { reviewEventService } from '@/services/reviewEventService'
 import { learnerStateService } from '@/services/learnerStateService'
 import { grammarStateService } from '@/services/grammarStateService'
+import { capabilityMigrationFlags } from '@/lib/featureFlags'
 
 export interface ReviewInput {
   userId: string
@@ -28,7 +29,14 @@ export interface ReviewResult {
   previousStage: string | null
 }
 
+function assertLegacyReviewPathAllowed(): void {
+  if (capabilityMigrationFlags.reviewCompat) {
+    throw new Error('Capability review compatibility mode requires capability session items; legacy review writes are disabled while the flag is on.')
+  }
+}
+
 export async function processReview(input: ReviewInput): Promise<ReviewResult> {
+  assertLegacyReviewPathAllowed()
   const { userId, sessionId, exerciseItem, currentItemState, currentSkillState, wasCorrect, isFuzzy, hintUsed, latencyMs, rawResponse, normalizedResponse, isConfusable = false } = input
   const { skillType, exerciseType } = exerciseItem
   // processReview is only called for vocab exercises — learningItem is always present
@@ -165,6 +173,7 @@ export interface GrammarReviewResult {
 }
 
 export async function processGrammarReview(input: GrammarReviewInput): Promise<GrammarReviewResult> {
+  assertLegacyReviewPathAllowed()
   const { userId, sessionId, grammarPatternId, exerciseType, currentState, wasCorrect, hintUsed, latencyMs, rawResponse, normalizedResponse } = input
 
   // 1. Compute FSRS rating and next state

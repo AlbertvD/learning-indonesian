@@ -4,6 +4,7 @@ import { Container, Paper, PasswordInput, TextInput, Button, Title, Stack, Text 
 import { useNavigate } from 'react-router-dom'
 import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
+import { nl as T } from '@/lib/i18n'
 
 export function Register() {
   const [email, setEmail] = useState('')
@@ -21,15 +22,15 @@ export function Register() {
       await signUp(email, password, fullName)
       notifications.show({
         color: 'green',
-        title: 'Account created',
-        message: 'You can now log in with your credentials.',
+        title: T.register.registrationSuccess,
+        message: T.register.accountCreated,
       })
       navigate('/login')
     } catch {
       notifications.show({
         color: 'red',
-        title: 'Registration failed',
-        message: 'Could not create account. Email might already exist.',
+        title: T.register.registrationFailed,
+        message: T.register.somethingWentWrong,
       })
     } finally {
       setLoading(false)
@@ -41,40 +42,40 @@ export function Register() {
     <Container size="xs" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
       <Paper p="lg" radius="md" shadow="md" style={{ width: '100%' }}>
         <Stack gap="md">
-          <Title order={2}>Create Account</Title>
+          <Title order={2}>{T.register.title}</Title>
           <form onSubmit={handleSubmit}>
             <Stack gap="md">
               <TextInput
-                label="Full Name"
-                placeholder="Your name"
+                label={T.register.fullName}
+                placeholder={T.register.fullNamePlaceholder}
                 value={fullName}
                 onChange={(e) => setFullName(e.currentTarget.value)}
                 disabled={loading}
                 required
               />
               <TextInput
-                label="Email"
-                placeholder="your@email.com"
+                label={T.register.email}
+                placeholder={T.register.emailPlaceholder}
                 value={email}
                 onChange={(e) => setEmail(e.currentTarget.value)}
                 disabled={loading}
                 required
               />
               <PasswordInput
-                label="Password"
-                placeholder="Create a strong password"
+                label={T.register.password}
+                placeholder={T.register.passwordPlaceholder}
                 value={password}
                 onChange={(e) => setPassword(e.currentTarget.value)}
                 disabled={loading}
                 required
               />
               <Button type="submit" fullWidth loading={loading}>
-                Create Account
+                {T.register.createAccount}
               </Button>
             </Stack>
           </form>
           <Text size="sm" c="dimmed">
-            Already have an account? <a href="/login">Log in</a>
+            {T.register.alreadyHaveAccount} <a href="/login">{T.register.logIn}</a>
           </Text>
         </Stack>
       </Paper>
