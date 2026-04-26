@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { spawnSync } from 'node:child_process'
 import path from 'node:path'
 import {
+  buildPromotionArtifactIndex,
   parsePromoteCapabilitiesArgs,
   planCapabilityPromotion,
 } from '../promote-capabilities'
@@ -65,6 +66,35 @@ describe('capability promotion planner', () => {
         readinessStatus: 'blocked',
         reason: 'No allowed exercise path for ready capability.',
       },
+    ])
+  })
+
+  it('excludes approved artifacts with invalid payload shapes from promotion readiness', () => {
+    const index = buildPromotionArtifactIndex({
+      capability: {
+        canonicalKey: 'cap:v1:item:learning_items/akhir:form_recall:l1_to_id:text:nl',
+        sourceRef: 'learning_items/akhir',
+      },
+      artifacts: [
+        {
+          artifact_kind: 'accepted_answers:id',
+          quality_status: 'approved',
+          artifact_json: { value: 'akhir' },
+        },
+        {
+          artifact_kind: 'base_text',
+          quality_status: 'approved',
+          artifact_json: { value: 'akhir' },
+        },
+      ],
+    })
+
+    expect(index['accepted_answers:id']).toBeUndefined()
+    expect(index.base_text).toEqual([
+      expect.objectContaining({
+        qualityStatus: 'approved',
+        capabilityKey: 'cap:v1:item:learning_items/akhir:form_recall:l1_to_id:text:nl',
+      }),
     ])
   })
 

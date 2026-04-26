@@ -19,6 +19,7 @@ import type {
 } from '../src/lib/capabilities/capabilityTypes'
 import { resolveExercise } from '../src/lib/exercises/exerciseResolver'
 import { collectLessonCapabilityKeys } from './check-capability-release-readiness'
+import { hasConcreteArtifactPayload } from './lib/content-pipeline-output'
 
 export interface CapabilityHealthExitCodeInput {
   strict: boolean
@@ -164,7 +165,7 @@ function toProjectedCapability(capability: RuntimeHealthCapability): ProjectedCa
 function buildRuntimeArtifactIndex(artifacts: RuntimeHealthArtifact[]): ArtifactIndex {
   const index: ArtifactIndex = {}
   for (const artifact of artifacts) {
-    if (!hasValidRuntimeArtifactPayload(artifact.artifactKind, artifact.artifactJson)) continue
+    if (!hasConcreteArtifactPayload(artifact.artifactKind, artifact.artifactJson)) continue
     const value = artifact.artifactJson
     if (value && typeof value === 'object' && !Array.isArray(value) && (value as Record<string, unknown>).placeholder === true) {
       continue
@@ -178,60 +179,6 @@ function buildRuntimeArtifactIndex(artifacts: RuntimeHealthArtifact[]): Artifact
     })
   }
   return index
-}
-
-function nonEmptyString(value: unknown): value is string {
-  return typeof value === 'string' && value.trim().length > 0
-}
-
-function nonEmptyStringArray(value: unknown): value is string[] {
-  return Array.isArray(value) && value.length > 0 && value.every(nonEmptyString)
-}
-
-function hasValidRuntimeArtifactPayload(kind: ArtifactKind, payload: unknown): boolean {
-  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return false
-  const record = payload as Record<string, unknown>
-  if (record.placeholder === true) return false
-
-  switch (kind) {
-    case 'base_text':
-    case 'meaning:l1':
-    case 'meaning:nl':
-    case 'meaning:en':
-    case 'translation:l1':
-    case 'pattern_explanation:l1':
-    case 'pattern_example':
-    case 'cloze_answer':
-      return nonEmptyString(record.value)
-    case 'accepted_answers:id':
-    case 'accepted_answers:l1':
-      return nonEmptyStringArray(record.values)
-    case 'cloze_context':
-      return nonEmptyString(record.sentence) && nonEmptyString(record.answer)
-    case 'audio_clip':
-    case 'audio_segment':
-      return nonEmptyString(record.storagePath) || nonEmptyString(record.url)
-    case 'exercise_variant':
-      return nonEmptyString(record.variantId) || Boolean(record.payload)
-    case 'transcript_segment':
-      return nonEmptyString(record.transcript)
-    case 'root_derived_pair':
-      return nonEmptyString(record.root) && nonEmptyString(record.derived)
-    case 'allomorph_rule':
-      return nonEmptyString(record.rule)
-    case 'minimal_pair':
-      return nonEmptyStringArray(record.values)
-    case 'dialogue_speaker_context':
-      return nonEmptyString(record.speaker) || nonEmptyString(record.context)
-    case 'podcast_gist_prompt':
-      return nonEmptyString(record.prompt)
-    case 'timecoded_phrase':
-      return nonEmptyString(record.phrase) && typeof record.startMs === 'number'
-    case 'production_rubric':
-      return nonEmptyString(record.rubric) || nonEmptyStringArray(record.criteria)
-    default:
-      return false
-  }
 }
 
 export function checkCapabilityHealthSnapshot(snapshot: CapabilityHealthSnapshot): CapabilityRuntimeHealthReport {
@@ -256,7 +203,7 @@ export function checkCapabilityHealthSnapshot(snapshot: CapabilityHealthSnapshot
     const approvedInvalidArtifacts = snapshot.artifacts.filter(artifact => (
       artifact.capabilityKey === capability.canonicalKey
       && artifact.qualityStatus === 'approved'
-      && !hasValidRuntimeArtifactPayload(artifact.artifactKind, artifact.artifactJson)
+      && !hasConcreteArtifactPayload(artifact.artifactKind, artifact.artifactJson)
     ))
     for (const artifact of approvedInvalidArtifacts) {
       critical.push(runtimeFinding(
@@ -667,9 +614,6 @@ export async function loadDbCapabilityHealthSnapshot(args: Extract<CapabilityHea
   for (const unit of contentUnits) {
     if (unit.source_ref) knownSourceRefs.add(unit.source_ref)
     if (unit.source_section_ref) knownSourceRefs.add(unit.source_section_ref)
-  }
-  for (const row of capabilityRows) {
-    if (typeof row.source_ref === 'string') knownSourceRefs.add(row.source_ref)
   }
 
   return {

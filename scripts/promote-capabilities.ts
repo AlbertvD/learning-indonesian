@@ -4,6 +4,7 @@ import { validateCapability, type CapabilityReadiness } from '../src/lib/capabil
 import type { ArtifactIndex } from '../src/lib/capabilities/artifactRegistry'
 import type { ArtifactKind, ProjectedCapability } from '../src/lib/capabilities/capabilityTypes'
 import { collectLessonCapabilityKeys } from './check-capability-release-readiness'
+import { hasConcreteArtifactPayload } from './lib/content-pipeline-output'
 
 interface CapabilityRow {
   id: string
@@ -20,7 +21,7 @@ interface CapabilityRow {
   metadata_json?: Record<string, unknown> | null
 }
 
-interface CapabilityArtifactRow {
+export interface CapabilityArtifactRow {
   artifact_kind: ArtifactKind
   quality_status: 'draft' | 'approved' | 'blocked' | 'deprecated'
   artifact_json: unknown
@@ -210,17 +211,15 @@ function toProjectedCapability(row: CapabilityRow): ProjectedCapability | null {
   }
 }
 
-function buildArtifactIndex(input: {
-  capability: ProjectedCapability
+export function buildPromotionArtifactIndex(input: {
+  capability: Pick<ProjectedCapability, 'canonicalKey' | 'sourceRef'>
   artifacts: CapabilityArtifactRow[]
 }): ArtifactIndex {
   const index: ArtifactIndex = {}
   for (const artifact of input.artifacts) {
     if (artifact.quality_status !== 'approved') continue
     const value = artifact.artifact_json
-    if (value && typeof value === 'object' && !Array.isArray(value) && (value as Record<string, unknown>).placeholder === true) {
-      continue
-    }
+    if (!hasConcreteArtifactPayload(artifact.artifact_kind, value)) continue
     index[artifact.artifact_kind] ??= []
     index[artifact.artifact_kind]!.push({
       qualityStatus: artifact.quality_status,
@@ -293,7 +292,7 @@ async function loadPromotionPlan(args: PromoteCapabilitiesArgs): Promise<Capabil
       canonicalKey: capability.canonicalKey,
       readiness: validateCapability({
         capability,
-        artifacts: buildArtifactIndex({
+        artifacts: buildPromotionArtifactIndex({
           capability,
           artifacts: (artifacts ?? []) as CapabilityArtifactRow[],
         }),

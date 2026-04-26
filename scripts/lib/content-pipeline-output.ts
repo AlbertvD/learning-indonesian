@@ -328,24 +328,62 @@ export function validateCapabilityStaging(input: {
 const VALID_ASSET_STATUSES = new Set(['draft', 'approved', 'blocked'])
 const VALID_ARTIFACT_KINDS = new Set<string>(ARTIFACT_KINDS)
 
-function hasNonEmptyValue(payload: Record<string, unknown>): boolean {
-  const value = payload.value
-  if (value == null) return false
-  if (typeof value === 'string') return value.trim().length > 0
-  if (Array.isArray(value)) return value.length > 0
-  if (typeof value === 'object') return Object.keys(value).length > 0
-  return true
+function nonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0
 }
 
-function hasNonEmptyStringArray(value: unknown): boolean {
-  return Array.isArray(value) && value.length > 0 && value.every(item => typeof item === 'string' && item.trim().length > 0)
+function nonEmptyStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.length > 0 && value.every(nonEmptyString)
+}
+
+export function hasConcreteArtifactPayload(artifactKind: ArtifactKind | string, payload: unknown): boolean {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return false
+  const record = payload as Record<string, unknown>
+  if (record.placeholder === true) return false
+
+  switch (artifactKind) {
+    case 'base_text':
+    case 'meaning:l1':
+    case 'meaning:nl':
+    case 'meaning:en':
+    case 'translation:l1':
+    case 'pattern_explanation:l1':
+    case 'pattern_example':
+    case 'cloze_answer':
+      return nonEmptyString(record.value)
+    case 'accepted_answers:id':
+    case 'accepted_answers:l1':
+      return nonEmptyStringArray(record.values)
+    case 'cloze_context':
+      return nonEmptyString(record.sentence) && nonEmptyString(record.answer)
+    case 'audio_clip':
+    case 'audio_segment':
+      return nonEmptyString(record.storagePath) || nonEmptyString(record.url)
+    case 'exercise_variant':
+      return nonEmptyString(record.variantId) || Boolean(record.payload)
+    case 'transcript_segment':
+      return nonEmptyString(record.transcript)
+    case 'root_derived_pair':
+      return nonEmptyString(record.root) && nonEmptyString(record.derived)
+    case 'allomorph_rule':
+      return nonEmptyString(record.rule)
+    case 'minimal_pair':
+      return nonEmptyStringArray(record.values)
+    case 'dialogue_speaker_context':
+      return nonEmptyString(record.speaker) || nonEmptyString(record.context)
+    case 'podcast_gist_prompt':
+      return nonEmptyString(record.prompt)
+    case 'timecoded_phrase':
+      return nonEmptyString(record.phrase) && typeof record.startMs === 'number'
+    case 'production_rubric':
+      return nonEmptyString(record.rubric) || nonEmptyStringArray(record.criteria)
+    default:
+      return false
+  }
 }
 
 function hasTypedApprovedValue(artifactKind: string, payload: Record<string, unknown>): boolean {
-  if (artifactKind === 'accepted_answers:id' || artifactKind === 'accepted_answers:l1') {
-    return hasNonEmptyStringArray(payload.values)
-  }
-  return hasNonEmptyValue(payload)
+  return hasConcreteArtifactPayload(artifactKind, payload)
 }
 
 export function validateExerciseAssets(input: {

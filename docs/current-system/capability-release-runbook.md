@@ -515,6 +515,14 @@ Production build passed.
 Build emitted non-blocking warnings for large chunks and the deprecated vite:react-swc esbuild option.
 ```
 
+Important interpretation:
+
+```text
+The staged capability health command is projection health over staged source content.
+It does not prove artifact approval readiness from exercise-assets.ts.
+Use approve-staged-capability-artifacts.ts and the DB-backed promotion/health checks for release readiness.
+```
+
 Lint status:
 
 ```bash
