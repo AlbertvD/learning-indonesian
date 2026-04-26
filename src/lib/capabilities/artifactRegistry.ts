@@ -1,4 +1,4 @@
-import type { ArtifactKind } from '@/lib/capabilities/capabilityTypes'
+import type { ArtifactKind } from './capabilityTypes'
 
 export type ArtifactQualityStatus = 'draft' | 'approved' | 'blocked' | 'deprecated'
 

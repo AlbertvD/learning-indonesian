@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { pathToFileURL } from 'node:url'
 
 interface CapabilityStatusRow {
+  canonical_key?: string
   readiness_status: string
   publication_status: string
 }
@@ -88,6 +89,8 @@ export function summarizeCapabilityReleaseReadiness(
     capability.readiness_status === 'ready'
     && capability.publication_status === 'published'
   )).length
+  const returnedCapabilityKeys = new Set(input.capabilities.map(capability => capability.canonical_key).filter(Boolean))
+  const missingCapabilityKeys = input.scopedCapabilityKeys.filter(key => !returnedCapabilityKeys.has(key))
   const draftOrUnknownCapabilities = input.capabilities.length - readyPublishedCapabilities
   const blockers: string[] = []
   const warnings: string[] = []
@@ -95,6 +98,7 @@ export function summarizeCapabilityReleaseReadiness(
   if (input.contentUnits === 0) blockers.push(`No content units are published for ${input.sourceRef}.`)
   if (input.lessonPageBlocks === 0) blockers.push(`No lesson page blocks are published for ${input.sourceRef}.`)
   if (input.scopedCapabilityKeys.length === 0) blockers.push(`No capability keys are linked to ${input.sourceRef}.`)
+  if (missingCapabilityKeys.length > 0) blockers.push(`Missing capability rows for lesson-scoped keys: ${missingCapabilityKeys.join(', ')}`)
   if (readyPublishedCapabilities === 0) blockers.push('No ready/published capabilities are available for capability sessions.')
   if (input.capabilityArtifacts === 0) blockers.push('No capability artifacts are published for scoped capabilities.')
   if (input.capabilityContentUnitRelationships === 0) warnings.push('No capability/content-unit relationships are published for this lesson.')

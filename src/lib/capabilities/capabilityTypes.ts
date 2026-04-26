@@ -1,4 +1,4 @@
-import type { SkillType } from '@/types/learning'
+import type { SkillType } from '../../types/learning'
 
 export const CAPABILITY_PROJECTION_VERSION = 'capability-v1' as const
 

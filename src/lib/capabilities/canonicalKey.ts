@@ -4,7 +4,7 @@ import type {
   CapabilitySourceKind,
   CapabilityType,
   LearnerLanguage,
-} from '@/lib/capabilities/capabilityTypes'
+} from './capabilityTypes'
 
 export interface CanonicalKeyInput {
   sourceKind: CapabilitySourceKind

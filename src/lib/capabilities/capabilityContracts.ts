@@ -1,6 +1,6 @@
-import type { ExerciseType } from '@/types/learning'
-import type { ArtifactKind, CapabilityProjection, ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
-import { type ArtifactIndex, hasApprovedArtifact } from '@/lib/capabilities/artifactRegistry'
+import type { ExerciseType } from '../../types/learning'
+import type { ArtifactKind, CapabilityProjection, ProjectedCapability } from './capabilityTypes'
+import { type ArtifactIndex, hasApprovedArtifact } from './artifactRegistry'
 
 export type ExerciseKind = ExerciseType
 export type ExerciseAvailabilityIndex = Partial<Record<ExerciseKind, boolean>>

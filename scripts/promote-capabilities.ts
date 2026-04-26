@@ -46,7 +46,7 @@ export interface CapabilityPromotion {
 }
 
 export interface BlockedCapabilityPromotion {
-  capabilityId: string
+  capabilityId: string | null
   canonicalKey: string
   readinessStatus: Exclude<CapabilityReadiness['status'], 'ready'> | 'blocked'
   reason: string
@@ -89,13 +89,26 @@ export function parsePromoteCapabilitiesArgs(args: string[]): PromoteCapabilitie
 }
 
 export function planCapabilityPromotion(input: {
+  scopedCapabilityKeys?: string[]
   capabilities: Pick<CapabilityRow, 'id' | 'canonical_key'>[]
   healthResults: PromotionHealthResult[]
 }): CapabilityPromotionPlan {
   const readinessByKey = new Map(input.healthResults.map(result => [result.canonicalKey, result.readiness]))
+  const capabilityByKey = new Map(input.capabilities.map(capability => [capability.canonical_key, capability]))
   const promotions: CapabilityPromotion[] = []
   const blocked: BlockedCapabilityPromotion[] = []
   const warnings: string[] = []
+
+  for (const key of input.scopedCapabilityKeys ?? []) {
+    if (!capabilityByKey.has(key)) {
+      blocked.push({
+        capabilityId: null,
+        canonicalKey: key,
+        readinessStatus: 'unknown',
+        reason: 'Lesson references a capability key that does not exist in learning_capabilities.',
+      })
+    }
+  }
 
   for (const capability of input.capabilities) {
     const readiness = readinessByKey.get(capability.canonical_key)
@@ -289,6 +302,7 @@ async function loadPromotionPlan(args: PromoteCapabilitiesArgs): Promise<Capabil
   }
 
   return planCapabilityPromotion({
+    scopedCapabilityKeys,
     capabilities: capabilityRows,
     healthResults,
   })

@@ -10,9 +10,9 @@ import {
   type CurrentContentSnapshot,
   type LearnerLanguage,
   type ProjectedCapability,
-} from '@/lib/capabilities/capabilityTypes'
-import type { SkillType } from '@/types/learning'
-import { buildCanonicalKey, normalizeLessonSourceRef } from '@/lib/capabilities/canonicalKey'
+} from './capabilityTypes'
+import type { SkillType } from '../../types/learning'
+import { buildCanonicalKey, normalizeLessonSourceRef } from './canonicalKey'
 
 interface CapabilityDraft {
   sourceKind: CapabilitySourceKind
