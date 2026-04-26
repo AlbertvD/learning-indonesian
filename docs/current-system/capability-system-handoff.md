@@ -159,6 +159,14 @@ The migration introduces capability-related tables and source progress support. 
 
 Important: production needs a real Supabase migration/publish smoke run before the capability path becomes the default learner experience.
 
+Release operations are documented in:
+
+```text
+docs/current-system/capability-release-runbook.md
+```
+
+Use that runbook for migration order, schema visibility checks, pilot artifact approval, publish, promotion, DB-backed health checks, and browser smoke tests. Do not enable learner-facing capability flags before that runbook is green.
+
 ### Capability Review Processor
 
 Main files:
