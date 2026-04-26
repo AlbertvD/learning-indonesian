@@ -4,6 +4,10 @@ Progressive-disclosure reference. Each section links to a detail doc. Start here
 
 ---
 
+## [Current System Documentation](../current-system/README.md)
+
+Start here for the capability-learning implementation handoff, the human product guide, and the content pipeline quality-gates guide. These docs explain what was built on the feature branch and how it relates to the deeper architecture plans.
+
 ## [Session Engine](session-engine.md)
 
 `buildSessionQueue` assembles a session from four item buckets (due, anchoring, weak, new), applies slot-allocation ratios, and calls `selectExercises` to turn each candidate into a concrete `ExerciseItem`. `calculateNewSlots` throttles new-item introduction based on how many reviews are pending (due >40 → 0 new, >20 → 2 new, else 8 new). Grammar exercises bypass the meanings filter because they carry all display content in their payload. `orderQueue` places up to two `recognition_mcq` items first for an easy warm-up.
