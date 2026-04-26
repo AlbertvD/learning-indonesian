@@ -328,14 +328,24 @@ export function validateCapabilityStaging(input: {
 const VALID_ASSET_STATUSES = new Set(['draft', 'approved', 'blocked'])
 const VALID_ARTIFACT_KINDS = new Set<string>(ARTIFACT_KINDS)
 
-function hasTypedApprovedValue(payload: Record<string, unknown>): boolean {
-  if (!Object.prototype.hasOwnProperty.call(payload, 'value')) return false
+function hasNonEmptyValue(payload: Record<string, unknown>): boolean {
   const value = payload.value
   if (value == null) return false
   if (typeof value === 'string') return value.trim().length > 0
   if (Array.isArray(value)) return value.length > 0
   if (typeof value === 'object') return Object.keys(value).length > 0
   return true
+}
+
+function hasNonEmptyStringArray(value: unknown): boolean {
+  return Array.isArray(value) && value.length > 0 && value.every(item => typeof item === 'string' && item.trim().length > 0)
+}
+
+function hasTypedApprovedValue(artifactKind: string, payload: Record<string, unknown>): boolean {
+  if (artifactKind === 'accepted_answers:id' || artifactKind === 'accepted_answers:l1') {
+    return hasNonEmptyStringArray(payload.values)
+  }
+  return hasNonEmptyValue(payload)
 }
 
 export function validateExerciseAssets(input: {
@@ -381,9 +391,9 @@ export function validateExerciseAssets(input: {
       findings.push(finding('CRITICAL', 'exercise-asset-approved-placeholder',
         'Approved exercise asset still has placeholder=true; generated scaffolds must remain draft until reviewed typed artifacts replace them', ref))
     }
-    if (asset.quality_status === 'approved' && !hasTypedApprovedValue(payload)) {
+    if (asset.quality_status === 'approved' && !hasTypedApprovedValue(asset.artifact_kind, payload)) {
       findings.push(finding('CRITICAL', 'exercise-asset-approved-value-missing',
-        'Approved exercise asset must provide a typed payload_json.value', ref))
+        'Approved exercise asset must provide a typed payload for its artifact kind', ref))
     }
   }
 

@@ -101,6 +101,29 @@ describe('capability staging', () => {
     ]))
   })
 
+  it('accepts reviewed accepted-answer assets that use values instead of a single value', () => {
+    const contentUnits = buildContentUnitsFromStaging(input)
+    const plan = buildCapabilityStagingFromContent({ ...input, contentUnits })
+    const acceptedAnswerAsset = plan.exerciseAssets.find(asset => asset.artifact_kind === 'accepted_answers:l1')!
+
+    const findings = validateExerciseAssets({
+      exerciseAssets: [{
+        ...acceptedAnswerAsset,
+        quality_status: 'approved',
+        payload_json: {
+          values: ['eten', 'het eten'],
+          reviewedBy: 'human',
+          reviewedAt: '2026-04-26',
+        },
+      }],
+      capabilities: plan.capabilities,
+    })
+
+    expect(findings).not.toEqual(expect.arrayContaining([
+      expect.objectContaining({ rule: 'exercise-asset-approved-value-missing' }),
+    ]))
+  })
+
   it('validates asset capability, artifact kind, status, and required artifact coverage', () => {
     const contentUnits = buildContentUnitsFromStaging(input)
     const plan = buildCapabilityStagingFromContent({ ...input, contentUnits })
