@@ -214,6 +214,7 @@ Run in SQL editor or via a trusted DB client:
 select to_regclass('indonesian.learning_capabilities');
 select to_regclass('indonesian.content_units');
 select to_regclass('indonesian.lesson_page_blocks');
+select to_regclass('indonesian.capability_content_units');
 select to_regclass('indonesian.capability_artifacts');
 select to_regclass('indonesian.learner_source_progress_state');
 select to_regclass('indonesian.capability_review_events');
@@ -342,6 +343,7 @@ Run:
 ```sql
 select count(*) from indonesian.content_units;
 select count(*) from indonesian.lesson_page_blocks;
+select count(*) from indonesian.capability_content_units;
 select readiness_status, publication_status, count(*)
 from indonesian.learning_capabilities
 group by readiness_status, publication_status;
@@ -353,6 +355,7 @@ Expected success:
 ```text
 content_units has Lesson 1 rows.
 lesson_page_blocks has Lesson 1 rows.
+capability_content_units has relationship rows for capability scoping.
 learning_capabilities shows unknown/draft rows before promotion.
 capability_artifacts has rows, with approved artifacts only for the reviewed pilot subset.
 ```

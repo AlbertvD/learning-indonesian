@@ -185,6 +185,37 @@ describe('capability health exit code planning', () => {
     }))
   })
 
+  it('fails ready/published capabilities whose source-progress ref does not match runtime projection source', () => {
+    const report = checkCapabilityHealthSnapshot({
+      knownSourceRefs: ['learning_items/minum', 'lesson-1/section-vocabulary'],
+      capabilities: [{
+        canonicalKey: 'cap:v1:item:learning_items/minum:text_recognition:id_to_l1:text:nl',
+        sourceRef: 'learning_items/minum',
+        capabilityType: 'text_recognition',
+        skillType: 'recognition',
+        readinessStatus: 'ready',
+        publicationStatus: 'published',
+        requiredArtifacts: ['base_text'],
+        requiredSourceProgress: {
+          kind: 'source_progress',
+          sourceRef: 'lesson-1/section-vocabulary',
+          requiredState: 'section_exposed',
+        },
+      }],
+      artifacts: [{
+        capabilityKey: 'cap:v1:item:learning_items/minum:text_recognition:id_to_l1:text:nl',
+        sourceRef: 'learning_items/minum',
+        artifactKind: 'base_text',
+        qualityStatus: 'approved',
+        artifactJson: { value: 'minum' },
+      }],
+    })
+
+    expect(report.critical).toContainEqual(expect.objectContaining({
+      rule: 'ready_capability_source_progress_ref_mismatch',
+    }))
+  })
+
   it('reports draft/unknown capabilities as warnings instead of blockers', () => {
     const report = checkCapabilityHealthSnapshot({
       knownSourceRefs: ['learning_items/makan'],

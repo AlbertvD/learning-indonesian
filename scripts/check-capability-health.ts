@@ -279,6 +279,17 @@ export function checkCapabilityHealthSnapshot(snapshot: CapabilityHealthSnapshot
         capability.canonicalKey,
       ))
     }
+    if (
+      progressRequirement?.kind === 'source_progress'
+      && progressRequirement.sourceRef !== projected.sourceRef
+    ) {
+      critical.push(runtimeFinding(
+        'critical',
+        'ready_capability_source_progress_ref_mismatch',
+        `Required source progress ref "${progressRequirement.sourceRef}" does not match capability source_ref "${projected.sourceRef}", so runtime session loading will reject it.`,
+        capability.canonicalKey,
+      ))
+    }
 
     const readiness = validateCapability({
       capability: projected,

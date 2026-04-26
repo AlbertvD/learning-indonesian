@@ -155,7 +155,7 @@ src/__tests__/sourceProgressService.test.ts
 src/__tests__/capabilitySessionDataService.test.ts
 ```
 
-The migration introduces capability-related tables and source progress support. The materialization script projects capabilities from current content and writes them by canonical key.
+The migrations introduce capability-related tables and source progress support. `scripts/materialize-capabilities.ts` is a dry-run/backfill planner: it can explain projected capability writes, but it does not currently execute database writes. The database executor for staged capability-era content is `scripts/publish-approved-content.ts`, followed by the explicit `scripts/promote-capabilities.ts` release gate.
 
 Important: production needs a real Supabase migration/publish smoke run before the capability path becomes the default learner experience.
 
@@ -339,7 +339,7 @@ The local git hooks expect `bun` and `bash`; those were unavailable in the curre
 
 1. Run migrations against a test Supabase instance.
 2. Publish a small staged content set with lesson page blocks and capabilities.
-3. Run `materialize-capabilities` and capability health checks against real data.
+3. Run `publish-approved-content.ts`, `promote-capabilities.ts`, and capability health checks against real data.
 4. Enable diagnostics only, observe legacy sessions.
 5. Enable review shadow/compat in test only.
 6. Enable `VITE_LESSON_READER_V2` for a test lesson once blocks exist.
