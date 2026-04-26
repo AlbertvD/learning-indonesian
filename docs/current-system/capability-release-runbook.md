@@ -515,6 +515,24 @@ Production build passed.
 Build emitted non-blocking warnings for large chunks and the deprecated vite:react-swc esbuild option.
 ```
 
+Lint status:
+
+```bash
+npm run lint
+```
+
+Observed result:
+
+```text
+Lint failed with pre-existing React hook errors in older admin/coverage pages:
+- src/pages/ContentReview.tsx
+- src/pages/ExerciseCoverage.tsx
+- src/pages/SectionCoverage.tsx
+
+Additional hook warnings remain in ExerciseShell, Lesson, Podcast, Practice, Session, and two primitive exercise files.
+Do not call the branch lint-clean until those are fixed or the lint rules are intentionally scoped.
+```
+
 Release gate command added:
 
 ```bash
