@@ -48,6 +48,10 @@ function nonEmptyStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.length > 0 && value.every(nonEmptyString)
 }
 
+function hasReviewMetadata(payload: Record<string, unknown>): boolean {
+  return nonEmptyString(payload.reviewedBy) && nonEmptyString(payload.reviewedAt)
+}
+
 export function isConcreteArtifactPayload(kind: ArtifactKind, payload: unknown): boolean {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return false
   const record = payload as Record<string, unknown>
@@ -157,6 +161,24 @@ export function planArtifactApproval(input: { assets: StagedExerciseAsset[] }): 
         capabilityKey: asset.capability_key,
         artifactKind: asset.artifact_kind,
         reason: 'incomplete_concrete_payload',
+      })
+      continue
+    }
+    if (asset.quality_status !== 'draft' && asset.quality_status !== 'approved') {
+      blocked.push({
+        assetKey: asset.asset_key,
+        capabilityKey: asset.capability_key,
+        artifactKind: asset.artifact_kind,
+        reason: 'status_not_approvable',
+      })
+      continue
+    }
+    if (!hasReviewMetadata(payload)) {
+      blocked.push({
+        assetKey: asset.asset_key,
+        capabilityKey: asset.capability_key,
+        artifactKind: asset.artifact_kind,
+        reason: 'missing_review_metadata',
       })
       continue
     }

@@ -36,7 +36,7 @@ describe('staged capability artifact approval', () => {
           capability_key: 'cap-2',
           artifact_kind: 'base_text',
           quality_status: 'draft',
-          payload_json: { value: 'akhir', reviewedBy: 'human' },
+          payload_json: { value: 'akhir', reviewedBy: 'human', reviewedAt: '2026-04-26' },
         },
       ],
     })
@@ -48,6 +48,61 @@ describe('staged capability artifact approval', () => {
       }),
     ])
     expect(plan.blocked).toEqual([])
+  })
+
+  it('blocks concrete payloads that have not been explicitly reviewed', () => {
+    const plan = planArtifactApproval({
+      assets: [
+        {
+          asset_key: 'asset-3',
+          capability_key: 'cap-3',
+          artifact_kind: 'base_text',
+          quality_status: 'draft',
+          payload_json: { value: 'akhir' },
+        },
+      ],
+    })
+
+    expect(plan.approved).toEqual([])
+    expect(plan.blocked).toEqual([
+      expect.objectContaining({
+        assetKey: 'asset-3',
+        reason: 'missing_review_metadata',
+      }),
+    ])
+  })
+
+  it('does not resurrect blocked or deprecated concrete artifacts', () => {
+    const plan = planArtifactApproval({
+      assets: [
+        {
+          asset_key: 'asset-4',
+          capability_key: 'cap-4',
+          artifact_kind: 'base_text',
+          quality_status: 'blocked',
+          payload_json: { value: 'akhir', reviewedBy: 'human', reviewedAt: '2026-04-26' },
+        },
+        {
+          asset_key: 'asset-5',
+          capability_key: 'cap-5',
+          artifact_kind: 'meaning:l1',
+          quality_status: 'deprecated',
+          payload_json: { value: 'einde', reviewedBy: 'human', reviewedAt: '2026-04-26' },
+        },
+      ],
+    })
+
+    expect(plan.approved).toEqual([])
+    expect(plan.blocked).toEqual([
+      expect.objectContaining({
+        assetKey: 'asset-4',
+        reason: 'status_not_approvable',
+      }),
+      expect.objectContaining({
+        assetKey: 'asset-5',
+        reason: 'status_not_approvable',
+      }),
+    ])
   })
 
   it('requires artifact-kind specific concrete values', () => {
