@@ -1,8 +1,8 @@
-import type { ArtifactKind, ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
-import { hasApprovedArtifact, type ArtifactIndex } from '@/lib/capabilities/artifactRegistry'
-import type { CapabilityReadiness } from '@/lib/capabilities/capabilityContracts'
-import type { ExerciseRenderPlan } from '@/lib/exercises/exerciseRenderPlan'
-import type { ExerciseType } from '@/types/learning'
+import type { ArtifactKind, ProjectedCapability } from '../capabilities/capabilityTypes'
+import { hasApprovedArtifact, type ArtifactIndex } from '../capabilities/artifactRegistry'
+import type { CapabilityReadiness } from '../capabilities/capabilityContracts'
+import type { ExerciseRenderPlan } from './exerciseRenderPlan'
+import type { ExerciseType } from '../../types/learning'
 
 export type ExerciseResolutionFailureReason =
   | 'capability_not_ready'

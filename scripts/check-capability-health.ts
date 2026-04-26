@@ -1,10 +1,24 @@
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
+import { createClient } from '@supabase/supabase-js'
 import { projectCapabilities } from '../src/lib/capabilities/capabilityCatalog'
-import { validateCapabilities, type CapabilityHealthReport } from '../src/lib/capabilities/capabilityContracts'
+import {
+  validateCapabilities,
+  validateCapability,
+  type CapabilityHealthReport,
+  type ExerciseAvailabilityIndex,
+} from '../src/lib/capabilities/capabilityContracts'
 import type { ArtifactIndex } from '../src/lib/capabilities/artifactRegistry'
-import type { ArtifactKind, CurrentContentSnapshot, CurrentLearningItem } from '../src/lib/capabilities/capabilityTypes'
+import type {
+  ArtifactKind,
+  CapabilitySourceProgressRequirement,
+  CurrentContentSnapshot,
+  CurrentLearningItem,
+  ProjectedCapability,
+} from '../src/lib/capabilities/capabilityTypes'
+import { resolveExercise } from '../src/lib/exercises/exerciseResolver'
+import { collectLessonCapabilityKeys } from './check-capability-release-readiness'
 
 export interface CapabilityHealthExitCodeInput {
   strict: boolean
@@ -15,18 +29,232 @@ export function getCapabilityHealthExitCode(input: CapabilityHealthExitCodeInput
   return input.strict && input.criticalCount > 0 ? 1 : 0
 }
 
-export function parseCapabilityHealthArgs(args: string[]): {
-  strict: boolean
-  stagingPath: string
-} {
+export type CapabilityHealthArgs =
+  | {
+      strict: boolean
+      mode: 'staging'
+      stagingPath: string
+    }
+  | {
+      strict: boolean
+      mode: 'db'
+      lesson: number
+      sourceRef: string
+    }
+
+export interface CapabilityHealthFinding {
+  severity: 'critical' | 'warning'
+  rule: string
+  detail: string
+  canonicalKey?: string
+}
+
+export interface RuntimeHealthCapability {
+  id?: string
+  canonicalKey: string
+  sourceKind?: ProjectedCapability['sourceKind']
+  sourceRef: string
+  capabilityType: ProjectedCapability['capabilityType']
+  skillType: ProjectedCapability['skillType']
+  direction?: ProjectedCapability['direction']
+  modality?: ProjectedCapability['modality']
+  learnerLanguage?: ProjectedCapability['learnerLanguage']
+  projectionVersion?: ProjectedCapability['projectionVersion']
+  readinessStatus: 'ready' | 'unknown' | 'blocked' | 'deprecated'
+  publicationStatus: 'published' | 'draft' | 'archived'
+  requiredArtifacts: ArtifactKind[]
+  requiredSourceProgress?: CapabilitySourceProgressRequirement
+  prerequisiteKeys?: string[]
+  difficultyLevel?: number
+  goalTags?: string[]
+  sourceFingerprint?: string
+  artifactFingerprint?: string
+  exerciseAvailability?: ExerciseAvailabilityIndex
+}
+
+export interface RuntimeHealthArtifact {
+  capabilityKey: string
+  sourceRef?: string
+  artifactKind: ArtifactKind
+  qualityStatus: 'draft' | 'approved' | 'blocked' | 'deprecated'
+  artifactJson: unknown
+}
+
+export interface CapabilityHealthSnapshot {
+  knownSourceRefs: string[]
+  capabilities: RuntimeHealthCapability[]
+  artifacts: RuntimeHealthArtifact[]
+}
+
+export interface CapabilityRuntimeHealthReport {
+  critical: CapabilityHealthFinding[]
+  warnings: CapabilityHealthFinding[]
+  criticalCount: number
+  warningCount: number
+}
+
+export function parseCapabilityHealthArgs(args: string[]): CapabilityHealthArgs {
+  const knownArgs = new Set(['--strict', '--staging', '--lesson', '--help'])
+  for (const arg of args) {
+    if (arg.startsWith('--') && !knownArgs.has(arg)) {
+      throw new Error(`Unknown argument: ${arg}`)
+    }
+  }
+
+  const hasLesson = args.includes('--lesson')
+  const hasStaging = args.includes('--staging')
+  if (hasLesson && hasStaging) throw new Error('Use either --lesson or --staging, not both')
+
   const stagingIndex = args.indexOf('--staging')
   if (stagingIndex >= 0 && (!args[stagingIndex + 1] || args[stagingIndex + 1].startsWith('--'))) {
     throw new Error('--staging requires a path')
   }
 
+  const lessonIndex = args.indexOf('--lesson')
+  if (lessonIndex >= 0) {
+    const rawLesson = args[lessonIndex + 1]
+    if (!rawLesson || rawLesson.startsWith('--')) throw new Error('--lesson requires a number')
+    const lesson = Number(rawLesson)
+    if (!Number.isInteger(lesson) || lesson <= 0) throw new Error('--lesson requires a positive integer')
+    return {
+      strict: args.includes('--strict'),
+      mode: 'db',
+      lesson,
+      sourceRef: `lesson-${lesson}`,
+    }
+  }
+
   return {
     strict: args.includes('--strict'),
+    mode: 'staging',
     stagingPath: stagingIndex >= 0 ? args[stagingIndex + 1] : 'scripts/data/staging/lesson-1',
+  }
+}
+
+function runtimeFinding(
+  severity: CapabilityHealthFinding['severity'],
+  rule: string,
+  detail: string,
+  canonicalKey?: string,
+): CapabilityHealthFinding {
+  return { severity, rule, detail, canonicalKey }
+}
+
+function toProjectedCapability(capability: RuntimeHealthCapability): ProjectedCapability {
+  return {
+    canonicalKey: capability.canonicalKey,
+    sourceKind: capability.sourceKind ?? 'item',
+    sourceRef: capability.sourceRef,
+    capabilityType: capability.capabilityType,
+    skillType: capability.skillType,
+    direction: capability.direction ?? 'id_to_l1',
+    modality: capability.modality ?? 'text',
+    learnerLanguage: capability.learnerLanguage ?? 'nl',
+    requiredArtifacts: capability.requiredArtifacts,
+    requiredSourceProgress: capability.requiredSourceProgress,
+    prerequisiteKeys: capability.prerequisiteKeys ?? [],
+    difficultyLevel: capability.difficultyLevel ?? 1,
+    goalTags: capability.goalTags ?? [],
+    projectionVersion: capability.projectionVersion ?? 'v1',
+    sourceFingerprint: capability.sourceFingerprint ?? capability.sourceRef,
+    artifactFingerprint: capability.artifactFingerprint ?? capability.canonicalKey,
+  }
+}
+
+function buildRuntimeArtifactIndex(artifacts: RuntimeHealthArtifact[]): ArtifactIndex {
+  const index: ArtifactIndex = {}
+  for (const artifact of artifacts) {
+    const value = artifact.artifactJson
+    if (value && typeof value === 'object' && !Array.isArray(value) && (value as Record<string, unknown>).placeholder === true) {
+      continue
+    }
+    index[artifact.artifactKind] ??= []
+    index[artifact.artifactKind]!.push({
+      qualityStatus: artifact.qualityStatus,
+      capabilityKey: artifact.capabilityKey,
+      sourceRef: artifact.sourceRef,
+      value,
+    })
+  }
+  return index
+}
+
+export function checkCapabilityHealthSnapshot(snapshot: CapabilityHealthSnapshot): CapabilityRuntimeHealthReport {
+  const critical: CapabilityHealthFinding[] = []
+  const warnings: CapabilityHealthFinding[] = []
+  const knownSourceRefs = new Set(snapshot.knownSourceRefs)
+  const artifactIndex = buildRuntimeArtifactIndex(snapshot.artifacts)
+
+  for (const capability of snapshot.capabilities) {
+    const isRuntimeSchedulable = capability.readinessStatus === 'ready' && capability.publicationStatus === 'published'
+    if (!isRuntimeSchedulable) {
+      warnings.push(runtimeFinding(
+        'warning',
+        'capability_not_runtime_schedulable',
+        `Capability is ${capability.readinessStatus}/${capability.publicationStatus}; sessions will not schedule it.`,
+        capability.canonicalKey,
+      ))
+      continue
+    }
+
+    const projected = toProjectedCapability(capability)
+    const progressRequirement = projected.requiredSourceProgress
+    if (
+      progressRequirement?.kind === 'source_progress'
+      && !knownSourceRefs.has(progressRequirement.sourceRef)
+    ) {
+      critical.push(runtimeFinding(
+        'critical',
+        'ready_capability_unknown_source_progress_ref',
+        `Required source progress ref "${progressRequirement.sourceRef}" is not present in the lesson/source graph.`,
+        capability.canonicalKey,
+      ))
+    }
+
+    const readiness = validateCapability({
+      capability: projected,
+      artifacts: artifactIndex,
+      exerciseAvailability: capability.exerciseAvailability,
+    })
+    if (readiness.status === 'blocked' && readiness.missingArtifacts.length > 0) {
+      critical.push(runtimeFinding(
+        'critical',
+        'ready_capability_missing_approved_artifact',
+        readiness.reason,
+        capability.canonicalKey,
+      ))
+      continue
+    }
+    if (readiness.status !== 'ready') {
+      critical.push(runtimeFinding(
+        'critical',
+        'ready_capability_unresolvable_exercise',
+        'reason' in readiness ? readiness.reason : `Capability readiness resolved to ${readiness.status}.`,
+        capability.canonicalKey,
+      ))
+      continue
+    }
+
+    const resolution = resolveExercise({
+      capability: projected,
+      readiness,
+      artifactIndex,
+    })
+    if (resolution.status === 'failed') {
+      critical.push(runtimeFinding(
+        'critical',
+        'ready_capability_unresolvable_exercise',
+        resolution.details,
+        capability.canonicalKey,
+      ))
+    }
+  }
+
+  return {
+    critical,
+    warnings,
+    criticalCount: critical.length,
+    warningCount: warnings.length,
   }
 }
 
@@ -203,15 +431,156 @@ export async function buildCapabilityHealthReport(stagingPath: string): Promise<
   })
 }
 
+function createServiceClient() {
+  const url = process.env.VITE_SUPABASE_URL || 'https://api.supabase.duin.home'
+  const serviceKey = process.env.SUPABASE_SERVICE_KEY
+  if (!serviceKey) throw new Error('SUPABASE_SERVICE_KEY is required')
+  return createClient(url, serviceKey)
+}
+
+function metadataStringArray(metadata: Record<string, unknown>, key: string): string[] {
+  const value = metadata[key]
+  return Array.isArray(value) ? value.map(String) : []
+}
+
+function toRuntimeCapability(row: Record<string, unknown>): RuntimeHealthCapability {
+  const metadata = row.metadata_json && typeof row.metadata_json === 'object'
+    ? row.metadata_json as Record<string, unknown>
+    : {}
+  return {
+    id: String(row.id ?? ''),
+    canonicalKey: String(row.canonical_key ?? ''),
+    sourceKind: row.source_kind as RuntimeHealthCapability['sourceKind'],
+    sourceRef: String(row.source_ref ?? ''),
+    capabilityType: row.capability_type as RuntimeHealthCapability['capabilityType'],
+    skillType: String(metadata.skillType ?? row.capability_type ?? 'recognition') as RuntimeHealthCapability['skillType'],
+    direction: row.direction as RuntimeHealthCapability['direction'],
+    modality: row.modality as RuntimeHealthCapability['modality'],
+    learnerLanguage: row.learner_language as RuntimeHealthCapability['learnerLanguage'],
+    projectionVersion: row.projection_version as RuntimeHealthCapability['projectionVersion'],
+    readinessStatus: row.readiness_status as RuntimeHealthCapability['readinessStatus'],
+    publicationStatus: row.publication_status as RuntimeHealthCapability['publicationStatus'],
+    requiredArtifacts: metadataStringArray(metadata, 'requiredArtifacts') as ArtifactKind[],
+    requiredSourceProgress: metadata.requiredSourceProgress as CapabilitySourceProgressRequirement | undefined,
+    prerequisiteKeys: metadataStringArray(metadata, 'prerequisiteKeys'),
+    difficultyLevel: typeof metadata.difficultyLevel === 'number' ? metadata.difficultyLevel : 1,
+    goalTags: metadataStringArray(metadata, 'goalTags'),
+    sourceFingerprint: String(row.source_fingerprint ?? ''),
+    artifactFingerprint: String(row.artifact_fingerprint ?? ''),
+  }
+}
+
+export async function loadDbCapabilityHealthSnapshot(args: Extract<CapabilityHealthArgs, { mode: 'db' }>): Promise<CapabilityHealthSnapshot> {
+  const supabase = createServiceClient()
+  const db = () => supabase.schema('indonesian')
+
+  const { data: blocks, error: blocksError } = await db()
+    .from('lesson_page_blocks')
+    .select('source_ref, source_refs, content_unit_slugs, capability_key_refs')
+    .eq('source_ref', args.sourceRef)
+  if (blocksError) throw blocksError
+  const lessonBlocks = (blocks ?? []) as Array<{
+    source_ref?: string | null
+    source_refs?: string[] | null
+    content_unit_slugs?: string[] | null
+    capability_key_refs?: string[] | null
+  }>
+
+  const contentUnitSlugs = [...new Set(lessonBlocks.flatMap(block => block.content_unit_slugs ?? []))]
+  const contentUnitsResult = contentUnitSlugs.length > 0
+    ? await db()
+        .from('content_units')
+        .select('id, source_ref, source_section_ref, unit_slug')
+        .in('unit_slug', contentUnitSlugs)
+    : { data: [], error: null }
+  if (contentUnitsResult.error) throw contentUnitsResult.error
+  const contentUnits = (contentUnitsResult.data ?? []) as Array<{
+    id: string
+    source_ref?: string | null
+    source_section_ref?: string | null
+    unit_slug?: string | null
+  }>
+
+  const relationshipRows = contentUnits.length > 0
+    ? await db()
+        .from('capability_content_units')
+        .select('capability:learning_capabilities(canonical_key)')
+        .in('content_unit_id', contentUnits.map(unit => unit.id))
+    : { data: [], error: null }
+  if (relationshipRows.error) throw relationshipRows.error
+  const relationshipCapabilities = ((relationshipRows.data ?? []) as Array<{ capability?: { canonical_key: string } | null }>)
+    .map(row => row.capability)
+    .filter((row): row is { canonical_key: string } => Boolean(row?.canonical_key))
+  const scopedCapabilityKeys = collectLessonCapabilityKeys({
+    lessonPageBlocks: lessonBlocks.map(block => ({ capability_key_refs: block.capability_key_refs })),
+    relationshipCapabilities,
+  })
+
+  const capabilityResult = scopedCapabilityKeys.length > 0
+    ? await db()
+        .from('learning_capabilities')
+        .select('*')
+        .in('canonical_key', scopedCapabilityKeys)
+    : { data: [], error: null }
+  if (capabilityResult.error) throw capabilityResult.error
+  const capabilityRows = (capabilityResult.data ?? []) as Array<Record<string, unknown>>
+  const capabilityIdByKey = new Map(capabilityRows.map(row => [String(row.canonical_key ?? ''), String(row.id ?? '')]))
+  const capabilityKeyById = new Map([...capabilityIdByKey.entries()].map(([key, id]) => [id, key]))
+
+  const artifactResult = capabilityRows.length > 0
+    ? await db()
+        .from('capability_artifacts')
+        .select('capability_id, artifact_kind, quality_status, artifact_json')
+        .in('capability_id', capabilityRows.map(row => String(row.id ?? '')))
+    : { data: [], error: null }
+  if (artifactResult.error) throw artifactResult.error
+
+  const knownSourceRefs = new Set<string>([args.sourceRef])
+  for (const block of lessonBlocks) {
+    if (block.source_ref) knownSourceRefs.add(block.source_ref)
+    for (const sourceRef of block.source_refs ?? []) knownSourceRefs.add(sourceRef)
+  }
+  for (const unit of contentUnits) {
+    if (unit.source_ref) knownSourceRefs.add(unit.source_ref)
+    if (unit.source_section_ref) knownSourceRefs.add(unit.source_section_ref)
+  }
+  for (const row of capabilityRows) {
+    if (typeof row.source_ref === 'string') knownSourceRefs.add(row.source_ref)
+  }
+
+  return {
+    knownSourceRefs: [...knownSourceRefs],
+    capabilities: capabilityRows.map(toRuntimeCapability),
+    artifacts: ((artifactResult.data ?? []) as Array<Record<string, unknown>>).map(artifact => {
+      const capabilityId = String(artifact.capability_id ?? '')
+      const capabilityKey = capabilityKeyById.get(capabilityId) ?? ''
+      const capability = capabilityRows.find(row => String(row.id ?? '') === capabilityId)
+      return {
+        capabilityKey,
+        sourceRef: typeof capability?.source_ref === 'string' ? capability.source_ref : undefined,
+        artifactKind: artifact.artifact_kind as ArtifactKind,
+        qualityStatus: artifact.quality_status as RuntimeHealthArtifact['qualityStatus'],
+        artifactJson: artifact.artifact_json,
+      }
+    }),
+  }
+}
+
+export async function buildDbCapabilityHealthReport(args: Extract<CapabilityHealthArgs, { mode: 'db' }>): Promise<CapabilityRuntimeHealthReport> {
+  return checkCapabilityHealthSnapshot(await loadDbCapabilityHealthSnapshot(args))
+}
+
 if (process.argv[1]?.endsWith('check-capability-health.ts')) {
   if (process.argv.includes('--help')) {
-    console.log('Usage: bun scripts/check-capability-health.ts [--staging scripts/data/staging/lesson-N] [--strict]')
+    console.log('Usage: npx tsx scripts/check-capability-health.ts [--staging scripts/data/staging/lesson-N | --lesson N] [--strict]')
     process.exit(0)
   }
 
   try {
     const args = parseCapabilityHealthArgs(process.argv.slice(2))
-    const report = await buildCapabilityHealthReport(args.stagingPath)
+    const report = args.mode === 'staging'
+      ? await buildCapabilityHealthReport(args.stagingPath)
+      : await buildDbCapabilityHealthReport(args)
     console.log(JSON.stringify(report, null, 2))
     process.exit(getCapabilityHealthExitCode({ strict: args.strict, criticalCount: report.criticalCount }))
   } catch (error) {

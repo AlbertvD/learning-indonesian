@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { buildCapabilityHealthReport, getCapabilityHealthExitCode, loadStagedContentSnapshot, parseCapabilityHealthArgs } from '../check-capability-health'
+import {
+  buildCapabilityHealthReport,
+  checkCapabilityHealthSnapshot,
+  getCapabilityHealthExitCode,
+  loadStagedContentSnapshot,
+  parseCapabilityHealthArgs,
+} from '../check-capability-health'
 
 describe('capability health exit code planning', () => {
   it('exits zero for report mode even when blocked content exists', () => {
@@ -25,6 +31,126 @@ describe('capability health exit code planning', () => {
 
   it('requires a path after --staging', () => {
     expect(() => parseCapabilityHealthArgs(['--staging'])).toThrow('--staging requires a path')
+  })
+
+  it('fails closed for unknown arguments', () => {
+    expect(() => parseCapabilityHealthArgs(['--bogus'])).toThrow('Unknown argument: --bogus')
+  })
+
+  it('parses lesson scope for DB-backed runtime health', () => {
+    expect(parseCapabilityHealthArgs(['--lesson', '1', '--strict'])).toEqual({
+      strict: true,
+      mode: 'db',
+      lesson: 1,
+      sourceRef: 'lesson-1',
+    })
+  })
+
+  it('keeps explicit staging mode for staged-file health', () => {
+    expect(parseCapabilityHealthArgs(['--staging', 'scripts/data/staging/lesson-9'])).toEqual({
+      strict: false,
+      mode: 'staging',
+      stagingPath: 'scripts/data/staging/lesson-9',
+    })
+  })
+
+  it('fails ready/published capabilities that have no approved artifact path', () => {
+    const report = checkCapabilityHealthSnapshot({
+      knownSourceRefs: ['learning_items/makan'],
+      capabilities: [{
+        canonicalKey: 'cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl',
+        sourceRef: 'learning_items/makan',
+        capabilityType: 'meaning_recall',
+        skillType: 'meaning_recall',
+        readinessStatus: 'ready',
+        publicationStatus: 'published',
+        requiredArtifacts: ['meaning:l1'],
+      }],
+      artifacts: [],
+    })
+
+    expect(report.critical).toContainEqual(expect.objectContaining({
+      rule: 'ready_capability_missing_approved_artifact',
+    }))
+  })
+
+  it('fails ready/published capabilities that cannot resolve an exercise render plan', () => {
+    const report = checkCapabilityHealthSnapshot({
+      knownSourceRefs: ['learning_items/makan'],
+      capabilities: [{
+        canonicalKey: 'cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl',
+        sourceRef: 'learning_items/makan',
+        capabilityType: 'meaning_recall',
+        skillType: 'meaning_recall',
+        readinessStatus: 'ready',
+        publicationStatus: 'published',
+        requiredArtifacts: ['meaning:l1'],
+        exerciseAvailability: { meaning_recall: false },
+      }],
+      artifacts: [{
+        capabilityKey: 'cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl',
+        sourceRef: 'learning_items/makan',
+        artifactKind: 'meaning:l1',
+        qualityStatus: 'approved',
+        artifactJson: { value: 'eten' },
+      }],
+    })
+
+    expect(report.critical).toContainEqual(expect.objectContaining({
+      rule: 'ready_capability_unresolvable_exercise',
+    }))
+  })
+
+  it('fails ready/published capabilities with unknown source progress refs', () => {
+    const report = checkCapabilityHealthSnapshot({
+      knownSourceRefs: ['learning_items/makan'],
+      capabilities: [{
+        canonicalKey: 'cap:v1:item:learning_items/minum:text_recognition:id_to_l1:text:nl',
+        sourceRef: 'learning_items/minum',
+        capabilityType: 'text_recognition',
+        skillType: 'recognition',
+        readinessStatus: 'ready',
+        publicationStatus: 'published',
+        requiredArtifacts: ['base_text'],
+        requiredSourceProgress: {
+          kind: 'source_progress',
+          sourceRef: 'lesson-1/unknown-section',
+          requiredState: 'section_exposed',
+        },
+      }],
+      artifacts: [{
+        capabilityKey: 'cap:v1:item:learning_items/minum:text_recognition:id_to_l1:text:nl',
+        sourceRef: 'learning_items/minum',
+        artifactKind: 'base_text',
+        qualityStatus: 'approved',
+        artifactJson: { value: 'minum' },
+      }],
+    })
+
+    expect(report.critical).toContainEqual(expect.objectContaining({
+      rule: 'ready_capability_unknown_source_progress_ref',
+    }))
+  })
+
+  it('reports draft/unknown capabilities as warnings instead of blockers', () => {
+    const report = checkCapabilityHealthSnapshot({
+      knownSourceRefs: ['learning_items/makan'],
+      capabilities: [{
+        canonicalKey: 'cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl',
+        sourceRef: 'learning_items/makan',
+        capabilityType: 'meaning_recall',
+        skillType: 'meaning_recall',
+        readinessStatus: 'unknown',
+        publicationStatus: 'draft',
+        requiredArtifacts: ['meaning:l1'],
+      }],
+      artifacts: [],
+    })
+
+    expect(report.critical).toEqual([])
+    expect(report.warnings).toContainEqual(expect.objectContaining({
+      rule: 'capability_not_runtime_schedulable',
+    }))
   })
 
   it('derives lesson-aware grammar pattern refs and examples from staged descriptions', async () => {
