@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   buildCapabilityHealthReport,
   checkCapabilityHealthSnapshot,
+  filterScopedContentUnits,
   getCapabilityHealthExitCode,
   loadStagedContentSnapshot,
   parseCapabilityHealthArgs,
@@ -71,6 +72,58 @@ describe('capability health exit code planning', () => {
 
     expect(report.critical).toContainEqual(expect.objectContaining({
       rule: 'ready_capability_missing_approved_artifact',
+    }))
+  })
+
+  it('keeps valid accepted-answer values payloads eligible for runtime health', () => {
+    const capabilityKey = 'cap:v1:item:learning_items/makan:form_recall:l1_to_id:text:nl'
+    const report = checkCapabilityHealthSnapshot({
+      knownSourceRefs: ['learning_items/makan'],
+      capabilities: [{
+        canonicalKey: capabilityKey,
+        sourceRef: 'learning_items/makan',
+        capabilityType: 'form_recall',
+        skillType: 'form_recall',
+        readinessStatus: 'ready',
+        publicationStatus: 'published',
+        requiredArtifacts: ['accepted_answers:id'],
+      }],
+      artifacts: [{
+        capabilityKey,
+        sourceRef: 'learning_items/makan',
+        artifactKind: 'accepted_answers:id',
+        qualityStatus: 'approved',
+        artifactJson: { values: ['makan'] },
+      }],
+    })
+
+    expect(report.critical).toEqual([])
+  })
+
+  it('fails approved artifacts with invalid artifact-kind payload shapes', () => {
+    const capabilityKey = 'cap:v1:item:learning_items/makan:form_recall:l1_to_id:text:nl'
+    const report = checkCapabilityHealthSnapshot({
+      knownSourceRefs: ['learning_items/makan'],
+      capabilities: [{
+        canonicalKey: capabilityKey,
+        sourceRef: 'learning_items/makan',
+        capabilityType: 'form_recall',
+        skillType: 'form_recall',
+        readinessStatus: 'ready',
+        publicationStatus: 'published',
+        requiredArtifacts: ['accepted_answers:id'],
+      }],
+      artifacts: [{
+        capabilityKey,
+        sourceRef: 'learning_items/makan',
+        artifactKind: 'accepted_answers:id',
+        qualityStatus: 'approved',
+        artifactJson: { value: 'makan' },
+      }],
+    })
+
+    expect(report.critical).toContainEqual(expect.objectContaining({
+      rule: 'ready_capability_invalid_approved_artifact_payload',
     }))
   })
 
@@ -151,6 +204,38 @@ describe('capability health exit code planning', () => {
     expect(report.warnings).toContainEqual(expect.objectContaining({
       rule: 'capability_not_runtime_schedulable',
     }))
+  })
+
+  it('filters DB content units by lesson block source context instead of slug alone', () => {
+    const scoped = filterScopedContentUnits({
+      lessonSourceRef: 'lesson-1',
+      blocks: [{
+        source_refs: ['learning_items/makan'],
+        content_unit_slugs: ['item-makan'],
+      }],
+      contentUnits: [
+        {
+          id: 'unit-lesson-1',
+          source_ref: 'learning_items/makan',
+          source_section_ref: 'lesson-1/section-vocabulary',
+          unit_slug: 'item-makan',
+        },
+        {
+          id: 'unit-lesson-2-collision',
+          source_ref: 'learning_items/makan',
+          source_section_ref: 'lesson-2/section-vocabulary',
+          unit_slug: 'item-makan',
+        },
+        {
+          id: 'unit-wrong-source',
+          source_ref: 'learning_items/minum',
+          source_section_ref: 'lesson-1/section-vocabulary',
+          unit_slug: 'item-makan',
+        },
+      ],
+    })
+
+    expect(scoped.map(unit => unit.id)).toEqual(['unit-lesson-1'])
   })
 
   it('derives lesson-aware grammar pattern refs and examples from staged descriptions', async () => {

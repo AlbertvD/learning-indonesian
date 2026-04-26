@@ -164,6 +164,7 @@ function toProjectedCapability(capability: RuntimeHealthCapability): ProjectedCa
 function buildRuntimeArtifactIndex(artifacts: RuntimeHealthArtifact[]): ArtifactIndex {
   const index: ArtifactIndex = {}
   for (const artifact of artifacts) {
+    if (!hasValidRuntimeArtifactPayload(artifact.artifactKind, artifact.artifactJson)) continue
     const value = artifact.artifactJson
     if (value && typeof value === 'object' && !Array.isArray(value) && (value as Record<string, unknown>).placeholder === true) {
       continue
@@ -177,6 +178,60 @@ function buildRuntimeArtifactIndex(artifacts: RuntimeHealthArtifact[]): Artifact
     })
   }
   return index
+}
+
+function nonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0
+}
+
+function nonEmptyStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.length > 0 && value.every(nonEmptyString)
+}
+
+function hasValidRuntimeArtifactPayload(kind: ArtifactKind, payload: unknown): boolean {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return false
+  const record = payload as Record<string, unknown>
+  if (record.placeholder === true) return false
+
+  switch (kind) {
+    case 'base_text':
+    case 'meaning:l1':
+    case 'meaning:nl':
+    case 'meaning:en':
+    case 'translation:l1':
+    case 'pattern_explanation:l1':
+    case 'pattern_example':
+    case 'cloze_answer':
+      return nonEmptyString(record.value)
+    case 'accepted_answers:id':
+    case 'accepted_answers:l1':
+      return nonEmptyStringArray(record.values)
+    case 'cloze_context':
+      return nonEmptyString(record.sentence) && nonEmptyString(record.answer)
+    case 'audio_clip':
+    case 'audio_segment':
+      return nonEmptyString(record.storagePath) || nonEmptyString(record.url)
+    case 'exercise_variant':
+      return nonEmptyString(record.variantId) || Boolean(record.payload)
+    case 'transcript_segment':
+      return nonEmptyString(record.transcript)
+    case 'root_derived_pair':
+      return nonEmptyString(record.root) && nonEmptyString(record.derived)
+    case 'allomorph_rule':
+      return nonEmptyString(record.rule)
+    case 'minimal_pair':
+      return nonEmptyStringArray(record.values)
+    case 'dialogue_speaker_context':
+      return nonEmptyString(record.speaker) || nonEmptyString(record.context)
+    case 'podcast_gist_prompt':
+      return nonEmptyString(record.prompt)
+    case 'timecoded_phrase':
+      return nonEmptyString(record.phrase) && typeof record.startMs === 'number'
+    case 'production_rubric':
+      return nonEmptyString(record.rubric) || nonEmptyStringArray(record.criteria)
+    default:
+      return false
+  }
 }
 
 export function checkCapabilityHealthSnapshot(snapshot: CapabilityHealthSnapshot): CapabilityRuntimeHealthReport {
@@ -198,6 +253,20 @@ export function checkCapabilityHealthSnapshot(snapshot: CapabilityHealthSnapshot
     }
 
     const projected = toProjectedCapability(capability)
+    const approvedInvalidArtifacts = snapshot.artifacts.filter(artifact => (
+      artifact.capabilityKey === capability.canonicalKey
+      && artifact.qualityStatus === 'approved'
+      && !hasValidRuntimeArtifactPayload(artifact.artifactKind, artifact.artifactJson)
+    ))
+    for (const artifact of approvedInvalidArtifacts) {
+      critical.push(runtimeFinding(
+        'critical',
+        'ready_capability_invalid_approved_artifact_payload',
+        `Approved artifact "${artifact.artifactKind}" does not satisfy its payload contract.`,
+        capability.canonicalKey,
+      ))
+    }
+
     const progressRequirement = projected.requiredSourceProgress
     if (
       progressRequirement?.kind === 'source_progress'
@@ -431,6 +500,46 @@ export async function buildCapabilityHealthReport(stagingPath: string): Promise<
   })
 }
 
+export interface DbLessonBlockScope {
+  source_refs?: string[] | null
+  content_unit_slugs?: string[] | null
+}
+
+export interface DbContentUnitScope {
+  id: string
+  source_ref?: string | null
+  source_section_ref?: string | null
+  unit_slug?: string | null
+}
+
+export function filterScopedContentUnits(input: {
+  lessonSourceRef: string
+  blocks: DbLessonBlockScope[]
+  contentUnits: DbContentUnitScope[]
+}): DbContentUnitScope[] {
+  const allowedSourceRefsBySlug = new Map<string, Set<string>>()
+  for (const block of input.blocks) {
+    const sourceRefs = new Set(block.source_refs ?? [])
+    for (const slug of block.content_unit_slugs ?? []) {
+      const existing = allowedSourceRefsBySlug.get(slug) ?? new Set<string>()
+      for (const sourceRef of sourceRefs) existing.add(sourceRef)
+      allowedSourceRefsBySlug.set(slug, existing)
+    }
+  }
+
+  return input.contentUnits.filter(unit => {
+    if (!unit.unit_slug) return false
+    const allowedSourceRefs = allowedSourceRefsBySlug.get(unit.unit_slug)
+    if (!allowedSourceRefs) return false
+    const sectionIsInLesson = typeof unit.source_section_ref === 'string'
+      && unit.source_section_ref.startsWith(`${input.lessonSourceRef}/`)
+    const sourceMatchesBlock = typeof unit.source_ref === 'string'
+      && allowedSourceRefs.has(unit.source_ref)
+    const sourceIsLesson = unit.source_ref === input.lessonSourceRef
+    return sectionIsInLesson && (sourceMatchesBlock || sourceIsLesson)
+  })
+}
+
 function createServiceClient() {
   const url = process.env.VITE_SUPABASE_URL || 'https://api.supabase.duin.home'
   const serviceKey = process.env.SUPABASE_SERVICE_KEY
@@ -494,12 +603,16 @@ export async function loadDbCapabilityHealthSnapshot(args: Extract<CapabilityHea
         .in('unit_slug', contentUnitSlugs)
     : { data: [], error: null }
   if (contentUnitsResult.error) throw contentUnitsResult.error
-  const contentUnits = (contentUnitsResult.data ?? []) as Array<{
+  const contentUnits = filterScopedContentUnits({
+    lessonSourceRef: args.sourceRef,
+    blocks: lessonBlocks,
+    contentUnits: (contentUnitsResult.data ?? []) as Array<{
     id: string
     source_ref?: string | null
     source_section_ref?: string | null
     unit_slug?: string | null
-  }>
+    }>,
+  })
 
   const relationshipRows = contentUnits.length > 0
     ? await db()
@@ -570,7 +683,7 @@ export async function buildDbCapabilityHealthReport(args: Extract<CapabilityHeal
   return checkCapabilityHealthSnapshot(await loadDbCapabilityHealthSnapshot(args))
 }
 
-if (process.argv[1]?.endsWith('check-capability-health.ts')) {
+async function main() {
   if (process.argv.includes('--help')) {
     console.log('Usage: npx tsx scripts/check-capability-health.ts [--staging scripts/data/staging/lesson-N | --lesson N] [--strict]')
     process.exit(0)
@@ -587,4 +700,12 @@ if (process.argv[1]?.endsWith('check-capability-health.ts')) {
     console.error(error instanceof Error ? error.message : String(error))
     process.exit(1)
   }
+}
+
+function isMainModule(): boolean {
+  return import.meta.url === pathToFileURL(process.argv[1] ?? '').href
+}
+
+if (isMainModule()) {
+  main()
 }
