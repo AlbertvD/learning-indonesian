@@ -170,7 +170,7 @@ async function loadReadinessInput(args: CapabilityReleaseReadinessArgs): Promise
   const { data: capabilities, error: capabilitiesError } = scopedCapabilityKeys.length > 0
     ? await db()
         .from('learning_capabilities')
-        .select('id, readiness_status, publication_status')
+        .select('id, canonical_key, readiness_status, publication_status')
         .in('canonical_key', scopedCapabilityKeys)
     : { data: [], error: null }
   if (capabilitiesError) throw capabilitiesError

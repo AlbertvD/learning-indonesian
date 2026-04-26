@@ -109,4 +109,26 @@ describe('capability release readiness planning', () => {
     expect(report.releaseReady).toBe(true)
     expect(report.blockers).toEqual([])
   })
+
+  it('treats DB-loaded capability rows with canonical_key as present', () => {
+    const report = summarizeCapabilityReleaseReadiness({
+      sourceRef: 'lesson-1',
+      contentUnits: 1,
+      lessonPageBlocks: 1,
+      scopedCapabilityKeys: ['cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl'],
+      capabilities: [
+        {
+          canonical_key: 'cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl',
+          readiness_status: 'ready',
+          publication_status: 'published',
+        },
+      ],
+      capabilityArtifacts: 1,
+      capabilityContentUnitRelationships: 1,
+      sourceProgressRows: 1,
+    })
+
+    expect(report.blockers).not.toContain('Missing capability rows for lesson-scoped keys: cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl')
+    expect(report.releaseReady).toBe(true)
+  })
 })
