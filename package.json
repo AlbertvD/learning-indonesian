@@ -11,6 +11,7 @@
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
+    "capability:release-gate": "tsx scripts/run-capability-release-gate.ts",
     "prepare": "husky"
   },
   "dependencies": {

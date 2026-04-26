@@ -482,3 +482,53 @@ promotion apply succeeds
 DB-backed health has no critical findings
 browser smoke passes for lesson reader, source progress, session load, and review commit
 ```
+
+## Execution Log: 2026-04-26 Local Build Session
+
+Environment:
+
+```text
+.env.local contains VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.
+.env.local does not contain SUPABASE_SERVICE_KEY.
+Real publish, promotion, readiness audit, and DB-backed health are blocked until a service-role key is supplied locally.
+```
+
+Safe local checks completed:
+
+```bash
+npm test -- --run scripts/__tests__/check-capability-health.test.ts scripts/__tests__/capability-staging.test.ts scripts/__tests__/approve-staged-capability-artifacts.test.ts scripts/__tests__/publish-approved-content-capability-output.test.ts scripts/__tests__/promote-capabilities.test.ts scripts/__tests__/check-capability-release-readiness.test.ts
+npx tsx scripts/publish-approved-content.ts 1 --dry-run
+npx tsx scripts/check-capability-health.ts --staging scripts/data/staging/lesson-1 --strict
+npx tsc -p tsconfig.app.json --noEmit --pretty false
+npm run build
+```
+
+Observed local results:
+
+```text
+Targeted tests passed.
+Publish dry-run passed local Slice 10 validation.
+Publish dry-run planned 70 content units, 138 lesson page blocks, 190 capabilities, and 441 exercise assets.
+Staged capability health returned criticalCount: 0.
+TypeScript passed.
+Production build passed.
+Build emitted non-blocking warnings for large chunks and the deprecated vite:react-swc esbuild option.
+```
+
+Release gate command added:
+
+```bash
+npm run capability:release-gate -- --lesson 1
+```
+
+Observed local release-gate result:
+
+```text
+Passed promote/readiness unit tests.
+Passed artifact approval unit tests.
+Passed publish-approved-content.ts 1 --dry-run.
+Passed approve-staged-capability-artifacts.ts --lesson 1 --dry-run with approved: 0, blocked: 434, unchanged: 7.
+Stopped at npx tsx scripts/promote-capabilities.ts --lesson 1 --dry-run because SUPABASE_SERVICE_KEY is required.
+```
+
+This is the expected local stopping point without service-role credentials. Continue from step 8 only after adding `SUPABASE_SERVICE_KEY` locally and confirming the target Supabase instance is the intended test/release database.
