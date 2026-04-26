@@ -702,6 +702,23 @@ scripts/materialize-capabilities.ts
 scripts/migrations/2026-04-25-*.sql
 ```
 
+Important capability-era boundary:
+
+```text
+publish-approved-content.ts writes catalog rows, but capability rows remain readiness_status = unknown and publication_status = draft.
+promote-capabilities.ts is the reviewed release gate that can move validated capabilities to ready/published.
+capability sessions can only schedule ready/published capabilities.
+```
+
+This means publishing makes content queryable for inspection and health checks, but it does not create learner review debt. After publishing, run:
+
+```text
+npx tsx scripts/promote-capabilities.ts --lesson <N> --dry-run
+npx tsx scripts/promote-capabilities.ts --lesson <N> --apply
+```
+
+Only run the apply command after the dry-run lists the exact capabilities to promote and the reviewer accepts that report.
+
 ### Gate 6: Post-Publish Health Audit
 
 Runs against database-backed content.

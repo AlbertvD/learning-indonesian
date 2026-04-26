@@ -308,6 +308,31 @@ export async function publishCapabilityPipelineOutput(input: {
     if (error) throw error
   }
   console.log(`   Upserted ${exerciseAssets.length} capability artifacts`)
+
+  const lessonNumber = inferLessonNumberForPromotion({ contentUnits, lessonPageBlocks })
+  console.log('\nCapability rows were published as draft/unknown.')
+  if (lessonNumber) {
+    console.log(`Run: npx tsx scripts/promote-capabilities.ts --lesson ${lessonNumber} --dry-run`)
+    console.log(`Then: npx tsx scripts/promote-capabilities.ts --lesson ${lessonNumber} --apply`)
+  } else {
+    console.log('Run: npx tsx scripts/promote-capabilities.ts --lesson <N> --dry-run')
+    console.log('Then: npx tsx scripts/promote-capabilities.ts --lesson <N> --apply')
+  }
+}
+
+function inferLessonNumberForPromotion(input: {
+  contentUnits: any[]
+  lessonPageBlocks: any[]
+}): number | null {
+  const sourceRefs = [
+    ...input.lessonPageBlocks.map(block => block.source_ref),
+    ...input.contentUnits.map(unit => unit.source_ref),
+  ]
+  for (const sourceRef of sourceRefs) {
+    const match = typeof sourceRef === 'string' ? /^lesson-(\d+)$/.exec(sourceRef) : null
+    if (match) return Number(match[1])
+  }
+  return null
 }
 
 async function publishContent(lessonNumber: number, dryRun: boolean) {
