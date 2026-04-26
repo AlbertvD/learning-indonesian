@@ -12,6 +12,8 @@
 import { createClient } from '@supabase/supabase-js'
 import fs from 'fs'
 import path from 'path'
+import { spawnSync } from 'node:child_process'
+import { pathToFileURL } from 'node:url'
 import { validatePOS } from './lib/validate-pos'
 import {
   validateCapabilityStaging,
@@ -153,7 +155,7 @@ function candidateSlugs(slug: string): string[] {
 // Publishing Logic
 // ---------------------------------------------------------------------------
 
-async function publishCapabilityPipelineOutput(input: {
+export async function publishCapabilityPipelineOutput(input: {
   supabase: ReturnType<typeof createSupabaseClient>
   dryRun: boolean
   contentUnits: any[]
@@ -1011,10 +1013,27 @@ async function publishContent(lessonNumber: number, dryRun: boolean) {
 // Main
 // ---------------------------------------------------------------------------
 
+export function buildLintStagingCommand(lessonNumber: number): {
+  command: string
+  args: string[]
+} {
+  return {
+    command: process.execPath,
+    args: [
+      path.join(process.cwd(), 'node_modules', 'tsx', 'dist', 'cli.mjs'),
+      'scripts/lint-staging.ts',
+      '--lesson',
+      String(lessonNumber),
+      '--severity',
+      'critical',
+    ],
+  }
+}
+
 async function main() {
   const lessonNumber = parseInt(process.argv[2], 10)
   if (isNaN(lessonNumber)) {
-    console.error('Usage: bun scripts/publish-approved-content.ts <lesson-number> [--dry-run] [--skip-lint]')
+    console.error('Usage: npx tsx scripts/publish-approved-content.ts <lesson-number> [--dry-run] [--skip-lint]')
     process.exit(1)
   }
 
@@ -1026,8 +1045,8 @@ async function main() {
     // linter means at least one CRITICAL finding Ã¢â‚¬â€ refuse to publish until
     // it's clean. Use --skip-lint to override (e.g. when republishing
     // already-shipped content during a migration).
-    const { spawnSync } = await import('child_process')
-    const lint = spawnSync('bun', ['scripts/lint-staging.ts', '--lesson', String(lessonNumber), '--severity', 'critical'], { stdio: 'inherit' })
+    const lintCommand = buildLintStagingCommand(lessonNumber)
+    const lint = spawnSync(lintCommand.command, lintCommand.args, { stdio: 'inherit' })
     if (lint.status !== 0) {
       console.error(`\nlint-staging found CRITICAL issues for lesson ${lessonNumber} Ã¢â‚¬â€ fix them and rerun, or use --skip-lint to override.`)
       process.exit(1)
@@ -1039,4 +1058,13 @@ async function main() {
   await publishContent(lessonNumber, dryRun)
 }
 
-main()
+function isMainModule(): boolean {
+  return import.meta.url === pathToFileURL(process.argv[1] ?? '').href
+}
+
+if (isMainModule()) {
+  main().catch(error => {
+    console.error(error)
+    process.exit(1)
+  })
+}
