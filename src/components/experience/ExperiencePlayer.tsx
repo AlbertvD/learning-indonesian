@@ -17,6 +17,7 @@ export function ExperiencePlayer(props: {
   const { plan, onAnswer, onComplete } = props
   const [answeredBlocks, setAnsweredBlocks] = useState<Set<string>>(() => new Set())
   const [submittingBlockId, setSubmittingBlockId] = useState<string | null>(null)
+  const [submissionError, setSubmissionError] = useState<string | null>(null)
 
   const dueCount = plan.blocks.filter(block => block.kind === 'due_review').length
   const newCount = plan.blocks.filter(block => block.kind === 'new_introduction').length
@@ -38,6 +39,7 @@ export function ExperiencePlayer(props: {
   const handleAnswerReport = async (block: SessionBlock, answerReport: AnswerReport) => {
     if (answeredBlocks.has(block.id) || submittingBlockId) return
     setSubmittingBlockId(block.id)
+    setSubmissionError(null)
     try {
       await onAnswer({
         sessionId: plan.id,
@@ -50,6 +52,8 @@ export function ExperiencePlayer(props: {
         answerReport,
       })
       setAnsweredBlocks(current => new Set(current).add(block.id))
+    } catch {
+      setSubmissionError('Je antwoord kon niet worden opgeslagen. Controleer je verbinding en probeer deze kaart opnieuw.')
     } finally {
       setSubmittingBlockId(null)
     }
@@ -85,6 +89,12 @@ export function ExperiencePlayer(props: {
                   <strong>{diagnostic.reason}</strong>: {diagnostic.details}
                 </p>
               ))}
+            </section>
+          )}
+
+          {submissionError && (
+            <section className={classes.diagnostics} role="alert">
+              <p>{submissionError}</p>
             </section>
           )}
 

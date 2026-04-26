@@ -121,6 +121,20 @@ describe('ExperiencePlayer', () => {
     expect(screen.getByText('Zelfcheck opgeslagen voor deze preview. Deze UI schrijft geen FSRS-herhaling.')).toBeInTheDocument()
   })
 
+  it('keeps the card unanswered and shows a save error when review commit fails', async () => {
+    const user = userEvent.setup()
+    const onAnswer = vi.fn(async () => {
+      throw new Error('edge function unavailable')
+    })
+
+    render(<ExperiencePlayer plan={plan()} onAnswer={onAnswer} onComplete={vi.fn()} />)
+    await user.click(screen.getByRole('button', { name: 'Dit wist ik' }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Je antwoord kon niet worden opgeslagen')
+    expect(screen.getByText('0/2')).toBeInTheDocument()
+    expect(screen.queryByText('Zelfcheck opgeslagen voor deze preview. Deze UI schrijft geen FSRS-herhaling.')).not.toBeInTheDocument()
+  })
+
   it('marks new introductions as pending Review Processor activation', async () => {
     const user = userEvent.setup()
     const onAnswer = vi.fn(async () => {})
