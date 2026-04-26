@@ -7,6 +7,7 @@ function query(data: unknown[] = []) {
   const chain: any = {
     select: () => chain,
     eq: () => chain,
+    in: () => chain,
     then: (resolve: (value: { data: unknown[]; error: null }) => void) => resolve({ data, error: null }),
   }
   return chain

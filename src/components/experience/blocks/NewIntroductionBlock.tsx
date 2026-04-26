@@ -1,5 +1,6 @@
 import type { SessionBlock } from '@/lib/session/sessionPlan'
 import type { AnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
+import { capabilityLabel, exerciseLabel } from '@/lib/session/sessionLabels'
 import { CapabilityExerciseFrame } from '../CapabilityExerciseFrame'
 import classes from '../ExperiencePlayer.module.css'
 
@@ -19,9 +20,9 @@ export function NewIntroductionBlock({ block, position, total, answered, submitt
         <span className={classes.blockKicker}>Nieuw {position} van {total}</span>
         <span className={classes.kindPill}>Introductie</span>
       </div>
-      <h2 id={`${block.id}-title`}>{block.renderPlan.capabilityType.replaceAll('_', ' ')}</h2>
+      <h2 id={`${block.id}-title`}>{capabilityLabel(block.renderPlan.capabilityType)}</h2>
       <p className={classes.blockMeta}>
-        Eerste blootstelling gebruikt {block.renderPlan.exerciseType.replaceAll('_', ' ')} en wacht op activatie door de reviewverwerker.
+        Eerste blootstelling gebruikt {exerciseLabel(block.renderPlan.exerciseType)} en wacht op activatie door de reviewverwerker.
       </p>
       <p className={classes.capabilityKey}>{block.canonicalKeySnapshot}</p>
       <CapabilityExerciseFrame

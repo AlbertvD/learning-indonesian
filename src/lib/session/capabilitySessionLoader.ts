@@ -9,7 +9,8 @@ import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
 import { resolveExercise } from '@/lib/exercises/exerciseResolver'
 import { planLearningPath, type PedagogyInput, type PlannerCapability } from '@/lib/pedagogy/pedagogyPlanner'
 import { composeSession } from '@/lib/session/sessionComposer'
-import type { SessionPlan } from '@/lib/session/sessionPlan'
+import type { CapabilityReviewSessionContext, SessionPlan } from '@/lib/session/sessionPlan'
+import type { CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
 
 export interface CapabilitySessionLoaderInput {
   enabled: boolean
@@ -44,6 +45,55 @@ export interface CapabilitySessionDataAdapter extends CapabilitySchedulerReadAda
   loadCapabilitySessionData(request: CapabilitySessionDataRequest): Promise<CapabilitySessionDataSnapshot>
 }
 
+function snapshotFromLearnerRow(row: LearnerCapabilityStateRow): CapabilityScheduleSnapshot {
+  return {
+    stateVersion: row.stateVersion,
+    activationState: row.activationState,
+    stability: row.stability,
+    difficulty: row.difficulty,
+    lastReviewedAt: row.lastReviewedAt,
+    nextDueAt: row.nextDueAt,
+    reviewCount: row.reviewCount,
+    lapseCount: row.lapseCount,
+    consecutiveFailureCount: row.consecutiveFailureCount,
+  }
+}
+
+function dormantSnapshot(): CapabilityScheduleSnapshot {
+  return {
+    stateVersion: 0,
+    activationState: 'dormant',
+    reviewCount: 0,
+    lapseCount: 0,
+    consecutiveFailureCount: 0,
+  }
+}
+
+function artifactVersionSnapshot(capability: ProjectedCapability | null): Record<string, unknown> {
+  if (!capability) return {}
+  return {
+    capabilityKey: capability.canonicalKey,
+    sourceRef: capability.sourceRef,
+    projectionVersion: capability.projectionVersion,
+    sourceFingerprint: capability.sourceFingerprint,
+    artifactFingerprint: capability.artifactFingerprint,
+    requiredArtifacts: capability.requiredArtifacts,
+  }
+}
+
+function reviewContext(input: {
+  capability: ProjectedCapability | null
+  schedulerSnapshot: CapabilityScheduleSnapshot
+}): CapabilityReviewSessionContext {
+  return {
+    schedulerSnapshot: input.schedulerSnapshot,
+    currentStateVersion: input.schedulerSnapshot.stateVersion,
+    artifactVersionSnapshot: artifactVersionSnapshot(input.capability),
+    capabilityReadinessStatus: 'ready',
+    capabilityPublicationStatus: 'published',
+  }
+}
+
 export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderInput): Promise<SessionPlan> {
   if (!input.enabled) {
     throw new Error('Capability standard session is disabled')
@@ -58,14 +108,27 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
     listLearnerCapabilityStates: async () => input.schedulerRows,
   })
 
+  const stateById = new Map(input.schedulerRows.map(row => [row.id, row]))
   const dueCapabilities = dueList.map(due => {
+    const stateRow = stateById.get(due.stateId)
     const capability = input.capabilitiesByKey.get(due.canonicalKeySnapshot)
     const readiness = input.readinessByKey.get(due.canonicalKeySnapshot)
+    const context = reviewContext({
+      capability: capability ?? null,
+      schedulerSnapshot: stateRow ? snapshotFromLearnerRow(stateRow) : {
+        stateVersion: due.stateVersion,
+        activationState: 'active',
+        reviewCount: 0,
+        lapseCount: 0,
+        consecutiveFailureCount: 0,
+      },
+    })
     if (!capability || !readiness) {
       return {
         capabilityId: due.capabilityId,
         canonicalKeySnapshot: due.canonicalKeySnapshot,
         stateVersion: due.stateVersion,
+        reviewContext: context,
         resolutionFailure: { reason: 'missing_capability_projection', details: 'Capability projection or readiness was not loaded.' },
       }
     }
@@ -75,12 +138,14 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
           capabilityId: due.capabilityId,
           canonicalKeySnapshot: due.canonicalKeySnapshot,
           stateVersion: due.stateVersion,
+          reviewContext: context,
           renderPlan: resolution.plan,
         }
       : {
           capabilityId: due.capabilityId,
           canonicalKeySnapshot: due.canonicalKeySnapshot,
           stateVersion: due.stateVersion,
+          reviewContext: context,
           resolutionFailure: { reason: resolution.reason, details: resolution.details },
         }
   })
@@ -97,19 +162,23 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
       return {
         capability: { id: eligible.capability.id, canonicalKey: eligible.capability.canonicalKey },
         activationRequest: { reason: 'eligible_new_capability' as const },
+        reviewContext: reviewContext({ capability: capability ?? null, schedulerSnapshot: dormantSnapshot() }),
         resolutionFailure: { reason: 'missing_capability_projection', details: 'Capability projection or readiness was not loaded.' },
       }
     }
+    const context = reviewContext({ capability, schedulerSnapshot: dormantSnapshot() })
     const resolution = resolveExercise({ capability, readiness, artifactIndex: input.artifactIndex })
     return resolution.status === 'resolved'
       ? {
           capability: { id: eligible.capability.id, canonicalKey: eligible.capability.canonicalKey },
           activationRequest: { reason: 'eligible_new_capability' as const },
+          reviewContext: context,
           renderPlan: resolution.plan,
         }
       : {
           capability: { id: eligible.capability.id, canonicalKey: eligible.capability.canonicalKey },
           activationRequest: { reason: 'eligible_new_capability' as const },
+          reviewContext: context,
           resolutionFailure: { reason: resolution.reason, details: resolution.details },
         }
   })

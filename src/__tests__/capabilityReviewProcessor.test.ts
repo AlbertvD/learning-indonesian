@@ -7,7 +7,7 @@ import {
 } from '@/lib/reviews/capabilityReviewProcessor'
 
 vi.mock('@/lib/supabase', () => ({
-  supabase: { schema: vi.fn() },
+  supabase: { functions: { invoke: vi.fn() } },
 }))
 
 function command(overrides: Partial<CapabilityAnswerReportCommand> = {}): CapabilityAnswerReportCommand {
@@ -186,8 +186,8 @@ describe('capability review processor', () => {
 })
 
 describe('capability review service', () => {
-  it('calls the schema-qualified commit RPC', async () => {
-    const rpc = vi.fn(async () => ({
+  it('commits through the trusted edge function instead of the browser RPC client', async () => {
+    const invoke = vi.fn(async () => ({
       data: {
         idempotencyStatus: 'committed',
         reviewEventId: 'review-1',
@@ -196,17 +196,23 @@ describe('capability review service', () => {
       },
       error: null,
     }))
-    const schema = vi.fn(() => ({ rpc }))
-    const service = createCapabilityReviewService({ schema })
+    const service = createCapabilityReviewService({ functions: { invoke } })
 
-    await service.commitCapabilityAnswerReport(planCapabilityReviewCommit(command()))
+    const plan = planCapabilityReviewCommit(command())
+    await service.commitCapabilityAnswerReport(plan)
 
-    expect(schema).toHaveBeenCalledWith('indonesian')
-    expect(rpc).toHaveBeenCalledWith('commit_capability_answer_report', {
-      p_command: expect.objectContaining({
-        userId: 'user-1',
-        idempotencyKey: 'session-1:capability:item-1:meaning:1',
-      }),
+    expect(invoke).toHaveBeenCalledWith('commit-capability-answer-report', {
+      body: {
+        plan: expect.objectContaining({
+          userId: 'user-1',
+          idempotencyKey: 'session-1:capability:item-1:meaning:1',
+        }),
+      },
     })
+    expect(invoke).not.toHaveBeenCalledWith(expect.anything(), expect.objectContaining({
+      body: expect.objectContaining({
+        userId: 'user-1',
+      }),
+    }))
   })
 })

@@ -6,6 +6,7 @@ import { ExerciseInstruction } from '@/components/exercises/primitives/ExerciseI
 import { ExerciseOption } from '@/components/exercises/primitives/ExerciseOption'
 import { ExerciseOptionGroup } from '@/components/exercises/primitives/ExerciseOptionGroup'
 import { ExercisePromptCard } from '@/components/exercises/primitives/ExercisePromptCard'
+import { capabilityLabel, exerciseLabel } from '@/lib/session/sessionLabels'
 import classes from './ExperiencePlayer.module.css'
 
 interface CapabilityExerciseFrameProps {
@@ -51,11 +52,11 @@ export function CapabilityExerciseFrame({
   }
 
   return (
-    <ExerciseFrame variant="session">
+    <ExerciseFrame as="section" variant="session">
       <ExerciseInstruction>{prompt}</ExerciseInstruction>
       <ExercisePromptCard variant="sentence">
-        <span className={classes.exercisePrompt}>{block.renderPlan.exerciseType.replaceAll('_', ' ')}</span>
-        <span className={classes.exercisePromptMeta}>{block.renderPlan.capabilityType.replaceAll('_', ' ')}</span>
+        <span className={classes.exercisePrompt}>{exerciseLabel(block.renderPlan.exerciseType)}</span>
+        <span className={classes.exercisePromptMeta}>{capabilityLabel(block.renderPlan.capabilityType)}</span>
       </ExercisePromptCard>
       <ExerciseOptionGroup>
         <ExerciseOption

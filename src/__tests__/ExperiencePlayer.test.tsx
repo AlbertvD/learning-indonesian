@@ -2,7 +2,40 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { ExperiencePlayer } from '@/components/experience/ExperiencePlayer'
+import type { CapabilityReviewSessionContext } from '@/lib/session/sessionPlan'
 import type { SessionPlan } from '@/lib/session/sessionPlan'
+
+const activeReviewContext: CapabilityReviewSessionContext = {
+  schedulerSnapshot: {
+    stateVersion: 2,
+    activationState: 'active',
+    stability: 1,
+    difficulty: 5,
+    lastReviewedAt: '2026-04-24T10:00:00.000Z',
+    nextDueAt: '2026-04-25T10:00:00.000Z',
+    reviewCount: 1,
+    lapseCount: 0,
+    consecutiveFailureCount: 0,
+  },
+  currentStateVersion: 2,
+  artifactVersionSnapshot: { artifactFingerprint: 'artifact-v1' },
+  capabilityReadinessStatus: 'ready',
+  capabilityPublicationStatus: 'published',
+}
+
+const dormantReviewContext: CapabilityReviewSessionContext = {
+  schedulerSnapshot: {
+    stateVersion: 0,
+    activationState: 'dormant',
+    reviewCount: 0,
+    lapseCount: 0,
+    consecutiveFailureCount: 0,
+  },
+  currentStateVersion: 0,
+  artifactVersionSnapshot: { artifactFingerprint: 'artifact-v1' },
+  capabilityReadinessStatus: 'ready',
+  capabilityPublicationStatus: 'published',
+}
 
 function plan(): SessionPlan {
   return {
@@ -18,6 +51,7 @@ function plan(): SessionPlan {
         capabilityId: 'cap-1',
         canonicalKeySnapshot: 'item:makan:meaning_recall:id_to_l1',
         stateVersion: 2,
+        reviewContext: activeReviewContext,
         renderPlan: {
           capabilityKey: 'item:makan:meaning_recall:id_to_l1',
           sourceRef: 'learning_items/makan',
@@ -32,6 +66,7 @@ function plan(): SessionPlan {
         kind: 'new_introduction',
         capabilityId: 'cap-2',
         canonicalKeySnapshot: 'item:minum:text_recognition:id_to_l1',
+        reviewContext: dormantReviewContext,
         pendingActivation: {
           capabilityId: 'cap-2',
           canonicalKeySnapshot: 'item:minum:text_recognition:id_to_l1',
@@ -56,10 +91,11 @@ describe('ExperiencePlayer', () => {
     render(<ExperiencePlayer plan={plan()} onAnswer={vi.fn()} onComplete={vi.fn()} />)
 
     expect(screen.getByRole('heading', { name: 'Daily Indonesian practice' })).toBeInTheDocument()
-    expect(screen.getByText((_, node) => node?.textContent === '2 capability cards')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'meaning recall' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'text recognition' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Session path in progress' })).toBeInTheDocument()
+    expect(screen.getByText((_, node) => node?.textContent === '2 vaardigheidskaarten')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Betekenis ophalen' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Tekst herkennen' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Sessieroute bezig' })).toBeInTheDocument()
+    expect(screen.getAllByRole('main')).toHaveLength(1)
   })
 
   it('emits answer events without directly committing review state', async () => {
@@ -67,7 +103,7 @@ describe('ExperiencePlayer', () => {
     const onAnswer = vi.fn(async () => {})
 
     render(<ExperiencePlayer plan={plan()} onAnswer={onAnswer} onComplete={vi.fn()} />)
-    await user.click(screen.getByRole('button', { name: 'I knew this' }))
+    await user.click(screen.getByRole('button', { name: 'Dit wist ik' }))
 
     expect(onAnswer).toHaveBeenCalledWith(expect.objectContaining({
       sessionId: 'session-1',
@@ -82,7 +118,7 @@ describe('ExperiencePlayer', () => {
         rawResponse: 'self_check_known',
       }),
     }))
-    expect(screen.getByText('Self-check captured for this preview. No FSRS review was written from this UI.')).toBeInTheDocument()
+    expect(screen.getByText('Zelfcheck opgeslagen voor deze preview. Deze UI schrijft geen FSRS-herhaling.')).toBeInTheDocument()
   })
 
   it('marks new introductions as pending Review Processor activation', async () => {
@@ -90,7 +126,7 @@ describe('ExperiencePlayer', () => {
     const onAnswer = vi.fn(async () => {})
 
     render(<ExperiencePlayer plan={plan()} onAnswer={onAnswer} onComplete={vi.fn()} />)
-    await user.click(screen.getByRole('button', { name: 'Keep it gentle' }))
+    await user.click(screen.getByRole('button', { name: 'Rustig opbouwen' }))
 
     expect(onAnswer).toHaveBeenCalledWith(expect.objectContaining({
       blockKind: 'new_introduction',
@@ -100,7 +136,7 @@ describe('ExperiencePlayer', () => {
         rawResponse: 'self_check_needs_practice',
       }),
     }))
-    expect(screen.getByText('Preview self-check captured. Pending activation remains owned by the Review Processor.')).toBeInTheDocument()
+    expect(screen.getByText('Preview-zelfcheck opgeslagen. Activatie blijft eigendom van de reviewverwerker.')).toBeInTheDocument()
   })
 
   it('only completes from recap after all capability cards are answered', async () => {
@@ -108,15 +144,15 @@ describe('ExperiencePlayer', () => {
     const onComplete = vi.fn()
 
     render(<ExperiencePlayer plan={plan()} onAnswer={vi.fn(async () => {})} onComplete={onComplete} />)
-    expect(screen.getByRole('button', { name: 'Finish after cards' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Rond af na de kaarten' })).toBeDisabled()
 
-    await user.click(screen.getByRole('button', { name: 'I knew this' }))
-    await user.click(screen.getByRole('button', { name: 'Feels familiar' }))
-    expect(screen.getByRole('heading', { name: 'Session path complete' })).toBeInTheDocument()
-    expect(screen.getByText('Reviewed preview')).toBeInTheDocument()
-    expect(screen.getByText('Introduced preview')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Dit wist ik' }))
+    await user.click(screen.getByRole('button', { name: 'Voelt bekend' }))
+    expect(screen.getByRole('heading', { name: 'Sessieroute afgerond' })).toBeInTheDocument()
+    expect(screen.getByText('Preview herhaald')).toBeInTheDocument()
+    expect(screen.getByText('Preview geintroduceerd')).toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'Finish session' }))
+    await user.click(screen.getByRole('button', { name: 'Sessie afronden' }))
 
     expect(onComplete).toHaveBeenCalledTimes(1)
   })

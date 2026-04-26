@@ -30,6 +30,23 @@ interface SupabaseSchemaClient {
   }
 }
 
+const CAPABILITY_COLUMNS = [
+  'id',
+  'canonical_key',
+  'source_kind',
+  'source_ref',
+  'capability_type',
+  'direction',
+  'modality',
+  'learner_language',
+  'projection_version',
+  'readiness_status',
+  'publication_status',
+  'source_fingerprint',
+  'artifact_fingerprint',
+  'metadata_json',
+].join(',')
+
 interface LearningCapabilityDbRow {
   id: string
   canonical_key: string
@@ -276,22 +293,31 @@ export function createCapabilitySessionDataService(client: SupabaseSchemaClient 
       const [
         capabilitiesResult,
         statesResult,
-        artifactsResult,
         sourceProgressResult,
       ] = await Promise.all([
-        db().from('learning_capabilities').select('*'),
+        db()
+          .from('learning_capabilities')
+          .select(CAPABILITY_COLUMNS)
+          .eq('readiness_status', 'ready')
+          .eq('publication_status', 'published'),
         db().from('learner_capability_state').select('*').eq('user_id', request.userId),
-        db().from('capability_artifacts').select('*'),
         db().from('learner_source_progress_state').select('*').eq('user_id', request.userId),
       ])
 
       if (capabilitiesResult.error) throw capabilitiesResult.error
       if (statesResult.error) throw statesResult.error
-      if (artifactsResult.error) throw artifactsResult.error
       if (sourceProgressResult.error) throw sourceProgressResult.error
 
       const capabilityRows = (capabilitiesResult.data ?? []) as LearningCapabilityDbRow[]
       const capabilityById = new Map(capabilityRows.map(row => [row.id, row]))
+      const capabilityIds = capabilityRows.map(row => row.id)
+      const artifactsResult = capabilityIds.length > 0
+        ? await db()
+            .from('capability_artifacts')
+            .select('*')
+            .in('capability_id', capabilityIds)
+        : { data: [], error: null }
+      if (artifactsResult.error) throw artifactsResult.error
       const artifactIndex = buildArtifactIndex((artifactsResult.data ?? []) as CapabilityArtifactDbRow[], capabilityById)
 
       const capabilitiesByKey = new Map<string, ProjectedCapability>()

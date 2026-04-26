@@ -1,6 +1,6 @@
 import type { CapabilityActivationRequest } from '@/lib/reviews/capabilityReviewProcessor'
 import type { ExerciseRenderPlan } from '@/lib/exercises/exerciseRenderPlan'
-import type { SessionDiagnostic, SessionPlan } from '@/lib/session/sessionPlan'
+import type { CapabilityReviewSessionContext, SessionDiagnostic, SessionPlan } from '@/lib/session/sessionPlan'
 
 interface ResolutionFailure {
   reason: string
@@ -12,6 +12,7 @@ export interface DueSessionCapabilityInput {
   canonicalKeySnapshot: string
   stateVersion: number
   renderPlan?: ExerciseRenderPlan
+  reviewContext: CapabilityReviewSessionContext
   resolutionFailure?: ResolutionFailure
 }
 
@@ -21,6 +22,7 @@ export interface EligibleNewSessionCapabilityInput {
     canonicalKey: string
   }
   renderPlan?: ExerciseRenderPlan
+  reviewContext: CapabilityReviewSessionContext
   resolutionFailure?: ResolutionFailure
   activationRequest: CapabilityActivationRequest
 }
@@ -57,6 +59,7 @@ export async function composeSession(input: ComposeSessionInput): Promise<Sessio
       capabilityId: due.capabilityId,
       canonicalKeySnapshot: due.canonicalKeySnapshot,
       stateVersion: due.stateVersion,
+      reviewContext: due.reviewContext,
     })
   }
 
@@ -71,6 +74,7 @@ export async function composeSession(input: ComposeSessionInput): Promise<Sessio
       renderPlan: introduction.renderPlan,
       capabilityId: introduction.capability.id,
       canonicalKeySnapshot: introduction.capability.canonicalKey,
+      reviewContext: introduction.reviewContext,
       pendingActivation: {
         capabilityId: introduction.capability.id,
         canonicalKeySnapshot: introduction.capability.canonicalKey,
@@ -83,7 +87,7 @@ export async function composeSession(input: ComposeSessionInput): Promise<Sessio
   return {
     id: input.sessionId,
     mode: input.mode,
-    title: 'Daily Indonesian practice',
+    title: 'Dagelijkse Indonesische oefening',
     blocks: blocks.slice(0, input.limit),
     recapPolicy: 'standard',
     diagnostics,

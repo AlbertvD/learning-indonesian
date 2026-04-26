@@ -1,5 +1,26 @@
 import { describe, expect, it } from 'vitest'
 import { composeSession } from '@/lib/session/sessionComposer'
+import type { CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
+
+const activeSnapshot: CapabilityScheduleSnapshot = {
+  stateVersion: 2,
+  activationState: 'active',
+  stability: 1,
+  difficulty: 5,
+  lastReviewedAt: '2026-04-24T10:00:00.000Z',
+  nextDueAt: '2026-04-25T10:00:00.000Z',
+  reviewCount: 1,
+  lapseCount: 0,
+  consecutiveFailureCount: 0,
+}
+
+const dormantSnapshot: CapabilityScheduleSnapshot = {
+  stateVersion: 0,
+  activationState: 'dormant',
+  reviewCount: 0,
+  lapseCount: 0,
+  consecutiveFailureCount: 0,
+}
 
 describe('capability session composer', () => {
   it('orders due review items before eligible new introductions', async () => {
@@ -10,12 +31,26 @@ describe('capability session composer', () => {
         capabilityId: 'capability-due',
         canonicalKeySnapshot: 'due-key',
         stateVersion: 2,
+        reviewContext: {
+          schedulerSnapshot: activeSnapshot,
+          currentStateVersion: 2,
+          artifactVersionSnapshot: { artifactFingerprint: 'due-artifact' },
+          capabilityReadinessStatus: 'ready',
+          capabilityPublicationStatus: 'published',
+        },
         renderPlan: { capabilityKey: 'due-key', sourceRef: 'source-1', exerciseType: 'meaning_recall', capabilityType: 'meaning_recall', skillType: 'meaning_recall', requiredArtifacts: [] },
       }],
       eligibleNewCapabilities: [{
         capability: { id: 'capability-new', canonicalKey: 'new-key' },
         renderPlan: { capabilityKey: 'new-key', sourceRef: 'source-2', exerciseType: 'recognition_mcq', capabilityType: 'text_recognition', skillType: 'recognition', requiredArtifacts: [] },
         activationRequest: { reason: 'eligible_new_capability' },
+        reviewContext: {
+          schedulerSnapshot: dormantSnapshot,
+          currentStateVersion: 0,
+          artifactVersionSnapshot: { artifactFingerprint: 'new-artifact' },
+          capabilityReadinessStatus: 'ready',
+          capabilityPublicationStatus: 'published',
+        },
       }],
       limit: 10,
     })
@@ -25,7 +60,13 @@ describe('capability session composer', () => {
       pendingActivation: expect.objectContaining({
         requiredActivationOwner: 'review_processor',
       }),
+      reviewContext: expect.objectContaining({
+        schedulerSnapshot: expect.objectContaining({ activationState: 'dormant' }),
+        currentStateVersion: 0,
+        artifactVersionSnapshot: { artifactFingerprint: 'new-artifact' },
+      }),
     }))
+    expect(plan.title).toBe('Dagelijkse Indonesische oefening')
   })
 
   it('omits failed resolutions instead of falling back to legacy content', async () => {
@@ -36,6 +77,13 @@ describe('capability session composer', () => {
         capabilityId: 'capability-due',
         canonicalKeySnapshot: 'due-key',
         stateVersion: 2,
+        reviewContext: {
+          schedulerSnapshot: activeSnapshot,
+          currentStateVersion: 2,
+          artifactVersionSnapshot: {},
+          capabilityReadinessStatus: 'ready',
+          capabilityPublicationStatus: 'published',
+        },
         resolutionFailure: { reason: 'missing_required_artifact', details: 'missing' },
       }],
       eligibleNewCapabilities: [],

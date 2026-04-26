@@ -119,6 +119,20 @@ describe('capability session loader', () => {
       capabilityId: 'capability-1',
       canonicalKeySnapshot: canonicalKey,
       stateVersion: 3,
+      reviewContext: expect.objectContaining({
+        currentStateVersion: 3,
+        schedulerSnapshot: expect.objectContaining({
+          activationState: 'active',
+          stateVersion: 3,
+          reviewCount: 1,
+        }),
+        artifactVersionSnapshot: expect.objectContaining({
+          artifactFingerprint: 'artifact',
+          sourceFingerprint: 'source',
+        }),
+        capabilityReadinessStatus: 'ready',
+        capabilityPublicationStatus: 'published',
+      }),
       renderPlan: expect.objectContaining({
         capabilityKey: canonicalKey,
         exerciseType: 'meaning_recall',
@@ -144,6 +158,14 @@ describe('capability session loader', () => {
       id: `${plan.id}:new:${canonicalKey}`,
       kind: 'new_introduction',
       capabilityId: 'capability-1',
+      reviewContext: expect.objectContaining({
+        currentStateVersion: 0,
+        schedulerSnapshot: expect.objectContaining({
+          activationState: 'dormant',
+          stateVersion: 0,
+          reviewCount: 0,
+        }),
+      }),
       pendingActivation: expect.objectContaining({
         requiredActivationOwner: 'review_processor',
       }),

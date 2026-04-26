@@ -26,6 +26,8 @@ import { SessionSummary } from '@/components/SessionSummary'
 import { logError } from '@/lib/logger'
 import { capabilityMigrationFlags } from '@/lib/featureFlags'
 import { loadCapabilitySessionPlanForUser } from '@/lib/session/capabilitySessionLoader'
+import { commitCapabilityAnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
+import { capabilityReviewService } from '@/services/capabilityReviewService'
 import { capabilitySessionDataService } from '@/services/capabilitySessionDataService'
 import type { SessionPlan } from '@/lib/session/sessionPlan'
 import type { SessionQueueItem, LearnerItemState, LearnerSkillState, LearnerGrammarState, GrammarPatternWithLesson, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant, WeeklyGoal } from '@/types/learning'
@@ -467,10 +469,37 @@ export function Session() {
   }
 
   const handleCapabilityAnswer = async (event: SessionAnswerEvent) => {
-    // The Experience Player emits answer reports only. Review validation,
-    // first-review activation, and FSRS writes remain owned by the Review
-    // Processor compatibility path once full capability exercise hydration
-    // provides scheduler/artifact snapshots.
+    if (!user || !capabilityPlan) return
+    const block = capabilityPlan.blocks.find(candidate => candidate.id === event.blockId)
+    if (!block) {
+      throw new Error(`Capability session block not found: ${event.blockId}`)
+    }
+
+    const result = await commitCapabilityAnswerReport({
+      userId: user.id,
+      sessionId: event.sessionId,
+      sessionItemId: event.blockId,
+      attemptNumber: 1,
+      idempotencyKey: `${user.id}:${event.sessionId}:${event.blockId}:1`,
+      capabilityId: event.capabilityId,
+      canonicalKeySnapshot: event.canonicalKeySnapshot,
+      answerReport: event.answerReport,
+      schedulerSnapshot: block.reviewContext.schedulerSnapshot,
+      currentStateVersion: block.reviewContext.currentStateVersion,
+      artifactVersionSnapshot: block.reviewContext.artifactVersionSnapshot,
+      activationRequest: block.pendingActivation?.activationRequest,
+      submittedAt: new Date().toISOString(),
+      capabilityReadinessStatus: block.reviewContext.capabilityReadinessStatus,
+      capabilityPublicationStatus: block.reviewContext.capabilityPublicationStatus,
+    }, { service: capabilityReviewService })
+
+    if (
+      result.idempotencyStatus !== 'committed'
+      && result.idempotencyStatus !== 'duplicate_returned'
+    ) {
+      throw new Error(`Capability review commit rejected: ${result.idempotencyStatus}`)
+    }
+
     setResults(r => ({
       total: r.total,
       correct: r.correct + (event.answerReport.wasCorrect ? 1 : 0),

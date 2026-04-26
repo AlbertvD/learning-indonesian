@@ -5,17 +5,20 @@ import type {
 } from '@/lib/reviews/capabilityReviewProcessor'
 
 interface SupabaseSchemaClient {
-  schema(schema: 'indonesian'): {
-    rpc(fn: string, args: Record<string, unknown>): any
+  functions: {
+    invoke(fn: string, args: { body: Record<string, unknown> }): Promise<{
+      data: unknown
+      error: unknown
+    }>
   }
 }
 
 export function createCapabilityReviewService(client: SupabaseSchemaClient = supabase) {
   return {
     async commitCapabilityAnswerReport(plan: CapabilityReviewCommitPlan): Promise<CapabilityReviewCommitResult> {
-      const { data, error } = await client
-        .schema('indonesian')
-        .rpc('commit_capability_answer_report', { p_command: plan })
+      const { data, error } = await client.functions.invoke('commit-capability-answer-report', {
+        body: { plan },
+      })
       if (error) throw error
       return data as CapabilityReviewCommitResult
     },

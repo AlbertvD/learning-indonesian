@@ -1,5 +1,6 @@
-import type { SessionBlock } from '@/lib/session/sessionPlan'
+﻿import type { SessionBlock } from '@/lib/session/sessionPlan'
 import type { AnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
+import { capabilityLabel, exerciseLabel, skillLabel } from '@/lib/session/sessionLabels'
 import { CapabilityExerciseFrame } from '../CapabilityExerciseFrame'
 import classes from '../ExperiencePlayer.module.css'
 
@@ -19,8 +20,8 @@ export function DueReviewBlock({ block, position, total, answered, submitting, o
         <span className={classes.blockKicker}>Herhaling {position} van {total}</span>
         <span className={classes.kindPill}>Nu te herhalen</span>
       </div>
-      <h2 id={`${block.id}-title`}>{block.renderPlan.exerciseType.replaceAll('_', ' ')}</h2>
-      <p className={classes.blockMeta}>{block.renderPlan.capabilityType.replaceAll('_', ' ')} · {block.renderPlan.skillType}</p>
+      <h2 id={`${block.id}-title`}>{exerciseLabel(block.renderPlan.exerciseType)}</h2>
+      <p className={classes.blockMeta}>{capabilityLabel(block.renderPlan.capabilityType)} - {skillLabel(block.renderPlan.skillType)}</p>
       <p className={classes.capabilityKey}>{block.canonicalKeySnapshot}</p>
       <CapabilityExerciseFrame
         block={block}

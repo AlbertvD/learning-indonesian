@@ -1,11 +1,20 @@
-import type { CapabilityActivationRequest } from '@/lib/reviews/capabilityReviewProcessor'
+import type { CapabilityActivationRequest, CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
 import type { ExerciseRenderPlan } from '@/lib/exercises/exerciseRenderPlan'
+import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/services/capabilityService'
 
 export interface PendingActivationSessionItem {
   capabilityId: string
   canonicalKeySnapshot: string
   activationRequest: CapabilityActivationRequest
   requiredActivationOwner: 'review_processor'
+}
+
+export interface CapabilityReviewSessionContext {
+  schedulerSnapshot: CapabilityScheduleSnapshot
+  currentStateVersion: number
+  artifactVersionSnapshot: Record<string, unknown>
+  capabilityReadinessStatus: CapabilityReadinessStatus
+  capabilityPublicationStatus: CapabilityPublicationStatus
 }
 
 export interface SessionBlock {
@@ -15,6 +24,7 @@ export interface SessionBlock {
   capabilityId: string
   canonicalKeySnapshot: string
   stateVersion?: number
+  reviewContext: CapabilityReviewSessionContext
   pendingActivation?: PendingActivationSessionItem
 }
 
