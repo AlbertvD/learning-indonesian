@@ -149,6 +149,7 @@ begin
    where id = v_capability_id;
 
   if not found
+     or v_capability.canonical_key is distinct from p_command->>'canonicalKeySnapshot'
      or v_capability.readiness_status is distinct from 'ready'
      or v_capability.publication_status is distinct from 'published' then
     return jsonb_build_object(

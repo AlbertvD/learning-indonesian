@@ -22,17 +22,16 @@ export function NewIntroductionBlock({ block, position, total, answered, submitt
       </div>
       <h2 id={`${block.id}-title`}>{capabilityLabel(block.renderPlan.capabilityType)}</h2>
       <p className={classes.blockMeta}>
-        Eerste blootstelling gebruikt {exerciseLabel(block.renderPlan.exerciseType)} en wacht op activatie door de reviewverwerker.
+        Eerste oefening met {exerciseLabel(block.renderPlan.exerciseType)}. De reviewverwerker start daarna je persoonlijke planning.
       </p>
-      <p className={classes.capabilityKey}>{block.canonicalKeySnapshot}</p>
       <CapabilityExerciseFrame
         block={block}
         answered={answered}
         submitting={submitting}
-        prompt="Bekijk deze introductie. Een echte eerste herhaling moet nog door de reviewverwerker worden geactiveerd en opgeslagen."
+        prompt="Maak rustig kennis met deze nieuwe vaardigheid. Je antwoord bepaalt hoe voorzichtig de planning begint."
         positiveLabel="Voelt bekend"
         negativeLabel="Rustig opbouwen"
-        completionCopy="Preview-zelfcheck opgeslagen. Activatie blijft eigendom van de reviewverwerker."
+        completionCopy="Introductie opgeslagen. Je planning wordt bijgewerkt door de reviewverwerker."
         onAnswerReport={onAnswerReport}
       />
     </article>

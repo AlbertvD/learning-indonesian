@@ -309,11 +309,9 @@
   font-weight: 850;
 }
 
-.changeList code {
-  overflow-wrap: anywhere;
+.changeList strong {
   color: rgba(24, 35, 29, 0.72);
-  font-family: "Cascadia Mono", "SFMono-Regular", monospace;
-  font-size: 0.76rem;
+  font-size: 0.92rem;
 }
 
 .noChanges {

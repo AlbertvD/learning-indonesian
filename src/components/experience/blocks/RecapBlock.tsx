@@ -1,10 +1,11 @@
+import type { ExerciseType } from '@/types/learning'
+import { exerciseLabel } from '@/lib/session/sessionLabels'
 import classes from '../ExperiencePlayer.module.css'
 
 interface RecapCapabilityChange {
   id: string
   kind: 'due_review' | 'new_introduction'
-  capabilityKey: string
-  exerciseType: string
+  exerciseType: ExerciseType
 }
 
 interface RecapBlockProps {
@@ -26,7 +27,7 @@ export function RecapBlock({ answeredCount, totalCount, dueCount, newCount, chan
       <p className={classes.eyebrow}>Samenvatting</p>
       <h2 id="experience-recap-title">{complete ? 'Sessieroute afgerond' : 'Sessieroute bezig'}</h2>
       <p className={classes.lede}>
-        {answeredCount} van {totalCount} vaardigheidskaarten hebben preview-antwoorden opgeleverd. Deze samenvatting telt alleen kaarten die je hebt aangeraakt.
+        {answeredCount} van {totalCount} vaardigheidskaarten zijn veilig opgeslagen. Deze samenvatting telt alleen kaarten die je hebt afgerond.
       </p>
       <div className={classes.statGrid}>
         <span><strong>{answeredDue}</strong> van {dueCount} herhaald</span>
@@ -37,13 +38,13 @@ export function RecapBlock({ answeredCount, totalCount, dueCount, newCount, chan
         <ul className={classes.changeList} aria-label="Vaardigheden aangeraakt in deze sessie">
           {changedCapabilities.map(change => (
             <li key={change.id}>
-              <span>{change.kind === 'due_review' ? 'Preview herhaald' : 'Preview geintroduceerd'}</span>
-              <code>{change.capabilityKey}</code>
+              <span>{change.kind === 'due_review' ? 'Herhaling opgeslagen' : 'Introductie gestart'}</span>
+              <strong>{exerciseLabel(change.exerciseType)}</strong>
             </li>
           ))}
         </ul>
       ) : (
-        <p className={classes.noChanges}>Er zijn nog geen vaardigheidspreviews afgerond.</p>
+        <p className={classes.noChanges}>Er zijn nog geen vaardigheidskaarten afgerond.</p>
       )}
       <button type="button" className={classes.primaryAction} onClick={onComplete} disabled={!complete}>
         {complete ? 'Sessie afronden' : 'Rond af na de kaarten'}

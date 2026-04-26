@@ -64,7 +64,6 @@ export function ExperiencePlayer(props: {
     .map(block => ({
       id: block.id,
       kind: block.kind,
-      capabilityKey: block.canonicalKeySnapshot,
       exerciseType: block.renderPlan.exerciseType,
     }))
 

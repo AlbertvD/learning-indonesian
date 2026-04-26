@@ -22,15 +22,14 @@ export function DueReviewBlock({ block, position, total, answered, submitting, o
       </div>
       <h2 id={`${block.id}-title`}>{exerciseLabel(block.renderPlan.exerciseType)}</h2>
       <p className={classes.blockMeta}>{capabilityLabel(block.renderPlan.capabilityType)} - {skillLabel(block.renderPlan.skillType)}</p>
-      <p className={classes.capabilityKey}>{block.canonicalKeySnapshot}</p>
       <CapabilityExerciseFrame
         block={block}
         answered={answered}
         submitting={submitting}
-        prompt="Bekijk deze vaardigheid die klaarstaat voor herhaling. Volledige beoordeling blijft bij de oefenrenderer en reviewverwerker."
+        prompt="Beantwoord deze herhaling. De reviewverwerker slaat je voortgang veilig op en plant de volgende oefening."
         positiveLabel="Dit wist ik"
         negativeLabel="Nog oefenen"
-        completionCopy="Zelfcheck opgeslagen voor deze preview. Deze UI schrijft geen FSRS-herhaling."
+        completionCopy="Antwoord opgeslagen. Je herhalingsplanning is bijgewerkt."
         onAnswerReport={onAnswerReport}
       />
     </article>

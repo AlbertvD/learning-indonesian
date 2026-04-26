@@ -41,7 +41,7 @@ function plan(): SessionPlan {
   return {
     id: 'session-1',
     mode: 'standard',
-    title: 'Daily Indonesian practice',
+    title: 'Dagelijkse Indonesische oefening',
     recapPolicy: 'standard',
     diagnostics: [],
     blocks: [
@@ -90,12 +90,14 @@ describe('ExperiencePlayer', () => {
   it('renders a warm input, capability blocks, and recap for desktop/mobile flow', () => {
     render(<ExperiencePlayer plan={plan()} onAnswer={vi.fn()} onComplete={vi.fn()} />)
 
-    expect(screen.getByRole('heading', { name: 'Daily Indonesian practice' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Dagelijkse Indonesische oefening' })).toBeInTheDocument()
     expect(screen.getByText((_, node) => node?.textContent === '2 vaardigheidskaarten')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Betekenis ophalen' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Tekst herkennen' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Sessieroute bezig' })).toBeInTheDocument()
     expect(screen.getAllByRole('main')).toHaveLength(1)
+    expect(screen.queryByText('item:makan:meaning_recall:id_to_l1')).not.toBeInTheDocument()
+    expect(screen.queryByText('item:minum:text_recognition:id_to_l1')).not.toBeInTheDocument()
   })
 
   it('emits answer events without directly committing review state', async () => {
@@ -118,7 +120,7 @@ describe('ExperiencePlayer', () => {
         rawResponse: 'self_check_known',
       }),
     }))
-    expect(screen.getByText('Zelfcheck opgeslagen voor deze preview. Deze UI schrijft geen FSRS-herhaling.')).toBeInTheDocument()
+    expect(screen.getByText('Antwoord opgeslagen. Je herhalingsplanning is bijgewerkt.')).toBeInTheDocument()
   })
 
   it('keeps the card unanswered and shows a save error when review commit fails', async () => {
@@ -132,7 +134,7 @@ describe('ExperiencePlayer', () => {
 
     expect(await screen.findByRole('alert')).toHaveTextContent('Je antwoord kon niet worden opgeslagen')
     expect(screen.getByText('0/2')).toBeInTheDocument()
-    expect(screen.queryByText('Zelfcheck opgeslagen voor deze preview. Deze UI schrijft geen FSRS-herhaling.')).not.toBeInTheDocument()
+    expect(screen.queryByText('Antwoord opgeslagen. Je herhalingsplanning is bijgewerkt.')).not.toBeInTheDocument()
   })
 
   it('marks new introductions as pending Review Processor activation', async () => {
@@ -150,7 +152,7 @@ describe('ExperiencePlayer', () => {
         rawResponse: 'self_check_needs_practice',
       }),
     }))
-    expect(screen.getByText('Preview-zelfcheck opgeslagen. Activatie blijft eigendom van de reviewverwerker.')).toBeInTheDocument()
+    expect(screen.getByText('Introductie opgeslagen. Je planning wordt bijgewerkt door de reviewverwerker.')).toBeInTheDocument()
   })
 
   it('only completes from recap after all capability cards are answered', async () => {
@@ -163,8 +165,8 @@ describe('ExperiencePlayer', () => {
     await user.click(screen.getByRole('button', { name: 'Dit wist ik' }))
     await user.click(screen.getByRole('button', { name: 'Voelt bekend' }))
     expect(screen.getByRole('heading', { name: 'Sessieroute afgerond' })).toBeInTheDocument()
-    expect(screen.getByText('Preview herhaald')).toBeInTheDocument()
-    expect(screen.getByText('Preview geintroduceerd')).toBeInTheDocument()
+    expect(screen.getByText('Herhaling opgeslagen')).toBeInTheDocument()
+    expect(screen.getByText('Introductie gestart')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Sessie afronden' }))
 
