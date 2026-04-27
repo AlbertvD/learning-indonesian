@@ -218,8 +218,8 @@ begin
      or v_state_after->>'activationState' is distinct from 'active'
      or coalesce(v_state_after->>'activationSource', 'review_processor') not in ('review_processor', 'admin_backfill', 'legacy_migration')
      or (v_state_after->>'reviewCount')::integer is distinct from coalesce(v_state.review_count, 0) + 1
-     or (v_state_after->>'lapseCount')::integer is distinct from coalesce(v_state.lapse_count, 0) + case when v_rating = 1 and coalesce(v_state.review_count, 0) > 0 then 1 else 0 end
-     or (v_state_after->>'consecutiveFailureCount')::integer is distinct from case when v_rating = 1 then coalesce(v_state.consecutive_failure_count, 0) + 1 else 0 end
+     or (v_state_after->>'lapseCount')::integer is distinct from coalesce(v_state.lapse_count, 0) + (case when v_rating = 1 and coalesce(v_state.review_count, 0) > 0 then 1 else 0 end)
+     or (v_state_after->>'consecutiveFailureCount')::integer is distinct from (case when v_rating = 1 then coalesce(v_state.consecutive_failure_count, 0) + 1 else 0 end)
      or nullif(v_state_after->>'stability', '') is null
      or nullif(v_state_after->>'difficulty', '') is null
      or nullif(v_state_after->>'nextDueAt', '') is null
