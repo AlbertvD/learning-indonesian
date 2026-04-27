@@ -1,12 +1,6 @@
 import { createEmptyCard, fsrs, generatorParameters, Rating } from 'npm:ts-fsrs@5.3.2'
 import type { Card, FSRSParameters, Grade } from 'npm:ts-fsrs@5.3.2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-}
-
 const fsrsParams: FSRSParameters = {
   ...generatorParameters(),
   request_retention: 0.85,
@@ -69,7 +63,6 @@ function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
-      ...corsHeaders,
       'Content-Type': 'application/json',
     },
   })
@@ -198,7 +191,7 @@ function safeString(value: unknown): string | null {
 
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response('ok')
   }
   if (request.method !== 'POST') {
     return publicReject(405, 'method_not_allowed')
