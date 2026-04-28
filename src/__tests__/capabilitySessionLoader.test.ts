@@ -243,4 +243,53 @@ describe('capability session loader', () => {
       capabilityId: 'capability-1',
     }))
   })
+
+  it('passes decided comeback/recovery posture into the planner before composing new material', async () => {
+    const prerequisite = 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl'
+    const formKey = 'cap:v1:item:learning_items/item-1:form_recall:l1_to_id:text:nl'
+    const formProjection = projectedCapability({
+      canonicalKey: formKey,
+      capabilityType: 'form_recall',
+      skillType: 'form_recall',
+      direction: 'l1_to_id',
+      requiredArtifacts: ['meaning:l1', 'base_text', 'accepted_answers:id'],
+      prerequisiteKeys: [prerequisite],
+    })
+    const input = {
+      ...baseInput({
+        capabilitiesByKey: new Map([[formKey, formProjection]]),
+        readinessByKey: new Map([[formKey, { status: 'ready' as const, allowedExercises: ['typed_recall' as const] }]]),
+        artifactIndex: {
+          'meaning:l1': [{ qualityStatus: 'approved' as const, sourceRef }],
+          base_text: [{ qualityStatus: 'approved' as const, sourceRef }],
+          'accepted_answers:id': [{ qualityStatus: 'approved' as const, sourceRef }],
+        },
+        plannerInput: {
+          userId: 'user-1',
+          preferredSessionSize: 12,
+          dueCount: 2,
+          readyCapabilities: [plannerCapability({
+            id: 'form-capability',
+            canonicalKey: formKey,
+            capabilityType: 'form_recall',
+            skillType: 'form_recall',
+            prerequisiteKeys: [prerequisite],
+          })],
+          learnerCapabilityStates: [{
+            canonicalKey: prerequisite,
+            activationState: 'active',
+            reviewCount: 1,
+            successfulReviewCount: 1,
+          }],
+          sourceProgress: [],
+          recentReviewEvidence: [],
+        },
+      }),
+      posture: 'light_recovery',
+    } as Parameters<typeof loadCapabilitySessionPlan>[0] & { posture: 'light_recovery' }
+
+    const plan = await loadCapabilitySessionPlan(input)
+
+    expect(plan.blocks).toEqual([])
+  })
 })

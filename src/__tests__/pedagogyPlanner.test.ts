@@ -281,4 +281,35 @@ describe('pedagogy planner', () => {
 
     expect(plan.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual(['new-form-recall'])
   })
+
+  it('prefers the safe Dutch-to-Indonesian bridge over another meaning recall when balanced budget is tight', () => {
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'standard',
+      posture: 'balanced',
+      now: new Date('2026-04-25T00:00:00.000Z'),
+      preferredSessionSize: 4,
+      dueCount: 0,
+      readyCapabilities: [
+        capability({
+          id: 'meaning-cap',
+          canonicalKey: 'meaning-cap',
+          capabilityType: 'meaning_recall',
+          skillType: 'meaning_recall',
+        }),
+        capability({
+          id: 'choice-cap',
+          canonicalKey: 'choice-cap',
+          capabilityType: 'l1_to_id_choice',
+          skillType: 'meaning_recall',
+        }),
+      ],
+      learnerCapabilityStates: [],
+      sourceProgress: [],
+      recentReviewEvidence: [],
+    })
+
+    expect(plan.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual(['choice-cap'])
+    expect(plan.suppressedCapabilities).toContainEqual({ canonicalKey: 'meaning-cap', reason: 'load_budget_exhausted' })
+  })
 })

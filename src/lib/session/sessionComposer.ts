@@ -32,6 +32,7 @@ export interface ComposeSessionInput {
   mode: 'standard'
   dueCapabilities: DueSessionCapabilityInput[]
   eligibleNewCapabilities: EligibleNewSessionCapabilityInput[]
+  diagnostics?: SessionDiagnostic[]
   limit: number
 }
 
@@ -44,7 +45,7 @@ function diagnosticFor(failure: ResolutionFailure): SessionDiagnostic {
 }
 
 export async function composeSession(input: ComposeSessionInput): Promise<SessionPlan> {
-  const diagnostics: SessionDiagnostic[] = []
+  const diagnostics: SessionDiagnostic[] = [...(input.diagnostics ?? [])]
   const blocks: SessionPlan['blocks'] = []
 
   for (const due of input.dueCapabilities) {

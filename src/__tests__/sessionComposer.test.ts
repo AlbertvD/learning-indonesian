@@ -95,4 +95,48 @@ describe('capability session composer', () => {
       expect.objectContaining({ severity: 'warn', reason: 'missing_required_artifact' }),
     ]))
   })
+
+  it('keeps a clean short session instead of padding to the limit', async () => {
+    const plan = await composeSession({
+      sessionId: 'session-1',
+      mode: 'standard',
+      dueCapabilities: [],
+      eligibleNewCapabilities: [{
+        capability: { id: 'capability-new', canonicalKey: 'new-key' },
+        renderPlan: { capabilityKey: 'new-key', sourceRef: 'source-2', exerciseType: 'recognition_mcq', capabilityType: 'text_recognition', skillType: 'recognition', requiredArtifacts: [] },
+        activationRequest: { reason: 'eligible_new_capability' },
+        reviewContext: {
+          schedulerSnapshot: dormantSnapshot,
+          currentStateVersion: 0,
+          artifactVersionSnapshot: {},
+          capabilityReadinessStatus: 'ready',
+          capabilityPublicationStatus: 'published',
+        },
+      }],
+      limit: 5,
+    })
+
+    expect(plan.blocks).toHaveLength(1)
+  })
+
+  it('carries queue-drying diagnostics into the session plan', async () => {
+    const plan = await composeSession({
+      sessionId: 'session-1',
+      mode: 'standard',
+      dueCapabilities: [],
+      eligibleNewCapabilities: [],
+      diagnostics: [{
+        severity: 'warn',
+        reason: 'learning_pipeline_drying_up',
+        details: 'session.pipelineDryingUp',
+      }],
+      limit: 5,
+    })
+
+    expect(plan.diagnostics).toEqual([{
+      severity: 'warn',
+      reason: 'learning_pipeline_drying_up',
+      details: 'session.pipelineDryingUp',
+    }])
+  })
 })

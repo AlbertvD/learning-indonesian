@@ -8,6 +8,7 @@ import {
 import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
 import { resolveExercise } from '@/lib/exercises/exerciseResolver'
 import { planLearningPath, type PedagogyInput, type PlannerCapability } from '@/lib/pedagogy/pedagogyPlanner'
+import type { SessionPosture } from '@/lib/pedagogy/sessionPosture'
 import { composeSession } from '@/lib/session/sessionComposer'
 import type { CapabilityReviewSessionContext, SessionPlan } from '@/lib/session/sessionPlan'
 import type { CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
@@ -19,6 +20,7 @@ export interface CapabilitySessionLoaderInput {
   now: Date
   limit: number
   schedulerRows: LearnerCapabilityStateRow[]
+  posture?: SessionPosture
   plannerInput: Omit<PedagogyInput, 'mode' | 'now'>
   capabilitiesByKey: Map<string, ProjectedCapability>
   readinessByKey: Map<string, CapabilityReadiness>
@@ -153,6 +155,7 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
   const learningPlan = planLearningPath({
     ...input.plannerInput,
     mode: input.mode,
+    posture: input.posture,
     now: input.now,
   })
   const eligibleNewCapabilities = learningPlan.eligibleNewCapabilities.map(eligible => {

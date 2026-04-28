@@ -116,6 +116,23 @@ function isSourceSwitch(capability: PlannerCapability, currentSourceRefs?: strin
   return Boolean(currentSourceRefs?.length) && !currentSourceRefs!.includes(capability.sourceRef)
 }
 
+function balancedIntroductionPriority(capability: PlannerCapability): number {
+  if (capability.capabilityType === 'text_recognition') return 0
+  if (capability.capabilityType === 'l1_to_id_choice') return 1
+  if (capability.capabilityType === 'meaning_recall') return 2
+  if (capability.capabilityType === 'form_recall') return 3
+  if (isPattern(capability)) return 4
+  return 5
+}
+
+function orderedReadyCapabilities(input: PedagogyInput): PlannerCapability[] {
+  if (input.posture !== 'balanced') return [...input.readyCapabilities]
+  return [...input.readyCapabilities].sort((a, b) => (
+    balancedIntroductionPriority(a) - balancedIntroductionPriority(b)
+    || a.canonicalKey.localeCompare(b.canonicalKey)
+  ))
+}
+
 function isUsefulForCurrentPath(input: {
   capability: PlannerCapability
   currentSourceRefs?: string[]
@@ -173,7 +190,7 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
   let hiddenAudioTaskCount = 0
   let sourceSwitchCount = 0
 
-  for (const capability of input.readyCapabilities) {
+  for (const capability of orderedReadyCapabilities(input)) {
     const suppress = (reason: PlannerReason): void => {
       suppressedCapabilities.push({ canonicalKey: capability.canonicalKey, reason })
     }
