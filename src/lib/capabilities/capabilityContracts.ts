@@ -36,6 +36,7 @@ export interface CapabilityValidationInput {
 const exerciseByCapability: Partial<Record<ProjectedCapability['capabilityType'], ExerciseKind[]>> = {
   text_recognition: ['recognition_mcq'],
   meaning_recall: ['meaning_recall'],
+  l1_to_id_choice: ['cued_recall'],
   form_recall: ['typed_recall'],
   contextual_cloze: ['cloze'],
   audio_recognition: ['listening_mcq'],

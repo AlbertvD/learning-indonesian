@@ -35,6 +35,27 @@ describe('capability contract validation', () => {
     })
   })
 
+  it('maps Dutch-to-Indonesian choice to cued recall when bridge artifacts are approved', () => {
+    const bridgeCapability = {
+      ...baseCapability,
+      canonicalKey: 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl',
+      capabilityType: 'l1_to_id_choice' as any,
+      direction: 'l1_to_id' as const,
+      requiredArtifacts: ['meaning:l1', 'base_text'] as ProjectedCapability['requiredArtifacts'],
+    }
+
+    expect(validateCapability({
+      capability: bridgeCapability,
+      artifacts: {
+        'meaning:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
+        base_text: [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
+      },
+    })).toEqual({
+      status: 'ready',
+      allowedExercises: ['cued_recall'],
+    })
+  })
+
   it.each(['draft', 'blocked', 'deprecated'] as const)('fails closed for %s artifacts', qualityStatus => {
     const result = validateCapability({
       capability: baseCapability,

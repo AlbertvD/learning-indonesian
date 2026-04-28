@@ -38,6 +38,70 @@ describe('load budgets', () => {
     }))
   })
 
+  it('adds balanced posture hard maximums without padding requirements', () => {
+    expect(decideLoadBudget({
+      mode: 'standard',
+      posture: 'balanced',
+      preferredSessionSize: 16,
+      dueCount: 4,
+    })).toEqual(expect.objectContaining({
+      allowNewCapabilities: true,
+      maxNewCapabilities: 4,
+      maxNewConcepts: 1,
+      maxNewProductionTasks: 1,
+      maxSourceSwitches: 1,
+      targetSessionSize: 16,
+      allowQueuePadding: false,
+    }))
+  })
+
+  it('keeps light recovery gentle and suppresses new concepts when backlog is medium', () => {
+    expect(decideLoadBudget({
+      mode: 'standard',
+      posture: 'light_recovery',
+      preferredSessionSize: 12,
+      dueCount: 8,
+    })).toEqual(expect.objectContaining({
+      maxNewCapabilities: 2,
+      maxNewConcepts: 0,
+      maxNewProductionTasks: 0,
+      maxHiddenAudioTasks: 1,
+      targetSessionSize: 12,
+      allowQueuePadding: false,
+    }))
+  })
+
+  it('uses review-first and comeback budgets to avoid padding with new material', () => {
+    expect(decideLoadBudget({
+      mode: 'standard',
+      posture: 'review_first',
+      preferredSessionSize: 12,
+      dueCount: 9,
+    })).toEqual(expect.objectContaining({
+      allowNewCapabilities: false,
+      maxNewCapabilities: 0,
+      maxNewConcepts: 0,
+      maxNewProductionTasks: 0,
+      allowQueuePadding: false,
+    }))
+
+    expect(decideLoadBudget({
+      mode: 'standard',
+      posture: 'comeback',
+      preferredSessionSize: 15,
+      dueCount: 2,
+    })).toEqual(expect.objectContaining({
+      allowNewCapabilities: false,
+      maxNewCapabilities: 0,
+      maxNewConcepts: 0,
+      maxNewProductionTasks: 0,
+      maxHiddenAudioTasks: 0,
+      maxSourceSwitches: 0,
+      targetSessionSize: 8,
+      allowQueuePadding: false,
+    }))
+  })
+
   it('has explicit budgets for podcast phrases and morphology workshops', () => {
     expect(decideLoadBudget({
       mode: 'podcast',

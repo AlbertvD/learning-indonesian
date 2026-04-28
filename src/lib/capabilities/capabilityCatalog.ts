@@ -52,6 +52,7 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
     const sourceRef = `learning_items/${item.id}`
     const recognitionArtifacts: ArtifactKind[] = ['base_text', 'meaning:l1']
     const meaningArtifacts: ArtifactKind[] = ['meaning:l1', 'accepted_answers:l1']
+    const choiceArtifacts: ArtifactKind[] = ['meaning:l1', 'base_text']
     const formArtifacts: ArtifactKind[] = ['meaning:l1', 'base_text', 'accepted_answers:id']
     const recognitionProgress: CapabilitySourceProgressRequirement = {
       kind: 'source_progress',
@@ -82,6 +83,20 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       difficultyLevel: 1,
     })
     capabilities.push(textRecognitionCapability)
+    const choiceCapability = createCapability({
+      sourceKind: 'item',
+      sourceRef,
+      capabilityType: 'l1_to_id_choice',
+      skillType: 'meaning_recall',
+      direction: 'l1_to_id',
+      modality: 'text',
+      learnerLanguage: item.meanings[0]?.language ?? 'none',
+      requiredArtifacts: choiceArtifacts,
+      requiredSourceProgress: recallProgress,
+      prerequisiteKeys: [textRecognitionCapability.canonicalKey],
+      difficultyLevel: 2,
+    })
+    capabilities.push(choiceCapability)
     capabilities.push(createCapability({
       sourceKind: 'item',
       sourceRef,
@@ -105,7 +120,7 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       learnerLanguage: item.meanings[0]?.language ?? 'none',
       requiredArtifacts: formArtifacts,
       requiredSourceProgress: recallProgress,
-      prerequisiteKeys: [textRecognitionCapability.canonicalKey],
+      prerequisiteKeys: [choiceCapability.canonicalKey],
       difficultyLevel: 3,
     }))
 

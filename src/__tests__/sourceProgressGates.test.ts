@@ -55,6 +55,44 @@ describe('source progress gates', () => {
     })).toEqual({ satisfied: true, reason: 'satisfied_by_evidence' })
   })
 
+  it('allows Dutch-to-Indonesian choice evidence to introduce vocabulary without relying on legacy skill type', () => {
+    expect(isSourceProgressSatisfied({
+      requiredSourceProgress: {
+        kind: 'source_progress',
+        sourceRef: 'learning_items/item-1',
+        requiredState: 'intro_completed',
+      },
+      sourceProgress: [],
+      evidence: [{
+        capabilityKey: 'choice-cap',
+        sourceRef: 'learning_items/item-1',
+        skillType: 'meaning_recall',
+        capabilityType: 'l1_to_id_choice',
+        successfulReviews: 1,
+      }],
+      allowEvidenceBypass: true,
+    })).toEqual({ satisfied: true, reason: 'satisfied_by_evidence' })
+  })
+
+  it('does not let ordinary meaning recall count as vocabulary introduction evidence', () => {
+    expect(isSourceProgressSatisfied({
+      requiredSourceProgress: {
+        kind: 'source_progress',
+        sourceRef: 'learning_items/item-1',
+        requiredState: 'intro_completed',
+      },
+      sourceProgress: [],
+      evidence: [{
+        capabilityKey: 'meaning-cap',
+        sourceRef: 'learning_items/item-1',
+        skillType: 'meaning_recall',
+        capabilityType: 'meaning_recall',
+        successfulReviews: 3,
+      }],
+      allowEvidenceBypass: true,
+    })).toEqual({ satisfied: false, reason: 'missing_source_progress' })
+  })
+
   it('does not allow unrelated recognition evidence to bypass source progress', () => {
     expect(isSourceProgressSatisfied({
       requiredSourceProgress: {

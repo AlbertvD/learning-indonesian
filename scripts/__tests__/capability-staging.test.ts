@@ -46,8 +46,16 @@ describe('capability staging', () => {
         contentUnitSlugs: ['item-makan'],
       }),
       expect.objectContaining({
-        canonicalKey: expect.stringContaining(':form_recall:'),
+        canonicalKey: expect.stringContaining(':l1_to_id_choice:'),
+        capabilityType: 'l1_to_id_choice',
+        skillType: 'meaning_recall',
+        direction: 'l1_to_id',
         prerequisiteKeys: [expect.stringContaining(':text_recognition:')],
+        relationshipKind: 'introduced_by',
+      }),
+      expect.objectContaining({
+        canonicalKey: expect.stringContaining(':form_recall:'),
+        prerequisiteKeys: [expect.stringContaining(':l1_to_id_choice:')],
         requiredSourceProgress: expect.objectContaining({ requiredState: 'intro_completed' }),
         difficultyLevel: 3,
       }),

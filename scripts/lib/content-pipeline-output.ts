@@ -287,13 +287,18 @@ export function buildCapabilityStagingFromContent(input: StagingLessonInput & {
     })),
   })
 
+  function relationshipKindForCapability(capability: ProjectedCapability): StagingCapability['relationshipKind'] {
+    if (capability.capabilityType === 'l1_to_id_choice') return 'introduced_by'
+    return capability.capabilityType.includes('recognition') ? 'introduced_by' : 'practiced_by'
+  }
+
   const capabilities: StagingCapability[] = projection.capabilities.map((capability: ProjectedCapability) => {
     const unit = itemUnitsBySourceRef.get(capability.sourceRef)
       ?? patternUnitsBySourceRef.get(capability.sourceRef)
     return {
       ...capability,
       contentUnitSlugs: unit ? [unit.unit_slug] : [],
-      relationshipKind: capability.capabilityType.includes('recognition') ? 'introduced_by' : 'practiced_by',
+      relationshipKind: relationshipKindForCapability(capability),
     }
   })
 

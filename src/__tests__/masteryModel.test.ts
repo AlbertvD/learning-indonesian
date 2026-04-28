@@ -93,11 +93,20 @@ describe('mastery model derivation', () => {
           stability: 1,
           lastReviewedAt: '2026-04-20T12:00:00.000Z',
         }),
+        evidence({
+          capabilityId: 'cap-choice',
+          canonicalKey: 'item:makan:l1_to_id_choice:l1_to_id',
+          capabilityType: 'l1_to_id_choice' as any,
+          reviewCount: 3,
+          stability: 6,
+          lastReviewedAt: '2026-04-20T12:00:00.000Z',
+        }),
       ],
     })
 
     expect(result.dimensions).toEqual(expect.arrayContaining([
       expect.objectContaining({ dimension: 'text_recognition', label: 'mastered' }),
+      expect.objectContaining({ dimension: 'l1_to_id_choice', label: 'strengthening' }),
       expect.objectContaining({ dimension: 'form_recall', label: 'learning' }),
     ]))
     expect(result.label).toBe('learning')

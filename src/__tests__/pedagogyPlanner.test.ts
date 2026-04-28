@@ -211,4 +211,74 @@ describe('pedagogy planner', () => {
       { canonicalKey: 'off-path', reason: 'not_useful_for_current_path' },
     ]))
   })
+
+  it('uses posture budgets to avoid brand-new production during light recovery', () => {
+    const prerequisite = 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl'
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'standard',
+      posture: 'light_recovery',
+      now: new Date('2026-04-25T00:00:00.000Z'),
+      preferredSessionSize: 12,
+      dueCount: 2,
+      readyCapabilities: [capability({
+        canonicalKey: 'new-form-recall',
+        capabilityType: 'form_recall',
+        skillType: 'form_recall',
+        prerequisiteKeys: [prerequisite],
+      })],
+      learnerCapabilityStates: [{
+        canonicalKey: prerequisite,
+        activationState: 'active',
+        reviewCount: 1,
+        successfulReviewCount: 1,
+      }],
+      sourceProgress: [],
+      recentReviewEvidence: [],
+    })
+
+    expect(plan.eligibleNewCapabilities).toEqual([])
+    expect(plan.suppressedCapabilities).toEqual([
+      { canonicalKey: 'new-form-recall', reason: 'load_budget_exhausted' },
+    ])
+    expect(plan.loadBudget.maxNewProductionTasks).toBe(0)
+  })
+
+  it('allows bridge choice evidence to satisfy vocabulary source-progress gates for production', () => {
+    const prerequisite = 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl'
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'standard',
+      now: new Date('2026-04-25T00:00:00.000Z'),
+      preferredSessionSize: 12,
+      dueCount: 0,
+      readyCapabilities: [capability({
+        canonicalKey: 'new-form-recall',
+        capabilityType: 'form_recall',
+        skillType: 'form_recall',
+        prerequisiteKeys: [prerequisite],
+        requiredSourceProgress: {
+          kind: 'source_progress',
+          sourceRef: 'learning_items/item-1',
+          requiredState: 'intro_completed',
+        },
+      })],
+      learnerCapabilityStates: [{
+        canonicalKey: prerequisite,
+        activationState: 'active',
+        reviewCount: 1,
+        successfulReviewCount: 1,
+      }],
+      sourceProgress: [],
+      recentReviewEvidence: [{
+        capabilityKey: prerequisite,
+        sourceRef: 'learning_items/item-1',
+        skillType: 'meaning_recall',
+        capabilityType: 'l1_to_id_choice',
+        successfulReviews: 1,
+      }],
+    })
+
+    expect(plan.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual(['new-form-recall'])
+  })
 })

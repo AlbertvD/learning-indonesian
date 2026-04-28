@@ -29,6 +29,7 @@ export interface ExerciseResolutionInput {
 const compatibleExercisesByCapability: Partial<Record<ProjectedCapability['capabilityType'], ExerciseType[]>> = {
   text_recognition: ['recognition_mcq'],
   meaning_recall: ['meaning_recall'],
+  l1_to_id_choice: ['cued_recall'],
   form_recall: ['typed_recall', 'cued_recall'],
   contextual_cloze: ['cloze', 'cloze_mcq'],
   audio_recognition: ['listening_mcq'],

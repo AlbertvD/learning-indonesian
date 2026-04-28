@@ -18,7 +18,7 @@ import { getDueCapabilitiesFromRows } from '@/lib/capabilities/capabilitySchedul
 import type { LearnerSourceProgress, ReviewEvidence } from '@/lib/pedagogy/sourceProgressGates'
 import type { PlannerCapability, PlannerLearnerCapabilityState } from '@/lib/pedagogy/pedagogyPlanner'
 import type { CapabilitySessionDataAdapter, CapabilitySessionDataRequest, CapabilitySessionDataSnapshot } from '@/lib/session/capabilitySessionLoader'
-import type { SkillType } from '@/types/learning'
+import type { ExerciseType, SkillType } from '@/types/learning'
 import type {
   CapabilityPublicationStatus,
   CapabilityReadinessStatus,
@@ -96,6 +96,12 @@ interface SourceProgressDbRow {
   completed_event_types: LearnerSourceProgress['completedEventTypes']
 }
 
+interface CapabilityReviewEventDbRow {
+  capability_id: string
+  rating: number
+  answer_report_json: Record<string, unknown> | null
+}
+
 const DEFAULT_SOURCE_SECTION_REF = '__lesson__'
 const sourceProgressStates = new Set<SourceProgressRequirement['requiredState']>([
   'section_exposed',
@@ -140,6 +146,7 @@ function sourceProgressRequirement(value: unknown): CapabilitySourceProgressRequ
 const lessonSequencedCapabilityTypes = new Set<CapabilityType>([
   'text_recognition',
   'meaning_recall',
+  'l1_to_id_choice',
   'form_recall',
   'audio_recognition',
   'dictation',
@@ -267,6 +274,40 @@ function toSourceProgress(row: SourceProgressDbRow): LearnerSourceProgress {
   }
 }
 
+function isExerciseType(value: unknown): value is ExerciseType {
+  return typeof value === 'string'
+}
+
+function isSuccessfulCapabilityReview(row: CapabilityReviewEventDbRow): boolean {
+  const wasCorrect = row.answer_report_json?.wasCorrect
+  if (typeof wasCorrect === 'boolean') return wasCorrect
+  return row.rating > 1
+}
+
+function toReviewEvidence(
+  rows: CapabilityReviewEventDbRow[],
+  capabilityById: Map<string, LearningCapabilityDbRow>,
+): ReviewEvidence[] {
+  return rows.flatMap(row => {
+    if (!isSuccessfulCapabilityReview(row)) return []
+    const capability = capabilityById.get(row.capability_id)
+    if (!capability) return []
+    const skillType = typeof capability.metadata_json?.skillType === 'string'
+      ? capability.metadata_json.skillType
+      : null
+    if (!skillType) return []
+    const exerciseType = row.answer_report_json?.exerciseType
+    return [{
+      capabilityKey: capability.canonical_key,
+      sourceRef: capability.source_ref,
+      skillType,
+      capabilityType: capability.capability_type,
+      ...(isExerciseType(exerciseType) ? { exerciseType } : {}),
+      successfulReviews: 1,
+    }]
+  })
+}
+
 export function createCapabilitySessionDataService(client: SupabaseSchemaClient = supabase): CapabilitySessionDataAdapter {
   const db = () => client.schema('indonesian')
 
@@ -294,6 +335,7 @@ export function createCapabilitySessionDataService(client: SupabaseSchemaClient 
         capabilitiesResult,
         statesResult,
         sourceProgressResult,
+        reviewEvidenceResult,
       ] = await Promise.all([
         db()
           .from('learning_capabilities')
@@ -302,11 +344,13 @@ export function createCapabilitySessionDataService(client: SupabaseSchemaClient 
           .eq('publication_status', 'published'),
         db().from('learner_capability_state').select('*').eq('user_id', request.userId),
         db().from('learner_source_progress_state').select('*').eq('user_id', request.userId),
+        db().from('capability_review_events').select('capability_id, rating, answer_report_json').eq('user_id', request.userId),
       ])
 
       if (capabilitiesResult.error) throw capabilitiesResult.error
       if (statesResult.error) throw statesResult.error
       if (sourceProgressResult.error) throw sourceProgressResult.error
+      if (reviewEvidenceResult.error) throw reviewEvidenceResult.error
 
       const capabilityRows = (capabilitiesResult.data ?? []) as LearningCapabilityDbRow[]
       const capabilityById = new Map(capabilityRows.map(row => [row.id, row]))
@@ -367,7 +411,7 @@ export function createCapabilitySessionDataService(client: SupabaseSchemaClient 
           readyCapabilities,
           learnerCapabilityStates: schedulerRows.map(toPlannerState),
           sourceProgress: ((sourceProgressResult.data ?? []) as SourceProgressDbRow[]).map(toSourceProgress),
-          recentReviewEvidence: [] satisfies ReviewEvidence[],
+          recentReviewEvidence: toReviewEvidence((reviewEvidenceResult.data ?? []) as CapabilityReviewEventDbRow[], capabilityById),
           currentSourceRefs,
           activeGoalTags: [],
           maxNewDifficultyLevel: 5,

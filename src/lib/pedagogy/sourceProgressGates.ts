@@ -1,5 +1,6 @@
-import type { CapabilitySourceProgressRequirement } from '@/lib/capabilities/capabilityTypes'
+import type { CapabilitySourceProgressRequirement, CapabilityType } from '@/lib/capabilities/capabilityTypes'
 import type { SourceProgressEventType, SourceProgressStateValue } from '@/services/sourceProgressService'
+import type { ExerciseType } from '@/types/learning'
 
 export interface LearnerSourceProgress {
   sourceRef: string
@@ -12,6 +13,8 @@ export interface ReviewEvidence {
   capabilityKey: string
   sourceRef: string
   skillType: string
+  capabilityType?: CapabilityType
+  exerciseType?: ExerciseType
   successfulReviews: number
 }
 
@@ -44,6 +47,23 @@ function satisfiesRequiredState(progress: LearnerSourceProgress, requiredState: 
   )
 }
 
+const vocabularyIntroductionCapabilityTypes = new Set<CapabilityType>([
+  'text_recognition',
+  'l1_to_id_choice',
+])
+
+function isVocabularyIntroductionEvidence(evidence: ReviewEvidence): boolean {
+  if (evidence.successfulReviews <= 0) return false
+  if (evidence.capabilityType) {
+    return vocabularyIntroductionCapabilityTypes.has(evidence.capabilityType)
+  }
+  return evidence.skillType === 'recognition'
+}
+
+function canEvidenceBypass(requiredState: SourceProgressEventType): boolean {
+  return requiredState === 'section_exposed' || requiredState === 'intro_completed'
+}
+
 export function isSourceProgressSatisfied(input: {
   requiredSourceProgress?: CapabilitySourceProgressRequirement
   sourceProgress: LearnerSourceProgress[]
@@ -63,10 +83,9 @@ export function isSourceProgressSatisfied(input: {
     return { satisfied: true, reason: 'satisfied_by_source_progress' }
   }
 
-  if (input.allowEvidenceBypass && input.evidence.some(evidence => (
+  if (input.allowEvidenceBypass && canEvidenceBypass(required.requiredState) && input.evidence.some(evidence => (
     evidence.sourceRef === required.sourceRef
-    && evidence.skillType === 'recognition'
-    && evidence.successfulReviews > 0
+    && isVocabularyIntroductionEvidence(evidence)
   ))) {
     return { satisfied: true, reason: 'satisfied_by_evidence' }
   }

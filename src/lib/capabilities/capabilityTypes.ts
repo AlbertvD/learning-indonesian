@@ -13,6 +13,7 @@ export type CapabilitySourceKind =
 export type CapabilityType =
   | 'text_recognition'
   | 'meaning_recall'
+  | 'l1_to_id_choice'
   | 'form_recall'
   | 'contextual_cloze'
   | 'audio_recognition'

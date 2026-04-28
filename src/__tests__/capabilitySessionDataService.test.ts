@@ -223,6 +223,174 @@ describe('capability session data service', () => {
     expect(snapshot.plannerInput.learnerCapabilityStates[0]?.successfulReviewCount).toBe(0)
   })
 
+  it('loads Dutch-to-Indonesian choice as ready lesson-sequenced planner material', async () => {
+    const service = createCapabilitySessionDataService({
+      schema: () => ({
+        from: (table: string) => {
+          if (table === 'learning_capabilities') {
+            return query([{
+              id: 'choice-capability',
+              canonical_key: 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl',
+              source_kind: 'item',
+              source_ref: 'learning_items/item-1',
+              capability_type: 'l1_to_id_choice',
+              direction: 'l1_to_id',
+              modality: 'text',
+              learner_language: 'nl',
+              projection_version: 'capability-v1',
+              readiness_status: 'ready',
+              publication_status: 'published',
+              source_fingerprint: 'source',
+              artifact_fingerprint: 'artifact',
+              metadata_json: {
+                skillType: 'meaning_recall',
+                requiredArtifacts: ['meaning:l1', 'base_text'],
+                prerequisiteKeys: ['text-recognition-key'],
+                requiredSourceProgress: {
+                  kind: 'source_progress',
+                  sourceRef: 'learning_items/item-1',
+                  requiredState: 'intro_completed',
+                },
+                difficultyLevel: 2,
+                goalTags: [],
+              },
+            }])
+          }
+          if (table === 'capability_artifacts') {
+            return query([{
+              capability_id: 'choice-capability',
+              artifact_kind: 'meaning:l1',
+              quality_status: 'approved',
+              artifact_json: { value: 'eten' },
+            }, {
+              capability_id: 'choice-capability',
+              artifact_kind: 'base_text',
+              quality_status: 'approved',
+              artifact_json: { value: 'makan' },
+            }])
+          }
+          if (table === 'learner_capability_state') return query([])
+          if (table === 'learner_source_progress_state') return query([])
+          return query([])
+        },
+      }),
+    })
+
+    const snapshot = await service.loadCapabilitySessionData({
+      userId: 'user-1',
+      mode: 'standard',
+      now: new Date('2026-04-25T12:00:00.000Z'),
+      limit: 15,
+      preferredSessionSize: 15,
+    })
+
+    expect(snapshot.readinessByKey.get('cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl')).toEqual({
+      status: 'ready',
+      allowedExercises: ['cued_recall'],
+    })
+    expect(snapshot.plannerInput.readyCapabilities).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        canonicalKey: 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl',
+        capabilityType: 'l1_to_id_choice',
+        skillType: 'meaning_recall',
+      }),
+    ]))
+  })
+
+  it('loads successful capability review evidence with capability type identity', async () => {
+    const service = createCapabilitySessionDataService({
+      schema: () => ({
+        from: (table: string) => {
+          if (table === 'learning_capabilities') {
+            return query([{
+              id: 'choice-capability',
+              canonical_key: 'choice-key',
+              source_kind: 'item',
+              source_ref: 'learning_items/item-1',
+              capability_type: 'l1_to_id_choice',
+              direction: 'l1_to_id',
+              modality: 'text',
+              learner_language: 'nl',
+              projection_version: 'capability-v1',
+              readiness_status: 'ready',
+              publication_status: 'published',
+              source_fingerprint: 'source',
+              artifact_fingerprint: 'artifact',
+              metadata_json: {
+                skillType: 'meaning_recall',
+                requiredArtifacts: ['meaning:l1', 'base_text'],
+                prerequisiteKeys: [],
+                requiredSourceProgress: {
+                  kind: 'source_progress',
+                  sourceRef: 'learning_items/item-1',
+                  requiredState: 'intro_completed',
+                },
+                difficultyLevel: 2,
+              },
+            }, {
+              id: 'meaning-capability',
+              canonical_key: 'meaning-key',
+              source_kind: 'item',
+              source_ref: 'learning_items/item-1',
+              capability_type: 'meaning_recall',
+              direction: 'id_to_l1',
+              modality: 'text',
+              learner_language: 'nl',
+              projection_version: 'capability-v1',
+              readiness_status: 'ready',
+              publication_status: 'published',
+              source_fingerprint: 'source',
+              artifact_fingerprint: 'artifact',
+              metadata_json: {
+                skillType: 'meaning_recall',
+                requiredArtifacts: ['meaning:l1', 'accepted_answers:l1'],
+                prerequisiteKeys: [],
+                requiredSourceProgress: {
+                  kind: 'source_progress',
+                  sourceRef: 'learning_items/item-1',
+                  requiredState: 'intro_completed',
+                },
+                difficultyLevel: 2,
+              },
+            }])
+          }
+          if (table === 'capability_review_events') {
+            return query([{
+              capability_id: 'choice-capability',
+              rating: 1,
+              answer_report_json: { wasCorrect: true, exerciseType: 'cued_recall' },
+            }, {
+              capability_id: 'meaning-capability',
+              rating: 4,
+              answer_report_json: { wasCorrect: false, exerciseType: 'meaning_recall' },
+            }])
+          }
+          if (table === 'learner_capability_state') return query([])
+          if (table === 'capability_artifacts') return query([])
+          if (table === 'learner_source_progress_state') return query([])
+          return query([])
+        },
+      }),
+    })
+
+    const snapshot = await service.loadCapabilitySessionData({
+      userId: 'user-1',
+      mode: 'standard',
+      now: new Date('2026-04-25T12:00:00.000Z'),
+      limit: 15,
+      preferredSessionSize: 15,
+    })
+
+    expect(snapshot.plannerInput.recentReviewEvidence).toEqual([{
+      capabilityKey: 'choice-key',
+      sourceRef: 'learning_items/item-1',
+      skillType: 'meaning_recall',
+      capabilityType: 'l1_to_id_choice',
+      exerciseType: 'cued_recall',
+      successfulReviews: 1,
+    }])
+  })
+
   it('fails closed when lesson-sequenced capabilities lack source progress metadata', async () => {
     const service = createCapabilitySessionDataService({
       schema: () => ({

@@ -5,6 +5,7 @@ import type {
 } from '@/lib/capabilities/capabilityTypes'
 import type { SkillType } from '@/types/learning'
 import { decideLoadBudget, type LoadBudgetDecision, type PlannerSessionMode } from '@/lib/pedagogy/loadBudgets'
+import type { SessionPosture } from '@/lib/pedagogy/sessionPosture'
 import { isSourceProgressSatisfied, type LearnerSourceProgress, type ReviewEvidence } from '@/lib/pedagogy/sourceProgressGates'
 import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/services/capabilityService'
 
@@ -67,6 +68,7 @@ export interface LearningPlan {
 export interface PedagogyInput {
   userId: string
   mode: PlannerSessionMode
+  posture?: SessionPosture
   now: Date
   preferredSessionSize: number
   dueCount: number
@@ -91,6 +93,27 @@ function isPattern(capability: PlannerCapability): boolean {
     || capability.capabilityType.includes('pattern')
     || capability.capabilityType.startsWith('root_derived_')
   )
+}
+
+function isNewProductionTask(capability: PlannerCapability): boolean {
+  return (
+    capability.capabilityType === 'form_recall'
+    || capability.capabilityType === 'dictation'
+    || capability.capabilityType === 'contextual_cloze'
+    || capability.capabilityType === 'root_derived_recall'
+  )
+}
+
+function isHiddenAudioTask(capability: PlannerCapability): boolean {
+  return (
+    capability.capabilityType === 'audio_recognition'
+    || capability.capabilityType === 'dictation'
+    || capability.capabilityType === 'podcast_gist'
+  )
+}
+
+function isSourceSwitch(capability: PlannerCapability, currentSourceRefs?: string[]): boolean {
+  return Boolean(currentSourceRefs?.length) && !currentSourceRefs!.includes(capability.sourceRef)
 }
 
 function isUsefulForCurrentPath(input: {
@@ -135,6 +158,7 @@ function isAllowedInSessionMode(input: {
 export function planLearningPath(input: PedagogyInput): LearningPlan {
   const loadBudget = decideLoadBudget({
     mode: input.mode,
+    posture: input.posture,
     preferredSessionSize: input.preferredSessionSize,
     dueCount: input.dueCount,
   })
@@ -145,6 +169,9 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
   const eligibleNewCapabilities: EligibleCapability[] = []
   const suppressedCapabilities: SuppressedCapability[] = []
   let patternCount = 0
+  let productionTaskCount = 0
+  let hiddenAudioTaskCount = 0
+  let sourceSwitchCount = 0
 
   for (const capability of input.readyCapabilities) {
     const suppress = (reason: PlannerReason): void => {
@@ -209,8 +236,23 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
       suppress('load_budget_exhausted')
       continue
     }
+    if (isNewProductionTask(capability) && productionTaskCount >= loadBudget.maxNewProductionTasks) {
+      suppress('load_budget_exhausted')
+      continue
+    }
+    if (isHiddenAudioTask(capability) && hiddenAudioTaskCount >= loadBudget.maxHiddenAudioTasks) {
+      suppress('load_budget_exhausted')
+      continue
+    }
+    if (isSourceSwitch(capability, input.currentSourceRefs) && sourceSwitchCount >= loadBudget.maxSourceSwitches) {
+      suppress('load_budget_exhausted')
+      continue
+    }
 
     if (isPattern(capability)) patternCount += 1
+    if (isNewProductionTask(capability)) productionTaskCount += 1
+    if (isHiddenAudioTask(capability)) hiddenAudioTaskCount += 1
+    if (isSourceSwitch(capability, input.currentSourceRefs)) sourceSwitchCount += 1
     eligibleNewCapabilities.push({
       capability,
       activationRecommendation: {

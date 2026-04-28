@@ -4,6 +4,8 @@ Audience: a human who wants to understand the app, the learning experience, the 
 
 This guide explains the functionality in product language first, then maps it to the implementation.
 
+For the refined learner-experience rules agreed on 2026-04-28, including Today posture, lesson unlocks, introduction gates, direction balance, audio behavior, and learner-facing wording, see [Learning Experience Rules](../plans/2026-04-28-learning-experience-rules.md).
+
 ## 1. Product Goal
 
 The app is a Dutch-first Indonesian learning system. Its goal is not only to show flashcards, but to guide a learner toward mastery through:

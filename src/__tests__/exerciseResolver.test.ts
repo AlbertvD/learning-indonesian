@@ -64,6 +64,30 @@ describe('exercise resolver', () => {
     })
   })
 
+  it('resolves Dutch-to-Indonesian choice through cued recall', () => {
+    expect(resolveExercise({
+      capability: capability({
+        canonicalKey: 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl',
+        capabilityType: 'l1_to_id_choice' as any,
+        skillType: 'meaning_recall',
+        direction: 'l1_to_id',
+        requiredArtifacts: ['meaning:l1', 'base_text'],
+      }),
+      readiness: { status: 'ready', allowedExercises: ['cued_recall'] },
+      artifactIndex: {
+        'meaning:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
+        base_text: [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
+      },
+    })).toEqual({
+      status: 'resolved',
+      plan: expect.objectContaining({
+        exerciseType: 'cued_recall',
+        capabilityType: 'l1_to_id_choice',
+        skillType: 'meaning_recall',
+      }),
+    })
+  })
+
   it('fails closed when no supported family exists', () => {
     expect(resolveExercise({
       capability: capability({ capabilityType: 'pattern_contrast', requiredArtifacts: [] }),

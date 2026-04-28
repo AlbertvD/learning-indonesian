@@ -47,7 +47,7 @@ describe('capability catalog projection', () => {
     const projection = projectCapabilities(snapshot)
 
     expect(projection.capabilities.map(capability => capability.capabilityType)).toEqual(
-      expect.arrayContaining(['text_recognition', 'meaning_recall', 'form_recall', 'audio_recognition', 'dictation']),
+      expect.arrayContaining(['text_recognition', 'meaning_recall', 'l1_to_id_choice', 'form_recall', 'audio_recognition', 'dictation']),
     )
     expect(projection.capabilities.every(capability => capability.projectionVersion === 'capability-v1')).toBe(true)
   })
@@ -68,6 +68,7 @@ describe('capability catalog projection', () => {
   it('lesson-sequences vocabulary and audio capabilities with explicit gates', () => {
     const projection = projectCapabilities(snapshot)
     const textRecognition = projection.capabilities.find(capability => capability.capabilityType === 'text_recognition')
+    const choiceBridge = projection.capabilities.find(capability => capability.capabilityType === 'l1_to_id_choice')
     const formRecall = projection.capabilities.find(capability => capability.capabilityType === 'form_recall')
     const audioCapability = projection.capabilities.find(capability => capability.sourceKind === 'item' && capability.capabilityType === 'audio_recognition')
 
@@ -76,12 +77,20 @@ describe('capability catalog projection', () => {
       sourceRef: 'learning_items/item-1',
       requiredState: 'section_exposed',
     })
+    expect(choiceBridge).toEqual(expect.objectContaining({
+      direction: 'l1_to_id',
+      modality: 'text',
+      skillType: 'meaning_recall',
+      requiredArtifacts: expect.arrayContaining(['meaning:l1', 'base_text']),
+      prerequisiteKeys: [textRecognition?.canonicalKey],
+      difficultyLevel: 2,
+    }))
     expect(formRecall?.requiredSourceProgress).toEqual({
       kind: 'source_progress',
       sourceRef: 'learning_items/item-1',
       requiredState: 'intro_completed',
     })
-    expect(formRecall?.prerequisiteKeys).toEqual([textRecognition?.canonicalKey])
+    expect(formRecall?.prerequisiteKeys).toEqual([choiceBridge?.canonicalKey])
     expect(audioCapability?.requiredSourceProgress).toEqual({
       kind: 'source_progress',
       sourceRef: 'learning_items/item-1',

@@ -19,6 +19,7 @@ export type MasteryConfidence = 'none' | 'low' | 'medium' | 'high'
 export type MasteryDimension =
   | 'text_recognition'
   | 'meaning_recall'
+  | 'l1_to_id_choice'
   | 'form_recall'
   | 'listening'
   | 'dictation'
@@ -154,6 +155,8 @@ function dimensionForCapability(type: CapabilityType): MasteryDimension {
       return 'text_recognition'
     case 'meaning_recall':
       return 'meaning_recall'
+    case 'l1_to_id_choice':
+      return 'l1_to_id_choice'
     case 'form_recall':
       return 'form_recall'
     case 'audio_recognition':
