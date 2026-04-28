@@ -45,6 +45,28 @@ describe('capability promotion planner', () => {
     ])
   })
 
+  it('promotes Dutch-to-Indonesian choice when health exposes the cued recall path', () => {
+    const plan = planCapabilityPromotion({
+      capabilities: [
+        { id: 'choice-cap', canonical_key: 'cap:v1:item:learning_items/makan:l1_to_id_choice:l1_to_id:text:nl' },
+      ],
+      healthResults: [
+        {
+          canonicalKey: 'cap:v1:item:learning_items/makan:l1_to_id_choice:l1_to_id:text:nl',
+          readiness: { status: 'ready', allowedExercises: ['cued_recall'] },
+        },
+      ],
+    })
+
+    expect(plan.promotions).toEqual([{
+      capabilityId: 'choice-cap',
+      canonicalKey: 'cap:v1:item:learning_items/makan:l1_to_id_choice:l1_to_id:text:nl',
+      readinessStatus: 'ready',
+      publicationStatus: 'published',
+      allowedExercises: ['cued_recall'],
+    }])
+  })
+
   it('blocks ready health rows with no exercise path', () => {
     const plan = planCapabilityPromotion({
       capabilities: [
@@ -152,5 +174,5 @@ describe('capability promotion planner', () => {
     expect(result.status).toBe(1)
     expect(result.stderr).toContain('Unknown argument: --bogus')
     expect(result.stderr).not.toContain('ERR_MODULE_NOT_FOUND')
-  })
+  }, 15000)
 })

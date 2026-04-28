@@ -45,6 +45,30 @@ Run the steps in this exact order:
 
 If any step fails, stop. Do not skip ahead to promotion or feature flags.
 
+## Dutch-to-Indonesian Choice Bridge
+
+The `l1_to_id_choice` capability is additive. It creates new capability rows for Dutch prompt to Indonesian choice practice and does not rewrite existing learner state.
+
+Release expectations:
+
+```text
+publish-approved-content.ts writes bridge rows as readiness_status = unknown and publication_status = draft
+promote-capabilities.ts is the only step that may move bridge rows to ready/published
+check-capability-health.ts must resolve the bridge through cued_recall
+content-unit relationships classify the bridge as introduced_by
+existing form_recall rows are not deleted or aliased in this rollout
+```
+
+Required local tests before bridge promotion:
+
+```text
+npm run test -- scripts/__tests__/capability-staging.test.ts
+npm run test -- scripts/__tests__/publish-approved-content-capability-output.test.ts
+npm run test -- scripts/__tests__/check-capability-health.test.ts
+npm run test -- scripts/__tests__/promote-capabilities.test.ts
+npm run test -- scripts/__tests__/materialize-capabilities.test.ts
+```
+
 ## 1. Apply Core Capability Migration
 
 Migration:

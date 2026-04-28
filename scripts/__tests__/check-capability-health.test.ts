@@ -100,6 +100,37 @@ describe('capability health exit code planning', () => {
     expect(report.critical).toEqual([])
   })
 
+  it('accepts ready Dutch-to-Indonesian choice capabilities with a cued recall render path', () => {
+    const capabilityKey = 'cap:v1:item:learning_items/makan:l1_to_id_choice:l1_to_id:text:nl'
+    const report = checkCapabilityHealthSnapshot({
+      knownSourceRefs: ['learning_items/makan'],
+      capabilities: [{
+        canonicalKey: capabilityKey,
+        sourceRef: 'learning_items/makan',
+        capabilityType: 'l1_to_id_choice',
+        skillType: 'meaning_recall',
+        readinessStatus: 'ready',
+        publicationStatus: 'published',
+        requiredArtifacts: ['meaning:l1', 'base_text'],
+      }],
+      artifacts: [{
+        capabilityKey,
+        sourceRef: 'learning_items/makan',
+        artifactKind: 'meaning:l1',
+        qualityStatus: 'approved',
+        artifactJson: { value: 'eten' },
+      }, {
+        capabilityKey,
+        sourceRef: 'learning_items/makan',
+        artifactKind: 'base_text',
+        qualityStatus: 'approved',
+        artifactJson: { value: 'makan' },
+      }],
+    })
+
+    expect(report.critical).toEqual([])
+  })
+
   it('fails approved artifacts with invalid artifact-kind payload shapes', () => {
     const capabilityKey = 'cap:v1:item:learning_items/makan:form_recall:l1_to_id:text:nl'
     const report = checkCapabilityHealthSnapshot({

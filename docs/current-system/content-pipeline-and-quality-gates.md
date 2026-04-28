@@ -307,6 +307,7 @@ Examples:
 
 ```text
 text_recognition
+l1_to_id_choice
 meaning_recall
 form_recall
 contextual_cloze
@@ -318,6 +319,21 @@ pattern_contrast
 root_derived_recognition
 root_derived_recall
 ```
+
+Vocabulary projection should include the Dutch-to-Indonesian bridge:
+
+```text
+text_recognition:
+  Indonesian seen -> Dutch meaning
+
+l1_to_id_choice:
+  Dutch prompt -> choose Indonesian
+
+form_recall:
+  Dutch prompt -> type Indonesian
+```
+
+`l1_to_id_choice` intentionally keeps legacy `skillType: meaning_recall` for compatibility with existing exercise/report plumbing. Its separate `capabilityType` and canonical key are the scheduling and source-progress identity.
 
 Current implementation:
 
@@ -351,6 +367,15 @@ Quality purpose:
 
 ```text
 The pipeline explicitly states what the learner may practice and under what conditions.
+```
+
+Bridge quality rule:
+
+```text
+l1_to_id_choice must have meaning:l1 and base_text artifacts
+l1_to_id_choice resolves to cued_recall
+l1_to_id_choice content-unit relationships are introduced_by
+ordinary meaning_recall evidence must not be treated as vocabulary introduction evidence
 ```
 
 ## 10. Capability Contracts

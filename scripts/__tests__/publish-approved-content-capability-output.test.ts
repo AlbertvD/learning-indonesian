@@ -118,4 +118,56 @@ describe('publish-approved-content capability output', () => {
     )
     consoleSpy.mockRestore()
   })
+
+  it('publishes Dutch-to-Indonesian choice rows as draft/unknown bridge capabilities', async () => {
+    const capabilityUpserts: Record<string, unknown>[] = []
+    const supabase = fakeSupabase({
+      onUpsert(table, payload) {
+        if (table === 'content_units') {
+          return { data: { id: 'unit-1', unit_slug: payload.unit_slug } }
+        }
+        if (table === 'learning_capabilities') {
+          capabilityUpserts.push(payload)
+          return { data: { id: 'choice-cap', canonical_key: payload.canonical_key } }
+        }
+        return { data: { id: `${table}-1` } }
+      },
+    })
+    const bridgeKey = 'cap:v1:item:learning_items/akhir:l1_to_id_choice:l1_to_id:text:nl'
+
+    await publishCapabilityPipelineOutput({
+      supabase: supabase as never,
+      dryRun: false,
+      contentUnits: validContentUnits as never,
+      capabilities: [{
+        ...validCapabilities[0],
+        canonicalKey: bridgeKey,
+        capabilityType: 'l1_to_id_choice',
+        skillType: 'meaning_recall',
+        direction: 'l1_to_id',
+        requiredArtifacts: ['meaning:l1', 'base_text'],
+        relationshipKind: 'introduced_by',
+      }] as never,
+      lessonPageBlocks: [{ ...validBlocks[0], capability_key_refs: [bridgeKey] }] as never,
+      exerciseAssets: [{
+        ...validAssets[0],
+        asset_key: `${bridgeKey}:base_text`,
+        capability_key: bridgeKey,
+      }, {
+        ...validAssets[0],
+        asset_key: `${bridgeKey}:meaning:l1`,
+        capability_key: bridgeKey,
+        artifact_kind: 'meaning:l1',
+        payload_json: { value: 'einde', reviewedBy: 'human', reviewedAt: '2026-04-26' },
+      }] as never,
+    })
+
+    expect(capabilityUpserts).toHaveLength(1)
+    expect(capabilityUpserts[0]).toMatchObject({
+      canonical_key: bridgeKey,
+      capability_type: 'l1_to_id_choice',
+      readiness_status: 'unknown',
+      publication_status: 'draft',
+    })
+  })
 })

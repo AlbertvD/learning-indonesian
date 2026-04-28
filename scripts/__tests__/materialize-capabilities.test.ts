@@ -67,6 +67,36 @@ describe('capability materialization planning', () => {
     expect(plan.artifactUpserts).toEqual([])
   })
 
+  it('materializes Dutch-to-Indonesian choice metadata without rewriting learner state', () => {
+    const bridge = capability({
+      canonicalKey: 'cap:v1:item:learning_items/makan:l1_to_id_choice:l1_to_id:text:nl',
+      capabilityType: 'l1_to_id_choice',
+      skillType: 'meaning_recall',
+      direction: 'l1_to_id',
+      requiredArtifacts: ['meaning:l1', 'base_text'],
+      prerequisiteKeys: ['cap:v1:item:learning_items/makan:text_recognition:id_to_l1:text:nl'],
+      difficultyLevel: 2,
+    })
+    const plan = planCapabilityMaterialization({
+      capabilities: [bridge],
+      existingCanonicalKeys: new Set(),
+      aliases: [],
+      applyBackfill: false,
+    })
+
+    expect(plan.capabilityInserts[0]).toEqual(expect.objectContaining({
+      canonicalKey: bridge.canonicalKey,
+      readinessStatus: 'unknown',
+      publicationStatus: 'draft',
+      metadataJson: expect.objectContaining({
+        skillType: 'meaning_recall',
+        requiredArtifacts: ['meaning:l1', 'base_text'],
+        prerequisiteKeys: ['cap:v1:item:learning_items/makan:text_recognition:id_to_l1:text:nl'],
+      }),
+    }))
+    expect(plan.backfillWrites).toEqual([])
+  })
+
   it('supports split aliases and refuses inferred auto-backfill', () => {
     const plan = planCapabilityMaterialization({
       capabilities: [capability()],
