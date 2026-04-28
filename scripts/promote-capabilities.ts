@@ -266,12 +266,17 @@ async function loadPromotionPlan(args: PromoteCapabilitiesArgs): Promise<Capabil
     return planCapabilityPromotion({ capabilities: [], healthResults: [] })
   }
 
-  const { data: capabilities, error: capabilitiesError } = await db()
-    .from('learning_capabilities')
-    .select('*')
-    .in('canonical_key', scopedCapabilityKeys)
-  if (capabilitiesError) throw capabilitiesError
-  const capabilityRows = (capabilities ?? []) as CapabilityRow[]
+  const capabilityRows: CapabilityRow[] = []
+  const chunkSize = 20
+  for (let i = 0; i < scopedCapabilityKeys.length; i += chunkSize) {
+    const chunk = scopedCapabilityKeys.slice(i, i + chunkSize)
+    const { data, error } = await db()
+      .from('learning_capabilities')
+      .select('*')
+      .in('canonical_key', chunk)
+    if (error) throw error
+    capabilityRows.push(...((data ?? []) as CapabilityRow[]))
+  }
 
   const healthResults: PromotionHealthResult[] = []
   for (const capabilityRow of capabilityRows) {

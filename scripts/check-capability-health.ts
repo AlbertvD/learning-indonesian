@@ -587,24 +587,33 @@ export async function loadDbCapabilityHealthSnapshot(args: Extract<CapabilityHea
     relationshipCapabilities,
   })
 
-  const capabilityResult = scopedCapabilityKeys.length > 0
-    ? await db()
-        .from('learning_capabilities')
-        .select('*')
-        .in('canonical_key', scopedCapabilityKeys)
-    : { data: [], error: null }
-  if (capabilityResult.error) throw capabilityResult.error
-  const capabilityRows = (capabilityResult.data ?? []) as Array<Record<string, unknown>>
+  const capabilityRows: Array<Record<string, unknown>> = []
+  const capabilityChunkSize = 20
+  for (let i = 0; i < scopedCapabilityKeys.length; i += capabilityChunkSize) {
+    const chunk = scopedCapabilityKeys.slice(i, i + capabilityChunkSize)
+    const { data, error } = await db()
+      .from('learning_capabilities')
+      .select('*')
+      .in('canonical_key', chunk)
+    if (error) throw error
+    capabilityRows.push(...((data ?? []) as Array<Record<string, unknown>>))
+  }
   const capabilityIdByKey = new Map(capabilityRows.map(row => [String(row.canonical_key ?? ''), String(row.id ?? '')]))
   const capabilityKeyById = new Map([...capabilityIdByKey.entries()].map(([key, id]) => [id, key]))
 
-  const artifactResult = capabilityRows.length > 0
-    ? await db()
-        .from('capability_artifacts')
-        .select('capability_id, artifact_kind, quality_status, artifact_json')
-        .in('capability_id', capabilityRows.map(row => String(row.id ?? '')))
-    : { data: [], error: null }
-  if (artifactResult.error) throw artifactResult.error
+  const artifactRows: Array<Record<string, unknown>> = []
+  const artifactChunkSize = 50
+  const capabilityIds = capabilityRows.map(row => String(row.id ?? ''))
+  for (let i = 0; i < capabilityIds.length; i += artifactChunkSize) {
+    const chunk = capabilityIds.slice(i, i + artifactChunkSize)
+    const { data, error } = await db()
+      .from('capability_artifacts')
+      .select('capability_id, artifact_kind, quality_status, artifact_json')
+      .in('capability_id', chunk)
+    if (error) throw error
+    artifactRows.push(...((data ?? []) as Array<Record<string, unknown>>))
+  }
+  const artifactResult = { data: artifactRows, error: null }
 
   const knownSourceRefs = new Set<string>([args.sourceRef])
   for (const block of lessonBlocks) {

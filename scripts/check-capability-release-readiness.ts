@@ -167,14 +167,19 @@ async function loadReadinessInput(args: CapabilityReleaseReadinessArgs): Promise
     relationshipCapabilities,
   })
 
-  const { data: capabilities, error: capabilitiesError } = scopedCapabilityKeys.length > 0
-    ? await db()
+  const capabilityRows: Array<CapabilityStatusRow & { id: string }> = []
+  if (scopedCapabilityKeys.length > 0) {
+    const chunkSize = 50
+    for (let i = 0; i < scopedCapabilityKeys.length; i += chunkSize) {
+      const chunk = scopedCapabilityKeys.slice(i, i + chunkSize)
+      const { data, error } = await db()
         .from('learning_capabilities')
         .select('id, canonical_key, readiness_status, publication_status')
-        .in('canonical_key', scopedCapabilityKeys)
-    : { data: [], error: null }
-  if (capabilitiesError) throw capabilitiesError
-  const capabilityRows = (capabilities ?? []) as Array<CapabilityStatusRow & { id: string }>
+        .in('canonical_key', chunk)
+      if (error) throw error
+      capabilityRows.push(...((data ?? []) as Array<CapabilityStatusRow & { id: string }>))
+    }
+  }
   const capabilityIds = capabilityRows.map(row => row.id)
 
   const capabilityArtifacts = capabilityIds.length > 0
