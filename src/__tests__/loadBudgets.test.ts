@@ -121,6 +121,7 @@ describe('load budgets', () => {
       allowNewCapabilities: true,
       maxNewCapabilities: 2,
       maxNewPatterns: 2,
+      maxNewProductionTasks: 2,
       reason: 'pattern_workshop_budget',
     }))
   })

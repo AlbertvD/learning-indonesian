@@ -72,7 +72,7 @@ export function decideLoadBudget(input: LoadBudgetInput): LoadBudgetDecision {
       allowNewCapabilities: true,
       maxNewCapabilities: 2,
       maxNewConcepts: 2,
-      maxNewProductionTasks: 0,
+      maxNewProductionTasks: 2,
       maxHiddenAudioTasks: 0,
       maxSourceSwitches: 1,
       targetSessionSize,

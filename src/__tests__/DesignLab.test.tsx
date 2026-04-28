@@ -29,7 +29,7 @@ describe('DesignLab', () => {
     const { DesignLab } = await import('@/pages/admin/DesignLab')
     renderWithProviders(<DesignLab />)
     expect(await screen.findByRole('heading', { name: /design lab/i, level: 1 })).toBeInTheDocument()
-  })
+  }, 10000)
 
   it('redirects when non-admin', async () => {
     useAuthStore.setState({

@@ -41,6 +41,33 @@ vi.mock('@/lib/supabase', () => ({
   },
 }))
 
+vi.mock('@/lib/featureFlags', () => ({
+  capabilityMigrationFlags: {
+    sessionDiagnostics: false,
+    reviewShadow: false,
+    reviewCompat: false,
+    standardSession: false,
+    experiencePlayerV1: false,
+    lessonReaderV2: false,
+    localContentPreview: false,
+  },
+  featureFlags: {
+    textbookImport: true,
+    aiGeneration: true,
+    cuedRecall: true,
+    contrastPair: true,
+    sentenceTransformation: true,
+    constrainedTranslation: true,
+    speaking: true,
+    listeningMcq: true,
+    dictation: true,
+  },
+  isExerciseTypeEnabled: vi.fn(() => true),
+  isContentPipelineEnabled: vi.fn(() => true),
+  isTextbookImportEnabled: vi.fn(() => true),
+  isAiGenerationEnabled: vi.fn(() => true),
+}))
+
 vi.mock('@/lib/session', () => ({
   startSession: vi.fn().mockResolvedValue('session-1'),
   endSession: vi.fn().mockResolvedValue(undefined),
@@ -160,7 +187,7 @@ describe('Session flow', () => {
     renderSession()
 
     // Should show loading text initially
-    expect(screen.getByText(/loading session/i)).toBeInTheDocument()
+    expect(screen.getByText(/sessie laden|loading session/i)).toBeInTheDocument()
 
     // Wait for exercise to appear — recognition MCQ shows the Indonesian word
     await waitFor(() => {
@@ -175,7 +202,7 @@ describe('Session flow', () => {
     renderSession()
 
     await waitFor(() => {
-      expect(screen.getByText(/no learning items/i)).toBeInTheDocument()
+      expect(screen.getByText(/geen leeritems|no learning items/i)).toBeInTheDocument()
     }, { timeout: 5000 })
   })
 

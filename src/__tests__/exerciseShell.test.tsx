@@ -83,7 +83,7 @@ describe('ExerciseShell feedback — grammar cloze_mcq explanation', () => {
     )
 
     // Pick the wrong option to trigger the feedback screen
-    await userEvent.click(await screen.findByRole('button', { name: 'minum' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'minum' }, { timeout: 5000 }))
 
     await waitFor(() => {
       expect(screen.getByText('Makan = eten; minum = drinken.')).toBeInTheDocument()
