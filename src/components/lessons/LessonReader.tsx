@@ -11,11 +11,10 @@ export function LessonReader(props: {
   progressBySourceRef: Map<string, SourceProgressState>
   actions?: LessonPracticeAction[]
   onBack: () => void
-  onPractice: (block: LessonExperienceBlock) => void
   onSourceProgress: (block: LessonExperienceBlock, eventType: SourceProgressEventType) => void
   onLessonExposureProgress?: (block: LessonExperienceBlock, exposureKind: LessonExposureKind) => void
 }) {
-  const { experience, progressBySourceRef, actions = [], onBack, onPractice, onSourceProgress, onLessonExposureProgress } = props
+  const { experience, progressBySourceRef, actions = [], onBack, onSourceProgress, onLessonExposureProgress } = props
 
   return (
     <main className={classes.root}>
@@ -37,7 +36,6 @@ export function LessonReader(props: {
                 block={block}
                 progress={progressBySourceRef.get(`${block.sourceRefs[0] ?? block.sourceRef}::${block.id}`)}
                 onProgress={(target) => onSourceProgress(target, target.sourceProgressEvent ?? 'section_exposed')}
-                onPractice={onPractice}
                 onLessonExposureProgress={onLessonExposureProgress}
               />
             </div>

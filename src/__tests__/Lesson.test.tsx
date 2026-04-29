@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
@@ -122,6 +122,7 @@ function renderLesson() {
 
 describe('Lesson page', () => {
   beforeEach(() => {
+    vi.clearAllMocks()
     localStorage.clear()
     vi.mocked(lessonService.getLesson).mockResolvedValue({
       id: 'lesson-4',
@@ -160,6 +161,7 @@ describe('Lesson page', () => {
     ] as any)
     vi.mocked(lessonService.getLessonSourceProgress).mockResolvedValue([])
     vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockResolvedValue({
+      readyCapabilityCount: 2,
       activePracticedCapabilityCount: 0,
     })
     vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([])
@@ -195,8 +197,8 @@ describe('Lesson page', () => {
   it('shows a subtle practice-ready toast after meaningful lesson exposure', async () => {
     renderLesson()
 
-    await screen.findByText('Grammar notes.')
-    fireEvent.click(screen.getByRole('button', { name: 'Markeer sectie als gezien' }))
+    const audio = await screen.findByTestId('lesson-block-audio-lesson-4-grammar')
+    setAudioProgress(audio, 600, 360)
 
     expect(await screen.findByText('Lesson 4 is ready to practice.')).toBeInTheDocument()
   })
@@ -204,17 +206,38 @@ describe('Lesson page', () => {
   it('opens lesson practice with the lesson-scoped session mode after exposure', async () => {
     renderLesson()
 
-    await screen.findByText('Grammar notes.')
+    const audio = await screen.findByTestId('lesson-block-audio-lesson-4-grammar')
     expect(screen.queryByRole('link', { name: /Practice this lesson/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Review this lesson' })).not.toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Markeer sectie als gezien' }))
+    setAudioProgress(audio, 600, 360)
     const practiceLink = await screen.findByRole('link', { name: /Practice this lesson/i })
 
     expect(practiceLink).toHaveAttribute('href', '/session?lesson=lesson-4&mode=lesson_practice')
+    expect(screen.queryByRole('link', { name: 'Review this lesson' })).not.toBeInTheDocument()
+  })
+
+  it('does not open lesson practice when exposed capability refs are not backend-ready', async () => {
+    vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockResolvedValue({
+      readyCapabilityCount: 0,
+      activePracticedCapabilityCount: 0,
+    })
+
+    renderLesson()
+
+    const audio = await screen.findByTestId('lesson-block-audio-lesson-4-grammar')
+    setAudioProgress(audio, 600, 360)
+    await waitFor(() => {
+      expect(sourceProgressService.recordEvent).toHaveBeenCalled()
+    })
+
+    await expect(screen.findByRole('link', { name: /Practice this lesson/i }, { timeout: 1000 })).rejects.toThrow()
+    expect(screen.queryByRole('link', { name: 'Review this lesson' })).not.toBeInTheDocument()
   })
 
   it('opens lesson review with the lesson-scoped review mode when practiced content exists', async () => {
     vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockResolvedValueOnce({
+      readyCapabilityCount: 2,
       activePracticedCapabilityCount: 2,
     })
 

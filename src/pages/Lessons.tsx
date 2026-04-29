@@ -5,7 +5,13 @@ import { Link } from 'react-router-dom'
 import { IconArrowRight, IconBook2, IconChevronRight, IconMap2 } from '@tabler/icons-react'
 import {
   extractLessonGrammarTopics,
+  lessonSourceRefForOverview,
+  lessonSourceRefsByLesson,
   lessonService,
+  type Lesson,
+  type LessonCapabilityPracticeSummary,
+  type LessonPageBlock,
+  type LessonSourceProgressRow,
 } from '@/services/lessonService'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
@@ -13,7 +19,9 @@ import { logError } from '@/lib/logger'
 import {
   buildLessonOverviewModel,
   buildLessonOverviewSignals,
+  type LessonOverviewCapabilityCounts,
   type LessonOverviewExposure,
+  type LessonOverviewExposureKind,
   type LessonOverviewModel,
 } from '@/lib/lessons/lessonOverviewModel'
 import type { LessonOverviewStatus } from '@/lib/lessons/lessonOverviewStatus'
@@ -45,16 +53,6 @@ function rememberOverviewScrollPosition() {
 
 function progressToExposures(progress: LessonProgress[]): LessonOverviewExposure[] {
   return progress.flatMap((row): LessonOverviewExposure[] => {
-    const completedSections = row.sections_completed ?? []
-    if (row.completed_at || completedSections.length > 0) {
-      return [{
-        lessonId: row.lesson_id,
-        exposureKind: 'grammar' as const,
-        started: true,
-        meaningful: true,
-      }]
-    }
-
     return [{
       lessonId: row.lesson_id,
       exposureKind: 'lesson' as const,
@@ -62,6 +60,137 @@ function progressToExposures(progress: LessonProgress[]): LessonOverviewExposure
       meaningful: false,
     }]
   })
+}
+
+const MEANINGFUL_GRAMMAR_SOURCE_EVENTS = new Set([
+  'heard_once',
+  'intro_completed',
+  'pattern_noticing_seen',
+  'guided_practice_completed',
+  'lesson_completed',
+])
+
+const MEANINGFUL_DIALOGUE_SOURCE_EVENTS = new Set([
+  'heard_once',
+  'section_exposed',
+  'guided_practice_completed',
+  'lesson_completed',
+])
+
+function sourceRefsForBlock(block: LessonPageBlock): string[] {
+  return block.source_refs?.length ? block.source_refs : [block.source_ref]
+}
+
+function lessonIdBySourceRef(sourceRefsByLesson: Map<string, string[]>): Map<string, string> {
+  const result = new Map<string, string>()
+  for (const [lessonId, sourceRefs] of sourceRefsByLesson) {
+    for (const sourceRef of sourceRefs) {
+      if (!result.has(sourceRef)) result.set(sourceRef, lessonId)
+    }
+  }
+  return result
+}
+
+function blockByProgressKey(blocks: LessonPageBlock[]): Map<string, LessonPageBlock> {
+  const result = new Map<string, LessonPageBlock>()
+  for (const block of blocks) {
+    result.set(`${block.source_ref}::${block.block_key}`, block)
+    for (const sourceRef of sourceRefsForBlock(block)) {
+      result.set(`${sourceRef}::${block.block_key}`, block)
+    }
+  }
+  return result
+}
+
+function sourceProgressEvents(row: LessonSourceProgressRow): Set<string> {
+  return new Set([
+    row.current_state,
+    ...(row.completed_event_types ?? []),
+  ].filter(Boolean))
+}
+
+function sourceProgressExposureKind(
+  row: LessonSourceProgressRow,
+  block: LessonPageBlock | undefined,
+  events: Set<string>,
+): LessonOverviewExposureKind {
+  const payloadType = typeof block?.payload_json?.type === 'string'
+    ? block.payload_json.type.toLowerCase()
+    : ''
+  const sectionRef = row.source_section_ref.toLowerCase()
+
+  if (events.has('opened') || sectionRef.includes('hero')) return 'lesson'
+  if (payloadType === 'dialogue' || sectionRef.includes('dialogue')) return 'dialogue'
+  if (payloadType === 'culture' || sectionRef.includes('culture')) return 'culture'
+  if (payloadType === 'pronunciation' || sectionRef.includes('pronunciation')) return 'pronunciation'
+  if (
+    payloadType === 'grammar'
+    || payloadType === 'reference_table'
+    || block?.source_progress_event === 'pattern_noticing_seen'
+    || sectionRef.includes('grammar')
+    || sectionRef.includes('pattern')
+  ) {
+    return 'grammar'
+  }
+
+  return 'lesson'
+}
+
+function isMeaningfulSourceExposure(kind: LessonOverviewExposureKind, events: Set<string>): boolean {
+  if (kind === 'grammar') {
+    return [...events].some(event => MEANINGFUL_GRAMMAR_SOURCE_EVENTS.has(event))
+  }
+  if (kind === 'dialogue') {
+    return [...events].some(event => MEANINGFUL_DIALOGUE_SOURCE_EVENTS.has(event))
+  }
+  return false
+}
+
+function sourceProgressToExposures(input: {
+  progressRows: LessonSourceProgressRow[]
+  pageBlocks: LessonPageBlock[]
+  sourceRefsByLesson: Map<string, string[]>
+}): LessonOverviewExposure[] {
+  const lessonIdForSourceRef = lessonIdBySourceRef(input.sourceRefsByLesson)
+  const blockForProgress = blockByProgressKey(input.pageBlocks)
+
+  return input.progressRows.flatMap((row): LessonOverviewExposure[] => {
+    const lessonId = lessonIdForSourceRef.get(row.source_ref)
+    if (!lessonId) return []
+
+    const events = sourceProgressEvents(row)
+    const block = blockForProgress.get(`${row.source_ref}::${row.source_section_ref}`)
+    const exposureKind = sourceProgressExposureKind(row, block, events)
+    return [{
+      lessonId,
+      exposureKind,
+      started: events.size > 0,
+      meaningful: isMeaningfulSourceExposure(exposureKind, events),
+    }]
+  })
+}
+
+function summaryToCapabilityCounts(
+  lessonId: string,
+  summary: LessonCapabilityPracticeSummary,
+): LessonOverviewCapabilityCounts {
+  const eligibleIntroducedItemCount = Math.max(0, summary.readyCapabilityCount)
+  const practicedEligibleItemCount = Math.min(
+    eligibleIntroducedItemCount,
+    Math.max(0, summary.activePracticedCapabilityCount),
+  )
+
+  return {
+    lessonId,
+    readyItemCount: Math.max(0, eligibleIntroducedItemCount - practicedEligibleItemCount),
+    practicedEligibleItemCount,
+    eligibleIntroducedItemCount,
+    hasAuthoredEligiblePracticeContent: eligibleIntroducedItemCount > 0,
+  }
+}
+
+function uniqueValues(values: string[]): string[] {
+  return [...new Set(values.filter(Boolean))]
 }
 
 export function Lessons() {
@@ -89,6 +218,9 @@ export function Lessons() {
       try {
         const lessonsData = await lessonService.getLessons()
         let progressData: LessonProgress[] = []
+        let pageBlocks: LessonPageBlock[] = []
+        let sourceProgressData: LessonSourceProgressRow[] = []
+        let capabilityCounts: LessonOverviewCapabilityCounts[] = []
 
         try {
           progressData = await lessonService.getUserLessonProgress(user.id)
@@ -97,10 +229,57 @@ export function Lessons() {
           if (!cancelled) setProgressRefreshFailed(true)
         }
 
+        try {
+          const pageBlockGroups = await Promise.all(lessonsData.map(async (lesson: Lesson) => {
+            try {
+              return await lessonService.getLessonPageBlocks(lessonSourceRefForOverview(lesson))
+            } catch (err) {
+              logError({ page: 'lessons', action: `fetch-page-blocks:${lesson.id}`, error: err })
+              if (!cancelled) setProgressRefreshFailed(true)
+              return []
+            }
+          }))
+          pageBlocks = pageBlockGroups.flat()
+        } catch (err) {
+          logError({ page: 'lessons', action: 'fetch-page-blocks', error: err })
+          if (!cancelled) setProgressRefreshFailed(true)
+        }
+
+        const sourceRefsByLesson = lessonSourceRefsByLesson(lessonsData, pageBlocks)
+        const allSourceRefs = uniqueValues([...sourceRefsByLesson.values()].flat())
+
+        try {
+          sourceProgressData = await lessonService.getLessonSourceProgress(user.id, allSourceRefs)
+        } catch (err) {
+          logError({ page: 'lessons', action: 'fetch-source-progress', error: err })
+          if (!cancelled) setProgressRefreshFailed(true)
+        }
+
+        try {
+          capabilityCounts = await Promise.all(
+            [...sourceRefsByLesson.entries()].map(async ([lessonId, sourceRefs]) => (
+              summaryToCapabilityCounts(
+                lessonId,
+                await lessonService.getLessonCapabilityPracticeSummary(user.id, sourceRefs),
+              )
+            )),
+          )
+        } catch (err) {
+          logError({ page: 'lessons', action: 'fetch-capability-summary', error: err })
+          if (!cancelled) setProgressRefreshFailed(true)
+        }
+
         const signals = buildLessonOverviewSignals({
           lessons: lessonsData,
-          exposures: progressToExposures(progressData),
-          capabilityCounts: [],
+          exposures: [
+            ...progressToExposures(progressData),
+            ...sourceProgressToExposures({
+              progressRows: sourceProgressData,
+              pageBlocks,
+              sourceRefsByLesson,
+            }),
+          ],
+          capabilityCounts,
         })
         const nextModel = buildLessonOverviewModel({
           lessons: lessonsData,

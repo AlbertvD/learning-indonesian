@@ -65,25 +65,27 @@ export async function composeSession(input: ComposeSessionInput): Promise<Sessio
     })
   }
 
-  for (const introduction of input.eligibleNewCapabilities) {
-    if (!introduction.renderPlan) {
-      if (introduction.resolutionFailure) diagnostics.push(diagnosticFor(introduction.resolutionFailure))
-      continue
-    }
-    blocks.push({
-      id: `${input.sessionId}:new:${introduction.capability.canonicalKey}`,
-      kind: 'new_introduction',
-      renderPlan: introduction.renderPlan,
-      capabilityId: introduction.capability.id,
-      canonicalKeySnapshot: introduction.capability.canonicalKey,
-      reviewContext: introduction.reviewContext,
-      pendingActivation: {
+  if (input.mode !== 'lesson_review') {
+    for (const introduction of input.eligibleNewCapabilities) {
+      if (!introduction.renderPlan) {
+        if (introduction.resolutionFailure) diagnostics.push(diagnosticFor(introduction.resolutionFailure))
+        continue
+      }
+      blocks.push({
+        id: `${input.sessionId}:new:${introduction.capability.canonicalKey}`,
+        kind: 'new_introduction',
+        renderPlan: introduction.renderPlan,
         capabilityId: introduction.capability.id,
         canonicalKeySnapshot: introduction.capability.canonicalKey,
-        activationRequest: introduction.activationRequest,
-        requiredActivationOwner: 'review_processor',
-      },
-    })
+        reviewContext: introduction.reviewContext,
+        pendingActivation: {
+          capabilityId: introduction.capability.id,
+          canonicalKeySnapshot: introduction.capability.canonicalKey,
+          activationRequest: introduction.activationRequest,
+          requiredActivationOwner: 'review_processor',
+        },
+      })
+    }
   }
 
   for (const review of input.practiceReviewCapabilities ?? []) {

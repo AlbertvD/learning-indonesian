@@ -1,8 +1,58 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { LessonReader } from '@/components/lessons/LessonReader'
 import type { LessonExperience, LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
+
+let observedSections: Array<{
+  target: Element
+  callback: IntersectionObserverCallback
+  observer: IntersectionObserver
+}> = []
+
+function installIntersectionObserverMock() {
+  observedSections = []
+
+  class MockIntersectionObserver {
+    readonly root: Element | Document | null = null
+    readonly rootMargin = '0px'
+    readonly scrollMargin = '0px'
+    readonly thresholds = [0.6]
+    private readonly callback: IntersectionObserverCallback
+
+    constructor(callback: IntersectionObserverCallback) {
+      this.callback = callback
+    }
+
+    disconnect = vi.fn()
+    unobserve = vi.fn()
+    takeRecords = vi.fn((): IntersectionObserverEntry[] => [])
+
+    observe = vi.fn((target: Element) => {
+      observedSections.push({
+        target,
+        callback: this.callback,
+        observer: this as unknown as IntersectionObserver,
+      })
+    })
+  }
+
+  vi.stubGlobal('IntersectionObserver', MockIntersectionObserver)
+}
+
+function markSectionVisible(title: string) {
+  const section = screen.getByRole('heading', { name: title }).closest('section')
+  expect(section).not.toBeNull()
+  const observed = observedSections.find(entry => entry.target === section)
+  expect(observed).toBeDefined()
+  observed!.callback([
+    {
+      isIntersecting: true,
+      intersectionRatio: 0.75,
+      target: section!,
+    } as unknown as IntersectionObserverEntry,
+  ], observed!.observer)
+}
 
 function setAudioProgress(audio: HTMLElement, durationSeconds: number, currentTimeSeconds: number) {
   Object.defineProperty(audio, 'duration', { configurable: true, value: durationSeconds })
@@ -60,13 +110,18 @@ function experience(): LessonExperience {
 }
 
 describe('LessonReader', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    vi.unstubAllGlobals()
+    vi.useRealTimers()
+  })
+
   it('renders a responsive web-native lesson flow with companion and progress rail', () => {
     render(
       <LessonReader
         experience={experience()}
         progressBySourceRef={new Map()}
         onBack={vi.fn()}
-        onPractice={vi.fn()}
         onSourceProgress={vi.fn()}
       />
     )
@@ -86,7 +141,6 @@ describe('LessonReader', () => {
         experience={experience()}
         progressBySourceRef={new Map()}
         onBack={vi.fn()}
-        onPractice={vi.fn()}
         onSourceProgress={onSourceProgress}
       />
     )
@@ -98,8 +152,7 @@ describe('LessonReader', () => {
     }), 'section_exposed')
   })
 
-  it('routes practice bridge through onPractice instead of creating review state', async () => {
-    const user = userEvent.setup()
+  it('does not expose a direct practice bridge action before lesson-level action rules allow it', () => {
     const onPractice = vi.fn()
 
     render(
@@ -107,17 +160,12 @@ describe('LessonReader', () => {
         experience={experience()}
         progressBySourceRef={new Map()}
         onBack={vi.fn()}
-        onPractice={onPractice}
         onSourceProgress={vi.fn()}
       />
     )
 
-    await user.click(screen.getByRole('button', { name: 'Oefen deze inhoud' }))
-
-    expect(onPractice).toHaveBeenCalledWith(expect.objectContaining({
-      kind: 'practice_bridge',
-      capabilityKeyRefs: ['capability:makan'],
-    }))
+    expect(screen.queryByRole('button', { name: 'Oefen deze inhoud' })).not.toBeInTheDocument()
+    expect(onPractice).not.toHaveBeenCalled()
   })
 
   it('does not record grammar audio exposure below the readiness threshold', () => {
@@ -135,7 +183,6 @@ describe('LessonReader', () => {
         ])}
         progressBySourceRef={new Map()}
         onBack={vi.fn()}
-        onPractice={vi.fn()}
         onSourceProgress={vi.fn()}
         onLessonExposureProgress={onLessonExposureProgress}
       />
@@ -161,7 +208,6 @@ describe('LessonReader', () => {
         ])}
         progressBySourceRef={new Map()}
         onBack={vi.fn()}
-        onPractice={vi.fn()}
         onSourceProgress={vi.fn()}
         onLessonExposureProgress={onLessonExposureProgress}
       />
@@ -175,6 +221,33 @@ describe('LessonReader', () => {
     expect(onLessonExposureProgress).toHaveBeenCalledWith(expect.objectContaining({
       id: 'lesson-4-grammar',
     }), 'grammar_audio')
+  })
+
+  it('does not crash when saved audio position cannot be restored by the browser', () => {
+    localStorage.setItem('lesson-audio-position:lesson-4:/grammar.mp3', '120')
+
+    render(
+      <LessonReader
+        experience={lessonExperienceWith([
+          lessonBlock({
+            id: 'lesson-4-grammar',
+            kind: 'reading_section',
+            title: 'Grammar audio',
+            payload: { type: 'grammar', audioUrl: '/grammar.mp3', body: 'Grammar notes.' },
+          }),
+        ])}
+        progressBySourceRef={new Map()}
+        onBack={vi.fn()}
+        onSourceProgress={vi.fn()}
+        onLessonExposureProgress={vi.fn()}
+      />
+    )
+
+    const audio = screen.getByTestId('lesson-block-audio-lesson-4-grammar')
+    Object.defineProperty(audio, 'duration', { configurable: true, value: 600 })
+    Object.defineProperty(audio, 'currentTime', { configurable: true, value: 0, writable: false })
+
+    expect(() => fireEvent.loadedMetadata(audio)).not.toThrow()
   })
 
   it('records dialogue audio exposure with 60 percent playback and no 5-minute floor', () => {
@@ -192,7 +265,6 @@ describe('LessonReader', () => {
         ])}
         progressBySourceRef={new Map()}
         onBack={vi.fn()}
-        onPractice={vi.fn()}
         onSourceProgress={vi.fn()}
         onLessonExposureProgress={onLessonExposureProgress}
       />
@@ -205,7 +277,7 @@ describe('LessonReader', () => {
     }), 'dialogue_audio')
   })
 
-  it('records grammar and dialogue text exposure from section exposure actions', async () => {
+  it('does not record grammar text exposure from a token click before meaningful reading time', async () => {
     const user = userEvent.setup()
     const onLessonExposureProgress = vi.fn()
 
@@ -228,7 +300,6 @@ describe('LessonReader', () => {
         ])}
         progressBySourceRef={new Map()}
         onBack={vi.fn()}
-        onPractice={vi.fn()}
         onSourceProgress={vi.fn()}
         onLessonExposureProgress={onLessonExposureProgress}
       />
@@ -236,10 +307,150 @@ describe('LessonReader', () => {
 
     const buttons = screen.getAllByRole('button', { name: 'Markeer sectie als gezien' })
     await user.click(buttons[0])
-    await user.click(buttons[1])
+
+    expect(onLessonExposureProgress).not.toHaveBeenCalled()
+  })
+
+  it('records grammar and dialogue text exposure after meaningful reading time', async () => {
+    vi.useFakeTimers()
+    installIntersectionObserverMock()
+    const onLessonExposureProgress = vi.fn()
+
+    render(
+      <LessonReader
+        experience={lessonExperienceWith([
+          lessonBlock({
+            id: 'lesson-4-grammar',
+            kind: 'reading_section',
+            title: 'Grammar',
+            payload: { type: 'grammar', body: 'Grammar notes.' },
+          }),
+          lessonBlock({
+            id: 'lesson-4-dialogue',
+            kind: 'dialogue_card',
+            title: 'Dialogue',
+            payload: { type: 'dialogue', lines: [{ text: 'Selamat pagi', translation: 'Goedemorgen' }] },
+            displayOrder: 20,
+          }),
+        ])}
+        progressBySourceRef={new Map()}
+        onBack={vi.fn()}
+        onSourceProgress={vi.fn()}
+        onLessonExposureProgress={onLessonExposureProgress}
+      />
+    )
+
+    markSectionVisible('Grammar')
+    markSectionVisible('Dialogue')
+    vi.advanceTimersByTime(120_000)
+    const buttons = screen.getAllByRole('button', { name: 'Markeer sectie als gezien' })
+    fireEvent.click(buttons[0])
+    fireEvent.click(buttons[1])
 
     expect(onLessonExposureProgress).toHaveBeenCalledWith(expect.objectContaining({ id: 'lesson-4-grammar' }), 'grammar_text')
     expect(onLessonExposureProgress).toHaveBeenCalledWith(expect.objectContaining({ id: 'lesson-4-dialogue' }), 'dialogue_text')
+  })
+
+  it('does not let time spent on one visible block unlock an unseen text block', () => {
+    vi.useFakeTimers()
+    installIntersectionObserverMock()
+    const onLessonExposureProgress = vi.fn()
+
+    render(
+      <LessonReader
+        experience={lessonExperienceWith([
+          lessonBlock({
+            id: 'lesson-4-grammar',
+            kind: 'reading_section',
+            title: 'Grammar',
+            payload: { type: 'grammar', body: 'Grammar notes.' },
+          }),
+          lessonBlock({
+            id: 'lesson-4-dialogue',
+            kind: 'dialogue_card',
+            title: 'Dialogue',
+            payload: { type: 'dialogue', lines: [{ text: 'Selamat pagi', translation: 'Goedemorgen' }] },
+            displayOrder: 20,
+          }),
+        ])}
+        progressBySourceRef={new Map()}
+        onBack={vi.fn()}
+        onSourceProgress={vi.fn()}
+        onLessonExposureProgress={onLessonExposureProgress}
+      />
+    )
+
+    markSectionVisible('Grammar')
+    vi.advanceTimersByTime(120_000)
+    const buttons = screen.getAllByRole('button', { name: 'Markeer sectie als gezien' })
+    fireEvent.click(buttons[0])
+    fireEvent.click(buttons[1])
+
+    expect(onLessonExposureProgress).toHaveBeenCalledTimes(1)
+    expect(onLessonExposureProgress).toHaveBeenCalledWith(expect.objectContaining({ id: 'lesson-4-grammar' }), 'grammar_text')
+  })
+
+  it('does not use mount time as text exposure time when visibility cannot be observed', () => {
+    vi.useFakeTimers()
+    const onLessonExposureProgress = vi.fn()
+
+    render(
+      <LessonReader
+        experience={lessonExperienceWith([
+          lessonBlock({
+            id: 'lesson-4-grammar',
+            kind: 'reading_section',
+            title: 'Grammar',
+            payload: { type: 'grammar', body: 'Grammar notes.' },
+          }),
+        ])}
+        progressBySourceRef={new Map()}
+        onBack={vi.fn()}
+        onSourceProgress={vi.fn()}
+        onLessonExposureProgress={onLessonExposureProgress}
+      />
+    )
+
+    vi.advanceTimersByTime(120_000)
+    fireEvent.click(screen.getByRole('button', { name: 'Markeer sectie als gezien' }))
+
+    expect(onLessonExposureProgress).not.toHaveBeenCalled()
+  })
+
+  it('gates pattern-noticing grammar exposure behind visible reading time', () => {
+    vi.useFakeTimers()
+    installIntersectionObserverMock()
+    const onSourceProgress = vi.fn()
+    const onLessonExposureProgress = vi.fn()
+
+    render(
+      <LessonReader
+        experience={lessonExperienceWith([
+          lessonBlock({
+            id: 'lesson-4-pattern',
+            kind: 'pattern_callout',
+            title: 'Pattern',
+            payload: { name: 'Possessive -nya', description: 'Use -nya after nouns.' },
+            sourceProgressEvent: 'pattern_noticing_seen',
+          }),
+        ])}
+        progressBySourceRef={new Map()}
+        onBack={vi.fn()}
+        onSourceProgress={onSourceProgress}
+        onLessonExposureProgress={onLessonExposureProgress}
+      />
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Ik heb dit patroon opgemerkt' }))
+    expect(onSourceProgress).not.toHaveBeenCalled()
+    expect(onLessonExposureProgress).not.toHaveBeenCalled()
+
+    markSectionVisible('Pattern')
+    vi.advanceTimersByTime(120_000)
+    fireEvent.click(screen.getByRole('button', { name: 'Ik heb dit patroon opgemerkt' }))
+
+    expect(onSourceProgress).not.toHaveBeenCalled()
+    expect(onLessonExposureProgress).toHaveBeenCalledWith(expect.objectContaining({ id: 'lesson-4-pattern' }), 'grammar_text')
   })
 
   it('renders authored grammar, dialogue, vocabulary, sentences, culture, and pronunciation content', () => {
@@ -258,8 +469,21 @@ describe('LessonReader', () => {
             id: 'vocab',
             kind: 'vocab_strip',
             title: 'Vocabulary',
-            payload: { type: 'vocabulary', items: [{ indonesian: 'makan', dutch: 'eten' }] },
+            payload: { type: 'vocabulary', items: [{ baseText: 'makan', translationNl: 'eten' }] },
             displayOrder: 30,
+          }),
+          lessonBlock({
+            id: 'flat-vocab',
+            kind: 'vocab_strip',
+            title: 'Flat vocabulary',
+            payload: { type: 'vocabulary', baseText: 'minum', translationNl: 'drinken' },
+            displayOrder: 32,
+          }),
+          lessonBlock({
+            id: 'grammar-categories',
+            title: 'Grammar detail',
+            payload: { type: 'grammar', intro: 'Use -nya for possession.', categories: [{ title: 'Possession', rules: ['noun + nya'] }] },
+            displayOrder: 35,
           }),
           lessonBlock({
             id: 'sentences',
@@ -282,7 +506,6 @@ describe('LessonReader', () => {
         ])}
         progressBySourceRef={new Map()}
         onBack={vi.fn()}
-        onPractice={vi.fn()}
         onSourceProgress={vi.fn()}
         onLessonExposureProgress={vi.fn()}
       />
@@ -291,6 +514,10 @@ describe('LessonReader', () => {
     expect(screen.getByText('Possessive pronouns')).toBeInTheDocument()
     expect(screen.getByText('Apa kabar?')).toBeInTheDocument()
     expect(screen.getByText('makan')).toBeInTheDocument()
+    expect(screen.getByText('minum')).toBeInTheDocument()
+    expect(screen.getByText('drinken')).toBeInTheDocument()
+    expect(screen.getByText(/Use -nya for possession/)).toBeInTheDocument()
+    expect(screen.getByText(/Possession/)).toBeInTheDocument()
     expect(screen.getByText(/Saya makan nasi/)).toBeInTheDocument()
     expect(screen.getByText('Market etiquette')).toBeInTheDocument()
     expect(screen.getByText('Roll r softly')).toBeInTheDocument()

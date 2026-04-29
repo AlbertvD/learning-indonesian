@@ -50,6 +50,7 @@ export interface LessonSourceProgressRow {
 }
 
 export interface LessonCapabilityPracticeSummary {
+  readyCapabilityCount: number
   activePracticedCapabilityCount: number
 }
 
@@ -225,7 +226,7 @@ export const lessonService = {
 
   async getLessonCapabilityPracticeSummary(userId: string, sourceRefs: string[]): Promise<LessonCapabilityPracticeSummary> {
     const uniqueSourceRefs = [...new Set(sourceRefs)].filter(Boolean)
-    if (uniqueSourceRefs.length === 0) return { activePracticedCapabilityCount: 0 }
+    if (uniqueSourceRefs.length === 0) return { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 }
 
     const { data: capabilityRows, error: capabilityError } = await supabase
       .schema('indonesian')
@@ -237,7 +238,7 @@ export const lessonService = {
     if (capabilityError) throw capabilityError
 
     const capabilityIds = ((capabilityRows ?? []) as Array<{ id: string }>).map(row => row.id)
-    if (capabilityIds.length === 0) return { activePracticedCapabilityCount: 0 }
+    if (capabilityIds.length === 0) return { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 }
 
     const { data: stateRows, error: stateError } = await supabase
       .schema('indonesian')
@@ -252,7 +253,10 @@ export const lessonService = {
       review_count: number | null
     }>).filter(row => row.activation_state === 'active' && (row.review_count ?? 0) > 0).length
 
-    return { activePracticedCapabilityCount }
+    return {
+      readyCapabilityCount: capabilityIds.length,
+      activePracticedCapabilityCount,
+    }
   },
 
   async getUserLessonProgress(userId: string): Promise<import('@/types/progress').LessonProgress[]> {

@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import type { LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
 import type { LessonExposureKind } from '@/lib/lessons/lessonExposureProgress'
 import { isMeaningfulDialogueAudio, isMeaningfulGrammarAudio } from '@/lib/lessons/lessonReadiness'
@@ -6,26 +6,79 @@ import type { SourceProgressState } from '@/services/sourceProgressService'
 import classes from '../LessonReader.module.css'
 
 const AUDIO_POSITION_PREFIX = 'lesson-audio-position'
+const MEANINGFUL_TEXT_EXPOSURE_MS = 120_000
 
 interface LessonBlockRendererProps {
   block: LessonExperienceBlock
   progress?: SourceProgressState | null
   onProgress: (block: LessonExperienceBlock) => void
-  onPractice: (block: LessonExperienceBlock) => void
   onLessonExposureProgress?: (block: LessonExperienceBlock, exposureKind: LessonExposureKind) => void
 }
 
 function textFromPayload(payload: Record<string, unknown>): string {
-  if (typeof payload.body === 'string') return payload.body
-  if (Array.isArray(payload.paragraphs)) return payload.paragraphs.filter(item => typeof item === 'string').join('\n\n')
-  if (typeof payload.label === 'string') return payload.label
+  const parts: string[] = []
+  for (const key of ['body', 'intro', 'description', 'label']) {
+    const value = payload[key]
+    if (typeof value === 'string' && value.trim()) parts.push(value)
+  }
+  if (Array.isArray(payload.paragraphs)) {
+    parts.push(...payload.paragraphs.filter((item): item is string => typeof item === 'string' && item.trim().length > 0))
+  }
+  if (Array.isArray(payload.categories)) {
+    for (const rawCategory of payload.categories) {
+      if (!rawCategory || typeof rawCategory !== 'object') continue
+      const category = rawCategory as Record<string, unknown>
+      if (typeof category.title === 'string' && category.title.trim()) parts.push(category.title)
+      if (Array.isArray(category.rules)) {
+        parts.push(...category.rules.filter((item): item is string => typeof item === 'string' && item.trim().length > 0))
+      }
+      if (Array.isArray(category.examples)) {
+        for (const rawExample of category.examples) {
+          if (!rawExample || typeof rawExample !== 'object') continue
+          const example = rawExample as Record<string, unknown>
+          for (const key of ['indonesian', 'dutch', 'text', 'translation']) {
+            const value = example[key]
+            if (typeof value === 'string' && value.trim()) parts.push(value)
+          }
+        }
+      }
+    }
+  }
+  return [...new Set(parts)].join('\n\n')
+}
+
+function itemsFromPayload(payload: Record<string, unknown>): Array<Record<string, unknown>> {
+  if (Array.isArray(payload.items)) return payload.items.filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === 'object')
+  if (Array.isArray(payload.lines)) return payload.lines.filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === 'object')
+  const hasFlatItemText = [
+    'indonesian',
+    'text',
+    'baseText',
+    'base_text',
+    'name',
+    'dutch',
+    'translation',
+    'translationNl',
+    'translation_nl',
+  ].some(key => typeof payload[key] === 'string' && payload[key].trim())
+  if (hasFlatItemText) return [payload]
+  return []
+}
+
+function primaryItemText(item: Record<string, unknown>): string {
+  for (const key of ['indonesian', 'text', 'baseText', 'base_text', 'name']) {
+    const value = item[key]
+    if (typeof value === 'string' && value.trim()) return value
+  }
   return ''
 }
 
-function itemsFromPayload(payload: Record<string, unknown>): Array<{ indonesian?: string; dutch?: string; text?: string; translation?: string }> {
-  if (Array.isArray(payload.items)) return payload.items as Array<{ indonesian?: string; dutch?: string }>
-  if (Array.isArray(payload.lines)) return payload.lines as Array<{ text?: string; translation?: string }>
-  return []
+function secondaryItemText(item: Record<string, unknown>): string {
+  for (const key of ['dutch', 'translation', 'translationNl', 'translation_nl', 'description']) {
+    const value = item[key]
+    if (typeof value === 'string' && value.trim()) return value
+  }
+  return ''
 }
 
 function audioUrlFromPayload(payload: Record<string, unknown>): string | null {
@@ -44,7 +97,11 @@ function restoreAudioPosition(audio: HTMLAudioElement, key: string) {
   const storedTime = Number(raw)
   if (!Number.isFinite(storedTime) || storedTime <= 0) return
   if (Number.isFinite(audio.duration) && audio.duration > 0 && storedTime >= audio.duration - 2) return
-  audio.currentTime = storedTime
+  try {
+    audio.currentTime = storedTime
+  } catch {
+    localStorage.removeItem(key)
+  }
 }
 
 function saveAudioPosition(audio: HTMLAudioElement, key: string) {
@@ -63,6 +120,9 @@ function payloadType(block: LessonExperienceBlock): string | null {
 function exposureKindForText(block: LessonExperienceBlock): LessonExposureKind | null {
   const type = payloadType(block)
   if (type === 'grammar') return 'grammar_text'
+  if (type === 'reference_table') return 'grammar_text'
+  if (block.kind === 'pattern_callout' || block.kind === 'noticing_prompt') return 'grammar_text'
+  if (block.sourceProgressEvent === 'pattern_noticing_seen') return 'grammar_text'
   if (type === 'dialogue' || block.kind === 'dialogue_card') return 'dialogue_text'
   return null
 }
@@ -94,14 +154,38 @@ function labelForStatus(status: string): string {
   return status
 }
 
-export function LessonBlockRenderer({ block, progress, onProgress, onPractice, onLessonExposureProgress }: LessonBlockRendererProps) {
+export function LessonBlockRenderer({ block, progress, onProgress, onLessonExposureProgress }: LessonBlockRendererProps) {
   const status = progress?.currentState ?? 'not_started'
   const items = itemsFromPayload(block.payload)
   const body = textFromPayload(block.payload)
   const audioUrl = audioUrlFromPayload(block.payload)
   const audioKey = audioUrl ? audioPositionKey(block, audioUrl) : null
   const audioExposureKind = exposureKindForAudio(block)
+  const textExposureKind = exposureKindForText(block)
+  const sectionRef = useRef<HTMLElement | null>(null)
   const audioExposureRecordedRef = useRef(false)
+  const visibleSinceRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (!textExposureKind) return
+    const element = sectionRef.current
+    if (!element) return
+
+    if (typeof IntersectionObserver === 'undefined') return
+
+    const observer = new IntersectionObserver(entries => {
+      const entry = entries.find(candidate => candidate.target === element)
+      if (!entry) return
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+        visibleSinceRef.current ??= Date.now()
+        return
+      }
+      visibleSinceRef.current = null
+    }, { threshold: [0, 0.6] })
+
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [textExposureKind])
 
   const maybeRecordAudioExposure = (audio: HTMLAudioElement) => {
     if (!audioExposureKind || !onLessonExposureProgress || audioExposureRecordedRef.current) return
@@ -120,8 +204,13 @@ export function LessonBlockRenderer({ block, progress, onProgress, onPractice, o
   }
 
   const handleSectionProgress = () => {
-    const textExposureKind = exposureKindForText(block)
     if (textExposureKind && onLessonExposureProgress) {
+      const visibleSince = visibleSinceRef.current
+      if (visibleSince == null) {
+        visibleSinceRef.current = Date.now()
+        return
+      }
+      if (Date.now() - visibleSince < MEANINGFUL_TEXT_EXPOSURE_MS) return
       onLessonExposureProgress(block, textExposureKind)
       return
     }
@@ -153,7 +242,6 @@ export function LessonBlockRenderer({ block, progress, onProgress, onPractice, o
             {block.contentUnitSlugs.map(slug => <li key={slug}><code>{slug}</code></li>)}
           </ul>
         </details>
-        <button type="button" onClick={() => onPractice(block)}>Oefen deze inhoud</button>
       </section>
     )
   }
@@ -170,7 +258,7 @@ export function LessonBlockRenderer({ block, progress, onProgress, onPractice, o
   }
 
   return (
-    <section className={classes.block} aria-labelledby={`${block.id}-title`}>
+    <section ref={sectionRef} className={classes.block} aria-labelledby={`${block.id}-title`}>
       <div className={classes.blockTopline}>
         <p className={classes.kicker}>{labelForKind(block.kind)}</p>
         <span>{labelForStatus(status)}</span>
@@ -200,8 +288,8 @@ export function LessonBlockRenderer({ block, progress, onProgress, onPractice, o
         <div className={classes.itemGrid}>
           {items.slice(0, 12).map((item, index) => (
             <article key={`${block.id}-${index}`} className={classes.itemCard}>
-              <strong>{item.indonesian ?? item.text}</strong>
-              <span>{item.dutch ?? item.translation}</span>
+              <strong>{primaryItemText(item)}</strong>
+              <span>{secondaryItemText(item)}</span>
             </article>
           ))}
         </div>

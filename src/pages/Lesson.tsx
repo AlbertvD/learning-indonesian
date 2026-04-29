@@ -556,6 +556,7 @@ export function Lesson() {
   const [audioMap, setAudioMap] = useState<AudioMap>(new Map())
   const [lessonPageBlocks, setLessonPageBlocks] = useState<LessonPageBlock[]>([])
   const [lessonSourceProgress, setLessonSourceProgress] = useState<LessonSourceProgressRow[]>([])
+  const [readyCapabilityCount, setReadyCapabilityCount] = useState(0)
   const [activePracticedCapabilityCount, setActivePracticedCapabilityCount] = useState(0)
 
   const loadVocabulary = async () => {
@@ -619,10 +620,11 @@ export function Lesson() {
           const sourceProgressRows = await lessonService.getLessonSourceProgress(user.id, sourceRefs)
           const practiceSummary = await lessonService.getLessonCapabilityPracticeSummary(user.id, sourceRefs).catch(err => {
             logError({ page: 'lesson-reader-v2', action: 'load-practice-summary', error: err })
-            return { activePracticedCapabilityCount: 0 }
+            return { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 }
           })
           setLessonPageBlocks(pageBlocks)
           setLessonSourceProgress(sourceProgressRows)
+          setReadyCapabilityCount(practiceSummary.readyCapabilityCount)
           setActivePracticedCapabilityCount(practiceSummary.activePracticedCapabilityCount)
         }
 
@@ -844,7 +846,11 @@ export function Lesson() {
       upsertLessonSourceProgress(state)
 
       const toastKey = `${lesson.id}:practice-ready`
-      if (block.capabilityKeyRefs.length > 0 && !practiceReadyToastShownRef.current.has(toastKey)) {
+      if (
+        block.capabilityKeyRefs.length > 0
+        && readyCapabilityCount > activePracticedCapabilityCount
+        && !practiceReadyToastShownRef.current.has(toastKey)
+      ) {
         practiceReadyToastShownRef.current.add(toastKey)
         notifications.show({
           color: 'teal',
@@ -855,7 +861,7 @@ export function Lesson() {
       logError({ page: 'lesson-reader-v2', action: 'record-lesson-exposure', error: err })
       notifications.show({ color: 'red', title: T.common.error, message: T.lessons.failedToSaveProgress })
     }
-  }, [lesson, user, T.common.error, T.lessons, upsertLessonSourceProgress])
+  }, [activePracticedCapabilityCount, lesson, readyCapabilityCount, user, T.common.error, T.lessons, upsertLessonSourceProgress])
 
   const readerExperience = useMemo(
     () => lesson ? buildLessonExperience({ lesson, pageBlocks: lessonPageBlocks }) : null,
@@ -875,13 +881,15 @@ export function Lesson() {
 
   const lessonPracticeActionState: LessonPracticeActionState | null = useMemo(() => {
     if (!readerExperience) return null
-    const practiceReadyCount = practiceReadyCapabilityCount(readerExperience.blocks, readerProgressBySourceRef)
+    const exposedReadyCapabilityCount = practiceReadyCapabilityCount(readerExperience.blocks, readerProgressBySourceRef)
+    const backendUnpracticedReadyCount = Math.max(0, readyCapabilityCount - activePracticedCapabilityCount)
+    const practiceReadyCount = Math.min(exposedReadyCapabilityCount, backendUnpracticedReadyCount)
     return {
       practiceReadyCount,
       hasUnpracticedEligibleItems: practiceReadyCount > 0,
       hasActivePracticedItems: activePracticedCapabilityCount > 0,
     }
-  }, [activePracticedCapabilityCount, readerExperience, readerProgressBySourceRef])
+  }, [activePracticedCapabilityCount, readerExperience, readerProgressBySourceRef, readyCapabilityCount])
 
   const lessonPracticeActions = useMemo(() => {
     if (!lesson || !lessonPracticeActionState) return []
@@ -928,10 +936,6 @@ export function Lesson() {
         progressBySourceRef={readerProgressBySourceRef}
         actions={lessonPracticeActions}
         onBack={() => navigate('/lessons')}
-        onPractice={(block) => {
-          void handleReaderSourceProgress(block, 'intro_completed')
-          navigate(`/session?lesson=${lessonId}&mode=lesson_practice`)
-        }}
         onSourceProgress={handleReaderSourceProgress}
         onLessonExposureProgress={handleLessonExposureProgress}
       />
@@ -1074,13 +1078,6 @@ export function Lesson() {
                     )
                   })}
                 </div>
-                <Button
-                  onClick={() => navigate(`/session?lesson=${lessonId}&mode=lesson_practice`)}
-                  fullWidth
-                  size="md"
-                >
-                  {T.lessons.practiceThisLesson}
-                </Button>
               </>
             )}
           </Stack>

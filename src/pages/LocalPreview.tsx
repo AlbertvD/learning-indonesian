@@ -84,7 +84,6 @@ export function LocalPreviewLesson() {
       experience={experience}
       progressBySourceRef={new Map()}
       onBack={() => navigate('/preview')}
-      onPractice={() => navigate('/preview')}
       onSourceProgress={() => {
         // Preview-only route: source progress is intentionally not persisted.
       }}

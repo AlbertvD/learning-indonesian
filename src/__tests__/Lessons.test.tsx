@@ -26,6 +26,9 @@ vi.mock('@/services/lessonService', async (importOriginal) => {
     lessonService: {
       ...actual.lessonService,
       getLessons: vi.fn(),
+      getLessonPageBlocks: vi.fn(),
+      getLessonSourceProgress: vi.fn(),
+      getLessonCapabilityPracticeSummary: vi.fn(),
       getUserLessonProgress: vi.fn(),
     },
   }
@@ -77,6 +80,12 @@ describe('Lessons overview', () => {
   beforeEach(() => {
     sessionStorage.clear()
     vi.mocked(lessonService.getLessons).mockResolvedValue(lessons)
+    vi.mocked(lessonService.getLessonPageBlocks).mockResolvedValue([])
+    vi.mocked(lessonService.getLessonSourceProgress).mockResolvedValue([])
+    vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockResolvedValue({
+      readyCapabilityCount: 0,
+      activePracticedCapabilityCount: 0,
+    } as any)
     vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([])
   })
 
@@ -159,5 +168,109 @@ describe('Lessons overview', () => {
     await screen.findByTestId('lesson-overview-row-lesson-1')
     expect(screen.queryByRole('searchbox')).not.toBeInTheDocument()
     expect(screen.queryByPlaceholderText(/search|filter/i)).not.toBeInTheDocument()
+  })
+
+  it('uses v2 source progress and capability counts to show a ready-to-practice lesson status', async () => {
+    vi.mocked(lessonService.getLessonPageBlocks).mockImplementation(async (sourceRef) => {
+      if (sourceRef !== 'lesson-1') return []
+      return [
+        {
+          block_key: 'lesson-1-grammar',
+          source_ref: 'lesson-1',
+          source_refs: ['lesson-1'],
+          content_unit_slugs: [],
+          block_kind: 'section',
+          display_order: 10,
+          payload_json: { type: 'grammar', title: 'Grammar' },
+          source_progress_event: 'section_exposed',
+          capability_key_refs: ['capability-1', 'capability-2'],
+        },
+      ] as any
+    })
+    vi.mocked(lessonService.getLessonSourceProgress).mockResolvedValue([
+      {
+        source_ref: 'lesson-1',
+        source_section_ref: 'lesson-1-grammar',
+        current_state: 'heard_once',
+        completed_event_types: ['heard_once'],
+        last_event_at: '2026-04-29T10:00:00Z',
+      },
+    ])
+    vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockImplementation(async (_userId, sourceRefs) => (
+      sourceRefs.includes('lesson-1')
+        ? { readyCapabilityCount: 2, activePracticedCapabilityCount: 0 } as any
+        : { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 } as any
+    ))
+
+    renderLessons()
+
+    const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
+    expect(lessonOne).toHaveTextContent('Ready to practice')
+    expect(lessonOne).toHaveTextContent('Open lesson')
+    expect(lessonOne).not.toHaveTextContent(/Review this lesson|Practice this lesson|\d+\s+ready/i)
+  })
+
+  it('does not use stale legacy lesson progress as v2 practice readiness exposure', async () => {
+    vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([
+      {
+        lesson_id: 'lesson-1',
+        sections_completed: ['legacy-section-1'],
+        completed_at: null,
+      },
+    ] as any)
+    vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockImplementation(async (_userId, sourceRefs) => (
+      sourceRefs.includes('lesson-1')
+        ? { readyCapabilityCount: 2, activePracticedCapabilityCount: 0 } as any
+        : { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 } as any
+    ))
+
+    renderLessons()
+
+    const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
+    expect(lessonOne).toHaveTextContent('In progress')
+    expect(lessonOne).not.toHaveTextContent('Ready to practice')
+  })
+
+  it('uses practiced capability counts to show in-practice and practiced lesson statuses', async () => {
+    vi.mocked(lessonService.getLessonPageBlocks).mockImplementation(async (sourceRef) => [
+      {
+        block_key: `${sourceRef}-grammar`,
+        source_ref: sourceRef,
+        source_refs: [sourceRef],
+        content_unit_slugs: [],
+        block_kind: 'section',
+        display_order: 10,
+        payload_json: { type: 'grammar', title: 'Grammar' },
+        source_progress_event: 'section_exposed',
+        capability_key_refs: [],
+      },
+    ] as any)
+    vi.mocked(lessonService.getLessonSourceProgress).mockResolvedValue([
+      {
+        source_ref: 'lesson-1',
+        source_section_ref: 'lesson-1-grammar',
+        current_state: 'heard_once',
+        completed_event_types: ['heard_once'],
+        last_event_at: '2026-04-29T10:00:00Z',
+      },
+      {
+        source_ref: 'lesson-2',
+        source_section_ref: 'lesson-2-grammar',
+        current_state: 'intro_completed',
+        completed_event_types: ['intro_completed'],
+        last_event_at: '2026-04-29T10:05:00Z',
+      },
+    ])
+    vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockImplementation(async (_userId, sourceRefs) => {
+      if (sourceRefs.includes('lesson-1')) return { readyCapabilityCount: 2, activePracticedCapabilityCount: 2 } as any
+      if (sourceRefs.includes('lesson-2')) return { readyCapabilityCount: 4, activePracticedCapabilityCount: 1 } as any
+      return { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 } as any
+    })
+
+    renderLessons()
+
+    expect(await screen.findByTestId('lesson-overview-row-lesson-1')).toHaveTextContent('Practiced')
+    expect(screen.getByTestId('lesson-overview-row-lesson-2')).toHaveTextContent('In practice')
+    expect(screen.queryByRole('link', { name: /Review this lesson|Practice this lesson/i })).not.toBeInTheDocument()
   })
 })
