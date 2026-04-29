@@ -44,6 +44,13 @@ export function parseDisabledByDefaultFlag(key: string): boolean {
   return false
 }
 
+export function parseEnabledByDefaultFlag(key: string): boolean {
+  const value = import.meta.env[key]
+  if (value === undefined || value === '') return true
+  if (value === 'false' || value === '0') return false
+  return true
+}
+
 export const featureFlags: FeatureFlags = {
   textbookImport: parseEnvFlag('VITE_FEATURE_TEXTBOOK_IMPORT'),
   aiGeneration: parseEnvFlag('VITE_FEATURE_AI_GENERATION'),
@@ -60,9 +67,9 @@ export const capabilityMigrationFlags: CapabilityMigrationFlags = {
   sessionDiagnostics: parseDisabledByDefaultFlag('VITE_CAPABILITY_SESSION_DIAGNOSTICS'),
   reviewShadow: parseDisabledByDefaultFlag('VITE_CAPABILITY_REVIEW_SHADOW'),
   reviewCompat: parseDisabledByDefaultFlag('VITE_CAPABILITY_REVIEW_COMPAT'),
-  standardSession: parseDisabledByDefaultFlag('VITE_CAPABILITY_STANDARD_SESSION'),
-  experiencePlayerV1: parseDisabledByDefaultFlag('VITE_EXPERIENCE_PLAYER_V1'),
-  lessonReaderV2: parseDisabledByDefaultFlag('VITE_LESSON_READER_V2'),
+  standardSession: parseEnabledByDefaultFlag('VITE_CAPABILITY_STANDARD_SESSION'),
+  experiencePlayerV1: parseEnabledByDefaultFlag('VITE_EXPERIENCE_PLAYER_V1'),
+  lessonReaderV2: parseEnabledByDefaultFlag('VITE_LESSON_READER_V2'),
   localContentPreview: parseDisabledByDefaultFlag('VITE_LOCAL_CONTENT_PREVIEW'),
 }
 
