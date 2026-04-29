@@ -18,6 +18,7 @@ describe('content units migration', () => {
   it('rolls the slice back in dependency order', () => {
     const drops = rollback
       .split('\n')
+      .map(line => line.trim())
       .filter(line => line.startsWith('drop table'))
 
     expect(drops).toEqual([
