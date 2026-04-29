@@ -1,6 +1,6 @@
 import { decideBacklogPressure, type SessionPosture } from '@/lib/pedagogy/sessionPosture'
 
-export type CurrentSessionMode = 'standard' | 'backlog_clear' | 'quick'
+export type CurrentSessionMode = 'standard' | 'backlog_clear' | 'quick' | 'lesson_practice' | 'lesson_review'
 export type FutureSessionMode = 'listening_focus' | 'pattern_workshop' | 'podcast'
 export type PlannerSessionMode = CurrentSessionMode | FutureSessionMode
 
@@ -37,6 +37,34 @@ function budget(input: Omit<LoadBudgetDecision, 'maxNewPatterns'> & {
 export function decideLoadBudget(input: LoadBudgetInput): LoadBudgetDecision {
   const targetSessionSize = Math.max(0, input.preferredSessionSize)
   const openSlots = Math.max(0, targetSessionSize - input.dueCount)
+
+  if (input.mode === 'lesson_review') {
+    return budget({
+      allowNewCapabilities: false,
+      maxNewCapabilities: 0,
+      maxNewConcepts: 0,
+      maxNewProductionTasks: 0,
+      maxHiddenAudioTasks: 0,
+      maxSourceSwitches: 0,
+      targetSessionSize,
+      allowQueuePadding: false,
+      reason: 'lesson_review_suppresses_new_content',
+    })
+  }
+
+  if (input.mode === 'lesson_practice') {
+    return budget({
+      allowNewCapabilities: openSlots > 0,
+      maxNewCapabilities: openSlots,
+      maxNewConcepts: openSlots,
+      maxNewProductionTasks: openSlots,
+      maxHiddenAudioTasks: targetSessionSize,
+      maxSourceSwitches: 0,
+      targetSessionSize,
+      allowQueuePadding: false,
+      reason: 'lesson_practice_selected_lesson_budget',
+    })
+  }
 
   if (input.mode === 'backlog_clear') {
     return budget({

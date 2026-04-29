@@ -84,6 +84,8 @@ export interface PedagogyInput {
     failedAt: string
     consecutiveFailures: number
   }>
+  selectedLessonId?: string
+  selectedSourceRefs?: string[]
 }
 
 function isPattern(capability: PlannerCapability): boolean {
@@ -172,6 +174,20 @@ function isAllowedInSessionMode(input: {
   return true
 }
 
+function isLessonScopedMode(mode: PlannerSessionMode): boolean {
+  return mode === 'lesson_practice' || mode === 'lesson_review'
+}
+
+function isInSelectedLessonScope(input: {
+  capability: PlannerCapability
+  selectedLessonId?: string
+  selectedSourceRefs?: string[]
+}): boolean {
+  return Boolean(input.selectedLessonId)
+    && Boolean(input.selectedSourceRefs?.length)
+    && input.selectedSourceRefs!.includes(input.capability.sourceRef)
+}
+
 export function planLearningPath(input: PedagogyInput): LearningPlan {
   const loadBudget = decideLoadBudget({
     mode: input.mode,
@@ -203,6 +219,17 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
       suppress('capability_not_published')
       continue
     }
+    if (
+      isLessonScopedMode(input.mode)
+      && !isInSelectedLessonScope({
+        capability,
+        selectedLessonId: input.selectedLessonId,
+        selectedSourceRefs: input.selectedSourceRefs,
+      })
+    ) {
+      suppress('wrong_session_mode')
+      continue
+    }
     const state = stateByKey.get(capability.canonicalKey)
     if (state && state.activationState !== 'dormant') {
       suppress('already_active_or_retired')
@@ -229,7 +256,7 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
     }
     if (!isUsefulForCurrentPath({
       capability,
-      currentSourceRefs: input.currentSourceRefs,
+      currentSourceRefs: isLessonScopedMode(input.mode) ? input.selectedSourceRefs : input.currentSourceRefs,
       activeGoalTags: input.activeGoalTags,
     })) {
       suppress('not_useful_for_current_path')

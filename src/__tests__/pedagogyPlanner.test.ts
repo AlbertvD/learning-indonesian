@@ -282,6 +282,81 @@ describe('pedagogy planner', () => {
     expect(plan.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual(['new-form-recall'])
   })
 
+  it('filters lesson practice new candidates to selected lesson source refs', () => {
+    const selected = capability({
+      id: 'selected',
+      canonicalKey: 'selected',
+      sourceRef: 'learning_items/lesson-4-makan',
+    })
+    const otherLesson = capability({
+      id: 'other',
+      canonicalKey: 'other',
+      sourceRef: 'learning_items/lesson-5-minum',
+    })
+
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'lesson_practice',
+      selectedLessonId: 'lesson-4',
+      selectedSourceRefs: ['lesson-4', 'learning_items/lesson-4-makan'],
+      now: new Date('2026-04-25T00:00:00.000Z'),
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [otherLesson, selected],
+      learnerCapabilityStates: [],
+      sourceProgress: [],
+      recentReviewEvidence: [],
+    })
+
+    expect(plan.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual(['selected'])
+    expect(plan.suppressedCapabilities).toContainEqual({
+      canonicalKey: 'other',
+      reason: 'wrong_session_mode',
+    })
+  })
+
+  it('fails closed for lesson practice when no selected lesson is supplied', () => {
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'lesson_practice',
+      now: new Date('2026-04-25T00:00:00.000Z'),
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [capability()],
+      learnerCapabilityStates: [],
+      sourceProgress: [],
+      recentReviewEvidence: [],
+    })
+
+    expect(plan.eligibleNewCapabilities).toEqual([])
+    expect(plan.suppressedCapabilities[0]).toEqual({
+      canonicalKey: 'cap:v1:item:learning_items/item-1:text_recognition:id_to_l1:text:nl',
+      reason: 'wrong_session_mode',
+    })
+  })
+
+  it('never introduces new capabilities during lesson review', () => {
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'lesson_review',
+      selectedLessonId: 'lesson-4',
+      selectedSourceRefs: ['learning_items/item-1'],
+      now: new Date('2026-04-25T00:00:00.000Z'),
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [capability()],
+      learnerCapabilityStates: [],
+      sourceProgress: [],
+      recentReviewEvidence: [],
+    })
+
+    expect(plan.eligibleNewCapabilities).toEqual([])
+    expect(plan.suppressedCapabilities[0]).toEqual({
+      canonicalKey: 'cap:v1:item:learning_items/item-1:text_recognition:id_to_l1:text:nl',
+      reason: 'load_budget_exhausted',
+    })
+  })
+
   it('prefers the safe Dutch-to-Indonesian bridge over another meaning recall when balanced budget is tight', () => {
     const plan = planLearningPath({
       userId: 'user-1',

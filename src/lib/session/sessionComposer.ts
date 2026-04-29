@@ -1,6 +1,6 @@
 import type { CapabilityActivationRequest } from '@/lib/reviews/capabilityReviewProcessor'
 import type { ExerciseRenderPlan } from '@/lib/exercises/exerciseRenderPlan'
-import type { CapabilityReviewSessionContext, SessionDiagnostic, SessionPlan } from '@/lib/session/sessionPlan'
+import type { CapabilityReviewSessionContext, CapabilitySessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session/sessionPlan'
 
 interface ResolutionFailure {
   reason: string
@@ -29,9 +29,10 @@ export interface EligibleNewSessionCapabilityInput {
 
 export interface ComposeSessionInput {
   sessionId: string
-  mode: 'standard'
+  mode: CapabilitySessionMode
   dueCapabilities: DueSessionCapabilityInput[]
   eligibleNewCapabilities: EligibleNewSessionCapabilityInput[]
+  practiceReviewCapabilities?: DueSessionCapabilityInput[]
   diagnostics?: SessionDiagnostic[]
   limit: number
 }
@@ -82,6 +83,22 @@ export async function composeSession(input: ComposeSessionInput): Promise<Sessio
         activationRequest: introduction.activationRequest,
         requiredActivationOwner: 'review_processor',
       },
+    })
+  }
+
+  for (const review of input.practiceReviewCapabilities ?? []) {
+    if (!review.renderPlan) {
+      if (review.resolutionFailure) diagnostics.push(diagnosticFor(review.resolutionFailure))
+      continue
+    }
+    blocks.push({
+      id: `${input.sessionId}:lesson-review:${review.canonicalKeySnapshot}`,
+      kind: 'due_review',
+      renderPlan: review.renderPlan,
+      capabilityId: review.capabilityId,
+      canonicalKeySnapshot: review.canonicalKeySnapshot,
+      stateVersion: review.stateVersion,
+      reviewContext: review.reviewContext,
     })
   }
 

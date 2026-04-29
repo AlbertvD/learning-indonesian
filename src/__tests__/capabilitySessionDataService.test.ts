@@ -391,6 +391,27 @@ describe('capability session data service', () => {
     }])
   })
 
+  it('carries selected lesson scope into the planner snapshot', async () => {
+    const service = createCapabilitySessionDataService({
+      schema: () => ({
+        from: () => query([]),
+      }),
+    })
+
+    const snapshot = await service.loadCapabilitySessionData({
+      userId: 'user-1',
+      mode: 'lesson_practice',
+      now: new Date('2026-04-25T12:00:00.000Z'),
+      limit: 15,
+      preferredSessionSize: 15,
+      selectedLessonId: 'lesson-4',
+      selectedSourceRefs: ['lesson-4', 'learning_items/makan'],
+    })
+
+    expect(snapshot.plannerInput.selectedLessonId).toBe('lesson-4')
+    expect(snapshot.plannerInput.selectedSourceRefs).toEqual(['lesson-4', 'learning_items/makan'])
+  })
+
   it('fails closed when lesson-sequenced capabilities lack source progress metadata', async () => {
     const service = createCapabilitySessionDataService({
       schema: () => ({

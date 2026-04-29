@@ -12,7 +12,7 @@ import type { SessionAudioMap } from '@/services/audioService'
 import { capabilityMigrationFlags, isExerciseTypeEnabled } from '@/lib/featureFlags'
 import { runSessionCapabilityDiagnosticsIfEnabled } from '@/lib/capabilities/sessionCapabilityDiagnostics'
 
-export type SessionMode = 'standard' | 'backlog_clear' | 'quick'
+export type SessionMode = 'standard' | 'backlog_clear' | 'quick' | 'lesson_practice' | 'lesson_review'
 
 // Fraction of the session filled with grammar exercises.
 // backlog_clear and quick modes exclude grammar entirely.

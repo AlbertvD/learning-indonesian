@@ -292,4 +292,121 @@ describe('capability session loader', () => {
 
     expect(plan.blocks).toEqual([])
   })
+
+  it('loads lesson practice from selected lesson due, new, and active review candidates only', async () => {
+    const selectedDueKey = 'selected-due-key'
+    const selectedNewKey = 'selected-new-key'
+    const selectedActiveKey = 'selected-active-key'
+    const otherDueKey = 'other-due-key'
+    const selectedRefs = ['lesson-4', 'learning_items/selected-due', 'learning_items/selected-new', 'learning_items/selected-active']
+    const projections = [
+      projectedCapability({ canonicalKey: selectedDueKey, sourceRef: 'learning_items/selected-due', requiredArtifacts: [] }),
+      projectedCapability({ canonicalKey: selectedNewKey, sourceRef: 'learning_items/selected-new', requiredArtifacts: [] }),
+      projectedCapability({ canonicalKey: selectedActiveKey, sourceRef: 'learning_items/selected-active', requiredArtifacts: [] }),
+      projectedCapability({ canonicalKey: otherDueKey, sourceRef: 'learning_items/other-due', requiredArtifacts: [] }),
+    ]
+
+    const plan = await loadCapabilitySessionPlan(baseInput({
+      mode: 'lesson_practice',
+      limit: 3,
+      schedulerRows: [
+        activeState({ id: 'selected-due-state', canonicalKeySnapshot: selectedDueKey, capabilityId: 'selected-due', nextDueAt: '2026-04-25T09:00:00.000Z' }),
+        activeState({ id: 'other-due-state', canonicalKeySnapshot: otherDueKey, capabilityId: 'other-due', nextDueAt: '2026-04-25T09:00:00.000Z' }),
+        activeState({ id: 'selected-active-state', canonicalKeySnapshot: selectedActiveKey, capabilityId: 'selected-active', nextDueAt: '2026-04-26T09:00:00.000Z' }),
+      ],
+      plannerInput: {
+        userId: 'user-1',
+        preferredSessionSize: 3,
+        dueCount: 0,
+        readyCapabilities: [
+          plannerCapability({ id: 'selected-new', canonicalKey: selectedNewKey, sourceRef: 'learning_items/selected-new' }),
+          plannerCapability({ id: 'other-new', canonicalKey: 'other-new-key', sourceRef: 'learning_items/other-new' }),
+        ],
+        learnerCapabilityStates: [],
+        sourceProgress: [],
+        recentReviewEvidence: [],
+        selectedLessonId: 'lesson-4',
+        selectedSourceRefs: selectedRefs,
+      },
+      capabilitiesByKey: new Map(projections.map(projection => [projection.canonicalKey, projection])),
+      readinessByKey: new Map(projections.map(projection => [projection.canonicalKey, { status: 'ready' as const, allowedExercises: ['meaning_recall' as const] }])),
+      artifactIndex: {},
+      selectedLessonId: 'lesson-4',
+      selectedSourceRefs: selectedRefs,
+    }))
+
+    expect(plan.blocks.map(block => block.renderPlan.sourceRef)).toEqual([
+      'learning_items/selected-due',
+      'learning_items/selected-new',
+      'learning_items/selected-active',
+    ])
+    expect(plan.blocks[1]?.pendingActivation).toEqual(expect.objectContaining({
+      capabilityId: 'selected-new',
+    }))
+    expect(plan.blocks[2]?.pendingActivation).toBeUndefined()
+  })
+
+  it('loads lesson review from selected active capabilities without introducing new ones', async () => {
+    const dueKey = 'selected-due-key'
+    const activeKey = 'selected-active-key'
+    const newKey = 'selected-new-key'
+    const selectedRefs = ['learning_items/selected-due', 'learning_items/selected-active', 'learning_items/selected-new']
+    const projections = [
+      projectedCapability({ canonicalKey: dueKey, sourceRef: 'learning_items/selected-due', requiredArtifacts: [] }),
+      projectedCapability({ canonicalKey: activeKey, sourceRef: 'learning_items/selected-active', requiredArtifacts: [] }),
+      projectedCapability({ canonicalKey: newKey, sourceRef: 'learning_items/selected-new', requiredArtifacts: [] }),
+    ]
+
+    const plan = await loadCapabilitySessionPlan(baseInput({
+      mode: 'lesson_review',
+      limit: 5,
+      schedulerRows: [
+        activeState({ id: 'due-state', canonicalKeySnapshot: dueKey, capabilityId: 'due-cap', nextDueAt: '2026-04-25T09:00:00.000Z' }),
+        activeState({ id: 'active-state', canonicalKeySnapshot: activeKey, capabilityId: 'active-cap', nextDueAt: '2026-04-26T09:00:00.000Z' }),
+      ],
+      plannerInput: {
+        userId: 'user-1',
+        preferredSessionSize: 5,
+        dueCount: 0,
+        readyCapabilities: [plannerCapability({ id: 'new-cap', canonicalKey: newKey, sourceRef: 'learning_items/selected-new' })],
+        learnerCapabilityStates: [],
+        sourceProgress: [],
+        recentReviewEvidence: [],
+        selectedLessonId: 'lesson-4',
+        selectedSourceRefs: selectedRefs,
+      },
+      capabilitiesByKey: new Map(projections.map(projection => [projection.canonicalKey, projection])),
+      readinessByKey: new Map(projections.map(projection => [projection.canonicalKey, { status: 'ready' as const, allowedExercises: ['meaning_recall' as const] }])),
+      artifactIndex: {},
+      selectedLessonId: 'lesson-4',
+      selectedSourceRefs: selectedRefs,
+    }))
+
+    expect(plan.blocks.map(block => block.renderPlan.sourceRef)).toEqual([
+      'learning_items/selected-due',
+      'learning_items/selected-active',
+    ])
+    expect(plan.blocks.every(block => !block.pendingActivation)).toBe(true)
+  })
+
+  it('fails closed when lesson mode has no selected lesson scope', async () => {
+    const plan = await loadCapabilitySessionPlan(baseInput({
+      mode: 'lesson_practice',
+      plannerInput: {
+        userId: 'user-1',
+        preferredSessionSize: 5,
+        dueCount: 0,
+        readyCapabilities: [plannerCapability()],
+        learnerCapabilityStates: [],
+        sourceProgress: [],
+        recentReviewEvidence: [],
+      },
+    }))
+
+    expect(plan.blocks).toEqual([])
+    expect(plan.diagnostics).toContainEqual(expect.objectContaining({
+      severity: 'critical',
+      reason: 'missing_selected_lesson',
+    }))
+  })
 })

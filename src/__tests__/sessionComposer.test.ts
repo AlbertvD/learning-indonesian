@@ -139,4 +139,59 @@ describe('capability session composer', () => {
       details: 'session.pipelineDryingUp',
     }])
   })
+
+  it('composes lesson practice with due reviews, new introductions, and extra selected reviews', async () => {
+    const plan = await composeSession({
+      sessionId: 'session-1',
+      mode: 'lesson_practice',
+      dueCapabilities: [{
+        capabilityId: 'capability-due',
+        canonicalKeySnapshot: 'due-key',
+        stateVersion: 2,
+        reviewContext: {
+          schedulerSnapshot: activeSnapshot,
+          currentStateVersion: 2,
+          artifactVersionSnapshot: {},
+          capabilityReadinessStatus: 'ready',
+          capabilityPublicationStatus: 'published',
+        },
+        renderPlan: { capabilityKey: 'due-key', sourceRef: 'lesson-4/due', exerciseType: 'meaning_recall', capabilityType: 'meaning_recall', skillType: 'meaning_recall', requiredArtifacts: [] },
+      }],
+      eligibleNewCapabilities: [{
+        capability: { id: 'capability-new', canonicalKey: 'new-key' },
+        renderPlan: { capabilityKey: 'new-key', sourceRef: 'lesson-4/new', exerciseType: 'recognition_mcq', capabilityType: 'text_recognition', skillType: 'recognition', requiredArtifacts: [] },
+        activationRequest: { reason: 'eligible_new_capability' },
+        reviewContext: {
+          schedulerSnapshot: dormantSnapshot,
+          currentStateVersion: 0,
+          artifactVersionSnapshot: {},
+          capabilityReadinessStatus: 'ready',
+          capabilityPublicationStatus: 'published',
+        },
+      }],
+      practiceReviewCapabilities: [{
+        capabilityId: 'capability-active',
+        canonicalKeySnapshot: 'active-key',
+        stateVersion: 2,
+        reviewContext: {
+          schedulerSnapshot: activeSnapshot,
+          currentStateVersion: 2,
+          artifactVersionSnapshot: {},
+          capabilityReadinessStatus: 'ready',
+          capabilityPublicationStatus: 'published',
+        },
+        renderPlan: { capabilityKey: 'active-key', sourceRef: 'lesson-4/active', exerciseType: 'meaning_recall', capabilityType: 'meaning_recall', skillType: 'meaning_recall', requiredArtifacts: [] },
+      }],
+      limit: 5,
+    })
+
+    expect(plan.mode).toBe('lesson_practice')
+    expect(plan.blocks.map(block => block.renderPlan.sourceRef)).toEqual([
+      'lesson-4/due',
+      'lesson-4/new',
+      'lesson-4/active',
+    ])
+    expect(plan.blocks[1]?.pendingActivation).toBeDefined()
+    expect(plan.blocks[2]?.pendingActivation).toBeUndefined()
+  })
 })

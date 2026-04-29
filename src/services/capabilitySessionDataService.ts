@@ -416,6 +416,8 @@ export function createCapabilitySessionDataService(client: SupabaseSchemaClient 
           activeGoalTags: [],
           maxNewDifficultyLevel: 5,
           recentFailures,
+          selectedLessonId: request.selectedLessonId,
+          selectedSourceRefs: request.selectedSourceRefs,
         },
         capabilitiesByKey,
         readinessByKey,
