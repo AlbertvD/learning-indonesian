@@ -172,6 +172,35 @@
   font-size: 0.76rem;
 }
 
+.lessonActions {
+  display: grid;
+  gap: 8px;
+}
+
+.primaryAction,
+.secondaryAction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border-radius: 14px;
+  padding: 8px 12px;
+  font-weight: 850;
+  text-align: center;
+  text-decoration: none;
+}
+
+.primaryAction {
+  background: #17231d;
+  color: #fff;
+}
+
+.secondaryAction {
+  border: 1px solid rgba(23, 35, 29, 0.16);
+  background: rgba(255, 255, 255, 0.58);
+  color: #25362f;
+}
+
 .itemGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));

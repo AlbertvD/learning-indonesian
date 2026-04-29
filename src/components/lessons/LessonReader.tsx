@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom'
 import type { LessonExperience, LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
+import type { LessonPracticeAction } from '@/lib/lessons/lessonActionModel'
 import type { LessonExposureKind } from '@/lib/lessons/lessonExposureProgress'
 import type { SourceProgressEventType, SourceProgressState } from '@/services/sourceProgressService'
 import { LessonBlockRenderer } from './blocks/LessonBlockRenderer'
@@ -7,12 +9,13 @@ import classes from './LessonReader.module.css'
 export function LessonReader(props: {
   experience: LessonExperience
   progressBySourceRef: Map<string, SourceProgressState>
+  actions?: LessonPracticeAction[]
   onBack: () => void
   onPractice: (block: LessonExperienceBlock) => void
   onSourceProgress: (block: LessonExperienceBlock, eventType: SourceProgressEventType) => void
   onLessonExposureProgress?: (block: LessonExperienceBlock, exposureKind: LessonExposureKind) => void
 }) {
-  const { experience, progressBySourceRef, onBack, onPractice, onSourceProgress, onLessonExposureProgress } = props
+  const { experience, progressBySourceRef, actions = [], onBack, onPractice, onSourceProgress, onLessonExposureProgress } = props
 
   return (
     <main className={classes.root}>
@@ -45,6 +48,19 @@ export function LessonReader(props: {
           <p className={classes.companionLabel}>Bron</p>
           <h2>{experience.title}</h2>
           <p>{experience.level}</p>
+          {actions.length > 0 && (
+            <div className={classes.lessonActions} aria-label="Lesson practice actions">
+              {actions.map(action => (
+                <Link
+                  key={action.kind}
+                  to={action.href}
+                  className={action.priority === 'primary' ? classes.primaryAction : classes.secondaryAction}
+                >
+                  {action.label}
+                </Link>
+              ))}
+            </div>
+          )}
           <details>
             <summary>{experience.sourceRefs.length} bronverwijzing(en)</summary>
             <ul>

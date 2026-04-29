@@ -51,6 +51,10 @@ interface CandidateItem {
 }
 
 export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] {
+  if (input.sessionMode === 'lesson_practice' || input.sessionMode === 'lesson_review') {
+    return []
+  }
+
   const sessionMode: SessionMode = (['standard', 'backlog_clear', 'quick'].includes(input.sessionMode ?? ''))
     ? input.sessionMode as SessionMode
     : 'standard'

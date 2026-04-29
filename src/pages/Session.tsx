@@ -29,11 +29,43 @@ import { loadCapabilitySessionPlanForUser } from '@/lib/session/capabilitySessio
 import { commitCapabilityAnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
 import { capabilityReviewService } from '@/services/capabilityReviewService'
 import { capabilitySessionDataService } from '@/services/capabilitySessionDataService'
-import type { SessionPlan } from '@/lib/session/sessionPlan'
+import type { CapabilitySessionMode, SessionPlan } from '@/lib/session/sessionPlan'
 import type { SessionQueueItem, LearnerItemState, LearnerSkillState, LearnerGrammarState, GrammarPatternWithLesson, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant, WeeklyGoal } from '@/types/learning'
 import { startSession, endSession } from '@/lib/session'
 import { useSessionBeacon } from '@/lib/useSessionBeacon'
 import classes from './Session.module.css'
+
+const VALID_SESSION_MODES: SessionMode[] = ['standard', 'backlog_clear', 'quick', 'lesson_practice', 'lesson_review']
+
+function parseSessionMode(value: string | null): SessionMode {
+  return VALID_SESSION_MODES.includes(value as SessionMode) ? value as SessionMode : 'standard'
+}
+
+function isLessonScopedSessionMode(mode: SessionMode): boolean {
+  return mode === 'lesson_practice' || mode === 'lesson_review'
+}
+
+function isCapabilitySessionMode(mode: SessionMode): mode is CapabilitySessionMode {
+  return mode === 'standard' || isLessonScopedSessionMode(mode)
+}
+
+async function loadSelectedLessonScope(lessonId: string | null): Promise<{
+  selectedLessonId?: string
+  selectedSourceRefs?: string[]
+}> {
+  if (!lessonId) return {}
+  const lesson = await lessonService.getLesson(lessonId)
+  const sourceRef = `lesson-${lesson.order_index}`
+  const pageBlocks = await lessonService.getLessonPageBlocks(sourceRef).catch(() => [])
+  const selectedSourceRefs = pageBlocks.length > 0
+    ? [...new Set(pageBlocks.flatMap(block => block.source_refs?.length ? block.source_refs : [block.source_ref]))]
+    : [sourceRef]
+
+  return {
+    selectedLessonId: lessonId,
+    selectedSourceRefs,
+  }
+}
 
 export function Session() {
   const navigate = useNavigate()
@@ -54,9 +86,7 @@ export function Session() {
 
   const lessonFilter = searchParams.get('lesson')
   const sessionModeParam = searchParams.get('mode')
-  const sessionMode: SessionMode = (['backlog_clear', 'quick'].includes(sessionModeParam ?? ''))
-    ? sessionModeParam as SessionMode
-    : 'standard'
+  const sessionMode = parseSessionMode(sessionModeParam)
   const preferredSessionSize = profile?.preferredSessionSize ?? 15
   const didInit = useRef(false)
   const beforeGoalsRef = useRef<WeeklyGoal[] | null>(null)
@@ -89,15 +119,26 @@ export function Session() {
         } catch (e) {
           throw new Error(`startSession failed: ${JSON.stringify(e)}`, { cause: e })
         }
-        if (capabilityMigrationFlags.standardSession && sessionMode === 'standard') {
+        if (isLessonScopedSessionMode(sessionMode) && !capabilityMigrationFlags.standardSession) {
+          setSessionId(sid)
+          setError('Deze lessessie kan nog niet veilig worden gestart.')
+          setLoading(false)
+          return
+        }
+
+        if (capabilityMigrationFlags.standardSession && isCapabilitySessionMode(sessionMode)) {
+          const lessonScope = isLessonScopedSessionMode(sessionMode)
+            ? await loadSelectedLessonScope(lessonFilter)
+            : {}
           const capabilityPlan = await loadCapabilitySessionPlanForUser({
             enabled: true,
             sessionId: sid,
             userId: user.id,
-            mode: 'standard',
+            mode: sessionMode,
             now: new Date(),
             limit: preferredSessionSize,
             preferredSessionSize,
+            ...lessonScope,
             adapter: capabilitySessionDataService,
           })
           setSessionId(sid)
@@ -361,7 +402,7 @@ export function Session() {
     }
 
     initSession()
-  }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter])
+  }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, sessionMode])
 
   // How many positions ahead to reinsert a wrong-answer item.
   // 3 means the user sees 2 other items before the retry appears.

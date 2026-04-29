@@ -230,6 +230,20 @@ describe('buildSessionQueue — session modes', () => {
     expect(() => buildSessionQueue(baseInput({ sessionMode: 'recall_sprint' as never }))).not.toThrow()
     expect(() => buildSessionQueue(baseInput({ sessionMode: 'push_to_productive' as never }))).not.toThrow()
   })
+
+  it('lesson-scoped legacy modes fail closed instead of falling back to a global queue', () => {
+    const item = makeItem('new1')
+    const input = baseInput({
+      allItems: [item],
+      meaningsByItem: { new1: [makeMeaning('new1')] },
+      sessionMode: 'lesson_practice',
+      lessonFilter: 'lesson-4',
+      preferredSessionSize: 15,
+    })
+
+    expect(buildSessionQueue(input)).toEqual([])
+    expect(buildSessionQueue({ ...input, sessionMode: 'lesson_review' })).toEqual([])
+  })
 })
 
 describe('buildSessionQueue — skill-type targeting (FSRS contract)', () => {

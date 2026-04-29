@@ -7,10 +7,22 @@ import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
 import { Session } from '@/pages/Session'
 import { useAuthStore } from '@/stores/authStore'
+import { learningItemService } from '@/services/learningItemService'
+import { loadCapabilitySessionPlanForUser } from '@/lib/session/capabilitySessionLoader'
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
 
 const mockNavigate = vi.fn()
+const capabilityFlags = vi.hoisted(() => ({
+  sessionDiagnostics: false,
+  reviewShadow: false,
+  reviewCompat: false,
+  standardSession: false,
+  experiencePlayerV1: false,
+  lessonReaderV2: false,
+  localContentPreview: false,
+}))
+
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom')
   return { ...actual, useNavigate: () => mockNavigate }
@@ -42,15 +54,7 @@ vi.mock('@/lib/supabase', () => ({
 }))
 
 vi.mock('@/lib/featureFlags', () => ({
-  capabilityMigrationFlags: {
-    sessionDiagnostics: false,
-    reviewShadow: false,
-    reviewCompat: false,
-    standardSession: false,
-    experiencePlayerV1: false,
-    lessonReaderV2: false,
-    localContentPreview: false,
-  },
+  capabilityMigrationFlags: capabilityFlags,
   featureFlags: {
     textbookImport: true,
     aiGeneration: true,
@@ -119,7 +123,29 @@ vi.mock('@/services/grammarStateService', () => ({
 vi.mock('@/services/lessonService', () => ({
   lessonService: {
     getLessonsBasic: vi.fn().mockResolvedValue([{ id: 'lesson-1', order_index: 1 }]),
+    getLesson: vi.fn().mockResolvedValue({
+      id: 'lesson-4',
+      order_index: 4,
+      lesson_sections: [],
+    }),
+    getLessonPageBlocks: vi.fn().mockResolvedValue([
+      {
+        source_ref: 'lesson-4',
+        source_refs: ['lesson-4', 'lesson-4-dialogue'],
+      },
+    ]),
   },
+}))
+
+vi.mock('@/lib/session/capabilitySessionLoader', () => ({
+  loadCapabilitySessionPlanForUser: vi.fn().mockResolvedValue({
+    id: 'session-1',
+    mode: 'lesson_practice',
+    title: 'Lesson practice',
+    blocks: [],
+    recapPolicy: 'standard',
+    diagnostics: [],
+  }),
 }))
 
 vi.mock('@/services/goalService', () => ({
@@ -159,9 +185,9 @@ vi.mock('@/lib/logger', () => ({ logError: vi.fn() }))
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-function renderSession() {
+function renderSession(initialEntry = '/session') {
   return render(
-    <MemoryRouter initialEntries={['/session']}>
+    <MemoryRouter initialEntries={[initialEntry]}>
       <MantineProvider>
         <Notifications />
         <Session />
@@ -176,6 +202,8 @@ describe('Session flow', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockNavigate.mockClear()
+    capabilityFlags.standardSession = false
+    capabilityFlags.experiencePlayerV1 = false
     useAuthStore.setState({
       user: { id: 'u1', email: 'test@duin.home' } as any,
       profile: { id: 'u1', email: 'test@duin.home', fullName: 'Test', language: 'nl', preferredSessionSize: 15, timezone: 'Europe/Amsterdam', isAdmin: false },
@@ -231,5 +259,61 @@ describe('Session flow', () => {
       const completed = screen.queryByText(/sessie/i) || screen.queryByText(/session/i) || screen.queryByText(/0\/1|1\/1/i)
       expect(completed).toBeTruthy()
     }, { timeout: 5000 })
+  })
+
+  it('passes selected lesson scope to the capability loader for lesson practice', async () => {
+    capabilityFlags.standardSession = true
+    vi.mocked(loadCapabilitySessionPlanForUser).mockResolvedValueOnce({
+      id: 'session-1',
+      mode: 'lesson_practice',
+      title: 'Lesson practice',
+      blocks: [],
+      recapPolicy: 'standard',
+      diagnostics: [],
+    })
+
+    renderSession('/session?lesson=lesson-4&mode=lesson_practice')
+
+    await waitFor(() => {
+      expect(loadCapabilitySessionPlanForUser).toHaveBeenCalledWith(expect.objectContaining({
+        mode: 'lesson_practice',
+        selectedLessonId: 'lesson-4',
+        selectedSourceRefs: ['lesson-4', 'lesson-4-dialogue'],
+        limit: 15,
+        preferredSessionSize: 15,
+      }))
+    })
+  })
+
+  it('passes selected lesson scope to the capability loader for lesson review', async () => {
+    capabilityFlags.standardSession = true
+    vi.mocked(loadCapabilitySessionPlanForUser).mockResolvedValueOnce({
+      id: 'session-1',
+      mode: 'lesson_review',
+      title: 'Lesson review',
+      blocks: [],
+      recapPolicy: 'standard',
+      diagnostics: [],
+    })
+
+    renderSession('/session?lesson=lesson-4&mode=lesson_review')
+
+    await waitFor(() => {
+      expect(loadCapabilitySessionPlanForUser).toHaveBeenCalledWith(expect.objectContaining({
+        mode: 'lesson_review',
+        selectedLessonId: 'lesson-4',
+        selectedSourceRefs: ['lesson-4', 'lesson-4-dialogue'],
+      }))
+    })
+  })
+
+  it('fails closed instead of starting a legacy global queue for lesson modes', async () => {
+    renderSession('/session?lesson=lesson-4&mode=lesson_practice')
+
+    await waitFor(() => {
+      expect(screen.getByText(/lessessie/i)).toBeInTheDocument()
+    }, { timeout: 5000 })
+    expect(loadCapabilitySessionPlanForUser).not.toHaveBeenCalled()
+    expect(learningItemService.getLearningItems).not.toHaveBeenCalled()
   })
 })

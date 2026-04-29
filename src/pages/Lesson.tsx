@@ -13,6 +13,7 @@ import { useSessionBeacon } from '@/lib/useSessionBeacon'
 import { useAuthStore } from '@/stores/authStore'
 import { capabilityMigrationFlags } from '@/lib/featureFlags'
 import { buildLessonExperience, type LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
+import { buildLessonPracticeActions, type LessonPracticeActionState } from '@/lib/lessons/lessonActionModel'
 import { sourceProgressEventForLessonExposure, type LessonExposureKind } from '@/lib/lessons/lessonExposureProgress'
 import { LessonReader } from '@/components/lessons/LessonReader'
 import { logError } from '@/lib/logger'
@@ -39,6 +40,15 @@ type DialogueLine = { speaker: string; text: string; translation?: string }
 type PronunciationLetter = { letter: string; rule: string; examples: string[] }
 type ReferenceTableRow = { label: string; cells: string[] }
 type ReferenceTableSection = { heading: string; rows: ReferenceTableRow[] }
+
+const PRACTICE_READY_SOURCE_EVENTS = new Set([
+  'section_exposed',
+  'intro_completed',
+  'heard_once',
+  'pattern_noticing_seen',
+  'guided_practice_completed',
+  'lesson_completed',
+])
 
 type SectionContentData =
   | { type: 'vocabulary'; items: ExerciseItem[] }
@@ -70,6 +80,29 @@ function renderBodyText(body: string) {
       })}
     </div>
   )
+}
+
+function hasPracticeReadyExposure(
+  block: LessonExperienceBlock,
+  progressBySourceRef: Map<string, SourceProgressState>,
+): boolean {
+  return block.sourceRefs.some(sourceRef => {
+    const progress = progressBySourceRef.get(`${sourceRef}::${block.id}`)
+    return progress?.completedEventTypes.some(eventType => PRACTICE_READY_SOURCE_EVENTS.has(eventType)) ?? false
+  })
+}
+
+function practiceReadyCapabilityCount(
+  blocks: LessonExperienceBlock[],
+  progressBySourceRef: Map<string, SourceProgressState>,
+): number {
+  const readyCapabilityKeys = new Set<string>()
+  for (const block of blocks) {
+    if (block.capabilityKeyRefs.length === 0) continue
+    if (!hasPracticeReadyExposure(block, progressBySourceRef)) continue
+    block.capabilityKeyRefs.forEach(ref => readyCapabilityKeys.add(ref))
+  }
+  return readyCapabilityKeys.size
 }
 
 function DialogueSection({ lines, setup, lesson, audioMap }: {
@@ -523,6 +556,7 @@ export function Lesson() {
   const [audioMap, setAudioMap] = useState<AudioMap>(new Map())
   const [lessonPageBlocks, setLessonPageBlocks] = useState<LessonPageBlock[]>([])
   const [lessonSourceProgress, setLessonSourceProgress] = useState<LessonSourceProgressRow[]>([])
+  const [activePracticedCapabilityCount, setActivePracticedCapabilityCount] = useState(0)
 
   const loadVocabulary = async () => {
     if (!lessonId || !user || vocabularyLoading) return
@@ -583,8 +617,13 @@ export function Lesson() {
             ? [...new Set(pageBlocks.flatMap(block => block.source_refs?.length ? block.source_refs : [block.source_ref]))]
             : [sourceRef]
           const sourceProgressRows = await lessonService.getLessonSourceProgress(user.id, sourceRefs)
+          const practiceSummary = await lessonService.getLessonCapabilityPracticeSummary(user.id, sourceRefs).catch(err => {
+            logError({ page: 'lesson-reader-v2', action: 'load-practice-summary', error: err })
+            return { activePracticedCapabilityCount: 0 }
+          })
           setLessonPageBlocks(pageBlocks)
           setLessonSourceProgress(sourceProgressRows)
+          setActivePracticedCapabilityCount(practiceSummary.activePracticedCapabilityCount)
         }
 
         // Fetch existing progress
@@ -834,6 +873,24 @@ export function Lesson() {
     }])
   ), [lessonSourceProgress, user?.id])
 
+  const lessonPracticeActionState: LessonPracticeActionState | null = useMemo(() => {
+    if (!readerExperience) return null
+    const practiceReadyCount = practiceReadyCapabilityCount(readerExperience.blocks, readerProgressBySourceRef)
+    return {
+      practiceReadyCount,
+      hasUnpracticedEligibleItems: practiceReadyCount > 0,
+      hasActivePracticedItems: activePracticedCapabilityCount > 0,
+    }
+  }, [activePracticedCapabilityCount, readerExperience, readerProgressBySourceRef])
+
+  const lessonPracticeActions = useMemo(() => {
+    if (!lesson || !lessonPracticeActionState) return []
+    return buildLessonPracticeActions({
+      lessonId: lesson.id,
+      state: lessonPracticeActionState,
+    })
+  }, [lesson, lessonPracticeActionState])
+
   useEffect(() => {
     if (!capabilityMigrationFlags.lessonReaderV2 || !user || !readerExperience) return
     const heroBlock = readerExperience.blocks.find(block => block.kind === 'lesson_hero')
@@ -869,10 +926,11 @@ export function Lesson() {
       <LessonReader
         experience={readerExperience}
         progressBySourceRef={readerProgressBySourceRef}
+        actions={lessonPracticeActions}
         onBack={() => navigate('/lessons')}
         onPractice={(block) => {
           void handleReaderSourceProgress(block, 'intro_completed')
-          navigate(`/session?lesson=${lessonId}`)
+          navigate(`/session?lesson=${lessonId}&mode=lesson_practice`)
         }}
         onSourceProgress={handleReaderSourceProgress}
         onLessonExposureProgress={handleLessonExposureProgress}
@@ -1017,7 +1075,7 @@ export function Lesson() {
                   })}
                 </div>
                 <Button
-                  onClick={() => navigate(`/session?lesson=${lessonId}`)}
+                  onClick={() => navigate(`/session?lesson=${lessonId}&mode=lesson_practice`)}
                   fullWidth
                   size="md"
                 >
