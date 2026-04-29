@@ -33,7 +33,7 @@ const input: StagingLessonInput = {
 }
 
 describe('lesson page block staging', () => {
-  it('creates independent hero, exposure, and practice bridge blocks', () => {
+  it('emits hero, grouped vocab strip, single practice bridge, and recap', () => {
     const contentUnits = buildContentUnitsFromStaging(input)
     const capabilities = buildCapabilityStagingFromContent({ ...input, contentUnits }).capabilities
     const blocks = buildLessonPageBlocksFromStaging({ ...input, contentUnits, capabilities })
@@ -44,18 +44,34 @@ describe('lesson page block staging', () => {
       content_unit_slugs: [],
       capability_key_refs: [],
     }))
+    // One vocab strip per context_type group, not one block per item
     expect(blocks).toEqual(expect.arrayContaining([
       expect.objectContaining({
-        block_kind: 'exposure',
+        block_kind: 'section',
         source_progress_event: 'section_exposed',
         content_unit_slugs: ['item-makan'],
+        payload_json: expect.objectContaining({
+          type: 'vocabulary',
+          items: expect.arrayContaining([
+            expect.objectContaining({ indonesian: 'makan' }),
+          ]),
+        }),
       }),
       expect.objectContaining({
+        block_key: 'lesson-1-practice-bridge',
         block_kind: 'practice_bridge',
         source_progress_event: 'intro_completed',
-        capability_key_refs: [expect.stringContaining(':text_recognition:')],
+        capability_key_refs: expect.arrayContaining([expect.stringContaining(':text_recognition:')]),
+      }),
+      expect.objectContaining({
+        block_key: 'lesson-1-recap',
+        block_kind: 'recap',
+        source_progress_event: 'lesson_completed',
       }),
     ]))
+    // No per-item practice_bridge blocks anymore
+    const practiceBridges = blocks.filter(block => block.block_kind === 'practice_bridge')
+    expect(practiceBridges).toHaveLength(1)
   })
 
   it('validates block references without requiring every block to own a unit', () => {

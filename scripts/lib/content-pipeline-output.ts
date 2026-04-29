@@ -558,12 +558,48 @@ export function validateExerciseAssets(input: {
   return findings
 }
 
+function vocabStripTitle(contextType: string): string {
+  switch (contextType) {
+    case 'vocabulary_list': return 'Woordenschat'
+    case 'numbers': return 'Getallen'
+    case 'expressions': return 'Uitdrukkingen'
+    case 'dialogue': return 'Dialoog'
+    default: return contextType.replace(/_/g, ' ')
+  }
+}
+
+function vocabStripPayloadType(contextType: string): string {
+  if (contextType === 'vocabulary_list') return 'vocabulary'
+  if (contextType === 'dialogue') return 'dialogue'
+  if (contextType === 'numbers' || contextType === 'expressions') return contextType
+  return 'reading'
+}
+
 export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
   contentUnits: StagingContentUnit[]
   capabilities: StagingCapability[]
 }): StagingLessonPageBlock[] {
   const lessonSourceRef = sourceRefForLesson(input.lessonNumber)
-  const blocks: StagingLessonPageBlock[] = [{
+  const blocks: StagingLessonPageBlock[] = []
+
+  const capabilitiesByUnitSlug = new Map<string, string[]>()
+  for (const capability of input.capabilities) {
+    for (const slug of capability.contentUnitSlugs) {
+      const keys = capabilitiesByUnitSlug.get(slug) ?? []
+      keys.push(capability.canonicalKey)
+      capabilitiesByUnitSlug.set(slug, keys)
+    }
+  }
+
+  const grammarPatternUnitsBySlug = new Map<string, StagingContentUnit>()
+  for (const unit of input.contentUnits) {
+    if (unit.unit_kind === 'grammar_pattern') {
+      grammarPatternUnitsBySlug.set(unit.unit_slug, unit)
+    }
+  }
+
+  // 1. Hero
+  blocks.push({
     block_key: `${lessonSourceRef}-hero`,
     source_ref: lessonSourceRef,
     source_refs: [lessonSourceRef],
@@ -575,66 +611,177 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
       level: input.lesson.level,
     },
     capability_key_refs: [],
-  }]
+  })
 
-  const capabilitiesByUnitSlug = new Map<string, string[]>()
-  for (const capability of input.capabilities) {
-    for (const slug of capability.contentUnitSlugs) {
-      const keys = capabilitiesByUnitSlug.get(slug) ?? []
-      keys.push(capability.canonicalKey)
-      capabilitiesByUnitSlug.set(slug, keys)
+  // 2. Lesson sections (grammar -> reading section + pattern callouts; other types -> reading sections)
+  for (const section of input.lesson.sections) {
+    const sectionContent = section.content as Record<string, unknown>
+    const contentType = typeof sectionContent.type === 'string' ? sectionContent.type : 'reading'
+    const baseOrder = 100 + section.order_index * 100
+
+    if (contentType === 'exercises') {
+      // Exercises happen via /session?lesson=...&mode=lesson_practice; not a lesson-page block.
+      continue
+    }
+
+    if (contentType === 'grammar') {
+      const intro = sectionContent.intro
+      const categories = Array.isArray(sectionContent.categories) ? sectionContent.categories : []
+
+      if (typeof intro === 'string' && intro.trim()) {
+        blocks.push({
+          block_key: `${lessonSourceRef}-section-${section.order_index}-grammar-intro`,
+          source_ref: lessonSourceRef,
+          source_refs: [lessonSourceRef],
+          content_unit_slugs: [],
+          block_kind: 'section',
+          display_order: baseOrder,
+          payload_json: {
+            type: 'grammar',
+            title: section.title,
+            intro,
+          },
+          source_progress_event: 'pattern_noticing_seen',
+          capability_key_refs: [],
+        })
+      }
+
+      categories.forEach((rawCategory, idx) => {
+        if (!rawCategory || typeof rawCategory !== 'object') return
+        const category = rawCategory as Record<string, unknown>
+        const title = typeof category.title === 'string' && category.title.trim()
+          ? category.title
+          : `${section.title} ${idx + 1}`
+        const slug = stableSlug(title) || `category-${idx + 1}`
+        const patternUnit = grammarPatternUnitsBySlug.get(`pattern-${slug}`)
+        blocks.push({
+          block_key: `${lessonSourceRef}-section-${section.order_index}-pattern-${slug}`,
+          source_ref: lessonSourceRef,
+          source_refs: [lessonSourceRef],
+          content_unit_slugs: patternUnit ? [patternUnit.unit_slug] : [],
+          block_kind: 'section',
+          display_order: baseOrder + 10 + idx,
+          payload_json: {
+            type: 'grammar',
+            title,
+            categories: [category],
+          },
+          source_progress_event: 'pattern_noticing_seen',
+          capability_key_refs: patternUnit ? capabilitiesByUnitSlug.get(patternUnit.unit_slug) ?? [] : [],
+        })
+      })
+    } else {
+      // Generic reading section (text/culture/pronunciation/etc.)
+      blocks.push({
+        block_key: `${lessonSourceRef}-section-${section.order_index}`,
+        source_ref: lessonSourceRef,
+        source_refs: [lessonSourceRef],
+        content_unit_slugs: [],
+        block_kind: 'section',
+        display_order: baseOrder,
+        payload_json: {
+          ...sectionContent,
+          type: contentType,
+          title: section.title,
+        },
+        source_progress_event: 'section_exposed',
+        capability_key_refs: [],
+      })
     }
   }
 
-  function sourceRefsForUnit(unit: StagingContentUnit): string[] {
-    if (unit.unit_kind === 'affixed_form_pair') {
+  // 3. Affixed form pairs (morphology, e.g. lesson 9): one Morfologie block per lesson grouping all pairs as cards
+  const affixedFormPairUnits = input.contentUnits.filter(unit => unit.unit_kind === 'affixed_form_pair')
+  if (affixedFormPairUnits.length > 0) {
+    const pairSourceRefs = new Set<string>([lessonSourceRef])
+    for (const unit of affixedFormPairUnits) {
+      pairSourceRefs.add(unit.source_ref)
       const patternSourceRef = typeof unit.payload_json.patternSourceRef === 'string'
         ? unit.payload_json.patternSourceRef
-        : unit.source_ref
-      return [...new Set([unit.source_ref, patternSourceRef])]
+        : null
+      if (patternSourceRef) pairSourceRefs.add(patternSourceRef)
     }
-    return [unit.source_ref]
-  }
-
-  function exposureEventForUnit(unit: StagingContentUnit): StagingLessonPageBlock['source_progress_event'] {
-    if (unit.unit_kind === 'grammar_pattern' || unit.unit_kind === 'affixed_form_pair') return 'pattern_noticing_seen'
-    return 'section_exposed'
-  }
-
-  function practiceEventForUnit(unit: StagingContentUnit): StagingLessonPageBlock['source_progress_event'] {
-    if (unit.unit_kind === 'grammar_pattern' || unit.unit_kind === 'affixed_form_pair') return 'guided_practice_completed'
-    return 'intro_completed'
-  }
-
-  input.contentUnits
-    .filter(unit => unit.unit_kind !== 'lesson_section')
-    .forEach((unit, index) => {
-      blocks.push({
-        block_key: `${lessonSourceRef}-${unit.unit_slug}-exposure`,
-        source_ref: lessonSourceRef,
-        source_refs: sourceRefsForUnit(unit),
-        content_unit_slugs: [unit.unit_slug],
-        block_kind: 'exposure',
-        display_order: 100 + index * 10,
-        payload_json: unit.payload_json,
-        source_progress_event: exposureEventForUnit(unit),
-        capability_key_refs: capabilitiesByUnitSlug.get(unit.unit_slug) ?? [],
-      })
-      blocks.push({
-        block_key: `${lessonSourceRef}-${unit.unit_slug}-practice`,
-        source_ref: lessonSourceRef,
-        source_refs: sourceRefsForUnit(unit),
-        content_unit_slugs: [unit.unit_slug],
-        block_kind: 'practice_bridge',
-        display_order: 101 + index * 10,
-        payload_json: {
-          label: 'Practice this content',
-        },
-        source_progress_event: practiceEventForUnit(unit),
-        capability_key_refs: (capabilitiesByUnitSlug.get(unit.unit_slug) ?? []).filter(key => key.includes(':text_recognition:')),
-      })
+    blocks.push({
+      block_key: `${lessonSourceRef}-morphology`,
+      source_ref: lessonSourceRef,
+      source_refs: [...pairSourceRefs],
+      content_unit_slugs: affixedFormPairUnits.map(unit => unit.unit_slug),
+      block_kind: 'section',
+      display_order: 500,
+      payload_json: {
+        type: 'morphology',
+        title: 'Morfologie',
+        items: affixedFormPairUnits.map(unit => ({
+          indonesian: typeof unit.payload_json.derived === 'string' ? unit.payload_json.derived : '',
+          dutch: typeof unit.payload_json.root === 'string'
+            ? `van ${unit.payload_json.root}`
+            : '',
+        })),
+      },
+      source_progress_event: 'pattern_noticing_seen',
+      capability_key_refs: affixedFormPairUnits.flatMap(unit => capabilitiesByUnitSlug.get(unit.unit_slug) ?? []),
     })
+  }
 
+  // 4. Vocab strips: one block per learning-item context_type group
+  const itemsByContext = new Map<string, StagingLessonInput['learningItems']>()
+  for (const item of input.learningItems) {
+    const arr = itemsByContext.get(item.context_type) ?? []
+    arr.push(item)
+    itemsByContext.set(item.context_type, arr)
+  }
+
+  const sortedContexts = [...itemsByContext.keys()].sort()
+  sortedContexts.forEach((contextType, contextIdx) => {
+    const items = itemsByContext.get(contextType) ?? []
+    if (items.length === 0) return
+    const itemUnitSlugs: string[] = []
+    const stripCapabilityKeys: string[] = []
+    for (const item of items) {
+      const slug = `item-${stableSlug(item.base_text)}`
+      itemUnitSlugs.push(slug)
+      const keys = capabilitiesByUnitSlug.get(slug) ?? []
+      stripCapabilityKeys.push(...keys)
+    }
+    blocks.push({
+      block_key: `${lessonSourceRef}-${contextType.replace(/_/g, '-')}`,
+      source_ref: lessonSourceRef,
+      source_refs: [lessonSourceRef],
+      content_unit_slugs: itemUnitSlugs,
+      block_kind: 'section',
+      display_order: 1000 + contextIdx * 10,
+      payload_json: {
+        type: vocabStripPayloadType(contextType),
+        title: vocabStripTitle(contextType),
+        items: items.map(item => ({
+          indonesian: item.base_text,
+          dutch: item.translation_nl ?? '',
+        })),
+      },
+      source_progress_event: 'section_exposed',
+      capability_key_refs: stripCapabilityKeys,
+    })
+  })
+
+  // 4. Practice bridge: one block linking to lesson_practice mode
+  const recognitionCapabilityKeys = input.capabilities
+    .filter(capability => capability.capabilityType === 'text_recognition')
+    .map(capability => capability.canonicalKey)
+  blocks.push({
+    block_key: `${lessonSourceRef}-practice-bridge`,
+    source_ref: lessonSourceRef,
+    source_refs: [lessonSourceRef],
+    content_unit_slugs: [],
+    block_kind: 'practice_bridge',
+    display_order: 9000,
+    payload_json: {
+      label: 'Oefen deze les',
+    },
+    source_progress_event: 'intro_completed',
+    capability_key_refs: recognitionCapabilityKeys,
+  })
+
+  // 5. Recap
   blocks.push({
     block_key: `${lessonSourceRef}-recap`,
     source_ref: lessonSourceRef,
@@ -642,7 +789,7 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
     content_unit_slugs: [],
     block_kind: 'recap',
     display_order: 9999,
-    payload_json: { title: 'Recap' },
+    payload_json: { title: 'Samenvatting' },
     source_progress_event: 'lesson_completed',
     capability_key_refs: [],
   })
