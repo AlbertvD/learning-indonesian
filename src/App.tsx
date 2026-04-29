@@ -10,7 +10,6 @@ import { Dashboard } from '@/pages/Dashboard'
 import { Lessons } from '@/pages/Lessons'
 import { Lesson } from '@/pages/Lesson'
 import { Session } from '@/pages/Session'
-import { Practice } from '@/pages/Practice'
 import { LocalPreviewIndex, LocalPreviewLesson } from '@/pages/LocalPreview'
 
 // Lazy-loaded routes (less frequently visited pages)
@@ -89,14 +88,6 @@ function App() {
           element={
             <ProtectedRoute>
               <LazyPage><Podcast /></LazyPage>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/practice"
-          element={
-            <ProtectedRoute>
-              <Practice />
             </ProtectedRoute>
           }
         />

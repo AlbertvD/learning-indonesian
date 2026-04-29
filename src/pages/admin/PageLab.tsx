@@ -188,7 +188,7 @@ export function PageLab() {
                 title="Zwakke woorden"
                 focus="6 woorden vragen aandacht"
                 reason="Recall onder 60% — focus op deze items."
-                to="/practice?mode=weak"
+                to="/session"
               />
             </div>
           </div>
@@ -391,7 +391,7 @@ export function PageLab() {
                 icon={<IconAlertTriangle size={20} />}
                 title="Zwakke woorden"
                 focus="6 woorden vragen aandacht"
-                to="/practice?mode=weak"
+                to="/session"
               />
             </div>
           </div>
