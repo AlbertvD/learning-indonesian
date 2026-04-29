@@ -5,6 +5,7 @@ export type LessonOverviewStatus =
   | 'in_practice'
   | 'practiced'
   | 'later'
+  | 'coming_later'
 
 export interface LessonOverviewSignal {
   lessonId: string

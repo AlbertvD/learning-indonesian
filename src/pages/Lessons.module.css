@@ -128,6 +128,17 @@
   transform: translateY(-1px);
 }
 
+.lessonCardDisabled {
+  color: inherit;
+  cursor: default;
+}
+
+.lessonCardDisabled:hover {
+  border-color: var(--card-border);
+  background: var(--card-bg);
+  transform: none;
+}
+
 .lessonNumber {
   display: inline-flex;
   align-items: center;
@@ -196,6 +207,11 @@
   color: var(--success);
 }
 
+.lessonStatus[data-status="coming_later"] {
+  border-color: var(--card-border);
+  color: var(--text-secondary);
+}
+
 .lessonAction {
   display: inline-flex;
   align-items: center;
@@ -205,6 +221,10 @@
   font-size: var(--fs-sm);
   font-weight: 750;
   white-space: nowrap;
+}
+
+.lessonCardDisabled .lessonAction {
+  color: var(--text-secondary);
 }
 
 @media (max-width: 720px) {

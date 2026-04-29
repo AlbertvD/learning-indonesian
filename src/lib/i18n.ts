@@ -216,8 +216,10 @@ export const nl = {
     statusInPractice: 'In oefening',
     statusPracticed: 'Geoefend',
     statusLater: 'Later',
+    statusComingLater: 'Binnenkort',
     actionOpenLesson: 'Open les',
     actionContinue: 'Doorgaan',
+    actionNotAvailableYet: 'Nog niet beschikbaar',
     readyToPracticeToast: (lessonOrder: number) => `Les ${lessonOrder} is klaar om te oefenen.`,
   },
   progress: {
@@ -594,8 +596,10 @@ export const en: typeof nl = {
     statusInPractice: 'In practice',
     statusPracticed: 'Practiced',
     statusLater: 'Later',
+    statusComingLater: 'Coming later',
     actionOpenLesson: 'Open lesson',
     actionContinue: 'Continue',
+    actionNotAvailableYet: 'Not available yet',
     readyToPracticeToast: (lessonOrder: number) => `Lesson ${lessonOrder} is ready to practice.`,
   },
   progress: {

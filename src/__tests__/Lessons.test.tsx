@@ -65,6 +65,20 @@ const lessons = [
   },
 ] as any[]
 
+function pageBlock(sourceRef: string) {
+  return {
+    block_key: `${sourceRef}-grammar`,
+    source_ref: sourceRef,
+    source_refs: [sourceRef],
+    content_unit_slugs: [],
+    block_kind: 'section',
+    display_order: 10,
+    payload_json: { type: 'grammar', title: 'Grammar' },
+    source_progress_event: 'section_exposed',
+    capability_key_refs: [],
+  } as any
+}
+
 function renderLessons() {
   return render(
     <MemoryRouter>
@@ -80,7 +94,7 @@ describe('Lessons overview', () => {
   beforeEach(() => {
     sessionStorage.clear()
     vi.mocked(lessonService.getLessons).mockResolvedValue(lessons)
-    vi.mocked(lessonService.getLessonPageBlocks).mockResolvedValue([])
+    vi.mocked(lessonService.getLessonPageBlocks).mockImplementation(async (sourceRef) => [pageBlock(String(sourceRef))])
     vi.mocked(lessonService.getLessonSourceProgress).mockResolvedValue([])
     vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockResolvedValue({
       readyCapabilityCount: 0,
@@ -120,6 +134,34 @@ describe('Lessons overview', () => {
     expect(screen.queryByText(/\d+\s+ready/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/\d+\s+min/i)).not.toBeInTheDocument()
     expect(container).not.toHaveTextContent(/source progress|fsrs|content health|eligible/i)
+  })
+
+  it('shows lessons without page blocks as coming later instead of openable', async () => {
+    vi.mocked(lessonService.getLessonPageBlocks).mockImplementation(async (sourceRef) => (
+      sourceRef === 'lesson-1' ? [pageBlock('lesson-1')] : []
+    ))
+
+    renderLessons()
+
+    const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
+    expect(within(lessonOne).getByRole('link')).toHaveAttribute('href', '/lesson/lesson-1')
+
+    const lessonTwo = screen.getByTestId('lesson-overview-row-lesson-2')
+    expect(lessonTwo).toHaveTextContent('Coming later')
+    expect(lessonTwo).toHaveTextContent('Not available yet')
+    expect(within(lessonTwo).queryByRole('link')).not.toBeInTheDocument()
+  })
+
+  it('does not recommend an unprepared first lesson', async () => {
+    vi.mocked(lessonService.getLessonPageBlocks).mockImplementation(async (sourceRef) => (
+      sourceRef === 'lesson-2' ? [pageBlock('lesson-2')] : []
+    ))
+
+    renderLessons()
+
+    expect(await screen.findByTestId('lesson-overview-row-lesson-1')).toHaveTextContent('Coming later')
+    expect(screen.queryByText('Recommended lesson')).not.toBeInTheDocument()
+    expect(screen.queryByText('Start with Lesson 1')).not.toBeInTheDocument()
   })
 
   it('uses Continue for in-progress lessons', async () => {

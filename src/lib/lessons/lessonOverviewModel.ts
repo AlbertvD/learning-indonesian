@@ -44,9 +44,10 @@ export interface LessonOverviewRow {
   orderIndex: number
   title: string
   status: LessonOverviewStatus
-  actionLabel: 'Open lesson' | 'Continue'
-  href: string
+  actionLabel: 'Open lesson' | 'Continue' | 'Not available yet'
+  href: string | null
   grammarTopicTag: string | null
+  isPrepared: boolean
 }
 
 export interface LessonOverviewModel {
@@ -148,26 +149,34 @@ export function buildLessonOverviewModel(input: {
   lessons: LessonOverviewModelLesson[]
   signals: LessonOverviewSignal[]
   grammarTopics: LessonGrammarTopic[]
+  preparedLessonIds?: string[]
 }): LessonOverviewModel {
   const lessons = publishedLessons(input.lessons)
   const normalizedSignals = normalizeSignalsForLessons(lessons, input.signals)
   const signalByLessonId = new Map(normalizedSignals.map(signal => [signal.lessonId, signal]))
+  const preparedLessonIds = input.preparedLessonIds
+    ? new Set(input.preparedLessonIds)
+    : new Set(lessons.map(lesson => lesson.id))
 
   const rows = lessons.map((lesson): LessonOverviewRow => {
     const signal = signalByLessonId.get(lesson.id) ?? defaultSignal(lesson)
-    const status = decideLessonOverviewStatus(signal)
+    const isPrepared = preparedLessonIds.has(lesson.id)
+    const status = isPrepared ? decideLessonOverviewStatus(signal) : 'coming_later'
     return {
       lessonId: lesson.id,
       orderIndex: lesson.order_index,
       title: lesson.title,
       status,
-      actionLabel: overviewActionLabel(status),
-      href: `/lesson/${lesson.id}`,
+      actionLabel: isPrepared ? overviewActionLabel(status) : 'Not available yet',
+      href: isPrepared ? `/lesson/${lesson.id}` : null,
       grammarTopicTag: formatGrammarTopicTag(input.grammarTopics, lesson.id),
+      isPrepared,
     }
   })
 
-  const recommendedLessonId = recommendLesson(normalizedSignals)
+  const recommendedLessonId = recommendLesson(
+    normalizedSignals.filter(signal => preparedLessonIds.has(signal.lessonId)),
+  )
   const recommendedRow = rows.find(row => row.lessonId === recommendedLessonId) ?? null
 
   return {

@@ -219,6 +219,7 @@ export function Lessons() {
         const lessonsData = await lessonService.getLessons()
         let progressData: LessonProgress[] = []
         let pageBlocks: LessonPageBlock[] = []
+        let preparedLessonIds: string[] = []
         let sourceProgressData: LessonSourceProgressRow[] = []
         let capabilityCounts: LessonOverviewCapabilityCounts[] = []
 
@@ -232,14 +233,20 @@ export function Lessons() {
         try {
           const pageBlockGroups = await Promise.all(lessonsData.map(async (lesson: Lesson) => {
             try {
-              return await lessonService.getLessonPageBlocks(lessonSourceRefForOverview(lesson))
+              return {
+                lessonId: lesson.id,
+                blocks: await lessonService.getLessonPageBlocks(lessonSourceRefForOverview(lesson)),
+              }
             } catch (err) {
               logError({ page: 'lessons', action: `fetch-page-blocks:${lesson.id}`, error: err })
               if (!cancelled) setProgressRefreshFailed(true)
-              return []
+              return { lessonId: lesson.id, blocks: [] }
             }
           }))
-          pageBlocks = pageBlockGroups.flat()
+          preparedLessonIds = pageBlockGroups
+            .filter(group => group.blocks.length > 0)
+            .map(group => group.lessonId)
+          pageBlocks = pageBlockGroups.flatMap(group => group.blocks)
         } catch (err) {
           logError({ page: 'lessons', action: 'fetch-page-blocks', error: err })
           if (!cancelled) setProgressRefreshFailed(true)
@@ -285,6 +292,7 @@ export function Lessons() {
           lessons: lessonsData,
           signals,
           grammarTopics: extractLessonGrammarTopics(lessonsData),
+          preparedLessonIds,
         })
 
         if (!cancelled) setModel(nextModel)
@@ -332,12 +340,17 @@ export function Lessons() {
     in_practice: T.lessons.statusInPractice,
     practiced: T.lessons.statusPracticed,
     later: T.lessons.statusLater,
+    coming_later: T.lessons.statusComingLater,
   }
 
-  const actionLabel = (action: 'Open lesson' | 'Continue') =>
-    action === 'Continue' ? T.lessons.actionContinue : T.lessons.actionOpenLesson
+  const actionLabel = (action: LessonOverviewModel['rows'][number]['actionLabel']) => {
+    if (action === 'Continue') return T.lessons.actionContinue
+    if (action === 'Not available yet') return T.lessons.actionNotAvailableYet
+    return T.lessons.actionOpenLesson
+  }
 
   const recommendedRow = model.recommendedRow
+  const recommendedHref = recommendedRow?.href
   const isNewLearnerStart = recommendedRow?.orderIndex === 1 && recommendedRow.status === 'not_started'
 
   return (
@@ -358,13 +371,13 @@ export function Lessons() {
         </div>
       )}
 
-      {recommendedRow && (
+      {recommendedRow && recommendedHref && (
         <section className={classes.recommendedSection} aria-labelledby="recommended-lesson-heading">
           <div className={classes.recommendedLabel}>
             <IconMap2 size={17} />
             <span>{T.lessons.recommendedLesson}</span>
           </div>
-          <Link to={recommendedRow.href} className={classes.recommendedCard} onClick={rememberOverviewScrollPosition}>
+          <Link to={recommendedHref} className={classes.recommendedCard} onClick={rememberOverviewScrollPosition}>
             <div className={classes.recommendedText}>
               <h2 id="recommended-lesson-heading" className={classes.recommendedTitle}>
                 {isNewLearnerStart ? T.lessons.startWithLesson1 : lessonTitle(recommendedRow.title)}
@@ -382,13 +395,9 @@ export function Lessons() {
       )}
 
       <ol className={classes.lessonList} aria-label={T.lessons.title}>
-        {model.rows.map((row) => (
-          <li
-            key={row.lessonId}
-            className={classes.lessonRow}
-            data-testid={`lesson-overview-row-${row.lessonId}`}
-          >
-            <Link to={row.href} className={classes.lessonCard} onClick={rememberOverviewScrollPosition}>
+        {model.rows.map((row) => {
+          const cardContent = (
+            <>
               <span className={classes.lessonNumber}>{row.orderIndex}</span>
               <span className={classes.lessonIcon}>
                 <IconBook2 size={18} />
@@ -404,11 +413,29 @@ export function Lessons() {
               </span>
               <span className={classes.lessonAction}>
                 {actionLabel(row.actionLabel)}
-                <IconChevronRight size={15} />
+                {row.href && <IconChevronRight size={15} />}
               </span>
-            </Link>
-          </li>
-        ))}
+            </>
+          )
+
+          return (
+            <li
+              key={row.lessonId}
+              className={classes.lessonRow}
+              data-testid={`lesson-overview-row-${row.lessonId}`}
+            >
+              {row.href ? (
+                <Link to={row.href} className={classes.lessonCard} onClick={rememberOverviewScrollPosition}>
+                  {cardContent}
+                </Link>
+              ) : (
+                <div className={`${classes.lessonCard} ${classes.lessonCardDisabled}`} aria-disabled="true">
+                  {cardContent}
+                </div>
+              )}
+            </li>
+          )
+        })}
       </ol>
     </Container>
   )
