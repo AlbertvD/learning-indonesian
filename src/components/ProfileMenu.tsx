@@ -52,8 +52,8 @@ export function ProfileMenu({ initials, profile }: Props) {
         <button className={classes.trigger} onClick={() => setOpen(o => !o)}>
           <div className={classes.avatar}>{initials}</div>
           <div style={{ minWidth: 0 }}>
-            <div className={classes.name}>{profile?.fullName?.split(' ')[0] ?? profile?.email ?? 'User'}</div>
-            <div className={classes.meta}>A1 · Beginner</div>
+            <div className={classes.name}>{profile?.fullName?.split(' ')[0] ?? profile?.email ?? 'Gebruiker'}</div>
+            <div className={classes.meta}>A1 - Beginner</div>
           </div>
         </button>
       </Popover.Target>

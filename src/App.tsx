@@ -11,6 +11,7 @@ import { Lessons } from '@/pages/Lessons'
 import { Lesson } from '@/pages/Lesson'
 import { Session } from '@/pages/Session'
 import { Practice } from '@/pages/Practice'
+import { LocalPreviewIndex, LocalPreviewLesson } from '@/pages/LocalPreview'
 
 // Lazy-loaded routes (less frequently visited pages)
 const Podcasts = lazy(() => import('@/pages/Podcasts').then(m => ({ default: m.Podcasts })))
@@ -35,9 +36,9 @@ function LazyPage({ children }: { children: React.ReactNode }) {
 function NotFound() {
   return (
     <Container size="sm" style={{ textAlign: 'center', paddingTop: '4rem' }}>
-      <Title order={2} mb="md">Page not found</Title>
-      <Text c="dimmed" mb="xl">The page you're looking for doesn't exist.</Text>
-      <Button component={Link} to="/">Go to Dashboard</Button>
+      <Title order={2} mb="md">Pagina niet gevonden</Title>
+      <Text c="dimmed" mb="xl">De pagina die je zoekt bestaat niet.</Text>
+      <Button component={Link} to="/">Ga naar dashboard</Button>
     </Container>
   )
 }
@@ -47,6 +48,8 @@ function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/preview" element={<LocalPreviewIndex />} />
+      <Route path="/preview/lesson/:slug" element={<LocalPreviewLesson />} />
 
       <Route element={<Layout />}>
         <Route

@@ -42,7 +42,7 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
   ]
 
   const adminItems = profile?.isAdmin
-    ? [{ label: 'Content Review', icon: <IconEye size={17} />, path: '/admin/content-review' }]
+    ? [{ label: 'Contentcontrole', icon: <IconEye size={17} />, path: '/admin/content-review' }]
     : []
 
   const initials = (profile?.fullName?.[0] ?? profile?.email?.[0] ?? 'A').toUpperCase()
@@ -56,7 +56,7 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
           <button
             className={`${classes.pinBtn} ${locked ? classes.pinLocked : ''}`}
             onClick={onToggleLock}
-            title={locked ? 'Unlock sidebar' : 'Lock sidebar'}
+            title={locked ? 'Zijbalk losmaken' : 'Zijbalk vastzetten'}
           >
             <PinIcon />
           </button>
@@ -100,7 +100,7 @@ export function Sidebar({ visible, locked, onToggleLock, onClose }: SidebarProps
         <button
           className={classes.themeBtn}
           onClick={toggleColorScheme}
-          title="Toggle theme"
+          title="Thema wisselen"
         >
           {colorScheme === 'dark'
             ? <IconSun size={14} />

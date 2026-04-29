@@ -1,19 +1,24 @@
-import { describe, it, expect, vi, beforeAll } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MantineProvider } from '@mantine/core'
 import { PlayButton } from '@/components/PlayButton'
 
-// jsdom does not implement HTMLAudioElement — mock window.Audio so useEffect
-// inside PlayButton does not throw when audioUrl is provided.
-beforeAll(() => {
-  const mockAudio = {
+let mockAudio: {
+  play: ReturnType<typeof vi.fn>
+  pause: ReturnType<typeof vi.fn>
+  addEventListener: ReturnType<typeof vi.fn>
+  removeEventListener: ReturnType<typeof vi.fn>
+  currentTime: number
+}
+
+beforeEach(() => {
+  mockAudio = {
     play: vi.fn().mockResolvedValue(undefined),
     pause: vi.fn(),
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
     currentTime: 0,
   }
-  // Must use a real constructor function (not arrow) so `new Audio()` works.
   ;(window as any).Audio = function Audio() {
     return mockAudio
   }
@@ -32,5 +37,10 @@ describe('PlayButton', () => {
   it('renders a button when audioUrl is provided', () => {
     renderWithProviders(<PlayButton audioUrl="https://example.com/audio.mp3" />)
     expect(screen.getByRole('button', { name: 'Play audio' })).toBeInTheDocument()
+  })
+
+  it('autoplays when the session preference enables it', () => {
+    renderWithProviders(<PlayButton audioUrl="https://example.com/audio.mp3" autoPlay />)
+    expect(mockAudio.play).toHaveBeenCalledTimes(1)
   })
 })

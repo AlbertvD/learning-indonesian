@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { progressService } from '@/services/progressService'
 import { supabase } from '@/lib/supabase'
+import { getMasteryOverview } from '@/lib/mastery/masteryModel'
 
 vi.mock('@/lib/supabase', () => ({
   supabase: {
@@ -16,13 +17,38 @@ vi.mock('@/lib/supabase', () => ({
   },
 }))
 
+vi.mock('@/lib/mastery/masteryModel', () => ({
+  getMasteryOverview: vi.fn(),
+}))
+
 const mockChain = supabase as unknown as Record<string, ReturnType<typeof vi.fn>>
+const mockGetMasteryOverview = vi.mocked(getMasteryOverview)
 
 beforeEach(() => {
   vi.clearAllMocks()
   // Re-wire chain methods to return `this` by default
   ;['schema', 'from', 'select', 'eq', 'in', 'gt', 'order', 'limit'].forEach((m) => {
     mockChain[m] = vi.fn().mockReturnThis()
+  })
+})
+
+describe('progressService.getCapabilityMasteryOverview', () => {
+  it('delegates learner-facing mastery to the mastery model', async () => {
+    mockGetMasteryOverview.mockResolvedValue({
+      scope: 'overview',
+      userId: 'user-1',
+      generatedAt: '2026-04-25T12:00:00.000Z',
+      label: 'learning',
+      confidence: 'medium',
+      assessedCapabilityCount: 2,
+      totalCapabilityCount: 3,
+      dimensions: [],
+    })
+
+    const result = await progressService.getCapabilityMasteryOverview('user-1')
+
+    expect(mockGetMasteryOverview).toHaveBeenCalledWith('user-1')
+    expect(result.label).toBe('learning')
   })
 })
 

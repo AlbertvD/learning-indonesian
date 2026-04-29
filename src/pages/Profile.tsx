@@ -147,11 +147,11 @@ export function Profile() {
     setSavingTimezone(true)
     try {
       await updateTimezone(tz)
-      notifications.show({
-        color: 'green',
-        title: T.profile.profileUpdated,
-        message: 'Timezone saved successfully',
-      })
+        notifications.show({
+          color: 'green',
+          title: T.profile.profileUpdated,
+          message: T.profile.timezoneSaved,
+        })
     } catch (err) {
       logError({ page: 'profile', action: 'updateTimezone', error: err })
       notifications.show({
@@ -262,13 +262,13 @@ export function Profile() {
         <Paper p="xl" radius="md" {...paperProps}>
           <Stack gap="md">
             <Box>
-              <Title order={4} mb="xs">Timezone</Title>
-              <Text size="sm" c="dimmed">Set your timezone for weekly goal tracking.</Text>
+              <Title order={4} mb="xs">{T.profile.timezone}</Title>
+              <Text size="sm" c="dimmed">{T.profile.timezoneDescription}</Text>
             </Box>
             <Select
               searchable
-              label="Select your timezone"
-              placeholder="Pick one"
+              label={T.profile.selectTimezone}
+              placeholder={T.profile.pickTimezone}
               data={Intl.supportedValuesOf('timeZone')}
               value={timezone}
               onChange={(val) => {
@@ -314,19 +314,17 @@ export function Profile() {
           <Stack gap="md">
             <Box>
               <Title order={4} mb="xs">
-                {(profile?.language ?? 'nl') === 'nl' ? 'Luister- en dicteeoefeningen' : 'Listening and dictation exercises'}
+                {T.profile.listeningExercises}
               </Title>
               <Text size="sm" c="dimmed">
-                {(profile?.language ?? 'nl') === 'nl'
-                  ? 'Schakel uit als je geen audio kunt horen of alleen tekstgebaseerd wilt oefenen.'
-                  : 'Disable if you cannot hear audio or prefer text-only practice.'}
+                {T.profile.listeningExercisesDescription}
               </Text>
             </Box>
             <Switch
               checked={listeningEnabled}
               onChange={(e) => setListeningEnabled(e.currentTarget.checked)}
               size="md"
-              label={(profile?.language ?? 'nl') === 'nl' ? 'Luister- en dicteeoefeningen inschakelen' : 'Enable listening and dictation exercises'}
+              label={T.profile.enableListeningExercises}
             />
           </Stack>
         </Paper>

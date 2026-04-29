@@ -1,5 +1,6 @@
 // src/services/progressService.ts
 import { supabase } from '@/lib/supabase'
+import { getMasteryOverview } from '@/lib/mastery/masteryModel'
 
 export const progressService = {
   async markLessonComplete(userId: string, lessonId: string, sectionsCompleted: string[]): Promise<void> {
@@ -129,5 +130,9 @@ export const progressService = {
       arr.length > 0 ? Math.round(arr.reduce((s, r) => s + (r.latency_ms ?? 0), 0) / arr.length) : null
 
     return { currentWeekMs: avgMs(currentWeekRows), priorWeekMs: avgMs(priorWeekRows) }
+  },
+
+  async getCapabilityMasteryOverview(userId: string) {
+    return getMasteryOverview(userId)
   },
 }

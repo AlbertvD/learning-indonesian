@@ -4,6 +4,18 @@ import type { ExerciseItem, LearnerSkillState } from '@/types/learning'
 import { learnerStateService } from '@/services/learnerStateService'
 import { reviewEventService } from '@/services/reviewEventService'
 
+vi.mock('@/lib/featureFlags', () => ({
+  capabilityMigrationFlags: {
+    sessionDiagnostics: false,
+    reviewShadow: false,
+    reviewCompat: false,
+    standardSession: false,
+    experiencePlayerV1: false,
+    lessonReaderV2: false,
+    localContentPreview: false,
+  },
+}))
+
 // Mock all external services
 vi.mock('@/services/reviewEventService', () => ({
   reviewEventService: {
@@ -36,6 +48,12 @@ vi.mock('@/services/learnerStateService', () => ({
     })),
     getSkillStates: vi.fn(async () => []),
     logStageEvent: vi.fn(async () => {}),
+  },
+}))
+
+vi.mock('@/services/grammarStateService', () => ({
+  grammarStateService: {
+    upsertGrammarState: vi.fn(),
   },
 }))
 

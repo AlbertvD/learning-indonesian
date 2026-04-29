@@ -17,6 +17,8 @@ import classes from './ExerciseFrame.module.css'
 
 export interface ExerciseFrameProps {
   children: ReactNode
+  /** Use section/div when embedding inside a page that already owns the main landmark. */
+  as?: 'main' | 'section' | 'div'
   /** 'live' (default) or 'preview' (admin preview mode — question + answer halves). */
   mode?: 'live' | 'preview'
   /** 'session' opts children into auto-focus on <ExerciseInstruction>. Default 'preview'. */
@@ -29,6 +31,7 @@ export interface ExerciseFrameProps {
 
 export function ExerciseFrame({
   children,
+  as = 'main',
   mode = 'live',
   variant = 'preview',
   footer,
@@ -40,12 +43,18 @@ export function ExerciseFrame({
     [instructionId],
   )
 
+  const FrameElement = as
+  const landmarkProps = as === 'main'
+    ? { role: 'main' as const, 'aria-label': 'Oefening' }
+    : as === 'section'
+      ? { 'aria-label': 'Oefening' }
+      : {}
+
   return (
     <FrameVariantContext.Provider value={variant}>
       <FrameInstructionIdContext.Provider value={instructionCtx}>
-        <main
-          role="main"
-          aria-label="Oefening"
+        <FrameElement
+          {...landmarkProps}
           className={`${classes.root} ${mode === 'preview' ? classes.preview : classes.live}`}
         >
           {adminOverlay && (
@@ -62,7 +71,7 @@ export function ExerciseFrame({
               </FrameFooterContext.Provider>
             </div>
           )}
-        </main>
+        </FrameElement>
       </FrameInstructionIdContext.Provider>
     </FrameVariantContext.Provider>
   )

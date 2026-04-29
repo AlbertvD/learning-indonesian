@@ -31,6 +31,12 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { stripAffixes, tokenize, FUNCTION_WORDS } from './lib/affix'
 import { normalizeForClozeCompare, normalizeForExemptLookup, normalizeDialogueToken } from './lib/normalize'
 import { VALID_POS } from './lib/validate-pos'
+import {
+  validateCapabilityStaging,
+  validateContentUnits,
+  validateExerciseAssets,
+  validateLessonPageBlocks,
+} from './lib/content-pipeline-output'
 
 // Internal Step-CA on the homelab. Scoped: only this script's HTTPS calls
 // (all to the homelab supabase) bypass cert validation.
@@ -71,6 +77,10 @@ interface LessonCtx {
   clozeSkips?: any[]
   patternBrief?: any
   learningItems?: any[]
+  contentUnits?: any[]
+  capabilities?: any[]
+  lessonPageBlocks?: any[]
+  exerciseAssets?: any[]
   vocabEnrichments?: any[] | null
   sectionsCatalog?: any
   priorLearningItems?: any[]   // vocabulary from lessons with lower order_index (flattened)
@@ -182,6 +192,10 @@ async function loadLesson(n: number): Promise<LessonCtx> {
       ?? (await readTsExport(path.join(dir, 'cloze-contexts.ts'))) ?? [],
     clozeSkips: (await readTsNamedExport(path.join(dir, 'cloze-contexts.ts'), 'clozeSkips')) ?? [],
     learningItems: (await readTsExport(path.join(dir, 'learning-items.ts'))) ?? [],
+    contentUnits: (await readTsExport(path.join(dir, 'content-units.ts'))) ?? [],
+    capabilities: (await readTsExport(path.join(dir, 'capabilities.ts'))) ?? [],
+    lessonPageBlocks: (await readTsExport(path.join(dir, 'lesson-page-blocks.ts'))) ?? [],
+    exerciseAssets: (await readTsExport(path.join(dir, 'exercise-assets.ts'))) ?? [],
     vocabEnrichments: (await readTsExport(path.join(dir, 'vocab-enrichments.ts'))) ?? null,
     patternBrief: readJson(path.join(dir, 'pattern-brief.json')),
     sectionsCatalog: readJson(path.join(dir, 'sections-catalog.json')),
@@ -917,6 +931,44 @@ function checkPatternBrief(ctx: LessonCtx): Finding[] {
   return out
 }
 
+function checkCapabilityPipelineOutput(ctx: LessonCtx): Finding[] {
+  const out: Finding[] = []
+  const contentUnits = ctx.contentUnits ?? []
+  const capabilities = ctx.capabilities ?? []
+  const lessonPageBlocks = ctx.lessonPageBlocks ?? []
+
+  if (contentUnits.length === 0) {
+    out.push(mkFinding('CRITICAL', ctx.n, 'content-units.ts', 'slice10-content-units-missing',
+      'content-units.ts is missing or empty; Slice 10 output is required'))
+  }
+  if (lessonPageBlocks.length === 0) {
+    out.push(mkFinding('CRITICAL', ctx.n, 'lesson-page-blocks.ts', 'slice10-lesson-blocks-missing',
+      'lesson-page-blocks.ts is missing or empty; Slice 10 output is required'))
+  }
+  if ((ctx.learningItems?.length ?? 0) + (ctx.grammarPatterns?.length ?? 0) > 0 && capabilities.length === 0) {
+    out.push(mkFinding('CRITICAL', ctx.n, 'capabilities.ts', 'slice10-capabilities-missing',
+      'capabilities.ts is missing or empty despite staged learning content'))
+  }
+  if (capabilities.length > 0 && (ctx.exerciseAssets?.length ?? 0) === 0) {
+    out.push(mkFinding('CRITICAL', ctx.n, 'exercise-assets.ts', 'slice10-exercise-assets-missing',
+      'exercise-assets.ts is missing or empty despite staged capabilities'))
+  }
+
+  for (const item of validateContentUnits(contentUnits)) {
+    out.push(mkFinding(item.severity, ctx.n, 'content-units.ts', item.rule, item.detail, item.ref))
+  }
+  for (const item of validateCapabilityStaging({ capabilities, contentUnits })) {
+    out.push(mkFinding(item.severity, ctx.n, 'capabilities.ts', item.rule, item.detail, item.ref))
+  }
+  for (const item of validateLessonPageBlocks({ blocks: lessonPageBlocks, contentUnits, capabilities })) {
+    out.push(mkFinding(item.severity, ctx.n, 'lesson-page-blocks.ts', item.rule, item.detail, item.ref))
+  }
+  for (const item of validateExerciseAssets({ exerciseAssets: ctx.exerciseAssets ?? [], capabilities })) {
+    out.push(mkFinding(item.severity, ctx.n, 'exercise-assets.ts', item.rule, item.detail, item.ref))
+  }
+  return out
+}
+
 function checkLearningItemsPos(ctx: LessonCtx): Finding[] {
   const out: Finding[] = []
   for (const it of ctx.learningItems ?? []) {
@@ -1084,6 +1136,7 @@ async function main() {
     findings.push(...checkExerciseCoverage(ctx))
     findings.push(...checkVocabCoverage(ctx, db))
     findings.push(...checkPatternBrief(ctx))
+    findings.push(...checkCapabilityPipelineOutput(ctx))
     findings.push(...checkLearningItemsPos(ctx))
     findings.push(...checkVocabEnrichments(ctx, db))
   }

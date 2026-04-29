@@ -2,18 +2,19 @@
 import { Outlet, NavLink } from 'react-router-dom'
 import { useMantineColorScheme } from '@mantine/core'
 import { IconUser, IconUserFilled, IconHome, IconHomeFilled, IconBook, IconBookFilled, IconHeadphones, IconHeadphonesFilled, IconChartBar } from '@tabler/icons-react'
+import { useT } from '@/hooks/useT'
 import classes from './MobileLayout.module.css'
-
-const navItems = [
-  { label: 'Home', iconOutline: <IconHome size={22} />, iconFilled: <IconHomeFilled size={22} />, path: '/' },
-  { label: 'Lessen', iconOutline: <IconBook size={22} />, iconFilled: <IconBookFilled size={22} />, path: '/lessons' },
-  { label: 'Podcasts', iconOutline: <IconHeadphones size={22} />, iconFilled: <IconHeadphonesFilled size={22} />, path: '/podcasts' },
-  { label: 'Voortgang', iconOutline: <IconChartBar size={22} />, iconFilled: <IconChartBar size={22} />, path: '/progress' },
-  { label: 'Profiel', iconOutline: <IconUser size={22} />, iconFilled: <IconUserFilled size={22} />, path: '/profile' },
-]
 
 export function MobileLayout() {
   const { colorScheme } = useMantineColorScheme()
+  const T = useT()
+  const navItems = [
+    { label: T.nav.home, iconOutline: <IconHome size={22} />, iconFilled: <IconHomeFilled size={22} />, path: '/' },
+    { label: T.nav.lessons, iconOutline: <IconBook size={22} />, iconFilled: <IconBookFilled size={22} />, path: '/lessons' },
+    { label: T.nav.podcasts, iconOutline: <IconHeadphones size={22} />, iconFilled: <IconHeadphonesFilled size={22} />, path: '/podcasts' },
+    { label: T.nav.progress, iconOutline: <IconChartBar size={22} />, iconFilled: <IconChartBar size={22} />, path: '/progress' },
+    { label: T.nav.profile, iconOutline: <IconUser size={22} />, iconFilled: <IconUserFilled size={22} />, path: '/profile' },
+  ]
 
   return (
     <div className={`${classes.root} ${colorScheme === 'light' ? classes.light : ''}`}>
