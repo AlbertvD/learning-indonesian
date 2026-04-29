@@ -102,6 +102,39 @@ describe('source progress reducer', () => {
     expect(result.currentState).toBe('section_exposed')
   })
 
+  it('honors stable lesson exposure idempotency keys supplied by adapters', async () => {
+    const rpc = vi.fn(() => Promise.resolve({
+      data: {
+        user_id: 'user-1',
+        source_ref: 'lesson-4',
+        source_section_ref: 'lesson-4-grammar',
+        current_state: 'heard_once',
+        completed_event_types: ['heard_once'],
+        last_event_at: '2026-04-29T10:00:00.000Z',
+      },
+      error: null,
+    }))
+    const schema = vi.fn(() => ({ from: vi.fn(), rpc }))
+    const service = createSourceProgressService({ schema })
+
+    await service.recordEvent({
+      userId: 'user-1',
+      sourceRef: 'lesson-4',
+      sourceSectionRef: 'lesson-4-grammar',
+      eventType: 'heard_once',
+      occurredAt: '2026-04-29T10:00:00.000Z',
+      metadataJson: { exposureKind: 'grammar_audio' },
+      idempotencyKey: 'lesson-exposure:user-1:lesson-4:lesson-4-grammar:grammar_audio',
+    })
+
+    expect(rpc).toHaveBeenCalledWith('record_source_progress_event', {
+      p_event: expect.objectContaining({
+        metadataJson: { exposureKind: 'grammar_audio' },
+        idempotencyKey: 'lesson-exposure:user-1:lesson-4:lesson-4-grammar:grammar_audio',
+      }),
+    })
+  })
+
   it('returns the RPC materialized state for duplicate idempotency keys without client-side state writes', async () => {
     const rpc = vi.fn(() => Promise.resolve({
       data: {
