@@ -3,6 +3,7 @@ import { ARTIFACT_KINDS } from '../../src/lib/capabilities/artifactRegistry'
 import type {
   ArtifactKind,
   CapabilitySourceProgressRequirement,
+  CurrentAffixedFormPair,
   ProjectedCapability,
 } from '../../src/lib/capabilities/capabilityTypes'
 import type { SkillType } from '../../src/types/learning'
@@ -45,13 +46,14 @@ export interface StagingLessonInput {
     complexity_score?: number
     confusion_group?: string | null
   }>
+  affixedFormPairs?: CurrentAffixedFormPair[]
 }
 
 export interface StagingContentUnit {
   content_unit_key: string
   source_ref: string
   source_section_ref: string
-  unit_kind: 'lesson_section' | 'learning_item' | 'grammar_pattern'
+  unit_kind: 'lesson_section' | 'learning_item' | 'grammar_pattern' | 'affixed_form_pair'
   unit_slug: string
   display_order: number
   payload_json: Record<string, unknown>
@@ -129,8 +131,73 @@ function grammarSourceRef(lessonNumber: number, slug: string): string {
   return `${sourceRefForLesson(lessonNumber)}/pattern-${stableSlug(slug)}`
 }
 
+function affixedFormPairSourceRef(lessonNumber: number, pair: CurrentAffixedFormPair): string {
+  return pair.sourceRef || `${sourceRefForLesson(lessonNumber)}/morphology/${stableSlug(`${pair.root}-${pair.derived}`)}`
+}
+
 function finding(severity: PipelineSeverity, rule: string, detail: string, ref?: string): PipelineFinding {
   return { severity, rule, detail, ref }
+}
+
+type LearningItem = StagingLessonInput['learningItems'][number]
+
+function appendUniqueDelimited(current: string | undefined, next: string | undefined): string | undefined {
+  const parts = new Set<string>()
+  for (const value of [current, next]) {
+    if (!value?.trim()) continue
+    value
+      .split(/\s+\/\s+|\s*;\s*/)
+      .map(part => part.trim())
+      .filter(Boolean)
+      .forEach(part => parts.add(part))
+  }
+  return parts.size > 0 ? [...parts].join(' / ') : undefined
+}
+
+function mergedItemType(current: LearningItem['item_type'], next: LearningItem['item_type']): LearningItem['item_type'] {
+  const rank: Record<LearningItem['item_type'], number> = {
+    word: 0,
+    phrase: 1,
+    sentence: 2,
+    dialogue_chunk: 3,
+  }
+  return rank[next] > rank[current] ? next : current
+}
+
+function mergedSourcePage(current: number | null | undefined, next: number | null | undefined): number | null {
+  if (current == null) return next ?? null
+  if (next == null) return current
+  return Math.min(current, next)
+}
+
+function mergedReviewStatus(current: string | undefined, next: string | undefined): string | undefined {
+  if (current === 'published' || next === 'published') return 'published'
+  return current ?? next
+}
+
+function dedupeLearningItems(items: LearningItem[]): LearningItem[] {
+  const bySourceRef = new Map<string, LearningItem>()
+
+  for (const item of items) {
+    const key = sourceRefForLearningItem(item.base_text)
+    const existing = bySourceRef.get(key)
+    if (!existing) {
+      bySourceRef.set(key, { ...item, base_text: item.base_text.trim() })
+      continue
+    }
+
+    bySourceRef.set(key, {
+      ...existing,
+      item_type: mergedItemType(existing.item_type, item.item_type),
+      context_type: existing.context_type === 'vocabulary_list' ? existing.context_type : item.context_type,
+      translation_nl: appendUniqueDelimited(existing.translation_nl, item.translation_nl),
+      translation_en: appendUniqueDelimited(existing.translation_en, item.translation_en),
+      source_page: mergedSourcePage(existing.source_page, item.source_page),
+      review_status: mergedReviewStatus(existing.review_status, item.review_status),
+    })
+  }
+
+  return [...bySourceRef.values()]
 }
 
 export function buildContentUnitsFromStaging(input: StagingLessonInput): StagingContentUnit[] {
@@ -159,7 +226,7 @@ export function buildContentUnitsFromStaging(input: StagingLessonInput): Staging
     })
   }
 
-  input.learningItems.forEach((item, index) => {
+  dedupeLearningItems(input.learningItems).forEach((item, index) => {
     const slug = stableSlug(item.base_text)
     units.push({
       content_unit_key: contentUnitKey({
@@ -204,6 +271,30 @@ export function buildContentUnitsFromStaging(input: StagingLessonInput): Staging
       source_fingerprint: fingerprint(pattern),
     })
   })
+
+  for (const [index, pair] of (input.affixedFormPairs ?? []).entries()) {
+    const sourceRef = affixedFormPairSourceRef(input.lessonNumber, pair)
+    const slug = stableSlug(pair.id || `${pair.root}-${pair.derived}`)
+    units.push({
+      content_unit_key: contentUnitKey({
+        sourceRef,
+        sourceSectionRef: `${lessonSourceRef}/section-morphology`,
+        unitSlug: `morphology-${slug}`,
+      }),
+      source_ref: sourceRef,
+      source_section_ref: `${lessonSourceRef}/section-morphology`,
+      unit_kind: 'affixed_form_pair',
+      unit_slug: `morphology-${slug}`,
+      display_order: 3000 + index,
+      payload_json: {
+        root: pair.root,
+        derived: pair.derived,
+        allomorphRule: pair.allomorphRule ?? '',
+        patternSourceRef: pair.patternSourceRef ?? sourceRef,
+      },
+      source_fingerprint: fingerprint(pair),
+    })
+  }
 
   return units.sort((a, b) => a.display_order - b.display_order || a.unit_slug.localeCompare(b.unit_slug))
 }
@@ -254,6 +345,7 @@ function draftArtifactAssets(capability: ProjectedCapability): StagingExerciseAs
 export function buildCapabilityStagingFromContent(input: StagingLessonInput & {
   contentUnits: StagingContentUnit[]
 }): CapabilityStagingPlan {
+  const learningItems = dedupeLearningItems(input.learningItems)
   const itemUnitsBySourceRef = new Map(
     input.contentUnits
       .filter(unit => unit.unit_kind === 'learning_item')
@@ -264,9 +356,14 @@ export function buildCapabilityStagingFromContent(input: StagingLessonInput & {
       .filter(unit => unit.unit_kind === 'grammar_pattern')
       .map(unit => [unit.source_ref, unit]),
   )
+  const affixedPairUnitsBySourceRef = new Map(
+    input.contentUnits
+      .filter(unit => unit.unit_kind === 'affixed_form_pair')
+      .map(unit => [unit.source_ref, unit]),
+  )
 
   const projection = projectCapabilities({
-    learningItems: input.learningItems.map(item => ({
+    learningItems: learningItems.map(item => ({
       id: stableSlug(item.base_text),
       baseText: item.base_text,
       meanings: [
@@ -285,6 +382,14 @@ export function buildCapabilityStagingFromContent(input: StagingLessonInput & {
       name: pattern.pattern_name,
       examples: [],
     })),
+    affixedFormPairs: (input.affixedFormPairs ?? []).map(pair => ({
+      id: pair.id,
+      sourceRef: affixedFormPairSourceRef(input.lessonNumber, pair),
+      root: pair.root,
+      derived: pair.derived,
+      allomorphRule: pair.allomorphRule,
+      patternSourceRef: affixedFormPairSourceRef(input.lessonNumber, pair),
+    })),
   })
 
   function relationshipKindForCapability(capability: ProjectedCapability): StagingCapability['relationshipKind'] {
@@ -295,6 +400,7 @@ export function buildCapabilityStagingFromContent(input: StagingLessonInput & {
   const capabilities: StagingCapability[] = projection.capabilities.map((capability: ProjectedCapability) => {
     const unit = itemUnitsBySourceRef.get(capability.sourceRef)
       ?? patternUnitsBySourceRef.get(capability.sourceRef)
+      ?? affixedPairUnitsBySourceRef.get(capability.sourceRef)
     return {
       ...capability,
       contentUnitSlugs: unit ? [unit.unit_slug] : [],
@@ -480,31 +586,51 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
     }
   }
 
+  function sourceRefsForUnit(unit: StagingContentUnit): string[] {
+    if (unit.unit_kind === 'affixed_form_pair') {
+      const patternSourceRef = typeof unit.payload_json.patternSourceRef === 'string'
+        ? unit.payload_json.patternSourceRef
+        : unit.source_ref
+      return [...new Set([unit.source_ref, patternSourceRef])]
+    }
+    return [unit.source_ref]
+  }
+
+  function exposureEventForUnit(unit: StagingContentUnit): StagingLessonPageBlock['source_progress_event'] {
+    if (unit.unit_kind === 'grammar_pattern' || unit.unit_kind === 'affixed_form_pair') return 'pattern_noticing_seen'
+    return 'section_exposed'
+  }
+
+  function practiceEventForUnit(unit: StagingContentUnit): StagingLessonPageBlock['source_progress_event'] {
+    if (unit.unit_kind === 'grammar_pattern' || unit.unit_kind === 'affixed_form_pair') return 'guided_practice_completed'
+    return 'intro_completed'
+  }
+
   input.contentUnits
     .filter(unit => unit.unit_kind !== 'lesson_section')
     .forEach((unit, index) => {
       blocks.push({
         block_key: `${lessonSourceRef}-${unit.unit_slug}-exposure`,
         source_ref: lessonSourceRef,
-        source_refs: [unit.source_ref],
+        source_refs: sourceRefsForUnit(unit),
         content_unit_slugs: [unit.unit_slug],
         block_kind: 'exposure',
         display_order: 100 + index * 10,
         payload_json: unit.payload_json,
-        source_progress_event: unit.unit_kind === 'grammar_pattern' ? 'pattern_noticing_seen' : 'section_exposed',
+        source_progress_event: exposureEventForUnit(unit),
         capability_key_refs: capabilitiesByUnitSlug.get(unit.unit_slug) ?? [],
       })
       blocks.push({
         block_key: `${lessonSourceRef}-${unit.unit_slug}-practice`,
         source_ref: lessonSourceRef,
-        source_refs: [unit.source_ref],
+        source_refs: sourceRefsForUnit(unit),
         content_unit_slugs: [unit.unit_slug],
         block_kind: 'practice_bridge',
         display_order: 101 + index * 10,
         payload_json: {
           label: 'Practice this content',
         },
-        source_progress_event: unit.unit_kind === 'grammar_pattern' ? 'guided_practice_completed' : 'intro_completed',
+        source_progress_event: practiceEventForUnit(unit),
         capability_key_refs: (capabilitiesByUnitSlug.get(unit.unit_slug) ?? []).filter(key => key.includes(':text_recognition:')),
       })
     })

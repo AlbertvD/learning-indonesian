@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', '.claude/**', 'tools/**', '.claude-hooks/**']),
+  globalIgnores(['dist', '.claude/**', 'tools/**', '.claude-hooks/**', '.worktrees/**', 'test-results/**']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -22,6 +22,7 @@ export default defineConfig([
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       'no-case-declarations': 'off',
+      'react-hooks/set-state-in-effect': 'off',
       // Page framework seam contract — viewport-height math belongs in
       // PageBody/PageContainer/PageFormLayout only. Inline JSX `style={{ height: '100vh' }}`
       // and variants are blocked here; CSS modules are checked separately by

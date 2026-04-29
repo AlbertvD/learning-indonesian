@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import {
+  buildCapabilityStagingFromContent,
   buildContentUnitsFromStaging,
+  buildLessonPageBlocksFromStaging,
+  validateCapabilityStaging,
   validateContentUnits,
   type StagingLessonInput,
 } from '../lib/content-pipeline-output'
@@ -77,6 +80,97 @@ describe('content unit staging', () => {
       expect.objectContaining({ severity: 'CRITICAL', rule: 'content-unit-slug-not-stable' }),
       expect.objectContaining({ severity: 'CRITICAL', rule: 'content-unit-duplicate-identity' }),
       expect.objectContaining({ severity: 'CRITICAL', rule: 'content-unit-duplicate-slug' }),
+    ]))
+  })
+
+  it('merges repeated learning items before projecting content and capabilities', () => {
+    const duplicateInput: StagingLessonInput = {
+      ...lessonInput,
+      learningItems: [
+        {
+          base_text: 'kaki',
+          item_type: 'word',
+          context_type: 'vocabulary_list',
+          translation_nl: 'voet',
+          translation_en: '',
+          source_page: 4,
+          review_status: 'published',
+        },
+        {
+          base_text: 'kaki',
+          item_type: 'word',
+          context_type: 'vocabulary_list',
+          translation_nl: 'been',
+          translation_en: '',
+          source_page: 9,
+          review_status: 'published',
+        },
+      ],
+      grammarPatterns: [],
+    }
+
+    const units = buildContentUnitsFromStaging(duplicateInput)
+
+    expect(units.filter(unit => unit.unit_slug === 'item-kaki')).toHaveLength(1)
+    expect(units.find(unit => unit.unit_slug === 'item-kaki')?.payload_json).toEqual(expect.objectContaining({
+      translationNl: 'voet / been',
+    }))
+    expect(validateContentUnits(units)).toEqual([])
+  })
+
+  it('projects affixed form pairs into content units, capabilities, and lesson blocks', () => {
+    const morphologyInput: StagingLessonInput = {
+      ...lessonInput,
+      learningItems: [],
+      grammarPatterns: [],
+      affixedFormPairs: [{
+        id: 'men-baca-membaca',
+        sourceRef: 'lesson-1/morphology/meN-baca-membaca',
+        patternSourceRef: 'lesson-1/pattern-men-active',
+        root: 'baca',
+        derived: 'membaca',
+        allomorphRule: 'meN- becomes mem- before b.',
+      }],
+    }
+
+    const contentUnits = buildContentUnitsFromStaging(morphologyInput)
+    const capabilityPlan = buildCapabilityStagingFromContent({ ...morphologyInput, contentUnits })
+    const lessonPageBlocks = buildLessonPageBlocksFromStaging({
+      ...morphologyInput,
+      contentUnits,
+      capabilities: capabilityPlan.capabilities,
+    })
+
+    expect(contentUnits).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        source_ref: 'lesson-1/morphology/meN-baca-membaca',
+        source_section_ref: 'lesson-1/section-morphology',
+        unit_kind: 'affixed_form_pair',
+        unit_slug: 'morphology-men-baca-membaca',
+      }),
+    ]))
+    expect(capabilityPlan.capabilities).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        sourceKind: 'affixed_form_pair',
+        sourceRef: 'lesson-1/morphology/meN-baca-membaca',
+        contentUnitSlugs: ['morphology-men-baca-membaca'],
+        requiredSourceProgress: expect.objectContaining({
+          sourceRef: 'lesson-1/morphology/meN-baca-membaca',
+          requiredState: 'pattern_noticing_seen',
+        }),
+      }),
+    ]))
+    expect(capabilityPlan.exerciseAssets).toEqual(expect.arrayContaining([
+      expect.objectContaining({ artifact_kind: 'root_derived_pair' }),
+      expect.objectContaining({ artifact_kind: 'allomorph_rule' }),
+    ]))
+    expect(validateCapabilityStaging({ capabilities: capabilityPlan.capabilities, contentUnits })).toEqual([])
+    expect(lessonPageBlocks).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        block_key: 'lesson-1-morphology-men-baca-membaca-exposure',
+        source_refs: ['lesson-1/morphology/meN-baca-membaca', 'lesson-1/pattern-men-active'],
+        source_progress_event: 'pattern_noticing_seen',
+      }),
     ]))
   })
 })

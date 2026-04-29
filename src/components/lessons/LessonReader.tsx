@@ -10,11 +10,23 @@ export function LessonReader(props: {
   experience: LessonExperience
   progressBySourceRef: Map<string, SourceProgressState>
   actions?: LessonPracticeAction[]
+  lessonAudioUrl?: string | null
+  lessonDurationSeconds?: number | null
   onBack: () => void
   onSourceProgress: (block: LessonExperienceBlock, eventType: SourceProgressEventType) => void
   onLessonExposureProgress?: (block: LessonExperienceBlock, exposureKind: LessonExposureKind) => void
 }) {
-  const { experience, progressBySourceRef, actions = [], onBack, onSourceProgress, onLessonExposureProgress } = props
+  const {
+    experience,
+    progressBySourceRef,
+    actions = [],
+    lessonAudioUrl,
+    lessonDurationSeconds,
+    onBack,
+    onSourceProgress,
+    onLessonExposureProgress,
+  } = props
+  const lessonDurationMinutes = lessonDurationSeconds ? Math.max(1, Math.round(lessonDurationSeconds / 60)) : null
 
   return (
     <main className={classes.root}>
@@ -46,6 +58,15 @@ export function LessonReader(props: {
           <p className={classes.companionLabel}>Bron</p>
           <h2>{experience.title}</h2>
           <p>{experience.level}</p>
+          {lessonAudioUrl && (
+            <section className={classes.lessonAudioPanel} aria-label="Lesaudio">
+              <div className={classes.lessonAudioHeader}>
+                <strong>Luister naar de les</strong>
+                {lessonDurationMinutes && <span>{lessonDurationMinutes} min</span>}
+              </div>
+              <audio controls preload="metadata" src={lessonAudioUrl} data-testid="lesson-audio-player" />
+            </section>
+          )}
           {actions.length > 0 && (
             <div className={classes.lessonActions} aria-label="Lesson practice actions">
               {actions.map(action => (

@@ -166,6 +166,7 @@ describe('Lesson page', () => {
       activePracticedCapabilityCount: 0,
     })
     vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([])
+    vi.mocked(lessonService.getAudioUrl).mockReturnValue('/lesson-audio.mp3')
     vi.mocked(sourceProgressService.recordEvent).mockImplementation(async (event) => ({
       userId: event.userId,
       sourceRef: event.sourceRef,
@@ -193,6 +194,33 @@ describe('Lesson page', () => {
       }),
       idempotencyKey: 'lesson-exposure:user-1:lesson-4:lesson-4-grammar:grammar_audio',
     }))
+  })
+
+  it('renders the lesson-level audio from the lesson audio path', async () => {
+    vi.mocked(lessonService.getLesson).mockResolvedValueOnce({
+      id: 'lesson-4',
+      module_id: 'module-1',
+      level: 'A1',
+      title: 'Lesson 4',
+      description: null,
+      order_index: 4,
+      created_at: '2026-04-01T00:00:00Z',
+      audio_path: 'lessons/lesson-4.mp3',
+      duration_seconds: 1500,
+      transcript_dutch: null,
+      transcript_indonesian: null,
+      transcript_english: null,
+      primary_voice: null,
+      dialogue_voices: null,
+      lesson_sections: [],
+    })
+
+    renderLesson()
+
+    const audio = await screen.findByTestId('lesson-audio-player')
+    expect(lessonService.getAudioUrl).toHaveBeenCalledWith('lessons/lesson-4.mp3')
+    expect(audio).toHaveAttribute('src', '/lesson-audio.mp3')
+    expect(screen.getByText('25 min')).toBeInTheDocument()
   })
 
   it('shows a learner-friendly unavailable state when lesson page blocks are missing', async () => {

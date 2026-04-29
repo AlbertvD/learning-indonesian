@@ -177,6 +177,33 @@
   gap: 8px;
 }
 
+.lessonAudioPanel {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  border-radius: 12px;
+  background: rgba(15, 118, 110, 0.07);
+}
+
+.lessonAudioHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #25362f;
+}
+
+.lessonAudioHeader span {
+  color: #6b7a72;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.lessonAudioPanel audio {
+  width: 100%;
+}
+
 .primaryAction,
 .secondaryAction {
   display: flex;

@@ -272,6 +272,10 @@ export function Lesson() {
       state: lessonPracticeActionState,
     })
   }, [lesson, lessonPracticeActionState])
+  const lessonAudioUrl = useMemo(
+    () => lesson?.audio_path ? lessonService.getAudioUrl(lesson.audio_path) : null,
+    [lesson],
+  )
 
   useEffect(() => {
     if (!userId || !readerExperience) return
@@ -320,6 +324,8 @@ export function Lesson() {
       experience={readerExperience}
       progressBySourceRef={readerProgressBySourceRef}
       actions={lessonPracticeActions}
+      lessonAudioUrl={lessonAudioUrl}
+      lessonDurationSeconds={lesson.duration_seconds}
       onBack={() => navigate('/lessons')}
       onSourceProgress={handleReaderSourceProgress}
       onLessonExposureProgress={handleLessonExposureProgress}
