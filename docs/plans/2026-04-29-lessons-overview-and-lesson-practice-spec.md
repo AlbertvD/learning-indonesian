@@ -303,12 +303,17 @@ Lesson progress could not be refreshed.
 
 Do not show technical labels such as source progress, capability readiness, FSRS, or content units to normal learners.
 
+Lesson-scoped sessions fail closed if the app cannot enforce selected-lesson-only practice. The legacy item queue must not silently turn `lesson_practice` or `lesson_review` into a global session.
+
+Implemented learner polish:
+
+- preserve overview scroll position when returning from a lesson;
+- resume the same lesson audio from the last local position without autoplay.
+
 ## 14. Later Polish
 
 Build after the core behavior is working:
 
-- preserve overview scroll position when returning from a lesson;
-- resume exact audio position inside a lesson;
 - polish empty/error states;
 - optional admin-only content-health overlays.
 

@@ -123,11 +123,13 @@ The app can be lesson-led without being lesson-locked. Old reviews, remediation,
 
 ### Today / Dashboard
 
-The dashboard remains the normal starting point for review and practice. It summarizes progress, goals, due work, and session entry points.
+The dashboard remains the normal starting point for review and practice. Today is the guided path: it summarizes progress, goals, due work, and the global session entry point.
 
 ### Lessons
 
-The new lesson reader is designed for book-derived content that feels like a modern web lesson rather than a PDF dump.
+Lessons are side quests that prepare and support Today. The lessons overview helps the learner choose and open a lesson; it does not start practice directly and does not compete with the dashboard.
+
+The individual lesson reader is designed for book-derived content that feels like a modern web lesson rather than a PDF dump. It introduces grammar, words, sentences, dialogue, and culture through reading and listening; retrieval practice still happens on the exercise/session surface.
 
 It supports a flow like:
 
@@ -141,15 +143,21 @@ practice bridge
 recap
 ```
 
-The lesson reader records source progress, such as opening a lesson or seeing a section. It does not directly create FSRS review state.
+The lesson reader records source progress, such as opening a lesson, listening to grammar audio, reading the grammar section, or meaningfully consuming dialogue. It does not directly create FSRS review state.
+
+Once lesson content is ready, the individual lesson page can show `Practice this lesson`. If the learner already has active practiced content from that lesson, it can show `Review this lesson`. Both actions launch selected-lesson capability sessions, count toward FSRS through the review processor, respect the learner's profile session size, and underfill cleanly rather than pulling unrelated material.
+
+Culture and pronunciation sections are useful reading/listening content, but they do not gate lesson status or unlock practice by themselves.
+
+The overview preserves scroll position when the learner returns from a lesson. Lesson audio resumes from the last local position for the same lesson audio and does not autoplay.
 
 Desktop and mobile are both intended. On desktop, the reader can use a left progress rail and right companion panel. On mobile, it collapses into a one-column reading flow.
 
 ### Sessions
 
-The legacy session remains the safe production path. It builds exercises from existing items, meanings, contexts, grammar variants, and learner skill state.
+The legacy session remains the safe production path for legacy item sessions. It builds exercises from existing items, meanings, contexts, grammar variants, and learner skill state.
 
-The new capability session path is feature-flagged. It renders a `SessionPlan` through the Experience Player. This supports a future tutor-like session flow:
+The new capability session path is feature-flagged. It renders a `SessionPlan` through the Experience Player and now owns standard capability sessions plus selected-lesson practice/review modes. This supports a future tutor-like session flow:
 
 ```text
 warm input

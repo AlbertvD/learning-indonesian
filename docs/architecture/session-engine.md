@@ -27,6 +27,8 @@ quick
 backlog_clear
 ```
 
+Lesson-scoped modes are not handled by the legacy queue. If `lesson_practice` or `lesson_review` reaches `buildSessionQueue`, it fails closed with an empty queue instead of falling back to global material.
+
 Unsupported older modes such as `recall_sprint` and `push_to_productive` should not be documented as active behavior.
 
 The legacy queue uses:
@@ -60,6 +62,18 @@ The capability path uses:
 - `capability_review_events` for capability answer history;
 - source-progress gates before lesson-sequenced capabilities can be introduced;
 - posture-aware load budgets for new capabilities, concepts, production, hidden audio, and source switches.
+
+Capability session modes are:
+
+```text
+standard
+lesson_practice
+lesson_review
+```
+
+`standard` is the global Today path. `lesson_practice` and `lesson_review` are launched from an individual lesson page with `selectedLessonId` and `selectedSourceRefs`. They are selected-lesson only, FSRS-writing sessions: the loader filters due, active, and new capabilities to that lesson's source refs before the composer fills the session. `lesson_review` does not introduce new capabilities.
+
+If the selected lesson scope is missing, the capability loader returns a fail-closed session plan with a critical diagnostic instead of borrowing content from the global path.
 
 ## Capability Introduction Order
 
