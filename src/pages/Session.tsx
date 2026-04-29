@@ -50,16 +50,16 @@ function isCapabilitySessionMode(mode: SessionMode): mode is CapabilitySessionMo
 }
 
 async function loadSelectedLessonScope(lessonId: string | null): Promise<{
-  selectedLessonId?: string
-  selectedSourceRefs?: string[]
-}> {
-  if (!lessonId) return {}
+  selectedLessonId: string
+  selectedSourceRefs: string[]
+} | null> {
+  if (!lessonId) return null
   const lesson = await lessonService.getLesson(lessonId)
   const sourceRef = `lesson-${lesson.order_index}`
   const pageBlocks = await lessonService.getLessonPageBlocks(sourceRef).catch(() => [])
-  const selectedSourceRefs = pageBlocks.length > 0
-    ? [...new Set(pageBlocks.flatMap(block => block.source_refs?.length ? block.source_refs : [block.source_ref]))]
-    : [sourceRef]
+  if (pageBlocks.length === 0) return null
+  const selectedSourceRefs = [...new Set(pageBlocks.flatMap(block => block.source_refs?.length ? block.source_refs : [block.source_ref]))]
+  if (selectedSourceRefs.length === 0) return null
 
   return {
     selectedLessonId: lessonId,
@@ -129,7 +129,13 @@ export function Session() {
         if (capabilityMigrationFlags.standardSession && isCapabilitySessionMode(sessionMode)) {
           const lessonScope = isLessonScopedSessionMode(sessionMode)
             ? await loadSelectedLessonScope(lessonFilter)
-            : {}
+            : null
+          if (isLessonScopedSessionMode(sessionMode) && !lessonScope) {
+            setSessionId(sid)
+            setError('Deze les is nog niet klaar om te oefenen.')
+            setLoading(false)
+            return
+          }
           const capabilityPlan = await loadCapabilitySessionPlanForUser({
             enabled: true,
             sessionId: sid,
@@ -138,7 +144,7 @@ export function Session() {
             now: new Date(),
             limit: preferredSessionSize,
             preferredSessionSize,
-            ...lessonScope,
+            ...(lessonScope ?? {}),
             adapter: capabilitySessionDataService,
           })
           setSessionId(sid)

@@ -8,6 +8,7 @@ import { Notifications } from '@mantine/notifications'
 import { Session } from '@/pages/Session'
 import { useAuthStore } from '@/stores/authStore'
 import { learningItemService } from '@/services/learningItemService'
+import { lessonService } from '@/services/lessonService'
 import { loadCapabilitySessionPlanForUser } from '@/lib/session/capabilitySessionLoader'
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
@@ -305,6 +306,19 @@ describe('Session flow', () => {
         selectedSourceRefs: ['lesson-4', 'lesson-4-dialogue'],
       }))
     })
+  })
+
+  it('fails closed when lesson practice targets an unprepared lesson', async () => {
+    capabilityFlags.standardSession = true
+    vi.mocked(lessonService.getLessonPageBlocks).mockResolvedValueOnce([])
+
+    renderSession('/session?lesson=lesson-4&mode=lesson_practice')
+
+    await waitFor(() => {
+      expect(screen.getByText(/nog niet klaar om te oefenen/i)).toBeInTheDocument()
+    })
+    expect(loadCapabilitySessionPlanForUser).not.toHaveBeenCalled()
+    expect(learningItemService.getLearningItems).not.toHaveBeenCalled()
   })
 
   it('fails closed instead of starting a legacy global queue for lesson modes', async () => {
