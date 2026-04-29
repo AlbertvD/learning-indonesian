@@ -81,57 +81,12 @@ function fromPipelineBlock(block: LessonPageBlock, lesson: Lesson): LessonExperi
   }
 }
 
-function fallbackBlocks(lesson: Lesson, sourceRef: string): LessonExperienceBlock[] {
-  const sectionBlocks = lesson.lesson_sections.map((section, index): LessonExperienceBlock => ({
-    id: `${sourceRef}-section-${section.order_index}`,
-    kind: 'reading_section',
-    title: section.title,
-    sourceRef,
-    sourceRefs: [sourceRef],
-    contentUnitSlugs: [],
-    displayOrder: 100 + index * 10,
-    payload: typeof section.content === 'object' ? section.content : { body: section.content },
-    sourceProgressEvent: 'section_exposed',
-    capabilityKeyRefs: [],
-  }))
-
-  return [
-    {
-      id: `${sourceRef}-hero`,
-      kind: 'lesson_hero',
-      title: lesson.title,
-      sourceRef,
-      sourceRefs: [sourceRef],
-      contentUnitSlugs: [],
-      displayOrder: 0,
-      payload: { title: lesson.title, level: lesson.level },
-      sourceProgressEvent: 'opened',
-      capabilityKeyRefs: [],
-    },
-    ...sectionBlocks,
-    {
-      id: `${sourceRef}-recap`,
-      kind: 'lesson_recap',
-      title: 'Recap',
-      sourceRef,
-      sourceRefs: [sourceRef],
-      contentUnitSlugs: [],
-      displayOrder: 9999,
-      payload: { title: 'Recap' },
-      sourceProgressEvent: 'lesson_completed',
-      capabilityKeyRefs: [],
-    },
-  ]
-}
-
 export function buildLessonExperience(input: {
   lesson: Lesson
   pageBlocks: LessonPageBlock[]
 }): LessonExperience {
   const sourceRef = sourceRefForLesson(input.lesson)
-  const blocks = input.pageBlocks.length > 0
-    ? input.pageBlocks.map(block => fromPipelineBlock(block, input.lesson))
-    : fallbackBlocks(input.lesson, sourceRef)
+  const blocks = input.pageBlocks.map(block => fromPipelineBlock(block, input.lesson))
 
   return {
     lessonId: input.lesson.id,

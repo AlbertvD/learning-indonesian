@@ -5,6 +5,7 @@ import { Notifications } from '@mantine/notifications'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Lesson } from '@/pages/Lesson'
 import { lessonService } from '@/services/lessonService'
+import { progressService } from '@/services/progressService'
 import { sourceProgressService } from '@/services/sourceProgressService'
 
 vi.mock('@/lib/featureFlags', () => ({
@@ -192,6 +193,50 @@ describe('Lesson page', () => {
       }),
       idempotencyKey: 'lesson-exposure:user-1:lesson-4:lesson-4-grammar:grammar_audio',
     }))
+  })
+
+  it('shows a learner-friendly unavailable state when lesson page blocks are missing', async () => {
+    vi.mocked(lessonService.getLessonPageBlocks).mockResolvedValue([])
+
+    renderLesson()
+
+    expect(await screen.findByRole('heading', { name: 'This lesson is being prepared' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Back to list' })).toHaveAttribute('href', '/lessons')
+    expect(screen.queryByText('Grammar notes.')).not.toBeInTheDocument()
+  })
+
+  it('does not write legacy lesson completion from the reader keyboard path', async () => {
+    vi.mocked(lessonService.getLesson).mockResolvedValueOnce({
+      id: 'lesson-4',
+      module_id: 'module-1',
+      level: 'A1',
+      title: 'Lesson 4',
+      description: null,
+      order_index: 4,
+      created_at: '2026-04-01T00:00:00Z',
+      audio_path: null,
+      duration_seconds: null,
+      transcript_dutch: null,
+      transcript_indonesian: null,
+      transcript_english: null,
+      primary_voice: null,
+      dialogue_voices: null,
+      lesson_sections: [{
+        id: 'legacy-section-1',
+        lesson_id: 'lesson-4',
+        title: 'Legacy section',
+        order_index: 1,
+        content: { type: 'text', paragraphs: ['Legacy content'] },
+      }],
+    })
+
+    renderLesson()
+
+    expect(await screen.findByText('Grammar notes.')).toBeInTheDocument()
+    fireEvent.keyDown(document, { key: 'ArrowRight' })
+    await Promise.resolve()
+
+    expect(progressService.markLessonComplete).not.toHaveBeenCalled()
   })
 
   it('shows a subtle practice-ready toast after meaningful lesson exposure', async () => {

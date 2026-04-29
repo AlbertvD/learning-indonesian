@@ -68,17 +68,10 @@ describe('lesson experience', () => {
     }))
   })
 
-  it('falls back to lesson sections when pipeline blocks are not present', () => {
+  it('does not synthesize legacy reader blocks when pipeline blocks are not present', () => {
     const experience = buildLessonExperience({ lesson, pageBlocks: [] })
 
-    expect(experience.blocks.map(block => block.kind)).toEqual([
-      'lesson_hero',
-      'reading_section',
-      'lesson_recap',
-    ])
-    expect(experience.blocks[1]).toEqual(expect.objectContaining({
-      title: 'Vocabulary',
-      sourceProgressEvent: 'section_exposed',
-    }))
+    expect(experience.blocks).toEqual([])
+    expect(experience.sourceRefs).toEqual([])
   })
 })
