@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
@@ -75,6 +75,7 @@ function renderLessons() {
 
 describe('Lessons overview', () => {
   beforeEach(() => {
+    sessionStorage.clear()
     vi.mocked(lessonService.getLessons).mockResolvedValue(lessons)
     vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([])
   })
@@ -136,5 +137,27 @@ describe('Lessons overview', () => {
     expect(await screen.findByText('Lesson progress could not be refreshed.')).toBeInTheDocument()
     expect(screen.getByTestId('lesson-overview-row-lesson-1')).toHaveTextContent('Open lesson')
     expect(screen.getByTestId('lesson-overview-row-lesson-2')).toHaveTextContent('Open lesson')
+  })
+
+  it('restores the overview scroll position when returning from a lesson', async () => {
+    sessionStorage.setItem('lessons:overview-scroll-y', '420')
+    const scrollToSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined)
+
+    renderLessons()
+
+    await screen.findByTestId('lesson-overview-row-lesson-1')
+    await waitFor(() => {
+      expect(scrollToSpy).toHaveBeenCalledWith(0, 420)
+    })
+
+    scrollToSpy.mockRestore()
+  })
+
+  it('does not show search or filter controls on the compact lesson overview', async () => {
+    renderLessons()
+
+    await screen.findByTestId('lesson-overview-row-lesson-1')
+    expect(screen.queryByRole('searchbox')).not.toBeInTheDocument()
+    expect(screen.queryByPlaceholderText(/search|filter/i)).not.toBeInTheDocument()
   })
 })

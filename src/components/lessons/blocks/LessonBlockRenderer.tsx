@@ -5,6 +5,8 @@ import { isMeaningfulDialogueAudio, isMeaningfulGrammarAudio } from '@/lib/lesso
 import type { SourceProgressState } from '@/services/sourceProgressService'
 import classes from '../LessonReader.module.css'
 
+const AUDIO_POSITION_PREFIX = 'lesson-audio-position'
+
 interface LessonBlockRendererProps {
   block: LessonExperienceBlock
   progress?: SourceProgressState | null
@@ -30,6 +32,28 @@ function audioUrlFromPayload(payload: Record<string, unknown>): string | null {
   if (typeof payload.audioUrl === 'string') return payload.audioUrl
   if (typeof payload.audio_url === 'string') return payload.audio_url
   return null
+}
+
+function audioPositionKey(block: LessonExperienceBlock, audioUrl: string): string {
+  return `${AUDIO_POSITION_PREFIX}:${block.sourceRef}:${audioUrl}`
+}
+
+function restoreAudioPosition(audio: HTMLAudioElement, key: string) {
+  const raw = localStorage.getItem(key)
+  if (!raw) return
+  const storedTime = Number(raw)
+  if (!Number.isFinite(storedTime) || storedTime <= 0) return
+  if (Number.isFinite(audio.duration) && audio.duration > 0 && storedTime >= audio.duration - 2) return
+  audio.currentTime = storedTime
+}
+
+function saveAudioPosition(audio: HTMLAudioElement, key: string) {
+  if (!Number.isFinite(audio.currentTime) || audio.currentTime <= 0) return
+  if (audio.ended) {
+    localStorage.removeItem(key)
+    return
+  }
+  localStorage.setItem(key, String(Math.round(audio.currentTime)))
 }
 
 function payloadType(block: LessonExperienceBlock): string | null {
@@ -75,6 +99,7 @@ export function LessonBlockRenderer({ block, progress, onProgress, onPractice, o
   const items = itemsFromPayload(block.payload)
   const body = textFromPayload(block.payload)
   const audioUrl = audioUrlFromPayload(block.payload)
+  const audioKey = audioUrl ? audioPositionKey(block, audioUrl) : null
   const audioExposureKind = exposureKindForAudio(block)
   const audioExposureRecordedRef = useRef(false)
 
@@ -156,9 +181,18 @@ export function LessonBlockRenderer({ block, progress, onProgress, onPractice, o
           controls
           data-testid={`lesson-block-audio-${block.id}`}
           src={audioUrl}
-          onLoadedMetadata={event => maybeRecordAudioExposure(event.currentTarget)}
-          onTimeUpdate={event => maybeRecordAudioExposure(event.currentTarget)}
-          onEnded={event => maybeRecordAudioExposure(event.currentTarget)}
+          onLoadedMetadata={event => {
+            if (audioKey) restoreAudioPosition(event.currentTarget, audioKey)
+            maybeRecordAudioExposure(event.currentTarget)
+          }}
+          onTimeUpdate={event => {
+            if (audioKey) saveAudioPosition(event.currentTarget, audioKey)
+            maybeRecordAudioExposure(event.currentTarget)
+          }}
+          onEnded={event => {
+            if (audioKey) localStorage.removeItem(audioKey)
+            maybeRecordAudioExposure(event.currentTarget)
+          }}
         />
       )}
       {body && <p className={classes.bodyText}>{body}</p>}

@@ -1,5 +1,5 @@
 // src/pages/Lessons.tsx
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Container, Loader, Center } from '@mantine/core'
 import { Link } from 'react-router-dom'
 import { IconArrowRight, IconBook2, IconChevronRight, IconMap2 } from '@tabler/icons-react'
@@ -26,8 +26,21 @@ const emptyModel: LessonOverviewModel = {
   rows: [],
 }
 
+const LESSONS_OVERVIEW_SCROLL_KEY = 'lessons:overview-scroll-y'
+
 function lessonTitle(title: string): string {
   return title.replace(/\s*\([^)]*\)/g, '').trim() || title
+}
+
+function readStoredOverviewScrollY(): number | null {
+  const raw = sessionStorage.getItem(LESSONS_OVERVIEW_SCROLL_KEY)
+  if (!raw) return null
+  const value = Number(raw)
+  return Number.isFinite(value) && value > 0 ? value : null
+}
+
+function rememberOverviewScrollPosition() {
+  sessionStorage.setItem(LESSONS_OVERVIEW_SCROLL_KEY, String(window.scrollY || window.pageYOffset || 0))
 }
 
 function progressToExposures(progress: LessonProgress[]): LessonOverviewExposure[] {
@@ -57,6 +70,7 @@ export function Lessons() {
   const [loading, setLoading] = useState(true)
   const [progressRefreshFailed, setProgressRefreshFailed] = useState(false)
   const [loadFailed, setLoadFailed] = useState(false)
+  const didRestoreScrollRef = useRef(false)
   const user = useAuthStore((state) => state.user)
 
   useEffect(() => {
@@ -113,6 +127,17 @@ export function Lessons() {
     }
   }, [user])
 
+  useEffect(() => {
+    if (loading || didRestoreScrollRef.current) return
+    didRestoreScrollRef.current = true
+    const storedScrollY = readStoredOverviewScrollY()
+    if (storedScrollY != null) window.scrollTo(0, storedScrollY)
+  }, [loading])
+
+  useEffect(() => () => {
+    rememberOverviewScrollPosition()
+  }, [])
+
   if (loading) {
     return (
       <Center h="50vh">
@@ -160,7 +185,7 @@ export function Lessons() {
             <IconMap2 size={17} />
             <span>{T.lessons.recommendedLesson}</span>
           </div>
-          <Link to={recommendedRow.href} className={classes.recommendedCard}>
+          <Link to={recommendedRow.href} className={classes.recommendedCard} onClick={rememberOverviewScrollPosition}>
             <div className={classes.recommendedText}>
               <h2 id="recommended-lesson-heading" className={classes.recommendedTitle}>
                 {isNewLearnerStart ? T.lessons.startWithLesson1 : lessonTitle(recommendedRow.title)}
@@ -184,7 +209,7 @@ export function Lessons() {
             className={classes.lessonRow}
             data-testid={`lesson-overview-row-${row.lessonId}`}
           >
-            <Link to={row.href} className={classes.lessonCard}>
+            <Link to={row.href} className={classes.lessonCard} onClick={rememberOverviewScrollPosition}>
               <span className={classes.lessonNumber}>{row.orderIndex}</span>
               <span className={classes.lessonIcon}>
                 <IconBook2 size={18} />

@@ -122,6 +122,7 @@ function renderLesson() {
 
 describe('Lesson page', () => {
   beforeEach(() => {
+    localStorage.clear()
     vi.mocked(lessonService.getLesson).mockResolvedValue({
       id: 'lesson-4',
       module_id: 'module-1',
@@ -222,5 +223,21 @@ describe('Lesson page', () => {
     const reviewLink = await screen.findByRole('link', { name: 'Review this lesson' })
 
     expect(reviewLink).toHaveAttribute('href', '/session?lesson=lesson-4&mode=lesson_review')
+  })
+
+  it('restores and saves lesson audio position without autoplay', async () => {
+    localStorage.setItem('lesson-audio-position:lesson-4:/grammar.mp3', '120')
+    renderLesson()
+
+    const audio = await screen.findByTestId('lesson-block-audio-lesson-4-grammar') as HTMLAudioElement
+    Object.defineProperty(audio, 'duration', { configurable: true, value: 600 })
+    fireEvent.loadedMetadata(audio)
+
+    expect(audio.autoplay).toBe(false)
+    expect(audio.currentTime).toBe(120)
+
+    Object.defineProperty(audio, 'currentTime', { configurable: true, value: 180 })
+    fireEvent.timeUpdate(audio)
+    expect(localStorage.getItem('lesson-audio-position:lesson-4:/grammar.mp3')).toBe('180')
   })
 })
