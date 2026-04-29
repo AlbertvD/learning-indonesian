@@ -1,4 +1,5 @@
 import type { LessonExperience, LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
+import type { LessonExposureKind } from '@/lib/lessons/lessonExposureProgress'
 import type { SourceProgressEventType, SourceProgressState } from '@/services/sourceProgressService'
 import { LessonBlockRenderer } from './blocks/LessonBlockRenderer'
 import classes from './LessonReader.module.css'
@@ -9,8 +10,9 @@ export function LessonReader(props: {
   onBack: () => void
   onPractice: (block: LessonExperienceBlock) => void
   onSourceProgress: (block: LessonExperienceBlock, eventType: SourceProgressEventType) => void
+  onLessonExposureProgress?: (block: LessonExperienceBlock, exposureKind: LessonExposureKind) => void
 }) {
-  const { experience, progressBySourceRef, onBack, onPractice, onSourceProgress } = props
+  const { experience, progressBySourceRef, onBack, onPractice, onSourceProgress, onLessonExposureProgress } = props
 
   return (
     <main className={classes.root}>
@@ -33,6 +35,7 @@ export function LessonReader(props: {
                 progress={progressBySourceRef.get(`${block.sourceRefs[0] ?? block.sourceRef}::${block.id}`)}
                 onProgress={(target) => onSourceProgress(target, target.sourceProgressEvent ?? 'section_exposed')}
                 onPractice={onPractice}
+                onLessonExposureProgress={onLessonExposureProgress}
               />
             </div>
           ))}

@@ -13,6 +13,7 @@ import { useSessionBeacon } from '@/lib/useSessionBeacon'
 import { useAuthStore } from '@/stores/authStore'
 import { capabilityMigrationFlags } from '@/lib/featureFlags'
 import { buildLessonExperience, type LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
+import { sourceProgressEventForLessonExposure, type LessonExposureKind } from '@/lib/lessons/lessonExposureProgress'
 import { LessonReader } from '@/components/lessons/LessonReader'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
@@ -507,6 +508,7 @@ export function Lesson() {
   const [error, setError] = useState(false)
   const sessionIdRef = useRef<string | null>(null)
   const readerOpenedRef = useRef<string | null>(null)
+  const practiceReadyToastShownRef = useRef<Set<string>>(new Set())
   useSessionBeacon(sessionIdRef)
   const [completedSections, setCompletedSections] = useState<string[]>([])
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -739,6 +741,19 @@ export function Lesson() {
     if (audioRef.current) audioRef.current.playbackRate = rate
   }
 
+  const upsertLessonSourceProgress = useCallback((state: SourceProgressState) => {
+    setLessonSourceProgress(rows => [
+      ...rows.filter(row => !(row.source_ref === state.sourceRef && row.source_section_ref === state.sourceSectionRef)),
+      {
+        source_ref: state.sourceRef,
+        source_section_ref: state.sourceSectionRef,
+        current_state: state.currentState,
+        completed_event_types: state.completedEventTypes,
+        last_event_at: state.lastEventAt,
+      },
+    ])
+  }, [])
+
   const handleReaderSourceProgress = useCallback(async (
     block: LessonExperienceBlock,
     eventType: Parameters<typeof sourceProgressService.recordEvent>[0]['eventType'],
@@ -760,21 +775,48 @@ export function Lesson() {
         },
         idempotencyKey: `lesson-reader:${user.id}:${sourceRef}:${block.id}:${eventType}`,
       })
-      setLessonSourceProgress(rows => [
-        ...rows.filter(row => !(row.source_ref === state.sourceRef && row.source_section_ref === state.sourceSectionRef)),
-        {
-          source_ref: state.sourceRef,
-          source_section_ref: state.sourceSectionRef,
-          current_state: state.currentState,
-          completed_event_types: state.completedEventTypes,
-          last_event_at: state.lastEventAt,
-        },
-      ])
+      upsertLessonSourceProgress(state)
     } catch (err) {
       logError({ page: 'lesson-reader-v2', action: 'record-source-progress', error: err })
       notifications.show({ color: 'red', title: T.common.error, message: T.lessons.failedToSaveProgress })
     }
-  }, [lesson, user, T.common.error, T.lessons.failedToSaveProgress])
+  }, [lesson, user, T.common.error, T.lessons.failedToSaveProgress, upsertLessonSourceProgress])
+
+  const handleLessonExposureProgress = useCallback(async (
+    block: LessonExperienceBlock,
+    exposureKind: LessonExposureKind,
+  ) => {
+    if (!user || !lesson) return
+    const sourceRef = block.sourceRefs[0] ?? block.sourceRef
+    try {
+      const state = await sourceProgressService.recordEvent(sourceProgressEventForLessonExposure({
+        userId: user.id,
+        lessonId: lesson.id,
+        sourceRef,
+        sourceSectionRef: block.id,
+        exposureKind,
+        occurredAt: new Date().toISOString(),
+        metadata: {
+          blockId: block.id,
+          blockKind: block.kind,
+          capabilityKeyRefs: block.capabilityKeyRefs,
+        },
+      }))
+      upsertLessonSourceProgress(state)
+
+      const toastKey = `${lesson.id}:practice-ready`
+      if (block.capabilityKeyRefs.length > 0 && !practiceReadyToastShownRef.current.has(toastKey)) {
+        practiceReadyToastShownRef.current.add(toastKey)
+        notifications.show({
+          color: 'teal',
+          message: T.lessons.readyToPracticeToast(lesson.order_index),
+        })
+      }
+    } catch (err) {
+      logError({ page: 'lesson-reader-v2', action: 'record-lesson-exposure', error: err })
+      notifications.show({ color: 'red', title: T.common.error, message: T.lessons.failedToSaveProgress })
+    }
+  }, [lesson, user, T.common.error, T.lessons, upsertLessonSourceProgress])
 
   const readerExperience = useMemo(
     () => lesson ? buildLessonExperience({ lesson, pageBlocks: lessonPageBlocks }) : null,
@@ -833,6 +875,7 @@ export function Lesson() {
           navigate(`/session?lesson=${lessonId}`)
         }}
         onSourceProgress={handleReaderSourceProgress}
+        onLessonExposureProgress={handleLessonExposureProgress}
       />
     )
   }

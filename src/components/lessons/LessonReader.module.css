@@ -132,6 +132,11 @@
   white-space: pre-wrap;
 }
 
+.block audio {
+  width: 100%;
+  margin-top: 18px;
+}
+
 .blockTopline {
   display: flex;
   justify-content: space-between;

@@ -218,6 +218,7 @@ export const nl = {
     statusLater: 'Later',
     actionOpenLesson: 'Open les',
     actionContinue: 'Doorgaan',
+    readyToPracticeToast: (lessonOrder: number) => `Les ${lessonOrder} is klaar om te oefenen.`,
   },
   progress: {
     title: 'Voortgang',
@@ -595,6 +596,7 @@ export const en: typeof nl = {
     statusLater: 'Later',
     actionOpenLesson: 'Open lesson',
     actionContinue: 'Continue',
+    readyToPracticeToast: (lessonOrder: number) => `Lesson ${lessonOrder} is ready to practice.`,
   },
   progress: {
     title: 'Progress',

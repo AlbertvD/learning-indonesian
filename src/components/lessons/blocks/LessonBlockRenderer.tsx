@@ -1,4 +1,7 @@
+import { useRef } from 'react'
 import type { LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
+import type { LessonExposureKind } from '@/lib/lessons/lessonExposureProgress'
+import { isMeaningfulDialogueAudio, isMeaningfulGrammarAudio } from '@/lib/lessons/lessonReadiness'
 import type { SourceProgressState } from '@/services/sourceProgressService'
 import classes from '../LessonReader.module.css'
 
@@ -7,6 +10,7 @@ interface LessonBlockRendererProps {
   progress?: SourceProgressState | null
   onProgress: (block: LessonExperienceBlock) => void
   onPractice: (block: LessonExperienceBlock) => void
+  onLessonExposureProgress?: (block: LessonExperienceBlock, exposureKind: LessonExposureKind) => void
 }
 
 function textFromPayload(payload: Record<string, unknown>): string {
@@ -20,6 +24,30 @@ function itemsFromPayload(payload: Record<string, unknown>): Array<{ indonesian?
   if (Array.isArray(payload.items)) return payload.items as Array<{ indonesian?: string; dutch?: string }>
   if (Array.isArray(payload.lines)) return payload.lines as Array<{ text?: string; translation?: string }>
   return []
+}
+
+function audioUrlFromPayload(payload: Record<string, unknown>): string | null {
+  if (typeof payload.audioUrl === 'string') return payload.audioUrl
+  if (typeof payload.audio_url === 'string') return payload.audio_url
+  return null
+}
+
+function payloadType(block: LessonExperienceBlock): string | null {
+  return typeof block.payload.type === 'string' ? block.payload.type : null
+}
+
+function exposureKindForText(block: LessonExperienceBlock): LessonExposureKind | null {
+  const type = payloadType(block)
+  if (type === 'grammar') return 'grammar_text'
+  if (type === 'dialogue' || block.kind === 'dialogue_card') return 'dialogue_text'
+  return null
+}
+
+function exposureKindForAudio(block: LessonExperienceBlock): LessonExposureKind | null {
+  const type = payloadType(block)
+  if (type === 'grammar') return 'grammar_audio'
+  if (type === 'dialogue' || block.kind === 'dialogue_card') return 'dialogue_audio'
+  return null
 }
 
 function labelForKind(kind: LessonExperienceBlock['kind']): string {
@@ -42,10 +70,39 @@ function labelForStatus(status: string): string {
   return status
 }
 
-export function LessonBlockRenderer({ block, progress, onProgress, onPractice }: LessonBlockRendererProps) {
+export function LessonBlockRenderer({ block, progress, onProgress, onPractice, onLessonExposureProgress }: LessonBlockRendererProps) {
   const status = progress?.currentState ?? 'not_started'
   const items = itemsFromPayload(block.payload)
   const body = textFromPayload(block.payload)
+  const audioUrl = audioUrlFromPayload(block.payload)
+  const audioExposureKind = exposureKindForAudio(block)
+  const audioExposureRecordedRef = useRef(false)
+
+  const maybeRecordAudioExposure = (audio: HTMLAudioElement) => {
+    if (!audioExposureKind || !onLessonExposureProgress || audioExposureRecordedRef.current) return
+    const input = {
+      durationSeconds: audio.duration,
+      playedSeconds: audio.currentTime,
+      completed: audio.ended || (Number.isFinite(audio.duration) && audio.duration > 0 && audio.currentTime >= audio.duration),
+    }
+    const isMeaningful = audioExposureKind === 'grammar_audio'
+      ? isMeaningfulGrammarAudio(input)
+      : isMeaningfulDialogueAudio(input)
+    if (!isMeaningful) return
+
+    audioExposureRecordedRef.current = true
+    onLessonExposureProgress(block, audioExposureKind)
+  }
+
+  const handleSectionProgress = () => {
+    const textExposureKind = exposureKindForText(block)
+    if (textExposureKind && onLessonExposureProgress) {
+      onLessonExposureProgress(block, textExposureKind)
+      return
+    }
+
+    onProgress(block)
+  }
 
   if (block.kind === 'lesson_hero') {
     return (
@@ -94,6 +151,16 @@ export function LessonBlockRenderer({ block, progress, onProgress, onPractice }:
         <span>{labelForStatus(status)}</span>
       </div>
       <h2 id={`${block.id}-title`}>{block.title}</h2>
+      {audioUrl && (
+        <audio
+          controls
+          data-testid={`lesson-block-audio-${block.id}`}
+          src={audioUrl}
+          onLoadedMetadata={event => maybeRecordAudioExposure(event.currentTarget)}
+          onTimeUpdate={event => maybeRecordAudioExposure(event.currentTarget)}
+          onEnded={event => maybeRecordAudioExposure(event.currentTarget)}
+        />
+      )}
       {body && <p className={classes.bodyText}>{body}</p>}
       {items.length > 0 && (
         <div className={classes.itemGrid}>
@@ -105,7 +172,7 @@ export function LessonBlockRenderer({ block, progress, onProgress, onPractice }:
           ))}
         </div>
       )}
-      <button type="button" onClick={() => onProgress(block)}>
+      <button type="button" onClick={handleSectionProgress}>
         {block.sourceProgressEvent === 'pattern_noticing_seen' ? 'Ik heb dit patroon opgemerkt' : 'Markeer sectie als gezien'}
       </button>
     </section>
