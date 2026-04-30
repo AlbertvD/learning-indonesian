@@ -167,9 +167,21 @@ describe('content unit staging', () => {
     expect(validateCapabilityStaging({ capabilities: capabilityPlan.capabilities, contentUnits })).toEqual([])
     expect(lessonPageBlocks).toEqual(expect.arrayContaining([
       expect.objectContaining({
-        block_key: 'lesson-1-morphology-men-baca-membaca-exposure',
-        source_refs: ['lesson-1/morphology/meN-baca-membaca', 'lesson-1/pattern-men-active'],
+        block_key: 'lesson-1-morphology',
+        block_kind: 'section',
+        content_unit_slugs: expect.arrayContaining(['morphology-men-baca-membaca']),
+        source_refs: expect.arrayContaining([
+          'lesson-1',
+          'lesson-1/morphology/meN-baca-membaca',
+          'lesson-1/pattern-men-active',
+        ]),
         source_progress_event: 'pattern_noticing_seen',
+        payload_json: expect.objectContaining({
+          type: 'morphology',
+          items: expect.arrayContaining([
+            expect.objectContaining({ indonesian: 'membaca' }),
+          ]),
+        }),
       }),
     ]))
   })
