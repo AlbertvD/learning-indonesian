@@ -1990,6 +1990,240 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh-satu:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh-satu:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh-satu",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh-satu:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh-satu:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh-satu",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh-satu:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh-satu:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh-satu",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh-satu:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh-satu:l1_to_id_choice:l1_to_id:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh-satu",
+      "capabilityType": "l1_to_id_choice",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh-satu:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh-satu:l1_to_id_choice:l1_to_id:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh-satu",
+      "capabilityType": "l1_to_id_choice",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh-satu:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh-satu:meaning_recall:id_to_l1:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh-satu",
+      "capabilityType": "meaning_recall",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh-satu:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh-satu:meaning_recall:id_to_l1:text:nl",
+    "artifact_kind": "accepted_answers:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh-satu",
+      "capabilityType": "meaning_recall",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh-satu:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh-satu:text_recognition:id_to_l1:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh-satu",
+      "capabilityType": "text_recognition",
+      "skillType": "recognition",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh-satu:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh-satu:text_recognition:id_to_l1:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh-satu",
+      "capabilityType": "text_recognition",
+      "skillType": "recognition",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh:l1_to_id_choice:l1_to_id:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh",
+      "capabilityType": "l1_to_id_choice",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh:l1_to_id_choice:l1_to_id:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh",
+      "capabilityType": "l1_to_id_choice",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh:meaning_recall:id_to_l1:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh",
+      "capabilityType": "meaning_recall",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh:meaning_recall:id_to_l1:text:nl",
+    "artifact_kind": "accepted_answers:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh",
+      "capabilityType": "meaning_recall",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh:text_recognition:id_to_l1:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh",
+      "capabilityType": "text_recognition",
+      "skillType": "recognition",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dua-puluh:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua-puluh:text_recognition:id_to_l1:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/dua-puluh",
+      "capabilityType": "text_recognition",
+      "skillType": "recognition",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/duduk:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/duduk:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -2451,6 +2685,123 @@ export const exerciseAssets = [
     "quality_status": "draft",
     "payload_json": {
       "sourceRef": "learning_items/harus",
+      "capabilityType": "text_recognition",
+      "skillType": "recognition",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kan:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kan:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/kan",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kan:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kan:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/kan",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kan:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kan:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/kan",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kan:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kan:l1_to_id_choice:l1_to_id:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/kan",
+      "capabilityType": "l1_to_id_choice",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kan:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kan:l1_to_id_choice:l1_to_id:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/kan",
+      "capabilityType": "l1_to_id_choice",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kan:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kan:meaning_recall:id_to_l1:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/kan",
+      "capabilityType": "meaning_recall",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kan:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/kan:meaning_recall:id_to_l1:text:nl",
+    "artifact_kind": "accepted_answers:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/kan",
+      "capabilityType": "meaning_recall",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kan:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kan:text_recognition:id_to_l1:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/kan",
+      "capabilityType": "text_recognition",
+      "skillType": "recognition",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kan:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kan:text_recognition:id_to_l1:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/kan",
       "capabilityType": "text_recognition",
       "skillType": "recognition",
       "placeholder": true,
@@ -3270,6 +3621,123 @@ export const exerciseAssets = [
     "quality_status": "draft",
     "payload_json": {
       "sourceRef": "learning_items/kota",
+      "capabilityType": "text_recognition",
+      "skillType": "recognition",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lah:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lah:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/lah",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lah:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lah:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/lah",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lah:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/lah:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/lah",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lah:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lah:l1_to_id_choice:l1_to_id:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/lah",
+      "capabilityType": "l1_to_id_choice",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lah:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lah:l1_to_id_choice:l1_to_id:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/lah",
+      "capabilityType": "l1_to_id_choice",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lah:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lah:meaning_recall:id_to_l1:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/lah",
+      "capabilityType": "meaning_recall",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lah:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/lah:meaning_recall:id_to_l1:text:nl",
+    "artifact_kind": "accepted_answers:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/lah",
+      "capabilityType": "meaning_recall",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lah:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lah:text_recognition:id_to_l1:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/lah",
+      "capabilityType": "text_recognition",
+      "skillType": "recognition",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lah:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lah:text_recognition:id_to_l1:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/lah",
       "capabilityType": "text_recognition",
       "skillType": "recognition",
       "placeholder": true,
@@ -6312,6 +6780,123 @@ export const exerciseAssets = [
     "quality_status": "draft",
     "payload_json": {
       "sourceRef": "learning_items/sepeda",
+      "capabilityType": "text_recognition",
+      "skillType": "recognition",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sepuluh:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sepuluh:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/sepuluh",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sepuluh:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sepuluh:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/sepuluh",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sepuluh:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/sepuluh:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/sepuluh",
+      "capabilityType": "form_recall",
+      "skillType": "form_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sepuluh:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sepuluh:l1_to_id_choice:l1_to_id:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/sepuluh",
+      "capabilityType": "l1_to_id_choice",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sepuluh:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sepuluh:l1_to_id_choice:l1_to_id:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/sepuluh",
+      "capabilityType": "l1_to_id_choice",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sepuluh:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sepuluh:meaning_recall:id_to_l1:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/sepuluh",
+      "capabilityType": "meaning_recall",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sepuluh:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/sepuluh:meaning_recall:id_to_l1:text:nl",
+    "artifact_kind": "accepted_answers:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/sepuluh",
+      "capabilityType": "meaning_recall",
+      "skillType": "meaning_recall",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sepuluh:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sepuluh:text_recognition:id_to_l1:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/sepuluh",
+      "capabilityType": "text_recognition",
+      "skillType": "recognition",
+      "placeholder": true,
+      "reason": "Generated scaffold only; a reviewed typed artifact must approve this."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sepuluh:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sepuluh:text_recognition:id_to_l1:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "draft",
+    "payload_json": {
+      "sourceRef": "learning_items/sepuluh",
       "capabilityType": "text_recognition",
       "skillType": "recognition",
       "placeholder": true,
