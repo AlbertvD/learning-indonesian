@@ -89,13 +89,16 @@ column; computing it from `base_text` matches projection).
 | `accepted_answers:id` | `[learning_items.base_text]` plus all `item_answer_variants.variant_text` where `language='id'` | `{ values, reviewedBy, reviewedAt }` |
 | `accepted_answers:l1` | All `item_meanings.translation_text` where `translation_language='nl'`, plus all `item_answer_variants.variant_text` where `language='nl'`. Split each value by the regex `/\s+\/\s+|\s*;\s*/` to match `appendUniqueDelimited` (`scripts/lib/content-pipeline-output.ts:144-155`) — otherwise auto-filled answers and projection-derived answers diverge. | `{ values, reviewedBy, reviewedAt }` |
 
-**Skip rule for items with no NL data**: pre-flight query to count
-`dialogue_chunk` rows that have any `item_meanings` row. If most
-`dialogue_chunk` rows lack `item_meanings`, switch the `meaning:l1` source
-for `item_type='dialogue_chunk'` to `item_contexts.translation_text` joined
-via `learning_item_id` where `context_type='dialogue'`. If neither source
-has a translation, leave the artifact draft (a reviewer will fill it
-later). Do not fabricate.
+**Skip rule for items with no NL data**: per-row, not global. For each
+`dialogue_chunk` capability:
+1. Try `item_meanings` where `learning_item_id = item.id` and
+   `translation_language='nl'`.
+2. If no rows, fall back to `item_contexts.translation_text` joined via
+   `learning_item_id` where `context_type='dialogue'`.
+3. If still no translation, leave the artifact draft + log reason.
+
+Do not fabricate translations. Per-row choice avoids the "if most ..."
+ambiguity flagged by review.
 
 **Skip rule for inactive items**: if `learning_items.is_active=false`,
 skip every artifact for that capability — do not resurrect deactivated
@@ -109,7 +112,7 @@ look up `grammar_patterns` where `slug = <slug>`.
 | `artifact_kind` | Source | Payload shape |
 |---|---|---|
 | `pattern_explanation:l1` | `grammar_patterns.short_explanation`. If length < 20 chars, emit the payload but log a WARNING — short explanations are likely one-liners that a reviewer should expand. | `{ value, reviewedBy, reviewedAt }` |
-| `pattern_example` | **Verified 2026-04-30: `item_context_grammar_patterns` is empty (0 rows) and `grammar_patterns.examples` column does not exist.** Source is `lesson_sections.content->'categories'[*]->'examples'` for the lesson section that introduces the pattern, joined via `grammar_patterns.introduced_by_lesson_id`. Match category by title that contains/equals the grammar_pattern's `name` (or its slug). Pick the first example whose `indonesian` field is non-empty. Format payload as `{ value: '<indonesian> — <dutch>', ... }` so the renderer's example display works. If no matching example, leave draft. | `{ value, reviewedBy, reviewedAt }` |
+| `pattern_example` | **Verified 2026-04-30: `item_context_grammar_patterns` is empty (0 rows) and `grammar_patterns.examples` column does not exist.** Source is `lesson_sections.content->'categories'[*]->'examples'` for the lesson section that introduces the pattern, joined via `grammar_patterns.introduced_by_lesson_id`. **Caveat: pattern↔category is 1:N** (lesson 1 has 7 patterns mapped across 3 categories). Use this fallback chain: (1) Title match — pick the category whose `title` matches the pattern's `name` or `slug` (case-insensitive, word-boundary substring). (2) Keyword match within a matched category — if multiple patterns share a category, pick the example whose `dutch` parenthetical contains a slug-derived keyword from the pattern (e.g. pattern slug `verb-no-conjugation` → look for "vervoeging" in `dutch`). (3) Lesson-wide fallback — if no category match, pick the first example from any category in the same lesson's grammar section, log WARNING. (4) Leave draft + log if no examples in any category. Format payload as `{ value: '<indonesian> — <dutch>', ... }`. | `{ value, reviewedBy, reviewedAt }` |
 
 ### 4.3 Affixed-form-pair capabilities (source_kind = `affixed_form_pair`)
 
@@ -212,6 +215,23 @@ were filled by which version, in case the source-of-truth mapping changes.
    DB state with placeholders. This makes the staging file the source of
    truth (matching the existing pilot pattern from `35139c5`) and avoids
    the need for a guard in publish. Commit the regenerated staging files.
+
+   **Determinism**: sort the `exerciseAssets` array by `asset_key`
+   ascending before serialising. Use stable 2-space JSON indentation
+   matching the existing TS-export shape. Re-runs against unchanged
+   source data must produce a byte-identical file (asserted in tests).
+
+   **Format**: keep TS export (`export const exerciseAssets = [...]`)
+   to match the existing pilot. Files will balloon to ~600 KB per lesson
+   (~5,800 artifacts × ~12 lines ≈ 70k lines across 9 files). The diff
+   is mechanical and committed once. If file size becomes a problem
+   later, a follow-up slice can move payloads to a sibling JSON sourced
+   by `index.ts`.
+
+10. **Exit code**: the script exits with **non-zero** if any unresolved
+    CRITICAL was logged (slug collision that couldn't be disambiguated,
+    payload that fails `hasConcreteArtifactPayload`, etc.). This lets
+    the runbook + CI catch authoring drift before promotion runs.
 ```
 
 ## 6. Idempotency
@@ -358,6 +378,16 @@ The test file should cover the pure planning function (no DB):
 - **Auto-fill produces a payload that fails `hasConcreteArtifactPayload`**
   (e.g. empty trimmed value) → does not flip to approved; logs CRITICAL.
   This is a defense-in-depth assertion against silent payload-shape drift.
+- **Pattern whose lesson has categories but none match by title or by
+  keyword** → falls through to the lesson-wide first example with a
+  WARNING; capability still becomes promotable. Test asserts the
+  fallback fires and the warning is recorded.
+- **Step 9 determinism** → re-running the script against unchanged source
+  produces a byte-identical `exercise-assets.ts` (sorted by `asset_key`,
+  stable indentation). Test runs the regenerator twice and asserts no
+  diff between the two outputs.
+- **Exit code on unresolved CRITICAL** → script returns non-zero when
+  any capability or artifact was skipped due to a CRITICAL condition.
 
 The DB-touching adapter is integration-tested with a fixture-loaded
 mocked Supabase client.
