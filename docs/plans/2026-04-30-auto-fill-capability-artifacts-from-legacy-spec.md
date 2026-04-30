@@ -198,17 +198,24 @@ were filled by which version, in case the source-of-truth mapping changes.
 7. Apply updates in chunks of 50 rows (Kong header buffer limit), each
    chunk wrapped in `BEGIN; ...UPDATEs; COMMIT;` so a mid-run failure
    leaves a consistent state. Use a single Postgres transaction per
-   chunk:
+   chunk. **Note**: the DB column is `artifact_json` (verified
+   2026-04-30 against `\d indonesian.capability_artifacts`); the
+   staging file shape uses `payload_json`. The script must map staging
+   `payload_json` → DB `artifact_json` when writing.
 
    ```sql
    begin;
    update indonesian.capability_artifacts
-     set payload_json = $new_payload,
-         quality_status = 'approved'
+     set artifact_json = $new_payload,
+         quality_status = 'approved',
+         updated_at = now()
      where id = $artifact_id;
    -- ... up to 50 updates ...
    commit;
    ```
+
+   The unique constraint is `(capability_id, artifact_kind,
+   artifact_fingerprint)`. UPDATE-by-id avoids constraint conflicts.
 
 8. After completion, print a JSON report with per-lesson + per-kind
    counts: filled, skipped, error, plus:
@@ -239,7 +246,8 @@ were filled by which version, in case the source-of-truth mapping changes.
 
    ```text
    For each lesson, load existing exercise-assets.ts as an array.
-   Build merged map keyed by asset_key:
+   If the file does not exist, treat as []. Then build merged map
+   keyed by asset_key:
      for each existing entry:
        if entry.quality_status == 'approved' AND
           entry.payload_json.reviewedBy != 'auto-from-legacy-db':
