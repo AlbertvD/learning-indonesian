@@ -111,8 +111,8 @@ look up `grammar_patterns` where `slug = <slug>`.
 
 | `artifact_kind` | Source | Payload shape |
 |---|---|---|
-| `pattern_explanation:l1` | `grammar_patterns.short_explanation`. If length < 20 chars, emit the payload but log a WARNING — short explanations are likely one-liners that a reviewer should expand. | `{ value, reviewedBy, reviewedAt }` |
-| `pattern_example` | **Verified 2026-04-30: `item_context_grammar_patterns` is empty (0 rows) and `grammar_patterns.examples` column does not exist.** Source is `lesson_sections.content->'categories'[*]->'examples'` for the lesson section that introduces the pattern, joined via `grammar_patterns.introduced_by_lesson_id`. **Caveat: pattern↔category is 1:N** (lesson 1 has 7 patterns mapped across 3 categories). Use this fallback chain: (1) Title match — pick the category whose `title` matches the pattern's `name` or `slug` (case-insensitive, word-boundary substring). (2) Keyword match within a matched category — if multiple patterns share a category, pick the example whose `dutch` parenthetical contains a slug-derived keyword from the pattern (e.g. pattern slug `verb-no-conjugation` → look for "vervoeging" in `dutch`). (3) Lesson-wide fallback — if no category match, pick the first example from any category in the same lesson's grammar section, log WARNING. (4) Leave draft + log if no examples in any category. Format payload as `{ value: '<indonesian> — <dutch>', ... }`. | `{ value, reviewedBy, reviewedAt }` |
+| `pattern_explanation:l1` | `grammar_patterns.short_explanation`. If length < 20 chars, emit the payload but log a WARNING — short explanations are likely one-liners that a reviewer should expand. **The WARNING is informational and does not block promotion**; `hasConcreteArtifactPayload` (`scripts/lib/content-pipeline-output.ts:457-464`) only checks `nonEmptyString(value)`, no minimum length. The artifact still flips to `approved`. | `{ value, reviewedBy, reviewedAt }` |
+| `pattern_example` | **Verified 2026-04-30: `item_context_grammar_patterns` is empty (0 rows) and `grammar_patterns.examples` column does not exist.** Source is `lesson_sections.content->'categories'[*]->'examples'` for the lesson section that introduces the pattern, joined via `grammar_patterns.introduced_by_lesson_id`. **Caveat: pattern↔category is 1:N** (lesson 1 has 7 patterns mapped across 3 categories). Use this fallback chain: (1) **Title match** — pick the category whose `title` matches the pattern's `name` (Dutch) or `slug` (English), case-insensitive, word-boundary substring. (2) **Keyword match within the chosen category, when multiple patterns share that category** — tokenize `pattern.name` (Dutch; strip any Indonesian/parenthetical suffixes, lowercase, drop stopwords like `de/het/een/met/zonder/of`); pick the first example in the category whose `dutch` field contains any pattern.name token as a substring. *Do not derive keywords from the slug — slugs are English and would not match the Dutch example text.* (3) **Lesson-wide fallback** — fires when (a) step 1 found no matching category at all, OR (b) step 1 found a category but step 2 found no keyword match within it. Pick the first non-empty example from any category in the same lesson's grammar section; log WARNING. (4) Leave draft + log if no examples in any category. Format payload as `{ value: '<indonesian> — <dutch>', ... }`. | `{ value, reviewedBy, reviewedAt }` |
 
 ### 4.3 Affixed-form-pair capabilities (source_kind = `affixed_form_pair`)
 
@@ -149,7 +149,10 @@ were filled by which version, in case the source-of-truth mapping changes.
 ## 5. Algorithm
 
 ```text
-1. Connect with SUPABASE_SERVICE_KEY.
+1. Connect with SUPABASE_SERVICE_KEY via the supabase-js service-role
+   client. Service-role bypasses RLS by design — there is no WITH CHECK
+   policy on capability_artifacts that gates UPDATEs against role.
+   Direct UPDATE is safe.
 2. Load all draft artifacts + their parent capabilities in a single join:
 
    select a.id, a.artifact_kind, a.payload_json, a.capability_id,
@@ -160,12 +163,14 @@ were filled by which version, in case the source-of-truth mapping changes.
      and (a.payload_json->>'placeholder')::boolean = true;
 
 3. **Pre-flight: detect slug collisions.** Run a query that materializes
-   `stableSlug(base_text)` per `learning_items` row and lists any slug
-   that occurs more than once across active items (e.g., `apa`/`apa?`,
-   `ya`/`ya!`). Build a colliding-slug set; capabilities whose source_ref
-   slug is in this set must be resolved by lesson scope (step 4a below).
-   If any colliding capability cannot be unambiguously resolved, log
-   CRITICAL and skip — do NOT guess.
+   `stableSlug(base_text)` per `learning_items` row (732 active rows)
+   and lists any slug that occurs more than once across active items
+   (e.g., `apa`/`apa?`, `ya`/`ya!`). Use the service-role PostgREST
+   client; the result fits within PostgREST's default 1000-row cap.
+   Build a colliding-slug set; capabilities whose source_ref slug is in
+   this set must be resolved by lesson scope (step 4a below). If any
+   colliding capability cannot be unambiguously resolved, log CRITICAL
+   and skip — do NOT guess.
 
 4. Group rows by source_ref to amortize legacy lookups.
 
@@ -206,8 +211,16 @@ were filled by which version, in case the source-of-truth mapping changes.
    ```
 
 8. After completion, print a JSON report with per-lesson + per-kind
-   counts: filled, skipped, error, plus a top-level `slugCollisions` list
-   (the colliding-slug set from step 3 with resolutions).
+   counts: filled, skipped, error, plus:
+     - `slugCollisions`: the colliding-slug set from step 3 with
+       resolutions (which slug → which capability via which lesson scope).
+     - `dialogueChunkResidual`: per-lesson count of dialogue_chunk
+       capabilities that stayed draft because neither `item_meanings`
+       nor `item_contexts.translation_text` had Dutch content. Lessons
+       5/7/8 are expected to have non-zero residuals here per the
+       lesson-content-audio-migration-status doc; surfacing them helps
+       the runbook know which lessons still need authoring before all
+       capabilities are practiceable.
 
 9. **Write the auto-filled payloads back to staging
    (`scripts/data/staging/lesson-<N>/exercise-assets.ts`)** so a future
@@ -216,10 +229,34 @@ were filled by which version, in case the source-of-truth mapping changes.
    truth (matching the existing pilot pattern from `35139c5`) and avoids
    the need for a guard in publish. Commit the regenerated staging files.
 
-   **Determinism**: sort the `exerciseAssets` array by `asset_key`
-   ascending before serialising. Use stable 2-space JSON indentation
-   matching the existing TS-export shape. Re-runs against unchanged
-   source data must produce a byte-identical file (asserted in tests).
+   **Merge with manually-reviewed entries** — the staging regenerator
+   must NOT silently overwrite the existing manually-reviewed pilot
+   rows (e.g. the 7 akhir entries in
+   `scripts/data/staging/lesson-1/exercise-assets.ts:1-60` carrying
+   `reviewedBy: 'manual-release-smoke'`). The DB-side filter
+   (`payload_json.placeholder=true`) protects manual entries in the
+   DB; the staging file needs the equivalent guard. Algorithm:
+
+   ```text
+   For each lesson, load existing exercise-assets.ts as an array.
+   Build merged map keyed by asset_key:
+     for each existing entry:
+       if entry.quality_status == 'approved' AND
+          entry.payload_json.reviewedBy != 'auto-from-legacy-db':
+         keep entry verbatim — manually reviewed, untouched
+       else:
+         drop (will be re-emitted by auto-fill if applicable)
+     for each auto-filled entry:
+       if asset_key not already in merged map (i.e. not protected above):
+         add to merged map
+   Sort merged map values by asset_key ascending, write to staging.
+   ```
+
+   **Determinism**: sort the merged `exerciseAssets` array by
+   `asset_key` ascending before serialising. Use stable 2-space JSON
+   indentation matching the existing TS-export shape. Re-runs against
+   unchanged source data must produce a byte-identical file (asserted
+   in tests).
 
    **Format**: keep TS export (`export const exerciseAssets = [...]`)
    to match the existing pilot. Files will balloon to ~600 KB per lesson
@@ -346,6 +383,12 @@ the auto-filled state.
 
 ## 11. Tests
 
+**Test infrastructure**: pure planning-function tests use Vitest with
+in-memory fixtures (no Supabase mock). Only the DB-touching adapter
+(load draft artifacts + apply chunked updates) is integration-tested
+with a fixture-loaded mocked Supabase client. The staging write-back
+merge is also pure and can be unit-tested with in-memory fixtures.
+
 The test file should cover the pure planning function (no DB):
 
 - Item with single NL meaning → fills `meaning:l1` / `meaning:nl` / `accepted_answers:l1`.
@@ -388,6 +431,21 @@ The test file should cover the pure planning function (no DB):
   diff between the two outputs.
 - **Exit code on unresolved CRITICAL** → script returns non-zero when
   any capability or artifact was skipped due to a CRITICAL condition.
+- **Staging merge preserves manually-reviewed entries** → when an
+  existing `exercise-assets.ts` has an entry with
+  `quality_status='approved'` and `payload_json.reviewedBy !=
+  'auto-from-legacy-db'` (e.g. the akhir pilot's
+  `reviewedBy: 'manual-release-smoke'`), the regenerated file keeps
+  that row verbatim. Auto-derived entries with the same `asset_key`
+  are dropped from the auto-fill payload. Test fixture: 1 manual
+  + 1 auto-target row, run regenerator, assert manual row
+  preserved + auto row replaces only the draft.
+- **Pattern keyword tokenization** uses the pattern's Dutch `name`,
+  not the slug. Test fixture: pattern with `name='Werkwoord (kata
+  kerja)'`, slug `'verb-no-conjugation'` → tokenization yields
+  `['werkwoord']` (parenthetical stripped, lowercased, stopwords
+  dropped); fallback chain step 2 substring-matches `werkwoord`
+  against examples'`dutch` field correctly.
 
 The DB-touching adapter is integration-tested with a fixture-loaded
 mocked Supabase client.
