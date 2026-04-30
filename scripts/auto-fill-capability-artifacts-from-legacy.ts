@@ -3,7 +3,11 @@
 //
 // Task 1: pure planning functions (no DB I/O).
 // Task 2: DB adapter — load + chunked transactional updates.
-// Subsequent tasks add the staging merge and CLI entry point.
+// Task 3: staging merge + deterministic write-back.
+// Subsequent task adds the CLI entry point.
+
+import fs from 'node:fs'
+import path from 'node:path'
 
 export const AUTO_FILL_VERSION = '1'
 export const AUTO_FILL_REVIEWED_BY = 'auto-from-legacy-db'
@@ -641,6 +645,100 @@ export async function loadLessonSections(
       content: (row.content as Record<string, unknown> | null) ?? null,
     }),
   )
+}
+
+// ----- Staging merge + write-back (Task 3) -------------------------------
+
+export interface ExerciseAssetEntry {
+  asset_key: string
+  capability_key: string
+  artifact_kind: string
+  quality_status: 'draft' | 'approved' | 'blocked' | 'deprecated'
+  payload_json: Record<string, unknown>
+}
+
+function isAutoFilled(entry: ExerciseAssetEntry): boolean {
+  const reviewedBy = (entry.payload_json as { reviewedBy?: unknown }).reviewedBy
+  return reviewedBy === AUTO_FILL_REVIEWED_BY
+}
+
+function isManuallyReviewed(entry: ExerciseAssetEntry): boolean {
+  return entry.quality_status === 'approved' && !isAutoFilled(entry)
+}
+
+export function mergeWithExistingStaging(
+  existing: ExerciseAssetEntry[],
+  autoFilled: ExerciseAssetEntry[],
+): ExerciseAssetEntry[] {
+  const merged = new Map<string, ExerciseAssetEntry>()
+  // Manual entries are protected — drop drafts and prior auto-fill rows so
+  // the new auto-fill batch can replace them.
+  for (const entry of existing) {
+    if (isManuallyReviewed(entry)) {
+      merged.set(entry.asset_key, entry)
+    }
+  }
+  for (const entry of autoFilled) {
+    if (!merged.has(entry.asset_key)) {
+      merged.set(entry.asset_key, entry)
+    }
+  }
+  return [...merged.values()].sort((a, b) =>
+    a.asset_key < b.asset_key ? -1 : a.asset_key > b.asset_key ? 1 : 0,
+  )
+}
+
+function entryPriority(entry: ExerciseAssetEntry): number {
+  // Higher = wins. Manual approved > auto-fill approved > non-draft other > draft.
+  if (entry.quality_status === 'approved' && !isAutoFilled(entry)) return 4
+  if (entry.quality_status === 'approved') return 3
+  if (entry.quality_status !== 'draft') return 2
+  return 1
+}
+
+export function serializeExerciseAssets(entries: ExerciseAssetEntry[]): string {
+  const dedupe = new Map<string, ExerciseAssetEntry>()
+  for (const entry of entries) {
+    const existing = dedupe.get(entry.asset_key)
+    if (!existing || entryPriority(entry) > entryPriority(existing)) {
+      dedupe.set(entry.asset_key, entry)
+    }
+  }
+  const sorted = [...dedupe.values()].sort((a, b) =>
+    a.asset_key < b.asset_key ? -1 : a.asset_key > b.asset_key ? 1 : 0,
+  )
+  const body = JSON.stringify(sorted, null, 2)
+  return `// Auto-filled by auto-fill-capability-artifacts-from-legacy.ts\nexport const exerciseAssets = ${body}\n`
+}
+
+const STAGING_FILENAME = 'exercise-assets.ts'
+
+const EXERCISE_ASSETS_BODY_RE = /export const exerciseAssets\s*=\s*(\[[\s\S]*?\])\s*;?\s*$/m
+
+export async function readExistingExerciseAssets(stagingDir: string): Promise<ExerciseAssetEntry[]> {
+  const filePath = path.join(stagingDir, STAGING_FILENAME)
+  if (!fs.existsSync(filePath)) return []
+  const source = fs.readFileSync(filePath, 'utf8')
+  const match = EXERCISE_ASSETS_BODY_RE.exec(source)
+  if (!match) return []
+  try {
+    const parsed = JSON.parse(match[1]!)
+    if (!Array.isArray(parsed)) return []
+    return parsed as ExerciseAssetEntry[]
+  } catch {
+    return []
+  }
+}
+
+export async function writeExerciseAssets(
+  stagingDir: string,
+  entries: ExerciseAssetEntry[],
+): Promise<void> {
+  if (!fs.existsSync(stagingDir)) {
+    fs.mkdirSync(stagingDir, { recursive: true })
+  }
+  const filePath = path.join(stagingDir, STAGING_FILENAME)
+  fs.writeFileSync(filePath, serializeExerciseAssets(entries), 'utf8')
 }
 
 export async function applyArtifactUpdatesInChunks(
