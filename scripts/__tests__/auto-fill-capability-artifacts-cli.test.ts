@@ -96,8 +96,19 @@ function fakeClientFromFixtures(fx: FakeFetchedFixtures): FakeClient {
       filters.push({ op: `filter:${op}`, col, value })
       return proxy
     }
+    proxy.range = (from: number, to: number) => {
+      filters.push({ op: 'range', col: 'range', value: [from, to] })
+      return proxy
+    }
     proxy.then = (resolve: (v: { data: unknown[] | null; error: unknown }) => void) => {
-      resolve({ data: fetchTable(table, filters), error: null })
+      const all = fetchTable(table, filters)
+      const rangeFilter = filters.find(f => f.op === 'range')
+      if (rangeFilter) {
+        const [from, to] = rangeFilter.value as [number, number]
+        resolve({ data: all.slice(from, to + 1), error: null })
+      } else {
+        resolve({ data: all, error: null })
+      }
     }
     return proxy
   }

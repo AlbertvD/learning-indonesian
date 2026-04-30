@@ -43,8 +43,19 @@ function fakeClient(opts: FakeOptions) {
       call.filters.push({ op: `filter:${op}`, col, value })
       return builder
     }
+    builder.range = (from: number, to: number) => {
+      call.filters.push({ op: 'range', col: 'range', value: [from, to] })
+      return builder
+    }
     builder.then = (resolve: (v: unknown) => void) => {
-      resolve({ data: dataProvider(), error: null })
+      const all = dataProvider()
+      const rangeFilter = call.filters.find(f => f.op === 'range')
+      if (rangeFilter) {
+        const [from, to] = rangeFilter.value as [number, number]
+        resolve({ data: all.slice(from, to + 1), error: null })
+      } else {
+        resolve({ data: all, error: null })
+      }
     }
     return builder
   }
@@ -166,8 +177,8 @@ describe('loadDraftArtifactsWithCapability', () => {
 })
 
 describe('loadAnswerVariants', () => {
-  it('chunks itemIds into 200-id batches and filters language=nl', async () => {
-    const itemIds = Array.from({ length: 450 }, (_, i) => `item-${i}`)
+  it('chunks itemIds into 50-id batches (Kong URI buffer limit)', async () => {
+    const itemIds = Array.from({ length: 130 }, (_, i) => `item-${i}`)
     const fake = fakeClient({
       answerVariantRows: [{
         learning_item_id: 'item-1',
@@ -176,13 +187,13 @@ describe('loadAnswerVariants', () => {
       }],
     })
     const rows = await loadAnswerVariants(fake as never, itemIds)
-    expect(rows.length).toBe(3) // 1 row × 3 chunks (200/200/50)
+    expect(rows.length).toBe(3) // 1 row × 3 chunks (50/50/30)
     expect(fake.queries).toHaveLength(3)
     for (const q of fake.queries) {
       expect(q.table).toBe('item_answer_variants')
       const inFilter = q.filters.find(f => f.op === 'in' && f.col === 'learning_item_id')
       expect(inFilter).toBeTruthy()
-      expect((inFilter!.value as string[]).length).toBeLessThanOrEqual(200)
+      expect((inFilter!.value as string[]).length).toBeLessThanOrEqual(50)
     }
   })
 

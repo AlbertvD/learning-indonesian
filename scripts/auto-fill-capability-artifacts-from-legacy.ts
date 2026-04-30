@@ -440,10 +440,13 @@ type SupabaseQueryBuilder = {
   eq?: (col: string, value: unknown) => SupabaseQueryBuilder
   in?: (col: string, values: unknown[]) => SupabaseQueryBuilder
   filter?: (col: string, op: string, value: unknown) => SupabaseQueryBuilder
+  range?: (from: number, to: number) => SupabaseQueryBuilder
   then?: (resolve: (v: { data: unknown[] | null; error: unknown }) => void) => void
 }
 
-const PG_IN_CHUNK_SIZE = 200
+const PG_PAGE_SIZE = 1000
+
+const PG_IN_CHUNK_SIZE = 50
 
 function db(client: SupabaseLike) {
   return client.schema('indonesian')
@@ -478,33 +481,43 @@ export function detectSlugCollisions(items: LearningItemRow[]): Map<string, Lear
 export async function loadDraftArtifactsWithCapability(
   client: SupabaseLike,
 ): Promise<DraftArtifactRow[]> {
-  const builder = db(client).from('capability_artifacts') as SupabaseQueryBuilder
-  let q = builder.select!(`
-    id, capability_id, artifact_kind, artifact_json,
-    capability:learning_capabilities!inner(canonical_key, source_kind, source_ref, capability_type)
-  `)
-  q = q.eq!('quality_status', 'draft')
-  q = q.filter!('artifact_json->>placeholder', 'eq', 'true')
-  const { data, error } = await new Promise<{ data: unknown[] | null; error: unknown }>(
-    resolve => q.then!(resolve),
-  )
-  if (error) throw error
-  const rows = (data ?? []) as Array<Record<string, unknown>>
-  return rows.map(row => {
-    const cap = row.capability as Record<string, unknown> | null
-    return {
-      id: String(row.id),
-      capabilityId: String(row.capability_id),
-      artifactKind: String(row.artifact_kind),
-      artifactJson: (row.artifact_json as Record<string, unknown>) ?? {},
-      capability: {
-        canonicalKey: String(cap?.canonical_key ?? ''),
-        sourceKind: String(cap?.source_kind ?? ''),
-        sourceRef: String(cap?.source_ref ?? ''),
-        capabilityType: String(cap?.capability_type ?? ''),
-      },
+  const out: DraftArtifactRow[] = []
+  let offset = 0
+  // Page through PostgREST's default 1000-row cap; embedded join keeps the
+  // payload manageable while still giving us source metadata in one query.
+  while (true) {
+    const builder = db(client).from('capability_artifacts') as SupabaseQueryBuilder
+    let q = builder.select!(`
+      id, capability_id, artifact_kind, artifact_json,
+      capability:learning_capabilities!inner(canonical_key, source_kind, source_ref, capability_type)
+    `)
+    q = q.eq!('quality_status', 'draft')
+    q = q.filter!('artifact_json->>placeholder', 'eq', 'true')
+    q = q.range!(offset, offset + PG_PAGE_SIZE - 1)
+    const { data, error } = await new Promise<{ data: unknown[] | null; error: unknown }>(
+      resolve => q.then!(resolve),
+    )
+    if (error) throw error
+    const rows = (data ?? []) as Array<Record<string, unknown>>
+    for (const row of rows) {
+      const cap = row.capability as Record<string, unknown> | null
+      out.push({
+        id: String(row.id),
+        capabilityId: String(row.capability_id),
+        artifactKind: String(row.artifact_kind),
+        artifactJson: (row.artifact_json as Record<string, unknown>) ?? {},
+        capability: {
+          canonicalKey: String(cap?.canonical_key ?? ''),
+          sourceKind: String(cap?.source_kind ?? ''),
+          sourceRef: String(cap?.source_ref ?? ''),
+          capabilityType: String(cap?.capability_type ?? ''),
+        },
+      })
     }
-  })
+    if (rows.length < PG_PAGE_SIZE) break
+    offset += PG_PAGE_SIZE
+  }
+  return out
 }
 
 export async function loadActiveLearningItems(
@@ -512,7 +525,7 @@ export async function loadActiveLearningItems(
 ): Promise<LearningItemRow[]> {
   const builder = db(client).from('learning_items') as SupabaseQueryBuilder
   const q = builder
-    .select!('id, base_text, normalized_text, item_type, is_active, source_lesson_id')
+    .select!('id, base_text, normalized_text, item_type, is_active')
     .eq!('is_active', true)
   const { data, error } = await new Promise<{ data: unknown[] | null; error: unknown }>(
     resolve => q.then!(resolve),
@@ -524,7 +537,9 @@ export async function loadActiveLearningItems(
     normalizedText: String(row.normalized_text ?? ''),
     itemType: String(row.item_type ?? ''),
     isActive: Boolean(row.is_active),
-    sourceLessonId: row.source_lesson_id == null ? null : String(row.source_lesson_id),
+    // sourceLessonId comes from item_contexts; the test fixture sets it
+    // directly for convenience but the live DB derives it via the bridge below.
+    sourceLessonId: (row.source_lesson_id as string | null | undefined) ?? null,
   }))
 }
 
@@ -620,14 +635,14 @@ export async function loadItemContexts(
   return loadInChunks<ItemContextRow>(
     client,
     'item_contexts',
-    'learning_item_id, context_type, sentence_text, translation_text, source_lesson_id',
+    'learning_item_id, context_type, source_text, translation_text, source_lesson_id',
     itemIds,
     'learning_item_id',
     [],
     row => ({
       learningItemId: String(row.learning_item_id),
       contextType: String(row.context_type ?? ''),
-      sentenceText: row.sentence_text == null ? null : String(row.sentence_text),
+      sentenceText: row.source_text == null ? null : String(row.source_text),
       translationText: row.translation_text == null ? null : String(row.translation_text),
       sourceLessonId: row.source_lesson_id == null ? null : String(row.source_lesson_id),
     }),
@@ -638,7 +653,7 @@ export async function loadGrammarPatterns(
   client: SupabaseLike,
 ): Promise<GrammarPatternRow[]> {
   const builder = db(client).from('grammar_patterns') as SupabaseQueryBuilder
-  const q = builder.select!('id, slug, pattern_name, short_explanation, introduced_by_lesson_id')
+  const q = builder.select!('id, slug, name, short_explanation, introduced_by_lesson_id')
   const { data, error } = await new Promise<{ data: unknown[] | null; error: unknown }>(
     resolve => q.then!(resolve),
   )
@@ -646,7 +661,7 @@ export async function loadGrammarPatterns(
   return ((data ?? []) as Array<Record<string, unknown>>).map(row => ({
     id: String(row.id),
     slug: String(row.slug ?? ''),
-    name: String(row.pattern_name ?? ''),
+    name: String(row.name ?? ''),
     shortExplanation: String(row.short_explanation ?? ''),
     introducedByLessonId: row.introduced_by_lesson_id == null ? null : String(row.introduced_by_lesson_id),
   }))
@@ -951,7 +966,31 @@ export async function runAutoFill(
     list.push(c)
     contextsByItemId.set(c.learningItemId, list)
   }
-  void contextsByItemId
+
+  // Derive item → lesson_uuid via item_contexts (the live schema does not
+  // store source_lesson_id on learning_items). For an item that appears in
+  // multiple lessons, prefer the smallest order_index (introduction lesson).
+  const itemLessonId = new Map<string, string>()
+  for (const item of items) {
+    if (item.sourceLessonId) {
+      itemLessonId.set(item.id, item.sourceLessonId)
+      continue
+    }
+    const ctxLessons = (contextsByItemId.get(item.id) ?? [])
+      .map(c => c.sourceLessonId)
+      .filter((v): v is string => Boolean(v))
+    if (ctxLessons.length === 0) continue
+    let bestLessonId = ctxLessons[0]!
+    let bestOrder = lessonIdToNumber.get(bestLessonId) ?? Number.POSITIVE_INFINITY
+    for (const id of ctxLessons.slice(1)) {
+      const order = lessonIdToNumber.get(id) ?? Number.POSITIVE_INFINITY
+      if (order < bestOrder) {
+        bestLessonId = id
+        bestOrder = order
+      }
+    }
+    itemLessonId.set(item.id, bestLessonId)
+  }
 
   const patternsBySlug = new Map(patterns.map(p => [p.slug, p]))
   const lessonGrammarById = new Map<string, GrammarSection>()
@@ -1034,9 +1073,8 @@ export async function runAutoFill(
         continue
       }
       const item = matching[0]!
-      lessonNumber = item.sourceLessonId
-        ? lessonIdToNumber.get(item.sourceLessonId)
-        : undefined
+      const lessonUuid = item.sourceLessonId ?? itemLessonId.get(item.id) ?? null
+      lessonNumber = lessonUuid ? lessonIdToNumber.get(lessonUuid) : undefined
       const itemSource: ItemSource = {
         id: item.id,
         baseText: item.baseText,
