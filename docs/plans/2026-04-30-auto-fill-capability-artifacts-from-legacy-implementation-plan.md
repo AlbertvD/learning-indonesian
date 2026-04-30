@@ -285,6 +285,7 @@ export async function runAutoFill(client: SupabaseClient, args: AutoFillArgs): P
 - `runAutoFill` with one unresolved slug collision → `exitCode=1`, `totalCritical>=1`, no DB writes attempted (dry-run mode).
 - `runAutoFill --dry-run` → no DB writes; report still includes planned counts.
 - `runAutoFill --apply` → DB writes called, staging files written.
+- **Process-exit wiring**: spawn the CLI as a subprocess in a test (or use `vi.spyOn(process, 'exit')`) and assert that when `report.exitCode === 1`, the process exits with code 1. Catches a regression where `runAutoFill` returns the right exit code but `main()` forgets to call `process.exit(report.exitCode)`.
 
 Run:
 ```bash
@@ -347,6 +348,8 @@ NODE_TLS_REJECT_UNAUTHORIZED=0 \
   | tee /tmp/auto-fill-apply-report.json
 ```
 
+**Resume on partial failure**: if the apply errors mid-run (e.g. transaction error in chunk 47 of 116), simply re-run the same `--apply` command. The DB-side WHERE filter (`quality_status='draft' AND placeholder=true`) skips rows that were already flipped to `approved`, so the second run picks up where the first left off. Diagnose the failing chunk from stderr first; fix the underlying issue if it's data-driven.
+
 **Step 4: Verify DB state.**
 
 ```sql
@@ -373,23 +376,27 @@ git commit --no-verify -m "content: auto-fill capability artifacts from legacy D
 **Step 1: DB-backed health check per lesson.**
 
 ```bash
+set -e  # stop the loop on first health-check failure so we don't promote on top of a known-broken state
 for n in 1 2 3 4 5 6 7 8 9; do
   echo "=== lesson $n ==="
   NODE_TLS_REJECT_UNAUTHORIZED=0 \
     npx tsx scripts/check-capability-health.ts --lesson $n --strict
 done
+set +e
 ```
 
-Expected: `criticalCount: 0` per lesson. Warnings are acceptable.
+Expected: `criticalCount: 0` per lesson. Warnings are acceptable. If a lesson fails strict health, fix it before continuing — promoting on top of a critical finding bakes broken state in.
 
 **Step 2: Promote per lesson.**
 
 ```bash
+set -e
 for n in 1 2 3 4 5 6 7 8 9; do
   echo "=== promote lesson $n ==="
   NODE_TLS_REJECT_UNAUTHORIZED=0 \
     npx tsx scripts/promote-capabilities.ts --lesson $n --apply
 done
+set +e
 ```
 
 **Step 3: Verify final capability state.**
