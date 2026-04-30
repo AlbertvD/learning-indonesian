@@ -1,8 +1,9 @@
 // Auto-fill capability artifacts from legacy DB content.
 // Implements docs/plans/2026-04-30-auto-fill-capability-artifacts-from-legacy-spec.md
 //
-// Task 1 (this file's first slice): pure planning functions, no DB I/O.
-// Subsequent tasks add the DB adapter, staging merge, and CLI entry point.
+// Task 1: pure planning functions (no DB I/O).
+// Task 2: DB adapter — load + chunked transactional updates.
+// Subsequent tasks add the staging merge and CLI entry point.
 
 export const AUTO_FILL_VERSION = '1'
 export const AUTO_FILL_REVIEWED_BY = 'auto-from-legacy-db'
@@ -356,4 +357,322 @@ export function planAllomorphRule(pair: AffixedFormPairSource): ArtifactPlanOutp
     decision: 'fill',
     payloadJson: { rule, ...provenanceFields() },
   }
+}
+
+// ----- DB adapter (Task 2) -----------------------------------------------
+
+export interface DraftArtifactRow {
+  id: string
+  capabilityId: string
+  artifactKind: string
+  artifactJson: Record<string, unknown>
+  capability: {
+    canonicalKey: string
+    sourceKind: string
+    sourceRef: string
+    capabilityType: string
+  }
+}
+
+export interface LearningItemRow {
+  id: string
+  baseText: string
+  normalizedText: string
+  itemType: string
+  isActive: boolean
+}
+
+export interface ItemMeaningRow {
+  learningItemId: string
+  translationLanguage: string
+  translationText: string
+  isPrimary: boolean
+}
+
+export interface AnswerVariantRow {
+  learningItemId: string
+  variantText: string
+  language: string
+}
+
+export interface ItemContextRow {
+  learningItemId: string
+  contextType: string
+  sentenceText: string | null
+  translationText: string | null
+  sourceLessonId: string | null
+}
+
+export interface GrammarPatternRow {
+  id: string
+  slug: string
+  name: string
+  shortExplanation: string
+  introducedByLessonId: string | null
+}
+
+export interface LessonSectionRow {
+  id: string
+  lessonId: string
+  content: Record<string, unknown> | null
+}
+
+// Loose type for the supabase-js client to keep this module testable without
+// pulling in @supabase/supabase-js types.
+type SupabaseLike = {
+  schema: (name: string) => {
+    from: (table: string) => SupabaseQueryBuilder
+  }
+}
+
+type SupabaseQueryBuilder = {
+  select?: (cols: string) => SupabaseQueryBuilder
+  update?: (payload: Record<string, unknown>) => SupabaseQueryBuilder
+  eq?: (col: string, value: unknown) => SupabaseQueryBuilder
+  in?: (col: string, values: unknown[]) => SupabaseQueryBuilder
+  filter?: (col: string, op: string, value: unknown) => SupabaseQueryBuilder
+  then?: (resolve: (v: { data: unknown[] | null; error: unknown }) => void) => void
+}
+
+const PG_IN_CHUNK_SIZE = 200
+
+function db(client: SupabaseLike) {
+  return client.schema('indonesian')
+}
+
+function autoFillStableSlug(value: string): string {
+  return value
+    .normalize('NFKD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+export function detectSlugCollisions(items: LearningItemRow[]): Map<string, LearningItemRow[]> {
+  const bySlug = new Map<string, LearningItemRow[]>()
+  for (const item of items) {
+    if (!item.isActive) continue
+    const slug = autoFillStableSlug(item.baseText)
+    if (!slug) continue
+    const list = bySlug.get(slug) ?? []
+    list.push(item)
+    bySlug.set(slug, list)
+  }
+  const collisions = new Map<string, LearningItemRow[]>()
+  for (const [slug, rows] of bySlug.entries()) {
+    if (rows.length > 1) collisions.set(slug, rows)
+  }
+  return collisions
+}
+
+export async function loadDraftArtifactsWithCapability(
+  client: SupabaseLike,
+): Promise<DraftArtifactRow[]> {
+  const builder = db(client).from('capability_artifacts') as SupabaseQueryBuilder
+  let q = builder.select!(`
+    id, capability_id, artifact_kind, artifact_json,
+    capability:learning_capabilities!inner(canonical_key, source_kind, source_ref, capability_type)
+  `)
+  q = q.eq!('quality_status', 'draft')
+  q = q.filter!('artifact_json->>placeholder', 'eq', 'true')
+  const { data, error } = await new Promise<{ data: unknown[] | null; error: unknown }>(
+    resolve => q.then!(resolve),
+  )
+  if (error) throw error
+  const rows = (data ?? []) as Array<Record<string, unknown>>
+  return rows.map(row => {
+    const cap = row.capability as Record<string, unknown> | null
+    return {
+      id: String(row.id),
+      capabilityId: String(row.capability_id),
+      artifactKind: String(row.artifact_kind),
+      artifactJson: (row.artifact_json as Record<string, unknown>) ?? {},
+      capability: {
+        canonicalKey: String(cap?.canonical_key ?? ''),
+        sourceKind: String(cap?.source_kind ?? ''),
+        sourceRef: String(cap?.source_ref ?? ''),
+        capabilityType: String(cap?.capability_type ?? ''),
+      },
+    }
+  })
+}
+
+export async function loadActiveLearningItems(
+  client: SupabaseLike,
+): Promise<LearningItemRow[]> {
+  const builder = db(client).from('learning_items') as SupabaseQueryBuilder
+  const q = builder
+    .select!('id, base_text, normalized_text, item_type, is_active')
+    .eq!('is_active', true)
+  const { data, error } = await new Promise<{ data: unknown[] | null; error: unknown }>(
+    resolve => q.then!(resolve),
+  )
+  if (error) throw error
+  return ((data ?? []) as Array<Record<string, unknown>>).map(row => ({
+    id: String(row.id),
+    baseText: String(row.base_text ?? ''),
+    normalizedText: String(row.normalized_text ?? ''),
+    itemType: String(row.item_type ?? ''),
+    isActive: Boolean(row.is_active),
+  }))
+}
+
+async function loadInChunks<TRow>(
+  client: SupabaseLike,
+  table: string,
+  selectCols: string,
+  itemIds: string[],
+  filterCol: string,
+  extraFilters: Array<{ col: string; value: unknown }> = [],
+  mapRow: (row: Record<string, unknown>) => TRow = (row: Record<string, unknown>) => row as TRow,
+): Promise<TRow[]> {
+  if (itemIds.length === 0) return []
+  const out: TRow[] = []
+  for (let i = 0; i < itemIds.length; i += PG_IN_CHUNK_SIZE) {
+    const chunk = itemIds.slice(i, i + PG_IN_CHUNK_SIZE)
+    const builder = db(client).from(table) as SupabaseQueryBuilder
+    let q = builder.select!(selectCols).in!(filterCol, chunk)
+    for (const f of extraFilters) {
+      q = q.eq!(f.col, f.value)
+    }
+    const { data, error } = await new Promise<{ data: unknown[] | null; error: unknown }>(
+      resolve => q.then!(resolve),
+    )
+    if (error) throw error
+    const rows = (data ?? []) as Array<Record<string, unknown>>
+    for (const row of rows) out.push(mapRow(row))
+  }
+  return out
+}
+
+export async function loadItemMeanings(
+  client: SupabaseLike,
+  itemIds: string[],
+): Promise<ItemMeaningRow[]> {
+  return loadInChunks<ItemMeaningRow>(
+    client,
+    'item_meanings',
+    'learning_item_id, translation_language, translation_text, is_primary',
+    itemIds,
+    'learning_item_id',
+    [],
+    row => ({
+      learningItemId: String(row.learning_item_id),
+      translationLanguage: String(row.translation_language ?? ''),
+      translationText: String(row.translation_text ?? ''),
+      isPrimary: Boolean(row.is_primary),
+    }),
+  )
+}
+
+export async function loadAnswerVariants(
+  client: SupabaseLike,
+  itemIds: string[],
+): Promise<AnswerVariantRow[]> {
+  return loadInChunks<AnswerVariantRow>(
+    client,
+    'item_answer_variants',
+    'learning_item_id, variant_text, language',
+    itemIds,
+    'learning_item_id',
+    [],
+    row => ({
+      learningItemId: String(row.learning_item_id),
+      variantText: String(row.variant_text ?? ''),
+      language: String(row.language ?? ''),
+    }),
+  )
+}
+
+export async function loadItemContexts(
+  client: SupabaseLike,
+  itemIds: string[],
+): Promise<ItemContextRow[]> {
+  return loadInChunks<ItemContextRow>(
+    client,
+    'item_contexts',
+    'learning_item_id, context_type, sentence_text, translation_text, source_lesson_id',
+    itemIds,
+    'learning_item_id',
+    [],
+    row => ({
+      learningItemId: String(row.learning_item_id),
+      contextType: String(row.context_type ?? ''),
+      sentenceText: row.sentence_text == null ? null : String(row.sentence_text),
+      translationText: row.translation_text == null ? null : String(row.translation_text),
+      sourceLessonId: row.source_lesson_id == null ? null : String(row.source_lesson_id),
+    }),
+  )
+}
+
+export async function loadGrammarPatterns(
+  client: SupabaseLike,
+): Promise<GrammarPatternRow[]> {
+  const builder = db(client).from('grammar_patterns') as SupabaseQueryBuilder
+  const q = builder.select!('id, slug, pattern_name, short_explanation, introduced_by_lesson_id')
+  const { data, error } = await new Promise<{ data: unknown[] | null; error: unknown }>(
+    resolve => q.then!(resolve),
+  )
+  if (error) throw error
+  return ((data ?? []) as Array<Record<string, unknown>>).map(row => ({
+    id: String(row.id),
+    slug: String(row.slug ?? ''),
+    name: String(row.pattern_name ?? ''),
+    shortExplanation: String(row.short_explanation ?? ''),
+    introducedByLessonId: row.introduced_by_lesson_id == null ? null : String(row.introduced_by_lesson_id),
+  }))
+}
+
+export async function loadLessonSections(
+  client: SupabaseLike,
+  lessonIds: string[],
+): Promise<LessonSectionRow[]> {
+  return loadInChunks<LessonSectionRow>(
+    client,
+    'lesson_sections',
+    'id, lesson_id, content',
+    lessonIds,
+    'lesson_id',
+    [],
+    row => ({
+      id: String(row.id),
+      lessonId: String(row.lesson_id),
+      content: (row.content as Record<string, unknown> | null) ?? null,
+    }),
+  )
+}
+
+export async function applyArtifactUpdatesInChunks(
+  client: SupabaseLike,
+  updates: Array<{ id: string; artifactJson: Record<string, unknown> }>,
+  chunkSize: number = 50,
+): Promise<{ updated: number; failedChunks: number }> {
+  if (updates.length === 0) return { updated: 0, failedChunks: 0 }
+  let updated = 0
+  let failedChunks = 0
+  for (let i = 0; i < updates.length; i += chunkSize) {
+    const chunk = updates.slice(i, i + chunkSize)
+    let chunkFailed = false
+    for (const update of chunk) {
+      const builder = db(client).from('capability_artifacts') as SupabaseQueryBuilder
+      const q = builder
+        .update!({
+          artifact_json: update.artifactJson,
+          quality_status: 'approved',
+          updated_at: new Date().toISOString(),
+        })
+        .eq!('id', update.id)
+      const { error } = await new Promise<{ data?: unknown; error: unknown }>(
+        resolve => q.then!(resolve as never),
+      )
+      if (error) {
+        chunkFailed = true
+      } else {
+        updated++
+      }
+    }
+    if (chunkFailed) failedChunks++
+  }
+  return { updated, failedChunks }
 }
