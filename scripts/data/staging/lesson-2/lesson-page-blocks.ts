@@ -886,6 +886,8 @@ export const lessonPageBlocks = [
       "lesson-2"
     ],
     "content_unit_slugs": [
+      "item-tas",
+      "item-sebelas",
       "item-ada",
       "item-jalan"
     ],
@@ -896,17 +898,33 @@ export const lessonPageBlocks = [
       "title": "cloze",
       "items": [
         {
+          "indonesian": "tas",
+          "dutch": "tas"
+        },
+        {
+          "indonesian": "sebelas",
+          "dutch": "elf"
+        },
+        {
           "indonesian": "ada",
           "dutch": "er is/er zijn"
         },
         {
           "indonesian": "jalan",
-          "dutch": "straat/weg"
+          "dutch": "rijden, gaan, lopen"
         }
       ]
     },
     "source_progress_event": "section_exposed",
     "capability_key_refs": [
+      "cap:v1:item:learning_items/tas:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/tas:l1_to_id_choice:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/tas:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/tas:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/sebelas:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/sebelas:l1_to_id_choice:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/sebelas:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/sebelas:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/ada:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/ada:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/ada:meaning_recall:id_to_l1:text:nl",
@@ -928,14 +946,14 @@ export const lessonPageBlocks = [
       "item-empat-belas",
       "item-delapan-belas",
       "item-dua-puluh",
-      "item-lima-belas",
       "item-sembilan-belas",
       "item-dari-mana",
       "item-siapa",
       "item-dua-belas",
       "item-enam-belas",
       "item-tiga-belas",
-      "item-tujuh-belas"
+      "item-tujuh-belas",
+      "item-lima-belas"
     ],
     "block_kind": "section",
     "display_order": 1010,
@@ -958,10 +976,6 @@ export const lessonPageBlocks = [
         {
           "indonesian": "dua puluh",
           "dutch": "twintig"
-        },
-        {
-          "indonesian": "lima belas",
-          "dutch": "vijftien"
         },
         {
           "indonesian": "sembilan belas",
@@ -990,6 +1004,10 @@ export const lessonPageBlocks = [
         {
           "indonesian": "tujuh belas",
           "dutch": "zeventien"
+        },
+        {
+          "indonesian": "lima belas",
+          "dutch": "vijftien"
         }
       ]
     },
@@ -1011,10 +1029,6 @@ export const lessonPageBlocks = [
       "cap:v1:item:learning_items/dua-puluh:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/dua-puluh:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/dua-puluh:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/lima-belas:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/lima-belas:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/lima-belas:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/lima-belas:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/sembilan-belas:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/sembilan-belas:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/sembilan-belas:meaning_recall:id_to_l1:text:nl",
@@ -1042,7 +1056,11 @@ export const lessonPageBlocks = [
       "cap:v1:item:learning_items/tujuh-belas:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/tujuh-belas:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/tujuh-belas:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/tujuh-belas:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/tujuh-belas:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/lima-belas:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/lima-belas:l1_to_id_choice:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/lima-belas:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/lima-belas:text_recognition:id_to_l1:text:nl"
     ]
   },
   {
@@ -1055,18 +1073,15 @@ export const lessonPageBlocks = [
       "item-bagus",
       "item-belanda",
       "item-butir",
-      "item-dokter",
       "item-ekor",
       "item-kantor",
       "item-nama",
       "item-pulang",
       "item-sama",
       "item-sudah",
-      "item-sampai-bertemu-lagi",
       "item-selamat-siang",
       "item-baru",
       "item-dapat",
-      "item-di-sana",
       "item-dulu",
       "item-guru",
       "item-istri",
@@ -1078,21 +1093,18 @@ export const lessonPageBlocks = [
       "item-sama-dengan",
       "item-sana",
       "item-siang",
-      "item-taksi",
-      "item-tas",
       "item-saya-pulang-dulu",
-      "item-sebelas",
       "item-kecil",
       "item-apel",
       "item-berat",
       "item-ini",
-      "item-nah",
       "item-nomor",
       "item-sampai",
       "item-sekarang",
       "item-tambah",
       "item-teman",
       "item-tomat",
+      "item-nah",
       "item-ayam",
       "item-bertemu",
       "item-dengan",
@@ -1102,7 +1114,11 @@ export const lessonPageBlocks = [
       "item-suami",
       "item-tinggal",
       "item-turis",
-      "item-beras"
+      "item-beras",
+      "item-dokter",
+      "item-sampai-bertemu-lagi",
+      "item-di-sana",
+      "item-taksi"
     ],
     "block_kind": "section",
     "display_order": 1020,
@@ -1121,10 +1137,6 @@ export const lessonPageBlocks = [
         {
           "indonesian": "butir",
           "dutch": "korrel"
-        },
-        {
-          "indonesian": "dokter",
-          "dutch": "dokter/arts"
         },
         {
           "indonesian": "ekor",
@@ -1151,10 +1163,6 @@ export const lessonPageBlocks = [
           "dutch": "al/reeds"
         },
         {
-          "indonesian": "sampai bertemu lagi",
-          "dutch": "tot ziens"
-        },
-        {
           "indonesian": "selamat siang",
           "dutch": "goedendag"
         },
@@ -1165,10 +1173,6 @@ export const lessonPageBlocks = [
         {
           "indonesian": "dapat",
           "dutch": "hebben/krijgen"
-        },
-        {
-          "indonesian": "di sana",
-          "dutch": "ginds/daar"
         },
         {
           "indonesian": "dulu",
@@ -1215,20 +1219,8 @@ export const lessonPageBlocks = [
           "dutch": "overdag"
         },
         {
-          "indonesian": "taksi",
-          "dutch": "taxi"
-        },
-        {
-          "indonesian": "tas",
-          "dutch": "tas"
-        },
-        {
           "indonesian": "saya pulang dulu",
           "dutch": "dan ga ik naar huis"
-        },
-        {
-          "indonesian": "sebelas",
-          "dutch": "elf"
         },
         {
           "indonesian": "kecil",
@@ -1245,10 +1237,6 @@ export const lessonPageBlocks = [
         {
           "indonesian": "ini",
           "dutch": "dit/deze"
-        },
-        {
-          "indonesian": "nah",
-          "dutch": "wel(stopwoord)"
         },
         {
           "indonesian": "nomor",
@@ -1273,6 +1261,10 @@ export const lessonPageBlocks = [
         {
           "indonesian": "tomat",
           "dutch": "tomaat"
+        },
+        {
+          "indonesian": "nah",
+          "dutch": "wel(stopwoord)"
         },
         {
           "indonesian": "ayam",
@@ -1312,7 +1304,23 @@ export const lessonPageBlocks = [
         },
         {
           "indonesian": "beras",
-          "dutch": "rijst(ongekookt)"
+          "dutch": "gepelde ongekookte rijst"
+        },
+        {
+          "indonesian": "dokter",
+          "dutch": "dokter/arts"
+        },
+        {
+          "indonesian": "sampai bertemu lagi",
+          "dutch": "tot ziens"
+        },
+        {
+          "indonesian": "di sana",
+          "dutch": "ginds/daar"
+        },
+        {
+          "indonesian": "taksi",
+          "dutch": "taxi"
         }
       ]
     },
@@ -1330,10 +1338,6 @@ export const lessonPageBlocks = [
       "cap:v1:item:learning_items/butir:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/butir:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/butir:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/dokter:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/dokter:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/dokter:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/dokter:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/ekor:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/ekor:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/ekor:meaning_recall:id_to_l1:text:nl",
@@ -1358,10 +1362,6 @@ export const lessonPageBlocks = [
       "cap:v1:item:learning_items/sudah:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/sudah:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/sudah:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sampai-bertemu-lagi:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/sampai-bertemu-lagi:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/sampai-bertemu-lagi:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sampai-bertemu-lagi:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/selamat-siang:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/selamat-siang:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/selamat-siang:meaning_recall:id_to_l1:text:nl",
@@ -1374,10 +1374,6 @@ export const lessonPageBlocks = [
       "cap:v1:item:learning_items/dapat:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/dapat:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/dapat:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/di-sana:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/di-sana:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/di-sana:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/di-sana:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/dulu:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/dulu:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/dulu:meaning_recall:id_to_l1:text:nl",
@@ -1422,22 +1418,10 @@ export const lessonPageBlocks = [
       "cap:v1:item:learning_items/siang:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/siang:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/siang:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/taksi:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/taksi:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/taksi:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/taksi:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/tas:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/tas:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/tas:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/tas:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/saya-pulang-dulu:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/saya-pulang-dulu:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/saya-pulang-dulu:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/saya-pulang-dulu:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sebelas:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/sebelas:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/sebelas:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sebelas:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/kecil:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/kecil:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/kecil:meaning_recall:id_to_l1:text:nl",
@@ -1454,10 +1438,6 @@ export const lessonPageBlocks = [
       "cap:v1:item:learning_items/ini:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/ini:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/ini:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/nah:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/nah:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/nah:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/nah:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/nomor:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/nomor:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/nomor:meaning_recall:id_to_l1:text:nl",
@@ -1482,6 +1462,10 @@ export const lessonPageBlocks = [
       "cap:v1:item:learning_items/tomat:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/tomat:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/tomat:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/nah:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/nah:l1_to_id_choice:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/nah:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/nah:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/ayam:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/ayam:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/ayam:meaning_recall:id_to_l1:text:nl",
@@ -1521,7 +1505,23 @@ export const lessonPageBlocks = [
       "cap:v1:item:learning_items/beras:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/beras:l1_to_id_choice:l1_to_id:text:nl",
       "cap:v1:item:learning_items/beras:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/beras:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/beras:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/dokter:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/dokter:l1_to_id_choice:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/dokter:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/dokter:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/sampai-bertemu-lagi:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/sampai-bertemu-lagi:l1_to_id_choice:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/sampai-bertemu-lagi:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/sampai-bertemu-lagi:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/di-sana:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/di-sana:l1_to_id_choice:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/di-sana:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/di-sana:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/taksi:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/taksi:l1_to_id_choice:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/taksi:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/taksi:text_recognition:id_to_l1:text:nl"
     ]
   },
   {

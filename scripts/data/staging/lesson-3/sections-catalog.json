@@ -3,7 +3,7 @@
   "lesson_title": "Les 3 - Di Bandar Udara (Op het vliegveld)",
   "level": "A1",
   "source": "reverse_engineered_from_db",
-  "note": "Grammar and exercise sections are already fully structured (categories/sections arrays). The linguist-creator should use structured_categories / structured_sections directly — no re-parsing needed. raw_text is provided as a human-readable reference only.",
+  "note": "Grammar and exercise sections are already fully structured (categories/sections arrays). The linguist-structurer should use structured_categories / structured_sections directly — no re-parsing needed. raw_text is provided as a human-readable reference only.",
   "sections": [
     {
       "section_type": "dialogue",
@@ -139,7 +139,7 @@
         },
         {
           "dutch": "morgen",
-          "notes": "bèsok",
+          "notes": "besok",
           "indonesian": "besok"
         },
         {
@@ -196,7 +196,7 @@
         },
         {
           "dutch": "kaas",
-          "notes": "kèju",
+          "notes": "keju",
           "indonesian": "keju"
         },
         {
@@ -249,12 +249,12 @@
         },
         {
           "dutch": "cadeautje, souvenir",
-          "notes": "olèh-olèh",
+          "notes": "oleh-oleh",
           "indonesian": "oleh-oleh"
         },
         {
           "dutch": "douane",
-          "notes": "pabéan",
+          "notes": "pabean",
           "indonesian": "pabean"
         },
         {
@@ -287,7 +287,7 @@
         },
         {
           "dutch": "fiets",
-          "notes": "sepéda",
+          "notes": "sepeda",
           "indonesian": "sepeda"
         },
         {
@@ -411,13 +411,13 @@
       "structured_categories": [
         {
           "rules": [
-            "dari — van, vanuit, vandaan (beweging van)",
-            "di — in, te, op (rust)",
-            "ke — naar (beweging ergens naar toe)",
+            "dari -- van, vanuit, vandaan (beweging van)",
+            "di -- in, te, op (rust)",
+            "ke -- naar (beweging ergens naar toe)",
             "Vergelijk: Saya dari Bali. Sekarang tinggal di Solo. Besok saya pulang ke Jakarta.",
             "Di, dari en ke worden altijd gebruikt in een plaatsbepaling en niet overdrachtelijk.",
-            "'Ik kom van huis' → Saya dari rumah (correct)",
-            "'Het huis is van mij' → NIET Rumah dari saya (fout)"
+            "'Ik kom van huis' -> Saya dari rumah (correct)",
+            "'Het huis is van mij' -> NIET Rumah dari saya (fout)"
           ],
           "title": "Woorden van plaats: dari, di, ke"
         },
@@ -427,36 +427,36 @@
               "word": "atas",
               "dutch": "op, bovenkant",
               "combinations": [
-                "dari atas — van boven",
-                "di atas — boven (op)",
-                "ke atas — naar boven"
+                "dari atas -- van boven",
+                "di atas -- boven (op)",
+                "ke atas -- naar boven"
               ]
             },
             {
               "word": "bawah",
               "dutch": "onder, onderkant",
               "combinations": [
-                "dari bawah — van beneden",
-                "di bawah — onder (zijn)",
-                "ke bawah — naar beneden"
+                "dari bawah -- van beneden",
+                "di bawah -- onder (zijn)",
+                "ke bawah -- naar beneden"
               ]
             },
             {
               "word": "belakang",
               "dutch": "achter, achterkant",
               "combinations": [
-                "dari belakang — van achter",
-                "di belakang — achter",
-                "ke belakang — naar achter"
+                "dari belakang -- van achter",
+                "di belakang -- achter",
+                "ke belakang -- naar achter"
               ]
             },
             {
               "word": "depan / muka",
               "dutch": "voor, voorkant",
               "combinations": [
-                "dari depan — van voor",
-                "di depan — voor",
-                "ke depan — naar voren"
+                "dari depan -- van voor",
+                "di depan -- voor",
+                "ke depan -- naar voren"
               ]
             },
             {
@@ -478,27 +478,27 @@
               "word": "kiri",
               "dutch": "links",
               "combinations": [
-                "dari kiri — van links",
-                "di kiri — aan de linkerkant",
-                "ke kiri — naar links"
+                "dari kiri -- van links",
+                "di kiri -- aan de linkerkant",
+                "ke kiri -- naar links"
               ]
             },
             {
               "word": "kanan",
               "dutch": "rechts",
               "combinations": [
-                "dari kanan — van rechts",
-                "di kanan — aan de rechterkant",
-                "ke kanan — naar rechts"
+                "dari kanan -- van rechts",
+                "di kanan -- aan de rechterkant",
+                "ke kanan -- naar rechts"
               ]
             },
             {
               "word": "sini",
               "dutch": "hier",
               "combinations": [
-                "dari sini — van hier",
-                "di sini — hier (zijn)",
-                "ke sini — naar hier"
+                "dari sini -- van hier",
+                "di sini -- hier (zijn)",
+                "ke sini -- naar hier"
               ]
             },
             {
@@ -517,7 +517,7 @@
       ],
       "word_order": null,
       "intro": null,
-      "raw_text": "### Woorden van plaats: dari, di, ke\n- dari — van, vanuit, vandaan (beweging van)\n- di — in, te, op (rust)\n- ke — naar (beweging ergens naar toe)\n- Vergelijk: Saya dari Bali. Sekarang tinggal di Solo. Besok saya pulang ke Jakarta.\n- Di, dari en ke worden altijd gebruikt in een plaatsbepaling en niet overdrachtelijk.\n- 'Ik kom van huis' → Saya dari rumah (correct)\n- 'Het huis is van mij' → NIET Rumah dari saya (fout)\n\n### Gecombineerde plaatsbepalingen\n  {\"word\":\"atas\",\"dutch\":\"op, bovenkant\",\"combinations\":[\"dari atas — van boven\",\"di atas — boven (op)\",\"ke atas — naar boven\"]}\n  {\"word\":\"bawah\",\"dutch\":\"onder, onderkant\",\"combinations\":[\"dari bawah — van beneden\",\"di bawah — onder (zijn)\",\"ke bawah — naar beneden\"]}\n  {\"word\":\"belakang\",\"dutch\":\"achter, achterkant\",\"combinations\":[\"dari belakang — van achter\",\"di belakang — achter\",\"ke belakang — naar achter\"]}\n  {\"word\":\"depan / muka\",\"dutch\":\"voor, voorkant\",\"combinations\":[\"dari depan — van voor\",\"di depan — voor\",\"ke depan — naar voren\"]}\n  {\"word\":\"dalam\",\"dutch\":\"in\",\"combinations\":[]}\n  {\"word\":\"luar\",\"dutch\":\"buiten\",\"combinations\":[]}\n  {\"word\":\"tengah\",\"dutch\":\"midden\",\"combinations\":[]}\n  {\"word\":\"kiri\",\"dutch\":\"links\",\"combinations\":[\"dari kiri — van links\",\"di kiri — aan de linkerkant\",\"ke kiri — naar links\"]}\n  {\"word\":\"kanan\",\"dutch\":\"rechts\",\"combinations\":[\"dari kanan — van rechts\",\"di kanan — aan de rechterkant\",\"ke kanan — naar rechts\"]}\n  {\"word\":\"sini\",\"dutch\":\"hier\",\"combinations\":[\"dari sini — van hier\",\"di sini — hier (zijn)\",\"ke sini — naar hier\"]}\n  {\"word\":\"situ\",\"dutch\":\"daar\",\"combinations\":[]}\n  {\"word\":\"sana\",\"dutch\":\"ginds, daar\",\"combinations\":[]}"
+      "raw_text": "### Woorden van plaats: dari, di, ke\n- dari -- van, vanuit, vandaan (beweging van)\n- di -- in, te, op (rust)\n- ke -- naar (beweging ergens naar toe)\n- Vergelijk: Saya dari Bali. Sekarang tinggal di Solo. Besok saya pulang ke Jakarta.\n- Di, dari en ke worden altijd gebruikt in een plaatsbepaling en niet overdrachtelijk.\n- 'Ik kom van huis' -> Saya dari rumah (correct)\n- 'Het huis is van mij' -> NIET Rumah dari saya (fout)\n\n### Gecombineerde plaatsbepalingen\n  {\"word\":\"atas\",\"dutch\":\"op, bovenkant\",\"combinations\":[\"dari atas -- van boven\",\"di atas -- boven (op)\",\"ke atas -- naar boven\"]}\n  {\"word\":\"bawah\",\"dutch\":\"onder, onderkant\",\"combinations\":[\"dari bawah -- van beneden\",\"di bawah -- onder (zijn)\",\"ke bawah -- naar beneden\"]}\n  {\"word\":\"belakang\",\"dutch\":\"achter, achterkant\",\"combinations\":[\"dari belakang -- van achter\",\"di belakang -- achter\",\"ke belakang -- naar achter\"]}\n  {\"word\":\"depan / muka\",\"dutch\":\"voor, voorkant\",\"combinations\":[\"dari depan -- van voor\",\"di depan -- voor\",\"ke depan -- naar voren\"]}\n  {\"word\":\"dalam\",\"dutch\":\"in\",\"combinations\":[]}\n  {\"word\":\"luar\",\"dutch\":\"buiten\",\"combinations\":[]}\n  {\"word\":\"tengah\",\"dutch\":\"midden\",\"combinations\":[]}\n  {\"word\":\"kiri\",\"dutch\":\"links\",\"combinations\":[\"dari kiri -- van links\",\"di kiri -- aan de linkerkant\",\"ke kiri -- naar links\"]}\n  {\"word\":\"kanan\",\"dutch\":\"rechts\",\"combinations\":[\"dari kanan -- van rechts\",\"di kanan -- aan de rechterkant\",\"ke kanan -- naar rechts\"]}\n  {\"word\":\"sini\",\"dutch\":\"hier\",\"combinations\":[\"dari sini -- van hier\",\"di sini -- hier (zijn)\",\"ke sini -- naar hier\"]}\n  {\"word\":\"situ\",\"dutch\":\"daar\",\"combinations\":[]}\n  {\"word\":\"sana\",\"dutch\":\"ginds, daar\",\"combinations\":[]}"
     },
     {
       "section_type": "grammar",
@@ -600,15 +600,15 @@
       "structured_categories": [
         {
           "rules": [
-            "Hotel itu mahal sekali — Dat hotel is erg duur",
-            "Sepeda ini bagus sekali — Deze fiets is erg mooi"
+            "Hotel itu mahal sekali -- Dat hotel is erg duur",
+            "Sepeda ini bagus sekali -- Deze fiets is erg mooi"
           ],
           "title": "Sekali"
         }
       ],
       "word_order": null,
-      "intro": "sekali = 'erg, zeer, heel' — komt achter het bijvoeglijk naamwoord.",
-      "raw_text": "sekali = 'erg, zeer, heel' — komt achter het bijvoeglijk naamwoord.\n\n### Sekali\n- Hotel itu mahal sekali — Dat hotel is erg duur\n- Sepeda ini bagus sekali — Deze fiets is erg mooi"
+      "intro": "sekali = 'erg, zeer, heel' -- komt achter het bijvoeglijk naamwoord.",
+      "raw_text": "sekali = 'erg, zeer, heel' -- komt achter het bijvoeglijk naamwoord.\n\n### Sekali\n- Hotel itu mahal sekali -- Dat hotel is erg duur\n- Sepeda ini bagus sekali -- Deze fiets is erg mooi"
     },
     {
       "section_type": "grammar",
@@ -619,20 +619,20 @@
       "structured_categories": [
         {
           "rules": [
-            "Di sana ada banyak mobil — Er zijn daar veel auto's",
-            "Ada keju? - Ya, ada — Is er kaas? - Ja, dat is er",
-            "Ada berapa sepeda? — Hoeveel fietsen zijn er?",
+            "Di sana ada banyak mobil -- Er zijn daar veel auto's",
+            "Ada keju? - Ya, ada -- Is er kaas? - Ja, dat is er",
+            "Ada berapa sepeda? -- Hoeveel fietsen zijn er?",
             "In het Nederlands maakt men dikwijls gebruik van de koppelwerkwoorden 'zijn' en 'hebben'. Het Indonesisch kent deze koppelwerkwoorden niet.",
-            "Dit huis is mooi → Rumah ini bagus (NIET: ada bagus)",
-            "Ik heb honger → Saya lapar (NIET: saya ada lapar)",
+            "Dit huis is mooi -> Rumah ini bagus (NIET: ada bagus)",
+            "Ik heb honger -> Saya lapar (NIET: saya ada lapar)",
             "Opmerking: Adalah = is, zijn. Het Nederlandse koppelwerkwoord kan worden vertaald met adalah, maar dit wordt slechts toegepast in officieel taalgebruik."
           ],
           "title": "Gebruik van ada"
         }
       ],
       "word_order": null,
-      "intro": "Ada is een werkwoord dat 'er is' of 'er zijn' ('zich bevinden') betekent. Ada is géén koppelwerkwoord.",
-      "raw_text": "Ada is een werkwoord dat 'er is' of 'er zijn' ('zich bevinden') betekent. Ada is géén koppelwerkwoord.\n\n### Gebruik van ada\n- Di sana ada banyak mobil — Er zijn daar veel auto's\n- Ada keju? - Ya, ada — Is er kaas? - Ja, dat is er\n- Ada berapa sepeda? — Hoeveel fietsen zijn er?\n- In het Nederlands maakt men dikwijls gebruik van de koppelwerkwoorden 'zijn' en 'hebben'. Het Indonesisch kent deze koppelwerkwoorden niet.\n- Dit huis is mooi → Rumah ini bagus (NIET: ada bagus)\n- Ik heb honger → Saya lapar (NIET: saya ada lapar)\n- Opmerking: Adalah = is, zijn. Het Nederlandse koppelwerkwoord kan worden vertaald met adalah, maar dit wordt slechts toegepast in officieel taalgebruik."
+      "intro": "Ada is een werkwoord dat 'er is' of 'er zijn' ('zich bevinden') betekent. Ada is geen koppelwerkwoord.",
+      "raw_text": "Ada is een werkwoord dat 'er is' of 'er zijn' ('zich bevinden') betekent. Ada is geen koppelwerkwoord.\n\n### Gebruik van ada\n- Di sana ada banyak mobil -- Er zijn daar veel auto's\n- Ada keju? - Ya, ada -- Is er kaas? - Ja, dat is er\n- Ada berapa sepeda? -- Hoeveel fietsen zijn er?\n- In het Nederlands maakt men dikwijls gebruik van de koppelwerkwoorden 'zijn' en 'hebben'. Het Indonesisch kent deze koppelwerkwoorden niet.\n- Dit huis is mooi -> Rumah ini bagus (NIET: ada bagus)\n- Ik heb honger -> Saya lapar (NIET: saya ada lapar)\n- Opmerking: Adalah = is, zijn. Het Nederlandse koppelwerkwoord kan worden vertaald met adalah, maar dit wordt slechts toegepast in officieel taalgebruik."
     },
     {
       "section_type": "exercises",
@@ -710,7 +710,7 @@
         {
           "items": [
             {
-              "dutch": "Ik ga naar Indonesië",
+              "dutch": "Ik ga naar Indonesie",
               "indonesian": "Saya ke Indonesia"
             },
             {
@@ -847,7 +847,7 @@
           "instruction": "Gebruik mana?, ke mana?, dari mana? en de gecombineerde plaatsbepalingen."
         }
       ],
-      "raw_text": "## Oefening I. Conversatie. Vraag en antwoord.\n  Nama Bapak/Ibu siapa?\n  Nama Bapak/Ibu di sebelah kiri siapa?\n  Nama Bapak/Ibu di sebelah kanan siapa?\n  Nama Ibu itu siapa?\n  Nama Bapak/Ibu itu siapa?\n  Ibu/Bapak dari mana?\n  Bapak/Ibu mau ke mana?\n  Bapak/Ibu tinggal di mana?\n  Kapan Bapak/Ibu mau ke Indonesia?\n  Bagaimana Bapak/Ibu datang ke sini?\n\n## Oefening II. Stel een vraag met apa (= wat) en siapa (= wie, van wie).\nContoh: Ini mobil apa? / Ini mobil siapa?\n  kamer\n  boek\n  kleding\n  huis\n  deur\n  cadeau\n  fiets\n\n## Oefening III. Conversatie. Vragen stellen.\nBedenk zelf 10 zinnen met een (ander) vraagwoord.\n\n## Oefening IV. Vertaal in het Indonesisch.\n  Ik ga naar Indonesië — Saya ke Indonesia\n  Moeder wil boeken kopen in Amsterdam — Ibu mau beli buku di Amsterdam\n  Kartono is op het vliegveld — Kartono di bandar udara\n  Vader is op kantoor — Bapak di kantor\n  Ik woon in de stad Utrecht — Saya tinggal di kota Utrecht\n  Tono komt van huis — Tono dari rumah\n  Moeder zit voor het huis — Ibu duduk di depan rumah\n  Waar komt Amir vandaan? — Amir dari mana?\n  Hoe heet die persoon? — Siapa nama orang itu?\n  Waar gaat u heen, meneer Suparman? — Bapak Suparman mau ke mana?\n\n## Oefening V. Siapa duduk (zitten) di mana?\nBekijk de personen vanuit het gezichtspunt van de guru.\n\n## Oefening VI. Vul in.\nGebruik mana?, ke mana?, dari mana? en de gecombineerde plaatsbepalingen.\n  naar boven\n  boven (zijn)\n  van boven\n  van hier\n  naar hier\n  hier (zijn)\n  van rechts\n  aan de rechterkant\n  naar rechts\n  naar links\n  van links\n  aan de linkerkant\n  naar beneden\n  van beneden\n  onder (zijn)"
+      "raw_text": "## Oefening I. Conversatie. Vraag en antwoord.\n  Nama Bapak/Ibu siapa?\n  Nama Bapak/Ibu di sebelah kiri siapa?\n  Nama Bapak/Ibu di sebelah kanan siapa?\n  Nama Ibu itu siapa?\n  Nama Bapak/Ibu itu siapa?\n  Ibu/Bapak dari mana?\n  Bapak/Ibu mau ke mana?\n  Bapak/Ibu tinggal di mana?\n  Kapan Bapak/Ibu mau ke Indonesia?\n  Bagaimana Bapak/Ibu datang ke sini?\n\n## Oefening II. Stel een vraag met apa (= wat) en siapa (= wie, van wie).\nContoh: Ini mobil apa? / Ini mobil siapa?\n  kamer\n  boek\n  kleding\n  huis\n  deur\n  cadeau\n  fiets\n\n## Oefening III. Conversatie. Vragen stellen.\nBedenk zelf 10 zinnen met een (ander) vraagwoord.\n\n## Oefening IV. Vertaal in het Indonesisch.\n  Ik ga naar Indonesie — Saya ke Indonesia\n  Moeder wil boeken kopen in Amsterdam — Ibu mau beli buku di Amsterdam\n  Kartono is op het vliegveld — Kartono di bandar udara\n  Vader is op kantoor — Bapak di kantor\n  Ik woon in de stad Utrecht — Saya tinggal di kota Utrecht\n  Tono komt van huis — Tono dari rumah\n  Moeder zit voor het huis — Ibu duduk di depan rumah\n  Waar komt Amir vandaan? — Amir dari mana?\n  Hoe heet die persoon? — Siapa nama orang itu?\n  Waar gaat u heen, meneer Suparman? — Bapak Suparman mau ke mana?\n\n## Oefening V. Siapa duduk (zitten) di mana?\nBekijk de personen vanuit het gezichtspunt van de guru.\n\n## Oefening VI. Vul in.\nGebruik mana?, ke mana?, dari mana? en de gecombineerde plaatsbepalingen.\n  naar boven\n  boven (zijn)\n  van boven\n  van hier\n  naar hier\n  hier (zijn)\n  van rechts\n  aan de rechterkant\n  naar rechts\n  naar links\n  van links\n  aan de linkerkant\n  naar beneden\n  van beneden\n  onder (zijn)"
     }
   ]
 }

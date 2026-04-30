@@ -1,4 +1,4 @@
-// Learning items for Lesson 3 — EN translations added by fill-english-translations.ts
+// Learning items for Lesson 3 — reverse-engineered from DB
 export const learningItems = [
   {
     "base_text": "keluar",
@@ -6,17 +6,15 @@ export const learningItems = [
     "translation_nl": "naar buiten gaan",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "go out"
+    "review_status": "published"
   },
   {
-    "base_text": "ke mana?",
-    "item_type": "phrase",
-    "translation_nl": "waarheen?",
-    "context_type": "lesson_snippet",
+    "base_text": "sepuluh",
+    "item_type": "word",
+    "translation_nl": "10",
+    "context_type": "cloze",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "where?"
+    "review_status": "published"
   },
   {
     "base_text": "barang",
@@ -24,8 +22,7 @@ export const learningItems = [
     "translation_nl": "spullen/bagage",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "luggage"
+    "review_status": "published"
   },
   {
     "base_text": "bus",
@@ -33,8 +30,7 @@ export const learningItems = [
     "translation_nl": "bus",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "bus"
+    "review_status": "published"
   },
   {
     "base_text": "depan",
@@ -42,8 +38,7 @@ export const learningItems = [
     "translation_nl": "voorzijde",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "front"
+    "review_status": "published"
   },
   {
     "base_text": "di sebelah",
@@ -51,8 +46,7 @@ export const learningItems = [
     "translation_nl": "aan de zijkant",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "beside"
+    "review_status": "published"
   },
   {
     "base_text": "duduk",
@@ -60,8 +54,7 @@ export const learningItems = [
     "translation_nl": "zitten",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "sit"
+    "review_status": "published"
   },
   {
     "base_text": "kota",
@@ -69,8 +62,7 @@ export const learningItems = [
     "translation_nl": "stad",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "city"
+    "review_status": "published"
   },
   {
     "base_text": "lapangan",
@@ -78,8 +70,7 @@ export const learningItems = [
     "translation_nl": "veld",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "field"
+    "review_status": "published"
   },
   {
     "base_text": "laut",
@@ -87,8 +78,7 @@ export const learningItems = [
     "translation_nl": "zee",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "sea"
+    "review_status": "published"
   },
   {
     "base_text": "minta",
@@ -96,8 +86,7 @@ export const learningItems = [
     "translation_nl": "vragen om iets",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "ask for"
+    "review_status": "published"
   },
   {
     "base_text": "pakaian",
@@ -105,8 +94,7 @@ export const learningItems = [
     "translation_nl": "kleding",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "clothing"
+    "review_status": "published"
   },
   {
     "base_text": "naik bus",
@@ -114,8 +102,7 @@ export const learningItems = [
     "translation_nl": "met de bus gaan",
     "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "take the bus"
+    "review_status": "published"
   },
   {
     "base_text": "enam puluh",
@@ -123,8 +110,7 @@ export const learningItems = [
     "translation_nl": "zestig",
     "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "sixty"
+    "review_status": "published"
   },
   {
     "base_text": "delapan puluh",
@@ -132,17 +118,7 @@ export const learningItems = [
     "translation_nl": "tachtig",
     "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "eighty"
-  },
-  {
-    "base_text": "udara",
-    "item_type": "word",
-    "translation_nl": "lucht/luchtruim",
-    "context_type": "vocabulary_list",
-    "source_page": 3,
-    "review_status": "published",
-    "translation_en": "air"
+    "review_status": "published"
   },
   {
     "base_text": "minta tolong",
@@ -150,8 +126,7 @@ export const learningItems = [
     "translation_nl": "kunt u me helpen?",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "can you help me?"
+    "review_status": "published"
   },
   {
     "base_text": "terima kasih kembali",
@@ -159,8 +134,31 @@ export const learningItems = [
     "translation_nl": "geen dank graag gedaan",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "you're welcome"
+    "review_status": "published"
+  },
+  {
+    "base_text": "dua puluh",
+    "item_type": "phrase",
+    "translation_nl": "twintig",
+    "context_type": "cloze",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "ke mana?",
+    "item_type": "phrase",
+    "translation_nl": "waarheen?",
+    "context_type": "lesson_snippet",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "udara",
+    "item_type": "word",
+    "translation_nl": "lucht/luchtruim",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published"
   },
   {
     "base_text": "bandar",
@@ -168,8 +166,7 @@ export const learningItems = [
     "translation_nl": "haven",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "harbor"
+    "review_status": "published"
   },
   {
     "base_text": "ada",
@@ -177,8 +174,7 @@ export const learningItems = [
     "translation_nl": "er is/er zijn",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "there is/are"
+    "review_status": "published"
   },
   {
     "base_text": "cari",
@@ -186,8 +182,7 @@ export const learningItems = [
     "translation_nl": "zoeken",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "search"
+    "review_status": "published"
   },
   {
     "base_text": "di depan",
@@ -195,8 +190,7 @@ export const learningItems = [
     "translation_nl": "voor(plaatsbep.)",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "in front of"
+    "review_status": "published"
   },
   {
     "base_text": "harus",
@@ -204,8 +198,7 @@ export const learningItems = [
     "translation_nl": "moeten",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "must"
+    "review_status": "published"
   },
   {
     "base_text": "kembali",
@@ -213,8 +206,7 @@ export const learningItems = [
     "translation_nl": "terugkeren/terug",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "return"
+    "review_status": "published"
   },
   {
     "base_text": "koper",
@@ -222,17 +214,7 @@ export const learningItems = [
     "translation_nl": "koffer",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "suitcase"
-  },
-  {
-    "base_text": "lapar",
-    "item_type": "word",
-    "translation_nl": "honger",
-    "context_type": "vocabulary_list",
-    "source_page": 3,
-    "review_status": "published",
-    "translation_en": "hunger"
+    "review_status": "published"
   },
   {
     "base_text": "mobil",
@@ -240,8 +222,7 @@ export const learningItems = [
     "translation_nl": "auto",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "car"
+    "review_status": "published"
   },
   {
     "base_text": "pabean",
@@ -249,8 +230,7 @@ export const learningItems = [
     "translation_nl": "douane",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "customs"
+    "review_status": "published"
   },
   {
     "base_text": "pengangkut",
@@ -258,8 +238,7 @@ export const learningItems = [
     "translation_nl": "kruier",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "porter"
+    "review_status": "published"
   },
   {
     "base_text": "samudera",
@@ -267,8 +246,7 @@ export const learningItems = [
     "translation_nl": "oceaan",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "ocean"
+    "review_status": "published"
   },
   {
     "base_text": "sekali",
@@ -276,8 +254,7 @@ export const learningItems = [
     "translation_nl": "zeer/erg/heel",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "very"
+    "review_status": "published"
   },
   {
     "base_text": "selesai",
@@ -285,8 +262,7 @@ export const learningItems = [
     "translation_nl": "klaar/gereed/afgelopen",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "done"
+    "review_status": "published"
   },
   {
     "base_text": "sepeda",
@@ -294,8 +270,7 @@ export const learningItems = [
     "translation_nl": "fiets",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "bicycle"
+    "review_status": "published"
   },
   {
     "base_text": "tahu",
@@ -303,17 +278,15 @@ export const learningItems = [
     "translation_nl": "weten",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "know"
+    "review_status": "published"
   },
   {
-    "base_text": "lalu",
+    "base_text": "lah",
     "item_type": "word",
     "translation_nl": "vervolgens",
     "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "then"
+    "review_status": "published"
   },
   {
     "base_text": "mana?",
@@ -321,17 +294,7 @@ export const learningItems = [
     "translation_nl": "welk/welke?",
     "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "which?"
-  },
-  {
-    "base_text": "naik sepeda",
-    "item_type": "phrase",
-    "translation_nl": "met de fiets gaan",
-    "context_type": "lesson_snippet",
-    "source_page": 3,
-    "review_status": "published",
-    "translation_en": "ride a bicycle"
+    "review_status": "published"
   },
   {
     "base_text": "naik mobil",
@@ -339,8 +302,7 @@ export const learningItems = [
     "translation_nl": "met de auto gaan",
     "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "ride in a car"
+    "review_status": "published"
   },
   {
     "base_text": "tiga puluh",
@@ -348,8 +310,7 @@ export const learningItems = [
     "translation_nl": "dertig",
     "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "thirty"
+    "review_status": "published"
   },
   {
     "base_text": "tujuh puluh",
@@ -357,8 +318,7 @@ export const learningItems = [
     "translation_nl": "zeventig",
     "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "seventy"
+    "review_status": "published"
   },
   {
     "base_text": "sembilan puluh",
@@ -366,17 +326,7 @@ export const learningItems = [
     "translation_nl": "negentig",
     "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "ninety"
-  },
-  {
-    "base_text": "silakan",
-    "item_type": "phrase",
-    "translation_nl": "alstublieft/gaat uw gang",
-    "context_type": "lesson_snippet",
-    "source_page": 3,
-    "review_status": "published",
-    "translation_en": "please"
+    "review_status": "published"
   },
   {
     "base_text": "pintu keluar",
@@ -384,8 +334,7 @@ export const learningItems = [
     "translation_nl": "uitgang",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "exit"
+    "review_status": "published"
   },
   {
     "base_text": "empat puluh",
@@ -393,8 +342,7 @@ export const learningItems = [
     "translation_nl": "veertig",
     "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "forty"
+    "review_status": "published"
   },
   {
     "base_text": "bandar udara",
@@ -402,8 +350,7 @@ export const learningItems = [
     "translation_nl": "luchthaven",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "airport"
+    "review_status": "published"
   },
   {
     "base_text": "besok",
@@ -411,17 +358,7 @@ export const learningItems = [
     "translation_nl": "morgen",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "tomorrow"
-  },
-  {
-    "base_text": "coklat",
-    "item_type": "word",
-    "translation_nl": "chocolade",
-    "context_type": "vocabulary_list",
-    "source_page": 3,
-    "review_status": "published",
-    "translation_en": "chocolate"
+    "review_status": "published"
   },
   {
     "base_text": "kanan",
@@ -429,8 +366,7 @@ export const learningItems = [
     "translation_nl": "rechts",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "right"
+    "review_status": "published"
   },
   {
     "base_text": "oleh-oleh",
@@ -438,8 +374,7 @@ export const learningItems = [
     "translation_nl": "cadeautje/souvenir",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "souvenir"
+    "review_status": "published"
   },
   {
     "base_text": "saja",
@@ -447,8 +382,7 @@ export const learningItems = [
     "translation_nl": "slechts/alleen maar",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "only"
+    "review_status": "published"
   },
   {
     "base_text": "sebelah",
@@ -456,8 +390,7 @@ export const learningItems = [
     "translation_nl": "zijkant/naast",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "side"
+    "review_status": "published"
   },
   {
     "base_text": "terbang",
@@ -465,26 +398,23 @@ export const learningItems = [
     "translation_nl": "vliegen",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "fly"
+    "review_status": "published"
   },
   {
     "base_text": "seratus",
     "item_type": "word",
-    "translation_nl": "honderd",
+    "translation_nl": "100",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "hundred"
+    "review_status": "published"
   },
   {
-    "base_text": "lima puluh",
+    "base_text": "silakan",
     "item_type": "phrase",
-    "translation_nl": "vijftig",
+    "translation_nl": "alstublieft/gaat uw gang",
     "context_type": "lesson_snippet",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "fifty"
+    "review_status": "published"
   },
   {
     "base_text": "banyak",
@@ -492,8 +422,7 @@ export const learningItems = [
     "translation_nl": "veel",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "many"
+    "review_status": "published"
   },
   {
     "base_text": "benar",
@@ -501,17 +430,7 @@ export const learningItems = [
     "translation_nl": "echt/waar",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "real"
-  },
-  {
-    "base_text": "buka",
-    "item_type": "word",
-    "translation_nl": "openen",
-    "context_type": "cloze",
-    "source_page": 3,
-    "review_status": "published",
-    "translation_en": "open"
+    "review_status": "published"
   },
   {
     "base_text": "di sini",
@@ -519,8 +438,7 @@ export const learningItems = [
     "translation_nl": "hier",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "here"
+    "review_status": "published"
   },
   {
     "base_text": "keju",
@@ -528,8 +446,7 @@ export const learningItems = [
     "translation_nl": "kaas",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "cheese"
+    "review_status": "published"
   },
   {
     "base_text": "tolong",
@@ -537,8 +454,7 @@ export const learningItems = [
     "translation_nl": "helpen",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "help"
+    "review_status": "published"
   },
   {
     "base_text": "sama-sama",
@@ -546,8 +462,7 @@ export const learningItems = [
     "translation_nl": "geen dank",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "you're welcome"
+    "review_status": "published"
   },
   {
     "base_text": "lapangan terbang",
@@ -555,8 +470,7 @@ export const learningItems = [
     "translation_nl": "vliegveld",
     "context_type": "vocabulary_list",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "airport"
+    "review_status": "published"
   },
   {
     "base_text": "contoh",
@@ -564,7 +478,70 @@ export const learningItems = [
     "translation_nl": "voorbeeld",
     "context_type": "cloze",
     "source_page": 3,
-    "review_status": "published",
-    "translation_en": "example"
+    "review_status": "published"
+  },
+  {
+    "base_text": "lima puluh",
+    "item_type": "phrase",
+    "translation_nl": "vijftig",
+    "context_type": "lesson_snippet",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "dua puluh satu",
+    "item_type": "word",
+    "translation_nl": "eenentwintig",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "'kan?",
+    "item_type": "word",
+    "translation_nl": "nietwaar?, toch?",
+    "context_type": "cloze",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "lalu",
+    "item_type": "word",
+    "translation_nl": "vervolgens",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "lapar",
+    "item_type": "word",
+    "translation_nl": "honger",
+    "context_type": "vocabulary_list",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "naik sepeda",
+    "item_type": "phrase",
+    "translation_nl": "met de fiets gaan",
+    "context_type": "lesson_snippet",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "coklat",
+    "item_type": "word",
+    "translation_nl": "bruin",
+    "context_type": "cloze",
+    "source_page": 3,
+    "review_status": "published"
+  },
+  {
+    "base_text": "buka",
+    "item_type": "word",
+    "translation_nl": "openen",
+    "context_type": "cloze",
+    "source_page": 3,
+    "review_status": "published"
   }
 ]

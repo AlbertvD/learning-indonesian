@@ -16,6 +16,115 @@ export const lessonPageBlocks = [
     "capability_key_refs": []
   },
   {
+    "block_key": "lesson-1-section-0",
+    "source_ref": "lesson-1",
+    "source_refs": [
+      "lesson-1"
+    ],
+    "content_unit_slugs": [],
+    "block_kind": "section",
+    "display_order": 100,
+    "payload_json": {
+      "type": "text",
+      "intro": "De Indonesische woorden kan men in het begin het best rustig en zonder klemtoon uitspreken. Van belang bij de uitspraak is een gelijkmatig ritme. Hierbij worden we geholpen door het feit dat de woorden over het algemeen niet lang zijn en een indeling in lettergrepen makkelijk te maken is.",
+      "examples": [
+        {
+          "dutch": "Welkom",
+          "phonetic": "Se-la-mat da-tang",
+          "indonesian": "Selamat datang"
+        },
+        {
+          "dutch": "Hoe is het ermee?",
+          "phonetic": "A-pa ka-bar?",
+          "indonesian": "Apa kabar?"
+        },
+        {
+          "dutch": "Goed, dank u wel",
+          "phonetic": "Ba-ik, te-ri-ma ka-sih",
+          "indonesian": "Baik, terima kasih"
+        },
+        {
+          "dutch": "Gaat u naar Bandung?",
+          "phonetic": "Ba-pak ke Ban-dung?",
+          "indonesian": "Bapak ke Bandung?"
+        }
+      ],
+      "spelling": [
+        {
+          "rule": "c = tj",
+          "dutch": "voldoende",
+          "example": "cukup (tjoekoep)"
+        },
+        {
+          "rule": "j = dj",
+          "dutch": "Jakarta",
+          "example": "Jakarta (Djakarta)"
+        },
+        {
+          "rule": "u = oe",
+          "dutch": "mevrouw, u",
+          "example": "Ibu (Iboe)"
+        },
+        {
+          "rule": "y = j",
+          "dutch": "Surabaya",
+          "example": "Surabaya (Soerabaja)"
+        },
+        {
+          "rule": "ny = nj",
+          "dutch": "mevrouw, u",
+          "example": "nyonya (njonja)"
+        },
+        {
+          "rule": "kh = ch",
+          "dutch": "einde",
+          "example": "akhir (achir)"
+        }
+      ],
+      "title": "Uitspraak"
+    },
+    "source_progress_event": "section_exposed",
+    "capability_key_refs": []
+  },
+  {
+    "block_key": "lesson-1-section-1",
+    "source_ref": "lesson-1",
+    "source_refs": [
+      "lesson-1"
+    ],
+    "content_unit_slugs": [],
+    "block_kind": "section",
+    "display_order": 200,
+    "payload_json": {
+      "type": "text",
+      "sentences": [
+        {
+          "dutch": "Ik ga/ging naar de/een markt",
+          "indonesian": "Saya ke pasar"
+        },
+        {
+          "dutch": "Ik koop/kocht een vrucht/vruchten",
+          "indonesian": "Saya beli buah"
+        },
+        {
+          "dutch": "Meneer koopt/kocht fruit",
+          "indonesian": "Bapak beli buah-buahan"
+        },
+        {
+          "dutch": "Meneer en mevrouw kopen/kochten een ananas",
+          "indonesian": "Bapak dan Ibu beli nanas"
+        },
+        {
+          "dutch": "Ik wil/wilde een groot huis kopen",
+          "indonesian": "Saya mau beli rumah besar"
+        }
+      ],
+      "title": "Eenvoudige zinnen"
+    },
+    "source_progress_event": "section_exposed",
+    "capability_key_refs": []
+  },
+  {
     "block_key": "lesson-1-section-2-grammar-intro",
     "source_ref": "lesson-1",
     "source_refs": [
@@ -46,25 +155,25 @@ export const lessonPageBlocks = [
       "title": "Werkwoord",
       "categories": [
         {
-          "title": "Werkwoord",
           "rules": [
             "Zinnen zonder een werkwoord zijn heel gewoon.",
             "Werkwoorden worden niet vervoegd naar enkel- of meervoud.",
             "Werkwoorden worden niet vervoegd naar tegenwoordige of verleden tijd. Tenzij uit de context anders blijkt, vertaalt men het werkwoord in de tegenwoordige tijd.",
             "Werkwoorden worden bij elkaar gezet."
           ],
+          "title": "Werkwoord",
           "examples": [
             {
-              "indonesian": "Itu mahal",
-              "dutch": "Dat [is] duur (geen koppelwerkwoord)"
+              "dutch": "Dat [is] duur (geen koppelwerkwoord)",
+              "indonesian": "Itu mahal"
             },
             {
-              "indonesian": "Saya beli buah",
-              "dutch": "Ik koop een vrucht (geen vervoeging)"
+              "dutch": "Ik koop een vrucht (geen vervoeging)",
+              "indonesian": "Saya beli buah"
             },
             {
-              "indonesian": "Saya mau beli rumah besar",
-              "dutch": "Ik wil een groot huis kopen (werkwoorden bij elkaar)"
+              "dutch": "Ik wil een groot huis kopen (werkwoorden bij elkaar)",
+              "indonesian": "Saya mau beli rumah besar"
             }
           ]
         }
@@ -87,25 +196,25 @@ export const lessonPageBlocks = [
       "title": "Zelfstandig naamwoord",
       "categories": [
         {
-          "title": "Zelfstandig naamwoord",
           "rules": [
             "Zelfstandige naamwoorden hebben geen lidwoord (de, het, een).",
             "Er wordt bij zelfstandige naamwoorden geen onderscheid gemaakt tussen enkelvoud en meervoud.",
             "Herhaling van een zelfstandig naamwoord geeft meervoud of verscheidenheid aan.",
             "Als uit de context blijkt dat er sprake is van meervoud of verscheidenheid, wordt een zelfstandig naamwoord niet verdubbeld (2 huizen = dua rumah en niet dua rumah-rumah)."
           ],
+          "title": "Zelfstandig naamwoord",
           "examples": [
             {
-              "indonesian": "Saya beli rumah",
-              "dutch": "Ik koop een/het huis (geen lidwoord)"
+              "dutch": "Ik koop een/het huis (geen lidwoord)",
+              "indonesian": "Saya beli rumah"
             },
             {
-              "indonesian": "Dua rumah",
-              "dutch": "Twee huizen (geen meervoud bij telwoord)"
+              "dutch": "Twee huizen (geen meervoud bij telwoord)",
+              "indonesian": "Dua rumah"
             },
             {
-              "indonesian": "Buah-buahan",
-              "dutch": "Allerlei fruit (reduplicatie = verscheidenheid)"
+              "dutch": "Allerlei fruit (reduplicatie = verscheidenheid)",
+              "indonesian": "Buah-buahan"
             }
           ]
         }
@@ -128,14 +237,14 @@ export const lessonPageBlocks = [
       "title": "Bijvoeglijk naamwoord",
       "categories": [
         {
-          "title": "Bijvoeglijk naamwoord",
           "rules": [
             "Het bijvoeglijk naamwoord wordt achter het zelfstandig naamwoord geplaatst."
           ],
+          "title": "Bijvoeglijk naamwoord",
           "examples": [
             {
-              "indonesian": "Rumah besar",
-              "dutch": "Een groot huis (bijv.nw. na znw.)"
+              "dutch": "Een groot huis (bijv.nw. na znw.)",
+              "indonesian": "Rumah besar"
             }
           ]
         }
@@ -145,6 +254,881 @@ export const lessonPageBlocks = [
     "capability_key_refs": []
   },
   {
+    "block_key": "lesson-1-section-3",
+    "source_ref": "lesson-1",
+    "source_refs": [
+      "lesson-1"
+    ],
+    "content_unit_slugs": [],
+    "block_kind": "section",
+    "display_order": 400,
+    "payload_json": {
+      "type": "dialogue",
+      "lines": [
+        {
+          "text": "Pak, saya mau beli tiga buah pisang. Berapa harganya?",
+          "speaker": "Ibu"
+        },
+        {
+          "text": "Harganya murah Bu, delapan rupiah.",
+          "speaker": "Penjual"
+        },
+        {
+          "text": "Itu mahal ya! Empat rupiah boleh?",
+          "speaker": "Ibu"
+        },
+        {
+          "text": "Belum bisa Bu. Tetapi kalau mau lima buah, bisa sembilan rupiah.",
+          "speaker": "Penjual"
+        }
+      ],
+      "setup": "Ibu mau ke pasar. Mau beli pisang.",
+      "title": "Di Pasar (Op de markt)"
+    },
+    "source_progress_event": "section_exposed",
+    "capability_key_refs": []
+  },
+  {
+    "block_key": "lesson-1-section-4",
+    "source_ref": "lesson-1",
+    "source_refs": [
+      "lesson-1"
+    ],
+    "content_unit_slugs": [],
+    "block_kind": "section",
+    "display_order": 500,
+    "payload_json": {
+      "type": "vocabulary",
+      "items": [
+        {
+          "dutch": "einde",
+          "indonesian": "akhir"
+        },
+        {
+          "dutch": "wat?",
+          "indonesian": "apa?"
+        },
+        {
+          "dutch": "taal",
+          "indonesian": "bahasa"
+        },
+        {
+          "dutch": "goed",
+          "indonesian": "baik"
+        },
+        {
+          "dutch": "meneer, vader, u",
+          "indonesian": "bapak"
+        },
+        {
+          "dutch": "kopen",
+          "indonesian": "beli"
+        },
+        {
+          "dutch": "nog niet",
+          "indonesian": "belum"
+        },
+        {
+          "dutch": "hoeveel?",
+          "indonesian": "berapa?"
+        },
+        {
+          "dutch": "groot",
+          "indonesian": "besar"
+        },
+        {
+          "dutch": "kunnen, mogen",
+          "indonesian": "bisa"
+        },
+        {
+          "dutch": "mogen, kunnen",
+          "indonesian": "boleh"
+        },
+        {
+          "dutch": "vrucht",
+          "indonesian": "buah"
+        },
+        {
+          "dutch": "voldoende",
+          "indonesian": "cukup"
+        },
+        {
+          "dutch": "en",
+          "indonesian": "dan"
+        },
+        {
+          "dutch": "uit, van",
+          "indonesian": "dari"
+        },
+        {
+          "dutch": "komen",
+          "indonesian": "datang"
+        },
+        {
+          "dutch": "in, op, te",
+          "indonesian": "di"
+        },
+        {
+          "dutch": "prijs",
+          "indonesian": "harga"
+        },
+        {
+          "dutch": "hotel",
+          "indonesian": "hotel"
+        },
+        {
+          "dutch": "mevrouw, moeder, u",
+          "indonesian": "ibu"
+        },
+        {
+          "dutch": "indonesië",
+          "indonesian": "indonesia"
+        },
+        {
+          "dutch": "dat, die",
+          "indonesian": "itu"
+        },
+        {
+          "dutch": "bericht",
+          "indonesian": "kabar"
+        },
+        {
+          "dutch": "indien, wanneer",
+          "indonesian": "kalau"
+        },
+        {
+          "dutch": "gunst, genegenheid",
+          "indonesian": "kasih"
+        },
+        {
+          "dutch": "naar",
+          "indonesian": "ke"
+        },
+        {
+          "dutch": "leeg",
+          "indonesian": "kosong"
+        },
+        {
+          "dutch": "duur",
+          "indonesian": "mahal"
+        },
+        {
+          "dutch": "eten",
+          "indonesian": "makan"
+        },
+        {
+          "dutch": "willen",
+          "indonesian": "mau"
+        },
+        {
+          "dutch": "goedkoop",
+          "indonesian": "murah"
+        },
+        {
+          "dutch": "ananas",
+          "indonesian": "nanas"
+        },
+        {
+          "dutch": "mevrouw, u",
+          "indonesian": "nyonya"
+        },
+        {
+          "dutch": "mens",
+          "indonesian": "orang"
+        },
+        {
+          "dutch": "markt",
+          "indonesian": "pasar"
+        },
+        {
+          "dutch": "verkoper",
+          "indonesian": "penjual"
+        },
+        {
+          "dutch": "banaan",
+          "indonesian": "pisang"
+        },
+        {
+          "dutch": "huis",
+          "indonesian": "rumah"
+        },
+        {
+          "dutch": "munteenheid",
+          "indonesian": "rupiah (Rp)"
+        },
+        {
+          "dutch": "ik, mijn",
+          "indonesian": "saya"
+        },
+        {
+          "dutch": "veilig, welzijn",
+          "indonesian": "selamat"
+        },
+        {
+          "dutch": "ontvangen",
+          "indonesian": "terima"
+        },
+        {
+          "dutch": "maar, echter",
+          "indonesian": "tetapi"
+        },
+        {
+          "dutch": "niet, nee",
+          "indonesian": "tidak"
+        }
+      ],
+      "title": "Woordenlijst"
+    },
+    "source_progress_event": "section_exposed",
+    "capability_key_refs": []
+  },
+  {
+    "block_key": "lesson-1-section-5",
+    "source_ref": "lesson-1",
+    "source_refs": [
+      "lesson-1"
+    ],
+    "content_unit_slugs": [],
+    "block_kind": "section",
+    "display_order": 600,
+    "payload_json": {
+      "type": "expressions",
+      "items": [
+        {
+          "dutch": "Hoe gaat het ermee?",
+          "indonesian": "Apa kabar?"
+        },
+        {
+          "dutch": "Goed, dank u wel",
+          "indonesian": "Baik-baik saja"
+        },
+        {
+          "dutch": "Wat kost het?",
+          "indonesian": "Berapa harganya?"
+        },
+        {
+          "dutch": "Het is goedkoop; de prijs is laag",
+          "indonesian": "Harganya murah"
+        },
+        {
+          "dutch": "Welkom",
+          "indonesian": "Selamat datang"
+        },
+        {
+          "dutch": "Dank u wel",
+          "indonesian": "Terima kasih"
+        }
+      ],
+      "title": "Uitdrukkingen"
+    },
+    "source_progress_event": "section_exposed",
+    "capability_key_refs": []
+  },
+  {
+    "block_key": "lesson-1-section-6",
+    "source_ref": "lesson-1",
+    "source_refs": [
+      "lesson-1"
+    ],
+    "content_unit_slugs": [],
+    "block_kind": "section",
+    "display_order": 700,
+    "payload_json": {
+      "type": "numbers",
+      "items": [
+        {
+          "dutch": "0",
+          "indonesian": "nol, kosong"
+        },
+        {
+          "dutch": "1",
+          "indonesian": "satu"
+        },
+        {
+          "dutch": "2",
+          "indonesian": "dua"
+        },
+        {
+          "dutch": "3",
+          "indonesian": "tiga"
+        },
+        {
+          "dutch": "4",
+          "indonesian": "empat"
+        },
+        {
+          "dutch": "5",
+          "indonesian": "lima"
+        },
+        {
+          "dutch": "6",
+          "indonesian": "enam"
+        },
+        {
+          "dutch": "7",
+          "indonesian": "tujuh"
+        },
+        {
+          "dutch": "8",
+          "indonesian": "delapan"
+        },
+        {
+          "dutch": "9",
+          "indonesian": "sembilan"
+        },
+        {
+          "dutch": "10",
+          "indonesian": "sepuluh"
+        }
+      ],
+      "title": "Telwoorden"
+    },
+    "source_progress_event": "section_exposed",
+    "capability_key_refs": []
+  },
+  {
+    "block_key": "lesson-1-section-7",
+    "source_ref": "lesson-1",
+    "source_refs": [
+      "lesson-1"
+    ],
+    "content_unit_slugs": [],
+    "block_kind": "section",
+    "display_order": 800,
+    "payload_json": {
+      "type": "pronunciation",
+      "letters": [
+        {
+          "rule": "kort als in kam",
+          "letter": "a",
+          "examples": [
+            "apa",
+            "akan",
+            "siapa",
+            "tetapi"
+          ]
+        },
+        {
+          "rule": "als in bang",
+          "letter": "b",
+          "examples": [
+            "bagus",
+            "bapak",
+            "barang",
+            "berapa"
+          ]
+        },
+        {
+          "rule": "als in tjalk",
+          "letter": "c",
+          "examples": [
+            "cendol",
+            "coklat",
+            "kecil",
+            "kunci"
+          ]
+        },
+        {
+          "rule": "als in denken",
+          "letter": "d",
+          "examples": [
+            "dan",
+            "dari",
+            "delapan",
+            "datang"
+          ]
+        },
+        {
+          "rule": "als in bericht",
+          "letter": "e",
+          "examples": [
+            "beli",
+            "berat",
+            "dekat",
+            "enam"
+          ]
+        },
+        {
+          "rule": "als in Eva",
+          "letter": "é",
+          "examples": [
+            "sate (saté)",
+            "sore (soré)"
+          ]
+        },
+        {
+          "rule": "als in bek",
+          "letter": "è",
+          "examples": [
+            "enak (ènak)",
+            "teh (tèh)"
+          ]
+        },
+        {
+          "rule": "als in falen",
+          "letter": "f",
+          "examples": [
+            "fanatik",
+            "famili",
+            "fakir",
+            "faham"
+          ]
+        },
+        {
+          "rule": "als in 'go'",
+          "letter": "g",
+          "examples": [
+            "gampang",
+            "gelas",
+            "gigi",
+            "gengsi"
+          ]
+        },
+        {
+          "rule": "als in heet",
+          "letter": "h",
+          "examples": [
+            "hangat",
+            "harus",
+            "hati",
+            "helai"
+          ]
+        },
+        {
+          "rule": "als in iep",
+          "letter": "i",
+          "examples": [
+            "ikan",
+            "istri",
+            "ikut",
+            "isi"
+          ]
+        },
+        {
+          "rule": "als in 'James'",
+          "letter": "j",
+          "examples": [
+            "jam",
+            "jangan",
+            "juga",
+            "saja"
+          ]
+        },
+        {
+          "rule": "als in kalm",
+          "letter": "k",
+          "examples": [
+            "kabar",
+            "kamar",
+            "kalau",
+            "ke"
+          ]
+        },
+        {
+          "rule": "als in lang",
+          "letter": "l",
+          "examples": [
+            "lama",
+            "lalu",
+            "lagi",
+            "laku"
+          ]
+        },
+        {
+          "rule": "als in mak",
+          "letter": "m",
+          "examples": [
+            "makan",
+            "masih",
+            "mau",
+            "mati"
+          ]
+        },
+        {
+          "rule": "als in na",
+          "letter": "n",
+          "examples": [
+            "nasi",
+            "nanas",
+            "nanti",
+            "negeri"
+          ]
+        },
+        {
+          "rule": "als in optiek",
+          "letter": "o",
+          "examples": [
+            "opelet",
+            "orang",
+            "otak",
+            "otot"
+          ]
+        },
+        {
+          "rule": "als in pa",
+          "letter": "p",
+          "examples": [
+            "pada",
+            "pagi",
+            "paksa",
+            "pasar"
+          ]
+        },
+        {
+          "rule": "als in kalm",
+          "letter": "q",
+          "examples": [
+            "qari",
+            "qariah",
+            "Quran",
+            "Alquran"
+          ]
+        },
+        {
+          "rule": "als in radio",
+          "letter": "r",
+          "examples": [
+            "raba",
+            "rambut",
+            "rasa",
+            "rumah"
+          ]
+        },
+        {
+          "rule": "als in staan",
+          "letter": "s",
+          "examples": [
+            "saya",
+            "sayang",
+            "sudah",
+            "sayur"
+          ]
+        },
+        {
+          "rule": "als in trein",
+          "letter": "t",
+          "examples": [
+            "terima",
+            "teman",
+            "tenun",
+            "tiga"
+          ]
+        },
+        {
+          "rule": "als in oever",
+          "letter": "u",
+          "examples": [
+            "uang",
+            "ubi",
+            "utara",
+            "tubuh"
+          ]
+        },
+        {
+          "rule": "als in varen",
+          "letter": "v",
+          "examples": [
+            "via",
+            "visa",
+            "vitamin",
+            "vokal"
+          ]
+        },
+        {
+          "rule": "als in waar",
+          "letter": "w",
+          "examples": [
+            "wah!",
+            "walau",
+            "warta",
+            "wisma"
+          ]
+        },
+        {
+          "rule": "als in ex",
+          "letter": "x",
+          "examples": [
+            "xerox",
+            "sinar-X",
+            "xilofon",
+            "xenograf"
+          ]
+        },
+        {
+          "rule": "als in ja",
+          "letter": "y",
+          "examples": [
+            "yakin",
+            "yang",
+            "ayam",
+            "ya"
+          ]
+        },
+        {
+          "rule": "als in zang",
+          "letter": "z",
+          "examples": [
+            "zaman",
+            "ziarah",
+            "zina",
+            "zakat"
+          ]
+        }
+      ],
+      "title": "Uitspraakoefening"
+    },
+    "source_progress_event": "section_exposed",
+    "capability_key_refs": []
+  },
+  {
+    "block_key": "lesson-1-cloze",
+    "source_ref": "lesson-1",
+    "source_refs": [
+      "lesson-1"
+    ],
+    "content_unit_slugs": [
+      "item-berapa-harganya",
+      "item-cukup",
+      "item-di",
+      "item-hotel",
+      "item-pasar",
+      "item-sepuluh",
+      "item-bisa",
+      "item-dan",
+      "item-tujuh",
+      "item-kasih",
+      "item-selamat",
+      "item-nol",
+      "item-delapan",
+      "item-mau",
+      "item-saya",
+      "item-tidak",
+      "item-sembilan",
+      "item-berapa",
+      "item-penjual"
+    ],
+    "block_kind": "section",
+    "display_order": 1000,
+    "payload_json": {
+      "type": "reading",
+      "title": "cloze",
+      "items": [
+        {
+          "indonesian": "Berapa harganya?",
+          "dutch": "Wat kost het?"
+        },
+        {
+          "indonesian": "cukup",
+          "dutch": "voldoende"
+        },
+        {
+          "indonesian": "di",
+          "dutch": "in, op, te"
+        },
+        {
+          "indonesian": "hotel",
+          "dutch": "hotel"
+        },
+        {
+          "indonesian": "pasar",
+          "dutch": "markt"
+        },
+        {
+          "indonesian": "sepuluh",
+          "dutch": "10"
+        },
+        {
+          "indonesian": "bisa",
+          "dutch": "kunnen, mogen"
+        },
+        {
+          "indonesian": "dan",
+          "dutch": "en"
+        },
+        {
+          "indonesian": "tujuh",
+          "dutch": "7"
+        },
+        {
+          "indonesian": "kasih",
+          "dutch": "gunst, genegenheid"
+        },
+        {
+          "indonesian": "selamat",
+          "dutch": "veilig, welzijn"
+        },
+        {
+          "indonesian": "nol",
+          "dutch": "0"
+        },
+        {
+          "indonesian": "delapan",
+          "dutch": "8"
+        },
+        {
+          "indonesian": "mau",
+          "dutch": "willen"
+        },
+        {
+          "indonesian": "saya",
+          "dutch": "ik, mijn"
+        },
+        {
+          "indonesian": "tidak",
+          "dutch": "niet, nee"
+        },
+        {
+          "indonesian": "sembilan",
+          "dutch": "9"
+        },
+        {
+          "indonesian": "berapa?",
+          "dutch": "hoeveel?"
+        },
+        {
+          "indonesian": "penjual",
+          "dutch": "verkoper"
+        }
+      ]
+    },
+    "source_progress_event": "section_exposed",
+    "capability_key_refs": [
+      "cap:v1:item:learning_items/berapa-harganya:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/berapa-harganya:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/berapa-harganya:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/cukup:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/cukup:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/cukup:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/di:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/di:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/di:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/hotel:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/hotel:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/hotel:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/pasar:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/pasar:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/pasar:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/sepuluh:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/sepuluh:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/sepuluh:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/bisa:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/bisa:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/bisa:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/dan:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/dan:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/dan:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/tujuh:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/tujuh:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/tujuh:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/kasih:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/kasih:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/kasih:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/selamat:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/selamat:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/selamat:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/nol:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/nol:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/nol:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/delapan:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/delapan:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/delapan:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/mau:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/mau:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/mau:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/saya:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/saya:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/saya:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/tidak:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/tidak:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/tidak:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/sembilan:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/sembilan:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/sembilan:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/berapa:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/berapa:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/berapa:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/penjual:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/penjual:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/penjual:text_recognition:id_to_l1:text:nl"
+    ]
+  },
+  {
+    "block_key": "lesson-1-lesson-snippet",
+    "source_ref": "lesson-1",
+    "source_refs": [
+      "lesson-1"
+    ],
+    "content_unit_slugs": [
+      "item-apa",
+      "item-harganya-murah",
+      "item-terima-kasih",
+      "item-indonesia",
+      "item-apa-kabar",
+      "item-selamat-datang",
+      "item-baik-baik-saja"
+    ],
+    "block_kind": "section",
+    "display_order": 1010,
+    "payload_json": {
+      "type": "reading",
+      "title": "lesson snippet",
+      "items": [
+        {
+          "indonesian": "apa?",
+          "dutch": "wat?"
+        },
+        {
+          "indonesian": "harganya murah",
+          "dutch": "Het is goedkoop; de prijs is laag"
+        },
+        {
+          "indonesian": "terima kasih",
+          "dutch": "Dank u wel"
+        },
+        {
+          "indonesian": "Indonesia",
+          "dutch": "Indonesië"
+        },
+        {
+          "indonesian": "Apa kabar?",
+          "dutch": "Hoe gaat het?"
+        },
+        {
+          "indonesian": "selamat datang",
+          "dutch": "Welkom"
+        },
+        {
+          "indonesian": "baik-baik saja",
+          "dutch": "Goed, dank u wel"
+        }
+      ]
+    },
+    "source_progress_event": "section_exposed",
+    "capability_key_refs": [
+      "cap:v1:item:learning_items/apa:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/apa:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/apa:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/harganya-murah:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/harganya-murah:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/harganya-murah:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/terima-kasih:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/terima-kasih:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/terima-kasih:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/indonesia:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/indonesia:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/indonesia:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/apa-kabar:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/apa-kabar:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/apa-kabar:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/selamat-datang:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/selamat-datang:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/selamat-datang:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/baik-baik-saja:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/baik-baik-saja:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/baik-baik-saja:text_recognition:id_to_l1:text:nl"
+    ]
+  },
+  {
     "block_key": "lesson-1-vocabulary-list",
     "source_ref": "lesson-1",
     "source_refs": [
@@ -152,69 +1136,43 @@ export const lessonPageBlocks = [
     ],
     "content_unit_slugs": [
       "item-akhir",
-      "item-apa",
-      "item-bahasa",
-      "item-baik",
       "item-bapak",
-      "item-beli",
-      "item-belum",
-      "item-berapa",
       "item-besar",
-      "item-bisa",
       "item-boleh",
-      "item-buah",
-      "item-cukup",
-      "item-dan",
       "item-dari",
-      "item-datang",
-      "item-di",
-      "item-harga",
-      "item-hotel",
-      "item-ibu",
-      "item-indonesia",
-      "item-itu",
-      "item-kabar",
-      "item-kalau",
-      "item-kasih",
-      "item-ke",
-      "item-kosong",
-      "item-mahal",
-      "item-makan",
-      "item-mau",
       "item-murah",
-      "item-nanas",
-      "item-nyonya",
-      "item-orang",
-      "item-pasar",
-      "item-penjual",
       "item-pisang",
-      "item-rumah",
-      "item-rupiah",
-      "item-saya",
-      "item-selamat",
-      "item-terima",
       "item-tetapi",
-      "item-tidak",
-      "item-apa-kabar",
-      "item-baik-baik-saja",
-      "item-berapa-harganya",
-      "item-harganya-murah",
-      "item-selamat-datang",
-      "item-terima-kasih",
-      "item-nol",
-      "item-satu",
       "item-dua",
-      "item-tiga",
-      "item-empat",
-      "item-lima",
       "item-enam",
-      "item-tujuh",
-      "item-delapan",
-      "item-sembilan",
-      "item-sepuluh"
+      "item-beli",
+      "item-ibu",
+      "item-ke",
+      "item-mahal",
+      "item-nanas",
+      "item-rumah",
+      "item-terima",
+      "item-satu",
+      "item-tiga",
+      "item-bahasa",
+      "item-belum",
+      "item-kabar",
+      "item-makan",
+      "item-nyonya",
+      "item-rupiah",
+      "item-empat",
+      "item-baik",
+      "item-buah",
+      "item-datang",
+      "item-harga",
+      "item-itu",
+      "item-kalau",
+      "item-lima",
+      "item-orang",
+      "item-kosong"
     ],
     "block_kind": "section",
-    "display_order": 1000,
+    "display_order": 1020,
     "payload_json": {
       "type": "vocabulary",
       "title": "Woordenschat",
@@ -224,244 +1182,140 @@ export const lessonPageBlocks = [
           "dutch": "einde"
         },
         {
-          "indonesian": "apa?",
-          "dutch": "wat?"
-        },
-        {
-          "indonesian": "bahasa",
-          "dutch": "taal"
-        },
-        {
-          "indonesian": "baik",
-          "dutch": "goed"
-        },
-        {
           "indonesian": "bapak",
           "dutch": "meneer, vader, u"
-        },
-        {
-          "indonesian": "beli",
-          "dutch": "kopen"
-        },
-        {
-          "indonesian": "belum",
-          "dutch": "nog niet"
-        },
-        {
-          "indonesian": "berapa?",
-          "dutch": "hoeveel?"
         },
         {
           "indonesian": "besar",
           "dutch": "groot"
         },
         {
-          "indonesian": "bisa",
-          "dutch": "kunnen, mogen"
-        },
-        {
           "indonesian": "boleh",
           "dutch": "mogen, kunnen"
-        },
-        {
-          "indonesian": "buah",
-          "dutch": "vrucht"
-        },
-        {
-          "indonesian": "cukup",
-          "dutch": "voldoende"
-        },
-        {
-          "indonesian": "dan",
-          "dutch": "en"
         },
         {
           "indonesian": "dari",
           "dutch": "uit, van"
         },
         {
-          "indonesian": "datang",
-          "dutch": "komen"
-        },
-        {
-          "indonesian": "di",
-          "dutch": "in, op, te"
-        },
-        {
-          "indonesian": "harga",
-          "dutch": "prijs"
-        },
-        {
-          "indonesian": "hotel",
-          "dutch": "hotel"
-        },
-        {
-          "indonesian": "ibu",
-          "dutch": "mevrouw, moeder, u"
-        },
-        {
-          "indonesian": "Indonesia",
-          "dutch": "Indonesië"
-        },
-        {
-          "indonesian": "itu",
-          "dutch": "dat, die"
-        },
-        {
-          "indonesian": "kabar",
-          "dutch": "bericht"
-        },
-        {
-          "indonesian": "kalau",
-          "dutch": "indien, wanneer"
-        },
-        {
-          "indonesian": "kasih",
-          "dutch": "gunst, genegenheid"
-        },
-        {
-          "indonesian": "ke",
-          "dutch": "naar"
-        },
-        {
-          "indonesian": "kosong",
-          "dutch": "leeg"
-        },
-        {
-          "indonesian": "mahal",
-          "dutch": "duur"
-        },
-        {
-          "indonesian": "makan",
-          "dutch": "eten"
-        },
-        {
-          "indonesian": "mau",
-          "dutch": "willen"
-        },
-        {
           "indonesian": "murah",
           "dutch": "goedkoop"
-        },
-        {
-          "indonesian": "nanas",
-          "dutch": "ananas"
-        },
-        {
-          "indonesian": "nyonya",
-          "dutch": "mevrouw, u"
-        },
-        {
-          "indonesian": "orang",
-          "dutch": "mens"
-        },
-        {
-          "indonesian": "pasar",
-          "dutch": "markt"
-        },
-        {
-          "indonesian": "penjual",
-          "dutch": "verkoper"
         },
         {
           "indonesian": "pisang",
           "dutch": "banaan"
         },
         {
-          "indonesian": "rumah",
-          "dutch": "huis"
-        },
-        {
-          "indonesian": "rupiah",
-          "dutch": "munteenheid"
-        },
-        {
-          "indonesian": "saya",
-          "dutch": "ik, mijn"
-        },
-        {
-          "indonesian": "selamat",
-          "dutch": "veilig, welzijn"
-        },
-        {
-          "indonesian": "terima",
-          "dutch": "ontvangen"
-        },
-        {
           "indonesian": "tetapi",
           "dutch": "maar, echter"
-        },
-        {
-          "indonesian": "tidak",
-          "dutch": "niet, nee"
-        },
-        {
-          "indonesian": "apa kabar?",
-          "dutch": "Hoe gaat het ermee?"
-        },
-        {
-          "indonesian": "baik-baik saja",
-          "dutch": "Goed, dank u wel"
-        },
-        {
-          "indonesian": "berapa harganya?",
-          "dutch": "Wat kost het?"
-        },
-        {
-          "indonesian": "harganya murah",
-          "dutch": "Het is goedkoop; de prijs is laag"
-        },
-        {
-          "indonesian": "selamat datang",
-          "dutch": "Welkom"
-        },
-        {
-          "indonesian": "terima kasih",
-          "dutch": "Dank u wel"
-        },
-        {
-          "indonesian": "nol",
-          "dutch": "0"
-        },
-        {
-          "indonesian": "satu",
-          "dutch": "1"
         },
         {
           "indonesian": "dua",
           "dutch": "2"
         },
         {
+          "indonesian": "enam",
+          "dutch": "6"
+        },
+        {
+          "indonesian": "beli",
+          "dutch": "kopen"
+        },
+        {
+          "indonesian": "ibu",
+          "dutch": "mevrouw, moeder, u"
+        },
+        {
+          "indonesian": "ke",
+          "dutch": "naar"
+        },
+        {
+          "indonesian": "mahal",
+          "dutch": "duur"
+        },
+        {
+          "indonesian": "nanas",
+          "dutch": "ananas"
+        },
+        {
+          "indonesian": "rumah",
+          "dutch": "huis"
+        },
+        {
+          "indonesian": "terima",
+          "dutch": "ontvangen"
+        },
+        {
+          "indonesian": "satu",
+          "dutch": "1"
+        },
+        {
           "indonesian": "tiga",
           "dutch": "3"
+        },
+        {
+          "indonesian": "bahasa",
+          "dutch": "taal"
+        },
+        {
+          "indonesian": "belum",
+          "dutch": "nog niet"
+        },
+        {
+          "indonesian": "kabar",
+          "dutch": "bericht"
+        },
+        {
+          "indonesian": "makan",
+          "dutch": "eten"
+        },
+        {
+          "indonesian": "nyonya",
+          "dutch": "mevrouw, u"
+        },
+        {
+          "indonesian": "rupiah",
+          "dutch": "munteenheid"
         },
         {
           "indonesian": "empat",
           "dutch": "4"
         },
         {
+          "indonesian": "baik",
+          "dutch": "goed"
+        },
+        {
+          "indonesian": "buah",
+          "dutch": "vrucht"
+        },
+        {
+          "indonesian": "datang",
+          "dutch": "komen"
+        },
+        {
+          "indonesian": "harga",
+          "dutch": "prijs"
+        },
+        {
+          "indonesian": "itu",
+          "dutch": "dat, die"
+        },
+        {
+          "indonesian": "kalau",
+          "dutch": "indien, wanneer"
+        },
+        {
           "indonesian": "lima",
           "dutch": "5"
         },
         {
-          "indonesian": "enam",
-          "dutch": "6"
+          "indonesian": "orang",
+          "dutch": "mens"
         },
         {
-          "indonesian": "tujuh",
-          "dutch": "7"
-        },
-        {
-          "indonesian": "delapan",
-          "dutch": "8"
-        },
-        {
-          "indonesian": "sembilan",
-          "dutch": "9"
-        },
-        {
-          "indonesian": "sepuluh",
-          "dutch": "10"
+          "indonesian": "kosong",
+          "dutch": "leeg"
         }
       ]
     },
@@ -470,186 +1324,108 @@ export const lessonPageBlocks = [
       "cap:v1:item:learning_items/akhir:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/apa:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/apa:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/apa:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/bahasa:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/bahasa:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/bahasa:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/baik:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/baik:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/baik:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/bapak:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/bapak:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/bapak:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/beli:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/beli:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/beli:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/belum:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/belum:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/belum:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/berapa:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/berapa:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/berapa:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/besar:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/besar:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/besar:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/bisa:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/bisa:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/bisa:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/boleh:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/boleh:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/boleh:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/buah:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/buah:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/buah:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/cukup:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/cukup:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/cukup:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/dan:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/dan:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/dan:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/dari:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/dari:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/dari:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/datang:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/datang:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/datang:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/di:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/di:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/di:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/harga:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/harga:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/harga:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/hotel:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/hotel:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/hotel:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ibu:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/ibu:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ibu:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/indonesia:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/indonesia:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/indonesia:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/itu:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/itu:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/itu:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kabar:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kabar:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kabar:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kalau:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kalau:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kalau:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kasih:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kasih:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kasih:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ke:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/ke:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ke:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kosong:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kosong:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kosong:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mahal:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/mahal:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mahal:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/makan:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/makan:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mau:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/mau:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mau:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/murah:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/murah:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/murah:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/nanas:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/nanas:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/nanas:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/nyonya:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/nyonya:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/nyonya:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/orang:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/orang:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/orang:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/pasar:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/pasar:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/pasar:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/penjual:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/penjual:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/penjual:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/pisang:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/pisang:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/pisang:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/rumah:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/rumah:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/rumah:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/rupiah:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/rupiah:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/rupiah:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/saya:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/saya:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/saya:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/selamat:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/selamat:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/selamat:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/terima:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/terima:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/terima:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/tetapi:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/tetapi:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/tetapi:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/tidak:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/tidak:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/tidak:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/apa-kabar:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/apa-kabar:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/apa-kabar:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/baik-baik-saja:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/baik-baik-saja:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/baik-baik-saja:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/berapa-harganya:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/berapa-harganya:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/berapa-harganya:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/harganya-murah:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/harganya-murah:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/harganya-murah:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/selamat-datang:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/selamat-datang:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/selamat-datang:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/terima-kasih:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/terima-kasih:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/terima-kasih:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/nol:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/nol:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/nol:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/satu:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/satu:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/satu:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/dua:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/dua:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/dua:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/tiga:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/tiga:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/tiga:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/empat:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/empat:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/empat:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/lima:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/lima:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/lima:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/enam:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/enam:meaning_recall:id_to_l1:text:nl",
       "cap:v1:item:learning_items/enam:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/tujuh:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/tujuh:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/tujuh:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/delapan:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/delapan:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/delapan:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sembilan:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/sembilan:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sembilan:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sepuluh:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/sepuluh:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sepuluh:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/beli:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/beli:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/beli:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/ibu:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/ibu:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/ibu:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/ke:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/ke:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/ke:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/mahal:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/mahal:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/mahal:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/nanas:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/nanas:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/nanas:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/rumah:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/rumah:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/rumah:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/terima:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/terima:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/terima:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/satu:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/satu:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/satu:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/tiga:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/tiga:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/tiga:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/bahasa:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/bahasa:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/bahasa:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/belum:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/belum:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/belum:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/kabar:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/kabar:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/kabar:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/makan:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/makan:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/nyonya:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/nyonya:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/nyonya:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/rupiah:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/rupiah:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/rupiah:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/empat:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/empat:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/empat:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/baik:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/baik:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/baik:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/buah:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/buah:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/buah:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/datang:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/datang:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/datang:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/harga:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/harga:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/harga:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/itu:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/itu:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/itu:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/kalau:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/kalau:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/kalau:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/lima:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/lima:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/lima:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/orang:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/orang:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/orang:text_recognition:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/kosong:form_recall:l1_to_id:text:nl",
+      "cap:v1:item:learning_items/kosong:meaning_recall:id_to_l1:text:nl",
+      "cap:v1:item:learning_items/kosong:text_recognition:id_to_l1:text:nl"
     ]
   },
   {
