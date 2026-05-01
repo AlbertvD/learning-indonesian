@@ -1,7 +1,12 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Box, Button, Container, Progress, Stack, Text, Loader, Center, Alert } from '@mantine/core'
+import { Box, Button, Progress, Stack, Text, Alert } from '@mantine/core'
 import { IconAlertCircle } from '@tabler/icons-react'
+import {
+  PageContainer,
+  PageBody,
+  LoadingState,
+} from '@/components/page/primitives'
 import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
 import { translations } from '@/lib/i18n'
@@ -556,22 +561,23 @@ export function Session() {
   // Render states
   if (loading) {
     return (
-      <Center h="100vh">
-        <Stack align="center" gap="md">
-          <Loader />
-          <Text c="dimmed">Sessie laden...</Text>
-        </Stack>
-      </Center>
+      <PageContainer size="md">
+        <PageBody>
+          <LoadingState caption="Sessie laden..." />
+        </PageBody>
+      </PageContainer>
     )
   }
 
   if (error) {
     return (
-      <Container size="sm" py="xl">
-        <Alert icon={<IconAlertCircle size={16} />} color="red" title="Sessiefout">
-          {error}
-        </Alert>
-      </Container>
+      <PageContainer size="sm">
+        <PageBody>
+          <Alert icon={<IconAlertCircle size={16} />} color="red" title="Sessiefout">
+            {error}
+          </Alert>
+        </PageBody>
+      </PageContainer>
     )
   }
 
@@ -587,49 +593,53 @@ export function Session() {
     }
 
     return (
-      <Container size="sm" py="xl">
-        <Stack gap="md">
-          <Alert color={capabilityPlan.blocks.length > 0 ? 'blue' : 'yellow'} title="Vaardigheidssessieplan">
-            {capabilityPlan.blocks.length > 0
-              ? `${capabilityPlan.blocks.length} vaardigheidsoefening(en) geladen via scheduler, pedagogische planner, resolver en composer.`
-              : `Er zijn geen renderbare vaardigheidsoefeningen gemaakt (${capabilityPlan.diagnostics.length} diagnoses).`}
-          </Alert>
-          {capabilityPlan.blocks.map(block => (
-            <Box
-              key={block.id}
-              p="md"
-              style={{
-                border: '1px solid var(--mantine-color-gray-3)',
-                borderRadius: 12,
-                background: 'var(--mantine-color-white)',
-              }}
-            >
-              <Text fw={700}>{block.kind === 'due_review' ? 'Nu te herhalen' : 'Nieuwe introductie'}</Text>
-              <Text size="sm" c="dimmed">{block.renderPlan.exerciseType} · {block.renderPlan.capabilityType}</Text>
-              <Text size="xs" c="dimmed">{block.canonicalKeySnapshot}</Text>
-            </Box>
-          ))}
-          {capabilityPlan.diagnostics.map((diagnostic, index) => (
-            <Alert key={`${diagnostic.reason}-${index}`} color="yellow" title={diagnostic.reason}>
-              {diagnostic.details}
+      <PageContainer size="sm">
+        <PageBody>
+          <Stack gap="md">
+            <Alert color={capabilityPlan.blocks.length > 0 ? 'blue' : 'yellow'} title="Vaardigheidssessieplan">
+              {capabilityPlan.blocks.length > 0
+                ? `${capabilityPlan.blocks.length} vaardigheidsoefening(en) geladen via scheduler, pedagogische planner, resolver en composer.`
+                : `Er zijn geen renderbare vaardigheidsoefeningen gemaakt (${capabilityPlan.diagnostics.length} diagnoses).`}
             </Alert>
-          ))}
-          <Text size="sm" c="dimmed">
-            De rijke antwoord- en reviewervaring hoort bij de Experience Player-slice; dit scherm controleert het echte vaardigheidscompositiepad zonder terug te vallen op legacy planning.
-          </Text>
-          <Button onClick={handleCapabilityPlanComplete}>Sessie afronden</Button>
-        </Stack>
-      </Container>
+            {capabilityPlan.blocks.map(block => (
+              <Box
+                key={block.id}
+                p="md"
+                style={{
+                  border: '1px solid var(--card-border)',
+                  borderRadius: 12,
+                  background: 'var(--card-bg)',
+                }}
+              >
+                <Text fw={700}>{block.kind === 'due_review' ? 'Nu te herhalen' : 'Nieuwe introductie'}</Text>
+                <Text size="sm" c="dimmed">{block.renderPlan.exerciseType} · {block.renderPlan.capabilityType}</Text>
+                <Text size="xs" c="dimmed">{block.canonicalKeySnapshot}</Text>
+              </Box>
+            ))}
+            {capabilityPlan.diagnostics.map((diagnostic, index) => (
+              <Alert key={`${diagnostic.reason}-${index}`} color="yellow" title={diagnostic.reason}>
+                {diagnostic.details}
+              </Alert>
+            ))}
+            <Text size="sm" c="dimmed">
+              De rijke antwoord- en reviewervaring hoort bij de Experience Player-slice; dit scherm controleert het echte vaardigheidscompositiepad zonder terug te vallen op legacy planning.
+            </Text>
+            <Button onClick={handleCapabilityPlanComplete}>Sessie afronden</Button>
+          </Stack>
+        </PageBody>
+      </PageContainer>
     )
   }
 
   if (queue.length === 0) {
     return (
-      <Container size="sm" py="xl">
-        <Alert color="yellow" title="Geen oefeningen">
-          Er zijn geen oefeningen beschikbaar voor deze sessie. Probeer een andere les of oefenset.
-        </Alert>
-      </Container>
+      <PageContainer size="sm">
+        <PageBody>
+          <Alert color="yellow" title="Geen oefeningen">
+            Er zijn geen oefeningen beschikbaar voor deze sessie. Probeer een andere les of oefenset.
+          </Alert>
+        </PageBody>
+      </PageContainer>
     )
   }
 
@@ -645,8 +655,8 @@ export function Session() {
   const t = translations[userLang]
 
   return (
-    <Box className={classes.container}>
-      <Container size="md">
+    <PageContainer size="md">
+      <PageBody>
         {/* Progress bar */}
         <Box mb="lg">
           <Box mb="xs" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -677,7 +687,7 @@ export function Session() {
             </SessionAudioProvider>
           </Box>
         )}
-      </Container>
-    </Box>
+      </PageBody>
+    </PageContainer>
   )
 }
