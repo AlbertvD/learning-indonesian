@@ -60,7 +60,7 @@ function fakeClient(opts: FakeOptions) {
     return builder
   }
 
-  const buildUpdate = (table: string) => {
+  const buildUpdate = () => {
     const updateState: { payload?: Record<string, unknown>; idValue?: string } = {}
     const builder: Record<string, unknown> = {}
     builder.update = (payload: Record<string, unknown>) => {
@@ -91,7 +91,7 @@ function fakeClient(opts: FakeOptions) {
             return (cols: string) => buildQuery(table, () => opts.draftArtifactRows ?? []).select!(cols)
           }
           if (prop === 'update') {
-            return (payload: Record<string, unknown>) => buildUpdate(table).update!(payload)
+            return (payload: Record<string, unknown>) => buildUpdate().update!(payload)
           }
           return undefined
         },
@@ -104,7 +104,7 @@ function fakeClient(opts: FakeOptions) {
   }
 
   return {
-    schema: (_schema: string) => ({ from: fromImpl }),
+    schema: () => ({ from: fromImpl }),
     queries,
     updateCalls,
   }

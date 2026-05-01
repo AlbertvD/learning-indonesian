@@ -246,7 +246,9 @@ describe('runAutoFill', () => {
 
   it('writes UPDATEs to capability_artifacts when --apply', async () => {
     const client = fakeClientFromFixtures(baseFixtures)
-    const stagingRoot = await import('node:fs/promises').then(m => m.mkdtemp((require('node:os')).tmpdir() + '/auto-fill-cli-'))
+    const fs = await import('node:fs/promises')
+    const os = await import('node:os')
+    const stagingRoot = await fs.mkdtemp(os.tmpdir() + '/auto-fill-cli-')
     const report = await runAutoFill(client as never, { mode: 'apply', stagingRoot })
     expect(report.mode).toBe('apply')
     expect(report.totalFilled).toBe(2)
@@ -298,7 +300,7 @@ describe('runAutoFill', () => {
 describe('main process exit wiring', () => {
   it('process.exit is called with the report exitCode', async () => {
     // Spy on process.exit to capture the value without actually exiting.
-    const exitSpy = vi.spyOn(process, 'exit').mockImplementation(((_code?: number) => undefined) as never)
+    const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never)
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined)
 
     const { runMain } = await import('../auto-fill-capability-artifacts-from-legacy')

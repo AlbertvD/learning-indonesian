@@ -1190,13 +1190,15 @@ function lessonKey(lessonNumber?: number): string {
   return lessonNumber === undefined ? 'unknown' : `lesson-${lessonNumber}`
 }
 
-function addSkip(report: AutoFillReport, key: string, kind: string, _reason: string) {
+function addSkip(report: AutoFillReport, key: string, kind: string, reason: string) {
+  void reason
   const bucket = ensureLessonBucket(report, key)
   bumpKind(bucket.skippedByKind, kind)
   report.totalSkipped++
 }
 
-function addCritical(report: AutoFillReport, key: string, kind: string, _reason: string) {
+function addCritical(report: AutoFillReport, key: string, kind: string, reason: string) {
+  void reason
   const bucket = ensureLessonBucket(report, key)
   bumpKind(bucket.criticalByKind, kind)
   report.totalCritical++
