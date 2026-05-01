@@ -43,16 +43,6 @@ describe('learnerStateService', () => {
     expect(mockQB.eq).toHaveBeenCalledWith('user_id', 'user1')
   })
 
-  it('getDueSkills filters by user_id and next_due_at', async () => {
-    await learnerStateService.getDueSkills('user1')
-
-    expect(supabase.schema).toHaveBeenCalledWith('indonesian')
-    expect(mockFrom).toHaveBeenCalledWith('learner_skill_state')
-    expect(mockQB.eq).toHaveBeenCalledWith('user_id', 'user1')
-    expect(mockQB.lte).toHaveBeenCalledWith('next_due_at', expect.any(String))
-    expect(mockQB.order).toHaveBeenCalledWith('next_due_at')
-  })
-
   it('getSkillStates filters by user_id and learning_item_id', async () => {
     await learnerStateService.getSkillStates('user1', 'item1')
 

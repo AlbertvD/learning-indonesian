@@ -49,18 +49,6 @@ export const learnerStateService = {
     return data
   },
 
-  async getDueSkills(userId: string): Promise<LearnerSkillState[]> {
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('learner_skill_state')
-      .select('*')
-      .eq('user_id', userId)
-      .lte('next_due_at', new Date().toISOString())
-      .order('next_due_at')
-    if (error) throw error
-    return data
-  },
-
   async upsertItemState(state: Omit<LearnerItemState, 'id' | 'updated_at'>): Promise<LearnerItemState> {
     const { data, error } = await supabase
       .schema('indonesian')
