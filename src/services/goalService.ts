@@ -1,9 +1,10 @@
 // src/services/goalService.ts
 import { supabase } from '@/lib/supabase'
-import type { 
-  WeeklyGoalSet, 
-  WeeklyGoal, 
-  WeeklyGoalResponse, 
+import { learnerProgressService } from '@/services/learnerProgressService'
+import type {
+  WeeklyGoalSet,
+  WeeklyGoal,
+  WeeklyGoalResponse,
   GoalStatus,
   TodayPlan
 } from '@/types/learning'
@@ -540,17 +541,14 @@ export const goalService = {
   },
 
   async computeTodayPlan(userId: string, preferredSize: number, _goalSet: WeeklyGoalSet, goals: WeeklyGoal[]): Promise<TodayPlan> {
-    const { data: skills, error } = await supabase
-      .schema('indonesian')
-      .from('learner_skill_state')
-      .select('next_due_at, skill_type, mean_latency_ms, lapse_count, learning_item_id')
-      .eq('user_id', userId)
-
-    if (error) throw error
-
     const now = new Date()
-    const dueNow = skills.filter(s => new Date(s.next_due_at) <= now).length
-    
+    // Canonical contract: surfacing-layer reads of user-progress data go through
+    // learnerProgressService. The legacy from('learner_skill_state') query is replaced;
+    // all goal-policy math (dueTarget ceiling, newTarget derivation, 20% weak cap)
+    // stays here in TS per the spec's deep-module contract.
+    const raw = await learnerProgressService.getTodaysPlanRawCounts({ userId, now })
+    const dueNow = raw.dueRaw
+
     const overdueCountGoal = goals.find(g => g.goal_type === 'review_health')?.current_value_numeric ?? 0
     const recallQualityGoal = goals.find(g => g.goal_type === 'recall_quality')
     const vocabGoal = goals.find(g => g.goal_type === 'usable_vocabulary')
@@ -574,7 +572,7 @@ export const goalService = {
     let newTarget = newBase
     if (dueNow > 20) newTarget = 2
     if (dueNow > 40) newTarget = 0
-    
+
     const recallQuality = recallQualityGoal?.current_value_numeric ?? 0.80
     const recallTarget = recallQualityGoal?.target_value_numeric ?? 0.80
     if (recallQuality < recallTarget - 0.05) newTarget = Math.max(0, newTarget - 2)
@@ -595,24 +593,13 @@ export const goalService = {
 
     // Recall target
     const desiredRecall = Math.max(8, Math.ceil(dueTarget * 0.4))
-    // We don't have a full interaction supply count here without generating a session,
-    // so we use a conservative estimate based on due count.
-    const recallSupply = skills.filter(s => s.skill_type === 'form_recall' && new Date(s.next_due_at) <= now).length
-    const recallTargetToday = Math.min(desiredRecall, recallSupply + newTarget)
+    const recallTargetToday = Math.min(desiredRecall, raw.recallSupplyRaw + newTarget)
 
-    // Compute mean latency from historical data; fall back to 20 s if no data yet
-    const latencies = skills.map(s => s.mean_latency_ms).filter((ms): ms is number => ms != null)
-    const meanLatencyMs = latencies.length > 0
-      ? latencies.reduce((a, b) => a + b, 0) / latencies.length
-      : 20_000
-    const estimatedMinutes = Math.max(1, Math.ceil((dueTarget + newTarget) * meanLatencyMs / 60_000))
+    const estimatedMinutes = Math.max(1, Math.ceil((dueTarget + newTarget) * raw.meanLatencyMs / 60_000))
 
-    // Weak items: due skills with lapse_count >= 3, capped at 20% of due target
-    const weakDue = skills.filter(s =>
-      new Date(s.next_due_at) <= now && (s.lapse_count ?? 0) >= 3
-    )
-    const weakUniqueItems = new Set(weakDue.map(s => s.learning_item_id))
-    const weakTarget = Math.min(weakUniqueItems.size, Math.ceil(dueTarget * 0.2))
+    // 20% weak cap (architect SIG-5 v3): SQL returns weakRaw uncapped; TS
+    // applies the 20%-of-dueTarget cap.
+    const weakTarget = Math.min(raw.weakRaw, Math.ceil(dueTarget * 0.2))
 
     return {
       due_reviews_today_target: dueTarget,

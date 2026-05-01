@@ -16,11 +16,13 @@ import type { WeeklyGoalResponse, WeeklyGoal, TodayPlan } from '@/types/learning
 // Mock services at the module level
 vi.mock('@/services/goalService')
 vi.mock('@/services/learnerStateService')
+vi.mock('@/services/learnerProgressService')
 vi.mock('@/services/lessonService')
 vi.mock('@/lib/supabase')
 
 import { goalService } from '@/services/goalService'
 import { learnerStateService } from '@/services/learnerStateService'
+import { learnerProgressService } from '@/services/learnerProgressService'
 import { lessonService } from '@/services/lessonService'
 import { supabase } from '@/lib/supabase'
 import { Dashboard } from '@/pages/Dashboard'
@@ -144,6 +146,7 @@ beforeEach(() => {
   vi.mocked(goalService.getGoalProgress).mockResolvedValue(makeGoalResponse())
   vi.mocked(learnerStateService.getItemStates).mockResolvedValue([])
   vi.mocked(learnerStateService.getLapsingItems).mockResolvedValue({ count: 0 })
+  vi.mocked(learnerProgressService.getCurrentStreakDays).mockResolvedValue(0)
 
   vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([])
   vi.mocked(lessonService.getLessonsBasic).mockResolvedValue([])

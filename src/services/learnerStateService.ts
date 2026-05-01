@@ -1,5 +1,6 @@
 // src/services/learnerStateService.ts
 import { supabase } from '@/lib/supabase'
+import { learnerProgressService } from '@/services/learnerProgressService'
 import type { DailyGoalRollup, LearnerItemState, LearnerSkillState } from '@/types/learning'
 
 export const learnerStateService = {
@@ -120,20 +121,12 @@ export const learnerStateService = {
   },
 
   async getLapsingItems(userId: string): Promise<{ count: number }> {
-    // Only show items that are currently weak (stability < 2.0), not just historically troubled.
-    // lapse_count is cumulative and never decreases, so without the stability filter
-    // a recovered word would show as at-risk forever.
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('learner_skill_state')
-      .select('learning_item_id')
-      .eq('user_id', userId)
-      .gte('lapse_count', 3)
-      .lt('stability', 2.0)
-
-    if (error) throw error
-    const unique = new Set(data.map((d: { learning_item_id: string }) => d.learning_item_id))
-    return { count: unique.size }
+    // Canonical contract: lapsing-items count goes through learnerProgressService.
+    // SQL function get_lapsing_count counts DISTINCT learning_items where any
+    // capability has lapse_count >= 3 AND stability < 2.0 — matches legacy
+    // semantics (architect C5 v1 fix). lapse_count is cumulative; the stability
+    // filter ensures recovered items don't show as at-risk forever.
+    return learnerProgressService.getLapsingCount({ userId })
   },
 
   async getDailyRollups(userId: string, limit = 7): Promise<DailyGoalRollup[]> {

@@ -30,12 +30,12 @@ import {
 } from '@/components/page/primitives'
 import { lessonService } from '@/services/lessonService'
 import { learnerStateService } from '@/services/learnerStateService'
+import { learnerProgressService } from '@/services/learnerProgressService'
 import { goalService } from '@/services/goalService'
 import type { WeeklyGoalResponse, WeeklyGoal, TodayPlan } from '@/types/learning'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
-import { supabase } from '@/lib/supabase'
 import classes from './Dashboard.module.css'
 
 // ── Ring chart helpers ──
@@ -391,27 +391,16 @@ export function Dashboard() {
           setContinueUrl(`/lessons/${target.id}?section=${sectionIndex}`)
         }
 
-        const { data: recentReviews, error: streakError } = await supabase
-          .schema('indonesian')
-          .from('review_events')
-          .select('created_at')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(1000)
-
-        if (!streakError && recentReviews && recentReviews.length > 0) {
-          let streak = 0
-          const toUTCDateStr = (d: Date) => d.toISOString().split('T')[0]
-          const reviewsByDay = new Set<string>()
-          for (const review of recentReviews) reviewsByDay.add(toUTCDateStr(new Date(review.created_at)))
-          const now = new Date()
-          const checkDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
-          while (reviewsByDay.has(toUTCDateStr(checkDate))) {
-            streak++
-            checkDate.setUTCDate(checkDate.getUTCDate() - 1)
-          }
-          setCurrentStreak(streak)
-        }
+        // Streak now bucketed in user-local timezone (was UTC). architect SIG-1 v4
+        // documented this as a deliberate, future-proof shift: a user near UTC
+        // midnight thinks of "today" as their local day, not UTC's. The dashboard
+        // tooltip in §11.4 communicates this on rollout.
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+        const streak = await learnerProgressService.getCurrentStreakDays({
+          userId: user.id,
+          timezone: userTimezone,
+        })
+        setCurrentStreak(streak)
       } catch (err) {
         logError({ page: 'dashboard', action: 'fetchData', error: err })
         notifications.show({
