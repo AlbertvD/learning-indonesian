@@ -1,61 +1,18 @@
-/* Progress.module.css */
-
-/* ── Page wrapper ────────────────────────────────────── */
-
-.page {
-  padding: 40px 0 80px;
-}
-
-/* ── Header ──────────────────────────────────────────── */
-
-.header {
-  margin-bottom: 36px;
-}
-
-.headerBadge {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--accent-primary);
-  background: var(--accent-primary-subtle);
-  border: 1px solid var(--accent-primary-border);
-  border-radius: var(--r-sm);
-  padding: 3px 8px;
-  margin-bottom: 8px;
-}
-
-.headerTitle {
-  font-size: var(--fs-3xl);
-  font-weight: var(--fw-semibold);
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-  line-height: 1.15;
-  margin: 0;
-}
-
-.headerSub {
-  margin-top: 6px;
-  color: var(--text-secondary);
-  font-size: var(--fs-md);
-  font-weight: var(--fw-normal);
-  letter-spacing: 0.01em;
-}
-
-/* ── Sections ────────────────────────────────────────── */
+/* Progress.module.css
+ * Page-local: just the section gap + the staggered fade-up animation. The
+ * page wrapper, header, and loading state are all framework primitives now.
+ */
 
 .section {
   margin-bottom: 32px;
   animation: fadeUp 0.5s ease both;
 }
 
-.section:nth-child(2)  { animation-delay: 0ms; }
-.section:nth-child(3)  { animation-delay: 80ms; }
-.section:nth-child(4)  { animation-delay: 160ms; }
-.section:nth-child(5)  { animation-delay: 240ms; }
-.section:nth-child(6)  { animation-delay: 320ms; }
+.section:nth-child(2) { animation-delay: 0ms; }
+.section:nth-child(3) { animation-delay: 80ms; }
+.section:nth-child(4) { animation-delay: 160ms; }
+.section:nth-child(5) { animation-delay: 240ms; }
+.section:nth-child(6) { animation-delay: 320ms; }
 
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(12px); }

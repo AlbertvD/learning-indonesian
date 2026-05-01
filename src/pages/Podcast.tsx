@@ -1,8 +1,15 @@
 // src/pages/Podcast.tsx
 import { useEffect, useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Container, Title, Text, Button, Paper, Group, Stack, Center, Loader, Tabs } from '@mantine/core'
+import { Text, Button, Paper, Group, Stack, Tabs } from '@mantine/core'
 import { IconChevronLeft, IconMicrophone } from '@tabler/icons-react'
+import {
+  PageContainer,
+  PageBody,
+  PageHeader,
+  LoadingState,
+  EmptyState,
+} from '@/components/page/primitives'
 import { podcastService, type Podcast } from '@/services/podcastService'
 import { startSession, endSession } from '@/lib/session'
 import { useSessionBeacon } from '@/lib/useSessionBeacon'
@@ -55,73 +62,83 @@ export function Podcast() {
 
   if (loading) {
     return (
-      <Center h="50vh">
-        <Loader size="xl" />
-      </Center>
+      <PageContainer size="md">
+        <PageBody>
+          <LoadingState />
+        </PageBody>
+      </PageContainer>
     )
   }
 
   if (error || !podcast) {
     return (
-      <Center h="50vh">
-        <Text c="dimmed">Failed to load podcast.</Text>
-      </Center>
+      <PageContainer size="md">
+        <PageBody>
+          <EmptyState
+            icon={<IconMicrophone size={48} />}
+            message="Failed to load podcast."
+          />
+        </PageBody>
+      </PageContainer>
     )
   }
 
   const audioUrl = podcastService.getAudioUrl(podcast.audio_path)
 
   return (
-    <Container size="md">
-      <Stack gap="xl" my="xl">
-        <Group justify="space-between">
-          <Button variant="subtle" color="gray" leftSection={<IconChevronLeft size={16} />} onClick={() => navigate('/podcasts')}>
-            {T.podcast.backToList}
-          </Button>
-        </Group>
+    <PageContainer size="md">
+      <PageBody>
+        <PageHeader
+          title={podcast.title}
+          subtitle={podcast.description ?? undefined}
+          action={(
+            <Button
+              variant="subtle"
+              color="gray"
+              leftSection={<IconChevronLeft size={16} />}
+              onClick={() => navigate('/podcasts')}
+            >
+              {T.podcast.backToList}
+            </Button>
+          )}
+        />
 
-        <Paper withBorder p="xl" radius="md" shadow="sm">
-          <Group mb="lg">
-            <IconMicrophone size={32} color="blue" />
-            <div>
-              <Title order={2}>{podcast.title}</Title>
-              <Text c="dimmed">{podcast.description}</Text>
-            </div>
-          </Group>
+        <Paper withBorder p="xl" radius="md">
+          <Stack gap="lg">
+            <Group>
+              <IconMicrophone size={32} color="var(--accent-primary)" />
+            </Group>
 
-          <audio
-            controls
-            style={{ width: '100%', marginBottom: '20px' }}
-            src={audioUrl}
-          />
+            <audio controls style={{ width: '100%' }} src={audioUrl} />
 
-          <Tabs defaultValue="indonesian">
-            <Tabs.List>
-              <Tabs.Tab value="indonesian">{T.podcast.transcriptIndonesian}</Tabs.Tab>
-              <Tabs.Tab value="english">{T.podcast.transcriptEnglish}</Tabs.Tab>
-              <Tabs.Tab value="dutch">{T.podcast.transcriptDutch}</Tabs.Tab>
-            </Tabs.List>
+            <Tabs defaultValue="indonesian">
+              <Tabs.List>
+                <Tabs.Tab value="indonesian">{T.podcast.transcriptIndonesian}</Tabs.Tab>
+                <Tabs.Tab value="english">{T.podcast.transcriptEnglish}</Tabs.Tab>
+                <Tabs.Tab value="dutch">{T.podcast.transcriptDutch}</Tabs.Tab>
+              </Tabs.List>
 
-            <Tabs.Panel value="indonesian" pt="md">
-              <Text style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
-                {podcast.transcript_indonesian || T.podcast.noTranscriptIndonesian}
-              </Text>
-            </Tabs.Panel>
+              <Tabs.Panel value="indonesian" pt="md">
+                <Text style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
+                  {podcast.transcript_indonesian || T.podcast.noTranscriptIndonesian}
+                </Text>
+              </Tabs.Panel>
 
-            <Tabs.Panel value="english" pt="md">
-              <Text style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
-                {podcast.transcript_english || T.podcast.noTranscriptEnglish}
-              </Text>
-            </Tabs.Panel>
+              <Tabs.Panel value="english" pt="md">
+                <Text style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
+                  {podcast.transcript_english || T.podcast.noTranscriptEnglish}
+                </Text>
+              </Tabs.Panel>
 
-            <Tabs.Panel value="dutch" pt="md">
-              <Text style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
-                {podcast.transcript_dutch || T.podcast.noTranscriptDutch}
-              </Text>
-            </Tabs.Panel>
-          </Tabs>
+              <Tabs.Panel value="dutch" pt="md">
+                <Text style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
+                  {podcast.transcript_dutch || T.podcast.noTranscriptDutch}
+                </Text>
+              </Tabs.Panel>
+            </Tabs>
+          </Stack>
         </Paper>
-      </Stack>
-    </Container>
+      </PageBody>
+    </PageContainer>
   )
 }

@@ -1,6 +1,11 @@
 // src/pages/Progress.tsx
 import { useEffect } from 'react'
-import { Container, Center, Loader } from '@mantine/core'
+import {
+  PageContainer,
+  PageBody,
+  PageHeader,
+  LoadingState,
+} from '@/components/page/primitives'
 import { useAuthStore } from '@/stores/authStore'
 import { analyticsService } from '@/services/analyticsService'
 import { useProgressData } from '@/hooks/useProgressData'
@@ -25,23 +30,22 @@ export function Progress() {
 
   if (data.wave1Loading) {
     return (
-      <Center h="50vh" data-loading="true">
-        <Loader size="xl" color="cyan" />
-      </Center>
+      <PageContainer size="lg">
+        <PageBody>
+          <LoadingState />
+        </PageBody>
+      </PageContainer>
     )
   }
 
   return (
-    <Container size="lg">
-      <div className={classes.page}>
+    <PageContainer size="lg">
+      <PageBody>
+        <PageHeader
+          title="Geheugenoverzicht"
+          subtitle="Jouw leervoortgang en geheugengezondheid"
+        />
 
-        {/* Page header */}
-        <div className={classes.header}>
-          <h1 className={classes.headerTitle}>Geheugenoverzicht</h1>
-          <p className={classes.headerSub}>Jouw leervoortgang en geheugengezondheid</p>
-        </div>
-
-        {/* Section 1 — Memory Health */}
         <section className={classes.section}>
           <MemoryHealthHero
             avgRecognitionDays={data.skillStats.avgRecognition}
@@ -49,12 +53,10 @@ export function Progress() {
           />
         </section>
 
-        {/* Section 2 — Mastery Pipeline */}
         <section className={classes.section}>
           <MasteryFunnel itemsByStage={data.itemsByStage} />
         </section>
 
-        {/* Section 3 — Vulnerable Words */}
         <section className={classes.section}>
           <VulnerableItemsList
             items={data.vulnerableItems}
@@ -62,12 +64,10 @@ export function Progress() {
           />
         </section>
 
-        {/* Section 4 — Forecast */}
         <section className={classes.section}>
           <ReviewForecastChart forecast={data.forecast} />
         </section>
 
-        {/* Section 5 — Detail Stats */}
         <section className={classes.section}>
           <DetailedMetrics
             avgStability={data.skillStats.avgStability}
@@ -77,8 +77,7 @@ export function Progress() {
             wave2Loading={data.wave2Loading}
           />
         </section>
-
-      </div>
-    </Container>
+      </PageBody>
+    </PageContainer>
   )
 }

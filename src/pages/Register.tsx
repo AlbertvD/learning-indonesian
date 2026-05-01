@@ -1,8 +1,9 @@
 // src/pages/Register.tsx
 import { useState } from 'react'
-import { Container, Paper, PasswordInput, TextInput, Button, Title, Stack, Text } from '@mantine/core'
+import { PasswordInput, TextInput, Button, Stack, Text } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
 import { notifications } from '@mantine/notifications'
+import { PageFormLayout } from '@/components/page/primitives'
 import { useAuthStore } from '@/stores/authStore'
 import { nl as T } from '@/lib/i18n'
 
@@ -38,47 +39,43 @@ export function Register() {
   }
 
   return (
-    // eslint-disable-next-line no-restricted-syntax -- TODO(page-framework Phase 6): migrate to <PageFormLayout>
-    <Container size="xs" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-      <Paper p="lg" radius="md" shadow="md" style={{ width: '100%' }}>
-        <Stack gap="md">
-          <Title order={2}>{T.register.title}</Title>
-          <form onSubmit={handleSubmit}>
-            <Stack gap="md">
-              <TextInput
-                label={T.register.fullName}
-                placeholder={T.register.fullNamePlaceholder}
-                value={fullName}
-                onChange={(e) => setFullName(e.currentTarget.value)}
-                disabled={loading}
-                required
-              />
-              <TextInput
-                label={T.register.email}
-                placeholder={T.register.emailPlaceholder}
-                value={email}
-                onChange={(e) => setEmail(e.currentTarget.value)}
-                disabled={loading}
-                required
-              />
-              <PasswordInput
-                label={T.register.password}
-                placeholder={T.register.passwordPlaceholder}
-                value={password}
-                onChange={(e) => setPassword(e.currentTarget.value)}
-                disabled={loading}
-                required
-              />
-              <Button type="submit" fullWidth loading={loading}>
-                {T.register.createAccount}
-              </Button>
-            </Stack>
-          </form>
-          <Text size="sm" c="dimmed">
-            {T.register.alreadyHaveAccount} <a href="/login">{T.register.logIn}</a>
-          </Text>
-        </Stack>
-      </Paper>
-    </Container>
+    <PageFormLayout title={T.register.title}>
+      <Stack gap="md">
+        <form onSubmit={handleSubmit}>
+          <Stack gap="md">
+            <TextInput
+              label={T.register.fullName}
+              placeholder={T.register.fullNamePlaceholder}
+              value={fullName}
+              onChange={(e) => setFullName(e.currentTarget.value)}
+              disabled={loading}
+              required
+            />
+            <TextInput
+              label={T.register.email}
+              placeholder={T.register.emailPlaceholder}
+              value={email}
+              onChange={(e) => setEmail(e.currentTarget.value)}
+              disabled={loading}
+              required
+            />
+            <PasswordInput
+              label={T.register.password}
+              placeholder={T.register.passwordPlaceholder}
+              value={password}
+              onChange={(e) => setPassword(e.currentTarget.value)}
+              disabled={loading}
+              required
+            />
+            <Button type="submit" fullWidth loading={loading}>
+              {T.register.createAccount}
+            </Button>
+          </Stack>
+        </form>
+        <Text size="sm" c="dimmed">
+          {T.register.alreadyHaveAccount} <a href="/login">{T.register.logIn}</a>
+        </Text>
+      </Stack>
+    </PageFormLayout>
   )
 }

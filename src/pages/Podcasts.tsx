@@ -1,13 +1,26 @@
 // src/pages/Podcasts.tsx
 import { useEffect, useState } from 'react'
-import { Container, Center, Loader } from '@mantine/core'
-import { Link } from 'react-router-dom'
-import { IconChevronRight } from '@tabler/icons-react'
+import { Group, Text, Badge } from '@mantine/core'
+import { notifications } from '@mantine/notifications'
+import {
+  PageContainer,
+  PageBody,
+  PageHeader,
+  ListCard,
+  LoadingState,
+  EmptyState,
+} from '@/components/page/primitives'
+import { IconHeadphones } from '@tabler/icons-react'
 import { podcastService, type Podcast } from '@/services/podcastService'
 import { logError } from '@/lib/logger'
-import { notifications } from '@mantine/notifications'
 import { useT } from '@/hooks/useT'
-import classes from './Podcasts.module.css'
+
+function formatDuration(seconds: number | null): string | null {
+  if (!seconds) return null
+  const mins = Math.floor(seconds / 60)
+  const secs = seconds % 60
+  return `${mins}:${secs.toString().padStart(2, '0')}`
+}
 
 export function Podcasts() {
   const T = useT()
@@ -29,56 +42,47 @@ export function Podcasts() {
     fetchData()
   }, [T.common.error, T.common.somethingWentWrong])
 
-  const formatDuration = (seconds: number | null) => {
-    if (!seconds) return null
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}:${secs.toString().padStart(2, '0')}`
-  }
-
   if (loading) {
     return (
-      <Center h="50vh">
-        <Loader size="xl" color="violet" />
-      </Center>
+      <PageContainer size="lg">
+        <PageBody>
+          <LoadingState />
+        </PageBody>
+      </PageContainer>
     )
   }
 
   return (
-    <Container size="lg" className={classes.podcasts}>
-      <div className={classes.header}>
-        <div className={classes.displaySm}>{T.nav.podcasts}</div>
-      </div>
+    <PageContainer size="lg">
+      <PageBody>
+        <PageHeader title={T.nav.podcasts} />
 
-      <div className={classes.podcastList}>
-        {podcasts.map((podcast, i) => {
-          const duration = formatDuration(podcast.duration_seconds)
-          return (
-            <Link key={podcast.id} to={`/podcast/${podcast.id}`} className={classes.podcastCard}>
-              <div className={classes.podcastNum}>{String(i + 1).padStart(2, '0')}</div>
-              <div className={classes.podcastInfo}>
-                <div className={classes.podcastTitle}>{podcast.title}</div>
-                {podcast.description && (
-                  <div className={classes.podcastDescription}>{podcast.description}</div>
+        {podcasts.length === 0 ? (
+          <EmptyState
+            icon={<IconHeadphones size={48} />}
+            message={T.podcast.noPodcasts}
+          />
+        ) : (
+          podcasts.map((podcast, i) => {
+            const duration = formatDuration(podcast.duration_seconds)
+            return (
+              <ListCard
+                key={podcast.id}
+                to={`/podcast/${podcast.id}`}
+                icon={<Text fw={700}>{String(i + 1).padStart(2, '0')}</Text>}
+                title={podcast.title}
+                subtitle={podcast.description ?? undefined}
+                trailing={(
+                  <Group gap={8}>
+                    {podcast.level && <Badge variant="light">{podcast.level}</Badge>}
+                    {duration && <Text size="sm" c="dimmed">{duration}</Text>}
+                  </Group>
                 )}
-                <div className={classes.podcastMeta}>
-                  {podcast.level && (
-                    <span className={`${classes.badge} ${classes.badgePurple}`}>{podcast.level}</span>
-                  )}
-                  {duration && <span className={classes.podcastDuration}>{duration}</span>}
-                </div>
-              </div>
-              <span className={classes.podcastArrow}><IconChevronRight size={15} /></span>
-            </Link>
-          )
-        })}
-
-        {podcasts.length === 0 && (
-          <Center h="20vh">
-            <div className={classes.bodySm}>{T.podcast.noPodcasts}</div>
-          </Center>
+              />
+            )
+          })
         )}
-      </div>
-    </Container>
+      </PageBody>
+    </PageContainer>
   )
 }
