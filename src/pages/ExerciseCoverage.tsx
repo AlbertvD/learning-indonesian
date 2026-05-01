@@ -1,8 +1,14 @@
 // src/pages/ExerciseCoverage.tsx
 import { useEffect, useState } from 'react'
-import { Center, Loader, Container, Group, Title, Text, ActionIcon, Tooltip } from '@mantine/core'
+import { ActionIcon, Tooltip } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconRefresh } from '@tabler/icons-react'
+import {
+  PageContainer,
+  PageBody,
+  PageHeader,
+  LoadingState,
+} from '@/components/page/primitives'
 import { supabase } from '@/lib/supabase'
 import { logError } from '@/lib/logger'
 import classes from './ContentCoverage.module.css'
@@ -236,29 +242,30 @@ export function ExerciseCoverage() {
 
   if (loading) {
     return (
-      <Center h="50vh">
-        <Loader size="xl" color="cyan" />
-      </Center>
+      <PageContainer size="xl">
+        <PageBody>
+          <LoadingState />
+        </PageBody>
+      </PageContainer>
     )
   }
 
   if (!coverage) return null
 
   return (
-    <Container size="xl" py="xl">
-      <Group justify="space-between" mb="lg">
-        <div>
-          <Title order={2}>Exercise Coverage</Title>
-          <Text c="dimmed" size="sm" mt={4}>
-            Which exercise types are available per lesson based on published content.
-          </Text>
-        </div>
-        <Tooltip label="Refresh">
-          <ActionIcon variant="subtle" size="lg" onClick={load} loading={loading}>
-            <IconRefresh size={18} />
-          </ActionIcon>
-        </Tooltip>
-      </Group>
+    <PageContainer size="xl">
+      <PageBody>
+        <PageHeader
+          title="Exercise Coverage"
+          subtitle="Which exercise types are available per lesson based on published content."
+          action={(
+            <Tooltip label="Refresh">
+              <ActionIcon variant="subtle" size="lg" onClick={load} loading={loading}>
+                <IconRefresh size={18} />
+              </ActionIcon>
+            </Tooltip>
+          )}
+        />
 
       <div className={classes.tableWrapper}>
         <table className={classes.table}>
@@ -285,6 +292,7 @@ export function ExerciseCoverage() {
           </tbody>
         </table>
       </div>
-    </Container>
+      </PageBody>
+    </PageContainer>
   )
 }

@@ -1,9 +1,15 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Container, Title, Group, Select, Text, Tabs, Stack,
+  Group, Select, Text, Tabs, Stack,
   Textarea, Button, Box, Center, Loader, Badge,
 } from '@mantine/core'
+import {
+  PageContainer,
+  PageBody,
+  PageHeader,
+  LoadingState,
+} from '@/components/page/primitives'
 import { IconChevronLeft, IconChevronRight, IconCheck } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
@@ -155,12 +161,21 @@ export function ContentReview() {
       .map(t => ({ value: t, label: t })),
   ]
 
-  if (!profile) return <Center h="100vh"><Loader /></Center>
+  if (!profile) {
+    return (
+      <PageContainer size="md">
+        <PageBody>
+          <LoadingState />
+        </PageBody>
+      </PageContainer>
+    )
+  }
   if (!profile.isAdmin) return null
 
   return (
-    <Container size="md" py="xl">
-      <Title order={2} mb="xl">Contentcontrole</Title>
+    <PageContainer size="md">
+      <PageBody>
+        <PageHeader title="Contentcontrole" />
 
       <Tabs
         defaultValue="browser"
@@ -279,6 +294,7 @@ export function ContentReview() {
           )}
         </Tabs.Panel>
       </Tabs>
-    </Container>
+      </PageBody>
+    </PageContainer>
   )
 }
