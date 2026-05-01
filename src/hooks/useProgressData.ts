@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react'
 import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
 import { learnerStateService } from '@/services/learnerStateService'
+import { learnerProgressService } from '@/services/learnerProgressService'
 import { lessonService } from '@/services/lessonService'
 import { progressService } from '@/services/progressService'
 import { goalService } from '@/services/goalService'
-import { computeReviewForecast } from '@/utils/progressUtils'
 import { logError } from '@/lib/logger'
-import type { LearnerSkillState, DailyGoalRollup, WeeklyGoal } from '@/types/learning'
+import type { DailyGoalRollup, WeeklyGoal } from '@/types/learning'
 
 export interface ProgressData {
   // Wave 1 — required, blocks primary render
@@ -17,7 +17,6 @@ export interface ProgressData {
   itemsByStage: { new: number; anchoring: number; retrieving: number; productive: number; maintenance: number }
   skillStats: { avgRecognition: number; avgRecall: number; avgStability: number }
   lessonsCompleted: { completed: number; total: number }
-  skillStates: LearnerSkillState[]
   forecast: { date: Date; count: number }[]
 
   // Wave 2 — non-blocking
@@ -36,7 +35,7 @@ export interface ProgressData {
   avgLatencyMs: { currentWeekMs: number | null; priorWeekMs: number | null } | null
 }
 
-type Wave1State = Pick<ProgressData, 'wave1Loading' | 'wave1Error' | 'itemsByStage' | 'skillStats' | 'lessonsCompleted' | 'skillStates' | 'forecast'>
+type Wave1State = Pick<ProgressData, 'wave1Loading' | 'wave1Error' | 'itemsByStage' | 'skillStats' | 'lessonsCompleted' | 'forecast'>
 type Wave2State = Pick<ProgressData, 'wave2Loading' | 'wave2Error' | 'dailyRollups' | 'accuracyBySkillType' | 'lapsePrevention' | 'weeklyGoals' | 'vulnerableItems' | 'avgLatencyMs'>
 
 const defaultWave1: Wave1State = {
@@ -45,7 +44,6 @@ const defaultWave1: Wave1State = {
   itemsByStage: { new: 0, anchoring: 0, retrieving: 0, productive: 0, maintenance: 0 },
   skillStats: { avgRecognition: 0, avgRecall: 0, avgStability: 0 },
   lessonsCompleted: { completed: 0, total: 0 },
-  skillStates: [],
   forecast: [],
 }
 
@@ -60,9 +58,23 @@ const defaultWave2: Wave2State = {
   avgLatencyMs: null,
 }
 
-function avg(nums: number[]): number {
-  if (nums.length === 0) return 0
-  return Math.round((nums.reduce((a, b) => a + b, 0) / nums.length) * 100) / 100
+// Fill in zero-counted days for the next `days` days starting today,
+// merging counts from the SQL function's sparse-day result.
+function buildDenseForecast(
+  sparse: { date: string; count: number }[],
+  days: number,
+): { date: Date; count: number }[] {
+  const counts = new Map(sparse.map(d => [d.date, d.count]))
+  const result: { date: Date; count: number }[] = []
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  for (let i = 0; i < days; i++) {
+    const d = new Date(today)
+    d.setDate(today.getDate() + i)
+    const key = d.toISOString().slice(0, 10)
+    result.push({ date: d, count: counts.get(key) ?? 0 })
+  }
+  return result
 }
 
 export function useProgressData(): ProgressData {
@@ -76,9 +88,13 @@ export function useProgressData(): ProgressData {
     async function run() {
       // --- Wave 1 ---
       try {
-        const [itemStates, skillStatesData, lessonProgressData, lessonsData] = await Promise.all([
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+        const [itemStates, memoryHealth, forecastSparse, lessonProgressData, lessonsData] = await Promise.all([
           learnerStateService.getItemStates(user!.id),
-          learnerStateService.getSkillStatesBatch(user!.id),
+          // Replaces the legacy learner_skill_state batch fetch + JS aggregation.
+          // getMemoryHealth returns 2-decimal-rounded stabilities (architect NIT-3 v4).
+          learnerProgressService.getMemoryHealth({ userId: user!.id }),
+          learnerProgressService.getReviewForecast({ userId: user!.id, days: 7, timezone: userTimezone }),
           lessonService.getUserLessonProgress(user!.id),
           lessonService.getLessonsBasic(),
         ])
@@ -88,23 +104,15 @@ export function useProgressData(): ProgressData {
           itemsByStage[state.stage]++
         }
 
-        const recognitionStabilities = skillStatesData
-          .filter((s) => s.skill_type === 'recognition')
-          .map((s) => s.stability)
-        const recallStabilities = skillStatesData
-          .filter((s) => s.skill_type === 'form_recall')
-          .map((s) => s.stability)
-        const allStabilities = skillStatesData.map((s) => s.stability)
-
         const skillStats = {
-          avgRecognition: avg(recognitionStabilities),
-          avgRecall: avg(recallStabilities),
-          avgStability: avg(allStabilities),
+          avgRecognition: memoryHealth.avgRecognitionStability,
+          avgRecall: memoryHealth.avgRecallStability,
+          avgStability: memoryHealth.avgOverallStability,
         }
 
         const completed = lessonProgressData.filter((lp) => lp.completed_at != null).length
         const lessonsCompleted = { completed, total: lessonsData.length }
-        const forecast = computeReviewForecast(skillStatesData)
+        const forecast = buildDenseForecast(forecastSparse, 7)
 
         setWave1State({
           wave1Loading: false,
@@ -112,7 +120,6 @@ export function useProgressData(): ProgressData {
           itemsByStage,
           skillStats,
           lessonsCompleted,
-          skillStates: skillStatesData,
           forecast,
         })
       } catch (err) {

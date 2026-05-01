@@ -27,6 +27,7 @@ export const nl = {
     browsePodcasts: 'Podcasts bekijken',
     dayStreak: 'Dagenreeks',
     daysInARow: 'dagen achter elkaar',
+    streakTimezoneNotice: 'Je reeks gebruikt nu je lokale tijdzone in plaats van UTC. Hierdoor kan je telling rond middernacht 1 dag verschillen van vroeger.',
     continueWhereYouLeftOff: 'Ga verder waar je gebleven was',
     ofModuleOne: 'van 12 in module 1',
     nextDueIn2Hours: 'volgende over 2 uur',
@@ -259,6 +260,7 @@ export const nl = {
     loading: 'Laden...',
     error: 'Fout',
     somethingWentWrong: 'Er ging iets mis. Probeer het opnieuw.',
+    dismiss: 'Sluiten',
   },
   leaderboard: {
     title: 'Ranglijst',
@@ -409,6 +411,7 @@ export const en: typeof nl = {
     browsePodcasts: 'Browse Podcasts',
     dayStreak: 'Day Streak',
     daysInARow: 'days in a row',
+    streakTimezoneNotice: 'Your streak now uses your local timezone instead of UTC. Reviews near midnight may shift your count by one day.',
     continueWhereYouLeftOff: 'Continue where you left off',
     ofModuleOne: 'of 12 in module 1',
     nextDueIn2Hours: 'next due in 2 hours',
@@ -641,6 +644,7 @@ export const en: typeof nl = {
     loading: 'Loading...',
     error: 'Error',
     somethingWentWrong: 'Something went wrong. Please try again.',
+    dismiss: 'Dismiss',
   },
   leaderboard: {
     title: 'Leaderboard',

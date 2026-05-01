@@ -10,11 +10,13 @@ import {
   Paper,
   Title,
   Tooltip,
+  Popover,
+  ActionIcon,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import {
   IconChevronRight, IconFlame, IconTarget, IconAlertTriangle, IconSparkles,
-  IconRefresh, IconKeyboard, IconClock, IconBook,
+  IconRefresh, IconKeyboard, IconClock, IconBook, IconX,
 } from '@tabler/icons-react'
 import {
   PageContainer,
@@ -363,6 +365,18 @@ export function Dashboard() {
   const [currentStreak, setCurrentStreak] = useState(0)
   const [lapsingCount, setLapsingCount] = useState(0)
 
+  // One-time rollout tooltip explaining the UTC → user-TZ streak shift
+  // (architect SIG-1 v4 + spec §11.4). Dismissed value lives in localStorage.
+  const STREAK_TZ_NOTICE_KEY = 'streak_tz_notice_dismissed_v1'
+  const [streakNoticeOpen, setStreakNoticeOpen] = useState(() => {
+    if (typeof localStorage === 'undefined') return false
+    return localStorage.getItem(STREAK_TZ_NOTICE_KEY) !== '1'
+  })
+  const dismissStreakNotice = () => {
+    try { localStorage.setItem(STREAK_TZ_NOTICE_KEY, '1') } catch { /* ignore quota */ }
+    setStreakNoticeOpen(false)
+  }
+
   useEffect(() => {
     async function fetchData() {
       if (!user) return
@@ -461,10 +475,35 @@ export function Dashboard() {
         <PageHeader
           title={`${T.dashboard.welcomeBack}, ${name}`}
           action={(
-            <Group gap="xs">
-              <IconFlame size={18} color="orange" />
-              <Text size="sm" fw={600}>{currentStreak} {T.dashboard.daysInARow}</Text>
-            </Group>
+            <Popover
+              opened={streakNoticeOpen}
+              onChange={setStreakNoticeOpen}
+              position="bottom-end"
+              shadow="md"
+              withArrow
+            >
+              <Popover.Target>
+                <Group gap="xs" style={{ cursor: streakNoticeOpen ? 'default' : 'inherit' }}>
+                  <IconFlame size={18} color="orange" />
+                  <Text size="sm" fw={600}>{currentStreak} {T.dashboard.daysInARow}</Text>
+                </Group>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <Group gap="xs" align="flex-start" wrap="nowrap">
+                  <Text size="sm" maw={240}>
+                    {T.dashboard.streakTimezoneNotice}
+                  </Text>
+                  <ActionIcon
+                    variant="subtle"
+                    size="sm"
+                    onClick={dismissStreakNotice}
+                    aria-label={T.common.dismiss}
+                  >
+                    <IconX size={14} />
+                  </ActionIcon>
+                </Group>
+              </Popover.Dropdown>
+            </Popover>
           )}
         />
 
