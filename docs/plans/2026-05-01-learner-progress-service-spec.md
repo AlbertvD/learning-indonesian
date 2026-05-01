@@ -1,8 +1,8 @@
-# Learner Progress Service — Canonical Contract Spec (v2)
+# Learner Progress Service — Canonical Contract Spec (v3)
 
 **Date:** 2026-05-01
-**Status:** Revised after first architect review (architect verdict on v1: NEEDS REVISION — 8 CRITICAL, 6 SIGNIFICANT). v2 addresses every flagged issue with code citations.
-**Source:** Synthesized from the 2026-05-01 architecture-review conversation; v2 incorporates architect review feedback.
+**Status:** Revised after second architect review (verdict on v2: NEEDS REVISION with 3 CRITICAL + 6 SIGNIFICANT). v3 addresses every remaining issue. Architect confirmed: "Once v3 lands these, the spec is ready to implement."
+**Source:** 2026-05-01 architecture-review conversation; v2 + v3 incorporate two rounds of architect review feedback.
 
 ## 1. Goal
 
@@ -47,7 +47,7 @@ The architect identified that `learner_capability_state`, `learning_capabilities
 
 Table definitions, with key column types confirmed:
 
-- `learner_capability_state` (`learner_capability_state` lines 56-77): `next_due_at timestamptz`, `stability double precision`, `lapse_count int`, `consecutive_failure_count int`, `activation_state text in ('dormant','active','suspended','retired')`. Indexes on `(user_id, next_due_at)` (line 78) and `(user_id, capability_id)` (line 80) — verified, suitable for the predicates we need.
+- `learner_capability_state` (lines 56-77): `next_due_at timestamptz`, `stability double precision`, `lapse_count int`, `consecutive_failure_count int`, `activation_state text in ('dormant','active','suspended','retired')`. Existing indexes (lines 78-81): `learner_capability_state_due_idx` on `(user_id, activation_state, next_due_at)` (3-column composite, SARGable for our `WHERE user_id=? AND activation_state='active' AND next_due_at <= now`) and `learner_capability_state_capability_idx` on `(capability_id)`. Verified directly.
 - `learning_capabilities` (lines 5-23): `metadata_json jsonb` (the projection metadata including `requiredSourceProgress`), `readiness_status text`, `publication_status text`, `source_kind text`, `source_ref text`, `capability_type text`. Indexes: `learning_capabilities_source_idx` on `(source_kind, source_ref)` line 24-25, and `learning_capabilities_readiness_publication_idx` on `(readiness_status, publication_status)` line 26-27.
 - `learner_source_progress_state` (lines 116-127): `source_ref text`, `source_section_ref text default '__lesson__'`, `current_state text`, `completed_event_types text[]` (TEXT ARRAY — confirmed). Unique constraint on `(user_id, source_ref, source_section_ref)`. **No index on `(user_id, source_ref)` — this needs adding** (see §10 risks).
 - `capability_review_events` (lines 83-101): `answer_report_json jsonb`, `created_at timestamptz`. Has a unique constraint on `(session_id, session_item_id, attempt_number)` line 100, but no obvious analytics index on `(user_id, created_at desc)`. Adding one in this spec.
@@ -135,8 +135,6 @@ export interface ReviewForecastDay {
   count: number
 }
 
-import type { MasteryOverview } from '@/lib/mastery/masteryModel'
-
 export interface LearnerProgressService {
   /** Raw eligibility counts. UI services apply goal-policy adjustments on top. */
   getTodaysPlanRawCounts(input: { userId: string; now: Date }): Promise<TodaysPlanRawCounts>
@@ -148,144 +146,162 @@ export interface LearnerProgressService {
   getMemoryHealth(input: { userId: string }): Promise<MemoryHealthResult>
   /** Mean latency current week vs prior week. */
   getReviewLatencyStats(input: { userId: string }): Promise<ReviewLatencyStatsResult>
-  /** Recall accuracy split by recognition vs form_recall. */
+  /** Recall accuracy: recognition (text_recognition) vs recall (form_recall) only. See §10 risks. */
   getRecallAccuracyByDirection(input: { userId: string }): Promise<RecallAccuracyResult>
   /** Top N vulnerable items with item context. */
   getVulnerableCapabilities(input: { userId: string; limit?: number }): Promise<VulnerableCapability[]>
   /** Per-day count of upcoming due capabilities, in user's local timezone. */
   getReviewForecast(input: { userId: string; days?: number; timezone: string }): Promise<ReviewForecastDay[]>
-  /** Pass-through to existing TS implementation; surfaced here so consumers don't bypass. */
-  getMasteryOverview(input: { userId: string }): Promise<MasteryOverview>
 }
 
-export const learnerProgressService: LearnerProgressService = { /* impl in §4.5 */ }
+export const learnerProgressService: LearnerProgressService = { /* impl in §4.6 */ }
 ```
+
+**Note (architect SIG-4 in v3):** the previous v2 spec exposed a `getMasteryOverview` pass-through to `@/lib/mastery/masteryModel`. v3 drops it as pure indirection — `masteryModel.ts:491-505` already reads `learner_capability_state` (capability-aware), so consumers can import `getMasteryOverview` directly from `@/lib/mastery/masteryModel` without violating the canonical-contract principle. The CI gate (when added per q3 resolution) does not need to allowlist `masteryModel.ts` because it doesn't read `learner_skill_state`.
 
 **Key changes from v1:**
 - (S1) `getTodaysPlanRawCounts` returns raw counts only. Zero policy adjustments. Goal-policy math stays in `goalService`.
 - (S2) `recallSupplyRaw` is the supply (not the target). The target derivation stays in `goalService`.
 - (C7) `getLapsePrevention` is now defined explicitly.
-- (S3) `RecallAccuracyResult` separates recognition / recall counts cleanly — no skill-type vs capability-type implicit mapping.
+- (S3) `RecallAccuracyResult` separates recognition / recall counts cleanly. Mapping documented in §10.
 - (N1, N7) `getReviewForecast` accepts a `timezone` parameter — bucketing must use the user's local date, not UTC.
 - (C5) `LapsingCountResult` documents that distinct *items* are counted (matching legacy item-level semantics).
-- (Pass-through) `getMasteryOverview` exposes the existing TS implementation so consumers go through the service.
+- (SIG-4 v3) `getMasteryOverview` removed from the interface — pure indirection, consumers import from masteryModel directly.
 
 ### 4.3 Helper SQL functions (foundations)
 
 These two helpers are required by the main metric functions.
 
 ```sql
--- Helper 1: stable_slug — port of the TypeScript stableSlug()
--- in scripts/lib/content-pipeline-output.ts:97-104. Pure, deterministic.
--- IMMUTABLE so it can be used in indexed expressions.
+-- Helper 1: stable_slug — port of the TypeScript stableSlug() at
+-- scripts/lib/content-pipeline-output.ts:97-104.
+--
+-- Uses the `unaccent` extension for diacritic stripping (matches NFKD+strip
+-- semantics of the JS .normalize('NFKD').replace(/[̀-ͯ]/g, '')
+-- pipeline). v2 attempted this with translate() but had a length-mismatch
+-- bug (architect CRIT-1: 8 'a's mapping to 7 source chars, off-by-one
+-- through the rest of the table). unaccent() is the right tool — it's a
+-- well-tested PG extension that does exactly what NFKD+combining-mark-strip
+-- does in JavaScript, without hand-maintained translation tables.
+--
+-- IMMUTABLE so it can be used in indexed expressions (functional index in
+-- §4.5 depends on this).
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
 CREATE OR REPLACE FUNCTION indonesian.stable_slug(p_text text)
 RETURNS text LANGUAGE sql IMMUTABLE AS $$
   SELECT regexp_replace(
     regexp_replace(
-      lower(translate(p_text, 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝŸàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ',
-                              'aaaaaaaaceeeeiiiindooooooouuuuyy aaaaaaaaceeeeiiiidnoooooouuuuyy')),
+      lower(unaccent(p_text)),
       '[^a-z0-9]+', '-', 'g'
     ),
     '^-+|-+$', '', 'g'
   );
 $$;
 
+-- Note: unaccent() is declared STABLE in pg_extension's catalog (because
+-- the extension's dictionary file could in theory be reloaded). Wrapping
+-- it inside a function we declare IMMUTABLE is a documented Postgres
+-- workaround when the dictionary is treated as immutable in practice
+-- (see https://www.postgresql.org/docs/current/unaccent.html).
+-- We accept this trade-off because the unaccent dictionary in our
+-- deployment is not modified at runtime.
+
 -- Helper 2: source-progress predicate
+--
+-- LANGUAGE sql STABLE — pure scalar function. Postgres can inline it into
+-- the calling query plan, eliminating the per-row function-call overhead
+-- that v2's plpgsql version had (architect SIG-3). Arguments take metadata
+-- and source-kind/capability-type by value so the function never re-reads
+-- learning_capabilities — the calling query already has those columns.
+--
 -- Mirrors src/lib/pedagogy/sourceProgressGates.ts:32-93 EXCLUDING evidence-bypass
 -- (evidence bypass is session-shape-specific; eligibility ceiling does not need it).
--- Returns true if the capability's required source progress is satisfied for the user.
--- Returns false (rejecting) when:
---   - kind = 'source_progress' but no progress row matches AND no transitive-state satisfies
---   - kind = 'none' AND requiresConcreteSourceProgress() would reject the capability
--- Returns true (trivially satisfied) when:
---   - requiredSourceProgress is missing entirely (legacy projection metadata)
---   - kind = 'none' AND the capability's source_kind+capability_type combo permits it
+--
+-- v3 corrects 3 list-drift bugs from v2 (architect CRIT-2):
+--   - source_kinds for kind='none' rejection: use 'item', 'pattern', 'dialogue_line'
+--     (NOT 'dialogue_chunk' — that doesn't exist in CapabilitySourceKind).
+--   - source_kinds: 'affixed_form_pair' is NOT in the production list — removed.
+--   - capability_types: include 'pattern_contrast' (was missing from v2);
+--     drop 'root_derived_recognition' and 'root_derived_recall' (never present
+--     with kind='none' in production code per capabilityCatalog.ts:229-265,
+--     and not in production lessonSequencedCapabilityTypes).
+-- Lists verified verbatim against capabilitySessionDataService.ts:147-164.
 CREATE OR REPLACE FUNCTION indonesian._capability_source_progress_met(
-  p_capability_id uuid,
-  p_user_id uuid
+  p_user_id uuid,
+  p_metadata jsonb,
+  p_source_kind text,
+  p_capability_type text
 )
-RETURNS boolean LANGUAGE plpgsql STABLE SECURITY INVOKER AS $$
-DECLARE
-  v_metadata jsonb;
-  v_kind text;
-  v_required_state text;
-  v_required_source_ref text;
-  v_source_kind text;
-  v_capability_type text;
-  v_satisfying_states text[];
-BEGIN
-  SELECT metadata_json, source_kind, capability_type
-    INTO v_metadata, v_source_kind, v_capability_type
-  FROM indonesian.learning_capabilities
-  WHERE id = p_capability_id;
-
-  v_kind := v_metadata->'requiredSourceProgress'->>'kind';
-
-  -- Case 1: no requiredSourceProgress at all → trivially satisfied
-  IF v_metadata->'requiredSourceProgress' IS NULL THEN
-    RETURN true;
-  END IF;
-
-  -- Case 2: kind = 'none' AND capability is item/pattern/dialogue + lesson-sequenced type
-  -- → reject (mirrors requiresConcreteSourceProgress in capabilitySessionDataService.ts:159-176)
-  IF v_kind = 'none' THEN
-    IF v_source_kind IN ('item', 'pattern', 'dialogue_chunk', 'affixed_form_pair')
-       AND v_capability_type IN (
-         'text_recognition', 'meaning_recall', 'form_recall', 'l1_to_id_choice',
-         'audio_recognition', 'dictation', 'pattern_recognition',
-         'root_derived_recognition', 'root_derived_recall', 'contextual_cloze'
-       )
-    THEN
-      RETURN false;
-    END IF;
-    RETURN true;
-  END IF;
-
-  -- Case 3: kind = 'source_progress' → check transitive closure
-  IF v_kind = 'source_progress' THEN
-    v_required_state := v_metadata->'requiredSourceProgress'->>'requiredState';
-    v_required_source_ref := v_metadata->'requiredSourceProgress'->>'sourceRef';
-
-    -- Build the satisfying-states list for the requiredState
-    -- Mirrors statesSatisfyingRequirement in sourceProgressGates.ts:32-40
-    v_satisfying_states := CASE v_required_state
-      WHEN 'opened' THEN ARRAY['opened','section_exposed','intro_completed','heard_once','pattern_noticing_seen','guided_practice_completed','lesson_completed']
-      WHEN 'section_exposed' THEN ARRAY['section_exposed','intro_completed','guided_practice_completed','lesson_completed']
-      WHEN 'intro_completed' THEN ARRAY['intro_completed','guided_practice_completed','lesson_completed']
-      WHEN 'heard_once' THEN ARRAY['heard_once','lesson_completed']
-      WHEN 'pattern_noticing_seen' THEN ARRAY['pattern_noticing_seen','guided_practice_completed','lesson_completed']
-      WHEN 'guided_practice_completed' THEN ARRAY['guided_practice_completed','lesson_completed']
-      WHEN 'lesson_completed' THEN ARRAY['lesson_completed']
-      ELSE ARRAY[]::text[]
-    END;
-
-    -- Match on either source_ref alone OR source_ref || '/' || source_section_ref
-    -- (source_section_ref fallback per sourceProgressGates.ts:78-81)
-    RETURN EXISTS (
-      SELECT 1
-      FROM indonesian.learner_source_progress_state lsps
-      WHERE lsps.user_id = p_user_id
-        AND (
-          lsps.source_ref = v_required_source_ref
-          OR (lsps.source_ref || '/' || lsps.source_section_ref) = v_required_source_ref
+RETURNS boolean LANGUAGE sql STABLE SECURITY INVOKER AS $$
+  -- Case 1: no requirement specified at all → trivially satisfied
+  SELECT
+    p_metadata->'requiredSourceProgress' IS NULL
+    OR (
+      -- Case 2: kind = 'none' AND lesson-sequenced item/pattern/dialogue_line capability → reject
+      p_metadata->'requiredSourceProgress'->>'kind' = 'none'
+      AND NOT (
+        p_source_kind IN ('item', 'pattern', 'dialogue_line')
+        AND p_capability_type IN (
+          'text_recognition', 'meaning_recall', 'l1_to_id_choice', 'form_recall',
+          'audio_recognition', 'dictation', 'pattern_recognition',
+          'pattern_contrast', 'contextual_cloze'
         )
-        AND (
-          lsps.current_state = ANY(v_satisfying_states)
-          OR lsps.completed_event_types && v_satisfying_states  -- array overlap
-        )
+      )
+    )
+    OR (
+      -- Case 3: kind = 'source_progress' → check transitive closure
+      p_metadata->'requiredSourceProgress'->>'kind' = 'source_progress'
+      AND EXISTS (
+        SELECT 1
+        FROM indonesian.learner_source_progress_state lsps
+        WHERE lsps.user_id = p_user_id
+          AND (
+            -- source_ref alone OR source_ref || '/' || source_section_ref
+            -- (per sourceProgressGates.ts:78-81)
+            lsps.source_ref = p_metadata->'requiredSourceProgress'->>'sourceRef'
+            OR (lsps.source_ref || '/' || lsps.source_section_ref)
+                 = p_metadata->'requiredSourceProgress'->>'sourceRef'
+          )
+          AND (
+            -- Transitive-closure satisfaction: current_state in satisfying set
+            -- OR any completed event in satisfying set.
+            -- Mirrors statesSatisfyingRequirement (sourceProgressGates.ts:32-40).
+            lsps.current_state = ANY(
+              CASE p_metadata->'requiredSourceProgress'->>'requiredState'
+                WHEN 'opened' THEN ARRAY['opened','section_exposed','intro_completed','heard_once','pattern_noticing_seen','guided_practice_completed','lesson_completed']
+                WHEN 'section_exposed' THEN ARRAY['section_exposed','intro_completed','guided_practice_completed','lesson_completed']
+                WHEN 'intro_completed' THEN ARRAY['intro_completed','guided_practice_completed','lesson_completed']
+                WHEN 'heard_once' THEN ARRAY['heard_once','lesson_completed']
+                WHEN 'pattern_noticing_seen' THEN ARRAY['pattern_noticing_seen','guided_practice_completed','lesson_completed']
+                WHEN 'guided_practice_completed' THEN ARRAY['guided_practice_completed','lesson_completed']
+                WHEN 'lesson_completed' THEN ARRAY['lesson_completed']
+                ELSE ARRAY[]::text[]
+              END
+            )
+            OR lsps.completed_event_types && (
+              CASE p_metadata->'requiredSourceProgress'->>'requiredState'
+                WHEN 'opened' THEN ARRAY['opened','section_exposed','intro_completed','heard_once','pattern_noticing_seen','guided_practice_completed','lesson_completed']
+                WHEN 'section_exposed' THEN ARRAY['section_exposed','intro_completed','guided_practice_completed','lesson_completed']
+                WHEN 'intro_completed' THEN ARRAY['intro_completed','guided_practice_completed','lesson_completed']
+                WHEN 'heard_once' THEN ARRAY['heard_once','lesson_completed']
+                WHEN 'pattern_noticing_seen' THEN ARRAY['pattern_noticing_seen','guided_practice_completed','lesson_completed']
+                WHEN 'guided_practice_completed' THEN ARRAY['guided_practice_completed','lesson_completed']
+                WHEN 'lesson_completed' THEN ARRAY['lesson_completed']
+                ELSE ARRAY[]::text[]
+              END
+            )
+          )
+      )
     );
-  END IF;
-
-  -- Unknown kind → reject conservatively
-  RETURN false;
-END;
 $$;
 ```
 
 **Architect-flagged details addressed:**
-- C1: `stable_slug` defined here, ported from TS line-by-line.
-- C3: transitive-closure table embedded; section_ref fallback; `requiresConcreteSourceProgress` rejection.
-- C6: `kind = 'none'` rejects for item/pattern/dialogue + lesson-sequenced types.
+- C1: `stable_slug` defined here using `unaccent` extension (CRIT-1 fix in v3).
+- C3: transitive-closure table embedded; section_ref fallback present.
+- C6: `kind = 'none'` rejection logic explicit, lists corrected per CRIT-2 in v3.
+- SIG-3: function rewritten LANGUAGE sql STABLE with metadata+source_kind+capability_type passed by value, allowing PG to inline the predicate into the outer query plan and eliminating the per-row PK lookup overhead from v2's plpgsql variant.
 - Out of scope (deliberate): evidence-bypass. The dashboard ceiling does not need it; the session loader applies it before serving but that's downstream of "is the capability eligible at all."
 
 ### 4.4 Metric SQL functions
@@ -324,9 +340,10 @@ BEGIN
     AND s.next_due_at <= p_now;
 
   -- "New" eligibility ceiling: ready+published, no learner state OR dormant,
-  -- AND source progress satisfied per _capability_source_progress_met.
-  -- Does NOT apply pedagogy load budgets or recent-failure fatigue —
-  -- those are session-output caps, not eligibility (per §1.1 contract semantics).
+  -- AND source progress satisfied. Set-based join with the inlined predicate
+  -- helper (architect SIG-3 fix in v3 — passes metadata + source_kind +
+  -- capability_type by value so the helper doesn't re-read learning_capabilities,
+  -- and LANGUAGE sql allows PG to inline the predicate into this query plan).
   SELECT count(*) INTO v_new
   FROM indonesian.learning_capabilities c
   LEFT JOIN indonesian.learner_capability_state s
@@ -334,7 +351,9 @@ BEGIN
   WHERE c.readiness_status = 'ready'
     AND c.publication_status = 'published'
     AND (s.id IS NULL OR s.activation_state = 'dormant')
-    AND indonesian._capability_source_progress_met(c.id, p_user_id);
+    AND indonesian._capability_source_progress_met(
+      p_user_id, c.metadata_json, c.source_kind, c.capability_type
+    );
 
   -- "Weak" raw count = due AND lapse_count >= 3 (no 20% cap in SQL — applied in TS)
   SELECT count(*) INTO v_weak
@@ -536,7 +555,7 @@ LANGUAGE sql STABLE SECURITY INVOKER AS $$
     AND c.readiness_status = 'ready'
     AND c.publication_status = 'published'
     AND s.next_due_at IS NOT NULL
-    AND s.next_due_at <= now() + (p_days || ' days')::interval
+    AND s.next_due_at <= now() + make_interval(days => p_days)
   GROUP BY 1
   ORDER BY 1;
 $$;
@@ -704,7 +723,8 @@ DROP INDEX IF EXISTS indonesian.learning_items_slug_idx;
 | `_capability_source_progress_met` is slow at scale (large user × many capabilities) | New index `lsps_user_source_ref_idx` covers the EXISTS clause's join (§4.5). Functional index on `learning_items.stable_slug(base_text)` covers the slug-match join. Function declared STABLE so PG can cache call results within a query. Defer perf testing until production scale is real. |
 | Capability source_ref scheme drifts in future (e.g., introduction of UUID-based refs) | Production today is uniformly slug-based (verified in §3.2). If the `capabilityCatalog.ts:51-52` runtime path is ever published to DB, a follow-up needs to update slug-match joins to handle both schemes. Out of scope for this spec. |
 | `getLapsingCount` semantics change from items to capabilities | Spec explicitly counts distinct items (§4.4 `get_lapsing_count`). Matches legacy. UI label stays "items at risk." |
-| Goal-policy adjustments split between SQL and TS | Spec resolution: SQL returns raw counts only. ALL goal-policy math stays in `goalService.ts`. Including the 20% weak cap and the `dueTarget = preferredSize` ceiling. |
+| Goal-policy adjustments split between SQL and TS (architect S1) | Spec resolution: SQL returns raw counts only. ALL goal-policy math stays in `goalService.ts`. The 20% weak cap (`Math.ceil(dueTarget * 0.2)` at `goalService.ts:615`) and the `dueTarget = preferredSize` ceiling (`goalService.ts:559-563`) stay in TS. SQL `weak_raw` is uncapped — TS applies the cap when shaping `weakItemsToday`. (architect SIG-5 in v3) |
+| Recognition aggregate is `text_recognition` only by design (architect S3) | Legacy `progressService.getAccuracyBySkillType` filtered by `skill_type = 'recognition'`, which mapped to today's `text_recognition` capability. Other recognition-flavored types (`audio_recognition`, `pattern_recognition`, `root_derived_recognition`, `l1_to_id_choice`) are EXCLUDED from this aggregate by design — they served different metrics in legacy code and would over-count if rolled in. If a separate "broader recognition" metric is needed in future, add a new method (`getAudioRecognitionAccuracy()`, `getPatternRecognitionAccuracy()`, etc.). |
 | `(answer_report_json->>'latencyMs')::int` throws on dirty data | Added regex pre-filter `~ '^\d+$'` in WHERE clauses. AVG over zero rows returns NULL; service code COALESCEs to `null` for the typed result. |
 | `(answer_report_json->>'wasCorrect')::boolean` throws on non-bool | Filtered to `IN ('true', 'false')` in `get_recall_accuracy_by_direction` (§4.4). |
 | Mastery funnel gets out of sync if `getMasteryOverview` changes shape | Service exposes it as a pass-through; consumers import the type from `@/lib/mastery/masteryModel`. Single point of typing. |
@@ -742,7 +762,28 @@ Two layers:
 
 **Shape smoke (always run):** mock `supabase.schema().rpc()` to return a fixture row; assert the service correctly extracts each field. This runs on every CI invocation without `SUPABASE_SERVICE_KEY`.
 
-**Live SQL parity (gated):** for each metric function, `it.skipIf(!process.env.SUPABASE_SERVICE_KEY)` calls the function against a SEEDED test fixture user. Asserts: result tuple matches expected counts derived from the seed. This catches predicate-parity regressions but only runs locally / on dev-tagged CI.
+**Live SQL parity (gated):** for each metric function, `it.skipIf(!process.env.SUPABASE_SERVICE_KEY)` calls the function against the seeded fixture user (§11.5). Asserts: result tuple matches expected counts derived from the seed. This catches predicate-parity regressions but only runs locally / on dev-tagged CI.
+
+### 11.5 Test fixture (architect SIG-6 in v3)
+
+Pinned to `testuser@duin.home` (existing test user, see `~/.claude/.../reference_test_user.md`). Fixture seeded by a small idempotent script:
+
+```text
+scripts/seed-progress-test-fixtures.ts
+```
+
+The script (run once before live SQL parity tests, idempotent re-runs):
+- Picks 3 `learning_capabilities` for the user, sets their `learner_capability_state.next_due_at` to `now() - interval '1 hour'` (due ceiling = 3).
+- Picks 2 additional capabilities, sets `lapse_count = 4`, `stability = 1.5`, `next_due_at = now() - interval '1 hour'` (lapsing ceiling = 2 distinct items).
+- Inserts 5 `capability_review_events` rows with `created_at >= now() - interval '7 days'`, mixed `wasCorrect` (3 true, 2 false) for known accuracy ratios.
+- Inserts 3 `learner_source_progress_state` rows so source-progress predicate has positive cases.
+
+Documented expected return values per metric function, e.g.:
+- `compute_todays_plan_raw(testuser, now)` → `due_raw=3, weak_raw=2, recall_supply_raw=<computed>, mean_latency_ms≈18000`.
+- `get_lapsing_count(testuser)` → `count=2`.
+- `get_recall_accuracy_by_direction(testuser)` → `recognition_correct=N, recognition_total=M, ...` per the seed.
+
+These constants live as exported test fixtures in the script, imported by the live SQL parity test.
 
 ### 11.4 UI copy changes (S5 secondary fix)
 Per §1.1, dashboard widget copy should clarify ceiling vs output:
@@ -760,17 +801,19 @@ Per §1.1, dashboard widget copy should clarify ceiling vs output:
 **Resolution:** Defer. Per-method round-trip is <50ms each based on the predicate sizes; Voortgang's 5 simultaneous calls finish in parallel under 200ms total. If perf testing later shows it matters, add a batch endpoint then.
 
 ### q3. Legacy session path: keep or delete?
-**Open.** The legacy session path (`Session.tsx:181-187` + `lib/reviewHandler.ts:59-139` + `learnerStateService.applyReviewToSkillState/upsertItemState/logStageEvent/getSkillStates/getSkillStatesBatch`) reads and writes `learner_skill_state` and is the fallback when `experiencePlayerV1` is OFF. Two questions for the spec author:
-  - (a) Is the legacy path still needed? `experiencePlayerV1` defaults to ON in `featureFlags.ts:71`; the legacy path is a fallback rather than a primary flow.
-  - (b) If yes: spec stops short — keeps these methods. CI gate excludes them.
-  - (c) If no: separate spec to delete the legacy path entirely (estimated 4-6 hr of work; risk: removes tested-and-shipped code that protects against capability-system bugs).
-**Recommendation:** answer in v3. Default assumption for now: keep, exclude from CI gate.
+**Deferred.** This spec scopes PR-1/2/3 (the surfacing-layer migration). PR-4 (cleanup + CI gate) is moved to a follow-up spec contingent on the q3 decision.
+
+The legacy session path (`Session.tsx:181-187` + `lib/reviewHandler.ts:59-139` + `learnerStateService.applyReviewToSkillState/upsertItemState/logStageEvent/getSkillStates/getSkillStatesBatch`) reads and writes `learner_skill_state` and is the fallback when `experiencePlayerV1` is OFF. The decision is whether:
+  - (a) Legacy path is intentional defense-in-depth → KEEP, allowlist its files in the future CI gate.
+  - (b) Legacy path is dead-code-in-waiting (now that experiencePlayerV1 is the canonical flow) → DELETE in a follow-up spec, no CI gate exemption needed.
+
+**Effect on this spec:** none. v3 ships PR-1/2/3 regardless. PR-4 is a follow-up spec.
 
 ### q4. Acceptable dashboard-vs-session disagreement?
 **Resolution:** Dashboard surfaces eligibility ceilings; session output is `≤` ceiling. Documented in §1.1. UI copy reflects this in §11.4.
 
 ### q5. CI gate scope
-**Open until q3 resolves.** The gate `! grep "from('learner_skill_state')"` should pass after PR-4 except for explicitly-allowlisted files (legacy reviewHandler / legacy session path). Allowlist is the spec author's decision per q3.
+**Deferred to PR-4 follow-up spec** (per q3 deferral above).
 
 ### q6. `processGoalEvaluation` referenced in v1 §3.1
 **Resolution:** v1 had the wrong method name. Actual functions are `goalService.refreshGoalProgress` (line 320) and `goalService.finalizeWeek` (line 504). v2 §3.2 / §5 use the correct names.
@@ -782,7 +825,7 @@ Per §1.1, dashboard widget copy should clarify ceiling vs output:
 
 Expected per-method round-trip costs against current test data (testuser, 9 lessons, 2,357 ready capabilities):
 
-- `compute_todays_plan_raw`: 1 RPC; 4 internal queries; <100ms with new indexes. Without `lsps_user_source_ref_idx` it would be 200-500ms.
+- `compute_todays_plan_raw`: 1 RPC; 4 internal queries. With v3's set-based "new" branch (LANGUAGE sql STABLE helper inlined into the outer query plan) and the indexes in §4.5, expect <150ms for ~2,500 ready capabilities. Architect SIG-3 noted that v2's plpgsql variant was O(n) function calls (~1ms each × 2,357 = ~2.4s); v3's inlinable LANGUAGE sql variant lets PG fuse the predicate into one set-based scan.
 - `get_lapsing_count`, `get_lapse_prevention`: 1 RPC each; single COUNT/SUM; <30ms with new indexes.
 - `get_memory_health`: 1 RPC; AVG with FILTER; <40ms.
 - `get_review_latency_stats`: 1 RPC; 2 sub-queries; <50ms with `cre_user_created_idx`.
@@ -799,23 +842,38 @@ Voortgang page's 5 parallel calls finish in <250ms total in practice (slowest si
 
 ## 15. Definition of Done
 
+This spec scopes PR-1, PR-2, PR-3 (per §5). PR-4 (cleanup + CI gate) is deferred to a follow-up spec contingent on §12 q3 resolving the legacy session path question. The DoD below covers PR-1/2/3 only.
+
 - [ ] Migration `2026-05-01-learner-progress-functions.sql` deployed to homelab Supabase.
-- [ ] `learnerProgressService.ts` exists with the 9-method interface in §4.2.
-- [ ] All consumers in §3.2 column "In scope" no longer `from('learner_skill_state')`.
-- [ ] CI gate added per q5 resolution; passes against `main`.
-- [ ] All 1013+ existing tests pass (post-fixture-rewrite count may be lower due to consolidation).
+- [ ] `unaccent` extension installed in the `indonesian` (or shared) schema before the migration runs.
+- [ ] `learnerProgressService.ts` exists with the 8-method interface in §4.2.
+- [ ] Consumers in §3.2 in-scope rows for PR-1/2/3 no longer `from('learner_skill_state')`. (PR-4 + CI gate handle the rest in a follow-up.)
+- [ ] All existing tests pass; PR description documents net change in test count after fixture rewrites.
 - [ ] New `learnerProgressService.test.ts` exists; passes.
 - [ ] SQL function shape smoke tests pass without `SUPABASE_SERVICE_KEY`.
-- [ ] Live SQL parity tests pass with `SUPABASE_SERVICE_KEY` against seeded fixtures.
-- [ ] Browser smoke per §7 step 5: Dashboard ceiling = DB count = session ceiling.
+- [ ] Live SQL parity tests pass with `SUPABASE_SERVICE_KEY` against `testuser@duin.home` with the §11.5 seeded fixture, with documented expected counts.
+- [ ] Browser smoke per §7 step 5: Dashboard ceiling matches the seeded counts; session output ≤ ceiling.
 - [ ] Dashboard widget copy reflects ceiling semantics (§11.4).
+- [ ] Health-check addition: `scripts/check-supabase-deep.ts` updated to verify all 8 RPCs respond (architect NIT-3).
 - [ ] CLAUDE.md mentions `learnerProgressService` as canonical.
 - [ ] `docs/current-system/page-framework-status.md` updated.
 
 ## 16. Changelog
 
-- **v1** (2026-05-01 morning): initial spec; failed architect review.
-- **v2** (2026-05-01 afternoon, this revision): addresses 8 CRITICAL + 6 SIGNIFICANT issues from architect review.
+- **v1** (2026-05-01 morning): initial spec; failed architect review with 8 CRITICAL + 6 SIGNIFICANT issues.
+- **v3** (2026-05-01 evening, current): addresses architect review of v2 (3 CRITICAL + 6 SIGNIFICANT).
+  - **CRIT-1 (stable_slug):** v2 used `translate()` with mismatched length source/target strings (8 a's vs 7 source chars, off-by-one cascade). v3 replaces `translate()` with the `unaccent` extension, which matches NFKD+combining-mark-strip semantics of the JS reference exactly. Migration adds `CREATE EXTENSION IF NOT EXISTS unaccent`.
+  - **CRIT-2 (source-progress predicate drift):** v2's source_kind list contained `dialogue_chunk` (doesn't exist) and `affixed_form_pair` (not in production list); capability_type list missed `pattern_contrast` and erroneously included `root_derived_recognition`/`root_derived_recall`. v3 lists verified verbatim against `capabilitySessionDataService.ts:147-164`.
+  - **CRIT-3 (index audit accuracy):** v2 §3.1 claimed `learner_capability_state` had a 2-column index `(user_id, next_due_at)`; the actual index per `2026-04-25-capability-core.sql:78-79` is 3-column `(user_id, activation_state, next_due_at)`. v3 corrects.
+  - **SIG-1 (PR-4 / CI gate scope):** v3 carves PR-4 + CI gate out of this spec's DoD. PR-4 is a follow-up spec contingent on §12 q3.
+  - **SIG-2 (interval expression):** v3 uses `make_interval(days => p_days)` instead of string-concat in `get_review_forecast`.
+  - **SIG-3 (per-row function call cost):** v2's `_capability_source_progress_met` was plpgsql with a per-row PK lookup. v3 rewrites it as `LANGUAGE sql STABLE` taking metadata + source_kind + capability_type by value, allowing PG to inline the predicate into the outer query plan.
+  - **SIG-4 (mastery pass-through):** v3 drops `getMasteryOverview` from the service interface — pure indirection. Consumers import directly from `@/lib/mastery/masteryModel` (which already reads `learner_capability_state`).
+  - **SIG-5 (20% cap location):** v3 risks table makes the cap location explicit (stays in `goalService.ts:615`).
+  - **SIG-6 (test fixture undefined):** v3 §11.5 pins fixture to `testuser@duin.home` with a small idempotent `scripts/seed-progress-test-fixtures.ts` and documented expected counts.
+  - **NIT-3 (health-check):** v3 §15 adds `scripts/check-supabase-deep.ts` update to DoD.
+
+- **v2** (2026-05-01 afternoon): addressed 8 CRITICAL + 6 SIGNIFICANT issues from v1 review (most fixed; CRIT-1/2/3 found in re-review).
   - C1: `stable_slug` SQL function defined (§4.3 Helper 1).
   - C2: production source_ref scheme verified slug-only (§3.2).
   - C3: source-progress predicate now mirrors `sourceProgressGates.ts:32-93` including transitive closure, section_ref fallback, and `requiresConcreteSourceProgress` rejection (§4.3 Helper 2).
