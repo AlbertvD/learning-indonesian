@@ -1,7 +1,7 @@
-# Learner Progress Service — Canonical Contract Spec (v5)
+# Learner Progress Service — Canonical Contract Spec (v6)
 
 **Date:** 2026-05-01
-**Status:** Implementation-ready after four rounds of architect review (v1→v2→v3→v4→v5). v4 expanded scope to cover all surfacing-layer interfaces between deep modules. v5 addresses the v4 review (3 SIGNIFICANT + 4 NIT, no CRITICALs).
+**Status:** Implementation-ready after five rounds of architect review (v1→v2→v3→v4→v5→v6). v6 rewrites §11.5 fixture as explicit numbered tables (per architect v5 review: 5 SIG + 2 NIT, all in §11.5 fixture math). No structural/architectural changes.
 **Source:** 2026-05-01 architecture-review conversation; v2/v3/v4 incorporate three rounds of architect review feedback.
 
 ## 1. Goal
@@ -1136,49 +1136,101 @@ timezone." Stored in localStorage so each user sees it once. Mitigates the
 ±1-day rollout drift documented in §10 risks. Tested by asserting the pill
 renders on first mount and disappears after click.
 
-### 11.5 Test fixture (architect SIG-6 v3 + SIG-B v3)
+### 11.5 Test fixture (architect SIG-6 v3 + SIG-B v3 + SIG-1..5/NIT-1..2 v5)
 
 Pinned to `testuser@duin.home` (existing test user, see `~/.claude/.../reference_test_user.md`).
 
 **The fixture script does not exist yet — it must be created in PR-1** (architect SIG-B v3). Path: `scripts/seed-progress-test-fixtures.ts`. Idempotent re-runs leave the DB in the same state. Wraps mutations in a transaction and exposes a runner that takes a sqlClient + transaction marker so live SQL parity tests can use the same fixture under their own BEGIN/ROLLBACK envelope.
 
-The script seeds (all timestamps anchored to a fixed `seedNow` UTC instant chosen at run time, exported alongside the expected counts so tests are deterministic; default `seedNow = 2026-05-01T10:00:00Z`):
+(architect v4 review identified that v4's prose-style §11.5 had multiple internal inconsistencies that left the implementer guessing. v5 rewrites it as explicit numbered tables so every expected return value is mechanically derivable from the seed.)
 
-**Capability state (5 capabilities for `testuser@duin.home`):**
-- `cap-1`, `cap-2`, `cap-3` — `text_recognition` for items A/B/C; `next_due_at = seedNow - 1 hour`, `activation_state='active'`, `lapse_count=0`, `stability=10.0`, `last_reviewed_at = seedNow - 5 days`. Due ceiling = 3.
-- `cap-4`, `cap-5` — `form_recall` for items A and B; `next_due_at = seedNow - 1 hour`, `lapse_count=4`, `stability=1.5`, `last_reviewed_at = seedNow - 2 days`, `consecutive_failure_count=1`. Lapsing ceiling = 2 distinct items.
+#### 11.5.1 Constants
 
-**Review events (8 capability_review_events rows):**
-- 3 events on `seedNow - 0d`, `seedNow - 1d`, `seedNow - 2d` (Europe/Amsterdam local days), each `capability_id=cap-1`, `wasCorrect=true`, `latencyMs=18000`. Streak (Europe/Amsterdam) = 3.
-- 1 event on `seedNow - 3d` near UTC midnight: `created_at = seedNow - 3d` adjusted so it's 23:30 UTC (= 01:30 Amsterdam next day). This is the **streak-bucketing-divergence** event that exercises SIG-1: under UTC bucketing it falls on day-3, under Europe/Amsterdam bucketing on day-2. Documented expected: `get_current_streak_days(testuser, 'Europe/Amsterdam') = 3` (the gap on day-3 breaks the streak); `get_current_streak_days(testuser, 'UTC') = 4` (no gap when bucketed UTC).
-- 1 event for `cap-4` (form_recall on item A) at `seedNow - 5 days` — first-ever form_recall for item A inside the seeded week.
-- 1 event for `cap-5` (form_recall on item B) at `seedNow - 30 days` (BEFORE seeded week start of `seedNow - 7 days`) — earlier form_recall for item B; ensures item B is **excluded** from the usable-vocabulary-gain count (negative test case).
-- 2 additional events: 1 `recognition` correct, 1 `recall` incorrect, both within the 7-day week, anchoring the recall_stats_for_week + recall_accuracy_by_direction expected counts.
+```text
+seedNow            = 2026-05-01T10:00:00Z
+weekStartUtc       = seedNow - 7 days  = 2026-04-24T10:00:00Z
+weekEndUtc         = seedNow            = 2026-05-01T10:00:00Z
+priorWeekStartUtc  = seedNow - 14 days = 2026-04-17T10:00:00Z
+testuserId         = (resolved at seed time from auth.users where email='testuser@duin.home')
+itemA, itemB, itemC = three pre-existing learning_items rows (created if absent; identified by stable_slug('item-a'), 'item-b', 'item-c')
+```
 
-**Source progress state (3 rows):**
-- `(testuser, 'lessons/lesson-4', '__lesson__', current_state='lesson_completed')` so predicate-positive case for capabilities pinned to that source.
-- `(testuser, 'lessons/lesson-5', 'sections/intro', current_state='intro_completed')` for section_ref-fallback test.
-- `(testuser, 'lessons/lesson-6', '__lesson__', current_state='not_started')` for negative case.
+**Timezone offset for Europe/Amsterdam in May 2026:** CEST = UTC+2. All Amsterdam-local-date computations below use this offset (architect NIT-1 v5).
 
-### Expected return values for all 13 functions
+#### 11.5.2 Learning capabilities (5 rows, all with `readiness_status='ready' AND publication_status='published'`, architect SIG-5 v5)
 
-(architect SIG-3 v4: every function gets a documented expected value; values are exported as constants from `scripts/seed-progress-test-fixtures.ts` and consumed verbatim by the live SQL parity tests.)
+| Capability id | source_kind | source_ref | capability_type | metadata_json (`requiredSourceProgress`) |
+|---|---|---|---|---|
+| cap-1 | item | `learning_items/item-a` | text_recognition | `{ kind: 'none', reason: 'not_lesson_sequenced' }` |
+| cap-2 | item | `learning_items/item-b` | text_recognition | `{ kind: 'none', reason: 'not_lesson_sequenced' }` |
+| cap-3 | item | `learning_items/item-c` | text_recognition | `{ kind: 'none', reason: 'not_lesson_sequenced' }` |
+| cap-4 | item | `learning_items/item-a` | form_recall | `{ kind: 'none', reason: 'not_lesson_sequenced' }` |
+| cap-5 | item | `learning_items/item-b` | form_recall | `{ kind: 'none', reason: 'not_lesson_sequenced' }` |
 
-| Function | Args | Expected return |
-|---|---|---|
-| `compute_todays_plan_raw` | `(testuser, seedNow)` | `due_raw=5, new_raw=<seed-dependent count of dormant ready capabilities>, weak_raw=2, recall_supply_raw=2, mean_latency_ms≈18000` |
-| `get_lapsing_count` | `(testuser)` | `2` |
-| `get_lapse_prevention` | `(testuser)` | `at_risk=2 (cap-4, cap-5 both have consecutive_failure_count>0), rescued=0` |
-| `get_memory_health` | `(testuser)` | `avg_recognition_stability=10.0, recognition_sample_size=3, avg_recall_stability=1.5, recall_sample_size=2, avg_overall_stability=6.6 (rounded), overall_sample_size=5` |
-| `get_review_latency_stats` | `(testuser)` | `current_week_ms≈18000 (3 events at 18000), prior_week_ms=null (no prior-week events seeded other than the 30-day-ago one which is outside both windows)` |
-| `get_recall_accuracy_by_direction` | `(testuser)` | `recognition_correct=3, recognition_total=4, recall_correct=0, recall_total=2` (3 cap-1 events all correct + 1 added recognition correct event = 4 total, 3 correct; 2 form_recall events from cap-4 and cap-5, 0 correct) |
-| `get_recall_stats_for_week` | `(testuser, weekStart=seedNow-7d, weekEnd=seedNow)` | Same shape as `get_recall_accuracy_by_direction` but windowed: `recognition_correct=3, recognition_total=4, recall_correct=0, recall_total=1` (cap-5's prior-week event is excluded; cap-4's in-week event is included as recall_total=1, and the seeded "1 recall incorrect" event matches) |
-| `get_study_days_count` | `(testuser, weekStart, weekEnd, 'Europe/Amsterdam')` | `4` (3 consecutive days + 1 UTC-midnight-crossing day = 4 distinct Europe/Amsterdam dates) |
-| `get_usable_vocabulary_gain` | `(testuser, weekStart, weekEnd)` | `1` (item A counted via cap-4's first-ever form_recall in week; item B excluded because cap-5 has earlier form_recall outside the week) |
-| `get_overdue_count` | `(testuser, 'Europe/Amsterdam')` | `0` (all due capabilities have `next_due_at = seedNow - 1 hour`, which is "today" Amsterdam local; "overdue" means before start-of-today-local) |
-| `get_current_streak_days` | `(testuser, 'Europe/Amsterdam')` | `3` (and `(testuser, 'UTC') = 4`, asserting the SIG-1 divergence) |
-| `get_vulnerable_capabilities` | `(testuser, 10)` | 2 rows: `cap-4` first (lapse_count=4 ties; consecutive_failure_count=1 ties; ordered by `s.lapse_count DESC, s.consecutive_failure_count DESC` then implicit row order). Both rows include item base_text and meaning from the seeded items. |
-| `get_review_forecast` | `(testuser, 14, 'Europe/Amsterdam')` | Per-day breakdown for the 5 active capabilities, all `next_due_at = seedNow - 1 hour`, all bucketed on the seedNow-Europe/Amsterdam date: `[(forecast_date=that_date, count=5)]` |
+(`kind:'none'` with these source_kinds + capability_types is rejected by `_capability_source_progress_met` per Case 2 — so they don't contribute to `new_raw`. The seed deliberately avoids any "new" eligibility; `new_raw` is therefore production-data-dependent and asserted as `>= 0` rather than as a fixed number.)
+
+#### 11.5.3 Learner capability state (5 rows)
+
+| capability_id | activation_state | next_due_at | stability | lapse_count | consecutive_failure_count | last_reviewed_at | review_count |
+|---|---|---|---|---|---|---|---|
+| cap-1 | active | seedNow - 1h (`2026-05-01T09:00:00Z`) | 10.0 | 0 | 0 | seedNow - 5d | 4 |
+| cap-2 | active | seedNow - 1h | 10.0 | 0 | 0 | seedNow - 5d | 0 |
+| cap-3 | active | seedNow - 1h | 10.0 | 0 | 0 | seedNow - 5d | 0 |
+| cap-4 | active | seedNow - 1h | 1.5 | 4 | 2 | seedNow - 5d | 1 |
+| cap-5 | active | seedNow - 1h | 1.5 | 4 | 1 | seedNow - 30d | 1 |
+
+(cap-4 has consecutive_failure_count=2 vs cap-5's 1 to make `get_vulnerable_capabilities` ORDER BY deterministic.)
+
+#### 11.5.4 Capability review events (6 rows, explicit) — architect SIG-1..4 v5
+
+| # | created_at (UTC) | UTC date | Europe/Amsterdam date (CEST = UTC+2) | capability_id | answer_report_json | In 7d week? | In 7d–14d prior week? |
+|---|---|---|---|---|---|---|---|
+| e1 | 2026-05-01T08:00:00Z | 2026-05-01 | 2026-05-01 | cap-1 | `{wasCorrect: true,  latencyMs: 18000}` | yes | no |
+| e2 | 2026-04-30T08:00:00Z | 2026-04-30 | 2026-04-30 | cap-1 | `{wasCorrect: true,  latencyMs: 18000}` | yes | no |
+| e3 | 2026-04-29T08:00:00Z | 2026-04-29 | 2026-04-29 | cap-1 | `{wasCorrect: true,  latencyMs: 18000}` | yes | no |
+| e4 | 2026-04-28T22:30:00Z | 2026-04-28 | 2026-04-29 | cap-1 | `{wasCorrect: false, latencyMs: 18000}` | yes (e4 ≥ weekStartUtc) | no |
+| e5 | 2026-04-26T10:00:00Z | 2026-04-26 | 2026-04-26 | cap-4 | `{wasCorrect: false, latencyMs: null}`  | yes | no |
+| e6 | 2026-04-01T10:00:00Z | 2026-04-01 | 2026-04-01 | cap-5 | `{wasCorrect: false, latencyMs: null}`  | no | no (outside both windows) |
+
+**Why these specific events:**
+- e1, e2, e3 establish the streak baseline on three consecutive days in BOTH UTC and Amsterdam buckets.
+- e4 is the **UTC-midnight-crossing** event that exercises the SIG-1 v4 streak divergence:
+  - In UTC, e4 falls on date `2026-04-28`, filling the streak-day gap; `streak(UTC) = 4`.
+  - In Amsterdam, e4 falls on date `2026-04-29` (same as e3), so `2026-04-28` Amsterdam has no events; `streak(Amsterdam) = 3`.
+- e4 also has `wasCorrect=false` so recognition all-time = 3 correct of 4 total (architect SIG-1 v5).
+- e5 is the in-week first form_recall for item A; e6 is a prior-week first form_recall for item B (excludes item B from `get_usable_vocabulary_gain` — negative case).
+- e5 and e6 have `latencyMs: null` so they're filtered out of latency averages by the regex pre-check (`~ '^\d+$'` fails for null).
+
+#### 11.5.5 Source progress state (3 rows)
+
+| user_id | source_ref | source_section_ref | current_state | completed_event_types |
+|---|---|---|---|---|
+| testuser | `lessons/lesson-4` | `__lesson__` | `lesson_completed` | `['lesson_completed']` |
+| testuser | `lessons/lesson-5` | `sections/intro` | `intro_completed` | `['intro_completed']` |
+| testuser | `lessons/lesson-6` | `__lesson__` | `not_started` | `[]` |
+
+Used to exercise the source-progress predicate's transitive closure (lesson-4 satisfies any required state from `section_exposed` upward), section-ref fallback (lesson-5 / sections/intro), and the negative case (lesson-6).
+
+#### 11.5.6 Expected return values — derived mechanically from the seed above
+
+(architect SIG-3 v4 + SIG-1..4 v5: every function has a documented, derivable expected return; values are exported as constants from `scripts/seed-progress-test-fixtures.ts` and consumed verbatim by the live SQL parity tests.)
+
+| Function | Args | Expected return | Derivation |
+|---|---|---|---|
+| `compute_todays_plan_raw` | `(testuser, seedNow)` | `due_raw=5, new_raw≥0, weak_raw=2, recall_supply_raw=2, mean_latency_ms=18000` | due: all 5 capabilities active+ready+published with `next_due_at <= seedNow`. weak: cap-4, cap-5 (lapse_count≥3 AND due). recall_supply: cap-4, cap-5 (form_recall AND due). mean_latency: AVG over events with latencyMs in 14d window = AVG(e1,e2,e3,e4) = 18000. new: dormant-ready-published count is production-dependent; asserted as `>= 0`. |
+| `get_lapsing_count` | `(testuser)` | `2` | cap-4 (item-a) and cap-5 (item-b) both have lapse_count=4≥3 AND stability=1.5<2.0; 2 distinct items. |
+| `get_lapse_prevention` | `(testuser)` | `at_risk=2, rescued=0` | cap-4 (cf=2>0) + cap-5 (cf=1>0) → at_risk. Neither has cf=0 AND last_reviewed_at recent enough so rescued=0. |
+| `get_memory_health` | `(testuser)` | `avg_recognition_stability=10.00, recognition_sample_size=3, avg_recall_stability=1.50, recall_sample_size=2, avg_overall_stability=6.60, overall_sample_size=5` | recognition: cap-1, cap-2, cap-3 all stability=10. recall: cap-4, cap-5 both stability=1.5. overall: AVG(10,10,10,1.5,1.5)=6.6. After service-side rounding to 2 decimals (NIT-3 v4). |
+| `get_review_latency_stats` | `(testuser)` | `current_week_ms=18000, prior_week_ms=null` | current week: AVG(latencyMs) over e1..e4 (all latencyMs=18000) = 18000. prior week (7d–14d): no events match. |
+| `get_recall_accuracy_by_direction` | `(testuser)` | `recognition_correct=3, recognition_total=4, recall_correct=0, recall_total=2` | recognition: e1,e2,e3,e4 are all cap-1 (text_recognition); 3 correct (e1,e2,e3) + 1 incorrect (e4) = 3/4. recall: e5,e6 both form_recall, both wasCorrect=false = 0/2. |
+| `get_recall_stats_for_week` | `(testuser, weekStartUtc, weekEndUtc)` | `recognition_correct=3, recognition_total=4, recall_correct=0, recall_total=1` | Same as above but windowed: e1..e4 in week (recognition: 3/4), e5 in week (recall: 0/1), e6 outside week. |
+| `get_study_days_count` | `(testuser, weekStartUtc, weekEndUtc, 'Europe/Amsterdam')` | `4` | Distinct Amsterdam dates of in-week events: {2026-05-01 (e1), 2026-04-30 (e2), 2026-04-29 (e3, e4), 2026-04-26 (e5)} = 4 distinct dates. |
+| `get_usable_vocabulary_gain` | `(testuser, weekStartUtc, weekEndUtc)` | `1` | Item-A: first-ever form_recall is e5 (in week), no earlier form_recall for item-a → counted. Item-B: first-ever form_recall is e6 (out of week), e6 is BEFORE weekStartUtc so item-b NOT counted (NOT EXISTS earlier prevents counting; in-week first must be the global first too). Result: 1. |
+| `get_overdue_count` | `(testuser, 'Europe/Amsterdam')` | `0` | start-of-today Amsterdam = 2026-05-01T00:00:00+02:00 = 2026-04-30T22:00:00Z. All 5 capabilities have next_due_at = 2026-05-01T09:00:00Z, which is AFTER 2026-04-30T22:00:00Z, so none are < start-of-today. count=0. |
+| `get_current_streak_days` | `(testuser, 'Europe/Amsterdam')` | `3` | Walking back from 2026-05-01 Amsterdam: 05-01 (e1) ✓, 04-30 (e2) ✓, 04-29 (e3,e4) ✓, 04-28 ✗. streak=3. |
+| `get_current_streak_days` | `(testuser, 'UTC')` | `4` | Walking back from 2026-05-01 UTC: 05-01 (e1) ✓, 04-30 (e2) ✓, 04-29 (e3) ✓, 04-28 (e4) ✓, 04-27 ✗. streak=4. (Demonstrates SIG-1 v4 divergence; both values are tested expectations.) |
+| `get_vulnerable_capabilities` | `(testuser, 10)` | 2 rows: row 1 = cap-4 (item-a), row 2 = cap-5 (item-b) | Both have lapse_count=4 (tied); ORDER BY lapse_count DESC, consecutive_failure_count DESC: cap-4.cf=2 > cap-5.cf=1 → cap-4 first. Each row carries item base_text and best NL meaning. |
+| `get_review_forecast` | `(testuser, 14, 'Europe/Amsterdam')` | `[{forecast_date='2026-05-01', count=5}]` | All 5 capabilities have `next_due_at = 2026-05-01T09:00:00Z = 2026-05-01T11:00 Amsterdam`. SQL filter `next_due_at <= now() + 14d` admits past-due. All 5 fall in the same Amsterdam-local-date bucket. |
 
 ## 12. Open Questions
 
@@ -1259,7 +1311,16 @@ This spec scopes PR-1, PR-2, PR-3, PR-5 (per §5). The CI gate is deferred to a 
 - **v1** (2026-05-01 morning): initial spec; failed architect review with 8 CRITICAL + 6 SIGNIFICANT issues.
 - **v2** (2026-05-01 afternoon): addressed v1 issues; failed re-review with 3 CRITICAL + 6 SIGNIFICANT.
 - **v3** (2026-05-01 evening): addressed v2 issues; failed re-review with 4 CRITICAL + 6 SIGNIFICANT + 3 NIT.
-- **v5** (2026-05-01 late evening, current): addresses architect v4 review (3 SIG + 4 NIT, no CRITICALs).
+- **v6** (2026-05-02 early morning, current): addresses architect v5 review (0 CRITICAL + 5 SIGNIFICANT + 2 NIT, all in §11.5 fixture math). Pure §11.5 rewrite — no structural / API / SQL changes.
+  - **(architect SIG-1 v5)** `get_recall_accuracy_by_direction` expected reconciled: e4 wasCorrect=false, giving recognition 3 correct of 4 total cleanly. Removed the contradictory "added recognition correct event."
+  - **(architect SIG-2 v5)** Event count is now exactly 6 rows (was ambiguously "8" in v4). Each event has explicit capability_id, created_at, wasCorrect, latencyMs.
+  - **(architect SIG-3 v5)** `get_study_days_count=4` now derived from {2026-05-01, 2026-04-30, 2026-04-29 (e3 ∪ e4), 2026-04-26 (e5)} — internally consistent with the streak reasoning.
+  - **(architect SIG-4 v5)** Latency calculation now reproducible: e5 and e6 explicitly `latencyMs: null` so the regex pre-filter excludes them; only e1–e4 (all 18000) contribute.
+  - **(architect SIG-5 v5)** `learning_capabilities` rows include `readiness_status='ready', publication_status='published'` explicitly per row.
+  - **(architect NIT-1 v5)** Europe/Amsterdam offset for May 2026 (CEST = UTC+2) stated.
+  - **(architect NIT-2 v5)** `get_review_forecast` derivation made explicit: all next_due_at fall in 2026-05-01 Amsterdam bucket.
+
+- **v5** (2026-05-01 late evening): addresses architect v4 review (3 SIG + 4 NIT, no CRITICALs).
   - **(architect SIG-1 v4)** Streak day-bucketing semantic shift (UTC → user-TZ) documented in §10 risks; §11.5 fixture seeds a UTC-midnight-crossing review event so both legacy and new bucketed values are explicitly asserted; §11.4 adds a one-time UI rollout tooltip.
   - **(architect SIG-2 v4)** §9 explicit deployment-path subsection: forward migration shipped as `scripts/migrations/2026-05-01-learner-progress-functions.sql` (SSH+docker exec, mirroring 2026-04-25-capability-core.sql precedent) AND folded into `scripts/migration.sql` so `make migrate` is the canonical re-apply path. Matching rollback file. §15 DoD adds checkboxes for both.
   - **(architect SIG-3 v4)** §11.5 fixture extended to document expected returns for **all 13 functions** (was 7); seeded test data anchored to `seedNow` UTC; expectations are exported as constants from the seed script for use by live SQL parity tests.
