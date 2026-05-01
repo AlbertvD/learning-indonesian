@@ -554,17 +554,22 @@ export async function loadDbCapabilityHealthSnapshot(args: Extract<CapabilityHea
   }>
 
   const contentUnitSlugs = [...new Set(lessonBlocks.flatMap(block => block.content_unit_slugs ?? []))]
-  const contentUnitsResult = contentUnitSlugs.length > 0
-    ? await db()
-        .from('content_units')
-        .select('id, source_ref, source_section_ref, unit_slug')
-        .in('unit_slug', contentUnitSlugs)
-    : { data: [], error: null }
-  if (contentUnitsResult.error) throw contentUnitsResult.error
+  // Chunk the IN list to keep request URIs under Kong's buffer.
+  const slugChunkSize = 50
+  const contentUnitRows: Array<Record<string, unknown>> = []
+  for (let i = 0; i < contentUnitSlugs.length; i += slugChunkSize) {
+    const chunk = contentUnitSlugs.slice(i, i + slugChunkSize)
+    const { data, error } = await db()
+      .from('content_units')
+      .select('id, source_ref, source_section_ref, unit_slug')
+      .in('unit_slug', chunk)
+    if (error) throw error
+    contentUnitRows.push(...((data ?? []) as Array<Record<string, unknown>>))
+  }
   const contentUnits = filterScopedContentUnits({
     lessonSourceRef: args.sourceRef,
     blocks: lessonBlocks,
-    contentUnits: (contentUnitsResult.data ?? []) as Array<{
+    contentUnits: contentUnitRows as Array<{
     id: string
     source_ref?: string | null
     source_section_ref?: string | null
@@ -572,14 +577,21 @@ export async function loadDbCapabilityHealthSnapshot(args: Extract<CapabilityHea
     }>,
   })
 
-  const relationshipRows = contentUnits.length > 0
-    ? await db()
-        .from('capability_content_units')
-        .select('capability:learning_capabilities(canonical_key)')
-        .in('content_unit_id', contentUnits.map(unit => unit.id))
-    : { data: [], error: null }
-  if (relationshipRows.error) throw relationshipRows.error
-  const relationshipCapabilities = ((relationshipRows.data ?? []) as Array<{ capability?: { canonical_key: string } | null }>)
+  // Chunk the content_unit_id IN list — lessons with >~50 units would exceed
+  // Kong's URI buffer.
+  const contentUnitIds = contentUnits.map(unit => unit.id)
+  const relationshipRowsAll: Array<{ capability?: { canonical_key: string } | null }> = []
+  const ccuChunkSize = 50
+  for (let i = 0; i < contentUnitIds.length; i += ccuChunkSize) {
+    const chunk = contentUnitIds.slice(i, i + ccuChunkSize)
+    const { data, error } = await db()
+      .from('capability_content_units')
+      .select('capability:learning_capabilities(canonical_key)')
+      .in('content_unit_id', chunk)
+    if (error) throw error
+    relationshipRowsAll.push(...((data ?? []) as Array<{ capability?: { canonical_key: string } | null }>))
+  }
+  const relationshipCapabilities = relationshipRowsAll
     .map(row => row.capability)
     .filter((row): row is { canonical_key: string } => Boolean(row?.canonical_key))
   const scopedCapabilityKeys = collectLessonCapabilityKeys({
@@ -661,7 +673,7 @@ async function main() {
     console.log(JSON.stringify(report, null, 2))
     process.exit(getCapabilityHealthExitCode({ strict: args.strict, criticalCount: report.criticalCount }))
   } catch (error) {
-    console.error(error instanceof Error ? error.message : String(error))
+    console.error(error instanceof Error ? error.message : JSON.stringify(error, null, 2))
     process.exit(1)
   }
 }

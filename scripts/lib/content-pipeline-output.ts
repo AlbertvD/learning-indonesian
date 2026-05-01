@@ -654,10 +654,12 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
           : `${section.title} ${idx + 1}`
         const slug = stableSlug(title) || `category-${idx + 1}`
         const patternUnit = grammarPatternUnitsBySlug.get(`pattern-${slug}`)
+        const patternSourceRefs = new Set<string>([lessonSourceRef])
+        if (patternUnit?.source_ref) patternSourceRefs.add(patternUnit.source_ref)
         blocks.push({
           block_key: `${lessonSourceRef}-section-${section.order_index}-pattern-${slug}`,
           source_ref: lessonSourceRef,
-          source_refs: [lessonSourceRef],
+          source_refs: [...patternSourceRefs],
           content_unit_slugs: patternUnit ? [patternUnit.unit_slug] : [],
           block_kind: 'section',
           display_order: baseOrder + 10 + idx,
@@ -737,16 +739,18 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
     if (items.length === 0) return
     const itemUnitSlugs: string[] = []
     const stripCapabilityKeys: string[] = []
+    const stripSourceRefs = new Set<string>([lessonSourceRef])
     for (const item of items) {
       const slug = `item-${stableSlug(item.base_text)}`
       itemUnitSlugs.push(slug)
       const keys = capabilitiesByUnitSlug.get(slug) ?? []
       stripCapabilityKeys.push(...keys)
+      stripSourceRefs.add(sourceRefForLearningItem(item.base_text))
     }
     blocks.push({
       block_key: `${lessonSourceRef}-${contextType.replace(/_/g, '-')}`,
       source_ref: lessonSourceRef,
-      source_refs: [lessonSourceRef],
+      source_refs: [...stripSourceRefs],
       content_unit_slugs: itemUnitSlugs,
       block_kind: 'section',
       display_order: 1000 + contextIdx * 10,

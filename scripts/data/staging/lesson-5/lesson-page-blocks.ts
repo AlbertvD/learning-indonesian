@@ -846,7 +846,8 @@ export const lessonPageBlocks = [
     "block_key": "lesson-5-cloze",
     "source_ref": "lesson-5",
     "source_refs": [
-      "lesson-5"
+      "lesson-5",
+      "learning_items/terbang"
     ],
     "content_unit_slugs": [
       "item-terbang"
@@ -875,7 +876,13 @@ export const lessonPageBlocks = [
     "block_key": "lesson-5-dialogue",
     "source_ref": "lesson-5",
     "source_refs": [
-      "lesson-5"
+      "lesson-5",
+      "learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah",
+      "learning_items/aku-tidak-senang-tinggal-di-rumah-terus",
+      "learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi",
+      "learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang",
+      "learning_items/besok-saja-jalan-jalan-dengan-ayahmu",
+      "learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya"
     ],
     "content_unit_slugs": [
       "item-ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah",
@@ -949,7 +956,14 @@ export const lessonPageBlocks = [
     "block_key": "lesson-5-example-sentence",
     "source_ref": "lesson-5",
     "source_refs": [
-      "lesson-5"
+      "lesson-5",
+      "learning_items/kita-harus-belajar-di-rumah",
+      "learning_items/kami-mau-ke-luar",
+      "learning_items/di-mana-bukuku",
+      "learning_items/mobilmu-rusak",
+      "learning_items/pembantunya-sakit",
+      "learning_items/uang-kita-sudah-habis",
+      "learning_items/rumahnya-bagus-sekali"
     ],
     "content_unit_slugs": [
       "item-kita-harus-belajar-di-rumah",
@@ -1032,7 +1046,59 @@ export const lessonPageBlocks = [
     "block_key": "lesson-5-vocabulary-list",
     "source_ref": "lesson-5",
     "source_refs": [
-      "lesson-5"
+      "lesson-5",
+      "learning_items/gabah",
+      "learning_items/padi",
+      "learning_items/abang",
+      "learning_items/adik",
+      "learning_items/aduh",
+      "learning_items/aku",
+      "learning_items/ayah",
+      "learning_items/ayo",
+      "learning_items/baiklah",
+      "learning_items/belajar",
+      "learning_items/bibit-padi",
+      "learning_items/enak-saja",
+      "learning_items/gurih",
+      "learning_items/habis",
+      "learning_items/halo",
+      "learning_items/hari",
+      "learning_items/hari-rabu",
+      "learning_items/ikut",
+      "learning_items/jadi",
+      "learning_items/jalan-jalan",
+      "learning_items/kakak",
+      "learning_items/kami",
+      "learning_items/kamu",
+      "learning_items/kering",
+      "learning_items/kerja",
+      "learning_items/kita",
+      "learning_items/ladang",
+      "learning_items/laki-laki",
+      "learning_items/mari",
+      "learning_items/mereka",
+      "learning_items/mi",
+      "learning_items/mulai",
+      "learning_items/nanti",
+      "learning_items/nasi-gurih",
+      "learning_items/pembantu",
+      "learning_items/perempuan",
+      "learning_items/pergi",
+      "learning_items/punya",
+      "learning_items/rusak",
+      "learning_items/sawah",
+      "learning_items/sebentar",
+      "learning_items/senang",
+      "learning_items/setrop",
+      "learning_items/setrop-susu",
+      "learning_items/sore",
+      "learning_items/susu",
+      "learning_items/taman",
+      "learning_items/taman-mini",
+      "learning_items/tapi-tetapi",
+      "learning_items/terus",
+      "learning_items/uang",
+      "learning_items/wah"
     ],
     "content_unit_slugs": [
       "item-gabah",
