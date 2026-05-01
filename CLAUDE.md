@@ -458,10 +458,12 @@ The `docker-compose.yml` reference in `homelab-configs/services/learning-indones
 
 Two admin-gated routes render every primitive in isolation + composition for visual review. Both require an admin row in `indonesian.user_roles`.
 
-- **`/admin/design-lab`** — exercise framework primitives (`src/components/exercises/primitives/`). Established 2026-04-23.
-- **`/admin/page-lab`** — page framework primitives (`src/components/page/primitives/`) plus the seam-contract smoke test (PageContainer fit + PageBody variant=fit at iPhone 390×844). Established 2026-04-25.
+- **`/admin/design-lab`** — exercise framework primitives (`src/components/exercises/primitives/`). Established 2026-04-23. The 12 production exercise components in `src/components/exercises/implementations/` consume these primitives via the runtime registry (Session → registry → implementations/).
+- **`/admin/page-lab`** — page framework primitives (`src/components/page/primitives/`) plus the seam-contract smoke test (PageContainer fit + PageBody variant=fit at iPhone 390×844). Established 2026-04-25. As of 2026-05-01, **16 of 18 user-facing page surfaces are on the framework** (Dashboard, Lessons, LessonReader internals, Lesson wrapper, Profile, Leaderboard, Podcasts, Podcast detail, Progress, Login, Register, Session chrome, LocalPreview, ContentReview, ExerciseCoverage, SectionCoverage). The remaining two (`AdminGuard`, `DesignLab`) are intentionally excluded. See `docs/current-system/page-framework-status.md` for the full map and residuals.
 
 Use these when iterating on primitive visuals or validating that a refactor didn't regress the rendered output.
+
+When adding a new page, prefer composing `PageContainer` / `PageBody` / `PageHeader` + the relevant card primitives over hand-rolled `<Container>` + `<Title>` + `<Paper>`. If a page has a recurring shape that no existing primitive covers (the `MediaShowcaseCard` extraction during the Lessons travel-journal redesign is the canonical example), extract a new primitive rather than letting the page drift into bespoke CSS.
 
 ## Data Model Overview
 
