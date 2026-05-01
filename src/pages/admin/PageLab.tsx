@@ -41,6 +41,7 @@ import {
   PageBody,
   StatCard,
   ListCard,
+  MediaShowcaseCard,
   ActionCard,
   HeroCard,
   SettingsCard,
@@ -49,6 +50,7 @@ import {
   LoadingState,
   PageFormLayout,
 } from '@/components/page/primitives'
+import { IconBuildingStore } from '@tabler/icons-react'
 import { AdminGuard } from './AdminGuard'
 import classes from './PageLab.module.css'
 
@@ -212,6 +214,61 @@ export function PageLab() {
                 <Button>Doorgaan met les</Button>
               </div>
             </HeroCard>
+          </div>
+
+          <div className={classes.demoBlockWide}>
+            <p className={classes.demoLabel}>MediaShowcaseCard · default + featured + disabled</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
+              <MediaShowcaseCard
+                banner={
+                  <div style={{
+                    width: '100%', height: '100%',
+                    background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <IconBuildingStore size={56} color="rgba(255,255,255,0.9)" />
+                  </div>
+                }
+                eyebrow="LES 1"
+                title="Di Pasar"
+                tags={<><StatusPill tone="neutral">Werkwoord</StatusPill><StatusPill tone="neutral">Naamwoord</StatusPill></>}
+                status={<StatusPill tone="accent">In oefening</StatusPill>}
+                cta="Doorgaan"
+                to="/lesson/1"
+              />
+              <MediaShowcaseCard
+                featured
+                banner={
+                  <div style={{
+                    width: '100%', height: '100%',
+                    background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <IconBook size={80} color="rgba(255,255,255,0.92)" />
+                  </div>
+                }
+                eyebrow="AANBEVOLEN"
+                title="Les 6 — Jakarta"
+                subtitle="Begin met de aanbevolen les en bouw rustig je woordenschat op."
+                cta="Open les"
+                to="/lesson/6"
+              />
+              <MediaShowcaseCard
+                disabled
+                banner={
+                  <div style={{
+                    width: '100%', height: '100%',
+                    background: 'linear-gradient(135deg, #71717a 0%, #3f3f46 100%)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <IconBook size={56} color="rgba(255,255,255,0.4)" />
+                  </div>
+                }
+                eyebrow="LES 9"
+                title="Ke Puskesmas"
+                status={<StatusPill tone="neutral">Komt later</StatusPill>}
+              />
+            </div>
           </div>
 
           <div className={classes.demoBlockWide}>

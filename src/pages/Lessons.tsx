@@ -1,8 +1,26 @@
 // src/pages/Lessons.tsx
-import { useEffect, useRef, useState } from 'react'
-import { Container, Loader, Center } from '@mantine/core'
-import { Link } from 'react-router-dom'
-import { IconArrowRight, IconBook2, IconChevronRight, IconMap2 } from '@tabler/icons-react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import {
+  IconBuildingStore,
+  IconWorld,
+  IconPlane,
+  IconBed,
+  IconNotebook,
+  IconBuilding,
+  IconUmbrella,
+  IconShirt,
+  IconStethoscope,
+  IconBook2,
+} from '@tabler/icons-react'
+import {
+  PageContainer,
+  PageBody,
+  PageHeader,
+  SectionHeading,
+  MediaShowcaseCard,
+  StatusPill,
+  LoadingState,
+} from '@/components/page/primitives'
 import {
   extractLessonGrammarTopics,
   lessonSourceRefForOverview,
@@ -32,6 +50,66 @@ const emptyModel: LessonOverviewModel = {
   recommendedLessonId: null,
   recommendedRow: null,
   rows: [],
+}
+
+// Per-location palette + glyph. Keyed by lesson order_index 1-9. Mirrors the
+// course's themed locations: Pasar (market), Indonesia, Bandar Udara
+// (airport), Hotel, Belajar (study), Jakarta, Libur Sekolah (school holiday),
+// Batik, Puskesmas (clinic). Token-driven would be cleaner long-term, but
+// keeping the palette page-local for now lets us iterate on it without
+// touching the design system. If a second page wants the same palette
+// (Podcasts themed by topic?), we'll hoist it to design tokens.
+const LESSON_PALETTES: Record<number, { gradient: string; glyph: ReactNode }> = {
+  1: { gradient: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)', glyph: <IconBuildingStore size={64} /> },
+  2: { gradient: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)', glyph: <IconWorld size={64} /> },
+  3: { gradient: 'linear-gradient(135deg, #06b6d4 0%, #2563eb 100%)', glyph: <IconPlane size={64} /> },
+  4: { gradient: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)', glyph: <IconBed size={64} /> },
+  5: { gradient: 'linear-gradient(135deg, #10b981 0%, #047857 100%)', glyph: <IconNotebook size={64} /> },
+  6: { gradient: 'linear-gradient(135deg, #14b8a6 0%, #0e7490 100%)', glyph: <IconBuilding size={64} /> },
+  7: { gradient: 'linear-gradient(135deg, #fb7185 0%, #e11d48 100%)', glyph: <IconUmbrella size={64} /> },
+  8: { gradient: 'linear-gradient(135deg, #ec4899 0%, #a21caf 100%)', glyph: <IconShirt size={64} /> },
+  9: { gradient: 'linear-gradient(135deg, #06b6d4 0%, #0e7490 100%)', glyph: <IconStethoscope size={64} /> },
+}
+
+const LESSON_PALETTE_FALLBACK = {
+  gradient: 'linear-gradient(135deg, #71717a 0%, #3f3f46 100%)',
+  glyph: <IconBook2 size={64} />,
+}
+
+function paletteFor(orderIndex: number, featured = false) {
+  const palette = LESSON_PALETTES[orderIndex] ?? LESSON_PALETTE_FALLBACK
+  const glyphSize = featured ? 96 : 64
+  // Re-render the glyph at the requested size so the featured banner reads
+  // bigger without us having to define a separate large-glyph slot.
+  const baseGlyph = palette.glyph as React.ReactElement<{ size?: number }>
+  const glyph = baseGlyph
+    ? <baseGlyph.type {...baseGlyph.props} size={glyphSize} />
+    : LESSON_PALETTE_FALLBACK.glyph
+  return { gradient: palette.gradient, glyph }
+}
+
+function LessonBanner({ orderIndex, featured }: { orderIndex: number; featured?: boolean }) {
+  const { gradient, glyph } = paletteFor(orderIndex, featured)
+  return (
+    <div
+      className={classes.banner}
+      style={{ background: gradient }}
+      aria-hidden="true"
+    >
+      <span className={classes.bannerGlyph}>{glyph}</span>
+      <span className={classes.bannerNumber}>{orderIndex}</span>
+    </div>
+  )
+}
+
+const STATUS_TONE: Record<string, 'success' | 'warning' | 'accent' | 'neutral'> = {
+  not_started: 'neutral',
+  in_progress: 'accent',
+  ready_to_practice: 'accent',
+  in_practice: 'accent',
+  practiced: 'success',
+  later: 'neutral',
+  coming_later: 'neutral',
 }
 
 const LESSONS_OVERVIEW_SCROLL_KEY = 'lessons:overview-scroll-y'
@@ -327,9 +405,11 @@ export function Lessons() {
 
   if (loading) {
     return (
-      <Center h="50vh">
-        <Loader size="xl" color="violet" />
-      </Center>
+      <PageContainer size="lg">
+        <PageBody>
+          <LoadingState />
+        </PageBody>
+      </PageContainer>
     )
   }
 
@@ -353,90 +433,77 @@ export function Lessons() {
   const recommendedHref = recommendedRow?.href
   const isNewLearnerStart = recommendedRow?.orderIndex === 1 && recommendedRow.status === 'not_started'
 
+  // Show the recommended lesson as the hero AND keep it in the ordered list
+  // below — matches the original behaviour and what the existing tests
+  // assert (every lesson must appear in the labelled list).
+  const gridRows = model.rows
+
   return (
-    <Container size="lg" className={classes.lessons}>
-      <div className={classes.header}>
-        <div className={classes.displaySm}>{T.nav.lessons}</div>
-      </div>
+    <PageContainer size="lg">
+      <PageBody>
+        <PageHeader title={T.nav.lessons} />
 
-      {loadFailed && (
-        <div className={classes.notice} role="status">
-          {T.common.somethingWentWrong}
-        </div>
-      )}
-
-      {progressRefreshFailed && (
-        <div className={classes.notice} role="status">
-          {T.lessons.progressRefreshFailed}
-        </div>
-      )}
-
-      {recommendedRow && recommendedHref && (
-        <section className={classes.recommendedSection} aria-labelledby="recommended-lesson-heading">
-          <div className={classes.recommendedLabel}>
-            <IconMap2 size={17} />
-            <span>{T.lessons.recommendedLesson}</span>
+        {loadFailed && (
+          <div className={classes.notice} role="status">
+            {T.common.somethingWentWrong}
           </div>
-          <Link to={recommendedHref} className={classes.recommendedCard} onClick={rememberOverviewScrollPosition}>
-            <div className={classes.recommendedText}>
-              <h2 id="recommended-lesson-heading" className={classes.recommendedTitle}>
-                {isNewLearnerStart ? T.lessons.startWithLesson1 : lessonTitle(recommendedRow.title)}
-              </h2>
-              <p className={classes.recommendedCopy}>
-                {isNewLearnerStart ? T.lessons.startWithLesson1Copy : T.lessons.recommendedLessonCopy}
-              </p>
-            </div>
-            <span className={classes.recommendedAction}>
-              {actionLabel(recommendedRow.actionLabel)}
-              <IconArrowRight size={16} />
-            </span>
-          </Link>
-        </section>
-      )}
+        )}
 
-      <ol className={classes.lessonList} aria-label={T.lessons.title}>
-        {model.rows.map((row) => {
-          const cardContent = (
-            <>
-              <span className={classes.lessonNumber}>{row.orderIndex}</span>
-              <span className={classes.lessonIcon}>
-                <IconBook2 size={18} />
-              </span>
-              <span className={classes.lessonInfo}>
-                <span className={classes.lessonTitle}>{lessonTitle(row.title)}</span>
-                {row.grammarTopicTag && (
-                  <span className={classes.lessonTag}>{row.grammarTopicTag}</span>
-                )}
-              </span>
-              <span className={classes.lessonStatus} data-status={row.status}>
-                {statusLabels[row.status]}
-              </span>
-              <span className={classes.lessonAction}>
-                {actionLabel(row.actionLabel)}
-                {row.href && <IconChevronRight size={15} />}
-              </span>
-            </>
-          )
+        {progressRefreshFailed && (
+          <div className={classes.notice} role="status">
+            {T.lessons.progressRefreshFailed}
+          </div>
+        )}
 
-          return (
-            <li
-              key={row.lessonId}
-              className={classes.lessonRow}
-              data-testid={`lesson-overview-row-${row.lessonId}`}
-            >
-              {row.href ? (
-                <Link to={row.href} className={classes.lessonCard} onClick={rememberOverviewScrollPosition}>
-                  {cardContent}
-                </Link>
-              ) : (
-                <div className={`${classes.lessonCard} ${classes.lessonCardDisabled}`} aria-disabled="true">
-                  {cardContent}
-                </div>
-              )}
-            </li>
-          )
-        })}
-      </ol>
-    </Container>
+        {recommendedRow && recommendedHref && (
+          <section aria-labelledby="recommended-lesson-heading">
+            <MediaShowcaseCard
+              featured
+              banner={<LessonBanner orderIndex={recommendedRow.orderIndex} featured />}
+              eyebrow={T.lessons.recommendedLesson}
+              title={isNewLearnerStart ? T.lessons.startWithLesson1 : lessonTitle(recommendedRow.title)}
+              subtitle={isNewLearnerStart ? T.lessons.startWithLesson1Copy : T.lessons.recommendedLessonCopy}
+              cta={actionLabel(recommendedRow.actionLabel)}
+              to={recommendedHref}
+              status={
+                <StatusPill tone={STATUS_TONE[recommendedRow.status] ?? 'neutral'}>
+                  {statusLabels[recommendedRow.status]}
+                </StatusPill>
+              }
+            />
+          </section>
+        )}
+
+        <SectionHeading>{T.lessons.title}</SectionHeading>
+
+        <ol className={classes.lessonGrid} aria-label={T.lessons.title}>
+          {gridRows.map((row) => {
+            const tone = STATUS_TONE[row.status] ?? 'neutral'
+            const isAvailable = Boolean(row.href)
+            return (
+              <li
+                key={row.lessonId}
+                className={classes.lessonGridItem}
+                data-testid={`lesson-overview-row-${row.lessonId}`}
+                onClick={isAvailable ? rememberOverviewScrollPosition : undefined}
+              >
+                <MediaShowcaseCard
+                  banner={<LessonBanner orderIndex={row.orderIndex} />}
+                  eyebrow={`LES ${row.orderIndex}`}
+                  title={lessonTitle(row.title)}
+                  tags={row.grammarTopicTag ? (
+                    <span className={classes.grammarTag}>{row.grammarTopicTag}</span>
+                  ) : undefined}
+                  status={<StatusPill tone={tone}>{statusLabels[row.status]}</StatusPill>}
+                  cta={actionLabel(row.actionLabel)}
+                  to={row.href ?? undefined}
+                  disabled={!isAvailable}
+                />
+              </li>
+            )
+          })}
+        </ol>
+      </PageBody>
+    </PageContainer>
   )
 }

@@ -1,0 +1,166 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   MediaShowcaseCard.module.css — visual-forward "showcase" card primitive.
+
+   Two-zone vertical layout: a banner slot at the top + a body slot underneath
+   with eyebrow / title / subtitle / tags / status / CTA. Sized for a 12-col
+   page grid where each card spans 4-12 cols depending on the row rhythm.
+
+   The banner is intentionally a passthrough — callers compose its content
+   (gradient + glyph for placeholder, <img> for artwork, SVG for an
+   illustration). The shell only guarantees the banner's height, radius
+   masking, and overflow:hidden so the inner gradient/illustration can run
+   to the edges.
+
+   Featured variant tightens the focus: taller banner, bumped title face,
+   roomier body. Use it for the recommended/hero card; keep the rest of the
+   grid at the default size so the featured one actually leads the eye.
+
+   No @container / @media / @layer / !important inside this file. Responsive
+   placement is the responsibility of the page-level grid (single-column on
+   mobile, multi-column on desktop). The card itself is layout-agnostic.
+───────────────────────────────────────────────────────────────────────────── */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition-base);
+  cursor: pointer;
+  position: relative;
+}
+
+.root:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.root:hover .banner {
+  filter: brightness(1.06);
+}
+
+.root:hover .cta {
+  color: var(--accent-primary);
+}
+
+/* ── Featured variant ─────────────────────────────────────────────────── */
+
+.featured {
+  border-radius: calc(var(--r-lg) + 4px);
+}
+
+.featured .banner {
+  min-height: 200px;
+}
+
+.featured .body {
+  padding: 24px 28px 26px;
+}
+
+.featured .title {
+  font-size: var(--fs-2xl);
+}
+
+.featured .eyebrow {
+  font-size: var(--fs-sm);
+}
+
+/* ── Disabled variant ─────────────────────────────────────────────────── */
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.disabled:hover {
+  border-color: var(--card-border);
+  transform: none;
+  box-shadow: none;
+}
+
+.disabled:hover .banner {
+  filter: none;
+}
+
+/* ── Banner ───────────────────────────────────────────────────────────── */
+
+.banner {
+  position: relative;
+  min-height: 130px;
+  background: var(--accent-primary-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: filter 0.2s ease;
+}
+
+/* ── Body ─────────────────────────────────────────────────────────────── */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px 20px;
+  gap: 6px;
+  flex: 1;
+  position: relative;
+}
+
+.eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.title {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  margin: 4px 0 0;
+  line-height: 1.45;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+/* Status pill is absolutely positioned to the top-right of the body so it
+ * sits over the same vertical band as the eyebrow without competing for
+ * width. Pages can pass any inline marker; the primitive owns the placement. */
+.status {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.cta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  transition: color 0.15s ease;
+}
