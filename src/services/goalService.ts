@@ -386,23 +386,16 @@ export const goalService = {
   },
 
   async getStudyDaysCount(userId: string, goalSet: WeeklyGoalSet): Promise<number> {
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('review_events')
-      .select('created_at')
-      .eq('user_id', userId)
-      .gte('created_at', goalSet.week_starts_at_utc)
-      .lt('created_at', goalSet.week_ends_at_utc)
-
-    if (error) throw error
-    
-    // Count unique days in goal_timezone
-    const days = new Set<string>()
-    for (const event of data) {
-      const dateStr = new Date(event.created_at).toLocaleDateString('en-US', { timeZone: goalSet.goal_timezone })
-      days.add(dateStr)
-    }
-    return days.size
+    // Canonical contract: distinct study-day count goes through learnerProgressService.
+    // The SQL function get_study_days_count buckets capability_review_events
+    // by user-timezone date — semantically identical to the legacy
+    // toLocaleDateString({ timeZone }) bucketing, against the capability system.
+    return learnerProgressService.getStudyDaysCount({
+      userId,
+      weekStartUtc: goalSet.week_starts_at_utc,
+      weekEndUtc: goalSet.week_ends_at_utc,
+      timezone: goalSet.goal_timezone,
+    })
   },
 
   async getRecallAndRecognitionStats(userId: string, goalSet: WeeklyGoalSet): Promise<{
@@ -411,68 +404,52 @@ export const goalService = {
     recognitionAccuracy: number
     recognitionSampleSize: number
   }> {
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('review_events')
-      .select('was_correct, skill_type')
-      .eq('user_id', userId)
-      .in('skill_type', ['form_recall', 'recognition'])
-      .gte('created_at', goalSet.week_starts_at_utc)
-      .lt('created_at', goalSet.week_ends_at_utc)
-
-    if (error) throw error
-
-    const recall = data.filter(e => e.skill_type === 'form_recall')
-    const recognition = data.filter(e => e.skill_type === 'recognition')
+    // Canonical contract: weekly recall/recognition stats go through
+    // learnerProgressService. Architect NIT-1 v4: the service returns RAW
+    // counts (not ratios); we adapt counts → ratios here for the goal
+    // evaluator's accuracy semantics. recognition maps to capability_type
+    // 'text_recognition' (matching the legacy 'recognition' skill_type).
+    const counts = await learnerProgressService.getRecallStatsForWeek({
+      userId,
+      weekStartUtc: goalSet.week_starts_at_utc,
+      weekEndUtc: goalSet.week_ends_at_utc,
+    })
 
     return {
-      recallAccuracy: recall.length > 0
-        ? recall.filter(e => e.was_correct).length / recall.length
+      recallAccuracy: counts.recallTotal > 0
+        ? counts.recallCorrect / counts.recallTotal
         : 0,
-      recallSampleSize: recall.length,
-      recognitionAccuracy: recognition.length > 0
-        ? recognition.filter(e => e.was_correct).length / recognition.length
+      recallSampleSize: counts.recallTotal,
+      recognitionAccuracy: counts.recognitionTotal > 0
+        ? counts.recognitionCorrect / counts.recognitionTotal
         : 0,
-      recognitionSampleSize: recognition.length,
+      recognitionSampleSize: counts.recognitionTotal,
     }
   },
 
   async getUsableVocabGain(userId: string, goalSet: WeeklyGoalSet): Promise<number> {
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('learner_stage_events')
-      .select('learning_item_id')
-      .eq('user_id', userId)
-      .in('to_stage', ['retrieving', 'productive', 'maintenance'])
-      .gte('created_at', goalSet.week_starts_at_utc)
-      .lt('created_at', goalSet.week_ends_at_utc)
-
-    if (error) throw error
-    const uniqueItems = new Set(data.map(e => e.learning_item_id))
-    return uniqueItems.size
+    // Canonical contract: usable vocabulary gained this week goes through
+    // learnerProgressService. Semantic shift documented in spec §10:
+    // legacy counted distinct learning_item_ids transitioning to stage
+    // 'retrieving'/'productive'/'maintenance' in the week (via learner_stage_events);
+    // capability equivalent counts distinct items whose first-ever form_recall
+    // capability_review_event fell in the week. For users on the capability
+    // session path this is a faithful mirror; legacy-path users won't have
+    // capability_review_events anyway.
+    return learnerProgressService.getUsableVocabularyGain({
+      userId,
+      weekStartUtc: goalSet.week_starts_at_utc,
+      weekEndUtc: goalSet.week_ends_at_utc,
+    })
   },
 
   async getOverdueCount(userId: string, timezone: string): Promise<number> {
-    // Overdue is items due before start of today local
-    const formatter = new Intl.DateTimeFormat('en-US', { timeZone: timezone, year: 'numeric', month: 'numeric', day: 'numeric' })
-    const parts = formatter.formatToParts(new Date())
-    const partMap = Object.fromEntries(parts.map(p => [p.type, p.value])) as any
-    
-    const y = parseInt(partMap.year)
-    const m = parseInt(partMap.month)
-    const d = parseInt(partMap.day)
-
-    const startOfTodayUtc = this.getUtcForLocalTimeParts(y, m, d, timezone)
-
-    const { count, error } = await supabase
-      .schema('indonesian')
-      .from('learner_skill_state')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', userId)
-      .lt('next_due_at', startOfTodayUtc.toISOString())
-
-    if (error) throw error
-    return count ?? 0
+    // Canonical contract: overdue capabilities go through learnerProgressService.
+    // The SQL function get_overdue_count computes start-of-today in the user's
+    // timezone and counts active+ready+published capabilities with
+    // next_due_at < that boundary — same semantics as the legacy code, against
+    // the capability system.
+    return learnerProgressService.getOverdueCount({ userId, timezone })
   },
 
   computeConsistencyStatus(current: number, target: number, goalSet: WeeklyGoalSet): GoalStatus {
