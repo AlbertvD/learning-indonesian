@@ -1,7 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Button, Center, Container, Loader, Text, Title } from '@mantine/core'
+import { Button } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
+import {
+  PageContainer,
+  PageBody,
+  PageHeader,
+  LoadingState,
+  EmptyState,
+} from '@/components/page/primitives'
+import { IconBook2 } from '@tabler/icons-react'
 import {
   lessonService,
   lessonSourceRefForOverview,
@@ -19,7 +27,6 @@ import { sourceProgressEventForLessonExposure, type LessonExposureKind } from '@
 import { LessonReader } from '@/components/lessons/LessonReader'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
-import classes from './Lesson.module.css'
 
 const PRACTICE_READY_SOURCE_EVENTS = new Set([
   'section_exposed',
@@ -293,29 +300,34 @@ export function Lesson() {
 
   if (loading) {
     return (
-      <Center h="50vh">
-        <Loader size="xl" color="cyan" />
-      </Center>
+      <PageContainer size="lg">
+        <PageBody>
+          <LoadingState />
+        </PageBody>
+      </PageContainer>
     )
   }
 
   if (error || !lesson) {
     return (
-      <Center h="50vh">
-        <Text c="dimmed">{T.lessons.failedToLoadLesson}</Text>
-      </Center>
+      <PageContainer size="lg">
+        <PageBody>
+          <EmptyState icon={<IconBook2 size={48} />} message={T.lessons.failedToLoadLesson} />
+        </PageBody>
+      </PageContainer>
     )
   }
 
   if (!readerExperience) {
     return (
-      <Container size="sm" className={classes.lesson}>
-        <Title order={1} mb="sm">{T.lessons.lessonUnavailableTitle}</Title>
-        <Text c="dimmed" mb="xl">{T.lessons.lessonUnavailableCopy}</Text>
-        <Button component={Link} to="/lessons" variant="light">
-          {T.lessons.backToList}
-        </Button>
-      </Container>
+      <PageContainer size="md">
+        <PageBody>
+          <PageHeader title={T.lessons.lessonUnavailableTitle} subtitle={T.lessons.lessonUnavailableCopy} />
+          <Button component={Link} to="/lessons" variant="light">
+            {T.lessons.backToList}
+          </Button>
+        </PageBody>
+      </PageContainer>
     )
   }
 

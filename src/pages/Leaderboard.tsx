@@ -1,13 +1,19 @@
 // src/pages/Leaderboard.tsx
 import { useEffect, useState } from 'react'
-import { Container, Tabs, Table, Text, Center, Loader, Group } from '@mantine/core'
-import classes from './Leaderboard.module.css'
+import { Tabs, Table, Group } from '@mantine/core'
+import { IconClock, IconBook, IconVocabulary, IconCalendar, IconTrophy } from '@tabler/icons-react'
+import {
+  PageContainer,
+  PageBody,
+  PageHeader,
+  LoadingState,
+  EmptyState,
+} from '@/components/page/primitives'
 import { leaderboardService } from '@/services/leaderboardService'
 import type { LeaderboardEntry, LeaderboardMetric } from '@/types/learning'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
 import { useT } from '@/hooks/useT'
-import { IconClock, IconBook, IconVocabulary, IconCalendar } from '@tabler/icons-react'
 
 export function Leaderboard() {
   const T = useT()
@@ -80,47 +86,41 @@ export function Leaderboard() {
     </Table>
   )
 
+  const renderTabContent = () => {
+    if (loading) return <LoadingState />
+    if (entries.length === 0) {
+      return <EmptyState icon={<IconTrophy size={48} />} message={T.leaderboard.noEntries} />
+    }
+    return renderTable()
+  }
+
   return (
-    <Container size="lg" className={classes.leaderboard}>
-      <div className={classes.header}>
-        <div className={classes.displaySm}>{T.leaderboard.title}</div>
-      </div>
+    <PageContainer size="lg">
+      <PageBody>
+        <PageHeader title={T.leaderboard.title} />
 
-      <Tabs value={activeTab} onChange={setActiveTab}>
-        <Tabs.List grow>
-          <Tabs.Tab value="total_seconds_spent" leftSection={<IconClock size={16} />}>
-            {T.leaderboard.timeSpent}
-          </Tabs.Tab>
-          <Tabs.Tab value="lessons_completed" leftSection={<IconBook size={16} />}>
-            {T.leaderboard.lessons}
-          </Tabs.Tab>
-          <Tabs.Tab value="items_learned" leftSection={<IconVocabulary size={16} />}>
-            {T.leaderboard.words}
-          </Tabs.Tab>
-          <Tabs.Tab value="days_active" leftSection={<IconCalendar size={16} />}>
-            {T.leaderboard.consistency}
-          </Tabs.Tab>
-        </Tabs.List>
+        <Tabs value={activeTab} onChange={setActiveTab}>
+          <Tabs.List grow>
+            <Tabs.Tab value="total_seconds_spent" leftSection={<IconClock size={16} />}>
+              {T.leaderboard.timeSpent}
+            </Tabs.Tab>
+            <Tabs.Tab value="lessons_completed" leftSection={<IconBook size={16} />}>
+              {T.leaderboard.lessons}
+            </Tabs.Tab>
+            <Tabs.Tab value="items_learned" leftSection={<IconVocabulary size={16} />}>
+              {T.leaderboard.words}
+            </Tabs.Tab>
+            <Tabs.Tab value="days_active" leftSection={<IconCalendar size={16} />}>
+              {T.leaderboard.consistency}
+            </Tabs.Tab>
+          </Tabs.List>
 
-        <Tabs.Panel value="total_seconds_spent">
-          {loading ? <Center h="30vh"><Loader /></Center> : renderTable()}
-        </Tabs.Panel>
-        <Tabs.Panel value="lessons_completed">
-          {loading ? <Center h="30vh"><Loader /></Center> : renderTable()}
-        </Tabs.Panel>
-        <Tabs.Panel value="items_learned">
-          {loading ? <Center h="30vh"><Loader /></Center> : renderTable()}
-        </Tabs.Panel>
-        <Tabs.Panel value="days_active">
-          {loading ? <Center h="30vh"><Loader /></Center> : renderTable()}
-        </Tabs.Panel>
-      </Tabs>
-
-      {!loading && entries.length === 0 && (
-        <Center h="20vh">
-          <Text c="dimmed">{T.leaderboard.noEntries}</Text>
-        </Center>
-      )}
-    </Container>
+          <Tabs.Panel value="total_seconds_spent">{renderTabContent()}</Tabs.Panel>
+          <Tabs.Panel value="lessons_completed">{renderTabContent()}</Tabs.Panel>
+          <Tabs.Panel value="items_learned">{renderTabContent()}</Tabs.Panel>
+          <Tabs.Panel value="days_active">{renderTabContent()}</Tabs.Panel>
+        </Tabs>
+      </PageBody>
+    </PageContainer>
   )
 }

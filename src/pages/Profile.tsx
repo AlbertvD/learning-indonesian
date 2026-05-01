@@ -1,16 +1,11 @@
 // src/pages/Profile.tsx
 import { useEffect, useState } from 'react'
 import {
-  Container,
-  Title,
   Text,
   TextInput,
   Button,
   Stack,
-  Paper,
   Group,
-  Center,
-  Loader,
   SegmentedControl,
   Switch,
   Slider,
@@ -21,6 +16,13 @@ import { useMantineColorScheme } from '@mantine/core'
 import { IconMoon, IconSun, IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
 import { useMediaQuery } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
+import {
+  PageContainer,
+  PageBody,
+  PageHeader,
+  SettingsCard,
+  LoadingState,
+} from '@/components/page/primitives'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { translations } from '@/lib/i18n'
@@ -54,7 +56,6 @@ export function Profile() {
     async function fetchData() {
       if (!user) return
       try {
-        // Use the saved display_name from the auth store profile
         setDisplayName(profile?.fullName ?? '')
         setSessionSize(profile?.preferredSessionSize ?? 15)
         setTimezone(profile?.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone)
@@ -98,9 +99,6 @@ export function Profile() {
     setSavingLang(true)
     try {
       await updateLanguage(lang)
-      // Use the new language's translations directly — T is captured at render
-      // time in the old language, so the toast would appear in the wrong language
-      // if we used T here.
       const newT = translations[lang]
       notifications.show({
         color: 'green',
@@ -135,7 +133,6 @@ export function Profile() {
         title: T.profile.failedToSave,
         message: T.profile.somethingWentWrong,
       })
-      // Reset to previous value on error
       setSessionSize(profile?.preferredSessionSize ?? 15)
     } finally {
       setSavingSessionSize(false)
@@ -147,11 +144,11 @@ export function Profile() {
     setSavingTimezone(true)
     try {
       await updateTimezone(tz)
-        notifications.show({
-          color: 'green',
-          title: T.profile.profileUpdated,
-          message: T.profile.timezoneSaved,
-        })
+      notifications.show({
+        color: 'green',
+        title: T.profile.profileUpdated,
+        message: T.profile.timezoneSaved,
+      })
     } catch (err) {
       logError({ page: 'profile', action: 'updateTimezone', error: err })
       notifications.show({
@@ -159,7 +156,6 @@ export function Profile() {
         title: T.profile.failedToSave,
         message: T.profile.somethingWentWrong,
       })
-      // Reset to previous value on error
       setTimezone(profile?.timezone ?? null)
     } finally {
       setSavingTimezone(false)
@@ -180,9 +176,11 @@ export function Profile() {
 
   if (loading) {
     return (
-      <Center h="50vh">
-        <Loader size="xl" />
-      </Center>
+      <PageContainer size="sm">
+        <PageBody>
+          <LoadingState />
+        </PageBody>
+      </PageContainer>
     )
   }
 
@@ -194,24 +192,13 @@ export function Profile() {
       })
     : '—'
 
-  const paperProps = isMobile ? {
-    style: {
-      background: colorScheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.60)',
-      backdropFilter: 'blur(16px)',
-      WebkitBackdropFilter: 'blur(16px)',
-      border: colorScheme === 'dark' ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.07)',
-      boxShadow: 'none',
-    },
-  } : { withBorder: true, shadow: 'sm' as const }
-
   return (
-    <Container size="sm">
-      <Stack gap="xl" my="xl">
-        <Title order={2}>{T.profile.title}</Title>
+    <PageContainer size="sm">
+      <PageBody>
+        <PageHeader title={T.profile.title} />
 
-        <Paper p="xl" radius="md" {...paperProps}>
+        <SettingsCard title={T.profile.account}>
           <Stack gap="md">
-            <Title order={4}>{T.profile.account}</Title>
             <Group gap="sm">
               <Text fw={500} w={120}>{T.profile.email}</Text>
               <Text c="dimmed">{user?.email ?? '—'}</Text>
@@ -221,11 +208,10 @@ export function Profile() {
               <Text c="dimmed">{memberSince}</Text>
             </Group>
           </Stack>
-        </Paper>
+        </SettingsCard>
 
-        <Paper p="xl" radius="md" {...paperProps}>
+        <SettingsCard title={T.profile.displayName}>
           <Stack gap="md">
-            <Title order={4}>{T.profile.displayName}</Title>
             <TextInput
               label={T.profile.displayName}
               placeholder={T.profile.displayNamePlaceholder}
@@ -238,100 +224,71 @@ export function Profile() {
               </Button>
             </Group>
           </Stack>
-        </Paper>
+        </SettingsCard>
 
         {isMobile && (
-          <Paper p="xl" radius="md" {...paperProps}>
-            <Stack gap="md">
-              <Title order={4}>{T.profile.appearance}</Title>
-              <Group justify="space-between">
-                <Group gap="xs">
-                  {colorScheme === 'dark' ? <IconMoon size={16} /> : <IconSun size={16} />}
-                  <Text size="sm">{colorScheme === 'dark' ? T.profile.darkMode : T.profile.lightMode}</Text>
-                </Group>
-                <Switch
-                  checked={colorScheme === 'dark'}
-                  onChange={toggleColorScheme}
-                  size="md"
-                />
+          <SettingsCard title={T.profile.appearance}>
+            <Group justify="space-between">
+              <Group gap="xs">
+                {colorScheme === 'dark' ? <IconMoon size={16} /> : <IconSun size={16} />}
+                <Text size="sm">{colorScheme === 'dark' ? T.profile.darkMode : T.profile.lightMode}</Text>
               </Group>
-            </Stack>
-          </Paper>
+              <Switch
+                checked={colorScheme === 'dark'}
+                onChange={toggleColorScheme}
+                size="md"
+              />
+            </Group>
+          </SettingsCard>
         )}
 
-        <Paper p="xl" radius="md" {...paperProps}>
-          <Stack gap="md">
-            <Box>
-              <Title order={4} mb="xs">{T.profile.timezone}</Title>
-              <Text size="sm" c="dimmed">{T.profile.timezoneDescription}</Text>
-            </Box>
-            <Select
-              searchable
-              label={T.profile.selectTimezone}
-              placeholder={T.profile.pickTimezone}
-              data={Intl.supportedValuesOf('timeZone')}
-              value={timezone}
-              onChange={(val) => {
-                setTimezone(val)
-                handleTimezoneChange(val)
-              }}
-              disabled={savingTimezone}
-            />
-          </Stack>
-        </Paper>
+        <SettingsCard title={T.profile.timezone} description={T.profile.timezoneDescription}>
+          <Select
+            searchable
+            label={T.profile.selectTimezone}
+            placeholder={T.profile.pickTimezone}
+            data={Intl.supportedValuesOf('timeZone')}
+            value={timezone}
+            onChange={(val) => {
+              setTimezone(val)
+              handleTimezoneChange(val)
+            }}
+            disabled={savingTimezone}
+          />
+        </SettingsCard>
 
-        <Paper p="xl" radius="md" {...paperProps}>
-          <Stack gap="md">
-            <Title order={4}>{T.profile.language}</Title>
-            <SegmentedControl
-              value={profile?.language ?? 'nl'}
-              onChange={(val) => handleLanguageChange(val as 'nl' | 'en')}
-              disabled={savingLang}
-              data={[
-                { label: T.profile.dutch, value: 'nl' },
-                { label: T.profile.english, value: 'en' },
-              ]}
-            />
-          </Stack>
-        </Paper>
+        <SettingsCard title={T.profile.language}>
+          <SegmentedControl
+            value={profile?.language ?? 'nl'}
+            onChange={(val) => handleLanguageChange(val as 'nl' | 'en')}
+            disabled={savingLang}
+            data={[
+              { label: T.profile.dutch, value: 'nl' },
+              { label: T.profile.english, value: 'en' },
+            ]}
+          />
+        </SettingsCard>
 
-        <Paper p="xl" radius="md" {...paperProps}>
-          <Stack gap="md">
-            <Box>
-              <Title order={4} mb="xs">{T.profile.autoPlayAudio}</Title>
-              <Text size="sm" c="dimmed">{T.profile.autoPlayAudioDescription}</Text>
-            </Box>
-            <Switch
-              checked={autoPlay}
-              onChange={(e) => setAutoPlay(e.currentTarget.checked)}
-              size="md"
-              label={T.profile.autoPlayAudio}
-            />
-          </Stack>
-        </Paper>
+        <SettingsCard title={T.profile.autoPlayAudio} description={T.profile.autoPlayAudioDescription}>
+          <Switch
+            checked={autoPlay}
+            onChange={(e) => setAutoPlay(e.currentTarget.checked)}
+            size="md"
+            label={T.profile.autoPlayAudio}
+          />
+        </SettingsCard>
 
-        <Paper p="xl" radius="md" {...paperProps}>
-          <Stack gap="md">
-            <Box>
-              <Title order={4} mb="xs">
-                {T.profile.listeningExercises}
-              </Title>
-              <Text size="sm" c="dimmed">
-                {T.profile.listeningExercisesDescription}
-              </Text>
-            </Box>
-            <Switch
-              checked={listeningEnabled}
-              onChange={(e) => setListeningEnabled(e.currentTarget.checked)}
-              size="md"
-              label={T.profile.enableListeningExercises}
-            />
-          </Stack>
-        </Paper>
+        <SettingsCard title={T.profile.listeningExercises} description={T.profile.listeningExercisesDescription}>
+          <Switch
+            checked={listeningEnabled}
+            onChange={(e) => setListeningEnabled(e.currentTarget.checked)}
+            size="md"
+            label={T.profile.enableListeningExercises}
+          />
+        </SettingsCard>
 
-        <Paper p="xl" radius="md" {...paperProps}>
+        <SettingsCard title={T.profile.sessionSize}>
           <Stack gap="md">
-            <Title order={4}>{T.profile.sessionSize}</Title>
             <Group justify="center" gap="md">
               <Button
                 variant="default"
@@ -372,8 +329,8 @@ export function Profile() {
               />
             </Box>
           </Stack>
-        </Paper>
-      </Stack>
-    </Container>
+        </SettingsCard>
+      </PageBody>
+    </PageContainer>
   )
 }
