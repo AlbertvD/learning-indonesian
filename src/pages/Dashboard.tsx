@@ -1,11 +1,7 @@
 // src/pages/Dashboard.tsx
-import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState, type ReactNode } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
-  Container,
-  Center,
-  Loader,
-  Box,
   Stack,
   Text,
   Button,
@@ -16,7 +12,22 @@ import {
   Tooltip,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconChevronRight, IconFlame, IconTarget, IconAlertTriangle, IconSparkles, IconRefresh, IconKeyboard, IconClock, IconBook } from '@tabler/icons-react'
+import {
+  IconChevronRight, IconFlame, IconTarget, IconAlertTriangle, IconSparkles,
+  IconRefresh, IconKeyboard, IconClock, IconBook,
+} from '@tabler/icons-react'
+import {
+  PageContainer,
+  PageBody,
+  PageHeader,
+  SectionHeading,
+  StatCard,
+  ListCard,
+  ActionCard,
+  HeroCard,
+  StatusPill,
+  LoadingState,
+} from '@/components/page/primitives'
 import { lessonService } from '@/services/lessonService'
 import { learnerStateService } from '@/services/learnerStateService'
 import { goalService } from '@/services/goalService'
@@ -36,8 +47,6 @@ function goalToRingPercent(goal: WeeklyGoal): number {
       ((goal.target_value_numeric - goal.current_value_numeric) / goal.target_value_numeric) * 100
     )))
   }
-  // For percent-unit goals, show actual value on the full 0-100% arc so the
-  // target marker sits at a meaningful position even when the goal is exceeded.
   if (goal.goal_unit === 'percent') {
     return Math.round(goal.current_value_numeric * 100)
   }
@@ -145,15 +154,12 @@ function getRingLabel(goal: WeeklyGoal, T: any): string {
   }
 }
 
-function getStatusPillClass(status: string, classes: Record<string, string>): string {
-  switch (status) {
-    case 'achieved': return `${classes.statusPill} ${classes.statusPillAchieved}`
-    case 'on_track': return `${classes.statusPill} ${classes.statusPillOnTrack}`
-    case 'at_risk':
-    case 'off_track': return `${classes.statusPill} ${classes.statusPillAtRisk}`
-    case 'missed': return `${classes.statusPill} ${classes.statusPillMissed}`
-    default: return classes.statusPill
-  }
+const STATUS_PILL_TONE: Record<string, 'success' | 'accent' | 'warning' | 'danger'> = {
+  achieved: 'success',
+  on_track: 'accent',
+  at_risk: 'warning',
+  off_track: 'warning',
+  missed: 'danger',
 }
 
 function getStatusLabel(status: string, T: any): string {
@@ -167,13 +173,11 @@ function getStatusLabel(status: string, T: any): string {
   }
 }
 
-export function GoalRingCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
+function GoalRing({ goal, T }: { goal: WeeklyGoal; T: any }): ReactNode {
   const percent = goalToRingPercent(goal)
   const ringDeg = Math.round((percent / 100) * 360)
   const ringColor = RING_COLOR[goal.status] ?? 'var(--accent-primary)'
   const tooltipText = getRingTooltip(goal, T)
-  const label = getRingLabel(goal, T)
-  const statusLabel = getStatusLabel(goal.status, T)
   const centerDisplay = goal.goal_unit === 'percent'
     ? `${Math.round(goal.current_value_numeric * 100)}%`
     : `${percent}%`
@@ -182,34 +186,42 @@ export function GoalRingCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
     : null
 
   return (
-    <div className={classes.ringCard}>
-      <div className={classes.ringWrapper}>
-        <div className={classes.ringBg} />
+    <div className={classes.ringWrapper}>
+      <div className={classes.ringBg} />
+      <div
+        className={classes.ringFill}
+        style={{ '--ring-color': ringColor, '--ring-deg': `${ringDeg}deg` } as React.CSSProperties}
+      />
+      {targetMarkerDeg !== null && (
         <div
-          className={classes.ringFill}
-          style={{ '--ring-color': ringColor, '--ring-deg': `${ringDeg}deg` } as React.CSSProperties}
+          className={classes.ringTargetMarker}
+          style={{ '--target-deg': `${targetMarkerDeg}deg` } as React.CSSProperties}
         />
-        {targetMarkerDeg !== null && (
-          <div
-            className={classes.ringTargetMarker}
-            style={{ '--target-deg': `${targetMarkerDeg}deg` } as React.CSSProperties}
-          />
-        )}
-        <Tooltip label={tooltipText} multiline w={260} withArrow>
-          <div className={classes.ringCenter} style={{ cursor: 'help' }}>{centerDisplay}</div>
-        </Tooltip>
-      </div>
-      <div className={classes.ringLabel}>{label}</div>
-      <div className={classes.ringValue}>
-        {goal.goal_unit === 'count' ? goalCountLabel(goal) : '\u00A0'}
-      </div>
-      <span className={getStatusPillClass(goal.status, classes)}>
-        {statusLabel}
-        {goal.is_provisional && (
-          <Text span size="xs" c="dimmed" ml={4}>({T.dashboard.statusProvisional})</Text>
-        )}
-      </span>
+      )}
+      <Tooltip label={tooltipText} multiline w={260} withArrow>
+        <div className={classes.ringCenter} style={{ cursor: 'help' }}>{centerDisplay}</div>
+      </Tooltip>
     </div>
+  )
+}
+
+function GoalStatCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
+  const statusLabel = getStatusLabel(goal.status, T)
+  const tone = STATUS_PILL_TONE[goal.status] ?? 'accent'
+  return (
+    <StatCard
+      ring={<GoalRing goal={goal} T={T} />}
+      label={getRingLabel(goal, T)}
+      value={goal.goal_unit === 'count' ? goalCountLabel(goal) : ' '}
+      trailing={
+        <StatusPill tone={tone}>
+          {statusLabel}
+          {goal.is_provisional && (
+            <Text span size="xs" c="dimmed" ml={4}>({T.dashboard.statusProvisional})</Text>
+          )}
+        </StatusPill>
+      }
+    />
   )
 }
 
@@ -217,65 +229,54 @@ const GOAL_ACTION_CONFIG: Record<string, {
   title: (T: any) => string
   focus: (T: any) => string
   mode: string
-  variant: 'amber' | 'teal'
+  tone: 'warning' | 'accent'
 }> = {
   recall_quality: {
     title: (T) => T.dashboard.improveRecall,
     focus: (T) => T.dashboard.focusRecall,
     mode: 'standard',
-    variant: 'amber',
+    tone: 'warning',
   },
   usable_vocabulary: {
     title: (T) => T.dashboard.improveVocab,
     focus: (T) => T.dashboard.focusVocab,
     mode: 'standard',
-    variant: 'teal',
+    tone: 'accent',
   },
   review_health: {
     title: (T) => T.dashboard.improveBacklog,
     focus: (T) => T.dashboard.focusBacklog,
     mode: 'backlog_clear',
-    variant: 'amber',
+    tone: 'warning',
   },
   consistency: {
     title: (T) => T.dashboard.quickSession,
     focus: (T) => T.dashboard.focusConsistency,
     mode: 'quick',
-    variant: 'amber',
+    tone: 'warning',
   },
 }
 
-export function ActionCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
+function GoalActionCard({ goal, T }: { goal: WeeklyGoal; T: any }) {
   const config = GOAL_ACTION_CONFIG[goal.goal_type]
   if (!config) return null
   const reason = getActionReason(goal, T)
-  const isAmber = config.variant === 'amber'
-  const borderClass = isAmber ? classes.actionCardAmberBorder : classes.actionCardTealBorder
-  const iconBgClass = isAmber ? classes.actionCardIconAmber : classes.actionCardIconTeal
-  const iconColor = isAmber ? 'var(--warning)' : 'var(--accent-primary)'
-
   return (
-    <Link
+    <ActionCard
+      tone={config.tone}
+      icon={config.tone === 'warning'
+        ? <IconAlertTriangle size={20} />
+        : <IconSparkles size={20} />
+      }
+      title={config.title(T)}
+      focus={config.focus(T)}
+      reason={reason || undefined}
       to={`/session?mode=${config.mode}`}
-      className={`${classes.actionCardBase} ${borderClass}`}
-    >
-      <div className={`${classes.actionCardIconBox} ${iconBgClass}`}>
-        {isAmber
-          ? <IconAlertTriangle size={20} color={iconColor} />
-          : <IconSparkles size={20} color={iconColor} />
-        }
-      </div>
-      <div className={classes.actionCardBody}>
-        <div className={classes.actionCardTitle}>{config.title(T)}</div>
-        <div className={classes.actionCardFocus}>{config.focus(T)}</div>
-        {reason && <div className={classes.actionCardReason}>{reason}</div>}
-      </div>
-      <IconChevronRight size={18} className={classes.actionCardChevron} />
-    </Link>
+    />
   )
 }
 
-function HeroCard({
+function TodaysPlanHero({
   plan,
   weeklyGoals,
   onStart,
@@ -292,9 +293,7 @@ function HeroCard({
   const showMixNote = plan.weak_items_target > 0 && plan.new_items_today_target < 3
 
   return (
-    <div className={classes.heroCardV2}>
-      <div className={classes.heroV2Title}>{T.dashboard.todaysPlan}</div>
-
+    <HeroCard title={T.dashboard.todaysPlan}>
       <div className={classes.heroV2Stats}>
         <span className={classes.heroV2Stat}>
           <IconRefresh size={16} /> {plan.due_reviews_today_target} {T.dashboard.reviewsLabel}
@@ -348,54 +347,7 @@ function HeroCard({
       </button>
 
       <div className={classes.heroPostNote}>{T.dashboard.postSessionNote}</div>
-    </div>
-  )
-}
-
-function SecondaryCard({
-  href,
-  icon,
-  title,
-  subtitle,
-}: {
-  href: string
-  icon: React.ReactNode
-  title: string
-  subtitle: string
-}) {
-  return (
-    <Link to={href} className={classes.secondaryCard}>
-      <div className={classes.cardLeft}>
-        <div className={`${classes.cardIconBox} ${classes.cardIconAccent}`}>{icon}</div>
-        <div>
-          <div className={classes.cardTitle}>{title}</div>
-          <div className={classes.cardSubtitle}>{subtitle}</div>
-        </div>
-      </div>
-      <IconChevronRight size={16} style={{ color: 'var(--text-secondary)', opacity: 0.5 }} />
-    </Link>
-  )
-}
-
-function RescueCard({ count, T }: { count: number; T: any }) {
-  if (count === 0) return null
-  return (
-    <div className={classes.rescueCard}>
-      <span className={classes.lapseBadge}>{count} {T.dashboard.lapsesLabel}</span>
-      <div className={classes.cardLeft}>
-        <div className={`${classes.cardIconBox} ${classes.cardIconDanger}`}>
-          <IconAlertTriangle size={18} color="var(--danger)" />
-        </div>
-        <div>
-          <div className={`${classes.cardTitle} ${classes.cardTitleDanger}`}>
-            {T.dashboard.rescueTitle.replace('{count}', `${count}`)}
-          </div>
-          <div className={classes.cardSubtitle}>
-            {T.dashboard.rescueSubtitle}
-          </div>
-        </div>
-      </div>
-    </div>
+    </HeroCard>
   )
 }
 
@@ -415,11 +367,9 @@ export function Dashboard() {
     async function fetchData() {
       if (!user) return
       try {
-        // Fetch goal progress and today's plan
         const progress = await goalService.getGoalProgress(user.id)
         setGoalProgress(progress)
 
-        // Fetch lapsing items, lesson progress, and lessons in parallel
         const [lapsingResult, lessonProgress, lessons] = await Promise.all([
           learnerStateService.getLapsingItems(user.id),
           lessonService.getUserLessonProgress(user.id),
@@ -427,7 +377,6 @@ export function Dashboard() {
         ])
         setLapsingCount(lapsingResult.count)
 
-        // Find the lesson to continue
         const inProgress = lessons.find((l) => {
           const p = lessonProgress.find((lp) => lp.lesson_id === l.id)
           return p && p.completed_at == null && p.sections_completed.length > 0
@@ -442,7 +391,6 @@ export function Dashboard() {
           setContinueUrl(`/lessons/${target.id}?section=${sectionIndex}`)
         }
 
-        // --- Sophisticated Streak (merged from retention-v2) ---
         const { data: recentReviews, error: streakError } = await supabase
           .schema('indonesian')
           .from('review_events')
@@ -480,9 +428,11 @@ export function Dashboard() {
 
   if (loading) {
     return (
-      <Center h="50vh">
-        <Loader size="xl" color="cyan" />
-      </Center>
+      <PageContainer size="lg">
+        <PageBody>
+          <LoadingState />
+        </PageBody>
+      </PageContainer>
     )
   }
 
@@ -490,11 +440,9 @@ export function Dashboard() {
 
   if (goalProgress?.state === 'timezone_required') {
     return (
-      <Container size="lg" className={classes.dashboard}>
-        <Stack gap="lg">
-          <Box>
-            <div className={classes.pageTitle}>{T.dashboard.welcomeBack}, {name}</div>
-          </Box>
+      <PageContainer size="lg">
+        <PageBody>
+          <PageHeader title={`${T.dashboard.welcomeBack}, ${name}`} />
           <Paper className="card-default" p="xl">
             <Stack align="center" gap="md">
               <IconTarget size={48} color="var(--accent-primary)" />
@@ -507,57 +455,50 @@ export function Dashboard() {
               </Button>
             </Stack>
           </Paper>
-        </Stack>
-      </Container>
+        </PageBody>
+      </PageContainer>
     )
   }
 
   const todayPlan = goalProgress?.todayPlan
   const weeklyGoals = goalProgress?.weeklyGoals ?? []
-
   const atRiskGoals = weeklyGoals.filter(g =>
     ['at_risk', 'off_track', 'missed'].includes(g.status)
   )
 
   return (
-    <Container size="lg" className={classes.dashboard}>
-      <Stack gap="lg">
-        {/* 1. Welcome bar */}
-        <Group justify="space-between" align="flex-end">
-          <div className={classes.pageTitle}>
-            {T.dashboard.welcomeBack}, {name}
-          </div>
-          <Group gap="xs">
-            <IconFlame size={18} color="orange" />
-            <Text size="sm" fw={600}>{currentStreak} {T.dashboard.daysInARow}</Text>
-          </Group>
-        </Group>
+    <PageContainer size="lg">
+      <PageBody>
+        <PageHeader
+          title={`${T.dashboard.welcomeBack}, ${name}`}
+          action={(
+            <Group gap="xs">
+              <IconFlame size={18} color="orange" />
+              <Text size="sm" fw={600}>{currentStreak} {T.dashboard.daysInARow}</Text>
+            </Group>
+          )}
+        />
 
-        {/* 2. Weekly Scorecard — ring charts */}
-        <div>
-          <Text fw={600} mb="sm">{T.dashboard.thisWeek}</Text>
-          <div className={classes.scorecardGrid}>
-            {weeklyGoals.map(goal => (
-              <GoalRingCard key={goal.id} goal={goal} T={T} />
-            ))}
-          </div>
+        <SectionHeading>{T.dashboard.thisWeek}</SectionHeading>
+        <div className={classes.scorecardGrid}>
+          {weeklyGoals.map(goal => (
+            <GoalStatCard key={goal.id} goal={goal} T={T} />
+          ))}
         </div>
 
-        {/* 3. Recommended Actions — only when goals are at risk */}
         {atRiskGoals.length > 0 && (
-          <div>
-            <Text fw={600} mb="sm">{T.dashboard.recommendedActions}</Text>
-            <div className={classes.actionCardList}>
+          <>
+            <SectionHeading>{T.dashboard.recommendedActions}</SectionHeading>
+            <Stack gap={10}>
               {atRiskGoals.map(goal => (
-                <ActionCard key={goal.id} goal={goal} T={T} />
+                <GoalActionCard key={goal.id} goal={goal} T={T} />
               ))}
-            </div>
-          </div>
+            </Stack>
+          </>
         )}
 
-        {/* 4. Hero card — today's plan */}
         {todayPlan && (
-          <HeroCard
+          <TodaysPlanHero
             plan={todayPlan}
             weeklyGoals={weeklyGoals}
             onStart={() => navigate('/session')}
@@ -565,30 +506,35 @@ export function Dashboard() {
           />
         )}
 
-        {/* 5. Secondary cards */}
         <SimpleGrid cols={2}>
-          <SecondaryCard
-            href={continueUrl}
+          <ListCard
+            to={continueUrl}
             icon={<IconBook size={18} color="var(--accent-primary)" />}
             title={T.dashboard.continueLesson}
             subtitle={T.dashboard.nextLesson}
           />
           {lapsingCount > 0
-            ? <RescueCard count={lapsingCount} T={T} />
+            ? (
+              <ActionCard
+                tone="danger"
+                icon={<IconAlertTriangle size={18} />}
+                title={T.dashboard.rescueTitle.replace('{count}', `${lapsingCount}`)}
+                focus={`${lapsingCount} ${T.dashboard.lapsesLabel}`}
+                reason={T.dashboard.rescueSubtitle}
+                to="/session?mode=backlog_clear"
+              />
+            )
             : (
-              <Link to="/session?mode=backlog_clear" className={classes.secondaryCard}>
-                <Group justify="space-between" h="100%">
-                  <Box>
-                    <Text size="sm" fw={500}>{T.dashboard.practiceWeak}</Text>
-                    <Text size="xs" c="dimmed" mt="4">{T.dashboard.reviewWeakItems}</Text>
-                  </Box>
-                  <IconChevronRight size={16} />
-                </Group>
-              </Link>
+              <ListCard
+                to="/session?mode=backlog_clear"
+                icon={<IconChevronRight size={18} />}
+                title={T.dashboard.practiceWeak}
+                subtitle={T.dashboard.reviewWeakItems}
+              />
             )
           }
         </SimpleGrid>
-      </Stack>
-    </Container>
+      </PageBody>
+    </PageContainer>
   )
 }
