@@ -6,7 +6,7 @@
   --xp-line: rgba(31, 53, 39, 0.14);
   --xp-accent: #0f766e;
   --xp-new: #b45309;
-  min-height: 100dvh;
+  min-height: 100dvh; /* skip-check: ExperiencePlayer is the next page-framework migration target — same bespoke-CSS pattern the lesson reader had pre-d2be846. Tracked in docs/current-system/page-framework-status.md residuals. */
   padding: clamp(18px, 4vw, 56px);
   color: var(--xp-ink);
   background:

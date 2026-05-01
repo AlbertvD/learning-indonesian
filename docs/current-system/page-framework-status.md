@@ -77,6 +77,10 @@ The 2026-04-24 implementation plan listed Phases 1–9 as "milestones only — r
 
 ## Residuals
 
+### `ExperiencePlayer` not yet on framework
+
+`src/components/experience/ExperiencePlayer.tsx` + its `.module.css` carry the same bespoke cream-mode + serif aesthetic the lesson reader had pre-`d2be846`. It's rendered from Session.tsx for the capability-plan branch (`capabilityMigrationFlags.experiencePlayerV1`). The CSS module's `min-height: 100dvh` was the seam-contract scanner's primary blocker; today it's silenced with a `/* skip-check: ... */` comment so CI unblocks the Docker image build, but the proper fix is to migrate it the same way we migrated the lesson reader (`d2be846`) — drop the cream gradient, switch to design tokens, route through `PageContainer` + `PageBody`, replace the bespoke 2-column shell with framework primitives where they fit.
+
 ### Admin / test residuals (no production user impact)
 
 - **ContentReview's exercise preview rendering** uses 4 legacy parent-dir components (`ContrastPairExercise`, `ClozeMcq`, `SentenceTransformationExercise`, `ConstrainedTranslationExercise`) at `src/components/exercises/<Name>.tsx`. They support a `previewMode` + `previewPayload` shape that the production `implementations/<Name>.tsx` versions don't. The production exercise registry path (`Session.tsx` → `registry.ts` → `implementations/`) does not touch them. To remove them, ContentReview would need to either synthesise a fake `ExerciseItem` from the previewPayload or have the production primitives extended with a preview mode. Not in any user flow.
