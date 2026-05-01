@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react'
+import { IconCheck, IconBulb, IconArrowRight } from '@tabler/icons-react'
+import { HeroCard, StatusPill } from '@/components/page/primitives'
 import type { LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
 import type { LessonExposureKind } from '@/lib/lessons/lessonExposureProgress'
 import { isMeaningfulDialogueAudio, isMeaningfulGrammarAudio } from '@/lib/lessons/lessonReadiness'
@@ -147,6 +149,12 @@ function labelForKind(kind: LessonExperienceBlock['kind']): string {
   }
 }
 
+function statusPillTone(status: string): 'success' | 'accent' | 'neutral' {
+  if (status === 'completed') return 'success'
+  if (status === 'seen') return 'accent'
+  return 'neutral'
+}
+
 function labelForStatus(status: string): string {
   if (status === 'not_started') return 'Nog niet gestart'
   if (status === 'seen') return 'Gezien'
@@ -220,21 +228,42 @@ export function LessonBlockRenderer({ block, progress, onProgress, onLessonExpos
 
   if (block.kind === 'lesson_hero') {
     return (
-      <section className={`${classes.block} ${classes.heroBlock}`} aria-labelledby={`${block.id}-title`}>
+      <HeroCard>
         <p className={classes.kicker}>Moderne lesweergave</p>
-        <h1 id={`${block.id}-title`}>{block.title}</h1>
-        <p>Lees, merk patronen op, luister en ga daarna gericht oefenen zonder lesblootstelling direct als FSRS-herhaling te tellen.</p>
-        <button type="button" onClick={() => onProgress(block)}>Markeer als geopend</button>
-      </section>
+        <h1 className={classes.heroTitle} id={`${block.id}-title`}>{block.title}</h1>
+        <p className={classes.heroBody}>
+          Lees, merk patronen op, luister en ga daarna gericht oefenen zonder lesblootstelling direct als FSRS-herhaling te tellen.
+        </p>
+        <div className={classes.heroCtaRow}>
+          <button
+            type="button"
+            className={classes.primaryButton}
+            onClick={() => onProgress(block)}
+          >
+            <IconCheck size={16} />
+            <span>Markeer als geopend</span>
+          </button>
+        </div>
+      </HeroCard>
     )
   }
 
   if (block.kind === 'practice_bridge') {
     return (
-      <section className={`${classes.block} ${classes.practiceBlock}`} aria-labelledby={`${block.id}-title`}>
-        <p className={classes.kicker}>Oefenbrug</p>
-        <h2 id={`${block.id}-title`}>{block.title}</h2>
-        <p>{body || 'Oefenen komt beschikbaar wanneer de planner en reviewverwerker aangeven dat de vaardigheid klaar is.'}</p>
+      <section
+        ref={sectionRef}
+        className={`${classes.block} ${classes.practiceBlock}`}
+        aria-labelledby={`${block.id}-title`}
+      >
+        <div className={classes.blockTopline}>
+          <p className={classes.kicker}>
+            <IconArrowRight size={12} /> Oefenbrug
+          </p>
+        </div>
+        <h2 id={`${block.id}-title`} className={classes.blockTitle}>{block.title}</h2>
+        <p className={classes.blockBody}>
+          {body || 'Oefenen komt beschikbaar wanneer de planner en reviewverwerker aangeven dat de vaardigheid klaar is.'}
+        </p>
         <details className={classes.meta}>
           <summary>{block.capabilityKeyRefs.length} vaardigheidsverwijzing(en)</summary>
           <ul>
@@ -248,11 +277,30 @@ export function LessonBlockRenderer({ block, progress, onProgress, onLessonExpos
 
   if (block.kind === 'lesson_recap') {
     return (
-      <section className={`${classes.block} ${classes.recapBlock}`} aria-labelledby={`${block.id}-title`}>
-        <p className={classes.kicker}>Samenvatting</p>
-        <h2 id={`${block.id}-title`}>{block.title}</h2>
-        <p>Rond af wanneer je de les hebt gezien en de opmerkvragen hebt gedaan. Dit registreert bronvoortgang, geen FSRS-beheersing.</p>
-        <button type="button" onClick={() => onProgress(block)}>Markeer les als afgerond</button>
+      <section
+        ref={sectionRef}
+        className={`${classes.block} ${classes.recapBlock}`}
+        aria-labelledby={`${block.id}-title`}
+      >
+        <div className={classes.blockTopline}>
+          <p className={classes.kicker}>
+            <IconBulb size={12} /> Samenvatting
+          </p>
+        </div>
+        <h2 id={`${block.id}-title`} className={classes.blockTitle}>{block.title}</h2>
+        <p className={classes.blockBody}>
+          Rond af wanneer je de les hebt gezien en de opmerkvragen hebt gedaan. Dit registreert bronvoortgang, geen FSRS-beheersing.
+        </p>
+        <div className={classes.blockCtaRow}>
+          <button
+            type="button"
+            className={classes.primaryButton}
+            onClick={() => onProgress(block)}
+          >
+            <IconCheck size={16} />
+            <span>Markeer les als afgerond</span>
+          </button>
+        </div>
       </section>
     )
   }
@@ -261,11 +309,12 @@ export function LessonBlockRenderer({ block, progress, onProgress, onLessonExpos
     <section ref={sectionRef} className={classes.block} aria-labelledby={`${block.id}-title`}>
       <div className={classes.blockTopline}>
         <p className={classes.kicker}>{labelForKind(block.kind)}</p>
-        <span>{labelForStatus(status)}</span>
+        <StatusPill tone={statusPillTone(status)}>{labelForStatus(status)}</StatusPill>
       </div>
-      <h2 id={`${block.id}-title`}>{block.title}</h2>
+      <h2 id={`${block.id}-title`} className={classes.blockTitle}>{block.title}</h2>
       {audioUrl && (
         <audio
+          className={classes.blockAudio}
           controls
           data-testid={`lesson-block-audio-${block.id}`}
           src={audioUrl}
@@ -283,20 +332,27 @@ export function LessonBlockRenderer({ block, progress, onProgress, onLessonExpos
           }}
         />
       )}
-      {body && <p className={classes.bodyText}>{body}</p>}
+      {body && <p className={classes.blockBody}>{body}</p>}
       {items.length > 0 && (
         <div className={classes.itemGrid}>
           {items.slice(0, 12).map((item, index) => (
             <article key={`${block.id}-${index}`} className={classes.itemCard}>
-              <strong>{primaryItemText(item)}</strong>
-              <span>{secondaryItemText(item)}</span>
+              <strong className={classes.itemPrimary}>{primaryItemText(item)}</strong>
+              <span className={classes.itemSecondary}>{secondaryItemText(item)}</span>
             </article>
           ))}
         </div>
       )}
-      <button type="button" onClick={handleSectionProgress}>
-        {block.sourceProgressEvent === 'pattern_noticing_seen' ? 'Ik heb dit patroon opgemerkt' : 'Markeer sectie als gezien'}
-      </button>
+      <div className={classes.blockCtaRow}>
+        <button
+          type="button"
+          className={(status as string) === 'completed' ? classes.secondaryButton : classes.primaryButton}
+          onClick={handleSectionProgress}
+        >
+          <IconCheck size={16} />
+          <span>{block.sourceProgressEvent === 'pattern_noticing_seen' ? 'Ik heb dit patroon opgemerkt' : 'Markeer sectie als gezien'}</span>
+        </button>
+      </div>
     </section>
   )
 }
