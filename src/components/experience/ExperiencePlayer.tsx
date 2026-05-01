@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { CSSProperties } from 'react'
+import { PageContainer, PageBody } from '@/components/page/primitives'
 import type { AnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
 import type { SessionPlan, SessionBlock } from '@/lib/session/sessionPlan'
 import type { SessionAnswerEvent } from './types'
@@ -68,9 +69,10 @@ export function ExperiencePlayer(props: {
     }))
 
   return (
-    <main className={classes.root} aria-labelledby="experience-warm-title">
-      <div className={classes.shell}>
-        <aside className={classes.rail} aria-label="Sessievoortgang">
+    <PageContainer size="lg">
+      <PageBody>
+        <div className={classes.shell} aria-labelledby="experience-warm-title">
+          <aside className={classes.rail} aria-label="Sessievoortgang">
           <span>{progress}%</span>
           <div className={classes.progressTrack}>
             <div style={progressStyle} />
@@ -131,9 +133,10 @@ export function ExperiencePlayer(props: {
             changedCapabilities={changedCapabilities}
             onComplete={onComplete}
           />
+          </div>
         </div>
-      </div>
-    </main>
+      </PageBody>
+    </PageContainer>
   )
 }
 

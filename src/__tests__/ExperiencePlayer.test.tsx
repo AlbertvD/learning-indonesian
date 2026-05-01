@@ -95,7 +95,10 @@ describe('ExperiencePlayer', () => {
     expect(screen.getByRole('heading', { name: 'Betekenis ophalen' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Tekst herkennen' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Sessieroute bezig' })).toBeInTheDocument()
-    expect(screen.getAllByRole('main')).toHaveLength(1)
+    // ExperiencePlayer renders inside AppShell's <main>; it should not nest a
+    // second <main> landmark. The "Sessievoortgang" rail and the warm-input
+    // heading are the structural anchors.
+    expect(screen.getByRole('complementary', { name: 'Sessievoortgang' })).toBeInTheDocument()
     expect(screen.queryByText('item:makan:meaning_recall:id_to_l1')).not.toBeInTheDocument()
     expect(screen.queryByText('item:minum:text_recognition:id_to_l1')).not.toBeInTheDocument()
   })
