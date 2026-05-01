@@ -32,6 +32,7 @@ Located at `src/components/page/primitives/`. 14 primitives, each with its own C
 | Dashboard | ✅ on framework | 2026-05-01 (`33e0cc9`) — pilot |
 | Lessons | ✅ on framework | 2026-05-01 (`4ad2a87`) — travel-journal redesign + drove `MediaShowcaseCard` extraction |
 | LessonReader internals (`src/components/lessons/LessonReader.tsx` + block renderer) | ✅ on framework | 2026-05-01 (`d2be846`) — dropped bespoke cream/serif CSS |
+| ExperiencePlayer (capability-flag-on session player) | ✅ on framework | 2026-05-01 (`fb8c6eb`) — same migration pattern as the lesson reader |
 | Lesson wrapper page | ✅ on framework | 2026-05-01 (`2bfdc61`) — loading/error/unavailable states |
 | Profile | ✅ on framework | 2026-05-01 (`2bfdc61`) — 8 inline `Paper` blocks → `SettingsCard` |
 | Leaderboard | ✅ on framework | 2026-05-01 (`2bfdc61`) |
@@ -76,10 +77,6 @@ The 2026-04-24 implementation plan listed Phases 1–9 as "milestones only — r
 3. **No 4-screenshot matrix per phase.** The plan called for 4 screenshots per migrated page (mobile-light, mobile-dark, desktop-light, desktop-dark) into `docs/plans/page-framework-screenshots/phase-N/`. Today's work used inline browser smoke checks via Playwright instead — same eyes-on-it validation, but not stored as a regression baseline. If a future regression is suspected, baselines should be captured before any further visual changes.
 
 ## Residuals
-
-### `ExperiencePlayer` not yet on framework
-
-`src/components/experience/ExperiencePlayer.tsx` + its `.module.css` carry the same bespoke cream-mode + serif aesthetic the lesson reader had pre-`d2be846`. It's rendered from Session.tsx for the capability-plan branch (`capabilityMigrationFlags.experiencePlayerV1`). The CSS module's `min-height: 100dvh` was the seam-contract scanner's primary blocker; today it's silenced with a `/* skip-check: ... */` comment so CI unblocks the Docker image build, but the proper fix is to migrate it the same way we migrated the lesson reader (`d2be846`) — drop the cream gradient, switch to design tokens, route through `PageContainer` + `PageBody`, replace the bespoke 2-column shell with framework primitives where they fit.
 
 ### Admin / test residuals (no production user impact)
 
