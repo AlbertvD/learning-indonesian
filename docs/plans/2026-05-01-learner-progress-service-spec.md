@@ -1,7 +1,7 @@
-# Learner Progress Service — Canonical Contract Spec (v4)
+# Learner Progress Service — Canonical Contract Spec (v5)
 
 **Date:** 2026-05-01
-**Status:** Implementation-ready after three rounds of architect review (v1→v2→v3→v4). v4 adds the full deep-module-interface inventory the user asked for and addresses every issue from the v3 review (4 CRITICAL + 6 SIGNIFICANT + 3 NIT). Implementation-ready pending one more architect-verification pass.
+**Status:** Implementation-ready after four rounds of architect review (v1→v2→v3→v4→v5). v4 expanded scope to cover all surfacing-layer interfaces between deep modules. v5 addresses the v4 review (3 SIGNIFICANT + 4 NIT, no CRITICALs).
 **Source:** 2026-05-01 architecture-review conversation; v2/v3/v4 incorporate three rounds of architect review feedback.
 
 ## 1. Goal
@@ -830,7 +830,41 @@ export const learnerProgressService: LearnerProgressService = {
       meanLatencyMs: r.mean_latency_ms,
     }
   },
-  // ... 12 other methods follow the same pattern
+  // Scalar-returning methods (architect NIT-2 v4): for SQL functions that
+  // return a single int (get_lapsing_count, get_overdue_count, get_study_days_count,
+  // get_usable_vocabulary_gain, get_current_streak_days), supabase-js returns
+  // the value directly (not as a row array). Wrap in the typed shape:
+  async getLapsingCount({ userId }) {
+    const data = await rpc<number>('get_lapsing_count', { p_user_id: userId })
+    return { count: data ?? 0 }
+  },
+  async getOverdueCount({ userId, timezone }) {
+    const data = await rpc<number>('get_overdue_count', { p_user_id: userId, p_timezone: timezone })
+    return data ?? 0
+  },
+  // get_memory_health rounding (architect NIT-3 v4): service maps the raw
+  // numeric AVG to 2-decimal numbers to preserve legacy useProgressData
+  // display semantics (avg() in src/hooks/useProgressData.ts:65 rounded to
+  // 2 decimals). Without this, MemoryHealthHero would show 2.7367890123 vs
+  // legacy 2.74.
+  async getMemoryHealth({ userId }) {
+    const rows = await rpc<Array<{
+      avg_recognition_stability: string; recognition_sample_size: number;
+      avg_recall_stability: string; recall_sample_size: number;
+      avg_overall_stability: string; overall_sample_size: number;
+    }>>('get_memory_health', { p_user_id: userId })
+    const r = rows[0]
+    const round2 = (s: string) => Math.round(Number(s) * 100) / 100
+    return {
+      avgRecognitionStability: round2(r.avg_recognition_stability),
+      recognitionSampleSize: r.recognition_sample_size,
+      avgRecallStability: round2(r.avg_recall_stability),
+      recallSampleSize: r.recall_sample_size,
+      avgOverallStability: round2(r.avg_overall_stability),
+      overallSampleSize: r.overall_sample_size,
+    }
+  },
+  // ... other methods follow the same pattern (table-returning ones unwrap rows[0])
 }
 ```
 
@@ -856,6 +890,10 @@ export const learnerProgressService: LearnerProgressService = {
      - goalService.getOverdueCount → service.getOverdueCount
      - goalService.getStudyDaysCount → service.getStudyDaysCount
      - goalService.getRecallAndRecognitionStats → service.getRecallStatsForWeek
+       (note: shape change — service returns RAW counts {recognitionCorrect/Total, recallCorrect/Total};
+        legacy returned RATIOS. Caller-side adapter required:
+        recallAccuracy = recallTotal > 0 ? recallCorrect / recallTotal : 0,
+        and likewise for recognition. Architect NIT-1 v4.)
      - goalService.getUsableVocabGain → service.getUsableVocabularyGain
      - All four reads in goalService now go through the service.
      - PR exit: zero from('learner_skill_state')|from('review_events')|from('learner_stage_events')
@@ -968,6 +1006,19 @@ DROP FUNCTION IF EXISTS indonesian.immutable_unaccent(text);
 
 ## 9. Supabase Requirements
 
+### Deployment path (architect SIG-2 v4)
+
+The new SQL ships in **two places** so both deployment paths converge:
+
+1. **Standalone migration file:** `scripts/migrations/2026-05-01-learner-progress-functions.sql` (mirrors the precedent set by `2026-04-25-capability-core.sql`). Apply manually via SSH for the initial deploy:
+   ```bash
+   ssh mrblond@master-docker "sudo docker exec -i supabase-db psql -U postgres -d postgres -v ON_ERROR_STOP=1" \
+     < scripts/migrations/2026-05-01-learner-progress-functions.sql
+   ```
+2. **Folded into `scripts/migration.sql`** at the end of PR-1, so `make migrate` is canonical for any future re-apply (the rest of the schema is already monolithic; this keeps consistency). The `CREATE EXTENSION` and all `CREATE OR REPLACE FUNCTION` / `CREATE INDEX IF NOT EXISTS` statements are idempotent.
+
+The matching `scripts/migrations/2026-05-01-learner-progress-functions.rollback.sql` ships alongside the forward file. Rollback is applied via the same SSH path. Re-running the rollback after rollback is also idempotent thanks to `DROP ... IF EXISTS`.
+
 ### Schema changes
 - **No new tables.** Only functions, indexes, and one extension.
 - **Extension:** `unaccent` (PG core extension; available on `supabase/postgres:15.8.1.085` per `homelab-configs/services/supabase/postgres/Dockerfile:1`). Migration runs `make migrate` via SSH → `docker exec` as the `postgres` superuser, so the `CREATE EXTENSION` is permitted. No CI environment changes required for the homelab.
@@ -1020,6 +1071,7 @@ Architect SIG-E v3 fix: cited explicitly. The `get_lapsing_count`, `get_vulnerab
 | **(architect SIG-C v3)** TS `stableSlug` (NFKD + combining-mark-strip + regex) and PG `stable_slug` (`unaccent` + regex) may diverge on unusual character classes (ligatures, `Æ` → `AE` in unaccent vs left alone in JS, etc.). The slug-match join in `get_lapsing_count` / `get_vulnerable_capabilities` / `get_usable_vocabulary_gain` would silently miss items if `base_text` contains such characters. | (a) For the Indonesian word stock today, only ASCII + diacritics like `é → e` are present — unaccent and NFKD agree exactly. (b) `check-supabase-deep.ts` adds a TS↔PG slug-equivalence assertion across all `learning_items` rows. Any future drift fails loudly before it bites a user. |
 | **(v4 NEW)** `getUsableVocabularyGain` uses "first-ever form_recall review during week" as the proxy for the legacy "moved to retrieving stage" event. | For users on the capability session path (the only path active going forward), this is a faithful mirror — every form_recall completion goes through `capability_review_events` and the first one is the introduction event. For users still on the legacy path (writing to `learner_stage_events`), this aggregate divergees but those users also won't have `capability_review_events` rows from the legacy path, so the aggregate would be zero — same effective semantics. Documented explicitly so the divergence is visible. If a richer "stage transitioned" aggregate is needed in future, add a `capability_stage_events` table and a new method. |
 | **(v4 NEW)** `getCurrentStreakDays` uses a plpgsql LOOP that walks day by day. | Capped at 365 iterations defensively. With `cre_user_created_idx`, each iteration is an EXISTS on a covering index — sub-millisecond. Total cost for a 30-day streak is ~30 × <1ms = ~30ms. For pathological multi-year streaks, the 365 cap kicks in. |
+| **(architect SIG-1 v4)** Streak day-bucketing semantics shift from UTC-day (legacy `Dashboard.tsx:402-414`, `toISOString().split('T')[0]`) to user-TZ day (new `(created_at AT TIME ZONE p_timezone)::date`). For users near UTC midnight (e.g. Europe/Amsterdam at 00:00–02:00 local in winter), a single review can fall on different "today" buckets between the two paths. On rollout, a user may see streak +1 or −1 versus the pre-PR display. | This is the architecturally correct fix (the user thinks of "today" as their local day, not UTC's), but it is a behavior change. Mitigations: (a) §11.4 UI copy adds a one-time tooltip "Streak now uses your local timezone." (b) §11.5 fixture seeds review events at known UTC instants (one near UTC midnight crossing) so both the legacy UTC-bucketed streak and the new userTZ-bucketed streak are explicitly asserted. The divergence is a tested expectation, not a silent change. (c) Browser-smoke step 5 in §7 explicitly checks the userTZ-bucketed value, with the seed pinned to Europe/Amsterdam. |
 | **(v4 NEW)** Dropping `skillStates` from `ProgressData` is a breaking change for the hook contract | Verified: the only consumer of `ProgressData.skillStates` outside the hook is the Voortgang page itself, which exposes it for the forecast computation. PR-3 tests the new shape end-to-end. Other pages don't import the hook. |
 
 ## 11. Tests
@@ -1078,28 +1130,55 @@ Per §1.1, dashboard widget copy should clarify ceiling vs output:
 - Same treatment for `newIntroductionsToday`.
 - Tested via dashboard-redesign.test.tsx string assertions.
 
+**Streak migration tooltip (architect SIG-1 v4):** the streak widget on the dashboard
+gets a one-time, dismissible info pill on rollout: "Streak now uses your local
+timezone." Stored in localStorage so each user sees it once. Mitigates the
+±1-day rollout drift documented in §10 risks. Tested by asserting the pill
+renders on first mount and disappears after click.
+
 ### 11.5 Test fixture (architect SIG-6 v3 + SIG-B v3)
 
 Pinned to `testuser@duin.home` (existing test user, see `~/.claude/.../reference_test_user.md`).
 
 **The fixture script does not exist yet — it must be created in PR-1** (architect SIG-B v3). Path: `scripts/seed-progress-test-fixtures.ts`. Idempotent re-runs leave the DB in the same state. Wraps mutations in a transaction and exposes a runner that takes a sqlClient + transaction marker so live SQL parity tests can use the same fixture under their own BEGIN/ROLLBACK envelope.
 
-The script seeds:
-- Picks 3 `learning_capabilities` for the user, sets their `learner_capability_state.next_due_at` to `now() - interval '1 hour'` (due ceiling = 3).
-- Picks 2 additional capabilities, sets `lapse_count = 4`, `stability = 1.5`, `next_due_at = now() - interval '1 hour'` (lapsing ceiling = 2 distinct items).
-- Inserts 5 `capability_review_events` rows with `created_at >= now() - interval '7 days'`, mixed `wasCorrect` (3 true, 2 false) for known accuracy ratios.
-- Inserts 3 `learner_source_progress_state` rows so source-progress predicate has positive cases.
-- Inserts events on 3 consecutive days ending today so streak = 3.
-- Seeds 1 capability with `capability_type='form_recall'` whose first-ever event is in the seeded week (for usable-vocabulary-gain = 1).
+The script seeds (all timestamps anchored to a fixed `seedNow` UTC instant chosen at run time, exported alongside the expected counts so tests are deterministic; default `seedNow = 2026-05-01T10:00:00Z`):
 
-Documented expected return values per metric function exported from the script as constants for the live parity tests:
-- `compute_todays_plan_raw(testuser, now)` → `due_raw=3, weak_raw=2, recall_supply_raw=<computed>, mean_latency_ms≈18000`.
-- `get_lapsing_count(testuser)` → `count=2`.
-- `get_recall_accuracy_by_direction(testuser)` → `recognition_correct=N, recognition_total=M, ...`.
-- `get_current_streak_days(testuser, 'Europe/Amsterdam')` → `3`.
-- `get_usable_vocabulary_gain(testuser, weekStart, weekEnd)` → `1`.
-- `get_overdue_count(testuser, 'Europe/Amsterdam')` → `0` (seeded due-times are `now - 1 hour`, which is "today" not "overdue" for any TZ).
-- `get_study_days_count(testuser, weekStart, weekEnd, 'Europe/Amsterdam')` → `3`.
+**Capability state (5 capabilities for `testuser@duin.home`):**
+- `cap-1`, `cap-2`, `cap-3` — `text_recognition` for items A/B/C; `next_due_at = seedNow - 1 hour`, `activation_state='active'`, `lapse_count=0`, `stability=10.0`, `last_reviewed_at = seedNow - 5 days`. Due ceiling = 3.
+- `cap-4`, `cap-5` — `form_recall` for items A and B; `next_due_at = seedNow - 1 hour`, `lapse_count=4`, `stability=1.5`, `last_reviewed_at = seedNow - 2 days`, `consecutive_failure_count=1`. Lapsing ceiling = 2 distinct items.
+
+**Review events (8 capability_review_events rows):**
+- 3 events on `seedNow - 0d`, `seedNow - 1d`, `seedNow - 2d` (Europe/Amsterdam local days), each `capability_id=cap-1`, `wasCorrect=true`, `latencyMs=18000`. Streak (Europe/Amsterdam) = 3.
+- 1 event on `seedNow - 3d` near UTC midnight: `created_at = seedNow - 3d` adjusted so it's 23:30 UTC (= 01:30 Amsterdam next day). This is the **streak-bucketing-divergence** event that exercises SIG-1: under UTC bucketing it falls on day-3, under Europe/Amsterdam bucketing on day-2. Documented expected: `get_current_streak_days(testuser, 'Europe/Amsterdam') = 3` (the gap on day-3 breaks the streak); `get_current_streak_days(testuser, 'UTC') = 4` (no gap when bucketed UTC).
+- 1 event for `cap-4` (form_recall on item A) at `seedNow - 5 days` — first-ever form_recall for item A inside the seeded week.
+- 1 event for `cap-5` (form_recall on item B) at `seedNow - 30 days` (BEFORE seeded week start of `seedNow - 7 days`) — earlier form_recall for item B; ensures item B is **excluded** from the usable-vocabulary-gain count (negative test case).
+- 2 additional events: 1 `recognition` correct, 1 `recall` incorrect, both within the 7-day week, anchoring the recall_stats_for_week + recall_accuracy_by_direction expected counts.
+
+**Source progress state (3 rows):**
+- `(testuser, 'lessons/lesson-4', '__lesson__', current_state='lesson_completed')` so predicate-positive case for capabilities pinned to that source.
+- `(testuser, 'lessons/lesson-5', 'sections/intro', current_state='intro_completed')` for section_ref-fallback test.
+- `(testuser, 'lessons/lesson-6', '__lesson__', current_state='not_started')` for negative case.
+
+### Expected return values for all 13 functions
+
+(architect SIG-3 v4: every function gets a documented expected value; values are exported as constants from `scripts/seed-progress-test-fixtures.ts` and consumed verbatim by the live SQL parity tests.)
+
+| Function | Args | Expected return |
+|---|---|---|
+| `compute_todays_plan_raw` | `(testuser, seedNow)` | `due_raw=5, new_raw=<seed-dependent count of dormant ready capabilities>, weak_raw=2, recall_supply_raw=2, mean_latency_ms≈18000` |
+| `get_lapsing_count` | `(testuser)` | `2` |
+| `get_lapse_prevention` | `(testuser)` | `at_risk=2 (cap-4, cap-5 both have consecutive_failure_count>0), rescued=0` |
+| `get_memory_health` | `(testuser)` | `avg_recognition_stability=10.0, recognition_sample_size=3, avg_recall_stability=1.5, recall_sample_size=2, avg_overall_stability=6.6 (rounded), overall_sample_size=5` |
+| `get_review_latency_stats` | `(testuser)` | `current_week_ms≈18000 (3 events at 18000), prior_week_ms=null (no prior-week events seeded other than the 30-day-ago one which is outside both windows)` |
+| `get_recall_accuracy_by_direction` | `(testuser)` | `recognition_correct=3, recognition_total=4, recall_correct=0, recall_total=2` (3 cap-1 events all correct + 1 added recognition correct event = 4 total, 3 correct; 2 form_recall events from cap-4 and cap-5, 0 correct) |
+| `get_recall_stats_for_week` | `(testuser, weekStart=seedNow-7d, weekEnd=seedNow)` | Same shape as `get_recall_accuracy_by_direction` but windowed: `recognition_correct=3, recognition_total=4, recall_correct=0, recall_total=1` (cap-5's prior-week event is excluded; cap-4's in-week event is included as recall_total=1, and the seeded "1 recall incorrect" event matches) |
+| `get_study_days_count` | `(testuser, weekStart, weekEnd, 'Europe/Amsterdam')` | `4` (3 consecutive days + 1 UTC-midnight-crossing day = 4 distinct Europe/Amsterdam dates) |
+| `get_usable_vocabulary_gain` | `(testuser, weekStart, weekEnd)` | `1` (item A counted via cap-4's first-ever form_recall in week; item B excluded because cap-5 has earlier form_recall outside the week) |
+| `get_overdue_count` | `(testuser, 'Europe/Amsterdam')` | `0` (all due capabilities have `next_due_at = seedNow - 1 hour`, which is "today" Amsterdam local; "overdue" means before start-of-today-local) |
+| `get_current_streak_days` | `(testuser, 'Europe/Amsterdam')` | `3` (and `(testuser, 'UTC') = 4`, asserting the SIG-1 divergence) |
+| `get_vulnerable_capabilities` | `(testuser, 10)` | 2 rows: `cap-4` first (lapse_count=4 ties; consecutive_failure_count=1 ties; ordered by `s.lapse_count DESC, s.consecutive_failure_count DESC` then implicit row order). Both rows include item base_text and meaning from the seeded items. |
+| `get_review_forecast` | `(testuser, 14, 'Europe/Amsterdam')` | Per-day breakdown for the 5 active capabilities, all `next_due_at = seedNow - 1 hour`, all bucketed on the seedNow-Europe/Amsterdam date: `[(forecast_date=that_date, count=5)]` |
 
 ## 12. Open Questions
 
@@ -1158,7 +1237,9 @@ Voortgang page's 5 parallel calls finish in <250ms total. Dashboard's 3 sequenti
 
 This spec scopes PR-1, PR-2, PR-3, PR-5 (per §5). The CI gate is deferred to a follow-up spec contingent on §12 q3.
 
-- [ ] Migration `2026-05-01-learner-progress-functions.sql` deployed to homelab Supabase.
+- [ ] Migration `scripts/migrations/2026-05-01-learner-progress-functions.sql` and rollback `scripts/migrations/2026-05-01-learner-progress-functions.rollback.sql` exist in repo (architect SIG-2 v4).
+- [ ] Forward migration deployed to homelab Supabase via SSH+`docker exec` (per §9 deployment path).
+- [ ] Same SQL appended to `scripts/migration.sql` so `make migrate` is canonical for future re-applies.
 - [ ] `unaccent` extension installed in the homelab Postgres image (verified via `\dx unaccent` after migration).
 - [ ] `learnerProgressService.ts` exists with the **13-method interface** in §4.2. (NIT-1 v3 fix carried forward.)
 - [ ] `scripts/seed-progress-test-fixtures.ts` created (idempotent, transaction-safe). (architect SIG-B v3)
@@ -1178,7 +1259,16 @@ This spec scopes PR-1, PR-2, PR-3, PR-5 (per §5). The CI gate is deferred to a 
 - **v1** (2026-05-01 morning): initial spec; failed architect review with 8 CRITICAL + 6 SIGNIFICANT issues.
 - **v2** (2026-05-01 afternoon): addressed v1 issues; failed re-review with 3 CRITICAL + 6 SIGNIFICANT.
 - **v3** (2026-05-01 evening): addressed v2 issues; failed re-review with 4 CRITICAL + 6 SIGNIFICANT + 3 NIT.
-- **v4** (2026-05-01 evening, current): addresses v3 review **and** expands scope to cover all surfacing-layer interfaces between deep modules (per user request). Major changes:
+- **v5** (2026-05-01 late evening, current): addresses architect v4 review (3 SIG + 4 NIT, no CRITICALs).
+  - **(architect SIG-1 v4)** Streak day-bucketing semantic shift (UTC → user-TZ) documented in §10 risks; §11.5 fixture seeds a UTC-midnight-crossing review event so both legacy and new bucketed values are explicitly asserted; §11.4 adds a one-time UI rollout tooltip.
+  - **(architect SIG-2 v4)** §9 explicit deployment-path subsection: forward migration shipped as `scripts/migrations/2026-05-01-learner-progress-functions.sql` (SSH+docker exec, mirroring 2026-04-25-capability-core.sql precedent) AND folded into `scripts/migration.sql` so `make migrate` is the canonical re-apply path. Matching rollback file. §15 DoD adds checkboxes for both.
+  - **(architect SIG-3 v4)** §11.5 fixture extended to document expected returns for **all 13 functions** (was 7); seeded test data anchored to `seedNow` UTC; expectations are exported as constants from the seed script for use by live SQL parity tests.
+  - **(architect NIT-1 v4)** §5 PR-2 documents the shape change in `getRecallStatsForWeek` (raw counts vs legacy ratios) and the caller-side adapter required.
+  - **(architect NIT-2 v4)** §4.6 service skeleton extended with examples for scalar-returning methods (`getLapsingCount`, `getOverdueCount`).
+  - **(architect NIT-3 v4)** `getMemoryHealth` mapper rounds raw numeric AVG to 2 decimals to preserve legacy `useProgressData.avg()` display semantics. Documented in §4.6 skeleton.
+  - **(architect NIT-4 v4 — deferred)** EXPLAIN evidence for `cre_user_capability_created_idx` deferred to PR-1 implementation (live planner-trace requires fixture data; will be captured during the actual TDD cycle and posted to the PR description).
+
+- **v4** (2026-05-01 evening): addresses v3 review **and** expands scope to cover all surfacing-layer interfaces between deep modules (per user request). Major changes:
   - **(scope expansion)** Added §3.3 deep-module interface inventory. Spec now covers all 14 in-scope legacy reads across goalService, progressService, learnerStateService, useProgressData, and Dashboard. Adds 5 new service methods + 5 new SQL functions: `getStudyDaysCount`, `getRecallStatsForWeek`, `getUsableVocabularyGain`, `getOverdueCount`, `getCurrentStreakDays`. Extends `getMemoryHealth` to also return `avgOverallStability` for `useProgressData` migration.
   - **(architect CRIT-A v3)** Rollback signature for `_capability_source_progress_met` corrected to match the create signature `(uuid, jsonb, text, text)`. §8.
   - **(architect CRIT-B v3)** `progressService.getCapabilityMasteryOverview` pass-through eliminated everywhere — v3 §5 PR-3 still referenced it; v4 deletes it and updates §5 PR-3 + §15 DoD count to 13 methods. Consumers import `getMasteryOverview` from `@/lib/mastery/masteryModel` directly.
