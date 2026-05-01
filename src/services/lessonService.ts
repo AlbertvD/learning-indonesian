@@ -1,5 +1,6 @@
 // src/services/lessonService.ts
 import { supabase } from '@/lib/supabase'
+import { chunkedIn } from '@/lib/chunkedQuery'
 import type { LessonGrammarTopic } from '@/lib/lessons/lessonOverviewStatus'
 
 export interface Lesson {
@@ -240,18 +241,18 @@ export const lessonService = {
     const capabilityIds = ((capabilityRows ?? []) as Array<{ id: string }>).map(row => row.id)
     if (capabilityIds.length === 0) return { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 }
 
-    const { data: stateRows, error: stateError } = await supabase
-      .schema('indonesian')
-      .from('learner_capability_state')
-      .select('capability_id, activation_state, review_count')
-      .eq('user_id', userId)
-      .in('capability_id', capabilityIds)
-    if (stateError) throw stateError
-
-    const activePracticedCapabilityCount = ((stateRows ?? []) as Array<{
+    const stateRows = await chunkedIn<{
       activation_state: string | null
       review_count: number | null
-    }>).filter(row => row.activation_state === 'active' && (row.review_count ?? 0) > 0).length
+    }>(
+      'learner_capability_state',
+      'capability_id',
+      capabilityIds,
+      (b) => b.select('capability_id, activation_state, review_count').eq('user_id', userId),
+    )
+
+    const activePracticedCapabilityCount = stateRows
+      .filter(row => row.activation_state === 'active' && (row.review_count ?? 0) > 0).length
 
     return {
       readyCapabilityCount: capabilityIds.length,

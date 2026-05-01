@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import { chunkedIn } from '@/lib/chunkedQuery'
 import { validateCapability, type CapabilityReadiness } from '@/lib/capabilities/capabilityContracts'
 import type { ArtifactIndex, ArtifactQualityStatus } from '@/lib/capabilities/artifactRegistry'
 import {
@@ -355,14 +356,14 @@ export function createCapabilitySessionDataService(client: SupabaseSchemaClient 
       const capabilityRows = (capabilitiesResult.data ?? []) as LearningCapabilityDbRow[]
       const capabilityById = new Map(capabilityRows.map(row => [row.id, row]))
       const capabilityIds = capabilityRows.map(row => row.id)
-      const artifactsResult = capabilityIds.length > 0
-        ? await db()
-            .from('capability_artifacts')
-            .select('*')
-            .in('capability_id', capabilityIds)
-        : { data: [], error: null }
-      if (artifactsResult.error) throw artifactsResult.error
-      const artifactIndex = buildArtifactIndex((artifactsResult.data ?? []) as CapabilityArtifactDbRow[], capabilityById)
+      const artifactRows = await chunkedIn<CapabilityArtifactDbRow>(
+        'capability_artifacts',
+        'capability_id',
+        capabilityIds,
+        undefined,
+        client,
+      )
+      const artifactIndex = buildArtifactIndex(artifactRows, capabilityById)
 
       const capabilitiesByKey = new Map<string, ProjectedCapability>()
       const readinessByKey = new Map<string, CapabilityReadiness>()

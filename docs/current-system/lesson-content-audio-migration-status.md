@@ -92,3 +92,42 @@ Once those are supplied, the next safe release order is:
 7. Repeat for lessons 2-5 after adding missing grammar examples.
 8. Repeat for lessons 7-8 after dialogue translations or cloze coverage are completed.
 ```
+
+## 2026-05-01 — Auto-fill from legacy DB applied
+
+The `auto-fill-capability-artifacts-from-legacy.ts` bridge ran end-to-end against the live homelab Supabase. State after apply + per-lesson promote (lessons 2–9):
+
+```text
+capability_artifacts: 5,407 approved (5,400 auto-from-legacy-db + 7 manual akhir pilot)
+                       400 still draft
+
+learning_capabilities: 2,183 ready/published
+                         397 still draft/unknown
+```
+
+Per-lesson promotion outcomes:
+
+| Lesson | Promoted | Blocked |
+|---:|---:|---:|
+| 1 | skipped (3 pre-existing akhir source-progress criticals predating auto-fill) | — |
+| 2 | 260 | 0 |
+| 3 | 272 | 0 |
+| 4 | 476 | 0 |
+| 5 | 264 | 0 |
+| 6 | 180 | 16 |
+| 7 | 228 | 60 |
+| 8 | 196 | 84 |
+| 9 | 376 | 20 |
+
+### Documented residuals after this pass
+
+- **`dibawa` / `dibawa*` slug collision.** Two genuinely distinct active `learning_items` rows both `stableSlug` to `dibawa`. The auto-fill script logs CRITICAL and skips; 9 capability artifacts stay draft. Resolution requires a manual disambiguation in the source data (rename one base_text or merge the items).
+- **388 dialogue-chunk capability skips.** Capability source_refs of the form `learning_items/<entire-utterance-slug>` (e.g. `learning_items/aduh-koper-sudah-berat-sekali-bu-bagus...`) do not match any active `learning_items` row by slug. These were projected as `dialogue_chunk` capabilities but the underlying authored content never produced single-row learning_items for whole utterances. Authoring fix: split each long-utterance chunk into proper sentence-or-phrase items, or stop projecting these as capabilities.
+- **180 blocked capabilities across lessons 6/7/8/9.** Health checker flags them as blocked from going `ready` despite having artifacts approved — typically because their `requiredSourceProgress` references a source the lesson graph can't resolve (same root cause as lesson 1's three akhir criticals). These remain draft until either source-progress refs are fixed or the projection drops the requirement.
+- **Lesson 1 promotion skipped.** Three akhir capabilities already promoted to `ready/published` before this branch's auto-fill have unresolved `requiredSourceProgress` refs (`learning_items/akhir`) per the strict health check. The promote loop was halted on lesson 1 so a re-promote does not demote them. To resolve: investigate the lesson-source graph builder in `check-capability-health.ts` and confirm whether those source refs should resolve through `lesson_page_blocks.source_refs` (they appear in the page blocks but the health graph does not surface them).
+- **Frontend chunking residual (resolved in this branch).** The session loader at `capabilitySessionDataService.ts:362` and three `capability_id` `.in()` queries in `masteryModel.ts` + `lessonService.ts` were unchunked. Auto-fill exposed the latent bug by lifting ready capabilities from 3 to 2,183, blowing past Kong's URI buffer. All four sites now route through `chunkedIn` (50 ids/chunk) and the session route loads cleanly.
+
+### Browser smoke (lesson 6, testuser@duin.home)
+
+- `/lesson/<lesson-6-uuid>` renders the rich lesson reader with hero, table of contents, and grammar/text blocks.
+- `/session?lesson=<lesson-6-uuid>&mode=lesson_practice` loads with no console errors after the chunking fix. Plan returns 0 cards because most lesson-6 capabilities require deeper `requiredSourceProgress` states (`intro_completed`, `pattern_noticing_seen`) that the test user has not yet emitted by walking through the lesson reader. This is expected behaviour, not a regression.

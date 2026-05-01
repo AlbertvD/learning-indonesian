@@ -5,6 +5,7 @@ import type {
   CapabilityType,
 } from '@/lib/capabilities/capabilityTypes'
 import type { ArtifactQualityStatus } from '@/lib/capabilities/artifactRegistry'
+import { chunkedIn } from '@/lib/chunkedQuery'
 
 export type MasteryLabel =
   | 'not_assessed'
@@ -422,24 +423,23 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
   }
 
   async function learnerStates(userId: string, capabilityIds: string[]): Promise<LearnerCapabilityStateRow[]> {
-    if (capabilityIds.length === 0) return []
-    const { data, error } = await db()
-      .from('learner_capability_state')
-      .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
-      .eq('user_id', userId)
-      .in('capability_id', capabilityIds)
-    if (error) throw error
-    return (data ?? []) as LearnerCapabilityStateRow[]
+    return chunkedIn<LearnerCapabilityStateRow>(
+      'learner_capability_state',
+      'capability_id',
+      capabilityIds,
+      (b) => b.select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at').eq('user_id', userId),
+      client,
+    )
   }
 
   async function artifacts(capabilityIds: string[]): Promise<CapabilityArtifactRow[]> {
-    if (capabilityIds.length === 0) return []
-    const { data, error } = await db()
-      .from('capability_artifacts')
-      .select('capability_id, artifact_kind, quality_status, artifact_json')
-      .in('capability_id', capabilityIds)
-    if (error) throw error
-    return (data ?? []) as CapabilityArtifactRow[]
+    return chunkedIn<CapabilityArtifactRow>(
+      'capability_artifacts',
+      'capability_id',
+      capabilityIds,
+      (b) => b.select('capability_id, artifact_kind, quality_status, artifact_json'),
+      client,
+    )
   }
 
   async function sourceProgress(userId: string, sourceRefs: string[]): Promise<SourceProgressRow[]> {
