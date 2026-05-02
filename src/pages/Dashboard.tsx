@@ -248,13 +248,13 @@ const GOAL_ACTION_CONFIG: Record<string, {
   review_health: {
     title: (T) => T.dashboard.improveBacklog,
     focus: (T) => T.dashboard.focusBacklog,
-    mode: 'backlog_clear',
+    mode: 'standard',
     tone: 'warning',
   },
   consistency: {
     title: (T) => T.dashboard.quickSession,
     focus: (T) => T.dashboard.focusConsistency,
-    mode: 'quick',
+    mode: 'standard',
     tone: 'warning',
   },
 }
@@ -549,12 +549,12 @@ export function Dashboard() {
                 title={T.dashboard.rescueTitle.replace('{count}', `${lapsingCount}`)}
                 focus={`${lapsingCount} ${T.dashboard.lapsesLabel}`}
                 reason={T.dashboard.rescueSubtitle}
-                to="/session?mode=backlog_clear"
+                to="/session?mode=standard"
               />
             )
             : (
               <ListCard
-                to="/session?mode=backlog_clear"
+                to="/session?mode=standard"
                 icon={<IconChevronRight size={18} />}
                 title={T.dashboard.practiceWeak}
                 subtitle={T.dashboard.reviewWeakItems}

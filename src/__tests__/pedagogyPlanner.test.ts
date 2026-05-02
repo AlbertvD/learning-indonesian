@@ -41,23 +41,6 @@ describe('pedagogy planner', () => {
     ]))
   })
 
-  it('suppresses new capabilities in backlog clear mode', () => {
-    const plan = planLearningPath({
-      userId: 'user-1',
-      mode: 'backlog_clear',
-      now: new Date('2026-04-25T00:00:00.000Z'),
-      preferredSessionSize: 15,
-      dueCount: 12,
-      readyCapabilities: [capability()],
-      learnerCapabilityStates: [],
-      sourceProgress: [],
-      recentReviewEvidence: [],
-    })
-
-    expect(plan.eligibleNewCapabilities).toEqual([])
-    expect(plan.suppressedCapabilities[0]?.reason).toBe('load_budget_exhausted')
-  })
-
   it('does not activate or mutate learner state', () => {
     const learnerCapabilityStates = Object.freeze([] as const)
     const plan = planLearningPath({

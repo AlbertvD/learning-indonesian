@@ -1,6 +1,6 @@
 import { decideBacklogPressure, type SessionPosture } from '@/lib/pedagogy/sessionPosture'
 
-export type CurrentSessionMode = 'standard' | 'backlog_clear' | 'quick' | 'lesson_practice' | 'lesson_review'
+export type CurrentSessionMode = 'standard' | 'lesson_practice' | 'lesson_review'
 export type FutureSessionMode = 'listening_focus' | 'pattern_workshop' | 'podcast'
 export type PlannerSessionMode = CurrentSessionMode | FutureSessionMode
 
@@ -9,7 +9,6 @@ export interface LoadBudgetInput {
   posture?: SessionPosture
   preferredSessionSize: number
   dueCount: number
-  allowQuickIntroduction?: boolean
 }
 
 export interface LoadBudgetDecision {
@@ -63,35 +62,6 @@ export function decideLoadBudget(input: LoadBudgetInput): LoadBudgetDecision {
       targetSessionSize,
       allowQueuePadding: false,
       reason: 'lesson_practice_selected_lesson_budget',
-    })
-  }
-
-  if (input.mode === 'backlog_clear') {
-    return budget({
-      allowNewCapabilities: false,
-      maxNewCapabilities: 0,
-      maxNewConcepts: 0,
-      maxNewProductionTasks: 0,
-      maxHiddenAudioTasks: 0,
-      maxSourceSwitches: 0,
-      targetSessionSize,
-      allowQueuePadding: false,
-      reason: 'backlog_clear_suppresses_new_content',
-    })
-  }
-
-  if (input.mode === 'quick') {
-    const maxNewCapabilities = input.allowQuickIntroduction === true ? 1 : 0
-    return budget({
-      allowNewCapabilities: input.allowQuickIntroduction === true,
-      maxNewCapabilities,
-      maxNewConcepts: 0,
-      maxNewProductionTasks: 0,
-      maxHiddenAudioTasks: 0,
-      maxSourceSwitches: 1,
-      targetSessionSize,
-      allowQueuePadding: false,
-      reason: input.allowQuickIntroduction === true ? 'quick_allows_one_light_intro' : 'quick_suppresses_new_content',
     })
   }
 

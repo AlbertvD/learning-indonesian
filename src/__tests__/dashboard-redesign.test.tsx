@@ -278,12 +278,11 @@ describe('Recommended Actions section', () => {
     expect(screen.getAllByText(/80%/)).not.toHaveLength(0)
   })
 
-  it('links action cards to the correct session mode URL', async () => {
+  it('links action cards to a session URL', async () => {
     renderDashboard()
-    // consistency at_risk -> should link to /session?mode=quick
     const actionLinks = await screen.findAllByRole('link')
-    const quickLink = actionLinks.find(l => l.getAttribute('href')?.includes('mode=quick'))
-    expect(quickLink).toBeDefined()
+    const sessionLink = actionLinks.find(l => l.getAttribute('href')?.startsWith('/session'))
+    expect(sessionLink).toBeDefined()
   })
 })
 

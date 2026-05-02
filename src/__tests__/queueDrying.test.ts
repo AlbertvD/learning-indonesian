@@ -40,17 +40,7 @@ describe('queue drying diagnostic', () => {
     })).toBeNull()
   })
 
-  it('does not warn for intentionally short modes and postures', () => {
-    expect(buildQueueDryingDiagnostic({
-      goodCandidateCount: 3,
-      preferredSessionSize: 12,
-      backlogPressure: 'light',
-      currentLessonHasEligibleIntroductions: false,
-      nextLessonNeedsExposure: true,
-      mode: 'quick',
-      posture: 'balanced',
-    })).toBeNull()
-
+  it('does not warn for intentionally short postures (e.g. comeback)', () => {
     expect(buildQueueDryingDiagnostic({
       goodCandidateCount: 3,
       preferredSessionSize: 12,
