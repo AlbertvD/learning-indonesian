@@ -23,13 +23,8 @@ import {
 } from '@/components/page/primitives'
 import {
   extractLessonGrammarTopics,
-  lessonSourceRefForOverview,
-  lessonSourceRefsByLesson,
   lessonService,
   type Lesson,
-  type LessonCapabilityPracticeSummary,
-  type LessonPageBlock,
-  type LessonSourceProgressRow,
 } from '@/services/lessonService'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
@@ -39,11 +34,9 @@ import {
   buildLessonOverviewSignals,
   type LessonOverviewCapabilityCounts,
   type LessonOverviewExposure,
-  type LessonOverviewExposureKind,
   type LessonOverviewModel,
 } from '@/lib/lessons/lessonOverviewModel'
 import type { LessonOverviewStatus } from '@/lib/lessons/lessonOverviewStatus'
-import type { LessonProgress } from '@/types/progress'
 import classes from './Lessons.module.css'
 
 const emptyModel: LessonOverviewModel = {
@@ -129,148 +122,6 @@ function rememberOverviewScrollPosition() {
   sessionStorage.setItem(LESSONS_OVERVIEW_SCROLL_KEY, String(window.scrollY || window.pageYOffset || 0))
 }
 
-function progressToExposures(progress: LessonProgress[]): LessonOverviewExposure[] {
-  return progress.flatMap((row): LessonOverviewExposure[] => {
-    return [{
-      lessonId: row.lesson_id,
-      exposureKind: 'lesson' as const,
-      started: true,
-      meaningful: false,
-    }]
-  })
-}
-
-const MEANINGFUL_GRAMMAR_SOURCE_EVENTS = new Set([
-  'heard_once',
-  'intro_completed',
-  'pattern_noticing_seen',
-  'guided_practice_completed',
-  'lesson_completed',
-])
-
-const MEANINGFUL_DIALOGUE_SOURCE_EVENTS = new Set([
-  'heard_once',
-  'section_exposed',
-  'guided_practice_completed',
-  'lesson_completed',
-])
-
-function sourceRefsForBlock(block: LessonPageBlock): string[] {
-  return block.source_refs?.length ? block.source_refs : [block.source_ref]
-}
-
-function lessonIdBySourceRef(sourceRefsByLesson: Map<string, string[]>): Map<string, string> {
-  const result = new Map<string, string>()
-  for (const [lessonId, sourceRefs] of sourceRefsByLesson) {
-    for (const sourceRef of sourceRefs) {
-      if (!result.has(sourceRef)) result.set(sourceRef, lessonId)
-    }
-  }
-  return result
-}
-
-function blockByProgressKey(blocks: LessonPageBlock[]): Map<string, LessonPageBlock> {
-  const result = new Map<string, LessonPageBlock>()
-  for (const block of blocks) {
-    result.set(`${block.source_ref}::${block.block_key}`, block)
-    for (const sourceRef of sourceRefsForBlock(block)) {
-      result.set(`${sourceRef}::${block.block_key}`, block)
-    }
-  }
-  return result
-}
-
-function sourceProgressEvents(row: LessonSourceProgressRow): Set<string> {
-  return new Set([
-    row.current_state,
-    ...(row.completed_event_types ?? []),
-  ].filter(Boolean))
-}
-
-function sourceProgressExposureKind(
-  row: LessonSourceProgressRow,
-  block: LessonPageBlock | undefined,
-  events: Set<string>,
-): LessonOverviewExposureKind {
-  const payloadType = typeof block?.payload_json?.type === 'string'
-    ? block.payload_json.type.toLowerCase()
-    : ''
-  const sectionRef = row.source_section_ref.toLowerCase()
-
-  if (events.has('opened') || sectionRef.includes('hero')) return 'lesson'
-  if (payloadType === 'dialogue' || sectionRef.includes('dialogue')) return 'dialogue'
-  if (payloadType === 'culture' || sectionRef.includes('culture')) return 'culture'
-  if (payloadType === 'pronunciation' || sectionRef.includes('pronunciation')) return 'pronunciation'
-  if (
-    payloadType === 'grammar'
-    || payloadType === 'reference_table'
-    || block?.source_progress_event === 'pattern_noticing_seen'
-    || sectionRef.includes('grammar')
-    || sectionRef.includes('pattern')
-  ) {
-    return 'grammar'
-  }
-
-  return 'lesson'
-}
-
-function isMeaningfulSourceExposure(kind: LessonOverviewExposureKind, events: Set<string>): boolean {
-  if (kind === 'grammar') {
-    return [...events].some(event => MEANINGFUL_GRAMMAR_SOURCE_EVENTS.has(event))
-  }
-  if (kind === 'dialogue') {
-    return [...events].some(event => MEANINGFUL_DIALOGUE_SOURCE_EVENTS.has(event))
-  }
-  return false
-}
-
-function sourceProgressToExposures(input: {
-  progressRows: LessonSourceProgressRow[]
-  pageBlocks: LessonPageBlock[]
-  sourceRefsByLesson: Map<string, string[]>
-}): LessonOverviewExposure[] {
-  const lessonIdForSourceRef = lessonIdBySourceRef(input.sourceRefsByLesson)
-  const blockForProgress = blockByProgressKey(input.pageBlocks)
-
-  return input.progressRows.flatMap((row): LessonOverviewExposure[] => {
-    const lessonId = lessonIdForSourceRef.get(row.source_ref)
-    if (!lessonId) return []
-
-    const events = sourceProgressEvents(row)
-    const block = blockForProgress.get(`${row.source_ref}::${row.source_section_ref}`)
-    const exposureKind = sourceProgressExposureKind(row, block, events)
-    return [{
-      lessonId,
-      exposureKind,
-      started: events.size > 0,
-      meaningful: isMeaningfulSourceExposure(exposureKind, events),
-    }]
-  })
-}
-
-function summaryToCapabilityCounts(
-  lessonId: string,
-  summary: LessonCapabilityPracticeSummary,
-): LessonOverviewCapabilityCounts {
-  const eligibleIntroducedItemCount = Math.max(0, summary.readyCapabilityCount)
-  const practicedEligibleItemCount = Math.min(
-    eligibleIntroducedItemCount,
-    Math.max(0, summary.activePracticedCapabilityCount),
-  )
-
-  return {
-    lessonId,
-    readyItemCount: Math.max(0, eligibleIntroducedItemCount - practicedEligibleItemCount),
-    practicedEligibleItemCount,
-    eligibleIntroducedItemCount,
-    hasAuthoredEligiblePracticeContent: eligibleIntroducedItemCount > 0,
-  }
-}
-
-function uniqueValues(values: string[]): string[] {
-  return [...new Set(values.filter(Boolean))]
-}
-
 export function Lessons() {
   const T = useT()
   const [model, setModel] = useState<LessonOverviewModel>(emptyModel)
@@ -294,76 +145,85 @@ export function Lessons() {
       setProgressRefreshFailed(false)
 
       try {
-        const lessonsData = await lessonService.getLessons()
-        let progressData: LessonProgress[] = []
-        let pageBlocks: LessonPageBlock[] = []
-        let preparedLessonIds: string[] = []
-        let sourceProgressData: LessonSourceProgressRow[] = []
-        let capabilityCounts: LessonOverviewCapabilityCounts[] = []
+        // Single round trip: indonesian.get_lessons_overview(user_id) returns
+        // one row per lesson with all the per-user signals + lesson basic info
+        // + lesson_sections needed for grammar topic extraction. Replaces the
+        // previous fanout of ~20 round trips.
+        const overviewRows = await lessonService.getLessonsOverview(user.id)
 
-        try {
-          progressData = await lessonService.getUserLessonProgress(user.id)
-        } catch (err) {
-          logError({ page: 'lessons', action: 'fetch-progress', error: err })
-          if (!cancelled) setProgressRefreshFailed(true)
-        }
+        // The signals shape that buildLessonOverviewModel expects.
+        // We can construct it directly from the SQL rows — every field comes
+        // from one column. earlierLessonsSatisfied is computed client-side
+        // because it requires walking lessons in order.
+        const lessonsData: Lesson[] = overviewRows.map(row => ({
+          id: row.lesson_id,
+          module_id: '',
+          level: '',
+          title: row.title,
+          description: row.description,
+          order_index: row.order_index,
+          created_at: '',
+          audio_path: row.audio_path,
+          duration_seconds: row.duration_seconds,
+          transcript_dutch: null,
+          transcript_indonesian: null,
+          transcript_english: null,
+          primary_voice: row.primary_voice,
+          dialogue_voices: null,
+          lesson_sections: row.lesson_sections,
+        }))
 
-        try {
-          const pageBlockGroups = await Promise.all(lessonsData.map(async (lesson: Lesson) => {
-            try {
-              return {
-                lessonId: lesson.id,
-                blocks: await lessonService.getLessonPageBlocks(lessonSourceRefForOverview(lesson)),
-              }
-            } catch (err) {
-              logError({ page: 'lessons', action: `fetch-page-blocks:${lesson.id}`, error: err })
-              if (!cancelled) setProgressRefreshFailed(true)
-              return { lessonId: lesson.id, blocks: [] }
-            }
-          }))
-          preparedLessonIds = pageBlockGroups
-            .filter(group => group.blocks.length > 0)
-            .map(group => group.lessonId)
-          pageBlocks = pageBlockGroups.flatMap(group => group.blocks)
-        } catch (err) {
-          logError({ page: 'lessons', action: 'fetch-page-blocks', error: err })
-          if (!cancelled) setProgressRefreshFailed(true)
-        }
+        const exposures: LessonOverviewExposure[] = []
+        const capabilityCounts: LessonOverviewCapabilityCounts[] = []
+        const preparedLessonIds: string[] = []
 
-        const sourceRefsByLesson = lessonSourceRefsByLesson(lessonsData, pageBlocks)
-        const allSourceRefs = uniqueValues([...sourceRefsByLesson.values()].flat())
+        for (const row of overviewRows) {
+          if (row.has_started_lesson) {
+            exposures.push({
+              lessonId: row.lesson_id,
+              exposureKind: 'lesson',
+              started: true,
+              meaningful: false,
+            })
+          }
+          if (row.has_meaningful_exposure) {
+            // The classification (grammar vs dialogue) is collapsed server-side
+            // into a single boolean. Use 'grammar' as the canonical kind for
+            // synthesizing the exposure — buildLessonOverviewSignals only
+            // checks for any meaningful kind in {grammar, dialogue}.
+            exposures.push({
+              lessonId: row.lesson_id,
+              exposureKind: 'grammar',
+              started: true,
+              meaningful: true,
+            })
+          }
 
-        try {
-          sourceProgressData = await lessonService.getLessonSourceProgress(user.id, allSourceRefs)
-        } catch (err) {
-          logError({ page: 'lessons', action: 'fetch-source-progress', error: err })
-          if (!cancelled) setProgressRefreshFailed(true)
-        }
-
-        try {
-          capabilityCounts = await Promise.all(
-            [...sourceRefsByLesson.entries()].map(async ([lessonId, sourceRefs]) => (
-              summaryToCapabilityCounts(
-                lessonId,
-                await lessonService.getLessonCapabilityPracticeSummary(user.id, sourceRefs),
-              )
-            )),
+          const eligibleIntroducedItemCount = Math.max(0, row.ready_capability_count)
+          const practicedEligibleItemCount = Math.min(
+            eligibleIntroducedItemCount,
+            Math.max(0, row.practiced_eligible_capability_count),
           )
-        } catch (err) {
-          logError({ page: 'lessons', action: 'fetch-capability-summary', error: err })
-          if (!cancelled) setProgressRefreshFailed(true)
+          capabilityCounts.push({
+            lessonId: row.lesson_id,
+            readyItemCount: Math.max(0, eligibleIntroducedItemCount - practicedEligibleItemCount),
+            practicedEligibleItemCount,
+            eligibleIntroducedItemCount,
+            hasAuthoredEligiblePracticeContent: eligibleIntroducedItemCount > 0,
+          })
+
+          // "Prepared" = lesson_page_blocks has rows for this lesson (the
+          // lesson reader can render content). Same semantic as the previous
+          // page-blocks-fanout fetch; the new SQL function returns the bool
+          // pre-aggregated.
+          if (row.has_page_blocks) {
+            preparedLessonIds.push(row.lesson_id)
+          }
         }
 
         const signals = buildLessonOverviewSignals({
           lessons: lessonsData,
-          exposures: [
-            ...progressToExposures(progressData),
-            ...sourceProgressToExposures({
-              progressRows: sourceProgressData,
-              pageBlocks,
-              sourceRefsByLesson,
-            }),
-          ],
+          exposures,
           capabilityCounts,
         })
         const nextModel = buildLessonOverviewModel({

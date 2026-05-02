@@ -25,59 +25,66 @@ vi.mock('@/services/lessonService', async (importOriginal) => {
     ...actual,
     lessonService: {
       ...actual.lessonService,
-      getLessons: vi.fn(),
-      getLessonPageBlocks: vi.fn(),
-      getLessonSourceProgress: vi.fn(),
-      getLessonCapabilityPracticeSummary: vi.fn(),
-      getUserLessonProgress: vi.fn(),
+      getLessonsOverview: vi.fn(),
     },
   }
 })
 
-const lessons = [
+const lesson1Sections = [
   {
-    id: 'lesson-1',
-    title: 'Lesson 1 (Di pasar)',
+    id: 'section-1',
+    lesson_id: 'lesson-1',
+    title: 'Grammar: word order',
     order_index: 1,
-    lesson_sections: [
-      {
-        id: 'section-1',
-        lesson_id: 'lesson-1',
-        title: 'Grammar: word order',
-        order_index: 1,
-        content: { type: 'grammar', body: 'Word order notes.' },
-      },
-    ],
+    content: { type: 'grammar', body: 'Word order notes.' },
   },
-  {
-    id: 'lesson-2',
-    title: 'Lesson 2',
-    order_index: 2,
-    lesson_sections: [
-      {
-        id: 'section-2',
-        lesson_id: 'lesson-2',
-        title: 'Grammar: negation',
-        order_index: 1,
-        content: { type: 'grammar', categories: [{ title: 'negation' }] },
-      },
-    ],
-  },
-] as any[]
+]
 
-function pageBlock(sourceRef: string) {
+const lesson2Sections = [
+  {
+    id: 'section-2',
+    lesson_id: 'lesson-2',
+    title: 'Grammar: negation',
+    order_index: 1,
+    content: { type: 'grammar', categories: [{ title: 'negation' }] },
+  },
+]
+
+// Helper: synthesize a row matching indonesian.get_lessons_overview's RETURNS TABLE shape.
+function overviewRow(opts: {
+  lessonId: string
+  orderIndex: number
+  title: string
+  hasStartedLesson?: boolean
+  hasMeaningfulExposure?: boolean
+  hasPageBlocks?: boolean
+  readyCapabilityCount?: number
+  practicedEligibleCapabilityCount?: number
+  lessonSections?: any[]
+}): any {
   return {
-    block_key: `${sourceRef}-grammar`,
-    source_ref: sourceRef,
-    source_refs: [sourceRef],
-    content_unit_slugs: [],
-    block_kind: 'section',
-    display_order: 10,
-    payload_json: { type: 'grammar', title: 'Grammar' },
-    source_progress_event: 'section_exposed',
-    capability_key_refs: [],
-  } as any
+    lesson_id: opts.lessonId,
+    order_index: opts.orderIndex,
+    title: opts.title,
+    description: null,
+    audio_path: null,
+    duration_seconds: null,
+    primary_voice: null,
+    publication_status: 'published',
+    is_published: true,
+    lesson_sections: opts.lessonSections ?? [],
+    has_started_lesson: opts.hasStartedLesson ?? false,
+    has_meaningful_exposure: opts.hasMeaningfulExposure ?? false,
+    has_page_blocks: opts.hasPageBlocks ?? true,
+    ready_capability_count: opts.readyCapabilityCount ?? 0,
+    practiced_eligible_capability_count: opts.practicedEligibleCapabilityCount ?? 0,
+  }
 }
+
+const defaultOverviewRows = () => [
+  overviewRow({ lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)', lessonSections: lesson1Sections }),
+  overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections }),
+]
 
 function renderLessons() {
   return render(
@@ -93,14 +100,7 @@ function renderLessons() {
 describe('Lessons overview', () => {
   beforeEach(() => {
     sessionStorage.clear()
-    vi.mocked(lessonService.getLessons).mockResolvedValue(lessons)
-    vi.mocked(lessonService.getLessonPageBlocks).mockImplementation(async (sourceRef) => [pageBlock(String(sourceRef))])
-    vi.mocked(lessonService.getLessonSourceProgress).mockResolvedValue([])
-    vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockResolvedValue({
-      readyCapabilityCount: 0,
-      activePracticedCapabilityCount: 0,
-    } as any)
-    vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([])
+    vi.mocked(lessonService.getLessonsOverview).mockResolvedValue(defaultOverviewRows())
   })
 
   it('renders a recommended lesson card and keeps that lesson in the ordered list', async () => {
@@ -137,9 +137,10 @@ describe('Lessons overview', () => {
   })
 
   it('shows lessons without page blocks as coming later instead of openable', async () => {
-    vi.mocked(lessonService.getLessonPageBlocks).mockImplementation(async (sourceRef) => (
-      sourceRef === 'lesson-1' ? [pageBlock('lesson-1')] : []
-    ))
+    vi.mocked(lessonService.getLessonsOverview).mockResolvedValue([
+      overviewRow({ lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)', lessonSections: lesson1Sections, hasPageBlocks: true }),
+      overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections, hasPageBlocks: false }),
+    ])
 
     renderLessons()
 
@@ -153,9 +154,10 @@ describe('Lessons overview', () => {
   })
 
   it('does not recommend an unprepared first lesson', async () => {
-    vi.mocked(lessonService.getLessonPageBlocks).mockImplementation(async (sourceRef) => (
-      sourceRef === 'lesson-2' ? [pageBlock('lesson-2')] : []
-    ))
+    vi.mocked(lessonService.getLessonsOverview).mockResolvedValue([
+      overviewRow({ lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)', lessonSections: lesson1Sections, hasPageBlocks: false }),
+      overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections, hasPageBlocks: true }),
+    ])
 
     renderLessons()
 
@@ -165,13 +167,10 @@ describe('Lessons overview', () => {
   })
 
   it('uses Continue for in-progress lessons', async () => {
-    vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([
-      {
-        lesson_id: 'lesson-1',
-        sections_completed: ['section-1'],
-        completed_at: null,
-      },
-    ] as any)
+    vi.mocked(lessonService.getLessonsOverview).mockResolvedValue([
+      overviewRow({ lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)', lessonSections: lesson1Sections, hasStartedLesson: true }),
+      overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections }),
+    ])
 
     renderLessons()
 
@@ -180,13 +179,16 @@ describe('Lessons overview', () => {
     expect(lessonOne).toHaveTextContent('Continue')
   })
 
-  it('keeps lessons openable when progress cannot be refreshed', async () => {
-    vi.mocked(lessonService.getUserLessonProgress).mockRejectedValue(new Error('progress unavailable'))
-
+  it('keeps lessons openable when overview load works', async () => {
+    // The legacy partial-failure case (progress unavailable but lessons still
+    // load) collapses with a single SQL function: either it succeeds end-to-end
+    // or the page falls into the loadFailed empty-model state. The "openable
+    // when partial fails" guarantee is now the responsibility of the SQL
+    // function staying robust against missing per-user data (LEFT JOINs do
+    // this correctly — verified by the function definition).
     renderLessons()
 
-    expect(await screen.findByText('Lesson progress could not be refreshed.')).toBeInTheDocument()
-    expect(screen.getByTestId('lesson-overview-row-lesson-1')).toHaveTextContent('Open lesson')
+    expect(await screen.findByTestId('lesson-overview-row-lesson-1')).toHaveTextContent('Open lesson')
     expect(screen.getByTestId('lesson-overview-row-lesson-2')).toHaveTextContent('Open lesson')
   })
 
@@ -213,36 +215,24 @@ describe('Lessons overview', () => {
   })
 
   it('uses v2 source progress and capability counts to show a ready-to-practice lesson status', async () => {
-    vi.mocked(lessonService.getLessonPageBlocks).mockImplementation(async (sourceRef) => {
-      if (sourceRef !== 'lesson-1') return []
-      return [
-        {
-          block_key: 'lesson-1-grammar',
-          source_ref: 'lesson-1',
-          source_refs: ['lesson-1'],
-          content_unit_slugs: [],
-          block_kind: 'section',
-          display_order: 10,
-          payload_json: { type: 'grammar', title: 'Grammar' },
-          source_progress_event: 'section_exposed',
-          capability_key_refs: ['capability-1', 'capability-2'],
-        },
-      ] as any
-    })
-    vi.mocked(lessonService.getLessonSourceProgress).mockResolvedValue([
-      {
-        source_ref: 'lesson-1',
-        source_section_ref: 'lesson-1-grammar',
-        current_state: 'heard_once',
-        completed_event_types: ['heard_once'],
-        last_event_at: '2026-04-29T10:00:00Z',
-      },
+    vi.mocked(lessonService.getLessonsOverview).mockResolvedValue([
+      overviewRow({
+        lessonId: 'lesson-1',
+        orderIndex: 1,
+        title: 'Lesson 1 (Di pasar)',
+        lessonSections: lesson1Sections,
+        hasMeaningfulExposure: true,
+        hasStartedLesson: true,
+        readyCapabilityCount: 2,
+        practicedEligibleCapabilityCount: 0,
+      }),
+      overviewRow({
+        lessonId: 'lesson-2',
+        orderIndex: 2,
+        title: 'Lesson 2',
+        lessonSections: lesson2Sections,
+      }),
     ])
-    vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockImplementation(async (_userId, sourceRefs) => (
-      sourceRefs.includes('lesson-1')
-        ? { readyCapabilityCount: 2, activePracticedCapabilityCount: 0 } as any
-        : { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 } as any
-    ))
 
     renderLessons()
 
@@ -253,18 +243,23 @@ describe('Lessons overview', () => {
   })
 
   it('does not use stale legacy lesson progress as v2 practice readiness exposure', async () => {
-    vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([
-      {
-        lesson_id: 'lesson-1',
-        sections_completed: ['legacy-section-1'],
-        completed_at: null,
-      },
-    ] as any)
-    vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockImplementation(async (_userId, sourceRefs) => (
-      sourceRefs.includes('lesson-1')
-        ? { readyCapabilityCount: 2, activePracticedCapabilityCount: 0 } as any
-        : { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 } as any
-    ))
+    // Legacy lesson_progress alone (without source-progress events from the v2
+    // reader) should produce "In progress" status — NOT "Ready to practice"
+    // even when ready capabilities exist. has_started_lesson=true (lesson_progress)
+    // but has_meaningful_exposure=false (no v2 source-progress events).
+    vi.mocked(lessonService.getLessonsOverview).mockResolvedValue([
+      overviewRow({
+        lessonId: 'lesson-1',
+        orderIndex: 1,
+        title: 'Lesson 1 (Di pasar)',
+        lessonSections: lesson1Sections,
+        hasStartedLesson: true,
+        hasMeaningfulExposure: false,
+        readyCapabilityCount: 2,
+        practicedEligibleCapabilityCount: 0,
+      }),
+      overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections }),
+    ])
 
     renderLessons()
 
@@ -274,40 +269,28 @@ describe('Lessons overview', () => {
   })
 
   it('uses practiced capability counts to show in-practice and practiced lesson statuses', async () => {
-    vi.mocked(lessonService.getLessonPageBlocks).mockImplementation(async (sourceRef) => [
-      {
-        block_key: `${sourceRef}-grammar`,
-        source_ref: sourceRef,
-        source_refs: [sourceRef],
-        content_unit_slugs: [],
-        block_kind: 'section',
-        display_order: 10,
-        payload_json: { type: 'grammar', title: 'Grammar' },
-        source_progress_event: 'section_exposed',
-        capability_key_refs: [],
-      },
-    ] as any)
-    vi.mocked(lessonService.getLessonSourceProgress).mockResolvedValue([
-      {
-        source_ref: 'lesson-1',
-        source_section_ref: 'lesson-1-grammar',
-        current_state: 'heard_once',
-        completed_event_types: ['heard_once'],
-        last_event_at: '2026-04-29T10:00:00Z',
-      },
-      {
-        source_ref: 'lesson-2',
-        source_section_ref: 'lesson-2-grammar',
-        current_state: 'intro_completed',
-        completed_event_types: ['intro_completed'],
-        last_event_at: '2026-04-29T10:05:00Z',
-      },
+    vi.mocked(lessonService.getLessonsOverview).mockResolvedValue([
+      overviewRow({
+        lessonId: 'lesson-1',
+        orderIndex: 1,
+        title: 'Lesson 1 (Di pasar)',
+        lessonSections: lesson1Sections,
+        hasMeaningfulExposure: true,
+        hasStartedLesson: true,
+        readyCapabilityCount: 2,
+        practicedEligibleCapabilityCount: 2,
+      }),
+      overviewRow({
+        lessonId: 'lesson-2',
+        orderIndex: 2,
+        title: 'Lesson 2',
+        lessonSections: lesson2Sections,
+        hasMeaningfulExposure: true,
+        hasStartedLesson: true,
+        readyCapabilityCount: 4,
+        practicedEligibleCapabilityCount: 1,
+      }),
     ])
-    vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockImplementation(async (_userId, sourceRefs) => {
-      if (sourceRefs.includes('lesson-1')) return { readyCapabilityCount: 2, activePracticedCapabilityCount: 2 } as any
-      if (sourceRefs.includes('lesson-2')) return { readyCapabilityCount: 4, activePracticedCapabilityCount: 1 } as any
-      return { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 } as any
-    })
 
     renderLessons()
 

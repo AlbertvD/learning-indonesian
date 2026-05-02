@@ -151,6 +151,26 @@ export function extractLessonGrammarTopics(lessons: Array<Pick<Lesson, 'id' | 'l
   return topics
 }
 
+// One row per lesson returned by indonesian.get_lessons_overview(p_user_id).
+// Mirrors the SQL function's RETURNS TABLE shape exactly.
+export interface LessonOverviewRow {
+  lesson_id: string
+  order_index: number
+  title: string
+  description: string | null
+  audio_path: string | null
+  duration_seconds: number | null
+  primary_voice: string | null
+  publication_status: string | null
+  is_published: boolean | null
+  lesson_sections: LessonSection[]
+  has_started_lesson: boolean
+  has_meaningful_exposure: boolean
+  has_page_blocks: boolean
+  ready_capability_count: number
+  practiced_eligible_capability_count: number
+}
+
 export const lessonService = {
   async getLessons(): Promise<Lesson[]> {
     const { data, error } = await supabase
@@ -258,6 +278,19 @@ export const lessonService = {
       readyCapabilityCount: capabilityIds.length,
       activePracticedCapabilityCount,
     }
+  },
+
+  // One-shot read for the Lessons overview page. Replaces the previous fanout
+  // of ~20 round trips (1 + N for page_blocks + 1 for source_progress + N for
+  // capability summaries) with a single SQL function call. The function
+  // mirrors the kind-classification + meaningful-events logic that lived in
+  // Lessons.tsx — see scripts/migrations/2026-05-02-lessons-overview-function.sql.
+  async getLessonsOverview(userId: string): Promise<LessonOverviewRow[]> {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .rpc('get_lessons_overview', { p_user_id: userId })
+    if (error) throw error
+    return (data ?? []) as LessonOverviewRow[]
   },
 
   async getUserLessonProgress(userId: string): Promise<import('@/types/progress').LessonProgress[]> {
