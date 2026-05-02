@@ -46,9 +46,17 @@ typecheck: ## Run TypeScript type checker
 # ============================================================================
 
 .PHONY: migrate
-migrate: ## Apply Supabase schema migration via psql (requires POSTGRES_PASSWORD in .env.local)
+migrate: ## Apply Supabase schema migration via psql + run schema-health check (requires POSTGRES_PASSWORD in .env.local)
 	@test -n "$(POSTGRES_PASSWORD)" || { echo "Error: POSTGRES_PASSWORD is required (add to .env.local)"; exit 1; }
 	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_DB_PASSWORD=$(POSTGRES_PASSWORD) bun scripts/migrate.ts
+	@echo ""
+	@echo "→ Running schema-health check to catch RLS / grant regressions..."
+	@if [ -n "$(SUPABASE_SERVICE_KEY)" ]; then \
+		$(MAKE) check-supabase-deep SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) || { echo ""; echo "❌ Migration applied but post-migration health check failed."; echo "   Review the output above and fix before deploying."; exit 1; }; \
+	else \
+		echo "⚠  SUPABASE_SERVICE_KEY not set; skipping post-migration health check."; \
+		echo "   Run: make check-supabase-deep SUPABASE_SERVICE_KEY=<key>  to verify manually."; \
+	fi
 
 .PHONY: seed-lessons
 seed-lessons: ## Seed lesson content (requires SUPABASE_SERVICE_KEY)
@@ -166,6 +174,26 @@ check-supabase-deep: ## Deep structural check: tables, RLS, grants (requires SUP
 .PHONY: check-supabase-rls
 check-supabase-rls: ## RLS deny-path check: signs in as test user + admin, verifies RLS policies (uses .env.local)
 	NODE_TLS_REJECT_UNAUTHORIZED=0 bun scripts/check-supabase-rls.ts
+
+.PHONY: pre-deploy
+pre-deploy: ## Run the full pre-deploy gauntlet: lint + tests + build + Supabase health checks
+	@echo "→ Lint..."
+	@$(MAKE) -s lint
+	@echo ""
+	@echo "→ Tests..."
+	@$(MAKE) -s test
+	@echo ""
+	@echo "→ Production build..."
+	@$(MAKE) -s build
+	@echo ""
+	@echo "→ Supabase tier-1 connectivity..."
+	@$(MAKE) -s check-supabase
+	@echo ""
+	@echo "→ Supabase deep schema health (RLS + policies + grants)..."
+	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "❌ SUPABASE_SERVICE_KEY required for deep check. Run: make pre-deploy SUPABASE_SERVICE_KEY=<key>"; exit 1; }
+	@$(MAKE) -s check-supabase-deep SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY)
+	@echo ""
+	@echo "✅ All pre-deploy checks passed."
 
 .PHONY: check-exercise-coverage
 check-exercise-coverage: ## Check that every grammar pattern has all required exercise types in staging
