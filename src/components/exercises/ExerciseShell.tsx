@@ -32,6 +32,7 @@ import { feedbackPropsFor } from './feedbackMapping'
 import { ExerciseFeedback, type FeedbackCopy } from './primitives'
 import { useSessionAudio } from '@/contexts/SessionAudioContext'
 import { resolveSessionAudioUrl } from '@/services/audioService'
+import { normalizeAnswerResponse } from '@/lib/answers/normalizeAnswerResponse'
 
 interface ExerciseShellProps {
   currentItem: SessionQueueItem
@@ -113,7 +114,7 @@ export function ExerciseShell({
     }
 
     try {
-      const normalizedResponse = rawResponse ? rawResponse.toLowerCase().trim() : null
+      const normalizedResponse = normalizeAnswerResponse(rawResponse)
       let result: ReviewResult | GrammarReviewResult
 
       if (currentItem.source === 'grammar') {
