@@ -16,10 +16,9 @@ import type { SessionAudioMap } from '@/services/audioService'
 import { capabilityMigrationFlags, isExerciseTypeEnabled } from '@/lib/featureFlags'
 import { runSessionCapabilityDiagnosticsIfEnabled } from '@/lib/capabilities/sessionCapabilityDiagnostics'
 
-export type SessionMode = 'standard' | 'backlog_clear' | 'quick' | 'lesson_practice' | 'lesson_review'
+export type SessionMode = 'standard' | 'lesson_practice' | 'lesson_review'
 
-// Fraction of the session filled with grammar exercises.
-// backlog_clear and quick modes exclude grammar entirely.
+// Fraction of the session filled with grammar exercises (standard mode only).
 const GRAMMAR_SESSION_RATIO = 0.15
 
 export interface SessionBuildInput {
@@ -59,10 +58,7 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
     return []
   }
 
-  const sessionMode: SessionMode = (['standard', 'backlog_clear', 'quick'].includes(input.sessionMode ?? ''))
-    ? input.sessionMode as SessionMode
-    : 'standard'
-  const effectiveSessionSize = sessionMode === 'quick' ? 5 : input.preferredSessionSize
+  const effectiveSessionSize = input.preferredSessionSize
   const now = new Date()
 
   // 1. Filter eligible items (by lesson, by language)
@@ -117,14 +113,10 @@ export function buildSessionQueue(input: SessionBuildInput): SessionQueueItem[] 
   // 4. Order new items by lesson order — earlier lessons first.
   // The combined slice at step 5 naturally limits new items to whatever space remains
   // after due items fill their slots, up to effectiveSessionSize total.
-  const gatedNew = sessionMode === 'backlog_clear'
-    ? []
-    : sortByLessonOrder(newItems, input.contextsByItem, input.lessonOrder)
+  const gatedNew = sortByLessonOrder(newItems, input.contextsByItem, input.lessonOrder)
 
-  // 5. Determine grammar slot count (0 for backlog_clear and quick)
-  const grammarSlots = (sessionMode === 'standard')
-    ? Math.max(1, Math.round(effectiveSessionSize * GRAMMAR_SESSION_RATIO))
-    : 0
+  // 5. Determine grammar slot count
+  const grammarSlots = Math.max(1, Math.round(effectiveSessionSize * GRAMMAR_SESSION_RATIO))
 
   // Vocab slots are the remainder after grammar is allocated.
   const vocabSlots = effectiveSessionSize - grammarSlots

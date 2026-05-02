@@ -170,29 +170,6 @@ describe('buildSessionQueue — FSRS scheduling (the core fix)', () => {
 })
 
 describe('buildSessionQueue — session modes', () => {
-  it('backlog_clear: excludes new items', () => {
-    const newItem = makeItem('new1')
-    const result = buildSessionQueue(baseInput({
-      allItems: [newItem],
-      meaningsByItem: { new1: [makeMeaning('new1')] },
-      sessionMode: 'backlog_clear',
-    }))
-    expect(result).toHaveLength(0)
-  })
-
-  it('quick: caps session at 5 items', () => {
-    const items = Array.from({ length: 20 }, (_, i) => makeItem(`i${i}`))
-    const result = buildSessionQueue(baseInput({
-      allItems: items,
-      meaningsByItem: Object.fromEntries(items.map(it => [it.id, [makeMeaning(it.id)]])),
-      itemStates: Object.fromEntries(items.map(it => [it.id, makeItemState(it.id, 'anchoring')])),
-      skillStates: Object.fromEntries(items.map(it => [it.id, [makeSkillState(it.id)]])),
-      sessionMode: 'quick',
-      preferredSessionSize: 20,
-    }))
-    expect(result.length).toBeLessThanOrEqual(5)
-  })
-
   it('standard: includes both due items and new items', () => {
     const dueItem = makeItem('due1')
     const newItem = makeItem('new1')
