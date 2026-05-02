@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { decodeCanonicalKey, extractItemId } from '../capabilityContentService.internal'
+import { decodeCanonicalKey, extractItemKey } from '../capabilityContentService.internal'
 import { buildCanonicalKey } from '@/lib/capabilities/canonicalKey'
 import { CAPABILITY_SOURCE_KINDS } from '@/lib/capabilities/capabilityTypes'
 
@@ -74,19 +74,19 @@ describe('decodeCanonicalKey', () => {
   })
 })
 
-describe('extractItemId', () => {
+describe('extractItemKey', () => {
   it('extracts the id after learning_items/', () => {
-    expect(extractItemId('learning_items/abc-123-def')).toBe('abc-123-def')
+    expect(extractItemKey('learning_items/abc-123-def')).toBe('abc-123-def')
   })
 
   it('returns null for non-item refs', () => {
-    expect(extractItemId('lesson-1/some_pattern')).toBeNull()
-    expect(extractItemId('patterns/grammar-1')).toBeNull()
-    expect(extractItemId('garbage')).toBeNull()
-    expect(extractItemId('')).toBeNull()
+    expect(extractItemKey('lesson-1/some_pattern')).toBeNull()
+    expect(extractItemKey('patterns/grammar-1')).toBeNull()
+    expect(extractItemKey('garbage')).toBeNull()
+    expect(extractItemKey('')).toBeNull()
   })
 
   it('captures greedily — preserves nested slashes in id portion', () => {
-    expect(extractItemId('learning_items/some/path')).toBe('some/path')
+    expect(extractItemKey('learning_items/some/path')).toBe('some/path')
   })
 })
