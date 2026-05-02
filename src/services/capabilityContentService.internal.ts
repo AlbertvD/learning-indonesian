@@ -36,10 +36,19 @@ export function decodeCanonicalKey(canonicalKeySnapshot: string): DecodedKey {
 }
 
 /**
- * Extract the learning_item_id from a sourceRef of form `learning_items/<uuid>`.
- * Returns null if the ref doesn't match. Used by item-source builders.
+ * Extract the learning-item key from a sourceRef of form
+ * `learning_items/<key>`. The key is the item's `normalized_text` (a UNIQUE
+ * slug column in `learning_items`), NOT a UUID — the capability catalog at
+ * `src/lib/capabilities/capabilityCatalog.ts:52` stores it that way:
+ *
+ *   for (const item of input.learningItems) {
+ *     const sourceRef = `learning_items/${item.id}`  // item.id == base_text/normalized_text
+ *
+ * Verified against production data 2026-05-02: every item-source capability
+ * row's source_ref is `learning_items/<slug>` (e.g. learning_items/akhir,
+ * learning_items/pasar). Returns null if the ref shape doesn't match.
  */
-export function extractItemId(sourceRef: string): string | null {
+export function extractItemKey(sourceRef: string): string | null {
   const m = /^learning_items\/(.+)$/.exec(sourceRef)
   return m ? m[1] : null
 }

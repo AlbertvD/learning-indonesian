@@ -10,7 +10,7 @@ import type {
 import type { SessionBlock } from '@/lib/session/sessionPlan'
 import type { ArtifactKind } from '@/lib/capabilities/capabilityTypes'
 import type { CapabilityArtifact } from '@/lib/capabilities/artifactRegistry'
-import { decodeCanonicalKey, extractItemId } from './capabilityContentService.internal'
+import { decodeCanonicalKey, extractItemKey } from './capabilityContentService.internal'
 import { buildForExerciseType } from '@/lib/exercises/builders'
 import type { BuilderInput } from '@/lib/exercises/builders'
 
@@ -103,7 +103,16 @@ function trimPayloadSnapshot(snapshot: unknown): unknown {
 export function createCapabilityContentService(client: SupabaseSchemaClient): CapabilityContentService {
   const db = () => client.schema('indonesian')
 
-  async function fetchLearningItems(ids: string[]): Promise<LearningItem[]> {
+  // Items are looked up by `normalized_text` (the slug the catalog stores),
+  // NOT by uuid `id`. See extractItemKey docstring + smoke-test 2026-05-02.
+  async function fetchLearningItemsByKey(keys: string[]): Promise<LearningItem[]> {
+    if (keys.length === 0) return []
+    const { data, error } = await db().from('learning_items').select('*').in('normalized_text', keys)
+    if (error) throw error
+    return (data ?? []) as LearningItem[]
+  }
+
+  async function fetchLearningItemsById(ids: string[]): Promise<LearningItem[]> {
     if (ids.length === 0) return []
     const { data, error } = await db().from('learning_items').select('*').in('id', ids)
     if (error) throw error
@@ -164,7 +173,7 @@ export function createCapabilityContentService(client: SupabaseSchemaClient): Ca
     const itemIds = [...new Set(((contextRows ?? []) as Array<{ learning_item_id: string }>).map(r => r.learning_item_id))]
     if (itemIds.length === 0) return { items: [], meanings: [] }
     const [items, meanings] = await Promise.all([
-      fetchLearningItems(itemIds),
+      fetchLearningItemsById(itemIds),
       fetchMeanings(itemIds),
     ])
     return { items: items.filter(i => i.is_active), meanings }
@@ -220,8 +229,8 @@ export function createCapabilityContentService(client: SupabaseSchemaClient): Ca
       const result = new Map<string, CapabilityRenderContext>()
       if (blocks.length === 0) return result
 
-      // Pass 1: decode canonical keys, collect item ids, route unsupported kinds
-      const itemBlocks: Array<{ block: SessionBlock; itemId: string }> = []
+      // Pass 1: decode canonical keys, collect item keys (slugs), route unsupported kinds
+      const itemBlocks: Array<{ block: SessionBlock; itemKey: string }> = []
       for (const block of blocks) {
         const decoded = decodeCanonicalKey(block.canonicalKeySnapshot)
         if (decoded.kind === 'malformed') {
@@ -236,37 +245,43 @@ export function createCapabilityContentService(client: SupabaseSchemaClient): Ca
             { sourceKind: decoded.sourceKind, sourceRef: decoded.sourceRef }))
           continue
         }
-        const itemId = extractItemId(decoded.sourceRef)
-        if (!itemId) {
+        const itemKey = extractItemKey(decoded.sourceRef)
+        if (!itemKey) {
           result.set(block.id, makeFailContext(block, 'sourceref_unparseable',
-            `cannot extract item id from sourceRef`,
+            `cannot extract item key from sourceRef`,
             { sourceRef: decoded.sourceRef }))
           continue
         }
-        itemBlocks.push({ block, itemId })
+        itemBlocks.push({ block, itemKey })
       }
 
       if (itemBlocks.length === 0) {
-        // Fire-and-forget log all failures, then return.
         for (const ctx of result.values()) if (ctx.diagnostic) void logResolutionFailure(ctx.diagnostic, options)
         return result
       }
 
-      // Wave 1: parallel reads
-      const itemIds = [...new Set(itemBlocks.map(b => b.itemId))]
+      const itemKeys = [...new Set(itemBlocks.map(b => b.itemKey))]
       const capabilityIds = [...new Set(itemBlocks.map(b => b.block.capabilityId))]
 
-      const [items, meanings, contexts, answerVariants, variants, artifactRows] = await Promise.all([
-        fetchLearningItems(itemIds),
+      // Wave 1: resolve item slugs → rows (with uuids) + fetch artifacts in parallel.
+      // Items are keyed by normalized_text (slug) because the catalog stores
+      // source_ref as `learning_items/<slug>` — see extractItemKey docstring.
+      const [items, artifactRows] = await Promise.all([
+        fetchLearningItemsByKey(itemKeys),
+        fetchArtifacts(capabilityIds),
+      ])
+
+      // Wave 2: now that we have item uuids, fan out dependent reads.
+      const itemIds = items.map(i => i.id)
+      const [meanings, contexts, answerVariants, variants] = await Promise.all([
         fetchMeanings(itemIds),
         fetchContexts(itemIds),
         fetchAnswerVariants(itemIds),
         fetchActiveVariants(itemIds),
-        fetchArtifacts(capabilityIds),
       ])
 
       // Distractor pool: derived from the lessons that the block items' contexts
-      // anchor to. Run after wave 1 so lessonIds are known.
+      // anchor to. Run after wave 2 so lessonIds are known.
       const lessonIds = [...new Set(
         contexts.map(c => c.source_lesson_id).filter((x): x is string => x != null),
       )]
@@ -278,8 +293,8 @@ export function createCapabilityContentService(client: SupabaseSchemaClient): Ca
         poolMeaningsByItem.set(m.learning_item_id, list)
       }
 
-      // Indexes
-      const itemById = new Map(items.map(i => [i.id, i]))
+      // Indexes — both by uuid (for joins) and by key (for slug → row lookup).
+      const itemByKey = new Map(items.map(i => [i.normalized_text, i]))
       const meaningsByItem = new Map<string, ItemMeaning[]>()
       for (const m of meanings) {
         const list = meaningsByItem.get(m.learning_item_id) ?? []
@@ -317,28 +332,29 @@ export function createCapabilityContentService(client: SupabaseSchemaClient): Ca
       }
 
       // Pass 2: per-block builder dispatch
-      for (const { block, itemId } of itemBlocks) {
-        const learningItem = itemById.get(itemId) ?? null
+      for (const { block, itemKey } of itemBlocks) {
+        const learningItem = itemByKey.get(itemKey) ?? null
         if (!learningItem) {
           result.set(block.id, makeFailContext(block, 'block_failed_db_fetch',
-            `learning_item ${itemId} not in wave-1 fetch result`,
-            { itemId, capabilityId: block.capabilityId }))
+            `learning_item with normalized_text='${itemKey}' not in wave-1 fetch result`,
+            { itemKey, capabilityId: block.capabilityId }))
           continue
         }
         if (!learningItem.is_active) {
           result.set(block.id, makeFailContext(block, 'item_inactive',
-            `learning_item ${itemId} is_active=false`,
-            { itemId }))
+            `learning_item ${learningItem.id} is_active=false`,
+            { itemKey, itemId: learningItem.id }))
           continue
         }
 
+        const itemUuid = learningItem.id
         const builderInput: BuilderInput = {
           block,
           learningItem,
-          meanings: meaningsByItem.get(itemId) ?? [],
-          contexts: contextsByItem.get(itemId) ?? [],
-          answerVariants: answerVariantsByItem.get(itemId) ?? [],
-          variant: variantByItemAndType.get(`${itemId}:${block.renderPlan.exerciseType}`) ?? null,
+          meanings: meaningsByItem.get(itemUuid) ?? [],
+          contexts: contextsByItem.get(itemUuid) ?? [],
+          answerVariants: answerVariantsByItem.get(itemUuid) ?? [],
+          variant: variantByItemAndType.get(`${itemUuid}:${block.renderPlan.exerciseType}`) ?? null,
           artifactsByKind: artifactsByCapability.get(block.capabilityId) ?? new Map(),
           poolItems: pool.items,
           poolMeaningsByItem,
