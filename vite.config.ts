@@ -48,8 +48,11 @@ export default defineConfig({
     // @ts-expect-error — environmentMatchGlobs was removed from Vitest 4 types but still works at runtime
     environmentMatchGlobs: [['**/*.test.ts', 'node']],
     setupFiles: ['./src/test-setup.ts'],
-    // Limit discovery to our test directory — avoids scanning node_modules paths.
-    include: ['src/__tests__/**/*.test.{ts,tsx}', 'scripts/__tests__/**/*.test.ts'],
+    // Limit discovery to test directories — avoids scanning node_modules paths.
+    // Colocated `__tests__/` directories under any src/ subtree are discovered
+    // (e.g. src/lib/distractors/__tests__/, src/services/__tests__/) so
+    // module-specific tests can live next to their implementation.
+    include: ['src/**/__tests__/**/*.test.{ts,tsx}', 'scripts/__tests__/**/*.test.ts'],
     // Progress.test.tsx tests require completed implementation work on the
     // redesigned Progress page — re-enable as implementation catches up.
     exclude: ['**/node_modules/**', 'src/__tests__/Progress.test.tsx'],

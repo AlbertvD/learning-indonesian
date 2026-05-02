@@ -19,6 +19,7 @@ import { grammarStateService } from '@/services/grammarStateService'
 import { lessonService } from '@/services/lessonService'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
 import { normalizeTtsText } from '@/lib/ttsNormalize'
+import { collectAudibleTextsFromExerciseItems } from '@/lib/session/collectAudibleTexts'
 import { SessionAudioProvider } from '@/contexts/SessionAudioContext'
 import { useListening } from '@/contexts/ListeningContext'
 import { goalService } from '@/services/goalService'
@@ -373,31 +374,12 @@ export function Session() {
         setLoading(false)
 
         // Fetch audio for the final session queue (non-blocking — audio degrades
-        // gracefully if absent).
+        // gracefully if absent). Harvest list lives in collectAudibleTexts so
+        // both the legacy and capability paths agree on coverage.
         try {
-          const textsSet = new Set<string>()
-          for (const qItem of shapedQueue) {
-            const item = qItem.exerciseItem
-            if (item.learningItem?.base_text) textsSet.add(normalizeTtsText(item.learningItem.base_text))
-            if (item.contrastPairData) {
-              item.contrastPairData.options.forEach(o => textsSet.add(normalizeTtsText(o)))
-            }
-            if (item.clozeMcqData) {
-              const filled = item.clozeMcqData.sentence.replace('___', item.clozeMcqData.correctOptionId)
-              textsSet.add(normalizeTtsText(filled))
-            }
-            if (item.sentenceTransformationData) {
-              textsSet.add(normalizeTtsText(item.sentenceTransformationData.sourceSentence))
-            }
-            if (item.constrainedTranslationData) {
-              item.constrainedTranslationData.acceptableAnswers.forEach(a => textsSet.add(normalizeTtsText(a)))
-            }
-            if (item.cuedRecallData) {
-              textsSet.add(normalizeTtsText(item.cuedRecallData.correctOptionId))
-            }
-          }
-          if (textsSet.size > 0) {
-            const map = await fetchSessionAudioMap([...textsSet])
+          const texts = collectAudibleTextsFromExerciseItems(shapedQueue.map(q => q.exerciseItem))
+          if (texts.length > 0) {
+            const map = await fetchSessionAudioMap(texts)
             setAudioMap(map)
           }
         } catch {

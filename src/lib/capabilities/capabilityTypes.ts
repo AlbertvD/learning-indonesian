@@ -10,6 +10,25 @@ export type CapabilitySourceKind =
   | 'podcast_phrase'
   | 'affixed_form_pair'
 
+/**
+ * Runtime list of every CapabilitySourceKind. The `as const satisfies` clause
+ * keeps this array type-locked to the union — when a new source kind is added
+ * to the union, TS flags this array as incomplete. Mirrors the ARTIFACT_KINDS
+ * pattern in artifactRegistry.ts.
+ *
+ * Used by capabilityContentService's canonical-key decoder so that the
+ * whitelist of accepted source kinds widens automatically when the catalog
+ * adds a new kind.
+ */
+export const CAPABILITY_SOURCE_KINDS = [
+  'item',
+  'pattern',
+  'dialogue_line',
+  'podcast_segment',
+  'podcast_phrase',
+  'affixed_form_pair',
+] as const satisfies readonly CapabilitySourceKind[]
+
 export type CapabilityType =
   | 'text_recognition'
   | 'meaning_recall'
