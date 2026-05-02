@@ -74,6 +74,7 @@ if (healthError) {
 const report = health as {
   tables: { name: string; rls_enabled: boolean; rls_forced: boolean }[]
   grants: { table: string; grantee: string; privilege: string }[]
+  policies?: { table: string; policy: string; cmd: string; roles: string[] }[]
 }
 
 const existingTables = new Set(report.tables.map((t) => t.name))
@@ -95,6 +96,27 @@ for (const table of EXPECTED_TABLES) {
     pass(`RLS enabled: ${table}`)
   } else {
     fail(`RLS enabled: ${table}`, `RLS is OFF on 'indonesian.${table}' — data exposure risk. Run: make migrate SUPABASE_SERVICE_KEY=<key>`)
+  }
+}
+
+// ── Check: every RLS-enabled table has at least one policy ───────────────
+// Caught a real production outage 2026-05-02 where 10 tables had RLS enabled
+// but zero policies → every SELECT denied for the authenticated role. This
+// guards against partial migrations or post-create policy drops.
+const policyCount: Record<string, number> = {}
+for (const p of report.policies ?? []) {
+  policyCount[p.table] = (policyCount[p.table] ?? 0) + 1
+}
+for (const t of report.tables) {
+  if (!t.rls_enabled) continue
+  if ((policyCount[t.name] ?? 0) === 0) {
+    fail(
+      `Policies exist: ${t.name}`,
+      `'indonesian.${t.name}' has RLS enabled with ZERO policies. Every SELECT/INSERT will be denied for non-superusers. ` +
+      `Re-run the migration that declares the policies or apply scripts/migrations/2026-05-02-lesson-content-rls-policies.sql.`,
+    )
+  } else {
+    pass(`Policies exist: ${t.name} (${policyCount[t.name]})`)
   }
 }
 

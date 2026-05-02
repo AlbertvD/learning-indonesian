@@ -499,6 +499,16 @@ RETURNS jsonb LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian 
       FROM information_schema.role_table_grants
       WHERE table_schema = 'indonesian'
         AND grantee IN ('anon', 'authenticated')
+    ),
+    'policies', (
+      SELECT jsonb_agg(jsonb_build_object(
+        'table', tablename,
+        'policy', policyname,
+        'cmd', cmd,
+        'roles', roles
+      ) ORDER BY tablename, policyname)
+      FROM pg_policies
+      WHERE schemaname = 'indonesian'
     )
   )
 $$;
