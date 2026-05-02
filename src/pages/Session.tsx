@@ -28,6 +28,8 @@ import { sessionSummaryService, type SessionImpactMessages } from '@/services/se
 import { exerciseAvailabilityService } from '@/services/exerciseAvailabilityService'
 import { ExerciseShell } from '@/components/exercises/ExerciseShell'
 import { ExperiencePlayer, type SessionAnswerEvent } from '@/components/experience/ExperiencePlayer'
+import { resolveCapabilityBlocks, type CapabilityRenderContext } from '@/services/capabilityContentService'
+import { collectAudibleTexts } from '@/lib/session/collectAudibleTexts'
 import { SessionSummary } from '@/components/SessionSummary'
 import { logError } from '@/lib/logger'
 import { capabilityMigrationFlags } from '@/lib/featureFlags'
@@ -89,6 +91,8 @@ export function Session() {
   const [goalImpactMessages, setGoalImpactMessages] = useState<SessionImpactMessages | null>(null)
   const [audioMap, setAudioMap] = useState<SessionAudioMap>(new Map())
   const [capabilityPlan, setCapabilityPlan] = useState<SessionPlan | null>(null)
+  const [capabilityContexts, setCapabilityContexts] = useState<Map<string, CapabilityRenderContext> | null>(null)
+  const [capabilityAudioMap, setCapabilityAudioMap] = useState<SessionAudioMap | null>(null)
 
   const lessonFilter = searchParams.get('lesson')
   const sessionModeParam = searchParams.get('mode')
@@ -157,6 +161,32 @@ export function Session() {
           setCapabilityPlan(capabilityPlan)
           setResults({ correct: 0, total: capabilityPlan.blocks.length })
           analyticsService.trackSessionStartedFromToday(user.id, sid)
+
+          // Resolve render contexts + fetch audio map. The new ExperiencePlayer
+          // is purely presentational and depends on both being present before
+          // mount. Failures degrade gracefully — silent-skipped blocks don't
+          // block the user, and missing audio just hides the play button.
+          try {
+            const contexts = await resolveCapabilityBlocks(capabilityPlan.blocks, {
+              userId: user.id,
+              userLanguage: (profile?.language ?? 'nl') as 'en' | 'nl',
+              sessionId: sid,
+            })
+            setCapabilityContexts(contexts)
+
+            const audioTexts = collectAudibleTexts(contexts.values())
+            const audioMap = audioTexts.length > 0
+              ? await fetchSessionAudioMap(audioTexts)
+              : new Map() as SessionAudioMap
+            setCapabilityAudioMap(audioMap)
+          } catch (err) {
+            logError({ page: 'session', action: 'resolveCapabilityBlocks', error: err })
+            // Mount with empty contexts so the user sees an empty session
+            // rather than a stuck loading spinner.
+            setCapabilityContexts(new Map())
+            setCapabilityAudioMap(new Map() as SessionAudioMap)
+          }
+
           setLoading(false)
           return
         }
@@ -565,9 +595,24 @@ export function Session() {
 
   if (capabilityPlan) {
     if (capabilityMigrationFlags.experiencePlayerV1) {
+      // ExperiencePlayer is presentational — the host owns the fetches.
+      // While contexts/audio resolve, the loading branch above is showing.
+      // Once both are ready we mount with real data.
+      if (!capabilityContexts || !capabilityAudioMap) {
+        return (
+          <PageContainer size="sm">
+            <PageBody>
+              <Alert color="blue" title="Sessie laden">Inhoud wordt voorbereid…</Alert>
+            </PageBody>
+          </PageContainer>
+        )
+      }
       return (
         <ExperiencePlayer
           plan={capabilityPlan}
+          contexts={capabilityContexts}
+          audioMap={capabilityAudioMap}
+          userLanguage={(profile?.language ?? 'nl') as 'en' | 'nl'}
           onAnswer={handleCapabilityAnswer}
           onComplete={handleCapabilityPlanComplete}
         />

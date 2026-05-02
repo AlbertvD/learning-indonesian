@@ -1,80 +1,83 @@
-import { useEffect, useRef } from 'react'
+// CapabilityExerciseFrame — thin dispatcher.
+// Replaces the v1 placeholder (label + 2 self-rate buttons) with a real
+// exercise component lookup. Receives the resolved CapabilityRenderContext
+// for the block; if exerciseItem is null (resolution failed per spec §9.1),
+// renders nothing and the block is silent-skipped.
+//
+// See docs/plans/2026-05-02-capability-content-service-spec.md §11.2.
+
+import { Suspense, useMemo } from 'react'
+import {
+  resolveExerciseComponent,
+  exerciseSkeletonVariant,
+  type AnswerOutcome,
+} from '@/components/exercises/registry'
+import { ExerciseSkeleton } from '@/components/exercises/ExerciseSkeleton'
+import { ExerciseErrorBoundary } from '@/components/exercises/ExerciseErrorBoundary'
+import { normalizeAnswerResponse } from '@/lib/answers/normalizeAnswerResponse'
 import type { AnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
 import type { SessionBlock } from '@/lib/session/sessionPlan'
-import { ExerciseFrame } from '@/components/exercises/primitives/ExerciseFrame'
-import { ExerciseInstruction } from '@/components/exercises/primitives/ExerciseInstruction'
-import { ExerciseOption } from '@/components/exercises/primitives/ExerciseOption'
-import { ExerciseOptionGroup } from '@/components/exercises/primitives/ExerciseOptionGroup'
-import { ExercisePromptCard } from '@/components/exercises/primitives/ExercisePromptCard'
-import { capabilityLabel, exerciseLabel } from '@/lib/session/sessionLabels'
-import classes from './ExperiencePlayer.module.css'
+import type { CapabilityRenderContext } from '@/services/capabilityContentService'
 
 interface CapabilityExerciseFrameProps {
   block: SessionBlock
-  answered: boolean
-  submitting: boolean
-  prompt: string
-  positiveLabel: string
-  negativeLabel: string
-  completionCopy: string
+  context: CapabilityRenderContext
+  userLanguage: 'nl' | 'en'
   onAnswerReport: (report: AnswerReport) => void
+  onSkip: (blockId: string) => void
 }
 
 export function CapabilityExerciseFrame({
   block,
-  answered,
-  submitting,
-  prompt,
-  positiveLabel,
-  negativeLabel,
-  completionCopy,
+  context,
+  userLanguage,
   onAnswerReport,
+  onSkip,
 }: CapabilityExerciseFrameProps) {
-  const startedAtRef = useRef(0)
+  // Stabilize the lazy reference across renders — React 19 compiler flags
+  // inline `resolveExerciseComponent(...)` calls in JSX as component-created-
+  // during-render, even though the registry is static.
+  const LazyExercise = useMemo(
+    () => resolveExerciseComponent(block.renderPlan.exerciseType),
+    [block.renderPlan.exerciseType],
+  )
 
-  useEffect(() => {
-    startedAtRef.current = performance.now()
-  }, [])
+  // Silent skip per spec §9.1 — failure is logged via the service; the player
+  // already excludes this block from effectiveTotal so completion isn't gated.
+  if (!context.exerciseItem) return null
+  if (!LazyExercise) return null
 
-  const submit = (wasCorrect: boolean) => {
-    if (answered || submitting) return
-    const rawResponse = wasCorrect ? 'self_check_known' : 'self_check_needs_practice'
-    const submittedAt = performance.now()
-    const startedAt = startedAtRef.current || submittedAt
+  const handleOutcome = (outcome: AnswerOutcome) => {
+    if (outcome && 'skipped' in outcome) {
+      onSkip(block.id)
+      return
+    }
     onAnswerReport({
-      wasCorrect,
+      wasCorrect: outcome.wasCorrect,
       hintUsed: false,
-      isFuzzy: false,
-      rawResponse,
-      normalizedResponse: rawResponse,
-      latencyMs: Math.round(submittedAt - startedAt),
+      isFuzzy: outcome.isFuzzy,
+      rawResponse: outcome.rawResponse,
+      normalizedResponse: normalizeAnswerResponse(outcome.rawResponse),
+      latencyMs: outcome.latencyMs,
     })
   }
 
   return (
-    <ExerciseFrame as="section" variant="session">
-      <ExerciseInstruction>{prompt}</ExerciseInstruction>
-      <ExercisePromptCard variant="sentence">
-        <span className={classes.exercisePrompt}>{exerciseLabel(block.renderPlan.exerciseType)}</span>
-        <span className={classes.exercisePromptMeta}>{capabilityLabel(block.renderPlan.capabilityType)}</span>
-      </ExercisePromptCard>
-      <ExerciseOptionGroup>
-        <ExerciseOption
-          state={answered || submitting ? 'disabled' : 'idle'}
-          variant="sentence"
-          onClick={() => submit(true)}
-        >
-          {positiveLabel}
-        </ExerciseOption>
-        <ExerciseOption
-          state={answered || submitting ? 'disabled' : 'idle'}
-          variant="sentence"
-          onClick={() => submit(false)}
-        >
-          {negativeLabel}
-        </ExerciseOption>
-      </ExerciseOptionGroup>
-      {answered && <p className={classes.recorded}>{completionCopy}</p>}
-    </ExerciseFrame>
+    <ExerciseErrorBoundary
+      exerciseType={block.renderPlan.exerciseType}
+      userLanguage={userLanguage}
+      onAnswer={handleOutcome}
+    >
+      <Suspense fallback={<ExerciseSkeleton variant={exerciseSkeletonVariant[block.renderPlan.exerciseType]} />}>
+        {/* eslint-disable-next-line react-hooks/static-components -- LazyExercise
+            is a React.lazy reference stable per exerciseType via useMemo above;
+            the compiler can't statically verify this. */}
+        <LazyExercise
+          exerciseItem={context.exerciseItem}
+          userLanguage={userLanguage}
+          onAnswer={handleOutcome}
+        />
+      </Suspense>
+    </ExerciseErrorBoundary>
   )
 }
