@@ -277,7 +277,7 @@ describe('LessonReader', () => {
     }), 'dialogue_audio')
   })
 
-  it('does not record grammar text exposure from a token click before meaningful reading time', async () => {
+  it('records grammar text exposure immediately on manual click (independent of reading-time gate)', async () => {
     const user = userEvent.setup()
     const onLessonExposureProgress = vi.fn()
 
@@ -308,7 +308,12 @@ describe('LessonReader', () => {
     const buttons = screen.getAllByRole('button', { name: 'Markeer sectie als gezien' })
     await user.click(buttons[0])
 
-    expect(onLessonExposureProgress).not.toHaveBeenCalled()
+    // New design: manual click fires the exposure event immediately.
+    // The 2-minute passive timer runs in parallel — either path may complete first.
+    expect(onLessonExposureProgress).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'lesson-4-grammar' }),
+      'grammar_text',
+    )
   })
 
   it('records grammar and dialogue text exposure after meaningful reading time', async () => {
@@ -351,7 +356,7 @@ describe('LessonReader', () => {
     expect(onLessonExposureProgress).toHaveBeenCalledWith(expect.objectContaining({ id: 'lesson-4-dialogue' }), 'dialogue_text')
   })
 
-  it('does not let time spent on one visible block unlock an unseen text block', () => {
+  it('passive visibility timer is per-block — only the visible block fires automatically', () => {
     vi.useFakeTimers()
     installIntersectionObserverMock()
     const onLessonExposureProgress = vi.fn()
@@ -380,17 +385,19 @@ describe('LessonReader', () => {
       />
     )
 
+    // Only Grammar visible → only Grammar's passive timer should fire after 2min.
+    // Dialogue stays unfired until either it becomes visible or its button is clicked.
     markSectionVisible('Grammar')
     vi.advanceTimersByTime(120_000)
-    const buttons = screen.getAllByRole('button', { name: 'Markeer sectie als gezien' })
-    fireEvent.click(buttons[0])
-    fireEvent.click(buttons[1])
 
     expect(onLessonExposureProgress).toHaveBeenCalledTimes(1)
-    expect(onLessonExposureProgress).toHaveBeenCalledWith(expect.objectContaining({ id: 'lesson-4-grammar' }), 'grammar_text')
+    expect(onLessonExposureProgress).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'lesson-4-grammar' }),
+      'grammar_text',
+    )
   })
 
-  it('does not use mount time as text exposure time when visibility cannot be observed', () => {
+  it('without IntersectionObserver, passive timer never fires but manual click still works', () => {
     vi.useFakeTimers()
     const onLessonExposureProgress = vi.fn()
 
@@ -411,13 +418,21 @@ describe('LessonReader', () => {
       />
     )
 
+    // No IntersectionObserver mock installed → no passive visibility tracking.
+    // Advancing time alone does not fire the event...
     vi.advanceTimersByTime(120_000)
-    fireEvent.click(screen.getByRole('button', { name: 'Markeer sectie als gezien' }))
-
     expect(onLessonExposureProgress).not.toHaveBeenCalled()
+
+    // ...but manual click still fires immediately, independent of visibility tracking.
+    fireEvent.click(screen.getByRole('button', { name: 'Markeer sectie als gezien' }))
+    expect(onLessonExposureProgress).toHaveBeenCalledTimes(1)
+    expect(onLessonExposureProgress).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'lesson-4-grammar' }),
+      'grammar_text',
+    )
   })
 
-  it('gates pattern-noticing grammar exposure behind visible reading time', () => {
+  it('routes pattern-noticing through onLessonExposureProgress (grammar_text), never onSourceProgress', () => {
     vi.useFakeTimers()
     installIntersectionObserverMock()
     const onSourceProgress = vi.fn()
@@ -441,16 +456,23 @@ describe('LessonReader', () => {
       />
     )
 
+    // Manual click fires immediately, routed to onLessonExposureProgress with grammar_text.
+    // The legacy onSourceProgress path is never used for pattern_callout blocks that have
+    // a textExposureKind.
     fireEvent.click(screen.getByRole('button', { name: 'Ik heb dit patroon opgemerkt' }))
     expect(onSourceProgress).not.toHaveBeenCalled()
-    expect(onLessonExposureProgress).not.toHaveBeenCalled()
+    expect(onLessonExposureProgress).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'lesson-4-pattern' }),
+      'grammar_text',
+    )
 
+    // A passive-visibility cycle plus a redundant click does not double-fire.
     markSectionVisible('Pattern')
     vi.advanceTimersByTime(120_000)
     fireEvent.click(screen.getByRole('button', { name: 'Ik heb dit patroon opgemerkt' }))
 
     expect(onSourceProgress).not.toHaveBeenCalled()
-    expect(onLessonExposureProgress).toHaveBeenCalledWith(expect.objectContaining({ id: 'lesson-4-pattern' }), 'grammar_text')
+    expect(onLessonExposureProgress).toHaveBeenCalledTimes(1)
   })
 
   it('renders authored grammar, dialogue, vocabulary, sentences, culture, and pronunciation content', () => {

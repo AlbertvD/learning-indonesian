@@ -172,28 +172,49 @@ export function LessonBlockRenderer({ block, progress, onProgress, onLessonExpos
   const textExposureKind = exposureKindForText(block)
   const sectionRef = useRef<HTMLElement | null>(null)
   const audioExposureRecordedRef = useRef(false)
-  const visibleSinceRef = useRef<number | null>(null)
+  const textExposureFiredRef = useRef(false)
 
+  // Passive reading-time tracker. When the section is ≥60% visible for
+  // MEANINGFUL_TEXT_EXPOSURE_MS contiguous milliseconds, fire the exposure
+  // event automatically. Independent of the manual mark-as-seen click —
+  // either path may fire first. textExposureFiredRef prevents double-firing.
   useEffect(() => {
-    if (!textExposureKind) return
+    if (!textExposureKind || !onLessonExposureProgress) return
     const element = sectionRef.current
     if (!element) return
 
     if (typeof IntersectionObserver === 'undefined') return
 
+    let timeoutId: number | null = null
+
     const observer = new IntersectionObserver(entries => {
       const entry = entries.find(candidate => candidate.target === element)
       if (!entry) return
       if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
-        visibleSinceRef.current ??= Date.now()
+        if (timeoutId == null && !textExposureFiredRef.current) {
+          timeoutId = window.setTimeout(() => {
+            timeoutId = null
+            if (textExposureFiredRef.current) return
+            textExposureFiredRef.current = true
+            onLessonExposureProgress(block, textExposureKind)
+          }, MEANINGFUL_TEXT_EXPOSURE_MS)
+        }
         return
       }
-      visibleSinceRef.current = null
+      // Scrolled out of view — cancel the pending timer; it restarts fresh
+      // next time the section is back in view.
+      if (timeoutId != null) {
+        clearTimeout(timeoutId)
+        timeoutId = null
+      }
     }, { threshold: [0, 0.6] })
 
     observer.observe(element)
-    return () => observer.disconnect()
-  }, [textExposureKind])
+    return () => {
+      observer.disconnect()
+      if (timeoutId != null) clearTimeout(timeoutId)
+    }
+  }, [textExposureKind, onLessonExposureProgress, block])
 
   const maybeRecordAudioExposure = (audio: HTMLAudioElement) => {
     if (!audioExposureKind || !onLessonExposureProgress || audioExposureRecordedRef.current) return
@@ -212,13 +233,12 @@ export function LessonBlockRenderer({ block, progress, onProgress, onLessonExpos
   }
 
   const handleSectionProgress = () => {
+    // Manual mark-as-seen always fires immediately. The passive timer above
+    // runs in parallel; either path may complete first. textExposureFiredRef
+    // prevents the timer from re-firing if the user clicks first.
     if (textExposureKind && onLessonExposureProgress) {
-      const visibleSince = visibleSinceRef.current
-      if (visibleSince == null) {
-        visibleSinceRef.current = Date.now()
-        return
-      }
-      if (Date.now() - visibleSince < MEANINGFUL_TEXT_EXPOSURE_MS) return
+      if (textExposureFiredRef.current) return
+      textExposureFiredRef.current = true
       onLessonExposureProgress(block, textExposureKind)
       return
     }
