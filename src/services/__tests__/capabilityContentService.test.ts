@@ -129,7 +129,7 @@ describe('capabilityContentService.resolveBlocks', () => {
   it('emits item_inactive when is_active=false', async () => {
     const tables: Record<string, MockTable> = {
       learning_items: { rows: [{
-        id: 'item-1', item_type: 'word', base_text: 'akhir', normalized_text: 'akhir',
+        id: 'uuid-1', item_type: 'word', base_text: 'item-1', normalized_text: 'item-1',
         language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null,
         source_card_id: null, notes: null, is_active: false, pos: 'noun',
         created_at: '', updated_at: '',
@@ -151,13 +151,13 @@ describe('capabilityContentService.resolveBlocks', () => {
   it('happy path: meaning_recall resolves to ok with audibleTexts', async () => {
     const tables: Record<string, MockTable> = {
       learning_items: { rows: [{
-        id: 'item-1', item_type: 'word', base_text: 'akhir', normalized_text: 'akhir',
+        id: 'uuid-1', item_type: 'word', base_text: 'item-1', normalized_text: 'item-1',
         language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null,
         source_card_id: null, notes: null, is_active: true, pos: 'noun',
         created_at: '', updated_at: '',
       }], inserts: [] },
       item_meanings: { rows: [{
-        id: 'm-1', learning_item_id: 'item-1', translation_language: 'nl',
+        id: 'm-1', learning_item_id: 'uuid-1', translation_language: 'nl',
         translation_text: 'einde', sense_label: null, usage_note: null, is_primary: true,
       }], inserts: [] },
       item_contexts: { rows: [], inserts: [] },
