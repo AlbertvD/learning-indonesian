@@ -13,7 +13,6 @@ export interface QueueDryingInput {
 }
 
 function isIntentionallyShort(input: QueueDryingInput): boolean {
-  if (input.mode === 'quick' || input.mode === 'backlog_clear') return true
   if (input.posture === 'comeback') return true
   return input.posture === 'review_first' && input.backlogPressure !== 'light'
 }
