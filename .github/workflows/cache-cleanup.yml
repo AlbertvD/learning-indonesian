@@ -9,6 +9,6 @@ on:
 
 jobs:
   cleanup:
-    uses: AlbertvD/homelab-platform/.github/workflows/cache-cleanup.yml@v1
+    uses: AlbertvD/homelab-platform/.github/workflows/cache-cleanup.yml@ddaa7e74146f38b11ecc28ee1a41a8eb411f30d9 # v1
     with:
       runner: self-hosted
