@@ -16,13 +16,13 @@ permissions:
 
 jobs:
   safety:
-    uses: AlbertvD/homelab-platform/.github/workflows/safety.yml@v1
+    uses: AlbertvD/homelab-platform/.github/workflows/safety.yml@ddaa7e74146f38b11ecc28ee1a41a8eb411f30d9 # v1
     with:
       runner: self-hosted
     secrets: inherit
 
   dependencies:
-    uses: AlbertvD/homelab-platform/.github/workflows/dependency-audit.yml@v1
+    uses: AlbertvD/homelab-platform/.github/workflows/dependency-audit.yml@ddaa7e74146f38b11ecc28ee1a41a8eb411f30d9 # v1
     with:
       fail_on_vulnerabilities: false
       runner: self-hosted
@@ -31,6 +31,6 @@ jobs:
     name: Seam contract — viewport-math scan
     runs-on: [self-hosted, master-docker]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - name: Run viewport-math scanner
         run: bash scripts/check-viewport-math.sh
