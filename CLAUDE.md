@@ -346,10 +346,15 @@ The service role key is NOT stored in the repo. Get it from the Supabase dashboa
 
 ```bash
 make check-supabase       # tier 1: API, CORS, schema exposure, auth, storage (uses .env.local)
-make check-supabase-deep  # tier 2: tables, RLS, grants via schema_health() RPC (uses SUPABASE_SERVICE_KEY from .env.local)
+make check-supabase-deep  # tier 2: tables, RLS, grants, policies via schema_health() RPC
+make pre-deploy           # full gauntlet: lint + test + build + check-supabase + check-supabase-deep
 ```
 
-Run `check-supabase` any time you suspect infrastructure issues. Run `check-supabase-deep` after migrations to verify schema state. Both scripts print actionable fix instructions on failure.
+Run `check-supabase` any time you suspect infrastructure issues. Run `check-supabase-deep` after migrations to verify schema state — it now also fails if any RLS-enabled table has zero policies (catches the 2026-05-02 regression where `lesson_page_blocks` and 9 other tables ended up RLS-on with no SELECT policy after a deploy).
+
+`make migrate` automatically chains `check-supabase-deep` after applying SQL — any policy/grant regression introduced by a migration is caught immediately rather than after deploying to prod.
+
+`make pre-deploy` is the documented gate to run before merging migration changes to main. GitHub Actions cannot reach the homelab, so this gate runs locally. All three scripts print actionable fix instructions on failure.
 
 ## Testing
 
