@@ -11,7 +11,6 @@ import { useAuthStore } from '@/stores/authStore'
 import { type SessionMode } from '@/lib/sessionQueue'
 import { lessonService } from '@/services/lessonService'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
-import { analyticsService } from '@/services/analyticsService'
 import { ExperiencePlayer, type SessionAnswerEvent } from '@/components/experience/ExperiencePlayer'
 import { resolveCapabilityBlocks, type CapabilityRenderContext } from '@/services/capabilityContentService'
 import { collectAudibleTexts } from '@/lib/session/collectAudibleTexts'
@@ -120,7 +119,6 @@ export function Session() {
         })
         setSessionId(sid)
         setCapabilityPlan(capabilityPlan)
-        analyticsService.trackSessionStartedFromToday(user.id, sid)
 
         // Resolve render contexts + fetch audio map. ExperiencePlayer is
         // presentational and depends on both being present before mount.
