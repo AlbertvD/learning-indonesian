@@ -259,12 +259,13 @@ created_at            timestamptz
 
 ### `learning_sessions`
 
-One row per study session. `duration_seconds` is a generated column.
+**Retirement #5 (2026-05-07)** — Rows are now materialised lazily by the `commit_capability_answer_report` RPC's upsert from the answer log. The first answer in a session inserts the row with `started_at = ended_at = submittedAt`; each subsequent answer advances `ended_at` via `GREATEST(existing, submittedAt)`. Sessions with zero answers leave no row. **Only the capability path produces sessions** — `session_type` is always `'learning'` for new rows. Lesson reading and Podcast listening no longer create rows; their time stops contributing to the leaderboard. One-answer sessions have `duration_seconds = 0` by construction. `duration_seconds` remains a generated column. Historical rows of `session_type IN ('lesson','podcast','practice')` persist; backwards-looking metrics are unaffected. Browsers no longer write to this table directly — the `authenticated` GRANT was narrowed to `SELECT` only; the service-role RPC writes via the upsert.
 
 ```sql
 id           uuid PK
 user_id      uuid FK → auth.users
-session_type text  -- 'lesson' | 'learning' | 'podcast' | 'practice'
+session_type text  -- historical: 'lesson' | 'learning' | 'podcast' | 'practice'
+                   -- new rows post-#5: always 'learning'
 started_at   timestamptz DEFAULT now()
 ended_at     timestamptz
 duration_seconds integer GENERATED ALWAYS AS (EXTRACT(EPOCH FROM (ended_at - started_at))::integer) STORED
