@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from 'vitest'
 import { createCapabilityReviewService } from '@/services/capabilityReviewService'
 import {
   commitCapabilityAnswerReport,
-  planCapabilityReviewCommit,
   type CapabilityAnswerReportCommand,
 } from '@/lib/reviews/capabilityReviewProcessor'
 
@@ -85,59 +84,50 @@ describe('capability review processor', () => {
     expect(service.commitCapabilityAnswerReport).not.toHaveBeenCalled()
   })
 
-  it('rejects caller-provided outcomes unless an approved adapter validated them', () => {
-    expect(() => planCapabilityReviewCommit(command({
-      precomputedOutcome: {
-        rating: 3,
-        wasCorrect: true,
-        validatedBy: 'unapproved-adapter',
-        adapterValidated: false,
-      },
-    }))).toThrow('Precomputed outcomes must be validated')
-  })
-
-  it('computes stateAfter with a state version increment and commits through the service', async () => {
+  it('forwards the command to the commit service when validation passes', async () => {
     const service = {
-      commitCapabilityAnswerReport: vi.fn(async (commitPlan) => ({
+      commitCapabilityAnswerReport: vi.fn(async (forwarded: CapabilityAnswerReportCommand) => ({
         idempotencyStatus: 'committed' as const,
         reviewEventId: 'review-1',
-        schedule: commitPlan.stateAfter,
+        schedule: forwarded.schedulerSnapshot,
         masteryRefreshQueued: true,
       })),
     }
 
-    const result = await commitCapabilityAnswerReport(command(), { service })
+    const result = await commitCapabilityAnswerReport(command({
+      schedulerSnapshot: {
+        ...command().schedulerSnapshot,
+        activationSource: 'admin_backfill',
+      },
+    }), { service })
 
+    expect(service.commitCapabilityAnswerReport).toHaveBeenCalledTimes(1)
     expect(service.commitCapabilityAnswerReport).toHaveBeenCalledWith(expect.objectContaining({
-      rating: 3,
-      stateBefore: expect.objectContaining({ stateVersion: 2 }),
-      stateAfter: expect.objectContaining({
-        stateVersion: 3,
-        reviewCount: 4,
-        activationState: 'active',
+      userId: 'user-1',
+      capabilityId: 'capability-1',
+      idempotencyKey: 'session-1:capability:item-1:meaning:1',
+      schedulerSnapshot: expect.objectContaining({
+        stateVersion: 2,
+        activationSource: 'admin_backfill',
       }),
     }))
+    const forwardedCommand = service.commitCapabilityAnswerReport.mock.calls[0][0]
+    expect(forwardedCommand).not.toHaveProperty('rating')
+    expect(forwardedCommand).not.toHaveProperty('stateAfter')
     expect(result.idempotencyStatus).toBe('committed')
   })
 
-  it('uses submittedAt as the review time for both lastReviewedAt and nextDueAt', () => {
-    vi.useFakeTimers()
-    vi.setSystemTime(new Date('2030-01-01T00:00:00.000Z'))
-
-    try {
-      const plan = planCapabilityReviewCommit(command({
-        submittedAt: '2026-04-25T12:00:00.000Z',
-      }))
-
-      expect(plan.stateAfter.lastReviewedAt).toBe('2026-04-25T12:00:00.000Z')
-      expect(plan.stateAfter.nextDueAt?.startsWith('2026-')).toBe(true)
-    } finally {
-      vi.useRealTimers()
+  it('forwards activationRequest for an eligible dormant capability', async () => {
+    const service = {
+      commitCapabilityAnswerReport: vi.fn(async () => ({
+        idempotencyStatus: 'committed' as const,
+        reviewEventId: 'review-1',
+        schedule: command().schedulerSnapshot,
+        masteryRefreshQueued: false,
+      })),
     }
-  })
 
-  it('plans first-review activation for an eligible dormant capability', () => {
-    const plan = planCapabilityReviewCommit(command({
+    await commitCapabilityAnswerReport(command({
       schedulerSnapshot: {
         stateVersion: 0,
         activationState: 'dormant',
@@ -146,26 +136,13 @@ describe('capability review processor', () => {
         consecutiveFailureCount: 0,
       },
       currentStateVersion: 0,
-      activationRequest: {
-        reason: 'eligible_new_capability',
-        plannerRunId: 'planner-1',
-      },
+      activationRequest: { reason: 'eligible_new_capability', plannerRunId: 'planner-1' },
+    }), { service })
+
+    expect(service.commitCapabilityAnswerReport).toHaveBeenCalledWith(expect.objectContaining({
+      activationRequest: expect.objectContaining({ reason: 'eligible_new_capability' }),
+      schedulerSnapshot: expect.objectContaining({ activationState: 'dormant', stateVersion: 0 }),
     }))
-
-    expect(plan.stateAfter.activationState).toBe('active')
-    expect(plan.stateAfter.activationSource).toBe('review_processor')
-    expect(plan.activationRequest?.reason).toBe('eligible_new_capability')
-  })
-
-  it('preserves existing activation provenance on normal reviews', () => {
-    const plan = planCapabilityReviewCommit(command({
-      schedulerSnapshot: {
-        ...command().schedulerSnapshot,
-        activationSource: 'admin_backfill',
-      },
-    }))
-
-    expect(plan.stateAfter.activationSource).toBe('admin_backfill')
   })
 
   it('returns duplicate RPC results without recomputing a second write result', async () => {
@@ -198,8 +175,7 @@ describe('capability review service', () => {
     }))
     const service = createCapabilityReviewService({ functions: { invoke } })
 
-    const plan = planCapabilityReviewCommit(command())
-    await service.commitCapabilityAnswerReport(plan)
+    await service.commitCapabilityAnswerReport(command())
 
     expect(invoke).toHaveBeenCalledWith('commit-capability-answer-report', {
       body: {
