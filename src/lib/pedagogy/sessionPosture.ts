@@ -13,7 +13,6 @@ export interface SessionPostureInput {
   now: Date
   mode: SessionPostureMode
   lastMeaningfulPracticeAt?: string | null
-  lastMeaningfulExposureAt?: string | null
   dueCount: number
   preferredSessionSize: number
   eligibleNewMaterialCount: number

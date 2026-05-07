@@ -79,11 +79,7 @@ export function LocalPreviewLesson() {
   return (
     <LessonReader
       experience={experience}
-      progressBySourceRef={new Map()}
       onBack={() => navigate('/preview')}
-      onSourceProgress={() => {
-        // Preview-only route: source progress is intentionally not persisted.
-      }}
     />
   )
 }

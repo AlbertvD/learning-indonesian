@@ -79,22 +79,6 @@ export type ArtifactKind =
   | 'timecoded_phrase'
   | 'production_rubric'
 
-export interface SourceProgressRequirement {
-  kind: 'source_progress'
-  sourceRef: string
-  requiredState:
-    | 'section_exposed'
-    | 'intro_completed'
-    | 'heard_once'
-    | 'pattern_noticing_seen'
-    | 'guided_practice_completed'
-    | 'lesson_completed'
-}
-
-export type CapabilitySourceProgressRequirement =
-  | SourceProgressRequirement
-  | { kind: 'none'; reason: 'not_lesson_sequenced' | 'exposure_only' | 'legacy_projection' }
-
 export interface CurrentLearningItem {
   id: string
   baseText: string
@@ -171,10 +155,13 @@ export interface ProjectedCapability {
   modality: CapabilityModality
   learnerLanguage: LearnerLanguage
   requiredArtifacts: ArtifactKind[]
-  requiredSourceProgress?: CapabilitySourceProgressRequirement
   prerequisiteKeys: string[]
   difficultyLevel: number
   goalTags: string[]
+  // NULL = capability is not lesson-scoped (podcast or cross-lesson). NOT
+  // NULL = capability is owned by that lesson and only eligible for new-
+  // capability introduction once the learner has activated it.
+  lessonId?: string | null
   projectionVersion: typeof CAPABILITY_PROJECTION_VERSION
   sourceFingerprint: string
   artifactFingerprint: string

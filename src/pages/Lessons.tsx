@@ -98,7 +98,6 @@ function LessonBanner({ orderIndex, featured }: { orderIndex: number; featured?:
 const STATUS_TONE: Record<string, 'success' | 'warning' | 'accent' | 'neutral'> = {
   not_started: 'neutral',
   in_progress: 'accent',
-  ready_to_practice: 'accent',
   in_practice: 'accent',
   practiced: 'success',
   later: 'neutral',
@@ -178,24 +177,15 @@ export function Lessons() {
         const preparedLessonIds: string[] = []
 
         for (const row of overviewRows) {
+          // After retirement #6, has_started_lesson is the union of
+          // learner_lesson_activation + legacy lesson_progress (per the
+          // get_lessons_overview rewrite). The "meaningful exposure"
+          // distinction retired with the source-progress state machine.
           if (row.has_started_lesson) {
             exposures.push({
               lessonId: row.lesson_id,
               exposureKind: 'lesson',
               started: true,
-              meaningful: false,
-            })
-          }
-          if (row.has_meaningful_exposure) {
-            // The classification (grammar vs dialogue) is collapsed server-side
-            // into a single boolean. Use 'grammar' as the canonical kind for
-            // synthesizing the exposure — buildLessonOverviewSignals only
-            // checks for any meaningful kind in {grammar, dialogue}.
-            exposures.push({
-              lessonId: row.lesson_id,
-              exposureKind: 'grammar',
-              started: true,
-              meaningful: true,
             })
           }
 
@@ -276,7 +266,6 @@ export function Lessons() {
   const statusLabels: Record<LessonOverviewStatus, string> = {
     not_started: T.lessons.statusNotStarted,
     in_progress: T.lessons.statusInProgress,
-    ready_to_practice: T.lessons.statusReadyToPractice,
     in_practice: T.lessons.statusInPractice,
     practiced: T.lessons.statusPracticed,
     later: T.lessons.statusLater,

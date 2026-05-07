@@ -4,32 +4,24 @@ import {
   PageContainer,
   PageBody,
 } from '@/components/page/primitives'
-import type { LessonExperience, LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
+import type { LessonExperience } from '@/lib/lessons/lessonExperience'
 import type { LessonPracticeAction } from '@/lib/lessons/lessonActionModel'
-import type { LessonExposureKind } from '@/lib/lessons/lessonExposureProgress'
-import type { SourceProgressEventType, SourceProgressState } from '@/services/sourceProgressService'
 import { LessonBlockRenderer } from './blocks/LessonBlockRenderer'
 import classes from './LessonReader.module.css'
 
 export function LessonReader(props: {
   experience: LessonExperience
-  progressBySourceRef: Map<string, SourceProgressState>
   actions?: LessonPracticeAction[]
   lessonAudioUrl?: string | null
   lessonDurationSeconds?: number | null
   onBack: () => void
-  onSourceProgress: (block: LessonExperienceBlock, eventType: SourceProgressEventType) => void
-  onLessonExposureProgress?: (block: LessonExperienceBlock, exposureKind: LessonExposureKind) => void
 }) {
   const {
     experience,
-    progressBySourceRef,
     actions = [],
     lessonAudioUrl,
     lessonDurationSeconds,
     onBack,
-    onSourceProgress,
-    onLessonExposureProgress,
   } = props
   const lessonDurationMinutes = lessonDurationSeconds ? Math.max(1, Math.round(lessonDurationSeconds / 60)) : null
 
@@ -57,12 +49,7 @@ export function LessonReader(props: {
           <article className={classes.lessonColumn}>
             {experience.blocks.map(block => (
               <div id={block.id} key={block.id} className={classes.anchorTarget}>
-                <LessonBlockRenderer
-                  block={block}
-                  progress={progressBySourceRef.get(`${block.sourceRefs[0] ?? block.sourceRef}::${block.id}`)}
-                  onProgress={(target) => onSourceProgress(target, target.sourceProgressEvent ?? 'section_exposed')}
-                  onLessonExposureProgress={onLessonExposureProgress}
-                />
+                <LessonBlockRenderer block={block} />
               </div>
             ))}
           </article>

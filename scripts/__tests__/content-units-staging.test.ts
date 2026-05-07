@@ -154,10 +154,6 @@ describe('content unit staging', () => {
         sourceKind: 'affixed_form_pair',
         sourceRef: 'lesson-1/morphology/meN-baca-membaca',
         contentUnitSlugs: ['morphology-men-baca-membaca'],
-        requiredSourceProgress: expect.objectContaining({
-          sourceRef: 'lesson-1/morphology/meN-baca-membaca',
-          requiredState: 'pattern_noticing_seen',
-        }),
       }),
     ]))
     expect(capabilityPlan.exerciseAssets).toEqual(expect.arrayContaining([
@@ -175,7 +171,6 @@ describe('content unit staging', () => {
           'lesson-1/morphology/meN-baca-membaca',
           'lesson-1/pattern-men-active',
         ]),
-        source_progress_event: 'pattern_noticing_seen',
         payload_json: expect.objectContaining({
           type: 'morphology',
           items: expect.arrayContaining([

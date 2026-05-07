@@ -8,18 +8,15 @@ import {
   type CapabilityDirection,
   type CapabilityModality,
   type CapabilitySourceKind,
-  type CapabilitySourceProgressRequirement,
   type CapabilityType,
   type LearnerLanguage,
   type ProjectedCapability,
-  type SourceProgressRequirement,
 } from '@/lib/capabilities/capabilityTypes'
 import type { LearnerCapabilityStateRow } from '@/lib/capabilities/capabilityScheduler'
 import { getDueCapabilitiesFromRows } from '@/lib/capabilities/capabilityScheduler'
-import type { LearnerSourceProgress, ReviewEvidence } from '@/lib/pedagogy/sourceProgressGates'
 import type { PlannerCapability, PlannerLearnerCapabilityState } from '@/lib/pedagogy/pedagogyPlanner'
 import type { CapabilitySessionDataAdapter, CapabilitySessionDataRequest, CapabilitySessionDataSnapshot } from '@/lib/session/capabilitySessionLoader'
-import type { ExerciseType, SkillType } from '@/types/learning'
+import type { SkillType } from '@/types/learning'
 import type {
   CapabilityPublicationStatus,
   CapabilityReadinessStatus,
@@ -45,6 +42,7 @@ const CAPABILITY_COLUMNS = [
   'publication_status',
   'source_fingerprint',
   'artifact_fingerprint',
+  'lesson_id',
   'metadata_json',
 ].join(',')
 
@@ -62,6 +60,7 @@ interface LearningCapabilityDbRow {
   publication_status: CapabilityPublicationStatus
   source_fingerprint: string | null
   artifact_fingerprint: string | null
+  lesson_id: string | null
   metadata_json: Record<string, unknown> | null
 }
 
@@ -89,78 +88,14 @@ interface CapabilityArtifactDbRow {
   artifact_json: unknown
 }
 
-interface SourceProgressDbRow {
-  user_id: string
-  source_ref: string
-  source_section_ref: string
-  current_state: LearnerSourceProgress['currentState']
-  completed_event_types: LearnerSourceProgress['completedEventTypes']
+interface LessonActivationDbRow {
+  lesson_id: string
 }
-
-interface CapabilityReviewEventDbRow {
-  capability_id: string
-  rating: number
-  answer_report_json: Record<string, unknown> | null
-}
-
-const DEFAULT_SOURCE_SECTION_REF = '__lesson__'
-const sourceProgressStates = new Set<SourceProgressRequirement['requiredState']>([
-  'section_exposed',
-  'intro_completed',
-  'heard_once',
-  'pattern_noticing_seen',
-  'guided_practice_completed',
-  'lesson_completed',
-])
 
 function arrayOfStrings(value: unknown): string[] | null {
   return Array.isArray(value) && value.every(item => typeof item === 'string')
     ? value
     : null
-}
-
-function isSourceProgressRequiredState(value: unknown): value is SourceProgressRequirement['requiredState'] {
-  return typeof value === 'string' && sourceProgressStates.has(value as SourceProgressRequirement['requiredState'])
-}
-
-function sourceProgressRequirement(value: unknown): CapabilitySourceProgressRequirement | undefined {
-  if (!value || typeof value !== 'object') return undefined
-  const raw = value as Record<string, unknown>
-  if (raw.kind === 'none') {
-    return {
-      kind: 'none',
-      reason: typeof raw.reason === 'string'
-        ? raw.reason as Extract<CapabilitySourceProgressRequirement, { kind: 'none' }>['reason']
-        : 'legacy_projection',
-    }
-  }
-  if (raw.kind === 'source_progress' && typeof raw.sourceRef === 'string' && isSourceProgressRequiredState(raw.requiredState)) {
-    return {
-      kind: 'source_progress',
-      sourceRef: raw.sourceRef,
-      requiredState: raw.requiredState,
-    }
-  }
-  return undefined
-}
-
-const lessonSequencedCapabilityTypes = new Set<CapabilityType>([
-  'text_recognition',
-  'meaning_recall',
-  'l1_to_id_choice',
-  'form_recall',
-  'audio_recognition',
-  'dictation',
-  'pattern_recognition',
-  'pattern_contrast',
-  'contextual_cloze',
-])
-
-function requiresConcreteSourceProgress(row: LearningCapabilityDbRow): boolean {
-  return (
-    (row.source_kind === 'item' || row.source_kind === 'pattern' || row.source_kind === 'dialogue_line')
-    && lessonSequencedCapabilityTypes.has(row.capability_type)
-  )
 }
 
 function toProjectedCapability(row: LearningCapabilityDbRow): ProjectedCapability | null {
@@ -170,11 +105,8 @@ function toProjectedCapability(row: LearningCapabilityDbRow): ProjectedCapabilit
   const prerequisiteKeys = arrayOfStrings(metadata.prerequisiteKeys)
   const difficultyLevel = typeof metadata.difficultyLevel === 'number' ? metadata.difficultyLevel : null
   const goalTags = arrayOfStrings(metadata.goalTags) ?? []
-  const requiredSourceProgress = sourceProgressRequirement(metadata.requiredSourceProgress)
 
   if (!skillType || !requiredArtifacts || !prerequisiteKeys || difficultyLevel == null) return null
-  if (requiresConcreteSourceProgress(row) && requiredSourceProgress?.kind !== 'source_progress') return null
-  if (requiredSourceProgress?.kind === 'source_progress' && requiredSourceProgress.sourceRef !== row.source_ref) return null
 
   return {
     canonicalKey: row.canonical_key,
@@ -186,10 +118,10 @@ function toProjectedCapability(row: LearningCapabilityDbRow): ProjectedCapabilit
     modality: row.modality,
     learnerLanguage: row.learner_language,
     requiredArtifacts,
-    requiredSourceProgress,
     prerequisiteKeys,
     difficultyLevel,
     goalTags,
+    lessonId: row.lesson_id,
     projectionVersion: CAPABILITY_PROJECTION_VERSION,
     sourceFingerprint: row.source_fingerprint ?? '',
     artifactFingerprint: row.artifact_fingerprint ?? '',
@@ -208,7 +140,7 @@ function toPlannerCapability(row: LearningCapabilityDbRow, projection: Projected
     readinessStatus: row.readiness_status,
     publicationStatus: row.publication_status,
     prerequisiteKeys: projection.prerequisiteKeys,
-    requiredSourceProgress: projection.requiredSourceProgress,
+    lessonId: row.lesson_id,
     difficultyLevel: typeof metadata.difficultyLevel === 'number' ? metadata.difficultyLevel : undefined,
     goalTags: arrayOfStrings(metadata.goalTags) ?? undefined,
   }
@@ -266,49 +198,6 @@ function toPlannerState(row: LearnerCapabilityStateRow): PlannerLearnerCapabilit
   }
 }
 
-function toSourceProgress(row: SourceProgressDbRow): LearnerSourceProgress {
-  return {
-    sourceRef: row.source_ref,
-    sourceSectionRef: row.source_section_ref ?? DEFAULT_SOURCE_SECTION_REF,
-    currentState: row.current_state,
-    completedEventTypes: row.completed_event_types ?? [],
-  }
-}
-
-function isExerciseType(value: unknown): value is ExerciseType {
-  return typeof value === 'string'
-}
-
-function isSuccessfulCapabilityReview(row: CapabilityReviewEventDbRow): boolean {
-  const wasCorrect = row.answer_report_json?.wasCorrect
-  if (typeof wasCorrect === 'boolean') return wasCorrect
-  return row.rating > 1
-}
-
-function toReviewEvidence(
-  rows: CapabilityReviewEventDbRow[],
-  capabilityById: Map<string, LearningCapabilityDbRow>,
-): ReviewEvidence[] {
-  return rows.flatMap(row => {
-    if (!isSuccessfulCapabilityReview(row)) return []
-    const capability = capabilityById.get(row.capability_id)
-    if (!capability) return []
-    const skillType = typeof capability.metadata_json?.skillType === 'string'
-      ? capability.metadata_json.skillType
-      : null
-    if (!skillType) return []
-    const exerciseType = row.answer_report_json?.exerciseType
-    return [{
-      capabilityKey: capability.canonical_key,
-      sourceRef: capability.source_ref,
-      skillType,
-      capabilityType: capability.capability_type,
-      ...(isExerciseType(exerciseType) ? { exerciseType } : {}),
-      successfulReviews: 1,
-    }]
-  })
-}
-
 export function createCapabilitySessionDataService(client: SupabaseSchemaClient = supabase): CapabilitySessionDataAdapter {
   const db = () => client.schema('indonesian')
 
@@ -335,8 +224,7 @@ export function createCapabilitySessionDataService(client: SupabaseSchemaClient 
       const [
         capabilitiesResult,
         statesResult,
-        sourceProgressResult,
-        reviewEvidenceResult,
+        activationResult,
       ] = await Promise.all([
         db()
           .from('learning_capabilities')
@@ -344,14 +232,12 @@ export function createCapabilitySessionDataService(client: SupabaseSchemaClient 
           .eq('readiness_status', 'ready')
           .eq('publication_status', 'published'),
         db().from('learner_capability_state').select('*').eq('user_id', request.userId),
-        db().from('learner_source_progress_state').select('*').eq('user_id', request.userId),
-        db().from('capability_review_events').select('capability_id, rating, answer_report_json').eq('user_id', request.userId),
+        db().from('learner_lesson_activation').select('lesson_id').eq('user_id', request.userId),
       ])
 
       if (capabilitiesResult.error) throw capabilitiesResult.error
       if (statesResult.error) throw statesResult.error
-      if (sourceProgressResult.error) throw sourceProgressResult.error
-      if (reviewEvidenceResult.error) throw reviewEvidenceResult.error
+      if (activationResult.error) throw activationResult.error
 
       const capabilityRows = (capabilitiesResult.data ?? []) as LearningCapabilityDbRow[]
       const capabilityById = new Map(capabilityRows.map(row => [row.id, row]))
@@ -390,11 +276,9 @@ export function createCapabilitySessionDataService(client: SupabaseSchemaClient 
         limit: Number.MAX_SAFE_INTEGER,
         rows: schedulerRows,
       }).length
-      const currentSourceRefs = Array.from(new Set(
-        ((sourceProgressResult.data ?? []) as SourceProgressDbRow[])
-          .map(row => row.source_ref)
-          .filter(Boolean),
-      ))
+      const activatedLessons = new Set(
+        ((activationResult.data ?? []) as LessonActivationDbRow[]).map(row => row.lesson_id),
+      )
       const recentFailures = schedulerRows
         .filter(row => row.consecutiveFailureCount >= 2 && row.lastReviewedAt != null)
         .map(row => ({
@@ -411,9 +295,7 @@ export function createCapabilitySessionDataService(client: SupabaseSchemaClient 
           dueCount,
           readyCapabilities,
           learnerCapabilityStates: schedulerRows.map(toPlannerState),
-          sourceProgress: ((sourceProgressResult.data ?? []) as SourceProgressDbRow[]).map(toSourceProgress),
-          recentReviewEvidence: toReviewEvidence((reviewEvidenceResult.data ?? []) as CapabilityReviewEventDbRow[], capabilityById),
-          currentSourceRefs,
+          activatedLessons,
           activeGoalTags: [],
           maxNewDifficultyLevel: 5,
           recentFailures,

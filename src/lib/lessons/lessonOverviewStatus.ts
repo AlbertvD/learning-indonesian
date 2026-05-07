@@ -1,7 +1,18 @@
+// Decision tree rewritten in retirement #6: source-progress signals retired,
+// lesson activation is the single "started" signal. Five surviving statuses:
+//   later         — earlier lessons not satisfied (UNCHANGED — order-driven)
+//   coming_later  — lesson has no page blocks yet (UNCHANGED — content-driven)
+//   not_started   — lesson is published + prepared but not yet activated
+//   in_progress   — lesson is activated; capabilities ready or not
+//   in_practice   — practiced > 0 AND practiced < ready
+//   practiced     — practiced > 0 AND practiced == ready
+//
+// The retired 'ready_to_practice' status was a function of source-progress
+// exposure. Activation now subsumes its meaning ("user is ready").
+
 export type LessonOverviewStatus =
   | 'not_started'
   | 'in_progress'
-  | 'ready_to_practice'
   | 'in_practice'
   | 'practiced'
   | 'later'
@@ -10,7 +21,6 @@ export type LessonOverviewStatus =
 export interface LessonOverviewSignal {
   lessonId: string
   orderIndex: number
-  hasMeaningfulExposure: boolean
   readyItemCount: number
   practicedEligibleItemCount: number
   eligibleIntroducedItemCount: number
@@ -25,14 +35,10 @@ export interface LessonGrammarTopic {
 }
 
 export function isLessonSatisfiedForRecommendation(signal: LessonOverviewSignal): boolean {
-  const status = decideLessonOverviewStatus({
+  return decideLessonOverviewStatus({
     ...signal,
     earlierLessonsSatisfied: true,
-  })
-  return (
-    status === 'practiced'
-    || (signal.hasMeaningfulExposure && !signal.hasAuthoredEligiblePracticeContent)
-  )
+  }) === 'practiced'
 }
 
 export function decideLessonOverviewStatus(signal: LessonOverviewSignal): LessonOverviewStatus {
@@ -55,15 +61,7 @@ export function decideLessonOverviewStatus(signal: LessonOverviewSignal): Lesson
     return 'in_practice'
   }
 
-  if (
-    signal.hasMeaningfulExposure
-    && signal.readyItemCount > 0
-    && signal.practicedEligibleItemCount === 0
-  ) {
-    return 'ready_to_practice'
-  }
-
-  if (signal.hasStartedLesson || signal.hasMeaningfulExposure) {
+  if (signal.hasStartedLesson) {
     return 'in_progress'
   }
 
@@ -116,18 +114,12 @@ export function recommendLesson(signals: LessonOverviewSignal[]): string | null 
     return inProgress.lessonId
   }
 
-  const readyOrInPractice = earliestByStatus(
-    signals,
-    status => status === 'ready_to_practice' || status === 'in_practice',
-  )
-  if (readyOrInPractice) {
-    return readyOrInPractice.lessonId
+  const inPractice = earliestByStatus(signals, status => status === 'in_practice')
+  if (inPractice) {
+    return inPractice.lessonId
   }
 
-  const notStarted = earliestByStatus(
-    signals,
-    status => status === 'not_started',
-  )
+  const notStarted = earliestByStatus(signals, status => status === 'not_started')
   if (notStarted) {
     return notStarted.lessonId
   }

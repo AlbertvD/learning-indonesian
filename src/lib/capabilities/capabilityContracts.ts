@@ -2,6 +2,18 @@ import type { ExerciseType } from '../../types/learning'
 import type { ArtifactKind, CapabilityProjection, ProjectedCapability } from './capabilityTypes'
 import { type ArtifactIndex, hasApprovedArtifact } from './artifactRegistry'
 
+/**
+ * Replaces the retired `requiredSourceProgress.kind === 'none' && reason ===
+ * 'exposure_only'` field-based escape hatch. Podcast capabilities are
+ * inherently exposure-only (the podcast plays through, then the capability
+ * retires); they should never enter spaced practice. Source-kind alone is
+ * the load-bearing signal.
+ */
+export function isExposureOnly(capability: Pick<ProjectedCapability, 'sourceKind'>): boolean {
+  return capability.sourceKind === 'podcast_segment'
+    || capability.sourceKind === 'podcast_phrase'
+}
+
 export type ExerciseKind = ExerciseType
 export type ExerciseAvailabilityIndex = Partial<Record<ExerciseKind, boolean>>
 
@@ -59,7 +71,7 @@ function requiredArtifactsFor(capability: ProjectedCapability): ArtifactKind[] {
 }
 
 export function validateCapability(input: CapabilityValidationInput): CapabilityReadiness {
-  if (input.capability.requiredSourceProgress?.kind === 'none' && input.capability.requiredSourceProgress.reason === 'exposure_only') {
+  if (isExposureOnly(input.capability)) {
     return { status: 'exposure_only', reason: 'Capability is exposure-only and cannot be scheduled for review.' }
   }
   if (input.readinessOverride === 'exposure_only') {

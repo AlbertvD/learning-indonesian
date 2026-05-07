@@ -28,7 +28,6 @@ export interface LessonOverviewExposure {
   lessonId: string
   exposureKind: LessonOverviewExposureKind
   started: boolean
-  meaningful: boolean
 }
 
 export interface LessonOverviewCapabilityCounts {
@@ -56,7 +55,6 @@ export interface LessonOverviewModel {
   rows: LessonOverviewRow[]
 }
 
-const LEARNING_EXPOSURE_KINDS = new Set<LessonOverviewExposureKind>(['grammar', 'dialogue'])
 const STARTED_EXPOSURE_KINDS = new Set<LessonOverviewExposureKind>(['lesson', 'grammar', 'dialogue'])
 
 export function isPublishedOverviewLesson(lesson: LessonOverviewModelLesson): boolean {
@@ -79,7 +77,6 @@ function defaultSignal(lesson: LessonOverviewModelLesson): LessonOverviewSignal 
   return {
     lessonId: lesson.id,
     orderIndex: lesson.order_index,
-    hasMeaningfulExposure: false,
     readyItemCount: 0,
     practicedEligibleItemCount: 0,
     eligibleIntroducedItemCount: 0,
@@ -127,9 +124,6 @@ export function buildLessonOverviewSignals(input: {
   const signals = publishedLessons(input.lessons).map(lesson => {
     const lessonExposures = exposuresByLessonId.get(lesson.id) ?? []
     const counts = countsByLessonId.get(lesson.id)
-    const hasMeaningfulExposure = lessonExposures.some(exposure =>
-      exposure.meaningful && LEARNING_EXPOSURE_KINDS.has(exposure.exposureKind),
-    )
     const hasStartedLesson = lessonExposures.some(exposure =>
       exposure.started && STARTED_EXPOSURE_KINDS.has(exposure.exposureKind),
     )
@@ -137,7 +131,6 @@ export function buildLessonOverviewSignals(input: {
     return {
       ...defaultSignal(lesson),
       ...counts,
-      hasMeaningfulExposure,
       hasStartedLesson,
     }
   })

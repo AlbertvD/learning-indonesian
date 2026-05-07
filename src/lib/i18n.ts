@@ -137,6 +137,11 @@ export const nl = {
     actionContinue: 'Doorgaan',
     actionNotAvailableYet: 'Nog niet beschikbaar',
     readyToPracticeToast: (lessonOrder: number) => `Les ${lessonOrder} is klaar om te oefenen.`,
+    activateThisLesson: 'Activeer deze les',
+    activateThisLessonHint: 'Voeg de woorden en patronen van deze les toe aan je oefeningen.',
+    lessonActivated: 'Les geactiveerd',
+    lessonDeactivated: 'Activatie ongedaan gemaakt',
+    activationFailed: 'Activatie kon niet worden bijgewerkt. Probeer het opnieuw.',
   },
   progress: {
     title: 'Voortgang',
@@ -421,6 +426,11 @@ export const en: typeof nl = {
     actionContinue: 'Continue',
     actionNotAvailableYet: 'Not available yet',
     readyToPracticeToast: (lessonOrder: number) => `Lesson ${lessonOrder} is ready to practice.`,
+    activateThisLesson: 'Activate this lesson',
+    activateThisLessonHint: 'Add this lesson’s words and patterns to your practice queue.',
+    lessonActivated: 'Lesson activated',
+    lessonDeactivated: 'Lesson deactivated',
+    activationFailed: 'Could not update activation. Please try again.',
   },
   progress: {
     title: 'Progress',

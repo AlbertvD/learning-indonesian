@@ -1,4 +1,17 @@
-import type { ReviewEvidence } from '@/lib/pedagogy/sourceProgressGates'
+import type { CapabilityType } from '@/lib/capabilities/capabilityTypes'
+import type { ExerciseType } from '@/types/learning'
+
+// Inlined locally after retirement #6 — sourceProgressGates retired, but the
+// shape was always lightweight and shared by accident with that module. This
+// is the canonical home for the type now.
+export interface ReviewEvidence {
+  capabilityKey: string
+  sourceRef: string
+  skillType: string
+  capabilityType?: CapabilityType
+  exerciseType?: ExerciseType
+  successfulReviews: number
+}
 
 export type LessonContentKind =
   | 'vocabulary'

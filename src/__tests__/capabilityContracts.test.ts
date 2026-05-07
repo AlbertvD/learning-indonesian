@@ -12,7 +12,6 @@ const baseCapability: ProjectedCapability = {
   modality: 'text',
   learnerLanguage: 'nl',
   requiredArtifacts: ['meaning:l1', 'accepted_answers:l1'],
-  requiredSourceProgress: { kind: 'none', reason: 'legacy_projection' },
   prerequisiteKeys: [],
   difficultyLevel: 2,
   goalTags: [],

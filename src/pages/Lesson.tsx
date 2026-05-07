@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Button } from '@mantine/core'
+import { Button, Checkbox } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import {
   PageContainer,
@@ -15,25 +15,14 @@ import {
   lessonSourceRefForOverview,
   type Lesson,
   type LessonPageBlock,
-  type LessonSourceProgressRow,
 } from '@/services/lessonService'
-import { sourceProgressService, type SourceProgressState } from '@/services/sourceProgressService'
 import { useAuthStore } from '@/stores/authStore'
-import { buildLessonExperience, type LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
+import { buildLessonExperience } from '@/lib/lessons/lessonExperience'
 import { buildLessonPracticeActions, type LessonPracticeActionState } from '@/lib/lessons/lessonActionModel'
-import { sourceProgressEventForLessonExposure, type LessonExposureKind } from '@/lib/lessons/lessonExposureProgress'
+import { isLessonActivated, setLessonActivated } from '@/lib/lessons/activation'
 import { LessonReader } from '@/components/lessons/LessonReader'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
-
-const PRACTICE_READY_SOURCE_EVENTS = new Set([
-  'section_exposed',
-  'intro_completed',
-  'heard_once',
-  'pattern_noticing_seen',
-  'guided_practice_completed',
-  'lesson_completed',
-])
 
 function sourceRefsForBlock(block: LessonPageBlock): string[] {
   return block.source_refs?.length ? block.source_refs : [block.source_ref]
@@ -42,29 +31,6 @@ function sourceRefsForBlock(block: LessonPageBlock): string[] {
 function sourceRefsForPageBlocks(blocks: LessonPageBlock[], fallbackSourceRef: string): string[] {
   const refs = blocks.flatMap(sourceRefsForBlock).filter(Boolean)
   return refs.length > 0 ? [...new Set(refs)] : [fallbackSourceRef]
-}
-
-function hasPracticeReadyExposure(
-  block: LessonExperienceBlock,
-  progressBySourceRef: Map<string, SourceProgressState>,
-): boolean {
-  return block.sourceRefs.some(sourceRef => {
-    const progress = progressBySourceRef.get(`${sourceRef}::${block.id}`)
-    return progress?.completedEventTypes.some(eventType => PRACTICE_READY_SOURCE_EVENTS.has(eventType)) ?? false
-  })
-}
-
-function practiceReadyCapabilityCount(
-  blocks: LessonExperienceBlock[],
-  progressBySourceRef: Map<string, SourceProgressState>,
-): number {
-  const readyCapabilityKeys = new Set<string>()
-  for (const block of blocks) {
-    if (block.capabilityKeyRefs.length === 0) continue
-    if (!hasPracticeReadyExposure(block, progressBySourceRef)) continue
-    block.capabilityKeyRefs.forEach(ref => readyCapabilityKeys.add(ref))
-  }
-  return readyCapabilityKeys.size
 }
 
 export function Lesson() {
@@ -77,11 +43,10 @@ export function Lesson() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [lessonPageBlocks, setLessonPageBlocks] = useState<LessonPageBlock[]>([])
-  const [lessonSourceProgress, setLessonSourceProgress] = useState<LessonSourceProgressRow[]>([])
   const [readyCapabilityCount, setReadyCapabilityCount] = useState(0)
   const [activePracticedCapabilityCount, setActivePracticedCapabilityCount] = useState(0)
-  const readerOpenedRef = useRef<string | null>(null)
-  const practiceReadyToastShownRef = useRef<Set<string>>(new Set())
+  const [lessonActivated, setLessonActivatedState] = useState(false)
+  const [activationSaving, setActivationSaving] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -96,9 +61,9 @@ export function Lesson() {
       setError(false)
       setLesson(null)
       setLessonPageBlocks([])
-      setLessonSourceProgress([])
       setReadyCapabilityCount(0)
       setActivePracticedCapabilityCount(0)
+      setLessonActivatedState(false)
 
       try {
         const lessonData = await lessonService.getLesson(lessonId)
@@ -119,18 +84,21 @@ export function Lesson() {
         if (pageBlocks.length === 0) return
 
         const sourceRefs = sourceRefsForPageBlocks(pageBlocks, canonicalSourceRef)
-        const [sourceProgressRows, practiceSummary] = await Promise.all([
-          lessonService.getLessonSourceProgress(userId, sourceRefs),
+        const [practiceSummary, activated] = await Promise.all([
           lessonService.getLessonCapabilityPracticeSummary(userId, sourceRefs).catch(err => {
             logError({ page: 'lesson-reader-v2', action: 'load-practice-summary', error: err })
             return { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 }
           }),
+          isLessonActivated(userId, lessonData.id).catch(err => {
+            logError({ page: 'lesson-reader-v2', action: 'load-activation', error: err })
+            return false
+          }),
         ])
         if (cancelled) return
 
-        setLessonSourceProgress(sourceProgressRows)
         setReadyCapabilityCount(practiceSummary.readyCapabilityCount)
         setActivePracticedCapabilityCount(practiceSummary.activePracticedCapabilityCount)
+        setLessonActivatedState(activated)
       } catch (err) {
         logError({ page: 'lesson', action: 'fetchData', error: err })
         notifications.show({ color: 'red', title: T.common.error, message: T.lessons.failedToLoadLesson })
@@ -147,87 +115,6 @@ export function Lesson() {
     }
   }, [lessonId, userId, T.common.error, T.lessons.failedToLoadLesson])
 
-  const upsertLessonSourceProgress = useCallback((state: SourceProgressState) => {
-    setLessonSourceProgress(rows => [
-      ...rows.filter(row => !(row.source_ref === state.sourceRef && row.source_section_ref === state.sourceSectionRef)),
-      {
-        source_ref: state.sourceRef,
-        source_section_ref: state.sourceSectionRef,
-        current_state: state.currentState,
-        completed_event_types: state.completedEventTypes,
-        last_event_at: state.lastEventAt,
-      },
-    ])
-  }, [])
-
-  const handleReaderSourceProgress = useCallback(async (
-    block: LessonExperienceBlock,
-    eventType: Parameters<typeof sourceProgressService.recordEvent>[0]['eventType'],
-  ) => {
-    if (!userId || !lesson) return
-    const sourceRef = block.sourceRefs[0] ?? block.sourceRef
-    try {
-      const state = await sourceProgressService.recordEvent({
-        userId,
-        sourceRef,
-        sourceSectionRef: block.id,
-        eventType,
-        occurredAt: new Date().toISOString(),
-        metadataJson: {
-          lessonId: lesson.id,
-          blockId: block.id,
-          blockKind: block.kind,
-          capabilityKeyRefs: block.capabilityKeyRefs,
-        },
-        idempotencyKey: `lesson-reader:${userId}:${sourceRef}:${block.id}:${eventType}`,
-      })
-      upsertLessonSourceProgress(state)
-    } catch (err) {
-      logError({ page: 'lesson-reader-v2', action: 'record-source-progress', error: err })
-      notifications.show({ color: 'red', title: T.common.error, message: T.lessons.failedToSaveProgress })
-    }
-  }, [lesson, userId, T.common.error, T.lessons.failedToSaveProgress, upsertLessonSourceProgress])
-
-  const handleLessonExposureProgress = useCallback(async (
-    block: LessonExperienceBlock,
-    exposureKind: LessonExposureKind,
-  ) => {
-    if (!userId || !lesson) return
-    const sourceRef = block.sourceRefs[0] ?? block.sourceRef
-    try {
-      const state = await sourceProgressService.recordEvent(sourceProgressEventForLessonExposure({
-        userId,
-        lessonId: lesson.id,
-        sourceRef,
-        sourceSectionRef: block.id,
-        exposureKind,
-        occurredAt: new Date().toISOString(),
-        metadata: {
-          blockId: block.id,
-          blockKind: block.kind,
-          capabilityKeyRefs: block.capabilityKeyRefs,
-        },
-      }))
-      upsertLessonSourceProgress(state)
-
-      const toastKey = `${lesson.id}:practice-ready`
-      if (
-        block.capabilityKeyRefs.length > 0
-        && readyCapabilityCount > activePracticedCapabilityCount
-        && !practiceReadyToastShownRef.current.has(toastKey)
-      ) {
-        practiceReadyToastShownRef.current.add(toastKey)
-        notifications.show({
-          color: 'teal',
-          message: T.lessons.readyToPracticeToast(lesson.order_index),
-        })
-      }
-    } catch (err) {
-      logError({ page: 'lesson-reader-v2', action: 'record-lesson-exposure', error: err })
-      notifications.show({ color: 'red', title: T.common.error, message: T.lessons.failedToSaveProgress })
-    }
-  }, [activePracticedCapabilityCount, lesson, readyCapabilityCount, userId, T.common.error, T.lessons, upsertLessonSourceProgress])
-
   const readerExperience = useMemo(
     () => lesson && lessonPageBlocks.length > 0
       ? buildLessonExperience({ lesson, pageBlocks: lessonPageBlocks })
@@ -235,28 +122,17 @@ export function Lesson() {
     [lesson, lessonPageBlocks],
   )
 
-  const readerProgressBySourceRef = useMemo(() => new Map<string, SourceProgressState>(
-    lessonSourceProgress.map(row => [`${row.source_ref}::${row.source_section_ref}`, {
-      userId: userId ?? '',
-      sourceRef: row.source_ref,
-      sourceSectionRef: row.source_section_ref,
-      currentState: row.current_state as SourceProgressState['currentState'],
-      completedEventTypes: row.completed_event_types as SourceProgressState['completedEventTypes'],
-      lastEventAt: row.last_event_at,
-    }]),
-  ), [lessonSourceProgress, userId])
-
   const lessonPracticeActionState: LessonPracticeActionState | null = useMemo(() => {
     if (!readerExperience) return null
-    const exposedReadyCapabilityCount = practiceReadyCapabilityCount(readerExperience.blocks, readerProgressBySourceRef)
-    const backendUnpracticedReadyCount = Math.max(0, readyCapabilityCount - activePracticedCapabilityCount)
-    const practiceReadyCount = Math.min(exposedReadyCapabilityCount, backendUnpracticedReadyCount)
+    const practiceReadyCount = lessonActivated
+      ? Math.max(0, readyCapabilityCount - activePracticedCapabilityCount)
+      : 0
     return {
       practiceReadyCount,
       hasUnpracticedEligibleItems: practiceReadyCount > 0,
       hasActivePracticedItems: activePracticedCapabilityCount > 0,
     }
-  }, [activePracticedCapabilityCount, readerExperience, readerProgressBySourceRef, readyCapabilityCount])
+  }, [activePracticedCapabilityCount, readerExperience, readyCapabilityCount, lessonActivated])
 
   const lessonPracticeActions = useMemo(() => {
     if (!lesson || !lessonPracticeActionState) return []
@@ -265,24 +141,31 @@ export function Lesson() {
       state: lessonPracticeActionState,
     })
   }, [lesson, lessonPracticeActionState])
+
   const lessonAudioUrl = useMemo(
     () => lesson?.audio_path ? lessonService.getAudioUrl(lesson.audio_path) : null,
     [lesson],
   )
 
-  useEffect(() => {
-    if (!userId || !readerExperience) return
-    const heroBlock = readerExperience.blocks.find(block => block.kind === 'lesson_hero')
-    if (!heroBlock) return
-    const sourceRef = heroBlock.sourceRefs[0] ?? heroBlock.sourceRef
-    const progress = readerProgressBySourceRef.get(`${sourceRef}::${heroBlock.id}`)
-    if (progress?.completedEventTypes.includes('opened')) return
-
-    const openedKey = `${readerExperience.sourceRef}:${heroBlock.id}:opened`
-    if (readerOpenedRef.current === openedKey) return
-    readerOpenedRef.current = openedKey
-    void handleReaderSourceProgress(heroBlock, 'opened')
-  }, [handleReaderSourceProgress, readerExperience, readerProgressBySourceRef, userId])
+  const handleToggleActivation = async (next: boolean) => {
+    if (!userId || !lesson || activationSaving) return
+    const previous = lessonActivated
+    setLessonActivatedState(next)
+    setActivationSaving(true)
+    try {
+      await setLessonActivated(userId, lesson.id, next)
+      notifications.show({
+        color: 'teal',
+        message: next ? T.lessons.lessonActivated : T.lessons.lessonDeactivated,
+      })
+    } catch (err) {
+      setLessonActivatedState(previous)
+      logError({ page: 'lesson', action: 'toggle-activation', error: err })
+      notifications.show({ color: 'red', title: T.common.error, message: T.lessons.activationFailed })
+    } finally {
+      setActivationSaving(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -318,15 +201,23 @@ export function Lesson() {
   }
 
   return (
-    <LessonReader
-      experience={readerExperience}
-      progressBySourceRef={readerProgressBySourceRef}
-      actions={lessonPracticeActions}
-      lessonAudioUrl={lessonAudioUrl}
-      lessonDurationSeconds={lesson.duration_seconds}
-      onBack={() => navigate('/lessons')}
-      onSourceProgress={handleReaderSourceProgress}
-      onLessonExposureProgress={handleLessonExposureProgress}
-    />
+    <>
+      <Checkbox
+        checked={lessonActivated}
+        disabled={activationSaving}
+        onChange={(event) => void handleToggleActivation(event.currentTarget.checked)}
+        label={T.lessons.activateThisLesson}
+        description={T.lessons.activateThisLessonHint}
+        data-testid="lesson-activation-checkbox"
+        styles={{ root: { padding: '12px 16px' } }}
+      />
+      <LessonReader
+        experience={readerExperience}
+        actions={lessonPracticeActions}
+        lessonAudioUrl={lessonAudioUrl}
+        lessonDurationSeconds={lesson.duration_seconds}
+        onBack={() => navigate('/lessons')}
+      />
+    </>
   )
 }

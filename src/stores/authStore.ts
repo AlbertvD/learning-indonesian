@@ -3,6 +3,7 @@ import { create } from 'zustand'
 import { supabase } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
 import type { UserProfile } from '@/types/auth'
+import { logError } from '@/lib/logger'
 
 interface AuthState {
   user: User | null
@@ -50,7 +51,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ loading: false })
     }
 
-    const { data } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         // Use setTimeout(0) to avoid Supabase auth deadlock when fetching
         // user data immediately after sign-in inside onAuthStateChange.
@@ -63,8 +64,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
               .schema('indonesian')
               .from('profiles')
               .upsert(
-                { 
-                  id: session.user!.id, 
+                {
+                  id: session.user!.id,
                   display_name: session.user!.user_metadata?.full_name ?? null,
                   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
                 },
@@ -80,6 +81,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             set({ user: session.user, profile: null })
           }
         }, 0)
+
+        // Auto-activate the legacy starter lessons (1-3) for new sign-ins.
+        // Idempotent — set_lesson_activation uses ON CONFLICT DO NOTHING.
+        // Deferred per the same auth-deadlock pattern as the profile load.
+        if (event === 'SIGNED_IN') {
+          setTimeout(() => {
+            void activateStarterLessons(session.user!.id)
+          }, 0)
+        }
       } else {
         set({ user: null, profile: null })
       }
@@ -142,6 +152,34 @@ async function updateProfile(
   set((state) => ({
     profile: state.profile ? { ...state.profile, ...profilePatch } : null,
   }))
+}
+
+async function activateStarterLessons(userId: string): Promise<void> {
+  try {
+    const { data: lessons } = await supabase
+      .schema('indonesian')
+      .from('lessons')
+      .select('id, order_index')
+      .in('order_index', [1, 2, 3])
+
+    const rows = (lessons ?? []) as Array<{ id: string; order_index: number }>
+    if (rows.length === 0) return
+
+    await Promise.allSettled(
+      rows.map(lesson =>
+        supabase
+          .schema('indonesian')
+          .rpc('set_lesson_activation', {
+            p_user_id: userId,
+            p_lesson_id: lesson.id,
+            p_activated: true,
+          }),
+      ),
+    )
+  } catch (err) {
+    logError({ page: 'auth', action: 'activate-starter-lessons', error: err })
+    // non-blocking — user can self-activate via the lesson page
+  }
 }
 
 async function checkAdmin(userId: string): Promise<boolean> {

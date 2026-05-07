@@ -21,7 +21,6 @@ function exposure(overrides: Partial<LessonOverviewExposure>): LessonOverviewExp
     lessonId: 'lesson-1',
     exposureKind: 'grammar',
     started: true,
-    meaningful: true,
     ...overrides,
   }
 }
@@ -65,8 +64,12 @@ describe('lesson overview model', () => {
     expect(model.rows.some(row => row.lessonId === model.recommendedLessonId)).toBe(true)
     expect(model.rows[0]).toMatchObject({
       lessonId: 'lesson-1',
-      status: 'ready_to_practice',
-      actionLabel: 'Open lesson',
+      // After retirement #6: activated lessons are 'in_progress' until the
+      // user has practiced at least one capability — the old
+      // 'ready_to_practice' state collapses into 'in_progress' since the
+      // lesson is now activated explicitly.
+      status: 'in_progress',
+      actionLabel: 'Continue',
       href: '/lesson/lesson-1',
       grammarTopicTag: 'Grammar: word order',
     })
@@ -92,7 +95,7 @@ describe('lesson overview model', () => {
     expect(model.rows.map(row => row.actionLabel)).toEqual(['Open lesson', 'Open lesson'])
   })
 
-  it('lets meaningful exposure with no authored practice content satisfy the earlier-lesson path', () => {
+  it('keeps an activated lesson with no practice yet in progress, and gates later lessons', () => {
     const lessons = [
       lesson({ id: 'lesson-1', title: 'Lesson 1', order_index: 1 }),
       lesson({ id: 'lesson-2', title: 'Lesson 2', order_index: 2 }),
@@ -114,11 +117,13 @@ describe('lesson overview model', () => {
       lessonId: 'lesson-1',
       status: 'in_progress',
     })
+    // After retirement #6, an activated-but-not-practiced lesson does not
+    // satisfy the earlier-lessons gate — Lesson 2 stays 'later'.
     expect(model.rows[1]).toMatchObject({
       lessonId: 'lesson-2',
-      status: 'not_started',
+      status: 'later',
     })
-    expect(model.recommendedLessonId).toBe('lesson-2')
+    expect(model.recommendedLessonId).toBe('lesson-1')
   })
 
   it('ignores culture and pronunciation-only exposure for status and recommendation', () => {
