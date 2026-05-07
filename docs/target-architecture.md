@@ -271,7 +271,8 @@ src/lib/profile/
 **Not part of this module.**
 - Audio-related preferences (autoplay, listening). Those live in `lib/audio`.
 - Identity/auth concerns. Those live in `lib/auth/`.
-- `preferred_session_size` — column retires with the goal subsystem.
+
+**Note on `preferred_session_size`:** column lives in `indonesian.profiles` (this module's table) and survives — pedagogy stack consumes it for queue sizing (loadBudgets, sessionPosture, queueDrying, capabilitySessionLoader, pedagogyPlanner). The original retirement list claimed this column would die; grep proved otherwise during retirement #4 (2026-05-07).
 
 **GDPR hooks (planned, not yet built).**
 
@@ -1110,27 +1111,46 @@ Total retirement: **~2300+ LOC** plus tables, jobs, RPCs, and analytics rows.
 
 ### 1. Goal / target subsystem
 
+**Status: RETIRED in retirement #4 (2026-05-07, branch `retire/goal-subsystem`).** Spec: `docs/plans/2026-05-07-retire-goal-subsystem.md`. See that doc for the full per-symbol grep evidence and the seven claims this section originally got wrong (table/function counts, retiring `preferred_session_size`).
+
 **Why.** Replaced by streak-only motivation. Daily and weekly targets were UX ceremony; the underlying mechanic (FSRS) already prescribes what to do. A target either over-prescribes (when nothing's due) or under-prescribes (when lots is due).
 
-**Retire:**
+**Retired (actual scope after grep verification):**
 
 ```
-src/services/goalService.ts                     ~609 LOC (≈90% retires;
-                                                 a thin remnant for "hit my
-                                                 streak today" might survive)
-scripts/lib/goal-job-service.ts                 ~401 LOC
+src/services/goalService.ts                     609 LOC (whole file)
+scripts/lib/goal-job-service.ts                 401 LOC (whole file)
+src/components/progress/WeeklyGoalsList.tsx     80 LOC + .module.css (orphan)
+src/pages/Dashboard.module.css                  192 LOC (every class was goal/today-plan)
+src/components/SessionSummary.tsx               121 LOC + .module.css (orphan)
+src/__tests__/Progress.test.tsx                 870 LOC (was Vitest-excluded dead weight)
 
-Tables:
+Tables (4, not the 2 originally listed):
   indonesian.learner_weekly_goal_sets
   indonesian.learner_weekly_goals
+  indonesian.learner_stage_events           (originally missed)
+  indonesian.learner_daily_goal_rollups     (originally missed)
 
-Postgres functions:
+Postgres functions (4 from master + 5 from 2026-05-01-learner-progress-functions.sql):
   indonesian.job_pregenerate_current_week
   indonesian.job_finalize_weekly_goals
+  indonesian.job_daily_rollup_snapshot      (originally missed)
+  indonesian.job_integrity_repair           (originally missed)
   indonesian.compute_todays_plan_raw
+  indonesian.get_study_days_count           (sole caller was goalService)
+  indonesian.get_recall_stats_for_week      (sole caller was goalService)
+  indonesian.get_usable_vocabulary_gain     (sole caller was goalService)
+  indonesian.get_overdue_count              (sole caller was goalService)
 
-Profile column:
-  indonesian.profiles.preferred_session_size
+pg_cron schedules (4):
+  goal-finalize-weekly, goal-pregenerate-weekly, goal-daily-rollup, goal-integrity-repair
+
+Profile column (NOT retired):
+  indonesian.profiles.preferred_session_size — column survives. The original
+  retirement list claimed it would die; grep proved it is consumed pervasively
+  by the pedagogy stack (loadBudgets, sessionPosture, queueDrying,
+  capabilitySessionLoader, pedagogyPlanner, Profile.tsx, Session.tsx). Ownership
+  reclassified to lib/profile/.
 ```
 
 **Replaced by.** Streak counter (already exists, derived from `capability_review_events.created_at` distinct dates) and ambient counts on the dashboard (derivable live from current state).
@@ -1282,15 +1302,15 @@ In src/services/audioService.ts (which folds into lib/audio anyway):
 
 ### 7. Event log (analytics write path)
 
+**Status: RETIRED in retirement #4 (2026-05-07), bundled with the goal subsystem.** All 3 production callers (`Progress.tsx`, `Session.tsx`, `SessionSummary.tsx`) were goal-flavoured and retired transitively in the same PR.
+
 **Why.** All 7 defined event types are goal-flavoured (`goal_generated`, `goal_viewed`, `daily_plan_viewed`, `session_started_from_today`, `goal_achieved`, `goal_missed`, `session_summary_viewed`). With the goal subsystem retired, no event has a live caller. Don't keep dead infrastructure on speculation.
 
-**Retire:**
+**Retired:**
 
 ```
 src/services/analyticsService.ts                134 LOC
-  + all 7 typed convenience methods
-  + the 3 remaining call sites (SessionSummary.tsx, Progress.tsx,
-    Session.tsx) all retire with the goal copy
+src/__tests__/analyticsService.test.ts          122 LOC
 
 Table:
   indonesian.learner_analytics_events
@@ -1327,7 +1347,7 @@ To prevent confusion in future passes:
 - **`confusion_group` field** stays — used at runtime by queue-ordering in session-builder.
 - **`indonesian.error_logs` table** stays — written by `lib/logger.ts`.
 - **`indonesian.user_roles` table** stays — used by auth's admin check.
-- **`indonesian.profiles` table** stays — `lib/profile/` owns it. (`preferred_session_size` column retires; other columns stay.)
+- **`indonesian.profiles` table** stays — `lib/profile/` owns it. **All columns stay**, including `preferred_session_size` (consumed by the pedagogy stack for queue sizing) and `timezone` (consumed by `learnerProgressService.getCurrentStreakDays`/`getReviewForecast`). The original retirement list claimed `preferred_session_size` would die; corrected during retirement #4.
 - **`indonesian-tts`, `indonesian-lessons`, `indonesian-podcasts` storage buckets** all stay — owned by `lib/audio`, `lib/lessons/`, `services/podcastService` respectively.
 - **All audio synthesis Postgres functions** (`get_audio_clip_per_text`, `get_audio_clips`, `audio_coverage_report`) — used by audio module + content pipeline.
 - **The 13 analytics Postgres functions** in `2026-05-01-learner-progress-functions.sql` — used by `lib/analytics/`.
@@ -1344,11 +1364,10 @@ This document captures *decisions*. The codebase has not yet been refactored. Ev
 ### Suggested migration order
 
 1. **Retirements first.** Removing dead code is the easiest and safest start. Order:
-   - Audio multi-voice path (dead, no callers)
-   - Grammar-state subsystem (dead, no callers)
-   - Event log (no live callers after step 2)
-2. **Goal subsystem retirement.** Removes the largest single chunk of LOC and several tables/jobs. Migration touches the dashboard, the goal service, two tables, two background jobs, profile column. Test carefully.
-3. **Browser FSRS retirement.** Move `inferRating` to `_shared/srs/`; delete `src/lib/fsrs.ts`; simplify `capabilityReviewProcessor.ts`; delete `previewScheduleUpdate`.
+   - Audio multi-voice path (dead, no callers) — DONE (#1, PR #34)
+   - Grammar-state subsystem (dead, no callers) — DONE (#2, PR #35)
+2. **Goal subsystem retirement.** DONE (#4, 2026-05-07, branch `retire/goal-subsystem`). Bundled with event-log retirement (originally listed as a separate step) since all 3 event-log call sites were goal-flavoured. ~3700 LOC + 5 tables + 9 functions + 4 cron jobs. See `docs/plans/2026-05-07-retire-goal-subsystem.md`.
+3. **Browser FSRS retirement.** DONE (#3, PR #36). Move `inferRating` to `_shared/srs/`; delete `src/lib/fsrs.ts`; simplify `capabilityReviewProcessor.ts`; delete `previewScheduleUpdate`.
 4. **Session lifecycle retirement.** Replace `startSession`/`endSession` with the upsert-from-commit pattern. Delete `lib/session.ts` and most of `useSessionBeacon`.
 5. **Source-progress retirement → lesson-activation.** Add the `learner_lesson_activation` table; auto-activate legacy lessons (1–3) for existing users; add the activation checkbox to the lesson page; rewrite the eligibility filter; simplify the mastery model. Delete `sourceProgressService`, `sourceProgressGates`, `lessonExposureProgress`, the source-progress tables and RPC.
 6. **Module folds.** One at a time. Suggested order: lessons, capabilities (cleanup), session-builder, exercise-content, analytics (incl. mastery), audio, auth, profile.

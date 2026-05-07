@@ -1,7 +1,7 @@
 // src/services/learnerStateService.ts
 import { supabase } from '@/lib/supabase'
 import { learnerProgressService } from '@/services/learnerProgressService'
-import type { DailyGoalRollup, LearnerItemState, LearnerSkillState } from '@/types/learning'
+import type { LearnerItemState, LearnerSkillState } from '@/types/learning'
 
 export const learnerStateService = {
   async getItemStates(userId: string): Promise<LearnerItemState[]> {
@@ -93,21 +93,6 @@ export const learnerStateService = {
     return data as LearnerSkillState
   },
 
-  async logStageEvent(userId: string, itemId: string, fromStage: string, toStage: string, reviewEventId: string): Promise<void> {
-    const { error } = await supabase
-      .schema('indonesian')
-      .from('learner_stage_events')
-      .insert({
-        user_id: userId,
-        learning_item_id: itemId,
-        from_stage: fromStage,
-        to_stage: toStage,
-        source_review_event_id: reviewEventId,
-        created_at: new Date().toISOString()
-      })
-    if (error) throw error
-  },
-
   async getLapsingItems(userId: string): Promise<{ count: number }> {
     // Canonical contract: lapsing-items count goes through learnerProgressService.
     // SQL function get_lapsing_count counts DISTINCT learning_items where any
@@ -115,17 +100,5 @@ export const learnerStateService = {
     // semantics (architect C5 v1 fix). lapse_count is cumulative; the stability
     // filter ensures recovered items don't show as at-risk forever.
     return learnerProgressService.getLapsingCount({ userId })
-  },
-
-  async getDailyRollups(userId: string, limit = 7): Promise<DailyGoalRollup[]> {
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('learner_daily_goal_rollups')
-      .select('*')
-      .eq('user_id', userId)
-      .order('local_date', { ascending: false })
-      .limit(limit)
-    if (error) throw error
-    return (data ?? []).reverse()  // oldest-first for chart rendering
   },
 }

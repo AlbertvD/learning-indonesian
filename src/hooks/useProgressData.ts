@@ -6,9 +6,7 @@ import { learnerStateService } from '@/services/learnerStateService'
 import { learnerProgressService } from '@/services/learnerProgressService'
 import { lessonService } from '@/services/lessonService'
 import { progressService } from '@/services/progressService'
-import { goalService } from '@/services/goalService'
 import { logError } from '@/lib/logger'
-import type { DailyGoalRollup, WeeklyGoal } from '@/types/learning'
 
 export interface ProgressData {
   // Wave 1 — required, blocks primary render
@@ -22,7 +20,6 @@ export interface ProgressData {
   // Wave 2 — non-blocking
   wave2Loading: boolean
   wave2Error: Error | null
-  dailyRollups: DailyGoalRollup[] | null
   accuracyBySkillType: {
     recognitionAccuracy: number
     recognitionSampleSize: number
@@ -30,13 +27,12 @@ export interface ProgressData {
     recallSampleSize: number
   } | null
   lapsePrevention: { atRisk: number; rescued: number } | null
-  weeklyGoals: WeeklyGoal[] | null
   vulnerableItems: { id: string; indonesianText: string; meaning: string; lapseCount: number; consecutiveFailures: number }[] | null
   avgLatencyMs: { currentWeekMs: number | null; priorWeekMs: number | null } | null
 }
 
 type Wave1State = Pick<ProgressData, 'wave1Loading' | 'wave1Error' | 'itemsByStage' | 'skillStats' | 'lessonsCompleted' | 'forecast'>
-type Wave2State = Pick<ProgressData, 'wave2Loading' | 'wave2Error' | 'dailyRollups' | 'accuracyBySkillType' | 'lapsePrevention' | 'weeklyGoals' | 'vulnerableItems' | 'avgLatencyMs'>
+type Wave2State = Pick<ProgressData, 'wave2Loading' | 'wave2Error' | 'accuracyBySkillType' | 'lapsePrevention' | 'vulnerableItems' | 'avgLatencyMs'>
 
 const defaultWave1: Wave1State = {
   wave1Loading: true,
@@ -50,10 +46,8 @@ const defaultWave1: Wave1State = {
 const defaultWave2: Wave2State = {
   wave2Loading: false,
   wave2Error: null,
-  dailyRollups: null,
   accuracyBySkillType: null,
   lapsePrevention: null,
-  weeklyGoals: null,
   vulnerableItems: null,
   avgLatencyMs: null,
 }
@@ -137,12 +131,10 @@ export function useProgressData(): ProgressData {
       // --- Wave 2 ---
       setWave2State((prev) => ({ ...prev, wave2Loading: true }))
 
-      const [rollupsResult, accuracyResult, lapseResult, goalsResult, vulnerableResult, latencyResult] =
+      const [accuracyResult, lapseResult, vulnerableResult, latencyResult] =
         await Promise.allSettled([
-          learnerStateService.getDailyRollups(user!.id, 7),
           progressService.getAccuracyBySkillType(user!.id),
           progressService.getLapsePrevention(user!.id),
-          goalService.getGoalProgress(user!.id),
           progressService.getVulnerableItems(user!.id),
           progressService.getAvgLatencyMs(user!.id),
         ])
@@ -150,18 +142,10 @@ export function useProgressData(): ProgressData {
       const nextWave2: Wave2State = {
         wave2Loading: false,
         wave2Error: null,
-        dailyRollups: null,
         accuracyBySkillType: null,
         lapsePrevention: null,
-        weeklyGoals: null,
         vulnerableItems: null,
         avgLatencyMs: null,
-      }
-
-      if (rollupsResult.status === 'fulfilled') {
-        nextWave2.dailyRollups = rollupsResult.value
-      } else {
-        logError({ page: 'progress', action: 'wave2FetchDailyRollups', error: rollupsResult.reason })
       }
 
       if (accuracyResult.status === 'fulfilled') {
@@ -174,13 +158,6 @@ export function useProgressData(): ProgressData {
         nextWave2.lapsePrevention = lapseResult.value
       } else {
         logError({ page: 'progress', action: 'wave2FetchLapsePrevention', error: lapseResult.reason })
-      }
-
-      if (goalsResult.status === 'fulfilled') {
-        const goalProgress = goalsResult.value
-        nextWave2.weeklyGoals = goalProgress.state === 'active' ? (goalProgress.weeklyGoals ?? []) : []
-      } else {
-        logError({ page: 'progress', action: 'wave2FetchGoals', error: goalsResult.reason })
       }
 
       if (vulnerableResult.status === 'fulfilled') {

@@ -268,78 +268,7 @@ CREATE INDEX IF NOT EXISTS idx_learner_item_state_stage ON indonesian.learner_it
 CREATE INDEX IF NOT EXISTS idx_learner_skill_state_due ON indonesian.learner_skill_state(user_id, next_due_at);
 CREATE INDEX IF NOT EXISTS idx_review_events_user_time ON indonesian.review_events(user_id, created_at);
 
--- Weekly goal system tables
-CREATE TABLE IF NOT EXISTS indonesian.learner_weekly_goal_sets (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  goal_timezone text NOT NULL,
-  week_start_date_local date NOT NULL,
-  week_end_date_local date NOT NULL,
-  week_starts_at_utc timestamptz NOT NULL,
-  week_ends_at_utc timestamptz NOT NULL,
-  generation_strategy_version text DEFAULT 'v1',
-  generated_at timestamptz DEFAULT now(),
-  closing_overdue_count integer,
-  closed_at timestamptz,
-  created_at timestamptz DEFAULT now(),
-  updated_at timestamptz DEFAULT now(),
-  UNIQUE(user_id, week_starts_at_utc)
-);
-
-CREATE TABLE IF NOT EXISTS indonesian.learner_weekly_goals (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  goal_set_id uuid NOT NULL REFERENCES indonesian.learner_weekly_goal_sets(id) ON DELETE CASCADE,
-  goal_type text NOT NULL CHECK (goal_type IN ('consistency', 'recall_quality', 'usable_vocabulary', 'review_health')),
-  goal_direction text NOT NULL CHECK (goal_direction IN ('at_least', 'at_most')),
-  goal_unit text NOT NULL CHECK (goal_unit IN ('count', 'percent')),
-  target_value_numeric numeric NOT NULL,
-  current_value_numeric numeric DEFAULT 0,
-  status text NOT NULL DEFAULT 'on_track' CHECK (status IN ('on_track', 'at_risk', 'achieved', 'missed')),
-  is_provisional boolean DEFAULT false,
-  provisional_reason text,
-  sample_size integer DEFAULT 0,
-  goal_config_jsonb jsonb DEFAULT '{}',
-  created_at timestamptz DEFAULT now(),
-  updated_at timestamptz DEFAULT now(),
-  UNIQUE(goal_set_id, goal_type)
-);
-
-CREATE TABLE IF NOT EXISTS indonesian.learner_stage_events (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  learning_item_id uuid NOT NULL REFERENCES indonesian.learning_items(id) ON DELETE CASCADE,
-  from_stage text NOT NULL CHECK (from_stage IN ('new', 'anchoring', 'retrieving', 'productive', 'maintenance')),
-  to_stage text NOT NULL CHECK (to_stage IN ('new', 'anchoring', 'retrieving', 'productive', 'maintenance')),
-  source_review_event_id uuid UNIQUE,
-  created_at timestamptz DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS indonesian.learner_daily_goal_rollups (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  goal_timezone text NOT NULL,
-  local_date date NOT NULL,
-  study_day_completed boolean DEFAULT false,
-  recall_accuracy numeric,
-  recall_sample_size integer DEFAULT 0,
-  usable_items_gained_today integer DEFAULT 0,
-  usable_items_total integer DEFAULT 0,
-  overdue_count integer DEFAULT 0,
-  created_at timestamptz DEFAULT now(),
-  updated_at timestamptz DEFAULT now(),
-  UNIQUE(user_id, local_date)
-);
-
--- Indexes for weekly goal queries
-CREATE INDEX IF NOT EXISTS idx_weekly_goal_sets_user_week ON indonesian.learner_weekly_goal_sets(user_id, week_starts_at_utc);
-CREATE INDEX IF NOT EXISTS idx_weekly_goal_sets_finalization ON indonesian.learner_weekly_goal_sets(user_id, closed_at, week_ends_at_utc);
--- Drop duplicate index created in an earlier migration (identical to idx_weekly_goal_sets_finalization)
-DROP INDEX IF EXISTS indonesian.idx_goal_sets_finalization;
-CREATE INDEX IF NOT EXISTS idx_stage_events_user_time ON indonesian.learner_stage_events(user_id, created_at);
-CREATE INDEX IF NOT EXISTS idx_stage_events_to_stage ON indonesian.learner_stage_events(user_id, to_stage, created_at);
--- Drop duplicate index created in an earlier migration (identical to idx_stage_events_to_stage)
-DROP INDEX IF EXISTS indonesian.idx_stage_events_user_target;
-CREATE INDEX IF NOT EXISTS idx_daily_rollups_user_date ON indonesian.learner_daily_goal_rollups(user_id, local_date);
+-- (Weekly goal system tables retired in 2026-05-07 retirement #4 — see end of file)
 
 -- RLS and Grants
 GRANT USAGE ON SCHEMA indonesian TO authenticated, anon;
@@ -360,10 +289,6 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON indonesian.learning_sessions TO authenti
 GRANT INSERT ON indonesian.error_logs TO authenticated;
 GRANT SELECT ON indonesian.leaderboard TO authenticated;
 GRANT SELECT ON indonesian.user_roles TO authenticated;
-GRANT SELECT, INSERT, UPDATE ON indonesian.learner_weekly_goal_sets TO authenticated;
-GRANT SELECT, INSERT, UPDATE ON indonesian.learner_weekly_goals TO authenticated;
-GRANT SELECT, INSERT ON indonesian.learner_stage_events TO authenticated;
-GRANT SELECT, INSERT, UPDATE ON indonesian.learner_daily_goal_rollups TO authenticated;
 
 -- Service role permissions (for health checks and scripts)
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA indonesian TO service_role;
@@ -386,10 +311,6 @@ ALTER TABLE indonesian.review_events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.lesson_progress ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.learning_sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.error_logs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.learner_weekly_goal_sets ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.learner_weekly_goals ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.learner_stage_events ENABLE ROW LEVEL SECURITY;
-ALTER TABLE indonesian.learner_daily_goal_rollups ENABLE ROW LEVEL SECURITY;
 
 -- Drop and recreate policies
 DO $$ DECLARE r record; BEGIN
@@ -461,19 +382,6 @@ CREATE POLICY "learning_sessions_write" ON indonesian.learning_sessions FOR ALL 
 
 CREATE POLICY "error_logs_insert" ON indonesian.error_logs FOR INSERT TO authenticated WITH CHECK (true);
 
-CREATE POLICY "learner_weekly_goal_sets_owner" ON indonesian.learner_weekly_goal_sets FOR ALL TO authenticated
-  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
-
-CREATE POLICY "learner_weekly_goals_via_goal_set" ON indonesian.learner_weekly_goals FOR ALL TO authenticated
-  USING (EXISTS (SELECT 1 FROM indonesian.learner_weekly_goal_sets WHERE id = goal_set_id AND user_id = auth.uid()))
-  WITH CHECK (EXISTS (SELECT 1 FROM indonesian.learner_weekly_goal_sets WHERE id = goal_set_id AND user_id = auth.uid()));
-
-CREATE POLICY "learner_stage_events_owner" ON indonesian.learner_stage_events FOR ALL TO authenticated
-  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
-
-CREATE POLICY "learner_daily_goal_rollups_owner" ON indonesian.learner_daily_goal_rollups FOR ALL TO authenticated
-  USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
-
 -- Health check RPC
 CREATE OR REPLACE FUNCTION indonesian.schema_health()
 RETURNS jsonb LANGUAGE sql SECURITY DEFINER STABLE SET search_path = indonesian AS $$
@@ -518,228 +426,12 @@ GRANT EXECUTE ON FUNCTION indonesian.schema_health() TO authenticated;
 -- Goal System Scheduled Jobs (pg_cron)
 -- These jobs maintain the weekly goal system consistency and generate reports.
 
--- Enable pg_cron extension (requires superuser; will be no-op if already enabled)
+-- pg_cron extension stays available for non-goal jobs (currently none scheduled,
+-- but learner_capability_state mastery refresh + future telemetry may use it).
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
--- Job 1: Weekly Goal Finalization
--- Closes goal sets that have passed their week end and captures final metrics.
-CREATE OR REPLACE FUNCTION indonesian.job_finalize_weekly_goals()
-RETURNS table(finalized_count integer, error_message text) AS $$
-BEGIN
-  -- Find open goal sets past their end time and close them
-  UPDATE indonesian.learner_weekly_goal_sets
-  SET closing_overdue_count = (
-    SELECT COUNT(*) FROM indonesian.learner_skill_state lss
-    WHERE lss.user_id = learner_weekly_goal_sets.user_id
-      AND lss.next_due_at < NOW()
-  ),
-  closed_at = NOW(),
-  updated_at = NOW()
-  WHERE week_ends_at_utc < NOW()
-    AND closed_at IS NULL;
-
-  RETURN QUERY SELECT ROW_NUMBER() OVER () :: integer, NULL::text;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = indonesian;
-
--- Job 2: Current-Week Goal Pre-Generation
--- Creates weekly goal sets for users at their local week start.
-CREATE OR REPLACE FUNCTION indonesian.job_pregenerate_current_week()
-RETURNS table(generated_count integer, error_message text) AS $$
-DECLARE
-  v_user_id uuid;
-  v_timezone text;
-  v_week_start timestamptz;
-  v_week_end timestamptz;
-  v_count integer := 0;
-BEGIN
-  -- For each user with a valid timezone
-  FOR v_user_id, v_timezone IN
-    SELECT id, timezone FROM indonesian.profiles
-    WHERE timezone IS NOT NULL AND timezone != ''
-  LOOP
-    -- Compute local week boundaries
-    v_week_start := date_trunc('week', NOW() AT TIME ZONE v_timezone) AT TIME ZONE 'UTC';
-    v_week_end := v_week_start + interval '7 days';
-
-    -- Check if user already has a goal set for this week
-    IF NOT EXISTS (
-      SELECT 1 FROM indonesian.learner_weekly_goal_sets
-      WHERE user_id = v_user_id
-        AND week_starts_at_utc <= NOW()
-        AND week_ends_at_utc > NOW()
-    ) THEN
-      -- Create goal set
-      INSERT INTO indonesian.learner_weekly_goal_sets (
-        user_id, goal_timezone, week_start_date_local, week_end_date_local,
-        week_starts_at_utc, week_ends_at_utc, generation_strategy_version, generated_at
-      ) VALUES (
-        v_user_id, v_timezone,
-        v_week_start::date,
-        (v_week_end - interval '1 day')::date,
-        v_week_start, v_week_end, 'v1', NOW()
-      );
-
-      -- Create child goals with default targets
-      INSERT INTO indonesian.learner_weekly_goals (goal_set_id, goal_type, goal_direction, goal_unit, target_value_numeric)
-      SELECT
-        (SELECT id FROM indonesian.learner_weekly_goal_sets WHERE user_id = v_user_id AND week_starts_at_utc = v_week_start),
-        goal_type,
-        goal_direction,
-        goal_unit,
-        target_value_numeric
-      FROM (
-        VALUES
-          ('consistency', 'at_least', 'count', 4),
-          ('recall_quality', 'at_least', 'percent', 0.80),
-          ('usable_vocabulary', 'at_least', 'count', 8),
-          ('review_health', 'at_most', 'count', 20)
-      ) AS defaults(goal_type, goal_direction, goal_unit, target_value_numeric);
-
-      v_count := v_count + 1;
-    END IF;
-  END LOOP;
-
-  RETURN QUERY SELECT v_count, NULL::text;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = indonesian;
-
--- Job 3: Daily Goal Rollup Snapshot
--- Materializes daily aggregates for trends and analytics.
-CREATE OR REPLACE FUNCTION indonesian.job_daily_rollup_snapshot()
-RETURNS table(rollup_count integer, error_message text) AS $$
-DECLARE
-  v_user_id uuid;
-  v_timezone text;
-  v_local_date date;
-  v_count integer := 0;
-BEGIN
-  -- For each user with a valid timezone
-  FOR v_user_id, v_timezone IN
-    SELECT id, timezone FROM indonesian.profiles
-    WHERE timezone IS NOT NULL AND timezone != ''
-  LOOP
-    -- Get local date in user's timezone
-    v_local_date := (NOW() AT TIME ZONE v_timezone)::date;
-
-    -- Upsert daily rollup. Date comparisons use the user's local timezone so
-    -- late-night reviews bucket into the correct day (without this, a review
-    -- at 01:00 Amsterdam — 23:00 UTC previous day — was attributed to the
-    -- wrong local date and could be dropped from both days).
-    -- recall_accuracy is intentionally form_recall-only per the goal spec.
-    INSERT INTO indonesian.learner_daily_goal_rollups (
-      user_id, goal_timezone, local_date,
-      study_day_completed, recall_accuracy, recall_sample_size,
-      usable_items_gained_today, usable_items_total, overdue_count
-    ) VALUES (
-      v_user_id, v_timezone, v_local_date,
-      COALESCE((SELECT COUNT(*) > 0 FROM indonesian.review_events re
-        WHERE re.user_id = v_user_id
-          AND (re.created_at AT TIME ZONE v_timezone)::date = v_local_date), false),
-      (SELECT CASE WHEN COUNT(*) > 0 THEN SUM(CASE WHEN was_correct THEN 1 ELSE 0 END)::numeric / COUNT(*)
-                   ELSE NULL END
-       FROM indonesian.review_events re
-       WHERE re.user_id = v_user_id
-         AND re.skill_type = 'form_recall'
-         AND (re.created_at AT TIME ZONE v_timezone)::date = v_local_date),
-      COALESCE((SELECT COUNT(*) FROM indonesian.review_events re
-        WHERE re.user_id = v_user_id
-          AND re.skill_type = 'form_recall'
-          AND (re.created_at AT TIME ZONE v_timezone)::date = v_local_date), 0),
-      (SELECT COUNT(DISTINCT learning_item_id) FROM indonesian.learner_stage_events lse
-        WHERE lse.user_id = v_user_id AND lse.to_stage IN ('retrieving', 'productive', 'maintenance')
-          AND (lse.created_at AT TIME ZONE v_timezone)::date = v_local_date),
-      (SELECT COUNT(*) FROM indonesian.learner_item_state lis
-        WHERE lis.user_id = v_user_id AND lis.stage IN ('retrieving', 'productive', 'maintenance')),
-      (SELECT COUNT(*) FROM indonesian.learner_skill_state lss
-        WHERE lss.user_id = v_user_id AND lss.next_due_at < NOW())
-    ) ON CONFLICT (user_id, local_date) DO UPDATE SET
-      study_day_completed = EXCLUDED.study_day_completed,
-      recall_accuracy = EXCLUDED.recall_accuracy,
-      recall_sample_size = EXCLUDED.recall_sample_size,
-      usable_items_gained_today = EXCLUDED.usable_items_gained_today,
-      usable_items_total = EXCLUDED.usable_items_total,
-      overdue_count = EXCLUDED.overdue_count,
-      updated_at = NOW();
-
-    v_count := v_count + 1;
-  END LOOP;
-
-  RETURN QUERY SELECT v_count, NULL::text;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = indonesian;
-
--- Job 4: Integrity and Repair Sweeper
--- Heals inconsistent goal state and closes overdue weeks.
-CREATE OR REPLACE FUNCTION indonesian.job_integrity_repair()
-RETURNS table(repairs_count integer, error_message text) AS $$
-DECLARE
-  v_count integer := 0;
-  v_goal_set_id uuid;
-BEGIN
-  -- Repair 1: Close overdue still-open weeks
-  UPDATE indonesian.learner_weekly_goal_sets
-  SET closing_overdue_count = (
-    SELECT COUNT(*) FROM indonesian.learner_skill_state lss
-    WHERE lss.user_id = learner_weekly_goal_sets.user_id
-      AND lss.next_due_at < NOW()
-  ),
-  closed_at = NOW(),
-  updated_at = NOW()
-  WHERE week_ends_at_utc < NOW()
-    AND closed_at IS NULL;
-
-  GET DIAGNOSTICS v_count = ROW_COUNT;
-
-  RETURN QUERY SELECT v_count, NULL::text;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = indonesian;
-
--- Grant execute permission to service role (needed for pg_cron)
-GRANT EXECUTE ON FUNCTION indonesian.job_finalize_weekly_goals() TO service_role;
-GRANT EXECUTE ON FUNCTION indonesian.job_pregenerate_current_week() TO service_role;
-GRANT EXECUTE ON FUNCTION indonesian.job_daily_rollup_snapshot() TO service_role;
-GRANT EXECUTE ON FUNCTION indonesian.job_integrity_repair() TO service_role;
-
--- Schedule jobs with pg_cron
--- Note: These schedules use UTC. Adjust times as needed for your deployment.
--- Format: minute hour day-of-month month day-of-week
-
--- Weekly finalization: hourly at minute 5
-SELECT cron.schedule('goal-finalize-weekly', '5 * * * *', 'SELECT indonesian.job_finalize_weekly_goals()');
-
--- Current-week pre-generation: hourly at minute 10
-SELECT cron.schedule('goal-pregenerate-weekly', '10 * * * *', 'SELECT indonesian.job_pregenerate_current_week()');
-
--- Daily rollup snapshots: hourly at minute 15
-SELECT cron.schedule('goal-daily-rollup', '15 * * * *', 'SELECT indonesian.job_daily_rollup_snapshot()');
-
--- Integrity repair: daily at 02:30 UTC
-SELECT cron.schedule('goal-integrity-repair', '30 2 * * *', 'SELECT indonesian.job_integrity_repair()');
-
--- Analytics: track user interactions with goal system and learning
-CREATE TABLE IF NOT EXISTS indonesian.learner_analytics_events (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  event_type text NOT NULL CHECK (event_type IN (
-    'goal_generated',
-    'goal_viewed',
-    'daily_plan_viewed',
-    'session_started_from_today',
-    'goal_achieved',
-    'goal_missed',
-    'session_summary_viewed'
-  )),
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  goal_id uuid,
-  goal_type text CHECK (goal_type IN ('consistency', 'recall_quality', 'usable_vocabulary', 'review_health')),
-  session_id uuid,
-  metadata jsonb DEFAULT '{}',
-  created_at timestamptz DEFAULT now()
-);
-
-CREATE INDEX IF NOT EXISTS learner_analytics_events_user_id_idx ON indonesian.learner_analytics_events(user_id);
-CREATE INDEX IF NOT EXISTS learner_analytics_events_event_type_idx ON indonesian.learner_analytics_events(event_type);
-CREATE INDEX IF NOT EXISTS learner_analytics_events_created_at_idx ON indonesian.learner_analytics_events(created_at);
+-- (Goal-system functions, cron schedules, and learner_analytics_events table
+-- retired in 2026-05-07 retirement #4 — see end of file.)
 
 -- Skill facet migration: rename 'recall' to 'form_recall'
 -- First widen constraints to allow both old and new values, then migrate data, then narrow
@@ -871,19 +563,7 @@ SELECT
 FROM indonesian.generated_exercise_candidates
 WHERE review_status IN ('pending_review', 'approved', 'rejected');
 
--- RLS: Users can only read their own analytics; all authenticated users can insert their own
-ALTER TABLE indonesian.learner_analytics_events ENABLE ROW LEVEL SECURITY;
-CREATE POLICY learner_analytics_events_own ON indonesian.learner_analytics_events
-  FOR SELECT TO authenticated USING (auth.uid() = user_id OR EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
-DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname = 'indonesian' AND tablename = 'learner_analytics_events' AND policyname = 'learner_analytics_events_insert') THEN
-    CREATE POLICY learner_analytics_events_insert ON indonesian.learner_analytics_events
-      FOR INSERT TO authenticated WITH CHECK (user_id = auth.uid());
-  END IF;
-END $$;
-
--- Grants: Authenticated users can read and insert analytics events
-GRANT SELECT, INSERT ON indonesian.learner_analytics_events TO authenticated;
+-- (learner_analytics_events RLS/policies/grants retired in 2026-05-07 retirement #4)
 
 -- Seed exercise type availability (runtime feature flags)
 INSERT INTO indonesian.exercise_type_availability (
@@ -1427,3 +1107,38 @@ EXCEPTION WHEN OTHERS THEN NULL;
 END $$;
 SELECT cron.schedule('finalize-stale-sessions', '25 * * * *',
   'SELECT indonesian.job_finalize_stale_sessions()');
+
+-- ============================================================================
+-- Retirement #4 (goal subsystem + event log) — 2026-05-07
+-- See docs/plans/2026-05-07-retire-goal-subsystem.md for context.
+-- Idempotent: lowercase drop ... if exists + cron.unschedule wrapped in
+-- exception handlers. Re-running on a node where the drops already applied
+-- is a safe no-op.
+-- ============================================================================
+
+-- Unschedule cron jobs (case-sensitive job names from the original cron.schedule registrations).
+do $$ begin perform cron.unschedule('goal-finalize-weekly');     exception when others then null; end $$;
+do $$ begin perform cron.unschedule('goal-pregenerate-weekly');  exception when others then null; end $$;
+do $$ begin perform cron.unschedule('goal-daily-rollup');        exception when others then null; end $$;
+do $$ begin perform cron.unschedule('goal-integrity-repair');    exception when others then null; end $$;
+
+-- Drop SQL functions: 4 from master + 5 from 2026-05-01 progress migration
+-- (compute_todays_plan_raw plus 4 survivor-surface functions whose only caller was goalService).
+drop function if exists indonesian.job_finalize_weekly_goals();
+drop function if exists indonesian.job_pregenerate_current_week();
+drop function if exists indonesian.job_daily_rollup_snapshot();
+drop function if exists indonesian.job_integrity_repair();
+drop function if exists indonesian.compute_todays_plan_raw(uuid, timestamptz);
+drop function if exists indonesian.get_study_days_count(uuid, timestamptz, timestamptz, text);
+drop function if exists indonesian.get_recall_stats_for_week(uuid, timestamptz, timestamptz);
+drop function if exists indonesian.get_usable_vocabulary_gain(uuid, timestamptz, timestamptz);
+drop function if exists indonesian.get_overdue_count(uuid, text);
+
+-- Drop tables in FK-aware order (cascade removes dependent indexes, policies, grants).
+drop table if exists indonesian.learner_daily_goal_rollups cascade;
+drop table if exists indonesian.learner_stage_events cascade;
+drop table if exists indonesian.learner_weekly_goals cascade;
+drop table if exists indonesian.learner_weekly_goal_sets cascade;
+
+-- Drop event-log table (bundled retirement #7).
+drop table if exists indonesian.learner_analytics_events cascade;
