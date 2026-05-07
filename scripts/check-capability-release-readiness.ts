@@ -28,7 +28,6 @@ export interface CapabilityReleaseReadinessInput {
   capabilities: CapabilityStatusRow[]
   capabilityArtifacts: number
   capabilityContentUnitRelationships: number
-  sourceProgressRows: number
 }
 
 export interface CapabilityReleaseReadinessReport {
@@ -43,7 +42,6 @@ export interface CapabilityReleaseReadinessReport {
     draftOrUnknownCapabilities: number
     capabilityArtifacts: number
     capabilityContentUnitRelationships: number
-    sourceProgressRows: number
   }
 }
 
@@ -102,7 +100,6 @@ export function summarizeCapabilityReleaseReadiness(
   if (readyPublishedCapabilities === 0) blockers.push('No ready/published capabilities are available for capability sessions.')
   if (input.capabilityArtifacts === 0) blockers.push('No capability artifacts are published for scoped capabilities.')
   if (input.capabilityContentUnitRelationships === 0) warnings.push('No capability/content-unit relationships are published for this lesson.')
-  if (input.sourceProgressRows === 0) warnings.push('No learner source progress rows exist yet; run a browser lesson-reader smoke test.')
 
   return {
     releaseReady: blockers.length === 0,
@@ -116,7 +113,6 @@ export function summarizeCapabilityReleaseReadiness(
       draftOrUnknownCapabilities,
       capabilityArtifacts: input.capabilityArtifacts,
       capabilityContentUnitRelationships: input.capabilityContentUnitRelationships,
-      sourceProgressRows: input.sourceProgressRows,
     },
   }
 }
@@ -195,11 +191,6 @@ async function loadReadinessInput(args: CapabilityReleaseReadinessArgs): Promise
         .in('content_unit_id', contentUnitIds)
         .in('capability_id', capabilityIds))
     : 0
-  const sourceProgressRows = await countRows(db()
-    .from('learner_source_progress_state')
-    .select('id', { count: 'exact', head: true })
-    .eq('source_ref', args.sourceRef))
-
   return {
     sourceRef: args.sourceRef,
     contentUnits: contentUnitIds.length,
@@ -208,7 +199,6 @@ async function loadReadinessInput(args: CapabilityReleaseReadinessArgs): Promise
     capabilities: capabilityRows,
     capabilityArtifacts,
     capabilityContentUnitRelationships,
-    sourceProgressRows,
   }
 }
 

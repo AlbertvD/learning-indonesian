@@ -27,7 +27,6 @@ interface LessonPageBlock {
   block_kind: string
   display_order: number
   payload_json?: Record<string, unknown>
-  source_progress_event?: string | null
   capability_key_refs?: string[]
 }
 
@@ -62,7 +61,6 @@ async function main() {
           block_kind: block.block_kind,
           display_order: block.display_order,
           payload_json: block.payload_json ?? {},
-          source_progress_event: block.source_progress_event ?? null,
           capability_key_refs: block.capability_key_refs ?? [],
           updated_at: new Date().toISOString(),
         }, { onConflict: 'source_ref,block_key' })

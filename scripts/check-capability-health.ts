@@ -12,7 +12,6 @@ import {
 import type { ArtifactIndex } from '../src/lib/capabilities/artifactRegistry'
 import type {
   ArtifactKind,
-  CapabilitySourceProgressRequirement,
   CurrentContentSnapshot,
   CurrentLearningItem,
   ProjectedCapability,
@@ -64,7 +63,6 @@ export interface RuntimeHealthCapability {
   readinessStatus: 'ready' | 'unknown' | 'blocked' | 'deprecated'
   publicationStatus: 'published' | 'draft' | 'archived'
   requiredArtifacts: ArtifactKind[]
-  requiredSourceProgress?: CapabilitySourceProgressRequirement
   prerequisiteKeys?: string[]
   difficultyLevel?: number
   goalTags?: string[]
@@ -152,7 +150,6 @@ function toProjectedCapability(capability: RuntimeHealthCapability): ProjectedCa
     modality: capability.modality ?? 'text',
     learnerLanguage: capability.learnerLanguage ?? 'nl',
     requiredArtifacts: capability.requiredArtifacts,
-    requiredSourceProgress: capability.requiredSourceProgress,
     prerequisiteKeys: capability.prerequisiteKeys ?? [],
     difficultyLevel: capability.difficultyLevel ?? 1,
     goalTags: capability.goalTags ?? [],
@@ -214,26 +211,14 @@ export function checkCapabilityHealthSnapshot(snapshot: CapabilityHealthSnapshot
       ))
     }
 
-    const progressRequirement = projected.requiredSourceProgress
-    if (
-      progressRequirement?.kind === 'source_progress'
-      && !knownSourceRefs.has(progressRequirement.sourceRef)
-    ) {
-      critical.push(runtimeFinding(
-        'critical',
-        'ready_capability_unknown_source_progress_ref',
-        `Required source progress ref "${progressRequirement.sourceRef}" is not present in the lesson/source graph.`,
-        capability.canonicalKey,
-      ))
-    }
-    if (
-      progressRequirement?.kind === 'source_progress'
-      && progressRequirement.sourceRef !== projected.sourceRef
-    ) {
-      critical.push(runtimeFinding(
-        'critical',
-        'ready_capability_source_progress_ref_mismatch',
-        `Required source progress ref "${progressRequirement.sourceRef}" does not match capability source_ref "${projected.sourceRef}", so runtime session loading will reject it.`,
+    // Source-ref reachability check: a `'ready'`-published capability whose
+    // source_ref isn't in the lesson/source graph indicates a publishing
+    // mistake. Replaces the retired source-progress ref-mismatch validators.
+    if (!knownSourceRefs.has(capability.sourceRef)) {
+      warnings.push(runtimeFinding(
+        'warning',
+        'ready_capability_unreachable_source_ref',
+        `Capability source_ref "${capability.sourceRef}" is not present in the lesson/source graph.`,
         capability.canonicalKey,
       ))
     }
@@ -528,7 +513,6 @@ function toRuntimeCapability(row: Record<string, unknown>): RuntimeHealthCapabil
     readinessStatus: row.readiness_status as RuntimeHealthCapability['readinessStatus'],
     publicationStatus: row.publication_status as RuntimeHealthCapability['publicationStatus'],
     requiredArtifacts: metadataStringArray(metadata, 'requiredArtifacts') as ArtifactKind[],
-    requiredSourceProgress: metadata.requiredSourceProgress as CapabilitySourceProgressRequirement | undefined,
     prerequisiteKeys: metadataStringArray(metadata, 'prerequisiteKeys'),
     difficultyLevel: typeof metadata.difficultyLevel === 'number' ? metadata.difficultyLevel : 1,
     goalTags: metadataStringArray(metadata, 'goalTags'),

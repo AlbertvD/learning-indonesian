@@ -18,6 +18,7 @@ interface CapabilityRow {
   projection_version?: ProjectedCapability['projectionVersion']
   source_fingerprint?: string | null
   artifact_fingerprint?: string | null
+  lesson_id?: string | null
   metadata_json?: Record<string, unknown> | null
 }
 
@@ -201,10 +202,10 @@ function toProjectedCapability(row: CapabilityRow): ProjectedCapability | null {
     modality: row.modality,
     learnerLanguage: row.learner_language,
     requiredArtifacts: requiredArtifacts as ArtifactKind[],
-    requiredSourceProgress: metadata.requiredSourceProgress as ProjectedCapability['requiredSourceProgress'],
     prerequisiteKeys: Array.isArray(metadata.prerequisiteKeys) ? metadata.prerequisiteKeys.map(String) : [],
     difficultyLevel: typeof metadata.difficultyLevel === 'number' ? metadata.difficultyLevel : 1,
     goalTags: Array.isArray(metadata.goalTags) ? metadata.goalTags.map(String) : [],
+    lessonId: row.lesson_id ?? null,
     projectionVersion: row.projection_version,
     sourceFingerprint: row.source_fingerprint ?? '',
     artifactFingerprint: row.artifact_fingerprint ?? '',

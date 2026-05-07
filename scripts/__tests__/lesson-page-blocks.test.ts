@@ -48,7 +48,6 @@ describe('lesson page block staging', () => {
     expect(blocks).toEqual(expect.arrayContaining([
       expect.objectContaining({
         block_kind: 'section',
-        source_progress_event: 'section_exposed',
         content_unit_slugs: ['item-makan'],
         payload_json: expect.objectContaining({
           type: 'vocabulary',
@@ -60,13 +59,11 @@ describe('lesson page block staging', () => {
       expect.objectContaining({
         block_key: 'lesson-1-practice-bridge',
         block_kind: 'practice_bridge',
-        source_progress_event: 'intro_completed',
         capability_key_refs: expect.arrayContaining([expect.stringContaining(':text_recognition:')]),
       }),
       expect.objectContaining({
         block_key: 'lesson-1-recap',
         block_kind: 'recap',
-        source_progress_event: 'lesson_completed',
       }),
     ]))
     // No per-item practice_bridge blocks anymore

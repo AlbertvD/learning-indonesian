@@ -83,7 +83,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Uitspraak"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -121,7 +120,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Eenvoudige zinnen"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -138,7 +136,6 @@ export const lessonPageBlocks = [
       "title": "Grammatica",
       "intro": "In de voorgaande Indonesische zinnen zijn enkele bijzonderheden op te merken, namelijk:"
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -179,7 +176,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -220,7 +216,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -250,7 +245,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -285,7 +279,6 @@ export const lessonPageBlocks = [
       "setup": "Ibu mau ke pasar. Mau beli pisang.",
       "title": "Di Pasar (Op de markt)"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -479,7 +472,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Woordenlijst"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -521,7 +513,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Uitdrukkingen"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -583,7 +574,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Telwoorden"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -877,7 +867,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Uitspraakoefening"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -1010,7 +999,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/berapa-harganya:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/berapa-harganya:meaning_recall:id_to_l1:text:nl",
@@ -1129,7 +1117,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/apa:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/apa:meaning_recall:id_to_l1:text:nl",
@@ -1380,7 +1367,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/akhir:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl",
@@ -1501,7 +1487,6 @@ export const lessonPageBlocks = [
     "payload_json": {
       "label": "Oefen deze les"
     },
-    "source_progress_event": "intro_completed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/apa-kabar:text_recognition:id_to_l1:text:nl",
@@ -1578,7 +1563,6 @@ export const lessonPageBlocks = [
     "payload_json": {
       "title": "Samenvatting"
     },
-    "source_progress_event": "lesson_completed",
     "capability_key_refs": []
   }
 ]

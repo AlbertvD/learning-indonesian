@@ -185,7 +185,7 @@ describe('capability health exit code planning', () => {
     }))
   })
 
-  it('fails ready/published capabilities with unknown source progress refs', () => {
+  it('warns on ready/published capabilities whose source_ref is not exposed by any lesson block or content unit', () => {
     const report = checkCapabilityHealthSnapshot({
       knownSourceRefs: ['learning_items/makan'],
       capabilities: [{
@@ -196,11 +196,6 @@ describe('capability health exit code planning', () => {
         readinessStatus: 'ready',
         publicationStatus: 'published',
         requiredArtifacts: ['base_text'],
-        requiredSourceProgress: {
-          kind: 'source_progress',
-          sourceRef: 'lesson-1/unknown-section',
-          requiredState: 'section_exposed',
-        },
       }],
       artifacts: [{
         capabilityKey: 'cap:v1:item:learning_items/minum:text_recognition:id_to_l1:text:nl',
@@ -211,70 +206,8 @@ describe('capability health exit code planning', () => {
       }],
     })
 
-    expect(report.critical).toContainEqual(expect.objectContaining({
-      rule: 'ready_capability_unknown_source_progress_ref',
-    }))
-  })
-
-  it('does not treat a capability source as reachable unless lesson blocks or content units expose it', () => {
-    const report = checkCapabilityHealthSnapshot({
-      knownSourceRefs: ['lesson-1'],
-      capabilities: [{
-        canonicalKey: 'cap:v1:item:learning_items/minum:text_recognition:id_to_l1:text:nl',
-        sourceRef: 'learning_items/minum',
-        capabilityType: 'text_recognition',
-        skillType: 'recognition',
-        readinessStatus: 'ready',
-        publicationStatus: 'published',
-        requiredArtifacts: ['base_text'],
-        requiredSourceProgress: {
-          kind: 'source_progress',
-          sourceRef: 'learning_items/minum',
-          requiredState: 'section_exposed',
-        },
-      }],
-      artifacts: [{
-        capabilityKey: 'cap:v1:item:learning_items/minum:text_recognition:id_to_l1:text:nl',
-        sourceRef: 'learning_items/minum',
-        artifactKind: 'base_text',
-        qualityStatus: 'approved',
-        artifactJson: { value: 'minum' },
-      }],
-    })
-
-    expect(report.critical).toContainEqual(expect.objectContaining({
-      rule: 'ready_capability_unknown_source_progress_ref',
-    }))
-  })
-
-  it('fails ready/published capabilities whose source-progress ref does not match runtime projection source', () => {
-    const report = checkCapabilityHealthSnapshot({
-      knownSourceRefs: ['learning_items/minum', 'lesson-1/section-vocabulary'],
-      capabilities: [{
-        canonicalKey: 'cap:v1:item:learning_items/minum:text_recognition:id_to_l1:text:nl',
-        sourceRef: 'learning_items/minum',
-        capabilityType: 'text_recognition',
-        skillType: 'recognition',
-        readinessStatus: 'ready',
-        publicationStatus: 'published',
-        requiredArtifacts: ['base_text'],
-        requiredSourceProgress: {
-          kind: 'source_progress',
-          sourceRef: 'lesson-1/section-vocabulary',
-          requiredState: 'section_exposed',
-        },
-      }],
-      artifacts: [{
-        capabilityKey: 'cap:v1:item:learning_items/minum:text_recognition:id_to_l1:text:nl',
-        sourceRef: 'learning_items/minum',
-        artifactKind: 'base_text',
-        qualityStatus: 'approved',
-        artifactJson: { value: 'minum' },
-      }],
-    })
-
-    expect(report.critical).toContainEqual(expect.objectContaining({
-      rule: 'ready_capability_source_progress_ref_mismatch',
+    expect(report.warnings).toContainEqual(expect.objectContaining({
+      rule: 'ready_capability_unreachable_source_ref',
     }))
   })
 

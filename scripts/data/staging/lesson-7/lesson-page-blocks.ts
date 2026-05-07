@@ -45,7 +45,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Cultuur - De zonnevogel Garuda"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -133,7 +132,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Libur Sekolah"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -391,7 +389,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Woordenlijst"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -417,7 +414,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Uitdrukkingen"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -452,7 +448,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -505,7 +500,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -544,7 +538,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -587,7 +580,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -658,7 +650,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -724,7 +715,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -769,7 +759,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -814,7 +803,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -899,7 +887,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/ninik-di-mana-kopernya-kita-perlu-koper-sekarang-kan-tas-pasti-terlalu-kecil-untuk-semua-barang-kita:form_recall:l1_to_id:text:none",
       "cap:v1:item:learning_items/ninik-di-mana-kopernya-kita-perlu-koper-sekarang-kan-tas-pasti-terlalu-kecil-untuk-semua-barang-kita:l1_to_id_choice:l1_to_id:text:none",
@@ -1334,7 +1321,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/akan:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/akan:l1_to_id_choice:l1_to_id:text:nl",
@@ -1598,7 +1584,6 @@ export const lessonPageBlocks = [
     "payload_json": {
       "label": "Oefen deze les"
     },
-    "source_progress_event": "intro_completed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/aduh-koper-sudah-berat-sekali-bu-bagus-kalau-bapak-mau-mengantar-kita-ke-lapangan-terbang-kalau-kita-harus-pikul-sendiri-bagaimana:text_recognition:id_to_l1:text:none",
       "cap:v1:item:learning_items/akan:text_recognition:id_to_l1:text:nl",
@@ -1686,7 +1671,6 @@ export const lessonPageBlocks = [
     "payload_json": {
       "title": "Samenvatting"
     },
-    "source_progress_event": "lesson_completed",
     "capability_key_refs": []
   }
 ]

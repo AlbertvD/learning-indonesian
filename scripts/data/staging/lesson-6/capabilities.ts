@@ -13,11 +13,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/ambil",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/ambil:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -44,11 +39,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/ambil",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/ambil:text_recognition:id_to_l1:text:nl"
     ],
@@ -75,11 +65,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/ambil",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/ambil:text_recognition:id_to_l1:text:nl"
     ],
@@ -106,11 +91,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/ambil",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/ambil:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -136,11 +116,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/arloji",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/arloji:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -167,11 +142,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/arloji",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/arloji:text_recognition:id_to_l1:text:nl"
     ],
@@ -198,11 +168,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/arloji",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/arloji:text_recognition:id_to_l1:text:nl"
     ],
@@ -229,11 +194,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/arloji",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/arloji:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -259,11 +219,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/belum-pernah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/belum-pernah:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -290,11 +245,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/belum-pernah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/belum-pernah:text_recognition:id_to_l1:text:nl"
     ],
@@ -321,11 +271,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/belum-pernah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/belum-pernah:text_recognition:id_to_l1:text:nl"
     ],
@@ -352,11 +297,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/belum-pernah",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/belum-pernah:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -382,11 +322,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/berangkat",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/berangkat:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -413,11 +348,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/berangkat",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/berangkat:text_recognition:id_to_l1:text:nl"
     ],
@@ -444,11 +374,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/berangkat",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/berangkat:text_recognition:id_to_l1:text:nl"
     ],
@@ -475,11 +400,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/berangkat",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/berangkat:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -505,11 +425,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/betul",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/betul:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -536,11 +451,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/betul",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/betul:text_recognition:id_to_l1:text:nl"
     ],
@@ -567,11 +477,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/betul",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/betul:text_recognition:id_to_l1:text:nl"
     ],
@@ -598,11 +503,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/betul",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/betul:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -628,11 +528,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/biarlah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/biarlah:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -659,11 +554,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/biarlah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/biarlah:text_recognition:id_to_l1:text:nl"
     ],
@@ -690,11 +580,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/biarlah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/biarlah:text_recognition:id_to_l1:text:nl"
     ],
@@ -721,11 +606,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/biarlah",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/biarlah:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -751,11 +631,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/bilang",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/bilang:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -782,11 +657,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/bilang",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/bilang:text_recognition:id_to_l1:text:nl"
     ],
@@ -813,11 +683,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/bilang",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/bilang:text_recognition:id_to_l1:text:nl"
     ],
@@ -844,11 +709,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/bilang",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/bilang:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -874,11 +734,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/bir",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/bir:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -905,11 +760,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/bir",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/bir:text_recognition:id_to_l1:text:nl"
     ],
@@ -936,11 +786,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/bir",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/bir:text_recognition:id_to_l1:text:nl"
     ],
@@ -967,11 +812,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/bir",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/bir:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -997,11 +837,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/biru",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/biru:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -1028,11 +863,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/biru",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/biru:text_recognition:id_to_l1:text:nl"
     ],
@@ -1059,11 +889,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/biru",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/biru:text_recognition:id_to_l1:text:nl"
     ],
@@ -1090,11 +915,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/biru",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/biru:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -1120,11 +940,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/bukan",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/bukan:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -1151,11 +966,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/bukan",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/bukan:text_recognition:id_to_l1:text:nl"
     ],
@@ -1182,11 +992,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/bukan",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/bukan:text_recognition:id_to_l1:text:nl"
     ],
@@ -1213,11 +1018,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/bukan",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/bukan:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -1243,11 +1043,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/cepat",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/cepat:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -1274,11 +1069,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/cepat",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/cepat:text_recognition:id_to_l1:text:nl"
     ],
@@ -1305,11 +1095,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/cepat",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/cepat:text_recognition:id_to_l1:text:nl"
     ],
@@ -1336,11 +1121,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/cepat",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/cepat:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -1366,11 +1146,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/coba",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/coba:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -1397,11 +1172,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/coba",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/coba:text_recognition:id_to_l1:text:nl"
     ],
@@ -1428,11 +1198,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/coba",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/coba:text_recognition:id_to_l1:text:nl"
     ],
@@ -1459,11 +1224,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/coba",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/coba:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -1489,11 +1249,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/deh-deh",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/deh-deh:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -1520,11 +1275,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/deh-deh",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/deh-deh:text_recognition:id_to_l1:text:nl"
     ],
@@ -1551,11 +1301,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/deh-deh",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/deh-deh:text_recognition:id_to_l1:text:nl"
     ],
@@ -1582,11 +1327,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/deh-deh",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/deh-deh:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -1612,11 +1352,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/dingin",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/dingin:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -1643,11 +1378,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/dingin",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/dingin:text_recognition:id_to_l1:text:nl"
     ],
@@ -1674,11 +1404,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/dingin",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/dingin:text_recognition:id_to_l1:text:nl"
     ],
@@ -1705,11 +1430,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/dingin",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/dingin:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -1735,11 +1455,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/ekonomi",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/ekonomi:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -1766,11 +1481,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/ekonomi",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/ekonomi:text_recognition:id_to_l1:text:nl"
     ],
@@ -1797,11 +1507,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/ekonomi",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/ekonomi:text_recognition:id_to_l1:text:nl"
     ],
@@ -1828,11 +1533,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/ekonomi",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/ekonomi:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -1858,11 +1558,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/full-ac",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/full-ac:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -1889,11 +1584,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/full-ac",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/full-ac:text_recognition:id_to_l1:text:nl"
     ],
@@ -1920,11 +1610,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/full-ac",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/full-ac:text_recognition:id_to_l1:text:nl"
     ],
@@ -1951,11 +1636,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/full-ac",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/full-ac:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -1981,11 +1661,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/gampang",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/gampang:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -2012,11 +1687,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/gampang",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/gampang:text_recognition:id_to_l1:text:nl"
     ],
@@ -2043,11 +1713,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/gampang",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/gampang:text_recognition:id_to_l1:text:nl"
     ],
@@ -2074,11 +1739,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/gampang",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/gampang:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -2104,11 +1764,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/hanya",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/hanya:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -2135,11 +1790,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/hanya",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/hanya:text_recognition:id_to_l1:text:nl"
     ],
@@ -2166,11 +1816,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/hanya",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/hanya:text_recognition:id_to_l1:text:nl"
     ],
@@ -2197,11 +1842,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/hanya",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/hanya:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -2227,11 +1867,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/hari-ini",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/hari-ini:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -2258,11 +1893,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/hari-ini",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/hari-ini:text_recognition:id_to_l1:text:nl"
     ],
@@ -2289,11 +1919,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/hari-ini",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/hari-ini:text_recognition:id_to_l1:text:nl"
     ],
@@ -2320,11 +1945,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/hari-ini",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/hari-ini:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -2350,11 +1970,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/hitam",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/hitam:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -2381,11 +1996,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/hitam",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/hitam:text_recognition:id_to_l1:text:nl"
     ],
@@ -2412,11 +2022,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/hitam",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/hitam:text_recognition:id_to_l1:text:nl"
     ],
@@ -2443,11 +2048,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/hitam",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/hitam:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -2473,11 +2073,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/istana",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/istana:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -2504,11 +2099,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/istana",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/istana:text_recognition:id_to_l1:text:nl"
     ],
@@ -2535,11 +2125,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/istana",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/istana:text_recognition:id_to_l1:text:nl"
     ],
@@ -2566,11 +2151,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/istana",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/istana:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -2596,11 +2176,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jalan",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jalan:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -2627,11 +2202,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jalan",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jalan:text_recognition:id_to_l1:text:nl"
     ],
@@ -2658,11 +2228,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jalan",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jalan:text_recognition:id_to_l1:text:nl"
     ],
@@ -2689,11 +2254,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jalan",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/jalan:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -2719,11 +2279,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jam",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jam:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -2750,11 +2305,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jam",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jam:text_recognition:id_to_l1:text:nl"
     ],
@@ -2781,11 +2331,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jam",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jam:text_recognition:id_to_l1:text:nl"
     ],
@@ -2812,11 +2357,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jam",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/jam:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -2842,11 +2382,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jangan",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jangan:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -2873,11 +2408,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jangan",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jangan:text_recognition:id_to_l1:text:nl"
     ],
@@ -2904,11 +2434,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jangan",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jangan:text_recognition:id_to_l1:text:nl"
     ],
@@ -2935,11 +2460,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jangan",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/jangan:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -2965,11 +2485,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/janji",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/janji:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -2996,11 +2511,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/janji",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/janji:text_recognition:id_to_l1:text:nl"
     ],
@@ -3027,11 +2537,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/janji",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/janji:text_recognition:id_to_l1:text:nl"
     ],
@@ -3058,11 +2563,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/janji",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/janji:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -3088,11 +2588,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jauh",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jauh:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -3119,11 +2614,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jauh",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jauh:text_recognition:id_to_l1:text:nl"
     ],
@@ -3150,11 +2640,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jauh",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jauh:text_recognition:id_to_l1:text:nl"
     ],
@@ -3181,11 +2666,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jauh",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/jauh:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -3211,11 +2691,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jepang",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jepang:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -3242,11 +2717,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jepang",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jepang:text_recognition:id_to_l1:text:nl"
     ],
@@ -3273,11 +2743,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jepang",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/jepang:text_recognition:id_to_l1:text:nl"
     ],
@@ -3304,11 +2769,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/jepang",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/jepang:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -3334,11 +2794,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/kira-kira",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/kira-kira:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -3365,11 +2820,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/kira-kira",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/kira-kira:text_recognition:id_to_l1:text:nl"
     ],
@@ -3396,11 +2846,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/kira-kira",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/kira-kira:text_recognition:id_to_l1:text:nl"
     ],
@@ -3427,11 +2872,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/kira-kira",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/kira-kira:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -3457,11 +2897,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/kurang-tahu",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/kurang-tahu:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -3488,11 +2923,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/kurang-tahu",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/kurang-tahu:text_recognition:id_to_l1:text:nl"
     ],
@@ -3519,11 +2949,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/kurang-tahu",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/kurang-tahu:text_recognition:id_to_l1:text:nl"
     ],
@@ -3550,11 +2975,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/kurang-tahu",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/kurang-tahu:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -3580,11 +3000,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/larut-malam",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/larut-malam:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -3611,11 +3026,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/larut-malam",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/larut-malam:text_recognition:id_to_l1:text:nl"
     ],
@@ -3642,11 +3052,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/larut-malam",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/larut-malam:text_recognition:id_to_l1:text:nl"
     ],
@@ -3673,11 +3078,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/larut-malam",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/larut-malam:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -3703,11 +3103,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/larut",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/larut:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -3734,11 +3129,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/larut",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/larut:text_recognition:id_to_l1:text:nl"
     ],
@@ -3765,11 +3155,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/larut",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/larut:text_recognition:id_to_l1:text:nl"
     ],
@@ -3796,11 +3181,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/larut",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/larut:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -3826,11 +3206,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/lebih",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/lebih:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -3857,11 +3232,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/lebih",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/lebih:text_recognition:id_to_l1:text:nl"
     ],
@@ -3888,11 +3258,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/lebih",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/lebih:text_recognition:id_to_l1:text:nl"
     ],
@@ -3919,11 +3284,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/lebih",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/lebih:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -3949,11 +3309,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/lewat-lewat",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/lewat-lewat:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -3980,11 +3335,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/lewat-lewat",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/lewat-lewat:text_recognition:id_to_l1:text:nl"
     ],
@@ -4011,11 +3361,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/lewat-lewat",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/lewat-lewat:text_recognition:id_to_l1:text:nl"
     ],
@@ -4042,11 +3387,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/lewat-lewat",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/lewat-lewat:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -4072,11 +3412,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/masuk",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/masuk:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -4103,11 +3438,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/masuk",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/masuk:text_recognition:id_to_l1:text:nl"
     ],
@@ -4134,11 +3464,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/masuk",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/masuk:text_recognition:id_to_l1:text:nl"
     ],
@@ -4165,11 +3490,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/masuk",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/masuk:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -4195,11 +3515,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/menit",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/menit:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -4226,11 +3541,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/menit",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/menit:text_recognition:id_to_l1:text:nl"
     ],
@@ -4257,11 +3567,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/menit",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/menit:text_recognition:id_to_l1:text:nl"
     ],
@@ -4288,11 +3593,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/menit",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/menit:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -4318,11 +3618,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/merah-merah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/merah-merah:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -4349,11 +3644,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/merah-merah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/merah-merah:text_recognition:id_to_l1:text:nl"
     ],
@@ -4380,11 +3670,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/merah-merah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/merah-merah:text_recognition:id_to_l1:text:nl"
     ],
@@ -4411,11 +3696,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/merah-merah",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/merah-merah:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -4441,11 +3721,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/monas-monumen-nasional",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/monas-monumen-nasional:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -4472,11 +3747,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/monas-monumen-nasional",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/monas-monumen-nasional:text_recognition:id_to_l1:text:nl"
     ],
@@ -4503,11 +3773,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/monas-monumen-nasional",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/monas-monumen-nasional:text_recognition:id_to_l1:text:nl"
     ],
@@ -4534,11 +3799,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/monas-monumen-nasional",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/monas-monumen-nasional:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -4564,11 +3824,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/ongkos",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/ongkos:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -4595,11 +3850,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/ongkos",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/ongkos:text_recognition:id_to_l1:text:nl"
     ],
@@ -4626,11 +3876,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/ongkos",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/ongkos:text_recognition:id_to_l1:text:nl"
     ],
@@ -4657,11 +3902,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/ongkos",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/ongkos:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -4687,11 +3927,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/pernah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/pernah:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -4718,11 +3953,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/pernah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/pernah:text_recognition:id_to_l1:text:nl"
     ],
@@ -4749,11 +3979,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/pernah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/pernah:text_recognition:id_to_l1:text:nl"
     ],
@@ -4780,11 +4005,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/pernah",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/pernah:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -4810,11 +4030,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/rugi",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/rugi:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -4841,11 +4056,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/rugi",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/rugi:text_recognition:id_to_l1:text:nl"
     ],
@@ -4872,11 +4082,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/rugi",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/rugi:text_recognition:id_to_l1:text:nl"
     ],
@@ -4903,11 +4108,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/rugi",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/rugi:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -4933,11 +4133,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/seperempat-jam",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/seperempat-jam:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -4964,11 +4159,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/seperempat-jam",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/seperempat-jam:text_recognition:id_to_l1:text:nl"
     ],
@@ -4995,11 +4185,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/seperempat-jam",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/seperempat-jam:text_recognition:id_to_l1:text:nl"
     ],
@@ -5026,11 +4211,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/seperempat-jam",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/seperempat-jam:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -5056,11 +4236,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/seperempat",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/seperempat:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -5087,11 +4262,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/seperempat",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/seperempat:text_recognition:id_to_l1:text:nl"
     ],
@@ -5118,11 +4288,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/seperempat",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/seperempat:text_recognition:id_to_l1:text:nl"
     ],
@@ -5149,11 +4314,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/seperempat",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/seperempat:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -5179,11 +4339,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/setengah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/setengah:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -5210,11 +4365,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/setengah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/setengah:text_recognition:id_to_l1:text:nl"
     ],
@@ -5241,11 +4391,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/setengah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/setengah:text_recognition:id_to_l1:text:nl"
     ],
@@ -5272,11 +4417,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/setengah",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/setengah:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -5302,11 +4442,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/sih",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/sih:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -5333,11 +4468,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/sih",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/sih:text_recognition:id_to_l1:text:nl"
     ],
@@ -5364,11 +4494,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/sih",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/sih:text_recognition:id_to_l1:text:nl"
     ],
@@ -5395,11 +4520,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/sih",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/sih:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -5425,11 +4545,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/sopir",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/sopir:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -5456,11 +4571,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/sopir",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/sopir:text_recognition:id_to_l1:text:nl"
     ],
@@ -5487,11 +4597,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/sopir",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/sopir:text_recognition:id_to_l1:text:nl"
     ],
@@ -5518,11 +4623,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/sopir",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/sopir:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -5548,11 +4648,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/tangan",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/tangan:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -5579,11 +4674,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/tangan",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/tangan:text_recognition:id_to_l1:text:nl"
     ],
@@ -5610,11 +4700,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/tangan",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/tangan:text_recognition:id_to_l1:text:nl"
     ],
@@ -5641,11 +4726,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/tangan",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/tangan:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -5671,11 +4751,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/telah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/telah:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -5702,11 +4777,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/telah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/telah:text_recognition:id_to_l1:text:nl"
     ],
@@ -5733,11 +4803,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/telah",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/telah:text_recognition:id_to_l1:text:nl"
     ],
@@ -5764,11 +4829,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/telah",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/telah:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -5794,11 +4854,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/tv-tivi",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/tv-tivi:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -5825,11 +4880,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/tv-tivi",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/tv-tivi:text_recognition:id_to_l1:text:nl"
     ],
@@ -5856,11 +4906,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/tv-tivi",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/tv-tivi:text_recognition:id_to_l1:text:nl"
     ],
@@ -5887,11 +4932,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/tv-tivi",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/tv-tivi:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -5917,11 +4957,6 @@ export const capabilities = [
       "base_text",
       "accepted_answers:id"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/warna",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/warna:l1_to_id_choice:l1_to_id:text:nl"
     ],
@@ -5948,11 +4983,6 @@ export const capabilities = [
       "meaning:l1",
       "base_text"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/warna",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/warna:text_recognition:id_to_l1:text:nl"
     ],
@@ -5979,11 +5009,6 @@ export const capabilities = [
       "meaning:l1",
       "accepted_answers:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/warna",
-      "requiredState": "intro_completed"
-    },
     "prerequisiteKeys": [
       "cap:v1:item:learning_items/warna:text_recognition:id_to_l1:text:nl"
     ],
@@ -6010,11 +5035,6 @@ export const capabilities = [
       "base_text",
       "meaning:l1"
     ],
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "learning_items/warna",
-      "requiredState": "section_exposed"
-    },
     "difficultyLevel": 1,
     "canonicalKey": "cap:v1:item:learning_items/warna:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
@@ -6040,11 +5060,6 @@ export const capabilities = [
       "pattern_example"
     ],
     "difficultyLevel": 4,
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "lesson-6/pattern-bukan-negation",
-      "requiredState": "pattern_noticing_seen"
-    },
     "canonicalKey": "cap:v1:pattern:lesson-6/pattern-bukan-negation:pattern_recognition:none:text:none",
     "prerequisiteKeys": [],
     "goalTags": [],
@@ -6069,11 +5084,6 @@ export const capabilities = [
       "pattern_example"
     ],
     "difficultyLevel": 4,
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "lesson-6/pattern-bukan-tag-question",
-      "requiredState": "pattern_noticing_seen"
-    },
     "canonicalKey": "cap:v1:pattern:lesson-6/pattern-bukan-tag-question:pattern_recognition:none:text:none",
     "prerequisiteKeys": [],
     "goalTags": [],
@@ -6098,11 +5108,6 @@ export const capabilities = [
       "pattern_example"
     ],
     "difficultyLevel": 4,
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "lesson-6/pattern-clock-time-telling",
-      "requiredState": "pattern_noticing_seen"
-    },
     "canonicalKey": "cap:v1:pattern:lesson-6/pattern-clock-time-telling:pattern_recognition:none:text:none",
     "prerequisiteKeys": [],
     "goalTags": [],
@@ -6127,11 +5132,6 @@ export const capabilities = [
       "pattern_example"
     ],
     "difficultyLevel": 4,
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "lesson-6/pattern-imperative-lah-suffix",
-      "requiredState": "pattern_noticing_seen"
-    },
     "canonicalKey": "cap:v1:pattern:lesson-6/pattern-imperative-lah-suffix:pattern_recognition:none:text:none",
     "prerequisiteKeys": [],
     "goalTags": [],
@@ -6156,11 +5156,6 @@ export const capabilities = [
       "pattern_example"
     ],
     "difficultyLevel": 4,
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "lesson-6/pattern-indonesian-day-parts",
-      "requiredState": "pattern_noticing_seen"
-    },
     "canonicalKey": "cap:v1:pattern:lesson-6/pattern-indonesian-day-parts:pattern_recognition:none:text:none",
     "prerequisiteKeys": [],
     "goalTags": [],
@@ -6185,11 +5180,6 @@ export const capabilities = [
       "pattern_example"
     ],
     "difficultyLevel": 4,
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "lesson-6/pattern-jangan-prohibition",
-      "requiredState": "pattern_noticing_seen"
-    },
     "canonicalKey": "cap:v1:pattern:lesson-6/pattern-jangan-prohibition:pattern_recognition:none:text:none",
     "prerequisiteKeys": [],
     "goalTags": [],
@@ -6214,11 +5204,6 @@ export const capabilities = [
       "pattern_example"
     ],
     "difficultyLevel": 4,
-    "requiredSourceProgress": {
-      "kind": "source_progress",
-      "sourceRef": "lesson-6/pattern-kah-question-suffix",
-      "requiredState": "pattern_noticing_seen"
-    },
     "canonicalKey": "cap:v1:pattern:lesson-6/pattern-kah-question-suffix:pattern_recognition:none:text:none",
     "prerequisiteKeys": [],
     "goalTags": [],

@@ -43,6 +43,10 @@ export interface CapabilityInsertPlan {
   publicationStatus: PublicationStatus
   sourceFingerprint: string
   artifactFingerprint: string
+  // NULL = capability is not lesson-scoped (podcast / cross-lesson). Backfilled
+  // pre-deploy from lesson_page_blocks.capability_key_refs[] adjacency. The
+  // staging publish path writes it from the lesson context.
+  lessonId: string | null
   metadataJson: Record<string, unknown>
 }
 
@@ -158,11 +162,11 @@ export function planCapabilityMaterialization(input: PlanCapabilityMaterializati
       publicationStatus: 'draft',
       sourceFingerprint: capability.sourceFingerprint,
       artifactFingerprint: capability.artifactFingerprint,
+      lessonId: capability.lessonId ?? null,
       metadataJson: {
         skillType: capability.skillType,
         requiredArtifacts: capability.requiredArtifacts,
         prerequisiteKeys: capability.prerequisiteKeys,
-        requiredSourceProgress: capability.requiredSourceProgress ?? null,
         difficultyLevel: capability.difficultyLevel,
         goalTags: capability.goalTags,
       },

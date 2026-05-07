@@ -24,7 +24,6 @@ const validCapabilities = [{
   modality: 'text',
   learnerLanguage: 'nl',
   requiredArtifacts: ['base_text'],
-  requiredSourceProgress: null,
   prerequisiteKeys: [],
   difficultyLevel: 1,
   goalTags: ['lesson-1'],
@@ -43,7 +42,6 @@ const validBlocks = [{
   block_kind: 'exposure',
   display_order: 10,
   payload_json: { title: 'Akhir' },
-  source_progress_event: 'section_exposed',
   capability_key_refs: [capabilityKey],
 }]
 
