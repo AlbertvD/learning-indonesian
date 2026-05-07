@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getDueCapabilities, getDueCapabilitiesFromRows, previewScheduleUpdate, type LearnerCapabilityStateRow } from '@/lib/capabilities/capabilityScheduler'
+import { getDueCapabilities, getDueCapabilitiesFromRows, type LearnerCapabilityStateRow } from '@/lib/capabilities/capabilityScheduler'
 
 function state(overrides: Partial<LearnerCapabilityStateRow> = {}): LearnerCapabilityStateRow {
   return {
@@ -65,15 +65,4 @@ describe('capability scheduler', () => {
     }).map(item => item.stateId)).toEqual(['earlier'])
   })
 
-  it('previews schedule updates without mutating input state', () => {
-    const before = state()
-    const preview = previewScheduleUpdate({
-      state: before,
-      rating: 3,
-      reviewedAt: new Date('2026-04-25T12:00:00.000Z'),
-    })
-
-    expect(preview.stateAfter.stateVersion).toBe(3)
-    expect(before.stateVersion).toBe(2)
-  })
 })

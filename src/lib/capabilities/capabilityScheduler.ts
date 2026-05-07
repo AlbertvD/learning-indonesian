@@ -1,5 +1,3 @@
-import type { Grade } from 'ts-fsrs'
-import { computeNextState } from '@/lib/fsrs'
 import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/services/capabilityService'
 import type { SessionMode } from '@/lib/sessionQueue'
 
@@ -76,46 +74,3 @@ export function getDueCapabilitiesFromRows(input: {
     }))
 }
 
-export interface CapabilityReviewPreview {
-  state: LearnerCapabilityStateRow
-  rating: Grade
-  reviewedAt: Date
-}
-
-export interface SchedulePreview {
-  stateBefore: LearnerCapabilityStateRow
-  stateAfter: {
-    stability: number
-    difficulty: number
-    retrievability: number | null
-    nextDueAt: string
-    lastReviewedAt: string
-    stateVersion: number
-  }
-}
-
-export function previewScheduleUpdate(input: CapabilityReviewPreview): SchedulePreview {
-  const next = computeNextState(
-    input.state.stability != null && input.state.difficulty != null
-      ? {
-          stability: input.state.stability,
-          difficulty: input.state.difficulty,
-          lastReviewedAt: input.state.lastReviewedAt ? new Date(input.state.lastReviewedAt) : null,
-        }
-      : null,
-    input.rating,
-    input.reviewedAt,
-  )
-
-  return {
-    stateBefore: input.state,
-    stateAfter: {
-      stability: next.stability,
-      difficulty: next.difficulty,
-      retrievability: next.retrievability,
-      nextDueAt: next.nextDueAt.toISOString(),
-      lastReviewedAt: input.reviewedAt.toISOString(),
-      stateVersion: input.state.stateVersion + 1,
-    },
-  }
-}
