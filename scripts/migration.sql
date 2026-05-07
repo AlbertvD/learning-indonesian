@@ -1469,3 +1469,277 @@ $$;
 revoke all on function indonesian.commit_capability_answer_report(jsonb) from public;
 revoke all on function indonesian.commit_capability_answer_report(jsonb) from authenticated;
 grant execute on function indonesian.commit_capability_answer_report(jsonb) to service_role;
+
+-- ============================================================================
+-- RETIREMENT #6 — Source-progress state machine → lesson-activation checkbox
+-- ============================================================================
+-- See docs/plans/2026-05-07-retire-source-progress.md for the spec.
+-- Idempotent. Safe to re-run.
+--
+-- This entire block is the end-state appended to master scripts/migration.sql.
+-- For deploy ordering (per §6), the block is split into two physical files:
+--   forward.sql  → steps 1-5 (FORWARD-ONLY; applied via psql -f BEFORE code deploy)
+--   cleanup.sql  → steps 6-10 (CLEANUP-ONLY; applied via make migrate AFTER code deploy)
+-- The same block runs end-to-end on a fresh DB via make migrate (idempotent).
+
+-- ============================================================================
+-- FORWARD-ONLY (applied in forward.sql BEFORE code deploy; mirrored in master)
+-- ============================================================================
+
+-- 1. NEW TABLE: learner_lesson_activation
+create table if not exists indonesian.learner_lesson_activation (
+  user_id      uuid        not null references auth.users(id) on delete cascade,
+  lesson_id    uuid        not null references indonesian.lessons(id) on delete cascade,
+  activated_at timestamptz not null default now(),
+  primary key (user_id, lesson_id)
+);
+
+create index if not exists learner_lesson_activation_user_idx
+  on indonesian.learner_lesson_activation(user_id);
+
+alter table indonesian.learner_lesson_activation enable row level security;
+
+drop policy if exists "lesson activation owner read" on indonesian.learner_lesson_activation;
+create policy "lesson activation owner read"
+  on indonesian.learner_lesson_activation for select
+  to authenticated
+  using (user_id = auth.uid());
+
+grant select on indonesian.learner_lesson_activation to authenticated;
+revoke insert, update, delete on indonesian.learner_lesson_activation from authenticated;
+grant all on indonesian.learner_lesson_activation to service_role;
+
+-- 2. NEW RPC: set_lesson_activation
+create or replace function indonesian.set_lesson_activation(
+  p_user_id   uuid,
+  p_lesson_id uuid,
+  p_activated boolean
+)
+returns void
+language plpgsql
+security definer
+set search_path = indonesian, public
+as $$
+begin
+  if p_user_id is null or p_lesson_id is null or p_activated is null then
+    raise exception 'set_lesson_activation requires p_user_id, p_lesson_id, p_activated';
+  end if;
+
+  if coalesce(auth.role(), '') <> 'service_role' and auth.uid() is distinct from p_user_id then
+    raise exception 'set_lesson_activation user mismatch';
+  end if;
+
+  if not exists (select 1 from indonesian.lessons where id = p_lesson_id) then
+    raise exception 'set_lesson_activation lesson not found: %', p_lesson_id;
+  end if;
+
+  if p_activated then
+    insert into indonesian.learner_lesson_activation (user_id, lesson_id)
+    values (p_user_id, p_lesson_id)
+    on conflict (user_id, lesson_id) do nothing;
+  else
+    delete from indonesian.learner_lesson_activation
+    where user_id = p_user_id and lesson_id = p_lesson_id;
+  end if;
+end;
+$$;
+
+revoke all on function indonesian.set_lesson_activation(uuid, uuid, boolean) from public;
+grant execute on function indonesian.set_lesson_activation(uuid, uuid, boolean) to authenticated, service_role;
+
+-- 3. (REMOVED in R1 v3.) The _capability_lesson_activated helper was dropped
+-- because it had zero callers — its only intended consumer (compute_todays_plan_raw)
+-- was a phantom retired in retirement #4. Eligibility filtering happens in TS
+-- (planner reads activatedLessons set; capability.lessonId is the gate).
+
+-- 4. NEW COLUMN: learning_capabilities.lesson_id (with backfill)
+alter table indonesian.learning_capabilities
+  add column if not exists lesson_id uuid references indonesian.lessons(id) on delete set null;
+
+create index if not exists learning_capabilities_lesson_idx
+  on indonesian.learning_capabilities(lesson_id) where lesson_id is not null;
+
+-- Backfill from page-block adjacency. Each capability_key in
+-- lesson_page_blocks.capability_key_refs[] is owned by the lowest-order_index
+-- lesson that references it (the "introducing" lesson). NULL stays for
+-- capabilities not referenced by any page block (e.g., podcast).
+-- The cap_key matches learning_capabilities.canonical_key (verified against
+-- capability_key_refs[] convention in the materialize pipeline).
+-- NO exception handler: the UPDATE is idempotent on its own (the
+-- `c.lesson_id is null` clause makes re-runs no-ops); silent-swallow of
+-- real errors here would mask backfill mis-population.
+update indonesian.learning_capabilities c
+set lesson_id = sub.lesson_id
+from (
+  select distinct on (cap_key)
+    unnest(pb.capability_key_refs) as cap_key,
+    l.id as lesson_id
+  from indonesian.lesson_page_blocks pb
+  join indonesian.lessons l on pb.source_ref = 'lesson-' || l.order_index
+  where array_length(pb.capability_key_refs, 1) > 0
+  order by cap_key, l.order_index
+) sub
+where c.canonical_key = sub.cap_key
+  and c.lesson_id is null;
+
+-- 5. BACKFILL — Step 1: auto-activate legacy lessons (1, 2, 3) for every existing user.
+-- Idempotent — safe to re-run.
+insert into indonesian.learner_lesson_activation (user_id, lesson_id, activated_at)
+select u.id, l.id, now()
+from auth.users u
+cross join indonesian.lessons l
+where l.order_index in (1, 2, 3)
+on conflict (user_id, lesson_id) do nothing;
+
+-- 5. BACKFILL — Step 2: promote legacy lesson_progress rows to activation.
+-- Preserves "started" state for users who clicked through any lesson via the
+-- pre-retirement reader. After this commit lesson_progress becomes orphan data
+-- (no future writes, no future reads); follow-up retirement to drop it.
+-- R1 v2 fix: lesson_progress has no last_accessed_at column (master line 198-206).
+insert into indonesian.learner_lesson_activation (user_id, lesson_id, activated_at)
+select lp.user_id, lp.lesson_id, coalesce(lp.completed_at, now())
+from indonesian.lesson_progress lp
+on conflict (user_id, lesson_id) do nothing;
+
+-- ============================================================================
+-- CLEANUP-ONLY (applied in cleanup.sql AFTER code deploy; mirrored in master)
+-- ============================================================================
+--
+-- get_lessons_overview rewrite is in cleanup, NOT forward, per R1 v2 C10:
+-- rewriting in forward.sql breaks the old client's has_meaningful_exposure
+-- field read during the deploy window between forward and code deploy.
+
+-- 6. REWRITE: get_lessons_overview — drop source-progress CTEs; use activation
+-- (compute_todays_plan_raw rewrite was REMOVED in R1 v2 — function was already
+-- retired in retirement #4, see scripts/migration.sql:1115-1120.)
+create or replace function indonesian.get_lessons_overview(p_user_id uuid)
+returns table (
+  lesson_id uuid,
+  order_index int,
+  title text,
+  description text,
+  audio_path text,
+  duration_seconds int,
+  primary_voice text,
+  publication_status text,
+  is_published boolean,
+  lesson_sections jsonb,
+  has_started_lesson boolean,
+  has_page_blocks boolean,
+  ready_capability_count int,
+  practiced_eligible_capability_count int
+)
+language sql stable security invoker as $$
+  with lesson_blocks as (
+    select
+      l.id as lesson_id,
+      pb.block_key,
+      pb.payload_json,
+      coalesce(nullif(pb.source_refs, array[]::text[]), array[pb.source_ref]) as expanded_refs
+    from indonesian.lessons l
+    join indonesian.lesson_page_blocks pb
+      on pb.source_ref = 'lesson-' || l.order_index
+  ),
+  lesson_capabilities as (
+    select distinct on (lb.lesson_id, c.id)
+      lb.lesson_id,
+      c.id as capability_id,
+      c.readiness_status,
+      c.publication_status,
+      s.activation_state,
+      s.review_count
+    from lesson_blocks lb
+    cross join lateral unnest(lb.expanded_refs) as expanded_ref
+    join indonesian.learning_capabilities c
+      on c.source_ref = expanded_ref
+    left join indonesian.learner_capability_state s
+      on s.capability_id = c.id and s.user_id = p_user_id
+  ),
+  capability_counts as (
+    select
+      lesson_id,
+      count(*) filter (
+        where readiness_status = 'ready' and publication_status = 'published'
+      )::int as ready_count,
+      count(*) filter (
+        where readiness_status = 'ready'
+          and publication_status = 'published'
+          and activation_state = 'active'
+          and coalesce(review_count, 0) > 0
+      )::int as practiced_count
+    from lesson_capabilities
+    group by lesson_id
+  ),
+  lesson_sections_json as (
+    select
+      ls.lesson_id,
+      jsonb_agg(to_jsonb(ls) order by ls.order_index) as sections
+    from indonesian.lesson_sections ls
+    group by ls.lesson_id
+  ),
+  lesson_block_presence as (
+    select lesson_id, true as has_blocks
+    from lesson_blocks
+    group by lesson_id
+  )
+  select
+    l.id,
+    l.order_index,
+    l.title,
+    l.description,
+    l.audio_path,
+    l.duration_seconds,
+    l.primary_voice,
+    'published'::text as publication_status,
+    true as is_published,
+    coalesce(lsj.sections, '[]'::jsonb) as lesson_sections,
+    (
+      exists (
+        select 1 from indonesian.learner_lesson_activation lla
+        where lla.user_id = p_user_id and lla.lesson_id = l.id
+      )
+      or exists (
+        select 1 from indonesian.lesson_progress lp
+        where lp.user_id = p_user_id and lp.lesson_id = l.id
+      )
+    ) as has_started_lesson,
+    coalesce(lbp.has_blocks, false) as has_page_blocks,
+    coalesce(cc.ready_count, 0) as ready_capability_count,
+    coalesce(cc.practiced_count, 0) as practiced_eligible_capability_count
+  from indonesian.lessons l
+  left join capability_counts cc on cc.lesson_id = l.id
+  left join lesson_sections_json lsj on lsj.lesson_id = l.id
+  left join lesson_block_presence lbp on lbp.lesson_id = l.id
+  order by l.order_index;
+$$;
+
+grant execute on function indonesian.get_lessons_overview(uuid) to authenticated;
+
+-- 7. D-R-O-P column lesson_page_blocks.source_progress_event (and its check constraint)
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'indonesian'
+      and table_name = 'lesson_page_blocks'
+      and column_name = 'source_progress_event'
+  ) then
+    alter table indonesian.lesson_page_blocks drop column source_progress_event;
+  end if;
+exception when others then null;
+end $$;
+
+-- 8. D-R-O-P dead SQL functions
+drop function if exists indonesian._capability_source_progress_met(uuid, jsonb, text, text) cascade;
+drop function if exists indonesian.record_source_progress_event(jsonb) cascade;
+
+-- 9. D-R-O-P source-progress RLS policies (defensive — harmless if already gone)
+drop policy if exists "source progress events owner read" on indonesian.learner_source_progress_events;
+drop policy if exists "source progress events owner insert" on indonesian.learner_source_progress_events;
+drop policy if exists "source progress state owner read" on indonesian.learner_source_progress_state;
+drop policy if exists "source progress state owner update" on indonesian.learner_source_progress_state;
+drop policy if exists "source progress state owner insert" on indonesian.learner_source_progress_state;
+
+-- 10. D-R-O-P source-progress tables (CASCADE picks up index learner_source_progress_state(user_id, source_ref))
+drop table if exists indonesian.learner_source_progress_state cascade;
+drop table if exists indonesian.learner_source_progress_events cascade;
