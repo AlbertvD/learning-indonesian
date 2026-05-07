@@ -90,11 +90,6 @@ vi.mock('@/services/progressService', () => ({
   },
 }))
 
-vi.mock('@/services/audioService', () => ({
-  fetchAudioMap: vi.fn().mockResolvedValue(new Map()),
-  resolveAudioUrl: vi.fn(),
-}))
-
 function setAudioProgress(audio: HTMLElement, durationSeconds: number, currentTimeSeconds: number) {
   Object.defineProperty(audio, 'duration', { configurable: true, value: durationSeconds })
   Object.defineProperty(audio, 'currentTime', { configurable: true, value: currentTimeSeconds })
