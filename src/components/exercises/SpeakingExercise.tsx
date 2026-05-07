@@ -21,12 +21,12 @@ export function SpeakingExercise({ exerciseItem, userLanguage }: SpeakingExercis
   }
 
   // Defensive no-op: speaking is gated out of session selection in
-  // sessionQueue.ts (buildGrammarQueue and the productive-stage selectExercises
-  // path both filter it), but if the component is ever reached via a future
-  // call path, do NOT invoke onAnswer with wasCorrect=true — that would
-  // corrupt FSRS state for the spoken_production skill before ASR exists.
-  // The component remains visually functional for admin preview; the record
-  // button is a deliberate dead-end click until ASR is wired.
+  // sessionQueue.ts (the productive-stage selectExercises path filters
+  // published speaking variants), but if the component is ever reached
+  // via a future call path, do NOT invoke onAnswer with wasCorrect=true —
+  // that would corrupt FSRS state for the spoken_production skill before
+  // ASR exists. The component remains visually functional for admin preview;
+  // the record button is a deliberate dead-end click until ASR is wired.
   const handleSubmitAnswer = () => {
     return
   }
