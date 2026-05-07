@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Button, Checkbox } from '@mantine/core'
+import { Button, Checkbox, Paper, Group, ThemeIcon } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import {
   PageContainer,
@@ -9,7 +9,7 @@ import {
   LoadingState,
   EmptyState,
 } from '@/components/page/primitives'
-import { IconBook2 } from '@tabler/icons-react'
+import { IconBook2, IconBookmark } from '@tabler/icons-react'
 import {
   lessonService,
   lessonSourceRefForOverview,
@@ -202,15 +202,27 @@ export function Lesson() {
 
   return (
     <>
-      <Checkbox
-        checked={lessonActivated}
-        disabled={activationSaving}
-        onChange={(event) => void handleToggleActivation(event.currentTarget.checked)}
-        label={T.lessons.activateThisLesson}
-        description={T.lessons.activateThisLessonHint}
-        data-testid="lesson-activation-checkbox"
-        styles={{ root: { padding: '12px 16px' } }}
-      />
+      <Paper withBorder radius="md" p="md" mx="md" my="sm">
+        <Group wrap="nowrap" align="flex-start">
+          <ThemeIcon
+            variant="light"
+            color={lessonActivated ? 'teal' : 'gray'}
+            size="lg"
+            radius="md"
+          >
+            <IconBookmark size={20} />
+          </ThemeIcon>
+          <Checkbox
+            checked={lessonActivated}
+            disabled={activationSaving}
+            onChange={(event) => void handleToggleActivation(event.currentTarget.checked)}
+            label={T.lessons.activateThisLesson}
+            description={T.lessons.activateThisLessonHint}
+            data-testid="lesson-activation-checkbox"
+            style={{ flex: 1 }}
+          />
+        </Group>
+      </Paper>
       <LessonReader
         experience={readerExperience}
         actions={lessonPracticeActions}
