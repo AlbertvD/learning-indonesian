@@ -125,28 +125,6 @@ export interface ReviewEvent {
   created_at: string
 }
 
-export interface LearnerGrammarState {
-  id: string
-  user_id: string
-  grammar_pattern_id: string
-  stage: LearnerStage
-  stability: number | null
-  difficulty: number | null
-  due_at: string | null
-  last_reviewed_at: string | null
-  review_count: number
-  lapse_count: number
-  consecutive_failures: number
-  updated_at: string
-}
-
-export interface GrammarPatternWithLesson {
-  id: string
-  slug: string
-  name: string
-  introduced_by_lesson_order: number
-}
-
 // === Exercise types ===
 
 export type ExerciseType =
@@ -266,19 +244,12 @@ export interface ExerciseItem {
   }
 }
 
-export type SessionQueueItem =
-  | {
-      source: 'vocab'
-      exerciseItem: ExerciseItem
-      learnerItemState: LearnerItemState | null
-      learnerSkillState: LearnerSkillState | null
-    }
-  | {
-      source: 'grammar'
-      exerciseItem: ExerciseItem
-      grammarState: LearnerGrammarState | null
-      grammarPatternId: string
-    }
+export interface SessionQueueItem {
+  source: 'vocab'
+  exerciseItem: ExerciseItem
+  learnerItemState: LearnerItemState | null
+  learnerSkillState: LearnerSkillState | null
+}
 
 // === Session types ===
 

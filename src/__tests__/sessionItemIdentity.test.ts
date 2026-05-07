@@ -69,23 +69,6 @@ describe('stable session item identity', () => {
     )
   })
 
-  it('creates deterministic grammar item identity', () => {
-    const item: SessionQueueItem = {
-      source: 'grammar',
-      exerciseItem: exerciseItem({ learningItem: null, skillType: 'recognition', exerciseType: 'cloze' }),
-      grammarState: null,
-      grammarPatternId: 'pattern-meN',
-    }
-
-    expect(getStableSessionItemIdentity(item)).toEqual({
-      sessionItemId: 'grammar:pattern-meN:recognition:cloze',
-      source: 'grammar',
-      sourceId: 'pattern-meN',
-      skillType: 'recognition',
-      grammarPatternId: 'pattern-meN',
-    })
-  })
-
   it('requires explicit attempt number in idempotency key', () => {
     expect(buildReviewIdempotencyKey({
       sessionId: 'session-1',
