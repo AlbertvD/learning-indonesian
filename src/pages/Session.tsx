@@ -20,8 +20,6 @@ import { commitCapabilityAnswerReport } from '@/lib/reviews/capabilityReviewProc
 import { capabilityReviewService } from '@/services/capabilityReviewService'
 import { capabilitySessionDataService } from '@/services/capabilitySessionDataService'
 import type { SessionPlan } from '@/lib/session/sessionPlan'
-import { startSession, endSession } from '@/lib/session'
-import { useSessionBeacon } from '@/lib/useSessionBeacon'
 
 const VALID_SESSION_MODES: SessionMode[] = ['standard', 'lesson_practice', 'lesson_review']
 
@@ -56,7 +54,6 @@ export function Session() {
   const [searchParams] = useSearchParams()
   const { user, profile } = useAuthStore()
 
-  const [sessionId, setSessionId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [capabilityPlan, setCapabilityPlan] = useState<SessionPlan | null>(null)
@@ -68,12 +65,6 @@ export function Session() {
   const sessionMode = parseSessionMode(sessionModeParam)
   const preferredSessionSize = profile?.preferredSessionSize ?? 15
   const didInit = useRef(false)
-
-  // Mirror sessionId into a ref so the pagehide beacon (which can't depend on
-  // re-renders) reads the current value.
-  const sessionIdRef = useRef<string | null>(null)
-  useEffect(() => { sessionIdRef.current = sessionId }, [sessionId])
-  useSessionBeacon(sessionIdRef)
 
   // Initialize session
   useEffect(() => {
@@ -90,18 +81,15 @@ export function Session() {
         setLoading(true)
         setError(null)
 
-        // Create session in DB
-        let sid: string
-        try {
-          sid = await startSession(user.id, 'learning')
-        } catch (e) {
-          throw new Error(`startSession failed: ${JSON.stringify(e)}`, { cause: e })
-        }
+        // Mint a client-side sessionId. Retirement #5 (2026-05-07): the
+        // commit_capability_answer_report RPC materialises the
+        // learning_sessions row lazily on the first answer; no DB write at
+        // session start. See docs/plans/2026-05-07-retire-session-lifecycle.md.
+        const sid = crypto.randomUUID()
         const lessonScope = isLessonScopedSessionMode(sessionMode)
           ? await loadSelectedLessonScope(lessonFilter)
           : null
         if (isLessonScopedSessionMode(sessionMode) && !lessonScope) {
-          setSessionId(sid)
           setError('Deze les is nog niet klaar om te oefenen.')
           setLoading(false)
           return
@@ -117,7 +105,6 @@ export function Session() {
           ...(lessonScope ?? {}),
           adapter: capabilitySessionDataService,
         })
-        setSessionId(sid)
         setCapabilityPlan(capabilityPlan)
 
         // Resolve render contexts + fetch audio map. ExperiencePlayer is
@@ -157,17 +144,6 @@ export function Session() {
   }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, sessionMode])
 
   const handleNavigateHome = () => navigate('/')
-
-  const handleCapabilityPlanComplete = async () => {
-    if (sessionId) {
-      try {
-        await endSession(sessionId)
-      } catch (err) {
-        logError({ page: 'session', action: 'complete-capability-plan', error: err })
-      }
-    }
-    handleNavigateHome()
-  }
 
   const handleCapabilityAnswer = async (event: SessionAnswerEvent) => {
     if (!user || !capabilityPlan) return
@@ -244,7 +220,7 @@ export function Session() {
         audioMap={capabilityAudioMap}
         userLanguage={(profile?.language ?? 'nl') as 'en' | 'nl'}
         onAnswer={handleCapabilityAnswer}
-        onComplete={handleCapabilityPlanComplete}
+        onComplete={handleNavigateHome}
       />
     )
   }

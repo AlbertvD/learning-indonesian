@@ -1,5 +1,5 @@
 // src/pages/Podcast.tsx
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Text, Button, Paper, Group, Stack, Tabs } from '@mantine/core'
 import { IconChevronLeft, IconMicrophone } from '@tabler/icons-react'
@@ -11,8 +11,6 @@ import {
   EmptyState,
 } from '@/components/page/primitives'
 import { podcastService, type Podcast } from '@/services/podcastService'
-import { startSession, endSession } from '@/lib/session'
-import { useSessionBeacon } from '@/lib/useSessionBeacon'
 import { useAuthStore } from '@/stores/authStore'
 import { logError } from '@/lib/logger'
 import { notifications } from '@mantine/notifications'
@@ -27,19 +25,13 @@ export function Podcast() {
   const [podcast, setPodcast] = useState<Podcast | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
-  const sessionIdRef = useRef<string | null>(null)
-  useSessionBeacon(sessionIdRef)
 
   useEffect(() => {
     async function fetchData() {
       if (!podcastId || !user) return
       try {
-        const [podcastData, sid] = await Promise.all([
-          podcastService.getPodcast(podcastId),
-          startSession(user.id, 'podcast')
-        ])
+        const podcastData = await podcastService.getPodcast(podcastId)
         setPodcast(podcastData)
-        sessionIdRef.current = sid
       } catch (err) {
         logError({ page: 'podcast', action: 'fetchData', error: err })
         notifications.show({ color: 'red', title: T.common.error, message: T.podcast.failedToLoad })
@@ -49,15 +41,6 @@ export function Podcast() {
       }
     }
     fetchData()
-
-    return () => {
-      if (sessionIdRef.current) {
-        endSession(sessionIdRef.current).catch(err => {
-          logError({ page: 'podcast', action: 'endSession', error: err })
-          notifications.show({ color: 'red', title: T.common.error, message: T.common.somethingWentWrong })
-        })
-      }
-    }
   }, [podcastId, user, T.common.error, T.podcast.failedToLoad])
 
   if (loading) {
