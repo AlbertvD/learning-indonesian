@@ -1,5 +1,3 @@
-import { Rating } from 'ts-fsrs'
-import { computeNextState, inferRating } from '@/lib/fsrs'
 import type { CapabilityReadinessStatus, CapabilityPublicationStatus } from '@/services/capabilityService'
 
 export interface AnswerReport {
@@ -9,13 +7,6 @@ export interface AnswerReport {
   rawResponse: string | null
   normalizedResponse: string | null
   latencyMs: number | null
-}
-
-export interface ValidatedReviewOutcome {
-  rating: 1 | 2 | 3 | 4
-  wasCorrect: boolean
-  validatedBy: string
-  adapterValidated: boolean
 }
 
 export interface CapabilityScheduleSnapshot {
@@ -47,7 +38,6 @@ export interface CapabilityAnswerReportCommand {
   capabilityId: string
   canonicalKeySnapshot: string
   answerReport: AnswerReport
-  precomputedOutcome?: ValidatedReviewOutcome
   schedulerSnapshot: CapabilityScheduleSnapshot
   currentStateVersion?: number
   artifactVersionSnapshot: Record<string, unknown>
@@ -55,13 +45,6 @@ export interface CapabilityAnswerReportCommand {
   submittedAt: string
   capabilityReadinessStatus?: CapabilityReadinessStatus
   capabilityPublicationStatus?: CapabilityPublicationStatus
-}
-
-export interface CapabilityReviewCommitPlan extends CapabilityAnswerReportCommand {
-  rating: 1 | 2 | 3 | 4
-  stateBefore: CapabilityScheduleSnapshot
-  stateAfter: CapabilityScheduleSnapshot
-  fsrsAlgorithmVersion: 'ts-fsrs:language-learning-v1'
 }
 
 export interface CapabilityReviewCommitResult {
@@ -74,7 +57,7 @@ export interface CapabilityReviewCommitResult {
 
 interface CapabilityReviewProcessorDeps {
   service: {
-    commitCapabilityAnswerReport(plan: CapabilityReviewCommitPlan): Promise<CapabilityReviewCommitResult>
+    commitCapabilityAnswerReport(command: CapabilityAnswerReportCommand): Promise<CapabilityReviewCommitResult>
   }
 }
 
@@ -113,79 +96,19 @@ function ensureCapabilityCanBeReviewed(command: CapabilityAnswerReportCommand): 
   }
 }
 
-function resolveOutcome(command: CapabilityAnswerReportCommand): ValidatedReviewOutcome {
-  if (command.precomputedOutcome) {
-    if (!command.precomputedOutcome.adapterValidated) {
-      throw new InvalidReviewOutcomeError('Precomputed outcomes must be validated by an approved scoring adapter')
-    }
-    return command.precomputedOutcome
-  }
-
-  const rating = inferRating(command.answerReport)
-  return {
-    rating: rating as 1 | 2 | 3 | 4,
-    wasCorrect: command.answerReport.wasCorrect,
-    validatedBy: 'capability-review-processor',
-    adapterValidated: true,
-  }
-}
-
-function currentFsrsState(snapshot: CapabilityScheduleSnapshot) {
-  if (snapshot.activationState === 'dormant' || snapshot.stability == null || snapshot.difficulty == null) {
-    return null
-  }
-
-  return {
-    stability: snapshot.stability,
-    difficulty: snapshot.difficulty,
-    lastReviewedAt: snapshot.lastReviewedAt ? new Date(snapshot.lastReviewedAt) : null,
-  }
-}
-
-export function planCapabilityReviewCommit(command: CapabilityAnswerReportCommand): CapabilityReviewCommitPlan {
-  if (
-    command.currentStateVersion != null
-    && command.currentStateVersion !== command.schedulerSnapshot.stateVersion
-  ) {
-    throw new StaleSchedulerSnapshotError()
-  }
-
-  ensureCapabilityCanBeReviewed(command)
-  const outcome = resolveOutcome(command)
-  const reviewedAt = new Date(command.submittedAt)
-  const nextFsrs = computeNextState(currentFsrsState(command.schedulerSnapshot), outcome.rating, reviewedAt)
-  const isFailure = outcome.rating === Rating.Again
-
-  return {
-    ...command,
-    rating: outcome.rating,
-    stateBefore: command.schedulerSnapshot,
-    stateAfter: {
-      stateVersion: command.schedulerSnapshot.stateVersion + 1,
-      activationState: 'active',
-      activationSource: command.schedulerSnapshot.activationState === 'dormant'
-        ? 'review_processor'
-        : command.schedulerSnapshot.activationSource,
-      stability: nextFsrs.stability,
-      difficulty: nextFsrs.difficulty,
-      retrievability: nextFsrs.retrievability,
-      lastReviewedAt: command.submittedAt,
-      nextDueAt: nextFsrs.nextDueAt.toISOString(),
-      reviewCount: command.schedulerSnapshot.reviewCount + 1,
-      lapseCount: command.schedulerSnapshot.lapseCount + (isFailure && command.schedulerSnapshot.reviewCount > 0 ? 1 : 0),
-      consecutiveFailureCount: isFailure ? command.schedulerSnapshot.consecutiveFailureCount + 1 : 0,
-    },
-    fsrsAlgorithmVersion: 'ts-fsrs:language-learning-v1',
-  }
-}
-
 export async function commitCapabilityAnswerReport(
   command: CapabilityAnswerReportCommand,
   deps: CapabilityReviewProcessorDeps,
 ): Promise<CapabilityReviewCommitResult> {
   try {
-    const plan = planCapabilityReviewCommit(command)
-    return await deps.service.commitCapabilityAnswerReport(plan)
+    if (
+      command.currentStateVersion != null
+      && command.currentStateVersion !== command.schedulerSnapshot.stateVersion
+    ) {
+      throw new StaleSchedulerSnapshotError()
+    }
+    ensureCapabilityCanBeReviewed(command)
+    return await deps.service.commitCapabilityAnswerReport(command)
   } catch (error) {
     if (error instanceof StaleSchedulerSnapshotError) {
       return {
