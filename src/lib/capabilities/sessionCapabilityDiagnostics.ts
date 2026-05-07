@@ -45,15 +45,12 @@ function capabilityTypeFor(item: SessionQueueItem): CapabilityType | null {
   if (item.exerciseItem.exerciseType === 'recognition_mcq') return 'text_recognition'
   if (item.exerciseItem.exerciseType === 'listening_mcq') return 'audio_recognition'
   if (item.exerciseItem.exerciseType === 'dictation') return 'dictation'
-  if (item.exerciseItem.exerciseType === 'cloze') return item.source === 'grammar' ? 'pattern_recognition' : 'contextual_cloze'
+  if (item.exerciseItem.exerciseType === 'cloze') return 'contextual_cloze'
   return null
 }
 
 function sourceRefFor(item: SessionQueueItem): string | null {
-  if (item.source === 'vocab') {
-    return item.exerciseItem.learningItem?.id ? `learning_items/${item.exerciseItem.learningItem.id}` : null
-  }
-  return item.grammarPatternId
+  return item.exerciseItem.learningItem?.id ? `learning_items/${item.exerciseItem.learningItem.id}` : null
 }
 
 export function diagnoseSessionItems(input: {

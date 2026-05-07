@@ -2,10 +2,9 @@ import type { SessionQueueItem, SkillType } from '@/types/learning'
 
 export interface StableSessionItemIdentity {
   sessionItemId: string
-  source: 'vocab' | 'grammar'
+  source: 'vocab'
   sourceId: string
   skillType?: SkillType
-  grammarPatternId?: string
   capabilityKeyHint?: string
 }
 
@@ -17,27 +16,16 @@ export function getStableSessionItemIdentity(item: SessionQueueItem): StableSess
   const skillType = item.exerciseItem.skillType
   const exerciseType = item.exerciseItem.exerciseType
 
-  if (item.source === 'vocab') {
-    const sourceId = item.exerciseItem.learningItem?.id
-    if (!sourceId) {
-      throw new Error('Vocab session item is missing learning item id')
-    }
-
-    return {
-      sessionItemId: `vocab:${sourceId}:${skillType}:${exerciseType}`,
-      source: 'vocab',
-      sourceId,
-      skillType,
-    }
+  const sourceId = item.exerciseItem.learningItem?.id
+  if (!sourceId) {
+    throw new Error('Vocab session item is missing learning item id')
   }
 
-  const sourceId = item.grammarPatternId
   return {
-    sessionItemId: `grammar:${sourceId}:${skillType}:${exerciseType}`,
-    source: 'grammar',
+    sessionItemId: `vocab:${sourceId}:${skillType}:${exerciseType}`,
+    source: 'vocab',
     sourceId,
     skillType,
-    grammarPatternId: sourceId,
   }
 }
 
