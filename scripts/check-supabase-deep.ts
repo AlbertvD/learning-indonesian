@@ -54,7 +54,7 @@ const EXPECTED_GRANTS: Record<string, Record<string, string[]>> = {
   learner_skill_state:  { authenticated: ['SELECT', 'INSERT', 'UPDATE'] },
   review_events:        { authenticated: ['SELECT', 'INSERT'] },
   lesson_progress:      { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
-  learning_sessions:    { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
+  learning_sessions:    { authenticated: ['SELECT'] },
   error_logs:           { authenticated: ['INSERT'] },
   user_roles:           { authenticated: ['SELECT'] },
   audio_clips:          { authenticated: ['SELECT'] },
