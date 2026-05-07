@@ -12,14 +12,6 @@ import { supabase } from '@/lib/supabase'
 
 // ----- Public types -----
 
-export interface TodaysPlanRawCounts {
-  dueRaw: number
-  newRaw: number
-  weakRaw: number
-  recallSupplyRaw: number
-  meanLatencyMs: number
-}
-
 export interface LapsingCountResult {
   count: number
 }
@@ -50,8 +42,6 @@ export interface RecallAccuracyResult {
   recallTotal: number
 }
 
-export type RecallStatsForWeekResult = RecallAccuracyResult
-
 export interface VulnerableCapability {
   capabilityId: string
   canonicalKey: string
@@ -68,7 +58,6 @@ export interface ReviewForecastDay {
 }
 
 export interface LearnerProgressService {
-  getTodaysPlanRawCounts(input: { userId: string; now: Date }): Promise<TodaysPlanRawCounts>
   getLapsingCount(input: { userId: string }): Promise<LapsingCountResult>
   getLapsePrevention(input: { userId: string }): Promise<LapsePreventionResult>
   getMemoryHealth(input: { userId: string }): Promise<MemoryHealthResult>
@@ -76,22 +65,10 @@ export interface LearnerProgressService {
   getRecallAccuracyByDirection(input: { userId: string }): Promise<RecallAccuracyResult>
   getVulnerableCapabilities(input: { userId: string; limit?: number }): Promise<VulnerableCapability[]>
   getReviewForecast(input: { userId: string; days?: number; timezone: string }): Promise<ReviewForecastDay[]>
-  getStudyDaysCount(input: { userId: string; weekStartUtc: string; weekEndUtc: string; timezone: string }): Promise<number>
-  getRecallStatsForWeek(input: { userId: string; weekStartUtc: string; weekEndUtc: string }): Promise<RecallStatsForWeekResult>
-  getUsableVocabularyGain(input: { userId: string; weekStartUtc: string; weekEndUtc: string }): Promise<number>
-  getOverdueCount(input: { userId: string; timezone: string }): Promise<number>
   getCurrentStreakDays(input: { userId: string; timezone: string }): Promise<number>
 }
 
 // ----- Internal row shapes (snake_case as returned by PostgREST) -----
-
-interface PlanCountsRow {
-  due_raw: number
-  new_raw: number
-  weak_raw: number
-  recall_supply_raw: number
-  mean_latency_ms: number
-}
 
 interface LapsePreventionRow {
   at_risk: number
@@ -157,21 +134,6 @@ export function createLearnerProgressService(client: SchemaClient): LearnerProgr
   }
 
   return {
-    async getTodaysPlanRawCounts({ userId, now }) {
-      const rows = await rpc<PlanCountsRow[]>('compute_todays_plan_raw', 'getTodaysPlanRawCounts', {
-        p_user_id: userId,
-        p_now: now.toISOString(),
-      })
-      const r = rows[0]
-      return {
-        dueRaw: r.due_raw,
-        newRaw: r.new_raw,
-        weakRaw: r.weak_raw,
-        recallSupplyRaw: r.recall_supply_raw,
-        meanLatencyMs: r.mean_latency_ms,
-      }
-    },
-
     async getLapsingCount({ userId }) {
       const data = await rpc<number | null>('get_lapsing_count', 'getLapsingCount', { p_user_id: userId })
       return { count: data ?? 0 }
@@ -238,48 +200,6 @@ export function createLearnerProgressService(client: SchemaClient): LearnerProgr
         p_timezone: timezone,
       })
       return rows.map(r => ({ date: r.forecast_date, count: r.count }))
-    },
-
-    async getStudyDaysCount({ userId, weekStartUtc, weekEndUtc, timezone }) {
-      const data = await rpc<number | null>('get_study_days_count', 'getStudyDaysCount', {
-        p_user_id: userId,
-        p_week_start_utc: weekStartUtc,
-        p_week_end_utc: weekEndUtc,
-        p_timezone: timezone,
-      })
-      return data ?? 0
-    },
-
-    async getRecallStatsForWeek({ userId, weekStartUtc, weekEndUtc }) {
-      const rows = await rpc<RecallAccuracyRow[]>('get_recall_stats_for_week', 'getRecallStatsForWeek', {
-        p_user_id: userId,
-        p_week_start_utc: weekStartUtc,
-        p_week_end_utc: weekEndUtc,
-      })
-      const r = rows[0]
-      return {
-        recognitionCorrect: r.recognition_correct,
-        recognitionTotal: r.recognition_total,
-        recallCorrect: r.recall_correct,
-        recallTotal: r.recall_total,
-      }
-    },
-
-    async getUsableVocabularyGain({ userId, weekStartUtc, weekEndUtc }) {
-      const data = await rpc<number | null>('get_usable_vocabulary_gain', 'getUsableVocabularyGain', {
-        p_user_id: userId,
-        p_week_start_utc: weekStartUtc,
-        p_week_end_utc: weekEndUtc,
-      })
-      return data ?? 0
-    },
-
-    async getOverdueCount({ userId, timezone }) {
-      const data = await rpc<number | null>('get_overdue_count', 'getOverdueCount', {
-        p_user_id: userId,
-        p_timezone: timezone,
-      })
-      return data ?? 0
     },
 
     async getCurrentStreakDays({ userId, timezone }) {
