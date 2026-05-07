@@ -182,18 +182,19 @@ Password resets are handled by an admin via Supabase Studio. If email is needed 
 
 All lesson, vocabulary, and podcast content (including audio files) is **deployed via scripts**, not through any UI.
 
-### Two content paths — choose based on lesson number
+### Runtime is unified; authoring is split
 
-> **Critical:** Lessons 1–3 and lessons 4+ use completely different pipelines. Mixing them up causes vocabulary to appear in the lesson reader but never be schedulable in review sessions.
+**At runtime, every lesson goes through the capability pipeline.** `src/pages/Session.tsx:110` is the only production caller of any session builder, and it always invokes `loadCapabilitySessionPlanForUser({ enabled: true, ... })`. The legacy `buildSessionQueue` in `src/lib/sessionQueue.ts` has zero non-test callers — it survives only as a source of extracted helpers (the new builders in `src/lib/exercises/builders/` cite their lineage back to it). The `vocabulary` table is not read at runtime.
 
-| | Lessons 1–3 (legacy) | Lessons 4+ (pipeline) |
+**The split between lessons 1–3 and lessons 4+ is purely about *authoring* — how content gets into Supabase:**
+
+| | Lessons 1–3 (legacy authoring) | Lessons 4+ (staging pipeline) |
 |---|---|---|
-| Source of truth | `scripts/data/lessons.ts` + `vocabulary.ts` | `scripts/data/staging/lesson-N/` |
-| Vocabulary seeding | `make seed-vocabulary` → `vocabulary` table | `publish-approved-content.ts` → `learning_items` table |
-| Exercise scheduling | Runtime from `vocabulary` table | Runtime from `learning_items` + `exercise_variants` |
-| Seed command | `make seed-lessons` + `make seed-vocabulary` | `bun scripts/publish-approved-content.ts <N>` |
+| Source of truth | `scripts/data/lessons.ts` + `vocabulary.ts` (predates the staging pipeline) | `scripts/data/staging/lesson-N/` |
+| How content reaches Supabase | `make seed-lessons` + `make seed-vocabulary` (writes to `lesson_sections`, `vocabulary`, `learning_items`) | `bun scripts/publish-approved-content.ts <N>` (writes to `lesson_sections`, `learning_items`, capability artifacts) |
+| Bridge into capability path | `scripts/reverse-engineer-staging.ts` reconstructs staging files from the live DB; `scripts/auto-fill-capability-artifacts-from-legacy.ts` backfills capability artifacts. Capabilities flagged with `requiredSourceProgress.kind: 'none', reason: 'legacy_projection'` (see `src/lib/capabilities/capabilityTypes.ts:96`) skip the section-by-section progression gate. | Capability artifacts are written directly by `publish-approved-content.ts`. |
 
-**Never add vocabulary to `lessons.ts` for lessons 4+.** `lessons.ts` only populates display content (`lesson_sections`) — vocabulary in it will never be schedulable in review sessions. For lessons 4+, vocabulary lives in staging files and is published via `publish-approved-content.ts`.
+**Never add vocabulary to `lessons.ts` for lessons 4+.** `lessons.ts` only populates display content (`lesson_sections`). Runtime scheduling reads from capability rows projected off `learning_items` + capability artifacts — vocabulary added only to `lessons.ts` will never become schedulable. For lessons 4+, vocabulary lives in staging files and is published via `publish-approved-content.ts`.
 
 ---
 
