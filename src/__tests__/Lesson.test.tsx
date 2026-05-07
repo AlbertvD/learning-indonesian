@@ -33,16 +33,6 @@ vi.mock('@/lib/logger', () => ({
   logError: vi.fn(),
 }))
 
-vi.mock('@/lib/session', () => ({
-  startSession: vi.fn().mockResolvedValue('session-1'),
-  endSession: vi.fn().mockResolvedValue(undefined),
-  endSessionBeacon: vi.fn(),
-}))
-
-vi.mock('@/lib/useSessionBeacon', () => ({
-  useSessionBeacon: vi.fn(),
-}))
-
 vi.mock('@/services/lessonService', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/services/lessonService')>()
   return {

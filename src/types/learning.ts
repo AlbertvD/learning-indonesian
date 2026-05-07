@@ -251,10 +251,6 @@ export interface SessionQueueItem {
   learnerSkillState: LearnerSkillState | null
 }
 
-// === Session types ===
-
-export type SessionType = 'lesson' | 'learning' | 'podcast' | 'practice'
-
 // === Leaderboard types ===
 
 export type LeaderboardMetric = 'total_seconds_spent' | 'lessons_completed' | 'items_learned' | 'days_active'

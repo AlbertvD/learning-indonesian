@@ -1188,27 +1188,70 @@ In src/lib/reviews/capabilityReviewProcessor.ts:
 
 ### 3. Session lifecycle module
 
-**Why.** Sessions are derived from the answer log. `learning_sessions.end_time = MAX(answer.created_at)` per session id, upserted by the commit edge function. No explicit start/end calls needed; no stale-session repair needed.
+**Status: RETIRED in retirement #5 (2026-05-07, branch `retire/session-lifecycle`).** Spec: `docs/plans/2026-05-07-retire-session-lifecycle.md`. See that doc for the full per-symbol grep evidence and the corrections this section originally got wrong.
 
-**Retire:**
+**Why.** Sessions are derived from the answer log. `learning_sessions.ended_at = MAX(answer.created_at)` per session id, upserted by the `commit_capability_answer_report` Postgres RPC. No explicit start/end calls needed; no stale-session repair needed.
+
+**Retired (actual scope after grep verification):**
 
 ```
-src/lib/session.ts                              ~50 LOC
+src/lib/session.ts                              110 LOC (whole file)
   startSession, endSession, endSessionBeacon
 
-src/lib/useSessionBeacon.ts                     largely obsolete
-  (the pagehide / visibilitychange flush path. end_time is already
-   correct as of the last answer, with or without the tab surviving.
-   May retain a tiny version for any remaining sync-flush need; most
-   of it retires.)
+src/lib/useSessionBeacon.ts                     30 LOC (whole file)
+  (the original "largely obsolete" wording was wrong — under bundled scope
+   the file retires 100%. Lesson + Podcast pages also drop their explicit
+   session lifecycle, so no caller needs the beacon.)
+
+src/types/learning.ts:285                       1 LOC (SessionType type alias —
+                                                  orphaned once src/lib/session.ts retires)
+
+Caller surgery:
+  src/pages/Session.tsx                         drops imports + sessionId useState +
+                                                 sessionIdRef + useSessionBeacon; mints
+                                                 sid via crypto.randomUUID()
+  src/pages/Lesson.tsx                          drops imports + sessionIdRef + beacon +
+                                                 startSession/endSession lifecycle
+  src/pages/Podcast.tsx                         same surgery as Lesson.tsx + drops
+                                                 entire return cleanup arrow
 
 Postgres functions:
-  indonesian.job_finalize_stale_sessions        not needed under the
-                                                 derived-from-answers
-                                                 model
+  indonesian.job_finalize_stale_sessions        retired (no callers under the
+                                                 derived-from-answers model)
+
+Postgres cron:
+  finalize-stale-sessions                       hourly cron job retired
+
+RLS policies:
+  learning_sessions_write                       dropped — was FOR ALL granted to
+                                                 authenticated; under #5 the underlying
+                                                 GRANT narrows to SELECT only, so the
+                                                 INSERT/UPDATE/DELETE branches were dead.
+                                                 SELECT continues via learning_sessions_read.
+
+GRANT narrowing:
+  indonesian.learning_sessions                  authenticated GRANT narrowed from
+                                                 (SELECT, INSERT, UPDATE, DELETE) to
+                                                 (SELECT only). Defense-in-depth: only
+                                                 the service_role RPC writes.
+
+RPC modification:
+  commit_capability_answer_report               adds submittedAt to required-fields
+                                                 validation + new learning_sessions
+                                                 UPSERT before final return; session_type
+                                                 hardcoded 'learning' (only the capability
+                                                 path commits via this RPC).
 ```
 
-**Architectural shift.** Each call to `buildSession` mints a fresh sessionId client-side. The first answer commit upserts the row. The next session's first commit auto-closes the previous session (its `end_time` was already correct from its last answer).
+**Architectural shift (corrected).** `pages/Session.tsx` mints a fresh sessionId client-side via `crypto.randomUUID()` (not via `buildSession` — the doc's prior framing assumed buildSession was the only minting site, but session minting is upstream of buildSession in the actual data flow). The first answer commit upserts the row with `started_at = ended_at = submittedAt`. Subsequent answers update `ended_at = GREATEST(existing, submittedAt)`. Sessions with zero answers leave no row (improvement over pre-#5 ghost rows). One-answer sessions have `duration_seconds = 0` (acceptable: a single-click session has zero meaningful duration).
+
+**Doc-claim corrections logged during retirement #5:**
+
+1. **Three caller pages, not one.** `startSession` was called by `Session.tsx`, `Lesson.tsx`, AND `Podcast.tsx`. Doc framing focused on `Session.tsx` / `buildSession` only — the Lesson + Podcast paths had to be bundled into the same retirement.
+2. **Upsert lives in the RPC, not the edge function TS.** Doc §1039 said "the commit edge function… upserts `learning_sessions`". Reality: the edge function delegates DB writes to the Postgres RPC `commit_capability_answer_report`. Upsert lives in the RPC.
+3. **`capability_review_events.session_id` is `text not null` with NO FK** to `learning_sessions.id`. Wire format is unblocked — events can be written before any session row exists; the upsert fires in the same RPC transaction without dependency ordering.
+4. **Test surgery: `src/__tests__/Lesson.test.tsx`** mocks all four exports of `@/lib/session` + `@/lib/useSessionBeacon`. Doc never enumerated test surgery.
+5. **Leaderboard view semantic shift.** `total_seconds_spent` and `days_active` no longer count Lesson reading or Podcast listening (only answer-emitting study). One-answer sessions also have `duration_seconds = 0` by construction. Acceptable per the streak-only motivation lock-in.
 
 ---
 
@@ -1329,10 +1372,9 @@ If event tracking becomes useful later, design it then with whatever events actu
 ```
 src/lib/sessionQueue.ts                         CLAUDE.md flags zero
                                                  non-test callers; legacy
-src/lib/session.ts                              session lifecycle (already
-                                                 retired in #3 above)
+src/lib/session.ts                              RETIRED in retirement #5
 src/lib/sessionPolicies.ts                      folds into lib/session-builder/
-src/lib/useSessionBeacon.ts                     largely retires with #3
+src/lib/useSessionBeacon.ts                     RETIRED in retirement #5
 src/lib/useExerciseScoring.ts                   relocate to src/hooks/
                                                  (it's a hook, not lib code)
 ```
@@ -1368,7 +1410,7 @@ This document captures *decisions*. The codebase has not yet been refactored. Ev
    - Grammar-state subsystem (dead, no callers) — DONE (#2, PR #35)
 2. **Goal subsystem retirement.** DONE (#4, 2026-05-07, branch `retire/goal-subsystem`). Bundled with event-log retirement (originally listed as a separate step) since all 3 event-log call sites were goal-flavoured. ~3700 LOC + 5 tables + 9 functions + 4 cron jobs. See `docs/plans/2026-05-07-retire-goal-subsystem.md`.
 3. **Browser FSRS retirement.** DONE (#3, PR #36). Move `inferRating` to `_shared/srs/`; delete `src/lib/fsrs.ts`; simplify `capabilityReviewProcessor.ts`; delete `previewScheduleUpdate`.
-4. **Session lifecycle retirement.** Replace `startSession`/`endSession` with the upsert-from-commit pattern. Delete `lib/session.ts` and most of `useSessionBeacon`.
+4. **Session lifecycle retirement.** DONE (#5, 2026-05-07, branch `retire/session-lifecycle`). Replaced `startSession`/`endSession` with client-side UUID minting + RPC-side upsert from answer commits. Deleted `lib/session.ts` (110 LOC) and `useSessionBeacon.ts` (30 LOC) entirely; bundled Lesson + Podcast caller surgery; dropped `job_finalize_stale_sessions` cron + function; dropped dead `learning_sessions_write` RLS policy; narrowed `learning_sessions` GRANT to SELECT only. ~221 LOC + 1 fn + 1 cron + 1 RLS policy + RPC modification. See `docs/plans/2026-05-07-retire-session-lifecycle.md`.
 5. **Source-progress retirement → lesson-activation.** Add the `learner_lesson_activation` table; auto-activate legacy lessons (1–3) for existing users; add the activation checkbox to the lesson page; rewrite the eligibility filter; simplify the mastery model. Delete `sourceProgressService`, `sourceProgressGates`, `lessonExposureProgress`, the source-progress tables and RPC.
 6. **Module folds.** One at a time. Suggested order: lessons, capabilities (cleanup), session-builder, exercise-content, analytics (incl. mastery), audio, auth, profile.
 7. **Legacy `src/lib/` root cleanup.** Last, after the modules above are folded.

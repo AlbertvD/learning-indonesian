@@ -18,8 +18,6 @@ import {
   type LessonSourceProgressRow,
 } from '@/services/lessonService'
 import { sourceProgressService, type SourceProgressState } from '@/services/sourceProgressService'
-import { startSession, endSession } from '@/lib/session'
-import { useSessionBeacon } from '@/lib/useSessionBeacon'
 import { useAuthStore } from '@/stores/authStore'
 import { buildLessonExperience, type LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
 import { buildLessonPracticeActions, type LessonPracticeActionState } from '@/lib/lessons/lessonActionModel'
@@ -82,10 +80,8 @@ export function Lesson() {
   const [lessonSourceProgress, setLessonSourceProgress] = useState<LessonSourceProgressRow[]>([])
   const [readyCapabilityCount, setReadyCapabilityCount] = useState(0)
   const [activePracticedCapabilityCount, setActivePracticedCapabilityCount] = useState(0)
-  const sessionIdRef = useRef<string | null>(null)
   const readerOpenedRef = useRef<string | null>(null)
   const practiceReadyToastShownRef = useRef<Set<string>>(new Set())
-  useSessionBeacon(sessionIdRef)
 
   useEffect(() => {
     let cancelled = false
@@ -105,13 +101,9 @@ export function Lesson() {
       setActivePracticedCapabilityCount(0)
 
       try {
-        const [lessonData, sid] = await Promise.all([
-          lessonService.getLesson(lessonId),
-          startSession(userId, 'lesson'),
-        ])
+        const lessonData = await lessonService.getLesson(lessonId)
         if (cancelled) return
 
-        sessionIdRef.current = sid
         setLesson(lessonData)
 
         const canonicalSourceRef = lessonSourceRefForOverview(lessonData)
@@ -152,14 +144,8 @@ export function Lesson() {
 
     return () => {
       cancelled = true
-      if (sessionIdRef.current) {
-        endSession(sessionIdRef.current).catch(err => {
-          logError({ page: 'lesson', action: 'endSession', error: err })
-          notifications.show({ color: 'red', title: T.common.error, message: T.common.somethingWentWrong })
-        })
-      }
     }
-  }, [lessonId, userId, T.common.error, T.common.somethingWentWrong, T.lessons.failedToLoadLesson])
+  }, [lessonId, userId, T.common.error, T.lessons.failedToLoadLesson])
 
   const upsertLessonSourceProgress = useCallback((state: SourceProgressState) => {
     setLessonSourceProgress(rows => [
