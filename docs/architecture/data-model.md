@@ -273,7 +273,7 @@ duration_seconds integer GENERATED ALWAYS AS (EXTRACT(EPOCH FROM (ended_at - sta
 
 ### `lesson_progress`
 
-Tracks lesson completion per user.
+**Retirement #6 (2026-05-07)** — Now orphan data. The legacy `progressService.markLessonComplete` write path retired with the source-progress reader. Existing rows were promoted to `learner_lesson_activation` via the master-migration backfill (preserving the "started" status for any user who clicked through legacy lessons before this retirement). No future writes; reads survive only as a fallback in `get_lessons_overview`'s `has_started_lesson` derivation. A follow-up retirement can drop the table after a quiet period.
 
 ```sql
 id                uuid PK
@@ -283,6 +283,23 @@ completed_at      timestamptz
 sections_completed text[] DEFAULT '{}'
 UNIQUE(user_id, lesson_id)
 ```
+
+### `learner_lesson_activation`
+
+**Retirement #6 (2026-05-07)** — New. Replaces the source-progress state machine. Existence of a row signals that the learner has activated that lesson — capabilities owned by that lesson are then eligible for new-capability introduction in the planner. Writes go through the `set_lesson_activation` RPC (`SECURITY DEFINER`, identity-checked); the `authenticated` GRANT is `SELECT`-only per the defense-in-depth pattern from retirement #5. New sign-ins auto-activate lessons 1–3 via the `authStore.onAuthStateChange` SIGNED_IN hook (idempotent via `ON CONFLICT DO NOTHING`); existing users were backfilled at retirement deploy time from `auth.users × lessons WHERE order_index IN (1, 2, 3)` and from the legacy `lesson_progress` rows.
+
+```sql
+user_id      uuid FK → auth.users
+lesson_id    uuid FK → indonesian.lessons
+activated_at timestamptz DEFAULT now()
+PRIMARY KEY (user_id, lesson_id)
+```
+
+The `set_lesson_activation(p_user_id, p_lesson_id, p_activated)` RPC is the only write surface — `INSERT ON CONFLICT DO NOTHING` for `p_activated = true`, `DELETE` for `p_activated = false`. Validates `auth.uid() = p_user_id` (service-role bypass) and `EXISTS lesson` before writing.
+
+### `learner_source_progress_events` and `learner_source_progress_state`
+
+**Retirement #6 (2026-05-07)** — Both tables D-R-O-P-P-E-D with CASCADE in the cleanup phase. The 7-event state machine retired in favour of `learner_lesson_activation`. The `record_source_progress_event` RPC and the `_capability_source_progress_met` analytics helper retired alongside.
 
 ---
 

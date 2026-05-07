@@ -1257,9 +1257,9 @@ RPC modification:
 
 ### 4. Source-progress state machine
 
-**Why.** Replaced by a single per-lesson activation checkbox. The 7-event state machine, inclusion rules, evidence-bypass policy, exposure-map translator, and idempotent event-log were all in service of inferring "has the user been exposed enough" — which the user can simply tell us.
+**Status: RETIRED in retirement #6 (2026-05-07, branch `retire/source-progress`).** Replaced by a single per-lesson activation checkbox. The 7-event state machine, inclusion rules, evidence-bypass policy, exposure-map translator, and idempotent event-log were all in service of inferring "has the user been exposed enough" — which the user can simply tell us.
 
-**Retire:**
+**Retired:**
 
 ```
 src/services/sourceProgressService.ts           ~161 LOC
@@ -1267,19 +1267,19 @@ src/lib/pedagogy/sourceProgressGates.ts         ~94 LOC
 src/lib/lessons/lessonExposureProgress.ts       ~48 LOC
 
 Postgres functions:
-  indonesian.record_source_progress_event       ~80 LOC
+  indonesian.record_source_progress_event       ~140 LOC plpgsql
+  indonesian._capability_source_progress_met    ~60 LOC plpgsql
 
 Tables:
   indonesian.learner_source_progress_events
   indonesian.learner_source_progress_state
 
+Column:
+  indonesian.lesson_page_blocks.source_progress_event (DROPPED)
+
 Type field on capabilities:
   CapabilitySourceProgressRequirement           (kind, requiredState, sourceRef)
   + the requiredSourceProgress field in capability metadata
-
-Call sites:
-  All emit-on-interaction calls in pages/Lesson.tsx (lines 184, 212)
-  All progress UI in components/lessons/LessonReader.tsx
 ```
 
 **Replaced by.** A single boolean per learner per lesson:
@@ -1293,7 +1293,9 @@ create table indonesian.learner_lesson_activation (
 );
 ```
 
-Owned by `lib/lessons/`. The session-builder's eligibility filter becomes one line. The mastery model's `'introduced'` label simplifies. The lesson reader becomes purely informational.
+Owned by `lib/lessons/`. The session-builder's eligibility filter is now `capability.lessonId == null || activatedLessons.has(capability.lessonId)`. The mastery model's `'introduced'` label depends on `lessonActivated` instead of source-progress state. The lesson reader is purely informational. New users get lessons 1–3 auto-activated on first sign-in via `authStore.activateStarterLessons` (idempotent, gated on the `SIGNED_IN` auth event). Existing users have the same activation backfilled by master `migration.sql`.
+
+`learning_capabilities` gained a nullable `lesson_id` column — NULL for cross-lesson capabilities (podcast, etc.); otherwise the capability is owned by that lesson and gated by activation.
 
 ---
 
@@ -1411,7 +1413,7 @@ This document captures *decisions*. The codebase has not yet been refactored. Ev
 2. **Goal subsystem retirement.** DONE (#4, 2026-05-07, branch `retire/goal-subsystem`). Bundled with event-log retirement (originally listed as a separate step) since all 3 event-log call sites were goal-flavoured. ~3700 LOC + 5 tables + 9 functions + 4 cron jobs. See `docs/plans/2026-05-07-retire-goal-subsystem.md`.
 3. **Browser FSRS retirement.** DONE (#3, PR #36). Move `inferRating` to `_shared/srs/`; delete `src/lib/fsrs.ts`; simplify `capabilityReviewProcessor.ts`; delete `previewScheduleUpdate`.
 4. **Session lifecycle retirement.** DONE (#5, 2026-05-07, branch `retire/session-lifecycle`). Replaced `startSession`/`endSession` with client-side UUID minting + RPC-side upsert from answer commits. Deleted `lib/session.ts` (110 LOC) and `useSessionBeacon.ts` (30 LOC) entirely; bundled Lesson + Podcast caller surgery; dropped `job_finalize_stale_sessions` cron + function; dropped dead `learning_sessions_write` RLS policy; narrowed `learning_sessions` GRANT to SELECT only. ~221 LOC + 1 fn + 1 cron + 1 RLS policy + RPC modification. See `docs/plans/2026-05-07-retire-session-lifecycle.md`.
-5. **Source-progress retirement → lesson-activation.** Add the `learner_lesson_activation` table; auto-activate legacy lessons (1–3) for existing users; add the activation checkbox to the lesson page; rewrite the eligibility filter; simplify the mastery model. Delete `sourceProgressService`, `sourceProgressGates`, `lessonExposureProgress`, the source-progress tables and RPC.
+5. **Source-progress retirement → lesson-activation.** DONE (#6, 2026-05-07, branch `retire/source-progress`). Added the `learner_lesson_activation` table + `set_lesson_activation` RPC; auto-activated legacy lessons (1–3) for existing users via master-migration backfill, and for new sign-ins via the `authStore.onAuthStateChange` SIGNED_IN hook; replaced the lesson-page mark-as-X buttons with a single Mantine activation Checkbox; rewrote the eligibility filter from `isSourceProgressSatisfied` to `capability.lessonId == null || activatedLessons.has(capability.lessonId)`; simplified mastery rule 2 to depend on `lessonActivated` instead of `sourceProgressState`. Deleted `sourceProgressService`, `sourceProgressGates`, `lessonExposureProgress`, the source-progress tables, the `record_source_progress_event` + `_capability_source_progress_met` RPCs, the `lesson_page_blocks.source_progress_event` column, and ~2,820 staging-file occurrences. Added `learning_capabilities.lesson_id` for the eligibility gate. ~4,173 LOC delete + ~830 LOC add. See `docs/plans/2026-05-07-retire-source-progress.md`.
 6. **Module folds.** One at a time. Suggested order: lessons, capabilities (cleanup), session-builder, exercise-content, analytics (incl. mastery), audio, auth, profile.
 7. **Legacy `src/lib/` root cleanup.** Last, after the modules above are folded.
 8. **Test colocation.** Disperse `src/__tests__/` into the modules.
