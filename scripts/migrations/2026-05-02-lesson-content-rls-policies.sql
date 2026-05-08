@@ -75,17 +75,11 @@ create policy "capability review events owner read"
   to authenticated
   using (user_id = auth.uid());
 
-drop policy if exists "source progress events owner read" on indonesian.learner_source_progress_events;
-create policy "source progress events owner read"
-  on indonesian.learner_source_progress_events for select
-  to authenticated
-  using (user_id = auth.uid());
-
-drop policy if exists "source progress state owner read" on indonesian.learner_source_progress_state;
-create policy "source progress state owner read"
-  on indonesian.learner_source_progress_state for select
-  to authenticated
-  using (user_id = auth.uid());
+-- Source-progress policies removed in retirement #6 (2026-05-07) — the
+-- learner_source_progress_events and learner_source_progress_state tables
+-- were dropped CASCADE in the cleanup migration. Re-running this script
+-- against a post-#6 DB would otherwise abort the entire transaction with
+-- "relation does not exist" before any policy lands.
 
 notify pgrst, 'reload schema';
 

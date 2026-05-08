@@ -9,59 +9,54 @@ hasn't been fixed yet, and the **fix** that should land.
 
 ---
 
-## 1. Capability tables — RLS enabled with zero policies
+## 1. Two capability tables — RLS enabled with zero policies
 
-**Surfaced:** 2026-05-02 (per CLAUDE.md). Reconfirmed at every
-`make check-supabase-deep` invocation since.
+**Surfaced:** 2026-05-02 originally; partially fixed on 2026-05-08 (the
+ten-table version) when the regression turned out to be actively breaking
+the lesson reader at deploy time, not just a latent risk. The hard-fix
+(re-applying `scripts/migrations/2026-05-02-lesson-content-rls-policies.sql`)
+landed for 8 of the 10 tables; two stragglers remain.
 
-**What's broken.** Ten capability-related tables have row-level security
-enabled but zero policies declared. Under PostgREST, every SELECT/INSERT
-from `authenticated` is denied for these tables — only `service_role` calls
-succeed. The runtime app currently routes capability reads through the
-`indonesian` schema RPCs (`get_lessons_overview`,
-`commit_capability_answer_report`) which run `SECURITY DEFINER` and bypass
-RLS, so the user-facing failure mode is masked. Direct PostgREST queries
-from the browser to any of these tables would 403.
+**What's broken.** Two capability-related tables still have row-level
+security enabled with zero policies declared. Under PostgREST, every
+SELECT/INSERT from `authenticated` is denied for these tables — only
+`service_role` calls succeed. Runtime impact is currently nil because no
+production code path reads from these two tables under the authenticated
+role.
 
 **Affected tables:**
 
 ```
-indonesian.capability_aliases
-indonesian.capability_artifacts
-indonesian.capability_content_units
 indonesian.capability_resolution_failure_events
-indonesian.capability_review_events
-indonesian.content_units
-indonesian.learner_capability_state
 indonesian.learner_lesson_engagement
-indonesian.learning_capabilities
-indonesian.lesson_page_blocks
 ```
 
-**Why unfixed.** A deploy on 2026-05-02 enabled RLS on these tables without
-declaring the matching SELECT policies. The original migration that should
-declare them lives at
-`scripts/migrations/2026-05-02-lesson-content-rls-policies.sql` but has not
-been re-applied since the regression. The `check-supabase-deep` rule was
-hardened at the same time so the regression is *visible* on every health
-run, but no follow-up landed.
+**Why unfixed.** The 2026-05-02 migration didn't declare policies for
+either table. They're write-only-from-RPCs surfaces today, so they don't
+trip the runtime. Adding owner-read policies (`user_id = auth.uid()`) is
+trivial but hasn't been spec'd yet.
 
-**Fix.**
+**Fix.** Author + apply a small migration declaring two policies:
 
-```bash
-PGPASSWORD=$POSTGRES_PASSWORD ssh mrblond@master-docker \
-  "sudo docker exec -i supabase-db psql -U postgres -d postgres -v ON_ERROR_STOP=1" \
-  < scripts/migrations/2026-05-02-lesson-content-rls-policies.sql
+```sql
+alter table indonesian.capability_resolution_failure_events enable row level security;
+drop policy if exists "capability resolution failure events owner read"
+  on indonesian.capability_resolution_failure_events;
+create policy "capability resolution failure events owner read"
+  on indonesian.capability_resolution_failure_events for select
+  to authenticated using (user_id = auth.uid());
+
+alter table indonesian.learner_lesson_engagement enable row level security;
+drop policy if exists "learner lesson engagement owner read"
+  on indonesian.learner_lesson_engagement;
+create policy "learner lesson engagement owner read"
+  on indonesian.learner_lesson_engagement for select
+  to authenticated using (user_id = auth.uid());
 ```
 
-After applying, re-run `make check-supabase-deep` — the ten "RLS enabled
-with ZERO policies" errors should clear. Until they do, a future deploy
-that drops the SECURITY DEFINER bypass (e.g. switching an RPC to
-SECURITY INVOKER) would expose every authenticated user to a 403 on the
-affected table.
-
-**Blocked on.** Nothing technical — the SQL is ready to apply. Holding for
-a quiet window so any unintended policy drift is easy to attribute.
+**Blocked on.** Decision on whether `learner_lesson_engagement` should be
+retired entirely (its retirement-candidacy was flagged in
+`docs/target-architecture.md` but no PR has landed).
 
 ---
 
