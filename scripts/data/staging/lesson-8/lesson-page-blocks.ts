@@ -42,7 +42,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Cultuur - Batik"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -160,7 +159,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Di Sarinah Jaya"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -374,7 +372,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Woordenlijst"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -408,7 +405,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Uitdrukkingen"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -435,7 +431,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -512,7 +507,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -550,7 +544,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -588,7 +581,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -631,7 +623,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -678,7 +669,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -713,7 +703,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -749,7 +738,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -790,7 +778,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -825,7 +812,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -871,7 +857,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -905,7 +890,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -1026,7 +1010,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:form_recall:l1_to_id:text:none",
       "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:l1_to_id_choice:l1_to_id:text:none",
@@ -1432,7 +1415,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/adat:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/adat:l1_to_id_choice:l1_to_id:text:nl",
@@ -1660,7 +1642,6 @@ export const lessonPageBlocks = [
     "payload_json": {
       "label": "Oefen deze les"
     },
-    "source_progress_event": "intro_completed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/adat:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:text_recognition:id_to_l1:text:none",
@@ -1746,7 +1727,6 @@ export const lessonPageBlocks = [
     "payload_json": {
       "title": "Samenvatting"
     },
-    "source_progress_event": "lesson_completed",
     "capability_key_refs": []
   }
 ]

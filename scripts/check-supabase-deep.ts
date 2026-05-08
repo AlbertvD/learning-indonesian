@@ -38,6 +38,7 @@ const EXPECTED_TABLES = [
   'learning_sessions',
   'error_logs',
   'audio_clips',
+  'learner_lesson_activation',  // retirement #6
 ]
 
 // Expected grants: table → { role → privileges[] }
@@ -58,6 +59,7 @@ const EXPECTED_GRANTS: Record<string, Record<string, string[]>> = {
   error_logs:           { authenticated: ['INSERT'] },
   user_roles:           { authenticated: ['SELECT'] },
   audio_clips:          { authenticated: ['SELECT'] },
+  learner_lesson_activation: { authenticated: ['SELECT'] },  // retirement #6 — writes via RPC only
 }
 
 // ── Fetch schema health report ─────────────────────────────────────────────

@@ -38,16 +38,7 @@ export interface LessonPageBlock {
   block_kind: 'hero' | 'section' | 'exposure' | 'practice_bridge' | 'recap'
   display_order: number
   payload_json: Record<string, unknown>
-  source_progress_event: string | null
   capability_key_refs: string[]
-}
-
-export interface LessonSourceProgressRow {
-  source_ref: string
-  source_section_ref: string
-  current_state: string
-  completed_event_types: string[]
-  last_event_at: string
 }
 
 export interface LessonCapabilityPracticeSummary {
@@ -165,7 +156,6 @@ export interface LessonOverviewRow {
   is_published: boolean | null
   lesson_sections: LessonSection[]
   has_started_lesson: boolean
-  has_meaningful_exposure: boolean
   has_page_blocks: boolean
   ready_capability_count: number
   practiced_eligible_capability_count: number
@@ -231,18 +221,6 @@ export const lessonService = {
       .order('display_order')
     if (error) throw error
     return (data ?? []) as LessonPageBlock[]
-  },
-
-  async getLessonSourceProgress(userId: string, sourceRefs: string[]): Promise<LessonSourceProgressRow[]> {
-    if (sourceRefs.length === 0) return []
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('learner_source_progress_state')
-      .select('source_ref, source_section_ref, current_state, completed_event_types, last_event_at')
-      .eq('user_id', userId)
-      .in('source_ref', [...new Set(sourceRefs)])
-    if (error) throw error
-    return (data ?? []) as LessonSourceProgressRow[]
   },
 
   async getLessonCapabilityPracticeSummary(userId: string, sourceRefs: string[]): Promise<LessonCapabilityPracticeSummary> {

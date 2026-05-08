@@ -2,7 +2,6 @@ import { projectCapabilities } from '../../src/lib/capabilities/capabilityCatalo
 import { ARTIFACT_KINDS } from '../../src/lib/capabilities/artifactRegistry'
 import type {
   ArtifactKind,
-  CapabilitySourceProgressRequirement,
   CurrentAffixedFormPair,
   ProjectedCapability,
 } from '../../src/lib/capabilities/capabilityTypes'
@@ -87,10 +86,6 @@ export interface StagingLessonPageBlock {
   block_kind: 'hero' | 'section' | 'exposure' | 'practice_bridge' | 'recap'
   display_order: number
   payload_json: Record<string, unknown>
-  source_progress_event?: Extract<
-    CapabilitySourceProgressRequirement,
-    { kind: 'source_progress' }
-  >['requiredState']
   capability_key_refs: string[]
 }
 
@@ -641,7 +636,6 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
             title: section.title,
             intro,
           },
-          source_progress_event: 'pattern_noticing_seen',
           capability_key_refs: [],
         })
       }
@@ -668,7 +662,6 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
             title,
             categories: [category],
           },
-          source_progress_event: 'pattern_noticing_seen',
           capability_key_refs: patternUnit ? capabilitiesByUnitSlug.get(patternUnit.unit_slug) ?? [] : [],
         })
       })
@@ -686,7 +679,6 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
           type: contentType,
           title: section.title,
         },
-        source_progress_event: 'section_exposed',
         capability_key_refs: [],
       })
     }
@@ -720,7 +712,6 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
             : '',
         })),
       },
-      source_progress_event: 'pattern_noticing_seen',
       capability_key_refs: affixedFormPairUnits.flatMap(unit => capabilitiesByUnitSlug.get(unit.unit_slug) ?? []),
     })
   }
@@ -762,7 +753,6 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
           dutch: item.translation_nl ?? '',
         })),
       },
-      source_progress_event: 'section_exposed',
       capability_key_refs: stripCapabilityKeys,
     })
   })
@@ -781,7 +771,6 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
     payload_json: {
       label: 'Oefen deze les',
     },
-    source_progress_event: 'intro_completed',
     capability_key_refs: recognitionCapabilityKeys,
   })
 
@@ -794,7 +783,6 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
     block_kind: 'recap',
     display_order: 9999,
     payload_json: { title: 'Samenvatting' },
-    source_progress_event: 'lesson_completed',
     capability_key_refs: [],
   })
 

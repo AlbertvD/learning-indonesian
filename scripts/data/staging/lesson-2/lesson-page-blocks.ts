@@ -82,7 +82,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Di Indonesia (dialoog)"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -309,7 +308,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Woordenlijst"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -339,7 +337,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Uitdrukkingen"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -397,7 +394,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Telwoorden"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -414,7 +410,6 @@ export const lessonPageBlocks = [
       "title": "Het voorvoegsel SE-",
       "intro": "Bij andere woorden dan telwoorden heeft SE- de betekenis van het onbepaald lidwoord \"een\" ('n). Dikwijls wordt SE- gebruikt in combinatie met een classificeerwoord. Dit woord deelt het zelfstandig naamwoord in bij een bepaalde groep (bijvoorbeeld mensen, dieren, voorwerpen)."
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -440,7 +435,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -457,7 +451,6 @@ export const lessonPageBlocks = [
       "title": "Grammatica: Zinsbouw en woordgroepen",
       "intro": "Een Indonesische zin bestaat altijd uit groepen woorden die bij elkaar horen. Men kan de zin alleen begrijpen als men in staat is te bepalen wat bij wat hoort."
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -485,7 +478,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -502,7 +494,6 @@ export const lessonPageBlocks = [
       "title": "Grammatica: ini & itu",
       "intro": "ini = dit, deze | itu = die, dat"
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -545,7 +536,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -588,7 +578,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -630,7 +619,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -647,7 +635,6 @@ export const lessonPageBlocks = [
       "title": "Grammatica: Ontkenning met tidak",
       "intro": "De ontkenning tidak = niet, nee. Tidak wordt geplaatst voor het woord dat ontkend wordt."
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -675,7 +662,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -692,7 +678,6 @@ export const lessonPageBlocks = [
       "title": "Grammatica: Bijvoeglijk naamwoord",
       "intro": "Het bijvoeglijk naamwoord wordt binnen de woordgroep achter het zelfstandig naamwoord geplaatst en wordt zonder pauze, samen met het zelfstandig naamwoord, uitgesproken."
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -719,7 +704,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -835,7 +819,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -876,7 +859,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Cultuur: Boeddhisme en de Borobudur"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -919,7 +901,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/tas:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/tas:l1_to_id_choice:l1_to_id:text:nl",
@@ -1027,7 +1008,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/di-mana:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/di-mana:l1_to_id_choice:l1_to_id:text:nl",
@@ -1389,7 +1369,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/bagus:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/bagus:l1_to_id_choice:l1_to_id:text:nl",
@@ -1601,7 +1580,6 @@ export const lessonPageBlocks = [
     "payload_json": {
       "label": "Oefen deze les"
     },
-    "source_progress_event": "intro_completed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/ada:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/apel:text_recognition:id_to_l1:text:nl",
@@ -1682,7 +1660,6 @@ export const lessonPageBlocks = [
     "payload_json": {
       "title": "Samenvatting"
     },
-    "source_progress_event": "lesson_completed",
     "capability_key_refs": []
   }
 ]

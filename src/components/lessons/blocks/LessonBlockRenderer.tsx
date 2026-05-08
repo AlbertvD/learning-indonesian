@@ -1,20 +1,12 @@
-import { useEffect, useRef } from 'react'
-import { IconCheck, IconBulb, IconArrowRight } from '@tabler/icons-react'
-import { HeroCard, StatusPill } from '@/components/page/primitives'
+import { IconBulb, IconArrowRight } from '@tabler/icons-react'
+import { HeroCard } from '@/components/page/primitives'
 import type { LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
-import type { LessonExposureKind } from '@/lib/lessons/lessonExposureProgress'
-import { isMeaningfulDialogueAudio, isMeaningfulGrammarAudio } from '@/lib/lessons/lessonReadiness'
-import type { SourceProgressState } from '@/services/sourceProgressService'
 import classes from '../LessonReader.module.css'
 
 const AUDIO_POSITION_PREFIX = 'lesson-audio-position'
-const MEANINGFUL_TEXT_EXPOSURE_MS = 120_000
 
 interface LessonBlockRendererProps {
   block: LessonExperienceBlock
-  progress?: SourceProgressState | null
-  onProgress: (block: LessonExperienceBlock) => void
-  onLessonExposureProgress?: (block: LessonExperienceBlock, exposureKind: LessonExposureKind) => void
 }
 
 function textFromPayload(payload: Record<string, unknown>): string {
@@ -115,32 +107,10 @@ function saveAudioPosition(audio: HTMLAudioElement, key: string) {
   localStorage.setItem(key, String(Math.round(audio.currentTime)))
 }
 
-function payloadType(block: LessonExperienceBlock): string | null {
-  return typeof block.payload.type === 'string' ? block.payload.type : null
-}
-
-function exposureKindForText(block: LessonExperienceBlock): LessonExposureKind | null {
-  const type = payloadType(block)
-  if (type === 'grammar') return 'grammar_text'
-  if (type === 'reference_table') return 'grammar_text'
-  if (block.kind === 'pattern_callout' || block.kind === 'noticing_prompt') return 'grammar_text'
-  if (block.sourceProgressEvent === 'pattern_noticing_seen') return 'grammar_text'
-  if (type === 'dialogue' || block.kind === 'dialogue_card') return 'dialogue_text'
-  return null
-}
-
-function exposureKindForAudio(block: LessonExperienceBlock): LessonExposureKind | null {
-  const type = payloadType(block)
-  if (type === 'grammar') return 'grammar_audio'
-  if (type === 'dialogue' || block.kind === 'dialogue_card') return 'dialogue_audio'
-  return null
-}
-
 function labelForKind(kind: LessonExperienceBlock['kind']): string {
   switch (kind) {
     case 'vocab_strip': return 'Woordenschat'
     case 'pattern_callout': return 'Patroon'
-    case 'noticing_prompt': return 'Opmerken'
     case 'reading_section': return 'Lezen'
     case 'lesson_hero': return 'Les'
     case 'practice_bridge': return 'Oefenbrug'
@@ -149,102 +119,11 @@ function labelForKind(kind: LessonExperienceBlock['kind']): string {
   }
 }
 
-function statusPillTone(status: string): 'success' | 'accent' | 'neutral' {
-  if (status === 'completed') return 'success'
-  if (status === 'seen') return 'accent'
-  return 'neutral'
-}
-
-function labelForStatus(status: string): string {
-  if (status === 'not_started') return 'Nog niet gestart'
-  if (status === 'seen') return 'Gezien'
-  if (status === 'completed') return 'Afgerond'
-  return status
-}
-
-export function LessonBlockRenderer({ block, progress, onProgress, onLessonExposureProgress }: LessonBlockRendererProps) {
-  const status = progress?.currentState ?? 'not_started'
+export function LessonBlockRenderer({ block }: LessonBlockRendererProps) {
   const items = itemsFromPayload(block.payload)
   const body = textFromPayload(block.payload)
   const audioUrl = audioUrlFromPayload(block.payload)
   const audioKey = audioUrl ? audioPositionKey(block, audioUrl) : null
-  const audioExposureKind = exposureKindForAudio(block)
-  const textExposureKind = exposureKindForText(block)
-  const sectionRef = useRef<HTMLElement | null>(null)
-  const audioExposureRecordedRef = useRef(false)
-  const textExposureFiredRef = useRef(false)
-
-  // Passive reading-time tracker. When the section is ≥60% visible for
-  // MEANINGFUL_TEXT_EXPOSURE_MS contiguous milliseconds, fire the exposure
-  // event automatically. Independent of the manual mark-as-seen click —
-  // either path may fire first. textExposureFiredRef prevents double-firing.
-  useEffect(() => {
-    if (!textExposureKind || !onLessonExposureProgress) return
-    const element = sectionRef.current
-    if (!element) return
-
-    if (typeof IntersectionObserver === 'undefined') return
-
-    let timeoutId: number | null = null
-
-    const observer = new IntersectionObserver(entries => {
-      const entry = entries.find(candidate => candidate.target === element)
-      if (!entry) return
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
-        if (timeoutId == null && !textExposureFiredRef.current) {
-          timeoutId = window.setTimeout(() => {
-            timeoutId = null
-            if (textExposureFiredRef.current) return
-            textExposureFiredRef.current = true
-            onLessonExposureProgress(block, textExposureKind)
-          }, MEANINGFUL_TEXT_EXPOSURE_MS)
-        }
-        return
-      }
-      // Scrolled out of view — cancel the pending timer; it restarts fresh
-      // next time the section is back in view.
-      if (timeoutId != null) {
-        clearTimeout(timeoutId)
-        timeoutId = null
-      }
-    }, { threshold: [0, 0.6] })
-
-    observer.observe(element)
-    return () => {
-      observer.disconnect()
-      if (timeoutId != null) clearTimeout(timeoutId)
-    }
-  }, [textExposureKind, onLessonExposureProgress, block])
-
-  const maybeRecordAudioExposure = (audio: HTMLAudioElement) => {
-    if (!audioExposureKind || !onLessonExposureProgress || audioExposureRecordedRef.current) return
-    const input = {
-      durationSeconds: audio.duration,
-      playedSeconds: audio.currentTime,
-      completed: audio.ended || (Number.isFinite(audio.duration) && audio.duration > 0 && audio.currentTime >= audio.duration),
-    }
-    const isMeaningful = audioExposureKind === 'grammar_audio'
-      ? isMeaningfulGrammarAudio(input)
-      : isMeaningfulDialogueAudio(input)
-    if (!isMeaningful) return
-
-    audioExposureRecordedRef.current = true
-    onLessonExposureProgress(block, audioExposureKind)
-  }
-
-  const handleSectionProgress = () => {
-    // Manual mark-as-seen always fires immediately. The passive timer above
-    // runs in parallel; either path may complete first. textExposureFiredRef
-    // prevents the timer from re-firing if the user clicks first.
-    if (textExposureKind && onLessonExposureProgress) {
-      if (textExposureFiredRef.current) return
-      textExposureFiredRef.current = true
-      onLessonExposureProgress(block, textExposureKind)
-      return
-    }
-
-    onProgress(block)
-  }
 
   if (block.kind === 'lesson_hero') {
     return (
@@ -254,16 +133,6 @@ export function LessonBlockRenderer({ block, progress, onProgress, onLessonExpos
         <p className={classes.heroBody}>
           Lees, merk patronen op, luister en ga daarna gericht oefenen zonder lesblootstelling direct als FSRS-herhaling te tellen.
         </p>
-        <div className={classes.heroCtaRow}>
-          <button
-            type="button"
-            className={classes.primaryButton}
-            onClick={() => onProgress(block)}
-          >
-            <IconCheck size={16} />
-            <span>Markeer als geopend</span>
-          </button>
-        </div>
       </HeroCard>
     )
   }
@@ -271,7 +140,6 @@ export function LessonBlockRenderer({ block, progress, onProgress, onLessonExpos
   if (block.kind === 'practice_bridge') {
     return (
       <section
-        ref={sectionRef}
         className={`${classes.block} ${classes.practiceBlock}`}
         aria-labelledby={`${block.id}-title`}
       >
@@ -298,7 +166,6 @@ export function LessonBlockRenderer({ block, progress, onProgress, onLessonExpos
   if (block.kind === 'lesson_recap') {
     return (
       <section
-        ref={sectionRef}
         className={`${classes.block} ${classes.recapBlock}`}
         aria-labelledby={`${block.id}-title`}
       >
@@ -309,27 +176,16 @@ export function LessonBlockRenderer({ block, progress, onProgress, onLessonExpos
         </div>
         <h2 id={`${block.id}-title`} className={classes.blockTitle}>{block.title}</h2>
         <p className={classes.blockBody}>
-          Rond af wanneer je de les hebt gezien en de opmerkvragen hebt gedaan. Dit registreert bronvoortgang, geen FSRS-beheersing.
+          Een korte terugblik op wat de les heeft voorbereid. Activeer de les hierboven als je hem wilt opnemen in oefeningen.
         </p>
-        <div className={classes.blockCtaRow}>
-          <button
-            type="button"
-            className={classes.primaryButton}
-            onClick={() => onProgress(block)}
-          >
-            <IconCheck size={16} />
-            <span>Markeer les als afgerond</span>
-          </button>
-        </div>
       </section>
     )
   }
 
   return (
-    <section ref={sectionRef} className={classes.block} aria-labelledby={`${block.id}-title`}>
+    <section className={classes.block} aria-labelledby={`${block.id}-title`}>
       <div className={classes.blockTopline}>
         <p className={classes.kicker}>{labelForKind(block.kind)}</p>
-        <StatusPill tone={statusPillTone(status)}>{labelForStatus(status)}</StatusPill>
       </div>
       <h2 id={`${block.id}-title`} className={classes.blockTitle}>{block.title}</h2>
       {audioUrl && (
@@ -340,15 +196,12 @@ export function LessonBlockRenderer({ block, progress, onProgress, onLessonExpos
           src={audioUrl}
           onLoadedMetadata={event => {
             if (audioKey) restoreAudioPosition(event.currentTarget, audioKey)
-            maybeRecordAudioExposure(event.currentTarget)
           }}
           onTimeUpdate={event => {
             if (audioKey) saveAudioPosition(event.currentTarget, audioKey)
-            maybeRecordAudioExposure(event.currentTarget)
           }}
-          onEnded={event => {
+          onEnded={() => {
             if (audioKey) localStorage.removeItem(audioKey)
-            maybeRecordAudioExposure(event.currentTarget)
           }}
         />
       )}
@@ -363,16 +216,6 @@ export function LessonBlockRenderer({ block, progress, onProgress, onLessonExpos
           ))}
         </div>
       )}
-      <div className={classes.blockCtaRow}>
-        <button
-          type="button"
-          className={(status as string) === 'completed' ? classes.secondaryButton : classes.primaryButton}
-          onClick={handleSectionProgress}
-        >
-          <IconCheck size={16} />
-          <span>{block.sourceProgressEvent === 'pattern_noticing_seen' ? 'Ik heb dit patroon opgemerkt' : 'Markeer sectie als gezien'}</span>
-        </button>
-      </div>
     </section>
   )
 }

@@ -38,7 +38,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Nasi gerechten"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -92,7 +91,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Dialoog: Belajar"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -132,7 +130,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -168,7 +165,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -209,7 +205,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -253,7 +248,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -288,7 +282,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -332,7 +325,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -372,7 +364,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -589,7 +580,6 @@ export const lessonPageBlocks = [
       "tableTitle": "Schema bezittelijk voornaamwoord",
       "title": "Bezittelijk voornaamwoord"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -609,7 +599,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Cultuur: Jakarta"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -839,7 +828,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Woordenlijst"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -864,7 +852,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/terbang:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/terbang:l1_to_id_choice:l1_to_id:text:nl",
@@ -924,7 +911,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah:l1_to_id_choice:l1_to_id:text:nl",
@@ -1010,7 +996,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/kita-harus-belajar-di-rumah:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/kita-harus-belajar-di-rumah:l1_to_id_choice:l1_to_id:text:nl",
@@ -1370,7 +1355,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/gabah:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/gabah:l1_to_id_choice:l1_to_id:text:nl",
@@ -1594,7 +1578,6 @@ export const lessonPageBlocks = [
     "payload_json": {
       "label": "Oefen deze les"
     },
-    "source_progress_event": "intro_completed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/abang:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/adik:text_recognition:id_to_l1:text:nl",
@@ -1676,7 +1659,6 @@ export const lessonPageBlocks = [
     "payload_json": {
       "title": "Samenvatting"
     },
-    "source_progress_event": "lesson_completed",
     "capability_key_refs": []
   }
 ]

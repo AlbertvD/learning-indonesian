@@ -1,4 +1,6 @@
 export interface LessonPracticeActionState {
+  // After retirement #6, derived as:
+  //   lessonActivated ? max(0, ready_capability_count - active_practiced_count) : 0
   practiceReadyCount: number
   hasActivePracticedItems: boolean
   hasUnpracticedEligibleItems: boolean

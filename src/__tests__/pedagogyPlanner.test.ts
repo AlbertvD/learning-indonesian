@@ -12,7 +12,7 @@ function capability(overrides: Partial<PlannerCapability> = {}): PlannerCapabili
     readinessStatus: 'ready',
     publicationStatus: 'published',
     prerequisiteKeys: [],
-    requiredSourceProgress: { kind: 'none', reason: 'legacy_projection' },
+    lessonId: null,
     ...overrides,
   }
 }
@@ -30,8 +30,7 @@ describe('pedagogy planner', () => {
         capability({ id: 'capability-2', canonicalKey: 'blocked', readinessStatus: 'blocked' }),
       ],
       learnerCapabilityStates: [],
-      sourceProgress: [],
-      recentReviewEvidence: [],
+      activatedLessons: new Set(),
     })
 
     expect(plan.eligibleNewCapabilities).toHaveLength(1)
@@ -51,36 +50,57 @@ describe('pedagogy planner', () => {
       dueCount: 0,
       readyCapabilities: [capability()],
       learnerCapabilityStates,
-      sourceProgress: [],
-      recentReviewEvidence: [],
+      activatedLessons: new Set(),
     })
 
     expect(plan.eligibleNewCapabilities[0]?.activationRecommendation.reason).toBe('eligible_new_capability')
     expect(learnerCapabilityStates).toHaveLength(0)
   })
 
-  it('does not let recognition evidence bypass heard-once audio exposure', () => {
+  it('suppresses lesson-scoped capabilities whose lesson is not activated', () => {
     const plan = planLearningPath({
       userId: 'user-1',
       mode: 'standard',
       now: new Date('2026-04-25T00:00:00.000Z'),
       preferredSessionSize: 15,
       dueCount: 0,
-      readyCapabilities: [capability({
-        capabilityType: 'audio_recognition',
-        requiredSourceProgress: {
-          kind: 'source_progress',
-          sourceRef: 'learning_items/item-1',
-          requiredState: 'heard_once',
-        },
-      })],
+      readyCapabilities: [capability({ lessonId: 'lesson-uuid' })],
       learnerCapabilityStates: [],
-      sourceProgress: [],
-      recentReviewEvidence: [{ capabilityKey: 'text-cap', sourceRef: 'learning_items/item-1', skillType: 'recognition', successfulReviews: 3 }],
+      activatedLessons: new Set(),
     })
 
     expect(plan.eligibleNewCapabilities).toEqual([])
-    expect(plan.suppressedCapabilities[0]?.reason).toBe('missing_source_progress')
+    expect(plan.suppressedCapabilities[0]?.reason).toBe('lesson_not_activated')
+  })
+
+  it('admits a lesson-scoped capability once its lesson is activated', () => {
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'standard',
+      now: new Date('2026-04-25T00:00:00.000Z'),
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [capability({ lessonId: 'lesson-uuid' })],
+      learnerCapabilityStates: [],
+      activatedLessons: new Set(['lesson-uuid']),
+    })
+
+    expect(plan.eligibleNewCapabilities).toHaveLength(1)
+  })
+
+  it('admits cross-lesson (null lessonId) capabilities without checking activation', () => {
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'standard',
+      now: new Date('2026-04-25T00:00:00.000Z'),
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [capability({ lessonId: null })],
+      learnerCapabilityStates: [],
+      activatedLessons: new Set(),
+    })
+
+    expect(plan.eligibleNewCapabilities).toHaveLength(1)
   })
 
   it('requires successful prerequisite evidence rather than any review attempt', () => {
@@ -102,8 +122,7 @@ describe('pedagogy planner', () => {
         reviewCount: 1,
         successfulReviewCount: 0,
       }],
-      sourceProgress: [],
-      recentReviewEvidence: [],
+      activatedLessons: new Set(),
     })
 
     expect(plan.eligibleNewCapabilities).toEqual([])
@@ -131,8 +150,7 @@ describe('pedagogy planner', () => {
         activationState: 'active',
         reviewCount: 1,
       } as any],
-      sourceProgress: [],
-      recentReviewEvidence: [],
+      activatedLessons: new Set(),
     })
 
     expect(plan.eligibleNewCapabilities).toEqual([])
@@ -148,8 +166,7 @@ describe('pedagogy planner', () => {
       dueCount: 0,
       readyCapabilities: [capability({ canonicalKey: 'unknown-difficulty', difficultyLevel: undefined })],
       learnerCapabilityStates: [],
-      sourceProgress: [],
-      recentReviewEvidence: [],
+      activatedLessons: new Set(),
       maxNewDifficultyLevel: 5,
     })
 
@@ -160,7 +177,7 @@ describe('pedagogy planner', () => {
     })
   })
 
-  it('owns usefulness, difficulty jump, and recent failure suppression gates', () => {
+  it('owns goal-tag, difficulty jump, and recent failure suppression gates', () => {
     const now = new Date('2026-04-25T00:00:00.000Z')
     const plan = planLearningPath({
       userId: 'user-1',
@@ -175,9 +192,7 @@ describe('pedagogy planner', () => {
         capability({ id: 'goal-match', canonicalKey: 'goal-match', sourceRef: 'learning_items/item-4', goalTags: ['daily-focus'], difficultyLevel: 2 }),
       ],
       learnerCapabilityStates: [],
-      sourceProgress: [],
-      recentReviewEvidence: [],
-      currentSourceRefs: ['learning_items/item-2'],
+      activatedLessons: new Set(),
       activeGoalTags: ['daily-focus'],
       maxNewDifficultyLevel: 5,
       recentFailures: [{
@@ -216,8 +231,7 @@ describe('pedagogy planner', () => {
         reviewCount: 1,
         successfulReviewCount: 1,
       }],
-      sourceProgress: [],
-      recentReviewEvidence: [],
+      activatedLessons: new Set(),
     })
 
     expect(plan.eligibleNewCapabilities).toEqual([])
@@ -225,44 +239,6 @@ describe('pedagogy planner', () => {
       { canonicalKey: 'new-form-recall', reason: 'load_budget_exhausted' },
     ])
     expect(plan.loadBudget.maxNewProductionTasks).toBe(0)
-  })
-
-  it('allows bridge choice evidence to satisfy vocabulary source-progress gates for production', () => {
-    const prerequisite = 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl'
-    const plan = planLearningPath({
-      userId: 'user-1',
-      mode: 'standard',
-      now: new Date('2026-04-25T00:00:00.000Z'),
-      preferredSessionSize: 12,
-      dueCount: 0,
-      readyCapabilities: [capability({
-        canonicalKey: 'new-form-recall',
-        capabilityType: 'form_recall',
-        skillType: 'form_recall',
-        prerequisiteKeys: [prerequisite],
-        requiredSourceProgress: {
-          kind: 'source_progress',
-          sourceRef: 'learning_items/item-1',
-          requiredState: 'intro_completed',
-        },
-      })],
-      learnerCapabilityStates: [{
-        canonicalKey: prerequisite,
-        activationState: 'active',
-        reviewCount: 1,
-        successfulReviewCount: 1,
-      }],
-      sourceProgress: [],
-      recentReviewEvidence: [{
-        capabilityKey: prerequisite,
-        sourceRef: 'learning_items/item-1',
-        skillType: 'meaning_recall',
-        capabilityType: 'l1_to_id_choice',
-        successfulReviews: 1,
-      }],
-    })
-
-    expect(plan.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual(['new-form-recall'])
   })
 
   it('filters lesson practice new candidates to selected lesson source refs', () => {
@@ -287,8 +263,7 @@ describe('pedagogy planner', () => {
       dueCount: 0,
       readyCapabilities: [otherLesson, selected],
       learnerCapabilityStates: [],
-      sourceProgress: [],
-      recentReviewEvidence: [],
+      activatedLessons: new Set(),
     })
 
     expect(plan.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual(['selected'])
@@ -307,8 +282,7 @@ describe('pedagogy planner', () => {
       dueCount: 0,
       readyCapabilities: [capability()],
       learnerCapabilityStates: [],
-      sourceProgress: [],
-      recentReviewEvidence: [],
+      activatedLessons: new Set(),
     })
 
     expect(plan.eligibleNewCapabilities).toEqual([])
@@ -329,8 +303,7 @@ describe('pedagogy planner', () => {
       dueCount: 0,
       readyCapabilities: [capability()],
       learnerCapabilityStates: [],
-      sourceProgress: [],
-      recentReviewEvidence: [],
+      activatedLessons: new Set(),
     })
 
     expect(plan.eligibleNewCapabilities).toEqual([])
@@ -363,8 +336,7 @@ describe('pedagogy planner', () => {
         }),
       ],
       learnerCapabilityStates: [],
-      sourceProgress: [],
-      recentReviewEvidence: [],
+      activatedLessons: new Set(),
     })
 
     expect(plan.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual(['choice-cap'])

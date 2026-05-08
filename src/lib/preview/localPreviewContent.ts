@@ -42,7 +42,6 @@ function lessonBlock(input: {
   kind: LessonPageBlock['block_kind']
   order: number
   payload: Record<string, unknown>
-  event?: LessonPageBlock['source_progress_event']
   unitSlugs?: string[]
   capabilityKeys?: string[]
 }): LessonPageBlock {
@@ -54,7 +53,6 @@ function lessonBlock(input: {
     block_kind: input.kind,
     display_order: input.order,
     payload_json: input.payload,
-    source_progress_event: input.event ?? null,
     capability_key_refs: input.capabilityKeys ?? [],
   }
 }
@@ -62,7 +60,7 @@ function lessonBlock(input: {
 const lessonOne: PreviewLesson = {
   slug: 'lesson-1-market',
   summary: 'Een moderne web-native leeservaring voor de eerste marktles.',
-  tags: ['lesweergave', 'bronvoortgang', 'oefenbrug'],
+  tags: ['lesweergave', 'oefenbrug'],
   lesson: previewLesson({
     id: 'preview-lesson-1',
     title: 'Les 1 - Di Pasar',
@@ -76,7 +74,6 @@ const lessonOne: PreviewLesson = {
       sourceRef: 'lesson-1',
       kind: 'hero',
       order: 0,
-      event: 'opened',
       payload: {
         title: 'Di Pasar',
         body: 'Een klein marktverhaal wordt het startpunt voor begroeten, fruit kopen, prijzen vragen en zien hoe Indonesisch werkwoorden eenvoudig houdt.',
@@ -87,7 +84,6 @@ const lessonOne: PreviewLesson = {
       sourceRef: 'lesson-1/section-story',
       kind: 'section',
       order: 10,
-      event: 'section_exposed',
       payload: {
         title: 'Een klein marktverhaal',
         paragraphs: [
@@ -102,7 +98,6 @@ const lessonOne: PreviewLesson = {
       sourceRef: 'lesson-1/section-vocabulary',
       kind: 'exposure',
       order: 20,
-      event: 'section_exposed',
       unitSlugs: ['item-ibu', 'item-pasar', 'item-beli', 'item-mahal'],
       payload: {
         type: 'vocabulary',
@@ -122,7 +117,6 @@ const lessonOne: PreviewLesson = {
       sourceRef: 'lesson-1/pattern-serial-verb-construction',
       kind: 'section',
       order: 30,
-      event: 'pattern_noticing_seen',
       unitSlugs: ['pattern-serial-verb-construction'],
       payload: {
         title: 'Let op: mau + beli',
@@ -134,7 +128,6 @@ const lessonOne: PreviewLesson = {
       sourceRef: 'lesson-1/practice',
       kind: 'practice_bridge',
       order: 40,
-      event: 'intro_completed',
       unitSlugs: ['item-pasar', 'pattern-serial-verb-construction'],
       capabilityKeys: [
         'cap:v1:item:learning_items/pasar:text_recognition:id_to_l1:text:nl',
@@ -150,7 +143,6 @@ const lessonOne: PreviewLesson = {
       sourceRef: 'lesson-1',
       kind: 'recap',
       order: 50,
-      event: 'lesson_completed',
       payload: { title: 'Wat deze les heeft voorbereid' },
     }),
   ],
@@ -173,7 +165,6 @@ const podcastPilot: PreviewLesson = {
       sourceRef: 'podcast-warung-market/segment-1',
       kind: 'hero',
       order: 0,
-      event: 'heard_once',
       payload: {
         title: 'Luister naar de hoofdzaak',
         body: 'Podcastsegmenten kunnen eerst alleen blootstelling zijn. De leerder luistert op betekenis voordat gemijnde zinnen in herhaling komen.',
@@ -184,7 +175,6 @@ const podcastPilot: PreviewLesson = {
       sourceRef: 'podcast-warung-market/segment-1',
       kind: 'section',
       order: 10,
-      event: 'heard_once',
       payload: {
         title: 'Begeleid transcript',
         paragraphs: [
@@ -198,7 +188,6 @@ const podcastPilot: PreviewLesson = {
       sourceRef: 'podcast-warung-market/phrases',
       kind: 'exposure',
       order: 20,
-      event: 'section_exposed',
       unitSlugs: ['phrase-apa-kabar', 'phrase-terima-kasih'],
       payload: {
         type: 'expressions',
@@ -214,7 +203,6 @@ const podcastPilot: PreviewLesson = {
       sourceRef: 'podcast-warung-market/segment-1',
       kind: 'recap',
       order: 30,
-      event: 'lesson_completed',
       payload: { title: 'Podcast samenvatting' },
     }),
   ],
@@ -237,7 +225,6 @@ const morphologyPilot: PreviewLesson = {
       sourceRef: 'lesson-9/pattern-men-active',
       kind: 'hero',
       order: 0,
-      event: 'opened',
       payload: {
         title: 'meN actieve werkwoorden',
         body: 'Deze preview modelleert morfologie als vaardigheden: eerst afgeleide vormen herkennen, daarna pas produceren wanneer er bewijs is.',
@@ -248,7 +235,6 @@ const morphologyPilot: PreviewLesson = {
       sourceRef: 'lesson-9/pattern-men-active',
       kind: 'section',
       order: 10,
-      event: 'pattern_noticing_seen',
       unitSlugs: ['pattern-men-active'],
       payload: {
         title: 'Let op de allomorf',
@@ -260,7 +246,6 @@ const morphologyPilot: PreviewLesson = {
       sourceRef: 'lesson-9/morphology',
       kind: 'exposure',
       order: 20,
-      event: 'section_exposed',
       unitSlugs: ['men-baca-membaca', 'men-tulis-menulis'],
       payload: {
         type: 'vocabulary',
@@ -276,7 +261,6 @@ const morphologyPilot: PreviewLesson = {
       sourceRef: 'lesson-9/morphology/practice',
       kind: 'practice_bridge',
       order: 30,
-      event: 'intro_completed',
       unitSlugs: ['men-baca-membaca'],
       capabilityKeys: [
         'cap:v1:affixed_form_pair:lesson-9/morphology/meN-baca-membaca:root_derived_recognition:derived_to_root:text:none',
@@ -292,7 +276,6 @@ const morphologyPilot: PreviewLesson = {
       sourceRef: 'lesson-9/pattern-men-active',
       kind: 'recap',
       order: 40,
-      event: 'lesson_completed',
       payload: { title: 'Morfologie samenvatting' },
     }),
   ],

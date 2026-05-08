@@ -1,12 +1,10 @@
 import type {
   CapabilitySourceKind,
-  CapabilitySourceProgressRequirement,
   CapabilityType,
 } from '@/lib/capabilities/capabilityTypes'
 import type { SkillType } from '@/types/learning'
 import { decideLoadBudget, type LoadBudgetDecision, type PlannerSessionMode } from '@/lib/pedagogy/loadBudgets'
 import type { SessionPosture } from '@/lib/pedagogy/sessionPosture'
-import { isSourceProgressSatisfied, type LearnerSourceProgress, type ReviewEvidence } from '@/lib/pedagogy/sourceProgressGates'
 import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/services/capabilityService'
 
 export interface PlannerCapability {
@@ -19,7 +17,9 @@ export interface PlannerCapability {
   readinessStatus: CapabilityReadinessStatus
   publicationStatus: CapabilityPublicationStatus
   prerequisiteKeys: string[]
-  requiredSourceProgress?: CapabilitySourceProgressRequirement
+  // NULL = capability is not lesson-scoped (podcast, cross-lesson). Otherwise
+  // gated by `activatedLessons` in PedagogyInput.
+  lessonId?: string | null
   difficultyLevel?: number
   goalTags?: string[]
 }
@@ -36,7 +36,7 @@ export type PlannerReason =
   | 'capability_not_ready'
   | 'capability_not_published'
   | 'already_active_or_retired'
-  | 'missing_source_progress'
+  | 'lesson_not_activated'
   | 'missing_prerequisite'
   | 'difficulty_jump'
   | 'recent_failure_fatigue'
@@ -74,9 +74,11 @@ export interface PedagogyInput {
   dueCount: number
   readyCapabilities: PlannerCapability[]
   learnerCapabilityStates: readonly PlannerLearnerCapabilityState[]
-  sourceProgress: LearnerSourceProgress[]
-  recentReviewEvidence: ReviewEvidence[]
-  currentSourceRefs?: string[]
+  // Set of lesson_ids the learner has activated. Replaces the source-progress
+  // gate retired in #6. A capability with non-null lessonId is suppressed
+  // unless its lessonId is in this set. Cross-lesson capabilities (lessonId
+  // null) bypass the gate.
+  activatedLessons: ReadonlySet<string>
   activeGoalTags?: string[]
   maxNewDifficultyLevel?: number
   recentFailures?: Array<{
@@ -114,10 +116,6 @@ function isHiddenAudioTask(capability: PlannerCapability): boolean {
   )
 }
 
-function isSourceSwitch(capability: PlannerCapability, currentSourceRefs?: string[]): boolean {
-  return Boolean(currentSourceRefs?.length) && !currentSourceRefs!.includes(capability.sourceRef)
-}
-
 function balancedIntroductionPriority(capability: PlannerCapability): number {
   if (capability.capabilityType === 'text_recognition') return 0
   if (capability.capabilityType === 'l1_to_id_choice') return 1
@@ -135,19 +133,10 @@ function orderedReadyCapabilities(input: PedagogyInput): PlannerCapability[] {
   ))
 }
 
-function isUsefulForCurrentPath(input: {
-  capability: PlannerCapability
-  currentSourceRefs?: string[]
-  activeGoalTags?: string[]
-}): boolean {
-  const sourceRefs = input.currentSourceRefs ?? []
-  const goalTags = input.activeGoalTags ?? []
-  if (sourceRefs.length === 0 && goalTags.length === 0) return true
-
-  return (
-    sourceRefs.includes(input.capability.sourceRef)
-    || goalTags.some(tag => input.capability.goalTags?.includes(tag))
-  )
+function matchesActiveGoalTags(capability: PlannerCapability, activeGoalTags?: string[]): boolean {
+  const tags = activeGoalTags ?? []
+  if (tags.length === 0) return true
+  return tags.some(tag => capability.goalTags?.includes(tag))
 }
 
 function hasRecentFailureFatigue(input: {
@@ -204,7 +193,6 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
   let patternCount = 0
   let productionTaskCount = 0
   let hiddenAudioTaskCount = 0
-  let sourceSwitchCount = 0
 
   for (const capability of orderedReadyCapabilities(input)) {
     const suppress = (reason: PlannerReason): void => {
@@ -254,22 +242,21 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
       suppress('wrong_session_mode')
       continue
     }
-    if (!isUsefulForCurrentPath({
-      capability,
-      currentSourceRefs: isLessonScopedMode(input.mode) ? input.selectedSourceRefs : input.currentSourceRefs,
-      activeGoalTags: input.activeGoalTags,
-    })) {
+    // Two-signal "useful for current path" check (R1 v2 I20):
+    // (a) for lesson-scoped sessions, the lesson-scope gate above already
+    //     filtered, so all that remains is goal-tag matching for free-form
+    //     sessions.
+    // (b) otherwise gate by goal-tag matching with default-allow if no tags
+    //     are configured.
+    if (!isLessonScopedMode(input.mode) && !matchesActiveGoalTags(capability, input.activeGoalTags)) {
       suppress('not_useful_for_current_path')
       continue
     }
-    const sourceGate = isSourceProgressSatisfied({
-      requiredSourceProgress: capability.requiredSourceProgress,
-      sourceProgress: input.sourceProgress,
-      evidence: input.recentReviewEvidence,
-      allowEvidenceBypass: capability.capabilityType === 'form_recall',
-    })
-    if (!sourceGate.satisfied) {
-      suppress('missing_source_progress')
+    // Lesson-activation gate (replaces source-progress gate, retirement #6).
+    // Cross-lesson capabilities (null lessonId) bypass; podcast capabilities
+    // never set lessonId either, so the mode gate above handles them.
+    if (capability.lessonId != null && !input.activatedLessons.has(capability.lessonId)) {
+      suppress('lesson_not_activated')
       continue
     }
     if (!loadBudget.allowNewCapabilities || eligibleNewCapabilities.length >= loadBudget.maxNewCapabilities) {
@@ -288,15 +275,10 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
       suppress('load_budget_exhausted')
       continue
     }
-    if (isSourceSwitch(capability, input.currentSourceRefs) && sourceSwitchCount >= loadBudget.maxSourceSwitches) {
-      suppress('load_budget_exhausted')
-      continue
-    }
 
     if (isPattern(capability)) patternCount += 1
     if (isNewProductionTask(capability)) productionTaskCount += 1
     if (isHiddenAudioTask(capability)) hiddenAudioTaskCount += 1
-    if (isSourceSwitch(capability, input.currentSourceRefs)) sourceSwitchCount += 1
     eligibleNewCapabilities.push({
       capability,
       activationRecommendation: {

@@ -123,7 +123,6 @@ export const lessonPageBlocks = [
       "closing": "Ibu jalan keluar, lalu naik taksi ke Jakarta.",
       "title": "Di Bandar Udara \"Soekarno-Hatta\" (dialoog)"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -338,7 +337,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Woordenlijst"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -380,7 +378,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Uitdrukkingen"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -446,7 +443,6 @@ export const lessonPageBlocks = [
       ],
       "title": "Telwoorden"
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": []
   },
   {
@@ -476,7 +472,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -587,7 +582,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -604,7 +598,6 @@ export const lessonPageBlocks = [
       "title": "Grammatica: Vraagwoorden",
       "intro": "Vraagwoorden in het Indonesisch:"
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -682,7 +675,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -699,7 +691,6 @@ export const lessonPageBlocks = [
       "title": "Grammatica: Sekali",
       "intro": "sekali = 'erg, zeer, heel' -- komt achter het bijvoeglijk naamwoord."
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -724,7 +715,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -741,7 +731,6 @@ export const lessonPageBlocks = [
       "title": "Grammatica: Ada",
       "intro": "Ada is een werkwoord dat 'er is' of 'er zijn' ('zich bevinden') betekent. Ada is geen koppelwerkwoord."
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -771,7 +760,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "pattern_noticing_seen",
     "capability_key_refs": []
   },
   {
@@ -826,7 +814,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/sepuluh:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/sepuluh:l1_to_id_choice:l1_to_id:text:nl",
@@ -954,7 +941,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/naik-bus:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/naik-bus:l1_to_id_choice:l1_to_id:text:nl",
@@ -1318,7 +1304,6 @@ export const lessonPageBlocks = [
         }
       ]
     },
-    "source_progress_event": "section_exposed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/keluar:form_recall:l1_to_id:text:nl",
       "cap:v1:item:learning_items/keluar:l1_to_id_choice:l1_to_id:text:nl",
@@ -1526,7 +1511,6 @@ export const lessonPageBlocks = [
     "payload_json": {
       "label": "Oefen deze les"
     },
-    "source_progress_event": "intro_completed",
     "capability_key_refs": [
       "cap:v1:item:learning_items/ada:text_recognition:id_to_l1:text:nl",
       "cap:v1:item:learning_items/bandar-udara:text_recognition:id_to_l1:text:nl",
@@ -1610,7 +1594,6 @@ export const lessonPageBlocks = [
     "payload_json": {
       "title": "Samenvatting"
     },
-    "source_progress_event": "lesson_completed",
     "capability_key_refs": []
   }
 ]

@@ -2,7 +2,6 @@ import { isMeaningfulPractice } from '@/lib/pedagogy/sessionPosture'
 
 export interface SessionPlanningSignals {
   lastMeaningfulPracticeAt: string | null
-  lastMeaningfulExposureAt: string | null
   dueCount: number
   eligibleNewMaterialCount: number
 }
@@ -18,29 +17,13 @@ export interface ReviewAttemptSignalRow {
   createdAt?: string | null
 }
 
-export interface SourceProgressSignalRow {
-  currentState: string
-  completedEventTypes?: string[] | null
-  lastEventAt: string | null
-}
-
 export interface DeriveSessionPlanningSignalsInput {
   learningSessions: LearningSessionSignalRow[]
   legacyReviewEvents: ReviewAttemptSignalRow[]
   capabilityReviewEvents: ReviewAttemptSignalRow[]
-  sourceProgressRows: SourceProgressSignalRow[]
   dueCount: number
   eligibleNewMaterialCount: number
 }
-
-const meaningfulExposureStates = new Set([
-  'section_exposed',
-  'intro_completed',
-  'heard_once',
-  'pattern_noticing_seen',
-  'guided_practice_completed',
-  'lesson_completed',
-])
 
 function durationMinutes(session: LearningSessionSignalRow): number {
   if (!session.endedAt) return 0
@@ -66,11 +49,6 @@ function latestIso(values: Array<string | null | undefined>): string | null {
   return valid[0] ?? null
 }
 
-function hasMeaningfulExposure(row: SourceProgressSignalRow): boolean {
-  return meaningfulExposureStates.has(row.currentState)
-    || (row.completedEventTypes ?? []).some(eventType => meaningfulExposureStates.has(eventType))
-}
-
 export function deriveSessionPlanningSignals(input: DeriveSessionPlanningSignalsInput): SessionPlanningSignals {
   const meaningfulSessionEnds = input.learningSessions
     .filter(session => session.endedAt)
@@ -82,11 +60,6 @@ export function deriveSessionPlanningSignals(input: DeriveSessionPlanningSignals
 
   return {
     lastMeaningfulPracticeAt: latestIso(meaningfulSessionEnds),
-    lastMeaningfulExposureAt: latestIso(
-      input.sourceProgressRows
-        .filter(hasMeaningfulExposure)
-        .map(row => row.lastEventAt),
-    ),
     dueCount: input.dueCount,
     eligibleNewMaterialCount: input.eligibleNewMaterialCount,
   }

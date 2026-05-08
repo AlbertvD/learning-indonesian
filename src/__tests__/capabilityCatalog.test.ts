@@ -65,18 +65,14 @@ describe('capability catalog projection', () => {
     expect(dictation?.requiredArtifacts).toEqual(expect.arrayContaining(['accepted_answers:id']))
   })
 
-  it('lesson-sequences vocabulary and audio capabilities with explicit gates', () => {
+  it('chains prerequisites for vocabulary and audio capabilities', () => {
     const projection = projectCapabilities(snapshot)
     const textRecognition = projection.capabilities.find(capability => capability.capabilityType === 'text_recognition')
     const choiceBridge = projection.capabilities.find(capability => capability.capabilityType === 'l1_to_id_choice')
     const formRecall = projection.capabilities.find(capability => capability.capabilityType === 'form_recall')
     const audioCapability = projection.capabilities.find(capability => capability.sourceKind === 'item' && capability.capabilityType === 'audio_recognition')
 
-    expect(textRecognition?.requiredSourceProgress).toEqual({
-      kind: 'source_progress',
-      sourceRef: 'learning_items/item-1',
-      requiredState: 'section_exposed',
-    })
+    expect(textRecognition?.sourceRef).toBe('learning_items/item-1')
     expect(choiceBridge).toEqual(expect.objectContaining({
       direction: 'l1_to_id',
       modality: 'text',
@@ -85,17 +81,7 @@ describe('capability catalog projection', () => {
       prerequisiteKeys: [textRecognition?.canonicalKey],
       difficultyLevel: 2,
     }))
-    expect(formRecall?.requiredSourceProgress).toEqual({
-      kind: 'source_progress',
-      sourceRef: 'learning_items/item-1',
-      requiredState: 'intro_completed',
-    })
     expect(formRecall?.prerequisiteKeys).toEqual([choiceBridge?.canonicalKey])
-    expect(audioCapability?.requiredSourceProgress).toEqual({
-      kind: 'source_progress',
-      sourceRef: 'learning_items/item-1',
-      requiredState: 'heard_once',
-    })
     expect(audioCapability?.prerequisiteKeys).toEqual([textRecognition?.canonicalKey])
   })
 

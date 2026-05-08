@@ -5,7 +5,6 @@ import {
   type CapabilityModality,
   type CapabilityProjection,
   type CapabilitySourceKind,
-  type CapabilitySourceProgressRequirement,
   type CapabilityType,
   type CurrentContentSnapshot,
   type LearnerLanguage,
@@ -23,7 +22,6 @@ interface CapabilityDraft {
   modality: CapabilityModality
   learnerLanguage: LearnerLanguage
   requiredArtifacts: ArtifactKind[]
-  requiredSourceProgress?: CapabilitySourceProgressRequirement
   prerequisiteKeys?: string[]
   difficultyLevel: number
   goalTags?: string[]
@@ -54,21 +52,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
     const meaningArtifacts: ArtifactKind[] = ['meaning:l1', 'accepted_answers:l1']
     const choiceArtifacts: ArtifactKind[] = ['meaning:l1', 'base_text']
     const formArtifacts: ArtifactKind[] = ['meaning:l1', 'base_text', 'accepted_answers:id']
-    const recognitionProgress: CapabilitySourceProgressRequirement = {
-      kind: 'source_progress',
-      sourceRef,
-      requiredState: 'section_exposed',
-    }
-    const recallProgress: CapabilitySourceProgressRequirement = {
-      kind: 'source_progress',
-      sourceRef,
-      requiredState: 'intro_completed',
-    }
-    const audioProgress: CapabilitySourceProgressRequirement = {
-      kind: 'source_progress',
-      sourceRef,
-      requiredState: 'heard_once',
-    }
 
     const textRecognitionCapability = createCapability({
       sourceKind: 'item',
@@ -79,7 +62,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       modality: 'text',
       learnerLanguage: item.meanings[0]?.language ?? 'none',
       requiredArtifacts: recognitionArtifacts,
-      requiredSourceProgress: recognitionProgress,
       difficultyLevel: 1,
     })
     capabilities.push(textRecognitionCapability)
@@ -92,7 +74,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       modality: 'text',
       learnerLanguage: item.meanings[0]?.language ?? 'none',
       requiredArtifacts: choiceArtifacts,
-      requiredSourceProgress: recallProgress,
       prerequisiteKeys: [textRecognitionCapability.canonicalKey],
       difficultyLevel: 2,
     })
@@ -106,7 +87,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       modality: 'text',
       learnerLanguage: item.meanings[0]?.language ?? 'none',
       requiredArtifacts: meaningArtifacts,
-      requiredSourceProgress: recallProgress,
       prerequisiteKeys: [textRecognitionCapability.canonicalKey],
       difficultyLevel: 2,
     }))
@@ -119,7 +99,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       modality: 'text',
       learnerLanguage: item.meanings[0]?.language ?? 'none',
       requiredArtifacts: formArtifacts,
-      requiredSourceProgress: recallProgress,
       prerequisiteKeys: [choiceCapability.canonicalKey],
       difficultyLevel: 3,
     }))
@@ -134,7 +113,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
         modality: 'audio',
         learnerLanguage: item.meanings[0]?.language ?? 'none',
         requiredArtifacts: ['audio_clip', 'meaning:l1'],
-        requiredSourceProgress: audioProgress,
         prerequisiteKeys: [textRecognitionCapability.canonicalKey],
         difficultyLevel: 2,
       }))
@@ -147,7 +125,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
         modality: 'audio',
         learnerLanguage: 'none',
         requiredArtifacts: ['audio_clip', 'base_text', 'accepted_answers:id'],
-        requiredSourceProgress: audioProgress,
         prerequisiteKeys: [textRecognitionCapability.canonicalKey],
         difficultyLevel: 4,
       }))
@@ -166,11 +143,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       learnerLanguage: 'none',
       requiredArtifacts: ['pattern_explanation:l1', 'pattern_example'],
       difficultyLevel: 4,
-      requiredSourceProgress: {
-        kind: 'source_progress',
-        sourceRef,
-        requiredState: 'pattern_noticing_seen',
-      },
     }))
   }
 
@@ -186,7 +158,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       learnerLanguage: 'none',
       requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
       difficultyLevel: 3,
-      requiredSourceProgress: { kind: 'source_progress', sourceRef, requiredState: 'section_exposed' },
     }))
   }
 
@@ -202,7 +173,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       requiredArtifacts: ['audio_segment', 'transcript_segment', 'podcast_gist_prompt'],
       difficultyLevel: 2,
       goalTags: ['podcast', 'guided_transcript'],
-      requiredSourceProgress: { kind: 'none', reason: 'exposure_only' },
     }))
   }
 
@@ -218,11 +188,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       requiredArtifacts: ['timecoded_phrase', 'translation:l1'],
       difficultyLevel: 3,
       goalTags: ['podcast', 'podcast_phrase'],
-      requiredSourceProgress: {
-        kind: 'source_progress',
-        sourceRef: phrase.segmentSourceRef ?? phrase.sourceRef,
-        requiredState: 'heard_once',
-      },
     }))
   }
 
@@ -230,11 +195,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
     const requiredArtifacts: ArtifactKind[] = pair.allomorphRule
       ? ['root_derived_pair', 'allomorph_rule']
       : ['root_derived_pair']
-    const requiredSourceProgress: CapabilitySourceProgressRequirement = {
-      kind: 'source_progress',
-      sourceRef: pair.patternSourceRef ?? pair.sourceRef,
-      requiredState: 'pattern_noticing_seen',
-    }
     const recognitionCapability = createCapability({
       sourceKind: 'affixed_form_pair',
       sourceRef: pair.sourceRef,
@@ -246,7 +206,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       requiredArtifacts,
       difficultyLevel: 4,
       goalTags: ['morphology', 'meN-active'],
-      requiredSourceProgress,
     })
     capabilities.push(recognitionCapability)
     capabilities.push(createCapability({
@@ -261,7 +220,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       prerequisiteKeys: [recognitionCapability.canonicalKey],
       difficultyLevel: 5,
       goalTags: ['morphology', 'meN-active'],
-      requiredSourceProgress,
     }))
   }
 

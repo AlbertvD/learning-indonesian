@@ -42,7 +42,7 @@ function plannerCapability(overrides: Partial<PlannerCapability> = {}): PlannerC
     readinessStatus: overrides.readinessStatus ?? 'ready',
     publicationStatus: overrides.publicationStatus ?? 'published',
     prerequisiteKeys: projection.prerequisiteKeys,
-    requiredSourceProgress: projection.requiredSourceProgress,
+    lessonId: projection.lessonId ?? null,
     difficultyLevel: projection.difficultyLevel,
     goalTags: projection.goalTags,
   }
@@ -91,8 +91,7 @@ function baseInput(overrides: Partial<Parameters<typeof loadCapabilitySessionPla
       dueCount: 0,
       readyCapabilities: [],
       learnerCapabilityStates: [],
-      sourceProgress: [],
-      recentReviewEvidence: [],
+      activatedLessons: new Set<string>(),
     },
     capabilitiesByKey: new Map([[projection.canonicalKey, projection]]),
     readinessByKey: new Map([[projection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }]]),
@@ -148,8 +147,7 @@ describe('capability session loader', () => {
         dueCount: 0,
         readyCapabilities: [plannerCapability()],
         learnerCapabilityStates: [],
-        sourceProgress: [],
-        recentReviewEvidence: [],
+        activatedLessons: new Set<string>(),
       },
     }))
 
@@ -187,8 +185,7 @@ describe('capability session loader', () => {
         dueCount: 0,
         readyCapabilities: [plannerCapability()],
         learnerCapabilityStates,
-        sourceProgress: [],
-        recentReviewEvidence: [],
+        activatedLessons: new Set<string>(),
       },
     }))
 
@@ -221,8 +218,7 @@ describe('capability session loader', () => {
           dueCount: 0,
           readyCapabilities: [],
           learnerCapabilityStates: [],
-          sourceProgress: [],
-          recentReviewEvidence: [],
+          activatedLessons: new Set<string>(),
         },
       }),
     }
@@ -281,8 +277,7 @@ describe('capability session loader', () => {
             reviewCount: 1,
             successfulReviewCount: 1,
           }],
-          sourceProgress: [],
-          recentReviewEvidence: [],
+          activatedLessons: new Set<string>(),
         },
       }),
       posture: 'light_recovery',
@@ -323,8 +318,7 @@ describe('capability session loader', () => {
           plannerCapability({ id: 'other-new', canonicalKey: 'other-new-key', sourceRef: 'learning_items/other-new' }),
         ],
         learnerCapabilityStates: [],
-        sourceProgress: [],
-        recentReviewEvidence: [],
+        activatedLessons: new Set<string>(),
         selectedLessonId: 'lesson-4',
         selectedSourceRefs: selectedRefs,
       },
@@ -370,8 +364,7 @@ describe('capability session loader', () => {
         dueCount: 0,
         readyCapabilities: [plannerCapability({ id: 'new-cap', canonicalKey: newKey, sourceRef: 'learning_items/selected-new' })],
         learnerCapabilityStates: [],
-        sourceProgress: [],
-        recentReviewEvidence: [],
+        activatedLessons: new Set<string>(),
         selectedLessonId: 'lesson-4',
         selectedSourceRefs: selectedRefs,
       },
@@ -398,8 +391,7 @@ describe('capability session loader', () => {
         dueCount: 0,
         readyCapabilities: [plannerCapability()],
         learnerCapabilityStates: [],
-        sourceProgress: [],
-        recentReviewEvidence: [],
+        activatedLessons: new Set<string>(),
       },
     }))
 

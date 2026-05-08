@@ -41,7 +41,10 @@ export interface CapabilityMasteryEvidence {
   publicationStatus: string
   requiredArtifacts: ArtifactKind[]
   approvedArtifacts: ArtifactKind[]
-  sourceProgressState?: string | null
+  // After retirement #6: 'introduced' if the lesson is activated, else
+  // 'not_assessed'. NULL lessonId (cross-lesson capability, e.g. podcast)
+  // counts as activated for the purposes of this signal.
+  lessonActivated: boolean
   reviewCount: number
   lapseCount: number
   consecutiveFailureCount: number
@@ -115,6 +118,7 @@ interface LearningCapabilityRow {
   modality: CapabilityModality
   readiness_status: string
   publication_status: string
+  lesson_id: string | null
   metadata_json: Record<string, unknown> | null
 }
 
@@ -132,11 +136,6 @@ interface CapabilityArtifactRow {
   artifact_kind: ArtifactKind
   quality_status: ArtifactQualityStatus
   artifact_json?: unknown
-}
-
-interface SourceProgressRow {
-  source_ref: string
-  current_state: string
 }
 
 function uniq<T>(values: T[]): T[] {
@@ -191,9 +190,7 @@ function hasCompatibleArtifacts(evidence: CapabilityMasteryEvidence): boolean {
 function labelForCapability(evidence: CapabilityMasteryEvidence, now: Date): MasteryLabel {
   if (evidence.consecutiveFailureCount > 0 || evidence.lapseCount > 0) return 'at_risk'
   if (evidence.reviewCount === 0) {
-    return evidence.sourceProgressState && evidence.sourceProgressState !== 'not_started'
-      ? 'introduced'
-      : 'not_assessed'
+    return evidence.lessonActivated ? 'introduced' : 'not_assessed'
   }
   if (!hasCompatibleArtifacts(evidence)) return 'learning'
   if (evidence.reviewCount >= 4 && (evidence.stability ?? 0) >= 14 && isRecent(evidence.lastReviewedAt, now)) return 'mastered'
@@ -378,16 +375,19 @@ function toEvidence(input: {
   capabilities: LearningCapabilityRow[]
   states: LearnerCapabilityStateRow[]
   artifacts: CapabilityArtifactRow[]
-  sourceProgress: SourceProgressRow[]
+  activatedLessons: Set<string>
 }): CapabilityMasteryEvidence[] {
   const stateByCapabilityId = new Map(input.states.map(state => [state.capability_id, state]))
-  const progressBySourceRef = new Map(input.sourceProgress.map(progress => [progress.source_ref, progress.current_state]))
 
   return input.capabilities.map(capability => {
     const state = stateByCapabilityId.get(capability.id)
     const approvedArtifacts = input.artifacts
       .filter(artifact => artifact.capability_id === capability.id && artifact.quality_status === 'approved')
       .map(artifact => artifact.artifact_kind)
+    // NULL lesson_id = cross-lesson (podcast) capability — always treated as
+    // activated. Otherwise gate on the activation set.
+    const lessonActivated = capability.lesson_id == null
+      || input.activatedLessons.has(capability.lesson_id)
     return {
       capabilityId: capability.id,
       canonicalKey: capability.canonical_key,
@@ -399,7 +399,7 @@ function toEvidence(input: {
       publicationStatus: capability.publication_status,
       requiredArtifacts: requiredArtifacts(capability.metadata_json),
       approvedArtifacts: uniq(approvedArtifacts),
-      sourceProgressState: progressBySourceRef.get(capability.source_ref) ?? null,
+      lessonActivated,
       reviewCount: state?.review_count ?? 0,
       lapseCount: state?.lapse_count ?? 0,
       consecutiveFailureCount: state?.consecutive_failure_count ?? 0,
@@ -416,7 +416,7 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
     if (ids.length === 0) return []
     const { data, error } = await db()
       .from('learning_capabilities')
-      .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, metadata_json')
+      .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id, metadata_json')
       .in('id', ids)
     if (error) throw error
     return (data ?? []) as LearningCapabilityRow[]
@@ -442,25 +442,23 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
     )
   }
 
-  async function sourceProgress(userId: string, sourceRefs: string[]): Promise<SourceProgressRow[]> {
-    if (sourceRefs.length === 0) return []
+  async function activatedLessons(userId: string): Promise<Set<string>> {
     const { data, error } = await db()
-      .from('learner_source_progress_state')
-      .select('source_ref, current_state')
+      .from('learner_lesson_activation')
+      .select('lesson_id')
       .eq('user_id', userId)
-      .in('source_ref', uniq(sourceRefs))
     if (error) throw error
-    return (data ?? []) as SourceProgressRow[]
+    return new Set(((data ?? []) as Array<{ lesson_id: string }>).map(row => row.lesson_id))
   }
 
   async function evidenceForCapabilities(userId: string, capabilities: LearningCapabilityRow[]): Promise<CapabilityMasteryEvidence[]> {
     const capabilityIds = capabilities.map(capability => capability.id)
-    const [states, artifactRows, progressRows] = await Promise.all([
+    const [states, artifactRows, activatedLessonsSet] = await Promise.all([
       learnerStates(userId, capabilityIds),
       artifacts(capabilityIds),
-      sourceProgress(userId, capabilities.map(capability => capability.source_ref)),
+      activatedLessons(userId),
     ])
-    return toEvidence({ capabilities, states, artifacts: artifactRows, sourceProgress: progressRows })
+    return toEvidence({ capabilities, states, artifacts: artifactRows, activatedLessons: activatedLessonsSet })
   }
 
   return {
@@ -479,7 +477,7 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
     async getPatternMastery(patternId: string, userId: string): Promise<PatternMastery> {
       const { data, error } = await db()
         .from('learning_capabilities')
-        .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, metadata_json')
+        .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id, metadata_json')
         .eq('source_kind', 'pattern')
         .eq('source_ref', patternId)
       if (error) throw error
@@ -496,11 +494,11 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
       if (stateError) throw stateError
       const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
       const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
-      const [artifactRows, progressRows] = await Promise.all([
+      const [artifactRows, activatedLessonsSet] = await Promise.all([
         artifacts(capabilities.map(capability => capability.id)),
-        sourceProgress(userId, capabilities.map(capability => capability.source_ref)),
+        activatedLessons(userId),
       ])
-      const evidence = toEvidence({ capabilities, states, artifacts: artifactRows, sourceProgress: progressRows })
+      const evidence = toEvidence({ capabilities, states, artifacts: artifactRows, activatedLessons: activatedLessonsSet })
       return deriveMasteryOverview({ userId, evidence })
     },
   }

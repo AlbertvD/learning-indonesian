@@ -56,7 +56,7 @@ function overviewRow(opts: {
   orderIndex: number
   title: string
   hasStartedLesson?: boolean
-  hasMeaningfulExposure?: boolean
+  hasMeaningfulExposure?: boolean // accepted for back-compat, ignored after retirement #6
   hasPageBlocks?: boolean
   readyCapabilityCount?: number
   practicedEligibleCapabilityCount?: number
@@ -74,7 +74,6 @@ function overviewRow(opts: {
     is_published: true,
     lesson_sections: opts.lessonSections ?? [],
     has_started_lesson: opts.hasStartedLesson ?? false,
-    has_meaningful_exposure: opts.hasMeaningfulExposure ?? false,
     has_page_blocks: opts.hasPageBlocks ?? true,
     ready_capability_count: opts.readyCapabilityCount ?? 0,
     practiced_eligible_capability_count: opts.practicedEligibleCapabilityCount ?? 0,
@@ -214,14 +213,13 @@ describe('Lessons overview', () => {
     expect(screen.queryByPlaceholderText(/search|filter/i)).not.toBeInTheDocument()
   })
 
-  it('uses v2 source progress and capability counts to show a ready-to-practice lesson status', async () => {
+  it('shows an activated lesson with ready capabilities as in progress', async () => {
     vi.mocked(lessonService.getLessonsOverview).mockResolvedValue([
       overviewRow({
         lessonId: 'lesson-1',
         orderIndex: 1,
         title: 'Lesson 1 (Di pasar)',
         lessonSections: lesson1Sections,
-        hasMeaningfulExposure: true,
         hasStartedLesson: true,
         readyCapabilityCount: 2,
         practicedEligibleCapabilityCount: 0,
@@ -237,35 +235,12 @@ describe('Lessons overview', () => {
     renderLessons()
 
     const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
-    expect(lessonOne).toHaveTextContent('Ready to practice')
-    expect(lessonOne).toHaveTextContent('Open lesson')
-    expect(lessonOne).not.toHaveTextContent(/Review this lesson|Practice this lesson|\d+\s+ready/i)
-  })
-
-  it('does not use stale legacy lesson progress as v2 practice readiness exposure', async () => {
-    // Legacy lesson_progress alone (without source-progress events from the v2
-    // reader) should produce "In progress" status — NOT "Ready to practice"
-    // even when ready capabilities exist. has_started_lesson=true (lesson_progress)
-    // but has_meaningful_exposure=false (no v2 source-progress events).
-    vi.mocked(lessonService.getLessonsOverview).mockResolvedValue([
-      overviewRow({
-        lessonId: 'lesson-1',
-        orderIndex: 1,
-        title: 'Lesson 1 (Di pasar)',
-        lessonSections: lesson1Sections,
-        hasStartedLesson: true,
-        hasMeaningfulExposure: false,
-        readyCapabilityCount: 2,
-        practicedEligibleCapabilityCount: 0,
-      }),
-      overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections }),
-    ])
-
-    renderLessons()
-
-    const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
+    // After retirement #6, "ready_to_practice" collapses into "in_progress" —
+    // activation IS the readiness signal.
     expect(lessonOne).toHaveTextContent('In progress')
-    expect(lessonOne).not.toHaveTextContent('Ready to practice')
+    expect(lessonOne).toHaveTextContent('Continue')
+    expect(lessonOne).not.toHaveTextContent(/Ready to practice/i)
+    expect(lessonOne).not.toHaveTextContent(/Review this lesson|Practice this lesson|\d+\s+ready/i)
   })
 
   it('uses practiced capability counts to show in-practice and practiced lesson statuses', async () => {
@@ -275,7 +250,6 @@ describe('Lessons overview', () => {
         orderIndex: 1,
         title: 'Lesson 1 (Di pasar)',
         lessonSections: lesson1Sections,
-        hasMeaningfulExposure: true,
         hasStartedLesson: true,
         readyCapabilityCount: 2,
         practicedEligibleCapabilityCount: 2,
@@ -285,7 +259,6 @@ describe('Lessons overview', () => {
         orderIndex: 2,
         title: 'Lesson 2',
         lessonSections: lesson2Sections,
-        hasMeaningfulExposure: true,
         hasStartedLesson: true,
         readyCapabilityCount: 4,
         practicedEligibleCapabilityCount: 1,

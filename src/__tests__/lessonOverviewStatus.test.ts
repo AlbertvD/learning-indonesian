@@ -11,7 +11,6 @@ function signal(overrides: Partial<LessonOverviewSignal> = {}): LessonOverviewSi
   return {
     lessonId: 'lesson-1',
     orderIndex: 1,
-    hasMeaningfulExposure: false,
     readyItemCount: 0,
     practicedEligibleItemCount: 0,
     eligibleIntroducedItemCount: 0,
@@ -26,38 +25,31 @@ describe('lesson overview status', () => {
   it('maps lesson signals to learner-facing statuses', () => {
     expect(decideLessonOverviewStatus(signal())).toBe('not_started')
     expect(decideLessonOverviewStatus(signal({ hasStartedLesson: true }))).toBe('in_progress')
-    expect(decideLessonOverviewStatus(signal({ hasMeaningfulExposure: true, readyItemCount: 4 }))).toBe('ready_to_practice')
     expect(decideLessonOverviewStatus(signal({
-      hasMeaningfulExposure: true,
+      hasStartedLesson: true,
+      readyItemCount: 4,
+    }))).toBe('in_progress')
+    expect(decideLessonOverviewStatus(signal({
+      hasStartedLesson: true,
       readyItemCount: 2,
       practicedEligibleItemCount: 1,
       eligibleIntroducedItemCount: 4,
     }))).toBe('in_practice')
     expect(decideLessonOverviewStatus(signal({
-      hasMeaningfulExposure: true,
+      hasStartedLesson: true,
       readyItemCount: 0,
       practicedEligibleItemCount: 4,
       eligibleIntroducedItemCount: 4,
     }))).toBe('practiced')
     expect(decideLessonOverviewStatus(signal({
-      hasMeaningfulExposure: true,
+      hasStartedLesson: true,
       readyItemCount: 4,
       earlierLessonsSatisfied: false,
     }))).toBe('later')
   })
 
-  it('does not call a lesson practiced when no introduced eligible item has been practiced', () => {
-    expect(decideLessonOverviewStatus(signal({
-      hasMeaningfulExposure: true,
-      practicedEligibleItemCount: 0,
-      eligibleIntroducedItemCount: 0,
-      hasAuthoredEligiblePracticeContent: false,
-    }))).toBe('in_progress')
-  })
-
   it('keeps later lessons openable but not practice-forward', () => {
     expect(overviewActionLabel('later')).toBe('Open lesson')
-    expect(overviewActionLabel('ready_to_practice')).toBe('Open lesson')
     expect(overviewActionLabel('practiced')).toBe('Open lesson')
     expect(overviewActionLabel('not_started')).toBe('Open lesson')
     expect(overviewActionLabel('in_progress')).toBe('Continue')
@@ -71,12 +63,12 @@ describe('lesson overview status', () => {
     ])).toBe('lesson-1')
   })
 
-  it('recommends the earliest ready or in-practice lesson before a not-started lesson', () => {
+  it('recommends the earliest in-practice lesson before a not-started lesson', () => {
     expect(recommendLesson([
       signal({
         lessonId: 'lesson-1',
         orderIndex: 1,
-        hasMeaningfulExposure: true,
+        hasStartedLesson: true,
         readyItemCount: 0,
         practicedEligibleItemCount: 3,
         eligibleIntroducedItemCount: 3,
@@ -84,19 +76,21 @@ describe('lesson overview status', () => {
       signal({
         lessonId: 'lesson-2',
         orderIndex: 2,
-        hasMeaningfulExposure: true,
-        readyItemCount: 5,
+        hasStartedLesson: true,
+        readyItemCount: 2,
+        practicedEligibleItemCount: 1,
+        eligibleIntroducedItemCount: 4,
       }),
       signal({ lessonId: 'lesson-3', orderIndex: 3 }),
     ])).toBe('lesson-2')
   })
 
-  it('usually moves from a practiced lesson to the next not-started lesson', () => {
+  it('moves from a practiced lesson to the next not-started lesson', () => {
     expect(recommendLesson([
       signal({
         lessonId: 'lesson-1',
         orderIndex: 1,
-        hasMeaningfulExposure: true,
+        hasStartedLesson: true,
         practicedEligibleItemCount: 3,
         eligibleIntroducedItemCount: 3,
       }),
@@ -109,29 +103,17 @@ describe('lesson overview status', () => {
       signal({
         lessonId: 'lesson-1',
         orderIndex: 1,
-        hasMeaningfulExposure: true,
+        hasStartedLesson: true,
         readyItemCount: 4,
       }),
       signal({
         lessonId: 'lesson-2',
         orderIndex: 2,
-        hasMeaningfulExposure: true,
+        hasStartedLesson: true,
         readyItemCount: 6,
         earlierLessonsSatisfied: false,
       }),
     ])).toBe('lesson-1')
-  })
-
-  it('lets meaningful lessons with no authored practice content satisfy the path without appearing practiced', () => {
-    expect(recommendLesson([
-      signal({
-        lessonId: 'lesson-1',
-        orderIndex: 1,
-        hasMeaningfulExposure: true,
-        hasAuthoredEligiblePracticeContent: false,
-      }),
-      signal({ lessonId: 'lesson-2', orderIndex: 2 }),
-    ])).toBe('lesson-2')
   })
 
   it('recommends Lesson 1 for new learners without needing empty stats copy', () => {

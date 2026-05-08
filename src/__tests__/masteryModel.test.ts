@@ -20,7 +20,7 @@ function evidence(overrides: Partial<CapabilityMasteryEvidence>): CapabilityMast
     publicationStatus: 'published',
     requiredArtifacts: ['base_text', 'meaning:l1'],
     approvedArtifacts: ['base_text', 'meaning:l1'],
-    sourceProgressState: 'intro_completed',
+    lessonActivated: true,
     reviewCount: 0,
     lapseCount: 0,
     consecutiveFailureCount: 0,
@@ -225,8 +225,8 @@ describe('mastery model data access', () => {
         { capability_id: 'cap-1', artifact_kind: 'base_text', quality_status: 'approved' },
         { capability_id: 'cap-1', artifact_kind: 'meaning:l1', quality_status: 'approved' },
       ],
-      learner_source_progress_state: [
-        { user_id: 'user-1', source_ref: 'learning_items/makan', current_state: 'intro_completed' },
+      learner_lesson_activation: [
+        { user_id: 'user-1', lesson_id: 'lesson-uuid' },
       ],
     }) as any)
 

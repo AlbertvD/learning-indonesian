@@ -1,5 +1,4 @@
 import type { Lesson, LessonPageBlock } from '@/services/lessonService'
-import type { SourceProgressEventType } from '@/services/sourceProgressService'
 
 export type LessonExperienceBlockKind =
   | 'lesson_hero'
@@ -7,7 +6,6 @@ export type LessonExperienceBlockKind =
   | 'vocab_strip'
   | 'dialogue_card'
   | 'pattern_callout'
-  | 'noticing_prompt'
   | 'practice_bridge'
   | 'lesson_recap'
 
@@ -20,7 +18,6 @@ export interface LessonExperienceBlock {
   contentUnitSlugs: string[]
   displayOrder: number
   payload: Record<string, unknown>
-  sourceProgressEvent?: SourceProgressEventType
   capabilityKeyRefs: string[]
 }
 
@@ -31,20 +28,6 @@ export interface LessonExperience {
   level: string
   blocks: LessonExperienceBlock[]
   sourceRefs: string[]
-}
-
-const SOURCE_PROGRESS_EVENTS = new Set<SourceProgressEventType>([
-  'opened',
-  'section_exposed',
-  'intro_completed',
-  'heard_once',
-  'pattern_noticing_seen',
-  'guided_practice_completed',
-  'lesson_completed',
-])
-
-function isSourceProgressEvent(value: unknown): value is SourceProgressEventType {
-  return typeof value === 'string' && SOURCE_PROGRESS_EVENTS.has(value as SourceProgressEventType)
 }
 
 function sourceRefForLesson(lesson: Lesson): string {
@@ -62,7 +45,7 @@ function blockKindFromPipeline(block: LessonPageBlock): LessonExperienceBlockKin
   if (block.payload_json?.type === 'dialogue') return 'dialogue_card'
   if (block.payload_json?.type === 'vocabulary' || block.payload_json?.type === 'numbers' || block.payload_json?.type === 'expressions') return 'vocab_strip'
   if (block.content_unit_slugs?.some(slug => slug.startsWith('pattern-'))) return 'pattern_callout'
-  return block.source_progress_event === 'pattern_noticing_seen' ? 'noticing_prompt' : 'reading_section'
+  return 'reading_section'
 }
 
 function fromPipelineBlock(block: LessonPageBlock, lesson: Lesson): LessonExperienceBlock {
@@ -76,7 +59,6 @@ function fromPipelineBlock(block: LessonPageBlock, lesson: Lesson): LessonExperi
     contentUnitSlugs: block.content_unit_slugs ?? [],
     displayOrder: block.display_order,
     payload,
-    ...(isSourceProgressEvent(block.source_progress_event) ? { sourceProgressEvent: block.source_progress_event } : {}),
     capabilityKeyRefs: block.capability_key_refs ?? [],
   }
 }

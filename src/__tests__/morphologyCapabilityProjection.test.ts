@@ -32,7 +32,7 @@ function asPlannerCapability(capability: ProjectedCapability): PlannerCapability
     readinessStatus: 'ready',
     publicationStatus: 'published',
     prerequisiteKeys: capability.prerequisiteKeys,
-    requiredSourceProgress: capability.requiredSourceProgress,
+    lessonId: capability.lessonId ?? null,
     difficultyLevel: capability.difficultyLevel,
     goalTags: capability.goalTags,
   }
@@ -50,11 +50,6 @@ describe('morphology capability projection', () => {
       direction: 'derived_to_root',
       skillType: 'recognition',
       requiredArtifacts: ['root_derived_pair', 'allomorph_rule'],
-      requiredSourceProgress: {
-        kind: 'source_progress',
-        sourceRef: patternSourceRef,
-        requiredState: 'pattern_noticing_seen',
-      },
       goalTags: ['morphology', 'meN-active'],
     }))
     expect(recall).toEqual(expect.objectContaining({
@@ -98,13 +93,7 @@ describe('morphology capability projection', () => {
       preferredSessionSize: 10,
       dueCount: 0,
       readyCapabilities: [asPlannerCapability(recall)],
-      sourceProgress: [{
-        sourceRef: patternSourceRef,
-        sourceSectionRef: 'noticing',
-        currentState: 'pattern_noticing_seen' as const,
-        completedEventTypes: ['pattern_noticing_seen' as const],
-      }],
-      recentReviewEvidence: [],
+      activatedLessons: new Set<string>(),
     }
 
     const beforeRecognition = planLearningPath({

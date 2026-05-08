@@ -37,11 +37,6 @@ describe('capability staging', () => {
       expect.objectContaining({
         canonicalKey: expect.stringContaining(':text_recognition:'),
         sourceRef: 'learning_items/makan',
-        requiredSourceProgress: {
-          kind: 'source_progress',
-          sourceRef: 'learning_items/makan',
-          requiredState: 'section_exposed',
-        },
         difficultyLevel: 1,
         contentUnitSlugs: ['item-makan'],
       }),
@@ -56,7 +51,6 @@ describe('capability staging', () => {
       expect.objectContaining({
         canonicalKey: expect.stringContaining(':form_recall:'),
         prerequisiteKeys: [expect.stringContaining(':l1_to_id_choice:')],
-        requiredSourceProgress: expect.objectContaining({ requiredState: 'intro_completed' }),
         difficultyLevel: 3,
       }),
     ]))
