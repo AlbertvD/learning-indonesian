@@ -16,6 +16,11 @@
 begin;
 
 -- 6. REWRITE: get_lessons_overview — activation-aware shape; drops has_meaningful_exposure.
+-- DROP FUNCTION first because Postgres CREATE OR REPLACE cannot change a
+-- function's RETURNS TABLE shape (the return-column set narrows by one).
+-- Idempotent via `if exists`. The grant below re-establishes the
+-- authenticated execute permission on the recreated function.
+drop function if exists indonesian.get_lessons_overview(uuid);
 create or replace function indonesian.get_lessons_overview(p_user_id uuid)
 returns table (
   lesson_id uuid,

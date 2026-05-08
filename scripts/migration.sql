@@ -1612,6 +1612,11 @@ on conflict (user_id, lesson_id) do nothing;
 -- 6. REWRITE: get_lessons_overview — drop source-progress CTEs; use activation
 -- (compute_todays_plan_raw rewrite was REMOVED in R1 v2 — function was already
 -- retired in retirement #4, see scripts/migration.sql:1115-1120.)
+-- DROP FUNCTION first because Postgres CREATE OR REPLACE cannot change a
+-- function's RETURNS TABLE shape (the return-column set narrows by one).
+-- Idempotent via `if exists`. The grant below re-establishes the
+-- authenticated execute permission on the recreated function.
+drop function if exists indonesian.get_lessons_overview(uuid);
 create or replace function indonesian.get_lessons_overview(p_user_id uuid)
 returns table (
   lesson_id uuid,
