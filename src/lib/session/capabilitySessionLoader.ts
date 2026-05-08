@@ -10,13 +10,13 @@ import { resolveExercise } from '@/lib/exercises/exerciseResolver'
 import { planLearningPath, type PedagogyInput, type PlannerCapability } from '@/lib/pedagogy/pedagogyPlanner'
 import type { SessionPosture } from '@/lib/pedagogy/sessionPosture'
 import { composeSession } from '@/lib/session/sessionComposer'
-import type { CapabilityReviewSessionContext, CapabilitySessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session/sessionPlan'
+import type { CapabilityReviewSessionContext, SessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session/sessionPlan'
 import type { CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
 
 export interface CapabilitySessionLoaderInput {
   enabled: boolean
   sessionId: string
-  mode: CapabilitySessionMode
+  mode: SessionMode
   now: Date
   limit: number
   schedulerRows: LearnerCapabilityStateRow[]
@@ -39,7 +39,7 @@ export interface CapabilitySessionDataSnapshot {
 
 export interface CapabilitySessionDataRequest {
   userId: string
-  mode: CapabilitySessionMode
+  mode: SessionMode
   now: Date
   limit: number
   preferredSessionSize: number
@@ -87,12 +87,12 @@ function artifactVersionSnapshot(capability: ProjectedCapability | null): Record
   }
 }
 
-function isLessonScopedMode(mode: CapabilitySessionMode): boolean {
+function isLessonScopedMode(mode: SessionMode): boolean {
   return mode === 'lesson_practice' || mode === 'lesson_review'
 }
 
 function lessonScope(input: {
-  mode: CapabilitySessionMode
+  mode: SessionMode
   selectedLessonId?: string
   selectedSourceRefs?: string[]
   plannerInput: Omit<PedagogyInput, 'mode' | 'now'>
@@ -107,7 +107,7 @@ function lessonScope(input: {
 }
 
 function isCapabilityInScope(input: {
-  mode: CapabilitySessionMode
+  mode: SessionMode
   capability: ProjectedCapability | undefined
   selectedSourceRefs: string[]
 }): boolean {
@@ -117,7 +117,7 @@ function isCapabilityInScope(input: {
 
 function missingLessonScopePlan(input: {
   sessionId: string
-  mode: CapabilitySessionMode
+  mode: SessionMode
   limit: number
 }): Promise<SessionPlan> {
   const diagnostics: SessionDiagnostic[] = [{
@@ -325,7 +325,7 @@ export async function loadCapabilitySessionPlanForUser(input: {
   enabled: boolean
   sessionId: string
   userId: string
-  mode: CapabilitySessionMode
+  mode: SessionMode
   now: Date
   limit: number
   preferredSessionSize: number

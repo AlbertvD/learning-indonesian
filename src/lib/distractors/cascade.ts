@@ -20,9 +20,9 @@ export interface DistractorCandidate {
 }
 
 /**
- * Shared 6-tier distractor cascade used by runtime MCQ builders
- * (makeRecognitionMCQ, makeCuedRecall, makeClozeMcq, and the new
- * capability-path builders in src/lib/exercises/builders/).
+ * Shared 6-tier distractor cascade used by runtime MCQ builders in
+ * src/lib/exercises/builders/. Originally extracted from sessionQueue.ts
+ * (retired in #7).
  *
  * Tiers (strict → lenient):
  *   0. same item_type + same POS + same semantic group

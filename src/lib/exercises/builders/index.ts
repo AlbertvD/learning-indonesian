@@ -1,6 +1,6 @@
 // Type-specific builders for capabilityContentService. Each takes BuilderInput
-// and returns BuilderResult. Mirrors the legacy switch in
-// sessionQueue.ts:230-560 but accepts capability-path inputs.
+// and returns BuilderResult. Originally extracted from sessionQueue.ts
+// (retired in #7); now accepts capability-path inputs.
 //
 // See docs/plans/2026-05-02-capability-content-service-spec.md §6.
 

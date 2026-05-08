@@ -100,7 +100,7 @@ async function main() {
   const preview = item.base_text.length > 70 ? `${item.base_text.slice(0, 70)}…` : item.base_text
   console.log(`${dryRun ? '[DRY RUN] ' : ''}Target: ${item.item_type} "${preview}" (is_active=${item.is_active})`)
   if (!item.is_active) {
-    console.warn('  ⚠️ item is inactive — filterEligible will exclude it even after forcing due/stage. Reactivate first.')
+    console.warn('  ⚠️ item is inactive — the capability-loader eligibility gate will exclude it even after forcing due/stage. Reactivate first.')
   }
 
   // --due: push a skill row's next_due_at to 1 day ago.

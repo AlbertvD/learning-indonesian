@@ -2,7 +2,7 @@ import type { CapabilityActivationRequest, CapabilityScheduleSnapshot } from '@/
 import type { ExerciseRenderPlan } from '@/lib/exercises/exerciseRenderPlan'
 import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/services/capabilityService'
 
-export type CapabilitySessionMode = 'standard' | 'lesson_practice' | 'lesson_review'
+export type SessionMode = 'standard' | 'lesson_practice' | 'lesson_review'
 
 export interface PendingActivationSessionItem {
   capabilityId: string
@@ -38,7 +38,7 @@ export interface SessionDiagnostic {
 
 export interface SessionPlan {
   id: string
-  mode: CapabilitySessionMode
+  mode: SessionMode
   title: string
   blocks: SessionBlock[]
   recapPolicy: 'standard'
