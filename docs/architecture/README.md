@@ -8,19 +8,15 @@ Start here for the capability-learning implementation handoff, the human product
 
 ## [Session Engine](session-engine.md)
 
-The legacy item queue lives in `src/lib/sessionQueue.ts`. The newer capability path lives under `src/lib/session/` and `src/lib/pedagogy/`. Capability sessions use canonical capability rows, source-progress gates, posture-aware load budgets, and explicit exercise resolution.
-
-## [Session Policies](session-policies.md)
-
-Four active policy layers transform the legacy queue after `buildSessionQueue` returns: exercise availability gating, grammar-aware interleaving, consecutive exercise-type cap, and queue trimming. Capability sessions use planner/composer gates instead.
+The runtime session engine lives under `src/lib/session/` and `src/lib/pedagogy/`. Capability sessions use canonical capability rows, lesson-activation gates, posture-aware load budgets, and explicit exercise resolution.
 
 ## [Session Modes](session-modes.md)
 
-The active legacy queue modes are `standard`, `quick`, and `backlog_clear`. Capability planning also has future focus-mode budget concepts, but these are not active legacy `sessionQueue.ts` modes unless explicitly wired into a capability session flow.
+The runtime `SessionMode` is `standard | lesson_practice | lesson_review`. The capability planner also has focus-mode budget concepts that are not active session modes unless explicitly wired into a capability session flow.
 
 ## [Exercise Types](exercise-types.md)
 
-Exercise rendering is selected through capability contracts and `src/lib/exercises/exerciseResolver.ts` on the capability path, and through stage-based queue selection on the legacy path.
+Exercise rendering is selected through capability contracts and `src/lib/exercises/exerciseResolver.ts`.
 
 ## [Content Pipeline](content-pipeline.md)
 
@@ -32,7 +28,7 @@ All app tables live in the `indonesian` Postgres schema. Capability-era scheduli
 
 ## [FSRS Scheduling](fsrs-scheduling.md)
 
-Legacy item skills and capability skills both use FSRS-style review state, but the capability path schedules by canonical capability row instead of collapsing multiple learner abilities into one item stage.
+The capability path uses FSRS-style review state, scheduled by canonical capability row.
 
 ## [Feature Flags](feature-flags.md)
 

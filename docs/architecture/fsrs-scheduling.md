@@ -94,7 +94,7 @@ Stage transitions are recorded in `learner_stage_events` (append-only). The tran
 - `retrieving → productive`: FSRS stability threshold indicating strong recall
 - Regressions (lapses): `productive → retrieving`, `retrieving → anchoring`, etc.
 
-The exact thresholds are in `src/lib/stages.ts` (`checkPromotion`, `checkDemotion`). Key constants: `ANCHORING_RECOGNITION_STABILITY = 1.8`, `RETRIEVING_STABILITY = 4.5`.
+The exact thresholds were in `src/lib/stages.ts` (retired in retirement #7); the current scheduler is `supabase/functions/commit-capability-answer-report/`. The historical constants (`ANCHORING_RECOGNITION_STABILITY = 1.8`, `RETRIEVING_STABILITY = 4.5`) are preserved in git history if needed for FSRS tuning research.
 
 ---
 
@@ -107,12 +107,6 @@ The session engine composes sessions in FSRS-aligned priority order:
 3. **New items up to `dailyNewItemsLimit`** — user-configurable (default 10), stored in `profiles.daily_new_items_limit`
 
 The total is trimmed to `preferredSessionSize`. This replaces the previous percentage-based slot allocation (55/20/10%) and new-learner protection rules, which were hand-crafted heuristics not derived from FSRS. See `docs/fsrs-algorithm-research.md` for the research that informed this change.
-
----
-
-## `filterByApprovedContent` (deferred)
-
-A commented-out policy hook in `sessionPolicies.ts` was intended to restrict grammar exercises to those where all content has been manually approved (via `exercise_type_availability.requires_approved_content`). This is deferred to Phase 2+. Currently all active exercise variants are served regardless of approval state.
 
 ---
 

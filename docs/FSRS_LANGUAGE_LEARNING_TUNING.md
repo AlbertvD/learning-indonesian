@@ -5,6 +5,8 @@
 **Files Modified:** `src/lib/fsrs.ts`, `src/lib/stages.ts`  
 **Status:** Implemented
 
+> **Note (2026-05-08):** `src/lib/fsrs.ts` was retired in retirement #3 and `src/lib/stages.ts` was retired in retirement #7. The promotion-gate semantics described below describe the historical pre-retirement design; the current scheduler lives at `supabase/functions/commit-capability-answer-report/index.ts`. Constants and pseudocode below are preserved for SLA / FSRS-tuning research reference.
+
 ---
 
 ## Problem

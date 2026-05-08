@@ -46,7 +46,7 @@ make seed-learning-items SUPABASE_SERVICE_KEY=<key>  # learning_items, item_mean
 
 ### `lesson_snippet` contexts
 
-Vocabulary items also get `lesson_snippet` contexts. These exist for one purpose only: to carry a `source_lesson_id` so the lesson-gating logic in `buildSessionQueue` can determine which lesson an item belongs to. Their `source_text` is the bare Indonesian word — not a real sentence. **They are never displayed to the user.** Do not use them as display content or assume they contain useful context sentences.
+Vocabulary items also get `lesson_snippet` contexts. These exist for one purpose only: to carry a `source_lesson_id` so the capability path's lesson-eligibility filter can determine which lesson an item belongs to. Their `source_text` is the bare Indonesian word — not a real sentence. **They are never displayed to the user.** Do not use them as display content or assume they contain useful context sentences.
 
 ---
 

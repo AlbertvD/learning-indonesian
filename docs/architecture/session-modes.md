@@ -1,32 +1,14 @@
 # Session Modes
 
-## Legacy Queue Modes
-
-`src/lib/sessionQueue.ts` currently supports:
+The runtime `SessionMode` type lives in `src/lib/session/sessionPlan.ts`:
 
 ```ts
-export type SessionMode = 'standard' | 'backlog_clear' | 'quick'
+export type SessionMode = 'standard' | 'lesson_practice' | 'lesson_review'
 ```
 
-## `standard`
+`standard` is the global Today path. `lesson_practice` and `lesson_review` are launched from an individual lesson page; they filter capabilities to the selected lesson's source refs before the composer fills the session. `lesson_review` does not introduce new capabilities.
 
-The normal legacy queue. It can include due review, anchoring reinforcement, new vocabulary, and grammar items.
-
-New item pacing is controlled by `dailyNewItemsLimit`, lesson gating, exercise availability, and the final session size cap.
-
-## `quick`
-
-A short legacy queue with:
-
-```text
-effectiveSessionSize = 5
-```
-
-Quick mode keeps the same safety gates but suppresses grammar slots and trims the queue early.
-
-## `backlog_clear`
-
-A due-review recovery mode. It suppresses new item introduction and grammar slots so the learner can reduce review backlog without adding more review debt.
+The legacy queue modes (`backlog_clear`, `quick`) were retired with `sessionQueue.ts` in retirement #7.
 
 ## Capability Planner Modes
 
@@ -38,7 +20,7 @@ pattern_workshop
 podcast
 ```
 
-These are budget/planning concepts in `src/lib/pedagogy/loadBudgets.ts`. They are not the same as active legacy `sessionQueue.ts` modes unless a caller explicitly wires them into a capability session flow.
+These are budget/planning concepts in `src/lib/pedagogy/loadBudgets.ts`. They are distinct from the runtime `SessionMode` and only apply when a caller explicitly wires them into a capability session flow.
 
 ## Session Posture
 
