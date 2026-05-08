@@ -1,6 +1,6 @@
 // builder for exerciseType='contrast_pair'.
 // Authored only — payload comes from exercise_variants.payload_json.
-// Mirrors makePublishedExercise's contrast_pair branch at sessionQueue.ts:973-994.
+// Originally extracted from sessionQueue.ts (retired in #7).
 
 import type { BuilderInput, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session/collectAudibleTexts'

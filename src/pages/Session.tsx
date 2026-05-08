@@ -8,7 +8,7 @@ import {
   LoadingState,
 } from '@/components/page/primitives'
 import { useAuthStore } from '@/stores/authStore'
-import { type SessionMode } from '@/lib/sessionQueue'
+import type { SessionMode } from '@/lib/session/sessionPlan'
 import { lessonService } from '@/services/lessonService'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
 import { ExperiencePlayer, type SessionAnswerEvent } from '@/components/experience/ExperiencePlayer'

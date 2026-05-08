@@ -1,6 +1,6 @@
 import type { CapabilityActivationRequest } from '@/lib/reviews/capabilityReviewProcessor'
 import type { ExerciseRenderPlan } from '@/lib/exercises/exerciseRenderPlan'
-import type { CapabilityReviewSessionContext, CapabilitySessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session/sessionPlan'
+import type { CapabilityReviewSessionContext, SessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session/sessionPlan'
 
 interface ResolutionFailure {
   reason: string
@@ -29,7 +29,7 @@ export interface EligibleNewSessionCapabilityInput {
 
 export interface ComposeSessionInput {
   sessionId: string
-  mode: CapabilitySessionMode
+  mode: SessionMode
   dueCapabilities: DueSessionCapabilityInput[]
   eligibleNewCapabilities: EligibleNewSessionCapabilityInput[]
   practiceReviewCapabilities?: DueSessionCapabilityInput[]

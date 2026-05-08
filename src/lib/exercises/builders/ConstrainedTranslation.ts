@@ -1,6 +1,5 @@
 // builder for exerciseType='constrained_translation'.
-// Authored only. Mirrors makePublishedExercise's constrained_translation
-// branch at sessionQueue.ts:1009-1021.
+// Authored only. Originally extracted from sessionQueue.ts (retired in #7).
 
 import type { BuilderInput, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session/collectAudibleTexts'

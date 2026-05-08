@@ -12,10 +12,10 @@ The old production path is still present:
 
 ```text
 Session page
-  -> buildSessionQueue
-  -> ExerciseShell
-  -> legacy exercise components
-  -> reviewHandler / FSRS skill state
+  -> loadCapabilitySessionPlanForUser
+  -> SessionPlan blocks (capability path)
+  -> exercise primitives + implementations
+  -> commit-capability-answer-report edge function
 ```
 
 The new capability path adds these seams:

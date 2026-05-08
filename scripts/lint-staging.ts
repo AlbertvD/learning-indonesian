@@ -418,7 +418,7 @@ function checkContrastPair(p: any, slug: string | undefined, ctx: LessonCtx, ref
       out.push(mkFinding('CRITICAL', ctx.n, 'candidates.ts', 'option-missing-id-or-text', '', ref))
     } else if (o.id !== o.text) {
       // WARNING (not CRITICAL): runtime tolerates the abstract-id form.
-      // sessionQueue.ts:243-266 normalises options to text strings and the
+      // The runtime builder normalises options to text strings and the
       // ContrastPairExercise component never sees the raw id. Convention check
       // only — flag for cleanup, don't block publish.
       out.push(mkFinding('WARNING', ctx.n, 'candidates.ts', 'option-id-not-text',

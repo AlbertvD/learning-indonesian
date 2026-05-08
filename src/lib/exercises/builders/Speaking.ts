@@ -1,7 +1,6 @@
 // builder for exerciseType='speaking'.
 // Authored payload OR fall back to learningItem.base_text as the model
-// utterance. Mirrors makePublishedExercise's speaking branch at
-// sessionQueue.ts:1023-1031 and the legacy item-anchored speaking flow.
+// utterance. Originally extracted from sessionQueue.ts (retired in #7).
 
 import type { BuilderInput, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session/collectAudibleTexts'

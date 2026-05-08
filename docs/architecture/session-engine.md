@@ -1,43 +1,15 @@
 # Session Engine
 
-Current session code has two paths:
+The runtime session engine is the capability path:
 
 ```text
-legacy item queue:
-  src/lib/sessionQueue.ts
-  src/lib/sessionPolicies.ts
-
 capability session path:
   src/lib/session/capabilitySessionLoader.ts
   src/lib/pedagogy/pedagogyPlanner.ts
   src/lib/session/sessionComposer.ts
 ```
 
-The legacy queue still powers the normal item-based session UI. The capability path is the newer, fail-closed planner/composer path used for ready/published learning capabilities and capability review events.
-
-## Legacy Item Queue
-
-`buildSessionQueue` in `src/lib/sessionQueue.ts` builds `SessionQueueItem[]` from item state, skill state, meanings, contexts, exercise variants, lesson order, and exercise availability.
-
-Current legacy modes are:
-
-```text
-standard
-quick
-backlog_clear
-```
-
-Lesson-scoped modes are not handled by the legacy queue. If `lesson_practice` or `lesson_review` reaches `buildSessionQueue`, it fails closed with an empty queue instead of falling back to global material.
-
-Unsupported older modes such as `recall_sprint` and `push_to_productive` should not be documented as active behavior.
-
-The legacy queue uses:
-
-- item buckets for new, anchoring, due, and grammar;
-- lesson gating for new vocabulary;
-- `dailyNewItemsLimit` plus session size caps;
-- stage-based exercise selection;
-- `applyPolicies` after queue construction.
+It is the fail-closed planner/composer path used for ready/published learning capabilities and capability review events. The legacy item queue (`sessionQueue.ts` + `sessionPolicies.ts`) was retired in retirement #7 (2026-05-08); see `docs/plans/2026-05-08-retire-legacy-lib-root.md`.
 
 ## Capability Session Path
 

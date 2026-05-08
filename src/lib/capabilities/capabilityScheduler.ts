@@ -1,5 +1,5 @@
 import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/services/capabilityService'
-import type { SessionMode } from '@/lib/sessionQueue'
+import type { SessionMode } from '@/lib/session/sessionPlan'
 
 export interface LearnerCapabilityStateRow {
   id: string

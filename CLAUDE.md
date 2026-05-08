@@ -184,7 +184,7 @@ All lesson, vocabulary, and podcast content (including audio files) is **deploye
 
 ### Runtime is unified; authoring is split
 
-**At runtime, every lesson goes through the capability pipeline.** `src/pages/Session.tsx:110` is the only production caller of any session builder, and it always invokes `loadCapabilitySessionPlanForUser({ enabled: true, ... })`. The legacy `buildSessionQueue` in `src/lib/sessionQueue.ts` has zero non-test callers — it survives only as a source of extracted helpers (the new builders in `src/lib/exercises/builders/` cite their lineage back to it). The `vocabulary` table is not read at runtime.
+**At runtime, every lesson goes through the capability pipeline.** `src/pages/Session.tsx:110` is the only production caller of any session builder, and it always invokes `loadCapabilitySessionPlanForUser({ enabled: true, ... })`. Legacy `buildSessionQueue` was retired in retirement #7; the new builders in `src/lib/exercises/builders/` carry the surface forward. The `vocabulary` table is not read at runtime.
 
 **The split between lessons 1–3 and lessons 4+ is purely about *authoring* — how content gets into Supabase:**
 

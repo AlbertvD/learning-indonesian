@@ -1,6 +1,5 @@
 // builder for exerciseType='sentence_transformation'.
-// Authored only. Mirrors makePublishedExercise's sentence_transformation
-// branch at sessionQueue.ts:996-1007.
+// Authored only. Originally extracted from sessionQueue.ts (retired in #7).
 
 import type { BuilderInput, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session/collectAudibleTexts'

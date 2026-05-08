@@ -20,13 +20,12 @@ export function SpeakingExercise({ exerciseItem, userLanguage }: SpeakingExercis
     return <div style={{ color: 'red' }}>Missing speaking data</div>
   }
 
-  // Defensive no-op: speaking is gated out of session selection in
-  // sessionQueue.ts (the productive-stage selectExercises path filters
-  // published speaking variants), but if the component is ever reached
-  // via a future call path, do NOT invoke onAnswer with wasCorrect=true —
-  // that would corrupt FSRS state for the spoken_production skill before
-  // ASR exists. The component remains visually functional for admin preview;
-  // the record button is a deliberate dead-end click until ASR is wired.
+  // Defensive no-op: speaking is gated out of session selection in the
+  // capability path, but if the component is ever reached via a future
+  // call path, do NOT invoke onAnswer with wasCorrect=true — that would
+  // corrupt FSRS state for the spoken_production skill before ASR exists.
+  // The component remains visually functional for admin preview; the
+  // record button is a deliberate dead-end click until ASR is wired.
   const handleSubmitAnswer = () => {
     return
   }

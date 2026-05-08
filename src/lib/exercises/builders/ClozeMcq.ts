@@ -3,8 +3,8 @@
 // Two paths per spec §6.2:
 //   1. Authored: variant.payload_json carries sentence + options + correct.
 //   2. Runtime: no active variant — build cloze sentence from a cloze-typed
-//      context and pull distractors from the cascade. Mirrors legacy
-//      makeClozeMcq at sessionQueue.ts:984-1027.
+//      context and pull distractors from the cascade.
+//      Originally extracted from sessionQueue.ts (retired in #7).
 //
 // The authored path is tried first.
 

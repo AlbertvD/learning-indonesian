@@ -847,8 +847,7 @@ src/lib/capabilities/
                                  math has retired. The due-list filter
                                  (getDueCapabilitiesFromRows) survives but
                                  moves into lib/analytics/upcoming/filter.ts.
-    sessionCapabilityDiagnostics.ts   only caller was lib/sessionQueue.ts
-                                      which is dead; retire entirely.
+    sessionCapabilityDiagnostics.ts   RETIRED in retirement #7
 ```
 
 **Depends on.** Nothing in `src/lib/`. Imports types from runtime row shapes and `chunkedQuery` utility for batched IN queries.
@@ -1367,18 +1366,37 @@ If event tracking becomes useful later, design it then with whatever events actu
 
 ### 8. Legacy `src/lib/` root files
 
-**Why.** Multiple files at `src/lib/` root are flagged in CLAUDE.md as legacy or are made obsolete by the lock-ins.
+**Status: PARTIALLY RETIRED in retirement #7 (2026-05-08, branch `retire/legacy-lib-root`).** Spec: `docs/plans/2026-05-08-retire-legacy-lib-root.md`. The function/test surface of the four legacy files plus the transitively-orphaned `sessionCapabilityDiagnostics.ts` are gone (~2518 LOC delete). `useExerciseScoring.ts` remains for a separate relocation PR (it has 11 production callers — relocation, not retirement).
 
-**Retire / relocate:**
+**Retired (actual scope after grep verification):**
 
 ```
-src/lib/sessionQueue.ts                         CLAUDE.md flags zero
-                                                 non-test callers; legacy
+src/lib/sessionQueue.ts                         RETIRED in retirement #7
 src/lib/session.ts                              RETIRED in retirement #5
-src/lib/sessionPolicies.ts                      folds into lib/session-builder/
+src/lib/sessionPolicies.ts                      RETIRED in retirement #7
+src/lib/stages.ts                               RETIRED in retirement #7
+src/lib/capabilities/sessionCapabilityDiagnostics.ts
+                                                RETIRED in retirement #7
+                                                (transitive orphan; only
+                                                caller was sessionQueue.ts)
 src/lib/useSessionBeacon.ts                     RETIRED in retirement #5
+
+Type relocation:
+  CapabilitySessionMode → SessionMode           renamed in lib/session/sessionPlan.ts;
+                                                12 occurrences across 3 files; two
+                                                production importers (Session.tsx +
+                                                capabilityScheduler.ts) became
+                                                path-only edits.
+```
+
+**Deferred (out of scope for retirement #7):**
+
+```
 src/lib/useExerciseScoring.ts                   relocate to src/hooks/
-                                                 (it's a hook, not lib code)
+                                                 (it's a hook, not lib code).
+                                                 Has 11 production callers; this
+                                                 is a relocation, not a retirement.
+                                                 Separate PR.
 ```
 
 ---
@@ -1415,7 +1433,7 @@ This document captures *decisions*. The codebase has not yet been refactored. Ev
 4. **Session lifecycle retirement.** DONE (#5, 2026-05-07, branch `retire/session-lifecycle`). Replaced `startSession`/`endSession` with client-side UUID minting + RPC-side upsert from answer commits. Deleted `lib/session.ts` (110 LOC) and `useSessionBeacon.ts` (30 LOC) entirely; bundled Lesson + Podcast caller surgery; dropped `job_finalize_stale_sessions` cron + function; dropped dead `learning_sessions_write` RLS policy; narrowed `learning_sessions` GRANT to SELECT only. ~221 LOC + 1 fn + 1 cron + 1 RLS policy + RPC modification. See `docs/plans/2026-05-07-retire-session-lifecycle.md`.
 5. **Source-progress retirement → lesson-activation.** DONE (#6, 2026-05-07, branch `retire/source-progress`). Added the `learner_lesson_activation` table + `set_lesson_activation` RPC; auto-activated legacy lessons (1–3) for existing users via master-migration backfill, and for new sign-ins via the `authStore.onAuthStateChange` SIGNED_IN hook; replaced the lesson-page mark-as-X buttons with a single Mantine activation Checkbox; rewrote the eligibility filter from `isSourceProgressSatisfied` to `capability.lessonId == null || activatedLessons.has(capability.lessonId)`; simplified mastery rule 2 to depend on `lessonActivated` instead of `sourceProgressState`. Deleted `sourceProgressService`, `sourceProgressGates`, `lessonExposureProgress`, the source-progress tables, the `record_source_progress_event` + `_capability_source_progress_met` RPCs, the `lesson_page_blocks.source_progress_event` column, and ~2,820 staging-file occurrences. Added `learning_capabilities.lesson_id` for the eligibility gate. ~4,173 LOC delete + ~830 LOC add. See `docs/plans/2026-05-07-retire-source-progress.md`.
 6. **Module folds.** One at a time. Suggested order: lessons, capabilities (cleanup), session-builder, exercise-content, analytics (incl. mastery), audio, auth, profile.
-7. **Legacy `src/lib/` root cleanup.** Last, after the modules above are folded.
+7. **Legacy `src/lib/` root cleanup.** PARTIALLY DONE (#7, 2026-05-08, branch `retire/legacy-lib-root`). Retired `sessionQueue.ts`, `sessionPolicies.ts`, `stages.ts`, and the transitively-orphaned `capabilities/sessionCapabilityDiagnostics.ts` (~2518 LOC delete). `useExerciseScoring.ts` deferred to a separate relocation PR (11 production callers; relocation, not retirement). See `docs/plans/2026-05-08-retire-legacy-lib-root.md`.
 8. **Test colocation.** Disperse `src/__tests__/` into the modules.
 
 Each step should be a separate PR with passing tests + the `make pre-deploy` gate.
