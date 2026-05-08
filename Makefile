@@ -58,6 +58,34 @@ migrate: ## Apply Supabase schema migration via psql + run schema-health check (
 		echo "   Run: make check-supabase-deep SUPABASE_SERVICE_KEY=<key>  to verify manually."; \
 	fi
 
+.PHONY: migrate-idempotent-check
+migrate-idempotent-check: ## Apply migration.sql twice + assert schema-health output is identical between runs (catches bulk-drop-class bugs without false-positives from pre-existing data gaps)
+	@test -n "$(POSTGRES_PASSWORD)" || { echo "Error: POSTGRES_PASSWORD is required (add to .env.local)"; exit 1; }
+	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required (add to .env.local)"; exit 1; }
+	@echo "→ First migrate.ts run..."
+	@NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_DB_PASSWORD=$(POSTGRES_PASSWORD) bun scripts/migrate.ts
+	@echo "→ Capturing schema-health snapshot after run 1..."
+	@$(MAKE) -s check-supabase-deep SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) > /tmp/migrate-idem-1.txt 2>&1 || true
+	@echo "→ Second migrate.ts run..."
+	@NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_DB_PASSWORD=$(POSTGRES_PASSWORD) bun scripts/migrate.ts
+	@echo "→ Capturing schema-health snapshot after run 2..."
+	@$(MAKE) -s check-supabase-deep SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) > /tmp/migrate-idem-2.txt 2>&1 || true
+	@echo "→ Comparing snapshots..."
+	@if diff -q /tmp/migrate-idem-1.txt /tmp/migrate-idem-2.txt > /dev/null; then \
+		echo ""; \
+		echo "✅ migrate.ts is idempotent — second run produced identical schema-health output."; \
+		echo "   (Pre-existing failures unrelated to this run remain unchanged — see snapshot in /tmp/migrate-idem-1.txt for live state.)"; \
+	else \
+		echo ""; \
+		echo "❌ Idempotency regression: schema-health output differed between runs."; \
+		echo "   This typically means a CREATE statement is missing a paired DROP IF EXISTS,"; \
+		echo "   or a bulk-DROP loop is wiping policies the file does not recreate."; \
+		echo ""; \
+		echo "Diff (run-1 → run-2):"; \
+		diff /tmp/migrate-idem-1.txt /tmp/migrate-idem-2.txt; \
+		exit 1; \
+	fi
+
 .PHONY: seed-lessons
 seed-lessons: ## Seed lesson content (requires SUPABASE_SERVICE_KEY)
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }

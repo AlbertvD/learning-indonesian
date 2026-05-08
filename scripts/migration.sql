@@ -1,4 +1,37 @@
 
+-- ============================================================================
+-- learning-indonesian — runtime schema migration (applied by `make migrate`)
+-- ============================================================================
+-- This file is the source of truth for everything `make migrate` applies.
+-- All schema changes that should reach the live DB via the canonical pipeline
+-- must land here. The whole file is designed to be idempotent — re-running
+-- `make migrate` against an existing DB must converge to the same end state
+-- and not regress any policy, grant, or trigger.
+--
+-- Idempotency conventions in this file:
+--   * `CREATE TABLE IF NOT EXISTS` / `CREATE INDEX IF NOT EXISTS`
+--   * `CREATE OR REPLACE FUNCTION` / `CREATE OR REPLACE VIEW`
+--   * `DROP POLICY IF EXISTS "X" ON Y;` immediately before each
+--     `CREATE POLICY "X" ON Y ...` (PG has no `CREATE POLICY IF NOT EXISTS`
+--     even on PG 18 — verified 2026-05-08; the per-policy drop+create idiom
+--     is the canonical workaround). Do NOT reintroduce a bulk-drop-all-policies
+--     loop: it silently wipes policies declared in scripts/migrations/*.sql.
+--
+-- Relationship to scripts/migrations/*.sql:
+--   These files are paper-trail audit logs and emergency rollback tools.
+--   Some predate the inversion of 2026-04-02 (when migrate.ts stopped
+--   regenerating migration.sql) and still hold load-bearing schema for the
+--   capability + content-units subsystem (tracked: lesson_page_blocks,
+--   content_units, capability_content_units, learning_capabilities,
+--   capability_aliases, capability_artifacts, learner_capability_state,
+--   capability_review_events, capability_resolution_failure_events).
+--   Until those are folded back here in a follow-up, fresh DB rebuilds need
+--   both this file AND those standalone files. New schema must land here,
+--   not in a new standalone file.
+--
+-- See docs/known-regressions.md and CLAUDE.md (Health checks) for context.
+-- ============================================================================
+
 -- V2 migration: complete indonesian schema target state (additive only, no drops)
 
 -- Create schema
@@ -315,74 +348,97 @@ ALTER TABLE indonesian.lesson_progress ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.learning_sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.error_logs ENABLE ROW LEVEL SECURITY;
 
--- Drop and recreate policies
-DO $$ DECLARE r record; BEGIN
-  FOR r IN SELECT tablename, policyname FROM pg_policies WHERE schemaname = 'indonesian' LOOP
-    EXECUTE 'DROP POLICY IF EXISTS ' || quote_ident(r.policyname) || ' ON indonesian.' || quote_ident(r.tablename);
-  END LOOP;
-END $$;
-
--- Policies
+-- Policies (idempotent: each CREATE is paired with DROP IF EXISTS so the file
+-- can be re-applied against an existing DB without "policy already exists").
+-- The previous bulk-drop loop was removed in 2026-05-08 because it silently
+-- wiped policies declared in scripts/migrations/*.sql files; per-policy
+-- `drop if exists; create` only touches policies this file owns.
+DROP POLICY IF EXISTS "profiles_read" ON indonesian.profiles;
 CREATE POLICY "profiles_read" ON indonesian.profiles FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "profiles_write" ON indonesian.profiles;
 CREATE POLICY "profiles_write" ON indonesian.profiles FOR ALL TO authenticated
   USING (id = auth.uid()) WITH CHECK (id = auth.uid());
 
+DROP POLICY IF EXISTS "user_roles_read" ON indonesian.user_roles;
 CREATE POLICY "user_roles_read" ON indonesian.user_roles FOR SELECT TO authenticated USING (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "lessons_read" ON indonesian.lessons;
 CREATE POLICY "lessons_read" ON indonesian.lessons FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "lessons_admin_write" ON indonesian.lessons;
 CREATE POLICY "lessons_admin_write" ON indonesian.lessons FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
+DROP POLICY IF EXISTS "lesson_sections_read" ON indonesian.lesson_sections;
 CREATE POLICY "lesson_sections_read" ON indonesian.lesson_sections FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "lesson_sections_admin_write" ON indonesian.lesson_sections;
 CREATE POLICY "lesson_sections_admin_write" ON indonesian.lesson_sections FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
+DROP POLICY IF EXISTS "podcasts_read" ON indonesian.podcasts;
 CREATE POLICY "podcasts_read" ON indonesian.podcasts FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "podcasts_admin_write" ON indonesian.podcasts;
 CREATE POLICY "podcasts_admin_write" ON indonesian.podcasts FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
+DROP POLICY IF EXISTS "learning_items_read" ON indonesian.learning_items;
 CREATE POLICY "learning_items_read" ON indonesian.learning_items FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "learning_items_admin_write" ON indonesian.learning_items;
 CREATE POLICY "learning_items_admin_write" ON indonesian.learning_items FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
+DROP POLICY IF EXISTS "item_meanings_read" ON indonesian.item_meanings;
 CREATE POLICY "item_meanings_read" ON indonesian.item_meanings FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "item_meanings_admin_write" ON indonesian.item_meanings;
 CREATE POLICY "item_meanings_admin_write" ON indonesian.item_meanings FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
+DROP POLICY IF EXISTS "item_contexts_read" ON indonesian.item_contexts;
 CREATE POLICY "item_contexts_read" ON indonesian.item_contexts FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "item_contexts_admin_write" ON indonesian.item_contexts;
 CREATE POLICY "item_contexts_admin_write" ON indonesian.item_contexts FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
+DROP POLICY IF EXISTS "item_answer_variants_read" ON indonesian.item_answer_variants;
 CREATE POLICY "item_answer_variants_read" ON indonesian.item_answer_variants FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "item_answer_variants_admin_write" ON indonesian.item_answer_variants;
 CREATE POLICY "item_answer_variants_admin_write" ON indonesian.item_answer_variants FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
+DROP POLICY IF EXISTS "learner_item_state_owner" ON indonesian.learner_item_state;
 CREATE POLICY "learner_item_state_owner" ON indonesian.learner_item_state FOR ALL TO authenticated
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "learner_skill_state_owner" ON indonesian.learner_skill_state;
 CREATE POLICY "learner_skill_state_owner" ON indonesian.learner_skill_state FOR ALL TO authenticated
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "review_events_read" ON indonesian.review_events;
 CREATE POLICY "review_events_read" ON indonesian.review_events FOR SELECT TO authenticated
   USING (user_id = auth.uid());
+DROP POLICY IF EXISTS "review_events_insert" ON indonesian.review_events;
 CREATE POLICY "review_events_insert" ON indonesian.review_events FOR INSERT TO authenticated
   WITH CHECK (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "lesson_progress_read" ON indonesian.lesson_progress;
 CREATE POLICY "lesson_progress_read" ON indonesian.lesson_progress FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "lesson_progress_write" ON indonesian.lesson_progress;
 CREATE POLICY "lesson_progress_write" ON indonesian.lesson_progress FOR ALL TO authenticated
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "learning_sessions_read" ON indonesian.learning_sessions;
 CREATE POLICY "learning_sessions_read" ON indonesian.learning_sessions FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "learning_sessions_write" ON indonesian.learning_sessions;
 CREATE POLICY "learning_sessions_write" ON indonesian.learning_sessions FOR ALL TO authenticated
   USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "error_logs_insert" ON indonesian.error_logs;
 CREATE POLICY "error_logs_insert" ON indonesian.error_logs FOR INSERT TO authenticated WITH CHECK (true);
 
 -- Health check RPC
@@ -596,36 +652,49 @@ ALTER TABLE indonesian.exercise_type_availability ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.generated_exercise_candidates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE indonesian.exercise_variants ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "textbook_sources_read" ON indonesian.textbook_sources;
 CREATE POLICY "textbook_sources_read" ON indonesian.textbook_sources FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "textbook_sources_admin_write" ON indonesian.textbook_sources;
 CREATE POLICY "textbook_sources_admin_write" ON indonesian.textbook_sources FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
+DROP POLICY IF EXISTS "textbook_pages_read" ON indonesian.textbook_pages;
 CREATE POLICY "textbook_pages_read" ON indonesian.textbook_pages FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "textbook_pages_admin_write" ON indonesian.textbook_pages;
 CREATE POLICY "textbook_pages_admin_write" ON indonesian.textbook_pages FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
+DROP POLICY IF EXISTS "grammar_patterns_read" ON indonesian.grammar_patterns;
 CREATE POLICY "grammar_patterns_read" ON indonesian.grammar_patterns FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "grammar_patterns_admin_write" ON indonesian.grammar_patterns;
 CREATE POLICY "grammar_patterns_admin_write" ON indonesian.grammar_patterns FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
+DROP POLICY IF EXISTS "item_context_grammar_patterns_read" ON indonesian.item_context_grammar_patterns;
 CREATE POLICY "item_context_grammar_patterns_read" ON indonesian.item_context_grammar_patterns FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "item_context_grammar_patterns_admin_write" ON indonesian.item_context_grammar_patterns;
 CREATE POLICY "item_context_grammar_patterns_admin_write" ON indonesian.item_context_grammar_patterns FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
+DROP POLICY IF EXISTS "exercise_type_availability_read" ON indonesian.exercise_type_availability;
 CREATE POLICY "exercise_type_availability_read" ON indonesian.exercise_type_availability FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "exercise_type_availability_admin_write" ON indonesian.exercise_type_availability;
 CREATE POLICY "exercise_type_availability_admin_write" ON indonesian.exercise_type_availability FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
+DROP POLICY IF EXISTS "generated_exercise_candidates_admin_only" ON indonesian.generated_exercise_candidates;
 CREATE POLICY "generated_exercise_candidates_admin_only" ON indonesian.generated_exercise_candidates FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
 
+DROP POLICY IF EXISTS "exercise_variants_read" ON indonesian.exercise_variants;
 CREATE POLICY "exercise_variants_read" ON indonesian.exercise_variants FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "exercise_variants_admin_write" ON indonesian.exercise_variants;
 CREATE POLICY "exercise_variants_admin_write" ON indonesian.exercise_variants FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
   WITH CHECK (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'));
@@ -884,8 +953,10 @@ CREATE TABLE IF NOT EXISTS indonesian.audio_clips (
 
 ALTER TABLE indonesian.audio_clips ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "audio_clips_read" ON indonesian.audio_clips;
 CREATE POLICY "audio_clips_read" ON indonesian.audio_clips
   FOR SELECT TO authenticated USING (true);
+DROP POLICY IF EXISTS "audio_clips_admin_write" ON indonesian.audio_clips;
 CREATE POLICY "audio_clips_admin_write" ON indonesian.audio_clips
   FOR ALL TO authenticated
   USING (EXISTS (SELECT 1 FROM indonesian.user_roles WHERE user_id = auth.uid() AND role = 'admin'))
@@ -1748,3 +1819,13 @@ drop policy if exists "source progress state owner insert" on indonesian.learner
 -- 10. D-R-O-P source-progress tables (CASCADE picks up index learner_source_progress_state(user_id, source_ref))
 drop table if exists indonesian.learner_source_progress_state cascade;
 drop table if exists indonesian.learner_source_progress_events cascade;
+
+-- ============================================================
+-- Orphan cleanup — learner_lesson_engagement (2026-05-08)
+-- ============================================================
+-- Out-of-band table (created via Studio) — never had a CREATE TABLE in this
+-- file, never referenced from src/, scripts/, or supabase/. Surfaced as one of
+-- the two stragglers in docs/known-regressions.md §1 (RLS-on with zero
+-- policies). Retiring rather than retrofitting policies onto an unused surface.
+-- Tracked-history rollout: scripts/migrations/2026-05-08-drop-learner-lesson-engagement.sql
+drop table if exists indonesian.learner_lesson_engagement cascade;
