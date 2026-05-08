@@ -1441,7 +1441,7 @@ Each step should be a separate PR with passing tests + the `make pre-deploy` gat
 ### Constraints to honour
 
 - **The canonical-key contract must not change.** `buildCanonicalKey` produces FSRS-keying strings. Any change orphans every learner's state. Refactor only its physical location, never its logic.
-- **`make migrate` must remain idempotent.** Migrations are SSH'd into the homelab and run via `docker exec`; they need to be safely re-runnable.
+- **`make migrate` must remain idempotent.** Migrations are SSH'd into the homelab and run via `docker exec`; they need to be safely re-runnable. The `make migrate-idempotent-check` target asserts this — it applies `migration.sql` twice and fails if the second run's `check-supabase-deep` output differs from the first. Catches the bulk-drop-class bugs that broke the lesson reader at the 2026-05-02 and 2026-05-08 deploys; see the comment block at the top of `scripts/migration.sql`.
 - **The `make pre-deploy` gauntlet** (lint + test + build + check-supabase + check-supabase-deep) is the documented gate; CI cannot reach the homelab.
 - **GitHub Actions builds the image on every push to main** but does not deploy. The image must be pulled to the homelab and the container recreated manually (per CLAUDE.md).
 
@@ -1452,6 +1452,7 @@ Each step should be a separate PR with passing tests + the `make pre-deploy` gat
 | Item | Effort | Notes |
 |---|---|---|
 | Migration plan execution | Significant | The largest open piece — taking the locks above and rewriting code to match. |
+| Fold capability + content-units schema into `migration.sql` | Medium | 9 tables (`learning_capabilities`, `capability_aliases`, `capability_artifacts`, `learner_capability_state`, `capability_review_events`, `content_units`, `lesson_page_blocks`, `capability_content_units`, `capability_resolution_failure_events`) plus their indexes / grants / RPCs currently live in `scripts/migrations/2026-04-25-*` + `2026-05-02-*` standalone files. Fresh DB rebuilds need both files + `migration.sql` until folded. The 2026-05-08 bulk-drop fix addressed the immediate regression (per-policy `drop if exists; create` pairs in `migration.sql` no longer wipe these) but not the structural source-of-truth gap. |
 | `src/lib/` root cleanup | Medium | Relocate the few stragglers above. |
 | Test colocation | Medium | Disperse `src/__tests__/` into modules. |
 | Update `docs/architecture-layers.html` | Small | Currently reflects current state. Could add a Plate V or rebuild to reflect target. |
@@ -1494,7 +1495,8 @@ The decisions in this document derive from inspecting the following files at the
 - `src/lib/audio*.ts` + `src/contexts/*Context.tsx` — audio module surface.
 - `src/lib/fsrs.ts` (retired) — browser-side FSRS adapter.
 - `supabase/functions/commit-capability-answer-report/index.ts` — authoritative scheduler.
-- `scripts/migration.sql`, `scripts/migrations/*.sql` — schema and Postgres functions.
+- `scripts/migration.sql` — canonical schema applied by `make migrate`; idempotency enforced by `make migrate-idempotent-check`. Convention documented in the comment block at the top of the file.
+- `scripts/migrations/*.sql` — historically-versioned migrations + paper-trail audit logs + emergency rollback files. Some still hold load-bearing schema for the capability + content-units subsystem (see Backlog).
 - `scripts/*.ts`, `scripts/lib/*.ts` — content pipeline.
 - `CLAUDE.md` — project conventions, deploy procedures, sharp-edge documentation.
 

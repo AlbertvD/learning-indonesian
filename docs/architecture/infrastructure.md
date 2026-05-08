@@ -169,7 +169,7 @@ make seed-flashcards SUPABASE_SERVICE_KEY=<key>
 make seed-all SUPABASE_SERVICE_KEY=<key>            # lessons + learning-items + sentences + podcasts
 ```
 
-`make migrate` runs `bun scripts/migrate.ts` directly (with `NODE_TLS_REJECT_UNAUTHORIZED=0` to allow the self-signed cert). It connects to the remote Supabase Postgres over TCP/HTTPS — there is no SSH or `docker exec` involved. Requires `POSTGRES_PASSWORD` in `.env.local`. Safe to re-run after any container recreation.
+`make migrate` runs `bun scripts/migrate.ts`, which SSHes into the homelab (`mrblond@master-docker` by default; overridable via the `HOMELAB_SSH` env var) and pipes the contents of `scripts/migration.sql` to `docker exec supabase-db psql -U postgres ... -v ON_ERROR_STOP=1`. It then runs a follow-up `psql -c "NOTIFY pgrst, 'reload schema'"` to refresh the PostgREST schema cache. `NODE_TLS_REJECT_UNAUTHORIZED=0` is set so the self-signed homelab cert doesn't trip Bun's HTTPS layer (used by post-migration tooling). Requires `POSTGRES_PASSWORD` in `.env.local`. Safe to re-run after any container recreation.
 
 Note: `seed-all` includes `seed-lessons`, `seed-learning-items`, `seed-sentences`, and `seed-podcasts`. It does **not** include `seed-vocabulary` (run that separately if needed).
 
