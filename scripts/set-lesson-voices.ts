@@ -7,9 +7,14 @@
  * Usage:
  *   bun scripts/set-lesson-voices.ts           # update DB
  *   bun scripts/set-lesson-voices.ts --dry-run  # preview only
+ *
+ * The single-lesson core is exported as `setLessonVoicesForLesson` so the
+ * lesson-stage audio orchestrator (scripts/lib/pipeline/lesson-stage/audio.ts)
+ * can configure voices per-lesson at publish time without re-running the
+ * whole CLI.
  */
 
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
@@ -17,7 +22,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 // Voice definitions
 // ---------------------------------------------------------------------------
 
-const VOICE_ROTATION = [
+export const VOICE_ROTATION = [
   'id-ID-Chirp3-HD-Despina',  // lesson 1 (order_index=1) — female
   'id-ID-Chirp3-HD-Achird',   // lesson 2 — male
   'id-ID-Chirp3-HD-Sulafat',  // lesson 3 — female
@@ -89,6 +94,75 @@ function pickDialogueVoice(
 }
 
 // ---------------------------------------------------------------------------
+// Per-lesson core (extracted for the lesson-stage audio orchestrator)
+// ---------------------------------------------------------------------------
+
+export interface SetLessonVoicesParams {
+  lessonId: string
+  orderIndex: number
+  supabase: SupabaseClient
+  dryRun?: boolean
+}
+
+export interface LessonVoiceAssignment {
+  primaryVoice: string
+  dialogueVoices: Record<string, string>
+}
+
+/**
+ * Compute (and optionally write) the primary_voice + dialogue_voices for a
+ * single lesson. Idempotent — safe to call before every publish: the same
+ * lesson always resolves to the same voices because the voice rotation is
+ * deterministic on order_index and pickDialogueVoice is deterministic on
+ * speaker order within the dialogue lines.
+ */
+export async function setLessonVoicesForLesson(
+  params: SetLessonVoicesParams,
+): Promise<LessonVoiceAssignment> {
+  const { lessonId, orderIndex, supabase, dryRun = false } = params
+
+  const idx = orderIndex - 1 // 0-indexed
+  const primaryVoice = VOICE_ROTATION[idx % VOICE_ROTATION.length]
+
+  // Fetch dialogue sections for THIS lesson only.
+  const { data: dialogueSections, error: sectionsError } = await supabase
+    .schema('indonesian')
+    .from('lesson_sections')
+    .select('content')
+    .eq('lesson_id', lessonId)
+    .filter('content->>type', 'eq', 'dialogue')
+
+  if (sectionsError) throw sectionsError
+
+  // Build dialogue_voices map from all speakers across all dialogue sections.
+  const dialogueVoices: Record<string, string> = {}
+  const usedVoices = new Map<string, string>()
+  for (const section of dialogueSections ?? []) {
+    const d = section.content as { lines?: { speaker?: string }[] }
+    for (const line of d.lines ?? []) {
+      const speaker = line.speaker?.trim()
+      if (!speaker) continue
+      if (dialogueVoices[speaker]) continue // already assigned
+      dialogueVoices[speaker] = pickDialogueVoice(speaker, primaryVoice, usedVoices)
+    }
+  }
+
+  if (!dryRun) {
+    const { error: updateError } = await supabase
+      .schema('indonesian')
+      .from('lessons')
+      .update({
+        primary_voice: primaryVoice,
+        dialogue_voices: Object.keys(dialogueVoices).length > 0 ? dialogueVoices : null,
+      })
+      .eq('id', lessonId)
+    if (updateError) throw updateError
+  }
+
+  return { primaryVoice, dialogueVoices }
+}
+
+// ---------------------------------------------------------------------------
 // Supabase client
 // ---------------------------------------------------------------------------
 
@@ -105,7 +179,7 @@ function createSupabaseClient() {
 }
 
 // ---------------------------------------------------------------------------
-// Main
+// CLI — iterate every lesson
 // ---------------------------------------------------------------------------
 
 const isDryRun = process.argv.includes('--dry-run')
@@ -113,7 +187,6 @@ const isDryRun = process.argv.includes('--dry-run')
 async function main() {
   const supabase = createSupabaseClient()
 
-  // 1. Fetch all lessons ordered by order_index
   const { data: lessons, error: lessonsError } = await supabase
     .schema('indonesian')
     .from('lessons')
@@ -126,76 +199,32 @@ async function main() {
     return
   }
 
-  // 2. Fetch all dialogue sections in one query
-  const { data: dialogueSections, error: sectionsError } = await supabase
-    .schema('indonesian')
-    .from('lesson_sections')
-    .select('lesson_id, content')
-    .filter('content->>type', 'eq', 'dialogue')
-
-  if (sectionsError) throw sectionsError
-
-  // Index dialogue sections by lesson_id (a lesson can have multiple dialogue sections)
-  const dialogueByLesson = new Map<string, unknown[]>()
-  for (const section of dialogueSections ?? []) {
-    const existing = dialogueByLesson.get(section.lesson_id) ?? []
-    existing.push(section.content)
-    dialogueByLesson.set(section.lesson_id, existing)
-  }
-
   console.log(isDryRun ? '--- DRY RUN (no DB changes) ---\n' : '--- Updating DB ---\n')
 
-  // 3. Process each lesson
   for (const lesson of lessons) {
-    const idx = lesson.order_index - 1 // 0-indexed
-    const primaryVoice = VOICE_ROTATION[idx % VOICE_ROTATION.length]
+    try {
+      const { primaryVoice, dialogueVoices } = await setLessonVoicesForLesson({
+        lessonId: lesson.id,
+        orderIndex: lesson.order_index,
+        supabase,
+        dryRun: isDryRun,
+      })
 
-    // Build dialogue_voices map: { speakerName: voiceId }
-    const dialogueVoices: Record<string, string> = {}
-    const usedVoices = new Map<string, string>()
-
-    const dialogues = dialogueByLesson.get(lesson.id) ?? []
-    for (const dialogue of dialogues) {
-      const d = dialogue as { lines?: { speaker: string }[] }
-      const lines = d.lines ?? []
-      for (const line of lines) {
-        const speaker = line.speaker?.trim()
-        if (!speaker) continue
-        if (dialogueVoices[speaker]) continue // already assigned
-
-        const voice = pickDialogueVoice(speaker, primaryVoice, usedVoices)
-        dialogueVoices[speaker] = voice
-      }
-    }
-
-    // Print assignment
-    console.log(`Lesson ${lesson.order_index}: ${lesson.title}`)
-    console.log(`  primary_voice: ${primaryVoice}`)
-    if (Object.keys(dialogueVoices).length > 0) {
-      console.log('  dialogue_voices:')
-      for (const [speaker, voice] of Object.entries(dialogueVoices)) {
-        console.log(`    "${speaker}" → ${voice}`)
-      }
-    } else {
-      console.log('  dialogue_voices: (none)')
-    }
-    console.log()
-
-    if (!isDryRun) {
-      const { error: updateError } = await supabase
-        .schema('indonesian')
-        .from('lessons')
-        .update({
-          primary_voice: primaryVoice,
-          dialogue_voices: Object.keys(dialogueVoices).length > 0 ? dialogueVoices : null,
-        })
-        .eq('id', lesson.id)
-
-      if (updateError) {
-        console.error(`  ERROR updating lesson ${lesson.order_index}:`, updateError.message)
+      console.log(`Lesson ${lesson.order_index}: ${lesson.title}`)
+      console.log(`  primary_voice: ${primaryVoice}`)
+      if (Object.keys(dialogueVoices).length > 0) {
+        console.log('  dialogue_voices:')
+        for (const [speaker, voice] of Object.entries(dialogueVoices)) {
+          console.log(`    "${speaker}" → ${voice}`)
+        }
       } else {
-        console.log(`  ✓ Updated`)
+        console.log('  dialogue_voices: (none)')
       }
+      if (!isDryRun) console.log('  ✓ Updated')
+      console.log()
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : JSON.stringify(err)
+      console.error(`  ERROR updating lesson ${lesson.order_index}: ${msg}`)
     }
   }
 
@@ -206,7 +235,10 @@ async function main() {
   }
 }
 
-main().catch((err) => {
-  console.error('Fatal error:', err)
-  process.exit(1)
-})
+// Only run main() when invoked as a CLI, not when imported as a module.
+if (import.meta.main) {
+  main().catch((err) => {
+    console.error('Fatal error:', err)
+    process.exit(1)
+  })
+}

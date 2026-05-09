@@ -9,58 +9,7 @@ hasn't been fixed yet, and the **fix** that should land.
 
 ---
 
-## 1. Two capability tables — RLS enabled with zero policies
-
-**Surfaced:** 2026-05-02 originally; partially fixed on 2026-05-08 (the
-ten-table version) when the regression turned out to be actively breaking
-the lesson reader at deploy time, not just a latent risk. The hard-fix
-(re-applying `scripts/migrations/2026-05-02-lesson-content-rls-policies.sql`)
-landed for 8 of the 10 tables; two stragglers remain.
-
-**What's broken.** Two capability-related tables still have row-level
-security enabled with zero policies declared. Under PostgREST, every
-SELECT/INSERT from `authenticated` is denied for these tables — only
-`service_role` calls succeed. Runtime impact is currently nil because no
-production code path reads from these two tables under the authenticated
-role.
-
-**Affected tables:**
-
-```
-indonesian.capability_resolution_failure_events
-indonesian.learner_lesson_engagement
-```
-
-**Why unfixed.** The 2026-05-02 migration didn't declare policies for
-either table. They're write-only-from-RPCs surfaces today, so they don't
-trip the runtime. Adding owner-read policies (`user_id = auth.uid()`) is
-trivial but hasn't been spec'd yet.
-
-**Fix.** Author + apply a small migration declaring two policies:
-
-```sql
-alter table indonesian.capability_resolution_failure_events enable row level security;
-drop policy if exists "capability resolution failure events owner read"
-  on indonesian.capability_resolution_failure_events;
-create policy "capability resolution failure events owner read"
-  on indonesian.capability_resolution_failure_events for select
-  to authenticated using (user_id = auth.uid());
-
-alter table indonesian.learner_lesson_engagement enable row level security;
-drop policy if exists "learner lesson engagement owner read"
-  on indonesian.learner_lesson_engagement;
-create policy "learner lesson engagement owner read"
-  on indonesian.learner_lesson_engagement for select
-  to authenticated using (user_id = auth.uid());
-```
-
-**Blocked on.** Decision on whether `learner_lesson_engagement` should be
-retired entirely (its retirement-candidacy was flagged in
-`docs/target-architecture.md` but no PR has landed).
-
----
-
-## 2. Five lessons missing `audio_path`
+## 1. Five lessons missing `audio_path`
 
 **Surfaced:** Retirement #4 (2026-05-07, per CLAUDE.md note: "the
 lesson-audio_path seed gap from retirement #4 still exists on main").

@@ -35,7 +35,7 @@ const baseExercise: ExerciseItem = {
 
 describe('Dictation', () => {
   it('does not display the Indonesian base_text before answering', () => {
-    const audioMap: SessionAudioMap = new Map([['apa kabar?', 'tts/voice-1/apa-xyz.mp3']])
+    const audioMap: SessionAudioMap = new Map([['apa kabar?|__default__', 'tts/voice-1/apa-xyz.mp3']])
     wrap(<Dictation exerciseItem={baseExercise} userLanguage="nl" onAnswer={vi.fn()} />, audioMap)
     expect(screen.queryByText('Apa kabar?')).toBeNull()
   })
@@ -46,7 +46,7 @@ describe('Dictation', () => {
   })
 
   it('autoplay rejection path: renders Tap to play overlay + disabled input', async () => {
-    const audioMap: SessionAudioMap = new Map([['apa kabar?', 'tts/voice-1/apa-xyz.mp3']])
+    const audioMap: SessionAudioMap = new Map([['apa kabar?|__default__', 'tts/voice-1/apa-xyz.mp3']])
     wrap(<Dictation exerciseItem={baseExercise} userLanguage="nl" onAnswer={vi.fn()} />, audioMap)
     await waitFor(() => {
       expect(screen.getByText(/klik om af te spelen/i)).toBeInTheDocument()
@@ -57,7 +57,7 @@ describe('Dictation', () => {
   })
 
   it('disables mobile input behaviors (autocorrect, autocapitalize, spellcheck)', async () => {
-    const audioMap: SessionAudioMap = new Map([['apa kabar?', 'tts/voice-1/apa-xyz.mp3']])
+    const audioMap: SessionAudioMap = new Map([['apa kabar?|__default__', 'tts/voice-1/apa-xyz.mp3']])
     wrap(<Dictation exerciseItem={baseExercise} userLanguage="nl" onAnswer={vi.fn()} />, audioMap)
     // In autoplay-blocked state the input is still rendered — just disabled.
     // Verify the attributes are present regardless of enabled state.

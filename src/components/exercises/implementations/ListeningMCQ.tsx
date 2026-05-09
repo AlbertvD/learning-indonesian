@@ -21,7 +21,7 @@ export default function ListeningMCQ({
   const { audioMap } = useSessionAudio()
   const { learningItem: item, meanings, distractors } = exerciseItem
   const learningItem = item!
-  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text)
+  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text, null)
 
   const correct = meanings.find(m => m.translation_language === userLanguage && m.is_primary)
     ?? meanings.find(m => m.translation_language === userLanguage)

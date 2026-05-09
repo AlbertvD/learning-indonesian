@@ -22,7 +22,7 @@ export function RecognitionMCQ({ exerciseItem, userLanguage, onAnswer }: Recogni
   const learningItem = learningItem_!
   const { audioMap } = useSessionAudio()
   const { autoPlay } = useAutoplay()
-  const promptAudioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text)
+  const promptAudioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text, null)
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
   const [failureCount, setFailureCount] = useState(0)

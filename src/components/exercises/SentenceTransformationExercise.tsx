@@ -83,7 +83,7 @@ export function SentenceTransformationExercise({
   }
 
   const data = exerciseItem!.sentenceTransformationData
-  const sourceAudioUrl = data ? resolveSessionAudioUrl(audioMap, data.sourceSentence) : undefined
+  const sourceAudioUrl = data ? resolveSessionAudioUrl(audioMap, data.sourceSentence, null) : undefined
 
   if (!data) {
     return <div style={{ color: 'red' }}>Missing sentence transformation data</div>

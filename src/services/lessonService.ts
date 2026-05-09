@@ -35,7 +35,21 @@ export interface LessonPageBlock {
   source_ref: string
   source_refs: string[]
   content_unit_slugs: string[]
-  block_kind: 'hero' | 'section' | 'exposure' | 'practice_bridge' | 'recap'
+  block_kind:
+    | 'lesson_hero'
+    | 'reading_section'
+    | 'vocab_strip'
+    | 'dialogue_card'
+    | 'pattern_callout'
+    | 'practice_bridge'
+    | 'lesson_recap'
+    // Legacy 5-value enum (lessons authored before commit 4 backfill). The
+    // runtime classifier in lessonExperience.ts:41–49 still handles these
+    // until the lessons fold PR retires the function entirely.
+    | 'hero'
+    | 'section'
+    | 'exposure'
+    | 'recap'
   display_order: number
   payload_json: Record<string, unknown>
   capability_key_refs: string[]

@@ -121,7 +121,7 @@ export function Session() {
 
           const audioTexts = collectAudibleTexts(contexts.values())
           const audioMap = audioTexts.length > 0
-            ? await fetchSessionAudioMap(audioTexts)
+            ? await fetchSessionAudioMap(audioTexts.map((text) => ({ text, voiceId: null })))
             : new Map() as SessionAudioMap
           setCapabilityAudioMap(audioMap)
         } catch (err) {

@@ -26,7 +26,7 @@ export default function SentenceTransformationExercise({
   const { audioMap } = useSessionAudio()
   const { autoPlay } = useAutoplay()
   const data = exerciseItem.sentenceTransformationData
-  const sourceAudioUrl = data ? resolveSessionAudioUrl(audioMap, data.sourceSentence) : undefined
+  const sourceAudioUrl = data ? resolveSessionAudioUrl(audioMap, data.sourceSentence, null) : undefined
 
   const acceptable = data?.acceptableAnswers ?? []
   const scoring = useExerciseScoring<string>({

@@ -346,9 +346,10 @@ The service role key is NOT stored in the repo. Get it from the Supabase dashboa
 ### Health checks
 
 ```bash
-make check-supabase       # tier 1: API, CORS, schema exposure, auth, storage (uses .env.local)
-make check-supabase-deep  # tier 2: tables, RLS, grants, policies via schema_health() RPC
-make pre-deploy           # full gauntlet: lint + test + build + check-supabase + check-supabase-deep
+make check-supabase            # tier 1: API, CORS, schema exposure, auth, storage (uses .env.local)
+make check-supabase-deep       # tier 2: tables, RLS, grants, policies via schema_health() RPC
+make migrate-idempotent-check  # applies migration.sql twice + check-supabase-deep — required before merging migration changes
+make pre-deploy                # full gauntlet: lint + test + build + check-supabase + check-supabase-deep
 ```
 
 Run `check-supabase` any time you suspect infrastructure issues. Run `check-supabase-deep` after migrations to verify schema state — it now also fails if any RLS-enabled table has zero policies (catches the 2026-05-02 regression where `lesson_page_blocks` and 9 other tables ended up RLS-on with no SELECT policy after a deploy).
@@ -356,6 +357,8 @@ Run `check-supabase` any time you suspect infrastructure issues. Run `check-supa
 `make migrate` automatically chains `check-supabase-deep` after applying SQL — any policy/grant regression introduced by a migration is caught immediately rather than after deploying to prod.
 
 `make pre-deploy` is the documented gate to run before merging migration changes to main. GitHub Actions cannot reach the homelab, so this gate runs locally. All three scripts print actionable fix instructions on failure.
+
+**Migration source-of-truth rule.** All schema changes that should reach the live DB via `make migrate` must land in `scripts/migration.sql` — that file is the canonical source applied by the pipeline. Files in `scripts/migrations/*.sql` are paper-trail audit logs and emergency rollback tools; do NOT add new schema there. See the comment block at the top of `scripts/migration.sql` for the full convention, including the per-policy `drop policy if exists; create policy ...` idiom that replaces the old bulk-drop pattern (removed 2026-05-08 — it silently wiped policies declared in standalone files). Before merging any change to `scripts/migration.sql`, run `make migrate-idempotent-check` — it applies the file twice and asserts the second run leaves the DB green, catching the bulk-drop bug class.
 
 ## Testing
 

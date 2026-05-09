@@ -20,7 +20,7 @@ export function ListeningMCQ({ exerciseItem, userLanguage, onAnswer }: Listening
   const learningItem = exerciseItem.learningItem!
   const { meanings, distractors } = exerciseItem
   const { audioMap } = useSessionAudio()
-  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text)
+  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text, null)
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [selectedOption, setSelectedOption] = useState<string | null>(null)

@@ -1,6 +1,6 @@
 # Data Model
 
-All tables live in the `indonesian` Postgres schema. `scripts/migration.sql` is the authoritative schema definition — it is idempotent and re-runnable via `make migrate`.
+All tables live in the `indonesian` Postgres schema. `scripts/migration.sql` is the authoritative schema definition for everything `make migrate` applies — idempotent and re-runnable, asserted by `make migrate-idempotent-check`. Some capability + content-units schema (9 tables, plus their indexes / grants / RPCs) currently lives in standalone `scripts/migrations/*.sql` files until folded back; see the comment block at the top of `scripts/migration.sql` for the full list and the convention.
 
 ---
 
