@@ -52,7 +52,11 @@ export default defineConfig({
     // Colocated `__tests__/` directories under any src/ subtree are discovered
     // (e.g. src/lib/distractors/__tests__/, src/services/__tests__/) so
     // module-specific tests can live next to their implementation.
-    include: ['src/**/__tests__/**/*.test.{ts,tsx}', 'scripts/__tests__/**/*.test.ts'],
+    include: [
+      'src/**/__tests__/**/*.test.{ts,tsx}',
+      'scripts/__tests__/**/*.test.ts',
+      'scripts/lib/**/__tests__/**/*.test.ts',
+    ],
     // Progress.test.tsx tests require completed implementation work on the
     // redesigned Progress page — re-enable as implementation catches up.
     exclude: ['**/node_modules/**', 'src/__tests__/Progress.test.tsx'],
