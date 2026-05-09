@@ -366,6 +366,38 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   }
 }
 
+// ── HC2 (lesson-stage GT2): zero lesson_page_blocks rows with block_kind
+//      outside the canonical 7-value reader set. Failure routes to a pipeline
+//      bug check on classifier.ts or its caller (per spec §11.4).
+{
+  const CANONICAL_BLOCK_KINDS = [
+    'lesson_hero', 'reading_section', 'vocab_strip', 'dialogue_card',
+    'pattern_callout', 'practice_bridge', 'lesson_recap',
+  ]
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('lesson_page_blocks')
+    .select('id, block_key, block_kind')
+    .not('block_kind', 'in', `(${CANONICAL_BLOCK_KINDS.map((k) => `"${k}"`).join(',')})`)
+  if (error) {
+    fail('HC2 lesson_page_blocks.block_kind ∈ canonical 7-value set', error.message)
+  } else {
+    const offenders = (data ?? []) as Array<{ id: string; block_key: string; block_kind: string }>
+    if (offenders.length === 0) {
+      pass('HC2 lesson_page_blocks.block_kind ∈ canonical 7-value set')
+    } else {
+      fail(
+        'HC2 lesson_page_blocks.block_kind ∈ canonical 7-value set',
+        `${offenders.length} block(s) with non-canonical block_kind: ` +
+        `${offenders.slice(0, 5).map((o) => `${o.block_key}=${o.block_kind}`).join(', ')}` +
+        `${offenders.length > 5 ? ' …' : ''}\n` +
+        `   → Pipeline bug in scripts/lib/pipeline/lesson-stage/classifier.ts or its caller. ` +
+        `File issue with row's id, block_kind, payload_json.type, content_unit_slugs.`,
+      )
+    }
+  }
+}
+
 // ── HC5 (lesson-stage GT5): zero lesson_sections rows with content->>'type'
 //      outside the 10-value canonical set. Failure routes to GT5 validator
 //      regression check (per spec §11.4).

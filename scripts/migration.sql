@@ -1831,6 +1831,126 @@ drop table if exists indonesian.learner_source_progress_events cascade;
 drop table if exists indonesian.learner_lesson_engagement cascade;
 
 -- ============================================================
+-- Lesson-stage Phase 1 (2026-05-09) — GT1 grammar_topics backfill
+-- ============================================================
+-- Mirrors the 5-step runtime extractor at src/services/lessonService.ts:102–125
+-- (explicit topics → categories[].title → content.title → section.title) so
+-- legacy rows match what the runtime would have produced. Idempotent via the
+-- `grammar_topics IS NULL OR empty` guard. Re-runnable.
+do $$
+declare
+  rec record;
+  derived text[];
+begin
+  for rec in
+    select id, title as section_title, content
+    from indonesian.lesson_sections
+    where content->>'type' in ('grammar','reference_table')
+      and (content->'grammar_topics' is null
+           or jsonb_array_length(coalesce(content->'grammar_topics', '[]'::jsonb)) = 0)
+  loop
+    derived := null;
+
+    -- Step 1: explicit topics (camelCase ∪ snake_case, per runtime spread).
+    select array_agg(distinct trim(both ' ' from
+        regexp_replace(t, '^\s*(grammar|grammatica)\s*:\s*', '', 'i')))
+      filter (where t is not null
+              and length(trim(both ' ' from regexp_replace(t, '^\s*(grammar|grammatica)\s*:\s*', '', 'i'))) > 0)
+      into derived
+      from (
+        select jsonb_array_elements_text(rec.content->'grammarTopics') as t
+        where jsonb_typeof(rec.content->'grammarTopics') = 'array'
+        union all
+        select jsonb_array_elements_text(rec.content->'grammar_topics') as t
+        where jsonb_typeof(rec.content->'grammar_topics') = 'array'
+      ) explicit_topics;
+
+    -- Step 2: categories[].title (only if step 1 empty).
+    if derived is null or array_length(derived, 1) is null then
+      select array_agg(distinct trim(both ' ' from
+          regexp_replace(t, '^\s*(grammar|grammatica)\s*:\s*', '', 'i')))
+        filter (where t is not null
+                and length(trim(both ' ' from regexp_replace(t, '^\s*(grammar|grammatica)\s*:\s*', '', 'i'))) > 0)
+        into derived
+        from (
+          select cat->>'title' as t
+          from jsonb_array_elements(coalesce(rec.content->'categories', '[]'::jsonb)) cat
+        ) cat_titles;
+    end if;
+
+    -- Step 3: content.title (only if step 2 empty).
+    if derived is null or array_length(derived, 1) is null then
+      if rec.content->>'title' is not null
+         and length(trim(both ' ' from regexp_replace(rec.content->>'title', '^\s*(grammar|grammatica)\s*:\s*', '', 'i'))) > 0 then
+        derived := array[trim(both ' ' from
+          regexp_replace(rec.content->>'title', '^\s*(grammar|grammatica)\s*:\s*', '', 'i'))];
+      end if;
+    end if;
+
+    -- Step 4: section.title (only if step 3 empty).
+    if derived is null or array_length(derived, 1) is null then
+      if rec.section_title is not null
+         and length(trim(both ' ' from regexp_replace(rec.section_title, '^\s*(grammar|grammatica)\s*:\s*', '', 'i'))) > 0 then
+        derived := array[trim(both ' ' from
+          regexp_replace(rec.section_title, '^\s*(grammar|grammatica)\s*:\s*', '', 'i'))];
+      end if;
+    end if;
+
+    if derived is null or array_length(derived, 1) is null then
+      raise warning 'Section % has no derivable grammar_topics; leaving as-is for manual fix', rec.id;
+      continue;
+    end if;
+
+    update indonesian.lesson_sections
+       set content = jsonb_set(content, '{grammar_topics}', to_jsonb(derived))
+     where id = rec.id;
+  end loop;
+end $$;
+
+-- ============================================================
+-- Lesson-stage Phase 1 (2026-05-09) — block_kind widen-then-narrow (GT2)
+-- ============================================================
+-- Drop the legacy 5-value CHECK, migrate values to the canonical 7-value
+-- reader kind using the same precedence rules as classifier.ts, then add the
+-- new CHECK. Wrapped in BEGIN/COMMIT for transactional hygiene. Idempotent
+-- via the `block_kind IN (legacy values)` UPDATE guard + the `do $$ if not
+-- exists` constraint re-add.
+begin;
+
+alter table indonesian.lesson_page_blocks
+  drop constraint if exists lesson_page_blocks_block_kind_check;
+
+update indonesian.lesson_page_blocks
+   set block_kind = case
+     when block_kind = 'hero' then 'lesson_hero'
+     when block_kind = 'recap' then 'lesson_recap'
+     when block_kind = 'practice_bridge' then 'practice_bridge'
+     when block_kind in ('section', 'exposure') and (payload_json->>'type') = 'dialogue' then 'dialogue_card'
+     when block_kind in ('section', 'exposure') and (payload_json->>'type') in ('vocabulary','numbers','expressions') then 'vocab_strip'
+     when block_kind in ('section', 'exposure') and exists (
+       select 1 from unnest(content_unit_slugs) slug where slug like 'pattern-%'
+     ) then 'pattern_callout'
+     else 'reading_section'
+   end
+ where block_kind in ('hero','section','exposure','practice_bridge','recap');
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'lesson_page_blocks_block_kind_check'
+  ) then
+    alter table indonesian.lesson_page_blocks
+      add constraint lesson_page_blocks_block_kind_check
+      check (block_kind in (
+        'lesson_hero','reading_section','vocab_strip','dialogue_card',
+        'pattern_callout','practice_bridge','lesson_recap'
+      ));
+  end if;
+end $$;
+
+commit;
+
+-- ============================================================
 -- Lesson-stage Phase 1 (2026-05-09) — content.type CHECK constraint (GT5)
 -- ============================================================
 -- Source-of-truth column for lesson_sections.content.type. Validator GT5
