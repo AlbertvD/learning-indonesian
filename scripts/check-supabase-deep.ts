@@ -293,6 +293,102 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   }
 }
 
+// ── HC4 (lesson-stage GT4 + §5 audio orchestrator): zero lesson-page texts
+//      without an audio_clips row at the appropriate voice. Walks dialogue
+//      lines (voiced via dialogue_voices[speaker]) and vocabulary/expressions/
+//      numbers items (voiced via primary_voice). Reading-section paragraphs
+//      use separate long-form lesson audio and are out of scope for HC4.
+{
+  function normalizeForKey(text: string): string {
+    return text.toLowerCase().trim().replace(/\s+/g, ' ')
+  }
+
+  const { data: lessonRows, error: lessonsErr } = await supabase
+    .schema('indonesian')
+    .from('lessons')
+    .select('id, order_index, primary_voice, dialogue_voices')
+  const { data: sectionRows, error: sectionsErr } = await supabase
+    .schema('indonesian')
+    .from('lesson_sections')
+    .select('lesson_id, content')
+
+  if (lessonsErr || sectionsErr) {
+    fail('HC4 audio coverage parity for dialogue + vocab', (lessonsErr ?? sectionsErr)!.message)
+  } else {
+    interface Required { normalized: string; voiceId: string; lessonId: string; sourceLabel: string }
+    const required: Required[] = []
+    const lessonsById = new Map<string, { primary_voice: string | null; dialogue_voices: Record<string, string> | null }>()
+    for (const l of (lessonRows ?? []) as Array<{ id: string; primary_voice: string | null; dialogue_voices: Record<string, string> | null }>) {
+      lessonsById.set(l.id, { primary_voice: l.primary_voice, dialogue_voices: l.dialogue_voices })
+    }
+
+    for (const sec of (sectionRows ?? []) as Array<{ lesson_id: string; content: Record<string, unknown> }>) {
+      const lesson = lessonsById.get(sec.lesson_id)
+      if (!lesson) continue
+      const type = sec.content?.type
+      if (type === 'dialogue') {
+        const lines = sec.content.lines
+        if (!Array.isArray(lines)) continue
+        for (const line of lines as Array<{ text?: unknown; speaker?: unknown }>) {
+          if (typeof line.text !== 'string' || !line.text.trim()) continue
+          if (typeof line.speaker !== 'string' || !line.speaker.trim()) continue
+          const voice = lesson.dialogue_voices?.[line.speaker.trim()]
+          if (!voice) continue // GT4 covers missing-voice; HC4 skips lines without resolvable voice
+          required.push({
+            normalized: normalizeForKey(line.text),
+            voiceId: voice,
+            lessonId: sec.lesson_id,
+            sourceLabel: `dialogue line "${line.text.slice(0, 30)}…"`,
+          })
+        }
+      } else if (type === 'vocabulary' || type === 'expressions' || type === 'numbers') {
+        const items = sec.content.items
+        if (!Array.isArray(items) || !lesson.primary_voice) continue
+        for (const item of items as Array<{ indonesian?: unknown }>) {
+          if (typeof item.indonesian !== 'string' || !item.indonesian.trim()) continue
+          required.push({
+            normalized: normalizeForKey(item.indonesian),
+            voiceId: lesson.primary_voice,
+            lessonId: sec.lesson_id,
+            sourceLabel: `${type} item "${item.indonesian}"`,
+          })
+        }
+      }
+    }
+
+    if (required.length === 0) {
+      pass('HC4 audio coverage parity (dialogue + vocab) — nothing to check')
+    } else {
+      const allTexts = [...new Set(required.map((r) => r.normalized))]
+      const allVoices = [...new Set(required.map((r) => r.voiceId))]
+      const { data: clips, error: clipsErr } = await supabase
+        .schema('indonesian')
+        .rpc('get_audio_clips', { p_texts: allTexts, p_voice_ids: allVoices })
+      if (clipsErr) {
+        fail('HC4 audio coverage parity', clipsErr.message)
+      } else {
+        const present = new Set<string>()
+        for (const row of (clips ?? []) as Array<{ normalized_text: string; voice_id: string }>) {
+          present.add(`${row.normalized_text}|${row.voice_id}`)
+        }
+        const gaps = required.filter((r) => !present.has(`${r.normalized}|${r.voiceId}`))
+        if (gaps.length === 0) {
+          pass(`HC4 audio coverage parity: ${required.length} (text, voice) pair(s) all present`)
+        } else {
+          const sample = gaps.slice(0, 3).map((g) => `${g.sourceLabel} (voice=${g.voiceId})`).join('; ')
+          fail(
+            'HC4 audio coverage parity',
+            `${gaps.length}/${required.length} (text, voice) pair(s) missing audio_clips rows. ` +
+            `Sample: ${sample}${gaps.length > 3 ? ' …' : ''}\n` +
+            `   → Re-run bun scripts/publish-approved-content.ts <N> for affected lesson(s) — ` +
+            `the audio orchestrator will fill gaps.`,
+          )
+        }
+      }
+    }
+  }
+}
+
 // ── Check: learning_items.pos column exists (read-only introspection) ──────
 {
   // Query via information_schema — safe, no side effects. If the column
