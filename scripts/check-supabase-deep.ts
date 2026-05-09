@@ -334,6 +334,73 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   }
 }
 
+// ── HC1 (lesson-stage GT1): zero grammar/reference_table sections with NULL or
+//      empty content.grammar_topics. Failure routes to linguist-structurer +
+//      re-publish (per spec §11.4).
+{
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('lesson_sections')
+    .select('id, content')
+    .in('content->>type', ['grammar', 'reference_table'])
+  if (error) {
+    fail('HC1 lesson_sections.content.grammar_topics non-empty', error.message)
+  } else {
+    const offenders: string[] = []
+    for (const row of (data ?? []) as Array<{ id: string; content: Record<string, unknown> }>) {
+      const topics = row.content?.grammar_topics
+      const ok =
+        Array.isArray(topics)
+        && (topics as unknown[]).some((t) => typeof t === 'string' && t.trim().length > 0)
+      if (!ok) offenders.push(row.id)
+    }
+    if (offenders.length === 0) {
+      pass('HC1 lesson_sections.content.grammar_topics non-empty for grammar/reference_table')
+    } else {
+      fail(
+        'HC1 lesson_sections.content.grammar_topics non-empty for grammar/reference_table',
+        `${offenders.length} section(s) with NULL/empty grammar_topics: ${offenders.slice(0, 5).join(', ')}${offenders.length > 5 ? ' …' : ''}\n` +
+        `   → Re-run linguist-structurer for affected lesson(s) and re-publish via bun scripts/publish-approved-content.ts <N>.`,
+      )
+    }
+  }
+}
+
+// ── HC5 (lesson-stage GT5): zero lesson_sections rows with content->>'type'
+//      outside the 10-value canonical set. Failure routes to GT5 validator
+//      regression check (per spec §11.4).
+{
+  const CANONICAL = [
+    'text', 'grammar', 'reference_table', 'vocabulary', 'expressions',
+    'numbers', 'dialogue', 'pronunciation', 'culture', 'exercises',
+  ]
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('lesson_sections')
+    .select('id, content')
+    .not('content->>type', 'is', null)
+  if (error) {
+    fail('HC5 lesson_sections.content.type ∈ canonical set', error.message)
+  } else {
+    const offenders: { id: string; type: string }[] = []
+    for (const row of (data ?? []) as Array<{ id: string; content: Record<string, unknown> }>) {
+      const type = row.content?.type
+      if (typeof type === 'string' && !CANONICAL.includes(type)) {
+        offenders.push({ id: row.id, type })
+      }
+    }
+    if (offenders.length === 0) {
+      pass('HC5 lesson_sections.content.type ∈ canonical 10-value set')
+    } else {
+      fail(
+        'HC5 lesson_sections.content.type ∈ canonical 10-value set',
+        `${offenders.length} section(s) with non-canonical type: ${offenders.slice(0, 5).map((o) => `${o.id}=${o.type}`).join(', ')}${offenders.length > 5 ? ' …' : ''}\n` +
+        `   → Likely a pipeline regression — check GT5 validator's last release.`,
+      )
+    }
+  }
+}
+
 // ── Output ─────────────────────────────────────────────────────────────────
 console.log(`\nSupabase deep structural check — ${SUPABASE_URL}\n`)
 let failures = 0

@@ -1829,3 +1829,28 @@ drop table if exists indonesian.learner_source_progress_events cascade;
 -- policies). Retiring rather than retrofitting policies onto an unused surface.
 -- Tracked-history rollout: scripts/migrations/2026-05-08-drop-learner-lesson-engagement.sql
 drop table if exists indonesian.learner_lesson_engagement cascade;
+
+-- ============================================================
+-- Lesson-stage Phase 1 (2026-05-09) — content.type CHECK constraint (GT5)
+-- ============================================================
+-- Source-of-truth column for lesson_sections.content.type. Validator GT5
+-- (scripts/lib/pipeline/lesson-stage/validators/sectionType.ts) enforces this
+-- at publish time; the CHECK constraint enforces it at write time so out-of-
+-- band UPDATEs (Studio, ad-hoc SQL) cannot land an unknown type. Idempotent
+-- via the do $$ if not exists guard.
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'lesson_sections_content_type_check'
+  ) then
+    alter table indonesian.lesson_sections
+      add constraint lesson_sections_content_type_check
+      check (
+        content->>'type' is null
+        or content->>'type' in (
+          'text','grammar','reference_table','vocabulary','expressions',
+          'numbers','dialogue','pronunciation','culture','exercises'
+        )
+      );
+  end if;
+end $$;

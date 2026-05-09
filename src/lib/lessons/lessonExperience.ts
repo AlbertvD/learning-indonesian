@@ -39,12 +39,35 @@ function titleFromPayload(payload: Record<string, unknown>, fallback: string): s
 }
 
 function blockKindFromPipeline(block: LessonPageBlock): LessonExperienceBlockKind {
-  if (block.block_kind === 'hero') return 'lesson_hero'
-  if (block.block_kind === 'practice_bridge') return 'practice_bridge'
-  if (block.block_kind === 'recap') return 'lesson_recap'
+  // Pass-through for the 7 canonical pipeline values (post-Item 2 backfill).
+  // This whole function retires in the lessons fold PR; until then it bridges
+  // the gap for any rows still carrying the legacy 5-value enum.
+  const direct = block.block_kind
+  if (
+    direct === 'lesson_hero'
+    || direct === 'reading_section'
+    || direct === 'vocab_strip'
+    || direct === 'dialogue_card'
+    || direct === 'pattern_callout'
+    || direct === 'practice_bridge'
+    || direct === 'lesson_recap'
+  ) {
+    return direct
+  }
+  // Legacy fallback (only for rows authored before the GT2 backfill ran).
+  if (direct === 'hero') return 'lesson_hero'
+  if (direct === 'recap') return 'lesson_recap'
   if (block.payload_json?.type === 'dialogue') return 'dialogue_card'
-  if (block.payload_json?.type === 'vocabulary' || block.payload_json?.type === 'numbers' || block.payload_json?.type === 'expressions') return 'vocab_strip'
-  if (block.content_unit_slugs?.some(slug => slug.startsWith('pattern-'))) return 'pattern_callout'
+  if (
+    block.payload_json?.type === 'vocabulary'
+    || block.payload_json?.type === 'numbers'
+    || block.payload_json?.type === 'expressions'
+  ) {
+    return 'vocab_strip'
+  }
+  if (block.content_unit_slugs?.some((slug) => slug.startsWith('pattern-'))) {
+    return 'pattern_callout'
+  }
   return 'reading_section'
 }
 
