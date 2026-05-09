@@ -14,11 +14,22 @@ interface SectionLike {
  * have `primary_voice` set AND `dialogue_voices` configured as a non-empty
  * `{speaker: voice_id}` map covering every speaker that appears in any
  * dialogue line. Without it, runtime audio resolution silently breaks.
+ *
+ * NOTE: staging files don't currently author voice config — it's computed at
+ * publish time by `setLessonVoicesForLesson` (per spec §13 risk #7). When
+ * staging carries neither field (both `undefined`), we skip the check: the
+ * audio orchestrator populates them before TTS runs. The validator only
+ * fires when staging EXPLICITLY provides voices, so it can catch broken or
+ * partial configurations.
  */
 export function validateLessonVoices(
   lesson: LessonLike,
   sections: SectionLike[],
 ): ValidationFinding[] {
+  if (lesson.primary_voice === undefined && lesson.dialogue_voices === undefined) {
+    return []
+  }
+
   const speakers = new Set<string>()
   for (const section of sections) {
     if (section.content?.type !== 'dialogue') continue

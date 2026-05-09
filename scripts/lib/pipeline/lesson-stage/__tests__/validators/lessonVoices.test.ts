@@ -83,6 +83,23 @@ describe('validateLessonVoices (GT4)', () => {
     expect(findings[0].message).toMatch(/Budi/)
   })
 
+  it('skips validation when staging carries neither primary_voice nor dialogue_voices (audio orchestrator configures them)', () => {
+    expect(
+      validateLessonVoices(
+        {} as { primary_voice: undefined; dialogue_voices: undefined },
+        [{ content: { type: 'dialogue', lines: [{ text: 'halo', speaker: 'A' }] } }],
+      ),
+    ).toEqual([])
+  })
+
+  it('still fires when staging explicitly provides null primary_voice', () => {
+    const findings = validateLessonVoices(
+      { primary_voice: null, dialogue_voices: { A: 'V1' } },
+      [{ content: { type: 'dialogue', lines: [{ text: 'halo', speaker: 'A' }] } }],
+    )
+    expect(findings.some((f) => f.gate === 'GT4')).toBe(true)
+  })
+
   it('aggregates speakers across multiple dialogue sections', () => {
     const findings = validateLessonVoices(
       { primary_voice: 'Despina', dialogue_voices: { Andi: 'Despina' } },

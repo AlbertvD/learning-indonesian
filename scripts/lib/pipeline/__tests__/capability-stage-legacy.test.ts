@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { publishCapabilityPipelineOutput } from '../publish-approved-content'
+import { publishCapabilityPipelineOutput } from '../capability-stage-legacy'
 
 const capabilityKey = 'cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl'
 
