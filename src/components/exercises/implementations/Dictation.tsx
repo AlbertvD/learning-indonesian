@@ -25,7 +25,7 @@ export default function Dictation({
   const { audioMap } = useSessionAudio()
   const { learningItem: item, answerVariants } = exerciseItem
   const learningItem = item!
-  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text)
+  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text, null)
   const variants = (answerVariants ?? []).map(v => v.variant_text)
 
   const hasPlayedRef = useRef(false)

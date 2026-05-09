@@ -59,7 +59,7 @@ export default function ContrastPairExercise({
       </ExercisePromptCard>
       <ExerciseOptionGroup>
         {data.options.map(opt => {
-          const audioUrl = resolveSessionAudioUrl(audioMap, opt)
+          const audioUrl = resolveSessionAudioUrl(audioMap, opt, null)
           return (
             <ExerciseOption
               key={opt}

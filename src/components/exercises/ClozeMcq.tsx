@@ -136,7 +136,7 @@ export function ClozeMcq({ exerciseItem, userLanguage, onAnswer, previewMode, pr
   const isCorrect = selectedOption === data.correctOptionId
   const parts = data.sentence.split('___')
   const filledSentence = data.sentence.replace('___', data.correctOptionId)
-  const filledAudioUrl = isAnswered ? resolveSessionAudioUrl(audioMap, filledSentence) : undefined
+  const filledAudioUrl = isAnswered ? resolveSessionAudioUrl(audioMap, filledSentence, null) : undefined
 
   return (
     <Box className={classes.container}>

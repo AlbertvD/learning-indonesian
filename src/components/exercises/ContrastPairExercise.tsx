@@ -138,7 +138,7 @@ export function ContrastPairExercise({ exerciseItem, userLanguage, onAnswer, pre
           {data.options.map((option) => {
             const isSelected = selectedOption === option
             const isCorrectOption = option === data.correctOptionId
-            const optionAudioUrl = resolveSessionAudioUrl(audioMap, option)
+            const optionAudioUrl = resolveSessionAudioUrl(audioMap, option, null)
 
             let statusClass = ''
             if (showWrong && isSelected) {

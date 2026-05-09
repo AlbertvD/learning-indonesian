@@ -186,7 +186,7 @@ export function ConstrainedTranslationExercise({
     const parts = data.targetSentenceWithBlank!.split('___')
     const correctWord = data.blankAcceptableAnswers![0]
     const clozeFilledSentence = data.targetSentenceWithBlank!.replace('___', correctWord)
-    const clozeAudioUrl = isAnswered ? resolveSessionAudioUrl(audioMap, clozeFilledSentence) : undefined
+    const clozeAudioUrl = isAnswered ? resolveSessionAudioUrl(audioMap, clozeFilledSentence, null) : undefined
 
     return (
       <Box className={classes.container}>
@@ -275,7 +275,7 @@ export function ConstrainedTranslationExercise({
   }
 
   // Full-sentence translation mode (legacy / structural patterns)
-  const fullAnswerAudioUrl = isAnswered ? resolveSessionAudioUrl(audioMap, data.acceptableAnswers[0]) : undefined
+  const fullAnswerAudioUrl = isAnswered ? resolveSessionAudioUrl(audioMap, data.acceptableAnswers[0], null) : undefined
   return (
     <Box className={classes.container}>
       <Stack gap="xl">

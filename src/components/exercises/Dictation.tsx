@@ -18,7 +18,7 @@ export function Dictation({ exerciseItem, userLanguage, onAnswer }: DictationPro
   const t = translations[userLanguage]
   const learningItem = exerciseItem.learningItem!
   const { audioMap } = useSessionAudio()
-  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text)
+  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text, null)
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)

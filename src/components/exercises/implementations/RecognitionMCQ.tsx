@@ -25,7 +25,7 @@ export default function RecognitionMCQ({
   const { autoPlay } = useAutoplay()
   const { learningItem: item, meanings, distractors } = exerciseItem
   const learningItem = item!
-  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text)
+  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text, null)
 
   // Canonical correct meaning in the user's language.
   const correctMeaning = meanings.find(m => m.translation_language === userLanguage && m.is_primary)

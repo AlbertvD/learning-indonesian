@@ -32,7 +32,7 @@ export default function MeaningRecall({
     .filter(m => m.id !== primary?.id)
     .map(m => m.translation_text)
 
-  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text)
+  const audioUrl = resolveSessionAudioUrl(audioMap, learningItem.base_text, null)
 
   const scoring = useExerciseScoring<string>({
     mode: 'typed',
