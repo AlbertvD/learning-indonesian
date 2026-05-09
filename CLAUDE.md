@@ -430,12 +430,37 @@ The image is built automatically via **GitHub Actions** on every push to `main` 
    gh run watch <run-id> --repo AlbertvD/learning-indonesian
    ```
 
-3. **Pull the new image on the homelab** — ghcr.io is not reachable from the Portainer container, so pull via SSH:
+3. **Pull the new image on the homelab.** Two paths — Portainer is preferred (no SSH session needed), SSH is the fallback:
+
+   **Via Portainer MCP** (verified working 2026-05-09):
+   ```
+   mcp__portainer__dockerProxy
+     environmentId: 3
+     method: POST
+     dockerAPIPath: /images/create
+     queryParams: [{key: fromImage, value: ghcr.io/albertvd/learning-indonesian}, {key: tag, value: latest}]
+   ```
+
+   **Via SSH** (fallback):
    ```bash
    ssh mrblond@master-docker "sudo docker pull ghcr.io/albertvd/learning-indonesian:latest"
    ```
 
-4. **Recreate the container** — stop, remove, and relaunch with the same labels:
+4. **Recreate the container** — stop, remove, and relaunch with the same labels.
+
+   **Via Portainer MCP** (sequence of dockerProxy calls — Traefik labels are below):
+   ```
+   POST /containers/learning-indonesian/stop  (queryParams: t=10)
+   DELETE /containers/learning-indonesian
+   POST /containers/create  (queryParams: name=learning-indonesian)
+     body: { "Image":"ghcr.io/albertvd/learning-indonesian:latest",
+             "Labels": { ... see SSH command below for the full Traefik label set ... },
+             "HostConfig": { "NetworkMode":"proxy",
+                              "RestartPolicy": {"Name":"unless-stopped"} } }
+   POST /containers/learning-indonesian/start
+   ```
+
+   **Via SSH** (fallback — full label set baked in):
    ```bash
    ssh mrblond@master-docker "sudo docker stop learning-indonesian && sudo docker rm learning-indonesian && sudo docker run -d \
      --name learning-indonesian \
@@ -454,12 +479,19 @@ The image is built automatically via **GitHub Actions** on every push to `main` 
      ghcr.io/albertvd/learning-indonesian:latest"
    ```
 
-5. **Verify** — check the container is running:
+5. **Verify** — check the container is running and on the new image:
+
+   **Via Portainer MCP:**
+   ```
+   GET /containers/learning-indonesian/json   → check State.Running + Config.Labels.org.opencontainers.image.revision
+   ```
+
+   **Via SSH:**
    ```bash
    ssh mrblond@master-docker "sudo docker inspect learning-indonesian --format '{{.State.Status}} — image: {{.Config.Image}}'"
    ```
 
-**Note:** Docker is not installed locally. All image operations happen on the homelab via SSH (`mrblond@master-docker`). The Portainer MCP can list containers (environment ID 3) but cannot pull images — ghcr.io is unreachable from the Portainer host network.
+**Note:** Docker is not installed locally. All image operations happen on the homelab. The Portainer MCP environment ID is `3` (`local`); its `dockerProxy` tool can pull images and recreate containers — verified 2026-05-09. SSH to `mrblond@master-docker` remains available as the fallback when Portainer is offline.
 
 The `docker-compose.yml` reference in `homelab-configs/services/learning-indonesian/` is kept for documentation but the container is managed directly via `docker run` as above.
 
