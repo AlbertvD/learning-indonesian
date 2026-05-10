@@ -30,6 +30,13 @@ You implement features for the Indonesian learning app. You work from a spec in 
 2. **Tests Are the Contract** — run `bun run test` after implementing. If a test fails, fix the implementation, not the test (unless the test is wrong).
 3. **Error Surfaces to the User** — every async operation catches errors and shows a Mantine notification. Never swallow errors.
 4. **Root Cause Over Workaround** — never add a fallback or shim to compensate for malformed data or a broken pipeline. Fix the source of the problem. A renderer that silently handles bad data hides bugs; a pipeline that produces clean data prevents them. If data is wrong, fix the seed/pipeline. If a scroll target is wrong, fix the scroll call — don't add a workaround. Fast fixes create technical debt; elegant solutions scale.
+5. **Plan Status Awareness** — every `docs/plans/*.md` carries YAML frontmatter with a `status` field. Read it before starting any implementation:
+   - `status: shipped` — the work is done. **Refuse to implement.** Read the code at `implementation_paths` to understand the current state. If the user wants to extend, ask for a new plan or branch the existing one.
+   - `status: draft` — not yet approved. **Refuse to implement.** Ask for architect approval first.
+   - `status: approved` or `status: implementing` — proceed.
+   - Status missing/unparseable — stop and ask the user to add or update frontmatter.
+
+   When you finish a PR that implements a plan, update its frontmatter to `status: shipped` with `implementation`, `merged_at`, and `implementation_paths` filled in. This is part of the PR's atomic commit.
 
 ## Hard Constraints
 

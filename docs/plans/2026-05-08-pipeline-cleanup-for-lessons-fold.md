@@ -1,12 +1,25 @@
+---
+status: shipped
+implementation: PR #41
+merged_at: 2026-05-09
+implementation_paths:
+  - scripts/lib/pipeline/lesson-stage/
+  - scripts/lib/pipeline/capability-stage-legacy.ts  # the extracted-but-not-yet-folded Stage B
+supersedes: []
+---
+
 # Lesson-stage module spec — Phase 1 of the pipeline rewrite
 
-Status: APPROVED v3.2 (2026-05-09, deep-module reframe + ground-truth audio + sub-shape alignment + round-5 surface fixes)
-Companion: `docs/plans/2026-05-08-fold-lib-lessons.md` (lessons fold — depends on this)
-Architect-review-loop:
+**SHIPPED in PR #41 (commit `4669aaf`, merged 2026-05-09).** Architect-review-loop was completed in 5 rounds; the 9-commit implementation plan at `docs/plans/2026-05-08-pipeline-cleanup-implementation.md` was executed and merged. The prose below describes the *design as planned* — for current state, read the code at `scripts/lib/pipeline/lesson-stage/`.
+
+Architect-review-loop history (pre-ship):
 - Round 1 (v1) — NEEDS_REVISION (6 substantive + 7 warnings + 12 recommended edits)
 - Round 2 (v2) — APPROVE_WITH_NITS (1 nit applied → v2.1)
 - Round 3 (v2.2) — APPROVE_WITH_NITS (2 nits applied → v2.2.1)
-- Round 4 (v3.0) — pending: deep-module reframe + module folder factoring + scope expansion to full Phase 1
+- Round 4 (v3.0) — APPROVED with deep-module reframe + module folder factoring + scope expansion to full Phase 1
+- Round 5 (v3.2) — APPROVED; shipped
+
+Companion: `docs/plans/2026-05-08-fold-lib-lessons.md` (lessons fold — depends on this).
 
 ---
 

@@ -86,6 +86,61 @@ Applied: the goal subsystem, browser FSRS, the source-progress events, grammar-s
 
 ---
 
+## Module conventions
+
+These conventions instantiate the architectural rules above — especially §1 (module shape), §2 (hexagonal modules), §3 (one job per module), and §7 (no back-edges) — in concrete code. Every fold and every new module follows them.
+
+The framework is Ousterhout's deep-module pattern from *A Philosophy of Software Design*: a narrow interface that hides significant complexity. The conventions below are how that pattern lands in this codebase.
+
+### Where things live
+
+See §Architecture overview for the five categories. Two clarifications:
+
+- `src/lib/` root has **two shapes only**: (a) a folder = a deep module, (b) a single `.ts` / `.tsx` file = a cross-cutting platform utility. No third shape — no bare logic files in `src/lib/` root that belong to a module.
+- The `Service` suffix is reserved for `src/services/`. Inside `src/lib/<name>/` the I/O file is always `adapter.ts`, never `<name>Service.ts`.
+
+### File roles inside `src/lib/<name>/`
+
+Each module folder uses these canonical file names. Not every role is required; only what the module needs.
+
+| Role | Filename | When to include |
+|---|---|---|
+| Public barrel (inbound port) | `index.ts` | Always. Re-exports the public API. Internal files are not re-exported. |
+| Domain types | `model.ts` | When the module has > 2 public types. Public types re-exported via `index.ts`. |
+| I/O adapter | `adapter.ts` | When the module touches Supabase. Exactly one. Internal — never imported by callers. |
+| Logic files | `<job>.ts` | At least one. Named by the verb/noun the file does. |
+| Sub-domains | `<sub>/` (folders) | When the module spans 6+ logic files or has distinct sub-aspects (e.g. `analytics/{engagement,memory,upcoming,…}`, `exercise-content/byType/`). Each sub-folder has its own `index.ts`. |
+| Tests | `__tests__/<file>.test.ts` | Colocated. One test file per logic file. Mirror the basename. |
+
+### `index.ts` is the inbound port only
+
+`index.ts` declares what callers can use. It does **not** advertise upstream dependencies — those are implementation complexity that the module is supposed to hide. Upstream dependencies live in the module's "Depends on" line in §Runtime module specs and are enforced by Rule #7 (no back-edges).
+
+### `adapter.ts` is the abstraction-translation seam
+
+`adapter.ts` translates DB shape → domain shape. It hides the schema name (`'indonesian'`), table names, RPC names, snake/camel mapping, RLS quirks, and any deadlock workarounds. **It is not a thin wrapper around `supabase.from(...)`.** If a caller could write the same query in two lines, the adapter has not earned its keep — that's the Ousterhout Ch. 7 pass-through anti-pattern, the same shape we retire when we fold a `service` into a module.
+
+### Naming rules
+
+1. **Drop the folder name from filenames.** Folder is `lessons/` → file is `overview.ts`, not `lessonOverview.ts`. The folder already provides context; repeating it is noise. The locked specs all do this — `session-builder/builder.ts`, `analytics/engagement/rules.ts`, `distractors/cascade.ts`.
+2. **camelCase.** Multi-word file names: `actionModel.ts`, `loadBudget.ts`, `audibleTexts.ts`, `flagState.ts`. Not snake_case, not kebab-case, not PascalCase.
+3. **`.tsx` only when the file emits JSX.** `guards.tsx`, `audio.tsx`. Everything else is `.ts`.
+4. **Test files mirror the file under test.** `activation.ts` → `__tests__/activation.test.ts`. Same basename, no `lesson-` prefix, no `.spec.` variant.
+
+### Depth and width rules (the deep-module test)
+
+Three rules guard against shallow-module drift:
+
+1. **Promotion criterion.** A folder under `src/lib/` is justified only when at least one function inside hides non-trivial logic a caller couldn't trivially inline. CRUD-shaped data adapters stay in `src/services/`. (Restating Rule #1 here for the convention's completeness.)
+2. **Folder-module depth floor.** A `src/lib/<name>/` folder requires either ≥ 2 substantive files **or** ≥ ~150 LOC of logic **or** a non-trivial type model. Below that threshold, prefer a single-file module like `lib/audio.tsx`. Single-file folders are a smell — they're either future modules waiting for their second file, or modules that should be demoted.
+3. **Public-API width.** If `index.ts` re-exports more than ~10 symbols, the module is probably doing two jobs. Split it. (`lib/lessons/` is at the edge with 9 symbols across overview / experience / activation; defensible because all three operate on the lesson noun and share the activation gate.)
+
+### Tests
+
+Tests colocate inside the module folder under `__tests__/` (Rule #2). The current `src/__tests__/` directory is the legacy layout; each module fold migrates the relevant test files into the module as part of the fold's atomic source+test commits.
+
+---
+
 ## Architecture overview
 
 Five categories of code:

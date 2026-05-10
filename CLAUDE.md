@@ -11,6 +11,36 @@ Prefer depth and accuracy over fast answers. These rules are non-negotiable:
 - **When asked to be thorough, that means exhaustive — not "long."** Length is not thoroughness. Every claim must be grounded in what was actually read.
 - **Missed edge cases caught after implementation cost more time than taking longer upfront.** Always choose the slower, more careful path.
 
+### Plan status awareness
+
+Every `docs/plans/*.md` carries YAML frontmatter with a `status` field. **Read the frontmatter before reasoning from any plan.** A plan can be in one of four states:
+
+| status | Meaning | How to treat it |
+|---|---|---|
+| `draft` | Spec being written; not yet approved | Forward-looking design; refuse to implement |
+| `approved` | Architect-reviewed; not yet implemented | Forward-looking; safe to implement |
+| `implementing` | A PR is open or merging | Verify against the in-flight PR before adding anything |
+| `shipped` | Merged to main | **Changelog, not a spec.** Verify claims against the code at `implementation_paths`. Never treat as forward work. |
+
+Frontmatter schema:
+
+```yaml
+---
+status: shipped
+implementation: PR #41                              # required when status=implementing or shipped
+merged_at: 2026-05-09                               # required when status=shipped
+implementation_paths:                               # required when status=shipped
+  - scripts/lib/pipeline/lesson-stage/
+supersedes: []                                      # optional
+---
+```
+
+**Why this matters:** the failure mode this prevents is reasoning from a shipped plan as if it were forward work. The plan's prose describes the design *as planned*; the merged code is what was actually built. Plan prose lags code. When a plan ships, its frontmatter status updates to `shipped` and any subsequent analysis must anchor to the code, not the prose.
+
+When you finish a PR that implements a plan, update the plan's frontmatter as part of the same commit. The PR template enforces this.
+
+Grep for `grep -L "^status:" docs/plans/*.md` to find plans missing frontmatter — these need backfilling before any agent uses them.
+
 Indonesian language tutor app — React frontend connecting directly to a shared self-hosted Supabase instance.
 
 ## Architecture
