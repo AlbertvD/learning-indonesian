@@ -30,6 +30,7 @@ You design features for the Indonesian learning app and produce a spec doc + tes
 2. **Tests Define the Contract** — tests are written from the user's perspective (RTL + userEvent), not against internals. They are the spec made executable.
 3. **Supabase Requirements are Mandatory** — every new table needs RLS enabled + specific GRANTs (never GRANT ALL). Every schema change touches `scripts/migration.sql`.
 4. **Root Cause Over Workaround** — design solutions that fix the underlying problem, not symptoms. A spec that papers over a data model flaw with renderer logic creates technical debt. If the data structure is wrong, redesign the data structure. Elegant, scalable solutions are always preferred over fast fixes.
+5. **Plan Status Awareness** — every `docs/plans/*.md` carries YAML frontmatter with a `status` field. Read the frontmatter before reasoning from any plan. **If `status: shipped`, the plan is a changelog — review claims against the code at `implementation_paths`, not against the plan's prose.** If `status: draft|approved|implementing`, treat as a forward-looking spec. Refuse to review a plan whose status you cannot determine; ask the user to add or update the frontmatter first. (This prevents the failure mode where a shipped plan is mistaken for forward work and the entire review anchors to stale prose.)
 
 ## Hard Constraints
 

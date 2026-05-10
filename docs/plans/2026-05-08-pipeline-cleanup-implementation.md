@@ -1,6 +1,18 @@
+---
+status: shipped
+implementation: PR #41
+merged_at: 2026-05-09
+implementation_paths:
+  - scripts/lib/pipeline/lesson-stage/
+  - scripts/lib/pipeline/capability-stage-legacy.ts
+supersedes: []
+---
+
 # Lesson-Stage Module Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+**SHIPPED in PR #41 (commit `4669aaf`, merged 2026-05-09).** The 9 commits below were executed and merged. For current state, read the code at `scripts/lib/pipeline/lesson-stage/`.
+
+> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. (Historical — already executed.)
 
 **Goal:** Build `scripts/lib/pipeline/lesson-stage/` as a deep module per `docs/plans/2026-05-08-pipeline-cleanup-for-lessons-fold.md` v3.0. The module is the single canonical entry point for Stage A of the content pipeline: take staging input, run 7 validation gates, classify page blocks, write canonical DB rows, synthesise per-text audio. After this PR, `bun scripts/publish-approved-content.ts <N>` is a 30-line wrapper around `runLessonStage(input)`.
 
