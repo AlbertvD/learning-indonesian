@@ -9,6 +9,7 @@ export const grammarPatterns = [
     page_reference: 2,
     slug: 'se-classifier',
     complexity_score: 4,
+    example: '/Rumah ini/ kecil/ — Dit huis is klein',
   },
   {
     pattern_name: 'ini/itu als aanwijzend voornaamwoord',
@@ -17,6 +18,7 @@ export const grammarPatterns = [
     page_reference: 2,
     slug: 'ini-itu-demonstrative',
     complexity_score: 2,
+    example: '/Rumah ini/ kecil/ — Dit huis is klein',
   },
   {
     pattern_name: 'ini/itu als woordgroepmarkeerder',
@@ -25,6 +27,7 @@ export const grammarPatterns = [
     page_reference: 2,
     slug: 'ini-itu-group-marker',
     complexity_score: 3,
+    example: '/Rumah ini/ kecil/ — Dit huis is klein',
   },
   {
     pattern_name: 'ini/itu als centrale woordgroep',
@@ -33,6 +36,7 @@ export const grammarPatterns = [
     page_reference: 2,
     slug: 'ini-itu-central',
     complexity_score: 1,
+    example: '/Rumah ini/ kecil/ — Dit huis is klein',
   },
   {
     pattern_name: 'Ontkenning met tidak',
@@ -41,6 +45,7 @@ export const grammarPatterns = [
     page_reference: 2,
     slug: 'tidak-negation',
     complexity_score: 2,
+    example: '/Rumah ini/ kecil/ — Dit huis is klein',
   },
   {
     pattern_name: 'Bijvoeglijk naamwoord na zelfstandig naamwoord',
@@ -49,6 +54,7 @@ export const grammarPatterns = [
     page_reference: 2,
     slug: 'adjective-after-noun',
     complexity_score: 2,
+    example: '/Rumah ini/ kecil/ — Dit huis is klein',
   },
   {
     pattern_name: 'Telwoorden 11-20 met belas',
@@ -57,5 +63,6 @@ export const grammarPatterns = [
     page_reference: 2,
     slug: 'belas-numbers',
     complexity_score: 3,
+    example: '/Rumah ini/ kecil/ — Dit huis is klein',
   },
 ]

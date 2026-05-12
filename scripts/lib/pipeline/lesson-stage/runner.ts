@@ -7,13 +7,12 @@ import type {
   LessonStageOutput,
   ValidationFinding,
 } from './model'
-import { validateGrammarTopics } from './validators/grammarTopics'
 import { validateBlockKind } from './validators/blockKind'
 import { validatePayloadAudio } from './validators/payloadAudio'
 import { validateLessonVoices } from './validators/lessonVoices'
 import { validateSectionType } from './validators/sectionType'
 import { validatePerItem } from './validators/perItem'
-import { validateGrammarPattern } from './validators/grammarPattern'
+import { validateGrammarTopics } from './validators/grammarTopics'
 import { classifyBlockKind, type LegacyBlockKind } from './classifier'
 import {
   upsertLesson,
@@ -22,6 +21,18 @@ import {
   type PageBlockInput,
 } from './adapter'
 import { ensureLessonAudio } from './audio'
+import {
+  enrichMissingGrammarTopics,
+  type GrammarTopicsEnrichmentResult,
+} from './enrichGrammarTopics'
+import {
+  enrichMissingDialogueTranslations,
+  collectDialogueLines,
+  applyDialogueTranslationsToSections,
+  type DialogueTranslationResult,
+  type DialogueLine,
+} from './enrichDialogueTranslations'
+import { writeLessonWithEnrichedSections } from './stagingWriteback'
 
 interface LessonStaging {
   title: string
@@ -81,6 +92,12 @@ export async function runLessonStage(
     loadStaging?: typeof loadStaging
     createSupabaseClient?: typeof createSupabaseClient
     synthesizer?: (text: string, voiceId: string) => Promise<Buffer>
+    enrichGrammarTopics?: (
+      sections: Array<{ title?: string; order_index?: number; content: Record<string, unknown> }>,
+      lessonNumber: number,
+      options?: { deterministicOnly?: boolean },
+    ) => Promise<GrammarTopicsEnrichmentResult>
+    enrichDialogueTranslations?: (lines: DialogueLine[]) => Promise<DialogueTranslationResult>
   } = {},
 ): Promise<LessonStageOutput> {
   const start = Date.now()
@@ -90,8 +107,57 @@ export async function runLessonStage(
 
   const staging = await load(input.lessonNumber)
 
-  // GT1 — grammar_topics. GT3, GT5, GT6 walk every section. GT4 walks the
-  // lesson + sections. GT7 walks the grammar pattern list.
+  // ---- Enrichment (pre-validation). ----
+  // Two enrichers run in sequence, both mutating staging.lesson.sections in
+  // place so the validators + section upsert see populated values.
+  //
+  //   1. grammar_topics — cohesive lesson-level summary, one chip-worthy
+  //      label set written to every grammar/reference_table section. Runs
+  //      unconditionally; in dry-run we force the deterministic path (no
+  //      LLM cost) so GT1 has populated values to validate against.
+  //   2. dialogue translations — fills empty Dutch translations on
+  //      `content.lines[].translation` so the lesson reader shows them.
+  //      LLM-only; skipped in dry-run to avoid cost.
+  //
+  // After enrichment the cached lesson.ts on disk is rewritten so
+  // subsequent runs skip the LLM calls. Disk writeback is gated on
+  // !input.dryRun — dry-run must not mutate the working tree.
+  let stagingDirty = false
+
+  const enrichTopics = hooks.enrichGrammarTopics ?? enrichMissingGrammarTopics
+  const topicsResult = await enrichTopics(
+    staging.lesson.sections,
+    input.lessonNumber,
+    { deterministicOnly: input.dryRun },
+  )
+  if (topicsResult.filledSectionCount > 0) stagingDirty = true
+
+  if (!input.dryRun) {
+    const dialogueLines = collectDialogueLines(staging.lesson.sections)
+    if (dialogueLines.length > 0) {
+      const enrichDialogues = hooks.enrichDialogueTranslations ?? enrichMissingDialogueTranslations
+      const dialogueResult = await enrichDialogues(dialogueLines)
+      if (dialogueResult.translationsByText.size > 0) {
+        const applied = applyDialogueTranslationsToSections(
+          staging.lesson.sections,
+          dialogueResult.translationsByText,
+        )
+        if (applied > 0) stagingDirty = true
+      }
+    }
+
+    if (stagingDirty) {
+      writeLessonWithEnrichedSections(
+        input.lessonNumber,
+        staging.lesson as unknown as Record<string, unknown>,
+      )
+    }
+  }
+
+  // GT1 (grammar_topics) runs AFTER enrichment so it sees populated values.
+  // GT3, GT5, GT6 walk every section. GT4 walks the lesson + sections.
+  // GT7 (grammar pattern shape) remains in capability-stage (CS6) since
+  // grammar_patterns is capability-stage's territory.
   findings.push(...validateGrammarTopics(staging.lesson.sections))
   findings.push(...validatePayloadAudio(staging.pageBlocks))
   // Pass through raw staging values (undefined when staging omits the field)
@@ -108,7 +174,6 @@ export async function runLessonStage(
   )
   findings.push(...validateSectionType(staging.lesson.sections))
   findings.push(...validatePerItem(staging.lesson.sections))
-  findings.push(...validateGrammarPattern(staging.grammarPatterns))
 
   // GT2 runs AFTER classification — classify first, then validate.
   const classifiedBlocks: PageBlockInput[] = staging.pageBlocks.map((block) => ({

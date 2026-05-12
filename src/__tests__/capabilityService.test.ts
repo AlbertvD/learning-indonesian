@@ -34,7 +34,7 @@ describe('capability service', () => {
       direction: 'id_to_l1',
       modality: 'text',
       learner_language: 'nl',
-      projection_version: 'capability-v1',
+      projection_version: 'capability-v2',
       readiness_status: 'ready',
       publication_status: 'published',
       source_fingerprint: 'source',

@@ -10,6 +10,7 @@ import type {
 } from '../src/lib/capabilities/capabilityTypes'
 import { hasApprovedArtifact, type ArtifactIndex } from '../src/lib/capabilities/artifactRegistry'
 import { projectCapabilities } from '../src/lib/capabilities/capabilityCatalog'
+import { projectPodcastCapabilities } from './lib/pipeline/podcast-stage/podcastProjectionRules'
 import { validateCapabilities } from '../src/lib/capabilities/capabilityContracts'
 import { loadStagedContentSnapshot } from './check-capability-health'
 
@@ -266,17 +267,23 @@ export async function buildMaterializationPlanFromStaging(input: {
 }): Promise<CapabilityMaterializationPlan> {
   const { snapshot, artifacts } = await loadStagedContentSnapshot(input.stagingPath)
   const projection = projectCapabilities(snapshot)
-  const health = validateCapabilities({ projection, artifacts })
+  // Decision 4: podcast capability emission moved to podcast-stage. Concatenate
+  // shared + podcast rules so callers see one combined capability list.
+  const allCapabilities = [...projection.capabilities, ...projectPodcastCapabilities(snapshot)]
+  const health = validateCapabilities({
+    projection: { ...projection, capabilities: allCapabilities },
+    artifacts,
+  })
 
   return planCapabilityMaterialization({
-    capabilities: projection.capabilities,
+    capabilities: allCapabilities,
     existingCanonicalKeys: input.existingCanonicalKeys ?? new Set(),
     aliases: projection.aliases,
     applyBackfill: input.applyBackfill,
     learnerBackfillCandidates: input.learnerBackfillCandidates,
     readinessByCanonicalKey: readinessMapFromReport(health),
     approvedArtifactsByCapabilityKey: approvedArtifactMap({
-      capabilities: projection.capabilities,
+      capabilities: allCapabilities,
       artifacts,
     }),
   })

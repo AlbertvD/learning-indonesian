@@ -7,7 +7,8 @@ export const learningItems = [
     "translation_nl": "Wat is er aan de hand?",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "deferred_dialogue"
+    "review_status": "deferred_dialogue",
+    "level": "A1"
   },
   {
     "base_text": "Kaki saya sakit sekali dokter. Saya jatuh dari pohon.",
@@ -16,7 +17,8 @@ export const learningItems = [
     "translation_nl": "Mijn voet doet heel erg pijn, dokter. Ik ben uit de boom gevallen.",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Bagaimana bisa jatuh dari pohon?",
@@ -25,7 +27,8 @@ export const learningItems = [
     "translation_nl": "Hoe kun je nou uit een boom vallen?",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "deferred_dialogue"
+    "review_status": "deferred_dialogue",
+    "level": "A1"
   },
   {
     "base_text": "Saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.",
@@ -34,7 +37,8 @@ export const learningItems = [
     "translation_nl": "Ik wilde nog hoger in die boom klimmen, maar dat lukte niet, zodat ik viel.",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Nah, coba, saya periksa kakimu dulu. Barangkali tidak apa-apa.",
@@ -43,7 +47,8 @@ export const learningItems = [
     "translation_nl": "Nou, kom, laat me eerst je voet onderzoeken. Misschien is er niets aan de hand.",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Awas dokter, jangan sakit, ya.",
@@ -52,7 +57,8 @@ export const learningItems = [
     "translation_nl": "Voorzichtig dokter, niet pijn doen, hè.",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "deferred_dialogue"
+    "review_status": "deferred_dialogue",
+    "level": "A1"
   },
   {
     "base_text": "Ini sakit atau tidak?",
@@ -61,7 +67,8 @@ export const learningItems = [
     "translation_nl": "Doet dit pijn of niet?",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "deferred_dialogue"
+    "review_status": "deferred_dialogue",
+    "level": "A1"
   },
   {
     "base_text": "Tidak begitu sakit dokter, sedikit saja.",
@@ -70,7 +77,8 @@ export const learningItems = [
     "translation_nl": "Niet zo erg pijn dokter, maar een beetje.",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Kalau begitu, tidak ada yang patah. Pasti nanti cepat sekali sembuh, Tin.",
@@ -79,7 +87,8 @@ export const learningItems = [
     "translation_nl": "In dat geval is er niets gebroken. Straks ben je vast heel snel weer beter, Tin.",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Betul dokter? Tidak ada yang patah? Saya takut sekali!",
@@ -88,7 +97,8 @@ export const learningItems = [
     "translation_nl": "Echt waar, dokter? Is er niets gebroken? Ik was zo bang!",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh.",
@@ -97,926 +107,1019 @@ export const learningItems = [
     "translation_nl": "Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt.",
     "translation_en": "",
     "source_page": 3,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "awas",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "oppassen / uitkijken",
-    "translation_en": "",
+    "translation_en": "watch out",
     "source_page": 4,
     "review_status": "published",
-    "pos": "verb"
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "bakal",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "zullen / om te",
-    "translation_en": "",
+    "translation_en": "will / to",
     "source_page": 4,
     "review_status": "published",
-    "pos": "particle"
+    "pos": "particle",
+    "level": "A1"
   },
   {
     "base_text": "bekerja",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "werken",
-    "translation_en": "",
+    "translation_en": "work",
     "source_page": 4,
     "review_status": "published",
-    "pos": "verb"
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "biar",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "opdat / laat maar",
-    "translation_en": "",
+    "translation_en": "let / so that",
     "source_page": 4,
     "review_status": "published",
-    "pos": "conjunction"
+    "pos": "conjunction",
+    "level": "A1"
   },
   {
     "base_text": "burung",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "vogel",
-    "translation_en": "",
+    "translation_en": "bird",
     "source_page": 4,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "di mana-mana",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "overal",
-    "translation_en": "",
+    "translation_en": "everywhere",
     "source_page": 4,
     "review_status": "published",
-    "pos": "adverb"
+    "pos": "adverb",
+    "level": "A1"
   },
   {
     "base_text": "diam",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "stil (zijn)",
-    "translation_en": "",
+    "translation_en": "quiet",
     "source_page": 4,
     "review_status": "published",
-    "pos": "adjective"
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "dibawa*",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "meegenomen",
-    "translation_en": "",
+    "translation_en": "taken",
     "source_page": 4,
     "review_status": "published",
-    "pos": "verb"
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "hati-hati",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "voorzichtig",
-    "translation_en": "",
+    "translation_en": "careful",
     "source_page": 4,
     "review_status": "published",
-    "pos": "adjective"
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "hendak",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "willen",
-    "translation_en": "",
+    "translation_en": "want",
     "source_page": 4,
     "review_status": "published",
-    "pos": "particle"
+    "pos": "particle",
+    "level": "A1"
   },
   {
     "base_text": "henti",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "stoppen / ophouden / stilstaan",
-    "translation_en": "",
+    "translation_en": "stop",
     "source_page": 4,
     "review_status": "published",
-    "pos": "verb"
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "jatuh",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "vallen",
-    "translation_en": "",
+    "translation_en": "fall",
     "source_page": 4,
     "review_status": "published",
-    "pos": "verb"
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "kaget (kagèt)",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "schrikken",
-    "translation_en": "",
+    "translation_en": "startle",
     "source_page": 4,
     "review_status": "published",
-    "pos": "verb"
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "kaki",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "voet / been",
-    "translation_en": "",
+    "translation_en": "foot/leg",
     "source_page": 4,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kapal",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "schip / boot",
-    "translation_en": "",
+    "translation_en": "ship / boat",
     "source_page": 4,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kepala",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "hoofd",
-    "translation_en": "",
+    "translation_en": "head",
     "source_page": 4,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kesehatan (keséhatan)",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "gezondheid",
-    "translation_en": "",
+    "translation_en": "health",
     "source_page": 4,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kumpul",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "verzamelen",
-    "translation_en": "",
+    "translation_en": "gather",
     "source_page": 4,
     "review_status": "published",
-    "pos": "verb"
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "lekas",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "snel",
-    "translation_en": "",
+    "translation_en": "fast",
     "source_page": 4,
     "review_status": "published",
-    "pos": "adverb"
+    "pos": "adverb",
+    "level": "A1"
   },
   {
     "base_text": "letnan (lètnan)",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "luitenant",
-    "translation_en": "",
+    "translation_en": "lieutenant",
     "source_page": 4,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "loncat",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "springen",
-    "translation_en": "",
+    "translation_en": "jump",
     "source_page": 4,
     "review_status": "published",
-    "pos": "verb"
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "maka",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "daarom",
-    "translation_en": "",
+    "translation_en": "therefore",
     "source_page": 4,
     "review_status": "published",
-    "pos": "conjunction"
+    "pos": "conjunction",
+    "level": "A1"
   },
   {
     "base_text": "masyarakat",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "samenleving / maatschappij",
-    "translation_en": "",
+    "translation_en": "society",
     "source_page": 4,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "obat",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "medicijn",
-    "translation_en": "",
+    "translation_en": "medicine",
     "source_page": 4,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "orang desa",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "dorpeling",
-    "translation_en": "",
+    "translation_en": "villager",
     "source_page": 4,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "patah",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "breken (botten)",
-    "translation_en": "",
+    "translation_en": "break",
     "source_page": 4,
     "review_status": "published",
-    "pos": "verb"
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "periksa",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "onderzoeken",
-    "translation_en": "",
+    "translation_en": "examine",
     "source_page": 4,
     "review_status": "published",
-    "pos": "verb"
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "puas",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "tevreden / voldaan",
-    "translation_en": "",
+    "translation_en": "satisfied",
     "source_page": 4,
     "review_status": "published",
-    "pos": "adjective"
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "pusat",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "centrum",
-    "translation_en": "",
+    "translation_en": "center",
     "source_page": 4,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "PUSKESMAS",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "volksgezondheidscentrum",
-    "translation_en": "",
+    "translation_en": "public health center",
     "source_page": 4,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "sedang",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "bezig te … (iets aan het doen zijn)",
-    "translation_en": "",
+    "translation_en": "busy doing",
     "source_page": 4,
     "review_status": "published",
-    "pos": "particle"
+    "pos": "particle",
+    "level": "A1"
   },
   {
     "base_text": "sehingga",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "zodat / totdat",
-    "translation_en": "",
+    "translation_en": "so that / until",
     "source_page": 4,
     "review_status": "published",
-    "pos": "conjunction"
+    "pos": "conjunction",
+    "level": "A1"
   },
   {
     "base_text": "sembuh",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "genezen / gezond worden",
-    "translation_en": "",
+    "translation_en": "recover / heal",
     "source_page": 4,
     "review_status": "published",
-    "pos": "verb"
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "tak (tidak)",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "niet",
-    "translation_en": "",
+    "translation_en": "not",
     "source_page": 4,
     "review_status": "published",
-    "pos": "particle"
+    "pos": "particle",
+    "level": "A1"
   },
   {
     "base_text": "takut",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "bang (zijn)",
-    "translation_en": "",
+    "translation_en": "afraid",
     "source_page": 4,
     "review_status": "published",
-    "pos": "adjective"
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "telah",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "al / reeds",
-    "translation_en": "",
+    "translation_en": "already / have",
     "source_page": 4,
     "review_status": "published",
-    "pos": "particle"
+    "pos": "particle",
+    "level": "A1"
   },
   {
     "base_text": "di mana-mana",
     "item_type": "phrase",
     "context_type": "vocabulary_list",
     "translation_nl": "overal",
-    "translation_en": "",
+    "translation_en": "everywhere",
     "source_page": 4,
     "review_status": "published",
-    "pos": "adverb"
+    "pos": "adverb",
+    "level": "A1"
   },
   {
     "base_text": "rumah sakit",
     "item_type": "phrase",
     "context_type": "vocabulary_list",
     "translation_nl": "ziekenhuis",
-    "translation_en": "",
+    "translation_en": "hospital",
     "source_page": 4,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "tidak (ada) apa-apa",
     "item_type": "phrase",
     "context_type": "vocabulary_list",
     "translation_nl": "er is niets / 't geeft niet / er is niets aan de hand",
-    "translation_en": "",
+    "translation_en": "nothing is wrong",
     "source_page": 4,
     "review_status": "published",
-    "pos": "particle"
+    "pos": "particle",
+    "level": "A1"
   },
   {
     "base_text": "tidak jadi",
     "item_type": "phrase",
     "context_type": "vocabulary_list",
     "translation_nl": "niet lukken / niet doorgaan",
-    "translation_en": "",
+    "translation_en": "not work out / not happen",
     "source_page": 4,
     "review_status": "published",
-    "pos": "verb"
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "tubuh / badan",
     "item_type": "phrase",
     "context_type": "vocabulary_list",
     "translation_nl": "lichaam",
-    "translation_en": "",
+    "translation_en": "body",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "hati",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "lever",
-    "translation_en": "",
+    "translation_en": "liver",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "mata",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "oog",
-    "translation_en": "",
+    "translation_en": "eye",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "mulut",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "mond",
-    "translation_en": "",
+    "translation_en": "mouth",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "dagu",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "kin",
-    "translation_en": "",
+    "translation_en": "chin",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kerongkongan",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "keel",
-    "translation_en": "",
+    "translation_en": "throat",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "perut",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "buik",
-    "translation_en": "",
+    "translation_en": "belly / stomach",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "lengan",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "arm",
-    "translation_en": "",
+    "translation_en": "arm",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kaki",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "voet / been",
-    "translation_en": "",
+    "translation_en": "foot/leg",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "pantat",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "billen",
-    "translation_en": "",
+    "translation_en": "buttocks",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "rambut",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "hoofdhaar",
-    "translation_en": "",
+    "translation_en": "hair",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "bulu",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "lichaamshaar",
-    "translation_en": "",
+    "translation_en": "body hair",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "hidung",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "neus",
-    "translation_en": "",
+    "translation_en": "nose",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "bibir",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "lip",
-    "translation_en": "",
+    "translation_en": "lip",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "dahi",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "voorhoofd",
-    "translation_en": "",
+    "translation_en": "forehead",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "jantung",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "hart",
-    "translation_en": "",
+    "translation_en": "heart",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "lambung",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "maag",
-    "translation_en": "",
+    "translation_en": "stomach",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "tangan",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "hand",
-    "translation_en": "",
+    "translation_en": "hand",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "lutut",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "knie",
-    "translation_en": "",
+    "translation_en": "knee",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "usus",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "darmen",
-    "translation_en": "",
+    "translation_en": "intestines",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kepala",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "hoofd",
-    "translation_en": "",
+    "translation_en": "head",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "lèhèr",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "hals",
-    "translation_en": "",
+    "translation_en": "neck",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kumis",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "snor",
-    "translation_en": "",
+    "translation_en": "mustache",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "telinga",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "oor",
-    "translation_en": "",
+    "translation_en": "ear",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "dada",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "borst(kas)",
-    "translation_en": "",
+    "translation_en": "chest",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "rongga dada",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "ribben",
-    "translation_en": "",
+    "translation_en": "ribs",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "jari tangan",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "vinger",
-    "translation_en": "",
+    "translation_en": "finger",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kaki",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "voet / been",
-    "translation_en": "",
+    "translation_en": "foot/leg",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kuku",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "nagel",
-    "translation_en": "",
+    "translation_en": "nail",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "jari kaki",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "teen",
-    "translation_en": "",
+    "translation_en": "toe",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "sakit perut / mag",
     "item_type": "phrase",
     "context_type": "vocabulary_list",
     "translation_nl": "buik/maagpijn",
-    "translation_en": "",
+    "translation_en": "stomach ache",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "pusing",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "duizelig zijn",
-    "translation_en": "",
+    "translation_en": "dizzy",
     "source_page": 9,
     "review_status": "published",
-    "pos": "adjective"
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "sakit kepala",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "hoofdpijn",
-    "translation_en": "",
+    "translation_en": "headache",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "pilek",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "verkoudheid",
-    "translation_en": "",
+    "translation_en": "cold",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "flu",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "griep",
-    "translation_en": "",
+    "translation_en": "flu",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "demam",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "koorts",
-    "translation_en": "",
+    "translation_en": "fever",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "mual",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "misselijk",
-    "translation_en": "",
+    "translation_en": "nauseous",
     "source_page": 9,
     "review_status": "published",
-    "pos": "adjective"
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "plèster",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "pleister",
-    "translation_en": "",
+    "translation_en": "plaster",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "pembalut",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "verband",
-    "translation_en": "",
+    "translation_en": "bandage",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "pembalut wanita",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "maandverband",
-    "translation_en": "",
+    "translation_en": "sanitary pad",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "capèk (na inspanning)",
     "item_type": "phrase",
     "context_type": "vocabulary_list",
     "translation_nl": "moe",
-    "translation_en": "",
+    "translation_en": "tired",
     "source_page": 9,
     "review_status": "published",
-    "pos": "adjective"
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "obat",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "medicijn",
-    "translation_en": "",
+    "translation_en": "medicine",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "jamu",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "kruidenmengsel",
-    "translation_en": "",
+    "translation_en": "herbal remedy",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "racun",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "vergif",
-    "translation_en": "",
+    "translation_en": "poison",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "obat batuk",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "hoestdrank",
-    "translation_en": "",
+    "translation_en": "cough syrup",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "diét",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "dieet",
-    "translation_en": "",
+    "translation_en": "diet",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "minum obat",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "medicijn innemen",
-    "translation_en": "",
+    "translation_en": "take medicine",
     "source_page": 9,
     "review_status": "published",
-    "pos": "verb"
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "suntik",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "prik",
-    "translation_en": "",
+    "translation_en": "injection",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "muntah",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "overgeven",
-    "translation_en": "",
+    "translation_en": "vomit",
     "source_page": 9,
     "review_status": "published",
-    "pos": "verb"
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "luka",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "wond",
-    "translation_en": "",
+    "translation_en": "wound",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "nafsu makan",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "eetlust",
-    "translation_en": "",
+    "translation_en": "appetite",
     "source_page": 9,
     "review_status": "published",
-    "pos": "noun"
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "lemah",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "zwak (slap)",
-    "translation_en": "",
+    "translation_en": "weak",
     "source_page": 9,
     "review_status": "published",
-    "pos": "adjective"
+    "pos": "adjective",
+    "level": "A1"
   }
 ]

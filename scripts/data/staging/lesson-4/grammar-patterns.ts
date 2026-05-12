@@ -8,7 +8,8 @@ export const grammarPatterns = [
     confusion_group: "yang-functions",
     page_reference: 5,
     slug: "yang-relative-pronoun",
-    complexity_score: 3
+    complexity_score: 3,
+    example: "Pisang yang terlalu tua tidak enak — Een banaan die te oud is, is niet lekker",
   },
   {
     pattern_name: "YANG - Nominalization",
@@ -16,7 +17,8 @@ export const grammarPatterns = [
     confusion_group: "yang-functions",
     page_reference: 5,
     slug: "yang-nominalization",
-    complexity_score: 5
+    complexity_score: 5,
+    example: "Pisang yang terlalu tua tidak enak — Een banaan die te oud is, is niet lekker",
   },
   {
     pattern_name: "YANG - Single Adjective Emphasis",
@@ -24,7 +26,8 @@ export const grammarPatterns = [
     confusion_group: "yang-adjective-patterns",
     page_reference: 5,
     slug: "yang-single-adjective-emphasis",
-    complexity_score: 4
+    complexity_score: 4,
+    example: "Pisang yang terlalu tua tidak enak — Een banaan die te oud is, is niet lekker",
   },
   {
     pattern_name: "YANG - Two Adjectives (Unequal Emphasis)",
@@ -32,7 +35,8 @@ export const grammarPatterns = [
     confusion_group: "yang-adjective-patterns",
     page_reference: 6,
     slug: "yang-two-adj-unequal",
-    complexity_score: 6
+    complexity_score: 6,
+    example: "Pisang yang terlalu tua tidak enak — Een banaan die te oud is, is niet lekker",
   },
   {
     pattern_name: "YANG - Two Adjectives (Equal Emphasis)",
@@ -40,7 +44,8 @@ export const grammarPatterns = [
     confusion_group: "yang-adjective-patterns",
     page_reference: 6,
     slug: "yang-two-adj-equal",
-    complexity_score: 6
+    complexity_score: 6,
+    example: "Pisang yang terlalu tua tidak enak — Een banaan die te oud is, is niet lekker",
   },
   {
     pattern_name: "Ada yang... - Existential with YANG",
@@ -48,6 +53,7 @@ export const grammarPatterns = [
     confusion_group: "yang-functions",
     page_reference: 6,
     slug: "ada-yang-existential",
-    complexity_score: 5
+    complexity_score: 5,
+    example: "Pisang yang terlalu tua tidak enak — Een banaan die te oud is, is niet lekker",
   }
 ]

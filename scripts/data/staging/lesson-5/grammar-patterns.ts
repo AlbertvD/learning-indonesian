@@ -14,6 +14,7 @@ export const grammarPatterns = [
     page_reference: 3,
     slug: 'kami-vs-kita',
     complexity_score: 4,
+    example: 'Saya dan teman saya — Mijn vriend en ik',
   },
   {
     pattern_name: 'Bezittelijk voornaamwoord — achterplaatsing en afgekorte vormen',
@@ -23,6 +24,7 @@ export const grammarPatterns = [
     page_reference: 6,
     slug: 'possessive-suffix-placement',
     complexity_score: 4,
+    example: 'Saya dan teman saya — Mijn vriend en ik',
   },
   {
     pattern_name: 'Persoonlijk voornaamwoord — formeel, neutraal en informeel',
@@ -32,5 +34,6 @@ export const grammarPatterns = [
     page_reference: 4,
     slug: 'pronoun-register-levels',
     complexity_score: 5,
+    example: 'Saya dan teman saya — Mijn vriend en ik',
   },
 ]

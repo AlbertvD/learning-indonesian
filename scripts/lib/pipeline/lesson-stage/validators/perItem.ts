@@ -6,14 +6,21 @@ interface SectionLike {
 }
 
 /**
- * GT6 — Every embedded item in a `lesson_sections.content` payload must have
- * its display fields. Stage-B-only enrichment fields (pos, level, dialogue
- * line translation) are warnings in Phase 1; they become errors in Phase 2
- * once `linguist-structurer` prompts emit them (per spec §4 GT6).
+ * GT6 — display-field per-item validator.
+ *
+ * Stage-A scope only: every embedded item in a `lesson_sections.content`
+ * payload must have its display fields (the bits the lesson reader UI
+ * shows directly).
  *
  * Item types covered:
  *  - vocabulary / expressions / numbers — items[]: indonesian + (dutch | english)
  *  - dialogue — lines[]: text + speaker
+ *
+ * Enrichment-field validation (pos / level / dialogue translation_nl) lives
+ * in capability-stage's `validators/perItemEnrichment.ts` (gate CS2) per
+ * fold §11 #19. Capability-stage's authoring agents produce those fields,
+ * so a missing enrichment value is a capability-stage failure, not a
+ * lesson-stage one.
  */
 export function validatePerItem(sections: SectionLike[]): ValidationFinding[] {
   const findings: ValidationFinding[] = []
@@ -73,24 +80,6 @@ function checkItem(
     })
   }
 
-  // Stage-B-only enrichment — warnings in Phase 1.
-  if (!isNonEmptyString((item as Record<string, unknown>)?.pos)) {
-    findings.push({
-      gate: 'GT6',
-      severity: 'warning',
-      message: `${type} item "${indonesian}" is missing 'pos' (Stage-B distractor cascade requires it)`,
-      context: ctx,
-    })
-  }
-  if (!isNonEmptyString((item as Record<string, unknown>)?.level)) {
-    findings.push({
-      gate: 'GT6',
-      severity: 'warning',
-      message: `${type} item "${indonesian}" is missing 'level' (Stage-B tier filtering requires it)`,
-      context: ctx,
-    })
-  }
-
   return findings
 }
 
@@ -119,18 +108,6 @@ function checkDialogueLine(
       gate: 'GT6',
       severity: 'error',
       message: `dialogue line is missing required field 'speaker' (needed for voice routing)`,
-      context: ctx,
-    })
-  }
-
-  // Stage-B-only enrichment — warnings in Phase 1. Dialogue translations are
-  // empty strings in current staging; Phase 2 fills them.
-  const translation = (line as Record<string, unknown>)?.translation
-  if (!isNonEmptyString(translation)) {
-    findings.push({
-      gate: 'GT6',
-      severity: 'warning',
-      message: `dialogue line has empty 'translation' (Stage-B capability authoring will fill it)`,
       context: ctx,
     })
   }

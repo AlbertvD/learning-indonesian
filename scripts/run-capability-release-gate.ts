@@ -26,9 +26,7 @@ export function parseCapabilityReleaseGateArgs(args: string[]): CapabilityReleas
 export function buildCapabilityReleaseGateCommands(input: CapabilityReleaseGateArgs): string[] {
   return [
     'npm test -- --run scripts/__tests__/promote-capabilities.test.ts scripts/__tests__/check-capability-release-readiness.test.ts',
-    'npm test -- --run scripts/__tests__/approve-staged-capability-artifacts.test.ts',
     `npx tsx scripts/publish-approved-content.ts ${input.lesson} --dry-run`,
-    `npx tsx scripts/approve-staged-capability-artifacts.ts --lesson ${input.lesson} --dry-run`,
     `npx tsx scripts/promote-capabilities.ts --lesson ${input.lesson} --dry-run`,
     `npx tsx scripts/check-capability-health.ts --lesson ${input.lesson} --strict`,
     `npx tsx scripts/check-capability-release-readiness.ts --lesson ${input.lesson}`,

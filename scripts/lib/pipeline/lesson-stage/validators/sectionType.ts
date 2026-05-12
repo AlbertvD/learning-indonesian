@@ -115,11 +115,13 @@ function checkSubShape(
       // No sub-shape requirement in Phase 1.
       return null
     case 'exercises': {
-      if (!isNonEmptyArray(c.exercises)) {
+      // linguist-structurer (build-sections.ts:186) emits exercises under
+      // content.sections, not content.exercises. Match the actual shape.
+      if (!isNonEmptyArray(c.sections)) {
         return {
           gate: 'GT5',
           severity: 'error',
-          message: 'exercises section requires non-empty exercises[]',
+          message: 'exercises section requires non-empty sections[]',
           context: ctx,
         }
       }

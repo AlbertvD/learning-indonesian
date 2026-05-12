@@ -3,7 +3,7 @@ import { validatePerItem } from '../../validators/perItem'
 
 describe('validatePerItem (GT6) — vocabulary/expressions/numbers display fields', () => {
   it.each(['vocabulary', 'expressions', 'numbers'] as const)(
-    '%s: accepts items with indonesian + dutch (no errors; warnings allowed)',
+    '%s: accepts items with indonesian + dutch (no errors)',
     (type) => {
       const findings = validatePerItem([
         { id: 's1', content: { type, items: [{ indonesian: 'halo', dutch: 'hallo' }] } },
@@ -12,7 +12,7 @@ describe('validatePerItem (GT6) — vocabulary/expressions/numbers display field
     },
   )
 
-  it('vocabulary: accepts items with indonesian + english only (no errors; warnings allowed)', () => {
+  it('vocabulary: accepts items with indonesian + english only (no errors)', () => {
     const findings = validatePerItem([
       { id: 's1', content: { type: 'vocabulary', items: [{ indonesian: 'halo', english: 'hello' }] } },
     ])
@@ -40,31 +40,11 @@ describe('validatePerItem (GT6) — vocabulary/expressions/numbers display field
     expect(findings.some((f) => f.severity === 'error' && f.message.match(/dutch|english/i))).toBe(true)
   })
 
-  it('warns when pos is missing on a vocabulary item (Stage-B-only enrichment)', () => {
+  it('does NOT emit pos / level warnings (those moved to capability-stage CS2)', () => {
     const findings = validatePerItem([
       { id: 's1', content: { type: 'vocabulary', items: [{ indonesian: 'halo', dutch: 'hallo' }] } },
     ])
-    expect(findings.some((f) => f.severity === 'warning' && f.message.includes('pos'))).toBe(true)
-  })
-
-  it('warns when level is missing on a vocabulary item (Stage-B-only enrichment)', () => {
-    const findings = validatePerItem([
-      { id: 's1', content: { type: 'vocabulary', items: [{ indonesian: 'halo', dutch: 'hallo' }] } },
-    ])
-    expect(findings.some((f) => f.severity === 'warning' && f.message.includes('level'))).toBe(true)
-  })
-
-  it('does not warn when pos+level are present', () => {
-    const findings = validatePerItem([
-      {
-        id: 's1',
-        content: {
-          type: 'vocabulary',
-          items: [{ indonesian: 'halo', dutch: 'hallo', pos: 'greeting', level: 'A1' }],
-        },
-      },
-    ])
-    expect(findings.filter((f) => f.severity === 'warning')).toEqual([])
+    expect(findings.filter((f) => f.message.includes('pos') || f.message.includes('level'))).toEqual([])
   })
 })
 
@@ -97,7 +77,7 @@ describe('validatePerItem (GT6) — dialogue line display fields', () => {
     expect(findings.some((f) => f.severity === 'error' && f.message.includes('speaker'))).toBe(true)
   })
 
-  it('warns when translation is empty (Stage-B-only enrichment)', () => {
+  it('does NOT emit translation warnings (moved to capability-stage CS2 as error)', () => {
     const findings = validatePerItem([
       {
         id: 's1',
@@ -107,20 +87,7 @@ describe('validatePerItem (GT6) — dialogue line display fields', () => {
         },
       },
     ])
-    expect(findings.some((f) => f.severity === 'warning' && f.message.includes('translation'))).toBe(true)
-  })
-
-  it('does not warn when translation is present', () => {
-    const findings = validatePerItem([
-      {
-        id: 's1',
-        content: {
-          type: 'dialogue',
-          lines: [{ text: 'Halo', speaker: 'Andi', translation: 'Hallo' }],
-        },
-      },
-    ])
-    expect(findings.filter((f) => f.severity === 'warning')).toEqual([])
+    expect(findings.filter((f) => f.message.includes('translation'))).toEqual([])
   })
 })
 

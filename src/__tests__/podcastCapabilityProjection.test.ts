@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { projectCapabilities } from '@/lib/capabilities/capabilityCatalog'
+// Decision 4 (capability-stage fold): podcast capability emission moved out of
+// the shared catalog into scripts/lib/pipeline/podcast-stage/podcastProjectionRules.
+// These tests target the moved rule directly.
+import { projectPodcastCapabilities } from '../../scripts/lib/pipeline/podcast-stage/podcastProjectionRules'
 import { isExposureOnly, validateCapability } from '@/lib/capabilities/capabilityContracts'
 import type { CurrentContentSnapshot } from '@/lib/capabilities/capabilityTypes'
 
@@ -28,8 +31,8 @@ const snapshot: CurrentContentSnapshot = {
 
 describe('podcast capability projection', () => {
   it('projects guided transcript segments as exposure-only via source kind', () => {
-    const projection = projectCapabilities(snapshot)
-    const segment = projection.capabilities.find(capability => capability.sourceKind === 'podcast_segment')
+    const capabilities = projectPodcastCapabilities(snapshot)
+    const segment = capabilities.find(capability => capability.sourceKind === 'podcast_segment')
 
     expect(segment).toEqual(expect.objectContaining({
       sourceRef: segmentSourceRef,
@@ -51,8 +54,8 @@ describe('podcast capability projection', () => {
   })
 
   it('projects mined phrases with meaning-recall metadata, but treats them as exposure-only', () => {
-    const projection = projectCapabilities(snapshot)
-    const phrase = projection.capabilities.find(capability => capability.sourceKind === 'podcast_phrase')!
+    const capabilities = projectPodcastCapabilities(snapshot)
+    const phrase = capabilities.find(capability => capability.sourceKind === 'podcast_phrase')!
 
     expect(phrase).toEqual(expect.objectContaining({
       sourceRef: phraseSourceRef,

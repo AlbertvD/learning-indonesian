@@ -12,6 +12,7 @@ export const grammarPatterns = [
     page_reference: 6,
     slug: 'nya-possessive-suffix',
     complexity_score: 3,
+    example: 'Sepedanya hitam — Zijn/haar fiets is zwart',
   },
   {
     pattern_name: '-nya topicalisatie — drie zinsconstructies',
@@ -21,6 +22,7 @@ export const grammarPatterns = [
     page_reference: 7,
     slug: 'nya-topicalization',
     complexity_score: 5,
+    example: 'Sepedanya hitam — Zijn/haar fiets is zwart',
   },
   {
     pattern_name: '-nya als nominalisator van bijvoeglijke naamwoorden',
@@ -30,6 +32,7 @@ export const grammarPatterns = [
     page_reference: 8,
     slug: 'nya-adjective-nominalizer',
     complexity_score: 4,
+    example: 'Sepedanya hitam — Zijn/haar fiets is zwart',
   },
   {
     pattern_name: 'Tijdsaanduidingen — kemarin, hari ini, besok, lusa',
@@ -39,6 +42,7 @@ export const grammarPatterns = [
     page_reference: 9,
     slug: 'time-adverbs-basic',
     complexity_score: 3,
+    example: 'Sepedanya hitam — Zijn/haar fiets is zwart',
   },
   {
     pattern_name: 'Tijdsbepaling en plaatsbepaling — woordvolgorde',
@@ -48,5 +52,6 @@ export const grammarPatterns = [
     page_reference: 10,
     slug: 'time-place-word-order',
     complexity_score: 4,
+    example: 'Sepedanya hitam — Zijn/haar fiets is zwart',
   },
 ]

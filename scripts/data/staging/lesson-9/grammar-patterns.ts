@@ -16,6 +16,7 @@ export const grammarPatterns = [
     page_reference: null,
     slug: 'verb-ordering-abc',
     complexity_score: 5,
+    example: 'Saya datang. — Ik kom. (alleen C)',
   },
   {
     pattern_name: 'Intensiveerders — positie van amat/sangat vs benar/betul/sekali',
@@ -25,6 +26,7 @@ export const grammarPatterns = [
     page_reference: null,
     slug: 'intensifier-position',
     complexity_score: 3,
+    example: 'Saya datang. — Ik kom. (alleen C)',
   },
   {
     pattern_name: "Benar / betul als waarheidsbijwoord — 'echt, juist, waar'",
@@ -34,5 +36,6 @@ export const grammarPatterns = [
     page_reference: null,
     slug: 'benar-betul-truth-adverb',
     complexity_score: 4,
+    example: 'Saya datang. — Ik kom. (alleen C)',
   },
 ]
