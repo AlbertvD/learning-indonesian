@@ -1,5 +1,17 @@
 ---
-status: approved
+status: implementing
+implementation: branch fold/capability-stage (commits 97ceec8, 2140668, 957ba0c, b3b1ef1, 2d7f646, efd2fb6, 077f8bd, d078661, 5ce328e)
+implementation_paths:
+  - scripts/lib/content-pipeline-output.ts
+  - scripts/lib/pipeline/capability-stage/loader.ts
+  - scripts/lib/pipeline/capability-stage/runner.ts
+  - scripts/lib/pipeline/lesson-stage/enrichGrammarTopics.ts
+  - scripts/lib/pipeline/lesson-stage/runner.ts
+  - scripts/data/staging/lesson-*/grammar-patterns.ts
+  - .claude/agents/linguist-structurer.md
+follow_ups:
+  - CS7 count-parity query at scripts/lib/pipeline/capability-stage/verify/countParity.ts:43-49 filters source_ref='lesson-N' but only lesson_section content units have that key; widen the query.
+  - projectors/vocab.ts:109-113 review_status filter excludes 'published' items, so re-publishes never refresh learning_items rows in the DB.
 ---
 
 # Deterministic snapshot regeneration — remove approval state from pipeline
