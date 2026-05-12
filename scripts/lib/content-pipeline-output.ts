@@ -6,7 +6,6 @@ import type {
   CurrentAffixedFormPair,
   ProjectedCapability,
 } from '../../src/lib/capabilities/capabilityTypes'
-import type { SkillType } from '../../src/types/learning'
 
 export type PipelineSeverity = 'CRITICAL' | 'WARNING'
 
@@ -319,23 +318,149 @@ export function validateContentUnits(units: StagingContentUnit[]): PipelineFindi
   return findings
 }
 
-function skillTypeForCapability(capability: ProjectedCapability): SkillType {
-  return capability.skillType
+export interface ArtifactBuildContext {
+  learningItemsBySourceRef: Map<string, { base_text: string; translation_nl?: string }>
+  grammarPatternsBySourceRef: Map<string, { pattern_name: string; description?: string; example?: string }>
+  affixedFormPairsBySourceRef: Map<string, { root: string; derived: string; allomorphRule?: string }>
 }
 
-function draftArtifactAssets(capability: ProjectedCapability): StagingExerciseAsset[] {
-  return capability.requiredArtifacts.map(artifactKind => ({
+function requireLearningItem(
+  capability: ProjectedCapability,
+  ctx: ArtifactBuildContext,
+  artifactKind: string,
+): { base_text: string; translation_nl?: string } {
+  const item = ctx.learningItemsBySourceRef.get(capability.sourceRef)
+  if (!item) {
+    throw new Error(
+      `buildArtifactsForCapability: no learning_item found for sourceRef "${capability.sourceRef}" ` +
+      `(artifact_kind="${artifactKind}", capability="${capability.canonicalKey}")`,
+    )
+  }
+  return item
+}
+
+function requireGrammarPattern(
+  capability: ProjectedCapability,
+  ctx: ArtifactBuildContext,
+  artifactKind: string,
+): { pattern_name: string; description?: string; example?: string } {
+  const pattern = ctx.grammarPatternsBySourceRef.get(capability.sourceRef)
+  if (!pattern) {
+    throw new Error(
+      `buildArtifactsForCapability: no grammar_pattern found for sourceRef "${capability.sourceRef}" ` +
+      `(artifact_kind="${artifactKind}", capability="${capability.canonicalKey}")`,
+    )
+  }
+  return pattern
+}
+
+function requireAffixedFormPair(
+  capability: ProjectedCapability,
+  ctx: ArtifactBuildContext,
+  artifactKind: string,
+): { root: string; derived: string; allomorphRule?: string } {
+  const pair = ctx.affixedFormPairsBySourceRef.get(capability.sourceRef)
+  if (!pair) {
+    throw new Error(
+      `buildArtifactsForCapability: no affixed_form_pair found for sourceRef "${capability.sourceRef}" ` +
+      `(artifact_kind="${artifactKind}", capability="${capability.canonicalKey}")`,
+    )
+  }
+  return pair
+}
+
+function buildPayloadForKind(
+  kind: string,
+  capability: ProjectedCapability,
+  ctx: ArtifactBuildContext,
+): Record<string, unknown> {
+  switch (kind) {
+    case 'base_text': {
+      const item = requireLearningItem(capability, ctx, kind)
+      if (!item.base_text) {
+        throw new Error(
+          `buildArtifactsForCapability: learning_item "${capability.sourceRef}" has empty base_text`,
+        )
+      }
+      return { value: item.base_text }
+    }
+    case 'accepted_answers:id': {
+      const item = requireLearningItem(capability, ctx, kind)
+      if (!item.base_text) {
+        throw new Error(
+          `buildArtifactsForCapability: learning_item "${capability.sourceRef}" has empty base_text (needed for accepted_answers:id)`,
+        )
+      }
+      return { values: [item.base_text] }
+    }
+    case 'accepted_answers:l1': {
+      const item = requireLearningItem(capability, ctx, kind)
+      if (!item.translation_nl) {
+        throw new Error(
+          `buildArtifactsForCapability: learning_item "${capability.sourceRef}" has no translation_nl (needed for accepted_answers:l1)`,
+        )
+      }
+      return { values: [item.translation_nl] }
+    }
+    case 'meaning:l1': {
+      const item = requireLearningItem(capability, ctx, kind)
+      if (!item.translation_nl) {
+        throw new Error(
+          `buildArtifactsForCapability: learning_item "${capability.sourceRef}" has no translation_nl (needed for meaning:l1)`,
+        )
+      }
+      return { value: item.translation_nl }
+    }
+    case 'root_derived_pair': {
+      const pair = requireAffixedFormPair(capability, ctx, kind)
+      return { root: pair.root, derived: pair.derived }
+    }
+    case 'allomorph_rule': {
+      const pair = requireAffixedFormPair(capability, ctx, kind)
+      if (!pair.allomorphRule) {
+        throw new Error(
+          `buildArtifactsForCapability: affixed_form_pair "${capability.sourceRef}" has no allomorphRule (needed for allomorph_rule)`,
+        )
+      }
+      return { rule: pair.allomorphRule }
+    }
+    case 'pattern_explanation:l1': {
+      const pattern = requireGrammarPattern(capability, ctx, kind)
+      if (!pattern.description) {
+        throw new Error(
+          `buildArtifactsForCapability: grammar_pattern "${capability.sourceRef}" has no description (needed for pattern_explanation:l1)`,
+        )
+      }
+      return { value: pattern.description }
+    }
+    case 'pattern_example': {
+      const pattern = requireGrammarPattern(capability, ctx, kind)
+      if (!pattern.example) {
+        throw new Error(
+          `buildArtifactsForCapability: grammar_pattern "${capability.sourceRef}" has no example field (needed for pattern_example). ` +
+          `Add an "example" string (e.g. 'Rumah besar — Een groot huis') to scripts/data/staging/lesson-*/grammar-patterns.ts.`,
+        )
+      }
+      return { value: pattern.example }
+    }
+    default:
+      throw new Error(
+        `buildArtifactsForCapability: unknown or unsupported artifact_kind "${kind}" for capability "${capability.canonicalKey}". ` +
+        `Supported kinds: base_text, accepted_answers:id, accepted_answers:l1, meaning:l1, root_derived_pair, allomorph_rule, pattern_explanation:l1, pattern_example.`,
+      )
+  }
+}
+
+export function buildArtifactsForCapability(
+  capability: ProjectedCapability,
+  ctx: ArtifactBuildContext,
+): StagingExerciseAsset[] {
+  return capability.requiredArtifacts.map((artifactKind): StagingExerciseAsset => ({
     asset_key: `${capability.canonicalKey}:${artifactKind}`,
     capability_key: capability.canonicalKey,
     artifact_kind: artifactKind,
-    quality_status: 'draft',
-    payload_json: {
-      sourceRef: capability.sourceRef,
-      capabilityType: capability.capabilityType,
-      skillType: skillTypeForCapability(capability),
-      placeholder: true,
-      reason: 'Generated scaffold only; a reviewed typed artifact must approve this.',
-    },
+    quality_status: 'approved',
+    payload_json: buildPayloadForKind(artifactKind, capability, ctx),
   }))
 }
 
@@ -413,9 +538,38 @@ export function buildCapabilityStagingFromContent(input: StagingLessonInput & {
     }
   })
 
+  // Build the per-kind artifact context from the (deduped) staging input, keyed
+  // on the same sourceRef helpers that drive content-unit emission. Capabilities
+  // look up their source row by sourceRef, then materialize the concrete
+  // payload for each required artifact kind.
+  const artifactCtx: ArtifactBuildContext = {
+    learningItemsBySourceRef: new Map(
+      learningItems.map(item => [
+        sourceRefForLearningItem(item.base_text),
+        { base_text: item.base_text, translation_nl: item.translation_nl },
+      ]),
+    ),
+    grammarPatternsBySourceRef: new Map(
+      input.grammarPatterns.map(pattern => [
+        grammarSourceRef(input.lessonNumber, pattern.slug),
+        {
+          pattern_name: pattern.pattern_name,
+          description: pattern.description,
+          example: pattern.example,
+        },
+      ]),
+    ),
+    affixedFormPairsBySourceRef: new Map(
+      (input.affixedFormPairs ?? []).map(pair => [
+        affixedFormPairSourceRef(input.lessonNumber, pair),
+        { root: pair.root, derived: pair.derived, allomorphRule: pair.allomorphRule },
+      ]),
+    ),
+  }
+
   return {
     capabilities,
-    exerciseAssets: capabilities.flatMap(draftArtifactAssets),
+    exerciseAssets: capabilities.flatMap(cap => buildArtifactsForCapability(cap, artifactCtx)),
   }
 }
 

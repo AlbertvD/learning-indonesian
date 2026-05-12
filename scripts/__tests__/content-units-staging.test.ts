@@ -35,6 +35,7 @@ const lessonInput: StagingLessonInput = {
     pattern_name: 'Word order',
     description: 'Adjectives follow nouns.',
     complexity_score: 2,
+    example: 'Rumah besar -- Een groot huis',
   }],
 }
 

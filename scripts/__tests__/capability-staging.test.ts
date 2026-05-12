@@ -54,14 +54,34 @@ describe('capability staging', () => {
         difficultyLevel: 3,
       }),
     ]))
+    // The pipeline emits deterministic, approved artifacts directly -- no more
+    // placeholder drafts. Each artifact_kind embeds the value sourced from
+    // learningItems / grammarPatterns / affixedFormPairs.
     expect(plan.exerciseAssets).toEqual(expect.arrayContaining([
       expect.objectContaining({
-        quality_status: 'draft',
-        payload_json: expect.objectContaining({
-          placeholder: true,
-        }),
+        artifact_kind: 'base_text',
+        quality_status: 'approved',
+        payload_json: { value: 'makan' },
+      }),
+      expect.objectContaining({
+        artifact_kind: 'meaning:l1',
+        quality_status: 'approved',
+        payload_json: { value: 'eten' },
+      }),
+      expect.objectContaining({
+        artifact_kind: 'accepted_answers:l1',
+        quality_status: 'approved',
+        payload_json: { values: ['eten'] },
+      }),
+      expect.objectContaining({
+        artifact_kind: 'accepted_answers:id',
+        quality_status: 'approved',
+        payload_json: { values: ['makan'] },
       }),
     ]))
+    // No remnants of the old placeholder scaffold.
+    expect(plan.exerciseAssets.every(asset => (asset.payload_json as Record<string, unknown>)?.placeholder !== true)).toBe(true)
+    expect(plan.exerciseAssets.every(asset => asset.quality_status === 'approved')).toBe(true)
   })
 
   it('validates capability links to generated content units', () => {
@@ -80,20 +100,26 @@ describe('capability staging', () => {
     ]))
   })
 
-  it('keeps generated draft placeholders valid but rejects approved placeholder assets', () => {
+  it('produces approved assets that pass validation and rejects forged placeholder approvals', () => {
     const contentUnits = buildContentUnitsFromStaging(input)
     const plan = buildCapabilityStagingFromContent({ ...input, contentUnits })
 
+    // Natural output is all-approved and passes the validator.
     expect(validateExerciseAssets({
       exerciseAssets: plan.exerciseAssets,
       capabilities: plan.capabilities,
     })).toEqual([])
 
+    // The validator still rejects a hand-crafted approved-but-placeholder asset
+    // (e.g. if a future code path regresses to scaffold payloads).
+    const targetAsset = plan.exerciseAssets[0]!
+    const forgedPlaceholder = {
+      ...targetAsset,
+      quality_status: 'approved' as const,
+      payload_json: { placeholder: true },
+    }
     const findings = validateExerciseAssets({
-      exerciseAssets: [{
-        ...plan.exerciseAssets[0]!,
-        quality_status: 'approved',
-      }],
+      exerciseAssets: [forgedPlaceholder],
       capabilities: plan.capabilities,
     })
 
