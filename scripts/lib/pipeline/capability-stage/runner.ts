@@ -227,7 +227,6 @@ export async function runCapabilityStage(
     lessonNumber: input.lessonNumber,
     lesson: {
       title: loaded.lesson.title,
-      description: '',
       level: loaded.lesson.level,
       module_id: loaded.lesson.module_id,
       order_index: loaded.lesson.order_index,
@@ -253,10 +252,12 @@ export async function runCapabilityStage(
   })
 
   // Replace the stale staging snapshots with fresh ones for the rest of the runner.
-  staging.contentUnits = regeneratedContentUnits as never
-  staging.capabilities = regeneratedCapabilityPlan.capabilities as never
-  staging.exerciseAssets = regeneratedCapabilityPlan.exerciseAssets as never
-  staging.lessonPageBlocks = regeneratedPageBlocks as never
+  // `as unknown as ...` widens the strict builder output to the loader's loose
+  // `Record<string, unknown>[]` shape — narrower-than-the-field; safe.
+  staging.contentUnits = regeneratedContentUnits as unknown as Array<Record<string, unknown>>
+  staging.capabilities = regeneratedCapabilityPlan.capabilities as unknown as Array<Record<string, unknown>>
+  staging.exerciseAssets = regeneratedCapabilityPlan.exerciseAssets as unknown as Array<Record<string, unknown>>
+  staging.lessonPageBlocks = regeneratedPageBlocks as unknown as Array<Record<string, unknown>>
 
   // Write back to disk so subsequent runs see the same state and the linguist
   // reviewer can inspect what was published. Skipped during --dry-run because
