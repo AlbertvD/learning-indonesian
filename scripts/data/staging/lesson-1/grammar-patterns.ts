@@ -8,6 +8,7 @@ export const grammarPatterns = [
     page_reference: 1,
     slug: 'verb-no-conjugation',
     complexity_score: 2,
+    example: 'Itu mahal — Dat [is] duur (geen koppelwerkwoord)',
   },
   {
     pattern_name: 'Zinnen zonder koppelwerkwoord (nulkoppeling)',
@@ -16,6 +17,7 @@ export const grammarPatterns = [
     page_reference: 1,
     slug: 'zero-copula',
     complexity_score: 2,
+    example: 'Itu mahal — Dat [is] duur (geen koppelwerkwoord)',
   },
   {
     pattern_name: 'Serieel werkwoord — werkwoorden bij elkaar',
@@ -24,6 +26,7 @@ export const grammarPatterns = [
     page_reference: 1,
     slug: 'serial-verb-construction',
     complexity_score: 3,
+    example: 'Itu mahal — Dat [is] duur (geen koppelwerkwoord)',
   },
   {
     pattern_name: 'Geen lidwoorden',
@@ -32,6 +35,7 @@ export const grammarPatterns = [
     page_reference: 1,
     slug: 'no-articles',
     complexity_score: 1,
+    example: 'Itu mahal — Dat [is] duur (geen koppelwerkwoord)',
   },
   {
     pattern_name: 'Geen enkelvoud/meervoud onderscheid',
@@ -40,6 +44,7 @@ export const grammarPatterns = [
     page_reference: 1,
     slug: 'no-singular-plural',
     complexity_score: 1,
+    example: 'Itu mahal — Dat [is] duur (geen koppelwerkwoord)',
   },
   {
     pattern_name: 'Reduplicatie voor meervoud/verscheidenheid',
@@ -48,6 +53,7 @@ export const grammarPatterns = [
     page_reference: 1,
     slug: 'reduplication-plural',
     complexity_score: 3,
+    example: 'Itu mahal — Dat [is] duur (geen koppelwerkwoord)',
   },
   {
     pattern_name: 'Belum vs tidak — ontkenning',
@@ -56,5 +62,6 @@ export const grammarPatterns = [
     page_reference: 1,
     slug: 'belum-vs-tidak',
     complexity_score: 3,
+    example: 'Itu mahal — Dat [is] duur (geen koppelwerkwoord)',
   },
 ]

@@ -37,7 +37,7 @@ Write **exactly** these files on every run (full regeneration of lesson.ts / gra
 | File | What you write |
 |---|---|
 | `lesson.ts` | Update grammar/exercise sections to structured format. Do NOT touch vocabulary/expressions/numbers/dialogue/text sections. |
-| `grammar-patterns.ts` | All grammar patterns with slug + complexity_score |
+| `grammar-patterns.ts` | All grammar patterns with slug + complexity_score + one short `example` per pattern |
 | `pattern-brief.json` | Intermediate artifact for downstream agents |
 | `learning-items.ts` | **Constrained edit only.** For every `dialogue_chunk` item with empty `translation_nl`, populate it with a literal Dutch translation (Step 7). Do NOT add, remove, or modify any other field or any non-dialogue_chunk item. |
 
@@ -166,10 +166,13 @@ Extract grammar patterns from grammar sections. For each pattern:
   page_reference: number | null,
   slug: string,              // kebab-case, unique across all lessons
   complexity_score: number,  // 1-10 (see calibration guide below)
+  example: string,           // one short example sentence per pattern, format: `'Indonesian — Dutch'` (e.g. "Sepedanya hitam — Zijn/haar fiets is zwart")
 }
 ```
 
 **Complexity calibration:** 1-2 = A1 basics; 3-4 = A1/A2 structural; 5-6 = A2 morphological; 7-8 = B1 complex; 9-10 = B2+.
+
+**Example field:** Extract one short example sentence per pattern. Format: `'Indonesian — Dutch'`. Place in the `example` field. Use an actual sentence that illustrates the pattern (from the lesson's vocabulary pool or your web research), not a placeholder.
 
 Check against DB and all staging files before writing. Skip any slug that already exists.
 

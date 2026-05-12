@@ -45,6 +45,7 @@ export interface StagingLessonInput {
     description?: string
     complexity_score?: number
     confusion_group?: string | null
+    example?: string // e.g. "Sepedanya hitam — Zijn/haar fiets is zwart"
   }>
   affixedFormPairs?: CurrentAffixedFormPair[]
 }

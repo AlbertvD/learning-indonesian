@@ -11,6 +11,7 @@ export const grammarPatterns = [
     page_reference: 4,
     slug: 'bukan-negation',
     complexity_score: 3,
+    example: 'tiga puluh lima detik — 35 seconden',
   },
   {
     pattern_name: "Bukan / 'kan -- tag question (nietwaar?)",
@@ -20,6 +21,7 @@ export const grammarPatterns = [
     page_reference: 4,
     slug: 'bukan-tag-question',
     complexity_score: 2,
+    example: 'tiga puluh lima detik — 35 seconden',
   },
   {
     pattern_name: 'Jangan -- verbod (negatieve gebiedende wijs)',
@@ -29,6 +31,7 @@ export const grammarPatterns = [
     page_reference: 5,
     slug: 'jangan-prohibition',
     complexity_score: 2,
+    example: 'Jangan! — Doe het niet!',
   },
   {
     pattern_name: 'Gebiedende wijs met -lah (beleefde imperatief)',
@@ -38,6 +41,7 @@ export const grammarPatterns = [
     page_reference: 5,
     slug: 'imperative-lah-suffix',
     complexity_score: 3,
+    example: 'tiga puluh lima detik — 35 seconden',
   },
   {
     pattern_name: '-kah -- vraagachtervoegsel voor nadruk',
@@ -47,6 +51,7 @@ export const grammarPatterns = [
     page_reference: 6,
     slug: 'kah-question-suffix',
     complexity_score: 2,
+    example: 'Adakah pisang? — Zijn er bananen?',
   },
   {
     pattern_name: 'Dagdelen -- malam, pagi, siang, sore',
@@ -56,6 +61,7 @@ export const grammarPatterns = [
     page_reference: 6,
     slug: 'indonesian-day-parts',
     complexity_score: 4,
+    example: 'tiga puluh lima detik — 35 seconden',
   },
   {
     pattern_name: 'Kloktijd -- jam, pukul, lewat, kurang',
@@ -65,5 +71,6 @@ export const grammarPatterns = [
     page_reference: 7,
     slug: 'clock-time-telling',
     complexity_score: 5,
+    example: 'tiga puluh lima detik — 35 seconden',
   },
 ]

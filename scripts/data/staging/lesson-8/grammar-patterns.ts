@@ -13,6 +13,7 @@ export const grammarPatterns = [
     page_reference: 4,
     slug: 'interjections-discourse-particles',
     complexity_score: 3,
+    example: 'Mahal dong! — Het is duur, hoor!',
   },
   {
     pattern_name: 'Vergrotende trap — lebih ... (daripada)',
@@ -22,6 +23,7 @@ export const grammarPatterns = [
     page_reference: 4,
     slug: 'lebih-comparative',
     complexity_score: 3,
+    example: 'Mahal dong! — Het is duur, hoor!',
   },
   {
     pattern_name: 'Overtreffende trap — paling / ter-',
@@ -31,6 +33,7 @@ export const grammarPatterns = [
     page_reference: 5,
     slug: 'paling-ter-superlative',
     complexity_score: 4,
+    example: 'Mahal dong! — Het is duur, hoor!',
   },
   {
     pattern_name: 'Gelijkheid — se- en sama ... dengan',
@@ -40,6 +43,7 @@ export const grammarPatterns = [
     page_reference: 5,
     slug: 'se-sama-equality-comparison',
     complexity_score: 4,
+    example: 'Mahal dong! — Het is duur, hoor!',
   },
   {
     pattern_name: 'Ongelijkheid verkleinend — kurang / tidak begitu',
@@ -49,5 +53,6 @@ export const grammarPatterns = [
     page_reference: 6,
     slug: 'kurang-diminutive-comparison',
     complexity_score: 4,
+    example: 'Mahal dong! — Het is duur, hoor!',
   },
 ]
