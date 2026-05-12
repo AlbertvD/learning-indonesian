@@ -15,7 +15,7 @@ const baseCapability: ProjectedCapability = {
   prerequisiteKeys: [],
   difficultyLevel: 2,
   goalTags: [],
-  projectionVersion: 'capability-v1',
+  projectionVersion: 'capability-v2',
   sourceFingerprint: 'source',
   artifactFingerprint: 'artifact',
 }
@@ -134,7 +134,7 @@ describe('capability contract validation', () => {
   it('counts blocked and unknown findings as critical in health reports', () => {
     const report = validateCapabilities({
       projection: {
-        projectionVersion: 'capability-v1',
+        projectionVersion: 'capability-v2',
         capabilities: [baseCapability],
         aliases: [],
         diagnostics: [],

@@ -1,4 +1,5 @@
 import { projectCapabilities } from '../../src/lib/capabilities/capabilityCatalog'
+import { projectPodcastCapabilities } from './pipeline/podcast-stage/podcastProjectionRules'
 import { ARTIFACT_KINDS } from '../../src/lib/capabilities/artifactRegistry'
 import type {
   ArtifactKind,
@@ -357,7 +358,7 @@ export function buildCapabilityStagingFromContent(input: StagingLessonInput & {
       .map(unit => [unit.source_ref, unit]),
   )
 
-  const projection = projectCapabilities({
+  const snapshot = {
     learningItems: learningItems.map(item => ({
       id: stableSlug(item.base_text),
       baseText: item.base_text,
@@ -385,7 +386,15 @@ export function buildCapabilityStagingFromContent(input: StagingLessonInput & {
       allomorphRule: pair.allomorphRule,
       patternSourceRef: affixedFormPairSourceRef(input.lessonNumber, pair),
     })),
-  })
+  }
+  const sharedProjection = projectCapabilities(snapshot)
+  // Decision 4: concatenate shared catalog + podcast rules. Staging-driven
+  // call sites never carry podcast snapshots, so projectPodcastCapabilities
+  // returns [] in this path; the wiring exists for symmetry with other callers.
+  const projection = {
+    ...sharedProjection,
+    capabilities: [...sharedProjection.capabilities, ...projectPodcastCapabilities(snapshot)],
+  }
 
   function relationshipKindForCapability(capability: ProjectedCapability): StagingCapability['relationshipKind'] {
     if (capability.capabilityType === 'l1_to_id_choice') return 'introduced_by'

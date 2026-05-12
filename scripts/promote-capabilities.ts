@@ -232,7 +232,7 @@ export function buildPromotionArtifactIndex(input: {
   return index
 }
 
-async function loadPromotionPlan(args: PromoteCapabilitiesArgs): Promise<CapabilityPromotionPlan> {
+export async function loadPromotionPlan(args: PromoteCapabilitiesArgs): Promise<CapabilityPromotionPlan> {
   const supabase = createServiceClient()
   const db = () => supabase.schema('indonesian')
 
@@ -313,7 +313,7 @@ async function loadPromotionPlan(args: PromoteCapabilitiesArgs): Promise<Capabil
   })
 }
 
-async function applyPromotionPlan(plan: CapabilityPromotionPlan): Promise<void> {
+export async function applyPromotionPlan(plan: CapabilityPromotionPlan): Promise<void> {
   const supabase = createServiceClient()
   const db = () => supabase.schema('indonesian')
   for (const promotion of plan.promotions) {

@@ -111,7 +111,7 @@ Example:
 
 // ── Claude calls ──────────────────────────────────────────────────────────────
 
-async function structureGrammarSection(
+export async function structureGrammarSection(
   client: Anthropic,
   sectionTitle: string,
   rawBody: string,
@@ -152,7 +152,7 @@ async function structureGrammarSection(
   return { type: 'grammar', categories }
 }
 
-async function structureExercisesSection(
+export async function structureExercisesSection(
   client: Anthropic,
   sectionTitle: string,
   rawBody: string,

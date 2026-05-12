@@ -49,7 +49,7 @@ describe('capability catalog projection', () => {
     expect(projection.capabilities.map(capability => capability.capabilityType)).toEqual(
       expect.arrayContaining(['text_recognition', 'meaning_recall', 'l1_to_id_choice', 'form_recall', 'audio_recognition', 'dictation']),
     )
-    expect(projection.capabilities.every(capability => capability.projectionVersion === 'capability-v1')).toBe(true)
+    expect(projection.capabilities.every(capability => capability.projectionVersion === 'capability-v2')).toBe(true)
   })
 
   it('requires learner-language meaning for text recognition and accepted answers for dictation', () => {
@@ -97,14 +97,34 @@ describe('capability catalog projection', () => {
     expect(projectCapabilities(snapshot)).toEqual(projectCapabilities(snapshot))
   })
 
-  it('projects non-vocabulary source kinds', () => {
+  it('projects non-vocabulary source kinds (post Decision 4 + 5b)', () => {
+    // Decision 4: podcast_segment + podcast_phrase moved to
+    // scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts.
+    // Decision 5b: dialogue_line contextual_cloze moved to
+    // capability-stage/projectors/vocab.ts (driven by clozeContexts).
+    // The shared catalog now emits only `pattern` (grammar) and
+    // `affixed_form_pair` (morphology) source kinds in addition to `item`.
     const sourceKinds = projectCapabilities(snapshot).capabilities.map(capability => capability.sourceKind)
 
     expect(sourceKinds).toEqual(expect.arrayContaining([
-      'dialogue_line',
-      'podcast_segment',
-      'podcast_phrase',
+      'item',
+      'pattern',
       'affixed_form_pair',
     ]))
+    expect(sourceKinds).not.toContain('dialogue_line')
+    expect(sourceKinds).not.toContain('podcast_segment')
+    expect(sourceKinds).not.toContain('podcast_phrase')
+  })
+
+  it('Decision 5a: pattern_recognition has a sibling pattern_contrast capability', () => {
+    const projection = projectCapabilities(snapshot)
+    const recognition = projection.capabilities.find(c => c.capabilityType === 'pattern_recognition')
+    const contrast = projection.capabilities.find(c => c.capabilityType === 'pattern_contrast')
+
+    expect(recognition).toBeDefined()
+    expect(contrast).toBeDefined()
+    expect(contrast?.sourceRef).toBe(recognition?.sourceRef)
+    expect(contrast?.prerequisiteKeys).toEqual([recognition?.canonicalKey])
+    expect(contrast?.difficultyLevel).toBeGreaterThan(recognition?.difficultyLevel ?? 0)
   })
 })

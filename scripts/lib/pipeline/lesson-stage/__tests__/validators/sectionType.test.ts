@@ -33,7 +33,7 @@ describe('validateSectionType (GT5) — type discriminator', () => {
       { id: 'g', content: { type: 'dialogue', lines: [{ text: 'halo', speaker: 'A' }] } },
       { id: 'h', content: { type: 'pronunciation', letters: [{ letter: 'c', rule: 'ts', examples: ['cara'] }] } },
       { id: 'i', content: { type: 'culture', paragraphs: ['halo'] } },
-      { id: 'j', content: { type: 'exercises', exercises: [{ title: 'q1', type: 'mcq' }] } },
+      { id: 'j', content: { type: 'exercises', sections: [{ title: 'q1', type: 'grammar_drill', items: [{ prompt: 'p', answer: 'a' }] }] } },
     ])
     expect(findings).toEqual([])
   })

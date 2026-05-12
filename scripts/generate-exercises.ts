@@ -120,12 +120,12 @@ Schema per exercise object:
 
 // ── Generate exercises for a single pattern ───────────────────────────────────
 
-interface GeneratedExercise {
+export interface GeneratedExercise {
   exercise_type: ExerciseType
   payload: Record<string, unknown>
 }
 
-async function generateForPattern(
+export async function generateForPattern(
   client: Anthropic,
   pattern: GrammarPattern,
   exerciseTypes: ExerciseType[],

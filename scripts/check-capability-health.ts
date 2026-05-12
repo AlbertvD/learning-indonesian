@@ -3,6 +3,7 @@ import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
 import { projectCapabilities } from '../src/lib/capabilities/capabilityCatalog'
+import { projectPodcastCapabilities } from './lib/pipeline/podcast-stage/podcastProjectionRules'
 import {
   validateCapabilities,
   validateCapability,
@@ -437,8 +438,11 @@ export async function loadStagedContentSnapshot(stagingPath: string): Promise<{
 
 export async function buildCapabilityHealthReport(stagingPath: string): Promise<CapabilityHealthReport> {
   const { snapshot, artifacts } = await loadStagedContentSnapshot(stagingPath)
+  // Decision 4: concatenate shared catalog + podcast rules.
+  const projection = projectCapabilities(snapshot)
+  const allCapabilities = [...projection.capabilities, ...projectPodcastCapabilities(snapshot)]
   return validateCapabilities({
-    projection: projectCapabilities(snapshot),
+    projection: { ...projection, capabilities: allCapabilities },
     artifacts,
   })
 }

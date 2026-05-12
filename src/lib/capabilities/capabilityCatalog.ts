@@ -133,7 +133,7 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
 
   for (const pattern of input.grammarPatterns) {
     const sourceRef = normalizeLessonSourceRef(pattern.sourceRef)
-    capabilities.push(createCapability({
+    const recognitionCapability = createCapability({
       sourceKind: 'pattern',
       sourceRef,
       capabilityType: 'pattern_recognition',
@@ -143,53 +143,36 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       learnerLanguage: 'none',
       requiredArtifacts: ['pattern_explanation:l1', 'pattern_example'],
       difficultyLevel: 4,
-    }))
-  }
-
-  for (const line of input.dialogueLines ?? []) {
-    const sourceRef = normalizeLessonSourceRef(line.sourceRef)
+    })
+    capabilities.push(recognitionCapability)
+    // Decision 5a — every pattern_recognition capability has a sibling
+    // pattern_contrast capability. Mirrors the recognition rule's source_ref
+    // so the runtime can render contrast exercises against the same examples.
     capabilities.push(createCapability({
-      sourceKind: 'dialogue_line',
+      sourceKind: 'pattern',
       sourceRef,
-      capabilityType: 'contextual_cloze',
-      skillType: 'form_recall',
-      direction: 'id_to_l1',
+      capabilityType: 'pattern_contrast',
+      skillType: 'recognition',
+      direction: 'none',
       modality: 'text',
       learnerLanguage: 'none',
-      requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
-      difficultyLevel: 3,
+      requiredArtifacts: ['pattern_explanation:l1', 'pattern_example'],
+      prerequisiteKeys: [recognitionCapability.canonicalKey],
+      difficultyLevel: 5,
     }))
   }
 
-  for (const segment of input.podcastSegments ?? []) {
-    capabilities.push(createCapability({
-      sourceKind: 'podcast_segment',
-      sourceRef: segment.sourceRef,
-      capabilityType: 'podcast_gist',
-      skillType: 'recognition',
-      direction: 'audio_to_l1',
-      modality: 'audio',
-      learnerLanguage: 'none',
-      requiredArtifacts: ['audio_segment', 'transcript_segment', 'podcast_gist_prompt'],
-      difficultyLevel: 2,
-      goalTags: ['podcast', 'guided_transcript'],
-    }))
-  }
-
-  for (const phrase of input.podcastPhrases ?? []) {
-    capabilities.push(createCapability({
-      sourceKind: 'podcast_phrase',
-      sourceRef: phrase.sourceRef,
-      capabilityType: 'meaning_recall',
-      skillType: 'meaning_recall',
-      direction: 'id_to_l1',
-      modality: 'mixed',
-      learnerLanguage: 'none',
-      requiredArtifacts: ['timecoded_phrase', 'translation:l1'],
-      difficultyLevel: 3,
-      goalTags: ['podcast', 'podcast_phrase'],
-    }))
-  }
+  // Decision 5b — `contextual_cloze` capability emission moved out of the
+  // shared catalog. The capability-stage's projectors/vocab.ts now emits
+  // these rows directly, driven by clozeContexts produced by the
+  // cloze-creator authoring agent (a cloze context keyed on a dialogue
+  // line's slug becomes one contextual_cloze capability rooted at that
+  // line's source_ref). Removed reads of `input.dialogueLines` here.
+  //
+  // Decision 4 — podcast capability emission moved to
+  // `scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts`. The four
+  // callers of projectCapabilities concatenate the podcast rule's output
+  // with the array returned by this function.
 
   for (const pair of input.affixedFormPairs ?? []) {
     const requiredArtifacts: ArtifactKind[] = pair.allomorphRule

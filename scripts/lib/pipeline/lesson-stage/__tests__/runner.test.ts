@@ -210,19 +210,65 @@ describe('runLessonStage — synthetic fixture', () => {
 
   it('validation errors short-circuit before any DB calls', async () => {
     const staging = buildSyntheticStaging()
-    // Break a grammar section's grammar_topics to trigger GT1 error.
-    staging.lesson.sections[2].content.grammar_topics = []
+    // Break a section's type to trigger GT5 (sectionType) error.
+    staging.lesson.sections[0].content.type = 'unknown_type_xyz'
     const { client, recorder } = buildSupabaseMock({})
     const result = await runLessonStage(
       { lessonNumber: 99 },
       { loadStaging: async () => staging, createSupabaseClient: () => client },
     )
     expect(result.status).toBe('validation_failed')
-    expect(result.findings.some((f) => f.gate === 'GT1' && f.severity === 'error')).toBe(true)
+    expect(result.findings.some((f) => f.gate === 'GT5' && f.severity === 'error')).toBe(true)
     // No DB calls because errors short-circuited.
     expect(recorder.inserts).toEqual([])
     expect(recorder.upserts).toEqual([])
     expect(recorder.rpcCalls).toEqual([])
+  })
+
+  it('GT1 short-circuits when grammar_topics is empty and the enricher does not fill it', async () => {
+    const staging = buildSyntheticStaging()
+    // Force a state where the grammar section's topics are empty AND the
+    // enricher is stubbed to be a no-op (e.g. an LLM/network failure).
+    staging.lesson.sections[2].content.grammar_topics = []
+    const { client, recorder } = buildSupabaseMock({})
+    const result = await runLessonStage(
+      { lessonNumber: 99 },
+      {
+        loadStaging: async () => staging,
+        createSupabaseClient: () => client,
+        enrichGrammarTopics: async () => ({ filledSectionCount: 0, labels: [], source: 'none' }),
+      },
+    )
+    expect(result.status).toBe('validation_failed')
+    expect(result.findings.some((f) => f.gate === 'GT1' && f.severity === 'error')).toBe(true)
+    expect(recorder.inserts).toEqual([])
+    expect(recorder.upserts).toEqual([])
+  })
+
+  it('enricher fills empty grammar_topics before GT1 runs; lesson publishes ok', async () => {
+    const staging = buildSyntheticStaging()
+    staging.lesson.sections[2].content.grammar_topics = []
+    const { client } = buildSupabaseMock({})
+    const result = await runLessonStage(
+      { lessonNumber: 99 },
+      {
+        loadStaging: async () => staging,
+        createSupabaseClient: () => client,
+        synthesizer: async () => Buffer.from('audio-bytes'),
+        // Enricher mutates the section in place and reports success — same
+        // contract as the real enricher when LLM returns labels.
+        enrichGrammarTopics: async (sections) => {
+          for (const s of sections) {
+            if (s.content?.type === 'grammar' || s.content?.type === 'reference_table') {
+              s.content.grammar_topics = ['Synthetic theme']
+            }
+          }
+          return { filledSectionCount: 1, labels: ['Synthetic theme'], source: 'llm' }
+        },
+      },
+    )
+    expect(result.status).toBe('ok')
+    expect(result.findings.some((f) => f.gate === 'GT1')).toBe(false)
   })
 
   it('dryRun skips DB + audio calls but still returns counts based on staging', async () => {

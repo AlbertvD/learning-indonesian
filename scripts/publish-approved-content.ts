@@ -2,9 +2,9 @@
 /**
  * publish-approved-content.ts
  *
- * Thin CLI wrapper around runLessonStage (Stage A — lessons module) +
- * publishLegacyStageB (Stage B — capability-stage-legacy.ts). After Phase 2,
- * Stage B moves to its own deep module and the legacy fallthrough retires.
+ * Thin CLI wrapper around runLessonStage (Stage A) + runCapabilityStage
+ * (Stage B). The legacy `publishLegacyStageB` shim retired with the Phase 2
+ * fold; Stage B is now `scripts/lib/pipeline/capability-stage/`.
  *
  * Usage:
  *   bun scripts/publish-approved-content.ts <lesson-number> [--dry-run] [--skip-lint]
@@ -16,16 +16,11 @@ import { pathToFileURL } from 'node:url'
 
 import { runLessonStage } from './lib/pipeline/lesson-stage'
 import {
+  runCapabilityStage,
   buildLintStagingCommand,
-  publishCapabilityPipelineOutput,
-  publishLegacyStageB,
-} from './lib/pipeline/capability-stage-legacy'
+} from './lib/pipeline/capability-stage'
 
-// Re-export Stage B helpers so existing tests that import from this module
-// keep working through the Phase 1 transition. Phase 2 moves the legacy
-// module's exports into the proper capability-stage/ deep module and the
-// re-exports retire.
-export { publishCapabilityPipelineOutput, buildLintStagingCommand }
+export { buildLintStagingCommand }
 
 // Homelab uses an internal Step-CA certificate that Node/Bun does not trust by default.
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
@@ -63,14 +58,20 @@ async function main() {
     process.exit(1)
   }
 
-  // Stage B — grammar patterns + learning items + meanings + contexts +
-  // exercise variants + cloze contexts. Retires when Phase 2's
-  // capability-stage/ module replaces it.
-  await publishLegacyStageB({
+  // Stage B — capability-stage (Phase 2 deep module).
+  // Stage A returns lesson.id = '' on validation failure (lesson-stage
+  // runner.ts:134). We already short-circuit above on stageA.status !== 'ok',
+  // so a non-empty lessonId is guaranteed here.
+  const stageB = await runCapabilityStage({
     lessonNumber,
     lessonId: stageA.lesson.id,
     dryRun,
   })
+  console.log(JSON.stringify(stageB, null, 2))
+  if (stageB.status !== 'ok') {
+    console.error(`\nStage B did not complete cleanly for lesson ${lessonNumber} (status=${stageB.status}).`)
+    process.exit(1)
+  }
 }
 
 function isMainModule(): boolean {

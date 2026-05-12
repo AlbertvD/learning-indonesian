@@ -6,8 +6,10 @@
  * 2. Dangerous system commands
  * 3. Destructive git operations
  * 4. Portainer API redeployments (wipes UI-managed env vars)
+ * 5. Edit/Write/MultiEdit without a prior Read of the same file
  */
 
+import { readFile, realpath, stat } from "node:fs/promises";
 import { appendLog, blockWithError, readStdinJson, rotateIfNeeded } from "./hook-utils";
 
 export interface CheckResult {
@@ -117,6 +119,85 @@ export function checkDangerousCommand(command: string): CheckResult {
 	return ALLOWED;
 }
 
+async function resolveTargetPath(filePath: string): Promise<string> {
+	try {
+		return await realpath(filePath);
+	} catch {
+		return filePath;
+	}
+}
+
+/**
+ * Blocks Edit / MultiEdit / Write when the target file was not Read or Written earlier
+ * in this session's transcript. Mirrors and reinforces the native Edit/Write Read-first
+ * check — useful when the native enforcement is bypassed by tool-input rewriting or
+ * when defending against a foggy memory of "yes, I read this."
+ *
+ * Fail-open semantics: if the transcript can't be parsed, allow the operation.
+ */
+export async function checkReadBeforeEdit(
+	toolName: string,
+	toolInput: Record<string, unknown>,
+	transcriptPath: string,
+): Promise<CheckResult> {
+	if (toolName !== "Edit" && toolName !== "MultiEdit" && toolName !== "Write") {
+		return ALLOWED;
+	}
+
+	const filePath = typeof toolInput.file_path === "string" ? toolInput.file_path : "";
+	if (!filePath || !transcriptPath) return ALLOWED;
+
+	// Write to a brand-new (non-existent) path: nothing to have read.
+	if (toolName === "Write") {
+		try {
+			await stat(filePath);
+		} catch {
+			return ALLOWED;
+		}
+	}
+
+	const target = await resolveTargetPath(filePath);
+
+	let transcript: string;
+	try {
+		transcript = await readFile(transcriptPath, "utf8");
+	} catch {
+		return ALLOWED;
+	}
+
+	for (const line of transcript.split("\n")) {
+		if (!line.trim()) continue;
+		let entry: { message?: { role?: string; content?: unknown } };
+		try {
+			entry = JSON.parse(line);
+		} catch {
+			continue;
+		}
+		const message = entry?.message;
+		if (!message || message.role !== "assistant") continue;
+		const blocks = message.content;
+		if (!Array.isArray(blocks)) continue;
+		for (const block of blocks) {
+			if (!block || typeof block !== "object") continue;
+			const b = block as { type?: string; name?: string; input?: { file_path?: unknown } };
+			if (b.type !== "tool_use") continue;
+			if (b.name !== "Read" && b.name !== "Write") continue;
+			const candidate = b.input?.file_path;
+			if (typeof candidate !== "string") continue;
+			const resolved = await resolveTargetPath(candidate);
+			if (resolved === target) return ALLOWED;
+		}
+	}
+
+	return {
+		blocked: true,
+		message:
+			`${toolName} of ${filePath} blocked — no prior Read of this file in the session transcript. ` +
+			"Use the Read tool first to inspect the current contents before modifying. " +
+			"This guard reinforces the native Edit/Write read-first check.",
+	};
+}
+
 export function checkInfraRedeploy(command: string): CheckResult {
 	if (command.includes("api/stacks") && command.includes("redeploy")) {
 		return {
@@ -139,6 +220,7 @@ async function main(): Promise<void> {
 			? (inputData.tool_input as Record<string, unknown>)
 			: {};
 	const sessionId = typeof inputData.session_id === "string" ? inputData.session_id : "unknown";
+	const transcriptPath = typeof inputData.transcript_path === "string" ? inputData.transcript_path : "";
 	const toolInputStr = JSON.stringify(toolInput);
 
 	const event: Record<string, unknown> = {
@@ -171,6 +253,9 @@ async function main(): Promise<void> {
 	// IP check applies to all tools (Edit, Write, Bash)
 	const ipResult = checkHardcodedIp(toolInputStr, toolInput);
 	if (ipResult.blocked) block(ipResult.message);
+
+	const readBeforeEditResult = await checkReadBeforeEdit(toolName, toolInput, transcriptPath);
+	if (readBeforeEditResult.blocked) block(readBeforeEditResult.message);
 
 	await appendLog(LOG_FILE, event);
 	await rotateIfNeeded(LOG_FILE);

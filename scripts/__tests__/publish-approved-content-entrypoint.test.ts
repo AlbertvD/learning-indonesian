@@ -6,9 +6,12 @@ describe('publish-approved-content module entrypoint', () => {
       throw new Error('process.exit called during import')
     }) as never)
 
+    // Post Phase 2 fold: publishLegacyStageB / publishCapabilityPipelineOutput
+    // are gone (capability-stage-legacy.ts deleted). The module now re-exports
+    // only buildLintStagingCommand for test consumers.
     const module = await import('../publish-approved-content')
 
-    expect(module.publishCapabilityPipelineOutput).toEqual(expect.any(Function))
+    expect(module.buildLintStagingCommand).toEqual(expect.any(Function))
     expect(exitSpy).not.toHaveBeenCalled()
     exitSpy.mockRestore()
   })

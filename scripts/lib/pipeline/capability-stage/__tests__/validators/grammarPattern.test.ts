@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { validateGrammarPattern } from '../../validators/grammarPattern'
 
-describe('validateGrammarPattern (GT7)', () => {
+describe('validateGrammarPattern (CS6) — moved from lesson-stage GT7', () => {
   it('accepts a well-formed pattern', () => {
     expect(
       validateGrammarPattern([
@@ -24,6 +24,7 @@ describe('validateGrammarPattern (GT7)', () => {
       { pattern_name: 'YANG', complexity_score: 1 } as unknown as { slug: string; pattern_name: string; complexity_score: number },
     ])
     expect(findings.some((f) => f.severity === 'error' && f.message.match(/slug/i))).toBe(true)
+    expect(findings[0].gate).toBe('CS6')
   })
 
   it('rejects a pattern with empty slug', () => {
