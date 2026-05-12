@@ -1,4 +1,25 @@
-import { describe, it, expect } from 'vitest'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+
+const { enrichMissingEnTranslationsMock, enrichMissingPosMock } = vi.hoisted(() => ({
+  enrichMissingEnTranslationsMock: vi.fn().mockResolvedValue({
+    translationsByBaseText: new Map<string, string>(),
+    translatedCount: 0,
+  }),
+  enrichMissingPosMock: vi.fn().mockResolvedValue({
+    posByBaseText: new Map<string, string>(),
+    enrichedCount: 0,
+  }),
+}))
+vi.mock('../enrichEnTranslations', () => ({
+  enrichMissingEnTranslations: enrichMissingEnTranslationsMock,
+}))
+vi.mock('../enrichPos', () => ({
+  enrichMissingPos: enrichMissingPosMock,
+}))
 
 import { runCapabilityStage } from '../runner'
 import type { LoadedLesson } from '../loader'
@@ -86,68 +107,100 @@ function buildSupabaseMock(opts: {
   return { client, recorder }
 }
 
-const synthLesson: LoadedLesson = {
-  lesson: {
-    id: 'lesson-uuid',
-    module_id: 'module-1',
-    order_index: 1,
-    title: 'Test Lesson',
-    level: 'A1',
-  },
-  sections: [
-    {
-      id: 'section-vocab',
-      title: 'Woordenschat',
-      order_index: 0,
-      content: {
-        type: 'vocabulary',
-        items: [
-          { indonesian: 'halo', dutch: 'hallo', pos: 'greeting', level: 'A1' },
-        ],
-      },
-    },
-    {
-      id: 'section-grammar',
-      title: 'Grammatica',
+// Each test gets its own tmpdir so the in-runner snapshot writes
+// (content-units.ts, capabilities.ts, exercise-assets.ts, lesson-page-blocks.ts,
+// learning-items.ts) don't collide across tests or leak between runs.
+let tmpStagingDir: string
+
+function makeSynthLesson(overrides: { stagingDir: string }): LoadedLesson {
+  return {
+    lesson: {
+      id: 'lesson-uuid',
+      module_id: 'module-1',
       order_index: 1,
-      content: { type: 'grammar', grammar_topics: ['ada existential'] },
+      title: 'Test Lesson',
+      level: 'A1',
     },
-  ],
-  pageBlocks: [],
-  audioNormalizedTexts: new Set(['halo']),
-  staging: {
-    stagingDir: '/tmp/lesson-test',
-    learningItems: [
+    sections: [
       {
-        base_text: 'halo',
-        item_type: 'word',
-        context_type: 'vocabulary_list',
-        translation_nl: 'hallo',
-        translation_en: 'hello',
-        pos: 'greeting',
-        level: 'A1',
-        review_status: 'pending_review',
+        id: 'section-vocab',
+        title: 'Woordenschat',
+        order_index: 0,
+        content: {
+          type: 'vocabulary',
+          items: [
+            { indonesian: 'halo', dutch: 'hallo', pos: 'greeting', level: 'A1' },
+          ],
+        },
+      },
+      {
+        id: 'section-grammar',
+        title: 'Grammatica',
+        order_index: 1,
+        content: { type: 'grammar', grammar_topics: ['ada existential'] },
       },
     ],
-    grammarPatterns: [
-      { slug: 'ada-existential', pattern_name: 'ADA existential', complexity_score: 2 },
-    ],
-    candidates: [],
-    clozeContexts: [],
-    contentUnits: [],
-    capabilities: [],
-    lessonPageBlocks: [],
-    exerciseAssets: [],
-  },
+    pageBlocks: [],
+    audioNormalizedTexts: new Set(['halo']),
+    staging: {
+      stagingDir: overrides.stagingDir,
+      learningItems: [
+        {
+          base_text: 'halo',
+          item_type: 'word',
+          context_type: 'vocabulary_list',
+          translation_nl: 'hallo',
+          translation_en: 'hello',
+          pos: 'greeting',
+          level: 'A1',
+          review_status: 'pending_review',
+        },
+      ],
+      grammarPatterns: [
+        {
+          slug: 'ada-existential',
+          pattern_name: 'ADA existential',
+          description: 'Indonesian uses *ada* to mark existence.',
+          example: 'Ada buku — er is een boek',
+          complexity_score: 2,
+        },
+      ],
+      candidates: [],
+      clozeContexts: [],
+      contentUnits: [],
+      capabilities: [],
+      lessonPageBlocks: [],
+      exerciseAssets: [],
+      affixedFormPairs: [],
+    },
+  }
 }
 
 describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
+  beforeEach(() => {
+    tmpStagingDir = fs.mkdtempSync(path.join(os.tmpdir(), 'capability-stage-test-'))
+    enrichMissingEnTranslationsMock.mockResolvedValue({
+      translationsByBaseText: new Map<string, string>(),
+      translatedCount: 0,
+    })
+    enrichMissingPosMock.mockResolvedValue({
+      posByBaseText: new Map<string, string>(),
+      enrichedCount: 0,
+    })
+  })
+
+  afterEach(() => {
+    if (tmpStagingDir && fs.existsSync(tmpStagingDir)) {
+      fs.rmSync(tmpStagingDir, { recursive: true, force: true })
+    }
+  })
+
   it('returns status:ok on a clean fixture and reaches the seed-hook phase', async () => {
     const { client } = buildSupabaseMock({})
     const result = await runCapabilityStage(
       { lessonNumber: 1, lessonId: 'lesson-uuid' },
       {
-        loadLesson: async () => synthLesson,
+        loadLesson: async () => makeSynthLesson({ stagingDir: tmpStagingDir }),
         createSupabaseClient: () => client as never,
       },
     )
@@ -157,11 +210,12 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
   })
 
   it('short-circuits with status:validation_failed when CS6 (grammar pattern) fails', async () => {
+    const synth = makeSynthLesson({ stagingDir: tmpStagingDir })
     const lessonWithBadPattern: LoadedLesson = {
-      ...synthLesson,
+      ...synth,
       staging: {
-        ...synthLesson.staging,
-        grammarPatterns: [{ slug: 'BAD_SLUG', pattern_name: 'X', complexity_score: 1 }],
+        ...synth.staging,
+        grammarPatterns: [{ slug: 'BAD_SLUG', pattern_name: 'X', description: 'irrelevant', example: 'irrelevant example', complexity_score: 1 }],
       },
     }
     const { client } = buildSupabaseMock({})
@@ -185,7 +239,7 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
     await expect(
       runCapabilityStage(
         { lessonNumber: 1, lessonId: '' },
-        { loadLesson: async () => synthLesson },
+        { loadLesson: async () => makeSynthLesson({ stagingDir: tmpStagingDir }) },
       ),
     ).rejects.toThrow(/lessonId/)
   })
@@ -195,12 +249,85 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
     const result = await runCapabilityStage(
       { lessonNumber: 1, lessonId: 'lesson-uuid', dryRun: true },
       {
-        loadLesson: async () => synthLesson,
+        loadLesson: async () => makeSynthLesson({ stagingDir: tmpStagingDir }),
         createSupabaseClient: () => client as never,
       },
     )
     expect(result.status).toBe('ok')
     expect(recorder.upserts).toEqual([])
     expect(recorder.inserts).toEqual([])
+  })
+
+  it('regenerates content-unit snapshots from enriched learning items so the upsert sees post-enrichment data', async () => {
+    // Set up: staging has a learning item with empty translation_en and a stale
+    // snapshot (contentUnits) that pre-dates enrichment — translationEn is empty.
+    // The runner's enrichment fills translation_en in-memory; without regeneration,
+    // the snapshot's payload_json.translationEn stays empty when upserted.
+    const synth = makeSynthLesson({ stagingDir: tmpStagingDir })
+    const lessonWithStaleSnapshot: LoadedLesson = {
+      ...synth,
+      staging: {
+        ...synth.staging,
+        learningItems: [
+          {
+            base_text: 'makan',
+            item_type: 'word',
+            context_type: 'vocabulary_list',
+            translation_nl: 'eten',
+            translation_en: '', // empty — enrichment should fill this
+            pos: 'verb',
+            level: 'A1',
+            review_status: 'pending_review',
+          },
+        ],
+        // Stale snapshot — built before enrichment, so translationEn is empty.
+        contentUnits: [
+          {
+            content_unit_key: 'item-makan::lesson-1/section-vocabulary::item-makan',
+            source_ref: 'item-makan',
+            source_section_ref: 'lesson-1/section-vocabulary',
+            unit_kind: 'learning_item',
+            unit_slug: 'item-makan',
+            display_order: 1000,
+            payload_json: {
+              baseText: 'makan',
+              itemType: 'word',
+              translationNl: 'eten',
+              translationEn: '', // stale
+            },
+            source_fingerprint: 'stale-fingerprint',
+          },
+        ],
+      },
+    }
+
+    // Mock the LLM enricher: fill translation_en for "makan" → "to eat".
+    enrichMissingEnTranslationsMock.mockResolvedValueOnce({
+      translationsByBaseText: new Map([['makan', 'to eat']]),
+      translatedCount: 1,
+    })
+
+    const { client, recorder } = buildSupabaseMock({})
+    const result = await runCapabilityStage(
+      { lessonNumber: 1, lessonId: 'lesson-uuid' },
+      {
+        loadLesson: async () => lessonWithStaleSnapshot,
+        createSupabaseClient: () => client as never,
+      },
+    )
+
+    expect(['ok', 'partial']).toContain(result.status)
+
+    // Find the content_units upsert payload for our learning item.
+    const learningItemUpserts = recorder.upserts.filter(
+      (u) => u.table === 'content_units' && u.payload.unit_slug === 'item-makan',
+    )
+    expect(learningItemUpserts).toHaveLength(1)
+    const payload = learningItemUpserts[0].payload as {
+      payload_json: { translationEn?: string }
+    }
+    // This is the centerpiece assertion: the regenerated snapshot picked up
+    // the enriched EN translation, so the DB upsert carries "to eat" — not "".
+    expect(payload.payload_json.translationEn).toBe('to eat')
   })
 })
