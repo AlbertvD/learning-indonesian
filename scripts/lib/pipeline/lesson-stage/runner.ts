@@ -95,6 +95,7 @@ export async function runLessonStage(
     enrichGrammarTopics?: (
       sections: Array<{ title?: string; order_index?: number; content: Record<string, unknown> }>,
       lessonNumber: number,
+      options?: { deterministicOnly?: boolean },
     ) => Promise<GrammarTopicsEnrichmentResult>
     enrichDialogueTranslations?: (lines: DialogueLine[]) => Promise<DialogueTranslationResult>
   } = {},
@@ -108,24 +109,30 @@ export async function runLessonStage(
 
   // ---- Enrichment (pre-validation). ----
   // Two enrichers run in sequence, both mutating staging.lesson.sections in
-  // place so the validators + section upsert see populated values. Both are
-  // skipped in dry-run to avoid LLM cost — validators will then surface any
-  // missing fields without touching the network.
+  // place so the validators + section upsert see populated values.
   //
   //   1. grammar_topics — cohesive lesson-level summary, one chip-worthy
-  //      label set written to every grammar/reference_table section.
+  //      label set written to every grammar/reference_table section. Runs
+  //      unconditionally; in dry-run we force the deterministic path (no
+  //      LLM cost) so GT1 has populated values to validate against.
   //   2. dialogue translations — fills empty Dutch translations on
   //      `content.lines[].translation` so the lesson reader shows them.
+  //      LLM-only; skipped in dry-run to avoid cost.
   //
   // After enrichment the cached lesson.ts on disk is rewritten so
-  // subsequent runs skip the LLM calls.
+  // subsequent runs skip the LLM calls. Disk writeback is gated on
+  // !input.dryRun — dry-run must not mutate the working tree.
+  let stagingDirty = false
+
+  const enrichTopics = hooks.enrichGrammarTopics ?? enrichMissingGrammarTopics
+  const topicsResult = await enrichTopics(
+    staging.lesson.sections,
+    input.lessonNumber,
+    { deterministicOnly: input.dryRun },
+  )
+  if (topicsResult.filledSectionCount > 0) stagingDirty = true
+
   if (!input.dryRun) {
-    let stagingDirty = false
-
-    const enrichTopics = hooks.enrichGrammarTopics ?? enrichMissingGrammarTopics
-    const topicsResult = await enrichTopics(staging.lesson.sections, input.lessonNumber)
-    if (topicsResult.filledSectionCount > 0) stagingDirty = true
-
     const dialogueLines = collectDialogueLines(staging.lesson.sections)
     if (dialogueLines.length > 0) {
       const enrichDialogues = hooks.enrichDialogueTranslations ?? enrichMissingDialogueTranslations

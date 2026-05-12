@@ -162,11 +162,16 @@ async function callClaude(
 export async function enrichMissingGrammarTopics(
   sections: SectionLike[],
   lessonNumber: number,
+  options: { deterministicOnly?: boolean } = {},
 ): Promise<GrammarTopicsEnrichmentResult> {
   const grammarSections = sections.filter(isGrammarSection)
   const emptySections = grammarSections.filter(hasEmptyGrammarTopics)
   if (emptySections.length === 0) {
     return { filledSectionCount: 0, labels: [], source: 'none' }
+  }
+
+  if (options.deterministicOnly) {
+    return deterministicFill(sections)
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY
