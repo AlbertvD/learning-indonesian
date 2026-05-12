@@ -53,6 +53,7 @@ export interface LoadedStaging {
   capabilities: Array<Record<string, unknown>>
   lessonPageBlocks: Array<Record<string, unknown>>
   exerciseAssets: Array<Record<string, unknown>>
+  affixedFormPairs: Array<Record<string, unknown>>
   stagingDir: string
 }
 
@@ -144,11 +145,12 @@ export async function loadStagingFiles(lessonNumber: number): Promise<LoadedStag
     readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'candidates.ts')),
     readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'cloze-contexts.ts')),
   ])
-  const [contentUnits, capabilities, lessonPageBlocks, exerciseAssets] = await Promise.all([
+  const [contentUnits, capabilities, lessonPageBlocks, exerciseAssets, affixedFormPairs] = await Promise.all([
     readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'content-units.ts')),
     readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'capabilities.ts')),
     readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'lesson-page-blocks.ts')),
     readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'exercise-assets.ts')),
+    readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'morphology-patterns.ts')),
   ])
 
   return {
@@ -160,6 +162,7 @@ export async function loadStagingFiles(lessonNumber: number): Promise<LoadedStag
     capabilities: capabilities ?? [],
     lessonPageBlocks: lessonPageBlocks ?? [],
     exerciseAssets: exerciseAssets ?? [],
+    affixedFormPairs: affixedFormPairs ?? [],
     stagingDir,
   }
 }
