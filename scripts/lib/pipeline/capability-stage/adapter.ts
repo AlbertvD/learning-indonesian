@@ -674,6 +674,27 @@ export async function countTableForLesson(
   return count ?? 0
 }
 
+export async function countRowsByIds(
+  supabase: CapabilitySupabaseClient,
+  table: string,
+  idColumn: string,
+  ids: string[],
+): Promise<number> {
+  if (ids.length === 0) return 0
+  let total = 0
+  for (let i = 0; i < ids.length; i += CHUNK_SIZE) {
+    const chunk = ids.slice(i, i + CHUNK_SIZE)
+    const { count, error } = await supabase
+      .schema('indonesian')
+      .from(table)
+      .select('*', { count: 'exact', head: true })
+      .in(idColumn, chunk)
+    if (error) throw error
+    total += count ?? 0
+  }
+  return total
+}
+
 export async function fetchRowsByIds<T extends Record<string, unknown>>(
   supabase: CapabilitySupabaseClient,
   table: string,

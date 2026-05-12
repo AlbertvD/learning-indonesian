@@ -532,10 +532,8 @@ export async function runCapabilityStage(
   counts.clozeContexts = clozeLanded
 
   // ---- 12. Verify (CS7 → CS8 → CS9). -----------------------------------
-  const lessonSourceRef = `lesson-${input.lessonNumber}`
   findings.push(...await runCountParity(supabase, {
     lessonId: input.lessonId,
-    lessonSourceRef,
     declared: {
       contentUnits: stagedContentUnits.length,
       grammarPatterns: grammar.grammarPatterns.length,
@@ -545,6 +543,8 @@ export async function runCapabilityStage(
       exerciseVariants: grammar.exerciseVariants.length,
       clozeContexts: cloze.plans.length,
     },
+    contentUnitIds,
+    capabilityIds,
   }))
   findings.push(...await runContentNonEmpty(supabase, {
     contentUnitIds,

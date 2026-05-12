@@ -53,7 +53,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
     })
     const findings = await runCountParity(supabase, {
       lessonId: 'lesson-9-uuid',
-      lessonSourceRef: 'lesson-9',
       declared: {
         contentUnits: 10,
         grammarPatterns: 5,
@@ -63,6 +62,8 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
         exerciseVariants: 3,
         clozeContexts: 0,
       },
+      contentUnitIds: Array.from({ length: 10 }, (_, i) => `unit-${i}`),
+      capabilityIds: [],
     })
     expect(findings).toEqual([])
   })
@@ -75,7 +76,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
     })
     const findings = await runCountParity(supabase, {
       lessonId: 'lesson-9-uuid',
-      lessonSourceRef: 'lesson-9',
       declared: {
         contentUnits: 10,
         grammarPatterns: 5,
@@ -85,6 +85,8 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
         exerciseVariants: 3,
         clozeContexts: 0,
       },
+      contentUnitIds: Array.from({ length: 10 }, (_, i) => `unit-${i}`),
+      capabilityIds: [],
     })
     expect(findings.length).toBeGreaterThan(0)
     expect(findings.every((f) => f.gate === 'CS7' && f.severity === 'error')).toBe(true)
@@ -98,7 +100,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
     })
     const findings = await runCountParity(supabase, {
       lessonId: 'lesson-9-uuid',
-      lessonSourceRef: 'lesson-9',
       declared: {
         contentUnits: 10,
         grammarPatterns: 5,
@@ -108,8 +109,125 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
         exerciseVariants: 3,
         clozeContexts: 0,
       },
+      contentUnitIds: Array.from({ length: 10 }, (_, i) => `unit-${i}`),
+      capabilityIds: [],
     })
     expect(findings).toEqual([])
+  })
+
+  // The 2026-05-13 regression: lesson-9 has 112 content_units, of which only 9
+  // carry source_ref="lesson-9". The prior implementation filtered by source_ref
+  // and reported 9 vs declared 112 — a false positive. By-ID verification
+  // counts all 112 via .in('id', contentUnitIds) and passes correctly.
+  it('counts content_units by ID — including mixed source_ref shapes', async () => {
+    const contentUnitIds = [
+      // 9 lesson-section rows (source_ref="lesson-9")
+      ...Array.from({ length: 9 }, (_, i) => `section-${i}`),
+      // 100 vocab item rows (source_ref="learning_items/<base>")
+      ...Array.from({ length: 100 }, (_, i) => `item-${i}`),
+      // 3 grammar pattern rows (source_ref="lesson-9/pattern-<slug>")
+      ...Array.from({ length: 3 }, (_, i) => `pattern-${i}`),
+    ]
+    const supabase = buildMockSupabase({
+      content_units: {
+        rows: contentUnitIds.map((id) => ({ id })),
+      },
+    })
+    const findings = await runCountParity(supabase, {
+      lessonId: 'lesson-9-uuid',
+      declared: {
+        contentUnits: 112,
+        grammarPatterns: 0,
+        capabilities: 0,
+        capabilityArtifacts: 0,
+        learningItems: 0,
+        exerciseVariants: 0,
+        clozeContexts: 0,
+      },
+      contentUnitIds,
+      capabilityIds: [],
+    })
+    expect(findings).toEqual([])
+  })
+
+  it('verifies learning_capabilities by ID — every declared capability must be in DB', async () => {
+    const capabilityIds = Array.from({ length: 10 }, (_, i) => `cap-${i}`)
+    const supabase = buildMockSupabase({
+      // Only 7 of the 10 declared capabilities are actually in DB.
+      learning_capabilities: {
+        rows: capabilityIds.slice(0, 7).map((id) => ({ id })),
+      },
+    })
+    const findings = await runCountParity(supabase, {
+      lessonId: 'lesson-9-uuid',
+      declared: {
+        contentUnits: 0,
+        grammarPatterns: 0,
+        capabilities: 10,
+        capabilityArtifacts: 0,
+        learningItems: 0,
+        exerciseVariants: 0,
+        clozeContexts: 0,
+      },
+      contentUnitIds: [],
+      capabilityIds,
+    })
+    expect(findings.length).toBe(1)
+    expect(findings[0].context?.table).toBe('learning_capabilities')
+  })
+
+  it('verifies capability_artifacts via capability_id membership', async () => {
+    const capabilityIds = Array.from({ length: 5 }, (_, i) => `cap-${i}`)
+    // 25 artifacts, all attached to one of our capabilities.
+    const artifacts = Array.from({ length: 25 }, (_, i) => ({
+      capability_id: capabilityIds[i % capabilityIds.length],
+    }))
+    const supabase = buildMockSupabase({
+      // Capabilities all present, so that check passes too.
+      learning_capabilities: { rows: capabilityIds.map((id) => ({ id })) },
+      capability_artifacts: { rows: artifacts },
+    })
+    const findings = await runCountParity(supabase, {
+      lessonId: 'lesson-9-uuid',
+      declared: {
+        contentUnits: 0,
+        grammarPatterns: 0,
+        capabilities: 5,
+        capabilityArtifacts: 25,
+        learningItems: 0,
+        exerciseVariants: 0,
+        clozeContexts: 0,
+      },
+      contentUnitIds: [],
+      capabilityIds,
+    })
+    expect(findings).toEqual([])
+  })
+
+  it('flags capability_artifacts when DB has fewer than declared', async () => {
+    const capabilityIds = ['cap-0', 'cap-1']
+    const supabase = buildMockSupabase({
+      learning_capabilities: { rows: capabilityIds.map((id) => ({ id })) },
+      // Only 3 artifacts in DB but 10 were declared.
+      capability_artifacts: {
+        rows: Array.from({ length: 3 }, (_, i) => ({ capability_id: capabilityIds[i % 2] })),
+      },
+    })
+    const findings = await runCountParity(supabase, {
+      lessonId: 'lesson-9-uuid',
+      declared: {
+        contentUnits: 0,
+        grammarPatterns: 0,
+        capabilities: 2,
+        capabilityArtifacts: 10,
+        learningItems: 0,
+        exerciseVariants: 0,
+        clozeContexts: 0,
+      },
+      contentUnitIds: [],
+      capabilityIds,
+    })
+    expect(findings.some((f) => f.context?.table === 'capability_artifacts')).toBe(true)
   })
 })
 

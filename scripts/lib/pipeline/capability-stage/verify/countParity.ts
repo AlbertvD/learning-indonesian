@@ -1,25 +1,43 @@
 /**
  * verify/countParity.ts — CS7 seed hook (post-write).
  *
- * For each write surface this stage touched, asserts that the DB row count
- * for the lesson is at least what the projectors said they intended to land
- * (`db_count >= declaredCount`). Per fold §11 #21 the comparison is `>=`,
- * not strict equality — re-runs that pick up rows from prior runs (or rows
- * authored by other lessons sharing a junction) must not flake. Strict
- * equality fails on re-runs; `>=` is the safer default.
+ * For each write surface this stage touched, asserts that the rows the
+ * upsert step claimed it wrote are actually present in the DB. Per fold
+ * §11 #21 the comparison is `>=`, not strict equality — re-runs that
+ * pick up rows from prior runs (or rows authored by other lessons
+ * sharing a junction) must not flake.
  *
- * Mismatches produce a CS7 `error` finding; the runner then returns
+ * Verification strategy:
+ *   - `content_units`, `learning_capabilities`: verify by ID membership.
+ *     The runner has the UUIDs returned by the upsert calls, so the
+ *     check is "are these N IDs present?" — no need to filter by
+ *     source_ref or walk a junction.
+ *   - `capability_artifacts`: verify by `capability_id` membership.
+ *     The upsert doesn't return artifact IDs today, but every artifact
+ *     references one of the capabilities we just wrote — so counting
+ *     `artifacts where capability_id in (capabilityIds)` is correct.
+ *   - `grammar_patterns`: keep the column-keyed query — patterns are
+ *     genuinely lesson-scoped via `introduced_by_lesson_id`.
+ *   - `exercise_variants`: keep the existing lesson_id-keyed check.
+ *     Vocab variants route via context_id, which seedIntegrity covers.
+ *
+ * Why not source_ref filtering on content_units? Of the four source_ref
+ * shapes a publish writes (`lesson-N`, `lesson-N/pattern-…`,
+ * `lesson-N/morphology/…`, `learning_items/…`), only the first matches
+ * a literal `.eq('source_ref', 'lesson-N')` — so the prior implementation
+ * always reported a false-positive parity failure on any lesson with
+ * vocabulary, grammar, or morphology rows.
+ *
+ * Mismatches produce a CS7 `error` finding; the runner returns
  * `status: 'partial'`.
  */
 
 import type { CapabilitySupabaseClient } from '../adapter'
-import { countTableForLesson, countExerciseVariantsForLesson } from '../adapter'
+import { countRowsByIds, countTableForLesson, countExerciseVariantsForLesson } from '../adapter'
 import type { ValidationFinding } from '../model'
 
 export interface CountParityInput {
   lessonId: string
-  /** lesson-N source_ref string used by source-ref-keyed tables. */
-  lessonSourceRef: string
   declared: {
     contentUnits: number
     grammarPatterns: number
@@ -31,6 +49,10 @@ export interface CountParityInput {
     /** Optional — only set when morphology fired. */
     morphologyContentUnits?: number
   }
+  /** Content unit UUIDs returned by upsertContentUnits. */
+  contentUnitIds: string[]
+  /** Capability UUIDs returned by upsertCapabilities. */
+  capabilityIds: string[]
 }
 
 export async function runCountParity(
@@ -39,13 +61,24 @@ export async function runCountParity(
 ): Promise<ValidationFinding[]> {
   const findings: ValidationFinding[] = []
 
-  // content_units: keyed by source_ref containing the lesson.
-  const contentUnitsCount = await countTableForLesson(supabase, 'content_units', {
-    column: 'source_ref',
-    value: input.lessonSourceRef,
-  })
+  // content_units: every UUID the runner declared must be in the DB.
+  const contentUnitsCount = await countRowsByIds(supabase, 'content_units', 'id', input.contentUnitIds)
   if (contentUnitsCount < input.declared.contentUnits) {
     findings.push(parityFinding('content_units', input.declared.contentUnits, contentUnitsCount))
+  }
+
+  // learning_capabilities: every UUID the runner declared must be in the DB.
+  const capabilitiesCount = await countRowsByIds(supabase, 'learning_capabilities', 'id', input.capabilityIds)
+  if (capabilitiesCount < input.declared.capabilities) {
+    findings.push(parityFinding('learning_capabilities', input.declared.capabilities, capabilitiesCount))
+  }
+
+  // capability_artifacts: count rows whose capability_id is one we just
+  // upserted. Artifacts have no lesson column; capability membership is the
+  // proxy. >= declared catches missing rows; passes on re-runs.
+  const artifactsCount = await countRowsByIds(supabase, 'capability_artifacts', 'capability_id', input.capabilityIds)
+  if (artifactsCount < input.declared.capabilityArtifacts) {
+    findings.push(parityFinding('capability_artifacts', input.declared.capabilityArtifacts, artifactsCount))
   }
 
   // grammar_patterns: keyed by introduced_by_lesson_id.
@@ -58,16 +91,9 @@ export async function runCountParity(
   }
 
   // exercise_variants: keyed by lesson_id (grammar) + context (vocab joined to lesson).
-  // The vocab branch lacks a direct lesson_id, so the count below covers grammar
-  // variants only; the runner double-checks the grammar count separately. Per
-  // fold §11 #2 the duplicate-row bug is preserved, so this only verifies the
-  // grammar-variant lower bound.
+  // The vocab branch lacks a direct lesson_id, so this only verifies the grammar-variant
+  // lower bound. seedIntegrity (CS9) catches the orphan pattern for vocab.
   const variantsCount = await countExerciseVariantsForLesson(supabase, input.lessonId)
-  // The grammar-only declared count: count grammar plans the projector emitted.
-  // Caller passes total exercise variants; we only assert >= grammar count's
-  // lower bound, ignoring vocab (which routes via context_id).
-  // (We accept variantsCount >= 0 as trivially true; the seedIntegrity hook
-  //  catches the orphan pattern instead.)
   if (input.declared.exerciseVariants > 0 && variantsCount === 0) {
     findings.push(parityFinding('exercise_variants', input.declared.exerciseVariants, variantsCount))
   }
