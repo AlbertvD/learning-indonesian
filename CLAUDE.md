@@ -283,7 +283,9 @@ If `review-report.json` status is `needs_revision` (CRITICAL issues only): re-ru
 bun scripts/publish-approved-content.ts <N> --dry-run   # preview
 bun scripts/publish-approved-content.ts <N>             # publish
 ```
-Publishes everything in one shot: lesson sections, vocabulary items, grammar patterns, cloze contexts, and exercise variants. All `pending_review` content is included. The `NODE_TLS_REJECT_UNAUTHORIZED=0` flag is built into the script for the homelab's internal CA.
+Publishes everything in one shot: lesson sections, vocabulary items, grammar patterns, cloze contexts, and exercise variants. All `pending_review` content is included. The `NODE_TLS_REJECT_UNAUTHORIZED=0` flag is built into the script for the homelab'''s internal CA.
+
+**Derived staging files.** The capability-stage runner regenerates `content-units.ts`, `capabilities.ts`, `exercise-assets.ts`, and `lesson-page-blocks.ts` from the canonical inputs (`learning-items.ts`, `grammar-patterns.ts`, `morphology-patterns.ts`) AFTER enrichment runs (POS, level, EN translations, dialogue NL propagation). Treat these four files as derived state — any hand-edits will be overwritten on the next publish. The pipeline always emits `quality_status: 'approved'` for generated artifacts; there is no manual approval step.
 
 The publish script runs quality gates at every step and exits non-zero on failure. If it fails, the `content-seeder` agent routes back to the appropriate linguist agent. Common failure → agent mappings:
 - Invalid `context_type` or empty `translation_nl` in staging → **linguist-structurer** or **cloze-creator**
