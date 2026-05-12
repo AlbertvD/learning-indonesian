@@ -8,9 +8,7 @@ describe('capability release gate command', () => {
   it('runs release gate checks in the required order', () => {
     expect(buildCapabilityReleaseGateCommands({ lesson: 1 })).toEqual([
       'npm test -- --run scripts/__tests__/promote-capabilities.test.ts scripts/__tests__/check-capability-release-readiness.test.ts',
-      'npm test -- --run scripts/__tests__/approve-staged-capability-artifacts.test.ts',
       'npx tsx scripts/publish-approved-content.ts 1 --dry-run',
-      'npx tsx scripts/approve-staged-capability-artifacts.ts --lesson 1 --dry-run',
       'npx tsx scripts/promote-capabilities.ts --lesson 1 --dry-run',
       'npx tsx scripts/check-capability-health.ts --lesson 1 --strict',
       'npx tsx scripts/check-capability-release-readiness.ts --lesson 1',
