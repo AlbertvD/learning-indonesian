@@ -71,6 +71,45 @@ describe('selectPublishableItems — deferred-dialogue gate (legacy 422–465)',
   })
 })
 
+describe("projectVocab — re-publish refreshes 'published' items", () => {
+  // Regression: prior implementation filtered out review_status='published',
+  // so a second publish never re-upserted items whose translations were
+  // enriched in between runs. Lesson-9 hit this on 2026-05-13: 87/92 items
+  // got fresh EN translations from the LLM but learningItems: 0 were
+  // upserted because every item was marked 'published' from a prior run.
+  it("includes review_status='published' items in perItemPlans", () => {
+    const out = projectVocab({
+      lessonNumber: 9,
+      lessonId: 'lesson-9-uuid',
+      level: 'A1',
+      sections: [],
+      learningItems: [
+        baseItem({ base_text: 'makan', review_status: 'published' }),
+        baseItem({ base_text: 'minum', review_status: 'pending_review' }),
+      ],
+      clozeContexts: [],
+    })
+    const baseTexts = out.perItemPlans.map((p) => p.item.base_text).sort()
+    expect(baseTexts).toEqual(['makan', 'minum'])
+  })
+
+  it("still excludes other non-publishable statuses (e.g. 'deprecated')", () => {
+    const out = projectVocab({
+      lessonNumber: 9,
+      lessonId: 'lesson-9-uuid',
+      level: 'A1',
+      sections: [],
+      learningItems: [
+        baseItem({ base_text: 'makan', review_status: 'published' }),
+        baseItem({ base_text: 'old-word', review_status: 'deprecated' as 'published' }),
+      ],
+      clozeContexts: [],
+    })
+    const baseTexts = out.perItemPlans.map((p) => p.item.base_text)
+    expect(baseTexts).toEqual(['makan'])
+  })
+})
+
 describe('projectVocab — Decision 5b: contextual_cloze emission driven by clozeContexts', () => {
   it('emits zero contextual_cloze capabilities when there are no cloze contexts', () => {
     const out = projectVocab({

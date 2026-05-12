@@ -105,11 +105,15 @@ export function selectPublishableItems(input: {
 export function projectVocab(input: VocabProjectionInput): VocabProjectionOutput {
   const lessonSourceRef = `lesson-${input.lessonNumber}`
 
-  // Filter to what legacy treats as approved/publishable.
+  // Include 'published' so re-publishes refresh DB rows with enriched data
+  // (LLM-filled translations, POS, levels). Upserts are idempotent — rewriting
+  // an unchanged row is a no-op in Postgres. The status field is kept for
+  // human review state; it no longer gates the DB write.
   const approved = input.learningItems.filter((item) =>
     item.review_status === 'pending_review' ||
     item.review_status === 'approved' ||
-    item.review_status === 'deferred_dialogue',
+    item.review_status === 'deferred_dialogue' ||
+    item.review_status === 'published',
   )
   const { publishable, deferredKeys } = selectPublishableItems({
     learningItems: approved,
