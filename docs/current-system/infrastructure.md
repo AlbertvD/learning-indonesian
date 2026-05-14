@@ -15,24 +15,28 @@ For deployment workflow see `docs/process/deploy.md`. For the content publishing
 
 ## 1. Service map
 
-The app talks to one external endpoint: `https://api.supabase.duin.home` (Kong, the API gateway). Behind Kong on the homelab, the Supabase stack runs as a set of containers — all internal, all on the `proxy` Docker network alongside Traefik.
+The app talks to one external endpoint: `https://api.supabase.duin.home` (Kong, the API gateway). Behind Kong on the homelab, the Supabase stack runs as 8 containers — all internal, all on the `proxy` Docker network alongside Traefik. Container names verified at `homelab-configs/services/supabase/docker-compose.yml`.
 
-| Service | Internal endpoint | Role |
+| Service (container) | Internal endpoint | Role |
 |---|---|---|
-| Kong | external `:443` via Traefik | API gateway — routes to PostgREST, GoTrue, Storage |
-| PostgREST | `rest:3000` | REST API for `indonesian` schema (and `public`, `storage`, `graphql_public`) |
-| GoTrue | `auth:9999` | Auth — signup, login, JWT issuance |
-| Storage | internal | Manages `indonesian-lessons` and `indonesian-podcasts` buckets |
-| Postgres | `db:5432` | All app data lives in the `indonesian` schema |
+| Kong (`supabase-kong`) | external `:443` via Traefik | API gateway — routes to PostgREST, GoTrue, Storage, edge-functions |
+| PostgREST (`supabase-rest`) | `rest:3000` | REST API for `indonesian` schema (and `public`, `storage`, `graphql_public`, `openbrain`) |
+| GoTrue (`supabase-auth`) | `auth:9999` | Auth — signup, login, JWT issuance |
+| Storage (`supabase-storage`) | `storage:5000` | Manages the storage buckets below |
+| Edge functions (`supabase-edge-functions`) | `functions:9000` | Runs `supabase/functions/commit-capability-answer-report` — the capability review processor (sole writer of `capability_review_events`) |
+| Postgres (`supabase-db`) | `db:5432` | All app data; `indonesian` schema |
+| Studio (`supabase-studio`) | internal | Admin UI; reached via separate `db.supabase.duin.home` host |
+| pg-meta (`supabase-pg-meta`) | internal | Schema-inspection API consumed by Studio |
 
-The same Supabase instance is shared with `family-hub`. The `indonesian` schema is invisible to that app; auth is shared (one login works across both).
+**Three apps share this Supabase instance** — `family-hub`, `learning-indonesian`, and `openbrain`. Each owns its own Postgres schema (`public` / `indonesian` / `openbrain`); cross-app data is invisible. Auth is shared — one login works across all three.
 
-Storage buckets (both public read):
+Storage buckets (all public read):
 
 | Bucket | Content |
 |---|---|
-| `indonesian-lessons` | Lesson audio MP3s |
+| `indonesian-lessons` | Lesson audio MP3s (per-section TTS output) |
 | `indonesian-podcasts` | NotebookLM-generated podcast audio |
+| `indonesian-tts` | TTS audio cache (created 2026-04-16) |
 
 ---
 
@@ -43,20 +47,28 @@ Both live in the `homelab-configs` repo, both must be in place before the app wo
 **PostgREST schema exposure** — `services/supabase/docker-compose.yml`:
 
 ```yaml
-PGRST_DB_SCHEMAS: public,storage,graphql_public,indonesian
+PGRST_DB_SCHEMAS: public,storage,graphql_public,indonesian,openbrain
 ```
 
-Without this the API returns 404 for every `indonesian.*` query. PostgREST container restart required when this changes (brief blip for the shared family-hub).
+Without this the API returns 404 for every `indonesian.*` query. PostgREST container restart required when this changes (brief blip for the shared apps). The `openbrain` schema is on the same exposure list (its app shares this instance) — touching this var affects all three apps.
 
 **Kong CORS** — `services/supabase/kong/kong.yml`:
 
+The actual origins list is shared with the other apps (`family.duin.home`, `brain.duin.home`) and includes a dev subdomain (`indonesian-dev.duin.home`) plus `localhost:5173`. The full list at the time of verification:
+
 ```yaml
 origins:
-  - https://indonesian.duin.home
-  - http://indonesian.duin.home
+  - http(s)://family.duin.home
+  - http(s)://api.supabase.duin.home
+  - http(s)://db.supabase.duin.home
+  - http://localhost:5173
+  - http(s)://indonesian-dev.duin.home
+  - http(s)://indonesian.duin.home
+  - http(s)://brain.duin.home
+  - http(s)://auth.duin.home
 ```
 
-`Access-Control-Allow-Headers` must include **`Accept-Profile` and `Content-Profile`** — `supabase-js` sends these on every request. If they're missing, Chrome silently drops requests after a successful OPTIONS preflight (Safari is more lenient and may still work, masking the issue). Kong image rebuild required when this changes (the Kong image bakes in the ANON_KEY).
+If you spin up the app under a new hostname, add it here. `Access-Control-Allow-Headers` must include **`Accept-Profile` and `Content-Profile`** — `supabase-js` sends these on every request. If they're missing, Chrome silently drops requests after a successful OPTIONS preflight (Safari is more lenient and may still work, masking the issue). Kong image rebuild required when this changes (the Kong image bakes in the ANON_KEY).
 
 ---
 
