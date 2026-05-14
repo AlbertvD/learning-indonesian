@@ -225,6 +225,84 @@ describe('capabilityContentService.resolveBlocks', () => {
   })
 })
 
+describe('capabilityContentService.resolveBlocks — distractor pool chunking', () => {
+  it('chunks learning_items and item_meanings IN queries when the pool exceeds 50 ids', async () => {
+    // 130 distinct distractor-pool ids → expect 3 chunks (50/50/30) per table.
+    const POOL_SIZE = 130
+    const poolIds = Array.from({ length: POOL_SIZE }, (_, i) => `pool-${String(i).padStart(3, '0')}`)
+    const learningItemsInCalls: string[][] = []
+    const itemMeaningsInCalls: string[][] = []
+
+    function makeBuilder(table: string): any {
+      const builder: any = {
+        select: () => builder,
+        eq: () => builder,
+        in: (column: string, ids: string[]) => {
+          if (table === 'learning_items' && column === 'id') {
+            learningItemsInCalls.push(ids)
+          } else if (table === 'item_meanings' && column === 'learning_item_id') {
+            itemMeaningsInCalls.push(ids)
+          }
+          builder._lastIn = { column, ids }
+          return builder
+        },
+        insert: () => Promise.resolve({ data: null, error: null }),
+        then: (resolve: (v: { data: unknown[]; error: null }) => void) => {
+          const lastIn = builder._lastIn as { column: string; ids: string[] } | undefined
+          if (table === 'learning_items' && lastIn?.column === 'normalized_text') {
+            resolve({ data: [{
+              id: 'item-1-uuid', item_type: 'word', base_text: 'item-1', normalized_text: 'item-1',
+              language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null,
+              source_card_id: null, notes: null, is_active: true, pos: 'noun',
+              created_at: '', updated_at: '',
+            }], error: null })
+          } else if (table === 'item_contexts' && lastIn?.column === 'learning_item_id') {
+            resolve({ data: [{
+              id: 'ctx-1', learning_item_id: 'item-1-uuid', context_type: 'phrase',
+              source_text: '', translation_text: '', difficulty: 'A1', topic_tag: null,
+              is_anchor_context: true, source_lesson_id: 'lesson-A', source_section_id: null,
+            }], error: null })
+          } else if (table === 'item_contexts' && lastIn?.column === 'source_lesson_id') {
+            // The pool-discovery query — return many distinct learning_item_ids.
+            resolve({ data: poolIds.map(id => ({ learning_item_id: id })), error: null })
+          } else if (table === 'learning_items' && lastIn?.column === 'id') {
+            resolve({ data: lastIn.ids.map(id => ({
+              id, item_type: 'word', base_text: id, normalized_text: id,
+              language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null,
+              source_card_id: null, notes: null, is_active: true, pos: 'noun',
+              created_at: '', updated_at: '',
+            })), error: null })
+          } else if (table === 'item_meanings' && lastIn?.column === 'learning_item_id') {
+            resolve({ data: [], error: null })
+          } else {
+            resolve({ data: [], error: null })
+          }
+        },
+      }
+      return builder
+    }
+    const client = { schema: () => ({ from: (table: string) => makeBuilder(table) }) }
+
+    const service = createCapabilityContentService(client as never)
+    await service.resolveBlocks([makeBlock({ itemId: 'item-1', exerciseType: 'meaning_recall' })], baseOptions)
+
+    // Wave 2 fetchMeanings runs first with ~1 session item, then fetchDistractorPool
+    // runs fetchMeanings again with all 130 pool ids — captured here mixed in.
+    // What matters is the URL ceiling: no chunk may exceed 50 ids.
+    expect(learningItemsInCalls.length).toBeGreaterThan(0)
+    expect(itemMeaningsInCalls.length).toBeGreaterThan(0)
+    for (const ids of learningItemsInCalls) expect(ids.length).toBeLessThanOrEqual(50)
+    for (const ids of itemMeaningsInCalls) expect(ids.length).toBeLessThanOrEqual(50)
+
+    // The distractor-pool path specifically must have produced 3 chunks of (50, 50, 30).
+    const poolChunkSizes = learningItemsInCalls
+      .filter(ids => ids.length > 1 || (ids[0]?.startsWith('pool-')))
+      .map(ids => ids.length)
+      .sort((a, b) => b - a)
+    expect(poolChunkSizes).toEqual([50, 50, 30])
+  })
+})
+
 describe('createCapabilityContentService — exported correctly', () => {
   it('returns an object that satisfies CapabilityContentService', () => {
     const tables: Record<string, MockTable> = {}

@@ -13,6 +13,7 @@ import type { CapabilityArtifact } from '@/lib/capabilities/artifactRegistry'
 import { decodeCanonicalKey, extractItemKey } from './capabilityContentService.internal'
 import { buildForExerciseType } from '@/lib/exercises/builders'
 import type { BuilderInput } from '@/lib/exercises/builders'
+import { chunkedIn } from '@/lib/chunkedQuery'
 
 // ─── Reason codes ───────────────────────────────────────────────────────────
 
@@ -112,18 +113,15 @@ export function createCapabilityContentService(client: SupabaseSchemaClient): Ca
     return (data ?? []) as LearningItem[]
   }
 
+  // Chunked: the distractor-pool path can pass several hundred ids (one per
+  // item anchored to any touched lesson). A single IN clause overflows Kong's
+  // 8 KB request-line buffer; the chunker holds each URL under ~2 KB.
   async function fetchLearningItemsById(ids: string[]): Promise<LearningItem[]> {
-    if (ids.length === 0) return []
-    const { data, error } = await db().from('learning_items').select('*').in('id', ids)
-    if (error) throw error
-    return (data ?? []) as LearningItem[]
+    return chunkedIn<LearningItem>('learning_items', 'id', ids, undefined, client)
   }
 
   async function fetchMeanings(itemIds: string[]): Promise<ItemMeaning[]> {
-    if (itemIds.length === 0) return []
-    const { data, error } = await db().from('item_meanings').select('*').in('learning_item_id', itemIds)
-    if (error) throw error
-    return (data ?? []) as ItemMeaning[]
+    return chunkedIn<ItemMeaning>('item_meanings', 'learning_item_id', itemIds, undefined, client)
   }
 
   async function fetchContexts(itemIds: string[]): Promise<ItemContext[]> {
