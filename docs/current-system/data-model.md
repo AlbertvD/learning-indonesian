@@ -26,7 +26,7 @@ For the *why* behind the capability schema, see `docs/adr/0001-capability-based-
 | **Legacy-retained** | `learner_item_state`, `learner_skill_state`, `review_events` | `scripts/migration.sql` (write paths retired; rows preserved as historical record) |
 | **Infrastructure** | `profiles`, `user_roles`, `exercise_type_availability`, `error_logs` | `scripts/migration.sql` |
 
-Retired tables (DROPPED with CASCADE in `scripts/migration.sql`) — listed only so readers know they used to exist: `learner_grammar_state` (retirement #2), `learner_weekly_goal_sets`, `learner_weekly_goals`, `learner_daily_goal_rollups`, `learner_stage_events`, `learner_analytics_events` (all #4), `learner_source_progress_events`, `learner_source_progress_state` (#6), `learner_lesson_engagement` (one-off).
+Retired tables (DROPPED with CASCADE in `scripts/migration.sql`) — listed only so readers know they used to exist: `learner_grammar_state` (retirement #2), `learner_weekly_goal_sets`, `learner_weekly_goals`, `learner_daily_goal_rollups`, `learner_stage_events`, `learner_analytics_events` (all #4), `learner_source_progress_events`, `learner_source_progress_state` (#6), `learner_lesson_engagement` (one-off), `anki_cards`, `card_reviews`, `card_set_shares`, `card_sets`, `user_progress`, `user_vocabulary`, `vocabulary` (all retirement #8 — orphan tables, zero rows, never managed in version control).
 
 ---
 
@@ -216,7 +216,12 @@ Write-only error log from the app. Admin-queryable via Supabase Studio. Logged v
 
 ## 8. Leaderboard view
 
-`indonesian.leaderboard` is a view (not a table), refreshed live on read. Post-retirement #5, it aggregates from `capability_review_events` + the lazily-materialised `learning_sessions`. Read by all authenticated users.
+`indonesian.leaderboard` is a view (not a table), refreshed live on read. Definition at `scripts/migration.sql:277-295`. **Currently uses legacy-retained tables:**
+- `items_learned` derives from `learner_item_state` (stage `IN ('retrieving','productive','maintenance')`).
+- `lessons_completed` derives from `lesson_progress` (orphan after retirement #6).
+- `total_seconds_spent` / `days_active` derive from `learning_sessions` (now lazy + capability-only).
+
+The view is **partially stale for capability-era users**: `items_learned` reads `learner_item_state`, which receives no new writes after retirement #5/#6 — so a user who only ever used the capability path will see `items_learned = 0`. A future rewrite should source `items_learned` from `learner_capability_state` (`review_count > 0` or equivalent). Tracked as a follow-up to this audit (2026-05-14).
 
 ---
 
@@ -234,4 +239,5 @@ Write-only error log from the app. Admin-queryable via Supabase Studio. Logged v
 ## 10. Notes for future work
 
 - The 10 capability-era tables in `scripts/migrations/2026-04-25-*.sql` (+ `2026-05-02-capability-resolution-failures.sql`) are tracked for fold-back into `scripts/migration.sql`. Until then, fresh DB rebuilds need both file sets applied. The fold is non-trivial because it requires reconciling the lowercase-DDL style of the standalone files with the uppercase-DDL style of master (the master uses `IF NOT EXISTS` aggressively for idempotency, which the standalone files also do).
-- `learner_item_state`, `learner_skill_state`, and `review_events` are candidates for a future retirement #8 once the historical-analytics use case is resolved (could be folded into capability_review_events via a backfill view, or kept indefinitely as cold storage).
+- `learner_item_state`, `learner_skill_state`, and `review_events` are candidates for a future retirement once the historical-analytics use case is resolved (could be folded into `capability_review_events` via a backfill view, or kept indefinitely as cold storage).
+- **Leaderboard view rewrite** — currently reads from legacy tables; needs to source `items_learned` from `learner_capability_state` to stop reporting 0 for capability-era-only users. Tracked but not yet specced.

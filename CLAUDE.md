@@ -397,19 +397,15 @@ When adding a new page, prefer composing `PageContainer` / `PageBody` / `PageHea
 
 | Table | Who writes | Who reads |
 |-------|-----------|-----------|
-| `lessons`, `podcasts`, `vocabulary` | Admin via scripts | All authenticated users |
-| `user_progress`, `lesson_progress`, `learning_sessions` | Row owner | All (for leaderboard) |
-| `card_sets`, `anki_cards` | Owner | Owner + shared users + public |
+| `lessons`, `lesson_sections`, `podcasts` | Admin via scripts | All authenticated users |
+| `learning_items`, `item_meanings`, `item_contexts`, `grammar_patterns`, `exercise_variants` | Pipeline (capability-stage) | All authenticated users |
+| `learning_capabilities`, `capability_artifacts`, `content_units`, `lesson_page_blocks` | Pipeline | All authenticated users |
+| `learner_capability_state`, `capability_review_events` | Capability review processor (server RPC) | Row owner |
+| `learner_lesson_activation` | `set_lesson_activation` RPC | Row owner |
+| `lesson_progress`, `learning_sessions` | Row owner / lazy materialiser | All (for leaderboard) |
 | `leaderboard` | View (read-only) | All authenticated users |
 
-Admin access is controlled via `indonesian.user_roles` table — no separate auth role needed.
-
-## Sharing Model (Card Sets)
-
-Card sets have three visibility levels:
-- `private` — owner only
-- `shared` — owner + specific users listed in `card_set_shares`
-- `public` — all authenticated users
+Admin access is controlled via the `indonesian.user_roles` table — no separate auth role needed. For the full schema reference (including legacy-retained and retired tables) see `docs/current-system/data-model.md`.
 
 ## Feature Design Rule: Supabase Requirements
 

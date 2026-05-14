@@ -1974,3 +1974,24 @@ begin
       );
   end if;
 end $$;
+
+-- ============================================================
+-- Retirement #8 — orphan tables (2026-05-14)
+-- ============================================================
+-- Seven out-of-band tables that exist in the live DB but:
+--   * have zero rows
+--   * have zero references in src/, scripts/, supabase/ (TS + SQL)
+--   * have no CREATE TABLE in this file or scripts/migrations/*.sql
+--   * have no RLS enabled
+-- They predate the rule that this file is authoritative (inversion of
+-- 2026-04-02) and were never adopted into the canonical schema. Per
+-- target-architecture.md rule #10 ("Don't keep dead infrastructure on
+-- speculation"), they retire here.
+-- Tracked-history rollout: scripts/migrations/2026-05-14-retirement-8-orphan-tables.sql
+drop table if exists indonesian.anki_cards       cascade;
+drop table if exists indonesian.card_reviews     cascade;
+drop table if exists indonesian.card_set_shares  cascade;
+drop table if exists indonesian.card_sets        cascade;
+drop table if exists indonesian.user_progress    cascade;
+drop table if exists indonesian.user_vocabulary  cascade;
+drop table if exists indonesian.vocabulary       cascade;
