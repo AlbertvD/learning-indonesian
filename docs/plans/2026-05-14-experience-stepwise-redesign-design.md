@@ -1,6 +1,6 @@
 ---
 status: shipped
-implementation: 3f7aab9
+implementation: 9b89fbb
 merged_at: 2026-05-14
 implementation_paths:
   - src/components/experience/
