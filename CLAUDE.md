@@ -41,6 +41,56 @@ When you finish a PR that implements a plan, update the plan's frontmatter as pa
 
 Grep for `grep -L "^status:" docs/plans/*.md` to find plans missing frontmatter — these need backfilling before any agent uses them.
 
+## Module specs
+
+Every deep module has a living spec at `docs/current-system/modules/<name>.md`. The spec is the contract: public interface, internal flow (functional, not stepwise), invariants, seams to other modules, known limitations. **Every behavioural claim cites `file:line`** so the spec stays verifiable as code drifts.
+
+`docs/current-system/modules/lesson-renderer.md` is the canonical example.
+
+### When to create a module spec
+
+- Any new top-level folder under `src/lib/` is a deep module — write its spec when the second non-trivial file lands.
+- Any non-trivial folder under `src/components/` that owns a coherent surface (the UI deep modules — `lessons/`, `experience/`, `exercises/primitives/`, `page/primitives/`, `progress/`).
+- Any service that survives the target-architecture fold (per `docs/target-architecture.md` § Service specs).
+- Any pipeline stage in `scripts/lib/pipeline/<stage>/` (`lesson-stage`, `capability-stage`, `podcast-stage`).
+
+### When to update a module spec
+
+When you change a module's public interface, internal flow, or invariants — **same commit as the code change**. Spec drift is treated like a code regression. The pre-commit hook does not enforce this yet; enforce it in code review.
+
+### When to trust a module spec
+
+As a starting point for navigation and as a map of seams to adjacent modules.
+
+**Never as the authority for a behavioural claim.** For those, re-verify against the code at the cited `file:line`. Specs lag code; the code is authoritative. If you find spec drift, fix the spec as part of whatever you're working on.
+
+### Before refactoring a module
+
+Write or update its spec first. The before-spec is your diff target; the after-spec is your acceptance criterion. A fold without a before-spec produces code that's no easier to understand than the code it replaced.
+
+### Navigating between specs
+
+Each spec's §5 "Seams" lists upstream / downstream / sibling modules with concrete file paths. Each spec's "What this spec does NOT cover" section names which sibling spec answers the next question.
+
+**To understand the system, follow the seam links — do not read every spec sequentially.** Specs pin each other down by saying what they don't cover; chase those pointers when the question shifts. Avoid grep-by-keyword when the spec graph already maps the dependency.
+
+### Module spec frontmatter
+
+```yaml
+---
+module: lesson-renderer
+surface: src/components/lessons/
+last_verified_against_code: 2026-05-14   # date the file:line cites were checked against the code
+status: stable                            # stable | in-flight | partial
+---
+```
+
+- `stable` — the module is settled; the spec should match code exactly.
+- `in-flight` — actively being refactored; spec may be ahead of or behind code.
+- `partial` — spec covers some surfaces but explicitly skips others (named in the spec's §7).
+
+A spec with `last_verified_against_code` older than ~30 days should be re-verified before trusting any specific cite. The date is the spec's freshness signal.
+
 Indonesian language tutor app — React frontend connecting directly to a shared self-hosted Supabase instance.
 
 ## Architecture
@@ -210,187 +260,62 @@ Password resets are handled by an admin via Supabase Studio. If email is needed 
 
 ## Content Management
 
-All lesson, vocabulary, and podcast content (including audio files) is **deployed via scripts**, not through any UI.
+All lesson, vocabulary, and podcast content is **deployed via scripts**, not through a UI. See `docs/process/content-pipeline.md` for the full authoring + publishing workflow (the 8 authoring steps, the 2-stage publish pipeline internals, agent invocations, failure-mode debugging).
 
 ### Runtime is unified; authoring is split
 
 **At runtime, every lesson goes through the capability pipeline.** `src/pages/Session.tsx:110` is the only production caller of any session builder, and it always invokes `loadCapabilitySessionPlanForUser({ enabled: true, ... })`. Legacy `buildSessionQueue` was retired in retirement #7; the new builders in `src/lib/exercises/builders/` carry the surface forward. The `vocabulary` table is not read at runtime.
 
-**The split between lessons 1–3 and lessons 4+ is purely about *authoring* — how content gets into Supabase:**
+The split between lessons 1–3 and lessons 4+ is purely about *authoring* — how content gets into Supabase:
 
-| | Lessons 1–3 (legacy authoring) | Lessons 4+ (staging pipeline) |
+| | Lessons 1–3 (legacy) | Lessons 4+ (pipeline) |
 |---|---|---|
-| Source of truth | `scripts/data/lessons.ts` + `vocabulary.ts` (predates the staging pipeline) | `scripts/data/staging/lesson-N/` |
-| How content reaches Supabase | `make seed-lessons` + `make seed-vocabulary` (writes to `lesson_sections`, `vocabulary`, `learning_items`) | `bun scripts/publish-approved-content.ts <N>` (writes to `lesson_sections`, `learning_items`, capability artifacts) |
-| Bridge into capability path | `scripts/reverse-engineer-staging.ts` reconstructs staging files from the live DB; capability artifacts are then materialized deterministically by the capability-stage runner on the next publish. Capabilities flagged with `requiredSourceProgress.kind: 'none', reason: 'legacy_projection'` (see `src/lib/capabilities/capabilityTypes.ts:96`) skip the section-by-section progression gate. | Capability artifacts are written directly by `publish-approved-content.ts`. |
+| Source of truth | `scripts/data/lessons.ts` + `vocabulary.ts` | `scripts/data/staging/lesson-N/` |
+| Publish command | `make seed-lessons` + `make seed-vocabulary` | `bun scripts/publish-approved-content.ts <N>` |
+| Bridge into capability runtime | Legacy projection (`requiredSourceProgress.kind: 'none', reason: 'legacy_projection'` in `src/lib/capabilities/capabilityTypes.ts:96`) | Direct capability artifact writes by the capability-stage runner |
 
-**Never add vocabulary to `lessons.ts` for lessons 4+.** `lessons.ts` only populates display content (`lesson_sections`). Runtime scheduling reads from capability rows projected off `learning_items` + capability artifacts — vocabulary added only to `lessons.ts` will never become schedulable. For lessons 4+, vocabulary lives in staging files and is published via `publish-approved-content.ts`.
+**Never add vocabulary to `lessons.ts` for lessons 4+.** That file only populates `lesson_sections` (display content). Runtime scheduling reads from capability rows projected off `learning_items` + capability artifacts — vocabulary added only to `lessons.ts` will never become schedulable.
 
----
+### Publish pipeline shape
 
-### Adding a new lesson (lessons 4+) — full pipeline
+`bun scripts/publish-approved-content.ts <N>` runs two stages in sequence: **Stage A = `runLessonStage`** (`scripts/lib/pipeline/lesson-stage/`) writes lessons + sections + page-blocks + audio_clips; **Stage B = `runCapabilityStage`** (`scripts/lib/pipeline/capability-stage/`) writes everything capability-related + learning_items. Stage A returns a `lesson.id`; Stage B requires it. Each stage has its own validators, enrichments, and adapter writes — see `docs/process/content-pipeline.md` for the detail.
 
-New lessons start as physical coursebook pages photographed with a phone.
+### Derived staging files
 
-**Publishing policy:** Everything publishes immediately. There is no manual approval gate. All content (`pending_review` and `approved`) is published as-is. Review and correction happens live in the app via the admin account.
+The capability-stage runner regenerates `content-units.ts`, `capabilities.ts`, `exercise-assets.ts`, and `lesson-page-blocks.ts` from canonical inputs (`learning-items.ts`, `grammar-patterns.ts`, `morphology-patterns.ts`) AFTER enrichment runs (POS, level, EN translations, dialogue NL propagation). **Hand-edits to these four files are overwritten on the next publish.**
 
-**Step 1 — Photograph pages**
-Place photos in `content/raw/lesson-<N>/` as JPEGs or HEICs.
+### Publishing policy
 
-**Step 2 — Convert and OCR**
-```bash
-bun scripts/convert-heic-to-jpg.ts <N>   # convert HEIC to JPG
-bun scripts/ocr-pages.ts <N>             # extract text via Tesseract → content/extracted/lesson-N/page-N.txt
-```
+Everything publishes immediately. There is no manual approval gate. All content publishes as-is. The pipeline always emits `quality_status: 'approved'` for generated artifacts. Review and correction happens live in the app via the admin account.
 
-**Step 3 — LLM section catalog** *(requires ANTHROPIC_API_KEY)*
-```bash
-bun scripts/catalog-lesson-sections.ts <N> [--level A1] [--force]
-```
-Claude reads every extracted page, identifies section boundaries from Dutch headers, fully parses vocabulary/expressions/numbers/dialogue/text items, and captures grammar/exercises/pronunciation as raw text. Each vocabulary/expression/number item is tagged with a part-of-speech value from the 12-value taxonomy (`verb, noun, adjective, adverb, pronoun, numeral, classifier, preposition, conjunction, particle, question_word, greeting`) for distractor filtering in runtime MCQ exercises. Reviews photos alongside OCR text to recover content the OCR missed.
-Output: `scripts/data/staging/lesson-<N>/sections-catalog.json`
-
-> **Legacy lessons (1–3) shortcut:** If the lesson content already lives in Supabase (lesson_sections + learning_items), skip steps 1–4 and run:
-> ```bash
-> bun scripts/reverse-engineer-staging.ts <N>
-> ```
-> This pulls lesson_sections and learning_items from the DB and writes sections-catalog.json, lesson.ts, and learning-items.ts directly. Grammar sections are already fully structured in the DB so no OCR or LLM catalog step is needed. Go straight to Step 5 (Linguist Creator).
-
-**Step 4 — Generate staging files**
-```bash
-bun scripts/generate-staging-files.ts <N>
-```
-Deterministic. Reads catalog → writes `lesson.ts` (all display sections) and `learning-items.ts` (vocabulary/expressions/numbers/dialogue items). Scaffolds empty `grammar-patterns.ts`, `candidates.ts`, `cloze-contexts.ts` if absent.
-
-**Step 5 — Linguist Structurer**
-Run the `linguist-structurer` agent to structure grammar/exercise sections in `lesson.ts`, extract grammar patterns, do web research, and build the pattern brief.
-Output: updated `lesson.ts`, `grammar-patterns.ts`, `pattern-brief.json`
-
-**Step 6 — Exercise & Cloze Creators** (can run in parallel)
-Run three agents:
-- `grammar-exercise-creator` — generates grammar exercise candidates. Output: `candidates.ts`
-- `vocab-exercise-creator` — authors curated distractors for vocab exercises. Output: `vocab-enrichments.ts`
-- `cloze-creator` — generates cloze context sentences. Output: `cloze-contexts.ts`
-
-**Step 7 — Linguist Reviewer**
-Run the `linguist-reviewer` agent to validate all pipeline output against payload contracts, slug uniqueness, and distractor quality.
-Output: `scripts/data/staging/lesson-<N>/review-report.json`
-
-If `review-report.json` status is `needs_revision` (CRITICAL issues only): re-run the agent that produced the flagged file, then reviewer. Repeat until `approved`. WARNINGs are flagged for admin review in the app and do not block publishing.
-
-**Step 7 — Publish**
-```bash
-bun scripts/publish-approved-content.ts <N> --dry-run   # preview
-bun scripts/publish-approved-content.ts <N>             # publish
-```
-Publishes everything in one shot: lesson sections, vocabulary items, grammar patterns, cloze contexts, and exercise variants. All `pending_review` content is included. The `NODE_TLS_REJECT_UNAUTHORIZED=0` flag is built into the script for the homelab'''s internal CA.
-
-**Derived staging files.** The capability-stage runner regenerates `content-units.ts`, `capabilities.ts`, `exercise-assets.ts`, and `lesson-page-blocks.ts` from the canonical inputs (`learning-items.ts`, `grammar-patterns.ts`, `morphology-patterns.ts`) AFTER enrichment runs (POS, level, EN translations, dialogue NL propagation). Treat these four files as derived state — any hand-edits will be overwritten on the next publish. The pipeline always emits `quality_status: 'approved'` for generated artifacts; there is no manual approval step.
-
-The publish script runs quality gates at every step and exits non-zero on failure. If it fails, the `content-seeder` agent routes back to the appropriate linguist agent. Common failure → agent mappings:
-- Invalid `context_type` or empty `translation_nl` in staging → **linguist-structurer** or **cloze-creator**
-- Unresolved cloze slugs → **cloze-creator**
-- Missing NL meanings after publish → re-run; if persistent → **linguist-structurer**
-- Broken candidate payloads → **grammar-exercise-creator**
-- Invalid POS value on a learning item → **linguist-structurer** (re-run catalog-lesson-sections.ts to retag)
-- Missing POS on word/phrase items → WARNING only; publish succeeds. Distractor quality degrades for affected items until POS is populated.
-
-### Staging files reference
-
-| File | Written by | Purpose |
-|---|---|---|
-| `sections-catalog.json` | `catalog-lesson-sections.ts` | LLM classification output — source of truth for lesson.ts and learning-items.ts |
-| `lesson.ts` | `generate-staging-files.ts` + `linguist-structurer` | Display sections for lesson reader |
-| `learning-items.ts` | `generate-staging-files.ts` | Schedulable FSRS items. Includes `pos` per word/phrase item (carried from catalog). |
-| `grammar-patterns.ts` | `linguist-structurer` | Grammar patterns with slug + complexity |
-| `pattern-brief.json` | `linguist-structurer` | Intermediate artifact: vocab pool, research notes, pattern list |
-| `candidates.ts` | `grammar-exercise-creator` | Authored grammar exercise variants |
-| `vocab-enrichments.ts` | `vocab-exercise-creator` | Curated distractors for vocab exercises |
-| `cloze-contexts.ts` | `cloze-creator` | Cloze sentences per vocabulary item |
-| `review-report.json` | `linguist-reviewer` | Review status and flagged issues |
-| `index.ts` | `generate-staging-files.ts` | Barrel export |
-
----
-
-### Adding a new lesson (legacy — lessons 1–3 only)
-
-These lessons predate the pipeline. Their content lives in `scripts/data/lessons.ts` and `vocabulary.ts`.
-
-**Do not use this path for lessons 4+.**
-
-```bash
-make seed-lessons SUPABASE_SERVICE_KEY=<key>
-make seed-vocabulary SUPABASE_SERVICE_KEY=<key>
-make seed-podcasts SUPABASE_SERVICE_KEY=<key>      # uploads audio to Supabase Storage
-```
-
----
-
-### Text content (in repo)
-
-```
-scripts/data/
-├── lessons.ts              — LEGACY: display sections for lessons 1–3 only
-├── vocabulary.ts           — LEGACY: vocabulary for lessons 1–3 only
-├── podcasts.ts             — podcast metadata and transcripts (all lessons)
-└── staging/
-    └── lesson-N/           — PIPELINE: source of truth for lessons 4+
-        ├── lesson.ts       — lesson structure + sections
-        ├── learning-items.ts — vocabulary with review_status
-        ├── grammar-patterns.ts — grammar pattern enrichment
-        └── candidates.ts   — exercise candidates
-```
-
-### Local files (not in repo)
-All local content files are gitignored. Directories:
+### Local content directories (gitignored)
 
 ```
 content/
-├── raw/             — source page images (gitignored)
-│   └── lesson-<N>/ — one subdirectory per lesson
-├── extracted/       — intermediate JSON + plain-text exports (gitignored)
-├── lessons/         — lesson audio files (gitignored)
-└── podcasts/        — NotebookLM-generated podcast audio (gitignored)
+├── raw/             — source page images (per-lesson subdirs)
+├── extracted/       — OCR + LLM intermediates
+├── lessons/         — lesson audio files
+└── podcasts/        — NotebookLM-generated podcast audio
 ```
 
-### Deploying content
+### Migration source-of-truth rule
 
-**Lessons 4+ (pipeline):**
-```bash
-bun scripts/publish-approved-content.ts <N> --dry-run
-bun scripts/publish-approved-content.ts <N>
-```
+All schema changes that should reach the live DB via `make migrate` must land in `scripts/migration.sql` — that file is the canonical source applied by the pipeline. Files in `scripts/migrations/*.sql` are paper-trail audit logs and emergency rollback tools; **do NOT add new schema there**. See the comment block at the top of `scripts/migration.sql` for the per-policy `drop policy if exists; create policy ...` idiom that replaces the old bulk-drop pattern (removed 2026-05-08 — it silently wiped policies declared in standalone files).
 
-**Lessons 1–3 (legacy) and shared infrastructure:**
-```bash
-make migrate                                     # apply schema via SSH → docker exec (idempotent, re-runnable)
-make seed-lessons SUPABASE_SERVICE_KEY=<key>
-make seed-vocabulary SUPABASE_SERVICE_KEY=<key>
-make seed-podcasts SUPABASE_SERVICE_KEY=<key>    # uploads audio from content/podcasts/
-make seed-flashcards SUPABASE_SERVICE_KEY=<key>  # seeds public decks from vocabulary
-make seed-all SUPABASE_SERVICE_KEY=<key>         # lessons + vocabulary (legacy only)
-```
+**Before merging any change to `scripts/migration.sql`**, run `make migrate-idempotent-check` — it applies the file twice and asserts the second run leaves the DB green, catching the bulk-drop bug class.
 
-`make migrate` requires `POSTGRES_PASSWORD` in `.env.local`. It SSHes into the homelab (`mrblond@192.168.2.51`), runs the SQL via `docker exec supabase-db`, and automatically reloads the PostgREST schema cache. Safe to re-run after any container recreation.
+`make migrate` requires `POSTGRES_PASSWORD` in `.env.local`. It SSHes to the homelab, runs the SQL via `docker exec supabase-db`, automatically reloads the PostgREST schema cache, and chains `check-supabase-deep` after applying SQL — any policy/grant regression is caught immediately. The service role key is NOT in the repo; get it from the Supabase dashboard on the homelab.
 
-The service role key is NOT stored in the repo. Get it from the Supabase dashboard on the homelab.
-
-### Health checks
+### Health checks (quick reference)
 
 ```bash
-make check-supabase            # tier 1: API, CORS, schema exposure, auth, storage (uses .env.local)
-make check-supabase-deep       # tier 2: tables, RLS, grants, policies via schema_health() RPC
-make migrate-idempotent-check  # applies migration.sql twice + check-supabase-deep — required before merging migration changes
-make pre-deploy                # full gauntlet: lint + test + build + check-supabase + check-supabase-deep
+make check-supabase            # tier 1: API, CORS, schema exposure, auth, storage
+make check-supabase-deep       # tier 2: tables, RLS, grants, policies (catches the 2026-05-02 RLS-no-policy class)
+make migrate-idempotent-check  # gate before merging migration.sql changes
+make pre-deploy                # full gauntlet: lint + test + build + tier 1 + tier 2
 ```
 
-Run `check-supabase` any time you suspect infrastructure issues. Run `check-supabase-deep` after migrations to verify schema state — it now also fails if any RLS-enabled table has zero policies (catches the 2026-05-02 regression where `lesson_page_blocks` and 9 other tables ended up RLS-on with no SELECT policy after a deploy).
-
-`make migrate` automatically chains `check-supabase-deep` after applying SQL — any policy/grant regression introduced by a migration is caught immediately rather than after deploying to prod.
-
-`make pre-deploy` is the documented gate to run before merging migration changes to main. GitHub Actions cannot reach the homelab, so this gate runs locally. All three scripts print actionable fix instructions on failure.
-
-**Migration source-of-truth rule.** All schema changes that should reach the live DB via `make migrate` must land in `scripts/migration.sql` — that file is the canonical source applied by the pipeline. Files in `scripts/migrations/*.sql` are paper-trail audit logs and emergency rollback tools; do NOT add new schema there. See the comment block at the top of `scripts/migration.sql` for the full convention, including the per-policy `drop policy if exists; create policy ...` idiom that replaces the old bulk-drop pattern (removed 2026-05-08 — it silently wiped policies declared in standalone files). Before merging any change to `scripts/migration.sql`, run `make migrate-idempotent-check` — it applies the file twice and asserts the second run leaves the DB green, catching the bulk-drop bug class.
+`make pre-deploy` is the documented gate before merging migration changes — GitHub Actions cannot reach the homelab, so this runs locally.
 
 ## Testing
 
@@ -450,82 +375,12 @@ POSTGRES_PASSWORD=<postgres password>     # for make migrate
 
 ## Deployment
 
-The image is built automatically via **GitHub Actions** on every push to `main` (workflow: "Build and Push Docker Image"). The built image is pushed to `ghcr.io/albertvd/learning-indonesian:latest`.
+GitHub Actions builds and pushes to `ghcr.io/albertvd/learning-indonesian:latest` on every push to `main`. The homelab container recreate is **manual** — Portainer MCP (preferred, environment id `3`) or SSH (`mrblond@master-docker`, fallback). See `docs/process/deploy.md` for the full procedure with the verified pull/recreate/verify commands and the Traefik label set.
 
-### Deploying a new version
-
-1. **Push to main** — GitHub Actions builds and pushes the image automatically.
-
-2. **Wait for the build** — monitor with:
-   ```bash
-   gh run list --repo AlbertvD/learning-indonesian --limit 5
-   gh run watch <run-id> --repo AlbertvD/learning-indonesian
-   ```
-
-3. **Pull the new image on the homelab.** Two paths — Portainer is preferred (no SSH session needed), SSH is the fallback:
-
-   **Via Portainer MCP** (verified working 2026-05-09):
-   ```
-   mcp__portainer__dockerProxy
-     environmentId: 3
-     method: POST
-     dockerAPIPath: /images/create
-     queryParams: [{key: fromImage, value: ghcr.io/albertvd/learning-indonesian}, {key: tag, value: latest}]
-   ```
-
-   **Via SSH** (fallback):
-   ```bash
-   ssh mrblond@master-docker "sudo docker pull ghcr.io/albertvd/learning-indonesian:latest"
-   ```
-
-4. **Recreate the container** — stop, remove, and relaunch with the same labels.
-
-   **Via Portainer MCP** (sequence of dockerProxy calls — Traefik labels are below):
-   ```
-   POST /containers/learning-indonesian/stop  (queryParams: t=10)
-   DELETE /containers/learning-indonesian
-   POST /containers/create  (queryParams: name=learning-indonesian)
-     body: { "Image":"ghcr.io/albertvd/learning-indonesian:latest",
-             "Labels": { ... see SSH command below for the full Traefik label set ... },
-             "HostConfig": { "NetworkMode":"proxy",
-                              "RestartPolicy": {"Name":"unless-stopped"} } }
-   POST /containers/learning-indonesian/start
-   ```
-
-   **Via SSH** (fallback — full label set baked in):
-   ```bash
-   ssh mrblond@master-docker "sudo docker stop learning-indonesian && sudo docker rm learning-indonesian && sudo docker run -d \
-     --name learning-indonesian \
-     --restart unless-stopped \
-     --network proxy \
-     --label 'traefik.enable=true' \
-     --label 'traefik.http.routers.learning-indonesian.rule=Host(\`indonesian.duin.home\`)' \
-     --label 'traefik.http.routers.learning-indonesian.entrypoints=websecure' \
-     --label 'traefik.http.routers.learning-indonesian.tls.certresolver=stepca' \
-     --label 'traefik.http.routers.learning-indonesian.middlewares=duinhuis-auth@docker' \
-     --label 'traefik.http.services.learning-indonesian.loadbalancer.server.port=80' \
-     --label 'traefik.http.routers.learning-indonesian-static.rule=Host(\`indonesian.duin.home\`) && (Path(\`/manifest.webmanifest\`) || PathRegexp(\`^/pwa-icon\`))' \
-     --label 'traefik.http.routers.learning-indonesian-static.entrypoints=websecure' \
-     --label 'traefik.http.routers.learning-indonesian-static.tls.certresolver=stepca' \
-     --label 'traefik.http.routers.learning-indonesian-static.service=learning-indonesian' \
-     ghcr.io/albertvd/learning-indonesian:latest"
-   ```
-
-5. **Verify** — check the container is running and on the new image:
-
-   **Via Portainer MCP:**
-   ```
-   GET /containers/learning-indonesian/json   → check State.Running + Config.Labels.org.opencontainers.image.revision
-   ```
-
-   **Via SSH:**
-   ```bash
-   ssh mrblond@master-docker "sudo docker inspect learning-indonesian --format '{{.State.Status}} — image: {{.Config.Image}}'"
-   ```
-
-**Note:** Docker is not installed locally. All image operations happen on the homelab. The Portainer MCP environment ID is `3` (`local`); its `dockerProxy` tool can pull images and recreate containers — verified 2026-05-09. SSH to `mrblond@master-docker` remains available as the fallback when Portainer is offline.
-
-The `docker-compose.yml` reference in `homelab-configs/services/learning-indonesian/` is kept for documentation but the container is managed directly via `docker run` as above.
+Architectural facts that matter:
+- The container is managed directly via `docker run`, not docker-compose. The `homelab-configs/services/learning-indonesian/docker-compose.yml` is documentation only.
+- Docker is **not** installed locally. All image operations happen on the homelab.
+- Pre-deploy gate (run locally before merging anything touching `scripts/migration.sql`): `make pre-deploy` — GitHub Actions cannot reach the homelab.
 
 ## Admin design surfaces
 
@@ -581,8 +436,14 @@ Every design document MUST include a **"Supabase Requirements"** section. No fea
 
 ## Docs
 
-- Design: `docs/plans/2026-03-16-learning-indonesian-design.md`
-- Implementation plan: `docs/plans/2026-03-16-learning-indonesian-implementation.md`
+| Where | What you'll find |
+|---|---|
+| `docs/target-architecture.md` | The locked-in module roster the codebase is migrating toward (status: not yet built). Reference for fold decisions. |
+| `docs/adr/` | Architecture Decision Records — the *why* behind the capability system (0001 capability core, 0002 stages derived, 0003 FSRS on capabilities, 0004 atomic review commits, 0005 lesson reader passivity). |
+| `docs/current-system/` | Living reference docs of the *current* implementation. See `README.md` for the index. |
+| `docs/current-system/modules/` | Per-module specs (see "Module specs" above). |
+| `docs/process/` | Operational workflows: `content-pipeline.md` (authoring + 2-stage publish), `deploy.md` (homelab container recreate). |
+| `docs/plans/` | Forward-looking specs (`draft`/`approved`/`implementing`). Shipped plans are archived to `/Users/albert/home/learning-indonesian-archive/`. See `ARCHIVE.md` at repo root. |
 
 ## Related Repos
 
