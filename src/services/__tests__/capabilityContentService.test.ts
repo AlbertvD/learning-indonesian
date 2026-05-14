@@ -9,6 +9,31 @@ import { buildCanonicalKey } from '@/lib/capabilities/canonicalKey'
 vi.mock('@/lib/supabase', () => ({ supabase: {} }))
 
 // ─── Mock plumbing ───
+//
+// URL-budget guard: every .in(column, ids) call in this test suite is checked
+// against Kong's 8 KB request-line buffer. Any unbounded IN that would overflow
+// in production fails the test here, regardless of whether the caller is the
+// distractor-pool path or something added later. The check is unconditional —
+// new tests don't need to opt in.
+
+const KONG_REQUEST_LINE_LIMIT_BYTES = 8 * 1024
+
+function assertUrlBudget(table: string, column: string, ids: readonly unknown[]): void {
+  // Mirrors how supabase-js + PostgREST encode .in() into a query string:
+  //   /rest/v1/{table}?select=*&{column}=in.(id1,id2,...)
+  // Commas/parens/colons get percent-encoded, so each id contributes its
+  // own length plus a worst-case 3-byte separator overhead. The constant
+  // prefix covers `/rest/v1/{table}?select=*&{column}=in.(...)` plus headroom.
+  const URL_PREFIX_BYTES = 256
+  const SEPARATOR_BYTES = 3
+  const projected = URL_PREFIX_BYTES + ids.reduce<number>((sum, id) => sum + String(id).length + SEPARATOR_BYTES, 0)
+  if (projected > KONG_REQUEST_LINE_LIMIT_BYTES) {
+    throw new Error(
+      `Unsafe IN fetch on ${table}.${column}: ${ids.length} ids would produce a ~${projected} B URL, `
+      + `over Kong's ${KONG_REQUEST_LINE_LIMIT_BYTES} B limit. Route the caller through chunkedIn.`,
+    )
+  }
+}
 
 interface MockTable {
   rows: unknown[]
@@ -21,7 +46,10 @@ function makeMockClient(tables: Record<string, MockTable>) {
     const chain: any = {
       select: () => chain,
       eq: () => chain,
-      in: () => chain,
+      in: (column: string, ids: readonly unknown[]) => {
+        assertUrlBudget(table, column, ids)
+        return chain
+      },
       insert: (row: unknown) => {
         t.inserts.push(row)
         return Promise.resolve({ data: null, error: null })
@@ -300,6 +328,46 @@ describe('capabilityContentService.resolveBlocks — distractor pool chunking', 
       .map(ids => ids.length)
       .sort((a, b) => b - a)
     expect(poolChunkSizes).toEqual([50, 50, 30])
+  })
+})
+
+describe('capabilityContentService.resolveBlocks — URL-budget guard at production scale', () => {
+  it('survives a 667-item distractor pool (full union of every activated lesson)', async () => {
+    // Worst-case observed in prod (all 9 lessons activated, union of every
+    // anchored item). The shared makeMockClient asserts URL budget on every
+    // .in() — if anyone removes chunkedIn from fetchLearningItemsById or
+    // fetchMeanings, this test throws with a clear message.
+    const poolRows = Array.from({ length: 667 }, (_, i) => ({
+      id: `ctx-${i}`,
+      learning_item_id: `00000000-0000-0000-0000-${String(i).padStart(12, '0')}`,
+      context_type: 'phrase',
+      source_text: '',
+      translation_text: '',
+      difficulty: 'A1',
+      topic_tag: null,
+      is_anchor_context: true,
+      source_lesson_id: 'lesson-A',
+      source_section_id: null,
+    }))
+    const tables: Record<string, MockTable> = {
+      learning_items: { rows: [{
+        id: 'uuid-1', item_type: 'word', base_text: 'item-1', normalized_text: 'item-1',
+        language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null,
+        source_card_id: null, notes: null, is_active: true, pos: 'noun',
+        created_at: '', updated_at: '',
+      }], inserts: [] },
+      item_meanings: { rows: [], inserts: [] },
+      item_contexts: { rows: poolRows, inserts: [] },
+      item_answer_variants: { rows: [], inserts: [] },
+      exercise_variants: { rows: [], inserts: [] },
+      capability_artifacts: { rows: [], inserts: [] },
+      capability_resolution_failure_events: { rows: [], inserts: [] },
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    // Must not throw — the guard would fire if any IN clause exceeded budget.
+    await expect(
+      service.resolveBlocks([makeBlock({ itemId: 'item-1', exerciseType: 'meaning_recall' })], baseOptions),
+    ).resolves.toBeDefined()
   })
 })
 
