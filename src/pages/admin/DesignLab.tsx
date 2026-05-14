@@ -20,30 +20,10 @@ import {
   type OptionState,
   type InputState,
   type PromptCardVariant,
-  type FeedbackCopy,
 } from '@/components/exercises/primitives'
+import { FEEDBACK_COPY_NL } from '@/components/experience/feedbackCopy'
 import { AdminGuard } from './AdminGuard'
 import classes from './DesignLab.module.css'
-
-const FEEDBACK_COPY_NL: FeedbackCopy = {
-  outcomeCorrect:     'Correct',
-  outcomeAlmost:      'Bijna goed',
-  outcomeWrong:       'Fout',
-  announceCorrect:    'Correct',
-  announceWrong:      'Fout. Het juiste antwoord is {x}.',
-  announceFuzzy:      'Bijna goed — het antwoord is {x}.',
-  roleLabelHeard:     'Je hoorde',
-  roleLabelShown:     'Je zag',
-  roleLabelSaid:      'Het woord was',
-  roleLabelTarget:    'Juist antwoord',
-  roleLabelYourAnswer:'Jouw antwoord',
-  roleLabelMeaning:   'Betekent',
-  roleLabelExplanation:'Uitleg',
-  alsoAccepted:       'Ook goed',
-  replayAudio:        'Herhaal audio',
-  commitFailed:       'Kon beoordeling niet opslaan — we gaan toch door.',
-  emptyAnswer:        '(geen antwoord)',
-}
 
 const OPTION_STATES: OptionState[] = ['idle', 'focused', 'disabled', 'correct', 'wrong', 'answer']
 const INPUT_STATES: InputState[] = ['idle', 'correct', 'wrong', 'fuzzy', 'disabled']

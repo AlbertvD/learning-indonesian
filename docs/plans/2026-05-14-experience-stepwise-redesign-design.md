@@ -1,5 +1,9 @@
 ---
-status: approved
+status: shipped
+implementation: 3f7aab9
+merged_at: 2026-05-14
+implementation_paths:
+  - src/components/experience/
 ---
 
 # Experience module — stepwise redesign
