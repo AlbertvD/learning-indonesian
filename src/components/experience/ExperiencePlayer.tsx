@@ -225,6 +225,7 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
               )
             : (
                 <CapabilityExerciseFrame
+                  key={currentBlock.id}
                   block={currentBlock}
                   context={contexts.get(currentBlock.id)!}
                   userLanguage={userLanguage}

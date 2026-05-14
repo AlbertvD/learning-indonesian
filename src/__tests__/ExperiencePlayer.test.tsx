@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
@@ -206,6 +207,45 @@ describe('ExperiencePlayer — stepwise shell', () => {
 
     expect(screen.queryByText('Doorgaan')).not.toBeInTheDocument()
     expect(screen.getByText('Oefening 2 van 2')).toBeInTheDocument()
+  })
+
+  it('2a. Each card mounts fresh between transitions (regression — shared state bug)', async () => {
+    const user = userEvent.setup()
+    let mountCount = 0
+    function CountingStub(props: { onAnswer: (outcome: { wasCorrect: boolean; isFuzzy: boolean; latencyMs: number; rawResponse: string | null }) => void }) {
+      const [submitted, setSubmitted] = useState(false)
+      useEffect(() => { mountCount += 1 }, [])
+      return (
+        <div data-testid="stub-exercise">
+          <button
+            disabled={submitted}
+            onClick={() => {
+              setSubmitted(true)
+              props.onAnswer({ wasCorrect: true, isFuzzy: false, latencyMs: 100, rawResponse: 'ans' })
+            }}
+          >
+            Submit
+          </button>
+        </div>
+      )
+    }
+    const { resolveExerciseComponent } = await import('@/components/exercises/registry')
+    vi.mocked(resolveExerciseComponent).mockImplementation(() => CountingStub as never)
+
+    const blocks = [
+      makeBlock('b1', 'due_review', 'recognition_mcq'),
+      makeBlock('b2', 'new_introduction', 'recognition_mcq'),
+    ]
+    const p = makePlan(blocks)
+    const contexts = new Map(blocks.map(b => [b.id, makeOk(b)]))
+    renderPlayer({ ...baseProps, plan: p, contexts })
+
+    expect(mountCount).toBe(1)
+    await user.click(screen.getByRole('button', { name: 'Submit' }))
+
+    await waitFor(() => expect(screen.getByText('Oefening 2 van 2')).toBeInTheDocument())
+    expect(mountCount).toBe(2)
+    expect(screen.getByRole('button', { name: 'Submit' })).not.toBeDisabled()
   })
 
   it('3. Wrong shows Doorgaan, advances on tap', async () => {
