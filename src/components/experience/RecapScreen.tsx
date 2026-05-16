@@ -1,7 +1,7 @@
 import { Stack, Button, Text, Group, SimpleGrid } from '@mantine/core'
 import { HeroCard } from '@/components/page/primitives'
-import { exerciseLabel } from '@/lib/session/sessionLabels'
-import type { SessionBlock } from '@/lib/session/sessionPlan'
+import { capabilityDisplay } from '@/lib/session-builder'
+import type { SessionBlock } from '@/lib/session-builder'
 
 interface RecapScreenProps {
   renderableBlocks: SessionBlock[]
@@ -92,7 +92,7 @@ export function RecapScreen({
           return (
             <li key={b.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0' }}>
               <Text size="sm" c="dimmed">{kicker}</Text>
-              <Text size="sm" fw={500}>{exerciseLabel(b.renderPlan.exerciseType)}</Text>
+              <Text size="sm" fw={500}>{capabilityDisplay(b.renderPlan.capabilityType).label}</Text>
             </li>
           )
         })}

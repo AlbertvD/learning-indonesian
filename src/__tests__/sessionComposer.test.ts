@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { composeSession } from '@/lib/session/sessionComposer'
+import { compose } from '@/lib/session-builder'
 import type { CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
 
 const activeSnapshot: CapabilityScheduleSnapshot = {
@@ -24,7 +24,7 @@ const dormantSnapshot: CapabilityScheduleSnapshot = {
 
 describe('capability session composer', () => {
   it('orders due review items before eligible new introductions', async () => {
-    const plan = await composeSession({
+    const plan = await compose({
       sessionId: 'session-1',
       mode: 'standard',
       dueCapabilities: [{
@@ -70,7 +70,7 @@ describe('capability session composer', () => {
   })
 
   it('omits failed resolutions instead of falling back to legacy content', async () => {
-    const plan = await composeSession({
+    const plan = await compose({
       sessionId: 'session-1',
       mode: 'standard',
       dueCapabilities: [{
@@ -97,7 +97,7 @@ describe('capability session composer', () => {
   })
 
   it('keeps a clean short session instead of padding to the limit', async () => {
-    const plan = await composeSession({
+    const plan = await compose({
       sessionId: 'session-1',
       mode: 'standard',
       dueCapabilities: [],
@@ -120,7 +120,7 @@ describe('capability session composer', () => {
   })
 
   it('carries queue-drying diagnostics into the session plan', async () => {
-    const plan = await composeSession({
+    const plan = await compose({
       sessionId: 'session-1',
       mode: 'standard',
       dueCapabilities: [],
@@ -141,7 +141,7 @@ describe('capability session composer', () => {
   })
 
   it('composes lesson practice with due reviews, new introductions, and extra selected reviews', async () => {
-    const plan = await composeSession({
+    const plan = await compose({
       sessionId: 'session-1',
       mode: 'lesson_practice',
       dueCapabilities: [{
@@ -196,7 +196,7 @@ describe('capability session composer', () => {
   })
 
   it('composes lesson review without introducing new lesson content', async () => {
-    const plan = await composeSession({
+    const plan = await compose({
       sessionId: 'session-1',
       mode: 'lesson_review',
       dueCapabilities: [{

@@ -9,7 +9,7 @@ import type {
   ItemAnswerVariant,
   ExerciseVariant,
 } from '@/types/learning'
-import type { SessionBlock } from '@/lib/session/sessionPlan'
+import type { SessionBlock } from '@/lib/session-builder'
 import type { ArtifactKind } from '@/lib/capabilities/capabilityTypes'
 import type { CapabilityArtifact } from '@/lib/capabilities/artifactRegistry'
 import type { ResolutionReasonCode } from '@/services/capabilityContentService'

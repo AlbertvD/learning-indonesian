@@ -8,7 +8,7 @@ import type {
   CapabilityReviewSessionContext,
   SessionPlan,
   SessionBlock,
-} from '@/lib/session/sessionPlan'
+} from '@/lib/session-builder'
 import type { CapabilityRenderContext } from '@/services/capabilityContentService'
 import type { ExerciseItem } from '@/types/learning'
 

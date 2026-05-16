@@ -7,7 +7,7 @@ import type {
   ExerciseItem, ExerciseType,
   LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant,
 } from '@/types/learning'
-import type { SessionBlock } from '@/lib/session/sessionPlan'
+import type { SessionBlock } from '@/lib/session-builder'
 import type { ArtifactKind } from '@/lib/capabilities/capabilityTypes'
 import type { CapabilityArtifact } from '@/lib/capabilities/artifactRegistry'
 import { decodeCanonicalKey, extractItemKey } from './capabilityContentService.internal'

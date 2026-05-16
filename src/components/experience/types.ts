@@ -1,5 +1,5 @@
 import type { AnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
-import type { SessionBlock } from '@/lib/session/sessionPlan'
+import type { SessionBlock } from '@/lib/session-builder'
 
 export interface SessionAnswerEvent {
   sessionId: string

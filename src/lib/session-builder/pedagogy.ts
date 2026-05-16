@@ -3,8 +3,8 @@ import type {
   CapabilityType,
 } from '@/lib/capabilities/capabilityTypes'
 import type { SkillType } from '@/types/learning'
-import { decideLoadBudget, type LoadBudgetDecision, type PlannerSessionMode } from '@/lib/pedagogy/loadBudgets'
-import type { SessionPosture } from '@/lib/pedagogy/sessionPosture'
+import { decideLoadBudget, type LoadBudgetDecision } from '@/lib/session-builder/loadBudget'
+import type { SessionMode } from '@/lib/session-builder/model'
 import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/services/capabilityService'
 
 export interface PlannerCapability {
@@ -38,9 +38,7 @@ export type PlannerReason =
   | 'already_active_or_retired'
   | 'lesson_not_activated'
   | 'missing_prerequisite'
-  | 'difficulty_jump'
   | 'recent_failure_fatigue'
-  | 'not_useful_for_current_path'
   | 'wrong_session_mode'
   | 'load_budget_exhausted'
 
@@ -67,8 +65,7 @@ export interface LearningPlan {
 
 export interface PedagogyInput {
   userId: string
-  mode: PlannerSessionMode
-  posture?: SessionPosture
+  mode: SessionMode
   now: Date
   preferredSessionSize: number
   dueCount: number
@@ -79,8 +76,6 @@ export interface PedagogyInput {
   // unless its lessonId is in this set. Cross-lesson capabilities (lessonId
   // null) bypass the gate.
   activatedLessons: ReadonlySet<string>
-  activeGoalTags?: string[]
-  maxNewDifficultyLevel?: number
   recentFailures?: Array<{
     canonicalKey: string
     failedAt: string
@@ -116,29 +111,6 @@ function isHiddenAudioTask(capability: PlannerCapability): boolean {
   )
 }
 
-function balancedIntroductionPriority(capability: PlannerCapability): number {
-  if (capability.capabilityType === 'text_recognition') return 0
-  if (capability.capabilityType === 'l1_to_id_choice') return 1
-  if (capability.capabilityType === 'meaning_recall') return 2
-  if (capability.capabilityType === 'form_recall') return 3
-  if (isPattern(capability)) return 4
-  return 5
-}
-
-function orderedReadyCapabilities(input: PedagogyInput): PlannerCapability[] {
-  if (input.posture !== 'balanced') return [...input.readyCapabilities]
-  return [...input.readyCapabilities].sort((a, b) => (
-    balancedIntroductionPriority(a) - balancedIntroductionPriority(b)
-    || a.canonicalKey.localeCompare(b.canonicalKey)
-  ))
-}
-
-function matchesActiveGoalTags(capability: PlannerCapability, activeGoalTags?: string[]): boolean {
-  const tags = activeGoalTags ?? []
-  if (tags.length === 0) return true
-  return tags.some(tag => capability.goalTags?.includes(tag))
-}
-
 function hasRecentFailureFatigue(input: {
   capability: PlannerCapability
   now: Date
@@ -153,17 +125,14 @@ function hasRecentFailureFatigue(input: {
   ))
 }
 
-function isAllowedInSessionMode(input: {
-  capability: PlannerCapability
-  mode: PlannerSessionMode
-}): boolean {
-  if (input.capability.sourceKind === 'podcast_phrase') {
-    return input.mode === 'podcast'
-  }
-  return true
+function isAllowedInSessionMode(capability: PlannerCapability): boolean {
+  // podcast_phrase capabilities have no live session mode today; the only
+  // mode that admitted them was the unwired 'podcast' mode (retired with the
+  // posture system). Suppress them everywhere until a podcast surface ships.
+  return capability.sourceKind !== 'podcast_phrase'
 }
 
-function isLessonScopedMode(mode: PlannerSessionMode): boolean {
+function isLessonScopedMode(mode: SessionMode): boolean {
   return mode === 'lesson_practice' || mode === 'lesson_review'
 }
 
@@ -180,7 +149,6 @@ function isInSelectedLessonScope(input: {
 export function planLearningPath(input: PedagogyInput): LearningPlan {
   const loadBudget = decideLoadBudget({
     mode: input.mode,
-    posture: input.posture,
     preferredSessionSize: input.preferredSessionSize,
     dueCount: input.dueCount,
   })
@@ -194,7 +162,7 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
   let productionTaskCount = 0
   let hiddenAudioTaskCount = 0
 
-  for (const capability of orderedReadyCapabilities(input)) {
+  for (const capability of input.readyCapabilities) {
     const suppress = (reason: PlannerReason): void => {
       suppressedCapabilities.push({ canonicalKey: capability.canonicalKey, reason })
     }
@@ -227,29 +195,12 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
       suppress('missing_prerequisite')
       continue
     }
-    if (
-      input.maxNewDifficultyLevel != null
-      && (capability.difficultyLevel == null || capability.difficultyLevel > input.maxNewDifficultyLevel)
-    ) {
-      suppress('difficulty_jump')
-      continue
-    }
     if (hasRecentFailureFatigue({ capability, now: input.now, recentFailures: input.recentFailures })) {
       suppress('recent_failure_fatigue')
       continue
     }
-    if (!isAllowedInSessionMode({ capability, mode: input.mode })) {
+    if (!isAllowedInSessionMode(capability)) {
       suppress('wrong_session_mode')
-      continue
-    }
-    // Two-signal "useful for current path" check (R1 v2 I20):
-    // (a) for lesson-scoped sessions, the lesson-scope gate above already
-    //     filtered, so all that remains is goal-tag matching for free-form
-    //     sessions.
-    // (b) otherwise gate by goal-tag matching with default-allow if no tags
-    //     are configured.
-    if (!isLessonScopedMode(input.mode) && !matchesActiveGoalTags(capability, input.activeGoalTags)) {
-      suppress('not_useful_for_current_path')
       continue
     }
     // Lesson-activation gate (replaces source-progress gate, retirement #6).

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { buildFeedbackInput } from '../buildFeedbackInput'
-import type { SessionBlock } from '@/lib/session/sessionPlan'
+import type { SessionBlock } from '@/lib/session-builder'
 import type { CapabilityRenderContext } from '@/services/capabilityContentService'
 import type { ExerciseItem, ExerciseType } from '@/types/learning'
 

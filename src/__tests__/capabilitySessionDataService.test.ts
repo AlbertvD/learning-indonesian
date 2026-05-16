@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createCapabilitySessionDataService } from '@/services/capabilitySessionDataService'
+import { createSessionBuilderAdapter } from '@/lib/session-builder/adapter'
 
 vi.mock('@/lib/supabase', () => ({ supabase: {} }))
 
@@ -15,7 +15,7 @@ function query(data: unknown[] = []) {
 
 describe('capability session data service', () => {
   it('derives planner dueCount from schedulable due rows only', async () => {
-    const service = createCapabilitySessionDataService({
+    const service = createSessionBuilderAdapter({
       schema: () => ({
         from: (table: string) => {
           if (table === 'learning_capabilities') {
@@ -129,7 +129,7 @@ describe('capability session data service', () => {
   })
 
   it('passes production planner gates from metadata and learner state', async () => {
-    const service = createCapabilitySessionDataService({
+    const service = createSessionBuilderAdapter({
       schema: () => ({
         from: (table: string) => {
           if (table === 'learning_capabilities') {
@@ -197,7 +197,6 @@ describe('capability session data service', () => {
       lessonId: 'lesson-uuid-1',
     }))
     expect(snapshot.plannerInput.activatedLessons).toEqual(new Set(['lesson-uuid-1']))
-    expect(snapshot.plannerInput.maxNewDifficultyLevel).toBe(5)
     expect(snapshot.plannerInput.recentFailures).toEqual([{
       canonicalKey: 'capability-key',
       failedAt: '2026-04-25T11:30:00.000Z',
@@ -207,7 +206,7 @@ describe('capability session data service', () => {
   })
 
   it('loads Dutch-to-Indonesian choice as ready planner material', async () => {
-    const service = createCapabilitySessionDataService({
+    const service = createSessionBuilderAdapter({
       schema: () => ({
         from: (table: string) => {
           if (table === 'learning_capabilities') {
@@ -277,7 +276,7 @@ describe('capability session data service', () => {
   })
 
   it('carries selected lesson scope into the planner snapshot', async () => {
-    const service = createCapabilitySessionDataService({
+    const service = createSessionBuilderAdapter({
       schema: () => ({
         from: () => query([]),
       }),
@@ -298,7 +297,7 @@ describe('capability session data service', () => {
   })
 
   it('exposes the activated-lessons set so the planner can gate lesson-scoped capabilities', async () => {
-    const service = createCapabilitySessionDataService({
+    const service = createSessionBuilderAdapter({
       schema: () => ({
         from: (table: string) => {
           if (table === 'learner_lesson_activation') {

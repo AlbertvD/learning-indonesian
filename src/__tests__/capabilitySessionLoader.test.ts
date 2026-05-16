@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { loadCapabilitySessionPlan, loadCapabilitySessionPlanForUser, type CapabilitySessionDataAdapter } from '@/lib/session/capabilitySessionLoader'
+import { loadCapabilitySessionPlan, buildSession, type CapabilitySessionDataAdapter } from '@/lib/session-builder/builder'
 import type { LearnerCapabilityStateRow } from '@/lib/capabilities/capabilityScheduler'
 import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
-import type { PlannerCapability, PlannerLearnerCapabilityState } from '@/lib/pedagogy/pedagogyPlanner'
+import type { PlannerCapability, PlannerLearnerCapabilityState } from '@/lib/session-builder/pedagogy'
 import type { ArtifactIndex } from '@/lib/capabilities/artifactRegistry'
 
 const now = new Date('2026-04-25T10:00:00.000Z')
@@ -208,7 +208,7 @@ describe('capability session loader', () => {
   it('loads user sessions through the production data adapter seam', async () => {
     const adapter: CapabilitySessionDataAdapter = {
       listLearnerCapabilityStates: async () => {
-        throw new Error('loadCapabilitySessionPlanForUser should use the full snapshot loader')
+        throw new Error('buildSession should use the full snapshot loader')
       },
       loadCapabilitySessionData: async request => baseInput({
         schedulerRows: [activeState({ userId: request.userId })],
@@ -223,7 +223,7 @@ describe('capability session loader', () => {
       }),
     }
 
-    const plan = await loadCapabilitySessionPlanForUser({
+    const plan = await buildSession({
       enabled: true,
       sessionId: 'session-1',
       userId: 'user-1',
@@ -238,54 +238,6 @@ describe('capability session loader', () => {
       kind: 'due_review',
       capabilityId: 'capability-1',
     }))
-  })
-
-  it('passes decided comeback/recovery posture into the planner before composing new material', async () => {
-    const prerequisite = 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl'
-    const formKey = 'cap:v1:item:learning_items/item-1:form_recall:l1_to_id:text:nl'
-    const formProjection = projectedCapability({
-      canonicalKey: formKey,
-      capabilityType: 'form_recall',
-      skillType: 'form_recall',
-      direction: 'l1_to_id',
-      requiredArtifacts: ['meaning:l1', 'base_text', 'accepted_answers:id'],
-      prerequisiteKeys: [prerequisite],
-    })
-    const input = {
-      ...baseInput({
-        capabilitiesByKey: new Map([[formKey, formProjection]]),
-        readinessByKey: new Map([[formKey, { status: 'ready' as const, allowedExercises: ['typed_recall' as const] }]]),
-        artifactIndex: {
-          'meaning:l1': [{ qualityStatus: 'approved' as const, sourceRef }],
-          base_text: [{ qualityStatus: 'approved' as const, sourceRef }],
-          'accepted_answers:id': [{ qualityStatus: 'approved' as const, sourceRef }],
-        },
-        plannerInput: {
-          userId: 'user-1',
-          preferredSessionSize: 12,
-          dueCount: 2,
-          readyCapabilities: [plannerCapability({
-            id: 'form-capability',
-            canonicalKey: formKey,
-            capabilityType: 'form_recall',
-            skillType: 'form_recall',
-            prerequisiteKeys: [prerequisite],
-          })],
-          learnerCapabilityStates: [{
-            canonicalKey: prerequisite,
-            activationState: 'active',
-            reviewCount: 1,
-            successfulReviewCount: 1,
-          }],
-          activatedLessons: new Set<string>(),
-        },
-      }),
-      posture: 'light_recovery',
-    } as Parameters<typeof loadCapabilitySessionPlan>[0] & { posture: 'light_recovery' }
-
-    const plan = await loadCapabilitySessionPlan(input)
-
-    expect(plan.blocks).toEqual([])
   })
 
   it('loads lesson practice from selected lesson due, new, and active review candidates only', async () => {

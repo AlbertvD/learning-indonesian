@@ -3,7 +3,7 @@
 
 import type { BuilderInput, BuilderResult } from './types'
 import { pickUserLangMeaning } from './helpers'
-import { audibleTextFieldsOf } from '@/lib/session/collectAudibleTexts'
+import { audibleTextFieldsOf } from '@/lib/session-builder'
 
 export function buildMeaningRecall(input: BuilderInput): BuilderResult {
   if (!input.learningItem) {

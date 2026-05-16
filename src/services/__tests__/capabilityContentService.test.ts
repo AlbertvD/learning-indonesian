@@ -1,9 +1,9 @@
 // Service-level tests for capabilityContentService.resolveBlocks.
-// Mocks Supabase's chained query API the same way capabilitySessionDataService.test.ts does.
+// Mocks Supabase's chained query API the same way the session-builder adapter test does.
 
 import { describe, it, expect, vi } from 'vitest'
 import { createCapabilityContentService, type CapabilityContentService } from '../capabilityContentService'
-import type { SessionBlock } from '@/lib/session/sessionPlan'
+import type { SessionBlock } from '@/lib/session-builder'
 import { buildCanonicalKey } from '@/lib/capabilities/canonicalKey'
 
 vi.mock('@/lib/supabase', () => ({ supabase: {} }))

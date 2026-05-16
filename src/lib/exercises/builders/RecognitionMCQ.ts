@@ -4,7 +4,7 @@
 
 import type { BuilderInput, BuilderResult } from './types'
 import { pickUserLangMeaning } from './helpers'
-import { audibleTextFieldsOf } from '@/lib/session/collectAudibleTexts'
+import { audibleTextFieldsOf } from '@/lib/session-builder'
 import { pickDistractorCascade, getSemanticGroup, type DistractorCandidate } from '@/lib/distractors'
 
 export function buildRecognitionMCQ(input: BuilderInput): BuilderResult {

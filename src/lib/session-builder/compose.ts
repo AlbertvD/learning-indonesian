@@ -1,6 +1,6 @@
 import type { CapabilityActivationRequest } from '@/lib/reviews/capabilityReviewProcessor'
 import type { ExerciseRenderPlan } from '@/lib/exercises/exerciseRenderPlan'
-import type { CapabilityReviewSessionContext, SessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session/sessionPlan'
+import type { CapabilityReviewSessionContext, SessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session-builder/model'
 
 interface ResolutionFailure {
   reason: string
@@ -45,7 +45,7 @@ function diagnosticFor(failure: ResolutionFailure): SessionDiagnostic {
   }
 }
 
-export async function composeSession(input: ComposeSessionInput): Promise<SessionPlan> {
+export async function compose(input: ComposeSessionInput): Promise<SessionPlan> {
   const diagnostics: SessionDiagnostic[] = [...(input.diagnostics ?? [])]
   const blocks: SessionPlan['blocks'] = []
 

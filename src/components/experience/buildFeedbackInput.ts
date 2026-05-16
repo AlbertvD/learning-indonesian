@@ -1,6 +1,6 @@
 import { resolveSessionAudioUrl } from '@/services/audioService'
 import type { FeedbackMapInput } from '@/components/exercises/feedbackMapping'
-import type { SessionBlock } from '@/lib/session/sessionPlan'
+import type { SessionBlock } from '@/lib/session-builder'
 import type { CapabilityRenderContext } from '@/services/capabilityContentService'
 import type { SessionAudioMap } from '@/services/audioService'
 

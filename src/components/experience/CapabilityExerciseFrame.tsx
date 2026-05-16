@@ -16,7 +16,7 @@ import { ExerciseSkeleton } from '@/components/exercises/ExerciseSkeleton'
 import { ExerciseErrorBoundary } from '@/components/exercises/ExerciseErrorBoundary'
 import { normalizeAnswerResponse } from '@/lib/answers/normalizeAnswerResponse'
 import type { AnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
-import type { SessionBlock } from '@/lib/session/sessionPlan'
+import type { SessionBlock } from '@/lib/session-builder'
 import type { CapabilityRenderContext } from '@/services/capabilityContentService'
 
 interface CapabilityExerciseFrameProps {
