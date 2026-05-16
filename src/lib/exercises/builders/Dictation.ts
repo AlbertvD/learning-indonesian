@@ -4,7 +4,7 @@
 // audio-only input. Audio resolution is upstream (SessionAudioContext).
 
 import type { BuilderInput, BuilderResult } from './types'
-import { audibleTextFieldsOf } from '@/lib/session/collectAudibleTexts'
+import { audibleTextFieldsOf } from '@/lib/session-builder'
 
 export function buildDictation(input: BuilderInput): BuilderResult {
   if (!input.learningItem) {

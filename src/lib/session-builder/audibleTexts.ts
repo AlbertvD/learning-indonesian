@@ -2,8 +2,7 @@
 // fields on an ExerciseItem are candidates for audio playback."
 //
 // Used by:
-//   - Legacy session path (src/pages/Session.tsx) — replaces the ad-hoc
-//     collector at :378-398.
+//   - Session.tsx via collectAudibleTexts to populate fetchSessionAudioMap.
 //   - Capability path (src/services/capabilityContentService.ts) — each builder
 //     calls audibleTextFieldsOf(builtItem) to populate
 //     BuilderResult.audibleTexts.
@@ -16,8 +15,7 @@ import { normalizeTtsText } from '@/lib/ttsNormalize'
 
 /**
  * Returns every Indonesian-language text field on a single ExerciseItem,
- * normalized for TTS lookup. Strict superset of the legacy collector at
- * Session.tsx:378-398.
+ * normalized for TTS lookup.
  *
  * Texts are deduplicated and sorted lexicographically for stable testing.
  *
@@ -92,17 +90,7 @@ export function audibleTextFieldsOf(item: ExerciseItem): string[] {
 }
 
 /**
- * Legacy entry point. Replaces the ad-hoc collector at Session.tsx:378-398
- * during PR-2 of the capabilityContentService spec.
- */
-export function collectAudibleTextsFromExerciseItems(items: Iterable<ExerciseItem>): string[] {
-  const set = new Set<string>()
-  for (const item of items) for (const t of audibleTextFieldsOf(item)) set.add(t)
-  return [...set].sort()
-}
-
-/**
- * Capability-path entry point. Unions per-block `audibleTexts` from the
+ * Aggregator entry point. Unions per-block `audibleTexts` from the
  * service's render contexts. Builders own per-block harvesting via
  * audibleTextFieldsOf; this helper just dedupes the union.
  */

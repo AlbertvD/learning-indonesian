@@ -6,7 +6,7 @@ import { describe, it, expect } from 'vitest'
 import type {
   LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant,
 } from '@/types/learning'
-import type { SessionBlock } from '@/lib/session/sessionPlan'
+import type { SessionBlock } from '@/lib/session-builder'
 import type { BuilderInput } from '../types'
 import { normalizeTtsText } from '@/lib/ttsNormalize'
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { projectCapabilities } from '@/lib/capabilities/capabilityCatalog'
 import { validateCapability } from '@/lib/capabilities/capabilityContracts'
 import { resolveExercise } from '@/lib/exercises/exerciseResolver'
-import { planLearningPath, type PlannerCapability } from '@/lib/pedagogy/pedagogyPlanner'
+import { planLearningPath, type PlannerCapability } from '@/lib/session-builder/pedagogy'
 import type { CurrentContentSnapshot, ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
 
 const pairSourceRef = 'lesson-9/morphology/meN-baca-membaca'
@@ -88,7 +88,7 @@ describe('morphology capability projection', () => {
     const recall = projection.capabilities.find(capability => capability.capabilityType === 'root_derived_recall')!
     const baseInput = {
       userId: 'user-1',
-      mode: 'pattern_workshop' as const,
+      mode: 'standard' as const,
       now: new Date('2026-04-25T00:00:00.000Z'),
       preferredSessionSize: 10,
       dueCount: 0,
@@ -115,6 +115,6 @@ describe('morphology capability projection', () => {
       reason: 'missing_prerequisite',
     })
     expect(afterRecognition.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual([recall.canonicalKey])
-    expect(afterRecognition.loadBudget.reason).toBe('pattern_workshop_budget')
+    expect(afterRecognition.loadBudget.reason).toBe('standard_daily_budget')
   })
 })

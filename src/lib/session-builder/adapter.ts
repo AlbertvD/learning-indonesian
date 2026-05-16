@@ -14,8 +14,8 @@ import {
 } from '@/lib/capabilities/capabilityTypes'
 import type { LearnerCapabilityStateRow } from '@/lib/capabilities/capabilityScheduler'
 import { getDueCapabilitiesFromRows } from '@/lib/capabilities/capabilityScheduler'
-import type { PlannerCapability, PlannerLearnerCapabilityState } from '@/lib/pedagogy/pedagogyPlanner'
-import type { CapabilitySessionDataAdapter, CapabilitySessionDataRequest, CapabilitySessionDataSnapshot } from '@/lib/session/capabilitySessionLoader'
+import type { PlannerCapability, PlannerLearnerCapabilityState } from '@/lib/session-builder/pedagogy'
+import type { CapabilitySessionDataAdapter, CapabilitySessionDataRequest, CapabilitySessionDataSnapshot } from '@/lib/session-builder/builder'
 import type { SkillType } from '@/types/learning'
 import type {
   CapabilityPublicationStatus,
@@ -198,7 +198,7 @@ function toPlannerState(row: LearnerCapabilityStateRow): PlannerLearnerCapabilit
   }
 }
 
-export function createCapabilitySessionDataService(client: SupabaseSchemaClient = supabase): CapabilitySessionDataAdapter {
+export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supabase): CapabilitySessionDataAdapter {
   const db = () => client.schema('indonesian')
 
   return {
@@ -296,8 +296,6 @@ export function createCapabilitySessionDataService(client: SupabaseSchemaClient 
           readyCapabilities,
           learnerCapabilityStates: schedulerRows.map(toPlannerState),
           activatedLessons,
-          activeGoalTags: [],
-          maxNewDifficultyLevel: 5,
           recentFailures,
           selectedLessonId: request.selectedLessonId,
           selectedSourceRefs: request.selectedSourceRefs,
@@ -310,4 +308,4 @@ export function createCapabilitySessionDataService(client: SupabaseSchemaClient 
   }
 }
 
-export const capabilitySessionDataService = createCapabilitySessionDataService()
+export const sessionBuilderAdapter = createSessionBuilderAdapter()

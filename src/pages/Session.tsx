@@ -8,18 +8,20 @@ import {
   LoadingState,
 } from '@/components/page/primitives'
 import { useAuthStore } from '@/stores/authStore'
-import type { SessionMode } from '@/lib/session/sessionPlan'
+import {
+  buildSession,
+  collectAudibleTexts,
+  sessionBuilderAdapter,
+  type SessionMode,
+  type SessionPlan,
+} from '@/lib/session-builder'
 import { lessonService } from '@/services/lessonService'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
 import { ExperiencePlayer, type SessionAnswerEvent } from '@/components/experience/ExperiencePlayer'
 import { resolveCapabilityBlocks, type CapabilityRenderContext } from '@/services/capabilityContentService'
-import { collectAudibleTexts } from '@/lib/session/collectAudibleTexts'
 import { logError } from '@/lib/logger'
-import { loadCapabilitySessionPlanForUser } from '@/lib/session/capabilitySessionLoader'
 import { commitCapabilityAnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
 import { capabilityReviewService } from '@/services/capabilityReviewService'
-import { capabilitySessionDataService } from '@/services/capabilitySessionDataService'
-import type { SessionPlan } from '@/lib/session/sessionPlan'
 
 const VALID_SESSION_MODES: SessionMode[] = ['standard', 'lesson_practice', 'lesson_review']
 
@@ -94,7 +96,7 @@ export function Session() {
           setLoading(false)
           return
         }
-        const capabilityPlan = await loadCapabilitySessionPlanForUser({
+        const capabilityPlan = await buildSession({
           enabled: true,
           sessionId: sid,
           userId: user.id,
@@ -103,7 +105,7 @@ export function Session() {
           limit: preferredSessionSize,
           preferredSessionSize,
           ...(lessonScope ?? {}),
-          adapter: capabilitySessionDataService,
+          adapter: sessionBuilderAdapter,
         })
         setCapabilityPlan(capabilityPlan)
 

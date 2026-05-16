@@ -2,7 +2,7 @@
 // Authored only. Originally extracted from sessionQueue.ts (retired in #7).
 
 import type { BuilderInput, BuilderResult } from './types'
-import { audibleTextFieldsOf } from '@/lib/session/collectAudibleTexts'
+import { audibleTextFieldsOf } from '@/lib/session-builder'
 
 export function buildConstrainedTranslation(input: BuilderInput): BuilderResult {
   if (!input.learningItem) {

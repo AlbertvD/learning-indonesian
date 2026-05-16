@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildQueueDryingDiagnostic } from '@/lib/session/queueDrying'
+import { buildQueueDryingDiagnostic } from '@/lib/session-builder/drying'
 
 describe('queue drying diagnostic', () => {
   it('warns when good candidates are low and the next lesson needs exposure', () => {

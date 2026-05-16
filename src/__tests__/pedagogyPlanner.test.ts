@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { planLearningPath, type PlannerCapability } from '@/lib/pedagogy/pedagogyPlanner'
+import { planLearningPath, type PlannerCapability } from '@/lib/session-builder/pedagogy'
 
 function capability(overrides: Partial<PlannerCapability> = {}): PlannerCapability {
   return {
@@ -157,27 +157,7 @@ describe('pedagogy planner', () => {
     expect(plan.suppressedCapabilities[0]?.reason).toBe('missing_prerequisite')
   })
 
-  it('fails closed when difficulty is missing while a difficulty ceiling is active', () => {
-    const plan = planLearningPath({
-      userId: 'user-1',
-      mode: 'standard',
-      now: new Date('2026-04-25T00:00:00.000Z'),
-      preferredSessionSize: 15,
-      dueCount: 0,
-      readyCapabilities: [capability({ canonicalKey: 'unknown-difficulty', difficultyLevel: undefined })],
-      learnerCapabilityStates: [],
-      activatedLessons: new Set(),
-      maxNewDifficultyLevel: 5,
-    })
-
-    expect(plan.eligibleNewCapabilities).toEqual([])
-    expect(plan.suppressedCapabilities[0]).toEqual({
-      canonicalKey: 'unknown-difficulty',
-      reason: 'difficulty_jump',
-    })
-  })
-
-  it('owns goal-tag, difficulty jump, and recent failure suppression gates', () => {
+  it('owns recent failure suppression gate', () => {
     const now = new Date('2026-04-25T00:00:00.000Z')
     const plan = planLearningPath({
       userId: 'user-1',
@@ -186,15 +166,11 @@ describe('pedagogy planner', () => {
       preferredSessionSize: 15,
       dueCount: 0,
       readyCapabilities: [
-        capability({ id: 'too-hard', canonicalKey: 'too-hard', difficultyLevel: 8 }),
-        capability({ id: 'fatigued', canonicalKey: 'fatigued', sourceRef: 'learning_items/item-2', difficultyLevel: 2 }),
-        capability({ id: 'off-path', canonicalKey: 'off-path', sourceRef: 'learning_items/item-3', difficultyLevel: 2 }),
-        capability({ id: 'goal-match', canonicalKey: 'goal-match', sourceRef: 'learning_items/item-4', goalTags: ['daily-focus'], difficultyLevel: 2 }),
+        capability({ id: 'fatigued', canonicalKey: 'fatigued', sourceRef: 'learning_items/item-2' }),
+        capability({ id: 'fresh', canonicalKey: 'fresh', sourceRef: 'learning_items/item-3' }),
       ],
       learnerCapabilityStates: [],
       activatedLessons: new Set(),
-      activeGoalTags: ['daily-focus'],
-      maxNewDifficultyLevel: 5,
       recentFailures: [{
         canonicalKey: 'fatigued',
         failedAt: now.toISOString(),
@@ -202,43 +178,11 @@ describe('pedagogy planner', () => {
       }],
     })
 
-    expect(plan.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual(['goal-match'])
-    expect(plan.suppressedCapabilities).toEqual(expect.arrayContaining([
-      { canonicalKey: 'too-hard', reason: 'difficulty_jump' },
-      { canonicalKey: 'fatigued', reason: 'recent_failure_fatigue' },
-      { canonicalKey: 'off-path', reason: 'not_useful_for_current_path' },
-    ]))
-  })
-
-  it('uses posture budgets to avoid brand-new production during light recovery', () => {
-    const prerequisite = 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl'
-    const plan = planLearningPath({
-      userId: 'user-1',
-      mode: 'standard',
-      posture: 'light_recovery',
-      now: new Date('2026-04-25T00:00:00.000Z'),
-      preferredSessionSize: 12,
-      dueCount: 2,
-      readyCapabilities: [capability({
-        canonicalKey: 'new-form-recall',
-        capabilityType: 'form_recall',
-        skillType: 'form_recall',
-        prerequisiteKeys: [prerequisite],
-      })],
-      learnerCapabilityStates: [{
-        canonicalKey: prerequisite,
-        activationState: 'active',
-        reviewCount: 1,
-        successfulReviewCount: 1,
-      }],
-      activatedLessons: new Set(),
+    expect(plan.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual(['fresh'])
+    expect(plan.suppressedCapabilities).toContainEqual({
+      canonicalKey: 'fatigued',
+      reason: 'recent_failure_fatigue',
     })
-
-    expect(plan.eligibleNewCapabilities).toEqual([])
-    expect(plan.suppressedCapabilities).toEqual([
-      { canonicalKey: 'new-form-recall', reason: 'load_budget_exhausted' },
-    ])
-    expect(plan.loadBudget.maxNewProductionTasks).toBe(0)
   })
 
   it('filters lesson practice new candidates to selected lesson source refs', () => {
@@ -313,11 +257,10 @@ describe('pedagogy planner', () => {
     })
   })
 
-  it('prefers the safe Dutch-to-Indonesian bridge over another meaning recall when balanced budget is tight', () => {
+  it('walks ready capabilities in input order and exhausts budget without reordering', () => {
     const plan = planLearningPath({
       userId: 'user-1',
       mode: 'standard',
-      posture: 'balanced',
       now: new Date('2026-04-25T00:00:00.000Z'),
       preferredSessionSize: 4,
       dueCount: 0,
@@ -339,7 +282,7 @@ describe('pedagogy planner', () => {
       activatedLessons: new Set(),
     })
 
-    expect(plan.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual(['choice-cap'])
-    expect(plan.suppressedCapabilities).toContainEqual({ canonicalKey: 'meaning-cap', reason: 'load_budget_exhausted' })
+    expect(plan.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual(['meaning-cap'])
+    expect(plan.suppressedCapabilities).toContainEqual({ canonicalKey: 'choice-cap', reason: 'load_budget_exhausted' })
   })
 })

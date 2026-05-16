@@ -7,10 +7,9 @@ import {
 } from '@/lib/capabilities/capabilityScheduler'
 import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
 import { resolveExercise } from '@/lib/exercises/exerciseResolver'
-import { planLearningPath, type PedagogyInput, type PlannerCapability } from '@/lib/pedagogy/pedagogyPlanner'
-import type { SessionPosture } from '@/lib/pedagogy/sessionPosture'
-import { composeSession } from '@/lib/session/sessionComposer'
-import type { CapabilityReviewSessionContext, SessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session/sessionPlan'
+import { planLearningPath, type PedagogyInput, type PlannerCapability } from '@/lib/session-builder/pedagogy'
+import { compose } from '@/lib/session-builder/compose'
+import type { CapabilityReviewSessionContext, SessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session-builder/model'
 import type { CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
 
 export interface CapabilitySessionLoaderInput {
@@ -20,7 +19,6 @@ export interface CapabilitySessionLoaderInput {
   now: Date
   limit: number
   schedulerRows: LearnerCapabilityStateRow[]
-  posture?: SessionPosture
   plannerInput: Omit<PedagogyInput, 'mode' | 'now'>
   capabilitiesByKey: Map<string, ProjectedCapability>
   readinessByKey: Map<string, CapabilityReadiness>
@@ -125,7 +123,7 @@ function missingLessonScopePlan(input: {
     reason: 'missing_selected_lesson',
     details: 'Lesson practice needs a selected lesson before a session can be built.',
   }]
-  return composeSession({
+  return compose({
     sessionId: input.sessionId,
     mode: input.mode,
     dueCapabilities: [],
@@ -145,6 +143,56 @@ function reviewContext(input: {
     artifactVersionSnapshot: artifactVersionSnapshot(input.capability),
     capabilityReadinessStatus: 'ready',
     capabilityPublicationStatus: 'published',
+  }
+}
+
+interface CandidateBase {
+  canonicalKey: string
+  context: CapabilityReviewSessionContext
+}
+
+interface ResolvedCandidate<T> {
+  meta: T
+  renderPlan: import('@/lib/exercises/exerciseRenderPlan').ExerciseRenderPlan
+  reviewContext: CapabilityReviewSessionContext
+}
+
+interface FailedCandidate<T> {
+  meta: T
+  resolutionFailure: { reason: string; details: string }
+  reviewContext: CapabilityReviewSessionContext
+}
+
+type CandidateOutcome<T> = ResolvedCandidate<T> | FailedCandidate<T>
+
+function resolveCandidate<T extends CandidateBase>(
+  meta: T,
+  ctx: {
+    capabilitiesByKey: Map<string, ProjectedCapability>
+    readinessByKey: Map<string, CapabilityReadiness>
+    artifactIndex: ArtifactIndex
+  },
+): CandidateOutcome<T> {
+  const capability = ctx.capabilitiesByKey.get(meta.canonicalKey)
+  const readiness = ctx.readinessByKey.get(meta.canonicalKey)
+  if (!capability || !readiness) {
+    return {
+      meta,
+      reviewContext: meta.context,
+      resolutionFailure: {
+        reason: 'missing_capability_projection',
+        details: 'Capability projection or readiness was not loaded.',
+      },
+    }
+  }
+  const resolution = resolveExercise({ capability, readiness, artifactIndex: ctx.artifactIndex })
+  if (resolution.status === 'resolved') {
+    return { meta, reviewContext: meta.context, renderPlan: resolution.plan }
+  }
+  return {
+    meta,
+    reviewContext: meta.context,
+    resolutionFailure: { reason: resolution.reason, details: resolution.details },
   }
 }
 
@@ -179,10 +227,15 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
     selectedSourceRefs: scope.selectedSourceRefs,
   }))
 
+  const resolveCtx = {
+    capabilitiesByKey: input.capabilitiesByKey,
+    readinessByKey: input.readinessByKey,
+    artifactIndex: input.artifactIndex,
+  }
+
   const dueCapabilities = scopedDueList.map(due => {
     const stateRow = stateById.get(due.stateId)
     const capability = input.capabilitiesByKey.get(due.canonicalKeySnapshot)
-    const readiness = input.readinessByKey.get(due.canonicalKeySnapshot)
     const context = reviewContext({
       capability: capability ?? null,
       schedulerSnapshot: stateRow ? snapshotFromLearnerRow(stateRow) : {
@@ -193,31 +246,19 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
         consecutiveFailureCount: 0,
       },
     })
-    if (!capability || !readiness) {
-      return {
-        capabilityId: due.capabilityId,
-        canonicalKeySnapshot: due.canonicalKeySnapshot,
-        stateVersion: due.stateVersion,
-        reviewContext: context,
-        resolutionFailure: { reason: 'missing_capability_projection', details: 'Capability projection or readiness was not loaded.' },
-      }
+    const outcome = resolveCandidate({
+      capabilityId: due.capabilityId,
+      canonicalKey: due.canonicalKeySnapshot,
+      stateVersion: due.stateVersion,
+      context,
+    }, resolveCtx)
+    return {
+      capabilityId: outcome.meta.capabilityId,
+      canonicalKeySnapshot: outcome.meta.canonicalKey,
+      stateVersion: outcome.meta.stateVersion,
+      reviewContext: outcome.reviewContext,
+      ...('renderPlan' in outcome ? { renderPlan: outcome.renderPlan } : { resolutionFailure: outcome.resolutionFailure }),
     }
-    const resolution = resolveExercise({ capability, readiness, artifactIndex: input.artifactIndex })
-    return resolution.status === 'resolved'
-      ? {
-          capabilityId: due.capabilityId,
-          canonicalKeySnapshot: due.canonicalKeySnapshot,
-          stateVersion: due.stateVersion,
-          reviewContext: context,
-          renderPlan: resolution.plan,
-        }
-      : {
-          capabilityId: due.capabilityId,
-          canonicalKeySnapshot: due.canonicalKeySnapshot,
-          stateVersion: due.stateVersion,
-          reviewContext: context,
-          resolutionFailure: { reason: resolution.reason, details: resolution.details },
-        }
   })
 
   const activePracticeReviewCapabilities = isLessonScopedMode(input.mode)
@@ -241,43 +282,29 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
         })
         .map(row => {
           const capability = input.capabilitiesByKey.get(row.canonicalKeySnapshot)
-          const readiness = input.readinessByKey.get(row.canonicalKeySnapshot)
           const context = reviewContext({
             capability: capability ?? null,
             schedulerSnapshot: snapshotFromLearnerRow(row),
           })
-          if (!capability || !readiness) {
-            return {
-              capabilityId: row.capabilityId,
-              canonicalKeySnapshot: row.canonicalKeySnapshot,
-              stateVersion: row.stateVersion,
-              reviewContext: context,
-              resolutionFailure: { reason: 'missing_capability_projection', details: 'Capability projection or readiness was not loaded.' },
-            }
+          const outcome = resolveCandidate({
+            capabilityId: row.capabilityId,
+            canonicalKey: row.canonicalKeySnapshot,
+            stateVersion: row.stateVersion,
+            context,
+          }, resolveCtx)
+          return {
+            capabilityId: outcome.meta.capabilityId,
+            canonicalKeySnapshot: outcome.meta.canonicalKey,
+            stateVersion: outcome.meta.stateVersion,
+            reviewContext: outcome.reviewContext,
+            ...('renderPlan' in outcome ? { renderPlan: outcome.renderPlan } : { resolutionFailure: outcome.resolutionFailure }),
           }
-          const resolution = resolveExercise({ capability, readiness, artifactIndex: input.artifactIndex })
-          return resolution.status === 'resolved'
-            ? {
-                capabilityId: row.capabilityId,
-                canonicalKeySnapshot: row.canonicalKeySnapshot,
-                stateVersion: row.stateVersion,
-                reviewContext: context,
-                renderPlan: resolution.plan,
-              }
-            : {
-                capabilityId: row.capabilityId,
-                canonicalKeySnapshot: row.canonicalKeySnapshot,
-                stateVersion: row.stateVersion,
-                reviewContext: context,
-                resolutionFailure: { reason: resolution.reason, details: resolution.details },
-              }
         })
     : []
 
   const learningPlan = planLearningPath({
     ...input.plannerInput,
     mode: input.mode,
-    posture: input.posture,
     now: input.now,
     dueCount: dueCapabilities.length,
     selectedLessonId: scope.selectedLessonId,
@@ -285,33 +312,23 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
   })
   const eligibleNewCapabilities = input.mode === 'lesson_review' ? [] : learningPlan.eligibleNewCapabilities.map(eligible => {
     const capability = input.capabilitiesByKey.get(eligible.capability.canonicalKey)
-    const readiness = input.readinessByKey.get(eligible.capability.canonicalKey)
-    if (!capability || !readiness) {
-      return {
-        capability: { id: eligible.capability.id, canonicalKey: eligible.capability.canonicalKey },
-        activationRequest: { reason: 'eligible_new_capability' as const },
-        reviewContext: reviewContext({ capability: capability ?? null, schedulerSnapshot: dormantSnapshot() }),
-        resolutionFailure: { reason: 'missing_capability_projection', details: 'Capability projection or readiness was not loaded.' },
-      }
+    const context = reviewContext({ capability: capability ?? null, schedulerSnapshot: dormantSnapshot() })
+    const outcome = resolveCandidate({
+      capabilityId: eligible.capability.id,
+      canonicalKey: eligible.capability.canonicalKey,
+      context,
+    }, resolveCtx)
+    const base = {
+      capability: { id: outcome.meta.capabilityId, canonicalKey: outcome.meta.canonicalKey },
+      activationRequest: { reason: 'eligible_new_capability' as const },
+      reviewContext: outcome.reviewContext,
     }
-    const context = reviewContext({ capability, schedulerSnapshot: dormantSnapshot() })
-    const resolution = resolveExercise({ capability, readiness, artifactIndex: input.artifactIndex })
-    return resolution.status === 'resolved'
-      ? {
-          capability: { id: eligible.capability.id, canonicalKey: eligible.capability.canonicalKey },
-          activationRequest: { reason: 'eligible_new_capability' as const },
-          reviewContext: context,
-          renderPlan: resolution.plan,
-        }
-      : {
-          capability: { id: eligible.capability.id, canonicalKey: eligible.capability.canonicalKey },
-          activationRequest: { reason: 'eligible_new_capability' as const },
-          reviewContext: context,
-          resolutionFailure: { reason: resolution.reason, details: resolution.details },
-        }
+    return 'renderPlan' in outcome
+      ? { ...base, renderPlan: outcome.renderPlan }
+      : { ...base, resolutionFailure: outcome.resolutionFailure }
   })
 
-  return composeSession({
+  return compose({
     sessionId: input.sessionId,
     mode: input.mode,
     dueCapabilities,
@@ -321,7 +338,7 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
   })
 }
 
-export async function loadCapabilitySessionPlanForUser(input: {
+export async function buildSession(input: {
   enabled: boolean
   sessionId: string
   userId: string
@@ -363,4 +380,7 @@ export async function loadCapabilitySessionPlanForUser(input: {
   })
 }
 
+// Internal export for tests to exercise the resolver loop directly.
+export { resolveCandidate }
+export type { CandidateOutcome }
 export type { PlannerCapability }

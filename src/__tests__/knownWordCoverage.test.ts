@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isKnownWordCoverageSatisfied } from '@/lib/pedagogy/knownWordCoverage'
+import { isKnownWordCoverageSatisfied } from '@/lib/session-builder/knownWordCoverage'
 
 describe('known-word coverage', () => {
   it('allows reading/context recognition when at least 70% of key words are known or recognizable', () => {
