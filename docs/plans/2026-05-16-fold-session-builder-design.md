@@ -1,13 +1,16 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #47
+merged_at: 2026-05-16
+implementation_paths:
+  - src/lib/session-builder/
 supersedes: []
 ---
 
 # Fold lib/session-builder/
 
 **Date:** 2026-05-16
-**Status:** implementing (PR-A)
+**Status:** shipped (PR-A merged 2026-05-16)
 
 ## Goal
 
