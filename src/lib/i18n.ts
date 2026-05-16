@@ -214,7 +214,7 @@ export const nl = {
     correct: 'correct',
     failedToLoadSession: 'Sessie kon niet worden geladen. Probeer het opnieuw.',
     noExercises: 'Geen oefeningen beschikbaar voor deze sessie.',
-    pipelineDryingUp: 'Je bent bijna klaar met de huidige les. Open de volgende les 2 minuten om nieuwe woorden en patronen klaar te zetten.',
+    pipelineDryingUp: 'Je bent bijna klaar met de huidige les. Activeer de volgende les om nieuwe woorden en patronen klaar te zetten.',
     recognition: {
       question: 'Wat betekent dit woord?',
     },
@@ -485,7 +485,7 @@ export const en: typeof nl = {
     correct: 'correct',
     failedToLoadSession: 'Failed to load session. Please try again.',
     noExercises: 'No exercises available for this session.',
-    pipelineDryingUp: 'You are almost finished with the current lesson. Open the next lesson for 2 minutes to prepare new words and patterns.',
+    pipelineDryingUp: 'You are almost finished with the current lesson. Activate the next lesson to queue up new words and patterns.',
     recognition: {
       question: 'What does this word mean?',
     },
