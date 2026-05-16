@@ -26,14 +26,14 @@ status: stable
 | `index.ts` | 19 | Public-API barrel. |
 
 **Consumers (production):**
-- `src/pages/Session.tsx:11-15, 97` — sole runtime caller. Imports `buildSession`, `collectAudibleTexts`, `sessionBuilderAdapter`, and the `SessionMode`/`SessionPlan` types from `@/lib/session-builder`.
+- `src/pages/Session.tsx:11-17, 99` — sole runtime caller. Imports `buildSession`, `collectAudibleTexts`, `sessionBuilderAdapter`, and the `SessionMode`/`SessionPlan` types from `@/lib/session-builder`.
 - `src/components/experience/{ExperiencePlayer,CapabilityExerciseFrame,buildFeedbackInput,types,RecapScreen}.tsx` — consume `SessionPlan`/`SessionBlock` via the barrel.
 - `src/components/experience/RecapScreen.tsx:3, 95` — consumes `capabilityDisplay(...).label` for the recap headline.
 - 12 files under `src/lib/exercises/builders/` — consume `audibleTextFieldsOf` via the barrel.
 - `src/lib/capabilities/capabilityScheduler.ts:2` — imports `SessionMode` from the barrel.
 - `src/services/capabilityContentService.ts:10` — imports `SessionBlock` from the barrel.
 
-**Status (2026-05-16):** stable. PR-A of the session-builder fold consolidated nine files from `src/lib/session/`, `src/lib/pedagogy/`, and `src/services/capabilitySessionDataService.ts` into this module; deleted three orphaned modules + the entire posture system + two dead planner inputs; rewrote `labels.ts` to a per-capability map with `satisfies` exhaustiveness. PR-B (queue-drying wiring) and PR-C/D (recency badge, capability descriptions) ride in separate PRs.
+**Status (2026-05-16):** stable. Spec rewritten 2026-05-16 as the after-spec of PR-A of the session-builder fold (commit `55edbf5`). PR-A consolidated nine files from `src/lib/session/`, `src/lib/pedagogy/`, and `src/services/capabilitySessionDataService.ts` into this module; deleted three orphaned modules + the entire posture system + two dead planner inputs; rewrote `labels.ts` to a per-capability map with `satisfies` exhaustiveness. PR-B (queue-drying wiring) and PR-C/D (recency badge, capability descriptions) ride in separate follow-on PRs — see fold plan §5.
 
 ---
 
@@ -41,7 +41,7 @@ status: stable
 
 Given a learner and a session mode, return a `SessionPlan` — an ordered list of `SessionBlock` rows the player renders one card at a time. Each block carries the inflated `ExerciseRenderPlan` needed to render the card plus the `reviewContext` needed to commit an answer.
 
-**Pure read.** No DB writes. No identity minted by the builder itself (`Session.tsx:88` mints `sessionId` upstream via `crypto.randomUUID()`). No side effects.
+**Pure read.** No DB writes. No identity minted by the builder itself (`Session.tsx:90` mints `sessionId` upstream via `crypto.randomUUID()`). No side effects.
 
 **Deterministic.** Two calls with identical inputs and identical learner state produce identical output. Implication: the builder is a *query*, not a generator; it can be called as many times as needed.
 
@@ -66,7 +66,7 @@ export async function buildSession(input: {
 }): Promise<SessionPlan>
 ```
 
-The `enabled` flag is a hard gate (`builder.ts:200-202, 353-355`) — throws if false. There is no on/off product surface; it is always true at the only call site (`Session.tsx:98`). Slimmer-API work (drop `enabled`, `sessionId`, `limit`, `preferredSessionSize`, `adapter`) is deferred to the exercise-content fold — see §7.
+The `enabled` flag is a hard gate (`builder.ts:200-202, 353-355`) — throws if false. There is no on/off product surface; it is always true at the only call site (`Session.tsx:100`). Slimmer-API work (drop `enabled`, `sessionId`, `limit`, `preferredSessionSize`, `adapter`) is deferred to the exercise-content fold — see §7.
 
 `SessionMode` — `model.ts:5`:
 
@@ -125,7 +125,7 @@ The production implementation lives at `adapter.ts:201-310`.
 
 ### 3.1 Adapter — three parallel Supabase reads
 
-`adapter.ts:223-310`. On each invocation:
+`adapter.ts:223-307`. On each invocation:
 
 1. **Capabilities** (`adapter.ts:229-233`) — every `learning_capabilities` row with `readiness_status='ready'` and `publication_status='published'`. No user filter. Yields ~thousands of rows once the catalog grows.
 2. **Learner state** (`adapter.ts:234`) — every `learner_capability_state` row for the user. Includes FSRS schedule data + activation state.
@@ -138,7 +138,7 @@ The adapter then:
 - Computes `dueCount` via `getDueCapabilitiesFromRows` (a flat date filter — no FSRS math; FSRS lives server-side per ADR 0003).
 - Computes `recentFailures` from rows with `consecutiveFailureCount ≥ 2`.
 
-Output is a `CapabilitySessionDataSnapshot` (`builder.ts:30-36`) carrying the four maps + a fully-typed `PedagogyInput`.
+Output is a `CapabilitySessionDataSnapshot` (`builder.ts:30-36`) carrying `schedulerRows`, `capabilitiesByKey`, `readinessByKey`, `artifactIndex`, and a fully-typed `PedagogyInput`.
 
 ### 3.2 Orchestrator — three selection passes through one resolver
 
@@ -158,7 +158,7 @@ The three passes share the resolver loop via `resolveCandidate` (`builder.ts:168
 
 ### 3.3 Planner — suppression-rule engine
 
-`pedagogy.ts:149-251`. Walks candidates in **input order** (the prior `orderedReadyCapabilities` priority sort was deleted in the fold — it was unreachable in production, and promoting it would have been a new opinionated ordering decision).
+`pedagogy.ts:149-252`. Walks candidates in **input order** (the prior `orderedReadyCapabilities` priority sort was deleted in the fold — it was unreachable in production, and promoting it would have been a new opinionated ordering decision).
 
 For each candidate, applies suppression rules in this exact order (`pedagogy.ts:159-242`):
 
@@ -194,7 +194,7 @@ interface LearningPlan {
 
 ### 3.4 Budgets
 
-`loadBudget.ts:22-52`. Three branches, in evaluation order:
+`loadBudget.ts:22-53`. Three branches, in evaluation order:
 
 1. `lesson_review` mode → 0 of everything new. `targetSessionSize = preferredSessionSize`.
 2. `lesson_practice` mode → `openSlots = max(0, preferredSessionSize - dueCount)` new capabilities. No pattern/production quotas (open slots applies to all). `maxHiddenAudioTasks = preferredSessionSize` (effectively unlimited).
@@ -215,10 +215,10 @@ After all three passes, `blocks.slice(0, input.limit)` caps the session at the r
 
 ### 3.6 Audible-text harvest
 
-`audibleTexts.ts:31-103`. Two-tier design:
+`audibleTexts.ts:31-104`. Two-tier design:
 
-- **Per-builder** (`audibleTextFieldsOf`, `audibleTexts.ts:31-91`) — given a single inflated `ExerciseItem`, returns every Indonesian-language text field on it (base text, contexts, cloze sentence, MCQ options, sentence-transformation source + answers, constrained-translation target, speaking utterance). Normalised via `normalizeTtsText`. Used by all 12 exercise builders.
-- **Session aggregator** (`collectAudibleTexts`, `audibleTexts.ts:97-103`) — given the resolved `CapabilityRenderContext` map, unions every per-block `audibleTexts[]` into a single deduped array. Used by `Session.tsx:122` before calling `fetchSessionAudioMap`.
+- **Per-builder** (`audibleTextFieldsOf`, `audibleTexts.ts:31-90`) — given a single inflated `ExerciseItem`, returns every Indonesian-language text field on it (base text, contexts, cloze sentence, MCQ options, sentence-transformation source + answers, constrained-translation target, speaking utterance). Normalised via `normalizeTtsText`. Used by all 12 exercise builders.
+- **Session aggregator** (`collectAudibleTexts`, `audibleTexts.ts:97-104`) — given the resolved `CapabilityRenderContext` map, unions every per-block `audibleTexts[]` into a single deduped array. Used by `Session.tsx:124` before calling `fetchSessionAudioMap`.
 
 ### 3.7 Labels (per-capability display copy)
 
@@ -240,12 +240,14 @@ interface CapabilityDisplay {
 
 `drying.ts:1-44`. Builds a `SessionDiagnostic` warning learners when the queue is dry but the next lesson still needs activation. The detector exists but **is not called from `builder.ts` yet** — wiring + a rewrite that drops the legacy posture/backlog inputs lands in PR-B.
 
+The file still references **locally-scoped** `LegacyPosture` and `LegacyBacklogPressure` string-union types (`drying.ts:12-13`). This is the only surviving site that names the posture concept; it survives only because the suppression rule signature has not yet been rewritten. The types are private to the file — no other code imports them — so the "posture system entirely removed" claim in §3.4 holds for the module's public surface.
+
 ---
 
 ## 4. Invariants
 
 - **No DB writes from the builder.** All paths through `buildSession` are pure reads. Writes happen elsewhere (Session.tsx → `commitCapabilityAnswerReport` → server-side RPC).
-- **No identity minted by the builder.** `sessionId` is minted by Session.tsx via `crypto.randomUUID()` (`Session.tsx:88`) and passed through.
+- **No identity minted by the builder.** `sessionId` is minted by Session.tsx via `crypto.randomUUID()` (`Session.tsx:90`) and passed through.
 - **Determinism.** Same inputs + same DB state → same output.
 - **The `enabled` flag is a hard gate, not a runtime feature flag.** It is always `true` at the call site; the parameter is vestigial from the pre-capability flag-gated rollout and removable in the exercise-content fold.
 - **Block ids embed the sessionId.** `${sessionId}:due:${canonicalKey}` etc. Block ids are unique within a session and unstable across sessions by design.
@@ -305,8 +307,8 @@ interface CapabilityDisplay {
 
 ## 7. What this spec does NOT cover
 
-- **Per-card content resolution.** `resolveExercise`, the artifact registry, distractor selection, and audio URL resolution all live outside the builder. The builder calls `resolveExercise` once per candidate (via `resolveCandidate`) and stores the result; the resolver's internals are a sibling concern. The target architecture will lift this into `lib/exercise-content/` (the next fold) — see `docs/target-architecture.md` § `lib/exercise-content/`.
-- **Answer commit / FSRS.** Server-side. Lives in `supabase/functions/_shared/srs/` per ADR 0001 and is called via the `commit_capability_answer_report` RPC. The builder never touches state writes.
-- **Session lifecycle.** Retirement #5 (2026-05-07) deleted explicit `startSession`/`endSession`. The `learning_sessions` row materialises lazily on the first answer-commit; no explicit lifecycle hooks remain. See `docs/plans/2026-05-07-retire-session-lifecycle.md`.
+- **Per-card content resolution.** `resolveExercise`, the artifact registry, distractor selection, and audio URL resolution all live outside the builder. The builder calls `resolveExercise` once per candidate (via `resolveCandidate`) and stores the result; the resolver's internals are a sibling concern. Owned by the future `lib/exercise-content/` module — see `docs/target-architecture.md:1480-1540` § `lib/exercise-content/`.
+- **Answer commit / FSRS.** Server-side. Lives in `supabase/functions/_shared/srs/` per ADR 0001 and ADR 0003; called via the `commit_capability_answer_report` RPC. The builder never touches state writes. See `docs/adr/0001-capability-core.md` and `docs/adr/0003-fsrs-on-capabilities.md` for the canonical reasoning.
+- **Session lifecycle.** Retirement #5 (2026-05-07) deleted explicit `startSession`/`endSession`. The `learning_sessions` row materialises lazily on the first answer-commit; no explicit lifecycle hooks remain. The retirement plan lives in the repo archive — see `ARCHIVE.md` at repo root for the pointer (path mirrors original: `docs/plans/2026-05-07-retire-session-lifecycle.md` under the archive root).
 - **Rendering.** Owned by `components/experience/` (the player) and `components/exercises/implementations/` (the 12 per-type renderers). See `docs/current-system/modules/experience.md`.
-- **Queue-drying / coverage UX.** The relocated helpers (`drying.ts`, `knownWordCoverage.ts`) ship in this module but their wiring + UX is downstream work, not part of the builder contract today.
+- **Queue-drying / coverage UX.** The relocated helpers (`drying.ts`, `knownWordCoverage.ts`) ship in this module but their wiring + UX is downstream work, not part of the builder contract today. Wiring lands in PR-B (drying) per the fold plan §4.1; coverage wiring has no owner yet.

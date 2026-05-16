@@ -5,7 +5,6 @@
 // barrel only re-exports the surface other parts of the codebase consume.
 
 export { buildSession, type CapabilitySessionDataAdapter, type CapabilitySessionDataRequest, type CapabilitySessionDataSnapshot } from '@/lib/session-builder/builder'
-export { compose } from '@/lib/session-builder/compose'
 export { sessionBuilderAdapter, createSessionBuilderAdapter } from '@/lib/session-builder/adapter'
 export { audibleTextFieldsOf, collectAudibleTexts } from '@/lib/session-builder/audibleTexts'
 export { capabilityDisplay, exerciseLabel, skillLabel, CAPABILITY_DISPLAY, type CapabilityDisplay } from '@/lib/session-builder/labels'

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { compose } from '@/lib/session-builder'
+import { compose } from '@/lib/session-builder/compose'
 import type { CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
 
 const activeSnapshot: CapabilityScheduleSnapshot = {
