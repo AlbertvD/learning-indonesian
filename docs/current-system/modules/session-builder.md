@@ -138,7 +138,7 @@ The adapter then:
 - Computes `dueCount` via `getDueCapabilitiesFromRows` (a flat date filter — no FSRS math; FSRS lives server-side per ADR 0003).
 - Computes `recentFailures` from rows with `consecutiveFailureCount ≥ 2`.
 
-Output is a `CapabilitySessionDataSnapshot` (`builder.ts:30-36`) carrying `schedulerRows`, `capabilitiesByKey`, `readinessByKey`, `artifactIndex`, and a fully-typed `PedagogyInput`.
+Output is a `CapabilitySessionDataSnapshot` (`builder.ts:30-36`) carrying `schedulerRows`, `capabilitiesByKey`, `readinessByKey`, `artifactIndex`, and `plannerInput` (typed `Omit<PedagogyInput, 'mode' | 'now'>`).
 
 ### 3.2 Orchestrator — three selection passes through one resolver
 
@@ -246,7 +246,7 @@ The file still references **locally-scoped** `LegacyPosture` and `LegacyBacklogP
 
 ## 4. Invariants
 
-- **No DB writes from the builder.** All paths through `buildSession` are pure reads. Writes happen elsewhere (Session.tsx → `commitCapabilityAnswerReport` → server-side RPC).
+- **No DB writes from the builder.** All paths through `buildSession` are pure reads. Writes happen elsewhere (Session.tsx → `commitCapabilityAnswerReport` → `commit-capability-answer-report` Edge Function).
 - **No identity minted by the builder.** `sessionId` is minted by Session.tsx via `crypto.randomUUID()` (`Session.tsx:90`) and passed through.
 - **Determinism.** Same inputs + same DB state → same output.
 - **The `enabled` flag is a hard gate, not a runtime feature flag.** It is always `true` at the call site; the parameter is vestigial from the pre-capability flag-gated rollout and removable in the exercise-content fold.
@@ -265,7 +265,7 @@ The file still references **locally-scoped** `LegacyPosture` and `LegacyBacklogP
 ### Upstream (data feeds the builder)
 
 - `learning_capabilities` table — capability catalog (one row per capability, ~thousands when projected).
-- `learner_capability_state` table — per-learner FSRS state (ADR 0001). Written by the server-side review processor (`supabase/functions/_shared/srs/`, called via the `commit_capability_answer_report` RPC).
+- `learner_capability_state` table — per-learner FSRS state (ADR 0001). Written by the server-side review processor (`supabase/functions/commit-capability-answer-report/index.ts`, invoked via the `commit-capability-answer-report` Edge Function).
 - `learner_lesson_activation` table — single-boolean per (user, lesson). Written by `set_lesson_activation` RPC (`migration.sql:1584`), called from `lib/lessons/` and `authStore.activateStarterLessons`.
 - `capability_artifacts` table — per-capability content blobs (meanings, contexts, items, etc.). Validated by `validateCapability` (`lib/capabilities/capabilityContracts.ts`).
 
@@ -308,7 +308,7 @@ The file still references **locally-scoped** `LegacyPosture` and `LegacyBacklogP
 ## 7. What this spec does NOT cover
 
 - **Per-card content resolution.** `resolveExercise`, the artifact registry, distractor selection, and audio URL resolution all live outside the builder. The builder calls `resolveExercise` once per candidate (via `resolveCandidate`) and stores the result; the resolver's internals are a sibling concern. Owned by the future `lib/exercise-content/` module — see `docs/target-architecture.md:1480-1540` § `lib/exercise-content/`.
-- **Answer commit / FSRS.** Server-side. Lives in `supabase/functions/_shared/srs/` per ADR 0001 and ADR 0003; called via the `commit_capability_answer_report` RPC. The builder never touches state writes. See `docs/adr/0001-capability-core.md` and `docs/adr/0003-fsrs-on-capabilities.md` for the canonical reasoning.
+- **Answer commit / FSRS.** Server-side. Lives in `supabase/functions/commit-capability-answer-report/index.ts` per ADR 0001 and ADR 0003; invoked as the `commit-capability-answer-report` Edge Function (FSRS pulled in inline from `npm:ts-fsrs`). The builder never touches state writes. See `docs/adr/0001-capability-based-learning-core.md` and `docs/adr/0003-fsrs-schedules-capabilities-not-content-sources.md` for the canonical reasoning.
 - **Session lifecycle.** Retirement #5 (2026-05-07) deleted explicit `startSession`/`endSession`. The `learning_sessions` row materialises lazily on the first answer-commit; no explicit lifecycle hooks remain. The retirement plan lives in the repo archive — see `ARCHIVE.md` at repo root for the pointer (path mirrors original: `docs/plans/2026-05-07-retire-session-lifecycle.md` under the archive root).
 - **Rendering.** Owned by `components/experience/` (the player) and `components/exercises/implementations/` (the 12 per-type renderers). See `docs/current-system/modules/experience.md`.
 - **Queue-drying / coverage UX.** The relocated helpers (`drying.ts`, `knownWordCoverage.ts`) ship in this module but their wiring + UX is downstream work, not part of the builder contract today. Wiring lands in PR-B (drying) per the fold plan §4.1; coverage wiring has no owner yet.
