@@ -4,13 +4,16 @@ implementation: PR #47
 merged_at: 2026-05-16
 implementation_paths:
   - src/lib/session-builder/
+  - src/pages/Session.tsx
+implementation_pr_b: PR #TBD
+implementation_pr_b_merged_at: 2026-05-16
 supersedes: []
 ---
 
 # Fold lib/session-builder/
 
 **Date:** 2026-05-16
-**Status:** shipped (PR-A merged 2026-05-16)
+**Status:** shipped (PR-A merged 2026-05-16; PR-B queue-drying wiring 2026-05-16)
 
 ## Goal
 

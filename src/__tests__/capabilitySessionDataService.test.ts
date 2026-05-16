@@ -321,4 +321,85 @@ describe('capability session data service', () => {
 
     expect(snapshot.plannerInput.activatedLessons).toEqual(new Set(['lesson-a', 'lesson-b']))
   })
+
+  describe('lesson progression (drying inputs)', () => {
+    function adapterFor(input: {
+      activations: Array<{ lesson_id: string }>
+      lessons: Array<{ id: string; order_index: number }>
+    }) {
+      return createSessionBuilderAdapter({
+        schema: () => ({
+          from: (table: string) => {
+            if (table === 'learner_lesson_activation') return query(input.activations)
+            if (table === 'lessons') return query(input.lessons)
+            return query([])
+          },
+        }),
+      })
+    }
+
+    const loadRequest = {
+      userId: 'user-1',
+      mode: 'standard' as const,
+      now: new Date('2026-04-25T12:00:00.000Z'),
+      limit: 15,
+      preferredSessionSize: 15,
+    }
+
+    it('reports null/false when the learner has no activations', async () => {
+      const snapshot = await adapterFor({
+        activations: [],
+        lessons: [
+          { id: 'lesson-1-uuid', order_index: 1 },
+          { id: 'lesson-2-uuid', order_index: 2 },
+        ],
+      }).loadCapabilitySessionData(loadRequest)
+      expect(snapshot.currentLessonId).toBeNull()
+      expect(snapshot.nextLessonNeedsExposure).toBe(false)
+    })
+
+    it('picks the highest-order_index activated lesson as the current lesson', async () => {
+      const snapshot = await adapterFor({
+        activations: [
+          { lesson_id: 'lesson-1-uuid' },
+          { lesson_id: 'lesson-2-uuid' },
+        ],
+        lessons: [
+          { id: 'lesson-1-uuid', order_index: 1 },
+          { id: 'lesson-2-uuid', order_index: 2 },
+          { id: 'lesson-3-uuid', order_index: 3 },
+        ],
+      }).loadCapabilitySessionData(loadRequest)
+      expect(snapshot.currentLessonId).toBe('lesson-2-uuid')
+      expect(snapshot.nextLessonNeedsExposure).toBe(true)
+    })
+
+    it('reports nextLessonNeedsExposure=false when the next lesson is already activated', async () => {
+      const snapshot = await adapterFor({
+        activations: [
+          { lesson_id: 'lesson-1-uuid' },
+          { lesson_id: 'lesson-2-uuid' },
+        ],
+        lessons: [
+          { id: 'lesson-1-uuid', order_index: 1 },
+          { id: 'lesson-2-uuid', order_index: 2 },
+        ],
+      }).loadCapabilitySessionData(loadRequest)
+      expect(snapshot.currentLessonId).toBe('lesson-2-uuid')
+      expect(snapshot.nextLessonNeedsExposure).toBe(false)
+    })
+
+    it('reports nextLessonNeedsExposure=false on the final lesson (no order_index + 1 exists)', async () => {
+      const snapshot = await adapterFor({
+        activations: [{ lesson_id: 'lesson-3-uuid' }],
+        lessons: [
+          { id: 'lesson-1-uuid', order_index: 1 },
+          { id: 'lesson-2-uuid', order_index: 2 },
+          { id: 'lesson-3-uuid', order_index: 3 },
+        ],
+      }).loadCapabilitySessionData(loadRequest)
+      expect(snapshot.currentLessonId).toBe('lesson-3-uuid')
+      expect(snapshot.nextLessonNeedsExposure).toBe(false)
+    })
+  })
 })

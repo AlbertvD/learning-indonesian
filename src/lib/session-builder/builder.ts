@@ -9,6 +9,7 @@ import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
 import { resolveExercise } from '@/lib/exercises/exerciseResolver'
 import { planLearningPath, type PedagogyInput, type PlannerCapability } from '@/lib/session-builder/pedagogy'
 import { compose } from '@/lib/session-builder/compose'
+import { buildQueueDryingDiagnostic } from '@/lib/session-builder/drying'
 import type { CapabilityReviewSessionContext, SessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session-builder/model'
 import type { CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
 
@@ -25,6 +26,12 @@ export interface CapabilitySessionLoaderInput {
   artifactIndex: ArtifactIndex
   selectedLessonId?: string
   selectedSourceRefs?: string[]
+  // Lesson-activation derivations fed to the queue-drying detector. Both
+  // default to null/false when the learner has no activations or has reached
+  // the final lesson — drying then stays suppressed by the detector's own
+  // rules. See drying.ts and the fold plan §4.1.
+  currentLessonId?: string | null
+  nextLessonNeedsExposure?: boolean
 }
 
 export interface CapabilitySessionDataSnapshot {
@@ -33,6 +40,8 @@ export interface CapabilitySessionDataSnapshot {
   capabilitiesByKey: Map<string, ProjectedCapability>
   readinessByKey: Map<string, CapabilityReadiness>
   artifactIndex: ArtifactIndex
+  currentLessonId: string | null
+  nextLessonNeedsExposure: boolean
 }
 
 export interface CapabilitySessionDataRequest {
@@ -328,12 +337,33 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
       : { ...base, resolutionFailure: outcome.resolutionFailure }
   })
 
+  const extraDiagnostics: SessionDiagnostic[] = []
+  // Compute eligibility precisely from the planner output rather than a
+  // cheaper adapter approximation: an "eligible introduction" for the
+  // current lesson is a capability the planner is willing to surface, not
+  // just one that exists. See plan §4.1 Part 2 ("Use option 2").
+  const currentLessonId = input.currentLessonId ?? null
+  const currentLessonHasEligibleIntroductions = currentLessonId != null
+    && learningPlan.eligibleNewCapabilities.some(eligible => (
+      eligible.capability.lessonId === currentLessonId
+    ))
+  const dryingDiagnostic = buildQueueDryingDiagnostic({
+    dueCount: dueCapabilities.length,
+    preferredSessionSize: input.plannerInput.preferredSessionSize,
+    goodCandidateCount: dueCapabilities.length + eligibleNewCapabilities.length,
+    currentLessonHasEligibleIntroductions,
+    nextLessonNeedsExposure: input.nextLessonNeedsExposure ?? false,
+    mode: input.mode,
+  })
+  if (dryingDiagnostic) extraDiagnostics.push(dryingDiagnostic)
+
   return compose({
     sessionId: input.sessionId,
     mode: input.mode,
     dueCapabilities,
     eligibleNewCapabilities,
     practiceReviewCapabilities: activePracticeReviewCapabilities,
+    diagnostics: extraDiagnostics,
     limit: input.limit,
   })
 }
@@ -377,6 +407,8 @@ export async function buildSession(input: {
     artifactIndex: snapshot.artifactIndex,
     selectedLessonId: input.selectedLessonId,
     selectedSourceRefs: input.selectedSourceRefs,
+    currentLessonId: snapshot.currentLessonId,
+    nextLessonNeedsExposure: snapshot.nextLessonNeedsExposure,
   })
 }
 

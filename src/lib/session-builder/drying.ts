@@ -1,41 +1,39 @@
-// Queue-drying detector. Relocated from src/lib/session/queueDrying.ts; not
-// yet wired from builder.ts. Wiring + rewrite lands in PR-B per
-// docs/plans/2026-05-16-fold-session-builder-design.md §4.1.
-//
-// PR-A preserves the existing detection rule verbatim using locally-scoped
-// types (the posture and planner-mode types it referenced are deleted in
-// this fold). PR-B replaces the suppression rule with a simpler
-// backlog-or-mode check.
+// Queue-drying detector. Surfaces a learner-facing diagnostic when the
+// current lesson is effectively exhausted but the next lesson is still
+// inactive — the planner has no introductions to give, the due queue is
+// nearly empty, and the only fix is for the learner to activate the next
+// lesson. See docs/plans/2026-05-16-fold-session-builder-design.md §4.1.
 
-import type { SessionMode, SessionDiagnostic } from '@/lib/session-builder/model'
-
-type LegacyBacklogPressure = 'light' | 'medium' | 'heavy' | 'huge'
-type LegacyPosture = 'balanced' | 'light_recovery' | 'review_first' | 'comeback'
+import type { SessionDiagnostic, SessionMode } from '@/lib/session-builder/model'
 
 export interface QueueDryingInput {
-  goodCandidateCount: number
+  dueCount: number
   preferredSessionSize: number
-  backlogPressure: LegacyBacklogPressure
+  goodCandidateCount: number
   currentLessonHasEligibleIntroductions: boolean
   nextLessonNeedsExposure: boolean
   mode: SessionMode
-  posture: LegacyPosture
 }
 
-function isIntentionallyShort(input: QueueDryingInput): boolean {
-  if (input.posture === 'comeback') return true
-  return input.posture === 'review_first' && input.backlogPressure !== 'light'
+function shouldSuppressDryingWarning(input: QueueDryingInput): boolean {
+  // Backlog explains the short session — don't blame drying.
+  if (input.dueCount > input.preferredSessionSize) return true
+  // Lesson modes are intentionally narrow.
+  if (input.mode !== 'standard') return true
+  return false
+}
+
+function shouldFireDryingWarning(input: QueueDryingInput): boolean {
+  if (shouldSuppressDryingWarning(input)) return false
+  if (input.currentLessonHasEligibleIntroductions) return false
+  if (!input.nextLessonNeedsExposure) return false
+  const preferredSize = Math.max(1, input.preferredSessionSize)
+  if (input.goodCandidateCount >= preferredSize * 0.7) return false
+  return true
 }
 
 export function buildQueueDryingDiagnostic(input: QueueDryingInput): SessionDiagnostic | null {
-  if (isIntentionallyShort(input)) return null
-  if (input.backlogPressure !== 'light') return null
-  if (input.currentLessonHasEligibleIntroductions) return null
-  if (!input.nextLessonNeedsExposure) return null
-
-  const preferredSize = Math.max(1, input.preferredSessionSize)
-  if (input.goodCandidateCount >= preferredSize * 0.7) return null
-
+  if (!shouldFireDryingWarning(input)) return null
   return {
     severity: 'warn',
     reason: 'learning_pipeline_drying_up',
