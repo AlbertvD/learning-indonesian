@@ -13,15 +13,15 @@ status: stable
 
 | File | LOC | Role |
 |---|---|---|
-| `adapter.ts` | 311 | Supabase reads — projects to planner/composer types. Exports `sessionBuilderAdapter` + `createSessionBuilderAdapter(client?)`. |
-| `builder.ts` | 386 | Orchestrator. Runs three selection passes, calls `resolveCandidate`, composes the plan. Exports `buildSession` + the test-only `loadCapabilitySessionPlan`. |
+| `adapter.ts` | 350 | Supabase reads — projects to planner/composer types. Also derives `currentLessonId` + `nextLessonNeedsExposure` for the drying detector. Exports `sessionBuilderAdapter` + `createSessionBuilderAdapter(client?)`. |
+| `builder.ts` | 418 | Orchestrator. Runs three selection passes, calls `resolveCandidate`, builds the queue-drying diagnostic, composes the plan. Exports `buildSession` + the test-only `loadCapabilitySessionPlan`. |
 | `compose.ts` | 115 | Packs candidate triples into `SessionBlock`s; emits diagnostics on resolution failure. Exports `compose`. |
 | `model.ts` | 46 | Types only — `SessionMode`, `SessionPlan`, `SessionBlock`, `SessionDiagnostic`, `CapabilityReviewSessionContext`. |
 | `pedagogy.ts` | 252 | Suppression-rule engine that picks new capabilities to introduce. Exports `planLearningPath`. |
 | `loadBudget.ts` | 53 | Per-mode budget rules. Three branches (`lesson_review`, `lesson_practice`, default `standard`). Exports `decideLoadBudget`. |
 | `labels.ts` | 66 | Per-capability display copy + exercise/skill helpers. Exports `capabilityDisplay`, `exerciseLabel`, `skillLabel`, `CAPABILITY_DISPLAY`. |
 | `audibleTexts.ts` | 104 | Audible-text harvest — `audibleTextFieldsOf` (per builder) + `collectAudibleTexts` (aggregator). |
-| `drying.ts` | 44 | Queue-drying detector. Relocated as-is from the pre-fold layout; **not yet wired** into the builder. PR-B wires it. |
+| `drying.ts` | 42 | Queue-drying detector. Wired into the builder in PR-B (2026-05-16). Suppresses when the due backlog exceeds preferred size or the mode is lesson-scoped; otherwise fires when the current lesson has no eligible introductions, the next lesson is still inactive, and the candidate pool is below 70% of preferred size. |
 | `knownWordCoverage.ts` | 95 | Sentence-comprehensibility gate. **Not yet wired** — survives as documentation per fold plan §10. |
 | `index.ts` | 19 | Public-API barrel. |
 
@@ -123,22 +123,24 @@ The production implementation lives at `adapter.ts:201-310`.
 
 ## 3. Internal flow
 
-### 3.1 Adapter — three parallel Supabase reads
+### 3.1 Adapter — four parallel Supabase reads
 
-`adapter.ts:223-307`. On each invocation:
+`adapter.ts`. On each invocation:
 
-1. **Capabilities** (`adapter.ts:229-233`) — every `learning_capabilities` row with `readiness_status='ready'` and `publication_status='published'`. No user filter. Yields ~thousands of rows once the catalog grows.
-2. **Learner state** (`adapter.ts:234`) — every `learner_capability_state` row for the user. Includes FSRS schedule data + activation state.
-3. **Lesson activation** (`adapter.ts:235`) — every `learner_lesson_activation` row for the user (single-boolean per lesson, added by retirement #6).
+1. **Capabilities** — every `learning_capabilities` row with `readiness_status='ready'` and `publication_status='published'`. No user filter. Yields ~thousands of rows once the catalog grows.
+2. **Learner state** — every `learner_capability_state` row for the user. Includes FSRS schedule data + activation state.
+3. **Lesson activation** — every `learner_lesson_activation` row for the user (single-boolean per lesson, added by retirement #6).
+4. **Lessons** — every `lessons` row (`id`, `order_index`). Used by `deriveLessonProgression` to compute `currentLessonId` + `nextLessonNeedsExposure` for the queue-drying detector. The query is unfiltered because the lesson catalog is small (~tens of rows).
 
-After those resolve, a fourth chunked query fetches `capability_artifacts` for the capability ids in batches (`adapter.ts:245-251`, via `chunkedIn` to avoid PostgREST URL-length limits).
+After those resolve, a fifth chunked query fetches `capability_artifacts` for the capability ids in batches (via `chunkedIn` to avoid PostgREST URL-length limits).
 
 The adapter then:
-- Builds `capabilitiesByKey: Map<string, ProjectedCapability>` and `readinessByKey: Map<string, CapabilityReadiness>` via `validateCapability` (`adapter.ts:258-270`). Capabilities with incomplete metadata are recorded with `readinessByKey.set(key, { status: 'unknown', ... })` and skipped from `readyCapabilities`.
+- Builds `capabilitiesByKey: Map<string, ProjectedCapability>` and `readinessByKey: Map<string, CapabilityReadiness>` via `validateCapability`. Capabilities with incomplete metadata are recorded with `readinessByKey.set(key, { status: 'unknown', ... })` and skipped from `readyCapabilities`.
 - Computes `dueCount` via `getDueCapabilitiesFromRows` (a flat date filter — no FSRS math; FSRS lives server-side per ADR 0003).
 - Computes `recentFailures` from rows with `consecutiveFailureCount ≥ 2`.
+- Derives `currentLessonId` (the activated lesson with the highest `order_index`, or `null` if no activations) and `nextLessonNeedsExposure` (true iff a lesson with `order_index = current.order_index + 1` exists and is not activated). Both feed the drying detector in §3.8.
 
-Output is a `CapabilitySessionDataSnapshot` (`builder.ts:30-36`) carrying `schedulerRows`, `capabilitiesByKey`, `readinessByKey`, `artifactIndex`, and `plannerInput` (typed `Omit<PedagogyInput, 'mode' | 'now'>`).
+Output is a `CapabilitySessionDataSnapshot` carrying `schedulerRows`, `capabilitiesByKey`, `readinessByKey`, `artifactIndex`, `currentLessonId`, `nextLessonNeedsExposure`, and `plannerInput` (typed `Omit<PedagogyInput, 'mode' | 'now'>`).
 
 ### 3.2 Orchestrator — three selection passes through one resolver
 
@@ -152,9 +154,11 @@ Output is a `CapabilitySessionDataSnapshot` (`builder.ts:30-36`) carrying `sched
 
 **Step D — pass 3: new introductions** (`builder.ts:305-329`). Calls `planLearningPath(plannerInput)` (`pedagogy.ts:149-251`). Result is the suppression-filtered + budget-limited list of eligible new capabilities. Mode `lesson_review` produces empty. Same `resolveCandidate` helper; each item carries an `activationRequest: { reason: 'eligible_new_capability' }` so the review processor knows to mint the FSRS state row on first answer.
 
-**Step E — compose** (`builder.ts:331-338`). All three pass outputs hand to `compose`.
+**Step E — queue-drying check** (`builder.ts`, post-PR-B). Once due + new pass outputs are known, the builder calls `buildQueueDryingDiagnostic` with `dueCount + eligibleNewCapabilities.length` as the candidate pool and the snapshot's `currentLessonId` / `nextLessonNeedsExposure`. `currentLessonHasEligibleIntroductions` is computed precisely from `learningPlan.eligibleNewCapabilities.some(e => e.capability.lessonId === currentLessonId)`. If the detector returns a diagnostic, the builder appends it to the `compose` input as `diagnostics: [dryingDiagnostic]`.
 
-The three passes share the resolver loop via `resolveCandidate` (`builder.ts:168-197`). It accepts the caller's `meta` object verbatim and returns either `{ meta, reviewContext, renderPlan }` (resolved) or `{ meta, reviewContext, resolutionFailure }` (failed). The dedup is the load-bearing detail of the §3.1 fold cleanup — see `__tests__/resolveCandidate.test.ts` for the contract.
+**Step F — compose**. All three pass outputs + the drying diagnostic (if any) hand to `compose`.
+
+The three passes share the resolver loop via `resolveCandidate`. It accepts the caller's `meta` object verbatim and returns either `{ meta, reviewContext, renderPlan }` (resolved) or `{ meta, reviewContext, resolutionFailure }` (failed). The dedup is the load-bearing detail of the §3.1 fold cleanup — see `__tests__/resolveCandidate.test.ts` for the contract.
 
 ### 3.3 Planner — suppression-rule engine
 
@@ -236,11 +240,24 @@ interface CapabilityDisplay {
 
 `capabilityDisplay(type)` returns the entry; `exerciseLabel(type)` and `skillLabel(type)` remain available for narrower lookups. `RecapScreen.tsx:95` uses `capabilityDisplay(b.renderPlan.capabilityType).label` for the recap headline (the prior `exerciseLabel(b.renderPlan.exerciseType)` was a deliberate UX swap — the headline now answers *what skill* not *what UI shape*).
 
-### 3.8 Drying detector (relocated, not yet wired)
+### 3.8 Drying detector (wired in PR-B)
 
-`drying.ts:1-44`. Builds a `SessionDiagnostic` warning learners when the queue is dry but the next lesson still needs activation. The detector exists but **is not called from `builder.ts` yet** — wiring + a rewrite that drops the legacy posture/backlog inputs lands in PR-B.
+`drying.ts`. Builds a `SessionDiagnostic` warning learners when the queue is dry but the next lesson still needs activation. Suppression rules, in order:
 
-The file still references **locally-scoped** `LegacyPosture` and `LegacyBacklogPressure` string-union types (`drying.ts:12-13`). This is the only surviving site that names the posture concept; it survives only because the suppression rule signature has not yet been rewritten. The types are private to the file — no other code imports them — so the "posture system entirely removed" claim in §3.4 holds for the module's public surface.
+| Rule | Effect |
+|---|---|
+| `dueCount > preferredSessionSize` | Suppress (backlog explains the short session) |
+| `mode !== 'standard'` | Suppress (lesson-scoped modes are intentionally narrow) |
+| `currentLessonHasEligibleIntroductions` | Suppress (the planner can still emit material from the current lesson) |
+| `!nextLessonNeedsExposure` | Suppress (the next lesson is already active, or there is no next lesson) |
+| `goodCandidateCount ≥ preferredSize * 0.7` | Suppress (the candidate pool is still substantial) |
+| Otherwise | Fire with `reason='learning_pipeline_drying_up'`, `details='session.pipelineDryingUp'` |
+
+The `currentLessonHasEligibleIntroductions` flag is computed in `builder.ts` from the planner's output (`learningPlan.eligibleNewCapabilities`) rather than approximated in the adapter. This is precise: it counts only capabilities the planner is *willing to surface*, not all dormant ones in the current lesson.
+
+The two adapter-derived inputs (`currentLessonId`, `nextLessonNeedsExposure`) default to `null` / `false` when the learner has no activations or has reached the final lesson — in both cases the detector's `!nextLessonNeedsExposure` rule suppresses the warning. See `adapter.ts:deriveLessonProgression`.
+
+The diagnostic surfaces in the UI via `Session.tsx`, which reads `plan.diagnostics.find(d => d.reason === 'learning_pipeline_drying_up')` and renders a dismissible Mantine `<Alert color="blue">` above the player using the Dutch copy from `src/lib/i18n.ts:217` (`session.pipelineDryingUp`).
 
 ---
 
@@ -287,8 +304,6 @@ The file still references **locally-scoped** `LegacyPosture` and `LegacyBacklogP
 
 ## 6. Known limitations and follow-ups
 
-**`drying.ts` is unwired.** The relocated detector exists but `builder.ts` does not call it. PR-B wires it and rewrites the suppression rule to drop the legacy posture/backlog inputs.
-
 **`knownWordCoverage.ts` is unwired.** Survives as documentation. Wiring requires (a) a pipeline change to emit per-content key-word artifacts, (b) a planner suppression rule, (c) a UX surface for the suppressed-because-of-coverage state. Multi-PR effort, no owner yet.
 
 **Per-capability descriptions are placeholder.** `CAPABILITY_DISPLAY` entries carry `label` only; `description` and `example` fields are stub for PR-D to author.
@@ -311,4 +326,5 @@ The file still references **locally-scoped** `LegacyPosture` and `LegacyBacklogP
 - **Answer commit / FSRS.** Server-side. Lives in `supabase/functions/commit-capability-answer-report/index.ts` per ADR 0001 and ADR 0003; invoked as the `commit-capability-answer-report` Edge Function (FSRS pulled in inline from `npm:ts-fsrs`). The builder never touches state writes. See `docs/adr/0001-capability-based-learning-core.md` and `docs/adr/0003-fsrs-schedules-capabilities-not-content-sources.md` for the canonical reasoning.
 - **Session lifecycle.** Retirement #5 (2026-05-07) deleted explicit `startSession`/`endSession`. The `learning_sessions` row materialises lazily on the first answer-commit; no explicit lifecycle hooks remain. The retirement plan lives in the repo archive — see `ARCHIVE.md` at repo root for the pointer (path mirrors original: `docs/plans/2026-05-07-retire-session-lifecycle.md` under the archive root).
 - **Rendering.** Owned by `components/experience/` (the player) and `components/exercises/implementations/` (the 12 per-type renderers). See `docs/current-system/modules/experience.md`.
-- **Queue-drying / coverage UX.** The relocated helpers (`drying.ts`, `knownWordCoverage.ts`) ship in this module but their wiring + UX is downstream work, not part of the builder contract today. Wiring lands in PR-B (drying) per the fold plan §4.1; coverage wiring has no owner yet.
+- **Coverage UX.** `knownWordCoverage.ts` ships in this module but its wiring + UX is downstream work, not part of the builder contract today. Owner: none yet.
+- **Queue-drying UX dismissal telemetry.** PR-B's `<Alert>` is dismissable per-mount but the dismissal is not persisted or logged. If we want to know how often learners dismiss vs. act on it, that's a follow-up.

@@ -92,6 +92,36 @@ interface LessonActivationDbRow {
   lesson_id: string
 }
 
+interface LessonOrderDbRow {
+  id: string
+  order_index: number
+}
+
+// Derives "current lesson" + "next lesson needs exposure" from the learner's
+// activations and the lessons table. Both feed the queue-drying detector.
+// Returns null/false defensively when the learner has no activations or has
+// reached the final lesson — the detector suppresses drying in those cases.
+function deriveLessonProgression(input: {
+  activatedLessonIds: ReadonlySet<string>
+  lessons: LessonOrderDbRow[]
+}): { currentLessonId: string | null; nextLessonNeedsExposure: boolean } {
+  if (input.activatedLessonIds.size === 0) {
+    return { currentLessonId: null, nextLessonNeedsExposure: false }
+  }
+  const activatedLessons = input.lessons.filter(lesson => input.activatedLessonIds.has(lesson.id))
+  if (activatedLessons.length === 0) {
+    return { currentLessonId: null, nextLessonNeedsExposure: false }
+  }
+  const current = activatedLessons.reduce((acc, candidate) => (
+    candidate.order_index > acc.order_index ? candidate : acc
+  ))
+  const next = input.lessons.find(lesson => lesson.order_index === current.order_index + 1)
+  return {
+    currentLessonId: current.id,
+    nextLessonNeedsExposure: next != null && !input.activatedLessonIds.has(next.id),
+  }
+}
+
 function arrayOfStrings(value: unknown): string[] | null {
   return Array.isArray(value) && value.every(item => typeof item === 'string')
     ? value
@@ -225,6 +255,7 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         capabilitiesResult,
         statesResult,
         activationResult,
+        lessonsResult,
       ] = await Promise.all([
         db()
           .from('learning_capabilities')
@@ -233,11 +264,13 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
           .eq('publication_status', 'published'),
         db().from('learner_capability_state').select('*').eq('user_id', request.userId),
         db().from('learner_lesson_activation').select('lesson_id').eq('user_id', request.userId),
+        db().from('lessons').select('id, order_index'),
       ])
 
       if (capabilitiesResult.error) throw capabilitiesResult.error
       if (statesResult.error) throw statesResult.error
       if (activationResult.error) throw activationResult.error
+      if (lessonsResult.error) throw lessonsResult.error
 
       const capabilityRows = (capabilitiesResult.data ?? []) as LearningCapabilityDbRow[]
       const capabilityById = new Map(capabilityRows.map(row => [row.id, row]))
@@ -286,6 +319,10 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
           failedAt: row.lastReviewedAt!,
           consecutiveFailures: row.consecutiveFailureCount,
         }))
+      const { currentLessonId, nextLessonNeedsExposure } = deriveLessonProgression({
+        activatedLessonIds: activatedLessons,
+        lessons: (lessonsResult.data ?? []) as LessonOrderDbRow[],
+      })
 
       return {
         schedulerRows,
@@ -303,6 +340,8 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         capabilitiesByKey,
         readinessByKey,
         artifactIndex,
+        currentLessonId,
+        nextLessonNeedsExposure,
       }
     },
   }

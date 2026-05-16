@@ -210,17 +210,28 @@ describe('capability session loader', () => {
       listLearnerCapabilityStates: async () => {
         throw new Error('buildSession should use the full snapshot loader')
       },
-      loadCapabilitySessionData: async request => baseInput({
-        schedulerRows: [activeState({ userId: request.userId })],
-        plannerInput: {
-          userId: request.userId,
-          preferredSessionSize: request.preferredSessionSize,
-          dueCount: 0,
-          readyCapabilities: [],
-          learnerCapabilityStates: [],
-          activatedLessons: new Set<string>(),
-        },
-      }),
+      loadCapabilitySessionData: async request => {
+        const base = baseInput({
+          schedulerRows: [activeState({ userId: request.userId })],
+          plannerInput: {
+            userId: request.userId,
+            preferredSessionSize: request.preferredSessionSize,
+            dueCount: 0,
+            readyCapabilities: [],
+            learnerCapabilityStates: [],
+            activatedLessons: new Set<string>(),
+          },
+        })
+        return {
+          schedulerRows: base.schedulerRows,
+          plannerInput: base.plannerInput,
+          capabilitiesByKey: base.capabilitiesByKey,
+          readinessByKey: base.readinessByKey,
+          artifactIndex: base.artifactIndex,
+          currentLessonId: null,
+          nextLessonNeedsExposure: false,
+        }
+      },
     }
 
     const plan = await buildSession({
@@ -352,5 +363,115 @@ describe('capability session loader', () => {
       severity: 'critical',
       reason: 'missing_selected_lesson',
     }))
+  })
+
+  describe('queue drying diagnostic', () => {
+    const currentLessonUuid = 'lesson-current-uuid'
+
+    function dryScenarioInput() {
+      // Standard-mode session with no due reviews, current lesson fully
+      // introduced (planner has no eligible new capabilities for it), and the
+      // next lesson still inactive. This is the wiring's positive case.
+      const otherLessonProjection = projectedCapability({
+        canonicalKey: 'other-lesson-key',
+        sourceRef: 'learning_items/other-lesson',
+        lessonId: 'lesson-other-uuid',
+        requiredArtifacts: [],
+      })
+      return baseInput({
+        schedulerRows: [],
+        plannerInput: {
+          userId: 'user-1',
+          preferredSessionSize: 15,
+          dueCount: 0,
+          // Other-lesson capability is the only ready candidate, but it is
+          // suppressed because its lessonId is not in `activatedLessons`.
+          readyCapabilities: [plannerCapability({
+            id: 'other-lesson-cap',
+            canonicalKey: otherLessonProjection.canonicalKey,
+            sourceRef: otherLessonProjection.sourceRef,
+            lessonId: 'lesson-other-uuid',
+          })],
+          learnerCapabilityStates: [],
+          // current lesson is activated; the suppressed capability belongs to
+          // a different (non-activated) lesson.
+          activatedLessons: new Set<string>([currentLessonUuid]),
+        },
+        capabilitiesByKey: new Map([[otherLessonProjection.canonicalKey, otherLessonProjection]]),
+        readinessByKey: new Map([[otherLessonProjection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }]]),
+        artifactIndex: {},
+        currentLessonId: currentLessonUuid,
+        nextLessonNeedsExposure: true,
+      })
+    }
+
+    it('emits the drying diagnostic when the queue is dry and the next lesson needs exposure', async () => {
+      const plan = await loadCapabilitySessionPlan(dryScenarioInput())
+      expect(plan.diagnostics).toContainEqual(expect.objectContaining({
+        severity: 'warn',
+        reason: 'learning_pipeline_drying_up',
+        details: 'session.pipelineDryingUp',
+      }))
+    })
+
+    it('does not emit the drying diagnostic when the next lesson is already active', async () => {
+      const input = dryScenarioInput()
+      const plan = await loadCapabilitySessionPlan({
+        ...input,
+        nextLessonNeedsExposure: false,
+      })
+      expect(plan.diagnostics.find(d => d.reason === 'learning_pipeline_drying_up')).toBeUndefined()
+    })
+
+    it('does not emit the drying diagnostic in lesson-scoped modes', async () => {
+      // lesson_practice would need scope, so we have to provide it.
+      const input = dryScenarioInput()
+      const selectedRefs = ['lesson-current', 'learning_items/other-lesson']
+      const plan = await loadCapabilitySessionPlan({
+        ...input,
+        mode: 'lesson_practice',
+        plannerInput: {
+          ...input.plannerInput,
+          selectedLessonId: 'lesson-current',
+          selectedSourceRefs: selectedRefs,
+        },
+        selectedLessonId: 'lesson-current',
+        selectedSourceRefs: selectedRefs,
+      })
+      expect(plan.diagnostics.find(d => d.reason === 'learning_pipeline_drying_up')).toBeUndefined()
+    })
+
+    it('does not emit the drying diagnostic when the planner still has eligible introductions for the current lesson', async () => {
+      // Same scenario, except the "other" capability now belongs to the
+      // current lesson — the planner will emit it as eligible, so drying is
+      // suppressed.
+      const currentLessonProjection = projectedCapability({
+        canonicalKey: 'current-lesson-key',
+        sourceRef: 'learning_items/current-lesson',
+        lessonId: currentLessonUuid,
+        requiredArtifacts: [],
+      })
+      const plan = await loadCapabilitySessionPlan(baseInput({
+        plannerInput: {
+          userId: 'user-1',
+          preferredSessionSize: 15,
+          dueCount: 0,
+          readyCapabilities: [plannerCapability({
+            id: 'current-lesson-cap',
+            canonicalKey: currentLessonProjection.canonicalKey,
+            sourceRef: currentLessonProjection.sourceRef,
+            lessonId: currentLessonUuid,
+          })],
+          learnerCapabilityStates: [],
+          activatedLessons: new Set<string>([currentLessonUuid]),
+        },
+        capabilitiesByKey: new Map([[currentLessonProjection.canonicalKey, currentLessonProjection]]),
+        readinessByKey: new Map([[currentLessonProjection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }]]),
+        artifactIndex: {},
+        currentLessonId: currentLessonUuid,
+        nextLessonNeedsExposure: true,
+      }))
+      expect(plan.diagnostics.find(d => d.reason === 'learning_pipeline_drying_up')).toBeUndefined()
+    })
   })
 })

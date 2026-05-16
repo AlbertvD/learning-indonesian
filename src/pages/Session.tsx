@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Alert } from '@mantine/core'
-import { IconAlertCircle } from '@tabler/icons-react'
+import { IconAlertCircle, IconInfoCircle } from '@tabler/icons-react'
 import {
   PageContainer,
   PageBody,
@@ -15,6 +15,7 @@ import {
   type SessionMode,
   type SessionPlan,
 } from '@/lib/session-builder'
+import { translations } from '@/lib/i18n'
 import { lessonService } from '@/services/lessonService'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
 import { ExperiencePlayer, type SessionAnswerEvent } from '@/components/experience/ExperiencePlayer'
@@ -61,6 +62,7 @@ export function Session() {
   const [capabilityPlan, setCapabilityPlan] = useState<SessionPlan | null>(null)
   const [capabilityContexts, setCapabilityContexts] = useState<Map<string, CapabilityRenderContext> | null>(null)
   const [capabilityAudioMap, setCapabilityAudioMap] = useState<SessionAudioMap | null>(null)
+  const [dryingDismissed, setDryingDismissed] = useState(false)
 
   const lessonFilter = searchParams.get('lesson')
   const sessionModeParam = searchParams.get('mode')
@@ -215,15 +217,37 @@ export function Session() {
         </PageContainer>
       )
     }
+    const dryingDiagnostic = capabilityPlan.diagnostics.find(
+      d => d.reason === 'learning_pipeline_drying_up'
+    )
+    const userLanguage = (profile?.language ?? 'nl') as 'en' | 'nl'
     return (
-      <ExperiencePlayer
-        plan={capabilityPlan}
-        contexts={capabilityContexts}
-        audioMap={capabilityAudioMap}
-        userLanguage={(profile?.language ?? 'nl') as 'en' | 'nl'}
-        onAnswer={handleCapabilityAnswer}
-        onComplete={handleNavigateHome}
-      />
+      <>
+        {dryingDiagnostic && !dryingDismissed && (
+          <PageContainer size="md">
+            <PageBody>
+              <Alert
+                color="blue"
+                icon={<IconInfoCircle size={16} />}
+                withCloseButton
+                closeButtonLabel={userLanguage === 'nl' ? 'Sluiten' : 'Close'}
+                onClose={() => setDryingDismissed(true)}
+                data-testid="drying-alert"
+              >
+                {translations[userLanguage].session.pipelineDryingUp}
+              </Alert>
+            </PageBody>
+          </PageContainer>
+        )}
+        <ExperiencePlayer
+          plan={capabilityPlan}
+          contexts={capabilityContexts}
+          audioMap={capabilityAudioMap}
+          userLanguage={userLanguage}
+          onAnswer={handleCapabilityAnswer}
+          onComplete={handleNavigateHome}
+        />
+      </>
     )
   }
 
