@@ -161,11 +161,21 @@ The column rename (`lesson_id` → `introduced_by_lesson_id`) is intentionally d
 
 ### PR-2 — Staging reconciliation + lint + regenerate `capabilities.ts`
 
-- [ ] New lint rule under `scripts/lib/pipeline/capability-stage/lint/` walks all `scripts/data/staging/lesson-*/learning-items.ts` and emits a CRITICAL finding if any item `base_text` (normalized) appears in two lessons' staging files.
-- [ ] One sub-commit per lesson that reconciles `learning-items.ts` to declare each item exactly once (in the lowest-order lesson where it appears in the explicit vocab list). Verified pre-existing duplicate to fix: `ada` declared in both `lesson-2/learning-items.ts` and `lesson-3/learning-items.ts`.
-- [ ] Other lessons that need the item retain it in their `lesson-page-blocks.ts` `source_refs[]` (no removal — only declaration moves).
+**Pre-audit (2026-05-17):** 690 total item declarations across 9 lessons → 648 distinct items. 41 duplicate declarations need reconciliation, split into:
+
+- **20 cross-lesson duplicates** — same item declared in different lessons. Resolve by moving the declaration to the lowest-order lesson and leaving the higher-order lesson with a `source_refs[]` reference in its `lesson-page-blocks.ts`. Examples: `ada` (lesson 2 + 3), `tetapi` (1 + 4), `tangan` (6 + 9), `sepuluh` (1 + 3).
+- **21 within-lesson duplicates** — same item listed twice in the SAME `learning-items.ts`. Pure authoring bug — silently deduped by `canonical_key` upsert today, but should not exist. 15 of 21 are in `lesson-4/learning-items.ts` (which has 135 items total, by far the biggest staging file), 1 in lesson 7, 5 in lesson 9. `kaki` appears 3× in lesson 9 alone. Resolve by deleting the redundant entries.
+
+**Acceptance:**
+
+- [ ] New lint rule under `scripts/lib/pipeline/capability-stage/lint/` walks all `scripts/data/staging/lesson-*/learning-items.ts` and emits a CRITICAL finding for any duplicate item declaration — both *within-lesson* (same `base_text` twice in one file) and *cross-lesson* (same `base_text` declared in two lessons' files).
+- [ ] One sub-commit per lesson that reconciles `learning-items.ts`:
+  - Within-lesson duplicates: delete the redundant entries.
+  - Cross-lesson duplicates: keep the entry in the lowest-order lesson; remove from higher-order lessons.
+  - Quick check on `lesson-4/learning-items.ts` to understand why 15 within-lesson dupes exist (likely an auto-generation regression). Document the cause in the commit message so future regenerations don't reintroduce them.
+- [ ] Higher-order lessons that need a moved item retain a reference in their `lesson-page-blocks.ts` `source_refs[]` (no removal of cross-references — only declaration moves).
 - [ ] All 9 lessons' `capabilities.ts` regenerated via `bun scripts/generate-staging-files.ts --all` (or per-lesson if the orchestrator doesn't support `--all`).
-- [ ] Lint check passes on the reconciled staging (no duplicate declarations).
+- [ ] Lint check passes on the reconciled staging (zero duplicate declarations).
 - [ ] `bun run test` green.
 - [ ] Lint check added to `buildLintStagingCommand`'s CRITICAL set.
 
