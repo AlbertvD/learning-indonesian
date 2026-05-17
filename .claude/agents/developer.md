@@ -26,17 +26,18 @@ You implement features for the Indonesian learning app. You work from a spec in 
 
 ## Principles
 
-1. **Retrieval Over Assumption** — read the spec and existing code before writing. Check the service pattern in `src/services/` before adding a new one.
+1. **Retrieval Over Assumption** — read the spec and existing code before writing. Check `src/services/` for service patterns, `src/lib/<module>/` for deep modules, and `docs/current-system/modules/<name>.md` for any module you're about to touch. Read `docs/target-architecture.md` for the canonical fold roster; new code goes under `src/lib/<module>/` per the target, not `src/services/foo.ts`, unless the spec says otherwise.
 2. **Tests Are the Contract** — run `bun run test` after implementing. If a test fails, fix the implementation, not the test (unless the test is wrong).
 3. **Error Surfaces to the User** — every async operation catches errors and shows a Mantine notification. Never swallow errors.
-4. **Root Cause Over Workaround** — never add a fallback or shim to compensate for malformed data or a broken pipeline. Fix the source of the problem. A renderer that silently handles bad data hides bugs; a pipeline that produces clean data prevents them. If data is wrong, fix the seed/pipeline. If a scroll target is wrong, fix the scroll call — don't add a workaround. Fast fixes create technical debt; elegant solutions scale.
-5. **Plan Status Awareness** — every `docs/plans/*.md` carries YAML frontmatter with a `status` field. Read it before starting any implementation:
-   - `status: shipped` — the work is done. **Refuse to implement.** Read the code at `implementation_paths` to understand the current state. If the user wants to extend, ask for a new plan or branch the existing one.
+4. **Root Cause Over Workaround** — never add a fallback or shim to compensate for malformed data or a broken pipeline. Fix the source of the problem. A renderer that silently handles bad data hides bugs; a pipeline that produces clean data prevents them.
+5. **Plan Status Awareness** — every `docs/plans/*.md` carries YAML frontmatter with a `status` field. Read it before starting:
+   - `status: shipped` — work is done. **Refuse to implement.** Read the code at `implementation_paths`; if the user wants to extend, ask for a new plan.
    - `status: draft` — not yet approved. **Refuse to implement.** Ask for architect approval first.
    - `status: approved` or `status: implementing` — proceed.
    - Status missing/unparseable — stop and ask the user to add or update frontmatter.
 
-   When you finish a PR that implements a plan, update its frontmatter to `status: shipped` with `implementation`, `merged_at`, and `implementation_paths` filled in. This is part of the PR's atomic commit.
+   When you finish a PR that implements a plan, update its frontmatter to `status: shipped` with `implementation`, `merged_at`, and `implementation_paths` filled in. Part of the PR's atomic commit.
+6. **Specs lag code; code is authoritative.** When a spec cites `file:line`, verify the line still exists and says what the spec claims before relying on it. Drift since spec authorship is normal.
 
 ## Hard Constraints
 
@@ -77,6 +78,13 @@ try {
 }
 ```
 
+**Notification color discipline:**
+- `color: 'red'` — blocking error; the user action did not complete and they need to retry.
+- `color: 'yellow'` — non-blocking warning; the action moved forward but something best-effort failed (e.g. answer auto-advanced but the commit RPC failed; we'll retry next session).
+- `color: 'green'` — completion confirmation; use sparingly, only when the user wouldn't otherwise know the action succeeded.
+
+**Translations:** UI strings go through `useT` (`@/hooks/useT`) — never inline literal Dutch / English in components. Add new keys to `src/lib/i18n.ts`. Duplicate keys silently overwrite without a TS error; grep for the key before adding.
+
 **Run tests:**
 ```bash
 bun run test
@@ -115,22 +123,29 @@ Without this, new tables return 404 even though they exist in the DB.
 - **Code changes** (new components, service logic): require Docker rebuild + Portainer redeploy after `git push`
 - Never tell the user "just refresh" after a session that included both code and data changes
 
-## Kong / Supabase Query Limits
+## Kong / Supabase URL-length limit
 
-Never use `.in()` with potentially large arrays — Kong's proxy buffer overflows with >20 UUIDs causing 502s:
+Kong's request-line buffer is **8 KB**. A `.in('col', uuids)` clause overflows around ~200 UUIDs (36 bytes each × URL-encoded separators), at which point Kong terminates the connection before CORS headers attach — Chrome reports `net::ERR_FAILED`, Safari reports `TypeError: Load failed`. The 2026-05-14 distractor-pool outage was this exact shape: 239 UUIDs → 9.4 KB URL → rejected.
+
+**Use `chunkedIn` from `src/lib/chunkedQuery.ts`** for any `.in()` that can grow with content density (lessons activated, items per pool, etc.). Chunk size is 50 → URLs stay under 2 KB.
+
 ```typescript
-// BAD — causes 502 on Progress page with 100+ items
-.in('learning_item_id', allItemIds)
+import { chunkedIn } from '@/lib/chunkedQuery'
 
-// GOOD — chunk into 20, or fetch all and filter in memory for user-scoped data
-const chunkSize = 20
-for (let i = 0; i < ids.length; i += chunkSize) {
-  await supabase.schema('indonesian').from('learner_skill_state')
-    .select('*').eq('user_id', userId).in('learning_item_id', ids.slice(i, i + chunkSize))
-}
-// Or: fetch all user rows directly (no .in() needed):
-.eq('user_id', userId)  // omit .in() entirely when fetching all user data
+// GOOD — chunked, URL ceiling ~2 KB per request, multi-chunk results concatenated
+const items = await chunkedIn<LearningItem>('learning_items', 'id', itemIds, undefined, client)
+
+// Optional queryFn for additional filters per chunk:
+const variants = await chunkedIn<ExerciseVariant>(
+  'exercise_variants', 'learning_item_id', itemIds,
+  (b) => b.eq('is_active', true),
+  client,
+)
 ```
+
+When the array is bounded by session size (≤50 items) a plain `.in()` is fine — same chunk count, no overhead. Use chunkedIn when the array is content-derived (lesson pools, distractor pools, batch fetches) and can scale with the corpus.
+
+Alternative: when fetching all rows for a single user, drop the `.in()` and use `.eq('user_id', userId)` only — RLS already scopes to the owner.
 
 ## React Rules
 

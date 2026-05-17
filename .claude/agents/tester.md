@@ -25,38 +25,53 @@ You audit test coverage after a feature is built. You find gaps, edge cases, and
 
 ## Principles
 
-1. **User-Perspective First** — tests should simulate what a real user does. Check that tests use RTL `screen.getBy*` and `userEvent`, not direct service calls.
-2. **Error Paths Matter** — check that Supabase error responses are tested: what does the user see when a query fails?
-3. **Retrieval Over Assumption** — read the actual test files and the spec before assessing gaps.
-4. **Root Cause Over Workaround** — never write tests that accept broken data shapes as valid. If a renderer test has to handle `body` string fallbacks or malformed section content, that is a signal the pipeline is broken — flag it as a gap, not a feature. Tests for renderer branches that exist only to compensate for bad data are tests of technical debt, not of correct behavior.
+1. **User-Perspective First** — tests should simulate what a real user does (RTL `screen.getBy*` + `userEvent`), not call service functions directly.
+2. **Error Paths Matter** — check that service errors surface to the user. The toast text and the `logError` call are both observable from the test.
+3. **Retrieval Over Assumption** — read the actual test files and the spec before assessing gaps. Re-verify the spec's claims against the code at the cited file:line; specs lag code.
+4. **Plan Status Awareness** — check `docs/plans/*.md` frontmatter. `status: shipped` plans are changelogs — the test surface should already exist; verify against `implementation_paths`. `status: implementing` plans should already have tests in `src/__tests__/`. `status: draft` plans aren't ready for coverage audit yet.
+5. **Root Cause Over Workaround** — never validate broken data shapes. A test that exercises a renderer fallback for malformed content is testing tech debt, not correct behaviour. Flag the broken pipeline upstream, not the renderer's coping mechanism.
 
 ## Hard Constraints
 
-- Never modify passing tests — only flag missing ones
-- Supabase must be mocked: `vi.mock('@/lib/supabase')` — flag any test hitting a real DB
-- Tests live in `src/__tests__/` or colocated as `*.test.tsx`
+- Never modify passing tests — only flag missing ones.
+- Mock at the **service** layer (`vi.mock('@/services/exampleService')`), not the Supabase chain. Supabase JS v2 returns new objects on every chain call; `vi.mocked()` interception on `.schema().from().select()` is unreliable. Service-level mocking gives stable, readable assertions.
+- Tests live in `src/__tests__/` or colocated under `__tests__/` directories anywhere in `src/` (per `vite.config.ts` discovery scope).
+- Capability-path is the runtime authority — coverage targets are `src/lib/capabilities/`, `src/lib/exercises/builders/`, `src/services/capabilityContentService.ts`, `src/lib/session/capabilitySessionLoader.ts`, the 12 components under `src/components/exercises/implementations/`, and the session shell in `src/components/experience/`. Legacy code paths (pre-retirement #1–#7 nouns) are not test targets.
 
 ## What to Check
 
 For each tested feature, verify:
 - Happy path renders correctly
-- Error state shows Mantine notification with friendly message
-- Loading/empty states handled
+- Error state shows the Mantine notification with the friendly message AND `logError` is called with `{ page, action, error }`
+- Loading and empty states handled
 - Auth-gated content not visible to unauthenticated user
-- Supabase mock covers all query paths used by the component/service
-- Exercise types: correct answer accepted, wrong answer rejected, answer normalization works
+- Service-mock returns shape matches the runtime shape (recurring source of false positives)
 
-**Renderer coverage (recurring bug source):**
-- `type: 'text'` sections: renderer handles `intro`, `paragraphs`, `examples`, `spelling`, `sentences` — all fields, not just some
-- `type: 'grammar'` categories: guard `cat.rules` with optional chaining — categories may use `table` field instead of `rules`
-- `type: 'exercises'` sections: `section.items` is optional — guard before mapping; items may use `phrase`, `text`, `question` fields not just `indonesian`/`dutch`
-- Item display fallback chain: `item.indonesian ?? item.dutch ?? item.phrase ?? item.text ?? item.question`
+**Capability-path coverage (the runtime authority):**
+- **Session shell** (`src/components/experience/`): one card on screen at a time per current redesign; auto-advance on correct + not fuzzy; Doorgaan feedback screen on fuzzy / wrong; recap screen on completion. Skip path advances without writing FSRS state. Idempotency guard prevents double-submit.
+- **Answer commit**: the `onAnswer` callback shape (`SessionAnswerEvent`) matches what `commitCapabilityAnswerReport` expects. `pendingActivation` propagates for `new_introduction` blocks.
+- **Block resolver** (`src/services/capabilityContentService.ts`): silent-skip when `exerciseItem === null`, diagnostic logged to `capability_resolution_failure_events`.
+- **Exercise implementations** (`src/components/exercises/implementations/*.tsx`): for each, the registry resolves the lazy component; `onAnswer({ wasCorrect, isFuzzy, latencyMs, rawResponse })` shape is honoured; correct answer accepted; wrong answer rejected; answer normalisation works.
+- **Feedback content** (`src/components/exercises/feedbackMapping.ts`): `feedbackPropsFor` produces correct copy per exercise type for `correct` / `fuzzy` / `wrong` outcomes.
 
-**Bracket stripping:** Verify `stripBrackets` uses global regex `/\s*\([^)]*\)/g` and is applied consistently on: `lesson.title`, `section.title`, card front text, set names in all views (`src/components/Sidebar.tsx`, `src/components/MobileLayout.tsx`, Set page header, flashcard review page)
+**Cross-module invariants — three-layer test gates:**
+- Any invariant that more than one module must agree on (normalization function, data-shape contract, slug↔table reference) needs coverage at three layers. If a feature introduces or modifies one, verify all three are tested:
+  1. **Shared helper** (e.g. `src/lib/capabilities/itemSlug.ts`) — unit tests pin its contract (lowercase + trim, hyphens preserved, idempotent, edge cases).
+  2. **Pipeline pre-write validator** (e.g. `scripts/lib/pipeline/capability-stage/validators/itemSourceRefResolvability.ts`) — colocated `__tests__` cover pass case, throw case, ignored source kinds.
+  3. **Live-DB health check** (e.g. HC8/HC9 in `scripts/check-supabase-deep.ts`) — coverage means the check is wired into `make check-supabase-deep` and reports a count + threshold. Health checks don't get vitest tests, but their presence is verifiable.
+- Missing any layer = **GAPS FOUND**. Precedents: Decision 3b lesson_id (PR #56), issue #59 itemSlug (PR #60). Cross-project memory entry: openbrain `deployment_lessons` 476de5b7.
+
+**URL-budget / chunked IN-fetches:**
+- Any service that issues `.in('column', ids)` with a content-derived array (lesson pool, distractor pool, batch fetch) must route through `chunkedIn` (`src/lib/chunkedQuery.ts`). Test that the helper splits at 50 per chunk and concatenates results. Canonical reference: `src/services/__tests__/capabilityContentService.test.ts` "distractor pool chunking" suite + the shared `assertUrlBudget` guard in the test's mock client.
+
+**Render fallback chains (lessons 1–3 legacy content, residual):**
+- `LessonBlockRenderer.tsx` payload-extraction helpers tolerate multiple shapes. Tests should exercise both the canonical and the residual legacy shape if a feature touches lesson rendering.
+- `stripBrackets` uses global regex `/\s*\([^)]*\)/g`. Verify it's applied consistently on `lesson.title`, `section.title`, card front text, and set names in `Sidebar.tsx` + `MobileLayout.tsx`.
 
 ## Run Tests
 
 ```bash
-bun run test
-bun run test:ui      # Vitest UI for exploring coverage
+bun run test                            # all tests
+bun run test path/to/file.test.ts       # one file
+bun run test:ui                         # Vitest UI for exploring coverage
 ```
