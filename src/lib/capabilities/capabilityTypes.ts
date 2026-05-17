@@ -1,6 +1,6 @@
 import type { SkillType } from '../../types/learning'
 
-export const CAPABILITY_PROJECTION_VERSION = 'capability-v2' as const
+export const CAPABILITY_PROJECTION_VERSION = 'capability-v3' as const
 
 export type CapabilitySourceKind =
   | 'item'

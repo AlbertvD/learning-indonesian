@@ -22,7 +22,7 @@ function projection(): ProjectedCapability {
     prerequisiteKeys: [],
     difficultyLevel: 2,
     goalTags: [],
-    projectionVersion: 'capability-v2',
+    projectionVersion: 'capability-v3',
     sourceFingerprint: 'source',
     artifactFingerprint: 'artifact',
   }
