@@ -1,12 +1,17 @@
 ---
-status: draft
+status: implementing
+implementation_pr_1: commit ec7e6a3 (merged locally, no GitHub PR)
+implementation_pr_1_merged_at: 2026-05-17
+implementation_pr_2: PR #51
+implementation_pr_2_merged_at: 2026-05-17
+implementation_pr_3: feat/decision-3b-pr3-republish-triage (in flight)
 supersedes: []
 ---
 
 # Extend Decision 3 — every capability has an introducing lesson
 
 **Date:** 2026-05-17
-**Status:** draft (architect review pending)
+**Status:** implementing (PR-1 + PR-2 merged; PR-3 in flight)
 
 ## Goal
 

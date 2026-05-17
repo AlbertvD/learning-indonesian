@@ -1,4 +1,4 @@
-// Lesson 3 — reverse-engineered from DB by reverse-engineer-staging.ts
+// Enriched by lesson-stage
 export const lesson = {
   "title": "Les 3 - Di Bandar Udara (Op het vliegveld)",
   "description": "Leer ada (er is/zijn), vraagwoorden, sekali (erg/heel), woorden van plaats (dari, di, ke) en de getallen 10-100. Oefen met een dialoog op vliegveld Soekarno-Hatta.",
@@ -14,95 +14,118 @@ export const lesson = {
         "lines": [
           {
             "text": "Pak! Di mana barang saya?",
-            "speaker": "Ibu Yulia"
+            "speaker": "Ibu Yulia",
+            "translation": "Meneer! Waar zijn mijn spullen?"
           },
           {
             "text": "Di sana, Bu.",
-            "speaker": "Pekerja"
+            "speaker": "Pekerja",
+            "translation": "Daar, mevrouw."
           },
           {
             "text": "Di sebelah kiri atau kanan?",
-            "speaker": "Ibu Yulia"
+            "speaker": "Ibu Yulia",
+            "translation": "Links of rechts?"
           },
           {
             "text": "Kanan, Bu.",
-            "speaker": "Pekerja"
+            "speaker": "Pekerja",
+            "translation": "Rechts, mevrouw."
           },
           {
             "text": "O, barang saya berat sekali. Ada dua koper dan satu tas besar. Pak, pengangkut barang, di mana, ya Pak?",
-            "speaker": "Ibu Yulia"
+            "speaker": "Ibu Yulia",
+            "translation": "O, mijn bagage is erg zwaar. Ik heb twee koffers en een grote tas. Meneer, transporteur, waar bent u?"
           },
           {
             "text": "Di sana, Bu.",
-            "speaker": "Pekerja"
+            "speaker": "Pekerja",
+            "translation": "Daar, mevrouw."
           },
           {
             "text": "Terima kasih banyak, Pak.",
-            "speaker": "Ibu Yulia"
+            "speaker": "Ibu Yulia",
+            "translation": "Dank je wel, meneer."
           },
           {
             "text": "Terima kasih kembali, Bu.",
-            "speaker": "Pekerja"
+            "speaker": "Pekerja",
+            "translation": "Graag gedaan, mevrouw."
           },
           {
             "text": "Barang ini harus ke mana, Bu?",
-            "speaker": "Pengangkut"
+            "speaker": "Pengangkut",
+            "translation": "Waar moet dit naar toe, mevrouw?"
           },
           {
             "text": "Ke pabean saja, Pak.",
-            "speaker": "Ibu Yulia"
+            "speaker": "Ibu Yulia",
+            "translation": "Alleen naar de douane, meneer."
           },
           {
             "text": "Ibu mau menginap di mana di kota?",
-            "speaker": "Pengangkut"
+            "speaker": "Pengangkut",
+            "translation": "Waar gaat u in de stad logeren?"
           },
           {
             "text": "Belum tahu, Pak. Saya menginap dulu di rumah teman. Besok saya mau cari hotel.",
-            "speaker": "Ibu Yulia"
+            "speaker": "Ibu Yulia",
+            "translation": "Weet ik nog niet, meneer. Ik logeer eerst bij een vriendin. Morgen zoek ik een hotel."
           },
           {
             "text": "Nah, di sini pabean. Ini barang Ibu.",
-            "speaker": "Pengangkut"
+            "speaker": "Pengangkut",
+            "translation": "Hier is de douane. Dit zijn uw spullen."
           },
           {
             "text": "Terima kasih, Pak.",
-            "speaker": "Ibu Yulia"
+            "speaker": "Ibu Yulia",
+            "translation": "Dank je wel, meneer."
           },
           {
             "text": "Selamat siang, Bu, silakan buka koper.",
-            "speaker": "Pabean"
+            "speaker": "Pabean",
+            "translation": "Goedemiddag, mevrouw, wilt u alstublieft uw koffer openmaken?"
           },
           {
             "text": "Minta tolong, Pak, koper saya berat sekali, penuh pakaian dan oleh-oleh untuk teman.",
-            "speaker": "Ibu Yulia"
+            "speaker": "Ibu Yulia",
+            "translation": "Kunt u me helpen, meneer? Mijn koffer is erg zwaar, vol met kleding en souvenirs voor vrienden."
           },
           {
             "text": "Oleh-oleh apa, Bu?",
-            "speaker": "Pabean"
+            "speaker": "Pabean",
+            "translation": "Wat voor souvenirs, mevrouw?"
           },
           {
             "text": "O, coklat dan keju. Di sini tidak ada 'kan?",
-            "speaker": "Ibu Yulia"
+            "speaker": "Ibu Yulia",
+            "translation": "O, chocolade en kaas. Die hebben jullie hier niet, toch?"
           },
           {
             "text": "Ya, benar. Silakan, Bu. Saya sudah selesai.",
-            "speaker": "Pabean"
+            "speaker": "Pabean",
+            "translation": "Dat klopt. Prima, mevrouw. Ik ben klaar."
           },
           {
             "text": "Pak, di mana ada taksi, ya Pak?",
-            "speaker": "Ibu Yulia"
+            "speaker": "Ibu Yulia",
+            "translation": "Meneer, waar kan ik hier een taxi vinden?"
           },
           {
             "text": "Di depan, Bu, di sebelah pintu keluar.",
-            "speaker": "Pabean"
+            "speaker": "Pabean",
+            "translation": "Buiten, mevrouw, bij de uitgang."
           },
           {
             "text": "Terima kasih, Pak.",
-            "speaker": "Ibu Yulia"
+            "speaker": "Ibu Yulia",
+            "translation": "Dank je wel, meneer."
           },
           {
             "text": "Sama-sama, Bu.",
-            "speaker": "Pabean"
+            "speaker": "Pabean",
+            "translation": "Graag gedaan, mevrouw."
           }
         ],
         "closing": "Ibu jalan keluar, lalu naik taksi ke Jakarta."
@@ -515,6 +538,10 @@ export const lesson = {
             ],
             "title": "Gecombineerde plaatsbepalingen"
           }
+        ],
+        "grammar_topics": [
+          "Plaatsbepalingen",
+          "Vraagwoorden, sekali en ada"
         ]
       }
     },
@@ -636,6 +663,10 @@ export const lesson = {
             ],
             "title": "Vraagwoorden"
           }
+        ],
+        "grammar_topics": [
+          "Plaatsbepalingen",
+          "Vraagwoorden, sekali en ada"
         ]
       }
     },
@@ -653,6 +684,10 @@ export const lesson = {
             ],
             "title": "Sekali"
           }
+        ],
+        "grammar_topics": [
+          "Plaatsbepalingen",
+          "Vraagwoorden, sekali en ada"
         ]
       }
     },
@@ -675,6 +710,10 @@ export const lesson = {
             ],
             "title": "Gebruik van ada"
           }
+        ],
+        "grammar_topics": [
+          "Plaatsbepalingen",
+          "Vraagwoorden, sekali en ada"
         ]
       }
     },

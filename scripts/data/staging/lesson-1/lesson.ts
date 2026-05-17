@@ -1,4 +1,4 @@
-// Lesson 1 — reverse-engineered from DB by reverse-engineer-staging.ts
+// Enriched by lesson-stage
 export const lesson = {
   "title": "Les 1 - Di Pasar (Op de markt)",
   "description": "Leer de basisuitspraakregels van het Indonesisch, essentiële grammaticaprincipes (werkwoord, zelfstandig naamwoord, bijvoeglijk naamwoord), en oefen met een marktdialoog en de getallen 0-10.",
@@ -162,6 +162,9 @@ export const lesson = {
               }
             ]
           }
+        ],
+        "grammar_topics": [
+          "Basale woordsoorten"
         ]
       }
     },
@@ -173,19 +176,23 @@ export const lesson = {
         "lines": [
           {
             "text": "Pak, saya mau beli tiga buah pisang. Berapa harganya?",
-            "speaker": "Ibu"
+            "speaker": "Ibu",
+            "translation": "Meneer, ik wil graag drie bananen kopen. Hoeveel kosten ze?"
           },
           {
             "text": "Harganya murah Bu, delapan rupiah.",
-            "speaker": "Penjual"
+            "speaker": "Penjual",
+            "translation": "Ze zijn goedkoop mevrouw, acht roepiah."
           },
           {
             "text": "Itu mahal ya! Empat rupiah boleh?",
-            "speaker": "Ibu"
+            "speaker": "Ibu",
+            "translation": "Dat is duur! Vier roepiah mogelijk?"
           },
           {
             "text": "Belum bisa Bu. Tetapi kalau mau lima buah, bisa sembilan rupiah.",
-            "speaker": "Penjual"
+            "speaker": "Penjual",
+            "translation": "Dat kan niet mevrouw. Maar als u vijf stuks wilt, kan het voor negen roepiah."
           }
         ],
         "setup": "Ibu mau ke pasar. Mau beli pisang."
