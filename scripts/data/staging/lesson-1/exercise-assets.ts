@@ -86,8 +86,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa-kabar:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/apa-kabar:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa kabar?:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/apa kabar?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -95,8 +95,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa-kabar:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/apa-kabar:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa kabar?:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/apa kabar?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -104,8 +104,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa-kabar:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/apa-kabar:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa kabar?:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/apa kabar?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -115,8 +115,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa-kabar:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/apa-kabar:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa kabar?:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/apa kabar?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -124,8 +124,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa-kabar:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/apa-kabar:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa kabar?:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/apa kabar?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -133,8 +133,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa-kabar:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/apa-kabar:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa kabar?:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/apa kabar?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -142,8 +142,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa-kabar:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/apa-kabar:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa kabar?:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/apa kabar?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -153,8 +153,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa-kabar:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/apa-kabar:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa kabar?:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/apa kabar?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -162,8 +162,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa-kabar:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/apa-kabar:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa kabar?:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/apa kabar?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -171,8 +171,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/apa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa?:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/apa?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -180,8 +180,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/apa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa?:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/apa?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -189,8 +189,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/apa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa?:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/apa?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -200,8 +200,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/apa:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa?:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/apa?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -209,8 +209,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/apa:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa?:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/apa?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -218,8 +218,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/apa:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa?:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/apa?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -227,8 +227,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/apa:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa?:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/apa?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -238,8 +238,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/apa:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa?:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/apa?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -247,8 +247,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/apa:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/apa:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/apa?:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/apa?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -341,8 +341,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/baik-baik-saja:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/baik-baik-saja:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/baik-baik saja:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/baik-baik saja:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -350,8 +350,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/baik-baik-saja:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/baik-baik-saja:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/baik-baik saja:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/baik-baik saja:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -359,8 +359,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/baik-baik-saja:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/baik-baik-saja:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/baik-baik saja:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/baik-baik saja:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -370,8 +370,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/baik-baik-saja:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/baik-baik-saja:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/baik-baik saja:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/baik-baik saja:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -379,8 +379,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/baik-baik-saja:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/baik-baik-saja:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/baik-baik saja:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/baik-baik saja:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -388,8 +388,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/baik-baik-saja:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/baik-baik-saja:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/baik-baik saja:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/baik-baik saja:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -397,8 +397,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/baik-baik-saja:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/baik-baik-saja:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/baik-baik saja:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/baik-baik saja:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -408,8 +408,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/baik-baik-saja:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/baik-baik-saja:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/baik-baik saja:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/baik-baik saja:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -417,8 +417,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/baik-baik-saja:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/baik-baik-saja:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/baik-baik saja:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/baik-baik saja:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -766,8 +766,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa-harganya:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/berapa-harganya:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa harganya?:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/berapa harganya?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -775,8 +775,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa-harganya:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/berapa-harganya:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa harganya?:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/berapa harganya?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -784,8 +784,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa-harganya:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/berapa-harganya:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa harganya?:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/berapa harganya?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -795,8 +795,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa-harganya:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/berapa-harganya:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa harganya?:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/berapa harganya?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -804,8 +804,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa-harganya:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/berapa-harganya:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa harganya?:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/berapa harganya?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -813,8 +813,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa-harganya:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/berapa-harganya:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa harganya?:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/berapa harganya?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -822,8 +822,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa-harganya:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/berapa-harganya:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa harganya?:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/berapa harganya?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -833,8 +833,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa-harganya:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/berapa-harganya:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa harganya?:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/berapa harganya?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -842,8 +842,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa-harganya:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/berapa-harganya:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa harganya?:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/berapa harganya?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -851,8 +851,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/berapa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa?:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/berapa?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -860,8 +860,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/berapa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa?:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/berapa?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -869,8 +869,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/berapa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa?:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/berapa?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -880,8 +880,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/berapa:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa?:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/berapa?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -889,8 +889,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/berapa:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa?:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/berapa?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -898,8 +898,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/berapa:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa?:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/berapa?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -907,8 +907,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/berapa:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa?:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/berapa?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -918,8 +918,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/berapa:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa?:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/berapa?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -927,8 +927,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/berapa:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/berapa:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/berapa?:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/berapa?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2126,8 +2126,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harganya-murah:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/harganya-murah:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harganya murah:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/harganya murah:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2135,8 +2135,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harganya-murah:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/harganya-murah:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harganya murah:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/harganya murah:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2144,8 +2144,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harganya-murah:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/harganya-murah:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harganya murah:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/harganya murah:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -2155,8 +2155,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harganya-murah:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/harganya-murah:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harganya murah:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/harganya murah:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2164,8 +2164,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harganya-murah:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/harganya-murah:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harganya murah:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/harganya murah:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2173,8 +2173,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harganya-murah:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/harganya-murah:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harganya murah:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/harganya murah:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2182,8 +2182,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harganya-murah:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/harganya-murah:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harganya murah:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/harganya murah:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2193,8 +2193,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harganya-murah:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/harganya-murah:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harganya murah:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/harganya murah:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2202,8 +2202,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harganya-murah:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/harganya-murah:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harganya murah:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/harganya murah:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4336,8 +4336,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-datang:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/selamat-datang:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat datang:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/selamat datang:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4345,8 +4345,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-datang:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/selamat-datang:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat datang:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/selamat datang:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4354,8 +4354,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-datang:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/selamat-datang:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat datang:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/selamat datang:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -4365,8 +4365,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-datang:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/selamat-datang:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat datang:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/selamat datang:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4374,8 +4374,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-datang:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/selamat-datang:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat datang:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/selamat datang:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4383,8 +4383,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-datang:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/selamat-datang:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat datang:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/selamat datang:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4392,8 +4392,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-datang:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/selamat-datang:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat datang:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/selamat datang:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4403,8 +4403,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-datang:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/selamat-datang:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat datang:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/selamat datang:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4412,8 +4412,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-datang:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/selamat-datang:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat datang:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/selamat datang:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4676,8 +4676,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4685,8 +4685,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/terima kasih:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4694,8 +4694,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/terima kasih:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -4705,8 +4705,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4714,8 +4714,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/terima kasih:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4723,8 +4723,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4732,8 +4732,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4743,8 +4743,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/terima kasih:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4752,8 +4752,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {

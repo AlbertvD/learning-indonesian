@@ -77,8 +77,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ada-apa:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/ada-apa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ada apa?:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/ada apa?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -86,8 +86,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ada-apa:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/ada-apa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ada apa?:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/ada apa?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -95,8 +95,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ada-apa:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/ada-apa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ada apa?:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/ada apa?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -106,8 +106,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ada-apa:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/ada-apa:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ada apa?:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/ada apa?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -115,8 +115,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ada-apa:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/ada-apa:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ada apa?:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/ada apa?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -124,8 +124,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ada-apa:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/ada-apa:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ada apa?:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/ada apa?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -133,8 +133,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ada-apa:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/ada-apa:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ada apa?:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/ada apa?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -144,8 +144,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ada-apa:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/ada-apa:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ada apa?:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/ada apa?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -153,8 +153,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ada-apa:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/ada-apa:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ada apa?:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/ada apa?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -162,8 +162,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -171,8 +171,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -180,8 +180,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -191,8 +191,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -200,8 +200,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -209,8 +209,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -218,8 +218,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -229,8 +229,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -238,8 +238,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/awas-dokter-jangan-sakit-ya:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -332,8 +332,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -341,8 +341,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -350,8 +350,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -361,8 +361,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -370,8 +370,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -379,8 +379,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -388,8 +388,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -399,8 +399,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -408,8 +408,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/bagaimana-bisa-jatuh-dari-pohon:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -587,93 +587,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:form_recall:l1_to_id:text:nl",
-    "artifact_kind": "meaning:l1",
-    "quality_status": "approved",
-    "payload_json": {
-      "value": "Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt."
-    }
-  },
-  {
-    "asset_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:form_recall:l1_to_id:text:nl",
-    "artifact_kind": "base_text",
-    "quality_status": "approved",
-    "payload_json": {
-      "value": "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh."
-    }
-  },
-  {
-    "asset_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:form_recall:l1_to_id:text:nl",
-    "artifact_kind": "accepted_answers:id",
-    "quality_status": "approved",
-    "payload_json": {
-      "values": [
-        "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh."
-      ]
-    }
-  },
-  {
-    "asset_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:l1_to_id_choice:l1_to_id:text:nl",
-    "artifact_kind": "meaning:l1",
-    "quality_status": "approved",
-    "payload_json": {
-      "value": "Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt."
-    }
-  },
-  {
-    "asset_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:l1_to_id_choice:l1_to_id:text:nl",
-    "artifact_kind": "base_text",
-    "quality_status": "approved",
-    "payload_json": {
-      "value": "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh."
-    }
-  },
-  {
-    "asset_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:meaning_recall:id_to_l1:text:nl",
-    "artifact_kind": "meaning:l1",
-    "quality_status": "approved",
-    "payload_json": {
-      "value": "Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt."
-    }
-  },
-  {
-    "asset_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:meaning_recall:id_to_l1:text:nl",
-    "artifact_kind": "accepted_answers:l1",
-    "quality_status": "approved",
-    "payload_json": {
-      "values": [
-        "Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt."
-      ]
-    }
-  },
-  {
-    "asset_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:text_recognition:id_to_l1:text:nl",
-    "artifact_kind": "base_text",
-    "quality_status": "approved",
-    "payload_json": {
-      "value": "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh."
-    }
-  },
-  {
-    "asset_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh:text_recognition:id_to_l1:text:nl",
-    "artifact_kind": "meaning:l1",
-    "quality_status": "approved",
-    "payload_json": {
-      "value": "Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt."
-    }
-  },
-  {
-    "asset_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -681,8 +596,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -690,8 +605,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -701,8 +616,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -710,8 +625,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -719,8 +634,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -728,8 +643,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -739,8 +654,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -748,12 +663,97 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
       "value": "Echt waar, dokter? Is er niets gebroken? Ik was zo bang!"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:form_recall:l1_to_id:text:nl",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh."
+      ]
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:l1_to_id_choice:l1_to_id:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:l1_to_id_choice:l1_to_id:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:meaning_recall:id_to_l1:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:meaning_recall:id_to_l1:text:nl",
+    "artifact_kind": "accepted_answers:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt."
+      ]
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:text_recognition:id_to_l1:text:nl",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:text_recognition:id_to_l1:text:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt."
     }
   },
   {
@@ -1097,8 +1097,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/capek-na-inspanning:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/capek-na-inspanning:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1106,8 +1106,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/capek-na-inspanning:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/capek-na-inspanning:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1115,8 +1115,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/capek-na-inspanning:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/capek-na-inspanning:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1126,8 +1126,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/capek-na-inspanning:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/capek-na-inspanning:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1135,8 +1135,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/capek-na-inspanning:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/capek-na-inspanning:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1144,8 +1144,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/capek-na-inspanning:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/capek-na-inspanning:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1153,8 +1153,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/capek-na-inspanning:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/capek-na-inspanning:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1164,8 +1164,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/capek-na-inspanning:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/capek-na-inspanning:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1173,8 +1173,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/capek-na-inspanning:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/capek-na-inspanning:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1522,8 +1522,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana-mana:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-mana-mana:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana-mana:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di mana-mana:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1531,8 +1531,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana-mana:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-mana-mana:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana-mana:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di mana-mana:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1540,8 +1540,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana-mana:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/di-mana-mana:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana-mana:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/di mana-mana:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1551,8 +1551,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana-mana:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-mana-mana:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana-mana:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di mana-mana:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1560,8 +1560,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana-mana:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-mana-mana:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana-mana:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di mana-mana:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1569,8 +1569,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana-mana:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-mana-mana:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana-mana:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di mana-mana:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1578,8 +1578,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana-mana:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/di-mana-mana:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana-mana:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/di mana-mana:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1589,8 +1589,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana-mana:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-mana-mana:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana-mana:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di mana-mana:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1598,8 +1598,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana-mana:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-mana-mana:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana-mana:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di mana-mana:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1692,8 +1692,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/diet:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/diet:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/diét:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/diét:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1701,8 +1701,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/diet:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/diet:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/diét:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/diét:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1710,8 +1710,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/diet:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/diet:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/diét:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/diét:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1721,8 +1721,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/diet:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/diet:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/diét:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/diét:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1730,8 +1730,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/diet:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/diet:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/diét:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/diét:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1739,8 +1739,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/diet:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/diet:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/diét:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/diét:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1748,8 +1748,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/diet:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/diet:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/diét:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/diét:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1759,8 +1759,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/diet:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/diet:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/diét:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/diét:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1768,8 +1768,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/diet:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/diet:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/diét:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/diét:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2287,8 +2287,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2296,8 +2296,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2305,8 +2305,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -2316,8 +2316,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2325,8 +2325,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2334,8 +2334,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2343,8 +2343,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2354,8 +2354,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2363,8 +2363,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/ini-sakit-atau-tidak:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2542,8 +2542,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-kaki:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/jari-kaki:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari kaki:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/jari kaki:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2551,8 +2551,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-kaki:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/jari-kaki:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari kaki:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/jari kaki:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2560,8 +2560,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-kaki:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/jari-kaki:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari kaki:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/jari kaki:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -2571,8 +2571,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-kaki:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/jari-kaki:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari kaki:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/jari kaki:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2580,8 +2580,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-kaki:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/jari-kaki:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari kaki:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/jari kaki:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2589,8 +2589,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-kaki:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/jari-kaki:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari kaki:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/jari kaki:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2598,8 +2598,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-kaki:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/jari-kaki:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari kaki:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/jari kaki:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2609,8 +2609,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-kaki:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/jari-kaki:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari kaki:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/jari kaki:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2618,8 +2618,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-kaki:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/jari-kaki:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari kaki:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/jari kaki:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2627,8 +2627,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-tangan:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/jari-tangan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari tangan:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/jari tangan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2636,8 +2636,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-tangan:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/jari-tangan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari tangan:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/jari tangan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2645,8 +2645,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-tangan:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/jari-tangan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari tangan:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/jari tangan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -2656,8 +2656,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-tangan:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/jari-tangan:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari tangan:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/jari tangan:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2665,8 +2665,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-tangan:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/jari-tangan:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari tangan:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/jari tangan:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2674,8 +2674,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-tangan:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/jari-tangan:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari tangan:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/jari tangan:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2683,8 +2683,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-tangan:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/jari-tangan:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari tangan:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/jari tangan:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2694,8 +2694,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-tangan:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/jari-tangan:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari tangan:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/jari tangan:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2703,8 +2703,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/jari-tangan:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/jari-tangan:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/jari tangan:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/jari tangan:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2797,8 +2797,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaget-kaget:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kaget-kaget:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaget (kagèt):form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kaget (kagèt):form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2806,8 +2806,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaget-kaget:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kaget-kaget:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaget (kagèt):form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kaget (kagèt):form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2815,8 +2815,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaget-kaget:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/kaget-kaget:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaget (kagèt):form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kaget (kagèt):form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -2826,8 +2826,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaget-kaget:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kaget-kaget:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaget (kagèt):l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kaget (kagèt):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2835,8 +2835,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaget-kaget:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kaget-kaget:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaget (kagèt):l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kaget (kagèt):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2844,8 +2844,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaget-kaget:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kaget-kaget:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaget (kagèt):meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kaget (kagèt):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2853,8 +2853,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaget-kaget:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/kaget-kaget:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaget (kagèt):meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/kaget (kagèt):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2864,8 +2864,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaget-kaget:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kaget-kaget:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaget (kagèt):text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kaget (kagèt):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2873,8 +2873,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaget-kaget:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kaget-kaget:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaget (kagèt):text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kaget (kagèt):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2882,8 +2882,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2891,8 +2891,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2900,8 +2900,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -2911,8 +2911,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2920,8 +2920,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2929,8 +2929,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2938,8 +2938,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2949,8 +2949,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2958,8 +2958,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3052,8 +3052,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3061,8 +3061,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3070,8 +3070,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -3081,8 +3081,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3090,8 +3090,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3099,8 +3099,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3108,8 +3108,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3119,8 +3119,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3128,8 +3128,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3392,8 +3392,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kesehatan-kesehatan:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kesehatan-kesehatan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kesehatan (keséhatan):form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kesehatan (keséhatan):form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3401,8 +3401,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kesehatan-kesehatan:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kesehatan-kesehatan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kesehatan (keséhatan):form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kesehatan (keséhatan):form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3410,8 +3410,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kesehatan-kesehatan:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/kesehatan-kesehatan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kesehatan (keséhatan):form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kesehatan (keséhatan):form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -3421,8 +3421,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kesehatan-kesehatan:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kesehatan-kesehatan:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kesehatan (keséhatan):l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kesehatan (keséhatan):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3430,8 +3430,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kesehatan-kesehatan:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kesehatan-kesehatan:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kesehatan (keséhatan):l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kesehatan (keséhatan):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3439,8 +3439,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kesehatan-kesehatan:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kesehatan-kesehatan:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kesehatan (keséhatan):meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kesehatan (keséhatan):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3448,8 +3448,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kesehatan-kesehatan:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/kesehatan-kesehatan:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kesehatan (keséhatan):meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/kesehatan (keséhatan):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3459,8 +3459,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kesehatan-kesehatan:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kesehatan-kesehatan:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kesehatan (keséhatan):text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kesehatan (keséhatan):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3468,8 +3468,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kesehatan-kesehatan:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kesehatan-kesehatan:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kesehatan (keséhatan):text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kesehatan (keséhatan):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3817,8 +3817,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/leher:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/leher:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lèhèr:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lèhèr:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3826,8 +3826,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/leher:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/leher:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lèhèr:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lèhèr:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3835,8 +3835,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/leher:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/leher:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lèhèr:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/lèhèr:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -3846,8 +3846,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/leher:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/leher:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lèhèr:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lèhèr:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3855,8 +3855,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/leher:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/leher:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lèhèr:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lèhèr:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3864,8 +3864,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/leher:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/leher:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lèhèr:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lèhèr:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3873,8 +3873,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/leher:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/leher:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lèhèr:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/lèhèr:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3884,8 +3884,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/leher:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/leher:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lèhèr:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lèhèr:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3893,8 +3893,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/leher:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/leher:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lèhèr:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lèhèr:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4157,8 +4157,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/letnan-letnan:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/letnan-letnan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/letnan (lètnan):form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/letnan (lètnan):form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4166,8 +4166,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/letnan-letnan:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/letnan-letnan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/letnan (lètnan):form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/letnan (lètnan):form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4175,8 +4175,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/letnan-letnan:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/letnan-letnan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/letnan (lètnan):form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/letnan (lètnan):form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -4186,8 +4186,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/letnan-letnan:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/letnan-letnan:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/letnan (lètnan):l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/letnan (lètnan):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4195,8 +4195,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/letnan-letnan:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/letnan-letnan:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/letnan (lètnan):l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/letnan (lètnan):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4204,8 +4204,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/letnan-letnan:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/letnan-letnan:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/letnan (lètnan):meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/letnan (lètnan):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4213,8 +4213,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/letnan-letnan:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/letnan-letnan:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/letnan (lètnan):meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/letnan (lètnan):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4224,8 +4224,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/letnan-letnan:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/letnan-letnan:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/letnan (lètnan):text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/letnan (lètnan):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4233,8 +4233,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/letnan-letnan:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/letnan-letnan:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/letnan (lètnan):text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/letnan (lètnan):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4752,8 +4752,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/minum-obat:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/minum-obat:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/minum obat:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/minum obat:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4761,8 +4761,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/minum-obat:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/minum-obat:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/minum obat:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/minum obat:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4770,8 +4770,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/minum-obat:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/minum-obat:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/minum obat:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/minum obat:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -4781,8 +4781,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/minum-obat:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/minum-obat:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/minum obat:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/minum obat:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4790,8 +4790,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/minum-obat:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/minum-obat:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/minum obat:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/minum obat:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4799,8 +4799,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/minum-obat:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/minum-obat:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/minum obat:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/minum obat:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4808,8 +4808,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/minum-obat:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/minum-obat:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/minum obat:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/minum obat:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4819,8 +4819,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/minum-obat:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/minum-obat:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/minum obat:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/minum obat:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4828,8 +4828,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/minum-obat:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/minum-obat:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/minum obat:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/minum obat:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5092,8 +5092,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nafsu-makan:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/nafsu-makan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nafsu makan:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/nafsu makan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5101,8 +5101,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nafsu-makan:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/nafsu-makan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nafsu makan:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/nafsu makan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5110,8 +5110,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nafsu-makan:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/nafsu-makan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nafsu makan:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/nafsu makan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -5121,8 +5121,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nafsu-makan:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/nafsu-makan:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nafsu makan:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/nafsu makan:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5130,8 +5130,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nafsu-makan:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/nafsu-makan:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nafsu makan:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/nafsu makan:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5139,8 +5139,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nafsu-makan:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/nafsu-makan:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nafsu makan:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/nafsu makan:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5148,8 +5148,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nafsu-makan:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/nafsu-makan:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nafsu makan:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/nafsu makan:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5159,8 +5159,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nafsu-makan:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/nafsu-makan:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nafsu makan:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/nafsu makan:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5168,8 +5168,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nafsu-makan:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/nafsu-makan:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nafsu makan:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/nafsu makan:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5177,8 +5177,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5186,8 +5186,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5195,8 +5195,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -5206,8 +5206,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5215,8 +5215,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5224,8 +5224,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5233,8 +5233,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5244,8 +5244,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5253,8 +5253,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5262,8 +5262,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/obat-batuk:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/obat-batuk:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/obat batuk:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/obat batuk:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5271,8 +5271,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/obat-batuk:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/obat-batuk:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/obat batuk:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/obat batuk:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5280,8 +5280,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/obat-batuk:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/obat-batuk:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/obat batuk:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/obat batuk:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -5291,8 +5291,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/obat-batuk:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/obat-batuk:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/obat batuk:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/obat batuk:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5300,8 +5300,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/obat-batuk:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/obat-batuk:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/obat batuk:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/obat batuk:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5309,8 +5309,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/obat-batuk:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/obat-batuk:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/obat batuk:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/obat batuk:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5318,8 +5318,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/obat-batuk:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/obat-batuk:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/obat batuk:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/obat batuk:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5329,8 +5329,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/obat-batuk:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/obat-batuk:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/obat batuk:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/obat batuk:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5338,8 +5338,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/obat-batuk:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/obat-batuk:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/obat batuk:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/obat batuk:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5432,8 +5432,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/orang-desa:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/orang-desa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/orang desa:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/orang desa:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5441,8 +5441,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/orang-desa:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/orang-desa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/orang desa:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/orang desa:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5450,8 +5450,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/orang-desa:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/orang-desa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/orang desa:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/orang desa:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -5461,8 +5461,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/orang-desa:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/orang-desa:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/orang desa:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/orang desa:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5470,8 +5470,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/orang-desa:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/orang-desa:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/orang desa:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/orang desa:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5479,8 +5479,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/orang-desa:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/orang-desa:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/orang desa:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/orang desa:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5488,8 +5488,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/orang-desa:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/orang-desa:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/orang desa:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/orang desa:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5499,8 +5499,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/orang-desa:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/orang-desa:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/orang desa:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/orang desa:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5508,8 +5508,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/orang-desa:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/orang-desa:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/orang desa:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/orang desa:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5687,8 +5687,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/pembalut-wanita:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/pembalut-wanita:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/pembalut wanita:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/pembalut wanita:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5696,8 +5696,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/pembalut-wanita:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/pembalut-wanita:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/pembalut wanita:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/pembalut wanita:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5705,8 +5705,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/pembalut-wanita:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/pembalut-wanita:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/pembalut wanita:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/pembalut wanita:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -5716,8 +5716,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/pembalut-wanita:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/pembalut-wanita:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/pembalut wanita:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/pembalut wanita:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5725,8 +5725,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/pembalut-wanita:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/pembalut-wanita:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/pembalut wanita:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/pembalut wanita:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5734,8 +5734,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/pembalut-wanita:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/pembalut-wanita:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/pembalut wanita:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/pembalut wanita:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5743,8 +5743,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/pembalut-wanita:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/pembalut-wanita:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/pembalut wanita:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/pembalut wanita:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5754,8 +5754,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/pembalut-wanita:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/pembalut-wanita:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/pembalut wanita:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/pembalut wanita:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5763,8 +5763,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/pembalut-wanita:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/pembalut-wanita:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/pembalut wanita:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/pembalut wanita:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6112,8 +6112,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/plester:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/plester:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/plèster:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/plèster:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6121,8 +6121,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/plester:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/plester:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/plèster:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/plèster:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6130,8 +6130,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/plester:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/plester:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/plèster:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/plèster:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -6141,8 +6141,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/plester:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/plester:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/plèster:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/plèster:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6150,8 +6150,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/plester:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/plester:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/plèster:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/plèster:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6159,8 +6159,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/plester:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/plester:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/plèster:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/plèster:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6168,8 +6168,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/plester:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/plester:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/plèster:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/plèster:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6179,8 +6179,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/plester:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/plester:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/plèster:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/plèster:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6188,8 +6188,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/plester:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/plester:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/plèster:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/plèster:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6622,8 +6622,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rongga-dada:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/rongga-dada:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rongga dada:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/rongga dada:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6631,8 +6631,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rongga-dada:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/rongga-dada:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rongga dada:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/rongga dada:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6640,8 +6640,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rongga-dada:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/rongga-dada:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rongga dada:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/rongga dada:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -6651,8 +6651,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rongga-dada:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/rongga-dada:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rongga dada:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/rongga dada:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6660,8 +6660,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rongga-dada:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/rongga-dada:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rongga dada:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/rongga dada:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6669,8 +6669,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rongga-dada:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/rongga-dada:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rongga dada:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/rongga dada:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6678,8 +6678,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rongga-dada:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/rongga-dada:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rongga dada:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/rongga dada:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6689,8 +6689,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rongga-dada:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/rongga-dada:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rongga dada:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/rongga dada:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6698,8 +6698,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rongga-dada:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/rongga-dada:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rongga dada:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/rongga dada:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6707,8 +6707,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rumah-sakit:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/rumah-sakit:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rumah sakit:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/rumah sakit:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6716,8 +6716,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rumah-sakit:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/rumah-sakit:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rumah sakit:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/rumah sakit:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6725,8 +6725,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rumah-sakit:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/rumah-sakit:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rumah sakit:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/rumah sakit:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -6736,8 +6736,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rumah-sakit:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/rumah-sakit:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rumah sakit:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/rumah sakit:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6745,8 +6745,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rumah-sakit:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/rumah-sakit:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rumah sakit:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/rumah sakit:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6754,8 +6754,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rumah-sakit:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/rumah-sakit:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rumah sakit:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/rumah sakit:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6763,8 +6763,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rumah-sakit:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/rumah-sakit:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rumah sakit:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/rumah sakit:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6774,8 +6774,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rumah-sakit:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/rumah-sakit:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rumah sakit:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/rumah sakit:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6783,8 +6783,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/rumah-sakit:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/rumah-sakit:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/rumah sakit:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/rumah sakit:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6792,8 +6792,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-kepala:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sakit-kepala:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit kepala:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sakit kepala:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6801,8 +6801,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-kepala:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sakit-kepala:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit kepala:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sakit kepala:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6810,8 +6810,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-kepala:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/sakit-kepala:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit kepala:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/sakit kepala:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -6821,8 +6821,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-kepala:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sakit-kepala:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit kepala:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sakit kepala:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6830,8 +6830,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-kepala:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sakit-kepala:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit kepala:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sakit kepala:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6839,8 +6839,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-kepala:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sakit-kepala:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit kepala:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sakit kepala:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6848,8 +6848,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-kepala:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/sakit-kepala:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit kepala:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/sakit kepala:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6859,8 +6859,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-kepala:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sakit-kepala:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit kepala:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sakit kepala:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6868,8 +6868,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-kepala:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sakit-kepala:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit kepala:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sakit kepala:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6877,8 +6877,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-perut-mag:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sakit-perut-mag:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit perut / mag:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sakit perut / mag:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6886,8 +6886,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-perut-mag:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sakit-perut-mag:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit perut / mag:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sakit perut / mag:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6895,8 +6895,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-perut-mag:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/sakit-perut-mag:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit perut / mag:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/sakit perut / mag:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -6906,8 +6906,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-perut-mag:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sakit-perut-mag:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit perut / mag:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sakit perut / mag:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6915,8 +6915,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-perut-mag:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sakit-perut-mag:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit perut / mag:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sakit perut / mag:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6924,8 +6924,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-perut-mag:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sakit-perut-mag:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit perut / mag:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sakit perut / mag:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6933,8 +6933,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-perut-mag:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/sakit-perut-mag:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit perut / mag:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/sakit perut / mag:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6944,8 +6944,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-perut-mag:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sakit-perut-mag:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit perut / mag:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sakit perut / mag:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6953,8 +6953,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sakit-perut-mag:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sakit-perut-mag:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sakit perut / mag:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sakit perut / mag:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6962,8 +6962,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -6971,8 +6971,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -6980,8 +6980,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -6991,8 +6991,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7000,8 +7000,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7009,8 +7009,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7018,8 +7018,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7029,8 +7029,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7038,8 +7038,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7387,8 +7387,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tak-tidak:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tak-tidak:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tak (tidak):form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tak (tidak):form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7396,8 +7396,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tak-tidak:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tak-tidak:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tak (tidak):form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tak (tidak):form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7405,8 +7405,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tak-tidak:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/tak-tidak:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tak (tidak):form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/tak (tidak):form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -7416,8 +7416,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tak-tidak:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tak-tidak:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tak (tidak):l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tak (tidak):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7425,8 +7425,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tak-tidak:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tak-tidak:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tak (tidak):l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tak (tidak):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7434,8 +7434,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tak-tidak:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tak-tidak:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tak (tidak):meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tak (tidak):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7443,8 +7443,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tak-tidak:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/tak-tidak:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tak (tidak):meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/tak (tidak):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7454,8 +7454,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tak-tidak:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tak-tidak:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tak (tidak):text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tak (tidak):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7463,8 +7463,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tak-tidak:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tak-tidak:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tak (tidak):text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tak (tidak):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7642,8 +7642,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7651,8 +7651,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7660,8 +7660,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -7671,8 +7671,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7680,8 +7680,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7689,8 +7689,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7698,8 +7698,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7709,8 +7709,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7718,8 +7718,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-ada-apa-apa:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7727,8 +7727,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7736,8 +7736,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7745,8 +7745,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -7756,8 +7756,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7765,8 +7765,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7774,8 +7774,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7783,8 +7783,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7794,8 +7794,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7803,8 +7803,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-begitu-sakit-dokter-sedikit-saja:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7812,8 +7812,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-jadi:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-jadi:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak jadi:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak jadi:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7821,8 +7821,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-jadi:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tidak-jadi:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak jadi:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tidak jadi:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7830,8 +7830,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-jadi:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/tidak-jadi:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak jadi:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/tidak jadi:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -7841,8 +7841,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-jadi:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-jadi:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak jadi:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak jadi:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7850,8 +7850,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-jadi:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tidak-jadi:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak jadi:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tidak jadi:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7859,8 +7859,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-jadi:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-jadi:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak jadi:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak jadi:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7868,8 +7868,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-jadi:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-jadi:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak jadi:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak jadi:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7879,8 +7879,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-jadi:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tidak-jadi:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak jadi:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tidak jadi:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7888,8 +7888,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tidak-jadi:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tidak-jadi:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tidak jadi:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak jadi:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7897,8 +7897,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tubuh-badan:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tubuh-badan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tubuh / badan:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tubuh / badan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7906,8 +7906,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tubuh-badan:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tubuh-badan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tubuh / badan:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tubuh / badan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7915,8 +7915,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tubuh-badan:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/tubuh-badan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tubuh / badan:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/tubuh / badan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -7926,8 +7926,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tubuh-badan:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tubuh-badan:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tubuh / badan:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tubuh / badan:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7935,8 +7935,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tubuh-badan:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tubuh-badan:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tubuh / badan:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tubuh / badan:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7944,8 +7944,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tubuh-badan:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tubuh-badan:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tubuh / badan:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tubuh / badan:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7953,8 +7953,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tubuh-badan:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/tubuh-badan:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tubuh / badan:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/tubuh / badan:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -7964,8 +7964,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tubuh-badan:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tubuh-badan:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tubuh / badan:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tubuh / badan:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -7973,8 +7973,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tubuh-badan:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tubuh-badan:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tubuh / badan:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tubuh / badan:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {

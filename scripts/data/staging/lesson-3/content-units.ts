@@ -178,8 +178,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"depan\",\"item_type\":\"word\",\"translation_nl\":\"voorzijde\",\"context_type\":\"vocabulary_list\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"front\"}"
   },
   {
-    "content_unit_key": "learning_items/di-sebelah::lesson-3/section-vocabulary::item-di-sebelah",
-    "source_ref": "learning_items/di-sebelah",
+    "content_unit_key": "learning_items/di sebelah::lesson-3/section-vocabulary::item-di-sebelah",
+    "source_ref": "learning_items/di sebelah",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-di-sebelah",
@@ -283,8 +283,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"pakaian\",\"item_type\":\"word\",\"translation_nl\":\"kleding\",\"context_type\":\"vocabulary_list\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"clothing\"}"
   },
   {
-    "content_unit_key": "learning_items/naik-bus::lesson-3/section-vocabulary::item-naik-bus",
-    "source_ref": "learning_items/naik-bus",
+    "content_unit_key": "learning_items/naik bus::lesson-3/section-vocabulary::item-naik-bus",
+    "source_ref": "learning_items/naik bus",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-naik-bus",
@@ -298,8 +298,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"naik bus\",\"item_type\":\"phrase\",\"translation_nl\":\"met de bus gaan\",\"context_type\":\"lesson_snippet\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A1\",\"translation_en\":\"take the bus\"}"
   },
   {
-    "content_unit_key": "learning_items/enam-puluh::lesson-3/section-vocabulary::item-enam-puluh",
-    "source_ref": "learning_items/enam-puluh",
+    "content_unit_key": "learning_items/enam puluh::lesson-3/section-vocabulary::item-enam-puluh",
+    "source_ref": "learning_items/enam puluh",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-enam-puluh",
@@ -313,8 +313,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"enam puluh\",\"item_type\":\"phrase\",\"translation_nl\":\"zestig\",\"context_type\":\"lesson_snippet\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"sixty\"}"
   },
   {
-    "content_unit_key": "learning_items/delapan-puluh::lesson-3/section-vocabulary::item-delapan-puluh",
-    "source_ref": "learning_items/delapan-puluh",
+    "content_unit_key": "learning_items/delapan puluh::lesson-3/section-vocabulary::item-delapan-puluh",
+    "source_ref": "learning_items/delapan puluh",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-delapan-puluh",
@@ -328,8 +328,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"delapan puluh\",\"item_type\":\"phrase\",\"translation_nl\":\"tachtig\",\"context_type\":\"lesson_snippet\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"eighty\"}"
   },
   {
-    "content_unit_key": "learning_items/minta-tolong::lesson-3/section-vocabulary::item-minta-tolong",
-    "source_ref": "learning_items/minta-tolong",
+    "content_unit_key": "learning_items/minta tolong::lesson-3/section-vocabulary::item-minta-tolong",
+    "source_ref": "learning_items/minta tolong",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-minta-tolong",
@@ -343,8 +343,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"minta tolong\",\"item_type\":\"phrase\",\"translation_nl\":\"kunt u me helpen?\",\"context_type\":\"vocabulary_list\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"greeting\",\"level\":\"A1\",\"translation_en\":\"help me\"}"
   },
   {
-    "content_unit_key": "learning_items/terima-kasih-kembali::lesson-3/section-vocabulary::item-terima-kasih-kembali",
-    "source_ref": "learning_items/terima-kasih-kembali",
+    "content_unit_key": "learning_items/terima kasih kembali::lesson-3/section-vocabulary::item-terima-kasih-kembali",
+    "source_ref": "learning_items/terima kasih kembali",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-terima-kasih-kembali",
@@ -358,8 +358,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"terima kasih kembali\",\"item_type\":\"phrase\",\"translation_nl\":\"geen dank graag gedaan\",\"context_type\":\"vocabulary_list\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"greeting\",\"level\":\"A1\",\"translation_en\":\"you're welcome\"}"
   },
   {
-    "content_unit_key": "learning_items/ke-mana::lesson-3/section-vocabulary::item-ke-mana",
-    "source_ref": "learning_items/ke-mana",
+    "content_unit_key": "learning_items/ke mana?::lesson-3/section-vocabulary::item-ke-mana",
+    "source_ref": "learning_items/ke mana?",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-ke-mana",
@@ -418,8 +418,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"cari\",\"item_type\":\"word\",\"translation_nl\":\"zoeken\",\"context_type\":\"vocabulary_list\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A1\",\"translation_en\":\"search\"}"
   },
   {
-    "content_unit_key": "learning_items/di-depan::lesson-3/section-vocabulary::item-di-depan",
-    "source_ref": "learning_items/di-depan",
+    "content_unit_key": "learning_items/di depan::lesson-3/section-vocabulary::item-di-depan",
+    "source_ref": "learning_items/di depan",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-di-depan",
@@ -613,8 +613,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"lah\",\"item_type\":\"word\",\"translation_nl\":\"vervolgens\",\"context_type\":\"lesson_snippet\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"particle\",\"level\":\"A1\",\"translation_en\":\"then\"}"
   },
   {
-    "content_unit_key": "learning_items/mana::lesson-3/section-vocabulary::item-mana",
-    "source_ref": "learning_items/mana",
+    "content_unit_key": "learning_items/mana?::lesson-3/section-vocabulary::item-mana",
+    "source_ref": "learning_items/mana?",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-mana",
@@ -628,8 +628,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"mana?\",\"item_type\":\"word\",\"translation_nl\":\"welk/welke?\",\"context_type\":\"lesson_snippet\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"question_word\",\"level\":\"A1\",\"translation_en\":\"which?\"}"
   },
   {
-    "content_unit_key": "learning_items/naik-mobil::lesson-3/section-vocabulary::item-naik-mobil",
-    "source_ref": "learning_items/naik-mobil",
+    "content_unit_key": "learning_items/naik mobil::lesson-3/section-vocabulary::item-naik-mobil",
+    "source_ref": "learning_items/naik mobil",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-naik-mobil",
@@ -643,8 +643,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"naik mobil\",\"item_type\":\"phrase\",\"translation_nl\":\"met de auto gaan\",\"context_type\":\"lesson_snippet\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A1\",\"translation_en\":\"drive by car\"}"
   },
   {
-    "content_unit_key": "learning_items/tiga-puluh::lesson-3/section-vocabulary::item-tiga-puluh",
-    "source_ref": "learning_items/tiga-puluh",
+    "content_unit_key": "learning_items/tiga puluh::lesson-3/section-vocabulary::item-tiga-puluh",
+    "source_ref": "learning_items/tiga puluh",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tiga-puluh",
@@ -658,8 +658,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"tiga puluh\",\"item_type\":\"phrase\",\"translation_nl\":\"dertig\",\"context_type\":\"lesson_snippet\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"thirty\"}"
   },
   {
-    "content_unit_key": "learning_items/tujuh-puluh::lesson-3/section-vocabulary::item-tujuh-puluh",
-    "source_ref": "learning_items/tujuh-puluh",
+    "content_unit_key": "learning_items/tujuh puluh::lesson-3/section-vocabulary::item-tujuh-puluh",
+    "source_ref": "learning_items/tujuh puluh",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tujuh-puluh",
@@ -673,8 +673,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"tujuh puluh\",\"item_type\":\"phrase\",\"translation_nl\":\"zeventig\",\"context_type\":\"lesson_snippet\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"seventy\"}"
   },
   {
-    "content_unit_key": "learning_items/sembilan-puluh::lesson-3/section-vocabulary::item-sembilan-puluh",
-    "source_ref": "learning_items/sembilan-puluh",
+    "content_unit_key": "learning_items/sembilan puluh::lesson-3/section-vocabulary::item-sembilan-puluh",
+    "source_ref": "learning_items/sembilan puluh",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-sembilan-puluh",
@@ -688,8 +688,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"sembilan puluh\",\"item_type\":\"phrase\",\"translation_nl\":\"negentig\",\"context_type\":\"lesson_snippet\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"ninety\"}"
   },
   {
-    "content_unit_key": "learning_items/pintu-keluar::lesson-3/section-vocabulary::item-pintu-keluar",
-    "source_ref": "learning_items/pintu-keluar",
+    "content_unit_key": "learning_items/pintu keluar::lesson-3/section-vocabulary::item-pintu-keluar",
+    "source_ref": "learning_items/pintu keluar",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-pintu-keluar",
@@ -703,8 +703,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"pintu keluar\",\"item_type\":\"phrase\",\"translation_nl\":\"uitgang\",\"context_type\":\"vocabulary_list\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"exit\"}"
   },
   {
-    "content_unit_key": "learning_items/empat-puluh::lesson-3/section-vocabulary::item-empat-puluh",
-    "source_ref": "learning_items/empat-puluh",
+    "content_unit_key": "learning_items/empat puluh::lesson-3/section-vocabulary::item-empat-puluh",
+    "source_ref": "learning_items/empat puluh",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-empat-puluh",
@@ -718,8 +718,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"empat puluh\",\"item_type\":\"phrase\",\"translation_nl\":\"veertig\",\"context_type\":\"lesson_snippet\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"forty\"}"
   },
   {
-    "content_unit_key": "learning_items/bandar-udara::lesson-3/section-vocabulary::item-bandar-udara",
-    "source_ref": "learning_items/bandar-udara",
+    "content_unit_key": "learning_items/bandar udara::lesson-3/section-vocabulary::item-bandar-udara",
+    "source_ref": "learning_items/bandar udara",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-bandar-udara",
@@ -883,8 +883,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"benar\",\"item_type\":\"word\",\"translation_nl\":\"echt/waar\",\"context_type\":\"vocabulary_list\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"adjective\",\"level\":\"A1\",\"translation_en\":\"true\"}"
   },
   {
-    "content_unit_key": "learning_items/di-sini::lesson-3/section-vocabulary::item-di-sini",
-    "source_ref": "learning_items/di-sini",
+    "content_unit_key": "learning_items/di sini::lesson-3/section-vocabulary::item-di-sini",
+    "source_ref": "learning_items/di sini",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-di-sini",
@@ -943,8 +943,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"sama-sama\",\"item_type\":\"phrase\",\"translation_nl\":\"geen dank\",\"context_type\":\"vocabulary_list\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"greeting\",\"level\":\"A1\",\"translation_en\":\"you're welcome\"}"
   },
   {
-    "content_unit_key": "learning_items/lapangan-terbang::lesson-3/section-vocabulary::item-lapangan-terbang",
-    "source_ref": "learning_items/lapangan-terbang",
+    "content_unit_key": "learning_items/lapangan terbang::lesson-3/section-vocabulary::item-lapangan-terbang",
+    "source_ref": "learning_items/lapangan terbang",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-lapangan-terbang",
@@ -973,8 +973,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"contoh\",\"item_type\":\"word\",\"translation_nl\":\"voorbeeld\",\"context_type\":\"cloze\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"example\"}"
   },
   {
-    "content_unit_key": "learning_items/lima-puluh::lesson-3/section-vocabulary::item-lima-puluh",
-    "source_ref": "learning_items/lima-puluh",
+    "content_unit_key": "learning_items/lima puluh::lesson-3/section-vocabulary::item-lima-puluh",
+    "source_ref": "learning_items/lima puluh",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-lima-puluh",
@@ -988,8 +988,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"lima puluh\",\"item_type\":\"phrase\",\"translation_nl\":\"vijftig\",\"context_type\":\"lesson_snippet\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"fifty\"}"
   },
   {
-    "content_unit_key": "learning_items/dua-puluh-satu::lesson-3/section-vocabulary::item-dua-puluh-satu",
-    "source_ref": "learning_items/dua-puluh-satu",
+    "content_unit_key": "learning_items/dua puluh satu::lesson-3/section-vocabulary::item-dua-puluh-satu",
+    "source_ref": "learning_items/dua puluh satu",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-dua-puluh-satu",
@@ -1003,8 +1003,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"dua puluh satu\",\"item_type\":\"word\",\"translation_nl\":\"eenentwintig\",\"context_type\":\"vocabulary_list\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"twenty-one\"}"
   },
   {
-    "content_unit_key": "learning_items/kan::lesson-3/section-vocabulary::item-kan",
-    "source_ref": "learning_items/kan",
+    "content_unit_key": "learning_items/'kan?::lesson-3/section-vocabulary::item-kan",
+    "source_ref": "learning_items/'kan?",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kan",
@@ -1048,8 +1048,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"lapar\",\"item_type\":\"word\",\"translation_nl\":\"honger\",\"context_type\":\"vocabulary_list\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"adjective\",\"level\":\"A1\",\"translation_en\":\"hunger\"}"
   },
   {
-    "content_unit_key": "learning_items/naik-sepeda::lesson-3/section-vocabulary::item-naik-sepeda",
-    "source_ref": "learning_items/naik-sepeda",
+    "content_unit_key": "learning_items/naik sepeda::lesson-3/section-vocabulary::item-naik-sepeda",
+    "source_ref": "learning_items/naik sepeda",
     "source_section_ref": "lesson-3/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-naik-sepeda",

@@ -167,8 +167,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"ayah\",\"item_type\":\"word\",\"translation_nl\":\"vader\",\"context_type\":\"vocabulary_list\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"father\"}"
   },
   {
-    "content_unit_key": "learning_items/ayo::lesson-5/section-vocabulary::item-ayo",
-    "source_ref": "learning_items/ayo",
+    "content_unit_key": "learning_items/ayo!::lesson-5/section-vocabulary::item-ayo",
+    "source_ref": "learning_items/ayo!",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-ayo",
@@ -212,8 +212,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"belajar\",\"item_type\":\"word\",\"translation_nl\":\"leren (zie ook Les 11)\",\"context_type\":\"vocabulary_list\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A1\",\"translation_en\":\"to learn\"}"
   },
   {
-    "content_unit_key": "learning_items/enak-saja::lesson-5/section-vocabulary::item-enak-saja",
-    "source_ref": "learning_items/enak-saja",
+    "content_unit_key": "learning_items/enak saja::lesson-5/section-vocabulary::item-enak-saja",
+    "source_ref": "learning_items/enak saja",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-enak-saja",
@@ -287,8 +287,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"hari\",\"item_type\":\"word\",\"translation_nl\":\"dag\",\"context_type\":\"vocabulary_list\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"day\"}"
   },
   {
-    "content_unit_key": "learning_items/hari-rabu::lesson-5/section-vocabulary::item-hari-rabu",
-    "source_ref": "learning_items/hari-rabu",
+    "content_unit_key": "learning_items/hari rabu::lesson-5/section-vocabulary::item-hari-rabu",
+    "source_ref": "learning_items/hari rabu",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-hari-rabu",
@@ -467,8 +467,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"laki-laki\",\"item_type\":\"word\",\"translation_nl\":\"man, mannelijk\",\"context_type\":\"vocabulary_list\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"man, male\"}"
   },
   {
-    "content_unit_key": "learning_items/mari::lesson-5/section-vocabulary::item-mari",
-    "source_ref": "learning_items/mari",
+    "content_unit_key": "learning_items/mari!::lesson-5/section-vocabulary::item-mari",
+    "source_ref": "learning_items/mari!",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-mari",
@@ -542,8 +542,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"nanti\",\"item_type\":\"word\",\"translation_nl\":\"straks, zo meteen\",\"context_type\":\"vocabulary_list\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"adverb\",\"level\":\"A1\",\"translation_en\":\"soon, in a moment\"}"
   },
   {
-    "content_unit_key": "learning_items/nasi-gurih::lesson-5/section-vocabulary::item-nasi-gurih",
-    "source_ref": "learning_items/nasi-gurih",
+    "content_unit_key": "learning_items/nasi gurih::lesson-5/section-vocabulary::item-nasi-gurih",
+    "source_ref": "learning_items/nasi gurih",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-nasi-gurih",
@@ -692,8 +692,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"setrop\",\"item_type\":\"word\",\"translation_nl\":\"siroop\",\"context_type\":\"vocabulary_list\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"syrup\"}"
   },
   {
-    "content_unit_key": "learning_items/setrop-susu::lesson-5/section-vocabulary::item-setrop-susu",
-    "source_ref": "learning_items/setrop-susu",
+    "content_unit_key": "learning_items/setrop susu::lesson-5/section-vocabulary::item-setrop-susu",
+    "source_ref": "learning_items/setrop susu",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-setrop-susu",
@@ -752,8 +752,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"taman\",\"item_type\":\"word\",\"translation_nl\":\"park, tuin\",\"context_type\":\"vocabulary_list\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"park, garden\"}"
   },
   {
-    "content_unit_key": "learning_items/taman-mini::lesson-5/section-vocabulary::item-taman-mini",
-    "source_ref": "learning_items/taman-mini",
+    "content_unit_key": "learning_items/taman mini::lesson-5/section-vocabulary::item-taman-mini",
+    "source_ref": "learning_items/taman mini",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-taman-mini",
@@ -767,8 +767,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Taman Mini\",\"item_type\":\"word\",\"translation_nl\":\"Klein Indonesie - park met traditionele Indonesische gebouwen in Jakarta\",\"context_type\":\"vocabulary_list\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"Taman Mini (traditional Indonesian park in Jakarta)\"}"
   },
   {
-    "content_unit_key": "learning_items/tapi-tetapi::lesson-5/section-vocabulary::item-tapi-tetapi",
-    "source_ref": "learning_items/tapi-tetapi",
+    "content_unit_key": "learning_items/tapi / tetapi::lesson-5/section-vocabulary::item-tapi-tetapi",
+    "source_ref": "learning_items/tapi / tetapi",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tapi-tetapi",
@@ -812,8 +812,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"uang\",\"item_type\":\"word\",\"translation_nl\":\"geld\",\"context_type\":\"vocabulary_list\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"money\"}"
   },
   {
-    "content_unit_key": "learning_items/wah::lesson-5/section-vocabulary::item-wah",
-    "source_ref": "learning_items/wah",
+    "content_unit_key": "learning_items/wah!::lesson-5/section-vocabulary::item-wah",
+    "source_ref": "learning_items/wah!",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-wah",
@@ -827,8 +827,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"wah!\",\"item_type\":\"word\",\"translation_nl\":\"goh! nou! (stopwoord/uitroep)\",\"context_type\":\"vocabulary_list\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"particle\",\"level\":\"A1\",\"translation_en\":\"wow!\"}"
   },
   {
-    "content_unit_key": "learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah::lesson-5/section-dialogue::item-ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah",
-    "source_ref": "learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah",
+    "content_unit_key": "learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.::lesson-5/section-dialogue::item-ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah",
+    "source_ref": "learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.",
     "source_section_ref": "lesson-5/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah",
@@ -842,8 +842,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Ibu dan bapak enak saja ke Taman Mini. Kita harus belajar di rumah.\",\"item_type\":\"dialogue_chunk\",\"translation_nl\":\"Moeder en vader gaan zo maar naar Taman Mini. Wij moeten thuis studeren.\",\"context_type\":\"dialogue\",\"source_page\":5,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/aku-tidak-senang-tinggal-di-rumah-terus::lesson-5/section-dialogue::item-aku-tidak-senang-tinggal-di-rumah-terus",
-    "source_ref": "learning_items/aku-tidak-senang-tinggal-di-rumah-terus",
+    "content_unit_key": "learning_items/aku tidak senang tinggal di rumah terus.::lesson-5/section-dialogue::item-aku-tidak-senang-tinggal-di-rumah-terus",
+    "source_ref": "learning_items/aku tidak senang tinggal di rumah terus.",
     "source_section_ref": "lesson-5/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-aku-tidak-senang-tinggal-di-rumah-terus",
@@ -857,8 +857,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Aku tidak senang tinggal di rumah terus.\",\"item_type\":\"dialogue_chunk\",\"translation_nl\":\"Ik vind het niet leuk om steeds thuis te blijven.\",\"context_type\":\"dialogue\",\"source_page\":5,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi::lesson-5/section-dialogue::item-kita-harus-kerja-dulu-sebentar-nanti-kita-pergi",
-    "source_ref": "learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi",
+    "content_unit_key": "learning_items/kita harus kerja dulu sebentar. nanti kita pergi.::lesson-5/section-dialogue::item-kita-harus-kerja-dulu-sebentar-nanti-kita-pergi",
+    "source_ref": "learning_items/kita harus kerja dulu sebentar. nanti kita pergi.",
     "source_section_ref": "lesson-5/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-kita-harus-kerja-dulu-sebentar-nanti-kita-pergi",
@@ -872,8 +872,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Kita harus kerja dulu sebentar. Nanti kita pergi.\",\"item_type\":\"dialogue_chunk\",\"translation_nl\":\"We moeten eerst even werken. Daarna gaan we.\",\"context_type\":\"dialogue\",\"source_page\":5,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang::lesson-5/section-dialogue::item-aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang",
-    "source_ref": "learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang",
+    "content_unit_key": "learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.::lesson-5/section-dialogue::item-aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang",
+    "source_ref": "learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.",
     "source_section_ref": "lesson-5/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang",
@@ -887,8 +887,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Aduh, kami mau ke luar, jalan-jalan dan makan di restoran Mi Enak tetapi tidak ada uang.\",\"item_type\":\"dialogue_chunk\",\"translation_nl\":\"Ai, wij willen naar buiten, wandelen en eten in restaurant Mi Enak maar er is geen geld.\",\"context_type\":\"dialogue\",\"source_page\":5,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/besok-saja-jalan-jalan-dengan-ayahmu::lesson-5/section-dialogue::item-besok-saja-jalan-jalan-dengan-ayahmu",
-    "source_ref": "learning_items/besok-saja-jalan-jalan-dengan-ayahmu",
+    "content_unit_key": "learning_items/besok saja jalan-jalan dengan ayahmu.::lesson-5/section-dialogue::item-besok-saja-jalan-jalan-dengan-ayahmu",
+    "source_ref": "learning_items/besok saja jalan-jalan dengan ayahmu.",
     "source_section_ref": "lesson-5/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-besok-saja-jalan-jalan-dengan-ayahmu",
@@ -902,8 +902,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Besok saja jalan-jalan dengan ayahmu.\",\"item_type\":\"dialogue_chunk\",\"translation_nl\":\"Ga morgen maar wandelen met je vader.\",\"context_type\":\"dialogue\",\"source_page\":5,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya::lesson-5/section-dialogue::item-baiklah-tapi-boleh-minta-setrop-susu-ya",
-    "source_ref": "learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya",
+    "content_unit_key": "learning_items/baiklah, tapi boleh minta setrop susu ya?::lesson-5/section-dialogue::item-baiklah-tapi-boleh-minta-setrop-susu-ya",
+    "source_ref": "learning_items/baiklah, tapi boleh minta setrop susu ya?",
     "source_section_ref": "lesson-5/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-baiklah-tapi-boleh-minta-setrop-susu-ya",
@@ -917,8 +917,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Baiklah, tapi boleh minta setrop susu ya?\",\"item_type\":\"dialogue_chunk\",\"translation_nl\":\"Goed dan, maar mag ik een setrop susu?\",\"context_type\":\"dialogue\",\"source_page\":5,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kita-harus-belajar-di-rumah::lesson-5/section-vocabulary::item-kita-harus-belajar-di-rumah",
-    "source_ref": "learning_items/kita-harus-belajar-di-rumah",
+    "content_unit_key": "learning_items/kita harus belajar di rumah.::lesson-5/section-vocabulary::item-kita-harus-belajar-di-rumah",
+    "source_ref": "learning_items/kita harus belajar di rumah.",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kita-harus-belajar-di-rumah",
@@ -932,8 +932,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Kita harus belajar di rumah.\",\"item_type\":\"sentence\",\"translation_nl\":\"Wij moeten thuis studeren. (inclusief: jij ook)\",\"context_type\":\"example_sentence\",\"source_page\":5,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kami-mau-ke-luar::lesson-5/section-vocabulary::item-kami-mau-ke-luar",
-    "source_ref": "learning_items/kami-mau-ke-luar",
+    "content_unit_key": "learning_items/kami mau ke luar.::lesson-5/section-vocabulary::item-kami-mau-ke-luar",
+    "source_ref": "learning_items/kami mau ke luar.",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kami-mau-ke-luar",
@@ -947,8 +947,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Kami mau ke luar.\",\"item_type\":\"sentence\",\"translation_nl\":\"Wij willen naar buiten. (exclusief: jij niet)\",\"context_type\":\"example_sentence\",\"source_page\":5,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/di-mana-bukuku::lesson-5/section-vocabulary::item-di-mana-bukuku",
-    "source_ref": "learning_items/di-mana-bukuku",
+    "content_unit_key": "learning_items/di mana bukuku?::lesson-5/section-vocabulary::item-di-mana-bukuku",
+    "source_ref": "learning_items/di mana bukuku?",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-di-mana-bukuku",
@@ -962,8 +962,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Di mana bukuku?\",\"item_type\":\"sentence\",\"translation_nl\":\"Waar is mijn boek?\",\"context_type\":\"example_sentence\",\"source_page\":5,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/mobilmu-rusak::lesson-5/section-vocabulary::item-mobilmu-rusak",
-    "source_ref": "learning_items/mobilmu-rusak",
+    "content_unit_key": "learning_items/mobilmu rusak.::lesson-5/section-vocabulary::item-mobilmu-rusak",
+    "source_ref": "learning_items/mobilmu rusak.",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-mobilmu-rusak",
@@ -977,8 +977,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Mobilmu rusak.\",\"item_type\":\"sentence\",\"translation_nl\":\"Jouw auto is kapot.\",\"context_type\":\"example_sentence\",\"source_page\":5,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/pembantunya-sakit::lesson-5/section-vocabulary::item-pembantunya-sakit",
-    "source_ref": "learning_items/pembantunya-sakit",
+    "content_unit_key": "learning_items/pembantunya sakit.::lesson-5/section-vocabulary::item-pembantunya-sakit",
+    "source_ref": "learning_items/pembantunya sakit.",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-pembantunya-sakit",
@@ -992,8 +992,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Pembantunya sakit.\",\"item_type\":\"sentence\",\"translation_nl\":\"Zijn/haar hulpje is ziek.\",\"context_type\":\"example_sentence\",\"source_page\":5,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/uang-kita-sudah-habis::lesson-5/section-vocabulary::item-uang-kita-sudah-habis",
-    "source_ref": "learning_items/uang-kita-sudah-habis",
+    "content_unit_key": "learning_items/uang kita sudah habis.::lesson-5/section-vocabulary::item-uang-kita-sudah-habis",
+    "source_ref": "learning_items/uang kita sudah habis.",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-uang-kita-sudah-habis",
@@ -1007,8 +1007,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Uang kita sudah habis.\",\"item_type\":\"sentence\",\"translation_nl\":\"Ons geld is al op.\",\"context_type\":\"example_sentence\",\"source_page\":5,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/rumahnya-bagus-sekali::lesson-5/section-vocabulary::item-rumahnya-bagus-sekali",
-    "source_ref": "learning_items/rumahnya-bagus-sekali",
+    "content_unit_key": "learning_items/rumahnya bagus sekali.::lesson-5/section-vocabulary::item-rumahnya-bagus-sekali",
+    "source_ref": "learning_items/rumahnya bagus sekali.",
     "source_section_ref": "lesson-5/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-rumahnya-bagus-sekali",

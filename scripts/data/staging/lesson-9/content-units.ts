@@ -118,8 +118,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"title\":\"Pijnen & Medicijnen\",\"order_index\":8,\"content\":{\"type\":\"vocabulary\",\"items\":[{\"dutch\":\"buik/maagpijn\",\"indonesian\":\"sakit perut / mag\"},{\"dutch\":\"duizelig zijn\",\"indonesian\":\"pusing\"},{\"dutch\":\"hoofdpijn\",\"indonesian\":\"sakit kepala\"},{\"dutch\":\"verkoudheid\",\"indonesian\":\"pilek\"},{\"dutch\":\"griep\",\"indonesian\":\"flu\"},{\"dutch\":\"koorts\",\"indonesian\":\"demam\"},{\"dutch\":\"misselijk\",\"indonesian\":\"mual\"},{\"dutch\":\"pleister\",\"indonesian\":\"plèster\"},{\"dutch\":\"verband\",\"indonesian\":\"pembalut\"},{\"dutch\":\"maandverband\",\"indonesian\":\"pembalut wanita\"},{\"dutch\":\"moe\",\"indonesian\":\"capèk (na inspanning)\"},{\"dutch\":\"medicijn\",\"indonesian\":\"obat\"},{\"dutch\":\"kruidenmengsel\",\"indonesian\":\"jamu\"},{\"dutch\":\"vergif\",\"indonesian\":\"racun\"},{\"dutch\":\"hoestdrank\",\"indonesian\":\"obat batuk\"},{\"dutch\":\"dieet\",\"indonesian\":\"diét\"},{\"dutch\":\"medicijn innemen\",\"indonesian\":\"minum obat\"},{\"dutch\":\"prik\",\"indonesian\":\"suntik\"},{\"dutch\":\"overgeven\",\"indonesian\":\"muntah\"},{\"dutch\":\"wond\",\"indonesian\":\"luka\"},{\"dutch\":\"eetlust\",\"indonesian\":\"nafsu makan\"},{\"dutch\":\"zwak (slap)\",\"indonesian\":\"lemah\"}]}}"
   },
   {
-    "content_unit_key": "learning_items/ada-apa::lesson-9/section-dialogue::item-ada-apa",
-    "source_ref": "learning_items/ada-apa",
+    "content_unit_key": "learning_items/ada apa?::lesson-9/section-dialogue::item-ada-apa",
+    "source_ref": "learning_items/ada apa?",
     "source_section_ref": "lesson-9/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-ada-apa",
@@ -133,8 +133,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Ada apa?\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Wat is er aan de hand?\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"deferred_dialogue\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon::lesson-9/section-dialogue::item-kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon",
-    "source_ref": "learning_items/kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon",
+    "content_unit_key": "learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.::lesson-9/section-dialogue::item-kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon",
+    "source_ref": "learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.",
     "source_section_ref": "lesson-9/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-kaki-saya-sakit-sekali-dokter-saya-jatuh-dari-pohon",
@@ -148,8 +148,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Kaki saya sakit sekali dokter. Saya jatuh dari pohon.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Mijn voet doet heel erg pijn, dokter. Ik ben uit de boom gevallen.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/bagaimana-bisa-jatuh-dari-pohon::lesson-9/section-dialogue::item-bagaimana-bisa-jatuh-dari-pohon",
-    "source_ref": "learning_items/bagaimana-bisa-jatuh-dari-pohon",
+    "content_unit_key": "learning_items/bagaimana bisa jatuh dari pohon?::lesson-9/section-dialogue::item-bagaimana-bisa-jatuh-dari-pohon",
+    "source_ref": "learning_items/bagaimana bisa jatuh dari pohon?",
     "source_section_ref": "lesson-9/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-bagaimana-bisa-jatuh-dari-pohon",
@@ -163,8 +163,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Bagaimana bisa jatuh dari pohon?\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Hoe kun je nou uit een boom vallen?\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"deferred_dialogue\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh::lesson-9/section-dialogue::item-saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh",
-    "source_ref": "learning_items/saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh",
+    "content_unit_key": "learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.::lesson-9/section-dialogue::item-saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh",
+    "source_ref": "learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.",
     "source_section_ref": "lesson-9/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-saya-mau-naik-lebih-tinggi-lagi-di-pohon-itu-tetapi-tidak-jadi-sehingga-saya-jatuh",
@@ -178,8 +178,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Ik wilde nog hoger in die boom klimmen, maar dat lukte niet, zodat ik viel.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa::lesson-9/section-dialogue::item-nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa",
-    "source_ref": "learning_items/nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa",
+    "content_unit_key": "learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.::lesson-9/section-dialogue::item-nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa",
+    "source_ref": "learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.",
     "source_section_ref": "lesson-9/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-nah-coba-saya-periksa-kakimu-dulu-barangkali-tidak-apa-apa",
@@ -193,8 +193,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Nah, coba, saya periksa kakimu dulu. Barangkali tidak apa-apa.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Nou, kom, laat me eerst je voet onderzoeken. Misschien is er niets aan de hand.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/awas-dokter-jangan-sakit-ya::lesson-9/section-dialogue::item-awas-dokter-jangan-sakit-ya",
-    "source_ref": "learning_items/awas-dokter-jangan-sakit-ya",
+    "content_unit_key": "learning_items/awas dokter, jangan sakit, ya.::lesson-9/section-dialogue::item-awas-dokter-jangan-sakit-ya",
+    "source_ref": "learning_items/awas dokter, jangan sakit, ya.",
     "source_section_ref": "lesson-9/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-awas-dokter-jangan-sakit-ya",
@@ -208,8 +208,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Awas dokter, jangan sakit, ya.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Voorzichtig dokter, niet pijn doen, hè.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"deferred_dialogue\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/ini-sakit-atau-tidak::lesson-9/section-dialogue::item-ini-sakit-atau-tidak",
-    "source_ref": "learning_items/ini-sakit-atau-tidak",
+    "content_unit_key": "learning_items/ini sakit atau tidak?::lesson-9/section-dialogue::item-ini-sakit-atau-tidak",
+    "source_ref": "learning_items/ini sakit atau tidak?",
     "source_section_ref": "lesson-9/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-ini-sakit-atau-tidak",
@@ -223,8 +223,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Ini sakit atau tidak?\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Doet dit pijn of niet?\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"deferred_dialogue\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/tidak-begitu-sakit-dokter-sedikit-saja::lesson-9/section-dialogue::item-tidak-begitu-sakit-dokter-sedikit-saja",
-    "source_ref": "learning_items/tidak-begitu-sakit-dokter-sedikit-saja",
+    "content_unit_key": "learning_items/tidak begitu sakit dokter, sedikit saja.::lesson-9/section-dialogue::item-tidak-begitu-sakit-dokter-sedikit-saja",
+    "source_ref": "learning_items/tidak begitu sakit dokter, sedikit saja.",
     "source_section_ref": "lesson-9/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-tidak-begitu-sakit-dokter-sedikit-saja",
@@ -238,8 +238,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Tidak begitu sakit dokter, sedikit saja.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Niet zo erg pijn dokter, maar een beetje.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin::lesson-9/section-dialogue::item-kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin",
-    "source_ref": "learning_items/kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin",
+    "content_unit_key": "learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.::lesson-9/section-dialogue::item-kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin",
+    "source_ref": "learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.",
     "source_section_ref": "lesson-9/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-kalau-begitu-tidak-ada-yang-patah-pasti-nanti-cepat-sekali-sembuh-tin",
@@ -253,8 +253,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Kalau begitu, tidak ada yang patah. Pasti nanti cepat sekali sembuh, Tin.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"In dat geval is er niets gebroken. Straks ben je vast heel snel weer beter, Tin.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali::lesson-9/section-dialogue::item-betul-dokter-tidak-ada-yang-patah-saya-takut-sekali",
-    "source_ref": "learning_items/betul-dokter-tidak-ada-yang-patah-saya-takut-sekali",
+    "content_unit_key": "learning_items/betul dokter? tidak ada yang patah? saya takut sekali!::lesson-9/section-dialogue::item-betul-dokter-tidak-ada-yang-patah-saya-takut-sekali",
+    "source_ref": "learning_items/betul dokter? tidak ada yang patah? saya takut sekali!",
     "source_section_ref": "lesson-9/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-betul-dokter-tidak-ada-yang-patah-saya-takut-sekali",
@@ -268,8 +268,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Betul dokter? Tidak ada yang patah? Saya takut sekali!\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Echt waar, dokter? Is er niets gebroken? Ik was zo bang!\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh::lesson-9/section-dialogue::item-betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh",
-    "source_ref": "learning_items/betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh",
+    "content_unit_key": "learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.::lesson-9/section-dialogue::item-betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh",
+    "source_ref": "learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.",
     "source_section_ref": "lesson-9/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-betul-bu-tidak-ada-apa-apa-tetapi-tina-harus-jalan-hati-hati-tina-jangan-lagi-naik-pohon-biar-kakimu-lekas-sembuh",
@@ -358,8 +358,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"burung\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"vogel\",\"translation_en\":\"bird\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/di-mana-mana::lesson-9/section-vocabulary::item-di-mana-mana",
-    "source_ref": "learning_items/di-mana-mana",
+    "content_unit_key": "learning_items/di mana-mana::lesson-9/section-vocabulary::item-di-mana-mana",
+    "source_ref": "learning_items/di mana-mana",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-di-mana-mana",
@@ -448,8 +448,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"jatuh\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"vallen\",\"translation_en\":\"fall\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kaget-kaget::lesson-9/section-vocabulary::item-kaget-kaget",
-    "source_ref": "learning_items/kaget-kaget",
+    "content_unit_key": "learning_items/kaget (kagèt)::lesson-9/section-vocabulary::item-kaget-kaget",
+    "source_ref": "learning_items/kaget (kagèt)",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kaget-kaget",
@@ -508,8 +508,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"kepala\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"hoofd\",\"translation_en\":\"head\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kesehatan-kesehatan::lesson-9/section-vocabulary::item-kesehatan-kesehatan",
-    "source_ref": "learning_items/kesehatan-kesehatan",
+    "content_unit_key": "learning_items/kesehatan (keséhatan)::lesson-9/section-vocabulary::item-kesehatan-kesehatan",
+    "source_ref": "learning_items/kesehatan (keséhatan)",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kesehatan-kesehatan",
@@ -553,8 +553,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"lekas\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"snel\",\"translation_en\":\"fast\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"adverb\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/letnan-letnan::lesson-9/section-vocabulary::item-letnan-letnan",
-    "source_ref": "learning_items/letnan-letnan",
+    "content_unit_key": "learning_items/letnan (lètnan)::lesson-9/section-vocabulary::item-letnan-letnan",
+    "source_ref": "learning_items/letnan (lètnan)",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-letnan-letnan",
@@ -628,8 +628,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"obat\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"medicijn\",\"translation_en\":\"medicine\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/orang-desa::lesson-9/section-vocabulary::item-orang-desa",
-    "source_ref": "learning_items/orang-desa",
+    "content_unit_key": "learning_items/orang desa::lesson-9/section-vocabulary::item-orang-desa",
+    "source_ref": "learning_items/orang desa",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-orang-desa",
@@ -763,8 +763,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"sembuh\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"genezen / gezond worden\",\"translation_en\":\"recover / heal\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/tak-tidak::lesson-9/section-vocabulary::item-tak-tidak",
-    "source_ref": "learning_items/tak-tidak",
+    "content_unit_key": "learning_items/tak (tidak)::lesson-9/section-vocabulary::item-tak-tidak",
+    "source_ref": "learning_items/tak (tidak)",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tak-tidak",
@@ -793,8 +793,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"takut\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"bang (zijn)\",\"translation_en\":\"afraid\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"adjective\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/rumah-sakit::lesson-9/section-vocabulary::item-rumah-sakit",
-    "source_ref": "learning_items/rumah-sakit",
+    "content_unit_key": "learning_items/rumah sakit::lesson-9/section-vocabulary::item-rumah-sakit",
+    "source_ref": "learning_items/rumah sakit",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-rumah-sakit",
@@ -808,8 +808,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"rumah sakit\",\"item_type\":\"phrase\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"ziekenhuis\",\"translation_en\":\"hospital\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/tidak-ada-apa-apa::lesson-9/section-vocabulary::item-tidak-ada-apa-apa",
-    "source_ref": "learning_items/tidak-ada-apa-apa",
+    "content_unit_key": "learning_items/tidak (ada) apa-apa::lesson-9/section-vocabulary::item-tidak-ada-apa-apa",
+    "source_ref": "learning_items/tidak (ada) apa-apa",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tidak-ada-apa-apa",
@@ -823,8 +823,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"tidak (ada) apa-apa\",\"item_type\":\"phrase\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"er is niets / 't geeft niet / er is niets aan de hand\",\"translation_en\":\"nothing is wrong\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"particle\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/tidak-jadi::lesson-9/section-vocabulary::item-tidak-jadi",
-    "source_ref": "learning_items/tidak-jadi",
+    "content_unit_key": "learning_items/tidak jadi::lesson-9/section-vocabulary::item-tidak-jadi",
+    "source_ref": "learning_items/tidak jadi",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tidak-jadi",
@@ -838,8 +838,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"tidak jadi\",\"item_type\":\"phrase\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"niet lukken / niet doorgaan\",\"translation_en\":\"not work out / not happen\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/tubuh-badan::lesson-9/section-vocabulary::item-tubuh-badan",
-    "source_ref": "learning_items/tubuh-badan",
+    "content_unit_key": "learning_items/tubuh / badan::lesson-9/section-vocabulary::item-tubuh-badan",
+    "source_ref": "learning_items/tubuh / badan",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tubuh-badan",
@@ -1093,8 +1093,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"usus\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"darmen\",\"translation_en\":\"intestines\",\"source_page\":9,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/leher::lesson-9/section-vocabulary::item-leher",
-    "source_ref": "learning_items/leher",
+    "content_unit_key": "learning_items/lèhèr::lesson-9/section-vocabulary::item-leher",
+    "source_ref": "learning_items/lèhèr",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-leher",
@@ -1153,8 +1153,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"dada\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"borst(kas)\",\"translation_en\":\"chest\",\"source_page\":9,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/rongga-dada::lesson-9/section-vocabulary::item-rongga-dada",
-    "source_ref": "learning_items/rongga-dada",
+    "content_unit_key": "learning_items/rongga dada::lesson-9/section-vocabulary::item-rongga-dada",
+    "source_ref": "learning_items/rongga dada",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-rongga-dada",
@@ -1168,8 +1168,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"rongga dada\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"ribben\",\"translation_en\":\"ribs\",\"source_page\":9,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/jari-tangan::lesson-9/section-vocabulary::item-jari-tangan",
-    "source_ref": "learning_items/jari-tangan",
+    "content_unit_key": "learning_items/jari tangan::lesson-9/section-vocabulary::item-jari-tangan",
+    "source_ref": "learning_items/jari tangan",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-jari-tangan",
@@ -1198,8 +1198,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"kuku\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"nagel\",\"translation_en\":\"nail\",\"source_page\":9,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/jari-kaki::lesson-9/section-vocabulary::item-jari-kaki",
-    "source_ref": "learning_items/jari-kaki",
+    "content_unit_key": "learning_items/jari kaki::lesson-9/section-vocabulary::item-jari-kaki",
+    "source_ref": "learning_items/jari kaki",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-jari-kaki",
@@ -1213,8 +1213,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"jari kaki\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"teen\",\"translation_en\":\"toe\",\"source_page\":9,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/sakit-perut-mag::lesson-9/section-vocabulary::item-sakit-perut-mag",
-    "source_ref": "learning_items/sakit-perut-mag",
+    "content_unit_key": "learning_items/sakit perut / mag::lesson-9/section-vocabulary::item-sakit-perut-mag",
+    "source_ref": "learning_items/sakit perut / mag",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-sakit-perut-mag",
@@ -1243,8 +1243,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"pusing\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"duizelig zijn\",\"translation_en\":\"dizzy\",\"source_page\":9,\"review_status\":\"published\",\"pos\":\"adjective\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/sakit-kepala::lesson-9/section-vocabulary::item-sakit-kepala",
-    "source_ref": "learning_items/sakit-kepala",
+    "content_unit_key": "learning_items/sakit kepala::lesson-9/section-vocabulary::item-sakit-kepala",
+    "source_ref": "learning_items/sakit kepala",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-sakit-kepala",
@@ -1318,8 +1318,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"mual\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"misselijk\",\"translation_en\":\"nauseous\",\"source_page\":9,\"review_status\":\"published\",\"pos\":\"adjective\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/plester::lesson-9/section-vocabulary::item-plester",
-    "source_ref": "learning_items/plester",
+    "content_unit_key": "learning_items/plèster::lesson-9/section-vocabulary::item-plester",
+    "source_ref": "learning_items/plèster",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-plester",
@@ -1348,8 +1348,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"pembalut\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"verband\",\"translation_en\":\"bandage\",\"source_page\":9,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/pembalut-wanita::lesson-9/section-vocabulary::item-pembalut-wanita",
-    "source_ref": "learning_items/pembalut-wanita",
+    "content_unit_key": "learning_items/pembalut wanita::lesson-9/section-vocabulary::item-pembalut-wanita",
+    "source_ref": "learning_items/pembalut wanita",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-pembalut-wanita",
@@ -1363,8 +1363,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"pembalut wanita\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"maandverband\",\"translation_en\":\"sanitary pad\",\"source_page\":9,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/capek-na-inspanning::lesson-9/section-vocabulary::item-capek-na-inspanning",
-    "source_ref": "learning_items/capek-na-inspanning",
+    "content_unit_key": "learning_items/capèk (na inspanning)::lesson-9/section-vocabulary::item-capek-na-inspanning",
+    "source_ref": "learning_items/capèk (na inspanning)",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-capek-na-inspanning",
@@ -1408,8 +1408,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"racun\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"vergif\",\"translation_en\":\"poison\",\"source_page\":9,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/obat-batuk::lesson-9/section-vocabulary::item-obat-batuk",
-    "source_ref": "learning_items/obat-batuk",
+    "content_unit_key": "learning_items/obat batuk::lesson-9/section-vocabulary::item-obat-batuk",
+    "source_ref": "learning_items/obat batuk",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-obat-batuk",
@@ -1423,8 +1423,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"obat batuk\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"hoestdrank\",\"translation_en\":\"cough syrup\",\"source_page\":9,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/diet::lesson-9/section-vocabulary::item-diet",
-    "source_ref": "learning_items/diet",
+    "content_unit_key": "learning_items/diét::lesson-9/section-vocabulary::item-diet",
+    "source_ref": "learning_items/diét",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-diet",
@@ -1438,8 +1438,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"diét\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"dieet\",\"translation_en\":\"diet\",\"source_page\":9,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/minum-obat::lesson-9/section-vocabulary::item-minum-obat",
-    "source_ref": "learning_items/minum-obat",
+    "content_unit_key": "learning_items/minum obat::lesson-9/section-vocabulary::item-minum-obat",
+    "source_ref": "learning_items/minum obat",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-minum-obat",
@@ -1498,8 +1498,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"luka\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"wond\",\"translation_en\":\"wound\",\"source_page\":9,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/nafsu-makan::lesson-9/section-vocabulary::item-nafsu-makan",
-    "source_ref": "learning_items/nafsu-makan",
+    "content_unit_key": "learning_items/nafsu makan::lesson-9/section-vocabulary::item-nafsu-makan",
+    "source_ref": "learning_items/nafsu makan",
     "source_section_ref": "lesson-9/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-nafsu-makan",

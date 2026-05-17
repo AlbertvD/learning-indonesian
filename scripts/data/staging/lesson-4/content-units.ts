@@ -347,8 +347,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"makanan\",\"item_type\":\"word\",\"translation_nl\":\"voedsel\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"food\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kamar-kecil::lesson-4/section-vocabulary::item-kamar-kecil",
-    "source_ref": "learning_items/kamar-kecil",
+    "content_unit_key": "learning_items/kamar kecil::lesson-4/section-vocabulary::item-kamar-kecil",
+    "source_ref": "learning_items/kamar kecil",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kamar-kecil",
@@ -362,8 +362,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"kamar kecil\",\"item_type\":\"phrase\",\"translation_nl\":\"toilet, w.c.\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"toilet\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kopi-pait::lesson-4/section-vocabulary::item-kopi-pait",
-    "source_ref": "learning_items/kopi-pait",
+    "content_unit_key": "learning_items/kopi pait::lesson-4/section-vocabulary::item-kopi-pait",
+    "source_ref": "learning_items/kopi pait",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kopi-pait",
@@ -392,8 +392,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"sayuran\",\"item_type\":\"word\",\"translation_nl\":\"groente\",\"context_type\":\"lesson_snippet\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"vegetable\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/jambu-air::lesson-4/section-vocabulary::item-jambu-air",
-    "source_ref": "learning_items/jambu-air",
+    "content_unit_key": "learning_items/jambu air::lesson-4/section-vocabulary::item-jambu-air",
+    "source_ref": "learning_items/jambu air",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-jambu-air",
@@ -542,8 +542,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"paspoort\",\"item_type\":\"word\",\"translation_nl\":\"paspoort\",\"context_type\":\"lesson_snippet\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"passport\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kamar-makan::lesson-4/section-vocabulary::item-kamar-makan",
-    "source_ref": "learning_items/kamar-makan",
+    "content_unit_key": "learning_items/kamar makan::lesson-4/section-vocabulary::item-kamar-makan",
+    "source_ref": "learning_items/kamar makan",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kamar-makan",
@@ -557,8 +557,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"kamar makan\",\"item_type\":\"phrase\",\"translation_nl\":\"eetkamer\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"dining room\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/nasi-goreng::lesson-4/section-vocabulary::item-nasi-goreng",
-    "source_ref": "learning_items/nasi-goreng",
+    "content_unit_key": "learning_items/nasi goreng::lesson-4/section-vocabulary::item-nasi-goreng",
+    "source_ref": "learning_items/nasi goreng",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-nasi-goreng",
@@ -572,8 +572,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"nasi goreng\",\"item_type\":\"phrase\",\"translation_nl\":\"gekookte rijst, daarna met kruiden gebakken\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"fried rice\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/air-putih::lesson-4/section-vocabulary::item-air-putih",
-    "source_ref": "learning_items/air-putih",
+    "content_unit_key": "learning_items/air putih::lesson-4/section-vocabulary::item-air-putih",
+    "source_ref": "learning_items/air putih",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-air-putih",
@@ -587,8 +587,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"air putih\",\"item_type\":\"phrase\",\"translation_nl\":\"drinkwater\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"drinking water\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kopi-tubruk::lesson-4/section-vocabulary::item-kopi-tubruk",
-    "source_ref": "learning_items/kopi-tubruk",
+    "content_unit_key": "learning_items/kopi tubruk::lesson-4/section-vocabulary::item-kopi-tubruk",
+    "source_ref": "learning_items/kopi tubruk",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kopi-tubruk",
@@ -632,8 +632,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"pedas\",\"item_type\":\"word\",\"translation_nl\":\"heet (van smaak)\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"spicy\",\"pos\":\"adjective\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/sendok-yang-kecil-dan-bersih::lesson-4/section-vocabulary::item-sendok-yang-kecil-dan-bersih",
-    "source_ref": "learning_items/sendok-yang-kecil-dan-bersih",
+    "content_unit_key": "learning_items/sendok yang kecil dan bersih::lesson-4/section-vocabulary::item-sendok-yang-kecil-dan-bersih",
+    "source_ref": "learning_items/sendok yang kecil dan bersih",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-sendok-yang-kecil-dan-bersih",
@@ -647,8 +647,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Sendok yang kecil dan bersih\",\"item_type\":\"sentence\",\"translation_nl\":\"De kleine schone lepel\",\"context_type\":\"example_sentence\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kunci-kecil-ini-kunci-ibu::lesson-4/section-vocabulary::item-kunci-kecil-ini-kunci-ibu",
-    "source_ref": "learning_items/kunci-kecil-ini-kunci-ibu",
+    "content_unit_key": "learning_items/kunci kecil ini kunci ibu.::lesson-4/section-vocabulary::item-kunci-kecil-ini-kunci-ibu",
+    "source_ref": "learning_items/kunci kecil ini kunci ibu.",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kunci-kecil-ini-kunci-ibu",
@@ -662,8 +662,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Kunci kecil ini kunci Ibu.\",\"item_type\":\"sentence\",\"translation_nl\":\"Dit kleine sleuteltje is mama's sleutel.\",\"context_type\":\"example_sentence\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/yang-tidur-banyak::lesson-4/section-vocabulary::item-yang-tidur-banyak",
-    "source_ref": "learning_items/yang-tidur-banyak",
+    "content_unit_key": "learning_items/yang tidur banyak.::lesson-4/section-vocabulary::item-yang-tidur-banyak",
+    "source_ref": "learning_items/yang tidur banyak.",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-yang-tidur-banyak",
@@ -872,8 +872,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"mas\",\"item_type\":\"word\",\"translation_nl\":\"goud (emas)\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"gold\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kamar-mandi::lesson-4/section-vocabulary::item-kamar-mandi",
-    "source_ref": "learning_items/kamar-mandi",
+    "content_unit_key": "learning_items/kamar mandi::lesson-4/section-vocabulary::item-kamar-mandi",
+    "source_ref": "learning_items/kamar mandi",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kamar-mandi",
@@ -887,8 +887,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"kamar mandi\",\"item_type\":\"phrase\",\"translation_nl\":\"badkamer\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"bathroom\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/nasi-kuning::lesson-4/section-vocabulary::item-nasi-kuning",
-    "source_ref": "learning_items/nasi-kuning",
+    "content_unit_key": "learning_items/nasi kuning::lesson-4/section-vocabulary::item-nasi-kuning",
+    "source_ref": "learning_items/nasi kuning",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-nasi-kuning",
@@ -932,8 +932,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"bak\",\"item_type\":\"word\",\"translation_nl\":\"bak\",\"context_type\":\"lesson_snippet\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"tub\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/bak-air::lesson-4/section-vocabulary::item-bak-air",
-    "source_ref": "learning_items/bak-air",
+    "content_unit_key": "learning_items/bak air::lesson-4/section-vocabulary::item-bak-air",
+    "source_ref": "learning_items/bak air",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-bak-air",
@@ -962,8 +962,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"anak-anak\",\"item_type\":\"word\",\"translation_nl\":\"kinderen\",\"context_type\":\"lesson_snippet\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"children\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/lima-ratus::lesson-4/section-vocabulary::item-lima-ratus",
-    "source_ref": "learning_items/lima-ratus",
+    "content_unit_key": "learning_items/lima ratus::lesson-4/section-vocabulary::item-lima-ratus",
+    "source_ref": "learning_items/lima ratus",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-lima-ratus",
@@ -977,8 +977,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"lima ratus\",\"item_type\":\"phrase\",\"translation_nl\":\"500\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"five hundred\",\"pos\":\"numeral\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/satu-juta::lesson-4/section-vocabulary::item-satu-juta",
-    "source_ref": "learning_items/satu-juta",
+    "content_unit_key": "learning_items/satu juta::lesson-4/section-vocabulary::item-satu-juta",
+    "source_ref": "learning_items/satu juta",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-satu-juta",
@@ -992,8 +992,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"satu juta\",\"item_type\":\"phrase\",\"translation_nl\":\"één miljoen\",\"context_type\":\"lesson_snippet\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"one million\",\"pos\":\"numeral\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/tempat-tidur::lesson-4/section-vocabulary::item-tempat-tidur",
-    "source_ref": "learning_items/tempat-tidur",
+    "content_unit_key": "learning_items/tempat tidur::lesson-4/section-vocabulary::item-tempat-tidur",
+    "source_ref": "learning_items/tempat tidur",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tempat-tidur",
@@ -1007,8 +1007,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"tempat tidur\",\"item_type\":\"phrase\",\"translation_nl\":\"bed\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"bed\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/nasi-putih::lesson-4/section-vocabulary::item-nasi-putih",
-    "source_ref": "learning_items/nasi-putih",
+    "content_unit_key": "learning_items/nasi putih::lesson-4/section-vocabulary::item-nasi-putih",
+    "source_ref": "learning_items/nasi putih",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-nasi-putih",
@@ -1037,8 +1037,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"anak\",\"item_type\":\"word\",\"translation_nl\":\"kind\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"child\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/rumah-besar-yang-kuning::lesson-4/section-vocabulary::item-rumah-besar-yang-kuning",
-    "source_ref": "learning_items/rumah-besar-yang-kuning",
+    "content_unit_key": "learning_items/rumah besar yang kuning::lesson-4/section-vocabulary::item-rumah-besar-yang-kuning",
+    "source_ref": "learning_items/rumah besar yang kuning",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-rumah-besar-yang-kuning",
@@ -1052,8 +1052,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Rumah besar yang kuning\",\"item_type\":\"sentence\",\"translation_nl\":\"Het grote gele huis\",\"context_type\":\"example_sentence\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/pisang-itu-terlalu-tua::lesson-4/section-vocabulary::item-pisang-itu-terlalu-tua",
-    "source_ref": "learning_items/pisang-itu-terlalu-tua",
+    "content_unit_key": "learning_items/pisang itu terlalu tua.::lesson-4/section-vocabulary::item-pisang-itu-terlalu-tua",
+    "source_ref": "learning_items/pisang itu terlalu tua.",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-pisang-itu-terlalu-tua",
@@ -1112,8 +1112,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"restoran\",\"item_type\":\"word\",\"translation_nl\":\"restaurant\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"restaurant\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kamar-yang-bersih::lesson-4/section-vocabulary::item-kamar-yang-bersih",
-    "source_ref": "learning_items/kamar-yang-bersih",
+    "content_unit_key": "learning_items/kamar yang bersih::lesson-4/section-vocabulary::item-kamar-yang-bersih",
+    "source_ref": "learning_items/kamar yang bersih",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kamar-yang-bersih",
@@ -1127,8 +1127,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Kamar yang bersih\",\"item_type\":\"sentence\",\"translation_nl\":\"De schone kamer\",\"context_type\":\"example_sentence\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kunci-yang-kecil-dan-kuning::lesson-4/section-vocabulary::item-kunci-yang-kecil-dan-kuning",
-    "source_ref": "learning_items/kunci-yang-kecil-dan-kuning",
+    "content_unit_key": "learning_items/kunci yang kecil dan kuning::lesson-4/section-vocabulary::item-kunci-yang-kecil-dan-kuning",
+    "source_ref": "learning_items/kunci yang kecil dan kuning",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kunci-yang-kecil-dan-kuning",
@@ -1322,8 +1322,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"seribu\",\"item_type\":\"word\",\"translation_nl\":\"1.000\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"thousand\",\"pos\":\"numeral\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/tempat-duduk::lesson-4/section-vocabulary::item-tempat-duduk",
-    "source_ref": "learning_items/tempat-duduk",
+    "content_unit_key": "learning_items/tempat duduk::lesson-4/section-vocabulary::item-tempat-duduk",
+    "source_ref": "learning_items/tempat duduk",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tempat-duduk",
@@ -1337,8 +1337,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"tempat duduk\",\"item_type\":\"phrase\",\"translation_nl\":\"zitplaats\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"seat\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/sikat-gigi::lesson-4/section-vocabulary::item-sikat-gigi",
-    "source_ref": "learning_items/sikat-gigi",
+    "content_unit_key": "learning_items/sikat gigi::lesson-4/section-vocabulary::item-sikat-gigi",
+    "source_ref": "learning_items/sikat gigi",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-sikat-gigi",
@@ -1367,8 +1367,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"oke\",\"item_type\":\"word\",\"translation_nl\":\"oké\",\"context_type\":\"lesson_snippet\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"okay\",\"pos\":\"particle\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/akan-tetapi::lesson-4/section-vocabulary::item-akan-tetapi",
-    "source_ref": "learning_items/akan-tetapi",
+    "content_unit_key": "learning_items/akan tetapi::lesson-4/section-vocabulary::item-akan-tetapi",
+    "source_ref": "learning_items/akan tetapi",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-akan-tetapi",
@@ -1382,8 +1382,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"akan tetapi\",\"item_type\":\"phrase\",\"translation_nl\":\"maar/echter\",\"context_type\":\"lesson_snippet\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"but\",\"pos\":\"conjunction\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/setelah-itu::lesson-4/section-vocabulary::item-setelah-itu",
-    "source_ref": "learning_items/setelah-itu",
+    "content_unit_key": "learning_items/setelah itu::lesson-4/section-vocabulary::item-setelah-itu",
+    "source_ref": "learning_items/setelah itu",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-setelah-itu",
@@ -1397,8 +1397,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"setelah itu\",\"item_type\":\"phrase\",\"translation_nl\":\"daarna/vervolgens\",\"context_type\":\"lesson_snippet\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"after that\",\"pos\":\"conjunction\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/selamat-tinggal::lesson-4/section-vocabulary::item-selamat-tinggal",
-    "source_ref": "learning_items/selamat-tinggal",
+    "content_unit_key": "learning_items/selamat tinggal::lesson-4/section-vocabulary::item-selamat-tinggal",
+    "source_ref": "learning_items/selamat tinggal",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-selamat-tinggal",
@@ -1412,8 +1412,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"selamat tinggal\",\"item_type\":\"phrase\",\"translation_nl\":\"vaarwel\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"goodbye\",\"pos\":\"greeting\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/dua-ratus::lesson-4/section-vocabulary::item-dua-ratus",
-    "source_ref": "learning_items/dua-ratus",
+    "content_unit_key": "learning_items/dua ratus::lesson-4/section-vocabulary::item-dua-ratus",
+    "source_ref": "learning_items/dua ratus",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-dua-ratus",
@@ -1427,8 +1427,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"dua ratus\",\"item_type\":\"phrase\",\"translation_nl\":\"200\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"two hundred\",\"pos\":\"numeral\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/ada-yang-dari-negeri-belanda-dan-ada-yang-dari-negeri-jerman::lesson-4/section-vocabulary::item-ada-yang-dari-negeri-belanda-dan-ada-yang-dari-negeri-jerman",
-    "source_ref": "learning_items/ada-yang-dari-negeri-belanda-dan-ada-yang-dari-negeri-jerman",
+    "content_unit_key": "learning_items/ada yang dari negeri belanda dan ada yang dari negeri jerman.::lesson-4/section-vocabulary::item-ada-yang-dari-negeri-belanda-dan-ada-yang-dari-negeri-jerman",
+    "source_ref": "learning_items/ada yang dari negeri belanda dan ada yang dari negeri jerman.",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-ada-yang-dari-negeri-belanda-dan-ada-yang-dari-negeri-jerman",
@@ -1442,8 +1442,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Ada yang dari negeri Belanda dan ada yang dari negeri Jerman.\",\"item_type\":\"sentence\",\"translation_nl\":\"Er zijn er van Nederland en er zijn er van Duitsland.\",\"context_type\":\"example_sentence\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/makanan-yang-enak::lesson-4/section-vocabulary::item-makanan-yang-enak",
-    "source_ref": "learning_items/makanan-yang-enak",
+    "content_unit_key": "learning_items/makanan yang enak::lesson-4/section-vocabulary::item-makanan-yang-enak",
+    "source_ref": "learning_items/makanan yang enak",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-makanan-yang-enak",
@@ -1517,8 +1517,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"sayur\",\"item_type\":\"word\",\"translation_nl\":\"groente\",\"context_type\":\"cloze\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"vegetable\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/tujuh-ratus::lesson-4/section-vocabulary::item-tujuh-ratus",
-    "source_ref": "learning_items/tujuh-ratus",
+    "content_unit_key": "learning_items/tujuh ratus::lesson-4/section-vocabulary::item-tujuh-ratus",
+    "source_ref": "learning_items/tujuh ratus",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tujuh-ratus",
@@ -1562,8 +1562,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"masih\",\"item_type\":\"word\",\"translation_nl\":\"nog\",\"context_type\":\"cloze\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"still\",\"pos\":\"adverb\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/sembilan-ratus::lesson-4/section-vocabulary::item-sembilan-ratus",
-    "source_ref": "learning_items/sembilan-ratus",
+    "content_unit_key": "learning_items/sembilan ratus::lesson-4/section-vocabulary::item-sembilan-ratus",
+    "source_ref": "learning_items/sembilan ratus",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-sembilan-ratus",
@@ -1577,8 +1577,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"sembilan ratus\",\"item_type\":\"word\",\"translation_nl\":\"900\",\"context_type\":\"cloze\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"nine hundred\",\"pos\":\"numeral\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/dua-ribu::lesson-4/section-vocabulary::item-dua-ribu",
-    "source_ref": "learning_items/dua-ribu",
+    "content_unit_key": "learning_items/dua ribu::lesson-4/section-vocabulary::item-dua-ribu",
+    "source_ref": "learning_items/dua ribu",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-dua-ribu",
@@ -1592,8 +1592,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"dua ribu\",\"item_type\":\"word\",\"translation_nl\":\"2.000\",\"context_type\":\"cloze\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"two thousand\",\"pos\":\"numeral\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/sembilan-ribu::lesson-4/section-vocabulary::item-sembilan-ribu",
-    "source_ref": "learning_items/sembilan-ribu",
+    "content_unit_key": "learning_items/sembilan ribu::lesson-4/section-vocabulary::item-sembilan-ribu",
+    "source_ref": "learning_items/sembilan ribu",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-sembilan-ribu",
@@ -1607,8 +1607,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"sembilan ribu\",\"item_type\":\"word\",\"translation_nl\":\"9.000\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"nine thousand\",\"pos\":\"numeral\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/tiga-ratus::lesson-4/section-vocabulary::item-tiga-ratus",
-    "source_ref": "learning_items/tiga-ratus",
+    "content_unit_key": "learning_items/tiga ratus::lesson-4/section-vocabulary::item-tiga-ratus",
+    "source_ref": "learning_items/tiga ratus",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tiga-ratus",
@@ -1622,8 +1622,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"tiga ratus\",\"item_type\":\"word\",\"translation_nl\":\"300\",\"context_type\":\"cloze\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"three hundred\",\"pos\":\"numeral\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/sepuluh-ribu::lesson-4/section-vocabulary::item-sepuluh-ribu",
-    "source_ref": "learning_items/sepuluh-ribu",
+    "content_unit_key": "learning_items/sepuluh ribu::lesson-4/section-vocabulary::item-sepuluh-ribu",
+    "source_ref": "learning_items/sepuluh ribu",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-sepuluh-ribu",
@@ -1667,8 +1667,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"lauk\",\"item_type\":\"word\",\"translation_nl\":\"bijgerechten\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"side dishes\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/empat-ratus::lesson-4/section-vocabulary::item-empat-ratus",
-    "source_ref": "learning_items/empat-ratus",
+    "content_unit_key": "learning_items/empat ratus::lesson-4/section-vocabulary::item-empat-ratus",
+    "source_ref": "learning_items/empat ratus",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-empat-ratus",
@@ -1727,8 +1727,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"semiliar\",\"item_type\":\"word\",\"translation_nl\":\"1.000.000.000\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"one billion\",\"pos\":\"numeral\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kopi-pahit::lesson-4/section-vocabulary::item-kopi-pahit",
-    "source_ref": "learning_items/kopi-pahit",
+    "content_unit_key": "learning_items/kopi pahit::lesson-4/section-vocabulary::item-kopi-pahit",
+    "source_ref": "learning_items/kopi pahit",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kopi-pahit",
@@ -1757,8 +1757,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"tubruk\",\"item_type\":\"word\",\"translation_nl\":\"botsen\",\"context_type\":\"vocabulary_list\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"collide\",\"pos\":\"verb\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/delapan-ratus::lesson-4/section-vocabulary::item-delapan-ratus",
-    "source_ref": "learning_items/delapan-ratus",
+    "content_unit_key": "learning_items/delapan ratus::lesson-4/section-vocabulary::item-delapan-ratus",
+    "source_ref": "learning_items/delapan ratus",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-delapan-ratus",
@@ -1772,8 +1772,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"delapan ratus\",\"item_type\":\"word\",\"translation_nl\":\"800\",\"context_type\":\"cloze\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"eight hundred\",\"pos\":\"numeral\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/enam-ratus::lesson-4/section-vocabulary::item-enam-ratus",
-    "source_ref": "learning_items/enam-ratus",
+    "content_unit_key": "learning_items/enam ratus::lesson-4/section-vocabulary::item-enam-ratus",
+    "source_ref": "learning_items/enam ratus",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-enam-ratus",
@@ -1802,8 +1802,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"setriliun\",\"item_type\":\"word\",\"translation_nl\":\"1.000.000.000.000\",\"context_type\":\"cloze\",\"source_page\":4,\"review_status\":\"published\",\"translation_en\":\"one trillion\",\"pos\":\"numeral\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/bibit-padi::lesson-4/section-vocabulary::item-bibit-padi",
-    "source_ref": "learning_items/bibit-padi",
+    "content_unit_key": "learning_items/bibit padi::lesson-4/section-vocabulary::item-bibit-padi",
+    "source_ref": "learning_items/bibit padi",
     "source_section_ref": "lesson-4/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-bibit-padi",

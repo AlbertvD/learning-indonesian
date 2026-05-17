@@ -936,8 +936,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dari-mana:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/dari-mana:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dari mana?:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dari mana?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -945,8 +945,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dari-mana:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/dari-mana:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dari mana?:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dari mana?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -954,8 +954,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dari-mana:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/dari-mana:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dari mana?:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/dari mana?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -965,8 +965,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dari-mana:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/dari-mana:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dari mana?:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dari mana?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -974,8 +974,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dari-mana:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/dari-mana:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dari mana?:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dari mana?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -983,8 +983,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dari-mana:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/dari-mana:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dari mana?:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dari mana?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -992,8 +992,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dari-mana:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/dari-mana:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dari mana?:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/dari mana?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1003,8 +1003,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dari-mana:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/dari-mana:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dari mana?:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dari mana?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1012,8 +1012,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dari-mana:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/dari-mana:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dari mana?:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dari mana?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1021,8 +1021,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/delapan-belas:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/delapan-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/delapan belas:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/delapan belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1030,8 +1030,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/delapan-belas:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/delapan-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/delapan belas:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/delapan belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1039,8 +1039,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/delapan-belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/delapan-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/delapan belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/delapan belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1050,8 +1050,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/delapan-belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/delapan-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/delapan belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/delapan belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1059,8 +1059,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/delapan-belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/delapan-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/delapan belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/delapan belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1068,8 +1068,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/delapan-belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/delapan-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/delapan belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/delapan belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1077,8 +1077,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/delapan-belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/delapan-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/delapan belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/delapan belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1088,8 +1088,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/delapan-belas:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/delapan-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/delapan belas:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/delapan belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1097,8 +1097,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/delapan-belas:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/delapan-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/delapan belas:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/delapan belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1191,8 +1191,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-mana:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana?:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di mana?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1200,8 +1200,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-mana:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana?:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di mana?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1209,8 +1209,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/di-mana:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana?:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/di mana?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1220,8 +1220,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-mana:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana?:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di mana?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1229,8 +1229,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-mana:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana?:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di mana?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1238,8 +1238,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-mana:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana?:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di mana?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1247,8 +1247,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/di-mana:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana?:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/di mana?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1258,8 +1258,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-mana:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana?:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di mana?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1267,8 +1267,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-mana:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-mana:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di mana?:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di mana?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1276,8 +1276,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-sana:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di sana:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1285,8 +1285,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-sana:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di sana:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1294,8 +1294,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/di-sana:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/di sana:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1305,8 +1305,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-sana:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di sana:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1314,8 +1314,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-sana:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di sana:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1323,8 +1323,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-sana:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di sana:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1332,8 +1332,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/di-sana:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/di sana:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1343,8 +1343,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-sana:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di sana:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1352,8 +1352,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-sana:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di sana:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1446,8 +1446,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-belas:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/dua-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua belas:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1455,8 +1455,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-belas:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/dua-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua belas:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dua belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1464,8 +1464,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/dua-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/dua belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1475,8 +1475,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/dua-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1484,8 +1484,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/dua-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dua belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1493,8 +1493,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/dua-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1502,8 +1502,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/dua-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/dua belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1513,8 +1513,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-belas:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/dua-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua belas:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dua belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1522,8 +1522,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-belas:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/dua-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua belas:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1531,8 +1531,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-puluh:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/dua-puluh:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua puluh:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua puluh:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1540,8 +1540,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-puluh:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/dua-puluh:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua puluh:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dua puluh:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1549,8 +1549,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-puluh:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/dua-puluh:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua puluh:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/dua puluh:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1560,8 +1560,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-puluh:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/dua-puluh:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua puluh:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua puluh:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1569,8 +1569,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-puluh:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/dua-puluh:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua puluh:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dua puluh:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1578,8 +1578,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-puluh:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/dua-puluh:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua puluh:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua puluh:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1587,8 +1587,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-puluh:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/dua-puluh:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua puluh:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/dua puluh:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1598,8 +1598,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-puluh:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/dua-puluh:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua puluh:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/dua puluh:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1607,8 +1607,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/dua-puluh:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/dua-puluh:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/dua puluh:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dua puluh:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1786,8 +1786,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/empat-belas:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/empat-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/empat belas:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/empat belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1795,8 +1795,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/empat-belas:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/empat-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/empat belas:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/empat belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1804,8 +1804,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/empat-belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/empat-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/empat belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/empat belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1815,8 +1815,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/empat-belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/empat-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/empat belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/empat belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1824,8 +1824,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/empat-belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/empat-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/empat belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/empat belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1833,8 +1833,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/empat-belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/empat-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/empat belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/empat belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1842,8 +1842,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/empat-belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/empat-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/empat belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/empat belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1853,8 +1853,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/empat-belas:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/empat-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/empat belas:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/empat belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1862,8 +1862,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/empat-belas:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/empat-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/empat belas:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/empat belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1871,8 +1871,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/enam-belas:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/enam-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/enam belas:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/enam belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1880,8 +1880,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/enam-belas:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/enam-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/enam belas:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/enam belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1889,8 +1889,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/enam-belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/enam-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/enam belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/enam belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1900,8 +1900,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/enam-belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/enam-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/enam belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/enam belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1909,8 +1909,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/enam-belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/enam-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/enam belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/enam belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1918,8 +1918,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/enam-belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/enam-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/enam belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/enam belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1927,8 +1927,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/enam-belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/enam-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/enam belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/enam belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1938,8 +1938,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/enam-belas:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/enam-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/enam belas:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/enam belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1947,8 +1947,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/enam-belas:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/enam-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/enam belas:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/enam belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2721,8 +2721,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lima-belas:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lima-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lima belas:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lima belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2730,8 +2730,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lima-belas:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/lima-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lima belas:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lima belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2739,8 +2739,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lima-belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/lima-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lima belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/lima belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -2750,8 +2750,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lima-belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lima-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lima belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lima belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2759,8 +2759,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lima-belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/lima-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lima belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lima belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2768,8 +2768,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lima-belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lima-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lima belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lima belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2777,8 +2777,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lima-belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/lima-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lima belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/lima belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2788,8 +2788,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lima-belas:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/lima-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lima belas:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lima belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2797,8 +2797,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lima-belas:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lima-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lima belas:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lima belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3571,8 +3571,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sama-dengan:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sama-dengan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sama dengan:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sama dengan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3580,8 +3580,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sama-dengan:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sama-dengan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sama dengan:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sama dengan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3589,8 +3589,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sama-dengan:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/sama-dengan:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sama dengan:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/sama dengan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -3600,8 +3600,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sama-dengan:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sama-dengan:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sama dengan:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sama dengan:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3609,8 +3609,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sama-dengan:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sama-dengan:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sama dengan:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sama dengan:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3618,8 +3618,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sama-dengan:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sama-dengan:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sama dengan:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sama dengan:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3627,8 +3627,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sama-dengan:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/sama-dengan:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sama dengan:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/sama dengan:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3638,8 +3638,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sama-dengan:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sama-dengan:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sama dengan:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sama dengan:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3647,8 +3647,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sama-dengan:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sama-dengan:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sama dengan:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sama dengan:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3741,8 +3741,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sampai bertemu lagi:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sampai bertemu lagi:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3750,8 +3750,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sampai bertemu lagi:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sampai bertemu lagi:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3759,8 +3759,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sampai bertemu lagi:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/sampai bertemu lagi:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -3770,8 +3770,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sampai bertemu lagi:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sampai bertemu lagi:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3779,8 +3779,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sampai bertemu lagi:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sampai bertemu lagi:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3788,8 +3788,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sampai bertemu lagi:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sampai bertemu lagi:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3797,8 +3797,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sampai bertemu lagi:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/sampai bertemu lagi:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3808,8 +3808,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sampai bertemu lagi:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sampai bertemu lagi:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3817,8 +3817,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sampai-bertemu-lagi:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sampai bertemu lagi:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sampai bertemu lagi:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3996,8 +3996,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-pulang-dulu:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/saya-pulang-dulu:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya pulang dulu:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/saya pulang dulu:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4005,8 +4005,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-pulang-dulu:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/saya-pulang-dulu:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya pulang dulu:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/saya pulang dulu:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4014,8 +4014,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-pulang-dulu:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/saya-pulang-dulu:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya pulang dulu:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/saya pulang dulu:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -4025,8 +4025,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-pulang-dulu:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/saya-pulang-dulu:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya pulang dulu:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/saya pulang dulu:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4034,8 +4034,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-pulang-dulu:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/saya-pulang-dulu:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya pulang dulu:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/saya pulang dulu:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4043,8 +4043,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-pulang-dulu:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/saya-pulang-dulu:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya pulang dulu:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/saya pulang dulu:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4052,8 +4052,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-pulang-dulu:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/saya-pulang-dulu:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya pulang dulu:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/saya pulang dulu:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4063,8 +4063,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-pulang-dulu:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/saya-pulang-dulu:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya pulang dulu:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/saya pulang dulu:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4072,8 +4072,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/saya-pulang-dulu:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/saya-pulang-dulu:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/saya pulang dulu:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/saya pulang dulu:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4251,8 +4251,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-siang:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/selamat-siang:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat siang:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/selamat siang:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4260,8 +4260,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-siang:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/selamat-siang:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat siang:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/selamat siang:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4269,8 +4269,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-siang:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/selamat-siang:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat siang:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/selamat siang:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -4280,8 +4280,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-siang:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/selamat-siang:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat siang:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/selamat siang:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4289,8 +4289,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-siang:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/selamat-siang:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat siang:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/selamat siang:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4298,8 +4298,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-siang:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/selamat-siang:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat siang:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/selamat siang:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4307,8 +4307,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-siang:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/selamat-siang:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat siang:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/selamat siang:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4318,8 +4318,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-siang:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/selamat-siang:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat siang:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/selamat siang:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4327,8 +4327,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/selamat-siang:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/selamat-siang:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/selamat siang:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/selamat siang:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4336,8 +4336,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sembilan-belas:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sembilan-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sembilan belas:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sembilan belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4345,8 +4345,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sembilan-belas:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sembilan-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sembilan belas:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sembilan belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4354,8 +4354,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sembilan-belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/sembilan-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sembilan belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/sembilan belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -4365,8 +4365,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sembilan-belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sembilan-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sembilan belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sembilan belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4374,8 +4374,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sembilan-belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sembilan-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sembilan belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sembilan belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4383,8 +4383,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sembilan-belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sembilan-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sembilan belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sembilan belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4392,8 +4392,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sembilan-belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/sembilan-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sembilan belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/sembilan belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4403,8 +4403,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sembilan-belas:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sembilan-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sembilan belas:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sembilan belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4412,8 +4412,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sembilan-belas:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sembilan-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sembilan belas:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sembilan belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4506,8 +4506,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/siapa:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/siapa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/siapa?:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/siapa?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4515,8 +4515,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/siapa:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/siapa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/siapa?:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/siapa?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4524,8 +4524,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/siapa:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/siapa:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/siapa?:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/siapa?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -4535,8 +4535,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/siapa:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/siapa:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/siapa?:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/siapa?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4544,8 +4544,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/siapa:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/siapa:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/siapa?:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/siapa?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4553,8 +4553,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/siapa:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/siapa:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/siapa?:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/siapa?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4562,8 +4562,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/siapa:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/siapa:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/siapa?:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/siapa?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4573,8 +4573,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/siapa:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/siapa:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/siapa?:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/siapa?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4582,8 +4582,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/siapa:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/siapa:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/siapa?:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/siapa?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5101,8 +5101,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tiga-belas:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tiga-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tiga belas:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tiga belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5110,8 +5110,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tiga-belas:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tiga-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tiga belas:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tiga belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5119,8 +5119,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tiga-belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/tiga-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tiga belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/tiga belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -5130,8 +5130,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tiga-belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tiga-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tiga belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tiga belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5139,8 +5139,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tiga-belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tiga-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tiga belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tiga belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5148,8 +5148,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tiga-belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tiga-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tiga belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tiga belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5157,8 +5157,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tiga-belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/tiga-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tiga belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/tiga belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5168,8 +5168,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tiga-belas:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tiga-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tiga belas:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tiga belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5177,8 +5177,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tiga-belas:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tiga-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tiga belas:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tiga belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5356,8 +5356,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tujuh-belas:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tujuh-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tujuh belas:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tujuh belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5365,8 +5365,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tujuh-belas:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tujuh-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tujuh belas:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tujuh belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5374,8 +5374,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tujuh-belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/tujuh-belas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tujuh belas:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/tujuh belas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -5385,8 +5385,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tujuh-belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tujuh-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tujuh belas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tujuh belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5394,8 +5394,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tujuh-belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tujuh-belas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tujuh belas:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tujuh belas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5403,8 +5403,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tujuh-belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tujuh-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tujuh belas:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tujuh belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5412,8 +5412,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tujuh-belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/tujuh-belas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tujuh belas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/tujuh belas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5423,8 +5423,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tujuh-belas:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tujuh-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tujuh belas:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tujuh belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5432,8 +5432,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tujuh-belas:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tujuh-belas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tujuh belas:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tujuh belas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
