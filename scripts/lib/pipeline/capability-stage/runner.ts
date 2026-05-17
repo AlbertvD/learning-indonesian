@@ -85,7 +85,8 @@ import { validatePosTags } from './validators/pos'
 import { projectVocab } from './projectors/vocab'
 import { projectGrammar } from './projectors/grammar'
 import { projectCloze } from './projectors/cloze'
-import { lessonIntroducesMorphology } from './projectors/morphology'
+
+import { validateLessonIdPresence } from './validators/lessonId'
 
 import { runCountParity } from './verify/countParity'
 import { runContentNonEmpty } from './verify/contentNonEmpty'
@@ -342,11 +343,13 @@ export async function runCapabilityStage(
   // ---- 5. Write — learning_capabilities. -------------------------------
   // Capabilities come pre-built from staging (capabilities.ts produced upstream
   // by materialize-capabilities.ts). Decision 5b appends contextual_cloze rows
-  // for dialogue lines that have cloze contexts. Decision 3 stamps lesson_id
-  // on morphology rows when this lesson introduces a morphology rule.
-  const morphologyTriggered = lessonIntroducesMorphology(
-    (staging.grammarPatterns as Array<{ slug: string }>).map((p) => p.slug),
-  )
+  // for dialogue lines that have cloze contexts. Decision 3b (ADR 0006) stamps
+  // lesson_id on every lesson-derived capability — the runner is invoked per
+  // lesson, so the projecting lesson IS the introducing lesson by construction.
+  // Decision 3's morphology tie-break is preserved as a special case: only
+  // morphology-introducing lessons emit affixed_form_pair capabilities, so
+  // those rows still get the rule-introducing lesson's id. Podcasts are not
+  // projected here; they're carved out from the lesson_id invariant.
   const stagedCapabilities = (staging.capabilities as Array<{
     canonicalKey: string
     sourceKind: string
@@ -375,10 +378,7 @@ export async function runCapabilityStage(
     projectionVersion: capability.projectionVersion,
     sourceFingerprint: capability.sourceFingerprint ?? null,
     artifactFingerprint: capability.artifactFingerprint ?? null,
-    // Decision 3: stamp lesson_id on morphology rows when fired.
-    lessonId: morphologyTriggered && capability.sourceKind === 'affixed_form_pair'
-      ? input.lessonId
-      : null,
+    lessonId: input.lessonId,
     metadata: {
       skillType: capability.skillType,
       requiredArtifacts: capability.requiredArtifacts,
@@ -392,6 +392,9 @@ export async function runCapabilityStage(
     ...stagedCapabilities,
     ...vocab.contextualClozeCapabilities,
   ]
+  // Decision 3b (ADR 0006): refuse to write any lesson-derived capability with
+  // null lesson_id. Podcast source kinds are exempt — see the validator.
+  validateLessonIdPresence(allCapabilities)
   const capabilityIdsByKey = await upsertCapabilities(supabase, allCapabilities)
   counts.capabilities = capabilityIdsByKey.size
   const capabilityIds = [...capabilityIdsByKey.values()]

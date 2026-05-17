@@ -23,7 +23,7 @@ function projectedCapability(overrides: Partial<ProjectedCapability> = {}): Proj
     prerequisiteKeys: [],
     difficultyLevel: overrides.difficultyLevel ?? 2,
     goalTags: overrides.goalTags ?? [],
-    projectionVersion: 'capability-v2',
+    projectionVersion: 'capability-v3',
     sourceFingerprint: 'source',
     artifactFingerprint: 'artifact',
     ...overrides,
