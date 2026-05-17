@@ -384,8 +384,12 @@ function toEvidence(input: {
     const approvedArtifacts = input.artifacts
       .filter(artifact => artifact.capability_id === capability.id && artifact.quality_status === 'approved')
       .map(artifact => artifact.artifact_kind)
-    // NULL lesson_id = cross-lesson (podcast) capability — always treated as
-    // activated. Otherwise gate on the activation set.
+    // Per ADR 0006 (Decision 3b), the only capabilities with NULL lesson_id
+    // are podcast source kinds (`podcast_segment`, `podcast_phrase`); they
+    // are always treated as activated because they are not lesson-scoped.
+    // Every other source kind has a non-null lesson_id enforced by the schema
+    // CHECK constraint `learning_capabilities_lesson_id_required_for_lessons`
+    // (scripts/migration.sql); those caps are gated on the activation set.
     const lessonActivated = capability.lesson_id == null
       || input.activatedLessons.has(capability.lesson_id)
     return {

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { loadCapabilitySessionPlan, buildSession, type CapabilitySessionDataAdapter } from '@/lib/session-builder/builder'
 import type { LearnerCapabilityStateRow } from '@/lib/capabilities/capabilityScheduler'
 import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
-import type { PlannerCapability, PlannerLearnerCapabilityState } from '@/lib/session-builder/pedagogy'
+import { planLearningPath, type PlannerCapability, type PlannerLearnerCapabilityState } from '@/lib/session-builder/pedagogy'
 import type { ArtifactIndex } from '@/lib/capabilities/artifactRegistry'
 
 const now = new Date('2026-04-25T10:00:00.000Z')
@@ -363,6 +363,112 @@ describe('capability session loader', () => {
       severity: 'critical',
       reason: 'missing_selected_lesson',
     }))
+  })
+
+  describe('lesson-activation gate (Decision 3b / ADR 0006)', () => {
+    const lesson1Id = 'lesson-1-uuid'
+    const lesson2Id = 'lesson-2-uuid'
+    const lesson1Key = 'cap:v1:item:learning_items/lesson-1-word:meaning_recall:id_to_l1:text:nl'
+    const lesson2Key = 'cap:v1:item:learning_items/lesson-2-word:meaning_recall:id_to_l1:text:nl'
+
+    it('suppresses lesson-2 caps as eligible introductions when only lesson-1 is activated', async () => {
+      // Pre-Decision-3b, vocab caps had null lessonId and bypassed the gate at
+      // pedagogy.ts:209 — a learner with only lesson-1 activated would still
+      // see lesson-2 vocab in `standard` mode. Post-Decision-3b every lesson-
+      // derived cap carries the lesson that introduces it (PR-1 projector +
+      // PR-4 CHECK constraint), so the gate fires correctly. This test pins
+      // that behaviour.
+      const lesson1Projection = projectedCapability({
+        canonicalKey: lesson1Key,
+        sourceRef: 'learning_items/lesson-1-word',
+        lessonId: lesson1Id,
+        requiredArtifacts: [],
+      })
+      const lesson2Projection = projectedCapability({
+        canonicalKey: lesson2Key,
+        sourceRef: 'learning_items/lesson-2-word',
+        lessonId: lesson2Id,
+        requiredArtifacts: [],
+      })
+
+      const plan = await loadCapabilitySessionPlan(baseInput({
+        plannerInput: {
+          userId: 'user-1',
+          preferredSessionSize: 15,
+          dueCount: 0,
+          readyCapabilities: [
+            plannerCapability({
+              id: 'lesson-1-cap',
+              canonicalKey: lesson1Projection.canonicalKey,
+              sourceRef: lesson1Projection.sourceRef,
+              lessonId: lesson1Id,
+            }),
+            plannerCapability({
+              id: 'lesson-2-cap',
+              canonicalKey: lesson2Projection.canonicalKey,
+              sourceRef: lesson2Projection.sourceRef,
+              lessonId: lesson2Id,
+            }),
+          ],
+          learnerCapabilityStates: [],
+          activatedLessons: new Set<string>([lesson1Id]),
+        },
+        capabilitiesByKey: new Map([
+          [lesson1Projection.canonicalKey, lesson1Projection],
+          [lesson2Projection.canonicalKey, lesson2Projection],
+        ]),
+        readinessByKey: new Map([
+          [lesson1Projection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }],
+          [lesson2Projection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }],
+        ]),
+        artifactIndex: {},
+      }))
+
+      expect(plan.blocks).toHaveLength(1)
+      expect(plan.blocks[0]?.canonicalKeySnapshot).toBe(lesson1Key)
+      expect(plan.blocks.find(block => block.canonicalKeySnapshot === lesson2Key)).toBeUndefined()
+    })
+
+    it('still bypasses the activation gate for null-lessonId caps at the planner level (Decision 3b carve-out)', () => {
+      // Positive control for the null-bypass at pedagogy.ts:209. Podcast source
+      // kinds are the documented carve-out admitted by the schema CHECK
+      // constraint `learning_capabilities_lesson_id_required_for_lessons`. The
+      // null-bypass below them is defense-in-depth: if a future refactor turns
+      // the `lessonId != null` test into a strict check, this assertion fails
+      // because the planner would NPE or suppress the cap. We test at the
+      // `planLearningPath` level directly because podcast caps are filtered
+      // out earlier (as exposure-only, capabilityContracts.ts:13) before they
+      // reach `loadCapabilitySessionPlan`, so this is the layer where the
+      // null-bypass actually has to hold.
+      const podcastKey = 'cap:v1:podcast_segment:podcasts/warung/seg-01:audio_recognition:l1_to_id:audio:nl'
+      const podcastCap: PlannerCapability = {
+        id: 'podcast-cap',
+        canonicalKey: podcastKey,
+        sourceKind: 'podcast_segment',
+        sourceRef: 'podcasts/warung/seg-01',
+        capabilityType: 'audio_recognition',
+        skillType: 'recognition',
+        readinessStatus: 'ready',
+        publicationStatus: 'published',
+        prerequisiteKeys: [],
+        lessonId: null,
+      }
+
+      const plan = planLearningPath({
+        userId: 'user-1',
+        mode: 'standard',
+        now,
+        preferredSessionSize: 15,
+        dueCount: 0,
+        readyCapabilities: [podcastCap],
+        learnerCapabilityStates: [],
+        activatedLessons: new Set<string>([lesson1Id]),
+      })
+
+      expect(plan.eligibleNewCapabilities).toHaveLength(1)
+      expect(plan.eligibleNewCapabilities[0]?.capability.canonicalKey).toBe(podcastKey)
+      expect(plan.suppressedCapabilities.find(s => s.reason === 'lesson_not_activated')).toBeUndefined()
+    })
   })
 
   describe('queue drying diagnostic', () => {

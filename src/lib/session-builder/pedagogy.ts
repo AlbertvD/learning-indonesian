@@ -17,7 +17,9 @@ export interface PlannerCapability {
   readinessStatus: CapabilityReadinessStatus
   publicationStatus: CapabilityPublicationStatus
   prerequisiteKeys: string[]
-  // NULL = capability is not lesson-scoped (podcast, cross-lesson). Otherwise
+  // NULL is reserved for podcast source kinds (ADR 0006). Every other source
+  // kind has a non-null lessonId enforced by the schema CHECK constraint
+  // `learning_capabilities_lesson_id_required_for_lessons`; those caps are
   // gated by `activatedLessons` in PedagogyInput.
   lessonId?: string | null
   difficultyLevel?: number
@@ -73,8 +75,9 @@ export interface PedagogyInput {
   learnerCapabilityStates: readonly PlannerLearnerCapabilityState[]
   // Set of lesson_ids the learner has activated. Replaces the source-progress
   // gate retired in #6. A capability with non-null lessonId is suppressed
-  // unless its lessonId is in this set. Cross-lesson capabilities (lessonId
-  // null) bypass the gate.
+  // unless its lessonId is in this set. Per ADR 0006 (Decision 3b), the only
+  // capabilities with null lessonId are podcast source kinds — those bypass
+  // this gate and rely on `isAllowedInSessionMode` for mode admission.
   activatedLessons: ReadonlySet<string>
   recentFailures?: Array<{
     canonicalKey: string
@@ -203,9 +206,15 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
       suppress('wrong_session_mode')
       continue
     }
-    // Lesson-activation gate (replaces source-progress gate, retirement #6).
-    // Cross-lesson capabilities (null lessonId) bypass; podcast capabilities
-    // never set lessonId either, so the mode gate above handles them.
+    // Lesson-activation gate. Per ADR 0006 (Decision 3b) every lesson-derived
+    // capability has a non-null lessonId; the schema CHECK constraint
+    // `learning_capabilities_lesson_id_required_for_lessons` (scripts/migration.sql)
+    // enforces this. The `!= null` test below is retained only because podcast
+    // source kinds (`podcast_segment`, `podcast_phrase`) are the documented
+    // carve-out and remain null-lesson by design — they bypass this gate and
+    // rely on `isAllowedInSessionMode` above to gate them by mode. For every
+    // other source kind, the schema guarantees lessonId is non-null and the
+    // gate fires whenever the learner has not activated that lesson.
     if (capability.lessonId != null && !input.activatedLessons.has(capability.lessonId)) {
       suppress('lesson_not_activated')
       continue
