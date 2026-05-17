@@ -118,8 +118,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"title\":\"Oefeningen\",\"order_index\":8,\"content\":{\"type\":\"exercises\",\"sections\":[{\"type\":\"translation\",\"items\":[{\"answer\":\"Saya ke pasar\",\"prompt\":\"Ik ga naar de markt\"},{\"answer\":\"Ibu beli enam pisang\",\"prompt\":\"Mevrouw koopt zes bananen\"},{\"answer\":\"Berapa harganya?\",\"prompt\":\"Wat kost het?\"},{\"answer\":\"Selamat datang Bu, apa kabar?\",\"prompt\":\"Welkom mevrouw, hoe is het met u?\"},{\"answer\":\"Saya tidak mau pisang, saya mau nanas\",\"prompt\":\"Ik wil geen bananen, ik wil ananas\"},{\"answer\":\"Bapak makan buah\",\"prompt\":\"Meneer eet een vrucht\"},{\"answer\":\"Ibu Gusti Ayu dan ibu datang dari Bali\",\"prompt\":\"Mevrouw Gusti Ayu en moeder komen uit Bali\"},{\"answer\":\"Di toko pisang mahal, di pasar murah\",\"prompt\":\"In de winkel zijn bananen duur, op de markt zijn ze goedkoop\"},{\"answer\":\"Apa kabar? Baik, terima kasih\",\"prompt\":\"Hoe gaat het ermee? Goed, dank u wel\"},{\"answer\":\"Dua ibu beli sembilan buah\",\"prompt\":\"Twee dames kopen negen vruchten\"}],\"title\":\"Oefening I\",\"instruction\":\"Vertaal in het Indonesisch.\"},{\"type\":\"translation\",\"items\":[{\"answer\":\"Ik wil geen bananen eten\",\"prompt\":\"Saya tidak mau makan pisang\"},{\"answer\":\"Welkom, mevrouw, hoe gaat het ermee?\",\"prompt\":\"Selamat datang, Bu, apa kabar?\"},{\"answer\":\"Goed, dank u wel\",\"prompt\":\"Baik, terima kasih\"},{\"answer\":\"De prijs van bananen is goedkoop, de prijs van ananas is duur\",\"prompt\":\"Harga pisang murah, harga nanas mahal\"},{\"answer\":\"Meneer en mevrouw willen niet naar de markt, maar naar het hotel\",\"prompt\":\"Bapak dan Ibu tidak mau ke pasar, tetapi mau ke hotel\"},{\"answer\":\"Hoeveel vruchten wilt u, meneer? Drie\",\"prompt\":\"Bapak mau berapa buah? Tiga\"},{\"answer\":\"Zeven ananassen is niet genoeg\",\"prompt\":\"Tujuh nanas tidak cukup\"},{\"answer\":\"Ik wil acht kopen\",\"prompt\":\"Saya mau beli delapan\"},{\"answer\":\"Mevrouw komt van de markt en koopt ananas en bananen\",\"prompt\":\"Ibu datang dari pasar dan beli nanas dan pisang\"},{\"answer\":\"Negen vruchten zijn duur, ik wil zes vruchten\",\"prompt\":\"Sembilan buah mahal, saya mau enam buah\"}],\"title\":\"Oefening II\",\"instruction\":\"Vertaal in het Nederlands.\"},{\"type\":\"grammar_drill\",\"items\":[{\"answer\":\"dua pisang\",\"prompt\":\"2 bananen\"},{\"answer\":\"sembilan bapak\",\"prompt\":\"9 heren\"},{\"answer\":\"tujuh nanas\",\"prompt\":\"7 ananassen\"},{\"answer\":\"enam ibu\",\"prompt\":\"6 dames\"},{\"answer\":\"empat penjual\",\"prompt\":\"4 verkopers\"},{\"answer\":\"tiga toko\",\"prompt\":\"3 winkels\"},{\"answer\":\"tiga ibu\",\"prompt\":\"drie dames\"},{\"answer\":\"sembilan toko\",\"prompt\":\"negen winkels\"},{\"answer\":\"dua orang\",\"prompt\":\"twee mensen\"},{\"answer\":\"enam nanas\",\"prompt\":\"zes ananassen\"},{\"answer\":\"lima bahasa\",\"prompt\":\"vijf talen\"},{\"answer\":\"empat rupiah\",\"prompt\":\"vier rupiah\"}],\"title\":\"Oefening III\",\"instruction\":\"Schrijf voluit in het Indonesisch.\"}]}}"
   },
   {
-    "content_unit_key": "learning_items/berapa-harganya::lesson-1/section-vocabulary::item-berapa-harganya",
-    "source_ref": "learning_items/berapa-harganya",
+    "content_unit_key": "learning_items/berapa harganya?::lesson-1/section-vocabulary::item-berapa-harganya",
+    "source_ref": "learning_items/berapa harganya?",
     "source_section_ref": "lesson-1/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-berapa-harganya",
@@ -358,8 +358,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"sepuluh\",\"item_type\":\"word\",\"translation_nl\":\"10\",\"context_type\":\"cloze\",\"source_page\":1,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"ten\"}"
   },
   {
-    "content_unit_key": "learning_items/apa::lesson-1/section-vocabulary::item-apa",
-    "source_ref": "learning_items/apa",
+    "content_unit_key": "learning_items/apa?::lesson-1/section-vocabulary::item-apa",
+    "source_ref": "learning_items/apa?",
     "source_section_ref": "lesson-1/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-apa",
@@ -508,8 +508,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"terima\",\"item_type\":\"word\",\"translation_nl\":\"ontvangen\",\"context_type\":\"vocabulary_list\",\"source_page\":1,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A1\",\"translation_en\":\"receive\"}"
   },
   {
-    "content_unit_key": "learning_items/harganya-murah::lesson-1/section-vocabulary::item-harganya-murah",
-    "source_ref": "learning_items/harganya-murah",
+    "content_unit_key": "learning_items/harganya murah::lesson-1/section-vocabulary::item-harganya-murah",
+    "source_ref": "learning_items/harganya murah",
     "source_section_ref": "lesson-1/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-harganya-murah",
@@ -523,8 +523,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"harganya murah\",\"item_type\":\"phrase\",\"translation_nl\":\"Het is goedkoop; de prijs is laag\",\"context_type\":\"lesson_snippet\",\"source_page\":1,\"review_status\":\"published\",\"pos\":\"adjective\",\"level\":\"A1\",\"translation_en\":\"it is cheap\"}"
   },
   {
-    "content_unit_key": "learning_items/terima-kasih::lesson-1/section-vocabulary::item-terima-kasih",
-    "source_ref": "learning_items/terima-kasih",
+    "content_unit_key": "learning_items/terima kasih::lesson-1/section-vocabulary::item-terima-kasih",
+    "source_ref": "learning_items/terima kasih",
     "source_section_ref": "lesson-1/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-terima-kasih",
@@ -763,8 +763,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"delapan\",\"item_type\":\"word\",\"translation_nl\":\"8\",\"context_type\":\"cloze\",\"source_page\":1,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"eight\"}"
   },
   {
-    "content_unit_key": "learning_items/apa-kabar::lesson-1/section-vocabulary::item-apa-kabar",
-    "source_ref": "learning_items/apa-kabar",
+    "content_unit_key": "learning_items/apa kabar?::lesson-1/section-vocabulary::item-apa-kabar",
+    "source_ref": "learning_items/apa kabar?",
     "source_section_ref": "lesson-1/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-apa-kabar",
@@ -943,8 +943,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"sembilan\",\"item_type\":\"word\",\"translation_nl\":\"9\",\"context_type\":\"cloze\",\"source_page\":1,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"nine\"}"
   },
   {
-    "content_unit_key": "learning_items/berapa::lesson-1/section-vocabulary::item-berapa",
-    "source_ref": "learning_items/berapa",
+    "content_unit_key": "learning_items/berapa?::lesson-1/section-vocabulary::item-berapa",
+    "source_ref": "learning_items/berapa?",
     "source_section_ref": "lesson-1/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-berapa",
@@ -973,8 +973,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"orang\",\"item_type\":\"word\",\"translation_nl\":\"mens\",\"context_type\":\"vocabulary_list\",\"source_page\":1,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"person\"}"
   },
   {
-    "content_unit_key": "learning_items/selamat-datang::lesson-1/section-vocabulary::item-selamat-datang",
-    "source_ref": "learning_items/selamat-datang",
+    "content_unit_key": "learning_items/selamat datang::lesson-1/section-vocabulary::item-selamat-datang",
+    "source_ref": "learning_items/selamat datang",
     "source_section_ref": "lesson-1/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-selamat-datang",
@@ -1018,8 +1018,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"penjual\",\"item_type\":\"word\",\"translation_nl\":\"verkoper\",\"context_type\":\"cloze\",\"source_page\":1,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"seller\"}"
   },
   {
-    "content_unit_key": "learning_items/baik-baik-saja::lesson-1/section-vocabulary::item-baik-baik-saja",
-    "source_ref": "learning_items/baik-baik-saja",
+    "content_unit_key": "learning_items/baik-baik saja::lesson-1/section-vocabulary::item-baik-baik-saja",
+    "source_ref": "learning_items/baik-baik saja",
     "source_section_ref": "lesson-1/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-baik-baik-saja",

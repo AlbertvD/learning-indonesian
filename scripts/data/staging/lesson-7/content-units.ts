@@ -92,8 +92,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"title\":\"OEFENINGEN\",\"order_index\":6,\"content\":{\"type\":\"exercises\",\"sections\":[{\"type\":\"grammar_drill\",\"items\":[{\"answer\":\"Guru itu anaknya baik / Guru itu baik anaknya\",\"prompt\":\"Anak guru itu baik\"},{\"answer\":\"Hasan kopernya berat / Hasan berat kopernya\",\"prompt\":\"Koper Hasan berat\"},{\"answer\":\"Nurul kemejanya bersih / Nurul bersih kemejanya\",\"prompt\":\"Kemeja Nurul bersih\"},{\"answer\":\"Adik saya gelasnya rusak / Adik saya rusak gelasnya\",\"prompt\":\"Gelas adik saya rusak\"},{\"answer\":\"Amir piringnya besar / Amir besar piringnya\",\"prompt\":\"Piring Amir besar\"},{\"answer\":\"Fani sepedanya baru / Fani baru sepedanya\",\"prompt\":\"Sepeda Fani baru\"},{\"answer\":\"Kaus oblong ini warnanya bagus / Kaus oblong ini bagus warnanya\",\"prompt\":\"Warna kaus oblong ini bagus\"},{\"answer\":\"Rini celananya putih / Rini putih celananya\",\"prompt\":\"Celana Rini putih\"},{\"answer\":\"Ninik cincinnya bagus / Ninik bagus cincinnya\",\"prompt\":\"Cincin Ninik bagus\"},{\"answer\":\"Rumah itu gudangnya kecil / Rumah itu kecil gudangnya\",\"prompt\":\"Gudang rumah itu kecil\"}],\"title\":\"Oefening I\",\"instruction\":\"Herschrijf de zin in twee andere constructies met -nya. Contoh: Warna hotel itu putih -> Hotel itu warnanya putih / Hotel itu putih warnanya\"},{\"type\":\"grammar_drill\",\"items\":[{\"answer\":\"Harganya dua ratus rupiah\",\"prompt\":\"200\"},{\"answer\":\"Harganya seratus enam puluh rupiah\",\"prompt\":\"160\"},{\"answer\":\"Harganya tiga ratus delapan puluh rupiah\",\"prompt\":\"380\"},{\"answer\":\"Harganya empat ratus sepuluh rupiah\",\"prompt\":\"410\"},{\"answer\":\"Harganya enam ratus lima puluh rupiah\",\"prompt\":\"650\"},{\"answer\":\"Harganya dua ribu tiga ratus empat puluh rupiah\",\"prompt\":\"2340\"},{\"answer\":\"Harganya delapan ribu tujuh ratus rupiah\",\"prompt\":\"8700\"},{\"answer\":\"Harganya sembilan ribu lima ratus rupiah\",\"prompt\":\"9500\"},{\"answer\":\"Harganya tiga ribu enam ratus rupiah\",\"prompt\":\"3600\"},{\"answer\":\"Harganya seribu empat puluh satu rupiah\",\"prompt\":\"1041\"},{\"answer\":\"Harganya sembilan ribu tujuh ratus sepuluh rupiah\",\"prompt\":\"9710\"},{\"answer\":\"Harganya tiga ribu empat ratus lima puluh rupiah\",\"prompt\":\"3450\"},{\"answer\":\"Harganya lima ribu tujuh ratus sembilan puluh delapan rupiah\",\"prompt\":\"5798\"},{\"answer\":\"Harganya delapan ribu seratus tiga puluh rupiah\",\"prompt\":\"8130\"},{\"answer\":\"Harganya enam ribu tujuh ratus empat puluh lima rupiah\",\"prompt\":\"6745\"},{\"answer\":\"Harganya tiga puluh satu ribu tiga ratus rupiah\",\"prompt\":\"31300\"},{\"answer\":\"Harganya lima belas ribu empat ratus enam puluh lima rupiah\",\"prompt\":\"15465\"},{\"answer\":\"Harganya sembilan puluh delapan ribu tujuh ratus lima puluh rupiah\",\"prompt\":\"98750\"},{\"answer\":\"Harganya dua puluh tujuh ribu enam ratus rupiah\",\"prompt\":\"27600\"},{\"answer\":\"Harganya tiga puluh dua ribu sembilan ratus enam puluh empat rupiah\",\"prompt\":\"32964\"}],\"title\":\"Oefening II\",\"instruction\":\"Schrijf de prijs in het Indonesisch. Contoh: Harganya berapa? (Rp 500) -> Harganya lima ratus rupiah\"},{\"type\":\"translation\",\"items\":[{\"answer\":\"Celana Mies biru muda / Mies celananya biru muda / Mies biru muda celananya\",\"prompt\":\"De broek van Mies is lichtblauw\"},{\"answer\":\"Rumah Hans besar / Hans rumahnya besar / Hans besar rumahnya\",\"prompt\":\"Het huis van Hans is groot\"},{\"answer\":\"Kacamata Yanto rusak / Yanto kacamatanya rusak / Yanto rusak kacamatanya\",\"prompt\":\"De bril van Yanto is kapot\"},{\"answer\":\"Harga kamar di hotel itu mahal / Hotel itu harga kamarnya mahal / Hotel itu mahal harga kamarnya\",\"prompt\":\"De prijs van de kamers in dat hotel is hoog\"},{\"answer\":\"Berapa harga mobil ini? / Mobil ini harganya berapa? / Mobil ini berapa harganya?\",\"prompt\":\"Hoeveel is de prijs van deze auto?\"},{\"answer\":\"Warna pisang ini kuning / Pisang ini warnanya kuning / Pisang ini kuning warnanya\",\"prompt\":\"De kleur van deze banaan is geel\"},{\"answer\":\"Kemeja bapak merah / Bapak kemejanya merah / Bapak merah kemejanya\",\"prompt\":\"Het overhemd van vader is rood\"},{\"answer\":\"Nama anjing itu Beng / Anjing itu namanya Beng / Anjing itu Beng namanya\",\"prompt\":\"De naam van de hond is Beng\"},{\"answer\":\"Sendok dan garpu restoran itu bersih / Restoran itu sendok dan garpunya bersih / Restoran itu bersih sendok dan garpunya\",\"prompt\":\"De lepels en vorken van het restaurant zijn schoon\"},{\"answer\":\"Rambut Sri hitam / Sri rambutnya hitam / Sri hitam rambutnya\",\"prompt\":\"De haren van Sri zijn zwart\"}],\"title\":\"Oefening III\",\"instruction\":\"Vertaal de zinnen op drie manieren: gebruik -nya!\"},{\"type\":\"translation\",\"items\":[{\"answer\":\"Na het eten nam Hasan de bus naar de markt\",\"prompt\":\"Setelah makan Hasan naik bus ke pasar\"},{\"answer\":\"Rechts van het hotel zijn veel nieuwe witte huizen\",\"prompt\":\"Di sebelah kanan hotel ada banyak rumah putih yang baru\"},{\"answer\":\"We zijn niet tevreden thuis. We willen naar Taman Mini\",\"prompt\":\"Kami tidak senang di rumah. Kami mau ke Taman Mini\"},{\"answer\":\"Hasan, zijn geld is op. Daarom kan hij dit boek niet kopen\",\"prompt\":\"Hasan uangnya sudah habis. Karena itu dia tidak bisa beli buku ini\"},{\"answer\":\"Morgen gaat Ali met de auto naar Jakarta en overmorgen met het vliegtuig naar Singapore\",\"prompt\":\"Besok Ali naik mobil ke Jakarta dan lusa naik kapal terbang ke Singapura\"},{\"answer\":\"Dat kind, zijn moeder is ziek en daarom gaat hij niet naar school\",\"prompt\":\"Anak itu ibunya sakit dan karena itu dia tidak ke sekolah\"},{\"answer\":\"Neem die taxi niet! Die taxi is kapot, nietwaar!\",\"prompt\":\"Jangan naik taksi itu! Taksi itu rusak, 'kan!\"},{\"answer\":\"Dat is een groot en schoon hotel. Het heet \\\"Hotel Indrapura\\\"\",\"prompt\":\"Itu hotel yang besar dan bersih. Namanya \\\"Hotel Indrapura\\\"\"},{\"answer\":\"Overdag heeft hij zeker een zonnebril nodig\",\"prompt\":\"Pada siang hari dia pasti perlu kacamata hitam\"},{\"answer\":\"Vanavond brengt hij ons naar het vliegveld\",\"prompt\":\"Nanti malam dia mengantar kami ke bandar udara\"}],\"title\":\"Oefening IV\",\"instruction\":\"Vertaal naar het Nederlands.\"}]}}"
   },
   {
-    "content_unit_key": "learning_items/ninik-di-mana-kopernya-kita-perlu-koper-sekarang-kan-tas-pasti-terlalu-kecil-untuk-semua-barang-kita::lesson-7/section-dialogue::item-ninik-di-mana-kopernya-kita-perlu-koper-sekarang-kan-tas-pasti-terlalu-kecil-untuk-semua-barang-kita",
-    "source_ref": "learning_items/ninik-di-mana-kopernya-kita-perlu-koper-sekarang-kan-tas-pasti-terlalu-kecil-untuk-semua-barang-kita",
+    "content_unit_key": "learning_items/ninik, di mana kopernya? kita perlu koper sekarang, 'kan? tas pasti terlalu kecil untuk semua barang kita.::lesson-7/section-dialogue::item-ninik-di-mana-kopernya-kita-perlu-koper-sekarang-kan-tas-pasti-terlalu-kecil-untuk-semua-barang-kita",
+    "source_ref": "learning_items/ninik, di mana kopernya? kita perlu koper sekarang, 'kan? tas pasti terlalu kecil untuk semua barang kita.",
     "source_section_ref": "lesson-7/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-ninik-di-mana-kopernya-kita-perlu-koper-sekarang-kan-tas-pasti-terlalu-kecil-untuk-semua-barang-kita",
@@ -107,8 +107,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Ninik, di mana kopernya? Kita perlu koper sekarang, 'kan? Tas pasti terlalu kecil untuk semua barang kita.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Moeder: 'Ninik, waar is de koffer? We hebben nu toch een koffer nodig, hè? Een tas is vast te klein voor al onze spullen.'\",\"translation_en\":\"\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/masih-di-gudang-bu-nanti-saya-ambil-barang-ibu-sudah-beres-barang-saya-sudah-banyak-bu::lesson-7/section-dialogue::item-masih-di-gudang-bu-nanti-saya-ambil-barang-ibu-sudah-beres-barang-saya-sudah-banyak-bu",
-    "source_ref": "learning_items/masih-di-gudang-bu-nanti-saya-ambil-barang-ibu-sudah-beres-barang-saya-sudah-banyak-bu",
+    "content_unit_key": "learning_items/masih di gudang bu, nanti saya ambil. barang ibu sudah beres? barang saya sudah banyak, bu.::lesson-7/section-dialogue::item-masih-di-gudang-bu-nanti-saya-ambil-barang-ibu-sudah-beres-barang-saya-sudah-banyak-bu",
+    "source_ref": "learning_items/masih di gudang bu, nanti saya ambil. barang ibu sudah beres? barang saya sudah banyak, bu.",
     "source_section_ref": "lesson-7/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-masih-di-gudang-bu-nanti-saya-ambil-barang-ibu-sudah-beres-barang-saya-sudah-banyak-bu",
@@ -122,8 +122,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Masih di gudang bu, nanti saya ambil. Barang ibu sudah beres? Barang saya sudah banyak, bu.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Ninik: 'Hij staat nog in de schuur, moeder, ik haal hem zo. Zijn uw spullen al ingepakt? Mijn spullen zijn al behoorlijk veel, moeder.'\",\"translation_en\":\"\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/jangan-bawa-pakaian-banyak-ya-nanti-kita-beli-saja-di-bali-di-kuta-dan-di-denpasar-ada-toko-pakaian-yang-bagus-bawa-saja-jean-dan-kemeja-jangan-lupa-rokmu-yang-merah-muda-sebab-cocok-sekali-kalau-kamu-mau-ke-disko::lesson-7/section-dialogue::item-jangan-bawa-pakaian-banyak-ya-nanti-kita-beli-saja-di-bali-di-kuta-dan-di-denpasar-ada-toko-pakaian-yang-bagus-bawa-saja-jean-dan-kemeja-jangan-lupa-rokmu-yang-merah-muda-sebab-cocok-sekali-kalau-kamu-mau-ke-disko",
-    "source_ref": "learning_items/jangan-bawa-pakaian-banyak-ya-nanti-kita-beli-saja-di-bali-di-kuta-dan-di-denpasar-ada-toko-pakaian-yang-bagus-bawa-saja-jean-dan-kemeja-jangan-lupa-rokmu-yang-merah-muda-sebab-cocok-sekali-kalau-kamu-mau-ke-disko",
+    "content_unit_key": "learning_items/jangan bawa pakaian banyak ya, nanti kita beli saja di bali. di kuta dan di denpasar ada toko pakaian yang bagus. bawa saja jean dan kemeja. jangan lupa rokmu yang merah muda, sebab cocok sekali kalau kamu mau ke disko.::lesson-7/section-dialogue::item-jangan-bawa-pakaian-banyak-ya-nanti-kita-beli-saja-di-bali-di-kuta-dan-di-denpasar-ada-toko-pakaian-yang-bagus-bawa-saja-jean-dan-kemeja-jangan-lupa-rokmu-yang-merah-muda-sebab-cocok-sekali-kalau-kamu-mau-ke-disko",
+    "source_ref": "learning_items/jangan bawa pakaian banyak ya, nanti kita beli saja di bali. di kuta dan di denpasar ada toko pakaian yang bagus. bawa saja jean dan kemeja. jangan lupa rokmu yang merah muda, sebab cocok sekali kalau kamu mau ke disko.",
     "source_section_ref": "lesson-7/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-jangan-bawa-pakaian-banyak-ya-nanti-kita-beli-saja-di-bali-di-kuta-dan-di-denpasar-ada-toko-pakaian-yang-bagus-bawa-saja-jean-dan-kemeja-jangan-lupa-rokmu-yang-merah-muda-sebab-cocok-sekali-kalau-kamu-mau-ke-disko",
@@ -137,8 +137,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Jangan bawa pakaian banyak ya, nanti kita beli saja di Bali. Di Kuta dan di Denpasar ada toko pakaian yang bagus. Bawa saja jean dan kemeja. Jangan lupa rokmu yang merah muda, sebab cocok sekali kalau kamu mau ke disko.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Moeder: 'Neem niet zoveel kleding mee, hoor. We kopen wel wat in Bali. In Kuta en in Denpasar zijn mooie kledingwinkels. Neem alleen maar jeans en een blouse mee. Vergeet je roze rok niet, want die staat je echt super als je naar de discotheek gaat.'\",\"translation_en\":\"\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/bu-jangan-lupa-kacamata-hitam-ya-bu-eeh-apa-perlu-saya-bawa-hiasan-seperti-cincin-gelang-dan-kalung-soalnya-saya-harus-keren-kan::lesson-7/section-dialogue::item-bu-jangan-lupa-kacamata-hitam-ya-bu-eeh-apa-perlu-saya-bawa-hiasan-seperti-cincin-gelang-dan-kalung-soalnya-saya-harus-keren-kan",
-    "source_ref": "learning_items/bu-jangan-lupa-kacamata-hitam-ya-bu-eeh-apa-perlu-saya-bawa-hiasan-seperti-cincin-gelang-dan-kalung-soalnya-saya-harus-keren-kan",
+    "content_unit_key": "learning_items/bu, jangan lupa kacamata hitam, ya bu. eeh ... apa perlu saya bawa hiasan seperti cincin, gelang dan kalung? soalnya saya harus keren, 'kan?::lesson-7/section-dialogue::item-bu-jangan-lupa-kacamata-hitam-ya-bu-eeh-apa-perlu-saya-bawa-hiasan-seperti-cincin-gelang-dan-kalung-soalnya-saya-harus-keren-kan",
+    "source_ref": "learning_items/bu, jangan lupa kacamata hitam, ya bu. eeh ... apa perlu saya bawa hiasan seperti cincin, gelang dan kalung? soalnya saya harus keren, 'kan?",
     "source_section_ref": "lesson-7/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-bu-jangan-lupa-kacamata-hitam-ya-bu-eeh-apa-perlu-saya-bawa-hiasan-seperti-cincin-gelang-dan-kalung-soalnya-saya-harus-keren-kan",
@@ -152,8 +152,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Bu, jangan lupa kacamata hitam, ya bu. Eeh ... apa perlu saya bawa hiasan seperti cincin, gelang dan kalung? Soalnya saya harus keren, 'kan?\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Ninik: 'Moeder, vergeet de donkere zonnebril niet, alstublieft. Eh... moet ik sieraad meenemen zoals ringen, armbanden en kettingen? Want ik moet er stoer uitzien, toch?'\",\"translation_en\":\"\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/boleh-nin-tapi-jangan-bawa-semuanya-kalau-hilang-bagaimana::lesson-7/section-dialogue::item-boleh-nin-tapi-jangan-bawa-semuanya-kalau-hilang-bagaimana",
-    "source_ref": "learning_items/boleh-nin-tapi-jangan-bawa-semuanya-kalau-hilang-bagaimana",
+    "content_unit_key": "learning_items/boleh, nin, tapi jangan bawa semuanya. kalau hilang bagaimana?::lesson-7/section-dialogue::item-boleh-nin-tapi-jangan-bawa-semuanya-kalau-hilang-bagaimana",
+    "source_ref": "learning_items/boleh, nin, tapi jangan bawa semuanya. kalau hilang bagaimana?",
     "source_section_ref": "lesson-7/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-boleh-nin-tapi-jangan-bawa-semuanya-kalau-hilang-bagaimana",
@@ -167,8 +167,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Boleh, Nin, tapi jangan bawa semuanya. Kalau hilang bagaimana?\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Moeder: 'Best hoor, Nin, maar neem niet alles mee. Stel je voor dat je iets kwijtraakt?'\",\"translation_en\":\"\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/ibu-juga-mau-bawa-celana-panjang-dengan-kantong-yang-merah-malam-hari-pasti-dingin-lho::lesson-7/section-dialogue::item-ibu-juga-mau-bawa-celana-panjang-dengan-kantong-yang-merah-malam-hari-pasti-dingin-lho",
-    "source_ref": "learning_items/ibu-juga-mau-bawa-celana-panjang-dengan-kantong-yang-merah-malam-hari-pasti-dingin-lho",
+    "content_unit_key": "learning_items/ibu juga mau bawa celana panjang dengan kantong yang merah? malam hari pasti dingin lho!::lesson-7/section-dialogue::item-ibu-juga-mau-bawa-celana-panjang-dengan-kantong-yang-merah-malam-hari-pasti-dingin-lho",
+    "source_ref": "learning_items/ibu juga mau bawa celana panjang dengan kantong yang merah? malam hari pasti dingin lho!",
     "source_section_ref": "lesson-7/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-ibu-juga-mau-bawa-celana-panjang-dengan-kantong-yang-merah-malam-hari-pasti-dingin-lho",
@@ -182,8 +182,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Ibu juga mau bawa celana panjang dengan kantong yang merah? Malam hari pasti dingin lho!\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Ninik: 'Wil u ook een lange broek met rode zakken meenemen? 's Avonds wordt het vast koud!'\",\"translation_en\":\"\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/benar-tapi-belum-disetrika-tapi-tidak-apa-apa-di-hotel-pasti-bisa::lesson-7/section-dialogue::item-benar-tapi-belum-disetrika-tapi-tidak-apa-apa-di-hotel-pasti-bisa",
-    "source_ref": "learning_items/benar-tapi-belum-disetrika-tapi-tidak-apa-apa-di-hotel-pasti-bisa",
+    "content_unit_key": "learning_items/benar, tapi belum disetrika. tapi tidak apa-apa, di hotel pasti bisa.::lesson-7/section-dialogue::item-benar-tapi-belum-disetrika-tapi-tidak-apa-apa-di-hotel-pasti-bisa",
+    "source_ref": "learning_items/benar, tapi belum disetrika. tapi tidak apa-apa, di hotel pasti bisa.",
     "source_section_ref": "lesson-7/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-benar-tapi-belum-disetrika-tapi-tidak-apa-apa-di-hotel-pasti-bisa",
@@ -197,8 +197,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Benar, tapi belum disetrika. Tapi tidak apa-apa, di hotel pasti bisa.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Moeder: 'Klopt, maar hij is nog niet gestreken. Maar dat geeft niet, in het hotel kunnen ze dat doen.'\",\"translation_en\":\"\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/aduh-koper-sudah-berat-sekali-bu-bagus-kalau-bapak-mau-mengantar-kita-ke-lapangan-terbang-kalau-kita-harus-pikul-sendiri-bagaimana::lesson-7/section-dialogue::item-aduh-koper-sudah-berat-sekali-bu-bagus-kalau-bapak-mau-mengantar-kita-ke-lapangan-terbang-kalau-kita-harus-pikul-sendiri-bagaimana",
-    "source_ref": "learning_items/aduh-koper-sudah-berat-sekali-bu-bagus-kalau-bapak-mau-mengantar-kita-ke-lapangan-terbang-kalau-kita-harus-pikul-sendiri-bagaimana",
+    "content_unit_key": "learning_items/aduh, koper sudah berat sekali bu. bagus kalau bapak mau mengantar kita ke lapangan terbang. kalau kita harus pikul sendiri bagaimana?::lesson-7/section-dialogue::item-aduh-koper-sudah-berat-sekali-bu-bagus-kalau-bapak-mau-mengantar-kita-ke-lapangan-terbang-kalau-kita-harus-pikul-sendiri-bagaimana",
+    "source_ref": "learning_items/aduh, koper sudah berat sekali bu. bagus kalau bapak mau mengantar kita ke lapangan terbang. kalau kita harus pikul sendiri bagaimana?",
     "source_section_ref": "lesson-7/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-aduh-koper-sudah-berat-sekali-bu-bagus-kalau-bapak-mau-mengantar-kita-ke-lapangan-terbang-kalau-kita-harus-pikul-sendiri-bagaimana",
@@ -212,8 +212,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Aduh, koper sudah berat sekali bu. Bagus kalau bapak mau mengantar kita ke lapangan terbang. Kalau kita harus pikul sendiri bagaimana?\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Ninik: 'Oeee, de koffer wordt al erg zwaar, moeder. Gelukkig dat vader ons naar het vliegveld wil brengen. Hoe zouden we het redden als we hem zelf moeten dragen?'\",\"translation_en\":\"\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/eh-pakaian-renang-dan-topi-sudah-ada-ya::lesson-7/section-dialogue::item-eh-pakaian-renang-dan-topi-sudah-ada-ya",
-    "source_ref": "learning_items/eh-pakaian-renang-dan-topi-sudah-ada-ya",
+    "content_unit_key": "learning_items/eh, pakaian renang dan topi sudah ada ya?::lesson-7/section-dialogue::item-eh-pakaian-renang-dan-topi-sudah-ada-ya",
+    "source_ref": "learning_items/eh, pakaian renang dan topi sudah ada ya?",
     "source_section_ref": "lesson-7/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-eh-pakaian-renang-dan-topi-sudah-ada-ya",
@@ -227,8 +227,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Eh, pakaian renang dan topi sudah ada ya?\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Moeder: 'Hé, het badpak en de hoed zijn toch meegenomen?'\",\"translation_en\":\"\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/sudah-tapi-di-mana-kaus-oblong-saya-yang-kuning-sudah-masuk-ya::lesson-7/section-dialogue::item-sudah-tapi-di-mana-kaus-oblong-saya-yang-kuning-sudah-masuk-ya",
-    "source_ref": "learning_items/sudah-tapi-di-mana-kaus-oblong-saya-yang-kuning-sudah-masuk-ya",
+    "content_unit_key": "learning_items/sudah. tapi di mana kaus oblong saya yang kuning? sudah masuk ya?::lesson-7/section-dialogue::item-sudah-tapi-di-mana-kaus-oblong-saya-yang-kuning-sudah-masuk-ya",
+    "source_ref": "learning_items/sudah. tapi di mana kaus oblong saya yang kuning? sudah masuk ya?",
     "source_section_ref": "lesson-7/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-sudah-tapi-di-mana-kaus-oblong-saya-yang-kuning-sudah-masuk-ya",
@@ -242,8 +242,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Sudah. Tapi di mana kaus oblong saya yang kuning? Sudah masuk ya?\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Ninik: 'Ja. Maar waar is mijn gele T-shirt? Zit het erin?'\",\"translation_en\":\"\",\"source_page\":4,\"review_status\":\"published\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/sudah::lesson-7/section-dialogue::item-sudah",
-    "source_ref": "learning_items/sudah",
+    "content_unit_key": "learning_items/sudah.::lesson-7/section-dialogue::item-sudah",
+    "source_ref": "learning_items/sudah.",
     "source_section_ref": "lesson-7/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-sudah",
@@ -302,8 +302,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"bawa\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"meebrengen / meenemen\",\"translation_en\":\"bring\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/beres-beres::lesson-7/section-vocabulary::item-beres-beres",
-    "source_ref": "learning_items/beres-beres",
+    "content_unit_key": "learning_items/beres (bèrès)::lesson-7/section-vocabulary::item-beres-beres",
+    "source_ref": "learning_items/beres (bèrès)",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-beres-beres",
@@ -377,8 +377,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"cocok\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"passen bij\",\"translation_en\":\"match\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/dibawa::lesson-7/section-vocabulary::item-dibawa",
-    "source_ref": "learning_items/dibawa",
+    "content_unit_key": "learning_items/dibawa*::lesson-7/section-vocabulary::item-dibawa",
+    "source_ref": "learning_items/dibawa*",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-dibawa",
@@ -392,8 +392,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"dibawa*\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"meegenomen\",\"translation_en\":\"taken\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/disetrika::lesson-7/section-vocabulary::item-disetrika",
-    "source_ref": "learning_items/disetrika",
+    "content_unit_key": "learning_items/disetrika*::lesson-7/section-vocabulary::item-disetrika",
+    "source_ref": "learning_items/disetrika*",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-disetrika",
@@ -497,8 +497,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"jepit\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"klemmen / knellen\",\"translation_en\":\"pinch\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/jepit-rambut::lesson-7/section-vocabulary::item-jepit-rambut",
-    "source_ref": "learning_items/jepit-rambut",
+    "content_unit_key": "learning_items/jepit rambut::lesson-7/section-vocabulary::item-jepit-rambut",
+    "source_ref": "learning_items/jepit rambut",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-jepit-rambut",
@@ -542,8 +542,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"kacamata\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"bril\",\"translation_en\":\"glasses\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/kacamata-hitam::lesson-7/section-vocabulary::item-kacamata-hitam",
-    "source_ref": "learning_items/kacamata-hitam",
+    "content_unit_key": "learning_items/kacamata hitam::lesson-7/section-vocabulary::item-kacamata-hitam",
+    "source_ref": "learning_items/kacamata hitam",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kacamata-hitam",
@@ -572,8 +572,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"kalung\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"halsketting\",\"translation_en\":\"necklace\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/hari-kamis::lesson-7/section-vocabulary::item-hari-kamis",
-    "source_ref": "learning_items/hari-kamis",
+    "content_unit_key": "learning_items/hari kamis::lesson-7/section-vocabulary::item-hari-kamis",
+    "source_ref": "learning_items/hari kamis",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-hari-kamis",
@@ -632,8 +632,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"kaus\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"(onder)hemd\",\"translation_en\":\"shirt\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/kaus-oblong::lesson-7/section-vocabulary::item-kaus-oblong",
-    "source_ref": "learning_items/kaus-oblong",
+    "content_unit_key": "learning_items/kaus oblong::lesson-7/section-vocabulary::item-kaus-oblong",
+    "source_ref": "learning_items/kaus oblong",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kaus-oblong",
@@ -647,8 +647,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"kaus oblong\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"T-shirt\",\"translation_en\":\"T-shirt\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/kemeja-kemeja::lesson-7/section-vocabulary::item-kemeja-kemeja",
-    "source_ref": "learning_items/kemeja-kemeja",
+    "content_unit_key": "learning_items/kemeja (keméja)::lesson-7/section-vocabulary::item-kemeja-kemeja",
+    "source_ref": "learning_items/kemeja (keméja)",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kemeja-kemeja",
@@ -662,8 +662,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"kemeja (keméja)\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"overhemd / hemd\",\"translation_en\":\"shirt\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/keren-keren::lesson-7/section-vocabulary::item-keren-keren",
-    "source_ref": "learning_items/keren-keren",
+    "content_unit_key": "learning_items/keren (kerèn)::lesson-7/section-vocabulary::item-keren-keren",
+    "source_ref": "learning_items/keren (kerèn)",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-keren-keren",
@@ -692,8 +692,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"kilometer\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"kilometer\",\"translation_en\":\"kilometer\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/lho::lesson-7/section-vocabulary::item-lho",
-    "source_ref": "learning_items/lho",
+    "content_unit_key": "learning_items/lho!::lesson-7/section-vocabulary::item-lho",
+    "source_ref": "learning_items/lho!",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-lho",
@@ -722,8 +722,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"libur\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"vrij (vakantie) hebben\",\"translation_en\":\"have a break\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/libur-sekolah::lesson-7/section-vocabulary::item-libur-sekolah",
-    "source_ref": "learning_items/libur-sekolah",
+    "content_unit_key": "learning_items/libur sekolah::lesson-7/section-vocabulary::item-libur-sekolah",
+    "source_ref": "learning_items/libur sekolah",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-libur-sekolah",
@@ -752,8 +752,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"lupa\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"vergeten\",\"translation_en\":\"forget\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/mengantar::lesson-7/section-vocabulary::item-mengantar",
-    "source_ref": "learning_items/mengantar",
+    "content_unit_key": "learning_items/mengantar*::lesson-7/section-vocabulary::item-mengantar",
+    "source_ref": "learning_items/mengantar*",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-mengantar",
@@ -767,8 +767,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"mengantar*\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"wegbrengen / begeleiden\",\"translation_en\":\"take, accompany\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/merah-muda::lesson-7/section-vocabulary::item-merah-muda",
-    "source_ref": "learning_items/merah-muda",
+    "content_unit_key": "learning_items/merah muda::lesson-7/section-vocabulary::item-merah-muda",
+    "source_ref": "learning_items/merah muda",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-merah-muda",
@@ -782,8 +782,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"merah muda\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"lichtrood / roze\",\"translation_en\":\"light red, pink\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"adjective\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/meter-meter::lesson-7/section-vocabulary::item-meter-meter",
-    "source_ref": "learning_items/meter-meter",
+    "content_unit_key": "learning_items/meter (mèter)::lesson-7/section-vocabulary::item-meter-meter",
+    "source_ref": "learning_items/meter (mèter)",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-meter-meter",
@@ -1127,8 +1127,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"waktu\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"tijd\",\"translation_en\":\"time\",\"source_page\":5,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A2\"}"
   },
   {
-    "content_unit_key": "learning_items/tidak-apa-apa::lesson-7/section-vocabulary::item-tidak-apa-apa",
-    "source_ref": "learning_items/tidak-apa-apa",
+    "content_unit_key": "learning_items/tidak apa-apa::lesson-7/section-vocabulary::item-tidak-apa-apa",
+    "source_ref": "learning_items/tidak apa-apa",
     "source_section_ref": "lesson-7/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tidak-apa-apa",

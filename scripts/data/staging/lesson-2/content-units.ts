@@ -144,8 +144,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"title\":\"Cultuur: Boeddhisme en de Borobudur\",\"order_index\":10,\"content\":{\"type\":\"text\",\"intro\":\"Het boeddhisme ontstond in de 6e eeuw voor Christus en verspreidde zich van Noord-India over heel Azie. Het is een verlossingsleer die ervan uitgaat dat de mens na de dood telkens herboren wordt (reincarnatie). Tijdens het leven ondervindt de mens keer op keer leed: teleurstellingen, liefdesverdriet, ziekte of dood. Om zichzelf van deze lijdensweg te verlossen, kan men proberen zich volledig te onthechten van al het aardse (zowel materieel als geestelijk). Heeft men volledige onthechting bereikt dan gaat men op in het Nirwana. Het Nirwana is een toestand waarin absolute stilte heerst en van waaruit men nooit meer wordt herboren.\",\"paragraphs\":[\"Om deze onthechting te bereiken, heeft Boeddha een leerproces van diverse stadia uitgewerkt. Deze stadia worden onder andere in de bouwvorm van de Borobudur weerspiegeld.\",\"Het boeddhisme kent twee hoofdstromingen: het Hinayana, de leer van het \\\"Kleine Wiel\\\", en het Mahayana, de leer van het \\\"Grote Wiel\\\". Het wiel is het symbool van het boeddhisme en staat voor de wijsheid van Boeddha. Het Hinayana houdt zich zo veel mogelijk aan de leer van Boeddha en wordt beschouwd als een strenge leer. Bij het Mahayana zijn lokale opvattingen en gebruiken toegestaan. Het Mahayana stelt het welzijn van de maatschappij boven dat van de enkeling (in tegenstelling tot het Hinayana waar individuele onthechting centraal staat).\",\"Het boeddhisme werd vermoedelijk in de 4e eeuw na Christus in Indonesie geintroduceerd. In het rijk van Srivijaya (7e-8e eeuw), dat naar men aanneemt gevestigd was op Sumatra, ontstond zelfs een bekend boeddhistisch-religieus centrum.\",\"Bij de Borobudur, in Midden-Java, moeten vroeger op het grote open veld rondom het complex vele houten gebouwen voor monniken en pelgrims hebben gestaan. De Borobudur werd gebouwd in de 8e eeuw na Christus. Het bouwen ervan wordt gerekend tot een van de grootste prestaties van de mensheid. Voor de bouw zijn vermoedelijk gedurende tientallen jaren meer dan 50.000 vakbekwame werklieden ingeschakeld.\",\"Elke galerij is versierd met beeldhouwwerk tot aan het hoogste terras waar de sfeer van de vormloosheid heerst en de punt van de stupa het oog leidt naar de onmetelijke wereld boven ons.\"],\"borobudur_levels\":[{\"code\":\"A\",\"name\":\"Kamadhatu\",\"dutch\":\"sfeer van de begeerte\"},{\"code\":\"B\",\"name\":\"Rupadhatu\",\"dutch\":\"sfeer van de vorm\"},{\"code\":\"C\",\"name\":\"Arupadhatu\",\"dutch\":\"sfeer van de vormloosheid\"}]}}"
   },
   {
-    "content_unit_key": "learning_items/di-mana::lesson-2/section-vocabulary::item-di-mana",
-    "source_ref": "learning_items/di-mana",
+    "content_unit_key": "learning_items/di mana?::lesson-2/section-vocabulary::item-di-mana",
+    "source_ref": "learning_items/di mana?",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-di-mana",
@@ -294,8 +294,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"sudah\",\"item_type\":\"word\",\"translation_nl\":\"al/reeds\",\"context_type\":\"vocabulary_list\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"particle\",\"level\":\"A1\",\"translation_en\":\"already\"}"
   },
   {
-    "content_unit_key": "learning_items/selamat-siang::lesson-2/section-vocabulary::item-selamat-siang",
-    "source_ref": "learning_items/selamat-siang",
+    "content_unit_key": "learning_items/selamat siang::lesson-2/section-vocabulary::item-selamat-siang",
+    "source_ref": "learning_items/selamat siang",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-selamat-siang",
@@ -309,8 +309,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"selamat siang\",\"item_type\":\"phrase\",\"translation_nl\":\"goedendag\",\"context_type\":\"vocabulary_list\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"greeting\",\"level\":\"A1\",\"translation_en\":\"good afternoon\"}"
   },
   {
-    "content_unit_key": "learning_items/empat-belas::lesson-2/section-vocabulary::item-empat-belas",
-    "source_ref": "learning_items/empat-belas",
+    "content_unit_key": "learning_items/empat belas::lesson-2/section-vocabulary::item-empat-belas",
+    "source_ref": "learning_items/empat belas",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-empat-belas",
@@ -324,8 +324,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"empat belas\",\"item_type\":\"phrase\",\"translation_nl\":\"veertien\",\"context_type\":\"lesson_snippet\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"fourteen\"}"
   },
   {
-    "content_unit_key": "learning_items/delapan-belas::lesson-2/section-vocabulary::item-delapan-belas",
-    "source_ref": "learning_items/delapan-belas",
+    "content_unit_key": "learning_items/delapan belas::lesson-2/section-vocabulary::item-delapan-belas",
+    "source_ref": "learning_items/delapan belas",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-delapan-belas",
@@ -339,8 +339,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"delapan belas\",\"item_type\":\"phrase\",\"translation_nl\":\"achttien\",\"context_type\":\"lesson_snippet\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"eighteen\"}"
   },
   {
-    "content_unit_key": "learning_items/dua-puluh::lesson-2/section-vocabulary::item-dua-puluh",
-    "source_ref": "learning_items/dua-puluh",
+    "content_unit_key": "learning_items/dua puluh::lesson-2/section-vocabulary::item-dua-puluh",
+    "source_ref": "learning_items/dua puluh",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-dua-puluh",
@@ -504,8 +504,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"sakit\",\"item_type\":\"word\",\"translation_nl\":\"ziek/pijn\",\"context_type\":\"vocabulary_list\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"adjective\",\"level\":\"A1\",\"translation_en\":\"sick\"}"
   },
   {
-    "content_unit_key": "learning_items/sama-dengan::lesson-2/section-vocabulary::item-sama-dengan",
-    "source_ref": "learning_items/sama-dengan",
+    "content_unit_key": "learning_items/sama dengan::lesson-2/section-vocabulary::item-sama-dengan",
+    "source_ref": "learning_items/sama dengan",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-sama-dengan",
@@ -564,8 +564,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"tas\",\"item_type\":\"word\",\"translation_nl\":\"tas\",\"context_type\":\"cloze\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"bag\"}"
   },
   {
-    "content_unit_key": "learning_items/saya-pulang-dulu::lesson-2/section-vocabulary::item-saya-pulang-dulu",
-    "source_ref": "learning_items/saya-pulang-dulu",
+    "content_unit_key": "learning_items/saya pulang dulu::lesson-2/section-vocabulary::item-saya-pulang-dulu",
+    "source_ref": "learning_items/saya pulang dulu",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-saya-pulang-dulu",
@@ -609,8 +609,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"ada\",\"item_type\":\"word\",\"translation_nl\":\"er is/er zijn\",\"context_type\":\"cloze\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A1\",\"translation_en\":\"there is/there are\"}"
   },
   {
-    "content_unit_key": "learning_items/sembilan-belas::lesson-2/section-vocabulary::item-sembilan-belas",
-    "source_ref": "learning_items/sembilan-belas",
+    "content_unit_key": "learning_items/sembilan belas::lesson-2/section-vocabulary::item-sembilan-belas",
+    "source_ref": "learning_items/sembilan belas",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-sembilan-belas",
@@ -789,8 +789,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"tomat\",\"item_type\":\"word\",\"translation_nl\":\"tomaat\",\"context_type\":\"vocabulary_list\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"tomato\"}"
   },
   {
-    "content_unit_key": "learning_items/dari-mana::lesson-2/section-vocabulary::item-dari-mana",
-    "source_ref": "learning_items/dari-mana",
+    "content_unit_key": "learning_items/dari mana?::lesson-2/section-vocabulary::item-dari-mana",
+    "source_ref": "learning_items/dari mana?",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-dari-mana",
@@ -804,8 +804,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"dari mana?\",\"item_type\":\"phrase\",\"translation_nl\":\"waar vandaan?\",\"context_type\":\"lesson_snippet\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"question_word\",\"level\":\"A1\",\"translation_en\":\"where from?\"}"
   },
   {
-    "content_unit_key": "learning_items/siapa::lesson-2/section-vocabulary::item-siapa",
-    "source_ref": "learning_items/siapa",
+    "content_unit_key": "learning_items/siapa?::lesson-2/section-vocabulary::item-siapa",
+    "source_ref": "learning_items/siapa?",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-siapa",
@@ -819,8 +819,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"siapa?\",\"item_type\":\"word\",\"translation_nl\":\"wie?\",\"context_type\":\"lesson_snippet\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"question_word\",\"level\":\"A1\",\"translation_en\":\"who?\"}"
   },
   {
-    "content_unit_key": "learning_items/dua-belas::lesson-2/section-vocabulary::item-dua-belas",
-    "source_ref": "learning_items/dua-belas",
+    "content_unit_key": "learning_items/dua belas::lesson-2/section-vocabulary::item-dua-belas",
+    "source_ref": "learning_items/dua belas",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-dua-belas",
@@ -834,8 +834,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"dua belas\",\"item_type\":\"phrase\",\"translation_nl\":\"twaalf\",\"context_type\":\"lesson_snippet\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"twelve\"}"
   },
   {
-    "content_unit_key": "learning_items/enam-belas::lesson-2/section-vocabulary::item-enam-belas",
-    "source_ref": "learning_items/enam-belas",
+    "content_unit_key": "learning_items/enam belas::lesson-2/section-vocabulary::item-enam-belas",
+    "source_ref": "learning_items/enam belas",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-enam-belas",
@@ -999,8 +999,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"turis\",\"item_type\":\"word\",\"translation_nl\":\"toerist\",\"context_type\":\"vocabulary_list\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"tourist\"}"
   },
   {
-    "content_unit_key": "learning_items/tiga-belas::lesson-2/section-vocabulary::item-tiga-belas",
-    "source_ref": "learning_items/tiga-belas",
+    "content_unit_key": "learning_items/tiga belas::lesson-2/section-vocabulary::item-tiga-belas",
+    "source_ref": "learning_items/tiga belas",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tiga-belas",
@@ -1014,8 +1014,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"tiga belas\",\"item_type\":\"phrase\",\"translation_nl\":\"dertien\",\"context_type\":\"lesson_snippet\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"thirteen\"}"
   },
   {
-    "content_unit_key": "learning_items/tujuh-belas::lesson-2/section-vocabulary::item-tujuh-belas",
-    "source_ref": "learning_items/tujuh-belas",
+    "content_unit_key": "learning_items/tujuh belas::lesson-2/section-vocabulary::item-tujuh-belas",
+    "source_ref": "learning_items/tujuh belas",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tujuh-belas",
@@ -1059,8 +1059,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"dokter\",\"item_type\":\"word\",\"translation_nl\":\"dokter/arts\",\"context_type\":\"vocabulary_list\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\",\"translation_en\":\"doctor\"}"
   },
   {
-    "content_unit_key": "learning_items/sampai-bertemu-lagi::lesson-2/section-vocabulary::item-sampai-bertemu-lagi",
-    "source_ref": "learning_items/sampai-bertemu-lagi",
+    "content_unit_key": "learning_items/sampai bertemu lagi::lesson-2/section-vocabulary::item-sampai-bertemu-lagi",
+    "source_ref": "learning_items/sampai bertemu lagi",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-sampai-bertemu-lagi",
@@ -1074,8 +1074,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"sampai bertemu lagi\",\"item_type\":\"phrase\",\"translation_nl\":\"tot ziens\",\"context_type\":\"vocabulary_list\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"greeting\",\"level\":\"A1\",\"translation_en\":\"goodbye\"}"
   },
   {
-    "content_unit_key": "learning_items/lima-belas::lesson-2/section-vocabulary::item-lima-belas",
-    "source_ref": "learning_items/lima-belas",
+    "content_unit_key": "learning_items/lima belas::lesson-2/section-vocabulary::item-lima-belas",
+    "source_ref": "learning_items/lima belas",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-lima-belas",
@@ -1089,8 +1089,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"lima belas\",\"item_type\":\"phrase\",\"translation_nl\":\"vijftien\",\"context_type\":\"lesson_snippet\",\"source_page\":2,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\",\"translation_en\":\"fifteen\"}"
   },
   {
-    "content_unit_key": "learning_items/di-sana::lesson-2/section-vocabulary::item-di-sana",
-    "source_ref": "learning_items/di-sana",
+    "content_unit_key": "learning_items/di sana::lesson-2/section-vocabulary::item-di-sana",
+    "source_ref": "learning_items/di sana",
     "source_section_ref": "lesson-2/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-di-sana",

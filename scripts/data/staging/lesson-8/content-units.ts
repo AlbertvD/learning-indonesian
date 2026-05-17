@@ -92,8 +92,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"title\":\"Oefeningen\",\"order_index\":6,\"content\":{\"type\":\"exercises\",\"sections\":[{\"type\":\"grammar_drill\",\"items\":[{\"answer\":\"Mobil ini cepat / Mobil ini lebih cepat daripada mobil itu / Mobil ini paling cepat (of: tercepat)\",\"prompt\":\"auto - snel\"},{\"answer\":\"Kursi ini tua / Kursi ini lebih tua daripada kursi itu / Kursi ini paling tua (of: tertua)\",\"prompt\":\"stoel - oud\"},{\"answer\":\"Buku ini mudah / Buku ini lebih mudah daripada buku itu / Buku ini paling mudah (of: termudah)\",\"prompt\":\"boek - makkelijk\"},{\"answer\":\"Hotel ini mahal / Hotel ini lebih mahal daripada hotel itu / Hotel ini paling mahal (of: termahal)\",\"prompt\":\"hotel - duur\"},{\"answer\":\"Sekolah ini bagus / Sekolah ini lebih bagus daripada sekolah itu / Sekolah ini paling bagus (of: terbagus)\",\"prompt\":\"school - goed\"},{\"answer\":\"Koper ini penuh / Koper ini lebih penuh daripada koper itu / Koper ini paling penuh\",\"prompt\":\"koffer - vol\"},{\"answer\":\"Negara ini besar / Negara ini lebih besar daripada negara itu / Negara ini paling besar (of: terbesar)\",\"prompt\":\"land - groot\"},{\"answer\":\"Pisang ini masak / Pisang ini lebih masak daripada pisang itu / Pisang ini paling masak\",\"prompt\":\"banaan - rijp\"},{\"answer\":\"Piring ini murah / Piring ini lebih murah daripada piring itu / Piring ini paling murah (of: termurah)\",\"prompt\":\"bord - goedkoop\"},{\"answer\":\"Warna ini muda / Warna ini lebih muda daripada warna itu / Warna ini paling muda\",\"prompt\":\"kleur - licht\"}],\"title\":\"Oefening I\",\"instruction\":\"Maak drie zinnen met trappen van vergelijking. Contoh: huis - groot -> Rumah ini besar / Rumah ini lebih besar daripada rumah itu / Rumah ini paling besar (of: terbesar)\"},{\"type\":\"conversation\",\"title\":\"Oefening II\",\"instruction\":\"Spreekvaardigheid. Vertel in het Indonesisch de route van uw huis naar het dichtstbijzijnde warenhuis. Gebruik termen als links, rechts, langs het water en dergelijke. Maak minimaal vijf en maximaal tien zinnen.\"},{\"type\":\"translation\",\"items\":[{\"answer\":\"Koper saya sama berat dengan kopermu\",\"prompt\":\"Mijn koffer is even zwaar als jouw koffer\"},{\"answer\":\"Kakak saya jauh lebih besar daripada temannya\",\"prompt\":\"Mijn oudere broer is veel groter dan haar vriend\"},{\"answer\":\"Mobilnya sama cepat dengan mobil kami\",\"prompt\":\"Zijn auto is even snel als onze auto\"},{\"answer\":\"Hotel lama ini lebih murah daripada hotel baru\",\"prompt\":\"Dit oude hotel is goedkoper dan het nieuwe hotel\"},{\"answer\":\"Tangga ini lebih panjang daripada tangga di depan sekolah kami\",\"prompt\":\"Deze trap is langer dan de trap aan de voorkant van onze school\"},{\"answer\":\"Ibu ini sama tua dengan nenek saya\",\"prompt\":\"Deze dame is even oud als mijn grootmoeder\"},{\"answer\":\"Berapa tahun kamu lebih tua daripada adikmu?\",\"prompt\":\"Hoeveel jaren ben jij ouder dan jouw broertje?\"},{\"answer\":\"Dulu orang lebih kecil daripada sekarang\",\"prompt\":\"Vroeger waren de mensen kleiner dan tegenwoordig\"},{\"answer\":\"Saya rasa kalian harus datang besok\",\"prompt\":\"Ik ben van mening dat jullie morgen moeten komen\"},{\"answer\":\"Minggu ini ada lebih banyak pesta daripada minggu lalu\",\"prompt\":\"Deze week zijn er meer feesten dan vorige week\"}],\"title\":\"Oefening III\",\"instruction\":\"Vertaal naar het Indonesisch.\"},{\"type\":\"translation\",\"items\":[{\"answer\":\"Pada bulan Mei Henk pergi ke Indonesia. Dia naik kapal terbang Garuda. Di Jakarta dia tinggal di hotel baru yang besar. Sesudah enam hari dia pergi ke Surabaya. Di sana tinggal temannya yang bernama Mardi.\",\"prompt\":\"In mei gaat Henk naar Indonesie. Hij vliegt met een vliegtuig van Garuda. In Jakarta verblijft hij in een nieuw, groot hotel. Na zes dagen gaat hij naar Surabaya. Daar woont een vriend van hem die Mardi heet.\"},{\"answer\":\"Selamat malam! Apa kabar? Baik, terima kasih. Anda sudah ke kraton di Yogya? Belum, besok kami pergi ke sana. Oh, kalau begitu jangan lupa juga pergi ke istana.\",\"prompt\":\"Goedenavond! Hoe gaat het? Goed, dank u wel. Bent u al naar de kraton in Yogya geweest? Nog niet, morgen gaan we daarheen. Oh, in dat geval moet u niet vergeten ook naar het paleis te gaan.\"},{\"answer\":\"Nanti malam kami mau makan di warung Pak Hasan. Makanan di sana enak sekali. Karena itu selalu ramai sekali. Warung Pak Hasan lebih kecil daripada 'Satay House' yang baru.\",\"prompt\":\"Wij gaan vanavond eten in het eethuisje van Pak Hasan. Het eten is daar erg lekker. Het is daarom altijd erg druk. Het eethuisje van Pak Hasan is kleiner dan het nieuwe 'Satay House'.\"},{\"answer\":\"Hari ini mereka sudah ke pasar. Barangnya sekarang ada di dapur. Mereka juga sudah beli hadiah ulang tahun untuk Susi. Hari Rabu adalah hari ulang tahun Susi.\",\"prompt\":\"Zij zijn vandaag naar de markt geweest. De spullen staan nu in de keuken. Ze hebben ook een verjaardagskado gekocht voor Susi. Woensdag is de verjaardag van Susi.\"},{\"answer\":\"Pak, kami cari kantor pos. Yang baru atau yang lama? Kantor pos baru paling besar di kota, tetapi jauh sekali dari sini. Kantor pos lama dekat. Pertama Bapak ke kiri sampai jembatan, sesudah itu ke kanan. Kantor pos lama di sebelah kanan Pasar Senen. Terima kasih, Pak.\",\"prompt\":\"Meneer, wij zoeken het postkantoor. Het nieuwe of het oude? Het nieuwe postkantoor is het grootste in de stad, maar is erg ver hier vandaan. Het oude postkantoor is dichtbij. Eerst gaat u naar links tot aan de brug, daarna naar rechts. Het oude postkantoor ligt rechts van Pasar Senen. Dank u wel, meneer.\"}],\"title\":\"Oefening IV\",\"instruction\":\"Vertaal naar het Indonesisch.\"}]}}"
   },
   {
-    "content_unit_key": "learning_items/mas-batik-di-lantai-berapa-ya-mas::lesson-8/section-dialogue::item-mas-batik-di-lantai-berapa-ya-mas",
-    "source_ref": "learning_items/mas-batik-di-lantai-berapa-ya-mas",
+    "content_unit_key": "learning_items/mas, batik di lantai berapa, ya mas?::lesson-8/section-dialogue::item-mas-batik-di-lantai-berapa-ya-mas",
+    "source_ref": "learning_items/mas, batik di lantai berapa, ya mas?",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-mas-batik-di-lantai-berapa-ya-mas",
@@ -107,8 +107,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Mas, batik di lantai berapa, ya Mas?\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Meneer, op welke verdieping is de batik, meneer?\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/di-lantai-empat-bu::lesson-8/section-dialogue::item-di-lantai-empat-bu",
-    "source_ref": "learning_items/di-lantai-empat-bu",
+    "content_unit_key": "learning_items/di lantai empat, bu.::lesson-8/section-dialogue::item-di-lantai-empat-bu",
+    "source_ref": "learning_items/di lantai empat, bu.",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-di-lantai-empat-bu",
@@ -122,8 +122,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Di lantai empat, Bu.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Op de vierde verdieping, mevrouw.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/aduh-kalau-begitu-di-mana-lift::lesson-8/section-dialogue::item-aduh-kalau-begitu-di-mana-lift",
-    "source_ref": "learning_items/aduh-kalau-begitu-di-mana-lift",
+    "content_unit_key": "learning_items/aduh, kalau begitu, di mana lift?::lesson-8/section-dialogue::item-aduh-kalau-begitu-di-mana-lift",
+    "source_ref": "learning_items/aduh, kalau begitu, di mana lift?",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-aduh-kalau-begitu-di-mana-lift",
@@ -137,8 +137,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Aduh, kalau begitu, di mana lift?\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Och, waar is dan de lift?\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga::lesson-8/section-dialogue::item-lift-di-situ-bu-di-sebelah-kiri-tangga",
-    "source_ref": "learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga",
+    "content_unit_key": "learning_items/lift di situ, bu, di sebelah kiri tangga.::lesson-8/section-dialogue::item-lift-di-situ-bu-di-sebelah-kiri-tangga",
+    "source_ref": "learning_items/lift di situ, bu, di sebelah kiri tangga.",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-lift-di-situ-bu-di-sebelah-kiri-tangga",
@@ -152,8 +152,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Lift di situ, Bu, di sebelah kiri tangga.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"De lift is daar, mevrouw, links naast de trap.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/terima-kasih-mas::lesson-8/section-dialogue::item-terima-kasih-mas",
-    "source_ref": "learning_items/terima-kasih-mas",
+    "content_unit_key": "learning_items/terima kasih, mas.::lesson-8/section-dialogue::item-terima-kasih-mas",
+    "source_ref": "learning_items/terima kasih, mas.",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-terima-kasih-mas",
@@ -167,8 +167,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Terima kasih, Mas.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Dank u wel, meneer.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun::lesson-8/section-dialogue::item-tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun",
-    "source_ref": "learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun",
+    "content_unit_key": "learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!::lesson-8/section-dialogue::item-tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun",
+    "source_ref": "learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun",
@@ -182,8 +182,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Tin, coba kita cari kain panjang yang bagus, ya. Kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Tin, laten we een mooie sarong zoeken, goed? Die sarong is een verjaardagscadeau voor oma, ze wordt bijna 76 jaar oud!\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok::lesson-8/section-dialogue::item-bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok",
-    "source_ref": "learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok",
+    "content_unit_key": "learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.::lesson-8/section-dialogue::item-bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok",
+    "source_ref": "learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok",
@@ -197,8 +197,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Bu, kami cari kain panjang tetapi yang tidak terlalu modern. Kalau ada, kami ingin yang sedikit tradisional. Maksud saya harganya kira-kira Rp 25.000. Batik yang pakai warna banyak barangkali juga tidak cocok.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Mevrouw, we zoeken een sarong die niet al te modern is. Als u er een hebt, graag iets wat traditioneler is. Ik bedoel ongeveer Rp 25.000. Batik met veel kleuren zal waarschijnlijk ook niet goed uitkomen.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus::lesson-8/section-dialogue::item-silakan-bu-di-sini-banyak-kain-batik-yang-halus",
-    "source_ref": "learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus",
+    "content_unit_key": "learning_items/silakan, bu, di sini banyak kain batik yang halus.::lesson-8/section-dialogue::item-silakan-bu-di-sini-banyak-kain-batik-yang-halus",
+    "source_ref": "learning_items/silakan, bu, di sini banyak kain batik yang halus.",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-silakan-bu-di-sini-banyak-kain-batik-yang-halus",
@@ -212,8 +212,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Silakan, Bu, di sini banyak kain batik yang halus.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Alstublieft, mevrouw, hier zijn veel mooie batikstoften.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/ini-tin-yang-ini-bagus-sekali::lesson-8/section-dialogue::item-ini-tin-yang-ini-bagus-sekali",
-    "source_ref": "learning_items/ini-tin-yang-ini-bagus-sekali",
+    "content_unit_key": "learning_items/ini, tin, yang ini bagus sekali.::lesson-8/section-dialogue::item-ini-tin-yang-ini-bagus-sekali",
+    "source_ref": "learning_items/ini, tin, yang ini bagus sekali.",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-ini-tin-yang-ini-bagus-sekali",
@@ -227,8 +227,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Ini, Tin, yang ini bagus sekali.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Deze, Tin, deze is echt prachtig.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong::lesson-8/section-dialogue::item-o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong",
-    "source_ref": "learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong",
+    "content_unit_key": "learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!::lesson-8/section-dialogue::item-o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong",
+    "source_ref": "learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong",
@@ -242,8 +242,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"O, iya, bagus sekali, tetapi yang ini lebih bagus dong!\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Ja, die is echt mooi, maar deze is nog mooier!\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju::lesson-8/section-dialogue::item-betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju",
-    "source_ref": "learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju",
+    "content_unit_key": "learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?::lesson-8/section-dialogue::item-betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju",
+    "source_ref": "learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju",
@@ -257,8 +257,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Betul, tetapi saya rasa warnanya terlalu banyak. Yang ini lebih bagus atau kamu kurang setuju?\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Ja, dat klopt, maar volgens mij zijn de kleuren te veel. Is deze beter of ben je het niet eens?\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal::lesson-8/section-dialogue::item-bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal",
-    "source_ref": "learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal",
+    "content_unit_key": "learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.::lesson-8/section-dialogue::item-bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal",
+    "source_ref": "learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal",
@@ -272,8 +272,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Bu, bagus betul, tetapi lihat dong! Harganya, kok, Rp 46.500. Jadi, amat mahal.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Mevrouw, deze is echt prachtig, maar kijk dan! De prijs is Rp 46.500. Dus erg duur.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000::lesson-8/section-dialogue::item-tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000",
-    "source_ref": "learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000",
+    "content_unit_key": "learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.::lesson-8/section-dialogue::item-tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000",
+    "source_ref": "learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000",
@@ -287,8 +287,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Tin, Tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas Rp 25.000.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Tin, Tin, probeer deze geel-bruine. Deze is het mooiste en de prijs is precies Rp 25.000.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/benar-bu-kain-ini-warnanya-paling-bagus::lesson-8/section-dialogue::item-benar-bu-kain-ini-warnanya-paling-bagus",
-    "source_ref": "learning_items/benar-bu-kain-ini-warnanya-paling-bagus",
+    "content_unit_key": "learning_items/benar, bu. kain ini warnanya paling bagus!::lesson-8/section-dialogue::item-benar-bu-kain-ini-warnanya-paling-bagus",
+    "source_ref": "learning_items/benar, bu. kain ini warnanya paling bagus!",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-benar-bu-kain-ini-warnanya-paling-bagus",
@@ -302,8 +302,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Benar, bu. Kain ini warnanya paling bagus!\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Ja, mevrouw. De kleuren van deze stof zijn het mooiste!\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar::lesson-8/section-dialogue::item-coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar",
-    "source_ref": "learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar",
+    "content_unit_key": "learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?::lesson-8/section-dialogue::item-coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar",
+    "source_ref": "learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar",
@@ -317,8 +317,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Coba kita beli yang ini saja. Bu, kami mau beli kain ini. Di mana bisa membayar?\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Laten we deze maar kopen. Mevrouw, we willen deze stof kopen. Waar kunnen we betalen?\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/di-sana-bu-ini-bon-untuk-kasir::lesson-8/section-dialogue::item-di-sana-bu-ini-bon-untuk-kasir",
-    "source_ref": "learning_items/di-sana-bu-ini-bon-untuk-kasir",
+    "content_unit_key": "learning_items/di sana, bu. ini bon untuk kasir.::lesson-8/section-dialogue::item-di-sana-bu-ini-bon-untuk-kasir",
+    "source_ref": "learning_items/di sana, bu. ini bon untuk kasir.",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-di-sana-bu-ini-bon-untuk-kasir",
@@ -332,8 +332,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Di sana, Bu. Ini bon untuk kasir.\",\"item_type\":\"dialogue_chunk\",\"context_type\":\"dialogue\",\"translation_nl\":\"Daar, mevrouw. Dit is een bon voor de kassa.\",\"translation_en\":\"\",\"source_page\":3,\"review_status\":\"published\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali::lesson-8/section-dialogue::item-terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali",
-    "source_ref": "learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali",
+    "content_unit_key": "learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!::lesson-8/section-dialogue::item-terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali",
+    "source_ref": "learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!",
     "source_section_ref": "lesson-8/section-dialogue",
     "unit_kind": "learning_item",
     "unit_slug": "item-terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali",
@@ -572,8 +572,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"hijau\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"groen\",\"translation_en\":\"green\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"adjective\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/iya-ya::lesson-8/section-vocabulary::item-iya-ya",
-    "source_ref": "learning_items/iya-ya",
+    "content_unit_key": "learning_items/iya (ya)::lesson-8/section-vocabulary::item-iya-ya",
+    "source_ref": "learning_items/iya (ya)",
     "source_section_ref": "lesson-8/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-iya-ya",
@@ -677,8 +677,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"kok\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"warempel / goh (interjectie)\",\"translation_en\":\"really\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"particle\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kurang-lebih::lesson-8/section-vocabulary::item-kurang-lebih",
-    "source_ref": "learning_items/kurang-lebih",
+    "content_unit_key": "learning_items/kurang lebih::lesson-8/section-vocabulary::item-kurang-lebih",
+    "source_ref": "learning_items/kurang lebih",
     "source_section_ref": "lesson-8/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kurang-lebih",
@@ -692,8 +692,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"kurang lebih\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"plusminus\",\"translation_en\":\"approximately\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"adverb\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/lebih-bagus::lesson-8/section-vocabulary::item-lebih-bagus",
-    "source_ref": "learning_items/lebih-bagus",
+    "content_unit_key": "learning_items/lebih bagus::lesson-8/section-vocabulary::item-lebih-bagus",
+    "source_ref": "learning_items/lebih bagus",
     "source_section_ref": "lesson-8/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-lebih-bagus",
@@ -707,8 +707,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"lebih bagus\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"mooier\",\"translation_en\":\"prettier\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"adjective\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/lebih-banyak::lesson-8/section-vocabulary::item-lebih-banyak",
-    "source_ref": "learning_items/lebih-banyak",
+    "content_unit_key": "learning_items/lebih banyak::lesson-8/section-vocabulary::item-lebih-banyak",
+    "source_ref": "learning_items/lebih banyak",
     "source_section_ref": "lesson-8/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-lebih-banyak",
@@ -767,8 +767,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"maksud\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"bedoeling\",\"translation_en\":\"intention\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/membayar::lesson-8/section-vocabulary::item-membayar",
-    "source_ref": "learning_items/membayar",
+    "content_unit_key": "learning_items/membayar*::lesson-8/section-vocabulary::item-membayar",
+    "source_ref": "learning_items/membayar*",
     "source_section_ref": "lesson-8/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-membayar",
@@ -782,8 +782,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"membayar*\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"betalen\",\"translation_en\":\"pay\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/modern-modern::lesson-8/section-vocabulary::item-modern-modern",
-    "source_ref": "learning_items/modern-modern",
+    "content_unit_key": "learning_items/modern (modèrn)::lesson-8/section-vocabulary::item-modern-modern",
+    "source_ref": "learning_items/modern (modèrn)",
     "source_section_ref": "lesson-8/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-modern-modern",
@@ -797,8 +797,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"modern (modèrn)\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"modern\",\"translation_en\":\"modern\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"adjective\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/nenek-nenek::lesson-8/section-vocabulary::item-nenek-nenek",
-    "source_ref": "learning_items/nenek-nenek",
+    "content_unit_key": "learning_items/nenek (nènèk)::lesson-8/section-vocabulary::item-nenek-nenek",
+    "source_ref": "learning_items/nenek (nènèk)",
     "source_section_ref": "lesson-8/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-nenek-nenek",
@@ -902,8 +902,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"rasa\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"voelen / gevoelen\",\"translation_en\":\"feel / sense\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/sarinah-jaya::lesson-8/section-vocabulary::item-sarinah-jaya",
-    "source_ref": "learning_items/sarinah-jaya",
+    "content_unit_key": "learning_items/sarinah jaya::lesson-8/section-vocabulary::item-sarinah-jaya",
+    "source_ref": "learning_items/sarinah jaya",
     "source_section_ref": "lesson-8/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-sarinah-jaya",
@@ -1052,8 +1052,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"warung\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"eethuisje\",\"translation_en\":\"small restaurant\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/harga-pas::lesson-8/section-vocabulary::item-harga-pas",
-    "source_ref": "learning_items/harga-pas",
+    "content_unit_key": "learning_items/harga pas::lesson-8/section-vocabulary::item-harga-pas",
+    "source_ref": "learning_items/harga pas",
     "source_section_ref": "lesson-8/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-harga-pas",
@@ -1067,8 +1067,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"harga pas\",\"item_type\":\"phrase\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"vaste prijs\",\"translation_en\":\"fixed price\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/hari-ulang-tahun-h-u-t::lesson-8/section-vocabulary::item-hari-ulang-tahun-h-u-t",
-    "source_ref": "learning_items/hari-ulang-tahun-h-u-t",
+    "content_unit_key": "learning_items/hari ulang tahun (h.u.t.)::lesson-8/section-vocabulary::item-hari-ulang-tahun-h-u-t",
+    "source_ref": "learning_items/hari ulang tahun (h.u.t.)",
     "source_section_ref": "lesson-8/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-hari-ulang-tahun-h-u-t",
@@ -1082,8 +1082,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"hari ulang tahun (H.U.T.)\",\"item_type\":\"phrase\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"verjaardag\",\"translation_en\":\"birthday\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kain-panjang::lesson-8/section-vocabulary::item-kain-panjang",
-    "source_ref": "learning_items/kain-panjang",
+    "content_unit_key": "learning_items/kain panjang::lesson-8/section-vocabulary::item-kain-panjang",
+    "source_ref": "learning_items/kain panjang",
     "source_section_ref": "lesson-8/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kain-panjang",
@@ -1097,8 +1097,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"kain panjang\",\"item_type\":\"phrase\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"gebatikte doek van speciaal formaat\",\"translation_en\":\"batik cloth of special format\",\"source_page\":4,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kalau-begitu::lesson-8/section-vocabulary::item-kalau-begitu",
-    "source_ref": "learning_items/kalau-begitu",
+    "content_unit_key": "learning_items/kalau begitu::lesson-8/section-vocabulary::item-kalau-begitu",
+    "source_ref": "learning_items/kalau begitu",
     "source_section_ref": "lesson-8/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kalau-begitu",

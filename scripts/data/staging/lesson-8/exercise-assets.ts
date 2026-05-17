@@ -86,8 +86,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -95,8 +95,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -104,8 +104,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -115,8 +115,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -124,8 +124,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -133,8 +133,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -142,8 +142,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -153,8 +153,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -162,8 +162,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/aduh-kalau-begitu-di-mana-lift:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/aduh, kalau begitu, di mana lift?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -596,8 +596,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -605,8 +605,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -614,8 +614,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -625,8 +625,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -634,8 +634,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -643,8 +643,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -652,8 +652,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -663,8 +663,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -672,8 +672,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/benar-bu-kain-ini-warnanya-paling-bagus:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/benar, bu. kain ini warnanya paling bagus!:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -681,8 +681,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -690,8 +690,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -699,8 +699,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -710,8 +710,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -719,8 +719,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -728,8 +728,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -737,8 +737,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -748,8 +748,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -757,8 +757,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/betul-tetapi-saya-rasa-warnanya-terlalu-banyak-yang-ini-lebih-bagus-atau-kamu-kurang-setuju:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/betul, tetapi saya rasa warnanya terlalu banyak. yang ini lebih bagus atau kamu kurang setuju?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -851,8 +851,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -860,8 +860,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -869,8 +869,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -880,8 +880,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -889,8 +889,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -898,8 +898,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -907,8 +907,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -918,8 +918,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -927,8 +927,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/bu-bagus-betul-tetapi-lihat-dong-harganya-kok-rp-46-500-jadi-amat-mahal:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bu, bagus betul, tetapi lihat dong! harganya, kok, rp 46.500. jadi, amat mahal.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -936,8 +936,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -945,8 +945,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -954,8 +954,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -965,8 +965,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -974,8 +974,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -983,8 +983,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -992,8 +992,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1003,8 +1003,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1012,8 +1012,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/bu-kami-cari-kain-panjang-tetapi-yang-tidak-terlalu-modern-kalau-ada-kami-ingin-yang-sedikit-tradisional-maksud-saya-harganya-kira-kira-rp-25-000-batik-yang-pakai-warna-banyak-barangkali-juga-tidak-cocok:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bu, kami cari kain panjang tetapi yang tidak terlalu modern. kalau ada, kami ingin yang sedikit tradisional. maksud saya harganya kira-kira rp 25.000. batik yang pakai warna banyak barangkali juga tidak cocok.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1106,8 +1106,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1115,8 +1115,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1124,8 +1124,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1135,8 +1135,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1144,8 +1144,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1153,8 +1153,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1162,8 +1162,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1173,8 +1173,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1182,8 +1182,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/coba-kita-beli-yang-ini-saja-bu-kami-mau-beli-kain-ini-di-mana-bisa-membayar:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/coba kita beli yang ini saja. bu, kami mau beli kain ini. di mana bisa membayar?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1276,8 +1276,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-lantai-empat-bu:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-lantai-empat-bu:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di lantai empat, bu.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di lantai empat, bu.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1285,8 +1285,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-lantai-empat-bu:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-lantai-empat-bu:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di lantai empat, bu.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di lantai empat, bu.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1294,8 +1294,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-lantai-empat-bu:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/di-lantai-empat-bu:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di lantai empat, bu.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/di lantai empat, bu.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1305,8 +1305,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-lantai-empat-bu:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-lantai-empat-bu:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di lantai empat, bu.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di lantai empat, bu.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1314,8 +1314,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-lantai-empat-bu:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-lantai-empat-bu:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di lantai empat, bu.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di lantai empat, bu.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1323,8 +1323,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-lantai-empat-bu:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-lantai-empat-bu:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di lantai empat, bu.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di lantai empat, bu.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1332,8 +1332,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-lantai-empat-bu:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/di-lantai-empat-bu:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di lantai empat, bu.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/di lantai empat, bu.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1343,8 +1343,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-lantai-empat-bu:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-lantai-empat-bu:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di lantai empat, bu.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di lantai empat, bu.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1352,8 +1352,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-lantai-empat-bu:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-lantai-empat-bu:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di lantai empat, bu.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di lantai empat, bu.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1361,8 +1361,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1370,8 +1370,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1379,8 +1379,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1390,8 +1390,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1399,8 +1399,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1408,8 +1408,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1417,8 +1417,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1428,8 +1428,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1437,8 +1437,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/di-sana-bu-ini-bon-untuk-kasir:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di sana, bu. ini bon untuk kasir.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1871,8 +1871,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harga-pas:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/harga-pas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harga pas:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/harga pas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1880,8 +1880,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harga-pas:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/harga-pas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harga pas:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/harga pas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1889,8 +1889,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harga-pas:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/harga-pas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harga pas:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/harga pas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1900,8 +1900,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harga-pas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/harga-pas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harga pas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/harga pas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1909,8 +1909,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harga-pas:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/harga-pas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harga pas:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/harga pas:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1918,8 +1918,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harga-pas:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/harga-pas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harga pas:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/harga pas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1927,8 +1927,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harga-pas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/harga-pas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harga pas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/harga pas:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1938,8 +1938,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harga-pas:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/harga-pas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harga pas:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/harga pas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1947,8 +1947,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/harga-pas:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/harga-pas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/harga pas:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/harga pas:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1956,8 +1956,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1965,8 +1965,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -1974,8 +1974,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -1985,8 +1985,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -1994,8 +1994,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2003,8 +2003,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2012,8 +2012,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2023,8 +2023,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2032,8 +2032,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/hari-ulang-tahun-h-u-t:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/hari ulang tahun (h.u.t.):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2126,8 +2126,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2135,8 +2135,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2144,8 +2144,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -2155,8 +2155,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2164,8 +2164,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2173,8 +2173,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2182,8 +2182,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2193,8 +2193,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2202,8 +2202,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/ini-tin-yang-ini-bagus-sekali:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/ini, tin, yang ini bagus sekali.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2211,8 +2211,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/iya-ya:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/iya-ya:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/iya (ya):form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/iya (ya):form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2220,8 +2220,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/iya-ya:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/iya-ya:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/iya (ya):form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/iya (ya):form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2229,8 +2229,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/iya-ya:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/iya-ya:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/iya (ya):form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/iya (ya):form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -2240,8 +2240,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/iya-ya:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/iya-ya:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/iya (ya):l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/iya (ya):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2249,8 +2249,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/iya-ya:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/iya-ya:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/iya (ya):l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/iya (ya):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2258,8 +2258,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/iya-ya:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/iya-ya:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/iya (ya):meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/iya (ya):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2267,8 +2267,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/iya-ya:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/iya-ya:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/iya (ya):meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/iya (ya):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2278,8 +2278,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/iya-ya:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/iya-ya:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/iya (ya):text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/iya (ya):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2287,8 +2287,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/iya-ya:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/iya-ya:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/iya (ya):text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/iya (ya):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2296,8 +2296,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kain-panjang:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kain-panjang:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kain panjang:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kain panjang:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2305,8 +2305,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kain-panjang:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kain-panjang:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kain panjang:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kain panjang:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2314,8 +2314,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kain-panjang:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/kain-panjang:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kain panjang:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kain panjang:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -2325,8 +2325,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kain-panjang:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kain-panjang:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kain panjang:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kain panjang:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2334,8 +2334,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kain-panjang:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kain-panjang:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kain panjang:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kain panjang:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2343,8 +2343,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kain-panjang:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kain-panjang:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kain panjang:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kain panjang:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2352,8 +2352,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kain-panjang:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/kain-panjang:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kain panjang:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/kain panjang:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2363,8 +2363,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kain-panjang:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kain-panjang:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kain panjang:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kain panjang:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2372,8 +2372,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kain-panjang:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kain-panjang:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kain panjang:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kain panjang:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2466,8 +2466,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2475,8 +2475,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2484,8 +2484,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -2495,8 +2495,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2504,8 +2504,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2513,8 +2513,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2522,8 +2522,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2533,8 +2533,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2542,8 +2542,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kalau-begitu:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kalau-begitu:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kalau begitu:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2976,8 +2976,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kurang-lebih:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kurang-lebih:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kurang lebih:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kurang lebih:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -2985,8 +2985,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kurang-lebih:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kurang-lebih:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kurang lebih:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kurang lebih:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -2994,8 +2994,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kurang-lebih:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/kurang-lebih:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kurang lebih:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kurang lebih:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -3005,8 +3005,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kurang-lebih:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kurang-lebih:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kurang lebih:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kurang lebih:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3014,8 +3014,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kurang-lebih:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kurang-lebih:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kurang lebih:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kurang lebih:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3023,8 +3023,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kurang-lebih:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kurang-lebih:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kurang lebih:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kurang lebih:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3032,8 +3032,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kurang-lebih:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/kurang-lebih:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kurang lebih:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/kurang lebih:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3043,8 +3043,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kurang-lebih:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/kurang-lebih:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kurang lebih:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/kurang lebih:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3052,8 +3052,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/kurang-lebih:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/kurang-lebih:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/kurang lebih:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kurang lebih:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3061,8 +3061,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-bagus:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lebih-bagus:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih bagus:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lebih bagus:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3070,8 +3070,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-bagus:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/lebih-bagus:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih bagus:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lebih bagus:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3079,8 +3079,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-bagus:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/lebih-bagus:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih bagus:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/lebih bagus:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -3090,8 +3090,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-bagus:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lebih-bagus:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih bagus:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lebih bagus:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3099,8 +3099,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-bagus:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/lebih-bagus:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih bagus:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lebih bagus:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3108,8 +3108,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-bagus:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lebih-bagus:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih bagus:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lebih bagus:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3117,8 +3117,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-bagus:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/lebih-bagus:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih bagus:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/lebih bagus:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3128,8 +3128,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-bagus:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/lebih-bagus:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih bagus:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lebih bagus:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3137,8 +3137,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-bagus:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lebih-bagus:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih bagus:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lebih bagus:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3146,8 +3146,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-banyak:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lebih-banyak:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih banyak:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lebih banyak:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3155,8 +3155,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-banyak:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/lebih-banyak:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih banyak:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lebih banyak:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3164,8 +3164,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-banyak:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/lebih-banyak:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih banyak:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/lebih banyak:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -3175,8 +3175,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-banyak:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lebih-banyak:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih banyak:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lebih banyak:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3184,8 +3184,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-banyak:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/lebih-banyak:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih banyak:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lebih banyak:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3193,8 +3193,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-banyak:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lebih-banyak:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih banyak:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lebih banyak:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3202,8 +3202,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-banyak:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/lebih-banyak:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih banyak:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/lebih banyak:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3213,8 +3213,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-banyak:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/lebih-banyak:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih banyak:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lebih banyak:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3222,8 +3222,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lebih-banyak:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lebih-banyak:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lebih banyak:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lebih banyak:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3231,8 +3231,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3240,8 +3240,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3249,8 +3249,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -3260,8 +3260,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3269,8 +3269,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3278,8 +3278,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3287,8 +3287,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3298,8 +3298,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3307,8 +3307,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/lift-di-situ-bu-di-sebelah-kiri-tangga:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lift di situ, bu, di sebelah kiri tangga.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3571,8 +3571,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3580,8 +3580,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3589,8 +3589,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -3600,8 +3600,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3609,8 +3609,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3618,8 +3618,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3627,8 +3627,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3638,8 +3638,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3647,8 +3647,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/mas-batik-di-lantai-berapa-ya-mas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/mas, batik di lantai berapa, ya mas?:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3656,8 +3656,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/membayar:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/membayar:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/membayar*:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/membayar*:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3665,8 +3665,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/membayar:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/membayar:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/membayar*:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/membayar*:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3674,8 +3674,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/membayar:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/membayar:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/membayar*:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/membayar*:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -3685,8 +3685,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/membayar:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/membayar:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/membayar*:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/membayar*:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3694,8 +3694,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/membayar:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/membayar:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/membayar*:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/membayar*:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3703,8 +3703,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/membayar:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/membayar:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/membayar*:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/membayar*:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3712,8 +3712,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/membayar:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/membayar:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/membayar*:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/membayar*:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3723,8 +3723,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/membayar:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/membayar:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/membayar*:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/membayar*:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3732,8 +3732,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/membayar:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/membayar:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/membayar*:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/membayar*:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3741,8 +3741,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/modern-modern:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/modern-modern:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/modern (modèrn):form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/modern (modèrn):form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3750,8 +3750,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/modern-modern:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/modern-modern:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/modern (modèrn):form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/modern (modèrn):form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3759,8 +3759,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/modern-modern:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/modern-modern:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/modern (modèrn):form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/modern (modèrn):form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -3770,8 +3770,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/modern-modern:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/modern-modern:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/modern (modèrn):l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/modern (modèrn):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3779,8 +3779,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/modern-modern:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/modern-modern:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/modern (modèrn):l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/modern (modèrn):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3788,8 +3788,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/modern-modern:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/modern-modern:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/modern (modèrn):meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/modern (modèrn):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3797,8 +3797,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/modern-modern:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/modern-modern:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/modern (modèrn):meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/modern (modèrn):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3808,8 +3808,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/modern-modern:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/modern-modern:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/modern (modèrn):text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/modern (modèrn):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3817,8 +3817,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/modern-modern:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/modern-modern:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/modern (modèrn):text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/modern (modèrn):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3826,8 +3826,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nenek-nenek:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/nenek-nenek:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nenek (nènèk):form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/nenek (nènèk):form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3835,8 +3835,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nenek-nenek:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/nenek-nenek:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nenek (nènèk):form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/nenek (nènèk):form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3844,8 +3844,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nenek-nenek:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/nenek-nenek:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nenek (nènèk):form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/nenek (nènèk):form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -3855,8 +3855,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nenek-nenek:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/nenek-nenek:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nenek (nènèk):l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/nenek (nènèk):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3864,8 +3864,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nenek-nenek:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/nenek-nenek:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nenek (nènèk):l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/nenek (nènèk):l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3873,8 +3873,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nenek-nenek:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/nenek-nenek:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nenek (nènèk):meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/nenek (nènèk):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3882,8 +3882,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nenek-nenek:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/nenek-nenek:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nenek (nènèk):meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/nenek (nènèk):meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3893,8 +3893,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nenek-nenek:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/nenek-nenek:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nenek (nènèk):text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/nenek (nènèk):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3902,8 +3902,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/nenek-nenek:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/nenek-nenek:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/nenek (nènèk):text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/nenek (nènèk):text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3911,8 +3911,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3920,8 +3920,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3929,8 +3929,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -3940,8 +3940,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3949,8 +3949,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3958,8 +3958,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3967,8 +3967,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -3978,8 +3978,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -3987,8 +3987,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/o-iya-bagus-sekali-tetapi-yang-ini-lebih-bagus-dong:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/o, iya, bagus sekali, tetapi yang ini lebih bagus dong!:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4506,8 +4506,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sarinah-jaya:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sarinah-jaya:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sarinah jaya:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sarinah jaya:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4515,8 +4515,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sarinah-jaya:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sarinah-jaya:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sarinah jaya:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sarinah jaya:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4524,8 +4524,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sarinah-jaya:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/sarinah-jaya:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sarinah jaya:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/sarinah jaya:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -4535,8 +4535,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sarinah-jaya:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sarinah-jaya:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sarinah jaya:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sarinah jaya:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4544,8 +4544,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sarinah-jaya:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sarinah-jaya:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sarinah jaya:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sarinah jaya:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4553,8 +4553,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sarinah-jaya:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sarinah-jaya:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sarinah jaya:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sarinah jaya:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4562,8 +4562,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sarinah-jaya:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/sarinah-jaya:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sarinah jaya:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/sarinah jaya:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4573,8 +4573,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sarinah-jaya:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/sarinah-jaya:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sarinah jaya:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/sarinah jaya:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4582,8 +4582,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/sarinah-jaya:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/sarinah-jaya:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/sarinah jaya:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sarinah jaya:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4676,8 +4676,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4685,8 +4685,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4694,8 +4694,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -4705,8 +4705,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4714,8 +4714,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4723,8 +4723,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4732,8 +4732,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4743,8 +4743,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4752,8 +4752,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/silakan-bu-di-sini-banyak-kain-batik-yang-halus:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/silakan, bu, di sini banyak kain batik yang halus.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4931,8 +4931,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-mas:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-mas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih, mas.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih, mas.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4940,8 +4940,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-mas:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-mas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih, mas.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/terima kasih, mas.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4949,8 +4949,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-mas:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-mas:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih, mas.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/terima kasih, mas.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -4960,8 +4960,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-mas:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-mas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih, mas.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih, mas.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4969,8 +4969,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-mas:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-mas:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih, mas.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/terima kasih, mas.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -4978,8 +4978,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-mas:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-mas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih, mas.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih, mas.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4987,8 +4987,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-mas:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-mas:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih, mas.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih, mas.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -4998,8 +4998,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-mas:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-mas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih, mas.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/terima kasih, mas.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5007,8 +5007,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-mas:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-mas:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih, mas.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih, mas.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5016,8 +5016,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5025,8 +5025,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5034,8 +5034,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -5045,8 +5045,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5054,8 +5054,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5063,8 +5063,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5072,8 +5072,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5083,8 +5083,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5092,8 +5092,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/terima-kasih-wah-saya-senang-kita-sudah-dapat-batik-yang-bagus-sekali:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/terima kasih. wah, saya senang, kita sudah dapat batik yang bagus sekali!:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5101,8 +5101,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5110,8 +5110,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5119,8 +5119,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -5130,8 +5130,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5139,8 +5139,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5148,8 +5148,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5157,8 +5157,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5168,8 +5168,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5177,8 +5177,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tin-coba-kita-cari-kain-panjang-yang-bagus-ya-kain-itu-hadiah-hari-ulang-tahun-nenek-umurnya-sudah-hampir-76-tahun:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tin, coba kita cari kain panjang yang bagus, ya. kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5186,8 +5186,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:form_recall:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:form_recall:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5195,8 +5195,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:form_recall:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:form_recall:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5204,8 +5204,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:form_recall:l1_to_id:text:nl:accepted_answers:id",
-    "capability_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:form_recall:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:form_recall:l1_to_id:text:nl:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "accepted_answers:id",
     "quality_status": "approved",
     "payload_json": {
@@ -5215,8 +5215,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:l1_to_id_choice:l1_to_id:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5224,8 +5224,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:l1_to_id_choice:l1_to_id:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:l1_to_id_choice:l1_to_id:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:l1_to_id_choice:l1_to_id:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:l1_to_id_choice:l1_to_id:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5233,8 +5233,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:meaning_recall:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:meaning_recall:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5242,8 +5242,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
-    "capability_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:meaning_recall:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:meaning_recall:id_to_l1:text:nl:accepted_answers:l1",
+    "capability_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:meaning_recall:id_to_l1:text:nl",
     "artifact_kind": "accepted_answers:l1",
     "quality_status": "approved",
     "payload_json": {
@@ -5253,8 +5253,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:text_recognition:id_to_l1:text:nl:base_text",
-    "capability_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:text_recognition:id_to_l1:text:nl:base_text",
+    "capability_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "base_text",
     "quality_status": "approved",
     "payload_json": {
@@ -5262,8 +5262,8 @@ export const exerciseAssets = [
     }
   },
   {
-    "asset_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:text_recognition:id_to_l1:text:nl:meaning:l1",
-    "capability_key": "cap:v1:item:learning_items/tin-tin-coba-yang-kuning-coklat-yang-ini-paling-bagus-dan-harganya-pas-rp-25-000:text_recognition:id_to_l1:text:nl",
+    "asset_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:text_recognition:id_to_l1:text:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tin, tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas rp 25.000.:text_recognition:id_to_l1:text:nl",
     "artifact_kind": "meaning:l1",
     "quality_status": "approved",
     "payload_json": {

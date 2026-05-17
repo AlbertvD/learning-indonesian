@@ -216,7 +216,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang",
+    "sourceRef": "learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -228,13 +228,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -244,7 +244,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang",
+    "sourceRef": "learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -255,13 +255,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -271,7 +271,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang",
+    "sourceRef": "learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -282,13 +282,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -298,7 +298,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang",
+    "sourceRef": "learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -309,11 +309,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aduh-kami-mau-ke-luar-jalan-jalan-dan-makan-di-restoran-mi-enak-tetapi-tidak-ada-uang\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -430,7 +430,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/aku-tidak-senang-tinggal-di-rumah-terus",
+    "sourceRef": "learning_items/aku tidak senang tinggal di rumah terus.",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -442,13 +442,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/aku-tidak-senang-tinggal-di-rumah-terus:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/aku tidak senang tinggal di rumah terus.:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/aku-tidak-senang-tinggal-di-rumah-terus:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/aku tidak senang tinggal di rumah terus.:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aku-tidak-senang-tinggal-di-rumah-terus\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aku tidak senang tinggal di rumah terus.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -458,7 +458,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/aku-tidak-senang-tinggal-di-rumah-terus",
+    "sourceRef": "learning_items/aku tidak senang tinggal di rumah terus.",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -469,13 +469,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/aku-tidak-senang-tinggal-di-rumah-terus:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/aku tidak senang tinggal di rumah terus.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/aku-tidak-senang-tinggal-di-rumah-terus:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/aku tidak senang tinggal di rumah terus.:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aku-tidak-senang-tinggal-di-rumah-terus\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aku tidak senang tinggal di rumah terus.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -485,7 +485,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/aku-tidak-senang-tinggal-di-rumah-terus",
+    "sourceRef": "learning_items/aku tidak senang tinggal di rumah terus.",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -496,13 +496,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/aku-tidak-senang-tinggal-di-rumah-terus:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/aku tidak senang tinggal di rumah terus.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/aku-tidak-senang-tinggal-di-rumah-terus:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/aku tidak senang tinggal di rumah terus.:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aku-tidak-senang-tinggal-di-rumah-terus\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aku tidak senang tinggal di rumah terus.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -512,7 +512,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/aku-tidak-senang-tinggal-di-rumah-terus",
+    "sourceRef": "learning_items/aku tidak senang tinggal di rumah terus.",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -523,11 +523,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/aku-tidak-senang-tinggal-di-rumah-terus:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/aku tidak senang tinggal di rumah terus.:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aku-tidak-senang-tinggal-di-rumah-terus\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/aku tidak senang tinggal di rumah terus.\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -751,7 +751,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/ayo",
+    "sourceRef": "learning_items/ayo!",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -763,13 +763,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/ayo:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/ayo!:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/ayo:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/ayo!:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ayo\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ayo!\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -779,7 +779,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/ayo",
+    "sourceRef": "learning_items/ayo!",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -790,13 +790,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/ayo:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/ayo!:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/ayo:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/ayo!:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ayo\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ayo!\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -806,7 +806,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/ayo",
+    "sourceRef": "learning_items/ayo!",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -817,13 +817,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/ayo:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/ayo!:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/ayo:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/ayo!:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ayo\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ayo!\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -833,7 +833,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/ayo",
+    "sourceRef": "learning_items/ayo!",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -844,11 +844,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/ayo:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/ayo!:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ayo\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ayo!\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -858,7 +858,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya",
+    "sourceRef": "learning_items/baiklah, tapi boleh minta setrop susu ya?",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -870,13 +870,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/baiklah, tapi boleh minta setrop susu ya?:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/baiklah, tapi boleh minta setrop susu ya?:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/baiklah, tapi boleh minta setrop susu ya?\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -886,7 +886,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya",
+    "sourceRef": "learning_items/baiklah, tapi boleh minta setrop susu ya?",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -897,13 +897,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/baiklah, tapi boleh minta setrop susu ya?:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/baiklah, tapi boleh minta setrop susu ya?:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/baiklah, tapi boleh minta setrop susu ya?\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -913,7 +913,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya",
+    "sourceRef": "learning_items/baiklah, tapi boleh minta setrop susu ya?",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -924,13 +924,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/baiklah, tapi boleh minta setrop susu ya?:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/baiklah, tapi boleh minta setrop susu ya?:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/baiklah, tapi boleh minta setrop susu ya?\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -940,7 +940,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya",
+    "sourceRef": "learning_items/baiklah, tapi boleh minta setrop susu ya?",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -951,11 +951,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/baiklah, tapi boleh minta setrop susu ya?:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/baiklah-tapi-boleh-minta-setrop-susu-ya\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/baiklah, tapi boleh minta setrop susu ya?\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1179,7 +1179,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/besok-saja-jalan-jalan-dengan-ayahmu",
+    "sourceRef": "learning_items/besok saja jalan-jalan dengan ayahmu.",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -1191,13 +1191,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/besok-saja-jalan-jalan-dengan-ayahmu:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/besok saja jalan-jalan dengan ayahmu.:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/besok-saja-jalan-jalan-dengan-ayahmu:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/besok saja jalan-jalan dengan ayahmu.:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/besok-saja-jalan-jalan-dengan-ayahmu\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/besok saja jalan-jalan dengan ayahmu.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1207,7 +1207,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/besok-saja-jalan-jalan-dengan-ayahmu",
+    "sourceRef": "learning_items/besok saja jalan-jalan dengan ayahmu.",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -1218,13 +1218,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/besok-saja-jalan-jalan-dengan-ayahmu:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/besok saja jalan-jalan dengan ayahmu.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/besok-saja-jalan-jalan-dengan-ayahmu:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/besok saja jalan-jalan dengan ayahmu.:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/besok-saja-jalan-jalan-dengan-ayahmu\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/besok saja jalan-jalan dengan ayahmu.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1234,7 +1234,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/besok-saja-jalan-jalan-dengan-ayahmu",
+    "sourceRef": "learning_items/besok saja jalan-jalan dengan ayahmu.",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -1245,13 +1245,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/besok-saja-jalan-jalan-dengan-ayahmu:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/besok saja jalan-jalan dengan ayahmu.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/besok-saja-jalan-jalan-dengan-ayahmu:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/besok saja jalan-jalan dengan ayahmu.:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/besok-saja-jalan-jalan-dengan-ayahmu\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/besok saja jalan-jalan dengan ayahmu.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1261,7 +1261,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/besok-saja-jalan-jalan-dengan-ayahmu",
+    "sourceRef": "learning_items/besok saja jalan-jalan dengan ayahmu.",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -1272,11 +1272,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/besok-saja-jalan-jalan-dengan-ayahmu:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/besok saja jalan-jalan dengan ayahmu.:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/besok-saja-jalan-jalan-dengan-ayahmu\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/besok saja jalan-jalan dengan ayahmu.\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1286,7 +1286,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/di-mana-bukuku",
+    "sourceRef": "learning_items/di mana bukuku?",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -1298,13 +1298,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/di-mana-bukuku:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/di mana bukuku?:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/di-mana-bukuku:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/di mana bukuku?:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/di-mana-bukuku\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/di mana bukuku?\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1314,7 +1314,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/di-mana-bukuku",
+    "sourceRef": "learning_items/di mana bukuku?",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -1325,13 +1325,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/di-mana-bukuku:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/di mana bukuku?:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/di-mana-bukuku:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/di mana bukuku?:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/di-mana-bukuku\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/di mana bukuku?\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1341,7 +1341,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/di-mana-bukuku",
+    "sourceRef": "learning_items/di mana bukuku?",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -1352,13 +1352,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/di-mana-bukuku:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/di mana bukuku?:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/di-mana-bukuku:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/di mana bukuku?:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/di-mana-bukuku\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/di mana bukuku?\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1368,7 +1368,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/di-mana-bukuku",
+    "sourceRef": "learning_items/di mana bukuku?",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -1379,11 +1379,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/di-mana-bukuku:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/di mana bukuku?:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/di-mana-bukuku\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/di mana bukuku?\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1393,7 +1393,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/enak-saja",
+    "sourceRef": "learning_items/enak saja",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -1405,13 +1405,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/enak-saja:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/enak saja:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/enak-saja:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/enak saja:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/enak-saja\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/enak saja\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1421,7 +1421,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/enak-saja",
+    "sourceRef": "learning_items/enak saja",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -1432,13 +1432,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/enak-saja:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/enak saja:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/enak-saja:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/enak saja:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/enak-saja\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/enak saja\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1448,7 +1448,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/enak-saja",
+    "sourceRef": "learning_items/enak saja",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -1459,13 +1459,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/enak-saja:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/enak saja:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/enak-saja:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/enak saja:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/enak-saja\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/enak saja\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1475,7 +1475,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/enak-saja",
+    "sourceRef": "learning_items/enak saja",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -1486,11 +1486,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/enak-saja:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/enak saja:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/enak-saja\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/enak saja\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1821,7 +1821,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/hari-rabu",
+    "sourceRef": "learning_items/hari rabu",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -1833,13 +1833,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/hari-rabu:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/hari rabu:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/hari-rabu:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/hari rabu:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/hari-rabu\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/hari rabu\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1849,7 +1849,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/hari-rabu",
+    "sourceRef": "learning_items/hari rabu",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -1860,13 +1860,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/hari-rabu:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/hari rabu:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/hari-rabu:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/hari rabu:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/hari-rabu\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/hari rabu\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1876,7 +1876,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/hari-rabu",
+    "sourceRef": "learning_items/hari rabu",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -1887,13 +1887,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/hari-rabu:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/hari rabu:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/hari-rabu:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/hari rabu:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/hari-rabu\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/hari rabu\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -1903,7 +1903,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/hari-rabu",
+    "sourceRef": "learning_items/hari rabu",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -1914,11 +1914,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/hari-rabu:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/hari rabu:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/hari-rabu\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/hari rabu\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -2035,7 +2035,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah",
+    "sourceRef": "learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -2047,13 +2047,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -2063,7 +2063,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah",
+    "sourceRef": "learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -2074,13 +2074,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -2090,7 +2090,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah",
+    "sourceRef": "learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -2101,13 +2101,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -2117,7 +2117,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah",
+    "sourceRef": "learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -2128,11 +2128,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ibu-dan-bapak-enak-saja-ke-taman-mini-kita-harus-belajar-di-rumah\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -2570,7 +2570,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/kami-mau-ke-luar",
+    "sourceRef": "learning_items/kami mau ke luar.",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -2582,13 +2582,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/kami-mau-ke-luar:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/kami mau ke luar.:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/kami-mau-ke-luar:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/kami mau ke luar.:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kami-mau-ke-luar\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kami mau ke luar.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -2598,7 +2598,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/kami-mau-ke-luar",
+    "sourceRef": "learning_items/kami mau ke luar.",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -2609,13 +2609,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/kami-mau-ke-luar:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/kami mau ke luar.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/kami-mau-ke-luar:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/kami mau ke luar.:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kami-mau-ke-luar\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kami mau ke luar.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -2625,7 +2625,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/kami-mau-ke-luar",
+    "sourceRef": "learning_items/kami mau ke luar.",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -2636,13 +2636,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/kami-mau-ke-luar:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/kami mau ke luar.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/kami-mau-ke-luar:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/kami mau ke luar.:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kami-mau-ke-luar\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kami mau ke luar.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -2652,7 +2652,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/kami-mau-ke-luar",
+    "sourceRef": "learning_items/kami mau ke luar.",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -2663,11 +2663,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/kami-mau-ke-luar:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/kami mau ke luar.:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kami-mau-ke-luar\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kami mau ke luar.\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -3105,7 +3105,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/kita-harus-belajar-di-rumah",
+    "sourceRef": "learning_items/kita harus belajar di rumah.",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -3117,13 +3117,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/kita-harus-belajar-di-rumah:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/kita harus belajar di rumah.:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/kita-harus-belajar-di-rumah:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/kita harus belajar di rumah.:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita-harus-belajar-di-rumah\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita harus belajar di rumah.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -3133,7 +3133,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/kita-harus-belajar-di-rumah",
+    "sourceRef": "learning_items/kita harus belajar di rumah.",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -3144,13 +3144,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/kita-harus-belajar-di-rumah:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/kita harus belajar di rumah.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/kita-harus-belajar-di-rumah:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/kita harus belajar di rumah.:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita-harus-belajar-di-rumah\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita harus belajar di rumah.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -3160,7 +3160,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/kita-harus-belajar-di-rumah",
+    "sourceRef": "learning_items/kita harus belajar di rumah.",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -3171,13 +3171,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/kita-harus-belajar-di-rumah:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/kita harus belajar di rumah.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/kita-harus-belajar-di-rumah:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/kita harus belajar di rumah.:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita-harus-belajar-di-rumah\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita harus belajar di rumah.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -3187,7 +3187,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/kita-harus-belajar-di-rumah",
+    "sourceRef": "learning_items/kita harus belajar di rumah.",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -3198,11 +3198,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/kita-harus-belajar-di-rumah:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/kita harus belajar di rumah.:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita-harus-belajar-di-rumah\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita harus belajar di rumah.\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -3212,7 +3212,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi",
+    "sourceRef": "learning_items/kita harus kerja dulu sebentar. nanti kita pergi.",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -3224,13 +3224,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/kita harus kerja dulu sebentar. nanti kita pergi.:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/kita harus kerja dulu sebentar. nanti kita pergi.:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita harus kerja dulu sebentar. nanti kita pergi.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -3240,7 +3240,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi",
+    "sourceRef": "learning_items/kita harus kerja dulu sebentar. nanti kita pergi.",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -3251,13 +3251,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/kita harus kerja dulu sebentar. nanti kita pergi.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/kita harus kerja dulu sebentar. nanti kita pergi.:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita harus kerja dulu sebentar. nanti kita pergi.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -3267,7 +3267,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi",
+    "sourceRef": "learning_items/kita harus kerja dulu sebentar. nanti kita pergi.",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -3278,13 +3278,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/kita harus kerja dulu sebentar. nanti kita pergi.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/kita harus kerja dulu sebentar. nanti kita pergi.:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita harus kerja dulu sebentar. nanti kita pergi.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -3294,7 +3294,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi",
+    "sourceRef": "learning_items/kita harus kerja dulu sebentar. nanti kita pergi.",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -3305,11 +3305,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/kita harus kerja dulu sebentar. nanti kita pergi.:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita-harus-kerja-dulu-sebentar-nanti-kita-pergi\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kita harus kerja dulu sebentar. nanti kita pergi.\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -3640,7 +3640,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/mari",
+    "sourceRef": "learning_items/mari!",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -3652,13 +3652,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/mari:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/mari!:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/mari:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/mari!:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mari\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mari!\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -3668,7 +3668,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/mari",
+    "sourceRef": "learning_items/mari!",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -3679,13 +3679,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/mari:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/mari!:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/mari:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/mari!:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mari\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mari!\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -3695,7 +3695,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/mari",
+    "sourceRef": "learning_items/mari!",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -3706,13 +3706,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/mari:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/mari!:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/mari:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/mari!:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mari\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mari!\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -3722,7 +3722,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/mari",
+    "sourceRef": "learning_items/mari!",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -3733,11 +3733,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/mari:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/mari!:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mari\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mari!\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -3961,7 +3961,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/mobilmu-rusak",
+    "sourceRef": "learning_items/mobilmu rusak.",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -3973,13 +3973,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/mobilmu-rusak:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/mobilmu rusak.:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/mobilmu-rusak:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/mobilmu rusak.:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mobilmu-rusak\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mobilmu rusak.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -3989,7 +3989,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/mobilmu-rusak",
+    "sourceRef": "learning_items/mobilmu rusak.",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -4000,13 +4000,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/mobilmu-rusak:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/mobilmu rusak.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/mobilmu-rusak:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/mobilmu rusak.:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mobilmu-rusak\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mobilmu rusak.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -4016,7 +4016,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/mobilmu-rusak",
+    "sourceRef": "learning_items/mobilmu rusak.",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -4027,13 +4027,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/mobilmu-rusak:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/mobilmu rusak.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/mobilmu-rusak:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/mobilmu rusak.:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mobilmu-rusak\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mobilmu rusak.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -4043,7 +4043,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/mobilmu-rusak",
+    "sourceRef": "learning_items/mobilmu rusak.",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -4054,11 +4054,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/mobilmu-rusak:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/mobilmu rusak.:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mobilmu-rusak\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/mobilmu rusak.\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -4282,7 +4282,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/nasi-gurih",
+    "sourceRef": "learning_items/nasi gurih",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -4294,13 +4294,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/nasi-gurih:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/nasi gurih:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/nasi-gurih:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/nasi gurih:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/nasi-gurih\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/nasi gurih\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -4310,7 +4310,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/nasi-gurih",
+    "sourceRef": "learning_items/nasi gurih",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -4321,13 +4321,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/nasi-gurih:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/nasi gurih:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/nasi-gurih:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/nasi gurih:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/nasi-gurih\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/nasi gurih\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -4337,7 +4337,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/nasi-gurih",
+    "sourceRef": "learning_items/nasi gurih",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -4348,13 +4348,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/nasi-gurih:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/nasi gurih:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/nasi-gurih:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/nasi gurih:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/nasi-gurih\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/nasi gurih\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -4364,7 +4364,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/nasi-gurih",
+    "sourceRef": "learning_items/nasi gurih",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -4375,11 +4375,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/nasi-gurih:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/nasi gurih:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/nasi-gurih\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/nasi gurih\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -4496,7 +4496,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/pembantunya-sakit",
+    "sourceRef": "learning_items/pembantunya sakit.",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -4508,13 +4508,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/pembantunya-sakit:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/pembantunya sakit.:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/pembantunya-sakit:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/pembantunya sakit.:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/pembantunya-sakit\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/pembantunya sakit.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -4524,7 +4524,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/pembantunya-sakit",
+    "sourceRef": "learning_items/pembantunya sakit.",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -4535,13 +4535,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/pembantunya-sakit:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/pembantunya sakit.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/pembantunya-sakit:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/pembantunya sakit.:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/pembantunya-sakit\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/pembantunya sakit.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -4551,7 +4551,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/pembantunya-sakit",
+    "sourceRef": "learning_items/pembantunya sakit.",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -4562,13 +4562,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/pembantunya-sakit:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/pembantunya sakit.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/pembantunya-sakit:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/pembantunya sakit.:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/pembantunya-sakit\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/pembantunya sakit.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -4578,7 +4578,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/pembantunya-sakit",
+    "sourceRef": "learning_items/pembantunya sakit.",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -4589,11 +4589,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/pembantunya-sakit:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/pembantunya sakit.:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/pembantunya-sakit\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/pembantunya sakit.\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -4924,7 +4924,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/rumahnya-bagus-sekali",
+    "sourceRef": "learning_items/rumahnya bagus sekali.",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -4936,13 +4936,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/rumahnya-bagus-sekali:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/rumahnya bagus sekali.:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/rumahnya-bagus-sekali:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/rumahnya bagus sekali.:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/rumahnya-bagus-sekali\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/rumahnya bagus sekali.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -4952,7 +4952,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/rumahnya-bagus-sekali",
+    "sourceRef": "learning_items/rumahnya bagus sekali.",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -4963,13 +4963,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/rumahnya-bagus-sekali:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/rumahnya bagus sekali.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/rumahnya-bagus-sekali:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/rumahnya bagus sekali.:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/rumahnya-bagus-sekali\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/rumahnya bagus sekali.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -4979,7 +4979,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/rumahnya-bagus-sekali",
+    "sourceRef": "learning_items/rumahnya bagus sekali.",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -4990,13 +4990,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/rumahnya-bagus-sekali:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/rumahnya bagus sekali.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/rumahnya-bagus-sekali:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/rumahnya bagus sekali.:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/rumahnya-bagus-sekali\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/rumahnya bagus sekali.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -5006,7 +5006,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/rumahnya-bagus-sekali",
+    "sourceRef": "learning_items/rumahnya bagus sekali.",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -5017,11 +5017,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/rumahnya-bagus-sekali:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/rumahnya bagus sekali.:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/rumahnya-bagus-sekali\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/rumahnya bagus sekali.\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -5459,7 +5459,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/setrop-susu",
+    "sourceRef": "learning_items/setrop susu",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -5471,13 +5471,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/setrop-susu:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/setrop susu:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/setrop-susu:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/setrop susu:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/setrop-susu\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/setrop susu\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -5487,7 +5487,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/setrop-susu",
+    "sourceRef": "learning_items/setrop susu",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -5498,13 +5498,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/setrop-susu:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/setrop susu:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/setrop-susu:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/setrop susu:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/setrop-susu\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/setrop susu\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -5514,7 +5514,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/setrop-susu",
+    "sourceRef": "learning_items/setrop susu",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -5525,13 +5525,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/setrop-susu:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/setrop susu:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/setrop-susu:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/setrop susu:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/setrop-susu\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/setrop susu\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -5541,7 +5541,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/setrop-susu",
+    "sourceRef": "learning_items/setrop susu",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -5552,11 +5552,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/setrop-susu:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/setrop susu:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/setrop-susu\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/setrop susu\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -5887,7 +5887,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/taman-mini",
+    "sourceRef": "learning_items/taman mini",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -5899,13 +5899,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/taman-mini:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/taman mini:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/taman-mini:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/taman mini:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/taman-mini\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/taman mini\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -5915,7 +5915,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/taman-mini",
+    "sourceRef": "learning_items/taman mini",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -5926,13 +5926,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/taman-mini:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/taman mini:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/taman-mini:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/taman mini:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/taman-mini\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/taman mini\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -5942,7 +5942,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/taman-mini",
+    "sourceRef": "learning_items/taman mini",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -5953,13 +5953,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/taman-mini:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/taman mini:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/taman-mini:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/taman mini:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/taman-mini\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/taman mini\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -5969,7 +5969,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/taman-mini",
+    "sourceRef": "learning_items/taman mini",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -5980,11 +5980,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/taman-mini:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/taman mini:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/taman-mini\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/taman mini\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -6101,7 +6101,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/tapi-tetapi",
+    "sourceRef": "learning_items/tapi / tetapi",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -6113,13 +6113,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/tapi-tetapi:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/tapi / tetapi:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/tapi-tetapi:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/tapi / tetapi:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/tapi-tetapi\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/tapi / tetapi\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -6129,7 +6129,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/tapi-tetapi",
+    "sourceRef": "learning_items/tapi / tetapi",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -6140,13 +6140,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/tapi-tetapi:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/tapi / tetapi:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/tapi-tetapi:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/tapi / tetapi:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/tapi-tetapi\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/tapi / tetapi\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -6156,7 +6156,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/tapi-tetapi",
+    "sourceRef": "learning_items/tapi / tetapi",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -6167,13 +6167,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/tapi-tetapi:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/tapi / tetapi:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/tapi-tetapi:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/tapi / tetapi:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/tapi-tetapi\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/tapi / tetapi\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -6183,7 +6183,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/tapi-tetapi",
+    "sourceRef": "learning_items/tapi / tetapi",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -6194,11 +6194,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/tapi-tetapi:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/tapi / tetapi:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/tapi-tetapi\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/tapi / tetapi\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -6315,7 +6315,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/uang-kita-sudah-habis",
+    "sourceRef": "learning_items/uang kita sudah habis.",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -6327,13 +6327,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/uang-kita-sudah-habis:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/uang kita sudah habis.:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/uang-kita-sudah-habis:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/uang kita sudah habis.:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/uang-kita-sudah-habis\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/uang kita sudah habis.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -6343,7 +6343,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/uang-kita-sudah-habis",
+    "sourceRef": "learning_items/uang kita sudah habis.",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -6354,13 +6354,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/uang-kita-sudah-habis:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/uang kita sudah habis.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/uang-kita-sudah-habis:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/uang kita sudah habis.:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/uang-kita-sudah-habis\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/uang kita sudah habis.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -6370,7 +6370,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/uang-kita-sudah-habis",
+    "sourceRef": "learning_items/uang kita sudah habis.",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -6381,13 +6381,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/uang-kita-sudah-habis:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/uang kita sudah habis.:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/uang-kita-sudah-habis:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/uang kita sudah habis.:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/uang-kita-sudah-habis\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/uang kita sudah habis.\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -6397,7 +6397,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/uang-kita-sudah-habis",
+    "sourceRef": "learning_items/uang kita sudah habis.",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -6408,11 +6408,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/uang-kita-sudah-habis:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/uang kita sudah habis.:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/uang-kita-sudah-habis\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/uang kita sudah habis.\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -6529,7 +6529,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/wah",
+    "sourceRef": "learning_items/wah!",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -6541,13 +6541,13 @@ export const capabilities = [
       "accepted_answers:id"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/wah:l1_to_id_choice:l1_to_id:text:nl"
+      "cap:v1:item:learning_items/wah!:l1_to_id_choice:l1_to_id:text:nl"
     ],
     "difficultyLevel": 3,
-    "canonicalKey": "cap:v1:item:learning_items/wah:form_recall:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/wah!:form_recall:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/wah\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/wah!\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\",\"accepted_answers:id\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -6557,7 +6557,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/wah",
+    "sourceRef": "learning_items/wah!",
     "capabilityType": "l1_to_id_choice",
     "skillType": "meaning_recall",
     "direction": "l1_to_id",
@@ -6568,13 +6568,13 @@ export const capabilities = [
       "base_text"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/wah:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/wah!:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/wah:l1_to_id_choice:l1_to_id:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/wah!:l1_to_id_choice:l1_to_id:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/wah\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/wah!\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"base_text\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -6584,7 +6584,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/wah",
+    "sourceRef": "learning_items/wah!",
     "capabilityType": "meaning_recall",
     "skillType": "meaning_recall",
     "direction": "id_to_l1",
@@ -6595,13 +6595,13 @@ export const capabilities = [
       "accepted_answers:l1"
     ],
     "prerequisiteKeys": [
-      "cap:v1:item:learning_items/wah:text_recognition:id_to_l1:text:nl"
+      "cap:v1:item:learning_items/wah!:text_recognition:id_to_l1:text:nl"
     ],
     "difficultyLevel": 2,
-    "canonicalKey": "cap:v1:item:learning_items/wah:meaning_recall:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/wah!:meaning_recall:id_to_l1:text:nl",
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/wah\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/wah!\"}",
     "artifactFingerprint": "[\"meaning:l1\",\"accepted_answers:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [
@@ -6611,7 +6611,7 @@ export const capabilities = [
   },
   {
     "sourceKind": "item",
-    "sourceRef": "learning_items/wah",
+    "sourceRef": "learning_items/wah!",
     "capabilityType": "text_recognition",
     "skillType": "recognition",
     "direction": "id_to_l1",
@@ -6622,11 +6622,11 @@ export const capabilities = [
       "meaning:l1"
     ],
     "difficultyLevel": 1,
-    "canonicalKey": "cap:v1:item:learning_items/wah:text_recognition:id_to_l1:text:nl",
+    "canonicalKey": "cap:v1:item:learning_items/wah!:text_recognition:id_to_l1:text:nl",
     "prerequisiteKeys": [],
     "goalTags": [],
     "projectionVersion": "capability-v3",
-    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/wah\"}",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/wah!\"}",
     "artifactFingerprint": "[\"base_text\",\"meaning:l1\"]",
     "lessonId": "c224ca54-46e8-4052-a65b-eda119f8c7ec",
     "contentUnitSlugs": [

@@ -189,8 +189,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"berangkat\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"vertrekken\",\"translation_en\":\"depart\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/belum-pernah::lesson-6/section-vocabulary::item-belum-pernah",
-    "source_ref": "learning_items/belum-pernah",
+    "content_unit_key": "learning_items/belum pernah::lesson-6/section-vocabulary::item-belum-pernah",
+    "source_ref": "learning_items/belum pernah",
     "source_section_ref": "lesson-6/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-belum-pernah",
@@ -324,8 +324,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"coba\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"proberen\",\"translation_en\":\"try\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"verb\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/deh-deh::lesson-6/section-vocabulary::item-deh-deh",
-    "source_ref": "learning_items/deh-deh",
+    "content_unit_key": "learning_items/deh! (dèh)::lesson-6/section-vocabulary::item-deh-deh",
+    "source_ref": "learning_items/deh! (dèh)",
     "source_section_ref": "lesson-6/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-deh-deh",
@@ -369,8 +369,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"ekonomi\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"economie\",\"translation_en\":\"economy\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/full-ac::lesson-6/section-vocabulary::item-full-ac",
-    "source_ref": "learning_items/full-ac",
+    "content_unit_key": "learning_items/'full ac'::lesson-6/section-vocabulary::item-full-ac",
+    "source_ref": "learning_items/'full ac'",
     "source_section_ref": "lesson-6/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-full-ac",
@@ -414,8 +414,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"hanya\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"slechts\",\"translation_en\":\"only\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"adverb\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/hari-ini::lesson-6/section-vocabulary::item-hari-ini",
-    "source_ref": "learning_items/hari-ini",
+    "content_unit_key": "learning_items/hari ini::lesson-6/section-vocabulary::item-hari-ini",
+    "source_ref": "learning_items/hari ini",
     "source_section_ref": "lesson-6/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-hari-ini",
@@ -534,8 +534,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"Jepang\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"Japan(s)\",\"translation_en\":\"Japan, Japanese\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/kurang-tahu::lesson-6/section-vocabulary::item-kurang-tahu",
-    "source_ref": "learning_items/kurang-tahu",
+    "content_unit_key": "learning_items/kurang tahu::lesson-6/section-vocabulary::item-kurang-tahu",
+    "source_ref": "learning_items/kurang tahu",
     "source_section_ref": "lesson-6/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-kurang-tahu",
@@ -579,8 +579,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"larut\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"laat / lang (tijd)\",\"translation_en\":\"late\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"adjective\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/larut-malam::lesson-6/section-vocabulary::item-larut-malam",
-    "source_ref": "learning_items/larut-malam",
+    "content_unit_key": "learning_items/larut malam::lesson-6/section-vocabulary::item-larut-malam",
+    "source_ref": "learning_items/larut malam",
     "source_section_ref": "lesson-6/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-larut-malam",
@@ -609,8 +609,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"lebih\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"meer\",\"translation_en\":\"more\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"adverb\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/lewat-lewat::lesson-6/section-vocabulary::item-lewat-lewat",
-    "source_ref": "learning_items/lewat-lewat",
+    "content_unit_key": "learning_items/lewat (léwat)::lesson-6/section-vocabulary::item-lewat-lewat",
+    "source_ref": "learning_items/lewat (léwat)",
     "source_section_ref": "lesson-6/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-lewat-lewat",
@@ -654,8 +654,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"menit\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"minuut\",\"translation_en\":\"minute\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"noun\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/merah-merah::lesson-6/section-vocabulary::item-merah-merah",
-    "source_ref": "learning_items/merah-merah",
+    "content_unit_key": "learning_items/merah (mérah)::lesson-6/section-vocabulary::item-merah-merah",
+    "source_ref": "learning_items/merah (mérah)",
     "source_section_ref": "lesson-6/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-merah-merah",
@@ -669,8 +669,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"merah (mérah)\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"rood\",\"translation_en\":\"red\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"adjective\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/monas-monumen-nasional::lesson-6/section-vocabulary::item-monas-monumen-nasional",
-    "source_ref": "learning_items/monas-monumen-nasional",
+    "content_unit_key": "learning_items/monas = monumen nasional::lesson-6/section-vocabulary::item-monas-monumen-nasional",
+    "source_ref": "learning_items/monas = monumen nasional",
     "source_section_ref": "lesson-6/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-monas-monumen-nasional",
@@ -744,8 +744,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"seperempat\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"een kwart\",\"translation_en\":\"a quarter\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/seperempat-jam::lesson-6/section-vocabulary::item-seperempat-jam",
-    "source_ref": "learning_items/seperempat-jam",
+    "content_unit_key": "learning_items/seperempat jam::lesson-6/section-vocabulary::item-seperempat-jam",
+    "source_ref": "learning_items/seperempat jam",
     "source_section_ref": "lesson-6/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-seperempat-jam",
@@ -774,8 +774,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"setengah\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"de helft / het midden\",\"translation_en\":\"half\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"numeral\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/sih::lesson-6/section-vocabulary::item-sih",
-    "source_ref": "learning_items/sih",
+    "content_unit_key": "learning_items/sih!::lesson-6/section-vocabulary::item-sih",
+    "source_ref": "learning_items/sih!",
     "source_section_ref": "lesson-6/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-sih",
@@ -834,8 +834,8 @@ export const contentUnits = [
     "source_fingerprint": "{\"base_text\":\"telah\",\"item_type\":\"word\",\"context_type\":\"vocabulary_list\",\"translation_nl\":\"al / reeds\",\"translation_en\":\"already\",\"source_page\":3,\"review_status\":\"published\",\"pos\":\"particle\",\"level\":\"A1\"}"
   },
   {
-    "content_unit_key": "learning_items/tv-tivi::lesson-6/section-vocabulary::item-tv-tivi",
-    "source_ref": "learning_items/tv-tivi",
+    "content_unit_key": "learning_items/tv (tivi)::lesson-6/section-vocabulary::item-tv-tivi",
+    "source_ref": "learning_items/tv (tivi)",
     "source_section_ref": "lesson-6/section-vocabulary",
     "unit_kind": "learning_item",
     "unit_slug": "item-tv-tivi",
