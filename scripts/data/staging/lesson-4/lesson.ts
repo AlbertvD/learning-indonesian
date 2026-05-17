@@ -1,4 +1,4 @@
-// Lesson 4 — reverse-engineered from DB by reverse-engineer-staging.ts
+// Enriched by lesson-stage
 export const lesson = {
   "title": "Les 4 - Di Hotel",
   "description": "Accommodation and dining in Indonesia. Grammar focus: YANG constructie (relative pronouns and emphasis patterns)",
@@ -14,21 +14,21 @@ export const lesson = {
         "paragraphs": [
           "Les 4\nCULTUUR",
           "Sommigen brengen de nacht door onder een flonkerende tropenhemel op het witte strand van Bali. Het is romantisch en goedkoop, al moet je de voortdurende nieuwsgierigheid van stekende muggen, blaffende hondjes en nachtelijke vissers op de koop toe nemen. Mocht je toch in slaap vallen, dan ben je bij deze gewaarschuwd: om vijf uur 's ochtends gonst het strand van de bedrijvigheid. Van zee terugkerende vissers, hout sprokkelende vrouwen, spelende kinderen en dauwtrappende toeristen komen de eerste zonnestralen begroeten.",
-          "Een andere mogelijkheid om de nacht door te brengen is het huren van een kamer in een \"penginapan\", vrij vertaald: \"een plaats waar je kunt overnachten\". Vaak betekent het inderdaad niets meer dan dat. Je krijgt er een slaapplaats aangewezen in een slaapzaal en wanneer je geluk hebt is er wellicht een afsluitbare tweepersoons-kamer te huur. Een gemeenschappelijk hurktoilet en 'mandi-kamer' die ettelijke dagen geen Hollandse schoonmaakbeurt hebben gekregen, zijn gebruikelijk. Ontbijt en andere maaltijden worden niet geserveerd, het beddegoed is niet altijd even nieuw en er wordt geen handdoek met zeep aangeboden. Echter over \u00e9\u00e9n ding kunnen zelfs 'budget travellers' niet kibbelen: de lage prijs. De kosten van een overnachting kunnen vari\u00ebren van Rp 7.000 tot Rp 20.000 (circa f 6,-- tot f 17,50). Natuurlijk zijn er vele nette en schone 'penginapans', doch over het algemeen zijn ze bedoeld voor de degene die op doorreis niet al te veel geld wil of kan besteden aan zijn nachtrust.",
-          "De nettere slaapgelegenheden presenteren zich als \"losmen\" (van het Nederlandse 'logement'). Het beheer is meestal in handen van een familie die door verhuur van kamers een klein extra inkomen probeert te verwerven. Het zijn in feite goedkope hotels met dien verstande dat ze niet de daarbij behorende service verlenen. Doorgaans kun je er bijvoorbeeld geen ontbijt krijgen en uitgebreide drink- en eetfaciliteiten zijn eveneens afwezig. Meestal kan men wel voor een klein bedrag kleding laten wassen. De kwaliteit van de kamers en de hygi\u00ebne zijn sterk afhankelijk van de eigenaar waardoor we een grote verscheidenheid aantreffen: soms hoge prijzen en smoezelige kamers, dan weer brandschone badkamers en lage prijzen. Het verdient aanbeveling om altijd eerst te kijken voordat men erin trekt. De prijzen liggen tussen de Rp 15.000 - Rp 30.000.",
-          "In juli 1988 heeft de Indonesische overheid voor Bali echter het verbod uitgevaardigd om toeristen in priv\u00e9huizen op te nemen teneinde een betere controle te krijgen op de toeristenstroom.",
-          "Van betere kwaliteit zijn de 'guesthouses', al moet de reiziger ook hier uitkijken wat hij huurt. Over het algemeen is de hygi\u00ebne goed en zijn toilet en mandi-kamer schoon. Het zijn andere zaken waarop men dient te letten zoals: de ligging van de kamer, netheid, de aanwezigheid van een electrische ventilator (probeer hem eerst uit) of AC (-air conditioning) en voldoende verlichting."
+          "Een andere mogelijkheid om de nacht door te brengen is het huren van een kamer in een \"penginapan\", vrij vertaald: \"een plaats waar je kunt overnachten\". Vaak betekent het inderdaad niets meer dan dat. Je krijgt er een slaapplaats aangewezen in een slaapzaal en wanneer je geluk hebt is er wellicht een afsluitbare tweepersoons-kamer te huur. Een gemeenschappelijk hurktoilet en 'mandi-kamer' die ettelijke dagen geen Hollandse schoonmaakbeurt hebben gekregen, zijn gebruikelijk. Ontbijt en andere maaltijden worden niet geserveerd, het beddegoed is niet altijd even nieuw en er wordt geen handdoek met zeep aangeboden. Echter over één ding kunnen zelfs 'budget travellers' niet kibbelen: de lage prijs. De kosten van een overnachting kunnen variëren van Rp 7.000 tot Rp 20.000 (circa f 6,-- tot f 17,50). Natuurlijk zijn er vele nette en schone 'penginapans', doch over het algemeen zijn ze bedoeld voor de degene die op doorreis niet al te veel geld wil of kan besteden aan zijn nachtrust.",
+          "De nettere slaapgelegenheden presenteren zich als \"losmen\" (van het Nederlandse 'logement'). Het beheer is meestal in handen van een familie die door verhuur van kamers een klein extra inkomen probeert te verwerven. Het zijn in feite goedkope hotels met dien verstande dat ze niet de daarbij behorende service verlenen. Doorgaans kun je er bijvoorbeeld geen ontbijt krijgen en uitgebreide drink- en eetfaciliteiten zijn eveneens afwezig. Meestal kan men wel voor een klein bedrag kleding laten wassen. De kwaliteit van de kamers en de hygiëne zijn sterk afhankelijk van de eigenaar waardoor we een grote verscheidenheid aantreffen: soms hoge prijzen en smoezelige kamers, dan weer brandschone badkamers en lage prijzen. Het verdient aanbeveling om altijd eerst te kijken voordat men erin trekt. De prijzen liggen tussen de Rp 15.000 - Rp 30.000.",
+          "In juli 1988 heeft de Indonesische overheid voor Bali echter het verbod uitgevaardigd om toeristen in privéhuizen op te nemen teneinde een betere controle te krijgen op de toeristenstroom.",
+          "Van betere kwaliteit zijn de 'guesthouses', al moet de reiziger ook hier uitkijken wat hij huurt. Over het algemeen is de hygiëne goed en zijn toilet en mandi-kamer schoon. Het zijn andere zaken waarop men dient te letten zoals: de ligging van de kamer, netheid, de aanwezigheid van een electrische ventilator (probeer hem eerst uit) of AC (-air conditioning) en voldoende verlichting."
         ]
       }
     },
     {
-      "title": "Cultuur: Rijst in Indonesi\u00eb",
+      "title": "Cultuur: Rijst in Indonesië",
       "order_index": 1,
       "content": {
         "type": "text",
         "paragraphs": [
-          "Reeds voor het begin van de christelijke jaartelling verbouwden de volkeren van Indonesi\u00eb rijst op zowel droge (lading) als natte (sawah) gronden. Natte rijstteelt geeft een hogere opbrengst maar is bijzonder arbeidsintensief. Daarnaast vereist het een uitgekiend bevloeiingssysteem. Dit heeft geleid tot de kenmerkende terrasbouw op onder andere Java en Bali.",
-          "Rijst is het basisvoedsel van de overgrote meerderheid van de Indonesi\u00ebrs. Het is daarom niet verwonderlijk dat het Indonesisch verschillende termen voor rijst kent, al naar gelang de stadia van groei en verwerkerking van rijst.",
+          "Reeds voor het begin van de christelijke jaartelling verbouwden de volkeren van Indonesië rijst op zowel droge (lading) als natte (sawah) gronden. Natte rijstteelt geeft een hogere opbrengst maar is bijzonder arbeidsintensief. Daarnaast vereist het een uitgekiend bevloeiingssysteem. Dit heeft geleid tot de kenmerkende terrasbouw op onder andere Java en Bali.",
+          "Rijst is het basisvoedsel van de overgrote meerderheid van de Indonesiërs. Het is daarom niet verwonderlijk dat het Indonesisch verschillende termen voor rijst kent, al naar gelang de stadia van groei en verwerkerking van rijst.",
           "Wil men aangeven dat de rijst op een bepaalde wijze is bereid, dan voegt men nog een woord toe, zoals nasi putih (gekookte witte rijst), nasi goreng (gekookte rijst, daarna met kruiden gebakken) en nasi kuning (met kruiden geel gekookte rijst).",
           "Naast de in Nederland populaire 'droogkokende' rijstsoorten bestaan er ook kleefrijst- en paprijstsoorten, elk met hun specifieke smaak en aroma. De meeste rijstsoorten hebben een milde smaak en kunnen daarom goed dienen als 'neutraal' voedingsmiddel, waarbij de vol-aromatische bijgerechten volledig tot hun recht komen. Een normale Indonesische maaltijd bestaat uit rijst en twee tot drie andere gerechten."
         ]
@@ -43,67 +43,67 @@ export const lesson = {
           {
             "text": "Selamat siang, Mas. Kamar saya nomor berapa?",
             "speaker": "Ibu Dewi",
-            "translation": ""
+            "translation": "Goedemiddag, meneer. Welk kamernummer heb ik?"
           },
           {
             "text": "Nomor 215, Bu. Di lantai 2.",
             "speaker": "Mas Wawan",
-            "translation": ""
+            "translation": "Nummer 215, mevrouw. Op de tweede verdieping."
           },
           {
             "text": "Paspor Ibu di mana? Saya harus isi formulir hotel.",
             "speaker": "Mas Wawan",
-            "translation": ""
+            "translation": "Waar is uw paspoort, mevrouw? Ik moet het hotelformulier invullen."
           },
           {
             "text": "Ini paspor saya. Kunci saya di mana?",
             "speaker": "Ibu Dewi",
-            "translation": ""
+            "translation": "Hier is mijn paspoort. Waar is mijn sleutel?"
           },
           {
             "text": "Kunci yang kecil dan kuning ini kunci Ibu, silakan!",
             "speaker": "Mas Wawan",
-            "translation": ""
+            "translation": "Deze kleine gele sleutel is uw sleutel, alstublieft!"
           },
           {
             "text": "Kamar saya bagus. Kamar mandi ada di mana?",
             "speaker": "Ibu Dewi",
-            "translation": ""
+            "translation": "Mijn kamer is mooi. Waar is het badkamer?"
           },
           {
             "text": "Di sini, Bu. Handuk, sabun dan sikat gigi ada. Di situ bak air.",
             "speaker": "Mas Wawan",
-            "translation": ""
+            "translation": "Hier, mevrouw. Handdoeken, zeep en tandenborstel zijn er. Daar is het badkuip."
           },
           {
             "text": "Air di bak untuk mandi.",
             "speaker": "Mas Wawan",
-            "translation": ""
+            "translation": "Het water in het kuip is voor het bad."
           },
           {
             "text": "Oke, terima kasih, ya Mas!",
             "speaker": "Ibu Dewi",
-            "translation": ""
+            "translation": "Oké, dank je wel, meneer!"
           },
           {
             "text": "Mas, saya ingin makan. Apa makanan yang enak?",
             "speaker": "Ibu Dewi",
-            "translation": ""
+            "translation": "Meneer, ik wil graag eten. Wat is lekker eten?"
           },
           {
             "text": "Oo, apa Ibu suka ayam pedas, nasi kuning dan lauk?",
             "speaker": "Mas Imran",
-            "translation": ""
+            "translation": "Oh, houdt u van pittige kip, gele rijst en bijgerechten?"
           },
           {
             "text": "Eeh... suka, tetapi saya ingin makan sate kambing, gado-gado dan nasi putih.",
             "speaker": "Ibu Dewi",
-            "translation": ""
+            "translation": "Eh... ja, maar ik wil liever geitenvlees satéspiesjes, gado-gado en witte rijst eten."
           },
           {
             "text": "Tambah krupuk juga dan segelas air putih, ya Mas.",
             "speaker": "Ibu Dewi",
-            "translation": ""
+            "translation": "Voeg ook nog krupuk toe en een glas water, meneer."
           }
         ]
       }
@@ -168,10 +168,10 @@ export const lesson = {
           },
           {
             "rules": [
-              "Yang v\u00f3\u00f3r \u00e9\u00e9n bijvoeglijk naamwoord geeft nadruk aan dat eigenschap.",
+              "Yang vóór één bijvoeglijk naamwoord geeft nadruk aan dat eigenschap.",
               "Vergelijkbaar met het cursief zetten van een woord in het Nederlands."
             ],
-            "title": "Yang bij \u00e9\u00e9n bijvoeglijk naamwoord (nadruk)",
+            "title": "Yang bij één bijvoeglijk naamwoord (nadruk)",
             "examples": [
               {
                 "dutch": "Het GROTE huis (nadruk op groot)",
@@ -193,7 +193,7 @@ export const lesson = {
           },
           {
             "rules": [
-              "Bij ongelijke nadruk (\u00e9\u00e9n eigenschap benadrukt): [znw] [bijv.nw.] yang [benadrukt bijv.nw.]",
+              "Bij ongelijke nadruk (één eigenschap benadrukt): [znw] [bijv.nw.] yang [benadrukt bijv.nw.]",
               "Bij gelijke nadruk (beide eigenschappen even belangrijk): [znw] yang [bijv.nw.] dan [bijv.nw.]"
             ],
             "title": "Yang bij twee bijvoeglijke naamwoorden",
@@ -221,7 +221,7 @@ export const lesson = {
               "Ada yang... betekent 'er zijn er die...' of 'sommigen..., anderen...'.",
               "Wordt gebruikt om een groep te verdelen of een deel aan te duiden."
             ],
-            "title": "Ada yang... \u2014 er zijn er die...",
+            "title": "Ada yang... — er zijn er die...",
             "examples": [
               {
                 "dutch": "Er zijn er die uit Nederland komen en er zijn er die uit Duitsland komen",
@@ -229,6 +229,9 @@ export const lesson = {
               }
             ]
           }
+        ],
+        "grammar_topics": [
+          "Yang-constructies"
         ]
       }
     },
@@ -353,7 +356,7 @@ export const lesson = {
               }
             ],
             "title": "Oefening III",
-            "instruction": "Vraag en antwoord. Contoh: 3 koffers \u2192 Itu berapa koper? Itu tiga koper."
+            "instruction": "Vraag en antwoord. Contoh: 3 koffers → Itu berapa koper? Itu tiga koper."
           },
           {
             "type": "grammar_drill",

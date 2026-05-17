@@ -1,4 +1,4 @@
-// Learning items for Lesson 4 — EN translations added by fill-english-translations.ts
+// Published via script
 export const learningItems = [
   {
     "base_text": "mengantar",
@@ -7,7 +7,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "accompany"
+    "translation_en": "accompany",
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "air",
@@ -16,7 +18,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "water"
+    "translation_en": "water",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "minum",
@@ -25,7 +29,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "drink"
+    "translation_en": "drink",
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "garpu",
@@ -34,7 +40,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "fork"
+    "translation_en": "fork",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "putih",
@@ -43,7 +51,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "white"
+    "translation_en": "white",
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "gelas",
@@ -52,7 +62,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "glass"
+    "translation_en": "glass",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "rapi",
@@ -61,7 +73,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "neat"
+    "translation_en": "neat",
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "gigi",
@@ -70,7 +84,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "tooth"
+    "translation_en": "tooth",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "handuk",
@@ -79,7 +95,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "towel"
+    "translation_en": "towel",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "sabun",
@@ -88,7 +106,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "soap"
+    "translation_en": "soap",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "hilang",
@@ -97,7 +117,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "lost"
+    "translation_en": "lost",
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "tamu",
@@ -106,7 +128,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "guest"
+    "translation_en": "guest",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "krupuk",
@@ -115,7 +139,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "prawn cracker"
+    "translation_en": "prawn cracker",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "tersedia",
@@ -124,7 +150,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "available"
+    "translation_en": "available",
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "tidur",
@@ -133,7 +161,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "sleep"
+    "translation_en": "sleep",
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "lantai",
@@ -142,7 +172,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "floor"
+    "translation_en": "floor",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "makanan",
@@ -151,7 +183,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "food"
+    "translation_en": "food",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kamar kecil",
@@ -160,7 +194,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "toilet"
+    "translation_en": "toilet",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kopi pait",
@@ -169,7 +205,9 @@ export const learningItems = [
     "context_type": "lesson_snippet",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "black coffee"
+    "translation_en": "black coffee",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "sayuran",
@@ -178,7 +216,9 @@ export const learningItems = [
     "context_type": "lesson_snippet",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "vegetable"
+    "translation_en": "vegetable",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "jambu air",
@@ -187,7 +227,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "water apple"
+    "translation_en": "water apple",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "minuman",
@@ -196,7 +238,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "drink"
+    "translation_en": "drink",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "pesan",
@@ -205,7 +249,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "order"
+    "translation_en": "order",
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "goreng",
@@ -214,7 +260,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "fry"
+    "translation_en": "fry",
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "sate",
@@ -223,7 +271,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "satay"
+    "translation_en": "satay",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "isi",
@@ -232,7 +282,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "fill"
+    "translation_en": "fill",
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "suka",
@@ -241,7 +293,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "like"
+    "translation_en": "like",
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "kopi",
@@ -250,7 +304,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "coffee"
+    "translation_en": "coffee",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "mandi",
@@ -259,7 +315,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "bathe"
+    "translation_en": "bathe",
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "paspoort",
@@ -268,7 +326,9 @@ export const learningItems = [
     "context_type": "lesson_snippet",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "passport"
+    "translation_en": "passport",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kamar makan",
@@ -277,7 +337,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "dining room"
+    "translation_en": "dining room",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "nasi goreng",
@@ -286,7 +348,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "fried rice"
+    "translation_en": "fried rice",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "air putih",
@@ -295,7 +359,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "drinking water"
+    "translation_en": "drinking water",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kopi tubruk",
@@ -304,7 +370,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "black coffee with sugar"
+    "translation_en": "black coffee with sugar",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "lauk-pauk",
@@ -313,7 +381,9 @@ export const learningItems = [
     "context_type": "lesson_snippet",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "side dishes"
+    "translation_en": "side dishes",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "pedas",
@@ -322,7 +392,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "spicy"
+    "translation_en": "spicy",
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "Sendok yang kecil dan bersih",
@@ -330,7 +402,8 @@ export const learningItems = [
     "translation_nl": "De kleine schone lepel",
     "context_type": "example_sentence",
     "source_page": 4,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Kunci kecil ini kunci Ibu.",
@@ -338,7 +411,8 @@ export const learningItems = [
     "translation_nl": "Dit kleine sleuteltje is mama's sleutel.",
     "context_type": "example_sentence",
     "source_page": 4,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Yang tidur banyak.",
@@ -346,7 +420,8 @@ export const learningItems = [
     "translation_nl": "Degenen die slapen zijn er veel.",
     "context_type": "example_sentence",
     "source_page": 4,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "pelan-pelan",
@@ -355,7 +430,9 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "slowly"
+    "translation_en": "slowly",
+    "pos": "adverb",
+    "level": "A1"
   },
   {
     "base_text": "piring",
@@ -364,7 +441,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "plate"
+    "translation_en": "plate",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "ingin",
@@ -373,7 +452,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "want"
+    "translation_en": "want",
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "pisau",
@@ -382,7 +463,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "knife"
+    "translation_en": "knife",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "sekolah",
@@ -391,7 +474,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "school"
+    "translation_en": "school",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "Jerman",
@@ -400,7 +485,9 @@ export const learningItems = [
     "context_type": "lesson_snippet",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "German"
+    "translation_en": "German",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "sikat",
@@ -409,7 +496,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "brush"
+    "translation_en": "brush",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kambing",
@@ -418,7 +507,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "goat"
+    "translation_en": "goat",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kenyang",
@@ -427,7 +518,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "full"
+    "translation_en": "full",
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "teh",
@@ -436,7 +529,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "tea"
+    "translation_en": "tea",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kuning",
@@ -445,7 +540,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "yellow"
+    "translation_en": "yellow",
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "kursi",
@@ -454,7 +551,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "chair"
+    "translation_en": "chair",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "mas",
@@ -463,7 +562,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "gold"
+    "translation_en": "gold",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kamar mandi",
@@ -472,7 +573,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "bathroom"
+    "translation_en": "bathroom",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "nasi kuning",
@@ -481,7 +584,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "yellow rice"
+    "translation_en": "yellow rice",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "sambel",
@@ -490,7 +595,9 @@ export const learningItems = [
     "context_type": "lesson_snippet",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "sambal"
+    "translation_en": "sambal",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "bak",
@@ -499,7 +606,9 @@ export const learningItems = [
     "context_type": "lesson_snippet",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "tub"
+    "translation_en": "tub",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "bak air",
@@ -508,7 +617,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "water tank"
+    "translation_en": "water tank",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "anak-anak",
@@ -517,7 +628,9 @@ export const learningItems = [
     "context_type": "lesson_snippet",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "children"
+    "translation_en": "children",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "lima ratus",
@@ -526,7 +639,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "five hundred"
+    "translation_en": "five hundred",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "satu juta",
@@ -535,7 +650,9 @@ export const learningItems = [
     "context_type": "lesson_snippet",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "one million"
+    "translation_en": "one million",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "tempat tidur",
@@ -544,7 +661,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "bed"
+    "translation_en": "bed",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "nasi putih",
@@ -553,7 +672,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "cooked white rice"
+    "translation_en": "cooked white rice",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "anak",
@@ -562,7 +683,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "child"
+    "translation_en": "child",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "Rumah besar yang kuning",
@@ -570,7 +693,8 @@ export const learningItems = [
     "translation_nl": "Het grote gele huis",
     "context_type": "example_sentence",
     "source_page": 4,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Pisang itu terlalu tua.",
@@ -578,7 +702,8 @@ export const learningItems = [
     "translation_nl": "De banaan is te rijp.",
     "context_type": "example_sentence",
     "source_page": 4,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "bersih",
@@ -587,7 +712,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "clean"
+    "translation_en": "clean",
+    "pos": "adjective",
+    "level": "A1"
   },
   {
     "base_text": "gado-gado",
@@ -596,7 +723,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "vegetable dish"
+    "translation_en": "vegetable dish",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "restoran",
@@ -605,7 +734,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "restaurant"
+    "translation_en": "restaurant",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "Kamar yang bersih",
@@ -613,7 +744,8 @@ export const learningItems = [
     "translation_nl": "De schone kamer",
     "context_type": "example_sentence",
     "source_page": 4,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Kunci yang kecil dan kuning",
@@ -621,7 +753,8 @@ export const learningItems = [
     "translation_nl": "De kleine gele sleutel",
     "context_type": "example_sentence",
     "source_page": 4,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "juga",
@@ -630,7 +763,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "also"
+    "translation_en": "also",
+    "pos": "particle",
+    "level": "A1"
   },
   {
     "base_text": "sendok",
@@ -639,7 +774,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "spoon"
+    "translation_en": "spoon",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kecap",
@@ -648,7 +785,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "soy sauce"
+    "translation_en": "soy sauce",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "tempat",
@@ -657,7 +796,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "place"
+    "translation_en": "place",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "terlalu",
@@ -666,7 +807,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "too"
+    "translation_en": "too",
+    "pos": "adverb",
+    "level": "A1"
   },
   {
     "base_text": "kunci",
@@ -675,7 +818,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "key"
+    "translation_en": "key",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "kurang",
@@ -684,7 +829,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "less"
+    "translation_en": "less",
+    "pos": "adverb",
+    "level": "A1"
   },
   {
     "base_text": "turun",
@@ -693,7 +840,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "descend"
+    "translation_en": "descend",
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "yang",
@@ -702,7 +851,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "that"
+    "translation_en": "that",
+    "pos": "particle",
+    "level": "A1"
   },
   {
     "base_text": "lemari",
@@ -711,7 +862,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "cupboard"
+    "translation_en": "cupboard",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "meja",
@@ -720,7 +873,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "table"
+    "translation_en": "table",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "seribu",
@@ -729,7 +884,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "thousand"
+    "translation_en": "thousand",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "tempat duduk",
@@ -738,7 +895,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "seat"
+    "translation_en": "seat",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "sikat gigi",
@@ -747,7 +906,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "toothbrush"
+    "translation_en": "toothbrush",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "oke",
@@ -756,7 +917,9 @@ export const learningItems = [
     "context_type": "lesson_snippet",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "okay"
+    "translation_en": "okay",
+    "pos": "particle",
+    "level": "A1"
   },
   {
     "base_text": "akan tetapi",
@@ -765,7 +928,9 @@ export const learningItems = [
     "context_type": "lesson_snippet",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "but"
+    "translation_en": "but",
+    "pos": "conjunction",
+    "level": "A1"
   },
   {
     "base_text": "setelah itu",
@@ -774,7 +939,9 @@ export const learningItems = [
     "context_type": "lesson_snippet",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "after that"
+    "translation_en": "after that",
+    "pos": "conjunction",
+    "level": "A1"
   },
   {
     "base_text": "selamat tinggal",
@@ -783,7 +950,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "goodbye"
+    "translation_en": "goodbye",
+    "pos": "greeting",
+    "level": "A1"
   },
   {
     "base_text": "dua ratus",
@@ -792,7 +961,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "two hundred"
+    "translation_en": "two hundred",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "Ada yang dari negeri Belanda dan ada yang dari negeri Jerman.",
@@ -800,7 +971,8 @@ export const learningItems = [
     "translation_nl": "Er zijn er van Nederland en er zijn er van Duitsland.",
     "context_type": "example_sentence",
     "source_page": 4,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Makanan yang enak",
@@ -808,7 +980,8 @@ export const learningItems = [
     "translation_nl": "Het lekkere eten",
     "context_type": "example_sentence",
     "source_page": 4,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "nasi",
@@ -817,7 +990,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "rice"
+    "translation_en": "rice",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "gabah",
@@ -826,7 +1001,9 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "paddy rice"
+    "translation_en": "paddy rice",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "padi",
@@ -835,7 +1012,9 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "rice plant"
+    "translation_en": "rice plant",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "sayur",
@@ -844,7 +1023,9 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "vegetable"
+    "translation_en": "vegetable",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "tujuh ratus",
@@ -853,7 +1034,9 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "seven hundred"
+    "translation_en": "seven hundred",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "formulir",
@@ -862,7 +1045,9 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "form"
+    "translation_en": "form",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "masih",
@@ -871,7 +1056,9 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "still"
+    "translation_en": "still",
+    "pos": "adverb",
+    "level": "A1"
   },
   {
     "base_text": "sembilan ratus",
@@ -880,7 +1067,9 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "nine hundred"
+    "translation_en": "nine hundred",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "dua ribu",
@@ -889,7 +1078,9 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "two thousand"
+    "translation_en": "two thousand",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "sembilan ribu",
@@ -898,7 +1089,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "nine thousand"
+    "translation_en": "nine thousand",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "tiga ratus",
@@ -907,7 +1100,9 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "three hundred"
+    "translation_en": "three hundred",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "sepuluh ribu",
@@ -916,7 +1111,9 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "ten thousand"
+    "translation_en": "ten thousand",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "sambal",
@@ -925,7 +1122,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "chili paste"
+    "translation_en": "chili paste",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "lauk",
@@ -934,7 +1133,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "side dishes"
+    "translation_en": "side dishes",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "empat ratus",
@@ -943,7 +1144,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "four hundred"
+    "translation_en": "four hundred",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "sejuta",
@@ -952,7 +1155,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "one million"
+    "translation_en": "one million",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "setelah",
@@ -961,7 +1166,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "after"
+    "translation_en": "after",
+    "pos": "preposition",
+    "level": "A1"
   },
   {
     "base_text": "semiliar",
@@ -970,7 +1177,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "one billion"
+    "translation_en": "one billion",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "kopi pahit",
@@ -979,7 +1188,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "black coffee"
+    "translation_en": "black coffee",
+    "pos": "noun",
+    "level": "A1"
   },
   {
     "base_text": "tubruk",
@@ -988,7 +1199,9 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "collide"
+    "translation_en": "collide",
+    "pos": "verb",
+    "level": "A1"
   },
   {
     "base_text": "delapan ratus",
@@ -997,7 +1210,9 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "eight hundred"
+    "translation_en": "eight hundred",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "enam ratus",
@@ -1006,7 +1221,9 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "six hundred"
+    "translation_en": "six hundred",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "setriliun",
@@ -1015,7 +1232,9 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "one trillion"
+    "translation_en": "one trillion",
+    "pos": "numeral",
+    "level": "A1"
   },
   {
     "base_text": "bibit padi",
@@ -1024,6 +1243,8 @@ export const learningItems = [
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",
-    "translation_en": "rice seedling"
+    "translation_en": "rice seedling",
+    "pos": "noun",
+    "level": "A1"
   }
 ]

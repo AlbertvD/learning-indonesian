@@ -1,4 +1,4 @@
-// Lesson 5 — reverse-engineered from DB by reverse-engineer-staging.ts
+// Enriched by lesson-stage
 export const lesson = {
   "title": "Les 5 - Belajar",
   "description": "Family dialogue about studying at home. Grammar focus: personal pronouns (persoonlijk voornaamwoord) and possessive pronouns (bezittelijk voornaamwoord), including kami vs kita distinction.",
@@ -14,10 +14,10 @@ export const lesson = {
         "paragraphs": [
           "Het koken van rijst kan op diverse manieren gebeuren. De aanwijzingen op de verpakking voor de behandeling van de betreffende rijst zijn meestal goed. Naast witte gekookte rijst kunt u wellicht eens onderstaande varianten proberen.",
           "Nasi gurih\n\nNasi gurih wordt bereid met santan (het witte sap verkregen door het uitpersen van natte kokospulp). Het krijgt daardoor een volle smaak. Bij de nasi gurih kunt u twee tot drie andere gerechten maken, bijvoorbeeld een 'droog' vleesgerecht, een groentegerecht en eventueel wat kroepoek.",
-          "Benodigdheden voor 4 personen:\n\u2013 circa 400 gram rijst, \u2013 2 koppen dikke santan, \u2013 snufje zout,\n\u2013 2-3 pandanbladeren.",
+          "Benodigdheden voor 4 personen:\n– circa 400 gram rijst, – 2 koppen dikke santan, – snufje zout,\n– 2-3 pandanbladeren.",
           "Was de rijst en breng daarna in een pan de rijst aan de kook met een 'vingerkootje' (niet meer dan 2,5 cm) water boven de rijst. Voeg dan toe de santan, een snufje zout en de pandanbladeren en meng ze door de rijst. Zodra het vocht begint te borrelen, zetten we het vuur zacht en gebruiken eventueel een vlamverdeler. Wanneer de rijst na 15 tot 20 minuten droog staat, kan het vuur uit. De rijst is dan half gaar. De rijst wordt vervolgens in een 'stomer' (tweedelige pan) overgebracht en in 15-20 minuten gaar gestoomd.",
           "Nasi kuning\n\nOok nasi kuning wordt met santan bereid. De gele kleur geeft de rijst een feestelijk aanzien. Het gerecht ligt vrij zwaar op de maag en men doet er goed aan een tikje bescheiden te zijn bij het opscheppen.",
-          "Benodigdheden voor 4 personen:\n\u2013 circa 400 gram rijst, \u2013 2 koppen dikke santan, \u2013 snufje zout,\n\u2013 2 mespunten kunyitpoeder (geelwortel = kurkuma), \u2013 2 stukjes verse serehstengels of serehbladeren, \u2013 1 jeruk purutblad en \u2013 eventueel een pandanblad.",
+          "Benodigdheden voor 4 personen:\n– circa 400 gram rijst, – 2 koppen dikke santan, – snufje zout,\n– 2 mespunten kunyitpoeder (geelwortel = kurkuma), – 2 stukjes verse serehstengels of serehbladeren, – 1 jeruk purutblad en – eventueel een pandanblad.",
           "Was de rijst en stoom hem in een vergiet gedurende 20 minuten (dus niet in het water). Intussen brengen we de santan met wat zout, kunyitpoeder, sereh, jeruk purut en pandanblad aan de kook. Zet het vuur laag en voeg de dampende rijst toe. Even goed doorroeren, het vuur uit doen, deksel op de pan en 5-7 minuten laten staan.",
           "De lauwe, gele rijst overbrengen in een vergiet en nog 20 minuten stomen om hem gaar te laten worden. De nasi kuning overbrengen op een grote schaal en garneren met gebakken uitjes, schijfjes komkommer, kleine stukjes gebakken tempe, reepjes gebakken geklopt ei en lombok (Spaanse pepers)."
         ]
@@ -33,37 +33,37 @@ export const lesson = {
           {
             "text": "Ibu dan bapak enak saja ke Taman Mini. Kita harus belajar di rumah. Aku juga mau ke Taman Mini, dan kamu Nanang?",
             "speaker": "Titin",
-            "translation": ""
+            "translation": "Mama en papa gaan maar naar Taman Mini. Wij moeten thuis studeren. Ik wil ook naar Taman Mini, en jij Nanang?"
           },
           {
             "text": "Aku tidak senang tinggal di rumah terus. Mari! Kita juga pergi saja, Tin.",
             "speaker": "Nanang",
-            "translation": ""
+            "translation": "Ik hou er niet van om maar thuis te blijven. Kom mee! Wij gaan toch gewoon weg, Tin."
           },
           {
             "text": "Kita harus kerja dulu sebentar. Nanti kita pergi.",
             "speaker": "Titin",
-            "translation": ""
+            "translation": "Wij moeten eerst nog even werken. Daarna gaan we weg."
           },
           {
             "text": "Ayo, kerja dulu anak-anak!",
             "speaker": "Pembantu",
-            "translation": ""
+            "translation": "Kom op, eerst werken kinderen!"
           },
           {
             "text": "Aduh, kami mau ke luar, jalan-jalan dan makan di restoran \"Mi Enak\" tetapi tidak ada uang.",
             "speaker": "Titin",
-            "translation": ""
+            "translation": "O jee, wij willen graag naar buiten, een wandelingetje maken en eten in het restaurant 'Mi Enak', maar we hebben geen geld."
           },
           {
             "text": "Saya juga tidak punya uang. Jadi, tinggal di rumah saja Tin. Besok saja jalan-jalan dengan ayahmu. Mari! Sekarang kerja. Besok harus ke sekolah 'kan?",
             "speaker": "Pembantu",
-            "translation": ""
+            "translation": "Ik heb ook geen geld. Dus blijf je maar thuis, Tin. Morgen ga je wandelen met je vader. Kom op! Nu werken. Morgen moet je naar school, hè?"
           },
           {
             "text": "Baiklah, tapi boleh minta setrop susu ya?",
             "speaker": "Titin",
-            "translation": ""
+            "translation": "Oké, maar mag ik een glas melk krijgen?"
           }
         ]
       }
@@ -78,9 +78,9 @@ export const lesson = {
             "rules": [
               "Gebruik saya als neutraal-formele vorm van 'ik' bij kennismakingen en in formele situaties.",
               "Aku is de informele vorm van 'ik', gebruikt in huiselijke kring en tussen vrienden.",
-              "Indonesi\u00ebrs verwijzen vaak naar zichzelf met hun eigen naam in plaats van saya of aku."
+              "Indonesiërs verwijzen vaak naar zichzelf met hun eigen naam in plaats van saya of aku."
             ],
-            "title": "Ik \u2014 saya, aku en eigennaam",
+            "title": "Ik — saya, aku en eigennaam",
             "examples": [
               {
                 "dutch": "Mijn vriend en ik",
@@ -100,9 +100,9 @@ export const lesson = {
             "rules": [
               "De beleefdste manier om 'jij' te zeggen is de eigen naam of voornaam van de ander te gebruiken.",
               "Kamu en engkau zijn informele aanspreekvormen, beperkt tot huiselijke kring en vrienden.",
-              "Gebruik nooit kamu tegen een volwassen gast of onbekende \u2014 dat wordt als schokken ervaren."
+              "Gebruik nooit kamu tegen een volwassen gast of onbekende — dat wordt als schokken ervaren."
             ],
-            "title": "Jij \u2014 beleefd via naam of kamu/engkau",
+            "title": "Jij — beleefd via naam of kamu/engkau",
             "examples": [
               {
                 "dutch": "Wat wil jij (Awan) in de stad kopen?",
@@ -121,7 +121,7 @@ export const lesson = {
               "Anda is sexe- en sociaal-neutraal 'u', populair in reclame en formele teksten.",
               "Saudara (vriend/gelijke) voor collega's en gelijken in neutrale situaties."
             ],
-            "title": "U \u2014 Tuan/Nyonya, Bapak/Ibu, Anda, Saudara",
+            "title": "U — Tuan/Nyonya, Bapak/Ibu, Anda, Saudara",
             "examples": [
               {
                 "dutch": "Waar komt u (meneer Sahid) vandaan?",
@@ -139,11 +139,11 @@ export const lesson = {
           },
           {
             "rules": [
-              "Onderscheid: kakak (oudere broer/zus), adik (jongere broer/zus) \u2014 geslacht is secundair.",
+              "Onderscheid: kakak (oudere broer/zus), adik (jongere broer/zus) — geslacht is secundair.",
               "Abang (informeel: bang) = oudere broer; kakak perempuan = oudere zus.",
               "Deze familietermen worden ook informeel gebruikt voor bekenden en buren."
             ],
-            "title": "Broers en zusters \u2014 kakak, adik, abang",
+            "title": "Broers en zusters — kakak, adik, abang",
             "examples": [
               {
                 "dutch": "oudere broer",
@@ -165,10 +165,10 @@ export const lesson = {
           },
           {
             "rules": [
-              "Dia en ia zijn beide correct voor 'hij' en 'zij' \u2014 er is geen geslachtsverschil.",
+              "Dia en ia zijn beide correct voor 'hij' en 'zij' — er is geen geslachtsverschil.",
               "Beliau is de respectvolle vorm: wordt gebruikt om over iemand te spreken met ontzag."
             ],
-            "title": "Hij/zij \u2014 dia, ia, beliau",
+            "title": "Hij/zij — dia, ia, beliau",
             "examples": [
               {
                 "dutch": "hij of zij (beide correct)",
@@ -184,16 +184,16 @@ export const lesson = {
             "rules": [
               "Kita = 'wij' inclusief de aangesprokene (de persoon tot wie je spreekt telt mee).",
               "Kami = 'wij' exclusief de aangesprokene (de persoon tot wie je spreekt is niet inbegrepen).",
-              "Dit onderscheid bestaat niet in het Nederlands \u2014 context bepaalt de keuze."
+              "Dit onderscheid bestaat niet in het Nederlands — context bepaalt de keuze."
             ],
-            "title": "Wij \u2014 kita (inclusief) versus kami (exclusief)",
+            "title": "Wij — kita (inclusief) versus kami (exclusief)",
             "examples": [
               {
-                "dutch": "Wij moeten thuis studeren (jij ook \u2014 Titin tegen Nanang)",
+                "dutch": "Wij moeten thuis studeren (jij ook — Titin tegen Nanang)",
                 "indonesian": "Kita harus belajar di rumah"
               },
               {
-                "dutch": "Wij willen naar buiten (jij niet \u2014 Titin tegen pembantu)",
+                "dutch": "Wij willen naar buiten (jij niet — Titin tegen pembantu)",
                 "indonesian": "Aduh, kami mau ke luar"
               },
               {
@@ -210,7 +210,7 @@ export const lesson = {
             "rules": [
               "Kalian = 'jullie' (neutraal meervoud tweede persoon).",
               "U meervoud: Bapak-Bapak / Ibu-Ibu / Saudara-Saudari / Anda (semua).",
-              "Zij meervoud: mereka (\u00e9\u00e9n woord, geen geslachtsverschil)."
+              "Zij meervoud: mereka (één woord, geen geslachtsverschil)."
             ],
             "title": "Jullie, U (meervoud) en Zij (meervoud)",
             "examples": [
@@ -228,6 +228,9 @@ export const lesson = {
               }
             ]
           }
+        ],
+        "grammar_topics": [
+          "Voornaamwoorden"
         ]
       }
     },
@@ -436,7 +439,10 @@ export const lesson = {
         "footnotes": [
           "* In geschreven taal wordt -nya voor de derde persoon enkelvoud en meervoud gebruikt. In gesproken taal wordt, in plaats van -nya, ook wel dia voor de derde persoon enkelvoud en mereka voor de derde persoon meervoud gebruikt."
         ],
-        "tableTitle": "Schema bezittelijk voornaamwoord"
+        "tableTitle": "Schema bezittelijk voornaamwoord",
+        "grammar_topics": [
+          "Voornaamwoorden"
+        ]
       }
     },
     {
@@ -450,7 +456,7 @@ export const lesson = {
             "items": [
               {
                 "answer": "Ini koper kita",
-                "prompt": "Ini koper siapa? (onze \u2014 kita)"
+                "prompt": "Ini koper siapa? (onze — kita)"
               },
               {
                 "answer": "Itu kuncimu / kunci kamu",
@@ -470,7 +476,7 @@ export const lesson = {
               },
               {
                 "answer": "Itu meja Bapak",
-                "prompt": "Itu meja siapa? (uw \u2014 Bapak)"
+                "prompt": "Itu meja siapa? (uw — Bapak)"
               },
               {
                 "answer": "Ini kursinya / kursi dia",
@@ -478,7 +484,7 @@ export const lesson = {
               },
               {
                 "answer": "Itu mobil kami",
-                "prompt": "Itu mobil siapa? (onze \u2014 kami)"
+                "prompt": "Itu mobil siapa? (onze — kami)"
               },
               {
                 "answer": "Ini rumah mereka / rumahnya",
@@ -490,7 +496,7 @@ export const lesson = {
               }
             ],
             "title": "Oefening I",
-            "instruction": "Bezittelijk voornaamwoord. Contoh: Itu buku siapa? (mijn) \u2192 Itu buku saya."
+            "instruction": "Bezittelijk voornaamwoord. Contoh: Itu buku siapa? (mijn) → Itu buku saya."
           },
           {
             "type": "translation",
@@ -580,31 +586,31 @@ export const lesson = {
             "type": "translation",
             "items": [
               {
-                "answer": "Di mana Jan sekarang? \u2014 Dia ada di atas.",
+                "answer": "Di mana Jan sekarang? — Dia ada di atas.",
                 "prompt": "Waar is Jan nu?"
               },
               {
-                "answer": "Kamu mau ke mana? \u2014 Saya mau ke bawah.",
+                "answer": "Kamu mau ke mana? — Saya mau ke bawah.",
                 "prompt": "Waar ga je heen?"
               },
               {
-                "answer": "Berapa orang yang duduk di sana? \u2014 Di sana duduk dua puluh empat orang.",
+                "answer": "Berapa orang yang duduk di sana? — Di sana duduk dua puluh empat orang.",
                 "prompt": "Hoeveel mensen zitten daar?"
               },
               {
-                "answer": "Taksi ada di mana? \u2014 Di belakang hotel ada taksi.",
+                "answer": "Taksi ada di mana? — Di belakang hotel ada taksi.",
                 "prompt": "Waar staan taxi's?"
               },
               {
-                "answer": "Tas saya di mana? \u2014 Tasmu ada di bawah meja.",
+                "answer": "Tas saya di mana? — Tasmu ada di bawah meja.",
                 "prompt": "Waar is mijn tas?"
               },
               {
-                "answer": "Ini harganya berapa? \u2014 Harganya tiga ratus enam puluh empat ribu rupiah.",
+                "answer": "Ini harganya berapa? — Harganya tiga ratus enam puluh empat ribu rupiah.",
                 "prompt": "Hoeveel kost dit?"
               },
               {
-                "answer": "Nama Bapak siapa? \u2014 Nama saya Hans.",
+                "answer": "Nama Bapak siapa? — Nama saya Hans.",
                 "prompt": "Hoe heet u, meneer?"
               },
               {
@@ -621,7 +627,7 @@ export const lesson = {
               }
             ],
             "title": "Oefening IV",
-            "instruction": "Vertaal. (Pagina deels scheef gefotografeerd \u2014 antwoorden 8-10 zijn gedeeltelijk.)"
+            "instruction": "Vertaal. (Pagina deels scheef gefotografeerd — antwoorden 8-10 zijn gedeeltelijk.)"
           }
         ]
       }
@@ -632,7 +638,7 @@ export const lesson = {
       "content": {
         "type": "text",
         "paragraphs": [
-          "Na de verovering van de belangrijke handelsplaatsen Goa in India in 1510 en Malakka in het huidige Maleisi\u00eb in 1511, trokken de Portugezen verder in de richting van de Indonesische archipel. In 1522 bereikten zij de in moerasachtig gebied gelegen haven Sunda Kelapa van het Westjavaanse rijk Pajajaran. De Portugezen sloten een overeenkomst met de heerser om er een fort te kunnen bouwen, maar toen ze in 1527 terugkwamen om met de bouw te beginnen, was de havenplaats inmiddels ingelijfd door de sultan van Bantam (West-Java).",
+          "Na de verovering van de belangrijke handelsplaatsen Goa in India in 1510 en Malakka in het huidige Maleisië in 1511, trokken de Portugezen verder in de richting van de Indonesische archipel. In 1522 bereikten zij de in moerasachtig gebied gelegen haven Sunda Kelapa van het Westjavaanse rijk Pajajaran. De Portugezen sloten een overeenkomst met de heerser om er een fort te kunnen bouwen, maar toen ze in 1527 terugkwamen om met de bouw te beginnen, was de havenplaats inmiddels ingelijfd door de sultan van Bantam (West-Java).",
           "De sultan weigerde de Portugezen toestemming om op deze plaats een vesting te bouwen. Tijdens de heerschappij van de sultan van Bantam werd de plaats omgedoopt in Jayakarta dat later werd verbasterd tot Jakatra, waarvan later Jakarta werd afgeleid."
         ]
       }

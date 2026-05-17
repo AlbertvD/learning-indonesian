@@ -1,4 +1,4 @@
-// Learning items for Lesson 5 — reverse-engineered from DB
+// Published via script
 export const learningItems = [
   {
     "base_text": "abang",
@@ -6,7 +6,10 @@ export const learningItems = [
     "translation_nl": "oudere broer",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "older brother"
   },
   {
     "base_text": "adik",
@@ -14,7 +17,10 @@ export const learningItems = [
     "translation_nl": "jongere broer/zus",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "younger sibling"
   },
   {
     "base_text": "aduh",
@@ -22,7 +28,10 @@ export const learningItems = [
     "translation_nl": "hemel, goh, jemig (uitroep)",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "particle",
+    "level": "A1",
+    "translation_en": "goodness, wow, gosh"
   },
   {
     "base_text": "aku",
@@ -30,7 +39,10 @@ export const learningItems = [
     "translation_nl": "ik (informeel)",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "pronoun",
+    "level": "A1",
+    "translation_en": "I (informal)"
   },
   {
     "base_text": "ayah",
@@ -38,7 +50,10 @@ export const learningItems = [
     "translation_nl": "vader",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "father"
   },
   {
     "base_text": "ayo!",
@@ -46,7 +61,10 @@ export const learningItems = [
     "translation_nl": "komaan!",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "greeting",
+    "level": "A1",
+    "translation_en": "come on!"
   },
   {
     "base_text": "baiklah",
@@ -54,7 +72,10 @@ export const learningItems = [
     "translation_nl": "goed dan (maar)",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "particle",
+    "level": "A1",
+    "translation_en": "alright then"
   },
   {
     "base_text": "belajar",
@@ -62,7 +83,10 @@ export const learningItems = [
     "translation_nl": "leren (zie ook Les 11)",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "verb",
+    "level": "A1",
+    "translation_en": "to learn"
   },
   {
     "base_text": "enak saja",
@@ -70,7 +94,10 @@ export const learningItems = [
     "translation_nl": "op z'n gemak, naar believen",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adjective",
+    "level": "A1",
+    "translation_en": "at ease, at one's leisure"
   },
   {
     "base_text": "gurih",
@@ -78,7 +105,10 @@ export const learningItems = [
     "translation_nl": "vol van smaak",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adjective",
+    "level": "A1",
+    "translation_en": "savory, full of flavor"
   },
   {
     "base_text": "habis",
@@ -86,7 +116,10 @@ export const learningItems = [
     "translation_nl": "op, afgelopen",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adjective",
+    "level": "A1",
+    "translation_en": "finished, used up"
   },
   {
     "base_text": "halo",
@@ -94,7 +127,10 @@ export const learningItems = [
     "translation_nl": "hallo",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "greeting",
+    "level": "A1",
+    "translation_en": "hello"
   },
   {
     "base_text": "hari",
@@ -102,7 +138,10 @@ export const learningItems = [
     "translation_nl": "dag",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "day"
   },
   {
     "base_text": "hari Rabu",
@@ -110,7 +149,10 @@ export const learningItems = [
     "translation_nl": "woensdag",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "Wednesday"
   },
   {
     "base_text": "ikut",
@@ -118,7 +160,10 @@ export const learningItems = [
     "translation_nl": "meegaan, meedoen",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "verb",
+    "level": "A1",
+    "translation_en": "to join, to go along"
   },
   {
     "base_text": "jadi",
@@ -126,7 +171,10 @@ export const learningItems = [
     "translation_nl": "dus",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "conjunction",
+    "level": "A1",
+    "translation_en": "so, thus"
   },
   {
     "base_text": "jalan-jalan",
@@ -134,7 +182,10 @@ export const learningItems = [
     "translation_nl": "een wandeling maken",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "verb",
+    "level": "A1",
+    "translation_en": "to take a walk"
   },
   {
     "base_text": "kakak",
@@ -142,7 +193,10 @@ export const learningItems = [
     "translation_nl": "oudere broer/zus",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "older sibling"
   },
   {
     "base_text": "kami",
@@ -150,7 +204,10 @@ export const learningItems = [
     "translation_nl": "wij (exclusief aangesprokene)",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "pronoun",
+    "level": "A1",
+    "translation_en": "we (exclusive)"
   },
   {
     "base_text": "kamu",
@@ -158,7 +215,10 @@ export const learningItems = [
     "translation_nl": "jij, jullie (informeel)",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "pronoun",
+    "level": "A1",
+    "translation_en": "you (informal)"
   },
   {
     "base_text": "kering",
@@ -166,7 +226,10 @@ export const learningItems = [
     "translation_nl": "droog",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adjective",
+    "level": "A1",
+    "translation_en": "dry"
   },
   {
     "base_text": "kerja",
@@ -174,7 +237,10 @@ export const learningItems = [
     "translation_nl": "werken",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "verb",
+    "level": "A1",
+    "translation_en": "to work"
   },
   {
     "base_text": "kita",
@@ -182,7 +248,10 @@ export const learningItems = [
     "translation_nl": "wij (inclusief aangesprokene)",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "pronoun",
+    "level": "A1",
+    "translation_en": "we (inclusive)"
   },
   {
     "base_text": "ladang",
@@ -190,7 +259,10 @@ export const learningItems = [
     "translation_nl": "rijstveld (droog)",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "rice field (dry)"
   },
   {
     "base_text": "laki-laki",
@@ -198,7 +270,10 @@ export const learningItems = [
     "translation_nl": "man, mannelijk",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "man, male"
   },
   {
     "base_text": "mari!",
@@ -206,7 +281,10 @@ export const learningItems = [
     "translation_nl": "kom!",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "greeting",
+    "level": "A1",
+    "translation_en": "come!"
   },
   {
     "base_text": "mereka",
@@ -214,7 +292,10 @@ export const learningItems = [
     "translation_nl": "zij (meervoud)",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "pronoun",
+    "level": "A1",
+    "translation_en": "they"
   },
   {
     "base_text": "mi",
@@ -222,7 +303,10 @@ export const learningItems = [
     "translation_nl": "bamie, noedels",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "noodles"
   },
   {
     "base_text": "mulai",
@@ -230,7 +314,10 @@ export const learningItems = [
     "translation_nl": "beginnen",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "verb",
+    "level": "A1",
+    "translation_en": "to begin"
   },
   {
     "base_text": "nanti",
@@ -238,7 +325,10 @@ export const learningItems = [
     "translation_nl": "straks, zo meteen",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adverb",
+    "level": "A1",
+    "translation_en": "soon, in a moment"
   },
   {
     "base_text": "nasi gurih",
@@ -246,7 +336,10 @@ export const learningItems = [
     "translation_nl": "rijstgerecht (met kokosmelk)",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "rice dish with coconut milk"
   },
   {
     "base_text": "pembantu",
@@ -254,7 +347,10 @@ export const learningItems = [
     "translation_nl": "hulp in de huishouding",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "domestic helper"
   },
   {
     "base_text": "perempuan",
@@ -262,7 +358,10 @@ export const learningItems = [
     "translation_nl": "vrouw, vrouwelijk",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "woman, female"
   },
   {
     "base_text": "pergi",
@@ -270,7 +369,10 @@ export const learningItems = [
     "translation_nl": "(weg)gaan",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "verb",
+    "level": "A1",
+    "translation_en": "go, leave"
   },
   {
     "base_text": "punya",
@@ -278,7 +380,10 @@ export const learningItems = [
     "translation_nl": "bezitten, hebben",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "verb",
+    "level": "A1",
+    "translation_en": "have, own"
   },
   {
     "base_text": "rusak",
@@ -286,7 +391,10 @@ export const learningItems = [
     "translation_nl": "kapot, stuk",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adjective",
+    "level": "A1",
+    "translation_en": "broken, damaged"
   },
   {
     "base_text": "sawah",
@@ -294,7 +402,10 @@ export const learningItems = [
     "translation_nl": "rijstveld (nat)",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "rice field"
   },
   {
     "base_text": "sebentar",
@@ -302,7 +413,10 @@ export const learningItems = [
     "translation_nl": "een moment(je), even",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adverb",
+    "level": "A1",
+    "translation_en": "a moment, just a moment"
   },
   {
     "base_text": "senang",
@@ -310,7 +424,10 @@ export const learningItems = [
     "translation_nl": "zich prettig voelen, blij, leuk",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adjective",
+    "level": "A1",
+    "translation_en": "happy, pleased, nice"
   },
   {
     "base_text": "setrop",
@@ -318,7 +435,10 @@ export const learningItems = [
     "translation_nl": "siroop",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "syrup"
   },
   {
     "base_text": "setrop susu",
@@ -326,7 +446,10 @@ export const learningItems = [
     "translation_nl": "zoet drankje (melk met siroop)",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "sweet milk drink"
   },
   {
     "base_text": "sore",
@@ -334,7 +457,10 @@ export const learningItems = [
     "translation_nl": "namiddag, avond",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "afternoon, evening"
   },
   {
     "base_text": "susu",
@@ -342,7 +468,10 @@ export const learningItems = [
     "translation_nl": "melk",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "milk"
   },
   {
     "base_text": "taman",
@@ -350,7 +479,10 @@ export const learningItems = [
     "translation_nl": "park, tuin",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "park, garden"
   },
   {
     "base_text": "Taman Mini",
@@ -358,7 +490,10 @@ export const learningItems = [
     "translation_nl": "Klein Indonesie - park met traditionele Indonesische gebouwen in Jakarta",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "Taman Mini (traditional Indonesian park in Jakarta)"
   },
   {
     "base_text": "tapi / tetapi",
@@ -366,7 +501,10 @@ export const learningItems = [
     "translation_nl": "maar, echter",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "conjunction",
+    "level": "A1",
+    "translation_en": "but, however"
   },
   {
     "base_text": "terus",
@@ -374,7 +512,10 @@ export const learningItems = [
     "translation_nl": "voorts, steeds, maar door",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adverb",
+    "level": "A1",
+    "translation_en": "go on, keep, continuously"
   },
   {
     "base_text": "uang",
@@ -382,7 +523,10 @@ export const learningItems = [
     "translation_nl": "geld",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "money"
   },
   {
     "base_text": "wah!",
@@ -390,7 +534,10 @@ export const learningItems = [
     "translation_nl": "goh! nou! (stopwoord/uitroep)",
     "context_type": "vocabulary_list",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "particle",
+    "level": "A1",
+    "translation_en": "wow!"
   },
   {
     "base_text": "Ibu dan bapak enak saja ke Taman Mini. Kita harus belajar di rumah.",
@@ -398,7 +545,8 @@ export const learningItems = [
     "translation_nl": "Moeder en vader gaan zo maar naar Taman Mini. Wij moeten thuis studeren.",
     "context_type": "dialogue",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Aku tidak senang tinggal di rumah terus.",
@@ -406,7 +554,8 @@ export const learningItems = [
     "translation_nl": "Ik vind het niet leuk om steeds thuis te blijven.",
     "context_type": "dialogue",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Kita harus kerja dulu sebentar. Nanti kita pergi.",
@@ -414,7 +563,8 @@ export const learningItems = [
     "translation_nl": "We moeten eerst even werken. Daarna gaan we.",
     "context_type": "dialogue",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Aduh, kami mau ke luar, jalan-jalan dan makan di restoran Mi Enak tetapi tidak ada uang.",
@@ -422,7 +572,8 @@ export const learningItems = [
     "translation_nl": "Ai, wij willen naar buiten, wandelen en eten in restaurant Mi Enak maar er is geen geld.",
     "context_type": "dialogue",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Besok saja jalan-jalan dengan ayahmu.",
@@ -430,7 +581,8 @@ export const learningItems = [
     "translation_nl": "Ga morgen maar wandelen met je vader.",
     "context_type": "dialogue",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Baiklah, tapi boleh minta setrop susu ya?",
@@ -438,7 +590,8 @@ export const learningItems = [
     "translation_nl": "Goed dan, maar mag ik een setrop susu?",
     "context_type": "dialogue",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Kita harus belajar di rumah.",
@@ -446,7 +599,8 @@ export const learningItems = [
     "translation_nl": "Wij moeten thuis studeren. (inclusief: jij ook)",
     "context_type": "example_sentence",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Kami mau ke luar.",
@@ -454,7 +608,8 @@ export const learningItems = [
     "translation_nl": "Wij willen naar buiten. (exclusief: jij niet)",
     "context_type": "example_sentence",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Di mana bukuku?",
@@ -462,7 +617,8 @@ export const learningItems = [
     "translation_nl": "Waar is mijn boek?",
     "context_type": "example_sentence",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Mobilmu rusak.",
@@ -470,7 +626,8 @@ export const learningItems = [
     "translation_nl": "Jouw auto is kapot.",
     "context_type": "example_sentence",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Pembantunya sakit.",
@@ -478,7 +635,8 @@ export const learningItems = [
     "translation_nl": "Zijn/haar hulpje is ziek.",
     "context_type": "example_sentence",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Uang kita sudah habis.",
@@ -486,7 +644,8 @@ export const learningItems = [
     "translation_nl": "Ons geld is al op.",
     "context_type": "example_sentence",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   },
   {
     "base_text": "Rumahnya bagus sekali.",
@@ -494,6 +653,7 @@ export const learningItems = [
     "translation_nl": "Hun huis is erg mooi.",
     "context_type": "example_sentence",
     "source_page": 5,
-    "review_status": "published"
+    "review_status": "published",
+    "level": "A1"
   }
 ]

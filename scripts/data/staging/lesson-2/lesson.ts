@@ -1,4 +1,4 @@
-// Lesson 2 — reverse-engineered from DB by reverse-engineer-staging.ts
+// Enriched by lesson-stage
 export const lesson = {
   "title": "Les 2 - Di Indonesia (In Indonesie)",
   "description": "Leer de SE- prefix, ini/itu (dit/dat) als aanwijzend voornaamwoord en woordgroepmarkeerder, ontkenning met tidak, bijvoeglijke naamwoorden en de getallen 11-20.",
@@ -14,55 +14,68 @@ export const lesson = {
         "lines": [
           {
             "text": "Selamat siang, apa kabar? Bapak dari mana?",
-            "speaker": "Bapak Mulyono"
+            "speaker": "Bapak Mulyono",
+            "translation": "Goedemiddag, hoe gaat het? Waar bent u vandaan?"
           },
           {
             "text": "Saya dari negeri Belanda.",
-            "speaker": "Bapak Barends"
+            "speaker": "Bapak Barends",
+            "translation": "Ik kom uit Nederland."
           },
           {
             "text": "Nama Bapak siapa?",
-            "speaker": "Bapak Mulyono"
+            "speaker": "Bapak Mulyono",
+            "translation": "Wat is uw naam?"
           },
           {
             "text": "Nama saya Barends.",
-            "speaker": "Bapak Barends"
+            "speaker": "Bapak Barends",
+            "translation": "Mijn naam is Barends."
           },
           {
             "text": "Dan ini Ibu Barends?",
-            "speaker": "Bapak Mulyono"
+            "speaker": "Bapak Mulyono",
+            "translation": "En dit is mevrouw Barends?"
           },
           {
             "text": "Ya, ini istri saya.",
-            "speaker": "Bapak Barends"
+            "speaker": "Bapak Barends",
+            "translation": "Ja, dit is mijn vrouw."
           },
           {
             "text": "Bapak menginap di mana? Sudah dapat hotel?",
-            "speaker": "Bapak Mulyono"
+            "speaker": "Bapak Mulyono",
+            "translation": "Waar logeert u? Heeft u al een hotel gevonden?"
           },
           {
             "text": "Sudah. Sekarang mau ke hotel. Di mana bisa naik taksi?",
-            "speaker": "Bapak Barends"
+            "speaker": "Bapak Barends",
+            "translation": "Ja, dat klopt. Nu willen we naar het hotel. Waar kan ik een taxi nemen?"
           },
           {
             "text": "Di sana. Bapak dan Ibu tinggal di mana?",
-            "speaker": "Bapak Mulyono"
+            "speaker": "Bapak Mulyono",
+            "translation": "Daar. Waar wonen u en mevrouw?"
           },
           {
             "text": "Saya dan suami saya tinggal di hotel Ramayana, Jalan Sinta nomor 11. Itu hotel bagus.",
-            "speaker": "Ibu Barends"
+            "speaker": "Ibu Barends",
+            "translation": "Mijn man en ik wonen in het hotel Ramayana, Sintalaan nummer 11. Dat is een mooi hotel."
           },
           {
             "text": "Nah, taksi sudah datang.",
-            "speaker": "Bapak Barends"
+            "speaker": "Bapak Barends",
+            "translation": "Daar komt de taxi al aan."
           },
           {
             "text": "Ooh, ya, saya pulang dulu. Sampai bertemu lagi!",
-            "speaker": "Bapak Mulyono"
+            "speaker": "Bapak Mulyono",
+            "translation": "O ja, ik ga naar huis. Tot ziens!"
           },
           {
             "text": "Sampai bertemu lagi, Pak.",
-            "speaker": "Bapak Barends"
+            "speaker": "Bapak Barends",
+            "translation": "Tot ziens!"
           }
         ]
       }
@@ -371,7 +384,11 @@ export const lesson = {
             "title": "Classificeerwoorden"
           }
         ],
-        "word_order": "telwoord - classificeerwoord - zelfstandig naamwoord - bijvoeglijk naamwoord"
+        "word_order": "telwoord - classificeerwoord - zelfstandig naamwoord - bijvoeglijk naamwoord",
+        "grammar_topics": [
+          "Woordgroepen en aanwijzers",
+          "Ontkenning"
+        ]
       }
     },
     {
@@ -423,6 +440,10 @@ export const lesson = {
             ],
             "title": "Woordgroepen"
           }
+        ],
+        "grammar_topics": [
+          "Woordgroepen en aanwijzers",
+          "Ontkenning"
         ]
       }
     },
@@ -507,6 +528,10 @@ export const lesson = {
               }
             ]
           }
+        ],
+        "grammar_topics": [
+          "Woordgroepen en aanwijzers",
+          "Ontkenning"
         ]
       }
     },
@@ -527,6 +552,10 @@ export const lesson = {
             ],
             "title": "Ontkenning: tidak"
           }
+        ],
+        "grammar_topics": [
+          "Woordgroepen en aanwijzers",
+          "Ontkenning"
         ]
       }
     },
@@ -644,6 +673,10 @@ export const lesson = {
             ],
             "title": "Tegengestelde bijvoeglijke naamwoorden"
           }
+        ],
+        "grammar_topics": [
+          "Woordgroepen en aanwijzers",
+          "Ontkenning"
         ]
       }
     },
