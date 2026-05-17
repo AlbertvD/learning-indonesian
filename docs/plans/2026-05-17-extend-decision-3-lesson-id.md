@@ -192,10 +192,10 @@ The column rename (`lesson_id` → `introduced_by_lesson_id`) is intentionally d
 - [ ] After each lesson re-publish: `select count(*) from indonesian.learning_capabilities where lesson_id = '<lesson-N-id>'` returns ≥ the expected count from staging.
 - [ ] New `scripts/triage-residual-capabilities.ts` handles the post-republish residue:
   - **Orphan-item caps** (`source_ref` slug has no matching `learning_items.normalized_text`): delete the capability row. **Skip caps with any `capability_review_events` row** — those preserve learner history; instead, default-assign them to lesson 1 with `metadata_json.note = 'orphan source_ref preserved for history'`.
-  - **Explicit child-table delete order** (because the FKs from `capability_artifacts:45`, `learner_capability_state:59`, `capability_review_events:86`, and `capability_aliases:33` to `learning_capabilities(id)` in `scripts/migrations/2026-04-25-capability-core.sql` lack `ON DELETE CASCADE`):
+  - **Explicit child-table delete order** (because the FKs from `capability_artifacts:45`, `learner_capability_state:59`, `capability_review_events:86`, and `capability_aliases:33` to `learning_capabilities(id)` in `scripts/migrations/2026-04-25-capability-core.sql` lacked `ON DELETE CASCADE` pre-PR-4):
     ```sql
     -- For each orphan capability id selected for deletion:
-    delete from indonesian.capability_aliases       where capability_id = $1;
+    delete from indonesian.capability_aliases       where new_capability_id = $1;
     delete from indonesian.capability_artifacts     where capability_id = $1;
     delete from indonesian.learner_capability_state where capability_id = $1;
     -- capability_review_events were already verified empty in the gate above
@@ -203,9 +203,10 @@ The column rename (`lesson_id` → `introduced_by_lesson_id`) is intentionally d
     delete from indonesian.learning_capabilities    where id = $1;
     ```
     `capability_content_units` and `capability_resolution_failure_events` already have CASCADE FKs, so they're handled implicitly. The `capability_artifacts` rows for orphan caps are *not* preserved (they are admin-written content with no learner state — their loss represents pipeline artifacts that no longer have a valid source).
+    > **Note (post-PR-4 followup):** the explicit enumeration above is now obsolete. PR-4 converted all four child FKs to `ON DELETE CASCADE`, so the triage script's delete branch collapses to a single `delete from indonesian.learning_capabilities where id = $1`. The PR-4 followup PR simplified `scripts/triage-residual-capabilities.ts` accordingly. The historical SQL is preserved here for plan archaeology. Also fixed in the followup: the alias delete uses `new_capability_id` (not `capability_id`), matching the actual column from `scripts/migrations/2026-04-25-capability-core.sql:33`.
   - **Function-word residue** (no Woordenlijst match anywhere): default-assign to lesson 1 with `metadata_json.note = 'cross-corpus, defaulted to lesson 1'`.
   - **Script asserts** zero non-podcast NULL rows on exit. Throws if non-zero.
-  - **Future-proofing:** PR-4 will alter the four RESTRICT FKs (`capability_artifacts`, `learner_capability_state`, `capability_review_events`, `capability_aliases` → `learning_capabilities`) to `ON DELETE CASCADE` so subsequent orphan cleanup can be a single `delete from learning_capabilities`. This plan defers that migration to PR-4 to keep PR-3's diff small; PR-3's script lives with the explicit enumeration.
+  - **Future-proofing:** PR-4 alters the four RESTRICT FKs (`capability_artifacts`, `learner_capability_state`, `capability_review_events`, `capability_aliases` → `learning_capabilities`) to `ON DELETE CASCADE` so subsequent orphan cleanup is a single `delete from learning_capabilities`. PR-3 defers that migration to PR-4 to keep PR-3's diff small; PR-3's script lives with the explicit enumeration. (Status: PR-4 merged ⇒ the followup PR collapses the script.)
 - [ ] `make check-supabase-deep` green.
 - [ ] Final state: `select count(*) from indonesian.learning_capabilities where lesson_id is null and source_kind not in ('podcast_segment', 'podcast_phrase')` returns 0.
 
@@ -227,10 +228,12 @@ The column rename (`lesson_id` → `introduced_by_lesson_id`) is intentionally d
 
   -- Convert four RESTRICT FKs to CASCADE so orphan-cap cleanup is one statement.
   -- See scripts/migrations/2026-04-25-capability-core.sql lines 33, 45, 59, 86.
+  -- NOTE: capability_aliases's FK is on new_capability_id (not capability_id);
+  -- the auto-named constraint is capability_aliases_new_capability_id_fkey.
   alter table indonesian.capability_aliases
-    drop constraint capability_aliases_capability_id_fkey,
-    add  constraint capability_aliases_capability_id_fkey
-      foreign key (capability_id) references indonesian.learning_capabilities(id) on delete cascade;
+    drop constraint capability_aliases_new_capability_id_fkey,
+    add  constraint capability_aliases_new_capability_id_fkey
+      foreign key (new_capability_id) references indonesian.learning_capabilities(id) on delete cascade;
   alter table indonesian.capability_artifacts
     drop constraint capability_artifacts_capability_id_fkey,
     add  constraint capability_artifacts_capability_id_fkey
@@ -245,6 +248,17 @@ The column rename (`lesson_id` → `introduced_by_lesson_id`) is intentionally d
       foreign key (capability_id) references indonesian.learning_capabilities(id) on delete cascade;
   ```
   (Constraint names may differ from the placeholders above — the migration script should grep `pg_constraint` to discover the actual names per `scripts/migration.sql`'s `drop constraint if exists` idiom documented in CLAUDE.md.)
+
+  **PR-4 in-flight correction notes (resolved during implementation):**
+  - `capability_aliases`'s FK column is `new_capability_id`, not `capability_id`. The schema at `scripts/migrations/2026-04-25-capability-core.sql:33` declares `new_capability_id uuid references indonesian.learning_capabilities(id)`. The auto-named constraint is `capability_aliases_new_capability_id_fkey`. The plan placeholder was wrong; PR-4 used the actual name. The followup PR fixed the same wrong column in `scripts/triage-residual-capabilities.ts` (where it was masked because `capability_aliases` has 0 rows and the delete branch was rarely hit).
+  - `learning_capabilities_lesson_id_fkey` *already existed* with `ON DELETE SET NULL` (created by the inline FK from `add column ... references ... on delete set null` in `migration.sql`'s "NEW COLUMN: learning_capabilities.lesson_id" block). PR-4 had to drop + re-add with `ON DELETE RESTRICT`. SET NULL would have been incompatible with the new CHECK constraint — a lesson deletion would set caps' `lesson_id` to NULL, instantly violating the "non-podcasts must have lesson_id" rule. RESTRICT is the only compatible policy; this was load-bearing, not cosmetic.
+  - The four child FKs had `confdeltype='a'` (NO ACTION), not `'r'` (RESTRICT), as the plan prose implied. Functionally identical (both refuse delete on conflict; NO ACTION defers the check to statement end). The CASCADE rewrite is unaffected by this distinction.
+
+  **Lessons learned (process):**
+  Every constraint name in a schema-change spec should be either grep-verified from `pg_constraint` at write-time or marked as a placeholder requiring lookup. The plan author guessed `capability_aliases_capability_id_fkey` and `capability_id`; both were wrong. The CLAUDE.md "Read code before describing it" rule applies to schema specs too — `select conname, conrelid::regclass, pg_get_constraintdef(oid) from pg_constraint where ...` is the canonical lookup.
+
+  **Audit observation — `capability_aliases` is vestigial:**
+  Queried 2026-05-17: 0 rows in production; no projector writes to it; only one TS reference (`scripts/triage-residual-capabilities.ts`, now updated). The schema (`old_canonical_key`, `new_canonical_key`, `new_capability_id`, `mapping_kind in ('rename','split','merge','grammar_inference','manual')`, `migration_confidence`) reads as an audit/history table for capability rename/split/merge events, but has never been populated. CASCADE-on-`new_capability_id` is therefore a non-issue today. **Open question for a future ADR (not blocking this plan):** if `capability_aliases` ever becomes load-bearing for historical alias tracking, the right semantic is probably "preserve the alias row when the new cap is deleted, with `new_capability_id` set to NULL" — which would require reverting this CASCADE to SET NULL. The schema's `old_canonical_key` column already preserves the rename's audit data (the original key) independently of the FK, so SET NULL would only lose the live FK pointer to the surviving cap, not the historical record itself — that's exactly why SET NULL is the right destination semantic for an audit table. Filed as a deferred concern; flag if this table starts getting populated.
 - [ ] **Race protection:** the migration runs in a single transaction. Postgres holds the lock through `ALTER TABLE ... ADD CONSTRAINT`, which already prevents concurrent inserts that would violate the constraint. Idempotent — `make migrate-idempotent-check` green.
 - [ ] `scripts/check-supabase-deep.ts` gains:
   ```ts

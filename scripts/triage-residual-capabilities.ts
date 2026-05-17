@@ -125,15 +125,13 @@ export async function applyClassification(
       continue
     }
     if (action.kind === 'delete') {
-      // Explicit child-table delete order — FKs are RESTRICT.
-      // capability_content_units + capability_resolution_failure_events
-      // already CASCADE, so they're not enumerated here.
-      await supabase.schema('indonesian').from('capability_aliases')
-        .delete().eq('capability_id', action.capId)
-      await supabase.schema('indonesian').from('capability_artifacts')
-        .delete().eq('capability_id', action.capId)
-      await supabase.schema('indonesian').from('learner_capability_state')
-        .delete().eq('capability_id', action.capId)
+      // Post-PR-4 (ADR 0006): all four child FKs (capability_aliases,
+      // capability_artifacts, learner_capability_state,
+      // capability_review_events) are ON DELETE CASCADE — deleting the parent
+      // sweeps the children. Pre-PR-4 this branch enumerated each child table
+      // explicitly; the capability_aliases call also had a wrong column name
+      // (capability_id instead of new_capability_id) which the CASCADE rewrite
+      // makes moot.
       await supabase.schema('indonesian').from('learning_capabilities')
         .delete().eq('id', action.capId)
       deleted++

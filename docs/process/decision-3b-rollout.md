@@ -116,9 +116,9 @@ bun scripts/triage-residual-capabilities.ts --apply
 
 This runs the same deletes/updates against the homelab DB. **Asserts on exit** that `select count(*) from indonesian.learning_capabilities where lesson_id is null and source_kind not in ('podcast_segment', 'podcast_phrase')` returns `0`. If the assertion throws, PR-3 is incomplete — do NOT open PR-4 until you've reconciled the residue.
 
-The delete path enumerates child tables explicitly because the FKs are RESTRICT (see `scripts/migrations/2026-04-25-capability-core.sql:33,45,59,86`). The order is `capability_aliases` → `capability_artifacts` → `learner_capability_state` → `learning_capabilities`. `capability_review_events` is guarded by the orphan-with-history skip — caps with events get default-assigned, never deleted, so the script never deletes a row with a referencing event. `capability_content_units` and `capability_resolution_failure_events` already have `ON DELETE CASCADE`, so they're handled implicitly.
+**Post-PR-4 (current behaviour):** the script's delete branch issues a single `delete from learning_capabilities where id = $1`. All four child FKs (`capability_aliases.new_capability_id`, `capability_artifacts.capability_id`, `learner_capability_state.capability_id`, `capability_review_events.capability_id`) are `ON DELETE CASCADE` post-PR-4, so the children sweep automatically. `capability_review_events` is additionally guarded by the orphan-with-history skip — caps with events get default-assigned, never deleted — so the cascade only ever fires on caps with zero referencing events. `capability_content_units` and `capability_resolution_failure_events` had `ON DELETE CASCADE` from the original schema.
 
-PR-4 will convert the four RESTRICT FKs to CASCADE; subsequent orphan cleanup will collapse to a single `DELETE FROM learning_capabilities`. The explicit enumeration is the PR-3-only idiom.
+**Pre-PR-4 history (for archaeology):** the script enumerated child tables explicitly because the FKs were RESTRICT (see `scripts/migrations/2026-04-25-capability-core.sql:33,45,59,86`). The order was `capability_aliases` → `capability_artifacts` → `learner_capability_state` → `learning_capabilities`. PR-4 converted the FKs to CASCADE and the PR-4 followup PR collapsed the script's enumeration accordingly. The explicit enumeration was a PR-3-only idiom.
 
 ---
 
