@@ -217,12 +217,13 @@ async function loadResidueAndContext(supabase: SupabaseLike): Promise<{
   }
 
   // 4. Cap-ids that have at least one capability_review_events row.
-  // Only need to check the residue set, not all caps.
+  // Only need to check the residue set, not all caps. Page in small chunks
+  // because PostgREST routes through Kong with a strict URL-length limit;
+  // .in('id', [...100 uuids...]) hits "URI too long" quickly.
   const capsWithReviewEvents = new Set<string>()
   if (residueCaps.length > 0) {
     const ids = residueCaps.map((c) => c.id)
-    // Page in chunks of 500 to keep the .in() filter manageable.
-    const CHUNK = 500
+    const CHUNK = 40
     for (let i = 0; i < ids.length; i += CHUNK) {
       const slice = ids.slice(i, i + CHUNK)
       const { data, error } = await supabase
