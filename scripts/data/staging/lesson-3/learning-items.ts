@@ -9,14 +9,6 @@ export const learningItems = [
     "review_status": "published"
   },
   {
-    "base_text": "sepuluh",
-    "item_type": "word",
-    "translation_nl": "10",
-    "context_type": "cloze",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
     "base_text": "barang",
     "item_type": "word",
     "translation_nl": "spullen/bagage",
@@ -137,14 +129,6 @@ export const learningItems = [
     "review_status": "published"
   },
   {
-    "base_text": "dua puluh",
-    "item_type": "phrase",
-    "translation_nl": "twintig",
-    "context_type": "cloze",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
     "base_text": "ke mana?",
     "item_type": "phrase",
     "translation_nl": "waarheen?",
@@ -164,14 +148,6 @@ export const learningItems = [
     "base_text": "bandar",
     "item_type": "word",
     "translation_nl": "haven",
-    "context_type": "vocabulary_list",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
-    "base_text": "ada",
-    "item_type": "word",
-    "translation_nl": "er is/er zijn",
     "context_type": "vocabulary_list",
     "source_page": 3,
     "review_status": "published"
