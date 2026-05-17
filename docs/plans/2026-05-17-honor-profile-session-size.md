@@ -1,13 +1,16 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #57
+merged_at: 2026-05-17
+implementation_paths:
+  - src/lib/session-builder/loadBudget.ts
 supersedes: []
 ---
 
 # Honor profile `preferredSessionSize` in standard mode
 
 **Date:** 2026-05-17
-**Status:** implementing (PR #57)
+**Status:** shipped (PR #57, merged 2026-05-17)
 
 ## Goal
 
