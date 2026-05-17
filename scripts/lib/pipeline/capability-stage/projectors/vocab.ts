@@ -16,6 +16,7 @@ import {
   CAPABILITY_PROJECTION_VERSION,
 } from '../../../../../src/lib/capabilities/capabilityTypes'
 import { buildCanonicalKey, normalizeLessonSourceRef } from '../../../../../src/lib/capabilities/canonicalKey'
+import { itemSlug } from '../../../../../src/lib/capabilities/itemSlug'
 
 import type {
   CapabilityInput,
@@ -86,14 +87,14 @@ export function selectPublishableItems(input: {
   const dialogueSlugsWithCloze = new Set(
     input.clozeContexts
       .filter((c) => typeof c?.learning_item_slug === 'string')
-      .map((c) => String(c.learning_item_slug).toLowerCase().trim()),
+      .map((c) => itemSlug(String(c.learning_item_slug))),
   )
 
   const deferred: VocabStagingItem[] = []
   for (const item of input.learningItems) {
     if (item.item_type !== 'dialogue_chunk') continue
     const hasTranslation = Boolean((item.translation_nl ?? '').trim())
-    const slug = String(item.base_text ?? '').toLowerCase().trim()
+    const slug = itemSlug(String(item.base_text ?? ''))
     const hasCloze = dialogueSlugsWithCloze.has(slug)
     if (!(hasTranslation && hasCloze)) deferred.push(item)
   }
@@ -162,7 +163,7 @@ export function projectVocab(input: VocabProjectionInput): VocabProjectionOutput
   const dialogueLineSourceRefs = collectDialogueLineSourceRefsByText(input.sections, lessonSourceRef)
   const contextualClozeCapabilities: CapabilityInput[] = []
   for (const ctx of input.clozeContexts) {
-    const slug = String(ctx.learning_item_slug ?? '').toLowerCase().trim()
+    const slug = itemSlug(String(ctx.learning_item_slug ?? ''))
     const sourceRefs = dialogueLineSourceRefs.get(slug) ?? []
     for (const rawRef of sourceRefs) {
       const sourceRef = normalizeLessonSourceRef(rawRef)
@@ -216,7 +217,7 @@ function collectDialogueLineSourceRefsByText(
     for (const [idx, raw] of (lines as Array<{ text?: unknown }>).entries()) {
       const text = typeof raw?.text === 'string' ? raw.text.trim() : ''
       if (!text) continue
-      const key = text.toLowerCase()
+      const key = itemSlug(text)
       const sourceRef = `${lessonSourceRef}/section-${section.order_index}/line-${idx}`
       const existing = map.get(key) ?? []
       existing.push(sourceRef)

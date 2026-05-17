@@ -24,6 +24,7 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import fs from 'fs'
 import path from 'path'
+import { itemSlug } from '../src/lib/capabilities/itemSlug'
 
 // Homelab's internal Step-CA cert isn't trusted by default.
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
@@ -94,10 +95,10 @@ async function main() {
   }
 
   // 3. Build normalized_text → base_text map for the staging set. DB's
-  //    normalized_text is base_text.toLowerCase().trim() per publish-approved-content.ts:293.
+  //    normalized_text = itemSlug(base_text) (src/lib/capabilities/itemSlug.ts).
   const normalizedToBaseText = new Map<string, string>()
   for (const c of stagingChunks) {
-    normalizedToBaseText.set(c.base_text.toLowerCase().trim(), c.base_text)
+    normalizedToBaseText.set(itemSlug(c.base_text), c.base_text)
   }
 
   // 4. Pull DB dialogue_chunks scoped to THIS lesson (via item_contexts.source_lesson_id)

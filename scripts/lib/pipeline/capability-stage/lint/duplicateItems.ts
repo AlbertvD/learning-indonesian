@@ -21,6 +21,8 @@
  * rule is trivially unit-testable.
  */
 
+import { itemSlug } from '../../../../../src/lib/capabilities/itemSlug'
+
 export interface LessonItemsInput {
   lesson: number
   items: ReadonlyArray<{ base_text?: unknown }>
@@ -34,10 +36,6 @@ export interface DuplicateItemFinding {
   detail: string
 }
 
-function normalize(s: string): string {
-  return s.toLowerCase().trim()
-}
-
 export function findDuplicateItems(
   lessons: ReadonlyArray<LessonItemsInput>,
 ): DuplicateItemFinding[] {
@@ -49,7 +47,7 @@ export function findDuplicateItems(
     for (const item of items) {
       const raw = typeof item?.base_text === 'string' ? item.base_text : ''
       if (!raw.trim()) continue
-      const key = normalize(raw)
+      const key = itemSlug(raw)
       let entry = byBaseText.get(key)
       if (!entry) {
         entry = { display: raw.trim(), lessons: [] }

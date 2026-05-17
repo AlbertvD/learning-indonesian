@@ -11,6 +11,7 @@ import {
   type ExerciseAvailabilityIndex,
 } from '../src/lib/capabilities/capabilityContracts'
 import type { ArtifactIndex } from '../src/lib/capabilities/artifactRegistry'
+import { itemSlug } from '../src/lib/capabilities/itemSlug'
 import type {
   ArtifactKind,
   CurrentContentSnapshot,
@@ -271,9 +272,14 @@ export function checkCapabilityHealthSnapshot(snapshot: CapabilityHealthSnapshot
   }
 }
 
+// Wrapper kept (not deleted) so the index-fallback shape — required when
+// base_text is empty in partial staging fixtures — stays colocated with the
+// itemSlug delegation. Switching this from a hyphenating mangler to itemSlug
+// is the audit-side counterpart to the issue #59 production fix; orphaned
+// rows (caps whose source_ref doesn't match) now surface correctly here.
 function stableItemId(item: { base_text?: string; baseText?: string }, index: number): string {
-  const text = item.base_text ?? item.baseText ?? `item-${index + 1}`
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || `item-${index + 1}`
+  const text = item.base_text ?? item.baseText ?? ''
+  return itemSlug(text) || `item-${index + 1}`
 }
 
 function stableSlug(value: string): string {

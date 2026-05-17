@@ -13,6 +13,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import path from 'path'
+import { itemSlug } from '../src/lib/capabilities/itemSlug'
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://api.supabase.duin.home'
 const serviceKey = process.env.SUPABASE_SERVICE_KEY
@@ -81,14 +82,14 @@ async function seedClozeContexts(lessonNumber: number) {
   }
 
   const itemByNormalized = new Map(items.map(i => [i.normalized_text, i]))
-  const itemByBase = new Map(items.map(i => [i.base_text.toLowerCase().trim(), i]))
+  const itemByBase = new Map(items.map(i => [itemSlug(i.base_text), i]))
 
   let inserted = 0
   let notFound = 0
   let failed = 0
 
   for (const ctx of clozeContexts) {
-    const slug = ctx.learning_item_slug.toLowerCase().trim()
+    const slug = itemSlug(ctx.learning_item_slug)
     const item = itemByNormalized.get(slug) || itemByBase.get(slug)
 
     if (!item) {

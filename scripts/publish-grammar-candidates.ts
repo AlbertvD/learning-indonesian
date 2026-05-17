@@ -23,6 +23,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import fs from 'fs'
+import { itemSlug } from '../src/lib/capabilities/itemSlug'
 import path from 'path'
 
 // ---------------------------------------------------------------------------
@@ -181,7 +182,7 @@ const publishedSlugs: string[] = []
 
 for (const candidate of approved) {
   const baseText = deriveBaseText(candidate)
-  const normalizedText = baseText.toLowerCase().trim()
+  const normalizedText = itemSlug(baseText)
   const slug = candidate.grammar_pattern_slug
   const exerciseType = candidate.exercise_type
   const patternId = patternIdBySlug[slug]
