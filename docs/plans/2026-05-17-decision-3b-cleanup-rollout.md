@@ -1,6 +1,6 @@
 ---
-status: approved
-implementation: TBD
+status: implementing
+implementation: PR #62
 merged_at: null
 implementation_paths:
   - docs/process/decision-3b-rollout.md
