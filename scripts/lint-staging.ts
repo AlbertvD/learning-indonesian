@@ -37,6 +37,7 @@ import {
   validateExerciseAssets,
   validateLessonPageBlocks,
 } from './lib/content-pipeline-output'
+import { findDuplicateItems } from './lib/pipeline/capability-stage/lint/duplicateItems'
 
 // Internal Step-CA on the homelab. Scoped: only this script's HTTPS calls
 // (all to the homelab supabase) bypass cert validation.
@@ -1123,7 +1124,19 @@ async function main() {
     }
   }
 
+  // Decision 3b (PR-2) duplicate-item lint. Runs over every loaded staging
+  // dir so the cross-lesson view is complete; per-lesson filter applies at
+  // emit time so `--lesson N` still surfaces N's collisions with other lessons
+  // attributed to N.
+  const duplicateItemFindings = findDuplicateItems(
+    allCtxs.map(c => ({ lesson: c.n, items: (c.learningItems ?? []) as Array<{ base_text?: unknown }> })),
+  )
+
   const findings: Finding[] = []
+  for (const d of duplicateItemFindings) {
+    if (onlyLesson != null && d.lesson !== onlyLesson) continue
+    findings.push(mkFinding(d.severity, d.lesson, 'learning-items.ts', d.rule, d.detail, d.base_text))
+  }
   for (const ctx of allCtxs) {
     if (onlyLesson != null && ctx.n !== onlyLesson) continue
     if (!ctx.exists) continue
