@@ -154,28 +154,10 @@ export const learningItems = [
     "translation_en": "food"
   },
   {
-    "base_text": "tetapi",
-    "item_type": "word",
-    "translation_nl": "maar, echter",
-    "context_type": "cloze",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "but"
-  },
-  {
-    "base_text": "duduk",
-    "item_type": "word",
-    "translation_nl": "zitten",
-    "context_type": "cloze",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "sit"
-  },
-  {
     "base_text": "kamar kecil",
     "item_type": "phrase",
     "translation_nl": "toilet, w.c.",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "toilet"
@@ -202,7 +184,7 @@ export const learningItems = [
     "base_text": "jambu air",
     "item_type": "phrase",
     "translation_nl": "een bepaalde vrucht",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "water apple"
@@ -292,7 +274,7 @@ export const learningItems = [
     "base_text": "kamar makan",
     "item_type": "phrase",
     "translation_nl": "eetkamer",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "dining room"
@@ -301,7 +283,7 @@ export const learningItems = [
     "base_text": "nasi goreng",
     "item_type": "phrase",
     "translation_nl": "gekookte rijst, daarna met kruiden gebakken",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "fried rice"
@@ -310,7 +292,7 @@ export const learningItems = [
     "base_text": "air putih",
     "item_type": "phrase",
     "translation_nl": "drinkwater",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "drinking water"
@@ -319,7 +301,7 @@ export const learningItems = [
     "base_text": "kopi tubruk",
     "item_type": "phrase",
     "translation_nl": "zwarte koffie met suiker",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "black coffee with sugar"
@@ -487,7 +469,7 @@ export const learningItems = [
     "base_text": "kamar mandi",
     "item_type": "phrase",
     "translation_nl": "badkamer",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "bathroom"
@@ -496,7 +478,7 @@ export const learningItems = [
     "base_text": "nasi kuning",
     "item_type": "phrase",
     "translation_nl": "met kruiden geel gekookte rijst",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "yellow rice"
@@ -523,7 +505,7 @@ export const learningItems = [
     "base_text": "bak air",
     "item_type": "phrase",
     "translation_nl": "waterbak",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "water tank"
@@ -541,7 +523,7 @@ export const learningItems = [
     "base_text": "lima ratus",
     "item_type": "phrase",
     "translation_nl": "500",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "five hundred"
@@ -556,19 +538,10 @@ export const learningItems = [
     "translation_en": "one million"
   },
   {
-    "base_text": "seratus",
-    "item_type": "word",
-    "translation_nl": "100",
-    "context_type": "cloze",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "one hundred"
-  },
-  {
     "base_text": "tempat tidur",
     "item_type": "phrase",
     "translation_nl": "bed",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "bed"
@@ -577,7 +550,7 @@ export const learningItems = [
     "base_text": "nasi putih",
     "item_type": "phrase",
     "translation_nl": "gekookte witte rijst",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "cooked white rice"
@@ -762,7 +735,7 @@ export const learningItems = [
     "base_text": "tempat duduk",
     "item_type": "phrase",
     "translation_nl": "zitplaats",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "seat"
@@ -771,7 +744,7 @@ export const learningItems = [
     "base_text": "sikat gigi",
     "item_type": "phrase",
     "translation_nl": "tandenborstel",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "toothbrush"
@@ -807,7 +780,7 @@ export const learningItems = [
     "base_text": "selamat tinggal",
     "item_type": "phrase",
     "translation_nl": "vaarwel",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "goodbye"
@@ -816,7 +789,7 @@ export const learningItems = [
     "base_text": "dua ratus",
     "item_type": "phrase",
     "translation_nl": "200",
-    "context_type": "lesson_snippet",
+    "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
     "translation_en": "two hundred"
@@ -838,24 +811,6 @@ export const learningItems = [
     "review_status": "published"
   },
   {
-    "base_text": "nasi goreng",
-    "item_type": "word",
-    "translation_nl": "gekookte rijst, daarna met kruiden gebakken",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "fried rice"
-  },
-  {
-    "base_text": "nasi kuning",
-    "item_type": "word",
-    "translation_nl": "met kruiden geel gekookte rijst",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "yellow rice"
-  },
-  {
     "base_text": "nasi",
     "item_type": "word",
     "translation_nl": "gekookte rijst",
@@ -863,15 +818,6 @@ export const learningItems = [
     "source_page": 4,
     "review_status": "published",
     "translation_en": "rice"
-  },
-  {
-    "base_text": "nasi putih",
-    "item_type": "word",
-    "translation_nl": "gekookte witte rijst",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "cooked white rice"
   },
   {
     "base_text": "gabah",
@@ -892,15 +838,6 @@ export const learningItems = [
     "translation_en": "rice plant"
   },
   {
-    "base_text": "beras",
-    "item_type": "word",
-    "translation_nl": "gepelde ongekookte rijst",
-    "context_type": "cloze",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "milled uncooked rice"
-  },
-  {
     "base_text": "sayur",
     "item_type": "word",
     "translation_nl": "groente",
@@ -919,15 +856,6 @@ export const learningItems = [
     "translation_en": "seven hundred"
   },
   {
-    "base_text": "air putih",
-    "item_type": "word",
-    "translation_nl": "drinkwater",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "drinking water"
-  },
-  {
     "base_text": "formulir",
     "item_type": "word",
     "translation_nl": "formulier",
@@ -935,24 +863,6 @@ export const learningItems = [
     "source_page": 4,
     "review_status": "published",
     "translation_en": "form"
-  },
-  {
-    "base_text": "sikat gigi",
-    "item_type": "word",
-    "translation_nl": "tandenborstel",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "toothbrush"
-  },
-  {
-    "base_text": "tempat duduk",
-    "item_type": "word",
-    "translation_nl": "zitplaats",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "seat"
   },
   {
     "base_text": "masih",
@@ -973,33 +883,6 @@ export const learningItems = [
     "translation_en": "nine hundred"
   },
   {
-    "base_text": "kopi tubruk",
-    "item_type": "word",
-    "translation_nl": "zwarte koffie met suiker",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "black coffee with sugar"
-  },
-  {
-    "base_text": "selamat tinggal",
-    "item_type": "word",
-    "translation_nl": "vaarwel",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "goodbye"
-  },
-  {
-    "base_text": "tempat tidur",
-    "item_type": "word",
-    "translation_nl": "bed",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "bed"
-  },
-  {
     "base_text": "dua ribu",
     "item_type": "word",
     "translation_nl": "2.000",
@@ -1009,15 +892,6 @@ export const learningItems = [
     "translation_en": "two thousand"
   },
   {
-    "base_text": "dua ratus",
-    "item_type": "word",
-    "translation_nl": "200",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "two hundred"
-  },
-  {
     "base_text": "sembilan ribu",
     "item_type": "word",
     "translation_nl": "9.000",
@@ -1025,15 +899,6 @@ export const learningItems = [
     "source_page": 4,
     "review_status": "published",
     "translation_en": "nine thousand"
-  },
-  {
-    "base_text": "bak air",
-    "item_type": "word",
-    "translation_nl": "waterbak",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "water tank"
   },
   {
     "base_text": "tiga ratus",
@@ -1061,15 +926,6 @@ export const learningItems = [
     "source_page": 4,
     "review_status": "published",
     "translation_en": "chili paste"
-  },
-  {
-    "base_text": "kamar kecil",
-    "item_type": "word",
-    "translation_nl": "toilet, w.c.",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "toilet"
   },
   {
     "base_text": "lauk",
@@ -1108,15 +964,6 @@ export const learningItems = [
     "translation_en": "after"
   },
   {
-    "base_text": "lima ratus",
-    "item_type": "word",
-    "translation_nl": "500",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "five hundred"
-  },
-  {
     "base_text": "semiliar",
     "item_type": "word",
     "translation_nl": "1.000.000.000",
@@ -1124,24 +971,6 @@ export const learningItems = [
     "source_page": 4,
     "review_status": "published",
     "translation_en": "one billion"
-  },
-  {
-    "base_text": "jambu air",
-    "item_type": "word",
-    "translation_nl": "een bepaalde vrucht",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "water apple"
-  },
-  {
-    "base_text": "kamar mandi",
-    "item_type": "word",
-    "translation_nl": "badkamer",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "bathroom"
   },
   {
     "base_text": "kopi pahit",
@@ -1169,15 +998,6 @@ export const learningItems = [
     "source_page": 4,
     "review_status": "published",
     "translation_en": "eight hundred"
-  },
-  {
-    "base_text": "kamar makan",
-    "item_type": "word",
-    "translation_nl": "eetkamer",
-    "context_type": "vocabulary_list",
-    "source_page": 4,
-    "review_status": "published",
-    "translation_en": "dining room"
   },
   {
     "base_text": "enam ratus",
