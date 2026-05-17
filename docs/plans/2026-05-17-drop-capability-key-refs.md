@@ -1,7 +1,7 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #63
-merged_at: null
+merged_at: 2026-05-17
 implementation_paths:
   - scripts/migration.sql
   - scripts/lib/pipeline/lesson-stage/
