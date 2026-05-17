@@ -1,4 +1,4 @@
-// POS-enriched by capability-stage
+// Published via script
 export const learningItems = [
   {
     "base_text": "Ninik, di mana kopernya? Kita perlu koper sekarang, 'kan? Tas pasti terlalu kecil untuk semua barang kita.",
@@ -31,10 +31,10 @@ export const learningItems = [
     "level": "A2"
   },
   {
-    "base_text": "Bu, jangan lupa kacamata hitam, ya bu. Eeh … apa perlu saya bawa hiasan seperti cincin, gelang dan kalung? Soalnya saya harus keren, 'kan?",
+    "base_text": "Bu, jangan lupa kacamata hitam, ya bu. Eeh ... apa perlu saya bawa hiasan seperti cincin, gelang dan kalung? Soalnya saya harus keren, 'kan?",
     "item_type": "dialogue_chunk",
     "context_type": "dialogue",
-    "translation_nl": "",
+    "translation_nl": "Ninik: 'Moeder, vergeet de donkere zonnebril niet, alstublieft. Eh... moet ik sieraad meenemen zoals ringen, armbanden en kettingen? Want ik moet er stoer uitzien, toch?'",
     "translation_en": "",
     "source_page": 4,
     "review_status": "published",

@@ -10,6 +10,7 @@ export const grammarPatterns = [
     page_reference: 3,
     slug: 'ada-existential',
     complexity_score: 3,
+    example: 'Ada buku di meja — Er ligt een boek op de tafel',
   },
   {
     pattern_name: 'Vraagwoorden - Question Words',
@@ -19,6 +20,7 @@ export const grammarPatterns = [
     page_reference: 3,
     slug: 'question-words',
     complexity_score: 4,
+    example: 'Apa kabar? — Hoe gaat het?',
   },
   {
     pattern_name: 'Dari/Di/Ke - Locative Prepositions',
@@ -28,6 +30,7 @@ export const grammarPatterns = [
     page_reference: 3,
     slug: 'dari-di-ke-locative',
     complexity_score: 4,
+    example: 'Saya ke pasar dari rumah — Ik ga naar de markt vanuit huis',
   },
   {
     pattern_name: 'Sekali - Intensifier',
@@ -37,5 +40,6 @@ export const grammarPatterns = [
     page_reference: 3,
     slug: 'sekali-intensifier',
     complexity_score: 2,
+    example: 'Mahal sekali — Heel duur',
   },
 ]
