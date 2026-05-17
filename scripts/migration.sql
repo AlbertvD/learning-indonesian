@@ -1636,22 +1636,35 @@ create index if not exists learning_capabilities_lesson_idx
 -- capabilities not referenced by any page block (e.g., podcast).
 -- The cap_key matches learning_capabilities.canonical_key (verified against
 -- capability_key_refs[] convention in the materialize pipeline).
--- NO exception handler: the UPDATE is idempotent on its own (the
--- `c.lesson_id is null` clause makes re-runs no-ops); silent-swallow of
--- real errors here would mask backfill mis-population.
-update indonesian.learning_capabilities c
-set lesson_id = sub.lesson_id
-from (
-  select distinct on (cap_key)
-    unnest(pb.capability_key_refs) as cap_key,
-    l.id as lesson_id
-  from indonesian.lesson_page_blocks pb
-  join indonesian.lessons l on pb.source_ref = 'lesson-' || l.order_index
-  where array_length(pb.capability_key_refs, 1) > 0
-  order by cap_key, l.order_index
-) sub
-where c.canonical_key = sub.cap_key
-  and c.lesson_id is null;
+-- Wrapped in a column-existence DO block: once issue #61's cleanup drops
+-- capability_key_refs (see drop block below), the unnest reference would
+-- fail at parse time. The guard makes the file idempotent for fresh DBs
+-- (paper-trail file 2026-04-25-content-units-lesson-blocks.sql:36 still
+-- creates the column on a fresh DB → backfill runs → drop block fires)
+-- and a no-op on already-dropped live DBs.
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'indonesian'
+      and table_name = 'lesson_page_blocks'
+      and column_name = 'capability_key_refs'
+  ) then
+    update indonesian.learning_capabilities c
+    set lesson_id = sub.lesson_id
+    from (
+      select distinct on (cap_key)
+        unnest(pb.capability_key_refs) as cap_key,
+        l.id as lesson_id
+      from indonesian.lesson_page_blocks pb
+      join indonesian.lessons l on pb.source_ref = 'lesson-' || l.order_index
+      where array_length(pb.capability_key_refs, 1) > 0
+      order by cap_key, l.order_index
+    ) sub
+    where c.canonical_key = sub.cap_key
+      and c.lesson_id is null;
+  end if;
+end $$;
 
 -- 5. BACKFILL — Step 1: auto-activate legacy lessons (1, 2, 3) for every existing user.
 -- Idempotent — safe to re-run.
@@ -1801,6 +1814,26 @@ begin
       and column_name = 'source_progress_event'
   ) then
     alter table indonesian.lesson_page_blocks drop column source_progress_event;
+  end if;
+exception when others then null;
+end $$;
+
+-- 7b. D-R-O-P column lesson_page_blocks.capability_key_refs (issue #61 closeout)
+-- Eliminates the dual-write divergence between Stage A (copies from a stale
+-- on-disk staging file) and learning_capabilities.canonical_key (Stage B's
+-- authoritative output). The promoter now scopes by
+-- learning_capabilities.lesson_id (ADR 0006). Mirrors the source_progress_event
+-- drop precedent above. The historical backfill block at lines ~1633-1666 is
+-- guarded for the column's eventual absence on fresh DBs and re-runs.
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'indonesian'
+      and table_name = 'lesson_page_blocks'
+      and column_name = 'capability_key_refs'
+  ) then
+    alter table indonesian.lesson_page_blocks drop column capability_key_refs;
   end if;
 exception when others then null;
 end $$;

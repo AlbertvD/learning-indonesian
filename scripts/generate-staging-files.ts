@@ -429,13 +429,12 @@ function buildPipeline(input: StagingLessonInput) {
   const lessonPageBlocks = buildLessonPageBlocksFromStaging({
     ...input,
     contentUnits,
-    capabilities: capabilityPlan.capabilities,
   })
   const findings = [
     ...validateContentUnits(contentUnits),
     ...validateCapabilityStaging({ capabilities: capabilityPlan.capabilities, contentUnits }),
     ...validateExerciseAssets({ exerciseAssets: capabilityPlan.exerciseAssets, capabilities: capabilityPlan.capabilities }),
-    ...validateLessonPageBlocks({ blocks: lessonPageBlocks, contentUnits, capabilities: capabilityPlan.capabilities }),
+    ...validateLessonPageBlocks({ blocks: lessonPageBlocks, contentUnits }),
   ]
   const critical = findings.filter(finding => finding.severity === 'CRITICAL')
   if (critical.length > 0) {

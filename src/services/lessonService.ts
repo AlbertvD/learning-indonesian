@@ -52,7 +52,6 @@ export interface LessonPageBlock {
     | 'recap'
   display_order: number
   payload_json: Record<string, unknown>
-  capability_key_refs: string[]
 }
 
 export interface LessonCapabilityPracticeSummary {

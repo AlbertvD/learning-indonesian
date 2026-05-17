@@ -30,7 +30,6 @@ export interface PageBlockInput {
   block_kind: string
   display_order: number
   payload_json: Record<string, unknown>
-  capability_key_refs: string[]
 }
 
 /**
@@ -138,7 +137,6 @@ export async function upsertLessonPageBlocks(
           block_kind: block.block_kind,
           display_order: block.display_order,
           payload_json: block.payload_json ?? {},
-          capability_key_refs: block.capability_key_refs ?? [],
           updated_at: new Date().toISOString(),
         },
         { onConflict: 'source_ref,block_key' },

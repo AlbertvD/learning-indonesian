@@ -152,13 +152,6 @@ export function LessonBlockRenderer({ block }: LessonBlockRendererProps) {
         <p className={classes.blockBody}>
           {body || 'Oefenen komt beschikbaar wanneer de planner en reviewverwerker aangeven dat de vaardigheid klaar is.'}
         </p>
-        <details className={classes.meta}>
-          <summary>{block.capabilityKeyRefs.length} vaardigheidsverwijzing(en)</summary>
-          <ul>
-            {block.capabilityKeyRefs.map(ref => <li key={ref}><code>{ref}</code></li>)}
-            {block.contentUnitSlugs.map(slug => <li key={slug}><code>{slug}</code></li>)}
-          </ul>
-        </details>
       </section>
     )
   }

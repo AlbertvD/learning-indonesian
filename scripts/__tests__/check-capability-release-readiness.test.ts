@@ -16,28 +16,21 @@ describe('capability release readiness planning', () => {
     expect(() => parseCapabilityReleaseReadinessArgs(['--bogus'])).toThrow('Unknown argument: --bogus')
   })
 
-  it('derives lesson capability keys from page blocks instead of capability source_ref', () => {
+  it('derives lesson capability keys from learning_capabilities scoped by lesson_id (ADR 0006)', () => {
     const keys = collectLessonCapabilityKeys({
-      lessonPageBlocks: [
-        {
-          capability_key_refs: [
-            'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
-            'cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl',
-          ],
-        },
-        {
-          capability_key_refs: ['cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl'],
-        },
-      ],
-      relationshipCapabilities: [
-        { canonical_key: 'cap:v1:item:learning_items/apa-kabar:text_recognition:id_to_l1:text:nl' },
+      capabilities: [
+        { canonical_key: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl' },
+        { canonical_key: 'cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl' },
+        { canonical_key: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl' },
+        { canonical_key: 'cap:v1:item:learning_items/apa kabar:text_recognition:id_to_l1:text:nl' },
       ],
     })
 
+    // Dedupes by canonical_key
     expect(keys).toEqual([
       'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
       'cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl',
-      'cap:v1:item:learning_items/apa-kabar:text_recognition:id_to_l1:text:nl',
+      'cap:v1:item:learning_items/apa kabar:text_recognition:id_to_l1:text:nl',
     ])
   })
 

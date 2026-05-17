@@ -18,7 +18,6 @@ export interface LessonExperienceBlock {
   contentUnitSlugs: string[]
   displayOrder: number
   payload: Record<string, unknown>
-  capabilityKeyRefs: string[]
 }
 
 export interface LessonExperience {
@@ -82,7 +81,6 @@ function fromPipelineBlock(block: LessonPageBlock, lesson: Lesson): LessonExperi
     contentUnitSlugs: block.content_unit_slugs ?? [],
     displayOrder: block.display_order,
     payload,
-    capabilityKeyRefs: block.capability_key_refs ?? [],
   }
 }
 

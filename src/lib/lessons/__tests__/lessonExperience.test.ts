@@ -31,7 +31,6 @@ function makeBlock(
     block_kind: overrides.block_kind,
     display_order: overrides.display_order ?? 0,
     payload_json: overrides.payload_json ?? {},
-    capability_key_refs: [],
   }
 }
 

@@ -37,7 +37,6 @@ describe('lesson experience', () => {
         block_kind: 'practice_bridge',
         display_order: 20,
         payload_json: { label: 'Practice this content' },
-        capability_key_refs: ['capability:makan'],
       },
       {
         block_key: 'lesson-1-hero',
@@ -47,7 +46,6 @@ describe('lesson experience', () => {
         block_kind: 'hero',
         display_order: 0,
         payload_json: { title: 'A market morning' },
-        capability_key_refs: [],
       },
     ]
 
@@ -61,7 +59,7 @@ describe('lesson experience', () => {
     }))
     expect(experience.blocks[1]).toEqual(expect.objectContaining({
       kind: 'practice_bridge',
-      capabilityKeyRefs: ['capability:makan'],
+      contentUnitSlugs: ['item-makan'],
     }))
   })
 

@@ -30,3 +30,4 @@ content/extracted/
 *.tsbuildinfo
 *.d.ts
 vite.config.js
+/content/decision-3b-cleanup-backup-*.json

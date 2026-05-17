@@ -7,14 +7,6 @@ interface CapabilityStatusRow {
   publication_status: string
 }
 
-interface LessonPageBlockCapabilityRefs {
-  capability_key_refs?: string[] | null
-}
-
-interface RelationshipCapability {
-  canonical_key: string
-}
-
 export interface CapabilityReleaseReadinessArgs {
   lesson: number
   sourceRef: string
@@ -64,18 +56,20 @@ export function parseCapabilityReleaseReadinessArgs(args: string[]): CapabilityR
   }
 }
 
+/**
+ * Returns all capability canonical_keys associated with a lesson, scoped by
+ * `learning_capabilities.lesson_id` (ADR 0006). Pre-issue-#61 cleanup, this
+ * function read from `lesson_page_blocks.capability_key_refs` — a denormalized
+ * cache that drifted out of sync with the canonical canonical_keys whenever
+ * the slug-derivation rule changed. The column was dropped in #61's cleanup;
+ * lesson_id is now the authoritative scoping path.
+ */
 export function collectLessonCapabilityKeys(input: {
-  lessonPageBlocks: LessonPageBlockCapabilityRefs[]
-  relationshipCapabilities: RelationshipCapability[]
+  capabilities: Array<{ canonical_key: string }>
 }): string[] {
   const keys = new Set<string>()
-  for (const block of input.lessonPageBlocks) {
-    for (const key of block.capability_key_refs ?? []) {
-      keys.add(key)
-    }
-  }
-  for (const capability of input.relationshipCapabilities) {
-    keys.add(capability.canonical_key)
+  for (const capability of input.capabilities) {
+    if (capability.canonical_key) keys.add(capability.canonical_key)
   }
   return [...keys]
 }
@@ -141,26 +135,29 @@ async function loadReadinessInput(args: CapabilityReleaseReadinessArgs): Promise
   if (contentUnitsError) throw contentUnitsError
   const contentUnitIds = (contentUnits ?? []).map((row: { id: string }) => row.id)
 
+  const { data: lessonRow, error: lessonErr } = await db()
+    .from('lessons')
+    .select('id')
+    .eq('order_index', args.lesson)
+    .maybeSingle()
+  if (lessonErr) throw lessonErr
+
   const { data: lessonPageBlocks, error: blocksError } = await db()
     .from('lesson_page_blocks')
-    .select('capability_key_refs')
+    .select('block_key')
     .eq('source_ref', args.sourceRef)
   if (blocksError) throw blocksError
 
-  const relationshipRows = contentUnitIds.length > 0
+  const lessonCapabilityRows = lessonRow
     ? await db()
-        .from('capability_content_units')
-        .select('capability:learning_capabilities(canonical_key)')
-        .in('content_unit_id', contentUnitIds)
+        .from('learning_capabilities')
+        .select('canonical_key')
+        .eq('lesson_id', lessonRow.id)
     : { data: [], error: null }
-  if (relationshipRows.error) throw relationshipRows.error
+  if (lessonCapabilityRows.error) throw lessonCapabilityRows.error
 
-  const relationshipCapabilities = ((relationshipRows.data ?? []) as Array<{ capability?: RelationshipCapability | null }>)
-    .map(row => row.capability)
-    .filter((row): row is RelationshipCapability => Boolean(row?.canonical_key))
   const scopedCapabilityKeys = collectLessonCapabilityKeys({
-    lessonPageBlocks: (lessonPageBlocks ?? []) as LessonPageBlockCapabilityRefs[],
-    relationshipCapabilities,
+    capabilities: (lessonCapabilityRows.data ?? []) as Array<{ canonical_key: string }>,
   })
 
   const capabilityRows: Array<CapabilityStatusRow & { id: string }> = []
