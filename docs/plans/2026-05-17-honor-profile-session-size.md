@@ -1,12 +1,13 @@
 ---
 status: implementing
+implementation: PR #57
 supersedes: []
 ---
 
 # Honor profile `preferredSessionSize` in standard mode
 
 **Date:** 2026-05-17
-**Status:** implementing (PR open on `feat/honor-profile-session-size`)
+**Status:** implementing (PR #57)
 
 ## Goal
 
