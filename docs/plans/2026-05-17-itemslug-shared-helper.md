@@ -1,6 +1,6 @@
 ---
-status: approved
-implementation: TBD
+status: implementing
+implementation: PR #60
 merged_at: null
 implementation_paths:
   - src/lib/capabilities/itemSlug.ts
