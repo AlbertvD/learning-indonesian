@@ -200,7 +200,7 @@ function buildRecordingSupabase(seed: {
 }
 
 describe('applyClassification', () => {
-  it('apply mode: delete branch removes child rows in order (aliases → artifacts → state → parent)', async () => {
+  it('apply mode: delete branch issues a single CASCADE delete on learning_capabilities (post-PR-4 child FKs are ON DELETE CASCADE)', async () => {
     const { client, calls } = buildRecordingSupabase()
     await applyClassification(client, {
       lesson1Id: 'lesson-1-uuid',
@@ -209,17 +209,8 @@ describe('applyClassification', () => {
     })
 
     const deleteCalls = calls.filter((c) => c.op === 'delete' && c.filterVal === 'cap-X')
-    expect(deleteCalls.map((c) => c.table)).toEqual([
-      'capability_aliases',
-      'capability_artifacts',
-      'learner_capability_state',
-      'learning_capabilities',
-    ])
-    // Each delete targets capability_id (or id for the parent table)
-    expect(deleteCalls[0].filterCol).toBe('capability_id')
-    expect(deleteCalls[1].filterCol).toBe('capability_id')
-    expect(deleteCalls[2].filterCol).toBe('capability_id')
-    expect(deleteCalls[3].filterCol).toBe('id')
+    expect(deleteCalls.map((c) => c.table)).toEqual(['learning_capabilities'])
+    expect(deleteCalls[0].filterCol).toBe('id')
   })
 
   it('apply mode: default_assign branch updates lesson_id and merges metadata_json.note', async () => {
