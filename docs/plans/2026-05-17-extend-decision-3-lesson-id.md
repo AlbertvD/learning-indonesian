@@ -1,19 +1,47 @@
 ---
-status: implementing
+status: shipped
 implementation_pr_1: commit ec7e6a3 (merged locally, no GitHub PR)
 implementation_pr_1_merged_at: 2026-05-17
 implementation_pr_2: PR #51
 implementation_pr_2_merged_at: 2026-05-17
 implementation_pr_3: PR #52
 implementation_pr_3_merged_at: 2026-05-17
-implementation_pr_4: feat/decision-3b-pr4-schema (in flight)
+implementation_pr_3_followup: PR #54
+implementation_pr_3_followup_merged_at: 2026-05-17
+implementation_pr_4: PR #53
+implementation_pr_4_merged_at: 2026-05-17
+implementation_pr_4_followup: PR #55
+implementation_pr_4_followup_merged_at: 2026-05-17
+implementation_pr_5: PR #56
+implementation_pr_5_merged_at: 2026-05-17
+merged_at: 2026-05-17
+implementation_paths:
+  - src/lib/capabilities/capabilityTypes.ts
+  - src/lib/session-builder/
+  - src/lib/mastery/masteryModel.ts
+  - scripts/lib/pipeline/capability-stage/
+  - scripts/data/staging/lesson-1/
+  - scripts/data/staging/lesson-2/
+  - scripts/data/staging/lesson-3/
+  - scripts/data/staging/lesson-4/
+  - scripts/data/staging/lesson-5/
+  - scripts/data/staging/lesson-6/
+  - scripts/data/staging/lesson-7/
+  - scripts/data/staging/lesson-8/
+  - scripts/data/staging/lesson-9/
+  - scripts/triage-residual-capabilities.ts
+  - scripts/migration.sql
+  - scripts/check-supabase-deep.ts
+  - docs/adr/0006-extend-lesson-id-to-all-capabilities.md
+  - docs/process/decision-3b-rollout.md
+  - src/__tests__/capabilitySessionLoader.test.ts
 supersedes: []
 ---
 
 # Extend Decision 3 — every capability has an introducing lesson
 
 **Date:** 2026-05-17
-**Status:** implementing (PR-1 + PR-2 + PR-3 merged; PR-4 in flight)
+**Status:** shipped (all five PRs + two followups merged 2026-05-17)
 
 ## Goal
 
