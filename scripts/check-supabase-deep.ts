@@ -560,6 +560,82 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   }
 }
 
+// ── HC9 (issue #59): zero item-source-kind learning_capabilities rows
+//      whose source_ref slug does not resolve against
+//      learning_items.normalized_text. Sibling to HC8.
+//
+//      EXPECTED RED until issue #58 cleanup completes — that is the
+//      SIGNAL that drives the cleanup. Once #58 runs the re-publish and
+//      clears orphan rows, HC9 should turn green and stay green. Do not
+//      treat as a regression in the interim.
+//
+//      Pagination: learning_capabilities holds ~2,649 rows; PostgREST's
+//      default cap is 1,000, so fetch in chunks via .range() until a
+//      page comes back short.
+{
+  type ItemCap = { canonical_key: string; source_ref: string }
+  type ItemSlugRow = { normalized_text: string }
+
+  async function fetchAllItemCaps(): Promise<ItemCap[]> {
+    const pageSize = 1000
+    const all: ItemCap[] = []
+    for (let offset = 0; ; offset += pageSize) {
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('learning_capabilities')
+        .select('canonical_key, source_ref')
+        .eq('source_kind', 'item')
+        .like('source_ref', 'learning_items/%')
+        .range(offset, offset + pageSize - 1)
+      if (error) throw error
+      const rows = (data ?? []) as ItemCap[]
+      all.push(...rows)
+      if (rows.length < pageSize) break
+    }
+    return all
+  }
+
+  async function fetchAllNormalizedTexts(): Promise<Set<string>> {
+    const pageSize = 1000
+    const slugs = new Set<string>()
+    for (let offset = 0; ; offset += pageSize) {
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('learning_items')
+        .select('normalized_text')
+        .range(offset, offset + pageSize - 1)
+      if (error) throw error
+      const rows = (data ?? []) as ItemSlugRow[]
+      for (const row of rows) slugs.add(row.normalized_text)
+      if (rows.length < pageSize) break
+    }
+    return slugs
+  }
+
+  try {
+    const [caps, slugs] = await Promise.all([fetchAllItemCaps(), fetchAllNormalizedTexts()])
+    const offenders = caps.filter((c) => !slugs.has(c.source_ref.replace(/^learning_items\//, '')))
+    if (offenders.length === 0) {
+      pass('HC9 item caps source_ref resolves to learning_items.normalized_text (#59)')
+    } else {
+      fail(
+        'HC9 item caps source_ref resolves to learning_items.normalized_text (#59) — EXPECTED RED until issue #58 cleanup completes',
+        `${offenders.length} item-cap(s) with unresolvable source_ref: ` +
+        `${offenders.slice(0, 5).map((o) => `${o.source_ref} (${o.canonical_key})`).join(', ')}` +
+        `${offenders.length > 5 ? ' …' : ''}\n` +
+        `   → Run issue #58 cleanup: re-publish affected lessons (the fix to the slug ` +
+        `generator landed in #59; re-publishing rewrites existing source_refs in the ` +
+        `space-preserving shape).`,
+      )
+    }
+  } catch (err) {
+    fail(
+      'HC9 item caps source_ref resolves to learning_items.normalized_text (#59)',
+      err instanceof Error ? err.message : String(err),
+    )
+  }
+}
+
 // ── Output ─────────────────────────────────────────────────────────────────
 console.log(`\nSupabase deep structural check — ${SUPABASE_URL}\n`)
 let failures = 0
