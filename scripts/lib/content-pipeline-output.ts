@@ -18,6 +18,12 @@ export interface PipelineFinding {
 
 export interface StagingLessonInput {
   lessonNumber: number
+  // ADR 0006 (Decision 3b): the DB UUID of the lesson, when known. Stamped
+  // onto every emitted capability so the on-disk capabilities.ts mirrors what
+  // the DB row will carry. Optional because pure offline generators
+  // (generate-staging-files.ts when no service key is available) cannot
+  // resolve the UUID; the runner's published rows are still authoritative.
+  lessonId?: string | null
   lesson: {
     title: string
     level: string
@@ -527,12 +533,21 @@ export function buildCapabilityStagingFromContent(input: StagingLessonInput & {
     return capability.capabilityType.includes('recognition') ? 'introduced_by' : 'practiced_by'
   }
 
+  // ADR 0006: stamp lessonId on every lesson-derived capability. Podcast
+  // source kinds are exempt (the constraint admits null only for podcasts).
+  // When input.lessonId is missing (offline generator with no service key),
+  // emit null and let the next publish overwrite. The runner's DB writes
+  // remain the authoritative source.
+  const PODCAST_SOURCE_KINDS = new Set(['podcast_segment', 'podcast_phrase'])
   const capabilities: StagingCapability[] = projection.capabilities.map((capability: ProjectedCapability) => {
     const unit = itemUnitsBySourceRef.get(capability.sourceRef)
       ?? patternUnitsBySourceRef.get(capability.sourceRef)
       ?? affixedPairUnitsBySourceRef.get(capability.sourceRef)
     return {
       ...capability,
+      lessonId: PODCAST_SOURCE_KINDS.has(capability.sourceKind)
+        ? null
+        : (input.lessonId ?? null),
       contentUnitSlugs: unit ? [unit.unit_slug] : [],
       relationshipKind: relationshipKindForCapability(capability),
     }

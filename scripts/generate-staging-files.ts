@@ -9,6 +9,7 @@
 import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
+import { createClient } from '@supabase/supabase-js'
 import {
   buildCapabilityStagingFromContent,
   buildContentUnitsFromStaging,
@@ -19,6 +20,38 @@ import {
   validateLessonPageBlocks,
   type StagingLessonInput,
 } from './lib/content-pipeline-output'
+
+// ADR 0006: look up the lesson's UUID by (module_id, order_index) so the
+// regenerated capabilities.ts on disk can carry lessonId. Falls back to null
+// when no service key is configured (the runner overwrites with the real id
+// on the next publish). Step-CA trust is local: only this script's HTTPS
+// calls to the homelab supabase bypass cert validation.
+async function lookupLessonId(moduleId: string, orderIndex: number): Promise<string | null> {
+  const url = process.env.VITE_SUPABASE_URL ?? 'https://api.supabase.duin.home'
+  const key = process.env.SUPABASE_SERVICE_KEY
+  if (!key) return null
+  const prevTls = process.env.NODE_TLS_REJECT_UNAUTHORIZED
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+  try {
+    const supabase = createClient(url, key, {
+      db: { schema: 'indonesian' },
+      auth: { persistSession: false },
+    })
+    const { data, error } = await supabase
+      .from('lessons')
+      .select('id')
+      .eq('module_id', moduleId)
+      .eq('order_index', orderIndex)
+      .maybeSingle()
+    if (error || !data) return null
+    return data.id as string
+  } catch {
+    return null
+  } finally {
+    if (prevTls === undefined) delete process.env.NODE_TLS_REJECT_UNAUTHORIZED
+    else process.env.NODE_TLS_REJECT_UNAUTHORIZED = prevTls
+  }
+}
 
 type SectionType =
   | 'vocabulary' | 'expressions' | 'numbers'
@@ -459,8 +492,13 @@ async function main() {
   }
   const grammarPatterns = existingInput?.grammarPatterns ?? []
   const affixedFormPairs = existingInput?.affixedFormPairs ?? []
+  const lessonId = await lookupLessonId(lesson.module_id, lesson.order_index)
+  if (lessonId == null && process.env.SUPABASE_SERVICE_KEY) {
+    console.warn(`  WARN: lesson UUID not found for module_id=${lesson.module_id} order_index=${lesson.order_index}; capabilities.ts will carry lessonId=null until next publish.`)
+  }
   const pipelineInput: StagingLessonInput = {
     lessonNumber,
+    lessonId,
     lesson,
     learningItems: generatedItems.items,
     grammarPatterns,

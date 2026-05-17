@@ -226,6 +226,7 @@ export async function runCapabilityStage(
   // pure on in-memory state — no DB or LLM call.
   const pipelineInput: StagingLessonInput = {
     lessonNumber: input.lessonNumber,
+    lessonId: input.lessonId,
     lesson: {
       title: loaded.lesson.title,
       level: loaded.lesson.level,
