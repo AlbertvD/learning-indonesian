@@ -1,7 +1,7 @@
 ---
 module: lesson-renderer
 surface: src/components/lessons/
-last_verified_against_code: 2026-05-14
+last_verified_against_code: 2026-05-17
 status: stable
 ---
 
@@ -81,7 +81,6 @@ interface LessonExperienceBlock {
   contentUnitSlugs: string[]
   displayOrder: number
   payload: Record<string, unknown>    // arbitrary, per-kind shape
-  capabilityKeyRefs: string[]
 }
 ```
 
@@ -119,7 +118,7 @@ Lesson duration is converted from seconds to minutes via `Math.max(1, Math.round
 | Kind | Render branch | Where |
 |---|---|---|
 | `lesson_hero` | `<HeroCard>` with kicker, title, fixed body copy | `LessonBlockRenderer.tsx:128-138` |
-| `practice_bridge` | Section with "Oefenbrug" kicker, title, body text (or fallback), and `<details>` listing `capabilityKeyRefs` + `contentUnitSlugs` | `LessonBlockRenderer.tsx:140-164` |
+| `practice_bridge` | Section with "Oefenbrug" kicker, title, body text (or fallback) | `LessonBlockRenderer.tsx:140-158` |
 | `lesson_recap` | Section with "Samenvatting" kicker + fixed copy ("Een korte terugblik...") | `LessonBlockRenderer.tsx:166-183` |
 | `vocab_strip` | Default `<section>` branch | `LessonBlockRenderer.tsx:185-220` |
 | `reading_section` | Default `<section>` branch | same |

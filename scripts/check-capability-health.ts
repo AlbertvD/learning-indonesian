@@ -19,7 +19,6 @@ import type {
   ProjectedCapability,
 } from '../src/lib/capabilities/capabilityTypes'
 import { resolveExercise } from '../src/lib/exercises/exerciseResolver'
-import { collectLessonCapabilityKeys } from './check-capability-release-readiness'
 import { hasConcreteArtifactPayload } from './lib/content-pipeline-output'
 
 export interface CapabilityHealthExitCodeInput {
@@ -537,14 +536,13 @@ export async function loadDbCapabilityHealthSnapshot(args: Extract<CapabilityHea
 
   const { data: blocks, error: blocksError } = await db()
     .from('lesson_page_blocks')
-    .select('source_ref, source_refs, content_unit_slugs, capability_key_refs')
+    .select('source_ref, source_refs, content_unit_slugs')
     .eq('source_ref', args.sourceRef)
   if (blocksError) throw blocksError
   const lessonBlocks = (blocks ?? []) as Array<{
     source_ref?: string | null
     source_refs?: string[] | null
     content_unit_slugs?: string[] | null
-    capability_key_refs?: string[] | null
   }>
 
   const contentUnitSlugs = [...new Set(lessonBlocks.flatMap(block => block.content_unit_slugs ?? []))]
@@ -571,38 +569,26 @@ export async function loadDbCapabilityHealthSnapshot(args: Extract<CapabilityHea
     }>,
   })
 
-  // Chunk the content_unit_id IN list — lessons with >~50 units would exceed
-  // Kong's URI buffer.
-  const contentUnitIds = contentUnits.map(unit => unit.id)
-  const relationshipRowsAll: Array<{ capability?: { canonical_key: string } | null }> = []
-  const ccuChunkSize = 50
-  for (let i = 0; i < contentUnitIds.length; i += ccuChunkSize) {
-    const chunk = contentUnitIds.slice(i, i + ccuChunkSize)
-    const { data, error } = await db()
-      .from('capability_content_units')
-      .select('capability:learning_capabilities(canonical_key)')
-      .in('content_unit_id', chunk)
-    if (error) throw error
-    relationshipRowsAll.push(...((data ?? []) as Array<{ capability?: { canonical_key: string } | null }>))
-  }
-  const relationshipCapabilities = relationshipRowsAll
-    .map(row => row.capability)
-    .filter((row): row is { canonical_key: string } => Boolean(row?.canonical_key))
-  const scopedCapabilityKeys = collectLessonCapabilityKeys({
-    lessonPageBlocks: lessonBlocks.map(block => ({ capability_key_refs: block.capability_key_refs })),
-    relationshipCapabilities,
-  })
-
+  // Scope by learning_capabilities.lesson_id (ADR 0006). The lesson-id is
+  // derived from args.sourceRef which has the shape "lesson-<order_index>".
+  const lessonNumberMatch = /^lesson-(\d+)$/.exec(args.sourceRef)
   const capabilityRows: Array<Record<string, unknown>> = []
-  const capabilityChunkSize = 20
-  for (let i = 0; i < scopedCapabilityKeys.length; i += capabilityChunkSize) {
-    const chunk = scopedCapabilityKeys.slice(i, i + capabilityChunkSize)
-    const { data, error } = await db()
-      .from('learning_capabilities')
-      .select('*')
-      .in('canonical_key', chunk)
-    if (error) throw error
-    capabilityRows.push(...((data ?? []) as Array<Record<string, unknown>>))
+  if (lessonNumberMatch) {
+    const lessonNumber = Number(lessonNumberMatch[1])
+    const { data: lessonRow, error: lessonErr } = await db()
+      .from('lessons')
+      .select('id')
+      .eq('order_index', lessonNumber)
+      .maybeSingle()
+    if (lessonErr) throw lessonErr
+    if (lessonRow) {
+      const { data, error } = await db()
+        .from('learning_capabilities')
+        .select('*')
+        .eq('lesson_id', lessonRow.id)
+      if (error) throw error
+      capabilityRows.push(...((data ?? []) as Array<Record<string, unknown>>))
+    }
   }
   const capabilityIdByKey = new Map(capabilityRows.map(row => [String(row.canonical_key ?? ''), String(row.id ?? '')]))
   const capabilityKeyById = new Map([...capabilityIdByKey.entries()].map(([key, id]) => [id, key]))

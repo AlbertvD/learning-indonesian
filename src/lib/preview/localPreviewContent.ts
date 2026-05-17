@@ -43,7 +43,6 @@ function lessonBlock(input: {
   order: number
   payload: Record<string, unknown>
   unitSlugs?: string[]
-  capabilityKeys?: string[]
 }): LessonPageBlock {
   return {
     block_key: input.key,
@@ -53,7 +52,6 @@ function lessonBlock(input: {
     block_kind: input.kind,
     display_order: input.order,
     payload_json: input.payload,
-    capability_key_refs: input.capabilityKeys ?? [],
   }
 }
 
@@ -129,10 +127,6 @@ const lessonOne: PreviewLesson = {
       kind: 'practice_bridge',
       order: 40,
       unitSlugs: ['item-pasar', 'pattern-serial-verb-construction'],
-      capabilityKeys: [
-        'cap:v1:item:learning_items/pasar:text_recognition:id_to_l1:text:nl',
-        'cap:v1:pattern:lesson-1/pattern-serial-verb-construction:pattern_recognition:none:text:none',
-      ],
       payload: {
         title: 'Door naar oefenen',
         body: 'Na lezen en opmerken kan de oefening precies de woorden en patronen gebruiken die in de les voorkwamen.',
@@ -262,10 +256,6 @@ const morphologyPilot: PreviewLesson = {
       kind: 'practice_bridge',
       order: 30,
       unitSlugs: ['men-baca-membaca'],
-      capabilityKeys: [
-        'cap:v1:affixed_form_pair:lesson-9/morphology/meN-baca-membaca:root_derived_recognition:derived_to_root:text:none',
-        'cap:v1:affixed_form_pair:lesson-9/morphology/meN-baca-membaca:root_derived_recall:root_to_derived:text:none',
-      ],
       payload: {
         title: 'Gerichte morfologie-oefening',
         body: 'De herinneringsvaardigheid blijft in de planner achter herkenningsbewijs; deze knop toont alleen de brug.',

@@ -44,9 +44,10 @@ export interface CapabilityInsertPlan {
   publicationStatus: PublicationStatus
   sourceFingerprint: string
   artifactFingerprint: string
-  // NULL = capability is not lesson-scoped (podcast / cross-lesson). Backfilled
-  // pre-deploy from lesson_page_blocks.capability_key_refs[] adjacency. The
-  // staging publish path writes it from the lesson context.
+  // NULL = capability is not lesson-scoped (podcast / cross-lesson). Per ADR 0006,
+  // non-podcast caps MUST have a lesson_id; the staging publish path writes it
+  // from the lesson context, enforced by validateLessonIdPresence + the CHECK
+  // constraint learning_capabilities_lesson_id_required_for_lessons.
   lessonId: string | null
   metadataJson: Record<string, unknown>
 }

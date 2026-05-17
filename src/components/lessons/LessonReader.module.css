@@ -213,33 +213,6 @@
   margin-top: 4px;
 }
 
-.meta {
-  margin: 0;
-  font-size: var(--fs-xs);
-  color: var(--text-secondary);
-}
-
-.meta summary {
-  cursor: pointer;
-  font-weight: var(--fw-semibold);
-  color: var(--text-secondary);
-}
-
-.meta ul {
-  margin: 8px 0 0;
-  padding-left: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.meta code {
-  font-family: var(--font-mono, "SFMono-Regular", monospace);
-  font-size: var(--fs-xs);
-  color: var(--text-primary);
-  word-break: break-all;
-}
-
 /* ─── Hero block (uses framework HeroCard shell, body styles only here) ── */
 
 .heroTitle {

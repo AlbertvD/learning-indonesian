@@ -94,7 +94,6 @@ export interface StagingLessonPageBlock {
   block_kind: 'hero' | 'section' | 'exposure' | 'practice_bridge' | 'recap'
   display_order: number
   payload_json: Record<string, unknown>
-  capability_key_refs: string[]
 }
 
 function stableSlug(value: string): string {
@@ -758,19 +757,9 @@ function vocabStripPayloadType(contextType: string): string {
 
 export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
   contentUnits: StagingContentUnit[]
-  capabilities: StagingCapability[]
 }): StagingLessonPageBlock[] {
   const lessonSourceRef = sourceRefForLesson(input.lessonNumber)
   const blocks: StagingLessonPageBlock[] = []
-
-  const capabilitiesByUnitSlug = new Map<string, string[]>()
-  for (const capability of input.capabilities) {
-    for (const slug of capability.contentUnitSlugs) {
-      const keys = capabilitiesByUnitSlug.get(slug) ?? []
-      keys.push(capability.canonicalKey)
-      capabilitiesByUnitSlug.set(slug, keys)
-    }
-  }
 
   const grammarPatternUnitsBySlug = new Map<string, StagingContentUnit>()
   for (const unit of input.contentUnits) {
@@ -791,7 +780,6 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
       title: input.lesson.title,
       level: input.lesson.level,
     },
-    capability_key_refs: [],
   })
 
   // 2. Lesson sections (grammar -> reading section + pattern callouts; other types -> reading sections)
@@ -822,7 +810,6 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
             title: section.title,
             intro,
           },
-          capability_key_refs: [],
         })
       }
 
@@ -848,7 +835,6 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
             title,
             categories: [category],
           },
-          capability_key_refs: patternUnit ? capabilitiesByUnitSlug.get(patternUnit.unit_slug) ?? [] : [],
         })
       })
     } else {
@@ -865,7 +851,6 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
           type: contentType,
           title: section.title,
         },
-        capability_key_refs: [],
       })
     }
   }
@@ -898,7 +883,6 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
             : '',
         })),
       },
-      capability_key_refs: affixedFormPairUnits.flatMap(unit => capabilitiesByUnitSlug.get(unit.unit_slug) ?? []),
     })
   }
 
@@ -915,13 +899,10 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
     const items = itemsByContext.get(contextType) ?? []
     if (items.length === 0) return
     const itemUnitSlugs: string[] = []
-    const stripCapabilityKeys: string[] = []
     const stripSourceRefs = new Set<string>([lessonSourceRef])
     for (const item of items) {
       const slug = `item-${stableSlug(item.base_text)}`
       itemUnitSlugs.push(slug)
-      const keys = capabilitiesByUnitSlug.get(slug) ?? []
-      stripCapabilityKeys.push(...keys)
       stripSourceRefs.add(sourceRefForLearningItem(item.base_text))
     }
     blocks.push({
@@ -939,14 +920,10 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
           dutch: item.translation_nl ?? '',
         })),
       },
-      capability_key_refs: stripCapabilityKeys,
     })
   })
 
   // 4. Practice bridge: one block linking to lesson_practice mode
-  const recognitionCapabilityKeys = input.capabilities
-    .filter(capability => capability.capabilityType === 'text_recognition')
-    .map(capability => capability.canonicalKey)
   blocks.push({
     block_key: `${lessonSourceRef}-practice-bridge`,
     source_ref: lessonSourceRef,
@@ -957,7 +934,6 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
     payload_json: {
       label: 'Oefen deze les',
     },
-    capability_key_refs: recognitionCapabilityKeys,
   })
 
   // 5. Recap
@@ -969,7 +945,6 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
     block_kind: 'recap',
     display_order: 9999,
     payload_json: { title: 'Samenvatting' },
-    capability_key_refs: [],
   })
 
   return blocks
@@ -978,12 +953,10 @@ export function buildLessonPageBlocksFromStaging(input: StagingLessonInput & {
 export function validateLessonPageBlocks(input: {
   blocks: StagingLessonPageBlock[]
   contentUnits: StagingContentUnit[]
-  capabilities: StagingCapability[]
 }): PipelineFinding[] {
   const findings: PipelineFinding[] = []
   const blockKeys = new Set<string>()
   const unitSlugs = new Set(input.contentUnits.map(unit => unit.unit_slug))
-  const capabilityKeys = new Set(input.capabilities.map(capability => capability.canonicalKey))
 
   for (const block of input.blocks) {
     if (!isStableSlug(block.block_key)) {
@@ -997,11 +970,6 @@ export function validateLessonPageBlocks(input: {
     for (const slug of block.content_unit_slugs) {
       if (!unitSlugs.has(slug)) {
         findings.push(finding('CRITICAL', 'lesson-block-content-unit-missing', `Unknown content unit "${slug}"`, block.block_key))
-      }
-    }
-    for (const key of block.capability_key_refs) {
-      if (!capabilityKeys.has(key)) {
-        findings.push(finding('CRITICAL', 'lesson-block-capability-missing', `Unknown capability "${key}"`, block.block_key))
       }
     }
   }

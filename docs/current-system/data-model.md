@@ -75,7 +75,7 @@ Stable teachable objects (word, phrase, sentence, dialogue_line, podcast_segment
 
 ### `lesson_page_blocks` (`content-units-lesson-blocks.sql:23`)
 
-Learner-facing lesson reader content. Each row is a `block_kind` from the 7-value enum (`lesson_hero`, `reading_section`, `vocab_strip`, `dialogue_card`, `pattern_callout`, `practice_bridge`, `lesson_recap`). Carries `payload_json` for the renderer, `source_ref`, `source_refs[]`, `content_unit_slugs[]`, and `capability_key_refs[]`. The lesson renderer consumes these (see `docs/current-system/modules/lesson-renderer.md`).
+Learner-facing lesson reader content. Each row is a `block_kind` from the 7-value enum (`lesson_hero`, `reading_section`, `vocab_strip`, `dialogue_card`, `pattern_callout`, `practice_bridge`, `lesson_recap`). Carries `payload_json` for the renderer, `source_ref`, `source_refs[]`, and `content_unit_slugs[]`. The lesson renderer consumes these (see `docs/current-system/modules/lesson-renderer.md`). The capability scope for a lesson is derived from `learning_capabilities.lesson_id` (ADR 0006), not denormalized on this table.
 
 ### `learner_capability_state` (`capability-core.sql:56`)
 

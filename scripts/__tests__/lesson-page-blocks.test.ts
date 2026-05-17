@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import {
-  buildCapabilityStagingFromContent,
   buildContentUnitsFromStaging,
   buildLessonPageBlocksFromStaging,
   validateLessonPageBlocks,
@@ -35,14 +34,12 @@ const input: StagingLessonInput = {
 describe('lesson page block staging', () => {
   it('emits hero, grouped vocab strip, single practice bridge, and recap', () => {
     const contentUnits = buildContentUnitsFromStaging(input)
-    const capabilities = buildCapabilityStagingFromContent({ ...input, contentUnits }).capabilities
-    const blocks = buildLessonPageBlocksFromStaging({ ...input, contentUnits, capabilities })
+    const blocks = buildLessonPageBlocksFromStaging({ ...input, contentUnits })
 
     expect(blocks[0]).toEqual(expect.objectContaining({
       block_key: 'lesson-1-hero',
       block_kind: 'hero',
       content_unit_slugs: [],
-      capability_key_refs: [],
     }))
     // One vocab strip per context_type group, not one block per item
     expect(blocks).toEqual(expect.arrayContaining([
@@ -59,7 +56,6 @@ describe('lesson page block staging', () => {
       expect.objectContaining({
         block_key: 'lesson-1-practice-bridge',
         block_kind: 'practice_bridge',
-        capability_key_refs: expect.arrayContaining([expect.stringContaining(':text_recognition:')]),
       }),
       expect.objectContaining({
         block_key: 'lesson-1-recap',
@@ -73,8 +69,7 @@ describe('lesson page block staging', () => {
 
   it('validates block references without requiring every block to own a unit', () => {
     const contentUnits = buildContentUnitsFromStaging(input)
-    const capabilities = buildCapabilityStagingFromContent({ ...input, contentUnits }).capabilities
-    const blocks = buildLessonPageBlocksFromStaging({ ...input, contentUnits, capabilities })
+    const blocks = buildLessonPageBlocksFromStaging({ ...input, contentUnits })
     const findings = validateLessonPageBlocks({
       blocks: [
         ...blocks,
@@ -82,7 +77,6 @@ describe('lesson page block staging', () => {
         { ...blocks[1]!, content_unit_slugs: ['missing-unit'] },
       ],
       contentUnits,
-      capabilities,
     })
 
     expect(findings).toEqual(expect.arrayContaining([

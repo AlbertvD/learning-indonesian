@@ -251,7 +251,6 @@ export async function runCapabilityStage(
   const regeneratedPageBlocks = buildLessonPageBlocksFromStaging({
     ...pipelineInput,
     contentUnits: regeneratedContentUnits,
-    capabilities: regeneratedCapabilityPlan.capabilities,
   })
 
   // Replace the stale staging snapshots with fresh ones for the rest of the runner.

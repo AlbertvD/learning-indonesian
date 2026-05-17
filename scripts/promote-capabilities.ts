@@ -3,7 +3,6 @@ import { pathToFileURL } from 'node:url'
 import { validateCapability, type CapabilityReadiness } from '../src/lib/capabilities/capabilityContracts'
 import type { ArtifactIndex } from '../src/lib/capabilities/artifactRegistry'
 import type { ArtifactKind, ProjectedCapability } from '../src/lib/capabilities/capabilityTypes'
-import { collectLessonCapabilityKeys } from './check-capability-release-readiness'
 import { hasConcreteArtifactPayload } from './lib/content-pipeline-output'
 
 interface CapabilityRow {
@@ -236,47 +235,31 @@ export async function loadPromotionPlan(args: PromoteCapabilitiesArgs): Promise<
   const supabase = createServiceClient()
   const db = () => supabase.schema('indonesian')
 
-  const { data: contentUnits, error: contentUnitsError } = await db()
-    .from('content_units')
+  // Scope by learning_capabilities.lesson_id (mandatory per ADR 0006).
+  // This replaces the pre-#61 path that scoped via
+  // lesson_page_blocks.capability_key_refs[] ∪ capability_content_units joined
+  // through this lesson's content_units. Per the proof in
+  // docs/plans/2026-05-17-drop-capability-key-refs.md §Promoter-semantic-equivalence,
+  // the new scope is a strict superset of the old union.
+  const { data: lessonRow, error: lessonErr } = await db()
+    .from('lessons')
     .select('id')
-    .eq('source_ref', args.sourceRef)
-  if (contentUnitsError) throw contentUnitsError
-  const contentUnitIds = (contentUnits ?? []).map((row: { id: string }) => row.id)
-
-  const { data: blocks, error: blocksError } = await db()
-    .from('lesson_page_blocks')
-    .select('capability_key_refs')
-    .eq('source_ref', args.sourceRef)
-  if (blocksError) throw blocksError
-
-  const relationshipRows = contentUnitIds.length > 0
-    ? await db()
-        .from('capability_content_units')
-        .select('capability:learning_capabilities(canonical_key)')
-        .in('content_unit_id', contentUnitIds)
-    : { data: [], error: null }
-  if (relationshipRows.error) throw relationshipRows.error
-  const relationshipCapabilities = ((relationshipRows.data ?? []) as Array<{ capability?: { canonical_key: string } | null }>)
-    .map(row => row.capability)
-    .filter((row): row is { canonical_key: string } => Boolean(row?.canonical_key))
-  const scopedCapabilityKeys = collectLessonCapabilityKeys({
-    lessonPageBlocks: (blocks ?? []) as Array<{ capability_key_refs?: string[] | null }>,
-    relationshipCapabilities,
-  })
-  if (scopedCapabilityKeys.length === 0) {
+    .eq('order_index', args.lesson)
+    .maybeSingle()
+  if (lessonErr) throw lessonErr
+  if (!lessonRow) {
     return planCapabilityPromotion({ capabilities: [], healthResults: [] })
   }
 
-  const capabilityRows: CapabilityRow[] = []
-  const chunkSize = 20
-  for (let i = 0; i < scopedCapabilityKeys.length; i += chunkSize) {
-    const chunk = scopedCapabilityKeys.slice(i, i + chunkSize)
-    const { data, error } = await db()
-      .from('learning_capabilities')
-      .select('*')
-      .in('canonical_key', chunk)
-    if (error) throw error
-    capabilityRows.push(...((data ?? []) as CapabilityRow[]))
+  const { data: capabilityRowsData, error: capsError } = await db()
+    .from('learning_capabilities')
+    .select('*')
+    .eq('lesson_id', lessonRow.id)
+  if (capsError) throw capsError
+  const capabilityRows = ((capabilityRowsData ?? []) as CapabilityRow[])
+  const scopedCapabilityKeys = capabilityRows.map(row => row.canonical_key)
+  if (scopedCapabilityKeys.length === 0) {
+    return planCapabilityPromotion({ capabilities: [], healthResults: [] })
   }
 
   const healthResults: PromotionHealthResult[] = []

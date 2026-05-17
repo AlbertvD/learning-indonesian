@@ -53,7 +53,6 @@ interface PageBlockStaging {
   block_kind: string
   display_order: number
   payload_json?: Record<string, unknown>
-  capability_key_refs?: string[]
 }
 
 interface PatternStaging {
@@ -188,7 +187,6 @@ export async function runLessonStage(
     }),
     display_order: block.display_order,
     payload_json: block.payload_json ?? {},
-    capability_key_refs: block.capability_key_refs ?? [],
   }))
   findings.push(...validateBlockKind(classifiedBlocks))
 

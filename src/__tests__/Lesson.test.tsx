@@ -129,7 +129,6 @@ describe('Lesson page', () => {
           body: 'Grammar notes.',
           audioUrl: '/grammar.mp3',
         },
-        capability_key_refs: ['capability-1', 'capability-2'],
       },
     ] as any)
     vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockResolvedValue({

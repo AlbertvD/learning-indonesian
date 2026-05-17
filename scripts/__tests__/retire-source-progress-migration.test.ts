@@ -37,11 +37,17 @@ describe('retirement #6 — source-progress → lesson-activation migration (mas
     expect(masterSql).toContain('create index if not exists learning_capabilities_lesson_idx')
   })
 
-  it('backfills lesson_id from page-block adjacency with no exception handler (idempotent via WHERE … IS NULL)', () => {
+  it('backfills lesson_id from page-block adjacency (idempotent via WHERE … IS NULL; wrapped in column-existence guard post-#61)', () => {
     expect(masterSql).toContain('update indonesian.learning_capabilities c')
     expect(masterSql).toContain('select distinct on (cap_key)')
     expect(masterSql).toContain('unnest(pb.capability_key_refs) as cap_key')
     expect(masterSql).toContain('and c.lesson_id is null')
+    // Post-#61: the backfill UPDATE is wrapped in a column-existence DO block so
+    // it becomes a no-op once capability_key_refs is dropped from the table.
+    // Keeps the file idempotent on fresh DBs AND on already-dropped live DBs.
+    expect(masterSql).toMatch(
+      /if exists \([\s\S]*?column_name = 'capability_key_refs'[\s\S]*?\) then[\s\S]*?unnest\(pb\.capability_key_refs\) as cap_key/i,
+    )
   })
 
   it('auto-activates legacy lessons {1,2,3} for every existing user (idempotent)', () => {

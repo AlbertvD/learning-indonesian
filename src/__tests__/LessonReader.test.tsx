@@ -21,7 +21,6 @@ function experience(): LessonExperience {
         contentUnitSlugs: [],
         displayOrder: 0,
         payload: { title: 'Les 1 - Di Pasar' },
-        capabilityKeyRefs: [],
       },
       {
         id: 'lesson-1-item-makan',
@@ -32,7 +31,6 @@ function experience(): LessonExperience {
         contentUnitSlugs: ['item-makan'],
         displayOrder: 10,
         payload: { items: [{ indonesian: 'makan', dutch: 'eten' }] },
-        capabilityKeyRefs: ['capability:makan'],
       },
       {
         id: 'lesson-1-practice',
@@ -43,7 +41,6 @@ function experience(): LessonExperience {
         contentUnitSlugs: ['item-makan'],
         displayOrder: 20,
         payload: { label: 'Practice this content' },
-        capabilityKeyRefs: ['capability:makan'],
       },
     ],
   }
