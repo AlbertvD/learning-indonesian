@@ -1,6 +1,6 @@
 ---
-status: approved
-implementation: TBD
+status: implementing
+implementation: PR #63
 merged_at: null
 implementation_paths:
   - scripts/migration.sql
