@@ -87,6 +87,7 @@ import { projectGrammar } from './projectors/grammar'
 import { projectCloze } from './projectors/cloze'
 
 import { validateLessonIdPresence } from './validators/lessonId'
+import { validateItemSourceRefResolvability } from './validators/itemSourceRefResolvability'
 
 import { runCountParity } from './verify/countParity'
 import { runContentNonEmpty } from './verify/contentNonEmpty'
@@ -396,6 +397,14 @@ export async function runCapabilityStage(
   // Decision 3b (ADR 0006): refuse to write any lesson-derived capability with
   // null lesson_id. Podcast source kinds are exempt — see the validator.
   validateLessonIdPresence(allCapabilities)
+  // Issue #59: refuse to write any item-source-kind capability whose source_ref
+  // slug does not match a learning_item in this snapshot. The validator
+  // accepts a minimal structural type ({ base_text: string }) so no cast from
+  // LearningItemStagingRow → LearningItemInput is needed.
+  validateItemSourceRefResolvability(
+    allCapabilities,
+    staging.learningItems as ReadonlyArray<{ base_text: string }>,
+  )
   const capabilityIdsByKey = await upsertCapabilities(supabase, allCapabilities)
   counts.capabilities = capabilityIdsByKey.size
   const capabilityIds = [...capabilityIdsByKey.values()]
