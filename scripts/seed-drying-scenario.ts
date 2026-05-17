@@ -18,20 +18,30 @@
  *
  * Usage:
  *   bun scripts/seed-drying-scenario.ts --user-id <uuid> [--target-lesson <n>] [--clear]
+ *   bun scripts/seed-drying-scenario.ts --email <addr> [--target-lesson <n>] [--clear]
  *
  * Flags:
- *   --user-id <uuid>     Required. The auth.users.id to seed for.
- *   --target-lesson <n>  The lesson order_index to treat as "current".
- *                        Default: 1.
- *   --clear              Wipe the user's learner_capability_state +
- *                        learner_lesson_activation rows first. Use to
- *                        re-baseline a polluted test user.
+ *   --user-id <uuid>     The auth.users.id to seed for. (--user-id or --email required.)
+ *   --email <addr>       The auth.users.email to look up the id by.
+ *   --target-lesson <n>  The lesson order_index to treat as "current". Default: 1.
+ *   --clear              Wipe the user's learner_lesson_activation rows first
+ *                        (does NOT delete learner_capability_state rows —
+ *                        those carry a FK from the capability_review_events
+ *                        audit log per ADR 0004 and shouldn't be erased).
+ *                        Existing state rows are upserted in place.
  *
- * Requires POSTGRES_PASSWORD in .env.local.
+ * The script always deletes the *next* lesson's activation row (if any) —
+ * drying cannot fire while it's set, regardless of other state.
+ *
+ * Requires VITE_SUPABASE_URL and SUPABASE_SERVICE_KEY in .env.local.
+ * Uses the REST API + service-role key (bypasses RLS) — works from any
+ * machine that can reach api.supabase.duin.home on 443.
  */
 
 import fs from 'fs'
-import postgres from 'postgres'
+import { createClient } from '@supabase/supabase-js'
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 function loadEnv() {
   const envPath = '.env.local'
@@ -48,128 +58,137 @@ const USER_ID = (() => {
   const i = process.argv.indexOf('--user-id')
   return i > -1 ? process.argv[i + 1] : null
 })()
+const EMAIL = (() => {
+  const i = process.argv.indexOf('--email')
+  return i > -1 ? process.argv[i + 1] : null
+})()
 const TARGET_LESSON = (() => {
   const i = process.argv.indexOf('--target-lesson')
   return i > -1 ? parseInt(process.argv[i + 1], 10) : 1
 })()
 const CLEAR = process.argv.includes('--clear')
 
-if (!USER_ID) {
-  console.error('Error: --user-id <uuid> is required')
+if (!USER_ID && !EMAIL) {
+  console.error('Error: --user-id <uuid> or --email <addr> is required')
   process.exit(1)
 }
 
-const postgresPassword = process.env.POSTGRES_PASSWORD
-if (!postgresPassword) {
-  console.error('Error: POSTGRES_PASSWORD must be set in .env.local')
+const supabaseUrl = process.env.VITE_SUPABASE_URL
+const serviceKey = process.env.SUPABASE_SERVICE_KEY
+if (!supabaseUrl || !serviceKey) {
+  console.error('Error: VITE_SUPABASE_URL and SUPABASE_SERVICE_KEY must be set in .env.local')
   process.exit(1)
 }
 
-const sql = postgres({
-  host: 'api.supabase.duin.home',
-  port: 5432,
-  database: 'postgres',
-  username: 'postgres',
-  password: postgresPassword,
-  ssl: 'require',
+const supabase = createClient(supabaseUrl, serviceKey, {
+  auth: { persistSession: false, autoRefreshToken: false },
 })
+const db = supabase.schema('indonesian')
+
+async function resolveUserId(): Promise<string> {
+  if (USER_ID) return USER_ID
+  // Look up by email via the auth admin API (service role required).
+  const { data, error } = await supabase.auth.admin.listUsers({ page: 1, perPage: 200 })
+  if (error) throw new Error(`auth.admin.listUsers failed: ${error.message}`)
+  const match = data.users.find(u => u.email?.toLowerCase() === EMAIL!.toLowerCase())
+  if (!match) throw new Error(`No user found with email=${EMAIL}`)
+  return match.id
+}
 
 async function seed() {
-  console.log(`→ Seeding drying scenario for user ${USER_ID} (target lesson order_index=${TARGET_LESSON})`)
+  const userId = await resolveUserId()
+  console.log(`→ Seeding drying scenario for user ${userId} (target lesson order_index=${TARGET_LESSON})`)
 
-  const userRow = await sql`select id from auth.users where id = ${USER_ID}::uuid limit 1`
-  if (userRow.length === 0) {
-    throw new Error(`No auth.users row with id=${USER_ID}`)
-  }
-
-  const targetLesson = await sql`
-    select id, title, order_index from indonesian.lessons where order_index = ${TARGET_LESSON} limit 1
-  `
-  if (targetLesson.length === 0) {
-    throw new Error(`No lesson with order_index=${TARGET_LESSON}`)
-  }
-  const targetLessonId = targetLesson[0].id
-  console.log(`  ✓ Target lesson: "${targetLesson[0].title}" (id=${targetLessonId})`)
-
-  const nextLesson = await sql`
-    select id, title, order_index from indonesian.lessons where order_index = ${TARGET_LESSON + 1} limit 1
-  `
-  if (nextLesson.length === 0) {
-    throw new Error(
-      `No lesson with order_index=${TARGET_LESSON + 1}. Pick a target with a successor — drying needs a "next lesson" to point at.`,
-    )
-  }
-  console.log(`  ✓ Next lesson exists: "${nextLesson[0].title}" (order_index=${nextLesson[0].order_index})`)
-
-  const nextAlreadyActive = await sql`
-    select 1 from indonesian.learner_lesson_activation
-    where user_id = ${USER_ID}::uuid and lesson_id = ${nextLesson[0].id}::uuid
-  `
-  if (nextAlreadyActive.length > 0 && !CLEAR) {
-    throw new Error(
-      `User already has the NEXT lesson activated. The drying alert won't fire. Re-run with --clear, or unset the next-lesson activation manually.`,
-    )
-  }
+  const { data: lessons, error: lessonsErr } = await db
+    .from('lessons')
+    .select('id, title, order_index')
+    .in('order_index', [TARGET_LESSON, TARGET_LESSON + 1])
+  if (lessonsErr) throw new Error(`lessons read failed: ${lessonsErr.message}`)
+  const targetLesson = lessons?.find(l => l.order_index === TARGET_LESSON)
+  const nextLesson = lessons?.find(l => l.order_index === TARGET_LESSON + 1)
+  if (!targetLesson) throw new Error(`No lesson with order_index=${TARGET_LESSON}`)
+  if (!nextLesson) throw new Error(
+    `No lesson with order_index=${TARGET_LESSON + 1}. Pick a target with a successor — drying needs a "next lesson" to point at.`,
+  )
+  console.log(`  ✓ Target lesson: "${targetLesson.title}" (id=${targetLesson.id})`)
+  console.log(`  ✓ Next lesson exists: "${nextLesson.title}" (order_index=${nextLesson.order_index})`)
 
   if (CLEAR) {
-    console.log('  → --clear: wiping existing activations + capability state for user')
-    await sql`delete from indonesian.learner_lesson_activation where user_id = ${USER_ID}::uuid`
-    await sql`delete from indonesian.learner_capability_state where user_id = ${USER_ID}::uuid`
+    console.log('  → --clear: wiping existing activations for user (state rows preserved — FK from capability_review_events per ADR 0004)')
+    const { error: delAct } = await db.from('learner_lesson_activation').delete().eq('user_id', userId)
+    if (delAct) throw new Error(`activation delete failed: ${delAct.message}`)
+  } else {
+    // Drying cannot fire while the *next* lesson is activated. Always drop
+    // that specific row so the smoke test is deterministic.
+    const { error: delNext } = await db
+      .from('learner_lesson_activation')
+      .delete()
+      .eq('user_id', userId)
+      .eq('lesson_id', nextLesson.id)
+    if (delNext) throw new Error(`next-activation delete failed: ${delNext.message}`)
+    console.log(`  ✓ Removed any existing activation for the next lesson`)
   }
 
-  await sql`
-    insert into indonesian.learner_lesson_activation (user_id, lesson_id)
-    values (${USER_ID}::uuid, ${targetLessonId}::uuid)
-    on conflict (user_id, lesson_id) do nothing
-  `
+  const { error: actErr } = await db
+    .from('learner_lesson_activation')
+    .upsert({ user_id: userId, lesson_id: targetLesson.id }, { onConflict: 'user_id,lesson_id' })
+  if (actErr) throw new Error(`activation insert failed: ${actErr.message}`)
   console.log(`  ✓ learner_lesson_activation row for target lesson`)
 
-  const capabilities = await sql`
-    select id, canonical_key
-    from indonesian.learning_capabilities
-    where lesson_id = ${targetLessonId}::uuid
-      and readiness_status = 'ready'
-      and publication_status = 'published'
-  `
-  if (capabilities.length === 0) {
+  const { data: capabilities, error: capErr } = await db
+    .from('learning_capabilities')
+    .select('id, canonical_key')
+    .eq('lesson_id', targetLesson.id)
+    .eq('readiness_status', 'ready')
+    .eq('publication_status', 'published')
+  if (capErr) throw new Error(`capabilities read failed: ${capErr.message}`)
+  if (!capabilities || capabilities.length === 0) {
     throw new Error(
       `Target lesson has no published+ready capabilities to seed. Either pick a different lesson or check the catalog.`,
     )
   }
 
-  let inserted = 0
-  let updated = 0
-  for (const cap of capabilities) {
-    const result = await sql`
-      insert into indonesian.learner_capability_state (
-        user_id, capability_id, canonical_key_snapshot, activation_state,
-        review_count, lapse_count, consecutive_failure_count, state_version,
-        last_reviewed_at, next_due_at
-      )
-      values (
-        ${USER_ID}::uuid, ${cap.id}::uuid, ${cap.canonical_key}, 'active',
-        1, 0, 0, 1,
-        now() - interval '1 hour', now() + interval '30 days'
-      )
-      on conflict (user_id, capability_id) do update set
-        activation_state = 'active',
-        review_count = greatest(excluded.review_count, indonesian.learner_capability_state.review_count),
-        next_due_at = now() + interval '30 days',
-        state_version = indonesian.learner_capability_state.state_version + 1
-      returning xmax = 0 as inserted
-    `
-    if (result[0]?.inserted) inserted += 1
-    else updated += 1
-  }
-  console.log(`  ✓ learner_capability_state: ${inserted} inserted, ${updated} updated (across ${capabilities.length} lesson-${TARGET_LESSON} capabilities)`)
+  const lastReviewedAt = new Date(Date.now() - 60 * 60 * 1000).toISOString()
+  const nextDueAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+  const rows = capabilities.map(cap => ({
+    user_id: userId,
+    capability_id: cap.id,
+    canonical_key_snapshot: cap.canonical_key,
+    activation_state: 'active',
+    review_count: 1,
+    lapse_count: 0,
+    consecutive_failure_count: 0,
+    state_version: 1,
+    last_reviewed_at: lastReviewedAt,
+    next_due_at: nextDueAt,
+  }))
 
-  console.log(`\n✅ Drying scenario seeded. Log in as user ${USER_ID} and open /session?mode=standard — the blue alert should appear above the player.`)
-  console.log(`   To clear: re-run with --clear and a different --target-lesson, or wipe the user's state manually.`)
+  const { error: stateErr } = await db
+    .from('learner_capability_state')
+    .upsert(rows, { onConflict: 'user_id,capability_id' })
+  if (stateErr) throw new Error(`state upsert failed: ${stateErr.message}`)
+  console.log(`  ✓ learner_capability_state: ${rows.length} rows upserted (active) for lesson-${TARGET_LESSON} capabilities`)
+
+  // Post-seed verification — count rows that would actually count as due
+  // right now. If dueCount > preferredSize (default 15), drying is
+  // suppressed regardless of the lesson state.
+  const { data: dueRows, error: dueErr } = await db
+    .from('learner_capability_state')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('activation_state', 'active')
+    .lte('next_due_at', new Date().toISOString())
+  if (dueErr) throw new Error(`due count check failed: ${dueErr.message}`)
+  const dueCount = dueRows?.length ?? 0
+  console.log(`  ℹ Current due capabilities for this user: ${dueCount}`)
+  if (dueCount > 15) {
+    console.log(`  ⚠ dueCount (${dueCount}) > default preferredSessionSize (15) — drying will be SUPPRESSED by backlog. Drain reviews or seed against a fresher user.`)
+  }
+
+  console.log(`\n✅ Drying scenario seeded. Log in as user ${userId} and open /session?mode=standard — the blue alert should appear above the player.`)
 }
 
-seed()
-  .catch(err => {
-    console.error(`\n❌ Seed failed: ${err instanceof Error ? err.message : String(err)}`)
-    process.exitCode = 1
-  })
-  .finally(() => sql.end())
+seed().catch(err => {
+  console.error(`\n❌ Seed failed: ${err instanceof Error ? err.message : String(err)}`)
+  process.exitCode = 1
+})
