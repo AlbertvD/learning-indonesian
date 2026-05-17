@@ -5,10 +5,26 @@ vi.mock('@/lib/supabase', () => ({
   supabase: { schema: vi.fn() },
 }))
 
+const logErrorMock = vi.fn()
+vi.mock('@/lib/logger', () => ({
+  logError: (...args: unknown[]) => logErrorMock(...args),
+}))
+
 function makeRpc(returns: unknown) {
   const rpc = vi.fn(() => Promise.resolve({ data: returns, error: null }))
   const schema = vi.fn(() => ({ rpc }))
   return { schema, rpc }
+}
+
+function makeQuery(response: { data: unknown; error: unknown }) {
+  const maybeSingle = vi.fn(() => Promise.resolve(response))
+  const limit = vi.fn(() => ({ maybeSingle }))
+  const order = vi.fn(() => ({ limit }))
+  const eq = vi.fn(() => ({ order }))
+  const select = vi.fn(() => ({ eq }))
+  const from = vi.fn(() => ({ select }))
+  const schema = vi.fn(() => ({ rpc: vi.fn(), from }))
+  return { schema, from, select, eq, order, limit, maybeSingle }
 }
 
 describe('learnerProgressService', () => {
@@ -177,6 +193,107 @@ describe('learnerProgressService', () => {
         p_user_id: 'user-1',
         p_limit: 10,
       })
+    })
+  })
+
+  describe('getLastPracticeAgeDays', () => {
+    it('returns null when the learner has no sessions yet', async () => {
+      const { schema, from } = makeQuery({ data: null, error: null })
+      const service = createLearnerProgressService({ schema })
+
+      const result = await service.getLastPracticeAgeDays({
+        userId: 'user-1',
+        timezone: 'Europe/Amsterdam',
+        now: new Date('2026-05-17T10:00:00Z'),
+      })
+
+      expect(result).toBeNull()
+      expect(from).toHaveBeenCalledWith('learning_sessions')
+    })
+
+    it('returns 0 when the most recent session is earlier today in the user timezone', async () => {
+      const { schema } = makeQuery({
+        // 10:00 local on 2026-05-17 in Europe/Amsterdam (UTC+2 in May).
+        data: { started_at: '2026-05-17T08:00:00Z' },
+        error: null,
+      })
+      const service = createLearnerProgressService({ schema })
+
+      const result = await service.getLastPracticeAgeDays({
+        userId: 'user-1',
+        timezone: 'Europe/Amsterdam',
+        // 20:00 local on 2026-05-17 in Europe/Amsterdam — same day.
+        now: new Date('2026-05-17T18:00:00Z'),
+      })
+
+      expect(result).toBe(0)
+    })
+
+    it('returns 3 when the most recent session is 3 calendar days ago in the user timezone', async () => {
+      const { schema } = makeQuery({
+        data: { started_at: '2026-05-14T08:00:00Z' },
+        error: null,
+      })
+      const service = createLearnerProgressService({ schema })
+
+      const result = await service.getLastPracticeAgeDays({
+        userId: 'user-1',
+        timezone: 'Europe/Amsterdam',
+        now: new Date('2026-05-17T10:00:00Z'),
+      })
+
+      expect(result).toBe(3)
+    })
+
+    it('clamps future timestamps to 0 (does not return a negative age)', async () => {
+      const { schema } = makeQuery({
+        data: { started_at: '2026-05-20T10:00:00Z' },
+        error: null,
+      })
+      const service = createLearnerProgressService({ schema })
+
+      const result = await service.getLastPracticeAgeDays({
+        userId: 'user-1',
+        timezone: 'Europe/Amsterdam',
+        now: new Date('2026-05-17T10:00:00Z'),
+      })
+
+      expect(result).toBe(0)
+    })
+
+    it('falls back to UTC when timezone is null', async () => {
+      const { schema } = makeQuery({
+        data: { started_at: '2026-05-15T23:30:00Z' },
+        error: null,
+      })
+      const service = createLearnerProgressService({ schema })
+
+      const result = await service.getLastPracticeAgeDays({
+        userId: 'user-1',
+        timezone: null,
+        now: new Date('2026-05-17T00:30:00Z'),
+      })
+
+      // In UTC: 2026-05-15 → 2026-05-17 is 2 calendar days.
+      expect(result).toBe(2)
+    })
+
+    it('returns null and logs the error when the Supabase query fails', async () => {
+      logErrorMock.mockClear()
+      const { schema } = makeQuery({ data: null, error: { message: 'boom' } })
+      const service = createLearnerProgressService({ schema })
+
+      const result = await service.getLastPracticeAgeDays({
+        userId: 'user-1',
+        timezone: 'Europe/Amsterdam',
+        now: new Date('2026-05-17T10:00:00Z'),
+      })
+
+      expect(result).toBeNull()
+      expect(logErrorMock).toHaveBeenCalledTimes(1)
+      expect(logErrorMock).toHaveBeenCalledWith(
+        expect.objectContaining({ page: 'dashboard', action: 'getLastPracticeAgeDays' }),
+      )
     })
   })
 

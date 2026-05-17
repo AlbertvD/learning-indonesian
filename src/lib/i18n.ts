@@ -25,6 +25,10 @@ export const nl = {
     rescueTitle: '{count} zwakke woorden',
     rescueSubtitle: 'Verschijnen automatisch in je volgende sessie',
     lapsesLabel: 'lapses',
+    recencyBadge: {
+      message: 'Je laatste sessie was {days} dagen geleden. Welkom terug.',
+      messageSingular: 'Je laatste sessie was {days} dag geleden. Welkom terug.',
+    },
   },
   profile: {
     title: 'Profiel',
@@ -296,6 +300,10 @@ export const en: typeof nl = {
     rescueTitle: '{count} weak words',
     rescueSubtitle: 'Will appear automatically in your next session',
     lapsesLabel: 'lapses',
+    recencyBadge: {
+      message: 'Your last session was {days} days ago. Welcome back.',
+      messageSingular: 'Your last session was {days} day ago. Welcome back.',
+    },
   },
   profile: {
     title: 'Profile',

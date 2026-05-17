@@ -17,6 +17,7 @@ import {
   ActionCard,
   LoadingState,
 } from '@/components/page/primitives'
+import { RecencyBadge } from '@/components/dashboard/RecencyBadge'
 import { lessonService } from '@/services/lessonService'
 import { learnerStateService } from '@/services/learnerStateService'
 import { learnerProgressService } from '@/services/learnerProgressService'
@@ -34,6 +35,7 @@ export function Dashboard() {
   const [continueUrl, setContinueUrl] = useState('/lessons')
   const [currentStreak, setCurrentStreak] = useState(0)
   const [lapsingCount, setLapsingCount] = useState(0)
+  const [lastPracticeAgeDays, setLastPracticeAgeDays] = useState<number | null>(null)
 
   useEffect(() => {
     async function fetchData() {
@@ -61,11 +63,18 @@ export function Dashboard() {
         }
 
         const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-        const streak = await learnerProgressService.getCurrentStreakDays({
-          userId: user.id,
-          timezone: userTimezone,
-        })
+        const [streak, ageDays] = await Promise.all([
+          learnerProgressService.getCurrentStreakDays({
+            userId: user.id,
+            timezone: userTimezone,
+          }),
+          learnerProgressService.getLastPracticeAgeDays({
+            userId: user.id,
+            timezone: userTimezone,
+          }),
+        ])
         setCurrentStreak(streak)
+        setLastPracticeAgeDays(ageDays)
       } catch (err) {
         logError({ page: 'dashboard', action: 'fetchData', error: err })
         notifications.show({
@@ -106,6 +115,8 @@ export function Dashboard() {
         />
 
         <Stack gap="md">
+          <RecencyBadge ageDays={lastPracticeAgeDays} />
+
           {lapsingCount > 0 && (
             <ActionCard
               tone="danger"

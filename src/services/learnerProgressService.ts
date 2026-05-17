@@ -9,6 +9,7 @@
 // joins, and timezone-correct day bucketing behind a typed TS interface.
 
 import { supabase } from '@/lib/supabase'
+import { logError } from '@/lib/logger'
 
 // ----- Public types -----
 
@@ -66,6 +67,7 @@ export interface LearnerProgressService {
   getVulnerableCapabilities(input: { userId: string; limit?: number }): Promise<VulnerableCapability[]>
   getReviewForecast(input: { userId: string; days?: number; timezone: string }): Promise<ReviewForecastDay[]>
   getCurrentStreakDays(input: { userId: string; timezone: string }): Promise<number>
+  getLastPracticeAgeDays(input: { userId: string; timezone: string | null; now?: Date }): Promise<number | null>
 }
 
 // ----- Internal row shapes (snake_case as returned by PostgREST) -----
@@ -117,7 +119,27 @@ interface SchemaClient {
   // Loose shape: matches both the real supabase-js client (which returns a
   // PostgrestFilterBuilder that is awaitable but not strictly Promise) and
   // test mocks. We await it and read { data, error } off the resolved value.
-  schema(name: 'indonesian'): { rpc: (fn: string, args: Record<string, unknown>) => any }
+  schema(name: 'indonesian'): {
+    rpc: (fn: string, args: Record<string, unknown>) => any
+    from?: (table: string) => any
+  }
+}
+
+// Calendar-day delta in the given IANA timezone. Returns >= 0; future dates
+// clamp to 0 so the UI never shows "-1 dagen geleden".
+function calendarDayAgeIn(timezone: string, started: Date, now: Date): number {
+  const fmt = new Intl.DateTimeFormat('en-CA', {
+    timeZone: timezone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+  const startedKey = fmt.format(started)
+  const nowKey = fmt.format(now)
+  const startedUtc = Date.parse(`${startedKey}T00:00:00Z`)
+  const nowUtc = Date.parse(`${nowKey}T00:00:00Z`)
+  const days = Math.floor((nowUtc - startedUtc) / 86_400_000)
+  return Math.max(0, days)
 }
 
 function round2(value: string | number): number {
@@ -208,6 +230,27 @@ export function createLearnerProgressService(client: SchemaClient): LearnerProgr
         p_timezone: timezone,
       })
       return data ?? 0
+    },
+
+    async getLastPracticeAgeDays({ userId, timezone, now }) {
+      try {
+        const { data, error } = await client
+          .schema('indonesian')
+          .from!('learning_sessions')
+          .select('started_at')
+          .eq('user_id', userId)
+          .order('started_at', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+        if (error) throw error
+        const startedAt = (data as { started_at?: string } | null)?.started_at
+        if (!startedAt) return null
+        const tz = timezone ?? 'UTC'
+        return calendarDayAgeIn(tz, new Date(startedAt), now ?? new Date())
+      } catch (err) {
+        logError({ page: 'dashboard', action: 'getLastPracticeAgeDays', error: err })
+        return null
+      }
     },
   }
 }
