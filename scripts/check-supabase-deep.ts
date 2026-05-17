@@ -529,6 +529,37 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   }
 }
 
+// ── HC8 (Decision 3b / ADR 0006): zero non-podcast learning_capabilities
+//      rows with NULL lesson_id. The CHECK constraint
+//      learning_capabilities_lesson_id_required_for_lessons enforces this at
+//      the DB layer; this check is the defence-in-depth assertion that fires
+//      if the constraint was ever dropped or bypassed.
+{
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('learning_capabilities')
+    .select('id, source_kind, canonical_key')
+    .is('lesson_id', null)
+    .not('source_kind', 'in', '("podcast_segment","podcast_phrase")')
+  if (error) {
+    fail('HC8 learning_capabilities.lesson_id non-null for non-podcast caps (ADR 0006)', error.message)
+  } else {
+    const offenders = (data ?? []) as Array<{ id: string; source_kind: string; canonical_key: string }>
+    if (offenders.length === 0) {
+      pass('HC8 learning_capabilities.lesson_id non-null for non-podcast caps (ADR 0006)')
+    } else {
+      fail(
+        'HC8 learning_capabilities.lesson_id non-null for non-podcast caps (ADR 0006)',
+        `${offenders.length} non-podcast cap(s) with NULL lesson_id: ` +
+        `${offenders.slice(0, 5).map((o) => `${o.canonical_key} (${o.source_kind})`).join(', ')}` +
+        `${offenders.length > 5 ? ' …' : ''}\n` +
+        `   → Re-run scripts/triage-residual-capabilities.ts and verify the CHECK constraint ` +
+        `learning_capabilities_lesson_id_required_for_lessons is still present.`,
+      )
+    }
+  }
+}
+
 // ── Output ─────────────────────────────────────────────────────────────────
 console.log(`\nSupabase deep structural check — ${SUPABASE_URL}\n`)
 let failures = 0
