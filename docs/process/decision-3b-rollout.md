@@ -167,3 +167,100 @@ The plan is the source of truth (`docs/plans/2026-05-17-extend-decision-3-lesson
 1. Update the plan frontmatter: `status: implementing`, `implementation_pr_3: PR #<N>`, `implementation_pr_3_merged_at: <date>`.
 2. Open / unblock PR-4 — the schema is now ready to receive the CHECK constraint cleanly.
 3. No user-facing smoke test required. PR-3 changes the *data* but not the *behaviour* learners see. The runtime null-bypass at `src/lib/session-builder/pedagogy.ts:209` still surfaces the same capabilities; PR-4 enforces the invariant, PR-5 starts respecting it.
+
+---
+
+## Phase 1 (post-#59): re-publish for #58
+
+After issue #59 landed (extract `itemSlug` helper + three-layer test gates), 113 multi-word vocabulary items in lessons 2–4 had silently-broken capabilities — `source_ref` slugs were hyphenated while `learning_items.normalized_text` preserved spaces. Issue #58 closed this with a re-publish loop + Phase 2 orphan sweep.
+
+The re-publish loop is identical in shape to Step 2 above. The key differences:
+
+- With `validateItemSourceRefResolvability` wired in at `runner.ts:404`, any staging item referenced by a cap but not declared throws synchronously. STOP on a throw; do not patch around it.
+- Lessons 5, 7, 8, 9 carry pre-existing `dialogue-cloze-missing` CRITICAL lint findings (38 deferred dialogue chunks total). These are unrelated to the slug fix. Use `--skip-lint` to bypass the pre-flight gate for those lessons; the Stage B slug validator still runs.
+- There is **no programmatic guard against concurrent publishes** — neither `runCapabilityStage` nor `upsertCapabilities` takes an advisory lock. Operator discipline only.
+
+```bash
+for n in 1 2 3 4; do
+  bun scripts/publish-approved-content.ts "$n"
+done
+for n in 5 6 7 8 9; do
+  bun scripts/publish-approved-content.ts "$n" --skip-lint
+done
+```
+
+Mid-rollout state: between lessons N and N+1, old hyphen-form caps coexist with new space-form caps for lessons 1..N. HC9 stays red until Phase 2. The live app remains functional because old hyphen-form caps were already silently broken (they fail at the strict resolver in `src/services/capabilityContentService.ts:107-114`).
+
+After all 9 lessons re-publish, commit the regenerated staging files (`scripts/data/staging/lesson-<N>/{capabilities,content-units,exercise-assets,lesson-page-blocks}.ts`). They are the durable record of #59's slug fix landing in staging.
+
+---
+
+## Phase 2 (post-#59): orphan sweep SQL
+
+Single CASCADE-safe DELETE, run via openbrain MCP `execute_sql` with `confirm_destructive: true`. PR-4's CASCADE child FKs (all six — `capability_aliases.new_capability_id`, `capability_artifacts.capability_id`, `learner_capability_state.capability_id`, `capability_review_events.capability_id`, `capability_content_units.capability_id`, `capability_resolution_failure_events.capability_id`) sweep all children automatically.
+
+**Pre-sweep audit** (verify safety, then run the DELETE):
+
+```sql
+-- Count current orphans (should match HC9's offender count)
+SELECT count(*) AS orphan_count
+FROM indonesian.learning_capabilities lc
+WHERE lc.source_kind = 'item'
+  AND lc.source_ref LIKE 'learning_items/%'
+  AND substring(lc.source_ref, length('learning_items/') + 1) NOT IN (
+    SELECT normalized_text FROM indonesian.learning_items
+  );
+
+-- Review events on orphans (MUST be 0)
+SELECT count(*) AS review_events_on_orphans
+FROM indonesian.capability_review_events cre
+JOIN indonesian.learning_capabilities lc ON lc.id = cre.capability_id
+WHERE lc.source_kind = 'item'
+  AND lc.source_ref LIKE 'learning_items/%'
+  AND substring(lc.source_ref, length('learning_items/') + 1) NOT IN (
+    SELECT normalized_text FROM indonesian.learning_items
+  );
+
+-- Learner state on orphans (audit only; CASCADE-deletes test-seed state)
+SELECT lcs.user_id, count(*) AS state_rows_on_orphans
+FROM indonesian.learner_capability_state lcs
+JOIN indonesian.learning_capabilities lc ON lc.id = lcs.capability_id
+WHERE lc.source_kind = 'item'
+  AND lc.source_ref LIKE 'learning_items/%'
+  AND substring(lc.source_ref, length('learning_items/') + 1) NOT IN (
+    SELECT normalized_text FROM indonesian.learning_items
+  )
+GROUP BY lcs.user_id;
+```
+
+If `review_events_on_orphans > 0`, **STOP** — real learner history exists on an orphan. Triage by hand (default-assign instead of delete for those rows) before continuing.
+
+**The sweep itself:**
+
+```sql
+DELETE FROM indonesian.learning_capabilities
+WHERE source_kind = 'item'
+  AND source_ref LIKE 'learning_items/%'
+  AND substring(source_ref, length('learning_items/') + 1) NOT IN (
+    SELECT normalized_text FROM indonesian.learning_items
+  );
+```
+
+**Post-sweep verification:**
+
+```sql
+SELECT count(*) AS after_count
+FROM indonesian.learning_capabilities lc
+WHERE lc.source_kind = 'item'
+  AND lc.source_ref LIKE 'learning_items/%'
+  AND substring(lc.source_ref, length('learning_items/') + 1) NOT IN (
+    SELECT normalized_text FROM indonesian.learning_items
+  );
+-- MUST return 0
+```
+
+Queries use raw `normalized_text` (no `lower(trim(...))`) to match HC9 exactly, so `orphan_count` lines up with HC9's reported offender count. Save the before/after counts to the PR description.
+
+**Why inline SQL and not `triage-residual-capabilities.ts`:** that script's invariant is `lesson_id IS NULL`, not `source_ref` unresolvability. Conflating the two would obscure the invariants. The cleanup belongs in the PR's audit trail, not as committed code.
+
+**Backup before sweep:** export the orphan rows to a local JSON file before running the DELETE. Keep for 7 days as rollback insurance. (CASCADE children are reconstructable from cap IDs via the daily Supabase backup if a hard rollback is ever needed.)

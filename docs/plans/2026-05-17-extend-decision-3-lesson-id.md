@@ -14,6 +14,7 @@ implementation_pr_4_followup: PR #55
 implementation_pr_4_followup_merged_at: 2026-05-17
 implementation_pr_5: PR #56
 implementation_pr_5_merged_at: 2026-05-17
+cleanup_completed_at: 2026-05-17  # via issue #58 cleanup; see docs/plans/2026-05-17-decision-3b-cleanup-rollout.md
 merged_at: 2026-05-17
 implementation_paths:
   - src/lib/capabilities/capabilityTypes.ts
