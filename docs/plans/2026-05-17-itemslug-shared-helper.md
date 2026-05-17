@@ -1,7 +1,7 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #60
-merged_at: null
+merged_at: 2026-05-17
 implementation_paths:
   - src/lib/capabilities/itemSlug.ts
   - src/lib/capabilities/__tests__/itemSlug.test.ts
@@ -12,8 +12,14 @@ implementation_paths:
   - scripts/lib/pipeline/capability-stage/validators/itemSourceRefResolvability.ts
   - scripts/lib/pipeline/capability-stage/__tests__/validators/itemSourceRefResolvability.test.ts
   - scripts/lib/pipeline/capability-stage/runner.ts
+  - scripts/lib/normalize.ts
   - scripts/check-capability-health.ts
   - scripts/check-supabase-deep.ts
+  - scripts/publish-grammar-candidates.ts
+  - scripts/repair-item-meanings.ts
+  - scripts/reactivate-dialogue-chunks.ts
+  - scripts/seed-cloze-contexts.ts
+  - scripts/cleanup-annotations.ts
 supersedes: []
 ---
 
