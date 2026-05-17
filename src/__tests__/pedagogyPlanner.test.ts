@@ -258,11 +258,13 @@ describe('pedagogy planner', () => {
   })
 
   it('walks ready capabilities in input order and exhausts budget without reordering', () => {
+    // preferredSessionSize=1, dueCount=0 → openSlots=1 → maxNewCapabilities=1.
+    // Only the first cap in input order fits; the second is suppressed.
     const plan = planLearningPath({
       userId: 'user-1',
       mode: 'standard',
       now: new Date('2026-04-25T00:00:00.000Z'),
-      preferredSessionSize: 4,
+      preferredSessionSize: 1,
       dueCount: 0,
       readyCapabilities: [
         capability({
@@ -284,5 +286,35 @@ describe('pedagogy planner', () => {
 
     expect(plan.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual(['meaning-cap'])
     expect(plan.suppressedCapabilities).toContainEqual({ canonicalKey: 'choice-cap', reason: 'load_budget_exhausted' })
+  })
+
+  it('fills openSlots with new caps in standard mode when the eligible pool is large enough', () => {
+    // Integration guard for docs/plans/2026-05-17-honor-profile-session-size.md.
+    // preferredSessionSize=25, dueCount=6 → openSlots=19. With 25 eligible caps
+    // (all distinct canonical keys, all meaning_recall to avoid per-type caps
+    // being the constraint), the planner must emit exactly 19 new caps.
+    const readyCapabilities = Array.from({ length: 25 }, (_, index) => capability({
+      id: `cap-${index}`,
+      canonicalKey: `cap-${index}`,
+      sourceRef: `learning_items/item-${index}`,
+      capabilityType: 'meaning_recall',
+      skillType: 'meaning_recall',
+    }))
+
+    const plan = planLearningPath({
+      userId: 'user-1',
+      mode: 'standard',
+      now: new Date('2026-05-17T00:00:00.000Z'),
+      preferredSessionSize: 25,
+      dueCount: 6,
+      readyCapabilities,
+      learnerCapabilityStates: [],
+      activatedLessons: new Set(),
+    })
+
+    expect(plan.eligibleNewCapabilities).toHaveLength(19)
+    expect(plan.loadBudget.maxNewCapabilities).toBe(19)
+    const suppressedForBudget = plan.suppressedCapabilities.filter(item => item.reason === 'load_budget_exhausted')
+    expect(suppressedForBudget).toHaveLength(6)
   })
 })

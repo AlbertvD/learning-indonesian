@@ -42,12 +42,17 @@ export function decideLoadBudget(input: LoadBudgetInput): LoadBudgetDecision {
     }
   }
 
-  const maxNewCapabilities = Math.min(openSlots, Math.max(1, Math.floor(targetSessionSize * 0.25)))
+  // Standard mode fills every open slot with new caps when the eligible pool
+  // can supply them — the learner's `preferredSessionSize` is the contract.
+  // Was previously capped at `min(openSlots, max(1, floor(targetSize * 0.25)))`
+  // with per-type ceilings of 1; the cap silently truncated sessions when due
+  // counts were low. See docs/plans/2026-05-17-honor-profile-session-size.md.
+  // `maxSourceSwitches: 1` stays distinct from lesson_practice (which uses 0).
   return {
-    allowNewCapabilities: openSlots > 0, maxNewCapabilities,
-    maxNewPatterns: 1, maxNewConcepts: 1, maxNewProductionTasks: 1,
-    maxHiddenAudioTasks: targetSessionSize, maxSourceSwitches: 1,
-    targetSessionSize, allowQueuePadding: false,
+    allowNewCapabilities: openSlots > 0, maxNewCapabilities: openSlots,
+    maxNewPatterns: openSlots, maxNewConcepts: openSlots,
+    maxNewProductionTasks: openSlots, maxHiddenAudioTasks: targetSessionSize,
+    maxSourceSwitches: 1, targetSessionSize, allowQueuePadding: false,
     reason: openSlots > 0 ? 'standard_daily_budget' : 'review_backlog_exhausts_budget',
   }
 }

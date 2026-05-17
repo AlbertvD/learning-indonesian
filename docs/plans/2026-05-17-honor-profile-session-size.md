@@ -1,12 +1,13 @@
 ---
-status: draft
+status: implementing
+implementation: PR #57
 supersedes: []
 ---
 
 # Honor profile `preferredSessionSize` in standard mode
 
 **Date:** 2026-05-17
-**Status:** draft (architect review pending)
+**Status:** implementing (PR #57)
 
 ## Goal
 

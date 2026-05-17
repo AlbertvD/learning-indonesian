@@ -202,7 +202,7 @@ interface LearningPlan {
 
 1. `lesson_review` mode → 0 of everything new. `targetSessionSize = preferredSessionSize`.
 2. `lesson_practice` mode → `openSlots = max(0, preferredSessionSize - dueCount)` new capabilities. No pattern/production quotas (open slots applies to all). `maxHiddenAudioTasks = preferredSessionSize` (effectively unlimited).
-3. Default (standard) → `maxNewCapabilities = min(openSlots, max(1, floor(targetSessionSize * 0.25)))`. `maxNewConcepts = maxNewPatterns = maxNewProductionTasks = 1`. `maxHiddenAudioTasks = targetSessionSize`.
+3. Default (standard) → `openSlots = max(0, preferredSessionSize - dueCount)`. Every `maxNew*` field (`maxNewCapabilities`, `maxNewPatterns`, `maxNewConcepts`, `maxNewProductionTasks`) is set to `openSlots`, so the planner can fill every open slot with new caps when the eligible pool can supply them. `maxHiddenAudioTasks = targetSessionSize`. `maxSourceSwitches = 1` (lesson_practice uses 0 — the two modes have different scoping rules). The previous formula capped `maxNewCapabilities` at `min(openSlots, max(1, floor(targetSessionSize * 0.25)))` and the per-type fields at `1`; that historical cap was retired by `docs/plans/2026-05-17-honor-profile-session-size.md` so the learner's `preferredSessionSize` is honoured.
 
 **Removed in the fold** (the unreachable posture/future-mode branches): `comeback`, `review_first`, `light_recovery`, `balanced` postures; `pattern_workshop` and `podcast` modes. None had a runtime caller; their removal eliminated 70+ LOC of dead code.
 
