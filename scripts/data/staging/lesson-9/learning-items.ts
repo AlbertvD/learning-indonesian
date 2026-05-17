@@ -167,7 +167,7 @@ export const learningItems = [
   },
   {
     "base_text": "di mana-mana",
-    "item_type": "word",
+    "item_type": "phrase",
     "context_type": "vocabulary_list",
     "translation_nl": "overal",
     "translation_en": "everywhere",
@@ -185,17 +185,6 @@ export const learningItems = [
     "source_page": 4,
     "review_status": "published",
     "pos": "adjective",
-    "level": "A1"
-  },
-  {
-    "base_text": "dibawa*",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "meegenomen",
-    "translation_en": "taken",
-    "source_page": 4,
-    "review_status": "published",
-    "pos": "verb",
     "level": "A1"
   },
   {
@@ -496,28 +485,6 @@ export const learningItems = [
     "level": "A1"
   },
   {
-    "base_text": "telah",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "al / reeds",
-    "translation_en": "already / have",
-    "source_page": 4,
-    "review_status": "published",
-    "pos": "particle",
-    "level": "A1"
-  },
-  {
-    "base_text": "di mana-mana",
-    "item_type": "phrase",
-    "context_type": "vocabulary_list",
-    "translation_nl": "overal",
-    "translation_en": "everywhere",
-    "source_page": 4,
-    "review_status": "published",
-    "pos": "adverb",
-    "level": "A1"
-  },
-  {
     "base_text": "rumah sakit",
     "item_type": "phrase",
     "context_type": "vocabulary_list",
@@ -639,33 +606,11 @@ export const learningItems = [
     "level": "A1"
   },
   {
-    "base_text": "kaki",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "voet / been",
-    "translation_en": "foot/leg",
-    "source_page": 9,
-    "review_status": "published",
-    "pos": "noun",
-    "level": "A1"
-  },
-  {
     "base_text": "pantat",
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "billen",
     "translation_en": "buttocks",
-    "source_page": 9,
-    "review_status": "published",
-    "pos": "noun",
-    "level": "A1"
-  },
-  {
-    "base_text": "rambut",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "hoofdhaar",
-    "translation_en": "hair",
     "source_page": 9,
     "review_status": "published",
     "pos": "noun",
@@ -738,17 +683,6 @@ export const learningItems = [
     "level": "A1"
   },
   {
-    "base_text": "tangan",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "hand",
-    "translation_en": "hand",
-    "source_page": 9,
-    "review_status": "published",
-    "pos": "noun",
-    "level": "A1"
-  },
-  {
     "base_text": "lutut",
     "item_type": "word",
     "context_type": "vocabulary_list",
@@ -765,17 +699,6 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "translation_nl": "darmen",
     "translation_en": "intestines",
-    "source_page": 9,
-    "review_status": "published",
-    "pos": "noun",
-    "level": "A1"
-  },
-  {
-    "base_text": "kepala",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "hoofd",
-    "translation_en": "head",
     "source_page": 9,
     "review_status": "published",
     "pos": "noun",
@@ -842,17 +765,6 @@ export const learningItems = [
     "context_type": "vocabulary_list",
     "translation_nl": "vinger",
     "translation_en": "finger",
-    "source_page": 9,
-    "review_status": "published",
-    "pos": "noun",
-    "level": "A1"
-  },
-  {
-    "base_text": "kaki",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "voet / been",
-    "translation_en": "foot/leg",
     "source_page": 9,
     "review_status": "published",
     "pos": "noun",
@@ -999,17 +911,6 @@ export const learningItems = [
     "source_page": 9,
     "review_status": "published",
     "pos": "adjective",
-    "level": "A1"
-  },
-  {
-    "base_text": "obat",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "medicijn",
-    "translation_en": "medicine",
-    "source_page": 9,
-    "review_status": "published",
-    "pos": "noun",
     "level": "A1"
   },
   {

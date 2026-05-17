@@ -49,7 +49,7 @@ describe('capability catalog projection', () => {
     expect(projection.capabilities.map(capability => capability.capabilityType)).toEqual(
       expect.arrayContaining(['text_recognition', 'meaning_recall', 'l1_to_id_choice', 'form_recall', 'audio_recognition', 'dictation']),
     )
-    expect(projection.capabilities.every(capability => capability.projectionVersion === 'capability-v2')).toBe(true)
+    expect(projection.capabilities.every(capability => capability.projectionVersion === 'capability-v3')).toBe(true)
   })
 
   it('requires learner-language meaning for text recognition and accepted answers for dictation', () => {

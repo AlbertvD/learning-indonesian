@@ -100,7 +100,11 @@ export interface CapabilityInput {
   projectionVersion: string
   sourceFingerprint?: string | null
   artifactFingerprint?: string | null
-  /** Decision 3: morphology rows set this; vocab/grammar leave it null. */
+  /**
+   * Decision 3b (ADR 0006): every lesson-derived capability has lessonId set.
+   * Podcast capabilities are the only source kinds permitted to leave it null
+   * — see the CHECK constraint in scripts/migration.sql.
+   */
   lessonId?: string | null
   metadata: {
     skillType: string

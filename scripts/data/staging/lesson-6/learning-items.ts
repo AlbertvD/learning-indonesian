@@ -190,15 +190,6 @@ export const learningItems = [
     "review_status": "published"
   },
   {
-    "base_text": "jalan",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "rijden / gaan / lopen",
-    "translation_en": "drive, go, walk",
-    "source_page": 3,
-    "review_status": "published"
-  },
-  {
     "base_text": "jam",
     "item_type": "word",
     "context_type": "vocabulary_list",

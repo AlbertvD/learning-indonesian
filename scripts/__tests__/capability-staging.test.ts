@@ -129,6 +129,24 @@ describe('capability staging', () => {
     ]))
   })
 
+  // ADR 0006 (Decision 3b): every lesson-derived capability in the on-disk
+  // capabilities.ts carries lessonId. Podcast caps stay null (carve-out).
+  // null/missing lessonId is allowed for offline generators that can't
+  // resolve the UUID.
+  it('stamps lessonId on every emitted capability when provided', () => {
+    const lessonId = '00000000-0000-4000-8000-000000000abc'
+    const contentUnits = buildContentUnitsFromStaging(input)
+    const plan = buildCapabilityStagingFromContent({ ...input, lessonId, contentUnits })
+    expect(plan.capabilities.length).toBeGreaterThan(0)
+    expect(plan.capabilities.every(c => c.lessonId === lessonId)).toBe(true)
+  })
+
+  it('emits lessonId=null when input omits it (offline generator path)', () => {
+    const contentUnits = buildContentUnitsFromStaging(input)
+    const plan = buildCapabilityStagingFromContent({ ...input, contentUnits })
+    expect(plan.capabilities.every(c => c.lessonId === null)).toBe(true)
+  })
+
   it('accepts reviewed accepted-answer assets that use values instead of a single value', () => {
     const contentUnits = buildContentUnitsFromStaging(input)
     const plan = buildCapabilityStagingFromContent({ ...input, contentUnits })

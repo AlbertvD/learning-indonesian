@@ -1,30 +1,6 @@
 // Learning items for Lesson 5 — reverse-engineered from DB
 export const learningItems = [
   {
-    "base_text": "terbang",
-    "item_type": "word",
-    "translation_nl": "vliegen",
-    "context_type": "cloze",
-    "source_page": 5,
-    "review_status": "published"
-  },
-  {
-    "base_text": "gabah",
-    "item_type": "word",
-    "translation_nl": "ongepelde rijst (rijst/vliesje)",
-    "context_type": "vocabulary_list",
-    "source_page": 5,
-    "review_status": "published"
-  },
-  {
-    "base_text": "padi",
-    "item_type": "word",
-    "translation_nl": "rijstplant",
-    "context_type": "vocabulary_list",
-    "source_page": 5,
-    "review_status": "published"
-  },
-  {
     "base_text": "abang",
     "item_type": "word",
     "translation_nl": "oudere broer",
@@ -84,14 +60,6 @@ export const learningItems = [
     "base_text": "belajar",
     "item_type": "word",
     "translation_nl": "leren (zie ook Les 11)",
-    "context_type": "vocabulary_list",
-    "source_page": 5,
-    "review_status": "published"
-  },
-  {
-    "base_text": "bibit padi",
-    "item_type": "word",
-    "translation_nl": "zaailing, jong rijstplantje",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published"

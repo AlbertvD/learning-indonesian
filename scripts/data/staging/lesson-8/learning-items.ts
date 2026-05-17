@@ -226,15 +226,6 @@ export const learningItems = [
     "review_status": "published"
   },
   {
-    "base_text": "coklat",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "bruin",
-    "translation_en": "",
-    "source_page": 4,
-    "review_status": "published"
-  },
-  {
     "base_text": "daripada",
     "item_type": "word",
     "context_type": "vocabulary_list",
@@ -365,15 +356,6 @@ export const learningItems = [
     "item_type": "word",
     "context_type": "vocabulary_list",
     "translation_nl": "plusminus",
-    "translation_en": "",
-    "source_page": 4,
-    "review_status": "published"
-  },
-  {
-    "base_text": "lantai",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "verdieping / vloer",
     "translation_en": "",
     "source_page": 4,
     "review_status": "published"

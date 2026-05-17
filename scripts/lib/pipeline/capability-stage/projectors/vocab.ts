@@ -185,6 +185,10 @@ export function projectVocab(input: VocabProjectionInput): VocabProjectionOutput
         projectionVersion: CAPABILITY_PROJECTION_VERSION,
         sourceFingerprint: fingerprint({ sourceKind: draft.sourceKind, sourceRef }),
         artifactFingerprint: fingerprint(['cloze_context', 'cloze_answer', 'translation:l1']),
+        // Decision 3b (ADR 0006): contextual_cloze caps inherit the projecting
+        // lesson — the runner is invoked per lesson, so this dialogue line's
+        // owning lesson IS the introducing lesson by construction.
+        lessonId: input.lessonId,
         metadata: {
           skillType: 'form_recall',
           requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],

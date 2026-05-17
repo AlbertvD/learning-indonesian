@@ -172,15 +172,6 @@ export const learningItems = [
     "review_status": "published"
   },
   {
-    "base_text": "contoh",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "voorbeeld",
-    "translation_en": "example",
-    "source_page": 5,
-    "review_status": "published"
-  },
-  {
     "base_text": "dibawa*",
     "item_type": "word",
     "context_type": "vocabulary_list",
@@ -389,11 +380,11 @@ export const learningItems = [
   },
   {
     "base_text": "libur sekolah",
-    "item_type": "word",
+    "item_type": "phrase",
     "context_type": "vocabulary_list",
     "translation_nl": "schoolvakantie",
     "translation_en": "school holiday",
-    "source_page": 5,
+    "source_page": 6,
     "review_status": "published"
   },
   {
@@ -628,24 +619,6 @@ export const learningItems = [
     "translation_nl": "tijd",
     "translation_en": "time",
     "source_page": 5,
-    "review_status": "published"
-  },
-  {
-    "base_text": "warna",
-    "item_type": "word",
-    "context_type": "vocabulary_list",
-    "translation_nl": "kleur",
-    "translation_en": "color",
-    "source_page": 5,
-    "review_status": "published"
-  },
-  {
-    "base_text": "libur sekolah",
-    "item_type": "phrase",
-    "context_type": "vocabulary_list",
-    "translation_nl": "schoolvakantie",
-    "translation_en": "school holiday",
-    "source_page": 6,
     "review_status": "published"
   },
   {
