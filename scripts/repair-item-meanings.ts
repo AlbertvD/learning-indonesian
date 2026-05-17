@@ -16,6 +16,7 @@
 import { createClient } from '@supabase/supabase-js'
 import fs from 'fs'
 import path from 'path'
+import { itemSlug } from '../src/lib/capabilities/itemSlug'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
@@ -50,7 +51,7 @@ async function repairLesson(supabase: ReturnType<typeof createSupabaseClient>, l
   for (const item of items) {
     if (!item.translation_nl) { skipped++; continue }
 
-    const normalizedText = item.base_text.toLowerCase().trim()
+    const normalizedText = itemSlug(item.base_text)
 
     // Look up ALL learning items with this normalized_text (item_type may differ between
     // staging and DB for numbers/phrases — match loosely and patch all variants)

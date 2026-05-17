@@ -34,7 +34,8 @@ export function normalizeForExemptLookup(s: string): string {
 
 // Normalize a token extracted from a sentence when cross-referencing it against
 // learning_items.normalized_text in the DB or staging files.
-// Matches publish-approved-content.ts:293 derivation (.toLowerCase().trim())
+// Matches `itemSlug` in src/lib/capabilities/itemSlug.ts — the canonical
+// helper for learning_items.normalized_text derivation
 // plus strips adjacent trailing ASCII punctuation (`pohon.` → `pohon`) so a
 // word adjacent to a period/comma/etc. in a sentence still matches its vocab
 // entry. Diacritics are preserved (unlike normalizeForClozeCompare) because

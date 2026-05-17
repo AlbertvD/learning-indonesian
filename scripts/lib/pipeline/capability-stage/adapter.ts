@@ -23,6 +23,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 import { candidateSlugs } from './projectors/slugs'
 import { normalizeTtsText } from '../../tts-normalize'
+import { itemSlug } from '../../../../src/lib/capabilities/itemSlug'
 
 // Homelab uses an internal Step-CA certificate that Node/Bun does not trust by default.
 // This is safe — we're connecting to our own internal Supabase instance.
@@ -301,7 +302,7 @@ export async function upsertLearningItem(
   supabase: CapabilitySupabaseClient,
   item: LearningItemInput,
 ): Promise<{ id: string; normalized_text: string }> {
-  const normalized_text = item.base_text.toLowerCase().trim()
+  const normalized_text = itemSlug(item.base_text)
   const payload: Record<string, unknown> = {
     base_text: item.base_text,
     item_type: item.item_type,

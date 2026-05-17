@@ -19,6 +19,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import fs from 'fs'
+import { itemSlug } from '../src/lib/capabilities/itemSlug'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
@@ -43,11 +44,6 @@ function cleanBaseText(s: string): string {
     .replace(/\s*\*\s*$/, '')
     .replace(/\s*\([^)]+\)\s*$/, '')
     .trim()
-}
-
-function normalizeForDb(s: string): string {
-  // Matches publish-approved-content.ts: s.toLowerCase().trim()
-  return s.toLowerCase().trim()
 }
 
 function normalizeTts(s: string): string {
@@ -107,7 +103,7 @@ async function main() {
       .from('learning_items')
       .update({
         base_text: u.newBase,
-        normalized_text: normalizeForDb(u.newBase),
+        normalized_text: itemSlug(u.newBase),
       })
       .eq('id', u.id)
     if (uErr) {

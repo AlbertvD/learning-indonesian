@@ -1,6 +1,7 @@
 import { projectCapabilities } from '../../src/lib/capabilities/capabilityCatalog'
 import { projectPodcastCapabilities } from './pipeline/podcast-stage/podcastProjectionRules'
 import { ARTIFACT_KINDS } from '../../src/lib/capabilities/artifactRegistry'
+import { itemSlug } from '../../src/lib/capabilities/itemSlug'
 import type {
   ArtifactKind,
   CurrentAffixedFormPair,
@@ -126,7 +127,10 @@ function sourceRefForLesson(lessonNumber: number): string {
 }
 
 function sourceRefForLearningItem(baseText: string): string {
-  return `learning_items/${stableSlug(baseText)}`
+  // Per issue #59: must match learning_items.normalized_text exactly so the
+  // runtime resolver (capabilityContentService.fetchLearningItemsByKey) can
+  // resolve item-source-kind caps. stableSlug mangles spaces to hyphens.
+  return `learning_items/${itemSlug(baseText)}`
 }
 
 function grammarSourceRef(lessonNumber: number, slug: string): string {
@@ -492,7 +496,10 @@ export function buildCapabilityStagingFromContent(input: StagingLessonInput & {
 
   const snapshot = {
     learningItems: learningItems.map(item => ({
-      id: stableSlug(item.base_text),
+      // Per issue #59: this id feeds `learning_items/${id}` in
+      // capabilityCatalog.ts:50 → must match learning_items.normalized_text.
+      // stableSlug hyphenates spaces; itemSlug preserves them.
+      id: itemSlug(item.base_text),
       baseText: item.base_text,
       meanings: [
         ...(item.translation_nl ? [{ language: 'nl' as const, text: item.translation_nl }] : []),
