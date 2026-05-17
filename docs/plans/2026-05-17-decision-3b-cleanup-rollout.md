@@ -1,7 +1,7 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #62
-merged_at: null
+merged_at: 2026-05-17
 implementation_paths:
   - docs/process/decision-3b-rollout.md
   - docs/plans/2026-05-17-extend-decision-3-lesson-id.md
