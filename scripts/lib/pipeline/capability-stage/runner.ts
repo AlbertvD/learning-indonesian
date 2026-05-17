@@ -651,15 +651,12 @@ export function buildLintStagingCommand(lessonNumber: number): {
   command: string
   args: string[]
 } {
-  return {
-    command: process.execPath,
-    args: [
-      path.join(process.cwd(), 'node_modules', 'tsx', 'dist', 'cli.mjs'),
-      'scripts/lint-staging.ts',
-      '--lesson',
-      String(lessonNumber),
-      '--severity',
-      'critical',
-    ],
-  }
+  // Bun executes .ts directly. Under node, route through the local tsx CLI
+  // because node has no native TS support.
+  const isBun = typeof (process.versions as { bun?: string }).bun === 'string'
+  const args = isBun
+    ? []
+    : [path.join(process.cwd(), 'node_modules', 'tsx', 'dist', 'cli.mjs')]
+  args.push('scripts/lint-staging.ts', '--lesson', String(lessonNumber), '--severity', 'critical')
+  return { command: process.execPath, args }
 }

@@ -220,7 +220,7 @@ async function checkItemContexts(
     const { data, error } = await supabase
       .schema('indonesian')
       .from('item_contexts')
-      .select('id, learning_item_id, source_text, capability_id')
+      .select('id, learning_item_id, source_text')
       .in('learning_item_id', chunk)
     if (error) throw error
     for (const r of (data ?? []) as Array<{ id: string; source_text: string | null }>) {
