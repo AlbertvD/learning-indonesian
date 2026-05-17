@@ -43,6 +43,21 @@ export type CapabilityType =
   | 'root_derived_recognition'
   | 'root_derived_recall'
 
+export const CAPABILITY_TYPES = [
+  'text_recognition',
+  'meaning_recall',
+  'l1_to_id_choice',
+  'form_recall',
+  'contextual_cloze',
+  'audio_recognition',
+  'dictation',
+  'podcast_gist',
+  'pattern_recognition',
+  'pattern_contrast',
+  'root_derived_recognition',
+  'root_derived_recall',
+] as const satisfies readonly CapabilityType[]
+
 export type CapabilityDirection =
   | 'id_to_l1'
   | 'l1_to_id'
