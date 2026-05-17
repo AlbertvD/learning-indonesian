@@ -9,6 +9,8 @@ implementation_pr_b: PR #48
 implementation_pr_b_merged_at: 2026-05-16
 implementation_pr_c: PR #49
 implementation_pr_c_merged_at: 2026-05-17
+implementation_pr_d: PR #50
+implementation_pr_d_merged_at: 2026-05-17
 supersedes: []
 ---
 

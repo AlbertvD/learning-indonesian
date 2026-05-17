@@ -1,7 +1,7 @@
 ---
 module: session-builder
 surface: src/lib/session-builder/
-last_verified_against_code: 2026-05-16
+last_verified_against_code: 2026-05-17
 status: stable
 ---
 
@@ -226,17 +226,19 @@ After all three passes, `blocks.slice(0, input.limit)` caps the session at the r
 
 ### 3.7 Labels (per-capability display copy)
 
-`labels.ts:1-66`. Exports a single `CAPABILITY_DISPLAY: Record<CapabilityType, CapabilityDisplay>` map (`labels.ts:15-28`) with one entry per `CapabilityType`. The `as const satisfies Record<CapabilityType, CapabilityDisplay>` assertion (line 28) makes the map exhaustive — a new `CapabilityType` added in `capabilityTypes.ts` will fail compilation here until it gets an entry.
+`labels.ts:1-117`. Exports a single `CAPABILITY_DISPLAY: Record<CapabilityType, CapabilityDisplay>` map (`labels.ts:20-79`) with one entry per `CapabilityType`. The `as const satisfies Record<CapabilityType, CapabilityDisplay>` assertion (line 79) makes the map exhaustive — a new `CapabilityType` added in `capabilityTypes.ts` will fail compilation here until it gets an entry. The runtime `CAPABILITY_TYPES` array (`capabilityTypes.ts:46-59`) is the iteration target for code that needs to walk every capability type.
 
 `CapabilityDisplay` shape:
 
 ```typescript
 interface CapabilityDisplay {
-  label: string                 // short, e.g. "Tekst herkennen"
-  description?: string          // 1 sentence — to be authored in PR-D
-  example?: string              // e.g. "makan → eten" — optional, PR-D
+  label: string                 // short, e.g. "Betekenis herkennen"
+  description: string           // 1 sentence, action-oriented, second person
+  example?: string              // e.g. "makan → eten" — optional
 }
 ```
+
+All 12 descriptions and most examples authored in PR-D (`feat(session-builder): capability descriptions (PR-D)`, c19a9d4); the snapshot test at `__tests__/labels.test.ts` guards non-empty fields, no-placeholder strings, exactly one sentence per description with no semicolons.
 
 `capabilityDisplay(type)` returns the entry; `exerciseLabel(type)` and `skillLabel(type)` remain available for narrower lookups. `RecapScreen.tsx:95` uses `capabilityDisplay(b.renderPlan.capabilityType).label` for the recap headline (the prior `exerciseLabel(b.renderPlan.exerciseType)` was a deliberate UX swap — the headline now answers *what skill* not *what UI shape*).
 
