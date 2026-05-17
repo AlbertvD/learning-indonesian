@@ -1,4 +1,4 @@
-// Learning items for Lesson 1 — reverse-engineered from DB
+// Published via script
 export const learningItems = [
   {
     "base_text": "Berapa harganya?",
@@ -6,7 +6,10 @@ export const learningItems = [
     "translation_nl": "Wat kost het?",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "question_word",
+    "level": "A1",
+    "translation_en": "How much does it cost?"
   },
   {
     "base_text": "akhir",
@@ -14,7 +17,10 @@ export const learningItems = [
     "translation_nl": "einde",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "end"
   },
   {
     "base_text": "bapak",
@@ -22,7 +28,10 @@ export const learningItems = [
     "translation_nl": "meneer, vader, u",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "sir, father, you"
   },
   {
     "base_text": "besar",
@@ -30,7 +39,10 @@ export const learningItems = [
     "translation_nl": "groot",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adjective",
+    "level": "A1",
+    "translation_en": "big"
   },
   {
     "base_text": "boleh",
@@ -38,7 +50,10 @@ export const learningItems = [
     "translation_nl": "mogen, kunnen",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "verb",
+    "level": "A1",
+    "translation_en": "may, can"
   },
   {
     "base_text": "cukup",
@@ -46,7 +61,10 @@ export const learningItems = [
     "translation_nl": "voldoende",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adjective",
+    "level": "A1",
+    "translation_en": "enough"
   },
   {
     "base_text": "dari",
@@ -54,7 +72,10 @@ export const learningItems = [
     "translation_nl": "uit, van",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "preposition",
+    "level": "A1",
+    "translation_en": "from, of"
   },
   {
     "base_text": "di",
@@ -62,7 +83,10 @@ export const learningItems = [
     "translation_nl": "in, op, te",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "preposition",
+    "level": "A1",
+    "translation_en": "in, on, at"
   },
   {
     "base_text": "hotel",
@@ -70,7 +94,10 @@ export const learningItems = [
     "translation_nl": "hotel",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "hotel"
   },
   {
     "base_text": "murah",
@@ -78,7 +105,10 @@ export const learningItems = [
     "translation_nl": "goedkoop",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adjective",
+    "level": "A1",
+    "translation_en": "cheap"
   },
   {
     "base_text": "pasar",
@@ -86,7 +116,10 @@ export const learningItems = [
     "translation_nl": "markt",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "market"
   },
   {
     "base_text": "pisang",
@@ -94,7 +127,10 @@ export const learningItems = [
     "translation_nl": "banaan",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "banana"
   },
   {
     "base_text": "tetapi",
@@ -102,7 +138,10 @@ export const learningItems = [
     "translation_nl": "maar, echter",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "conjunction",
+    "level": "A1",
+    "translation_en": "but, however"
   },
   {
     "base_text": "dua",
@@ -110,7 +149,10 @@ export const learningItems = [
     "translation_nl": "2",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "numeral",
+    "level": "A1",
+    "translation_en": "two"
   },
   {
     "base_text": "enam",
@@ -118,7 +160,10 @@ export const learningItems = [
     "translation_nl": "6",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "numeral",
+    "level": "A1",
+    "translation_en": "six"
   },
   {
     "base_text": "sepuluh",
@@ -126,7 +171,10 @@ export const learningItems = [
     "translation_nl": "10",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "numeral",
+    "level": "A1",
+    "translation_en": "ten"
   },
   {
     "base_text": "apa?",
@@ -134,7 +182,10 @@ export const learningItems = [
     "translation_nl": "wat?",
     "context_type": "lesson_snippet",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "question_word",
+    "level": "A1",
+    "translation_en": "what?"
   },
   {
     "base_text": "beli",
@@ -142,7 +193,10 @@ export const learningItems = [
     "translation_nl": "kopen",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "verb",
+    "level": "A1",
+    "translation_en": "buy"
   },
   {
     "base_text": "bisa",
@@ -150,7 +204,10 @@ export const learningItems = [
     "translation_nl": "kunnen, mogen",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "verb",
+    "level": "A1",
+    "translation_en": "can, may"
   },
   {
     "base_text": "dan",
@@ -158,7 +215,10 @@ export const learningItems = [
     "translation_nl": "en",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "conjunction",
+    "level": "A1",
+    "translation_en": "and"
   },
   {
     "base_text": "ibu",
@@ -166,7 +226,10 @@ export const learningItems = [
     "translation_nl": "mevrouw, moeder, u",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "madam, mother, you"
   },
   {
     "base_text": "ke",
@@ -174,7 +237,10 @@ export const learningItems = [
     "translation_nl": "naar",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "preposition",
+    "level": "A1",
+    "translation_en": "to"
   },
   {
     "base_text": "mahal",
@@ -182,7 +248,10 @@ export const learningItems = [
     "translation_nl": "duur",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adjective",
+    "level": "A1",
+    "translation_en": "expensive"
   },
   {
     "base_text": "nanas",
@@ -190,7 +259,10 @@ export const learningItems = [
     "translation_nl": "ananas",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "pineapple"
   },
   {
     "base_text": "rumah",
@@ -198,7 +270,10 @@ export const learningItems = [
     "translation_nl": "huis",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "house"
   },
   {
     "base_text": "terima",
@@ -206,7 +281,10 @@ export const learningItems = [
     "translation_nl": "ontvangen",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "verb",
+    "level": "A1",
+    "translation_en": "receive"
   },
   {
     "base_text": "harganya murah",
@@ -214,7 +292,10 @@ export const learningItems = [
     "translation_nl": "Het is goedkoop; de prijs is laag",
     "context_type": "lesson_snippet",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adjective",
+    "level": "A1",
+    "translation_en": "it is cheap"
   },
   {
     "base_text": "terima kasih",
@@ -222,7 +303,10 @@ export const learningItems = [
     "translation_nl": "Dank u wel",
     "context_type": "lesson_snippet",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "greeting",
+    "level": "A1",
+    "translation_en": "thank you"
   },
   {
     "base_text": "satu",
@@ -230,7 +314,10 @@ export const learningItems = [
     "translation_nl": "1",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "numeral",
+    "level": "A1",
+    "translation_en": "one"
   },
   {
     "base_text": "tiga",
@@ -238,7 +325,10 @@ export const learningItems = [
     "translation_nl": "3",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "numeral",
+    "level": "A1",
+    "translation_en": "three"
   },
   {
     "base_text": "tujuh",
@@ -246,7 +336,10 @@ export const learningItems = [
     "translation_nl": "7",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "numeral",
+    "level": "A1",
+    "translation_en": "seven"
   },
   {
     "base_text": "bahasa",
@@ -254,7 +347,10 @@ export const learningItems = [
     "translation_nl": "taal",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "language"
   },
   {
     "base_text": "belum",
@@ -262,7 +358,10 @@ export const learningItems = [
     "translation_nl": "nog niet",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "particle",
+    "level": "A1",
+    "translation_en": "not yet"
   },
   {
     "base_text": "Indonesia",
@@ -270,7 +369,10 @@ export const learningItems = [
     "translation_nl": "Indonesië",
     "context_type": "lesson_snippet",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "Indonesia"
   },
   {
     "base_text": "kabar",
@@ -278,7 +380,10 @@ export const learningItems = [
     "translation_nl": "bericht",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "message"
   },
   {
     "base_text": "kasih",
@@ -286,7 +391,10 @@ export const learningItems = [
     "translation_nl": "gunst, genegenheid",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "affection"
   },
   {
     "base_text": "makan",
@@ -294,7 +402,10 @@ export const learningItems = [
     "translation_nl": "eten",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "verb",
+    "level": "A1",
+    "translation_en": "eat"
   },
   {
     "base_text": "nyonya",
@@ -302,7 +413,10 @@ export const learningItems = [
     "translation_nl": "mevrouw, u",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "madam"
   },
   {
     "base_text": "rupiah",
@@ -310,7 +424,10 @@ export const learningItems = [
     "translation_nl": "munteenheid",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "rupiah"
   },
   {
     "base_text": "selamat",
@@ -318,7 +435,10 @@ export const learningItems = [
     "translation_nl": "veilig, welzijn",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adjective",
+    "level": "A1",
+    "translation_en": "safe"
   },
   {
     "base_text": "nol",
@@ -326,7 +446,10 @@ export const learningItems = [
     "translation_nl": "0",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "numeral",
+    "level": "A1",
+    "translation_en": "zero"
   },
   {
     "base_text": "empat",
@@ -334,7 +457,10 @@ export const learningItems = [
     "translation_nl": "4",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "numeral",
+    "level": "A1",
+    "translation_en": "four"
   },
   {
     "base_text": "delapan",
@@ -342,7 +468,10 @@ export const learningItems = [
     "translation_nl": "8",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "numeral",
+    "level": "A1",
+    "translation_en": "eight"
   },
   {
     "base_text": "Apa kabar?",
@@ -350,7 +479,10 @@ export const learningItems = [
     "translation_nl": "Hoe gaat het?",
     "context_type": "lesson_snippet",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "greeting",
+    "level": "A1",
+    "translation_en": "How are you?"
   },
   {
     "base_text": "baik",
@@ -358,7 +490,10 @@ export const learningItems = [
     "translation_nl": "goed",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adjective",
+    "level": "A1",
+    "translation_en": "good"
   },
   {
     "base_text": "buah",
@@ -366,7 +501,10 @@ export const learningItems = [
     "translation_nl": "vrucht",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "fruit"
   },
   {
     "base_text": "datang",
@@ -374,7 +512,10 @@ export const learningItems = [
     "translation_nl": "komen",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "verb",
+    "level": "A1",
+    "translation_en": "come"
   },
   {
     "base_text": "harga",
@@ -382,7 +523,10 @@ export const learningItems = [
     "translation_nl": "prijs",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "price"
   },
   {
     "base_text": "itu",
@@ -390,7 +534,10 @@ export const learningItems = [
     "translation_nl": "dat, die",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "pronoun",
+    "level": "A1",
+    "translation_en": "that"
   },
   {
     "base_text": "kalau",
@@ -398,7 +545,10 @@ export const learningItems = [
     "translation_nl": "indien, wanneer",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "conjunction",
+    "level": "A1",
+    "translation_en": "if"
   },
   {
     "base_text": "mau",
@@ -406,7 +556,10 @@ export const learningItems = [
     "translation_nl": "willen",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "verb",
+    "level": "A1",
+    "translation_en": "want"
   },
   {
     "base_text": "saya",
@@ -414,7 +567,10 @@ export const learningItems = [
     "translation_nl": "ik, mijn",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "pronoun",
+    "level": "A1",
+    "translation_en": "I"
   },
   {
     "base_text": "tidak",
@@ -422,7 +578,10 @@ export const learningItems = [
     "translation_nl": "niet, nee",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adverb",
+    "level": "A1",
+    "translation_en": "not"
   },
   {
     "base_text": "lima",
@@ -430,7 +589,10 @@ export const learningItems = [
     "translation_nl": "5",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "numeral",
+    "level": "A1",
+    "translation_en": "five"
   },
   {
     "base_text": "sembilan",
@@ -438,7 +600,10 @@ export const learningItems = [
     "translation_nl": "9",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "numeral",
+    "level": "A1",
+    "translation_en": "nine"
   },
   {
     "base_text": "berapa?",
@@ -446,7 +611,10 @@ export const learningItems = [
     "translation_nl": "hoeveel?",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "question_word",
+    "level": "A1",
+    "translation_en": "how much?"
   },
   {
     "base_text": "orang",
@@ -454,7 +622,10 @@ export const learningItems = [
     "translation_nl": "mens",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "person"
   },
   {
     "base_text": "selamat datang",
@@ -462,7 +633,10 @@ export const learningItems = [
     "translation_nl": "Welkom",
     "context_type": "lesson_snippet",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "greeting",
+    "level": "A1",
+    "translation_en": "welcome"
   },
   {
     "base_text": "kosong",
@@ -470,7 +644,10 @@ export const learningItems = [
     "translation_nl": "leeg",
     "context_type": "vocabulary_list",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "adjective",
+    "level": "A1",
+    "translation_en": "empty"
   },
   {
     "base_text": "penjual",
@@ -478,7 +655,10 @@ export const learningItems = [
     "translation_nl": "verkoper",
     "context_type": "cloze",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "noun",
+    "level": "A1",
+    "translation_en": "seller"
   },
   {
     "base_text": "baik-baik saja",
@@ -486,6 +666,9 @@ export const learningItems = [
     "translation_nl": "Goed, dank u wel",
     "context_type": "lesson_snippet",
     "source_page": 1,
-    "review_status": "published"
+    "review_status": "published",
+    "pos": "greeting",
+    "level": "A1",
+    "translation_en": "fine, thank you"
   }
 ]

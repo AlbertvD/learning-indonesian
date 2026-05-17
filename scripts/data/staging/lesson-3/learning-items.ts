@@ -1,4 +1,4 @@
-// POS-enriched by capability-stage
+// Published via script
 export const learningItems = [
   {
     "base_text": "keluar",

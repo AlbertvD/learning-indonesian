@@ -73,6 +73,7 @@ export const lesson = {
       "order_index": 1,
       "content": {
         "type": "text",
+        "intro": "Een paar eenvoudige zinnen om de basisstructuur van het Indonesisch te oefenen:",
         "sentences": [
           {
             "dutch": "Ik ga/ging naar de/een markt",
