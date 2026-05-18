@@ -165,19 +165,15 @@ For i from 0 to blocks.length - 1:
 
 ### 5.1 Type changes
 
-- `DueSessionCapabilityInput` (`compose.ts:10-17`): add `sourceRef: string`.
-- `EligibleNewSessionCapabilityInput` (`compose.ts:19-28`): add `sourceRef: string`.
-- `SessionBlock` (`model.ts`): **no change**. `sourceRef` is composer-internal; not exposed to the player.
+**No type changes required.** `ExerciseRenderPlan` already carries `sourceRef` (`exerciseRenderPlan.ts:6`), and the composer's `blocks` array only contains entries with a non-null `renderPlan` (resolution failures are turned into diagnostics and skipped at `compose.ts:53-54`, `:70-71`, `:92-93`). The interleave post-pass reads `block.renderPlan.sourceRef` directly.
+
+- `DueSessionCapabilityInput`: no change.
+- `EligibleNewSessionCapabilityInput`: no change.
+- `SessionBlock` (`model.ts:22-31`): no change — `sourceRef` is already reachable via `block.renderPlan.sourceRef`.
 
 ### 5.2 Builder plumbing
 
-`builder.ts` constructs composer inputs in three places. Each needs to populate `sourceRef` from the already-available `input.capabilitiesByKey` lookup:
-
-- Due pass (`builder.ts:245-271`): `sourceRef: input.capabilitiesByKey.get(due.canonicalKeySnapshot)?.sourceRef ?? ''`.
-- Practice-review pass (`builder.ts:273-312`): same pattern.
-- New-intro pass (`builder.ts:322-338`): `sourceRef: eligible.capability.sourceRef` (already on PlannerCapability).
-
-Defensive `?? ''` for the lookup case handles the (currently impossible) case where the capability is missing from the index; the interleave treats empty strings as "always unique" so they never block swaps.
+**No `builder.ts` changes required.** All three composer-input construction sites already populate `renderPlan` (containing `sourceRef`) via `resolveCandidate` → `resolveExercise` → render-plan emission. The interleave operates on the finalised `blocks[]` array after compose's three append passes, so it inherits whatever the resolver produced.
 
 ### 5.3 What this rule does NOT do
 

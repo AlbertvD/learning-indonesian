@@ -104,6 +104,16 @@ export async function compose(input: ComposeSessionInput): Promise<SessionPlan> 
     })
   }
 
+  // Interleave by source_ref (Rule B of docs/plans/2026-05-18-capability-staging-gate.md).
+  // Prevents two blocks sharing a source_ref from being within
+  // INTERLEAVE_WINDOW positions of each other. Greedy single-pass, left-to-right,
+  // swap with the nearest later block that doesn't violate the window. Accept
+  // violations at end-of-queue or when all remaining blocks share a source_ref.
+  // Deterministic: same input yields same output (Karpicke 2009 expanding
+  // retrieval — two retrievals within working-memory range aren't real
+  // retrieval practice; intervening items are required).
+  interleaveBySourceRef(blocks, INTERLEAVE_WINDOW)
+
   return {
     id: input.sessionId,
     mode: input.mode,
@@ -111,5 +121,29 @@ export async function compose(input: ComposeSessionInput): Promise<SessionPlan> 
     blocks: blocks.slice(0, input.limit),
     recapPolicy: 'standard',
     diagnostics,
+  }
+}
+
+const INTERLEAVE_WINDOW = 3
+
+function interleaveBySourceRef(blocks: SessionPlan['blocks'], window: number): void {
+  for (let i = 1; i < blocks.length; i += 1) {
+    const current = blocks[i]!
+    const recent = new Set<string>()
+    for (let k = Math.max(0, i - window); k < i; k += 1) {
+      recent.add(blocks[k]!.renderPlan.sourceRef)
+    }
+    if (!recent.has(current.renderPlan.sourceRef)) continue
+    let swapWith = -1
+    for (let j = i + 1; j < blocks.length; j += 1) {
+      if (!recent.has(blocks[j]!.renderPlan.sourceRef)) {
+        swapWith = j
+        break
+      }
+    }
+    if (swapWith === -1) continue
+    const tmp = blocks[i]!
+    blocks[i] = blocks[swapWith]!
+    blocks[swapWith] = tmp
   }
 }
