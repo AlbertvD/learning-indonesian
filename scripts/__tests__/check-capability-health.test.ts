@@ -76,6 +76,12 @@ describe('capability health exit code planning', () => {
   })
 
   it('keeps valid accepted-answer values payloads eligible for runtime health', () => {
+    // Post-PR #65: form_recall routes to cued_recall + typed_recall in the
+    // RENDER_CONTRACTS table. typed_recall's contract requires
+    // ['base_text', 'meaning:l1', 'accepted_answers:id']. The cap also
+    // declares its own requiredArtifacts which validateCapability unions
+    // with the contract's; this fixture provides every artifact in that
+    // union so the cap remains ready.
     const capabilityKey = 'cap:v1:item:learning_items/makan:form_recall:l1_to_id:text:nl'
     const report = checkCapabilityHealthSnapshot({
       knownSourceRefs: ['learning_items/makan'],
@@ -86,7 +92,7 @@ describe('capability health exit code planning', () => {
         skillType: 'form_recall',
         readinessStatus: 'ready',
         publicationStatus: 'published',
-        requiredArtifacts: ['accepted_answers:id'],
+        requiredArtifacts: ['meaning:l1', 'base_text', 'accepted_answers:id'],
       }],
       artifacts: [{
         capabilityKey,
@@ -94,6 +100,18 @@ describe('capability health exit code planning', () => {
         artifactKind: 'accepted_answers:id',
         qualityStatus: 'approved',
         artifactJson: { values: ['makan'] },
+      }, {
+        capabilityKey,
+        sourceRef: 'learning_items/makan',
+        artifactKind: 'meaning:l1',
+        qualityStatus: 'approved',
+        artifactJson: { value: 'eten' },
+      }, {
+        capabilityKey,
+        sourceRef: 'learning_items/makan',
+        artifactKind: 'base_text',
+        qualityStatus: 'approved',
+        artifactJson: { value: 'makan' },
       }],
     })
 
@@ -159,24 +177,36 @@ describe('capability health exit code planning', () => {
   })
 
   it('fails ready/published capabilities that cannot resolve an exercise render plan', () => {
+    // Post-PR #65: meaning_recall's RENDER_CONTRACTS entry requires
+    // ['meaning:l1', 'accepted_answers:l1']. To isolate the
+    // exerciseAvailability gating (the actual subject of this test),
+    // provide every artifact the cap needs so it passes artifact validation;
+    // the only thing blocking it is `meaning_recall: false`.
+    const capabilityKey = 'cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl'
     const report = checkCapabilityHealthSnapshot({
       knownSourceRefs: ['learning_items/makan'],
       capabilities: [{
-        canonicalKey: 'cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl',
+        canonicalKey: capabilityKey,
         sourceRef: 'learning_items/makan',
         capabilityType: 'meaning_recall',
         skillType: 'meaning_recall',
         readinessStatus: 'ready',
         publicationStatus: 'published',
-        requiredArtifacts: ['meaning:l1'],
+        requiredArtifacts: ['meaning:l1', 'accepted_answers:l1'],
         exerciseAvailability: { meaning_recall: false },
       }],
       artifacts: [{
-        capabilityKey: 'cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl',
+        capabilityKey,
         sourceRef: 'learning_items/makan',
         artifactKind: 'meaning:l1',
         qualityStatus: 'approved',
         artifactJson: { value: 'eten' },
+      }, {
+        capabilityKey,
+        sourceRef: 'learning_items/makan',
+        artifactKind: 'accepted_answers:l1',
+        qualityStatus: 'approved',
+        artifactJson: { values: ['eten'] },
       }],
     })
 
@@ -275,13 +305,25 @@ describe('capability health exit code planning', () => {
     expect(pattern?.examples).toEqual(expect.arrayContaining(['Saya tidak mau datang']))
   })
 
-  it('includes staged morphology pairs in lesson health without introducing critical findings', async () => {
+  it('blocks staged morphology pairs at validation pending the affixed_form_pair renderer (PR #65 source-kind decision)', async () => {
+    // Per PR #65 plan §"Source kind decision": every contract's
+    // supportedSourceKinds is currently ['item']. Morphology caps have
+    // sourceKind='affixed_form_pair' so they're correctly marked `blocked`
+    // at validateCapability with reason 'no_compatible_exercise_for_capability_type'
+    // instead of passing as `ready` and silently dropping at runtime. The
+    // future capabilityContentService fold widens supportedSourceKinds and
+    // this assertion flips back to criticalCount === 0.
     const report = await buildCapabilityHealthReport('scripts/data/staging/lesson-9')
 
-    expect(report.criticalCount).toBe(0)
     expect(report.results.map(result => result.canonicalKey)).toEqual(expect.arrayContaining([
       'cap:v1:affixed_form_pair:lesson-9/morphology/meN-baca-membaca:root_derived_recognition:derived_to_root:text:none',
       'cap:v1:affixed_form_pair:lesson-9/morphology/meN-baca-membaca:root_derived_recall:root_to_derived:text:none',
     ]))
+    // Morphology caps now register as blocked-critical until the renderer ships.
+    const morphologyResults = report.results.filter(r => r.canonicalKey.startsWith('cap:v1:affixed_form_pair:'))
+    expect(morphologyResults.length).toBeGreaterThan(0)
+    for (const result of morphologyResults) {
+      expect(result.readiness.status).toBe('blocked')
+    }
   })
 })

@@ -2,23 +2,11 @@
 // User sees the meaning, types the Indonesian form. Needs a user-lang meaning
 // (for the prompt) and answer_variants (for fuzzy-match acceptance).
 
-import type { BuilderInput, BuilderResult } from './types'
-import { pickUserLangMeaning } from './helpers'
+import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 
-export function buildTypedRecall(input: BuilderInput): BuilderResult {
-  if (!input.learningItem) {
-    return { kind: 'fail', reasonCode: 'item_not_found', message: 'typed_recall requires a learningItem' }
-  }
-  const primary = pickUserLangMeaning(input.meanings, input.userLanguage)
-  if (!primary) {
-    return {
-      kind: 'fail',
-      reasonCode: 'no_meaning_in_lang',
-      message: `no ${input.userLanguage} meaning for item ${input.learningItem.id}`,
-      payloadSnapshot: { learningItemId: input.learningItem.id, userLanguage: input.userLanguage },
-    }
-  }
+export function buildTypedRecall(input: BuilderInputFor<'typed_recall'>): BuilderResult {
+  // learningItem and primaryMeaning are non-null by contract (projector narrows).
   const exerciseItem = {
     learningItem: input.learningItem,
     meanings: input.meanings,

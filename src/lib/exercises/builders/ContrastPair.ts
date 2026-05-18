@@ -1,22 +1,12 @@
 // builder for exerciseType='contrast_pair'.
 // Authored only — payload comes from exercise_variants.payload_json.
-// Originally extracted from sessionQueue.ts (retired in #7).
+// Contract: learningItem + variant (with exercise_type='contrast_pair')
+// are both non-null by projector guarantee.
 
-import type { BuilderInput, BuilderResult } from './types'
+import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 
-export function buildContrastPair(input: BuilderInput): BuilderResult {
-  if (!input.learningItem) {
-    return { kind: 'fail', reasonCode: 'item_not_found', message: 'contrast_pair requires a learningItem (PR-2 scope)' }
-  }
-  if (!input.variant || input.variant.exercise_type !== 'contrast_pair') {
-    return {
-      kind: 'fail',
-      reasonCode: 'no_active_variant',
-      message: `no active contrast_pair variant for item ${input.learningItem.id}`,
-      payloadSnapshot: { learningItemId: input.learningItem.id },
-    }
-  }
+export function buildContrastPair(input: BuilderInputFor<'contrast_pair'>): BuilderResult {
   const payload = input.variant.payload_json as Record<string, unknown>
   const answerKey = input.variant.answer_key_json as Record<string, unknown> | null
 

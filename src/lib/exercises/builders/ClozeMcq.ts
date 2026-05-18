@@ -6,23 +6,22 @@
 //      context and pull distractors from the cascade.
 //      Originally extracted from sessionQueue.ts (retired in #7).
 //
-// The authored path is tried first.
+// Contract: learningItem is non-null. clozeContext is nullable (authored
+// path may have null clozeContext; runtime path has it non-null). variant
+// is nullable. The projector enforces the invariant that at least one of
+// (variant with matching exercise_type) OR clozeContext is non-null.
 
-import type { BuilderInput, BuilderResult } from './types'
+import type { BuilderInputFor, BuilderResult } from './types'
 import { pickUserLangMeaning, shuffle } from './helpers'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 import { pickDistractorCascade, getSemanticGroup, type DistractorCandidate } from '@/lib/distractors'
 
-export function buildClozeMcq(input: BuilderInput): BuilderResult {
-  if (!input.learningItem) {
-    return { kind: 'fail', reasonCode: 'item_not_found', message: 'cloze_mcq requires a learningItem' }
-  }
-
+export function buildClozeMcq(input: BuilderInputFor<'cloze_mcq'>): BuilderResult {
   // Authored path
   if (input.variant && input.variant.exercise_type === 'cloze_mcq') {
     const payload = input.variant.payload_json as Record<string, unknown>
     const answerKey = input.variant.answer_key_json as Record<string, unknown> | null
-    const sentence = (payload.sentence as string) || (input.contexts.find(c => c.context_type === 'cloze')?.source_text) || ''
+    const sentence = (payload.sentence as string) || input.clozeContext?.source_text || ''
     const options = (payload.options as string[]) || []
     const correctOptionId = (answerKey?.correctOptionId as string) || (payload.correctOptionId as string) || ''
     if (!sentence || options.length === 0 || !correctOptionId) {
@@ -51,20 +50,21 @@ export function buildClozeMcq(input: BuilderInput): BuilderResult {
     return { kind: 'ok', exerciseItem, audibleTexts: audibleTextFieldsOf(exerciseItem) }
   }
 
-  // Runtime path
-  const clozeContext = input.contexts.find(c => c.context_type === 'cloze')
-  if (!clozeContext) {
+  // Runtime path — by projector invariant, clozeContext is non-null here.
+  if (!input.clozeContext) {
+    // Defensive: projector should have caught this. Treat as a contract
+    // invariant violation so future debugging surfaces the right layer.
     return {
       kind: 'fail',
       reasonCode: 'malformed_cloze',
-      message: `no cloze context for runtime cloze_mcq (item ${input.learningItem.id})`,
-      payloadSnapshot: { learningItemId: input.learningItem.id, contextCount: input.contexts.length },
+      message: `projector invariant violated: clozeContext null with no matching authored variant (item ${input.learningItem.id})`,
+      payloadSnapshot: { learningItemId: input.learningItem.id },
     }
   }
   const primary = pickUserLangMeaning(input.meanings, input.userLanguage)
   const targetTranslation = primary?.translation_text ?? ''
   const pool: DistractorCandidate[] = input.poolItems
-    .filter(i => i.id !== input.learningItem!.id && i.base_text)
+    .filter(i => i.id !== input.learningItem.id && i.base_text)
     .map(i => {
       const ms = input.poolMeaningsByItem.get(i.id) ?? []
       const t = (ms.find(m => m.translation_language === input.userLanguage && m.is_primary)
@@ -102,8 +102,8 @@ export function buildClozeMcq(input: BuilderInput): BuilderResult {
     skillType: 'recognition' as const,
     exerciseType: 'cloze_mcq' as const,
     clozeMcqData: {
-      sentence: clozeContext.source_text,
-      translation: clozeContext.translation_text,
+      sentence: input.clozeContext.source_text,
+      translation: input.clozeContext.translation_text,
       options,
       correctOptionId: input.learningItem.base_text,
     },

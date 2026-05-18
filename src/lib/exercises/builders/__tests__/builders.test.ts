@@ -1,28 +1,20 @@
 // Tests for the 12 type-specific builders. Cover happy path + each failure
-// mode in spec §6.2. Audio playability isn't a builder concern; we just check
+// mode. Audio playability isn't a builder concern; we just check
 // audibleTexts contains the right Indonesian fields.
+//
+// All builder calls route through buildForExerciseType, which exercises
+// the projector + dispatch + builder pipeline together — the production
+// path. Direct builder calls would bypass the projector's contract
+// narrowing and require us to hand-build BuilderInputFor<T> fixtures.
 
 import { describe, it, expect } from 'vitest'
 import type {
   LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant,
 } from '@/types/learning'
 import type { SessionBlock } from '@/lib/session-builder'
-import type { BuilderInput } from '../types'
 import { normalizeTtsText } from '@/lib/ttsNormalize'
 
-import { buildMeaningRecall } from '../MeaningRecall'
-import { buildTypedRecall } from '../TypedRecall'
-import { buildDictation } from '../Dictation'
-import { buildCloze } from '../Cloze'
-import { buildRecognitionMCQ } from '../RecognitionMCQ'
-import { buildCuedRecall } from '../CuedRecall'
-import { buildListeningMCQ } from '../ListeningMCQ'
-import { buildClozeMcq } from '../ClozeMcq'
-import { buildContrastPair } from '../ContrastPair'
-import { buildSentenceTransformation } from '../SentenceTransformation'
-import { buildConstrainedTranslation } from '../ConstrainedTranslation'
-import { buildSpeaking } from '../Speaking'
-import { buildForExerciseType } from '../index'
+import { buildForExerciseType, type RawProjectorInput } from '../index'
 
 // ─── fixtures ───
 
@@ -86,7 +78,7 @@ function makePoolItems(size: number): { items: LearningItem[]; meaningsByItem: M
   return { items, meaningsByItem }
 }
 
-function baseInput(overrides: Partial<BuilderInput> = {}): BuilderInput {
+function baseInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorInput {
   const pool = makePoolItems(5)
   return {
     block: makeBlock(),
@@ -107,7 +99,7 @@ function baseInput(overrides: Partial<BuilderInput> = {}): BuilderInput {
 
 describe('buildMeaningRecall', () => {
   it('happy path', () => {
-    const r = buildMeaningRecall(baseInput())
+    const r = buildForExerciseType('meaning_recall', baseInput())
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.exerciseType).toBe('meaning_recall')
@@ -117,13 +109,13 @@ describe('buildMeaningRecall', () => {
   })
 
   it('fails when no learningItem', () => {
-    const r = buildMeaningRecall(baseInput({ learningItem: null }))
+    const r = buildForExerciseType('meaning_recall', baseInput({ learningItem: null }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')
   })
 
   it('fails when no user-lang meaning', () => {
-    const r = buildMeaningRecall(baseInput({ meanings: [makeMeaning('end', 'en')] }))
+    const r = buildForExerciseType('meaning_recall', baseInput({ meanings: [makeMeaning('end', 'en')] }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('no_meaning_in_lang')
   })
@@ -131,7 +123,7 @@ describe('buildMeaningRecall', () => {
 
 describe('buildTypedRecall', () => {
   it('happy path', () => {
-    const r = buildTypedRecall(baseInput({ answerVariants: [makeAnswerVariant('akhir')] }))
+    const r = buildForExerciseType('typed_recall', baseInput({ answerVariants: [makeAnswerVariant('akhir')] }))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.exerciseType).toBe('typed_recall')
@@ -140,7 +132,7 @@ describe('buildTypedRecall', () => {
   })
 
   it('fails when no user-lang meaning', () => {
-    const r = buildTypedRecall(baseInput({ meanings: [] }))
+    const r = buildForExerciseType('typed_recall', baseInput({ meanings: [] }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('no_meaning_in_lang')
   })
@@ -148,7 +140,7 @@ describe('buildTypedRecall', () => {
 
 describe('buildDictation', () => {
   it('happy path', () => {
-    const r = buildDictation(baseInput())
+    const r = buildForExerciseType('dictation', baseInput())
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.exerciseType).toBe('dictation')
@@ -157,7 +149,7 @@ describe('buildDictation', () => {
   })
 
   it('fails when no learningItem', () => {
-    const r = buildDictation(baseInput({ learningItem: null }))
+    const r = buildForExerciseType('dictation', baseInput({ learningItem: null }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')
   })
@@ -166,7 +158,7 @@ describe('buildDictation', () => {
 describe('buildCloze', () => {
   it('happy path with cloze context', () => {
     const ctx = makeContext('Saya ___ nasi', 'cloze')
-    const r = buildCloze(baseInput({ contexts: [ctx] }))
+    const r = buildForExerciseType('cloze', baseInput({ contexts: [ctx] }))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.clozeContext?.sentence).toBe('Saya ___ nasi')
@@ -175,14 +167,14 @@ describe('buildCloze', () => {
   })
 
   it('fails when no cloze context', () => {
-    const r = buildCloze(baseInput({ contexts: [] }))
+    const r = buildForExerciseType('cloze', baseInput({ contexts: [] }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_cloze')
   })
 
   it('fails when cloze context lacks `___` marker', () => {
     const ctx = makeContext('Saya makan nasi', 'cloze')  // no blank
-    const r = buildCloze(baseInput({ contexts: [ctx] }))
+    const r = buildForExerciseType('cloze', baseInput({ contexts: [ctx] }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_cloze')
   })
@@ -192,7 +184,7 @@ describe('buildCloze', () => {
 
 describe('buildRecognitionMCQ', () => {
   it('happy path with sufficient pool', () => {
-    const r = buildRecognitionMCQ(baseInput())
+    const r = buildForExerciseType('recognition_mcq', baseInput())
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.distractors).toHaveLength(3)
@@ -201,7 +193,7 @@ describe('buildRecognitionMCQ', () => {
 
   it('fails with insufficient pool', () => {
     const small = makePoolItems(1)
-    const r = buildRecognitionMCQ(baseInput({ poolItems: small.items, poolMeaningsByItem: small.meaningsByItem }))
+    const r = buildForExerciseType('recognition_mcq', baseInput({ poolItems: small.items, poolMeaningsByItem: small.meaningsByItem }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('no_distractor_candidates')
   })
@@ -209,7 +201,7 @@ describe('buildRecognitionMCQ', () => {
 
 describe('buildCuedRecall', () => {
   it('happy path', () => {
-    const r = buildCuedRecall(baseInput())
+    const r = buildForExerciseType('cued_recall', baseInput())
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.cuedRecallData?.options).toHaveLength(4)  // 1 correct + 3 distractors
@@ -219,7 +211,7 @@ describe('buildCuedRecall', () => {
 
   it('fails with insufficient pool', () => {
     const small = makePoolItems(2)
-    const r = buildCuedRecall(baseInput({ poolItems: small.items, poolMeaningsByItem: small.meaningsByItem }))
+    const r = buildForExerciseType('cued_recall', baseInput({ poolItems: small.items, poolMeaningsByItem: small.meaningsByItem }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('no_distractor_candidates')
   })
@@ -227,7 +219,7 @@ describe('buildCuedRecall', () => {
 
 describe('buildListeningMCQ', () => {
   it('happy path', () => {
-    const r = buildListeningMCQ(baseInput())
+    const r = buildForExerciseType('listening_mcq', baseInput())
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.exerciseType).toBe('listening_mcq')
@@ -252,7 +244,7 @@ describe('buildClozeMcq', () => {
       answer_key_json: { correctOptionId: 'mahal' },
       created_at: '', updated_at: '',
     }
-    const r = buildClozeMcq(baseInput({ variant }))
+    const r = buildForExerciseType('cloze_mcq', baseInput({ variant }))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.clozeMcqData?.sentence).toBe('Itu ___ ya!')
@@ -262,7 +254,7 @@ describe('buildClozeMcq', () => {
 
   it('runtime path with cloze context + sufficient pool', () => {
     const ctx = makeContext('Saya ___ nasi', 'cloze')
-    const r = buildClozeMcq(baseInput({ contexts: [ctx] }))
+    const r = buildForExerciseType('cloze_mcq', baseInput({ contexts: [ctx] }))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.clozeMcqData?.sentence).toBe('Saya ___ nasi')
@@ -272,7 +264,7 @@ describe('buildClozeMcq', () => {
   })
 
   it('runtime fails when no cloze context AND no variant', () => {
-    const r = buildClozeMcq(baseInput({ contexts: [] }))
+    const r = buildForExerciseType('cloze_mcq', baseInput({ contexts: [] }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_cloze')
   })
@@ -285,7 +277,7 @@ describe('buildClozeMcq', () => {
       answer_key_json: {},
       created_at: '', updated_at: '',
     }
-    const r = buildClozeMcq(baseInput({ variant }))
+    const r = buildForExerciseType('cloze_mcq', baseInput({ variant }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_payload')
   })
@@ -308,7 +300,7 @@ describe('buildContrastPair', () => {
       answer_key_json: { correctOptionId: 'a' },
       created_at: '', updated_at: '',
     }
-    const r = buildContrastPair(baseInput({ variant }))
+    const r = buildForExerciseType('contrast_pair', baseInput({ variant }))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.contrastPairData?.options).toEqual(['ini', 'itu'])
@@ -317,7 +309,7 @@ describe('buildContrastPair', () => {
   })
 
   it('fails when no active variant', () => {
-    const r = buildContrastPair(baseInput({ variant: null }))
+    const r = buildForExerciseType('contrast_pair', baseInput({ variant: null }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('no_active_variant')
   })
@@ -330,7 +322,7 @@ describe('buildContrastPair', () => {
       answer_key_json: {},
       created_at: '', updated_at: '',
     }
-    const r = buildContrastPair(baseInput({ variant }))
+    const r = buildForExerciseType('contrast_pair', baseInput({ variant }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_payload')
   })
@@ -350,7 +342,7 @@ describe('buildSentenceTransformation', () => {
       answer_key_json: { acceptableAnswers: ['Saya tidak makan'] },
       created_at: '', updated_at: '',
     }
-    const r = buildSentenceTransformation(baseInput({ variant }))
+    const r = buildForExerciseType('sentence_transformation', baseInput({ variant }))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.sentenceTransformationData?.sourceSentence).toBe('Saya makan')
@@ -358,7 +350,7 @@ describe('buildSentenceTransformation', () => {
   })
 
   it('fails when no active variant', () => {
-    const r = buildSentenceTransformation(baseInput({ variant: null }))
+    const r = buildForExerciseType('sentence_transformation', baseInput({ variant: null }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('no_active_variant')
   })
@@ -371,7 +363,7 @@ describe('buildSentenceTransformation', () => {
       answer_key_json: {},
       created_at: '', updated_at: '',
     }
-    const r = buildSentenceTransformation(baseInput({ variant }))
+    const r = buildForExerciseType('sentence_transformation', baseInput({ variant }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_payload')
   })
@@ -391,7 +383,7 @@ describe('buildConstrainedTranslation', () => {
       answer_key_json: { acceptableAnswers: ['Saya belum makan'] },
       created_at: '', updated_at: '',
     }
-    const r = buildConstrainedTranslation(baseInput({ variant }))
+    const r = buildForExerciseType('constrained_translation', baseInput({ variant }))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.constrainedTranslationData?.acceptableAnswers).toEqual(['Saya belum makan'])
@@ -399,7 +391,7 @@ describe('buildConstrainedTranslation', () => {
   })
 
   it('fails when no active variant', () => {
-    const r = buildConstrainedTranslation(baseInput({ variant: null }))
+    const r = buildForExerciseType('constrained_translation', baseInput({ variant: null }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('no_active_variant')
   })
@@ -414,7 +406,7 @@ describe('buildSpeaking', () => {
       answer_key_json: {},
       created_at: '', updated_at: '',
     }
-    const r = buildSpeaking(baseInput({ variant }))
+    const r = buildForExerciseType('speaking', baseInput({ variant }))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.speakingData?.targetPatternOrScenario).toBe('Selamat pagi')
@@ -422,7 +414,7 @@ describe('buildSpeaking', () => {
   })
 
   it('item-anchored fallback (no variant)', () => {
-    const r = buildSpeaking(baseInput({ variant: null }))
+    const r = buildForExerciseType('speaking', baseInput({ variant: null }))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.speakingData?.targetPatternOrScenario).toBe('akhir')

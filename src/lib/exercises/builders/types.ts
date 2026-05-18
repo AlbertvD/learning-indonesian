@@ -1,48 +1,24 @@
 // Shared types for capabilityContentService builders.
-// See docs/plans/2026-05-02-capability-content-service-spec.md §6.1.
+//
+// The per-builder input shape is BuilderInputFor<T> from the capabilities
+// deep module's renderContracts. The dispatch site (capabilityContentService)
+// constructs a RawProjectorInput and hands it to buildForExerciseType which
+// runs projectBuilderInput<T>() before dispatching. After projection, each
+// builder is statically guaranteed every field its contract requires is
+// non-null — no more per-builder `if (!input.X) return fail` guards.
 
-import type {
-  ExerciseItem,
-  LearningItem,
-  ItemMeaning,
-  ItemContext,
-  ItemAnswerVariant,
-  ExerciseVariant,
-} from '@/types/learning'
-import type { SessionBlock } from '@/lib/session-builder'
-import type { ArtifactKind } from '@/lib/capabilities/capabilityTypes'
-import type { CapabilityArtifact } from '@/lib/capabilities/artifactRegistry'
-import type { ResolutionReasonCode } from '@/services/capabilityContentService'
+// Import from the leaf module rather than the service re-export — keeps the
+// dependency graph acyclic. The service still re-exports for back-compat.
+import type { ResolutionReasonCode } from '@/lib/exercises/resolutionReasons'
+import type { ExerciseItem } from '@/types/learning'
 
-export interface BuilderInput {
-  block: SessionBlock
-  /** null only for grammar/pattern-anchored exercises (out of PR-2 scope). */
-  learningItem: LearningItem | null
-  /** All meanings for the item, both languages. The builder picks per
-   *  userLanguage with fallback. */
-  meanings: ItemMeaning[]
-  /** All contexts for the item; per-type filtering done in the builder. */
-  contexts: ItemContext[]
-  /** Acceptable answer variants — used by typed_recall fuzzy matching. */
-  answerVariants: ItemAnswerVariant[]
-  /** Active variant row for this (item, exerciseType) — null if none. */
-  variant: ExerciseVariant | null
-  /** Approved capability artifacts indexed by ArtifactKind for cheap lookup. */
-  artifactsByKind: Map<ArtifactKind, CapabilityArtifact>
-  /** All learning items eligible to participate as distractor candidates
-   *  (same-lesson, structurally similar). Each cascade-driven builder turns
-   *  these into DistractorCandidate[] with the right `option` flavor. */
-  poolItems: LearningItem[]
-  /** Meanings for every entry in poolItems, indexed by item id. */
-  poolMeaningsByItem: Map<string, ItemMeaning[]>
-  userLanguage: 'nl' | 'en'
-}
+export type { BuilderInputFor, RawProjectorInput } from '@/lib/capabilities/renderContracts'
 
 export type BuilderResult =
   | {
       kind: 'ok'
       exerciseItem: ExerciseItem
-      audibleTexts: string[]   // populated via audibleTextFieldsOf
+      audibleTexts: string[]
     }
   | {
       kind: 'fail'

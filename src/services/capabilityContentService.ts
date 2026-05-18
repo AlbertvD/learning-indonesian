@@ -12,7 +12,7 @@ import type { ArtifactKind } from '@/lib/capabilities/capabilityTypes'
 import type { CapabilityArtifact } from '@/lib/capabilities/artifactRegistry'
 import { decodeCanonicalKey, extractItemKey } from './capabilityContentService.internal'
 import { buildForExerciseType } from '@/lib/exercises/builders'
-import type { BuilderInput } from '@/lib/exercises/builders'
+import type { RawProjectorInput } from '@/lib/exercises/builders'
 import { chunkedIn } from '@/lib/chunkedQuery'
 
 // ─── Reason codes ───────────────────────────────────────────────────────────
@@ -338,7 +338,7 @@ export function createCapabilityContentService(client: SupabaseSchemaClient): Ca
         }
 
         const itemUuid = learningItem.id
-        const builderInput: BuilderInput = {
+        const rawInput: RawProjectorInput = {
           block,
           learningItem,
           meanings: meaningsByItem.get(itemUuid) ?? [],
@@ -351,7 +351,7 @@ export function createCapabilityContentService(client: SupabaseSchemaClient): Ca
           userLanguage: options.userLanguage,
         }
 
-        const built = buildForExerciseType(block.renderPlan.exerciseType, builderInput)
+        const built = buildForExerciseType(block.renderPlan.exerciseType, rawInput)
         if (built.kind === 'ok') {
           result.set(block.id, {
             blockId: block.id,

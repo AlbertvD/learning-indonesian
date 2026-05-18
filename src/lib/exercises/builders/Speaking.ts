@@ -1,15 +1,12 @@
 // builder for exerciseType='speaking'.
 // Authored payload OR fall back to learningItem.base_text as the model
-// utterance. Originally extracted from sessionQueue.ts (retired in #7).
+// utterance. Contract guarantees learningItem is non-null; variant is
+// nullable (item-anchored fallback path).
 
-import type { BuilderInput, BuilderResult } from './types'
+import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 
-export function buildSpeaking(input: BuilderInput): BuilderResult {
-  if (!input.learningItem) {
-    return { kind: 'fail', reasonCode: 'item_not_found', message: 'speaking requires a learningItem (PR-2 scope)' }
-  }
-
+export function buildSpeaking(input: BuilderInputFor<'speaking'>): BuilderResult {
   // Authored path
   if (input.variant && input.variant.exercise_type === 'speaking') {
     const payload = input.variant.payload_json as Record<string, unknown>
@@ -28,9 +25,9 @@ export function buildSpeaking(input: BuilderInput): BuilderResult {
     return { kind: 'ok', exerciseItem, audibleTexts: audibleTextFieldsOf(exerciseItem) }
   }
 
-  // Item-anchored fallback: model utterance is the item's base_text. Prompt is
-  // the user-language meaning; falls back to base_text if no meaning available
-  // (the speaking component shows the prompt for context only).
+  // Item-anchored fallback: model utterance is the item's base_text. Prompt
+  // is the user-language meaning; falls back to base_text if no meaning
+  // available (the speaking component shows the prompt for context only).
   const exerciseItem = {
     learningItem: input.learningItem,
     meanings: input.meanings,

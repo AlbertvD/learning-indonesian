@@ -2,29 +2,17 @@
 // User sees the Indonesian word, picks the user-language meaning from 4 options.
 // Pool option = each candidate's user-language translation.
 
-import type { BuilderInput, BuilderResult } from './types'
-import { pickUserLangMeaning } from './helpers'
+import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 import { pickDistractorCascade, getSemanticGroup, type DistractorCandidate } from '@/lib/distractors'
 
-export function buildRecognitionMCQ(input: BuilderInput): BuilderResult {
-  if (!input.learningItem) {
-    return { kind: 'fail', reasonCode: 'item_not_found', message: 'recognition_mcq requires a learningItem' }
-  }
-  const primary = pickUserLangMeaning(input.meanings, input.userLanguage)
-  if (!primary) {
-    return {
-      kind: 'fail',
-      reasonCode: 'no_meaning_in_lang',
-      message: `no ${input.userLanguage} meaning for item ${input.learningItem.id}`,
-      payloadSnapshot: { learningItemId: input.learningItem.id, userLanguage: input.userLanguage },
-    }
-  }
-  const correctAnswer = primary.translation_text
+export function buildRecognitionMCQ(input: BuilderInputFor<'recognition_mcq'>): BuilderResult {
+  // learningItem and primaryMeaning are non-null by contract (projector narrows).
+  const correctAnswer = input.primaryMeaning.translation_text
 
   // Pool option = candidate's user-language translation.
   const pool: DistractorCandidate[] = input.poolItems
-    .filter(i => i.id !== input.learningItem!.id)
+    .filter(i => i.id !== input.learningItem.id)
     .flatMap(i => {
       const ms = input.poolMeaningsByItem.get(i.id) ?? []
       const t = (ms.find(m => m.translation_language === input.userLanguage && m.is_primary)
