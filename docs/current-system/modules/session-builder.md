@@ -1,7 +1,7 @@
 ---
 module: session-builder
 surface: src/lib/session-builder/
-last_verified_against_code: 2026-05-17
+last_verified_against_code: 2026-05-18
 status: stable
 ---
 
@@ -299,7 +299,7 @@ The diagnostic surfaces in the UI via `Session.tsx`, which reads `plan.diagnosti
 - `lib/exercises/exerciseResolver.ts` — `resolveExercise(capability, readiness, artifactIndex)` is called inline during each pass to inflate the `renderPlan`. Currently lives outside the builder; the exercise-content fold will absorb the resolver into a new `lib/exercise-content/` module.
 - `lib/exercises/builders/*` — 12 builders that consume `audibleTextFieldsOf` from the barrel to populate per-block `audibleTexts`.
 - `lib/capabilities/capabilityScheduler.ts` — provides `getDueCapabilities` (date+flag filter; no FSRS math) and `getDueCapabilitiesFromRows`. Imports `SessionMode` back from the barrel.
-- `lib/capabilities/capabilityContracts.ts` — provides `validateCapability` for readiness.
+- `lib/capabilities/capabilityContracts.ts` — provides `validateCapability` for readiness. Post-PR #65, readiness derives from the shared `RENDER_CONTRACTS` table in `lib/capabilities/renderContracts.ts`; see `docs/current-system/modules/capabilities.md`.
 - `services/audioService.ts` — `fetchSessionAudioMap` consumes the aggregator's deduped audible-text list.
 
 ---

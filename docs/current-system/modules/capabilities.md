@@ -1,0 +1,222 @@
+---
+module: capabilities
+surface: src/lib/capabilities/
+last_verified_against_code: 2026-05-18
+status: stable
+---
+
+# Capabilities deep module
+
+**Surface:** `src/lib/capabilities/`
+
+**Files (8):**
+
+| File | LOC | Role |
+|---|---|---|
+| `capabilityTypes.ts` | 203 | Types only — `CapabilityType`, `CapabilitySourceKind`, `ArtifactKind`, `ProjectedCapability`, `CapabilityProjection`, `CurrentContentSnapshot`, and the `CAPABILITY_PROJECTION_VERSION` stamp. |
+| `capabilityCatalog.ts` | 217 | `projectCapabilities(snapshot)` — derives every `ProjectedCapability` from raw catalog content (learning items, grammar patterns, affixed-form pairs). Source-of-truth for which cap_types each content kind emits + what each cap_type's `requiredArtifacts` is. Podcast caps are emitted by a separate projector at `scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts` per Decision 4; contextual_cloze caps live in `scripts/lib/pipeline/capability-stage/projectors/vocab.ts` per Decision 5b. |
+| `capabilityContracts.ts` | 159 | `validateCapability(input)` — derives `CapabilityReadiness` from `RENDER_CONTRACTS` + the cap's projected `requiredArtifacts` + the artifact index. `isExposureOnly(cap)` for podcast caps. `validateCapabilities` for aggregate health. |
+| **`renderContracts.ts`** | 333 | **The shared render contract** — `RENDER_CONTRACTS`, `ContractInputShapes`, `BuilderInputFor<T>`, `projectBuilderInput<T>()`, plus inverted-lookup helpers (`exerciseTypesForCapability`, `requiredArtifactsFor`, `supportsSourceKind`). Sole source of truth for (a) which exercise types each cap_type is ready for, (b) which builder the resolver dispatches to, (c) what inputs each builder is guaranteed to receive. |
+| `artifactRegistry.ts` | 49 | `hasApprovedArtifact(...)` — quality + scope check (capabilityKey OR sourceRef must match). The exhaustive `ARTIFACT_KINDS` array (`as const satisfies readonly ArtifactKind[]`). |
+| `capabilityScheduler.ts` | 76 | `getDueCapabilities(...)` + `getDueCapabilitiesFromRows(...)` — date+flag filter, no FSRS math (FSRS lives server-side per ADR 0003). |
+| `canonicalKey.ts` | 40 | `buildCanonicalKey(input)` — encodes a `ProjectedCapability` into its stable canonical key. `normalizeLessonSourceRef` for legacy lesson-source-ref shapes. |
+| `itemSlug.ts` | 25 | `itemSlug(base_text)` — canonical slug derivation extracted in PR #59 to fix the silent slug-divergence bug class (~113 multi-word items unreachable). |
+
+**Consumers (production):**
+- `src/lib/session-builder/adapter.ts:299` — calls `validateCapability` per row to project readiness.
+- `src/services/capabilityContentService.ts:14, 350-362` — imports `buildForExerciseType` + `RawProjectorInput`; constructs raw input + dispatches via the projector.
+- `src/lib/exercises/exerciseResolver.ts` — imports `exerciseTypesForCapability` for compatibility lookup.
+- `src/lib/exercises/builders/types.ts` — re-exports `BuilderInputFor<T>` + `RawProjectorInput` for the 12 builders.
+- `scripts/promote-capabilities.ts:282` — calls `validateCapability` for promotion decisions.
+- `scripts/check-capability-health.ts:227` — calls `validateCapability` for health-report generation.
+
+**Status (2026-05-18):** stable. PR #65 introduced `renderContracts.ts` and rewrote `validateCapability` to consume it. The contract surface that previously lived as three divergent declarations (validator's `exerciseByCapability`, resolver's `compatibleExercisesByCapability`, builders' inline guards) now lives in one table.
+
+---
+
+## 1. Purpose
+
+Three responsibilities:
+
+1. **Project the catalog into capabilities.** `projectCapabilities(snapshot)` turns raw content (learning items, grammar patterns, affixed-form pairs) into the full set of `ProjectedCapability` rows, each with a canonical key, source kind, capability type, and declared `requiredArtifacts`.
+
+2. **Decide readiness.** `validateCapability` consults `RENDER_CONTRACTS` (which exercise types serve this cap_type AND support its source kind) plus the artifact index (are all required artifacts approved?) and returns a `CapabilityReadiness` — `ready` | `blocked` | `exposure_only` | `deprecated` | `unknown`.
+
+3. **Govern rendering.** `RENDER_CONTRACTS` declares per-exercise: which cap_types it serves, which source kinds it accepts, what artifacts it needs. `projectBuilderInput<T>()` narrows a `RawProjectorInput` into the per-builder typed input, performing every runtime guard the 12 builders used to re-implement. After projection, each builder is statically guaranteed every field its contract requires is non-null.
+
+---
+
+## 2. Public interface
+
+**Catalog projection:**
+- `projectCapabilities(input: CurrentContentSnapshot): CapabilityProjection` — `capabilityCatalog.ts:46`.
+
+**Readiness:**
+- `validateCapability(input: CapabilityValidationInput): CapabilityReadiness` — `capabilityContracts.ts:52`.
+- `validateCapabilities(input: { projection, artifacts }): CapabilityHealthReport` — `capabilityContracts.ts:141`.
+- `isExposureOnly(capability: Pick<ProjectedCapability, 'sourceKind'>): boolean` — `capabilityContracts.ts:17`. True for `podcast_segment` / `podcast_phrase`.
+- Types: `CapabilityReadiness`, `CapabilityHealthReport`, `CapabilityValidationInput`.
+
+**Render contract:**
+- `RENDER_CONTRACTS: Record<ExerciseType, RenderContract>` — `renderContracts.ts:43-103`. The runtime table.
+- `ContractInputShapes` — `renderContracts.ts:147-167`. The compile-time per-exercise input shape map.
+- `BuilderInputFor<T extends ExerciseType> = ContractInputShapes[T]` — `renderContracts.ts:171`.
+- `RawProjectorInput` — `renderContracts.ts:120-131`. The shared input shape the dispatcher constructs.
+- `projectBuilderInput<T>(exerciseType, raw): { ok: true; input: BuilderInputFor<T> } | { ok: false; reasonCode; ... }` — `renderContracts.ts:182`. The projector.
+- `exerciseTypesForCapability(capabilityType): readonly ExerciseType[]` — `renderContracts.ts:107`. Inverted lookup.
+- `requiredArtifactsFor(exerciseType): readonly ArtifactKind[]` — `renderContracts.ts:113`.
+- `supportsSourceKind(exerciseType, sourceKind): boolean` — `renderContracts.ts:117`.
+
+**Scheduling (no FSRS math):**
+- `getDueCapabilities(request, adapter): Promise<DueCapability[]>` — `capabilityScheduler.ts:41`.
+- `getDueCapabilitiesFromRows(input): DueCapability[]` — `capabilityScheduler.ts:53`. Pure function.
+
+**Artifact registry:**
+- `hasApprovedArtifact({ index, kind, capabilityKey, sourceRef }): boolean` — `artifactRegistry.ts:39`.
+- `ARTIFACT_KINDS` — `artifactRegistry.ts:14`. Exhaustive constant array.
+- Types: `CapabilityArtifact`, `ArtifactIndex`, `ArtifactQualityStatus`.
+
+**Canonical key + slug:**
+- `buildCanonicalKey(input: CanonicalKeyInput): string` — `canonicalKey.ts:29`.
+- `normalizeLessonSourceRef(sourceRef: string): string` — `canonicalKey.ts:22`.
+- `itemSlug(baseText: string): string` — `itemSlug.ts:23`. Single source of truth for slug derivation (PR #59).
+
+**Type unions (re-exported via `capabilityTypes.ts`):**
+- `CapabilityType`, `CapabilitySourceKind`, `ArtifactKind`, `CapabilityDirection`, `CapabilityModality`, `LearnerLanguage`.
+- `ProjectedCapability`, `CapabilityProjection`, `CapabilityAlias`, `ProjectionDiagnostic`.
+- `CAPABILITY_PROJECTION_VERSION` (`capability-v3`), `CAPABILITY_TYPES`, `CAPABILITY_SOURCE_KINDS`.
+
+---
+
+## 3. Internal flow
+
+### 3.1 The contract flow (read by every consumer)
+
+```
+RENDER_CONTRACTS table  (renderContracts.ts:43)
+        │
+        │  exerciseTypesForCapability(cap_type)
+        │       — which exercise types name this cap_type?
+        │  supportsSourceKind(et, sourceKind)
+        │       — does this exercise accept this source kind?
+        │  requiredArtifactsFor(et)
+        │       — what artifacts does this exercise's builder read?
+        ▼
+validateCapability(cap, artifacts)  (capabilityContracts.ts:52)
+        │
+        │  1. Short-circuit on exposure_only / readinessOverride.
+        │  2. candidateExercises = exerciseTypesForCapability(cap.capabilityType)
+        │                              .filter(supportsSourceKind(et, cap.sourceKind))
+        │  3. If empty → blocked with `no_compatible_exercise_for_capability_type`.
+        │  4. readyExercises = candidateExercises.filter(et => UNION(
+        │       contract.requiredArtifacts, cap.requiredArtifacts
+        │     ).every(approved))
+        │  5. If empty → blocked with missing artifacts.
+        │  6. Apply exerciseAvailability override.
+        │  7. Return ready / blocked.
+        ▼
+CapabilityReadiness  →  resolveExercise  →  ExerciseRenderPlan
+                            │
+                            │  picks first ready exercise from
+                            │  allowedExercises ∩ exerciseTypesForCapability;
+                            │  defence-in-depth artifact re-check uses
+                            │  cap.requiredArtifacts (not the contract's).
+                            ▼
+                       SessionBlock.renderPlan
+```
+
+### 3.2 The render flow (builder dispatch)
+
+```
+RawProjectorInput          (constructed at capabilityContentService.ts:332)
+        │
+        │  projectBuilderInput(exerciseType, raw)   (renderContracts.ts:182)
+        │
+        │  Single source of runtime gating:
+        │   - learningItem present?      → 'item_not_found'
+        │   - primaryMeaning needed?     → 'no_meaning_in_lang'
+        │   - clozeContext for cloze?    → 'malformed_cloze'
+        │   - matching variant for X?    → 'no_active_variant'
+        │   - cloze_mcq invariant:       at least one of (matching variant)
+        │                                or (clozeContext) is non-null
+        ▼
+BuilderInputFor<T>  (narrowed; learningItem etc. are non-null by TS)
+        │
+        │  BUILDERS[exerciseType](narrowedInput)
+        ▼
+BuilderResult  ({ kind: 'ok', exerciseItem, audibleTexts } | fail)
+```
+
+### 3.3 The catalog projection (one-shot, called by pipeline + tests)
+
+`projectCapabilities(snapshot)` walks every `learningItem`, every `grammarPattern`, every `affixedFormPair` in the snapshot and emits the appropriate cap rows. The mapping from content shape → cap_type rows is hardcoded in `capabilityCatalog.ts:46-217`. Podcast caps are NOT emitted here — they live in `scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts` per Decision 4. Contextual_cloze caps are NOT emitted here either — they live in `scripts/lib/pipeline/capability-stage/projectors/vocab.ts` per Decision 5b.
+
+---
+
+## 4. Invariants
+
+- **`RENDER_CONTRACTS` exhaustiveness.** Every `ExerciseType` must have an entry. Enforced by `as const satisfies Record<ExerciseType, RenderContract>` at `renderContracts.ts:103`. A new ExerciseType added to `@/types/learning` without a contract entry is a compile error.
+
+- **`ContractInputShapes` exhaustiveness.** Every `ExerciseType` must have an input-shape entry. Enforced by the `_CONTRACT_SHAPES_EXHAUSTIVENESS_CHECK` assertion at `renderContracts.ts:169-170`.
+
+- **Pattern caps are blocked at validateCapability.** `pattern_recognition` + `pattern_contrast` are intentionally absent from every `capabilityTypes` array (per PR #65 Option D — `renderContracts.ts:43-103`). `validateCapability` returns `blocked` with reason `no_compatible_exercise_for_capability_type`. Resolved by a future follow-up that introduces dedicated `pattern_cloze` / `pattern_contrast_pair` ExerciseTypes with contract entries consuming `pattern_explanation:l1` + `pattern_example` artifacts.
+
+- **`supportedSourceKinds: ['item']` for every contract today.** Codifies the `capabilityContentService.ts:240` runtime restriction at the contract layer. Caps with sourceKind in `{dialogue_line, affixed_form_pair, pattern, podcast_*}` cannot render through any current builder. Future fold work to widen the service expands these arrays.
+
+- **Exposure-only caps never enter spaced practice.** `isExposureOnly` returns true for `podcast_segment` / `podcast_phrase`; `validateCapability` short-circuits at line 53 before any source-kind / artifact checks.
+
+- **The projector is the sole runtime gate for builder input shape.** Builders trust their inputs — no more `if (!input.X) return fail` guards for fields the contract guarantees. The single exception is content-quality guards (cloze-context `___` marker, payload-shape validation in authored variants, distractor cascade min count) — those remain in the builder bodies because they're not contract-provable.
+
+- **`CAPABILITY_PROJECTION_VERSION` is fixed at `'capability-v3'`.** Bumped to v3 by Decision 3b (PR-1, ADR 0006). Bumping would invalidate every cached projection.
+
+- **`itemSlug` is the SOLE slug derivation function.** Per PR #59. Divergent local implementations historically caused ~113 multi-word items to become unreachable.
+
+---
+
+## 5. Seams (to other modules)
+
+### Upstream (data feeds the module)
+
+- `learning_capabilities` table — capability catalog rows (~thousands when projected).
+- `capability_artifacts` table — per-capability content blobs. Indexed into `ArtifactIndex` and consumed by `hasApprovedArtifact`.
+- `learner_capability_state` table — per-learner FSRS state (ADR 0001). Read-only here; written server-side by the review processor.
+
+### Downstream (the module feeds these)
+
+- **`lib/session-builder/`** — `adapter.ts:299` calls `validateCapability` per row. `builder.ts:197` consumes the resulting `CapabilityReadiness` via `resolveCandidate`. See `docs/current-system/modules/session-builder.md`.
+- **`lib/exercises/exerciseResolver.ts`** — calls `exerciseTypesForCapability` for the cap → exercise dispatch lookup. Trusts the validator's `readiness.allowedExercises`; does NOT replicate source-kind filtering.
+- **`lib/exercises/builders/`** — 12 builders consume `BuilderInputFor<T>` types; the dispatcher at `builders/index.ts:50` runs `projectBuilderInput<T>()` before invoking each.
+- **`services/capabilityContentService.ts`** — sole runtime caller of `buildForExerciseType`. Constructs `RawProjectorInput` at line 332 and dispatches at line 362.
+- **`scripts/promote-capabilities.ts`, `scripts/check-capability-health.ts`** — call `validateCapability` for promotion + health-report generation.
+
+### Sibling
+
+- **`lib/exercises/resolutionReasons.ts`** — leaf module owning `ResolutionReasonCode`. Created in PR #65 to break what would otherwise be a circular import between `renderContracts.ts` and `capabilityContentService.ts`. Re-exported from the service for back-compat with `builders/types.ts`.
+
+---
+
+## 6. Known limitations and follow-ups
+
+- **Pattern renderers missing.** `pattern_recognition` + `pattern_contrast` capabilities are blocked at validateCapability pending the introduction of `pattern_cloze` / `pattern_contrast_pair` ExerciseTypes with their own builders. Follow-up issue tracks this.
+
+- **`supportedSourceKinds: ['item']` is the current ceiling.** `contextual_cloze` (sourceKind `dialogue_line`) and `root_derived_*` (sourceKind `affixed_form_pair`) capabilities are correctly marked `blocked` at validateCapability because no current builder can render their source-kind. The capabilityContentService fold (per `docs/target-architecture.md`) widens this.
+
+- **Legacy projection for lessons 1-3.** Documented in `capabilityTypes.ts:96` (the comment at the top of `CurrentContentSnapshot`). Lessons 1-3 still use a legacy bridge; lessons 4+ use the pipeline. Separate cleanup, not owned here.
+
+- **Artifact-payload schema seam not contractualised.** The `hasConcreteArtifactPayload` per-kind shape requirements (used by `check-capability-health.ts`) live outside `RENDER_CONTRACTS`. Same shared-contract pattern applies; documented as a follow-up.
+
+---
+
+## 7. What this spec does NOT cover
+
+- **Per-card rendering / React components.** Owned by `src/components/exercises/implementations/` (the 12 per-type renderers). See `docs/current-system/modules/experience.md` for the player's contract.
+
+- **FSRS scheduling math.** Server-side, ADR 0003. The capability scheduler here does only the date+flag filter; no SM-2 / FSRS math runs client-side.
+
+- **Answer commits.** Server-side Edge Function (`supabase/functions/commit-capability-answer-report/index.ts`), ADR 0004 (atomic review commits).
+
+- **Lesson reader content.** Owned by `lib/lessons/`, see `docs/current-system/modules/lesson-renderer.md`.
+
+- **The publish pipeline.** Stage A (lesson-stage) + Stage B (capability-stage) write the rows this module reads. See `docs/process/content-pipeline.md` and the stage-specific module specs.
+
+- **Session orchestration.** Owned by `lib/session-builder/`. See `docs/current-system/modules/session-builder.md` for the planner/composer/budget flow.
