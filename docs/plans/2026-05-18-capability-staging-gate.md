@@ -1,5 +1,14 @@
 ---
-status: implementing
+status: shipped
+implementation: PR #70
+merged_at: 2026-05-18
+implementation_paths:
+  - src/lib/session-builder/pedagogy.ts
+  - src/lib/session-builder/adapter.ts
+  - src/lib/session-builder/compose.ts
+  - src/lib/session-builder/__tests__/compose.test.ts
+  - docs/adr/0007-receptive-before-productive-staging.md
+  - docs/current-system/modules/session-builder.md
 ---
 
 # Capability staging gate + session-block interleave
