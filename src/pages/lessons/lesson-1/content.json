@@ -1,0 +1,1007 @@
+{
+  "meta": {
+    "id": "cb78cfa6-0146-4e65-89fd-da692642f6bf",
+    "order_index": 1,
+    "title": "Les 1 - Di Pasar (Op de markt)",
+    "level": "A1",
+    "description": "Leer de basisuitspraakregels van het Indonesisch, essentiële grammaticaprincipes (werkwoord, zelfstandig naamwoord, bijvoeglijk naamwoord), en oefen met een marktdialoog en de getallen 0-10.",
+    "primary_voice": "id-ID-Chirp3-HD-Despina",
+    "duration_seconds": null,
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-1.m4a"
+  },
+  "sections": [
+    {
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "intro": "De Indonesische woorden kan men in het begin het best rustig en zonder klemtoon uitspreken. Van belang bij de uitspraak is een gelijkmatig ritme. Hierbij worden we geholpen door het feit dat de woorden over het algemeen niet lang zijn en een indeling in lettergrepen makkelijk te maken is.",
+        "examples": [
+          {
+            "dutch": "Welkom",
+            "phonetic": "Se-la-mat da-tang",
+            "indonesian": "Selamat datang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/selamat-datang-696a227b.mp3"
+          },
+          {
+            "dutch": "Hoe is het ermee?",
+            "phonetic": "A-pa ka-bar?",
+            "indonesian": "Apa kabar?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/apa-kabar-820ae655.mp3"
+          },
+          {
+            "dutch": "Goed, dank u wel",
+            "phonetic": "Ba-ik, te-ri-ma ka-sih",
+            "indonesian": "Baik, terima kasih"
+          },
+          {
+            "dutch": "Gaat u naar Bandung?",
+            "phonetic": "Ba-pak ke Ban-dung?",
+            "indonesian": "Bapak ke Bandung?"
+          }
+        ],
+        "spelling": [
+          {
+            "rule": "c = tj",
+            "dutch": "voldoende",
+            "example": "cukup (tjoekoep)"
+          },
+          {
+            "rule": "j = dj",
+            "dutch": "Jakarta",
+            "example": "Jakarta (Djakarta)"
+          },
+          {
+            "rule": "u = oe",
+            "dutch": "mevrouw, u",
+            "example": "Ibu (Iboe)"
+          },
+          {
+            "rule": "y = j",
+            "dutch": "Surabaya",
+            "example": "Surabaya (Soerabaja)"
+          },
+          {
+            "rule": "ny = nj",
+            "dutch": "mevrouw, u",
+            "example": "nyonya (njonja)"
+          },
+          {
+            "rule": "kh = ch",
+            "dutch": "einde",
+            "example": "akhir (achir)"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "text",
+        "intro": "Een paar eenvoudige zinnen om de basisstructuur van het Indonesisch te oefenen:",
+        "sentences": [
+          {
+            "dutch": "Ik ga/ging naar de/een markt",
+            "indonesian": "Saya ke pasar"
+          },
+          {
+            "dutch": "Ik koop/kocht een vrucht/vruchten",
+            "indonesian": "Saya beli buah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/saya-beli-buah-3729b610.mp3"
+          },
+          {
+            "dutch": "Meneer koopt/kocht fruit",
+            "indonesian": "Bapak beli buah-buahan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bapak-beli-buahbuahan-c4388f89.mp3"
+          },
+          {
+            "dutch": "Meneer en mevrouw kopen/kochten een ananas",
+            "indonesian": "Bapak dan Ibu beli nanas"
+          },
+          {
+            "dutch": "Ik wil/wilde een groot huis kopen",
+            "indonesian": "Saya mau beli rumah besar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/saya-mau-beli-rumah-b2460a89.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "grammar",
+        "intro": "In de voorgaande Indonesische zinnen zijn enkele bijzonderheden op te merken, namelijk:",
+        "categories": [
+          {
+            "rules": [
+              "Zinnen zonder een werkwoord zijn heel gewoon.",
+              "Werkwoorden worden niet vervoegd naar enkel- of meervoud.",
+              "Werkwoorden worden niet vervoegd naar tegenwoordige of verleden tijd. Tenzij uit de context anders blijkt, vertaalt men het werkwoord in de tegenwoordige tijd.",
+              "Werkwoorden worden bij elkaar gezet."
+            ],
+            "title": "Werkwoord",
+            "examples": [
+              {
+                "dutch": "Dat [is] duur (geen koppelwerkwoord)",
+                "indonesian": "Itu mahal",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/itu-mahal-ab8bea54.mp3"
+              },
+              {
+                "dutch": "Ik koop een vrucht (geen vervoeging)",
+                "indonesian": "Saya beli buah",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/saya-beli-buah-3729b610.mp3"
+              },
+              {
+                "dutch": "Ik wil een groot huis kopen (werkwoorden bij elkaar)",
+                "indonesian": "Saya mau beli rumah besar",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/saya-mau-beli-rumah-b2460a89.mp3"
+              }
+            ]
+          },
+          {
+            "rules": [
+              "Zelfstandige naamwoorden hebben geen lidwoord (de, het, een).",
+              "Er wordt bij zelfstandige naamwoorden geen onderscheid gemaakt tussen enkelvoud en meervoud.",
+              "Herhaling van een zelfstandig naamwoord geeft meervoud of verscheidenheid aan.",
+              "Als uit de context blijkt dat er sprake is van meervoud of verscheidenheid, wordt een zelfstandig naamwoord niet verdubbeld (2 huizen = dua rumah en niet dua rumah-rumah)."
+            ],
+            "title": "Zelfstandig naamwoord",
+            "examples": [
+              {
+                "dutch": "Ik koop een/het huis (geen lidwoord)",
+                "indonesian": "Saya beli rumah"
+              },
+              {
+                "dutch": "Twee huizen (geen meervoud bij telwoord)",
+                "indonesian": "Dua rumah"
+              },
+              {
+                "dutch": "Allerlei fruit (reduplicatie = verscheidenheid)",
+                "indonesian": "Buah-buahan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/buahbuahan-c45d9c10.mp3"
+              }
+            ]
+          },
+          {
+            "rules": [
+              "Het bijvoeglijk naamwoord wordt achter het zelfstandig naamwoord geplaatst."
+            ],
+            "title": "Bijvoeglijk naamwoord",
+            "examples": [
+              {
+                "dutch": "Een groot huis (bijv.nw. na znw.)",
+                "indonesian": "Rumah besar",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/rumah-besar-98669f44.mp3"
+              }
+            ]
+          }
+        ],
+        "grammar_topics": [
+          "Basale woordsoorten"
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
+        "type": "dialogue",
+        "lines": [
+          {
+            "text": "Pak, saya mau beli tiga buah pisang. Berapa harganya?",
+            "speaker": "Ibu",
+            "translation": "Meneer, ik wil graag drie bananen kopen. Hoeveel kosten ze?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/pak-saya-mau-beli-f725b1ff.mp3"
+          },
+          {
+            "text": "Harganya murah Bu, delapan rupiah.",
+            "speaker": "Penjual",
+            "translation": "Ze zijn goedkoop mevrouw, acht roepiah.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/harganya-murah-bu-delapan-7e12296e.mp3"
+          },
+          {
+            "text": "Itu mahal ya! Empat rupiah boleh?",
+            "speaker": "Ibu",
+            "translation": "Dat is duur! Vier roepiah mogelijk?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/itu-mahal-ya-empat-42f9f436.mp3"
+          },
+          {
+            "text": "Belum bisa Bu. Tetapi kalau mau lima buah, bisa sembilan rupiah.",
+            "speaker": "Penjual",
+            "translation": "Dat kan niet mevrouw. Maar als u vijf stuks wilt, kan het voor negen roepiah.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/belum-bisa-bu-tetapi-3d486b00.mp3"
+          }
+        ],
+        "setup": "Ibu mau ke pasar. Mau beli pisang."
+      }
+    },
+    {
+      "order_index": 4,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "einde",
+            "indonesian": "akhir",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/akhir-a379c80a.mp3"
+          },
+          {
+            "dutch": "wat?",
+            "indonesian": "apa?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/apa-39612e2f.mp3"
+          },
+          {
+            "dutch": "taal",
+            "indonesian": "bahasa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bahasa-e9be75af.mp3"
+          },
+          {
+            "dutch": "goed",
+            "indonesian": "baik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/baik-593599a7.mp3"
+          },
+          {
+            "dutch": "meneer, vader, u",
+            "indonesian": "bapak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bapak-13619f63.mp3"
+          },
+          {
+            "dutch": "kopen",
+            "indonesian": "beli",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/beli-b7fe2d14.mp3"
+          },
+          {
+            "dutch": "nog niet",
+            "indonesian": "belum",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/belum-229316db.mp3"
+          },
+          {
+            "dutch": "hoeveel?",
+            "indonesian": "berapa?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/berapa-ba194872.mp3"
+          },
+          {
+            "dutch": "groot",
+            "indonesian": "besar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/besar-ccb6de20.mp3"
+          },
+          {
+            "dutch": "kunnen, mogen",
+            "indonesian": "bisa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bisa-f8ed2b5e.mp3"
+          },
+          {
+            "dutch": "mogen, kunnen",
+            "indonesian": "boleh",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/boleh-61406141.mp3"
+          },
+          {
+            "dutch": "vrucht",
+            "indonesian": "buah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/buah-ad2989e4.mp3"
+          },
+          {
+            "dutch": "voldoende",
+            "indonesian": "cukup",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/cukup-dd335355.mp3"
+          },
+          {
+            "dutch": "en",
+            "indonesian": "dan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dan-b568ccd1.mp3"
+          },
+          {
+            "dutch": "uit, van",
+            "indonesian": "dari",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dari-9dc1d36b.mp3"
+          },
+          {
+            "dutch": "komen",
+            "indonesian": "datang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/datang-e7a8f681.mp3"
+          },
+          {
+            "dutch": "in, op, te",
+            "indonesian": "di",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/di-7b01f7a4.mp3"
+          },
+          {
+            "dutch": "prijs",
+            "indonesian": "harga",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/harga-2ee76c25.mp3"
+          },
+          {
+            "dutch": "hotel",
+            "indonesian": "hotel",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hotel-1d14a163.mp3"
+          },
+          {
+            "dutch": "mevrouw, moeder, u",
+            "indonesian": "ibu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ibu-e94fd077.mp3"
+          },
+          {
+            "dutch": "indonesië",
+            "indonesian": "indonesia",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/indonesia-3d830d97.mp3"
+          },
+          {
+            "dutch": "dat, die",
+            "indonesian": "itu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/itu-00ec8483.mp3"
+          },
+          {
+            "dutch": "bericht",
+            "indonesian": "kabar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kabar-3bf455f9.mp3"
+          },
+          {
+            "dutch": "indien, wanneer",
+            "indonesian": "kalau",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kalau-0f3c1a8a.mp3"
+          },
+          {
+            "dutch": "gunst, genegenheid",
+            "indonesian": "kasih",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kasih-9a31d6b6.mp3"
+          },
+          {
+            "dutch": "naar",
+            "indonesian": "ke",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ke-1a9e7e2c.mp3"
+          },
+          {
+            "dutch": "leeg",
+            "indonesian": "kosong",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kosong-c6525167.mp3"
+          },
+          {
+            "dutch": "duur",
+            "indonesian": "mahal",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mahal-59096b51.mp3"
+          },
+          {
+            "dutch": "eten",
+            "indonesian": "makan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/makan-aeb27f80.mp3"
+          },
+          {
+            "dutch": "willen",
+            "indonesian": "mau",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mau-9463d8a5.mp3"
+          },
+          {
+            "dutch": "goedkoop",
+            "indonesian": "murah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/murah-55b9148f.mp3"
+          },
+          {
+            "dutch": "ananas",
+            "indonesian": "nanas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/nanas-b63149bb.mp3"
+          },
+          {
+            "dutch": "mevrouw, u",
+            "indonesian": "nyonya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/nyonya-80467b2a.mp3"
+          },
+          {
+            "dutch": "mens",
+            "indonesian": "orang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/orang-b77dfb07.mp3"
+          },
+          {
+            "dutch": "markt",
+            "indonesian": "pasar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pasar-30e9a349.mp3"
+          },
+          {
+            "dutch": "verkoper",
+            "indonesian": "penjual",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/penjual-4e3b020b.mp3"
+          },
+          {
+            "dutch": "banaan",
+            "indonesian": "pisang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pisang-5de724c3.mp3"
+          },
+          {
+            "dutch": "huis",
+            "indonesian": "rumah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/rumah-25b8a581.mp3"
+          },
+          {
+            "dutch": "munteenheid",
+            "indonesian": "rupiah (Rp)",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/rupiah-rp-3c8583a1.mp3"
+          },
+          {
+            "dutch": "ik, mijn",
+            "indonesian": "saya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/saya-00f12deb.mp3"
+          },
+          {
+            "dutch": "veilig, welzijn",
+            "indonesian": "selamat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/selamat-7f395818.mp3"
+          },
+          {
+            "dutch": "ontvangen",
+            "indonesian": "terima",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/terima-5145e489.mp3"
+          },
+          {
+            "dutch": "maar, echter",
+            "indonesian": "tetapi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tetapi-9422f99a.mp3"
+          },
+          {
+            "dutch": "niet, nee",
+            "indonesian": "tidak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tidak-40bb4679.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 5,
+      "content": {
+        "type": "expressions",
+        "items": [
+          {
+            "dutch": "Hoe gaat het ermee?",
+            "indonesian": "Apa kabar?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/apa-kabar-820ae655.mp3"
+          },
+          {
+            "dutch": "Goed, dank u wel",
+            "indonesian": "Baik-baik saja",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/baikbaik-saja-6e4c87a8.mp3"
+          },
+          {
+            "dutch": "Wat kost het?",
+            "indonesian": "Berapa harganya?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/berapa-harganya-ef692cc9.mp3"
+          },
+          {
+            "dutch": "Het is goedkoop; de prijs is laag",
+            "indonesian": "Harganya murah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/harganya-murah-76842ab5.mp3"
+          },
+          {
+            "dutch": "Welkom",
+            "indonesian": "Selamat datang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/selamat-datang-696a227b.mp3"
+          },
+          {
+            "dutch": "Dank u wel",
+            "indonesian": "Terima kasih",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/terima-kasih-db7c82e0.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 6,
+      "content": {
+        "type": "numbers",
+        "items": [
+          {
+            "dutch": "0",
+            "indonesian": "nol, kosong",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/nol-kosong-3486c2df.mp3"
+          },
+          {
+            "dutch": "1",
+            "indonesian": "satu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/satu-cc21d748.mp3"
+          },
+          {
+            "dutch": "2",
+            "indonesian": "dua",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dua-2493df87.mp3"
+          },
+          {
+            "dutch": "3",
+            "indonesian": "tiga",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tiga-4e738dbf.mp3"
+          },
+          {
+            "dutch": "4",
+            "indonesian": "empat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/empat-950ec13e.mp3"
+          },
+          {
+            "dutch": "5",
+            "indonesian": "lima",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lima-d4f51dd7.mp3"
+          },
+          {
+            "dutch": "6",
+            "indonesian": "enam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/enam-a91f23b3.mp3"
+          },
+          {
+            "dutch": "7",
+            "indonesian": "tujuh",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tujuh-a5f51f01.mp3"
+          },
+          {
+            "dutch": "8",
+            "indonesian": "delapan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/delapan-d59e38fb.mp3"
+          },
+          {
+            "dutch": "9",
+            "indonesian": "sembilan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sembilan-3bdaa9f2.mp3"
+          },
+          {
+            "dutch": "10",
+            "indonesian": "sepuluh",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sepuluh-2945d9a0.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 7,
+      "content": {
+        "type": "pronunciation",
+        "letters": [
+          {
+            "rule": "kort als in kam",
+            "letter": "a",
+            "examples": [
+              "apa",
+              "akan",
+              "siapa",
+              "tetapi"
+            ]
+          },
+          {
+            "rule": "als in bang",
+            "letter": "b",
+            "examples": [
+              "bagus",
+              "bapak",
+              "barang",
+              "berapa"
+            ]
+          },
+          {
+            "rule": "als in tjalk",
+            "letter": "c",
+            "examples": [
+              "cendol",
+              "coklat",
+              "kecil",
+              "kunci"
+            ]
+          },
+          {
+            "rule": "als in denken",
+            "letter": "d",
+            "examples": [
+              "dan",
+              "dari",
+              "delapan",
+              "datang"
+            ]
+          },
+          {
+            "rule": "als in bericht",
+            "letter": "e",
+            "examples": [
+              "beli",
+              "berat",
+              "dekat",
+              "enam"
+            ]
+          },
+          {
+            "rule": "als in Eva",
+            "letter": "é",
+            "examples": [
+              "sate (saté)",
+              "sore (soré)"
+            ]
+          },
+          {
+            "rule": "als in bek",
+            "letter": "è",
+            "examples": [
+              "enak (ènak)",
+              "teh (tèh)"
+            ]
+          },
+          {
+            "rule": "als in falen",
+            "letter": "f",
+            "examples": [
+              "fanatik",
+              "famili",
+              "fakir",
+              "faham"
+            ]
+          },
+          {
+            "rule": "als in 'go'",
+            "letter": "g",
+            "examples": [
+              "gampang",
+              "gelas",
+              "gigi",
+              "gengsi"
+            ]
+          },
+          {
+            "rule": "als in heet",
+            "letter": "h",
+            "examples": [
+              "hangat",
+              "harus",
+              "hati",
+              "helai"
+            ]
+          },
+          {
+            "rule": "als in iep",
+            "letter": "i",
+            "examples": [
+              "ikan",
+              "istri",
+              "ikut",
+              "isi"
+            ]
+          },
+          {
+            "rule": "als in 'James'",
+            "letter": "j",
+            "examples": [
+              "jam",
+              "jangan",
+              "juga",
+              "saja"
+            ]
+          },
+          {
+            "rule": "als in kalm",
+            "letter": "k",
+            "examples": [
+              "kabar",
+              "kamar",
+              "kalau",
+              "ke"
+            ]
+          },
+          {
+            "rule": "als in lang",
+            "letter": "l",
+            "examples": [
+              "lama",
+              "lalu",
+              "lagi",
+              "laku"
+            ]
+          },
+          {
+            "rule": "als in mak",
+            "letter": "m",
+            "examples": [
+              "makan",
+              "masih",
+              "mau",
+              "mati"
+            ]
+          },
+          {
+            "rule": "als in na",
+            "letter": "n",
+            "examples": [
+              "nasi",
+              "nanas",
+              "nanti",
+              "negeri"
+            ]
+          },
+          {
+            "rule": "als in optiek",
+            "letter": "o",
+            "examples": [
+              "opelet",
+              "orang",
+              "otak",
+              "otot"
+            ]
+          },
+          {
+            "rule": "als in pa",
+            "letter": "p",
+            "examples": [
+              "pada",
+              "pagi",
+              "paksa",
+              "pasar"
+            ]
+          },
+          {
+            "rule": "als in kalm",
+            "letter": "q",
+            "examples": [
+              "qari",
+              "qariah",
+              "Quran",
+              "Alquran"
+            ]
+          },
+          {
+            "rule": "als in radio",
+            "letter": "r",
+            "examples": [
+              "raba",
+              "rambut",
+              "rasa",
+              "rumah"
+            ]
+          },
+          {
+            "rule": "als in staan",
+            "letter": "s",
+            "examples": [
+              "saya",
+              "sayang",
+              "sudah",
+              "sayur"
+            ]
+          },
+          {
+            "rule": "als in trein",
+            "letter": "t",
+            "examples": [
+              "terima",
+              "teman",
+              "tenun",
+              "tiga"
+            ]
+          },
+          {
+            "rule": "als in oever",
+            "letter": "u",
+            "examples": [
+              "uang",
+              "ubi",
+              "utara",
+              "tubuh"
+            ]
+          },
+          {
+            "rule": "als in varen",
+            "letter": "v",
+            "examples": [
+              "via",
+              "visa",
+              "vitamin",
+              "vokal"
+            ]
+          },
+          {
+            "rule": "als in waar",
+            "letter": "w",
+            "examples": [
+              "wah!",
+              "walau",
+              "warta",
+              "wisma"
+            ]
+          },
+          {
+            "rule": "als in ex",
+            "letter": "x",
+            "examples": [
+              "xerox",
+              "sinar-X",
+              "xilofon",
+              "xenograf"
+            ]
+          },
+          {
+            "rule": "als in ja",
+            "letter": "y",
+            "examples": [
+              "yakin",
+              "yang",
+              "ayam",
+              "ya"
+            ]
+          },
+          {
+            "rule": "als in zang",
+            "letter": "z",
+            "examples": [
+              "zaman",
+              "ziarah",
+              "zina",
+              "zakat"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 8,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Saya ke pasar",
+                "prompt": "Ik ga naar de markt"
+              },
+              {
+                "answer": "Ibu beli enam pisang",
+                "prompt": "Mevrouw koopt zes bananen"
+              },
+              {
+                "answer": "Berapa harganya?",
+                "prompt": "Wat kost het?"
+              },
+              {
+                "answer": "Selamat datang Bu, apa kabar?",
+                "prompt": "Welkom mevrouw, hoe is het met u?"
+              },
+              {
+                "answer": "Saya tidak mau pisang, saya mau nanas",
+                "prompt": "Ik wil geen bananen, ik wil ananas"
+              },
+              {
+                "answer": "Bapak makan buah",
+                "prompt": "Meneer eet een vrucht"
+              },
+              {
+                "answer": "Ibu Gusti Ayu dan ibu datang dari Bali",
+                "prompt": "Mevrouw Gusti Ayu en moeder komen uit Bali"
+              },
+              {
+                "answer": "Di toko pisang mahal, di pasar murah",
+                "prompt": "In de winkel zijn bananen duur, op de markt zijn ze goedkoop"
+              },
+              {
+                "answer": "Apa kabar? Baik, terima kasih",
+                "prompt": "Hoe gaat het ermee? Goed, dank u wel"
+              },
+              {
+                "answer": "Dua ibu beli sembilan buah",
+                "prompt": "Twee dames kopen negen vruchten"
+              }
+            ],
+            "title": "Oefening I",
+            "instruction": "Vertaal in het Indonesisch."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Ik wil geen bananen eten",
+                "prompt": "Saya tidak mau makan pisang"
+              },
+              {
+                "answer": "Welkom, mevrouw, hoe gaat het ermee?",
+                "prompt": "Selamat datang, Bu, apa kabar?"
+              },
+              {
+                "answer": "Goed, dank u wel",
+                "prompt": "Baik, terima kasih"
+              },
+              {
+                "answer": "De prijs van bananen is goedkoop, de prijs van ananas is duur",
+                "prompt": "Harga pisang murah, harga nanas mahal"
+              },
+              {
+                "answer": "Meneer en mevrouw willen niet naar de markt, maar naar het hotel",
+                "prompt": "Bapak dan Ibu tidak mau ke pasar, tetapi mau ke hotel"
+              },
+              {
+                "answer": "Hoeveel vruchten wilt u, meneer? Drie",
+                "prompt": "Bapak mau berapa buah? Tiga"
+              },
+              {
+                "answer": "Zeven ananassen is niet genoeg",
+                "prompt": "Tujuh nanas tidak cukup"
+              },
+              {
+                "answer": "Ik wil acht kopen",
+                "prompt": "Saya mau beli delapan"
+              },
+              {
+                "answer": "Mevrouw komt van de markt en koopt ananas en bananen",
+                "prompt": "Ibu datang dari pasar dan beli nanas dan pisang"
+              },
+              {
+                "answer": "Negen vruchten zijn duur, ik wil zes vruchten",
+                "prompt": "Sembilan buah mahal, saya mau enam buah"
+              }
+            ],
+            "title": "Oefening II",
+            "instruction": "Vertaal in het Nederlands."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "dua pisang",
+                "prompt": "2 bananen"
+              },
+              {
+                "answer": "sembilan bapak",
+                "prompt": "9 heren"
+              },
+              {
+                "answer": "tujuh nanas",
+                "prompt": "7 ananassen"
+              },
+              {
+                "answer": "enam ibu",
+                "prompt": "6 dames"
+              },
+              {
+                "answer": "empat penjual",
+                "prompt": "4 verkopers"
+              },
+              {
+                "answer": "tiga toko",
+                "prompt": "3 winkels"
+              },
+              {
+                "answer": "tiga ibu",
+                "prompt": "drie dames"
+              },
+              {
+                "answer": "sembilan toko",
+                "prompt": "negen winkels"
+              },
+              {
+                "answer": "dua orang",
+                "prompt": "twee mensen"
+              },
+              {
+                "answer": "enam nanas",
+                "prompt": "zes ananassen"
+              },
+              {
+                "answer": "lima bahasa",
+                "prompt": "vijf talen"
+              },
+              {
+                "answer": "empat rupiah",
+                "prompt": "vier rupiah"
+              }
+            ],
+            "title": "Oefening III",
+            "instruction": "Schrijf voluit in het Indonesisch."
+          }
+        ]
+      }
+    }
+  ],
+  "runtime_components": {
+    "ActivationGate": {
+      "import": "import { ActivationGate } from '@/components/lessons/ActivationGate'",
+      "usage": "<ActivationGate lessonId=\"cb78cfa6-0146-4e65-89fd-da692642f6bf\" />",
+      "purpose": "The user-controlled checkbox that adds this lesson's capabilities to spaced review.",
+      "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
+    },
+    "LessonAudioPlayer": {
+      "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
+      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-1.m4a\" voice=\"id-ID-Chirp3-HD-Despina\" />",
+      "purpose": "The lesson-level explanation/overview audio player.",
+      "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
+    },
+    "PracticeActions": {
+      "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
+      "usage": "<PracticeActions lessonId=\"cb78cfa6-0146-4e65-89fd-da692642f6bf\" />",
+      "purpose": "Wired to runtime capability counts; renders \"Practice this lesson · N ready\" and \"Review this lesson\" CTAs.",
+      "placement": "Anywhere on the page. Conventionally pinned to a sidebar or near the bottom as a conclusion CTA."
+    }
+  }
+}
