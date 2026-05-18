@@ -225,6 +225,10 @@ function toPlannerState(row: LearnerCapabilityStateRow): PlannerLearnerCapabilit
     activationState: row.activationState,
     reviewCount: row.reviewCount,
     successfulReviewCount: Math.max(0, row.reviewCount - row.lapseCount - row.consecutiveFailureCount),
+    // FSRS stability in days. Used by the receptive-before-productive staging
+    // gate in pedagogy.ts (added 2026-05-18). Null when no FSRS state is yet
+    // recorded for the capability (dormant rows before any review).
+    stability: row.stability,
   }
 }
 
