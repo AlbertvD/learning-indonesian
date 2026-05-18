@@ -60,26 +60,34 @@ describe('morphology capability projection', () => {
     }))
   })
 
-  it('keeps morphology readiness artifact-based and exercise-resolvable', () => {
+  it('blocks morphology readiness until a renderer for affixed_form_pair source kinds ships', () => {
+    // Per PR #65 (renderContracts.ts), every contract's supportedSourceKinds
+    // is currently ['item'] — codifying capabilityContentService.ts:240's
+    // existing rejection of non-item source kinds at the contract layer.
+    // Morphology caps have sourceKind='affixed_form_pair', so they're marked
+    // `blocked` at validateCapability instead of passing as `ready` and then
+    // silently dropping downstream. When the future capabilityContentService
+    // fold widens supportedSourceKinds, this test restores the resolved-plan
+    // assertion against the new contract entry.
     const recall = projectCapabilities(snapshot).capabilities.find(capability => capability.capabilityType === 'root_derived_recall')!
     const artifactIndex = {
       root_derived_pair: [{ qualityStatus: 'approved' as const, sourceRef: pairSourceRef }],
       allomorph_rule: [{ qualityStatus: 'approved' as const, sourceRef: pairSourceRef }],
     }
     const readiness = validateCapability({ capability: recall, artifacts: artifactIndex })
-
-    expect(readiness).toEqual({ status: 'ready', allowedExercises: ['typed_recall'] })
+    expect(readiness.status).toBe('blocked')
+    if (readiness.status === 'blocked') {
+      expect(readiness.reason).toMatch(/no_compatible_exercise_for_capability_type/)
+    }
     expect(resolveExercise({
       capability: recall,
       readiness,
       artifactIndex,
-    })).toEqual(expect.objectContaining({
-      status: 'resolved',
-      plan: expect.objectContaining({
-        exerciseType: 'typed_recall',
-        capabilityType: 'root_derived_recall',
-      }),
-    }))
+    })).toEqual({
+      status: 'failed',
+      reason: 'capability_not_ready',
+      details: 'Capability readiness is blocked',
+    })
   })
 
   it('requires pattern noticing and recognition success before root-to-derived practice enters the queue', () => {
