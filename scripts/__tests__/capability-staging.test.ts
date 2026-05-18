@@ -147,6 +147,73 @@ describe('capability staging', () => {
     expect(plan.capabilities.every(c => c.lessonId === null)).toBe(true)
   })
 
+  // Replaces the old behavior where hasAudio was hardcoded false in the
+  // snapshot, causing audio_recognition and dictation capabilities to never
+  // be emitted — even when the lesson's audio_clips were fully in place.
+  // The audio map is supplied by the capability-stage loader from live DB
+  // rows; presence in the map ⇒ audio exists ⇒ both capabilities emit.
+  describe('audio capability emission', () => {
+    it('omits audio_recognition and dictation when no audio map is provided', () => {
+      const contentUnits = buildContentUnitsFromStaging(input)
+      const plan = buildCapabilityStagingFromContent({ ...input, contentUnits })
+      const types = plan.capabilities.map(c => c.capabilityType)
+      expect(types).not.toContain('audio_recognition')
+      expect(types).not.toContain('dictation')
+    })
+
+    it('emits audio_recognition + dictation when audio coverage matches the item', () => {
+      const contentUnits = buildContentUnitsFromStaging(input)
+      const audio = new Map([
+        ['makan', { storage_path: 'lesson-1/makan-Achird.mp3', voice_id: 'Achird' }],
+      ])
+      const plan = buildCapabilityStagingFromContent({
+        ...input,
+        contentUnits,
+        audioClipsByNormalizedText: audio,
+      })
+
+      expect(plan.capabilities).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          capabilityType: 'audio_recognition',
+          sourceRef: 'learning_items/makan',
+          modality: 'audio',
+          direction: 'audio_to_l1',
+        }),
+        expect.objectContaining({
+          capabilityType: 'dictation',
+          sourceRef: 'learning_items/makan',
+          modality: 'audio',
+          direction: 'audio_to_id',
+        }),
+      ]))
+
+      expect(plan.exerciseAssets).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          artifact_kind: 'audio_clip',
+          quality_status: 'approved',
+          payload_json: { storagePath: 'lesson-1/makan-Achird.mp3', voiceId: 'Achird' },
+        }),
+      ]))
+    })
+
+    it('omits audio capabilities for items not present in the audio map', () => {
+      const contentUnits = buildContentUnitsFromStaging(input)
+      // Audio exists for an unrelated text; "makan" has no audio.
+      const audio = new Map([
+        ['minum', { storage_path: 'lesson-1/minum-Achird.mp3', voice_id: 'Achird' }],
+      ])
+      const plan = buildCapabilityStagingFromContent({
+        ...input,
+        contentUnits,
+        audioClipsByNormalizedText: audio,
+      })
+      const audioCaps = plan.capabilities.filter(
+        c => c.capabilityType === 'audio_recognition' || c.capabilityType === 'dictation',
+      )
+      expect(audioCaps).toEqual([])
+    })
+  })
+
   it('accepts reviewed accepted-answer assets that use values instead of a single value', () => {
     const contentUnits = buildContentUnitsFromStaging(input)
     const plan = buildCapabilityStagingFromContent({ ...input, contentUnits })
