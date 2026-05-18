@@ -8,7 +8,7 @@ import { Login } from '@/pages/Login'
 import { Register } from '@/pages/Register'
 import { Dashboard } from '@/pages/Dashboard'
 import { Lessons } from '@/pages/Lessons'
-import { Lesson } from '@/pages/Lesson'
+import { LessonRouter } from '@/pages/LessonRouter'
 import { Session } from '@/pages/Session'
 import { LocalPreviewIndex, LocalPreviewLesson } from '@/pages/LocalPreview'
 
@@ -24,9 +24,10 @@ const ContentReview = lazy(() => import('@/pages/ContentReview').then(m => ({ de
 const DesignLab = lazy(() => import('@/pages/admin/DesignLab').then(m => ({ default: m.DesignLab })))
 const PageLab = lazy(() => import('@/pages/admin/PageLab').then(m => ({ default: m.PageLab })))
 
-// ─── Bespoke lesson pages (preview) ───────────────────────────────────────────
-// Per-lesson designed reader pages. Each lesson has its own composition; not
-// served via the /lesson/:lessonId route yet — viewable at /lesson-preview/<N>.
+// ─── Bespoke lesson pages — preview routes ────────────────────────────────────
+// /lesson/:lessonId resolves to the bespoke page when one is registered (see
+// pages/lessons/registry.ts and LessonRouter). These /lesson-preview/<N>
+// routes stay as stable explicit URLs for in-progress design work.
 const Lesson1Bespoke = lazy(() => import('@/pages/lessons/lesson-1/Page'))
 
 function LazyPage({ children }: { children: React.ReactNode }) {
@@ -76,7 +77,7 @@ function App() {
           path="/lesson/:lessonId"
           element={
             <ProtectedRoute>
-              <Lesson />
+              <LessonRouter />
             </ProtectedRoute>
           }
         />
