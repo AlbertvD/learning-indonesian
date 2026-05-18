@@ -1,6 +1,17 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #66
+merged_at: 2026-05-18
+implementation_paths:
+  - src/lib/capabilities/renderContracts.ts
+  - src/lib/capabilities/capabilityContracts.ts
+  - src/lib/exercises/exerciseResolver.ts
+  - src/lib/exercises/builders/
+  - src/lib/exercises/resolutionReasons.ts
+  - src/services/capabilityContentService.ts
+  - src/__tests__/renderContractsValidatorMatrix.test.ts
+  - docs/current-system/modules/capabilities.md
+  - docs/current-system/modules/session-builder.md
 supersedes: []
 ---
 
