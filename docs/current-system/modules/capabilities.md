@@ -2,17 +2,19 @@
 module: capabilities
 surface: src/lib/capabilities/
 last_verified_against_code: 2026-05-18
+inbound_port: src/lib/capabilities/index.ts
 status: stable
 ---
 
 # Capabilities deep module
 
-**Surface:** `src/lib/capabilities/`
+**Surface:** `src/lib/capabilities/`. Inbound port: `index.ts` — all `src/` production callers import from `@/lib/capabilities`. Internal files remain importable from their paths for tests and for sibling files inside the module.
 
-**Files (8):**
+**Files (9):**
 
 | File | LOC | Role |
 |---|---|---|
+| `index.ts` | — | Barrel — re-exports the public surface (every externally-consumed symbol). The inbound port per target-architecture.md §2. |
 | `capabilityTypes.ts` | 203 | Types only — `CapabilityType`, `CapabilitySourceKind`, `ArtifactKind`, `ProjectedCapability`, `CapabilityProjection`, `CurrentContentSnapshot`, and the `CAPABILITY_PROJECTION_VERSION` stamp. |
 | `capabilityCatalog.ts` | 217 | `projectCapabilities(snapshot)` — derives every `ProjectedCapability` from raw catalog content (learning items, grammar patterns, affixed-form pairs). Source-of-truth for which cap_types each content kind emits + what each cap_type's `requiredArtifacts` is. Podcast caps are emitted by a separate projector at `scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts` per Decision 4; contextual_cloze caps live in `scripts/lib/pipeline/capability-stage/projectors/vocab.ts` per Decision 5b. |
 | `capabilityContracts.ts` | 159 | `validateCapability(input)` — derives `CapabilityReadiness` from `RENDER_CONTRACTS` + the cap's projected `requiredArtifacts` + the artifact index. `isExposureOnly(cap)` for podcast caps. `validateCapabilities` for aggregate health. |
@@ -22,15 +24,26 @@ status: stable
 | `canonicalKey.ts` | 40 | `buildCanonicalKey(input)` — encodes a `ProjectedCapability` into its stable canonical key. `normalizeLessonSourceRef` for legacy lesson-source-ref shapes. |
 | `itemSlug.ts` | 25 | `itemSlug(base_text)` — canonical slug derivation extracted in PR #59 to fix the silent slug-divergence bug class (~113 multi-word items unreachable). |
 
-**Consumers (production):**
-- `src/lib/session-builder/adapter.ts:299` — calls `validateCapability` per row to project readiness.
-- `src/services/capabilityContentService.ts:14, 350-362` — imports `buildForExerciseType` + `RawProjectorInput`; constructs raw input + dispatches via the projector.
-- `src/lib/exercises/exerciseResolver.ts` — imports `exerciseTypesForCapability` for compatibility lookup.
-- `src/lib/exercises/builders/types.ts` — re-exports `BuilderInputFor<T>` + `RawProjectorInput` for the 12 builders.
-- `scripts/promote-capabilities.ts:282` — calls `validateCapability` for promotion decisions.
-- `scripts/check-capability-health.ts:227` — calls `validateCapability` for health-report generation.
+**Consumers (production):** all `src/` callers import from `@/lib/capabilities` (the barrel). Scripts continue to use relative paths into specific files until they are migrated.
 
-**Status (2026-05-18):** stable. PR #65 introduced `renderContracts.ts` and rewrote `validateCapability` to consume it. The contract surface that previously lived as three divergent declarations (validator's `exerciseByCapability`, resolver's `compatibleExercisesByCapability`, builders' inline guards) now lives in one table.
+- `src/lib/session-builder/adapter.ts` — calls `validateCapability` per row to project readiness; pulls `getDueCapabilitiesFromRows` + most projection types.
+- `src/lib/session-builder/builder.ts` — pulls `getDueCapabilities`, scheduler types, `CapabilityReadiness`, `ProjectedCapability`.
+- `src/lib/session-builder/pedagogy.ts`, `labels.ts` — pull `CapabilityType` / `CapabilitySourceKind` for planner + display labels.
+- `src/lib/mastery/masteryModel.ts` — pulls cap_type / source_kind / artifact types for the mastery-labelling rules.
+- `src/lib/exercises/builders/index.ts` — calls `projectBuilderInput` to narrow raw input before dispatching to typed builders.
+- `src/lib/exercises/builders/types.ts` — re-exports `BuilderInputFor<T>` + `RawProjectorInput` for the 12 builders.
+- `src/lib/exercises/exerciseResolver.ts` — calls `exerciseTypesForCapability` for compatibility lookup; consumes `CapabilityReadiness`, `ArtifactIndex`, `hasApprovedArtifact`.
+- `src/lib/exercises/exerciseRenderPlan.ts` — consumes `ArtifactKind`, `ProjectedCapability` for the render-plan shape.
+- `src/services/capabilityContentService.ts` — imports `ArtifactKind`, `CapabilityArtifact`; dispatches via `buildForExerciseType` from `@/lib/exercises/builders` (which itself reaches into capabilities).
+- `src/services/capabilityContentService.internal.ts` — consumes `CAPABILITY_SOURCE_KINDS`, `CapabilitySourceKind` for canonical-key decoding.
+- `src/services/capabilityService.ts` — consumes the cap_type / direction / modality / language enums for the DB row shape.
+- `scripts/promote-capabilities.ts` — calls `validateCapability` for promotion decisions.
+- `scripts/check-capability-health.ts` — calls `validateCapability` + `validateCapabilities` for health-report generation; also pulls `CapabilityHealthReport`, `ExerciseAvailabilityIndex`.
+- `scripts/materialize-capabilities.ts`, `scripts/lib/content-pipeline-output.ts`, `scripts/data/staging/podcast-warung-market/capabilities.ts` — call `projectCapabilities`.
+- `scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts`, `scripts/lib/pipeline/capability-stage/projectors/vocab.ts` — call `buildCanonicalKey` + the `CAPABILITY_PROJECTION_VERSION` stamp.
+- `scripts/lib/pipeline/capability-stage/{adapter,lint/duplicateItems,projectors/vocab,validators/itemSourceRefResolvability}.ts`, plus `scripts/seed-cloze-contexts.ts`, `scripts/repair-item-meanings.ts`, `scripts/reactivate-dialogue-chunks.ts`, `scripts/cleanup-annotations.ts`, `scripts/publish-grammar-candidates.ts` — call `itemSlug` for canonical slug derivation.
+
+**Status (2026-05-18):** stable. PR #65 introduced `renderContracts.ts` and rewrote `validateCapability` to consume it. The contract surface that previously lived as three divergent declarations (validator's `exerciseByCapability`, resolver's `compatibleExercisesByCapability`, builders' inline guards) now lives in one table. Inbound-port barrel (`index.ts`) added 2026-05-18; all `src/` production callers now route through it.
 
 ---
 

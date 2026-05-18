@@ -1,11 +1,11 @@
-import type { ArtifactIndex } from '@/lib/capabilities/artifactRegistry'
-import type { CapabilityReadiness } from '@/lib/capabilities/capabilityContracts'
 import {
   getDueCapabilities,
+  type ArtifactIndex,
+  type CapabilityReadiness,
   type CapabilitySchedulerReadAdapter,
   type LearnerCapabilityStateRow,
-} from '@/lib/capabilities/capabilityScheduler'
-import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
+  type ProjectedCapability,
+} from '@/lib/capabilities'
 import { resolveExercise } from '@/lib/exercises/exerciseResolver'
 import { planLearningPath, type PedagogyInput, type PlannerCapability } from '@/lib/session-builder/pedagogy'
 import { compose } from '@/lib/session-builder/compose'

@@ -8,7 +8,7 @@
 
 import type { ExerciseType } from '@/types/learning'
 import type { BuilderInputFor, BuilderResult, RawProjectorInput } from './types'
-import { projectBuilderInput } from '@/lib/capabilities/renderContracts'
+import { projectBuilderInput } from '@/lib/capabilities'
 
 import { buildRecognitionMCQ } from './RecognitionMCQ'
 import { buildCuedRecall } from './CuedRecall'

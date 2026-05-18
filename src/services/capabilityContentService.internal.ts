@@ -3,8 +3,7 @@
 //
 // See docs/plans/2026-05-02-capability-content-service-spec.md §4.3.
 
-import type { CapabilitySourceKind } from '@/lib/capabilities/capabilityTypes'
-import { CAPABILITY_SOURCE_KINDS } from '@/lib/capabilities/capabilityTypes'
+import { CAPABILITY_SOURCE_KINDS, type CapabilitySourceKind } from '@/lib/capabilities'
 
 const VALID_SOURCE_KINDS: ReadonlySet<CapabilitySourceKind> = new Set(CAPABILITY_SOURCE_KINDS)
 

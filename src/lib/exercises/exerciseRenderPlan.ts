@@ -1,4 +1,4 @@
-import type { ArtifactKind, ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
+import type { ArtifactKind, ProjectedCapability } from '@/lib/capabilities'
 import type { ExerciseType } from '@/types/learning'
 
 export interface ExerciseRenderPlan {

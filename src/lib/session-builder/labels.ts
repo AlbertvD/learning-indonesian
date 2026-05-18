@@ -1,4 +1,4 @@
-import type { CapabilityType } from '@/lib/capabilities/capabilityTypes'
+import type { CapabilityType } from '@/lib/capabilities'
 import type { ExerciseType, SkillType } from '@/types/learning'
 
 export interface CapabilityDisplay {
