@@ -1,5 +1,5 @@
 ---
-status: approved
+status: implementing
 ---
 
 # Capability staging gate + session-block interleave
