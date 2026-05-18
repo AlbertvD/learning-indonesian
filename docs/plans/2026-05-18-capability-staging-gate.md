@@ -136,6 +136,14 @@ The `switch` is exhaustive over the `CapabilityType` union; the TS compiler will
 - It does not enforce a maximum number of productive intros per session — that remains the job of `maxNewProductionTasks` in `loadBudget.ts`.
 - It does not differentiate by user — the gate is per-capability-type and per-`source_ref`, not per-learner-profile.
 
+### 4.5 Morphology carve-out (`affixed_form_pair`)
+
+Morphology capabilities (`source_kind = 'affixed_form_pair'`) have **no Phase 1+2 siblings** in the catalog — both `root_derived_recognition` and `root_derived_recall` are productive per the §3 taxonomy. Applying the staging gate to morphology would permanently orphan-suppress every morphology cap, because there is no receptive sibling that can ever satisfy the unlock condition.
+
+The carve-out exempts `affixed_form_pair` from the staging gate. The sequencing within morphology is preserved by the existing **prerequisite chain** (`prerequisiteKeys` on the projection): `root_derived_recall` is gated behind a successful `root_derived_recognition`, enforced by the `missing_prerequisite` suppression rule at `pedagogy.ts:197-200`. The two mechanisms compose — staging gate handles receptive→productive (vocab/dialogue/grammar); prerequisite chain handles recognition→recall (morphology).
+
+Implementation: a single `capability.sourceKind !== 'affixed_form_pair'` guard in the staging-gate condition (`pedagogy.ts`).
+
 ## 5. Rule B — Block interleave (composer post-pass)
 
 **Where:** `src/lib/session-builder/compose.ts:compose`, inserted after the three append loops (line 105) and before `blocks.slice(0, input.limit)` (line 111).

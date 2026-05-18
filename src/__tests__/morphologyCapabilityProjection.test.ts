@@ -100,7 +100,11 @@ describe('morphology capability projection', () => {
       now: new Date('2026-04-25T00:00:00.000Z'),
       preferredSessionSize: 10,
       dueCount: 0,
-      readyCapabilities: [asPlannerCapability(recall)],
+      // Include both caps in the ready pool to match production behaviour:
+      // adapter.ts:262-264 selects every ready+published capability, not a
+      // subset. The sibling lookup in the staging gate (added 2026-05-18)
+      // depends on the sibling existing in the projection.
+      readyCapabilities: [asPlannerCapability(recognition), asPlannerCapability(recall)],
       activatedLessons: new Set<string>(),
     }
 
@@ -113,8 +117,12 @@ describe('morphology capability projection', () => {
       learnerCapabilityStates: [{
         canonicalKey: recognition.canonicalKey,
         activationState: 'active',
-        reviewCount: 1,
+        reviewCount: 2,
         successfulReviewCount: 1,
+        // stability >= 1d satisfies the receptive-before-productive staging
+        // gate (2026-05-18). The test's prerequisite-chain assertion still
+        // holds; this just supplies the additional gate input.
+        stability: 2.0,
       }],
     })
 

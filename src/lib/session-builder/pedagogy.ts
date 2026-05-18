@@ -31,6 +31,12 @@ export interface PlannerLearnerCapabilityState {
   activationState: 'dormant' | 'active' | 'suspended' | 'retired'
   reviewCount: number
   successfulReviewCount: number
+  // FSRS stability in days. Null when the capability has never been reviewed
+  // (the row may exist as dormant with no FSRS state yet). Used by the
+  // staging gate to admit productive capabilities only when a sibling
+  // capability sharing the same source_ref has stabilised — see
+  // docs/plans/2026-05-18-capability-staging-gate.md.
+  stability: number | null
 }
 
 export type PlannerReason =
@@ -43,6 +49,7 @@ export type PlannerReason =
   | 'recent_failure_fatigue'
   | 'wrong_session_mode'
   | 'load_budget_exhausted'
+  | 'productive_capability_not_unlocked'
 
 export interface EligibleCapability {
   capability: PlannerCapability
@@ -135,6 +142,56 @@ function isAllowedInSessionMode(capability: PlannerCapability): boolean {
   return capability.sourceKind !== 'podcast_phrase'
 }
 
+// Receptive-before-productive staging. Phase 3+4 capabilities require a
+// sibling for the same source_ref to have stabilised before they unlock.
+// Conservative classification per docs/plans/2026-05-18-capability-staging-gate.md §3:
+// types that *can* render as Phase 4 are classified at Phase 4 even when an
+// MCQ resolution is possible. The switch is exhaustive over CapabilityType so
+// any new type added to capabilityTypes.ts will fail compilation here.
+function capabilityPhase(type: CapabilityType): 1 | 2 | 3 | 4 {
+  switch (type) {
+    case 'text_recognition':
+    case 'audio_recognition':
+    case 'podcast_gist':
+      return 1
+    case 'meaning_recall':
+      return 2
+    case 'l1_to_id_choice':
+    case 'pattern_contrast':
+      return 3
+    case 'form_recall':
+    case 'contextual_cloze':
+    case 'dictation':
+    case 'root_derived_recognition':
+    case 'root_derived_recall':
+    case 'pattern_recognition':
+      return 4
+  }
+}
+
+// Stability threshold for "this trace exists." Operationally, FSRS initialises
+// stability around 0.21d after a first "good" answer; after a successful
+// re-review the next day, stability climbs past 1d. So `>= 1d` means
+// "at least one successful retrieval after the introduction." Tune from
+// review-event aggregates over weeks.
+const STAGING_STABILITY_THRESHOLD_DAYS = 1
+
+function buildUnlockedSourceRefs(input: {
+  readyCapabilities: readonly PlannerCapability[]
+  learnerCapabilityStates: readonly PlannerLearnerCapabilityState[]
+}): Set<string> {
+  const capabilityByCanonicalKey = new Map(input.readyCapabilities.map(cap => [cap.canonicalKey, cap]))
+  const unlocked = new Set<string>()
+  for (const state of input.learnerCapabilityStates) {
+    if (state.activationState !== 'active') continue
+    if ((state.stability ?? 0) < STAGING_STABILITY_THRESHOLD_DAYS) continue
+    if (state.successfulReviewCount < 1) continue
+    const cap = capabilityByCanonicalKey.get(state.canonicalKey)
+    if (cap) unlocked.add(cap.sourceRef)
+  }
+  return unlocked
+}
+
 function isLessonScopedMode(mode: SessionMode): boolean {
   return mode === 'lesson_practice' || mode === 'lesson_review'
 }
@@ -159,6 +216,10 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
   const satisfiedKeys = new Set(input.learnerCapabilityStates
     .filter(state => state.activationState === 'active' && state.successfulReviewCount > 0)
     .map(state => state.canonicalKey))
+  const unlockedSourceRefs = buildUnlockedSourceRefs({
+    readyCapabilities: input.readyCapabilities,
+    learnerCapabilityStates: input.learnerCapabilityStates,
+  })
   const eligibleNewCapabilities: EligibleCapability[] = []
   const suppressedCapabilities: SuppressedCapability[] = []
   let patternCount = 0
@@ -200,6 +261,28 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
     }
     if (hasRecentFailureFatigue({ capability, now: input.now, recentFailures: input.recentFailures })) {
       suppress('recent_failure_fatigue')
+      continue
+    }
+    // Receptive-before-productive staging gate. Phase 3+4 candidates only
+    // unlock once a sibling capability sharing the same source_ref has
+    // stabilised (active + stability >= 1d + at least one successful review).
+    // See docs/plans/2026-05-18-capability-staging-gate.md §4. Phase 1+2
+    // candidates always pass this gate; they are the path to unlocking
+    // their own siblings.
+    //
+    // Morphology carve-out: affixed_form_pair capabilities have no Phase 1/2
+    // siblings (both `root_derived_recognition` and `root_derived_recall`
+    // are productive). The receptive→productive ladder doesn't apply; the
+    // existing prerequisite chain (recognition → recall, encoded in
+    // `prerequisiteKeys`) already enforces a within-pattern learning order.
+    // Without this carve-out, every morphology capability is permanently
+    // orphan-suppressed.
+    if (
+      capability.sourceKind !== 'affixed_form_pair'
+      && capabilityPhase(capability.capabilityType) >= 3
+      && !unlockedSourceRefs.has(capability.sourceRef)
+    ) {
+      suppress('productive_capability_not_unlocked')
       continue
     }
     if (!isAllowedInSessionMode(capability)) {

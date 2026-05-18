@@ -176,6 +176,7 @@ describe('capability session loader', () => {
       activationState: 'active',
       reviewCount: 1,
       successfulReviewCount: 1,
+      stability: null,
     }]
 
     const plan = await loadCapabilitySessionPlan(baseInput({

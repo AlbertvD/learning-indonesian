@@ -121,6 +121,7 @@ describe('pedagogy planner', () => {
         activationState: 'active',
         reviewCount: 1,
         successfulReviewCount: 0,
+        stability: null,
       }],
       activatedLessons: new Set(),
     })
@@ -260,6 +261,9 @@ describe('pedagogy planner', () => {
   it('walks ready capabilities in input order and exhausts budget without reordering', () => {
     // preferredSessionSize=1, dueCount=0 → openSlots=1 → maxNewCapabilities=1.
     // Only the first cap in input order fits; the second is suppressed.
+    // Both caps use receptive types (Phase ≤ 2) so the staging gate at
+    // pedagogy.ts (added 2026-05-18) does not interfere with the budget rule
+    // this test exercises.
     const plan = planLearningPath({
       userId: 'user-1',
       mode: 'standard',
@@ -274,10 +278,10 @@ describe('pedagogy planner', () => {
           skillType: 'meaning_recall',
         }),
         capability({
-          id: 'choice-cap',
-          canonicalKey: 'choice-cap',
-          capabilityType: 'l1_to_id_choice',
-          skillType: 'meaning_recall',
+          id: 'recognition-cap',
+          canonicalKey: 'recognition-cap',
+          capabilityType: 'text_recognition',
+          skillType: 'recognition',
         }),
       ],
       learnerCapabilityStates: [],
@@ -285,7 +289,7 @@ describe('pedagogy planner', () => {
     })
 
     expect(plan.eligibleNewCapabilities.map(item => item.capability.canonicalKey)).toEqual(['meaning-cap'])
-    expect(plan.suppressedCapabilities).toContainEqual({ canonicalKey: 'choice-cap', reason: 'load_budget_exhausted' })
+    expect(plan.suppressedCapabilities).toContainEqual({ canonicalKey: 'recognition-cap', reason: 'load_budget_exhausted' })
   })
 
   it('fills openSlots with new caps in standard mode when the eligible pool is large enough', () => {
@@ -316,5 +320,222 @@ describe('pedagogy planner', () => {
     expect(plan.loadBudget.maxNewCapabilities).toBe(19)
     const suppressedForBudget = plan.suppressedCapabilities.filter(item => item.reason === 'load_budget_exhausted')
     expect(suppressedForBudget).toHaveLength(6)
+  })
+})
+
+// Plan: docs/plans/2026-05-18-capability-staging-gate.md (§4, §7.1)
+describe('pedagogy planner — receptive-before-productive staging gate', () => {
+  // Build a productive (Phase 4) candidate that shares a sourceRef with the
+  // hypothetical receptive sibling at 'cap:receptive'.
+  const sharedSourceRef = 'learning_items/test-item'
+  const productive = (overrides: Partial<PlannerCapability> = {}): PlannerCapability => capability({
+    id: 'productive-cap',
+    canonicalKey: 'cap:productive',
+    capabilityType: 'form_recall',
+    skillType: 'meaning_recall',
+    sourceRef: sharedSourceRef,
+    ...overrides,
+  })
+
+  const baseInput = {
+    userId: 'user-1',
+    mode: 'standard' as const,
+    now: new Date('2026-05-18T00:00:00.000Z'),
+    preferredSessionSize: 25,
+    dueCount: 0,
+    activatedLessons: new Set<string>(),
+  }
+
+  it('suppresses a Phase-4 candidate when no sibling state exists', () => {
+    const plan = planLearningPath({
+      ...baseInput,
+      readyCapabilities: [productive()],
+      learnerCapabilityStates: [],
+    })
+    expect(plan.eligibleNewCapabilities).toEqual([])
+    expect(plan.suppressedCapabilities[0]?.reason).toBe('productive_capability_not_unlocked')
+  })
+
+  it('suppresses a Phase-4 candidate when the sibling is dormant', () => {
+    const plan = planLearningPath({
+      ...baseInput,
+      readyCapabilities: [productive()],
+      learnerCapabilityStates: [{
+        canonicalKey: 'cap:receptive',
+        activationState: 'dormant',
+        reviewCount: 0,
+        successfulReviewCount: 0,
+        stability: null,
+      }],
+    })
+    expect(plan.eligibleNewCapabilities).toEqual([])
+    expect(plan.suppressedCapabilities[0]?.reason).toBe('productive_capability_not_unlocked')
+  })
+
+  it('suppresses a Phase-4 candidate when sibling stability is below 1 day', () => {
+    const plan = planLearningPath({
+      ...baseInput,
+      readyCapabilities: [productive()],
+      learnerCapabilityStates: [{
+        canonicalKey: 'cap:receptive',
+        activationState: 'active',
+        reviewCount: 1,
+        successfulReviewCount: 1,
+        stability: 0.5,
+      }],
+      // sibling lookup must also find the receptive cap in the planner pool:
+      // sourceRef matching is what links the productive candidate to the state.
+    })
+    // No sibling capability in readyCapabilities, so canonicalKey → sourceRef
+    // mapping fails — the gate still suppresses.
+    expect(plan.eligibleNewCapabilities).toEqual([])
+    expect(plan.suppressedCapabilities[0]?.reason).toBe('productive_capability_not_unlocked')
+  })
+
+  it('suppresses a Phase-4 candidate when sibling has zero successful reviews', () => {
+    const receptive = capability({
+      id: 'receptive-cap',
+      canonicalKey: 'cap:receptive',
+      capabilityType: 'text_recognition',
+      sourceRef: sharedSourceRef,
+    })
+    const plan = planLearningPath({
+      ...baseInput,
+      readyCapabilities: [receptive, productive()],
+      learnerCapabilityStates: [{
+        canonicalKey: 'cap:receptive',
+        activationState: 'active',
+        reviewCount: 0,
+        successfulReviewCount: 0,
+        stability: 2.0,
+      }],
+    })
+    // The receptive cap is suppressed as 'already_active_or_retired'; the
+    // productive cap is suppressed by the staging gate because the sibling
+    // has no successful review yet.
+    const productiveSuppression = plan.suppressedCapabilities.find(s => s.canonicalKey === 'cap:productive')
+    expect(productiveSuppression?.reason).toBe('productive_capability_not_unlocked')
+  })
+
+  it('admits a Phase-4 candidate when the sibling is fully unlocked', () => {
+    const receptive = capability({
+      id: 'receptive-cap',
+      canonicalKey: 'cap:receptive',
+      capabilityType: 'text_recognition',
+      sourceRef: sharedSourceRef,
+    })
+    const plan = planLearningPath({
+      ...baseInput,
+      readyCapabilities: [receptive, productive()],
+      learnerCapabilityStates: [{
+        canonicalKey: 'cap:receptive',
+        activationState: 'active',
+        reviewCount: 2,
+        successfulReviewCount: 1,
+        stability: 1.0,
+      }],
+    })
+    const eligibleKeys = plan.eligibleNewCapabilities.map(e => e.capability.canonicalKey)
+    expect(eligibleKeys).toContain('cap:productive')
+  })
+
+  it('admits a Phase-3 candidate when the sibling is fully unlocked', () => {
+    const receptive = capability({
+      id: 'receptive-cap',
+      canonicalKey: 'cap:receptive',
+      capabilityType: 'text_recognition',
+      sourceRef: sharedSourceRef,
+    })
+    const productiveMcq = capability({
+      id: 'mcq-cap',
+      canonicalKey: 'cap:mcq',
+      capabilityType: 'l1_to_id_choice',
+      sourceRef: sharedSourceRef,
+    })
+    const plan = planLearningPath({
+      ...baseInput,
+      readyCapabilities: [receptive, productiveMcq],
+      learnerCapabilityStates: [{
+        canonicalKey: 'cap:receptive',
+        activationState: 'active',
+        reviewCount: 3,
+        successfulReviewCount: 2,
+        stability: 5.0,
+      }],
+    })
+    const eligibleKeys = plan.eligibleNewCapabilities.map(e => e.capability.canonicalKey)
+    expect(eligibleKeys).toContain('cap:mcq')
+  })
+
+  it('does not gate Phase-1 candidates regardless of sibling state', () => {
+    const newReceptive = capability({
+      id: 'new-receptive',
+      canonicalKey: 'cap:new-receptive',
+      capabilityType: 'text_recognition',
+      sourceRef: 'learning_items/other-item',
+    })
+    const plan = planLearningPath({
+      ...baseInput,
+      readyCapabilities: [newReceptive],
+      learnerCapabilityStates: [],
+    })
+    expect(plan.eligibleNewCapabilities).toHaveLength(1)
+    expect(plan.eligibleNewCapabilities[0]?.capability.canonicalKey).toBe('cap:new-receptive')
+  })
+
+  it('does not gate Phase-2 candidates regardless of sibling state', () => {
+    const newMeaning = capability({
+      id: 'new-meaning',
+      canonicalKey: 'cap:new-meaning',
+      capabilityType: 'meaning_recall',
+      sourceRef: 'learning_items/other-item',
+    })
+    const plan = planLearningPath({
+      ...baseInput,
+      readyCapabilities: [newMeaning],
+      learnerCapabilityStates: [],
+    })
+    expect(plan.eligibleNewCapabilities).toHaveLength(1)
+    expect(plan.eligibleNewCapabilities[0]?.capability.canonicalKey).toBe('cap:new-meaning')
+  })
+
+  it('suppresses orphan productive caps (no receptive sibling in the catalog)', () => {
+    // pattern_recognition has no receptive sibling at the moment (per §3.2 the
+    // pattern types are inert at runtime, but the planner contract is still
+    // safe: orphan productive caps stay locked until a sibling lands).
+    const orphan = capability({
+      id: 'orphan-cap',
+      canonicalKey: 'cap:orphan',
+      capabilityType: 'pattern_recognition',
+      sourceRef: 'patterns/orphan-pattern',
+    })
+    const plan = planLearningPath({
+      ...baseInput,
+      readyCapabilities: [orphan],
+      learnerCapabilityStates: [],
+    })
+    expect(plan.eligibleNewCapabilities).toEqual([])
+    expect(plan.suppressedCapabilities[0]?.reason).toBe('productive_capability_not_unlocked')
+  })
+
+  it('exempts affixed_form_pair (morphology) from the staging gate', () => {
+    // Morphology has no Phase 1/2 ladder — every cap is productive
+    // (root_derived_recognition + root_derived_recall). The carve-out keeps
+    // the within-pattern prerequisite chain as the sequencing mechanism.
+    const morphologyRecognition = capability({
+      id: 'morph-recognition',
+      canonicalKey: 'cap:morph:recognition',
+      sourceKind: 'affixed_form_pair',
+      capabilityType: 'root_derived_recognition',
+      sourceRef: 'morphology/test-pattern',
+    })
+    const plan = planLearningPath({
+      ...baseInput,
+      readyCapabilities: [morphologyRecognition],
+      learnerCapabilityStates: [],
+    })
+    // Should admit despite Phase 4 classification + no sibling state, because
+    // the source_kind exempts it from the staging gate.
+    expect(plan.eligibleNewCapabilities.map(e => e.capability.canonicalKey)).toContain('cap:morph:recognition')
   })
 })
