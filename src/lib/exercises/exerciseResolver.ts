@@ -1,6 +1,7 @@
 import type { ArtifactKind, ProjectedCapability } from '../capabilities/capabilityTypes'
 import { hasApprovedArtifact, type ArtifactIndex } from '../capabilities/artifactRegistry'
 import type { CapabilityReadiness } from '../capabilities/capabilityContracts'
+import { exerciseTypesForCapability } from '../capabilities/renderContracts'
 import type { ExerciseRenderPlan } from './exerciseRenderPlan'
 import type { ExerciseType } from '../../types/learning'
 
@@ -26,26 +27,17 @@ export interface ExerciseResolutionInput {
   artifactIndex: ArtifactIndex
 }
 
-const compatibleExercisesByCapability: Partial<Record<ProjectedCapability['capabilityType'], ExerciseType[]>> = {
-  text_recognition: ['recognition_mcq'],
-  meaning_recall: ['meaning_recall'],
-  l1_to_id_choice: ['cued_recall'],
-  form_recall: ['typed_recall', 'cued_recall'],
-  contextual_cloze: ['cloze', 'cloze_mcq'],
-  audio_recognition: ['listening_mcq'],
-  dictation: ['dictation'],
-  podcast_gist: ['listening_mcq'],
-  pattern_recognition: ['cloze', 'cloze_mcq'],
-  pattern_contrast: ['contrast_pair'],
-  root_derived_recognition: ['typed_recall', 'cued_recall'],
-  root_derived_recall: ['typed_recall', 'cued_recall'],
-}
-
 function firstCompatibleExercise(input: {
   capability: ProjectedCapability
   allowedExercises: ExerciseType[]
 }): ExerciseType | null {
-  const compatible = compatibleExercisesByCapability[input.capability.capabilityType] ?? []
+  // No sourceKind filter here — the validator is the sole runtime gate for
+  // "cap is eligible for an exercise." The resolver trusts the
+  // readiness.allowedExercises array it receives; that array already
+  // reflects the source-kind filtering done at the validator layer. This
+  // avoids the very anti-pattern PR #65 exists to close (two layers
+  // gating on the same thing, then disagreeing).
+  const compatible = exerciseTypesForCapability(input.capability.capabilityType)
   return input.allowedExercises.find(exercise => compatible.includes(exercise)) ?? null
 }
 
@@ -58,6 +50,24 @@ export function resolveExercise(input: ExerciseResolutionInput): ExerciseResolut
     }
   }
 
+  const exerciseType = firstCompatibleExercise({
+    capability: input.capability,
+    allowedExercises: input.readiness.allowedExercises,
+  })
+  if (!exerciseType) {
+    return {
+      status: 'failed',
+      reason: 'no_supported_exercise_family',
+      details: `No supported exercise family is available for ${input.capability.capabilityType}.`,
+    }
+  }
+
+  // Re-verify required artifacts as defence-in-depth (validateCapability
+  // already gates the union of contract + capability artifacts upstream).
+  // Use the capability's declared requiredArtifacts here — preserves
+  // existing exerciseResolver.test.ts:146-168 assertions that pass
+  // synthetic readiness objects with cap-specific artifacts. The contract
+  // requirements are caught upstream by the validator.
   const missingArtifacts = input.capability.requiredArtifacts.filter(artifactKind => !hasApprovedArtifact({
     index: input.artifactIndex,
     kind: artifactKind,
@@ -70,18 +80,6 @@ export function resolveExercise(input: ExerciseResolutionInput): ExerciseResolut
       reason: 'missing_required_artifact',
       details: `Missing approved artifacts: ${missingArtifacts.join(', ')}`,
       missingArtifacts,
-    }
-  }
-
-  const exerciseType = firstCompatibleExercise({
-    capability: input.capability,
-    allowedExercises: input.readiness.allowedExercises,
-  })
-  if (!exerciseType) {
-    return {
-      status: 'failed',
-      reason: 'no_supported_exercise_family',
-      details: `No supported exercise family is available for ${input.capability.capabilityType}.`,
     }
   }
 
