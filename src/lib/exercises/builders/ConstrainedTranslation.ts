@@ -1,21 +1,11 @@
 // builder for exerciseType='constrained_translation'.
-// Authored only. Originally extracted from sessionQueue.ts (retired in #7).
+// Authored only. Contract guarantees learningItem + variant (with matching
+// exercise_type) are non-null.
 
-import type { BuilderInput, BuilderResult } from './types'
+import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 
-export function buildConstrainedTranslation(input: BuilderInput): BuilderResult {
-  if (!input.learningItem) {
-    return { kind: 'fail', reasonCode: 'item_not_found', message: 'constrained_translation requires a learningItem (PR-2 scope)' }
-  }
-  if (!input.variant || input.variant.exercise_type !== 'constrained_translation') {
-    return {
-      kind: 'fail',
-      reasonCode: 'no_active_variant',
-      message: `no active constrained_translation variant for item ${input.learningItem.id}`,
-      payloadSnapshot: { learningItemId: input.learningItem.id },
-    }
-  }
+export function buildConstrainedTranslation(input: BuilderInputFor<'constrained_translation'>): BuilderResult {
   const payload = input.variant.payload_json as Record<string, unknown>
   const answerKey = input.variant.answer_key_json as Record<string, unknown> | null
   const acceptable = (answerKey?.acceptableAnswers as string[]) || (payload.acceptableAnswers as string[]) || []

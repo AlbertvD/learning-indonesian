@@ -1,11 +1,14 @@
-// Type-specific builders for capabilityContentService. Each takes BuilderInput
-// and returns BuilderResult. Originally extracted from sessionQueue.ts
-// (retired in #7); now accepts capability-path inputs.
+// Type-specific builders for capabilityContentService. Each builder takes
+// a typed BuilderInputFor<'<exerciseType>'> (narrowed by the projector) and
+// returns a BuilderResult. Originally extracted from sessionQueue.ts
+// (retired in #7); migrated to typed contract inputs in PR #65.
 //
-// See docs/plans/2026-05-02-capability-content-service-spec.md §6.
+// See docs/plans/2026-05-18-render-contracts.md and
+// docs/current-system/modules/capabilities.md.
 
 import type { ExerciseType } from '@/types/learning'
-import type { BuilderInput, BuilderResult } from './types'
+import type { BuilderInputFor, BuilderResult, RawProjectorInput } from './types'
+import { projectBuilderInput } from '@/lib/capabilities/renderContracts'
 
 import { buildRecognitionMCQ } from './RecognitionMCQ'
 import { buildCuedRecall } from './CuedRecall'
@@ -20,9 +23,13 @@ import { buildSentenceTransformation } from './SentenceTransformation'
 import { buildConstrainedTranslation } from './ConstrainedTranslation'
 import { buildSpeaking } from './Speaking'
 
-export type { BuilderInput, BuilderResult } from './types'
+export type { BuilderResult, BuilderInputFor, RawProjectorInput } from './types'
 
-const BUILDERS: Record<ExerciseType, (input: BuilderInput) => BuilderResult> = {
+type BuilderRegistry = {
+  [K in ExerciseType]: (input: BuilderInputFor<K>) => BuilderResult
+}
+
+const BUILDERS: BuilderRegistry = {
   recognition_mcq:         buildRecognitionMCQ,
   cued_recall:             buildCuedRecall,
   typed_recall:            buildTypedRecall,
@@ -38,23 +45,27 @@ const BUILDERS: Record<ExerciseType, (input: BuilderInput) => BuilderResult> = {
 }
 
 /**
- * Dispatch a BuilderInput to the right builder. Returns
- * `{ kind: 'fail', reasonCode: 'unsupported_exercise_type' }` for unknown
- * exercise types — defensive against future ExerciseType additions that
- * forget to register a builder here.
+ * Dispatch a raw input to the right builder, via the projector. The
+ * projector narrows the input type and performs every runtime guard that
+ * used to live inside each builder. After it returns ok, the builder is
+ * statically guaranteed every field its contract requires is non-null.
+ *
+ * Failure cases bubble up as BuilderResult.fail — the projector's
+ * reasonCode + message + payloadSnapshot all surface intact.
  */
-export function buildForExerciseType(
-  exerciseType: ExerciseType,
-  input: BuilderInput,
+export function buildForExerciseType<K extends ExerciseType>(
+  exerciseType: K,
+  raw: RawProjectorInput,
 ): BuilderResult {
-  const builder = BUILDERS[exerciseType]
-  if (!builder) {
+  const projected = projectBuilderInput(exerciseType, raw)
+  if (!projected.ok) {
     return {
       kind: 'fail',
-      reasonCode: 'unsupported_exercise_type',
-      message: `no builder registered for exerciseType '${exerciseType}'`,
-      payloadSnapshot: { exerciseType },
+      reasonCode: projected.reasonCode,
+      message: projected.message,
+      payloadSnapshot: projected.payloadSnapshot,
     }
   }
-  return builder(input)
+  const builder = BUILDERS[exerciseType] as (input: BuilderInputFor<K>) => BuilderResult
+  return builder(projected.input)
 }

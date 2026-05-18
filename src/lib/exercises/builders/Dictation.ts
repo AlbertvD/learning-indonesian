@@ -3,13 +3,11 @@
 // typed_recall; only exerciseType differs so the component renders
 // audio-only input. Audio resolution is upstream (SessionAudioContext).
 
-import type { BuilderInput, BuilderResult } from './types'
+import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 
-export function buildDictation(input: BuilderInput): BuilderResult {
-  if (!input.learningItem) {
-    return { kind: 'fail', reasonCode: 'item_not_found', message: 'dictation requires a learningItem' }
-  }
+export function buildDictation(input: BuilderInputFor<'dictation'>): BuilderResult {
+  // learningItem is non-null by contract (projector narrows).
   const exerciseItem = {
     learningItem: input.learningItem,
     meanings: input.meanings,

@@ -3,28 +3,17 @@
 // Pool option = candidate's base_text; semanticGroup looked up via candidate's
 // translation so the group filter still works even though we render base_text.
 
-import type { BuilderInput, BuilderResult } from './types'
-import { pickUserLangMeaning, shuffle } from './helpers'
+import type { BuilderInputFor, BuilderResult } from './types'
+import { shuffle } from './helpers'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 import { pickDistractorCascade, getSemanticGroup, type DistractorCandidate } from '@/lib/distractors'
 
-export function buildCuedRecall(input: BuilderInput): BuilderResult {
-  if (!input.learningItem) {
-    return { kind: 'fail', reasonCode: 'item_not_found', message: 'cued_recall requires a learningItem' }
-  }
-  const primary = pickUserLangMeaning(input.meanings, input.userLanguage)
-  if (!primary) {
-    return {
-      kind: 'fail',
-      reasonCode: 'no_meaning_in_lang',
-      message: `no ${input.userLanguage} meaning for item ${input.learningItem.id}`,
-      payloadSnapshot: { learningItemId: input.learningItem.id, userLanguage: input.userLanguage },
-    }
-  }
-  const promptMeaningText = primary.translation_text
+export function buildCuedRecall(input: BuilderInputFor<'cued_recall'>): BuilderResult {
+  // learningItem and primaryMeaning are non-null by contract (projector narrows).
+  const promptMeaningText = input.primaryMeaning.translation_text
 
   const pool: DistractorCandidate[] = input.poolItems
-    .filter(i => i.id !== input.learningItem!.id && i.base_text)
+    .filter(i => i.id !== input.learningItem.id && i.base_text)
     .map(i => {
       const ms = input.poolMeaningsByItem.get(i.id) ?? []
       const t = (ms.find(m => m.translation_language === input.userLanguage && m.is_primary)

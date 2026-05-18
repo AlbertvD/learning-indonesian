@@ -3,28 +3,16 @@
 // decide whether to hide the Indonesian text and play audio instead.
 // Audio resolution is upstream (SessionAudioContext).
 
-import type { BuilderInput, BuilderResult } from './types'
-import { pickUserLangMeaning } from './helpers'
+import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 import { pickDistractorCascade, getSemanticGroup, type DistractorCandidate } from '@/lib/distractors'
 
-export function buildListeningMCQ(input: BuilderInput): BuilderResult {
-  if (!input.learningItem) {
-    return { kind: 'fail', reasonCode: 'item_not_found', message: 'listening_mcq requires a learningItem' }
-  }
-  const primary = pickUserLangMeaning(input.meanings, input.userLanguage)
-  if (!primary) {
-    return {
-      kind: 'fail',
-      reasonCode: 'no_meaning_in_lang',
-      message: `no ${input.userLanguage} meaning for item ${input.learningItem.id}`,
-      payloadSnapshot: { learningItemId: input.learningItem.id, userLanguage: input.userLanguage },
-    }
-  }
-  const correctAnswer = primary.translation_text
+export function buildListeningMCQ(input: BuilderInputFor<'listening_mcq'>): BuilderResult {
+  // learningItem and primaryMeaning are non-null by contract (projector narrows).
+  const correctAnswer = input.primaryMeaning.translation_text
 
   const pool: DistractorCandidate[] = input.poolItems
-    .filter(i => i.id !== input.learningItem!.id)
+    .filter(i => i.id !== input.learningItem.id)
     .flatMap(i => {
       const ms = input.poolMeaningsByItem.get(i.id) ?? []
       const t = (ms.find(m => m.translation_language === input.userLanguage && m.is_primary)

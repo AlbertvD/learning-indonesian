@@ -12,27 +12,19 @@ import type { ArtifactKind } from '@/lib/capabilities/capabilityTypes'
 import type { CapabilityArtifact } from '@/lib/capabilities/artifactRegistry'
 import { decodeCanonicalKey, extractItemKey } from './capabilityContentService.internal'
 import { buildForExerciseType } from '@/lib/exercises/builders'
-import type { BuilderInput } from '@/lib/exercises/builders'
+import type { RawProjectorInput } from '@/lib/exercises/builders'
 import { chunkedIn } from '@/lib/chunkedQuery'
 
 // ─── Reason codes ───────────────────────────────────────────────────────────
+//
+// Canonical declaration lives at @/lib/exercises/resolutionReasons to break
+// what would otherwise be a circular dependency between this service and
+// @/lib/capabilities/renderContracts (which the service now consumes for
+// projectBuilderInput). The re-export below preserves the existing public
+// path so external consumers keep working.
 
-export type ResolutionReasonCode =
-  // Source-ref / capability-shape problems
-  | 'unsupported_source_kind'
-  | 'sourceref_unparseable'
-  | 'item_not_found'
-  | 'item_inactive'
-  // Content-data gaps
-  | 'no_active_variant'
-  | 'no_meaning_in_lang'
-  | 'malformed_cloze'
-  | 'malformed_payload'
-  | 'no_distractor_candidates'
-  | 'missing_required_artifact'
-  // Defensive
-  | 'unsupported_exercise_type'
-  | 'block_failed_db_fetch'
+export type { ResolutionReasonCode } from '@/lib/exercises/resolutionReasons'
+import type { ResolutionReasonCode } from '@/lib/exercises/resolutionReasons'
 
 // ─── Diagnostic ──────────────────────────────────────────────────────────────
 
@@ -346,7 +338,7 @@ export function createCapabilityContentService(client: SupabaseSchemaClient): Ca
         }
 
         const itemUuid = learningItem.id
-        const builderInput: BuilderInput = {
+        const rawInput: RawProjectorInput = {
           block,
           learningItem,
           meanings: meaningsByItem.get(itemUuid) ?? [],
@@ -359,7 +351,7 @@ export function createCapabilityContentService(client: SupabaseSchemaClient): Ca
           userLanguage: options.userLanguage,
         }
 
-        const built = buildForExerciseType(block.renderPlan.exerciseType, builderInput)
+        const built = buildForExerciseType(block.renderPlan.exerciseType, rawInput)
         if (built.kind === 'ok') {
           result.set(block.id, {
             blockId: block.id,

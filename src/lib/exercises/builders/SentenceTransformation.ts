@@ -1,21 +1,11 @@
 // builder for exerciseType='sentence_transformation'.
-// Authored only. Originally extracted from sessionQueue.ts (retired in #7).
+// Authored only. Contract guarantees learningItem + variant (with matching
+// exercise_type) are non-null.
 
-import type { BuilderInput, BuilderResult } from './types'
+import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 
-export function buildSentenceTransformation(input: BuilderInput): BuilderResult {
-  if (!input.learningItem) {
-    return { kind: 'fail', reasonCode: 'item_not_found', message: 'sentence_transformation requires a learningItem (PR-2 scope)' }
-  }
-  if (!input.variant || input.variant.exercise_type !== 'sentence_transformation') {
-    return {
-      kind: 'fail',
-      reasonCode: 'no_active_variant',
-      message: `no active sentence_transformation variant for item ${input.learningItem.id}`,
-      payloadSnapshot: { learningItemId: input.learningItem.id },
-    }
-  }
+export function buildSentenceTransformation(input: BuilderInputFor<'sentence_transformation'>): BuilderResult {
   const payload = input.variant.payload_json as Record<string, unknown>
   const answerKey = input.variant.answer_key_json as Record<string, unknown> | null
   const sourceSentence = (payload.sourceSentence as string) || ''

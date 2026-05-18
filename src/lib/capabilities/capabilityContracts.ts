@@ -1,6 +1,11 @@
 import type { ExerciseType } from '../../types/learning'
 import type { ArtifactKind, CapabilityProjection, ProjectedCapability } from './capabilityTypes'
 import { type ArtifactIndex, hasApprovedArtifact } from './artifactRegistry'
+import {
+  exerciseTypesForCapability,
+  requiredArtifactsFor as artifactsForExercise,
+  supportsSourceKind,
+} from './renderContracts'
 
 /**
  * Replaces the retired `requiredSourceProgress.kind === 'none' && reason ===
@@ -45,31 +50,6 @@ export interface CapabilityValidationInput {
   replacementKey?: string
 }
 
-const exerciseByCapability: Partial<Record<ProjectedCapability['capabilityType'], ExerciseKind[]>> = {
-  text_recognition: ['recognition_mcq'],
-  meaning_recall: ['meaning_recall'],
-  l1_to_id_choice: ['cued_recall'],
-  form_recall: ['typed_recall'],
-  contextual_cloze: ['cloze'],
-  audio_recognition: ['listening_mcq'],
-  dictation: ['dictation'],
-  podcast_gist: ['listening_mcq'],
-  pattern_recognition: ['cloze'],
-  pattern_contrast: ['contrast_pair'],
-  root_derived_recognition: ['typed_recall'],
-  root_derived_recall: ['typed_recall'],
-}
-
-function requiredArtifactsFor(capability: ProjectedCapability): ArtifactKind[] {
-  if (capability.capabilityType === 'contextual_cloze') {
-    return ['cloze_context', 'cloze_answer', 'translation:l1']
-  }
-  if (capability.capabilityType === 'pattern_recognition') {
-    return ['pattern_explanation:l1', 'pattern_example']
-  }
-  return capability.requiredArtifacts
-}
-
 export function validateCapability(input: CapabilityValidationInput): CapabilityReadiness {
   if (isExposureOnly(input.capability)) {
     return { status: 'exposure_only', reason: 'Capability is exposure-only and cannot be scheduled for review.' }
@@ -84,25 +64,66 @@ export function validateCapability(input: CapabilityValidationInput): Capability
     return { status: 'unknown', reason: 'Capability readiness is unknown and fails closed.' }
   }
 
-  const requiredArtifacts = requiredArtifactsFor(input.capability)
-  const missingArtifacts = requiredArtifacts.filter(kind => !hasApprovedArtifact({
+  // Inverted lookup against RENDER_CONTRACTS: which exercise types name this
+  // cap_type AND support its source kind? Cap_types that no exercise serves
+  // — pattern_recognition, pattern_contrast — return [] here. Cap_types
+  // whose source kind no current exercise supports — contextual_cloze
+  // (dialogue_line), root_derived_* (affixed_form_pair) — also return []
+  // until the capabilityContentService fold widens supportedSourceKinds.
+  const candidateExercises = exerciseTypesForCapability(input.capability.capabilityType)
+    .filter(et => supportsSourceKind(et, input.capability.sourceKind))
+
+  if (candidateExercises.length === 0) {
+    return {
+      status: 'blocked',
+      missingArtifacts: [],
+      reason: 'no_compatible_exercise_for_capability_type',
+    }
+  }
+
+  // An exercise is render-ready if the union of (a) its contract-declared
+  // required artifacts and (b) the capability's catalog-declared required
+  // artifacts are all approved.
+  //
+  // Why both: the contract declares what the BUILDER reads; the catalog
+  // declares what the CAP_TYPE needs (which may be stricter for certain
+  // cap_types served by a looser builder — e.g. typed_recall serves both
+  // form_recall (needs accepted_answers:id) and root_derived_recall (needs
+  // root_derived_pair). The contract holds the builder's strict minimum;
+  // capability.requiredArtifacts holds the cap-type's additional asks.
+  const checkArtifact = (kind: ArtifactKind) => hasApprovedArtifact({
     index: input.artifacts,
     kind,
     capabilityKey: input.capability.canonicalKey,
     sourceRef: input.capability.sourceRef,
-  }))
+  })
 
-  if (missingArtifacts.length > 0) {
+  const readyExercises = candidateExercises.filter(et => {
+    const required = new Set<ArtifactKind>([
+      ...artifactsForExercise(et),
+      ...input.capability.requiredArtifacts,
+    ])
+    return [...required].every(checkArtifact)
+  })
+
+  if (readyExercises.length === 0) {
+    // Report the union of missing artifacts across all candidate exercises.
+    const missing = new Set<ArtifactKind>()
+    for (const et of candidateExercises) {
+      const required = new Set<ArtifactKind>([
+        ...artifactsForExercise(et),
+        ...input.capability.requiredArtifacts,
+      ])
+      for (const kind of required) if (!checkArtifact(kind)) missing.add(kind)
+    }
     return {
       status: 'blocked',
-      missingArtifacts,
-      reason: `Missing approved artifacts: ${missingArtifacts.join(', ')}`,
+      missingArtifacts: Array.from(missing),
+      reason: `Missing approved artifacts: ${Array.from(missing).join(', ')}`,
     }
   }
 
-  const allowedExercises = exerciseByCapability[input.capability.capabilityType] ?? []
-  const availableExercises = allowedExercises.filter(kind => input.exerciseAvailability?.[kind] !== false)
-
+  const availableExercises = readyExercises.filter(kind => input.exerciseAvailability?.[kind] !== false)
   if (availableExercises.length === 0) {
     return {
       status: 'blocked',
