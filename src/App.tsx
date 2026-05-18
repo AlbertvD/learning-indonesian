@@ -24,6 +24,11 @@ const ContentReview = lazy(() => import('@/pages/ContentReview').then(m => ({ de
 const DesignLab = lazy(() => import('@/pages/admin/DesignLab').then(m => ({ default: m.DesignLab })))
 const PageLab = lazy(() => import('@/pages/admin/PageLab').then(m => ({ default: m.PageLab })))
 
+// ─── Bespoke lesson pages (preview) ───────────────────────────────────────────
+// Per-lesson designed reader pages. Each lesson has its own composition; not
+// served via the /lesson/:lessonId route yet — viewable at /lesson-preview/<N>.
+const Lesson1Bespoke = lazy(() => import('@/pages/lessons/lesson-1/Page'))
+
 function LazyPage({ children }: { children: React.ReactNode }) {
   return (
     <Suspense fallback={<Center h="60vh"><Loader size="lg" /></Center>}>
@@ -72,6 +77,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Lesson />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/1"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson1Bespoke /></LazyPage>
             </ProtectedRoute>
           }
         />
