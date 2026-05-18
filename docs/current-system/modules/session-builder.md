@@ -174,6 +174,7 @@ For each candidate, applies suppression rules in this exact order (`pedagogy.ts:
 | State exists and not dormant | `already_active_or_retired` | Skip |
 | Any prerequisite key not in `satisfiedKeys` | `missing_prerequisite` | Skip |
 | Recent failure fatigue (≥2 consec failures, ≤1h ago) | `recent_failure_fatigue` | Skip |
+| Phase ≥ 3 capability with no stable receptive sibling for the same `source_ref` (except `affixed_form_pair` morphology — exempt) | `productive_capability_not_unlocked` | Skip |
 | Source kind = `podcast_phrase` | `wrong_session_mode` | Skip (no live podcast mode) |
 | Lesson not activated | `lesson_not_activated` | Skip |
 | Over `maxNewCapabilities` budget | `load_budget_exhausted` | Skip |
@@ -184,6 +185,17 @@ For each candidate, applies suppression rules in this exact order (`pedagogy.ts:
 **Removed in the fold** (deleted suppression rules + their inputs, per §2.3 of the fold plan):
 - `difficulty_jump` rule + `maxNewDifficultyLevel` input.
 - `not_useful_for_current_path` rule + `activeGoalTags` input.
+
+**Staging-gate phase taxonomy** (`pedagogy.ts:capabilityPhase`): the rule above gates Phase 3+4 capabilities behind their Phase 1+2 siblings. Mapping from `CapabilityType` to phase:
+
+| Phase | Cognitive process | Capability types |
+|---|---|---|
+| 1 (receptive recognition) | input → "I know this" | `text_recognition`, `audio_recognition`, `podcast_gist` |
+| 2 (receptive recall) | input → produce L1 meaning | `meaning_recall` |
+| 3 (productive recognition) | L1 / cue → choose from options | `l1_to_id_choice`, `pattern_contrast` |
+| 4 (productive recall) | L1 / cue → produce ID from memory | `form_recall`, `contextual_cloze`, `dictation`, `root_derived_recognition`, `root_derived_recall`, `pattern_recognition` |
+
+Conservative-classification rationale (types that can render as both MCQ and free-recall are placed at Phase 4): see `docs/plans/2026-05-18-capability-staging-gate.md` §3.1. The `affixed_form_pair` carve-out (§4.5 of that plan) exempts morphology from this gate; the prerequisite chain remains the within-pattern sequencing mechanism for morphology.
 
 Passed candidates are accumulated into `eligibleNewCapabilities[]` with `activationRecommendation`. Suppressed ones are tracked in `suppressedCapabilities[]` for diagnostics. Return shape — `pedagogy.ts:59-64`:
 
@@ -213,7 +225,9 @@ interface LearningPlan {
 - If `renderPlan` is missing (i.e. the resolver returned a failure), append a `warn` diagnostic and skip the block.
 - Otherwise, push a `SessionBlock` with `id = \`${sessionId}:<kind>:${canonicalKey}\`` (`compose.ts:58, 75, 97`).
 
-After all three passes, `blocks.slice(0, input.limit)` caps the session at the requested size (`compose.ts:111`). Order is deterministic: all due, then all new (skipped for `lesson_review`), then all practice-review. Diagnostics preserve their order.
+After all three passes, an **interleave post-pass** (`compose.ts:interleaveBySourceRef`, added 2026-05-18) walks the assembled blocks left-to-right. At each position `i`, if any of the preceding `INTERLEAVE_WINDOW = 3` blocks share the same `block.renderPlan.sourceRef`, the algorithm finds the nearest later block with a non-conflicting `sourceRef` and swaps. Violations are accepted at end-of-queue (no swap target available) and when all remaining blocks share a `sourceRef`. Greedy single-pass, deterministic — same input yields same output. Macro three-pass order (due → new → practice-review) is preserved because the interleave only does local swaps.
+
+After the interleave, `blocks.slice(0, input.limit)` caps the session at the requested size (`compose.ts:111`). Diagnostics preserve their order.
 
 `SessionPlan.title` is hard-coded `'Dagelijkse Indonesische oefening'` (`compose.ts:110`). `SessionPlan.recapPolicy` is always `'standard'`.
 
@@ -276,6 +290,9 @@ The diagnostic surfaces in the UI via `Session.tsx`, which reads `plan.diagnosti
 - **Resolution failures degrade the session, not error it.** All three passes pipe through `resolveCandidate` which returns either `{ ..., renderPlan }` or `{ ..., resolutionFailure }`; the composer turns failures into diagnostics and skips the block, never throws.
 - **The planner walks candidates in input order.** The prior `orderedReadyCapabilities` priority sort was deleted; any future re-ordering should be a deliberate change with a product motivation.
 - **The `CAPABILITY_DISPLAY` map is exhaustive at the type level.** Adding a `CapabilityType` without an entry is a compile error.
+- **Receptive-before-productive staging gate is enforced for new introductions.** Phase 3+4 capabilities (`l1_to_id_choice`, `form_recall`, `contextual_cloze`, `dictation`, `root_derived_recognition`, `root_derived_recall`, `pattern_contrast`, `pattern_recognition`) are suppressed unless a sibling capability sharing the same `source_ref` has `activationState='active'` AND `stability >= 1` AND `successfulReviewCount >= 1`. `affixed_form_pair` (morphology) is exempt from this gate because it has no Phase 1+2 siblings; the prerequisite chain enforces sequencing instead. See ADR 0007 and `docs/plans/2026-05-18-capability-staging-gate.md`.
+- **The composer interleaves blocks by `source_ref`.** Post-pass after the three append loops; greedy single-pass; window = 3 preceding blocks. Prevents back-to-back retrievals of the same word that don't count as real spaced practice (Karpicke 2009). Macro three-pass order (due → new → practice-review) preserved.
+- **`capabilityPhase` is exhaustive over `CapabilityType`.** Adding a new type without a phase arm fails compilation.
 
 ---
 
