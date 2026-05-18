@@ -1,7 +1,7 @@
 import type {
   CapabilitySourceKind,
   CapabilityType,
-} from '@/lib/capabilities/capabilityTypes'
+} from '@/lib/capabilities'
 import type { SkillType } from '@/types/learning'
 import { decideLoadBudget, type LoadBudgetDecision } from '@/lib/session-builder/loadBudget'
 import type { SessionMode } from '@/lib/session-builder/model'

@@ -12,7 +12,7 @@
 import type { ResolutionReasonCode } from '@/lib/exercises/resolutionReasons'
 import type { ExerciseItem } from '@/types/learning'
 
-export type { BuilderInputFor, RawProjectorInput } from '@/lib/capabilities/renderContracts'
+export type { BuilderInputFor, RawProjectorInput } from '@/lib/capabilities'
 
 export type BuilderResult =
   | {

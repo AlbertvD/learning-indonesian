@@ -1,10 +1,10 @@
 import type {
   ArtifactKind,
+  ArtifactQualityStatus,
   CapabilityModality,
   CapabilitySourceKind,
   CapabilityType,
-} from '@/lib/capabilities/capabilityTypes'
-import type { ArtifactQualityStatus } from '@/lib/capabilities/artifactRegistry'
+} from '@/lib/capabilities'
 import { chunkedIn } from '@/lib/chunkedQuery'
 
 export type MasteryLabel =

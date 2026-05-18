@@ -8,8 +8,7 @@ import type {
   LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant,
 } from '@/types/learning'
 import type { SessionBlock } from '@/lib/session-builder'
-import type { ArtifactKind } from '@/lib/capabilities/capabilityTypes'
-import type { CapabilityArtifact } from '@/lib/capabilities/artifactRegistry'
+import type { ArtifactKind, CapabilityArtifact } from '@/lib/capabilities'
 import { decodeCanonicalKey, extractItemKey } from './capabilityContentService.internal'
 import { buildForExerciseType } from '@/lib/exercises/builders'
 import type { RawProjectorInput } from '@/lib/exercises/builders'

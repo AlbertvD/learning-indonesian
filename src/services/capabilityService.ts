@@ -5,7 +5,7 @@ import type {
   CapabilitySourceKind,
   CapabilityType,
   LearnerLanguage,
-} from '@/lib/capabilities/capabilityTypes'
+} from '@/lib/capabilities'
 
 export type CapabilityReadinessStatus = 'ready' | 'blocked' | 'exposure_only' | 'deprecated' | 'unknown'
 export type CapabilityPublicationStatus = 'draft' | 'published' | 'retired'

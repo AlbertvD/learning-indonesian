@@ -1,7 +1,11 @@
-import type { ArtifactKind, ProjectedCapability } from '../capabilities/capabilityTypes'
-import { hasApprovedArtifact, type ArtifactIndex } from '../capabilities/artifactRegistry'
-import type { CapabilityReadiness } from '../capabilities/capabilityContracts'
-import { exerciseTypesForCapability } from '../capabilities/renderContracts'
+import {
+  exerciseTypesForCapability,
+  hasApprovedArtifact,
+  type ArtifactIndex,
+  type ArtifactKind,
+  type CapabilityReadiness,
+  type ProjectedCapability,
+} from '@/lib/capabilities'
 import type { ExerciseRenderPlan } from './exerciseRenderPlan'
 import type { ExerciseType } from '../../types/learning'
 
