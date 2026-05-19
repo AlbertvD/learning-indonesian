@@ -35,12 +35,23 @@ export function ExerciseAudioButton({
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [state, setState] = useState<PlaybackState>('idle')
 
+  // Hold callbacks in a ref so the audio-element lifecycle below depends only
+  // on `audioUrl` + `autoplay`. Without this, a parent that re-renders during
+  // playback (e.g. Dictation re-rendering on every keystroke) churns the
+  // effect, which pause()-interrupts the in-flight play() promise and trips
+  // its reject path — surfacing as state='blocked'/'error' even though the
+  // clip was loading fine. See useRef-callback pattern in the README.
+  const callbacksRef = useRef({ onPlay, onError, onReplay })
+  useEffect(() => {
+    callbacksRef.current = { onPlay, onError, onReplay }
+  }, [onPlay, onError, onReplay])
+
   useEffect(() => {
     const audio = new Audio(audioUrl)
     audioRef.current = audio
 
     const onEnded = () => setState('played')
-    const onErr = () => { setState('error'); onError?.() }
+    const onErr = () => { setState('error'); callbacksRef.current.onError?.() }
 
     audio.addEventListener('ended', onEnded)
     audio.addEventListener('error', onErr)
@@ -49,7 +60,7 @@ export function ExerciseAudioButton({
       const result = audio.play()
       if (result && typeof result.then === 'function') {
         result
-          .then(() => { setState('playing'); onPlay?.() })
+          .then(() => { setState('playing'); callbacksRef.current.onPlay?.() })
           .catch(() => setState('blocked'))
       } else {
         queueMicrotask(() => setState('blocked'))
@@ -61,24 +72,24 @@ export function ExerciseAudioButton({
       audio.removeEventListener('ended', onEnded)
       audio.removeEventListener('error', onErr)
     }
-  }, [audioUrl, autoplay, onPlay, onError])
+  }, [audioUrl, autoplay])
 
   const play = () => {
     const audio = audioRef.current
     if (!audio) return
     triggerHaptic('selection')
     if (state === 'played' || state === 'playing') {
-      onReplay?.()
+      callbacksRef.current.onReplay?.()
     }
     audio.currentTime = 0
     const result = audio.play()
     if (result && typeof result.then === 'function') {
       result
-        .then(() => { setState('playing'); onPlay?.() })
+        .then(() => { setState('playing'); callbacksRef.current.onPlay?.() })
         .catch(() => setState('error'))
     } else {
       setState('playing')
-      onPlay?.()
+      callbacksRef.current.onPlay?.()
     }
   }
 
