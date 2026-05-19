@@ -1,7 +1,7 @@
 // src/components/exercises/registry.ts
-// Exercise-type → component registry with React.lazy. Empty at creation —
-// each migration PR fills in one entry. ExerciseShell falls through to its
-// legacy switch for unmapped types.
+// Exercise-type → component registry with React.lazy. All 12 exercise types
+// are mapped. The dispatcher (CapabilityExerciseFrame) renders `null` for
+// any unmapped type, silent-skipping the block per spec §9.1.
 //
 // See docs/plans/2026-04-23-exercise-framework-design.md §7.2
 
@@ -11,13 +11,11 @@ import type { ExerciseType, ExerciseItem } from '@/types/learning'
 // ─── Public types ────────────────────────────────────────────────────────────
 
 /**
- * Raw answer data that thin exercise wrappers report. ExerciseShell translates
- * this into a processReview(...) call — processReview needs session context
- * (userId, sessionId, learner states) that doesn't live in the exercise.
- *
- * Deviation from design §7.2 (which said AnswerOutcome = ReviewResult): keeping
- * the existing separation of concerns where the shell owns the FSRS write.
- * Thin wrappers stay thin (~40 lines) and don't import reviewHandler directly.
+ * Raw answer data that exercise components emit. The dispatcher
+ * (CapabilityExerciseFrame) translates this into the AnswerReport the player
+ * ships to the server via answerCommitService. Exercise components stay
+ * grader-agnostic — they call useExerciseScoring with the right grader plugged
+ * into `config.checkCorrect` and report the outcome here.
  */
 export interface ExerciseAnswerReport {
   wasCorrect: boolean
@@ -28,9 +26,9 @@ export interface ExerciseAnswerReport {
 
 /**
  * Discriminated union returned by exercise components. The `{skipped: true}`
- * branch lets <ExerciseErrorBoundary> report a skip without fabricating a
- * ReviewResult. Shell reads `outcome.skipped` to distinguish session-length
- * accounting from FSRS write paths.
+ * branch lets <ExerciseErrorBoundary> (and explicit skip handlers) report a
+ * skip without fabricating an answer. The dispatcher reads `outcome.skipped`
+ * to distinguish session-length accounting from review-commit paths.
  */
 export type AnswerOutcome =
   | { skipped: true, reviewRecorded: false }
@@ -55,9 +53,8 @@ export type LazyExercise = LazyExoticComponent<ComponentType<ExerciseComponentPr
 // ─── Registry ────────────────────────────────────────────────────────────────
 
 /**
- * Exercise-type → lazy component. Entries fill in per migration PR (#4a/b/c).
- * While `undefined`, ExerciseShell falls back to its legacy switch for that
- * exercise type.
+ * Exercise-type → lazy component. All 12 types are mapped today; an unmapped
+ * type causes the dispatcher to render nothing and silent-skip the block.
  */
 export const exerciseRegistry: Partial<Record<ExerciseType, LazyExercise>> = {
   // PR #4a — Tier 1 (simplest)
@@ -97,8 +94,8 @@ export const exerciseSkeletonVariant: Record<ExerciseType, 'word' | 'sentence' |
 }
 
 /**
- * Returns the lazy component for a type, or `null` if not yet migrated. Caller
- * (ExerciseShell) falls back to legacy switch when null.
+ * Returns the lazy component for a type, or `null` if not mapped. The
+ * dispatcher (CapabilityExerciseFrame) silent-skips the block when null.
  */
 export function resolveExerciseComponent(type: ExerciseType): LazyExercise | null {
   return exerciseRegistry[type] ?? null

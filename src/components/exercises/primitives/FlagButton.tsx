@@ -4,8 +4,8 @@
 // .exerciseInput class to pin font-size ≥16px (kills iOS zoom).
 // See docs/plans/2026-04-23-exercise-framework-design.md §6.12
 //
-// Wired into ExerciseShell in PR #6 (along with the DB migration that makes
-// content_flags.flag_type nullable). Built here so the design lab can show it.
+// Exposed as a primitive (rendered via ExerciseFrame's topRight slot for
+// admin sessions) and surfaced in the design lab.
 
 import { useState, useEffect } from 'react'
 import { ActionIcon, Drawer, Popover, Textarea, Button, Stack, Text } from '@mantine/core'

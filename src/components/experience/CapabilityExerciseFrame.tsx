@@ -14,7 +14,7 @@ import {
 } from '@/components/exercises/registry'
 import { ExerciseSkeleton } from '@/components/exercises/ExerciseSkeleton'
 import { ExerciseErrorBoundary } from '@/components/exercises/ExerciseErrorBoundary'
-import { normalizeAnswerResponse } from '@/lib/answers/normalizeAnswerResponse'
+import { normalizeAnswerResponse } from '@/lib/answerNormalization'
 import type { AnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
 import type { SessionBlock } from '@/lib/session-builder'
 import type { CapabilityRenderContext } from '@/services/capabilityContentService'

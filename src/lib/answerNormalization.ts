@@ -112,3 +112,16 @@ export function checkAnswer(
 
   return { isCorrect: false, isFuzzy: false }
 }
+
+/**
+ * Normalize a raw exercise response for FSRS / review-event writes.
+ *
+ * Storage-side normalisation (lowercase + trim, with null guard) — distinct
+ * from `normalizeAnswer` above, which is the aggressive comparison-side
+ * normalisation. Storage stays faithful to user input modulo casing so that
+ * punctuation and parentheticals are preserved on the review event row;
+ * comparison strips those to maximise match recall.
+ */
+export function normalizeAnswerResponse(rawResponse: string | null | undefined): string | null {
+  return rawResponse ? rawResponse.toLowerCase().trim() : null
+}

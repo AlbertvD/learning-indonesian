@@ -7,8 +7,9 @@ import classes from './RecognitionMCQ.module.css'
 interface SpeakingExerciseProps {
   exerciseItem: ExerciseItem
   userLanguage: 'en' | 'nl'
-  // Kept in the interface so ExerciseShell's dispatch branch compiles;
-  // intentionally unused until ASR is wired (see handleSubmitAnswer below).
+  // Required by callers' types, intentionally never invoked here — ASR is
+  // not wired and we must not fabricate a wasCorrect=true answer. See
+  // handleSubmitAnswer below.
   onAnswer: (wasCorrect: boolean, latencyMs: number) => void
 }
 
