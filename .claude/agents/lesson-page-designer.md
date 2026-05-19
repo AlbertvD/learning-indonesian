@@ -47,7 +47,24 @@ The user invokes you with a lesson identifier — usually an `order_index` like 
      element={<ProtectedRoute><LazyPage><Lesson<N>Bespoke /></LazyPage></ProtectedRoute>}
    />
    ```
-8. **Verify locally.**
+   The preview route is for in-progress iteration before publish.
+
+8. **(Once the page is final) Publish via the registry.** Add an entry to `src/pages/lessons/registry.tsx` so `/lesson/<lessonId>` dispatches to the bespoke page on the canonical URL:
+   ```diff
+    import lesson1Content from '@/pages/lessons/lesson-1/content.json'
+   +import lesson<N>Content from '@/pages/lessons/lesson-<N>/content.json'
+
+    const Lesson1Bespoke = lazy(() => import('@/pages/lessons/lesson-1/Page'))
+   +const Lesson<N>Bespoke = lazy(() => import('@/pages/lessons/lesson-<N>/Page'))
+
+    export const bespokeLessonElements: Record<string, ReactElement> = {
+      [lesson1Content.meta.id]: <Suspense fallback={fallback}><Lesson1Bespoke /></Suspense>,
+   +  [lesson<N>Content.meta.id]: <Suspense fallback={fallback}><Lesson<N>Bespoke /></Suspense>,
+    }
+   ```
+   Two separate steps so the agent can produce + iterate on a page in preview (step 7) without going live on the canonical lesson URL; the user decides when to flip the publish switch (step 8).
+
+9. **Verify locally.**
    - `bun run build` — must pass.
    - `bun run lint -- src/pages/lessons/lesson-<N>/` — no new errors from your code (pre-existing warnings are fine).
    - If `bun run dev` is already running, navigate to `http://localhost:5173/lesson-preview/<N>` and screenshot via Playwright tools. Otherwise instruct the user to do so.
