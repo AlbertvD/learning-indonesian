@@ -150,3 +150,76 @@ describe('buildLessonExperience — legacy fallback for 5-value block_kind', () 
     expect(exp.blocks[0].kind).toBe('dialogue_card')
   })
 })
+
+// End-to-end shape coverage (merged from the legacy
+// src/__tests__/lessonExperience.test.ts during the lessons fold; the
+// classifier coverage above does not exercise full block ordering or the
+// empty-blocks path).
+describe('buildLessonExperience — end-to-end shape', () => {
+  const fullLesson: Lesson = {
+    id: 'lesson-id-1',
+    module_id: 'module-1',
+    level: 'A1',
+    title: 'Les 1 - Di Pasar',
+    description: null,
+    order_index: 1,
+    created_at: '2026-04-25T00:00:00.000Z',
+    audio_path: null,
+    duration_seconds: null,
+    transcript_dutch: null,
+    transcript_indonesian: null,
+    transcript_english: null,
+    primary_voice: null,
+    dialogue_voices: null,
+    lesson_sections: [{
+      id: 'section-1',
+      lesson_id: 'lesson-id-1',
+      title: 'Vocabulary',
+      content: { type: 'vocabulary', items: [{ indonesian: 'makan', dutch: 'eten' }] },
+      order_index: 0,
+    }],
+  }
+
+  it('maps pipeline lesson page blocks into ordered reader blocks', () => {
+    const pageBlocks: LessonPageBlock[] = [
+      {
+        block_key: 'lesson-1-item-makan-practice',
+        source_ref: 'lesson-1',
+        source_refs: ['learning_items/makan'],
+        content_unit_slugs: ['item-makan'],
+        block_kind: 'practice_bridge',
+        display_order: 20,
+        payload_json: { label: 'Practice this content' },
+      },
+      {
+        block_key: 'lesson-1-hero',
+        source_ref: 'lesson-1',
+        source_refs: ['lesson-1'],
+        content_unit_slugs: [],
+        block_kind: 'hero',
+        display_order: 0,
+        payload_json: { title: 'A market morning' },
+      },
+    ]
+
+    const experience = buildLessonExperience({ lesson: fullLesson, pageBlocks })
+
+    expect(experience.sourceRef).toBe('lesson-1')
+    expect(experience.blocks.map(block => block.id)).toEqual(['lesson-1-hero', 'lesson-1-item-makan-practice'])
+    expect(experience.blocks[0]).toEqual(expect.objectContaining({
+      kind: 'lesson_hero',
+      title: 'A market morning',
+    }))
+    expect(experience.blocks[1]).toEqual(expect.objectContaining({
+      kind: 'practice_bridge',
+      contentUnitSlugs: ['item-makan'],
+    }))
+  })
+
+  it('does not synthesize legacy reader blocks when pipeline blocks are not present', () => {
+    const experience = buildLessonExperience({ lesson: fullLesson, pageBlocks: [] })
+
+    expect(experience.blocks).toEqual([])
+    expect(experience.sourceRefs).toEqual([])
+  })
+})
