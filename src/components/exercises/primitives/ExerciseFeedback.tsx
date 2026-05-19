@@ -1,8 +1,8 @@
 // src/components/exercises/primitives/ExerciseFeedback.tsx
-// Single canonical correct/fuzzy/wrong feedback screen. Replaces the legacy
-// ExerciseShell.tsx feedback block with a role-labeled, language-tagged,
-// learning-science-ordered layout (user's wrong attempt dimmed above the
-// correct answer).
+// Single canonical correct/fuzzy/wrong feedback screen. Role-labeled,
+// language-tagged, learning-science-ordered layout (user's wrong attempt
+// dimmed above the correct answer). Rendered by the experience layer's
+// Doorgaan flow.
 // See docs/plans/2026-04-23-exercise-framework-design.md §6.9 / §8
 
 import { useEffect, useRef, useState } from 'react'

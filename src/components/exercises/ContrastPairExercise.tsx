@@ -181,7 +181,8 @@ export function ContrastPairExercise({ exerciseItem, userLanguage, onAnswer, pre
           </Box>
         )}
 
-        {/* Wrong final answer — ExerciseShell takes over immediately, this won't be seen */}
+        {/* Wrong final answer — shown only in admin preview / tests; the runtime
+            path renders the Doorgaan card via ExperiencePlayer instead. */}
         {isAnswered && !isCorrect && (
           <Box style={{ textAlign: 'center', marginTop: '32px' }}>
             <Badge color="red" size="xl" style={{ fontSize: '16px', padding: '12px 20px' }}>

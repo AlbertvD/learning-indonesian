@@ -509,6 +509,12 @@ browser smoke passes for lesson reader, source progress, session load, and revie
 
 ## Execution Log: 2026-04-26 Local Build Session
 
+> **Historical snapshot.** This section captures observations from a specific
+> local build run on 2026-04-26. Some referenced files have since been retired
+> — notably `src/components/exercises/ExerciseShell.tsx`, deleted on
+> 2026-05-02 (commit `4d00b6d`, PR #27). Verify against the current code
+> before acting on anything here.
+
 Environment:
 
 ```text

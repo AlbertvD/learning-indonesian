@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { normalizeAnswer, checkAnswer } from '@/lib/answerNormalization'
+import { normalizeAnswer, checkAnswer, normalizeAnswerResponse } from '@/lib/answerNormalization'
 
 describe('normalizeAnswer', () => {
   it('trims whitespace', () => {
@@ -84,5 +84,41 @@ describe('checkAnswer', () => {
   it('rejects answers beyond Levenshtein distance 1', () => {
     const result = checkAnswer('membeli', 'memberi', [])
     expect(result.isCorrect).toBe(false)
+  })
+})
+
+describe('normalizeAnswerResponse', () => {
+  it('lowercases', () => {
+    expect(normalizeAnswerResponse('Hello')).toBe('hello')
+  })
+
+  it('trims surrounding whitespace', () => {
+    expect(normalizeAnswerResponse('  hello  ')).toBe('hello')
+  })
+
+  it('does both', () => {
+    expect(normalizeAnswerResponse('  HELLO World  ')).toBe('hello world')
+  })
+
+  it('returns null for null', () => {
+    expect(normalizeAnswerResponse(null)).toBe(null)
+  })
+
+  it('returns null for undefined', () => {
+    expect(normalizeAnswerResponse(undefined)).toBe(null)
+  })
+
+  it('returns null for empty string', () => {
+    // Empty string is falsy → null. An empty rawResponse means "no answer
+    // provided" and should not be stored as the literal empty string.
+    expect(normalizeAnswerResponse('')).toBe(null)
+  })
+
+  it('preserves internal whitespace', () => {
+    expect(normalizeAnswerResponse('saya makan nasi')).toBe('saya makan nasi')
+  })
+
+  it('preserves punctuation (unlike comparison-side normalizeAnswer)', () => {
+    expect(normalizeAnswerResponse('  Hello, World!  ')).toBe('hello, world!')
   })
 })

@@ -1078,6 +1078,7 @@ These are not modules. They're shared platform helpers used across the codebase.
 | `lib/i18n.ts` | NL/EN translation strings. `useT` hook lives in `hooks/`. |
 | `lib/featureFlags.ts` | Feature flag reads. |
 | `lib/chunkedQuery.ts` | `chunkedIn(...)` helper for batched IN queries. |
+| `lib/answerNormalization.ts` | Owns both answer-side string policies: `normalizeAnswer` + `checkAnswer` (aggressive — strips punctuation/parentheticals, Levenshtein/Damerau-Levenshtein fuzzy matching) for *comparison*; `normalizeAnswerResponse` (lowercase + trim only) for *storage* on the AnswerReport. Pure functions, no React, no I/O. Comparison helper is plugged into the `useExerciseScoring` hook (via `config.checkCorrect`) by typed-string exercise components; storage helper is called once per answer by `CapabilityExerciseFrame` when building the AnswerReport. ~130 LOC. |
 
 These stay where they are. They are not promoted to modules and not moved to `services/`.
 
@@ -1469,6 +1470,7 @@ To prevent confusion in future passes:
 - **All audio synthesis Postgres functions** (`get_audio_clip_per_text`, `get_audio_clips`, `audio_coverage_report`) — used by audio module + content pipeline.
 - **The 13 analytics Postgres functions** in `2026-05-01-learner-progress-functions.sql` — used by `lib/analytics/`.
 - **The capability-related tables** (`learning_capabilities`, `learner_capability_state`, `capability_artifacts`, `capability_review_events`, `capability_resolution_failure_events`, `capability_aliases`, `capability_content_units`) — central to the architecture.
+- **`src/lib/answerNormalization.ts`** stays — pure grading utility (~130 LOC: comparison-side string normalisation + Levenshtein / Damerau-Levenshtein fuzzy matching, plus storage-side normalisation for the AnswerReport). Consumed by typed-string exercise components in `src/components/exercises/implementations/` via the `useExerciseScoring` hook (`config.checkCorrect` slot) and by `CapabilityExerciseFrame` (storage helper). Not promoted to a deep module (fails the §Module conventions → Depth and width rules depth-floor); see the §Cross-cutting utilities table.
 
 ---
 
