@@ -120,6 +120,7 @@ function makeSynthLesson(overrides: { stagingDir: string }): LoadedLesson {
       order_index: 1,
       title: 'Test Lesson',
       level: 'A1',
+      primary_voice: 'Achird',
     },
     sections: [
       {
@@ -141,7 +142,9 @@ function makeSynthLesson(overrides: { stagingDir: string }): LoadedLesson {
       },
     ],
     pageBlocks: [],
-    audioNormalizedTexts: new Set(['halo']),
+    audioClipsByNormalizedText: new Map([
+      ['halo', { storage_path: 'lesson-1/halo-Achird.mp3', voice_id: 'Achird' }],
+    ]),
     staging: {
       stagingDir: overrides.stagingDir,
       learningItems: [

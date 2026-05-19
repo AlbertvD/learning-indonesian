@@ -12,8 +12,7 @@ export const lessonPageBlocks = [
     "payload_json": {
       "title": "Les 5 - Belajar",
       "level": "A1"
-    },
-    "capability_key_refs": []
+    }
   },
   {
     "block_key": "lesson-5-section-0",
@@ -37,8 +36,7 @@ export const lessonPageBlocks = [
         "De lauwe, gele rijst overbrengen in een vergiet en nog 20 minuten stomen om hem gaar te laten worden. De nasi kuning overbrengen op een grote schaal en garneren met gebakken uitjes, schijfjes komkommer, kleine stukjes gebakken tempe, reepjes gebakken geklopt ei en lombok (Spaanse pepers)."
       ],
       "title": "Nasi gerechten"
-    },
-    "capability_key_refs": []
+    }
   },
   {
     "block_key": "lesson-5-section-1",
@@ -90,8 +88,7 @@ export const lessonPageBlocks = [
         }
       ],
       "title": "Dialoog: Belajar"
-    },
-    "capability_key_refs": []
+    }
   },
   {
     "block_key": "lesson-5-section-2-pattern-ik-saya-aku-en-eigennaam",
@@ -129,8 +126,7 @@ export const lessonPageBlocks = [
           ]
         }
       ]
-    },
-    "capability_key_refs": []
+    }
   },
   {
     "block_key": "lesson-5-section-2-pattern-jij-beleefd-via-naam-of-kamu-engkau",
@@ -164,8 +160,7 @@ export const lessonPageBlocks = [
           ]
         }
       ]
-    },
-    "capability_key_refs": []
+    }
   },
   {
     "block_key": "lesson-5-section-2-pattern-u-tuan-nyonya-bapak-ibu-anda-saudara",
@@ -204,8 +199,7 @@ export const lessonPageBlocks = [
           ]
         }
       ]
-    },
-    "capability_key_refs": []
+    }
   },
   {
     "block_key": "lesson-5-section-2-pattern-broers-en-zusters-kakak-adik-abang",
@@ -247,8 +241,7 @@ export const lessonPageBlocks = [
           ]
         }
       ]
-    },
-    "capability_key_refs": []
+    }
   },
   {
     "block_key": "lesson-5-section-2-pattern-hij-zij-dia-ia-beliau",
@@ -281,8 +274,7 @@ export const lessonPageBlocks = [
           ]
         }
       ]
-    },
-    "capability_key_refs": []
+    }
   },
   {
     "block_key": "lesson-5-section-2-pattern-wij-kita-inclusief-versus-kami-exclusief",
@@ -324,8 +316,7 @@ export const lessonPageBlocks = [
           ]
         }
       ]
-    },
-    "capability_key_refs": []
+    }
   },
   {
     "block_key": "lesson-5-section-2-pattern-jullie-u-meervoud-en-zij-meervoud",
@@ -363,8 +354,7 @@ export const lessonPageBlocks = [
           ]
         }
       ]
-    },
-    "capability_key_refs": []
+    }
   },
   {
     "block_key": "lesson-5-section-3",
@@ -582,8 +572,7 @@ export const lessonPageBlocks = [
         "Voornaamwoorden"
       ],
       "title": "Bezittelijk voornaamwoord"
-    },
-    "capability_key_refs": []
+    }
   },
   {
     "block_key": "lesson-5-section-5",
@@ -601,8 +590,7 @@ export const lessonPageBlocks = [
         "De sultan weigerde de Portugezen toestemming om op deze plaats een vesting te bouwen. Tijdens de heerschappij van de sultan van Bantam werd de plaats omgedoopt in Jayakarta dat later werd verbasterd tot Jakatra, waarvan later Jakarta werd afgeleid."
       ],
       "title": "Cultuur: Jakarta"
-    },
-    "capability_key_refs": []
+    }
   },
   {
     "block_key": "lesson-5-section-6",
@@ -830,8 +818,7 @@ export const lessonPageBlocks = [
         }
       ],
       "title": "Woordenlijst"
-    },
-    "capability_key_refs": []
+    }
   },
   {
     "block_key": "lesson-5-dialogue",
@@ -884,33 +871,7 @@ export const lessonPageBlocks = [
           "dutch": "Goed dan, maar mag ik een setrop susu?"
         }
       ]
-    },
-    "capability_key_refs": [
-      "cap:v1:item:learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/aku tidak senang tinggal di rumah terus.:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/aku tidak senang tinggal di rumah terus.:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/aku tidak senang tinggal di rumah terus.:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/aku tidak senang tinggal di rumah terus.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kita harus kerja dulu sebentar. nanti kita pergi.:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kita harus kerja dulu sebentar. nanti kita pergi.:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kita harus kerja dulu sebentar. nanti kita pergi.:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kita harus kerja dulu sebentar. nanti kita pergi.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/besok saja jalan-jalan dengan ayahmu.:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/besok saja jalan-jalan dengan ayahmu.:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/besok saja jalan-jalan dengan ayahmu.:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/besok saja jalan-jalan dengan ayahmu.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/baiklah, tapi boleh minta setrop susu ya?:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/baiklah, tapi boleh minta setrop susu ya?:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/baiklah, tapi boleh minta setrop susu ya?:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/baiklah, tapi boleh minta setrop susu ya?:text_recognition:id_to_l1:text:nl"
-    ]
+    }
   },
   {
     "block_key": "lesson-5-example-sentence",
@@ -969,37 +930,7 @@ export const lessonPageBlocks = [
           "dutch": "Hun huis is erg mooi."
         }
       ]
-    },
-    "capability_key_refs": [
-      "cap:v1:item:learning_items/kita harus belajar di rumah.:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kita harus belajar di rumah.:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kita harus belajar di rumah.:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kita harus belajar di rumah.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kami mau ke luar.:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kami mau ke luar.:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kami mau ke luar.:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kami mau ke luar.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/di mana bukuku?:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/di mana bukuku?:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/di mana bukuku?:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/di mana bukuku?:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mobilmu rusak.:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/mobilmu rusak.:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/mobilmu rusak.:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mobilmu rusak.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/pembantunya sakit.:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/pembantunya sakit.:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/pembantunya sakit.:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/pembantunya sakit.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/uang kita sudah habis.:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/uang kita sudah habis.:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/uang kita sudah habis.:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/uang kita sudah habis.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/rumahnya bagus sekali.:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/rumahnya bagus sekali.:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/rumahnya bagus sekali.:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/rumahnya bagus sekali.:text_recognition:id_to_l1:text:nl"
-    ]
+    }
   },
   {
     "block_key": "lesson-5-vocabulary-list",
@@ -1310,205 +1241,7 @@ export const lessonPageBlocks = [
           "dutch": "goh! nou! (stopwoord/uitroep)"
         }
       ]
-    },
-    "capability_key_refs": [
-      "cap:v1:item:learning_items/abang:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/abang:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/abang:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/abang:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/adik:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/adik:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/adik:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/adik:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/aduh:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/aduh:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/aduh:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/aduh:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/aku:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/aku:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/aku:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/aku:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ayah:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/ayah:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/ayah:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ayah:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ayo!:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/ayo!:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/ayo!:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ayo!:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/baiklah:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/baiklah:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/baiklah:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/baiklah:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/belajar:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/belajar:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/belajar:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/belajar:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/enak saja:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/enak saja:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/enak saja:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/enak saja:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/gurih:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/gurih:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/gurih:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/gurih:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/habis:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/habis:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/habis:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/habis:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/halo:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/halo:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/halo:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/halo:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/hari:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/hari:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/hari:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/hari:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/hari rabu:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/hari rabu:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/hari rabu:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/hari rabu:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ikut:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/ikut:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/ikut:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ikut:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/jadi:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/jadi:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/jadi:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/jadi:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/jalan-jalan:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/jalan-jalan:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/jalan-jalan:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/jalan-jalan:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kakak:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kakak:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kakak:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kakak:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kami:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kami:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kami:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kami:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kamu:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kamu:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kamu:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kamu:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kering:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kering:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kering:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kering:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kerja:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kerja:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kerja:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kerja:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kita:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kita:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/kita:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kita:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ladang:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/ladang:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/ladang:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ladang:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/laki-laki:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/laki-laki:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/laki-laki:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/laki-laki:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mari!:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/mari!:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/mari!:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mari!:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mereka:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/mereka:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/mereka:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mereka:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mi:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/mi:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/mi:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mi:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mulai:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/mulai:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/mulai:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mulai:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/nanti:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/nanti:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/nanti:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/nanti:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/nasi gurih:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/nasi gurih:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/nasi gurih:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/nasi gurih:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/pembantu:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/pembantu:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/pembantu:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/pembantu:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/perempuan:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/perempuan:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/perempuan:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/perempuan:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/pergi:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/pergi:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/pergi:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/pergi:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/punya:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/punya:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/punya:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/punya:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/rusak:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/rusak:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/rusak:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/rusak:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sawah:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/sawah:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/sawah:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sawah:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sebentar:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/sebentar:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/sebentar:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sebentar:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/senang:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/senang:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/senang:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/senang:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/setrop:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/setrop:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/setrop:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/setrop:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/setrop susu:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/setrop susu:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/setrop susu:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/setrop susu:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sore:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/sore:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/sore:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sore:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/susu:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/susu:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/susu:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/susu:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/taman:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/taman:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/taman:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/taman:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/taman mini:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/taman mini:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/taman mini:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/taman mini:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/tapi / tetapi:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/tapi / tetapi:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/tapi / tetapi:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/tapi / tetapi:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/terus:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/terus:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/terus:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/terus:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/uang:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/uang:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/uang:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/uang:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/wah!:form_recall:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/wah!:l1_to_id_choice:l1_to_id:text:nl",
-      "cap:v1:item:learning_items/wah!:meaning_recall:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/wah!:text_recognition:id_to_l1:text:nl"
-    ]
+    }
   },
   {
     "block_key": "lesson-5-practice-bridge",
@@ -1521,71 +1254,7 @@ export const lessonPageBlocks = [
     "display_order": 9000,
     "payload_json": {
       "label": "Oefen deze les"
-    },
-    "capability_key_refs": [
-      "cap:v1:item:learning_items/abang:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/adik:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/aduh, kami mau ke luar, jalan-jalan dan makan di restoran mi enak tetapi tidak ada uang.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/aduh:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/aku tidak senang tinggal di rumah terus.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/aku:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ayah:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ayo!:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/baiklah, tapi boleh minta setrop susu ya?:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/baiklah:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/belajar:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/besok saja jalan-jalan dengan ayahmu.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/di mana bukuku?:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/enak saja:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/gurih:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/habis:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/halo:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/hari rabu:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/hari:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ibu dan bapak enak saja ke taman mini. kita harus belajar di rumah.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ikut:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/jadi:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/jalan-jalan:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kakak:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kami mau ke luar.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kami:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kamu:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kering:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kerja:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kita harus belajar di rumah.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kita harus kerja dulu sebentar. nanti kita pergi.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/kita:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/ladang:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/laki-laki:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mari!:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mereka:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mi:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mobilmu rusak.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/mulai:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/nanti:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/nasi gurih:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/pembantu:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/pembantunya sakit.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/perempuan:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/pergi:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/punya:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/rumahnya bagus sekali.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/rusak:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sawah:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sebentar:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/senang:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/setrop susu:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/setrop:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/sore:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/susu:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/taman mini:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/taman:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/tapi / tetapi:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/terus:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/uang kita sudah habis.:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/uang:text_recognition:id_to_l1:text:nl",
-      "cap:v1:item:learning_items/wah!:text_recognition:id_to_l1:text:nl"
-    ]
+    }
   },
   {
     "block_key": "lesson-5-recap",
@@ -1598,7 +1267,6 @@ export const lessonPageBlocks = [
     "display_order": 9999,
     "payload_json": {
       "title": "Samenvatting"
-    },
-    "capability_key_refs": []
+    }
   }
 ]

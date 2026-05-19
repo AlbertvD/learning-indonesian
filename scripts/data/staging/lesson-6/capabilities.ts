@@ -3,6 +3,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/'full ac'",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/'full ac':text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/'full ac':audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/'full ac'\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-full-ac"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/'full ac'",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/'full ac':text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/'full ac':dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/'full ac'\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-full-ac"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/'full ac'",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -106,6 +161,61 @@ export const capabilities = [
       "item-full-ac"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/ambil",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/ambil:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/ambil:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ambil\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-ambil"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/ambil",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/ambil:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/ambil:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ambil\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-ambil"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -217,6 +327,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/arloji",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/arloji:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/arloji:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/arloji\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-arloji"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/arloji",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/arloji:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/arloji:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/arloji\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-arloji"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/arloji",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -320,6 +485,61 @@ export const capabilities = [
       "item-arloji"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/belum pernah",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/belum pernah:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/belum pernah:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/belum pernah\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-belum-pernah"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/belum pernah",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/belum pernah:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/belum pernah:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/belum pernah\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-belum-pernah"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -431,6 +651,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/berangkat",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/berangkat:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/berangkat:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/berangkat\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-berangkat"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/berangkat",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/berangkat:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/berangkat:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/berangkat\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-berangkat"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/berangkat",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -534,6 +809,61 @@ export const capabilities = [
       "item-berangkat"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/betul",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/betul:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/betul:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/betul\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-betul"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/betul",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/betul:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/betul:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/betul\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-betul"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -645,6 +975,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/biarlah",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/biarlah:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/biarlah:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/biarlah\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-biarlah"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/biarlah",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/biarlah:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/biarlah:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/biarlah\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-biarlah"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/biarlah",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -748,6 +1133,61 @@ export const capabilities = [
       "item-biarlah"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/bilang",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/bilang:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/bilang:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/bilang\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-bilang"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/bilang",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/bilang:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/bilang:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/bilang\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-bilang"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -859,6 +1299,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/bir",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/bir:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/bir:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/bir\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-bir"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/bir",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/bir:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/bir:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/bir\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-bir"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/bir",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -962,6 +1457,61 @@ export const capabilities = [
       "item-bir"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/biru",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/biru:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/biru:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/biru\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-biru"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/biru",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/biru:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/biru:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/biru\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-biru"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -1073,6 +1623,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/bukan",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/bukan:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/bukan:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/bukan\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-bukan"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/bukan",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/bukan:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/bukan:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/bukan\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-bukan"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/bukan",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -1180,6 +1785,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/cepat",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/cepat:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/cepat:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/cepat\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-cepat"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/cepat",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/cepat:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/cepat:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/cepat\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-cepat"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/cepat",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -1283,6 +1943,61 @@ export const capabilities = [
       "item-cepat"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/coba",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/coba:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/coba:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/coba\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-coba"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/coba",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/coba:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/coba:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/coba\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-coba"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -1501,6 +2216,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/dingin",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/dingin:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/dingin:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/dingin\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-dingin"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/dingin",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/dingin:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/dingin:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/dingin\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-dingin"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/dingin",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -1604,6 +2374,61 @@ export const capabilities = [
       "item-dingin"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/ekonomi",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/ekonomi:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/ekonomi:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ekonomi\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-ekonomi"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/ekonomi",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/ekonomi:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/ekonomi:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ekonomi\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-ekonomi"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -1715,6 +2540,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/gampang",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/gampang:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/gampang:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/gampang\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-gampang"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/gampang",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/gampang:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/gampang:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/gampang\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-gampang"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/gampang",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -1818,6 +2698,61 @@ export const capabilities = [
       "item-gampang"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/hanya",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/hanya:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/hanya:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/hanya\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-hanya"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/hanya",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/hanya:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/hanya:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/hanya\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-hanya"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -1929,6 +2864,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/hari ini",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/hari ini:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/hari ini:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/hari ini\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-hari-ini"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/hari ini",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/hari ini:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/hari ini:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/hari ini\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-hari-ini"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/hari ini",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -2032,6 +3022,61 @@ export const capabilities = [
       "item-hari-ini"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/hitam",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/hitam:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/hitam:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/hitam\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-hitam"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/hitam",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/hitam:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/hitam:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/hitam\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-hitam"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -2143,6 +3188,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/istana",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/istana:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/istana:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/istana\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-istana"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/istana",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/istana:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/istana:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/istana\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-istana"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/istana",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -2246,6 +3346,61 @@ export const capabilities = [
       "item-istana"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/jam",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/jam:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/jam:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/jam\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-jam"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/jam",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/jam:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/jam:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/jam\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-jam"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -2357,6 +3512,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/jangan",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/jangan:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/jangan:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/jangan\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-jangan"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/jangan",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/jangan:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/jangan:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/jangan\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-jangan"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/jangan",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -2460,6 +3670,61 @@ export const capabilities = [
       "item-jangan"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/janji",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/janji:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/janji:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/janji\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-janji"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/janji",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/janji:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/janji:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/janji\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-janji"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -2571,6 +3836,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/jauh",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/jauh:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/jauh:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/jauh\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-jauh"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/jauh",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/jauh:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/jauh:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/jauh\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-jauh"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/jauh",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -2674,6 +3994,61 @@ export const capabilities = [
       "item-jauh"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/jepang",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/jepang:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/jepang:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/jepang\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-jepang"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/jepang",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/jepang:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/jepang:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/jepang\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-jepang"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -2785,6 +4160,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/kira-kira",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/kira-kira:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/kira-kira:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kira-kira\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-kira-kira"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/kira-kira",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/kira-kira:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/kira-kira:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kira-kira\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-kira-kira"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/kira-kira",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -2888,6 +4318,61 @@ export const capabilities = [
       "item-kira-kira"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/kurang tahu",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/kurang tahu:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/kurang tahu:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kurang tahu\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-kurang-tahu"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/kurang tahu",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/kurang tahu:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/kurang tahu:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/kurang tahu\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-kurang-tahu"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -2999,6 +4484,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/larut malam",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/larut malam:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/larut malam:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/larut malam\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-larut-malam"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/larut malam",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/larut malam:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/larut malam:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/larut malam\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-larut-malam"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/larut malam",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -3106,6 +4646,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/larut",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/larut:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/larut:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/larut\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-larut"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/larut",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/larut:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/larut:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/larut\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-larut"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/larut",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -3209,6 +4804,61 @@ export const capabilities = [
       "item-larut"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/lebih",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/lebih:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/lebih:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/lebih\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-lebih"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/lebih",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/lebih:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/lebih:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/lebih\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-lebih"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -3427,6 +5077,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/masuk",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/masuk:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/masuk:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/masuk\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-masuk"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/masuk",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/masuk:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/masuk:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/masuk\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-masuk"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/masuk",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -3530,6 +5235,61 @@ export const capabilities = [
       "item-masuk"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/menit",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/menit:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/menit:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/menit\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-menit"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/menit",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/menit:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/menit:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/menit\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-menit"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -3748,6 +5508,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/monas = monumen nasional",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/monas = monumen nasional:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/monas = monumen nasional:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/monas = monumen nasional\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-monas-monumen-nasional"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/monas = monumen nasional",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/monas = monumen nasional:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/monas = monumen nasional:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/monas = monumen nasional\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-monas-monumen-nasional"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/monas = monumen nasional",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -3851,6 +5666,61 @@ export const capabilities = [
       "item-monas-monumen-nasional"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/ongkos",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/ongkos:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/ongkos:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ongkos\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-ongkos"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/ongkos",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/ongkos:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/ongkos:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/ongkos\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-ongkos"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -3962,6 +5832,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/pernah",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/pernah:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/pernah:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/pernah\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-pernah"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/pernah",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/pernah:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/pernah:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/pernah\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-pernah"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/pernah",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -4065,6 +5990,61 @@ export const capabilities = [
       "item-pernah"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/rugi",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/rugi:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/rugi:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/rugi\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-rugi"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/rugi",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/rugi:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/rugi:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/rugi\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-rugi"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -4176,6 +6156,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/seperempat jam",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/seperempat jam:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/seperempat jam:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/seperempat jam\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-seperempat-jam"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/seperempat jam",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/seperempat jam:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/seperempat jam:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/seperempat jam\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-seperempat-jam"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/seperempat jam",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -4279,6 +6314,61 @@ export const capabilities = [
       "item-seperempat-jam"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/seperempat",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/seperempat:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/seperempat:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/seperempat\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-seperempat"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/seperempat",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/seperempat:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/seperempat:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/seperempat\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-seperempat"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -4390,6 +6480,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/setengah",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/setengah:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/setengah:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/setengah\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-setengah"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/setengah",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/setengah:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/setengah:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/setengah\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-setengah"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/setengah",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -4493,6 +6638,61 @@ export const capabilities = [
       "item-setengah"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/sih!",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/sih!:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/sih!:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/sih!\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-sih"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/sih!",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/sih!:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/sih!:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/sih!\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-sih"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -4604,6 +6804,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/sopir",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/sopir:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/sopir:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/sopir\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-sopir"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/sopir",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/sopir:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/sopir:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/sopir\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-sopir"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/sopir",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -4707,6 +6962,61 @@ export const capabilities = [
       "item-sopir"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/tangan",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/tangan:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/tangan:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/tangan\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-tangan"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/tangan",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/tangan:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/tangan:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/tangan\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-tangan"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",
@@ -4818,6 +7128,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/telah",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/telah:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/telah:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/telah\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-telah"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/telah",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/telah:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/telah:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/telah\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-telah"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/telah",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -4925,6 +7290,61 @@ export const capabilities = [
   {
     "sourceKind": "item",
     "sourceRef": "learning_items/tv (tivi)",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/tv (tivi):text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/tv (tivi):audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/tv (tivi)\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-tv-tivi"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/tv (tivi)",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/tv (tivi):text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/tv (tivi):dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/tv (tivi)\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-tv-tivi"
+    ],
+    "relationshipKind": "practiced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/tv (tivi)",
     "capabilityType": "form_recall",
     "skillType": "form_recall",
     "direction": "l1_to_id",
@@ -5028,6 +7448,61 @@ export const capabilities = [
       "item-tv-tivi"
     ],
     "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/warna",
+    "capabilityType": "audio_recognition",
+    "skillType": "recognition",
+    "direction": "audio_to_l1",
+    "modality": "audio",
+    "learnerLanguage": "nl",
+    "requiredArtifacts": [
+      "audio_clip",
+      "meaning:l1"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/warna:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 2,
+    "canonicalKey": "cap:v1:item:learning_items/warna:audio_recognition:audio_to_l1:audio:nl",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/warna\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"meaning:l1\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-warna"
+    ],
+    "relationshipKind": "introduced_by"
+  },
+  {
+    "sourceKind": "item",
+    "sourceRef": "learning_items/warna",
+    "capabilityType": "dictation",
+    "skillType": "form_recall",
+    "direction": "audio_to_id",
+    "modality": "audio",
+    "learnerLanguage": "none",
+    "requiredArtifacts": [
+      "audio_clip",
+      "base_text",
+      "accepted_answers:id"
+    ],
+    "prerequisiteKeys": [
+      "cap:v1:item:learning_items/warna:text_recognition:id_to_l1:text:nl"
+    ],
+    "difficultyLevel": 4,
+    "canonicalKey": "cap:v1:item:learning_items/warna:dictation:audio_to_id:audio:none",
+    "goalTags": [],
+    "projectionVersion": "capability-v3",
+    "sourceFingerprint": "{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/warna\"}",
+    "artifactFingerprint": "[\"audio_clip\",\"base_text\",\"accepted_answers:id\"]",
+    "lessonId": "1817ddaa-f529-49d7-9773-8cc5ba90dc50",
+    "contentUnitSlugs": [
+      "item-warna"
+    ],
+    "relationshipKind": "practiced_by"
   },
   {
     "sourceKind": "item",

@@ -77,6 +77,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/ada apa?:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/ada apa?:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/ada-apa-1eb5fb8e.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/ada apa?:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/ada apa?:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Wat is er aan de hand?"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/ada apa?:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/ada apa?:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/ada-apa-1eb5fb8e.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/ada apa?:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/ada apa?:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Ada apa?"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/ada apa?:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/ada apa?:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "Ada apa?"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/ada apa?:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/ada apa?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -159,6 +208,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "Wat is er aan de hand?"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/awas-dokter-jangan-sakit-ed30e65c.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Voorzichtig dokter, niet pijn doen, hè."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/awas-dokter-jangan-sakit-ed30e65c.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Awas dokter, jangan sakit, ya."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/awas dokter, jangan sakit, ya.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "Awas dokter, jangan sakit, ya."
+      ]
     }
   },
   {
@@ -247,6 +345,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/awas:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/awas:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/awas-a64c566d.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/awas:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/awas:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "oppassen / uitkijken"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/awas:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/awas:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/awas-a64c566d.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/awas:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/awas:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "awas"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/awas:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/awas:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "awas"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/awas:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/awas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -329,6 +476,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "oppassen / uitkijken"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/bagaimana-bisa-jatuh-dari-63795c9d.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Hoe kun je nou uit een boom vallen?"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/bagaimana-bisa-jatuh-dari-63795c9d.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Bagaimana bisa jatuh dari pohon?"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/bagaimana bisa jatuh dari pohon?:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "Bagaimana bisa jatuh dari pohon?"
+      ]
     }
   },
   {
@@ -417,6 +613,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/bakal:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/bakal:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/bakal-1e6ae890.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bakal:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bakal:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "zullen / om te"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bakal:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/bakal:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/bakal-1e6ae890.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bakal:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/bakal:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "bakal"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bakal:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/bakal:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "bakal"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/bakal:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/bakal:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -499,6 +744,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "zullen / om te"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bekerja:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/bekerja:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/bekerja-8c7eb26f.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bekerja:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bekerja:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "werken"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bekerja:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/bekerja:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/bekerja-8c7eb26f.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bekerja:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/bekerja:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "bekerja"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bekerja:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/bekerja:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "bekerja"
+      ]
     }
   },
   {
@@ -587,6 +881,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/betul-dokter-tidak-ada-e850c4ad.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Echt waar, dokter? Is er niets gebroken? Ik was zo bang!"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/betul-dokter-tidak-ada-e850c4ad.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Betul dokter? Tidak ada yang patah? Saya takut sekali!"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "Betul dokter? Tidak ada yang patah? Saya takut sekali!"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/betul dokter? tidak ada yang patah? saya takut sekali!:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -669,6 +1012,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "Echt waar, dokter? Is er niets gebroken? Ik was zo bang!"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/betul-bu-tidak-ada-7f434d6a.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/betul-bu-tidak-ada-7f434d6a.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh."
+      ]
     }
   },
   {
@@ -757,6 +1149,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/biar:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/biar:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/biar-2cffe752.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/biar:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/biar:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "opdat / laat maar"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/biar:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/biar:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/biar-2cffe752.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/biar:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/biar:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "biar"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/biar:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/biar:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "biar"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/biar:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/biar:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -839,6 +1280,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "opdat / laat maar"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bibir:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/bibir:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/bibir-a65ae02c.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bibir:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bibir:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "lip"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bibir:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/bibir:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/bibir-a65ae02c.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bibir:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/bibir:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "bibir"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bibir:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/bibir:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "bibir"
+      ]
     }
   },
   {
@@ -927,6 +1417,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/bulu:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/bulu:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/bulu-e9f2aca3.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bulu:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/bulu:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "lichaamshaar"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bulu:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/bulu:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/bulu-e9f2aca3.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bulu:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/bulu:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "bulu"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/bulu:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/bulu:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "bulu"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/bulu:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/bulu:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -1009,6 +1548,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "lichaamshaar"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/burung:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/burung:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/burung-57ab96e3.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/burung:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/burung:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "vogel"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/burung:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/burung:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/burung-57ab96e3.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/burung:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/burung:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "burung"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/burung:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/burung:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "burung"
+      ]
     }
   },
   {
@@ -1097,6 +1685,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/capk-na-inspanning-e5a32fc7.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "moe"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/capk-na-inspanning-e5a32fc7.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "capèk (na inspanning)"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "capèk (na inspanning)"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/capèk (na inspanning):form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/capèk (na inspanning):form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -1179,6 +1816,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "moe"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dada:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/dada:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/dada-d44fe093.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dada:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dada:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "borst(kas)"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dada:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/dada:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/dada-d44fe093.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dada:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/dada:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "dada"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dada:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/dada:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "dada"
+      ]
     }
   },
   {
@@ -1267,6 +1953,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/dagu:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/dagu:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/dagu-3108a950.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dagu:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dagu:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "kin"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dagu:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/dagu:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/dagu-3108a950.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dagu:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/dagu:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "dagu"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dagu:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/dagu:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "dagu"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/dagu:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/dagu:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -1349,6 +2084,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "kin"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dahi:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/dahi:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/dahi-7a04023e.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dahi:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/dahi:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "voorhoofd"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dahi:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/dahi:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/dahi-7a04023e.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dahi:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/dahi:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "dahi"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/dahi:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/dahi:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "dahi"
+      ]
     }
   },
   {
@@ -1437,6 +2221,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/demam:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/demam:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/demam-c362e99f.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/demam:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/demam:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "koorts"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/demam:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/demam:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/demam-c362e99f.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/demam:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/demam:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "demam"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/demam:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/demam:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "demam"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/demam:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/demam:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -1519,6 +2352,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "koorts"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/di mana-mana:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/di mana-mana:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/di-manamana-9aae974b.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/di mana-mana:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/di mana-mana:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "overal"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/di mana-mana:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/di mana-mana:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/di-manamana-9aae974b.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/di mana-mana:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/di mana-mana:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "di mana-mana"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/di mana-mana:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/di mana-mana:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "di mana-mana"
+      ]
     }
   },
   {
@@ -1607,6 +2489,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/diam:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/diam:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/diam-f2024678.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/diam:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/diam:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "stil (zijn)"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/diam:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/diam:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/diam-f2024678.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/diam:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/diam:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "diam"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/diam:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/diam:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "diam"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/diam:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/diam:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -1689,6 +2620,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "stil (zijn)"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/diét:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/diét:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/dit-40fc3d9e.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/diét:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/diét:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "dieet"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/diét:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/diét:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/dit-40fc3d9e.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/diét:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/diét:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "diét"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/diét:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/diét:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "diét"
+      ]
     }
   },
   {
@@ -1777,6 +2757,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/flu:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/flu:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/flu-cfe32a43.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/flu:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/flu:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "griep"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/flu:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/flu:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/flu-cfe32a43.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/flu:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/flu:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "flu"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/flu:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/flu:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "flu"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/flu:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/flu:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -1859,6 +2888,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "griep"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hati-hati:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/hati-hati:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/hatihati-728099f9.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hati-hati:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/hati-hati:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "voorzichtig"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hati-hati:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/hati-hati:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/hatihati-728099f9.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hati-hati:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/hati-hati:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "hati-hati"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hati-hati:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/hati-hati:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "hati-hati"
+      ]
     }
   },
   {
@@ -1947,6 +3025,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/hati:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/hati:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/hati-7f785f71.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hati:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/hati:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "lever"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hati:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/hati:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/hati-7f785f71.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hati:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/hati:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "hati"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hati:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/hati:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "hati"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/hati:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/hati:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -2029,6 +3156,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "lever"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hendak:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/hendak:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/hendak-5ee11ccd.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hendak:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/hendak:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "willen"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hendak:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/hendak:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/hendak-5ee11ccd.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hendak:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/hendak:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "hendak"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hendak:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/hendak:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "hendak"
+      ]
     }
   },
   {
@@ -2117,6 +3293,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/henti:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/henti:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/henti-519b7440.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/henti:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/henti:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "stoppen / ophouden / stilstaan"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/henti:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/henti:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/henti-519b7440.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/henti:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/henti:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "henti"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/henti:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/henti:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "henti"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/henti:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/henti:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -2199,6 +3424,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "stoppen / ophouden / stilstaan"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hidung:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/hidung:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/hidung-d9e1ea5a.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hidung:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/hidung:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "neus"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hidung:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/hidung:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/hidung-d9e1ea5a.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hidung:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/hidung:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "hidung"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/hidung:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/hidung:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "hidung"
+      ]
     }
   },
   {
@@ -2287,6 +3561,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/ini-sakit-atau-tidak-3cd18147.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Doet dit pijn of niet?"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/ini-sakit-atau-tidak-3cd18147.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Ini sakit atau tidak?"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "Ini sakit atau tidak?"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/ini sakit atau tidak?:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/ini sakit atau tidak?:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -2369,6 +3692,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "Doet dit pijn of niet?"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jamu:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/jamu:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/jamu-bf0842b8.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jamu:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/jamu:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "kruidenmengsel"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jamu:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/jamu:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/jamu-bf0842b8.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jamu:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/jamu:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "jamu"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jamu:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/jamu:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "jamu"
+      ]
     }
   },
   {
@@ -2457,6 +3829,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/jantung:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/jantung:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/jantung-3230e184.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jantung:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/jantung:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "hart"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jantung:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/jantung:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/jantung-3230e184.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jantung:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/jantung:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "jantung"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jantung:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/jantung:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "jantung"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/jantung:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/jantung:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -2539,6 +3960,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "hart"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jari kaki:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/jari kaki:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/jari-kaki-335b11f2.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jari kaki:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/jari kaki:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "teen"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jari kaki:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/jari kaki:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/jari-kaki-335b11f2.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jari kaki:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/jari kaki:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "jari kaki"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jari kaki:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/jari kaki:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "jari kaki"
+      ]
     }
   },
   {
@@ -2627,6 +4097,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/jari tangan:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/jari tangan:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/jari-tangan-f13b501d.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jari tangan:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/jari tangan:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "vinger"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jari tangan:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/jari tangan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/jari-tangan-f13b501d.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jari tangan:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/jari tangan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "jari tangan"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jari tangan:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/jari tangan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "jari tangan"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/jari tangan:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/jari tangan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -2709,6 +4228,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "vinger"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jatuh:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/jatuh:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/jatuh-3e4bde43.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jatuh:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/jatuh:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "vallen"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jatuh:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/jatuh:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/jatuh-3e4bde43.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jatuh:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/jatuh:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "jatuh"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/jatuh:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/jatuh:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "jatuh"
+      ]
     }
   },
   {
@@ -2797,6 +4365,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/kaget (kagèt):audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kaget (kagèt):audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kaget-kagt-37813980.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kaget (kagèt):audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kaget (kagèt):audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "schrikken"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kaget (kagèt):dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kaget (kagèt):dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kaget-kagt-37813980.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kaget (kagèt):dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/kaget (kagèt):dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "kaget (kagèt)"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kaget (kagèt):dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kaget (kagèt):dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "kaget (kagèt)"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/kaget (kagèt):form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/kaget (kagèt):form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -2879,6 +4496,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "schrikken"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kaki-saya-sakit-sekali-5e79362d.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Mijn voet doet heel erg pijn, dokter. Ik ben uit de boom gevallen."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kaki-saya-sakit-sekali-5e79362d.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Kaki saya sakit sekali dokter. Saya jatuh dari pohon."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kaki saya sakit sekali dokter. saya jatuh dari pohon.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "Kaki saya sakit sekali dokter. Saya jatuh dari pohon."
+      ]
     }
   },
   {
@@ -2967,6 +4633,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/kaki:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kaki:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kaki-24fab15f.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kaki:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kaki:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "voet / been"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kaki:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kaki:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kaki-24fab15f.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kaki:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/kaki:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "kaki"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kaki:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kaki:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "kaki"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/kaki:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/kaki:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -3049,6 +4764,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "voet / been"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kalau-begitu-tidak-ada-1d3e7f51.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "In dat geval is er niets gebroken. Straks ben je vast heel snel weer beter, Tin."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kalau-begitu-tidak-ada-1d3e7f51.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Kalau begitu, tidak ada yang patah. Pasti nanti cepat sekali sembuh, Tin."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "Kalau begitu, tidak ada yang patah. Pasti nanti cepat sekali sembuh, Tin."
+      ]
     }
   },
   {
@@ -3137,6 +4901,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/kapal:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kapal:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kapal-2a725864.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kapal:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kapal:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "schip / boot"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kapal:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kapal:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kapal-2a725864.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kapal:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/kapal:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "kapal"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kapal:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kapal:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "kapal"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/kapal:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/kapal:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -3219,6 +5032,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "schip / boot"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kepala:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kepala:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kepala-892f1e9a.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kepala:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kepala:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "hoofd"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kepala:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kepala:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kepala-892f1e9a.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kepala:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/kepala:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "kepala"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kepala:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kepala:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "kepala"
+      ]
     }
   },
   {
@@ -3307,6 +5169,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/kerongkongan:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kerongkongan:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kerongkongan-f3fa671f.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kerongkongan:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kerongkongan:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "keel"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kerongkongan:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kerongkongan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kerongkongan-f3fa671f.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kerongkongan:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/kerongkongan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "kerongkongan"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kerongkongan:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kerongkongan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "kerongkongan"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/kerongkongan:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/kerongkongan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -3389,6 +5300,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "keel"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kesehatan (keséhatan):audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kesehatan (keséhatan):audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kesehatan-keshatan-8e31dcd0.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kesehatan (keséhatan):audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kesehatan (keséhatan):audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "gezondheid"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kesehatan (keséhatan):dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kesehatan (keséhatan):dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kesehatan-keshatan-8e31dcd0.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kesehatan (keséhatan):dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/kesehatan (keséhatan):dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "kesehatan (keséhatan)"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kesehatan (keséhatan):dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kesehatan (keséhatan):dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "kesehatan (keséhatan)"
+      ]
     }
   },
   {
@@ -3477,6 +5437,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/kuku:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kuku:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kuku-be3cf188.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kuku:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kuku:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "nagel"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kuku:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kuku:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kuku-be3cf188.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kuku:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/kuku:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "kuku"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kuku:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kuku:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "kuku"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/kuku:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/kuku:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -3559,6 +5568,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "nagel"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kumis:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kumis:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kumis-8f17621f.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kumis:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kumis:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "snor"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kumis:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kumis:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kumis-8f17621f.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kumis:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/kumis:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "kumis"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kumis:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kumis:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "kumis"
+      ]
     }
   },
   {
@@ -3647,6 +5705,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/kumpul:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kumpul:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kumpul-f21c89a3.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kumpul:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/kumpul:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "verzamelen"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kumpul:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/kumpul:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/kumpul-f21c89a3.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kumpul:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/kumpul:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "kumpul"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/kumpul:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/kumpul:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "kumpul"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/kumpul:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/kumpul:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -3729,6 +5836,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "verzamelen"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lambung:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/lambung:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/lambung-03654b6f.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lambung:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lambung:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "maag"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lambung:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/lambung:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/lambung-03654b6f.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lambung:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/lambung:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "lambung"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lambung:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/lambung:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "lambung"
+      ]
     }
   },
   {
@@ -3817,6 +5973,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/lèhèr:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/lèhèr:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/lhr-0ec77747.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lèhèr:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lèhèr:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "hals"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lèhèr:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/lèhèr:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/lhr-0ec77747.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lèhèr:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/lèhèr:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "lèhèr"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lèhèr:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/lèhèr:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "lèhèr"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/lèhèr:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/lèhèr:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -3899,6 +6104,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "hals"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lekas:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/lekas:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/lekas-78320470.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lekas:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lekas:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "snel"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lekas:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/lekas:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/lekas-78320470.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lekas:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/lekas:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "lekas"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lekas:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/lekas:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "lekas"
+      ]
     }
   },
   {
@@ -3987,6 +6241,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/lemah:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/lemah:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/lemah-a20cd39c.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lemah:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lemah:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "zwak (slap)"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lemah:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/lemah:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/lemah-a20cd39c.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lemah:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/lemah:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "lemah"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lemah:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/lemah:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "lemah"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/lemah:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/lemah:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -4069,6 +6372,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "zwak (slap)"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lengan:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/lengan:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/lengan-62e1ad43.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lengan:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lengan:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "arm"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lengan:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/lengan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/lengan-62e1ad43.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lengan:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/lengan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "lengan"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lengan:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/lengan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "lengan"
+      ]
     }
   },
   {
@@ -4157,6 +6509,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/letnan (lètnan):audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/letnan (lètnan):audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/letnan-ltnan-f9b47d17.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/letnan (lètnan):audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/letnan (lètnan):audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "luitenant"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/letnan (lètnan):dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/letnan (lètnan):dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/letnan-ltnan-f9b47d17.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/letnan (lètnan):dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/letnan (lètnan):dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "letnan (lètnan)"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/letnan (lètnan):dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/letnan (lètnan):dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "letnan (lètnan)"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/letnan (lètnan):form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/letnan (lètnan):form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -4239,6 +6640,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "luitenant"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/loncat:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/loncat:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/loncat-24336ad3.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/loncat:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/loncat:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "springen"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/loncat:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/loncat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/loncat-24336ad3.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/loncat:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/loncat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "loncat"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/loncat:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/loncat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "loncat"
+      ]
     }
   },
   {
@@ -4327,6 +6777,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/luka:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/luka:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/luka-ae428329.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/luka:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/luka:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "wond"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/luka:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/luka:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/luka-ae428329.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/luka:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/luka:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "luka"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/luka:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/luka:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "luka"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/luka:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/luka:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -4409,6 +6908,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "wond"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lutut:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/lutut:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/lutut-32a76e98.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lutut:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/lutut:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "knie"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lutut:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/lutut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/lutut-32a76e98.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lutut:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/lutut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "lutut"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/lutut:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/lutut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "lutut"
+      ]
     }
   },
   {
@@ -4497,6 +7045,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/maka:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/maka:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/maka-f37c030a.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/maka:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/maka:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "daarom"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/maka:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/maka:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/maka-f37c030a.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/maka:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/maka:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "maka"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/maka:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/maka:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "maka"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/maka:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/maka:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -4579,6 +7176,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "daarom"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/masyarakat:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/masyarakat:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/masyarakat-31e9de62.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/masyarakat:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/masyarakat:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "samenleving / maatschappij"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/masyarakat:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/masyarakat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/masyarakat-31e9de62.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/masyarakat:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/masyarakat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "masyarakat"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/masyarakat:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/masyarakat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "masyarakat"
+      ]
     }
   },
   {
@@ -4667,6 +7313,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/mata:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/mata:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/mata-4706b3ec.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/mata:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/mata:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "oog"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/mata:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/mata:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/mata-4706b3ec.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/mata:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/mata:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "mata"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/mata:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/mata:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "mata"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/mata:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/mata:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -4749,6 +7444,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "oog"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/minum obat:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/minum obat:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/minum-obat-12957a79.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/minum obat:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/minum obat:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "medicijn innemen"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/minum obat:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/minum obat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/minum-obat-12957a79.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/minum obat:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/minum obat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "minum obat"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/minum obat:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/minum obat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "minum obat"
+      ]
     }
   },
   {
@@ -4837,6 +7581,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/mual:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/mual:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/mual-2ff075be.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/mual:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/mual:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "misselijk"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/mual:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/mual:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/mual-2ff075be.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/mual:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/mual:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "mual"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/mual:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/mual:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "mual"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/mual:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/mual:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -4919,6 +7712,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "misselijk"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/mulut:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/mulut:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/mulut-6e57af15.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/mulut:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/mulut:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "mond"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/mulut:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/mulut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/mulut-6e57af15.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/mulut:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/mulut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "mulut"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/mulut:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/mulut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "mulut"
+      ]
     }
   },
   {
@@ -5007,6 +7849,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/muntah:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/muntah:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/muntah-ebd3046d.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/muntah:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/muntah:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "overgeven"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/muntah:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/muntah:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/muntah-ebd3046d.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/muntah:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/muntah:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "muntah"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/muntah:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/muntah:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "muntah"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/muntah:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/muntah:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -5089,6 +7980,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "overgeven"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/nafsu makan:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/nafsu makan:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/nafsu-makan-8c268c16.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/nafsu makan:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/nafsu makan:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "eetlust"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/nafsu makan:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/nafsu makan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/nafsu-makan-8c268c16.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/nafsu makan:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/nafsu makan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "nafsu makan"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/nafsu makan:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/nafsu makan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "nafsu makan"
+      ]
     }
   },
   {
@@ -5177,6 +8117,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/nah-coba-saya-periksa-52f595df.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Nou, kom, laat me eerst je voet onderzoeken. Misschien is er niets aan de hand."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/nah-coba-saya-periksa-52f595df.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Nah, coba, saya periksa kakimu dulu. Barangkali tidak apa-apa."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "Nah, coba, saya periksa kakimu dulu. Barangkali tidak apa-apa."
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -5259,6 +8248,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "Nou, kom, laat me eerst je voet onderzoeken. Misschien is er niets aan de hand."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/obat batuk:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/obat batuk:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/obat-batuk-288af61c.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/obat batuk:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/obat batuk:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "hoestdrank"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/obat batuk:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/obat batuk:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/obat-batuk-288af61c.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/obat batuk:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/obat batuk:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "obat batuk"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/obat batuk:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/obat batuk:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "obat batuk"
+      ]
     }
   },
   {
@@ -5347,6 +8385,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/obat:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/obat:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/obat-815560b6.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/obat:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/obat:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "medicijn"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/obat:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/obat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/obat-815560b6.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/obat:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/obat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "obat"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/obat:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/obat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "obat"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/obat:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/obat:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -5429,6 +8516,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "medicijn"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/orang desa:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/orang desa:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/orang-desa-9aee9878.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/orang desa:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/orang desa:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "dorpeling"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/orang desa:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/orang desa:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/orang-desa-9aee9878.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/orang desa:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/orang desa:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "orang desa"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/orang desa:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/orang desa:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "orang desa"
+      ]
     }
   },
   {
@@ -5517,6 +8653,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/pantat:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/pantat:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/pantat-1cab4be6.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pantat:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/pantat:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "billen"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pantat:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/pantat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/pantat-1cab4be6.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pantat:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/pantat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "pantat"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pantat:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/pantat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "pantat"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/pantat:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/pantat:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -5599,6 +8784,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "billen"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/patah:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/patah:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/patah-6937ca52.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/patah:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/patah:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "breken (botten)"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/patah:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/patah:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/patah-6937ca52.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/patah:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/patah:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "patah"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/patah:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/patah:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "patah"
+      ]
     }
   },
   {
@@ -5687,6 +8921,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/pembalut wanita:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/pembalut wanita:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/pembalut-wanita-f3df9a9c.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pembalut wanita:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/pembalut wanita:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "maandverband"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pembalut wanita:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/pembalut wanita:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/pembalut-wanita-f3df9a9c.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pembalut wanita:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/pembalut wanita:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "pembalut wanita"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pembalut wanita:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/pembalut wanita:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "pembalut wanita"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/pembalut wanita:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/pembalut wanita:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -5769,6 +9052,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "maandverband"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pembalut:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/pembalut:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/pembalut-dded3f5f.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pembalut:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/pembalut:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "verband"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pembalut:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/pembalut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/pembalut-dded3f5f.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pembalut:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/pembalut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "pembalut"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pembalut:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/pembalut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "pembalut"
+      ]
     }
   },
   {
@@ -5857,6 +9189,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/periksa:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/periksa:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/periksa-fdfb7c57.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/periksa:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/periksa:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "onderzoeken"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/periksa:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/periksa:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/periksa-fdfb7c57.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/periksa:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/periksa:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "periksa"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/periksa:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/periksa:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "periksa"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/periksa:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/periksa:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -5939,6 +9320,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "onderzoeken"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/perut:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/perut:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/perut-85e64a00.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/perut:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/perut:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "buik"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/perut:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/perut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/perut-85e64a00.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/perut:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/perut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "perut"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/perut:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/perut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "perut"
+      ]
     }
   },
   {
@@ -6027,6 +9457,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/pilek:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/pilek:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/pilek-7dd1c4f0.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pilek:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/pilek:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "verkoudheid"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pilek:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/pilek:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/pilek-7dd1c4f0.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pilek:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/pilek:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "pilek"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pilek:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/pilek:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "pilek"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/pilek:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/pilek:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -6109,6 +9588,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "verkoudheid"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/plèster:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/plèster:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/plster-eeb8b2c8.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/plèster:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/plèster:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "pleister"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/plèster:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/plèster:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/plster-eeb8b2c8.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/plèster:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/plèster:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "plèster"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/plèster:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/plèster:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "plèster"
+      ]
     }
   },
   {
@@ -6197,6 +9725,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/puas:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/puas:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/puas-1783685e.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/puas:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/puas:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "tevreden / voldaan"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/puas:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/puas:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/puas-1783685e.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/puas:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/puas:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "puas"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/puas:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/puas:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "puas"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/puas:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/puas:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -6279,6 +9856,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "tevreden / voldaan"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pusat:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/pusat:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/pusat-7a7825b4.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pusat:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/pusat:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "centrum"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pusat:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/pusat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/pusat-7a7825b4.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pusat:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/pusat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "pusat"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pusat:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/pusat:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "pusat"
+      ]
     }
   },
   {
@@ -6367,6 +9993,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/pusing:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/pusing:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/pusing-6b76ba18.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pusing:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/pusing:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "duizelig zijn"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pusing:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/pusing:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/pusing-6b76ba18.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pusing:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/pusing:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "pusing"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/pusing:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/pusing:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "pusing"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/pusing:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/pusing:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -6449,6 +10124,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "duizelig zijn"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/puskesmas:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/puskesmas:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/puskesmas-a478644b.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/puskesmas:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/puskesmas:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "volksgezondheidscentrum"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/puskesmas:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/puskesmas:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/puskesmas-a478644b.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/puskesmas:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/puskesmas:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "PUSKESMAS"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/puskesmas:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/puskesmas:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "PUSKESMAS"
+      ]
     }
   },
   {
@@ -6537,6 +10261,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/racun:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/racun:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/racun-81e38dc3.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/racun:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/racun:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "vergif"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/racun:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/racun:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/racun-81e38dc3.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/racun:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/racun:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "racun"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/racun:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/racun:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "racun"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/racun:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/racun:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -6619,6 +10392,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "vergif"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/rongga dada:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/rongga dada:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/rongga-dada-ac9b7452.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/rongga dada:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/rongga dada:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "ribben"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/rongga dada:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/rongga dada:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/rongga-dada-ac9b7452.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/rongga dada:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/rongga dada:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "rongga dada"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/rongga dada:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/rongga dada:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "rongga dada"
+      ]
     }
   },
   {
@@ -6707,6 +10529,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/rumah sakit:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/rumah sakit:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/rumah-sakit-508fc8fe.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/rumah sakit:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/rumah sakit:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "ziekenhuis"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/rumah sakit:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/rumah sakit:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/rumah-sakit-508fc8fe.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/rumah sakit:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/rumah sakit:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "rumah sakit"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/rumah sakit:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/rumah sakit:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "rumah sakit"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/rumah sakit:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/rumah sakit:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -6789,6 +10660,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "ziekenhuis"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sakit kepala:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/sakit kepala:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/sakit-kepala-ac66f02e.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sakit kepala:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sakit kepala:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "hoofdpijn"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sakit kepala:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/sakit kepala:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/sakit-kepala-ac66f02e.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sakit kepala:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/sakit kepala:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "sakit kepala"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sakit kepala:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/sakit kepala:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "sakit kepala"
+      ]
     }
   },
   {
@@ -6877,6 +10797,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/sakit perut / mag:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/sakit perut / mag:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/sakit-perut-mag-03fc2e70.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sakit perut / mag:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sakit perut / mag:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "buik/maagpijn"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sakit perut / mag:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/sakit perut / mag:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/sakit-perut-mag-03fc2e70.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sakit perut / mag:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/sakit perut / mag:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "sakit perut / mag"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sakit perut / mag:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/sakit perut / mag:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "sakit perut / mag"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/sakit perut / mag:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/sakit perut / mag:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -6959,6 +10928,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "buik/maagpijn"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/saya-mau-naik-lebih-4f3febaa.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Ik wilde nog hoger in die boom klimmen, maar dat lukte niet, zodat ik viel."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/saya-mau-naik-lebih-4f3febaa.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "Saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh."
+      ]
     }
   },
   {
@@ -7047,6 +11065,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/sedang:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/sedang:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/sedang-f8657e10.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sedang:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sedang:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "bezig te … (iets aan het doen zijn)"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sedang:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/sedang:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/sedang-f8657e10.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sedang:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/sedang:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "sedang"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sedang:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/sedang:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "sedang"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/sedang:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/sedang:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -7129,6 +11196,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "bezig te … (iets aan het doen zijn)"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sehingga:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/sehingga:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/sehingga-8aa0945c.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sehingga:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sehingga:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "zodat / totdat"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sehingga:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/sehingga:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/sehingga-8aa0945c.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sehingga:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/sehingga:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "sehingga"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sehingga:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/sehingga:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "sehingga"
+      ]
     }
   },
   {
@@ -7217,6 +11333,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/sembuh:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/sembuh:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/sembuh-a9a2afa5.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sembuh:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/sembuh:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "genezen / gezond worden"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sembuh:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/sembuh:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/sembuh-a9a2afa5.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sembuh:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/sembuh:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "sembuh"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/sembuh:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/sembuh:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "sembuh"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/sembuh:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/sembuh:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -7299,6 +11464,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "genezen / gezond worden"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/suntik:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/suntik:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/suntik-b403cac2.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/suntik:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/suntik:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "prik"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/suntik:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/suntik:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/suntik-b403cac2.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/suntik:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/suntik:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "suntik"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/suntik:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/suntik:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "suntik"
+      ]
     }
   },
   {
@@ -7387,6 +11601,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/tak (tidak):audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/tak (tidak):audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/tak-tidak-d541e778.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tak (tidak):audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tak (tidak):audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "niet"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tak (tidak):dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/tak (tidak):dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/tak-tidak-d541e778.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tak (tidak):dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/tak (tidak):dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "tak (tidak)"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tak (tidak):dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/tak (tidak):dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "tak (tidak)"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/tak (tidak):form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/tak (tidak):form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -7469,6 +11732,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "niet"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/takut:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/takut:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/takut-02b44dd6.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/takut:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/takut:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "bang (zijn)"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/takut:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/takut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/takut-02b44dd6.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/takut:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/takut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "takut"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/takut:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/takut:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "takut"
+      ]
     }
   },
   {
@@ -7557,6 +11869,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/telinga:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/telinga:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/telinga-203782dc.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/telinga:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/telinga:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "oor"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/telinga:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/telinga:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/telinga-203782dc.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/telinga:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/telinga:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "telinga"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/telinga:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/telinga:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "telinga"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/telinga:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/telinga:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -7639,6 +12000,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "oor"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/tidak-ada-apaapa-91faf522.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "er is niets / 't geeft niet / er is niets aan de hand"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/tidak-ada-apaapa-91faf522.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "tidak (ada) apa-apa"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/tidak (ada) apa-apa:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "tidak (ada) apa-apa"
+      ]
     }
   },
   {
@@ -7727,6 +12137,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/tidak-begitu-sakit-dokter-0d0df0d6.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Niet zo erg pijn dokter, maar een beetje."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/tidak-begitu-sakit-dokter-0d0df0d6.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "Tidak begitu sakit dokter, sedikit saja."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "Tidak begitu sakit dokter, sedikit saja."
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/tidak begitu sakit dokter, sedikit saja.:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -7809,6 +12268,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "Niet zo erg pijn dokter, maar een beetje."
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tidak jadi:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/tidak jadi:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/tidak-jadi-fc6350fb.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tidak jadi:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tidak jadi:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "niet lukken / niet doorgaan"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tidak jadi:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/tidak jadi:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/tidak-jadi-fc6350fb.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tidak jadi:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/tidak jadi:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "tidak jadi"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tidak jadi:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/tidak jadi:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "tidak jadi"
+      ]
     }
   },
   {
@@ -7897,6 +12405,55 @@ export const exerciseAssets = [
     }
   },
   {
+    "asset_key": "cap:v1:item:learning_items/tubuh / badan:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/tubuh / badan:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/tubuh-badan-bb3286c5.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tubuh / badan:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/tubuh / badan:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "lichaam"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tubuh / badan:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/tubuh / badan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/tubuh-badan-bb3286c5.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tubuh / badan:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/tubuh / badan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "tubuh / badan"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/tubuh / badan:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/tubuh / badan:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "tubuh / badan"
+      ]
+    }
+  },
+  {
     "asset_key": "cap:v1:item:learning_items/tubuh / badan:form_recall:l1_to_id:text:nl:meaning:l1",
     "capability_key": "cap:v1:item:learning_items/tubuh / badan:form_recall:l1_to_id:text:nl",
     "artifact_kind": "meaning:l1",
@@ -7979,6 +12536,55 @@ export const exerciseAssets = [
     "quality_status": "approved",
     "payload_json": {
       "value": "lichaam"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/usus:audio_recognition:audio_to_l1:audio:nl:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/usus:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/usus-e85284d0.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/usus:audio_recognition:audio_to_l1:audio:nl:meaning:l1",
+    "capability_key": "cap:v1:item:learning_items/usus:audio_recognition:audio_to_l1:audio:nl",
+    "artifact_kind": "meaning:l1",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "darmen"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/usus:dictation:audio_to_id:audio:none:audio_clip",
+    "capability_key": "cap:v1:item:learning_items/usus:dictation:audio_to_id:audio:none",
+    "artifact_kind": "audio_clip",
+    "quality_status": "approved",
+    "payload_json": {
+      "storagePath": "tts/gacrux/usus-e85284d0.mp3",
+      "voiceId": "id-ID-Chirp3-HD-Gacrux"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/usus:dictation:audio_to_id:audio:none:base_text",
+    "capability_key": "cap:v1:item:learning_items/usus:dictation:audio_to_id:audio:none",
+    "artifact_kind": "base_text",
+    "quality_status": "approved",
+    "payload_json": {
+      "value": "usus"
+    }
+  },
+  {
+    "asset_key": "cap:v1:item:learning_items/usus:dictation:audio_to_id:audio:none:accepted_answers:id",
+    "capability_key": "cap:v1:item:learning_items/usus:dictation:audio_to_id:audio:none",
+    "artifact_kind": "accepted_answers:id",
+    "quality_status": "approved",
+    "payload_json": {
+      "values": [
+        "usus"
+      ]
     }
   },
   {

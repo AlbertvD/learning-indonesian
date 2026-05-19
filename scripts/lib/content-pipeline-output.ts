@@ -2,11 +2,22 @@ import { projectCapabilities } from '../../src/lib/capabilities/capabilityCatalo
 import { projectPodcastCapabilities } from './pipeline/podcast-stage/podcastProjectionRules'
 import { ARTIFACT_KINDS } from '../../src/lib/capabilities/artifactRegistry'
 import { itemSlug } from '../../src/lib/capabilities/itemSlug'
+import { normalizeTtsText } from './tts-normalize'
 import type {
   ArtifactKind,
   CurrentAffixedFormPair,
   ProjectedCapability,
 } from '../../src/lib/capabilities/capabilityTypes'
+
+/**
+ * Per-lesson audio coverage map keyed by `normalizeTtsText(base_text)`.
+ * Populated by the capability-stage loader from `audio_clips` rows; an empty
+ * map preserves the offline-generator path (no audio capabilities emitted).
+ */
+export interface AudioClipCoverage {
+  storage_path: string
+  voice_id: string
+}
 
 export type PipelineSeverity = 'CRITICAL' | 'WARNING'
 
@@ -331,6 +342,12 @@ export interface ArtifactBuildContext {
   learningItemsBySourceRef: Map<string, { base_text: string; translation_nl?: string }>
   grammarPatternsBySourceRef: Map<string, { pattern_name: string; description?: string; example?: string }>
   affixedFormPairsBySourceRef: Map<string, { root: string; derived: string; allomorphRule?: string }>
+  /**
+   * Audio coverage keyed by `normalizeTtsText(base_text)`. Drives the
+   * `audio_clip` artifact payload (storagePath); empty map → no audio caps
+   * exist so this lookup is never invoked.
+   */
+  audioClipsByNormalizedText: ReadonlyMap<string, AudioClipCoverage>
 }
 
 function requireLearningItem(
@@ -452,10 +469,24 @@ function buildPayloadForKind(
       }
       return { value: pattern.example }
     }
+    case 'audio_clip': {
+      const item = requireLearningItem(capability, ctx, kind)
+      const clip = ctx.audioClipsByNormalizedText.get(normalizeTtsText(item.base_text))
+      if (!clip) {
+        // Should never happen — the snapshot only sets hasAudio=true when a
+        // matching audio_clip exists, and the artifact builder only runs for
+        // capabilities the catalog actually emitted. A miss here means the
+        // ctx map was rebuilt with stale data.
+        throw new Error(
+          `buildArtifactsForCapability: audio_clip artifact requested for "${capability.sourceRef}" but no audio_clip is registered for normalized_text="${normalizeTtsText(item.base_text)}"`,
+        )
+      }
+      return { storagePath: clip.storage_path, voiceId: clip.voice_id }
+    }
     default:
       throw new Error(
         `buildArtifactsForCapability: unknown or unsupported artifact_kind "${kind}" for capability "${capability.canonicalKey}". ` +
-        `Supported kinds: base_text, accepted_answers:id, accepted_answers:l1, meaning:l1, root_derived_pair, allomorph_rule, pattern_explanation:l1, pattern_example.`,
+        `Supported kinds: base_text, accepted_answers:id, accepted_answers:l1, meaning:l1, audio_clip, root_derived_pair, allomorph_rule, pattern_explanation:l1, pattern_example.`,
       )
   }
 }
@@ -475,8 +506,18 @@ export function buildArtifactsForCapability(
 
 export function buildCapabilityStagingFromContent(input: StagingLessonInput & {
   contentUnits: StagingContentUnit[]
+  /**
+   * Per-lesson audio coverage from the capability-stage loader. Drives the
+   * snapshot's `hasAudio` flag (which gates `audio_recognition` + `dictation`
+   * capability emission in capabilityCatalog.ts:106) and the `audio_clip`
+   * artifact payload. Optional — offline callers (generate-staging-files.ts,
+   * tests) omit it and get no audio capabilities, preserving prior behavior.
+   */
+  audioClipsByNormalizedText?: ReadonlyMap<string, AudioClipCoverage>
 }): CapabilityStagingPlan {
   const learningItems = dedupeLearningItems(input.learningItems)
+  const audioClipsByNormalizedText: ReadonlyMap<string, AudioClipCoverage> =
+    input.audioClipsByNormalizedText ?? new Map()
   const itemUnitsBySourceRef = new Map(
     input.contentUnits
       .filter(unit => unit.unit_kind === 'learning_item')
@@ -508,7 +549,7 @@ export function buildCapabilityStagingFromContent(input: StagingLessonInput & {
         id: [item.base_text],
         l1: [item.translation_nl ?? item.translation_en ?? ''].filter(Boolean),
       },
-      hasAudio: false,
+      hasAudio: audioClipsByNormalizedText.has(normalizeTtsText(item.base_text)),
     })),
     grammarPatterns: input.grammarPatterns.map(pattern => ({
       id: stableSlug(pattern.slug),
@@ -586,6 +627,7 @@ export function buildCapabilityStagingFromContent(input: StagingLessonInput & {
         { root: pair.root, derived: pair.derived, allomorphRule: pair.allomorphRule },
       ]),
     ),
+    audioClipsByNormalizedText,
   }
 
   return {

@@ -10,13 +10,14 @@ const ITEM_SOURCE_REF = 'learning_items/makan'
 const PATTERN_SOURCE_REF = 'lesson-1/pattern-noun-adjective'
 const MORPHOLOGY_SOURCE_REF = 'lesson-9/morphology/meN-baca-membaca'
 
-function makeItemContext(): ArtifactBuildContext {
+function makeItemContext(opts: { audio?: Map<string, { storage_path: string; voice_id: string }> } = {}): ArtifactBuildContext {
   return {
     learningItemsBySourceRef: new Map([
       [ITEM_SOURCE_REF, { base_text: 'makan', translation_nl: 'eten' }],
     ]),
     grammarPatternsBySourceRef: new Map(),
     affixedFormPairsBySourceRef: new Map(),
+    audioClipsByNormalizedText: opts.audio ?? new Map(),
   }
 }
 
@@ -31,6 +32,7 @@ function makePatternContext(opts: { withExample?: boolean } = {}): ArtifactBuild
       }],
     ]),
     affixedFormPairsBySourceRef: new Map(),
+    audioClipsByNormalizedText: new Map(),
   }
 }
 
@@ -45,6 +47,7 @@ function makeMorphologyContext(): ArtifactBuildContext {
         allomorphRule: 'meN- becomes mem- before roots beginning with b.',
       }],
     ]),
+    audioClipsByNormalizedText: new Map(),
   }
 }
 
@@ -251,5 +254,38 @@ describe('buildArtifactsForCapability', () => {
       requiredArtifacts: ['exercise_variant'],
     })
     expect(() => buildArtifactsForCapability(cap, makeItemContext())).toThrow(/Unknown artifact_kind|exercise_variant/)
+  })
+
+  it('builds an audio_clip payload from the registered clip', () => {
+    const cap = makeCapability({
+      canonicalKey: 'cap:v1:item:learning_items/makan:audio_recognition:audio_to_l1:audio:nl',
+      sourceRef: ITEM_SOURCE_REF,
+      capabilityType: 'audio_recognition',
+      modality: 'audio',
+      direction: 'audio_to_l1',
+      requiredArtifacts: ['audio_clip', 'meaning:l1'],
+    })
+    const audio = new Map([
+      ['makan', { storage_path: 'lesson-1/makan-Achird.mp3', voice_id: 'Achird' }],
+    ])
+    const result = buildArtifactsForCapability(cap, makeItemContext({ audio }))
+    const clip = result.find(a => a.artifact_kind === 'audio_clip')!
+    expect(clip.payload_json).toEqual({
+      storagePath: 'lesson-1/makan-Achird.mp3',
+      voiceId: 'Achird',
+    })
+  })
+
+  it('throws when audio_clip artifact is requested but no clip is registered', () => {
+    const cap = makeCapability({
+      canonicalKey: 'cap:v1:item:learning_items/makan:dictation:audio_to_id:audio:none',
+      sourceRef: ITEM_SOURCE_REF,
+      capabilityType: 'dictation',
+      modality: 'audio',
+      direction: 'audio_to_id',
+      requiredArtifacts: ['audio_clip'],
+    })
+    expect(() => buildArtifactsForCapability(cap, makeItemContext()))
+      .toThrow(/audio_clip artifact requested/)
   })
 })

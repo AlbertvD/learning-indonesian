@@ -545,37 +545,52 @@ export async function countExerciseVariantsForLesson(
 // Audio coverage (Decision §11 #20: normalize via normalizeTtsText, NOT lower+trim only)
 // ---------------------------------------------------------------------------
 
+export interface AudioClipMeta {
+  storage_path: string
+  voice_id: string
+}
+
 /**
- * Read which `audio_clips.normalized_text` values exist for a lesson. Stage A
- * writes audio_clips with `normalized_text = normalizeTtsText(text)`
- * (audio.ts:71). The legacy `hasAudio` lookup at capability-stage-legacy.ts:497
- * used `base_text.toLowerCase().trim()` (no whitespace collapse), so items
- * with stray double-spaces silently missed the lookup. §11 #20 aligns the key.
+ * Read all audio_clips for a lesson, keyed by normalized_text. When multiple
+ * voices exist for the same text, `preferredVoiceId` wins; otherwise the first
+ * row seen is kept. The capability snapshot uses presence in this map to set
+ * `hasAudio` on each item (replacing the legacy hardcoded `false`); the
+ * artifact builder reads `storage_path` to populate the `audio_clip` payload.
+ *
+ * Stage A writes audio_clips with `normalized_text = normalizeTtsText(text)`
+ * (audio.ts:71), so callers must look up using the same normalization (see
+ * `lookupAudioClip` below).
  */
-export async function fetchAudioNormalizedTextsForLesson(
+export async function fetchLessonAudioCoverage(
   supabase: CapabilitySupabaseClient,
   lessonId: string,
-): Promise<Set<string>> {
+  preferredVoiceId: string | null,
+): Promise<Map<string, AudioClipMeta>> {
   // audio_clips uses `generated_for_lesson_id` (FK to lessons) — not
   // `lesson_id` — per scripts/migration.sql:948.
   const { data, error } = await supabase
     .schema('indonesian')
     .from('audio_clips')
-    .select('normalized_text')
+    .select('normalized_text, storage_path, voice_id')
     .eq('generated_for_lesson_id', lessonId)
   if (error) throw error
-  const set = new Set<string>()
-  for (const row of (data ?? []) as Array<{ normalized_text: string }>) {
-    set.add(row.normalized_text)
+
+  const map = new Map<string, AudioClipMeta>()
+  for (const row of (data ?? []) as Array<{ normalized_text: string; storage_path: string; voice_id: string }>) {
+    const existing = map.get(row.normalized_text)
+    const isPreferred = preferredVoiceId !== null && row.voice_id === preferredVoiceId
+    if (!existing || isPreferred) {
+      map.set(row.normalized_text, { storage_path: row.storage_path, voice_id: row.voice_id })
+    }
   }
-  return set
+  return map
 }
 
-export function lookupHasAudio(
-  audioNormalizedTexts: Set<string>,
+export function lookupAudioClip(
+  audioClipsByNormalizedText: ReadonlyMap<string, AudioClipMeta>,
   baseText: string,
-): boolean {
-  return audioNormalizedTexts.has(normalizeTtsText(baseText))
+): AudioClipMeta | undefined {
+  return audioClipsByNormalizedText.get(normalizeTtsText(baseText))
 }
 
 // ---------------------------------------------------------------------------

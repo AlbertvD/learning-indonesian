@@ -17,7 +17,11 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { fetchAudioNormalizedTextsForLesson, type CapabilitySupabaseClient } from './adapter'
+import {
+  fetchLessonAudioCoverage,
+  type AudioClipMeta,
+  type CapabilitySupabaseClient,
+} from './adapter'
 
 export interface LoadedLessonRow {
   id: string
@@ -25,6 +29,7 @@ export interface LoadedLessonRow {
   order_index: number
   title: string
   level: string
+  primary_voice: string | null
 }
 
 export interface LoadedLessonSection {
@@ -61,7 +66,15 @@ export interface LoadedLesson {
   lesson: LoadedLessonRow
   sections: LoadedLessonSection[]
   pageBlocks: LoadedLessonPageBlock[]
-  audioNormalizedTexts: Set<string>
+  /**
+   * Map of `normalized_text` (via normalizeTtsText) → audio clip metadata for
+   * every audio_clips row attached to this lesson, primary-voice preferred.
+   * Replaces the older `audioNormalizedTexts: Set<string>` so the projector
+   * can both flag `hasAudio` AND build a concrete `audio_clip` artifact
+   * payload from the same source. Empty when the loader runs without a
+   * Supabase client (dry-run / offline staging generator).
+   */
+  audioClipsByNormalizedText: Map<string, AudioClipMeta>
   staging: LoadedStaging
 }
 
@@ -78,7 +91,7 @@ export async function loadStageAOutputsFromDb(
   const { data: lessonRow, error: lessonError } = await supabase
     .schema('indonesian')
     .from('lessons')
-    .select('id, module_id, order_index, title, level')
+    .select('id, module_id, order_index, title, level, primary_voice')
     .eq('id', lessonId)
     .single()
   if (lessonError) throw new Error(`Failed to load lessons.id=${lessonId}: ${lessonError.message}`)
@@ -100,10 +113,15 @@ export async function loadStageAOutputsFromDb(
     .order('display_order', { ascending: true })
   if (pageBlocksError) throw pageBlocksError
 
-  const audioNormalizedTexts = await fetchAudioNormalizedTextsForLesson(supabase, lessonId)
+  const typedLessonRow = lessonRow as LoadedLessonRow
+  const audioClipsByNormalizedText = await fetchLessonAudioCoverage(
+    supabase,
+    lessonId,
+    typedLessonRow.primary_voice,
+  )
 
   return {
-    lesson: lessonRow as LoadedLessonRow,
+    lesson: typedLessonRow,
     sections: (sectionsData ?? []) as LoadedLessonSection[],
     pageBlocks: ((pageBlocksData ?? []) as Array<Partial<LoadedLessonPageBlock>>).map((b) => ({
       block_key: b.block_key ?? '',
@@ -114,7 +132,7 @@ export async function loadStageAOutputsFromDb(
       display_order: b.display_order ?? 0,
       payload_json: (b.payload_json ?? {}) as Record<string, unknown>,
     })),
-    audioNormalizedTexts,
+    audioClipsByNormalizedText,
   }
 }
 
@@ -212,6 +230,7 @@ export async function loadLessonForDryRun(
       order_index: stagedLesson?.order_index ?? input.lessonNumber,
       title: stagedLesson?.title ?? `Lesson ${input.lessonNumber}`,
       level: stagedLesson?.level ?? 'A1',
+      primary_voice: null,
     },
     sections: (stagedLesson?.sections ?? []).map((s, idx) => ({
       id: `staging-section-${idx}`,
@@ -220,7 +239,7 @@ export async function loadLessonForDryRun(
       order_index: s.order_index,
     })),
     pageBlocks: [],
-    audioNormalizedTexts: new Set(),
+    audioClipsByNormalizedText: new Map(),
     staging,
   }
 }

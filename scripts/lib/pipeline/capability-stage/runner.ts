@@ -247,6 +247,7 @@ export async function runCapabilityStage(
   const regeneratedCapabilityPlan = buildCapabilityStagingFromContent({
     ...pipelineInput,
     contentUnits: regeneratedContentUnits,
+    audioClipsByNormalizedText: loaded.audioClipsByNormalizedText,
   })
   const regeneratedPageBlocks = buildLessonPageBlocksFromStaging({
     ...pipelineInput,
@@ -607,6 +608,7 @@ export async function runCapabilityStage(
   if (status === 'ok') {
     try {
       const promotionPlan = await loadPromotionPlan({
+        lesson: input.lessonNumber,
         sourceRef: `lesson-${input.lessonNumber}`,
         apply: true,
       })
