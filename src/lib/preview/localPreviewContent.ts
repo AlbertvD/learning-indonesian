@@ -1,6 +1,9 @@
-import type { Lesson, LessonPageBlock } from '@/services/lessonService'
-import type { LessonExperience } from '@/lib/lessons/lessonExperience'
-import { buildLessonExperience } from '@/lib/lessons/lessonExperience'
+import {
+  buildLessonExperience,
+  type Lesson,
+  type LessonExperience,
+  type LessonPageBlock,
+} from '@/lib/lessons'
 
 export interface PreviewLesson {
   slug: string

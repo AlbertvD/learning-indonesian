@@ -10,16 +10,21 @@ import {
   EmptyState,
 } from '@/components/page/primitives'
 import { IconBook2, IconBookmark } from '@tabler/icons-react'
+import { lessonService } from '@/services/lessonService'
+import { useAuthStore } from '@/stores/authStore'
 import {
-  lessonService,
+  buildLessonExperience,
+  buildLessonPracticeActions,
+  getLesson,
+  getLessonPageBlocks,
+  getLessonCapabilityPracticeSummary,
+  isLessonActivated,
   lessonSourceRefForOverview,
+  setLessonActivated,
   type Lesson,
   type LessonPageBlock,
-} from '@/services/lessonService'
-import { useAuthStore } from '@/stores/authStore'
-import { buildLessonExperience } from '@/lib/lessons/lessonExperience'
-import { buildLessonPracticeActions, type LessonPracticeActionState } from '@/lib/lessons/lessonActionModel'
-import { isLessonActivated, setLessonActivated } from '@/lib/lessons/activation'
+  type LessonPracticeActionState,
+} from '@/lib/lessons'
 import { LessonReader } from '@/components/lessons/LessonReader'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'
@@ -66,7 +71,7 @@ export function Lesson() {
       setLessonActivatedState(false)
 
       try {
-        const lessonData = await lessonService.getLesson(lessonId)
+        const lessonData = await getLesson(lessonId)
         if (cancelled) return
 
         setLesson(lessonData)
@@ -74,7 +79,7 @@ export function Lesson() {
         const canonicalSourceRef = lessonSourceRefForOverview(lessonData)
         let pageBlocks: LessonPageBlock[] = []
         try {
-          pageBlocks = await lessonService.getLessonPageBlocks(canonicalSourceRef)
+          pageBlocks = await getLessonPageBlocks(canonicalSourceRef)
         } catch (err) {
           logError({ page: 'lesson-reader-v2', action: 'load-page-blocks', error: err })
         }
@@ -85,7 +90,7 @@ export function Lesson() {
 
         const sourceRefs = sourceRefsForPageBlocks(pageBlocks, canonicalSourceRef)
         const [practiceSummary, activated] = await Promise.all([
-          lessonService.getLessonCapabilityPracticeSummary(userId, sourceRefs).catch(err => {
+          getLessonCapabilityPracticeSummary(userId, sourceRefs).catch(err => {
             logError({ page: 'lesson-reader-v2', action: 'load-practice-summary', error: err })
             return { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 }
           }),

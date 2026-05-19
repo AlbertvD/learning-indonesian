@@ -21,22 +21,20 @@ import {
   StatusPill,
   LoadingState,
 } from '@/components/page/primitives'
-import {
-  extractLessonGrammarTopics,
-  lessonService,
-  type Lesson,
-} from '@/services/lessonService'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
 import {
   buildLessonOverviewModel,
   buildLessonOverviewSignals,
+  extractLessonGrammarTopics,
+  getLessonsOverview,
+  type Lesson,
   type LessonOverviewCapabilityCounts,
   type LessonOverviewExposure,
   type LessonOverviewModel,
-} from '@/lib/lessons/lessonOverviewModel'
-import type { LessonOverviewStatus } from '@/lib/lessons/lessonOverviewStatus'
+  type LessonOverviewStatus,
+} from '@/lib/lessons'
 import classes from './Lessons.module.css'
 
 const emptyModel: LessonOverviewModel = {
@@ -148,7 +146,7 @@ export function Lessons() {
         // one row per lesson with all the per-user signals + lesson basic info
         // + lesson_sections needed for grammar topic extraction. Replaces the
         // previous fanout of ~20 round trips.
-        const overviewRows = await lessonService.getLessonsOverview(user.id)
+        const overviewRows = await getLessonsOverview(user.id)
 
         // The signals shape that buildLessonOverviewModel expects.
         // We can construct it directly from the SQL rows — every field comes

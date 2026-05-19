@@ -4,7 +4,7 @@ import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Lessons } from '@/pages/Lessons'
-import { lessonService } from '@/services/lessonService'
+import * as lessonsAdapter from '@/lib/lessons/adapter'
 
 vi.mock('@/stores/authStore', () => ({
   useAuthStore: vi.fn((selector: (state: any) => unknown) =>
@@ -19,14 +19,11 @@ vi.mock('@/lib/logger', () => ({
   logError: vi.fn(),
 }))
 
-vi.mock('@/services/lessonService', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/services/lessonService')>()
+vi.mock('@/lib/lessons/adapter', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/lessons/adapter')>()
   return {
     ...actual,
-    lessonService: {
-      ...actual.lessonService,
-      getLessonsOverview: vi.fn(),
-    },
+    getLessonsOverview: vi.fn(),
   }
 })
 
@@ -99,7 +96,7 @@ function renderLessons() {
 describe('Lessons overview', () => {
   beforeEach(() => {
     sessionStorage.clear()
-    vi.mocked(lessonService.getLessonsOverview).mockResolvedValue(defaultOverviewRows())
+    vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue(defaultOverviewRows())
   })
 
   it('renders a recommended lesson card and keeps that lesson in the ordered list', async () => {
@@ -136,7 +133,7 @@ describe('Lessons overview', () => {
   })
 
   it('shows lessons without page blocks as coming later instead of openable', async () => {
-    vi.mocked(lessonService.getLessonsOverview).mockResolvedValue([
+    vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
       overviewRow({ lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)', lessonSections: lesson1Sections, hasPageBlocks: true }),
       overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections, hasPageBlocks: false }),
     ])
@@ -153,7 +150,7 @@ describe('Lessons overview', () => {
   })
 
   it('does not recommend an unprepared first lesson', async () => {
-    vi.mocked(lessonService.getLessonsOverview).mockResolvedValue([
+    vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
       overviewRow({ lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)', lessonSections: lesson1Sections, hasPageBlocks: false }),
       overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections, hasPageBlocks: true }),
     ])
@@ -166,7 +163,7 @@ describe('Lessons overview', () => {
   })
 
   it('uses Continue for in-progress lessons', async () => {
-    vi.mocked(lessonService.getLessonsOverview).mockResolvedValue([
+    vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
       overviewRow({ lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)', lessonSections: lesson1Sections, hasStartedLesson: true }),
       overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections }),
     ])
@@ -214,7 +211,7 @@ describe('Lessons overview', () => {
   })
 
   it('shows an activated lesson with ready capabilities as in progress', async () => {
-    vi.mocked(lessonService.getLessonsOverview).mockResolvedValue([
+    vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
       overviewRow({
         lessonId: 'lesson-1',
         orderIndex: 1,
@@ -244,7 +241,7 @@ describe('Lessons overview', () => {
   })
 
   it('uses practiced capability counts to show in-practice and practiced lesson statuses', async () => {
-    vi.mocked(lessonService.getLessonsOverview).mockResolvedValue([
+    vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
       overviewRow({
         lessonId: 'lesson-1',
         orderIndex: 1,

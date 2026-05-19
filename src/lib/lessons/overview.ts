@@ -7,7 +7,7 @@ import {
   type LessonGrammarTopic,
   type LessonOverviewSignal,
   type LessonOverviewStatus,
-} from '@/lib/lessons/lessonOverviewStatus'
+} from './overviewStatus'
 
 export interface LessonOverviewModelLesson {
   id: string

@@ -8,6 +8,7 @@ import { Lesson } from '@/pages/Lesson'
 import { lessonService } from '@/services/lessonService'
 import { progressService } from '@/services/progressService'
 import * as activationModule from '@/lib/lessons/activation'
+import * as lessonsAdapter from '@/lib/lessons/adapter'
 
 vi.mock('@/lib/featureFlags', () => ({
   capabilityMigrationFlags: {
@@ -40,12 +41,19 @@ vi.mock('@/services/lessonService', async (importOriginal) => {
     ...actual,
     lessonService: {
       ...actual.lessonService,
-      getLesson: vi.fn(),
-      getLessonPageBlocks: vi.fn(),
-      getLessonCapabilityPracticeSummary: vi.fn(),
       getUserLessonProgress: vi.fn(),
       getAudioUrl: vi.fn(),
     },
+  }
+})
+
+vi.mock('@/lib/lessons/adapter', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/lessons/adapter')>()
+  return {
+    ...actual,
+    getLesson: vi.fn(),
+    getLessonPageBlocks: vi.fn(),
+    getLessonCapabilityPracticeSummary: vi.fn(),
   }
 })
 
@@ -98,7 +106,7 @@ describe('Lesson page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     localStorage.clear()
-    vi.mocked(lessonService.getLesson).mockResolvedValue({
+    vi.mocked(lessonsAdapter.getLesson).mockResolvedValue({
       id: 'lesson-4',
       module_id: 'module-1',
       level: 'A1',
@@ -115,7 +123,7 @@ describe('Lesson page', () => {
       dialogue_voices: null,
       lesson_sections: [],
     })
-    vi.mocked(lessonService.getLessonPageBlocks).mockResolvedValue([
+    vi.mocked(lessonsAdapter.getLessonPageBlocks).mockResolvedValue([
       {
         block_key: 'lesson-4-grammar',
         source_ref: 'lesson-4',
@@ -131,7 +139,7 @@ describe('Lesson page', () => {
         },
       },
     ] as any)
-    vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockResolvedValue({
+    vi.mocked(lessonsAdapter.getLessonCapabilityPracticeSummary).mockResolvedValue({
       readyCapabilityCount: 2,
       activePracticedCapabilityCount: 0,
     })
@@ -182,7 +190,7 @@ describe('Lesson page', () => {
   })
 
   it('renders the lesson-level audio from the lesson audio path', async () => {
-    vi.mocked(lessonService.getLesson).mockResolvedValueOnce({
+    vi.mocked(lessonsAdapter.getLesson).mockResolvedValueOnce({
       id: 'lesson-4',
       module_id: 'module-1',
       level: 'A1',
@@ -209,7 +217,7 @@ describe('Lesson page', () => {
   })
 
   it('shows a learner-friendly unavailable state when lesson page blocks are missing', async () => {
-    vi.mocked(lessonService.getLessonPageBlocks).mockResolvedValue([])
+    vi.mocked(lessonsAdapter.getLessonPageBlocks).mockResolvedValue([])
 
     renderLesson()
 
@@ -229,7 +237,7 @@ describe('Lesson page', () => {
   })
 
   it('opens lesson review with the lesson-scoped review mode when practiced content exists', async () => {
-    vi.mocked(lessonService.getLessonCapabilityPracticeSummary).mockResolvedValueOnce({
+    vi.mocked(lessonsAdapter.getLessonCapabilityPracticeSummary).mockResolvedValueOnce({
       readyCapabilityCount: 2,
       activePracticedCapabilityCount: 2,
     })

@@ -4,8 +4,7 @@ import {
   PageContainer,
   PageBody,
 } from '@/components/page/primitives'
-import type { LessonExperience } from '@/lib/lessons/lessonExperience'
-import type { LessonPracticeAction } from '@/lib/lessons/lessonActionModel'
+import type { LessonExperience, LessonPracticeAction } from '@/lib/lessons'
 import { LessonBlockRenderer } from './blocks/LessonBlockRenderer'
 import classes from './LessonReader.module.css'
 

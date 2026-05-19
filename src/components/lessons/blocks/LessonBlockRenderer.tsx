@@ -1,6 +1,6 @@
 import { IconBulb, IconArrowRight } from '@tabler/icons-react'
 import { HeroCard } from '@/components/page/primitives'
-import type { LessonExperienceBlock } from '@/lib/lessons/lessonExperience'
+import type { LessonExperienceBlock } from '@/lib/lessons'
 import classes from '../LessonReader.module.css'
 
 const AUDIO_POSITION_PREFIX = 'lesson-audio-position'

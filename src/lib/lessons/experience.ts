@@ -1,4 +1,8 @@
-import type { Lesson, LessonPageBlock } from '@/services/lessonService'
+import type { Lesson, LessonPageBlock } from './adapter'
+
+// Re-export the input types so callers can pull them from the lessons module
+// surface (and the colocated test can import them from `../experience`).
+export type { Lesson, LessonPageBlock }
 
 export type LessonExperienceBlockKind =
   | 'lesson_hero'

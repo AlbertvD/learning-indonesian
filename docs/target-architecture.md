@@ -526,8 +526,6 @@ getLessonOverview(lessonId)                → Promise<LessonOverview>
 getLessonOverviewStatus(lessonId, userId)  → Promise<LessonOverviewStatus>
 buildLessonExperience(...)                 → LessonExperience
 buildLessonPracticeActions(...)            → LessonPracticeAction[]
-isMeaningfulDialogueAudio(...)             → boolean
-isMeaningfulGrammarAudio(...)              → boolean
 
 // activation (replaces source-progress)
 isLessonActivated(userId, lessonId)        → Promise<boolean>
@@ -549,15 +547,13 @@ LessonExperience, LessonPracticeAction
 
 ```
 src/lib/lessons/
-  index.ts
-  model.ts                Lesson, LessonOverview, LessonActivation,
-                          LessonExperience, LessonPracticeAction
-  overview.ts             folds lessonOverviewModel, lessonOverviewStatus
+  index.ts                public barrel
+  overview.ts             folds lessonOverviewModel
+  overviewStatus.ts       folds lessonOverviewStatus
   experience.ts           folds lessonExperience
-  readiness.ts            folds lessonReadiness (isMeaningfulDialogueAudio etc.)
   actionModel.ts          folds lessonActionModel (buildLessonPracticeActions)
   activation.ts           NEW — replaces source-progress
-  adapter.ts              folds lessonService.ts + progressService.ts
+  adapter.ts              folds lessonService.ts lesson-domain methods
 ```
 
 **Depends on.**
