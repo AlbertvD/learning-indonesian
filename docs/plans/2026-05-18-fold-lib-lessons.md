@@ -1,15 +1,22 @@
 ---
-status: approved
+status: implementing
+implementation: branch fold/lib-lessons (commits 98a64f2, 9ffd3e9, dafdc5b, 6966aa5, cb833ef + this commit)
+implementation_paths:
+  - src/lib/lessons/
+  - src/services/lessonService.ts
 supersedes:
   - learning-indonesian-archive/docs/plans/2026-05-08-fold-lib-lessons.md
 ---
 
 # Fold spec — `lib/lessons/`
 
-**Status:** APPROVED v1.1 (2026-05-18). Supersedes the archived 2026-05-08 draft (never shipped).
+**Status:** IMPLEMENTING v1.1 (2026-05-18). Supersedes the archived 2026-05-08 draft (never shipped).
 **Architect-review-loop:**
 - Round 1 (v1) — NEEDS_REVISION (2 SUBSTANTIVE + 5 WARNING + 4 NIT)
 - Round 2 (v1.1) — APPROVED with 2 non-blocking NOTES (LOC-estimate sanity check; client-param vs vi.mock stylistic choice left to architect-on-diff)
+
+**Execution deviations from §9 plan:**
+- Original commits 2 (rename) and 3 (caller migration) merged into a single commit because renaming the 4 files breaks 16 callers — per source-test-bundling, both must land atomically to keep build + tests green. Net commit count: 6, not 7. Numbering preserved (commits 1, 2, 4, 5, 6, 7).
 
 ---
 
