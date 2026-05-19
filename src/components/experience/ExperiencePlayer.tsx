@@ -36,19 +36,20 @@ interface FeedbackState {
 }
 
 interface SessionHeaderProps {
-  currentIndex: number
-  total: number
+  position: number
+  queueLength: number
   correctCount: number
+  totalUniqueCaps: number
   progress: number
   diagnostics: SessionPlan['diagnostics']
 }
 
-function SessionHeader({ currentIndex, total, correctCount, progress, diagnostics }: SessionHeaderProps) {
+function SessionHeader({ position, queueLength, correctCount, totalUniqueCaps, progress, diagnostics }: SessionHeaderProps) {
   return (
     <Stack gap="xs" mb="md">
       <Group justify="space-between">
-        <Text size="sm" c="dimmed">Oefening {currentIndex + 1} van {total}</Text>
-        <Text size="sm" c="dimmed">{correctCount}/{currentIndex} correct</Text>
+        <Text size="sm" c="dimmed">Oefening {position + 1} van {queueLength}</Text>
+        <Text size="sm" c="dimmed">{correctCount}/{totalUniqueCaps} correct</Text>
       </Group>
       <Progress value={progress} size="sm" />
       {diagnostics.length > 0 && (
@@ -62,6 +63,15 @@ function SessionHeader({ currentIndex, total, correctCount, progress, diagnostic
       )}
     </Stack>
   )
+}
+
+/**
+ * Picks the re-insertion spacing for a wrong-answered block: a random integer
+ * in [3, 6]. After `currentIndex + 1 + offset`, the re-shown block will sit
+ * that many capabilities ahead of the next card the learner sees.
+ */
+function pickRedrillOffset(): number {
+  return 3 + Math.floor(Math.random() * 4)
 }
 
 export function ExperiencePlayer(props: ExperiencePlayerProps) {
@@ -98,59 +108,100 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
     }
   }, [registryMissCount])
 
-  const effectiveTotal = renderableBlocks.length
+  const uniqueCapabilityIds = useMemo(() => {
+    const ids = new Set<string>()
+    for (const b of renderableBlocks) ids.add(b.capabilityId)
+    return ids
+  }, [renderableBlocks])
 
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [queue, setQueue] = useState<SessionBlock[]>(() => renderableBlocks)
+  const [position, setPosition] = useState(0)
   const [answeredBlocks, setAnsweredBlocks] = useState<Set<string>>(() => new Set())
   const [skippedBlocks, setSkippedBlocks] = useState<Set<string>>(() => new Set())
+  const [skippedCapabilityIds, setSkippedCapabilityIds] = useState<Set<string>>(() => new Set())
+  const [correctCapabilityIds, setCorrectCapabilityIds] = useState<Set<string>>(() => new Set())
   const [commitFailedBlocks, setCommitFailedBlocks] = useState<Set<string>>(() => new Set())
-  const [correctCount, setCorrectCount] = useState(0)
   const [feedback, setFeedback] = useState<FeedbackState | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
-  const isComplete = currentIndex >= effectiveTotal
-  const currentBlock = renderableBlocks[currentIndex]
-  const progress = effectiveTotal === 0 ? 100 : Math.round((currentIndex / effectiveTotal) * 100)
+  // Reset queue when renderableBlocks changes (new session plan).
+  useEffect(() => {
+    setQueue(renderableBlocks)
+    setPosition(0)
+    setAnsweredBlocks(new Set())
+    setSkippedBlocks(new Set())
+    setSkippedCapabilityIds(new Set())
+    setCorrectCapabilityIds(new Set())
+    setCommitFailedBlocks(new Set())
+    setFeedback(null)
+  }, [renderableBlocks])
+
+  const queueLength = queue.length
+  const currentBlock = queue[position]
+  const isComplete = position >= queueLength
+  const totalUniqueCaps = uniqueCapabilityIds.size
+  const correctCount = correctCapabilityIds.size
+  const progress = totalUniqueCaps === 0
+    ? 100
+    : Math.round(((correctCount + skippedCapabilityIds.size) / totalUniqueCaps) * 100)
 
   const { copy: feedbackCopy, continueLabel } = feedbackCopyFor(userLanguage)
 
   async function handleAnswerReport(report: AnswerReport) {
     if (!currentBlock || submitting) return
-    setSubmitting(true)
+    const isDrillReshow = answeredBlocks.has(currentBlock.id)
     const wasCorrect = report.wasCorrect && !report.isFuzzy
     let commitFailed = false
-    try {
-      await onAnswer({
-        sessionId: plan.id,
-        blockId: currentBlock.id,
-        blockKind: currentBlock.kind,
-        capabilityId: currentBlock.capabilityId,
-        canonicalKeySnapshot: currentBlock.canonicalKeySnapshot,
-        exerciseType: currentBlock.renderPlan.exerciseType,
-        answerReport: report,
-        pendingActivation: Boolean(currentBlock.pendingActivation),
-      })
-    } catch (err) {
-      commitFailed = true
-      logError({ page: 'session', action: 'commitAnswer', error: err })
-      if (wasCorrect) {
-        notifications.show({
-          color: 'yellow',
-          title: 'Antwoord niet opgeslagen',
-          message: 'We proberen het later opnieuw.',
+
+    // Drill re-shows do not commit again: the original wrong answer already
+    // posted a review event (the lapse). Subsequent in-session drills are
+    // UI-only — committing again with a stale schedulerSnapshot would be
+    // rejected as stale by the server.
+    if (!isDrillReshow) {
+      setSubmitting(true)
+      try {
+        await onAnswer({
+          sessionId: plan.id,
+          blockId: currentBlock.id,
+          blockKind: currentBlock.kind,
+          capabilityId: currentBlock.capabilityId,
+          canonicalKeySnapshot: currentBlock.canonicalKeySnapshot,
+          exerciseType: currentBlock.renderPlan.exerciseType,
+          answerReport: report,
+          pendingActivation: Boolean(currentBlock.pendingActivation),
         })
+      } catch (err) {
+        commitFailed = true
+        logError({ page: 'session', action: 'commitAnswer', error: err })
+        if (wasCorrect) {
+          notifications.show({
+            color: 'yellow',
+            title: 'Antwoord niet opgeslagen',
+            message: 'We proberen het later opnieuw.',
+          })
+        }
+      }
+      setSubmitting(false)
+      setAnsweredBlocks(s => { const n = new Set(s); n.add(currentBlock.id); return n })
+      if (commitFailed) {
+        setCommitFailedBlocks(s => { const n = new Set(s); n.add(currentBlock.id); return n })
       }
     }
-    setSubmitting(false)
-    setAnsweredBlocks(s => { const n = new Set(s); n.add(currentBlock.id); return n })
-    if (commitFailed) {
-      setCommitFailedBlocks(s => { const n = new Set(s); n.add(currentBlock.id); return n })
-    }
-    if (report.wasCorrect) setCorrectCount(n => n + 1)
 
     if (wasCorrect) {
-      setCurrentIndex(i => i + 1)
+      setCorrectCapabilityIds(s => { const n = new Set(s); n.add(currentBlock.capabilityId); return n })
+      setPosition(p => p + 1)
     } else {
+      // Wrong / fuzzy: re-queue this block 3–6 capabilities later and show
+      // the Doorgaan feedback card. No max cap — the block stays in the
+      // queue until the learner gets it right (or skips it).
+      const blockToRequeue = currentBlock
+      const insertPos = position
+      const offset = pickRedrillOffset()
+      setQueue(q => {
+        const insertAt = Math.min(insertPos + 1 + offset, q.length)
+        return [...q.slice(0, insertAt), blockToRequeue, ...q.slice(insertAt)]
+      })
       setFeedback({
         block: currentBlock,
         context: contexts.get(currentBlock.id)!,
@@ -165,12 +216,13 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
     if (!currentBlock || currentBlock.id !== blockId) return
     setAnsweredBlocks(s => { const n = new Set(s); n.add(blockId); return n })
     setSkippedBlocks(s => { const n = new Set(s); n.add(blockId); return n })
-    setCurrentIndex(i => i + 1)
+    setSkippedCapabilityIds(s => { const n = new Set(s); n.add(currentBlock.capabilityId); return n })
+    setPosition(p => p + 1)
   }
 
   function handleContinue() {
     setFeedback(null)
-    setCurrentIndex(i => i + 1)
+    setPosition(p => p + 1)
   }
 
   if (isComplete) {
@@ -208,9 +260,10 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
       <PageContainer size="md">
         <PageBody>
           <SessionHeader
-            currentIndex={currentIndex}
-            total={effectiveTotal}
+            position={position}
+            queueLength={queueLength}
             correctCount={correctCount}
+            totalUniqueCaps={totalUniqueCaps}
             progress={progress}
             diagnostics={profile?.isAdmin ? plan.diagnostics : []}
           />
@@ -225,7 +278,7 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
               )
             : (
                 <CapabilityExerciseFrame
-                  key={currentBlock.id}
+                  key={`${currentBlock.id}-${position}`}
                   block={currentBlock}
                   context={contexts.get(currentBlock.id)!}
                   userLanguage={userLanguage}
