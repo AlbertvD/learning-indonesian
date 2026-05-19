@@ -85,6 +85,45 @@ describe('checkAnswer', () => {
     const result = checkAnswer('membeli', 'memberi', [])
     expect(result.isCorrect).toBe(false)
   })
+
+  it('accepts any comma-separated alternative in canonical', () => {
+    expect(checkAnswer('maar', 'maar, echter', []).isCorrect).toBe(true)
+    expect(checkAnswer('maar', 'maar, echter', []).isFuzzy).toBe(false)
+    expect(checkAnswer('echter', 'maar, echter', []).isCorrect).toBe(true)
+    expect(checkAnswer('echter', 'maar, echter', []).isFuzzy).toBe(false)
+  })
+
+  it('accepts a comma-separated alternative that contains a parenthetical hint', () => {
+    expect(checkAnswer('weg', 'weg, verdwenen (kwijt)', []).isCorrect).toBe(true)
+    expect(checkAnswer('verdwenen', 'weg, verdwenen (kwijt)', []).isCorrect).toBe(true)
+  })
+
+  it('accepts a comma-separated alternative even when the alternative itself has punctuation', () => {
+    expect(checkAnswer('wc', 'toilet, w.c.', []).isCorrect).toBe(true)
+    expect(checkAnswer('toilet', 'toilet, w.c.', []).isCorrect).toBe(true)
+  })
+
+  it('accepts both alternatives joined by slash even when canonical uses commas', () => {
+    const r = checkAnswer('maar/echter', 'maar, echter', [])
+    expect(r.isCorrect).toBe(true)
+    expect(r.isFuzzy).toBe(false)
+  })
+
+  it('accepts the full comma-joined form as a single answer', () => {
+    const r = checkAnswer('maar, echter', 'maar, echter', [])
+    expect(r.isCorrect).toBe(true)
+    expect(r.isFuzzy).toBe(false)
+  })
+
+  it('accepts three-way alternatives', () => {
+    expect(checkAnswer('happy', 'happy, pleased, nice', []).isCorrect).toBe(true)
+    expect(checkAnswer('pleased', 'happy, pleased, nice', []).isCorrect).toBe(true)
+    expect(checkAnswer('nice', 'happy, pleased, nice', []).isCorrect).toBe(true)
+  })
+
+  it('still rejects a wrong answer when canonical has alternatives', () => {
+    expect(checkAnswer('banana', 'maar, echter', []).isCorrect).toBe(false)
+  })
 })
 
 describe('normalizeAnswerResponse', () => {

@@ -69,44 +69,60 @@ export interface AnswerCheckResult {
   isFuzzy: boolean
 }
 
+// Split a translation string on the alternative separators the staging
+// authoring convention uses: "/" and ",". "huis / woning" and
+// "maar, echter" are both authored forms of "two acceptable answers".
+function splitAlternatives(s: string): string[] {
+  return s.split(/[/,]/).map(t => t.trim()).filter(t => t.length > 0)
+}
+
 /**
  * Check a user's answer against the canonical answer and known variants.
  * Applies normalization, exact matching, then fuzzy matching:
  * - Distance 1 for insertions, deletions, and transpositions.
  * - Substitutions are EXCLUDED (prevent minimal pair errors like membeli/memberi).
+ *
+ * Slash- and comma-separated alternatives are split on BOTH sides: a target
+ * "maar, echter" accepts "maar", "echter", "maar/echter", or "maar, echter".
  */
 export function checkAnswer(
   userAnswer: string,
   canonicalAnswer: string,
   acceptedVariants: string[]
 ): AnswerCheckResult {
-  const normalized = normalizeAnswer(userAnswer)
+  const userNorms = Array.from(new Set(
+    [userAnswer, ...splitAlternatives(userAnswer)]
+      .map(normalizeAnswer)
+      .filter(s => s.length > 0),
+  ))
 
-  // Expand slash-separated alternatives in canonical and variants, then normalize each.
-  // This lets "huis / woning" accept either "huis" or "woning" as a correct answer.
-  const allTargets = [canonicalAnswer, ...acceptedVariants]
-    .flatMap(a => a.split('/').map(s => s.trim()))
-    .map(normalizeAnswer)
-    .filter(s => s.length > 0)
+  const rawTargets = [canonicalAnswer, ...acceptedVariants]
+  const targetSet = Array.from(new Set(
+    [...rawTargets, ...rawTargets.flatMap(splitAlternatives)]
+      .map(normalizeAnswer)
+      .filter(s => s.length > 0),
+  ))
 
   // Exact match
-  if (allTargets.includes(normalized)) {
+  if (userNorms.some(u => targetSet.includes(u))) {
     return { isCorrect: true, isFuzzy: false }
   }
 
   // Fuzzy match (Insertion/Deletion or Transposition)
-  for (const target of allTargets) {
-    const dDist = damerauLevenshtein(normalized, target)
-    const lDist = levenshtein(normalized, target)
+  for (const u of userNorms) {
+    for (const target of targetSet) {
+      const dDist = damerauLevenshtein(u, target)
+      const lDist = levenshtein(u, target)
 
-    // Allowed if:
-    // 1. Length differs by 1 and Levenshtein distance is 1 (Insertion/Deletion)
-    // 2. Length is same, Damerau-Levenshtein is 1 AND Levenshtein is NOT 1 (Transposition)
-    const isInsertionDeletion = Math.abs(normalized.length - target.length) === 1 && lDist === 1
-    const isTransposition = normalized.length === target.length && dDist === 1 && lDist !== 1
+      // Allowed if:
+      // 1. Length differs by 1 and Levenshtein distance is 1 (Insertion/Deletion)
+      // 2. Length is same, Damerau-Levenshtein is 1 AND Levenshtein is NOT 1 (Transposition)
+      const isInsertionDeletion = Math.abs(u.length - target.length) === 1 && lDist === 1
+      const isTransposition = u.length === target.length && dDist === 1 && lDist !== 1
 
-    if (isInsertionDeletion || isTransposition) {
-      return { isCorrect: true, isFuzzy: true }
+      if (isInsertionDeletion || isTransposition) {
+        return { isCorrect: true, isFuzzy: true }
+      }
     }
   }
 
