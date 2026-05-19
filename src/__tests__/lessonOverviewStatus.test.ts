@@ -5,7 +5,7 @@ import {
   overviewActionLabel,
   recommendLesson,
   type LessonOverviewSignal,
-} from '@/lib/lessons/lessonOverviewStatus'
+} from '@/lib/lessons'
 
 function signal(overrides: Partial<LessonOverviewSignal> = {}): LessonOverviewSignal {
   return {

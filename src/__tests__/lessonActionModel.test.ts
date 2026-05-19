@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildLessonPracticeActions } from '@/lib/lessons/lessonActionModel'
+import { buildLessonPracticeActions } from '@/lib/lessons'
 
 describe('buildLessonPracticeActions', () => {
   it('does not offer review before the learner has practiced lesson content', () => {

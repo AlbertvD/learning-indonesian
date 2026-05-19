@@ -1,7 +1,7 @@
 // src/services/lessonService.ts
 import { supabase } from '@/lib/supabase'
 import { chunkedIn } from '@/lib/chunkedQuery'
-import type { LessonGrammarTopic } from '@/lib/lessons/lessonOverviewStatus'
+import type { LessonGrammarTopic } from '@/lib/lessons'
 
 export interface Lesson {
   id: string

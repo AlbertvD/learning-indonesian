@@ -17,9 +17,13 @@ import {
   type LessonPageBlock,
 } from '@/services/lessonService'
 import { useAuthStore } from '@/stores/authStore'
-import { buildLessonExperience } from '@/lib/lessons/lessonExperience'
-import { buildLessonPracticeActions, type LessonPracticeActionState } from '@/lib/lessons/lessonActionModel'
-import { isLessonActivated, setLessonActivated } from '@/lib/lessons/activation'
+import {
+  buildLessonExperience,
+  buildLessonPracticeActions,
+  isLessonActivated,
+  setLessonActivated,
+  type LessonPracticeActionState,
+} from '@/lib/lessons'
 import { LessonReader } from '@/components/lessons/LessonReader'
 import { logError } from '@/lib/logger'
 import { useT } from '@/hooks/useT'

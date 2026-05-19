@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildLessonExperience } from '@/lib/lessons/lessonExperience'
+import { buildLessonExperience } from '@/lib/lessons'
 import type { Lesson, LessonPageBlock } from '@/services/lessonService'
 
 const lesson: Lesson = {

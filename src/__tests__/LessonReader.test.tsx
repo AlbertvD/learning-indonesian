@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 import { LessonReader } from '@/components/lessons/LessonReader'
-import type { LessonExperience } from '@/lib/lessons/lessonExperience'
+import type { LessonExperience } from '@/lib/lessons'
 
 function experience(): LessonExperience {
   return {

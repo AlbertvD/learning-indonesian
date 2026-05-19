@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { buildLessonExperience } from '../lessonExperience'
-import type { Lesson, LessonPageBlock } from '@/services/lessonService'
+import { buildLessonExperience } from '../experience'
+import type { Lesson, LessonPageBlock } from '../experience'
 
 const baseLesson: Lesson = {
   id: 'l1',

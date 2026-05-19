@@ -5,7 +5,7 @@ import {
   type LessonOverviewCapabilityCounts,
   type LessonOverviewExposure,
   type LessonOverviewModelLesson,
-} from '@/lib/lessons/lessonOverviewModel'
+} from '@/lib/lessons'
 
 function lesson(overrides: Partial<LessonOverviewModelLesson>): LessonOverviewModelLesson {
   return {

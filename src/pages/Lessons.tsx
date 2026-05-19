@@ -35,8 +35,8 @@ import {
   type LessonOverviewCapabilityCounts,
   type LessonOverviewExposure,
   type LessonOverviewModel,
-} from '@/lib/lessons/lessonOverviewModel'
-import type { LessonOverviewStatus } from '@/lib/lessons/lessonOverviewStatus'
+  type LessonOverviewStatus,
+} from '@/lib/lessons'
 import classes from './Lessons.module.css'
 
 const emptyModel: LessonOverviewModel = {
