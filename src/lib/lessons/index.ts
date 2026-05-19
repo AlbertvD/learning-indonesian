@@ -61,3 +61,23 @@ export {
   listActivatedLessons,
   setLessonActivated,
 } from './activation'
+
+// Adapter (folded lesson-domain methods from services/lessonService.ts)
+export {
+  getLessons,
+  getLesson,
+  getLessonsBasic,
+  getLessonsWithVoice,
+  getLessonPageBlocks,
+  getLessonCapabilityPracticeSummary,
+  getLessonsOverview,
+  lessonSourceRefForOverview,
+  lessonSourceRefsByLesson,
+  extractLessonGrammarTopics,
+} from './adapter'
+export type {
+  LessonSection,
+  LessonCapabilityPracticeSummary,
+  LessonOverviewSourceBlock,
+  LessonOverviewRpcRow,
+} from './adapter'

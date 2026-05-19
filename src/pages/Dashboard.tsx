@@ -19,6 +19,7 @@ import {
 } from '@/components/page/primitives'
 import { RecencyBadge } from '@/components/dashboard/RecencyBadge'
 import { lessonService } from '@/services/lessonService'
+import { getLessonsBasic } from '@/lib/lessons'
 import { learnerStateService } from '@/services/learnerStateService'
 import { learnerProgressService } from '@/services/learnerProgressService'
 import { useAuthStore } from '@/stores/authStore'
@@ -44,7 +45,7 @@ export function Dashboard() {
         const [lapsingResult, lessonProgress, lessons] = await Promise.all([
           learnerStateService.getLapsingItems(user.id),
           lessonService.getUserLessonProgress(user.id),
-          lessonService.getLessonsBasic(),
+          getLessonsBasic(),
         ])
         setLapsingCount(lapsingResult.count)
 

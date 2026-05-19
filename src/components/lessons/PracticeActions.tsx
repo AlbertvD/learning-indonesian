@@ -3,8 +3,13 @@ import { Button, Stack } from '@mantine/core'
 import { Link } from 'react-router-dom'
 import { IconPlayerPlay, IconRotateClockwise } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
-import { isLessonActivated, buildLessonPracticeActions } from '@/lib/lessons'
-import { lessonService } from '@/services/lessonService'
+import {
+  isLessonActivated,
+  buildLessonPracticeActions,
+  getLesson,
+  getLessonPageBlocks,
+  getLessonCapabilityPracticeSummary,
+} from '@/lib/lessons'
 import { logError } from '@/lib/logger'
 
 // Renders the two practice CTAs ("Practice this lesson · N ready" + "Review")
@@ -20,16 +25,16 @@ export function PracticeActions({ lessonId }: { lessonId: string }) {
     let cancelled = false
     async function load() {
       try {
-        const lesson = await lessonService.getLesson(lessonId)
+        const lesson = await getLesson(lessonId)
         const canonicalSourceRef = `lesson-${lesson.order_index}`
         // Capabilities are linked to per-item source refs (e.g. item-pisang,
         // pattern-werkwoord), not to the parent lesson-N. Aggregate them from
         // the lesson's page blocks — same pattern Lesson.tsx uses.
-        const pageBlocks = await lessonService.getLessonPageBlocks(canonicalSourceRef).catch(() => [])
+        const pageBlocks = await getLessonPageBlocks(canonicalSourceRef).catch(() => [])
         const refs = pageBlocks.flatMap(b => b.source_refs?.length ? b.source_refs : [b.source_ref]).filter(Boolean)
         const sourceRefs = refs.length > 0 ? [...new Set(refs)] : [canonicalSourceRef]
         const [summary, isActive] = await Promise.all([
-          lessonService.getLessonCapabilityPracticeSummary(userId!, sourceRefs).catch(() => ({
+          getLessonCapabilityPracticeSummary(userId!, sourceRefs).catch(() => ({
             readyCapabilityCount: 0,
             activePracticedCapabilityCount: 0,
           })),

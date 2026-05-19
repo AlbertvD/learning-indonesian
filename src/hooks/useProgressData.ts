@@ -5,6 +5,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { learnerStateService } from '@/services/learnerStateService'
 import { learnerProgressService } from '@/services/learnerProgressService'
 import { lessonService } from '@/services/lessonService'
+import { getLessonsBasic } from '@/lib/lessons'
 import { progressService } from '@/services/progressService'
 import { logError } from '@/lib/logger'
 
@@ -90,7 +91,7 @@ export function useProgressData(): ProgressData {
           learnerProgressService.getMemoryHealth({ userId: user!.id }),
           learnerProgressService.getReviewForecast({ userId: user!.id, days: 7, timezone: userTimezone }),
           lessonService.getUserLessonProgress(user!.id),
-          lessonService.getLessonsBasic(),
+          getLessonsBasic(),
         ])
 
         const itemsByStage = { new: 0, anchoring: 0, retrieving: 0, productive: 0, maintenance: 0 }

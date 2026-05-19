@@ -24,11 +24,13 @@ import { vi, describe, it, expect, beforeEach } from 'vitest'
 vi.mock('@/services/learnerStateService')
 vi.mock('@/services/learnerProgressService')
 vi.mock('@/services/lessonService')
+vi.mock('@/lib/lessons/adapter')
 vi.mock('@/lib/supabase')
 
 import { learnerStateService } from '@/services/learnerStateService'
 import { learnerProgressService } from '@/services/learnerProgressService'
 import { lessonService } from '@/services/lessonService'
+import * as lessonsAdapter from '@/lib/lessons/adapter'
 import { Dashboard } from '@/pages/Dashboard'
 
 const mockNavigate = vi.fn()
@@ -62,7 +64,7 @@ beforeEach(() => {
   vi.mocked(learnerStateService.getLapsingItems).mockResolvedValue({ count: 0 })
   vi.mocked(learnerProgressService.getCurrentStreakDays).mockResolvedValue(0)
   vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([])
-  vi.mocked(lessonService.getLessonsBasic).mockResolvedValue([])
+  vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([])
 })
 
 describe('Dashboard (minimal placeholder)', () => {
@@ -98,7 +100,7 @@ describe('Dashboard (minimal placeholder)', () => {
   })
 
   it('renders the continue-lesson card with a /lessons URL', async () => {
-    vi.mocked(lessonService.getLessonsBasic).mockResolvedValue([
+    vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([
       { id: 'lesson-1', order_index: 1, title: 'Lesson 1', level: 'A1', is_published: true } as any,
     ])
     vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([])

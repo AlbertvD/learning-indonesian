@@ -1,11 +1,20 @@
-// src/__tests__/lessonService.test.ts
+// src/lib/lessons/__tests__/adapter.test.ts
+//
+// Tests for the lesson-domain methods + pure helpers folded out of
+// src/services/lessonService.ts during the lib/lessons/ fold (commit 6 of
+// docs/plans/2026-05-18-fold-lib-lessons.md). Moved verbatim from
+// src/__tests__/lessonService.test.ts; the remaining 2 service methods
+// (getAudioUrl, getUserLessonProgress) had no tests, so the legacy file is
+// deleted entirely.
+
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import {
   extractLessonGrammarTopics,
+  getLesson,
+  getLessons,
   lessonSourceRefForOverview,
   lessonSourceRefsByLesson,
-  lessonService,
-} from '@/services/lessonService'
+} from '../adapter'
 import { supabase } from '@/lib/supabase'
 
 vi.mock('@/lib/supabase', () => {
@@ -17,9 +26,9 @@ vi.mock('@/lib/supabase', () => {
     single: vi.fn().mockReturnThis(),
     then: vi.fn(function(onFulfilled: any) {
       return Promise.resolve({ data: [], error: null }).then(onFulfilled)
-    })
+    }),
   }
-  
+
   return {
     supabase: {
       schema: vi.fn().mockReturnValue({
@@ -29,7 +38,7 @@ vi.mock('@/lib/supabase', () => {
   }
 })
 
-describe('lessonService', () => {
+describe('lessons adapter', () => {
   const getMock = () => (supabase.schema('indonesian').from('any') as any)
 
   beforeEach(() => {
@@ -45,7 +54,7 @@ describe('lessonService', () => {
       return Promise.resolve({ data: mockData, error: null }).then(onFulfilled)
     })
 
-    const result = await lessonService.getLessons()
+    const result = await getLessons()
 
     expect(supabase.schema).toHaveBeenCalledWith('indonesian')
     expect(getMock().select).toHaveBeenCalledWith('*, lesson_sections(*)')
@@ -58,7 +67,7 @@ describe('lessonService', () => {
       return Promise.resolve({ data: mockLesson, error: null }).then(onFulfilled)
     })
 
-    const result = await lessonService.getLesson('1')
+    const result = await getLesson('1')
 
     expect(getMock().eq).toHaveBeenCalledWith('id', '1')
     expect(result).toEqual(mockLesson)
