@@ -38,7 +38,7 @@ describe('capability release readiness planning', () => {
     const report = summarizeCapabilityReleaseReadiness({
       sourceRef: 'lesson-1',
       contentUnits: 12,
-      lessonPageBlocks: 8,
+      readyPublishedCapabilityCount: 8,
       scopedCapabilityKeys: ['cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl'],
       capabilities: [
         {
@@ -49,18 +49,38 @@ describe('capability release readiness planning', () => {
       ],
       capabilityArtifacts: 20,
       capabilityContentUnitRelationships: 4,
-      sourceProgressRows: 0,
     })
 
     expect(report.releaseReady).toBe(false)
     expect(report.blockers).toContain('No ready/published capabilities are available for capability sessions.')
   })
 
+  it('blocks release when readyPublishedCapabilityCount is 0 (Phase 1 of retiring lesson_page_blocks)', () => {
+    const report = summarizeCapabilityReleaseReadiness({
+      sourceRef: 'lesson-10',
+      contentUnits: 12,
+      readyPublishedCapabilityCount: 0,
+      scopedCapabilityKeys: ['cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl'],
+      capabilities: [
+        {
+          canonical_key: 'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
+          readiness_status: 'ready',
+          publication_status: 'published',
+        },
+      ],
+      capabilityArtifacts: 1,
+      capabilityContentUnitRelationships: 1,
+    })
+
+    expect(report.releaseReady).toBe(false)
+    expect(report.blockers).toContain('No published, ready capabilities for lesson-10.')
+  })
+
   it('blocks release when lesson blocks reference missing capability rows', () => {
     const report = summarizeCapabilityReleaseReadiness({
       sourceRef: 'lesson-1',
       contentUnits: 12,
-      lessonPageBlocks: 8,
+      readyPublishedCapabilityCount: 8,
       scopedCapabilityKeys: [
         'cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl',
         'cap:v1:item:learning_items/missing:text_recognition:id_to_l1:text:nl',
@@ -85,7 +105,7 @@ describe('capability release readiness planning', () => {
     const report = summarizeCapabilityReleaseReadiness({
       sourceRef: 'lesson-1',
       contentUnits: 12,
-      lessonPageBlocks: 8,
+      readyPublishedCapabilityCount: 8,
       scopedCapabilityKeys: ['cap:v1:item:learning_items/akhir:meaning_recall:id_to_l1:text:nl'],
       capabilities: [
         {
