@@ -17,10 +17,6 @@ import { supabase } from '@/lib/supabase'
 import { exerciseReviewService } from '@/services/exerciseReviewService'
 import { logError } from '@/lib/logger'
 import { ExerciseSummaryCard } from '@/components/admin/ExerciseSummaryCard'
-import { ContrastPairExercise } from '@/components/exercises/ContrastPairExercise'
-import { ClozeMcq } from '@/components/exercises/ClozeMcq'
-import { SentenceTransformationExercise } from '@/components/exercises/SentenceTransformationExercise'
-import { ConstrainedTranslationExercise } from '@/components/exercises/ConstrainedTranslationExercise'
 import type { ExerciseVariant, ReviewComment, ReviewCommentWithContext } from '@/types/learning'
 
 interface Lesson { id: string; title: string; order_index: number }
@@ -139,19 +135,7 @@ export function ContentReview() {
   }
 
   function renderExercisePreview(variant: ExerciseVariant) {
-    const p = variant.payload_json as Record<string, any>
-    switch (variant.exercise_type) {
-      case 'contrast_pair':
-        return <ContrastPairExercise previewMode previewPayload={p} userLanguage="nl" onAnswer={(() => {}) as any} />
-      case 'cloze_mcq':
-        return <ClozeMcq previewMode previewPayload={p} userLanguage="nl" onAnswer={(() => {}) as any} />
-      case 'sentence_transformation':
-        return <SentenceTransformationExercise previewMode previewPayload={p} userLanguage="nl" onAnswer={(() => {}) as any} />
-      case 'constrained_translation':
-        return <ConstrainedTranslationExercise previewMode previewPayload={p} userLanguage="nl" onAnswer={(() => {}) as any} />
-      default:
-        return <ExerciseSummaryCard variant={variant} comment={commentMap.get(variant.id)} />
-    }
+    return <ExerciseSummaryCard variant={variant} comment={commentMap.get(variant.id)} />
   }
 
   const lessonOptions = lessons.map(l => ({ value: l.id, label: l.title }))
