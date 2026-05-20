@@ -73,8 +73,10 @@ describe('retirement #6 — source-progress → lesson-activation migration (mas
   it('drops has_meaningful_exposure from get_lessons_overview return shape', () => {
     // The cleanup-stage rewrite removes the field. Verify by counting occurrences:
     // the only surviving reference should be in narrative comments, not the
-    // RETURNS TABLE signature of the new function body.
-    const newFnIndex = masterSql.indexOf('-- 6. REWRITE: get_lessons_overview')
+    // RETURNS TABLE signature of the new function body. The anchor moved from
+    // `-- 6. REWRITE: get_lessons_overview` (retirement #6 cleanup) to the new
+    // Phase 1 rewrite block in 2026-05-20.
+    const newFnIndex = masterSql.indexOf('-- get_lessons_overview — 2026-05-20')
     expect(newFnIndex).toBeGreaterThan(0)
     const newFnSlice = masterSql.slice(newFnIndex, newFnIndex + 3000)
     expect(newFnSlice).not.toContain('has_meaningful_exposure')
