@@ -35,7 +35,6 @@ import {
   validateCapabilityStaging,
   validateContentUnits,
   validateExerciseAssets,
-  validateLessonPageBlocks,
 } from './lib/content-pipeline-output'
 import { findDuplicateItems } from './lib/pipeline/capability-stage/lint/duplicateItems'
 
@@ -80,7 +79,6 @@ interface LessonCtx {
   learningItems?: any[]
   contentUnits?: any[]
   capabilities?: any[]
-  lessonPageBlocks?: any[]
   exerciseAssets?: any[]
   vocabEnrichments?: any[] | null
   sectionsCatalog?: any
@@ -195,7 +193,6 @@ async function loadLesson(n: number): Promise<LessonCtx> {
     learningItems: (await readTsExport(path.join(dir, 'learning-items.ts'))) ?? [],
     contentUnits: (await readTsExport(path.join(dir, 'content-units.ts'))) ?? [],
     capabilities: (await readTsExport(path.join(dir, 'capabilities.ts'))) ?? [],
-    lessonPageBlocks: (await readTsExport(path.join(dir, 'lesson-page-blocks.ts'))) ?? [],
     exerciseAssets: (await readTsExport(path.join(dir, 'exercise-assets.ts'))) ?? [],
     vocabEnrichments: (await readTsExport(path.join(dir, 'vocab-enrichments.ts'))) ?? null,
     patternBrief: readJson(path.join(dir, 'pattern-brief.json')),
@@ -944,7 +941,6 @@ function checkCapabilityPipelineOutput(ctx: LessonCtx): Finding[] {
   const out: Finding[] = []
   const contentUnits = ctx.contentUnits ?? []
   const capabilities = ctx.capabilities ?? []
-  const lessonPageBlocks = ctx.lessonPageBlocks ?? []
 
   if (contentUnits.length > 0) {
     for (const item of validateContentUnits(contentUnits)) {
@@ -954,11 +950,6 @@ function checkCapabilityPipelineOutput(ctx: LessonCtx): Finding[] {
   if (capabilities.length > 0) {
     for (const item of validateCapabilityStaging({ capabilities, contentUnits })) {
       out.push(mkFinding(item.severity, ctx.n, 'capabilities.ts', item.rule, item.detail, item.ref))
-    }
-  }
-  if (lessonPageBlocks.length > 0) {
-    for (const item of validateLessonPageBlocks({ blocks: lessonPageBlocks, contentUnits, capabilities })) {
-      out.push(mkFinding(item.severity, ctx.n, 'lesson-page-blocks.ts', item.rule, item.detail, item.ref))
     }
   }
   if ((ctx.exerciseAssets?.length ?? 0) > 0) {

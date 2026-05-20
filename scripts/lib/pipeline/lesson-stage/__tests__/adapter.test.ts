@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from 'vitest'
 import {
   upsertLesson,
   upsertLessonSections,
-  upsertLessonPageBlocks,
   fetchExistingAudioClips,
 } from '../adapter'
 
@@ -198,52 +197,6 @@ describe('upsertLessonSections', () => {
       onConflict: 'lesson_id,order_index',
       payload: { lesson_id: 'lid', title: 'A', order_index: 0 },
     })
-  })
-})
-
-describe('upsertLessonPageBlocks', () => {
-  it('upserts using (source_ref, block_key) conflict target with the canonical 7-value block_kind', async () => {
-    const { client, upserts } = buildSupabaseMock({})
-    const count = await upsertLessonPageBlocks(client, [
-      {
-        block_key: 'b1',
-        source_ref: 'lesson-4',
-        source_refs: ['lesson-4'],
-        content_unit_slugs: [],
-        block_kind: 'reading_section',
-        display_order: 0,
-        payload_json: { type: 'text' },
-        capability_key_refs: [],
-      },
-    ])
-    expect(count).toBe(1)
-    expect(upserts).toHaveLength(1)
-    expect(upserts[0]).toMatchObject({
-      table: 'lesson_page_blocks',
-      onConflict: 'source_ref,block_key',
-    })
-    expect(upserts[0].payload).toMatchObject({
-      block_kind: 'reading_section',
-      block_key: 'b1',
-      source_ref: 'lesson-4',
-    })
-  })
-
-  it('does NOT include the dead source_progress_event field in the upsert payload (retirement #6 cleanup)', async () => {
-    const { client, upserts } = buildSupabaseMock({})
-    await upsertLessonPageBlocks(client, [
-      {
-        block_key: 'b1',
-        source_ref: 'lesson-4',
-        source_refs: ['lesson-4'],
-        content_unit_slugs: [],
-        block_kind: 'reading_section',
-        display_order: 0,
-        payload_json: {},
-        capability_key_refs: [],
-      },
-    ])
-    expect(upserts[0].payload).not.toHaveProperty('source_progress_event')
   })
 })
 

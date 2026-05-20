@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   buildCapabilityStagingFromContent,
   buildContentUnitsFromStaging,
-  buildLessonPageBlocksFromStaging,
   validateCapabilityStaging,
   validateContentUnits,
   type StagingLessonInput,
@@ -119,7 +118,7 @@ describe('content unit staging', () => {
     expect(validateContentUnits(units)).toEqual([])
   })
 
-  it('projects affixed form pairs into content units, capabilities, and lesson blocks', () => {
+  it('projects affixed form pairs into content units and capabilities', () => {
     const morphologyInput: StagingLessonInput = {
       ...lessonInput,
       learningItems: [],
@@ -136,11 +135,6 @@ describe('content unit staging', () => {
 
     const contentUnits = buildContentUnitsFromStaging(morphologyInput)
     const capabilityPlan = buildCapabilityStagingFromContent({ ...morphologyInput, contentUnits })
-    const lessonPageBlocks = buildLessonPageBlocksFromStaging({
-      ...morphologyInput,
-      contentUnits,
-      capabilities: capabilityPlan.capabilities,
-    })
 
     expect(contentUnits).toEqual(expect.arrayContaining([
       expect.objectContaining({
@@ -162,84 +156,5 @@ describe('content unit staging', () => {
       expect.objectContaining({ artifact_kind: 'allomorph_rule' }),
     ]))
     expect(validateCapabilityStaging({ capabilities: capabilityPlan.capabilities, contentUnits })).toEqual([])
-    expect(lessonPageBlocks).toEqual(expect.arrayContaining([
-      expect.objectContaining({
-        block_key: 'lesson-1-morphology',
-        block_kind: 'section',
-        content_unit_slugs: expect.arrayContaining(['morphology-men-baca-membaca']),
-        source_refs: expect.arrayContaining([
-          'lesson-1',
-          'lesson-1/morphology/meN-baca-membaca',
-          'lesson-1/pattern-men-active',
-        ]),
-        payload_json: expect.objectContaining({
-          type: 'morphology',
-          items: expect.arrayContaining([
-            expect.objectContaining({ indonesian: 'membaca' }),
-          ]),
-        }),
-      }),
-    ]))
-  })
-
-  it('vocab strip blocks list each item source_ref so health-check filterScopedContentUnits keeps the item content_unit', () => {
-    const contentUnits = buildContentUnitsFromStaging(lessonInput)
-    const capabilityPlan = buildCapabilityStagingFromContent({ ...lessonInput, contentUnits })
-    const blocks = buildLessonPageBlocksFromStaging({
-      ...lessonInput,
-      contentUnits,
-      capabilities: capabilityPlan.capabilities,
-    })
-
-    const vocabBlock = blocks.find(block => block.block_kind === 'section'
-      && (block.content_unit_slugs ?? []).includes('item-makan'))
-    expect(vocabBlock).toBeDefined()
-    // The block must surface the item's own source_ref. Without it,
-    // filterScopedContentUnits in scripts/check-capability-health.ts drops the
-    // content_unit, so any capability requiring `learning_items/<slug>` source
-    // progress fires the `ready_capability_unknown_source_progress_ref` rule.
-    expect(vocabBlock!.source_refs).toEqual(expect.arrayContaining([
-      'lesson-1',
-      'learning_items/makan',
-    ]))
-  })
-
-  it('grammar pattern callout blocks list the pattern source_ref alongside the lesson ref', () => {
-    const grammarLessonInput: StagingLessonInput = {
-      ...lessonInput,
-      lesson: {
-        ...lessonInput.lesson,
-        sections: [{
-          title: 'Grammatica',
-          order_index: 1,
-          content: {
-            type: 'grammar',
-            intro: 'Korte introductie.',
-            categories: [
-              {
-                title: 'Word order',
-                rules: ['Adjectives follow nouns.'],
-                examples: [{ indonesian: 'rumah besar', dutch: 'groot huis' }],
-              },
-            ],
-          },
-        }],
-      },
-    }
-    const contentUnits = buildContentUnitsFromStaging(grammarLessonInput)
-    const capabilityPlan = buildCapabilityStagingFromContent({ ...grammarLessonInput, contentUnits })
-    const blocks = buildLessonPageBlocksFromStaging({
-      ...grammarLessonInput,
-      contentUnits,
-      capabilities: capabilityPlan.capabilities,
-    })
-
-    const patternBlock = blocks.find(block => block.block_kind === 'section'
-      && (block.content_unit_slugs ?? []).some(slug => slug.startsWith('pattern-')))
-    expect(patternBlock).toBeDefined()
-    expect(patternBlock!.source_refs).toEqual(expect.arrayContaining([
-      'lesson-1',
-      'lesson-1/pattern-word-order',
-    ]))
   })
 })

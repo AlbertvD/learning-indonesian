@@ -148,7 +148,6 @@ function makeSynthLesson(overrides: { stagingDir: string }): LoadedLesson {
         content: { type: 'grammar', grammar_topics: ['ada existential'] },
       },
     ],
-    pageBlocks: [],
     audioClipsByNormalizedText: new Map([
       ['halo', { storage_path: 'lesson-1/halo-Achird.mp3', voice_id: 'Achird' }],
     ]),
@@ -179,7 +178,6 @@ function makeSynthLesson(overrides: { stagingDir: string }): LoadedLesson {
       clozeContexts: [],
       contentUnits: [],
       capabilities: [],
-      lessonPageBlocks: [],
       exerciseAssets: [],
       affixedFormPairs: [],
     },
