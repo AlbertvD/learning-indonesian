@@ -237,7 +237,7 @@ describe('Lessons overview', () => {
     expect(lessonOne).toHaveTextContent('In progress')
     expect(lessonOne).toHaveTextContent('Continue')
     expect(lessonOne).not.toHaveTextContent(/Ready to practice/i)
-    expect(lessonOne).not.toHaveTextContent(/Review this lesson|Practice this lesson|\d+\s+ready/i)
+    expect(lessonOne).not.toHaveTextContent(/Herhaal deze les|Oefen deze les|\d+\s+klaar/i)
   })
 
   it('uses practiced capability counts to show in-practice and practiced lesson statuses', async () => {
@@ -266,6 +266,6 @@ describe('Lessons overview', () => {
 
     expect(await screen.findByTestId('lesson-overview-row-lesson-1')).toHaveTextContent('Practiced')
     expect(screen.getByTestId('lesson-overview-row-lesson-2')).toHaveTextContent('In practice')
-    expect(screen.queryByRole('link', { name: /Review this lesson|Practice this lesson/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /Herhaal deze les|Oefen deze les/i })).not.toBeInTheDocument()
   })
 })

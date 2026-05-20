@@ -99,14 +99,14 @@ describe('LessonReader', () => {
       actions: [
         {
           kind: 'practice',
-          label: 'Practice this lesson · 3 ready',
+          label: 'Oefen deze les · 3 klaar',
           href: '/session?lesson=lesson-1&mode=lesson_practice',
           priority: 'primary',
         },
       ],
     })
 
-    const link = screen.getByRole('link', { name: /Practice this lesson · 3 ready/i })
+    const link = screen.getByRole('link', { name: /Oefen deze les · 3 klaar/i })
     expect(link).toHaveAttribute('href', '/session?lesson=lesson-1&mode=lesson_practice')
   })
 })

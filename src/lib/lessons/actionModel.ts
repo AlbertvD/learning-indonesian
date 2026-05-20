@@ -23,7 +23,7 @@ export function buildLessonPracticeActions(input: {
   if (state.hasUnpracticedEligibleItems && state.practiceReadyCount > 0) {
     actions.push({
       kind: 'practice',
-      label: `Practice this lesson · ${state.practiceReadyCount} ready`,
+      label: `Oefen deze les · ${state.practiceReadyCount} klaar`,
       href: `/session?lesson=${encodeURIComponent(lessonId)}&mode=lesson_practice`,
       priority: 'primary',
     })
@@ -32,7 +32,7 @@ export function buildLessonPracticeActions(input: {
   if (state.hasActivePracticedItems) {
     actions.push({
       kind: 'review',
-      label: 'Review this lesson',
+      label: 'Herhaal deze les',
       href: `/session?lesson=${encodeURIComponent(lessonId)}&mode=lesson_review`,
       priority: actions.length > 0 ? 'secondary' : 'primary',
     })

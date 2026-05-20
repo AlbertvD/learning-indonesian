@@ -180,12 +180,12 @@ describe('Lesson page', () => {
     renderLesson()
     await screen.findByTestId('lesson-activation-checkbox')
 
-    expect(screen.queryByRole('link', { name: /Practice this lesson/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /Oefen deze les/i })).not.toBeInTheDocument()
 
     const checkbox = await screen.findByTestId('lesson-activation-checkbox') as HTMLInputElement
     await userEvent.click(checkbox)
 
-    const practiceLink = await screen.findByRole('link', { name: /Practice this lesson/i })
+    const practiceLink = await screen.findByRole('link', { name: /Oefen deze les/i })
     expect(practiceLink).toHaveAttribute('href', '/session?lesson=lesson-4&mode=lesson_practice')
   })
 
@@ -245,7 +245,7 @@ describe('Lesson page', () => {
 
     renderLesson()
 
-    const reviewLink = await screen.findByRole('link', { name: 'Review this lesson' })
+    const reviewLink = await screen.findByRole('link', { name: 'Herhaal deze les' })
     expect(reviewLink).toHaveAttribute('href', '/session?lesson=lesson-4&mode=lesson_review')
   })
 
