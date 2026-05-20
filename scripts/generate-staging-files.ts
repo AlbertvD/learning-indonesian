@@ -9,49 +9,7 @@
 import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
-import { createClient } from '@supabase/supabase-js'
-import {
-  buildCapabilityStagingFromContent,
-  buildContentUnitsFromStaging,
-  buildLessonPageBlocksFromStaging,
-  validateCapabilityStaging,
-  validateContentUnits,
-  validateExerciseAssets,
-  validateLessonPageBlocks,
-  type StagingLessonInput,
-} from './lib/content-pipeline-output'
-
-// ADR 0006: look up the lesson's UUID by (module_id, order_index) so the
-// regenerated capabilities.ts on disk can carry lessonId. Falls back to null
-// when no service key is configured (the runner overwrites with the real id
-// on the next publish). Step-CA trust is local: only this script's HTTPS
-// calls to the homelab supabase bypass cert validation.
-async function lookupLessonId(moduleId: string, orderIndex: number): Promise<string | null> {
-  const url = process.env.VITE_SUPABASE_URL ?? 'https://api.supabase.duin.home'
-  const key = process.env.SUPABASE_SERVICE_KEY
-  if (!key) return null
-  const prevTls = process.env.NODE_TLS_REJECT_UNAUTHORIZED
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
-  try {
-    const supabase = createClient(url, key, {
-      db: { schema: 'indonesian' },
-      auth: { persistSession: false },
-    })
-    const { data, error } = await supabase
-      .from('lessons')
-      .select('id')
-      .eq('module_id', moduleId)
-      .eq('order_index', orderIndex)
-      .maybeSingle()
-    if (error || !data) return null
-    return data.id as string
-  } catch {
-    return null
-  } finally {
-    if (prevTls === undefined) delete process.env.NODE_TLS_REJECT_UNAUTHORIZED
-    else process.env.NODE_TLS_REJECT_UNAUTHORIZED = prevTls
-  }
-}
+import type { StagingLessonInput } from './lib/content-pipeline-output'
 
 type SectionType =
   | 'vocabulary' | 'expressions' | 'numbers'
@@ -437,25 +395,13 @@ async function inputFromExistingStaging(lessonNumber: number, stagingDir: string
   }
 }
 
-function buildPipeline(input: StagingLessonInput) {
-  const contentUnits = buildContentUnitsFromStaging(input)
-  const capabilityPlan = buildCapabilityStagingFromContent({ ...input, contentUnits })
-  const lessonPageBlocks = buildLessonPageBlocksFromStaging({
-    ...input,
-    contentUnits,
-  })
-  const findings = [
-    ...validateContentUnits(contentUnits),
-    ...validateCapabilityStaging({ capabilities: capabilityPlan.capabilities, contentUnits }),
-    ...validateExerciseAssets({ exerciseAssets: capabilityPlan.exerciseAssets, capabilities: capabilityPlan.capabilities }),
-    ...validateLessonPageBlocks({ blocks: lessonPageBlocks, contentUnits }),
-  ]
-  const critical = findings.filter(finding => finding.severity === 'CRITICAL')
-  if (critical.length > 0) {
-    throw new Error(`Generated pipeline output has critical findings:\n${critical.map(item => `${item.rule}: ${item.detail}`).join('\n')}`)
-  }
-  return { contentUnits, capabilityPlan, lessonPageBlocks }
-}
+// Derived snapshot files (content-units.ts, capabilities.ts, exercise-assets.ts,
+// lesson-page-blocks.ts) are NOT projected here. The capability-stage runner
+// regenerates them at publish time from the enriched learning-items.ts
+// (POS, EN translations, dialogue NL propagation) — see
+// scripts/lib/pipeline/capability-stage/runner.ts §1b. Pre-projecting them
+// here would capture pre-enrichment state and crash on dialogue_chunk items
+// whose translation_nl arrives via propagation.
 
 async function main() {
   const args = process.argv.slice(2)
@@ -503,22 +449,6 @@ async function main() {
       totalGenerated: mergedLearningItems.length,
     },
   }
-  const grammarPatterns = existingInput?.grammarPatterns ?? []
-  const affixedFormPairs = existingInput?.affixedFormPairs ?? []
-  const lessonId = await lookupLessonId(lesson.module_id, lesson.order_index)
-  if (lessonId == null && process.env.SUPABASE_SERVICE_KEY) {
-    console.warn(`  WARN: lesson UUID not found for module_id=${lesson.module_id} order_index=${lesson.order_index}; capabilities.ts will carry lessonId=null until next publish.`)
-  }
-  const pipelineInput: StagingLessonInput = {
-    lessonNumber,
-    lessonId,
-    lesson,
-    learningItems: generatedItems.items,
-    grammarPatterns,
-    affixedFormPairs,
-  }
-  const { contentUnits, capabilityPlan, lessonPageBlocks } = buildPipeline(pipelineInput)
-
   console.log(`${dryRun ? '[DRY RUN] ' : ''}Generating staging files for lesson ${lessonNumber} (${lesson.title})...`)
   if (catalog && !useCatalog) {
     console.log('  Using existing curated staging files because sections-catalog.json is in the legacy reverse-engineered format.')
@@ -557,10 +487,11 @@ async function main() {
   scaffoldIfAbsent(path.join(stagingDir, 'candidates.ts'), scaffoldCandidates(lessonNumber), 'candidates.ts', dryRun)
   scaffoldIfAbsent(path.join(stagingDir, 'cloze-contexts.ts'), scaffoldClozeContexts(lessonNumber), 'cloze-contexts.ts', dryRun)
 
-  writeFile(path.join(stagingDir, 'content-units.ts'), tsExport('contentUnits', contentUnits), 'content-units.ts', dryRun)
-  writeFile(path.join(stagingDir, 'capabilities.ts'), tsExport('capabilities', capabilityPlan.capabilities), 'capabilities.ts', dryRun)
-  writeFile(path.join(stagingDir, 'lesson-page-blocks.ts'), tsExport('lessonPageBlocks', lessonPageBlocks), 'lesson-page-blocks.ts', dryRun)
-  writeFile(path.join(stagingDir, 'exercise-assets.ts'), tsExport('exerciseAssets', capabilityPlan.exerciseAssets), 'exercise-assets.ts', dryRun)
+  // Derived snapshots (content-units.ts / capabilities.ts / exercise-assets.ts /
+  // lesson-page-blocks.ts) are produced by the capability-stage runner at
+  // publish time, from enriched learning-items. The loader treats missing
+  // files as empty arrays, so we don't pre-write them here.
+
   const indexPath = path.join(stagingDir, 'index.ts')
   const existingIndexContent = fs.existsSync(indexPath) ? fs.readFileSync(indexPath, 'utf-8') : ''
   writeFile(indexPath, generateIndexTs(existingIndexContent, stagingDir), 'index.ts', dryRun)
@@ -570,10 +501,6 @@ async function main() {
     : []
   console.log('\nSummary:')
   console.log(`  learning_items to review: ${generatedItems.items.length}`)
-  console.log(`  content units: ${contentUnits.length}`)
-  console.log(`  capability rows planned: ${capabilityPlan.capabilities.length}`)
-  console.log(`  exercise assets planned: ${capabilityPlan.exerciseAssets.length}`)
-  console.log(`  lesson page blocks planned: ${lessonPageBlocks.length}`)
   console.log(`  raw sections for linguist-structurer: ${rawSections.length}`)
   rawSections.forEach(section => console.log(`    - ${section.title} (${section.type})`))
 

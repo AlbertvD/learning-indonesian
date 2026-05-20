@@ -933,39 +933,38 @@ function checkPatternBrief(ctx: LessonCtx): Finding[] {
 }
 
 function checkCapabilityPipelineOutput(ctx: LessonCtx): Finding[] {
+  // The four derived files (content-units.ts, capabilities.ts,
+  // exercise-assets.ts, lesson-page-blocks.ts) are produced by the
+  // capability-stage runner at publish time from the enriched learning-items
+  // (POS, EN translations, dialogue NL propagation). They are NOT authoring
+  // artifacts and are not present after `bun scripts/generate-staging-files.ts`.
+  // Validators that examine their contents only run if the files already
+  // exist (from a prior publish); the previous CRITICAL "missing or empty"
+  // gates are removed because they fire against this expected pre-publish state.
   const out: Finding[] = []
   const contentUnits = ctx.contentUnits ?? []
   const capabilities = ctx.capabilities ?? []
   const lessonPageBlocks = ctx.lessonPageBlocks ?? []
 
-  if (contentUnits.length === 0) {
-    out.push(mkFinding('CRITICAL', ctx.n, 'content-units.ts', 'slice10-content-units-missing',
-      'content-units.ts is missing or empty; Slice 10 output is required'))
+  if (contentUnits.length > 0) {
+    for (const item of validateContentUnits(contentUnits)) {
+      out.push(mkFinding(item.severity, ctx.n, 'content-units.ts', item.rule, item.detail, item.ref))
+    }
   }
-  if (lessonPageBlocks.length === 0) {
-    out.push(mkFinding('CRITICAL', ctx.n, 'lesson-page-blocks.ts', 'slice10-lesson-blocks-missing',
-      'lesson-page-blocks.ts is missing or empty; Slice 10 output is required'))
+  if (capabilities.length > 0) {
+    for (const item of validateCapabilityStaging({ capabilities, contentUnits })) {
+      out.push(mkFinding(item.severity, ctx.n, 'capabilities.ts', item.rule, item.detail, item.ref))
+    }
   }
-  if ((ctx.learningItems?.length ?? 0) + (ctx.grammarPatterns?.length ?? 0) > 0 && capabilities.length === 0) {
-    out.push(mkFinding('CRITICAL', ctx.n, 'capabilities.ts', 'slice10-capabilities-missing',
-      'capabilities.ts is missing or empty despite staged learning content'))
+  if (lessonPageBlocks.length > 0) {
+    for (const item of validateLessonPageBlocks({ blocks: lessonPageBlocks, contentUnits, capabilities })) {
+      out.push(mkFinding(item.severity, ctx.n, 'lesson-page-blocks.ts', item.rule, item.detail, item.ref))
+    }
   }
-  if (capabilities.length > 0 && (ctx.exerciseAssets?.length ?? 0) === 0) {
-    out.push(mkFinding('CRITICAL', ctx.n, 'exercise-assets.ts', 'slice10-exercise-assets-missing',
-      'exercise-assets.ts is missing or empty despite staged capabilities'))
-  }
-
-  for (const item of validateContentUnits(contentUnits)) {
-    out.push(mkFinding(item.severity, ctx.n, 'content-units.ts', item.rule, item.detail, item.ref))
-  }
-  for (const item of validateCapabilityStaging({ capabilities, contentUnits })) {
-    out.push(mkFinding(item.severity, ctx.n, 'capabilities.ts', item.rule, item.detail, item.ref))
-  }
-  for (const item of validateLessonPageBlocks({ blocks: lessonPageBlocks, contentUnits, capabilities })) {
-    out.push(mkFinding(item.severity, ctx.n, 'lesson-page-blocks.ts', item.rule, item.detail, item.ref))
-  }
-  for (const item of validateExerciseAssets({ exerciseAssets: ctx.exerciseAssets ?? [], capabilities })) {
-    out.push(mkFinding(item.severity, ctx.n, 'exercise-assets.ts', item.rule, item.detail, item.ref))
+  if ((ctx.exerciseAssets?.length ?? 0) > 0) {
+    for (const item of validateExerciseAssets({ exerciseAssets: ctx.exerciseAssets ?? [], capabilities })) {
+      out.push(mkFinding(item.severity, ctx.n, 'exercise-assets.ts', item.rule, item.detail, item.ref))
+    }
   }
   return out
 }
