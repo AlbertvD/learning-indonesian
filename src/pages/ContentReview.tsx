@@ -16,7 +16,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/lib/supabase'
 import { exerciseReviewService } from '@/services/exerciseReviewService'
 import { logError } from '@/lib/logger'
-import { ExerciseSummaryCard } from '@/components/admin/ExerciseSummaryCard'
+import { VariantPreview } from '@/components/admin/VariantPreview'
 import type { ExerciseVariant, ReviewComment, ReviewCommentWithContext } from '@/types/learning'
 
 interface Lesson { id: string; title: string; order_index: number }
@@ -135,7 +135,7 @@ export function ContentReview() {
   }
 
   function renderExercisePreview(variant: ExerciseVariant) {
-    return <ExerciseSummaryCard variant={variant} comment={commentMap.get(variant.id)} />
+    return <VariantPreview variant={variant} comment={commentMap.get(variant.id)} />
   }
 
   const lessonOptions = lessons.map(l => ({ value: l.id, label: l.title }))

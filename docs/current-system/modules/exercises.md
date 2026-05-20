@@ -48,7 +48,7 @@ All conform to `ExerciseComponentProps` (`registry.ts:43-49`): `{ exerciseItem: 
 - `src/components/experience/ExperiencePlayer.tsx:71-87` — uses `resolveExerciseComponent` for the silent-skip filter at the queue level.
 - `src/components/experience/buildFeedbackInput.ts` — produces the `FeedbackMapInput` consumed by `feedbackPropsFor`.
 - `src/pages/admin/DesignLab.tsx` — admin design-lab showcase of the 13 primitives. No production runtime consumption.
-- `src/pages/ContentReview.tsx` — admin variant-review page. Consumes `ExerciseSummaryCard` (not the implementations) — does NOT call the registry. The 8 legacy preview-mode renderers that previously lived in this folder were retired 2026-05-20 in favour of a single summary card for all 12 types.
+- `src/pages/ContentReview.tsx` — admin variant-review page. Consumes `VariantPreview` (`components/admin/VariantPreview.tsx`) which renders rich question + "Antwoord" + answer-revealed previews for the 4 types where the visual shape carries meaning (cloze_mcq, contrast_pair, sentence_transformation, constrained_translation), and falls back to `ExerciseSummaryCard` for the other 8. Does NOT call the registry. The 8 legacy preview-mode renderers that previously lived in this folder were retired 2026-05-20 in favour of this dedicated admin component.
 
 **Status (2026-05-20):** stable. Framework migration completed by retiring the 8 legacy top-level renderers that survived from the pre-framework era (RecognitionMCQ, ClozeMcq, ContrastPair, Dictation, ListeningMCQ, SentenceTransformation, ConstrainedTranslation, Speaking) plus their divergent top-level `FlagButton.tsx` clone plus 4 test files (`mcqWrongAnswer`, `dictationExercise`, `listeningMcqExercise`, `speakingExercise`) that exercised the legacy code paths. ContentReview's per-type rich preview was dropped in favour of `ExerciseSummaryCard` for all types — admin loses inline rendering of cloze/contrast/sentence-transformation/constrained-translation variants, gains a uniform question/answer summary.
 
@@ -200,7 +200,7 @@ The player owns `onContinue` / `continueLabel` / `copy`; the adapter owns everyt
 - **`src/lib/i18n.ts`** — `translations[userLanguage]` per-locale string table for instruction copy.
 - **`src/lib/answerNormalization.ts`** — `normalizeAnswerResponse(raw)` applied at the frame boundary (`CapabilityExerciseFrame.tsx:60`) before the report ships upstream.
 - **`src/services/exerciseReviewService.ts`** — `FlagButton` writes user-flagged variants here directly.
-- **`src/components/admin/ExerciseSummaryCard.tsx`** — the ContentReview admin page's static variant preview. Lives outside this module surface and does NOT route through the registry.
+- **`src/components/admin/VariantPreview.tsx`** + **`src/components/admin/ExerciseSummaryCard.tsx`** — the ContentReview admin page's static variant preview. Live outside this module surface and do NOT route through the registry; they read `payload_json` directly.
 
 ---
 
@@ -220,6 +220,6 @@ The player owns `onContinue` / `continueLabel` / `copy`; the adapter owns everyt
 - **The session builder** — `src/lib/session-builder/`. Produces the `SessionPlan` whose blocks become the queue.
 - **The lesson reader** — `src/components/lessons/`. See `docs/current-system/modules/lesson-renderer.md`.
 - **The capability projection + readiness** — `src/lib/capabilities/`. See `docs/current-system/modules/capabilities.md`.
-- **The admin variant-review page** — `src/pages/ContentReview.tsx` + `src/components/admin/ExerciseSummaryCard.tsx`. Their summary-card path is independent of the runtime registry.
+- **The admin variant-review page** — `src/pages/ContentReview.tsx` + `src/components/admin/VariantPreview.tsx` + `src/components/admin/ExerciseSummaryCard.tsx`. Their preview/summary-card path is independent of the runtime registry — it reads `payload_json` directly and renders without going through capability resolution.
 - **The audio service + storage bucket** — `src/services/audioService.ts`.
 - **The FSRS commit path** — `supabase/functions/commit-capability-answer-report/`. Server-side.
