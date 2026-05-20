@@ -240,7 +240,6 @@ export { candidates } from './candidates'
       expect(out).toContain("export { candidates } from './candidates'")
       expect(out).not.toContain("export { contentUnits } from './content-units'")
       expect(out).not.toContain("export { capabilities } from './capabilities'")
-      expect(out).not.toContain("export { lessonPageBlocks } from './lesson-page-blocks'")
       expect(out).not.toContain("export { exerciseAssets } from './exercise-assets'")
     } finally {
       fs.rmSync(dir, { recursive: true, force: true })
@@ -250,13 +249,12 @@ export { candidates } from './candidates'
   it('includes workflow exports once their derived files exist', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'staging-'))
     try {
-      for (const f of ['lesson.ts', 'learning-items.ts', 'grammar-patterns.ts', 'candidates.ts', 'cloze-contexts.ts', 'content-units.ts', 'capabilities.ts', 'lesson-page-blocks.ts', 'exercise-assets.ts']) {
+      for (const f of ['lesson.ts', 'learning-items.ts', 'grammar-patterns.ts', 'candidates.ts', 'cloze-contexts.ts', 'content-units.ts', 'capabilities.ts', 'exercise-assets.ts']) {
         fs.writeFileSync(path.join(dir, f), '')
       }
       const out = generateIndexTs('', dir)
       expect(out).toContain("export { contentUnits } from './content-units'")
       expect(out).toContain("export { capabilities } from './capabilities'")
-      expect(out).toContain("export { lessonPageBlocks } from './lesson-page-blocks'")
       expect(out).toContain("export { exerciseAssets } from './exercise-assets'")
     } finally {
       fs.rmSync(dir, { recursive: true, force: true })
