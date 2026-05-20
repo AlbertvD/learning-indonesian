@@ -21,17 +21,6 @@ export interface SectionInput {
   order_index: number
 }
 
-export interface PageBlockInput {
-  block_key: string
-  source_ref: string
-  source_refs: string[]
-  content_unit_slugs: string[]
-  /** Canonical 7-value reader kind, post-classifier. */
-  block_kind: string
-  display_order: number
-  payload_json: Record<string, unknown>
-}
-
 /**
  * Upsert the `lessons` row by (module_id, order_index). Mirrors the existing
  * find-or-insert pattern at publish-approved-content.ts so behaviour is
@@ -106,40 +95,6 @@ export async function upsertLessonSections(
           order_index: section.order_index,
         },
         { onConflict: 'lesson_id,order_index' },
-      )
-    if (error) throw error
-    count++
-  }
-  return count
-}
-
-/**
- * Upsert every page-block row, keyed by (source_ref, block_key). Drops the
- * dead `source_progress_event` field — the column was removed in retirement
- * #6 (scripts/migration.sql:1801–1803). Includes the canonical block_kind
- * value produced by classifier.ts.
- */
-export async function upsertLessonPageBlocks(
-  supabase: SupabaseClient,
-  blocks: PageBlockInput[],
-): Promise<number> {
-  let count = 0
-  for (const block of blocks) {
-    const { error } = await supabase
-      .schema('indonesian')
-      .from('lesson_page_blocks')
-      .upsert(
-        {
-          block_key: block.block_key,
-          source_ref: block.source_ref,
-          source_refs: block.source_refs ?? [],
-          content_unit_slugs: block.content_unit_slugs ?? [],
-          block_kind: block.block_kind,
-          display_order: block.display_order,
-          payload_json: block.payload_json ?? {},
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: 'source_ref,block_key' },
       )
     if (error) throw error
     count++

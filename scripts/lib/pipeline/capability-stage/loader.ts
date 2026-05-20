@@ -2,11 +2,11 @@
  * capability-stage/loader.ts — input boundary for the deep module.
  *
  * Two read sources:
- *   1. DB (Stage A's outputs): `lessons`, `lesson_sections`, `lesson_page_blocks`,
- *      `audio_clips`. Replaces the legacy `lesson.ts` staging-file read.
+ *   1. DB (Stage A's outputs): `lessons`, `lesson_sections`, `audio_clips`.
+ *      Replaces the legacy `lesson.ts` staging-file read.
  *   2. Staging files (everything downstream of `lesson.ts`):
  *      learning-items / grammar-patterns / candidates / cloze-contexts /
- *      content-units / capabilities / exercise-assets / lesson-page-blocks.
+ *      content-units / capabilities / exercise-assets.
  *      Mirrors capability-stage-legacy.ts:67–101 minus the `lesson.ts` read.
  *
  * The deep module's external interface remains
@@ -39,16 +39,6 @@ export interface LoadedLessonSection {
   order_index: number
 }
 
-export interface LoadedLessonPageBlock {
-  block_key: string
-  source_ref: string
-  source_refs: string[]
-  content_unit_slugs: string[]
-  block_kind: string
-  display_order: number
-  payload_json: Record<string, unknown>
-}
-
 export interface LoadedStaging {
   learningItems: Array<Record<string, unknown>>
   grammarPatterns: Array<Record<string, unknown>>
@@ -56,7 +46,6 @@ export interface LoadedStaging {
   clozeContexts: Array<Record<string, unknown>>
   contentUnits: Array<Record<string, unknown>>
   capabilities: Array<Record<string, unknown>>
-  lessonPageBlocks: Array<Record<string, unknown>>
   exerciseAssets: Array<Record<string, unknown>>
   affixedFormPairs: Array<Record<string, unknown>>
   stagingDir: string
@@ -65,7 +54,6 @@ export interface LoadedStaging {
 export interface LoadedLesson {
   lesson: LoadedLessonRow
   sections: LoadedLessonSection[]
-  pageBlocks: LoadedLessonPageBlock[]
   /**
    * Map of `normalized_text` (via normalizeTtsText) → audio clip metadata for
    * every audio_clips row attached to this lesson, primary-voice preferred.
@@ -86,7 +74,7 @@ export async function loadStageAOutputsFromDb(
   supabase: CapabilitySupabaseClient,
   input: { lessonNumber: number; lessonId: string },
 ): Promise<Omit<LoadedLesson, 'staging'>> {
-  const { lessonId, lessonNumber } = input
+  const { lessonId } = input
 
   const { data: lessonRow, error: lessonError } = await supabase
     .schema('indonesian')
@@ -105,14 +93,6 @@ export async function loadStageAOutputsFromDb(
     .order('order_index', { ascending: true })
   if (sectionsError) throw sectionsError
 
-  const { data: pageBlocksData, error: pageBlocksError } = await supabase
-    .schema('indonesian')
-    .from('lesson_page_blocks')
-    .select('block_key, source_ref, source_refs, content_unit_slugs, block_kind, display_order, payload_json')
-    .eq('source_ref', `lesson-${lessonNumber}`)
-    .order('display_order', { ascending: true })
-  if (pageBlocksError) throw pageBlocksError
-
   const typedLessonRow = lessonRow as LoadedLessonRow
   const audioClipsByNormalizedText = await fetchLessonAudioCoverage(
     supabase,
@@ -123,15 +103,6 @@ export async function loadStageAOutputsFromDb(
   return {
     lesson: typedLessonRow,
     sections: (sectionsData ?? []) as LoadedLessonSection[],
-    pageBlocks: ((pageBlocksData ?? []) as Array<Partial<LoadedLessonPageBlock>>).map((b) => ({
-      block_key: b.block_key ?? '',
-      source_ref: b.source_ref ?? '',
-      source_refs: b.source_refs ?? [],
-      content_unit_slugs: b.content_unit_slugs ?? [],
-      block_kind: b.block_kind ?? '',
-      display_order: b.display_order ?? 0,
-      payload_json: (b.payload_json ?? {}) as Record<string, unknown>,
-    })),
     audioClipsByNormalizedText,
   }
 }
@@ -163,10 +134,9 @@ export async function loadStagingFiles(lessonNumber: number): Promise<LoadedStag
     readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'candidates.ts')),
     readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'cloze-contexts.ts')),
   ])
-  const [contentUnits, capabilities, lessonPageBlocks, exerciseAssets, affixedFormPairs] = await Promise.all([
+  const [contentUnits, capabilities, exerciseAssets, affixedFormPairs] = await Promise.all([
     readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'content-units.ts')),
     readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'capabilities.ts')),
-    readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'lesson-page-blocks.ts')),
     readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'exercise-assets.ts')),
     readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'morphology-patterns.ts')),
   ])
@@ -178,7 +148,6 @@ export async function loadStagingFiles(lessonNumber: number): Promise<LoadedStag
     clozeContexts: clozeContexts ?? [],
     contentUnits: contentUnits ?? [],
     capabilities: capabilities ?? [],
-    lessonPageBlocks: lessonPageBlocks ?? [],
     exerciseAssets: exerciseAssets ?? [],
     affixedFormPairs: affixedFormPairs ?? [],
     stagingDir,
@@ -238,7 +207,6 @@ export async function loadLessonForDryRun(
       content: s.content,
       order_index: s.order_index,
     })),
-    pageBlocks: [],
     audioClipsByNormalizedText: new Map(),
     staging,
   }
