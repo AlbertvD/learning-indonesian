@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   buildCapabilityHealthReport,
   checkCapabilityHealthSnapshot,
-  filterScopedContentUnits,
   getCapabilityHealthExitCode,
   loadStagedContentSnapshot,
   parseCapabilityHealthArgs,
@@ -57,7 +56,6 @@ describe('capability health exit code planning', () => {
 
   it('fails ready/published capabilities that have no approved artifact path', () => {
     const report = checkCapabilityHealthSnapshot({
-      knownSourceRefs: ['learning_items/makan'],
       capabilities: [{
         canonicalKey: 'cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl',
         sourceRef: 'learning_items/makan',
@@ -84,7 +82,6 @@ describe('capability health exit code planning', () => {
     // union so the cap remains ready.
     const capabilityKey = 'cap:v1:item:learning_items/makan:form_recall:l1_to_id:text:nl'
     const report = checkCapabilityHealthSnapshot({
-      knownSourceRefs: ['learning_items/makan'],
       capabilities: [{
         canonicalKey: capabilityKey,
         sourceRef: 'learning_items/makan',
@@ -121,7 +118,6 @@ describe('capability health exit code planning', () => {
   it('accepts ready Dutch-to-Indonesian choice capabilities with a cued recall render path', () => {
     const capabilityKey = 'cap:v1:item:learning_items/makan:l1_to_id_choice:l1_to_id:text:nl'
     const report = checkCapabilityHealthSnapshot({
-      knownSourceRefs: ['learning_items/makan'],
       capabilities: [{
         canonicalKey: capabilityKey,
         sourceRef: 'learning_items/makan',
@@ -152,7 +148,6 @@ describe('capability health exit code planning', () => {
   it('fails approved artifacts with invalid artifact-kind payload shapes', () => {
     const capabilityKey = 'cap:v1:item:learning_items/makan:form_recall:l1_to_id:text:nl'
     const report = checkCapabilityHealthSnapshot({
-      knownSourceRefs: ['learning_items/makan'],
       capabilities: [{
         canonicalKey: capabilityKey,
         sourceRef: 'learning_items/makan',
@@ -184,7 +179,6 @@ describe('capability health exit code planning', () => {
     // the only thing blocking it is `meaning_recall: false`.
     const capabilityKey = 'cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl'
     const report = checkCapabilityHealthSnapshot({
-      knownSourceRefs: ['learning_items/makan'],
       capabilities: [{
         canonicalKey: capabilityKey,
         sourceRef: 'learning_items/makan',
@@ -215,9 +209,15 @@ describe('capability health exit code planning', () => {
     }))
   })
 
-  it('warns on ready/published capabilities whose source_ref is not exposed by any lesson block or content unit', () => {
+  it('does NOT emit ready_capability_unreachable_source_ref (retired in Phase 1 of retiring lesson_page_blocks, 2026-05-20)', () => {
+    // Pre-Phase-1 the check fired when a cap's source_ref was not in
+    // knownSourceRefs (derived from page_blocks + content_units). With
+    // page_blocks removed and content_units no longer fetched in DB mode,
+    // knownSourceRefs no longer exists and the warning is retired (it had no
+    // orthogonal source to validate against — knownSourceRefs was derived
+    // from the same caps it was supposed to check). ADR 0006 stamps lesson_id
+    // on every lesson-derived cap, replacing the validation purpose.
     const report = checkCapabilityHealthSnapshot({
-      knownSourceRefs: ['learning_items/makan'],
       capabilities: [{
         canonicalKey: 'cap:v1:item:learning_items/minum:text_recognition:id_to_l1:text:nl',
         sourceRef: 'learning_items/minum',
@@ -236,14 +236,13 @@ describe('capability health exit code planning', () => {
       }],
     })
 
-    expect(report.warnings).toContainEqual(expect.objectContaining({
+    expect(report.warnings).not.toContainEqual(expect.objectContaining({
       rule: 'ready_capability_unreachable_source_ref',
     }))
   })
 
   it('reports draft/unknown capabilities as warnings instead of blockers', () => {
     const report = checkCapabilityHealthSnapshot({
-      knownSourceRefs: ['learning_items/makan'],
       capabilities: [{
         canonicalKey: 'cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl',
         sourceRef: 'learning_items/makan',
@@ -260,38 +259,6 @@ describe('capability health exit code planning', () => {
     expect(report.warnings).toContainEqual(expect.objectContaining({
       rule: 'capability_not_runtime_schedulable',
     }))
-  })
-
-  it('filters DB content units by lesson block source context instead of slug alone', () => {
-    const scoped = filterScopedContentUnits({
-      lessonSourceRef: 'lesson-1',
-      blocks: [{
-        source_refs: ['learning_items/makan'],
-        content_unit_slugs: ['item-makan'],
-      }],
-      contentUnits: [
-        {
-          id: 'unit-lesson-1',
-          source_ref: 'learning_items/makan',
-          source_section_ref: 'lesson-1/section-vocabulary',
-          unit_slug: 'item-makan',
-        },
-        {
-          id: 'unit-lesson-2-collision',
-          source_ref: 'learning_items/makan',
-          source_section_ref: 'lesson-2/section-vocabulary',
-          unit_slug: 'item-makan',
-        },
-        {
-          id: 'unit-wrong-source',
-          source_ref: 'learning_items/minum',
-          source_section_ref: 'lesson-1/section-vocabulary',
-          unit_slug: 'item-makan',
-        },
-      ],
-    })
-
-    expect(scoped.map(unit => unit.id)).toEqual(['unit-lesson-1'])
   })
 
   it('derives lesson-aware grammar pattern refs and examples from staged descriptions', async () => {

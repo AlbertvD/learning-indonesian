@@ -81,7 +81,6 @@ export interface RuntimeHealthArtifact {
 }
 
 export interface CapabilityHealthSnapshot {
-  knownSourceRefs: string[]
   capabilities: RuntimeHealthCapability[]
   artifacts: RuntimeHealthArtifact[]
 }
@@ -182,7 +181,6 @@ function buildRuntimeArtifactIndex(artifacts: RuntimeHealthArtifact[]): Artifact
 export function checkCapabilityHealthSnapshot(snapshot: CapabilityHealthSnapshot): CapabilityRuntimeHealthReport {
   const critical: CapabilityHealthFinding[] = []
   const warnings: CapabilityHealthFinding[] = []
-  const knownSourceRefs = new Set(snapshot.knownSourceRefs)
   const artifactIndex = buildRuntimeArtifactIndex(snapshot.artifacts)
 
   for (const capability of snapshot.capabilities) {
@@ -212,17 +210,12 @@ export function checkCapabilityHealthSnapshot(snapshot: CapabilityHealthSnapshot
       ))
     }
 
-    // Source-ref reachability check: a `'ready'`-published capability whose
-    // source_ref isn't in the lesson/source graph indicates a publishing
-    // mistake. Replaces the retired source-progress ref-mismatch validators.
-    if (!knownSourceRefs.has(capability.sourceRef)) {
-      warnings.push(runtimeFinding(
-        'warning',
-        'ready_capability_unreachable_source_ref',
-        `Capability source_ref "${capability.sourceRef}" is not present in the lesson/source graph.`,
-        capability.canonicalKey,
-      ))
-    }
+    // Phase 1 of retiring lesson_page_blocks (2026-05-20): the
+    // `ready_capability_unreachable_source_ref` warning was retired. The check
+    // derived knownSourceRefs from page_blocks + content_units that themselves
+    // were derived from the same caps it was validating, so the check had no
+    // orthogonal source to be inconsistent with. See ADR 0006 for the new
+    // scoping invariant (capability.lesson_id NOT NULL for lesson caps).
 
     const readiness = validateCapability({
       capability: projected,
@@ -452,46 +445,6 @@ export async function buildCapabilityHealthReport(stagingPath: string): Promise<
   })
 }
 
-export interface DbLessonBlockScope {
-  source_refs?: string[] | null
-  content_unit_slugs?: string[] | null
-}
-
-export interface DbContentUnitScope {
-  id: string
-  source_ref?: string | null
-  source_section_ref?: string | null
-  unit_slug?: string | null
-}
-
-export function filterScopedContentUnits(input: {
-  lessonSourceRef: string
-  blocks: DbLessonBlockScope[]
-  contentUnits: DbContentUnitScope[]
-}): DbContentUnitScope[] {
-  const allowedSourceRefsBySlug = new Map<string, Set<string>>()
-  for (const block of input.blocks) {
-    const sourceRefs = new Set(block.source_refs ?? [])
-    for (const slug of block.content_unit_slugs ?? []) {
-      const existing = allowedSourceRefsBySlug.get(slug) ?? new Set<string>()
-      for (const sourceRef of sourceRefs) existing.add(sourceRef)
-      allowedSourceRefsBySlug.set(slug, existing)
-    }
-  }
-
-  return input.contentUnits.filter(unit => {
-    if (!unit.unit_slug) return false
-    const allowedSourceRefs = allowedSourceRefsBySlug.get(unit.unit_slug)
-    if (!allowedSourceRefs) return false
-    const sectionIsInLesson = typeof unit.source_section_ref === 'string'
-      && unit.source_section_ref.startsWith(`${input.lessonSourceRef}/`)
-    const sourceMatchesBlock = typeof unit.source_ref === 'string'
-      && allowedSourceRefs.has(unit.source_ref)
-    const sourceIsLesson = unit.source_ref === input.lessonSourceRef
-    return sectionIsInLesson && (sourceMatchesBlock || sourceIsLesson)
-  })
-}
-
 function createServiceClient() {
   const url = process.env.VITE_SUPABASE_URL || 'https://api.supabase.duin.home'
   const serviceKey = process.env.SUPABASE_SERVICE_KEY
@@ -534,43 +487,16 @@ export async function loadDbCapabilityHealthSnapshot(args: Extract<CapabilityHea
   const supabase = createServiceClient()
   const db = () => supabase.schema('indonesian')
 
-  const { data: blocks, error: blocksError } = await db()
-    .from('lesson_page_blocks')
-    .select('source_ref, source_refs, content_unit_slugs')
-    .eq('source_ref', args.sourceRef)
-  if (blocksError) throw blocksError
-  const lessonBlocks = (blocks ?? []) as Array<{
-    source_ref?: string | null
-    source_refs?: string[] | null
-    content_unit_slugs?: string[] | null
-  }>
-
-  const contentUnitSlugs = [...new Set(lessonBlocks.flatMap(block => block.content_unit_slugs ?? []))]
-  // Chunk the IN list to keep request URIs under Kong's buffer.
-  const slugChunkSize = 50
-  const contentUnitRows: Array<Record<string, unknown>> = []
-  for (let i = 0; i < contentUnitSlugs.length; i += slugChunkSize) {
-    const chunk = contentUnitSlugs.slice(i, i + slugChunkSize)
-    const { data, error } = await db()
-      .from('content_units')
-      .select('id, source_ref, source_section_ref, unit_slug')
-      .in('unit_slug', chunk)
-    if (error) throw error
-    contentUnitRows.push(...((data ?? []) as Array<Record<string, unknown>>))
-  }
-  const contentUnits = filterScopedContentUnits({
-    lessonSourceRef: args.sourceRef,
-    blocks: lessonBlocks,
-    contentUnits: contentUnitRows as Array<{
-    id: string
-    source_ref?: string | null
-    source_section_ref?: string | null
-    unit_slug?: string | null
-    }>,
-  })
-
   // Scope by learning_capabilities.lesson_id (ADR 0006). The lesson-id is
   // derived from args.sourceRef which has the shape "lesson-<order_index>".
+  //
+  // Phase 1 of retiring lesson_page_blocks (2026-05-20): the previous
+  // implementation read lesson_page_blocks → derived contentUnitSlugs →
+  // fetched content_units → built knownSourceRefs. All of that fed only the
+  // retired `ready_capability_unreachable_source_ref` warning (the warning
+  // had no orthogonal source to validate against — knownSourceRefs was
+  // derived from the same caps it was supposed to check). With the warning
+  // gone, the entire page-block + content-units path is dead.
   const lessonNumberMatch = /^lesson-(\d+)$/.exec(args.sourceRef)
   const capabilityRows: Array<Record<string, unknown>> = []
   if (lessonNumberMatch) {
@@ -605,22 +531,10 @@ export async function loadDbCapabilityHealthSnapshot(args: Extract<CapabilityHea
     if (error) throw error
     artifactRows.push(...((data ?? []) as Array<Record<string, unknown>>))
   }
-  const artifactResult = { data: artifactRows, error: null }
-
-  const knownSourceRefs = new Set<string>([args.sourceRef])
-  for (const block of lessonBlocks) {
-    if (block.source_ref) knownSourceRefs.add(block.source_ref)
-    for (const sourceRef of block.source_refs ?? []) knownSourceRefs.add(sourceRef)
-  }
-  for (const unit of contentUnits) {
-    if (unit.source_ref) knownSourceRefs.add(unit.source_ref)
-    if (unit.source_section_ref) knownSourceRefs.add(unit.source_section_ref)
-  }
 
   return {
-    knownSourceRefs: [...knownSourceRefs],
     capabilities: capabilityRows.map(toRuntimeCapability),
-    artifacts: ((artifactResult.data ?? []) as Array<Record<string, unknown>>).map(artifact => {
+    artifacts: artifactRows.map(artifact => {
       const capabilityId = String(artifact.capability_id ?? '')
       const capabilityKey = capabilityKeyById.get(capabilityId) ?? ''
       const capability = capabilityRows.find(row => String(row.id ?? '') === capabilityId)
