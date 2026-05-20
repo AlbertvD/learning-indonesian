@@ -302,7 +302,7 @@ The diagnostic surfaces in the UI via `Session.tsx`, which reads `plan.diagnosti
 
 - `learning_capabilities` table — capability catalog (one row per capability, ~thousands when projected).
 - `learner_capability_state` table — per-learner FSRS state (ADR 0001). Written by the server-side review processor (`supabase/functions/commit-capability-answer-report/index.ts`, invoked via the `commit-capability-answer-report` Edge Function).
-- `learner_lesson_activation` table — single-boolean per (user, lesson). Written by `set_lesson_activation` RPC (`migration.sql:1584`), called from `lib/lessons/` and `authStore.activateStarterLessons`.
+- `learner_lesson_activation` table — single-boolean per (user, lesson). Written by `set_lesson_activation` RPC (`migration.sql:1584`); all callers route through `setLessonActivated` in `lib/lessons/activation.ts` (used by the lesson-page checkbox and the `authStore.activateStarterLessons` first-sign-in hook).
 - `capability_artifacts` table — per-capability content blobs (meanings, contexts, items, etc.). Validated by `validateCapability` (`lib/capabilities/capabilityContracts.ts`).
 
 ### Downstream (the builder feeds these)

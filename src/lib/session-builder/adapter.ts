@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import { chunkedIn } from '@/lib/chunkedQuery'
+import { listActivatedLessons } from '@/lib/lessons'
 import {
   CAPABILITY_PROJECTION_VERSION,
   getDueCapabilitiesFromRows,
@@ -88,10 +89,6 @@ interface CapabilityArtifactDbRow {
   artifact_kind: ArtifactKind
   quality_status: ArtifactQualityStatus
   artifact_json: unknown
-}
-
-interface LessonActivationDbRow {
-  lesson_id: string
 }
 
 interface LessonOrderDbRow {
@@ -260,7 +257,7 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
       const [
         capabilitiesResult,
         statesResult,
-        activationResult,
+        activatedLessons,
         lessonsResult,
       ] = await Promise.all([
         db()
@@ -269,13 +266,12 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
           .eq('readiness_status', 'ready')
           .eq('publication_status', 'published'),
         db().from('learner_capability_state').select('*').eq('user_id', request.userId),
-        db().from('learner_lesson_activation').select('lesson_id').eq('user_id', request.userId),
+        listActivatedLessons(request.userId, client),
         db().from('lessons').select('id, order_index'),
       ])
 
       if (capabilitiesResult.error) throw capabilitiesResult.error
       if (statesResult.error) throw statesResult.error
-      if (activationResult.error) throw activationResult.error
       if (lessonsResult.error) throw lessonsResult.error
 
       const capabilityRows = (capabilitiesResult.data ?? []) as LearningCapabilityDbRow[]
@@ -315,9 +311,6 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         limit: Number.MAX_SAFE_INTEGER,
         rows: schedulerRows,
       }).length
-      const activatedLessons = new Set(
-        ((activationResult.data ?? []) as LessonActivationDbRow[]).map(row => row.lesson_id),
-      )
       const recentFailures = schedulerRows
         .filter(row => row.consecutiveFailureCount >= 2 && row.lastReviewedAt != null)
         .map(row => ({

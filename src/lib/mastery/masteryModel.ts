@@ -5,6 +5,7 @@ import type {
   CapabilitySourceKind,
   CapabilityType,
 } from '@/lib/capabilities'
+import { listActivatedLessons } from '@/lib/lessons'
 import { chunkedIn } from '@/lib/chunkedQuery'
 
 export type MasteryLabel =
@@ -446,21 +447,12 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
     )
   }
 
-  async function activatedLessons(userId: string): Promise<Set<string>> {
-    const { data, error } = await db()
-      .from('learner_lesson_activation')
-      .select('lesson_id')
-      .eq('user_id', userId)
-    if (error) throw error
-    return new Set(((data ?? []) as Array<{ lesson_id: string }>).map(row => row.lesson_id))
-  }
-
   async function evidenceForCapabilities(userId: string, capabilities: LearningCapabilityRow[]): Promise<CapabilityMasteryEvidence[]> {
     const capabilityIds = capabilities.map(capability => capability.id)
     const [states, artifactRows, activatedLessonsSet] = await Promise.all([
       learnerStates(userId, capabilityIds),
       artifacts(capabilityIds),
-      activatedLessons(userId),
+      listActivatedLessons(userId, client),
     ])
     return toEvidence({ capabilities, states, artifacts: artifactRows, activatedLessons: activatedLessonsSet })
   }
@@ -500,7 +492,7 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
       const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
       const [artifactRows, activatedLessonsSet] = await Promise.all([
         artifacts(capabilities.map(capability => capability.id)),
-        activatedLessons(userId),
+        listActivatedLessons(userId, client),
       ])
       const evidence = toEvidence({ capabilities, states, artifacts: artifactRows, activatedLessons: activatedLessonsSet })
       return deriveMasteryOverview({ userId, evidence })
