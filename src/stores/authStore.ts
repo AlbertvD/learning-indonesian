@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
 import type { UserProfile } from '@/types/auth'
 import { logError } from '@/lib/logger'
+import { setLessonActivated } from '@/lib/lessons'
 
 interface AuthState {
   user: User | null
@@ -166,15 +167,7 @@ async function activateStarterLessons(userId: string): Promise<void> {
     if (rows.length === 0) return
 
     await Promise.allSettled(
-      rows.map(lesson =>
-        supabase
-          .schema('indonesian')
-          .rpc('set_lesson_activation', {
-            p_user_id: userId,
-            p_lesson_id: lesson.id,
-            p_activated: true,
-          }),
-      ),
+      rows.map(lesson => setLessonActivated(userId, lesson.id, true)),
     )
   } catch (err) {
     logError({ page: 'auth', action: 'activate-starter-lessons', error: err })

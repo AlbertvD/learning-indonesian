@@ -10,9 +10,17 @@
 
 import { supabase } from '@/lib/supabase'
 
-interface SupabaseSchemaClient {
+// Read clients only need .from(...). Write clients (used by
+// setLessonActivated) additionally need .rpc(...). Splitting these
+// lets callers pass narrower client mocks for read-only paths.
+interface SupabaseReadClient {
   schema(schema: 'indonesian'): {
     from(table: string): any
+  }
+}
+
+interface SupabaseRpcClient {
+  schema(schema: 'indonesian'): {
     rpc(fn: string, args: Record<string, unknown>): any
   }
 }
@@ -20,7 +28,7 @@ interface SupabaseSchemaClient {
 export async function isLessonActivated(
   userId: string,
   lessonId: string,
-  client: SupabaseSchemaClient = supabase,
+  client: SupabaseReadClient = supabase,
 ): Promise<boolean> {
   const { data, error } = await client
     .schema('indonesian')
@@ -35,7 +43,7 @@ export async function isLessonActivated(
 
 export async function listActivatedLessons(
   userId: string,
-  client: SupabaseSchemaClient = supabase,
+  client: SupabaseReadClient = supabase,
 ): Promise<Set<string>> {
   const { data, error } = await client
     .schema('indonesian')
@@ -50,7 +58,7 @@ export async function setLessonActivated(
   userId: string,
   lessonId: string,
   activated: boolean,
-  client: SupabaseSchemaClient = supabase,
+  client: SupabaseRpcClient = supabase,
 ): Promise<void> {
   const { error } = await client
     .schema('indonesian')
