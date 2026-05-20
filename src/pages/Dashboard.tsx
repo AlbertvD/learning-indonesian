@@ -58,9 +58,7 @@ export function Dashboard() {
         )
         const target = inProgress ?? notStarted
         if (target) {
-          const lessonEntry = lessonProgress.find((lp) => lp.lesson_id === target.id)
-          const sectionIndex = lessonEntry?.sections_completed.length ?? 0
-          setContinueUrl(`/lessons/${target.id}?section=${sectionIndex}`)
+          setContinueUrl(`/lesson/${target.id}`)
         }
 
         const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone

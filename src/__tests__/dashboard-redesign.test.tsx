@@ -99,14 +99,14 @@ describe('Dashboard (minimal placeholder)', () => {
     expect(screen.queryByText(/zwakke woorden|weak words/i)).not.toBeInTheDocument()
   })
 
-  it('renders the continue-lesson card with a /lessons URL', async () => {
+  it('renders the continue-lesson card with a /lesson/:id URL', async () => {
     vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([
       { id: 'lesson-1', order_index: 1, title: 'Lesson 1', level: 'A1', is_published: true } as any,
     ])
     vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([])
     renderDashboard()
     const link = await screen.findByRole('link', { name: /doorgaan met les|continue lesson/i })
-    expect(link).toHaveAttribute('href', expect.stringMatching(/^\/lessons\//))
+    expect(link).toHaveAttribute('href', '/lesson/lesson-1')
   })
 
   it('does not render TodaysPlanHero or weekly goal rings (regression check)', async () => {
