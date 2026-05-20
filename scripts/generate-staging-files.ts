@@ -336,7 +336,6 @@ const workflowIndexExports = [
   "export { clozeContexts } from './cloze-contexts'",
   "export { contentUnits } from './content-units'",
   "export { capabilities } from './capabilities'",
-  "export { lessonPageBlocks } from './lesson-page-blocks'",
   "export { exerciseAssets } from './exercise-assets'",
 ]
 
