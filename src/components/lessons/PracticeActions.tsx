@@ -6,9 +6,7 @@ import { useAuthStore } from '@/stores/authStore'
 import {
   isLessonActivated,
   buildLessonPracticeActions,
-  getLesson,
-  getLessonPageBlocks,
-  getLessonCapabilityPracticeSummary,
+  getLessonCapabilityPracticeSummaryByLessonId,
 } from '@/lib/lessons'
 import { logError } from '@/lib/logger'
 
@@ -25,16 +23,8 @@ export function PracticeActions({ lessonId }: { lessonId: string }) {
     let cancelled = false
     async function load() {
       try {
-        const lesson = await getLesson(lessonId)
-        const canonicalSourceRef = `lesson-${lesson.order_index}`
-        // Capabilities are linked to per-item source refs (e.g. item-pisang,
-        // pattern-werkwoord), not to the parent lesson-N. Aggregate them from
-        // the lesson's page blocks — same pattern Lesson.tsx uses.
-        const pageBlocks = await getLessonPageBlocks(canonicalSourceRef).catch(() => [])
-        const refs = pageBlocks.flatMap(b => b.source_refs?.length ? b.source_refs : [b.source_ref]).filter(Boolean)
-        const sourceRefs = refs.length > 0 ? [...new Set(refs)] : [canonicalSourceRef]
         const [summary, isActive] = await Promise.all([
-          getLessonCapabilityPracticeSummary(userId!, sourceRefs).catch(() => ({
+          getLessonCapabilityPracticeSummaryByLessonId(userId!, lessonId).catch(() => ({
             readyCapabilityCount: 0,
             activePracticedCapabilityCount: 0,
           })),
