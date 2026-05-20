@@ -171,9 +171,16 @@ function dimensionForCapability(type: CapabilityType): MasteryDimension {
     case 'contextual_cloze':
       return 'contextual_cloze'
     case 'root_derived_recognition':
+    case 'root_derived_recall':
       return 'morphology'
-    default:
+    case 'podcast_gist':
       return 'exposure'
+    default: {
+      // Exhaustiveness guard: adding a new CapabilityType without a matching
+      // dimension fails to compile here instead of silently bucketing it.
+      const _exhaustive: never = type
+      return _exhaustive
+    }
   }
 }
 

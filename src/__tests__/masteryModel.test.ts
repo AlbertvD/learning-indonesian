@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest'
 import {
   createMasteryModel,
   deriveContentUnitMastery,
+  deriveMasteryDimensions,
   derivePatternMastery,
   type CapabilityMasteryEvidence,
 } from '@/lib/mastery/masteryModel'
+import { CAPABILITY_TYPES } from '@/lib/capabilities'
 
 const now = new Date('2026-04-25T12:00:00.000Z')
 
@@ -148,6 +150,36 @@ describe('mastery model derivation', () => {
 
     expect(result.label).toBe('at_risk')
     expect(result.weakestDimension).toBe('pattern_use')
+  })
+
+  it('routes root_derived_recall capabilities into the morphology dimension', () => {
+    const dimensions = deriveMasteryDimensions([
+      evidence({
+        capabilityId: 'cap-morph-recall',
+        canonicalKey: 'item:berjalan:root_derived_recall:derived_to_root',
+        capabilityType: 'root_derived_recall',
+        reviewCount: 3,
+        stability: 5,
+        lastReviewedAt: '2026-04-21T12:00:00.000Z',
+      }),
+    ], now)
+
+    expect(dimensions).toEqual([expect.objectContaining({ dimension: 'morphology', capabilityCount: 1 })])
+  })
+
+  it('does not silently route any current CapabilityType through the exposure default', () => {
+    // Guard against future capability types being added to the union without a
+    // matching case in dimensionForCapability. podcast_gist is the only type
+    // intentionally mapped to 'exposure' (comprehensible-input listening).
+    const intentionallyExposure = new Set(['podcast_gist'])
+    for (const type of CAPABILITY_TYPES) {
+      const [dimension] = deriveMasteryDimensions([evidence({ capabilityType: type })], now)
+      if (intentionallyExposure.has(type)) {
+        expect(dimension?.dimension, `${type} should map to exposure`).toBe('exposure')
+      } else {
+        expect(dimension?.dimension, `${type} should not fall through to exposure`).not.toBe('exposure')
+      }
+    }
   })
 
   it('does not label a pattern mastered when pattern use has not been assessed', () => {
