@@ -1693,13 +1693,19 @@ on conflict (user_id, lesson_id) do nothing;
 -- rewriting in forward.sql breaks the old client's has_meaningful_exposure
 -- field read during the deploy window between forward and code deploy.
 
--- 6. REWRITE: get_lessons_overview — drop source-progress CTEs; use activation
--- (compute_todays_plan_raw rewrite was REMOVED in R1 v2 — function was already
--- retired in retirement #4, see scripts/migration.sql:1115-1120.)
--- DROP FUNCTION first because Postgres CREATE OR REPLACE cannot change a
--- function's RETURNS TABLE shape (the return-column set narrows by one).
--- Idempotent via `if exists`. The grant below re-establishes the
--- authenticated execute permission on the recreated function.
+-- ============================================================================
+-- get_lessons_overview — 2026-05-20 (Phase 1 of retiring lesson_page_blocks)
+-- ============================================================================
+--
+-- Reads capability counts from learning_capabilities.lesson_id (ADR 0006)
+-- instead of unnesting lesson_page_blocks.source_refs[]. Return shape is
+-- byte-identical to the previous version — has_page_blocks stays as a
+-- narrow probe against lesson_page_blocks to drive the "openable" tile
+-- signal in Lessons.tsx:207 (Phase 2 will replace it).
+--
+-- Idempotent. DROP FUNCTION first because CREATE OR REPLACE cannot change
+-- a function's RETURNS TABLE shape (even when it doesn't, drop+create is
+-- a strictly safer idiom).
 drop function if exists indonesian.get_lessons_overview(uuid);
 create or replace function indonesian.get_lessons_overview(p_user_id uuid)
 returns table (
@@ -1719,57 +1725,44 @@ returns table (
   practiced_eligible_capability_count int
 )
 language sql stable security invoker as $$
-  with lesson_blocks as (
-    select
-      l.id as lesson_id,
-      pb.block_key,
-      pb.payload_json,
-      coalesce(nullif(pb.source_refs, array[]::text[]), array[pb.source_ref]) as expanded_refs
-    from indonesian.lessons l
-    join indonesian.lesson_page_blocks pb
-      on pb.source_ref = 'lesson-' || l.order_index
-  ),
-  lesson_capabilities as (
-    select distinct on (lb.lesson_id, c.id)
-      lb.lesson_id,
-      c.id as capability_id,
-      c.readiness_status,
-      c.publication_status,
-      s.activation_state,
-      s.review_count
-    from lesson_blocks lb
-    cross join lateral unnest(lb.expanded_refs) as expanded_ref
-    join indonesian.learning_capabilities c
-      on c.source_ref = expanded_ref
+  with lesson_capabilities as (
+    -- Re-anchored 2026-05-20 (Phase 1 of retiring lesson_page_blocks):
+    -- joins learning_capabilities directly on lesson_id (ADR 0006) instead
+    -- of unnesting lesson_page_blocks.source_refs[]. Excludes podcast caps
+    -- (lesson_id is null) which were never in scope of this RPC.
+    select c.lesson_id, c.id as capability_id,
+           c.readiness_status, c.publication_status,
+           s.activation_state, s.review_count
+    from indonesian.learning_capabilities c
     left join indonesian.learner_capability_state s
       on s.capability_id = c.id and s.user_id = p_user_id
+    where c.lesson_id is not null
   ),
   capability_counts as (
-    select
-      lesson_id,
-      count(*) filter (
-        where readiness_status = 'ready' and publication_status = 'published'
-      )::int as ready_count,
-      count(*) filter (
-        where readiness_status = 'ready'
-          and publication_status = 'published'
-          and activation_state = 'active'
-          and coalesce(review_count, 0) > 0
-      )::int as practiced_count
-    from lesson_capabilities
-    group by lesson_id
+    select lesson_id,
+           count(*) filter (
+             where readiness_status = 'ready' and publication_status = 'published'
+           )::int as ready_count,
+           count(*) filter (
+             where readiness_status = 'ready' and publication_status = 'published'
+               and activation_state = 'active' and coalesce(review_count, 0) > 0
+           )::int as practiced_count
+    from lesson_capabilities group by lesson_id
   ),
   lesson_sections_json as (
-    select
-      ls.lesson_id,
-      jsonb_agg(to_jsonb(ls) order by ls.order_index) as sections
-    from indonesian.lesson_sections ls
-    group by ls.lesson_id
+    select ls.lesson_id, jsonb_agg(to_jsonb(ls) order by ls.order_index) as sections
+    from indonesian.lesson_sections ls group by ls.lesson_id
   ),
   lesson_block_presence as (
-    select lesson_id, true as has_blocks
-    from lesson_blocks
-    group by lesson_id
+    -- Phase 1: kept as a narrow probe against lesson_page_blocks to drive the
+    -- "openable lesson tile" signal in Lessons.tsx:207. Phase 2 will replace
+    -- this with a "has bespoke page" signal once every lesson has one.
+    select l.id as lesson_id, true as has_blocks
+    from indonesian.lessons l
+    where exists (
+      select 1 from indonesian.lesson_page_blocks pb
+      where pb.source_ref = 'lesson-' || l.order_index
+    )
   )
   select
     l.id,
