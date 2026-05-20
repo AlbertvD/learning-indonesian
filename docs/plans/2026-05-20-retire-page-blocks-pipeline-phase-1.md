@@ -1,5 +1,6 @@
 ---
-status: approved
+status: implementing
+implementation: PR #85
 implementation_paths:
   - scripts/lib/pipeline/lesson-stage/
   - scripts/lib/pipeline/capability-stage/
