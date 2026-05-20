@@ -12,7 +12,8 @@ implementation_paths:
   - scripts/check-capability-health.ts
   - scripts/data/staging/lesson-{1..9}/lesson-page-blocks.ts
   - src/components/lessons/PracticeActions.tsx
-  - src/services/lessonService.ts
+  - src/lib/lessons/adapter.ts
+  - src/lib/lessons/index.ts
 supersedes: []
 ---
 
@@ -37,21 +38,23 @@ supersedes: []
 1. `scripts/lib/pipeline/lesson-stage/runner.ts:230` — the DB write via `upsertLessonPageBlocks`.
 2. `scripts/lib/pipeline/capability-stage/runner.ts:282-284` — the disk write of `lesson-page-blocks.ts` regenerated post-enrichment (never propagates to DB).
 
-`scripts/generate-staging-files.ts` does NOT write `lesson-page-blocks.ts` content anymore (cleanup landed 2026-05-20 on this branch, ahead of this plan), but **still injects `export { lessonPageBlocks } from './lesson-page-blocks'` into the staging `index.ts`** (line 339). That dangling re-export breaks `index.ts` for any newly-generated lesson; it must be removed.
+`scripts/generate-staging-files.ts` does NOT write `lesson-page-blocks.ts` content anymore (cleanup landed in commit `31986ae` `chore(pipeline): stop pre-projecting capability snapshots in generate-staging-files + relax lint-staging gates`, on main ahead of this plan), but the `workflowIndexExports` array (line 334) **still contains** `"export { lessonPageBlocks } from './lesson-page-blocks'"` at line 339. A separate commit `c0c90b6` `fix(staging-generator): emit only existing workflow exports in index.ts` added an existence filter at line 364 — `generateIndexTs(existingContent, stagingDir)` now drops the line for newly-generated lessons whose `lesson-page-blocks.ts` doesn't exist. That filter is the safety net; for a permanently retired file, removing the entry from `workflowIndexExports` (single source of truth) is still cleaner and is what Task 4 does.
 
 The `lesson_page_blocks` DB table has **five active consumers** today:
 
 | # | Consumer | What it does | Phase 1 plan |
 |---|---|---|---|
 | 1 | `scripts/migration.sql:1696-1803` — `get_lessons_overview` RPC | Joins `pb.source_refs[]` to `learning_capabilities.source_ref` for ready/practiced counts per lesson. | **Re-anchor on `learning_capabilities.lesson_id`** (Task 6). |
-| 2 | `src/components/lessons/PracticeActions.tsx:29-30` | Fetches page blocks, flattens `source_refs[]`, queries capability practice summary by ref. | **Re-anchor on `learning_capabilities.lesson_id`** (Task 7). |
+| 2 | `src/components/lessons/PracticeActions.tsx:33-37` | Fetches page blocks (`getLessonPageBlocks(canonicalSourceRef)` at line 33), flattens `source_refs[]` (line 34), queries capability practice summary (line 37). Imports are bare-function from `@/lib/lessons` (post-PR-#79 fold; the methods moved out of `src/services/lessonService.ts` into `src/lib/lessons/adapter.ts`). | **Re-anchor on `learning_capabilities.lesson_id`** (Task 7). |
 | 3 | `scripts/check-capability-release-readiness.ts:91, 145, 194` | Queries `lesson_page_blocks` count in `loadReadinessInput`; raises blocker `"No lesson page blocks are published for ${sourceRef}."` when count is 0. Invoked by `scripts/run-capability-release-gate.ts:32`. | **Re-anchor on `learning_capabilities.lesson_id`** (Task 8). Without this, the documented release gate becomes impossible to pass for lesson 10+. |
 | 4 | `scripts/check-capability-health.ts:537-540` | Derives `contentUnitSlugs` from `lesson_page_blocks.content_unit_slugs[]`; downstream health probes filter against it. | **Re-anchor on `learning_capabilities.lesson_id` or `content_units.lesson_id`** (Task 9). Without this, the health probe returns false-negative empty content for lesson 10+. |
 | 5 | `src/pages/Session.tsx:44` — `loadSelectedLessonScope` | Fetches page blocks to derive `selectedSourceRefs` for `lesson_practice`/`lesson_review` modes; short-circuits to `null` (no practice mode) when count is 0. ADR 0006 line 17 calls this out as working "by accident". | **DEFERRED to Phase 2.** User-visible breakage is gated by `has_page_blocks=false` keeping lessons 10+ in `coming_later` on the Lessons tile — the user cannot reach this code path for lesson 10+. Phase 2 rewires it together with the bespoke page work, since lesson_practice discovery needs to align with the bespoke page's own scoping. |
 
 **Known structural reader that survives Phase 1 unchanged:** `scripts/check-supabase-deep.ts:465-486` (HC2) reads `lesson_page_blocks.block_kind` as a structural health probe. Phase 1 preserves the table + rows + `block_kind` check constraint, so the probe continues to pass for lessons 1–9. The probe is intentionally not in scope; Phase 3 retires it together with the table drop.
 
-The `lesson_page_blocks` DB table itself is **NOT dropped** in Phase 1; existing rows for lessons 1–9 stay, so the legacy renderer (`Lesson.tsx` → `LessonBlockRenderer`) keeps rendering them. The `has_page_blocks` boolean returned by `get_lessons_overview` keeps its current semantics — "this lesson has page-block rows in the DB". Lessons 1–9 = `true`; lesson 10+ = `false`. Frontend `Lessons.tsx:209` continues to use it unchanged.
+The `lesson_page_blocks` DB table itself is **NOT dropped** in Phase 1; existing rows for lessons 1–9 stay, so the legacy renderer (`Lesson.tsx` → `LessonBlockRenderer`) keeps rendering them where it's still in the route. The `has_page_blocks` boolean returned by `get_lessons_overview` keeps its current semantics — "this lesson has page-block rows in the DB". Lessons 1–9 = `true`; lesson 10+ = `false`. Frontend `Lessons.tsx:207` continues to use it unchanged.
+
+**Note on lessons 1–3 already on bespoke pages:** As of origin's PRs #73 and #83, lessons 1, 2, and 3 already route through bespoke per-lesson `Page.tsx` files on the canonical `/lesson/:id` route — the legacy `LessonBlockRenderer` is no longer their renderer. Lessons 4–9 still use the legacy renderer. Phase 1's "preserve legacy renderer for lessons 1–9" wording is therefore technically wider than necessary: the lessons currently *served by* the legacy renderer are 4–9. The producer-side cleanup is unaffected — page-block rows for lessons 1–9 stay in the DB either way; the `has_page_blocks=true` signal still drives the "openable" tile state for all of them.
 
 `learning_capabilities.lesson_id` (ADR 0006) is already populated on every lesson-derived capability (NOT NULL via the `learning_capabilities_lesson_id_required_for_lessons` constraint, `scripts/migration.sql:2052`) and indexed (`scripts/migration.sql:1630-1631`). Podcast capabilities have NULL `lesson_id` and are exempt — they don't appear in any of the Phase 1 RPC queries (the new CTE adds `where c.lesson_id is not null`).
 
@@ -65,10 +68,10 @@ The five `lesson-page-blocks.ts` files under `scripts/data/staging/lesson-{1..5}
 
 - **No DB table drop.** `lesson_page_blocks` stays. Phase 3 drops it.
 - **No `has_page_blocks` rename or removal.** Keeps current semantic ("this lesson has page-block rows in the DB"). Phase 2 replaces it with a "has bespoke page" signal once every lesson has one.
-- **No legacy renderer changes.** `Lesson.tsx`, `LessonBlockRenderer`, `lessonExperience.ts`, `getLessonPageBlocks` in `lessonService.ts` all stay. They serve lessons 1–9 unchanged.
+- **No legacy renderer changes.** `Lesson.tsx`, `LessonBlockRenderer`, `lessonExperience.ts`, and `getLessonPageBlocks` in `src/lib/lessons/adapter.ts` (re-exported via `@/lib/lessons`) all stay. They serve lessons 4–9 unchanged (lessons 1–3 are already on bespoke pages per origin PRs #73 and #83).
 - **No `Session.tsx` lesson_practice mode rewire.** Gated by `has_page_blocks=false` for lesson 10+; Phase 2 fixes alongside bespoke pages.
 - **No deletion of existing page-block rows in the DB.** The pipeline simply stops adding new ones.
-- **No change to `getLessonCapabilityPracticeSummary(userId, sourceRefs[])` service method.** Kept alongside the new `getLessonCapabilityPracticeSummaryByLessonId` — `Lesson.tsx:88` (legacy renderer code path) still uses the old method.
+- **No change to `getLessonCapabilityPracticeSummary(userId, sourceRefs[])` method in `src/lib/lessons/adapter.ts`.** Kept alongside the new `getLessonCapabilityPracticeSummaryByLessonId` — `Lesson.tsx:93` (legacy renderer code path, still used by lessons 4–9) still calls the old method.
 
 ---
 
@@ -530,7 +533,7 @@ language sql stable security invoker as $$
   ),
   lesson_block_presence as (
     -- Phase 1: kept as a narrow probe against lesson_page_blocks to drive the
-    -- "openable lesson tile" signal in Lessons.tsx:209. Phase 2 will replace
+    -- "openable lesson tile" signal in Lessons.tsx:207. Phase 2 will replace
     -- this with a "has bespoke page" signal once every lesson has one.
     select l.id as lesson_id, true as has_blocks
     from indonesian.lessons l
@@ -583,7 +586,7 @@ Update the surrounding comment block (lines 1690-1702) to reflect the new approa
 -- instead of unnesting lesson_page_blocks.source_refs[]. Return shape is
 -- byte-identical to the previous version — has_page_blocks stays as a
 -- narrow probe against lesson_page_blocks to drive the "openable" tile
--- signal in Lessons.tsx:209 (Phase 2 will replace it).
+-- signal in Lessons.tsx:207 (Phase 2 will replace it).
 --
 -- Idempotent. DROP FUNCTION first because CREATE OR REPLACE cannot change
 -- a function's RETURNS TABLE shape (even when it doesn't, drop+create is
@@ -782,7 +785,7 @@ learning_capabilities directly on lesson_id (ADR 0006) instead of
 unnesting lesson_page_blocks.source_refs[]. Return signature is
 byte-identical — has_page_blocks stays as a narrow EXISTS probe against
 lesson_page_blocks to drive the "openable" lesson tile signal in
-Lessons.tsx:209. Phase 2 will replace that signal.
+Lessons.tsx:207. Phase 2 will replace that signal.
 
 Idempotent. Paper-trail snapshot at scripts/migrations/2026-05-20-lessons-overview-by-lesson-id.sql.
 
@@ -795,18 +798,22 @@ EOF
 
 ## Task 7: Rewire PracticeActions.tsx to query by lesson_id
 
+Post-PR-#79 fold, the lesson-domain methods (`getLessonPageBlocks`, `getLessonCapabilityPracticeSummary`, etc.) live in `src/lib/lessons/adapter.ts` and are re-exported via the `@/lib/lessons` barrel. Callers import them as bare functions. The new method goes in the same adapter file alongside the existing one.
+
 **Files:**
-- Modify: `src/services/lessonService.ts` (add new method)
-- Modify: `src/components/lessons/PracticeActions.tsx` (lines 25-35 approx — replace the fetch+flatten+summary chain)
-- Test: `src/services/__tests__/lessonService.test.ts` (or `src/__tests__/lessonService.test.ts`)
-- Test: `src/components/lessons/__tests__/PracticeActions.test.tsx` (create if absent)
+- Modify: `src/lib/lessons/adapter.ts` (add new method `getLessonCapabilityPracticeSummaryByLessonId` near the existing `getLessonCapabilityPracticeSummary` at line 244)
+- Modify: `src/lib/lessons/index.ts` (add the new method to the adapter re-export block at lines 65-77)
+- Modify: `src/components/lessons/PracticeActions.tsx` (lines 33-37 — replace the page-block fetch+flatten+summary chain; the bare-function import set at lines 6-13 gets the new name added and `getLessonPageBlocks` removed)
+- Test: `src/lib/lessons/__tests__/adapter.test.ts` (or co-located equivalent — confirm existing test location with `ls src/lib/lessons/__tests__/`)
+- Test: `src/components/lessons/__tests__/PracticeActions.test.tsx` (no test exists today; create)
 
-**Step 7.1: Add `getLessonCapabilityPracticeSummaryByLessonId` to the service**
+**Step 7.1: Add `getLessonCapabilityPracticeSummaryByLessonId` to the adapter**
 
-In `src/services/lessonService.ts`, append a new method alongside the existing `getLessonCapabilityPracticeSummary` (do NOT replace it — `Lesson.tsx:88` still uses the old one):
+In `src/lib/lessons/adapter.ts`, append a new exported function alongside the existing `getLessonCapabilityPracticeSummary` (line 244 onwards). Do NOT remove the old one — `Lesson.tsx:93` still calls it.
 
 ```ts
-async getLessonCapabilityPracticeSummaryByLessonId(
+// In src/lib/lessons/adapter.ts, alongside getLessonCapabilityPracticeSummary
+export async function getLessonCapabilityPracticeSummaryByLessonId(
   userId: string,
   lessonId: string,
 ): Promise<LessonCapabilityPracticeSummary> {
@@ -836,18 +843,21 @@ async getLessonCapabilityPracticeSummaryByLessonId(
   const activePracticedCapabilityCount = stateRows
     .filter(row => row.activation_state === 'active' && (row.review_count ?? 0) > 0).length
   return { readyCapabilityCount: capabilityIds.length, activePracticedCapabilityCount }
-},
+}
 ```
+
+Then re-export it from the barrel in `src/lib/lessons/index.ts`. The existing adapter re-export block is around lines 65-77; add `getLessonCapabilityPracticeSummaryByLessonId` to that list.
 
 **Step 7.2: Write a failing test for the new method**
 
+Find the existing adapter test (likely `src/lib/lessons/__tests__/adapter.test.ts`); follow the established mock pattern there.
+
 ```ts
 it('queries capability practice summary by lesson_id', async () => {
-  // Mock supabase to return 3 ready capabilities for lessonId='lesson-uuid-1';
-  // chunkedIn returns 2 rows: one active+reviewed, one active+not-reviewed.
-  const summary = await lessonService.getLessonCapabilityPracticeSummaryByLessonId(
-    'user-uuid', 'lesson-uuid-1',
-  )
+  // Mock the supabase chain via vi.mock('@/lib/supabase') to return 3 ready
+  // capabilities for lessonId='lesson-uuid-1'; learner_capability_state has 2 rows
+  // (one active+reviewed, one active+not-reviewed).
+  const summary = await getLessonCapabilityPracticeSummaryByLessonId('user-uuid', 'lesson-uuid-1')
   expect(summary).toEqual({
     readyCapabilityCount: 3,
     activePracticedCapabilityCount: 1,
@@ -855,36 +865,82 @@ it('queries capability practice summary by lesson_id', async () => {
 })
 ```
 
-Run: `bun run test -- lessonService` → expected FAIL.
+Run: `bun run test -- lib/lessons` → expected FAIL.
 Implement Step 7.1 → re-run → expected PASS.
 
 **Step 7.3: Update PracticeActions.tsx**
 
-Replace the page-block-flattening fetch with the direct lesson_id call. The component already has access to the lesson row via props or context — pass `lessonId` instead of `canonicalSourceRef`.
+Replace the page-block-flattening chain at lines 33-37 with the direct lesson_id call. The component already has `lessonId` in scope (passed as a prop on line 17). Drop the `canonicalSourceRef` derivation at line 29 — no longer needed.
 
-Conceptual diff (exact line numbers depend on what changes earlier in the file):
+Concrete diff (line numbers from the current file):
 
 ```diff
-- const pageBlocks = await lessonService.getLessonPageBlocks(canonicalSourceRef).catch(() => [])
-- const refs = pageBlocks.flatMap(b => b.source_refs?.length ? b.source_refs : [b.source_ref]).filter(Boolean)
-- const summary = await lessonService.getLessonCapabilityPracticeSummary(userId, refs)
-+ const summary = await lessonService.getLessonCapabilityPracticeSummaryByLessonId(userId, lessonId)
+@@ src/components/lessons/PracticeActions.tsx @@
+ import {
+   isLessonActivated,
+   buildLessonPracticeActions,
+   getLesson,
+-  getLessonPageBlocks,
+-  getLessonCapabilityPracticeSummary,
++  getLessonCapabilityPracticeSummaryByLessonId,
+ } from '@/lib/lessons'
+   ...
+-        const canonicalSourceRef = `lesson-${lesson.order_index}`
+        ...
+-        const pageBlocks = await getLessonPageBlocks(canonicalSourceRef).catch(() => [])
+-        const refs = pageBlocks.flatMap(b => b.source_refs?.length ? b.source_refs : [b.source_ref]).filter(Boolean)
+-        const sourceRefs = refs.length > 0 ? [...new Set(refs)] : [canonicalSourceRef]
+-        const [summary, activated] = await Promise.all([
+-          getLessonCapabilityPracticeSummary(userId!, sourceRefs).catch(() => ({
++        const [summary, activated] = await Promise.all([
++          getLessonCapabilityPracticeSummaryByLessonId(userId!, lessonId).catch(() => ({
+            readyCapabilityCount: 0,
+            activePracticedCapabilityCount: 0,
+          })),
 ```
 
-If `lessonId` isn't already available in scope, thread it from the existing `lesson` prop / context.
+If the component currently fetches the `lesson` row only to derive `canonicalSourceRef`, that fetch may now be dead — verify before deleting. The `lesson` row may still be needed for other state (e.g. activation check); read the file once before pruning.
 
-**Step 7.4: Update tests for PracticeActions**
+**Step 7.4: Write tests for PracticeActions**
 
-Mock at the service layer, not the supabase chain — matches the established testing pattern per CLAUDE.md ("Testing layers" section and the `src/services/__tests__/` style).
+No `src/components/lessons/__tests__/PracticeActions.test.tsx` exists today. Create one. Mock the bare-function imports via `vi.mock('@/lib/lessons')`, per the project's service-layer mock pattern (CLAUDE.md "Testing layers" section).
 
 ```ts
+import { render, screen, waitFor } from '@testing-library/react'
+import { vi, describe, it, expect, beforeEach } from 'vitest'
+import { MemoryRouter } from 'react-router-dom'
+import { MantineProvider } from '@mantine/core'
+import { PracticeActions } from '../PracticeActions'
+
+vi.mock('@/lib/lessons')
+vi.mock('@/stores/authStore', () => ({
+  useAuthStore: (selector: any) => selector({ user: { id: 'user-uuid' } }),
+}))
+
+import {
+  getLessonCapabilityPracticeSummaryByLessonId,
+  getLessonPageBlocks,
+  isLessonActivated,
+  buildLessonPracticeActions,
+  getLesson,
+} from '@/lib/lessons'
+
+beforeEach(() => {
+  vi.mocked(isLessonActivated).mockResolvedValue(true)
+  vi.mocked(getLesson).mockResolvedValue({ id: 'lesson-abc', order_index: 4 } as any)
+  vi.mocked(buildLessonPracticeActions).mockReturnValue([])
+})
+
 it('fetches practice summary by lesson_id instead of page-block source_refs', async () => {
-  const spy = vi.spyOn(lessonService, 'getLessonCapabilityPracticeSummaryByLessonId')
-    .mockResolvedValue({ readyCapabilityCount: 5, activePracticedCapabilityCount: 2 })
-  const getPageBlocksSpy = vi.spyOn(lessonService, 'getLessonPageBlocks')
-  render(<PracticeActions lessonId="abc" userId="user" />)
-  await waitFor(() => expect(spy).toHaveBeenCalledWith('user', 'abc'))
-  expect(getPageBlocksSpy).not.toHaveBeenCalled()
+  vi.mocked(getLessonCapabilityPracticeSummaryByLessonId).mockResolvedValue({
+    readyCapabilityCount: 5,
+    activePracticedCapabilityCount: 2,
+  })
+  render(<MantineProvider><MemoryRouter><PracticeActions lessonId="lesson-abc" /></MemoryRouter></MantineProvider>)
+  await waitFor(() =>
+    expect(getLessonCapabilityPracticeSummaryByLessonId).toHaveBeenCalledWith('user-uuid', 'lesson-abc'),
+  )
+  expect(getLessonPageBlocks).not.toHaveBeenCalled()
 })
 ```
 
@@ -900,16 +956,20 @@ Expected: PASS.
 **Step 7.6: Commit**
 
 ```bash
-git add src/services/lessonService.ts \
-        src/components/lessons/PracticeActions.tsx
-git add -u src/services/__tests__/ src/components/lessons/__tests__/ 2>/dev/null || true
+git add src/lib/lessons/adapter.ts \
+        src/lib/lessons/index.ts \
+        src/components/lessons/PracticeActions.tsx \
+        src/lib/lessons/__tests__/ \
+        src/components/lessons/__tests__/PracticeActions.test.tsx
 git commit -m "$(cat <<'EOF'
 feat(lessons): query lesson capability practice summary by lesson_id
 
-PracticeActions no longer fetches lesson_page_blocks to flatten source_refs.
-It queries learning_capabilities directly by lesson_id (ADR 0006). The old
+Adds getLessonCapabilityPracticeSummaryByLessonId to lib/lessons/adapter.ts
+and re-exports from the @/lib/lessons barrel. PracticeActions no longer
+fetches lesson_page_blocks to flatten source_refs — queries
+learning_capabilities directly by lesson_id (ADR 0006). The old
 getLessonCapabilityPracticeSummary(sourceRefs[]) method is kept (still used
-by Lesson.tsx:88 in the legacy renderer code path).
+by Lesson.tsx:93 in the legacy renderer code path for lessons 4-9).
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 EOF
@@ -1262,7 +1322,7 @@ After PR merges, update frontmatter to `status: shipped` + `merged_at: 2026-05-<
 |---|---|---|
 | Capability counts diverge between old (source_ref-unnest) and new (lesson_id) join | Low | ADR 0006 enforces the constraint `source_kind in ('podcast_segment','podcast_phrase') OR lesson_id is not null` on `learning_capabilities` (`scripts/migration.sql:2052` — a CHECK constraint, not NOT NULL; functionally equivalent for our filter since podcast caps are excluded by `where c.lesson_id is not null` in the new RPC CTE). The parity probe in Step 6.6 catches any divergence empirically before merge. |
 | `has_page_blocks` semantic drift | None | Phase 1 preserves the exact same EXISTS probe against the unchanged `lesson_page_blocks` table. Lessons 1-9 still report `true`; lesson 10 reports `false`. |
-| Frontend deploys before RPC migration applies | Low | RPC return shape is byte-identical — old clients keep working. New `getLessonCapabilityPracticeSummaryByLessonId` method only runs from updated frontend code; old method `getLessonCapabilityPracticeSummary(sourceRefs)` is preserved for `Lesson.tsx:88`. |
+| Frontend deploys before RPC migration applies | Low | RPC return shape is byte-identical — old clients keep working. New `getLessonCapabilityPracticeSummaryByLessonId` method only runs from updated frontend code; old method `getLessonCapabilityPracticeSummary(sourceRefs)` is preserved for `Lesson.tsx:93` (legacy renderer code path used by lessons 4–9). |
 | RPC migration applies before frontend deploys | None | Identical reasoning — return shape is byte-identical. |
 | `Session.tsx:44` page-block read causes a regression for lesson 10+ | None — gated | Phase 1 keeps `has_page_blocks=false` for lesson 10+; the Lesson tile shows "coming later"; the user cannot click into the lesson; Session.tsx's `lesson_practice` mode is unreachable. Phase 2 rewires Session.tsx alongside the bespoke page work. |
 | `check-capability-release-readiness.ts` regresses | Low | Task 8 rewires it; tests in Step 8.3 cover both 0-caps and N-caps cases. |
