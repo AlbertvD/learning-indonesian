@@ -15,7 +15,7 @@ export interface CapabilityReleaseReadinessArgs {
 export interface CapabilityReleaseReadinessInput {
   sourceRef: string
   contentUnits: number
-  lessonPageBlocks: number
+  readyPublishedCapabilityCount: number
   scopedCapabilityKeys: string[]
   capabilities: CapabilityStatusRow[]
   capabilityArtifacts: number
@@ -28,7 +28,7 @@ export interface CapabilityReleaseReadinessReport {
   warnings: string[]
   counts: {
     contentUnits: number
-    lessonPageBlocks: number
+    readyPublishedCapabilityCount: number
     scopedCapabilityKeys: number
     readyPublishedCapabilities: number
     draftOrUnknownCapabilities: number
@@ -88,7 +88,7 @@ export function summarizeCapabilityReleaseReadiness(
   const warnings: string[] = []
 
   if (input.contentUnits === 0) blockers.push(`No content units are published for ${input.sourceRef}.`)
-  if (input.lessonPageBlocks === 0) blockers.push(`No lesson page blocks are published for ${input.sourceRef}.`)
+  if (input.readyPublishedCapabilityCount === 0) blockers.push(`No published, ready capabilities for ${input.sourceRef}.`)
   if (input.scopedCapabilityKeys.length === 0) blockers.push(`No capability keys are linked to ${input.sourceRef}.`)
   if (missingCapabilityKeys.length > 0) blockers.push(`Missing capability rows for lesson-scoped keys: ${missingCapabilityKeys.join(', ')}`)
   if (readyPublishedCapabilities === 0) blockers.push('No ready/published capabilities are available for capability sessions.')
@@ -101,7 +101,7 @@ export function summarizeCapabilityReleaseReadiness(
     warnings,
     counts: {
       contentUnits: input.contentUnits,
-      lessonPageBlocks: input.lessonPageBlocks,
+      readyPublishedCapabilityCount: input.readyPublishedCapabilityCount,
       scopedCapabilityKeys: input.scopedCapabilityKeys.length,
       readyPublishedCapabilities,
       draftOrUnknownCapabilities,
@@ -142,11 +142,20 @@ async function loadReadinessInput(args: CapabilityReleaseReadinessArgs): Promise
     .maybeSingle()
   if (lessonErr) throw lessonErr
 
-  const { data: lessonPageBlocks, error: blocksError } = await db()
-    .from('lesson_page_blocks')
-    .select('block_key')
-    .eq('source_ref', args.sourceRef)
-  if (blocksError) throw blocksError
+  // Phase 1 of retiring lesson_page_blocks (2026-05-20): the release gate used
+  // to assert "page blocks exist" as a proxy for "shippable". It now checks
+  // that learning_capabilities has at least one ready+published row for the
+  // lesson (ADR 0006) — strictly more correct since a lesson with page blocks
+  // but no ready caps was never actually shippable. Reuses the lessonRow
+  // lookup above (no second `.from('lessons')` round-trip).
+  const readyPublishedCapabilityCount = lessonRow
+    ? await countRows(db()
+        .from('learning_capabilities')
+        .select('id', { count: 'exact', head: true })
+        .eq('lesson_id', lessonRow.id)
+        .eq('readiness_status', 'ready')
+        .eq('publication_status', 'published'))
+    : 0
 
   const lessonCapabilityRows = lessonRow
     ? await db()
@@ -191,7 +200,7 @@ async function loadReadinessInput(args: CapabilityReleaseReadinessArgs): Promise
   return {
     sourceRef: args.sourceRef,
     contentUnits: contentUnitIds.length,
-    lessonPageBlocks: (lessonPageBlocks ?? []).length,
+    readyPublishedCapabilityCount,
     scopedCapabilityKeys,
     capabilities: capabilityRows,
     capabilityArtifacts,
