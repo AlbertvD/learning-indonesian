@@ -60,7 +60,7 @@ After committing the fix to `homelab-configs`, apply it to the live container ma
 ## Makefile Commands
 - **Development:** `make dev`, `make build`, `make lint`, `make typecheck`.
 - **Testing:** `make test`, `make test-watch`.
-- **Database:** `make migrate`, `make seed-lessons`, `make seed-vocabulary`, `make seed-podcasts`, `make seed-flashcards`, `make seed-all`, `make extract-lesson`.
+- **Database:** `make migrate`, `make seed-lessons`, `make seed-vocabulary`, `make seed-podcasts`, `make seed-all`, `make extract-lesson`.
 - **Docker:** `make docker-build`, `make docker-run`.
 
 ## Coding Standards

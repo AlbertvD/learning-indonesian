@@ -234,7 +234,6 @@ For shared infrastructure not tied to a specific lesson:
 
 ```bash
 make seed-podcasts    SUPABASE_SERVICE_KEY=<key>   # podcast audio + transcripts
-make seed-flashcards  SUPABASE_SERVICE_KEY=<key>   # public decks
 make seed-all         SUPABASE_SERVICE_KEY=<key>   # legacy lessons + vocabulary
 ```
 

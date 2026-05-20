@@ -101,11 +101,6 @@ seed-lesson-audio: ## Upload lesson audio files from content/lessons/ to indones
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
 	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-lesson-audio.ts
 
-.PHONY: seed-flashcards
-seed-flashcards: ## Seed public flashcard decks from lesson vocabulary (requires SUPABASE_SERVICE_KEY)
-	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
-	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-flashcards.ts
-
 .PHONY: seed-learning-items
 seed-learning-items: ## Seed learning items from data files (requires SUPABASE_SERVICE_KEY)
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
