@@ -204,10 +204,10 @@ export interface CapabilityArtifactInput {
 export async function upsertCapabilityArtifacts(
   supabase: CapabilitySupabaseClient,
   artifacts: CapabilityArtifactInput[],
-): Promise<number> {
-  let count = 0
+): Promise<string[]> {
+  const ids: string[] = []
   for (const artifact of artifacts) {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .schema('indonesian')
       .from('capability_artifacts')
       .upsert({
@@ -219,10 +219,12 @@ export async function upsertCapabilityArtifacts(
         artifact_fingerprint: artifact.artifact_fingerprint,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'capability_id,artifact_kind,artifact_fingerprint' })
+      .select('id')
+      .single()
     if (error) throw error
-    count++
+    if (data?.id) ids.push(data.id as string)
   }
-  return count
+  return ids
 }
 
 // ---------------------------------------------------------------------------
@@ -471,8 +473,8 @@ export interface GrammarExerciseVariantInput {
 export async function insertExerciseVariantGrammar(
   supabase: CapabilitySupabaseClient,
   variant: GrammarExerciseVariantInput,
-): Promise<{ ok: boolean; error?: string }> {
-  const { error } = await supabase
+): Promise<{ ok: boolean; id?: string; error?: string }> {
+  const { data, error } = await supabase
     .schema('indonesian')
     .from('exercise_variants')
     .insert({
@@ -483,8 +485,10 @@ export async function insertExerciseVariantGrammar(
       answer_key_json: variant.answer_key_json,
       is_active: true,
     })
+    .select('id')
+    .single()
   if (error) return { ok: false, error: error.message }
-  return { ok: true }
+  return { ok: true, id: (data?.id as string | undefined) ?? undefined }
 }
 
 export interface VocabExerciseVariantInput {
@@ -498,8 +502,8 @@ export interface VocabExerciseVariantInput {
 export async function insertExerciseVariantVocab(
   supabase: CapabilitySupabaseClient,
   variant: VocabExerciseVariantInput,
-): Promise<{ ok: boolean; error?: string }> {
-  const { error } = await supabase
+): Promise<{ ok: boolean; id?: string; error?: string }> {
+  const { data, error } = await supabase
     .schema('indonesian')
     .from('exercise_variants')
     .insert({
@@ -510,8 +514,10 @@ export async function insertExerciseVariantVocab(
       answer_key_json: variant.answer_key_json,
       is_active: true,
     })
+    .select('id')
+    .single()
   if (error) return { ok: false, error: error.message }
-  return { ok: true }
+  return { ok: true, id: (data?.id as string | undefined) ?? undefined }
 }
 
 export async function findContextIdBySourceText(

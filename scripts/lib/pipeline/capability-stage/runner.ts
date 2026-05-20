@@ -454,7 +454,8 @@ export async function runCapabilityStage(
       artifact_fingerprint: asset.asset_key,
     })
   }
-  counts.capabilityArtifacts = await upsertCapabilityArtifacts(supabase, artifactInputs)
+  const capabilityArtifactIds = await upsertCapabilityArtifacts(supabase, artifactInputs)
+  counts.capabilityArtifacts = capabilityArtifactIds.length
 
   // ---- 8. Write — grammar_patterns (PGRST205 fallback preserved). ------
   const grammarPatternUpsert = await upsertGrammarPatterns(supabase, grammar.grammarPatterns)
@@ -483,7 +484,7 @@ export async function runCapabilityStage(
   const patternIdsBySlug = grammarPatternUpsert.tableMissing
     ? new Map<string, string>()
     : await fetchGrammarPatternIdsBySlug(supabase)
-  let exerciseVariantsLanded = 0
+  const exerciseVariantIds: string[] = []
   for (const variant of grammar.exerciseVariants) {
     if (variant.kind === 'grammar') {
       const grammarPatternId = variant.grammarPatternSlug
@@ -497,7 +498,7 @@ export async function runCapabilityStage(
         payload_json: variant.payload_json,
         answer_key_json: variant.answer_key_json,
       })
-      if (result.ok) exerciseVariantsLanded++
+      if (result.ok && result.id) exerciseVariantIds.push(result.id)
     } else {
       const contextId = await findContextIdBySourceText(supabase, variant.sourceText)
       if (!contextId) continue
@@ -511,9 +512,10 @@ export async function runCapabilityStage(
         payload_json: variant.payload_json,
         answer_key_json: variant.answer_key_json,
       })
-      if (result.ok) exerciseVariantsLanded++
+      if (result.ok && result.id) exerciseVariantIds.push(result.id)
     }
   }
+  const exerciseVariantsLanded = exerciseVariantIds.length
   counts.exerciseVariants = exerciseVariantsLanded
 
   // Staging write-back #1 — mirror legacy 712–722. After exercise_variants
@@ -562,9 +564,9 @@ export async function runCapabilityStage(
   findings.push(...await runContentNonEmpty(supabase, {
     contentUnitIds,
     capabilityIds,
-    capabilityArtifactIds: [],
+    capabilityArtifactIds,
     learningItemIds: publishedItemIds,
-    exerciseVariantIds: [],
+    exerciseVariantIds,
     grammarPatternIds: [...grammarPatternUpsert.idsBySlug.values()],
   }))
   const integrityReport = await runSeedIntegrity(supabase, {

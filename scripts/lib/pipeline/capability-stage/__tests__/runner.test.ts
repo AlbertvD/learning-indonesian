@@ -90,7 +90,14 @@ function buildSupabaseMock(opts: {
       },
       insert: (payload: Record<string, unknown>) => {
         recorder.inserts.push({ table, payload })
-        return Promise.resolve({ error: null, data: { id: idGen(table) } })
+        const id = idGen(table)
+        return {
+          select: () => ({
+            single: async () => ({ data: { id }, error: null }),
+          }),
+          then: (resolve: (v: { error: null; data: { id: string } }) => unknown) =>
+            resolve({ error: null, data: { id } }),
+        }
       },
       delete: () => ({
         eq: async () => {
