@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom'
 import { IconPlayerPlay, IconRotateClockwise } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
 import { isLessonActivated } from '@/lib/lessons/activation'
-import { lessonService } from '@/services/lessonService'
 import { buildLessonPracticeActions } from '@/lib/lessons/lessonActionModel'
+import { lessonService } from '@/services/lessonService'
 import { logError } from '@/lib/logger'
 
 // Renders the two practice CTAs ("Practice this lesson · N ready" + "Review")

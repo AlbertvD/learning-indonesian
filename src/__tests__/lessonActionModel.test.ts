@@ -28,7 +28,7 @@ describe('buildLessonPracticeActions', () => {
     expect(actions).toEqual([
       {
         kind: 'practice',
-        label: 'Practice this lesson · 8 ready',
+        label: 'Oefen deze les · 8 klaar',
         href: '/session?lesson=lesson-4&mode=lesson_practice',
         priority: 'primary',
       },
@@ -48,7 +48,7 @@ describe('buildLessonPracticeActions', () => {
     expect(actions).toEqual([
       {
         kind: 'review',
-        label: 'Review this lesson',
+        label: 'Herhaal deze les',
         href: '/session?lesson=lesson-4&mode=lesson_review',
         priority: 'primary',
       },
@@ -68,13 +68,13 @@ describe('buildLessonPracticeActions', () => {
     expect(actions).toEqual([
       {
         kind: 'practice',
-        label: 'Practice this lesson · 3 ready',
+        label: 'Oefen deze les · 3 klaar',
         href: '/session?lesson=lesson-4&mode=lesson_practice',
         priority: 'primary',
       },
       {
         kind: 'review',
-        label: 'Review this lesson',
+        label: 'Herhaal deze les',
         href: '/session?lesson=lesson-4&mode=lesson_review',
         priority: 'secondary',
       },

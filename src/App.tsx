@@ -29,6 +29,8 @@ const PageLab = lazy(() => import('@/pages/admin/PageLab').then(m => ({ default:
 // pages/lessons/registry.ts and LessonRouter). These /lesson-preview/<N>
 // routes stay as stable explicit URLs for in-progress design work.
 const Lesson1Bespoke = lazy(() => import('@/pages/lessons/lesson-1/Page'))
+const Lesson2Bespoke = lazy(() => import('@/pages/lessons/lesson-2/Page'))
+const Lesson3Bespoke = lazy(() => import('@/pages/lessons/lesson-3/Page'))
 
 function LazyPage({ children }: { children: React.ReactNode }) {
   return (
@@ -86,6 +88,22 @@ function App() {
           element={
             <ProtectedRoute>
               <LazyPage><Lesson1Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/2"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson2Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/3"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson3Bespoke /></LazyPage>
             </ProtectedRoute>
           }
         />
