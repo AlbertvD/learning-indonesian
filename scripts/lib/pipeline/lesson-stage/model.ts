@@ -24,7 +24,6 @@ export interface LessonStageOutput {
   lesson: { id: string; orderIndex: number; title: string }
   counts: {
     sections: number
-    pageBlocks: number
     audioClipsSynthesised: number
     audioClipsReused: number
   }

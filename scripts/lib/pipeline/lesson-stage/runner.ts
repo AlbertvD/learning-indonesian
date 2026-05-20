@@ -7,18 +7,13 @@ import type {
   LessonStageOutput,
   ValidationFinding,
 } from './model'
-import { validateBlockKind } from './validators/blockKind'
-import { validatePayloadAudio } from './validators/payloadAudio'
 import { validateLessonVoices } from './validators/lessonVoices'
 import { validateSectionType } from './validators/sectionType'
 import { validatePerItem } from './validators/perItem'
 import { validateGrammarTopics } from './validators/grammarTopics'
-import { classifyBlockKind, type LegacyBlockKind } from './classifier'
 import {
   upsertLesson,
   upsertLessonSections,
-  upsertLessonPageBlocks,
-  type PageBlockInput,
 } from './adapter'
 import { ensureLessonAudio } from './audio'
 import {
@@ -45,26 +40,8 @@ interface LessonStaging {
   sections: Array<{ title: string; content: Record<string, unknown>; order_index: number }>
 }
 
-interface PageBlockStaging {
-  block_key: string
-  source_ref: string
-  source_refs?: string[]
-  content_unit_slugs?: string[]
-  block_kind: string
-  display_order: number
-  payload_json?: Record<string, unknown>
-}
-
-interface PatternStaging {
-  slug: string
-  pattern_name: string
-  complexity_score: number
-}
-
 interface StagingBundle {
   lesson: LessonStaging
-  pageBlocks: PageBlockStaging[]
-  grammarPatterns: PatternStaging[]
 }
 
 const RUNNER_INTERNALS = {
@@ -158,7 +135,6 @@ export async function runLessonStage(
   // GT7 (grammar pattern shape) remains in capability-stage (CS6) since
   // grammar_patterns is capability-stage's territory.
   findings.push(...validateGrammarTopics(staging.lesson.sections))
-  findings.push(...validatePayloadAudio(staging.pageBlocks))
   // Pass through raw staging values (undefined when staging omits the field)
   // so GT4 can distinguish "not configured in staging — orchestrator handles
   // it" from "explicitly provided but null/empty — broken authoring".
@@ -174,28 +150,12 @@ export async function runLessonStage(
   findings.push(...validateSectionType(staging.lesson.sections))
   findings.push(...validatePerItem(staging.lesson.sections))
 
-  // GT2 runs AFTER classification — classify first, then validate.
-  const classifiedBlocks: PageBlockInput[] = staging.pageBlocks.map((block) => ({
-    block_key: block.block_key,
-    source_ref: block.source_ref,
-    source_refs: block.source_refs ?? [block.source_ref],
-    content_unit_slugs: block.content_unit_slugs ?? [],
-    block_kind: classifyBlockKind({
-      legacyKind: block.block_kind as LegacyBlockKind,
-      payloadType: (block.payload_json?.type as PageBlockInput['block_kind']) ?? undefined,
-      contentUnitSlugs: block.content_unit_slugs ?? [],
-    }),
-    display_order: block.display_order,
-    payload_json: block.payload_json ?? {},
-  }))
-  findings.push(...validateBlockKind(classifiedBlocks))
-
   const errors = findings.filter((f) => f.severity === 'error')
   if (errors.length > 0) {
     return {
       status: 'validation_failed',
       lesson: { id: '', orderIndex: staging.lesson.order_index, title: staging.lesson.title },
-      counts: { sections: 0, pageBlocks: 0, audioClipsSynthesised: 0, audioClipsReused: 0 },
+      counts: { sections: 0, audioClipsSynthesised: 0, audioClipsReused: 0 },
       findings,
       durationMs: Date.now() - start,
     }
@@ -207,7 +167,6 @@ export async function runLessonStage(
       lesson: { id: '', orderIndex: staging.lesson.order_index, title: staging.lesson.title },
       counts: {
         sections: staging.lesson.sections.length,
-        pageBlocks: classifiedBlocks.length,
         audioClipsSynthesised: 0,
         audioClipsReused: 0,
       },
@@ -227,7 +186,6 @@ export async function runLessonStage(
   })
 
   const sectionCount = await upsertLessonSections(supabase, lesson.id, staging.lesson.sections)
-  const pageBlockCount = await upsertLessonPageBlocks(supabase, classifiedBlocks)
 
   // Collect audio texts AFTER the lesson row + voices are persisted, since
   // ensureLessonAudio re-runs setLessonVoicesForLesson which reads the row.
@@ -247,7 +205,6 @@ export async function runLessonStage(
     lesson,
     counts: {
       sections: sectionCount,
-      pageBlocks: pageBlockCount,
       audioClipsSynthesised: audio.synthesised,
       audioClipsReused: audio.reused,
     },
@@ -314,14 +271,7 @@ async function loadStaging(lessonNumber: number): Promise<StagingBundle> {
   )) ?? null
   if (!lesson) throw new Error(`scripts/data/staging/lesson-${lessonNumber}/lesson.ts is empty or unreadable`)
 
-  const grammarPatterns =
-    (await readStagingExport<PatternStaging[]>(path.join(stagingDir, 'grammar-patterns.ts'))) ?? []
-  const pageBlocks =
-    (await readStagingExport<PageBlockStaging[]>(
-      path.join(stagingDir, 'lesson-page-blocks.ts'),
-    )) ?? []
-
-  return { lesson, grammarPatterns, pageBlocks }
+  return { lesson }
 }
 
 async function readStagingExport<T>(filePath: string): Promise<T | null> {

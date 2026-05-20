@@ -14,8 +14,6 @@ import { runLessonStage, collectLessonPageTexts } from '../runner'
 
 interface StagingBundle {
   lesson: any
-  pageBlocks: any[]
-  grammarPatterns: any[]
 }
 
 function buildSyntheticStaging(): StagingBundle {
@@ -58,31 +56,6 @@ function buildSyntheticStaging(): StagingBundle {
         },
       ],
     },
-    grammarPatterns: [
-      { slug: 'ada-existential', pattern_name: 'ADA — existential', complexity_score: 2 },
-    ],
-    pageBlocks: [
-      {
-        block_key: 'b1',
-        source_ref: 'lesson-99',
-        source_refs: ['lesson-99'],
-        content_unit_slugs: [],
-        block_kind: 'hero',
-        display_order: 0,
-        payload_json: { type: 'text', paragraphs: ['Welcome'] },
-        capability_key_refs: [],
-      },
-      {
-        block_key: 'b2',
-        source_ref: 'lesson-99',
-        source_refs: ['lesson-99'],
-        content_unit_slugs: [],
-        block_kind: 'section',
-        display_order: 1,
-        payload_json: { type: 'dialogue' },
-        capability_key_refs: [],
-      },
-    ],
   }
 }
 
@@ -159,7 +132,25 @@ function buildSupabaseMock(opts: {
 }
 
 describe('runLessonStage — synthetic fixture', () => {
-  it('runs all 7 validators, classifies blocks, writes via adapter, returns ok', async () => {
+  it('runs Stage A cleanly with no page-block or grammar-pattern reads (Phase 1: pipeline does not produce page blocks)', async () => {
+    const staging = buildSyntheticStaging()
+    // Phase 1: staging no longer carries pageBlocks or grammarPatterns —
+    // simulate that by passing a lesson-only bundle to loadStaging.
+    const { client, recorder } = buildSupabaseMock({})
+    const result = await runLessonStage(
+      { lessonNumber: 99 },
+      {
+        loadStaging: async () => ({ lesson: staging.lesson } as any),
+        createSupabaseClient: () => client,
+        synthesizer: async () => Buffer.from('audio-bytes'),
+      },
+    )
+    expect(result.status).toBe('ok')
+    expect((result.counts as { pageBlocks?: number }).pageBlocks).toBeUndefined()
+    expect(recorder.upserts.filter((u) => u.table === 'lesson_page_blocks')).toEqual([])
+  })
+
+  it('runs all validators and writes lesson + sections via adapter, returns ok', async () => {
     const staging = buildSyntheticStaging()
     const { client, recorder } = buildSupabaseMock({})
 
@@ -173,18 +164,12 @@ describe('runLessonStage — synthetic fixture', () => {
     )
 
     expect(result.status).toBe('ok')
-    // Lesson + sections + page-blocks all written.
+    // Lesson + sections written (page-blocks no longer produced — Phase 1).
     expect(recorder.inserts.find((i) => i.table === 'lessons')).toBeDefined()
     expect(recorder.upserts.filter((u) => u.table === 'lesson_sections')).toHaveLength(3)
-    expect(recorder.upserts.filter((u) => u.table === 'lesson_page_blocks')).toHaveLength(2)
-    // page-block kinds got classified to canonical 7-value set.
-    const blockKinds = recorder.upserts
-      .filter((u) => u.table === 'lesson_page_blocks')
-      .map((u) => u.payload.block_kind)
-    expect(blockKinds.sort()).toEqual(['dialogue_card', 'lesson_hero'])
+    expect(recorder.upserts.filter((u) => u.table === 'lesson_page_blocks')).toEqual([])
     // Counts match.
     expect(result.counts.sections).toBe(3)
-    expect(result.counts.pageBlocks).toBe(2)
     // Findings has only warnings (no errors).
     expect(result.findings.every((f) => f.severity !== 'error')).toBe(true)
   })
@@ -280,23 +265,10 @@ describe('runLessonStage — synthetic fixture', () => {
     )
     expect(result.status).toBe('ok')
     expect(result.counts.sections).toBe(3)
-    expect(result.counts.pageBlocks).toBe(2)
     expect(result.counts.audioClipsSynthesised).toBe(0)
     expect(recorder.inserts).toEqual([])
     expect(recorder.upserts).toEqual([])
     expect(recorder.rpcCalls).toEqual([])
-  })
-
-  it('payload audioUrl in a page-block surfaces a GT3 error', async () => {
-    const staging = buildSyntheticStaging()
-    staging.pageBlocks[0].payload_json = { type: 'text', audioUrl: 'tts/x.mp3' }
-    const { client } = buildSupabaseMock({})
-    const result = await runLessonStage(
-      { lessonNumber: 99 },
-      { loadStaging: async () => staging, createSupabaseClient: () => client },
-    )
-    expect(result.status).toBe('validation_failed')
-    expect(result.findings.some((f) => f.gate === 'GT3' && f.severity === 'error')).toBe(true)
   })
 
   it('missing dialogue voice triggers GT4 error', async () => {
