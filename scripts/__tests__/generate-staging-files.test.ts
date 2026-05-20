@@ -1,3 +1,7 @@
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+
 import { describe, expect, it } from 'vitest'
 import {
   canUseCatalogForGeneration,
@@ -222,5 +226,40 @@ export { lesson } from './lesson'
 export { affixedFormPairs } from './morphology-patterns'
 export { candidates } from './candidates'
 `)).toContain("export { affixedFormPairs } from './morphology-patterns'\nexport { candidates } from './candidates'")
+  })
+
+  it('omits workflow exports for derived files that do not yet exist on disk', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'staging-'))
+    try {
+      // Touch only the source + early-workflow files; leave derived ones absent.
+      for (const f of ['lesson.ts', 'learning-items.ts', 'grammar-patterns.ts', 'candidates.ts', 'cloze-contexts.ts']) {
+        fs.writeFileSync(path.join(dir, f), '')
+      }
+      const out = generateIndexTs('', dir)
+      expect(out).toContain("export { lesson } from './lesson'")
+      expect(out).toContain("export { candidates } from './candidates'")
+      expect(out).not.toContain("export { contentUnits } from './content-units'")
+      expect(out).not.toContain("export { capabilities } from './capabilities'")
+      expect(out).not.toContain("export { lessonPageBlocks } from './lesson-page-blocks'")
+      expect(out).not.toContain("export { exerciseAssets } from './exercise-assets'")
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true })
+    }
+  })
+
+  it('includes workflow exports once their derived files exist', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'staging-'))
+    try {
+      for (const f of ['lesson.ts', 'learning-items.ts', 'grammar-patterns.ts', 'candidates.ts', 'cloze-contexts.ts', 'content-units.ts', 'capabilities.ts', 'lesson-page-blocks.ts', 'exercise-assets.ts']) {
+        fs.writeFileSync(path.join(dir, f), '')
+      }
+      const out = generateIndexTs('', dir)
+      expect(out).toContain("export { contentUnits } from './content-units'")
+      expect(out).toContain("export { capabilities } from './capabilities'")
+      expect(out).toContain("export { lessonPageBlocks } from './lesson-page-blocks'")
+      expect(out).toContain("export { exerciseAssets } from './exercise-assets'")
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true })
+    }
   })
 })

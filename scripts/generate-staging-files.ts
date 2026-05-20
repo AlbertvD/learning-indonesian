@@ -386,7 +386,7 @@ function exportPath(line: string): string | null {
   return line.match(/\sfrom\s['"](.+)['"]/)?.[1] ?? null
 }
 
-export function generateIndexTs(existingContent = ''): string {
+export function generateIndexTs(existingContent = '', stagingDir?: string): string {
   const standardPaths = new Set([...sourceIndexExports, ...workflowIndexExports].map(exportPath).filter(Boolean))
   const customExports = existingContent
     .split(/\r?\n/)
@@ -397,7 +397,21 @@ export function generateIndexTs(existingContent = ''): string {
       return pathRef && !standardPaths.has(pathRef)
     })
 
-  return [...sourceIndexExports, ...customExports, ...workflowIndexExports].join('\n') + '\n'
+  // Derived workflow files (content-units.ts, capabilities.ts,
+  // exercise-assets.ts, lesson-page-blocks.ts) are produced by the
+  // capability-stage runner at publish time. Pre-publish their files do not
+  // exist, so re-exporting them yields unresolvable imports. Filter the
+  // workflow set by file existence when stagingDir is provided.
+  const workflowReady = stagingDir
+    ? workflowIndexExports.filter(line => {
+        const ref = exportPath(line)
+        if (!ref) return false
+        const filename = ref.replace(/^\.\//, '') + '.ts'
+        return fs.existsSync(path.join(stagingDir, filename))
+      })
+    : workflowIndexExports
+
+  return [...sourceIndexExports, ...customExports, ...workflowReady].join('\n') + '\n'
 }
 
 async function readExistingExport(filePath: string): Promise<any> {
@@ -549,7 +563,7 @@ async function main() {
   writeFile(path.join(stagingDir, 'exercise-assets.ts'), tsExport('exerciseAssets', capabilityPlan.exerciseAssets), 'exercise-assets.ts', dryRun)
   const indexPath = path.join(stagingDir, 'index.ts')
   const existingIndexContent = fs.existsSync(indexPath) ? fs.readFileSync(indexPath, 'utf-8') : ''
-  writeFile(indexPath, generateIndexTs(existingIndexContent), 'index.ts', dryRun)
+  writeFile(indexPath, generateIndexTs(existingIndexContent, stagingDir), 'index.ts', dryRun)
 
   const rawSections = useCatalog && !usingCuratedLesson
     ? catalog.sections.filter(section => ['grammar', 'exercises', 'pronunciation', 'reference_table'].includes(section.type))
