@@ -268,6 +268,26 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
     expect(recorder.inserts).toEqual([])
   })
 
+  it('does not regenerate lesson-page-blocks.ts (Phase 1: pipeline does not produce page blocks)', async () => {
+    const writes: string[] = []
+    const spy = vi.spyOn(fs, 'writeFileSync').mockImplementation((p: fs.PathOrFileDescriptor) => {
+      writes.push(String(p))
+    })
+    try {
+      const { client } = buildSupabaseMock({})
+      await runCapabilityStage(
+        { lessonNumber: 1, lessonId: 'lesson-uuid' },
+        {
+          loadLesson: async () => makeSynthLesson({ stagingDir: tmpStagingDir }),
+          createSupabaseClient: () => client as never,
+        },
+      )
+    } finally {
+      spy.mockRestore()
+    }
+    expect(writes.find((w) => w.endsWith('lesson-page-blocks.ts'))).toBeUndefined()
+  })
+
   it('regenerates content-unit snapshots from enriched learning items so the upsert sees post-enrichment data', async () => {
     // Set up: staging has a learning item with empty translation_en and a stale
     // snapshot (contentUnits) that pre-dates enrichment — translationEn is empty.
