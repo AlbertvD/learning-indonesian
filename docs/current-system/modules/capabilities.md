@@ -1,7 +1,7 @@
 ---
 module: capabilities
 surface: src/lib/capabilities/
-last_verified_against_code: 2026-05-18
+last_verified_against_code: 2026-05-20
 inbound_port: src/lib/capabilities/index.ts
 status: stable
 ---
@@ -10,7 +10,7 @@ status: stable
 
 **Surface:** `src/lib/capabilities/`. Inbound port: `index.ts` — all `src/` production callers import from `@/lib/capabilities`. Internal files remain importable from their paths for tests and for sibling files inside the module.
 
-**Files (9):**
+**Files (8):**
 
 | File | LOC | Role |
 |---|---|---|
@@ -20,14 +20,13 @@ status: stable
 | `capabilityContracts.ts` | 159 | `validateCapability(input)` — derives `CapabilityReadiness` from `RENDER_CONTRACTS` + the cap's projected `requiredArtifacts` + the artifact index. `isExposureOnly(cap)` for podcast caps. `validateCapabilities` for aggregate health. |
 | **`renderContracts.ts`** | 333 | **The shared render contract** — `RENDER_CONTRACTS`, `ContractInputShapes`, `BuilderInputFor<T>`, `projectBuilderInput<T>()`, plus inverted-lookup helpers (`exerciseTypesForCapability`, `requiredArtifactsFor`, `supportsSourceKind`). Sole source of truth for (a) which exercise types each cap_type is ready for, (b) which builder the resolver dispatches to, (c) what inputs each builder is guaranteed to receive. |
 | `artifactRegistry.ts` | 49 | `hasApprovedArtifact(...)` — quality + scope check (capabilityKey OR sourceRef must match). The exhaustive `ARTIFACT_KINDS` array (`as const satisfies readonly ArtifactKind[]`). |
-| `capabilityScheduler.ts` | 76 | `getDueCapabilities(...)` + `getDueCapabilitiesFromRows(...)` — date+flag filter, no FSRS math (FSRS lives server-side per ADR 0003). |
 | `canonicalKey.ts` | 40 | `buildCanonicalKey(input)` — encodes a `ProjectedCapability` into its stable canonical key. `normalizeLessonSourceRef` for legacy lesson-source-ref shapes. |
 | `itemSlug.ts` | 25 | `itemSlug(base_text)` — canonical slug derivation extracted in PR #59 to fix the silent slug-divergence bug class (~113 multi-word items unreachable). |
 
 **Consumers (production):** all `src/` callers import from `@/lib/capabilities` (the barrel). Scripts continue to use relative paths into specific files until they are migrated.
 
-- `src/lib/session-builder/adapter.ts` — calls `validateCapability` per row to project readiness; pulls `getDueCapabilitiesFromRows` + most projection types.
-- `src/lib/session-builder/builder.ts` — pulls `getDueCapabilities`, scheduler types, `CapabilityReadiness`, `ProjectedCapability`.
+- `src/lib/session-builder/adapter.ts` — calls `validateCapability` per row to project readiness; pulls most projection types.
+- `src/lib/session-builder/builder.ts` — pulls `CapabilityReadiness`, `ProjectedCapability`.
 - `src/lib/session-builder/pedagogy.ts`, `labels.ts` — pull `CapabilityType` / `CapabilitySourceKind` for planner + display labels.
 - `src/lib/mastery/masteryModel.ts` — pulls cap_type / source_kind / artifact types for the mastery-labelling rules.
 - `src/lib/exercises/builders/index.ts` — calls `projectBuilderInput` to narrow raw input before dispatching to typed builders.
@@ -79,10 +78,6 @@ Three responsibilities:
 - `exerciseTypesForCapability(capabilityType): readonly ExerciseType[]` — `renderContracts.ts:107`. Inverted lookup.
 - `requiredArtifactsFor(exerciseType): readonly ArtifactKind[]` — `renderContracts.ts:113`.
 - `supportsSourceKind(exerciseType, sourceKind): boolean` — `renderContracts.ts:117`.
-
-**Scheduling (no FSRS math):**
-- `getDueCapabilities(request, adapter): Promise<DueCapability[]>` — `capabilityScheduler.ts:41`.
-- `getDueCapabilitiesFromRows(input): DueCapability[]` — `capabilityScheduler.ts:53`. Pure function.
 
 **Artifact registry:**
 - `hasApprovedArtifact({ index, kind, capabilityKey, sourceRef }): boolean` — `artifactRegistry.ts:39`.
@@ -224,7 +219,7 @@ BuilderResult  ({ kind: 'ok', exerciseItem, audibleTexts } | fail)
 
 - **Per-card rendering / React components.** Owned by `src/components/exercises/implementations/` (the 12 per-type renderers). See `docs/current-system/modules/experience.md` for the player's contract.
 
-- **FSRS scheduling math.** Server-side, ADR 0003. The capability scheduler here does only the date+flag filter; no SM-2 / FSRS math runs client-side.
+- **FSRS scheduling math.** Server-side, ADR 0003. Browser never computes FSRS; it reads `next_due_at` from `learner_capability_state`. The due-row filter that consumes that field lives in `src/lib/session-builder/dueFilter.ts` — see the session-builder module spec.
 
 - **Answer commits.** Server-side Edge Function (`supabase/functions/commit-capability-answer-report/index.ts`), ADR 0004 (atomic review commits).
 

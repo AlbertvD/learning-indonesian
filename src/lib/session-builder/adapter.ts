@@ -2,7 +2,6 @@ import { supabase } from '@/lib/supabase'
 import { chunkedIn } from '@/lib/chunkedQuery'
 import {
   CAPABILITY_PROJECTION_VERSION,
-  getDueCapabilitiesFromRows,
   validateCapability,
   type ArtifactIndex,
   type ArtifactKind,
@@ -12,10 +11,13 @@ import {
   type CapabilityReadiness,
   type CapabilitySourceKind,
   type CapabilityType,
-  type LearnerCapabilityStateRow,
   type LearnerLanguage,
   type ProjectedCapability,
 } from '@/lib/capabilities'
+import {
+  getDueCapabilitiesFromRows,
+  type LearnerCapabilityStateRow,
+} from './dueFilter'
 import type { PlannerCapability, PlannerLearnerCapabilityState } from '@/lib/session-builder/pedagogy'
 import type { CapabilitySessionDataAdapter, CapabilitySessionDataRequest, CapabilitySessionDataSnapshot } from '@/lib/session-builder/builder'
 import type { SkillType } from '@/types/learning'

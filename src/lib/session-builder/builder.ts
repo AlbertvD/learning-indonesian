@@ -1,11 +1,13 @@
 import {
-  getDueCapabilities,
   type ArtifactIndex,
   type CapabilityReadiness,
-  type CapabilitySchedulerReadAdapter,
-  type LearnerCapabilityStateRow,
   type ProjectedCapability,
 } from '@/lib/capabilities'
+import {
+  getDueCapabilities,
+  type CapabilitySchedulerReadAdapter,
+  type LearnerCapabilityStateRow,
+} from './dueFilter'
 import { resolveExercise } from '@/lib/exercises/exerciseResolver'
 import { planLearningPath, type PedagogyInput, type PlannerCapability } from '@/lib/session-builder/pedagogy'
 import { compose } from '@/lib/session-builder/compose'

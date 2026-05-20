@@ -1,7 +1,7 @@
 ---
 module: session-builder
 surface: src/lib/session-builder/
-last_verified_against_code: 2026-05-18
+last_verified_against_code: 2026-05-20
 status: stable
 ---
 
@@ -9,7 +9,7 @@ status: stable
 
 **Surface:** `src/lib/session-builder/`
 
-**Files (11):**
+**Files (12):**
 
 | File | LOC | Role |
 |---|---|---|
@@ -22,6 +22,7 @@ status: stable
 | `labels.ts` | 66 | Per-capability display copy + exercise/skill helpers. Exports `capabilityDisplay`, `exerciseLabel`, `skillLabel`, `CAPABILITY_DISPLAY`. |
 | `audibleTexts.ts` | 104 | Audible-text harvest — `audibleTextFieldsOf` (per builder) + `collectAudibleTexts` (aggregator). |
 | `drying.ts` | 42 | Queue-drying detector. Wired into the builder in PR-B (2026-05-16). Suppresses when the due backlog exceeds preferred size or the mode is lesson-scoped; otherwise fires when the current lesson has no eligible introductions, the next lesson is still inactive, and the candidate pool is below 70% of preferred size. |
+| `dueFilter.ts` | 76 | Date+flag filter over `LearnerCapabilityStateRow[]` — `getDueCapabilitiesFromRows` (pure) + `getDueCapabilities` (async wrapper over `CapabilitySchedulerReadAdapter`). FSRS math lives server-side per ADR 0003; this file just reads the persisted `next_due_at` plus the activation / readiness / publication flags. Folded out of `lib/capabilities/` 2026-05-20 — the file's only consumer is this module (`builder.ts`, `adapter.ts`). |
 | `knownWordCoverage.ts` | 95 | Sentence-comprehensibility gate. **Not yet wired** — survives as documentation per fold plan §10. |
 | `index.ts` | 19 | Public-API barrel. |
 
@@ -30,7 +31,6 @@ status: stable
 - `src/components/experience/{ExperiencePlayer,CapabilityExerciseFrame,buildFeedbackInput,types,RecapScreen}.tsx` — consume `SessionPlan`/`SessionBlock` via the barrel.
 - `src/components/experience/RecapScreen.tsx:3, 95` — consumes `capabilityDisplay(...).label` for the recap headline.
 - 12 files under `src/lib/exercises/builders/` — consume `audibleTextFieldsOf` via the barrel.
-- `src/lib/capabilities/capabilityScheduler.ts:2` — imports `SessionMode` from the barrel.
 - `src/services/capabilityContentService.ts:10` — imports `SessionBlock` from the barrel.
 
 **Status (2026-05-16):** stable. Spec rewritten 2026-05-16 as the after-spec of PR-A of the session-builder fold (commit `55edbf5`). PR-A consolidated nine files from `src/lib/session/`, `src/lib/pedagogy/`, and `src/services/capabilitySessionDataService.ts` into this module; deleted three orphaned modules + the entire posture system + two dead planner inputs; rewrote `labels.ts` to a per-capability map with `satisfies` exhaustiveness. PR-B (queue-drying wiring) and PR-C/D (recency badge, capability descriptions) ride in separate follow-on PRs — see fold plan §5.
@@ -148,7 +148,7 @@ Output is a `CapabilitySessionDataSnapshot` carrying `schedulerRows`, `capabilit
 
 **Step A — lesson-scope validation** (`builder.ts:92-105, 204-211`). For `lesson_practice` / `lesson_review` modes, both `selectedLessonId` and `selectedSourceRefs[]` must be present and non-empty. If not, a `SessionPlan` with a single `critical` diagnostic (`missing_selected_lesson`) is returned immediately. No further work happens.
 
-**Step B — pass 1: due capabilities** (`builder.ts:236-262`). `getDueCapabilities` (`capabilityScheduler.ts`) is called with the in-memory `schedulerRows`. Result is filtered to lesson scope when applicable. Each due item then has its exercise resolved via the shared `resolveCandidate` helper.
+**Step B — pass 1: due capabilities** (`builder.ts:236-262`). `getDueCapabilities` (`dueFilter.ts`) is called with the in-memory `schedulerRows`. Result is filtered to lesson scope when applicable. Each due item then has its exercise resolved via the shared `resolveCandidate` helper.
 
 **Step C — pass 2: lesson-scope practice reviews** (`builder.ts:264-303`). Only fires for `lesson_practice` / `lesson_review`. Filters `schedulerRows` to rows that are: active + ready + published + in lesson scope + **not** in the due set + (for `lesson_review`) have at least one prior review. Sorted by `nextDueAt` ascending, then `consecutiveFailureCount` descending. Same `resolveCandidate` helper.
 
@@ -315,7 +315,6 @@ The diagnostic surfaces in the UI via `Session.tsx`, which reads `plan.diagnosti
 
 - `lib/exercises/exerciseResolver.ts` — `resolveExercise(capability, readiness, artifactIndex)` is called inline during each pass to inflate the `renderPlan`. Currently lives outside the builder; the exercise-content fold will absorb the resolver into a new `lib/exercise-content/` module.
 - `lib/exercises/builders/*` — 12 builders that consume `audibleTextFieldsOf` from the barrel to populate per-block `audibleTexts`.
-- `lib/capabilities/capabilityScheduler.ts` — provides `getDueCapabilities` (date+flag filter; no FSRS math) and `getDueCapabilitiesFromRows`. Imports `SessionMode` back from the barrel.
 - `lib/capabilities/capabilityContracts.ts` — provides `validateCapability` for readiness. Post-PR #65, readiness derives from the shared `RENDER_CONTRACTS` table in `lib/capabilities/renderContracts.ts`; see `docs/current-system/modules/capabilities.md`.
 - `services/audioService.ts` — `fetchSessionAudioMap` consumes the aggregator's deduped audible-text list.
 
