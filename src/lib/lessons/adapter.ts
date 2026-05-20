@@ -279,6 +279,43 @@ export async function getLessonCapabilityPracticeSummary(
   }
 }
 
+// Phase 1 of retiring lesson_page_blocks (2026-05-20): same shape as
+// getLessonCapabilityPracticeSummary, but keyed on learning_capabilities.lesson_id
+// (ADR 0006) instead of source_refs derived from page-block fan-out. Used by
+// PracticeActions.tsx; the old source_refs[]-based variant stays alive for
+// Lesson.tsx (legacy renderer code path for lessons 4-9).
+export async function getLessonCapabilityPracticeSummaryByLessonId(
+  userId: string,
+  lessonId: string,
+): Promise<LessonCapabilityPracticeSummary> {
+  const { data: capabilityRows, error: capabilityError } = await supabase
+    .schema('indonesian')
+    .from('learning_capabilities')
+    .select('id')
+    .eq('lesson_id', lessonId)
+    .eq('readiness_status', 'ready')
+    .eq('publication_status', 'published')
+  if (capabilityError) throw capabilityError
+
+  const capabilityIds = ((capabilityRows ?? []) as Array<{ id: string }>).map(r => r.id)
+  if (capabilityIds.length === 0) {
+    return { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 }
+  }
+
+  const stateRows = await chunkedIn<{
+    activation_state: string | null
+    review_count: number | null
+  }>(
+    'learner_capability_state',
+    'capability_id',
+    capabilityIds,
+    (b) => b.select('capability_id, activation_state, review_count').eq('user_id', userId),
+  )
+  const activePracticedCapabilityCount = stateRows
+    .filter(row => row.activation_state === 'active' && (row.review_count ?? 0) > 0).length
+  return { readyCapabilityCount: capabilityIds.length, activePracticedCapabilityCount }
+}
+
 // One-shot read for the Lessons overview page. Replaces the previous fanout
 // of ~20 round trips (1 + N for page_blocks + 1 for source_progress + N for
 // capability summaries) with a single SQL function call. The function

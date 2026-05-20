@@ -70,6 +70,7 @@ export {
   getLessonsWithVoice,
   getLessonPageBlocks,
   getLessonCapabilityPracticeSummary,
+  getLessonCapabilityPracticeSummaryByLessonId,
   getLessonsOverview,
   lessonSourceRefForOverview,
   lessonSourceRefsByLesson,

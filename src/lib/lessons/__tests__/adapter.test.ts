@@ -12,6 +12,7 @@ import {
   extractLessonGrammarTopics,
   getLesson,
   getLessons,
+  getLessonCapabilityPracticeSummaryByLessonId,
   lessonSourceRefForOverview,
   lessonSourceRefsByLesson,
 } from '../adapter'
@@ -91,6 +92,45 @@ describe('lessons adapter', () => {
       ['lesson-4', ['lesson-4', 'learning_items/makan', 'learning_items/minum']],
       ['lesson-5', ['lesson-5']],
     ]))
+  })
+
+  it('getLessonCapabilityPracticeSummaryByLessonId queries by lesson_id and returns zeros when no capabilities', async () => {
+    // Mock chain: select(...).eq('lesson_id',...).eq('readiness_status',...).eq('publication_status',...)
+    // resolves to empty data → method short-circuits with zeros.
+    getMock().then.mockImplementationOnce(function(onFulfilled: any) {
+      return Promise.resolve({ data: [], error: null }).then(onFulfilled)
+    })
+
+    const summary = await getLessonCapabilityPracticeSummaryByLessonId('user-uuid', 'lesson-uuid-1')
+
+    expect(supabase.schema).toHaveBeenCalledWith('indonesian')
+    expect(getMock().eq).toHaveBeenCalledWith('lesson_id', 'lesson-uuid-1')
+    expect(getMock().eq).toHaveBeenCalledWith('readiness_status', 'ready')
+    expect(getMock().eq).toHaveBeenCalledWith('publication_status', 'published')
+    expect(summary).toEqual({ readyCapabilityCount: 0, activePracticedCapabilityCount: 0 })
+  })
+
+  it('getLessonCapabilityPracticeSummaryByLessonId counts active+reviewed states', async () => {
+    const capabilityRows = [{ id: 'c1' }, { id: 'c2' }, { id: 'c3' }]
+    const stateRows = [
+      { capability_id: 'c1', activation_state: 'active', review_count: 3 },
+      { capability_id: 'c2', activation_state: 'active', review_count: 0 },
+      { capability_id: 'c3', activation_state: 'inactive', review_count: 5 },
+    ]
+    // First .then (capabilities) → rows; second .then (state via chunkedIn) → rows.
+    getMock().then
+      .mockImplementationOnce(function(onFulfilled: any) {
+        return Promise.resolve({ data: capabilityRows, error: null }).then(onFulfilled)
+      })
+      .mockImplementationOnce(function(onFulfilled: any) {
+        return Promise.resolve({ data: stateRows, error: null }).then(onFulfilled)
+      })
+
+    const summary = await getLessonCapabilityPracticeSummaryByLessonId('user-uuid', 'lesson-uuid-1')
+
+    expect(summary.readyCapabilityCount).toBe(3)
+    // Only c1 is both active and review_count>0.
+    expect(summary.activePracticedCapabilityCount).toBe(1)
   })
 
   it('extracts only grammar topics from lesson section metadata', () => {
