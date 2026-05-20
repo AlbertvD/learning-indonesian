@@ -1,6 +1,7 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #85
+merged_at: 2026-05-20
 implementation_paths:
   - scripts/lib/pipeline/lesson-stage/
   - scripts/lib/pipeline/capability-stage/
