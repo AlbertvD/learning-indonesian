@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { loadCapabilitySessionPlan, buildSession, type CapabilitySessionDataAdapter } from '@/lib/session-builder/builder'
-import type { LearnerCapabilityStateRow } from '@/lib/capabilities/capabilityScheduler'
+import type { LearnerCapabilityStateRow } from '@/lib/session-builder/dueFilter'
 import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
 import { planLearningPath, type PlannerCapability, type PlannerLearnerCapabilityState } from '@/lib/session-builder/pedagogy'
 import type { ArtifactIndex } from '@/lib/capabilities/artifactRegistry'

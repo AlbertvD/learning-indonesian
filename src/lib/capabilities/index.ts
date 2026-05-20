@@ -51,18 +51,6 @@ export type {
   ExerciseAvailabilityIndex,
 } from './capabilityContracts'
 
-// ─── Scheduling (read-side; FSRS math lives server-side per ADR 0003) ──────
-export {
-  getDueCapabilities,
-  getDueCapabilitiesFromRows,
-} from './capabilityScheduler'
-export type {
-  LearnerCapabilityStateRow,
-  DueCapability,
-  DueCapabilityRequest,
-  CapabilitySchedulerReadAdapter,
-} from './capabilityScheduler'
-
 // ─── Artifacts ─────────────────────────────────────────────────────────────
 export {
   ARTIFACT_KINDS,

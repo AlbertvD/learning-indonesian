@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getDueCapabilities, getDueCapabilitiesFromRows, type LearnerCapabilityStateRow } from '@/lib/capabilities/capabilityScheduler'
+import { getDueCapabilities, getDueCapabilitiesFromRows, type LearnerCapabilityStateRow } from '../dueFilter'
 
 function state(overrides: Partial<LearnerCapabilityStateRow> = {}): LearnerCapabilityStateRow {
   return {
