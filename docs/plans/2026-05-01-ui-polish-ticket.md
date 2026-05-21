@@ -1,3 +1,7 @@
+---
+status: draft
+---
+
 # UI Polish Ticket
 
 **Date:** 2026-05-01

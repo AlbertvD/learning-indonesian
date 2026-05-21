@@ -1,3 +1,7 @@
+---
+status: draft
+---
+
 # Commercialization Roadmap
 
 **Date:** 2026-05-01
