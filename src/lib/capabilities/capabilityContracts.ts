@@ -65,9 +65,10 @@ export function validateCapability(input: CapabilityValidationInput): Capability
   // Inverted lookup against RENDER_CONTRACTS: which exercise types name this
   // cap_type AND support its source kind? Cap_types that no exercise serves
   // — pattern_recognition, pattern_contrast — return [] here. The 2026-05-21
-  // lib/exercise-content fold widened cloze + cloze_mcq to accept
-  // dialogue_line, so contextual_cloze caps with sourceKind=dialogue_line
-  // now resolve here; root_derived_* (affixed_form_pair) still returns []
+  // lib/exercise-content fold widened `cloze` (typed) to accept dialogue_line,
+  // so contextual_cloze caps with sourceKind=dialogue_line resolve here via
+  // cloze only. `cloze_mcq` stays item-only (its distractor pool is lesson-
+  // anchored; follow-up). root_derived_* (affixed_form_pair) still returns []
   // until the affixed_form_pair fetcher lands in lib/exercise-content/adapter.
   const candidateExercises = exerciseTypesForCapability(input.capability.capabilityType)
     .filter(et => supportsSourceKind(et, input.capability.sourceKind))
