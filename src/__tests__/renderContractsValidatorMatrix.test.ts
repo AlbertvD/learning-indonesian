@@ -86,11 +86,14 @@ const matrix: MatrixRow[] = [
     expected: { status: 'blocked', reasonMatch: /no_compatible_exercise_for_capability_type/ },
   },
   {
+    // Post 2026-05-21 lib/exercise-content fold PR-B: cloze accepts
+    // dialogue_line. cloze_mcq stays item-only (lesson-pool distractor
+    // follow-up), so allowedExercises is ['cloze'] only.
     capabilityType: 'contextual_cloze',
     sourceKind: 'dialogue_line',
     requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
     approvedArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
-    expected: { status: 'blocked', reasonMatch: /no_compatible_exercise_for_capability_type/ },
+    expected: { status: 'ready', allowedExercises: ['cloze'] },
   },
   {
     capabilityType: 'root_derived_recognition',

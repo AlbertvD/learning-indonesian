@@ -83,6 +83,7 @@ function baseInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorInpu
   return {
     block: makeBlock(),
     learningItem: makeItem(),
+    dialogueLine: null,
     meanings: [makeMeaning('einde')],
     contexts: [],
     answerVariants: [],
@@ -436,5 +437,80 @@ describe('buildForExerciseType', () => {
     const r = buildForExerciseType('unknown_future_type' as never, baseInput())
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('unsupported_exercise_type')
+  })
+})
+
+// ─── dialogue_line cloze ───
+//
+// PR-B of the lib/exercise-content fold adds a parallel input shape: cloze
+// (typed only — cloze_mcq still item-only) accepts a dialogueLine instead
+// of a learningItem. The adapter assembles dialogueLine from artifact rows
+// the publish pipeline writes; the byType packager reads it directly.
+
+describe('buildCloze — dialogue_line source kind', () => {
+  function dialogueInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorInput {
+    return baseInput({
+      learningItem: null,
+      dialogueLine: {
+        text: 'Aku tidak suka tinggal di rumah terus',
+        speaker: 'Titin',
+        sourceRef: 'lesson-9/section-1/line-10',
+        targetWord: 'suka',
+        translation: 'Ik vind het niet leuk om de hele tijd thuis te blijven',
+        sourceText: 'Aku tidak ___ tinggal di rumah terus',
+      },
+      ...overrides,
+    })
+  }
+
+  it('produces a cloze exerciseItem with dialogueLine fields populated and learningItem=null', () => {
+    const r = buildForExerciseType('cloze', dialogueInput())
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    expect(r.exerciseItem.exerciseType).toBe('cloze')
+    expect(r.exerciseItem.learningItem).toBeNull()
+    expect(r.exerciseItem.clozeContext?.sentence).toBe('Aku tidak ___ tinggal di rumah terus')
+    expect(r.exerciseItem.clozeContext?.targetWord).toBe('suka')
+    expect(r.exerciseItem.clozeContext?.translation).toBe('Ik vind het niet leuk om de hele tijd thuis te blijven')
+    expect(r.exerciseItem.clozeContext?.speaker).toBe('Titin')
+  })
+
+  it('fails malformed_cloze when sourceText lacks the ___ marker', () => {
+    const r = buildForExerciseType('cloze', dialogueInput({
+      dialogueLine: {
+        text: 'Aku tidak suka tinggal di rumah terus',
+        speaker: 'Titin',
+        sourceRef: 'lesson-9/section-1/line-10',
+        targetWord: 'suka',
+        translation: 'irrelevant',
+        sourceText: 'Aku tidak suka tinggal di rumah terus',  // no ___
+      },
+    }))
+    expect(r.kind).toBe('fail')
+    if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_cloze')
+  })
+
+  it('exerciseItem.clozeContext.speaker is null when the dialogue line has no speaker', () => {
+    const r = buildForExerciseType('cloze', dialogueInput({
+      dialogueLine: {
+        text: 'Apa kabar?',
+        speaker: null,
+        sourceRef: 'lesson-9/section-1/line-3',
+        targetWord: 'kabar',
+        translation: 'Hoe gaat het?',
+        sourceText: 'Apa ___?',
+      },
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind === 'ok') expect(r.exerciseItem.clozeContext?.speaker).toBeNull()
+  })
+
+  it('cloze_mcq still requires learningItem (the dialogue_line widening did not extend to it)', () => {
+    const r = buildForExerciseType('cloze_mcq', dialogueInput({
+      // Even with a dialogueLine populated, cloze_mcq's contract still
+      // requires a learningItem. The projector emits item_not_found.
+    }))
+    expect(r.kind).toBe('fail')
+    if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')
   })
 })

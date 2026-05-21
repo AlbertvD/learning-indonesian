@@ -63,6 +63,7 @@ function makeClozeContext(overrides: Partial<ItemContext> = {}): ItemContext {
 function makeRawInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorInput {
   return {
     learningItem: null,
+    dialogueLine: null,
     meanings: [],
     contexts: [],
     answerVariants: [],
@@ -141,9 +142,10 @@ describe('supportsSourceKind', () => {
     }
   })
 
-  it('no exercise supports dialogue_line source kind yet (capabilityContentService restriction)', () => {
+  it('only cloze supports dialogue_line source kind (PR-B of lib/exercise-content fold); cloze_mcq is item-only until lesson-pool distractors land', () => {
     for (const et of Object.keys(RENDER_CONTRACTS) as Array<keyof typeof RENDER_CONTRACTS>) {
-      expect(supportsSourceKind(et, 'dialogue_line')).toBe(false)
+      const expected = et === 'cloze'
+      expect(supportsSourceKind(et, 'dialogue_line')).toBe(expected)
     }
   })
 

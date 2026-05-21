@@ -378,3 +378,126 @@ describe('createCapabilityContentService — exported correctly', () => {
     expect(typeof service.resolveBlocks).toBe('function')
   })
 })
+
+// ─── dialogue_line resolution (PR-B of the lib/exercise-content fold) ────────
+
+function makeDialogueBlock(opts: { sourceRef?: string; capabilityId?: string; exerciseType?: SessionBlock['renderPlan']['exerciseType'] } = {}): SessionBlock {
+  const sourceRef = opts.sourceRef ?? 'lesson-9/section-1/line-10'
+  const capabilityId = opts.capabilityId ?? `cap-${sourceRef}`
+  const exerciseType = opts.exerciseType ?? 'cloze'
+  const key = buildCanonicalKey({
+    sourceKind: 'dialogue_line',
+    sourceRef,
+    capabilityType: 'contextual_cloze',
+    direction: 'id_to_l1',
+    modality: 'text',
+    learnerLanguage: 'nl',
+  })
+  return {
+    id: `block-${sourceRef}-${exerciseType}`,
+    kind: 'due_review',
+    capabilityId,
+    canonicalKeySnapshot: key,
+    renderPlan: {
+      capabilityKey: key,
+      sourceRef,
+      exerciseType,
+      capabilityType: 'contextual_cloze',
+      skillType: 'form_recall',
+      requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
+    },
+    reviewContext: {
+      schedulerSnapshot: {} as never,
+      currentStateVersion: 0,
+      artifactVersionSnapshot: {},
+      capabilityReadinessStatus: 'ready',
+      capabilityPublicationStatus: 'published',
+    },
+  }
+}
+
+describe('resolver.resolveBlocks — dialogue_line source kind', () => {
+  it('resolves to a render-ready cloze exerciseItem from the three artifact rows', async () => {
+    const block = makeDialogueBlock({ capabilityId: 'cap-dl-1' })
+    const tables: Record<string, MockTable> = {
+      capability_artifacts: { rows: [
+        { capability_id: 'cap-dl-1', artifact_kind: 'cloze_context', quality_status: 'approved', artifact_json: {
+          source_text: 'Aku tidak ___ tinggal di rumah terus',
+          line_text: 'Aku tidak suka tinggal di rumah terus',
+          speaker: 'Titin',
+          source_ref: 'lesson-9/section-1/line-10',
+        } },
+        { capability_id: 'cap-dl-1', artifact_kind: 'cloze_answer', quality_status: 'approved', artifact_json: { value: 'suka' } },
+        { capability_id: 'cap-dl-1', artifact_kind: 'translation:l1', quality_status: 'approved', artifact_json: { value: 'Ik vind het niet leuk om de hele tijd thuis te blijven' } },
+      ], inserts: [] },
+      capability_resolution_failure_events: { rows: [], inserts: [] },
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    const map = await service.resolveBlocks([block], baseOptions)
+    const ctx = map.get(block.id)!
+    expect(ctx.diagnostic).toBeNull()
+    expect(ctx.exerciseItem?.exerciseType).toBe('cloze')
+    expect(ctx.exerciseItem?.learningItem).toBeNull()
+    expect(ctx.exerciseItem?.clozeContext?.sentence).toBe('Aku tidak ___ tinggal di rumah terus')
+    expect(ctx.exerciseItem?.clozeContext?.targetWord).toBe('suka')
+    expect(ctx.exerciseItem?.clozeContext?.translation).toBe('Ik vind het niet leuk om de hele tijd thuis te blijven')
+    expect(ctx.exerciseItem?.clozeContext?.speaker).toBe('Titin')
+  })
+
+  it('fails dialogue_line_artifact_missing when one of the three required artifacts is absent', async () => {
+    const block = makeDialogueBlock({ capabilityId: 'cap-dl-missing' })
+    const tables: Record<string, MockTable> = {
+      capability_artifacts: { rows: [
+        { capability_id: 'cap-dl-missing', artifact_kind: 'cloze_context', quality_status: 'approved', artifact_json: {
+          source_text: 'Aku tidak ___ tinggal di rumah terus',
+          line_text: 'Aku tidak suka tinggal di rumah terus',
+          speaker: 'Titin',
+          source_ref: 'lesson-9/section-1/line-10',
+        } },
+        // cloze_answer + translation:l1 missing.
+      ], inserts: [] },
+      capability_resolution_failure_events: { rows: [], inserts: [] },
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    const map = await service.resolveBlocks([block], baseOptions)
+    const ctx = map.get(block.id)!
+    expect(ctx.exerciseItem).toBeNull()
+    expect(ctx.diagnostic?.reasonCode).toBe('dialogue_line_artifact_missing')
+  })
+
+  it('fails dialogue_line_ref_unparseable when source_ref does not match lesson-N/section-M/line-K', async () => {
+    const block = makeDialogueBlock({ sourceRef: 'lesson-9/section-1', capabilityId: 'cap-dl-bad' })
+    const tables: Record<string, MockTable> = {
+      capability_artifacts: { rows: [], inserts: [] },
+      capability_resolution_failure_events: { rows: [], inserts: [] },
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    const map = await service.resolveBlocks([block], baseOptions)
+    const ctx = map.get(block.id)!
+    expect(ctx.diagnostic?.reasonCode).toBe('dialogue_line_ref_unparseable')
+  })
+
+  it('rejects dialogue_line block scheduled with exerciseType=cloze_mcq (cloze_mcq still item-only)', async () => {
+    const block = makeDialogueBlock({ exerciseType: 'cloze_mcq', capabilityId: 'cap-dl-mcq' })
+    const tables: Record<string, MockTable> = {
+      capability_artifacts: { rows: [
+        { capability_id: 'cap-dl-mcq', artifact_kind: 'cloze_context', quality_status: 'approved', artifact_json: {
+          source_text: 'Aku tidak ___ tinggal di rumah terus',
+          line_text: 'Aku tidak suka tinggal di rumah terus',
+          speaker: null,
+          source_ref: 'lesson-9/section-1/line-10',
+        } },
+        { capability_id: 'cap-dl-mcq', artifact_kind: 'cloze_answer', quality_status: 'approved', artifact_json: { value: 'suka' } },
+        { capability_id: 'cap-dl-mcq', artifact_kind: 'translation:l1', quality_status: 'approved', artifact_json: { value: 'irrelevant' } },
+      ], inserts: [] },
+      capability_resolution_failure_events: { rows: [], inserts: [] },
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    const map = await service.resolveBlocks([block], baseOptions)
+    const ctx = map.get(block.id)!
+    expect(ctx.exerciseItem).toBeNull()
+    // The projector emits item_not_found because cloze_mcq's contract input
+    // requires a non-null learningItem (no dialogueLine field in its shape).
+    expect(ctx.diagnostic?.reasonCode).toBe('item_not_found')
+  })
+})

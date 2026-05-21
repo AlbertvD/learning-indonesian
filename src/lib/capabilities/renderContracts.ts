@@ -30,10 +30,13 @@ import type { SessionBlock } from '@/lib/session-builder'
 export interface RenderContract {
   /** Which capability types this exercise serves. */
   capabilityTypes: readonly CapabilityType[]
-  /** Which source kinds the exercise can render from. Today every entry is
-   *  ['item'] because capabilityContentService only handles item source
-   *  kinds (see src/services/capabilityContentService.ts:240). Future fold
-   *  work to extend the service expands this. */
+  /** Which source kinds the exercise can render from. `cloze` accepts
+   *  ['item', 'dialogue_line'] post the 2026-05-21 lib/exercise-content fold
+   *  (PR-B); every other entry remains ['item'] until its source-kind fetcher
+   *  lands in lib/exercise-content/adapter. (`cloze_mcq` needs a lesson-
+   *  anchored distractor pool that hasn't been extended to dialogue_line —
+   *  follow-up.) See docs/current-system/modules/exercise-content.md §3 for
+   *  the bucketing dispatch shape. */
   supportedSourceKinds: readonly CapabilitySourceKind[]
   /** Artifacts that must be present + approved for the exercise to render. */
   requiredArtifacts: readonly ArtifactKind[]
@@ -72,10 +75,16 @@ export const RENDER_CONTRACTS = {
   },
   cloze: {
     capabilityTypes: ['contextual_cloze'],
-    supportedSourceKinds: ['item'],
+    supportedSourceKinds: ['item', 'dialogue_line'],
     requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
   },
   cloze_mcq: {
+    // dialogue_line is intentionally absent — cloze_mcq's distractor pool is
+    // derived from item_contexts.source_lesson_id (see adapter.fetchForItem-
+    // Blocks). Adding dialogue_line here requires a lesson-anchored pool
+    // fetcher in adapter.fetchForDialogueLineBlocks that doesn't exist yet.
+    // Follow-up. Today contextual_cloze with sourceKind=dialogue_line renders
+    // through typed cloze only.
     capabilityTypes: ['contextual_cloze'],
     supportedSourceKinds: ['item'],
     requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
@@ -125,16 +134,52 @@ export function supportsSourceKind(exerciseType: ExerciseType, sourceKind: Capab
 // ─── Compile-time builder input shapes ─────────────────────────────────────
 
 /**
- * The raw input the dispatcher (capabilityContentService) constructs before
- * projection. The projector narrows this to BuilderInputFor<K> for a
- * specific exercise type, or returns a fail.
+ * Per-block input for a `dialogue_line:contextual_cloze` capability. The
+ * lib/exercise-content adapter assembles this from the three artifact rows
+ * the publish pipeline writes (cloze_context + cloze_answer + translation:l1).
  *
- * Shape is intentionally identical to the legacy BuilderInput type so the
- * dispatch site remains a single object construction.
+ * See scripts/lib/pipeline/capability-stage/projectors/dialogueArtifacts.ts
+ * for the writer; see docs/current-system/modules/exercise-content.md §3 for
+ * the fetcher contract.
+ */
+export interface DialogueLineInput {
+  /** Full line text from `lesson_sections.content.lines[idx].text`,
+   *  unblanked. Persisted in `cloze_context.payload_json.line_text`. */
+  text: string
+  /** Speaker name if the dialogue carries one (e.g. "Titin"); null otherwise.
+   *  Persisted in `cloze_context.payload_json.speaker`. */
+  speaker: string | null
+  /** The cap's source_ref of shape `lesson-N/section-M/line-K`. Carried for
+   *  audit/debug; the builder does not parse it. */
+  sourceRef: string
+  /** The blanked word — the answer the learner types into `___`. Persisted
+   *  in `cloze_answer.payload_json.value`. */
+  targetWord: string
+  /** L1 (NL) translation of the full line. Persisted in
+   *  `translation:l1.payload_json.value`. */
+  translation: string
+  /** The cloze sentence with the `___` placeholder. Persisted in
+   *  `cloze_context.payload_json.source_text`. The builder uses this as the
+   *  `sentence` it shows to the learner. */
+  sourceText: string
+}
+
+/**
+ * The raw input the dispatcher (lib/exercise-content/resolver via the
+ * adapter) constructs before projection. The projector narrows this to
+ * BuilderInputFor<K> for a specific exercise type, or returns a fail.
+ *
+ * Both `learningItem` and `dialogueLine` are honestly nullable; cloze +
+ * cloze_mcq accept either (exactly one is populated per the bucketing
+ * invariant); every other exercise type requires `learningItem` to be
+ * non-null and treats `dialogueLine` as irrelevant.
  */
 export interface RawProjectorInput {
   block?: SessionBlock
   learningItem: LearningItem | null
+  /** Set when the resolved block's sourceKind is `dialogue_line`. Mutually
+   *  exclusive with `learningItem` (bucketing invariant). */
+  dialogueLine: DialogueLineInput | null
   meanings: ItemMeaning[]
   contexts: ItemContext[]
   answerVariants: ItemAnswerVariant[]
@@ -162,10 +207,17 @@ interface BuilderBase {
  * entry here is a compile error (enforced by `satisfies` on the value
  * `_CONTRACT_SHAPES_EXHAUSTIVENESS_CHECK` below).
  *
- * cloze_mcq's `clozeContext` is honestly nullable: the authored path uses
- * variant.payload_json and ignores clozeContext, while the runtime path
- * requires clozeContext. The projector enforces the invariant: at least
- * ONE of `variant (matching type)` OR `clozeContext` is non-null.
+ * cloze accepts two source kinds (`item` and `dialogue_line`); cloze_mcq is
+ * item-only today (needs a lesson-anchored distractor pool that hasn't been
+ * extended to dialogue_line yet — follow-up). For cloze the shape encodes
+ * "exactly one of learningItem or dialogueLine is non-null" as nullable
+ * fields; the projector enforces the invariant.
+ *
+ * cloze_mcq's `clozeContext` is additionally nullable: the authored path
+ * uses variant.payload_json and ignores clozeContext, while the runtime
+ * item-sourced path requires clozeContext. The projector enforces the
+ * invariant: at least ONE of `variant (matching type)` OR `clozeContext`
+ * is non-null.
  */
 export interface ContractInputShapes {
   recognition_mcq: BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
@@ -174,7 +226,7 @@ export interface ContractInputShapes {
   meaning_recall:  BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   listening_mcq:   BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   dictation:       BuilderBase & { learningItem: LearningItem }
-  cloze:           BuilderBase & { learningItem: LearningItem; clozeContext: ItemContext }
+  cloze:           BuilderBase & { learningItem: LearningItem | null; clozeContext: ItemContext | null; dialogueLine: DialogueLineInput | null }
   cloze_mcq:       BuilderBase & { learningItem: LearningItem; clozeContext: ItemContext | null; variant: ExerciseVariant | null }
   contrast_pair:   BuilderBase & { learningItem: LearningItem; variant: ExerciseVariant }
   sentence_transformation: BuilderBase & { learningItem: LearningItem; variant: ExerciseVariant }
@@ -207,19 +259,36 @@ export function projectBuilderInput<T extends ExerciseType>(
   exerciseType: T,
   raw: RawProjectorInput,
 ): ProjectorResult<T> {
-  // Every builder requires a learningItem (matrix verified 2026-05-18 against
-  // every file under src/lib/exercises/builders/).
-  if (!raw.learningItem) {
+  // cloze accepts either learningItem (item-sourced) or dialogueLine
+  // (dialogue_line-sourced). cloze_mcq is item-only today (the cloze_mcq
+  // distractor pool is lesson-anchored via item_contexts.source_lesson_id;
+  // extending it to dialogue_line requires a separate adapter fetcher).
+  // Every other exercise type requires a learningItem.
+  const acceptsDialogueLine = exerciseType === 'cloze'
+
+  if (!raw.learningItem && !(acceptsDialogueLine && raw.dialogueLine)) {
     return {
       ok: false,
       reasonCode: 'item_not_found',
-      message: `${exerciseType} requires a learningItem`,
+      message: `${exerciseType} requires a learningItem (or a dialogueLine for cloze/cloze_mcq)`,
     }
   }
 
-  const learningItem = raw.learningItem
+  // Bucketing invariant: exactly one of learningItem / dialogueLine is set
+  // for cloze/cloze_mcq. The adapter never populates both; defend in depth.
+  if (acceptsDialogueLine && raw.learningItem && raw.dialogueLine) {
+    return {
+      ok: false,
+      reasonCode: 'malformed_payload',
+      message: `${exerciseType} received both a learningItem and a dialogueLine — bucketing invariant violated`,
+      payloadSnapshot: { learningItemId: raw.learningItem.id, sourceRef: raw.dialogueLine.sourceRef },
+    }
+  }
 
-  // Builders that need a user-language meaning.
+  const learningItem = raw.learningItem  // may be null when dialogueLine path is active
+
+  // Builders that need a user-language meaning. All five require learningItem
+  // (none accept the dialogue_line path), so the existing logic is unchanged.
   const needsPrimaryMeaning: ReadonlySet<ExerciseType> = new Set([
     'recognition_mcq', 'cued_recall', 'typed_recall', 'meaning_recall', 'listening_mcq',
   ])
@@ -231,26 +300,31 @@ export function projectBuilderInput<T extends ExerciseType>(
       return {
         ok: false,
         reasonCode: 'no_meaning_in_lang',
-        message: `no ${raw.userLanguage} meaning for item ${learningItem.id}`,
-        payloadSnapshot: { learningItemId: learningItem.id, userLanguage: raw.userLanguage },
+        message: `no ${raw.userLanguage} meaning for item ${learningItem!.id}`,
+        payloadSnapshot: { learningItemId: learningItem!.id, userLanguage: raw.userLanguage },
       }
     }
   }
 
-  // Builders that need a cloze-typed context.
-  //   cloze: hard-required (no fallback path).
-  //   cloze_mcq: at least ONE of clozeContext OR a matching authored variant
-  //              is required; the field stays nullable in the typed shape
-  //              and the builder branches on which path is active.
+  // Builders that need a cloze-typed context (item-sourced path only — the
+  // dialogue_line path carries source_text inside the DialogueLineInput).
+  //   cloze: requires either dialogueLine OR a cloze-typed context.
+  //   cloze_mcq: requires at least ONE of dialogueLine, a cloze-typed
+  //              context, or a matching authored variant.
   let clozeContext: ItemContext | null = null
   if (exerciseType === 'cloze') {
-    clozeContext = raw.contexts.find(c => c.context_type === 'cloze') ?? null
-    if (!clozeContext) {
-      return {
-        ok: false,
-        reasonCode: 'malformed_cloze',
-        message: `no cloze context for item ${learningItem.id}`,
-        payloadSnapshot: { learningItemId: learningItem.id, contextCount: raw.contexts.length },
+    if (raw.dialogueLine) {
+      // dialogue_line path — sentence comes from dialogueLine.sourceText; no
+      // item_contexts row is required (or available).
+    } else {
+      clozeContext = raw.contexts.find(c => c.context_type === 'cloze') ?? null
+      if (!clozeContext) {
+        return {
+          ok: false,
+          reasonCode: 'malformed_cloze',
+          message: `no cloze context for item ${learningItem!.id}`,
+          payloadSnapshot: { learningItemId: learningItem!.id, contextCount: raw.contexts.length },
+        }
       }
     }
   }
@@ -261,9 +335,9 @@ export function projectBuilderInput<T extends ExerciseType>(
       return {
         ok: false,
         reasonCode: 'malformed_cloze',
-        message: `no cloze context and no authored cloze_mcq variant for item ${learningItem.id}`,
+        message: `no cloze context and no authored cloze_mcq variant for item ${learningItem!.id}`,
         payloadSnapshot: {
-          learningItemId: learningItem.id,
+          learningItemId: learningItem!.id,
           contextCount: raw.contexts.length,
           hasVariant: raw.variant != null,
         },
@@ -280,8 +354,8 @@ export function projectBuilderInput<T extends ExerciseType>(
       return {
         ok: false,
         reasonCode: 'no_active_variant',
-        message: `no active ${exerciseType} variant for item ${learningItem.id}`,
-        payloadSnapshot: { learningItemId: learningItem.id },
+        message: `no active ${exerciseType} variant for item ${learningItem!.id}`,
+        payloadSnapshot: { learningItemId: learningItem!.id },
       }
     }
   }
@@ -295,31 +369,34 @@ export function projectBuilderInput<T extends ExerciseType>(
     poolItems: raw.poolItems,
     poolMeaningsByItem: raw.poolMeaningsByItem,
     userLanguage: raw.userLanguage,
-    learningItem,
   }
 
   // Per-exercise narrowing.
   switch (exerciseType) {
     case 'cloze':
-      return { ok: true, input: { ...base, clozeContext: clozeContext! } as BuilderInputFor<T> }
+      // learningItem + clozeContext + dialogueLine are all honestly nullable
+      // here. The projector has proven that exactly one of learningItem (with
+      // its clozeContext) OR dialogueLine is populated. The byType packager
+      // branches on which is present.
+      return { ok: true, input: { ...base, learningItem, clozeContext, dialogueLine: raw.dialogueLine } as BuilderInputFor<T> }
     case 'cloze_mcq':
       // clozeContext is honestly nullable here — the projector has already
       // proven that either it OR the variant is present.
-      return { ok: true, input: { ...base, clozeContext, variant: raw.variant } as BuilderInputFor<T> }
+      return { ok: true, input: { ...base, learningItem: learningItem!, clozeContext, variant: raw.variant } as BuilderInputFor<T> }
     case 'contrast_pair':
     case 'sentence_transformation':
     case 'constrained_translation':
-      return { ok: true, input: { ...base, variant: raw.variant! } as BuilderInputFor<T> }
+      return { ok: true, input: { ...base, learningItem: learningItem!, variant: raw.variant! } as BuilderInputFor<T> }
     case 'speaking':
-      return { ok: true, input: { ...base, variant: raw.variant } as BuilderInputFor<T> }
+      return { ok: true, input: { ...base, learningItem: learningItem!, variant: raw.variant } as BuilderInputFor<T> }
     case 'recognition_mcq':
     case 'cued_recall':
     case 'typed_recall':
     case 'meaning_recall':
     case 'listening_mcq':
-      return { ok: true, input: { ...base, primaryMeaning: primaryMeaning! } as BuilderInputFor<T> }
+      return { ok: true, input: { ...base, learningItem: learningItem!, primaryMeaning: primaryMeaning! } as BuilderInputFor<T> }
     case 'dictation':
-      return { ok: true, input: base as BuilderInputFor<T> }
+      return { ok: true, input: { ...base, learningItem: learningItem! } as BuilderInputFor<T> }
     default: {
       // Exhaustiveness check
       const _exhaustive: never = exerciseType

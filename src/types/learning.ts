@@ -188,6 +188,10 @@ export interface ExerciseItem {
     sentence: string
     targetWord: string
     translation: string | null
+    /** Set for dialogue_line-sourced clozes; the UI renders it as a speaker
+     *  prefix (e.g. *Titin:* Aku tidak ___ tinggal di rumah terus.). null
+     *  for item-sourced clozes; UI omits the prefix. */
+    speaker?: string | null
   }
   /** For cloze_mcq: sentence with blank and 4 options to pick from */
   clozeMcqData?: {
@@ -196,6 +200,8 @@ export interface ExerciseItem {
     options: string[]
     correctOptionId: string
     explanationText?: string
+    /** Same role as clozeContext.speaker — set for dialogue_line-sourced clozes. */
+    speaker?: string | null
   }
   /** For cued_recall: optional cue text and options */
   cuedRecallData?: {

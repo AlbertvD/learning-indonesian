@@ -86,26 +86,37 @@ export interface ItemBucketEntry {
   itemKey: string
 }
 
+export interface DialogueLineBucketEntry {
+  block: SessionBlock
+  sourceRef: string  // shape: lesson-N/section-M/line-K
+}
+
 export interface BucketingResult {
-  /** Per-source-kind buckets. Today only `item` is populated; future source
-   *  kinds (dialogue_line, affixed_form_pair, podcast_*) add their own
-   *  bucket entries here without touching the resolver. */
+  /** Per-source-kind buckets. `item` and `dialogue_line` are populated today;
+   *  future source kinds (affixed_form_pair, podcast_*) add their own bucket
+   *  entries here without touching the resolver. */
   buckets: {
     item: ItemBucketEntry[]
+    dialogue_line: DialogueLineBucketEntry[]
   }
   /** Blocks whose canonical key was malformed or whose source kind has no
    *  fetcher yet. Pre-built fail contexts keyed by blockId. */
   failures: Map<string, CapabilityRenderContext>
 }
 
+// Source ref of shape `lesson-N/section-M/line-K`. Validated cheaply at
+// bucketing time so a malformed ref fails fast with a clear reason code.
+const DIALOGUE_LINE_REF_RE = /^lesson-\d+\/section-\d+\/line-\d+$/u
+
 /**
  * Decode + classify blocks by source kind. Pure function; no I/O. Malformed
- * canonical keys → `sourceref_unparseable`. Non-item source kinds →
- * `unsupported_source_kind` (until per-kind fetchers land — PR-B adds
- * dialogue_line). Unparseable item refs → `sourceref_unparseable`.
+ * canonical keys → `sourceref_unparseable`. Source kinds without a fetcher
+ * yet (pattern, affixed_form_pair, podcast_*) → `unsupported_source_kind`.
+ * Unparseable item refs → `sourceref_unparseable`. Unparseable dialogue_line
+ * refs → `dialogue_line_ref_unparseable`.
  */
 export function bucketByDecodedSourceKind(blocks: SessionBlock[]): BucketingResult {
-  const buckets: BucketingResult['buckets'] = { item: [] }
+  const buckets: BucketingResult['buckets'] = { item: [], dialogue_line: [] }
   const failures = new Map<string, CapabilityRenderContext>()
 
   for (const block of blocks) {
@@ -116,20 +127,37 @@ export function bucketByDecodedSourceKind(blocks: SessionBlock[]): BucketingResu
         { canonicalKeySnapshot: block.canonicalKeySnapshot }))
       continue
     }
-    if (decoded.sourceKind !== 'item') {
-      failures.set(block.id, makeFailContext(block, 'unsupported_source_kind',
-        `sourceKind '${decoded.sourceKind}' is out of PR-2 scope`,
-        { sourceKind: decoded.sourceKind, sourceRef: decoded.sourceRef }))
+
+    if (decoded.sourceKind === 'item') {
+      const itemKey = extractItemKey(decoded.sourceRef)
+      if (!itemKey) {
+        failures.set(block.id, makeFailContext(block, 'sourceref_unparseable',
+          `cannot extract item key from sourceRef`,
+          { sourceRef: decoded.sourceRef }))
+        continue
+      }
+      buckets.item.push({ block, itemKey })
       continue
     }
-    const itemKey = extractItemKey(decoded.sourceRef)
-    if (!itemKey) {
-      failures.set(block.id, makeFailContext(block, 'sourceref_unparseable',
-        `cannot extract item key from sourceRef`,
-        { sourceRef: decoded.sourceRef }))
+
+    if (decoded.sourceKind === 'dialogue_line') {
+      if (!DIALOGUE_LINE_REF_RE.test(decoded.sourceRef)) {
+        failures.set(block.id, makeFailContext(block, 'dialogue_line_ref_unparseable',
+          `dialogue_line sourceRef "${decoded.sourceRef}" does not match lesson-N/section-M/line-K`,
+          { sourceRef: decoded.sourceRef }))
+        continue
+      }
+      buckets.dialogue_line.push({ block, sourceRef: decoded.sourceRef })
       continue
     }
-    buckets.item.push({ block, itemKey })
+
+    // Other source kinds (pattern, affixed_form_pair, podcast_segment,
+    // podcast_phrase) have no fetcher yet. Caps with these source kinds
+    // should already be marked blocked by validateCapability — this is a
+    // belt-and-braces guard in case a stale block reaches the resolver.
+    failures.set(block.id, makeFailContext(block, 'unsupported_source_kind',
+      `sourceKind '${decoded.sourceKind}' has no fetcher in lib/exercise-content/adapter yet`,
+      { sourceKind: decoded.sourceKind, sourceRef: decoded.sourceRef }))
   }
   return { buckets, failures }
 }
@@ -404,6 +432,7 @@ export function createAdapter(client: SupabaseSchemaClient): Adapter {
       const input: RawProjectorInput = {
         block,
         learningItem,
+        dialogueLine: null,  // item bucket — projector's bucketing invariant
         meanings: meaningsByItem.get(itemUuid) ?? [],
         contexts: contextsByItem.get(itemUuid) ?? [],
         answerVariants: answerVariantsByItem.get(itemUuid) ?? [],
@@ -417,15 +446,124 @@ export function createAdapter(client: SupabaseSchemaClient): Adapter {
     }
   }
 
+  /**
+   * Dialogue_line bucket: artifacts-only fetch. No learning_items join. The
+   * three required artifacts (cloze_context, cloze_answer, translation:l1)
+   * are written by the publish pipeline's projectDialogueArtifacts helper
+   * (scripts/lib/pipeline/capability-stage/projectors/dialogueArtifacts.ts).
+   * The RawProjectorInput has learningItem=null and dialogueLine populated;
+   * the byType cloze packager branches on which field is set.
+   *
+   * cloze_mcq remains item-only (its distractor pool is lesson-anchored and
+   * extending it to dialogue_line is a follow-up). dialogue_line blocks
+   * scheduled with exerciseType=cloze_mcq would be a planner bug —
+   * defensively we still emit them with their artifacts, but the projector
+   * will reject the input shape with item_not_found.
+   */
+  async function fetchForDialogueLineBlocks(
+    dialogueBlocks: DialogueLineBucketEntry[],
+    userLanguage: 'nl' | 'en',
+    result: Map<string, BlockResolutionData>,
+  ): Promise<void> {
+    if (dialogueBlocks.length === 0) return
+
+    const capabilityIds = [...new Set(dialogueBlocks.map(b => b.block.capabilityId))]
+    const artifactRows = await fetchArtifacts(capabilityIds)
+
+    // Index artifacts by capability_id → Map<kind, artifact>. Same shape as
+    // the item bucket so the resolver gets a uniform artifactsByKind map.
+    const artifactsByCapability = new Map<string, Map<ArtifactKind, CapabilityArtifact>>()
+    for (const row of artifactRows) {
+      const inner = artifactsByCapability.get(row.capability_id) ?? new Map<ArtifactKind, CapabilityArtifact>()
+      inner.set(row.artifact_kind, {
+        qualityStatus: 'approved',
+        value: row.artifact_json,
+      })
+      artifactsByCapability.set(row.capability_id, inner)
+    }
+
+    for (const { block, sourceRef } of dialogueBlocks) {
+      const artifactsByKind = artifactsByCapability.get(block.capabilityId) ?? new Map<ArtifactKind, CapabilityArtifact>()
+      const clozeContextArtifact = artifactsByKind.get('cloze_context')
+      const clozeAnswerArtifact = artifactsByKind.get('cloze_answer')
+      const translationArtifact = artifactsByKind.get('translation:l1')
+
+      const missing: string[] = []
+      if (!clozeContextArtifact) missing.push('cloze_context')
+      if (!clozeAnswerArtifact) missing.push('cloze_answer')
+      if (!translationArtifact) missing.push('translation:l1')
+      if (missing.length > 0) {
+        result.set(block.id, {
+          kind: 'fail',
+          block,
+          context: makeFailContext(block, 'dialogue_line_artifact_missing',
+            `dialogue_line cap ${block.capabilityId} is missing artifacts: ${missing.join(', ')}`,
+            { capabilityId: block.capabilityId, sourceRef, missing }),
+        })
+        continue
+      }
+
+      // Payload shapes are written by projectDialogueArtifacts:
+      //   cloze_context.value = { source_text, line_text, speaker, source_ref }
+      //   cloze_answer.value  = { value: '<word>' }
+      //   translation:l1.value = { value: '<NL line>' }
+      const ctxPayload = clozeContextArtifact!.value as {
+        source_text?: unknown; line_text?: unknown; speaker?: unknown; source_ref?: unknown
+      }
+      const answerPayload = clozeAnswerArtifact!.value as { value?: unknown }
+      const translationPayload = translationArtifact!.value as { value?: unknown }
+
+      const sourceText = typeof ctxPayload?.source_text === 'string' ? ctxPayload.source_text : ''
+      const lineText = typeof ctxPayload?.line_text === 'string' ? ctxPayload.line_text : ''
+      const speaker = typeof ctxPayload?.speaker === 'string' ? ctxPayload.speaker : null
+      const targetWord = typeof answerPayload?.value === 'string' ? answerPayload.value : ''
+      const translation = typeof translationPayload?.value === 'string' ? translationPayload.value : ''
+
+      if (!sourceText || !lineText || !targetWord || !translation) {
+        result.set(block.id, {
+          kind: 'fail',
+          block,
+          context: makeFailContext(block, 'dialogue_line_artifact_missing',
+            `dialogue_line cap ${block.capabilityId} artifacts have empty/malformed payloads`,
+            {
+              capabilityId: block.capabilityId,
+              sourceRef,
+              hasSourceText: !!sourceText,
+              hasLineText: !!lineText,
+              hasTargetWord: !!targetWord,
+              hasTranslation: !!translation,
+            }),
+        })
+        continue
+      }
+
+      const input: RawProjectorInput = {
+        block,
+        learningItem: null,
+        dialogueLine: { text: lineText, speaker, sourceRef, targetWord, translation, sourceText },
+        meanings: [],
+        contexts: [],
+        answerVariants: [],
+        variant: null,
+        artifactsByKind,
+        poolItems: [],
+        poolMeaningsByItem: new Map(),
+        userLanguage,
+      }
+      result.set(block.id, { kind: 'ok', block, input })
+    }
+  }
+
   // ─── Public surface ──────────────────────────────────────────────────────
 
   return {
     async loadBlockData(buckets, options) {
       const result = new Map<string, BlockResolutionData>()
-      // Per-source-kind fetchers run in parallel. Only item populated today;
-      // PR-B adds dialogue_line, affixed_form_pair follows, then podcasts.
+      // Per-source-kind fetchers run in parallel. item + dialogue_line populated
+      // today; affixed_form_pair follows, then podcasts.
       await Promise.all([
         fetchForItemBlocks(buckets.item, options.userLanguage, result),
+        fetchForDialogueLineBlocks(buckets.dialogue_line, options.userLanguage, result),
       ])
       return result
     },

@@ -10,6 +10,8 @@ export type ResolutionReasonCode =
   | 'sourceref_unparseable'
   | 'item_not_found'
   | 'item_inactive'
+  | 'dialogue_line_ref_unparseable'
+  | 'dialogue_line_artifact_missing'
   // Content-data gaps
   | 'no_active_variant'
   | 'no_meaning_in_lang'
