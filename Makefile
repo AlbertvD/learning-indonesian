@@ -101,11 +101,6 @@ seed-lesson-audio: ## Upload lesson audio files from content/lessons/ to indones
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
 	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-lesson-audio.ts
 
-.PHONY: seed-learning-items
-seed-learning-items: ## Seed learning items from data files (requires SUPABASE_SERVICE_KEY)
-	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
-	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-learning-items.ts
-
 .PHONY: seed-sentences
 seed-sentences: ## Seed sentence/cloze learning items (requires SUPABASE_SERVICE_KEY)
 	@test -n "$(SUPABASE_SERVICE_KEY)" || { echo "Error: SUPABASE_SERVICE_KEY is required."; exit 1; }
@@ -118,7 +113,7 @@ seed-cloze-contexts: ## Seed cloze contexts from staging (requires SUPABASE_SERV
 	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/seed-cloze-contexts.ts $(LESSON)
 
 .PHONY: seed-all
-seed-all: seed-lessons seed-podcasts seed-learning-items seed-sentences ## Seed all non-audio content (requires SUPABASE_SERVICE_KEY)
+seed-all: seed-lessons seed-podcasts seed-sentences ## Seed all non-audio content (requires SUPABASE_SERVICE_KEY)
 
 # ============================================================================
 # CONTENT PIPELINE
