@@ -876,6 +876,66 @@ Per-PR E2E breakdown:
 
 **Spec authoring policy:** each per-capability PR (2-5) writes its E2E spec FIRST (before the schema/pipeline changes), confirms the spec FAILS against the current schema (proving it tests the migrated surface), then ships the migration code that makes it pass. This is a TDD-style guard against the failure mode `feedback_answer_log_check.md` documents: claiming a feature renders when it doesn't.
 
+**How each E2E spec forces the migrated cap into a session** ("artificial activation" — the user's term in the 2026-05-21 direction):
+
+Each spec drives the test user through these steps to guarantee the migrated cap renders:
+
+```ts
+// e2e/<pr>-<source_kind>.spec.ts pattern
+
+// 1. Log in as the test user (per memory reference_test_user.md).
+await page.goto('/login')
+await page.getByLabel('Email').fill('testuser@duin.home')
+await page.getByLabel('Password').fill('TestUser123!')
+await page.getByRole('button', { name: /log in/i }).click()
+
+// 2. Activate the lesson that owns the target source_kind.
+//    - Item caps: any lesson (every lesson has item caps); use L1.
+//    - dialogue_line caps: L9 only (7 caps).
+//    - affixed_form_pair caps: L9 only (4 caps).
+//    - pattern caps: any lesson with grammar patterns (L1-L9 all have some).
+await page.goto('/lessons/<lesson-uuid>')
+await page.getByRole('checkbox', { name: /activate/i }).check()
+
+// 3. Start a session in 'lesson_practice' mode — this forces session-builder
+//    to draw caps from that lesson's pool, not from cross-lesson due-list.
+//    See src/lib/session-builder/builder.ts for the lesson_practice scope.
+await page.goto('/session?lesson=<lesson-uuid>&mode=lesson_practice')
+
+// 4. Iterate cards until the target exercise type renders. The page's
+//    [data-exercise-type] attribute (or equivalent) identifies the rendered
+//    type. If the type doesn't appear within N cards, the test fails.
+const MAX_CARDS_TO_SCAN = 30
+let foundTarget = false
+for (let i = 0; i < MAX_CARDS_TO_SCAN; i++) {
+  const exerciseType = await page.locator('[data-exercise-type]').getAttribute('data-exercise-type')
+  if (exerciseType === '<target_exercise_type>') {
+    foundTarget = true
+    break
+  }
+  // Submit a no-op / wrong answer to advance.
+  await advanceToNextCard(page)
+}
+expect(foundTarget).toBe(true)
+
+// 5. Submit a real answer to produce a capability_review_events row.
+await submitAnswer(page, '<correct-or-wrong>')
+
+// 6. Post-session: query capability_review_events to confirm the row landed
+//    for the migrated (source_kind, capability_type) tuple. This is the
+//    feedback_answer_log_check.md gate.
+const { data } = await sb.schema('indonesian')
+  .from('capability_review_events')
+  .select('capability_id, learning_capabilities!inner(source_kind, capability_type)')
+  .eq('user_id', '<test-user-uuid>')
+  .gte('created_at', '<test-start-iso>')
+expect(data.some(r => r.learning_capabilities.source_kind === '<target_source_kind>')).toBe(true)
+```
+
+**Alternative if the natural card-walk is too slow / flaky:** add a dev-only query param `?force_capability=<canonical_key>` to `/session` that bypasses the session-builder and renders a specific cap. Wire it behind `import.meta.env.DEV` so it never reaches production. Use this for the per-PR E2E spec; the production code path is unchanged. This is a one-time test-affordance, not part of the runtime contract.
+
+**When the spec is genuinely impossible** (e.g. the cap can't appear because no test-user `learner_capability_state` row exists for the brand-new cap kind): PR 5's `pattern` source kind is the only case where this matters today. Seed a state row for the test user in PR 1's `pg_dump` restore step OR programmatically activate the cap before the E2E run via a service-key migration in the spec's `beforeAll`. Document the chosen approach in the spec file's header comment.
+
 **Gate failure handling:** if any of the four gate checks fails (idempotent-check, pre-deploy, playwright, answer-log), the PR does not merge. Rollback is a revert of the PR commit + `make migrate` (idempotent — re-runs the previous schema).
 
 ### 13.4 No soak windows
