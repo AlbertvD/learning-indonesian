@@ -1,14 +1,15 @@
-// capabilityContentService — resolves SessionBlock[] into render-ready
-// ExerciseItems for the new ExperiencePlayer dispatcher.
+// lib/exercise-content/resolver — resolves SessionBlock[] into render-ready
+// ExerciseItems. Orchestrator-only; no SQL. SQL lives in ./adapter.
 //
-// See docs/plans/2026-05-02-capability-content-service-spec.md.
+// Module spec: docs/current-system/modules/exercise-content.md.
+// Fold plan: docs/plans/2026-05-21-lib-exercise-content-fold.md.
 
 import type {
   LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant,
 } from '@/types/learning'
 import type { SessionBlock } from '@/lib/session-builder'
 import type { ArtifactKind, CapabilityArtifact } from '@/lib/capabilities'
-import { decodeCanonicalKey, extractItemKey } from './capabilityContentService.internal'
+import { decodeCanonicalKey, extractItemKey } from './adapter'
 import { buildForExerciseType } from '@/lib/exercises/builders'
 import type { RawProjectorInput } from '@/lib/exercises/builders'
 import { chunkedIn } from '@/lib/chunkedQuery'
@@ -16,8 +17,8 @@ import { chunkedIn } from '@/lib/chunkedQuery'
 // ─── Reason codes ───────────────────────────────────────────────────────────
 //
 // Canonical declaration lives at @/lib/exercises/resolutionReasons to break
-// what would otherwise be a circular dependency between this service and
-// @/lib/capabilities/renderContracts (which the service now consumes for
+// what would otherwise be a circular dependency between this module and
+// @/lib/capabilities/renderContracts (which the module consumes for
 // projectBuilderInput). The re-export below preserves the existing public
 // path so external consumers keep working.
 
@@ -27,7 +28,7 @@ import type { ResolutionReasonCode } from '@/lib/exercises/resolutionReasons'
 // ─── Diagnostic + render context ─────────────────────────────────────────────
 //
 // Definitions live in src/lib/capabilities/renderContext.ts so that lib
-// consumers (session-builder, etc.) don't import them from services/.
+// consumers (session-builder, etc.) don't import them through this module.
 import type { CapabilityRenderContext, ResolutionDiagnostic } from '@/lib/capabilities'
 export type { CapabilityRenderContext, ResolutionDiagnostic }
 

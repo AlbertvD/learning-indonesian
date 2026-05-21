@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { decodeCanonicalKey, extractItemKey } from '../capabilityContentService.internal'
+import { decodeCanonicalKey, extractItemKey } from '../adapter'
 import { buildCanonicalKey } from '@/lib/capabilities/canonicalKey'
 import { CAPABILITY_SOURCE_KINDS } from '@/lib/capabilities/capabilityTypes'
 

@@ -1,7 +1,7 @@
 import { resolveSessionAudioUrl } from '@/services/audioService'
 import type { FeedbackMapInput } from '@/components/exercises/feedbackMapping'
 import type { SessionBlock } from '@/lib/session-builder'
-import type { CapabilityRenderContext } from '@/services/capabilityContentService'
+import type { CapabilityRenderContext } from '@/lib/capabilities'
 import type { SessionAudioMap } from '@/services/audioService'
 
 const GRAMMAR_CAPABILITY_TYPES = new Set(['pattern_recognition', 'pattern_contrast'])

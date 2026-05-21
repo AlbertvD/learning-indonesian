@@ -24,7 +24,7 @@ vi.mock('@/services/audioService', () => ({
   fetchSessionAudioMap: vi.fn(async () => new Map()),
 }))
 
-vi.mock('@/services/capabilityContentService', () => ({
+vi.mock('@/lib/exercise-content', () => ({
   resolveCapabilityBlocks: vi.fn(async () => new Map()),
 }))
 

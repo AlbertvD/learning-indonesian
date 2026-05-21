@@ -1,7 +1,13 @@
-// Internal helpers for capabilityContentService. Kept in a sibling file so the
-// main service file stays focused on resolveBlocks orchestration.
+// lib/exercise-content/adapter — Supabase reads + canonical-key decoding for
+// capability resolution. This is the module's sole I/O seam. Sister file to
+// ./resolver, which is pure orchestration.
 //
-// See docs/plans/2026-05-02-capability-content-service-spec.md §4.3.
+// PR-A of the lib/exercise-content fold: today this file contains only the
+// canonical-key decode + item-key extract helpers. PR-A step 2 absorbs the
+// fetcher helpers + diagnostic helpers from ./resolver and introduces the
+// public loadBlockData(buckets) seam. See:
+//   - docs/current-system/modules/exercise-content.md
+//   - docs/plans/2026-05-21-lib-exercise-content-fold.md (D3, D5)
 
 import { CAPABILITY_SOURCE_KINDS, type CapabilitySourceKind } from '@/lib/capabilities'
 

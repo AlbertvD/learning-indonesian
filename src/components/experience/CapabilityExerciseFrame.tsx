@@ -17,7 +17,7 @@ import { ExerciseErrorBoundary } from '@/components/exercises/ExerciseErrorBound
 import { normalizeAnswerResponse } from '@/lib/answerNormalization'
 import type { AnswerReport } from '@/lib/reviews/capabilityReviewProcessor'
 import type { SessionBlock } from '@/lib/session-builder'
-import type { CapabilityRenderContext } from '@/services/capabilityContentService'
+import type { CapabilityRenderContext } from '@/lib/capabilities'
 
 interface CapabilityExerciseFrameProps {
   block: SessionBlock

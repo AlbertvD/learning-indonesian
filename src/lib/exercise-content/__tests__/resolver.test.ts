@@ -1,8 +1,8 @@
-// Service-level tests for capabilityContentService.resolveBlocks.
+// Resolver-level tests for lib/exercise-content/resolver.resolveBlocks.
 // Mocks Supabase's chained query API the same way the session-builder adapter test does.
 
 import { describe, it, expect, vi } from 'vitest'
-import { createCapabilityContentService, type CapabilityContentService } from '../capabilityContentService'
+import { createCapabilityContentService, type CapabilityContentService } from '../resolver'
 import type { SessionBlock } from '@/lib/session-builder'
 import { buildCanonicalKey } from '@/lib/capabilities/canonicalKey'
 
@@ -105,7 +105,7 @@ const baseOptions = { userId: 'u-1', userLanguage: 'nl' as const, sessionId: 'se
 
 // ─── Tests ───
 
-describe('capabilityContentService.resolveBlocks', () => {
+describe('resolver.resolveBlocks', () => {
   it('returns empty map for empty input', async () => {
     const tables: Record<string, MockTable> = {}
     const service = createCapabilityContentService(makeMockClient(tables) as never)
@@ -253,7 +253,7 @@ describe('capabilityContentService.resolveBlocks', () => {
   })
 })
 
-describe('capabilityContentService.resolveBlocks — distractor pool chunking', () => {
+describe('resolver.resolveBlocks — distractor pool chunking', () => {
   it('chunks learning_items and item_meanings IN queries when the pool exceeds 50 ids', async () => {
     // 130 distinct distractor-pool ids → expect 3 chunks (50/50/30) per table.
     const POOL_SIZE = 130
@@ -331,7 +331,7 @@ describe('capabilityContentService.resolveBlocks — distractor pool chunking', 
   })
 })
 
-describe('capabilityContentService.resolveBlocks — URL-budget guard at production scale', () => {
+describe('resolver.resolveBlocks — URL-budget guard at production scale', () => {
   it('survives a 667-item distractor pool (full union of every activated lesson)', async () => {
     // Worst-case observed in prod (all 9 lessons activated, union of every
     // anchored item). The shared makeMockClient asserts URL budget on every

@@ -9,7 +9,7 @@ import type {
   SessionPlan,
   SessionBlock,
 } from '@/lib/session-builder'
-import type { CapabilityRenderContext } from '@/services/capabilityContentService'
+import type { CapabilityRenderContext } from '@/lib/capabilities'
 import type { ExerciseItem } from '@/types/learning'
 
 vi.mock('@/lib/supabase', () => ({ supabase: {} }))

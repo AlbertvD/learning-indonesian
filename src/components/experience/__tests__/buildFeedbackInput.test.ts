@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { buildFeedbackInput } from '../buildFeedbackInput'
 import type { SessionBlock } from '@/lib/session-builder'
-import type { CapabilityRenderContext } from '@/services/capabilityContentService'
+import type { CapabilityRenderContext } from '@/lib/capabilities'
 import type { ExerciseItem, ExerciseType } from '@/types/learning'
 
 function makeBlock(exerciseType: ExerciseType, capabilityType = 'meaning_recall'): SessionBlock {
