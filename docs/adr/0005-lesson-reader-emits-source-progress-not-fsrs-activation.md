@@ -2,7 +2,11 @@
 
 ## Status
 
-Accepted
+Superseded by retirement #6 (shipped 2026-05-07).
+
+The reader is now fully passive: source-progress emission was removed along with the `learner_source_progress_*` tables and functions. The renderer composes lesson page blocks and bridges to practice, but it does not emit events or activate FSRS. The capability-system module specs are the current authority — see `docs/current-system/modules/lesson-renderer.md` §3.
+
+The original decision is kept below as the historical record.
 
 ## Context
 

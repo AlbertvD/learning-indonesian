@@ -20,27 +20,14 @@ It is intentionally different from the planning docs in `docs/plans/`. The plann
 
 ## Release Posture
 
-The new capability system is additive and feature-flagged. The legacy exercise/session path remains the safe production path unless migration flags are explicitly enabled.
+The capability runtime is unified. `Session.tsx` always invokes `loadCapabilitySessionPlanForUser({ enabled: true, ... })`; the legacy migration flags that gated rollout (`VITE_CAPABILITY_REVIEW_SHADOW`, `VITE_CAPABILITY_REVIEW_COMPAT`, `VITE_CAPABILITY_STANDARD_SESSION`, `VITE_EXPERIENCE_PLAYER_V1`, `VITE_LESSON_READER_V2`) are no longer load-bearing and the runtime ignores them.
 
-Safe default release posture:
+The one flag still consulted is `VITE_LOCAL_CONTENT_PREVIEW`, which enables the `/preview` routes — local review surfaces for visual/product iteration that do not replace publishing approved content into Supabase.
 
-```text
-VITE_CAPABILITY_SESSION_DIAGNOSTICS=false
-VITE_CAPABILITY_REVIEW_SHADOW=false
-VITE_CAPABILITY_REVIEW_COMPAT=false
-VITE_CAPABILITY_STANDARD_SESSION=false
-VITE_EXPERIENCE_PLAYER_V1=false
-VITE_LESSON_READER_V2=false
-VITE_LOCAL_CONTENT_PREVIEW=false
-```
+## Key References
 
-The `/preview` routes are local review surfaces. They are useful for visual/product review, but they are not a replacement for publishing approved content into Supabase.
-
-## Key Planning References
-
-- `docs/plans/2026-04-25-capability-based-learning-architecture.md`
-- `docs/plans/2026-04-25-capability-content-pipeline-and-exercises.md`
-- `docs/plans/2026-04-25-learning-experience-ui-audio-mastery.md`
-- `docs/plans/capability-implementation-slices/00-index.md`
-- `docs/adr/0001-capability-based-learning-core.md`
-- `docs/adr/0005-lesson-reader-emits-source-progress-not-fsrs-activation.md`
+- `CLAUDE.md` — project rules, conventions, and runtime invariants.
+- `docs/target-architecture.md` — the locked-in module roster the codebase is migrating toward.
+- `docs/current-system/modules/` — per-module specs (`capabilities`, `experience`, `lesson-renderer`, `session-builder`).
+- `docs/adr/` — architecture decision records (0001 capability core through 0007 receptive-before-productive).
+- `docs/process/content-pipeline.md` — the authoring + 2-stage publish pipeline.

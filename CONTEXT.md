@@ -30,13 +30,9 @@ The scheduling/rendering readiness state of a capability. Valid states are `read
 
 The learner-specific state describing whether a capability is dormant, active, suspended, or retired for that learner. FSRS schedules active learner capabilities only.
 
-## Source Progress
-
-Evidence that a learner has encountered source material in the Lesson Reader or listening experience. Examples include opened, section exposed, intro completed, heard once, pattern noticing seen, guided practice completed, and lesson completed.
-
 ## Lesson Page Block
 
-A web-native lesson rendering block with stable identity, source refs, optional content unit refs, optional capability refs, and optional source progress events. Lesson page blocks make book-derived lessons feel modern without directly activating FSRS review.
+A web-native lesson rendering block with stable identity, source refs, optional content unit refs, and optional capability refs. Lesson page blocks make book-derived lessons feel modern without directly activating FSRS review.
 
 ## Review Processor
 
@@ -52,8 +48,8 @@ The module that composes a learning session from due active capabilities, Pedago
 
 ## Lesson Experience Module
 
-The module that renders lesson page blocks, emits source progress, and bridges to practice. It does not directly activate FSRS review.
+The module that renders lesson page blocks and bridges to practice. It is fully passive: it does not emit progress events and does not directly activate FSRS review. Source-progress emission was removed in retirement #6 (2026-05-07).
 
 ## Mastery Model
 
-A read-only model that derives learner-facing mastery from capability state, review evidence, source progress, modality spread, recency, and confidence. It does not schedule content or overclaim production ability from recognition evidence.
+A read-only model that derives learner-facing mastery from capability state, review evidence, modality spread, recency, and confidence. It does not schedule content or overclaim production ability from recognition evidence.
