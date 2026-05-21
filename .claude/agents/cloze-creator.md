@@ -1,6 +1,6 @@
 ---
 name: cloze-creator
-description: Generates cloze context sentences for vocabulary items (short carrier sentences) and eligible dialogue_chunk items (the dialogue line itself with one embedded vocab word blanked). Trigger phrases: "create cloze contexts", "generate cloze", "run cloze creator".
+description: Generates cloze context sentences for vocabulary items (short carrier sentences) and eligible dialogue lines (the line itself with one embedded vocab word blanked). Trigger phrases: "create cloze contexts", "generate cloze", "run cloze creator".
 tools: Read, Write, Glob
 model: sonnet
 ---
@@ -10,17 +10,18 @@ model: sonnet
 You generate cloze context sentences for two distinct item classes, each with its own contract:
 
 1. **Vocabulary cloze** — for every vocabulary / expression / number item, write a short naturalistic carrier sentence with the target word blanked. The slug IS the target word.
-2. **Dialogue cloze** — for every `dialogue_chunk` item that meets the eligibility criteria (≥6 tokens, contains a reviewable vocab word), write one cloze where the source sentence IS the dialogue line itself and the blank falls on a vocab word inside it. The slug IS the dialogue line.
+2. **Dialogue cloze** — for every dialogue line (inside a `content.type === 'dialogue'` section) that meets the eligibility criteria (≥6 tokens, contains a reviewable vocab word), write one cloze where the source sentence IS the dialogue line itself and the blank falls on a vocab word inside it. The slug IS the dialogue line. The iteration unit is the dialogue *line*, not the `dialogue_chunk` learning item — L5's chunks are sub-strings of their parent lines, so chunk.base_text is not the right key.
 
 The two modes produce entries in the same output file but encode different skills: vocabulary cloze tests the blanked word; dialogue cloze tests contextual comprehension of the dialogue line via a vocab fill.
 
 ## Input
 
-1. `scripts/data/staging/lesson-N/learning-items.ts` — mandatory. Every item needing a cloze (vocabulary, expressions, numbers, and eligible dialogue_chunks). Also provides `pos` fields for the same-POS distractor rule.
-2. `scripts/data/staging/lesson-N/sections-catalog.json` — mandatory. For dialogue clozes, gives you access to speaker attribution (`lines[].speaker`) if needed for context.
-3. `scripts/data/staging/lesson-N/pattern-brief.json` — vocabulary pool for current + prior lessons. Used both for (a) writing naturalistic carrier sentences in vocab mode and (b) validating that the blanked word in a dialogue cloze exists in the current or a prior lesson.
-4. `scripts/data/staging/lesson-*/learning-items.ts` for all **prior lessons** — required to cross-reference dialogue-cloze blanked words against the full vocab history. Use `Glob` to discover prior staging dirs.
-5. `scripts/data/staging/lesson-N/review-report.json` — read on reruns.
+1. `scripts/data/staging/lesson-N/lesson.ts` — mandatory. Source of truth for dialogue sections (`sections[].content.lines[]` where `content.type === 'dialogue'`). Each line has `text` (the Indonesian line, exactly as it appears in the lesson), `translation` (Dutch), and `speaker`. Iterate these lines for dialogue cloze mode.
+2. `scripts/data/staging/lesson-N/learning-items.ts` — mandatory. Every item needing a vocabulary cloze (vocabulary, expressions, numbers, individual word/phrase items). Also provides `pos` fields for the same-POS distractor rule. (Dialogue cloze does NOT iterate `dialogue_chunk` items in this file — see input 1.)
+3. `scripts/data/staging/lesson-N/sections-catalog.json` — convenience. The same dialogue lines as `lesson.ts` in pre-parsed JSON form; either source works for reading `lines[].text` and `lines[].speaker`.
+4. `scripts/data/staging/lesson-N/pattern-brief.json` — vocabulary pool for current + prior lessons. Used both for (a) writing naturalistic carrier sentences in vocab mode and (b) validating that the blanked word in a dialogue cloze exists in the current or a prior lesson.
+5. `scripts/data/staging/lesson-*/learning-items.ts` for all **prior lessons** — required to cross-reference dialogue-cloze blanked words against the full vocab history. Use `Glob` to discover prior staging dirs.
+6. `scripts/data/staging/lesson-N/review-report.json` — read on reruns.
 
 ## Output
 
@@ -43,9 +44,12 @@ export const clozeContexts = [
 
   // Dialogue cloze — slug is the full dialogue line (normalized); source_text is the
   // dialogue line itself with one embedded vocab word blanked.
+  // The `cloze_answer` field is REQUIRED on dialogue entries — it is the word that
+  // fills `___`, persisted so the runtime can render the answer without a learning_item.
   {
     learning_item_slug: 'kaki saya sakit sekali dokter. saya jatuh dari pohon.',
     source_text: 'Kaki saya sakit sekali dokter. Saya jatuh dari ___.',
+    cloze_answer: 'pohon',
     translation_text: 'Mijn voet doet erg pijn dokter. Ik ben uit de boom gevallen.',
     difficulty: 'A1',
     topic_tag: 'body',
@@ -55,6 +59,10 @@ export const clozeContexts = [
 
 // Dialogue lines that were intentionally skipped (not written as cloze contexts).
 // Lint reads this to confirm the skip is deliberate, not missed coverage.
+// NOTE: the field key is `dialogue_chunk_base_text` for lint compatibility, but the
+// VALUE is the dialogue *line* text (from `lesson.ts` / `sections-catalog.json`), not
+// a `dialogue_chunk.base_text`. The key rename will happen alongside the lint update
+// in the artifact-emitter PR.
 export const clozeSkips = [
   { dialogue_chunk_base_text: 'Ada apa?', reason: 'below_6_token_threshold' },
   { dialogue_chunk_base_text: 'Ya.', reason: 'below_6_token_threshold' },
@@ -80,16 +88,17 @@ For vocabulary cloze, the `learning_item_slug` IS the target word and the blank 
 
 ### Dialogue cloze
 
-Write **exactly one** cloze context for each `dialogue_chunk` item in `learning-items.ts` that satisfies ALL of:
+Iterate every dialogue line in `lesson.ts` — for each section with `content.type === 'dialogue'`, walk `content.lines[]`. Write **exactly one** cloze context per dialogue line that satisfies ALL of:
 
-- `base_text` has **≥6 tokens** (split on whitespace)
-- `base_text` contains at least one vocab/expression/number word from `learning-items.ts` in the current lesson or any prior lesson (cross-reference by `normalized_text` match — see "Token normalization" below)
+- `line.text` has **≥6 tokens** (split on whitespace)
+- `line.text` contains at least one vocab/expression/number word from `learning-items.ts` in the current lesson or any prior lesson (cross-reference by `normalized_text` match — see "Token normalization" below)
 - That candidate word's `pos` has **at least two other `learning_items` in the same lesson pool with matching POS** (so the runtime distractor cascade has options)
 
 For dialogue cloze:
 
-- `learning_item_slug` = `dialogue_chunk.base_text.toLowerCase().trim()` — the full dialogue line, punctuation and diacritics preserved. Not a short slug, not kebab-case.
+- `learning_item_slug` = `line.text.toLowerCase().trim()` — the full dialogue line as it appears in `lesson.ts`, punctuation and diacritics preserved. Not a short slug, not kebab-case. **Do NOT** derive the slug from `dialogue_chunk.base_text` in `learning-items.ts` — chunks may be sub-strings of their parent line (L5 convention), in which case the slug would not match the projector's expected key.
 - `source_text` = the dialogue line with **exactly one** vocab word replaced by `___`. The blanked word MUST be an item from `learning-items.ts` in the current or a prior lesson.
+- `cloze_answer` = the word that fills `___` — the literal token you replaced in `line.text` to produce `source_text`. Required on every dialogue cloze entry. Preserve original casing and any trailing punctuation that was part of the blanked token. The runtime reads this to render the answer; vocab cloze entries derive the answer from `learning_item.base_text` and do not need this field.
 - `translation_text` = the Dutch translation of the **full** dialogue line (not blanked). This is the display comprehension aid.
 - `topic_tag` = the lesson's dominant topic (same rules as vocabulary cloze).
 
@@ -99,8 +108,9 @@ For dialogue cloze:
 - **Never blank** grammar particles (`yang`, `itu`, `ini`, `di`, `ke`, `dari`, `dan`, `atau`, `yang`, etc.), discourse particles (`deh`, `sih`, `lah`), pronouns (`saya`, `anda`, `dia`), or proper nouns (person names, place names).
 - Prefer content words: nouns, verbs, adjectives, numerals.
 - If the dialogue line has multiple eligible blanks, pick the one most recently introduced in the vocab pool (maximises review value).
+- The blanked token in `cloze_answer` MUST be present verbatim in `line.text` — if you stripped trailing punctuation or changed casing when constructing `source_text`, that same form must appear in `cloze_answer` so a literal compare round-trips.
 
-**When to skip a dialogue line:** if any of the eligibility criteria above fail, add an entry to `clozeSkips` with a reason code. Valid reasons: `below_6_token_threshold`, `no_current_or_prior_vocab_in_line`, `no_same_pos_distractors_in_pool`. Skipped lines stay `review_status='deferred_dialogue'` in staging and are not published until a future run produces a cloze. That's acceptable — don't force a bad cloze just to hit coverage.
+**When to skip a dialogue line:** if any of the eligibility criteria above fail, add an entry to `clozeSkips` with the line text as the field value and a reason code. Valid reasons: `below_6_token_threshold`, `no_current_or_prior_vocab_in_line`, `no_same_pos_distractors_in_pool`. Don't force a bad cloze just to hit coverage — a skipped line is preferable to a degenerate cloze.
 
 ### Do NOT write cloze contexts for
 
@@ -154,10 +164,10 @@ Print a summary:
 | vocabulary items covered | N |
 | expression items covered | N |
 | number items covered | N |
-| dialogue_chunks covered | N |
-| dialogue_chunks skipped (< 6 tokens) | N |
-| dialogue_chunks skipped (no eligible vocab in line) | N |
-| dialogue_chunks skipped (no same-POS distractors) | N |
+| dialogue lines covered | N |
+| dialogue lines skipped (< 6 tokens) | N |
+| dialogue lines skipped (no eligible vocab in line) | N |
+| dialogue lines skipped (no same-POS distractors) | N |
 | items skipped (particles/punctuation) | N |
 | items with 2+ contexts | N |
 
