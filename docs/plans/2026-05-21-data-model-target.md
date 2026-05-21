@@ -499,27 +499,26 @@ create table indonesian.capability_content_units (
 **Decision: Retire entirely. Promote needed fields to columns.**
 
 **Evidence (investigation §3.1, §5.3):**
-- `goalTags` — **NOT uniformly dead.** 4 of 4,005 caps carry `['morphology', 'meN-active']`; the podcast projector writes `['podcast', ...]` (no podcast caps in DB today). Read into `PlannerCapability.goalTags` at `src/lib/session-builder/adapter.ts:138,154,176`. Before retiring: grep downstream of the planner-side read for any consumer that filters/orders by `goalTags`. If there is a consumer, the field must be promoted (e.g. to `learning_capabilities.goal_tags text[]`), not dropped.
+- `goalTags` — **dead in effect.** The goal subsystem that consumed this field was retired #4 (2026-05-07). 4 caps carry non-empty values + the podcast projector writes them, but `grep -rn '\.goalTags' src/` returns zero non-writer references — the values flow into `PlannerCapability.goalTags` and stop. Retire the column; remove the writers in the same PR.
 - `requiredSourceProgress` — dead in DB (always null) but still emitted by pipeline. Retiring the column requires updating `pipeline/capability-stage/runner.ts:379` + `adapter.ts:147` in the same PR.
 - `prerequisiteKeys` — actively used by `pedagogy.ts` staging gate (ADR 0007).
 - `requiredArtifacts` — duplicates `artifact_fingerprint`.
 - `skillType` — duplicates `capability_type`.
 - `difficultyLevel` — set per-cap-type, never read at runtime (verified by grep — only emitted in `capabilityCatalog.ts`, no runtime consumer).
 
-**Target shape:** Promote `prerequisiteKeys` to a typed column. Conditionally promote `goalTags` (if a consumer survives the grep). Retire everything else.
+**Target shape:** Promote `prerequisiteKeys` to a typed column. Retire everything else.
 
 ```sql
 alter table indonesian.learning_capabilities
   drop column metadata_json,
   drop column source_fingerprint,                 -- JSON-as-text; redundant with (source_kind, source_ref)
   drop column artifact_fingerprint,               -- JSON-as-text; derive from contract + cap state
-  add column prerequisite_keys text[] not null default '{}',
-  add column goal_tags text[] not null default '{}';   -- if grep finds a consumer (W1 of architect review)
+  add column prerequisite_keys text[] not null default '{}';
 ```
 
 | Field | Disposition |
 |---|---|
-| `goalTags` | **Promote to `goal_tags text[]`** if the planner-downstream grep finds any consumer; **drop** if not. Decision deferred to PR-level grep. |
+| `goalTags` | Drop — goal subsystem retired #4; grep confirms no reader. Pipeline + adapter writers at `capabilityCatalog.ts:191,205` + `podcast-stage/podcastProjectionRules.ts:81,96` + `pipeline/capability-stage/runner.ts:381` + `adapter.ts:149` removed in the same PR. |
 | `requiredSourceProgress` | Drop — source-progress retired #6. Pipeline emitters at `runner.ts:379` + `adapter.ts:147` must be updated in the same PR. |
 | `requiredArtifacts` | Drop — derivable from `renderContracts.RENDER_CONTRACTS[exercise_type].requiredArtifacts[source_kind]` |
 | `skillType` | Drop — equivalent to `capability_type` (per `capabilityCatalog.ts`) |

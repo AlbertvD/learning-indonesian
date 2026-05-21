@@ -232,10 +232,11 @@ alter table indonesian.learning_capabilities
 
 ### 4.2 Code paths that change
 
-- `src/lib/capabilities/capabilityTypes.ts` — drop `metadata_json` from `LearningCapabilityRow`; drop `goalTags`/`requiredSourceProgress`/`requiredArtifacts`/`difficultyLevel`/`skillType` from `ProjectedCapability` (or promote `goal_tags` per Decision F decision); add `prerequisiteKeys` (already there) and remove the metadata wrapping in `capabilityCatalog.ts`.
+- `src/lib/capabilities/capabilityTypes.ts` — drop `metadata_json` from `LearningCapabilityRow`; drop `goalTags`/`requiredSourceProgress`/`requiredArtifacts`/`difficultyLevel`/`skillType` from `ProjectedCapability`; `prerequisiteKeys` survives (already present); remove the metadata wrapping in `capabilityCatalog.ts`.
 - `src/lib/capabilities/capabilityCatalog.ts:30-44` — drop `sourceFingerprint`, `artifactFingerprint`, the helpers that compute them.
-- `src/lib/capabilities/capabilityCatalog.ts:191,205` — affixed_form_pair caps currently emit `goalTags: ['morphology', 'meN-active']`. Either drop the field (if no consumer) or migrate the value to the new `goal_tags` column.
-- `scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts:81,96` — podcast caps emit `goalTags: ['podcast', ...]`. Same migration as above.
+- `src/lib/capabilities/capabilityCatalog.ts:191,205` — affixed_form_pair caps currently emit `goalTags: ['morphology', 'meN-active']`. Drop the field (goal subsystem retired #4; grep confirmed no reader).
+- `scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts:81,96` — podcast caps emit `goalTags: ['podcast', ...]`. Drop similarly.
+- `src/lib/session-builder/adapter.ts:138,154,176` and `pedagogy.ts:26` — drop the `goalTags` projection through `PlannerCapability` entirely (the field has no consumer downstream).
 - `scripts/lib/pipeline/capability-stage/runner.ts:379` AND `scripts/lib/pipeline/capability-stage/adapter.ts:147` — **still actively emit `requiredSourceProgress: null` into metadata_json**. These must be removed in the same PR or the next publish run will fail (column doesn't exist).
 - `scripts/lib/pipeline/capability-stage/adapter.ts` — upsert path drops the JSON column write.
 - `src/lib/session-builder/pedagogy.ts` (the staging gate per ADR 0007) — reads `prerequisiteKeys`. Switch from `cap.metadata_json.prerequisiteKeys` to `cap.prerequisite_keys` typed column.

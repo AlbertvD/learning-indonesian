@@ -207,8 +207,8 @@ This section catalogues each non-trivial table: its purpose, columns, JSON shape
 ```
 Verified across 50 sampled rows per capability_type: shape is uniform (no per-type variation). Field status:
 
-- `goalTags` — **not uniformly empty.** 4 of 4,005 caps carry `['morphology', 'meN-active']` (the 4 `affixed_form_pair` caps, set by `capabilityCatalog.ts:191,205`). The podcast projector (`scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts:81,96`) actively emits `['podcast', 'guided_transcript']` / `['podcast', 'podcast_phrase']` for podcast caps — there are zero podcast caps in DB today but the emitter is live. The retire/keep question depends on whether `PlannerCapability.goalTags` (consumed at `src/lib/session-builder/adapter.ts:138,154,176`) is downstream-read by any session-builder logic; this needs a grep before retirement (corrected from the earlier "always []" claim).
-- `requiredSourceProgress` — always null in DB (source-progress retired #6). **But the field is still actively emitted as null by the pipeline** at `scripts/lib/pipeline/capability-stage/runner.ts:379` and `scripts/lib/pipeline/capability-stage/adapter.ts:147`. Retiring the column requires changing those emitters in the same PR.
+- `goalTags` — **dead in effect.** The goal subsystem that would have consumed this field was retired #4 (2026-05-07, `docs/plans/2026-05-07-retire-goal-subsystem.md`). 4 of 4,005 caps carry `['morphology', 'meN-active']` (the 4 `affixed_form_pair` caps at `capabilityCatalog.ts:191,205`); the podcast projector emits `['podcast', ...]` (no podcast caps in DB yet). These writes flow into `PlannerCapability.goalTags` via `src/lib/session-builder/adapter.ts:138,154,176` — and stop there. Grep `\.goalTags` across `src/` returns zero non-writer references; the field is set by emitters and projected through the planner, but **never read** for ordering, filtering, or display. Retirement is safe; the writers are dead-writes against a retired subsystem.
+- `requiredSourceProgress` — always null in DB (source-progress retired #6). **But the field is still actively emitted as null by the pipeline** at `scripts/lib/pipeline/capability-stage/runner.ts:379` and `scripts/lib/pipeline/capability-stage/adapter.ts:147`. Same shape as `goalTags`: writers survived the subsystem retirement. Retiring the column requires changing those emitters in the same PR.
 - `requiredArtifacts`, `skillType` — duplicates of columnar / type-projection data per `capabilityCatalog.ts`.
 
 **`source_fingerprint` shape:** TEXT column storing `JSON.stringify({sourceKind, sourceRef})`. Example: `"{\"sourceKind\":\"item\",\"sourceRef\":\"learning_items/akhir\"}"`. Emitted by `capabilityCatalog.ts:30-32`. Used to detect projection-input drift in the validator.
@@ -672,11 +672,11 @@ All emitted by `JSON.stringify(...)` in the projector (`capabilityCatalog.ts:30-
 | `lessons.duration_seconds` | Never populated | Always NULL |
 | `capability_review_events.rating = 4` | Easy rating never written | Zero rows of rating=4 |
 
-**Conditionally-dead fields** (filled by emitter with a usable value sometimes, but reader-side consumption is unclear):
+**Zombie-emitted fields** (writers survived the subsystem retirement that would have consumed them):
 
-| Field | Status | Verify before retiring |
-|---|---|---|
-| `learning_capabilities.metadata_json.goalTags` | Non-empty on 4 of 4,005 caps (affixed_form_pair `['morphology', 'meN-active']`); podcast emitter writes `['podcast', ...]` (no podcast caps yet). Read into `PlannerCapability.goalTags` at `src/lib/session-builder/adapter.ts:138,154,176`. | Grep `goalTags` reads downstream of session-builder; if no consumer uses the field for ordering/filtering, retiring is safe. |
+| Field | Status |
+|---|---|
+| `learning_capabilities.metadata_json.goalTags` | Goal subsystem retired #4. Emitters at `capabilityCatalog.ts:191,205` and `podcast-stage/podcastProjectionRules.ts:81,96` still write values. Adapter at `src/lib/session-builder/adapter.ts:138,154,176` projects through to `PlannerCapability.goalTags`. Grep confirms no downstream reader. Dead in effect; retire with the column. |
 
 **Declared but unused enum values:**
 
