@@ -23,7 +23,7 @@ depends_on:
 - No staged rollout / no feature flags — the runtime is unified (CLAUDE.md: "Runtime is unified — every lesson goes through the capability pipeline").
 - Live admin (Albert) iterates content in production; "Publishing policy: Everything publishes immediately." (CLAUDE.md).
 
-**Strategy (revised 2026-05-21 per user direction "no soak period; migrate ASAP"):** ship the migration as 5 dependency-ordered PRs that flow back-to-back. Within each PR, all schema changes + reader switches + writer switches + retire-old land in the same atomic commit; there are no compat windows, no feature flags, no dual-write phases. Single-user homelab app; low write volume; the schema can flip cleanly. Each PR still has its own pre-deploy gate (`make migrate-idempotent-check` + `make pre-deploy`) and visual smoke where applicable.
+**Strategy (revised 2026-05-21 per user direction "no soak period; migrate ASAP" + "repoint the seed files to the new tables and simply repopulate"):** ship the migration as 5 dependency-ordered PRs that flow back-to-back. Within each PR, all schema changes + pipeline-writer rewrites + runtime-reader rewrites + retire-old land in the same atomic commit. **No SQL backfill** — the publish pipeline (which already exists) repopulates the new tables from the canonical staging files. See §1.1 below for the repopulate strategy. There are no compat windows, no feature flags, no dual-write phases, no soak periods. Single-user homelab app; low write volume; the schema can flip cleanly. Each PR still has its own pre-deploy gate (`make migrate-idempotent-check` + `make pre-deploy`) and visual smoke where applicable.
 
 ---
 
@@ -43,7 +43,35 @@ Five PRs in dependency order. Each is internally larger than the prior 12-PR seq
 
 **Optional further collapse:** PRs 4 and 5 can merge into one if the author prefers a single lesson-content migration. They are split here for review surface — each PR rewrites a distinct module (lesson reader for PR 4; section consumers for PR 5).
 
-### 1.1 Mapping from the per-PR detail sections to the 5-PR sequence
+### 1.1 Repopulate strategy — no SQL backfill
+
+User direction (2026-05-21): "perhaps not migrate but repoint the seed files to the new tables and simply repopulate."
+
+The staging files at `scripts/data/staging/lesson-N/` are the canonical source of truth for all content (CLAUDE.md §"Derived staging files"). The DB tables are projections, written by `bun scripts/publish-approved-content.ts <N>`. Each lesson can be re-published from staging at any time.
+
+This means every per-PR "backfill" in the sections below is achievable by **re-running the publish pipeline against repointed writers**, not by hand-written one-shot SQL. The pipeline already exists; it already does the shape classification (paragraph vs categories vs sentences for reading sections, etc.); it already upserts capabilities on `canonical_key` (verified: `scripts/lib/pipeline/capability-stage/adapter.ts:152`). Capability `id` UUIDs are preserved across republishes, so FSRS state in `learner_capability_state` and the audit log in `capability_review_events` are NOT orphaned by re-publishing.
+
+**Per-PR data step under the repopulate strategy:**
+
+1. Edit the pipeline writer to emit the new typed-table rows instead of the old shape.
+2. Edit the runtime reader to read the new tables.
+3. CREATE the new tables; DROP the old.
+4. Re-run `bun scripts/publish-approved-content.ts <N>` for every lesson 1..9 (or whichever lessons hold content the new tables need).
+5. Verify with `make check-supabase-deep` + visual smoke.
+
+**Trade-off vs. SQL backfill:** the repopulate strategy has the publish pipeline as the only writer of the new tables, which means (a) no parallel maintenance of a one-shot SQL parser; (b) the shape transformation lives in TypeScript with type safety; (c) any shape-classification bugs surface in the pipeline (where they're caught by validators) rather than in raw SQL; (d) re-running publishing is a normal app operation, not a privileged DB hack.
+
+**Caveats:**
+
+- `learner_capability_state` + `capability_review_events`: not repopulatable from staging — they are learner data. They survive because `learning_capabilities.id` is stable across republishes (upsert on `canonical_key`). The slim-column ALTERs in new PR 1 preserve `id` (ALTER doesn't recreate rows).
+- `audio_clips`: TTS-rendered audio, expensive to regenerate. Survives unchanged (no shape change in §3 of target doc). The new `capability_audio_refs` rows get populated by republishing the capability stage.
+- `learner_lesson_activation`, `profiles`, `user_roles`, `error_logs`: pure user state, not touched.
+- `learning_sessions`: pure session data, not touched.
+- Edge function `commit-capability-answer-report`: PR 1's column renames in `capability_review_events` require an edge-function deploy alongside the schema migration (no repopulate-equivalent path).
+
+**The backfill SQL blocks in §§6-12 below are kept as illustrative reference** — they document the data shape correspondence between old and new tables. In practice you do not run them; you re-publish.
+
+### 1.2 Mapping from the per-PR detail sections to the 5-PR sequence
 
 The detail sections that follow (§2-§12) were authored against an earlier 11-PR breakdown. They are retained for their schema diffs + backfill SQL + code-paths-touched, but they consolidate into the 5-PR sequence above as follows:
 
@@ -55,7 +83,7 @@ The detail sections that follow (§2-§12) were authored against an earlier 11-P
 | **PR 4 (lesson_blocks satellites)** | §11 (`lesson_page_blocks` replacement). Drop of `lesson_page_blocks` in same PR. |
 | **PR 5 (lesson_section satellites)** | §12 (`lesson_sections.content` replacement). `lesson_sections.content` column dropped in same PR. |
 
-When reading §§2-12, treat each "old PR N" header as describing a chunk of one of the 5 new PRs.
+When reading §§2-12, treat each "old PR N" header as describing a chunk of one of the 5 new PRs. The SQL backfill snippets there are kept for shape-correspondence reference — under the §1.1 repopulate strategy you re-publish from staging instead of running the SQL.
 
 ---
 
@@ -805,14 +833,16 @@ Per user direction (2026-05-21): no soak windows; PRs ship back-to-back. Each PR
 
 The pre-PR-1 backup is the only "wait" in the sequence: `pg_dump --table=indonesian.learner_item_state --table=indonesian.learner_skill_state --table=indonesian.review_events` to `learning-indonesian-archive/legacy-state-2026-05-21.sql.gz` BEFORE PR 1 runs. This is a one-time archive operation, not a soak. After it lands, PR 1 drops those tables in the same change.
 
-**Order of ops per PR:**
-1. Update `scripts/migration.sql` with the schema change.
+**Order of ops per PR (revised for repopulate):**
+1. Update `scripts/migration.sql` with the schema change (CREATE new tables + slim/ALTER existing + DROP old).
 2. Update `supabase/functions/commit-capability-answer-report` (PR 1 only — for column renames).
-3. Update runtime + pipeline code that reads/writes the changed shape.
-4. Update staging files and any subagent prompts that emit the old shape.
-5. Run `make migrate-idempotent-check` + `make pre-deploy`.
-6. Merge; deploy edge function if changed; recreate container.
-7. Manual smoke (visual lesson reader + a real session) — these are minutes of work, not days.
+3. Update runtime code that reads the changed shape.
+4. Update pipeline writer code (`scripts/lib/pipeline/*-stage/*.ts`) to emit the new typed tables.
+5. Update staging files (and any subagent prompts) that carry shape the pipeline now writes differently. For derived staging files (`capabilities.ts`, `content-units.ts`, `exercise-assets.ts`, `lesson-page-blocks.ts`), the pipeline regenerates them — no manual edit needed.
+6. Run `make migrate-idempotent-check` + `make pre-deploy`.
+7. Run `make migrate` to apply the schema (homelab).
+8. Re-publish every affected lesson: `for i in {1..9}; do bun scripts/publish-approved-content.ts $i; done`. The pipeline writes the new tables; the old tables (if not yet dropped) become stale or get DROPPED in step 1.
+9. Visual smoke (lesson reader + a real session). Confirm via `select count(*) from <new_table>` that the publish populated rows as expected.
 
 This is feasible at single-user scale. It would not be at multi-tenant scale; if the app grows users, future migrations need the soak/dual-write pattern. Documented for the next contributor.
 
@@ -846,7 +876,7 @@ These are decisions the user / architect must weigh in on before any PR ships:
 
 2. **Audio orphans.** `audio_clips` has 1,334 unreferenced storage paths (investigation §3.11). Either include a cleanup `DELETE FROM audio_clips WHERE id NOT IN (SELECT audio_clip_id FROM capability_audio_refs)` in PR 2's last step, or defer to a separate audio-storage hygiene pass. Recommendation: include in PR 2.
 
-3. **Coordination with staging-file regeneration.** The pipeline regenerates `scripts/data/staging/lesson-N/{capabilities,content-units,exercise-assets,lesson-page-blocks}.ts` from canonical inputs (CLAUDE.md:281). Each PR that changes the projection's emitter shape must also update the corresponding staging-file template — confirm coverage when the PRs are written.
+3. **Coordination with staging-file regeneration.** The pipeline regenerates `scripts/data/staging/lesson-N/{capabilities,content-units,exercise-assets,lesson-page-blocks}.ts` from canonical inputs (CLAUDE.md:281). Under the §1.1 repopulate strategy this is the central mechanism — each PR rewrites the pipeline writers and re-publishes, which regenerates these derived files automatically. The canonical staging files (`learning-items.ts`, `grammar-patterns.ts`, `morphology-patterns.ts`) need updating only if their shape changes (mostly they don't; the pipeline reads them as-is).
 
 4. **Should this migration coincide with the `2026-05-18-fold-lib-lessons` plan?** That plan folds `lessonService` into `lib/lessons/`. The two interact (this migration changes what `lib/lessons/` reads). Sequencing: PR 4/5 of this migration touch the same code surface. Recommend: lib-lessons fold first (it's already an `approved` plan), then PR 4 of this migration builds on the folded shape.
 
