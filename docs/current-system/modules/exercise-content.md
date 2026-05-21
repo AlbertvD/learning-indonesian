@@ -3,29 +3,31 @@ module: exercise-content
 surface: src/lib/exercise-content/
 last_verified_against_code: 2026-05-21
 inbound_port: src/lib/exercise-content/index.ts
-status: in-flight
+status: stable
 ---
 
 # Exercise content deep module
 
 **Surface:** `src/lib/exercise-content/`. Inbound port: `index.ts` — the public surface every production caller imports from. Internal files remain importable from their paths for tests and sibling files inside the module.
 
-**Status:** in-flight as of 2026-05-21. PR-A of `docs/plans/2026-05-21-lib-exercise-content-fold.md` is landing the module. Before-PR-A, the logic this spec documents lived in `src/services/capabilityContentService.ts` + `capabilityContentService.internal.ts` + `src/lib/exercises/builders/*`. The spec is written **first** as the diff target for the fold; behavioral claims cite either the current legacy paths (during PR-A) or the new module paths (post PR-A merge). The frontmatter flips to `stable` and `last_verified_against_code` is bumped on PR-A merge.
+**Status:** stable as of 2026-05-21. The module was created by PR-A of `docs/plans/2026-05-21-lib-exercise-content-fold.md` (commits `bc45009` step 1, `c70271e` step 2, `fbefba7` step 3). Before PR-A, the logic lived in `src/services/capabilityContentService.ts` + `capabilityContentService.internal.ts` + `src/lib/exercises/builders/*`. Today PR-A is shipped; behavioral claims cite the new module paths. The fold is a pure relocation + internal restructuring around source-kind bucketing; the public surface (the factory + `resolveCapabilityBlocks` convenience + `CapabilityContentService` interface + type re-exports) is byte-identical to pre-fold.
 
-**Files (post-fold target shape):**
+**Files (verified line counts 2026-05-21 via `wc -l`):**
 
-| File | LOC (estimated post-fold) | Role |
+| File | LOC | Role |
 |---|---|---|
-| `index.ts` | — | Barrel — re-exports `resolveBlocks`, `resolveCapabilityBlocks`, `createService`. Re-exports `CapabilityRenderContext` + `ResolutionDiagnostic` types from `@/lib/capabilities` for ergonomic callers. |
-| `resolver.ts` | ~90 | `resolveBlocks(blocks, options)` orchestrator. Decode + bucket-by-source-kind → adapter.loadBlockData → per-block dispatch via `buildForExerciseType`. No SQL. |
-| `adapter.ts` | ~205 | Source-kind-specific fetchers, bucketing dispatch, canonical-key decode (absorbs former `internal.ts`), diagnostic helpers (`makeFailContext`, `logResolutionFailure`, `trimPayloadSnapshot`). One public function `loadBlockData(buckets)` + factory `createService(client)`. Sole SQL touchpoint of the module. |
-| `byType/index.ts` | ~70 | Barrel + `buildForExerciseType(exerciseType, raw)` dispatch + `BUILDERS` registry. |
-| `byType/<exerciseType>.ts` | ~545 across 12 files | Per-exercise-type packagers. Source-kind-agnostic. Receive `BuilderInputFor<T>` (narrowed by the projector), return `BuilderResult`. The 12 files: `recognitionMcq.ts`, `cuedRecall.ts`, `typedRecall.ts`, `meaningRecall.ts`, `listeningMcq.ts`, `dictation.ts`, `cloze.ts`, `clozeMcq.ts`, `contrastPair.ts`, `sentenceTransformation.ts`, `constrainedTranslation.ts`, `speaking.ts`. |
-| `byType/helpers.ts` | ~28 | Shared helpers — `pickUserLangMeaning`, `shuffle`. |
-| `byType/types.ts` | ~28 | `BuilderResult` type + re-export of `BuilderInputFor<T>`, `RawProjectorInput` from `@/lib/capabilities`. |
-| `__tests__/resolver.test.ts` | ~380 | Mocked-Supabase service tests including the URL-budget guard for Kong's 8 KB request-line buffer. |
-| `__tests__/adapter.test.ts` | — | Unit tests for `decodeCanonicalKey` + `extractItemKey` (absorbed from former `capabilityContentService.internal.test.ts`); per-bucket fetcher tests added over time. |
-| `__tests__/byType.test.ts` | ~440 | Builder unit tests covering all 12 exercise types. |
+| `index.ts` | 20 | Barrel — re-exports `createCapabilityContentService`, `resolveCapabilityBlocks`, and the public types (`CapabilityContentService`, `ResolveOptions`, `ResolutionReasonCode`, `CapabilityRenderContext`, `ResolutionDiagnostic`). |
+| `resolver.ts` | 140 | `resolveBlocks(blocks, options)` orchestrator + `createCapabilityContentService(client)` factory + `resolveCapabilityBlocks` lazy convenience. Decode + bucket → `adapter.loadBlockData` → per-block dispatch via `buildForExerciseType`. **No SQL.** |
+| `adapter.ts` | 450 | Source-kind bucketing (`bucketByDecodedSourceKind`), per-source-kind fetchers (today: `fetchForItemBlocks`), canonical-key decode (`decodeCanonicalKey` + `extractItemKey`, absorbed from former `internal.ts`), diagnostic helpers (`makeFailContext`, `trimPayloadSnapshot`). Public surface: one `Adapter` interface with `loadBlockData` + `logResolutionFailure`; factory `createAdapter(client)`. **Sole SQL touchpoint of the module.** |
+| `byType/index.ts` | 73 | Barrel + `buildForExerciseType(exerciseType, raw)` dispatch + `BUILDERS` registry. |
+| `byType/<exerciseType>.ts` | 543 across 12 files | Per-exercise-type packagers. Source-kind-agnostic. Receive `BuilderInputFor<T>` (narrowed by the projector), return `BuilderResult`. The 12 files: `recognitionMcq.ts` (56), `cuedRecall.ts` (61), `typedRecall.ts` (19), `meaningRecall.ts` (17), `listeningMcq.ts` (56), `dictation.ts` (20), `cloze.ts` (31), `clozeMcq.ts` (112), `contrastPair.ts` (48), `sentenceTransformation.ts` (39), `constrainedTranslation.ts` (42), `speaking.ts` (44). |
+| `byType/helpers.ts` | 28 | Shared helpers — `pickUserLangMeaning`, `shuffle`. |
+| `byType/types.ts` | 28 | `BuilderResult` type + re-export of `BuilderInputFor<T>`, `RawProjectorInput` from `@/lib/capabilities`. |
+| `__tests__/resolver.test.ts` | 380 | Mocked-Supabase service tests including the URL-budget guard for Kong's 8 KB request-line buffer. |
+| `__tests__/adapter.test.ts` | 92 | Unit tests for `decodeCanonicalKey` + `extractItemKey` (absorbed from former `capabilityContentService.internal.test.ts`); per-bucket fetcher tests added over time. |
+| `__tests__/byType.test.ts` | 440 | Builder unit tests covering all 12 exercise types via `buildForExerciseType` (exercises projector + dispatch + builder). |
+
+**Note on `adapter.ts` size (450 LOC, over the ~300 LOC trigger named in fold plan D5):** the file is single-source-kind today — one polymorphic fetcher (`fetchForItemBlocks`) plus bucketing + diagnostic helpers + factory. D5's split trigger is "when a second per-kind fetcher is added" (i.e. PR-B's `fetchForDialogueLineBlocks`), which is what actually shallows the file. Splitting today produces a one-file `adapter/byKind/item.ts` directory — target-arch smell on its own. The current shape is intentional; split happens with PR-B.
 
 **Consumers (production, verified via grep 2026-05-21):**
 
@@ -257,8 +259,13 @@ Wave 1 gathers item UUIDs from slug-shaped source refs (`learning_items/<slug>`)
 
 ## 8. Migration history
 
-- **2026-05-21 → PR-A merge (TBD):** the fold itself. See `docs/plans/2026-05-21-lib-exercise-content-fold.md`. Before-PR-A logic lived in `src/services/capabilityContentService.ts` (375 LOC) + `capabilityContentService.internal.ts` (53 LOC) + `src/lib/exercises/builders/` (12 packagers + helpers + index + tests). PR-A is a pure relocation + internal restructuring around source-kind bucketing; behavior is byte-identical (verified by the PR-A baseline-diff verification gate).
+- **2026-05-21 — PR-A shipped:** the fold itself, in three commits.
+  - `bc45009` — step 1: `git mv` `capabilityContentService{,.internal}.ts` → `lib/exercise-content/resolver.ts` + `adapter.ts`; relocate the two test files; create `index.ts` barrel; update 4 production + 3 test importers; retarget 5 `CapabilityRenderContext` type-only imports to `@/lib/capabilities` (the canonical home).
+  - `c70271e` — step 2: `git mv` 12 builders + helpers + types + index + test from `lib/exercises/builders/` → `lib/exercise-content/byType/` with camelCase rename per target-arch naming rules; update resolver.ts to import `buildForExerciseType` from `./byType`.
+  - `fbefba7` — step 3: extract bucketing seam. Moved all fetchers + diagnostic helpers from `resolver.ts` into `adapter.ts`; introduced `bucketByDecodedSourceKind(blocks): { buckets, failures }` (pure function) and `createAdapter(client): Adapter` with `loadBlockData(buckets, opts)` running per-source-kind fetchers in parallel via `Promise.all`. Resolver became pure orchestration (140 LOC, no SQL); adapter became the single I/O seam (450 LOC). Public surface unchanged.
+
+  Test baseline preserved across all three commits: 1193 passing, 0 lint errors, 4 pre-existing warnings, build clean.
 
 - **2026-05-18 (PR #65):** the render contract layer was extracted into `@/lib/capabilities/renderContracts.ts`. The pre-PR-#65 service had per-builder runtime guards (`if (!input.X) return fail`) which were retired in favor of `projectBuilderInput`'s typed narrowing. This is the seam exercise-content consumes today.
 
-- **Pre-fold legacy paths:** `src/services/capabilityContentService.ts`, `src/services/capabilityContentService.internal.ts`, `src/lib/exercises/builders/*`. These delete at PR-A merge.
+- **Pre-fold legacy paths (DELETED at PR-A):** `src/services/capabilityContentService.ts`, `src/services/capabilityContentService.internal.ts`, `src/lib/exercises/builders/*`.
