@@ -24,8 +24,14 @@ fi
 
 echo "✓ Pre-commit checks passed."
 
-# homelab-platform: destructive operation guard
+# Staged-set check — refuses mixed-docs+code and >10-file commits
+# (escape: ALLOW_MIXED_COMMIT=1 / ALLOW_LARGE_COMMIT=1)
 _evals_dir="$(git rev-parse --show-toplevel)/evals"
+if [ -f "$_evals_dir/staged-set-check.sh" ]; then
+  bash "$_evals_dir/staged-set-check.sh" || exit 1
+fi
+
+# homelab-platform: destructive operation guard
 if [ -f "$_evals_dir/destructive-op-check.sh" ]; then
   bash "$_evals_dir/destructive-op-check.sh" || exit 1
 fi
