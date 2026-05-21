@@ -244,13 +244,6 @@ export interface ExerciseItem {
   }
 }
 
-export interface SessionQueueItem {
-  source: 'vocab'
-  exerciseItem: ExerciseItem
-  learnerItemState: LearnerItemState | null
-  learnerSkillState: LearnerSkillState | null
-}
-
 // === Leaderboard types ===
 
 export type LeaderboardMetric = 'total_seconds_spent' | 'lessons_completed' | 'items_learned' | 'days_active'
