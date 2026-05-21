@@ -1,4 +1,4 @@
-﻿import { projectCapabilities } from '../../../../src/lib/capabilities/capabilityCatalog'
+﻿import { projectCapabilities } from '@/lib/capabilities'
 import { projectPodcastCapabilities } from '../../../lib/pipeline/podcast-stage/podcastProjectionRules'
 import { podcastSegments } from './podcast-segments'
 import { podcastPhrases } from './podcast-phrases'

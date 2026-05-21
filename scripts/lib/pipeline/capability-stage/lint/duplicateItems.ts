@@ -21,7 +21,7 @@
  * rule is trivially unit-testable.
  */
 
-import { itemSlug } from '../../../../../src/lib/capabilities/itemSlug'
+import { itemSlug } from '@/lib/capabilities'
 
 export interface LessonItemsInput {
   lesson: number

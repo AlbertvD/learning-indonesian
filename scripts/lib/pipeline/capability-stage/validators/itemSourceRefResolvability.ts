@@ -21,7 +21,7 @@
  * slug derivation).
  */
 
-import { itemSlug } from '../../../../../src/lib/capabilities/itemSlug'
+import { itemSlug } from '@/lib/capabilities'
 
 // Minimal structural types — decoupled from CapabilityInput / LearningItemInput
 // so the runner can pass `staging.learningItems` (LearningItemStagingRow[])

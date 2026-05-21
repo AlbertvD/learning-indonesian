@@ -4,7 +4,7 @@ import {
   type ArtifactBuildContext,
   type StagingExerciseAsset,
 } from '../content-pipeline-output'
-import type { ProjectedCapability } from '../../../src/lib/capabilities/capabilityTypes'
+import type { ProjectedCapability } from '@/lib/capabilities'
 
 const ITEM_SOURCE_REF = 'learning_items/makan'
 const PATTERN_SOURCE_REF = 'lesson-1/pattern-noun-adjective'

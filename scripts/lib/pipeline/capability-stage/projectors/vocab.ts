@@ -13,10 +13,11 @@
  */
 
 import {
+  buildCanonicalKey,
   CAPABILITY_PROJECTION_VERSION,
-} from '../../../../../src/lib/capabilities/capabilityTypes'
-import { buildCanonicalKey, normalizeLessonSourceRef } from '../../../../../src/lib/capabilities/canonicalKey'
-import { itemSlug } from '../../../../../src/lib/capabilities/itemSlug'
+  itemSlug,
+  normalizeLessonSourceRef,
+} from '@/lib/capabilities'
 
 import type {
   CapabilityInput,

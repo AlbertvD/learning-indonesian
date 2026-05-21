@@ -23,7 +23,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 import { candidateSlugs } from './projectors/slugs'
 import { normalizeTtsText } from '../../tts-normalize'
-import { itemSlug } from '../../../../src/lib/capabilities/itemSlug'
+import { itemSlug } from '@/lib/capabilities'
 
 // Homelab uses an internal Step-CA certificate that Node/Bun does not trust by default.
 // This is safe — we're connecting to our own internal Supabase instance.

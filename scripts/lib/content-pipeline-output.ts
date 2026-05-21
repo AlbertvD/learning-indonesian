@@ -1,13 +1,13 @@
-import { projectCapabilities } from '../../src/lib/capabilities/capabilityCatalog'
+import {
+  ARTIFACT_KINDS,
+  itemSlug,
+  projectCapabilities,
+  type ArtifactKind,
+  type CurrentAffixedFormPair,
+  type ProjectedCapability,
+} from '@/lib/capabilities'
 import { projectPodcastCapabilities } from './pipeline/podcast-stage/podcastProjectionRules'
-import { ARTIFACT_KINDS } from '../../src/lib/capabilities/artifactRegistry'
-import { itemSlug } from '../../src/lib/capabilities/itemSlug'
 import { normalizeTtsText } from './tts-normalize'
-import type {
-  ArtifactKind,
-  CurrentAffixedFormPair,
-  ProjectedCapability,
-} from '../../src/lib/capabilities/capabilityTypes'
 
 /**
  * Per-lesson audio coverage map keyed by `normalizeTtsText(base_text)`.

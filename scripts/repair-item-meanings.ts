@@ -16,7 +16,7 @@
 import { createClient } from '@supabase/supabase-js'
 import fs from 'fs'
 import path from 'path'
-import { itemSlug } from '../src/lib/capabilities/itemSlug'
+import { itemSlug } from '@/lib/capabilities'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 

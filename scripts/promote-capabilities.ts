@@ -1,8 +1,12 @@
 import { createClient } from '@supabase/supabase-js'
 import { pathToFileURL } from 'node:url'
-import { validateCapability, type CapabilityReadiness } from '../src/lib/capabilities/capabilityContracts'
-import type { ArtifactIndex } from '../src/lib/capabilities/artifactRegistry'
-import type { ArtifactKind, ProjectedCapability } from '../src/lib/capabilities/capabilityTypes'
+import {
+  validateCapability,
+  type ArtifactIndex,
+  type ArtifactKind,
+  type CapabilityReadiness,
+  type ProjectedCapability,
+} from '@/lib/capabilities'
 import { hasConcreteArtifactPayload } from './lib/content-pipeline-output'
 
 interface CapabilityRow {

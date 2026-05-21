@@ -2,21 +2,19 @@ import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
-import { projectCapabilities } from '../src/lib/capabilities/capabilityCatalog'
-import { projectPodcastCapabilities } from './lib/pipeline/podcast-stage/podcastProjectionRules'
 import {
+  itemSlug,
+  projectCapabilities,
   validateCapabilities,
   validateCapability,
+  type ArtifactIndex,
+  type ArtifactKind,
   type CapabilityHealthReport,
-} from '../src/lib/capabilities/capabilityContracts'
-import type { ArtifactIndex } from '../src/lib/capabilities/artifactRegistry'
-import { itemSlug } from '../src/lib/capabilities/itemSlug'
-import type {
-  ArtifactKind,
-  CurrentContentSnapshot,
-  CurrentLearningItem,
-  ProjectedCapability,
-} from '../src/lib/capabilities/capabilityTypes'
+  type CurrentContentSnapshot,
+  type CurrentLearningItem,
+  type ProjectedCapability,
+} from '@/lib/capabilities'
+import { projectPodcastCapabilities } from './lib/pipeline/podcast-stage/podcastProjectionRules'
 import { resolveExercise } from '../src/lib/exercises/exerciseResolver'
 import { hasConcreteArtifactPayload } from './lib/content-pipeline-output'
 

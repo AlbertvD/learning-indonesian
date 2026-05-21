@@ -13,6 +13,7 @@
  */
 
 import {
+  buildCanonicalKey,
   CAPABILITY_PROJECTION_VERSION,
   type ArtifactKind,
   type CapabilityDirection,
@@ -22,9 +23,8 @@ import {
   type CurrentContentSnapshot,
   type LearnerLanguage,
   type ProjectedCapability,
-} from '../../../../src/lib/capabilities/capabilityTypes'
-import { buildCanonicalKey } from '../../../../src/lib/capabilities/canonicalKey'
-import type { SkillType } from '../../../../src/types/learning'
+} from '@/lib/capabilities'
+import type { SkillType } from '@/types/learning'
 
 interface CapabilityDraft {
   sourceKind: CapabilitySourceKind

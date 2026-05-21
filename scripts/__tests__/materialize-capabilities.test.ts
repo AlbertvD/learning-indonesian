@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { parseMaterializeArgs, planCapabilityMaterialization } from '../materialize-capabilities'
-import type { ProjectedCapability } from '../../src/lib/capabilities/capabilityTypes'
+import type { ProjectedCapability } from '@/lib/capabilities'
 
 function capability(overrides: Partial<ProjectedCapability> = {}): ProjectedCapability {
   return {

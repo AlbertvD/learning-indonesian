@@ -1,17 +1,18 @@
-import type {
-  ArtifactKind,
-  CapabilityAlias,
-  CapabilityDirection,
-  CapabilityModality,
-  CapabilitySourceKind,
-  CapabilityType,
-  LearnerLanguage,
-  ProjectedCapability,
-} from '../src/lib/capabilities/capabilityTypes'
-import { hasApprovedArtifact, type ArtifactIndex } from '../src/lib/capabilities/artifactRegistry'
-import { projectCapabilities } from '../src/lib/capabilities/capabilityCatalog'
+import {
+  hasApprovedArtifact,
+  projectCapabilities,
+  validateCapabilities,
+  type ArtifactIndex,
+  type ArtifactKind,
+  type CapabilityAlias,
+  type CapabilityDirection,
+  type CapabilityModality,
+  type CapabilitySourceKind,
+  type CapabilityType,
+  type LearnerLanguage,
+  type ProjectedCapability,
+} from '@/lib/capabilities'
 import { projectPodcastCapabilities } from './lib/pipeline/podcast-stage/podcastProjectionRules'
-import { validateCapabilities } from '../src/lib/capabilities/capabilityContracts'
 import { loadStagedContentSnapshot } from './check-capability-health'
 
 type ReadinessStatus = 'ready' | 'blocked' | 'exposure_only' | 'deprecated' | 'unknown'

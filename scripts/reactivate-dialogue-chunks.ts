@@ -24,7 +24,7 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import fs from 'fs'
 import path from 'path'
-import { itemSlug } from '../src/lib/capabilities/itemSlug'
+import { itemSlug } from '@/lib/capabilities'
 
 // Homelab's internal Step-CA cert isn't trusted by default.
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'

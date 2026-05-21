@@ -13,7 +13,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import path from 'path'
-import { itemSlug } from '../src/lib/capabilities/itemSlug'
+import { itemSlug } from '@/lib/capabilities'
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://api.supabase.duin.home'
 const serviceKey = process.env.SUPABASE_SERVICE_KEY
