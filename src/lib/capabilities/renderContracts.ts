@@ -26,91 +26,129 @@ import type { SessionBlock } from '@/lib/session-builder'
  * and an exercise builder for one ExerciseType. validateCapability consults
  * this to decide readiness; the resolver consults it to dispatch; the
  * projector consults it to narrow the typed input handed to the builder.
+ *
+ * `requiredArtifacts` is source-kind-keyed: each entry in
+ * `supportedSourceKinds` must have a corresponding non-undefined entry under
+ * `requiredArtifacts`. This shape lets the same exercise (e.g. typed_recall)
+ * declare different artifact dependencies under different source kinds —
+ * item-sourced typed_recall reads base_text + meaning:l1 + accepted_answers:id;
+ * affixed_form_pair-sourced typed_recall reads root_derived_pair +
+ * allomorph_rule. Enforced via a runtime exhaustiveness assertion at module
+ * load time (see ASSERT_REQUIRED_ARTIFACTS_COMPLETE below).
  */
 export interface RenderContract {
   /** Which capability types this exercise serves. */
   capabilityTypes: readonly CapabilityType[]
   /** Which source kinds the exercise can render from. `cloze` accepts
    *  ['item', 'dialogue_line'] post the 2026-05-21 lib/exercise-content fold
-   *  (PR-B); every other entry remains ['item'] until its source-kind fetcher
-   *  lands in lib/exercise-content/adapter. (`cloze_mcq` needs a lesson-
-   *  anchored distractor pool that hasn't been extended to dialogue_line —
-   *  follow-up.) See docs/current-system/modules/exercise-content.md §3 for
-   *  the bucketing dispatch shape. */
+   *  (PR-B); `typed_recall` accepts ['item', 'affixed_form_pair'] post the
+   *  affixed-form-pair PR (today); every other entry remains ['item'] until
+   *  its source-kind fetcher lands in lib/exercise-content/byKind. */
   supportedSourceKinds: readonly CapabilitySourceKind[]
-  /** Artifacts that must be present + approved for the exercise to render. */
-  requiredArtifacts: readonly ArtifactKind[]
+  /** Artifacts that must be present + approved for the exercise to render
+   *  under each supported source kind. The key set must equal the set of
+   *  source kinds named in `supportedSourceKinds` (asserted at module load). */
+  requiredArtifacts: Partial<Record<CapabilitySourceKind, readonly ArtifactKind[]>>
 }
 
 export const RENDER_CONTRACTS = {
   recognition_mcq: {
     capabilityTypes: ['text_recognition'],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: ['base_text', 'meaning:l1'],
+    requiredArtifacts: { item: ['base_text', 'meaning:l1'] },
   },
   cued_recall: {
+    // cued_recall serves root_derived_* cap types but its
+    // supportedSourceKinds stays ['item'] — affixed_form_pair extension
+    // requires authored distractors, deferred to a follow-up plan (D3/D4
+    // of the affixed-form-pair plan).
     capabilityTypes: ['l1_to_id_choice', 'form_recall', 'root_derived_recognition', 'root_derived_recall'],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: ['base_text', 'meaning:l1'],
+    requiredArtifacts: { item: ['base_text', 'meaning:l1'] },
   },
   typed_recall: {
     capabilityTypes: ['form_recall', 'root_derived_recognition', 'root_derived_recall'],
-    supportedSourceKinds: ['item'],
-    requiredArtifacts: ['base_text', 'meaning:l1', 'accepted_answers:id'],
+    supportedSourceKinds: ['item', 'affixed_form_pair'],
+    requiredArtifacts: {
+      item: ['base_text', 'meaning:l1', 'accepted_answers:id'],
+      affixed_form_pair: ['root_derived_pair', 'allomorph_rule'],
+    },
   },
   meaning_recall: {
     capabilityTypes: ['meaning_recall'],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: ['meaning:l1', 'accepted_answers:l1'],
+    requiredArtifacts: { item: ['meaning:l1', 'accepted_answers:l1'] },
   },
   listening_mcq: {
     capabilityTypes: ['audio_recognition', 'podcast_gist'],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: ['audio_clip', 'meaning:l1'],
+    requiredArtifacts: { item: ['audio_clip', 'meaning:l1'] },
   },
   dictation: {
     capabilityTypes: ['dictation'],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: ['audio_clip', 'base_text', 'accepted_answers:id'],
+    requiredArtifacts: { item: ['audio_clip', 'base_text', 'accepted_answers:id'] },
   },
   cloze: {
     capabilityTypes: ['contextual_cloze'],
     supportedSourceKinds: ['item', 'dialogue_line'],
-    requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
+    requiredArtifacts: {
+      item: ['cloze_context', 'cloze_answer', 'translation:l1'],
+      dialogue_line: ['cloze_context', 'cloze_answer', 'translation:l1'],
+    },
   },
   cloze_mcq: {
     // dialogue_line is intentionally absent — cloze_mcq's distractor pool is
-    // derived from item_contexts.source_lesson_id (see adapter.fetchForItem-
-    // Blocks). Adding dialogue_line here requires a lesson-anchored pool
-    // fetcher in adapter.fetchForDialogueLineBlocks that doesn't exist yet.
-    // Follow-up. Today contextual_cloze with sourceKind=dialogue_line renders
-    // through typed cloze only.
+    // derived from item_contexts.source_lesson_id (see byKind/item.ts).
+    // Adding dialogue_line here requires a lesson-anchored pool fetcher in
+    // byKind/dialogueLine.ts that doesn't exist yet. Follow-up.
     capabilityTypes: ['contextual_cloze'],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
+    requiredArtifacts: { item: ['cloze_context', 'cloze_answer', 'translation:l1'] },
   },
   contrast_pair: {
     // pattern_contrast is intentionally absent — see plan §"Pattern decision".
     capabilityTypes: [],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: ['exercise_variant'],
+    requiredArtifacts: { item: ['exercise_variant'] },
   },
   sentence_transformation: {
     capabilityTypes: [],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: ['exercise_variant'],
+    requiredArtifacts: { item: ['exercise_variant'] },
   },
   constrained_translation: {
     capabilityTypes: [],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: ['exercise_variant'],
+    requiredArtifacts: { item: ['exercise_variant'] },
   },
   speaking: {
     capabilityTypes: [],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: ['base_text'],
+    requiredArtifacts: { item: ['base_text'] },
   },
 } as const satisfies Record<ExerciseType, RenderContract>
+
+// Runtime exhaustiveness assertion: every entry in `supportedSourceKinds`
+// must have a matching non-undefined entry in `requiredArtifacts`. Fires at
+// module load if a future contract edit forgets a key (e.g. widens
+// supportedSourceKinds without adding the per-kind artifact list).
+//
+// Per Open Question 4 of the affixed-form-pair plan: this replaces the
+// (more invasive) type-level conditional-type enforcement; the runtime
+// assertion catches the same misconfiguration class at process start.
+;(function assertRequiredArtifactsComplete() {
+  for (const [exerciseType, contract] of Object.entries(RENDER_CONTRACTS) as Array<[ExerciseType, RenderContract]>) {
+    for (const sourceKind of contract.supportedSourceKinds) {
+      if (contract.requiredArtifacts[sourceKind] == null) {
+        throw new Error(
+          `RENDER_CONTRACTS misconfiguration: exerciseType '${exerciseType}' lists '${sourceKind}' in supportedSourceKinds ` +
+          `but has no entry under requiredArtifacts. Every supported source kind must declare its artifact list.`,
+        )
+      }
+    }
+  }
+})()
 
 // ─── Inverted-lookup helpers (consumed by validateCapability + resolver) ───
 
@@ -120,14 +158,33 @@ export function exerciseTypesForCapability(capabilityType: CapabilityType): read
     .map(([et]) => et)
 }
 
-export function requiredArtifactsFor(exerciseType: ExerciseType): readonly ArtifactKind[] {
-  return RENDER_CONTRACTS[exerciseType].requiredArtifacts
+export function requiredArtifactsFor(
+  exerciseType: ExerciseType,
+  sourceKind: CapabilitySourceKind,
+): readonly ArtifactKind[] {
+  // Returns the artifact list for this exercise under this source kind, or
+  // [] if the source kind is not supported by this exercise. Callers that
+  // need to know whether the source kind is supported should consult
+  // `supportsSourceKind` separately.
+  //
+  // Cast: the `as const` narrowing on RENDER_CONTRACTS makes each entry's
+  // `requiredArtifacts` a heterogeneous union with only the keys it actually
+  // carries. Widen here to the full Partial<Record<...>> shape declared by
+  // the RenderContract interface for indexing.
+  const required = RENDER_CONTRACTS[exerciseType].requiredArtifacts as Partial<Record<CapabilitySourceKind, readonly ArtifactKind[]>>
+  return required[sourceKind] ?? []
 }
 
 export function supportsSourceKind(exerciseType: ExerciseType, sourceKind: CapabilitySourceKind): boolean {
   // Widen the literal-tuple type from `as const` so `.includes` accepts the
   // union argument without complaining that 'pattern' isn't 'item'.
-  const supported = RENDER_CONTRACTS[exerciseType].supportedSourceKinds as readonly CapabilitySourceKind[]
+  // Defensive null-check: an exerciseType not in the contract table (e.g. a
+  // synthetic future type passed by tests via `as never`) returns false
+  // rather than throwing — the dispatcher will then surface the failure as
+  // unsupported_exercise_type via the projector's exhaustiveness branch.
+  const contract = RENDER_CONTRACTS[exerciseType]
+  if (!contract) return false
+  const supported = contract.supportedSourceKinds as readonly CapabilitySourceKind[]
   return supported.includes(sourceKind)
 }
 
@@ -165,14 +222,44 @@ export interface DialogueLineInput {
 }
 
 /**
+ * Per-block input for an `affixed_form_pair:root_derived_*` capability. The
+ * lib/exercise-content adapter assembles this from the two artifact rows the
+ * publish pipeline writes (root_derived_pair + allomorph_rule), plus the
+ * cap's `direction` field decoded from the canonical-key tail.
+ *
+ * See scripts/lib/content-pipeline-output.ts:430-441 for the artifact
+ * writers; see src/lib/exercise-content/byKind/affixedFormPair.ts for the
+ * fetcher contract.
+ */
+export interface AffixedFormPairInput {
+  /** The root word from `root_derived_pair.payload_json.root`
+   *  (e.g. "baca"). */
+  root: string
+  /** The derived/affixed form from `root_derived_pair.payload_json.derived`
+   *  (e.g. "membaca"). */
+  derived: string
+  /** The cap row's `direction`. `root_to_derived` → recall (form_recall);
+   *  `derived_to_root` → recognition (root_derived_recognition). Decoded
+   *  from the canonical-key tail by the adapter. */
+  direction: 'root_to_derived' | 'derived_to_root'
+  /** The allomorph rule from `allomorph_rule.payload_json.rule`
+   *  (e.g. "meN- becomes mem- before roots beginning with b: baca -> membaca."). */
+  allomorphRule: string
+  /** The cap's source_ref of shape `lesson-N/morphology/<slug>`. Carried for
+   *  audit/debug; the builder does not parse it. */
+  sourceRef: string
+}
+
+/**
  * The raw input the dispatcher (lib/exercise-content/resolver via the
  * adapter) constructs before projection. The projector narrows this to
  * BuilderInputFor<K> for a specific exercise type, or returns a fail.
  *
- * Both `learningItem` and `dialogueLine` are honestly nullable; cloze +
- * cloze_mcq accept either (exactly one is populated per the bucketing
- * invariant); every other exercise type requires `learningItem` to be
- * non-null and treats `dialogueLine` as irrelevant.
+ * `learningItem`, `dialogueLine`, and `affixedFormPair` are all honestly
+ * nullable. The bucketing invariant: at most one is populated per block.
+ * cloze accepts learningItem or dialogueLine; typed_recall accepts
+ * learningItem or affixedFormPair; every other exercise type requires
+ * `learningItem` non-null and treats the other slots as irrelevant.
  */
 export interface RawProjectorInput {
   block?: SessionBlock
@@ -180,6 +267,9 @@ export interface RawProjectorInput {
   /** Set when the resolved block's sourceKind is `dialogue_line`. Mutually
    *  exclusive with `learningItem` (bucketing invariant). */
   dialogueLine: DialogueLineInput | null
+  /** Set when the resolved block's sourceKind is `affixed_form_pair`.
+   *  Mutually exclusive with `learningItem` (bucketing invariant). */
+  affixedFormPair: AffixedFormPairInput | null
   meanings: ItemMeaning[]
   contexts: ItemContext[]
   answerVariants: ItemAnswerVariant[]
@@ -222,7 +312,7 @@ interface BuilderBase {
 export interface ContractInputShapes {
   recognition_mcq: BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   cued_recall:     BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
-  typed_recall:    BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
+  typed_recall:    BuilderBase & { learningItem: LearningItem | null; primaryMeaning: ItemMeaning | null; affixedFormPair: AffixedFormPairInput | null }
   meaning_recall:  BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   listening_mcq:   BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   dictation:       BuilderBase & { learningItem: LearningItem }
@@ -259,23 +349,28 @@ export function projectBuilderInput<T extends ExerciseType>(
   exerciseType: T,
   raw: RawProjectorInput,
 ): ProjectorResult<T> {
-  // cloze accepts either learningItem (item-sourced) or dialogueLine
-  // (dialogue_line-sourced). cloze_mcq is item-only today (the cloze_mcq
-  // distractor pool is lesson-anchored via item_contexts.source_lesson_id;
-  // extending it to dialogue_line requires a separate adapter fetcher).
-  // Every other exercise type requires a learningItem.
-  const acceptsDialogueLine = exerciseType === 'cloze'
+  // Source-kind acceptance is keyed off RENDER_CONTRACTS[et].supportedSourceKinds.
+  //   cloze        — accepts ['item', 'dialogue_line']
+  //   typed_recall — accepts ['item', 'affixed_form_pair']
+  //   every other  — ['item']
+  const acceptsDialogueLine = supportsSourceKind(exerciseType, 'dialogue_line')
+  const acceptsAffixedFormPair = supportsSourceKind(exerciseType, 'affixed_form_pair')
 
-  if (!raw.learningItem && !(acceptsDialogueLine && raw.dialogueLine)) {
+  if (
+    !raw.learningItem
+    && !(acceptsDialogueLine && raw.dialogueLine)
+    && !(acceptsAffixedFormPair && raw.affixedFormPair)
+  ) {
     return {
       ok: false,
       reasonCode: 'item_not_found',
-      message: `${exerciseType} requires a learningItem (or a dialogueLine for cloze/cloze_mcq)`,
+      message: `${exerciseType} requires a learningItem (or a dialogueLine for cloze, or an affixedFormPair for typed_recall)`,
     }
   }
 
-  // Bucketing invariant: exactly one of learningItem / dialogueLine is set
-  // for cloze/cloze_mcq. The adapter never populates both; defend in depth.
+  // Bucketing invariant: at most one of learningItem / dialogueLine /
+  // affixedFormPair is set. The adapter never populates more than one;
+  // defend in depth.
   if (acceptsDialogueLine && raw.learningItem && raw.dialogueLine) {
     return {
       ok: false,
@@ -284,24 +379,39 @@ export function projectBuilderInput<T extends ExerciseType>(
       payloadSnapshot: { learningItemId: raw.learningItem.id, sourceRef: raw.dialogueLine.sourceRef },
     }
   }
+  if (acceptsAffixedFormPair && raw.learningItem && raw.affixedFormPair) {
+    return {
+      ok: false,
+      reasonCode: 'malformed_payload',
+      message: `${exerciseType} received both a learningItem and an affixedFormPair — bucketing invariant violated`,
+      payloadSnapshot: { learningItemId: raw.learningItem.id, sourceRef: raw.affixedFormPair.sourceRef },
+    }
+  }
 
-  const learningItem = raw.learningItem  // may be null when dialogueLine path is active
+  const learningItem = raw.learningItem  // may be null when dialogueLine or affixedFormPair path is active
 
-  // Builders that need a user-language meaning. All five require learningItem
-  // (none accept the dialogue_line path), so the existing logic is unchanged.
+  // Builders that need a user-language meaning. For typed_recall the
+  // affixed_form_pair path skips this lookup — the prompt comes from the
+  // pair's root/derived, not from a translation. Item path for typed_recall
+  // still needs a meaning. recognition_mcq / cued_recall / meaning_recall /
+  // listening_mcq all stay item-only and always need primaryMeaning.
   const needsPrimaryMeaning: ReadonlySet<ExerciseType> = new Set([
     'recognition_mcq', 'cued_recall', 'typed_recall', 'meaning_recall', 'listening_mcq',
   ])
   let primaryMeaning: ItemMeaning | undefined
   if (needsPrimaryMeaning.has(exerciseType)) {
-    primaryMeaning = raw.meanings.find(m => m.translation_language === raw.userLanguage && m.is_primary)
-      ?? raw.meanings.find(m => m.translation_language === raw.userLanguage)
-    if (!primaryMeaning) {
-      return {
-        ok: false,
-        reasonCode: 'no_meaning_in_lang',
-        message: `no ${raw.userLanguage} meaning for item ${learningItem!.id}`,
-        payloadSnapshot: { learningItemId: learningItem!.id, userLanguage: raw.userLanguage },
+    if (exerciseType === 'typed_recall' && raw.affixedFormPair) {
+      // affixed_form_pair path — no learningItem, no meanings. Skip lookup.
+    } else {
+      primaryMeaning = raw.meanings.find(m => m.translation_language === raw.userLanguage && m.is_primary)
+        ?? raw.meanings.find(m => m.translation_language === raw.userLanguage)
+      if (!primaryMeaning) {
+        return {
+          ok: false,
+          reasonCode: 'no_meaning_in_lang',
+          message: `no ${raw.userLanguage} meaning for item ${learningItem!.id}`,
+          payloadSnapshot: { learningItemId: learningItem!.id, userLanguage: raw.userLanguage },
+        }
       }
     }
   }
@@ -389,9 +499,18 @@ export function projectBuilderInput<T extends ExerciseType>(
       return { ok: true, input: { ...base, learningItem: learningItem!, variant: raw.variant! } as BuilderInputFor<T> }
     case 'speaking':
       return { ok: true, input: { ...base, learningItem: learningItem!, variant: raw.variant } as BuilderInputFor<T> }
+    case 'typed_recall':
+      // typed_recall accepts item OR affixed_form_pair. The projector has
+      // proven that exactly one is populated. The byType packager branches
+      // on which.
+      return { ok: true, input: {
+        ...base,
+        learningItem,
+        primaryMeaning: primaryMeaning ?? null,
+        affixedFormPair: raw.affixedFormPair,
+      } as BuilderInputFor<T> }
     case 'recognition_mcq':
     case 'cued_recall':
-    case 'typed_recall':
     case 'meaning_recall':
     case 'listening_mcq':
       return { ok: true, input: { ...base, learningItem: learningItem!, primaryMeaning: primaryMeaning! } as BuilderInputFor<T> }

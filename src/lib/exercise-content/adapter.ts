@@ -25,13 +25,29 @@ import type { ResolutionReasonCode } from '@/lib/exercises/resolutionReasons'
 import type { RawProjectorInput } from './byType'
 import { fetchForItemBlocks } from './byKind/item'
 import { fetchForDialogueLineBlocks } from './byKind/dialogueLine'
+import { fetchForAffixedFormPairBlocks } from './byKind/affixedFormPair'
 
 // ─── Canonical-key decoding ─────────────────────────────────────────────────
 
 const VALID_SOURCE_KINDS: ReadonlySet<CapabilitySourceKind> = new Set(CAPABILITY_SOURCE_KINDS)
 
+/** Parsed tail components of a canonical key. The full canonical key format is:
+ *
+ *    cap:v1:<sourceKind>:<encodedSourceRef>:<capabilityType>:<direction>:<modality>:<learnerLanguage>
+ *
+ *  The first 4 parts (cap:v1:sourceKind:sourceRef) drive bucketing; the tail
+ *  carries cap-row metadata used by certain fetchers (e.g. the affixed-form-
+ *  pair fetcher reads `direction` to decide which side of the pair is the
+ *  prompt). Tail is null when the canonical key has fewer than 8 parts. */
+export interface DecodedKeyTail {
+  capabilityType: string
+  direction: string
+  modality: string
+  learnerLanguage: string
+}
+
 export type DecodedKey =
-  | { kind: 'ok'; sourceKind: CapabilitySourceKind; sourceRef: string }
+  | { kind: 'ok'; sourceKind: CapabilitySourceKind; sourceRef: string; tail: DecodedKeyTail | null }
   | { kind: 'malformed'; raw: string }
 
 /**
@@ -41,6 +57,13 @@ export type DecodedKey =
  *
  * Where `<encodedSourceRef>` percent-encodes `:` to `%3A` (preserves `/`).
  * See src/lib/capabilities/canonicalKey.ts:18-40.
+ *
+ * Returns the 4 leading components as before, plus a `tail` with the 4
+ * trailing components when present. Caps in the live DB always carry the
+ * tail (it encodes cap_type/direction/modality/learner_language uniqueness),
+ * so `tail: null` should be rare — only synthetic/test inputs and malformed
+ * snapshots. The tail is non-load-bearing for bucketing; per-kind fetchers
+ * that need a tail field (e.g. direction) should null-check it before use.
  */
 export function decodeCanonicalKey(canonicalKeySnapshot: string): DecodedKey {
   const parts = canonicalKeySnapshot.split(':')
@@ -50,10 +73,19 @@ export function decodeCanonicalKey(canonicalKeySnapshot: string): DecodedKey {
   if (!VALID_SOURCE_KINDS.has(parts[2] as CapabilitySourceKind)) {
     return { kind: 'malformed', raw: canonicalKeySnapshot }
   }
+  const tail: DecodedKeyTail | null = parts.length >= 8
+    ? {
+      capabilityType: parts[4],
+      direction: parts[5],
+      modality: parts[6],
+      learnerLanguage: parts[7],
+    }
+    : null
   return {
     kind: 'ok',
     sourceKind: parts[2] as CapabilitySourceKind,
     sourceRef: decodeURIComponent(parts[3]),
+    tail,
   }
 }
 
@@ -87,13 +119,24 @@ export interface DialogueLineBucketEntry {
   sourceRef: string  // shape: lesson-N/section-M/line-K
 }
 
+export interface AffixedFormPairBucketEntry {
+  block: SessionBlock
+  sourceRef: string  // shape: lesson-N/morphology/<slug>
+  /** Pair direction, decoded from the canonical-key tail. Drives which side
+   *  of the root/derived pair is the prompt vs the answer. Null when the
+   *  canonical key is missing its tail (synthetic inputs only — production
+   *  caps always carry it). */
+  direction: string | null
+}
+
 export interface BucketingResult {
-  /** Per-source-kind buckets. `item` and `dialogue_line` are populated today;
-   *  future source kinds (affixed_form_pair, podcast_*) add their own bucket
-   *  entries here without touching the resolver. */
+  /** Per-source-kind buckets. `item`, `dialogue_line`, and `affixed_form_pair`
+   *  are populated today; future source kinds (podcast_*) add their own
+   *  bucket entries here without touching the resolver. */
   buckets: {
     item: ItemBucketEntry[]
     dialogue_line: DialogueLineBucketEntry[]
+    affixed_form_pair: AffixedFormPairBucketEntry[]
   }
   /** Blocks whose canonical key was malformed or whose source kind has no
    *  fetcher yet. Pre-built fail contexts keyed by blockId. */
@@ -104,6 +147,10 @@ export interface BucketingResult {
 // bucketing time so a malformed ref fails fast with a clear reason code.
 const DIALOGUE_LINE_REF_RE = /^lesson-\d+\/section-\d+\/line-\d+$/u
 
+// Source ref of shape `lesson-N/morphology/<slug>`. Verified against live DB
+// 2026-05-21 (e.g. `lesson-9/morphology/meN-baca-membaca`).
+const AFFIXED_FORM_PAIR_REF_RE = /^lesson-\d+\/morphology\/.+$/u
+
 /**
  * Decode + classify blocks by source kind. Pure function; no I/O. Malformed
  * canonical keys → `sourceref_unparseable`. Source kinds without a fetcher
@@ -112,7 +159,7 @@ const DIALOGUE_LINE_REF_RE = /^lesson-\d+\/section-\d+\/line-\d+$/u
  * refs → `dialogue_line_ref_unparseable`.
  */
 export function bucketByDecodedSourceKind(blocks: SessionBlock[]): BucketingResult {
-  const buckets: BucketingResult['buckets'] = { item: [], dialogue_line: [] }
+  const buckets: BucketingResult['buckets'] = { item: [], dialogue_line: [], affixed_form_pair: [] }
   const failures = new Map<string, CapabilityRenderContext>()
 
   for (const block of blocks) {
@@ -147,10 +194,25 @@ export function bucketByDecodedSourceKind(blocks: SessionBlock[]): BucketingResu
       continue
     }
 
-    // Other source kinds (pattern, affixed_form_pair, podcast_segment,
-    // podcast_phrase) have no fetcher yet. Caps with these source kinds
-    // should already be marked blocked by validateCapability — this is a
-    // belt-and-braces guard in case a stale block reaches the resolver.
+    if (decoded.sourceKind === 'affixed_form_pair') {
+      if (!AFFIXED_FORM_PAIR_REF_RE.test(decoded.sourceRef)) {
+        failures.set(block.id, makeFailContext(block, 'affixed_form_pair_ref_unparseable',
+          `affixed_form_pair sourceRef "${decoded.sourceRef}" does not match lesson-N/morphology/<slug>`,
+          { sourceRef: decoded.sourceRef }))
+        continue
+      }
+      buckets.affixed_form_pair.push({
+        block,
+        sourceRef: decoded.sourceRef,
+        direction: decoded.tail?.direction ?? null,
+      })
+      continue
+    }
+
+    // Other source kinds (pattern, podcast_segment, podcast_phrase) have no
+    // fetcher yet. Caps with these source kinds should already be marked
+    // blocked by validateCapability — this is a belt-and-braces guard in
+    // case a stale block reaches the resolver.
     failures.set(block.id, makeFailContext(block, 'unsupported_source_kind',
       `sourceKind '${decoded.sourceKind}' has no fetcher in lib/exercise-content/adapter yet`,
       { sourceKind: decoded.sourceKind, sourceRef: decoded.sourceRef }))
@@ -264,11 +326,12 @@ export function createAdapter(client: SupabaseSchemaClient): Adapter {
   return {
     async loadBlockData(buckets, options) {
       const result = new Map<string, BlockResolutionData>()
-      // Per-source-kind fetchers run in parallel. item + dialogue_line populated
-      // today; affixed_form_pair follows, then podcasts.
+      // Per-source-kind fetchers run in parallel. item + dialogue_line +
+      // affixed_form_pair populated today; podcasts follow.
       await Promise.all([
         fetchForItemBlocks(client, buckets.item, options.userLanguage, result),
         fetchForDialogueLineBlocks(client, buckets.dialogue_line, options.userLanguage, result),
+        fetchForAffixedFormPairBlocks(client, buckets.affixed_form_pair, options.userLanguage, result),
       ])
       return result
     },

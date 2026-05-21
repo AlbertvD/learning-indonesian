@@ -109,6 +109,7 @@ export async function fetchForDialogueLineBlocks(
         block,
         learningItem: null,
         dialogueLine: { text: lineText, speaker, sourceRef, targetWord, translation, sourceText },
+        affixedFormPair: null,
         meanings: [],
         contexts: [],
         answerVariants: [],

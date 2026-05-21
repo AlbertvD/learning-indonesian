@@ -234,25 +234,26 @@ describe('capability health exit code planning', () => {
     expect(pattern?.examples).toEqual(expect.arrayContaining(['Saya tidak mau datang']))
   })
 
-  it('blocks staged morphology pairs at validation pending the affixed_form_pair renderer (PR #65 source-kind decision)', async () => {
-    // Per PR #65 plan §"Source kind decision": every contract's
-    // supportedSourceKinds is currently ['item']. Morphology caps have
-    // sourceKind='affixed_form_pair' so they're correctly marked `blocked`
-    // at validateCapability with reason 'no_compatible_exercise_for_capability_type'
-    // instead of passing as `ready` and silently dropping at runtime. The
-    // future capabilityContentService fold widens supportedSourceKinds and
-    // this assertion flips back to criticalCount === 0.
+  it('marks staged morphology pairs as ready via typed_recall when both artifacts are approved (2026-05-21 affixed-form-pair widening)', async () => {
+    // Post the 2026-05-21 affixed-form-pair widening: typed_recall accepts
+    // affixed_form_pair source kind with requiredArtifacts
+    // {root_derived_pair, allomorph_rule}. Both are emitted by the existing
+    // publish pipeline at scripts/lib/content-pipeline-output.ts:430-441 so
+    // L9's 4 morphology caps register as ready with typed_recall as the
+    // only allowed exercise (cued_recall stays item-only per D4).
     const report = await buildCapabilityHealthReport('scripts/data/staging/lesson-9')
 
     expect(report.results.map(result => result.canonicalKey)).toEqual(expect.arrayContaining([
       'cap:v1:affixed_form_pair:lesson-9/morphology/meN-baca-membaca:root_derived_recognition:derived_to_root:text:none',
       'cap:v1:affixed_form_pair:lesson-9/morphology/meN-baca-membaca:root_derived_recall:root_to_derived:text:none',
     ]))
-    // Morphology caps now register as blocked-critical until the renderer ships.
     const morphologyResults = report.results.filter(r => r.canonicalKey.startsWith('cap:v1:affixed_form_pair:'))
     expect(morphologyResults.length).toBeGreaterThan(0)
     for (const result of morphologyResults) {
-      expect(result.readiness.status).toBe('blocked')
+      expect(result.readiness.status).toBe('ready')
+      if (result.readiness.status === 'ready') {
+        expect(result.readiness.allowedExercises).toEqual(['typed_recall'])
+      }
     }
   })
 })

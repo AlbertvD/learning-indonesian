@@ -96,18 +96,23 @@ const matrix: MatrixRow[] = [
     expected: { status: 'ready', allowedExercises: ['cloze'] },
   },
   {
+    // Post 2026-05-21 affixed-form-pair PR: typed_recall accepts
+    // affixed_form_pair source kind with requiredArtifacts
+    // {root_derived_pair, allomorph_rule}. cued_recall stays item-only
+    // (distractor authoring deferred per D3/D4), so allowedExercises is
+    // ['typed_recall'] only.
     capabilityType: 'root_derived_recognition',
     sourceKind: 'affixed_form_pair',
     requiredArtifacts: ['root_derived_pair', 'allomorph_rule'],
     approvedArtifacts: ['root_derived_pair', 'allomorph_rule'],
-    expected: { status: 'blocked', reasonMatch: /no_compatible_exercise_for_capability_type/ },
+    expected: { status: 'ready', allowedExercises: ['typed_recall'] },
   },
   {
     capabilityType: 'root_derived_recall',
     sourceKind: 'affixed_form_pair',
     requiredArtifacts: ['root_derived_pair', 'allomorph_rule'],
     approvedArtifacts: ['root_derived_pair', 'allomorph_rule'],
-    expected: { status: 'blocked', reasonMatch: /no_compatible_exercise_for_capability_type/ },
+    expected: { status: 'ready', allowedExercises: ['typed_recall'] },
   },
   // ─── Exposure-only (short-circuits before source-kind check) ─────────
   {

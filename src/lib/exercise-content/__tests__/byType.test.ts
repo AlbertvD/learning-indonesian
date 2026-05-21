@@ -84,6 +84,7 @@ function baseInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorInpu
     block: makeBlock(),
     learningItem: makeItem(),
     dialogueLine: null,
+    affixedFormPair: null,
     meanings: [makeMeaning('einde')],
     contexts: [],
     answerVariants: [],
@@ -510,6 +511,84 @@ describe('buildCloze — dialogue_line source kind', () => {
       // Even with a dialogueLine populated, cloze_mcq's contract still
       // requires a learningItem. The projector emits item_not_found.
     }))
+    expect(r.kind).toBe('fail')
+    if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')
+  })
+})
+
+// ─── affixed_form_pair typed_recall ───
+//
+// The affixed-form-pair PR (2026-05-21) extends typed_recall to accept the
+// affixed_form_pair source kind: the input carries an AffixedFormPairInput
+// instead of a LearningItem + ItemMeaning, the builder branches on which
+// field is populated, and the exerciseItem grows an `affixedFormPairData`
+// slot the UI reads. cued_recall stays item-only per D4.
+
+describe('buildTypedRecall — affixed_form_pair source kind', () => {
+  function affixedInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorInput {
+    return baseInput({
+      learningItem: null,
+      meanings: [],
+      affixedFormPair: {
+        root: 'baca',
+        derived: 'membaca',
+        direction: 'root_to_derived',
+        allomorphRule: 'meN- becomes mem- before roots beginning with b: baca -> membaca.',
+        sourceRef: 'lesson-9/morphology/meN-baca-membaca',
+      },
+      ...overrides,
+    })
+  }
+
+  it('produces a typed_recall exerciseItem with affixedFormPairData populated and learningItem=null (root→derived)', () => {
+    const r = buildForExerciseType('typed_recall', affixedInput())
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    expect(r.exerciseItem.exerciseType).toBe('typed_recall')
+    expect(r.exerciseItem.learningItem).toBeNull()
+    expect(r.exerciseItem.affixedFormPairData).toEqual({
+      promptText: 'Form the meN- form of: baca',
+      acceptedAnswer: 'membaca',
+      direction: 'root_to_derived',
+      allomorphRule: 'meN- becomes mem- before roots beginning with b: baca -> membaca.',
+      root: 'baca',
+      derived: 'membaca',
+    })
+    expect(r.exerciseItem.skillType).toBe('form_recall')
+  })
+
+  it('flips prompt + answer for derived→root direction (recognition)', () => {
+    const r = buildForExerciseType('typed_recall', affixedInput({
+      affixedFormPair: {
+        root: 'baca',
+        derived: 'membaca',
+        direction: 'derived_to_root',
+        allomorphRule: 'meN- becomes mem- before roots beginning with b.',
+        sourceRef: 'lesson-9/morphology/meN-baca-membaca',
+      },
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    expect(r.exerciseItem.affixedFormPairData?.promptText).toBe('What is the root of: membaca')
+    expect(r.exerciseItem.affixedFormPairData?.acceptedAnswer).toBe('baca')
+    expect(r.exerciseItem.skillType).toBe('recognition')
+  })
+
+  it('audibleTexts harvest includes both root and derived (Indonesian-language)', () => {
+    const r = buildForExerciseType('typed_recall', affixedInput())
+    expect(r.kind).toBe('ok')
+    if (r.kind !== 'ok') return
+    expect(r.audibleTexts).toEqual(expect.arrayContaining(['baca', 'membaca']))
+  })
+
+  it('cued_recall stays item-only (the affixed-form-pair widening did not extend to it per D4)', () => {
+    const r = buildForExerciseType('cued_recall', affixedInput())
+    expect(r.kind).toBe('fail')
+    if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')
+  })
+
+  it('dictation rejects affixed_form_pair input (typed_recall is the only exercise that accepts it)', () => {
+    const r = buildForExerciseType('dictation', affixedInput())
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')
   })

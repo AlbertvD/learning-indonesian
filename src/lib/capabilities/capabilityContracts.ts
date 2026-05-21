@@ -98,9 +98,15 @@ export function validateCapability(input: CapabilityValidationInput): Capability
     sourceRef: input.capability.sourceRef,
   })
 
+  // The contract's per-source-kind artifact list (post-affixed-form-pair PR)
+  // declares what the BUILDER reads for this exercise under this source kind.
+  // The cap's catalog-declared `requiredArtifacts` is the source of truth for
+  // what the CAP_TYPE needs. The union catches builder/cap drift either
+  // direction.
+  const sourceKind = input.capability.sourceKind
   const readyExercises = candidateExercises.filter(et => {
     const required = new Set<ArtifactKind>([
-      ...artifactsForExercise(et),
+      ...artifactsForExercise(et, sourceKind),
       ...input.capability.requiredArtifacts,
     ])
     return [...required].every(checkArtifact)
@@ -111,7 +117,7 @@ export function validateCapability(input: CapabilityValidationInput): Capability
     const missing = new Set<ArtifactKind>()
     for (const et of candidateExercises) {
       const required = new Set<ArtifactKind>([
-        ...artifactsForExercise(et),
+        ...artifactsForExercise(et, sourceKind),
         ...input.capability.requiredArtifacts,
       ])
       for (const kind of required) if (!checkArtifact(kind)) missing.add(kind)

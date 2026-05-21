@@ -1,5 +1,11 @@
 // src/components/exercises/implementations/TypedRecall.tsx
-// User sees L1 translation, types Indonesian.
+// Two paths:
+//  - Item-sourced (existing): user sees L1 translation, types Indonesian.
+//  - Affixed_form_pair-sourced (added 2026-05-21 per
+//    docs/plans/2026-05-21-affixed-form-pair-runtime.md): user sees one side
+//    of the morphology pair (root or derived), types the other.
+// Branching is gated on exerciseItem.affixedFormPairData; primitives + scoring
+// hook are identical between branches.
 
 import {
   ExerciseFrame,
@@ -17,18 +23,31 @@ export default function TypedRecall({
   exerciseItem, userLanguage, onAnswer, onEvent, adminOverlay,
 }: ExerciseComponentProps) {
   const t = translations[userLanguage]
-  const { learningItem: item, meanings, answerVariants } = exerciseItem
-  const learningItem = item!
+  const { learningItem, meanings, answerVariants, affixedFormPairData } = exerciseItem
 
-  const primary = meanings.find(m => m.translation_language === userLanguage && m.is_primary)
-    ?? meanings.find(m => m.translation_language === userLanguage)
-  const translation = primary?.translation_text ?? ''
-  const variants = (answerVariants ?? []).map(v => v.variant_text)
+  // Resolve prompt + accepted answer + variants from whichever source path is
+  // active. The affixed_form_pair path has no learningItem / meanings /
+  // variants; the item path has them.
+  let promptText: string
+  let acceptedAnswer: string
+  let acceptedVariants: string[]
+  if (affixedFormPairData) {
+    promptText = affixedFormPairData.promptText
+    acceptedAnswer = affixedFormPairData.acceptedAnswer
+    acceptedVariants = []
+  } else {
+    const item = learningItem!
+    const primary = meanings.find(m => m.translation_language === userLanguage && m.is_primary)
+      ?? meanings.find(m => m.translation_language === userLanguage)
+    promptText = primary?.translation_text ?? ''
+    acceptedAnswer = item.base_text
+    acceptedVariants = (answerVariants ?? []).map(v => v.variant_text)
+  }
 
   const scoring = useExerciseScoring<string>({
     mode: 'typed',
     checkCorrect: (response) => {
-      const r = checkAnswer(response, learningItem.base_text, variants)
+      const r = checkAnswer(response, acceptedAnswer, acceptedVariants)
       return { isCorrect: r.isCorrect, isFuzzy: r.isFuzzy }
     },
     onAnswer: async (result) => {
@@ -57,7 +76,7 @@ export default function TypedRecall({
       }
     >
       <ExerciseInstruction>{t.session.recall.question}</ExerciseInstruction>
-      <ExercisePromptCard variant="word">{translation}</ExercisePromptCard>
+      <ExercisePromptCard variant="word">{promptText}</ExercisePromptCard>
       <ExerciseTextInput
         label={t.session.recall.placeholder}
         placeholder={t.session.recall.placeholder}

@@ -152,23 +152,79 @@ describe('bucketByDecodedSourceKind', () => {
     expect(ctx.diagnostic?.reasonCode).toBe('dialogue_line_ref_unparseable')
   })
 
-  it('fails unsupported_source_kind for pattern + affixed_form_pair (no fetcher yet)', () => {
+  it('fails unsupported_source_kind for pattern (no fetcher yet); affixed_form_pair lands in its own bucket post 2026-05-21', () => {
     const blockPattern = makeBlockWithSourceRef({ sourceKind: 'pattern', sourceRef: 'lesson-9/pattern-1' })
-    const blockMorph = makeBlockWithSourceRef({ sourceKind: 'affixed_form_pair', sourceRef: 'lesson-9/morph-1' })
-    const { buckets, failures } = bucketByDecodedSourceKind([blockPattern, blockMorph])
+    const { buckets, failures } = bucketByDecodedSourceKind([blockPattern])
     expect(buckets.item).toEqual([])
     expect(buckets.dialogue_line).toEqual([])
-    expect(failures.size).toBe(2)
+    expect(buckets.affixed_form_pair).toEqual([])
+    expect(failures.size).toBe(1)
     expect(failures.get(blockPattern.id)?.diagnostic?.reasonCode).toBe('unsupported_source_kind')
-    expect(failures.get(blockMorph.id)?.diagnostic?.reasonCode).toBe('unsupported_source_kind')
   })
 
-  it('mixes item + dialogue_line in one call without crosstalk', () => {
+  it('places affixed_form_pair blocks in the affixed_form_pair bucket with direction parsed from canonical-key tail', () => {
+    const block = makeBlockWithSourceRef({ sourceKind: 'affixed_form_pair', sourceRef: 'lesson-9/morphology/meN-baca-membaca' })
+    const { buckets, failures } = bucketByDecodedSourceKind([block])
+    expect(failures.size).toBe(0)
+    expect(buckets.affixed_form_pair).toHaveLength(1)
+    const entry = buckets.affixed_form_pair[0]
+    expect(entry.sourceRef).toBe('lesson-9/morphology/meN-baca-membaca')
+    // The test's makeBlockWithSourceRef builds the canonical key with
+    // direction='id_to_l1' (a synthetic value used across this test file);
+    // the bucketing function reads it from the tail and surfaces it
+    // verbatim. Production caps carry 'root_to_derived' or 'derived_to_root'.
+    expect(entry.direction).toBe('id_to_l1')
+  })
+
+  it('fails affixed_form_pair_ref_unparseable when the sourceRef does not match lesson-N/morphology/<slug>', () => {
+    const block = makeBlockWithSourceRef({ sourceKind: 'affixed_form_pair', sourceRef: 'garbage/path' })
+    const { buckets, failures } = bucketByDecodedSourceKind([block])
+    expect(buckets.affixed_form_pair).toEqual([])
+    expect(failures.size).toBe(1)
+    const ctx = failures.get(block.id)!
+    expect(ctx.diagnostic?.reasonCode).toBe('affixed_form_pair_ref_unparseable')
+  })
+
+  it('mixes item + dialogue_line + affixed_form_pair in one call without crosstalk', () => {
     const itemBlock = makeBlockWithSourceRef({ sourceKind: 'item', sourceRef: 'learning_items/apa' })
     const dialogueBlock = makeBlockWithSourceRef({ sourceKind: 'dialogue_line', sourceRef: 'lesson-9/section-1/line-10' })
-    const { buckets, failures } = bucketByDecodedSourceKind([itemBlock, dialogueBlock])
+    const affixedBlock = makeBlockWithSourceRef({ sourceKind: 'affixed_form_pair', sourceRef: 'lesson-9/morphology/meN-baca-membaca' })
+    const { buckets, failures } = bucketByDecodedSourceKind([itemBlock, dialogueBlock, affixedBlock])
     expect(failures.size).toBe(0)
     expect(buckets.item).toHaveLength(1)
     expect(buckets.dialogue_line).toHaveLength(1)
+    expect(buckets.affixed_form_pair).toHaveLength(1)
+  })
+})
+
+describe('decodeCanonicalKey — tail parsing', () => {
+  it('returns tail components when canonical key has all 8 parts', () => {
+    const key = buildCanonicalKey({
+      sourceKind: 'affixed_form_pair',
+      sourceRef: 'lesson-9/morphology/meN-baca-membaca',
+      capabilityType: 'root_derived_recall',
+      direction: 'root_to_derived',
+      modality: 'text',
+      learnerLanguage: 'none',
+    })
+    const decoded = decodeCanonicalKey(key)
+    expect(decoded.kind).toBe('ok')
+    if (decoded.kind === 'ok') {
+      expect(decoded.tail).toEqual({
+        capabilityType: 'root_derived_recall',
+        direction: 'root_to_derived',
+        modality: 'text',
+        learnerLanguage: 'none',
+      })
+    }
+  })
+
+  it('returns tail=null when canonical key has fewer than 8 parts but is otherwise valid', () => {
+    // 4-part key passes the leading guard; tail is null.
+    const decoded = decodeCanonicalKey('cap:v1:item:learning_items/abc')
+    expect(decoded.kind).toBe('ok')
+    if (decoded.kind === 'ok') {
+      expect(decoded.tail).toBeNull()
+    }
   })
 })

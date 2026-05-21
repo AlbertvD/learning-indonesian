@@ -211,6 +211,25 @@ export interface ExerciseItem {
     correctOptionId: string
     explanationText?: string
   }
+  /** For typed_recall on affixed_form_pair source kind (morphology drills).
+   *  Set by the byType typed_recall builder when input.affixedFormPair is
+   *  populated; null for item-sourced typed_recall (existing path). The UI
+   *  branches on this field's presence. */
+  affixedFormPairData?: {
+    /** Prompt the learner sees (e.g. "Form the meN- form of: baca"). */
+    promptText: string
+    /** The exact answer string the learner must type. */
+    acceptedAnswer: string
+    /** Pair direction. Drives prompt vs answer assignment. */
+    direction: 'root_to_derived' | 'derived_to_root'
+    /** Allomorph rule string, surfaced on the wrong-answer Doorgaan screen
+     *  as the explanation (via feedbackMapping.ts grammar-reveal layout). */
+    allomorphRule: string
+    /** Raw root + derived strings, carried for the feedback layer + the
+     *  audibleTexts TTS prefetch. */
+    root: string
+    derived: string
+  }
   /** For contrast_pair: contrast options and metadata */
   contrastPairData?: {
     promptText: string

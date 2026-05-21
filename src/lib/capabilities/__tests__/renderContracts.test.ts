@@ -64,6 +64,7 @@ function makeRawInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorI
   return {
     learningItem: null,
     dialogueLine: null,
+    affixedFormPair: null,
     meanings: [],
     contexts: [],
     answerVariants: [],
@@ -149,48 +150,124 @@ describe('supportsSourceKind', () => {
     }
   })
 
-  it('no exercise supports affixed_form_pair source kind yet', () => {
+  it('only typed_recall supports affixed_form_pair source kind (added 2026-05-21); cued_recall is item-only until distractor authoring lands', () => {
     for (const et of Object.keys(RENDER_CONTRACTS) as Array<keyof typeof RENDER_CONTRACTS>) {
-      expect(supportsSourceKind(et, 'affixed_form_pair')).toBe(false)
+      const expected = et === 'typed_recall'
+      expect(supportsSourceKind(et, 'affixed_form_pair')).toBe(expected)
     }
   })
 })
 
 describe('requiredArtifactsFor', () => {
-  it('cloze requires cloze_context + cloze_answer + translation:l1', () => {
-    expect(requiredArtifactsFor('cloze')).toEqual(
+  it('cloze item-source requires cloze_context + cloze_answer + translation:l1', () => {
+    expect(requiredArtifactsFor('cloze', 'item')).toEqual(
       expect.arrayContaining(['cloze_context', 'cloze_answer', 'translation:l1']),
     )
   })
 
-  it('listening_mcq requires audio_clip', () => {
-    expect(requiredArtifactsFor('listening_mcq')).toContain('audio_clip')
+  it('cloze dialogue_line-source requires the same trio', () => {
+    expect(requiredArtifactsFor('cloze', 'dialogue_line')).toEqual(
+      expect.arrayContaining(['cloze_context', 'cloze_answer', 'translation:l1']),
+    )
   })
 
-  it('dictation requires audio_clip + base_text + accepted_answers:id', () => {
-    expect(requiredArtifactsFor('dictation')).toEqual(
+  it('listening_mcq requires audio_clip (item path)', () => {
+    expect(requiredArtifactsFor('listening_mcq', 'item')).toContain('audio_clip')
+  })
+
+  it('dictation requires audio_clip + base_text + accepted_answers:id (item path)', () => {
+    expect(requiredArtifactsFor('dictation', 'item')).toEqual(
       expect.arrayContaining(['audio_clip', 'base_text', 'accepted_answers:id']),
     )
   })
 
-  it('recognition_mcq requires base_text + meaning:l1 (catalog-matched)', () => {
-    expect(requiredArtifactsFor('recognition_mcq')).toEqual(
+  it('recognition_mcq requires base_text + meaning:l1 (item path)', () => {
+    expect(requiredArtifactsFor('recognition_mcq', 'item')).toEqual(
       expect.arrayContaining(['base_text', 'meaning:l1']),
     )
+  })
+
+  it('typed_recall affixed_form_pair-source requires root_derived_pair + allomorph_rule', () => {
+    expect(requiredArtifactsFor('typed_recall', 'affixed_form_pair')).toEqual(
+      expect.arrayContaining(['root_derived_pair', 'allomorph_rule']),
+    )
+  })
+
+  it('returns [] for an exercise/source-kind combination the contract does not declare', () => {
+    // recognition_mcq does not support affixed_form_pair.
+    expect(requiredArtifactsFor('recognition_mcq', 'affixed_form_pair')).toEqual([])
+    // cued_recall does not support affixed_form_pair (deferred per D3/D4).
+    expect(requiredArtifactsFor('cued_recall', 'affixed_form_pair')).toEqual([])
   })
 })
 
 // ─── projectBuilderInput ───────────────────────────────────────────────────
 
 describe('projectBuilderInput — common failures', () => {
-  it('fails closed when learningItem is null for every exercise', () => {
+  it('fails closed when learningItem is null AND no alternative source-kind input is set', () => {
+    // Every exercise rejects an input with no learningItem and no
+    // dialogueLine / affixedFormPair populated. typed_recall + cloze accept
+    // the alternative paths when those are populated (covered elsewhere).
     for (const et of Object.keys(RENDER_CONTRACTS) as Array<keyof typeof RENDER_CONTRACTS>) {
-      const raw = makeRawInput({ learningItem: null })
+      const raw = makeRawInput({ learningItem: null, dialogueLine: null, affixedFormPair: null })
       const result = projectBuilderInput(et, raw)
       expect(result.ok).toBe(false)
       if (!result.ok) {
         expect(result.reasonCode).toBe('item_not_found')
       }
+    }
+  })
+})
+
+describe('projectBuilderInput — affixed_form_pair (typed_recall path)', () => {
+  const AFFIXED_FIXTURE = {
+    root: 'baca',
+    derived: 'membaca',
+    direction: 'root_to_derived' as const,
+    allomorphRule: 'meN- becomes mem- before roots beginning with b.',
+    sourceRef: 'lesson-9/morphology/meN-baca-membaca',
+  }
+
+  it('succeeds for typed_recall with affixedFormPair populated + learningItem null', () => {
+    const raw = makeRawInput({ learningItem: null, affixedFormPair: AFFIXED_FIXTURE })
+    const result = projectBuilderInput('typed_recall', raw)
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      const input = result.input as { affixedFormPair: typeof AFFIXED_FIXTURE | null; learningItem: unknown; primaryMeaning: unknown }
+      expect(input.affixedFormPair).toEqual(AFFIXED_FIXTURE)
+      expect(input.learningItem).toBeNull()
+      expect(input.primaryMeaning).toBeNull()
+    }
+  })
+
+  it('rejects typed_recall when both learningItem and affixedFormPair are populated (bucketing invariant)', () => {
+    const raw = makeRawInput({
+      learningItem: makeLearningItem(),
+      affixedFormPair: AFFIXED_FIXTURE,
+      meanings: [makeMeaning()],
+    })
+    const result = projectBuilderInput('typed_recall', raw)
+    expect(result.ok).toBe(false)
+    if (!result.ok) {
+      expect(result.reasonCode).toBe('malformed_payload')
+    }
+  })
+
+  it('rejects dictation when only affixedFormPair is populated (dictation does not accept affixed_form_pair)', () => {
+    const raw = makeRawInput({ learningItem: null, affixedFormPair: AFFIXED_FIXTURE })
+    const result = projectBuilderInput('dictation', raw)
+    expect(result.ok).toBe(false)
+    if (!result.ok) {
+      expect(result.reasonCode).toBe('item_not_found')
+    }
+  })
+
+  it('rejects cued_recall when only affixedFormPair is populated (cued_recall stays item-only per D4)', () => {
+    const raw = makeRawInput({ learningItem: null, affixedFormPair: AFFIXED_FIXTURE })
+    const result = projectBuilderInput('cued_recall', raw)
+    expect(result.ok).toBe(false)
+    if (!result.ok) {
+      expect(result.reasonCode).toBe('item_not_found')
     }
   })
 })

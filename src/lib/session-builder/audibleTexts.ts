@@ -26,6 +26,8 @@ import { normalizeTtsText } from '@/lib/ttsNormalize'
  *   - sentenceTransformationData.transformationInstruction — meta-text
  *   - constrainedTranslationData.sourceLanguageSentence    — source language
  *   - speakingData.promptText           — Dutch/English prompt
+ *   - affixedFormPairData.promptText    — Dutch/English instruction text
+ *   - affixedFormPairData.allomorphRule — Dutch/English rule explanation
  *   - explanationText fields            — Dutch/English explanations
  */
 export function audibleTextFieldsOf(item: ExerciseItem): string[] {
@@ -84,6 +86,14 @@ export function audibleTextFieldsOf(item: ExerciseItem): string[] {
   // Speaking: model utterance for imitation.
   if (item.speakingData?.targetPatternOrScenario) {
     add(item.speakingData.targetPatternOrScenario)
+  }
+
+  // Affixed-form-pair (typed_recall on morphology caps): root + derived are
+  // both Indonesian-language. promptText + allomorphRule are explanatory
+  // user-language text — excluded per the docstring convention above.
+  if (item.affixedFormPairData) {
+    add(item.affixedFormPairData.root)
+    add(item.affixedFormPairData.derived)
   }
 
   return [...set].sort()

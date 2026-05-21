@@ -77,7 +77,26 @@ export function feedbackPropsFor(input: FeedbackMapInput): FeedbackProps {
     }
 
     case 'typed_recall': {
-      // L1 → ID typed
+      // affixed_form_pair sub-branch — morphology drills. Renders in the
+      // grammar-reveal layout so the allomorph rule surfaces as the
+      // explanation card (ExerciseFeedback.tsx:274 only renders `explanation`
+      // under grammar-reveal). Added 2026-05-21 per
+      // docs/plans/2026-05-21-affixed-form-pair-runtime.md.
+      const affixData = item.affixedFormPairData
+      if (affixData) {
+        return {
+          outcome,
+          layout: 'grammar-reveal',
+          direction: 'L1→ID',
+          promptShown: { text: affixData.promptText, lang: 'ID', role: 'shown' },
+          correctAnswer: { text: affixData.acceptedAnswer, lang: 'ID', role: 'target' },
+          userAnswer: response ? { text: response, lang: 'ID', role: 'typed' } : undefined,
+          acceptedVariants: [],
+          explanation: affixData.allomorphRule,
+          commitFailed,
+        }
+      }
+      // L1 → ID typed (item path)
       const base = item.learningItem?.base_text ?? ''
       return {
         outcome,

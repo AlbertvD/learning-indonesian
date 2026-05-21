@@ -203,7 +203,8 @@ export async function fetchForItemBlocks(
       input: {
         block,
         learningItem,
-        dialogueLine: null,  // item bucket — projector's bucketing invariant
+        dialogueLine: null,        // item bucket — projector's bucketing invariant
+        affixedFormPair: null,     // item bucket — projector's bucketing invariant
         meanings: meaningsByItem.get(itemUuid) ?? [],
         contexts: contextsByItem.get(itemUuid) ?? [],
         answerVariants: answerVariantsByItem.get(itemUuid) ?? [],

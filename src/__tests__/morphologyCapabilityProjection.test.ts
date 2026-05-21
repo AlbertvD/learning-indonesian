@@ -60,24 +60,46 @@ describe('morphology capability projection', () => {
     }))
   })
 
-  it('blocks morphology readiness until a renderer for affixed_form_pair source kinds ships', () => {
-    // Per PR #65 (renderContracts.ts), every contract's supportedSourceKinds
-    // is currently ['item'] — codifying capabilityContentService.ts:240's
-    // existing rejection of non-item source kinds at the contract layer.
-    // Morphology caps have sourceKind='affixed_form_pair', so they're marked
-    // `blocked` at validateCapability instead of passing as `ready` and then
-    // silently dropping downstream. When the future capabilityContentService
-    // fold widens supportedSourceKinds, this test restores the resolved-plan
-    // assertion against the new contract entry.
+  it('marks morphology root_derived_recall as ready via typed_recall when both artifacts are approved (2026-05-21 affixed-form-pair widening)', () => {
+    // Post the 2026-05-21 affixed-form-pair widening: typed_recall accepts
+    // affixed_form_pair source kind with requiredArtifacts
+    // {root_derived_pair, allomorph_rule}. With both approved in the
+    // artifact index, validateCapability returns ready with typed_recall
+    // as the allowed exercise.
     const recall = projectCapabilities(snapshot).capabilities.find(capability => capability.capabilityType === 'root_derived_recall')!
     const artifactIndex = {
       root_derived_pair: [{ qualityStatus: 'approved' as const, sourceRef: pairSourceRef }],
       allomorph_rule: [{ qualityStatus: 'approved' as const, sourceRef: pairSourceRef }],
     }
     const readiness = validateCapability({ capability: recall, artifacts: artifactIndex })
+    expect(readiness.status).toBe('ready')
+    if (readiness.status === 'ready') {
+      expect(readiness.allowedExercises).toEqual(['typed_recall'])
+    }
+  })
+
+  it('marks morphology root_derived_recognition as ready via typed_recall when both artifacts are approved', () => {
+    const recognition = projectCapabilities(snapshot).capabilities.find(capability => capability.capabilityType === 'root_derived_recognition')!
+    const artifactIndex = {
+      root_derived_pair: [{ qualityStatus: 'approved' as const, sourceRef: pairSourceRef }],
+      allomorph_rule: [{ qualityStatus: 'approved' as const, sourceRef: pairSourceRef }],
+    }
+    const readiness = validateCapability({ capability: recognition, artifacts: artifactIndex })
+    expect(readiness.status).toBe('ready')
+    if (readiness.status === 'ready') {
+      expect(readiness.allowedExercises).toEqual(['typed_recall'])
+    }
+  })
+
+  it('blocks morphology readiness when allomorph_rule is missing', () => {
+    const recall = projectCapabilities(snapshot).capabilities.find(capability => capability.capabilityType === 'root_derived_recall')!
+    const artifactIndex = {
+      root_derived_pair: [{ qualityStatus: 'approved' as const, sourceRef: pairSourceRef }],
+    }
+    const readiness = validateCapability({ capability: recall, artifacts: artifactIndex })
     expect(readiness.status).toBe('blocked')
     if (readiness.status === 'blocked') {
-      expect(readiness.reason).toMatch(/no_compatible_exercise_for_capability_type/)
+      expect(readiness.missingArtifacts).toContain('allomorph_rule')
     }
     expect(resolveExercise({
       capability: recall,
