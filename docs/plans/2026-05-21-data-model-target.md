@@ -548,6 +548,29 @@ alter table indonesian.learning_capabilities
 - `lib/exercise-content/byKind/` gets a new `pattern.ts` fetcher that reads the typed exercise tables by `grammar_pattern_id`.
 - `pipeline/capability-stage/projectors/grammar.ts` writes the same `pattern_recognition` + `pattern_contrast` cap rows as today, but the readiness check (validateCapability) now passes (the grammar exercise table has rows for the pattern).
 
+### Decision G2 — Exercise-type roster: all 12 types accounted for
+
+The 4 authored grammar exercises get typed tables (Decision G). The other 8 exercise types are runtime-derived from existing tables and need **no new table**. This decision makes the policy explicit so every `ExerciseType` in `src/types/learning.ts:130` has a documented home.
+
+| Exercise type | Source kinds | Storage | Reader path |
+|---|---|---|---|
+| `recognition_mcq` | item | `learning_items` + `item_meanings`; pool from `item_meanings` of other items in lesson | Runtime JOIN |
+| `cued_recall` | item | `learning_items` + `item_meanings`; pool from `learning_items` of other items in lesson | Runtime JOIN |
+| `typed_recall` | item, affixed_form_pair | item: `learning_items` + `item_meanings` + `item_answer_variants`; affixed_form_pair: `affixed_form_pairs` (Decision A) | Runtime JOIN |
+| `meaning_recall` | item | `learning_items` + `item_meanings` + `item_answer_variants` | Runtime JOIN |
+| `listening_mcq` | item | `learning_items` + `item_meanings` + `capability_audio_refs` → `audio_clips` (Decision Q); pool from other items in lesson | Runtime JOIN |
+| `dictation` | item | `learning_items` + `item_answer_variants` + `capability_audio_refs` → `audio_clips` | Runtime JOIN |
+| `cloze` | item, dialogue_line | item: `item_contexts WHERE context_type='cloze'`; dialogue_line: `dialogue_clozes` + `lesson_dialogue_lines` (Decisions A + D) | Runtime JOIN |
+| `cloze_mcq` | item, pattern | item: `item_contexts WHERE context_type='cloze'` + computed pool; pattern: `cloze_mcq_exercises` (Decision G) | Runtime JOIN OR typed-table read |
+| `contrast_pair` | pattern | `contrast_pair_exercises` (Decision G) | Typed-table read |
+| `sentence_transformation` | pattern | `sentence_transformation_exercises` (Decision G) | Typed-table read |
+| `constrained_translation` | pattern | `constrained_translation_exercises` (Decision G) | Typed-table read |
+| `speaking` | item | `learning_items.base_text` + (optional, future) `speaking_exercises` for per-cap rubrics | Runtime JOIN (no new table needed today; `capabilityTypes: []` per `renderContracts.ts:130` — no cap routes to it yet) |
+
+**Policy for future authored exercises:** when a new exercise type ships with hand-authored per-cap content (prompts, options, hints), it gets a typed table named `<exercise_type>_exercises`. When the content is derivable from upstream typed tables, no new table is needed.
+
+**`exercise_type_availability` audit:** the table currently has 10 rows but the code defines 12 `ExerciseType` values. Missing: `meaning_recall`, `cloze_mcq`. Both must be inserted in the migration (with `session_enabled=true`, `rollout_phase='full'`) so the runtime's check at `lib/session-builder/` doesn't fail-open / fail-closed inconsistently.
+
 ### Decision H — `learner_capability_state.fsrs_state_json` vs columnar duplication
 
 **Decision: Retire `fsrs_state_json`. Keep columnar fields. Add `retrievability` as a generated column** (today it's computed in `state_after_json` retrospectively).
@@ -676,6 +699,57 @@ alter table indonesian.capability_resolution_failure_events
   alter column session_id set not null;
 ```
 
+### Decision Q — Audio data model (forward-looking for the `lib/audio` deep module)
+
+The `lib/audio` module exists today as a single file (`src/lib/audio.tsx`, per target-architecture.md §"lib/audio") but is on the roadmap for promotion to a deep module. The schema needs to support both today's narrow use (TTS playback for exercise audio) and the deep module's plausible future surfaces (lesson-long-form, podcast playback, audio coverage analytics).
+
+**Current state (investigation §3.11):**
+- `audio_clips` — 1,974 rows. TTS-clip storage: one row per (`text_content`, `voice_id`). Used by `listening_mcq`, `dictation`, and `lib/audio.fetchSessionAudioMap`.
+- `lessons.audio_path text` — 9 rows (one per lesson). Long-form lesson audio file path. Storage bucket `indonesian-lessons`.
+- `podcasts.audio_path` (in retired `podcasts` table) — was for podcast audio; feature not built.
+- `capability_artifacts(kind=audio_clip)` — 1,280 rows binding caps to clips (retired in Decision A).
+
+**Target shape (3 concerns; 3 tables):**
+
+```sql
+-- (1) TTS clips. Keep audio_clips as-is — one row per (text, voice).
+--     Already typed; no shape changes. 1,974 rows; 1,334 today are orphaned
+--     (no cap references them) — audio-storage hygiene tracked separately
+--     (Open Question §7).
+-- audio_clips schema unchanged.
+
+-- (2) Capability → audio binding. NEW (replaces the retired audio_clip
+--     artifact rows).
+create table indonesian.capability_audio_refs (
+  capability_id uuid not null references indonesian.learning_capabilities(id) on delete cascade,
+  audio_clip_id uuid not null references indonesian.audio_clips(id) on delete restrict,
+  voice_id text not null,                          -- denormalised from audio_clips.voice_id for query simplicity
+  primary key (capability_id, audio_clip_id)
+);
+
+create index if not exists capability_audio_refs_clip_idx
+  on indonesian.capability_audio_refs(audio_clip_id);
+
+-- (3) Lesson long-form audio. KEEP lessons.audio_path text column for now;
+--     it carries one file path per lesson. The deep module's future needs
+--     (section-level audio? per-paragraph timecodes?) may require a
+--     `lesson_audio_assets` table later — but the current shape is fit for
+--     the current product. No change in this migration.
+```
+
+**Decisions deferred to when `lib/audio` is built:**
+
+- Whether `lesson_audio` becomes its own table with per-section playback (vs. one whole-lesson MP3 file).
+- Audio coverage analytics (which items lack TTS for which voice).
+- Podcast audio (waits for the podcast feature).
+- Per-clip duration_ms population (currently NULL on all rows; computed at TTS generation time but not persisted).
+
+**Forward-compatibility check:** none of the proposed schema changes (in this target document) close off plausible audio-module designs:
+- TTS clips are stable typed rows.
+- Capability binding is a typed junction (extensible if a cap ever needs multiple clips per voice).
+- Lesson audio is one column; expanding to a child table is a future migration.
+- The audio module can build its read API (`fetchSessionAudioMap`, `resolveSessionAudioUrl`) over the 3-table shape.
+
 ### Decision O — `content_flags`, `exercise_review_comments`
 
 **Decision: Keep. Both are admin/UX tables, columnar, no shape issues. Add `lesson_id` denormalisation where it makes per-lesson admin queries simpler.**
@@ -739,7 +813,8 @@ This section names every table in the target schema. For brevity, only changes f
 |---|---|---|
 | `lessons` | survives | Drop `dialogue_voices`, `duration_seconds`, `transcript_*` (Decision J). |
 | `lesson_sections` | survives (slimmer) | Drop `content`. Add `section_kind`, `source_section_ref`. (Decision D) |
-| `audio_clips` | survives | No change. The 1,334 orphans (§3.11) are cleanup tracked separately. |
+| `audio_clips` | survives | No change. The 1,334 orphans (§3.11) are cleanup tracked separately. See Decision Q. |
+| **NEW** `capability_audio_refs` | new | Decision Q — binds caps to TTS clips (replaces `audio_clip` artifact rows). |
 | `podcasts` | **RETIRED** | Empty + feature not built. |
 | **NEW** `lesson_speakers` | new | Decision J |
 | **NEW** `lesson_blocks` | new | Decision C |

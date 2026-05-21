@@ -23,33 +23,43 @@ depends_on:
 - No staged rollout / no feature flags — the runtime is unified (CLAUDE.md: "Runtime is unified — every lesson goes through the capability pipeline").
 - Live admin (Albert) iterates content in production; "Publishing policy: Everything publishes immediately." (CLAUDE.md).
 
-**Strategy:** Migrate in dependency order — typed satellites first (new tables, populated from existing data), then code switches reader to the new tables, then drop the old. Each step is a discrete PR; the system stays consistent at every step.
+**Strategy (revised 2026-05-21 per user direction "no soak period; migrate ASAP"):** ship the migration as 5 dependency-ordered PRs that flow back-to-back. Within each PR, all schema changes + reader switches + writer switches + retire-old land in the same atomic commit; there are no compat windows, no feature flags, no dual-write phases. Single-user homelab app; low write volume; the schema can flip cleanly. Each PR still has its own pre-deploy gate (`make migrate-idempotent-check` + `make pre-deploy`) and visual smoke where applicable.
 
 ---
 
 ## §1. PR sequence overview
 
-Eleven PRs in dependency order. Each one is independently shippable, reviewable, and revertible.
+Five PRs in dependency order. Each is internally larger than the prior 12-PR sequence, but each ships immediately when its predecessor lands. **No soak periods.**
 
-| PR | Title | Scope | Risk | Estimated diff |
-|---|---|---|---|---|
-| 1 | Drop empty/legacy/aspirational tables | Pure cleanup | LOW | small migration; no code |
-| 2 | Slim `learner_capability_state` + `capability_review_events` | Drop redundant JSON columns | LOW | migration + 2 file edits |
-| 3 | Slim `learning_capabilities` metadata | Drop dead fields; promote `prerequisite_keys` | LOW | migration + handful of code edits |
-| 4 | Slim `lessons` + introduce `lesson_speakers` | Drop dead columns; junction-ify dialogue_voices | LOW | migration + 2 file edits |
-| 5 | Introduce typed dialogue satellites | New `dialogue_clozes`, `lesson_dialogue_lines`, `lesson_section_dialogue` + backfill | MEDIUM | migration + pipeline + runtime reader |
-| 6 | Introduce typed affixed-form-pair table | New `affixed_form_pairs` + backfill + reader switch | LOW (small data) | migration + pipeline + runtime reader |
-| 7 | Introduce typed grammar-pattern examples + reading-side artifact retirement | New `grammar_pattern_examples` + readiness check refactor | MEDIUM | migration + readiness refactor |
-| 8 | Routing fix: wire grammar exercises | Split `exercise_variants` into 4 typed tables; wire `renderContracts.ts`; pattern-source-kind byKind fetcher | HIGH (new live feature) | migration + ~6 file edits + 4 new files |
-| 9 | Retire `capability_artifacts` | Final artifact-table drop after all readers moved | MEDIUM | migration + reader switch |
-| 10 | Replace `lesson_page_blocks` with typed satellites | New `lesson_blocks` + 6 satellites + backfill | HIGH (renderer rewrite) | large migration + lesson-renderer rewrite |
-| 11 | Replace `lesson_sections.content` with typed satellites | New section satellites + backfill | HIGH (coverage + grammar-topic + per-lesson-Page consumers) | large migration + ~10 file edits |
+| PR | Title | Scope | Risk |
+|---|---|---|---|
+| 1 | **Cleanup + slim columns** | Drop empty/aspirational/legacy/orphan tables; rewrite `leaderboard` view; slim `learning_capabilities` (drop metadata_json + fingerprints; add `prerequisite_keys`); slim `lessons` (drop dead columns); junction-ify `dialogue_voices` → `lesson_speakers`; slim `learner_capability_state` (drop `fsrs_state_json`); slim `capability_review_events` (drop redundant JSON columns + rename); add `meaning_recall` + `cloze_mcq` to `exercise_type_availability` | LOW |
+| 2 | **Typed content satellites + retire `capability_artifacts`** | Add `dialogue_clozes`, `lesson_dialogue_lines`, `lesson_section_dialogue` (header only), `affixed_form_pairs`, `grammar_pattern_examples`, `capability_audio_refs`; backfill all from current artifacts; switch every reader (`lib/exercise-content/byKind/{item,dialogueLine,affixedFormPair}.ts` + `session-builder/adapter.ts:282-289` planner-side reader); drop `capability_artifacts` | MEDIUM |
+| 3 | **Grammar exercise typed tables + routing wire-up** | Add 4 typed tables (`contrast_pair_exercises`, `sentence_transformation_exercises`, `constrained_translation_exercises`, `cloze_mcq_exercises`); backfill from `exercise_variants`; wire `renderContracts.ts` `capabilityTypes` arrays for the 4 grammar exercises; new `lib/exercise-content/byKind/pattern.ts` fetcher + bucket; drop `exercise_variants` | HIGH (new live feature surface) |
+| 4 | **`lesson_blocks` typed satellites** | Replace `lesson_page_blocks` with `lesson_blocks` (header) + 6 typed satellites (`lesson_block_{hero,reading_section,vocab_strip,dialogue_card,practice_bridge,lesson_recap}`); backfill; rewrite `LessonReader` + `LessonBlockRenderer`; rewrite pipeline `lesson-stage/runner.ts` to write typed rows; drop `lesson_page_blocks` | HIGH (renderer rewrite) |
+| 5 | **`lesson_section_*` typed satellites** | Replace `lesson_sections.content` with typed satellites (`lesson_section_{reading,items,item_rows,grammar,grammar_categories,grammar_topics,pronunciation,pronunciation_letters,reference,exercise_groups}`); backfill; rewrite consumers (`coverageService`, `lib/lessons/adapter.ts`, per-lesson `Page.tsx` files); slim `lesson_sections` to header-only (drop `content` column) | HIGH (largest reader surface) |
 
-**Cumulative gate per PR:** Each PR ends green on `make pre-deploy`. PR 8 + 10 + 11 also require visual smoke (open `/admin/design-lab` + `/admin/page-lab` + each lesson reader on dev).
+**Per-PR gate:** `make migrate-idempotent-check` + `make pre-deploy` (lint + test + build + `check-supabase` + `check-supabase-deep`). PR 3 + PR 4 + PR 5 also require visual smoke (open `/admin/design-lab` + `/admin/page-lab` + every lesson reader on dev).
+
+**Optional further collapse:** PRs 4 and 5 can merge into one if the author prefers a single lesson-content migration. They are split here for review surface — each PR rewrites a distinct module (lesson reader for PR 4; section consumers for PR 5).
+
+### 1.1 Mapping from the per-PR detail sections to the 5-PR sequence
+
+The detail sections that follow (§2-§12) were authored against an earlier 11-PR breakdown. They are retained for their schema diffs + backfill SQL + code-paths-touched, but they consolidate into the 5-PR sequence above as follows:
+
+| New PR | Subsumes old §s |
+|---|---|
+| **PR 1 (cleanup + slim)** | §2 (drop empty/legacy) + §3 (slim review events + FSRS state) + §4 (slim learning_capabilities metadata) + §5 (slim lessons + lesson_speakers). The leaderboard rewrite from §2.2 lands here. The pre-PR-1 `pg_dump` of legacy-retained tables runs first. |
+| **PR 2 (typed satellites + retire `capability_artifacts`)** | §6 (dialogue satellites) + §7 (affixed_form_pairs) + §8 (grammar_pattern_examples + readiness refactor) + §10 (retire capability_artifacts including the PR 8.5 `capability_audio_refs` step). All four ship in one atomic PR. |
+| **PR 3 (grammar exercise routing)** | §9 (grammar exercise split + routing wire). Includes the `exercise_variants` drop in the same PR. |
+| **PR 4 (lesson_blocks satellites)** | §11 (`lesson_page_blocks` replacement). Drop of `lesson_page_blocks` in same PR. |
+| **PR 5 (lesson_section satellites)** | §12 (`lesson_sections.content` replacement). `lesson_sections.content` column dropped in same PR. |
+
+When reading §§2-12, treat each "old PR N" header as describing a chunk of one of the 5 new PRs.
 
 ---
 
-## §2. PR 1 — Drop empty and legacy-retained tables
+## §2. Old PR 1 (now part of new PR 1) — Drop empty and legacy-retained tables
 
 **Scope:** Cleanup-only. No code changes (besides removing references in `EXPECTED_TABLES` lists).
 
@@ -73,19 +83,18 @@ drop table if exists indonesian.lesson_progress cascade;
 
 Note: `capability_aliases` is **NOT** dropped (Decision K revised — preserved per ADR 0001 as the canonical-key migration escape hatch).
 
-**PR 12 (FINAL, after all migrations soak) — legacy-retained drops:**
+**Legacy-retained drops (now in same new PR 1 — no soak, but archive first):**
 
 ```sql
--- Legacy-retained (last write 2026-05-01; no new writes). Per architect
--- review: defer until the typed-satellite migrations (PR 5-11) have soaked
--- AND a pg_dump backup of these tables has been taken. Dropping in PR 1
--- removes the historical data before any new table has been validated.
+-- Legacy-retained (last write 2026-05-01; no new writes). pg_dump these
+-- to /Users/albert/home/learning-indonesian-archive/legacy-state-2026-05-21.sql.gz
+-- BEFORE running the migration, then drop in the same PR.
 drop table if exists indonesian.learner_item_state cascade;
 drop table if exists indonesian.learner_skill_state cascade;
 drop table if exists indonesian.review_events cascade;
 ```
 
-Recommended sequence: take a `pg_dump --table=indonesian.learner_item_state --table=indonesian.learner_skill_state --table=indonesian.review_events` BEFORE PR 1 runs; archive the dump to /Users/albert/home/learning-indonesian-archive/legacy-state-2026-05-21.sql.gz. Drop the tables in PR 12 after PR 11 has soaked.
+Order: (1) take the pg_dump archive; (2) ship PR 1 (which includes these drops alongside everything else in the cleanup + slim chunk).
 
 ### 2.2 Rewrite the `leaderboard` view
 
@@ -139,7 +148,7 @@ Restore via the rollback files already in `scripts/migrations/*.rollback.sql` (n
 
 ---
 
-## §3. PR 2 — Slim `learner_capability_state` + `capability_review_events`
+## §3. Old PR 2 (now part of new PR 1) — Slim `learner_capability_state` + `capability_review_events`
 
 **Scope:** Drop redundant JSON columns. Pure storage cleanup.
 
@@ -205,7 +214,7 @@ Re-add the dropped columns; backfill from the new ones (data shape is identical)
 
 ---
 
-## §4. PR 3 — Slim `learning_capabilities.metadata_json`
+## §4. Old PR 3 (now part of new PR 1) — Slim `learning_capabilities.metadata_json`
 
 **Scope:** Drop dead fields; promote `prerequisite_keys` to a typed column.
 
@@ -256,7 +265,7 @@ Re-add the dropped columns; backfill `source_fingerprint = JSON.stringify({sourc
 
 ---
 
-## §5. PR 4 — Slim `lessons` + introduce `lesson_speakers`
+## §5. Old PR 4 (now part of new PR 1) — Slim `lessons` + introduce `lesson_speakers`
 
 **Scope:** Drop dead columns; junction-ify `dialogue_voices`.
 
@@ -310,7 +319,7 @@ Re-add the columns; backfill `dialogue_voices = jsonb_object_agg(speaker, voice_
 
 ---
 
-## §6. PR 5 — Typed dialogue satellites
+## §6. Old PR 5 (now part of new PR 2) — Typed dialogue satellites
 
 **Scope:** The biggest schema split. Introduces `lesson_dialogue_lines`, `dialogue_clozes`, plus the section-side typed satellite.
 
@@ -417,7 +426,7 @@ Drop the new tables; restore old read path in `byKind/dialogueLine.ts`. `capabil
 
 ---
 
-## §7. PR 6 — Typed `affixed_form_pairs` table
+## §7. Old PR 6 (now part of new PR 2) — Typed `affixed_form_pairs` table
 
 **Scope:** Replace 2 `capability_artifacts` rows per pair (root_derived_pair + allomorph_rule) with 1 typed row.
 
@@ -482,7 +491,7 @@ Drop `affixed_form_pairs`; restore old reader. The 2 capability_artifacts rows a
 
 ---
 
-## §8. PR 7 — Typed `grammar_pattern_examples` + readiness refactor
+## §8. Old PR 7 (now part of new PR 2) — Typed `grammar_pattern_examples` + readiness refactor
 
 **Scope:** The last remaining structured artifact replacement; refactor `validateCapability` to derive readiness from upstream tables instead of `capability_artifacts`.
 
@@ -553,7 +562,7 @@ The pipeline adapter implements via SQL (the queries from §5 in the target doc)
 
 ---
 
-## §9. PR 8 — Routing fix: split `exercise_variants` into typed tables
+## §9. Old PR 8 (now new PR 3) — Routing fix: split `exercise_variants` into typed tables
 
 **Scope:** The biggest pure-additive change to the runtime feature surface. This is where the orphan grammar-exercise data becomes live.
 
@@ -614,7 +623,7 @@ on conflict (id) do nothing;
 
 ---
 
-## §10. PR 9 — Retire `capability_artifacts`
+## §10. Old PR 9 (now part of new PR 2) — Retire `capability_artifacts`
 
 **Scope:** Drop the artifact table once every reader path has been moved.
 
@@ -667,11 +676,11 @@ drop table if exists indonesian.capability_artifacts cascade;
 
 MEDIUM. The `drop table` step is irreversible. Rollback would require restoring from `pg_dump` + reverting all PR 5-8 code changes.
 
-Mitigation: run for ~2 weeks with `capability_artifacts` retained but unused (a "decommissioning soak" PR 9-pre); verify nothing fails. Only then drop.
+Mitigation under the no-soak strategy: the schema change + the reader switch + the drop ship atomically in the same PR (new PR 2). The risk is therefore "did the readers actually switch before the drop landed?" — verifiable via `grep capability_artifacts` returning only deleted code, migration history, or this plan. No production soak; the verification is a single grep + smoke test before merge.
 
 ---
 
-## §11. PR 10 — Replace `lesson_page_blocks` with typed satellites
+## §11. Old PR 10 (now new PR 4) — Replace `lesson_page_blocks` with typed satellites
 
 **Scope:** Lesson reader rewrite. HIGH risk due to user-visible UI change.
 
@@ -729,11 +738,11 @@ where pb.block_kind = 'reading_section';
 
 ### 11.5 Risk + rollback
 
-HIGH. Keep `lesson_page_blocks` table for ~2 weeks post-migration as a fallback before dropping. The renderer change is what carries the risk; the schema can run dual-write during the transition.
+HIGH. Under no-soak: the renderer rewrite + the schema change + the drop ship atomically. Pre-merge gate: visual smoke against every lesson reader on dev. Post-merge: monitor `error_logs` for `LessonReader` errors for the first session; rollback by reverting the PR + re-running migrate (idempotent restoration of the old table from the pg_dump archive — which means archiving `lesson_page_blocks` before PR 4 runs, parallel to the PR 1 legacy-retained archive).
 
 ---
 
-## §12. PR 11 — Replace `lesson_sections.content` with typed satellites
+## §12. Old PR 11 (now new PR 5) — Replace `lesson_sections.content` with typed satellites
 
 **Scope:** Authoring-side and admin-side migration. The pipeline reads from staging TS files and writes typed satellites instead of the JSON content column.
 
@@ -764,7 +773,7 @@ Per `content.type` discriminator, split each `lesson_sections.content` blob into
 
 ### 12.4 Risk + rollback
 
-HIGH (largest reader surface). Keep `lesson_sections.content` column for ~2 weeks as fallback.
+HIGH (largest reader surface). Under no-soak: rewrite all consumers + drop the `content` column in the same PR. Pre-merge: archive `lesson_sections` (`pg_dump --table=indonesian.lesson_sections`) so a revert is non-destructive. Visual smoke on every lesson reader on dev + the `coverageService` admin page.
 
 ---
 
@@ -790,27 +799,22 @@ Each PR adds at least one HC to `scripts/check-supabase-deep.ts`. Examples alrea
 - PR 7: readiness adapter output stability (one-off compare)
 - PR 8: live-session smoke for grammar exercises
 
-### 13.4 Backwards compatibility windows
+### 13.4 No soak windows
 
-Most PRs add new tables before retiring old ones. The migration is *not* a single mega-migration — that would be too high-risk. Per architect review (W2/PR ordering), the sequence is:
+Per user direction (2026-05-21): no soak windows; PRs ship back-to-back. Each PR is atomic — the schema change, reader switch, writer switch, and old-table drop all land in the same commit. The runtime never sees an inconsistent state because the migration script and the code change deploy together.
 
-```
-PR 1   : drop empty/aspirational tables only (no legacy-retained drops yet)
-         + pg_dump legacy tables to archive BEFORE running
-PR 2-4 : slim columns (atomic; one PR per concern)
-PR 5-8 : add typed tables alongside capability_artifacts; switch readers
-PR 8.5 : new — introduce capability_audio_refs and migrate audio reader
-PR 9   : after PR-7 soak (1 week recommended; smaller because no UX change),
-         drop capability_artifacts
-PR 10  : add lesson_blocks satellites alongside lesson_page_blocks; switch
-         reader; HIGHEST risk PR (renderer rewrite); soak 2 weeks before drop
-PR 11  : same for lesson_sections.content; HIGHEST reader surface; soak
-         2 weeks before drop
-PR 12  : final — drop legacy-retained tables (learner_item_state,
-         learner_skill_state, review_events) after PR 11 has soaked
-```
+The pre-PR-1 backup is the only "wait" in the sequence: `pg_dump --table=indonesian.learner_item_state --table=indonesian.learner_skill_state --table=indonesian.review_events` to `learning-indonesian-archive/legacy-state-2026-05-21.sql.gz` BEFORE PR 1 runs. This is a one-time archive operation, not a soak. After it lands, PR 1 drops those tables in the same change.
 
-**Soak revision (architect N6):** longer soaks for PRs with bigger user-visible reader surfaces. PR 11 > PR 10 > PR 9 in soak length, not the reverse. Total elapsed: ~6-8 weeks for the full sequence given soak periods.
+**Order of ops per PR:**
+1. Update `scripts/migration.sql` with the schema change.
+2. Update `supabase/functions/commit-capability-answer-report` (PR 1 only — for column renames).
+3. Update runtime + pipeline code that reads/writes the changed shape.
+4. Update staging files and any subagent prompts that emit the old shape.
+5. Run `make migrate-idempotent-check` + `make pre-deploy`.
+6. Merge; deploy edge function if changed; recreate container.
+7. Manual smoke (visual lesson reader + a real session) — these are minutes of work, not days.
+
+This is feasible at single-user scale. It would not be at multi-tenant scale; if the app grows users, future migrations need the soak/dual-write pattern. Documented for the next contributor.
 
 ### 13.5 Pre-deploy gauntlet per PR
 
@@ -838,25 +842,19 @@ If user base grows, individual PR steps may need staged rollouts (e.g. feature f
 
 These are decisions the user / architect must weigh in on before any PR ships:
 
-1. **Soak period.** PR 9, 10, 11 carry HIGH risk. The plan suggests 2 weeks. Is 2 weeks enough? Too long? (Recommend: 1 week given single-user app; reduce to 2-3 days for PR 11 since the lesson section reader is well-tested.)
+1. **`item_contexts.context_type` audit.** The `vocabulary_list` and `lesson_snippet` types have 515 + 60 rows. Grep before PR 2 to confirm whether they're consumed at runtime; drop if not.
 
-2. **Order of PR 8 within the sequence.** PR 8 (the grammar-exercise routing fix) ships *before* PR 9 (artifact drop), but is independent of PR 5-7. It could ship first. Alternative ordering: PR 1, 8, 2-7, 9, 10, 11. Both work; the named order optimises for "simpler PRs first."
+2. **Audio orphans.** `audio_clips` has 1,334 unreferenced storage paths (investigation §3.11). Either include a cleanup `DELETE FROM audio_clips WHERE id NOT IN (SELECT audio_clip_id FROM capability_audio_refs)` in PR 2's last step, or defer to a separate audio-storage hygiene pass. Recommendation: include in PR 2.
 
-3. **Drop `lesson_progress` in PR 1 or defer?** Per data-model.md it has 14 rows of orphan data. If anyone has reported wanting historical lesson-progress data, defer. Recommendation: drop in PR 1.
+3. **Coordination with staging-file regeneration.** The pipeline regenerates `scripts/data/staging/lesson-N/{capabilities,content-units,exercise-assets,lesson-page-blocks}.ts` from canonical inputs (CLAUDE.md:281). Each PR that changes the projection's emitter shape must also update the corresponding staging-file template — confirm coverage when the PRs are written.
 
-4. **Bump `CAPABILITY_PROJECTION_VERSION` to `'capability-v4'`?** Marks the schema cutover. Implication: every learner's FSRS state's `canonical_key_snapshot` is technically against v3 caps; v4 caps would orphan-invalidate them. Better: do NOT bump (the canonical_key contract is unchanged; only the support tables change).
+4. **Should this migration coincide with the `2026-05-18-fold-lib-lessons` plan?** That plan folds `lessonService` into `lib/lessons/`. The two interact (this migration changes what `lib/lessons/` reads). Sequencing: PR 4/5 of this migration touch the same code surface. Recommend: lib-lessons fold first (it's already an `approved` plan), then PR 4 of this migration builds on the folded shape.
 
-5. **PR 8 routing — `cloze_mcq` accepts pattern OR item OR dialogue_line?** The new `cloze_mcq_exercises` table is keyed by `grammar_pattern_id`. If `cloze_mcq` also wants to render item-sourced or dialogue_line-sourced clozes (today the typed `cloze` exercise does), that's a separate table. Decision per Decision G in target doc: cloze_mcq stays grammar-only for now.
+5. **Speaking exercise activation.** Decision G2 of the target doc keeps `speaking_exercises` un-built — `speaking` has `capabilityTypes: []` and no cap routes to it. If speaking becomes a real exercise type during this work, it gets a typed `speaking_exercises` table following the Decision G pattern. Not in scope of the 5-PR sequence.
 
-6. **`item_contexts.context_type` audit (Decision E).** The `vocabulary_list` and `lesson_snippet` types have 515 + 60 rows. Pre-PR-7 audit needs to confirm whether they're consumed.
+6. **`exercise_type_availability` for `meaning_recall` and `cloze_mcq`.** Both ExerciseTypes are defined in code but missing rows in the table. PR 1 inserts them with `session_enabled=true, rollout_phase='full'`. Confirm this matches product intent.
 
-7. **Audio orphans.** `audio_clips` has 1,334 unreferenced storage paths (§3.11 of evidence). Should the migration include a cleanup step, or defer to a separate audio-storage hygiene pass?
-
-8. **Live data in `learner_*` tables.** Three legacy-retained tables hold ~4,400 rows of historical answer data. Recommend `pg_dump` to `/tmp/legacy-state-backup.sql.gz` on the homelab before PR 1 runs.
-
-9. **Coordination with staging-file regeneration.** The pipeline regenerates `scripts/data/staging/lesson-N/{capabilities,content-units,exercise-assets,lesson-page-blocks}.ts` from canonical inputs (CLAUDE.md:281). Migrating the schema implies migrating the regeneration logic too — each pipeline-side PR must update the corresponding staging-file template.
-
-10. **Should this migration coincide with the `2026-05-18-fold-lib-lessons` plan?** That plan folds `lessonService` into `lib/lessons/`. The two interact (this migration changes what `lib/lessons/` reads). Sequencing: this migration first, then the fold, or the fold first, then this migration? Recommend: lib-lessons fold first (it's already an `approved` plan), then start this migration.
+7. **Audio module data model is forward-looking.** Decision Q in the target doc says lesson long-form audio (`lessons.audio_path`) stays as a text column for now. When the audio deep module is built, it may want per-section audio (`lesson_audio_assets` table) — that's a future migration, not this one. Confirm this is the right call.
 
 ---
 
