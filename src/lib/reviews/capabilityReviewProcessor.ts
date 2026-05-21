@@ -26,7 +26,6 @@ export interface CapabilityScheduleSnapshot {
 export interface CapabilityActivationRequest {
   reason: 'eligible_new_capability' | 'intro_completion_review'
   plannerRunId?: string
-  sourceProgressSnapshot?: Record<string, unknown>
 }
 
 export interface CapabilityAnswerReportCommand {

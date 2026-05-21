@@ -94,7 +94,6 @@ describe('capability release readiness planning', () => {
       ],
       capabilityArtifacts: 20,
       capabilityContentUnitRelationships: 1,
-      sourceProgressRows: 1,
     })
 
     expect(report.releaseReady).toBe(false)
@@ -116,7 +115,6 @@ describe('capability release readiness planning', () => {
       ],
       capabilityArtifacts: 20,
       capabilityContentUnitRelationships: 1,
-      sourceProgressRows: 1,
     })
 
     expect(report.releaseReady).toBe(true)
@@ -127,7 +125,6 @@ describe('capability release readiness planning', () => {
     const report = summarizeCapabilityReleaseReadiness({
       sourceRef: 'lesson-1',
       contentUnits: 1,
-      lessonPageBlocks: 1,
       scopedCapabilityKeys: ['cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl'],
       capabilities: [
         {
@@ -138,7 +135,6 @@ describe('capability release readiness planning', () => {
       ],
       capabilityArtifacts: 1,
       capabilityContentUnitRelationships: 1,
-      sourceProgressRows: 1,
     })
 
     expect(report.blockers).not.toContain('Missing capability rows for lesson-scoped keys: cap:v1:item:learning_items/akhir:text_recognition:id_to_l1:text:nl')

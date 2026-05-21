@@ -316,11 +316,9 @@ export async function getLessonCapabilityPracticeSummaryByLessonId(
   return { readyCapabilityCount: capabilityIds.length, activePracticedCapabilityCount }
 }
 
-// One-shot read for the Lessons overview page. Replaces the previous fanout
-// of ~20 round trips (1 + N for page_blocks + 1 for source_progress + N for
-// capability summaries) with a single SQL function call. The function
-// mirrors the kind-classification + meaningful-events logic that lived in
-// Lessons.tsx — see scripts/migrations/2026-05-02-lessons-overview-function.sql.
+// One-shot read for the Lessons overview page. The SQL function returns the
+// per-lesson kind-classification + meaningful-events shape that Lessons.tsx
+// consumes — see scripts/migrations/2026-05-02-lessons-overview-function.sql.
 export async function getLessonsOverview(userId: string): Promise<LessonOverviewRpcRow[]> {
   const { data, error } = await supabase
     .schema('indonesian')
