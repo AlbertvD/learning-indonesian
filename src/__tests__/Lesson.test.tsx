@@ -63,13 +63,6 @@ vi.mock('@/lib/lessons/activation', () => ({
   listActivatedLessons: vi.fn(),
 }))
 
-vi.mock('@/services/learningItemService', () => ({
-  learningItemService: {
-    getByLesson: vi.fn().mockResolvedValue([]),
-    getMeaningsBatch: vi.fn().mockResolvedValue([]),
-  },
-}))
-
 vi.mock('@/services/learnerStateService', () => ({
   learnerStateService: {
     getItemStates: vi.fn().mockResolvedValue([]),
