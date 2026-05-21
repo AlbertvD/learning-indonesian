@@ -1,4 +1,3 @@
-import { supabase } from '@/lib/supabase'
 import type {
   CapabilityDirection,
   CapabilityModality,
@@ -6,6 +5,12 @@ import type {
   CapabilityType,
   LearnerLanguage,
 } from '@/lib/capabilities'
+
+// Shared type vocabulary used across session-builder, reviews, and other
+// consumers. The runtime methods that used to live here (listCapabilities,
+// getCapabilityByCanonicalKey, upsertCapability) had no production callers
+// and were removed; capability writes go through the capability-stage
+// pipeline, capability reads go through capabilityContentService.
 
 export type CapabilityReadinessStatus = 'ready' | 'blocked' | 'exposure_only' | 'deprecated' | 'unknown'
 export type CapabilityPublicationStatus = 'draft' | 'published' | 'retired'
@@ -28,48 +33,3 @@ export interface LearningCapabilityRow {
   created_at?: string
   updated_at?: string
 }
-
-interface SupabaseSchemaClient {
-  schema(schema: 'indonesian'): {
-    from(table: string): any
-  }
-}
-
-export function createCapabilityService(client: SupabaseSchemaClient = supabase) {
-  const db = () => client.schema('indonesian')
-
-  return {
-    async listCapabilities(): Promise<LearningCapabilityRow[]> {
-      const { data, error } = await db()
-        .from('learning_capabilities')
-        .select('*')
-      if (error) throw error
-      return (data ?? []) as LearningCapabilityRow[]
-    },
-
-    async getCapabilityByCanonicalKey(canonicalKey: string): Promise<LearningCapabilityRow | null> {
-      const { data, error } = await db()
-        .from('learning_capabilities')
-        .select('*')
-        .eq('canonical_key', canonicalKey)
-        .maybeSingle()
-      if (error) throw error
-      return data as LearningCapabilityRow | null
-    },
-
-    async upsertCapability(row: Omit<LearningCapabilityRow, 'id' | 'created_at' | 'updated_at'>): Promise<LearningCapabilityRow> {
-      const { data, error } = await db()
-        .from('learning_capabilities')
-        .upsert({
-          ...row,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'canonical_key' })
-        .select()
-        .single()
-      if (error) throw error
-      return data as LearningCapabilityRow
-    },
-  }
-}
-
-export const capabilityService = createCapabilityService()
