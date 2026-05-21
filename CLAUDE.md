@@ -262,19 +262,13 @@ Password resets are handled by an admin via Supabase Studio. If email is needed 
 
 All lesson, vocabulary, and podcast content is **deployed via scripts**, not through a UI. See `docs/process/content-pipeline.md` for the full authoring + publishing workflow (the 8 authoring steps, the 2-stage publish pipeline internals, agent invocations, failure-mode debugging).
 
-### Runtime is unified; authoring is split
+### Runtime is unified — every lesson goes through the capability pipeline
 
-**At runtime, every lesson goes through the capability pipeline.** `src/pages/Session.tsx:110` is the only production caller of any session builder, and it always invokes `loadCapabilitySessionPlanForUser({ enabled: true, ... })`. Legacy `buildSessionQueue` was retired in retirement #7; the new builders in `src/lib/exercises/builders/` carry the surface forward. The `vocabulary` table is not read at runtime.
+`src/pages/Session.tsx` is the only production caller of any session builder, and it always invokes `buildSession({ enabled: true, ... })`. Every lesson in the live DB sits on `projection_version='capability-v3'` with `lesson_id` set on every non-podcast capability row. The lessons 1–3 "legacy projection" path was retired in 2026-05-21; the live DB confirmation is recorded in `docs/code-review-2026-05-20/README.md` §"2026-05-21 — Pattern I + retirement".
 
-The split between lessons 1–3 and lessons 4+ is purely about *authoring* — how content gets into Supabase:
+The legacy seed surface (`scripts/data/vocabulary.ts`, `scripts/seed-learning-items.ts`, the `seed-vocabulary` Makefile target) is **deleted**. Do not reintroduce it.
 
-| | Lessons 1–3 (legacy) | Lessons 4+ (pipeline) |
-|---|---|---|
-| Source of truth | `scripts/data/lessons.ts` + `vocabulary.ts` | `scripts/data/staging/lesson-N/` |
-| Publish command | `make seed-lessons` + `make seed-vocabulary` | `bun scripts/publish-approved-content.ts <N>` |
-| Bridge into capability runtime | Legacy projection (`requiredSourceProgress.kind: 'none', reason: 'legacy_projection'` in `src/lib/capabilities/capabilityTypes.ts:96`) | Direct capability artifact writes by the capability-stage runner |
-
-**Never add vocabulary to `lessons.ts` for lessons 4+.** That file only populates `lesson_sections` (display content). Runtime scheduling reads from capability rows projected off `learning_items` + capability artifacts — vocabulary added only to `lessons.ts` will never become schedulable.
+**`scripts/data/lessons.ts` is still live for display content.** It populates `lesson_sections` (the reader-facing material) only. Capability rows are projected off `learning_items` written by the capability-stage runner — vocabulary added only to `lessons.ts` will never become schedulable.
 
 ### Publish pipeline shape
 
