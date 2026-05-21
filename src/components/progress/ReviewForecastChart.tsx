@@ -1,4 +1,6 @@
 // src/components/progress/ReviewForecastChart.tsx
+import { useT } from '@/hooks/useT'
+import { useAuthStore } from '@/stores/authStore'
 import classes from './ReviewForecastChart.module.css'
 
 interface ReviewForecastChartProps {
@@ -9,14 +11,24 @@ function capitalize(s: string): string {
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : s
 }
 
+function fillTemplate(template: string, values: Record<string, string | number>): string {
+  return Object.entries(values).reduce(
+    (acc, [key, value]) => acc.replaceAll(`{${key}}`, String(value)),
+    template,
+  )
+}
+
 export function ReviewForecastChart({ forecast }: ReviewForecastChartProps) {
+  const T = useT()
+  const language = useAuthStore((state) => state.profile?.language ?? 'nl')
+  const dateLocale = language === 'en' ? 'en-US' : 'nl-NL'
   const allEmpty = forecast.every((d) => d.count === 0)
 
   if (allEmpty) {
     return (
       <div className={classes.card}>
-        <div className={classes.cardTitle}>7-Daagse Voorspelling</div>
-        <p className={classes.empty}>Geen reviews gepland de komende 7 dagen</p>
+        <div className={classes.cardTitle}>{T.progress.forecastTitle}</div>
+        <p className={classes.empty}>{T.progress.forecastEmpty}</p>
       </div>
     )
   }
@@ -40,7 +52,7 @@ export function ReviewForecastChart({ forecast }: ReviewForecastChartProps) {
 
   return (
     <div className={classes.card}>
-      <div className={classes.cardTitle}>7-Daagse Voorspelling</div>
+      <div className={classes.cardTitle}>{T.progress.forecastTitle}</div>
 
       {/* Bar chart with y-axis */}
       <div className={classes.chartArea}>
@@ -68,8 +80,8 @@ export function ReviewForecastChart({ forecast }: ReviewForecastChartProps) {
               const barHeightPct = day.count > 0 ? (day.count / chartMax) * 100 : 0
 
               const dayLabel = isToday
-                ? 'Vand.'
-                : capitalize(day.date.toLocaleDateString('nl-NL', { weekday: 'short' }))
+                ? T.progress.todayShort
+                : capitalize(day.date.toLocaleDateString(dateLocale, { weekday: 'short' }))
 
               return (
                 <div key={i} className={`${classes.barCol} ${isSpike ? classes.barColSpike : ''}`}>
@@ -88,9 +100,8 @@ export function ReviewForecastChart({ forecast }: ReviewForecastChartProps) {
                   </div>
                   {isSpike && (
                     <div className={classes.whatifTooltip}>
-                      <strong>Als je deze dag overslaat:</strong><br />
-                      {day.count} items schuiven door — backlog stijgt naar{' '}
-                      <span style={{ color: 'var(--danger)', fontWeight: 700 }}>{day.count + 15} items</span>.
+                      <strong>{T.progress.skipIntro}</strong><br />
+                      {fillTemplate(T.progress.skipBacklog, { count: day.count, newCount: day.count + 15 })}
                     </div>
                   )}
                 </div>
@@ -103,20 +114,23 @@ export function ReviewForecastChart({ forecast }: ReviewForecastChartProps) {
       {spikeDay !== null && (
         <p className={classes.spikeNote}>
           <span style={{ color: 'var(--danger)' }}>■</span>{' '}
-          {capitalize(forecast[spikeDay].date.toLocaleDateString('nl-NL', { weekday: 'long' }))}: {forecast[spikeDay].count} kaarten vervallen — plan extra tijd in.
+          {fillTemplate(T.progress.spikeNote, {
+            day: capitalize(forecast[spikeDay].date.toLocaleDateString(dateLocale, { weekday: 'long' })),
+            count: forecast[spikeDay].count,
+          })}
         </p>
       )}
 
       {/* Projected next week */}
       <div className={classes.projSection}>
-        <div className={classes.projLabel}>Volgende week (als je consistent blijft)</div>
+        <div className={classes.projLabel}>{T.progress.projectedNextWeek}</div>
         <div className={classes.projBars}>
           {forecast.map((day, i) => {
             const projCount = projectedValues[i]
             const heightPct = projCount > 0 ? (projCount / maxProjected) * 100 : 0
             const dayLabel = i === 0
-              ? 'Vand.'
-              : capitalize(day.date.toLocaleDateString('nl-NL', { weekday: 'short' }))
+              ? T.progress.todayShort
+              : capitalize(day.date.toLocaleDateString(dateLocale, { weekday: 'short' }))
 
             return (
               <div key={i} className={classes.projBarCol}>
@@ -127,7 +141,7 @@ export function ReviewForecastChart({ forecast }: ReviewForecastChartProps) {
           })}
         </div>
         <div className={classes.projSuccess}>
-          ✓ Max {Math.max(...projectedValues)} kaarten/dag — geen spikes
+          {fillTemplate(T.progress.projectedSuccess, { n: Math.max(...projectedValues) })}
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 // src/components/progress/MasteryFunnel.tsx
+import { useT } from '@/hooks/useT'
 import classes from './MasteryFunnel.module.css'
 
 interface MasteryFunnelProps {
@@ -11,47 +12,51 @@ interface MasteryFunnelProps {
   }
 }
 
-const PIPELINE_STAGES = [
-  { key: 'anchoring' as const,   label: 'Inprenten' },
-  { key: 'retrieving' as const,  label: 'Oproepen' },
-  { key: 'productive' as const,  label: 'Productief' },
-  { key: 'maintenance' as const, label: 'Onderhoud' },
-]
+type StageKey = 'anchoring' | 'retrieving' | 'productive' | 'maintenance'
+const STAGE_ORDER: StageKey[] = ['anchoring', 'retrieving', 'productive', 'maintenance']
 
 export function MasteryFunnel({ itemsByStage }: MasteryFunnelProps) {
+  const T = useT()
+  const stageLabel: Record<StageKey, string> = {
+    anchoring: T.progress.stageAnchoring,
+    retrieving: T.progress.stageRetrieving,
+    productive: T.progress.stageProductive,
+    maintenance: T.progress.stageMaintenance,
+  }
+
   const totalItems = Object.values(itemsByStage).reduce((a, b) => a + b, 0)
 
   // Bottleneck: the non-new stage with the most items (only if meaningful count)
-  const bottleneckKey = PIPELINE_STAGES.reduce<typeof PIPELINE_STAGES[number] | null>((best, stage) => {
-    if (itemsByStage[stage.key] === 0) return best
+  const bottleneckKey = STAGE_ORDER.reduce<StageKey | null>((best, stage) => {
+    if (itemsByStage[stage] === 0) return best
     if (!best) return stage
-    return itemsByStage[stage.key] > itemsByStage[best.key] ? stage : best
-  }, null)?.key ?? null
+    return itemsByStage[stage] > itemsByStage[best] ? stage : best
+  }, null)
 
   if (totalItems === 0) {
     return (
       <div>
-        <div className="section-label">Leerpijplijn</div>
-        <p className={classes.empty}>Nog geen woorden geleerd.</p>
+        <div className="section-label">{T.progress.funnelTitle}</div>
+        <p className={classes.empty}>{T.progress.funnelEmpty}</p>
       </div>
     )
   }
 
   return (
     <div>
-      <div className="section-label">Leerpijplijn</div>
+      <div className="section-label">{T.progress.funnelTitle}</div>
 
       <div className={classes.card}>
         <div className={classes.pipelineRow}>
-          {PIPELINE_STAGES.map((stage, i) => {
-            const count = itemsByStage[stage.key]
-            const isBottleneck = stage.key === bottleneckKey
-            const isLast = i === PIPELINE_STAGES.length - 1
+          {STAGE_ORDER.map((stage, i) => {
+            const count = itemsByStage[stage]
+            const isBottleneck = stage === bottleneckKey
+            const isLast = i === STAGE_ORDER.length - 1
             const isFirst = i === 0
 
             return (
               <div
-                key={stage.key}
+                key={stage}
                 className={[
                   classes.stage,
                   isBottleneck ? classes.stageBottleneck : '',
@@ -61,12 +66,12 @@ export function MasteryFunnel({ itemsByStage }: MasteryFunnelProps) {
               >
                 <div className={classes.stageName}>
                   {isBottleneck && <span className={classes.warningIcon}>⚠</span>}
-                  {stage.label}
+                  {stageLabel[stage]}
                 </div>
                 <div className={[classes.stageCount, isBottleneck ? classes.stageCountBottleneck : count === 0 ? classes.stageCountZero : ''].filter(Boolean).join(' ')}>
                   {count}
                 </div>
-                <div className={classes.stageUnit}>items</div>
+                <div className={classes.stageUnit}>{T.progress.itemsUnit}</div>
               </div>
             )
           })}

@@ -6,6 +6,7 @@ import {
   LoadingState,
 } from '@/components/page/primitives'
 import { useProgressData } from '@/hooks/useProgressData'
+import { useT } from '@/hooks/useT'
 import { MemoryHealthHero } from '@/components/progress/MemoryHealthHero'
 import { MasteryFunnel } from '@/components/progress/MasteryFunnel'
 import { VulnerableItemsList } from '@/components/progress/VulnerableItemsList'
@@ -15,6 +16,7 @@ import classes from './Progress.module.css'
 
 export function Progress() {
   const data = useProgressData()
+  const T = useT()
 
   if (data.wave1Loading) {
     return (
@@ -30,8 +32,8 @@ export function Progress() {
     <PageContainer size="lg">
       <PageBody>
         <PageHeader
-          title="Geheugenoverzicht"
-          subtitle="Jouw leervoortgang en geheugengezondheid"
+          title={T.progress.pageTitle}
+          subtitle={T.progress.pageSubtitle}
         />
 
         <section className={classes.section}>

@@ -1,6 +1,10 @@
 // src/components/progress/MemoryHealthHero.tsx
 import { useState, useEffect } from 'react'
+import { useT } from '@/hooks/useT'
+import type { translations } from '@/lib/i18n'
 import classes from './MemoryHealthHero.module.css'
+
+type TProgress = (typeof translations)['nl']['progress']
 
 interface MemoryHealthHeroProps {
   avgRecognitionDays: number
@@ -11,10 +15,10 @@ function daysToPct(days: number): number {
   return Math.min(100, Math.round((days / 10) * 100))
 }
 
-function strengthLabel(pct: number): { label: string; color: string; cls: string } {
-  if (pct >= 70) return { label: 'Sterk', color: 'var(--success)', cls: classes.sublabelStrong }
-  if (pct >= 40) return { label: 'Ontwikkelen', color: 'var(--warning)', cls: classes.sublabelDeveloping }
-  return { label: 'Zwak', color: 'var(--danger)', cls: classes.sublabelWeak }
+function strengthLabel(pct: number, t: TProgress): { label: string; color: string; cls: string } {
+  if (pct >= 70) return { label: t.strengthStrong, color: 'var(--success)', cls: classes.sublabelStrong }
+  if (pct >= 40) return { label: t.strengthDeveloping, color: 'var(--warning)', cls: classes.sublabelDeveloping }
+  return { label: t.strengthWeak, color: 'var(--danger)', cls: classes.sublabelWeak }
 }
 
 const HALF_CIRCUMFERENCE = Math.PI * 62 // ≈ 194.779
@@ -29,8 +33,9 @@ interface GaugeCardProps {
 }
 
 function GaugeCard({ pct, label, directionLabel, strokeColor, glowColor, valueClass }: GaugeCardProps) {
+  const T = useT()
   const [offset, setOffset] = useState(HALF_CIRCUMFERENCE)
-  const strength = strengthLabel(pct)
+  const strength = strengthLabel(pct, T.progress)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -93,33 +98,33 @@ function GaugeCard({ pct, label, directionLabel, strokeColor, glowColor, valueCl
 }
 
 export function MemoryHealthHero({ avgRecognitionDays, avgRecallDays }: MemoryHealthHeroProps) {
+  const T = useT()
   const recognitionPct = daysToPct(avgRecognitionDays)
   const recallPct = daysToPct(avgRecallDays)
   const gap = recognitionPct - recallPct
   const showGapPill = gap >= 20
 
-  const insightText =
-    gap >= 20
-      ? "Je herkenning is sterk, maar je oproepen loopt achter. Het algoritme geeft prioriteit aan 'Typed Recall' oefeningen om de kloof te overbruggen."
-      : 'Je geheugenbalans ziet er goed uit. Blijf consistent oefenen.'
+  const insightText = gap >= 20
+    ? T.progress.insightRecognitionAhead
+    : T.progress.insightBalanced
 
   return (
     <div>
-      <div className="section-label">Geheugensterkte</div>
+      <div className="section-label">{T.progress.memoryStrength}</div>
 
       <div className={classes.heroGrid}>
         <GaugeCard
           pct={recognitionPct}
-          label="Herkenning"
-          directionLabel="Indonesisch → NL/EN"
+          label={T.progress.recognition}
+          directionLabel={T.progress.directionIdToL1}
           strokeColor="var(--accent-primary)"
           glowColor="var(--accent-primary-glow)"
           valueClass={classes.valueRecognition}
         />
         <GaugeCard
           pct={recallPct}
-          label="Oproepen"
-          directionLabel="NL/EN → Indonesisch"
+          label={T.progress.recall}
+          directionLabel={T.progress.directionL1ToId}
           strokeColor="var(--warning)"
           glowColor="var(--warning-glow)"
           valueClass={classes.valueRecall}
@@ -128,9 +133,9 @@ export function MemoryHealthHero({ avgRecognitionDays, avgRecallDays }: MemoryHe
 
       {showGapPill && (
         <div className={classes.gapRow}>
-          <span className={classes.gapRowLabel}>KLOOF ANALYSE</span>
+          <span className={classes.gapRowLabel}>{T.progress.gapAnalysis}</span>
           <div className={classes.gapPill}>
-            <span className={classes.gapPillText}>{gap}% GAP</span>
+            <span className={classes.gapPillText}>{gap}% {T.progress.gapLabel}</span>
           </div>
         </div>
       )}

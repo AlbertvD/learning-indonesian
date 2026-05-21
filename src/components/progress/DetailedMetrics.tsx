@@ -1,6 +1,14 @@
 // src/components/progress/DetailedMetrics.tsx
 import { Skeleton } from '@mantine/core'
+import { useT } from '@/hooks/useT'
 import classes from './DetailedMetrics.module.css'
+
+function fillTemplate(template: string, values: Record<string, string | number>): string {
+  return Object.entries(values).reduce(
+    (acc, [key, value]) => acc.replaceAll(`{${key}}`, String(value)),
+    template,
+  )
+}
 
 interface DetailedMetricsProps {
   avgStability: number
@@ -53,6 +61,7 @@ export function DetailedMetrics({
   avgLatencyMs,
   wave2Loading,
 }: DetailedMetricsProps) {
+  const T = useT()
   const recPct = Math.round((accuracyBySkillType?.recognitionAccuracy ?? 0) * 100)
   const recallPct = Math.round((accuracyBySkillType?.recallAccuracy ?? 0) * 100)
   const rescued = lapsePrevention?.rescued ?? 0
@@ -67,13 +76,13 @@ export function DetailedMetrics({
 
   return (
     <div>
-      <div className="section-label">Details</div>
+      <div className="section-label">{T.progress.detailsTitle}</div>
 
       <div className={classes.grid}>
 
-        {/* Tile 1 — Gem. Stabiliteit */}
+        {/* Tile 1 — Avg. Stability */}
         <div className={classes.tile}>
-          <TileLabel>Gem. Stabiliteit</TileLabel>
+          <TileLabel>{T.progress.avgStability}</TileLabel>
           <div className={classes.tileRow}>
             <span className={classes.bigNum} style={{ color: 'var(--accent-primary)', textShadow: '0 0 10px var(--accent-primary-glow)' }}>
               {avgStability.toFixed(1)}
@@ -81,13 +90,13 @@ export function DetailedMetrics({
             <ForgettingCurve avgStability={avgStability} />
           </div>
           <div className={classes.tileSub}>
-            dagen — na {avgStability.toFixed(1)}d daalt retentie onder 90%
+            {fillTemplate(T.progress.stabilityHint, { n: avgStability.toFixed(1) })}
           </div>
         </div>
 
-        {/* Tile 2 — Zwakke Woorden Gered */}
+        {/* Tile 2 — Weak Words Rescued */}
         <div className={classes.tile}>
-          <TileLabel>Zwakke Woorden Gered</TileLabel>
+          <TileLabel>{T.progress.rescuedTitle}</TileLabel>
           {wave2Loading && lapsePrevention === null ? (
             <Skeleton height={28} width={48} mb={4} />
           ) : (
@@ -104,15 +113,15 @@ export function DetailedMetrics({
                   </div>
                 )}
               </div>
-              <div className={classes.tileSub}>woorden gered van terugval</div>
+              <div className={classes.tileSub}>{T.progress.rescuedSub}</div>
               <div className={classes.rescueBar} />
             </>
           )}
         </div>
 
-        {/* Tile 3 — Nauwkeurigheid split */}
+        {/* Tile 3 — Accuracy split */}
         <div className={classes.tile}>
-          <TileLabel>Nauwkeurigheid</TileLabel>
+          <TileLabel>{T.progress.accuracyTitle}</TileLabel>
           {wave2Loading && accuracyBySkillType === null ? (
             <Skeleton height={28} width={100} mb={4} />
           ) : (
@@ -122,14 +131,14 @@ export function DetailedMetrics({
                   <div className={classes.accuracyNum} style={{ color: recPct >= 70 ? 'var(--success)' : recPct >= 50 ? 'var(--warning)' : 'var(--danger)' }}>
                     {recPct}%
                   </div>
-                  <div className={classes.accuracyLabel}>MCQ</div>
+                  <div className={classes.accuracyLabel}>{T.progress.accuracyMcq}</div>
                 </div>
                 <div className={classes.accuracyDivider} />
                 <div className={classes.accuracyItem}>
                   <div className={classes.accuracyNum} style={{ color: recallPct >= 70 ? 'var(--success)' : recallPct >= 50 ? 'var(--warning)' : 'var(--danger)' }}>
                     {recallPct}%
                   </div>
-                  <div className={classes.accuracyLabel}>Recall</div>
+                  <div className={classes.accuracyLabel}>{T.progress.accuracyRecall}</div>
                 </div>
               </div>
               <div className={classes.accuracyTrack}>
@@ -142,22 +151,22 @@ export function DetailedMetrics({
           )}
         </div>
 
-        {/* Tile 4 — Tijd Bespaard */}
+        {/* Tile 4 — Response Time */}
         <div className={classes.tile}>
-          <TileLabel>Reactietijd</TileLabel>
+          <TileLabel>{T.progress.responseTime}</TileLabel>
           {wave2Loading && avgLatencyMs === null ? (
             <Skeleton height={28} width={80} mb={4} />
           ) : currentMs === null ? (
-            <div className={classes.tileSub} style={{ marginTop: 8 }}>Nog geen data</div>
+            <div className={classes.tileSub} style={{ marginTop: 8 }}>{T.progress.noData}</div>
           ) : savedMs !== null && savedMs > 0 ? (
             <>
               <div className={classes.tileRow} style={{ alignItems: 'baseline', gap: 4 }}>
                 <span className={classes.bigNum} style={{ color: 'var(--success)', textShadow: '0 0 10px var(--success-glow)' }}>
                   {savedSec}
                 </span>
-                <span className={classes.tileUnit}>s/antwoord sneller</span>
+                <span className={classes.tileUnit}>{T.progress.fasterPerAnswer}</span>
               </div>
-              <div className={classes.tileSub}>{priorSec}s → {currentSec}s gem.</div>
+              <div className={classes.tileSub}>{priorSec}s → {currentSec}s</div>
               <div className={classes.speedBar}>
                 <div className={classes.speedBarLabel}>{priorSec}s</div>
                 <div className={classes.speedTrack}>
@@ -172,9 +181,9 @@ export function DetailedMetrics({
                 <span className={classes.bigNum} style={{ color: 'var(--text-secondary)' }}>
                   {currentSec}
                 </span>
-                <span className={classes.tileUnit}>s/antwoord</span>
+                <span className={classes.tileUnit}>{T.progress.perAnswer}</span>
               </div>
-              <div className={classes.tileSub}>gem. reactietijd deze week</div>
+              <div className={classes.tileSub}>{T.progress.avgThisWeek}</div>
             </>
           )}
         </div>

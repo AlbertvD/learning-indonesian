@@ -1,5 +1,6 @@
 // src/components/progress/VulnerableItemsList.tsx
 import { Skeleton } from '@mantine/core'
+import { useT } from '@/hooks/useT'
 import classes from './VulnerableItemsList.module.css'
 
 interface VulnerableItemsListProps {
@@ -18,16 +19,15 @@ function strengthPct(lapseCount: number): number {
 }
 
 export function VulnerableItemsList({ items, loading }: VulnerableItemsListProps) {
+  const T = useT()
   if (!loading && (items === null || items.length === 0)) return null
 
   return (
     <div>
-      <div className="section-label">Meest Kwetsbare Woorden</div>
+      <div className="section-label">{T.progress.vulnerableTitle}</div>
 
       <div className={classes.card}>
-        <p className={classes.subtitle}>
-          Woorden die het meest aandacht nodig hebben op basis van herhaalde fouten.
-        </p>
+        <p className={classes.subtitle}>{T.progress.vulnerableSubtitle}</p>
 
         {loading && (
           <div className={classes.list}>
@@ -52,7 +52,7 @@ export function VulnerableItemsList({ items, loading }: VulnerableItemsListProps
                     {showLapseIcon && (
                       <span className={classes.lapseIcon} style={{ borderColor: color, color }}>!</span>
                     )}
-                    {item.lapseCount} {item.lapseCount === 1 ? 'lapse' : 'lapses'}
+                    {item.lapseCount} {item.lapseCount === 1 ? T.progress.lapseSingular : T.progress.lapsePlural}
                   </span>
                   <div className={classes.barWrap}>
                     <div
