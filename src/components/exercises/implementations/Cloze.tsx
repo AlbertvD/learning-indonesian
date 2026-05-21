@@ -42,7 +42,9 @@ export default function Cloze({
   })
 
   if (!clozeContext) {
-    return <div style={{ color: 'red' }}>Error: missing cloze context</div>
+    // ExerciseErrorBoundary catches, logs, and emits a skip so Session
+    // accounting stays consistent without rendering a raw error string.
+    throw new Error('Cloze exercise is missing required cloze context payload')
   }
 
   const { sentence, translation } = clozeContext

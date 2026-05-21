@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { supabase } from '@/lib/supabase'
 
 vi.mock('@/lib/supabase')
+vi.mock('@/lib/logger', () => ({ logError: vi.fn() }))
 
 describe('fetchSessionAudioMap (legacy voice-agnostic behaviour preserved via voiceId: null)', () => {
   beforeEach(() => {

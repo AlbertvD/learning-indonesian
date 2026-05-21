@@ -57,7 +57,7 @@ export default function ConstrainedTranslationExercise({
   })
 
   if (!data) {
-    return <div style={{ color: 'red' }}>Missing constrained translation data</div>
+    throw new Error('ConstrainedTranslation exercise is missing required data payload')
   }
 
   // Cloze sub-mode — sentence with blank, inline input inside the flowing text

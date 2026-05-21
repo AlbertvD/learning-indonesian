@@ -136,10 +136,9 @@ export function Session() {
 
         setLoading(false)
       } catch (err) {
-        const errMsg = err instanceof Error ? err.message : JSON.stringify(err)
-        console.error('Session init error:', err)
         logError({ page: 'session', action: 'initialize', error: err })
-        setError(`Sessie laden mislukt: ${errMsg}`)
+        const lang = (profile?.language ?? 'nl') as 'en' | 'nl'
+        setError(translations[lang].session.failedToLoadSession)
         setLoading(false)
       }
     }

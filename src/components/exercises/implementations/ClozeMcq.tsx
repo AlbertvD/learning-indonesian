@@ -38,7 +38,7 @@ export default function ClozeMcq({
   })
 
   if (!data) {
-    return <div style={{ color: 'red' }}>Missing cloze MCQ data</div>
+    throw new Error('ClozeMcq exercise is missing required data payload')
   }
 
   const parts = data.sentence.split('___')

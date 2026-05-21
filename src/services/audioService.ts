@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import { logError } from '@/lib/logger'
 import { normalizeTtsText } from '@/lib/ttsNormalize'
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
@@ -48,7 +49,9 @@ export async function fetchSessionAudioMap(items: AudioRequest[]): Promise<Sessi
       .schema('indonesian')
       .rpc('get_audio_clips', { p_texts: normalizedTexts, p_voice_ids: voiceIds })
 
-    if (!error && data) {
+    if (error) {
+      logError({ page: 'audio-service', action: 'get_audio_clips', error })
+    } else if (data) {
       for (const clip of data as Array<{
         normalized_text: string
         voice_id: string
@@ -70,7 +73,9 @@ export async function fetchSessionAudioMap(items: AudioRequest[]): Promise<Sessi
       .schema('indonesian')
       .rpc('get_audio_clip_per_text', { p_texts: normalizedTexts })
 
-    if (!error && data) {
+    if (error) {
+      logError({ page: 'audio-service', action: 'get_audio_clip_per_text', error })
+    } else if (data) {
       for (const clip of data as Array<{ normalized_text: string; storage_path: string }>) {
         map.set(makeKey(clip.normalized_text, null), clip.storage_path)
       }

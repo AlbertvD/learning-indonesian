@@ -51,7 +51,7 @@ export default function SentenceTransformationExercise({
   })
 
   if (!data) {
-    return <div style={{ color: 'red' }}>Missing sentence transformation data</div>
+    throw new Error('SentenceTransformation exercise is missing required data payload')
   }
 
   return (

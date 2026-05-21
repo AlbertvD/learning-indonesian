@@ -41,7 +41,7 @@ export default function ContrastPairExercise({
   })
 
   if (!data) {
-    return <div style={{ color: 'red' }}>Missing contrast pair data</div>
+    throw new Error('ContrastPair exercise is missing required data payload')
   }
 
   // Strip legacy prompt prefixes — the instruction label above carries them now.

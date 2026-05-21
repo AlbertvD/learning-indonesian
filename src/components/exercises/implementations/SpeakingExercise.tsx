@@ -21,7 +21,7 @@ export default function SpeakingExercise({ exerciseItem, userLanguage }: Exercis
   const data = exerciseItem.speakingData
 
   if (!data) {
-    return <div style={{ color: 'red' }}>Missing speaking data</div>
+    throw new Error('Speaking exercise is missing required data payload')
   }
 
   return (

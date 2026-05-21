@@ -37,7 +37,7 @@ export default function CuedRecallExercise({
   })
 
   if (!data) {
-    return <div style={{ color: 'red' }}>Missing cued recall data</div>
+    throw new Error('CuedRecall exercise is missing required data payload')
   }
 
   return (
