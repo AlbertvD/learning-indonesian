@@ -9,53 +9,10 @@ import {
   PageHeader,
   LoadingState,
 } from '@/components/page/primitives'
-import { supabase } from '@/lib/supabase'
 import { logError } from '@/lib/logger'
 import { AdminGuard } from '@/pages/admin/AdminGuard'
+import { coverageService, type LessonSectionCoverage } from '@/services/coverageService'
 import classes from './ContentCoverage.module.css'
-
-// ── Data types ──────────────────────────────────────────────────────────────
-
-interface LessonSections {
-  lessonId: string
-  orderIndex: number
-  title: string
-  sectionTypes: Set<string>
-}
-
-// ── Data fetching ───────────────────────────────────────────────────────────
-
-async function fetchSections(): Promise<LessonSections[]> {
-  const [
-    { data: lessons, error: lessonsError },
-    { data: sections, error: sectionsError },
-  ] = await Promise.all([
-    supabase.schema('indonesian').from('lessons').select('id, order_index, title').order('order_index'),
-    supabase.schema('indonesian').from('lesson_sections').select('lesson_id, content'),
-  ])
-
-  if (lessonsError) throw lessonsError
-  if (sectionsError) throw sectionsError
-
-  const map = new Map<string, LessonSections>()
-  for (const lesson of lessons ?? []) {
-    map.set(lesson.id, {
-      lessonId: lesson.id,
-      orderIndex: lesson.order_index,
-      title: lesson.title,
-      sectionTypes: new Set(),
-    })
-  }
-
-  for (const section of sections ?? []) {
-    const entry = map.get(section.lesson_id)
-    if (!entry) continue
-    const type = (section.content as Record<string, unknown>)?.type
-    if (typeof type === 'string') entry.sectionTypes.add(type)
-  }
-
-  return [...map.values()].sort((a, b) => a.orderIndex - b.orderIndex)
-}
 
 // ── Row definitions ─────────────────────────────────────────────────────────
 
@@ -65,7 +22,7 @@ interface CellValue {
 
 interface RowDef {
   label: string
-  getValue: (c: LessonSections) => CellValue
+  getValue: (c: LessonSectionCoverage) => CellValue
 }
 
 const ROWS: RowDef[] = [
@@ -93,13 +50,13 @@ function Cell({ ok }: CellValue) {
 // ── Page ────────────────────────────────────────────────────────────────────
 
 export function SectionCoverage() {
-  const [data, setData] = useState<LessonSections[] | null>(null)
+  const [data, setData] = useState<LessonSectionCoverage[] | null>(null)
   const [loading, setLoading] = useState(true)
 
   const load = async () => {
     setLoading(true)
     try {
-      setData(await fetchSections())
+      setData(await coverageService.getSectionCoverage())
     } catch (err) {
       logError({ page: 'section-coverage', action: 'fetchSections', error: err })
       notifications.show({ color: 'red', title: 'Error', message: 'Failed to load section data.' })
