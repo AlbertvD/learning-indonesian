@@ -24,6 +24,14 @@ The capability runtime is unified. `Session.tsx` always invokes `loadCapabilityS
 
 The one flag still consulted is `VITE_LOCAL_CONTENT_PREVIEW`, which enables the `/preview` routes — local review surfaces for visual/product iteration that do not replace publishing approved content into Supabase.
 
+## Status snapshots
+
+These are point-in-time architectural finding docs, named so future sessions don't re-investigate the same gaps:
+
+- [Capability runtime vs data model gap](capability-runtime-data-model-gap.md) — 2026-05-21. Documents that the data model accommodates six source kinds and twelve capability types, but the runtime renders one source kind (`item`). 97% of capability rows are renderable; ~105 rows across pattern / dialogue_line / affixed_form_pair are projected-but-inert. Lays out the cost of closing each gap.
+- [Page framework — adoption status](page-framework-status.md) — page-primitive adoption per surface.
+- [Lesson content / audio migration status](lesson-content-audio-migration-status.md) — per-lesson migration state.
+
 ## Key References
 
 - `CLAUDE.md` — project rules, conventions, and runtime invariants.
