@@ -25,7 +25,7 @@ import type { SkillType } from '@/types/learning'
 import type {
   CapabilityPublicationStatus,
   CapabilityReadinessStatus,
-} from '@/services/capabilityService'
+} from '@/lib/capabilities'
 
 interface SupabaseSchemaClient {
   schema(schema: 'indonesian'): {

@@ -1,4 +1,4 @@
-import type { CapabilityReadinessStatus, CapabilityPublicationStatus } from '@/services/capabilityService'
+import type { CapabilityReadinessStatus, CapabilityPublicationStatus } from '@/lib/capabilities'
 
 export interface AnswerReport {
   wasCorrect: boolean

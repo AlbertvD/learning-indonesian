@@ -1,6 +1,6 @@
 import type { CapabilityActivationRequest, CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
 import type { ExerciseRenderPlan } from '@/lib/exercises/exerciseRenderPlan'
-import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/services/capabilityService'
+import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/lib/capabilities'
 
 export type SessionMode = 'standard' | 'lesson_practice' | 'lesson_review'
 

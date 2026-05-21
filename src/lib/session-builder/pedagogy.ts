@@ -5,7 +5,7 @@ import type {
 import type { SkillType } from '@/types/learning'
 import { decideLoadBudget, type LoadBudgetDecision } from '@/lib/session-builder/loadBudget'
 import type { SessionMode } from '@/lib/session-builder/model'
-import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/services/capabilityService'
+import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/lib/capabilities'
 
 export interface PlannerCapability {
   id: string

@@ -1,4 +1,4 @@
-import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/services/capabilityService'
+import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/lib/capabilities'
 import type { SessionMode } from './model'
 
 export interface LearnerCapabilityStateRow {

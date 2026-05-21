@@ -4,7 +4,6 @@
 // See docs/plans/2026-05-02-capability-content-service-spec.md.
 
 import type {
-  ExerciseItem, ExerciseType,
   LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant,
 } from '@/types/learning'
 import type { SessionBlock } from '@/lib/session-builder'
@@ -25,27 +24,12 @@ import { chunkedIn } from '@/lib/chunkedQuery'
 export type { ResolutionReasonCode } from '@/lib/exercises/resolutionReasons'
 import type { ResolutionReasonCode } from '@/lib/exercises/resolutionReasons'
 
-// ─── Diagnostic ──────────────────────────────────────────────────────────────
-
-export interface ResolutionDiagnostic {
-  reasonCode: ResolutionReasonCode
-  message: string
-  capabilityKey: string
-  capabilityId: string
-  exerciseType: ExerciseType
-  blockId: string
-  payloadSnapshot?: unknown
-}
-
-// ─── Render context ─────────────────────────────────────────────────────────
-
-export interface CapabilityRenderContext {
-  blockId: string
-  capabilityId: string
-  exerciseItem: ExerciseItem | null
-  audibleTexts: string[]
-  diagnostic: ResolutionDiagnostic | null
-}
+// ─── Diagnostic + render context ─────────────────────────────────────────────
+//
+// Definitions live in src/lib/capabilities/renderContext.ts so that lib
+// consumers (session-builder, etc.) don't import them from services/.
+import type { CapabilityRenderContext, ResolutionDiagnostic } from '@/lib/capabilities'
+export type { CapabilityRenderContext, ResolutionDiagnostic }
 
 // ─── Service interface ──────────────────────────────────────────────────────
 

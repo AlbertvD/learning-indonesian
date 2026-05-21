@@ -10,7 +10,7 @@
 // See docs/plans/2026-05-02-capability-content-service-spec.md §6.3 + §8.
 
 import type { ExerciseItem } from '@/types/learning'
-import type { CapabilityRenderContext } from '@/services/capabilityContentService'
+import type { CapabilityRenderContext } from '@/lib/capabilities'
 import { normalizeTtsText } from '@/lib/ttsNormalize'
 
 /**

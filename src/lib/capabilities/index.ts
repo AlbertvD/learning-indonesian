@@ -32,7 +32,11 @@ export type {
   CapabilityAlias,
   ProjectionDiagnostic,
   CapabilityProjection,
+  CapabilityReadinessStatus,
+  CapabilityPublicationStatus,
+  LearningCapabilityRow,
 } from './capabilityTypes'
+export type { CapabilityRenderContext, ResolutionDiagnostic } from './renderContext'
 
 // ─── Projection ────────────────────────────────────────────────────────────
 export { projectCapabilities } from './capabilityCatalog'

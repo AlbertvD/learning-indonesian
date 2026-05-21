@@ -6,9 +6,17 @@
 // See docs/plans/2026-04-23-exercise-framework-design.md §7.1
 
 import { useCallback, useEffect, useReducer, useRef } from 'react'
-import type { OptionState } from '@/components/exercises/primitives'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
+
+/**
+ * The visual states an MCQ-style option can be in. Returned by
+ * the `optionState(option, correct)` function exposed by this hook and
+ * consumed by `ExerciseOption` for class-name resolution. Defined here
+ * (the lib layer) so the components layer can depend on lib, not the
+ * other way around.
+ */
+export type OptionState = 'idle' | 'focused' | 'disabled' | 'correct' | 'wrong' | 'answer'
 
 export type ScoringMode = 'tap' | 'typed'
 

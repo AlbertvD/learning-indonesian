@@ -201,3 +201,31 @@ export interface CapabilityProjection {
   aliases: CapabilityAlias[]
   diagnostics: ProjectionDiagnostic[]
 }
+
+// ─── DB-row shape and lifecycle enums ──────────────────────────────────────
+//
+// Mirrors learning_capabilities rows. Lives here (the lib layer) rather than
+// in services/ so consumers in lib/ can depend on these types without
+// inverting the architectural arrow.
+
+export type CapabilityReadinessStatus = 'ready' | 'blocked' | 'exposure_only' | 'deprecated' | 'unknown'
+export type CapabilityPublicationStatus = 'draft' | 'published' | 'retired'
+
+export interface LearningCapabilityRow {
+  id?: string
+  canonical_key: string
+  source_kind: CapabilitySourceKind
+  source_ref: string
+  capability_type: CapabilityType
+  direction: CapabilityDirection
+  modality: CapabilityModality
+  learner_language: LearnerLanguage
+  projection_version: string
+  readiness_status: CapabilityReadinessStatus
+  publication_status: CapabilityPublicationStatus
+  source_fingerprint?: string | null
+  artifact_fingerprint?: string | null
+  metadata_json: Record<string, unknown>
+  created_at?: string
+  updated_at?: string
+}

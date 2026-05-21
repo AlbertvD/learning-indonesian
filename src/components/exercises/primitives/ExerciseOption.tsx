@@ -4,11 +4,12 @@
 
 import type { ReactNode, MouseEventHandler } from 'react'
 import { IconCheck, IconX } from '@tabler/icons-react'
+import type { OptionState } from '@/lib/useExerciseScoring'
 import { triggerHaptic } from './haptics'
 import { ExerciseAudioButton } from './ExerciseAudioButton'
 import classes from './ExerciseOption.module.css'
 
-export type OptionState = 'idle' | 'focused' | 'disabled' | 'correct' | 'wrong' | 'answer'
+export type { OptionState }
 export type OptionVariant = 'word' | 'sentence'
 
 export interface ExerciseOptionProps {
