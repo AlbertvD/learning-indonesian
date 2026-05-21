@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
 import {
   Group, Select, Text, Tabs, Stack,
   Textarea, Button, Box, Center, Loader, Badge,
@@ -16,18 +15,14 @@ import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/lib/supabase'
 import { exerciseReviewService } from '@/services/exerciseReviewService'
 import { logError } from '@/lib/logger'
+import { AdminGuard } from '@/pages/admin/AdminGuard'
 import { VariantPreview } from '@/components/admin/VariantPreview'
 import type { ExerciseVariant, ReviewComment, ReviewCommentWithContext } from '@/types/learning'
 
 interface Lesson { id: string; title: string; order_index: number }
 
 export function ContentReview() {
-  const navigate = useNavigate()
   const { user, profile } = useAuthStore()
-
-  useEffect(() => {
-    if (profile && !profile.isAdmin) navigate('/', { replace: true })
-  }, [profile, navigate])
 
   const [lessons, setLessons] = useState<Lesson[]>([])
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null)
@@ -147,16 +142,18 @@ export function ContentReview() {
 
   if (!profile) {
     return (
-      <PageContainer size="md">
-        <PageBody>
-          <LoadingState />
-        </PageBody>
-      </PageContainer>
+      <AdminGuard>
+        <PageContainer size="md">
+          <PageBody>
+            <LoadingState />
+          </PageBody>
+        </PageContainer>
+      </AdminGuard>
     )
   }
-  if (!profile.isAdmin) return null
 
   return (
+    <AdminGuard>
     <PageContainer size="md">
       <PageBody>
         <PageHeader title="Contentcontrole" />
@@ -280,5 +277,6 @@ export function ContentReview() {
       </Tabs>
       </PageBody>
     </PageContainer>
+    </AdminGuard>
   )
 }

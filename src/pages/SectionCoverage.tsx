@@ -11,6 +11,7 @@ import {
 } from '@/components/page/primitives'
 import { supabase } from '@/lib/supabase'
 import { logError } from '@/lib/logger'
+import { AdminGuard } from '@/pages/admin/AdminGuard'
 import classes from './ContentCoverage.module.css'
 
 // ── Data types ──────────────────────────────────────────────────────────────
@@ -111,17 +112,20 @@ export function SectionCoverage() {
 
   if (loading) {
     return (
-      <PageContainer size="xl">
-        <PageBody>
-          <LoadingState />
-        </PageBody>
-      </PageContainer>
+      <AdminGuard>
+        <PageContainer size="xl">
+          <PageBody>
+            <LoadingState />
+          </PageBody>
+        </PageContainer>
+      </AdminGuard>
     )
   }
 
   if (!data) return null
 
   return (
+    <AdminGuard>
     <PageContainer size="xl">
       <PageBody>
         <PageHeader
@@ -163,5 +167,6 @@ export function SectionCoverage() {
       </div>
       </PageBody>
     </PageContainer>
+    </AdminGuard>
   )
 }
