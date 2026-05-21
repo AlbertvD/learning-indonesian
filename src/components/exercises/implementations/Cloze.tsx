@@ -47,11 +47,12 @@ export default function Cloze({
     throw new Error('Cloze exercise is missing required cloze context payload')
   }
 
-  const { sentence, translation } = clozeContext
+  const { sentence, translation, speaker } = clozeContext
   const parts = sentence.split('___')
 
   const inlineInput = (
     <span style={{ lineHeight: 1.6 }}>
+      {speaker && <strong>{speaker}: </strong>}
       {parts[0]}
       <ExerciseTextInput
         inline

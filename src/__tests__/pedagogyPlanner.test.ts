@@ -538,4 +538,29 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     // the source_kind exempts it from the staging gate.
     expect(plan.eligibleNewCapabilities.map(e => e.capability.canonicalKey)).toContain('cap:morph:recognition')
   })
+
+  it('exempts dialogue_line from the staging gate (PR-C of lib/exercise-content fold)', () => {
+    // Each dialogue line has exactly one productive cap (contextual_cloze)
+    // and no Phase 1/2 sibling at the same source_ref. Receptive items on
+    // the same lesson live at different source_refs (learning_items/<slug>),
+    // so the staging gate's source_ref-keyed sibling lookup never matches.
+    // Without this carve-out every dialogue_line cap is permanently orphan-
+    // suppressed. lesson_activation is the actual readiness lever for these
+    // caps (Decision 3b / ADR 0006).
+    const dialogueCloze = capability({
+      id: 'dialogue-cloze-1',
+      canonicalKey: 'cap:dialogue:l9-s1-l10',
+      sourceKind: 'dialogue_line',
+      capabilityType: 'contextual_cloze',
+      sourceRef: 'lesson-9/section-1/line-10',
+      lessonId: 'lesson-9-uuid',
+    })
+    const plan = planLearningPath({
+      ...baseInput,
+      readyCapabilities: [dialogueCloze],
+      learnerCapabilityStates: [],
+      activatedLessons: new Set(['lesson-9-uuid']),
+    })
+    expect(plan.eligibleNewCapabilities.map(e => e.capability.canonicalKey)).toContain('cap:dialogue:l9-s1-l10')
+  })
 })

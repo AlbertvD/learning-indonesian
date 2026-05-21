@@ -270,15 +270,24 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
     // candidates always pass this gate; they are the path to unlocking
     // their own siblings.
     //
-    // Morphology carve-out: affixed_form_pair capabilities have no Phase 1/2
-    // siblings (both `root_derived_recognition` and `root_derived_recall`
-    // are productive). The receptive→productive ladder doesn't apply; the
-    // existing prerequisite chain (recognition → recall, encoded in
-    // `prerequisiteKeys`) already enforces a within-pattern learning order.
-    // Without this carve-out, every morphology capability is permanently
-    // orphan-suppressed.
+    // Carve-outs for source kinds that have no Phase 1/2 sibling at the
+    // same source_ref:
+    //   - affixed_form_pair: both root_derived_recognition + root_derived_recall
+    //     are productive; their own prerequisite chain (encoded in
+    //     prerequisiteKeys) already enforces a within-pattern learning order.
+    //   - dialogue_line: each dialogue line has exactly one productive
+    //     contextual_cloze cap; the source_ref `lesson-N/section-M/line-K`
+    //     is unique to that line. Receptive items on the same lesson live at
+    //     different source_refs (`learning_items/<slug>`), so they would not
+    //     unlock under the source_ref-keyed gate even if the dialogue line's
+    //     vocabulary has been seen. The lesson_activation gate below
+    //     (Decision 3b / ADR 0006) is the actual readiness lever for
+    //     dialogue lines.
+    //   Without these carve-outs, every cap of these kinds is permanently
+    //   orphan-suppressed.
     if (
       capability.sourceKind !== 'affixed_form_pair'
+      && capability.sourceKind !== 'dialogue_line'
       && capabilityPhase(capability.capabilityType) >= 3
       && !unlockedSourceRefs.has(capability.sourceRef)
     ) {
