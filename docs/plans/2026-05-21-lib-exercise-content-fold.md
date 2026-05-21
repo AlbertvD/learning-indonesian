@@ -1,19 +1,30 @@
 ---
-status: implementing
-implementation: PR-A + PR-B merged; PR-C (UI + HC11) pending
+status: shipped
+implementation: PR-A (bc45009 + c70271e + fbefba7) + PR-B (c7acb67 + docs 1d4b31d) + PR-C all merged
+merged_at: 2026-05-21
 implementation_paths:
   - src/lib/exercise-content/
   - docs/current-system/modules/exercise-content.md
   - src/lib/capabilities/renderContracts.ts
   - src/lib/exercises/resolutionReasons.ts
+  - src/lib/session-builder/pedagogy.ts
+  - src/components/exercises/implementations/Cloze.tsx
+  - src/components/exercises/primitives/fixtures/dialogue-cloze.ts
+  - scripts/check-supabase-deep.ts
   - src/types/learning.ts
 ---
 
 # `lib/exercise-content/` fold — deepening capability resolution so source-kind variation hides inside one module
 
-> **PR-A shipped 2026-05-21.** Three commits on main: `bc45009` (relocate service files + update importers), `c70271e` (relocate 12 byType packagers), `fbefba7` (extract bucketing seam — adapter owns I/O, resolver pure orchestration). Test baseline preserved at 1193 passing, 0 errors, 4 warnings, build clean.
+> **Shipped 2026-05-21.** Eight commits on main:
 >
-> **PR-B shipped 2026-05-21.** Dialogue_line widening absorbed into the new structure: `cloze.supportedSourceKinds = ['item', 'dialogue_line']`; new `fetchForDialogueLineBlocks` in the adapter; byType/cloze.ts branches on populated field; new reason codes; +13 new tests (1193 → 1206). `cloze_mcq` stays item-only — narrowed scope from D7's matrix because cloze_mcq's distractor pool is lesson-anchored and fetchForDialogueLineBlocks doesn't populate one (follow-up). PR-C (UI + HC11 health check) remains.
+> - **PR-A** — `bc45009` (relocate service files), `c70271e` (relocate 12 byType packagers), `fbefba7` (extract bucketing seam), `02a1df9` (spec → stable).
+> - **PR-B** — `c7acb67` (dialogue_line widening: contract + adapter fetcher + byType branch + reason codes + 13 new tests), `1d4b31d` (docs).
+> - **PR-C** — staging-gate carve-out for dialogue_line, Cloze.tsx speaker prefix, design-lab fixture, HC11 health check, end-to-end capstone test. +6 new tests.
+>
+> Final test baseline: **1212 passing** (1193 → 1206 → 1212), 0 lint errors, 4 pre-existing warnings, build clean. Five inert dialogue_line:contextual_cloze caps on L9 (7 in total — re-publish needed to backfill HC11 if not yet done) now resolve to render-ready typed clozes with speaker prefix.
+>
+> Narrowed scope from the original D7 matrix: `cloze_mcq` stays item-only because its distractor pool is lesson-anchored and `fetchForDialogueLineBlocks` doesn't populate one. Tracked as a follow-up. PR 1a (L5/L7/L8 content authoring) also deferred — cloze-creator agent re-runs not scheduled in this work session.
 
 ## Goal
 

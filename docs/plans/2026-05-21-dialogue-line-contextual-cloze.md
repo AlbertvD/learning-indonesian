@@ -1,11 +1,22 @@
 ---
-status: implementing
-implementation: PR 0 + PR 1 merged via a4cd381 + 1467cae; PR 2 + PR 3 + PR 4 absorbed into the lib/exercise-content fold's PR-B; PR 5 + PR 6 + PR 7 + capstone pending
+status: shipped
+implementation: PR 0 (a4cd381) + PR 1 (1467cae) + PR 2/3/4 absorbed into lib/exercise-content fold's PR-B (c7acb67) + PR 5/6/7 + capstone shipped via lib/exercise-content fold's PR-C
+merged_at: 2026-05-21
+implementation_paths:
+  - src/lib/exercise-content/
+  - src/lib/capabilities/renderContracts.ts
+  - src/lib/exercises/resolutionReasons.ts
+  - src/lib/session-builder/pedagogy.ts
+  - src/components/exercises/implementations/Cloze.tsx
+  - src/components/exercises/primitives/fixtures/dialogue-cloze.ts
+  - scripts/check-supabase-deep.ts
+  - scripts/lib/pipeline/capability-stage/projectors/dialogueArtifacts.ts
+  - src/types/learning.ts
 ---
 
 # Dialogue-line contextual cloze — first non-item source kind reaches the runtime
 
-> **2026-05-21 update:** PR 2 + PR 3 + PR 4 shipped as one cohesive change inside the lib/exercise-content fold's PR-B (which absorbed the runtime widening per the pause-note decision α). The shape that lands is narrower than the original plan: `cloze` (typed) accepts dialogue_line but `cloze_mcq` stays item-only — the cloze_mcq runtime path needs a lesson-anchored distractor pool that fetchForDialogueLineBlocks doesn't populate yet (follow-up). PR 5 (session-builder verification), PR 6 (UI surfaces), PR 7 (HC11 health check), and the capstone are still pending. See `docs/current-system/modules/exercise-content.md` §8 for the PR-B commit list.
+> **Shipped 2026-05-21.** The narrower-than-originally-planned shape that landed: `cloze` (typed) accepts dialogue_line; `cloze_mcq` stays item-only because its distractor pool is lesson-anchored and the dialogue_line fetcher doesn't populate one (follow-up). PR 5 escalated to a code change (PR 5b) when the receptive-before-productive staging gate was found to suppress all dialogue_line caps; the carve-out for `affixed_form_pair` was extended to `dialogue_line`. PR 1a (L5/L7/L8 content authoring) deferred until cloze-creator agent re-runs are scheduled. See `docs/current-system/modules/exercise-content.md` §8 for the full commit list.
 
 ## Goal
 
