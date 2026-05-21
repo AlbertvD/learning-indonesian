@@ -1,35 +1,48 @@
-// lib/exercise-content/resolver — resolves SessionBlock[] into render-ready
-// ExerciseItems. Orchestrator-only; no SQL. SQL lives in ./adapter.
+// lib/exercise-content/resolver — orchestrates SessionBlock[] → render-ready
+// ExerciseItems. Pure orchestration; no SQL. The adapter at ./adapter owns
+// the I/O seam and the source-kind bucketing dispatch; the byType packagers
+// at ./byType own the per-exercise-type packaging.
+//
+// Flow per resolveBlocks call:
+//   1. bucketByDecodedSourceKind classifies each block by source kind;
+//      malformed / unsupported-kind blocks become fail contexts here.
+//   2. adapter.loadBlockData runs per-bucket fetchers in parallel and
+//      returns per-block RawProjectorInput | pre-built fail context.
+//   3. Single dispatch loop: ok blocks go to buildForExerciseType (which
+//      projects + dispatches to the byType packager); fail blocks pass
+//      through unchanged.
+//   4. Fire-and-forget log every diagnostic to
+//      capability_resolution_failure_events.
 //
 // Module spec: docs/current-system/modules/exercise-content.md.
 // Fold plan: docs/plans/2026-05-21-lib-exercise-content-fold.md.
 
-import type {
-  LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant,
-} from '@/types/learning'
 import type { SessionBlock } from '@/lib/session-builder'
-import type { ArtifactKind, CapabilityArtifact } from '@/lib/capabilities'
-import { decodeCanonicalKey, extractItemKey } from './adapter'
+import type {
+  CapabilityRenderContext,
+  ResolutionDiagnostic,
+} from '@/lib/capabilities'
+import {
+  bucketByDecodedSourceKind,
+  createAdapter,
+  makeFailContext,
+} from './adapter'
 import { buildForExerciseType } from './byType'
-import type { RawProjectorInput } from './byType'
-import { chunkedIn } from '@/lib/chunkedQuery'
 
 // ─── Reason codes ───────────────────────────────────────────────────────────
 //
 // Canonical declaration lives at @/lib/exercises/resolutionReasons to break
 // what would otherwise be a circular dependency between this module and
-// @/lib/capabilities/renderContracts (which the module consumes for
-// projectBuilderInput). The re-export below preserves the existing public
-// path so external consumers keep working.
+// @/lib/capabilities/renderContracts. Re-exported here for back-compat with
+// callers that imported the type from the old service path.
 
 export type { ResolutionReasonCode } from '@/lib/exercises/resolutionReasons'
-import type { ResolutionReasonCode } from '@/lib/exercises/resolutionReasons'
 
-// ─── Diagnostic + render context ─────────────────────────────────────────────
+// ─── Diagnostic + render context type re-exports ────────────────────────────
 //
 // Definitions live in src/lib/capabilities/renderContext.ts so that lib
 // consumers (session-builder, etc.) don't import them through this module.
-import type { CapabilityRenderContext, ResolutionDiagnostic } from '@/lib/capabilities'
+// Re-exported here for back-compat.
 export type { CapabilityRenderContext, ResolutionDiagnostic }
 
 // ─── Service interface ──────────────────────────────────────────────────────
@@ -47,313 +60,62 @@ export interface CapabilityContentService {
   ): Promise<Map<string, CapabilityRenderContext>>
 }
 
-// ─── Internal types ──────────────────────────────────────────────────────────
-
 interface SupabaseSchemaClient {
   schema(schema: 'indonesian'): {
     from(table: string): any
   }
 }
 
-interface CapabilityArtifactRow {
-  capability_id: string
-  artifact_kind: ArtifactKind
-  quality_status: string
-  artifact_json: unknown
-}
-
-const PAYLOAD_SNAPSHOT_BYTE_LIMIT = 4 * 1024  // 4 KB
-
-function trimPayloadSnapshot(snapshot: unknown): unknown {
-  if (snapshot == null) return {}
-  const serialized = JSON.stringify(snapshot)
-  if (serialized.length <= PAYLOAD_SNAPSHOT_BYTE_LIMIT) return snapshot
-  return {
-    _truncated: true,
-    _originalSizeBytes: serialized.length,
-    sample: serialized.slice(0, PAYLOAD_SNAPSHOT_BYTE_LIMIT - 200) + '…',
-  }
-}
-
 // ─── Factory ────────────────────────────────────────────────────────────────
 
 export function createCapabilityContentService(client: SupabaseSchemaClient): CapabilityContentService {
-  const db = () => client.schema('indonesian')
-
-  // Items are looked up by `normalized_text` (the slug the catalog stores),
-  // NOT by uuid `id`. See extractItemKey docstring + smoke-test 2026-05-02.
-  async function fetchLearningItemsByKey(keys: string[]): Promise<LearningItem[]> {
-    if (keys.length === 0) return []
-    const { data, error } = await db().from('learning_items').select('*').in('normalized_text', keys)
-    if (error) throw error
-    return (data ?? []) as LearningItem[]
-  }
-
-  // Chunked: the distractor-pool path can pass several hundred ids (one per
-  // item anchored to any touched lesson). A single IN clause overflows Kong's
-  // 8 KB request-line buffer; the chunker holds each URL under ~2 KB.
-  async function fetchLearningItemsById(ids: string[]): Promise<LearningItem[]> {
-    return chunkedIn<LearningItem>('learning_items', 'id', ids, undefined, client)
-  }
-
-  async function fetchMeanings(itemIds: string[]): Promise<ItemMeaning[]> {
-    return chunkedIn<ItemMeaning>('item_meanings', 'learning_item_id', itemIds, undefined, client)
-  }
-
-  async function fetchContexts(itemIds: string[]): Promise<ItemContext[]> {
-    if (itemIds.length === 0) return []
-    const { data, error } = await db().from('item_contexts').select('*').in('learning_item_id', itemIds)
-    if (error) throw error
-    return (data ?? []) as ItemContext[]
-  }
-
-  async function fetchAnswerVariants(itemIds: string[]): Promise<ItemAnswerVariant[]> {
-    if (itemIds.length === 0) return []
-    const { data, error } = await db().from('item_answer_variants').select('*').in('learning_item_id', itemIds)
-    if (error) throw error
-    return (data ?? []) as ItemAnswerVariant[]
-  }
-
-  async function fetchActiveVariants(itemIds: string[]): Promise<ExerciseVariant[]> {
-    if (itemIds.length === 0) return []
-    const { data, error } = await db()
-      .from('exercise_variants')
-      .select('*')
-      .in('learning_item_id', itemIds)
-      .eq('is_active', true)
-    if (error) throw error
-    return (data ?? []) as ExerciseVariant[]
-  }
-
-  async function fetchArtifacts(capabilityIds: string[]): Promise<CapabilityArtifactRow[]> {
-    if (capabilityIds.length === 0) return []
-    const { data, error } = await db()
-      .from('capability_artifacts')
-      .select('capability_id, artifact_kind, quality_status, artifact_json')
-      .in('capability_id', capabilityIds)
-      .eq('quality_status', 'approved')
-    if (error) throw error
-    return (data ?? []) as CapabilityArtifactRow[]
-  }
-
-  async function fetchDistractorPool(lessonIds: string[]): Promise<{ items: LearningItem[]; meanings: ItemMeaning[] }> {
-    if (lessonIds.length === 0) return { items: [], meanings: [] }
-    // Items whose contexts anchor to any of the touched lessons.
-    const { data: contextRows, error: cErr } = await db()
-      .from('item_contexts')
-      .select('learning_item_id')
-      .in('source_lesson_id', lessonIds)
-    if (cErr) throw cErr
-    const itemIds = [...new Set(((contextRows ?? []) as Array<{ learning_item_id: string }>).map(r => r.learning_item_id))]
-    if (itemIds.length === 0) return { items: [], meanings: [] }
-    const [items, meanings] = await Promise.all([
-      fetchLearningItemsById(itemIds),
-      fetchMeanings(itemIds),
-    ])
-    return { items: items.filter(i => i.is_active), meanings }
-  }
-
-  async function logResolutionFailure(
-    diagnostic: ResolutionDiagnostic,
-    options: ResolveOptions,
-  ): Promise<void> {
-    try {
-      await db().from('capability_resolution_failure_events').insert({
-        capability_id: diagnostic.capabilityId,
-        capability_key: diagnostic.capabilityKey,
-        reason_code: diagnostic.reasonCode,
-        exercise_type: diagnostic.exerciseType,
-        user_id: options.userId,
-        session_id: options.sessionId,
-        block_id: diagnostic.blockId,
-        payload_json: trimPayloadSnapshot(diagnostic.payloadSnapshot),
-      })
-    } catch {
-      // Swallowed. Resolution result is unaffected.
-    }
-  }
-
-  function makeFailContext(
-    block: SessionBlock,
-    reasonCode: ResolutionReasonCode,
-    message: string,
-    payloadSnapshot?: unknown,
-  ): CapabilityRenderContext {
-    return {
-      blockId: block.id,
-      capabilityId: block.capabilityId,
-      exerciseItem: null,
-      audibleTexts: [],
-      diagnostic: {
-        reasonCode,
-        message,
-        capabilityKey: block.canonicalKeySnapshot,
-        capabilityId: block.capabilityId,
-        exerciseType: block.renderPlan.exerciseType,
-        blockId: block.id,
-        payloadSnapshot,
-      },
-    }
-  }
-
-  // ─── resolveBlocks ────────────────────────────────────────────────────────
+  const adapter = createAdapter(client)
 
   return {
     async resolveBlocks(blocks, options) {
-      const result = new Map<string, CapabilityRenderContext>()
-      if (blocks.length === 0) return result
+      if (blocks.length === 0) return new Map()
 
-      // Pass 1: decode canonical keys, collect item keys (slugs), route unsupported kinds
-      const itemBlocks: Array<{ block: SessionBlock; itemKey: string }> = []
-      for (const block of blocks) {
-        const decoded = decodeCanonicalKey(block.canonicalKeySnapshot)
-        if (decoded.kind === 'malformed') {
-          result.set(block.id, makeFailContext(block, 'sourceref_unparseable',
-            `canonical key snapshot malformed`,
-            { canonicalKeySnapshot: block.canonicalKeySnapshot }))
+      // Step 1: bucket by source kind. Malformed / unsupported blocks become
+      // pre-built fail contexts; these flow straight to the result map.
+      const { buckets, failures } = bucketByDecodedSourceKind(blocks)
+      const result = new Map<string, CapabilityRenderContext>(failures)
+
+      // Step 2: per-bucket data fetch. Adapter runs per-kind fetchers in
+      // parallel; today only the item bucket is populated.
+      const blockData = await adapter.loadBlockData(buckets, {
+        userLanguage: options.userLanguage,
+      })
+
+      // Step 3: per-block dispatch. Adapter-emitted fails pass through; ok
+      // blocks go through the projector + byType packager via
+      // buildForExerciseType. Builder-side fails are reshaped to fail contexts.
+      for (const [blockId, data] of blockData) {
+        if (data.kind === 'fail') {
+          result.set(blockId, data.context)
           continue
         }
-        if (decoded.sourceKind !== 'item') {
-          result.set(block.id, makeFailContext(block, 'unsupported_source_kind',
-            `sourceKind '${decoded.sourceKind}' is out of PR-2 scope`,
-            { sourceKind: decoded.sourceKind, sourceRef: decoded.sourceRef }))
-          continue
-        }
-        const itemKey = extractItemKey(decoded.sourceRef)
-        if (!itemKey) {
-          result.set(block.id, makeFailContext(block, 'sourceref_unparseable',
-            `cannot extract item key from sourceRef`,
-            { sourceRef: decoded.sourceRef }))
-          continue
-        }
-        itemBlocks.push({ block, itemKey })
-      }
-
-      if (itemBlocks.length === 0) {
-        for (const ctx of result.values()) if (ctx.diagnostic) void logResolutionFailure(ctx.diagnostic, options)
-        return result
-      }
-
-      const itemKeys = [...new Set(itemBlocks.map(b => b.itemKey))]
-      const capabilityIds = [...new Set(itemBlocks.map(b => b.block.capabilityId))]
-
-      // Wave 1: resolve item slugs → rows (with uuids) + fetch artifacts in parallel.
-      // Items are keyed by normalized_text (slug) because the catalog stores
-      // source_ref as `learning_items/<slug>` — see extractItemKey docstring.
-      const [items, artifactRows] = await Promise.all([
-        fetchLearningItemsByKey(itemKeys),
-        fetchArtifacts(capabilityIds),
-      ])
-
-      // Wave 2: now that we have item uuids, fan out dependent reads.
-      const itemIds = items.map(i => i.id)
-      const [meanings, contexts, answerVariants, variants] = await Promise.all([
-        fetchMeanings(itemIds),
-        fetchContexts(itemIds),
-        fetchAnswerVariants(itemIds),
-        fetchActiveVariants(itemIds),
-      ])
-
-      // Distractor pool: derived from the lessons that the block items' contexts
-      // anchor to. Run after wave 2 so lessonIds are known.
-      const lessonIds = [...new Set(
-        contexts.map(c => c.source_lesson_id).filter((x): x is string => x != null),
-      )]
-      const pool = await fetchDistractorPool(lessonIds)
-      const poolMeaningsByItem = new Map<string, ItemMeaning[]>()
-      for (const m of pool.meanings) {
-        const list = poolMeaningsByItem.get(m.learning_item_id) ?? []
-        list.push(m)
-        poolMeaningsByItem.set(m.learning_item_id, list)
-      }
-
-      // Indexes — both by uuid (for joins) and by key (for slug → row lookup).
-      const itemByKey = new Map(items.map(i => [i.normalized_text, i]))
-      const meaningsByItem = new Map<string, ItemMeaning[]>()
-      for (const m of meanings) {
-        const list = meaningsByItem.get(m.learning_item_id) ?? []
-        list.push(m)
-        meaningsByItem.set(m.learning_item_id, list)
-      }
-      const contextsByItem = new Map<string, ItemContext[]>()
-      for (const c of contexts) {
-        const list = contextsByItem.get(c.learning_item_id) ?? []
-        list.push(c)
-        contextsByItem.set(c.learning_item_id, list)
-      }
-      const answerVariantsByItem = new Map<string, ItemAnswerVariant[]>()
-      for (const v of answerVariants) {
-        const list = answerVariantsByItem.get(v.learning_item_id) ?? []
-        list.push(v)
-        answerVariantsByItem.set(v.learning_item_id, list)
-      }
-      // Variants indexed by (item_id, exercise_type) for cheap lookup.
-      const variantByItemAndType = new Map<string, ExerciseVariant>()
-      for (const v of variants) {
-        if (v.learning_item_id) {
-          variantByItemAndType.set(`${v.learning_item_id}:${v.exercise_type}`, v)
-        }
-      }
-      // Artifacts indexed by capability_id → Map<kind, artifact>.
-      const artifactsByCapability = new Map<string, Map<ArtifactKind, CapabilityArtifact>>()
-      for (const row of artifactRows) {
-        const inner = artifactsByCapability.get(row.capability_id) ?? new Map<ArtifactKind, CapabilityArtifact>()
-        inner.set(row.artifact_kind, {
-          qualityStatus: 'approved',
-          value: row.artifact_json,
-        })
-        artifactsByCapability.set(row.capability_id, inner)
-      }
-
-      // Pass 2: per-block builder dispatch
-      for (const { block, itemKey } of itemBlocks) {
-        const learningItem = itemByKey.get(itemKey) ?? null
-        if (!learningItem) {
-          result.set(block.id, makeFailContext(block, 'block_failed_db_fetch',
-            `learning_item with normalized_text='${itemKey}' not in wave-1 fetch result`,
-            { itemKey, capabilityId: block.capabilityId }))
-          continue
-        }
-        if (!learningItem.is_active) {
-          result.set(block.id, makeFailContext(block, 'item_inactive',
-            `learning_item ${learningItem.id} is_active=false`,
-            { itemKey, itemId: learningItem.id }))
-          continue
-        }
-
-        const itemUuid = learningItem.id
-        const rawInput: RawProjectorInput = {
-          block,
-          learningItem,
-          meanings: meaningsByItem.get(itemUuid) ?? [],
-          contexts: contextsByItem.get(itemUuid) ?? [],
-          answerVariants: answerVariantsByItem.get(itemUuid) ?? [],
-          variant: variantByItemAndType.get(`${itemUuid}:${block.renderPlan.exerciseType}`) ?? null,
-          artifactsByKind: artifactsByCapability.get(block.capabilityId) ?? new Map(),
-          poolItems: pool.items,
-          poolMeaningsByItem,
-          userLanguage: options.userLanguage,
-        }
-
-        const built = buildForExerciseType(block.renderPlan.exerciseType, rawInput)
+        const built = buildForExerciseType(data.block.renderPlan.exerciseType, data.input)
         if (built.kind === 'ok') {
-          result.set(block.id, {
-            blockId: block.id,
-            capabilityId: block.capabilityId,
+          result.set(blockId, {
+            blockId,
+            capabilityId: data.block.capabilityId,
             exerciseItem: built.exerciseItem,
             audibleTexts: built.audibleTexts,
             diagnostic: null,
           })
         } else {
-          result.set(block.id, makeFailContext(
-            block, built.reasonCode, built.message, built.payloadSnapshot,
+          result.set(blockId, makeFailContext(
+            data.block, built.reasonCode, built.message, built.payloadSnapshot,
           ))
         }
       }
 
-      // Fire-and-forget log every diagnostic.
+      // Step 4: fire-and-forget log every diagnostic.
       for (const ctx of result.values()) {
-        if (ctx.diagnostic) void logResolutionFailure(ctx.diagnostic, options)
+        if (ctx.diagnostic) void adapter.logResolutionFailure(ctx.diagnostic, {
+          userId: options.userId,
+          sessionId: options.sessionId,
+        })
       }
 
       return result
@@ -361,12 +123,14 @@ export function createCapabilityContentService(client: SupabaseSchemaClient): Ca
   }
 }
 
+// ─── Convenience entry point ────────────────────────────────────────────────
+
 async function defaultService(): Promise<CapabilityContentService> {
   const { supabase } = await import('@/lib/supabase')
   return createCapabilityContentService(supabase)
 }
 
-/** Convenience entry point used by ExperiencePlayer's host page. */
+/** Convenience entry point used by Session's host page. */
 export async function resolveCapabilityBlocks(
   blocks: SessionBlock[],
   options: ResolveOptions,
