@@ -108,6 +108,38 @@ This is **out of scope for the runtime fold**, but in scope for "L5 ships dialog
 
 **Non-effect on existing learner state:** D6(b) does not touch existing `item:text_recognition` / `item:audio_recognition` / `item:dictation` etc. caps that point at L5's dialogue_chunk items. Their source_refs (`learning_items/<chunk_text>`) keep resolving, the chunks keep ticking through FSRS review, and existing `learner_capability_state` rows are preserved. The change is additive: dialogue-line caps gain renderability without removing anything from the item-sourced path.
 
+## ⚠ 2026-05-21 update — fold-decision pause point between PR 1 and PR 2
+
+A post-approval architectural review surfaced a target-architecture concern that scopes how the rest of this plan should land. **PR 0 and PR 1 are unaffected and can ship.** Pause before PR 2 to make a decision.
+
+**The concern.** PRs 2 and 3 as drafted add **parallel branches inside `src/services/capabilityContentService.ts`** — a parallel `dialogueBlocks` array, a parallel pass-2 loop, a new `extractDialogueLineRef` helper, new `ResolutionReasonCode` values, and a widening of `supportedSourceKinds` in the per-exercise render contracts. Each addition is small but they don't compose: when affixed_form_pair lands, it gets its own parallel branch; podcasts add two more. The file shallows over time (more code paths each tied to one source kind) instead of deepening (one polymorphic dispatch hiding source-kind variation).
+
+This drift is explicit in the docs:
+
+- `docs/target-architecture.md:442-498` defines a planned `lib/exercise-content/` deep module that **folds `capabilityContentService.ts`** (~456 LOC) into a `resolver.ts` + `byType/<exerciseType>.ts` polymorphic structure.
+- `docs/current-system/modules/capabilities.md:210` states: *"`supportedSourceKinds: ['item']` is the current ceiling. ... The capabilityContentService fold (per `docs/target-architecture.md`) widens this."* — naming the fold as the legitimate path.
+
+**What this means concretely.**
+
+| PR | Status | Why |
+|---|---|---|
+| PR 0 — agent spec | proceed | doc-only, no module surface |
+| PR 1 — artifact emitter | proceed | publish-pipeline-side; doesn't touch `capabilityContentService.ts`; no shallow-module concern |
+| PR 1a — L5/L7/L8 content | proceed | content authoring; runs after PR 0 |
+| PRs 2–7 + capstone | **paused** | need a fold-decision before landing |
+
+**The decision to make.**
+
+- **(α) Fold first.** Plan and ship `lib/exercise-content/` per the target architecture, then re-attempt PRs 2–7 against the new structure. PRs 2 and 3 likely collapse into one `byType/cloze.ts` + one `byType/clozeMcq.ts` extension; PRs 4–7 simplify or merge in. Architectural integrity preserved. Cost: fold is a separate plan (~1–2 weeks).
+- **(β) Fold + dialogue_line as one wave.** Single combined plan whose fold IS the vehicle for the source-kind widening. ~2.5 weeks but produces a coherent narrative.
+- **(γ) Accept the scaffold drift.** Ship PRs 2–7 as drafted, knowing the parallel branches will be ripped out at the fold. Fastest in the short term; deliberate technical debt; requires a tracking note pinning the cleanup to whoever owns the fold.
+
+**D1–D6 remain valid** regardless of the fold decision. The decisions about artifact shape, builder input nullability, speaker handling, agent spec, and content authoring all stand. What changes is the seams those decisions land at.
+
+**Action before PR 2 starts:** a separate planning session drafts `docs/plans/<date>-lib-exercise-content-fold.md` grounded in `docs/target-architecture.md:442-498` and `docs/current-system/modules/capabilities.md`. Architect-review that plan, then choose (α), (β), or (γ).
+
+---
+
 ## PR sequence
 
 One PR per deep module, in dependency order. Each PR's diff is independently reviewable and has a green test gate the next PR can depend on.

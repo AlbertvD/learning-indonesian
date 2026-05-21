@@ -1401,6 +1401,7 @@ export const clozeContexts = [
   {
     learning_item_slug: 'kaki saya sakit sekali dokter. saya jatuh dari pohon.',
     source_text: 'Kaki saya sakit sekali dokter. Saya jatuh dari ___.',
+    cloze_answer: 'pohon',
     translation_text: 'Mijn voet doet heel erg pijn, dokter. Ik ben uit de boom gevallen.',
     difficulty: 'A1',
     topic_tag: 'body',
@@ -1411,6 +1412,7 @@ export const clozeContexts = [
   {
     learning_item_slug: 'saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.',
     source_text: 'Saya mau naik lebih ___ lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.',
+    cloze_answer: 'tinggi',
     translation_text: 'Ik wilde nog hoger in die boom klimmen, maar dat lukte niet, zodat ik viel.',
     difficulty: 'A1',
     topic_tag: 'body',
@@ -1421,6 +1423,7 @@ export const clozeContexts = [
   {
     learning_item_slug: 'nah, coba, saya periksa kakimu dulu. barangkali tidak apa-apa.',
     source_text: 'Nah, coba, saya ___ kakimu dulu. Barangkali tidak apa-apa.',
+    cloze_answer: 'periksa',
     translation_text: 'Nou, kom, laat me eerst je voet onderzoeken. Misschien is er niets aan de hand.',
     difficulty: 'A1',
     topic_tag: 'body',
@@ -1431,6 +1434,7 @@ export const clozeContexts = [
   {
     learning_item_slug: 'kalau begitu, tidak ada yang patah. pasti nanti cepat sekali sembuh, tin.',
     source_text: 'Kalau begitu, tidak ada yang patah. Pasti nanti cepat sekali ___, Tin.',
+    cloze_answer: 'sembuh',
     translation_text: 'In dat geval is er niets gebroken. Straks ben je vast heel snel weer beter, Tin.',
     difficulty: 'A1',
     topic_tag: 'body',
@@ -1441,6 +1445,7 @@ export const clozeContexts = [
   {
     learning_item_slug: 'betul dokter? tidak ada yang patah? saya takut sekali!',
     source_text: 'Betul dokter? Tidak ada yang patah? Saya ___ sekali!',
+    cloze_answer: 'takut',
     translation_text: 'Echt waar, dokter? Is er niets gebroken? Ik was zo bang!',
     difficulty: 'A1',
     topic_tag: 'body',
@@ -1452,6 +1457,7 @@ export const clozeContexts = [
   {
     learning_item_slug: 'tidak begitu sakit dokter, sedikit saja.',
     source_text: 'Tidak begitu ___ dokter, sedikit saja.',
+    cloze_answer: 'sakit',
     translation_text: 'Niet zo erg pijn dokter, maar een beetje.',
     difficulty: 'A1',
     topic_tag: 'body',
@@ -1462,6 +1468,7 @@ export const clozeContexts = [
   {
     learning_item_slug: 'betul, bu, tidak ada apa-apa. tetapi tina harus jalan hati-hati. tina, jangan lagi naik pohon biar kakimu lekas sembuh.',
     source_text: 'Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan ___. Tina, jangan lagi naik pohon biar kakimu lekas sembuh.',
+    cloze_answer: 'hati-hati',
     translation_text: 'Echt waar, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, niet meer in bomen klimmen, zodat je voet snel beter wordt.',
     difficulty: 'A1',
     topic_tag: 'body',

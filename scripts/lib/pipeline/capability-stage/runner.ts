@@ -84,6 +84,7 @@ import { validatePosTags } from './validators/pos'
 import { projectVocab } from './projectors/vocab'
 import { projectGrammar } from './projectors/grammar'
 import { projectCloze } from './projectors/cloze'
+import { projectDialogueArtifacts } from './projectors/dialogueArtifacts'
 
 import { validateLessonIdPresence } from './validators/lessonId'
 import { validateItemSourceRefResolvability } from './validators/itemSourceRefResolvability'
@@ -444,6 +445,22 @@ export async function runCapabilityStage(
       artifact_fingerprint: asset.asset_key,
     })
   }
+
+  // ---- 7b. Dialogue-line artifacts (Decision 5b extension). -------------
+  // The shared catalog at content-pipeline-output.ts:484 only knows item /
+  // pattern / morphology artifact kinds. Dialogue-line caps are appended
+  // downstream by projectVocab (vocab.ts:163-203), so their artifacts must
+  // also be appended downstream — same `upsertCapabilityArtifacts` adapter,
+  // separate projector. See projectors/dialogueArtifacts.ts for the contract.
+  const dialogueArtifactsResult = projectDialogueArtifacts({
+    contextualClozeCapabilities: vocab.contextualClozeCapabilities,
+    capabilityIdsByKey,
+    clozeContexts: staging.clozeContexts as never,
+    sections: loaded.sections,
+  })
+  artifactInputs.push(...dialogueArtifactsResult.artifacts)
+  findings.push(...dialogueArtifactsResult.findings)
+
   const capabilityArtifactIds = await upsertCapabilityArtifacts(supabase, artifactInputs)
   counts.capabilityArtifacts = capabilityArtifactIds.length
 

@@ -42,6 +42,15 @@ export interface VocabStagingClozeContext {
   translation_text: string
   difficulty?: number | null
   topic_tag?: string | null
+  /**
+   * The literal token that fills `___` in `source_text`. Required on
+   * dialogue-line cloze entries (the `learning_item_slug` matches a dialogue
+   * line text, not a vocab item); ignored on vocab-item cloze entries where
+   * the answer derives from `learning_item.base_text` at render time.
+   * Consumed by `projectDialogueArtifacts` to write the `cloze_answer`
+   * artifact for dialogue_line:contextual_cloze capabilities.
+   */
+  cloze_answer?: string
 }
 
 export interface VocabProjectionInput {

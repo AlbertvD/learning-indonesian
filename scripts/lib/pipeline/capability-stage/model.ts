@@ -18,6 +18,7 @@ export const CAPABILITY_GATES = [
   'CS7', // count parity (post-write seed hook)
   'CS8', // content non-empty (post-write seed hook)
   'CS9', // seed integrity (post-write reviewability cross-check)
+  'CS10', // dialogue-line artifact emission (Decision 5b — cloze_context/cloze_answer/translation:l1 for dialogue_line caps)
 ] as const
 
 export type CapabilityGate = typeof CAPABILITY_GATES[number]
