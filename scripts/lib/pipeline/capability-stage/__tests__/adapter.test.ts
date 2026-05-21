@@ -4,7 +4,9 @@ import {
   insertExerciseVariantGrammar,
   insertExerciseVariantVocab,
   upsertCapabilityArtifacts,
+  upsertLearningItem,
   type CapabilityArtifactInput,
+  type LearningItemInput,
 } from '../adapter'
 
 // Minimal Supabase mock that records upserts/inserts and returns the supplied
@@ -66,5 +68,77 @@ describe('capability-stage adapter — writer return contracts (F6-1 wiring)', (
       answer_key_json: { answer: 'y' },
     })
     expect(result).toEqual({ ok: true, id: 'variant-uuid-2' })
+  })
+})
+
+// Captures the upsert payload so we can assert on its shape. Returns a Supabase
+// stub whose .upsert(payload) call records the payload before resolving.
+function buildPayloadCapturingClient(returnId: string) {
+  const captured: Array<{ table: string; payload: unknown; options: unknown }> = []
+  const client = {
+    schema: () => ({
+      from: (table: string) => ({
+        upsert: (payload: unknown, options: unknown) => {
+          captured.push({ table, payload, options })
+          return {
+            select: () => ({
+              single: async () => ({
+                data: { id: returnId, normalized_text: (payload as { normalized_text: string }).normalized_text },
+                error: null,
+              }),
+            }),
+          }
+        },
+      }),
+    }),
+  } as never
+  return { client, captured }
+}
+
+describe('capability-stage adapter — upsertLearningItem activation', () => {
+  it('always upserts with is_active: true so re-publishes reactivate items that were toggled off', async () => {
+    // Regression: the 2026-04-24 incident left a pile of dialogue_chunk
+    // learning_items with is_active=false. Re-publishing did not flip them
+    // back on because the upsert payload omitted is_active. The
+    // reactivate-dialogue-chunks.ts maintenance script was the workaround;
+    // this lock-in test ensures the field stays in the payload so the
+    // runner's upsert is itself the activation gate.
+    const { client, captured } = buildPayloadCapturingClient('item-uuid-1')
+    const input: LearningItemInput = {
+      base_text: 'Apa kabar?',
+      item_type: 'phrase',
+      language: 'id',
+      level: 'A1',
+      source_type: 'lesson',
+      pos: 'greeting',
+    }
+    const result = await upsertLearningItem(client, input)
+
+    expect(result.id).toBe('item-uuid-1')
+    expect(captured).toHaveLength(1)
+    expect(captured[0].table).toBe('learning_items')
+    const payload = captured[0].payload as Record<string, unknown>
+    expect(payload.is_active).toBe(true)
+    expect(payload.base_text).toBe('Apa kabar?')
+    expect(payload.normalized_text).toBe('apa kabar?')
+    expect(captured[0].options).toEqual({ onConflict: 'normalized_text' })
+  })
+
+  it('keeps is_active: true for dialogue_chunk items — the specific class the bug affected', async () => {
+    const { client, captured } = buildPayloadCapturingClient('item-uuid-2')
+    const input: LearningItemInput = {
+      base_text: 'Aduh, kalau begitu, di mana lift?',
+      item_type: 'dialogue_chunk',
+      language: 'id',
+      level: 'A1',
+      source_type: 'lesson',
+      review_status: 'published',
+    }
+    await upsertLearningItem(client, input)
+
+    const payload = captured[0].payload as Record<string, unknown>
+    expect(payload.is_active).toBe(true)
+    expect(payload.item_type).toBe('dialogue_chunk')
+    expect(payload.review_status).toBe('published')
   })
 })

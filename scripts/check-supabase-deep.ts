@@ -636,6 +636,91 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   }
 }
 
+// ── HC10: zero item-source-kind learning_capabilities reference a
+//        learning_item whose is_active=false. The runtime resolves item
+//        caps by source_ref → normalized_text, then expects the item to
+//        be active. The 2026-04-24 incident left dialogue_chunk rows at
+//        is_active=false; the capability-stage runner's upsertLearningItem
+//        now always writes is_active=true (adapter.ts), but lessons
+//        published before that fix still carry inactive items referenced
+//        by live caps. Re-publishing those lessons clears the violation.
+//
+//        EXPECTED RED for L7/L8 (and any other lesson whose dialogue
+//        chunks were inactive at the time of the fix) until they are
+//        re-published with the runner change.
+{
+  type ItemCap = { source_ref: string; capability_type: string; lesson_id: string | null }
+  type ItemActivityRow = { normalized_text: string; is_active: boolean; item_type: string }
+
+  async function fetchAllItemCapsWithLesson(): Promise<ItemCap[]> {
+    const pageSize = 1000
+    const all: ItemCap[] = []
+    for (let offset = 0; ; offset += pageSize) {
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('learning_capabilities')
+        .select('source_ref, capability_type, lesson_id')
+        .eq('source_kind', 'item')
+        .like('source_ref', 'learning_items/%')
+        .range(offset, offset + pageSize - 1)
+      if (error) throw error
+      const rows = (data ?? []) as ItemCap[]
+      all.push(...rows)
+      if (rows.length < pageSize) break
+    }
+    return all
+  }
+
+  async function fetchAllItemActivity(): Promise<Map<string, ItemActivityRow>> {
+    const pageSize = 1000
+    const byNorm = new Map<string, ItemActivityRow>()
+    for (let offset = 0; ; offset += pageSize) {
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('learning_items')
+        .select('normalized_text, is_active, item_type')
+        .range(offset, offset + pageSize - 1)
+      if (error) throw error
+      const rows = (data ?? []) as ItemActivityRow[]
+      for (const row of rows) byNorm.set(row.normalized_text, row)
+      if (rows.length < pageSize) break
+    }
+    return byNorm
+  }
+
+  try {
+    const [caps, items] = await Promise.all([fetchAllItemCapsWithLesson(), fetchAllItemActivity()])
+    const offenders: Array<{ slug: string; capability_type: string; lesson_id: string | null; item_type: string }> = []
+    for (const c of caps) {
+      const slug = c.source_ref.replace(/^learning_items\//, '')
+      const it = items.get(slug)
+      if (!it) continue   // HC9 already covers unresolved slugs
+      if (!it.is_active) {
+        offenders.push({ slug, capability_type: c.capability_type, lesson_id: c.lesson_id, item_type: it.item_type })
+      }
+    }
+    if (offenders.length === 0) {
+      pass('HC10 item caps reference active learning_items (dialogue is_active invariant)')
+    } else {
+      const lessonsAffected = new Set(offenders.map((o) => o.lesson_id ?? 'null'))
+      const sample = offenders.slice(0, 5).map((o) => `${o.capability_type} '${o.slug}' (${o.item_type})`).join(', ')
+      fail(
+        'HC10 item caps reference active learning_items (dialogue is_active invariant) — EXPECTED RED until affected lessons re-publish',
+        `${offenders.length} cap(s) point at is_active=false items across ${lessonsAffected.size} lesson(s). ` +
+        `Sample: ${sample}${offenders.length > 5 ? ' …' : ''}\n` +
+        `   → Re-publish the affected lessons: bun scripts/publish-approved-content.ts <N>. ` +
+        `The runner's upsertLearningItem now always writes is_active=true, so re-publishing ` +
+        `clears the violation.`,
+      )
+    }
+  } catch (err) {
+    fail(
+      'HC10 item caps reference active learning_items (dialogue is_active invariant)',
+      err instanceof Error ? err.message : String(err),
+    )
+  }
+}
+
 // ── Output ─────────────────────────────────────────────────────────────────
 console.log(`\nSupabase deep structural check — ${SUPABASE_URL}\n`)
 let failures = 0

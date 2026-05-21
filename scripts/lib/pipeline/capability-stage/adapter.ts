@@ -305,6 +305,14 @@ export async function upsertLearningItem(
   item: LearningItemInput,
 ): Promise<{ id: string; normalized_text: string }> {
   const normalized_text = itemSlug(item.base_text)
+  // is_active: true on every projected item. The capability-stage runner is
+  // the publish-time gate — if an item reaches upsertLearningItem, the
+  // projector has already cleared selectPublishableItems and decided the
+  // item is publishable. Without this, the 2026-04-24 incident's residue of
+  // is_active=false dialogue_chunks could not be reactivated by a
+  // re-publish (the ON CONFLICT DO UPDATE only refreshed listed columns,
+  // leaving is_active intact). Deferred items don't reach this path, so
+  // they correctly stay inactive.
   const payload: Record<string, unknown> = {
     base_text: item.base_text,
     item_type: item.item_type,
@@ -313,6 +321,7 @@ export async function upsertLearningItem(
     level: item.level,
     source_type: item.source_type,
     pos: item.pos ?? null,
+    is_active: true,
   }
   if (item.review_status) {
     payload.review_status = item.review_status
