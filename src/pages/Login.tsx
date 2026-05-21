@@ -5,6 +5,10 @@ import { useNavigate } from 'react-router-dom'
 import { notifications } from '@mantine/notifications'
 import { PageFormLayout } from '@/components/page/primitives'
 import { useAuthStore } from '@/stores/authStore'
+// Auth pages render before the user profile is loaded, so there is no
+// language preference to honour yet. Dutch is the project's default UI
+// language; if/when EN-first onboarding ships, swap this for a browser-
+// language detection helper.
 import { nl as T } from '@/lib/i18n'
 
 export function Login() {

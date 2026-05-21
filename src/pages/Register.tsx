@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom'
 import { notifications } from '@mantine/notifications'
 import { PageFormLayout } from '@/components/page/primitives'
 import { useAuthStore } from '@/stores/authStore'
+// See Login.tsx — auth pages render before the user profile loads, so we
+// pin the language to NL (the project default) until EN-first onboarding
+// is introduced.
 import { nl as T } from '@/lib/i18n'
 
 export function Register() {

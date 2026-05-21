@@ -3,6 +3,7 @@ import { Checkbox } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
 import { isLessonActivated, setLessonActivated } from '@/lib/lessons/activation'
+import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
 
 // Frameless activation control — the host page provides the card/banner frame.
@@ -10,6 +11,7 @@ import { logError } from '@/lib/logger'
 // update, error handling) stays out of every bespoke page.
 export function ActivationGate({ lessonId }: { lessonId: string }) {
   const userId = useAuthStore(s => s.user?.id)
+  const T = useT()
   const [activated, setActivated] = useState(false)
   const [saving, setSaving] = useState(false)
 
@@ -31,15 +33,15 @@ export function ActivationGate({ lessonId }: { lessonId: string }) {
       await setLessonActivated(userId, lessonId, next)
       notifications.show({
         color: 'teal',
-        message: next ? 'Les toegevoegd aan oefeningen' : 'Les verwijderd uit oefeningen',
+        message: next ? T.lessons.lessonActivated : T.lessons.lessonDeactivated,
       })
     } catch (err) {
       setActivated(previous)
       logError({ page: 'lesson-page', action: 'toggle-activation', error: err })
       notifications.show({
         color: 'red',
-        title: 'Activatie mislukte',
-        message: 'Probeer het later opnieuw.',
+        title: T.lessons.activationFailed,
+        message: T.common.somethingWentWrong,
       })
     } finally {
       setSaving(false)
@@ -51,7 +53,7 @@ export function ActivationGate({ lessonId }: { lessonId: string }) {
       checked={activated}
       disabled={saving}
       onChange={(event) => void handleToggle(event.currentTarget.checked)}
-      label="Activeer deze les en voeg de woorden en patronen toe aan je oefeningen."
+      label={`${T.lessons.activateThisLesson}. ${T.lessons.activateThisLessonHint}`}
       data-testid="lesson-activation-checkbox"
     />
   )
