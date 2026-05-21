@@ -48,7 +48,6 @@ export type {
   CapabilityHealthReport,
   CapabilityValidationInput,
   ExerciseKind,
-  ExerciseAvailabilityIndex,
 } from './capabilityContracts'
 
 // ─── Artifacts ─────────────────────────────────────────────────────────────

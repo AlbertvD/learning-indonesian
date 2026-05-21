@@ -8,7 +8,6 @@ import {
   validateCapabilities,
   validateCapability,
   type CapabilityHealthReport,
-  type ExerciseAvailabilityIndex,
 } from '../src/lib/capabilities/capabilityContracts'
 import type { ArtifactIndex } from '../src/lib/capabilities/artifactRegistry'
 import { itemSlug } from '../src/lib/capabilities/itemSlug'
@@ -69,7 +68,6 @@ export interface RuntimeHealthCapability {
   goalTags?: string[]
   sourceFingerprint?: string
   artifactFingerprint?: string
-  exerciseAvailability?: ExerciseAvailabilityIndex
 }
 
 export interface RuntimeHealthArtifact {
@@ -220,7 +218,6 @@ export function checkCapabilityHealthSnapshot(snapshot: CapabilityHealthSnapshot
     const readiness = validateCapability({
       capability: projected,
       artifacts: artifactIndex,
-      exerciseAvailability: capability.exerciseAvailability,
     })
     if (readiness.status === 'blocked' && readiness.missingArtifacts.length > 0) {
       critical.push(runtimeFinding(

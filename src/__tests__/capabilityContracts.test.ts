@@ -102,23 +102,6 @@ describe('capability contract validation', () => {
     expect(result.status).toBe('blocked')
   })
 
-  it('lets exercise availability tighten but not revive blocked readiness', () => {
-    const result = validateCapability({
-      capability: baseCapability,
-      artifacts: {
-        'meaning:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-        'accepted_answers:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-      },
-      exerciseAvailability: { meaning_recall: false },
-    })
-
-    expect(result).toEqual({
-      status: 'blocked',
-      missingArtifacts: [],
-      reason: 'No available exercise family for ready capability',
-    })
-  })
-
   it.each([
     ['exposure_only', 'exposure_only'],
     ['deprecated', 'deprecated'],

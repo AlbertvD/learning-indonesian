@@ -171,44 +171,6 @@ describe('capability health exit code planning', () => {
     }))
   })
 
-  it('fails ready/published capabilities that cannot resolve an exercise render plan', () => {
-    // Post-PR #65: meaning_recall's RENDER_CONTRACTS entry requires
-    // ['meaning:l1', 'accepted_answers:l1']. To isolate the
-    // exerciseAvailability gating (the actual subject of this test),
-    // provide every artifact the cap needs so it passes artifact validation;
-    // the only thing blocking it is `meaning_recall: false`.
-    const capabilityKey = 'cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl'
-    const report = checkCapabilityHealthSnapshot({
-      capabilities: [{
-        canonicalKey: capabilityKey,
-        sourceRef: 'learning_items/makan',
-        capabilityType: 'meaning_recall',
-        skillType: 'meaning_recall',
-        readinessStatus: 'ready',
-        publicationStatus: 'published',
-        requiredArtifacts: ['meaning:l1', 'accepted_answers:l1'],
-        exerciseAvailability: { meaning_recall: false },
-      }],
-      artifacts: [{
-        capabilityKey,
-        sourceRef: 'learning_items/makan',
-        artifactKind: 'meaning:l1',
-        qualityStatus: 'approved',
-        artifactJson: { value: 'eten' },
-      }, {
-        capabilityKey,
-        sourceRef: 'learning_items/makan',
-        artifactKind: 'accepted_answers:l1',
-        qualityStatus: 'approved',
-        artifactJson: { values: ['eten'] },
-      }],
-    })
-
-    expect(report.critical).toContainEqual(expect.objectContaining({
-      rule: 'ready_capability_unresolvable_exercise',
-    }))
-  })
-
   it('does NOT emit ready_capability_unreachable_source_ref (retired in Phase 1 of retiring lesson_page_blocks, 2026-05-20)', () => {
     // Pre-Phase-1 the check fired when a cap's source_ref was not in
     // knownSourceRefs (derived from page_blocks + content_units). With

@@ -20,7 +20,6 @@ export function isExposureOnly(capability: Pick<ProjectedCapability, 'sourceKind
 }
 
 export type ExerciseKind = ExerciseType
-export type ExerciseAvailabilityIndex = Partial<Record<ExerciseKind, boolean>>
 
 export type CapabilityReadiness =
   | { status: 'ready'; allowedExercises: ExerciseKind[] }
@@ -45,7 +44,6 @@ export interface CapabilityHealthReport {
 export interface CapabilityValidationInput {
   capability: ProjectedCapability
   artifacts: ArtifactIndex
-  exerciseAvailability?: ExerciseAvailabilityIndex
   readinessOverride?: 'exposure_only' | 'deprecated' | 'unknown'
   replacementKey?: string
 }
@@ -123,18 +121,9 @@ export function validateCapability(input: CapabilityValidationInput): Capability
     }
   }
 
-  const availableExercises = readyExercises.filter(kind => input.exerciseAvailability?.[kind] !== false)
-  if (availableExercises.length === 0) {
-    return {
-      status: 'blocked',
-      missingArtifacts: [],
-      reason: 'No available exercise family for ready capability',
-    }
-  }
-
   return {
     status: 'ready',
-    allowedExercises: availableExercises,
+    allowedExercises: readyExercises,
   }
 }
 
