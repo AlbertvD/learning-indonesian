@@ -1,4 +1,4 @@
-// Shared helpers for capabilityContentService builders.
+// Shared helpers for lib/exercise-content byType packagers.
 
 import type { ItemMeaning } from '@/types/learning'
 

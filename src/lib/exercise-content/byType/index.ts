@@ -1,27 +1,29 @@
-// Type-specific builders for capabilityContentService. Each builder takes
+// Per-exercise-type packagers for lib/exercise-content. Each packager takes
 // a typed BuilderInputFor<'<exerciseType>'> (narrowed by the projector) and
 // returns a BuilderResult. Originally extracted from sessionQueue.ts
-// (retired in #7); migrated to typed contract inputs in PR #65.
+// (retired in #7); migrated to typed contract inputs in PR #65; relocated
+// from src/lib/exercises/builders/ to here in the lib/exercise-content fold
+// (docs/plans/2026-05-21-lib-exercise-content-fold.md PR-A step 2).
 //
-// See docs/plans/2026-05-18-render-contracts.md and
+// See docs/current-system/modules/exercise-content.md and
 // docs/current-system/modules/capabilities.md.
 
 import type { ExerciseType } from '@/types/learning'
 import type { BuilderInputFor, BuilderResult, RawProjectorInput } from './types'
 import { projectBuilderInput } from '@/lib/capabilities'
 
-import { buildRecognitionMCQ } from './RecognitionMCQ'
-import { buildCuedRecall } from './CuedRecall'
-import { buildTypedRecall } from './TypedRecall'
-import { buildMeaningRecall } from './MeaningRecall'
-import { buildListeningMCQ } from './ListeningMCQ'
-import { buildDictation } from './Dictation'
-import { buildCloze } from './Cloze'
-import { buildClozeMcq } from './ClozeMcq'
-import { buildContrastPair } from './ContrastPair'
-import { buildSentenceTransformation } from './SentenceTransformation'
-import { buildConstrainedTranslation } from './ConstrainedTranslation'
-import { buildSpeaking } from './Speaking'
+import { buildRecognitionMCQ } from './recognitionMcq'
+import { buildCuedRecall } from './cuedRecall'
+import { buildTypedRecall } from './typedRecall'
+import { buildMeaningRecall } from './meaningRecall'
+import { buildListeningMCQ } from './listeningMcq'
+import { buildDictation } from './dictation'
+import { buildCloze } from './cloze'
+import { buildClozeMcq } from './clozeMcq'
+import { buildContrastPair } from './contrastPair'
+import { buildSentenceTransformation } from './sentenceTransformation'
+import { buildConstrainedTranslation } from './constrainedTranslation'
+import { buildSpeaking } from './speaking'
 
 export type { BuilderResult, BuilderInputFor, RawProjectorInput } from './types'
 

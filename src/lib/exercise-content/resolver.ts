@@ -10,8 +10,8 @@ import type {
 import type { SessionBlock } from '@/lib/session-builder'
 import type { ArtifactKind, CapabilityArtifact } from '@/lib/capabilities'
 import { decodeCanonicalKey, extractItemKey } from './adapter'
-import { buildForExerciseType } from '@/lib/exercises/builders'
-import type { RawProjectorInput } from '@/lib/exercises/builders'
+import { buildForExerciseType } from './byType'
+import type { RawProjectorInput } from './byType'
 import { chunkedIn } from '@/lib/chunkedQuery'
 
 // ─── Reason codes ───────────────────────────────────────────────────────────

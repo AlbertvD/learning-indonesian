@@ -14,7 +14,7 @@ import type {
 import type { SessionBlock } from '@/lib/session-builder'
 import { normalizeTtsText } from '@/lib/ttsNormalize'
 
-import { buildForExerciseType, type RawProjectorInput } from '../index'
+import { buildForExerciseType, type RawProjectorInput } from '../byType'
 
 // ─── fixtures ───
 
