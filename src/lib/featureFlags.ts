@@ -18,12 +18,15 @@ interface FeatureFlags {
 }
 
 export interface CapabilityMigrationFlags {
-  sessionDiagnostics: boolean
-  reviewShadow: boolean
-  reviewCompat: boolean
-  standardSession: boolean
-  experiencePlayerV1: boolean
-  lessonReaderV2: boolean
+  /**
+   * Enables the /preview routes. Six sibling flags
+   * (sessionDiagnostics, reviewShadow, reviewCompat, standardSession,
+   * experiencePlayerV1, lessonReaderV2) used to live here; they were the
+   * migration scaffolding for the capability-runtime rollout, all
+   * unconditionally-on in production today and removed in the
+   * 2026-05-21 cleanup. Only localContentPreview remains because
+   * LocalPreview.tsx genuinely gates on it.
+   */
   localContentPreview: boolean
 }
 
@@ -37,18 +40,11 @@ function parseEnvFlag(key: string): boolean {
   return true
 }
 
-export function parseDisabledByDefaultFlag(key: string): boolean {
+function parseDisabledByDefaultFlag(key: string): boolean {
   const value = import.meta.env[key]
   if (value === undefined || value === '') return false
   if (value === 'true' || value === '1') return true
   return false
-}
-
-export function parseEnabledByDefaultFlag(key: string): boolean {
-  const value = import.meta.env[key]
-  if (value === undefined || value === '') return true
-  if (value === 'false' || value === '0') return false
-  return true
 }
 
 export const featureFlags: FeatureFlags = {
@@ -64,12 +60,6 @@ export const featureFlags: FeatureFlags = {
 }
 
 export const capabilityMigrationFlags: CapabilityMigrationFlags = {
-  sessionDiagnostics: parseDisabledByDefaultFlag('VITE_CAPABILITY_SESSION_DIAGNOSTICS'),
-  reviewShadow: parseDisabledByDefaultFlag('VITE_CAPABILITY_REVIEW_SHADOW'),
-  reviewCompat: parseDisabledByDefaultFlag('VITE_CAPABILITY_REVIEW_COMPAT'),
-  standardSession: parseEnabledByDefaultFlag('VITE_CAPABILITY_STANDARD_SESSION'),
-  experiencePlayerV1: parseEnabledByDefaultFlag('VITE_EXPERIENCE_PLAYER_V1'),
-  lessonReaderV2: parseEnabledByDefaultFlag('VITE_LESSON_READER_V2'),
   localContentPreview: parseDisabledByDefaultFlag('VITE_LOCAL_CONTENT_PREVIEW'),
 }
 

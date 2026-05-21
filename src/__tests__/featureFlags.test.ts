@@ -10,40 +10,14 @@ describe('capability migration feature flags', () => {
     vi.unstubAllEnvs()
   })
 
-  it('defaults the cutover runtime flags to enabled and operational flags to disabled', async () => {
-    vi.stubEnv('VITE_CAPABILITY_SESSION_DIAGNOSTICS', '')
-    vi.stubEnv('VITE_CAPABILITY_REVIEW_SHADOW', '')
-    vi.stubEnv('VITE_CAPABILITY_REVIEW_COMPAT', '')
-    vi.stubEnv('VITE_CAPABILITY_STANDARD_SESSION', '')
-    vi.stubEnv('VITE_EXPERIENCE_PLAYER_V1', '')
-    vi.stubEnv('VITE_LESSON_READER_V2', '')
+  it('defaults localContentPreview to disabled when unset', async () => {
     vi.stubEnv('VITE_LOCAL_CONTENT_PREVIEW', '')
 
     const { capabilityMigrationFlags } = await loadFeatureFlags()
 
     expect(capabilityMigrationFlags).toEqual({
-      sessionDiagnostics: false,
-      reviewShadow: false,
-      reviewCompat: false,
-      standardSession: true,
-      experiencePlayerV1: true,
-      lessonReaderV2: true,
       localContentPreview: false,
     })
-  })
-
-  it.each([
-    ['', true],
-    ['false', false],
-    ['0', false],
-    ['true', true],
-    ['1', true],
-  ])('parses %s for enabled-by-default cutover flags', async (value, expected) => {
-    vi.stubEnv('VITE_CAPABILITY_STANDARD_SESSION', value)
-
-    const { capabilityMigrationFlags } = await loadFeatureFlags()
-
-    expect(capabilityMigrationFlags.standardSession).toBe(expected)
   })
 
   it.each([
