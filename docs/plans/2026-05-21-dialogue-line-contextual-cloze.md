@@ -1,8 +1,11 @@
 ---
-status: approved
+status: implementing
+implementation: PR 0 + PR 1 merged via a4cd381 + 1467cae; PR 2 + PR 3 + PR 4 absorbed into the lib/exercise-content fold's PR-B; PR 5 + PR 6 + PR 7 + capstone pending
 ---
 
 # Dialogue-line contextual cloze — first non-item source kind reaches the runtime
+
+> **2026-05-21 update:** PR 2 + PR 3 + PR 4 shipped as one cohesive change inside the lib/exercise-content fold's PR-B (which absorbed the runtime widening per the pause-note decision α). The shape that lands is narrower than the original plan: `cloze` (typed) accepts dialogue_line but `cloze_mcq` stays item-only — the cloze_mcq runtime path needs a lesson-anchored distractor pool that fetchForDialogueLineBlocks doesn't populate yet (follow-up). PR 5 (session-builder verification), PR 6 (UI surfaces), PR 7 (HC11 health check), and the capstone are still pending. See `docs/current-system/modules/exercise-content.md` §8 for the PR-B commit list.
 
 ## Goal
 

@@ -1,14 +1,19 @@
 ---
 status: implementing
-implementation: PR-A merged (commits bc45009 + c70271e + fbefba7)
+implementation: PR-A + PR-B merged; PR-C (UI + HC11) pending
 implementation_paths:
   - src/lib/exercise-content/
   - docs/current-system/modules/exercise-content.md
+  - src/lib/capabilities/renderContracts.ts
+  - src/lib/exercises/resolutionReasons.ts
+  - src/types/learning.ts
 ---
 
 # `lib/exercise-content/` fold — deepening capability resolution so source-kind variation hides inside one module
 
-> **PR-A shipped 2026-05-21.** Three commits on main: `bc45009` (relocate service files + update importers), `c70271e` (relocate 12 byType packagers), `fbefba7` (extract bucketing seam — adapter owns I/O, resolver pure orchestration). Test baseline preserved at 1193 passing, 0 errors, 4 warnings, build clean. Verification gate (live `bun run dev` baseline diff per D6) deferred to the next session that touches a session — the public surface is byte-identical and the unit tests fully exercise the new dispatch shape. PR-B (dialogue_line widening absorbed) and PR-C (UI + HC11) remain to ship per the original plan.
+> **PR-A shipped 2026-05-21.** Three commits on main: `bc45009` (relocate service files + update importers), `c70271e` (relocate 12 byType packagers), `fbefba7` (extract bucketing seam — adapter owns I/O, resolver pure orchestration). Test baseline preserved at 1193 passing, 0 errors, 4 warnings, build clean.
+>
+> **PR-B shipped 2026-05-21.** Dialogue_line widening absorbed into the new structure: `cloze.supportedSourceKinds = ['item', 'dialogue_line']`; new `fetchForDialogueLineBlocks` in the adapter; byType/cloze.ts branches on populated field; new reason codes; +13 new tests (1193 → 1206). `cloze_mcq` stays item-only — narrowed scope from D7's matrix because cloze_mcq's distractor pool is lesson-anchored and fetchForDialogueLineBlocks doesn't populate one (follow-up). PR-C (UI + HC11 health check) remains.
 
 ## Goal
 

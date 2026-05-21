@@ -18,14 +18,14 @@ status: stable
 |---|---|---|
 | `index.ts` | 20 | Barrel — re-exports `createCapabilityContentService`, `resolveCapabilityBlocks`, and the public types (`CapabilityContentService`, `ResolveOptions`, `ResolutionReasonCode`, `CapabilityRenderContext`, `ResolutionDiagnostic`). |
 | `resolver.ts` | 140 | `resolveBlocks(blocks, options)` orchestrator + `createCapabilityContentService(client)` factory + `resolveCapabilityBlocks` lazy convenience. Decode + bucket → `adapter.loadBlockData` → per-block dispatch via `buildForExerciseType`. **No SQL.** |
-| `adapter.ts` | 450 | Source-kind bucketing (`bucketByDecodedSourceKind`), per-source-kind fetchers (today: `fetchForItemBlocks`), canonical-key decode (`decodeCanonicalKey` + `extractItemKey`, absorbed from former `internal.ts`), diagnostic helpers (`makeFailContext`, `trimPayloadSnapshot`). Public surface: one `Adapter` interface with `loadBlockData` + `logResolutionFailure`; factory `createAdapter(client)`. **Sole SQL touchpoint of the module.** |
+| `adapter.ts` | 588 | Source-kind bucketing (`bucketByDecodedSourceKind`), per-source-kind fetchers (`fetchForItemBlocks` + `fetchForDialogueLineBlocks`), canonical-key decode (`decodeCanonicalKey` + `extractItemKey`, absorbed from former `internal.ts`), diagnostic helpers (`makeFailContext`, `trimPayloadSnapshot`). Public surface: one `Adapter` interface with `loadBlockData` + `logResolutionFailure`; factory `createAdapter(client)`. **Sole SQL touchpoint of the module.** |
 | `byType/index.ts` | 73 | Barrel + `buildForExerciseType(exerciseType, raw)` dispatch + `BUILDERS` registry. |
 | `byType/<exerciseType>.ts` | 543 across 12 files | Per-exercise-type packagers. Source-kind-agnostic. Receive `BuilderInputFor<T>` (narrowed by the projector), return `BuilderResult`. The 12 files: `recognitionMcq.ts` (56), `cuedRecall.ts` (61), `typedRecall.ts` (19), `meaningRecall.ts` (17), `listeningMcq.ts` (56), `dictation.ts` (20), `cloze.ts` (31), `clozeMcq.ts` (112), `contrastPair.ts` (48), `sentenceTransformation.ts` (39), `constrainedTranslation.ts` (42), `speaking.ts` (44). |
 | `byType/helpers.ts` | 28 | Shared helpers — `pickUserLangMeaning`, `shuffle`. |
 | `byType/types.ts` | 28 | `BuilderResult` type + re-export of `BuilderInputFor<T>`, `RawProjectorInput` from `@/lib/capabilities`. |
-| `__tests__/resolver.test.ts` | 380 | Mocked-Supabase service tests including the URL-budget guard for Kong's 8 KB request-line buffer. |
-| `__tests__/adapter.test.ts` | 92 | Unit tests for `decodeCanonicalKey` + `extractItemKey` (absorbed from former `capabilityContentService.internal.test.ts`); per-bucket fetcher tests added over time. |
-| `__tests__/byType.test.ts` | 440 | Builder unit tests covering all 12 exercise types via `buildForExerciseType` (exercises projector + dispatch + builder). |
+| `__tests__/resolver.test.ts` | 503 | Mocked-Supabase service tests including the URL-budget guard for Kong's 8 KB request-line buffer, plus end-to-end dialogue_line resolution scenarios (PR-B). |
+| `__tests__/adapter.test.ts` | 174 | Unit tests for `decodeCanonicalKey` + `extractItemKey` (absorbed from former `capabilityContentService.internal.test.ts`) + `bucketByDecodedSourceKind` (item, dialogue_line, unsupported kinds, malformed refs). |
+| `__tests__/byType.test.ts` | 516 | Builder unit tests covering all 12 exercise types via `buildForExerciseType` (exercises projector + dispatch + builder), plus cloze packager dialogue_line branch (PR-B). |
 
 **Note on `adapter.ts` size (450 LOC, over the ~300 LOC trigger named in fold plan D5):** the file is single-source-kind today — one polymorphic fetcher (`fetchForItemBlocks`) plus bucketing + diagnostic helpers + factory. D5's split trigger is "when a second per-kind fetcher is added" (i.e. PR-B's `fetchForDialogueLineBlocks`), which is what actually shallows the file. Splitting today produces a one-file `adapter/byKind/item.ts` directory — target-arch smell on its own. The current shape is intentional; split happens with PR-B.
 
@@ -225,7 +225,9 @@ Wave 1 gathers item UUIDs from slug-shaped source refs (`learning_items/<slug>`)
 
 ## 6. Known limitations and follow-ups
 
-- **One source kind supported at PR-A merge: `item`.** The bucketing dispatch is in place but only the item bucket has a fetcher. `dialogue_line` lands with PR-B of the fold plan (`docs/plans/2026-05-21-lib-exercise-content-fold.md`). `affixed_form_pair` is the next pilot after that. `podcast_segment` + `podcast_phrase` follow; `pattern`-sourced capabilities are slated for retirement (the projection pipeline emits them but no exercise renders them and the gap doc recommends a cleanup migration).
+- **Two source kinds supported post PR-B: `item` and `dialogue_line`.** The bucketing dispatch handles both; `fetchForItemBlocks` and `fetchForDialogueLineBlocks` run in parallel via `Promise.all` inside `loadBlockData`. `cloze` (typed) is the only exercise type whose contract accepts `dialogue_line`; `cloze_mcq` stays item-only because its distractor pool is lesson-anchored and the dialogue_line fetcher does not populate a pool today (follow-up — see below). `affixed_form_pair` is the next pilot; `podcast_segment` + `podcast_phrase` follow; `pattern`-sourced capabilities are slated for retirement (the projection pipeline emits them but no exercise renders them and the gap doc recommends a cleanup migration).
+
+- **`cloze_mcq` does not accept `dialogue_line`.** The runtime cloze_mcq path picks distractors via `pickDistractorCascade` against `input.poolItems` — items whose `item_contexts.source_lesson_id` matches a touched lesson. `fetchForDialogueLineBlocks` does not fetch a distractor pool today; extending it to do so requires parsing `lesson-N` from the source ref + a lesson-id-keyed pool query. Tracked as a follow-up after `affixed_form_pair` lands.
 
 - **`content_flags` not yet built.** Target architecture's `flagState.ts` (`docs/target-architecture.md:479`) describes "user's existing content_flag for this card, if any." The runtime has no `content_flags` table or fetch today. If the feature ships later, it's a new file `flagState.ts` + an additional optional field on `RawProjectorInput`.
 
@@ -258,6 +260,14 @@ Wave 1 gathers item UUIDs from slug-shaped source refs (`learning_items/<slug>`)
 ---
 
 ## 8. Migration history
+
+- **2026-05-21 — PR-B shipped:** dialogue_line widening absorbed into the new structure.
+  - `renderContracts.ts`: widened `cloze.supportedSourceKinds` to `['item', 'dialogue_line']`; left `cloze_mcq` at `['item']` (lesson-pool distractor extension is a follow-up). Added `DialogueLineInput` type. Made `RawProjectorInput.dialogueLine` honestly nullable; widened `ContractInputShapes.cloze` to allow `learningItem: LearningItem | null` + `dialogueLine: DialogueLineInput | null` (exactly-one invariant enforced by the projector).
+  - `adapter.ts`: bucketing now produces an `item` bucket AND a `dialogue_line` bucket. New `fetchForDialogueLineBlocks` runs artifacts-only — no `learning_items` join — reading `cloze_context` + `cloze_answer` + `translation:l1` payload shapes per the writer at `scripts/lib/pipeline/capability-stage/projectors/dialogueArtifacts.ts`. `loadBlockData` calls both bucket fetchers via `Promise.all`.
+  - `byType/cloze.ts`: branches on `input.dialogueLine != null`; dialogue path reads sentence + targetWord + translation + speaker from `DialogueLineInput`; item path unchanged.
+  - `resolutionReasons.ts`: added `dialogue_line_ref_unparseable` + `dialogue_line_artifact_missing`.
+  - `types/learning.ts`: extended `ExerciseItem.clozeContext` + `clozeMcqData` shape with optional `speaker: string | null` for the UI to render as a prefix in PR-C.
+  - Tests: +13 new unit tests across resolver.test.ts (end-to-end dialogue_line scenarios), adapter.test.ts (bucketing), byType.test.ts (cloze packager dialogue branch). Test baseline 1193 → 1206 passing.
 
 - **2026-05-21 — PR-A shipped:** the fold itself, in three commits.
   - `bc45009` — step 1: `git mv` `capabilityContentService{,.internal}.ts` → `lib/exercise-content/resolver.ts` + `adapter.ts`; relocate the two test files; create `index.ts` barrel; update 4 production + 3 test importers; retarget 5 `CapabilityRenderContext` type-only imports to `@/lib/capabilities` (the canonical home).
