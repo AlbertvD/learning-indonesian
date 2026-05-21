@@ -1,7 +1,7 @@
 ---
 module: capabilities
 surface: src/lib/capabilities/
-last_verified_against_code: 2026-05-20
+last_verified_against_code: 2026-05-21
 inbound_port: src/lib/capabilities/index.ts
 status: stable
 ---
@@ -29,12 +29,12 @@ status: stable
 - `src/lib/session-builder/builder.ts` — pulls `CapabilityReadiness`, `ProjectedCapability`.
 - `src/lib/session-builder/pedagogy.ts`, `labels.ts` — pull `CapabilityType` / `CapabilitySourceKind` for planner + display labels.
 - `src/lib/mastery/masteryModel.ts` — pulls cap_type / source_kind / artifact types for the mastery-labelling rules.
-- `src/lib/exercises/builders/index.ts` — calls `projectBuilderInput` to narrow raw input before dispatching to typed builders.
-- `src/lib/exercises/builders/types.ts` — re-exports `BuilderInputFor<T>` + `RawProjectorInput` for the 12 builders.
+- `src/lib/exercise-content/byType/index.ts` — calls `projectBuilderInput` to narrow raw input before dispatching to typed builders. (Was `src/lib/exercises/builders/index.ts` pre-2026-05-21 fold.)
+- `src/lib/exercise-content/byType/types.ts` — re-exports `BuilderInputFor<T>` + `RawProjectorInput` for the 12 per-type packagers.
 - `src/lib/exercises/exerciseResolver.ts` — calls `exerciseTypesForCapability` for compatibility lookup; consumes `CapabilityReadiness`, `ArtifactIndex`, `hasApprovedArtifact`.
 - `src/lib/exercises/exerciseRenderPlan.ts` — consumes `ArtifactKind`, `ProjectedCapability` for the render-plan shape.
-- `src/services/capabilityContentService.ts` — imports `ArtifactKind`, `CapabilityArtifact`; dispatches via `buildForExerciseType` from `@/lib/exercises/builders` (which itself reaches into capabilities).
-- `src/services/capabilityContentService.internal.ts` — consumes `CAPABILITY_SOURCE_KINDS`, `CapabilitySourceKind` for canonical-key decoding.
+- `src/lib/exercise-content/resolver.ts` — orchestrates the per-block dispatch; imports `CapabilityRenderContext`, `ResolutionDiagnostic`. (Was `src/services/capabilityContentService.ts` pre-2026-05-21 fold.)
+- `src/lib/exercise-content/adapter.ts` — imports `ArtifactKind`, `CapabilityArtifact`, `CapabilitySourceKind`, `CAPABILITY_SOURCE_KINDS` for the source-kind bucketing + canonical-key decoding + per-bucket fetchers. (Absorbed the former `capabilityContentService.internal.ts`.)
 - `src/services/capabilityService.ts` — consumes the cap_type / direction / modality / language enums for the DB row shape.
 - `scripts/promote-capabilities.ts` — calls `validateCapability` for promotion decisions.
 - `scripts/check-capability-health.ts` — calls `validateCapability` + `validateCapabilities` for health-report generation; also pulls `CapabilityHealthReport`, `ExerciseAvailabilityIndex`.
@@ -136,7 +136,7 @@ CapabilityReadiness  →  resolveExercise  →  ExerciseRenderPlan
 ### 3.2 The render flow (builder dispatch)
 
 ```
-RawProjectorInput          (constructed at capabilityContentService.ts:332)
+RawProjectorInput          (constructed inside src/lib/exercise-content/adapter.ts per-bucket fetchers)
         │
         │  projectBuilderInput(exerciseType, raw)   (renderContracts.ts:182)
         │
@@ -169,7 +169,7 @@ BuilderResult  ({ kind: 'ok', exerciseItem, audibleTexts } | fail)
 
 - **Pattern caps are blocked at validateCapability.** `pattern_recognition` + `pattern_contrast` are intentionally absent from every `capabilityTypes` array (per PR #65 Option D — `renderContracts.ts:43-103`). `validateCapability` returns `blocked` with reason `no_compatible_exercise_for_capability_type`. Resolved by a future follow-up that introduces dedicated `pattern_cloze` / `pattern_contrast_pair` ExerciseTypes with contract entries consuming `pattern_explanation:l1` + `pattern_example` artifacts.
 
-- **`supportedSourceKinds: ['item']` for every contract today.** Codifies the `capabilityContentService.ts:240` runtime restriction at the contract layer. Caps with sourceKind in `{dialogue_line, affixed_form_pair, pattern, podcast_*}` cannot render through any current builder. Future fold work to widen the service expands these arrays.
+- **`supportedSourceKinds` is `['item']` for every contract except `cloze`.** Codifies the runtime restriction at the contract layer. The 2026-05-21 lib/exercise-content fold widened `cloze.supportedSourceKinds` to `['item', 'dialogue_line']` (PR-B), so contextual_cloze caps with `sourceKind=dialogue_line` render through typed cloze. `cloze_mcq` stays item-only (its distractor pool is lesson-anchored; tracked as a follow-up). Caps with sourceKind in `{affixed_form_pair, pattern, podcast_*}` still cannot render through any current builder — adding source kinds is a one-file addition to `lib/exercise-content/adapter.ts`'s per-bucket dispatch plus a `supportedSourceKinds` widening here.
 
 - **Exposure-only caps never enter spaced practice.** `isExposureOnly` returns true for `podcast_segment` / `podcast_phrase`; `validateCapability` short-circuits at line 53 before any source-kind / artifact checks.
 
@@ -194,12 +194,12 @@ BuilderResult  ({ kind: 'ok', exerciseItem, audibleTexts } | fail)
 - **`lib/session-builder/`** — `adapter.ts:299` calls `validateCapability` per row. `builder.ts:197` consumes the resulting `CapabilityReadiness` via `resolveCandidate`. See `docs/current-system/modules/session-builder.md`.
 - **`lib/exercises/exerciseResolver.ts`** — calls `exerciseTypesForCapability` for the cap → exercise dispatch lookup. Trusts the validator's `readiness.allowedExercises`; does NOT replicate source-kind filtering.
 - **`lib/exercises/builders/`** — 12 builders consume `BuilderInputFor<T>` types; the dispatcher at `builders/index.ts:50` runs `projectBuilderInput<T>()` before invoking each.
-- **`services/capabilityContentService.ts`** — sole runtime caller of `buildForExerciseType`. Constructs `RawProjectorInput` at line 332 and dispatches at line 362.
+- **`lib/exercise-content/`** — sole runtime caller of `buildForExerciseType`. `resolver.ts` orchestrates; `adapter.ts` constructs `RawProjectorInput` inside `fetchForItemBlocks` (item bucket) and `fetchForDialogueLineBlocks` (dialogue_line bucket). See `docs/current-system/modules/exercise-content.md`.
 - **`scripts/promote-capabilities.ts`, `scripts/check-capability-health.ts`** — call `validateCapability` for promotion + health-report generation.
 
 ### Sibling
 
-- **`lib/exercises/resolutionReasons.ts`** — leaf module owning `ResolutionReasonCode`. Created in PR #65 to break what would otherwise be a circular import between `renderContracts.ts` and `capabilityContentService.ts`. Re-exported from the service for back-compat with `builders/types.ts`.
+- **`lib/exercises/resolutionReasons.ts`** — leaf module owning `ResolutionReasonCode`. Created in PR #65 to break what would otherwise be a circular import between `renderContracts.ts` and the runtime resolver. Re-exported from `lib/exercise-content/resolver.ts` for back-compat with `byType/types.ts`. PR-B of the 2026-05-21 fold added `dialogue_line_ref_unparseable` and `dialogue_line_artifact_missing` codes.
 
 ---
 
@@ -207,7 +207,9 @@ BuilderResult  ({ kind: 'ok', exerciseItem, audibleTexts } | fail)
 
 - **Pattern renderers missing.** `pattern_recognition` + `pattern_contrast` capabilities are blocked at validateCapability pending the introduction of `pattern_cloze` / `pattern_contrast_pair` ExerciseTypes with their own builders. Follow-up issue tracks this.
 
-- **`supportedSourceKinds: ['item']` is the current ceiling.** `contextual_cloze` (sourceKind `dialogue_line`) and `root_derived_*` (sourceKind `affixed_form_pair`) capabilities are correctly marked `blocked` at validateCapability because no current builder can render their source-kind. The capabilityContentService fold (per `docs/target-architecture.md`) widens this.
+- **`affixed_form_pair` source kind not yet renderable.** `root_derived_*` capabilities (sourceKind `affixed_form_pair`) are correctly marked `blocked` at validateCapability because no current builder can render their source-kind. The next source-kind pilot will widen `cued_recall` + `typed_recall` to accept `affixed_form_pair` and add `fetchForAffixedFormPairBlocks` in `lib/exercise-content/adapter.ts`. The dialogue_line widening (2026-05-21 fold PR-B) is the template.
+
+- **`cloze_mcq` is item-only.** Even though `contextual_cloze:dialogue_line` caps render via typed cloze, `cloze_mcq` stays `supportedSourceKinds: ['item']` because its distractor pool is lesson-anchored via `item_contexts.source_lesson_id`, and `fetchForDialogueLineBlocks` doesn't populate `poolItems`. Extending it requires either a lesson-anchored pool fetcher in the dialogue_line path or an authored-variant distractor route. Follow-up.
 
 - **Legacy projection for lessons 1-3.** Documented in `capabilityTypes.ts:96` (the comment at the top of `CurrentContentSnapshot`). Lessons 1-3 still use a legacy bridge; lessons 4+ use the pipeline. Separate cleanup, not owned here.
 

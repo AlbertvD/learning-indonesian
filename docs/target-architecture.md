@@ -182,7 +182,6 @@ LOCAL PIPELINE          in scripts/
 | Shared | `supabase/functions/_shared/srs/` | LOCKED |
 | Service | `services/answerCommitService` | LOCKED |
 | Service | `services/podcastService` | LOCKED (stays — no module) |
-| Service | `services/exerciseAvailabilityService` | LOCKED (stays — no module) |
 | Service | `services/loggerService` (or `lib/logger.ts`) | LOCKED (stays in `lib/` root) |
 | Server | `supabase/functions/commit-capability-answer-report` | LOCKED |
 | Local | `scripts/lib/pipeline/` | LOCKED (Plate IV) |
@@ -466,16 +465,21 @@ ResolveContext { userId: string, now: Date }
 - The content joins across `learning_items`, `item_meanings`, `item_contexts`, `item_answer_variants`.
 - Per-exercise-type packaging logic (12 exercise types; ~5 of them MCQ-shaped).
 
-**Module structure.**
+**Module structure (as shipped 2026-05-21).**
 
 ```
 src/lib/exercise-content/
   index.ts                  barrel
-  model.ts                  RenderPlan discriminated union per exercise type
-  resolver.ts               resolveBlock orchestrator
-  variantChoice.ts          which authored exercise_variant to use
-  flagState.ts              user's existing content_flag for this card, if any
+  resolver.ts               resolveBlocks orchestrator (pure orchestration, no SQL)
+  adapter.ts                source-kind bucketing + per-bucket fetchers +
+                            canonical-key decode + diagnostic helpers +
+                            createAdapter factory. Sole SQL touchpoint.
+                            Folded capabilityContentService.ts +
+                            capabilityContentService.internal.ts.
   byType/
+    index.ts                buildForExerciseType dispatch + BUILDERS registry
+    helpers.ts              pickUserLangMeaning, shuffle
+    types.ts                BuilderResult + re-exports
     recognitionMcq.ts
     cloze.ts
     clozeMcq.ts
@@ -488,14 +492,15 @@ src/lib/exercise-content/
     listeningMcq.ts
     typedRecall.ts
     meaningRecall.ts
-  availability.ts           folds exerciseAvailabilityService — reads
-                            exercise_type_availability lookup
-  adapter.ts                folds capabilityContentService.ts +
-                            capabilityContentService.internal.ts
-                            (~456 LOC) — Supabase reads
 ```
 
-Approximately 600–700 LOC after splitting the current single file across per-type packagers.
+Approximately 1200 LOC across the module (resolver 140, adapter 588 post-PR-B with the dialogue_line fetcher, byType 12 packagers ~545 LOC + 70 LOC index + helpers/types).
+
+**Folds that did not happen** (vs the earlier draft of this section):
+- `variantChoice.ts` was not created — variant choice is a 3-line `Map.get` keyed on `(item_id, exercise_type)` inside `fetchForItemBlocks`; per Ousterhout depth rules, it doesn't deserve a file.
+- `flagState.ts` was not created — the runtime has no `content_flags` table or fetch today. Future feature.
+- `availability.ts` was not created — `exerciseAvailabilityService.ts` was deleted at commit `1f430ac` ("feature never wired") before the fold ran.
+- `model.ts` was not created — `CapabilityRenderContext` + `ResolutionDiagnostic` types live in `lib/capabilities/renderContext.ts` (shared between capabilities and exercise-content); the exercise-content barrel re-exports them.
 
 **Depends on.**
 - `lib/capabilities/` — types + artifact registry
@@ -1044,22 +1049,9 @@ Podcast {
 
 ---
 
-### `services/exerciseAvailabilityService` (stays as service — no module)
+### ~~`services/exerciseAvailabilityService`~~ (deleted)
 
-**Decision:** Stays in `src/services/exerciseAvailabilityService.ts`.
-
-**Why not a module.** Reads one table (`exercise_type_availability`) — a flat lookup of which exercise types are session-enabled. No logic to hide.
-
-**Public API.**
-
-```ts
-isExerciseTypeEnabled(type: ExerciseType) → Promise<boolean>
-getEnabledExerciseTypes()                 → Promise<ExerciseType[]>
-```
-
-**Consumed by.** `lib/session-builder/` when filtering exercise types ("listening preference is off → drop listening exercises from the queue"). The filtering logic itself lives in the session-builder; this service is just the data fetch.
-
-**Optional future fold.** Could move into `lib/exercise-content/availability.ts` if the session-builder ever stops using it directly. For now, sits in `services/`.
+The earlier draft of this document specified this service. The file was deleted at commit `1f430ac` (chore(dead-code): delete exerciseAvailability surface — feature never wired). The session-builder never consumed it. The roster row and the `lib/exercise-content/availability.ts` mention in the earlier `lib/exercise-content/` target shape have both been removed.
 
 ---
 
@@ -1485,7 +1477,7 @@ This document captures *decisions*. The codebase has not yet been refactored. Ev
 3. **Browser FSRS retirement.** DONE (#3, PR #36). Move `inferRating` to `_shared/srs/`; delete `src/lib/fsrs.ts`; simplify `capabilityReviewProcessor.ts`; delete `previewScheduleUpdate`.
 4. **Session lifecycle retirement.** DONE (#5, 2026-05-07, branch `retire/session-lifecycle`). Replaced `startSession`/`endSession` with client-side UUID minting + RPC-side upsert from answer commits. Deleted `lib/session.ts` (110 LOC) and `useSessionBeacon.ts` (30 LOC) entirely; bundled Lesson + Podcast caller surgery; dropped `job_finalize_stale_sessions` cron + function; dropped dead `learning_sessions_write` RLS policy; narrowed `learning_sessions` GRANT to SELECT only. ~221 LOC + 1 fn + 1 cron + 1 RLS policy + RPC modification. See `docs/plans/2026-05-07-retire-session-lifecycle.md`.
 5. **Source-progress retirement → lesson-activation.** DONE (#6, 2026-05-07, branch `retire/source-progress`). Added the `learner_lesson_activation` table + `set_lesson_activation` RPC; auto-activated legacy lessons (1–3) for existing users via master-migration backfill, and for new sign-ins via the `authStore.onAuthStateChange` SIGNED_IN hook; replaced the lesson-page mark-as-X buttons with a single Mantine activation Checkbox; rewrote the eligibility filter from `isSourceProgressSatisfied` to `capability.lessonId == null || activatedLessons.has(capability.lessonId)`; simplified mastery rule 2 to depend on `lessonActivated` instead of `sourceProgressState`. Deleted `sourceProgressService`, `sourceProgressGates`, `lessonExposureProgress`, the source-progress tables, the `record_source_progress_event` + `_capability_source_progress_met` RPCs, the `lesson_page_blocks.source_progress_event` column, and ~2,820 staging-file occurrences. Added `learning_capabilities.lesson_id` for the eligibility gate. ~4,173 LOC delete + ~830 LOC add. See `docs/plans/2026-05-07-retire-source-progress.md`.
-6. **Module folds.** One at a time. Suggested order: lessons, capabilities (cleanup), session-builder, exercise-content, analytics (incl. mastery), audio, auth, profile.
+6. **Module folds.** One at a time. Suggested order: lessons, capabilities (cleanup), session-builder, ~~exercise-content~~ (DONE 2026-05-21, commits `bc45009` + `c70271e` + `fbefba7` + `c7acb67` + `6a366b6`), analytics (incl. mastery), audio, auth, profile.
 7. **Legacy `src/lib/` root cleanup.** PARTIALLY DONE (#7, 2026-05-08, branch `retire/legacy-lib-root`). Retired `sessionQueue.ts`, `sessionPolicies.ts`, `stages.ts`, and the transitively-orphaned `capabilities/sessionCapabilityDiagnostics.ts` (~2518 LOC delete). `useExerciseScoring.ts` deferred to a separate relocation PR (11 production callers; relocation, not retirement). See `docs/plans/2026-05-08-retire-legacy-lib-root.md`.
 8. **Test colocation.** Disperse `src/__tests__/` into the modules.
 

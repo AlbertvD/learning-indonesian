@@ -36,6 +36,6 @@ These are point-in-time architectural finding docs, named so future sessions don
 
 - `CLAUDE.md` — project rules, conventions, and runtime invariants.
 - `docs/target-architecture.md` — the locked-in module roster the codebase is migrating toward.
-- `docs/current-system/modules/` — per-module specs (`capabilities`, `experience`, `lesson-renderer`, `session-builder`).
+- `docs/current-system/modules/` — per-module specs (`capabilities`, `exercise-content`, `experience`, `lesson-renderer`, `session-builder`).
 - `docs/adr/` — architecture decision records (0001 capability core through 0007 receptive-before-productive).
 - `docs/process/content-pipeline.md` — the authoring + 2-stage publish pipeline.
