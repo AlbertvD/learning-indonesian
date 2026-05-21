@@ -29,19 +29,41 @@ depends_on:
 
 ## §1. PR sequence overview
 
-Five PRs in dependency order. Each is internally larger than the prior 12-PR sequence, but each ships immediately when its predecessor lands. **No soak periods.**
+Per user direction (2026-05-21): **slice by source_kind**, not by layer. Each per-capability PR does ALL the work end-to-end for one source kind — schema, pipeline writer, runtime reader, re-publish, smoke. Mistakes surface immediately on the one capability shape being migrated.
+
+Eight PRs total: one upfront cleanup, five per-source-kind, one final-cleanup, two lesson-content (orthogonal). Each ships immediately when its predecessor lands. **No soak periods.**
 
 | PR | Title | Scope | Risk |
 |---|---|---|---|
-| 1 | **Cleanup + slim columns** | Drop empty/aspirational/legacy/orphan tables; rewrite `leaderboard` view; slim `learning_capabilities` (drop metadata_json + fingerprints; add `prerequisite_keys`); slim `lessons` (drop dead columns); junction-ify `dialogue_voices` → `lesson_speakers`; slim `learner_capability_state` (drop `fsrs_state_json`); slim `capability_review_events` (drop redundant JSON columns + rename); add `meaning_recall` + `cloze_mcq` to `exercise_type_availability` | LOW |
-| 2 | **Typed content satellites + retire `capability_artifacts`** | Add `dialogue_clozes`, `lesson_dialogue_lines`, `lesson_section_dialogue` (header only), `affixed_form_pairs`, `grammar_pattern_examples`, `capability_audio_refs`; backfill all from current artifacts; switch every reader (`lib/exercise-content/byKind/{item,dialogueLine,affixedFormPair}.ts` + `session-builder/adapter.ts:282-289` planner-side reader); drop `capability_artifacts` | MEDIUM |
-| 3 | **Grammar exercise typed tables + routing wire-up** | Add 4 typed tables (`contrast_pair_exercises`, `sentence_transformation_exercises`, `constrained_translation_exercises`, `cloze_mcq_exercises`); backfill from `exercise_variants`; wire `renderContracts.ts` `capabilityTypes` arrays for the 4 grammar exercises; new `lib/exercise-content/byKind/pattern.ts` fetcher + bucket; drop `exercise_variants` | HIGH (new live feature surface) |
-| 4 | **`lesson_blocks` typed satellites** | Replace `lesson_page_blocks` with `lesson_blocks` (header) + 6 typed satellites (`lesson_block_{hero,reading_section,vocab_strip,dialogue_card,practice_bridge,lesson_recap}`); backfill; rewrite `LessonReader` + `LessonBlockRenderer`; rewrite pipeline `lesson-stage/runner.ts` to write typed rows; drop `lesson_page_blocks` | HIGH (renderer rewrite) |
-| 5 | **`lesson_section_*` typed satellites** | Replace `lesson_sections.content` with typed satellites (`lesson_section_{reading,items,item_rows,grammar,grammar_categories,grammar_topics,pronunciation,pronunciation_letters,reference,exercise_groups}`); backfill; rewrite consumers (`coverageService`, `lib/lessons/adapter.ts`, per-lesson `Page.tsx` files); slim `lesson_sections` to header-only (drop `content` column) | HIGH (largest reader surface) |
+| 1 | **Schema cleanup + slim columns** | Drop empty/aspirational/legacy/orphan tables; rewrite `leaderboard` view; slim `learning_capabilities` (drop `metadata_json` + fingerprints; add `prerequisite_keys`); slim `lessons` (drop dead columns); junction-ify `dialogue_voices` → `lesson_speakers`; slim `learner_capability_state` (drop `fsrs_state_json`); slim `capability_review_events` (drop redundant JSON columns + rename); add `meaning_recall` + `cloze_mcq` to `exercise_type_availability`. **ALTER-only — no repopulate needed; existing rows survive.** | LOW |
+| 2 | **`item` source kind end-to-end** | Add `capability_audio_refs` table. Rewrite `byKind/item.ts` to read upstream typed tables (`learning_items` + `item_meanings` + `item_answer_variants` + `capability_audio_refs`) instead of `capability_artifacts`. Rewrite `session-builder/adapter.ts:282-289` planner-side artifact reader. Rewrite pipeline `projectors/vocab.ts` + audio path to write `capability_audio_refs` rows and stop emitting the 9 item-only artifact kinds. Republish all 9 lessons. Verify item-source caps still render (the 6 capability types that have ever shipped — see investigation §1.4). Item-keyed `capability_artifacts` rows become stale (deleted in PR 7). | MEDIUM |
+| 3 | **`dialogue_line` source kind end-to-end** | Add `dialogue_clozes` + `lesson_dialogue_lines` + `lesson_section_dialogue` (header). Rewrite `byKind/dialogueLine.ts` to read `dialogue_clozes` JOIN `lesson_dialogue_lines` instead of the 3 dialogue artifact kinds. Rewrite pipeline `projectors/dialogueArtifacts.ts` + lesson-stage dialogue propagation. Republish L9 (7 dialogue clozes — the only ones live today). Verify via real session against a `contextual_cloze` cap. Dialogue artifact rows become stale (deleted in PR 7). | LOW (small data) |
+| 4 | **`affixed_form_pair` source kind end-to-end** | Add `affixed_form_pairs` table. Rewrite `byKind/affixedFormPair.ts` to read `affixed_form_pairs` instead of the 2 morphology artifact kinds. Rewrite pipeline `projectors/morphology.ts`. Republish L9 (the only lesson with affixed pairs — 2 pairs × 2 caps = 4 rows). Verify via real session against a `root_derived_*` cap (this is the runtime-gap "next pilot" per the gap doc). Morphology artifact rows become stale (deleted in PR 7). | LOW |
+| 5 | **`pattern` source kind end-to-end (grammar routing fix)** | Add `grammar_pattern_examples` + 4 grammar exercise typed tables (`contrast_pair_exercises`, `sentence_transformation_exercises`, `constrained_translation_exercises`, `cloze_mcq_exercises`). Add new `byKind/pattern.ts` fetcher. Add `pattern` source-kind bucket to `adapter.ts:bucketByDecodedSourceKind`. Wire `renderContracts.ts` `capabilityTypes` arrays for the 4 grammar exercises. Rewrite pipeline `projectors/grammar.ts` + `publish-grammar-candidates.ts` + grammar-exercise-creator agent prompt. Republish all 9 lessons + grammar candidates. **First time pattern caps render for any learner** — mandatory live-session smoke (per `feedback_answer_log_check.md`). Drop `exercise_variants`. Pattern artifact rows (`pattern_explanation:l1`, `pattern_example`) become stale (deleted in PR 7). | HIGH (new live feature surface) |
+| 6 | **(reserved for podcast source kinds)** | Empty today; PR 6 placeholder for `podcast_segment` + `podcast_phrase` when those features ship. Out of scope for this migration. | n/a |
+| 7 | **Drop `capability_artifacts`** | Confirm via `grep capability_artifacts` that the only hits are deleted code, migration history, and this plan. `drop table indonesian.capability_artifacts cascade`. Final removal step once PRs 2-5 have moved every source kind off the bag. | LOW (after PRs 2-5) |
+| 8 | **`lesson_blocks` typed satellites (orthogonal to capabilities)** | Replace `lesson_page_blocks` with `lesson_blocks` (header) + 6 typed satellites. Rewrite `LessonReader` + `LessonBlockRenderer` + pipeline `lesson-stage/runner.ts`. Republish all 9 lessons. Drop `lesson_page_blocks`. | HIGH (renderer rewrite) |
+| 9 | **`lesson_section_*` typed satellites (orthogonal to capabilities)** | Replace `lesson_sections.content` with typed satellites. Rewrite consumers (`coverageService`, `lib/lessons/adapter.ts`, per-lesson `Page.tsx` files). Slim `lesson_sections` to header-only (drop `content` column). Republish. | HIGH (largest reader surface) |
 
-**Per-PR gate:** `make migrate-idempotent-check` + `make pre-deploy` (lint + test + build + `check-supabase` + `check-supabase-deep`). PR 3 + PR 4 + PR 5 also require visual smoke (open `/admin/design-lab` + `/admin/page-lab` + every lesson reader on dev).
+**Per-PR gate (every PR — non-negotiable):**
 
-**Optional further collapse:** PRs 4 and 5 can merge into one if the author prefers a single lesson-content migration. They are split here for review surface — each PR rewrites a distinct module (lesson reader for PR 4; section consumers for PR 5).
+1. `make migrate-idempotent-check` — idempotency of the schema change.
+2. `make pre-deploy` — lint + unit tests + build + `check-supabase` + `check-supabase-deep`.
+3. **Playwright E2E suite passes locally** — `bun playwright test` against `e2e/*.spec.ts`. The existing suite covers `lesson-reader.spec.ts`, `session.spec.ts`, `pr4a-smoke.spec.ts`, `design-lab-capture.spec.ts`. Each PR EXTENDS the relevant spec with assertions for its migrated surface (per the per-PR E2E rows in §13.5 below).
+4. **Live-session answer-log check** — per `feedback_answer_log_check.md`. After the migration applies + the publish re-runs, drive a real session that exercises the migrated surface, then `select source_kind, capability_type, count(*) from learning_capabilities lc join capability_review_events cre on lc.id = cre.capability_id group by 1, 2 order by 3 desc;` and confirm the migrated `(source_kind, capability_type)` tuple has new event rows. The answer log is ground truth: data existence ≠ feature works.
+
+PR 5 + PR 8 + PR 9 also require visual smoke (open `/admin/design-lab` + `/admin/page-lab` + every lesson reader on dev).
+
+**Slicing rationale (why source_kind instead of layer):**
+
+- Each per-capability PR has a tight end-to-end story: edit schema → edit pipeline → edit reader → republish → confirm THAT cap renders → done.
+- Mistakes are confined to one source kind. A bug in `byKind/dialogueLine.ts` doesn't block PR 2 (item) from shipping; a bug in `projectors/grammar.ts` doesn't block PR 4 (affixed_form_pair).
+- The orphan-routing problem for pattern caps (the `feedback_answer_log_check.md` failure mode) is contained to PR 5 — that PR is the one where the answer-log smoke test matters most.
+- `capability_artifacts` survives across PRs 2-5 (as stale data for the kinds that have been migrated off it) — the bag is dropped atomically in PR 7 once all readers are gone.
+
+**PR 7 alternative:** instead of keeping `capability_artifacts` rows around through PRs 2-5, each per-capability PR can `delete from capability_artifacts where artifact_kind in (...)` for its kinds. The end-state is identical; the early-deletion variant exercises the per-PR rollback path more aggressively (a rollback would lose the deleted rows and require re-publishing to recover). Recommendation: keep PR 7 as the centralised drop; per-PR PRs leave stale rows in place.
+
+**Lesson-content PRs (8, 9) can ship before or after the capability PRs (2-5).** They touch `lesson_page_blocks` + `lesson_sections.content`, not `capability_artifacts`. Order them based on review-cycle preference.
 
 ### 1.1 Repopulate strategy — no SQL backfill
 
@@ -53,11 +75,12 @@ This means every per-PR "backfill" in the sections below is achievable by **re-r
 
 **Per-PR data step under the repopulate strategy:**
 
-1. Edit the pipeline writer to emit the new typed-table rows instead of the old shape.
+1. Edit the pipeline writer to emit the new typed-table rows instead of the old shape (for the source kind being migrated).
 2. Edit the runtime reader to read the new tables.
-3. CREATE the new tables; DROP the old.
-4. Re-run `bun scripts/publish-approved-content.ts <N>` for every lesson 1..9 (or whichever lessons hold content the new tables need).
-5. Verify with `make check-supabase-deep` + visual smoke.
+3. CREATE the new tables in `scripts/migration.sql`.
+4. Re-run `bun scripts/publish-approved-content.ts <N>` for every affected lesson — typically all 9, occasionally a subset (e.g. PR 4 only needs L9 republished because that's the only lesson with affixed_form_pair caps today).
+5. Verify with `make check-supabase-deep` + visual smoke + a live session that exercises the migrated source kind.
+6. The old artifact rows for the migrated kind(s) become stale but are not dropped until PR 7 (`drop table capability_artifacts cascade`) — keeping them lets each PR roll back independently by reverting the code and re-publishing.
 
 **Trade-off vs. SQL backfill:** the repopulate strategy has the publish pipeline as the only writer of the new tables, which means (a) no parallel maintenance of a one-shot SQL parser; (b) the shape transformation lives in TypeScript with type safety; (c) any shape-classification bugs surface in the pipeline (where they're caught by validators) rather than in raw SQL; (d) re-running publishing is a normal app operation, not a privileged DB hack.
 
@@ -71,19 +94,23 @@ This means every per-PR "backfill" in the sections below is achievable by **re-r
 
 **The backfill SQL blocks in §§6-12 below are kept as illustrative reference** — they document the data shape correspondence between old and new tables. In practice you do not run them; you re-publish.
 
-### 1.2 Mapping from the per-PR detail sections to the 5-PR sequence
+### 1.2 Mapping from the per-PR detail sections to the per-source-kind sequence
 
-The detail sections that follow (§2-§12) were authored against an earlier 11-PR breakdown. They are retained for their schema diffs + backfill SQL + code-paths-touched, but they consolidate into the 5-PR sequence above as follows:
+The detail sections that follow (§2-§12) were authored against an earlier layer-sliced 11-PR breakdown. They are retained for their schema diffs + code-paths-touched + per-source-kind data shapes, but they consolidate into the 9-PR sequence above as follows:
 
 | New PR | Subsumes old §s |
 |---|---|
-| **PR 1 (cleanup + slim)** | §2 (drop empty/legacy) + §3 (slim review events + FSRS state) + §4 (slim learning_capabilities metadata) + §5 (slim lessons + lesson_speakers). The leaderboard rewrite from §2.2 lands here. The pre-PR-1 `pg_dump` of legacy-retained tables runs first. |
-| **PR 2 (typed satellites + retire `capability_artifacts`)** | §6 (dialogue satellites) + §7 (affixed_form_pairs) + §8 (grammar_pattern_examples + readiness refactor) + §10 (retire capability_artifacts including the PR 8.5 `capability_audio_refs` step). All four ship in one atomic PR. |
-| **PR 3 (grammar exercise routing)** | §9 (grammar exercise split + routing wire). Includes the `exercise_variants` drop in the same PR. |
-| **PR 4 (lesson_blocks satellites)** | §11 (`lesson_page_blocks` replacement). Drop of `lesson_page_blocks` in same PR. |
-| **PR 5 (lesson_section satellites)** | §12 (`lesson_sections.content` replacement). `lesson_sections.content` column dropped in same PR. |
+| **PR 1 (schema cleanup + slim columns)** | §2 (drop empty/legacy) + §3 (slim review events + FSRS state) + §4 (slim `learning_capabilities` metadata) + §5 (slim lessons + lesson_speakers). The leaderboard rewrite from §2.2 lands here. The pre-PR-1 `pg_dump` of legacy-retained tables runs first. ALTER-only, no repopulate. |
+| **PR 2 (`item` source kind end-to-end)** | §10.2 (`capability_audio_refs` introduction — was "PR 8.5"). Plus the item-side of the readiness refactor (§8) — for item caps, read upstream `learning_items` + `item_meanings` + `item_answer_variants` + `capability_audio_refs` instead of `capability_artifacts`. |
+| **PR 3 (`dialogue_line` source kind end-to-end)** | §6 (typed dialogue satellites) — `dialogue_clozes`, `lesson_dialogue_lines`, `lesson_section_dialogue`. |
+| **PR 4 (`affixed_form_pair` source kind end-to-end)** | §7 (typed `affixed_form_pairs` table). |
+| **PR 5 (`pattern` source kind end-to-end)** | §8 (typed `grammar_pattern_examples` — pattern side of readiness refactor) + §9 (grammar exercise split + routing wire-up + `exercise_variants` drop). The two old PRs collapse into one because they share the pattern source kind. |
+| **PR 6 (podcast source kinds — placeholder)** | n/a (not in original layer-sliced plan). Out of scope today. |
+| **PR 7 (drop `capability_artifacts`)** | §10.1 (the artifact-table drop only). The audio-ref step from §10.2 already shipped in PR 2. |
+| **PR 8 (`lesson_blocks` satellites)** | §11. Drop of `lesson_page_blocks` in same PR. |
+| **PR 9 (`lesson_section_*` satellites)** | §12. `lesson_sections.content` column dropped in same PR. |
 
-When reading §§2-12, treat each "old PR N" header as describing a chunk of one of the 5 new PRs. The SQL backfill snippets there are kept for shape-correspondence reference — under the §1.1 repopulate strategy you re-publish from staging instead of running the SQL.
+When reading §§2-12, treat each "old PR N" header as describing a chunk of one of the 9 new PRs. The SQL backfill snippets there are kept for shape-correspondence reference — under the §1.1 repopulate strategy you re-publish from staging instead of running the SQL.
 
 ---
 
@@ -826,6 +853,30 @@ Each PR adds at least one HC to `scripts/check-supabase-deep.ts`. Examples alrea
 - PR 6: affixed_form_pairs source_ref parity
 - PR 7: readiness adapter output stability (one-off compare)
 - PR 8: live-session smoke for grammar exercises
+
+### 13.5 End-to-end testing per PR
+
+Every PR ships with its own E2E spec extension. The Playwright suite at `e2e/*.spec.ts` is the harness; each PR adds or extends a spec to cover the migrated surface. The spec must include both the user-visible interaction AND a post-session query against `capability_review_events` confirming the new rendering path actually emitted answer rows for the migrated `(source_kind, capability_type)` tuple.
+
+Per-PR E2E breakdown:
+
+| PR | E2E spec | Surface tested | Post-session assertion |
+|---|---|---|---|
+| 1 | Existing `session.spec.ts` + `lesson-reader.spec.ts` unchanged behaviour | Login → lessons → session → answer; lesson reader renders | Same answer counts as pre-migration. No regressions. |
+| 2 | `session.spec.ts` extended: drive a session with item-source caps; assert at least one `text_recognition` + one `dictation` cap renders + can be answered | item source kind end-to-end | `cre WHERE source_kind='item' AND capability_type IN ('text_recognition','meaning_recall','dictation','audio_recognition','l1_to_id_choice','form_recall')` shows new rows |
+| 3 | NEW `e2e/dialogue-cloze.spec.ts`: activate L9, start a session, force a `cloze` exercise on a dialogue_line cap, type the answer, submit | `dialogue_line` source kind via typed `cloze` | `cre WHERE source_kind='dialogue_line' AND capability_type='contextual_cloze'` shows ≥ 1 new row (today this query returns zero historically — first-time feature smoke) |
+| 4 | NEW `e2e/affixed-form-pair.spec.ts`: activate L9, drive a session, force a `typed_recall` on a `root_derived_*` cap | `affixed_form_pair` source kind via `typed_recall` | `cre WHERE source_kind='affixed_form_pair' AND capability_type IN ('root_derived_recognition','root_derived_recall')` shows ≥ 1 new row |
+| 5 | NEW `e2e/grammar-exercises.spec.ts`: 4 sub-tests, one per exercise type (`contrast_pair`, `sentence_transformation`, `constrained_translation`, `cloze_mcq`); each drives a session, answers a pattern-source cap | `pattern` source kind via 4 grammar exercise types | `cre WHERE source_kind='pattern' AND capability_type IN ('pattern_recognition','pattern_contrast')` shows ≥ 4 new rows (one per exercise type). **First-ever rendering of pattern caps for any user.** |
+| 6 | n/a (placeholder) | n/a | n/a |
+| 7 | Existing `session.spec.ts` + `lesson-reader.spec.ts` unchanged behaviour | All source kinds still resolve after artifact-table drop | No new `capability_resolution_failure_events` rows for the dropped table |
+| 8 | `lesson-reader.spec.ts` extended: assert every block kind renders (`lesson_hero`, `reading_section`, `vocab_strip`, `dialogue_card`, `practice_bridge`, `lesson_recap`). Add visual snapshot per kind | `lesson_blocks` typed satellites end-to-end | Every lesson reads correctly; no console errors |
+| 9 | `lesson-reader.spec.ts` extended further: assert every section kind renders (`reading`, `vocabulary`, `expressions`, `numbers`, `dialogue`, `grammar`, `pronunciation`, `reference`, `exercises`, `culture`). Plus admin coverage page renders correctly | `lesson_section_*` typed satellites end-to-end | All section types visible on the relevant per-lesson page (`Lesson.tsx` + per-lesson `Page.tsx`) |
+
+**Test user:** the existing test user (per memory `reference_test_user.md`) — `testuser@duin.home` / `TestUser123!` — drives the E2E sessions. PR 1's pre-migration `pg_dump` includes this user's `learner_capability_state` rows so they can be restored on rollback.
+
+**Spec authoring policy:** each per-capability PR (2-5) writes its E2E spec FIRST (before the schema/pipeline changes), confirms the spec FAILS against the current schema (proving it tests the migrated surface), then ships the migration code that makes it pass. This is a TDD-style guard against the failure mode `feedback_answer_log_check.md` documents: claiming a feature renders when it doesn't.
+
+**Gate failure handling:** if any of the four gate checks fails (idempotent-check, pre-deploy, playwright, answer-log), the PR does not merge. Rollback is a revert of the PR commit + `make migrate` (idempotent — re-runs the previous schema).
 
 ### 13.4 No soak windows
 
