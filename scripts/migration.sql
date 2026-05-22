@@ -2177,3 +2177,49 @@ end $$;
 
 comment on column indonesian.learning_capabilities.required_artifacts is
   'ArtifactKind[] this cap_type needs beyond what the exercise contract declares. Replaces metadata_json.requiredArtifacts. Decision F (revised 2026-05-22): kept as a column because affixed_form_pair caps have conditional requirements (±allomorph_rule) that are not derivable from capability_type alone.';
+
+-- §3.5 — lesson_speakers table (replaces lessons.dialogue_voices jsonb).
+-- Decision J: per-lesson speaker→voice mapping, flattened from the bag-of-keys
+-- jsonb into a typed (lesson_id, speaker) PK. Additive in PR 0; the column
+-- drops on lessons (dialogue_voices + transcript_* + duration_seconds) happen
+-- in Step 6 of the same PR.
+create table if not exists indonesian.lesson_speakers (
+  lesson_id  uuid        not null references indonesian.lessons(id) on delete cascade,
+  speaker    text        not null,
+  voice_id   text        not null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  primary key (lesson_id, speaker)
+);
+
+create index if not exists lesson_speakers_lesson_idx
+  on indonesian.lesson_speakers(lesson_id);
+
+alter table indonesian.lesson_speakers enable row level security;
+drop policy if exists "lesson_speakers_authenticated_read" on indonesian.lesson_speakers;
+create policy "lesson_speakers_authenticated_read"
+  on indonesian.lesson_speakers for select to authenticated using (true);
+grant select on indonesian.lesson_speakers to authenticated;
+revoke insert, update, delete on indonesian.lesson_speakers from authenticated;
+grant all on indonesian.lesson_speakers to service_role;
+comment on table indonesian.lesson_speakers is
+  'Per-lesson speaker→voice mapping. Replaces lessons.dialogue_voices jsonb (decision J). PK guarantees one voice per (lesson, speaker); jsonb_each_text order during the backfill does not affect determinism for that reason.';
+
+-- Backfill from lessons.dialogue_voices. Idempotent on re-run via the PK
+-- conflict. Guarded by column-existence so the file remains valid after
+-- Step 6's drop of dialogue_voices.
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'indonesian'
+      and table_name = 'lessons'
+      and column_name = 'dialogue_voices'
+  ) then
+    insert into indonesian.lesson_speakers (lesson_id, speaker, voice_id)
+    select l.id, kv.key, kv.value
+    from   indonesian.lessons l,
+           jsonb_each_text(coalesce(l.dialogue_voices, '{}'::jsonb)) kv
+    on conflict (lesson_id, speaker) do nothing;
+  end if;
+end $$;

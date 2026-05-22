@@ -295,9 +295,9 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
 
 // ── HC4 (lesson-stage GT4 + §5 audio orchestrator): zero lesson-page texts
 //      without an audio_clips row at the appropriate voice. Walks dialogue
-//      lines (voiced via dialogue_voices[speaker]) and vocabulary/expressions/
-//      numbers items (voiced via primary_voice). Reading-section paragraphs
-//      use separate long-form lesson audio and are out of scope for HC4.
+//      lines (voiced via lesson_speakers[lesson_id,speaker]) and vocabulary/
+//      expressions/numbers items (voiced via primary_voice). Reading-section
+//      paragraphs use separate long-form lesson audio, out of scope for HC4.
 {
   function normalizeForKey(text: string): string {
     return text.toLowerCase().trim().replace(/\s+/g, ' ')
@@ -306,20 +306,28 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   const { data: lessonRows, error: lessonsErr } = await supabase
     .schema('indonesian')
     .from('lessons')
-    .select('id, order_index, primary_voice, dialogue_voices')
+    .select('id, order_index, primary_voice')
   const { data: sectionRows, error: sectionsErr } = await supabase
     .schema('indonesian')
     .from('lesson_sections')
     .select('lesson_id, content')
+  const { data: speakerRows, error: speakersErr } = await supabase
+    .schema('indonesian')
+    .from('lesson_speakers')
+    .select('lesson_id, speaker, voice_id')
 
-  if (lessonsErr || sectionsErr) {
-    fail('HC4 audio coverage parity for dialogue + vocab', (lessonsErr ?? sectionsErr)!.message)
+  if (lessonsErr || sectionsErr || speakersErr) {
+    fail('HC4 audio coverage parity for dialogue + vocab', (lessonsErr ?? sectionsErr ?? speakersErr)!.message)
   } else {
     interface Required { normalized: string; voiceId: string; lessonId: string; sourceLabel: string }
     const required: Required[] = []
-    const lessonsById = new Map<string, { primary_voice: string | null; dialogue_voices: Record<string, string> | null }>()
-    for (const l of (lessonRows ?? []) as Array<{ id: string; primary_voice: string | null; dialogue_voices: Record<string, string> | null }>) {
-      lessonsById.set(l.id, { primary_voice: l.primary_voice, dialogue_voices: l.dialogue_voices })
+    const lessonsById = new Map<string, { primary_voice: string | null }>()
+    for (const l of (lessonRows ?? []) as Array<{ id: string; primary_voice: string | null }>) {
+      lessonsById.set(l.id, { primary_voice: l.primary_voice })
+    }
+    const voicesBy = new Map<string, string>()
+    for (const r of (speakerRows ?? []) as Array<{ lesson_id: string; speaker: string; voice_id: string }>) {
+      voicesBy.set(`${r.lesson_id}:${r.speaker.trim()}`, r.voice_id)
     }
 
     for (const sec of (sectionRows ?? []) as Array<{ lesson_id: string; content: Record<string, unknown> }>) {
@@ -332,7 +340,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
         for (const line of lines as Array<{ text?: unknown; speaker?: unknown }>) {
           if (typeof line.text !== 'string' || !line.text.trim()) continue
           if (typeof line.speaker !== 'string' || !line.speaker.trim()) continue
-          const voice = lesson.dialogue_voices?.[line.speaker.trim()]
+          const voice = voicesBy.get(`${sec.lesson_id}:${line.speaker.trim()}`)
           if (!voice) continue // GT4 covers missing-voice; HC4 skips lines without resolvable voice
           required.push({
             normalized: normalizeForKey(line.text),
