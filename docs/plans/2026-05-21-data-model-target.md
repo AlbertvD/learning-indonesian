@@ -206,10 +206,12 @@ create table indonesian.cloze_mcq_exercises (
 | (b) Keep generic; add many more `block_kind` values for each sub-shape | Same; +constraint widening | Generic reader needs new branches per kind | **No.** Doubles down on the discriminator-with-JSON pattern. |
 | (c) Split: one typed table per block_kind | Drop generic; +6-7 new tables | Each kind's reader is a typed query | **Yes.** Eliminates the shape-divergence problem. |
 
-**Target shape (6 typed tables — `pattern_callout` is dropped per §5.3, has zero rows):**
+**Target shape (audited per the Decision G2 principle — drop pure-marker satellites; collapse small-content satellites into parent columns; keep typed satellite only when the kind has real content variability or many-per-block child rows):**
 
 ```sql
--- Stable base: every lesson page block carries lesson + ordering + source ref.
+-- Parent: every lesson page block carries lesson + ordering + source ref +
+-- the small-content fields for every block_kind that has a flat shape.
+-- Only block_kinds with real shape variability get a separate satellite.
 create table indonesian.lesson_blocks (
   id uuid primary key default gen_random_uuid(),
   lesson_id uuid not null references indonesian.lessons(id) on delete cascade,
@@ -218,35 +220,30 @@ create table indonesian.lesson_blocks (
     'practice_bridge','lesson_recap'
   )),
   display_order integer not null,
-  source_ref text not null,                       -- e.g. 'lesson-1/section-3'; kept as audit trail / debugging hook
-  -- the typed satellite row is found by (lesson_id, block_kind) + a kind-specific UNIQUE on satellite
+  source_ref text not null,                       -- e.g. 'lesson-1/section-3'
+  title text,                                     -- nullable; populated for kinds that need a per-block title (vocab_strip, dialogue_card, reading_section). lesson_hero reads from lessons.title; lesson_recap + practice_bridge use hardcoded copy in the renderer.
+  -- vocab_strip-specific (populated only when block_kind='vocab_strip'):
+  content_unit_slugs text[],                      -- refs to content_units.unit_slug
+  -- dialogue_card-specific (populated only when block_kind='dialogue_card'):
+  intro text,
+  setup text,
+  closing text,
+  source_section_ref text,                        -- → the parent dialogue section in lesson_sections
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   unique (lesson_id, display_order),
   unique (lesson_id, source_ref)
 );
 
--- ─────────────── per-kind typed satellites ───────────────
+-- ─────────────── per-kind typed satellites (1 only) ───────────────
 
-create table indonesian.lesson_block_hero (
-  block_id uuid primary key references indonesian.lesson_blocks(id) on delete cascade,
-  title text not null,
-  level text not null  -- e.g. 'A1'
-);
-
-create table indonesian.lesson_block_recap (
-  block_id uuid primary key references indonesian.lesson_blocks(id) on delete cascade,
-  title text not null
-);
-
-create table indonesian.lesson_block_practice_bridge (
-  block_id uuid primary key references indonesian.lesson_blocks(id) on delete cascade,
-  label text not null
-);
-
+-- reading_section is the ONLY block_kind that earns its own satellite.
+-- Reason: 4 mutually-exclusive heterogeneous content fields (paragraphs vs
+-- categories vs letters vs grammar_reference jsonb) plus a sub-discriminator
+-- (reading_kind). Wide-column-on-parent would NULL most cells per row; a typed
+-- satellite isolates the variability cleanly.
 create table indonesian.lesson_block_reading_section (
   block_id uuid primary key references indonesian.lesson_blocks(id) on delete cascade,
-  title text not null,
   reading_kind text not null check (reading_kind in (
     'paragraphs','categories','letters','sentences','intro_only','grammar_reference'
   )),
@@ -255,32 +252,28 @@ create table indonesian.lesson_block_reading_section (
   sentences jsonb,                                -- shape: [{indonesian, dutch}]
   categories jsonb,                               -- shape: [{title, rules[], examples[{indonesian,dutch}]}, ...]
   letters jsonb,                                  -- shape: [{letter, rule, examples[]}]
-  grammar_reference jsonb                         -- holdout for the 1-row reference_table shape; documented as "if non-null, the reader uses a bespoke renderer"
-);
-
-create table indonesian.lesson_block_vocab_strip (
-  block_id uuid primary key references indonesian.lesson_blocks(id) on delete cascade,
-  title text not null,
-  -- items reference content_units (the stable identity), not raw strings; renderer joins
-  -- to get the displayed Indonesian + L1 text. See content_units retirement in Decision E
-  -- and replacement table in target §3.
-  content_unit_slugs text[] not null
-);
-
-create table indonesian.lesson_block_dialogue_card (
-  block_id uuid primary key references indonesian.lesson_blocks(id) on delete cascade,
-  title text not null,
-  intro text,
-  setup text,
-  closing text,
-  -- dialogue lines are typed rows in lesson_dialogue_lines (Decision D), not embedded JSON
-  source_section_ref text not null   -- e.g. 'lesson-1/section-3' → the parent dialogue section in lesson_sections
+  grammar_reference jsonb                         -- holdout for the 1-row reference_table shape
 );
 ```
 
-**Reading shape simplification:** The `reading_section` kind has 7 sub-shapes today. The proposal collapses them via a `reading_kind` discriminator + typed columns. This admits the data without forcing the renderer to probe keys. The one bespoke `reference_table` row (lesson 4) becomes `reading_kind='grammar_reference'` + `grammar_reference jsonb` (an honest single-row bespoke shape with a clear flag).
+**Tables dropped from the original proposal (per the Decision G2 principle — pure markers that only duplicate signals already present elsewhere):**
 
-**On `lesson_block_vocab_strip.content_unit_slugs`:** This is the only place arrays survive in the proposal — see Decision G.
+| Originally proposed satellite | Why dropped |
+|---|---|
+| `lesson_block_hero` | `title` is on `lessons.title`; `level` is on `lessons.level`. Renderer reads from the lesson row, not from a block-specific row. |
+| `lesson_block_recap` | Recap copy ("Een korte terugblik...") is hardcoded in `LessonBlockRenderer.tsx:166-183`. The `title` column would be the literal "Samenvatting" on every row. |
+| `lesson_block_practice_bridge` | Label ("Oefen deze les") is hardcoded in `LessonBlockRenderer.tsx:140-158`. Same story. |
+
+**Tables collapsed into `lesson_blocks` columns (small-content satellites with flat shape):**
+
+| Originally proposed satellite | Where its fields live now |
+|---|---|
+| `lesson_block_vocab_strip` | `title` + `content_unit_slugs[]` on `lesson_blocks` (populated when block_kind='vocab_strip') |
+| `lesson_block_dialogue_card` | `title` + `intro` + `setup` + `closing` + `source_section_ref` on `lesson_blocks` (populated when block_kind='dialogue_card') |
+
+**Reading shape simplification (unchanged):** The `reading_section` kind has 7 sub-shapes today. The proposal collapses them via a `reading_kind` discriminator + typed columns inside `lesson_block_reading_section`. This admits the data without forcing the renderer to probe keys. The one bespoke `reference_table` row (lesson 4) becomes `reading_kind='grammar_reference'` + `grammar_reference jsonb`.
+
+**Net change vs original proposal:** 7 lesson_block tables → 2 (parent + reading_section satellite). 5 tables dropped/collapsed. The parent row gains 5 nullable columns (`title`, `content_unit_slugs`, `intro`, `setup`, `closing`, `source_section_ref`) that are populated only for the block_kinds that need them.
 
 ### Decision D — `lesson_sections.content` shape variance
 
@@ -293,10 +286,14 @@ create table indonesian.lesson_block_dialogue_card (
 
 **Why this matters even though the lesson page-block table also exists:** `lesson_page_blocks` is the *projection* (what the lesson reader renders). `lesson_sections` is the *authoring source* (what the pipeline reads from staging + writes per lesson). Both exist today (`data-model.md:127, 96`). The lesson reader uses page_blocks (`LessonReader.tsx:55` via `LessonExperience`); other consumers (coverage, grammar topic extraction, dialogue propagation) use `lesson_sections.content`.
 
-**Target shape:** Replace `lesson_sections.content` with typed rows. `lesson_sections` becomes a slim header table:
+**Target shape (audited per the Decision G2 principle — collapse small-content section_kind satellites into parent columns; keep child tables for many-per-section content):**
 
 ```sql
--- Slim header: identity + ordering. Content lives in typed satellites.
+-- Parent: identity + ordering + the small-content fields for every
+-- section_kind that has a flat shape. Section_kinds with many-per-section
+-- content get child tables; section_kinds with no per-section content
+-- (e.g. pronunciation today has only an optional intro) live entirely on
+-- the parent row.
 create table indonesian.lesson_sections (
   id uuid primary key default gen_random_uuid(),
   lesson_id uuid not null references indonesian.lessons(id) on delete cascade,
@@ -307,48 +304,26 @@ create table indonesian.lesson_sections (
   )),
   order_index integer not null,
   source_section_ref text not null,               -- 'lesson-N/section-M' — stable identifier
+  -- ─── small-content fields, populated per section_kind ───
+  intro text,                                     -- used by: reading, dialogue, grammar, pronunciation, reference, culture
+  paragraphs text[],                              -- used by: reading, culture
+  word_order text,                                -- used by: grammar (SE-prefix section)
+  note text,                                      -- used by: grammar (trailing note)
+  setup text,                                     -- used by: dialogue
+  closing text,                                   -- used by: dialogue
+  table_title text,                               -- used by: reference (1 row in DB)
+  reference_payload jsonb,                        -- used by: reference (the bespoke 9-key shape; 1 row)
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   unique(lesson_id, source_section_ref)
 );
 
--- Typed satellites. Most lesson_section.section_kind values map to one of:
-
--- 'reading' — paragraphs of prose
-create table indonesian.lesson_section_reading (
-  section_id uuid primary key references indonesian.lesson_sections(id) on delete cascade,
-  intro text,
-  paragraphs text[] not null
-);
-
--- 'vocabulary' / 'expressions' / 'numbers' — uniform items shape today (investigation §3.5);
--- merge into one table with a sub-kind discriminator
-create table indonesian.lesson_section_items (
-  section_id uuid primary key references indonesian.lesson_sections(id) on delete cascade
-  -- items list lives in lesson_section_item_rows (Decision G — junction over array)
-);
-
-create table indonesian.lesson_section_item_rows (
-  id uuid primary key default gen_random_uuid(),
-  section_id uuid not null references indonesian.lesson_section_items(section_id) on delete cascade,
-  display_order integer not null,
-  indonesian_text text not null,
-  l1_translation text not null,
-  unique(section_id, display_order)
-);
+-- ─────────────── child tables (many-per-section content) ───────────────
 
 -- 'dialogue' — per-line typed rows; also the source of dialogue_line capabilities
-create table indonesian.lesson_section_dialogue (
-  section_id uuid primary key references indonesian.lesson_sections(id) on delete cascade,
-  intro text,
-  setup text,
-  closing text
-  -- lines live in lesson_dialogue_lines (next table)
-);
-
 create table indonesian.lesson_dialogue_lines (
   id uuid primary key default gen_random_uuid(),
-  section_id uuid not null references indonesian.lesson_section_dialogue(section_id) on delete cascade,
+  section_id uuid not null references indonesian.lesson_sections(id) on delete cascade,
   lesson_id uuid not null references indonesian.lessons(id) on delete cascade,  -- denormalised for query uniformity per user preference
   line_index integer not null,                                                  -- 0-based; same as canonical-key line-K
   source_line_ref text not null,                                                -- 'lesson-N/section-M/line-K' — stable identifier
@@ -361,40 +336,41 @@ create table indonesian.lesson_dialogue_lines (
   unique(source_line_ref)
 );
 
--- 'grammar' — explanation with optional examples and topic tags
-create table indonesian.lesson_section_grammar (
-  section_id uuid primary key references indonesian.lesson_sections(id) on delete cascade,
-  intro text,
-  word_order text,                                -- for the SE-prefix section
-  note text                                       -- short trailing note
-);
-
-create table indonesian.lesson_section_grammar_categories (
+-- 'vocabulary' / 'expressions' / 'numbers' — per-item rows (sub-discriminator on
+-- lesson_sections.section_kind tells the renderer how to display them)
+create table indonesian.lesson_section_item_rows (
   id uuid primary key default gen_random_uuid(),
-  section_id uuid not null references indonesian.lesson_section_grammar(section_id) on delete cascade,
+  section_id uuid not null references indonesian.lesson_sections(id) on delete cascade,
   display_order integer not null,
-  title text not null,
-  rules text[] not null default '{}',
-  examples jsonb,                                 -- [{indonesian,dutch}] — bounded
+  indonesian_text text not null,
+  l1_translation text not null,
   unique(section_id, display_order)
 );
 
+-- 'grammar' — per-category rows (a grammar section can have multiple categories
+-- with their own titles, rules, and examples)
+create table indonesian.lesson_section_grammar_categories (
+  id uuid primary key default gen_random_uuid(),
+  section_id uuid not null references indonesian.lesson_sections(id) on delete cascade,
+  display_order integer not null,
+  title text not null,
+  rules text[] not null default '{}',
+  examples jsonb,                                 -- [{indonesian, dutch}] — bounded
+  unique(section_id, display_order)
+);
+
+-- 'grammar' — topic-tag rows (label set per section)
 create table indonesian.lesson_section_grammar_topics (
   id uuid primary key default gen_random_uuid(),
-  section_id uuid not null references indonesian.lesson_section_grammar(section_id) on delete cascade,
+  section_id uuid not null references indonesian.lesson_sections(id) on delete cascade,
   topic_label text not null,
   unique(section_id, topic_label)
 );
 
--- 'pronunciation' — letters with rules
-create table indonesian.lesson_section_pronunciation (
-  section_id uuid primary key references indonesian.lesson_sections(id) on delete cascade,
-  intro text
-);
-
+-- 'pronunciation' — per-letter rows (one row per letter with examples)
 create table indonesian.lesson_section_pronunciation_letters (
   id uuid primary key default gen_random_uuid(),
-  section_id uuid not null references indonesian.lesson_section_pronunciation(section_id) on delete cascade,
+  section_id uuid not null references indonesian.lesson_sections(id) on delete cascade,
   display_order integer not null,
   letter text not null,
   rule text not null,
@@ -402,15 +378,7 @@ create table indonesian.lesson_section_pronunciation_letters (
   unique(section_id, display_order)
 );
 
--- 'reference' — the one 9-key bespoke shape; documented as "bespoke, structured, do not generalise"
-create table indonesian.lesson_section_reference (
-  section_id uuid primary key references indonesian.lesson_sections(id) on delete cascade,
-  intro text,
-  table_title text,
-  reference_payload jsonb not null                -- documented as: the bespoke reference-table shape for this 1 section; if generalised later, this becomes typed
-);
-
--- 'exercises' — embedded question lists (read-only display, distinct from runtime exercises)
+-- 'exercises' — embedded question groups (read-only display, distinct from runtime exercises)
 create table indonesian.lesson_section_exercise_groups (
   id uuid primary key default gen_random_uuid(),
   section_id uuid not null references indonesian.lesson_sections(id) on delete cascade,
@@ -419,14 +387,37 @@ create table indonesian.lesson_section_exercise_groups (
   questions text[] not null,
   unique(section_id, display_order)
 );
-
--- 'culture' — same shape as 'reading' (paragraphs) in practice; merge into reading and add culture_flag
--- → use lesson_section_reading with section_kind='culture' on the parent header (discriminator on lesson_sections.section_kind)
 ```
 
-**Net change:** `lesson_sections` becomes a header table. ~10 typed satellites cover the 10 section_kinds. The pipeline emits typed rows directly. The runtime readers query the satellite that matches the section_kind.
+**Tables collapsed into `lesson_sections` columns (small-content section_kind satellites):**
 
-**Note on the bespoke `reference_table` row:** This is the one case where a 9-key JSON column survives, in `lesson_section_reference.reference_payload`. Documented as a known one-off; if a future lesson needs the same shape, formalise it then.
+| Originally proposed satellite | Where its fields live now |
+|---|---|
+| `lesson_section_reading` | `intro` + `paragraphs[]` on `lesson_sections` |
+| `lesson_section_dialogue` | `intro` + `setup` + `closing` on `lesson_sections` (lines stay in `lesson_dialogue_lines`) |
+| `lesson_section_grammar` | `intro` + `word_order` + `note` on `lesson_sections` (categories + topics stay in their child tables) |
+| `lesson_section_pronunciation` | `intro` on `lesson_sections` (letters stay in `lesson_section_pronunciation_letters`) |
+| `lesson_section_reference` | `table_title` + `reference_payload jsonb` on `lesson_sections` (the one bespoke row keeps its JSON column, now on the parent) |
+
+**Tables dropped from the original proposal (pure markers):**
+
+| Originally proposed satellite | Why dropped |
+|---|---|
+| `lesson_section_items` | Pure marker — just `{section_id}`. The child `lesson_section_item_rows` FKs `lesson_sections.id` directly; no intermediate header needed. |
+
+**'culture' section_kind** is the same shape as 'reading' in practice (just paragraphs) — handled by `section_kind='culture'` + the same `paragraphs[]` column on `lesson_sections`.
+
+**Child tables that stay** (each carries many-per-section content that can't collapse to a column):
+- `lesson_dialogue_lines` (per dialogue line)
+- `lesson_section_item_rows` (per vocab/expression/number item)
+- `lesson_section_grammar_categories` (per grammar category)
+- `lesson_section_grammar_topics` (per topic tag)
+- `lesson_section_pronunciation_letters` (per letter)
+- `lesson_section_exercise_groups` (per question group)
+
+**Net change vs original proposal:** ~12 lesson_section tables → 7 (parent + 6 child tables). 5 satellites collapsed, 1 dropped. The parent row gains 8 nullable columns (`intro`, `paragraphs`, `word_order`, `note`, `setup`, `closing`, `table_title`, `reference_payload`) populated only when the section_kind calls for them.
+
+**Note on the bespoke `reference_table` row:** This is the one case where a JSON column survives (now `lesson_sections.reference_payload`). Documented as a known one-off; if a future lesson needs the same shape, formalise it then.
 
 **`source_section_ref` denormalisation:** kept as a TEXT column even though it could be derived from `lessons.order_index + lesson_sections.order_index`. The path-shaped ref is referenced from:
 - `learning_capabilities.source_ref` for `dialogue_line` caps (`lesson-N/section-M/line-K`)
@@ -877,30 +868,30 @@ This section names every table in the target schema. For brevity, only changes f
 | Table | Status | Change |
 |---|---|---|
 | `lessons` | survives | Drop `dialogue_voices`, `duration_seconds`, `transcript_*` (Decision J). |
-| `lesson_sections` | survives (slimmer) | Drop `content`. Add `section_kind`, `source_section_ref`. (Decision D) |
+| `lesson_sections` | survives (wider but flatter) | Drop `content` jsonb. Add `section_kind`, `source_section_ref`, plus per-kind nullable columns (`intro`, `paragraphs`, `word_order`, `note`, `setup`, `closing`, `table_title`, `reference_payload`). 5 section-kind satellites collapsed in here per Decision D audit. |
 | `audio_clips` | survives | No change. The 1,334 orphans (§3.11) are cleanup tracked separately. See Decision Q. |
 | **NEW** `capability_audio_refs` | new | Decision Q — binds caps to TTS clips (replaces `audio_clip` artifact rows). |
 | `podcasts` | **RETIRED** | Empty + feature not built. |
 | **NEW** `lesson_speakers` | new | Decision J |
-| **NEW** `lesson_blocks` | new | Decision C |
-| **NEW** `lesson_block_hero` | new | Decision C |
-| **NEW** `lesson_block_recap` | new | Decision C |
-| **NEW** `lesson_block_practice_bridge` | new | Decision C |
-| **NEW** `lesson_block_reading_section` | new | Decision C |
-| **NEW** `lesson_block_vocab_strip` | new | Decision C |
-| **NEW** `lesson_block_dialogue_card` | new | Decision C |
-| **NEW** `lesson_section_reading` | new | Decision D |
-| **NEW** `lesson_section_items` | new | Decision D |
-| **NEW** `lesson_section_item_rows` | new | Decision D |
-| **NEW** `lesson_section_dialogue` | new | Decision D |
-| **NEW** `lesson_section_grammar` | new | Decision D |
-| **NEW** `lesson_section_grammar_categories` | new | Decision D |
-| **NEW** `lesson_section_grammar_topics` | new | Decision D |
-| **NEW** `lesson_section_pronunciation` | new | Decision D |
-| **NEW** `lesson_section_pronunciation_letters` | new | Decision D |
-| **NEW** `lesson_section_reference` | new | Decision D |
-| **NEW** `lesson_section_exercise_groups` | new | Decision D |
-| **NEW** `lesson_dialogue_lines` | new | Decision D |
+| **NEW** `lesson_blocks` | new | Decision C — parent with `title`/`content_unit_slugs`/`intro`/`setup`/`closing`/`source_section_ref` columns populated per block_kind |
+| **NEW** `lesson_block_reading_section` | new | Decision C — the only block satellite (sub-discriminator + 4 mutually-exclusive jsonb shapes) |
+| ~~`lesson_block_hero`~~ | **DROPPED from proposal** | Decision C audit — title/level read from `lessons` row |
+| ~~`lesson_block_recap`~~ | **DROPPED from proposal** | Decision C audit — copy hardcoded in renderer |
+| ~~`lesson_block_practice_bridge`~~ | **DROPPED from proposal** | Decision C audit — label hardcoded in renderer |
+| ~~`lesson_block_vocab_strip`~~ | **COLLAPSED into lesson_blocks** | Decision C audit — title + content_unit_slugs as parent columns |
+| ~~`lesson_block_dialogue_card`~~ | **COLLAPSED into lesson_blocks** | Decision C audit — title + intro/setup/closing/source_section_ref as parent columns |
+| **NEW** `lesson_section_item_rows` | new | Decision D — many-per-section vocab/expression/number items |
+| **NEW** `lesson_section_grammar_categories` | new | Decision D — many-per-section grammar categories |
+| **NEW** `lesson_section_grammar_topics` | new | Decision D — many-per-section topic tags |
+| **NEW** `lesson_section_pronunciation_letters` | new | Decision D — many-per-section letters |
+| **NEW** `lesson_section_exercise_groups` | new | Decision D — many-per-section question groups |
+| **NEW** `lesson_dialogue_lines` | new | Decision D — many-per-section dialogue lines |
+| ~~`lesson_section_items`~~ | **DROPPED from proposal** | Decision D audit — pure marker; item_rows FKs sections directly |
+| ~~`lesson_section_reading`~~ | **COLLAPSED into lesson_sections** | Decision D audit — intro + paragraphs as parent columns |
+| ~~`lesson_section_dialogue`~~ | **COLLAPSED into lesson_sections** | Decision D audit — intro + setup + closing as parent columns |
+| ~~`lesson_section_grammar`~~ | **COLLAPSED into lesson_sections** | Decision D audit — intro + word_order + note as parent columns |
+| ~~`lesson_section_pronunciation`~~ | **COLLAPSED into lesson_sections** | Decision D audit — intro as parent column |
+| ~~`lesson_section_reference`~~ | **COLLAPSED into lesson_sections** | Decision D audit — intro + table_title + reference_payload as parent columns |
 
 ### 3.5 Authoring + flags
 
@@ -1091,8 +1082,8 @@ A summary count of complexity reduction. Rough numbers; the migration doc has ac
 
 | Metric | Current | Target | Δ |
 |---|---:|---:|---:|
-| Tables in `indonesian` schema | 35 | ~30 base + ~14 satellites (slim) = 44 | +9 (but slim tables) |
-| JSON/JSONB columns (cumulative) | 16 (across 9 tables) | 5 (small bounded shapes only) | −11 |
+| Tables in `indonesian` schema | 35 | ~33 (after Decision C + D audit collapsed 8 sparse satellites into parent columns + dropped 4 pure markers + retired item_meanings) | −2 |
+| JSON/JSONB columns (cumulative) | 16 (across 9 tables) | 4 (small bounded shapes only: reference_payload, sentences/categories/letters/grammar_reference on reading_section, examples on grammar_categories, options on the 4 grammar exercises, dialogue_voices retired) | −12 |
 | Shape-variable JSON columns (HIGH risk) | 4 (`lesson_page_blocks.payload_json`, `lesson_sections.content`, `exercise_variants.payload_json`+`answer_key_json`) | 0 | −4 |
 | Empty tables | 6 | 0 | −6 |
 | Legacy-retained dead tables | 3 + 1 view | 0 (view rewritten) | −3 |
