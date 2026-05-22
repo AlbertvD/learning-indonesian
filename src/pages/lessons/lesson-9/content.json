@@ -1,0 +1,1107 @@
+{
+  "meta": {
+    "id": "93c54586-3542-47ec-9a60-26a97c8c5a3d",
+    "order_index": 9,
+    "title": "Les - Ke Puskesmas / Dukun en Jamu",
+    "level": "A1",
+    "description": "",
+    "primary_voice": "id-ID-Chirp3-HD-Despina",
+    "duration_seconds": null,
+    "lesson_audio_url": null
+  },
+  "sections": [
+    {
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Over de inheemse Indonesische geneeskunst hebben westerse geneeskundigen zich vroeger wel eens laatdunkend uitgelaten. Tegenwoordig echter is er in de medische wereld serieuze belangstelling voor geneeskrachtige stoffen uit de natuur. De populariteit van homeopatische middelen stijgt nog steeds en er begint zelfs een bepaalde mate van acceptatie bij sommige ziektekostenverzekeringen te komen, die ook deze middelen zijn gaan vergoeden.",
+          "In Indonesië is gezond zijn van groot belang. Voor de meeste Indonesiërs geldt, dat als men ziek is en niet kan werken, er ook geen geld binnenkomt. Bovendien moeten de kosten voor operaties, ziekenhuizen, artsen, medicijnen en geneeskrachtige kruiden (jamu, jejamu) door het gezin zelf worden opgebracht. Ziekte van één van de familieleden kan betekenen dat het hele gezin onder zware financiële druk komt te staan.",
+          "Het voorkomen van ziekte neemt dan ook, meer dan in Nederland, een belangrijke plaats in. Van dit gegeven profiteren zowel de farmaceutische industrie als de jamu-fabrikant die een overstelpend aanbod aan preventieve middelen op de markt brengen. Ook de markt voor middelen tegen 'kleine ongemakken' als hoofdpijn, maag- en darmstoornissen, verkoudheid en stijve spieren is bijzonder groot.",
+          "Uiteraard kent iedere Indonesiër naast de aangeboden geneesmiddelen en jamu zijn eigen huismiddel om bepaalde kwalen te voorkomen of te genezen.",
+          "Maar soms worden de problemen zo groot, dat specialistische hulp gewenst is. Naast consultatie van een huisarts en een bezoek aan een dorpskliniek of medisch centrum (ziekenhuis), bezoekt een Indonesiër vaak eveneens een dukun: een persoon die gespecialiseerd is in het op traditionele wijze behandelen van zowel lichamelijke als geestelijke klachten.",
+          "De dukun, de traditionele genezer, brengt ziektebeelden en symptomen in verband met de geestelijke conditie van de zieke. De traditionele behandelingswijze van ziektes is gestoeld op de Indonesische culturele opvattingen over het wezen van de mens.",
+          "Volgens deze opvatting bestaat de mens uit een stoffelijk en een niet-stoffelijk aspect. Beide aspecten bezitten een bepaalde goede 'kracht' (zie schema op de volgende pagina). Indien deze twee positieve krachten niet in evenwicht zijn, komt de gezondheid in gevaar en kan men ziek worden doordat men: zelf niet in evenwicht verkeert, of doordat het evenwicht makkelijk beïnvloed kan worden door kwade krachten van buitenaf.",
+          "De innerlijke kracht, op Java semangat genoemd, behoort bij elk persoon. De ene persoon heeft een wat kleinere semangat dan de andere, maar men kan deze innerlijke kracht versterken en gezond houden door de condities te verbeteren, zoals door beheersing van het lichaam middels de vechtsport pencak silat, het scherpen van de geest door het uit het hoofd reciteren van teksten uit de Koran en het aan zichzelf opleggen van restricties (taboes) vooral wat betreft de menselijke zwakheden als veel eten en drinken, sex, macht en financieel gewin.",
+          "Kwade krachten veroorzaken ziekte. De kwade krachten vinden we overal om ons heen in de natuur, in de vorm van hevige regen, droogte en slangebeten. Soms ook als niet-stoffelijke verschijningsvormen, zoals geesten, bovennatuurlijke wezens, spoken en soms door manipulatie van een dukun met zwarte magie.",
+          "Sommige dukun zijn gespecialiseerd. Dukun bayi (baby), bij voorbeeld, zijn vroedvrouwen die assistentie verlenen bij bevallingen. Daarnaast zijn er masseurs, specialisten voor botbreuken, slangebeten, kruidenmengsels, witte en zwarte magie, bezetenheid door geesten, enzovoorts.",
+          "Een dukun leert zijn vak over het algemeen niet via formele scholing. Het is daarnaast ook niet vanzelfsprekend dat de zoon van een dukun in de voetsporen van zijn vader treedt. Men gaat in de leer bij een dukun van aanzien of ontvangt de gave door bovennatuurlijke inspiratie. De meeste dukun hebben jarenlange ervaring op een bepaald gebied en sommigen leren hun leven lang door om hun kennis te vermeerderen en hun genezingskracht te vergroten.",
+          "Enkele eigenschappen die veel dukun bezitten zijn :\na. uitgebreide kennis van geneeskrachtige kruiden en kruidenmengsels (jamu, jejamu);\nb. het uit het hoofd kunnen reciteren van specifieke, bezwerende formules om een bepaalde ziekte uit te bannen;\nc. psychologisch inzicht;\nd. kennis van culturele taboes en sociale conventies die met de ziekte worden geassocieerd.",
+          "Door de behandeling tweeledig toe te passen, namelijk op het lichaam met kruidenmengsels en op de geest met behulp van culturele en psychologische codes, herstelt de dukun het evenwicht en versterkt daarmee de semangat. Juist vanwege het succes van deze gecombineerde aanpak is het onwaarschijnlijk dat het verschijnsel dukun in Indonesië snel zal verdwijnen."
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "dialogue",
+        "lines": [
+          {
+            "text": "Sekarang di Indonesia di mana-mana ada PUSKESMAS. PUSKESMAS itu adalah tempat orang desa cari dokter atau minta obat. Di desa-desa kecil tidak ada rumah sakit seperti di kota besar.",
+            "speaker": "narrator",
+            "translation": "Tegenwoordig zijn er overal in Indonesië PUSKESMAS'en. PUSKESMAS is een plek waar dorpsbewoners naar een dokter gaan of medicijnen halen. In kleine dorpen zijn er geen ziekenhuizen zoals in grote steden.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sekarang-di-indonesia-di-60cde03b.mp3"
+          },
+          {
+            "text": "Tina kakinya sakit sekali. Dia jatuh dari pohon. Ibunya betul-betul kaget waktu Tina jatuh. Barangkali kakinya patah. Maka ibu dengan Tina ke dokter di PUSKESMAS.",
+            "speaker": "narrator",
+            "translation": "Tina's been deed haar heel erg pijn. Ze was uit een boom gevallen. Haar moeder schrok zich rot toen Tina viel. Misschien was haar been gebroken. Daarom gingen moeder en Tina naar de dokter op de PUSKESMAS.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tina-kakinya-sakit-sekali-11e4872d.mp3"
+          },
+          {
+            "text": "Ada apa?",
+            "speaker": "Dokter",
+            "translation": "Wat is er aan de hand?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/ada-apa-1eb5fb8e.mp3"
+          },
+          {
+            "text": "Kaki saya sakit sekali dokter. Saya jatuh dari pohon.",
+            "speaker": "Tina",
+            "translation": "Dokter, mijn been doet heel erg pijn. Ik ben uit een boom gevallen.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kaki-saya-sakit-sekali-5e79362d.mp3"
+          },
+          {
+            "text": "Bagaimana bisa jatuh dari pohon?",
+            "speaker": "Dokter",
+            "translation": "Hoe ben je in hemelsnaam uit een boom gevallen?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bagaimana-bisa-jatuh-dari-63795c9d.mp3"
+          },
+          {
+            "text": "Saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.",
+            "speaker": "Tina",
+            "translation": "Ik wilde hoger in die boom klimmen, maar het lukte niet, dus ben ik gevallen.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/saya-mau-naik-lebih-4f3febaa.mp3"
+          },
+          {
+            "text": "Nah, coba, saya periksa kakimu dulu. Barangkali tidak apa-apa.",
+            "speaker": "Dokter",
+            "translation": "Goed, laat mij je been eerst even onderzoeken. Misschien is er niets aan de hand.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/nah-coba-saya-periksa-52f595df.mp3"
+          },
+          {
+            "text": "Awas dokter, jangan sakit, ya.",
+            "speaker": "Tina",
+            "translation": "Voorzichtig dokter, doe geen pijn, alstublieft.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/awas-dokter-jangan-sakit-ed30e65c.mp3"
+          },
+          {
+            "text": "Ini sakit atau tidak?",
+            "speaker": "Dokter",
+            "translation": "Doet dit pijn of niet?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/ini-sakit-atau-tidak-3cd18147.mp3"
+          },
+          {
+            "text": "Tidak begitu sakit dokter, sedikit saja.",
+            "speaker": "Tina",
+            "translation": "Niet echt dokter, alleen een beetje.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tidak-begitu-sakit-dokter-0d0df0d6.mp3"
+          },
+          {
+            "text": "Kalau begitu, tidak ada yang patah. Pasti nanti cepat sekali sembuh, Tin.",
+            "speaker": "Dokter",
+            "translation": "In dat geval is er niets gebroken. Je bent vast heel snel beter, Tin.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kalau-begitu-tidak-ada-1d3e7f51.mp3"
+          },
+          {
+            "text": "Betul dokter? Tidak ada yang patah? Saya takut sekali!",
+            "speaker": "Ibu",
+            "translation": "Echt waar dokter? Niets gebroken? Ik schrok me kapot!",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/betul-dokter-tidak-ada-e850c4ad.mp3"
+          },
+          {
+            "text": "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh.",
+            "speaker": "Dokter",
+            "translation": "Ja hoor, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, klim niet meer in bomen zodat je been snel beter wordt.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/betul-bu-tidak-ada-7f434d6a.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "oppassen / uitkijken",
+            "indonesian": "awas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/awas-a64c566d.mp3"
+          },
+          {
+            "dutch": "zullen / om te",
+            "indonesian": "bakal",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bakal-1e6ae890.mp3"
+          },
+          {
+            "dutch": "werken",
+            "indonesian": "bekerja",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bekerja-8c7eb26f.mp3"
+          },
+          {
+            "dutch": "opdat / laat maar",
+            "indonesian": "biar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/biar-2cffe752.mp3"
+          },
+          {
+            "dutch": "vogel",
+            "indonesian": "burung",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/burung-57ab96e3.mp3"
+          },
+          {
+            "dutch": "overal",
+            "indonesian": "di mana-mana",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/di-manamana-9aae974b.mp3"
+          },
+          {
+            "dutch": "stil (zijn)",
+            "indonesian": "diam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/diam-f2024678.mp3"
+          },
+          {
+            "dutch": "meegenomen",
+            "indonesian": "dibawa*",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dibawa-cf3814d9.mp3"
+          },
+          {
+            "dutch": "voorzichtig",
+            "indonesian": "hati-hati",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/hatihati-728099f9.mp3"
+          },
+          {
+            "dutch": "willen",
+            "indonesian": "hendak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/hendak-5ee11ccd.mp3"
+          },
+          {
+            "dutch": "stoppen / ophouden / stilstaan",
+            "indonesian": "henti",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/henti-519b7440.mp3"
+          },
+          {
+            "dutch": "vallen",
+            "indonesian": "jatuh",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/jatuh-3e4bde43.mp3"
+          },
+          {
+            "dutch": "schrikken",
+            "indonesian": "kaget (kagèt)",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kaget-kagt-37813980.mp3"
+          },
+          {
+            "dutch": "voet",
+            "indonesian": "kaki",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kaki-24fab15f.mp3"
+          },
+          {
+            "dutch": "schip / boot",
+            "indonesian": "kapal",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kapal-2a725864.mp3"
+          },
+          {
+            "dutch": "hoofd",
+            "indonesian": "kepala",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kepala-892f1e9a.mp3"
+          },
+          {
+            "dutch": "gezondheid",
+            "indonesian": "kesehatan (keséhatan)",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kesehatan-keshatan-8e31dcd0.mp3"
+          },
+          {
+            "dutch": "verzamelen",
+            "indonesian": "kumpul",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kumpul-f21c89a3.mp3"
+          },
+          {
+            "dutch": "snel",
+            "indonesian": "lekas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/lekas-78320470.mp3"
+          },
+          {
+            "dutch": "luitenant",
+            "indonesian": "letnan (lètnan)",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/letnan-ltnan-f9b47d17.mp3"
+          },
+          {
+            "dutch": "springen",
+            "indonesian": "loncat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/loncat-24336ad3.mp3"
+          },
+          {
+            "dutch": "daarom",
+            "indonesian": "maka",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/maka-f37c030a.mp3"
+          },
+          {
+            "dutch": "samenleving / maatschappij",
+            "indonesian": "masyarakat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/masyarakat-31e9de62.mp3"
+          },
+          {
+            "dutch": "medicijn",
+            "indonesian": "obat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/obat-815560b6.mp3"
+          },
+          {
+            "dutch": "dorpeling",
+            "indonesian": "orang desa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/orang-desa-9aee9878.mp3"
+          },
+          {
+            "dutch": "breken (botten)",
+            "indonesian": "patah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/patah-6937ca52.mp3"
+          },
+          {
+            "dutch": "onderzoeken",
+            "indonesian": "periksa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/periksa-fdfb7c57.mp3"
+          },
+          {
+            "dutch": "tevreden / voldaan",
+            "indonesian": "puas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/puas-1783685e.mp3"
+          },
+          {
+            "dutch": "centrum",
+            "indonesian": "pusat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/pusat-7a7825b4.mp3"
+          },
+          {
+            "dutch": "volksgezondheidscentrum",
+            "indonesian": "PUSKESMAS",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/puskesmas-a478644b.mp3"
+          },
+          {
+            "dutch": "bezig te … (iets aan het doen zijn)",
+            "indonesian": "sedang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sedang-f8657e10.mp3"
+          },
+          {
+            "dutch": "zodat / totdat",
+            "indonesian": "sehingga",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sehingga-8aa0945c.mp3"
+          },
+          {
+            "dutch": "genezen / gezond worden",
+            "indonesian": "sembuh",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sembuh-a9a2afa5.mp3"
+          },
+          {
+            "dutch": "niet",
+            "indonesian": "tak (tidak)",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tak-tidak-d541e778.mp3"
+          },
+          {
+            "dutch": "bang (zijn)",
+            "indonesian": "takut",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/takut-02b44dd6.mp3"
+          },
+          {
+            "dutch": "al / reeds",
+            "indonesian": "telah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/telah-450e446f.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
+        "type": "expressions",
+        "items": [
+          {
+            "dutch": "overal",
+            "indonesian": "di mana-mana",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/di-manamana-9aae974b.mp3"
+          },
+          {
+            "dutch": "ziekenhuis",
+            "indonesian": "rumah sakit",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/rumah-sakit-508fc8fe.mp3"
+          },
+          {
+            "dutch": "er is niets / 't geeft niet / er is niets aan de hand",
+            "indonesian": "tidak (ada) apa-apa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tidak-ada-apaapa-91faf522.mp3"
+          },
+          {
+            "dutch": "niet lukken / niet doorgaan",
+            "indonesian": "tidak jadi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tidak-jadi-fc6350fb.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 4,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "Indonesische werkwoorden en hun hulpwoorden worden in vaste volgorde geplaatst: A – B – C.",
+              "A = fase van de handeling (ontkenning, toekomst, voortduring, verleden).",
+              "B = specifiek aspect van de handeling (moeten, willen, mogen, kunnen, etc.).",
+              "C = het hoofdwerkwoord zelf.",
+              "Een woord uit groep B of A is optioneel; een hoofdwerkwoord C is altijd nodig."
+            ],
+            "title": "Volgorde A-B-C",
+            "examples": [
+              {
+                "dutch": "Ik kom. (alleen C)",
+                "indonesian": "Saya datang."
+              },
+              {
+                "dutch": "Ik kom niet. (A + C)",
+                "indonesian": "Saya tidak datang."
+              },
+              {
+                "dutch": "Ik wil komen. (B + C)",
+                "indonesian": "Saya mau datang.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/saya-mau-datang-b9928499.mp3"
+              },
+              {
+                "dutch": "Ik wil niet komen. (A + B + C)",
+                "indonesian": "Saya tidak mau datang.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/saya-tidak-mau-datang-e5b163c0.mp3"
+              },
+              {
+                "dutch": "Ik moet ook (weg)gaan.",
+                "indonesian": "Saya juga harus pergi."
+              },
+              {
+                "dutch": "Hij hoeft niet te komen.",
+                "indonesian": "Dia tidak usah datang."
+              },
+              {
+                "dutch": "Hebt u net gegeten?",
+                "indonesian": "Saudara baru makan?"
+              },
+              {
+                "dutch": "Hij wil ook een bad nemen.",
+                "indonesian": "Beliau juga ingin mandi."
+              }
+            ]
+          },
+          {
+            "table": [
+              [
+                "Groep A (fase)",
+                "Groep B (aspect)",
+                "Groep C (hoofdwerkwoord)"
+              ],
+              [
+                "tidak*",
+                "harus**",
+                "bekerja"
+              ],
+              [
+                "kurang",
+                "bisa",
+                "berangkat"
+              ],
+              [
+                "belum",
+                "boleh",
+                "datang"
+              ],
+              [
+                "akan",
+                "coba",
+                "duduk"
+              ],
+              [
+                "bakal",
+                "dapat",
+                "mandi"
+              ],
+              [
+                "masih",
+                "hendak",
+                "minum"
+              ],
+              [
+                "sedang / lagi",
+                "ingin",
+                "pergi"
+              ],
+              [
+                "sudah / telah",
+                "kembali",
+                "pulang"
+              ],
+              [
+                "juga",
+                "mau",
+                "tidur"
+              ],
+              [
+                "baru",
+                "mulai",
+                "tinggal"
+              ],
+              [
+                "",
+                "perlu",
+                "turun"
+              ],
+              [
+                "",
+                "senang / suka",
+                "(enzovoorts)"
+              ],
+              [
+                "",
+                "usah",
+                ""
+              ]
+            ],
+            "title": "Woorden per groep"
+          },
+          {
+            "rules": [
+              "Ontkenning: tidak, kurang, belum — de handeling start (nog) niet.",
+              "Toekomst: akan, bakal — de handeling zal starten.",
+              "Voortduring: masih, sedang, lagi — de handeling is (nog) gaande.",
+              "Verleden: telah, sudah — de handeling is voorbij.",
+              "Groep A-woorden staan altijd vóór een woord uit groep B en/of groep C.",
+              "Tidak kan voor akan en bakal staan (tidak akan, tidak bakal).",
+              "Harus kan voor alle andere groep-B-woorden staan (harus bisa, harus mau)."
+            ],
+            "title": "Groep A — fase van de handeling",
+            "examples": [
+              {
+                "dutch": "Ik heb nog niet gegeten.",
+                "indonesian": "Saya belum makan."
+              },
+              {
+                "dutch": "Ik wil niet meegaan.",
+                "indonesian": "Saya tidak mau ikut."
+              },
+              {
+                "dutch": "Ben je je koffer aan het zoeken?",
+                "indonesian": "Kamu lagi cari kopermu?"
+              },
+              {
+                "dutch": "Ik heb al zes uur gestudeerd.",
+                "indonesian": "Saya sudah belajar enam jam."
+              }
+            ]
+          },
+          {
+            "rules": [
+              "Geeft het aspect aan: willen, moeten, mogen, kunnen, proberen.",
+              "Krijgt in positie B nooit een voorvoegsel (zie Les 11 e.v.).",
+              "Groep B-woorden kunnen zelf ook als hoofdwerkwoord (positie C) optreden; daar krijgen ze wel een voorvoegsel."
+            ],
+            "title": "Groep B — specifiek aspect",
+            "examples": [
+              {
+                "dutch": "Ik wil thee drinken.",
+                "indonesian": "Saya ingin minum teh."
+              },
+              {
+                "dutch": "Hij moet om 10 uur vertrekken.",
+                "indonesian": "Dia harus berangkat jam sepuluh."
+              },
+              {
+                "dutch": "Ik probeer nu te slapen.",
+                "indonesian": "Saya coba tidur sekarang."
+              },
+              {
+                "dutch": "Moeder moet kunnen zitten.",
+                "indonesian": "Ibu harus dapat duduk."
+              }
+            ]
+          },
+          {
+            "rules": [
+              "Om een zin te maken is een onderwerp en een hoofdwerkwoord (groep C) nodig.",
+              "Een volle zin kan combinaties uit A, B en C bevatten: onderwerp + (A) + (B) + C + ... ."
+            ],
+            "title": "Groep C — hoofdwerkwoord",
+            "examples": [
+              {
+                "dutch": "Hij zal proberen een hotel te zoeken.",
+                "indonesian": "Dia akan coba cari hotel."
+              },
+              {
+                "dutch": "Ik moet nog naar school gaan.",
+                "indonesian": "Saya masih harus masuk sekolah."
+              },
+              {
+                "dutch": "Moeder kan nog niet vertrekken.",
+                "indonesian": "Ibu belum bisa berangkat."
+              },
+              {
+                "dutch": "U mag (al) gaan werken.",
+                "indonesian": "Bapak sudah boleh bekerja.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bapak-sudah-boleh-bekerja-f5eeb2dd.mp3"
+              }
+            ]
+          }
+        ],
+        "grammar_topics": [
+          "Werkwoordvolgorde",
+          "Intensiveerders"
+        ]
+      }
+    },
+    {
+      "order_index": 5,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "De woorden amat, sangat, benar, betul, sekali betekenen in combinatie met een bijvoeglijk naamwoord: erg, zeer.",
+              "amat en sangat staan vóór het bijvoeglijk naamwoord.",
+              "benar, betul en sekali staan áchter het bijvoeglijk naamwoord.",
+              "sangat klinkt formeel (nieuwsberichten, toespraken); sekali is neutraal tot informeel; amat is relatief formeel."
+            ],
+            "title": "Positie van intensiveerders",
+            "examples": [
+              {
+                "dutch": "De prijs van deze banaan is erg hoog.",
+                "indonesian": "Harga pisang ini amat mahal.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/harga-pisang-ini-amat-4a0020a4.mp3"
+              },
+              {
+                "dutch": "Die auto is zeer snel.",
+                "indonesian": "Mobil itu sangat cepat.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/mobil-itu-sangat-cepat-8ad0f24b.mp3"
+              },
+              {
+                "dutch": "De prijs van die sinaasappel is zeer laag.",
+                "indonesian": "Jeruk itu murah sekali harganya."
+              },
+              {
+                "dutch": "Deze stad is erg groot.",
+                "indonesian": "Kota ini besar betul.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kota-ini-besar-betul-ae3da96d.mp3"
+              },
+              {
+                "dutch": "Dat kind is zeer bang.",
+                "indonesian": "Anak itu takut benar.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/anak-itu-takut-benar-a76691d0.mp3"
+              }
+            ]
+          },
+          {
+            "rules": [
+              "benar en betul kunnen ook 'echt, juist, echt waar' betekenen.",
+              "In die betekenis staan ze niet meer achter een bijvoeglijk naamwoord.",
+              "Dubbeling betul-betul versterkt: écht waar, werkelijk."
+            ],
+            "title": "Benar en betul als 'echt, juist, waar'",
+            "examples": [
+              {
+                "dutch": "Dat is juist.",
+                "indonesian": "Kata itu benar."
+              },
+              {
+                "dutch": "Dat is juist, maar ....",
+                "indonesian": "Itu benar, tetapi ...."
+              },
+              {
+                "dutch": "Dat is waar, ik ben het vergeten.",
+                "indonesian": "Betul, saya lupa.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/betul-saya-lupa-24c2157f.mp3"
+              },
+              {
+                "dutch": "Hij is echt erg ziek.",
+                "indonesian": "Dia betul sakit sekali."
+              },
+              {
+                "dutch": "Sorry, ik ben het écht vergeten.",
+                "indonesian": "Maaf, saya betul-betul lupa."
+              },
+              {
+                "dutch": "Haar moeder schrok echt toen zij thuis kwam.",
+                "indonesian": "Ibunya betul-betul kaget waktu dia pulang.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/ibunya-betulbetul-kaget-waktu-f117a7b2.mp3"
+              }
+            ]
+          }
+        ],
+        "grammar_topics": [
+          "Werkwoordvolgorde",
+          "Intensiveerders"
+        ]
+      }
+    },
+    {
+      "order_index": 6,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "conversation",
+            "title": "Oefening I — Volgorde in een Indonesische zin",
+            "instruction": "Maak 10 Indonesische zinnen waarin de volgorde van de groepen A, B en C goed te constateren valt."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "Di kota ini banyak rumah sekali. (In deze stad zijn heel veel huizen.)",
+                "prompt": "sekali - di - rumah - banyak - kota - ini"
+              },
+              {
+                "answer": "Pohon di taman itu amat tinggi. (De boom in die tuin is erg hoog.)",
+                "prompt": "taman - tinggi - pohon - di - itu - amat"
+              },
+              {
+                "answer": "Pasar jauh benar dari sini. (De markt is echt ver van hier.)",
+                "prompt": "sini - benar - pasar - ke - jauh - dari"
+              },
+              {
+                "answer": "Bapak akan mengantar kami ke pusat kota. (Vader zal ons naar het centrum brengen.)",
+                "prompt": "akan - ke - bapak - pusat - mengantar - kota - kami"
+              },
+              {
+                "answer": "Kapal terbang itu besar betul. (Dat vliegtuig is erg groot.)",
+                "prompt": "terbang - besar - kapal - betul - itu"
+              },
+              {
+                "answer": "Saya kira naik bus lebih murah. (Ik denk dat de bus nemen goedkoper is.)",
+                "prompt": "naik - saya - murah - bus - kira - lebih"
+              },
+              {
+                "answer": "Mobil baru ini amat cepat. (Deze nieuwe auto is erg snel.)",
+                "prompt": "cepat - ini - baru - amat - mobil"
+              },
+              {
+                "answer": "Buah ini yang paling enak. (Deze vrucht is het lekkerst.)",
+                "prompt": "enak - buah - paling - ini - yang"
+              },
+              {
+                "answer": "Besok kamu harus tolong cari oleh-oleh. (Morgen moet jij alsjeblieft souvenirs zoeken.)",
+                "prompt": "harus - besok - kamu - tolong - oleh-oleh - cari"
+              },
+              {
+                "answer": "Bukan kaki saya, tapi kakinya patah. (Niet mijn voet, maar zijn voet is gebroken.)",
+                "prompt": "kaki - bukan - tapi - saya - patah - nya - kaki"
+              }
+            ],
+            "title": "Oefening II — Zinnen samenstellen",
+            "instruction": "Onderstaande zinnen zijn uit elkaar geknipt. Maak van de woorden een complete zin en vertaal deze zin."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Saya lupa kunci saya.",
+                "prompt": "mijn sleutel"
+              },
+              {
+                "answer": "Saya lupa namamu.",
+                "prompt": "jouw naam"
+              },
+              {
+                "answer": "Saya lupa nomor kami.",
+                "prompt": "ons nummer"
+              },
+              {
+                "answer": "Saya lupa sepedanya.",
+                "prompt": "zijn fiets"
+              },
+              {
+                "answer": "Saya lupa formulir Bapak/Ibu.",
+                "prompt": "uw formulier"
+              },
+              {
+                "answer": "Saya lupa handuk saya.",
+                "prompt": "mijn handdoek"
+              },
+              {
+                "answer": "Saya lupa nomor rumah mereka.",
+                "prompt": "hun huisnummer"
+              },
+              {
+                "answer": "Saya lupa sendok kami.",
+                "prompt": "onze lepels"
+              },
+              {
+                "answer": "Saya lupa bukunya.",
+                "prompt": "haar boek"
+              },
+              {
+                "answer": "Saya lupa tas Bapak/Ibu.",
+                "prompt": "uw tas"
+              },
+              {
+                "answer": "Saya lupa nomor kamar mereka.",
+                "prompt": "hun kamernummer"
+              },
+              {
+                "answer": "Saya lupa tas ayah saya.",
+                "prompt": "mijn vaders tas"
+              },
+              {
+                "answer": "Saya lupa buku adik saya.",
+                "prompt": "het boek van mijn broertje"
+              },
+              {
+                "answer": "Saya lupa kunci lemari saya.",
+                "prompt": "de sleutel van mijn kast"
+              },
+              {
+                "answer": "Saya lupa nama temannya.",
+                "prompt": "de naam van zijn vriend"
+              }
+            ],
+            "title": "Oefening III — Bezittelijk achtervoegsel",
+            "instruction": "Vul in: 'Saya lupa ...' (Ik ben ... vergeten) met het juiste bezittelijk achtervoegsel."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Saya akan coba datang besok.",
+                "prompt": "Ik zal proberen morgen te komen."
+              },
+              {
+                "answer": "Dia masih bekerja.",
+                "prompt": "Hij is nog aan het werk."
+              },
+              {
+                "answer": "Bapak belum pulang.",
+                "prompt": "Vader is nog niet teruggekeerd."
+              },
+              {
+                "answer": "Siapa sudah minum cendol?",
+                "prompt": "Wie heeft al cendol gedronken?"
+              },
+              {
+                "answer": "Dia kemarin tidak mau datang, barangkali hari ini dia akan datang ke sini.",
+                "prompt": "Zij wilde gisteren niet komen, misschien zal zij vandaag hierheen komen."
+              },
+              {
+                "answer": "Ibu tidak senang tidur sore.",
+                "prompt": "Moeder vindt het niet prettig om in de namiddag te slapen."
+              },
+              {
+                "answer": "Pak Usman akan tinggal di sana tahun depan.",
+                "prompt": "Meneer Usman gaat daar volgend jaar wonen."
+              },
+              {
+                "answer": "Ibu Prapto akan coba datang jam setengah dua belas.",
+                "prompt": "Mevrouw Prapto zal proberen om 11.30 uur te komen."
+              },
+              {
+                "answer": "Tina belum bisa mandi, airnya sudah habis.",
+                "prompt": "Tina kan nog geen bad nemen, het water is al op."
+              },
+              {
+                "answer": "Dia mau coba pulang hari Rabu.",
+                "prompt": "Hij wil proberen op woensdag naar huis te gaan."
+              }
+            ],
+            "title": "Oefening IV — Vertaal",
+            "instruction": "Vertaal de volgende Nederlandse zinnen in het Indonesisch."
+          },
+          {
+            "type": "conversation",
+            "title": "Oefening V — Extra oefening",
+            "instruction": "Schrijf een verhaal in het Indonesisch (maximaal tien zinnen) over de afgebeelde spotprent: de orang kota gaan tegenwoordig naar de dukun en de orang desa naar de dokter. Gebruik de toegevoegde woordenlijst ter ondersteuning."
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 7,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "lichaam",
+            "indonesian": "tubuh / badan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/tubuh-badan-bb3286c5.mp3"
+          },
+          {
+            "dutch": "lever",
+            "indonesian": "hati",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hati-5f1355ab.mp3"
+          },
+          {
+            "dutch": "oog",
+            "indonesian": "mata",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/mata-4706b3ec.mp3"
+          },
+          {
+            "dutch": "mond",
+            "indonesian": "mulut",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/mulut-6e57af15.mp3"
+          },
+          {
+            "dutch": "kin",
+            "indonesian": "dagu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/dagu-3108a950.mp3"
+          },
+          {
+            "dutch": "keel",
+            "indonesian": "kerongkongan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kerongkongan-f3fa671f.mp3"
+          },
+          {
+            "dutch": "buik",
+            "indonesian": "perut",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/perut-85e64a00.mp3"
+          },
+          {
+            "dutch": "arm",
+            "indonesian": "lengan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/lengan-62e1ad43.mp3"
+          },
+          {
+            "dutch": "been",
+            "indonesian": "kaki",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kaki-24fab15f.mp3"
+          },
+          {
+            "dutch": "billen",
+            "indonesian": "pantat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/pantat-1cab4be6.mp3"
+          },
+          {
+            "dutch": "hoofdhaar",
+            "indonesian": "rambut",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/rambut-dba7d643.mp3"
+          },
+          {
+            "dutch": "lichaamshaar",
+            "indonesian": "bulu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bulu-e9f2aca3.mp3"
+          },
+          {
+            "dutch": "neus",
+            "indonesian": "hidung",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/hidung-d9e1ea5a.mp3"
+          },
+          {
+            "dutch": "lip",
+            "indonesian": "bibir",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/bibir-a65ae02c.mp3"
+          },
+          {
+            "dutch": "voorhoofd",
+            "indonesian": "dahi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/dahi-7a04023e.mp3"
+          },
+          {
+            "dutch": "hart",
+            "indonesian": "jantung",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/jantung-3230e184.mp3"
+          },
+          {
+            "dutch": "maag",
+            "indonesian": "lambung",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/lambung-03654b6f.mp3"
+          },
+          {
+            "dutch": "hand",
+            "indonesian": "tangan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tangan-81840941.mp3"
+          },
+          {
+            "dutch": "knie",
+            "indonesian": "lutut",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/lutut-32a76e98.mp3"
+          },
+          {
+            "dutch": "darmen",
+            "indonesian": "usus",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/usus-e85284d0.mp3"
+          },
+          {
+            "dutch": "hoofd",
+            "indonesian": "kepala",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kepala-892f1e9a.mp3"
+          },
+          {
+            "dutch": "hals",
+            "indonesian": "lèhèr",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/lhr-0ec77747.mp3"
+          },
+          {
+            "dutch": "snor",
+            "indonesian": "kumis",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kumis-8f17621f.mp3"
+          },
+          {
+            "dutch": "oor",
+            "indonesian": "telinga",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/telinga-203782dc.mp3"
+          },
+          {
+            "dutch": "borst(kas)",
+            "indonesian": "dada",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/dada-d44fe093.mp3"
+          },
+          {
+            "dutch": "ribben",
+            "indonesian": "rongga dada",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/rongga-dada-ac9b7452.mp3"
+          },
+          {
+            "dutch": "vinger",
+            "indonesian": "jari tangan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/jari-tangan-f13b501d.mp3"
+          },
+          {
+            "dutch": "voet",
+            "indonesian": "kaki",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kaki-24fab15f.mp3"
+          },
+          {
+            "dutch": "nagel",
+            "indonesian": "kuku",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/kuku-be3cf188.mp3"
+          },
+          {
+            "dutch": "teen",
+            "indonesian": "jari kaki",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/jari-kaki-335b11f2.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 8,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "buik/maagpijn",
+            "indonesian": "sakit perut / mag",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sakit-perut-mag-03fc2e70.mp3"
+          },
+          {
+            "dutch": "duizelig zijn",
+            "indonesian": "pusing",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/pusing-6b76ba18.mp3"
+          },
+          {
+            "dutch": "hoofdpijn",
+            "indonesian": "sakit kepala",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/sakit-kepala-ac66f02e.mp3"
+          },
+          {
+            "dutch": "verkoudheid",
+            "indonesian": "pilek",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/pilek-7dd1c4f0.mp3"
+          },
+          {
+            "dutch": "griep",
+            "indonesian": "flu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/flu-cfe32a43.mp3"
+          },
+          {
+            "dutch": "koorts",
+            "indonesian": "demam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/demam-c362e99f.mp3"
+          },
+          {
+            "dutch": "misselijk",
+            "indonesian": "mual",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/mual-2ff075be.mp3"
+          },
+          {
+            "dutch": "pleister",
+            "indonesian": "plèster",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/plster-eeb8b2c8.mp3"
+          },
+          {
+            "dutch": "verband",
+            "indonesian": "pembalut",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/pembalut-dded3f5f.mp3"
+          },
+          {
+            "dutch": "maandverband",
+            "indonesian": "pembalut wanita",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/pembalut-wanita-f3df9a9c.mp3"
+          },
+          {
+            "dutch": "moe",
+            "indonesian": "capèk (na inspanning)",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/capk-na-inspanning-e5a32fc7.mp3"
+          },
+          {
+            "dutch": "medicijn",
+            "indonesian": "obat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/obat-815560b6.mp3"
+          },
+          {
+            "dutch": "kruidenmengsel",
+            "indonesian": "jamu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/jamu-bf0842b8.mp3"
+          },
+          {
+            "dutch": "vergif",
+            "indonesian": "racun",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/racun-81e38dc3.mp3"
+          },
+          {
+            "dutch": "hoestdrank",
+            "indonesian": "obat batuk",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/obat-batuk-288af61c.mp3"
+          },
+          {
+            "dutch": "dieet",
+            "indonesian": "diét",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/dit-40fc3d9e.mp3"
+          },
+          {
+            "dutch": "medicijn innemen",
+            "indonesian": "minum obat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/minum-obat-12957a79.mp3"
+          },
+          {
+            "dutch": "prik",
+            "indonesian": "suntik",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/suntik-b403cac2.mp3"
+          },
+          {
+            "dutch": "overgeven",
+            "indonesian": "muntah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/muntah-ebd3046d.mp3"
+          },
+          {
+            "dutch": "wond",
+            "indonesian": "luka",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/luka-ae428329.mp3"
+          },
+          {
+            "dutch": "eetlust",
+            "indonesian": "nafsu makan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/nafsu-makan-8c268c16.mp3"
+          },
+          {
+            "dutch": "zwak (slap)",
+            "indonesian": "lemah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/lemah-a20cd39c.mp3"
+          }
+        ]
+      }
+    }
+  ],
+  "runtime_components": {
+    "ActivationGate": {
+      "import": "import { ActivationGate } from '@/components/lessons/ActivationGate'",
+      "usage": "<ActivationGate lessonId=\"93c54586-3542-47ec-9a60-26a97c8c5a3d\" />",
+      "purpose": "The user-controlled checkbox that adds this lesson's capabilities to spaced review.",
+      "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
+    },
+    "LessonAudioPlayer": {
+      "note": "No lesson-level audio published for this lesson yet."
+    },
+    "PracticeActions": {
+      "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
+      "usage": "<PracticeActions lessonId=\"93c54586-3542-47ec-9a60-26a97c8c5a3d\" />",
+      "purpose": "Wired to runtime capability counts; renders \"Practice this lesson · N ready\" and \"Review this lesson\" CTAs.",
+      "placement": "Anywhere on the page. Conventionally pinned to a sidebar or near the bottom as a conclusion CTA."
+    }
+  }
+}

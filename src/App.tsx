@@ -30,6 +30,12 @@ const PageLab = lazy(() => import('@/pages/admin/PageLab').then(m => ({ default:
 const Lesson1Bespoke = lazy(() => import('@/pages/lessons/lesson-1/Page'))
 const Lesson2Bespoke = lazy(() => import('@/pages/lessons/lesson-2/Page'))
 const Lesson3Bespoke = lazy(() => import('@/pages/lessons/lesson-3/Page'))
+const Lesson4Bespoke = lazy(() => import('@/pages/lessons/lesson-4/Page'))
+const Lesson5Bespoke = lazy(() => import('@/pages/lessons/lesson-5/Page'))
+const Lesson6Bespoke = lazy(() => import('@/pages/lessons/lesson-6/Page'))
+const Lesson7Bespoke = lazy(() => import('@/pages/lessons/lesson-7/Page'))
+const Lesson8Bespoke = lazy(() => import('@/pages/lessons/lesson-8/Page'))
+const Lesson9Bespoke = lazy(() => import('@/pages/lessons/lesson-9/Page'))
 
 function LazyPage({ children }: { children: React.ReactNode }) {
   return (
@@ -103,6 +109,54 @@ function App() {
           element={
             <ProtectedRoute>
               <LazyPage><Lesson3Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/4"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson4Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/5"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson5Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/6"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson6Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/7"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson7Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/8"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson8Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/9"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson9Bespoke /></LazyPage>
             </ProtectedRoute>
           }
         />

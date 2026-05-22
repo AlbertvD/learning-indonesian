@@ -179,7 +179,7 @@
 
 .shell {
   composes: container;
-  max-width: 920px;
+  max-width: 1120px;
   display: flex;
   flex-direction: column;
   gap: 80px;
@@ -226,7 +226,8 @@
   color: var(--text-secondary);
   line-height: 1.65;
   margin: 0 0 28px;
-  max-width: 62ch;
+  max-width: 80ch;
+  margin-inline: auto;
 }
 
 .subheading {
@@ -254,7 +255,8 @@
   margin: 0 0 18px;
   font-style: italic;
   line-height: 1.55;
-  max-width: 62ch;
+  max-width: 80ch;
+  margin-inline: auto;
 }
 
 /* ─── 1. Dialogue — teal scene with three speakers ───────────────────────── */
@@ -305,7 +307,8 @@
   color: var(--text-secondary);
   line-height: 1.6;
   margin: 0 0 28px;
-  max-width: 60ch;
+  max-width: 80ch;
+  margin-inline: auto;
 }
 
 .dialogueLines {
@@ -965,7 +968,8 @@
   color: var(--text-secondary);
   font-style: italic;
   margin: 0 0 20px;
-  max-width: 60ch;
+  max-width: 80ch;
+  margin-inline: auto;
   line-height: 1.55;
 }
 
@@ -997,7 +1001,7 @@
 }
 
 .vocabNl {
-  font-size: var(--fs-sm);
+  font-size: var(--fs-md);
   color: var(--text-secondary);
   font-style: italic;
   text-align: right;
@@ -1032,10 +1036,10 @@
 
 .cultureEyebrow {
   composes: sectionEyebrow;
-  color: var(--ring-target);
+  color: var(--warning);
 }
 
-.cultureEyebrow::before { background: var(--ring-target); }
+.cultureEyebrow::before { background: var(--warning); }
 
 .cultureIntro {
   font-size: clamp(16px, 1.4vw, 18px);
@@ -1043,7 +1047,8 @@
   color: var(--text-primary);
   line-height: 1.65;
   margin: 0 0 28px;
-  max-width: 64ch;
+  max-width: 80ch;
+  margin-inline: auto;
   position: relative;
   z-index: 1;
 }
@@ -1062,7 +1067,8 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
-  max-width: 64ch;
+  max-width: 80ch;
+  margin-inline: auto;
   position: relative;
   z-index: 1;
 }

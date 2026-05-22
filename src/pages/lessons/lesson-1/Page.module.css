@@ -204,7 +204,7 @@
 
 .shell {
   composes: container;
-  max-width: 920px;
+  max-width: 1120px;
   display: flex;
   flex-direction: column;
   gap: 80px;
@@ -249,7 +249,8 @@
   color: var(--text-secondary);
   line-height: 1.65;
   margin: 0 0 28px;
-  max-width: 62ch;
+  max-width: 80ch;
+  margin-inline: auto;
 }
 
 .sectionLede::first-letter {
@@ -587,7 +588,8 @@
   color: var(--text-secondary);
   line-height: 1.6;
   margin: 0 0 28px;
-  max-width: 600px;
+  max-width: 80ch;
+  margin-inline: auto;
 }
 
 .dialogueLines {
