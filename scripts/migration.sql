@@ -2100,3 +2100,46 @@ alter table indonesian.capability_review_events
 --    exposure-aware queries that match by source_ref membership in the array.
 create index if not exists lesson_page_blocks_source_refs_gin
   on indonesian.lesson_page_blocks using gin (source_refs);
+
+-- ============================================================================
+-- PR 0 (2026-05-22) — Data-model migration pre-work
+-- ============================================================================
+-- Spec: docs/plans/2026-05-22-data-model-migration.md §3
+-- This block lands the ADDITIVE half of PR 0 (Steps 3 + 5 in the work order).
+-- The destructive half (column drops, table drops, RPC body co-edits) lands in
+-- a separate transactional block in Step 6 of the same PR. Splitting forward
+-- (additive) from cleanup (drops) keeps the writer/reader/DB transition safe:
+-- writers can switch to new columns before old columns are removed.
+
+-- §3.2 — Add learning_capabilities.prerequisite_keys (additive).
+-- The DROP of metadata_json + source_fingerprint + artifact_fingerprint lands
+-- in the Step 6 destructive block AFTER all writers have switched (per plan
+-- §3.2 line 329-340 ordering rule).
+alter table indonesian.learning_capabilities
+  add column if not exists prerequisite_keys text[] not null default '{}';
+
+-- Backfill from metadata_json.prerequisiteKeys. Idempotent — only updates rows
+-- where the new column is still empty AND the old JSON shape carries data.
+-- Wrapped in a column-existence guard so the file remains valid after Step 6
+-- drops metadata_json (a re-run of the file then no-ops the backfill).
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'indonesian'
+      and table_name = 'learning_capabilities'
+      and column_name = 'metadata_json'
+  ) then
+    update indonesian.learning_capabilities
+       set prerequisite_keys = coalesce(
+         array(select jsonb_array_elements_text(metadata_json->'prerequisiteKeys')),
+         '{}'::text[]
+       )
+     where prerequisite_keys = '{}'
+       and metadata_json is not null
+       and metadata_json ? 'prerequisiteKeys';
+  end if;
+end $$;
+
+comment on column indonesian.learning_capabilities.prerequisite_keys is
+  'Canonical-key array of capabilities that must be active before this one can be introduced. Replaces metadata_json.prerequisiteKeys (decision A).';
