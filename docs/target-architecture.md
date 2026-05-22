@@ -947,8 +947,8 @@ SrsState, SrsResult, ReviewOutcome, SrsRating, SrsParams
 ```
 
 **Hides.**
-- The `request_retention: 0.85` constant (more frequent reviews than ts-fsrs default of 0.9).
-- The `w[]` weights tuned for language learning (see `params.ts`).
+- The `request_retention: 0.85` constant. ts-fsrs default is 0.9. The interval formula `I(r, s) = (r^(1/DECAY) - 1) / FACTOR · s` (`packages/fsrs/src/algorithm.ts:80-90`) yields a longer interval at lower `r` — so 0.85 means *less* frequent reviews than the default 0.9 (modifier 1.64 × stability vs 1.0). Earlier versions of this document and the historical research note `docs/research/2026-04-03-fsrs-language-learning-tuning.md` claimed the opposite; both were wrong. Corrected 2026-05-22 alongside `docs/plans/2026-05-21-fsrs-config-tuning.md` (which retunes this knob further to 0.80 → modifier 2.40).
+- The `w[]` weights — the live array is the ts-fsrs FSRS-5 stock weights, not language-learning-tuned. The "tuned for language learning" framing is a misattribution carried from the same historical research note. A genuine FSRS-6 optimisation pass against live answer data is out of scope here and would be a separate project.
 - The mapping from review outcome (was correct, hint used, fuzzy match, latency) to FSRS Grade.
 - ts-fsrs library wrapping.
 
@@ -957,8 +957,10 @@ SrsState, SrsResult, ReviewOutcome, SrsRating, SrsParams
 ```
 supabase/functions/_shared/srs/
   index.ts            barrel
-  params.ts           DEFAULT_PARAMS — language-learning weights
-                      Documents the rationale for request_retention=0.85
+  params.ts           DEFAULT_PARAMS — the active FSRS parameter set.
+                      Documents the rationale for the chosen
+                      request_retention (currently being retuned to 0.80
+                      per docs/plans/2026-05-21-fsrs-config-tuning.md)
                       and the w[] choices.
   algorithm.ts        computeNextState, inferRating, getRetrievability,
                       applyGrammarAdjustment

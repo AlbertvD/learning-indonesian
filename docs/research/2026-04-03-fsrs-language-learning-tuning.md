@@ -7,6 +7,8 @@
 
 > **Note (2026-05-08):** `src/lib/fsrs.ts` was retired in retirement #3 and `src/lib/stages.ts` was retired in retirement #7. The promotion-gate semantics described below describe the historical pre-retirement design; the current scheduler lives at `supabase/functions/commit-capability-answer-report/index.ts`. Constants and pseudocode below are preserved for SLA / FSRS-tuning research reference.
 
+> **Correction (2026-05-22):** This document's framing of `request_retention: 0.85` as "more frequent reviews than the 0.9 default" is **backwards**. The ts-fsrs interval formula `I(r, s) = (r^(1/DECAY) - 1) / FACTOR · s` (`packages/fsrs/src/algorithm.ts:80-90`) yields a *longer* interval at lower `r`. At `decay = -0.5` (the FSRS5_DEFAULT_DECAY auto-filled for our 17-element w array), the modifier table is: r=0.9 → ×1.00, r=0.85 → ×1.64, r=0.80 → ×2.40, r=0.75 → ×3.32 (interval as a multiple of stability). So 0.85 produces intervals 64% longer than the library default, not shorter. The "~15% failure rate triggers more frequent reviews" reasoning below is also incorrect — a lower R_target *accepts* more failures by letting cards decay further before re-review, which is the opposite of the historical framing. See `docs/plans/2026-05-21-fsrs-config-tuning.md` § "Three propagators of the '0.85 = more frequent' error" for the full derivation. The historical w-array justification ("tuned to accelerate stability growth") is also a misattribution — the live array is the ts-fsrs FSRS-5 stock weights, not custom-tuned. This document remains for archival reference only; do not cite the directional claims.
+
 ---
 
 ## Problem
