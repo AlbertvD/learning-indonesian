@@ -284,6 +284,9 @@ export interface LearningItemInput {
   level: string
   source_type: 'lesson'
   pos?: string | null
+  /** Decision R (PR 1): inline translation columns replacing item_meanings rows. */
+  translation_nl?: string | null
+  translation_en?: string | null
   /** §11 #15 — when set to 'deferred_dialogue', drives the dialogue defer state. */
   review_status?: 'published' | 'deferred_dialogue'
 }
@@ -311,6 +314,9 @@ export async function upsertLearningItem(
     pos: item.pos ?? null,
     is_active: true,
   }
+  // Decision R (PR 1): write inline translation columns when provided.
+  if (item.translation_nl != null) payload.translation_nl = item.translation_nl
+  if (item.translation_en != null) payload.translation_en = item.translation_en
   if (item.review_status) {
     payload.review_status = item.review_status
   }

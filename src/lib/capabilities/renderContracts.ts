@@ -53,9 +53,12 @@ export interface RenderContract {
 
 export const RENDER_CONTRACTS = {
   recognition_mcq: {
+    // Decision R (PR 1): item translations read from learning_items.translation_{nl,en}
+    // directly. No capability_artifacts required for item caps. requiredArtifacts.item=[]
+    // so validateCapability passes without artifact rows.
     capabilityTypes: ['text_recognition'],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: ['base_text', 'meaning:l1'] },
+    requiredArtifacts: { item: [] },
   },
   cued_recall: {
     // cued_recall serves root_derived_* cap types but its
@@ -64,36 +67,40 @@ export const RENDER_CONTRACTS = {
     // of the affixed-form-pair plan).
     capabilityTypes: ['l1_to_id_choice', 'form_recall', 'root_derived_recognition', 'root_derived_recall'],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: ['base_text', 'meaning:l1'] },
+    requiredArtifacts: { item: [] },
   },
   typed_recall: {
     capabilityTypes: ['form_recall', 'root_derived_recognition', 'root_derived_recall'],
     supportedSourceKinds: ['item', 'affixed_form_pair'],
     requiredArtifacts: {
-      item: ['base_text', 'meaning:l1', 'accepted_answers:id'],
+      // Decision R (PR 1): item data from learning_items directly; no artifact bag needed.
+      item: [],
       affixed_form_pair: ['root_derived_pair', 'allomorph_rule'],
     },
   },
   meaning_recall: {
     capabilityTypes: ['meaning_recall'],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: ['meaning:l1', 'accepted_answers:l1'] },
+    requiredArtifacts: { item: [] },
   },
   listening_mcq: {
+    // Decision Q (PR 1): audio read via capability_audio_refs + audio_clips.
+    // The artifact bag no longer holds the audio_clip reference for item caps.
     capabilityTypes: ['audio_recognition', 'podcast_gist'],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: ['audio_clip', 'meaning:l1'] },
+    requiredArtifacts: { item: [] },
   },
   dictation: {
     capabilityTypes: ['dictation'],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: ['audio_clip', 'base_text', 'accepted_answers:id'] },
+    requiredArtifacts: { item: [] },
   },
   cloze: {
     capabilityTypes: ['contextual_cloze'],
     supportedSourceKinds: ['item', 'dialogue_line'],
     requiredArtifacts: {
-      item: ['cloze_context', 'cloze_answer', 'translation:l1'],
+      // Decision R (PR 1): item cloze data from item_contexts directly.
+      item: [],
       dialogue_line: ['cloze_context', 'cloze_answer', 'translation:l1'],
     },
   },
@@ -104,28 +111,28 @@ export const RENDER_CONTRACTS = {
     // byKind/dialogueLine.ts that doesn't exist yet. Follow-up.
     capabilityTypes: ['contextual_cloze'],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: ['cloze_context', 'cloze_answer', 'translation:l1'] },
+    requiredArtifacts: { item: [] },
   },
   contrast_pair: {
     // pattern_contrast is intentionally absent — see plan §"Pattern decision".
     capabilityTypes: [],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: ['exercise_variant'] },
+    requiredArtifacts: { item: [] },
   },
   sentence_transformation: {
     capabilityTypes: [],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: ['exercise_variant'] },
+    requiredArtifacts: { item: [] },
   },
   constrained_translation: {
     capabilityTypes: [],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: ['exercise_variant'] },
+    requiredArtifacts: { item: [] },
   },
   speaking: {
     capabilityTypes: [],
     supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: ['base_text'] },
+    requiredArtifacts: { item: [] },
   },
 } as const satisfies Record<ExerciseType, RenderContract>
 

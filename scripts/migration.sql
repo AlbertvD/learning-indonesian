@@ -2228,3 +2228,109 @@ begin
     on conflict (lesson_id, speaker) do nothing;
   end if;
 end $$;
+
+-- ============================================================================
+-- PR 1 — item source kind end-to-end migration (Decision R + Decision G2 + Decision Q)
+-- ============================================================================
+
+-- §PR1.1 — Add translation columns to learning_items (Decision R).
+-- Collapses item_meanings into two typed columns. item_meanings table stays
+-- until the final cleanup PR (PR 7) — the writer stops emitting rows, the
+-- reader switches to inline columns in the same deploy. Re-publish from
+-- staging populates the new columns via the updated pipeline writer.
+alter table indonesian.learning_items
+  add column if not exists translation_nl text,
+  add column if not exists translation_en text,
+  add column if not exists usage_note text;
+
+comment on column indonesian.learning_items.translation_nl is
+  'Primary Dutch translation. Replaces item_meanings WHERE translation_language=''nl'' AND is_primary=true. Decision R.';
+comment on column indonesian.learning_items.translation_en is
+  'Primary English translation. Replaces item_meanings WHERE translation_language=''en'' AND is_primary=true. Decision R.';
+comment on column indonesian.learning_items.usage_note is
+  'Optional usage note. Replaces item_meanings.usage_note. Decision R.';
+
+-- §PR1.2 — capability_audio_refs (Decision Q).
+-- Replaces capability_artifacts(artifact_kind=audio_clip) as the binding
+-- between caps and their TTS audio. One row per (capability_id, audio_clip_id)
+-- pair; voice_id is denormalised from audio_clips for query simplicity.
+create table if not exists indonesian.capability_audio_refs (
+  capability_id uuid not null references indonesian.learning_capabilities(id) on delete cascade,
+  audio_clip_id uuid not null references indonesian.audio_clips(id) on delete restrict,
+  voice_id      text not null,
+  created_at    timestamptz not null default now(),
+  primary key (capability_id, audio_clip_id)
+);
+
+create index if not exists capability_audio_refs_clip_idx
+  on indonesian.capability_audio_refs(audio_clip_id);
+
+alter table indonesian.capability_audio_refs enable row level security;
+drop policy if exists "capability_audio_refs_authenticated_read" on indonesian.capability_audio_refs;
+create policy "capability_audio_refs_authenticated_read"
+  on indonesian.capability_audio_refs for select to authenticated using (true);
+grant select on indonesian.capability_audio_refs to authenticated;
+revoke insert, update, delete on indonesian.capability_audio_refs from authenticated;
+grant all on indonesian.capability_audio_refs to service_role;
+
+comment on table indonesian.capability_audio_refs is
+  'Capability to audio_clip binding. Replaces capability_artifacts(kind=audio_clip). Decision Q.';
+
+-- §PR1.3 — Curated distractor tables (Decision G2 Group B).
+-- Wires the orphaned vocab-enrichments.ts agent output into the DB.
+-- Each table is keyed by capability_id (1:1). When absent, byKind/item.ts
+-- falls back to random pool sampling (existing behaviour).
+
+create table if not exists indonesian.recognition_mcq_distractors (
+  capability_id uuid primary key references indonesian.learning_capabilities(id) on delete cascade,
+  distractors   text[] not null,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+
+alter table indonesian.recognition_mcq_distractors enable row level security;
+drop policy if exists "recognition_mcq_distractors_authenticated_read" on indonesian.recognition_mcq_distractors;
+create policy "recognition_mcq_distractors_authenticated_read"
+  on indonesian.recognition_mcq_distractors for select to authenticated using (true);
+grant select on indonesian.recognition_mcq_distractors to authenticated;
+revoke insert, update, delete on indonesian.recognition_mcq_distractors from authenticated;
+grant all on indonesian.recognition_mcq_distractors to service_role;
+
+comment on table indonesian.recognition_mcq_distractors is
+  'Curated NL wrong-option strings for recognition_mcq. Per-cap 1:1. Decision G2 Group B.';
+
+create table if not exists indonesian.cued_recall_distractors (
+  capability_id uuid primary key references indonesian.learning_capabilities(id) on delete cascade,
+  distractors   text[] not null,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+
+alter table indonesian.cued_recall_distractors enable row level security;
+drop policy if exists "cued_recall_distractors_authenticated_read" on indonesian.cued_recall_distractors;
+create policy "cued_recall_distractors_authenticated_read"
+  on indonesian.cued_recall_distractors for select to authenticated using (true);
+grant select on indonesian.cued_recall_distractors to authenticated;
+revoke insert, update, delete on indonesian.cued_recall_distractors from authenticated;
+grant all on indonesian.cued_recall_distractors to service_role;
+
+comment on table indonesian.cued_recall_distractors is
+  'Curated Indonesian wrong-option strings for cued_recall. Per-cap 1:1. Decision G2 Group B.';
+
+create table if not exists indonesian.cloze_mcq_item_distractors (
+  capability_id uuid primary key references indonesian.learning_capabilities(id) on delete cascade,
+  distractors   text[] not null,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+
+alter table indonesian.cloze_mcq_item_distractors enable row level security;
+drop policy if exists "cloze_mcq_item_distractors_authenticated_read" on indonesian.cloze_mcq_item_distractors;
+create policy "cloze_mcq_item_distractors_authenticated_read"
+  on indonesian.cloze_mcq_item_distractors for select to authenticated using (true);
+grant select on indonesian.cloze_mcq_item_distractors to authenticated;
+revoke insert, update, delete on indonesian.cloze_mcq_item_distractors from authenticated;
+grant all on indonesian.cloze_mcq_item_distractors to service_role;
+
+comment on table indonesian.cloze_mcq_item_distractors is
+  'Curated Indonesian filler-word strings for cloze_mcq. Per-cap 1:1. Decision G2 Group B.';

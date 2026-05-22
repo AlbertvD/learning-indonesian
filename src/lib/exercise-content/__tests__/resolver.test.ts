@@ -178,16 +178,15 @@ describe('resolver.resolveBlocks', () => {
 
   it('happy path: meaning_recall resolves to ok with audibleTexts', async () => {
     const tables: Record<string, MockTable> = {
+      // Decision R (PR 1): translation_nl is now read from inline column, not item_meanings.
       learning_items: { rows: [{
         id: 'uuid-1', item_type: 'word', base_text: 'item-1', normalized_text: 'item-1',
         language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null,
         source_card_id: null, notes: null, is_active: true, pos: 'noun',
+        translation_nl: 'einde', translation_en: 'end', usage_note: null,
         created_at: '', updated_at: '',
       }], inserts: [] },
-      item_meanings: { rows: [{
-        id: 'm-1', learning_item_id: 'uuid-1', translation_language: 'nl',
-        translation_text: 'einde', sense_label: null, usage_note: null, is_primary: true,
-      }], inserts: [] },
+      // item_meanings table is not read by byKind/item.ts after PR 1 (Decision R).
       item_contexts: { rows: [], inserts: [] },
       item_answer_variants: { rows: [], inserts: [] },
       exercise_variants: { rows: [], inserts: [] },
@@ -254,12 +253,13 @@ describe('resolver.resolveBlocks', () => {
 })
 
 describe('resolver.resolveBlocks — distractor pool chunking', () => {
-  it('chunks learning_items and item_meanings IN queries when the pool exceeds 50 ids', async () => {
-    // 130 distinct distractor-pool ids → expect 3 chunks (50/50/30) per table.
+  // Decision R (PR 1): item_meanings is no longer fetched. Chunking test now
+  // verifies only learning_items chunked IN queries (pool of 130 items → 3 chunks).
+  it('chunks learning_items IN queries when the distractor pool exceeds 50 ids', async () => {
+    // 130 distinct distractor-pool ids → expect 3 chunks (50/50/30) for learning_items.id.
     const POOL_SIZE = 130
     const poolIds = Array.from({ length: POOL_SIZE }, (_, i) => `pool-${String(i).padStart(3, '0')}`)
     const learningItemsInCalls: string[][] = []
-    const itemMeaningsInCalls: string[][] = []
 
     function makeBuilder(table: string): any {
       const builder: any = {
@@ -268,8 +268,6 @@ describe('resolver.resolveBlocks — distractor pool chunking', () => {
         in: (column: string, ids: string[]) => {
           if (table === 'learning_items' && column === 'id') {
             learningItemsInCalls.push(ids)
-          } else if (table === 'item_meanings' && column === 'learning_item_id') {
-            itemMeaningsInCalls.push(ids)
           }
           builder._lastIn = { column, ids }
           return builder
@@ -278,10 +276,12 @@ describe('resolver.resolveBlocks — distractor pool chunking', () => {
         then: (resolve: (v: { data: unknown[]; error: null }) => void) => {
           const lastIn = builder._lastIn as { column: string; ids: string[] } | undefined
           if (table === 'learning_items' && lastIn?.column === 'normalized_text') {
+            // Decision R: return row with translation_nl so the builder can synthesise a meaning.
             resolve({ data: [{
               id: 'item-1-uuid', item_type: 'word', base_text: 'item-1', normalized_text: 'item-1',
               language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null,
               source_card_id: null, notes: null, is_active: true, pos: 'noun',
+              translation_nl: 'einde', translation_en: 'end', usage_note: null,
               created_at: '', updated_at: '',
             }], error: null })
           } else if (table === 'item_contexts' && lastIn?.column === 'learning_item_id') {
@@ -294,14 +294,14 @@ describe('resolver.resolveBlocks — distractor pool chunking', () => {
             // The pool-discovery query — return many distinct learning_item_ids.
             resolve({ data: poolIds.map(id => ({ learning_item_id: id })), error: null })
           } else if (table === 'learning_items' && lastIn?.column === 'id') {
+            // Decision R: pool items get translation_nl so meaningsFromItem returns values.
             resolve({ data: lastIn.ids.map(id => ({
               id, item_type: 'word', base_text: id, normalized_text: id,
               language: 'id', level: 'A1', source_type: 'lesson', source_vocabulary_id: null,
               source_card_id: null, notes: null, is_active: true, pos: 'noun',
+              translation_nl: `vertaling-${id}`, translation_en: null, usage_note: null,
               created_at: '', updated_at: '',
             })), error: null })
-          } else if (table === 'item_meanings' && lastIn?.column === 'learning_item_id') {
-            resolve({ data: [], error: null })
           } else {
             resolve({ data: [], error: null })
           }
@@ -314,13 +314,10 @@ describe('resolver.resolveBlocks — distractor pool chunking', () => {
     const service = createCapabilityContentService(client as never)
     await service.resolveBlocks([makeBlock({ itemId: 'item-1', exerciseType: 'meaning_recall' })], baseOptions)
 
-    // Wave 2 fetchMeanings runs first with ~1 session item, then fetchDistractorPool
-    // runs fetchMeanings again with all 130 pool ids — captured here mixed in.
-    // What matters is the URL ceiling: no chunk may exceed 50 ids.
+    // Decision R (PR 1): item_meanings is no longer fetched from DB. Only learning_items
+    // is chunked. The distractor pool fetches 130 pool item rows via chunkedIn.
     expect(learningItemsInCalls.length).toBeGreaterThan(0)
-    expect(itemMeaningsInCalls.length).toBeGreaterThan(0)
     for (const ids of learningItemsInCalls) expect(ids.length).toBeLessThanOrEqual(50)
-    for (const ids of itemMeaningsInCalls) expect(ids.length).toBeLessThanOrEqual(50)
 
     // The distractor-pool path specifically must have produced 3 chunks of (50, 50, 30).
     const poolChunkSizes = learningItemsInCalls

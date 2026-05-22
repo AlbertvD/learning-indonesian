@@ -52,7 +52,6 @@ import {
   findLearningItemBySlug,
   insertExerciseVariantGrammar,
   insertExerciseVariantVocab,
-  replaceItemMeanings,
   upsertCapabilities,
   upsertCapabilityArtifacts,
   upsertCapabilityContentUnits,
@@ -87,6 +86,7 @@ import { projectCloze } from './projectors/cloze'
 import { projectDialogueArtifacts } from './projectors/dialogueArtifacts'
 
 import { validateLessonIdPresence } from './validators/lessonId'
+import { validateItemTranslations } from './validators/itemTranslations'
 import { validateItemSourceRefResolvability } from './validators/itemSourceRefResolvability'
 
 import { runCountParity } from './verify/countParity'
@@ -281,6 +281,8 @@ export async function runCapabilityStage(
   findings.push(...validateGrammarPattern(staging.grammarPatterns as Array<{ slug: string; pattern_name: string; complexity_score: number }>))
   findings.push(...validateCandidatePayload(staging.candidates as Array<{ exercise_type?: string; payload?: Record<string, unknown> | null }>))
   findings.push(...validatePerItemMeaning(staging.learningItems as Array<{ base_text: string; context_type?: string; translation_nl?: string | null; translation_en?: string | null }>))
+  // CS4b — Decision R (PR 1): require translation_nl for non-dialogue_chunk items.
+  findings.push(...validateItemTranslations(staging.learningItems as Array<{ base_text: string; item_type: string; translation_nl?: string | null; translation_en?: string | null }>))
   const posResult = validatePosTags(staging.learningItems as Array<{ base_text: string; item_type: string; pos?: string | null }>)
   findings.push(...posResult.findings)
 
@@ -422,6 +424,11 @@ export async function runCapabilityStage(
   for (const asset of stagedAssets) {
     const capId = capabilityIdsByKey.get(asset.capability_key)
     if (!capId) continue
+    // Decision R/Q (PR 1): item-sourced caps no longer use capability_artifacts.
+    // Translations come from learning_items.translation_{nl,en} (Decision R) and
+    // audio from capability_audio_refs (Decision Q). Skipping here stops writing
+    // stale artifact rows; the reader (byKind/item.ts) does not read them.
+    if (asset.capability_key.startsWith("item:")) continue
     artifactInputs.push({
       capability_id: capId,
       artifact_kind: asset.artifact_kind,
@@ -453,15 +460,17 @@ export async function runCapabilityStage(
   // ---- 8. Write — grammar_patterns (PGRST205 fallback preserved). ------
   const grammarPatternUpsert = await upsertGrammarPatterns(supabase, grammar.grammarPatterns)
 
-  // ---- 9. Write — learning_items + meanings + anchor contexts. ---------
+  // ---- 9. Write — learning_items + anchor contexts. -----------------------
+  // Decision R (PR 1): translations now written to learning_items.translation_{nl,en}
+  // directly via upsertLearningItem (the learningItemInput carries the fields).
+  // replaceItemMeanings is NO LONGER called for item caps — item_meanings rows
+  // become stale and will be dropped in the final cleanup PR (PR 7).
   const publishedItemIds: string[] = []
   const dialogueItemIds = new Set<string>()
   for (const plan of vocab.perItemPlans) {
     const item = await upsertLearningItem(supabase, plan.learningItemInput)
     publishedItemIds.push(item.id)
     if (plan.item.item_type === 'dialogue_chunk') dialogueItemIds.add(item.id)
-    const meanings = plan.meanings.map((m) => ({ ...m, learning_item_id: item.id }))
-    await replaceItemMeanings(supabase, item.id, meanings)
     await upsertItemAnchorContext(supabase, {
       learning_item_id: item.id,
       context_type: plan.anchorContext.context_type,

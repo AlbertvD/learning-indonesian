@@ -155,6 +155,9 @@ export function projectVocab(input: VocabProjectionInput): VocabProjectionOutput
         level: input.level,
         source_type: 'lesson',
         pos: item.pos ?? null,
+        // Decision R (PR 1): write translations directly to learning_items columns.
+        translation_nl: (item.translation_nl ?? '').trim() || null,
+        translation_en: (item.translation_en ?? '').trim() || null,
       },
       meanings,
       anchorContext: {

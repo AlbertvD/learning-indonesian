@@ -25,6 +25,9 @@ function makeLearningItem(overrides: Partial<LearningItem> = {}): LearningItem {
     notes: null,
     is_active: true,
     pos: null,
+    translation_nl: 'eten',
+    translation_en: 'eat',
+    usage_note: null,
     created_at: '2026-01-01T00:00:00Z',
     updated_at: '2026-01-01T00:00:00Z',
     ...overrides,
@@ -159,32 +162,30 @@ describe('supportsSourceKind', () => {
 })
 
 describe('requiredArtifactsFor', () => {
-  it('cloze item-source requires cloze_context + cloze_answer + translation:l1', () => {
-    expect(requiredArtifactsFor('cloze', 'item')).toEqual(
-      expect.arrayContaining(['cloze_context', 'cloze_answer', 'translation:l1']),
-    )
+  // Decision R (PR 1): item-sourced caps no longer require capability_artifacts.
+  // Translations come from learning_items.translation_{nl,en} inline columns.
+  it('cloze item-source requires [] (Decision R: no artifact check for item caps)', () => {
+    expect(requiredArtifactsFor('cloze', 'item')).toEqual([])
   })
 
-  it('cloze dialogue_line-source requires the same trio', () => {
+  it('cloze dialogue_line-source still requires cloze_context + cloze_answer + translation:l1', () => {
     expect(requiredArtifactsFor('cloze', 'dialogue_line')).toEqual(
       expect.arrayContaining(['cloze_context', 'cloze_answer', 'translation:l1']),
     )
   })
 
-  it('listening_mcq requires audio_clip (item path)', () => {
-    expect(requiredArtifactsFor('listening_mcq', 'item')).toContain('audio_clip')
+  // Decision Q (PR 1): audio for item caps is resolved via capability_audio_refs,
+  // not capability_artifacts. requiredArtifacts.item = [] for audio exercise types.
+  it('listening_mcq item-source requires [] (Decision Q: audio via capability_audio_refs)', () => {
+    expect(requiredArtifactsFor('listening_mcq', 'item')).toEqual([])
   })
 
-  it('dictation requires audio_clip + base_text + accepted_answers:id (item path)', () => {
-    expect(requiredArtifactsFor('dictation', 'item')).toEqual(
-      expect.arrayContaining(['audio_clip', 'base_text', 'accepted_answers:id']),
-    )
+  it('dictation item-source requires [] (Decision Q: audio via capability_audio_refs)', () => {
+    expect(requiredArtifactsFor('dictation', 'item')).toEqual([])
   })
 
-  it('recognition_mcq requires base_text + meaning:l1 (item path)', () => {
-    expect(requiredArtifactsFor('recognition_mcq', 'item')).toEqual(
-      expect.arrayContaining(['base_text', 'meaning:l1']),
-    )
+  it('recognition_mcq item-source requires [] (Decision R: translation from inline columns)', () => {
+    expect(requiredArtifactsFor('recognition_mcq', 'item')).toEqual([])
   })
 
   it('typed_recall affixed_form_pair-source requires root_derived_pair + allomorph_rule', () => {
