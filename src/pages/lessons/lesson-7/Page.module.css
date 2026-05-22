@@ -1,0 +1,1345 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Page.module.css — Lesson 7: Libur Sekolah (Schoolvakantie)
+
+   Two voices: the modern packing dialogue (cyan/teal) and the Garuda myth
+   (purple/amber). The hero blends Kuta sunset under a violet→amber gradient
+   that bridges both. Per-section accent palette:
+
+     Dialogue       — teal + amber  (Ibu = teal, Ninik = amber, narrator = mix-recall)
+     -nya grammar   — cyan + spotlight (the suffix gets a single coloured pill)
+     Time grammar   — split palette: months use season tints, days use cyan
+     Expressions    — green
+     Vocabulary     — green chips (re-using the inventory tone)
+     Garuda myth    — purple + amber (sunset-and-myth tones)
+     Closing        — cyan
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ─── Page root ──────────────────────────────────────────────────────────── */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
+}
+
+.band {
+  width: 100%;
+  padding: 56px 0;
+}
+
+@media (max-width: 720px) { .band { padding: 40px 0; } }
+
+/* ─── Hero — Kuta sunset blended under violet→amber gradient ─────────────── */
+
+.heroBand {
+  composes: band;
+  background-color: #1a1437;
+  background-image:
+    linear-gradient(135deg,
+      rgba(156, 54, 181, 0.62) 0%,
+      rgba(26, 20, 55, 0.78) 50%,
+      rgba(252, 100, 0, 0.34) 100%),
+    url('/lesson-7-hero.webp');
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid var(--hero-border);
+  padding: 80px 0 96px;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroBand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 85% 25%, rgba(252, 196, 25, 0.20), transparent 38%),
+    radial-gradient(circle at 12% 80%, rgba(156, 54, 181, 0.22), transparent 40%);
+  pointer-events: none;
+}
+
+.heroInner {
+  composes: container;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 720px) {
+  .heroBand { padding: 56px 0 64px; }
+}
+
+.heroLeft { display: flex; flex-direction: column; gap: 16px; max-width: 740px; }
+
+.heroBadgeRow { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.heroBadge {
+  align-self: flex-start;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(252, 196, 25, 0.18);
+  color: var(--ring-target);
+  border: 1px solid rgba(252, 196, 25, 0.30);
+}
+
+.heroBadgeAlt {
+  composes: heroBadge;
+  background: rgba(156, 54, 181, 0.20);
+  color: #d6a3eb;
+  border-color: rgba(156, 54, 181, 0.40);
+}
+
+.heroTitle { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+
+.heroTitleId {
+  font-size: clamp(40px, 5.5vw, 60px);
+  font-weight: var(--fw-black);
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.heroTitleNl {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: rgba(255, 255, 255, 0.65);
+  font-style: italic;
+}
+
+.heroDescription {
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+  max-width: 620px;
+  font-weight: var(--fw-normal);
+}
+
+/* ─── Editorial lede ─────────────────────────────────────────────────────── */
+
+.ledeBand {
+  composes: band;
+  padding: 64px 0 32px;
+}
+
+.ledeInner { composes: container; max-width: 920px; }
+
+.ledeQuote {
+  font-size: clamp(17px, 1.8vw, 21px);
+  font-weight: var(--fw-medium);
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.ledeQuote em {
+  font-style: italic;
+  color: var(--mix-recall);
+  font-weight: var(--fw-semibold);
+}
+
+.ledeMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.ledeMeta::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  background: var(--mix-recall);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ─── Main shell ─────────────────────────────────────────────────────────── */
+
+.shellBand {
+  composes: band;
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.shell {
+  composes: container;
+  max-width: 1120px;
+  display: flex;
+  flex-direction: column;
+  gap: 88px;
+  min-width: 0;
+}
+
+@media (max-width: 720px) { .shell { gap: 56px; } }
+
+/* ─── Shared section primitives ──────────────────────────────────────────── */
+
+.section { display: flex; flex-direction: column; }
+
+.sectionEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  margin: 0 0 18px;
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+  font-style: italic;
+}
+
+.sectionLede {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0 0 28px;
+  max-width: 80ch;
+  margin-inline: auto;
+}
+
+/* ─── Dialogue — packing for Bali ────────────────────────────────────────── */
+
+.dialogueBand {
+  background: linear-gradient(135deg, rgba(0,199,190,0.08) 0%, rgba(252,196,25,0.05) 100%);
+  border-radius: var(--r-xl);
+  padding: 48px 36px;
+  margin: 0 -36px;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 720px) {
+  .dialogueBand { padding: 32px 20px; margin: 0; }
+}
+
+.dialogueBand::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -50px;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(0,199,190,0.15), transparent 70%);
+  pointer-events: none;
+}
+
+.dialogueEyebrow {
+  composes: sectionEyebrow;
+  color: var(--teal);
+}
+.dialogueEyebrow::before { background: var(--teal); }
+
+.dialogueSetup {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 28px;
+  max-width: 80ch;
+  margin-inline: auto;
+}
+
+.dialogueSetup em { color: var(--ring-target); font-style: italic; font-weight: var(--fw-semibold); }
+
+.dialogueLines {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.dialogueLine {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 16px 18px;
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--r-md);
+}
+
+@media (max-width: 720px) {
+  .dialogueLine { grid-template-columns: 1fr; gap: 6px; }
+}
+
+.dialogueSpeaker {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.dialogueLine[data-speaker-tone='ibu']      .dialogueSpeaker { color: var(--teal); }
+.dialogueLine[data-speaker-tone='ninik']    .dialogueSpeaker { color: var(--ring-target); }
+.dialogueLine[data-speaker-tone='narrator'] .dialogueSpeaker { color: var(--mix-recall); }
+
+/* The narrator lines feel like stage directions — subtle italic backdrop. */
+.dialogueLine[data-speaker-tone='narrator'] {
+  background: rgba(156,54,181,0.06);
+  border: 1px dashed rgba(156,54,181,0.18);
+}
+.dialogueLine[data-speaker-tone='narrator'] .dialogueId {
+  font-style: italic;
+  font-weight: var(--fw-medium);
+}
+
+.dialogueBody { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+
+.dialogueIdRow { display: flex; align-items: center; gap: 12px; }
+
+.dialogueId {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  line-height: 1.5;
+  flex: 1;
+  min-width: 0;
+}
+
+.dialogueNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ─── Grammar I — three faces of -nya ────────────────────────────────────── */
+
+.nyaEyebrow {
+  composes: sectionEyebrow;
+  color: #b197fc;
+}
+.nyaEyebrow::before { background: #b197fc; }
+
+.nyaMarkTitle {
+  color: var(--accent-primary);
+  font-weight: var(--fw-black);
+  font-style: italic;
+}
+
+.nyaIntro {
+  composes: sectionLede;
+  margin-bottom: 32px;
+}
+
+.nyaIntro em {
+  color: var(--accent-primary);
+  font-style: normal;
+  font-weight: var(--fw-semibold);
+}
+
+/* The coloured pill for any -nya occurrence in examples */
+.nyaMark {
+  display: inline-block;
+  padding: 0 4px;
+  margin: 0 1px;
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+  border-radius: 4px;
+  font-style: normal;
+  font-weight: var(--fw-bold);
+  font-size: 0.95em;
+  line-height: 1.2;
+}
+
+/* Centerpiece: the topicalisation triptych */
+.topicalisatie {
+  background: linear-gradient(180deg, rgba(0,229,255,0.06) 0%, rgba(0,229,255,0.02) 100%);
+  border: 1px solid var(--accent-primary-border);
+  border-radius: var(--r-xl);
+  padding: 36px 32px;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+@media (max-width: 720px) {
+  .topicalisatie { padding: 28px 20px; }
+}
+
+.topicalisatieKicker {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  margin: 0 0 6px;
+}
+
+.topicalisatieHint {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0 0 24px;
+  max-width: 80ch;
+  margin-inline: auto;
+}
+
+.constructies {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  counter-reset: con;
+}
+
+.constructie {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 180px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: baseline;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.constructie:hover {
+  background: rgba(0,229,255,0.06);
+}
+
+@media (max-width: 720px) {
+  .constructie { grid-template-columns: 32px 1fr; }
+  .constructieHead { grid-column: 2; }
+  .constructieSentence { grid-column: 1 / -1; padding-left: 0; }
+}
+
+.constructieNumber {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--accent-primary);
+  letter-spacing: 0.06em;
+}
+
+.constructieHead {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.constructieSentence {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  letter-spacing: -0.005em;
+}
+
+.topicalisatieFoot {
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
+  margin: 18px 0 0;
+  font-style: italic;
+  text-align: right;
+}
+
+/* Two flanking sub-cards */
+.nyaFlanks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+@media (max-width: 720px) {
+  .nyaFlanks { grid-template-columns: 1fr; }
+}
+
+.nyaFlank {
+  padding: 22px 22px 24px;
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.nyaFlank[data-flank='possessive']     { border-top: 3px solid var(--ring-target); }
+.nyaFlank[data-flank='nominalisation'] { border-top: 3px solid var(--teal); }
+
+.nyaFlankHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.nyaFlankNumber {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.12em;
+  color: var(--text-tertiary);
+}
+
+.nyaFlankTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.nyaFlankRubric {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.nyaFlankRubric em {
+  color: var(--text-primary);
+  font-style: italic;
+  font-weight: var(--fw-semibold);
+}
+
+.nyaFlankExamples {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px dashed var(--card-border);
+  border-bottom: 1px dashed var(--card-border);
+  margin: 4px 0 4px;
+}
+
+.nyaFlankExample { display: flex; flex-direction: column; gap: 2px; }
+
+.nyaFlankId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.nyaFlankNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.nyaFlankRule {
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.nyaFlankRule strong {
+  color: var(--success);
+  font-weight: var(--fw-semibold);
+}
+
+.nyaFlankRule s {
+  color: var(--danger);
+  text-decoration: line-through;
+  text-decoration-color: var(--danger);
+}
+
+/* ─── Grammar II — Time, calendar layout ─────────────────────────────────── */
+
+.timeEyebrow {
+  composes: sectionEyebrow;
+  color: var(--mix-recall);
+}
+.timeEyebrow::before { background: var(--mix-recall); }
+
+.timeBlockHeading {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  margin: 32px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.timeBlockHeading::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 2px;
+  background: var(--mix-recall);
+  border-radius: 999px;
+}
+
+.timeBlockHeading em {
+  color: var(--mix-recall);
+  font-style: italic;
+  font-weight: var(--fw-medium);
+}
+
+.timeBlockRubric {
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
+  margin: 0 0 16px;
+  font-style: italic;
+}
+
+.timeBlockRubric em { color: var(--mix-recall); }
+
+/* Tijdseenheden — small ladder */
+.timeUnits { display: flex; flex-direction: column; }
+
+.timeUnitsRail {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 720px) { .timeUnitsRail { grid-template-columns: repeat(2, 1fr); } }
+
+.timeUnit {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 14px 16px;
+  background: rgba(156, 54, 181, 0.06);
+  border: 1px solid rgba(156, 54, 181, 0.20);
+  border-radius: var(--r-md);
+}
+
+.timeUnitId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.timeUnitNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+}
+
+/* Maanden — 12-cell calendar grid */
+.timeMonths { display: flex; flex-direction: column; }
+
+.timeMonthsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 720px) { .timeMonthsGrid { grid-template-columns: repeat(2, 1fr); } }
+
+.timeMonth {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 14px;
+  border-radius: var(--r-md);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  position: relative;
+}
+
+/* Season-tinted backgrounds removed for visual calm — uniform card surface. */
+
+.timeMonthIndex {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.10em;
+  color: var(--text-tertiary);
+}
+
+.timeMonthName {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.timeMonthPrefix {
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+.timeMonthHead {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.005em;
+}
+
+.timeMonthNl {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Dagen — horizontal week-strip */
+.timeDays { display: flex; flex-direction: column; }
+
+.timeWeekStrip {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+@media (max-width: 720px) { .timeWeekStrip { grid-template-columns: repeat(4, 1fr); } }
+
+.timeDay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 6px;
+  background: rgba(0,229,255,0.05);
+  border: 1px solid rgba(0,229,255,0.16);
+  border-radius: var(--r-md);
+  text-align: center;
+}
+
+.timeDay[data-weekend='true'] {
+  background: rgba(252, 196, 25, 0.07);
+  border-color: rgba(252,196,25,0.22);
+}
+
+.timeDayNl {
+  font-size: var(--fs-xs);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+}
+
+.timeDayId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.timeDayExtras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.timeDayExtra {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--bg-hover);
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+}
+
+.timeDayExtraId {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.timeDayExtraNl {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Tijdshorizon — kemarin↔besok timeline */
+.timeHorizon { display: flex; flex-direction: column; }
+
+.timeAxis {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  position: relative;
+}
+
+.timeAxis::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 4%;
+  right: 4%;
+  height: 2px;
+  background: linear-gradient(90deg,
+    rgba(156,54,181,0.30) 0%,
+    rgba(0,229,255,0.50) 50%,
+    rgba(252,196,25,0.40) 100%);
+  border-radius: 999px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 720px) {
+  .timeAxis { grid-template-columns: 1fr 1fr; }
+  .timeAxis::before { display: none; }
+}
+
+.timeAxisCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.timeAxisCell[data-offset='-2'] { border-color: rgba(156,54,181,0.32); background: rgba(156,54,181,0.06); }
+.timeAxisCell[data-offset='-1'] { border-color: rgba(156,54,181,0.45); background: rgba(156,54,181,0.10); }
+.timeAxisCell[data-offset='0']  { border-color: var(--accent-primary); background: var(--accent-primary-subtle); }
+.timeAxisCell[data-offset='1']  { border-color: rgba(252,196,25,0.45); background: rgba(252,196,25,0.10); }
+.timeAxisCell[data-offset='2']  { border-color: rgba(252,196,25,0.32); background: rgba(252,196,25,0.07); }
+
+.timeAxisWord {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.005em;
+}
+
+.timeAxisCell[data-offset='0'] .timeAxisWord { color: var(--accent-primary); }
+
+.timeAxisNl {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.timeAxisSub {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.timeAxisSubCell {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--bg-hover);
+  border: 1px dashed var(--card-border);
+  border-radius: var(--r-md);
+}
+
+.timeAxisRules {
+  list-style: none;
+  margin: 18px 0 14px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.timeAxisRules li {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: 1.55;
+  padding-left: 18px;
+  position: relative;
+}
+
+.timeAxisRules li::before {
+  content: '·';
+  position: absolute;
+  left: 4px;
+  color: var(--mix-recall);
+  font-weight: var(--fw-bold);
+}
+
+.timeAxisExamples {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.timeAxisExample {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+}
+
+.timeAxisExampleId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.timeAxisExampleNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Zinsbouw — short doctrine card */
+.timeSyntax {
+  margin-top: 28px;
+  padding: 22px 24px;
+  background: linear-gradient(180deg, rgba(156,54,181,0.04) 0%, transparent 100%);
+  border: 1px solid rgba(156,54,181,0.20);
+  border-radius: var(--r-lg);
+}
+
+@media (max-width: 720px) { .timeSyntax { padding: 18px; } }
+
+.timeSyntaxRules {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.timeSyntaxRules li {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.55;
+  padding-left: 22px;
+  position: relative;
+}
+
+.timeSyntaxRules li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--mix-recall);
+  font-weight: var(--fw-bold);
+}
+
+.timeSyntaxExamples {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+@media (max-width: 720px) { .timeSyntaxExamples { grid-template-columns: 1fr; } }
+
+.timeSyntaxExample {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--r-md);
+}
+
+.timeSyntaxId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.timeSyntaxNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ─── Expressions — two twin statements ──────────────────────────────────── */
+
+.exprEyebrow {
+  composes: sectionEyebrow;
+  color: var(--warning);
+}
+.exprEyebrow::before { background: var(--warning); }
+
+.exprDuet {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 720px) { .exprDuet { grid-template-columns: 1fr; } }
+
+.exprCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 22px 24px;
+  background: rgba(50, 215, 75, 0.06);
+  border: 1px solid rgba(50, 215, 75, 0.20);
+  border-radius: var(--r-lg);
+  position: relative;
+}
+
+.exprMark {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.12em;
+  color: var(--success);
+  position: absolute;
+  top: 14px;
+  right: 18px;
+}
+
+.exprId {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.exprNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ─── Vocabulary — dense reference grid ──────────────────────────────────── */
+
+.vocabEyebrow {
+  composes: sectionEyebrow;
+  color: var(--success);
+}
+.vocabEyebrow::before { background: var(--success); }
+
+.vocabHint {
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
+  margin: 0 0 18px;
+  line-height: 1.6;
+  max-width: 80ch;
+  margin-inline: auto;
+}
+
+.vocabHint em {
+  font-family: var(--font-mono);
+  color: var(--warning);
+  font-style: normal;
+  font-weight: var(--fw-bold);
+}
+
+.vocabGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 6px;
+}
+
+.vocabEntry {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.vocabEntry:hover {
+  border-color: var(--success);
+  background: rgba(50, 215, 75, 0.06);
+}
+
+.vocabId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  min-width: 0;
+}
+
+.vocabNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: right;
+  min-width: 0;
+}
+
+/* ─── Garuda myth — closing essay spread ─────────────────────────────────── */
+
+.mythBand {
+  background:
+    radial-gradient(circle at 90% 0%, rgba(252, 196, 25, 0.06), transparent 40%),
+    linear-gradient(180deg, rgba(156, 54, 181, 0.06) 0%, rgba(156, 54, 181, 0.02) 60%, transparent 100%);
+  border-radius: var(--r-xl);
+  padding: 56px 44px;
+  margin: 0 -44px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(156, 54, 181, 0.16);
+}
+
+@media (max-width: 720px) {
+  .mythBand { padding: 40px 20px; margin: 0; }
+}
+
+.mythKicker {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mix-recall);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 8px;
+}
+
+.mythKicker::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  background: var(--mix-recall);
+  border-radius: 999px;
+}
+
+.mythDisplay {
+  font-size: clamp(28px, 3.4vw, 38px);
+  font-weight: var(--fw-black);
+  color: var(--text-primary);
+  margin: 0 0 32px;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 22ch;
+}
+
+.mythDisplaySub {
+  font-size: clamp(16px, 1.4vw, 18px);
+  font-weight: var(--fw-medium);
+  color: var(--ring-target);
+  font-style: italic;
+  letter-spacing: 0;
+}
+
+.mythProse {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.mythRow {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .mythRow {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .mythAnchorCol { order: -1; flex-direction: row; flex-wrap: wrap; gap: 10px; }
+}
+
+.mythAnchorCol {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.mythRow[data-has-anchor='false'] .mythAnchorCol { min-height: 0; }
+
+.mythAnchor {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  background: rgba(252, 196, 25, 0.06);
+  border-radius: var(--r-sm);
+}
+
+.mythAnchorName {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--ring-target);
+  letter-spacing: -0.01em;
+}
+
+.mythAnchorGloss {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.mythPara {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.75;
+  margin: 0;
+  max-width: 80ch;
+  margin-inline: auto;
+}
+
+.mythPara[data-opener='true']::first-letter {
+  font-size: 3.2em;
+  font-weight: var(--fw-black);
+  float: left;
+  line-height: 0.95;
+  padding: 4px 12px 0 0;
+  color: var(--mix-recall);
+}
+
+.mythCoda {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.65;
+  margin: 32px 0 0;
+  padding: 18px 0 0;
+  border-top: 1px dashed rgba(156, 54, 181, 0.30);
+  max-width: 80ch;
+  margin-inline: auto;
+}
+
+/* ─── Inline play button ─────────────────────────────────────────────────── */
+
+.playButton {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition-base);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.playButton:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+}
+
+.playButton[data-playing='true'] {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-glow);
+}
+
+.playButton svg { width: 10px; height: 10px; }
+
+/* ─── Closing band ───────────────────────────────────────────────────────── */
+
+.closingBand {
+  composes: band;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,229,255,0.04) 100%);
+  padding: 64px 0 96px;
+}
+
+.closingInner {
+  composes: container;
+  max-width: 720px;
+  text-align: center;
+}
+
+.closingTitle {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  letter-spacing: -0.015em;
+}
+
+.closingLede {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+  line-height: 1.65;
+}
+
+.closingLede em {
+  color: var(--accent-primary);
+  font-style: italic;
+  font-weight: var(--fw-semibold);
+}
+
+.closingActivation {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 28px;
+}
+
+.closingActivation > * {
+  width: 100%;
+  max-width: 660px;
+  text-align: left;
+  padding: 18px 22px;
+  background: var(--accent-primary-subtle);
+  border: 1px solid var(--accent-primary-border);
+  border-radius: var(--r-lg);
+}
+
+.closingActions {
+  display: flex;
+  justify-content: center;
+}
+
+.closingActions > * {
+  width: 100%;
+  max-width: 660px;
+}

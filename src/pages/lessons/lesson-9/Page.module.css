@@ -1,0 +1,1509 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Page.module.css — Lesson 9: Ke Puskesmas / Dukun en Jamu
+
+   Two systems, one body. The page's visual language pairs:
+
+     - jamu-green (var(--success)) for the traditional thread — the cultuur
+       spread, the dukun specialisten, the body atlas (the shared anatomy),
+       the herbal half of the symptoms/remedies column.
+     - clinical-cyan (var(--accent-primary)) for the modern thread — the
+       PUSKESMAS dialogue scene, the symptoms column, the closing CTA.
+
+   The grammar is the bridge. The A·B·C section gets three accents in
+   rotation (rose / amber / teal) so the three positions of the verb
+   cluster read as distinct slots, not a single block.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ─── Page root ──────────────────────────────────────────────────────────── */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
+}
+
+.band {
+  width: 100%;
+  padding: 56px 0;
+}
+
+@media (max-width: 720px) { .band { padding: 40px 0; } }
+
+/* ─── Hero — jamu vendor, green-cinnamon gradient ───────────────────────── */
+
+.heroBand {
+  composes: band;
+  /* Deep cinnamon + jamu green over the Kebumen jamu vendor photograph.
+     Green right-side accent ties the page to the herbal worldview that the
+     cultuur spread spends 13 paragraphs unpacking. */
+  background-color: #1d2618;
+  background-image:
+    linear-gradient(135deg, rgba(20, 40, 22, 0.86) 0%, rgba(48, 30, 18, 0.72) 50%, rgba(50, 215, 75, 0.26) 100%),
+    url('/lesson-9-hero.webp');
+  background-size: cover;
+  background-position: center 45%;
+  background-blend-mode: normal;
+  border-bottom: 1px solid var(--hero-border);
+  padding: 88px 0 104px;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroBand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 84% 22%, rgba(50, 215, 75, 0.22), transparent 45%),
+    radial-gradient(circle at 8% 88%, rgba(20, 40, 22, 0.45), transparent 40%);
+  pointer-events: none;
+}
+
+.heroInner {
+  composes: container;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 720px) { .heroBand { padding: 56px 0 64px; } }
+
+.heroLeft { display: flex; flex-direction: column; gap: 16px; max-width: 720px; }
+
+.heroBadgeRow { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.heroBadge {
+  align-self: flex-start;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(50, 215, 75, 0.20);
+  color: var(--success);
+  border: 1px solid rgba(50, 215, 75, 0.34);
+}
+
+.heroBadgeAlt {
+  composes: heroBadge;
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary-border);
+}
+
+.heroTitle { display: flex; flex-direction: column; gap: 8px; margin: 0; }
+
+.heroTitleId {
+  font-size: clamp(34px, 4.6vw, 52px);
+  font-weight: var(--fw-black);
+  color: #ffffff;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.heroTitleNl {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+  line-height: 1.4;
+  max-width: 560px;
+}
+
+.heroDescription {
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.65;
+  max-width: 600px;
+  font-weight: var(--fw-normal);
+}
+
+.heroDescription em {
+  font-style: italic;
+  color: var(--success);
+  font-weight: var(--fw-semibold);
+}
+
+/* ─── Editorial lede ─────────────────────────────────────────────────────── */
+
+.ledeBand {
+  composes: band;
+  padding: 64px 0 32px;
+}
+
+.ledeInner { composes: container; max-width: 920px; }
+
+.ledeQuote {
+  font-size: clamp(17px, 1.8vw, 21px);
+  font-weight: var(--fw-medium);
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.ledeQuote em {
+  font-style: italic;
+  color: var(--success);
+  font-weight: var(--fw-semibold);
+}
+
+.ledeMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.ledeMeta::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  background: var(--success);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ─── Main content shell ─────────────────────────────────────────────────── */
+
+.shellBand {
+  composes: band;
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.shell {
+  composes: container;
+  max-width: 1120px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  min-width: 0;
+}
+
+@media (max-width: 720px) { .shell { gap: 56px; } }
+
+.section { display: flex; flex-direction: column; }
+
+.sectionEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: clamp(18px, 1.6vw, 22px);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  margin: 0 0 18px;
+  letter-spacing: -0.005em;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.sectionTitle em {
+  font-family: var(--font-mono);
+  font-style: italic;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+}
+
+/* ─── 1. Culture spread — jamu-green, editorial ──────────────────────────── */
+
+.cultureBand {
+  background:
+    linear-gradient(180deg, rgba(50, 215, 75, 0.06) 0%, rgba(20, 40, 22, 0.04) 60%, transparent 100%);
+  border-radius: var(--r-xl);
+  padding: 56px 56px;
+  margin: 0 -56px;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(50, 215, 75, 0.22);
+}
+
+@media (max-width: 720px) {
+  .cultureBand { padding: 36px 22px; margin: 0; }
+}
+
+.cultureBand::before {
+  content: '';
+  position: absolute;
+  top: -100px; right: -120px;
+  width: 360px; height: 360px;
+  background: radial-gradient(circle, rgba(50, 215, 75, 0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.cultureKicker {
+  composes: sectionEyebrow;
+  color: var(--success);
+  margin-bottom: 16px;
+}
+
+.cultureKicker::before { background: var(--success); }
+
+.cultureDisplay {
+  font-size: clamp(28px, 3.4vw, 42px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 28px;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cultureDisplayLine2 {
+  font-size: clamp(18px, 1.9vw, 24px);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  font-style: italic;
+  letter-spacing: -0.01em;
+}
+
+.cultureLede {
+  font-size: clamp(16px, 1.4vw, 18px);
+  font-weight: var(--fw-normal);
+  color: var(--text-primary);
+  line-height: 1.75;
+  margin: 0 0 22px;
+  max-width: 80ch;
+  margin-inline: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.cultureLede::first-letter {
+  font-size: 4.2em;
+  font-weight: var(--fw-black);
+  float: left;
+  line-height: 0.85;
+  padding: 6px 14px 0 0;
+  color: var(--success);
+  font-style: normal;
+  letter-spacing: -0.04em;
+}
+
+.cultureBody {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.7;
+  margin: 0 0 18px;
+  max-width: 80ch;
+  margin-inline: auto;
+}
+
+.cultureAside {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.7;
+  margin: 24px 0;
+  max-width: 80ch;
+  margin-inline: auto;
+  padding-left: 18px;
+  border-left: 2px solid rgba(50, 215, 75, 0.32);
+}
+
+.cultureCoda {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.7;
+  margin: 24px 0 0;
+  max-width: 80ch;
+  margin-inline: auto;
+  font-weight: var(--fw-medium);
+}
+
+.culturePull {
+  margin: 32px 0;
+  padding: 24px 32px;
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: var(--fw-medium);
+  font-style: italic;
+  color: var(--text-primary);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  max-width: 56ch;
+  position: relative;
+}
+
+.culturePullMark, .culturePullMarkClose {
+  color: var(--success);
+  font-weight: var(--fw-black);
+  font-size: 1.4em;
+  line-height: 0;
+}
+
+.culturePullMark { padding-right: 4px; }
+.culturePullMarkClose { padding-left: 4px; }
+
+/* ── Semangat panel — the lesson's pivotal concept ─────────────────────── */
+
+.semangatPanel {
+  margin: 32px 0;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, rgba(50, 215, 75, 0.10) 0%, rgba(0, 199, 190, 0.08) 100%);
+  border: 1px solid rgba(50, 215, 75, 0.30);
+  border-radius: var(--r-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.semangatPanel::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; right: -80px;
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, rgba(0, 199, 190, 0.16), transparent 70%);
+  pointer-events: none;
+}
+
+.semangatKicker {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin: 0 0 12px;
+}
+
+.semangatTerm {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 0 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.semangatId {
+  font-family: var(--font-mono);
+  font-style: italic;
+  font-size: clamp(28px, 3.2vw, 38px);
+  font-weight: var(--fw-black);
+  color: var(--success);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.semangatGloss {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.semangatBody {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.7;
+  margin: 0 0 12px;
+  max-width: 80ch;
+  margin-inline: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.semangatBody:last-of-type { margin-bottom: 0; }
+
+/* ── Dukun specialisten — extracted chip strip ─────────────────────────── */
+
+.specialisten {
+  margin: 32px 0;
+  padding: 24px 0;
+  border-top: 1px dashed rgba(50, 215, 75, 0.28);
+  border-bottom: 1px dashed rgba(50, 215, 75, 0.28);
+}
+
+.specialistenKicker {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--success);
+  margin: 0 0 8px;
+}
+
+.specialistenIntro {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0 0 18px;
+  max-width: 80ch;
+  margin-inline: auto;
+}
+
+.specialistenList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.specialistChip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  transition: var(--transition-base);
+}
+
+.specialistChip[data-cell='1'] { background: rgba(50, 215, 75, 0.08);  border-color: rgba(50, 215, 75, 0.24); }
+.specialistChip[data-cell='2'] { background: rgba(0, 199, 190, 0.08);  border-color: rgba(0, 199, 190, 0.24); }
+.specialistChip[data-cell='3'] { background: rgba(252, 196, 25, 0.08); border-color: rgba(252, 196, 25, 0.24); }
+.specialistChip[data-cell='4'] { background: rgba(156, 54, 181, 0.08); border-color: rgba(156, 54, 181, 0.24); }
+
+.specialistChip:hover { transform: translateY(-1px); }
+
+.specialistKey {
+  font-family: var(--font-mono);
+  font-style: italic;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.specialistGloss {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+/* ── Eigenschappen grid (the a/b/c/d list) ─────────────────────────────── */
+
+.eigenschappen {
+  margin: 32px 0 8px;
+  padding: 28px 0 8px;
+}
+
+.eigenschappenHeading {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  margin: 0 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.eigenschappenHeading::before,
+.eigenschappenHeading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(50, 215, 75, 0.30);
+}
+
+.eigenschappenGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: eigenschap;
+}
+
+.eigenschap {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 12px;
+  row-gap: 4px;
+  padding: 18px 18px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  position: relative;
+}
+
+
+.eigenschapLetter {
+  grid-row: 1;
+  grid-column: 1;
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-black);
+  color: var(--success);
+  line-height: 1;
+}
+
+.eigenschap:nth-child(4n+2) .eigenschapLetter { color: var(--accent-primary); }
+.eigenschap:nth-child(4n+3) .eigenschapLetter { color: var(--teal); }
+.eigenschap:nth-child(4n+4) .eigenschapLetter { color: var(--mix-recall); }
+
+.eigenschapTitle {
+  grid-row: 1;
+  grid-column: 2;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.005em;
+}
+
+.eigenschapBody {
+  grid-row: 2;
+  grid-column: 1 / -1;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+/* ─── 2. Dialogue — clinical-cyan PUSKESMAS encounter ──────────────────── */
+
+.dialogueBand {
+  background: linear-gradient(135deg, rgba(0, 199, 190, 0.08) 0%, rgba(252, 196, 25, 0.05) 100%);
+  border-radius: var(--r-xl);
+  padding: 48px 36px;
+  margin: 0 -36px;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 720px) {
+  .dialogueBand { padding: 32px 20px; margin: 0; }
+}
+
+.dialogueBand::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(0, 199, 190, 0.15), transparent 70%);
+  pointer-events: none;
+}
+
+.dialogueEyebrow {
+  composes: sectionEyebrow;
+  color: var(--teal);
+}
+
+.dialogueEyebrow::before { background: var(--teal); }
+
+/* ── Narrator stage (the two opening setup paragraphs) ─────────────────── */
+
+.dialogueStage {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 0 28px;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--r-md);
+  position: relative;
+  z-index: 1;
+}
+
+.dialogueStageLine {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dialogueStageIdRow {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dialogueStageId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  font-style: italic;
+  line-height: 1.55;
+  flex: 1;
+  min-width: 0;
+}
+
+.dialogueStageNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+/* ── Spoken consultation lines ─────────────────────────────────────────── */
+
+.dialogueLines {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.dialogueLine {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--r-md);
+}
+
+@media (max-width: 720px) {
+  .dialogueLine { grid-template-columns: 1fr; gap: 6px; }
+}
+
+.dialogueSpeaker {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.dialogueLine[data-speaker-tone='dokter'] .dialogueSpeaker { color: var(--accent-primary); }
+.dialogueLine[data-speaker-tone='tina']   .dialogueSpeaker { color: var(--ring-target); }
+.dialogueLine[data-speaker-tone='ibu']    .dialogueSpeaker { color: var(--teal); }
+
+.dialogueBody { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+
+.dialogueIdRow { display: flex; align-items: center; gap: 12px; }
+
+.dialogueId {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  line-height: 1.5;
+  flex: 1;
+  min-width: 0;
+}
+
+.dialogueNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ─── 3. Grammar I — A·B·C verbal-order section ────────────────────────── */
+
+.abcEyebrow {
+  composes: sectionEyebrow;
+  color: #b197fc;
+}
+
+.abcEyebrow::before { background: #b197fc; }
+
+.abcIntro {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0 0 22px;
+  max-width: 80ch;
+  margin-inline: auto;
+}
+
+/* ── A·B·C slot legend ─────────────────────────────────────────────────── */
+
+.abcLegend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 28px;
+  padding: 14px 18px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+}
+
+.abcSlot {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.abcSlot[data-slot='a'] { background: rgba(255, 75, 110, 0.12); color: #ff7a93; border: 1px solid rgba(255, 75, 110, 0.30); }
+.abcSlot[data-slot='b'] { background: rgba(252, 196, 25, 0.12); color: var(--ring-target); border: 1px solid rgba(252, 196, 25, 0.30); }
+.abcSlot[data-slot='c'] { background: rgba(0, 199, 190, 0.12); color: var(--teal); border: 1px solid rgba(0, 199, 190, 0.30); }
+
+.abcArrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  color: var(--text-tertiary);
+  font-weight: var(--fw-bold);
+}
+
+/* ── Opener examples (8 entries) ───────────────────────────────────────── */
+
+.abcExamples {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin: 0 0 36px;
+}
+
+.abcExample {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+}
+
+.abcExampleId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  line-height: 1.45;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.abcExampleNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* ── The word-group TABLE — the lesson's centrepiece ───────────────────── */
+
+.abcTableWrap {
+  margin: 0 0 36px;
+  padding: 32px 32px;
+  background:
+    linear-gradient(135deg, rgba(255, 75, 110, 0.05) 0%, rgba(252, 196, 25, 0.05) 50%, rgba(0, 199, 190, 0.05) 100%);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 720px) {
+  .abcTableWrap { padding: 24px 18px; }
+}
+
+.abcTableHeading {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  margin: 0 0 18px;
+  letter-spacing: -0.005em;
+}
+
+.abcTable {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+
+.abcTableRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.abcTableHead {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  background: var(--card-bg);
+  border-radius: var(--r-sm);
+}
+
+.abcTableHead[data-col='a'] { color: #ff7a93; background: rgba(255, 75, 110, 0.10); }
+.abcTableHead[data-col='b'] { color: var(--ring-target); background: rgba(252, 196, 25, 0.10); }
+.abcTableHead[data-col='c'] { color: var(--teal); background: rgba(0, 199, 190, 0.10); }
+
+.abcTableCell {
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--r-sm);
+  letter-spacing: -0.01em;
+}
+
+.abcTableCell[data-col='a'] { color: rgba(255, 122, 147, 0.95); }
+.abcTableCell[data-col='b'] { color: rgba(252, 196, 25, 0.95); }
+.abcTableCell[data-col='c'] { color: rgba(0, 199, 190, 0.95); }
+
+.abcTableCell:empty {
+  background: transparent;
+}
+
+.abcTableFoot {
+  margin: 18px 0 0;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  line-height: 1.55;
+}
+
+.abcTableFoot strong {
+  font-family: var(--font-mono);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+/* ── Three group tiles ─────────────────────────────────────────────────── */
+
+.abcGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.abcGroup {
+  padding: 24px 24px;
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.abcGroup[data-accent='rose']  { --group-accent: #ff4b6e; }
+.abcGroup[data-accent='amber'] { --group-accent: var(--ring-target); }
+.abcGroup[data-accent='teal']  { --group-accent: var(--teal); }
+
+.abcGroupHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.abcGroupBadge {
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-black);
+  color: var(--group-accent, var(--accent-primary));
+  padding: 4px 12px;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.04);
+  letter-spacing: 0.04em;
+}
+
+.abcGroupTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.abcGroupBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+
+@media (max-width: 720px) {
+  .abcGroupBody { grid-template-columns: 1fr; gap: 20px; }
+  .abcGroup { padding: 20px 18px 20px 22px; }
+}
+
+.abcGroupRules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.abcGroupRules li {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.55;
+  padding-left: 22px;
+  position: relative;
+}
+
+.abcGroupRules li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--group-accent, var(--accent-primary));
+  font-weight: var(--fw-bold);
+}
+
+.abcGroupExamples {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 14px;
+  border-left: 1px dashed var(--card-border);
+}
+
+@media (max-width: 720px) {
+  .abcGroupExamples { padding-left: 0; border-left: none; padding-top: 12px; border-top: 1px dashed var(--card-border); }
+}
+
+.abcGroupExample { display: flex; flex-direction: column; gap: 2px; }
+
+.abcGroupExampleId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.abcGroupExampleNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ─── 4. Grammar II — intensifiers (two-tile spread) ───────────────────── */
+
+.intEyebrow {
+  composes: sectionEyebrow;
+  color: var(--warning);
+}
+
+.intEyebrow::before { background: var(--warning); }
+
+.intIntro {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0 0 22px;
+  max-width: 80ch;
+  margin-inline: auto;
+}
+
+.intTiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 14px;
+}
+
+.intTile {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 22px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.intTile[data-tile='positie']::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--warning);
+}
+
+.intTile[data-tile='echt']::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--ring-target);
+}
+
+.intTileHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.intTileBadge {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--warning);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.1em;
+}
+
+.intTile[data-tile='echt'] .intTileBadge { color: var(--ring-target); }
+
+.intTileTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.intRules {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.intRules li {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: 1.55;
+  padding-left: 18px;
+  position: relative;
+}
+
+.intRules li::before {
+  content: '·';
+  position: absolute;
+  left: 6px;
+  top: -1px;
+  color: var(--warning);
+  font-weight: var(--fw-bold);
+  font-size: 1.2em;
+}
+
+.intTile[data-tile='echt'] .intRules li::before { color: var(--ring-target); }
+
+.intExamples {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--card-border);
+}
+
+.intExample { display: flex; flex-direction: column; gap: 2px; }
+
+.intExampleId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.intExampleNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ─── 5. Body atlas — green-tinted lexicon, zoned ──────────────────────── */
+
+.bodyEyebrow {
+  composes: sectionEyebrow;
+  color: var(--success);
+}
+
+.bodyEyebrow::before { background: var(--success); }
+
+.bodyHint {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.6;
+  margin: 0 0 28px;
+  max-width: 80ch;
+  margin-inline: auto;
+}
+
+.bodyZones {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.bodyZone { display: flex; flex-direction: column; gap: 10px; }
+
+.bodyZoneLabel {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--success);
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed rgba(50, 215, 75, 0.30);
+}
+
+.bodyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 8px;
+}
+
+.bodyEntry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(50, 215, 75, 0.05);
+  border: 1px solid rgba(50, 215, 75, 0.18);
+  border-radius: var(--r-sm);
+  transition: var(--transition-base);
+}
+
+.bodyEntry:hover {
+  border-color: var(--success);
+  transform: translateY(-1px);
+}
+
+.bodyId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.bodyNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  margin-left: auto;
+  font-style: italic;
+  text-align: right;
+}
+
+/* ─── 6. Symptoms & remedies — paired columns ──────────────────────────── */
+
+.clinicEyebrow {
+  composes: sectionEyebrow;
+  color: var(--teal);
+}
+
+.clinicEyebrow::before { background: var(--teal); }
+
+.clinicDual {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+@media (max-width: 720px) {
+  .clinicDual { grid-template-columns: 1fr; gap: 28px; }
+  .clinicDivider { display: none; }
+}
+
+.clinicColumn { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+.clinicColumnLabel {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.clinicColumn[data-column='symptoms'] .clinicColumnLabel { color: var(--accent-primary); }
+.clinicColumn[data-column='remedies'] .clinicColumnLabel { color: var(--success); }
+
+.clinicDivider {
+  background: linear-gradient(180deg, transparent 0%, var(--card-border) 30%, var(--card-border) 70%, transparent 100%);
+  width: 1px;
+}
+
+.clinicGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.clinicEntry {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  transition: var(--transition-base);
+}
+
+.clinicEntry[data-side='symptom'] {
+  background: rgba(0, 229, 255, 0.05);
+  border-color: rgba(0, 229, 255, 0.20);
+}
+
+.clinicEntry[data-side='remedy'] {
+  background: rgba(50, 215, 75, 0.05);
+  border-color: rgba(50, 215, 75, 0.20);
+}
+
+.clinicEntry[data-side='symptom']:hover { border-color: var(--accent-primary); }
+.clinicEntry[data-side='remedy']:hover  { border-color: var(--success); }
+
+.clinicIdRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.clinicId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 0;
+  letter-spacing: -0.005em;
+}
+
+.clinicNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.45;
+}
+
+/* ─── 7. General vocab — tight reference grid ──────────────────────────── */
+
+.vocabEyebrow {
+  composes: sectionEyebrow;
+  color: var(--success);
+}
+
+.vocabEyebrow::before { background: var(--success); }
+
+.vocabHint {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.6;
+  margin: 0 0 24px;
+  max-width: 80ch;
+  margin-inline: auto;
+}
+
+.vocabGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+}
+
+.vocabEntry {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  row-gap: 2px;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-sm);
+  transition: var(--transition-base);
+}
+
+.vocabEntry:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+}
+
+.vocabEntry .playButton {
+  grid-row: 1 / span 2;
+  grid-column: 1;
+}
+
+.vocabId {
+  grid-row: 1;
+  grid-column: 2;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.005em;
+}
+
+.vocabNl {
+  grid-row: 2;
+  grid-column: 2;
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* ─── 8. Expressions — small showcase tiles ────────────────────────────── */
+
+.expressionsEyebrow {
+  composes: sectionEyebrow;
+  color: var(--warning);
+}
+
+.expressionsEyebrow::before { background: var(--warning); }
+
+.expressionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.expressionCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  background: rgba(255, 149, 0, 0.06);
+  border: 1px solid rgba(255, 149, 0, 0.22);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.expressionCard:hover {
+  border-color: var(--warning);
+  transform: translateY(-1px);
+}
+
+.expressionIdRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.expressionId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 0;
+}
+
+.expressionNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* ─── Inline play button ─────────────────────────────────────────────────── */
+
+.playButton {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition-base);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.playButton:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+}
+
+.playButton[data-playing='true'] {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-glow);
+}
+
+.playButton svg { width: 10px; height: 10px; }
+
+/* ─── Closing band ───────────────────────────────────────────────────────── */
+
+.closingBand {
+  composes: band;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 229, 255, 0.04) 100%);
+  padding: 64px 0 96px;
+}
+
+.closingInner {
+  composes: container;
+  max-width: 720px;
+  text-align: center;
+}
+
+.closingTitle {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  letter-spacing: -0.015em;
+}
+
+.closingLede {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+  line-height: 1.65;
+}
+
+.closingActivation {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 28px;
+}
+
+.closingActivation > * {
+  width: 100%;
+  max-width: 660px;
+  text-align: left;
+  padding: 18px 22px;
+  background: var(--accent-primary-subtle);
+  border: 1px solid var(--accent-primary-border);
+  border-radius: var(--r-lg);
+}
+
+.closingActions {
+  display: flex;
+  justify-content: center;
+}
+
+.closingActions > * {
+  width: 100%;
+  max-width: 660px;
+}

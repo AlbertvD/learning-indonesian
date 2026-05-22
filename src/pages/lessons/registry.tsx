@@ -22,10 +22,22 @@ import { Center, Loader } from '@mantine/core'
 import lesson1Content from '@/pages/lessons/lesson-1/content.json'
 import lesson2Content from '@/pages/lessons/lesson-2/content.json'
 import lesson3Content from '@/pages/lessons/lesson-3/content.json'
+import lesson4Content from '@/pages/lessons/lesson-4/content.json'
+import lesson5Content from '@/pages/lessons/lesson-5/content.json'
+import lesson6Content from '@/pages/lessons/lesson-6/content.json'
+import lesson7Content from '@/pages/lessons/lesson-7/content.json'
+import lesson8Content from '@/pages/lessons/lesson-8/content.json'
+import lesson9Content from '@/pages/lessons/lesson-9/content.json'
 
 const Lesson1Bespoke = lazy(() => import('@/pages/lessons/lesson-1/Page'))
 const Lesson2Bespoke = lazy(() => import('@/pages/lessons/lesson-2/Page'))
 const Lesson3Bespoke = lazy(() => import('@/pages/lessons/lesson-3/Page'))
+const Lesson4Bespoke = lazy(() => import('@/pages/lessons/lesson-4/Page'))
+const Lesson5Bespoke = lazy(() => import('@/pages/lessons/lesson-5/Page'))
+const Lesson6Bespoke = lazy(() => import('@/pages/lessons/lesson-6/Page'))
+const Lesson7Bespoke = lazy(() => import('@/pages/lessons/lesson-7/Page'))
+const Lesson8Bespoke = lazy(() => import('@/pages/lessons/lesson-8/Page'))
+const Lesson9Bespoke = lazy(() => import('@/pages/lessons/lesson-9/Page'))
 
 const fallback = <Center h="60vh"><Loader size="lg" /></Center>
 
@@ -33,4 +45,10 @@ export const bespokeLessonElements: Record<string, ReactElement> = {
   [lesson1Content.meta.id]: <Suspense fallback={fallback}><Lesson1Bespoke /></Suspense>,
   [lesson2Content.meta.id]: <Suspense fallback={fallback}><Lesson2Bespoke /></Suspense>,
   [lesson3Content.meta.id]: <Suspense fallback={fallback}><Lesson3Bespoke /></Suspense>,
+  [lesson4Content.meta.id]: <Suspense fallback={fallback}><Lesson4Bespoke /></Suspense>,
+  [lesson5Content.meta.id]: <Suspense fallback={fallback}><Lesson5Bespoke /></Suspense>,
+  [lesson6Content.meta.id]: <Suspense fallback={fallback}><Lesson6Bespoke /></Suspense>,
+  [lesson7Content.meta.id]: <Suspense fallback={fallback}><Lesson7Bespoke /></Suspense>,
+  [lesson8Content.meta.id]: <Suspense fallback={fallback}><Lesson8Bespoke /></Suspense>,
+  [lesson9Content.meta.id]: <Suspense fallback={fallback}><Lesson9Bespoke /></Suspense>,
 }
