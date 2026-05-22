@@ -635,7 +635,12 @@ INSERT INTO indonesian.exercise_type_availability (
   ('contrast_pair', true, true, true, 'beta', 'Grammar-aware, requires published content'),
   ('sentence_transformation', true, true, true, 'beta', 'Grammar-aware, requires published content'),
   ('constrained_translation', true, true, true, 'beta', 'Grammar-aware, requires published content'),
-  ('speaking', false, true, true, 'alpha', 'Not yet enabled in sessions')
+  ('speaking', false, true, true, 'alpha', 'Not yet enabled in sessions'),
+  -- PR 0 §3.6: backfill rows for exercise types that route through the
+  -- registry but had no availability row. recognition_mcq and cued_recall
+  -- already had rows; meaning_recall + cloze_mcq were missing.
+  ('meaning_recall', true, true, false, 'full', 'Item meaning recall — derived from learning_items + variants'),
+  ('cloze_mcq', true, true, true, 'full', 'Cloze MCQ — item + pattern source kinds')
 ON CONFLICT (exercise_type) DO UPDATE SET
   session_enabled = EXCLUDED.session_enabled,
   authoring_enabled = EXCLUDED.authoring_enabled,
