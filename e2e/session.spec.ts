@@ -1,47 +1,5 @@
 import { test, expect, type Page } from '@playwright/test'
-
-const TEST_EMAIL = 'testuser@duin.home'
-const TEST_PASSWORD = 'TestUser123!'
-
-// Playwright runs from localhost:5175 but Supabase (Kong) only allows
-// CORS from .duin.home origins. Intercept all Supabase requests and
-// inject the required CORS response headers so auth calls succeed.
-async function bypassSupabaseCors(page: Page) {
-  const SUPABASE_URL = 'https://api.supabase.duin.home'
-  await page.route(`${SUPABASE_URL}/**`, async route => {
-    const request = route.request()
-    // Handle CORS preflight OPTIONS requests
-    if (request.method() === 'OPTIONS') {
-      await route.fulfill({
-        status: 204,
-        headers: {
-          'access-control-allow-origin': 'http://localhost:5175',
-          'access-control-allow-credentials': 'true',
-          'access-control-allow-methods': 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
-          'access-control-allow-headers': 'authorization,content-type,apikey,x-client-info,accept-profile,content-profile,prefer,range',
-          'access-control-max-age': '86400',
-        },
-      })
-      return
-    }
-    // Forward real requests and add CORS response headers
-    const response = await route.fetch()
-    const headers = { ...response.headers() }
-    headers['access-control-allow-origin'] = 'http://localhost:5175'
-    headers['access-control-allow-credentials'] = 'true'
-    await route.fulfill({ response, headers })
-  })
-}
-
-async function login(page: Page) {
-  await bypassSupabaseCors(page)
-  await page.goto('/login')
-  await page.getByLabel(/email/i).fill(TEST_EMAIL)
-  await page.getByLabel(/password/i).fill(TEST_PASSWORD)
-  await page.getByRole('button', { name: /^login$/i }).click()
-  // Wait for redirect away from login
-  await page.waitForURL(url => !url.pathname.includes('/login'), { timeout: 20000 })
-}
+import { login } from './_helpers'
 
 async function navigateToSession(page: Page) {
   await page.goto('/session')
