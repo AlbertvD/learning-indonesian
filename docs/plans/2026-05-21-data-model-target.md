@@ -550,26 +550,88 @@ alter table indonesian.learning_capabilities
 
 ### Decision G2 — Exercise-type roster: all 12 types accounted for
 
-The 4 authored grammar exercises get typed tables (Decision G). The other 8 exercise types are runtime-derived from existing tables and need **no new table**. This decision makes the policy explicit so every `ExerciseType` in `src/types/learning.ts:130` has a documented home.
+**Principle:** add a typed table only when there's authored content unique to that exercise type. Skip the table when the row would only duplicate signals already on `learning_capabilities` (which expresses validity per cap) or on upstream content tables (`learning_items`, `item_answer_variants`, etc.).
 
-| Exercise type | Source kinds | Storage | Reader path |
-|---|---|---|---|
-| `recognition_mcq` | item | `learning_items` + `item_meanings`; pool from `item_meanings` of other items in lesson | Runtime JOIN |
-| `cued_recall` | item | `learning_items` + `item_meanings`; pool from `learning_items` of other items in lesson | Runtime JOIN |
-| `typed_recall` | item, affixed_form_pair | item: `learning_items` + `item_meanings` + `item_answer_variants`; affixed_form_pair: `affixed_form_pairs` (Decision A) | Runtime JOIN |
-| `meaning_recall` | item | `learning_items` + `item_meanings` + `item_answer_variants` | Runtime JOIN |
-| `listening_mcq` | item | `learning_items` + `item_meanings` + `capability_audio_refs` → `audio_clips` (Decision Q); pool from other items in lesson | Runtime JOIN |
-| `dictation` | item | `learning_items` + `item_answer_variants` + `capability_audio_refs` → `audio_clips` | Runtime JOIN |
-| `cloze` | item, dialogue_line | item: `item_contexts WHERE context_type='cloze'`; dialogue_line: `dialogue_clozes` + `lesson_dialogue_lines` (Decisions A + D) | Runtime JOIN |
-| `cloze_mcq` | item, pattern | item: `item_contexts WHERE context_type='cloze'` + computed pool; pattern: `cloze_mcq_exercises` (Decision G) | Runtime JOIN OR typed-table read |
-| `contrast_pair` | pattern | `contrast_pair_exercises` (Decision G) | Typed-table read |
-| `sentence_transformation` | pattern | `sentence_transformation_exercises` (Decision G) | Typed-table read |
-| `constrained_translation` | pattern | `constrained_translation_exercises` (Decision G) | Typed-table read |
-| `speaking` | item | `learning_items.base_text` + (optional, future) `speaking_exercises` for per-cap rubrics | Runtime JOIN (no new table needed today; `capabilityTypes: []` per `renderContracts.ts:130` — no cap routes to it yet) |
+By this rule the 12 ExerciseTypes split into three groups:
 
-**Policy for future authored exercises:** when a new exercise type ships with hand-authored per-cap content (prompts, options, hints), it gets a typed table named `<exercise_type>_exercises`. When the content is derivable from upstream typed tables, no new table is needed.
+**Group A — full authored payload (4 typed tables; pattern source kind):**
+- `contrast_pair_exercises`, `sentence_transformation_exercises`, `constrained_translation_exercises`, `cloze_mcq_exercises` (the pattern-source variant) — per Decision G.
 
-**`exercise_type_availability` audit:** the table currently has 10 rows but the code defines 12 `ExerciseType` values. Missing: `meaning_recall`, `cloze_mcq`. Both must be inserted in the migration (with `session_enabled=true`, `rollout_phase='full'`) so the runtime's check at `lib/session-builder/` doesn't fail-open / fail-closed inconsistently.
+**Group B — authored curated distractors (3 typed tables; item source kind):**
+- `recognition_mcq_distractors`, `cued_recall_distractors`, `cloze_mcq_item_distractors`. Each is small: `(capability_id PK, distractors text[], audit)`. They hold the curated wrong-options authored by the `vocab-exercise-creator` agent (`scripts/data/staging/lesson-N/vocab-enrichments.ts`). Today the agent's output is orphaned — staging files exist for L8 + L9 but no DB table receives them and `byKind/item.ts` falls back to random pool sampling. These tables wire up the existing-but-unused agent path. Schema:
+
+```sql
+create table indonesian.recognition_mcq_distractors (
+  capability_id uuid primary key references indonesian.learning_capabilities(id) on delete cascade,
+  distractors text[] not null,                    -- L1 (NL) wrong-option strings
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table indonesian.cued_recall_distractors (
+  capability_id uuid primary key references indonesian.learning_capabilities(id) on delete cascade,
+  distractors text[] not null,                    -- Indonesian wrong-option strings
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table indonesian.cloze_mcq_item_distractors (
+  capability_id uuid primary key references indonesian.learning_capabilities(id) on delete cascade,
+  distractors text[] not null,                    -- Indonesian filler-word strings
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+```
+
+**Group C — no table; signals already exist (5 exercise types):**
+
+| Exercise type | Why no table |
+|---|---|
+| `typed_recall` | Validity = `learning_capabilities` row exists; prompt + accepted answers from `learning_items` + `item_answer_variants`; no authored hints/explanations |
+| `meaning_recall` | Same as `typed_recall` — fully derived from item + variants |
+| `dictation` | Validity = capability row; audio from `capability_audio_refs` → `audio_clips`; accepted answers from `item_answer_variants` |
+| `cloze` (item + dialogue_line) | Validity = capability row; content from `item_contexts WHERE context_type='cloze'` (item) or `dialogue_clozes` (dialogue_line) |
+| `listening_mcq` | Validity = capability row; audio from `capability_audio_refs`; correct meaning from `learning_items.translation_<lang>` (post Decision R below); distractors today are random — a future authored variant gets a typed table when added (mirroring `recognition_mcq_distractors`) |
+| `speaking` | Validity = capability row; prompt from `learning_items.base_text`. No authored rubric today. If rubric content arrives, add `speaking_exercises` then. `capabilityTypes: []` today; no cap routes to it. |
+
+**Why this is not redundant with `learning_capabilities`.** The capability row says "this exercise type is valid for this cap" (via existence + `readiness_status='ready'` + `publication_status='published'`). That's the *validity* marker. The Group B tables (`*_distractors`) add per-cap *authored content* (curated wrong-options) that doesn't fit on the capability row. A Group C exercise has no such content, so the capability row alone is sufficient — adding a sparse `<exercise_type>_exercises` table would duplicate the validity signal.
+
+**Total new exercise-content tables: 7** (4 Group A + 3 Group B). Group C exercises render via `byType/*.ts` templates over capability + item data, no per-exercise table.
+
+**`exercise_type_availability` audit:** the table currently has 10 rows but the code defines 12 `ExerciseType` values. Missing: `meaning_recall`, `cloze_mcq`. Both inserted in PR 1 (with `session_enabled=true`, `rollout_phase='full'`).
+
+### Decision R — Collapse `item_meanings` into columns on `learning_items`
+
+**Decision:** Drop `item_meanings`. Add `translation_nl text` + `translation_en text` (+ optional `usage_note text`) columns to `learning_items`.
+
+**Evidence (investigation §1.1, §3.10):**
+- 758 items × ~1.65 meanings each = 1,248 `item_meanings` rows.
+- Pattern: each item has ~1 NL row + ~1 EN row, both `is_primary=true`. Multi-sense per language is effectively unused.
+- Two reasons the original schema split them — (a) multiple translation languages per item, (b) multiple senses per language — are both speculative for this app's actual use:
+  - Only NL + EN UI languages today; the user-language switch reads one or the other.
+  - No item carries multiple "senses" in production data.
+
+**Target shape:**
+
+```sql
+alter table indonesian.learning_items
+  add column translation_nl text,
+  add column translation_en text,
+  add column usage_note text;    -- optional; replaces item_meanings.usage_note
+
+drop table indonesian.item_meanings cascade;
+```
+
+**Why `item_answer_variants` stays a separate table:** different concept — it holds *accepted alternative answers* for fuzzy grading (e.g. "huis", "het huis", "een huis" all count as correct when the learner types). That's intrinsically many-per-(item, language) and doesn't collapse.
+
+**If multi-sense becomes needed later:** add a separate `item_meaning_alternates(learning_item_id, language, sense_label, text)` table when the use case appears. Per CLAUDE.md Rule #10, don't pre-build.
+
+**Reader/writer changes:**
+- `byKind/item.ts` reads `learning_items.translation_<userLanguage>` directly instead of JOINing to `item_meanings`.
+- Pipeline `projectors/vocab.ts` writes the translation columns instead of inserting `item_meanings` rows.
+- Coverage / health checks that count `item_meanings` switch to `WHERE translation_nl IS NOT NULL` or equivalent.
+
+This collapse ships in PR 2 (item source kind) alongside the vocab distractor tables, since both are item-source data-shape changes.
 
 ### Decision H — `learner_capability_state.fsrs_state_json` vs columnar duplication
 
@@ -792,17 +854,20 @@ This section names every table in the target schema. For brevity, only changes f
 
 | Table | Status | Change |
 |---|---|---|
-| `learning_items` | survives | Add `lesson_id` (denormalised — per user preference). |
-| `item_meanings` | survives | No change. |
-| `item_answer_variants` | survives | No change. |
+| `learning_items` | survives + columns added | Add `lesson_id`; add `translation_nl text` + `translation_en text` + `usage_note text` (replacing `item_meanings`, per Decision R). |
+| `item_meanings` | **RETIRED** | Collapsed into columns on `learning_items` (Decision R). 1,248 rows → 3 columns. |
+| `item_answer_variants` | survives | No change. Different concept (alternates for grading); intrinsically many-per-(item, language). |
 | `item_contexts` | survives | Add `lesson_id` if not already present (already has `source_lesson_id`). Audit context_type values — drop `vocabulary_list` if confirmed unused. |
 | `item_context_grammar_patterns` | **RETIRED** | Empty + unused. |
 | `grammar_patterns` | survives | Already has `introduced_by_lesson_id`. No change. |
 | `exercise_variants` | **RETIRED** | Replaced by 4 typed tables. |
-| **NEW** `contrast_pair_exercises` | new | Decision B |
-| **NEW** `sentence_transformation_exercises` | new | Decision B |
-| **NEW** `constrained_translation_exercises` | new | Decision B |
-| **NEW** `cloze_mcq_exercises` | new | Decision B |
+| **NEW** `contrast_pair_exercises` | new | Decision G (full authored payload) |
+| **NEW** `sentence_transformation_exercises` | new | Decision G |
+| **NEW** `constrained_translation_exercises` | new | Decision G |
+| **NEW** `cloze_mcq_exercises` | new | Decision G (pattern-source variant) |
+| **NEW** `recognition_mcq_distractors` | new | Decision G2 Group B — wires up `vocab-enrichments.ts` |
+| **NEW** `cued_recall_distractors` | new | Decision G2 Group B |
+| **NEW** `cloze_mcq_item_distractors` | new | Decision G2 Group B (item-source `cloze_mcq` curated distractors) |
 | **NEW** `grammar_pattern_examples` | new | Decision A; replaces `capability_artifacts.artifact_kind='pattern_example'` rows. Multiple examples per pattern is natural. |
 | **NEW** `dialogue_clozes` | new | Decision A; one row per dialogue cloze (replaces 3 artifact rows). |
 | **NEW** `affixed_form_pairs` | new | Decision A; one row per pair (replaces 2 artifact rows). |
@@ -881,7 +946,7 @@ For every today-concept observed in §6 of the evidence doc, the target home:
 | Concept | Today | Target |
 |---|---|---|
 | Vocabulary base form (e.g. "rumah") | `learning_items.base_text` + denormalised in `content_units.payload_json.baseText` + denormalised in `capability_artifacts(kind=base_text).artifact_json.value` | `learning_items.base_text` (single source) |
-| Vocabulary translation | `item_meanings.translation_text` + denormalised in `content_units.payload_json.translationNl/En` + denormalised in `capability_artifacts(kind=meaning:l1).artifact_json.value` | `item_meanings.translation_text` (single source) |
+| Vocabulary translation | `item_meanings.translation_text` + denormalised in `content_units.payload_json.translationNl/En` + denormalised in `capability_artifacts(kind=meaning:l1).artifact_json.value` | `learning_items.translation_nl` / `translation_en` (single source, columns on the item row — `item_meanings` retired per Decision R) |
 | Accepted answer (l1 + id) | `item_answer_variants.variant_text` + denormalised in `capability_artifacts(kind=accepted_answers:*).artifact_json.values` | `item_answer_variants.variant_text` (single source) |
 | Audio for an item | `audio_clips` row + denormalised in `capability_artifacts(kind=audio_clip).artifact_json` | `audio_clips` (single source); FK from capability via `capability_audio_refs` (new) |
 | Grammar pattern explanation | `grammar_patterns.short_explanation` + denormalised in `capability_artifacts(kind=pattern_explanation:l1)` + denormalised in `content_units.payload_json.description` | `grammar_patterns.short_explanation` (single source) |
