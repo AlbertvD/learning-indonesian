@@ -119,7 +119,7 @@ function makeExerciseItem(exerciseType = 'meaning_recall'): ExerciseItem {
       id: 'item-1', item_type: 'word', base_text: 'makan', normalized_text: 'makan',
       language: 'id', level: 'A1', source_type: 'lesson',
       source_vocabulary_id: null, source_card_id: null, notes: null,
-      is_active: true, pos: null, created_at: '', updated_at: '',
+      is_active: true, pos: null, translation_nl: null, translation_en: null, usage_note: null, created_at: '', updated_at: '',
     },
     meanings: [{ id: 'm1', learning_item_id: 'item-1', translation_language: 'nl', translation_text: 'eten', sense_label: null, usage_note: null, is_primary: true }],
     contexts: [],

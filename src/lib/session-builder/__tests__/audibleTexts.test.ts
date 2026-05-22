@@ -14,7 +14,7 @@ function makeItem(base_text: string): LearningItem {
     id: 'item-1', item_type: 'word', base_text, normalized_text: base_text,
     language: 'id', level: 'A1', source_type: 'lesson',
     source_vocabulary_id: null, source_card_id: null, notes: null,
-    is_active: true, pos: 'verb', created_at: '', updated_at: '',
+    is_active: true, pos: 'verb', translation_nl: null, translation_en: null, usage_note: null, created_at: '', updated_at: '',
   }
 }
 
