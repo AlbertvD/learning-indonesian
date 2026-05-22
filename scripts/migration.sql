@@ -2341,6 +2341,44 @@ comment on table indonesian.cloze_mcq_item_distractors is
 --     docs/plans/2026-05-21-data-model-target.md Decision A + Decision B.
 -- ============================================================================
 
+-- ── Decision D: lesson_dialogue_lines ─────────────────────────────────────────────
+-- Per-dialogue-line typed rows. Child table of lesson_sections (section_kind='dialogue').
+-- lesson_id denormalised per user preference §1.3 (query uniformity).
+-- source_line_ref is the stable canonical identifier used by capabilities.source_ref
+-- for dialogue_line caps (format: 'lesson-N/section-M/line-K').
+-- Spec: docs/plans/2026-05-21-data-model-target.md Decision D lines 324-337.
+-- Must precede dialogue_clozes DDL (FK dialogue_clozes.dialogue_line_id → this table).
+create table if not exists indonesian.lesson_dialogue_lines (
+  id              uuid        primary key default gen_random_uuid(),
+  section_id      uuid        not null references indonesian.lesson_sections(id) on delete cascade,
+  lesson_id       uuid        not null references indonesian.lessons(id) on delete cascade,
+  line_index      integer     not null,
+  source_line_ref text        not null,
+  text            text        not null,
+  speaker         text,
+  translation     text        not null,
+  created_at      timestamptz not null default now(),
+  updated_at      timestamptz not null default now(),
+  unique(section_id, line_index),
+  unique(source_line_ref)
+);
+
+create index if not exists lesson_dialogue_lines_section_idx
+  on indonesian.lesson_dialogue_lines(section_id);
+create index if not exists lesson_dialogue_lines_lesson_idx
+  on indonesian.lesson_dialogue_lines(lesson_id);
+
+alter table indonesian.lesson_dialogue_lines enable row level security;
+drop policy if exists "lesson_dialogue_lines_authenticated_read" on indonesian.lesson_dialogue_lines;
+create policy "lesson_dialogue_lines_authenticated_read"
+  on indonesian.lesson_dialogue_lines for select to authenticated using (true);
+grant select on indonesian.lesson_dialogue_lines to authenticated;
+revoke insert, update, delete on indonesian.lesson_dialogue_lines from authenticated;
+grant all on indonesian.lesson_dialogue_lines to service_role;
+
+comment on table indonesian.lesson_dialogue_lines is
+  'Per-line typed rows for dialogue sections. Child of lesson_sections (section_kind=''dialogue''). lesson_id denormalised for query uniformity. source_line_ref (lesson-N/section-M/line-K) is the stable identifier used by dialogue_line capability source_ref. Decision D; spec at 2026-05-21-data-model-target.md lines 324-337. Populated by PR 2 (lesson-stage writer).';
+
 -- ── Decision A: dialogue_clozes ──────────────────────────────────────────────
 -- One row per dialogue_line capability; replaces 3 capability_artifacts rows
 -- (cloze_context, cloze_answer, translation:l1). capability_id is 1:1 (UNIQUE).
