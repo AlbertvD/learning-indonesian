@@ -120,7 +120,7 @@ interface LearningCapabilityRow {
   readiness_status: string
   publication_status: string
   lesson_id: string | null
-  metadata_json: Record<string, unknown> | null
+  required_artifacts: string[] | null
 }
 
 interface LearnerCapabilityStateRow {
@@ -143,8 +143,8 @@ function uniq<T>(values: T[]): T[] {
   return [...new Set(values)]
 }
 
-function requiredArtifacts(metadata: Record<string, unknown> | null): ArtifactKind[] {
-  const raw = metadata?.requiredArtifacts
+function requiredArtifacts(row: LearningCapabilityRow): ArtifactKind[] {
+  const raw = row.required_artifacts
   return Array.isArray(raw) && raw.every(item => typeof item === 'string')
     ? raw as ArtifactKind[]
     : []
@@ -409,7 +409,7 @@ function toEvidence(input: {
       modality: capability.modality,
       readinessStatus: capability.readiness_status,
       publicationStatus: capability.publication_status,
-      requiredArtifacts: requiredArtifacts(capability.metadata_json),
+      requiredArtifacts: requiredArtifacts(capability),
       approvedArtifacts: uniq(approvedArtifacts),
       lessonActivated,
       reviewCount: state?.review_count ?? 0,
@@ -428,7 +428,7 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
     if (ids.length === 0) return []
     const { data, error } = await db()
       .from('learning_capabilities')
-      .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id, metadata_json')
+      .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id, required_artifacts')
       .in('id', ids)
     if (error) throw error
     return (data ?? []) as LearningCapabilityRow[]
@@ -480,7 +480,7 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
     async getPatternMastery(patternId: string, userId: string): Promise<PatternMastery> {
       const { data, error } = await db()
         .from('learning_capabilities')
-        .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id, metadata_json')
+        .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id, required_artifacts')
         .eq('source_kind', 'pattern')
         .eq('source_ref', patternId)
       if (error) throw error

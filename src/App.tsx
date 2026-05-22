@@ -15,7 +15,6 @@ import { LocalPreviewIndex, LocalPreviewLesson } from '@/pages/LocalPreview'
 // Lazy-loaded routes (less frequently visited pages)
 const Podcasts = lazy(() => import('@/pages/Podcasts').then(m => ({ default: m.Podcasts })))
 const Podcast = lazy(() => import('@/pages/Podcast').then(m => ({ default: m.Podcast })))
-const Leaderboard = lazy(() => import('@/pages/Leaderboard').then(m => ({ default: m.Leaderboard })))
 const Profile = lazy(() => import('@/pages/Profile').then(m => ({ default: m.Profile })))
 const Progress = lazy(() => import('@/pages/Progress').then(m => ({ default: m.Progress })))
 const SectionCoverage = lazy(() => import('@/pages/SectionCoverage').then(m => ({ default: m.SectionCoverage })))
@@ -182,14 +181,6 @@ function App() {
           element={
             <ProtectedRoute>
               <Session />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/leaderboard"
-          element={
-            <ProtectedRoute>
-              <LazyPage><Leaderboard /></LazyPage>
             </ProtectedRoute>
           }
         />

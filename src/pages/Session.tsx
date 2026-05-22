@@ -68,6 +68,15 @@ export function Session() {
   const sessionModeParam = searchParams.get('mode')
   const sessionMode = parseSessionMode(sessionModeParam)
   const preferredSessionSize = profile?.preferredSessionSize ?? 15
+  // ?force_capability=<canonical_key> — admin-only dev bypass for the per-PR E2E
+  // gate (plan §3.8). Routes through the real renderer + real review-event commit
+  // path; the only thing skipped is the planner. Gated on profile.isAdmin so a
+  // non-admin who guesses the URL gets the normal session.
+  const forceCapabilityKey = searchParams.get('force_capability')
+  const allowForceCapability =
+    forceCapabilityKey != null
+    && profile?.isAdmin === true
+    && (import.meta.env.DEV === true || import.meta.env.VITE_ALLOW_FORCE_CAPABILITY === 'true')
   const didInit = useRef(false)
 
   // Initialize session
@@ -107,6 +116,7 @@ export function Session() {
           limit: preferredSessionSize,
           preferredSessionSize,
           ...(lessonScope ?? {}),
+          ...(allowForceCapability && forceCapabilityKey ? { forceCapabilityKey } : {}),
           adapter: sessionBuilderAdapter,
         })
         setCapabilityPlan(capabilityPlan)
@@ -144,7 +154,7 @@ export function Session() {
     }
 
     initSession()
-  }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, sessionMode])
+  }, [user, navigate, profile?.language, profile?.preferredSessionSize, preferredSessionSize, lessonFilter, sessionMode, forceCapabilityKey, allowForceCapability])
 
   const handleNavigateHome = () => navigate('/')
 

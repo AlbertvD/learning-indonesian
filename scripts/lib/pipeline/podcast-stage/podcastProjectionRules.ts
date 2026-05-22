@@ -36,12 +36,6 @@ interface CapabilityDraft {
   learnerLanguage: LearnerLanguage
   requiredArtifacts: ArtifactKind[]
   prerequisiteKeys?: string[]
-  difficultyLevel: number
-  goalTags?: string[]
-}
-
-function fingerprint(input: unknown): string {
-  return JSON.stringify(input)
 }
 
 function createCapability(draft: CapabilityDraft): ProjectedCapability {
@@ -49,10 +43,7 @@ function createCapability(draft: CapabilityDraft): ProjectedCapability {
     ...draft,
     canonicalKey: buildCanonicalKey(draft),
     prerequisiteKeys: draft.prerequisiteKeys ?? [],
-    goalTags: draft.goalTags ?? [],
     projectionVersion: CAPABILITY_PROJECTION_VERSION,
-    sourceFingerprint: fingerprint({ sourceKind: draft.sourceKind, sourceRef: draft.sourceRef }),
-    artifactFingerprint: fingerprint(draft.requiredArtifacts),
   }
 }
 
@@ -77,8 +68,6 @@ export function projectPodcastCapabilities(
       modality: 'audio',
       learnerLanguage: 'none',
       requiredArtifacts: ['audio_segment', 'transcript_segment', 'podcast_gist_prompt'],
-      difficultyLevel: 2,
-      goalTags: ['podcast', 'guided_transcript'],
     }))
   }
 
@@ -92,8 +81,6 @@ export function projectPodcastCapabilities(
       modality: 'mixed',
       learnerLanguage: 'none',
       requiredArtifacts: ['timecoded_phrase', 'translation:l1'],
-      difficultyLevel: 3,
-      goalTags: ['podcast', 'podcast_phrase'],
     }))
   }
 

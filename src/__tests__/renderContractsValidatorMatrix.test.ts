@@ -136,11 +136,7 @@ function fakeCapability(row: MatrixRow): ProjectedCapability {
     learnerLanguage: 'none',
     requiredArtifacts: [...row.requiredArtifacts],
     prerequisiteKeys: [],
-    difficultyLevel: 1,
-    goalTags: [],
     projectionVersion: 'capability-v3',
-    sourceFingerprint: 'fake',
-    artifactFingerprint: 'fake',
   }
 }
 

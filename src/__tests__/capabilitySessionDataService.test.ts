@@ -31,16 +31,9 @@ describe('capability session data service', () => {
               projection_version: 'capability-v2',
               readiness_status: 'ready',
               publication_status: 'published',
-              source_fingerprint: 'source',
-              artifact_fingerprint: 'artifact',
               lesson_id: 'lesson-uuid-1',
-              metadata_json: {
-                skillType: 'recognition',
-                requiredArtifacts: [],
-                prerequisiteKeys: [],
-                difficultyLevel: 1,
-                goalTags: [],
-              },
+              prerequisite_keys: [],
+              required_artifacts: [],
             }, {
               id: 'capability-2',
               canonical_key: 'blocked-key',
@@ -53,16 +46,9 @@ describe('capability session data service', () => {
               projection_version: 'capability-v2',
               readiness_status: 'blocked',
               publication_status: 'published',
-              source_fingerprint: 'source',
-              artifact_fingerprint: 'artifact',
               lesson_id: 'lesson-uuid-1',
-              metadata_json: {
-                skillType: 'recognition',
-                requiredArtifacts: [],
-                prerequisiteKeys: [],
-                difficultyLevel: 1,
-                goalTags: [],
-              },
+              prerequisite_keys: [],
+              required_artifacts: [],
             }])
           }
           if (table === 'learner_capability_state') {
@@ -145,16 +131,9 @@ describe('capability session data service', () => {
               projection_version: 'capability-v2',
               readiness_status: 'ready',
               publication_status: 'published',
-              source_fingerprint: 'source',
-              artifact_fingerprint: 'artifact',
               lesson_id: 'lesson-uuid-1',
-              metadata_json: {
-                skillType: 'recognition',
-                requiredArtifacts: [],
-                prerequisiteKeys: [],
-                difficultyLevel: 7,
-                goalTags: ['travel'],
-              },
+              prerequisite_keys: [],
+              required_artifacts: [],
             }])
           }
           if (table === 'learner_capability_state') {
@@ -192,8 +171,6 @@ describe('capability session data service', () => {
     })
 
     expect(snapshot.plannerInput.readyCapabilities[0]).toEqual(expect.objectContaining({
-      difficultyLevel: 7,
-      goalTags: ['travel'],
       lessonId: 'lesson-uuid-1',
     }))
     expect(snapshot.plannerInput.activatedLessons).toEqual(new Set(['lesson-uuid-1']))
@@ -222,16 +199,9 @@ describe('capability session data service', () => {
               projection_version: 'capability-v2',
               readiness_status: 'ready',
               publication_status: 'published',
-              source_fingerprint: 'source',
-              artifact_fingerprint: 'artifact',
               lesson_id: 'lesson-uuid-1',
-              metadata_json: {
-                skillType: 'meaning_recall',
-                requiredArtifacts: ['meaning:l1', 'base_text'],
-                prerequisiteKeys: ['text-recognition-key'],
-                difficultyLevel: 2,
-                goalTags: [],
-              },
+              prerequisite_keys: ['text-recognition-key'],
+              required_artifacts: ['meaning:l1', 'base_text'],
             }])
           }
           if (table === 'capability_artifacts') {

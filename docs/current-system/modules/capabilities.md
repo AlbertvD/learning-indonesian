@@ -1,7 +1,7 @@
 ---
 module: capabilities
 surface: src/lib/capabilities/
-last_verified_against_code: 2026-05-21
+last_verified_against_code: 2026-05-22
 inbound_port: src/lib/capabilities/index.ts
 status: stable
 ---
@@ -15,8 +15,8 @@ status: stable
 | File | LOC | Role |
 |---|---|---|
 | `index.ts` | — | Barrel — re-exports the public surface (every externally-consumed symbol). The inbound port per target-architecture.md §2. |
-| `capabilityTypes.ts` | 203 | Types only — `CapabilityType`, `CapabilitySourceKind`, `ArtifactKind`, `ProjectedCapability`, `CapabilityProjection`, `CurrentContentSnapshot`, and the `CAPABILITY_PROJECTION_VERSION` stamp. |
-| `capabilityCatalog.ts` | 217 | `projectCapabilities(snapshot)` — derives every `ProjectedCapability` from raw catalog content (learning items, grammar patterns, affixed-form pairs). Source-of-truth for which cap_types each content kind emits + what each cap_type's `requiredArtifacts` is. Podcast caps are emitted by a separate projector at `scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts` per Decision 4; contextual_cloze caps live in `scripts/lib/pipeline/capability-stage/projectors/vocab.ts` per Decision 5b. |
+| `capabilityTypes.ts` | 251 | Types only — `CapabilityType`, `CapabilitySourceKind`, `ArtifactKind`, `ProjectedCapability`, `CapabilityProjection`, `CurrentContentSnapshot`, the `CAPABILITY_PROJECTION_VERSION` stamp, and the closed-mapping helper `deriveSkillTypeFromCapabilityType(capabilityType): SkillType` used at read-time after metadata_json retirement. |
+| `capabilityCatalog.ts` | 196 | `projectCapabilities(snapshot)` — derives every `ProjectedCapability` from raw catalog content (learning items, grammar patterns, affixed-form pairs). Source-of-truth for which cap_types each content kind emits + what each cap_type's `requiredArtifacts` is. Podcast caps are emitted by a separate projector at `scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts` per Decision 4; contextual_cloze caps live in `scripts/lib/pipeline/capability-stage/projectors/vocab.ts` per Decision 5b. |
 | `capabilityContracts.ts` | 159 | `validateCapability(input)` — derives `CapabilityReadiness` from `RENDER_CONTRACTS` + the cap's projected `requiredArtifacts` + the artifact index. `isExposureOnly(cap)` for podcast caps. `validateCapabilities` for aggregate health. |
 | **`renderContracts.ts`** | 333 | **The shared render contract** — `RENDER_CONTRACTS`, `ContractInputShapes`, `BuilderInputFor<T>`, `projectBuilderInput<T>()`, plus inverted-lookup helpers (`exerciseTypesForCapability`, `requiredArtifactsFor`, `supportsSourceKind`). Sole source of truth for (a) which exercise types each cap_type is ready for, (b) which builder the resolver dispatches to, (c) what inputs each builder is guaranteed to receive. |
 | `artifactRegistry.ts` | 49 | `hasApprovedArtifact(...)` — quality + scope check (capabilityKey OR sourceRef must match). The exhaustive `ARTIFACT_KINDS` array (`as const satisfies readonly ArtifactKind[]`). |
@@ -42,7 +42,9 @@ status: stable
 - `scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts`, `scripts/lib/pipeline/capability-stage/projectors/vocab.ts` — call `buildCanonicalKey` + the `CAPABILITY_PROJECTION_VERSION` stamp.
 - `scripts/lib/pipeline/capability-stage/{adapter,lint/duplicateItems,projectors/vocab,validators/itemSourceRefResolvability}.ts`, plus `scripts/seed-cloze-contexts.ts`, `scripts/repair-item-meanings.ts`, `scripts/reactivate-dialogue-chunks.ts`, `scripts/cleanup-annotations.ts`, `scripts/publish-grammar-candidates.ts` — call `itemSlug` for canonical slug derivation.
 
-**Status (2026-05-18):** stable. PR #65 introduced `renderContracts.ts` and rewrote `validateCapability` to consume it. The contract surface that previously lived as three divergent declarations (validator's `exerciseByCapability`, resolver's `compatibleExercisesByCapability`, builders' inline guards) now lives in one table. Inbound-port barrel (`index.ts`) added 2026-05-18; all `src/` production callers now route through it.
+**Status (2026-05-22):** stable. PR #65 introduced `renderContracts.ts` and rewrote `validateCapability` to consume it. The contract surface that previously lived as three divergent declarations (validator's `exerciseByCapability`, resolver's `compatibleExercisesByCapability`, builders' inline guards) now lives in one table. Inbound-port barrel (`index.ts`) added 2026-05-18; all `src/` production callers now route through it.
+
+**2026-05-22 — typed-column projection (PR 0 of the data-model migration).** `ProjectedCapability` slimmed: `difficultyLevel`, `goalTags`, `sourceFingerprint`, `artifactFingerprint` dropped (no runtime consumers, or derivable, or destination-column-going-away). `skillType` retained but read-time-derived from `capability_type` via `deriveSkillTypeFromCapabilityType` instead of stored in metadata_json. `requiredArtifacts` and `prerequisiteKeys` are now backed by two typed `learning_capabilities` columns (`required_artifacts text[]`, `prerequisite_keys text[]`) added in scripts/migration.sql; the legacy `metadata_json` jsonb column survives until a follow-up cleanup PR drops it but is no longer read or written. `required_artifacts` stays as a column (not derivable from capability_type alone) because affixed_form_pair caps have conditional artifacts (±allomorph_rule per capabilityCatalog.ts:178-180).
 
 ---
 

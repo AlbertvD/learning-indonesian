@@ -33,8 +33,6 @@ function asPlannerCapability(capability: ProjectedCapability): PlannerCapability
     publicationStatus: 'published',
     prerequisiteKeys: capability.prerequisiteKeys,
     lessonId: capability.lessonId ?? null,
-    difficultyLevel: capability.difficultyLevel,
-    goalTags: capability.goalTags,
   }
 }
 
@@ -50,13 +48,11 @@ describe('morphology capability projection', () => {
       direction: 'derived_to_root',
       skillType: 'recognition',
       requiredArtifacts: ['root_derived_pair', 'allomorph_rule'],
-      goalTags: ['morphology', 'meN-active'],
     }))
     expect(recall).toEqual(expect.objectContaining({
       direction: 'root_to_derived',
       skillType: 'form_recall',
       prerequisiteKeys: [recognition.canonicalKey],
-      difficultyLevel: 5,
     }))
   })
 

@@ -23,12 +23,6 @@ interface CapabilityDraft {
   learnerLanguage: LearnerLanguage
   requiredArtifacts: ArtifactKind[]
   prerequisiteKeys?: string[]
-  difficultyLevel: number
-  goalTags?: string[]
-}
-
-function fingerprint(input: unknown): string {
-  return JSON.stringify(input)
 }
 
 function createCapability(draft: CapabilityDraft): ProjectedCapability {
@@ -36,10 +30,7 @@ function createCapability(draft: CapabilityDraft): ProjectedCapability {
     ...draft,
     canonicalKey: buildCanonicalKey(draft),
     prerequisiteKeys: draft.prerequisiteKeys ?? [],
-    goalTags: draft.goalTags ?? [],
     projectionVersion: CAPABILITY_PROJECTION_VERSION,
-    sourceFingerprint: fingerprint({ sourceKind: draft.sourceKind, sourceRef: draft.sourceRef }),
-    artifactFingerprint: fingerprint(draft.requiredArtifacts),
   }
 }
 
@@ -62,7 +53,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       modality: 'text',
       learnerLanguage: item.meanings[0]?.language ?? 'none',
       requiredArtifacts: recognitionArtifacts,
-      difficultyLevel: 1,
     })
     capabilities.push(textRecognitionCapability)
     const choiceCapability = createCapability({
@@ -75,7 +65,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       learnerLanguage: item.meanings[0]?.language ?? 'none',
       requiredArtifacts: choiceArtifacts,
       prerequisiteKeys: [textRecognitionCapability.canonicalKey],
-      difficultyLevel: 2,
     })
     capabilities.push(choiceCapability)
     capabilities.push(createCapability({
@@ -88,7 +77,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       learnerLanguage: item.meanings[0]?.language ?? 'none',
       requiredArtifacts: meaningArtifacts,
       prerequisiteKeys: [textRecognitionCapability.canonicalKey],
-      difficultyLevel: 2,
     }))
     capabilities.push(createCapability({
       sourceKind: 'item',
@@ -100,7 +88,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       learnerLanguage: item.meanings[0]?.language ?? 'none',
       requiredArtifacts: formArtifacts,
       prerequisiteKeys: [choiceCapability.canonicalKey],
-      difficultyLevel: 3,
     }))
 
     if (item.hasAudio) {
@@ -114,7 +101,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
         learnerLanguage: item.meanings[0]?.language ?? 'none',
         requiredArtifacts: ['audio_clip', 'meaning:l1'],
         prerequisiteKeys: [textRecognitionCapability.canonicalKey],
-        difficultyLevel: 2,
       }))
       capabilities.push(createCapability({
         sourceKind: 'item',
@@ -126,7 +112,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
         learnerLanguage: 'none',
         requiredArtifacts: ['audio_clip', 'base_text', 'accepted_answers:id'],
         prerequisiteKeys: [textRecognitionCapability.canonicalKey],
-        difficultyLevel: 4,
       }))
     }
   }
@@ -142,7 +127,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       modality: 'text',
       learnerLanguage: 'none',
       requiredArtifacts: ['pattern_explanation:l1', 'pattern_example'],
-      difficultyLevel: 4,
     })
     capabilities.push(recognitionCapability)
     // Decision 5a — every pattern_recognition capability has a sibling
@@ -158,7 +142,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       learnerLanguage: 'none',
       requiredArtifacts: ['pattern_explanation:l1', 'pattern_example'],
       prerequisiteKeys: [recognitionCapability.canonicalKey],
-      difficultyLevel: 5,
     }))
   }
 
@@ -187,8 +170,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       modality: 'text',
       learnerLanguage: 'none',
       requiredArtifacts,
-      difficultyLevel: 4,
-      goalTags: ['morphology', 'meN-active'],
     })
     capabilities.push(recognitionCapability)
     capabilities.push(createCapability({
@@ -201,8 +182,6 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       learnerLanguage: 'none',
       requiredArtifacts,
       prerequisiteKeys: [recognitionCapability.canonicalKey],
-      difficultyLevel: 5,
-      goalTags: ['morphology', 'meN-active'],
     }))
   }
 

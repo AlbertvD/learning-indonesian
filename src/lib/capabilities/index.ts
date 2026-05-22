@@ -12,6 +12,7 @@ export {
   CAPABILITY_PROJECTION_VERSION,
   CAPABILITY_SOURCE_KINDS,
   CAPABILITY_TYPES,
+  deriveSkillTypeFromCapabilityType,
 } from './capabilityTypes'
 export type {
   CapabilitySourceKind,

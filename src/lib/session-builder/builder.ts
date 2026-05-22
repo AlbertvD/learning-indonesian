@@ -86,12 +86,14 @@ function dormantSnapshot(): CapabilityScheduleSnapshot {
 
 function artifactVersionSnapshot(capability: ProjectedCapability | null): Record<string, unknown> {
   if (!capability) return {}
+  // sourceFingerprint + artifactFingerprint retired with the metadata_json fold
+  // (Decision F, 2026-05-22). Snapshot now carries the stable identity fields
+  // only; the destination column `capability_review_events.artifact_version_snapshot_json`
+  // is itself dropped in Step 6 of PR 0 — this whole field becomes vestigial.
   return {
     capabilityKey: capability.canonicalKey,
     sourceRef: capability.sourceRef,
     projectionVersion: capability.projectionVersion,
-    sourceFingerprint: capability.sourceFingerprint,
-    artifactFingerprint: capability.artifactFingerprint,
     requiredArtifacts: capability.requiredArtifacts,
   }
 }
@@ -370,6 +372,57 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
   })
 }
 
+export interface ForceCapabilityAdapter {
+  loadForceCapabilitySnapshot(canonicalKey: string, userId: string): Promise<{
+    capabilityRow: { id: string; canonical_key: string }
+    capability: ProjectedCapability
+    readiness: CapabilityReadiness
+    artifactIndex: ArtifactIndex
+    learnerState: LearnerCapabilityStateRow
+  }>
+}
+
+// Bypasses the planner; builds a single-card session for the named capability.
+// Used by the ?force_capability dev URL and scripts/force-capability-answer.ts.
+// Fail-loud: the snapshot loader throws CapabilityNotFoundError when the key does
+// not exist; resolveCandidate surfaces missing-artifact failures as diagnostics
+// in the returned plan (the renderer then throws CapabilityDataMissingError —
+// the bypass deliberately surfaces real bugs).
+export async function buildForceCapabilitySession(input: {
+  sessionId: string
+  userId: string
+  forceCapabilityKey: string
+  adapter: ForceCapabilityAdapter
+}): Promise<SessionPlan> {
+  const snapshot = await input.adapter.loadForceCapabilitySnapshot(input.forceCapabilityKey, input.userId)
+  const schedulerSnapshot = snapshotFromLearnerRow(snapshot.learnerState)
+  const context = reviewContext({ capability: snapshot.capability, schedulerSnapshot })
+  const outcome = resolveCandidate({
+    capabilityId: snapshot.capabilityRow.id,
+    canonicalKey: snapshot.capability.canonicalKey,
+    stateVersion: schedulerSnapshot.stateVersion,
+    context,
+  }, {
+    capabilitiesByKey: new Map([[snapshot.capability.canonicalKey, snapshot.capability]]),
+    readinessByKey: new Map([[snapshot.capability.canonicalKey, snapshot.readiness]]),
+    artifactIndex: snapshot.artifactIndex,
+  })
+  const dueCapability = {
+    capabilityId: outcome.meta.capabilityId,
+    canonicalKeySnapshot: outcome.meta.canonicalKey,
+    stateVersion: outcome.meta.stateVersion,
+    reviewContext: outcome.reviewContext,
+    ...('renderPlan' in outcome ? { renderPlan: outcome.renderPlan } : { resolutionFailure: outcome.resolutionFailure }),
+  }
+  return compose({
+    sessionId: input.sessionId,
+    mode: 'standard',
+    dueCapabilities: [dueCapability],
+    eligibleNewCapabilities: [],
+    limit: 1,
+  })
+}
+
 export async function buildSession(input: {
   enabled: boolean
   sessionId: string
@@ -380,10 +433,23 @@ export async function buildSession(input: {
   preferredSessionSize: number
   selectedLessonId?: string
   selectedSourceRefs?: string[]
-  adapter: CapabilitySessionDataAdapter
+  forceCapabilityKey?: string
+  adapter: CapabilitySessionDataAdapter & Partial<ForceCapabilityAdapter>
 }): Promise<SessionPlan> {
   if (!input.enabled) {
     throw new Error('Capability standard session is disabled')
+  }
+
+  if (input.forceCapabilityKey) {
+    if (!input.adapter.loadForceCapabilitySnapshot) {
+      throw new Error('Force-capability bypass requested but adapter does not implement loadForceCapabilitySnapshot')
+    }
+    return buildForceCapabilitySession({
+      sessionId: input.sessionId,
+      userId: input.userId,
+      forceCapabilityKey: input.forceCapabilityKey,
+      adapter: input.adapter as ForceCapabilityAdapter,
+    })
   }
 
   const snapshot = await input.adapter.loadCapabilitySessionData({

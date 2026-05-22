@@ -1,7 +1,7 @@
 ---
 module: session-builder
 surface: src/lib/session-builder/
-last_verified_against_code: 2026-05-20
+last_verified_against_code: 2026-05-22
 status: stable
 ---
 
@@ -13,8 +13,8 @@ status: stable
 
 | File | LOC | Role |
 |---|---|---|
-| `adapter.ts` | 350 | Supabase reads — projects to planner/composer types. Also derives `currentLessonId` + `nextLessonNeedsExposure` for the drying detector. Exports `sessionBuilderAdapter` + `createSessionBuilderAdapter(client?)`. |
-| `builder.ts` | 418 | Orchestrator. Runs three selection passes, calls `resolveCandidate`, builds the queue-drying diagnostic, composes the plan. Exports `buildSession` + the test-only `loadCapabilitySessionPlan`. |
+| `adapter.ts` | 416 | Supabase reads — projects to planner/composer types. Also derives `currentLessonId` + `nextLessonNeedsExposure` for the drying detector. Exports `sessionBuilderAdapter` + `createSessionBuilderAdapter(client?)`. Since 2026-05-22 also exposes `loadForceCapabilitySnapshot(canonicalKey, userId)` for the `?force_capability` dev bypass (PR 0 §3.8) and throws `CapabilityNotFoundError` (defined here) when the key does not resolve. |
+| `builder.ts` | 486 | Orchestrator. Runs three selection passes, calls `resolveCandidate`, builds the queue-drying diagnostic, composes the plan. Exports `buildSession` + the test-only `loadCapabilitySessionPlan`. Since 2026-05-22 also exports `buildForceCapabilitySession({...})` — invoked by `buildSession` when `forceCapabilityKey` is set; bypasses the planner and emits a one-card session against the named capability. |
 | `compose.ts` | 115 | Packs candidate triples into `SessionBlock`s; emits diagnostics on resolution failure. Exports `compose`. |
 | `model.ts` | 46 | Types only — `SessionMode`, `SessionPlan`, `SessionBlock`, `SessionDiagnostic`, `CapabilityReviewSessionContext`. |
 | `pedagogy.ts` | 252 | Suppression-rule engine that picks new capabilities to introduce. Exports `planLearningPath`. |
@@ -33,7 +33,9 @@ status: stable
 - 12 files under `src/lib/exercises/builders/` — consume `audibleTextFieldsOf` via the barrel.
 - `src/services/capabilityContentService.ts:10` — imports `SessionBlock` from the barrel.
 
-**Status (2026-05-16):** stable. Spec rewritten 2026-05-16 as the after-spec of PR-A of the session-builder fold (commit `55edbf5`). PR-A consolidated nine files from `src/lib/session/`, `src/lib/pedagogy/`, and `src/services/capabilitySessionDataService.ts` into this module; deleted three orphaned modules + the entire posture system + two dead planner inputs; rewrote `labels.ts` to a per-capability map with `satisfies` exhaustiveness. PR-B (queue-drying wiring) and PR-C/D (recency badge, capability descriptions) ride in separate follow-on PRs — see fold plan §5.
+**Status (2026-05-22):** stable. Spec rewritten 2026-05-16 as the after-spec of PR-A of the session-builder fold (commit `55edbf5`). PR-A consolidated nine files from `src/lib/session/`, `src/lib/pedagogy/`, and `src/services/capabilitySessionDataService.ts` into this module; deleted three orphaned modules + the entire posture system + two dead planner inputs; rewrote `labels.ts` to a per-capability map with `satisfies` exhaustiveness. PR-B (queue-drying wiring) and PR-C/D (recency badge, capability descriptions) ride in separate follow-on PRs — see fold plan §5.
+
+**2026-05-22 — force-capability dev bypass (PR 0 §3.8).** `buildSession` now accepts an optional `forceCapabilityKey` arg; when set, it routes through `buildForceCapabilitySession` instead of the planner. `adapter.ts` resolves the canonical_key → capability + readiness + artifact subset, and seeds a dormant `learner_capability_state` row idempotently on first hit. Used by `src/pages/Session.tsx` (admin-gated via `profile.isAdmin` + `import.meta.env.DEV || VITE_ALLOW_FORCE_CAPABILITY`) and by `scripts/force-capability-answer.ts` (per-PR post-deploy gate). Plus `toProjectedCapability` now reads the new typed columns `prerequisite_keys` + `required_artifacts` instead of `metadata_json`; `skillType` is derived via `deriveSkillTypeFromCapabilityType` from `capabilityTypes.ts`.
 
 ---
 

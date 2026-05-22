@@ -171,15 +171,11 @@ export interface ProjectedCapability {
   learnerLanguage: LearnerLanguage
   requiredArtifacts: ArtifactKind[]
   prerequisiteKeys: string[]
-  difficultyLevel: number
-  goalTags: string[]
   // NULL = capability is not lesson-scoped (podcast or cross-lesson). NOT
   // NULL = capability is owned by that lesson and only eligible for new-
   // capability introduction once the learner has activated it.
   lessonId?: string | null
   projectionVersion: typeof CAPABILITY_PROJECTION_VERSION
-  sourceFingerprint: string
-  artifactFingerprint: string
 }
 
 export interface CapabilityAlias {
@@ -223,9 +219,33 @@ export interface LearningCapabilityRow {
   projection_version: string
   readiness_status: CapabilityReadinessStatus
   publication_status: CapabilityPublicationStatus
-  source_fingerprint?: string | null
-  artifact_fingerprint?: string | null
-  metadata_json: Record<string, unknown>
+  lesson_id: string | null
+  prerequisite_keys: string[]
+  required_artifacts: ArtifactKind[]
   created_at?: string
   updated_at?: string
+}
+
+// Maps capability_type to the SkillType that the renderer uses to pick the
+// answer-feedback flow. Was previously stored on metadata_json.skillType; now
+// derived at read-time per Decision F. Closed mapping — TS exhaustiveness
+// catches any new capability_type that needs a skill assignment.
+export function deriveSkillTypeFromCapabilityType(capabilityType: CapabilityType): SkillType {
+  switch (capabilityType) {
+    case 'text_recognition':
+    case 'audio_recognition':
+    case 'pattern_recognition':
+    case 'pattern_contrast':
+    case 'root_derived_recognition':
+    case 'podcast_gist':
+      return 'recognition'
+    case 'meaning_recall':
+    case 'l1_to_id_choice':
+      return 'meaning_recall'
+    case 'form_recall':
+    case 'dictation':
+    case 'root_derived_recall':
+    case 'contextual_cloze':
+      return 'form_recall'
+  }
 }

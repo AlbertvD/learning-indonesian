@@ -22,8 +22,6 @@ export interface PlannerCapability {
   // `learning_capabilities_lesson_id_required_for_lessons`; those caps are
   // gated by `activatedLessons` in PedagogyInput.
   lessonId?: string | null
-  difficultyLevel?: number
-  goalTags?: string[]
 }
 
 export interface PlannerLearnerCapabilityState {

@@ -269,19 +269,6 @@ export interface ExerciseItem {
   }
 }
 
-// === Leaderboard types ===
-
-export type LeaderboardMetric = 'total_seconds_spent' | 'lessons_completed' | 'items_learned' | 'days_active'
-
-export interface LeaderboardEntry {
-  user_id: string
-  display_name: string | null
-  items_learned: number
-  lessons_completed: number
-  total_seconds_spent: number
-  days_active: number
-}
-
 // === Content generation and exercise variants ===
 
 export interface ItemContextGrammarPattern {

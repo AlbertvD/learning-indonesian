@@ -13,11 +13,7 @@ const baseCapability: ProjectedCapability = {
   learnerLanguage: 'nl',
   requiredArtifacts: ['meaning:l1', 'accepted_answers:l1'],
   prerequisiteKeys: [],
-  difficultyLevel: 2,
-  goalTags: [],
   projectionVersion: 'capability-v3',
-  sourceFingerprint: 'source',
-  artifactFingerprint: 'artifact',
 }
 
 describe('capability contract validation', () => {

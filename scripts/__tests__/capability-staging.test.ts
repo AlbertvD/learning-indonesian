@@ -37,7 +37,6 @@ describe('capability staging', () => {
       expect.objectContaining({
         canonicalKey: expect.stringContaining(':text_recognition:'),
         sourceRef: 'learning_items/makan',
-        difficultyLevel: 1,
         contentUnitSlugs: ['item-makan'],
       }),
       expect.objectContaining({
@@ -51,7 +50,6 @@ describe('capability staging', () => {
       expect.objectContaining({
         canonicalKey: expect.stringContaining(':form_recall:'),
         prerequisiteKeys: [expect.stringContaining(':l1_to_id_choice:')],
-        difficultyLevel: 3,
       }),
     ]))
     // The pipeline emits deterministic, approved artifacts directly -- no more

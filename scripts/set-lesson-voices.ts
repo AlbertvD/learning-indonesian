@@ -148,15 +148,29 @@ export async function setLessonVoicesForLesson(
   }
 
   if (!dryRun) {
+    // primary_voice stays on the lessons row; dialogue_voices is replaced by
+    // the typed (lesson_id, speaker) → voice_id rows in lesson_speakers (PR 0
+    // §3.5 / decision J).
     const { error: updateError } = await supabase
       .schema('indonesian')
       .from('lessons')
-      .update({
-        primary_voice: primaryVoice,
-        dialogue_voices: Object.keys(dialogueVoices).length > 0 ? dialogueVoices : null,
-      })
+      .update({ primary_voice: primaryVoice })
       .eq('id', lessonId)
     if (updateError) throw updateError
+
+    if (Object.keys(dialogueVoices).length > 0) {
+      const rows = Object.entries(dialogueVoices).map(([speaker, voice_id]) => ({
+        lesson_id: lessonId,
+        speaker,
+        voice_id,
+        updated_at: new Date().toISOString(),
+      }))
+      const { error: upsertError } = await supabase
+        .schema('indonesian')
+        .from('lesson_speakers')
+        .upsert(rows, { onConflict: 'lesson_id,speaker' })
+      if (upsertError) throw upsertError
+    }
   }
 
   return { primaryVoice, dialogueVoices }

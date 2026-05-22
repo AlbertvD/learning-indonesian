@@ -40,7 +40,6 @@ describe('podcast capability projection', () => {
       direction: 'audio_to_l1',
       modality: 'audio',
       requiredArtifacts: ['audio_segment', 'transcript_segment', 'podcast_gist_prompt'],
-      goalTags: ['podcast', 'guided_transcript'],
     }))
     expect(isExposureOnly(segment!)).toBe(true)
     expect(validateCapability({

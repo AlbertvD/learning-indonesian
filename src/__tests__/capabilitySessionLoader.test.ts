@@ -21,11 +21,7 @@ function projectedCapability(overrides: Partial<ProjectedCapability> = {}): Proj
     learnerLanguage: 'nl',
     requiredArtifacts: ['meaning:l1', 'accepted_answers:l1'],
     prerequisiteKeys: [],
-    difficultyLevel: overrides.difficultyLevel ?? 2,
-    goalTags: overrides.goalTags ?? [],
     projectionVersion: 'capability-v3',
-    sourceFingerprint: 'source',
-    artifactFingerprint: 'artifact',
     ...overrides,
   }
 }
@@ -43,8 +39,6 @@ function plannerCapability(overrides: Partial<PlannerCapability> = {}): PlannerC
     publicationStatus: overrides.publicationStatus ?? 'published',
     prerequisiteKeys: projection.prerequisiteKeys,
     lessonId: projection.lessonId ?? null,
-    difficultyLevel: projection.difficultyLevel,
-    goalTags: projection.goalTags,
   }
 }
 
@@ -126,8 +120,8 @@ describe('capability session loader', () => {
           reviewCount: 1,
         }),
         artifactVersionSnapshot: expect.objectContaining({
-          artifactFingerprint: 'artifact',
-          sourceFingerprint: 'source',
+          capabilityKey: canonicalKey,
+          projectionVersion: 'capability-v3',
         }),
         capabilityReadinessStatus: 'ready',
         capabilityPublicationStatus: 'published',
