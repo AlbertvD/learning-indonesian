@@ -233,7 +233,24 @@ function toPlannerState(row: LearnerCapabilityStateRow): PlannerLearnerCapabilit
   }
 }
 
-export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supabase): CapabilitySessionDataAdapter {
+export class CapabilityNotFoundError extends Error {
+  constructor(canonicalKey: string) {
+    super(`No learning_capabilities row with canonical_key=${canonicalKey}.`)
+    this.name = 'CapabilityNotFoundError'
+  }
+}
+
+export interface ForceCapabilitySnapshot {
+  capabilityRow: LearningCapabilityDbRow
+  capability: ProjectedCapability
+  readiness: CapabilityReadiness
+  artifactIndex: ArtifactIndex
+  learnerState: LearnerCapabilityStateRow
+}
+
+export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supabase): CapabilitySessionDataAdapter & {
+  loadForceCapabilitySnapshot(canonicalKey: string, userId: string): Promise<ForceCapabilitySnapshot>
+} {
   const db = () => client.schema('indonesian')
 
   return {
@@ -343,6 +360,82 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         artifactIndex,
         currentLessonId,
         nextLessonNeedsExposure,
+      }
+    },
+
+    // Loads everything needed to build a one-card session for a named capability.
+    // Bypasses the planner. Used by the ?force_capability dev URL (see Session.tsx)
+    // and by scripts/force-capability-answer.ts (per-PR post-deploy gate, plan §3.8).
+    // Throws CapabilityNotFoundError if the canonical_key does not resolve.
+    // Seeds a dormant learner_capability_state row on first hit so the card renders
+    // even when the learner has never encountered the capability before.
+    async loadForceCapabilitySnapshot(canonicalKey: string, userId: string): Promise<ForceCapabilitySnapshot> {
+      const { data: rows, error: capError } = await db()
+        .from('learning_capabilities')
+        .select(CAPABILITY_COLUMNS)
+        .eq('canonical_key', canonicalKey)
+        .limit(1)
+      if (capError) throw capError
+      const capabilityRow = ((rows ?? []) as LearningCapabilityDbRow[])[0]
+      if (!capabilityRow) throw new CapabilityNotFoundError(canonicalKey)
+
+      const capability = toProjectedCapability(capabilityRow)
+      if (!capability) {
+        throw new Error(`Force-capability: row exists but projection failed for canonical_key=${canonicalKey}.`)
+      }
+
+      const artifactRows = await chunkedIn<CapabilityArtifactDbRow>(
+        'capability_artifacts',
+        'capability_id',
+        [capabilityRow.id],
+        undefined,
+        client,
+      )
+      const artifactIndex = buildArtifactIndex(artifactRows, new Map([[capabilityRow.id, capabilityRow]]))
+      const readiness = capabilityRow.readiness_status === 'ready'
+        ? validateCapability({ capability, artifacts: artifactIndex })
+        : { status: capabilityRow.readiness_status, reason: `Capability readiness is ${capabilityRow.readiness_status}` } as CapabilityReadiness
+
+      // Seed a dormant learner_capability_state row on first hit. Idempotent — the
+      // existing row is returned if present. Without this the planner-bypass would
+      // render against an empty state and the answer commit would write the first
+      // review event itself, which is the desired test path.
+      const { data: existing, error: stateLoadError } = await db()
+        .from('learner_capability_state')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('capability_id', capabilityRow.id)
+        .limit(1)
+      if (stateLoadError) throw stateLoadError
+      let stateRow = ((existing ?? []) as LearnerCapabilityStateDbRow[])[0]
+      if (!stateRow) {
+        const insert = {
+          user_id: userId,
+          capability_id: capabilityRow.id,
+          canonical_key_snapshot: capabilityRow.canonical_key,
+          activation_state: 'dormant',
+          review_count: 0,
+          lapse_count: 0,
+          consecutive_failure_count: 0,
+          state_version: 0,
+        }
+        const { data: inserted, error: insertError } = await db()
+          .from('learner_capability_state')
+          .insert(insert)
+          .select('*')
+          .single()
+        if (insertError) throw insertError
+        stateRow = inserted as LearnerCapabilityStateDbRow
+      }
+
+      const learnerState = toLearnerRow(stateRow, new Map([[capabilityRow.id, capabilityRow]]))
+
+      return {
+        capabilityRow,
+        capability,
+        readiness,
+        artifactIndex,
+        learnerState,
       }
     },
   }
