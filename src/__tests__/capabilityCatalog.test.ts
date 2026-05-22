@@ -58,10 +58,8 @@ describe('capability catalog projection', () => {
     const dictation = projection.capabilities.find(capability => capability.capabilityType === 'dictation')
 
     expect(textRecognition?.learnerLanguage).toBe('nl')
-    expect(textRecognition?.difficultyLevel).toBe(1)
     expect(textRecognition?.requiredArtifacts).toEqual(expect.arrayContaining(['base_text', 'meaning:l1']))
     expect(dictation?.direction).toBe('audio_to_id')
-    expect(dictation?.difficultyLevel).toBe(4)
     expect(dictation?.requiredArtifacts).toEqual(expect.arrayContaining(['accepted_answers:id']))
   })
 
@@ -79,7 +77,6 @@ describe('capability catalog projection', () => {
       skillType: 'meaning_recall',
       requiredArtifacts: expect.arrayContaining(['meaning:l1', 'base_text']),
       prerequisiteKeys: [textRecognition?.canonicalKey],
-      difficultyLevel: 2,
     }))
     expect(formRecall?.prerequisiteKeys).toEqual([choiceBridge?.canonicalKey])
     expect(audioCapability?.prerequisiteKeys).toEqual([textRecognition?.canonicalKey])
@@ -125,6 +122,5 @@ describe('capability catalog projection', () => {
     expect(contrast).toBeDefined()
     expect(contrast?.sourceRef).toBe(recognition?.sourceRef)
     expect(contrast?.prerequisiteKeys).toEqual([recognition?.canonicalKey])
-    expect(contrast?.difficultyLevel).toBeGreaterThan(recognition?.difficultyLevel ?? 0)
   })
 })

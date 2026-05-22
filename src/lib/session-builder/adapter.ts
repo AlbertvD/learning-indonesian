@@ -3,6 +3,7 @@ import { chunkedIn } from '@/lib/chunkedQuery'
 import { listActivatedLessons } from '@/lib/lessons'
 import {
   CAPABILITY_PROJECTION_VERSION,
+  deriveSkillTypeFromCapabilityType,
   validateCapability,
   type ArtifactIndex,
   type ArtifactKind,
@@ -21,7 +22,6 @@ import {
 } from './dueFilter'
 import type { PlannerCapability, PlannerLearnerCapabilityState } from '@/lib/session-builder/pedagogy'
 import type { CapabilitySessionDataAdapter, CapabilitySessionDataRequest, CapabilitySessionDataSnapshot } from '@/lib/session-builder/builder'
-import type { SkillType } from '@/types/learning'
 import type {
   CapabilityPublicationStatus,
   CapabilityReadinessStatus,
@@ -45,10 +45,9 @@ const CAPABILITY_COLUMNS = [
   'projection_version',
   'readiness_status',
   'publication_status',
-  'source_fingerprint',
-  'artifact_fingerprint',
   'lesson_id',
-  'metadata_json',
+  'prerequisite_keys',
+  'required_artifacts',
 ].join(',')
 
 interface LearningCapabilityDbRow {
@@ -63,10 +62,9 @@ interface LearningCapabilityDbRow {
   projection_version: string
   readiness_status: CapabilityReadinessStatus
   publication_status: CapabilityPublicationStatus
-  source_fingerprint: string | null
-  artifact_fingerprint: string | null
   lesson_id: string | null
-  metadata_json: Record<string, unknown> | null
+  prerequisite_keys: string[] | null
+  required_artifacts: string[] | null
 }
 
 interface LearnerCapabilityStateDbRow {
@@ -123,44 +121,27 @@ function deriveLessonProgression(input: {
   }
 }
 
-function arrayOfStrings(value: unknown): string[] | null {
-  return Array.isArray(value) && value.every(item => typeof item === 'string')
-    ? value
-    : null
-}
-
-function toProjectedCapability(row: LearningCapabilityDbRow): ProjectedCapability | null {
-  const metadata = row.metadata_json ?? {}
-  const skillType = typeof metadata.skillType === 'string' ? metadata.skillType as SkillType : null
-  const requiredArtifacts = arrayOfStrings(metadata.requiredArtifacts) as ArtifactKind[] | null
-  const prerequisiteKeys = arrayOfStrings(metadata.prerequisiteKeys)
-  const difficultyLevel = typeof metadata.difficultyLevel === 'number' ? metadata.difficultyLevel : null
-  const goalTags = arrayOfStrings(metadata.goalTags) ?? []
-
-  if (!skillType || !requiredArtifacts || !prerequisiteKeys || difficultyLevel == null) return null
-
+function toProjectedCapability(row: LearningCapabilityDbRow): ProjectedCapability {
+  // After Decision F (revised 2026-05-22), the typed columns prerequisite_keys
+  // and required_artifacts are the source of truth; skill_type is derived from
+  // capability_type via the closed mapping in capabilityTypes.ts.
   return {
     canonicalKey: row.canonical_key,
     sourceKind: row.source_kind,
     sourceRef: row.source_ref,
     capabilityType: row.capability_type,
-    skillType,
+    skillType: deriveSkillTypeFromCapabilityType(row.capability_type),
     direction: row.direction,
     modality: row.modality,
     learnerLanguage: row.learner_language,
-    requiredArtifacts,
-    prerequisiteKeys,
-    difficultyLevel,
-    goalTags,
+    requiredArtifacts: (row.required_artifacts ?? []) as ArtifactKind[],
+    prerequisiteKeys: row.prerequisite_keys ?? [],
     lessonId: row.lesson_id,
     projectionVersion: CAPABILITY_PROJECTION_VERSION,
-    sourceFingerprint: row.source_fingerprint ?? '',
-    artifactFingerprint: row.artifact_fingerprint ?? '',
   }
 }
 
 function toPlannerCapability(row: LearningCapabilityDbRow, projection: ProjectedCapability): PlannerCapability {
-  const metadata = row.metadata_json ?? {}
   return {
     id: row.id,
     canonicalKey: projection.canonicalKey,
@@ -172,8 +153,6 @@ function toPlannerCapability(row: LearningCapabilityDbRow, projection: Projected
     publicationStatus: row.publication_status,
     prerequisiteKeys: projection.prerequisiteKeys,
     lessonId: row.lesson_id,
-    difficultyLevel: typeof metadata.difficultyLevel === 'number' ? metadata.difficultyLevel : undefined,
-    goalTags: arrayOfStrings(metadata.goalTags) ?? undefined,
   }
 }
 
@@ -311,10 +290,6 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
 
       for (const row of capabilityRows) {
         const projection = toProjectedCapability(row)
-        if (!projection) {
-          readinessByKey.set(row.canonical_key, { status: 'unknown', reason: 'Capability metadata is incomplete for safe rendering.' })
-          continue
-        }
         capabilitiesByKey.set(row.canonical_key, projection)
         const readiness = row.readiness_status === 'ready'
           ? validateCapability({ capability: projection, artifacts: artifactIndex })
@@ -380,9 +355,6 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
       if (!capabilityRow) throw new CapabilityNotFoundError(canonicalKey)
 
       const capability = toProjectedCapability(capabilityRow)
-      if (!capability) {
-        throw new Error(`Force-capability: row exists but projection failed for canonical_key=${canonicalKey}.`)
-      }
 
       const artifactRows = await chunkedIn<CapabilityArtifactDbRow>(
         'capability_artifacts',

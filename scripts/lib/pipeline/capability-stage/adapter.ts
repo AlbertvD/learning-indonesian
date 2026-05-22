@@ -99,22 +99,18 @@ export interface CapabilityInput {
   modality: string
   learnerLanguage: string
   projectionVersion: string
-  sourceFingerprint?: string | null
-  artifactFingerprint?: string | null
   /**
    * Decision 3b (ADR 0006): every lesson-derived capability has lessonId set.
    * Podcast capabilities are the only source kinds permitted to leave it null
    * — see the CHECK constraint in scripts/migration.sql.
    */
   lessonId?: string | null
-  metadata: {
-    skillType: string
-    requiredArtifacts: string[]
-    prerequisiteKeys: string[]
-    requiredSourceProgress?: unknown
-    difficultyLevel: number
-    goalTags: string[]
-  }
+  // Typed columns replacing metadata_json (Decision F, 2026-05-22).
+  // The reader (session-builder/adapter.ts) derives skillType from
+  // capability_type; goalTags + difficultyLevel + requiredSourceProgress are
+  // gone (no consumers).
+  requiredArtifacts: string[]
+  prerequisiteKeys: string[]
 }
 
 export async function upsertCapabilities(
@@ -137,17 +133,9 @@ export async function upsertCapabilities(
         projection_version: capability.projectionVersion,
         readiness_status: 'unknown',
         publication_status: 'draft',
-        source_fingerprint: capability.sourceFingerprint ?? null,
-        artifact_fingerprint: capability.artifactFingerprint ?? null,
         lesson_id: capability.lessonId ?? null,
-        metadata_json: {
-          skillType: capability.metadata.skillType,
-          requiredArtifacts: capability.metadata.requiredArtifacts,
-          prerequisiteKeys: capability.metadata.prerequisiteKeys,
-          requiredSourceProgress: capability.metadata.requiredSourceProgress ?? null,
-          difficultyLevel: capability.metadata.difficultyLevel,
-          goalTags: capability.metadata.goalTags ?? [],
-        },
+        required_artifacts: capability.requiredArtifacts,
+        prerequisite_keys: capability.prerequisiteKeys,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'canonical_key' })
       .select('id, canonical_key')

@@ -14,11 +14,7 @@ function capability(overrides: Partial<ProjectedCapability> = {}): ProjectedCapa
     learnerLanguage: 'nl',
     requiredArtifacts: ['meaning:l1', 'accepted_answers:l1'],
     prerequisiteKeys: [],
-    difficultyLevel: overrides.difficultyLevel ?? 2,
-    goalTags: overrides.goalTags ?? [],
     projectionVersion: 'capability-v3',
-    sourceFingerprint: 'source',
-    artifactFingerprint: 'artifact',
     ...overrides,
   }
 }

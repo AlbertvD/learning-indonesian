@@ -352,14 +352,8 @@ export async function runCapabilityStage(
     modality: string
     learnerLanguage: string
     projectionVersion: string
-    sourceFingerprint?: string
-    artifactFingerprint?: string
-    skillType: string
     requiredArtifacts: string[]
     prerequisiteKeys?: string[]
-    requiredSourceProgress?: unknown
-    difficultyLevel: number
-    goalTags?: string[]
   }>).map((capability): CapabilityInput => ({
     canonicalKey: capability.canonicalKey,
     sourceKind: capability.sourceKind,
@@ -369,17 +363,9 @@ export async function runCapabilityStage(
     modality: capability.modality,
     learnerLanguage: capability.learnerLanguage,
     projectionVersion: capability.projectionVersion,
-    sourceFingerprint: capability.sourceFingerprint ?? null,
-    artifactFingerprint: capability.artifactFingerprint ?? null,
     lessonId: input.lessonId,
-    metadata: {
-      skillType: capability.skillType,
-      requiredArtifacts: capability.requiredArtifacts,
-      prerequisiteKeys: capability.prerequisiteKeys ?? [],
-      requiredSourceProgress: capability.requiredSourceProgress ?? null,
-      difficultyLevel: capability.difficultyLevel,
-      goalTags: capability.goalTags ?? [],
-    },
+    requiredArtifacts: capability.requiredArtifacts,
+    prerequisiteKeys: capability.prerequisiteKeys ?? [],
   }))
   const allCapabilities: CapabilityInput[] = [
     ...stagedCapabilities,

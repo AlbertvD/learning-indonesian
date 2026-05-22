@@ -86,12 +86,14 @@ function dormantSnapshot(): CapabilityScheduleSnapshot {
 
 function artifactVersionSnapshot(capability: ProjectedCapability | null): Record<string, unknown> {
   if (!capability) return {}
+  // sourceFingerprint + artifactFingerprint retired with the metadata_json fold
+  // (Decision F, 2026-05-22). Snapshot now carries the stable identity fields
+  // only; the destination column `capability_review_events.artifact_version_snapshot_json`
+  // is itself dropped in Step 6 of PR 0 — this whole field becomes vestigial.
   return {
     capabilityKey: capability.canonicalKey,
     sourceRef: capability.sourceRef,
     projectionVersion: capability.projectionVersion,
-    sourceFingerprint: capability.sourceFingerprint,
-    artifactFingerprint: capability.artifactFingerprint,
     requiredArtifacts: capability.requiredArtifacts,
   }
 }
