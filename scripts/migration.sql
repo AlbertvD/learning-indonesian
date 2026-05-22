@@ -2143,3 +2143,37 @@ end $$;
 
 comment on column indonesian.learning_capabilities.prerequisite_keys is
   'Canonical-key array of capabilities that must be active before this one can be introduced. Replaces metadata_json.prerequisiteKeys (decision A).';
+
+-- §3.2-extension — Add learning_capabilities.required_artifacts (additive).
+-- Decision F (target-arch) said drop+derive, but affixed_form_pair caps have
+-- conditional artifacts (±allomorph_rule) that aren't derivable from
+-- capability_type alone — the writer at capabilityCatalog.ts:178-180 branches
+-- on pair.allomorphRule, and the DB row is the only place that knowledge
+-- survives. Promoting to a typed column preserves the writer/reader/validator
+-- triangle cleanly (CLAUDE.md content-pipeline discipline). Backfill mirrors
+-- the prerequisite_keys pattern above. Drop of metadata_json (Step 6) happens
+-- AFTER all writers + readers switch to this column.
+alter table indonesian.learning_capabilities
+  add column if not exists required_artifacts text[] not null default '{}';
+
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'indonesian'
+      and table_name = 'learning_capabilities'
+      and column_name = 'metadata_json'
+  ) then
+    update indonesian.learning_capabilities
+       set required_artifacts = coalesce(
+         array(select jsonb_array_elements_text(metadata_json->'requiredArtifacts')),
+         '{}'::text[]
+       )
+     where required_artifacts = '{}'
+       and metadata_json is not null
+       and metadata_json ? 'requiredArtifacts';
+  end if;
+end $$;
+
+comment on column indonesian.learning_capabilities.required_artifacts is
+  'ArtifactKind[] this cap_type needs beyond what the exercise contract declares. Replaces metadata_json.requiredArtifacts. Decision F (revised 2026-05-22): kept as a column because affixed_form_pair caps have conditional requirements (±allomorph_rule) that are not derivable from capability_type alone.';
