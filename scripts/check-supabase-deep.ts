@@ -711,6 +711,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
       pass('HC10 item caps reference active learning_items (dialogue is_active invariant)')
     } else {
       const lessonsAffected = new Set(offenders.map((o) => o.lesson_id ?? 'null'))
+      offenders.sort((a, b) => a.slug.localeCompare(b.slug) || a.capability_type.localeCompare(b.capability_type))
       const sample = offenders.slice(0, 5).map((o) => `${o.capability_type} '${o.slug}' (${o.item_type})`).join(', ')
       fail(
         'HC10 item caps reference active learning_items (dialogue is_active invariant) — EXPECTED RED until affected lessons re-publish',
