@@ -2228,3 +2228,389 @@ begin
     on conflict (lesson_id, speaker) do nothing;
   end if;
 end $$;
+
+-- ============================================================================
+-- PR 1 — item source kind end-to-end migration (Decision R + Decision G2 + Decision Q)
+-- ============================================================================
+
+-- §PR1.1 — Add translation columns to learning_items (Decision R).
+-- Collapses item_meanings into two typed columns. item_meanings table stays
+-- until the final cleanup PR (PR 7) — the writer stops emitting rows, the
+-- reader switches to inline columns in the same deploy. Re-publish from
+-- staging populates the new columns via the updated pipeline writer.
+alter table indonesian.learning_items
+  add column if not exists translation_nl text,
+  add column if not exists translation_en text,
+  add column if not exists usage_note text;
+
+comment on column indonesian.learning_items.translation_nl is
+  'Primary Dutch translation. Replaces item_meanings WHERE translation_language=''nl'' AND is_primary=true. Decision R.';
+comment on column indonesian.learning_items.translation_en is
+  'Primary English translation. Replaces item_meanings WHERE translation_language=''en'' AND is_primary=true. Decision R.';
+comment on column indonesian.learning_items.usage_note is
+  'Optional usage note. Replaces item_meanings.usage_note. Decision R.';
+
+-- §PR1.2 — capability_audio_refs (Decision Q).
+-- Replaces capability_artifacts(artifact_kind=audio_clip) as the binding
+-- between caps and their TTS audio. One row per (capability_id, audio_clip_id)
+-- pair; voice_id is denormalised from audio_clips for query simplicity.
+create table if not exists indonesian.capability_audio_refs (
+  capability_id uuid not null references indonesian.learning_capabilities(id) on delete cascade,
+  audio_clip_id uuid not null references indonesian.audio_clips(id) on delete restrict,
+  voice_id      text not null,
+  created_at    timestamptz not null default now(),
+  primary key (capability_id, audio_clip_id)
+);
+
+create index if not exists capability_audio_refs_clip_idx
+  on indonesian.capability_audio_refs(audio_clip_id);
+
+alter table indonesian.capability_audio_refs enable row level security;
+drop policy if exists "capability_audio_refs_authenticated_read" on indonesian.capability_audio_refs;
+create policy "capability_audio_refs_authenticated_read"
+  on indonesian.capability_audio_refs for select to authenticated using (true);
+grant select on indonesian.capability_audio_refs to authenticated;
+revoke insert, update, delete on indonesian.capability_audio_refs from authenticated;
+grant all on indonesian.capability_audio_refs to service_role;
+
+comment on table indonesian.capability_audio_refs is
+  'Capability to audio_clip binding. Replaces capability_artifacts(kind=audio_clip). Decision Q.';
+
+-- §PR1.3 — Curated distractor tables (Decision G2 Group B).
+-- Wires the orphaned vocab-enrichments.ts agent output into the DB.
+-- Each table is keyed by capability_id (1:1). When absent, byKind/item.ts
+-- falls back to random pool sampling (existing behaviour).
+
+create table if not exists indonesian.recognition_mcq_distractors (
+  capability_id uuid primary key references indonesian.learning_capabilities(id) on delete cascade,
+  distractors   text[] not null,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+
+alter table indonesian.recognition_mcq_distractors enable row level security;
+drop policy if exists "recognition_mcq_distractors_authenticated_read" on indonesian.recognition_mcq_distractors;
+create policy "recognition_mcq_distractors_authenticated_read"
+  on indonesian.recognition_mcq_distractors for select to authenticated using (true);
+grant select on indonesian.recognition_mcq_distractors to authenticated;
+revoke insert, update, delete on indonesian.recognition_mcq_distractors from authenticated;
+grant all on indonesian.recognition_mcq_distractors to service_role;
+
+comment on table indonesian.recognition_mcq_distractors is
+  'Curated NL wrong-option strings for recognition_mcq. Per-cap 1:1. Decision G2 Group B.';
+
+create table if not exists indonesian.cued_recall_distractors (
+  capability_id uuid primary key references indonesian.learning_capabilities(id) on delete cascade,
+  distractors   text[] not null,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+
+alter table indonesian.cued_recall_distractors enable row level security;
+drop policy if exists "cued_recall_distractors_authenticated_read" on indonesian.cued_recall_distractors;
+create policy "cued_recall_distractors_authenticated_read"
+  on indonesian.cued_recall_distractors for select to authenticated using (true);
+grant select on indonesian.cued_recall_distractors to authenticated;
+revoke insert, update, delete on indonesian.cued_recall_distractors from authenticated;
+grant all on indonesian.cued_recall_distractors to service_role;
+
+comment on table indonesian.cued_recall_distractors is
+  'Curated Indonesian wrong-option strings for cued_recall. Per-cap 1:1. Decision G2 Group B.';
+
+create table if not exists indonesian.cloze_mcq_item_distractors (
+  capability_id uuid primary key references indonesian.learning_capabilities(id) on delete cascade,
+  distractors   text[] not null,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+
+alter table indonesian.cloze_mcq_item_distractors enable row level security;
+drop policy if exists "cloze_mcq_item_distractors_authenticated_read" on indonesian.cloze_mcq_item_distractors;
+create policy "cloze_mcq_item_distractors_authenticated_read"
+  on indonesian.cloze_mcq_item_distractors for select to authenticated using (true);
+grant select on indonesian.cloze_mcq_item_distractors to authenticated;
+revoke insert, update, delete on indonesian.cloze_mcq_item_distractors from authenticated;
+grant all on indonesian.cloze_mcq_item_distractors to service_role;
+
+comment on table indonesian.cloze_mcq_item_distractors is
+  'Curated Indonesian filler-word strings for cloze_mcq. Per-cap 1:1. Decision G2 Group B.';
+-- ============================================================================
+-- PR 1 addendum — 7 typed satellite tables for PRs 2–4 (Decision A + B §3.9)
+-- These tables are empty until the per-PR re-publish populates them.
+-- See docs/plans/2026-05-22-data-model-migration.md §3.1 and
+--     docs/plans/2026-05-21-data-model-target.md Decision A + Decision B.
+-- ============================================================================
+
+-- ── Decision D: lesson_dialogue_lines ─────────────────────────────────────────────
+-- Per-dialogue-line typed rows. Child table of lesson_sections (section_kind='dialogue').
+-- lesson_id denormalised per user preference §1.3 (query uniformity).
+-- source_line_ref is the stable canonical identifier used by capabilities.source_ref
+-- for dialogue_line caps (format: 'lesson-N/section-M/line-K').
+-- Spec: docs/plans/2026-05-21-data-model-target.md Decision D lines 324-337.
+-- Must precede dialogue_clozes DDL (FK dialogue_clozes.dialogue_line_id → this table).
+create table if not exists indonesian.lesson_dialogue_lines (
+  id              uuid        primary key default gen_random_uuid(),
+  section_id      uuid        not null references indonesian.lesson_sections(id) on delete cascade,
+  lesson_id       uuid        not null references indonesian.lessons(id) on delete cascade,
+  line_index      integer     not null,
+  source_line_ref text        not null,
+  text            text        not null,
+  speaker         text,
+  translation     text        not null,
+  created_at      timestamptz not null default now(),
+  updated_at      timestamptz not null default now(),
+  unique(section_id, line_index),
+  unique(source_line_ref)
+);
+
+create index if not exists lesson_dialogue_lines_section_idx
+  on indonesian.lesson_dialogue_lines(section_id);
+create index if not exists lesson_dialogue_lines_lesson_idx
+  on indonesian.lesson_dialogue_lines(lesson_id);
+
+alter table indonesian.lesson_dialogue_lines enable row level security;
+drop policy if exists "lesson_dialogue_lines_authenticated_read" on indonesian.lesson_dialogue_lines;
+create policy "lesson_dialogue_lines_authenticated_read"
+  on indonesian.lesson_dialogue_lines for select to authenticated using (true);
+grant select on indonesian.lesson_dialogue_lines to authenticated;
+revoke insert, update, delete on indonesian.lesson_dialogue_lines from authenticated;
+grant all on indonesian.lesson_dialogue_lines to service_role;
+
+comment on table indonesian.lesson_dialogue_lines is
+  'Per-line typed rows for dialogue sections. Child of lesson_sections (section_kind=''dialogue''). lesson_id denormalised for query uniformity. source_line_ref (lesson-N/section-M/line-K) is the stable identifier used by dialogue_line capability source_ref. Decision D; spec at 2026-05-21-data-model-target.md lines 324-337. Populated by PR 2 (lesson-stage writer).';
+
+-- ── Decision A: dialogue_clozes ──────────────────────────────────────────────
+-- One row per dialogue_line capability; replaces 3 capability_artifacts rows
+-- (cloze_context, cloze_answer, translation:l1). capability_id is 1:1 (UNIQUE).
+-- dialogue_line_id FK to lesson_dialogue_lines for structural cohesion.
+-- Populated by PR 2 (projectors/dialogueArtifacts.ts).
+create table if not exists indonesian.dialogue_clozes (
+  id                  uuid primary key default gen_random_uuid(),
+  capability_id       uuid not null unique references indonesian.learning_capabilities(id) on delete cascade,
+  dialogue_line_id    uuid not null references indonesian.lesson_dialogue_lines(id) on delete cascade,
+  sentence_with_blank text not null,
+  answer_text         text not null,
+  translation_text    text not null,
+  created_at          timestamptz not null default now(),
+  updated_at          timestamptz not null default now()
+);
+
+create index if not exists dialogue_clozes_cap_idx
+  on indonesian.dialogue_clozes(capability_id);
+create index if not exists dialogue_clozes_line_idx
+  on indonesian.dialogue_clozes(dialogue_line_id);
+
+alter table indonesian.dialogue_clozes enable row level security;
+drop policy if exists "dialogue_clozes_authenticated_read" on indonesian.dialogue_clozes;
+create policy "dialogue_clozes_authenticated_read"
+  on indonesian.dialogue_clozes for select to authenticated using (true);
+grant select on indonesian.dialogue_clozes to authenticated;
+revoke insert, update, delete on indonesian.dialogue_clozes from authenticated;
+grant all on indonesian.dialogue_clozes to service_role;
+
+comment on table indonesian.dialogue_clozes is
+  'One row per dialogue_line capability. Replaces capability_artifacts(cloze_context/cloze_answer/translation:l1). Decision A. Populated by PR 2.';
+
+-- ── Decision A: affixed_form_pairs ───────────────────────────────────────────
+-- One row per capability (2 per linguistic pair — recognition + production).
+-- Replaces capability_artifacts(root_derived_pair, allomorph_rule).
+-- UNIQUE(source_ref, capability_id) per validator contract (migration plan §6.5).
+-- lesson_id denormalised for uniform per-lesson joins (user preference §1.3).
+-- Populated by PR 3 (projectors/morphology.ts).
+create table if not exists indonesian.affixed_form_pairs (
+  id               uuid primary key default gen_random_uuid(),
+  capability_id    uuid not null unique references indonesian.learning_capabilities(id) on delete cascade,
+  source_ref       text not null,
+  lesson_id        uuid not null references indonesian.lessons(id) on delete restrict,
+  root_text        text not null,
+  derived_text     text not null,
+  allomorph_rule   text not null,
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now(),
+  unique (source_ref, capability_id)
+);
+
+create index if not exists affixed_form_pairs_cap_idx
+  on indonesian.affixed_form_pairs(capability_id);
+create index if not exists affixed_form_pairs_lesson_idx
+  on indonesian.affixed_form_pairs(lesson_id);
+
+alter table indonesian.affixed_form_pairs enable row level security;
+drop policy if exists "affixed_form_pairs_authenticated_read" on indonesian.affixed_form_pairs;
+create policy "affixed_form_pairs_authenticated_read"
+  on indonesian.affixed_form_pairs for select to authenticated using (true);
+grant select on indonesian.affixed_form_pairs to authenticated;
+revoke insert, update, delete on indonesian.affixed_form_pairs from authenticated;
+grant all on indonesian.affixed_form_pairs to service_role;
+
+comment on table indonesian.affixed_form_pairs is
+  'One row per affixed_form_pair capability (2 per linguistic pair). Replaces capability_artifacts(root_derived_pair/allomorph_rule). Decision A. Populated by PR 3.';
+
+-- ── Decision A: grammar_pattern_examples ─────────────────────────────────────
+-- Per-pattern example sentences; replaces capability_artifacts(pattern_example).
+-- Multiple examples per pattern via display_order; today exactly 1 per pattern.
+-- FK to grammar_patterns; no capability_id (pattern-level, not cap-level).
+-- Populated by PR 4 (projectors/grammar.ts).
+create table if not exists indonesian.grammar_pattern_examples (
+  id            uuid primary key default gen_random_uuid(),
+  pattern_id    uuid not null references indonesian.grammar_patterns(id) on delete cascade,
+  example_text  text not null,
+  display_order integer not null,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now(),
+  unique (pattern_id, display_order)
+);
+
+create index if not exists grammar_pattern_examples_pattern_idx
+  on indonesian.grammar_pattern_examples(pattern_id);
+
+alter table indonesian.grammar_pattern_examples enable row level security;
+drop policy if exists "grammar_pattern_examples_authenticated_read" on indonesian.grammar_pattern_examples;
+create policy "grammar_pattern_examples_authenticated_read"
+  on indonesian.grammar_pattern_examples for select to authenticated using (true);
+grant select on indonesian.grammar_pattern_examples to authenticated;
+revoke insert, update, delete on indonesian.grammar_pattern_examples from authenticated;
+grant all on indonesian.grammar_pattern_examples to service_role;
+
+comment on table indonesian.grammar_pattern_examples is
+  'Typed example sentences per grammar pattern. Replaces capability_artifacts(pattern_example). Decision A. Populated by PR 4.';
+
+-- ── Decision B Group A: contrast_pair_exercises ──────────────────────────────
+-- Full authored payload for contrast_pair exercise type. FK to grammar_patterns;
+-- lesson_id denormalised for uniform per-lesson queries (user preference §1.3).
+-- options jsonb shape: [{id:string, text:string}, ...] (small bounded array).
+-- Populated by PR 4 (scripts/publish-grammar-candidates.ts).
+create table if not exists indonesian.contrast_pair_exercises (
+  id                  uuid primary key default gen_random_uuid(),
+  grammar_pattern_id  uuid not null references indonesian.grammar_patterns(id) on delete cascade,
+  lesson_id           uuid not null references indonesian.lessons(id) on delete restrict,
+  prompt_text         text not null,
+  target_meaning      text not null,
+  options             jsonb not null,
+  correct_option_id   text not null,
+  explanation_text    text not null,
+  is_active           boolean not null default true,
+  source_candidate_id uuid,
+  created_at          timestamptz not null default now(),
+  updated_at          timestamptz not null default now()
+);
+
+create index if not exists contrast_pair_exercises_pattern_idx
+  on indonesian.contrast_pair_exercises(grammar_pattern_id);
+create index if not exists contrast_pair_exercises_lesson_idx
+  on indonesian.contrast_pair_exercises(lesson_id);
+
+alter table indonesian.contrast_pair_exercises enable row level security;
+drop policy if exists "contrast_pair_exercises_authenticated_read" on indonesian.contrast_pair_exercises;
+create policy "contrast_pair_exercises_authenticated_read"
+  on indonesian.contrast_pair_exercises for select to authenticated using (true);
+grant select on indonesian.contrast_pair_exercises to authenticated;
+revoke insert, update, delete on indonesian.contrast_pair_exercises from authenticated;
+grant all on indonesian.contrast_pair_exercises to service_role;
+
+comment on table indonesian.contrast_pair_exercises is
+  'Full authored payload for contrast_pair exercise type. options jsonb: [{id,text},...]. Decision B Group A. Populated by PR 4.';
+
+-- ── Decision B Group A: sentence_transformation_exercises ────────────────────
+-- Full authored payload for sentence_transformation exercise type.
+-- acceptable_answers text[]: multiple accepted answer forms.
+-- hint_text is optional (nullable).
+create table if not exists indonesian.sentence_transformation_exercises (
+  id                         uuid primary key default gen_random_uuid(),
+  grammar_pattern_id         uuid not null references indonesian.grammar_patterns(id) on delete cascade,
+  lesson_id                  uuid not null references indonesian.lessons(id) on delete restrict,
+  source_sentence            text not null,
+  transformation_instruction text not null,
+  hint_text                  text,
+  acceptable_answers         text[] not null,
+  explanation_text           text not null,
+  is_active                  boolean not null default true,
+  source_candidate_id        uuid,
+  created_at                 timestamptz not null default now(),
+  updated_at                 timestamptz not null default now()
+);
+
+create index if not exists sentence_transformation_exercises_pattern_idx
+  on indonesian.sentence_transformation_exercises(grammar_pattern_id);
+create index if not exists sentence_transformation_exercises_lesson_idx
+  on indonesian.sentence_transformation_exercises(lesson_id);
+
+alter table indonesian.sentence_transformation_exercises enable row level security;
+drop policy if exists "sentence_transformation_exercises_authenticated_read" on indonesian.sentence_transformation_exercises;
+create policy "sentence_transformation_exercises_authenticated_read"
+  on indonesian.sentence_transformation_exercises for select to authenticated using (true);
+grant select on indonesian.sentence_transformation_exercises to authenticated;
+revoke insert, update, delete on indonesian.sentence_transformation_exercises from authenticated;
+grant all on indonesian.sentence_transformation_exercises to service_role;
+
+comment on table indonesian.sentence_transformation_exercises is
+  'Full authored payload for sentence_transformation exercise type. acceptable_answers text[]. Decision B Group A. Populated by PR 4.';
+
+-- ── Decision B Group A: constrained_translation_exercises ────────────────────
+-- Full authored payload for constrained_translation exercise type.
+-- disallowed_shortcut_forms text[]: forbidden shortcut phrasings (default empty).
+create table if not exists indonesian.constrained_translation_exercises (
+  id                        uuid primary key default gen_random_uuid(),
+  grammar_pattern_id        uuid not null references indonesian.grammar_patterns(id) on delete cascade,
+  lesson_id                 uuid not null references indonesian.lessons(id) on delete restrict,
+  source_language_sentence  text not null,
+  required_target_pattern   text not null,
+  disallowed_shortcut_forms text[] not null default '{}',
+  acceptable_answers        text[] not null,
+  explanation_text          text not null,
+  is_active                 boolean not null default true,
+  source_candidate_id       uuid,
+  created_at                timestamptz not null default now(),
+  updated_at                timestamptz not null default now()
+);
+
+create index if not exists constrained_translation_exercises_pattern_idx
+  on indonesian.constrained_translation_exercises(grammar_pattern_id);
+create index if not exists constrained_translation_exercises_lesson_idx
+  on indonesian.constrained_translation_exercises(lesson_id);
+
+alter table indonesian.constrained_translation_exercises enable row level security;
+drop policy if exists "constrained_translation_exercises_authenticated_read" on indonesian.constrained_translation_exercises;
+create policy "constrained_translation_exercises_authenticated_read"
+  on indonesian.constrained_translation_exercises for select to authenticated using (true);
+grant select on indonesian.constrained_translation_exercises to authenticated;
+revoke insert, update, delete on indonesian.constrained_translation_exercises from authenticated;
+grant all on indonesian.constrained_translation_exercises to service_role;
+
+comment on table indonesian.constrained_translation_exercises is
+  'Full authored payload for constrained_translation exercise type. disallowed_shortcut_forms text[] default empty. Decision B Group A. Populated by PR 4.';
+
+-- ── Decision B Group A: cloze_mcq_exercises ──────────────────────────────────
+-- Full authored payload for cloze_mcq exercise type (pattern-source variant).
+-- options jsonb shape: string[] (option strings only; no id field).
+-- Serves pattern_recognition / contextual_cloze capability_types with source_kind='pattern'.
+create table if not exists indonesian.cloze_mcq_exercises (
+  id                  uuid primary key default gen_random_uuid(),
+  grammar_pattern_id  uuid not null references indonesian.grammar_patterns(id) on delete cascade,
+  lesson_id           uuid not null references indonesian.lessons(id) on delete restrict,
+  sentence            text not null,
+  translation         text not null,
+  options             jsonb not null,
+  correct_option_id   text not null,
+  explanation_text    text not null,
+  is_active           boolean not null default true,
+  source_candidate_id uuid,
+  created_at          timestamptz not null default now(),
+  updated_at          timestamptz not null default now()
+);
+
+create index if not exists cloze_mcq_exercises_pattern_idx
+  on indonesian.cloze_mcq_exercises(grammar_pattern_id);
+create index if not exists cloze_mcq_exercises_lesson_idx
+  on indonesian.cloze_mcq_exercises(lesson_id);
+
+alter table indonesian.cloze_mcq_exercises enable row level security;
+drop policy if exists "cloze_mcq_exercises_authenticated_read" on indonesian.cloze_mcq_exercises;
+create policy "cloze_mcq_exercises_authenticated_read"
+  on indonesian.cloze_mcq_exercises for select to authenticated using (true);
+grant select on indonesian.cloze_mcq_exercises to authenticated;
+revoke insert, update, delete on indonesian.cloze_mcq_exercises from authenticated;
+grant all on indonesian.cloze_mcq_exercises to service_role;
+
+comment on table indonesian.cloze_mcq_exercises is
+  'Full authored payload for cloze_mcq exercise type (pattern-source variant). options jsonb is string[]. Decision B Group A. Populated by PR 4.';

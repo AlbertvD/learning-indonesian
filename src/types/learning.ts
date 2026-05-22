@@ -30,6 +30,10 @@ export interface LearningItem {
   notes: string | null
   is_active: boolean
   pos: POS | null
+  /** Decision R: inline translation columns (replaces item_meanings JOIN). null until after first re-publish. */
+  translation_nl: string | null
+  translation_en: string | null
+  usage_note: string | null
   created_at: string
   updated_at: string
 }

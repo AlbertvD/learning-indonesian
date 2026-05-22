@@ -23,7 +23,7 @@ function makeItem(overrides: Partial<LearningItem> = {}): LearningItem {
     id: 'item-1', item_type: 'word', base_text: 'akhir', normalized_text: 'akhir',
     language: 'id', level: 'A1', source_type: 'lesson',
     source_vocabulary_id: null, source_card_id: null, notes: null,
-    is_active: true, pos: 'noun', created_at: '', updated_at: '',
+    is_active: true, pos: 'noun', translation_nl: null, translation_en: null, usage_note: null, created_at: '', updated_at: '',
     ...overrides,
   }
 }

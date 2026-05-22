@@ -711,6 +711,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
       pass('HC10 item caps reference active learning_items (dialogue is_active invariant)')
     } else {
       const lessonsAffected = new Set(offenders.map((o) => o.lesson_id ?? 'null'))
+      offenders.sort((a, b) => a.slug.localeCompare(b.slug) || a.capability_type.localeCompare(b.capability_type))
       const sample = offenders.slice(0, 5).map((o) => `${o.capability_type} '${o.slug}' (${o.item_type})`).join(', ')
       fail(
         'HC10 item caps reference active learning_items (dialogue is_active invariant) — EXPECTED RED until affected lessons re-publish',
@@ -937,6 +938,89 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   } catch (err) {
     fail(
       'HC12 affixed_form_pair caps have required artifacts',
+      err instanceof Error ? err.message : String(err),
+    )
+  }
+}
+
+// ── HC13 (PR 1 of 2026-05-22-data-model-migration.md): every item source_kind
+//        cap references a learning_item whose translation_nl is non-null. PR 1
+//        switched src/lib/exercise-content/byKind/item.ts to read translation
+//        directly from learning_items (Decision R), and the reader throws
+//        CapabilityDataMissingError on null. This check makes the broken state
+//        visible at the health-check layer so it cannot slip past CI.
+//
+//        EXPECTED RED for lessons not yet re-published after the migration
+//        (lessons 5, 7, 8 as of 2026-05-22 — blocked by pre-existing
+//        dialogue-cloze-missing CRIT lint errors). Resolves on re-publish.
+{
+  type ItemCap = { canonical_key: string; source_ref: string; lesson_id: string | null }
+  type ItemNlRow = { normalized_text: string; translation_nl: string | null }
+
+  async function fetchAllItemCaps(): Promise<ItemCap[]> {
+    const pageSize = 1000
+    const all: ItemCap[] = []
+    for (let offset = 0; ; offset += pageSize) {
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('learning_capabilities')
+        .select('canonical_key, source_ref, lesson_id')
+        .eq('source_kind', 'item')
+        .like('source_ref', 'learning_items/%')
+        .range(offset, offset + pageSize - 1)
+      if (error) throw error
+      const rows = (data ?? []) as ItemCap[]
+      all.push(...rows)
+      if (rows.length < pageSize) break
+    }
+    return all
+  }
+
+  async function fetchItemTranslations(): Promise<Map<string, ItemNlRow>> {
+    const pageSize = 1000
+    const byNorm = new Map<string, ItemNlRow>()
+    for (let offset = 0; ; offset += pageSize) {
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('learning_items')
+        .select('normalized_text, translation_nl')
+        .range(offset, offset + pageSize - 1)
+      if (error) throw error
+      const rows = (data ?? []) as ItemNlRow[]
+      for (const row of rows) byNorm.set(row.normalized_text, row)
+      if (rows.length < pageSize) break
+    }
+    return byNorm
+  }
+
+  try {
+    const [caps, items] = await Promise.all([fetchAllItemCaps(), fetchItemTranslations()])
+    const offenders: Array<{ slug: string; canonical_key: string; lesson_id: string | null }> = []
+    for (const c of caps) {
+      const slug = c.source_ref.replace(/^learning_items\//, '')
+      const it = items.get(slug)
+      if (!it) continue   // HC9 already covers unresolvable slugs
+      if (it.translation_nl === null) {
+        offenders.push({ slug, canonical_key: c.canonical_key, lesson_id: c.lesson_id })
+      }
+    }
+    if (offenders.length === 0) {
+      pass(`HC13 item caps reference learning_items with translation_nl populated (${caps.length} cap(s) checked)`)
+    } else {
+      const lessonsAffected = new Set(offenders.map(o => o.lesson_id ?? 'null'))
+      offenders.sort((a, b) => a.slug.localeCompare(b.slug))
+      const sample = offenders.slice(0, 5).map(o => `'${o.slug}'`).join(', ')
+      fail(
+        'HC13 item caps reference learning_items with translation_nl populated (Decision R) — EXPECTED RED until affected lessons re-publish',
+        `${offenders.length} cap(s) point at learning_items with translation_nl=null across ${lessonsAffected.size} lesson(s). ` +
+        `Sample: ${sample}${offenders.length > 5 ? ' …' : ''}\n` +
+        `   → Re-publish the affected lessons: bun scripts/publish-approved-content.ts <N>. ` +
+        `Stage B's vocab projector populates translation_nl/en on every learning_item.`,
+      )
+    }
+  } catch (err) {
+    fail(
+      'HC13 item caps reference learning_items with translation_nl populated (Decision R)',
       err instanceof Error ? err.message : String(err),
     )
   }

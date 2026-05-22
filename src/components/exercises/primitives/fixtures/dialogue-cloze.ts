@@ -34,7 +34,7 @@ export const VOCAB_CLOZE_FIXTURE: ExerciseItem = {
     id: 'item-1', item_type: 'word', base_text: 'tujuh', normalized_text: 'tujuh',
     language: 'id', level: 'A1', source_type: 'lesson',
     source_vocabulary_id: null, source_card_id: null, notes: null,
-    is_active: true, pos: 'numeral', created_at: '', updated_at: '',
+    is_active: true, pos: 'numeral', translation_nl: null, translation_en: null, usage_note: null, created_at: '', updated_at: '',
   },
   meanings: [],
   contexts: [],
