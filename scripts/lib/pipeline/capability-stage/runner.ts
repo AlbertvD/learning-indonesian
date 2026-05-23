@@ -62,6 +62,7 @@ import {
   fetchGrammarPatternIdsBySlug,
   upsertItemAnchorContext,
   upsertLearningItem,
+  replaceDialogueClozes,
   type CapabilityArtifactInput,
   type CapabilityContentUnitInput,
   type CapabilityInput,
@@ -89,6 +90,7 @@ import { projectDialogueArtifacts } from './projectors/dialogueArtifacts'
 import { validateLessonIdPresence } from './validators/lessonId'
 import { validateItemTranslations } from './validators/itemTranslations'
 import { validateItemSourceRefResolvability } from './validators/itemSourceRefResolvability'
+import { validateDialogueClozes } from './validators/dialogueClozes'
 
 import { runCountParity } from './verify/countParity'
 import { runContentNonEmpty } from './verify/contentNonEmpty'
@@ -462,6 +464,11 @@ export async function runCapabilityStage(
   // downstream by projectVocab (vocab.ts:163-203), so their artifacts must
   // also be appended downstream — same `upsertCapabilityArtifacts` adapter,
   // separate projector. See projectors/dialogueArtifacts.ts for the contract.
+  //
+  // PR 2 — projectDialogueArtifacts also emits the typed `dialogue_clozes`
+  // rows, written via `replaceDialogueClozes` further down. Both write paths
+  // run for now (parallel-paths policy); the final cleanup PR drops the
+  // legacy `capability_artifacts` writes for these three kinds.
   const dialogueArtifactsResult = projectDialogueArtifacts({
     contextualClozeCapabilities: vocab.contextualClozeCapabilities,
     capabilityIdsByKey,
@@ -471,8 +478,30 @@ export async function runCapabilityStage(
   artifactInputs.push(...dialogueArtifactsResult.artifacts)
   findings.push(...dialogueArtifactsResult.findings)
 
+  // Pre-write validator (PR 2) — fails CRITICAL on missing/malformed cloze
+  // shape so the typed-table reader never has to defend against it at
+  // runtime.
+  const dialogueClozeFindings = validateDialogueClozes(dialogueArtifactsResult.dialogueClozes)
+  findings.push(...dialogueClozeFindings)
+  if (dialogueClozeFindings.some((f) => f.severity === 'error')) {
+    return {
+      status: 'validation_failed',
+      counts,
+      findings,
+      durationMs: Date.now() - start,
+    }
+  }
+
   const capabilityArtifactIds = await upsertCapabilityArtifacts(supabase, artifactInputs)
   counts.capabilityArtifacts = capabilityArtifactIds.length
+
+  // PR 2 — typed dialogue_clozes table write. Replaces the trio of
+  // capability_artifacts rows the reader used to read.
+  const dialogueClozesLanded = await replaceDialogueClozes(
+    supabase,
+    dialogueArtifactsResult.dialogueClozes,
+  )
+  counts.dialogueClozes = dialogueClozesLanded
 
   // ---- 8. Write — grammar_patterns (PGRST205 fallback preserved). ------
   const grammarPatternUpsert = await upsertGrammarPatterns(supabase, grammar.grammarPatterns)

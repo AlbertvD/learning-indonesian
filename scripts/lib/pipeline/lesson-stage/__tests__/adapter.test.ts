@@ -106,7 +106,12 @@ function buildSupabaseMock(options: {
         return {
           select: () => ({
             single: async () => ({
-              data: { id: 'upserted-id' },
+              data: {
+                id: 'upserted-id',
+                // Echo back the payload's order_index for upsertLessonSections's
+                // return-shape (sections are keyed by order_index downstream).
+                order_index: (payload as { order_index?: number }).order_index,
+              },
               error: options.upsertError ?? null,
             }),
           }),
@@ -184,13 +189,16 @@ describe('upsertLesson', () => {
 })
 
 describe('upsertLessonSections', () => {
-  it('upserts every section with the correct conflict target', async () => {
+  it('upserts every section with the correct conflict target and returns ids by order_index', async () => {
     const { client, upserts } = buildSupabaseMock({})
-    const count = await upsertLessonSections(client, 'lid', [
+    const result = await upsertLessonSections(client, 'lid', [
       { title: 'A', content: { type: 'text' }, order_index: 0 },
       { title: 'B', content: { type: 'vocabulary', items: [] }, order_index: 1 },
     ])
-    expect(count).toBe(2)
+    expect(result.count).toBe(2)
+    expect(result.idsByOrderIndex.size).toBe(2)
+    expect(result.idsByOrderIndex.get(0)).toBe('upserted-id')
+    expect(result.idsByOrderIndex.get(1)).toBe('upserted-id')
     expect(upserts).toHaveLength(2)
     expect(upserts[0]).toMatchObject({
       table: 'lesson_sections',

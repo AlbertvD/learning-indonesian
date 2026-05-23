@@ -19,6 +19,7 @@ export const CAPABILITY_GATES = [
   'CS8', // content non-empty (post-write seed hook)
   'CS9', // seed integrity (post-write reviewability cross-check)
   'CS10', // dialogue-line artifact emission (Decision 5b — cloze_context/cloze_answer/translation:l1 for dialogue_line caps)
+  'CS11', // dialogue_clozes typed-row shape (PR 2 — sentence_with_blank/answer_text/translation_text)
 ] as const
 
 export type CapabilityGate = typeof CAPABILITY_GATES[number]
@@ -38,6 +39,8 @@ export interface CapabilityStageCounts {
   exerciseVariants: number
   clozeContexts: number
   deferredDialogueChunks: number
+  /** PR 2: typed `dialogue_clozes` rows written. */
+  dialogueClozes: number
 }
 
 export interface CapabilityStageOutput {
@@ -57,6 +60,8 @@ export interface ValidationFinding {
     capabilityKey?: string
     rowId?: string
     table?: string
+    /** PR 2: source_line_ref used to identify dialogue_clozes rows in CS11 findings. */
+    sourceLineRef?: string
   }
 }
 
@@ -68,4 +73,5 @@ export const EMPTY_COUNTS: CapabilityStageCounts = {
   exerciseVariants: 0,
   clozeContexts: 0,
   deferredDialogueChunks: 0,
+  dialogueClozes: 0,
 }

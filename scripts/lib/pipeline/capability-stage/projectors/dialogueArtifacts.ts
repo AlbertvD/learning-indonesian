@@ -31,7 +31,7 @@
 
 import { itemSlug } from '@/lib/capabilities'
 
-import type { CapabilityArtifactInput, CapabilityInput } from '../adapter'
+import type { CapabilityArtifactInput, CapabilityInput, DialogueClozeInput } from '../adapter'
 import type { ValidationFinding } from '../model'
 import type { VocabStagingClozeContext } from './vocab'
 
@@ -64,6 +64,12 @@ export interface DialogueArtifactsInput {
 
 export interface DialogueArtifactsOutput {
   artifacts: CapabilityArtifactInput[]
+  /**
+   * PR 2 — typed `dialogue_clozes` rows. One per dialogue_line capability.
+   * The adapter resolves `source_line_ref` to `dialogue_line_id` via the
+   * UNIQUE index at write time.
+   */
+  dialogueClozes: DialogueClozeInput[]
   findings: ValidationFinding[]
 }
 
@@ -132,13 +138,14 @@ function inferLessonSourceRef(capability: CapabilityInput): string | null {
  */
 export function projectDialogueArtifacts(input: DialogueArtifactsInput): DialogueArtifactsOutput {
   const artifacts: CapabilityArtifactInput[] = []
+  const dialogueClozes: DialogueClozeInput[] = []
   const findings: ValidationFinding[] = []
 
   const dialogueCaps = input.contextualClozeCapabilities.filter(
     (cap) => cap.sourceKind === 'dialogue_line' && cap.capabilityType === 'contextual_cloze',
   )
   if (dialogueCaps.length === 0) {
-    return { artifacts, findings }
+    return { artifacts, dialogueClozes, findings }
   }
 
   const lessonSourceRef = inferLessonSourceRef(dialogueCaps[0])
@@ -149,7 +156,7 @@ export function projectDialogueArtifacts(input: DialogueArtifactsInput): Dialogu
       message: `dialogue_line capability has malformed sourceRef "${dialogueCaps[0].sourceRef}" — expected "lesson-N/section-M/line-K"`,
       context: { capabilityKey: dialogueCaps[0].canonicalKey },
     })
-    return { artifacts, findings }
+    return { artifacts, dialogueClozes, findings }
   }
 
   const linesBySourceRef = collectDialogueLinesBySourceRef(input.sections, lessonSourceRef)
@@ -261,7 +268,18 @@ export function projectDialogueArtifacts(input: DialogueArtifactsInput): Dialogu
       artifact_json: { value: ctx.translation_text.trim() },
       artifact_fingerprint: `${refPrefix}:translation:l1`,
     })
+
+    // PR 2 — typed satellite row. The adapter resolves source_line_ref to
+    // the lesson_dialogue_lines.id at write time. This row coheres the 3
+    // legacy artifacts above into one typed row (Decision A).
+    dialogueClozes.push({
+      capability_id: capId,
+      source_line_ref: cap.sourceRef,
+      sentence_with_blank: ctx.source_text,
+      answer_text: answer,
+      translation_text: ctx.translation_text.trim(),
+    })
   }
 
-  return { artifacts, findings }
+  return { artifacts, dialogueClozes, findings }
 }

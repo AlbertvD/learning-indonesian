@@ -11,9 +11,12 @@ import { validateLessonVoices } from './validators/lessonVoices'
 import { validateSectionType } from './validators/sectionType'
 import { validatePerItem } from './validators/perItem'
 import { validateGrammarTopics } from './validators/grammarTopics'
+import { validateDialogueLines } from './validators/dialogueLines'
 import {
   upsertLesson,
   upsertLessonSections,
+  replaceLessonDialogueLines,
+  type DialogueLineInput,
 } from './adapter'
 import { ensureLessonAudio } from './audio'
 import {
@@ -149,6 +152,9 @@ export async function runLessonStage(
   )
   findings.push(...validateSectionType(staging.lesson.sections))
   findings.push(...validatePerItem(staging.lesson.sections))
+  // GT8 (PR 2): dialogue line shape gate. Runs after dialogue translation
+  // enrichment so populated translations are visible.
+  findings.push(...validateDialogueLines(staging.lesson.sections))
 
   const errors = findings.filter((f) => f.severity === 'error')
   if (errors.length > 0) {
@@ -185,7 +191,45 @@ export async function runLessonStage(
     level: staging.lesson.level,
   })
 
-  const sectionCount = await upsertLessonSections(supabase, lesson.id, staging.lesson.sections)
+  const { count: sectionCount, idsByOrderIndex: sectionIdsByOrderIndex } =
+    await upsertLessonSections(supabase, lesson.id, staging.lesson.sections)
+
+  // PR 2 — write `lesson_dialogue_lines` typed satellite rows for every
+  // dialogue section. Replaces the per-line shape that previously lived only
+  // inside `lesson_sections.content.lines[]`. capability-stage's
+  // dialogue_clozes projector FKs to these rows by id.
+  const dialogueLineInputs: DialogueLineInput[] = []
+  const dialogueSectionIds: string[] = []
+  for (const section of staging.lesson.sections) {
+    const content = section.content as { type?: unknown; lines?: unknown } | undefined
+    if (content?.type !== 'dialogue') continue
+    const sectionId = sectionIdsByOrderIndex.get(section.order_index)
+    if (!sectionId) continue
+    dialogueSectionIds.push(sectionId)
+    if (!Array.isArray(content.lines)) continue
+    for (const [idx, raw] of (content.lines as Array<Record<string, unknown>>).entries()) {
+      const text = typeof raw?.text === 'string' ? raw.text.trim() : ''
+      if (!text) continue
+      const translation = typeof raw?.translation === 'string' ? raw.translation.trim() : ''
+      if (!translation) continue
+      const speakerRaw = typeof raw?.speaker === 'string' ? raw.speaker.trim() : ''
+      const speaker = speakerRaw ? speakerRaw : null
+      dialogueLineInputs.push({
+        section_id: sectionId,
+        lesson_id: lesson.id,
+        line_index: idx,
+        source_line_ref: `lesson-${input.lessonNumber}/section-${section.order_index}/line-${idx}`,
+        text,
+        speaker,
+        translation,
+      })
+    }
+  }
+  const dialogueLineCount = await replaceLessonDialogueLines(
+    supabase,
+    dialogueSectionIds,
+    dialogueLineInputs,
+  )
 
   // Collect audio texts AFTER the lesson row + voices are persisted, since
   // ensureLessonAudio re-runs setLessonVoicesForLesson which reads the row.
@@ -207,6 +251,7 @@ export async function runLessonStage(
       sections: sectionCount,
       audioClipsSynthesised: audio.synthesised,
       audioClipsReused: audio.reused,
+      dialogueLines: dialogueLineCount,
     },
     findings,
     durationMs: Date.now() - start,

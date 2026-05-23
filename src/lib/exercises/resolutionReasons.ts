@@ -12,6 +12,8 @@ export type ResolutionReasonCode =
   | 'item_inactive'
   | 'dialogue_line_ref_unparseable'
   | 'dialogue_line_artifact_missing'
+  // PR 2: typed-table fetch returns no row for a ready dialogue_line cap.
+  | 'dialogue_typed_row_missing'
   | 'affixed_form_pair_ref_unparseable'
   | 'affixed_form_pair_artifact_missing'
   // Content-data gaps

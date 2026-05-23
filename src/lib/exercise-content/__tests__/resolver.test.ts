@@ -414,18 +414,26 @@ function makeDialogueBlock(opts: { sourceRef?: string; capabilityId?: string; ex
 }
 
 describe('resolver.resolveBlocks — dialogue_line source kind', () => {
-  it('resolves to a render-ready cloze exerciseItem from the three artifact rows', async () => {
+  // PR 2: dialogue_line reads come from the typed `dialogue_clozes` table
+  // JOINed to `lesson_dialogue_lines`, not from 3 `capability_artifacts` rows.
+  // The PostgREST JOIN puts the lesson_dialogue_lines row as a nested object
+  // on each dialogue_clozes row in the mock fixture.
+
+  it('resolves to a render-ready cloze exerciseItem from the typed dialogue_clozes row', async () => {
     const block = makeDialogueBlock({ capabilityId: 'cap-dl-1' })
     const tables: Record<string, MockTable> = {
-      capability_artifacts: { rows: [
-        { capability_id: 'cap-dl-1', artifact_kind: 'cloze_context', quality_status: 'approved', artifact_json: {
-          source_text: 'Aku tidak ___ tinggal di rumah terus',
-          line_text: 'Aku tidak suka tinggal di rumah terus',
-          speaker: 'Titin',
-          source_ref: 'lesson-9/section-1/line-10',
-        } },
-        { capability_id: 'cap-dl-1', artifact_kind: 'cloze_answer', quality_status: 'approved', artifact_json: { value: 'suka' } },
-        { capability_id: 'cap-dl-1', artifact_kind: 'translation:l1', quality_status: 'approved', artifact_json: { value: 'Ik vind het niet leuk om de hele tijd thuis te blijven' } },
+      dialogue_clozes: { rows: [
+        {
+          capability_id: 'cap-dl-1',
+          sentence_with_blank: 'Aku tidak ___ tinggal di rumah terus',
+          answer_text: 'suka',
+          translation_text: 'Ik vind het niet leuk om de hele tijd thuis te blijven',
+          lesson_dialogue_lines: {
+            text: 'Aku tidak suka tinggal di rumah terus',
+            speaker: 'Titin',
+            translation: 'Ik vind het niet leuk om de hele tijd thuis te blijven',
+          },
+        },
       ], inserts: [] },
       capability_resolution_failure_events: { rows: [], inserts: [] },
     }
@@ -441,17 +449,31 @@ describe('resolver.resolveBlocks — dialogue_line source kind', () => {
     expect(ctx.exerciseItem?.clozeContext?.speaker).toBe('Titin')
   })
 
-  it('fails dialogue_line_artifact_missing when one of the three required artifacts is absent', async () => {
+  it('fails dialogue_typed_row_missing when no dialogue_clozes row exists for a ready cap', async () => {
     const block = makeDialogueBlock({ capabilityId: 'cap-dl-missing' })
     const tables: Record<string, MockTable> = {
-      capability_artifacts: { rows: [
-        { capability_id: 'cap-dl-missing', artifact_kind: 'cloze_context', quality_status: 'approved', artifact_json: {
-          source_text: 'Aku tidak ___ tinggal di rumah terus',
-          line_text: 'Aku tidak suka tinggal di rumah terus',
-          speaker: 'Titin',
-          source_ref: 'lesson-9/section-1/line-10',
-        } },
-        // cloze_answer + translation:l1 missing.
+      // Empty dialogue_clozes — the JOIN returns no row.
+      dialogue_clozes: { rows: [], inserts: [] },
+      capability_resolution_failure_events: { rows: [], inserts: [] },
+    }
+    const service = createCapabilityContentService(makeMockClient(tables) as never)
+    const map = await service.resolveBlocks([block], baseOptions)
+    const ctx = map.get(block.id)!
+    expect(ctx.exerciseItem).toBeNull()
+    expect(ctx.diagnostic?.reasonCode).toBe('dialogue_typed_row_missing')
+  })
+
+  it('fails dialogue_typed_row_missing when JOIN to lesson_dialogue_lines is broken', async () => {
+    const block = makeDialogueBlock({ capabilityId: 'cap-dl-broken-fk' })
+    const tables: Record<string, MockTable> = {
+      dialogue_clozes: { rows: [
+        {
+          capability_id: 'cap-dl-broken-fk',
+          sentence_with_blank: 'Aku tidak ___ tinggal di rumah terus',
+          answer_text: 'suka',
+          translation_text: 'Ik vind het niet leuk',
+          lesson_dialogue_lines: null,
+        },
       ], inserts: [] },
       capability_resolution_failure_events: { rows: [], inserts: [] },
     }
@@ -459,13 +481,13 @@ describe('resolver.resolveBlocks — dialogue_line source kind', () => {
     const map = await service.resolveBlocks([block], baseOptions)
     const ctx = map.get(block.id)!
     expect(ctx.exerciseItem).toBeNull()
-    expect(ctx.diagnostic?.reasonCode).toBe('dialogue_line_artifact_missing')
+    expect(ctx.diagnostic?.reasonCode).toBe('dialogue_typed_row_missing')
   })
 
   it('fails dialogue_line_ref_unparseable when source_ref does not match lesson-N/section-M/line-K', async () => {
     const block = makeDialogueBlock({ sourceRef: 'lesson-9/section-1', capabilityId: 'cap-dl-bad' })
     const tables: Record<string, MockTable> = {
-      capability_artifacts: { rows: [], inserts: [] },
+      dialogue_clozes: { rows: [], inserts: [] },
       capability_resolution_failure_events: { rows: [], inserts: [] },
     }
     const service = createCapabilityContentService(makeMockClient(tables) as never)
@@ -477,15 +499,18 @@ describe('resolver.resolveBlocks — dialogue_line source kind', () => {
   it('rejects dialogue_line block scheduled with exerciseType=cloze_mcq (cloze_mcq still item-only)', async () => {
     const block = makeDialogueBlock({ exerciseType: 'cloze_mcq', capabilityId: 'cap-dl-mcq' })
     const tables: Record<string, MockTable> = {
-      capability_artifacts: { rows: [
-        { capability_id: 'cap-dl-mcq', artifact_kind: 'cloze_context', quality_status: 'approved', artifact_json: {
-          source_text: 'Aku tidak ___ tinggal di rumah terus',
-          line_text: 'Aku tidak suka tinggal di rumah terus',
-          speaker: null,
-          source_ref: 'lesson-9/section-1/line-10',
-        } },
-        { capability_id: 'cap-dl-mcq', artifact_kind: 'cloze_answer', quality_status: 'approved', artifact_json: { value: 'suka' } },
-        { capability_id: 'cap-dl-mcq', artifact_kind: 'translation:l1', quality_status: 'approved', artifact_json: { value: 'irrelevant' } },
+      dialogue_clozes: { rows: [
+        {
+          capability_id: 'cap-dl-mcq',
+          sentence_with_blank: 'Aku tidak ___ tinggal di rumah terus',
+          answer_text: 'suka',
+          translation_text: 'irrelevant',
+          lesson_dialogue_lines: {
+            text: 'Aku tidak suka tinggal di rumah terus',
+            speaker: null,
+            translation: 'irrelevant',
+          },
+        },
       ], inserts: [] },
       capability_resolution_failure_events: { rows: [], inserts: [] },
     }

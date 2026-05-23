@@ -26,14 +26,23 @@ export interface LessonStageOutput {
     sections: number
     audioClipsSynthesised: number
     audioClipsReused: number
+    /** PR 2: per-line typed rows written to `lesson_dialogue_lines`. */
+    dialogueLines?: number
   }
   findings: ValidationFinding[]
   durationMs: number
 }
 
 export interface ValidationFinding {
-  gate: 'GT1' | 'GT2' | 'GT3' | 'GT4' | 'GT5' | 'GT6' | 'GT7'
+  gate: 'GT1' | 'GT2' | 'GT3' | 'GT4' | 'GT5' | 'GT6' | 'GT7' | 'GT8'
   severity: 'error' | 'warning'
   message: string
-  context?: { sectionId?: string; blockKey?: string; itemSlug?: string }
+  context?: {
+    sectionId?: string
+    sectionOrderIndex?: number
+    sectionTitle?: string
+    blockKey?: string
+    itemSlug?: string
+    lineIndex?: number
+  }
 }
