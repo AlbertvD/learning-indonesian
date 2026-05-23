@@ -75,16 +75,19 @@ export async function upsertLesson(
 
 /**
  * Upsert every section row, keyed by (lesson_id, order_index) — matches the
- * existing UNIQUE constraint on the table.
+ * existing UNIQUE constraint on the table. Returns the section ids keyed by
+ * order_index so downstream writers (e.g. lesson_dialogue_lines for
+ * dialogue sections) can FK to them.
  */
 export async function upsertLessonSections(
   supabase: SupabaseClient,
   lessonId: string,
   sections: SectionInput[],
-): Promise<number> {
+): Promise<{ count: number; idsByOrderIndex: Map<number, string> }> {
+  const idsByOrderIndex = new Map<number, string>()
   let count = 0
   for (const section of sections) {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .schema('indonesian')
       .from('lesson_sections')
       .upsert(
@@ -96,10 +99,70 @@ export async function upsertLessonSections(
         },
         { onConflict: 'lesson_id,order_index' },
       )
+      .select('id, order_index')
+      .single()
     if (error) throw error
+    if (data) idsByOrderIndex.set(data.order_index as number, data.id as string)
     count++
   }
-  return count
+  return { count, idsByOrderIndex }
+}
+
+export interface DialogueLineInput {
+  section_id: string
+  lesson_id: string
+  line_index: number
+  source_line_ref: string
+  text: string
+  speaker: string | null
+  translation: string
+}
+
+/**
+ * Replace every `lesson_dialogue_lines` row for the given dialogue sections.
+ *
+ * Strategy: delete all rows for the affected `section_id`s, then bulk-insert
+ * the new ones. This is safe because `lesson_dialogue_lines` is a
+ * regenerable projection of `lesson_sections.content.lines[]` — there is no
+ * referenced user state (caps FK to capability_id, not the line). Re-publish
+ * is the canonical writer.
+ *
+ * Idempotent across re-runs: re-publishing the same lesson reproduces the
+ * same set of rows.
+ */
+export async function replaceLessonDialogueLines(
+  supabase: SupabaseClient,
+  sectionIds: string[],
+  lines: DialogueLineInput[],
+): Promise<number> {
+  if (sectionIds.length === 0) return 0
+
+  const { error: deleteError } = await supabase
+    .schema('indonesian')
+    .from('lesson_dialogue_lines')
+    .delete()
+    .in('section_id', sectionIds)
+  if (deleteError) throw deleteError
+
+  if (lines.length === 0) return 0
+
+  const { error: insertError } = await supabase
+    .schema('indonesian')
+    .from('lesson_dialogue_lines')
+    .insert(
+      lines.map((line) => ({
+        section_id: line.section_id,
+        lesson_id: line.lesson_id,
+        line_index: line.line_index,
+        source_line_ref: line.source_line_ref,
+        text: line.text,
+        speaker: line.speaker,
+        translation: line.translation,
+      })),
+    )
+  if (insertError) throw insertError
+
+  return lines.length
 }
 
 /**

@@ -12,6 +12,12 @@ export type ResolutionReasonCode =
   | 'item_inactive'
   | 'dialogue_line_ref_unparseable'
   | 'dialogue_line_artifact_missing'
+  // PR 2: typed-table fetch returns no row for a ready dialogue_line cap.
+  // PR 3/4 mirror this with `affixed_form_pair_typed_row_missing` and
+  // `pattern_typed_row_missing` — per-source-kind codes so the diagnostic
+  // reason alone identifies which byKind/* fetcher broke without parsing
+  // the canonical_key.
+  | 'dialogue_line_typed_row_missing'
   | 'affixed_form_pair_ref_unparseable'
   | 'affixed_form_pair_artifact_missing'
   // Content-data gaps

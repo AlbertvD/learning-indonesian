@@ -279,6 +279,96 @@ export async function upsertCapabilityArtifacts(
 }
 
 // ---------------------------------------------------------------------------
+// Dialogue clozes (PR 2 — typed satellite replacing 3 capability_artifacts rows)
+// ---------------------------------------------------------------------------
+
+export interface DialogueClozeInput {
+  capability_id: string
+  /**
+   * The `lesson_dialogue_lines.source_line_ref` of the source line. The
+   * adapter resolves this to the line's UUID via a single bulk read on the
+   * UNIQUE column. We use the ref rather than the raw id so the projector
+   * stays pure (no DB lookup) — the resolution happens here at the I/O
+   * seam.
+   */
+  source_line_ref: string
+  sentence_with_blank: string
+  answer_text: string
+  translation_text: string
+}
+
+/**
+ * Replace every `dialogue_clozes` row whose capability_id is in `inputs`.
+ *
+ * Strategy: delete by `capability_id` first (UNIQUE), then bulk-insert.
+ * This is safe because `dialogue_clozes` is a regenerable projection of
+ * staged cloze contexts + lesson dialogue lines — there is no referenced
+ * user state. The 1:1 UNIQUE(capability_id) keeps the row count bounded.
+ *
+ * Returns the number of rows written.
+ */
+export async function replaceDialogueClozes(
+  supabase: CapabilitySupabaseClient,
+  inputs: DialogueClozeInput[],
+): Promise<number> {
+  if (inputs.length === 0) return 0
+
+  // Bulk-resolve source_line_ref → lesson_dialogue_lines.id via a single
+  // chunked read. The column is UNIQUE so the map is 1:1.
+  const refs = [...new Set(inputs.map((i) => i.source_line_ref))]
+  const idByRef = new Map<string, string>()
+  for (let i = 0; i < refs.length; i += 50) {
+    const slice = refs.slice(i, i + 50)
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('lesson_dialogue_lines')
+      .select('id, source_line_ref')
+      .in('source_line_ref', slice)
+    if (error) throw error
+    for (const row of (data ?? []) as Array<{ id: string; source_line_ref: string }>) {
+      idByRef.set(row.source_line_ref, row.id)
+    }
+  }
+
+  const resolved: Array<DialogueClozeInput & { dialogue_line_id: string }> = []
+  for (const input of inputs) {
+    const dialogueLineId = idByRef.get(input.source_line_ref)
+    if (!dialogueLineId) {
+      throw new Error(
+        `replaceDialogueClozes: no lesson_dialogue_lines row found for source_line_ref="${input.source_line_ref}". ` +
+        `Stage A must have written the dialogue line before Stage B writes its cloze. ` +
+        `Verify Stage A's lesson_dialogue_lines insert covered this section.`,
+      )
+    }
+    resolved.push({ ...input, dialogue_line_id: dialogueLineId })
+  }
+
+  const capabilityIds = resolved.map((r) => r.capability_id)
+  const { error: deleteError } = await supabase
+    .schema('indonesian')
+    .from('dialogue_clozes')
+    .delete()
+    .in('capability_id', capabilityIds)
+  if (deleteError) throw deleteError
+
+  const { error: insertError } = await supabase
+    .schema('indonesian')
+    .from('dialogue_clozes')
+    .insert(
+      resolved.map((r) => ({
+        capability_id: r.capability_id,
+        dialogue_line_id: r.dialogue_line_id,
+        sentence_with_blank: r.sentence_with_blank,
+        answer_text: r.answer_text,
+        translation_text: r.translation_text,
+      })),
+    )
+  if (insertError) throw insertError
+
+  return resolved.length
+}
+
+// ---------------------------------------------------------------------------
 // Grammar patterns (PGRST205 fallback preserved verbatim)
 // ---------------------------------------------------------------------------
 

@@ -86,18 +86,24 @@ describe('dialogue_line:contextual_cloze — end-to-end capstone', () => {
     const capabilityId = 'cap-l9-dialogue-1'
     const sourceRef = 'lesson-9/section-1/line-10'
 
-    // ── 1. Mock Supabase with the three artifact rows the publish pipeline
-    //       writes (matching projectDialogueArtifacts payload shapes).
+    // ── 1. Mock Supabase with one typed `dialogue_clozes` row + its
+    //       nested `lesson_dialogue_lines` JOIN row. PR 2 — the reader at
+    //       byKind/dialogueLine.ts reads dialogue_clozes WHERE capability_id
+    //       IN (...) and PostgREST returns the joined lesson_dialogue_lines
+    //       row as a nested object.
     const tables: Record<string, MockTable> = {
-      capability_artifacts: { rows: [
-        { capability_id: capabilityId, artifact_kind: 'cloze_context', quality_status: 'approved', artifact_json: {
-          source_text: 'Aku tidak ___ tinggal di rumah terus',
-          line_text: 'Aku tidak suka tinggal di rumah terus',
-          speaker: 'Titin',
-          source_ref: sourceRef,
-        } },
-        { capability_id: capabilityId, artifact_kind: 'cloze_answer', quality_status: 'approved', artifact_json: { value: 'suka' } },
-        { capability_id: capabilityId, artifact_kind: 'translation:l1', quality_status: 'approved', artifact_json: { value: 'Ik vind het niet leuk om de hele tijd thuis te blijven' } },
+      dialogue_clozes: { rows: [
+        {
+          capability_id: capabilityId,
+          sentence_with_blank: 'Aku tidak ___ tinggal di rumah terus',
+          answer_text: 'suka',
+          translation_text: 'Ik vind het niet leuk om de hele tijd thuis te blijven',
+          lesson_dialogue_lines: {
+            text: 'Aku tidak suka tinggal di rumah terus',
+            speaker: 'Titin',
+            translation: 'Ik vind het niet leuk om de hele tijd thuis te blijven',
+          },
+        },
       ], inserts: [] },
       capability_resolution_failure_events: { rows: [], inserts: [] },
     }

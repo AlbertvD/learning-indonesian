@@ -1085,6 +1085,90 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   }
 }
 
+// ── HC15 (PR 2 of 2026-05-22-data-model-migration.md): every active
+//        dialogue_line capability has exactly one `dialogue_clozes` row.
+//        The fail-loud reader at src/lib/exercise-content/byKind/dialogueLine.ts
+//        surfaces `dialogue_line_typed_row_missing` for any cap that fails this
+//        invariant — HC15 is the structural mirror so the regression is
+//        caught at health-check time rather than at session-render time.
+//        Lesson learned from PR 1: ship the live-DB HC in the SAME PR as
+//        the typed-table reader.
+//
+//        Implementation note: PostgREST cannot directly express "left join
+//        and filter parent on embed.col IS NULL" — the embed-side `.is()`
+//        filters the embedded row, not the parent's visibility. We instead
+//        fetch the two id sets and difference them in code.
+{
+  const { data: capRows, error: capsError } = await supabase
+    .schema('indonesian')
+    .from('learning_capabilities')
+    .select('id, canonical_key, source_ref')
+    .eq('source_kind', 'dialogue_line')
+    .is('retired_at', null)
+  if (capsError) {
+    fail('HC15 every active dialogue_line cap has a dialogue_clozes row (PR 2)', capsError.message)
+  } else {
+    const activeCaps = (capRows ?? []) as Array<{ id: string; canonical_key: string; source_ref: string }>
+    if (activeCaps.length === 0) {
+      pass('HC15 every active dialogue_line cap has a dialogue_clozes row (PR 2) (no dialogue_line caps in DB; vacuously green)')
+    } else {
+      const { data: dcRows, error: dcError } = await supabase
+        .schema('indonesian')
+        .from('dialogue_clozes')
+        .select('capability_id')
+        .in('capability_id', activeCaps.map((c) => c.id))
+      if (dcError) {
+        fail('HC15 every active dialogue_line cap has a dialogue_clozes row (PR 2)', dcError.message)
+      } else {
+        const haveClozes = new Set(((dcRows ?? []) as Array<{ capability_id: string }>).map((r) => r.capability_id))
+        const offenders = activeCaps.filter((c) => !haveClozes.has(c.id))
+        if (offenders.length === 0) {
+          pass(`HC15 every active dialogue_line cap has a dialogue_clozes row (PR 2) (${activeCaps.length} cap(s) checked)`)
+        } else {
+          const sample = offenders.slice(0, 5).map((o) => `${o.canonical_key} (${o.source_ref})`).join(', ')
+          fail(
+            'HC15 every active dialogue_line cap has a dialogue_clozes row (PR 2)',
+            `${offenders.length}+ active dialogue_line caps with no dialogue_clozes row. ` +
+            `Sample: ${sample}${offenders.length > 5 ? ' …' : ''}\n` +
+            `   → Either re-publish the affected lessons (Stage B writes dialogue_clozes via the ` +
+            `dialogueArtifacts projector) or run scripts/migrate-typed-tables-pr2-dialogue.ts to ` +
+            `bridge from the legacy capability_artifacts rows.`,
+          )
+        }
+      }
+    }
+  }
+}
+
+// ── HC16 (PR 2 of 2026-05-22-data-model-migration.md): every dialogue_clozes
+//        row points at a real `lesson_dialogue_lines` row. The DB FK enforces
+//        this on write, but HC16 catches:
+//          - a manual DELETE on lesson_dialogue_lines that bypasses cascade
+//            (unlikely — FK is `on delete cascade`),
+//          - a Postgres-side referential integrity drift,
+//          - a race where the typed-row reader fetched a dialogue_clozes
+//            row but the JOIN returned null (which the reader surfaces as
+//            `dialogue_line_typed_row_missing` per byKind/dialogueLine.ts).
+//        Strict zero on this query is the structural invariant the reader
+//        relies on.
+{
+  const { count, error } = await supabase
+    .schema('indonesian')
+    .from('dialogue_clozes')
+    .select('id', { count: 'exact', head: true })
+    .is('dialogue_line_id', null)
+  if (error) {
+    fail('HC16 dialogue_clozes.dialogue_line_id is never null (PR 2)', error.message)
+  } else if ((count ?? 0) === 0) {
+    pass('HC16 dialogue_clozes.dialogue_line_id is never null (PR 2)')
+  } else {
+    fail(
+      'HC16 dialogue_clozes.dialogue_line_id is never null (PR 2)',
+      `${count} dialogue_clozes row(s) have NULL dialogue_line_id. The DB FK is NOT NULL — this means data drift or a writer regression. Investigate replaceDialogueClozes in capability-stage/adapter.ts.`,
+    )
+  }
+}
+
 // ── Output ─────────────────────────────────────────────────────────────────
 console.log(`\nSupabase deep structural check — ${SUPABASE_URL}\n`)
 let failures = 0
