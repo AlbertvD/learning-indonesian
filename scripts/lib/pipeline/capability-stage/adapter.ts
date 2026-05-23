@@ -369,6 +369,63 @@ export async function replaceDialogueClozes(
 }
 
 // ---------------------------------------------------------------------------
+// Affixed form pairs (PR 3 — typed satellite replacing 2 capability_artifacts
+// rows: root_derived_pair + allomorph_rule)
+// ---------------------------------------------------------------------------
+
+export interface AffixedFormPairRowInput {
+  capability_id: string
+  source_ref: string
+  lesson_id: string
+  root_text: string
+  derived_text: string
+  allomorph_rule: string
+}
+
+/**
+ * Replace every `affixed_form_pairs` row whose capability_id is in `inputs`.
+ *
+ * Strategy: delete by `capability_id` first (the column is UNIQUE — one row
+ * per cap, 2 caps per linguistic pair), then bulk-insert. Safe because
+ * `affixed_form_pairs` is a regenerable projection of staged morphology pairs
+ * — no referenced user state. Simpler than replaceDialogueClozes: there is no
+ * source_line_ref → id resolution; capability_id is the only key.
+ *
+ * Returns the number of rows written.
+ */
+export async function replaceAffixedFormPairs(
+  supabase: CapabilitySupabaseClient,
+  inputs: AffixedFormPairRowInput[],
+): Promise<number> {
+  if (inputs.length === 0) return 0
+
+  const capabilityIds = inputs.map((r) => r.capability_id)
+  const { error: deleteError } = await supabase
+    .schema('indonesian')
+    .from('affixed_form_pairs')
+    .delete()
+    .in('capability_id', capabilityIds)
+  if (deleteError) throw deleteError
+
+  const { error: insertError } = await supabase
+    .schema('indonesian')
+    .from('affixed_form_pairs')
+    .insert(
+      inputs.map((r) => ({
+        capability_id: r.capability_id,
+        source_ref: r.source_ref,
+        lesson_id: r.lesson_id,
+        root_text: r.root_text,
+        derived_text: r.derived_text,
+        allomorph_rule: r.allomorph_rule,
+      })),
+    )
+  if (insertError) throw insertError
+
+  return inputs.length
+}
+
+// ---------------------------------------------------------------------------
 // Grammar patterns (PGRST205 fallback preserved verbatim)
 // ---------------------------------------------------------------------------
 

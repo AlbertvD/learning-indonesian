@@ -78,7 +78,8 @@ function makeAffixedBlock(opts: {
       exerciseType: 'typed_recall',
       capabilityType: opts.capabilityType,
       skillType: opts.direction === 'root_to_derived' ? 'form_recall' : 'recognition',
-      requiredArtifacts: ['root_derived_pair', 'allomorph_rule'],
+      // PR 3 slice: affixed_form_pair caps require no artifacts (renderContracts: []).
+      requiredArtifacts: [],
     },
     reviewContext: {
       schedulerSnapshot: {} as never,
@@ -95,17 +96,17 @@ describe('affixed_form_pair:root_derived_* — end-to-end capstone', () => {
     const capabilityId = 'cap-l9-membaca-recall'
     const sourceRef = 'lesson-9/morphology/meN-baca-membaca'
 
-    // ── 1. Mock Supabase with the two artifact rows the publish pipeline
-    //       writes (matching scripts/lib/content-pipeline-output.ts:430-441).
+    // ── 1. Mock Supabase with the typed affixed_form_pairs row the publish
+    //       pipeline writes (PR 3 — replaces the two capability_artifacts rows;
+    //       reader: src/lib/exercise-content/byKind/affixedFormPair.ts).
     const tables: Record<string, MockTable> = {
-      capability_artifacts: { rows: [
-        { capability_id: capabilityId, artifact_kind: 'root_derived_pair', quality_status: 'approved', artifact_json: {
-          root: 'baca',
-          derived: 'membaca',
-        } },
-        { capability_id: capabilityId, artifact_kind: 'allomorph_rule', quality_status: 'approved', artifact_json: {
-          rule: 'meN- becomes mem- before roots beginning with b: baca -> membaca.',
-        } },
+      affixed_form_pairs: { rows: [
+        {
+          capability_id: capabilityId,
+          root_text: 'baca',
+          derived_text: 'membaca',
+          allomorph_rule: 'meN- becomes mem- before roots beginning with b: baca -> membaca.',
+        },
       ], inserts: [] },
       capability_resolution_failure_events: { rows: [], inserts: [] },
     }
@@ -180,9 +181,13 @@ describe('affixed_form_pair:root_derived_* — end-to-end capstone', () => {
     const sourceRef = 'lesson-9/morphology/meN-baca-membaca'
 
     const tables: Record<string, MockTable> = {
-      capability_artifacts: { rows: [
-        { capability_id: capabilityId, artifact_kind: 'root_derived_pair', quality_status: 'approved', artifact_json: { root: 'baca', derived: 'membaca' } },
-        { capability_id: capabilityId, artifact_kind: 'allomorph_rule', quality_status: 'approved', artifact_json: { rule: 'meN- becomes mem- before roots beginning with b.' } },
+      affixed_form_pairs: { rows: [
+        {
+          capability_id: capabilityId,
+          root_text: 'baca',
+          derived_text: 'membaca',
+          allomorph_rule: 'meN- becomes mem- before roots beginning with b.',
+        },
       ], inserts: [] },
       capability_resolution_failure_events: { rows: [], inserts: [] },
     }
@@ -235,9 +240,13 @@ describe('affixed_form_pair:root_derived_* — end-to-end capstone', () => {
   it('typing the wrong answer fires onAnswer with wasCorrect=false', async () => {
     const capabilityId = 'cap-l9-wrong-answer'
     const tables: Record<string, MockTable> = {
-      capability_artifacts: { rows: [
-        { capability_id: capabilityId, artifact_kind: 'root_derived_pair', quality_status: 'approved', artifact_json: { root: 'baca', derived: 'membaca' } },
-        { capability_id: capabilityId, artifact_kind: 'allomorph_rule', quality_status: 'approved', artifact_json: { rule: 'meN- becomes mem- before roots beginning with b.' } },
+      affixed_form_pairs: { rows: [
+        {
+          capability_id: capabilityId,
+          root_text: 'baca',
+          derived_text: 'membaca',
+          allomorph_rule: 'meN- becomes mem- before roots beginning with b.',
+        },
       ], inserts: [] },
       capability_resolution_failure_events: { rows: [], inserts: [] },
     }

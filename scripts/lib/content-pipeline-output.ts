@@ -137,7 +137,10 @@ function grammarSourceRef(lessonNumber: number, slug: string): string {
   return `${sourceRefForLesson(lessonNumber)}/pattern-${stableSlug(slug)}`
 }
 
-function affixedFormPairSourceRef(lessonNumber: number, pair: CurrentAffixedFormPair): string {
+// Exported (PR 3): the capability-stage runner keys its affixed_form_pairs
+// typed-row projector by this same ref so the join cap.source_ref ↔ pair is
+// identical to the one the content-unit + capability emission uses.
+export function affixedFormPairSourceRef(lessonNumber: number, pair: CurrentAffixedFormPair): string {
   return pair.sourceRef || `${sourceRefForLesson(lessonNumber)}/morphology/${stableSlug(`${pair.root}-${pair.derived}`)}`
 }
 

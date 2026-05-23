@@ -75,7 +75,13 @@ export const RENDER_CONTRACTS = {
     requiredArtifacts: {
       // Decision R (PR 1): item data from learning_items directly; no artifact bag needed.
       item: [],
-      affixed_form_pair: ['root_derived_pair', 'allomorph_rule'],
+      // PR 3 slice: affixed_form_pair renders from the typed `affixed_form_pairs`
+      // table (byKind/affixedFormPair.ts). Structure is guaranteed by that
+      // table's NOT NULL columns (root_text/derived_text/allomorph_rule) + the
+      // pre-write validateAffixedFormPairs gate + HC17 — not by
+      // capability_artifacts. Readiness needs no artifact bag, mirroring item +
+      // dialogue_line (Decision R).
+      affixed_form_pair: [],
     },
   },
   meaning_recall: {

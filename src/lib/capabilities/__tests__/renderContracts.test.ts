@@ -186,10 +186,8 @@ describe('requiredArtifactsFor', () => {
     expect(requiredArtifactsFor('recognition_mcq', 'item')).toEqual([])
   })
 
-  it('typed_recall affixed_form_pair-source requires root_derived_pair + allomorph_rule', () => {
-    expect(requiredArtifactsFor('typed_recall', 'affixed_form_pair')).toEqual(
-      expect.arrayContaining(['root_derived_pair', 'allomorph_rule']),
-    )
+  it('typed_recall affixed_form_pair-source requires [] (PR 3 slice: structure guaranteed by the typed affixed_form_pairs table + validateAffixedFormPairs + HC17, not capability_artifacts)', () => {
+    expect(requiredArtifactsFor('typed_recall', 'affixed_form_pair')).toEqual([])
   })
 
   it('returns [] for an exercise/source-kind combination the contract does not declare', () => {

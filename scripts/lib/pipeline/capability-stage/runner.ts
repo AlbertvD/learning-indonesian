@@ -44,6 +44,7 @@ import {
 import {
   buildContentUnitsFromStaging,
   buildCapabilityStagingFromContent,
+  affixedFormPairSourceRef,
   type StagingLessonInput,
 } from '../../content-pipeline-output'
 import {
@@ -63,6 +64,7 @@ import {
   upsertItemAnchorContext,
   upsertLearningItem,
   replaceDialogueClozes,
+  replaceAffixedFormPairs,
   type CapabilityArtifactInput,
   type CapabilityContentUnitInput,
   type CapabilityInput,
@@ -86,11 +88,13 @@ import { projectVocab } from './projectors/vocab'
 import { projectGrammar } from './projectors/grammar'
 import { projectCloze } from './projectors/cloze'
 import { projectDialogueArtifacts } from './projectors/dialogueArtifacts'
+import { projectAffixedFormPairs, type AffixedPairSource } from './projectors/morphology'
 
 import { validateLessonIdPresence } from './validators/lessonId'
 import { validateItemTranslations } from './validators/itemTranslations'
 import { validateItemSourceRefResolvability } from './validators/itemSourceRefResolvability'
 import { validateDialogueClozes } from './validators/dialogueClozes'
+import { validateAffixedFormPairs } from './validators/affixedFormPairs'
 
 import { runCountParity } from './verify/countParity'
 import { runContentNonEmpty } from './verify/contentNonEmpty'
@@ -487,6 +491,45 @@ export async function runCapabilityStage(
     }
   }
 
+  // ---- 7c. Affixed-form-pair typed rows (Decision A / PR 3 slice). ------
+  // affixed_form_pair caps render from the typed `affixed_form_pairs` row — the
+  // SOLE persisted representation. No capability_artifacts are emitted for them
+  // (capabilityCatalog sets requiredArtifacts: [] → buildArtifactsForCapability
+  // produces none); structure is guaranteed by the typed table's NOT NULL
+  // columns + validateAffixedFormPairs + HC17. See projectors/morphology.ts.
+  // The pairs are keyed by the SAME affixedFormPairSourceRef the caps were
+  // emitted with, so cap.sourceRef ↔ pair join is exact.
+  const affixedPairsBySourceRef = new Map<string, AffixedPairSource>(
+    (pipelineInput.affixedFormPairs ?? []).map((p) => [
+      affixedFormPairSourceRef(input.lessonNumber, p),
+      { root: p.root, derived: p.derived, allomorphRule: p.allomorphRule },
+    ]),
+  )
+  const affixedFormPairsResult = projectAffixedFormPairs({
+    capabilities: allCapabilities,
+    capabilityIdsByKey,
+    pairsBySourceRef: affixedPairsBySourceRef,
+    lessonId: input.lessonId,
+  })
+  findings.push(...affixedFormPairsResult.findings)
+
+  // Pre-write validator (PR 3) — fails CRITICAL on missing/empty
+  // root/derived/allomorph so the typed-table reader never has to defend
+  // against it at runtime.
+  const affixedFormPairFindings = validateAffixedFormPairs(affixedFormPairsResult.rows)
+  findings.push(...affixedFormPairFindings)
+  if (
+    affixedFormPairsResult.findings.some((f) => f.severity === 'error')
+    || affixedFormPairFindings.some((f) => f.severity === 'error')
+  ) {
+    return {
+      status: 'validation_failed',
+      counts,
+      findings,
+      durationMs: Date.now() - start,
+    }
+  }
+
   const capabilityArtifactIds = await upsertCapabilityArtifacts(supabase, artifactInputs)
   counts.capabilityArtifacts = capabilityArtifactIds.length
 
@@ -497,6 +540,15 @@ export async function runCapabilityStage(
     dialogueArtifactsResult.dialogueClozes,
   )
   counts.dialogueClozes = dialogueClozesLanded
+
+  // PR 3 — typed affixed_form_pairs table write. Replaces the two
+  // capability_artifacts rows (root_derived_pair + allomorph_rule) the reader
+  // used to read.
+  const affixedFormPairsLanded = await replaceAffixedFormPairs(
+    supabase,
+    affixedFormPairsResult.rows,
+  )
+  counts.affixedFormPairs = affixedFormPairsLanded
 
   // ---- 8. Write — grammar_patterns (PGRST205 fallback preserved). ------
   const grammarPatternUpsert = await upsertGrammarPatterns(supabase, grammar.grammarPatterns)

@@ -20,6 +20,13 @@ export type ResolutionReasonCode =
   | 'dialogue_line_typed_row_missing'
   | 'affixed_form_pair_ref_unparseable'
   | 'affixed_form_pair_artifact_missing'
+  // PR 3: typed-table fetch returns no row for a ready affixed_form_pair cap.
+  // Mirrors `dialogue_line_typed_row_missing` — the reader switched from the
+  // legacy capability_artifacts (root_derived_pair/allomorph_rule) to the typed
+  // `affixed_form_pairs` table. `affixed_form_pair_artifact_missing` above is
+  // retained for resolver belt-and-braces paths but is no longer emitted by
+  // byKind/affixedFormPair.ts.
+  | 'affixed_form_pair_typed_row_missing'
   // Content-data gaps
   | 'no_active_variant'
   | 'no_meaning_in_lang'
