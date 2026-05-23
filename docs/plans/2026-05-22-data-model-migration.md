@@ -243,7 +243,7 @@ WHERE c.source_kind = '<source_kind>'
 | **PR 0** | Additive foundation: infra + typed table DDL + leaderboard retire + `?force_capability` bypass | — | ✅ shipped — typed-table DDL + typed-column projection live |
 | **PR 1** | Item source_kind: writer + reader + re-publish | PR 0 | ✅ shipped — #87 item; #88 (§1.5 cap cleanup); §1.6 item-translation bridge |
 | **PR 2** | Dialogue line source_kind: writer + reader + re-publish | PR 0 | ✅ shipped — #91 typed reader+writer+bridge; #92 validator → typed table + legacy artifact writes removed (see §5) |
-| **PR 3** | Affixed form pair source_kind: writer + reader + re-publish | PR 0 | not started — caps render today via the legacy `capability_artifacts` path (HC12 green); typed `affixed_form_pairs` migration pending |
+| **PR 3** | Affixed form pair source_kind: writer + reader + re-publish | PR 0 | ✅ shipped — #94 typed reader+writer+validator+bridge; HC12 retired → HC17; renderContracts/catalog `affixed_form_pair → []` (see §6). No pattern_source_ref column exists (DDL deviates from §6.5) |
 | **PR 4** | Pattern source_kind: writer + reader + routing widening + re-publish | PR 0 | not started — pattern caps remain `unknown`/`draft` (no compatible exercise yet) |
 | **PR 5** | Lesson blocks (Stage A): typed satellites + re-publish | PR 0 | not started |
 | **PR 6** | Lesson sections (Stage A): typed satellites + re-publish | PR 5 | not started |
@@ -494,6 +494,14 @@ bun scripts/publish-approved-content.ts 9
 ---
 
 ## §6. PR 3 — Affixed form pair source_kind
+
+> **Status: ✅ shipped (2026-05-23, #94).** Typed reader + writer + validator (CS12) + one-shot bridge, on the same end-state design as dialogue_line:
+> - **renderContracts + capabilityCatalog** — `affixed_form_pair` requires no artifacts (`[]`), mirroring item + dialogue_line (Decision R). This both stops the shared artifact builder from emitting `root_derived_pair`/`allomorph_rule` (it maps over `requiredArtifacts`) and moves readiness onto the `affixed_form_pairs` NOT NULL columns + `validateAffixedFormPairs` + HC17.
+> - **HC12 retired** in favour of HC17 (every active affixed_form_pair cap has an `affixed_form_pairs` row).
+> - **No promote-capabilities change** — PR 2's #92 already de-staled promotion globally (reads typed columns), so the 4 L9 caps were already `ready`/`published`, not stuck.
+> - **DDL deviation from §6.5 below:** the shipped `affixed_form_pairs` table (`scripts/migration.sql:2420-2431`) has **no `pattern_source_ref` column** (PR 0 did not add it; staging's `patternSourceRef` is a source_ref, not a `grammar_patterns.slug`), and `allomorph_rule` is `NOT NULL`. So the §6.5 `pattern_source_ref` validator/reader/bridge and a pattern-link HC do not exist; HC17 (no-orphan) is the sole live invariant.
+>
+> Bridge applied: `affixed_form_pairs` 0 → 4. Re-published L9: `affixedFormPairs=4`; all 4 caps `ready`/`published` with `required_artifacts=[]`; HC17 green; reader-simulation 4/4 OK. The shared `capability_artifacts` table is retained for not-yet-migrated kinds (pattern) and drops in PR 7.
 
 **Target typed table:** `affixed_form_pairs` (added in PR 0 §3.1 — empty).
 
