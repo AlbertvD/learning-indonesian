@@ -91,9 +91,11 @@ Every source_kind PR (PRs 1–4) fills in these items:
    - Reads from the new typed table; throws CapabilityDataMissingError on empty result.
    - Old fetchArtifacts call sites removed in the same PR.
 
-5. Re-publish
-   - bun scripts/publish-approved-content.ts <N> for all affected lessons.
-   - This populates the new typed tables. No SQL UPDATE backfill.
+5. Re-publish + one-shot bridge
+   - bun scripts/publish-approved-content.ts <N> in a per-lesson loop for all affected lessons.
+   - **Lesson learned from PR 1 (see feedback_post_pr_verification + project_pr1_6_data_completion):** re-publish ONLY exercises currently-publishable lessons. Lessons blocked by lint-staging CRITICAL findings (e.g. cloze gaps) do NOT get their rows rewritten. Lessons that nobody re-publishes also stay stale. The pipeline-is-writer principle (ongoing) still holds — but for a SHAPE-TRANSITION PR, a one-shot bridge SQL is required to migrate existing rows whose lessons aren't being touched by this PR's re-publish.
+   - Ship the bridge script in the SAME PR as the writer+reader: `scripts/migrate-<source_kind>-typed-tables.ts`. Idempotent, reports before/after counts.
+   - "No SQL UPDATE backfill" remains the rule for the steady state. Bridge migrations are one-time shape transitions, not ongoing writes.
 
 6. E2E test (§1.6 pattern)
    - e2e/<source_kind>.spec.ts using the ?force_capability bypass.
@@ -107,6 +109,14 @@ Every source_kind PR (PRs 1–4) fills in these items:
    - Old capability_artifacts rows are gone — but the old projector can regenerate them
      on re-publish if the revert restores the artifact-write code path.
    - No schema rollback needed for additive DDL (new tables are inert if nothing reads them).
+
+9. Post-merge verification (MANDATORY — see §1.8 — runs AFTER merge to main, BEFORE the next PR's prompt is dispatched)
+   - Plan-vs-actual diff check: `git show <merge-commit> --stat`; cross-reference every file
+     the PR section named. Smell-test if file counts feel light vs the PR's stated scope.
+   - Live-DB completeness queries: parameterized SQL per source_kind (§1.8). Every cap of
+     this source_kind MUST have its expected typed-table data populated, not just the
+     bypass-tested example.
+   - If either check fails: fix-forward in the same PR. Do NOT mark the PR done.
 ```
 
 ### §1.5 Fail-loud policy
@@ -164,6 +174,65 @@ LIMIT 5
 ```
 
 For grammar exercise tables (FK is `grammar_pattern_id` not `capability_id`): join via `learning_capabilities.source_ref → grammar_patterns.slug → <typed_table>.grammar_pattern_id`.
+
+### §1.8 Post-merge verification (orchestrator-side, MANDATORY)
+
+**Why this section exists:** PR 1 of this migration shipped a broken state and was declared done despite leaving 41% of `learning_items.translation_nl` unpopulated. Three architect rounds + one data-architect audit + a green G7 bypass check all missed it. The bug class — *data-completeness gaps that pass schema checks* — is invisible to plan reviewers because their catalogs cover plan correctness, not implementation correctness. The fix is two ground-truth checks the orchestrator runs after every PR merges, **before** the next PR's prompt is dispatched. See memory `feedback_post_pr_verification.md` and openbrain deployment-lesson `2bc57e23-f68d-44af-a729-552aac40d847`.
+
+**Check 1 — Plan-vs-actual diff.** Verify the actually-merged commit's diff matches what this PR section claimed to implement.
+
+```bash
+git show <merge-commit-hash> --stat
+git log --first-parent <previous-tip>..<merge-commit-hash> --oneline
+```
+
+Cross-reference every file the PR section names against the diff:
+- Every file in the plan must appear in the diff (otherwise the implementation skipped the spec).
+- Every file in the diff that is NOT in the plan is scope creep — flag it.
+- If file counts feel light vs the PR's stated scope (PR claims "vertical pipeline slice" but only 3 lines changed in the writer), that is a critical smell — read the actual code, do NOT trust the dev's summary.
+
+**Check 2 — Live-DB completeness queries.** Don't trust "G7 cleared on one bypass call." Query the actual tables for the invariants the plan promised. Per-source-kind templates (orchestrator parameterizes at PR-end time):
+
+```sql
+-- Template A: typed-column population on upstream table (PR 1 pattern)
+-- IMPORTANT (lesson from PR 1.6): scope the query to publishable items only.
+-- Rows in lessons blocked by lint-staging CRITICAL findings (e.g. dialogue-cloze
+-- gaps in L5/7/8) legitimately stay NULL until their authoring gaps close.
+-- Use item_type filtering or join to lessons to exclude known un-publishable scope.
+SELECT
+  count(*) FILTER (WHERE translation_nl IS NULL) AS missing_translation_nl,
+  count(*) FILTER (WHERE translation_en IS NULL) AS missing_translation_en
+FROM indonesian.learning_items
+WHERE item_type != 'dialogue_chunk';  -- dialogue chunks deferred until PR 3
+-- Expect: 0 / 0 after the migration's bridge runs.
+-- Non-zero = the bridge missed rows OR the projector failed for re-published lessons.
+
+-- Template B: typed-table satellite parity (PR 1 + future PRs)
+SELECT
+  (SELECT count(*) FROM indonesian.capability_audio_refs)                      AS new_audio_refs,
+  (SELECT count(*) FROM indonesian.capability_artifacts
+    WHERE artifact_kind='audio_clip')                                          AS legacy_audio_artifacts;
+-- Expect: new_audio_refs >= legacy_audio_artifacts. Otherwise the writer for the typed
+-- table never landed — the reader will throw CapabilityDataMissingError in production.
+
+-- Template C: no-orphan invariant (§1.7) executed via SQL (not just baked into HC code)
+SELECT count(*) AS orphans
+FROM indonesian.learning_capabilities c
+LEFT JOIN indonesian.<typed_table> t ON t.capability_id = c.id
+WHERE c.source_kind = '<source_kind>'
+  AND c.retired_at IS NULL
+  AND t.id IS NULL;
+-- Expect: 0. Non-zero = caps exist whose data the reader needs but cannot find.
+```
+
+**The orchestrator's procedure on every PR's merge-to-main moment:**
+
+1. Use the openbrain MCP (`mcp__openbrain__execute_sql`) to run the per-PR invariant queries.
+2. Use `git show` + `git log --first-parent` against the merge commit to do Check 1.
+3. If both checks pass → mark the PR done; dispatch the next PR's prompt.
+4. If either check fails → do NOT dispatch the next PR. Either (a) fix-forward in the same PR (preferred), or (b) open a follow-up PR to complete the gap, blocking on the next source_kind until it lands.
+
+**Per-PR invariant query lists.** Each PR section (§3–§10) names its specific invariant queries inline. The PR is not done until those queries return their expected values against the live DB after the merge. This is non-negotiable.
 
 ---
 
