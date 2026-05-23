@@ -61,6 +61,11 @@ function buildSupabaseMock(opts: {
             current = current.filter((r) => vals.includes(r[col]))
             return chain
           },
+          is: (col: string, val: unknown) => {
+            // PR 1.5 retireOrphanedCapabilities uses .is('retired_at', null).
+            current = current.filter((r) => r[col] === val)
+            return chain
+          },
           ilike: () => chain,
           limit: () => chain,
           order: () => chain,
@@ -70,6 +75,14 @@ function buildSupabaseMock(opts: {
         }
         return chain
       },
+      update: (payload: Record<string, unknown>) => ({
+        // PR 1.5 retireOrphanedCapabilities chains .update(...).in('id', ids).
+        // No persistence needed for the synthetic fixture — return error: null.
+        in: async (col: string, ids: string[]) => {
+          void payload; void col; void ids
+          return { error: null }
+        },
+      }),
       upsert: (payload: Record<string, unknown>, opts2?: { onConflict?: string }) => {
         recorder.upserts.push({ table, payload, onConflict: opts2?.onConflict })
         const id = idGen(table)

@@ -136,6 +136,12 @@ export async function upsertCapabilities(
         lesson_id: capability.lessonId ?? null,
         required_artifacts: capability.requiredArtifacts,
         prerequisite_keys: capability.prerequisiteKeys,
+        // PR 1.5: re-emission un-retires. If the canonical_key fell out of an
+        // earlier emit set and got soft-retired (see retireOrphanedCapabilities),
+        // its reappearance here flips retired_at back to NULL so readers see it
+        // again. FSRS state in learner_capability_state survives the round-trip
+        // because the row id is stable across upserts.
+        retired_at: null,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'canonical_key' })
       .select('id, canonical_key')
@@ -144,6 +150,63 @@ export async function upsertCapabilities(
     idsByKey.set(data.canonical_key, data.id)
   }
   return idsByKey
+}
+
+export interface RetireOrphanedCapabilitiesResult {
+  retiredCount: number
+  retiredKeys: string[]
+}
+
+/**
+ * PR 1.5: soft-retire active capabilities attached to `lessonId` whose
+ * canonical_key is NOT in `emittedKeys`. Sets `retired_at = now()`; readers
+ * filter `retired_at IS NULL`. Child rows (learner_capability_state FSRS,
+ * capability_review_events history) are preserved — no DELETE, no CASCADE.
+ *
+ * Re-publish flow (per-lesson):
+ *   upsertCapabilities      — re-emits every cap in the new staging snapshot
+ *                             (sets retired_at = NULL so any previously-retired
+ *                             reincarnations come back active).
+ *   ↓
+ *   retireOrphanedCapabilities — sweeps anything still attached to this
+ *                                lesson that did NOT re-appear.
+ *
+ * Scoped to `lessonId` so a re-publish of lesson N never touches lesson M's
+ * capabilities, even if their canonical_keys happen to differ.
+ */
+export async function retireOrphanedCapabilities(
+  supabase: CapabilitySupabaseClient,
+  input: { lessonId: string; emittedKeys: ReadonlyArray<string> },
+): Promise<RetireOrphanedCapabilitiesResult> {
+  const { data: active, error: fetchError } = await supabase
+    .schema('indonesian')
+    .from('learning_capabilities')
+    .select('id, canonical_key')
+    .eq('lesson_id', input.lessonId)
+    .is('retired_at', null)
+  if (fetchError) throw fetchError
+
+  const emittedSet = new Set(input.emittedKeys)
+  const orphans = (active ?? []).filter(
+    (c: { canonical_key: string }) => !emittedSet.has(c.canonical_key),
+  )
+  if (orphans.length === 0) {
+    return { retiredCount: 0, retiredKeys: [] }
+  }
+
+  const orphanIds = orphans.map((o: { id: string }) => o.id)
+  const nowIso = new Date().toISOString()
+  const { error: updateError } = await supabase
+    .schema('indonesian')
+    .from('learning_capabilities')
+    .update({ retired_at: nowIso, updated_at: nowIso })
+    .in('id', orphanIds)
+  if (updateError) throw updateError
+
+  return {
+    retiredCount: orphanIds.length,
+    retiredKeys: orphans.map((o: { canonical_key: string }) => o.canonical_key),
+  }
 }
 
 // ---------------------------------------------------------------------------

@@ -47,6 +47,12 @@ function fakeClient(tables: Record<string, any[]>) {
             filters.push(row => values.includes(row[column]))
             return builder
           },
+          is: (column: string, value: unknown) => {
+            // PostgREST `.is('col', null)` matches both NULL and absent columns;
+            // fixture rows that don't set retired_at are treated as active.
+            filters.push(row => value === null ? (row[column] == null) : (row[column] === value))
+            return builder
+          },
           then: (resolve: (value: { data: any[]; error: null }) => void) => {
             resolve({
               data: (tables[table] ?? []).filter(row => filters.every(fn => fn(row))),

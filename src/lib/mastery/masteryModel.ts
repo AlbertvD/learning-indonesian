@@ -430,6 +430,7 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
       .from('learning_capabilities')
       .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id, required_artifacts')
       .in('id', ids)
+      .is('retired_at', null)
     if (error) throw error
     return (data ?? []) as LearningCapabilityRow[]
   }
@@ -483,6 +484,7 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
         .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id, required_artifacts')
         .eq('source_kind', 'pattern')
         .eq('source_ref', patternId)
+        .is('retired_at', null)
       if (error) throw error
       const capabilities = (data ?? []) as LearningCapabilityRow[]
       const evidence = await evidenceForCapabilities(userId, capabilities)

@@ -237,6 +237,7 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
       const { data: capabilities, error: capabilitiesError } = await db()
         .from('learning_capabilities')
         .select('*')
+        .is('retired_at', null)
       if (capabilitiesError) throw capabilitiesError
       const capabilityById = new Map<string, LearningCapabilityDbRow>(
         ((capabilities ?? []) as LearningCapabilityDbRow[]).map(row => [row.id, row]),
@@ -248,7 +249,9 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         .eq('user_id', request.userId)
       if (error) throw error
 
-      return (data ?? []).map((row: LearnerCapabilityStateDbRow) => toLearnerRow(row, capabilityById))
+      return (data ?? [])
+        .filter((row: LearnerCapabilityStateDbRow) => capabilityById.has(row.capability_id))
+        .map((row: LearnerCapabilityStateDbRow) => toLearnerRow(row, capabilityById))
     },
 
     async loadCapabilitySessionData(request: CapabilitySessionDataRequest): Promise<CapabilitySessionDataSnapshot> {
@@ -262,7 +265,8 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
           .from('learning_capabilities')
           .select(CAPABILITY_COLUMNS)
           .eq('readiness_status', 'ready')
-          .eq('publication_status', 'published'),
+          .eq('publication_status', 'published')
+          .is('retired_at', null),
         db().from('learner_capability_state').select('*').eq('user_id', request.userId),
         listActivatedLessons(request.userId, client),
         db().from('lessons').select('id, order_index'),
@@ -299,6 +303,7 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
       }
 
       const schedulerRows = ((statesResult.data ?? []) as LearnerCapabilityStateDbRow[])
+        .filter(row => capabilityById.has(row.capability_id))
         .map(row => toLearnerRow(row, capabilityById))
       const dueCount = getDueCapabilitiesFromRows({
         now: request.now,

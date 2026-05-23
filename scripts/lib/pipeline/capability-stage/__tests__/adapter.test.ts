@@ -3,9 +3,12 @@ import { describe, expect, it } from 'vitest'
 import {
   insertExerciseVariantGrammar,
   insertExerciseVariantVocab,
+  retireOrphanedCapabilities,
+  upsertCapabilities,
   upsertCapabilityArtifacts,
   upsertLearningItem,
   type CapabilityArtifactInput,
+  type CapabilityInput,
   type LearningItemInput,
 } from '../adapter'
 
@@ -140,5 +143,144 @@ describe('capability-stage adapter — upsertLearningItem activation', () => {
     expect(payload.is_active).toBe(true)
     expect(payload.item_type).toBe('dialogue_chunk')
     expect(payload.review_status).toBe('published')
+  })
+})
+
+// ── PR 1.5: soft-retirement for orphaned capabilities ──────────────────────
+
+// Captures upsertCapabilities payloads to assert the retired_at field is set
+// to null (un-retire on re-emission contract).
+function buildCapabilityUpsertCapturer() {
+  const captured: Array<{ table: string; payload: Record<string, unknown>; options: unknown }> = []
+  const client = {
+    schema: () => ({
+      from: (table: string) => ({
+        upsert: (payload: Record<string, unknown>, options: unknown) => {
+          captured.push({ table, payload, options })
+          return {
+            select: () => ({
+              single: async () => ({
+                data: { id: `cap-${captured.length}`, canonical_key: payload.canonical_key },
+                error: null,
+              }),
+            }),
+          }
+        },
+      }),
+    }),
+  } as never
+  return { client, captured }
+}
+
+describe('capability-stage adapter — upsertCapabilities un-retires on re-emission', () => {
+  it('every upsert payload sets retired_at: null so re-emitted caps come back active', async () => {
+    const { client, captured } = buildCapabilityUpsertCapturer()
+    const input: CapabilityInput = {
+      canonicalKey: 'item:halo:recognition:l1-l2:visual',
+      sourceKind: 'item',
+      sourceRef: 'learning_items/halo',
+      capabilityType: 'recognition',
+      direction: 'l1-l2',
+      modality: 'visual',
+      learnerLanguage: 'nl',
+      projectionVersion: 'capability-v3',
+      lessonId: 'lesson-uuid-1',
+      requiredArtifacts: [],
+      prerequisiteKeys: [],
+    }
+    await upsertCapabilities(client, [input])
+    expect(captured).toHaveLength(1)
+    expect(captured[0].table).toBe('learning_capabilities')
+    expect(captured[0].payload.retired_at).toBeNull()
+    expect(captured[0].options).toEqual({ onConflict: 'canonical_key' })
+  })
+})
+
+// Mock supabase client that supports the chains retireOrphanedCapabilities calls:
+//   .from('learning_capabilities').select(...).eq('lesson_id', X).is('retired_at', null)
+//   .from('learning_capabilities').update({ retired_at, updated_at }).in('id', ids)
+function buildRetireClient(activeCapsForLesson: Array<{ id: string; canonical_key: string }>) {
+  const updateCalls: Array<{ payload: Record<string, unknown>; ids: string[] }> = []
+  const client = {
+    schema: () => ({
+      from: (table: string) => {
+        if (table !== 'learning_capabilities') throw new Error(`unexpected table: ${table}`)
+        return {
+          select: () => ({
+            eq: () => ({
+              is: async () => ({ data: activeCapsForLesson, error: null }),
+            }),
+          }),
+          update: (payload: Record<string, unknown>) => ({
+            in: async (_column: string, ids: string[]) => {
+              updateCalls.push({ payload, ids })
+              return { error: null }
+            },
+          }),
+        }
+      },
+    }),
+  } as never
+  return { client, updateCalls }
+}
+
+describe('capability-stage adapter — retireOrphanedCapabilities', () => {
+  it('retires caps attached to the lesson that did NOT reappear in the emit set', async () => {
+    const { client, updateCalls } = buildRetireClient([
+      { id: 'cap-a', canonical_key: 'item:halo:recognition' },     // re-emitted → keep
+      { id: 'cap-b', canonical_key: 'item:gone:recognition' },     // orphan    → retire
+      { id: 'cap-c', canonical_key: 'item:halo:cued_recall' },     // re-emitted → keep
+      { id: 'cap-d', canonical_key: 'dialogue_line:old-text:cl' }, // orphan    → retire
+    ])
+    const result = await retireOrphanedCapabilities(client, {
+      lessonId: 'lesson-uuid-1',
+      emittedKeys: ['item:halo:recognition', 'item:halo:cued_recall', 'item:new:recognition'],
+    })
+    expect(result.retiredCount).toBe(2)
+    expect(result.retiredKeys.sort()).toEqual([
+      'dialogue_line:old-text:cl',
+      'item:gone:recognition',
+    ])
+    expect(updateCalls).toHaveLength(1)
+    expect(updateCalls[0].ids.sort()).toEqual(['cap-b', 'cap-d'])
+    expect(updateCalls[0].payload.retired_at).toEqual(expect.any(String))
+    expect(updateCalls[0].payload.updated_at).toEqual(expect.any(String))
+  })
+
+  it('makes no update call when every active cap is in the emit set', async () => {
+    const { client, updateCalls } = buildRetireClient([
+      { id: 'cap-a', canonical_key: 'item:halo:recognition' },
+    ])
+    const result = await retireOrphanedCapabilities(client, {
+      lessonId: 'lesson-uuid-1',
+      emittedKeys: ['item:halo:recognition', 'item:halo:cued_recall'],
+    })
+    expect(result.retiredCount).toBe(0)
+    expect(result.retiredKeys).toEqual([])
+    expect(updateCalls).toHaveLength(0)
+  })
+
+  it('makes no update call when no caps are active under this lesson', async () => {
+    const { client, updateCalls } = buildRetireClient([])
+    const result = await retireOrphanedCapabilities(client, {
+      lessonId: 'lesson-uuid-with-no-caps',
+      emittedKeys: ['item:halo:recognition'],
+    })
+    expect(result.retiredCount).toBe(0)
+    expect(updateCalls).toHaveLength(0)
+  })
+
+  it('retires every active cap when the emit set is empty (mass retire)', async () => {
+    const { client, updateCalls } = buildRetireClient([
+      { id: 'cap-a', canonical_key: 'item:halo:recognition' },
+      { id: 'cap-b', canonical_key: 'item:halo:cued_recall' },
+    ])
+    const result = await retireOrphanedCapabilities(client, {
+      lessonId: 'lesson-uuid-1',
+      emittedKeys: [],
+    })
+    expect(result.retiredCount).toBe(2)
+    expect(updateCalls).toHaveLength(1)
+    expect(updateCalls[0].ids.sort()).toEqual(['cap-a', 'cap-b'])
   })
 })

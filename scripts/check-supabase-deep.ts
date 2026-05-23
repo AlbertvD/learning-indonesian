@@ -543,11 +543,15 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
 //      the DB layer; this check is the defence-in-depth assertion that fires
 //      if the constraint was ever dropped or bypassed.
 {
+  // PR 1.5: filter retired_at IS NULL — retired caps may legitimately have
+  // null lesson_id once we eventually relax the constraint, and they don't
+  // affect runtime; ADR 0006 only constrains caps the runtime sees.
   const { data, error } = await supabase
     .schema('indonesian')
     .from('learning_capabilities')
     .select('id, source_kind, canonical_key')
     .is('lesson_id', null)
+    .is('retired_at', null)
     .not('source_kind', 'in', '("podcast_segment","podcast_phrase")')
   if (error) {
     fail('HC8 learning_capabilities.lesson_id non-null for non-podcast caps (ADR 0006)', error.message)
@@ -594,6 +598,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
         .select('canonical_key, source_ref')
         .eq('source_kind', 'item')
         .like('source_ref', 'learning_items/%')
+        .is('retired_at', null)
         .range(offset, offset + pageSize - 1)
       if (error) throw error
       const rows = (data ?? []) as ItemCap[]
@@ -670,6 +675,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
         .select('source_ref, capability_type, lesson_id')
         .eq('source_kind', 'item')
         .like('source_ref', 'learning_items/%')
+        .is('retired_at', null)
         .range(offset, offset + pageSize - 1)
       if (error) throw error
       const rows = (data ?? []) as ItemCap[]
@@ -755,6 +761,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
         .select('id, source_ref, lesson_id')
         .eq('source_kind', 'dialogue_line')
         .eq('capability_type', 'contextual_cloze')
+        .is('retired_at', null)
         .range(offset, offset + pageSize - 1)
       if (error) throw error
       const rows = (data ?? []) as DialogueCap[]
@@ -859,6 +866,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
         .from('learning_capabilities')
         .select('id, source_ref, lesson_id')
         .eq('source_kind', 'affixed_form_pair')
+        .is('retired_at', null)
         .range(offset, offset + pageSize - 1)
       if (error) throw error
       const rows = (data ?? []) as AffixedCap[]
@@ -967,6 +975,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
         .select('canonical_key, source_ref, lesson_id')
         .eq('source_kind', 'item')
         .like('source_ref', 'learning_items/%')
+        .is('retired_at', null)
         .range(offset, offset + pageSize - 1)
       if (error) throw error
       const rows = (data ?? []) as ItemCap[]
@@ -1023,6 +1032,56 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
       'HC13 item caps reference learning_items with translation_nl populated (Decision R)',
       err instanceof Error ? err.message : String(err),
     )
+  }
+}
+
+// ── HC14 (PR 1.5 of 2026-05-21-data-model-migration.md): no learner is
+//        currently scheduled to review a retired capability. Retired caps
+//        (learning_capabilities.retired_at IS NOT NULL) must be invisible to
+//        the session-builder; if a learner_capability_state row with
+//        next_due_at <= now() exists for a retired cap, either:
+//          (a) a reader is missing the .is('retired_at', null) filter
+//              (writer/reader/validator triangle gap), OR
+//          (b) the retire writer accidentally retired an in-use cap.
+//        Both are bugs the user would feel as "the session offered a card
+//        for content that no longer exists in the lesson." Pure-DB tripwire.
+{
+  type RetiredDueRow = {
+    capability_id: string
+    next_due_at: string
+    learning_capabilities: { canonical_key: string; retired_at: string | null } | null
+  }
+  const nowIso = new Date().toISOString()
+  // PostgREST embed: pull the parent row inline. PostgREST returns the inner
+  // object as `learning_capabilities`. Filtering on the embed via
+  // `learning_capabilities.retired_at` requires the !inner hint so the embed
+  // is treated as a join filter, not a post-fetch nullable.
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('learner_capability_state')
+    .select('capability_id, next_due_at, learning_capabilities!inner(canonical_key, retired_at)')
+    .lte('next_due_at', nowIso)
+    .not('learning_capabilities.retired_at', 'is', null)
+    .limit(20)
+  if (error) {
+    fail('HC14 no scheduler row references a retired capability (PR 1.5 soft-retire invariant)', error.message)
+  } else {
+    const offenders = (data ?? []) as unknown as RetiredDueRow[]
+    if (offenders.length === 0) {
+      pass('HC14 no scheduler row references a retired capability (PR 1.5 soft-retire invariant)')
+    } else {
+      const sample = offenders.slice(0, 5)
+        .map((o) => `${o.learning_capabilities?.canonical_key ?? o.capability_id} (due ${o.next_due_at})`)
+        .join(', ')
+      fail(
+        'HC14 no scheduler row references a retired capability (PR 1.5 soft-retire invariant)',
+        `${offenders.length}+ scheduler rows pointing at retired caps with next_due_at <= now(). ` +
+        `Sample: ${sample}${offenders.length > 5 ? ' …' : ''}\n` +
+        `   → Either a reader is missing .is('retired_at', null) (check session-builder/lessons/` +
+        `mastery adapters), or a cap was incorrectly retired (check the re-publish that produced ` +
+        `the retire_at timestamp).`,
+      )
+    }
   }
 }
 

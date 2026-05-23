@@ -1,7 +1,7 @@
 ---
 module: capabilities
 surface: src/lib/capabilities/
-last_verified_against_code: 2026-05-22
+last_verified_against_code: 2026-05-23
 inbound_port: src/lib/capabilities/index.ts
 status: stable
 ---
@@ -180,6 +180,8 @@ BuilderResult  ({ kind: 'ok', exerciseItem, audibleTexts } | fail)
 - **`CAPABILITY_PROJECTION_VERSION` is fixed at `'capability-v3'`.** Bumped to v3 by Decision 3b (PR-1, ADR 0006). Bumping would invalidate every cached projection.
 
 - **`itemSlug` is the SOLE slug derivation function.** Per PR #59. Divergent local implementations historically caused ~113 multi-word items to become unreachable.
+
+- **Soft-retired caps are invisible at runtime (PR 1.5, 2026-05-22).** `learning_capabilities.retired_at` is a soft-deletion timestamp set by the capability-stage runner when a re-publish's emit set no longer contains a previously-active canonical_key. Every runtime read site filters `retired_at IS NULL` — verified at the DB layer by HC14 in `scripts/check-supabase-deep.ts` (a scheduler row with `next_due_at <= now()` pointing at a retired cap = bug). The retired row's `learner_capability_state` and `capability_review_events` children survive untouched, so re-emission of the same canonical_key (which sets `retired_at = NULL` via `upsertCapabilities`) restores FSRS state intact. See `scripts/lib/pipeline/capability-stage/adapter.ts:retireOrphanedCapabilities`.
 
 ---
 
