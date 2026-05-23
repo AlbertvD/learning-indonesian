@@ -46,6 +46,8 @@ status: stable
 
 **2026-05-22 — typed-column projection (PR 0 of the data-model migration).** `ProjectedCapability` slimmed: `difficultyLevel`, `goalTags`, `sourceFingerprint`, `artifactFingerprint` dropped (no runtime consumers, or derivable, or destination-column-going-away). `skillType` retained but read-time-derived from `capability_type` via `deriveSkillTypeFromCapabilityType` instead of stored in metadata_json. `requiredArtifacts` and `prerequisiteKeys` are now backed by two typed `learning_capabilities` columns (`required_artifacts text[]`, `prerequisite_keys text[]`) added in scripts/migration.sql; the legacy `metadata_json` jsonb column survives until a follow-up cleanup PR drops it but is no longer read or written. `required_artifacts` stays as a column (not derivable from capability_type alone) because affixed_form_pair caps have conditional artifacts (±allomorph_rule per capabilityCatalog.ts:178-180).
 
+**2026-05-23 — dialogue_line readiness off artifacts; promoter de-staled (#92).** `renderContracts` now declares `dialogue_line` requires no artifacts (`[]`), mirroring `item`: dialogue_line caps render from the typed `dialogue_clozes` table, so `validateCapability` no longer gates them on `capability_artifacts`. `scripts/promote-capabilities.ts` was still projecting caps from `metadata_json` (contradicting the 2026-05-22 entry's "no longer read" claim); it now projects from the typed columns + `deriveSkillTypeFromCapabilityType`, matching the runtime adapter. That stale read had silently blocked promotion for *every* source_kind — it is why L9's dialogue caps sat `unknown`/`draft`. HC11 (legacy three-artifact check) retired in favour of HC15 (every dialogue_line cap has a `dialogue_clozes` row).
+
 ---
 
 ## 1. Purpose

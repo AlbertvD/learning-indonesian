@@ -1,9 +1,9 @@
 ---
-status: approved
+status: implementing
 approved_at: 2026-05-22
 doc_type: data-model-migration-plan
 migration_shape: additive+republish+final-cleanup
-last_verified_against_code: 2026-05-22
+last_verified_against_code: 2026-05-23
 supersedes: 2026-05-21-data-model-migration.md
 depends_on:
   - 2026-05-21-data-model-target.md
@@ -240,11 +240,11 @@ WHERE c.source_kind = '<source_kind>'
 
 | PR | Title | Depends on | Status |
 |---|---|---|---|
-| **PR 0** | Additive foundation: infra + typed table DDL + leaderboard retire + `?force_capability` bypass | — | in progress (6 commits done) |
-| **PR 1** | Item source_kind: writer + reader + re-publish | PR 0 | not started |
-| **PR 2** | Dialogue line source_kind: writer + reader + re-publish | PR 0 | not started |
-| **PR 3** | Affixed form pair source_kind: writer + reader + re-publish | PR 0 | not started |
-| **PR 4** | Pattern source_kind: writer + reader + routing widening + re-publish | PR 0 | not started |
+| **PR 0** | Additive foundation: infra + typed table DDL + leaderboard retire + `?force_capability` bypass | — | ✅ shipped — typed-table DDL + typed-column projection live |
+| **PR 1** | Item source_kind: writer + reader + re-publish | PR 0 | ✅ shipped — #87 item; #88 (§1.5 cap cleanup); §1.6 item-translation bridge |
+| **PR 2** | Dialogue line source_kind: writer + reader + re-publish | PR 0 | ✅ shipped — #91 typed reader+writer+bridge; #92 validator → typed table + legacy artifact writes removed (see §5) |
+| **PR 3** | Affixed form pair source_kind: writer + reader + re-publish | PR 0 | not started — caps render today via the legacy `capability_artifacts` path (HC12 green); typed `affixed_form_pairs` migration pending |
+| **PR 4** | Pattern source_kind: writer + reader + routing widening + re-publish | PR 0 | not started — pattern caps remain `unknown`/`draft` (no compatible exercise yet) |
 | **PR 5** | Lesson blocks (Stage A): typed satellites + re-publish | PR 0 | not started |
 | **PR 6** | Lesson sections (Stage A): typed satellites + re-publish | PR 5 | not started |
 | **PR 7** | Final cleanup: drop everything no longer read | PRs 1–6 | not started |
@@ -429,6 +429,14 @@ drop table if exists indonesian.item_meanings cascade;
 ---
 
 ## §5. PR 2 — Dialogue line source_kind
+
+> **Status: ✅ shipped (2026-05-23).** #91 landed the typed reader + writer + bridge (§5.1–§5.3). #92 completed the slice end-to-end on the new design:
+> - **renderContracts** — `dialogue_line` requires no artifacts (`[]`), mirroring `item` (Decision R). Readiness no longer consults `capability_artifacts`; structure is guaranteed by the `dialogue_clozes` NOT NULL columns + `validators/dialogueClozes.ts` + HC15.
+> - **projector + runner** — stopped writing the legacy three `capability_artifacts` (`cloze_context`/`cloze_answer`/`translation:l1`); the typed `dialogue_clozes` row is the sole persisted representation.
+> - **promote-capabilities.ts** — now projects from the typed columns + derives `skillType`, instead of the folded-away `metadata_json` it had still been reading. That stale read silently blocked promotion for *every* source_kind; fixing it is what let the dialogue caps promote.
+> - **HC11 retired** in favour of HC15 (every dialogue_line cap has a `dialogue_clozes` row).
+>
+> Re-published L9: 7 `dialogue_clozes` rows; 7 caps `ready`/`published` with `required_artifacts=[]`; HC15 green; deployed (revision `0f88d0c`). The shared `capability_artifacts` table itself is retained for the not-yet-migrated kinds and drops in PR 7.
 
 **Target typed tables:** `lesson_dialogue_lines`, `dialogue_clozes` (both added in PR 0 §3.1 — empty).
 
