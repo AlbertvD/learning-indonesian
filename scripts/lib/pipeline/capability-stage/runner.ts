@@ -458,24 +458,19 @@ export async function runCapabilityStage(
     })
   }
 
-  // ---- 7b. Dialogue-line artifacts (Decision 5b extension). -------------
-  // The shared catalog at content-pipeline-output.ts:484 only knows item /
-  // pattern / morphology artifact kinds. Dialogue-line caps are appended
-  // downstream by projectVocab (vocab.ts:163-203), so their artifacts must
-  // also be appended downstream — same `upsertCapabilityArtifacts` adapter,
-  // separate projector. See projectors/dialogueArtifacts.ts for the contract.
-  //
-  // PR 2 — projectDialogueArtifacts also emits the typed `dialogue_clozes`
-  // rows, written via `replaceDialogueClozes` further down. Both write paths
-  // run for now (parallel-paths policy); the final cleanup PR drops the
-  // legacy `capability_artifacts` writes for these three kinds.
+  // ---- 7b. Dialogue-line typed rows (Decision 5b / PR 2 slice). ---------
+  // Dialogue-line caps are appended downstream by projectVocab
+  // (vocab.ts:163-203). Their renderable data is the typed `dialogue_clozes`
+  // row, written via `replaceDialogueClozes` below — the SOLE persisted
+  // representation. No capability_artifacts are emitted for dialogue_line
+  // (renderContracts: dialogue_line → []); structure is guaranteed by the typed
+  // table + validateDialogueClozes + HC15. See projectors/dialogueArtifacts.ts.
   const dialogueArtifactsResult = projectDialogueArtifacts({
     contextualClozeCapabilities: vocab.contextualClozeCapabilities,
     capabilityIdsByKey,
     clozeContexts: staging.clozeContexts as never,
     sections: loaded.sections,
   })
-  artifactInputs.push(...dialogueArtifactsResult.artifacts)
   findings.push(...dialogueArtifactsResult.findings)
 
   // Pre-write validator (PR 2) — fails CRITICAL on missing/malformed cloze

@@ -83,6 +83,25 @@ describe('capability contract validation', () => {
     })
   })
 
+  it('readies a dialogue_line contextual_cloze cap with no capability_artifacts (PR 2 slice: structure lives in the typed dialogue_clozes table)', () => {
+    const result = validateCapability({
+      capability: {
+        ...baseCapability,
+        canonicalKey: 'cap:v1:dialogue_line:lesson-9/section-1/line-3:contextual_cloze:id_to_l1:text:none',
+        sourceKind: 'dialogue_line',
+        sourceRef: 'lesson-9/section-1/line-3',
+        capabilityType: 'contextual_cloze',
+        requiredArtifacts: [],
+      },
+      artifacts: {},
+    })
+
+    expect(result).toEqual({
+      status: 'ready',
+      allowedExercises: ['cloze'],
+    })
+  })
+
   it('requires typed pattern examples for pattern recognition', () => {
     const result = validateCapability({
       capability: {

@@ -736,110 +736,13 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   }
 }
 
-// ── HC11: every dialogue_line:contextual_cloze cap has the three artifacts
-//        the runtime requires (cloze_context, cloze_answer, translation:l1)
-//        with quality_status='approved' AND cloze_context.payload_json.
-//        source_text contains the literal ___ marker. Mirrors the writer at
-//        scripts/lib/pipeline/capability-stage/projectors/dialogueArtifacts.ts
-//        and the reader at src/lib/exercise-content/adapter.ts
-//        fetchForDialogueLineBlocks.
-//
-//        EXPECTED RED until the affected lesson is re-published with PR 1
-//        (artifact emitter, commit 1467cae). Once re-published, this check
-//        stays green.
-{
-  type DialogueCap = { id: string; source_ref: string; lesson_id: string | null }
-  type ArtifactRow = { capability_id: string; artifact_kind: string; quality_status: string; artifact_json: unknown }
-
-  async function fetchAllDialogueCaps(): Promise<DialogueCap[]> {
-    const pageSize = 1000
-    const all: DialogueCap[] = []
-    for (let offset = 0; ; offset += pageSize) {
-      const { data, error } = await supabase
-        .schema('indonesian')
-        .from('learning_capabilities')
-        .select('id, source_ref, lesson_id')
-        .eq('source_kind', 'dialogue_line')
-        .eq('capability_type', 'contextual_cloze')
-        .is('retired_at', null)
-        .range(offset, offset + pageSize - 1)
-      if (error) throw error
-      const rows = (data ?? []) as DialogueCap[]
-      all.push(...rows)
-      if (rows.length < pageSize) break
-    }
-    return all
-  }
-
-  async function fetchArtifactsForCaps(capIds: string[]): Promise<Map<string, ArtifactRow[]>> {
-    if (capIds.length === 0) return new Map()
-    const byCap = new Map<string, ArtifactRow[]>()
-    // Chunk the IN clause to stay under Kong's 8 KB request-line buffer.
-    const chunkSize = 200
-    for (let i = 0; i < capIds.length; i += chunkSize) {
-      const chunk = capIds.slice(i, i + chunkSize)
-      const { data, error } = await supabase
-        .schema('indonesian')
-        .from('capability_artifacts')
-        .select('capability_id, artifact_kind, quality_status, artifact_json')
-        .in('capability_id', chunk)
-      if (error) throw error
-      for (const row of (data ?? []) as ArtifactRow[]) {
-        const list = byCap.get(row.capability_id) ?? []
-        list.push(row)
-        byCap.set(row.capability_id, list)
-      }
-    }
-    return byCap
-  }
-
-  const REQUIRED_KINDS = ['cloze_context', 'cloze_answer', 'translation:l1'] as const
-
-  try {
-    const caps = await fetchAllDialogueCaps()
-    if (caps.length === 0) {
-      pass('HC11 dialogue_line:contextual_cloze caps have required artifacts (no dialogue_line caps in DB; vacuously green)')
-    } else {
-      const artifactsByCap = await fetchArtifactsForCaps(caps.map(c => c.id))
-      const offenders: Array<{ capId: string; sourceRef: string; lessonId: string | null; reason: string }> = []
-      for (const cap of caps) {
-        const arts = artifactsByCap.get(cap.id) ?? []
-        const approvedByKind = new Map<string, ArtifactRow>()
-        for (const a of arts) {
-          if (a.quality_status === 'approved') approvedByKind.set(a.artifact_kind, a)
-        }
-        const missing = REQUIRED_KINDS.filter(k => !approvedByKind.has(k))
-        if (missing.length > 0) {
-          offenders.push({ capId: cap.id, sourceRef: cap.source_ref, lessonId: cap.lesson_id, reason: `missing approved artifacts: ${missing.join(', ')}` })
-          continue
-        }
-        // Verify cloze_context.payload_json.source_text contains ___.
-        const ctx = approvedByKind.get('cloze_context')!
-        const payload = ctx.artifact_json as { source_text?: unknown } | null
-        const sourceText = typeof payload?.source_text === 'string' ? payload.source_text : ''
-        if (!sourceText.includes('___')) {
-          offenders.push({ capId: cap.id, sourceRef: cap.source_ref, lessonId: cap.lesson_id, reason: `cloze_context.payload_json.source_text missing '___' marker` })
-        }
-      }
-      if (offenders.length === 0) {
-        pass(`HC11 dialogue_line:contextual_cloze caps have required artifacts (${caps.length} cap(s) checked)`)
-      } else {
-        const lessonsAffected = new Set(offenders.map(o => o.lessonId ?? 'null'))
-        const sample = offenders.slice(0, 5).map(o => `${o.sourceRef}: ${o.reason}`).join('\n      ')
-        fail(
-          'HC11 dialogue_line:contextual_cloze caps have required artifacts — EXPECTED RED until lessons re-publish with the dialogueArtifacts emitter (PR 1, 1467cae)',
-          `${offenders.length} of ${caps.length} dialogue_line cap(s) failing across ${lessonsAffected.size} lesson(s):\n      ${sample}${offenders.length > 5 ? '\n      …' : ''}\n` +
-          `   → Re-publish the affected lessons: bun scripts/publish-approved-content.ts <N>.`,
-        )
-      }
-    }
-  } catch (err) {
-    fail(
-      'HC11 dialogue_line:contextual_cloze caps have required artifacts',
-      err instanceof Error ? err.message : String(err),
-    )
-  }
-}
+// ── HC11 retired (PR 2 slice): dialogue_line readiness no longer depends on
+//        capability_artifacts. The legacy three-artifact check (cloze_context /
+//        cloze_answer / translation:l1) was removed when dialogue_line moved
+//        fully onto the typed `dialogue_clozes` table. HC15 below ("every
+//        dialogue_line cap has a dialogue_clozes row") is the live-DB invariant
+//        now; structural well-formedness is the table's NOT NULL columns +
+//        the pre-write validateDialogueClozes gate.
 
 // ── HC12: every affixed_form_pair cap has the two artifacts the runtime
 //        requires (root_derived_pair, allomorph_rule) with

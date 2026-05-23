@@ -197,7 +197,10 @@ export function projectVocab(input: VocabProjectionInput): VocabProjectionOutput
         // lesson — the runner is invoked per lesson, so this dialogue line's
         // owning lesson IS the introducing lesson by construction.
         lessonId: input.lessonId,
-        requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
+        // PR 2 slice: dialogue_line caps render from the typed `dialogue_clozes`
+        // table; structure is guaranteed by that table + validateDialogueClozes +
+        // HC15, so no capability_artifacts are required (mirrors item, Decision R).
+        requiredArtifacts: [],
         prerequisiteKeys: [],
       })
     }

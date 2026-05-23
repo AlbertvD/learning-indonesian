@@ -168,10 +168,8 @@ describe('requiredArtifactsFor', () => {
     expect(requiredArtifactsFor('cloze', 'item')).toEqual([])
   })
 
-  it('cloze dialogue_line-source still requires cloze_context + cloze_answer + translation:l1', () => {
-    expect(requiredArtifactsFor('cloze', 'dialogue_line')).toEqual(
-      expect.arrayContaining(['cloze_context', 'cloze_answer', 'translation:l1']),
-    )
+  it('cloze dialogue_line-source requires [] (PR 2 slice: structure guaranteed by the typed dialogue_clozes table + validateDialogueClozes + HC15, not capability_artifacts)', () => {
+    expect(requiredArtifactsFor('cloze', 'dialogue_line')).toEqual([])
   })
 
   // Decision Q (PR 1): audio for item caps is resolved via capability_audio_refs,

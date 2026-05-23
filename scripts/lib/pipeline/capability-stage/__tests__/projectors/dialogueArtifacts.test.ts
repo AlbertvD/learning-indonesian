@@ -6,6 +6,10 @@ import {
 } from '../../projectors/dialogueArtifacts'
 import type { CapabilityInput } from '../../adapter'
 
+// PR 2 slice: the projector's SOLE output is typed `dialogue_clozes` rows
+// (sentence_with_blank, answer_text, translation_text + source_line_ref). No
+// capability_artifacts are emitted; line_text + speaker live in
+// lesson_dialogue_lines (written by Stage A) and are joined at read time.
 const baseCap = (overrides: Partial<CapabilityInput>): CapabilityInput => ({
   canonicalKey: 'dialogue_line:lesson-9/section-1/line-3:contextual_cloze:id_to_l1:text:none',
   sourceKind: 'dialogue_line',
@@ -20,7 +24,8 @@ const baseCap = (overrides: Partial<CapabilityInput>): CapabilityInput => ({
   lessonId: 'lesson-9-uuid',
   metadata: {
     skillType: 'form_recall',
-    requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
+    // dialogue_line caps require no capability_artifacts (renderContracts: []).
+    requiredArtifacts: [],
     prerequisiteKeys: [],
     difficultyLevel: 3,
     goalTags: [],
@@ -50,7 +55,7 @@ const baseSections = (): DialogueArtifactsInput['sections'] => [
 ]
 
 describe('projectDialogueArtifacts — happy path', () => {
-  it('emits cloze_context + cloze_answer + translation:l1 for each dialogue_line cap with a matching clozeContext', () => {
+  it('emits one dialogue_clozes row per dialogue_line cap with a matching clozeContext', () => {
     const cap = baseCap({})
     const out = projectDialogueArtifacts({
       contextualClozeCapabilities: [cap],
@@ -67,23 +72,15 @@ describe('projectDialogueArtifacts — happy path', () => {
     })
 
     expect(out.findings).toEqual([])
-    expect(out.artifacts).toHaveLength(3)
-
-    const byKind = new Map(out.artifacts.map((a) => [a.artifact_kind, a]))
-    expect(byKind.get('cloze_context')?.artifact_json).toEqual({
-      source_text: 'Kaki saya sakit sekali dokter. Saya jatuh dari ___.',
-      line_text: 'Kaki saya sakit sekali dokter. Saya jatuh dari pohon.',
-      speaker: 'Tina',
-      source_ref: 'lesson-9/section-1/line-3',
-    })
-    expect(byKind.get('cloze_answer')?.artifact_json).toEqual({ value: 'pohon' })
-    expect(byKind.get('translation:l1')?.artifact_json).toEqual({
-      value: 'Mijn voet doet erg pijn dokter. Ik ben uit de boom gevallen.',
-    })
-    for (const artifact of out.artifacts) {
-      expect(artifact.capability_id).toBe('cap-id-1')
-      expect(artifact.quality_status).toBe('approved')
-    }
+    expect(out.dialogueClozes).toEqual([
+      {
+        capability_id: 'cap-id-1',
+        source_line_ref: 'lesson-9/section-1/line-3',
+        sentence_with_blank: 'Kaki saya sakit sekali dokter. Saya jatuh dari ___.',
+        answer_text: 'pohon',
+        translation_text: 'Mijn voet doet erg pijn dokter. Ik ben uit de boom gevallen.',
+      },
+    ])
   })
 
   it('matches each cap to its line by sourceRef, not by position in the list', () => {
@@ -104,9 +101,6 @@ describe('projectDialogueArtifacts — happy path', () => {
       ]),
       clozeContexts: [
         {
-          // belongs to cap2 (line-1 = "Ada apa?" — but this line is <6 tokens,
-          // so in practice clozeContexts wouldn't have it; here we use a longer
-          // line at line-1 by overriding sections below).
           learning_item_slug: 'ada apa? makan minum tidur dan jalan.',
           source_text: 'Ada apa? Makan ___ tidur dan jalan.',
           cloze_answer: 'minum',
@@ -136,23 +130,22 @@ describe('projectDialogueArtifacts — happy path', () => {
     })
 
     expect(out.findings).toEqual([])
-    expect(out.artifacts).toHaveLength(6) // 3 per cap
+    expect(out.dialogueClozes).toHaveLength(2)
 
-    const cap1Artifacts = out.artifacts.filter((a) => a.capability_id === 'cap-id-1')
-    const cap2Artifacts = out.artifacts.filter((a) => a.capability_id === 'cap-id-2')
-    expect(cap1Artifacts).toHaveLength(3)
-    expect(cap2Artifacts).toHaveLength(3)
-    const cap1Context = cap1Artifacts.find((a) => a.artifact_kind === 'cloze_context')
-    expect(cap1Context?.artifact_json).toMatchObject({
-      line_text: 'Kaki saya sakit sekali dokter. Saya jatuh dari pohon.',
+    const byCap = new Map(out.dialogueClozes.map((r) => [r.capability_id, r]))
+    expect(byCap.get('cap-id-1')).toMatchObject({
+      source_line_ref: 'lesson-9/section-1/line-3',
+      sentence_with_blank: 'Kaki saya sakit sekali dokter. Saya jatuh dari ___.',
+      answer_text: 'pohon',
     })
-    const cap2Context = cap2Artifacts.find((a) => a.artifact_kind === 'cloze_context')
-    expect(cap2Context?.artifact_json).toMatchObject({
-      line_text: 'Ada apa? Makan minum tidur dan jalan.',
+    expect(byCap.get('cap-id-2')).toMatchObject({
+      source_line_ref: 'lesson-9/section-1/line-1',
+      sentence_with_blank: 'Ada apa? Makan ___ tidur dan jalan.',
+      answer_text: 'minum',
     })
   })
 
-  it('strips trailing sentence punctuation from cloze_answer (defensive normalization)', () => {
+  it('strips trailing sentence punctuation from answer_text (defensive normalization)', () => {
     const cap = baseCap({})
     const out = projectDialogueArtifacts({
       contextualClozeCapabilities: [cap],
@@ -169,11 +162,13 @@ describe('projectDialogueArtifacts — happy path', () => {
     })
 
     expect(out.findings).toEqual([])
-    const ans = out.artifacts.find((a) => a.artifact_kind === 'cloze_answer')
-    expect(ans?.artifact_json).toEqual({ value: 'pohon' })
+    expect(out.dialogueClozes).toHaveLength(1)
+    expect(out.dialogueClozes[0].answer_text).toBe('pohon')
   })
 
-  it('preserves null speaker when the line has no attribution', () => {
+  it('still emits a typed row when the source line has no speaker attribution', () => {
+    // speaker is no longer carried by the projector output (it lives in
+    // lesson_dialogue_lines); the row is produced regardless of attribution.
     const cap = baseCap({ sourceRef: 'lesson-9/section-1/line-3' })
     const out = projectDialogueArtifacts({
       contextualClozeCapabilities: [cap],
@@ -203,13 +198,13 @@ describe('projectDialogueArtifacts — happy path', () => {
     })
 
     expect(out.findings).toEqual([])
-    const ctx = out.artifacts.find((a) => a.artifact_kind === 'cloze_context')
-    expect(ctx?.artifact_json).toMatchObject({ speaker: null })
+    expect(out.dialogueClozes).toHaveLength(1)
+    expect(out.dialogueClozes[0].source_line_ref).toBe('lesson-9/section-1/line-3')
   })
 })
 
 describe('projectDialogueArtifacts — error cases (CS10 findings)', () => {
-  it('emits a CS10 finding and skips the artifact set when cloze_answer is missing', () => {
+  it('emits a CS10 finding and skips the typed row when cloze_answer is missing', () => {
     const cap = baseCap({})
     const out = projectDialogueArtifacts({
       contextualClozeCapabilities: [cap],
@@ -225,7 +220,7 @@ describe('projectDialogueArtifacts — error cases (CS10 findings)', () => {
       sections: baseSections(),
     })
 
-    expect(out.artifacts).toEqual([])
+    expect(out.dialogueClozes).toEqual([])
     expect(out.findings).toHaveLength(1)
     expect(out.findings[0]).toMatchObject({
       gate: 'CS10',
@@ -251,7 +246,7 @@ describe('projectDialogueArtifacts — error cases (CS10 findings)', () => {
       sections: baseSections(),
     })
 
-    expect(out.artifacts).toEqual([])
+    expect(out.dialogueClozes).toEqual([])
     expect(out.findings).toHaveLength(1)
     expect(out.findings[0].gate).toBe('CS10')
   })
@@ -272,7 +267,7 @@ describe('projectDialogueArtifacts — error cases (CS10 findings)', () => {
       sections: baseSections(),
     })
 
-    expect(out.artifacts).toEqual([])
+    expect(out.dialogueClozes).toEqual([])
     expect(out.findings).toHaveLength(1)
     expect(out.findings[0].gate).toBe('CS10')
     expect(out.findings[0].message).toContain('lesson_sections')
@@ -287,7 +282,7 @@ describe('projectDialogueArtifacts — error cases (CS10 findings)', () => {
       sections: baseSections(),
     })
 
-    expect(out.artifacts).toEqual([])
+    expect(out.dialogueClozes).toEqual([])
     expect(out.findings).toHaveLength(1)
     expect(out.findings[0].gate).toBe('CS10')
     expect(out.findings[0].message).toContain('clozeContexts')
@@ -309,7 +304,7 @@ describe('projectDialogueArtifacts — error cases (CS10 findings)', () => {
       sections: baseSections(),
     })
 
-    expect(out.artifacts).toEqual([])
+    expect(out.dialogueClozes).toEqual([])
     expect(out.findings[0].message).toContain('___')
   })
 
@@ -329,7 +324,7 @@ describe('projectDialogueArtifacts — error cases (CS10 findings)', () => {
       sections: baseSections(),
     })
 
-    expect(out.artifacts).toEqual([])
+    expect(out.dialogueClozes).toEqual([])
     expect(out.findings[0].message).toContain('translation_text')
   })
 
@@ -349,7 +344,7 @@ describe('projectDialogueArtifacts — error cases (CS10 findings)', () => {
       sections: baseSections(),
     })
 
-    expect(out.artifacts).toEqual([])
+    expect(out.dialogueClozes).toEqual([])
     expect(out.findings[0].message).toContain('upsert result')
   })
 })
@@ -362,7 +357,7 @@ describe('projectDialogueArtifacts — input shape edge cases', () => {
       clozeContexts: [],
       sections: [],
     })
-    expect(out.artifacts).toEqual([])
+    expect(out.dialogueClozes).toEqual([])
     expect(out.findings).toEqual([])
   })
 
@@ -378,7 +373,7 @@ describe('projectDialogueArtifacts — input shape edge cases', () => {
       clozeContexts: [],
       sections: baseSections(),
     })
-    expect(out.artifacts).toEqual([])
+    expect(out.dialogueClozes).toEqual([])
     expect(out.findings).toEqual([])
   })
 
@@ -410,7 +405,7 @@ describe('projectDialogueArtifacts — input shape edge cases', () => {
     })
 
     // The cap's line-1 has empty text → not in linesBySourceRef → CS10 finding
-    expect(out.artifacts).toEqual([])
+    expect(out.dialogueClozes).toEqual([])
     expect(out.findings[0].gate).toBe('CS10')
   })
 })
