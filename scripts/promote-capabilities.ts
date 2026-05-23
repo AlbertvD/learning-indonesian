@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { pathToFileURL } from 'node:url'
 import {
+  deriveSkillTypeFromCapabilityType,
   validateCapability,
   type ArtifactIndex,
   type ArtifactKind,
@@ -19,10 +20,12 @@ interface CapabilityRow {
   modality?: ProjectedCapability['modality']
   learner_language?: ProjectedCapability['learnerLanguage']
   projection_version?: ProjectedCapability['projectionVersion']
-  source_fingerprint?: string | null
-  artifact_fingerprint?: string | null
   lesson_id?: string | null
-  metadata_json?: Record<string, unknown> | null
+  // Decision F (2026-05-22): typed columns replace metadata_json as the source
+  // of truth. The promoter projects from these, matching the runtime adapter
+  // (src/lib/session-builder/adapter.ts), so the two never diverge.
+  required_artifacts?: string[] | null
+  prerequisite_keys?: string[] | null
 }
 
 export interface CapabilityArtifactRow {
@@ -177,9 +180,6 @@ function createServiceClient() {
 }
 
 function toProjectedCapability(row: CapabilityRow): ProjectedCapability | null {
-  const metadata = row.metadata_json ?? {}
-  const skillType = metadata.skillType
-  const requiredArtifacts = metadata.requiredArtifacts
   if (
     !row.source_kind
     || !row.source_ref
@@ -188,30 +188,27 @@ function toProjectedCapability(row: CapabilityRow): ProjectedCapability | null {
     || !row.modality
     || !row.learner_language
     || !row.projection_version
-    || typeof skillType !== 'string'
-    || !Array.isArray(requiredArtifacts)
-    || !requiredArtifacts.every(item => typeof item === 'string')
   ) {
     return null
   }
 
+  // Decision F (2026-05-22): project from the typed columns and derive skillType
+  // from capability_type — the same projection the runtime adapter uses. The
+  // pre-fold path read these from metadata_json, which is no longer written, so
+  // the promoter saw stale data and blocked otherwise-ready caps.
   return {
     canonicalKey: row.canonical_key,
     sourceKind: row.source_kind,
     sourceRef: row.source_ref,
     capabilityType: row.capability_type,
-    skillType: skillType as ProjectedCapability['skillType'],
+    skillType: deriveSkillTypeFromCapabilityType(row.capability_type),
     direction: row.direction,
     modality: row.modality,
     learnerLanguage: row.learner_language,
-    requiredArtifacts: requiredArtifacts as ArtifactKind[],
-    prerequisiteKeys: Array.isArray(metadata.prerequisiteKeys) ? metadata.prerequisiteKeys.map(String) : [],
-    difficultyLevel: typeof metadata.difficultyLevel === 'number' ? metadata.difficultyLevel : 1,
-    goalTags: Array.isArray(metadata.goalTags) ? metadata.goalTags.map(String) : [],
+    requiredArtifacts: (row.required_artifacts ?? []) as ArtifactKind[],
+    prerequisiteKeys: row.prerequisite_keys ?? [],
     lessonId: row.lesson_id ?? null,
     projectionVersion: row.projection_version,
-    sourceFingerprint: row.source_fingerprint ?? '',
-    artifactFingerprint: row.artifact_fingerprint ?? '',
   }
 }
 

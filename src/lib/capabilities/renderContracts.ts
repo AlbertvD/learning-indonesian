@@ -101,7 +101,11 @@ export const RENDER_CONTRACTS = {
     requiredArtifacts: {
       // Decision R (PR 1): item cloze data from item_contexts directly.
       item: [],
-      dialogue_line: ['cloze_context', 'cloze_answer', 'translation:l1'],
+      // PR 2 slice: dialogue_line renders from the typed `dialogue_clozes` table
+      // (byKind/dialogueLine.ts). Structure is guaranteed by that table's NOT NULL
+      // columns + the pre-write validateDialogueClozes gate + HC15 — not by
+      // capability_artifacts. Readiness needs no artifact bag, mirroring item.
+      dialogue_line: [],
     },
   },
   cloze_mcq: {

@@ -1,37 +1,24 @@
 /**
- * projectors/dialogueArtifacts.ts — emit the three artifact rows that make a
- * dialogue_line:contextual_cloze capability renderable.
+ * projectors/dialogueArtifacts.ts — emit the typed `dialogue_clozes` row that
+ * makes a dialogue_line:contextual_cloze capability renderable.
  *
  * Decision 5b in projectors/vocab.ts emits the capability ROW for every
- * dialogue line whose slug matches an authored cloze context, but it does NOT
- * emit the capability_artifacts those caps require. Without artifacts the
- * resolver at src/services/capabilityContentService.ts has nothing to read
- * and the cap stays inert.
+ * dialogue line whose slug matches an authored cloze context; this projector
+ * emits the satellite data those caps need to render.
  *
- * Per the 2026-05-21 dialogue-line contextual-cloze plan PR 1 (D1, D2, D4,
- * D5), this projector closes that gap. Three artifacts per cap:
- *   cloze_context.payload_json = { source_text, line_text, speaker, source_ref }
- *   cloze_answer.payload_json  = { value: '<the blanked word>' }
- *   translation:l1.payload_json = { value: '<NL translation of the line>' }
- *
- * Plan D4: this helper does NOT route through `buildPayloadForKind` in
- * scripts/lib/content-pipeline-output.ts:484. That function's switch (lines
- * 425–481) only knows item / pattern / morphology artifact kinds; teaching
- * it three new kinds would couple two unrelated emission paths. Instead the
- * runner upserts our artifacts via the same adapter call (`upsertCapability
- * Artifacts` — adapter.ts:204) that handles the shared-catalog path. The
- * idempotent onConflict='capability_id,artifact_kind,artifact_fingerprint'
- * (adapter.ts:221) keeps re-publishes safe.
- *
- * Plan D1 / D2 chose option (b) for both: artifacts are self-contained
- * payloads, not source_ref-parsed at runtime. The resolver in PR 2 reads
- * line_text + speaker from cloze_context.payload_json, not from a parallel
- * lesson_sections lookup.
+ * PR 2 slice (target state): the SOLE persisted representation is one
+ * `dialogue_clozes` row per cap (sentence_with_blank, answer_text,
+ * translation_text + a FK to lesson_dialogue_lines). No capability_artifacts
+ * are written — the runtime reader (byKind/dialogueLine.ts) reads the typed
+ * table, structure is guaranteed by its NOT NULL columns + the pre-write
+ * validateDialogueClozes gate + the live HC15, and readiness requires no
+ * artifact bag (renderContracts: dialogue_line → []). The legacy three-artifact
+ * emission (cloze_context / cloze_answer / translation:l1) was removed here.
  */
 
 import { itemSlug } from '@/lib/capabilities'
 
-import type { CapabilityArtifactInput, CapabilityInput, DialogueClozeInput } from '../adapter'
+import type { CapabilityInput, DialogueClozeInput } from '../adapter'
 import type { ValidationFinding } from '../model'
 import type { VocabStagingClozeContext } from './vocab'
 
@@ -63,11 +50,12 @@ export interface DialogueArtifactsInput {
 }
 
 export interface DialogueArtifactsOutput {
-  artifacts: CapabilityArtifactInput[]
   /**
-   * PR 2 — typed `dialogue_clozes` rows. One per dialogue_line capability.
-   * The adapter resolves `source_line_ref` to `dialogue_line_id` via the
-   * UNIQUE index at write time.
+   * Typed `dialogue_clozes` rows — one per dialogue_line capability, and the
+   * sole persisted representation (PR 2 slice). The adapter resolves
+   * `source_line_ref` to `dialogue_line_id` via the UNIQUE index at write time.
+   * No capability_artifacts are emitted; structure is guaranteed by the table's
+   * NOT NULL columns + validateDialogueClozes + HC15.
    */
   dialogueClozes: DialogueClozeInput[]
   findings: ValidationFinding[]
@@ -137,7 +125,6 @@ function inferLessonSourceRef(capability: CapabilityInput): string | null {
  * `cloze_answer` are skipped and surface a CS10 finding.
  */
 export function projectDialogueArtifacts(input: DialogueArtifactsInput): DialogueArtifactsOutput {
-  const artifacts: CapabilityArtifactInput[] = []
   const dialogueClozes: DialogueClozeInput[] = []
   const findings: ValidationFinding[] = []
 
@@ -145,7 +132,7 @@ export function projectDialogueArtifacts(input: DialogueArtifactsInput): Dialogu
     (cap) => cap.sourceKind === 'dialogue_line' && cap.capabilityType === 'contextual_cloze',
   )
   if (dialogueCaps.length === 0) {
-    return { artifacts, dialogueClozes, findings }
+    return { dialogueClozes, findings }
   }
 
   const lessonSourceRef = inferLessonSourceRef(dialogueCaps[0])
@@ -156,7 +143,7 @@ export function projectDialogueArtifacts(input: DialogueArtifactsInput): Dialogu
       message: `dialogue_line capability has malformed sourceRef "${dialogueCaps[0].sourceRef}" — expected "lesson-N/section-M/line-K"`,
       context: { capabilityKey: dialogueCaps[0].canonicalKey },
     })
-    return { artifacts, dialogueClozes, findings }
+    return { dialogueClozes, findings }
   }
 
   const linesBySourceRef = collectDialogueLinesBySourceRef(input.sections, lessonSourceRef)
@@ -234,44 +221,11 @@ export function projectDialogueArtifacts(input: DialogueArtifactsInput): Dialogu
       continue
     }
 
-    // The artifact_fingerprint is the artifact's IDENTITY (capability+kind), not
-    // a content hash. With onConflict='capability_id,artifact_kind,artifact_
-    // fingerprint' (adapter.ts:221) the upsert overwrites in place when payload
-    // changes — content correctness is verified by HC11 (PR 7), not here.
-    const refPrefix = `${cap.canonicalKey}`
-    artifacts.push({
-      capability_id: capId,
-      artifact_kind: 'cloze_context',
-      quality_status: 'approved',
-      artifact_ref: `${refPrefix}:cloze_context`,
-      artifact_json: {
-        source_text: ctx.source_text,
-        line_text: line.text,
-        speaker: line.speaker,
-        source_ref: cap.sourceRef,
-      },
-      artifact_fingerprint: `${refPrefix}:cloze_context`,
-    })
-    artifacts.push({
-      capability_id: capId,
-      artifact_kind: 'cloze_answer',
-      quality_status: 'approved',
-      artifact_ref: `${refPrefix}:cloze_answer`,
-      artifact_json: { value: answer },
-      artifact_fingerprint: `${refPrefix}:cloze_answer`,
-    })
-    artifacts.push({
-      capability_id: capId,
-      artifact_kind: 'translation:l1',
-      quality_status: 'approved',
-      artifact_ref: `${refPrefix}:translation:l1`,
-      artifact_json: { value: ctx.translation_text.trim() },
-      artifact_fingerprint: `${refPrefix}:translation:l1`,
-    })
-
-    // PR 2 — typed satellite row. The adapter resolves source_line_ref to
-    // the lesson_dialogue_lines.id at write time. This row coheres the 3
-    // legacy artifacts above into one typed row (Decision A).
+    // Typed satellite row — the sole persisted representation for dialogue_line
+    // caps (PR 2 slice). The adapter resolves source_line_ref to
+    // lesson_dialogue_lines.id at write time. No capability_artifacts are
+    // written; structure is guaranteed by the table's NOT NULL columns +
+    // validateDialogueClozes + HC15.
     dialogueClozes.push({
       capability_id: capId,
       source_line_ref: cap.sourceRef,
@@ -281,5 +235,5 @@ export function projectDialogueArtifacts(input: DialogueArtifactsInput): Dialogu
     })
   }
 
-  return { artifacts, dialogueClozes, findings }
+  return { dialogueClozes, findings }
 }
