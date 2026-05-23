@@ -1088,7 +1088,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
 // ── HC15 (PR 2 of 2026-05-22-data-model-migration.md): every active
 //        dialogue_line capability has exactly one `dialogue_clozes` row.
 //        The fail-loud reader at src/lib/exercise-content/byKind/dialogueLine.ts
-//        surfaces `dialogue_typed_row_missing` for any cap that fails this
+//        surfaces `dialogue_line_typed_row_missing` for any cap that fails this
 //        invariant — HC15 is the structural mirror so the regression is
 //        caught at health-check time rather than at session-render time.
 //        Lesson learned from PR 1: ship the live-DB HC in the SAME PR as
@@ -1148,7 +1148,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
 //          - a Postgres-side referential integrity drift,
 //          - a race where the typed-row reader fetched a dialogue_clozes
 //            row but the JOIN returned null (which the reader surfaces as
-//            `dialogue_typed_row_missing` per byKind/dialogueLine.ts).
+//            `dialogue_line_typed_row_missing` per byKind/dialogueLine.ts).
 //        Strict zero on this query is the structural invariant the reader
 //        relies on.
 {

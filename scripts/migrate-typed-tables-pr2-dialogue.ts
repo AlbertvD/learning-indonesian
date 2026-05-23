@@ -25,7 +25,7 @@
  *
  * However, even on L9 the typed tables start empty (PR 0 created the tables
  * only). Without this bridge, a deploy without an immediate re-publish would
- * surface the new fail-loud reader's `dialogue_typed_row_missing` diagnostic
+ * surface the new fail-loud reader's `dialogue_line_typed_row_missing` diagnostic
  * for every active dialogue_line cap. This bridge populates the typed rows
  * from the existing artifacts + sections data so the deploy + re-publish
  * sequence stays safe.

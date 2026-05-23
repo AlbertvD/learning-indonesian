@@ -5,7 +5,7 @@
 // typed `dialogue_clozes` JOIN `lesson_dialogue_lines` reader. The new reader
 // is FAIL-LOUD per §1.5 of `docs/plans/2026-05-22-data-model-migration.md`:
 // when `learning_capabilities` says the cap is ready but the JOIN returns
-// nothing, the resolver surfaces a `dialogue_typed_row_missing` failure
+// nothing, the resolver surfaces a `dialogue_line_typed_row_missing` failure
 // diagnostic. This is intentionally noisier than the silent skip that masked
 // the dialogue-cloze gap on L7/8/9.
 //
@@ -85,7 +85,7 @@ export async function fetchForDialogueLineBlocks(
       result.set(block.id, {
         kind: 'fail',
         block,
-        context: makeFailContext(block, 'dialogue_typed_row_missing',
+        context: makeFailContext(block, 'dialogue_line_typed_row_missing',
           `dialogue_line cap ${block.capabilityId} has no dialogue_clozes row — typed-row writer failed or did not run for this lesson`,
           { capabilityId: block.capabilityId, sourceRef }),
       })
@@ -99,7 +99,7 @@ export async function fetchForDialogueLineBlocks(
       result.set(block.id, {
         kind: 'fail',
         block,
-        context: makeFailContext(block, 'dialogue_typed_row_missing',
+        context: makeFailContext(block, 'dialogue_line_typed_row_missing',
           `dialogue_clozes row for cap ${block.capabilityId} resolves to no lesson_dialogue_lines row (broken FK)`,
           { capabilityId: block.capabilityId, sourceRef }),
       })
@@ -118,7 +118,7 @@ export async function fetchForDialogueLineBlocks(
       result.set(block.id, {
         kind: 'fail',
         block,
-        context: makeFailContext(block, 'dialogue_typed_row_missing',
+        context: makeFailContext(block, 'dialogue_line_typed_row_missing',
           `dialogue_clozes row for cap ${block.capabilityId} has empty fields after fetch`,
           {
             capabilityId: block.capabilityId,

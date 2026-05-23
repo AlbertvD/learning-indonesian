@@ -449,7 +449,7 @@ describe('resolver.resolveBlocks — dialogue_line source kind', () => {
     expect(ctx.exerciseItem?.clozeContext?.speaker).toBe('Titin')
   })
 
-  it('fails dialogue_typed_row_missing when no dialogue_clozes row exists for a ready cap', async () => {
+  it('fails dialogue_line_typed_row_missing when no dialogue_clozes row exists for a ready cap', async () => {
     const block = makeDialogueBlock({ capabilityId: 'cap-dl-missing' })
     const tables: Record<string, MockTable> = {
       // Empty dialogue_clozes — the JOIN returns no row.
@@ -460,10 +460,10 @@ describe('resolver.resolveBlocks — dialogue_line source kind', () => {
     const map = await service.resolveBlocks([block], baseOptions)
     const ctx = map.get(block.id)!
     expect(ctx.exerciseItem).toBeNull()
-    expect(ctx.diagnostic?.reasonCode).toBe('dialogue_typed_row_missing')
+    expect(ctx.diagnostic?.reasonCode).toBe('dialogue_line_typed_row_missing')
   })
 
-  it('fails dialogue_typed_row_missing when JOIN to lesson_dialogue_lines is broken', async () => {
+  it('fails dialogue_line_typed_row_missing when JOIN to lesson_dialogue_lines is broken', async () => {
     const block = makeDialogueBlock({ capabilityId: 'cap-dl-broken-fk' })
     const tables: Record<string, MockTable> = {
       dialogue_clozes: { rows: [
@@ -481,7 +481,7 @@ describe('resolver.resolveBlocks — dialogue_line source kind', () => {
     const map = await service.resolveBlocks([block], baseOptions)
     const ctx = map.get(block.id)!
     expect(ctx.exerciseItem).toBeNull()
-    expect(ctx.diagnostic?.reasonCode).toBe('dialogue_typed_row_missing')
+    expect(ctx.diagnostic?.reasonCode).toBe('dialogue_line_typed_row_missing')
   })
 
   it('fails dialogue_line_ref_unparseable when source_ref does not match lesson-N/section-M/line-K', async () => {
