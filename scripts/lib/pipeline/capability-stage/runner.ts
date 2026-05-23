@@ -52,6 +52,7 @@ import {
   findLearningItemBySlug,
   insertExerciseVariantGrammar,
   insertExerciseVariantVocab,
+  retireOrphanedCapabilities,
   upsertCapabilities,
   upsertCapabilityArtifacts,
   upsertCapabilityContentUnits,
@@ -387,6 +388,22 @@ export async function runCapabilityStage(
   const capabilityIdsByKey = await upsertCapabilities(supabase, allCapabilities)
   counts.capabilities = capabilityIdsByKey.size
   const capabilityIds = [...capabilityIdsByKey.values()]
+
+  // PR 1.5: soft-retire any caps still attached to this lesson whose canonical_key
+  // dropped out of the new emit set. upsertCapabilities above has already
+  // un-retired anything the new emit set re-includes (retired_at=null), so this
+  // sweep only catches genuine orphans. FSRS state + review history are
+  // preserved (no DELETE); a future re-emission of the same canonical_key
+  // reanimates the cap with state intact.
+  const retired = await retireOrphanedCapabilities(supabase, {
+    lessonId: input.lessonId,
+    emittedKeys: [...capabilityIdsByKey.keys()],
+  })
+  if (retired.retiredCount > 0) {
+    const previewKeys = retired.retiredKeys.slice(0, 5).join(', ')
+    const suffix = retired.retiredKeys.length > 5 ? ', …' : ''
+    console.log(`   ✓ Soft-retired ${retired.retiredCount} orphan capabilit${retired.retiredCount === 1 ? 'y' : 'ies'}: ${previewKeys}${suffix}`)
+  }
 
   // ---- 6. Write — capability_content_units (junction). -----------------
   // Junction rows come from staging capabilities[].contentUnitSlugs +

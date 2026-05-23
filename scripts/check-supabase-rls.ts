@@ -82,6 +82,7 @@ const { data: someCap, error: capErr } = await userClient!
   .from('learning_capabilities')
   .select('id, canonical_key')
   .eq('publication_status', 'published')
+  .is('retired_at', null)
   .limit(1)
   .maybeSingle()
 if (capErr || !someCap) {

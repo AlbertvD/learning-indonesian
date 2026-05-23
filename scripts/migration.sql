@@ -2614,3 +2614,39 @@ grant all on indonesian.cloze_mcq_exercises to service_role;
 
 comment on table indonesian.cloze_mcq_exercises is
   'Full authored payload for cloze_mcq exercise type (pattern-source variant). options jsonb is string[]. Decision B Group A. Populated by PR 4.';
+
+-- ============================================================================
+-- PR 1.5 (2026-05-22) — Soft retirement for orphaned capabilities
+-- ============================================================================
+-- Spec: docs/plans/2026-05-21-data-model-migration.md (PR 1.5 — small foundation
+--       PR before per-source-kind PRs 2-5).
+--
+-- Adds `retired_at` to learning_capabilities so re-publish can soft-retire any
+-- cap whose canonical_key falls out of the new emit set for its lesson. Readers
+-- filter `retired_at IS NULL`; retired caps keep their child rows
+-- (learner_capability_state FSRS, capability_review_events history) so a future
+-- re-emission of the same canonical_key — handled by upsertCapabilities setting
+-- retired_at = NULL on conflict — restores the cap to active with state intact.
+--
+-- Writer pair:
+--   1. scripts/lib/pipeline/capability-stage/adapter.ts:upsertCapabilities
+--      sets retired_at = NULL on every upsert (un-retire on re-emission).
+--   2. scripts/lib/pipeline/capability-stage/adapter.ts:retireOrphanedCapabilities
+--      runs after upsertCapabilities in the runner; sets retired_at = now()
+--      for caps WHERE lesson_id = current lesson AND canonical_key NOT IN
+--      emit set.
+-- Validator (HC14 in scripts/check-supabase-deep.ts): no learner_capability_state
+-- row references a retired cap with next_due_at <= now() (scheduler-leak tripwire).
+
+alter table indonesian.learning_capabilities
+  add column if not exists retired_at timestamptz;
+
+-- Partial index: virtually every runtime query filters retired_at IS NULL;
+-- the index covers (lesson_id, source_kind) for the read patterns in
+-- src/lib/session-builder/adapter.ts and src/lib/lessons/adapter.ts.
+create index if not exists learning_capabilities_active_idx
+  on indonesian.learning_capabilities(lesson_id, source_kind)
+  where retired_at is null;
+
+comment on column indonesian.learning_capabilities.retired_at is
+  'Soft-retirement timestamp. NULL = active (rendered + scheduled); non-null = orphaned by a re-publish whose new emit set did not include this canonical_key. Readers filter retired_at IS NULL. upsertCapabilities sets back to NULL on re-emission so FSRS state survives. PR 1.5 (2026-05-22).';

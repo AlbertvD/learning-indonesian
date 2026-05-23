@@ -8,6 +8,7 @@ function query(data: unknown[] = []) {
     select: () => chain,
     eq: () => chain,
     in: () => chain,
+    is: () => chain,
     then: (resolve: (value: { data: unknown[]; error: null }) => void) => resolve({ data, error: null }),
   }
   return chain

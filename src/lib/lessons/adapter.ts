@@ -255,6 +255,7 @@ export async function getLessonCapabilityPracticeSummary(
     .in('source_ref', uniqueSourceRefs)
     .eq('readiness_status', 'ready')
     .eq('publication_status', 'published')
+    .is('retired_at', null)
   if (capabilityError) throw capabilityError
 
   const capabilityIds = ((capabilityRows ?? []) as Array<{ id: string }>).map(row => row.id)
@@ -295,6 +296,7 @@ export async function getLessonCapabilityPracticeSummaryByLessonId(
     .eq('lesson_id', lessonId)
     .eq('readiness_status', 'ready')
     .eq('publication_status', 'published')
+    .is('retired_at', null)
   if (capabilityError) throw capabilityError
 
   const capabilityIds = ((capabilityRows ?? []) as Array<{ id: string }>).map(r => r.id)

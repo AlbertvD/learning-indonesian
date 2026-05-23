@@ -259,6 +259,7 @@ export async function loadPromotionPlan(args: PromoteCapabilitiesArgs): Promise<
     .from('learning_capabilities')
     .select('*')
     .eq('lesson_id', lessonRow.id)
+    .is('retired_at', null)
   if (capsError) throw capsError
   const capabilityRows = ((capabilityRowsData ?? []) as CapabilityRow[])
   const scopedCapabilityKeys = capabilityRows.map(row => row.canonical_key)

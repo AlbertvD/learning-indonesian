@@ -154,7 +154,8 @@ async function loadReadinessInput(args: CapabilityReleaseReadinessArgs): Promise
         .select('id', { count: 'exact', head: true })
         .eq('lesson_id', lessonRow.id)
         .eq('readiness_status', 'ready')
-        .eq('publication_status', 'published'))
+        .eq('publication_status', 'published')
+        .is('retired_at', null))
     : 0
 
   const lessonCapabilityRows = lessonRow
@@ -162,6 +163,7 @@ async function loadReadinessInput(args: CapabilityReleaseReadinessArgs): Promise
         .from('learning_capabilities')
         .select('canonical_key')
         .eq('lesson_id', lessonRow.id)
+        .is('retired_at', null)
     : { data: [], error: null }
   if (lessonCapabilityRows.error) throw lessonCapabilityRows.error
 
@@ -178,6 +180,7 @@ async function loadReadinessInput(args: CapabilityReleaseReadinessArgs): Promise
         .from('learning_capabilities')
         .select('id, canonical_key, readiness_status, publication_status')
         .in('canonical_key', chunk)
+        .is('retired_at', null)
       if (error) throw error
       capabilityRows.push(...((data ?? []) as Array<CapabilityStatusRow & { id: string }>))
     }
