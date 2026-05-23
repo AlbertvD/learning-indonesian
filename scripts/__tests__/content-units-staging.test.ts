@@ -151,10 +151,14 @@ describe('content unit staging', () => {
         contentUnitSlugs: ['morphology-men-baca-membaca'],
       }),
     ]))
-    expect(capabilityPlan.exerciseAssets).toEqual(expect.arrayContaining([
-      expect.objectContaining({ artifact_kind: 'root_derived_pair' }),
-      expect.objectContaining({ artifact_kind: 'allomorph_rule' }),
-    ]))
+    // PR 3 slice: affixed_form_pair caps emit requiredArtifacts: [] (they render
+    // from the typed `affixed_form_pairs` table written by the morphology
+    // projector), so buildArtifactsForCapability no longer produces
+    // root_derived_pair / allomorph_rule exercise assets for them.
+    const affixedAssetKinds = capabilityPlan.exerciseAssets
+      .filter((a) => a.capability_key.includes(':affixed_form_pair:'))
+      .map((a) => a.artifact_kind)
+    expect(affixedAssetKinds).toEqual([])
     expect(validateCapabilityStaging({ capabilities: capabilityPlan.capabilities, contentUnits })).toEqual([])
   })
 })

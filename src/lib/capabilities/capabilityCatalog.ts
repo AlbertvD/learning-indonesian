@@ -158,9 +158,14 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
   // with the array returned by this function.
 
   for (const pair of input.affixedFormPairs ?? []) {
-    const requiredArtifacts: ArtifactKind[] = pair.allomorphRule
-      ? ['root_derived_pair', 'allomorph_rule']
-      : ['root_derived_pair']
+    // PR 3 slice: affixed_form_pair caps render from the typed `affixed_form_pairs`
+    // table; structure is guaranteed by that table's NOT NULL columns +
+    // validateAffixedFormPairs + HC17, so no capability_artifacts are required
+    // (mirrors item + dialogue_line, Decision R). Emitting [] both (a) stops the
+    // shared artifact builder from writing root_derived_pair/allomorph_rule
+    // (buildArtifactsForCapability maps over requiredArtifacts), and (b) keeps
+    // readiness off the legacy artifact bag.
+    const requiredArtifacts: ArtifactKind[] = []
     const recognitionCapability = createCapability({
       sourceKind: 'affixed_form_pair',
       sourceRef: pair.sourceRef,

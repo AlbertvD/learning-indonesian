@@ -744,115 +744,13 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
 //        now; structural well-formedness is the table's NOT NULL columns +
 //        the pre-write validateDialogueClozes gate.
 
-// ── HC12: every affixed_form_pair cap has the two artifacts the runtime
-//        requires (root_derived_pair, allomorph_rule) with
-//        quality_status='approved' AND non-empty payload fields (root,
-//        derived, rule). Mirrors HC11; mirrors the writer at
-//        scripts/lib/content-pipeline-output.ts:430-441 and the reader at
-//        src/lib/exercise-content/byKind/affixedFormPair.ts.
-//
-//        EXPECTED RED until the affected lesson is re-published with the
-//        affixed-form-pair contract widening (PR 1 of
-//        docs/plans/2026-05-21-affixed-form-pair-runtime.md). Stale-since
-//        runbook: if HC12 stays red >7 days post PR 1 merge, investigate
-//        the re-publish path or revert PR 1 to remove the dark signal.
-{
-  type AffixedCap = { id: string; source_ref: string; lesson_id: string | null }
-  type ArtifactRow = { capability_id: string; artifact_kind: string; quality_status: string; artifact_json: unknown }
-
-  async function fetchAllAffixedCaps(): Promise<AffixedCap[]> {
-    const pageSize = 1000
-    const all: AffixedCap[] = []
-    for (let offset = 0; ; offset += pageSize) {
-      const { data, error } = await supabase
-        .schema('indonesian')
-        .from('learning_capabilities')
-        .select('id, source_ref, lesson_id')
-        .eq('source_kind', 'affixed_form_pair')
-        .is('retired_at', null)
-        .range(offset, offset + pageSize - 1)
-      if (error) throw error
-      const rows = (data ?? []) as AffixedCap[]
-      all.push(...rows)
-      if (rows.length < pageSize) break
-    }
-    return all
-  }
-
-  async function fetchArtifactsForCaps(capIds: string[]): Promise<Map<string, ArtifactRow[]>> {
-    if (capIds.length === 0) return new Map()
-    const byCap = new Map<string, ArtifactRow[]>()
-    const chunkSize = 200
-    for (let i = 0; i < capIds.length; i += chunkSize) {
-      const chunk = capIds.slice(i, i + chunkSize)
-      const { data, error } = await supabase
-        .schema('indonesian')
-        .from('capability_artifacts')
-        .select('capability_id, artifact_kind, quality_status, artifact_json')
-        .in('capability_id', chunk)
-      if (error) throw error
-      for (const row of (data ?? []) as ArtifactRow[]) {
-        const list = byCap.get(row.capability_id) ?? []
-        list.push(row)
-        byCap.set(row.capability_id, list)
-      }
-    }
-    return byCap
-  }
-
-  const REQUIRED_KINDS = ['root_derived_pair', 'allomorph_rule'] as const
-
-  try {
-    const caps = await fetchAllAffixedCaps()
-    if (caps.length === 0) {
-      pass('HC12 affixed_form_pair caps have required artifacts (no affixed_form_pair caps in DB; vacuously green)')
-    } else {
-      const artifactsByCap = await fetchArtifactsForCaps(caps.map(c => c.id))
-      const offenders: Array<{ capId: string; sourceRef: string; lessonId: string | null; reason: string }> = []
-      for (const cap of caps) {
-        const arts = artifactsByCap.get(cap.id) ?? []
-        const approvedByKind = new Map<string, ArtifactRow>()
-        for (const a of arts) {
-          if (a.quality_status === 'approved') approvedByKind.set(a.artifact_kind, a)
-        }
-        const missing = REQUIRED_KINDS.filter(k => !approvedByKind.has(k))
-        if (missing.length > 0) {
-          offenders.push({ capId: cap.id, sourceRef: cap.source_ref, lessonId: cap.lesson_id, reason: `missing approved artifacts: ${missing.join(', ')}` })
-          continue
-        }
-        // Verify payload fields are non-empty.
-        const pairPayload = approvedByKind.get('root_derived_pair')!.artifact_json as { root?: unknown; derived?: unknown } | null
-        const rulePayload = approvedByKind.get('allomorph_rule')!.artifact_json as { rule?: unknown } | null
-        const root = typeof pairPayload?.root === 'string' ? pairPayload.root : ''
-        const derived = typeof pairPayload?.derived === 'string' ? pairPayload.derived : ''
-        const rule = typeof rulePayload?.rule === 'string' ? rulePayload.rule : ''
-        const fieldProblems: string[] = []
-        if (!root) fieldProblems.push('root_derived_pair.payload_json.root empty/missing')
-        if (!derived) fieldProblems.push('root_derived_pair.payload_json.derived empty/missing')
-        if (!rule) fieldProblems.push('allomorph_rule.payload_json.rule empty/missing')
-        if (fieldProblems.length > 0) {
-          offenders.push({ capId: cap.id, sourceRef: cap.source_ref, lessonId: cap.lesson_id, reason: fieldProblems.join('; ') })
-        }
-      }
-      if (offenders.length === 0) {
-        pass(`HC12 affixed_form_pair caps have required artifacts (${caps.length} cap(s) checked)`)
-      } else {
-        const lessonsAffected = new Set(offenders.map(o => o.lessonId ?? 'null'))
-        const sample = offenders.slice(0, 5).map(o => `${o.sourceRef}: ${o.reason}`).join('\n      ')
-        fail(
-          'HC12 affixed_form_pair caps have required artifacts — EXPECTED RED until lessons re-publish with the affixed-form-pair PR 1 contract widening',
-          `${offenders.length} of ${caps.length} affixed_form_pair cap(s) failing across ${lessonsAffected.size} lesson(s):\n      ${sample}${offenders.length > 5 ? '\n      …' : ''}\n` +
-          `   → Re-publish the affected lessons: bun scripts/publish-approved-content.ts <N>.`,
-        )
-      }
-    }
-  } catch (err) {
-    fail(
-      'HC12 affixed_form_pair caps have required artifacts',
-      err instanceof Error ? err.message : String(err),
-    )
-  }
-}
+// ── HC12 retired (PR 3 slice): affixed_form_pair readiness no longer depends
+//        on capability_artifacts. The legacy two-artifact check (root_derived_pair
+//        / allomorph_rule) was removed when affixed_form_pair moved fully onto the
+//        typed `affixed_form_pairs` table. HC17 below ("every active
+//        affixed_form_pair cap has an affixed_form_pairs row") is the live-DB
+//        invariant now; structural well-formedness is the table's NOT NULL
+//        columns + the pre-write validateAffixedFormPairs gate.
 
 // ── HC13 (PR 1 of 2026-05-22-data-model-migration.md): every item source_kind
 //        cap references a learning_item whose translation_nl is non-null. PR 1
@@ -1069,6 +967,66 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
       'HC16 dialogue_clozes.dialogue_line_id is never null (PR 2)',
       `${count} dialogue_clozes row(s) have NULL dialogue_line_id. The DB FK is NOT NULL — this means data drift or a writer regression. Investigate replaceDialogueClozes in capability-stage/adapter.ts.`,
     )
+  }
+}
+
+// ── HC17 (PR 3 of 2026-05-22-data-model-migration.md): every active
+//        affixed_form_pair capability has exactly one `affixed_form_pairs` row.
+//        The fail-loud reader at src/lib/exercise-content/byKind/affixedFormPair.ts
+//        surfaces `affixed_form_pair_typed_row_missing` for any cap that fails
+//        this invariant — HC17 is the structural mirror (replacing the retired
+//        HC12 artifact check) so the regression is caught at health-check time
+//        rather than at session-render time.
+//
+//        No HC18 (pattern link resolution): the shipped affixed_form_pairs DDL
+//        (scripts/migration.sql:2420-2431) has no pattern_source_ref column —
+//        the §6.5 plan named one, but PR 0 did not add it (staging's
+//        patternSourceRef is a source_ref, not a grammar_patterns.slug). There
+//        is no nullable FK on affixed_form_pairs to assert, so the no-orphan
+//        HC17 is the sole live invariant for this source kind.
+//
+//        Implementation note (same as HC15): PostgREST can't express "left join
+//        and filter parent on embed IS NULL", so we fetch the two id sets and
+//        difference them in code.
+{
+  const { data: capRows, error: capsError } = await supabase
+    .schema('indonesian')
+    .from('learning_capabilities')
+    .select('id, canonical_key, source_ref')
+    .eq('source_kind', 'affixed_form_pair')
+    .is('retired_at', null)
+  if (capsError) {
+    fail('HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3)', capsError.message)
+  } else {
+    const activeCaps = (capRows ?? []) as Array<{ id: string; canonical_key: string; source_ref: string }>
+    if (activeCaps.length === 0) {
+      pass('HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3) (no affixed_form_pair caps in DB; vacuously green)')
+    } else {
+      const { data: afpRows, error: afpError } = await supabase
+        .schema('indonesian')
+        .from('affixed_form_pairs')
+        .select('capability_id')
+        .in('capability_id', activeCaps.map((c) => c.id))
+      if (afpError) {
+        fail('HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3)', afpError.message)
+      } else {
+        const havePairs = new Set(((afpRows ?? []) as Array<{ capability_id: string }>).map((r) => r.capability_id))
+        const offenders = activeCaps.filter((c) => !havePairs.has(c.id))
+        if (offenders.length === 0) {
+          pass(`HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3) (${activeCaps.length} cap(s) checked)`)
+        } else {
+          const sample = offenders.slice(0, 5).map((o) => `${o.canonical_key} (${o.source_ref})`).join(', ')
+          fail(
+            'HC17 every active affixed_form_pair cap has an affixed_form_pairs row (PR 3)',
+            `${offenders.length}+ active affixed_form_pair caps with no affixed_form_pairs row. ` +
+            `Sample: ${sample}${offenders.length > 5 ? ' …' : ''}\n` +
+            `   → Either re-publish the affected lessons (Stage B writes affixed_form_pairs via the ` +
+            `morphology projector) or run scripts/migrate-typed-tables-pr3-affixed-form-pair.ts to ` +
+            `bridge from the legacy capability_artifacts rows.`,
+          )
+        }
+      }
+    }
   }
 }
 
