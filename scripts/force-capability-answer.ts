@@ -132,13 +132,16 @@ async function main() {
     const url = `/session?force_capability=${encodeURIComponent(args.canonicalKey)}`
     await page.goto(url)
 
-    // Wait for the experience-player to mount or an error to surface
+    // Wait for the experience-player to mount or an error to surface. The
+    // interaction surface is either a mantine button (item exercises), a native
+    // option button inside an ExerciseOptionGroup (role="group" — MCQ/grammar),
+    // or a text input (typed/transformation exercises).
     const ready = await page.waitForFunction(
       () => {
         const body = document.body.textContent ?? ''
-        const optionButton = document.querySelector('button.mantine-Button-root')
+        const surface = document.querySelector('button.mantine-Button-root, [role="group"] button, input')
         const errorText = /sessiefout|capabilitynotfoundError|geen oefeningen/i.test(body)
-        return !!optionButton || errorText
+        return !!surface || errorText
       },
       { timeout: 15000 },
     ).catch(() => null)
@@ -148,7 +151,9 @@ async function main() {
     }
 
     const bodyText = await page.locator('body').textContent() ?? ''
-    if (/capabilitynotfoundError|geen oefeningen/i.test(bodyText)) {
+    // "Sessiefout" included so a genuine session-load error fails loudly here
+    // rather than slipping through to answerOneCard as a phantom card.
+    if (/capabilitynotfoundError|geen oefeningen|sessiefout/i.test(bodyText)) {
       console.error('Bypass URL returned unexpected state:', bodyText.slice(0, 200))
       process.exit(1)
     }

@@ -373,10 +373,7 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         ? validateCapability({ capability, artifacts: artifactIndex })
         : { status: capabilityRow.readiness_status, reason: `Capability readiness is ${capabilityRow.readiness_status}` } as CapabilityReadiness
 
-      // Seed a dormant learner_capability_state row on first hit. Idempotent — the
-      // existing row is returned if present. Without this the planner-bypass would
-      // render against an empty state and the answer commit would write the first
-      // review event itself, which is the desired test path.
+      // Read any existing learner_capability_state row for this cap.
       const { data: existing, error: stateLoadError } = await db()
         .from('learner_capability_state')
         .select('*')
@@ -384,26 +381,30 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         .eq('capability_id', capabilityRow.id)
         .limit(1)
       if (stateLoadError) throw stateLoadError
-      let stateRow = ((existing ?? []) as LearnerCapabilityStateDbRow[])[0]
-      if (!stateRow) {
-        const insert = {
+      // When none exists, synthesize a dormant state IN MEMORY rather than
+      // inserting it. learner_capability_state is RLS SELECT-only for the owner —
+      // every real write goes through the commit_capability_answer_report
+      // SECURITY DEFINER RPC — so a client-side insert here 403s ("Sessiefout").
+      // The bypass only needs a snapshot to render against; the answer-commit RPC
+      // creates the real row on the first answer, the same first-write path a
+      // brand-new capability takes in a normal session (see the stateRow-null
+      // default-snapshot branch in builder.ts).
+      const stateRow: LearnerCapabilityStateDbRow =
+        ((existing ?? []) as LearnerCapabilityStateDbRow[])[0] ?? {
+          id: crypto.randomUUID(),
           user_id: userId,
           capability_id: capabilityRow.id,
           canonical_key_snapshot: capabilityRow.canonical_key,
           activation_state: 'dormant',
+          stability: null,
+          difficulty: null,
+          last_reviewed_at: null,
+          next_due_at: null,
           review_count: 0,
           lapse_count: 0,
           consecutive_failure_count: 0,
           state_version: 0,
         }
-        const { data: inserted, error: insertError } = await db()
-          .from('learner_capability_state')
-          .insert(insert)
-          .select('*')
-          .single()
-        if (insertError) throw insertError
-        stateRow = inserted as LearnerCapabilityStateDbRow
-      }
 
       const learnerState = toLearnerRow(stateRow, new Map([[capabilityRow.id, capabilityRow]]))
 
