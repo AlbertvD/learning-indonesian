@@ -1030,6 +1030,115 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   }
 }
 
+// ── HC19 + HC20 (PR 4 of 2026-05-22-data-model-migration.md): every active
+//        pattern capability resolves to typed grammar-exercise rows.
+//
+//        These tables are keyed by grammar_pattern_id (NOT capability_id), with
+//        many rows per pattern. The cap → exercise link is:
+//          source_ref (lesson-N/pattern-<slug>) → strip prefix → grammar_patterns.slug
+//          → grammar_pattern_id → <typed table>.grammar_pattern_id
+//        (verified 94/94 resolve, 2026-05-24). The fail-loud reader
+//        (byKind/pattern.ts) surfaces `pattern_typed_row_missing` for any cap
+//        whose chosen exercise_type has no row for its pattern — HC19/HC20 are
+//        the structural no-orphan mirrors.
+//
+//        HC19: every pattern_contrast cap's pattern has ≥1 contrast_pair row.
+//        HC20: every pattern_recognition cap's pattern has ≥1 row in at least
+//              ONE of (sentence_transformation / constrained_translation /
+//              cloze_mcq). Per-type coverage gaps remain possible (readiness is
+//              structural, not data-existence — Decision R) and surface as a
+//              fail-loud reader diagnostic if the resolver picks an empty type.
+//
+//        Implementation note (same as HC15/HC17): PostgREST can't express the
+//        anti-join, so we fetch id sets and difference in code.
+{
+  const slugOf = (sourceRef: string) => sourceRef.replace(/^lesson-\d+\/pattern-/u, '')
+
+  const { data: capRows, error: capsError } = await supabase
+    .schema('indonesian')
+    .from('learning_capabilities')
+    .select('id, canonical_key, source_ref, capability_type')
+    .eq('source_kind', 'pattern')
+    .is('retired_at', null)
+  if (capsError) {
+    fail('HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4)', capsError.message)
+    fail('HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4)', capsError.message)
+  } else {
+    const caps = (capRows ?? []) as Array<{ id: string; canonical_key: string; source_ref: string; capability_type: string }>
+    if (caps.length === 0) {
+      pass('HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4) (no pattern caps in DB; vacuously green)')
+      pass('HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4) (no pattern caps in DB; vacuously green)')
+    } else {
+      // slug → grammar_pattern_id
+      const slugs = [...new Set(caps.map((c) => slugOf(c.source_ref)))]
+      const { data: patternRows, error: pErr } = await supabase
+        .schema('indonesian')
+        .from('grammar_patterns')
+        .select('id, slug')
+        .in('slug', slugs)
+      // active grammar_pattern_id set per table
+      const activePatternIds = async (table: string): Promise<Set<string> | { error: string }> => {
+        const { data, error } = await supabase
+          .schema('indonesian')
+          .from(table)
+          .select('grammar_pattern_id')
+          .eq('is_active', true)
+        if (error) return { error: error.message }
+        return new Set(((data ?? []) as Array<{ grammar_pattern_id: string }>).map((r) => r.grammar_pattern_id))
+      }
+      const contrastIds = await activePatternIds('contrast_pair_exercises')
+      const stIds = await activePatternIds('sentence_transformation_exercises')
+      const ctIds = await activePatternIds('constrained_translation_exercises')
+      const cmIds = await activePatternIds('cloze_mcq_exercises')
+      const firstErr = [contrastIds, stIds, ctIds, cmIds].find((x) => 'error' in (x as object)) as { error: string } | undefined
+
+      if (pErr || firstErr) {
+        const msg = pErr?.message ?? firstErr?.error ?? 'unknown'
+        fail('HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4)', msg)
+        fail('HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4)', msg)
+      } else {
+        const patternIdBySlug = new Map(((patternRows ?? []) as Array<{ id: string; slug: string }>).map((p) => [p.slug, p.id]))
+        const contrastSet = contrastIds as Set<string>
+        const recognitionUnion = new Set<string>([...(stIds as Set<string>), ...(ctIds as Set<string>), ...(cmIds as Set<string>)])
+
+        const describe = (c: { canonical_key: string; source_ref: string }) => `${c.canonical_key} (${c.source_ref})`
+        const reportFmt = (offenders: Array<{ canonical_key: string; source_ref: string }>) => {
+          const sample = offenders.slice(0, 5).map(describe).join(', ')
+          return `Sample: ${sample}${offenders.length > 5 ? ' …' : ''}\n` +
+            `   → Run scripts/migrate-typed-tables-pr4-grammar.ts to bridge the existing exercise_variants, ` +
+            `or re-publish (Stage B dual-writes the typed rows for not-yet-published candidates).`
+        }
+
+        // HC19 — pattern_contrast
+        const contrastCaps = caps.filter((c) => c.capability_type === 'pattern_contrast')
+        const contrastOffenders = contrastCaps.filter((c) => {
+          const pid = patternIdBySlug.get(slugOf(c.source_ref))
+          return !pid || !contrastSet.has(pid)
+        })
+        if (contrastOffenders.length === 0) {
+          pass(`HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4) (${contrastCaps.length} cap(s) checked)`)
+        } else {
+          fail('HC19 every active pattern_contrast cap resolves to a contrast_pair row (PR 4)',
+            `${contrastOffenders.length}+ pattern_contrast caps with no contrast_pair row for their pattern. ${reportFmt(contrastOffenders)}`)
+        }
+
+        // HC20 — pattern_recognition (union of the 3 recognition tables)
+        const recognitionCaps = caps.filter((c) => c.capability_type === 'pattern_recognition')
+        const recognitionOffenders = recognitionCaps.filter((c) => {
+          const pid = patternIdBySlug.get(slugOf(c.source_ref))
+          return !pid || !recognitionUnion.has(pid)
+        })
+        if (recognitionOffenders.length === 0) {
+          pass(`HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4) (${recognitionCaps.length} cap(s) checked)`)
+        } else {
+          fail('HC20 every active pattern_recognition cap resolves to a recognition grammar row (PR 4)',
+            `${recognitionOffenders.length}+ pattern_recognition caps with no sentence_transformation/constrained_translation/cloze_mcq row for their pattern. ${reportFmt(recognitionOffenders)}`)
+        }
+      }
+    }
+  }
+}
+
 // ── Output ─────────────────────────────────────────────────────────────────
 console.log(`\nSupabase deep structural check — ${SUPABASE_URL}\n`)
 let failures = 0
