@@ -54,7 +54,12 @@ function parseArgs(argv: string[]): Args {
 
 async function answerOneCard(page: Page, mode: 'correct' | 'wrong'): Promise<boolean> {
   await page.waitForTimeout(800)
-  const optionButtons = page.locator('button.mantine-Button-root:not([disabled])').filter({
+  // MCQ options: ExerciseOption renders a native <button> inside
+  // ExerciseOptionGroup (role="group"); item-style exercises use
+  // mantine-Button-root. Match both; exclude chrome/submit/login buttons.
+  const optionButtons = page.locator(
+    '[role="group"] button:not([disabled]), button.mantine-Button-root:not([disabled])',
+  ).filter({
     hasNotText: /doorgaan|continue|inloggen|log in/i,
   })
   const buttonCount = await optionButtons.count()
@@ -115,7 +120,10 @@ async function main() {
   let browser: Browser | null = null
   try {
     browser = await chromium.launch({ headless: true })
-    const context = await browser.newContext({ baseURL: baseUrl })
+    // ignoreHTTPSErrors: the homelab Supabase (api.supabase.duin.home) is behind
+    // Step-CA (internal CA) — the in-page CORS-shim route.fetch() can't verify
+    // the cert otherwise. Harmless against the deployed app (valid chain).
+    const context = await browser.newContext({ baseURL: baseUrl, ignoreHTTPSErrors: true })
     const page = await context.newPage()
 
     await bypassSupabaseCors(page)
@@ -124,13 +132,16 @@ async function main() {
     const url = `/session?force_capability=${encodeURIComponent(args.canonicalKey)}`
     await page.goto(url)
 
-    // Wait for the experience-player to mount or an error to surface
+    // Wait for the experience-player to mount or an error to surface. The
+    // interaction surface is either a mantine button (item exercises), a native
+    // option button inside an ExerciseOptionGroup (role="group" — MCQ/grammar),
+    // or a text input (typed/transformation exercises).
     const ready = await page.waitForFunction(
       () => {
         const body = document.body.textContent ?? ''
-        const optionButton = document.querySelector('button.mantine-Button-root')
+        const surface = document.querySelector('button.mantine-Button-root, [role="group"] button, input')
         const errorText = /sessiefout|capabilitynotfoundError|geen oefeningen/i.test(body)
-        return !!optionButton || errorText
+        return !!surface || errorText
       },
       { timeout: 15000 },
     ).catch(() => null)
@@ -140,7 +151,9 @@ async function main() {
     }
 
     const bodyText = await page.locator('body').textContent() ?? ''
-    if (/capabilitynotfoundError|geen oefeningen/i.test(bodyText)) {
+    // "Sessiefout" included so a genuine session-load error fails loudly here
+    // rather than slipping through to answerOneCard as a phantom card.
+    if (/capabilitynotfoundError|geen oefeningen|sessiefout/i.test(bodyText)) {
       console.error('Bypass URL returned unexpected state:', bodyText.slice(0, 200))
       process.exit(1)
     }

@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import type { LearningItem, ItemMeaning, ItemContext } from '@/types/learning'
+import type {
+  LearningItem, ItemMeaning, ItemContext,
+  ContrastPairExercisesRow, SentenceTransformationExercisesRow,
+  ConstrainedTranslationExercisesRow, ClozeMcqExercisesRow,
+} from '@/types/learning'
 import {
   RENDER_CONTRACTS,
   exerciseTypesForCapability,
@@ -7,7 +11,23 @@ import {
   supportsSourceKind,
   projectBuilderInput,
   type RawProjectorInput,
+  type PatternExerciseInput,
 } from '../renderContracts'
+
+// Minimal typed grammar-exercise rows for the pattern-path projector tests.
+function patternExerciseOf(exerciseType: PatternExerciseInput['exerciseType']): PatternExerciseInput {
+  const base = { id: 'ex-1', grammar_pattern_id: 'gp-1', lesson_id: 'l-1', is_active: true, source_candidate_id: null, created_at: '', updated_at: '' }
+  switch (exerciseType) {
+    case 'contrast_pair':
+      return { exerciseType, row: { ...base, prompt_text: 'p', target_meaning: 'm', options: [{ id: 'a', text: 'x' }, { id: 'b', text: 'y' }], correct_option_id: 'a', explanation_text: 'e' } as ContrastPairExercisesRow }
+    case 'sentence_transformation':
+      return { exerciseType, row: { ...base, source_sentence: 's', transformation_instruction: 'i', hint_text: null, acceptable_answers: ['a'], explanation_text: 'e' } as SentenceTransformationExercisesRow }
+    case 'constrained_translation':
+      return { exerciseType, row: { ...base, source_language_sentence: 's', required_target_pattern: 'belum', disallowed_shortcut_forms: [], acceptable_answers: ['a'], explanation_text: 'e' } as ConstrainedTranslationExercisesRow }
+    case 'cloze_mcq':
+      return { exerciseType, row: { ...base, sentence: 's ___', translation: 't', options: ['a', 'b'], correct_option_id: 'a', explanation_text: 'e' } as ClozeMcqExercisesRow }
+  }
+}
 
 // ─── Fixture builders ──────────────────────────────────────────────────────
 
@@ -68,10 +88,10 @@ function makeRawInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorI
     learningItem: null,
     dialogueLine: null,
     affixedFormPair: null,
+    patternExercise: null,
     meanings: [],
     contexts: [],
     answerVariants: [],
-    variant: null,
     artifactsByKind: new Map(),
     poolItems: [],
     poolMeaningsByItem: new Map(),
@@ -93,15 +113,20 @@ describe('RENDER_CONTRACTS table', () => {
     }
   })
 
-  it('pattern_recognition is not named in any contract entry (Option D)', () => {
-    for (const contract of Object.values(RENDER_CONTRACTS)) {
-      expect(contract.capabilityTypes).not.toContain('pattern_recognition')
-    }
+  it('pattern_recognition routes to the 3 recognition grammar exercises (PR 4 Decision G)', () => {
+    expect(RENDER_CONTRACTS.sentence_transformation.capabilityTypes).toContain('pattern_recognition')
+    expect(RENDER_CONTRACTS.constrained_translation.capabilityTypes).toContain('pattern_recognition')
+    expect(RENDER_CONTRACTS.cloze_mcq.capabilityTypes).toContain('pattern_recognition')
   })
 
-  it('pattern_contrast is not named in any contract entry (Option D)', () => {
-    for (const contract of Object.values(RENDER_CONTRACTS)) {
-      expect(contract.capabilityTypes).not.toContain('pattern_contrast')
+  it('pattern_contrast routes to contrast_pair (PR 4 Decision G)', () => {
+    expect(RENDER_CONTRACTS.contrast_pair.capabilityTypes).toEqual(['pattern_contrast'])
+  })
+
+  it('the 4 grammar exercises support the pattern source kind with no required artifacts', () => {
+    for (const et of ['contrast_pair', 'sentence_transformation', 'constrained_translation', 'cloze_mcq'] as const) {
+      expect(RENDER_CONTRACTS[et].supportedSourceKinds).toContain('pattern')
+      expect(requiredArtifactsFor(et, 'pattern')).toEqual([])
     }
   })
 })
@@ -113,12 +138,14 @@ describe('exerciseTypesForCapability', () => {
     expect(exerciseTypesForCapability('text_recognition')).toEqual(['recognition_mcq'])
   })
 
-  it('returns [] for pattern_recognition', () => {
-    expect(exerciseTypesForCapability('pattern_recognition')).toEqual([])
+  it('returns the 3 recognition grammar exercises for pattern_recognition (PR 4)', () => {
+    expect(exerciseTypesForCapability('pattern_recognition')).toEqual(
+      expect.arrayContaining(['sentence_transformation', 'constrained_translation', 'cloze_mcq']),
+    )
   })
 
-  it('returns [] for pattern_contrast', () => {
-    expect(exerciseTypesForCapability('pattern_contrast')).toEqual([])
+  it('returns ["contrast_pair"] for pattern_contrast (PR 4)', () => {
+    expect(exerciseTypesForCapability('pattern_contrast')).toEqual(['contrast_pair'])
   })
 
   it('returns both cloze and cloze_mcq for contextual_cloze', () => {
@@ -134,15 +161,19 @@ describe('exerciseTypesForCapability', () => {
 })
 
 describe('supportsSourceKind', () => {
-  it('every exercise supports source kind item', () => {
+  it('every exercise supports source kind item except the 3 pattern-only grammar exercises (PR 4)', () => {
+    // contrast_pair / sentence_transformation / constrained_translation route
+    // exclusively to pattern caps now. cloze_mcq is dual (item + pattern).
+    const patternOnly = new Set(['contrast_pair', 'sentence_transformation', 'constrained_translation'])
     for (const et of Object.keys(RENDER_CONTRACTS) as Array<keyof typeof RENDER_CONTRACTS>) {
-      expect(supportsSourceKind(et, 'item')).toBe(true)
+      expect(supportsSourceKind(et, 'item')).toBe(!patternOnly.has(et))
     }
   })
 
-  it('no exercise supports pattern source kind (Option D)', () => {
+  it('only the 4 grammar exercises support pattern source kind (PR 4 Decision G)', () => {
+    const grammar = new Set(['contrast_pair', 'sentence_transformation', 'constrained_translation', 'cloze_mcq'])
     for (const et of Object.keys(RENDER_CONTRACTS) as Array<keyof typeof RENDER_CONTRACTS>) {
-      expect(supportsSourceKind(et, 'pattern')).toBe(false)
+      expect(supportsSourceKind(et, 'pattern')).toBe(grammar.has(et))
     }
   })
 
@@ -328,11 +359,10 @@ describe('projectBuilderInput — cloze', () => {
 })
 
 describe('projectBuilderInput — cloze_mcq', () => {
-  it('fails when neither cloze context nor matching authored variant present', () => {
+  it('fails when neither cloze context (item) nor pattern exercise present', () => {
     const raw = makeRawInput({
       learningItem: makeLearningItem(),
       contexts: [],
-      variant: null,
     })
     const result = projectBuilderInput('cloze_mcq', raw)
     expect(result.ok).toBe(false)
@@ -341,70 +371,66 @@ describe('projectBuilderInput — cloze_mcq', () => {
     }
   })
 
-  it('succeeds with cloze context and clozeContext is non-null (runtime path)', () => {
+  it('succeeds with cloze context and exercise is null (item runtime path)', () => {
     const raw = makeRawInput({
       learningItem: makeLearningItem(),
       contexts: [makeClozeContext()],
-      variant: null,
     })
     const result = projectBuilderInput('cloze_mcq', raw)
     expect(result.ok).toBe(true)
     if (result.ok) {
-      const input = result.input as { clozeContext: ItemContext | null; variant: unknown }
+      const input = result.input as { clozeContext: ItemContext | null; exercise: unknown }
       expect(input.clozeContext).not.toBeNull()
-      expect(input.variant).toBeNull()
+      expect(input.exercise).toBeNull()
     }
   })
 
-  it('succeeds with authored variant and clozeContext is null (authored path)', () => {
+  it('succeeds with a pattern cloze_mcq row, learningItem + clozeContext null (pattern path)', () => {
     const raw = makeRawInput({
-      learningItem: makeLearningItem(),
+      learningItem: null,
       contexts: [],
-      variant: { id: 'v-1', exercise_type: 'cloze_mcq', payload_json: {}, answer_key_json: null, is_active: true, learning_item_id: 'item-1' } as never,
+      patternExercise: patternExerciseOf('cloze_mcq'),
     })
     const result = projectBuilderInput('cloze_mcq', raw)
     expect(result.ok).toBe(true)
     if (result.ok) {
-      const input = result.input as { clozeContext: ItemContext | null; variant: unknown }
+      const input = result.input as { learningItem: LearningItem | null; clozeContext: ItemContext | null; exercise: unknown }
+      expect(input.learningItem).toBeNull()
       expect(input.clozeContext).toBeNull()
-      expect(input.variant).not.toBeNull()
+      expect(input.exercise).not.toBeNull()
     }
   })
 })
 
-describe('projectBuilderInput — variant-required builders', () => {
+describe('projectBuilderInput — pattern-exercise builders', () => {
   for (const et of ['contrast_pair', 'sentence_transformation', 'constrained_translation'] as const) {
-    it(`fails with no_active_variant for ${et} when no matching variant`, () => {
+    it(`fails with item_not_found for ${et} when no learningItem and no pattern exercise`, () => {
+      const raw = makeRawInput({ learningItem: null, patternExercise: null })
+      const result = projectBuilderInput(et, raw)
+      expect(result.ok).toBe(false)
+      // No source at all → the fundamental gate fires first.
+      if (!result.ok) expect(result.reasonCode).toBe('item_not_found')
+    })
+
+    it(`fails with pattern_typed_row_missing for ${et} when pattern exercise type mismatches`, () => {
+      // A learningItem present (defends the guard) but a wrong-typed pattern row.
       const raw = makeRawInput({
         learningItem: makeLearningItem(),
-        variant: null,
+        patternExercise: patternExerciseOf('cloze_mcq'),
       })
       const result = projectBuilderInput(et, raw)
       expect(result.ok).toBe(false)
-      if (!result.ok) {
-        expect(result.reasonCode).toBe('no_active_variant')
-      }
+      if (!result.ok) expect(result.reasonCode).toBe('pattern_typed_row_missing')
     })
 
-    it(`fails with no_active_variant for ${et} when variant type mismatches`, () => {
-      const raw = makeRawInput({
-        learningItem: makeLearningItem(),
-        variant: { id: 'v-1', exercise_type: 'cloze_mcq', payload_json: {}, answer_key_json: null, is_active: true, learning_item_id: 'item-1' } as never,
-      })
-      const result = projectBuilderInput(et, raw)
-      expect(result.ok).toBe(false)
-      if (!result.ok) {
-        expect(result.reasonCode).toBe('no_active_variant')
-      }
-    })
-
-    it(`succeeds for ${et} when matching variant present`, () => {
-      const raw = makeRawInput({
-        learningItem: makeLearningItem(),
-        variant: { id: 'v-1', exercise_type: et, payload_json: {}, answer_key_json: null, is_active: true, learning_item_id: 'item-1' } as never,
-      })
+    it(`succeeds for ${et} when the matching pattern row is present (learningItem null)`, () => {
+      const raw = makeRawInput({ learningItem: null, patternExercise: patternExerciseOf(et) })
       const result = projectBuilderInput(et, raw)
       expect(result.ok).toBe(true)
+      if (result.ok) {
+        const input = result.input as { exercise: { id: string } }
+        expect(input.exercise.id).toBe('ex-1')
+      }
     })
   }
 })
@@ -418,17 +444,8 @@ describe('projectBuilderInput — dictation', () => {
 })
 
 describe('projectBuilderInput — speaking', () => {
-  it('succeeds with just learningItem (item-anchored fallback)', () => {
+  it('succeeds with just learningItem (item-anchored)', () => {
     const raw = makeRawInput({ learningItem: makeLearningItem() })
-    const result = projectBuilderInput('speaking', raw)
-    expect(result.ok).toBe(true)
-  })
-
-  it('succeeds with authored speaking variant', () => {
-    const raw = makeRawInput({
-      learningItem: makeLearningItem(),
-      variant: { id: 'v-1', exercise_type: 'speaking', payload_json: {}, answer_key_json: null, is_active: true, learning_item_id: 'item-1' } as never,
-    })
     const result = projectBuilderInput('speaking', raw)
     expect(result.ok).toBe(true)
   })

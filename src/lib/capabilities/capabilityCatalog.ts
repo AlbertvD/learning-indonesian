@@ -118,6 +118,16 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
 
   for (const pattern of input.grammarPatterns) {
     const sourceRef = normalizeLessonSourceRef(pattern.sourceRef)
+    // PR 4 slice: pattern caps render from the 4 typed grammar-exercise tables
+    // (byKind/pattern.ts); structure is guaranteed by those tables' NOT NULL
+    // columns + validateGrammarExercises + HC19/HC20, so no capability_artifacts
+    // are required (mirrors item + dialogue_line + affixed_form_pair, Decision R).
+    // Emitting [] both (a) stops the shared artifact builder from writing
+    // pattern_explanation:l1/pattern_example (buildArtifactsForCapability maps
+    // over requiredArtifacts), and (b) moves readiness off the legacy artifact
+    // bag onto renderContracts routing (pattern_contrast → contrast_pair,
+    // pattern_recognition → sentence_transformation/constrained_translation/cloze_mcq).
+    const requiredArtifacts: ArtifactKind[] = []
     const recognitionCapability = createCapability({
       sourceKind: 'pattern',
       sourceRef,
@@ -126,7 +136,7 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       direction: 'none',
       modality: 'text',
       learnerLanguage: 'none',
-      requiredArtifacts: ['pattern_explanation:l1', 'pattern_example'],
+      requiredArtifacts,
     })
     capabilities.push(recognitionCapability)
     // Decision 5a — every pattern_recognition capability has a sibling
@@ -140,7 +150,7 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       direction: 'none',
       modality: 'text',
       learnerLanguage: 'none',
-      requiredArtifacts: ['pattern_explanation:l1', 'pattern_example'],
+      requiredArtifacts,
       prerequisiteKeys: [recognitionCapability.canonicalKey],
     }))
   }

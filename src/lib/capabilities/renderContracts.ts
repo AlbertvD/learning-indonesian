@@ -8,7 +8,9 @@
 // docs/current-system/modules/capabilities.md.
 
 import type {
-  ExerciseType, LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant,
+  ExerciseType, LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant,
+  ContrastPairExercisesRow, SentenceTransformationExercisesRow,
+  ConstrainedTranslationExercisesRow, ClozeMcqExercisesRow,
 } from '@/types/learning'
 import type { ArtifactKind, CapabilityType, CapabilitySourceKind } from './capabilityTypes'
 import type { CapabilityArtifact } from './artifactRegistry'
@@ -115,29 +117,38 @@ export const RENDER_CONTRACTS = {
     },
   },
   cloze_mcq: {
-    // dialogue_line is intentionally absent — cloze_mcq's distractor pool is
-    // derived from item_contexts.source_lesson_id (see byKind/item.ts).
-    // Adding dialogue_line here requires a lesson-anchored pool fetcher in
-    // byKind/dialogueLine.ts that doesn't exist yet. Follow-up.
-    capabilityTypes: ['contextual_cloze'],
-    supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: [] },
+    // PR 4 (Decision G): cloze_mcq now serves BOTH item-sourced contextual_cloze
+    // (distractor pool from item_contexts.source_lesson_id — see byKind/item.ts)
+    // AND pattern-sourced pattern_recognition (authored typed row from
+    // cloze_mcq_exercises — see byKind/pattern.ts). The byType packager branches
+    // on which input slot is populated. dialogue_line stays absent (needs a
+    // lesson-anchored pool fetcher that doesn't exist yet — follow-up).
+    capabilityTypes: ['contextual_cloze', 'pattern_recognition'],
+    supportedSourceKinds: ['item', 'pattern'],
+    // pattern: [] — readiness is guaranteed by the cloze_mcq_exercises NOT NULL
+    // columns + validateGrammarExercises + HC20, not capability_artifacts
+    // (Decision R mirror). item: [] unchanged.
+    requiredArtifacts: { item: [], pattern: [] },
   },
   contrast_pair: {
-    // pattern_contrast is intentionally absent — see plan §"Pattern decision".
-    capabilityTypes: [],
-    supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: [] },
+    // PR 4 (Decision G): pattern_contrast routes here, rendering from the typed
+    // contrast_pair_exercises table (byKind/pattern.ts). requiredArtifacts.pattern=[]
+    // — structure guaranteed by NOT NULL columns + validateGrammarExercises + HC19.
+    capabilityTypes: ['pattern_contrast'],
+    supportedSourceKinds: ['pattern'],
+    requiredArtifacts: { pattern: [] },
   },
   sentence_transformation: {
-    capabilityTypes: [],
-    supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: [] },
+    // PR 4 (Decision G): pattern_recognition → sentence_transformation_exercises.
+    capabilityTypes: ['pattern_recognition'],
+    supportedSourceKinds: ['pattern'],
+    requiredArtifacts: { pattern: [] },
   },
   constrained_translation: {
-    capabilityTypes: [],
-    supportedSourceKinds: ['item'],
-    requiredArtifacts: { item: [] },
+    // PR 4 (Decision G): pattern_recognition → constrained_translation_exercises.
+    capabilityTypes: ['pattern_recognition'],
+    supportedSourceKinds: ['pattern'],
+    requiredArtifacts: { pattern: [] },
   },
   speaking: {
     capabilityTypes: [],
@@ -268,15 +279,33 @@ export interface AffixedFormPairInput {
 }
 
 /**
+ * Per-block input for a `pattern:pattern_*` capability (PR 4). The
+ * lib/exercise-content adapter assembles this from one typed grammar-exercise
+ * row (byKind/pattern.ts resolves cap → grammar_pattern_id → typed table,
+ * collapsing the N rows per (pattern, exercise_type) to one). The discriminant
+ * `exerciseType` lets the projector narrow `row` to the right typed shape.
+ *
+ * Replaces the retired `exercise_variants.payload_json` path: the 4 grammar
+ * builders read `input.exercise.<column>` instead of `input.variant.payload_json.X`.
+ */
+export type PatternExerciseInput =
+  | { exerciseType: 'contrast_pair'; row: ContrastPairExercisesRow }
+  | { exerciseType: 'sentence_transformation'; row: SentenceTransformationExercisesRow }
+  | { exerciseType: 'constrained_translation'; row: ConstrainedTranslationExercisesRow }
+  | { exerciseType: 'cloze_mcq'; row: ClozeMcqExercisesRow }
+
+/**
  * The raw input the dispatcher (lib/exercise-content/resolver via the
  * adapter) constructs before projection. The projector narrows this to
  * BuilderInputFor<K> for a specific exercise type, or returns a fail.
  *
- * `learningItem`, `dialogueLine`, and `affixedFormPair` are all honestly
- * nullable. The bucketing invariant: at most one is populated per block.
- * cloze accepts learningItem or dialogueLine; typed_recall accepts
- * learningItem or affixedFormPair; every other exercise type requires
- * `learningItem` non-null and treats the other slots as irrelevant.
+ * `learningItem`, `dialogueLine`, `affixedFormPair`, and `patternExercise` are
+ * all honestly nullable. The bucketing invariant: at most one is populated per
+ * block. cloze accepts learningItem or dialogueLine; typed_recall accepts
+ * learningItem or affixedFormPair; the 4 grammar exercises accept
+ * patternExercise; cloze_mcq accepts learningItem (item) OR patternExercise
+ * (pattern); every other exercise type requires `learningItem` non-null and
+ * treats the other slots as irrelevant.
  */
 export interface RawProjectorInput {
   block?: SessionBlock
@@ -287,10 +316,13 @@ export interface RawProjectorInput {
   /** Set when the resolved block's sourceKind is `affixed_form_pair`.
    *  Mutually exclusive with `learningItem` (bucketing invariant). */
   affixedFormPair: AffixedFormPairInput | null
+  /** Set when the resolved block's sourceKind is `pattern` (PR 4). Mutually
+   *  exclusive with `learningItem` (bucketing invariant). The typed grammar-
+   *  exercise row, tagged by exercise_type. */
+  patternExercise: PatternExerciseInput | null
   meanings: ItemMeaning[]
   contexts: ItemContext[]
   answerVariants: ItemAnswerVariant[]
-  variant: ExerciseVariant | null
   artifactsByKind: Map<ArtifactKind, CapabilityArtifact>
   poolItems: LearningItem[]
   poolMeaningsByItem: Map<string, ItemMeaning[]>
@@ -314,17 +346,19 @@ interface BuilderBase {
  * entry here is a compile error (enforced by `satisfies` on the value
  * `_CONTRACT_SHAPES_EXHAUSTIVENESS_CHECK` below).
  *
- * cloze accepts two source kinds (`item` and `dialogue_line`); cloze_mcq is
- * item-only today (needs a lesson-anchored distractor pool that hasn't been
- * extended to dialogue_line yet — follow-up). For cloze the shape encodes
- * "exactly one of learningItem or dialogueLine is non-null" as nullable
- * fields; the projector enforces the invariant.
+ * cloze accepts two source kinds (`item` and `dialogue_line`). cloze_mcq (PR 4)
+ * accepts `item` (contextual_cloze) OR `pattern` (pattern_recognition): the item
+ * path needs a non-null learningItem + (clozeContext OR distractor pool); the
+ * pattern path needs a non-null `exercise` (cloze_mcq_exercises row) and a null
+ * learningItem. For cloze the shape encodes "exactly one of learningItem or
+ * dialogueLine is non-null" as nullable fields; the projector enforces the
+ * invariant.
  *
- * cloze_mcq's `clozeContext` is additionally nullable: the authored path
- * uses variant.payload_json and ignores clozeContext, while the runtime
- * item-sourced path requires clozeContext. The projector enforces the
- * invariant: at least ONE of `variant (matching type)` OR `clozeContext`
- * is non-null.
+ * The 4 grammar exercises (contrast_pair / sentence_transformation /
+ * constrained_translation / cloze_mcq-pattern) read `exercise.<column>` — the
+ * typed grammar-exercise row replaces the retired exercise_variants.payload_json
+ * (Decision M1: the typed row IS the contract). They carry no learningItem
+ * (pattern caps are not item-rooted).
  */
 export interface ContractInputShapes {
   recognition_mcq: BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
@@ -334,11 +368,11 @@ export interface ContractInputShapes {
   listening_mcq:   BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   dictation:       BuilderBase & { learningItem: LearningItem }
   cloze:           BuilderBase & { learningItem: LearningItem | null; clozeContext: ItemContext | null; dialogueLine: DialogueLineInput | null }
-  cloze_mcq:       BuilderBase & { learningItem: LearningItem; clozeContext: ItemContext | null; variant: ExerciseVariant | null }
-  contrast_pair:   BuilderBase & { learningItem: LearningItem; variant: ExerciseVariant }
-  sentence_transformation: BuilderBase & { learningItem: LearningItem; variant: ExerciseVariant }
-  constrained_translation: BuilderBase & { learningItem: LearningItem; variant: ExerciseVariant }
-  speaking:        BuilderBase & { learningItem: LearningItem; variant: ExerciseVariant | null }
+  cloze_mcq:       BuilderBase & { learningItem: LearningItem | null; clozeContext: ItemContext | null; exercise: ClozeMcqExercisesRow | null }
+  contrast_pair:   BuilderBase & { exercise: ContrastPairExercisesRow }
+  sentence_transformation: BuilderBase & { exercise: SentenceTransformationExercisesRow }
+  constrained_translation: BuilderBase & { exercise: ConstrainedTranslationExercisesRow }
+  speaking:        BuilderBase & { learningItem: LearningItem }
 }
 
 // Exhaustiveness check: this line fails compilation if a new ExerciseType is
@@ -369,25 +403,37 @@ export function projectBuilderInput<T extends ExerciseType>(
   // Source-kind acceptance is keyed off RENDER_CONTRACTS[et].supportedSourceKinds.
   //   cloze        — accepts ['item', 'dialogue_line']
   //   typed_recall — accepts ['item', 'affixed_form_pair']
+  //   cloze_mcq    — accepts ['item', 'pattern']  (PR 4)
+  //   contrast_pair / sentence_transformation / constrained_translation — ['pattern'] (PR 4)
   //   every other  — ['item']
   const acceptsDialogueLine = supportsSourceKind(exerciseType, 'dialogue_line')
   const acceptsAffixedFormPair = supportsSourceKind(exerciseType, 'affixed_form_pair')
+  const acceptsPattern = supportsSourceKind(exerciseType, 'pattern')
+
+  // A pattern-source block carries its typed grammar-exercise row, tagged with
+  // the exercise_type the resolver chose. The slot is only valid when it
+  // matches this exerciseType (the resolver and reader agree on the type).
+  const patternExercise =
+    acceptsPattern && raw.patternExercise?.exerciseType === exerciseType
+      ? raw.patternExercise
+      : null
 
   if (
     !raw.learningItem
     && !(acceptsDialogueLine && raw.dialogueLine)
     && !(acceptsAffixedFormPair && raw.affixedFormPair)
+    && !patternExercise
   ) {
     return {
       ok: false,
       reasonCode: 'item_not_found',
-      message: `${exerciseType} requires a learningItem (or a dialogueLine for cloze, or an affixedFormPair for typed_recall)`,
+      message: `${exerciseType} requires a learningItem (or a dialogueLine for cloze, an affixedFormPair for typed_recall, or a patternExercise for grammar exercises)`,
     }
   }
 
   // Bucketing invariant: at most one of learningItem / dialogueLine /
-  // affixedFormPair is set. The adapter never populates more than one;
-  // defend in depth.
+  // affixedFormPair / patternExercise is set. The adapter never populates more
+  // than one; defend in depth.
   if (acceptsDialogueLine && raw.learningItem && raw.dialogueLine) {
     return {
       ok: false,
@@ -404,8 +450,16 @@ export function projectBuilderInput<T extends ExerciseType>(
       payloadSnapshot: { learningItemId: raw.learningItem.id, sourceRef: raw.affixedFormPair.sourceRef },
     }
   }
+  if (patternExercise && raw.learningItem) {
+    return {
+      ok: false,
+      reasonCode: 'malformed_payload',
+      message: `${exerciseType} received both a learningItem and a patternExercise — bucketing invariant violated`,
+      payloadSnapshot: { learningItemId: raw.learningItem.id, patternExerciseId: patternExercise.row.id },
+    }
+  }
 
-  const learningItem = raw.learningItem  // may be null when dialogueLine or affixedFormPair path is active
+  const learningItem = raw.learningItem  // may be null when dialogueLine / affixedFormPair / patternExercise path is active
 
   // Builders that need a user-language meaning. For typed_recall the
   // affixed_form_pair path skips this lookup — the prompt comes from the
@@ -434,10 +488,11 @@ export function projectBuilderInput<T extends ExerciseType>(
   }
 
   // Builders that need a cloze-typed context (item-sourced path only — the
-  // dialogue_line path carries source_text inside the DialogueLineInput).
+  // dialogue_line path carries source_text inside the DialogueLineInput, and
+  // the pattern path carries everything inside the typed cloze_mcq row).
   //   cloze: requires either dialogueLine OR a cloze-typed context.
-  //   cloze_mcq: requires at least ONE of dialogueLine, a cloze-typed
-  //              context, or a matching authored variant.
+  //   cloze_mcq: requires a cloze-typed context (item path) OR a patternExercise
+  //              (pattern path).
   let clozeContext: ItemContext | null = null
   if (exerciseType === 'cloze') {
     if (raw.dialogueLine) {
@@ -456,34 +511,39 @@ export function projectBuilderInput<T extends ExerciseType>(
     }
   }
   if (exerciseType === 'cloze_mcq') {
-    clozeContext = raw.contexts.find(c => c.context_type === 'cloze') ?? null
-    const hasAuthoredVariant = raw.variant != null && raw.variant.exercise_type === 'cloze_mcq'
-    if (!clozeContext && !hasAuthoredVariant) {
-      return {
-        ok: false,
-        reasonCode: 'malformed_cloze',
-        message: `no cloze context and no authored cloze_mcq variant for item ${learningItem!.id}`,
-        payloadSnapshot: {
-          learningItemId: learningItem!.id,
-          contextCount: raw.contexts.length,
-          hasVariant: raw.variant != null,
-        },
+    // PR 4: pattern path renders from the typed cloze_mcq_exercises row; no
+    // clozeContext required (or available). Item path needs a cloze context
+    // (the runtime distractor-pool path reads clozeContext.source_text).
+    if (!patternExercise) {
+      clozeContext = raw.contexts.find(c => c.context_type === 'cloze') ?? null
+      if (!clozeContext) {
+        return {
+          ok: false,
+          reasonCode: 'malformed_cloze',
+          message: `no cloze context and no pattern cloze_mcq row for item ${learningItem!.id}`,
+          payloadSnapshot: {
+            learningItemId: learningItem!.id,
+            contextCount: raw.contexts.length,
+          },
+        }
       }
     }
   }
 
-  // Builders that require an exact-match active variant.
-  const needsActiveVariant: ReadonlySet<ExerciseType> = new Set([
+  // The 3 pure-grammar exercises render exclusively from a typed pattern row
+  // (PR 4). The reader (byKind/pattern.ts) already fails loud when the typed
+  // table has no row for a ready pattern cap; this is the projector-side
+  // belt-and-braces guard (e.g. resolver picked an exercise_type with no row
+  // for this pattern).
+  const needsPatternExercise: ReadonlySet<ExerciseType> = new Set([
     'contrast_pair', 'sentence_transformation', 'constrained_translation',
   ])
-  if (needsActiveVariant.has(exerciseType)) {
-    if (!raw.variant || raw.variant.exercise_type !== exerciseType) {
-      return {
-        ok: false,
-        reasonCode: 'no_active_variant',
-        message: `no active ${exerciseType} variant for item ${learningItem!.id}`,
-        payloadSnapshot: { learningItemId: learningItem!.id },
-      }
+  if (needsPatternExercise.has(exerciseType) && !patternExercise) {
+    return {
+      ok: false,
+      reasonCode: 'pattern_typed_row_missing',
+      message: `no ${exerciseType} pattern row for this capability`,
+      payloadSnapshot: { hasPatternExercise: raw.patternExercise != null, gotExerciseType: raw.patternExercise?.exerciseType ?? null },
     }
   }
 
@@ -507,15 +567,24 @@ export function projectBuilderInput<T extends ExerciseType>(
       // branches on which is present.
       return { ok: true, input: { ...base, learningItem, clozeContext, dialogueLine: raw.dialogueLine } as BuilderInputFor<T> }
     case 'cloze_mcq':
-      // clozeContext is honestly nullable here — the projector has already
-      // proven that either it OR the variant is present.
-      return { ok: true, input: { ...base, learningItem: learningItem!, clozeContext, variant: raw.variant } as BuilderInputFor<T> }
+      // Dual-path (PR 4): item path has learningItem + clozeContext; pattern
+      // path has a typed cloze_mcq_exercises row and null learningItem. All
+      // honestly nullable here — the projector proved exactly one path holds.
+      // The byType packager branches on which is present.
+      return { ok: true, input: {
+        ...base,
+        learningItem,
+        clozeContext,
+        exercise: patternExercise?.exerciseType === 'cloze_mcq' ? patternExercise.row : null,
+      } as BuilderInputFor<T> }
     case 'contrast_pair':
     case 'sentence_transformation':
     case 'constrained_translation':
-      return { ok: true, input: { ...base, learningItem: learningItem!, variant: raw.variant! } as BuilderInputFor<T> }
+      // Pattern-only (PR 4): the typed grammar-exercise row IS the contract.
+      // patternExercise is non-null + type-matched by the guard above.
+      return { ok: true, input: { ...base, exercise: patternExercise!.row } as BuilderInputFor<T> }
     case 'speaking':
-      return { ok: true, input: { ...base, learningItem: learningItem!, variant: raw.variant } as BuilderInputFor<T> }
+      return { ok: true, input: { ...base, learningItem: learningItem! } as BuilderInputFor<T> }
     case 'typed_recall':
       // typed_recall accepts item OR affixed_form_pair. The projector has
       // proven that exactly one is populated. The byType packager branches

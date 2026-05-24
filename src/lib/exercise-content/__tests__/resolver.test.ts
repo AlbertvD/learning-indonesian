@@ -113,7 +113,10 @@ describe('resolver.resolveBlocks', () => {
     expect(map.size).toBe(0)
   })
 
-  it('routes non-item sourceKind blocks to unsupported_source_kind', async () => {
+  it('routes a pattern block with a malformed pattern ref to pattern_ref_unparseable', async () => {
+    // PR 4: pattern is now a supported source kind (bucketed to byKind/pattern),
+    // but makeBlock's sourceRef (lesson-1/item-1) lacks the `/pattern-` segment,
+    // so it fails ref parsing rather than reaching the fetcher.
     const tables: Record<string, MockTable> = {}
     const service = createCapabilityContentService(makeMockClient(tables) as never)
     const block = makeBlock({ sourceKind: 'pattern' })
@@ -121,7 +124,7 @@ describe('resolver.resolveBlocks', () => {
     expect(map.size).toBe(1)
     const ctx = map.get(block.id)!
     expect(ctx.exerciseItem).toBeNull()
-    expect(ctx.diagnostic?.reasonCode).toBe('unsupported_source_kind')
+    expect(ctx.diagnostic?.reasonCode).toBe('pattern_ref_unparseable')
   })
 
   it('routes malformed canonical keys to sourceref_unparseable', async () => {

@@ -297,6 +297,80 @@ export interface ExerciseVariant {
   updated_at: string
 }
 
+// ─── Typed grammar-exercise rows (PR 4 — pattern source_kind) ────────────────
+// One row per authored grammar exercise, keyed by grammar_pattern_id (NOT
+// capability_id — the pattern cap links via source_ref → grammar_patterns.slug
+// → grammar_pattern_id). These replace exercise_variants.payload_json's
+// per-exercise_type JSON shapes with typed columns (target plan Decision B).
+// Mirrors scripts/migration.sql:2483-2600. `source_candidate_id` is a naked
+// uuid (no FK; generated_exercise_candidates retires in PR 7) — currently
+// unpopulated (audit m4). The runtime reader (byKind/pattern.ts) collapses the
+// N rows per (pattern, exercise_type) to one, mirroring the legacy
+// variantByItemAndType single-pick.
+
+export interface ContrastPairExercisesRow {
+  id: string
+  grammar_pattern_id: string
+  lesson_id: string
+  prompt_text: string
+  target_meaning: string
+  /** shape: [{id: string, text: string}, ...] — see audit I2 (differs from
+   *  cloze_mcq_exercises.options, which is string[]). */
+  options: Array<{ id: string; text: string }>
+  correct_option_id: string
+  explanation_text: string
+  is_active: boolean
+  source_candidate_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface SentenceTransformationExercisesRow {
+  id: string
+  grammar_pattern_id: string
+  lesson_id: string
+  source_sentence: string
+  transformation_instruction: string
+  hint_text: string | null
+  acceptable_answers: string[]
+  explanation_text: string
+  is_active: boolean
+  source_candidate_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface ConstrainedTranslationExercisesRow {
+  id: string
+  grammar_pattern_id: string
+  lesson_id: string
+  source_language_sentence: string
+  required_target_pattern: string
+  disallowed_shortcut_forms: string[]
+  acceptable_answers: string[]
+  explanation_text: string
+  is_active: boolean
+  source_candidate_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface ClozeMcqExercisesRow {
+  id: string
+  grammar_pattern_id: string
+  lesson_id: string
+  sentence: string
+  translation: string
+  /** shape: string[] — see audit I2 (differs from contrast_pair_exercises.options). */
+  options: string[]
+  correct_option_id: string
+  explanation_text: string
+  is_active: boolean
+  source_candidate_id: string | null
+  created_at: string
+  updated_at: string
+}
+
 export interface ExerciseTypeAvailability {
   exercise_type: string
   session_enabled: boolean

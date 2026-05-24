@@ -704,6 +704,29 @@ export async function insertExerciseVariantGrammar(
   return { ok: true, id: (data?.id as string | undefined) ?? undefined }
 }
 
+/**
+ * PR 4: dual-write a typed grammar-exercise row alongside the exercise_variants
+ * insert. `table` is one of the 4 grammar exercise tables (from
+ * GRAMMAR_EXERCISE_TABLE); `row` carries grammar_pattern_id + lesson_id + the
+ * typed columns built by buildGrammarExerciseRow. exercise_variants writes stay
+ * until PR 4a/PR 7 (admin still reads them). Idempotency for re-publish is not
+ * needed here — projectGrammar only emits not-yet-published candidates.
+ */
+export async function insertGrammarExerciseTyped(
+  supabase: CapabilitySupabaseClient,
+  table: string,
+  row: Record<string, unknown>,
+): Promise<{ ok: boolean; id?: string; error?: string }> {
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from(table)
+    .insert({ ...row, is_active: true })
+    .select('id')
+    .single()
+  if (error) return { ok: false, error: error.message }
+  return { ok: true, id: (data?.id as string | undefined) ?? undefined }
+}
+
 export interface VocabExerciseVariantInput {
   context_id: string
   exercise_type: string

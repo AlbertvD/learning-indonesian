@@ -1,15 +1,15 @@
 // builder for exerciseType='cloze_mcq'.
 //
-// Two paths per spec §6.2:
-//   1. Authored: variant.payload_json carries sentence + options + correct.
-//   2. Runtime: no active variant — build cloze sentence from a cloze-typed
-//      context and pull distractors from the cascade.
+// Two paths (PR 4):
+//   1. Pattern-sourced: input.exercise is a typed cloze_mcq_exercises row
+//      (sentence + options string[] + correct_option_id). No learningItem.
+//   2. Item-sourced runtime: no exercise; build the cloze sentence from a
+//      cloze-typed context and pull distractors from the cascade.
 //      Originally extracted from sessionQueue.ts (retired in #7).
 //
-// Contract: learningItem is non-null. clozeContext is nullable (authored
-// path may have null clozeContext; runtime path has it non-null). variant
-// is nullable. The projector enforces the invariant that at least one of
-// (variant with matching exercise_type) OR clozeContext is non-null.
+// Contract: exactly one of (exercise) OR (learningItem + clozeContext) is set —
+// the projector enforces it. The legacy exercise_variants authored path is
+// gone (PR 4 removed the variant slot).
 
 import type { BuilderInputFor, BuilderResult } from './types'
 import { pickUserLangMeaning, shuffle } from './helpers'
@@ -17,54 +17,53 @@ import { audibleTextFieldsOf } from '@/lib/session-builder'
 import { pickDistractorCascade, getSemanticGroup, type DistractorCandidate } from '@/lib/distractors'
 
 export function buildClozeMcq(input: BuilderInputFor<'cloze_mcq'>): BuilderResult {
-  // Authored path
-  if (input.variant && input.variant.exercise_type === 'cloze_mcq') {
-    const payload = input.variant.payload_json as Record<string, unknown>
-    const answerKey = input.variant.answer_key_json as Record<string, unknown> | null
-    const sentence = (payload.sentence as string) || input.clozeContext?.source_text || ''
-    const options = (payload.options as string[]) || []
-    const correctOptionId = (answerKey?.correctOptionId as string) || (payload.correctOptionId as string) || ''
-    if (!sentence || options.length === 0 || !correctOptionId) {
+  // Pattern-sourced path — typed cloze_mcq_exercises row.
+  if (input.exercise) {
+    const ex = input.exercise
+    if (!ex.sentence || ex.options.length === 0 || !ex.correct_option_id) {
       return {
         kind: 'fail',
         reasonCode: 'malformed_payload',
-        message: `cloze_mcq variant ${input.variant.id} missing sentence/options/correctOptionId`,
-        payloadSnapshot: { variantId: input.variant.id, hasSentence: !!sentence, optionsLength: options.length, hasCorrect: !!correctOptionId },
+        message: `cloze_mcq exercise ${ex.id} missing sentence/options/correct_option_id`,
+        payloadSnapshot: { exerciseId: ex.id, hasSentence: !!ex.sentence, optionsLength: ex.options.length, hasCorrect: !!ex.correct_option_id },
       }
     }
     const exerciseItem = {
-      learningItem: input.learningItem,
+      learningItem: null,
       meanings: input.meanings,
       contexts: input.contexts,
       answerVariants: input.answerVariants,
       skillType: 'recognition' as const,
       exerciseType: 'cloze_mcq' as const,
       clozeMcqData: {
-        sentence,
-        translation: (payload.translation as string | null) ?? null,
-        options,
-        correctOptionId,
-        explanationText: (payload.explanationText as string) || undefined,
+        sentence: ex.sentence,
+        translation: ex.translation,
+        options: ex.options,
+        correctOptionId: ex.correct_option_id,
+        explanationText: ex.explanation_text || undefined,
       },
     }
     return { kind: 'ok', exerciseItem, audibleTexts: audibleTextFieldsOf(exerciseItem) }
   }
 
-  // Runtime path — by projector invariant, clozeContext is non-null here.
-  if (!input.clozeContext) {
+  // Item-sourced runtime path — by projector invariant, learningItem +
+  // clozeContext are non-null here.
+  if (!input.learningItem || !input.clozeContext) {
     // Defensive: projector should have caught this. Treat as a contract
     // invariant violation so future debugging surfaces the right layer.
     return {
       kind: 'fail',
       reasonCode: 'malformed_cloze',
-      message: `projector invariant violated: clozeContext null with no matching authored variant (item ${input.learningItem.id})`,
-      payloadSnapshot: { learningItemId: input.learningItem.id },
+      message: `projector invariant violated: cloze_mcq has neither a pattern exercise nor item learningItem+clozeContext`,
+      payloadSnapshot: { hasLearningItem: !!input.learningItem, hasClozeContext: !!input.clozeContext },
     }
   }
+  const learningItem = input.learningItem
+  const clozeContext = input.clozeContext
   const primary = pickUserLangMeaning(input.meanings, input.userLanguage)
   const targetTranslation = primary?.translation_text ?? ''
   const pool: DistractorCandidate[] = input.poolItems
-    .filter(i => i.id !== input.learningItem.id && i.base_text)
+    .filter(i => i.id !== learningItem.id && i.base_text)
     .map(i => {
       const ms = input.poolMeaningsByItem.get(i.id) ?? []
       const t = (ms.find(m => m.translation_language === input.userLanguage && m.is_primary)
@@ -79,33 +78,33 @@ export function buildClozeMcq(input: BuilderInputFor<'cloze_mcq'>): BuilderResul
       }
     })
   const target = {
-    itemType: input.learningItem.item_type,
-    pos: input.learningItem.pos ?? null,
-    level: input.learningItem.level,
+    itemType: learningItem.item_type,
+    pos: learningItem.pos ?? null,
+    level: learningItem.level,
     semanticGroup: getSemanticGroup(targetTranslation, input.userLanguage),
   }
-  const distractors = pickDistractorCascade(target, pool, 3, input.learningItem.base_text)
+  const distractors = pickDistractorCascade(target, pool, 3, learningItem.base_text)
   if (distractors.length < 3) {
     return {
       kind: 'fail',
       reasonCode: 'no_distractor_candidates',
-      message: `runtime cloze_mcq cascade returned only ${distractors.length}/3 distractors for item ${input.learningItem.id}`,
-      payloadSnapshot: { learningItemId: input.learningItem.id, poolSize: pool.length, distractorsFound: distractors.length },
+      message: `runtime cloze_mcq cascade returned only ${distractors.length}/3 distractors for item ${learningItem.id}`,
+      payloadSnapshot: { learningItemId: learningItem.id, poolSize: pool.length, distractorsFound: distractors.length },
     }
   }
-  const options = shuffle([input.learningItem.base_text, ...distractors])
+  const options = shuffle([learningItem.base_text, ...distractors])
   const exerciseItem = {
-    learningItem: input.learningItem,
+    learningItem,
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: input.answerVariants,
     skillType: 'recognition' as const,
     exerciseType: 'cloze_mcq' as const,
     clozeMcqData: {
-      sentence: input.clozeContext.source_text,
-      translation: input.clozeContext.translation_text,
+      sentence: clozeContext.source_text,
+      translation: clozeContext.translation_text,
       options,
-      correctOptionId: input.learningItem.base_text,
+      correctOptionId: learningItem.base_text,
     },
   }
   return { kind: 'ok', exerciseItem, audibleTexts: audibleTextFieldsOf(exerciseItem) }

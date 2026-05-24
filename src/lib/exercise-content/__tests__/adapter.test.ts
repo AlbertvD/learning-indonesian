@@ -152,14 +152,22 @@ describe('bucketByDecodedSourceKind', () => {
     expect(ctx.diagnostic?.reasonCode).toBe('dialogue_line_ref_unparseable')
   })
 
-  it('fails unsupported_source_kind for pattern (no fetcher yet); affixed_form_pair lands in its own bucket post 2026-05-21', () => {
+  it('places pattern blocks in the pattern bucket post 2026-05-24 (PR 4 fetcher landed)', () => {
     const blockPattern = makeBlockWithSourceRef({ sourceKind: 'pattern', sourceRef: 'lesson-9/pattern-1' })
     const { buckets, failures } = bucketByDecodedSourceKind([blockPattern])
     expect(buckets.item).toEqual([])
     expect(buckets.dialogue_line).toEqual([])
     expect(buckets.affixed_form_pair).toEqual([])
+    expect(failures.size).toBe(0)
+    expect(buckets.pattern).toEqual([{ block: blockPattern, sourceRef: 'lesson-9/pattern-1' }])
+  })
+
+  it('fails pattern_ref_unparseable for a pattern block whose ref lacks the /pattern- segment', () => {
+    const blockPattern = makeBlockWithSourceRef({ sourceKind: 'pattern', sourceRef: 'lesson-9/morphology-1' })
+    const { buckets, failures } = bucketByDecodedSourceKind([blockPattern])
+    expect(buckets.pattern).toEqual([])
     expect(failures.size).toBe(1)
-    expect(failures.get(blockPattern.id)?.diagnostic?.reasonCode).toBe('unsupported_source_kind')
+    expect(failures.get(blockPattern.id)?.diagnostic?.reasonCode).toBe('pattern_ref_unparseable')
   })
 
   it('places affixed_form_pair blocks in the affixed_form_pair bucket with direction parsed from canonical-key tail', () => {

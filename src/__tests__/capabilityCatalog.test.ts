@@ -87,7 +87,9 @@ describe('capability catalog projection', () => {
     const pattern = projection.capabilities.find(capability => capability.sourceKind === 'pattern')
 
     expect(pattern?.sourceRef).toBe('lesson-1/pattern-meN')
-    expect(pattern?.requiredArtifacts).toEqual(expect.arrayContaining(['pattern_explanation:l1', 'pattern_example']))
+    // PR 4 (Decision R): pattern caps render from typed grammar-exercise tables;
+    // no capability_artifacts required (readiness off the legacy artifact bag).
+    expect(pattern?.requiredArtifacts).toEqual([])
   })
 
   it('is deterministic for the same input', () => {

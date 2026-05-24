@@ -2,7 +2,12 @@ import { type Page } from '@playwright/test'
 
 export const TEST_EMAIL = 'testuser@duin.home'
 export const TEST_PASSWORD = 'TestUser123!'
-export const ADMIN_EMAIL = 'albertvduijn@proton.me'
+// The admin account is the only row in indonesian.user_roles (role=admin),
+// verified 2026-05-24: albert@duin.home. The previous value
+// (albertvduijn@proton.me) is not an auth user, so admin-gated specs only ever
+// ran skipped. profile.isAdmin (which gates ?force_capability) is true for this
+// account only.
+export const ADMIN_EMAIL = 'albert@duin.home'
 
 // Playwright runs from localhost:5175 but Supabase (Kong) only allows
 // CORS from .duin.home origins. Intercept all Supabase requests and
@@ -44,9 +49,14 @@ export async function login(page: Page, options: LoginOptions = {}) {
   const email = options.admin ? ADMIN_EMAIL : TEST_EMAIL
   const password = options.admin ? process.env.ADMIN_PASSWORD ?? TEST_PASSWORD : TEST_PASSWORD
   await page.goto('/login')
-  await page.getByLabel(/email/i).fill(email)
-  await page.getByLabel(/password/i).fill(password)
-  await page.getByRole('button', { name: /^login$/i }).click()
+  // Selectors are language-agnostic: the app defaults to NL (E-mail / Wachtwoord
+  // / Inloggen) but may be EN (Email / Password / Log in).
+  // Placeholder-based: unambiguous across NL (jij@voorbeeld.com / Je wachtwoord)
+  // and EN (you@example.com / Your password), and avoids Mantine's
+  // PasswordInput visibility-toggle button (which has no placeholder).
+  await page.getByPlaceholder(/voorbeeld|example/i).fill(email)
+  await page.getByPlaceholder(/wachtwoord|password/i).fill(password)
+  await page.getByRole('button', { name: /^(inloggen|log\s*in)$/i }).click()
   // Wait for redirect away from login
   await page.waitForURL(url => !url.pathname.includes('/login'), { timeout: 20000 })
 }

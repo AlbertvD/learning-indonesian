@@ -244,7 +244,7 @@ WHERE c.source_kind = '<source_kind>'
 | **PR 1** | Item source_kind: writer + reader + re-publish | PR 0 | ✅ shipped — #87 item; #88 (§1.5 cap cleanup); §1.6 item-translation bridge |
 | **PR 2** | Dialogue line source_kind: writer + reader + re-publish | PR 0 | ✅ shipped — #91 typed reader+writer+bridge; #92 validator → typed table + legacy artifact writes removed (see §5) |
 | **PR 3** | Affixed form pair source_kind: writer + reader + re-publish | PR 0 | ✅ shipped — #94 typed reader+writer+validator+bridge; HC12 retired → HC17; renderContracts/catalog `affixed_form_pair → []` (see §6). No pattern_source_ref column exists (DDL deviates from §6.5) |
-| **PR 4** | Pattern source_kind: writer + reader + routing widening + re-publish | PR 0 | not started — pattern caps remain `unknown`/`draft` (no compatible exercise yet) |
+| **PR 4** | Pattern source_kind: writer + reader + routing widening + re-publish | PR 0 | ✅ shipped — typed readers (byKind/pattern + 4 byType) + dual-write writer + CS13 validator + one-shot bridge (716 rows) + HC19/HC20 + routing widen (Decision G) + Decision-R no-artifact readiness (see §7). Admin path deferred to PR 4a. First live grammar render confirmed via DOM; bypass answer-commit blocked by pre-existing infra (issue #95, all source kinds) |
 | **PR 5** | Lesson blocks (Stage A): typed satellites + re-publish | PR 0 | not started |
 | **PR 6** | Lesson sections (Stage A): typed satellites + re-publish | PR 5 | not started |
 | **PR 7** | Final cleanup: drop everything no longer read | PRs 1–6 | not started |
@@ -551,6 +551,15 @@ bun scripts/publish-approved-content.ts 9
 ---
 
 ## §7. PR 4 — Pattern source_kind
+
+> **Status: ✅ shipped (2026-05-24).** First-ever live grammar rendering. The runtime path landed; corrections vs the prose below, forced by the live schema + how the code actually works:
+> - **Writer is the capability-stage runner step 10** (`projectGrammar` → `insertGrammarExerciseTyped`), dual-writing the 4 typed tables alongside `exercise_variants` via the shared `projectors/grammarExerciseRows.ts` mapper. The 716 existing rows (all candidates already `published`, so re-publish/standalone-script don't regenerate them) were migrated by the one-shot bridge `scripts/migrate-typed-tables-pr4-grammar.ts` (idempotent on PK `id`; 0→141/189/240/146).
+> - **The 4 tables are keyed by `grammar_pattern_id`, not `capability_id`** (no such column). Cap → exercise link: `source_ref` (`lesson-N/pattern-<slug>`) → strip prefix → `grammar_patterns.slug` → `grammar_pattern_id`. The reader (`byKind/pattern.ts`) collapses N rows per (pattern, exercise_type) → one (lowest id); selection/variety is a planner concern.
+> - **Readiness moved off artifacts (Decision R mirror):** `capabilityCatalog` zeroes pattern `requiredArtifacts` so `validateCapability` returns ready on re-publish (this was NOT a no-op — caps declared `pattern_explanation:l1`/`pattern_example`). The legacy `variant` slot was removed from `RawProjectorInput` entirely (verified 0 `exercise_variants` attach to vocab items).
+> - **`grammar_pattern_examples` left empty** (unwritten + unread — would be dead data; deferred to a future lesson-reader grammar-display feature). **`source_candidate_id` kept** unpopulated (audit m4; shipped DDL + spec).
+> - **Validator** is per-table Zod (CS13, audit I2 — no shared options helper). **HCs** are HC19 (contrast no-orphan) + HC20 (recognition no-orphan), joined via slug (not `cpe.capability_id` — no such column).
+> - **Admin path (exerciseReviewService / VariantPreview / ExerciseSummaryCard / ContentReview) deferred to PR 4a** — `exercise_variants` writes retained for it until then.
+> - HC19 ✓ / HC20 ✓; reader-sim 4/4; first live grammar render confirmed via DOM. The `?force_capability` answer-commit (`rejected_invalid_outcome`) is a pre-existing bypass-infra bug affecting all source kinds — issue #95, not PR 4.
 
 **Target typed tables:** `grammar_pattern_examples`, `contrast_pair_exercises`, `sentence_transformation_exercises`, `constrained_translation_exercises`, `cloze_mcq_exercises` (all added in PR 0 §3.1 — empty).
 

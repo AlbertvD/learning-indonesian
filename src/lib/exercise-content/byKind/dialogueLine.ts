@@ -140,10 +140,10 @@ export async function fetchForDialogueLineBlocks(
         learningItem: null,
         dialogueLine: { text: lineText, speaker, sourceRef, targetWord, translation, sourceText },
         affixedFormPair: null,
+        patternExercise: null,
         meanings: [],
         contexts: [],
         answerVariants: [],
-        variant: null,
         // No artifacts in the typed-table path — the byType/cloze.ts packager
         // reads input.dialogueLine for the dialogue path; the empty map is
         // a no-op for it.
