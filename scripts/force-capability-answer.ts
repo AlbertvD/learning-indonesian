@@ -54,7 +54,12 @@ function parseArgs(argv: string[]): Args {
 
 async function answerOneCard(page: Page, mode: 'correct' | 'wrong'): Promise<boolean> {
   await page.waitForTimeout(800)
-  const optionButtons = page.locator('button.mantine-Button-root:not([disabled])').filter({
+  // MCQ options: ExerciseOption renders a native <button> inside
+  // ExerciseOptionGroup (role="group"); item-style exercises use
+  // mantine-Button-root. Match both; exclude chrome/submit/login buttons.
+  const optionButtons = page.locator(
+    '[role="group"] button:not([disabled]), button.mantine-Button-root:not([disabled])',
+  ).filter({
     hasNotText: /doorgaan|continue|inloggen|log in/i,
   })
   const buttonCount = await optionButtons.count()
@@ -115,7 +120,10 @@ async function main() {
   let browser: Browser | null = null
   try {
     browser = await chromium.launch({ headless: true })
-    const context = await browser.newContext({ baseURL: baseUrl })
+    // ignoreHTTPSErrors: the homelab Supabase (api.supabase.duin.home) is behind
+    // Step-CA (internal CA) — the in-page CORS-shim route.fetch() can't verify
+    // the cert otherwise. Harmless against the deployed app (valid chain).
+    const context = await browser.newContext({ baseURL: baseUrl, ignoreHTTPSErrors: true })
     const page = await context.newPage()
 
     await bypassSupabaseCors(page)
