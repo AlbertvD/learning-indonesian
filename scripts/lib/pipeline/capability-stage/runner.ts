@@ -53,6 +53,7 @@ import {
   findLearningItemBySlug,
   insertExerciseVariantGrammar,
   insertExerciseVariantVocab,
+  insertGrammarExerciseTyped,
   retireOrphanedCapabilities,
   upsertCapabilities,
   upsertCapabilityArtifacts,
@@ -80,12 +81,14 @@ import { loadLesson as defaultLoadLesson, type LoadedLesson } from './loader'
 // / enrichEnTranslations / enrichDialogueTranslations) that fill the fields
 // rather than gating.
 import { validateCandidatePayload } from './validators/candidatePayload'
+import { validateGrammarExercises } from './validators/grammarExercises'
 import { validatePerItemMeaning } from './validators/perItemMeaning'
 import { validateGrammarPattern } from './validators/grammarPattern'
 import { validatePosTags } from './validators/pos'
 
 import { projectVocab } from './projectors/vocab'
 import { projectGrammar } from './projectors/grammar'
+import { buildGrammarExerciseRow } from './projectors/grammarExerciseRows'
 import { projectCloze } from './projectors/cloze'
 import { projectDialogueArtifacts } from './projectors/dialogueArtifacts'
 import { projectAffixedFormPairs, type AffixedPairSource } from './projectors/morphology'
@@ -287,6 +290,9 @@ export async function runCapabilityStage(
   // Stage A's outputs land here, content.grammar_topics is already populated.
   findings.push(...validateGrammarPattern(staging.grammarPatterns as Array<{ slug: string; pattern_name: string; complexity_score: number }>))
   findings.push(...validateCandidatePayload(staging.candidates as Array<{ exercise_type?: string; payload?: Record<string, unknown> | null }>))
+  // CS13 (PR 4): grammar-exercise typed-row shape — per-table Zod over the
+  // projectable grammar candidates the writer will land in the 4 typed tables.
+  findings.push(...validateGrammarExercises(staging.candidates as Array<{ exercise_type?: string; payload?: Record<string, unknown> | null; review_status?: string }>))
   findings.push(...validatePerItemMeaning(staging.learningItems as Array<{ base_text: string; context_type?: string; translation_nl?: string | null; translation_en?: string | null }>))
   // CS4b — Decision R (PR 1): require translation_nl for non-dialogue_chunk items.
   findings.push(...validateItemTranslations(staging.learningItems as Array<{ base_text: string; item_type: string; translation_nl?: string | null; translation_en?: string | null }>))
@@ -580,6 +586,7 @@ export async function runCapabilityStage(
     ? new Map<string, string>()
     : await fetchGrammarPatternIdsBySlug(supabase)
   const exerciseVariantIds: string[] = []
+  let grammarExerciseRowsLanded = 0
   for (const variant of grammar.exerciseVariants) {
     if (variant.kind === 'grammar') {
       const grammarPatternId = variant.grammarPatternSlug
@@ -594,6 +601,24 @@ export async function runCapabilityStage(
         answer_key_json: variant.answer_key_json,
       })
       if (result.ok && result.id) exerciseVariantIds.push(result.id)
+
+      // PR 4 dual-write: also land the typed grammar-exercise row. Keyed by
+      // grammar_pattern_id (NOT capability_id). The shared mapper + CS13
+      // validator + DB NOT NULL guard the shape; a DB error fails loud.
+      if (grammarPatternId) {
+        const built = buildGrammarExerciseRow(variant.exercise_type, variant.payload_json, variant.answer_key_json)
+        if (built) {
+          const typedResult = await insertGrammarExerciseTyped(supabase, built.table, {
+            ...built.columns,
+            grammar_pattern_id: grammarPatternId,
+            lesson_id: variant.lessonId,
+          })
+          if (!typedResult.ok) {
+            throw new Error(`PR4 typed grammar-exercise write failed (${built.table}, ${variant.exercise_type}): ${typedResult.error}`)
+          }
+          grammarExerciseRowsLanded++
+        }
+      }
     } else {
       const contextId = await findContextIdBySourceText(supabase, variant.sourceText)
       if (!contextId) continue
@@ -612,6 +637,7 @@ export async function runCapabilityStage(
   }
   const exerciseVariantsLanded = exerciseVariantIds.length
   counts.exerciseVariants = exerciseVariantsLanded
+  counts.grammarExerciseRows = grammarExerciseRowsLanded
 
   // Staging write-back #1 — mirror legacy 712–722. After exercise_variants
   // land + count verification, mark approved candidates as `published` in

@@ -21,6 +21,7 @@ export const CAPABILITY_GATES = [
   'CS10', // dialogue-line artifact emission (Decision 5b — cloze_context/cloze_answer/translation:l1 for dialogue_line caps)
   'CS11', // dialogue_clozes typed-row shape (PR 2 — sentence_with_blank/answer_text/translation_text)
   'CS12', // affixed_form_pairs typed-row shape (PR 3 — root_text/derived_text/allomorph_rule non-empty per cap)
+  'CS13', // grammar-exercise typed-row shape (PR 4 — per-table Zod over the 4 grammar exercise tables, audit I2 options shapes)
 ] as const
 
 export type CapabilityGate = typeof CAPABILITY_GATES[number]
@@ -44,6 +45,8 @@ export interface CapabilityStageCounts {
   dialogueClozes: number
   /** PR 3: typed `affixed_form_pairs` rows written. */
   affixedFormPairs: number
+  /** PR 4: typed grammar-exercise rows written across the 4 tables. */
+  grammarExerciseRows: number
 }
 
 export interface CapabilityStageOutput {
@@ -78,4 +81,5 @@ export const EMPTY_COUNTS: CapabilityStageCounts = {
   deferredDialogueChunks: 0,
   dialogueClozes: 0,
   affixedFormPairs: 0,
+  grammarExerciseRows: 0,
 }
