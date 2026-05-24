@@ -70,20 +70,22 @@ const matrix: MatrixRow[] = [
     approvedArtifacts: ['audio_clip', 'base_text', 'accepted_answers:id'],
     expected: { status: 'ready', allowedExercises: ['dictation'] },
   },
-  // ─── Non-item source kinds (blocked per Option B / source-kind decision) ──
+  // ─── Pattern source kind (PR 4 Decision G + R): routes to typed grammar
+  //     exercise tables; no required artifacts (structure guaranteed by NOT
+  //     NULL columns + validateGrammarExercises + HC19/HC20). ──
   {
     capabilityType: 'pattern_recognition',
     sourceKind: 'pattern',
-    requiredArtifacts: ['pattern_explanation:l1', 'pattern_example'],
-    approvedArtifacts: ['pattern_explanation:l1', 'pattern_example'],
-    expected: { status: 'blocked', reasonMatch: /no_compatible_exercise_for_capability_type/ },
+    requiredArtifacts: [],
+    approvedArtifacts: [],
+    expected: { status: 'ready', allowedExercises: ['cloze_mcq', 'sentence_transformation', 'constrained_translation'] },
   },
   {
     capabilityType: 'pattern_contrast',
     sourceKind: 'pattern',
-    requiredArtifacts: ['pattern_explanation:l1', 'pattern_example'],
-    approvedArtifacts: ['pattern_explanation:l1', 'pattern_example'],
-    expected: { status: 'blocked', reasonMatch: /no_compatible_exercise_for_capability_type/ },
+    requiredArtifacts: [],
+    approvedArtifacts: [],
+    expected: { status: 'ready', allowedExercises: ['contrast_pair'] },
   },
   {
     // Post 2026-05-21 lib/exercise-content fold PR-B: cloze accepts

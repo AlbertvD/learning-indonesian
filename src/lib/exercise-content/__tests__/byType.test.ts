@@ -9,8 +9,11 @@
 
 import { describe, it, expect } from 'vitest'
 import type {
-  LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant,
+  LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant,
+  ContrastPairExercisesRow, SentenceTransformationExercisesRow,
+  ConstrainedTranslationExercisesRow, ClozeMcqExercisesRow,
 } from '@/types/learning'
+import type { PatternExerciseInput } from '@/lib/capabilities'
 import type { SessionBlock } from '@/lib/session-builder'
 import { normalizeTtsText } from '@/lib/ttsNormalize'
 
@@ -85,16 +88,64 @@ function baseInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorInpu
     learningItem: makeItem(),
     dialogueLine: null,
     affixedFormPair: null,
+    patternExercise: null,
     meanings: [makeMeaning('einde')],
     contexts: [],
     answerVariants: [],
-    variant: null,
     artifactsByKind: new Map(),
     poolItems: pool.items,
     poolMeaningsByItem: pool.meaningsByItem,
     userLanguage: 'nl',
     ...overrides,
   }
+}
+
+// ─── typed grammar-exercise row fixtures (PR 4) ───
+
+function contrastRow(overrides: Partial<ContrastPairExercisesRow> = {}): ContrastPairExercisesRow {
+  return {
+    id: 'cpe-1', grammar_pattern_id: 'gp-1', lesson_id: 'l-1',
+    prompt_text: 'Kies de juiste', target_meaning: 'this',
+    options: [{ id: 'a', text: 'ini' }, { id: 'b', text: 'itu' }],
+    correct_option_id: 'a', explanation_text: 'ini = this (near speaker)',
+    is_active: true, source_candidate_id: null, created_at: '', updated_at: '',
+    ...overrides,
+  }
+}
+function sentenceRow(overrides: Partial<SentenceTransformationExercisesRow> = {}): SentenceTransformationExercisesRow {
+  return {
+    id: 'ste-1', grammar_pattern_id: 'gp-1', lesson_id: 'l-1',
+    source_sentence: 'Saya makan', transformation_instruction: 'Negate',
+    hint_text: null, acceptable_answers: ['Saya tidak makan'],
+    explanation_text: 'tidak negates verbs',
+    is_active: true, source_candidate_id: null, created_at: '', updated_at: '',
+    ...overrides,
+  }
+}
+function constrainedRow(overrides: Partial<ConstrainedTranslationExercisesRow> = {}): ConstrainedTranslationExercisesRow {
+  return {
+    id: 'cte-1', grammar_pattern_id: 'gp-1', lesson_id: 'l-1',
+    source_language_sentence: 'I have not eaten', required_target_pattern: 'belum',
+    disallowed_shortcut_forms: [], acceptable_answers: ['Saya belum makan'],
+    explanation_text: 'belum = not yet',
+    is_active: true, source_candidate_id: null, created_at: '', updated_at: '',
+    ...overrides,
+  }
+}
+function clozeMcqRow(overrides: Partial<ClozeMcqExercisesRow> = {}): ClozeMcqExercisesRow {
+  return {
+    id: 'cme-1', grammar_pattern_id: 'gp-1', lesson_id: 'l-1',
+    sentence: 'Itu ___ ya!', translation: 'That is ... yes',
+    options: ['mahal', 'murah', 'baik', 'buruk'], correct_option_id: 'mahal',
+    explanation_text: 'mahal = expensive',
+    is_active: true, source_candidate_id: null, created_at: '', updated_at: '',
+    ...overrides,
+  }
+}
+function patternEx(p: PatternExerciseInput): Partial<RawProjectorInput> {
+  // Pattern caps are not item-rooted: learningItem must be null (bucketing
+  // invariant). The projector reads patternExercise + matches exercise_type.
+  return { learningItem: null, patternExercise: p }
 }
 
 // ─── simple builders ───
@@ -233,28 +284,17 @@ describe('buildListeningMCQ', () => {
 // ─── cloze_mcq dual path ───
 
 describe('buildClozeMcq', () => {
-  it('authored path', () => {
-    const variant: ExerciseVariant = {
-      id: 'var-1', exercise_type: 'cloze_mcq', learning_item_id: 'item-1', context_id: 'ctx-1',
-      grammar_pattern_id: null, source_candidate_id: null, is_active: true,
-      payload_json: {
-        sentence: 'Itu ___ ya!',
-        translation: 'That is ... yes',
-        options: ['mahal', 'murah', 'baik', 'buruk'],
-        correctOptionId: 'mahal',
-      },
-      answer_key_json: { correctOptionId: 'mahal' },
-      created_at: '', updated_at: '',
-    }
-    const r = buildForExerciseType('cloze_mcq', baseInput({ variant }))
+  it('pattern path — typed cloze_mcq_exercises row', () => {
+    const r = buildForExerciseType('cloze_mcq', baseInput(patternEx({ exerciseType: 'cloze_mcq', row: clozeMcqRow() })))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
+      expect(r.exerciseItem.learningItem).toBeNull()
       expect(r.exerciseItem.clozeMcqData?.sentence).toBe('Itu ___ ya!')
       expect(r.exerciseItem.clozeMcqData?.correctOptionId).toBe('mahal')
     }
   })
 
-  it('runtime path with cloze context + sufficient pool', () => {
+  it('runtime (item) path with cloze context + sufficient pool', () => {
     const ctx = makeContext('Saya ___ nasi', 'cloze')
     const r = buildForExerciseType('cloze_mcq', baseInput({ contexts: [ctx] }))
     expect(r.kind).toBe('ok')
@@ -265,66 +305,47 @@ describe('buildClozeMcq', () => {
     }
   })
 
-  it('runtime fails when no cloze context AND no variant', () => {
+  it('item path fails when no cloze context AND no pattern exercise', () => {
     const r = buildForExerciseType('cloze_mcq', baseInput({ contexts: [] }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_cloze')
   })
 
-  it('authored path fails on malformed payload', () => {
-    const variant: ExerciseVariant = {
-      id: 'var-1', exercise_type: 'cloze_mcq', learning_item_id: 'item-1', context_id: 'ctx-1',
-      grammar_pattern_id: null, source_candidate_id: null, is_active: true,
-      payload_json: { sentence: '', options: [], correctOptionId: '' },  // empty
-      answer_key_json: {},
-      created_at: '', updated_at: '',
-    }
-    const r = buildForExerciseType('cloze_mcq', baseInput({ variant }))
+  it('pattern path fails on malformed typed row', () => {
+    const r = buildForExerciseType('cloze_mcq', baseInput(patternEx({
+      exerciseType: 'cloze_mcq', row: clozeMcqRow({ sentence: '', options: [], correct_option_id: '' }),
+    })))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_payload')
   })
 })
 
-// ─── variant-only builders ───
+// ─── typed grammar-exercise builders (pattern source kind, PR 4) ───
 
 describe('buildContrastPair', () => {
   it('happy path with [{id,text}] options', () => {
-    const variant: ExerciseVariant = {
-      id: 'var-1', exercise_type: 'contrast_pair', learning_item_id: 'item-1', context_id: 'ctx-1',
-      grammar_pattern_id: null, source_candidate_id: null, is_active: true,
-      payload_json: {
-        promptText: 'Kies de juiste',
-        targetMeaning: 'this',
-        options: [{ id: 'a', text: 'ini' }, { id: 'b', text: 'itu' }],
-        correctOptionId: 'a',
-        explanationText: 'ini = this (near speaker)',
-      },
-      answer_key_json: { correctOptionId: 'a' },
-      created_at: '', updated_at: '',
-    }
-    const r = buildForExerciseType('contrast_pair', baseInput({ variant }))
+    const r = buildForExerciseType('contrast_pair', baseInput(patternEx({ exerciseType: 'contrast_pair', row: contrastRow() })))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
+      expect(r.exerciseItem.learningItem).toBeNull()
       expect(r.exerciseItem.contrastPairData?.options).toEqual(['ini', 'itu'])
       expect(r.exerciseItem.contrastPairData?.correctOptionId).toBe('ini')  // resolved from id 'a'
     }
   })
 
-  it('fails when no active variant', () => {
-    const r = buildForExerciseType('contrast_pair', baseInput({ variant: null }))
+  it('fails when no pattern exercise', () => {
+    // learningItem present + patternExercise null exercises the projector's
+    // needsPatternExercise guard (production never has a learningItem here).
+    const r = buildForExerciseType('contrast_pair', baseInput())
     expect(r.kind).toBe('fail')
-    if (r.kind === 'fail') expect(r.reasonCode).toBe('no_active_variant')
+    if (r.kind === 'fail') expect(r.reasonCode).toBe('pattern_typed_row_missing')
   })
 
   it('fails when option count != 2', () => {
-    const variant: ExerciseVariant = {
-      id: 'var-1', exercise_type: 'contrast_pair', learning_item_id: 'item-1', context_id: 'ctx-1',
-      grammar_pattern_id: null, source_candidate_id: null, is_active: true,
-      payload_json: { options: ['a', 'b', 'c'], correctOptionId: 'a' },
-      answer_key_json: {},
-      created_at: '', updated_at: '',
-    }
-    const r = buildForExerciseType('contrast_pair', baseInput({ variant }))
+    const r = buildForExerciseType('contrast_pair', baseInput(patternEx({
+      exerciseType: 'contrast_pair',
+      row: contrastRow({ options: [{ id: 'a', text: 'x' }, { id: 'b', text: 'y' }, { id: 'c', text: 'z' }] }),
+    })))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_payload')
   })
@@ -332,40 +353,23 @@ describe('buildContrastPair', () => {
 
 describe('buildSentenceTransformation', () => {
   it('happy path', () => {
-    const variant: ExerciseVariant = {
-      id: 'var-1', exercise_type: 'sentence_transformation', learning_item_id: 'item-1', context_id: 'ctx-1',
-      grammar_pattern_id: null, source_candidate_id: null, is_active: true,
-      payload_json: {
-        sourceSentence: 'Saya makan',
-        transformationInstruction: 'Negate',
-        acceptableAnswers: ['Saya tidak makan'],
-        explanationText: 'tidak negates verbs',
-      },
-      answer_key_json: { acceptableAnswers: ['Saya tidak makan'] },
-      created_at: '', updated_at: '',
-    }
-    const r = buildForExerciseType('sentence_transformation', baseInput({ variant }))
+    const r = buildForExerciseType('sentence_transformation', baseInput(patternEx({ exerciseType: 'sentence_transformation', row: sentenceRow() })))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.sentenceTransformationData?.sourceSentence).toBe('Saya makan')
     }
   })
 
-  it('fails when no active variant', () => {
-    const r = buildForExerciseType('sentence_transformation', baseInput({ variant: null }))
+  it('fails when no pattern exercise', () => {
+    const r = buildForExerciseType('sentence_transformation', baseInput())
     expect(r.kind).toBe('fail')
-    if (r.kind === 'fail') expect(r.reasonCode).toBe('no_active_variant')
+    if (r.kind === 'fail') expect(r.reasonCode).toBe('pattern_typed_row_missing')
   })
 
-  it('fails on missing acceptableAnswers', () => {
-    const variant: ExerciseVariant = {
-      id: 'var-1', exercise_type: 'sentence_transformation', learning_item_id: 'item-1', context_id: 'ctx-1',
-      grammar_pattern_id: null, source_candidate_id: null, is_active: true,
-      payload_json: { sourceSentence: 'Saya makan' },
-      answer_key_json: {},
-      created_at: '', updated_at: '',
-    }
-    const r = buildForExerciseType('sentence_transformation', baseInput({ variant }))
+  it('fails on missing acceptable_answers', () => {
+    const r = buildForExerciseType('sentence_transformation', baseInput(patternEx({
+      exerciseType: 'sentence_transformation', row: sentenceRow({ acceptable_answers: [] }),
+    })))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_payload')
   })
@@ -373,50 +377,23 @@ describe('buildSentenceTransformation', () => {
 
 describe('buildConstrainedTranslation', () => {
   it('happy path', () => {
-    const variant: ExerciseVariant = {
-      id: 'var-1', exercise_type: 'constrained_translation', learning_item_id: 'item-1', context_id: 'ctx-1',
-      grammar_pattern_id: null, source_candidate_id: null, is_active: true,
-      payload_json: {
-        sourceLanguageSentence: 'I have not eaten',
-        requiredTargetPattern: 'belum',
-        acceptableAnswers: ['Saya belum makan'],
-        explanationText: 'belum = not yet',
-      },
-      answer_key_json: { acceptableAnswers: ['Saya belum makan'] },
-      created_at: '', updated_at: '',
-    }
-    const r = buildForExerciseType('constrained_translation', baseInput({ variant }))
+    const r = buildForExerciseType('constrained_translation', baseInput(patternEx({ exerciseType: 'constrained_translation', row: constrainedRow() })))
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.constrainedTranslationData?.acceptableAnswers).toEqual(['Saya belum makan'])
     }
   })
 
-  it('fails when no active variant', () => {
-    const r = buildForExerciseType('constrained_translation', baseInput({ variant: null }))
+  it('fails when no pattern exercise', () => {
+    const r = buildForExerciseType('constrained_translation', baseInput())
     expect(r.kind).toBe('fail')
-    if (r.kind === 'fail') expect(r.reasonCode).toBe('no_active_variant')
+    if (r.kind === 'fail') expect(r.reasonCode).toBe('pattern_typed_row_missing')
   })
 })
 
 describe('buildSpeaking', () => {
-  it('authored path', () => {
-    const variant: ExerciseVariant = {
-      id: 'var-1', exercise_type: 'speaking', learning_item_id: 'item-1', context_id: 'ctx-1',
-      grammar_pattern_id: null, source_candidate_id: null, is_active: true,
-      payload_json: { promptText: 'Greet a stranger', targetPatternOrScenario: 'Selamat pagi' },
-      answer_key_json: {},
-      created_at: '', updated_at: '',
-    }
-    const r = buildForExerciseType('speaking', baseInput({ variant }))
-    expect(r.kind).toBe('ok')
-    if (r.kind === 'ok') {
-      expect(r.exerciseItem.speakingData?.targetPatternOrScenario).toBe('Selamat pagi')
-    }
-  })
-
-  it('item-anchored fallback (no variant)', () => {
-    const r = buildForExerciseType('speaking', baseInput({ variant: null }))
+  it('item-anchored (model utterance = base_text)', () => {
+    const r = buildForExerciseType('speaking', baseInput())
     expect(r.kind).toBe('ok')
     if (r.kind === 'ok') {
       expect(r.exerciseItem.speakingData?.targetPatternOrScenario).toBe('akhir')

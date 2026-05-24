@@ -89,6 +89,7 @@ export {
 export type {
   RenderContract,
   RawProjectorInput,
+  PatternExerciseInput,
   ContractInputShapes,
   BuilderInputFor,
   ProjectorResult,

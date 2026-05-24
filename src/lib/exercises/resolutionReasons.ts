@@ -27,6 +27,13 @@ export type ResolutionReasonCode =
   // retained for resolver belt-and-braces paths but is no longer emitted by
   // byKind/affixedFormPair.ts.
   | 'affixed_form_pair_typed_row_missing'
+  // PR 4: pattern source_kind has no fetcher → ref unparseable, or the typed
+  // grammar-exercise table (contrast_pair/sentence_transformation/
+  // constrained_translation/cloze_mcq_exercises) returns no row for a ready
+  // pattern cap. Mirrors dialogue_line/affixed_form_pair: the per-source-kind
+  // code names which byKind/* fetcher broke without parsing the canonical_key.
+  | 'pattern_ref_unparseable'
+  | 'pattern_typed_row_missing'
   // Content-data gaps
   | 'no_active_variant'
   | 'no_meaning_in_lang'

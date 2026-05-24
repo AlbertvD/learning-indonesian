@@ -1,41 +1,37 @@
-// builder for exerciseType='constrained_translation'.
-// Authored only. Contract guarantees learningItem + variant (with matching
-// exercise_type) are non-null.
+// builder for exerciseType='constrained_translation' (pattern source kind).
+// PR 4: reads the typed constrained_translation_exercises row (input.exercise)
+// instead of exercise_variants.payload_json. Contract guarantees `exercise` is
+// non-null (projector). No learningItem — pattern caps are not item-rooted.
 
 import type { BuilderInputFor, BuilderResult } from './types'
 import { audibleTextFieldsOf } from '@/lib/session-builder'
 
 export function buildConstrainedTranslation(input: BuilderInputFor<'constrained_translation'>): BuilderResult {
-  const payload = input.variant.payload_json as Record<string, unknown>
-  const answerKey = input.variant.answer_key_json as Record<string, unknown> | null
-  const acceptable = (answerKey?.acceptableAnswers as string[]) || (payload.acceptableAnswers as string[]) || []
+  const ex = input.exercise
 
-  if (acceptable.length === 0) {
+  if (ex.acceptable_answers.length === 0) {
     return {
       kind: 'fail',
       reasonCode: 'malformed_payload',
-      message: `constrained_translation variant ${input.variant.id} missing acceptableAnswers`,
-      payloadSnapshot: { variantId: input.variant.id, hasAcceptable: false },
+      message: `constrained_translation exercise ${ex.id} missing acceptable_answers`,
+      payloadSnapshot: { exerciseId: ex.id, hasAcceptable: false },
     }
   }
 
   const exerciseItem = {
-    learningItem: input.learningItem,
+    learningItem: null,
     meanings: input.meanings,
     contexts: input.contexts,
     answerVariants: [],
     skillType: 'meaning_recall' as const,
     exerciseType: 'constrained_translation' as const,
     constrainedTranslationData: {
-      sourceLanguageSentence: (payload.sourceLanguageSentence as string) || '',
-      requiredTargetPattern: (payload.requiredTargetPattern as string) || '',
+      sourceLanguageSentence: ex.source_language_sentence,
+      requiredTargetPattern: ex.required_target_pattern,
       patternName: '',
-      acceptableAnswers: acceptable,
-      disallowedShortcutForms: (answerKey?.disallowedShortcutForms as string[] | undefined)
-        ?? (payload.disallowedShortcutForms as string[] | undefined),
-      explanationText: (payload.explanationText as string) || '',
-      targetSentenceWithBlank: payload.targetSentenceWithBlank as string | undefined,
-      blankAcceptableAnswers: payload.blankAcceptableAnswers as string[] | undefined,
+      acceptableAnswers: ex.acceptable_answers,
+      disallowedShortcutForms: ex.disallowed_shortcut_forms.length > 0 ? ex.disallowed_shortcut_forms : undefined,
+      explanationText: ex.explanation_text,
     },
   }
   return { kind: 'ok', exerciseItem, audibleTexts: audibleTextFieldsOf(exerciseItem) }

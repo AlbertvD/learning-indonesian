@@ -125,7 +125,7 @@ export async function fetchForAffixedFormPairBlocks(
         meanings: [],
         contexts: [],
         answerVariants: [],
-        variant: null,
+        patternExercise: null,
         // No artifacts in the typed-table path — the byType/typedRecall.ts
         // packager reads input.affixedFormPair; the empty map is a no-op for it.
         artifactsByKind: new Map(),

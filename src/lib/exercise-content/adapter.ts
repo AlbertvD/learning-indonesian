@@ -26,6 +26,7 @@ import type { RawProjectorInput } from './byType'
 import { fetchForItemBlocks } from './byKind/item'
 import { fetchForDialogueLineBlocks } from './byKind/dialogueLine'
 import { fetchForAffixedFormPairBlocks } from './byKind/affixedFormPair'
+import { fetchForPatternBlocks } from './byKind/pattern'
 
 // ─── Canonical-key decoding ─────────────────────────────────────────────────
 
@@ -129,14 +130,23 @@ export interface AffixedFormPairBucketEntry {
   direction: string | null
 }
 
+export interface PatternBucketEntry {
+  block: SessionBlock
+  sourceRef: string  // shape: lesson-N/pattern-<slug>
+  // The grammar exercise table is chosen from block.renderPlan.exerciseType
+  // (the resolver's pick among the cap's allowed exercises); the slug is
+  // derived from sourceRef in byKind/pattern.ts.
+}
+
 export interface BucketingResult {
-  /** Per-source-kind buckets. `item`, `dialogue_line`, and `affixed_form_pair`
-   *  are populated today; future source kinds (podcast_*) add their own
-   *  bucket entries here without touching the resolver. */
+  /** Per-source-kind buckets. `item`, `dialogue_line`, `affixed_form_pair`, and
+   *  `pattern` are populated today; future source kinds (podcast_*) add their
+   *  own bucket entries here without touching the resolver. */
   buckets: {
     item: ItemBucketEntry[]
     dialogue_line: DialogueLineBucketEntry[]
     affixed_form_pair: AffixedFormPairBucketEntry[]
+    pattern: PatternBucketEntry[]
   }
   /** Blocks whose canonical key was malformed or whose source kind has no
    *  fetcher yet. Pre-built fail contexts keyed by blockId. */
@@ -151,15 +161,21 @@ const DIALOGUE_LINE_REF_RE = /^lesson-\d+\/section-\d+\/line-\d+$/u
 // 2026-05-21 (e.g. `lesson-9/morphology/meN-baca-membaca`).
 const AFFIXED_FORM_PAIR_REF_RE = /^lesson-\d+\/morphology\/.+$/u
 
+// Source ref of shape `lesson-N/pattern-<slug>`. Verified against live DB
+// 2026-05-24 (e.g. `lesson-1/pattern-belum-vs-tidak`); all 94 pattern caps
+// strip the `lesson-N/pattern-` prefix to a real grammar_patterns.slug.
+const PATTERN_REF_RE = /^lesson-\d+\/pattern-.+$/u
+
 /**
  * Decode + classify blocks by source kind. Pure function; no I/O. Malformed
  * canonical keys → `sourceref_unparseable`. Source kinds without a fetcher
- * yet (pattern, affixed_form_pair, podcast_*) → `unsupported_source_kind`.
- * Unparseable item refs → `sourceref_unparseable`. Unparseable dialogue_line
- * refs → `dialogue_line_ref_unparseable`.
+ * yet (podcast_*) → `unsupported_source_kind`. Unparseable item refs →
+ * `sourceref_unparseable`. Unparseable dialogue_line refs →
+ * `dialogue_line_ref_unparseable`. Unparseable pattern refs →
+ * `pattern_ref_unparseable`.
  */
 export function bucketByDecodedSourceKind(blocks: SessionBlock[]): BucketingResult {
-  const buckets: BucketingResult['buckets'] = { item: [], dialogue_line: [], affixed_form_pair: [] }
+  const buckets: BucketingResult['buckets'] = { item: [], dialogue_line: [], affixed_form_pair: [], pattern: [] }
   const failures = new Map<string, CapabilityRenderContext>()
 
   for (const block of blocks) {
@@ -209,10 +225,21 @@ export function bucketByDecodedSourceKind(blocks: SessionBlock[]): BucketingResu
       continue
     }
 
-    // Other source kinds (pattern, podcast_segment, podcast_phrase) have no
-    // fetcher yet. Caps with these source kinds should already be marked
-    // blocked by validateCapability — this is a belt-and-braces guard in
-    // case a stale block reaches the resolver.
+    if (decoded.sourceKind === 'pattern') {
+      if (!PATTERN_REF_RE.test(decoded.sourceRef)) {
+        failures.set(block.id, makeFailContext(block, 'pattern_ref_unparseable',
+          `pattern sourceRef "${decoded.sourceRef}" does not match lesson-N/pattern-<slug>`,
+          { sourceRef: decoded.sourceRef }))
+        continue
+      }
+      buckets.pattern.push({ block, sourceRef: decoded.sourceRef })
+      continue
+    }
+
+    // Other source kinds (podcast_segment, podcast_phrase) have no fetcher yet.
+    // Caps with these source kinds should already be marked blocked by
+    // validateCapability — this is a belt-and-braces guard in case a stale
+    // block reaches the resolver.
     failures.set(block.id, makeFailContext(block, 'unsupported_source_kind',
       `sourceKind '${decoded.sourceKind}' has no fetcher in lib/exercise-content/adapter yet`,
       { sourceKind: decoded.sourceKind, sourceRef: decoded.sourceRef }))
@@ -327,11 +354,12 @@ export function createAdapter(client: SupabaseSchemaClient): Adapter {
     async loadBlockData(buckets, options) {
       const result = new Map<string, BlockResolutionData>()
       // Per-source-kind fetchers run in parallel. item + dialogue_line +
-      // affixed_form_pair populated today; podcasts follow.
+      // affixed_form_pair + pattern populated today; podcasts follow.
       await Promise.all([
         fetchForItemBlocks(client, buckets.item, options.userLanguage, result),
         fetchForDialogueLineBlocks(client, buckets.dialogue_line, options.userLanguage, result),
         fetchForAffixedFormPairBlocks(client, buckets.affixed_form_pair, options.userLanguage, result),
+        fetchForPatternBlocks(client, buckets.pattern, options.userLanguage, result),
       ])
       return result
     },

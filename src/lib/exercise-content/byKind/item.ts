@@ -13,7 +13,7 @@
 // docs/plans/2026-05-21-affixed-form-pair-runtime.md.
 
 import type {
-  LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant, ExerciseVariant,
+  LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant,
 } from '@/types/learning'
 import { chunkedIn } from '@/lib/chunkedQuery'
 import {
@@ -108,17 +108,6 @@ export async function fetchForItemBlocks(
     return (data ?? []) as ItemAnswerVariant[]
   }
 
-  async function fetchActiveVariants(itemIds: string[]): Promise<ExerciseVariant[]> {
-    if (itemIds.length === 0) return []
-    const { data, error } = await db()
-      .from('exercise_variants')
-      .select('*')
-      .in('learning_item_id', itemIds)
-      .eq('is_active', true)
-    if (error) throw error
-    return (data ?? []) as ExerciseVariant[]
-  }
-
   async function fetchDistractorPool(lessonIds: string[]): Promise<LearningItem[]> {
     if (lessonIds.length === 0) return []
     // Items whose contexts anchor to any of the touched lessons.
@@ -140,10 +129,9 @@ export async function fetchForItemBlocks(
 
   // Wave 2: now that we have item uuids, fan out dependent reads.
   const itemIds = items.map(i => i.id)
-  const [contexts, answerVariants, variants] = await Promise.all([
+  const [contexts, answerVariants] = await Promise.all([
     fetchContexts(itemIds),
     fetchAnswerVariants(itemIds),
-    fetchActiveVariants(itemIds),
   ])
 
   // Distractor pool: derived from the lessons the block items' contexts
@@ -176,14 +164,6 @@ export async function fetchForItemBlocks(
     list.push(v)
     answerVariantsByItem.set(v.learning_item_id, list)
   }
-  // Variants indexed by (item_id, exercise_type) for cheap lookup.
-  const variantByItemAndType = new Map<string, ExerciseVariant>()
-  for (const v of variants) {
-    if (v.learning_item_id) {
-      variantByItemAndType.set(`${v.learning_item_id}:${v.exercise_type}`, v)
-    }
-  }
-
   // Per-block RawProjectorInput assembly. The item-not-found + item-inactive
   // failure cases are item-specific so they live inside this fetcher.
   for (const { block, itemKey } of itemBlocks) {
@@ -221,10 +201,10 @@ export async function fetchForItemBlocks(
         learningItem,
         dialogueLine: null,        // item bucket — projector's bucketing invariant
         affixedFormPair: null,     // item bucket — projector's bucketing invariant
+        patternExercise: null,     // item bucket — projector's bucketing invariant
         meanings,
         contexts: contextsByItem.get(itemUuid) ?? [],
         answerVariants: answerVariantsByItem.get(itemUuid) ?? [],
-        variant: variantByItemAndType.get(`${itemUuid}:${block.renderPlan.exerciseType}`) ?? null,
         // Decision Q + G2: artifactsByKind is always empty for item caps after
         // PR 1. The byType builders never read artifactsByKind (verified by
         // grep); audio is resolved via SessionAudioContext upstream. The session-
