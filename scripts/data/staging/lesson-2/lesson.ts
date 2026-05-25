@@ -15,67 +15,80 @@ export const lesson = {
           {
             "text": "Selamat siang, apa kabar? Bapak dari mana?",
             "speaker": "Bapak Mulyono",
-            "translation": "Goedemiddag, hoe gaat het? Waar bent u vandaan?"
+            "translation": "Goedemiddag, hoe gaat het? Waar bent u vandaan?",
+            "translation_en": "Good afternoon, how are you? Where are you from?"
           },
           {
             "text": "Saya dari negeri Belanda.",
             "speaker": "Bapak Barends",
-            "translation": "Ik kom uit Nederland."
+            "translation": "Ik kom uit Nederland.",
+            "translation_en": "I'm from the Netherlands."
           },
           {
             "text": "Nama Bapak siapa?",
             "speaker": "Bapak Mulyono",
-            "translation": "Wat is uw naam?"
+            "translation": "Wat is uw naam?",
+            "translation_en": "What is your name?"
           },
           {
             "text": "Nama saya Barends.",
             "speaker": "Bapak Barends",
-            "translation": "Mijn naam is Barends."
+            "translation": "Mijn naam is Barends.",
+            "translation_en": "My name is Barends."
           },
           {
             "text": "Dan ini Ibu Barends?",
             "speaker": "Bapak Mulyono",
-            "translation": "En dit is mevrouw Barends?"
+            "translation": "En dit is mevrouw Barends?",
+            "translation_en": "And this is Mrs. Barends?"
           },
           {
             "text": "Ya, ini istri saya.",
             "speaker": "Bapak Barends",
-            "translation": "Ja, dit is mijn vrouw."
+            "translation": "Ja, dit is mijn vrouw.",
+            "translation_en": "Yes, this is my wife."
           },
           {
             "text": "Bapak menginap di mana? Sudah dapat hotel?",
             "speaker": "Bapak Mulyono",
-            "translation": "Waar logeert u? Heeft u al een hotel gevonden?"
+            "translation": "Waar logeert u? Heeft u al een hotel gevonden?",
+            "translation_en": "Where are you staying? Have you found a hotel?"
           },
           {
             "text": "Sudah. Sekarang mau ke hotel. Di mana bisa naik taksi?",
             "speaker": "Bapak Barends",
-            "translation": "Ja, dat klopt. Nu willen we naar het hotel. Waar kan ik een taxi nemen?"
+            "translation": "Ja, dat klopt. Nu willen we naar het hotel. Waar kan ik een taxi nemen?",
+            "translation_en": "Yes, that's right. Now we want to go to the hotel. Where can I get a taxi?"
           },
           {
             "text": "Di sana. Bapak dan Ibu tinggal di mana?",
             "speaker": "Bapak Mulyono",
-            "translation": "Daar. Waar wonen u en mevrouw?"
+            "translation": "Daar. Waar wonen u en mevrouw?",
+            "translation_en": "Over there. Where do you and Mrs. live?"
           },
           {
             "text": "Saya dan suami saya tinggal di hotel Ramayana, Jalan Sinta nomor 11. Itu hotel bagus.",
             "speaker": "Ibu Barends",
-            "translation": "Mijn man en ik wonen in het hotel Ramayana, Sintalaan nummer 11. Dat is een mooi hotel."
+            "translation": "Mijn man en ik wonen in het hotel Ramayana, Sintalaan nummer 11. Dat is een mooi hotel.",
+            "translation_en": "My husband and I live at the Ramayana hotel, Sinta Street number 11. That's a nice hotel."
           },
           {
             "text": "Nah, taksi sudah datang.",
             "speaker": "Bapak Barends",
-            "translation": "Daar komt de taxi al aan."
+            "translation": "Daar komt de taxi al aan.",
+            "translation_en": "There comes the taxi."
           },
           {
             "text": "Ooh, ya, saya pulang dulu. Sampai bertemu lagi!",
             "speaker": "Bapak Mulyono",
-            "translation": "O ja, ik ga naar huis. Tot ziens!"
+            "translation": "O ja, ik ga naar huis. Tot ziens!",
+            "translation_en": "Oh yes, I'm going home. See you again!"
           },
           {
             "text": "Sampai bertemu lagi, Pak.",
             "speaker": "Bapak Barends",
-            "translation": "Tot ziens!"
+            "translation": "Tot ziens!",
+            "translation_en": "See you again!"
           }
         ]
       }
@@ -88,212 +101,264 @@ export const lesson = {
         "items": [
           {
             "dutch": "er is, er zijn; hebben",
-            "indonesian": "ada"
+            "indonesian": "ada",
+            "english": "there is, there are; have"
           },
           {
             "dutch": "appel",
-            "indonesian": "apel"
+            "indonesian": "apel",
+            "english": "apple"
           },
           {
             "dutch": "kip",
-            "indonesian": "ayam"
+            "indonesian": "ayam",
+            "english": "chicken"
           },
           {
             "dutch": "mooi",
-            "indonesian": "bagus"
+            "indonesian": "bagus",
+            "english": "beautiful, nice"
           },
           {
             "dutch": "nieuw; pas",
-            "indonesian": "baru"
+            "indonesian": "baru",
+            "english": "new; just"
           },
           {
             "dutch": "Nederland(s)",
-            "indonesian": "Belanda"
+            "indonesian": "Belanda",
+            "english": "Netherlands"
           },
           {
             "dutch": "rijst (ongekookt)",
-            "indonesian": "beras"
+            "indonesian": "beras",
+            "english": "rice (uncooked)"
           },
           {
             "dutch": "zwaar",
-            "indonesian": "berat"
+            "indonesian": "berat",
+            "english": "heavy"
           },
           {
             "dutch": "ontmoeten",
-            "indonesian": "bertemu"
+            "indonesian": "bertemu",
+            "english": "meet"
           },
           {
             "dutch": "korrel",
-            "indonesian": "butir"
+            "indonesian": "butir",
+            "english": "grain"
           },
           {
             "dutch": "hebben, krijgen",
-            "indonesian": "dapat"
+            "indonesian": "dapat",
+            "english": "have, get"
           },
           {
             "dutch": "waar vandaan?",
-            "indonesian": "dari mana?"
+            "indonesian": "dari mana?",
+            "english": "where from?"
           },
           {
             "dutch": "met",
-            "indonesian": "dengan"
+            "indonesian": "dengan",
+            "english": "with"
           },
           {
             "dutch": "waar?",
-            "indonesian": "di mana?"
+            "indonesian": "di mana?",
+            "english": "where?"
           },
           {
             "dutch": "ginds, daar",
-            "indonesian": "di sana"
+            "indonesian": "di sana",
+            "english": "there, over there"
           },
           {
             "dutch": "dokter, arts",
-            "indonesian": "dokter"
+            "indonesian": "dokter",
+            "english": "doctor"
           },
           {
             "dutch": "eerst, vroeger",
-            "indonesian": "dulu"
+            "indonesian": "dulu",
+            "english": "first, earlier"
           },
           {
             "dutch": "staart (classificeerwoord voor dieren)",
             "notes": "ekor",
-            "indonesian": "ekor"
+            "indonesian": "ekor",
+            "english": "tail (classifier for animals)"
           },
           {
             "dutch": "onderwijzer, leraar",
-            "indonesian": "guru"
+            "indonesian": "guru",
+            "english": "teacher, instructor"
           },
           {
             "dutch": "dit, deze",
-            "indonesian": "ini"
+            "indonesian": "ini",
+            "english": "this, these"
           },
           {
             "dutch": "vrouw, echtgenote",
-            "indonesian": "istri"
+            "indonesian": "istri",
+            "english": "woman, wife"
           },
           {
             "dutch": "straat, weg",
-            "indonesian": "jalan"
+            "indonesian": "jalan",
+            "english": "street, road"
           },
           {
             "dutch": "kamer",
-            "indonesian": "kamar"
+            "indonesian": "kamar",
+            "english": "room"
           },
           {
             "dutch": "kantoor",
-            "indonesian": "kantor"
+            "indonesian": "kantor",
+            "english": "office"
           },
           {
             "dutch": "rijk",
-            "indonesian": "kaya"
+            "indonesian": "kaya",
+            "english": "rich"
           },
           {
             "dutch": "klein",
-            "indonesian": "kecil"
+            "indonesian": "kecil",
+            "english": "small"
           },
           {
             "dutch": "weer, wederom, nog",
-            "indonesian": "lagi"
+            "indonesian": "lagi",
+            "english": "again, once more, still"
           },
           {
             "dutch": "logeren, overnachten",
-            "indonesian": "menginap"
+            "indonesian": "menginap",
+            "english": "stay (overnight), lodge"
           },
           {
             "dutch": "wel (stopwoord)",
-            "indonesian": "nah"
+            "indonesian": "nah",
+            "english": "well (filler word)"
           },
           {
             "dutch": "gaan met, omhoog gaan",
-            "indonesian": "naik"
+            "indonesian": "naik",
+            "english": "go by, go up"
           },
           {
             "dutch": "naam",
-            "indonesian": "nama"
+            "indonesian": "nama",
+            "english": "name"
           },
           {
             "dutch": "land",
-            "indonesian": "negeri"
+            "indonesian": "negeri",
+            "english": "country"
           },
           {
             "dutch": "nummer",
-            "indonesian": "nomor"
+            "indonesian": "nomor",
+            "english": "number"
           },
           {
             "dutch": "deur",
-            "indonesian": "pintu"
+            "indonesian": "pintu",
+            "english": "door"
           },
           {
             "dutch": "terugkeren (naar huis)",
-            "indonesian": "pulang"
+            "indonesian": "pulang",
+            "english": "return (home)"
           },
           {
             "dutch": "ziek; pijn",
-            "indonesian": "sakit"
+            "indonesian": "sakit",
+            "english": "sick; pain"
           },
           {
             "dutch": "gelijk, dezelfde, hetzelfde",
-            "indonesian": "sama"
+            "indonesian": "sama",
+            "english": "same, equal"
           },
           {
             "dutch": "gelijk aan",
-            "indonesian": "sama dengan"
+            "indonesian": "sama dengan",
+            "english": "equal to"
           },
           {
             "dutch": "tot, tot aan",
-            "indonesian": "sampai"
+            "indonesian": "sampai",
+            "english": "until, up to"
           },
           {
             "dutch": "ginds",
-            "indonesian": "sana"
+            "indonesian": "sana",
+            "english": "over there"
           },
           {
             "dutch": "nu, tegenwoordig",
-            "indonesian": "sekarang"
+            "indonesian": "sekarang",
+            "english": "now, nowadays"
           },
           {
             "dutch": "overdag",
-            "indonesian": "siang"
+            "indonesian": "siang",
+            "english": "daytime"
           },
           {
             "dutch": "wie? (voor persoon)",
-            "indonesian": "siapa?"
+            "indonesian": "siapa?",
+            "english": "who? (for person)"
           },
           {
             "dutch": "man, echtgenoot",
-            "indonesian": "suami"
+            "indonesian": "suami",
+            "english": "man, husband"
           },
           {
             "dutch": "al, reeds",
-            "indonesian": "sudah"
+            "indonesian": "sudah",
+            "english": "already"
           },
           {
             "dutch": "taxi",
-            "indonesian": "taksi"
+            "indonesian": "taksi",
+            "english": "taxi"
           },
           {
             "dutch": "toevoegen; optellen",
-            "indonesian": "tambah"
+            "indonesian": "tambah",
+            "english": "add; add up"
           },
           {
             "dutch": "tas",
-            "indonesian": "tas"
+            "indonesian": "tas",
+            "english": "bag"
           },
           {
             "dutch": "vriend, vriendin",
-            "indonesian": "teman"
+            "indonesian": "teman",
+            "english": "friend"
           },
           {
             "dutch": "verblijven, wonen",
-            "indonesian": "tinggal"
+            "indonesian": "tinggal",
+            "english": "live, stay"
           },
           {
             "dutch": "tomaat",
-            "indonesian": "tomat"
+            "indonesian": "tomat",
+            "english": "tomato"
           },
           {
             "dutch": "toerist",
-            "indonesian": "turis"
+            "indonesian": "turis",
+            "english": "tourist"
           }
         ]
       }
@@ -306,15 +371,18 @@ export const lesson = {
         "items": [
           {
             "dutch": "tot (weer)ziens",
-            "indonesian": "sampai bertemu lagi"
+            "indonesian": "sampai bertemu lagi",
+            "english": "see you again"
           },
           {
             "dutch": "dan ga ik maar (naar huis)",
-            "indonesian": "saya pulang dulu"
+            "indonesian": "saya pulang dulu",
+            "english": "I'm going home now"
           },
           {
             "dutch": "goedendag, goedemiddag",
-            "indonesian": "selamat siang"
+            "indonesian": "selamat siang",
+            "english": "good afternoon"
           }
         ]
       }
@@ -327,43 +395,53 @@ export const lesson = {
         "items": [
           {
             "dutch": "11",
-            "indonesian": "sebelas"
+            "indonesian": "sebelas",
+            "english": "eleven"
           },
           {
             "dutch": "12",
-            "indonesian": "dua belas"
+            "indonesian": "dua belas",
+            "english": "twelve"
           },
           {
             "dutch": "13",
-            "indonesian": "tiga belas"
+            "indonesian": "tiga belas",
+            "english": "thirteen"
           },
           {
             "dutch": "14",
-            "indonesian": "empat belas"
+            "indonesian": "empat belas",
+            "english": "fourteen"
           },
           {
             "dutch": "15",
-            "indonesian": "lima belas"
+            "indonesian": "lima belas",
+            "english": "fifteen"
           },
           {
             "dutch": "16",
-            "indonesian": "enam belas"
+            "indonesian": "enam belas",
+            "english": "sixteen"
           },
           {
             "dutch": "17",
-            "indonesian": "tujuh belas"
+            "indonesian": "tujuh belas",
+            "english": "seventeen"
           },
           {
             "dutch": "18",
-            "indonesian": "delapan belas"
+            "indonesian": "delapan belas",
+            "english": "eighteen"
           },
           {
             "dutch": "19",
-            "indonesian": "sembilan belas"
+            "indonesian": "sembilan belas",
+            "english": "nineteen"
           },
           {
             "dutch": "20",
-            "indonesian": "dua puluh"
+            "indonesian": "dua puluh",
+            "english": "twenty"
           }
         ]
       }
@@ -381,7 +459,13 @@ export const lesson = {
               "voor dieren: ekor -> seekor ayam kecil -- een ('n) kleine kip",
               "voor voorwerpen: buah -> sebuah tas -- een tas; dua buah pisang besar -- twee grote bananen"
             ],
-            "title": "Classificeerwoorden"
+            "title": "Classificeerwoorden",
+            "title_en": "Classifiers",
+            "rules_en": [
+              "for people: orang → seorang — a person; seorang Belanda — a Dutchman",
+              "for animals: ekor → seekor ayam kecil — a small chicken",
+              "for objects: buah → sebuah tas — a bag; dua buah pisang besar — two large bananas"
+            ]
           }
         ],
         "word_order": "telwoord - classificeerwoord - zelfstandig naamwoord - bijvoeglijk naamwoord",
@@ -438,7 +522,15 @@ export const lesson = {
               "Met behulp van een schuine streepje (/ /) wordt de indeling naar woordgroep aangegeven.",
               "Probeer bij het uitspreken van een zin een korte pauze in te lassen tussen de woordgroepen."
             ],
-            "title": "Woordgroepen"
+            "title": "Woordgroepen",
+            "title_en": "Word groups",
+            "rules_en": [
+              "A word group can consist of a single word, but usually consists of multiple words.",
+              "An Indonesian sentence consists minimally of one, usually of two or more word groups.",
+              "There is always a central word group. Other word groups add information to this central word group.",
+              "The division into word groups is indicated by means of a forward slash (/ /).",
+              "When pronouncing a sentence, try to insert a brief pause between the word groups."
+            ]
           }
         ],
         "grammar_topics": [
@@ -463,20 +555,29 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "Dit huis is klein",
-                "indonesian": "/Rumah ini/ kecil/"
+                "indonesian": "/Rumah ini/ kecil/",
+                "english": "This house is small"
               },
               {
                 "dutch": "Dat huis is duur",
-                "indonesian": "/Rumah itu/ mahal/"
+                "indonesian": "/Rumah itu/ mahal/",
+                "english": "That house is expensive"
               },
               {
                 "dutch": "Dit grote huis is duur",
-                "indonesian": "/Rumah besar ini/ mahal/"
+                "indonesian": "/Rumah besar ini/ mahal/",
+                "english": "This large house is expensive"
               },
               {
                 "dutch": "Dat kleine huis is goedkoop",
-                "indonesian": "/Rumah kecil itu/ murah/"
+                "indonesian": "/Rumah kecil itu/ murah/",
+                "english": "That small house is cheap"
               }
+            ],
+            "title_en": "1. ini and itu as demonstrative pronouns",
+            "rules_en": [
+              "As a demonstrative pronoun, ini or itu is placed after the noun or after the noun + adjective.",
+              "They are pronounced with emphasis."
             ]
           },
           {
@@ -488,20 +589,29 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "De weg is mooi",
-                "indonesian": "/Jalan itu/ bagus/"
+                "indonesian": "/Jalan itu/ bagus/",
+                "english": "The road is beautiful"
               },
               {
                 "dutch": "Deze bananen zijn goedkoop",
-                "indonesian": "/Pisang ini/ murah/"
+                "indonesian": "/Pisang ini/ murah/",
+                "english": "These bananas are cheap"
               },
               {
                 "dutch": "De mevrouw is thuis",
-                "indonesian": "/Ibu itu/ di rumah/"
+                "indonesian": "/Ibu itu/ di rumah/",
+                "english": "The lady is at home"
               },
               {
                 "dutch": "Deze taxi is nieuw",
-                "indonesian": "/Taksi ini/ baru/"
+                "indonesian": "/Taksi ini/ baru/",
+                "english": "This taxi is new"
               }
+            ],
+            "title_en": "2. ini and itu as phrase markers",
+            "rules_en": [
+              "After each ini or itu there is a short pause (end of phrase).",
+              "When itu is pronounced without emphasis, it can be translated with an article (the)."
             ]
           },
           {
@@ -512,20 +622,28 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "Dat is mooi",
-                "indonesian": "/Itu/ /bagus/"
+                "indonesian": "/Itu/ /bagus/",
+                "english": "That is beautiful"
               },
               {
                 "dutch": "Dit is een banaan",
-                "indonesian": "/Ini/ /pisang/"
+                "indonesian": "/Ini/ /pisang/",
+                "english": "This is a banana"
               },
               {
                 "dutch": "Dat is een huis",
-                "indonesian": "/Itu/ /rumah/"
+                "indonesian": "/Itu/ /rumah/",
+                "english": "That is a house"
               },
               {
                 "dutch": "Dit is een taxi",
-                "indonesian": "/Ini/ /taksi/"
+                "indonesian": "/Ini/ /taksi/",
+                "english": "This is a taxi"
               }
+            ],
+            "title_en": "3. ini and itu as central phrase",
+            "rules_en": [
+              "Ini and itu can themselves function as central phrase."
             ]
           }
         ],
@@ -550,7 +668,15 @@ export const lesson = {
               "Orang itu sakit -> Orang itu tidak sakit (Die persoon is ziek -> Die persoon is niet ziek)",
               "Saya makan pisang -> Saya tidak makan pisang (Ik eet een banaan -> Ik eet geen banaan)"
             ],
-            "title": "Ontkenning: tidak"
+            "title": "Ontkenning: tidak",
+            "title_en": "Negation: tidak",
+            "rules_en": [
+              "Taksi ini baru -> Taksi ini tidak baru (This taxi is new -> This taxi is not new)",
+              "Kamar ini baik -> Kamar ini tidak baik (This room is good -> This room is not good)",
+              "Hasan tinggal di hotel -> Hasan tidak tinggal di hotel (Hasan stays in the hotel -> Hasan does not stay in the hotel)",
+              "Orang itu sakit -> Orang itu tidak sakit (That person is sick -> That person is not sick)",
+              "Saya makan pisang -> Saya tidak makan pisang (I eat a banana -> I do not eat a banana)"
+            ]
           }
         ],
         "grammar_topics": [
@@ -573,7 +699,14 @@ export const lesson = {
               "/Dua orang turis ini/ kaya/ -- Deze twee toeristen zijn rijk",
               "Opmerking: de regels voor de plaatsing van twee bijvoeglijke naamwoorden worden gegeven in Les 4."
             ],
-            "title": "Plaatsing"
+            "title": "Plaatsing",
+            "title_en": "Placement",
+            "rules_en": [
+              "This large bag is expensive",
+              "That small house is cheap",
+              "These two tourists are rich",
+              "Note: the rules for placement of two adjectives are given in Lesson 4."
+            ]
           },
           {
             "notes": "barang lama = oude spullen die nog functioneren (bijv. antiek); barang tua = goederen die bijna zijn versleten (door gebruik)",

@@ -43,67 +43,80 @@ export const lesson = {
           {
             "text": "Selamat siang, Mas. Kamar saya nomor berapa?",
             "speaker": "Ibu Dewi",
-            "translation": "Goedemiddag, meneer. Welk kamernummer heb ik?"
+            "translation": "Goedemiddag, meneer. Welk kamernummer heb ik?",
+            "translation_en": "Good afternoon, sir. What is my room number?"
           },
           {
             "text": "Nomor 215, Bu. Di lantai 2.",
             "speaker": "Mas Wawan",
-            "translation": "Nummer 215, mevrouw. Op de tweede verdieping."
+            "translation": "Nummer 215, mevrouw. Op de tweede verdieping.",
+            "translation_en": "Number 215, madam. On the second floor."
           },
           {
             "text": "Paspor Ibu di mana? Saya harus isi formulir hotel.",
             "speaker": "Mas Wawan",
-            "translation": "Waar is uw paspoort, mevrouw? Ik moet het hotelformulier invullen."
+            "translation": "Waar is uw paspoort, mevrouw? Ik moet het hotelformulier invullen.",
+            "translation_en": "Where is your passport, madam? I need to fill in the hotel form."
           },
           {
             "text": "Ini paspor saya. Kunci saya di mana?",
             "speaker": "Ibu Dewi",
-            "translation": "Hier is mijn paspoort. Waar is mijn sleutel?"
+            "translation": "Hier is mijn paspoort. Waar is mijn sleutel?",
+            "translation_en": "Here is my passport. Where is my key?"
           },
           {
             "text": "Kunci yang kecil dan kuning ini kunci Ibu, silakan!",
             "speaker": "Mas Wawan",
-            "translation": "Deze kleine gele sleutel is uw sleutel, alstublieft!"
+            "translation": "Deze kleine gele sleutel is uw sleutel, alstublieft!",
+            "translation_en": "This small yellow key is your key, please!"
           },
           {
             "text": "Kamar saya bagus. Kamar mandi ada di mana?",
             "speaker": "Ibu Dewi",
-            "translation": "Mijn kamer is mooi. Waar is het badkamer?"
+            "translation": "Mijn kamer is mooi. Waar is het badkamer?",
+            "translation_en": "My room is nice. Where is the bathroom?"
           },
           {
             "text": "Di sini, Bu. Handuk, sabun dan sikat gigi ada. Di situ bak air.",
             "speaker": "Mas Wawan",
-            "translation": "Hier, mevrouw. Handdoeken, zeep en tandenborstel zijn er. Daar is het badkuip."
+            "translation": "Hier, mevrouw. Handdoeken, zeep en tandenborstel zijn er. Daar is het badkuip.",
+            "translation_en": "Here, madam. Towels, soap and toothbrush are here. There is the bathtub."
           },
           {
             "text": "Air di bak untuk mandi.",
             "speaker": "Mas Wawan",
-            "translation": "Het water in het kuip is voor het bad."
+            "translation": "Het water in het kuip is voor het bad.",
+            "translation_en": "The water in the tub is for bathing."
           },
           {
             "text": "Oke, terima kasih, ya Mas!",
             "speaker": "Ibu Dewi",
-            "translation": "Oké, dank je wel, meneer!"
+            "translation": "Oké, dank je wel, meneer!",
+            "translation_en": "Okay, thank you, sir!"
           },
           {
             "text": "Mas, saya ingin makan. Apa makanan yang enak?",
             "speaker": "Ibu Dewi",
-            "translation": "Meneer, ik wil graag eten. Wat is lekker eten?"
+            "translation": "Meneer, ik wil graag eten. Wat is lekker eten?",
+            "translation_en": "Sir, I want to eat. What is good food?"
           },
           {
             "text": "Oo, apa Ibu suka ayam pedas, nasi kuning dan lauk?",
             "speaker": "Mas Imran",
-            "translation": "Oh, houdt u van pittige kip, gele rijst en bijgerechten?"
+            "translation": "Oh, houdt u van pittige kip, gele rijst en bijgerechten?",
+            "translation_en": "Oh, do you like spicy chicken, yellow rice and side dishes?"
           },
           {
             "text": "Eeh... suka, tetapi saya ingin makan sate kambing, gado-gado dan nasi putih.",
             "speaker": "Ibu Dewi",
-            "translation": "Eh... ja, maar ik wil liever geitenvlees satéspiesjes, gado-gado en witte rijst eten."
+            "translation": "Eh... ja, maar ik wil liever geitenvlees satéspiesjes, gado-gado en witte rijst eten.",
+            "translation_en": "Eh... yes, but I would prefer to eat goat satay, gado-gado and white rice."
           },
           {
             "text": "Tambah krupuk juga dan segelas air putih, ya Mas.",
             "speaker": "Ibu Dewi",
-            "translation": "Voeg ook nog krupuk toe en een glas water, meneer."
+            "translation": "Voeg ook nog krupuk toe en een glas water, meneer.",
+            "translation_en": "Add crackers too and a glass of water, sir."
           }
         ]
       }
@@ -125,16 +138,26 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "Een banaan die te oud is, is niet lekker",
-                "indonesian": "Pisang yang terlalu tua tidak enak"
+                "indonesian": "Pisang yang terlalu tua tidak enak",
+                "english": "A banana that is too ripe is not tasty."
               },
               {
                 "dutch": "Dit is de Nederlander die in Bogor woont",
-                "indonesian": "Ini orang Belanda yang tinggal di Bogor"
+                "indonesian": "Ini orang Belanda yang tinggal di Bogor",
+                "english": "This is the Dutchman who lives in Bogor."
               },
               {
                 "dutch": "Mijn kleine fiets is verdwenen",
-                "indonesian": "Sepeda saya yang kecil hilang"
+                "indonesian": "Sepeda saya yang kecil hilang",
+                "english": "My small bicycle has disappeared."
               }
+            ],
+            "title_en": "Yang as relative pronoun (who/which/that)",
+            "rules_en": [
+              "Yang links as a relative pronoun a subordinate clause to the preceding noun.",
+              "Yang always stands directly after the word or phrase it refers to.",
+              "After compound nouns (kamar mandi, tempat tidur) yang is obligatory.",
+              "After a possessive pronoun an adjective must also be preceded by yang."
             ]
           },
           {
@@ -146,24 +169,34 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "De dure (dingen) zijn mooi",
-                "indonesian": "Yang mahal bagus"
+                "indonesian": "Yang mahal bagus",
+                "english": "The expensive ones are beautiful."
               },
               {
                 "dutch": "De grote is lekker",
-                "indonesian": "Yang besar enak"
+                "indonesian": "Yang besar enak",
+                "english": "The big one is tasty."
               },
               {
                 "dutch": "Degenen die slapen zijn talrijk",
-                "indonesian": "Yang tidur banyak"
+                "indonesian": "Yang tidur banyak",
+                "english": "Those who sleep are many."
               },
               {
                 "dutch": "Degenen die naar de winkel willen moeten een taxi nemen",
-                "indonesian": "Yang mau ke toko harus naik taksi"
+                "indonesian": "Yang mau ke toko harus naik taksi",
+                "english": "Those who want to go to the store must take a taxi."
               },
               {
                 "dutch": "Deze twee zijn schoon",
-                "indonesian": "Yang dua ini bersih"
+                "indonesian": "Yang dua ini bersih",
+                "english": "These two are clean."
               }
+            ],
+            "title_en": "Yang makes nouns (nominalization)",
+            "rules_en": [
+              "Yang can convert adjectives, verbs and other parts of speech into nouns.",
+              "Comparable to the Dutch 'the...' or 'those who...'."
             ]
           },
           {
@@ -175,20 +208,29 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "Het GROTE huis (nadruk op groot)",
-                "indonesian": "Rumah yang besar"
+                "indonesian": "Rumah yang besar",
+                "english": "The BIG house (emphasis on big)"
               },
               {
                 "dutch": "De SCHONE lepel",
-                "indonesian": "Sendok yang bersih"
+                "indonesian": "Sendok yang bersih",
+                "english": "The CLEAN spoon"
               },
               {
                 "dutch": "De KLEINE stoel",
-                "indonesian": "Kursi yang kecil"
+                "indonesian": "Kursi yang kecil",
+                "english": "The SMALL chair"
               },
               {
                 "dutch": "De WITTE badkamer",
-                "indonesian": "Kamar mandi yang putih"
+                "indonesian": "Kamar mandi yang putih",
+                "english": "The WHITE bathroom"
               }
+            ],
+            "title_en": "Yang with a single adjective (emphasis)",
+            "rules_en": [
+              "Yang before an adjective emphasizes that property.",
+              "Comparable to italicizing a word in Dutch."
             ]
           },
           {
@@ -200,20 +242,29 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "Het GELE grote huis (geel benadrukt)",
-                "indonesian": "Rumah besar yang kuning"
+                "indonesian": "Rumah besar yang kuning",
+                "english": "The YELLOW large house (yellow emphasized)"
               },
               {
                 "dutch": "De schone kleine lepel (schoon benadrukt)",
-                "indonesian": "Sendok kecil yang bersih"
+                "indonesian": "Sendok kecil yang bersih",
+                "english": "The clean small spoon (clean emphasized)"
               },
               {
                 "dutch": "Het grote en gele huis (gelijke nadruk)",
-                "indonesian": "Rumah yang besar dan kuning"
+                "indonesian": "Rumah yang besar dan kuning",
+                "english": "The large and yellow house (equal emphasis)"
               },
               {
                 "dutch": "De witte, zware kamerdeur (gelijke nadruk)",
-                "indonesian": "Pintu kamar yang putih dan berat"
+                "indonesian": "Pintu kamar yang putih dan berat",
+                "english": "The white, heavy room door (equal emphasis)"
               }
+            ],
+            "title_en": "Yang with two adjectives",
+            "rules_en": [
+              "With unequal emphasis (one property emphasized): [noun] [adj.] yang [emphasized adj.]",
+              "With equal emphasis (both properties equally important): [noun] yang [adj.] dan [adj.]"
             ]
           },
           {
@@ -225,8 +276,14 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "Er zijn er die uit Nederland komen en er zijn er die uit Duitsland komen",
-                "indonesian": "Ada yang dari negeri Belanda dan ada yang dari negeri Jerman"
+                "indonesian": "Ada yang dari negeri Belanda dan ada yang dari negeri Jerman",
+                "english": "There are those from the Netherlands and there are those from Germany"
               }
+            ],
+            "title_en": "Ada yang... — there are those who...",
+            "rules_en": [
+              "Ada yang... means 'there are those who...' or 'some..., others...'",
+              "Used to divide a group or indicate a portion."
             ]
           }
         ],
@@ -436,335 +493,418 @@ export const lesson = {
         "items": [
           {
             "dutch": "de jonge rijstplant",
-            "indonesian": "bibit padi"
+            "indonesian": "bibit padi",
+            "english": "young rice plant"
           },
           {
             "dutch": "volgroeide rijstplant met volle rijstaar, ongepelde rijst",
-            "indonesian": "padi"
+            "indonesian": "padi",
+            "english": "mature rice plant with full rice head, unmilled rice"
           },
           {
             "dutch": "ongepelde rijst",
-            "indonesian": "gabah"
+            "indonesian": "gabah",
+            "english": "unmilled rice"
           },
           {
             "dutch": "gepelde ongekookte rijst",
-            "indonesian": "beras"
+            "indonesian": "beras",
+            "english": "milled uncooked rice"
           },
           {
             "dutch": "gekookte rijst",
-            "indonesian": "nasi"
+            "indonesian": "nasi",
+            "english": "cooked rice"
           },
           {
             "dutch": "gekookte witte rijst",
-            "indonesian": "nasi putih"
+            "indonesian": "nasi putih",
+            "english": "cooked white rice"
           },
           {
             "dutch": "gekookte rijst, daarna met kruiden gebakken",
-            "indonesian": "nasi goreng"
+            "indonesian": "nasi goreng",
+            "english": "cooked rice, then fried with spices"
           },
           {
             "dutch": "met kruiden geel gekookte rijst",
-            "indonesian": "nasi kuning"
+            "indonesian": "nasi kuning",
+            "english": "rice cooked yellow with spices"
           },
           {
             "dutch": "begeleiden",
-            "indonesian": "mengantar"
+            "indonesian": "mengantar",
+            "english": "to accompany"
           },
           {
             "dutch": "water",
-            "indonesian": "air"
+            "indonesian": "air",
+            "english": "water"
           },
           {
             "dutch": "drinken",
-            "indonesian": "minum"
+            "indonesian": "minum",
+            "english": "to drink"
           },
           {
             "dutch": "drinkwater",
-            "indonesian": "air putih"
+            "indonesian": "air putih",
+            "english": "drinking water"
           },
           {
             "dutch": "drank",
-            "indonesian": "minuman"
+            "indonesian": "minuman",
+            "english": "beverage"
           },
           {
             "dutch": "maar, echter",
-            "indonesian": "tetapi"
+            "indonesian": "tetapi",
+            "english": "but, however"
           },
           {
             "dutch": "kind",
-            "indonesian": "anak"
+            "indonesian": "anak",
+            "english": "child"
           },
           {
             "dutch": "waterbak",
-            "indonesian": "bak air"
+            "indonesian": "bak air",
+            "english": "water tank"
           },
           {
             "dutch": "heet (van smaak)",
-            "indonesian": "pedas"
+            "indonesian": "pedas",
+            "english": "spicy, hot (taste)"
           },
           {
             "dutch": "schoon",
-            "indonesian": "bersih"
+            "indonesian": "bersih",
+            "english": "clean"
           },
           {
             "dutch": "langzaam (aan)",
-            "indonesian": "pelan-pelan"
+            "indonesian": "pelan-pelan",
+            "english": "slowly"
           },
           {
             "dutch": "zitten",
-            "indonesian": "duduk"
+            "indonesian": "duduk",
+            "english": "sit"
           },
           {
             "dutch": "bestellen",
-            "indonesian": "pesan"
+            "indonesian": "pesan",
+            "english": "order"
           },
           {
             "dutch": "formulier",
-            "indonesian": "formulir"
+            "indonesian": "formulir",
+            "english": "form"
           },
           {
             "dutch": "bord",
-            "indonesian": "piring"
+            "indonesian": "piring",
+            "english": "plate"
           },
           {
             "dutch": "groentegerecht",
-            "indonesian": "gado-gado"
+            "indonesian": "gado-gado",
+            "english": "vegetable dish"
           },
           {
             "dutch": "verlangen, willen",
-            "indonesian": "ingin"
+            "indonesian": "ingin",
+            "english": "want, desire"
           },
           {
             "dutch": "mes",
-            "indonesian": "pisau"
+            "indonesian": "pisau",
+            "english": "knife"
           },
           {
             "dutch": "vork",
-            "indonesian": "garpu"
+            "indonesian": "garpu",
+            "english": "fork"
           },
           {
             "dutch": "wit",
-            "indonesian": "putih"
+            "indonesian": "putih",
+            "english": "white"
           },
           {
             "dutch": "glas",
-            "indonesian": "gelas"
+            "indonesian": "gelas",
+            "english": "glass"
           },
           {
             "dutch": "netjes",
-            "indonesian": "rapi"
+            "indonesian": "rapi",
+            "english": "tidy, neat"
           },
           {
             "dutch": "tand",
-            "indonesian": "gigi"
+            "indonesian": "gigi",
+            "english": "tooth"
           },
           {
             "dutch": "restaurant",
-            "indonesian": "restoran"
+            "indonesian": "restoran",
+            "english": "restaurant"
           },
           {
             "dutch": "bakken, braden",
-            "indonesian": "goreng"
+            "indonesian": "goreng",
+            "english": "fry"
           },
           {
             "dutch": "handdoek",
-            "indonesian": "handuk"
+            "indonesian": "handuk",
+            "english": "towel"
           },
           {
             "dutch": "zeep",
-            "indonesian": "sabun"
+            "indonesian": "sabun",
+            "english": "soap"
           },
           {
             "dutch": "weg, verdwenen (kwijt)",
-            "indonesian": "hilang"
+            "indonesian": "hilang",
+            "english": "lost, missing"
           },
           {
             "dutch": "pasta van Spaanse pepers",
-            "indonesian": "sambal"
+            "indonesian": "sambal",
+            "english": "chili pepper paste"
           },
           {
             "dutch": "sate",
-            "indonesian": "sate"
+            "indonesian": "sate",
+            "english": "satay"
           },
           {
             "dutch": "inhoud, (in)vullen",
-            "indonesian": "isi"
+            "indonesian": "isi",
+            "english": "contents, fill"
           },
           {
             "dutch": "groente",
-            "indonesian": "sayur"
+            "indonesian": "sayur",
+            "english": "vegetable"
           },
           {
             "dutch": "een bepaalde vrucht",
-            "indonesian": "jambu air"
+            "indonesian": "jambu air",
+            "english": "rose apple"
           },
           {
             "dutch": "school",
-            "indonesian": "sekolah"
+            "indonesian": "sekolah",
+            "english": "school"
           },
           {
             "dutch": "Duitsland, Duits",
-            "indonesian": "Jerman"
+            "indonesian": "Jerman",
+            "english": "Germany, German"
           },
           {
             "dutch": "vaarwel",
-            "indonesian": "selamat tinggal"
+            "indonesian": "selamat tinggal",
+            "english": "goodbye"
           },
           {
             "dutch": "ook",
-            "indonesian": "juga"
+            "indonesian": "juga",
+            "english": "also"
           },
           {
             "dutch": "lepel",
-            "indonesian": "sendok"
+            "indonesian": "sendok",
+            "english": "spoon"
           },
           {
             "dutch": "toilet, w.c.",
-            "indonesian": "kamar kecil"
+            "indonesian": "kamar kecil",
+            "english": "toilet, restroom"
           },
           {
             "dutch": "na(dat), vervolgens",
-            "indonesian": "setelah"
+            "indonesian": "setelah",
+            "english": "after, then"
           },
           {
             "dutch": "eetkamer",
-            "indonesian": "kamar makan"
+            "indonesian": "kamar makan",
+            "english": "dining room"
           },
           {
             "dutch": "borstel",
-            "indonesian": "sikat"
+            "indonesian": "sikat",
+            "english": "brush"
           },
           {
             "dutch": "badkamer",
-            "indonesian": "kamar mandi"
+            "indonesian": "kamar mandi",
+            "english": "bathroom"
           },
           {
             "dutch": "tandenborstel",
-            "indonesian": "sikat gigi"
+            "indonesian": "sikat gigi",
+            "english": "toothbrush"
           },
           {
             "dutch": "geit",
-            "indonesian": "kambing"
+            "indonesian": "kambing",
+            "english": "goat"
           },
           {
             "dutch": "houden van (lekker vinden)",
-            "indonesian": "suka"
+            "indonesian": "suka",
+            "english": "like, enjoy"
           },
           {
             "dutch": "sojasaus",
-            "indonesian": "kecap"
+            "indonesian": "kecap",
+            "english": "soy sauce"
           },
           {
             "dutch": "gast",
-            "indonesian": "tamu"
+            "indonesian": "tamu",
+            "english": "guest"
           },
           {
             "dutch": "genoeg, voldaan",
-            "indonesian": "kenyang"
+            "indonesian": "kenyang",
+            "english": "full, satisfied"
           },
           {
             "dutch": "thee",
-            "indonesian": "teh"
+            "indonesian": "teh",
+            "english": "tea"
           },
           {
             "dutch": "koffie",
-            "indonesian": "kopi"
+            "indonesian": "kopi",
+            "english": "coffee"
           },
           {
             "dutch": "plaats",
-            "indonesian": "tempat"
+            "indonesian": "tempat",
+            "english": "place"
           },
           {
             "dutch": "zwarte koffie",
-            "indonesian": "kopi pahit"
+            "indonesian": "kopi pahit",
+            "english": "black coffee"
           },
           {
             "dutch": "zitplaats",
-            "indonesian": "tempat duduk"
+            "indonesian": "tempat duduk",
+            "english": "seat"
           },
           {
             "dutch": "zwarte koffie met suiker",
-            "indonesian": "kopi tubruk"
+            "indonesian": "kopi tubruk",
+            "english": "black coffee with sugar"
           },
           {
             "dutch": "bed",
-            "indonesian": "tempat tidur"
+            "indonesian": "tempat tidur",
+            "english": "bed"
           },
           {
             "dutch": "te",
-            "indonesian": "terlalu"
+            "indonesian": "terlalu",
+            "english": "too"
           },
           {
             "dutch": "kroepoek",
-            "indonesian": "krupuk"
+            "indonesian": "krupuk",
+            "english": "prawn cracker"
           },
           {
             "dutch": "klaar staan, gereed",
-            "indonesian": "tersedia"
+            "indonesian": "tersedia",
+            "english": "available, ready"
           },
           {
             "dutch": "sleutel",
-            "indonesian": "kunci"
+            "indonesian": "kunci",
+            "english": "key"
           },
           {
             "dutch": "slapen",
-            "indonesian": "tidur"
+            "indonesian": "tidur",
+            "english": "sleep"
           },
           {
             "dutch": "geel",
-            "indonesian": "kuning"
+            "indonesian": "kuning",
+            "english": "yellow"
           },
           {
             "dutch": "botsen",
-            "indonesian": "tubruk"
+            "indonesian": "tubruk",
+            "english": "collide"
           },
           {
             "dutch": "tekort, minder",
-            "indonesian": "kurang"
+            "indonesian": "kurang",
+            "english": "less, short of"
           },
           {
             "dutch": "afdalen, uitstappen",
-            "indonesian": "turun"
+            "indonesian": "turun",
+            "english": "descend, get off"
           },
           {
             "dutch": "die, dat",
-            "indonesian": "yang"
+            "indonesian": "yang",
+            "english": "who, which, that"
           },
           {
             "dutch": "stoel",
-            "indonesian": "kursi"
+            "indonesian": "kursi",
+            "english": "chair"
           },
           {
             "dutch": "vloer, verdieping",
-            "indonesian": "lantai"
+            "indonesian": "lantai",
+            "english": "floor, story"
           },
           {
             "dutch": "bijgerechten",
-            "indonesian": "lauk"
+            "indonesian": "lauk",
+            "english": "side dishes"
           },
           {
             "dutch": "kast",
-            "indonesian": "lemari"
+            "indonesian": "lemari",
+            "english": "cabinet"
           },
           {
             "dutch": "voedsel",
-            "indonesian": "makanan"
+            "indonesian": "makanan",
+            "english": "food"
           },
           {
             "dutch": "baden",
-            "indonesian": "mandi"
+            "indonesian": "mandi",
+            "english": "bathe"
           },
           {
             "dutch": "goud (emas)",
-            "indonesian": "mas"
+            "indonesian": "mas",
+            "english": "gold"
           },
           {
             "dutch": "nog",
-            "indonesian": "masih"
+            "indonesian": "masih",
+            "english": "still"
           },
           {
             "dutch": "tafel",
-            "indonesian": "meja"
+            "indonesian": "meja",
+            "english": "table"
           }
         ]
       }
@@ -777,67 +917,83 @@ export const lesson = {
         "items": [
           {
             "dutch": "100",
-            "indonesian": "seratus"
+            "indonesian": "seratus",
+            "english": "hundred"
           },
           {
             "dutch": "200",
-            "indonesian": "dua ratus"
+            "indonesian": "dua ratus",
+            "english": "two hundred"
           },
           {
             "dutch": "300",
-            "indonesian": "tiga ratus"
+            "indonesian": "tiga ratus",
+            "english": "three hundred"
           },
           {
             "dutch": "400",
-            "indonesian": "empat ratus"
+            "indonesian": "empat ratus",
+            "english": "four hundred"
           },
           {
             "dutch": "500",
-            "indonesian": "lima ratus"
+            "indonesian": "lima ratus",
+            "english": "five hundred"
           },
           {
             "dutch": "600",
-            "indonesian": "enam ratus"
+            "indonesian": "enam ratus",
+            "english": "six hundred"
           },
           {
             "dutch": "700",
-            "indonesian": "tujuh ratus"
+            "indonesian": "tujuh ratus",
+            "english": "seven hundred"
           },
           {
             "dutch": "800",
-            "indonesian": "delapan ratus"
+            "indonesian": "delapan ratus",
+            "english": "eight hundred"
           },
           {
             "dutch": "900",
-            "indonesian": "sembilan ratus"
+            "indonesian": "sembilan ratus",
+            "english": "nine hundred"
           },
           {
             "dutch": "1.000",
-            "indonesian": "seribu"
+            "indonesian": "seribu",
+            "english": "thousand"
           },
           {
             "dutch": "2.000",
-            "indonesian": "dua ribu"
+            "indonesian": "dua ribu",
+            "english": "two thousand"
           },
           {
             "dutch": "9.000",
-            "indonesian": "sembilan ribu"
+            "indonesian": "sembilan ribu",
+            "english": "nine thousand"
           },
           {
             "dutch": "10.000",
-            "indonesian": "sepuluh ribu"
+            "indonesian": "sepuluh ribu",
+            "english": "ten thousand"
           },
           {
             "dutch": "1.000.000",
-            "indonesian": "sejuta"
+            "indonesian": "sejuta",
+            "english": "million"
           },
           {
             "dutch": "1.000.000.000",
-            "indonesian": "semiliar"
+            "indonesian": "semiliar",
+            "english": "billion"
           },
           {
             "dutch": "1.000.000.000.000",
-            "indonesian": "setriliun"
+            "indonesian": "setriliun",
+            "english": "trillion"
           }
         ]
       }

@@ -33,8 +33,10 @@ function buildSyntheticStaging(): StagingBundle {
           content: {
             type: 'vocabulary',
             items: [
-              { indonesian: 'halo', dutch: 'hallo', pos: 'greeting', level: 'A1' },
-              { indonesian: 'apa kabar', dutch: 'hoe gaat het', pos: 'greeting', level: 'A1' },
+              // english present so GT9 (sectionShape) passes without an LLM call —
+              // mirrors how dialogue lines pre-carry `translation` for GT8.
+              { indonesian: 'halo', dutch: 'hallo', english: 'hello', pos: 'greeting', level: 'A1' },
+              { indonesian: 'apa kabar', dutch: 'hoe gaat het', english: 'how are you', pos: 'greeting', level: 'A1' },
             ],
           },
         },
@@ -44,8 +46,8 @@ function buildSyntheticStaging(): StagingBundle {
           content: {
             type: 'dialogue',
             lines: [
-              { text: 'Halo Budi', speaker: 'Andi', translation: 'Hallo Budi' },
-              { text: 'Halo Andi', speaker: 'Budi', translation: 'Hallo Andi' },
+              { text: 'Halo Budi', speaker: 'Andi', translation: 'Hallo Budi', translation_en: 'Hello Budi' },
+              { text: 'Halo Andi', speaker: 'Budi', translation: 'Hallo Andi', translation_en: 'Hello Andi' },
             ],
           },
         },
@@ -97,6 +99,11 @@ function buildSupabaseMock(opts: {
           recorder.updates.push({ table, payload })
           return { error: null }
         },
+      }),
+      // PR 6: typed-table writers + the dialogue writer use delete-then-insert.
+      delete: () => ({
+        in: async () => ({ error: null }),
+        eq: async () => ({ error: null }),
       }),
       upsert: (payload: any, opts2?: { onConflict?: string }) => {
         recorder.upserts.push({ table, payload, onConflict: opts2?.onConflict })

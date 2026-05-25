@@ -116,16 +116,26 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "Dat [is] duur (geen koppelwerkwoord)",
-                "indonesian": "Itu mahal"
+                "indonesian": "Itu mahal",
+                "english": "That [is] expensive (no copula)"
               },
               {
                 "dutch": "Ik koop een vrucht (geen vervoeging)",
-                "indonesian": "Saya beli buah"
+                "indonesian": "Saya beli buah",
+                "english": "I buy a fruit (no inflection)"
               },
               {
                 "dutch": "Ik wil een groot huis kopen (werkwoorden bij elkaar)",
-                "indonesian": "Saya mau beli rumah besar"
+                "indonesian": "Saya mau beli rumah besar",
+                "english": "I want to buy a big house (verbs together)"
               }
+            ],
+            "title_en": "Verb",
+            "rules_en": [
+              "Sentences without a verb are very common.",
+              "Verbs are not inflected for singular or plural.",
+              "Verbs are not inflected for present or past tense. Unless the context indicates otherwise, the verb is translated in the present tense.",
+              "Verbs are placed together."
             ]
           },
           {
@@ -139,16 +149,26 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "Ik koop een/het huis (geen lidwoord)",
-                "indonesian": "Saya beli rumah"
+                "indonesian": "Saya beli rumah",
+                "english": "I buy a/the house (no article)"
               },
               {
                 "dutch": "Twee huizen (geen meervoud bij telwoord)",
-                "indonesian": "Dua rumah"
+                "indonesian": "Dua rumah",
+                "english": "Two houses (no plural with numeral)"
               },
               {
                 "dutch": "Allerlei fruit (reduplicatie = verscheidenheid)",
-                "indonesian": "Buah-buahan"
+                "indonesian": "Buah-buahan",
+                "english": "All kinds of fruit (reduplication = variety)"
               }
+            ],
+            "title_en": "Noun",
+            "rules_en": [
+              "Nouns have no articles (the, a).",
+              "No distinction is made between singular and plural in nouns.",
+              "Repetition of a noun indicates plurality or variety.",
+              "If context shows plurality or variety, a noun is not doubled (2 houses = dua rumah not dua rumah-rumah)."
             ]
           },
           {
@@ -159,8 +179,13 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "Een groot huis (bijv.nw. na znw.)",
-                "indonesian": "Rumah besar"
+                "indonesian": "Rumah besar",
+                "english": "A big house (adj. after noun)"
               }
+            ],
+            "title_en": "Adjective",
+            "rules_en": [
+              "The adjective is placed after the noun."
             ]
           }
         ],
@@ -178,22 +203,26 @@ export const lesson = {
           {
             "text": "Pak, saya mau beli tiga buah pisang. Berapa harganya?",
             "speaker": "Ibu",
-            "translation": "Meneer, ik wil graag drie bananen kopen. Hoeveel kosten ze?"
+            "translation": "Meneer, ik wil graag drie bananen kopen. Hoeveel kosten ze?",
+            "translation_en": "Sir, I would like to buy three bananas. How much are they?"
           },
           {
             "text": "Harganya murah Bu, delapan rupiah.",
             "speaker": "Penjual",
-            "translation": "Ze zijn goedkoop mevrouw, acht roepiah."
+            "translation": "Ze zijn goedkoop mevrouw, acht roepiah.",
+            "translation_en": "They are cheap madam, eight rupiah."
           },
           {
             "text": "Itu mahal ya! Empat rupiah boleh?",
             "speaker": "Ibu",
-            "translation": "Dat is duur! Vier roepiah mogelijk?"
+            "translation": "Dat is duur! Vier roepiah mogelijk?",
+            "translation_en": "That is expensive! Four rupiah possible?"
           },
           {
             "text": "Belum bisa Bu. Tetapi kalau mau lima buah, bisa sembilan rupiah.",
             "speaker": "Penjual",
-            "translation": "Dat kan niet mevrouw. Maar als u vijf stuks wilt, kan het voor negen roepiah."
+            "translation": "Dat kan niet mevrouw. Maar als u vijf stuks wilt, kan het voor negen roepiah.",
+            "translation_en": "That won't work madam. But if you want five pieces, it can be nine rupiah."
           }
         ],
         "setup": "Ibu mau ke pasar. Mau beli pisang."
@@ -207,179 +236,223 @@ export const lesson = {
         "items": [
           {
             "dutch": "einde",
-            "indonesian": "akhir"
+            "indonesian": "akhir",
+            "english": "end"
           },
           {
             "dutch": "wat?",
-            "indonesian": "apa?"
+            "indonesian": "apa?",
+            "english": "what?"
           },
           {
             "dutch": "taal",
-            "indonesian": "bahasa"
+            "indonesian": "bahasa",
+            "english": "language"
           },
           {
             "dutch": "goed",
-            "indonesian": "baik"
+            "indonesian": "baik",
+            "english": "good"
           },
           {
             "dutch": "meneer, vader, u",
-            "indonesian": "bapak"
+            "indonesian": "bapak",
+            "english": "sir, father, you"
           },
           {
             "dutch": "kopen",
-            "indonesian": "beli"
+            "indonesian": "beli",
+            "english": "buy"
           },
           {
             "dutch": "nog niet",
-            "indonesian": "belum"
+            "indonesian": "belum",
+            "english": "not yet"
           },
           {
             "dutch": "hoeveel?",
-            "indonesian": "berapa?"
+            "indonesian": "berapa?",
+            "english": "how much?"
           },
           {
             "dutch": "groot",
-            "indonesian": "besar"
+            "indonesian": "besar",
+            "english": "big"
           },
           {
             "dutch": "kunnen, mogen",
-            "indonesian": "bisa"
+            "indonesian": "bisa",
+            "english": "can, may"
           },
           {
             "dutch": "mogen, kunnen",
-            "indonesian": "boleh"
+            "indonesian": "boleh",
+            "english": "may, can"
           },
           {
             "dutch": "vrucht",
-            "indonesian": "buah"
+            "indonesian": "buah",
+            "english": "fruit"
           },
           {
             "dutch": "voldoende",
-            "indonesian": "cukup"
+            "indonesian": "cukup",
+            "english": "enough"
           },
           {
             "dutch": "en",
-            "indonesian": "dan"
+            "indonesian": "dan",
+            "english": "and"
           },
           {
             "dutch": "uit, van",
-            "indonesian": "dari"
+            "indonesian": "dari",
+            "english": "from, of"
           },
           {
             "dutch": "komen",
-            "indonesian": "datang"
+            "indonesian": "datang",
+            "english": "come"
           },
           {
             "dutch": "in, op, te",
-            "indonesian": "di"
+            "indonesian": "di",
+            "english": "in, on, at"
           },
           {
             "dutch": "prijs",
-            "indonesian": "harga"
+            "indonesian": "harga",
+            "english": "price"
           },
           {
             "dutch": "hotel",
-            "indonesian": "hotel"
+            "indonesian": "hotel",
+            "english": "hotel"
           },
           {
             "dutch": "mevrouw, moeder, u",
-            "indonesian": "ibu"
+            "indonesian": "ibu",
+            "english": "madam, mother, you"
           },
           {
             "dutch": "indonesië",
-            "indonesian": "indonesia"
+            "indonesian": "indonesia",
+            "english": "Indonesia"
           },
           {
             "dutch": "dat, die",
-            "indonesian": "itu"
+            "indonesian": "itu",
+            "english": "that, those"
           },
           {
             "dutch": "bericht",
-            "indonesian": "kabar"
+            "indonesian": "kabar",
+            "english": "news"
           },
           {
             "dutch": "indien, wanneer",
-            "indonesian": "kalau"
+            "indonesian": "kalau",
+            "english": "if, when"
           },
           {
             "dutch": "gunst, genegenheid",
-            "indonesian": "kasih"
+            "indonesian": "kasih",
+            "english": "favor, affection"
           },
           {
             "dutch": "naar",
-            "indonesian": "ke"
+            "indonesian": "ke",
+            "english": "to"
           },
           {
             "dutch": "leeg",
-            "indonesian": "kosong"
+            "indonesian": "kosong",
+            "english": "empty"
           },
           {
             "dutch": "duur",
-            "indonesian": "mahal"
+            "indonesian": "mahal",
+            "english": "expensive"
           },
           {
             "dutch": "eten",
-            "indonesian": "makan"
+            "indonesian": "makan",
+            "english": "eat"
           },
           {
             "dutch": "willen",
-            "indonesian": "mau"
+            "indonesian": "mau",
+            "english": "want"
           },
           {
             "dutch": "goedkoop",
-            "indonesian": "murah"
+            "indonesian": "murah",
+            "english": "cheap"
           },
           {
             "dutch": "ananas",
-            "indonesian": "nanas"
+            "indonesian": "nanas",
+            "english": "pineapple"
           },
           {
             "dutch": "mevrouw, u",
-            "indonesian": "nyonya"
+            "indonesian": "nyonya",
+            "english": "madam, you"
           },
           {
             "dutch": "mens",
-            "indonesian": "orang"
+            "indonesian": "orang",
+            "english": "person"
           },
           {
             "dutch": "markt",
-            "indonesian": "pasar"
+            "indonesian": "pasar",
+            "english": "market"
           },
           {
             "dutch": "verkoper",
-            "indonesian": "penjual"
+            "indonesian": "penjual",
+            "english": "seller"
           },
           {
             "dutch": "banaan",
-            "indonesian": "pisang"
+            "indonesian": "pisang",
+            "english": "banana"
           },
           {
             "dutch": "huis",
-            "indonesian": "rumah"
+            "indonesian": "rumah",
+            "english": "house"
           },
           {
             "dutch": "munteenheid",
-            "indonesian": "rupiah (Rp)"
+            "indonesian": "rupiah (Rp)",
+            "english": "rupiah (Rp)"
           },
           {
             "dutch": "ik, mijn",
-            "indonesian": "saya"
+            "indonesian": "saya",
+            "english": "I, my"
           },
           {
             "dutch": "veilig, welzijn",
-            "indonesian": "selamat"
+            "indonesian": "selamat",
+            "english": "safe, well-being"
           },
           {
             "dutch": "ontvangen",
-            "indonesian": "terima"
+            "indonesian": "terima",
+            "english": "receive"
           },
           {
             "dutch": "maar, echter",
-            "indonesian": "tetapi"
+            "indonesian": "tetapi",
+            "english": "but, however"
           },
           {
             "dutch": "niet, nee",
-            "indonesian": "tidak"
+            "indonesian": "tidak",
+            "english": "not, no"
           }
         ]
       }
@@ -392,27 +465,33 @@ export const lesson = {
         "items": [
           {
             "dutch": "Hoe gaat het ermee?",
-            "indonesian": "Apa kabar?"
+            "indonesian": "Apa kabar?",
+            "english": "How are you?"
           },
           {
             "dutch": "Goed, dank u wel",
-            "indonesian": "Baik-baik saja"
+            "indonesian": "Baik-baik saja",
+            "english": "Fine, thank you"
           },
           {
             "dutch": "Wat kost het?",
-            "indonesian": "Berapa harganya?"
+            "indonesian": "Berapa harganya?",
+            "english": "How much does it cost?"
           },
           {
             "dutch": "Het is goedkoop; de prijs is laag",
-            "indonesian": "Harganya murah"
+            "indonesian": "Harganya murah",
+            "english": "It's cheap; the price is low"
           },
           {
             "dutch": "Welkom",
-            "indonesian": "Selamat datang"
+            "indonesian": "Selamat datang",
+            "english": "Welcome"
           },
           {
             "dutch": "Dank u wel",
-            "indonesian": "Terima kasih"
+            "indonesian": "Terima kasih",
+            "english": "Thank you"
           }
         ]
       }
@@ -425,47 +504,58 @@ export const lesson = {
         "items": [
           {
             "dutch": "0",
-            "indonesian": "nol, kosong"
+            "indonesian": "nol, kosong",
+            "english": "zero, empty"
           },
           {
             "dutch": "1",
-            "indonesian": "satu"
+            "indonesian": "satu",
+            "english": "one"
           },
           {
             "dutch": "2",
-            "indonesian": "dua"
+            "indonesian": "dua",
+            "english": "two"
           },
           {
             "dutch": "3",
-            "indonesian": "tiga"
+            "indonesian": "tiga",
+            "english": "three"
           },
           {
             "dutch": "4",
-            "indonesian": "empat"
+            "indonesian": "empat",
+            "english": "four"
           },
           {
             "dutch": "5",
-            "indonesian": "lima"
+            "indonesian": "lima",
+            "english": "five"
           },
           {
             "dutch": "6",
-            "indonesian": "enam"
+            "indonesian": "enam",
+            "english": "six"
           },
           {
             "dutch": "7",
-            "indonesian": "tujuh"
+            "indonesian": "tujuh",
+            "english": "seven"
           },
           {
             "dutch": "8",
-            "indonesian": "delapan"
+            "indonesian": "delapan",
+            "english": "eight"
           },
           {
             "dutch": "9",
-            "indonesian": "sembilan"
+            "indonesian": "sembilan",
+            "english": "nine"
           },
           {
             "dutch": "10",
-            "indonesian": "sepuluh"
+            "indonesian": "sepuluh",
+            "english": "ten"
           }
         ]
       }

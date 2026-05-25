@@ -1,5 +1,6 @@
 ---
-status: draft
+status: implementing
+implementation: PR #108 delivered the lesson-side foundation (typed tables + bilingual data, write-only). Stays `implementing` — the success criterion "typed rows for all 9 lessons" is at 6/9; L5/7/8 pend a pre-existing dialogue-cloze authoring fix. Issue #106.
 doc_type: prd
 created: 2026-05-25
 destined_for: GitHub issue (PRD) — AlbertvD/learning-indonesian

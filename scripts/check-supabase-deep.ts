@@ -1111,6 +1111,59 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   }
 }
 
+// ── HC21 (PR 6 of 2026-05-22-data-model-migration.md §9): the typed
+//        lesson-section capability-contract rows are bilingual + non-orphan.
+//        These tables are WRITE-ONLY at PR 6 merge (no capability reader yet —
+//        #98/#99), so the invariant is lesson-side data integrity, not a
+//        cap→row resolve: every item row carries EN (l2_translation), every
+//        grammar category carries EN (title_en + rules_en parallel to rules).
+//        FK CASCADE guarantees structural non-orphanhood; this gate adds the
+//        EN-coverage assertion the DONE bar requires (spec §8). Mirrors the
+//        lesson-stage sectionShape (GT9) validator at the DB layer. Lessons
+//        blocked from re-publish by pre-existing lint CRITICALs (L5/7/8 cloze
+//        gaps) simply have no rows yet — they cannot produce offenders here.
+{
+  const { count: itemEnMissing, error: itemErr } = await supabase
+    .schema('indonesian')
+    .from('lesson_section_item_rows')
+    .select('id', { count: 'exact', head: true })
+    .is('l2_translation', null)
+  if (itemErr) {
+    fail('HC21 typed lesson-section item rows carry EN (PR 6)', itemErr.message)
+  } else if ((itemEnMissing ?? 0) > 0) {
+    fail('HC21 typed lesson-section item rows carry EN (PR 6)',
+      `${itemEnMissing} lesson_section_item_rows row(s) with l2_translation IS NULL. ` +
+      `→ Re-publish the affected lesson; the lesson-stage EN enricher fills l2_translation and GT9 gates it.`)
+  } else {
+    pass('HC21 typed lesson-section item rows carry EN (PR 6) (0 rows missing l2_translation)')
+  }
+
+  // Grammar categories: title_en present + rules_en parallel to rules. Array
+  // length can't be compared via PostgREST filters, so fetch + compare in code
+  // (small N).
+  const { data: gcatRows, error: gcatErr } = await supabase
+    .schema('indonesian')
+    .from('lesson_section_grammar_categories')
+    .select('id, title, title_en, rules, rules_en')
+  if (gcatErr) {
+    fail('HC22 typed grammar categories carry EN (PR 6)', gcatErr.message)
+  } else {
+    const cats = (gcatRows ?? []) as Array<{ id: string; title: string; title_en: string | null; rules: string[] | null; rules_en: string[] | null }>
+    const offenders = cats.filter((c) =>
+      !c.title_en || (c.rules ?? []).length !== (c.rules_en ?? []).length || (c.rules_en ?? []).some((r) => !r || !r.trim()),
+    )
+    if (offenders.length === 0) {
+      pass(`HC22 typed grammar categories carry EN (PR 6) (${cats.length} categor${cats.length === 1 ? 'y' : 'ies'} checked)`)
+    } else {
+      const sample = offenders.slice(0, 5).map((o) => o.title).join(', ')
+      fail('HC22 typed grammar categories carry EN (PR 6)',
+        `${offenders.length} grammar categor(y/ies) missing title_en or with rules_en not parallel to rules. ` +
+        `Sample: ${sample}${offenders.length > 5 ? ' …' : ''}\n` +
+        `   → Re-publish the affected lesson; the lesson-stage EN enricher fills title_en/rules_en and GT9 gates it.`)
+    }
+  }
+}
+
 // ── Output ─────────────────────────────────────────────────────────────────
 console.log(`\nSupabase deep structural check — ${SUPABASE_URL}\n`)
 let failures = 0

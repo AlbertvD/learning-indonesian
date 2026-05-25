@@ -1,5 +1,11 @@
 ---
-status: draft
+status: shipped
+implementation: PR #108 — lesson-side typed capability contract; the capability-side reader (#98/#99) remains separate
+merged_at: 2026-05-25
+implementation_paths:
+  - scripts/lib/pipeline/lesson-stage/   # projectSections.ts, enrichEnTranslations.ts, validators/sectionShape.ts, runner.ts, adapter.ts, model.ts
+  - scripts/migration.sql                # 4 typed tables + section_kind/source_section_ref + dialogue/cloze NL+EN
+  - scripts/check-supabase-deep.ts       # HC21/HC22
 doc_type: lesson-pipeline-alignment-spec
 created: 2026-05-25
 depends_on:

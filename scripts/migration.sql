@@ -2538,3 +2538,251 @@ create index if not exists learning_capabilities_active_idx
 
 comment on column indonesian.learning_capabilities.retired_at is
   'Soft-retirement timestamp. NULL = active (rendered + scheduled); non-null = orphaned by a re-publish whose new emit set did not include this canonical_key. Readers filter retired_at IS NULL. upsertCapabilities sets back to NULL on re-emission so FSRS state survives. PR 1.5 (2026-05-22).';
+
+-- ============================================================================
+-- PR 6 (2026-05-25) — Typed lesson-section capability contract (ADR 0011 + 0012)
+-- ============================================================================
+-- Spec: docs/plans/2026-05-25-lesson-pipeline-adr-0011-0012-alignment.md (§3, §6)
+--       docs/plans/2026-05-22-data-model-migration.md §9
+--       docs/plans/2026-05-21-data-model-target.md Decision D
+--
+-- Establishes the lesson-stage WRITER tables that the redesigned Capability
+-- Stage (#98/#99) will read as structured input instead of staging files.
+-- Every new table is WRITE-ONLY at merge — there is no runtime reader yet
+-- (G4 gate is "rows populated", not "a reader returns them").
+-- All lesson-content tables follow the pipeline-is-writer regime (ADR 0011):
+-- new columns/rows are populated by re-publish, never SQL-backfilled.
+
+-- ── PR 6: lesson_section_item_rows ───────────────────────────────────────────
+-- Per vocab/expression/named-number item row written by the Lesson Stage.
+-- The parent section_kind (vocabulary/expressions/numbers) tells the Capability
+-- Stage which item class this feeds. item_type ('word'|'phrase'): harvest rule
+-- — memorised primitives only. Named numbers (0-20 + place-value landmarks) are
+-- words/phrases; composed numbers ('dua puluh satu') are NOT items (formed by
+-- the belas-numbers pattern). Whole dialogue lines are NOT items (those are
+-- lesson_dialogue_lines). source_item_ref ('lesson-N/section-M/item-K') is the
+-- per-occurrence lesson-side identity — NOT the item cap source_ref (item caps
+-- dedup globally by normalized_text; 758 items -> 3,884 caps). The Capability
+-- Stage reduces these rows via indonesian_text -> learning_items.normalized_text.
+-- l2_translation nullable at DB level (additive); the lesson-stage validator
+-- sectionShape.ts asserts non-null before write (mirrors PR 1 translation_en).
+-- lesson_id denormalised for uniform per-lesson queries (user preference §1.3).
+-- Populated by PR 6 (lesson-stage/runner.ts + lesson-stage/enrichEnTranslations.ts).
+create table if not exists indonesian.lesson_section_item_rows (
+  id               uuid        primary key default gen_random_uuid(),
+  section_id       uuid        not null references indonesian.lesson_sections(id) on delete cascade,
+  lesson_id        uuid        not null references indonesian.lessons(id) on delete cascade,
+  display_order    integer     not null,
+  source_item_ref  text        not null,
+  item_type        text        not null check (item_type in ('word', 'phrase')),
+  indonesian_text  text        not null,
+  l1_translation   text        not null,
+  l2_translation   text,
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now(),
+  unique (section_id, display_order),
+  unique (lesson_id, source_item_ref)
+);
+
+create index if not exists lesson_section_item_rows_section_idx
+  on indonesian.lesson_section_item_rows(section_id);
+create index if not exists lesson_section_item_rows_lesson_idx
+  on indonesian.lesson_section_item_rows(lesson_id);
+
+alter table indonesian.lesson_section_item_rows enable row level security;
+drop policy if exists "lesson_section_item_rows_authenticated_read" on indonesian.lesson_section_item_rows;
+create policy "lesson_section_item_rows_authenticated_read"
+  on indonesian.lesson_section_item_rows for select to authenticated using (true);
+grant select on indonesian.lesson_section_item_rows to authenticated;
+revoke insert, update, delete on indonesian.lesson_section_item_rows from authenticated;
+grant all on indonesian.lesson_section_item_rows to service_role;
+
+comment on table indonesian.lesson_section_item_rows is
+  'Per-item typed rows for vocabulary/expressions/numbers sections. Child of lesson_sections (section_kind in (''vocabulary'',''expressions'',''numbers'')). lesson_id denormalised for query uniformity. source_item_ref (lesson-N/section-M/item-K) is the per-occurrence lesson-side identity — NOT the item cap source_ref (item caps dedup by normalized_text). Capability Stage input for item cap generation. Decision D; spec at 2026-05-25-lesson-pipeline-adr-0011-0012-alignment.md §3.1. Populated by PR 6 (lesson-stage writer).';
+
+-- ── PR 6: lesson_section_grammar_categories ──────────────────────────────────
+-- Per-category rows for grammar sections (one grammar section can have several
+-- categories; L6 has 8). title/rules carry NL; title_en/rules_en carry EN
+-- (ADR 0012 — Lesson Stage owns all learner-facing translations). examples jsonb
+-- shape: [{indonesian, dutch, english}]. Table-only categories (reference grids,
+-- no rules) are SKIPPED by the writer — they carry no pattern-cap input and stay
+-- in the retained content blob. lesson_id denormalised for query uniformity.
+-- Populated by PR 6 (lesson-stage/runner.ts).
+create table if not exists indonesian.lesson_section_grammar_categories (
+  id             uuid        primary key default gen_random_uuid(),
+  section_id     uuid        not null references indonesian.lesson_sections(id) on delete cascade,
+  lesson_id      uuid        not null references indonesian.lessons(id) on delete cascade,
+  display_order  integer     not null,
+  title          text        not null,
+  title_en       text,
+  rules          text[]      not null default '{}',
+  rules_en       text[]      not null default '{}',
+  examples       jsonb,
+  created_at     timestamptz not null default now(),
+  updated_at     timestamptz not null default now(),
+  unique (section_id, display_order)
+);
+
+create index if not exists lesson_section_grammar_categories_section_idx
+  on indonesian.lesson_section_grammar_categories(section_id);
+create index if not exists lesson_section_grammar_categories_lesson_idx
+  on indonesian.lesson_section_grammar_categories(lesson_id);
+
+alter table indonesian.lesson_section_grammar_categories enable row level security;
+drop policy if exists "lesson_section_grammar_categories_authenticated_read" on indonesian.lesson_section_grammar_categories;
+create policy "lesson_section_grammar_categories_authenticated_read"
+  on indonesian.lesson_section_grammar_categories for select to authenticated using (true);
+grant select on indonesian.lesson_section_grammar_categories to authenticated;
+revoke insert, update, delete on indonesian.lesson_section_grammar_categories from authenticated;
+grant all on indonesian.lesson_section_grammar_categories to service_role;
+
+comment on table indonesian.lesson_section_grammar_categories is
+  'Per-category typed rows for grammar sections. Capability Stage input for pattern cap generation. title/rules carry NL; title_en/rules_en carry EN (ADR 0012). Table-only categories (reference grids, no rules) are excluded — they stay in the retained content blob. examples jsonb shape: [{indonesian, dutch, english}]. Decision D §3.3; spec at 2026-05-25-lesson-pipeline-adr-0011-0012-alignment.md §3.3. Populated by PR 6 (lesson-stage writer).';
+
+comment on column indonesian.lesson_section_grammar_categories.examples is
+  'Nullable jsonb array of bilingual examples: [{indonesian: text, dutch: text, english: text}]. Null for categories with rules but no authored examples.';
+
+-- ── PR 6: lesson_section_grammar_topics ──────────────────────────────────────
+-- Topic-label rows per grammar section (content.grammar_topics[] string array).
+-- One row per label. Used by extractLessonGrammarTopics (overview chips) and by
+-- the Capability Stage to associate pattern caps with lesson grammar topics.
+-- lesson_id denormalised for query uniformity. Populated by PR 6 (runner.ts).
+create table if not exists indonesian.lesson_section_grammar_topics (
+  id           uuid        primary key default gen_random_uuid(),
+  section_id   uuid        not null references indonesian.lesson_sections(id) on delete cascade,
+  lesson_id    uuid        not null references indonesian.lessons(id) on delete cascade,
+  topic_label  text        not null,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now(),
+  unique (section_id, topic_label)
+);
+
+create index if not exists lesson_section_grammar_topics_section_idx
+  on indonesian.lesson_section_grammar_topics(section_id);
+create index if not exists lesson_section_grammar_topics_lesson_idx
+  on indonesian.lesson_section_grammar_topics(lesson_id);
+
+alter table indonesian.lesson_section_grammar_topics enable row level security;
+drop policy if exists "lesson_section_grammar_topics_authenticated_read" on indonesian.lesson_section_grammar_topics;
+create policy "lesson_section_grammar_topics_authenticated_read"
+  on indonesian.lesson_section_grammar_topics for select to authenticated using (true);
+grant select on indonesian.lesson_section_grammar_topics to authenticated;
+revoke insert, update, delete on indonesian.lesson_section_grammar_topics from authenticated;
+grant all on indonesian.lesson_section_grammar_topics to service_role;
+
+comment on table indonesian.lesson_section_grammar_topics is
+  'Topic-label rows per grammar section (content.grammar_topics[] strings). One row per label. Used by extractLessonGrammarTopics (overview chips) and Capability Stage pattern-cap association. lesson_id denormalised for query uniformity. Populated by PR 6 (lesson-stage writer).';
+
+-- ── PR 6: lesson_section_affixed_pairs ───────────────────────────────────────
+-- DB form of scripts/data/staging/lesson-N/morphology-patterns.ts (only L9 today,
+-- 2 pairs). Lesson-side typed rows for root->derived morphology pairs; the
+-- Capability Stage reads these to mint affixed_form_pair caps. section_id is
+-- NULLABLE because morphology-patterns.ts is a sibling staging file with no
+-- corresponding lesson.ts section (its patternSourceRef maps to a grammar_patterns
+-- record, not a lesson_sections row). lesson_id NOT NULL — morphology is authored
+-- per lesson. DISTINCT from the capability-side `affixed_form_pairs` table (PR 3):
+-- that is keyed by capability_id; this is keyed by lesson_id + source_ref and is
+-- the Capability Stage INPUT. affix ('meN-','di-','ber-',...) derived by the
+-- writer from the sourceRef pattern. pattern_source_ref (nullable) is the grammar
+-- pattern the pair elaborates ('lesson-9/pattern-men-active').
+-- Populated by PR 6 (lesson-stage/runner.ts, reads morphology-patterns.ts).
+create table if not exists indonesian.lesson_section_affixed_pairs (
+  id                  uuid        primary key default gen_random_uuid(),
+  lesson_id           uuid        not null references indonesian.lessons(id) on delete cascade,
+  section_id          uuid        references indonesian.lesson_sections(id) on delete cascade,
+  source_ref          text        not null,
+  pattern_source_ref  text,
+  affix               text        not null,
+  root_text           text        not null,
+  derived_text        text        not null,
+  allomorph_rule      text        not null,
+  created_at          timestamptz not null default now(),
+  updated_at          timestamptz not null default now(),
+  unique (lesson_id, source_ref)
+);
+
+create index if not exists lesson_section_affixed_pairs_lesson_idx
+  on indonesian.lesson_section_affixed_pairs(lesson_id);
+create index if not exists lesson_section_affixed_pairs_section_idx
+  on indonesian.lesson_section_affixed_pairs(section_id)
+  where section_id is not null;
+
+alter table indonesian.lesson_section_affixed_pairs enable row level security;
+drop policy if exists "lesson_section_affixed_pairs_authenticated_read" on indonesian.lesson_section_affixed_pairs;
+create policy "lesson_section_affixed_pairs_authenticated_read"
+  on indonesian.lesson_section_affixed_pairs for select to authenticated using (true);
+grant select on indonesian.lesson_section_affixed_pairs to authenticated;
+revoke insert, update, delete on indonesian.lesson_section_affixed_pairs from authenticated;
+grant all on indonesian.lesson_section_affixed_pairs to service_role;
+
+comment on table indonesian.lesson_section_affixed_pairs is
+  'Lesson-side typed rows for root->derived morphology pairs. DB form of scripts/data/staging/lesson-N/morphology-patterns.ts. DISTINCT from capability-side affixed_form_pairs (PR 3) — that table is keyed by capability_id; this one is keyed by lesson_id + source_ref and is the Capability Stage INPUT for affixed_form_pair cap generation. section_id nullable: morphology-patterns.ts has no corresponding lesson.ts section. affix derived by the writer from sourceRef. Populated by PR 6 (lesson-stage writer).';
+
+-- ── PR 6: ALTER lesson_sections — section_kind + source_section_ref ──────────
+-- section_kind: the canonical content.type value (scripts/lib/pipeline/lesson-stage/
+-- model.ts SECTION_CONTENT_TYPES). Nullable at DDL (pipeline-is-writer: existing
+-- rows stay NULL until re-publish; GT5 validateSectionType already errors on
+-- non-canonical values at write time). source_section_ref: 'lesson-N/section-M'.
+-- content jsonb is RETAINED (Decision D amendment / §10.2). Both columns are
+-- write-only in PR 6 — no runtime reader switches.
+alter table indonesian.lesson_sections
+  add column if not exists section_kind       text,
+  add column if not exists source_section_ref text;
+
+-- section_kind CHECK (null-tolerant so existing pre-republish NULL rows pass).
+-- DO block catches duplicate_object on the second migrate-idempotent-check apply.
+do $$
+begin
+  alter table indonesian.lesson_sections
+    add constraint lesson_sections_section_kind_check
+    check (
+      section_kind is null
+      or section_kind in (
+        'text', 'grammar', 'reference_table', 'vocabulary',
+        'expressions', 'numbers', 'dialogue', 'pronunciation',
+        'culture', 'exercises'
+      )
+    ) not valid;
+exception
+  when duplicate_object then null;
+end
+$$;
+
+-- Partial unique index on source_section_ref: enforces uniqueness only on
+-- non-null rows (safe on existing NULL rows; idempotent via IF NOT EXISTS).
+create unique index if not exists lesson_sections_source_section_ref_idx
+  on indonesian.lesson_sections(lesson_id, source_section_ref)
+  where source_section_ref is not null;
+
+comment on column indonesian.lesson_sections.section_kind is
+  'Discriminator matching SECTION_CONTENT_TYPES in scripts/lib/pipeline/lesson-stage/model.ts. Nullable until re-publish. CHECK tolerates NULL. PR 6.';
+comment on column indonesian.lesson_sections.source_section_ref is
+  'Stable lesson-side identifier: ''lesson-N/section-M'' (order_index-based). Nullable until re-publish; partial unique index enforces uniqueness per lesson on non-null rows. PR 6.';
+
+-- ── PR 6: ALTER lesson_dialogue_lines — add NL + EN translation columns ──────
+-- Additive alongside the existing NOT NULL `translation` (Dutch). The writer sets
+-- translation_nl = Dutch (mirrors `translation`) and translation_en = English.
+-- Legacy `translation` kept (rename-retire is a standalone PR). Both nullable at
+-- DDL (populated by re-publish; pipeline-is-writer).
+alter table indonesian.lesson_dialogue_lines
+  add column if not exists translation_nl text,
+  add column if not exists translation_en text;
+
+comment on column indonesian.lesson_dialogue_lines.translation_nl is
+  'Dutch translation (NL). Added PR 6 (ADR 0012). Mirrors the legacy `translation`; both written by the lesson-stage writer. Nullable until re-publish.';
+comment on column indonesian.lesson_dialogue_lines.translation_en is
+  'English translation (EN). Added PR 6 (ADR 0012). Generated by the lesson-stage EN enricher (relocated from capability-stage/enrichEnTranslations.ts). Nullable until re-publish; lesson-stage validator asserts non-null before write.';
+
+-- ── PR 6: ALTER dialogue_clozes — add NL + EN translation columns ────────────
+-- Additive alongside the existing NOT NULL `translation_text` (Dutch). These stay
+-- NULL in PR 6 — dialogue_clozes is written by the Capability Stage, which is out
+-- of scope here. Columns added now so the shape is settled before the
+-- capability-stage redesign (#98/#99) populates them.
+alter table indonesian.dialogue_clozes
+  add column if not exists translation_nl text,
+  add column if not exists translation_en text;
+
+comment on column indonesian.dialogue_clozes.translation_nl is
+  'Dutch translation (NL). Added PR 6 (shape settled here). Populated by the Capability Stage in the capability-stage redesign (#98/#99), not PR 6. NULL until then.';
+comment on column indonesian.dialogue_clozes.translation_en is
+  'English translation (EN). Added PR 6 (shape settled here). Populated by the Capability Stage in the capability-stage redesign (#98/#99). NULL until then.';
