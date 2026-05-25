@@ -256,7 +256,7 @@ WHERE c.source_kind = '<source_kind>'
 | **PR 3** | Affixed form pair source_kind: writer + reader + re-publish | PR 0 | ✅ shipped — #94 typed reader+writer+validator+bridge; HC12 retired → HC17; renderContracts/catalog `affixed_form_pair → []` (see §6). No pattern_source_ref column exists (DDL deviates from §6.5) |
 | **PR 4** | Pattern source_kind: writer + reader + routing widening + re-publish | PR 0 | ✅ shipped — typed readers (byKind/pattern + 4 byType) + dual-write writer + CS13 validator + one-shot bridge (716 rows) + HC19/HC20 + routing widen (Decision G) + Decision-R no-artifact readiness (see §7). Admin path deferred to PR 4a. First live grammar render confirmed via DOM; bypass answer-commit blocked by pre-existing infra (issue #95, all source kinds) |
 | **PR 5** | Retire the page-block render path: drop `lesson_page_blocks` (revised — **no** typed `lesson_blocks`; bespoke pages are the sole renderer) | PR 0 | implementing — branch `pr-5-retire-page-blocks`; runtime stack deleted + table dropped + RPC re-pointed; see §8 |
-| **PR 6** | Lesson sections (Stage A): typed satellites + re-publish | PR 5 | not started |
+| **PR 6** | Lesson sections (Stage A): typed capability contract + re-publish | PR 5 | implementing — branch `pr-6-typed-lesson-sections`; 4 typed tables + section_kind/source_section_ref + dialogue/grammar NL+EN; EN enricher relocated to lesson-stage; 9 lessons re-published (write-only — reader is #98/#99); see §9 |
 | **PR 7** | Final cleanup: drop everything no longer read | PRs 1–6 | not started |
 
 **Parallelism:** PRs 1–4 can start simultaneously after PR 0. PRs 5–6 are orthogonal to PRs 1–4. PR 7 waits for all.

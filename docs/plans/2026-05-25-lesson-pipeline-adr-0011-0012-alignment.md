@@ -1,5 +1,6 @@
 ---
-status: draft
+status: implementing
+implementation: PR 6 (branch pr-6-typed-lesson-sections) — lesson-side typed capability contract; the capability-side reader (#98/#99) remains separate
 doc_type: lesson-pipeline-alignment-spec
 created: 2026-05-25
 depends_on:

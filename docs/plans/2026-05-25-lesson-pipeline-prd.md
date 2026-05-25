@@ -1,5 +1,6 @@
 ---
-status: draft
+status: implementing
+implementation: PR 6 (branch pr-6-typed-lesson-sections) — issue #106
 doc_type: prd
 created: 2026-05-25
 destined_for: GitHub issue (PRD) — AlbertvD/learning-indonesian

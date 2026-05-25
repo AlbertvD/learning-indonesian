@@ -22,7 +22,8 @@ For the *why* behind the capability schema, see `docs/adr/0001-capability-based-
 | **Capability layer** | `learning_capabilities`, `capability_aliases`, `capability_artifacts`, `capability_content_units`, `content_units`, `lesson_page_blocks`, `learner_capability_state`, `capability_review_events`, `capability_resolution_failure_events` | standalone `scripts/migrations/2026-04-25-*.sql` + `2026-05-02-capability-resolution-failures.sql` |
 | **Lesson activation** | `learner_lesson_activation` | `scripts/migration.sql:1561` (post-retirement #6) |
 | **Content (vocab + sentences)** | `learning_items`, `item_meanings`, `item_answer_variants`, `item_contexts`, `item_context_grammar_patterns`, `grammar_patterns`, `exercise_variants` | `scripts/migration.sql` |
-| **Lesson content** | `lessons`, `lesson_sections`, `audio_clips`, `podcasts`, `vocabulary` (legacy) | `scripts/migration.sql` |
+| **Lesson content** | `lessons`, `lesson_sections` (+ `section_kind`/`source_section_ref`), `lesson_dialogue_lines`, `audio_clips`, `podcasts`, `vocabulary` (legacy) | `scripts/migration.sql` |
+| **Lesson-section typed contract (PR 6)** | `lesson_section_item_rows`, `lesson_section_grammar_categories`, `lesson_section_grammar_topics`, `lesson_section_affixed_pairs` | `scripts/migration.sql` (lesson-stage writer; capability-stage reader is #98/#99) |
 | **Authoring pipeline** | `textbook_sources`, `textbook_pages`, `generated_exercise_candidates`, `exercise_review_comments`, `content_flags` | `scripts/migration.sql` |
 | **Sessions + progress** | `learning_sessions` (lazy, capability-only), `lesson_progress` (orphan after #6) | `scripts/migration.sql` |
 | **Legacy-retained** | `learner_item_state`, `learner_skill_state`, `review_events` | `scripts/migration.sql` (write paths retired; rows preserved as historical record) |
@@ -160,6 +161,19 @@ Reusable grammar patterns with stable `slug`, `complexity_score`, and `confusion
 ### `exercise_variants`
 
 Published grammar exercises authored by the pipeline. Carries `payload_json` (display-safe) and `answer_key_json` (correctness data, server-only read).
+
+### Lesson-section typed contract (PR 6 — `migration.sql`)
+
+The lesson-content layer's **typed capability contract** (ADR 0011 + 0012): one typed table per capability-feeding section, written by the **Lesson Stage** (`scripts/lib/pipeline/lesson-stage/runner.ts` + `projectSections.ts` + `enrichEnTranslations.ts`) so the future Capability Stage (#98/#99) reads **structured rows, not prose** from the DB instead of staging files. **Write-only today** — there is no runtime/capability reader yet (the G4 gate is "rows populated"). The `lesson_sections.content` JSON blob is **retained** as the display source (the bespoke `Page.tsx` read `content.json`); these tables are the contract, not a render path.
+
+- **`lesson_sections.section_kind` + `source_section_ref`** — discriminator (= `content.type`, the canonical 10 from `lesson-stage/model.ts`) + stable id (`lesson-N/section-M`). `content jsonb` retained.
+- **`lesson_section_item_rows`** — per vocab/expression/named-number item: `source_item_ref` (per-occurrence lesson-side id), `item_type` (`word`/`phrase`), `indonesian_text`, `l1_translation` (NL), `l2_translation` (EN). Harvest = memorised primitives only: words, short phrases, named numbers (0–20 + place-value landmarks); composed numbers and whole dialogue lines are **not** harvested.
+- **`lesson_section_grammar_categories`** — rule-bearing grammar categories: `title`/`title_en`, `rules`/`rules_en` (NL+EN), `examples` jsonb (`[{indonesian, dutch, english}]`). Table-only reference grids stay in the blob.
+- **`lesson_section_grammar_topics`** — topic labels (`content.grammar_topics[]`), also read by `extractLessonGrammarTopics`.
+- **`lesson_section_affixed_pairs`** — DB form of `morphology-patterns.ts`: `root_text`/`derived_text`/`affix`/`allomorph_rule`. `section_id` is **nullable** (morphology has no `lesson.ts` section). Distinct from the capability-side `affixed_form_pairs` (PR 3, keyed by `capability_id`).
+- **`lesson_dialogue_lines` / `dialogue_clozes`** gained `translation_nl` + `translation_en` (ADR 0012 — bilingual). Dialogue-line EN is filled by the lesson-stage enricher; `dialogue_clozes` EN is populated later by the capability-stage redesign.
+
+The EN/NL enricher was **relocated** out of the capability stage into `lesson-stage/enrichEnTranslations.ts` and widened to items + dialogue + grammar (ADR 0012 — the Lesson Stage owns all learner-facing translations).
 
 ---
 
