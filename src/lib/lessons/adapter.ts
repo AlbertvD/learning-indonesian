@@ -42,31 +42,6 @@ export interface LessonSection {
   order_index: number
 }
 
-export interface LessonPageBlock {
-  id?: string
-  block_key: string
-  source_ref: string
-  source_refs: string[]
-  content_unit_slugs: string[]
-  block_kind:
-    | 'lesson_hero'
-    | 'reading_section'
-    | 'vocab_strip'
-    | 'dialogue_card'
-    | 'pattern_callout'
-    | 'practice_bridge'
-    | 'lesson_recap'
-    // Legacy 5-value enum (lessons authored before the GT2 backfill). The
-    // runtime classifier in experience.ts:40-71 still handles these until a
-    // future PR audits the live DB + retires the bridging classifier.
-    | 'hero'
-    | 'section'
-    | 'exposure'
-    | 'recap'
-  display_order: number
-  payload_json: Record<string, unknown>
-}
-
 export interface LessonCapabilityPracticeSummary {
   readyCapabilityCount: number
   activePracticedCapabilityCount: number
@@ -230,61 +205,27 @@ export async function getLessonsWithVoice(): Promise<{ id: string; order_index: 
   return (data ?? []) as { id: string; order_index: number; primary_voice: string | null }[]
 }
 
-export async function getLessonPageBlocks(sourceRef: string): Promise<LessonPageBlock[]> {
+// Distinct source_refs of a lesson's ready+published capabilities, scoped by
+// learning_capabilities.lesson_id (ADR 0006). Feeds the lesson_practice /
+// lesson_review session scope (Session.tsx) — replacing the retired
+// lesson_page_blocks fan-out. The session-builder still matches caps by
+// selectedSourceRefs.includes(cap.sourceRef); only the data source changed.
+export async function getLessonSourceRefsByLessonId(lessonId: string): Promise<string[]> {
   const { data, error } = await supabase
     .schema('indonesian')
-    .from('lesson_page_blocks')
-    .select('*')
-    .eq('source_ref', sourceRef)
-    .order('display_order')
-  if (error) throw error
-  return (data ?? []) as LessonPageBlock[]
-}
-
-export async function getLessonCapabilityPracticeSummary(
-  userId: string,
-  sourceRefs: string[],
-): Promise<LessonCapabilityPracticeSummary> {
-  const uniqueSourceRefs = [...new Set(sourceRefs)].filter(Boolean)
-  if (uniqueSourceRefs.length === 0) return { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 }
-
-  const { data: capabilityRows, error: capabilityError } = await supabase
-    .schema('indonesian')
     .from('learning_capabilities')
-    .select('id')
-    .in('source_ref', uniqueSourceRefs)
+    .select('source_ref')
+    .eq('lesson_id', lessonId)
     .eq('readiness_status', 'ready')
     .eq('publication_status', 'published')
     .is('retired_at', null)
-  if (capabilityError) throw capabilityError
-
-  const capabilityIds = ((capabilityRows ?? []) as Array<{ id: string }>).map(row => row.id)
-  if (capabilityIds.length === 0) return { readyCapabilityCount: 0, activePracticedCapabilityCount: 0 }
-
-  const stateRows = await chunkedIn<{
-    activation_state: string | null
-    review_count: number | null
-  }>(
-    'learner_capability_state',
-    'capability_id',
-    capabilityIds,
-    (b) => b.select('capability_id, activation_state, review_count').eq('user_id', userId),
-  )
-
-  const activePracticedCapabilityCount = stateRows
-    .filter(row => row.activation_state === 'active' && (row.review_count ?? 0) > 0).length
-
-  return {
-    readyCapabilityCount: capabilityIds.length,
-    activePracticedCapabilityCount,
-  }
+  if (error) throw error
+  return [...new Set(((data ?? []) as Array<{ source_ref: string }>).map(r => r.source_ref).filter(Boolean))]
 }
 
-// Phase 1 of retiring lesson_page_blocks (2026-05-20): same shape as
-// getLessonCapabilityPracticeSummary, but keyed on learning_capabilities.lesson_id
-// (ADR 0006) instead of source_refs derived from page-block fan-out. Used by
-// PracticeActions.tsx; the old source_refs[]-based variant stays alive for
-// Lesson.tsx (legacy renderer code path for lessons 4-9).
+// Lesson practice summary keyed on learning_capabilities.lesson_id (ADR 0006).
+// Used by PracticeActions.tsx. The legacy source_refs[]-based variant and its
+// page-block fan-out were removed when the generic reader path was retired.
 export async function getLessonCapabilityPracticeSummaryByLessonId(
   userId: string,
   lessonId: string,

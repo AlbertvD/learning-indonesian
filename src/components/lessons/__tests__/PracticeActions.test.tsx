@@ -15,7 +15,6 @@ vi.mock('@/stores/authStore', () => ({
 
 import {
   getLessonCapabilityPracticeSummaryByLessonId,
-  getLessonPageBlocks,
   isLessonActivated,
   buildLessonPracticeActions,
 } from '@/lib/lessons'
@@ -41,7 +40,7 @@ beforeEach(() => {
 })
 
 describe('PracticeActions', () => {
-  it('fetches practice summary by lesson_id and does not call getLessonPageBlocks', async () => {
+  it('fetches practice summary by lesson_id', async () => {
     vi.mocked(getLessonCapabilityPracticeSummaryByLessonId).mockResolvedValue({
       readyCapabilityCount: 5,
       activePracticedCapabilityCount: 2,
@@ -52,8 +51,6 @@ describe('PracticeActions', () => {
     await waitFor(() => {
       expect(getLessonCapabilityPracticeSummaryByLessonId).toHaveBeenCalledWith('user-uuid', 'lesson-abc')
     })
-    // PracticeActions no longer fans out via page blocks.
-    expect(getLessonPageBlocks).not.toHaveBeenCalled()
   })
 
   it('passes correct practiceReadyCount to buildLessonPracticeActions (ready minus practiced when activated)', async () => {

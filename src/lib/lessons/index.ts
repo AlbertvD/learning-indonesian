@@ -38,16 +38,6 @@ export type {
   LessonGrammarTopic,
 } from './overviewStatus'
 
-// Experience
-export { buildLessonExperience } from './experience'
-export type {
-  LessonExperience,
-  LessonExperienceBlock,
-  LessonExperienceBlockKind,
-  Lesson,
-  LessonPageBlock,
-} from './experience'
-
 // Practice actions
 export { buildLessonPracticeActions } from './actionModel'
 export type {
@@ -68,8 +58,7 @@ export {
   getLesson,
   getLessonsBasic,
   getLessonsWithVoice,
-  getLessonPageBlocks,
-  getLessonCapabilityPracticeSummary,
+  getLessonSourceRefsByLessonId,
   getLessonCapabilityPracticeSummaryByLessonId,
   getLessonsOverview,
   lessonSourceRefForOverview,
@@ -77,6 +66,7 @@ export {
   extractLessonGrammarTopics,
 } from './adapter'
 export type {
+  Lesson,
   LessonSection,
   LessonCapabilityPracticeSummary,
   LessonOverviewSourceBlock,

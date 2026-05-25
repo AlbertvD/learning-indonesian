@@ -16,7 +16,7 @@ import {
   type SessionPlan,
 } from '@/lib/session-builder'
 import { translations } from '@/lib/i18n'
-import { getLesson, getLessonPageBlocks } from '@/lib/lessons'
+import { getLessonSourceRefsByLessonId } from '@/lib/lessons'
 import { fetchSessionAudioMap, type SessionAudioMap } from '@/services/audioService'
 import { ExperiencePlayer, type SessionAnswerEvent } from '@/components/experience/ExperiencePlayer'
 import { resolveCapabilityBlocks, type CapabilityRenderContext } from '@/lib/exercise-content'
@@ -39,11 +39,10 @@ async function loadSelectedLessonScope(lessonId: string | null): Promise<{
   selectedSourceRefs: string[]
 } | null> {
   if (!lessonId) return null
-  const lesson = await getLesson(lessonId)
-  const sourceRef = `lesson-${lesson.order_index}`
-  const pageBlocks = await getLessonPageBlocks(sourceRef).catch(() => [])
-  if (pageBlocks.length === 0) return null
-  const selectedSourceRefs = [...new Set(pageBlocks.flatMap(block => block.source_refs?.length ? block.source_refs : [block.source_ref]))]
+  // Lesson scope = the lesson's ready+published capability source_refs, keyed by
+  // learning_capabilities.lesson_id (ADR 0006). Replaces the retired
+  // lesson_page_blocks fan-out; the session-builder match is unchanged.
+  const selectedSourceRefs = await getLessonSourceRefsByLessonId(lessonId).catch(() => [])
   if (selectedSourceRefs.length === 0) return null
 
   return {

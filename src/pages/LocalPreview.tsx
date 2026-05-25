@@ -1,6 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Button, Text } from '@mantine/core'
-import { IconAlertTriangle } from '@tabler/icons-react'
+import { IconAlertTriangle, IconArrowLeft } from '@tabler/icons-react'
 import {
   PageContainer,
   PageBody,
@@ -8,8 +8,7 @@ import {
   EmptyState,
   ListCard,
 } from '@/components/page/primitives'
-import { LessonReader } from '@/components/lessons/LessonReader'
-import { buildPreviewExperience, getPreviewLesson, previewLessons } from '@/lib/preview/localPreviewContent'
+import { bespokeLessonElements, bespokeLessonPreviews } from '@/pages/lessons/registry'
 import { capabilityMigrationFlags } from '@/lib/featureFlags'
 
 function PreviewDisabled() {
@@ -34,16 +33,16 @@ export function LocalPreviewIndex() {
     <PageContainer size="lg">
       <PageBody>
         <PageHeader
-          title="Bekijk de nieuwe leerervaring zonder Supabase."
-          subtitle="Deze voorbeelden gebruiken hetzelfde LessonReader-model als de echte app, maar alle content komt lokaal uit de code. Er wordt geen auth-, bronvoortgang- of FSRS-state opgeslagen."
+          title="Bekijk de leslayout zonder Supabase."
+          subtitle="Deze previews tonen de echte bespoke lespagina's uit content.json. Er wordt geen auth-, activatie- of FSRS-state opgeslagen; de oefenknoppen onderaan zijn inactief zonder login."
         />
-        {previewLessons.map(lesson => (
+        {bespokeLessonPreviews.map(lesson => (
           <ListCard
-            key={lesson.slug}
-            to={`/preview/lesson/${lesson.slug}`}
-            icon={<Text fw={700}>{lesson.lesson.level}</Text>}
-            title={lesson.lesson.title}
-            subtitle={lesson.summary}
+            key={lesson.id}
+            to={`/preview/lesson/${lesson.orderIndex}`}
+            icon={<Text fw={700}>{lesson.level}</Text>}
+            title={lesson.title}
+            subtitle={lesson.description ?? undefined}
             trailing={<Text size="sm" c="dimmed">Bekijk preview</Text>}
           />
         ))}
@@ -58,8 +57,13 @@ export function LocalPreviewLesson() {
 
   if (!capabilityMigrationFlags.localContentPreview) return <PreviewDisabled />
 
-  const preview = getPreviewLesson(slug)
-  if (!preview) {
+  const orderIndex = Number(slug)
+  const preview = Number.isFinite(orderIndex)
+    ? bespokeLessonPreviews.find(l => l.orderIndex === orderIndex)
+    : undefined
+  const element = preview ? bespokeLessonElements[preview.id] : undefined
+
+  if (!preview || !element) {
     return (
       <PageContainer size="sm">
         <PageBody>
@@ -74,12 +78,18 @@ export function LocalPreviewLesson() {
     )
   }
 
-  const experience = buildPreviewExperience(preview)
-
   return (
-    <LessonReader
-      experience={experience}
-      onBack={() => navigate('/preview')}
-    />
+    <>
+      <Button
+        component={Link}
+        to="/preview"
+        variant="subtle"
+        leftSection={<IconArrowLeft size={16} />}
+        m="md"
+      >
+        Terug naar previews
+      </Button>
+      {element}
+    </>
   )
 }

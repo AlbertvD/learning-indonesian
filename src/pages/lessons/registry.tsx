@@ -6,9 +6,10 @@
 // components" rule is disabled file-wide. The map is read once at route
 // resolution; HMR drift here is not load-bearing.
 //
-// When the runtime visits /lesson/:lessonId, LessonRouter checks this map
-// first. If the lesson has a bespoke page, it renders that element;
-// otherwise it falls back to the generic LessonReader.
+// When the runtime visits /lesson/:lessonId, LessonRouter looks the UUID up in
+// this map and renders the matching bespoke page. There is no generic fallback
+// reader — an unregistered UUID is a not-found case (every published lesson has
+// a bespoke page).
 //
 // To publish a new lesson's bespoke page:
 //   1. Author the page at src/pages/lessons/lesson-<N>/Page.tsx + content.json
@@ -52,3 +53,30 @@ export const bespokeLessonElements: Record<string, ReactElement> = {
   [lesson8Content.meta.id]: <Suspense fallback={fallback}><Lesson8Bespoke /></Suspense>,
   [lesson9Content.meta.id]: <Suspense fallback={fallback}><Lesson9Bespoke /></Suspense>,
 }
+
+// Ordered index of the bespoke lessons, derived from the same content.json
+// metas. Used by the local content preview (/preview) to list and render the
+// real bespoke pages without Supabase — bespoke pages read static content.json
+// and their footer controls (ActivationGate / PracticeActions) no-op without
+// an authenticated user.
+export interface BespokeLessonPreview {
+  id: string
+  orderIndex: number
+  title: string
+  level: string
+  description: string | null
+}
+
+export const bespokeLessonPreviews: BespokeLessonPreview[] = [
+  lesson1Content.meta, lesson2Content.meta, lesson3Content.meta,
+  lesson4Content.meta, lesson5Content.meta, lesson6Content.meta,
+  lesson7Content.meta, lesson8Content.meta, lesson9Content.meta,
+]
+  .map(m => ({
+    id: m.id,
+    orderIndex: m.order_index,
+    title: m.title,
+    level: m.level,
+    description: m.description ?? null,
+  }))
+  .sort((a, b) => a.orderIndex - b.orderIndex)
