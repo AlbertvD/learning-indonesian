@@ -12,13 +12,32 @@ A stable, publishable unit derived from a content source. Content units preserve
 
 ## Learning Item
 
-A single atomic piece of **lexical** content to be learned — one word, phrase, or dialogue chunk (e.g. `hati` = liver). Learning items are stored globally and deduplicated by `normalized_text` (one row per unique item across the whole course, 758 rows today); a lesson links to an item through the capabilities the item produces, not through the item row itself (the table has no `lesson_id`). A learning item is *content*, not a skill — it is never itself scheduled.
+A single atomic piece of **lexical** content to be learned — a **word or a short phrase** (e.g. `hati` = liver; `apa kabar?` = how are you?). The unit is a *reusable lexical chunk*: a fixed expression, collocation, or greeting qualifies; a **whole sentence or dialogue line does not** — it is too long to drill as a vocabulary card. A learnable phrase occurring inside a dialogue line is **extracted as a phrase item**; the line itself is a **`dialogue_line`** capability (contextual cloze), never an item. (The legacy `dialogue_chunk` item rows that stored entire lines are over-harvest — to be dropped; see the item-harvest rule in the pipeline docs.) An item must also be a **memorised primitive, not a rule-generated composed form**. **Numbers have two drilled layers.** (1) The numbers with their own lexical name — **0–20** (the rote-counting block) plus the **place-value landmarks** `seratus` (100), `seribu` (1 000), `sejuta` (1 000 000), … and the place words `ratus`/`ribu`/`juta`/`miliar`/`triliun` — are **vocabulary**: `item`-source capabilities with the standard vocab capability types. (2) The **number-formation rule** (compose 21, 137, 2 000 via `belas`/`puluh`/`ratus`) is a drilled **`pattern`** capability (the `belas-numbers` pattern), sourced from the numbers section like a grammar pattern. Composed numbers (`dua puluh satu`, `dua ratus`, `sepuluh ribu`) are therefore *not* harvested as individual items — you don't memorise 137 as a flashcard — but the skill of **forming** them is drilled via the pattern. Learning items are stored globally and deduplicated by `normalized_text` (one row per unique item across the whole course); a lesson links to an item through the capabilities the item produces, not through the item row itself (the table has no `lesson_id`). A learning item is *content*, not a skill — it is never itself scheduled.
 
 **A learning item is only one *kind* of Content Source — the lexical kind.** It is not the universal store of "things to be learned": grammar patterns live in `grammar_patterns`, morphology pairs in `affixed_form_pairs`, dialogue lines in `lesson_dialogue_lines` — each its own typed table (ADR 0009). A capability reaches whichever source it belongs to through `source_kind` + `source_ref`, so the thing learned in a capability is frequently *not* a learning item. (The `learning_items` table is really the lexical-item store; the name overreaches.)
 
 ## Capability Type
 
-One of the 12 *kinds* of skill facet through which a content source can be practised, fixed in code (`src/lib/capabilities/capabilityTypes.ts`): `text_recognition`, `meaning_recall`, `form_recall`, `l1_to_id_choice`, `audio_recognition`, `dictation` (vocabulary items); `pattern_recognition`, `pattern_contrast` (grammar patterns); `contextual_cloze` (dialogue lines); `root_derived_recognition`, `root_derived_recall` (morphology); `podcast_gist` (podcasts). A capability type is the *how* of knowing, not a thing in itself.
+One of the 12 *kinds* of skill facet through which a content source can be practised, fixed in code (`src/lib/capabilities/capabilityTypes.ts` — `CAPABILITY_TYPES`). A capability type is the *how* of knowing, not a thing in itself.
+
+The **mode** column is the pedagogically meaningful axis (receptive → productive, ADR 0007) — the `SkillType` each type maps to via `deriveSkillTypeFromCapabilityType`: **recognise** (receptive; pick/know the answer), **recall meaning** (state what it means), **produce form** (write the Indonesian unaided). "L1" = the learner's language (Dutch or English); "id" = Indonesian. Definitions consolidated from `capabilityTypes.ts` + `docs/current-system/human-product-and-learning-guide.md` §7–8 + `docs/current-system/content-pipeline-and-quality-gates.md` §8–9.
+
+| Capability type | Source kind | Mode | Human definition |
+|---|---|---|---|
+| `text_recognition` | item | recognise | See the written Indonesian word → know its meaning in the learner's language. (`makan` seen → "eten".) |
+| `audio_recognition` | item | recognise | Hear the spoken Indonesian word → know its meaning. (hear `makan` → "eten".) |
+| `meaning_recall` | item | recall meaning | Given the Indonesian word, recall its meaning *unaided* (state it, not choose from options). |
+| `l1_to_id_choice` | item | recall meaning | Given the meaning in the learner's language, **choose** the correct Indonesian word from options. (Keeps legacy `skillType: meaning_recall`.) |
+| `form_recall` | item | produce form | Given the meaning in the learner's language, **type** the Indonesian written form unaided. ("eten" → type `makan`.) |
+| `dictation` | item | produce form | Hear the spoken Indonesian word → **type** its written form. (hear `makan` → type `makan`.) |
+| `contextual_cloze` | item + dialogue_line | produce form | Fill the blanked word in a sentence or dialogue line — produce the correct form from context. |
+| `pattern_recognition` | pattern | recognise | Recognise a grammar pattern in use and understand its function (e.g. the role of the `meN-` prefix). |
+| `pattern_contrast` | pattern | recognise | Distinguish a grammar pattern from a contrasting one (e.g. `belum` vs `tidak`, `meN-` vs `di-`). |
+| `root_derived_recognition` | affixed_form_pair | recognise | Recognise the link between a root and its affixed/derived form (e.g. `baca` → `membaca`), or the meaning of the derived form. |
+| `root_derived_recall` | affixed_form_pair | produce form | Produce the derived (affixed) form from the root, or the root from the derived form. |
+| `podcast_gist` | podcast_segment | recognise | Listen to a podcast segment and grasp its overall gist (exposure-oriented; feature not yet live — 0 rows). |
+
+One vocabulary item typically produces ~6 capabilities (the `item`-source rows above that its content supports — e.g. an item with audio gets `audio_recognition` + `dictation`, one without does not). See **Learning Capability** for the (source × type) pairing this enumerates the *type* half of.
 
 ## Learning Capability
 
@@ -92,6 +111,8 @@ Corrected content therefore lives in the database, not in any staging file. This
 The interface between the Lesson Stage and the Capability Stage is **purely database tables**. The Capability Stage reads only from the lesson-content tables the Lesson Stage wrote; no staging file crosses the boundary. The database is the single hand-off point. This forbids the current dual-read, where the Capability Stage reaches back to disk staging files (`learning-items.ts`, `grammar-patterns.ts`, `candidates.ts`, `cloze-contexts.ts`) for its source material.
 
 This is the operational consequence of **ADR 0011** (capability content is DB-authoritative after seeding): because the Capability Stage seeds capabilities once and corrections then live in the DB, its *input* must also be the DB — a staging-file re-read would reintroduce a source that drifts from the corrected DB state. The typed lesson-content tables the Lesson Stage emits (`lesson_dialogue_lines` today; the `lesson_sections` typed satellites of migration PRs 5–6) **are** that contract. Note the asymmetry: lesson content remains pipeline-is-writer / staging-canonical; only the capability side is DB-authoritative.
+
+The *responsibility split* behind this contract — which work runs in which stage — is recorded in **ADR 0012**: the Lesson Stage owns the full ingestion-to-content chain plus **all learner-facing enrichment, including NL + EN translations**; the Capability Stage reads only the DB (never disk) and generates everything capability-side (deduped `learning_items`, POS, level, exercises, distractors, cloze, interpreted patterns). The dividing line is *what the learner reads* (Lesson Stage) vs. *what is needed to generate or schedule practice* (Capability Stage).
 
 The `lesson_sections.content` JSON blob is **retained** alongside the typed tables (not dropped) — it is the complete authored snapshot of a section; the typed columns + child tables are its projection. Readers (the lesson page, the capability-stage contract) use the typed tables; the blob stays next to them as the round-trippable record.
 
