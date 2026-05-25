@@ -255,7 +255,7 @@ WHERE c.source_kind = '<source_kind>'
 | **PR 2** | Dialogue line source_kind: writer + reader + re-publish | PR 0 | ✅ shipped — #91 typed reader+writer+bridge; #92 validator → typed table + legacy artifact writes removed (see §5) |
 | **PR 3** | Affixed form pair source_kind: writer + reader + re-publish | PR 0 | ✅ shipped — #94 typed reader+writer+validator+bridge; HC12 retired → HC17; renderContracts/catalog `affixed_form_pair → []` (see §6). No pattern_source_ref column exists (DDL deviates from §6.5) |
 | **PR 4** | Pattern source_kind: writer + reader + routing widening + re-publish | PR 0 | ✅ shipped — typed readers (byKind/pattern + 4 byType) + dual-write writer + CS13 validator + one-shot bridge (716 rows) + HC19/HC20 + routing widen (Decision G) + Decision-R no-artifact readiness (see §7). Admin path deferred to PR 4a. First live grammar render confirmed via DOM; bypass answer-commit blocked by pre-existing infra (issue #95, all source kinds) |
-| **PR 5** | Lesson blocks (Stage A): typed satellites + re-publish | PR 0 | not started |
+| **PR 5** | Retire the page-block render path: drop `lesson_page_blocks` (revised — **no** typed `lesson_blocks`; bespoke pages are the sole renderer) | PR 0 | implementing — branch `pr-5-retire-page-blocks`; runtime stack deleted + table dropped + RPC re-pointed; see §8 |
 | **PR 6** | Lesson sections (Stage A): typed satellites + re-publish | PR 5 | not started |
 | **PR 7** | Final cleanup: drop everything no longer read | PRs 1–6 | not started |
 
@@ -656,52 +656,56 @@ done
 
 ---
 
-## §8. PR 5 — Lesson blocks (Stage A, orthogonal)
+## §8. PR 5 — Retire the page-block render path
 
-**Can start after PR 0.** Does not touch `capability_artifacts` or any capability source_kind.
+> **Scope revised 2026-05-25 — retirement, not typed migration.** The original §8
+> (migrate `lesson_page_blocks` → typed `lesson_blocks` + `lesson_block_reading_section`)
+> was dropped after grounding against the shipped code. The page-block path was
+> already mid-retirement: the Stage A writer was removed in the shipped
+> `2026-05-20-retire-page-blocks-pipeline-phase-1.md` (PR #85), and all 9 lessons
+> render via bespoke per-lesson `Page.tsx` reading static `content.json` snapshots
+> — the generic `LessonReader`/`LessonBlockRenderer`/`buildLessonExperience` stack
+> was a fallback nothing reached. Under ADR 0011 the `lesson_sections.content`
+> blob renders the pages and the typed `lesson_sections` tables (PR 6) are the
+> capability contract; page-block *rendering layout* (`lesson_page_blocks`)
+> belongs to neither side. Building typed `lesson_blocks` would be dead
+> infrastructure (target-arch Rule #10). So PR 5 **completes the retirement**:
+> delete the generic render stack end to end and drop `lesson_page_blocks` with
+> no typed replacement.
 
-**Target tables:** `lesson_blocks` (parent, replacing `lesson_page_blocks`), `lesson_block_reading_section` (typed satellite for reading_kind sub-discriminator).
+**End state:** one lesson-rendering path (bespoke pages); zero page-block
+machinery. DB lesson content (`lesson_sections` + PR 6 typed children) exists
+purely as the capability contract + coverage/propagation reads, never for page
+rendering.
 
-### §8.1 Pipeline writer
+### §8.1 Removed (runtime)
+- `src/pages/Lesson.tsx` (generic reader page) + `__tests__/Lesson.test.tsx`
+- `src/components/lessons/LessonReader.tsx` (+ `.module.css`) + `__tests__/LessonReader.test.tsx`
+- `src/components/lessons/blocks/LessonBlockRenderer.tsx`
+- `src/lib/lessons/experience.ts` (`buildLessonExperience`) + its test
+- `src/lib/preview/localPreviewContent.ts` (synthetic preview model)
+- `getLessonPageBlocks`, the `LessonPageBlock` type, and the `source_refs`-based
+  `getLessonCapabilityPracticeSummary` variant (`lib/lessons` adapter + barrel)
 
-`scripts/lib/pipeline/lesson-stage/runner.ts`:
-- Write `lesson_blocks` + `lesson_block_reading_section` rows.
-- Remove `lesson_page_blocks` writes.
+### §8.2 Re-pointed (runtime)
+- `LessonRouter.tsx` — dropped the `<Lesson/>` fallback; an unregistered UUID is a not-found case.
+- `LocalPreview.tsx` — renders the real bespoke pages from `content.json` (via `registry.tsx`), not the synthetic page-block model.
+- `Session.tsx` — `lesson_practice`/`lesson_review` scope from `learning_capabilities.lesson_id` (`getLessonSourceRefsByLessonId`), not page-block fan-out. **Session-builder unchanged** — same `selectedSourceRefs.includes(cap.sourceRef)` match, new data source (adjacent-module rule).
+- `Lessons.tsx` + `registry.tsx` — `preparedLessonIds` ("openable" tile gate) from bespoke-registry membership (`bespokeLessonIdSet`), replacing the retired `has_page_blocks` RPC signal. "Openable" is a client fact (has a bespoke page), not a DB one.
 
-`scripts/lib/pipeline/lesson-stage/validators/blockShape.ts`:
-- Assert per-`block_kind` that required nullable columns are populated; forbidden columns are null.
-- Mirrors the DB CHECK constraint conditions.
+### §8.3 DB + pipeline + health (`migration.sql`, `check-supabase-deep.ts`, lesson-stage)
+- `drop table lesson_page_blocks cascade`; removed its `block_kind` widen-narrow block, the `source_refs` GIN index, the two column-drop DO blocks, and the historical lesson_id page-block backfill (lesson_id is pipeline-maintained per ADR 0006).
+- Rewrote `get_lessons_overview` to drop the `lesson_block_presence` CTE + `has_page_blocks` column.
+- Retired HC2 (`check-supabase-deep.ts`).
+- Lesson-stage: the Stage A page-block writer was already gone (Phase 1, PR #85); PR 5 dropped the residual docstring steps.
 
-### §8.2 Reader rewrite (fail-loud)
+### §8.4 Gates (met)
+- Build green; lint 0 errors; 1232 tests pass.
+- `make migrate-idempotent-check` green; `make migrate` applied to live DB.
+- **Live-DB verified:** `lesson_page_blocks` absent (table not in schema cache); `get_lessons_overview` returns 9 rows with the new shape (`ready_capability_count` present, `has_page_blocks` absent).
+- Visual smoke (pre-merge): all 9 bespoke lessons render; `/preview` renders bespoke pages; Lessons tiles openable for all registered lessons; unregistered `/lesson/:id` → not-found.
 
-`src/components/lessons/LessonBlockRenderer.tsx`:
-- Replace fuzzy extraction (`textFromPayload`, `itemsFromPayload`) with typed dispatch per `block_kind`.
-- Throw if `block_kind` is unknown.
-
-`src/lib/lessons/lessonExperience.ts` (`buildLessonExperience`): consume typed rows.
-
-### §8.3 Re-publish (all lessons)
-
-```bash
-for N in 1 2 3 4 5 6 7 8 9; do
-  bun scripts/publish-approved-content.ts $N
-done
-```
-
-### §8.4 Gates
-
-- G4: `lesson_blocks` has rows for all 9 lessons; no-orphan for `reading_section` kind
-- Visual smoke: all 9 lessons render every block kind
-- `check-supabase-deep`: every `lesson_blocks WHERE block_kind='reading_section'` has a `lesson_block_reading_section` row
-
-**Writer/Reader/Validator triangle:**
-
-| Table | Writer | Reader | Validator |
-|---|---|---|---|
-| `lesson_blocks` | `lesson-stage/runner.ts` | `LessonBlockRenderer.tsx` | DB CHECK on `block_kind` + per-discriminator CHECK + `validators/blockShape.ts` |
-| `lesson_block_reading_section` | same | typed reader per block_kind | DB CHECK on `reading_kind` |
-
-**Rollback:** revert writer + reader; re-publish. `lesson_page_blocks` can be regenerated on re-publish if the old write path is restored.
+**Rollback:** revert the runtime + RPC commits. No re-publish needed (no content regenerated). The table drop is the one destructive step; the live DB is backed up daily (ADR 0011) for point-in-time recovery.
 
 ---
 
@@ -782,13 +786,12 @@ done
 grep -rn 'capability_artifacts'  src/ scripts/lib/   # must be zero non-comment hits
 grep -rn 'item_meanings'         src/ scripts/lib/   # must be zero (dropped in PR 1)
 grep -rn 'exercise_variants'     src/ scripts/lib/   # must be zero (dropped in PR 4)
-grep -rn 'lesson_page_blocks'    src/ scripts/lib/   # must be zero (dropped in PR 5)
 grep -rn 'section\.content'      src/               # must be zero
+# (lesson_page_blocks already dropped in PR 5 — table + all readers gone.)
 
 # 2. Confirm row counts (should all be 0 after re-publishes stopped writing them).
 SELECT count(*) FROM indonesian.capability_artifacts;
 SELECT count(*) FROM indonesian.exercise_variants;
-SELECT count(*) FROM indonesian.lesson_page_blocks;
 ```
 
 ### §10.1 Drop content tables (now fully superseded)
@@ -796,10 +799,10 @@ SELECT count(*) FROM indonesian.lesson_page_blocks;
 ```sql
 drop table if exists indonesian.capability_artifacts cascade;
 drop table if exists indonesian.exercise_variants    cascade;
-drop table if exists indonesian.lesson_page_blocks   cascade;
+-- lesson_page_blocks was already dropped in PR 5 (page-block render path retired).
 ```
 
-`scripts/migration.sql` co-edits: remove `CREATE TABLE` blocks + indexes + RLS + grants for all three.
+`scripts/migration.sql` co-edits: remove `CREATE TABLE` blocks + indexes + RLS + grants for the two remaining tables.
 
 ### §10.2 Retain lesson_sections.content column (NOT dropped — decision 2026-05-25)
 

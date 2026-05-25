@@ -287,7 +287,7 @@ The legacy seed surface (`scripts/data/vocabulary.ts`, `scripts/seed-learning-it
 
 ### Derived staging files
 
-The capability-stage runner regenerates `content-units.ts`, `capabilities.ts`, `exercise-assets.ts`, and `lesson-page-blocks.ts` from canonical inputs (`learning-items.ts`, `grammar-patterns.ts`, `morphology-patterns.ts`) AFTER enrichment runs (POS, level, EN translations, dialogue NL propagation). **Hand-edits to these four files are overwritten on the next publish.**
+The capability-stage runner regenerates `content-units.ts`, `capabilities.ts`, and `exercise-assets.ts` from canonical inputs (`learning-items.ts`, `grammar-patterns.ts`, `morphology-patterns.ts`) AFTER enrichment runs (POS, level, EN translations, dialogue NL propagation). **Hand-edits to these three files are overwritten on the next publish.** (`lesson-page-blocks.ts` was retired in PR 5 with the `lesson_page_blocks` table — bespoke per-lesson pages are the sole lesson renderer.)
 
 ### Publishing policy
 
@@ -404,7 +404,7 @@ When adding a new page, prefer composing `PageContainer` / `PageBody` / `PageHea
 |-------|-----------|-----------|
 | `lessons`, `lesson_sections`, `podcasts` | Admin via scripts | All authenticated users |
 | `learning_items`, `item_meanings`, `item_contexts`, `grammar_patterns`, `exercise_variants` | Pipeline (capability-stage) | All authenticated users |
-| `learning_capabilities`, `capability_artifacts`, `content_units`, `lesson_page_blocks` | Pipeline | All authenticated users |
+| `learning_capabilities`, `capability_artifacts`, `content_units` | Pipeline | All authenticated users |
 | `learner_capability_state`, `capability_review_events` | Capability review processor (server RPC) | Row owner |
 | `learner_lesson_activation` | `set_lesson_activation` RPC | Row owner |
 | `lesson_progress`, `learning_sessions` | Row owner / lazy materialiser | All (for leaderboard) |
