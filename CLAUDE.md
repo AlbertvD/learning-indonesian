@@ -264,6 +264,15 @@ Password resets are handled by an admin via Supabase Studio. If email is needed 
 
 All lesson, vocabulary, and podcast content is **deployed via scripts**, not through a UI. See `docs/process/content-pipeline.md` for the full authoring + publishing workflow (the 8 authoring steps, the 2-stage publish pipeline internals, agent invocations, failure-mode debugging).
 
+### Two source-of-truth regimes (ADR 0011) — read this before reasoning about content
+
+Content has **two** source-of-truth rules, split by layer. **Do not apply one to the other** — conflating them is what produced the capability-stage redesign confusion:
+
+- **Lesson content** — `lessons`, `lesson_sections`, `lesson_dialogue_lines`, `audio_clips`: the material a learner *reads*. **Regime: pipeline-is-writer, DB-is-projection.** The canonical source is the staging files (`scripts/data/staging/lesson-N/*` + `scripts/data/lessons.ts`); a re-publish regenerates these tables from them. Migrations here are additive schema + re-publish + final cleanup — never SQL backfills. (This is the original rule; see `memory/feedback_pipeline_is_writer_not_db.md`.)
+- **Capability content** — `learning_capabilities` and the typed capability / exercise / distractor tables: what FSRS *schedules*. **Regime: DB-authoritative after seeding (ADR 0011).** The Capability Stage is a generator/seeder, not a continuous projector: it seeds each capability once; routine re-runs are idempotent and additive-only (skip-if-exists on `normalized_text` / `canonical_key`); post-publish corrections live **in the DB** via the flag→agent loop (`CONTEXT.md` → Capability Review) and are **never** overwritten by a routine publish. `--regenerate <unit>` is the explicit, destructive opt-out.
+
+**The Stage Contract follows from this:** the Capability Stage reads lesson content **from the database** (the typed lesson-content tables the Lesson Stage wrote), not from staging files. No staging file crosses the Lesson→Capability boundary. See `CONTEXT.md` → Stage Contract / Capability Stage / Capability Review, and the authoritative decision in **`docs/adr/0011-capability-content-is-db-authoritative-after-seeding.md`**.
+
 ### Runtime is unified — every lesson goes through the capability pipeline
 
 `src/pages/Session.tsx` is the only production caller of any session builder, and it always invokes `buildSession({ enabled: true, ... })`. Every lesson in the live DB sits on `projection_version='capability-v3'` with `lesson_id` set on every non-podcast capability row. The lessons 1–3 "legacy projection" path was retired in 2026-05-21; the live DB confirmation is recorded in `docs/code-review-2026-05-20/README.md` §"2026-05-21 — Pattern I + retirement".
@@ -431,7 +440,7 @@ Every design document MUST include a **"Supabase Requirements"** section. No fea
 | Where | What you'll find |
 |---|---|
 | `docs/target-architecture.md` | The locked-in module roster the codebase is migrating toward (status: not yet built). Reference for fold decisions. |
-| `docs/adr/` | Architecture Decision Records — the *why* behind the capability system (0001 capability core, 0002 stages derived, 0003 FSRS on capabilities, 0004 atomic review commits, 0005 lesson reader passivity, 0006 every lesson-derived capability has an introducing lesson). |
+| `docs/adr/` | Architecture Decision Records — the *why* behind the capability system (0001 capability core, 0002 stages derived, 0003 FSRS on capabilities, 0004 atomic review commits, 0005 lesson reader passivity, 0006 every lesson-derived capability has an introducing lesson, 0008 retire generic capability_artifacts, 0009 typed-table-per-content-concept, 0010 wire grammar via pattern capabilities, **0011 capability content is DB-authoritative after seeding** — the source-of-truth split in § Content Management). |
 | `docs/current-system/` | Living reference docs of the *current* implementation. See `README.md` for the index. |
 | `docs/current-system/modules/` | Per-module specs (see "Module specs" above). |
 | `docs/process/` | Operational workflows: `content-pipeline.md` (authoring + 2-stage publish), `deploy.md` (homelab container recreate). |
@@ -465,3 +474,17 @@ Key facts relevant to this app:
 - **Supabase:** Self-hosted at `https://api.supabase.duin.home`. Kong is the API gateway in front of PostgREST, GoTrue, and Storage. CORS must include `Accept-Profile` and `Content-Profile` headers (required by supabase-js)
 - **Data persistence:** App data lives in the Supabase PostgreSQL instance. No local storage volumes needed for this app
 - **Internal networking:** Services communicate over internal Docker networks via HTTP. Only external-facing URLs use HTTPS via Traefik
+
+## Agent skills
+
+### Issue tracker
+
+Issues and PRDs live as GitHub issues on `AlbertvD/learning-indonesian`, via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The default five-role vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). `wontfix` pre-existed; the other four were created during setup. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `CONTEXT.md` + `docs/adr/` at the repo root, plus the living `docs/current-system/modules/<name>.md` specs. See `docs/agents/domain.md`.

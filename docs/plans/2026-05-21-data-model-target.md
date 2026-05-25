@@ -277,7 +277,9 @@ create table indonesian.lesson_block_reading_section (
 
 ### Decision D — `lesson_sections.content` shape variance
 
-**Decision: Split `lesson_sections.content` into typed rows in new satellite tables. Retire the generic JSON column.**
+**Decision: Split `lesson_sections.content` into typed rows in new satellite tables. RETAIN the generic JSON column alongside them** (amended 2026-05-25 — the original decision retired the blob).
+
+The typed columns + child tables are the queryable projection — and, per ADR 0011, the **capability-stage contract**. The `content` blob is **kept next to them** as the complete, round-trippable lesson-content snapshot the Lesson Stage writes. It is not dropped (see migration plan §10.2). Runtime readers still move to the typed columns; the blob is retained as data, not as a read path.
 
 **Evidence (investigation §3.5):**
 - 10 declared `content.type` values; 9+ observed shapes; one bespoke 9-key shape (`reference_table`).
@@ -313,6 +315,7 @@ create table indonesian.lesson_sections (
   closing text,                                   -- used by: dialogue
   table_title text,                               -- used by: reference (1 row in DB)
   reference_payload jsonb,                        -- used by: reference (the bespoke 9-key shape; 1 row)
+  content jsonb not null default '{}',            -- RETAINED (2026-05-25): the complete authored section snapshot. The typed columns above + the child tables below are its projection. NOT dropped — kept next to the structured tables.
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   unique(lesson_id, source_section_ref)
