@@ -722,7 +722,7 @@ done
 
 `lesson-stage/runner.ts`:
 - Write typed columns on `lesson_sections` and rows in child tables.
-- Keep writing `lesson_sections.content jsonb` until reader switch is confirmed (this is the one exception to the "no dual-write" rule — `lesson_sections.content` is not a DB table drop, just a column; existing reader can coexist briefly).
+- Keep writing `lesson_sections.content jsonb` **permanently** (decision 2026-05-25). The blob is **retained next to** the typed columns + child tables as the complete lesson-content snapshot — it is NOT dropped in PR 7. The typed structures are the projection that readers and the capability-stage contract (ADR 0011) use; the blob stays alongside them. This is a permanent dual-representation, not a temporary dual-write.
 
 `lesson-stage/validators/sectionShape.ts`: assert per-`section_kind` field applicability. CRITICAL if not.
 
@@ -795,13 +795,11 @@ drop table if exists indonesian.lesson_page_blocks   cascade;
 
 `scripts/migration.sql` co-edits: remove `CREATE TABLE` blocks + indexes + RLS + grants for all three.
 
-### §10.2 Drop lesson_sections.content column
+### §10.2 Retain lesson_sections.content column (NOT dropped — decision 2026-05-25)
 
-```sql
-alter table indonesian.lesson_sections drop column if exists content;
-```
+The `lesson_sections.content` blob is **kept permanently** alongside the typed columns + child tables. It is the complete, round-trippable lesson-content snapshot; the typed structures are its projection (and the capability-stage contract per ADR 0011). **No drop here** — the earlier `alter table ... drop column content` step is removed.
 
-`scripts/migration.sql` co-edit: remove `content jsonb` from the `CREATE TABLE indonesian.lesson_sections` block.
+Runtime readers still move to the typed columns in PR 6 (the blob is retained as data, not as a read path), so the `section.content` reader-count check below still applies; the difference is the column itself survives.
 
 ### §10.3 Drop legacy-retained user-state tables (no live readers since 2026-05-01)
 
@@ -902,7 +900,7 @@ Recreate `commit_capability_answer_report` RPC body referencing the renamed colu
 |---|---|---|
 | Grammar exercise routing widening (PR 4) — first-ever live pattern caps | HIGH | `exercise_type_availability.session_enabled = false` for grammar types; flip to `true` after G7 verified |
 | Lesson reader rewrite (PR 5) — fuzzy → typed; any missed section shape throws | HIGH | Visual smoke all 9 lessons in dev before merge |
-| `lesson_sections.content` drop (PR 6 → PR 7) — 9 per-lesson Page.tsx files as second readers | HIGH | No-missed-consumer grep gate; must be clean before §9.4 |
+| `lesson_sections` reader switch (PR 6) — 9 per-lesson Page.tsx files move to typed columns | MEDIUM | No-missed-consumer grep gate before §9.4. The `content` blob is **retained** (not dropped — decision 2026-05-25), so a missed reader still has its data to fall back on — downgrades this from HIGH |
 | PR 7 drops — no cheap rollback | HIGH | pg_dump before PR 7; pre-drop grep checklist; immediate G7 regression |
 | Edge function deploy gap (PR 7 RPC rename) | LOW | At 2-user scale acceptable; force-bypass check closes the window |
 

@@ -93,6 +93,8 @@ The interface between the Lesson Stage and the Capability Stage is **purely data
 
 This is the operational consequence of **ADR 0011** (capability content is DB-authoritative after seeding): because the Capability Stage seeds capabilities once and corrections then live in the DB, its *input* must also be the DB — a staging-file re-read would reintroduce a source that drifts from the corrected DB state. The typed lesson-content tables the Lesson Stage emits (`lesson_dialogue_lines` today; the `lesson_sections` typed satellites of migration PRs 5–6) **are** that contract. Note the asymmetry: lesson content remains pipeline-is-writer / staging-canonical; only the capability side is DB-authoritative.
 
+The `lesson_sections.content` JSON blob is **retained** alongside the typed tables (not dropped) — it is the complete authored snapshot of a section; the typed columns + child tables are its projection. Readers (the lesson page, the capability-stage contract) use the typed tables; the blob stays next to them as the round-trippable record.
+
 ## Pipelines are per content origin
 
 The Lesson Stage and Capability Stage above describe the **textbook-lesson** pipeline (HEIC pages → lesson content → capabilities). They are not universal. Each content origin gets its **own separate pipeline**:
