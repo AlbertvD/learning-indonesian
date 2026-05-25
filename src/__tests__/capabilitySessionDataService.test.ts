@@ -184,6 +184,8 @@ describe('capability session data service', () => {
   })
 
   it('loads Dutch-to-Indonesian choice as ready planner material', async () => {
+    // Slice 1 invariant: item-sourced caps have required_artifacts=[] and
+    // never use capability_artifacts. The fixture reflects this reality.
     const service = createSessionBuilderAdapter({
       schema: () => ({
         from: (table: string) => {
@@ -202,22 +204,10 @@ describe('capability session data service', () => {
               publication_status: 'published',
               lesson_id: 'lesson-uuid-1',
               prerequisite_keys: ['text-recognition-key'],
-              required_artifacts: ['meaning:l1', 'base_text'],
+              required_artifacts: [],
             }])
           }
-          if (table === 'capability_artifacts') {
-            return query([{
-              capability_id: 'choice-capability',
-              artifact_kind: 'meaning:l1',
-              quality_status: 'approved',
-              artifact_json: { value: 'eten' },
-            }, {
-              capability_id: 'choice-capability',
-              artifact_kind: 'base_text',
-              quality_status: 'approved',
-              artifact_json: { value: 'makan' },
-            }])
-          }
+          // Item caps do not use capability_artifacts (Slice 1) — no mock needed.
           if (table === 'learner_capability_state') return query([])
           if (table === 'learner_lesson_activation') return query([])
           return query([])

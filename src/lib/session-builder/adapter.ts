@@ -278,14 +278,21 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
 
       const capabilityRows = (capabilitiesResult.data ?? []) as LearningCapabilityDbRow[]
       const capabilityById = new Map(capabilityRows.map(row => [row.id, row]))
-      const capabilityIds = capabilityRows.map(row => row.id)
-      const artifactRows = await chunkedIn<CapabilityArtifactDbRow>(
-        'capability_artifacts',
-        'capability_id',
-        capabilityIds,
-        undefined,
-        client,
-      )
+      // Slice 1: item-sourced capabilities have required_artifacts=[] and never
+      // store rows in capability_artifacts. Exclude them so the chunkedIn call
+      // does not fan out over all capabilities when the corpus is mostly items.
+      const nonItemCapabilityIds = capabilityRows
+        .filter(row => row.source_kind !== 'item')
+        .map(row => row.id)
+      const artifactRows = nonItemCapabilityIds.length > 0
+        ? await chunkedIn<CapabilityArtifactDbRow>(
+          'capability_artifacts',
+          'capability_id',
+          nonItemCapabilityIds,
+          undefined,
+          client,
+        )
+        : []
       const artifactIndex = buildArtifactIndex(artifactRows, capabilityById)
 
       const capabilitiesByKey = new Map<string, ProjectedCapability>()

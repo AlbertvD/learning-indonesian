@@ -445,11 +445,15 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
     )
   }
 
-  async function artifacts(capabilityIds: string[]): Promise<CapabilityArtifactRow[]> {
+  // Slice 1: item-sourced capabilities have required_artifacts=[] — skip the
+  // capability_artifacts fetch for them entirely. Only grammar/dialogue/podcast
+  // kinds use capability_artifacts; fetching it for item caps is always a no-op.
+  async function artifacts(nonItemCapabilityIds: string[]): Promise<CapabilityArtifactRow[]> {
+    if (nonItemCapabilityIds.length === 0) return []
     return chunkedIn<CapabilityArtifactRow>(
       'capability_artifacts',
       'capability_id',
-      capabilityIds,
+      nonItemCapabilityIds,
       (b) => b.select('capability_id, artifact_kind, quality_status, artifact_json'),
       client,
     )
@@ -457,9 +461,14 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
 
   async function evidenceForCapabilities(userId: string, capabilities: LearningCapabilityRow[]): Promise<CapabilityMasteryEvidence[]> {
     const capabilityIds = capabilities.map(capability => capability.id)
+    // Item caps have required_artifacts=[] — their artifacts fetch is always a no-op.
+    // Skip them to avoid an unconditional chunkedIn over capability_artifacts for the full set.
+    const nonItemIds = capabilities
+      .filter(capability => capability.source_kind !== 'item')
+      .map(capability => capability.id)
     const [states, artifactRows, activatedLessonsSet] = await Promise.all([
       learnerStates(userId, capabilityIds),
-      artifacts(capabilityIds),
+      artifacts(nonItemIds),
       listActivatedLessons(userId, client),
     ])
     return toEvidence({ capabilities, states, artifacts: artifactRows, activatedLessons: activatedLessonsSet })
@@ -499,8 +508,11 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
       if (stateError) throw stateError
       const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
       const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
+      const nonItemIds = capabilities
+        .filter(capability => capability.source_kind !== 'item')
+        .map(capability => capability.id)
       const [artifactRows, activatedLessonsSet] = await Promise.all([
-        artifacts(capabilities.map(capability => capability.id)),
+        artifacts(nonItemIds),
         listActivatedLessons(userId, client),
       ])
       const evidence = toEvidence({ capabilities, states, artifacts: artifactRows, activatedLessons: activatedLessonsSet })

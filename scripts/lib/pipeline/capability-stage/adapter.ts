@@ -920,6 +920,47 @@ export async function readActiveVariantContextIds(
 }
 
 // ---------------------------------------------------------------------------
+// Curated item distractors (Slice 1 — recognition_mcq, cued_recall, cloze_mcq)
+// ---------------------------------------------------------------------------
+
+export interface DistractorUpsertRow {
+  capability_id: string
+  table: 'recognition_mcq_distractors' | 'cued_recall_distractors' | 'cloze_mcq_item_distractors'
+  distractors: string[]
+}
+
+/**
+ * Write curated distractor rows to the three typed tables.
+ *
+ * Strategy: upsert ON CONFLICT (capability_id) DO UPDATE — idempotent,
+ * re-running the pipeline regenerates the same deterministic distractors and
+ * overwrites the row. The capability_id column carries a UNIQUE constraint in
+ * the migration so Postgres can find the conflict target.
+ *
+ * The three tables (recognition_mcq_distractors, cued_recall_distractors,
+ * cloze_mcq_item_distractors) all share the same shape: capability_id + distractors.
+ */
+export async function upsertItemDistractors(
+  supabase: CapabilitySupabaseClient,
+  rows: DistractorUpsertRow[],
+): Promise<number> {
+  if (rows.length === 0) return 0
+  let written = 0
+  for (const row of rows) {
+    const { error } = await supabase
+      .schema('indonesian')
+      .from(row.table)
+      .upsert(
+        { capability_id: row.capability_id, distractors: row.distractors, updated_at: new Date().toISOString() },
+        { onConflict: 'capability_id' },
+      )
+    if (error) throw error
+    written++
+  }
+  return written
+}
+
+// ---------------------------------------------------------------------------
 // Count helpers (verify/countParity.ts)
 // ---------------------------------------------------------------------------
 
