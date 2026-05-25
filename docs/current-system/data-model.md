@@ -11,6 +11,8 @@ All tables live in the `indonesian` Postgres schema. `scripts/migration.sql` is 
 
 For the *why* behind the capability schema, see `docs/adr/0001-capability-based-learning-core.md` and ADRs 0002–0005. For the publishing pipeline that writes these tables, see `docs/process/content-pipeline.md`.
 
+**Source-of-truth regimes (ADR 0011).** These tables are written under *two* different rules. **Lesson-content tables** (`lessons`, `lesson_sections`, `lesson_dialogue_lines`, `audio_clips`) are a projection of canonical staging files — re-publish regenerates them. **Capability-content tables** (`learning_capabilities` + the typed exercise/distractor satellites) are **DB-authoritative after seeding**: the Capability Stage seeds them once, re-runs are idempotent/additive-only, and post-publish corrections live in the DB and are never overwritten by a routine re-publish. See `docs/adr/0011-capability-content-is-db-authoritative-after-seeding.md` and `CLAUDE.md` § Content Management.
+
 ---
 
 ## 1. Schema groups

@@ -16,6 +16,16 @@ depends_on:
 
 **What this doc is not:** A schema reference. All DDL for new typed tables lives in `docs/plans/2026-05-21-data-model-target.md`. This plan governs sequencing, the writer/reader/validator triangle per PR, gating, and rollback.
 
+> **⚠ Superseded in part by ADR 0011 (accepted 2026-05-25) — capability source-of-truth.**
+> This plan (written 2026-05-22) assumes one regime for *all* content: "the DB is a projection of canonical staging files; the pipeline reads staging and re-publish overwrites." **ADR 0011 splits that:** it holds for **lesson content**, but **capability content is now DB-authoritative after seeding** — the Capability Stage reads lesson content *from the DB* (not staging files), seeds idempotently, and never overwrites seeded capabilities on a routine re-publish.
+>
+> **Consequences for this plan:**
+> - **PRs 0–4 (capability side, ✅ shipped)** were built under the pre-ADR-0011 model (e.g. PR 1 writes distractors *from `vocab-enrichments.ts`*; PR 4 writes grammar *from staging candidates*). They stand as historical record, but their "capability stage reads staging" premise is **superseded** — the capability-stage redesign (epic #98, and `docs/adr/0011-...`) re-points those reads at the DB.
+> - **PRs 5–6 (typed `lesson_sections` / `lesson_blocks`, not started)** are now **dual-purpose**: they remain the lesson *reader's* typed source, **and** they become the **capability-stage contract** — the typed lesson-content tables the Capability Stage reads (per CONTEXT.md → Stage Contract). They must land *before* the capability-stage redesign consumes them.
+> - The capability-stage redesign (#98/#99) is **not** a separate-but-equal program; it re-founds the capability side on ADR 0011. Sequence it *after* the lesson-content typed tables exist.
+>
+> See `docs/adr/0011-capability-content-is-db-authoritative-after-seeding.md` and `CLAUDE.md` § Content Management → "Two source-of-truth regimes (ADR 0011)".
+
 ---
 
 ## §1. Fundamental model: the DB is a projection
