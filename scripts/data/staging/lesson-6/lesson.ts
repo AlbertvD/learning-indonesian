@@ -37,199 +37,248 @@ export const lesson = {
         "items": [
           {
             "indonesian": "ambil",
-            "dutch": "nemen, pakken"
+            "dutch": "nemen, pakken",
+            "english": "take, grab"
           },
           {
             "indonesian": "arloji",
-            "dutch": "horloge"
+            "dutch": "horloge",
+            "english": "watch"
           },
           {
             "indonesian": "berangkat",
-            "dutch": "vertrekken"
+            "dutch": "vertrekken",
+            "english": "depart"
           },
           {
             "indonesian": "belum pernah",
-            "dutch": "nog nooit"
+            "dutch": "nog nooit",
+            "english": "never before"
           },
           {
             "indonesian": "betul",
-            "dutch": "echt, echt waar"
+            "dutch": "echt, echt waar",
+            "english": "really, truly"
           },
           {
             "indonesian": "biarlah",
-            "dutch": "laat maar"
+            "dutch": "laat maar",
+            "english": "never mind"
           },
           {
             "indonesian": "bilang",
-            "dutch": "zeggen"
+            "dutch": "zeggen",
+            "english": "say"
           },
           {
             "indonesian": "bir",
-            "dutch": "bier"
+            "dutch": "bier",
+            "english": "beer"
           },
           {
             "indonesian": "biru",
-            "dutch": "blauw"
+            "dutch": "blauw",
+            "english": "blue"
           },
           {
             "indonesian": "bukan",
-            "dutch": "1. niet, geen; 2. is 't niet?"
+            "dutch": "1. niet, geen; 2. is 't niet?",
+            "english": "not, no; isn't it?"
           },
           {
             "indonesian": "cepat",
-            "dutch": "snel"
+            "dutch": "snel",
+            "english": "fast"
           },
           {
             "indonesian": "coba",
-            "dutch": "proberen"
+            "dutch": "proberen",
+            "english": "try"
           },
           {
             "indonesian": "deh! (deh)",
-            "dutch": "zeg! (stopwoord)"
+            "dutch": "zeg! (stopwoord)",
+            "english": "say! (filler word)"
           },
           {
             "indonesian": "dingin",
-            "dutch": "koud"
+            "dutch": "koud",
+            "english": "cold"
           },
           {
             "indonesian": "ekonomi",
-            "dutch": "economie"
+            "dutch": "economie",
+            "english": "economy"
           },
           {
             "indonesian": "'full AC'",
-            "dutch": "voorzien van 'air conditioning'"
+            "dutch": "voorzien van 'air conditioning'",
+            "english": "equipped with air conditioning"
           },
           {
             "indonesian": "gampang",
-            "dutch": "makkelijk"
+            "dutch": "makkelijk",
+            "english": "easy"
           },
           {
             "indonesian": "hanya",
-            "dutch": "slechts"
+            "dutch": "slechts",
+            "english": "only"
           },
           {
             "indonesian": "hari ini",
-            "dutch": "vandaag"
+            "dutch": "vandaag",
+            "english": "today"
           },
           {
             "indonesian": "hitam",
-            "dutch": "zwart"
+            "dutch": "zwart",
+            "english": "black"
           },
           {
             "indonesian": "istana",
-            "dutch": "paleis"
+            "dutch": "paleis",
+            "english": "palace"
           },
           {
             "indonesian": "jalan",
-            "dutch": "rijden, gaan, lopen"
+            "dutch": "rijden, gaan, lopen",
+            "english": "drive, go, walk"
           },
           {
             "indonesian": "jam",
-            "dutch": "uur; klok"
+            "dutch": "uur; klok",
+            "english": "hour; clock"
           },
           {
             "indonesian": "jangan",
-            "dutch": "doe niet!"
+            "dutch": "doe niet!",
+            "english": "don't!"
           },
           {
             "indonesian": "janji",
-            "dutch": "afspraak, belofte"
+            "dutch": "afspraak, belofte",
+            "english": "appointment, promise"
           },
           {
             "indonesian": "jauh",
-            "dutch": "ver"
+            "dutch": "ver",
+            "english": "far"
           },
           {
             "indonesian": "Jepang",
-            "dutch": "Japan(s)"
+            "dutch": "Japan(s)",
+            "english": "Japan(ese)"
           },
           {
             "indonesian": "kurang tahu",
-            "dutch": "ik weet het niet (zo goed)"
+            "dutch": "ik weet het niet (zo goed)",
+            "english": "I don't know (so well)"
           },
           {
             "indonesian": "kira-kira",
-            "dutch": "ongeveer"
+            "dutch": "ongeveer",
+            "english": "approximately"
           },
           {
             "indonesian": "larut",
-            "dutch": "laat, lang (tijd)"
+            "dutch": "laat, lang (tijd)",
+            "english": "late, long (time)"
           },
           {
             "indonesian": "larut malam",
-            "dutch": "laat op de avond"
+            "dutch": "laat op de avond",
+            "english": "late evening"
           },
           {
             "indonesian": "lebih",
-            "dutch": "meer"
+            "dutch": "meer",
+            "english": "more"
           },
           {
             "indonesian": "lewat (lewat)",
-            "dutch": "voorbij (zijn/gaan)"
+            "dutch": "voorbij (zijn/gaan)",
+            "english": "past (be/go)"
           },
           {
             "indonesian": "masuk",
-            "dutch": "binnengaan"
+            "dutch": "binnengaan",
+            "english": "enter"
           },
           {
             "indonesian": "menit",
-            "dutch": "minuut"
+            "dutch": "minuut",
+            "english": "minute"
           },
           {
             "indonesian": "merah (merah)",
-            "dutch": "rood"
+            "dutch": "rood",
+            "english": "red"
           },
           {
             "indonesian": "Monas = Monumen Nasional",
-            "dutch": "Nationaal Monument"
+            "dutch": "Nationaal Monument",
+            "english": "National Monument"
           },
           {
             "indonesian": "ongkos",
-            "dutch": "(on)kosten"
+            "dutch": "(on)kosten",
+            "english": "cost(s)"
           },
           {
             "indonesian": "pernah",
-            "dutch": "ooit"
+            "dutch": "ooit",
+            "english": "ever"
           },
           {
             "indonesian": "rugi",
-            "dutch": "verlies lijden"
+            "dutch": "verlies lijden",
+            "english": "suffer a loss"
           },
           {
             "indonesian": "seperempat",
-            "dutch": "een kwart"
+            "dutch": "een kwart",
+            "english": "a quarter"
           },
           {
             "indonesian": "seperempat jam",
-            "dutch": "een kwartier"
+            "dutch": "een kwartier",
+            "english": "a quarter hour"
           },
           {
             "indonesian": "setengah",
-            "dutch": "de helft, het midden"
+            "dutch": "de helft, het midden",
+            "english": "half, middle"
           },
           {
             "indonesian": "sih!",
-            "dutch": "zeg! (stopwoord)"
+            "dutch": "zeg! (stopwoord)",
+            "english": "hey! (filler word)"
           },
           {
             "indonesian": "sopir",
-            "dutch": "chauffeur"
+            "dutch": "chauffeur",
+            "english": "driver"
           },
           {
             "indonesian": "tangan",
-            "dutch": "hand, (onder)arm"
+            "dutch": "hand, (onder)arm",
+            "english": "hand, (fore)arm"
           },
           {
             "indonesian": "telah",
-            "dutch": "al, reeds"
+            "dutch": "al, reeds",
+            "english": "already"
           },
           {
             "indonesian": "tv (tivi)",
-            "dutch": "televisie"
+            "dutch": "televisie",
+            "english": "television"
           },
           {
             "indonesian": "warna",
-            "dutch": "kleur"
+            "dutch": "kleur",
+            "english": "color"
           }
         ]
       }
@@ -248,20 +297,28 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Mas sudah minum kopi? -- Belum, saya belum minum kopi.",
-                "dutch": "Heb je al koffie gedronken? -- Nog niet, ik heb nog geen koffie gedronken."
+                "dutch": "Heb je al koffie gedronken? -- Nog niet, ik heb nog geen koffie gedronken.",
+                "english": "Have you already had coffee? -- Not yet, I haven't had coffee yet."
               },
               {
                 "indonesian": "Kamu sudah punya arloji? -- Belum, tidak punya uang.",
-                "dutch": "Heb je al een horloge? -- Nee, ik heb geen geld."
+                "dutch": "Heb je al een horloge? -- Nee, ik heb geen geld.",
+                "english": "Do you already have a watch? -- No, I don't have money."
               },
               {
                 "indonesian": "Saya lapar, belum makan.",
-                "dutch": "Ik heb honger, ik heb nog niet gegeten."
+                "dutch": "Ik heb honger, ik heb nog niet gegeten.",
+                "english": "I'm hungry, I haven't eaten yet."
               },
               {
                 "indonesian": "Saya belum pernah ke Monas.",
-                "dutch": "Ik ben nog nooit naar het Nationaal Monument geweest."
+                "dutch": "Ik ben nog nooit naar het Nationaal Monument geweest.",
+                "english": "I have never been to the National Monument."
               }
+            ],
+            "title_en": "Not yet",
+            "rules_en": [
+              "After a question with sudah, telah (= already) or pernah (= ever), the negative answer is always belum, never tidak."
             ]
           }
         ],
@@ -286,24 +343,34 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Ini bukan rumah, tetapi kantor.",
-                "dutch": "Dit is geen huis, maar een kantoor."
+                "dutch": "Dit is geen huis, maar een kantoor.",
+                "english": "This is not a house, but an office."
               },
               {
                 "indonesian": "Bukan koper biru, tetapi yang hitam.",
-                "dutch": "Niet de blauwe koffer, maar de zwarte."
+                "dutch": "Niet de blauwe koffer, maar de zwarte.",
+                "english": "Not the blue suitcase, but the black one."
               },
               {
                 "indonesian": "Bukan yang berat, yang ringan hilang.",
-                "dutch": "Niet de zware, de lichte is verdwenen."
+                "dutch": "Niet de zware, de lichte is verdwenen.",
+                "english": "Not the heavy one, the light one is gone."
               },
               {
                 "indonesian": "Bukan saya yang bilang itu, tetapi Yono!",
-                "dutch": "Ik ben het niet die dat gezegd heeft, maar Yono!"
+                "dutch": "Ik ben het niet die dat gezegd heeft, maar Yono!",
+                "english": "It's not me who said that, but Yono!"
               },
               {
                 "indonesian": "Bukan mas Tiro yang sakit, tetapi mas Parman.",
-                "dutch": "Niet Tiro is ziek, maar Parman."
+                "dutch": "Niet Tiro is ziek, maar Parman.",
+                "english": "It's not Tiro who is sick, but Parman."
               }
+            ],
+            "title_en": "Bukan (1) -- negation of nouns",
+            "rules_en": [
+              "Bukan negates nouns, words made into nouns with yang, personal pronouns, and proper nouns.",
+              "Bukan is often combined with tetapi (= but) to express a contrast: 'not that..., but...'."
             ]
           },
           {
@@ -315,16 +382,24 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "TV di Indonesia masih baru bukan?",
-                "dutch": "De tv in Indonesie is nog nieuw, nietwaar?"
+                "dutch": "De tv in Indonesie is nog nieuw, nietwaar?",
+                "english": "TV in Indonesia is still new, isn't it?"
               },
               {
                 "indonesian": "Ekonomi Jepang baik sekali, 'kan?",
-                "dutch": "De economie van Japan is erg goed, is 't niet?"
+                "dutch": "De economie van Japan is erg goed, is 't niet?",
+                "english": "Japan's economy is very good, isn't it?"
               },
               {
                 "indonesian": "Hari ini dia pulang, 'kan?",
-                "dutch": "Vandaag komt hij terug, nietwaar?"
+                "dutch": "Vandaag komt hij terug, nietwaar?",
+                "english": "He's coming back today, right?"
               }
+            ],
+            "title_en": "Bukan / 'kan (2) -- tag question (isn't it?)",
+            "rules_en": [
+              "Bukan at the end of a sentence means 'isn't it?, right?'.",
+              "The shortened form 'kan? is widely used in spoken language."
             ]
           }
         ],
@@ -350,28 +425,40 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Saya tidak mau ke sana.",
-                "dutch": "Ik wil daar niet naar toe."
+                "dutch": "Ik wil daar niet naar toe.",
+                "english": "I don't want to go there."
               },
               {
                 "indonesian": "Dia tidak boleh masuk.",
-                "dutch": "Zij mag niet binnenkomen."
+                "dutch": "Zij mag niet binnenkomen.",
+                "english": "She is not allowed to come in."
               },
               {
                 "indonesian": "Mereka tidak bisa datang.",
-                "dutch": "Ze kunnen niet komen."
+                "dutch": "Ze kunnen niet komen.",
+                "english": "They cannot come."
               },
               {
                 "indonesian": "Air tidak dingin.",
-                "dutch": "Het water is niet koud."
+                "dutch": "Het water is niet koud.",
+                "english": "The water is not cold."
               },
               {
                 "indonesian": "Kursi besar tidak bagus.",
-                "dutch": "De grote stoel is niet mooi."
+                "dutch": "De grote stoel is niet mooi.",
+                "english": "The big chair is not nice."
               },
               {
                 "indonesian": "Rumah ini tidak rapi.",
-                "dutch": "Dit huis is niet netjes."
+                "dutch": "Dit huis is niet netjes.",
+                "english": "This house is not tidy."
               }
+            ],
+            "title_en": "Tidak -- negation of verbs and adjectives",
+            "rules_en": [
+              "Tidak (shortened form: tak) precedes a verb or adjective.",
+              "Tidak pernah = never.",
+              "Tak is used in formal language (literature, songs)."
             ]
           }
         ],
@@ -395,20 +482,28 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Jangan!",
-                "dutch": "Doe het niet!"
+                "dutch": "Doe het niet!",
+                "english": "Don't!"
               },
               {
                 "indonesian": "Jangan minum bir terlalu banyak!",
-                "dutch": "Drink niet teveel bier!"
+                "dutch": "Drink niet teveel bier!",
+                "english": "Don't drink too much beer!"
               },
               {
                 "indonesian": "Jangan bilang itu!",
-                "dutch": "Zeg dat niet!"
+                "dutch": "Zeg dat niet!",
+                "english": "Don't say that!"
               },
               {
                 "indonesian": "Jangan duduk!",
-                "dutch": "Ga niet zitten!"
+                "dutch": "Ga niet zitten!",
+                "english": "Don't sit down!"
               }
+            ],
+            "title_en": "Jangan -- prohibition (negative imperative)",
+            "rules_en": [
+              "Jangan expresses a prohibition. It can be used independently or precede a verb."
             ]
           }
         ],
@@ -462,6 +557,12 @@ export const lesson = {
                 "tolonglah!",
                 "help me (toch)!"
               ]
+            ],
+            "title_en": "Imperative with -lah (polite imperative)",
+            "rules_en": [
+              "The imperative = base verb + exclamation mark.",
+              "With the suffix -lah the imperative becomes polite (softened).",
+              "Invitations begin with silakan or mari. Exhortations with ayo, coba, cepat or tolong."
             ]
           },
           {
@@ -511,20 +612,28 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Adakah pisang?",
-                "dutch": "Zijn er bananen?"
+                "dutch": "Zijn er bananen?",
+                "english": "Are there bananas?"
               },
               {
                 "indonesian": "Apakah itu?",
-                "dutch": "Wat is dat?"
+                "dutch": "Wat is dat?",
+                "english": "What is that?"
               },
               {
                 "indonesian": "Bolehkah saya ikut?",
-                "dutch": "Mag ik meegaan?"
+                "dutch": "Mag ik meegaan?",
+                "english": "May I come along?"
               },
               {
                 "indonesian": "Bisakah tolong saya?",
-                "dutch": "Kunt u mij helpen?"
+                "dutch": "Kunt u mij helpen?",
+                "english": "Can you help me?"
               }
+            ],
+            "title_en": "-kah -- question suffix for emphasis",
+            "rules_en": [
+              "The suffix -kah turns a word into an emphatic question. It gives more emphasis than a regular question."
             ]
           }
         ],
@@ -581,6 +690,10 @@ export const lesson = {
                 "16.00-18.30 uur",
                 "namiddag"
               ]
+            ],
+            "title_en": "Parts of the day in Indonesian",
+            "rules_en": [
+              "In Indonesia a new day begins after sunset (around 6 PM). What we call 'Monday evening' is 'Tuesday evening' in Indonesia (malam Selasa)."
             ]
           }
         ],
@@ -604,20 +717,28 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "tiga puluh lima detik",
-                "dutch": "35 seconden"
+                "dutch": "35 seconden",
+                "english": "35 seconds"
               },
               {
                 "indonesian": "dua puluh dua menit",
-                "dutch": "22 minuten"
+                "dutch": "22 minuten",
+                "english": "22 minutes"
               },
               {
                 "indonesian": "sembilan jam",
-                "dutch": "9 uur"
+                "dutch": "9 uur",
+                "english": "9 hours"
               },
               {
                 "indonesian": "Saya belajar satu setengah jam.",
-                "dutch": "Ik heb anderhalf uur gestudeerd."
+                "dutch": "Ik heb anderhalf uur gestudeerd.",
+                "english": "I studied for one and a half hours."
               }
+            ],
+            "title_en": "Duration",
+            "rules_en": [
+              "A duration = numeral + time unit (detik / menit / jam)."
             ]
           },
           {
@@ -660,6 +781,14 @@ export const lesson = {
                 "--",
                 "uurwerk, klok"
               ]
+            ],
+            "title_en": "Clock time — time expressions",
+            "rules_en": [
+              "What time is it now?",
+              "Time = jam / pukul + numeral. Part of day (pagi, siang, sore, malam) is optional but common.",
+              "lewat = past (after the hour); kurang = to (before the hour); setengah = half (before the next hour).",
+              "In spoken language lewat and menit are often omitted.",
+              "Pronunciation: lewat, sore."
             ]
           },
           {

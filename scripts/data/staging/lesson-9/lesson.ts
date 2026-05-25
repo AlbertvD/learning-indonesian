@@ -37,67 +37,80 @@ export const lesson = {
           {
             "speaker": "narrator",
             "text": "Sekarang di Indonesia di mana-mana ada PUSKESMAS. PUSKESMAS itu adalah tempat orang desa cari dokter atau minta obat. Di desa-desa kecil tidak ada rumah sakit seperti di kota besar.",
-            "translation": "Tegenwoordig zijn er overal in Indonesië PUSKESMAS'en. PUSKESMAS is een plek waar dorpsbewoners naar een dokter gaan of medicijnen halen. In kleine dorpen zijn er geen ziekenhuizen zoals in grote steden."
+            "translation": "Tegenwoordig zijn er overal in Indonesië PUSKESMAS'en. PUSKESMAS is een plek waar dorpsbewoners naar een dokter gaan of medicijnen halen. In kleine dorpen zijn er geen ziekenhuizen zoals in grote steden.",
+            "translation_en": "Nowadays there are PUSKESMAS (health clinics) everywhere in Indonesia. A PUSKESMAS is a place where villagers go to see a doctor or get medicine. In small villages there are no hospitals like in big cities."
           },
           {
             "speaker": "narrator",
             "text": "Tina kakinya sakit sekali. Dia jatuh dari pohon. Ibunya betul-betul kaget waktu Tina jatuh. Barangkali kakinya patah. Maka ibu dengan Tina ke dokter di PUSKESMAS.",
-            "translation": "Tina's been deed haar heel erg pijn. Ze was uit een boom gevallen. Haar moeder schrok zich rot toen Tina viel. Misschien was haar been gebroken. Daarom gingen moeder en Tina naar de dokter op de PUSKESMAS."
+            "translation": "Tina's been deed haar heel erg pijn. Ze was uit een boom gevallen. Haar moeder schrok zich rot toen Tina viel. Misschien was haar been gebroken. Daarom gingen moeder en Tina naar de dokter op de PUSKESMAS.",
+            "translation_en": "Tina's leg hurt her very badly. She had fallen out of a tree. Her mother got a real shock when Tina fell. Maybe her leg was broken. So mother and Tina went to the doctor at the PUSKESMAS."
           },
           {
             "speaker": "Dokter",
             "text": "Ada apa?",
-            "translation": "Wat is er aan de hand?"
+            "translation": "Wat is er aan de hand?",
+            "translation_en": "What's the matter?"
           },
           {
             "speaker": "Tina",
             "text": "Kaki saya sakit sekali dokter. Saya jatuh dari pohon.",
-            "translation": "Dokter, mijn been doet heel erg pijn. Ik ben uit een boom gevallen."
+            "translation": "Dokter, mijn been doet heel erg pijn. Ik ben uit een boom gevallen.",
+            "translation_en": "Doctor, my leg hurts very badly. I fell out of a tree."
           },
           {
             "speaker": "Dokter",
             "text": "Bagaimana bisa jatuh dari pohon?",
-            "translation": "Hoe ben je in hemelsnaam uit een boom gevallen?"
+            "translation": "Hoe ben je in hemelsnaam uit een boom gevallen?",
+            "translation_en": "How on earth did you fall out of a tree?"
           },
           {
             "speaker": "Tina",
             "text": "Saya mau naik lebih tinggi lagi di pohon itu, tetapi tidak jadi, sehingga saya jatuh.",
-            "translation": "Ik wilde hoger in die boom klimmen, maar het lukte niet, dus ben ik gevallen."
+            "translation": "Ik wilde hoger in die boom klimmen, maar het lukte niet, dus ben ik gevallen.",
+            "translation_en": "I wanted to climb higher up in that tree, but I couldn't, so I fell."
           },
           {
             "speaker": "Dokter",
             "text": "Nah, coba, saya periksa kakimu dulu. Barangkali tidak apa-apa.",
-            "translation": "Goed, laat mij je been eerst even onderzoeken. Misschien is er niets aan de hand."
+            "translation": "Goed, laat mij je been eerst even onderzoeken. Misschien is er niets aan de hand.",
+            "translation_en": "Well, let me examine your leg first. Maybe there's nothing wrong."
           },
           {
             "speaker": "Tina",
             "text": "Awas dokter, jangan sakit, ya.",
-            "translation": "Voorzichtig dokter, doe geen pijn, alstublieft."
+            "translation": "Voorzichtig dokter, doe geen pijn, alstublieft.",
+            "translation_en": "Careful doctor, don't hurt me, please."
           },
           {
             "speaker": "Dokter",
             "text": "Ini sakit atau tidak?",
-            "translation": "Doet dit pijn of niet?"
+            "translation": "Doet dit pijn of niet?",
+            "translation_en": "Does this hurt or not?"
           },
           {
             "speaker": "Tina",
             "text": "Tidak begitu sakit dokter, sedikit saja.",
-            "translation": "Niet echt dokter, alleen een beetje."
+            "translation": "Niet echt dokter, alleen een beetje.",
+            "translation_en": "Not really doctor, just a little."
           },
           {
             "speaker": "Dokter",
             "text": "Kalau begitu, tidak ada yang patah. Pasti nanti cepat sekali sembuh, Tin.",
-            "translation": "In dat geval is er niets gebroken. Je bent vast heel snel beter, Tin."
+            "translation": "In dat geval is er niets gebroken. Je bent vast heel snel beter, Tin.",
+            "translation_en": "In that case, nothing is broken. You'll be better very quickly, Tin."
           },
           {
             "speaker": "Ibu",
             "text": "Betul dokter? Tidak ada yang patah? Saya takut sekali!",
-            "translation": "Echt waar dokter? Niets gebroken? Ik schrok me kapot!"
+            "translation": "Echt waar dokter? Niets gebroken? Ik schrok me kapot!",
+            "translation_en": "Really doctor? Nothing broken? I was so frightened!"
           },
           {
             "speaker": "Dokter",
             "text": "Betul, Bu, tidak ada apa-apa. Tetapi Tina harus jalan hati-hati. Tina, jangan lagi naik pohon biar kakimu lekas sembuh.",
-            "translation": "Ja hoor, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, klim niet meer in bomen zodat je been snel beter wordt."
+            "translation": "Ja hoor, mevrouw, er is niets aan de hand. Maar Tina moet voorzichtig lopen. Tina, klim niet meer in bomen zodat je been snel beter wordt.",
+            "translation_en": "Yes indeed, madam, there's nothing wrong. But Tina must walk carefully. Tina, don't climb trees anymore so your leg gets better quickly."
           }
         ]
       }
@@ -110,147 +123,183 @@ export const lesson = {
         "items": [
           {
             "indonesian": "awas",
-            "dutch": "oppassen / uitkijken"
+            "dutch": "oppassen / uitkijken",
+            "english": "careful / watch out"
           },
           {
             "indonesian": "bakal",
-            "dutch": "zullen / om te"
+            "dutch": "zullen / om te",
+            "english": "will / in order to"
           },
           {
             "indonesian": "bekerja",
-            "dutch": "werken"
+            "dutch": "werken",
+            "english": "work"
           },
           {
             "indonesian": "biar",
-            "dutch": "opdat / laat maar"
+            "dutch": "opdat / laat maar",
+            "english": "so that / let"
           },
           {
             "indonesian": "burung",
-            "dutch": "vogel"
+            "dutch": "vogel",
+            "english": "bird"
           },
           {
             "indonesian": "di mana-mana",
-            "dutch": "overal"
+            "dutch": "overal",
+            "english": "everywhere"
           },
           {
             "indonesian": "diam",
-            "dutch": "stil (zijn)"
+            "dutch": "stil (zijn)",
+            "english": "still / quiet"
           },
           {
             "indonesian": "dibawa*",
-            "dutch": "meegenomen"
+            "dutch": "meegenomen",
+            "english": "taken along"
           },
           {
             "indonesian": "hati-hati",
-            "dutch": "voorzichtig"
+            "dutch": "voorzichtig",
+            "english": "careful"
           },
           {
             "indonesian": "hendak",
-            "dutch": "willen"
+            "dutch": "willen",
+            "english": "want"
           },
           {
             "indonesian": "henti",
-            "dutch": "stoppen / ophouden / stilstaan"
+            "dutch": "stoppen / ophouden / stilstaan",
+            "english": "stop / cease / stand still"
           },
           {
             "indonesian": "jatuh",
-            "dutch": "vallen"
+            "dutch": "vallen",
+            "english": "fall"
           },
           {
             "indonesian": "kaget (kagèt)",
-            "dutch": "schrikken"
+            "dutch": "schrikken",
+            "english": "be startled / get a fright"
           },
           {
             "indonesian": "kaki",
-            "dutch": "voet"
+            "dutch": "voet",
+            "english": "foot / leg"
           },
           {
             "indonesian": "kapal",
-            "dutch": "schip / boot"
+            "dutch": "schip / boot",
+            "english": "ship / boat"
           },
           {
             "indonesian": "kepala",
-            "dutch": "hoofd"
+            "dutch": "hoofd",
+            "english": "head"
           },
           {
             "indonesian": "kesehatan (keséhatan)",
-            "dutch": "gezondheid"
+            "dutch": "gezondheid",
+            "english": "health"
           },
           {
             "indonesian": "kumpul",
-            "dutch": "verzamelen"
+            "dutch": "verzamelen",
+            "english": "gather"
           },
           {
             "indonesian": "lekas",
-            "dutch": "snel"
+            "dutch": "snel",
+            "english": "fast"
           },
           {
             "indonesian": "letnan (lètnan)",
-            "dutch": "luitenant"
+            "dutch": "luitenant",
+            "english": "lieutenant"
           },
           {
             "indonesian": "loncat",
-            "dutch": "springen"
+            "dutch": "springen",
+            "english": "jump"
           },
           {
             "indonesian": "maka",
-            "dutch": "daarom"
+            "dutch": "daarom",
+            "english": "therefore"
           },
           {
             "indonesian": "masyarakat",
-            "dutch": "samenleving / maatschappij"
+            "dutch": "samenleving / maatschappij",
+            "english": "society"
           },
           {
             "indonesian": "obat",
-            "dutch": "medicijn"
+            "dutch": "medicijn",
+            "english": "medicine"
           },
           {
             "indonesian": "orang desa",
-            "dutch": "dorpeling"
+            "dutch": "dorpeling",
+            "english": "villager"
           },
           {
             "indonesian": "patah",
-            "dutch": "breken (botten)"
+            "dutch": "breken (botten)",
+            "english": "break (bones)"
           },
           {
             "indonesian": "periksa",
-            "dutch": "onderzoeken"
+            "dutch": "onderzoeken",
+            "english": "examine"
           },
           {
             "indonesian": "puas",
-            "dutch": "tevreden / voldaan"
+            "dutch": "tevreden / voldaan",
+            "english": "satisfied"
           },
           {
             "indonesian": "pusat",
-            "dutch": "centrum"
+            "dutch": "centrum",
+            "english": "center"
           },
           {
             "indonesian": "PUSKESMAS",
-            "dutch": "volksgezondheidscentrum"
+            "dutch": "volksgezondheidscentrum",
+            "english": "health center"
           },
           {
             "indonesian": "sedang",
-            "dutch": "bezig te … (iets aan het doen zijn)"
+            "dutch": "bezig te … (iets aan het doen zijn)",
+            "english": "in the process of (doing something)"
           },
           {
             "indonesian": "sehingga",
-            "dutch": "zodat / totdat"
+            "dutch": "zodat / totdat",
+            "english": "so that / until"
           },
           {
             "indonesian": "sembuh",
-            "dutch": "genezen / gezond worden"
+            "dutch": "genezen / gezond worden",
+            "english": "recover / heal"
           },
           {
             "indonesian": "tak (tidak)",
-            "dutch": "niet"
+            "dutch": "niet",
+            "english": "not"
           },
           {
             "indonesian": "takut",
-            "dutch": "bang (zijn)"
+            "dutch": "bang (zijn)",
+            "english": "afraid"
           },
           {
             "indonesian": "telah",
-            "dutch": "al / reeds"
+            "dutch": "al / reeds",
+            "english": "already"
           }
         ]
       }
@@ -263,19 +312,23 @@ export const lesson = {
         "items": [
           {
             "indonesian": "di mana-mana",
-            "dutch": "overal"
+            "dutch": "overal",
+            "english": "everywhere"
           },
           {
             "indonesian": "rumah sakit",
-            "dutch": "ziekenhuis"
+            "dutch": "ziekenhuis",
+            "english": "hospital"
           },
           {
             "indonesian": "tidak (ada) apa-apa",
-            "dutch": "er is niets / 't geeft niet / er is niets aan de hand"
+            "dutch": "er is niets / 't geeft niet / er is niets aan de hand",
+            "english": "there is nothing / it's nothing / there is no problem"
           },
           {
             "indonesian": "tidak jadi",
-            "dutch": "niet lukken / niet doorgaan"
+            "dutch": "niet lukken / niet doorgaan",
+            "english": "fail / not happen"
           }
         ]
       }
@@ -298,36 +351,52 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Saya datang.",
-                "dutch": "Ik kom. (alleen C)"
+                "dutch": "Ik kom. (alleen C)",
+                "english": "I come. (C only)"
               },
               {
                 "indonesian": "Saya tidak datang.",
-                "dutch": "Ik kom niet. (A + C)"
+                "dutch": "Ik kom niet. (A + C)",
+                "english": "I am not coming."
               },
               {
                 "indonesian": "Saya mau datang.",
-                "dutch": "Ik wil komen. (B + C)"
+                "dutch": "Ik wil komen. (B + C)",
+                "english": "I want to come."
               },
               {
                 "indonesian": "Saya tidak mau datang.",
-                "dutch": "Ik wil niet komen. (A + B + C)"
+                "dutch": "Ik wil niet komen. (A + B + C)",
+                "english": "I don't want to come."
               },
               {
                 "indonesian": "Saya juga harus pergi.",
-                "dutch": "Ik moet ook (weg)gaan."
+                "dutch": "Ik moet ook (weg)gaan.",
+                "english": "I also have to go."
               },
               {
                 "indonesian": "Dia tidak usah datang.",
-                "dutch": "Hij hoeft niet te komen."
+                "dutch": "Hij hoeft niet te komen.",
+                "english": "He doesn't need to come."
               },
               {
                 "indonesian": "Saudara baru makan?",
-                "dutch": "Hebt u net gegeten?"
+                "dutch": "Hebt u net gegeten?",
+                "english": "Have you just eaten?"
               },
               {
                 "indonesian": "Beliau juga ingin mandi.",
-                "dutch": "Hij wil ook een bad nemen."
+                "dutch": "Hij wil ook een bad nemen.",
+                "english": "He also wants to take a bath."
               }
+            ],
+            "title_en": "Order A-B-C",
+            "rules_en": [
+              "Indonesian verbs and their auxiliaries are placed in fixed order: A – B – C.",
+              "A = phase of the action (negation, future, continuous, past).",
+              "B = specific aspect of the action (must, want, may, can, etc.).",
+              "C = the main verb itself.",
+              "A word from group B or A is optional; a main verb C is always required."
             ]
           },
           {
@@ -419,20 +488,34 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Saya belum makan.",
-                "dutch": "Ik heb nog niet gegeten."
+                "dutch": "Ik heb nog niet gegeten.",
+                "english": "I haven't eaten yet."
               },
               {
                 "indonesian": "Saya tidak mau ikut.",
-                "dutch": "Ik wil niet meegaan."
+                "dutch": "Ik wil niet meegaan.",
+                "english": "I don't want to come along."
               },
               {
                 "indonesian": "Kamu lagi cari kopermu?",
-                "dutch": "Ben je je koffer aan het zoeken?"
+                "dutch": "Ben je je koffer aan het zoeken?",
+                "english": "Are you looking for your suitcase?"
               },
               {
                 "indonesian": "Saya sudah belajar enam jam.",
-                "dutch": "Ik heb al zes uur gestudeerd."
+                "dutch": "Ik heb al zes uur gestudeerd.",
+                "english": "I have already studied for six hours."
               }
+            ],
+            "title_en": "Group A — phase of the action",
+            "rules_en": [
+              "Negation: tidak, kurang, belum — the action does (not yet) start.",
+              "Future: akan, bakal — the action will start.",
+              "Continuity: masih, sedang, lagi — the action is (still) ongoing.",
+              "Past: telah, sudah — the action is over.",
+              "Group A words always come before a word from group B and/or group C.",
+              "Tidak can come before akan and bakal (tidak akan, tidak bakal).",
+              "Harus can come before all other group B words (harus bisa, harus mau)."
             ]
           },
           {
@@ -445,20 +528,30 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Saya ingin minum teh.",
-                "dutch": "Ik wil thee drinken."
+                "dutch": "Ik wil thee drinken.",
+                "english": "I want to drink tea."
               },
               {
                 "indonesian": "Dia harus berangkat jam sepuluh.",
-                "dutch": "Hij moet om 10 uur vertrekken."
+                "dutch": "Hij moet om 10 uur vertrekken.",
+                "english": "He must leave at 10 o'clock."
               },
               {
                 "indonesian": "Saya coba tidur sekarang.",
-                "dutch": "Ik probeer nu te slapen."
+                "dutch": "Ik probeer nu te slapen.",
+                "english": "I try to sleep now."
               },
               {
                 "indonesian": "Ibu harus dapat duduk.",
-                "dutch": "Moeder moet kunnen zitten."
+                "dutch": "Moeder moet kunnen zitten.",
+                "english": "Mother must be able to sit."
               }
+            ],
+            "title_en": "Group B — specific aspect",
+            "rules_en": [
+              "Indicates the aspect: want, must, may, can, try.",
+              "Never takes a prefix in position B (see Lesson 11 onwards).",
+              "Group B words can themselves also function as the main verb (position C); there they do take a prefix."
             ]
           },
           {
@@ -470,20 +563,29 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Dia akan coba cari hotel.",
-                "dutch": "Hij zal proberen een hotel te zoeken."
+                "dutch": "Hij zal proberen een hotel te zoeken.",
+                "english": "He will try to find a hotel."
               },
               {
                 "indonesian": "Saya masih harus masuk sekolah.",
-                "dutch": "Ik moet nog naar school gaan."
+                "dutch": "Ik moet nog naar school gaan.",
+                "english": "I still have to go to school."
               },
               {
                 "indonesian": "Ibu belum bisa berangkat.",
-                "dutch": "Moeder kan nog niet vertrekken."
+                "dutch": "Moeder kan nog niet vertrekken.",
+                "english": "Mother cannot leave yet."
               },
               {
                 "indonesian": "Bapak sudah boleh bekerja.",
-                "dutch": "U mag (al) gaan werken."
+                "dutch": "U mag (al) gaan werken.",
+                "english": "You may (already) go to work."
               }
+            ],
+            "title_en": "Group C — main verb",
+            "rules_en": [
+              "To make a sentence you need a subject and a main verb (group C).",
+              "A complete sentence can contain combinations from A, B and C: subject + (A) + (B) + C + ..."
             ]
           }
         ],
@@ -510,24 +612,36 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Harga pisang ini amat mahal.",
-                "dutch": "De prijs van deze banaan is erg hoog."
+                "dutch": "De prijs van deze banaan is erg hoog.",
+                "english": "The price of this banana is very high."
               },
               {
                 "indonesian": "Mobil itu sangat cepat.",
-                "dutch": "Die auto is zeer snel."
+                "dutch": "Die auto is zeer snel.",
+                "english": "That car is extremely fast."
               },
               {
                 "indonesian": "Jeruk itu murah sekali harganya.",
-                "dutch": "De prijs van die sinaasappel is zeer laag."
+                "dutch": "De prijs van die sinaasappel is zeer laag.",
+                "english": "The price of that orange is very low."
               },
               {
                 "indonesian": "Kota ini besar betul.",
-                "dutch": "Deze stad is erg groot."
+                "dutch": "Deze stad is erg groot.",
+                "english": "This city is very large."
               },
               {
                 "indonesian": "Anak itu takut benar.",
-                "dutch": "Dat kind is zeer bang."
+                "dutch": "Dat kind is zeer bang.",
+                "english": "That child is very afraid."
               }
+            ],
+            "title_en": "Position of intensifiers",
+            "rules_en": [
+              "The words amat, sangat, benar, betul, sekali combined with an adjective mean: very, extremely.",
+              "amat and sangat come before the adjective.",
+              "benar, betul and sekali come after the adjective.",
+              "sangat sounds formal (news reports, speeches); sekali is neutral to informal; amat is relatively formal."
             ]
           },
           {
@@ -540,28 +654,40 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Kata itu benar.",
-                "dutch": "Dat is juist."
+                "dutch": "Dat is juist.",
+                "english": "That is correct."
               },
               {
                 "indonesian": "Itu benar, tetapi ....",
-                "dutch": "Dat is juist, maar ...."
+                "dutch": "Dat is juist, maar ....",
+                "english": "That is correct, but...."
               },
               {
                 "indonesian": "Betul, saya lupa.",
-                "dutch": "Dat is waar, ik ben het vergeten."
+                "dutch": "Dat is waar, ik ben het vergeten.",
+                "english": "That's right, I forgot."
               },
               {
                 "indonesian": "Dia betul sakit sekali.",
-                "dutch": "Hij is echt erg ziek."
+                "dutch": "Hij is echt erg ziek.",
+                "english": "He is really very sick."
               },
               {
                 "indonesian": "Maaf, saya betul-betul lupa.",
-                "dutch": "Sorry, ik ben het écht vergeten."
+                "dutch": "Sorry, ik ben het écht vergeten.",
+                "english": "Sorry, I really did forget."
               },
               {
                 "indonesian": "Ibunya betul-betul kaget waktu dia pulang.",
-                "dutch": "Haar moeder schrok echt toen zij thuis kwam."
+                "dutch": "Haar moeder schrok echt toen zij thuis kwam.",
+                "english": "Her mother was really startled when she came home."
               }
+            ],
+            "title_en": "benar and betul as 'true, correct, right'",
+            "rules_en": [
+              "benar and betul can also mean 'true, correct, really true'.",
+              "In that meaning they no longer come after an adjective.",
+              "Doubling betul-betul intensifies: really true, truly."
             ]
           }
         ],
@@ -759,123 +885,153 @@ export const lesson = {
         "items": [
           {
             "indonesian": "tubuh / badan",
-            "dutch": "lichaam"
+            "dutch": "lichaam",
+            "english": "body"
           },
           {
             "indonesian": "hati",
-            "dutch": "lever"
+            "dutch": "lever",
+            "english": "liver"
           },
           {
             "indonesian": "mata",
-            "dutch": "oog"
+            "dutch": "oog",
+            "english": "eye"
           },
           {
             "indonesian": "mulut",
-            "dutch": "mond"
+            "dutch": "mond",
+            "english": "mouth"
           },
           {
             "indonesian": "dagu",
-            "dutch": "kin"
+            "dutch": "kin",
+            "english": "chin"
           },
           {
             "indonesian": "kerongkongan",
-            "dutch": "keel"
+            "dutch": "keel",
+            "english": "throat"
           },
           {
             "indonesian": "perut",
-            "dutch": "buik"
+            "dutch": "buik",
+            "english": "belly"
           },
           {
             "indonesian": "lengan",
-            "dutch": "arm"
+            "dutch": "arm",
+            "english": "arm"
           },
           {
             "indonesian": "kaki",
-            "dutch": "been"
+            "dutch": "been",
+            "english": "leg"
           },
           {
             "indonesian": "pantat",
-            "dutch": "billen"
+            "dutch": "billen",
+            "english": "buttocks"
           },
           {
             "indonesian": "rambut",
-            "dutch": "hoofdhaar"
+            "dutch": "hoofdhaar",
+            "english": "head hair"
           },
           {
             "indonesian": "bulu",
-            "dutch": "lichaamshaar"
+            "dutch": "lichaamshaar",
+            "english": "body hair"
           },
           {
             "indonesian": "hidung",
-            "dutch": "neus"
+            "dutch": "neus",
+            "english": "nose"
           },
           {
             "indonesian": "bibir",
-            "dutch": "lip"
+            "dutch": "lip",
+            "english": "lip"
           },
           {
             "indonesian": "dahi",
-            "dutch": "voorhoofd"
+            "dutch": "voorhoofd",
+            "english": "forehead"
           },
           {
             "indonesian": "jantung",
-            "dutch": "hart"
+            "dutch": "hart",
+            "english": "heart"
           },
           {
             "indonesian": "lambung",
-            "dutch": "maag"
+            "dutch": "maag",
+            "english": "stomach"
           },
           {
             "indonesian": "tangan",
-            "dutch": "hand"
+            "dutch": "hand",
+            "english": "hand"
           },
           {
             "indonesian": "lutut",
-            "dutch": "knie"
+            "dutch": "knie",
+            "english": "knee"
           },
           {
             "indonesian": "usus",
-            "dutch": "darmen"
+            "dutch": "darmen",
+            "english": "intestines"
           },
           {
             "indonesian": "kepala",
-            "dutch": "hoofd"
+            "dutch": "hoofd",
+            "english": "head"
           },
           {
             "indonesian": "lèhèr",
-            "dutch": "hals"
+            "dutch": "hals",
+            "english": "neck"
           },
           {
             "indonesian": "kumis",
-            "dutch": "snor"
+            "dutch": "snor",
+            "english": "mustache"
           },
           {
             "indonesian": "telinga",
-            "dutch": "oor"
+            "dutch": "oor",
+            "english": "ear"
           },
           {
             "indonesian": "dada",
-            "dutch": "borst(kas)"
+            "dutch": "borst(kas)",
+            "english": "chest"
           },
           {
             "indonesian": "rongga dada",
-            "dutch": "ribben"
+            "dutch": "ribben",
+            "english": "ribs"
           },
           {
             "indonesian": "jari tangan",
-            "dutch": "vinger"
+            "dutch": "vinger",
+            "english": "finger"
           },
           {
             "indonesian": "kaki",
-            "dutch": "voet"
+            "dutch": "voet",
+            "english": "foot"
           },
           {
             "indonesian": "kuku",
-            "dutch": "nagel"
+            "dutch": "nagel",
+            "english": "nail"
           },
           {
             "indonesian": "jari kaki",
-            "dutch": "teen"
+            "dutch": "teen",
+            "english": "toe"
           }
         ]
       }
@@ -888,91 +1044,113 @@ export const lesson = {
         "items": [
           {
             "indonesian": "sakit perut / mag",
-            "dutch": "buik/maagpijn"
+            "dutch": "buik/maagpijn",
+            "english": "stomach ache"
           },
           {
             "indonesian": "pusing",
-            "dutch": "duizelig zijn"
+            "dutch": "duizelig zijn",
+            "english": "dizziness"
           },
           {
             "indonesian": "sakit kepala",
-            "dutch": "hoofdpijn"
+            "dutch": "hoofdpijn",
+            "english": "headache"
           },
           {
             "indonesian": "pilek",
-            "dutch": "verkoudheid"
+            "dutch": "verkoudheid",
+            "english": "cold"
           },
           {
             "indonesian": "flu",
-            "dutch": "griep"
+            "dutch": "griep",
+            "english": "flu"
           },
           {
             "indonesian": "demam",
-            "dutch": "koorts"
+            "dutch": "koorts",
+            "english": "fever"
           },
           {
             "indonesian": "mual",
-            "dutch": "misselijk"
+            "dutch": "misselijk",
+            "english": "nauseous"
           },
           {
             "indonesian": "plèster",
-            "dutch": "pleister"
+            "dutch": "pleister",
+            "english": "plaster"
           },
           {
             "indonesian": "pembalut",
-            "dutch": "verband"
+            "dutch": "verband",
+            "english": "bandage"
           },
           {
             "indonesian": "pembalut wanita",
-            "dutch": "maandverband"
+            "dutch": "maandverband",
+            "english": "sanitary pad"
           },
           {
             "indonesian": "capèk (na inspanning)",
-            "dutch": "moe"
+            "dutch": "moe",
+            "english": "tired (after exertion)"
           },
           {
             "indonesian": "obat",
-            "dutch": "medicijn"
+            "dutch": "medicijn",
+            "english": "medicine"
           },
           {
             "indonesian": "jamu",
-            "dutch": "kruidenmengsel"
+            "dutch": "kruidenmengsel",
+            "english": "herbal mixture"
           },
           {
             "indonesian": "racun",
-            "dutch": "vergif"
+            "dutch": "vergif",
+            "english": "poison"
           },
           {
             "indonesian": "obat batuk",
-            "dutch": "hoestdrank"
+            "dutch": "hoestdrank",
+            "english": "cough syrup"
           },
           {
             "indonesian": "diét",
-            "dutch": "dieet"
+            "dutch": "dieet",
+            "english": "diet"
           },
           {
             "indonesian": "minum obat",
-            "dutch": "medicijn innemen"
+            "dutch": "medicijn innemen",
+            "english": "take medicine"
           },
           {
             "indonesian": "suntik",
-            "dutch": "prik"
+            "dutch": "prik",
+            "english": "injection"
           },
           {
             "indonesian": "muntah",
-            "dutch": "overgeven"
+            "dutch": "overgeven",
+            "english": "vomit"
           },
           {
             "indonesian": "luka",
-            "dutch": "wond"
+            "dutch": "wond",
+            "english": "wound"
           },
           {
             "indonesian": "nafsu makan",
-            "dutch": "eetlust"
+            "dutch": "eetlust",
+            "english": "appetite"
           },
           {
             "indonesian": "lemah",
-            "dutch": "zwak (slap)"
+            "dutch": "zwak (slap)",
+            "english": "weak (feeble)"
           }
         ]
       }
