@@ -16,7 +16,15 @@ import {
   upsertLesson,
   upsertLessonSections,
   replaceLessonDialogueLines,
+  replaceLessonSectionItemRows,
+  replaceLessonSectionGrammarCategories,
+  replaceLessonSectionGrammarTopics,
+  replaceLessonSectionAffixedPairs,
   type DialogueLineInput,
+  type ItemRowInput,
+  type GrammarCategoryInput,
+  type GrammarTopicInput,
+  type AffixedPairRowInput,
 } from './adapter'
 import { ensureLessonAudio } from './audio'
 import {
@@ -30,6 +38,9 @@ import {
   type DialogueTranslationResult,
   type DialogueLine,
 } from './enrichDialogueTranslations'
+import { enrichMissingEnContent } from './enrichEnTranslations'
+import { projectSections, type AffixedPairInput } from './projectSections'
+import { validateSectionShape } from './validators/sectionShape'
 import { writeLessonWithEnrichedSections } from './stagingWriteback'
 
 interface LessonStaging {
@@ -45,6 +56,8 @@ interface LessonStaging {
 
 interface StagingBundle {
   lesson: LessonStaging
+  /** PR 6: morphology-patterns.ts (sibling staging file; only some lessons). */
+  affixedFormPairs: AffixedPairInput[]
 }
 
 const RUNNER_INTERNALS = {
@@ -76,6 +89,7 @@ export async function runLessonStage(
       options?: { deterministicOnly?: boolean },
     ) => Promise<GrammarTopicsEnrichmentResult>
     enrichDialogueTranslations?: (lines: DialogueLine[]) => Promise<DialogueTranslationResult>
+    enrichEnContent?: typeof enrichMissingEnContent
   } = {},
 ): Promise<LessonStageOutput> {
   const start = Date.now()
@@ -96,6 +110,10 @@ export async function runLessonStage(
   //   2. dialogue translations — fills empty Dutch translations on
   //      `content.lines[].translation` so the lesson reader shows them.
   //      LLM-only; skipped in dry-run to avoid cost.
+  //   3. EN content (PR 6, ADR 0012) — fills English across items, dialogue
+  //      lines, and grammar (title/rules/examples). The Lesson Stage owns all
+  //      learner-facing translations. Runs AFTER dialogue Dutch enrichment so
+  //      it has the Dutch as context. LLM-only; skipped in dry-run.
   //
   // After enrichment the cached lesson.ts on disk is rewritten so
   // subsequent runs skip the LLM calls. Disk writeback is gated on
@@ -122,6 +140,13 @@ export async function runLessonStage(
         )
         if (applied > 0) stagingDirty = true
       }
+    }
+
+    // EN content enrichment (PR 6) — fills items + dialogue + grammar English.
+    const enrichEn = hooks.enrichEnContent ?? enrichMissingEnContent
+    const enResult = await enrichEn(staging.lesson.sections)
+    if (enResult.filled.items > 0 || enResult.filled.dialogueLines > 0 || enResult.filled.grammarCategories > 0) {
+      stagingDirty = true
     }
 
     if (stagingDirty) {
@@ -154,6 +179,18 @@ export async function runLessonStage(
   // GT8 (PR 2): dialogue line shape gate. Runs after dialogue translation
   // enrichment so populated translations are visible.
   findings.push(...validateDialogueLines(staging.lesson.sections))
+
+  // GT9 (PR 6): typed lesson-section capability-contract row shape. Project the
+  // enriched sections (+ morphology pairs) into the typed rows, then assert each
+  // row's required fields (incl. EN). Pure projection — no DB needed — so it
+  // runs before the dry-run short-circuit. The projected rows are reused for the
+  // typed-table writes below.
+  const projected = projectSections({
+    lessonNumber: input.lessonNumber,
+    sections: staging.lesson.sections,
+    affixedPairs: staging.affixedFormPairs,
+  })
+  findings.push(...validateSectionShape(projected))
 
   const errors = findings.filter((f) => f.severity === 'error')
   if (errors.length > 0) {
@@ -191,7 +228,7 @@ export async function runLessonStage(
   })
 
   const { count: sectionCount, idsByOrderIndex: sectionIdsByOrderIndex } =
-    await upsertLessonSections(supabase, lesson.id, staging.lesson.sections)
+    await upsertLessonSections(supabase, lesson.id, input.lessonNumber, staging.lesson.sections)
 
   // PR 2 — write `lesson_dialogue_lines` typed satellite rows for every
   // dialogue section. Replaces the per-line shape that previously lived only
@@ -213,6 +250,11 @@ export async function runLessonStage(
       if (!translation) continue
       const speakerRaw = typeof raw?.speaker === 'string' ? raw.speaker.trim() : ''
       const speaker = speakerRaw ? speakerRaw : null
+      // PR 6: translation_nl mirrors the legacy Dutch `translation`;
+      // translation_en is filled by the lesson-stage EN enricher.
+      const translationEn = typeof raw?.translation_en === 'string' && raw.translation_en.trim()
+        ? raw.translation_en.trim()
+        : null
       dialogueLineInputs.push({
         section_id: sectionId,
         lesson_id: lesson.id,
@@ -221,6 +263,8 @@ export async function runLessonStage(
         text,
         speaker,
         translation,
+        translation_nl: translation,
+        translation_en: translationEn,
       })
     }
   }
@@ -228,6 +272,87 @@ export async function runLessonStage(
     supabase,
     dialogueSectionIds,
     dialogueLineInputs,
+  )
+
+  // PR 6 — typed lesson-section capability-contract writes. Resolve the pure
+  // projection's section order_index → DB section_id, then replace each typed
+  // table. Write-only at merge — the future Capability Stage (#98/#99) reads them.
+  const itemRowInputs: ItemRowInput[] = []
+  const itemSectionIds = new Set<string>()
+  for (const row of projected.itemRows) {
+    const sectionId = sectionIdsByOrderIndex.get(row.sourceSectionOrderIndex)
+    if (!sectionId) continue
+    itemSectionIds.add(sectionId)
+    itemRowInputs.push({
+      section_id: sectionId,
+      lesson_id: lesson.id,
+      display_order: row.display_order,
+      source_item_ref: row.source_item_ref,
+      item_type: row.item_type,
+      indonesian_text: row.indonesian_text,
+      l1_translation: row.l1_translation,
+      l2_translation: row.l2_translation,
+    })
+  }
+  const itemRowCount = await replaceLessonSectionItemRows(
+    supabase,
+    [...itemSectionIds],
+    itemRowInputs,
+  )
+
+  const grammarCategoryInputs: GrammarCategoryInput[] = []
+  const grammarTopicInputs: GrammarTopicInput[] = []
+  const grammarSectionIds = new Set<string>()
+  for (const cat of projected.grammarCategories) {
+    const sectionId = sectionIdsByOrderIndex.get(cat.sourceSectionOrderIndex)
+    if (!sectionId) continue
+    grammarSectionIds.add(sectionId)
+    grammarCategoryInputs.push({
+      section_id: sectionId,
+      lesson_id: lesson.id,
+      display_order: cat.display_order,
+      title: cat.title,
+      title_en: cat.title_en,
+      rules: cat.rules,
+      rules_en: cat.rules_en,
+      examples: cat.examples,
+    })
+  }
+  for (const topic of projected.grammarTopics) {
+    const sectionId = sectionIdsByOrderIndex.get(topic.sourceSectionOrderIndex)
+    if (!sectionId) continue
+    grammarSectionIds.add(sectionId)
+    grammarTopicInputs.push({
+      section_id: sectionId,
+      lesson_id: lesson.id,
+      topic_label: topic.topic_label,
+    })
+  }
+  const grammarCategoryCount = await replaceLessonSectionGrammarCategories(
+    supabase,
+    [...grammarSectionIds],
+    grammarCategoryInputs,
+  )
+  const grammarTopicCount = await replaceLessonSectionGrammarTopics(
+    supabase,
+    [...grammarSectionIds],
+    grammarTopicInputs,
+  )
+
+  const affixedPairInputs: AffixedPairRowInput[] = projected.affixedPairs.map((p) => ({
+    lesson_id: lesson.id,
+    section_id: null, // morphology has no lesson.ts section
+    source_ref: p.source_ref,
+    pattern_source_ref: p.pattern_source_ref,
+    affix: p.affix,
+    root_text: p.root_text,
+    derived_text: p.derived_text,
+    allomorph_rule: p.allomorph_rule,
+  }))
+  const affixedPairCount = await replaceLessonSectionAffixedPairs(
+    supabase,
+    lesson.id,
+    affixedPairInputs,
   )
 
   // Collect audio texts AFTER the lesson row + voices are persisted, since
@@ -251,6 +376,10 @@ export async function runLessonStage(
       audioClipsSynthesised: audio.synthesised,
       audioClipsReused: audio.reused,
       dialogueLines: dialogueLineCount,
+      itemRows: itemRowCount,
+      grammarCategories: grammarCategoryCount,
+      grammarTopics: grammarTopicCount,
+      affixedPairs: affixedPairCount,
     },
     findings,
     durationMs: Date.now() - start,
@@ -315,7 +444,16 @@ async function loadStaging(lessonNumber: number): Promise<StagingBundle> {
   )) ?? null
   if (!lesson) throw new Error(`scripts/data/staging/lesson-${lessonNumber}/lesson.ts is empty or unreadable`)
 
-  return { lesson }
+  // PR 6: morphology-patterns.ts is a sibling staging file present only for
+  // morphology-introducing lessons (L9 today). The Lesson Stage now owns the
+  // affixed-pair lesson-content (ADR 0012) and projects it to
+  // lesson_section_affixed_pairs. Absent file → empty list (no morphology).
+  const affixedFormPairs =
+    (await readStagingExport<AffixedPairInput[]>(
+      path.join(stagingDir, 'morphology-patterns.ts'),
+    )) ?? []
+
+  return { lesson, affixedFormPairs }
 }
 
 async function readStagingExport<T>(filePath: string): Promise<T | null> {

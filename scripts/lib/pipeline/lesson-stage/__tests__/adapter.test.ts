@@ -191,7 +191,7 @@ describe('upsertLesson', () => {
 describe('upsertLessonSections', () => {
   it('upserts every section with the correct conflict target and returns ids by order_index', async () => {
     const { client, upserts } = buildSupabaseMock({})
-    const result = await upsertLessonSections(client, 'lid', [
+    const result = await upsertLessonSections(client, 'lid', 7, [
       { title: 'A', content: { type: 'text' }, order_index: 0 },
       { title: 'B', content: { type: 'vocabulary', items: [] }, order_index: 1 },
     ])
@@ -203,7 +203,8 @@ describe('upsertLessonSections', () => {
     expect(upserts[0]).toMatchObject({
       table: 'lesson_sections',
       onConflict: 'lesson_id,order_index',
-      payload: { lesson_id: 'lid', title: 'A', order_index: 0 },
+      // PR 6: section_kind (= content.type) + source_section_ref now written.
+      payload: { lesson_id: 'lid', title: 'A', order_index: 0, section_kind: 'text', source_section_ref: 'lesson-7/section-0' },
     })
   })
 })

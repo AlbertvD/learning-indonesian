@@ -78,15 +78,22 @@ export async function upsertLesson(
  * existing UNIQUE constraint on the table. Returns the section ids keyed by
  * order_index so downstream writers (e.g. lesson_dialogue_lines for
  * dialogue sections) can FK to them.
+ *
+ * PR 6: also writes the `section_kind` discriminator (= content.type, already
+ * GT5-validated to the canonical set) and `source_section_ref`
+ * (`lesson-N/section-orderIndex`). The `content` jsonb blob is RETAINED.
  */
 export async function upsertLessonSections(
   supabase: SupabaseClient,
   lessonId: string,
+  lessonNumber: number,
   sections: SectionInput[],
 ): Promise<{ count: number; idsByOrderIndex: Map<number, string> }> {
   const idsByOrderIndex = new Map<number, string>()
   let count = 0
   for (const section of sections) {
+    const rawType = (section.content as { type?: unknown })?.type
+    const sectionKind = typeof rawType === 'string' ? rawType : null
     const { data, error } = await supabase
       .schema('indonesian')
       .from('lesson_sections')
@@ -96,6 +103,8 @@ export async function upsertLessonSections(
           title: section.title,
           content: section.content,
           order_index: section.order_index,
+          section_kind: sectionKind,
+          source_section_ref: `lesson-${lessonNumber}/section-${section.order_index}`,
         },
         { onConflict: 'lesson_id,order_index' },
       )
@@ -115,7 +124,11 @@ export interface DialogueLineInput {
   source_line_ref: string
   text: string
   speaker: string | null
+  /** Legacy single-column Dutch translation (kept; rename-retire is a later PR). */
   translation: string
+  /** PR 6: bilingual columns. translation_nl mirrors `translation`. */
+  translation_nl: string
+  translation_en: string | null
 }
 
 /**
@@ -158,11 +171,150 @@ export async function replaceLessonDialogueLines(
         text: line.text,
         speaker: line.speaker,
         translation: line.translation,
+        translation_nl: line.translation_nl,
+        translation_en: line.translation_en,
       })),
     )
   if (insertError) throw insertError
 
   return lines.length
+}
+
+// ───────────────── PR 6: typed lesson-section capability-contract writers ─────
+//
+// Each is a delete-by-scope + bulk-insert replace. Safe + idempotent because
+// these are regenerable projections of the (staging-canonical) lesson content —
+// no referenced user state (ADR 0011 lesson-content regime; re-publish is the
+// canonical writer). They are WRITE-ONLY at PR 6 merge — the future Capability
+// Stage (#98/#99) is their reader.
+
+export interface ItemRowInput {
+  section_id: string
+  lesson_id: string
+  display_order: number
+  source_item_ref: string
+  item_type: 'word' | 'phrase'
+  indonesian_text: string
+  l1_translation: string
+  l2_translation: string | null
+}
+
+/** Replace lesson_section_item_rows for the given (item-bearing) section ids. */
+export async function replaceLessonSectionItemRows(
+  supabase: SupabaseClient,
+  sectionIds: string[],
+  rows: ItemRowInput[],
+): Promise<number> {
+  if (sectionIds.length === 0) return 0
+  const { error: deleteError } = await supabase
+    .schema('indonesian')
+    .from('lesson_section_item_rows')
+    .delete()
+    .in('section_id', sectionIds)
+  if (deleteError) throw deleteError
+  if (rows.length === 0) return 0
+  const { error: insertError } = await supabase
+    .schema('indonesian')
+    .from('lesson_section_item_rows')
+    .insert(rows)
+  if (insertError) throw insertError
+  return rows.length
+}
+
+export interface GrammarCategoryInput {
+  section_id: string
+  lesson_id: string
+  display_order: number
+  title: string
+  title_en: string | null
+  rules: string[]
+  rules_en: string[]
+  examples: Array<{ indonesian: string; dutch: string | null; english: string | null }> | null
+}
+
+/** Replace lesson_section_grammar_categories for the given grammar section ids. */
+export async function replaceLessonSectionGrammarCategories(
+  supabase: SupabaseClient,
+  sectionIds: string[],
+  rows: GrammarCategoryInput[],
+): Promise<number> {
+  if (sectionIds.length === 0) return 0
+  const { error: deleteError } = await supabase
+    .schema('indonesian')
+    .from('lesson_section_grammar_categories')
+    .delete()
+    .in('section_id', sectionIds)
+  if (deleteError) throw deleteError
+  if (rows.length === 0) return 0
+  const { error: insertError } = await supabase
+    .schema('indonesian')
+    .from('lesson_section_grammar_categories')
+    .insert(rows)
+  if (insertError) throw insertError
+  return rows.length
+}
+
+export interface GrammarTopicInput {
+  section_id: string
+  lesson_id: string
+  topic_label: string
+}
+
+/** Replace lesson_section_grammar_topics for the given grammar section ids. */
+export async function replaceLessonSectionGrammarTopics(
+  supabase: SupabaseClient,
+  sectionIds: string[],
+  rows: GrammarTopicInput[],
+): Promise<number> {
+  if (sectionIds.length === 0) return 0
+  const { error: deleteError } = await supabase
+    .schema('indonesian')
+    .from('lesson_section_grammar_topics')
+    .delete()
+    .in('section_id', sectionIds)
+  if (deleteError) throw deleteError
+  if (rows.length === 0) return 0
+  const { error: insertError } = await supabase
+    .schema('indonesian')
+    .from('lesson_section_grammar_topics')
+    .insert(rows)
+  if (insertError) throw insertError
+  return rows.length
+}
+
+export interface AffixedPairRowInput {
+  lesson_id: string
+  section_id: string | null
+  source_ref: string
+  pattern_source_ref: string | null
+  affix: string
+  root_text: string
+  derived_text: string
+  allomorph_rule: string
+}
+
+/**
+ * Replace lesson_section_affixed_pairs for the lesson. Scoped by lesson_id
+ * (not section_id — morphology has no lesson.ts section, section_id is null).
+ */
+export async function replaceLessonSectionAffixedPairs(
+  supabase: SupabaseClient,
+  lessonId: string,
+  rows: AffixedPairRowInput[],
+): Promise<number> {
+  const { error: deleteError } = await supabase
+    .schema('indonesian')
+    .from('lesson_section_affixed_pairs')
+    .delete()
+    .eq('lesson_id', lessonId)
+  if (deleteError) throw deleteError
+  if (rows.length === 0) return 0
+  const { error: insertError } = await supabase
+    .schema('indonesian')
+    .from('lesson_section_affixed_pairs')
+    .insert(rows)
+  if (insertError) throw insertError
+  return rows.length
 }
 
 /**
