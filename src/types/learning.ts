@@ -283,6 +283,12 @@ export interface ItemContextGrammarPattern {
   created_at: string
 }
 
+// RETIRE IN PR 7 (final cleanup). The `exercise_variants` table is still
+// dual-written by the capability-stage runner (projectors/grammarExerciseRows.ts)
+// alongside the 4 typed exercise tables, so this type is referenced by writer
+// code until that table is dropped. The admin READER switched off it in PR 4a —
+// see ExerciseReviewRow below. No live reader of this type remains in src/ except
+// coverageService.ts (a row count, also PR 7).
 export interface ExerciseVariant {
   id: string
   exercise_type: string
@@ -370,6 +376,27 @@ export interface ClozeMcqExercisesRow {
   created_at: string
   updated_at: string
 }
+
+// ─── Admin review shape (PR 4a — pattern source_kind admin path) ─────────────
+// Discriminated union over `exercise_type`, one branch per typed grammar-exercise
+// table. The admin review flow (exerciseReviewService → ContentReview →
+// VariantPreview / ExerciseSummaryCard) reads these typed rows directly instead
+// of probing the retired `exercise_variants.payload_json`.
+//
+// `id` IS the shared exercise uuid: PR 4's dual-write reuses one uuid across the
+// typed table AND exercise_variants (verified 141/189/240/146 id-matched against
+// the live DB, 2026-05-25), so exercise_review_comments.exercise_variant_id keying
+// is unchanged — comments saved against a typed row still satisfy the FK to
+// exercise_variants.id, which survives until PR 7.
+//
+// These 4 are the only exercise_types that exist as authored rows (vocab
+// exercises are generated at runtime, never persisted — verified 0 vocab rows in
+// exercise_variants). The admin browser is therefore grammar-only.
+export type ExerciseReviewRow =
+  | ({ exercise_type: 'contrast_pair' } & ContrastPairExercisesRow)
+  | ({ exercise_type: 'sentence_transformation' } & SentenceTransformationExercisesRow)
+  | ({ exercise_type: 'constrained_translation' } & ConstrainedTranslationExercisesRow)
+  | ({ exercise_type: 'cloze_mcq' } & ClozeMcqExercisesRow)
 
 export interface ExerciseTypeAvailability {
   exercise_type: string

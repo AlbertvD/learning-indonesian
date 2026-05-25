@@ -9,8 +9,8 @@ vi.mock('@/services/exerciseReviewService')
 vi.mock('@/lib/supabase')
 
 const mockVariants = [
-  { id: 'v1', exercise_type: 'contrast_pair', payload_json: { promptText: 'Kies de vorm', options: ['belum', 'tidak'], correctOptionId: 'belum', targetMeaning: 'Nog niet' }, lesson_id: 'l1', is_active: true },
-  { id: 'v2', exercise_type: 'recognition_mcq', payload_json: { base_text: 'makan' }, lesson_id: null, is_active: true },
+  { id: 'v1', exercise_type: 'contrast_pair', lesson_id: 'l1', prompt_text: 'Kies de vorm', target_meaning: 'Nog niet', options: [{ id: 'a', text: 'belum' }, { id: 'b', text: 'tidak' }], correct_option_id: 'a', explanation_text: '', is_active: true },
+  { id: 'v2', exercise_type: 'cloze_mcq', lesson_id: 'l1', sentence: 'Saya ___ nasi.', translation: 'Ik eet rijst.', options: ['makan', 'minum'], correct_option_id: 'makan', explanation_text: '', is_active: true },
 ]
 
 function renderWithProviders(ui: React.ReactElement) {

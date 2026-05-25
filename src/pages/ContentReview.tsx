@@ -17,7 +17,7 @@ import { exerciseReviewService } from '@/services/exerciseReviewService'
 import { logError } from '@/lib/logger'
 import { AdminGuard } from '@/pages/admin/AdminGuard'
 import { VariantPreview } from '@/components/admin/VariantPreview'
-import type { ExerciseVariant, ReviewComment, ReviewCommentWithContext } from '@/types/learning'
+import type { ExerciseReviewRow, ReviewComment, ReviewCommentWithContext } from '@/types/learning'
 
 interface Lesson { id: string; title: string; order_index: number }
 
@@ -27,7 +27,7 @@ export function ContentReview() {
   const [lessons, setLessons] = useState<Lesson[]>([])
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null)
   const [selectedType, setSelectedType] = useState<string | null>(null)
-  const [variants, setVariants] = useState<ExerciseVariant[]>([])
+  const [variants, setVariants] = useState<ExerciseReviewRow[]>([])
   const [commentMap, setCommentMap] = useState<Map<string, ReviewComment>>(new Map())
   const [index, setIndex] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -129,8 +129,8 @@ export function ContentReview() {
     }
   }
 
-  function renderExercisePreview(variant: ExerciseVariant) {
-    return <VariantPreview variant={variant} comment={commentMap.get(variant.id)} />
+  function renderExercisePreview(row: ExerciseReviewRow) {
+    return <VariantPreview row={row} comment={commentMap.get(row.id)} />
   }
 
   const lessonOptions = lessons.map(l => ({ value: l.id, label: l.title }))
