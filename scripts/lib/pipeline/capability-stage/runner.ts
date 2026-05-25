@@ -78,8 +78,9 @@ import { loadLesson as defaultLoadLesson, type LoadedLesson } from './loader'
 // is Stage A's territory, and lesson-stage now owns the enricher that
 // fills `content.grammar_topics`. CS2 (perItemEnrichment) was deleted —
 // its checks are now replaced by active enrichments (enrichPos / enrichLevel
-// / enrichEnTranslations / enrichDialogueTranslations) that fill the fields
-// rather than gating.
+// / enrichDialogueTranslations) that fill the fields rather than gating.
+// EN-translation enrichment was relocated to lesson-stage (PR 6, ADR 0012);
+// this stage no longer generates translations.
 import { validateCandidatePayload } from './validators/candidatePayload'
 import { validateGrammarExercises } from './validators/grammarExercises'
 import { validatePerItemMeaning } from './validators/perItemMeaning'
@@ -112,7 +113,6 @@ import {
   type LearningItemStagingRow,
 } from './stagingWriteback'
 import { enrichMissingPos } from './enrichPos'
-import { enrichMissingEnTranslations } from './enrichEnTranslations'
 import { enrichMissingLevel } from './enrichLevel'
 import { propagateDialogueTranslationsToLearningItems } from './propagateDialogueTranslations'
 import { loadPromotionPlan, applyPromotionPlan } from '../../../promote-capabilities'
@@ -190,20 +190,14 @@ export async function runCapabilityStage(
       console.log(`   ✓ Level enrichment: ${levelResult.filledCount} items set to ${loaded.lesson.level}`)
     }
 
-    // EN translations (LLM via Claude haiku)
-    const enResult = await enrichMissingEnTranslations(items.map((i) => ({
-      base_text: i.base_text,
-      item_type: i.item_type as 'word' | 'phrase' | 'sentence' | 'dialogue_chunk' | 'numbers',
-      translation_nl: i.translation_nl,
-      translation_en: i.translation_en,
-    })))
-    if (enResult.translationsByBaseText.size > 0) {
-      for (const item of items) {
-        const en = enResult.translationsByBaseText.get(item.base_text)
-        if (en) item.translation_en = en
-      }
-      learningItemsDirty = true
-    }
+    // EN translations: NO LONGER generated here. Per ADR 0012 the Lesson Stage
+    // owns all learner-facing translations — the EN enricher was relocated to
+    // `lesson-stage/enrichEnTranslations.ts` (PR 6), widened to cover items +
+    // dialogue + grammar. The Capability Stage still PROJECTS
+    // learning_items.translation_en from staging `learning-items.ts` (which
+    // already carries EN); it just stops filling missing EN. The eventual
+    // capability-stage redesign (#98/#99) will read EN from the typed
+    // lesson-content tables instead.
 
     // Dialogue translation propagation (deterministic — no LLM call here).
     // The LLM-driven enrichment of `lesson_sections.content.lines[].translation`

@@ -4,18 +4,13 @@ import path from 'node:path'
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
-const { enrichMissingEnTranslationsMock, enrichMissingPosMock } = vi.hoisted(() => ({
-  enrichMissingEnTranslationsMock: vi.fn().mockResolvedValue({
-    translationsByBaseText: new Map<string, string>(),
-    translatedCount: 0,
-  }),
+// EN-translation enrichment relocated to lesson-stage (PR 6, ADR 0012) — the
+// capability stage no longer imports an EN enricher, so there is nothing to mock.
+const { enrichMissingPosMock } = vi.hoisted(() => ({
   enrichMissingPosMock: vi.fn().mockResolvedValue({
     posByBaseText: new Map<string, string>(),
     enrichedCount: 0,
   }),
-}))
-vi.mock('../enrichEnTranslations', () => ({
-  enrichMissingEnTranslations: enrichMissingEnTranslationsMock,
 }))
 vi.mock('../enrichPos', () => ({
   enrichMissingPos: enrichMissingPosMock,
@@ -200,10 +195,6 @@ function makeSynthLesson(overrides: { stagingDir: string }): LoadedLesson {
 describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
   beforeEach(() => {
     tmpStagingDir = fs.mkdtempSync(path.join(os.tmpdir(), 'capability-stage-test-'))
-    enrichMissingEnTranslationsMock.mockResolvedValue({
-      translationsByBaseText: new Map<string, string>(),
-      translatedCount: 0,
-    })
     enrichMissingPosMock.mockResolvedValue({
       posByBaseText: new Map<string, string>(),
       enrichedCount: 0,
@@ -299,11 +290,13 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
     expect(writes.find((w) => w.endsWith('lesson-page-blocks.ts'))).toBeUndefined()
   })
 
-  it('regenerates content-unit snapshots from enriched learning items so the upsert sees post-enrichment data', async () => {
-    // Set up: staging has a learning item with empty translation_en and a stale
-    // snapshot (contentUnits) that pre-dates enrichment — translationEn is empty.
-    // The runner's enrichment fills translation_en in-memory; without regeneration,
-    // the snapshot's payload_json.translationEn stays empty when upserted.
+  it('regenerates content-unit snapshots from staging learning items so the upsert sees fresh (not stale-snapshot) data', async () => {
+    // Set up: staging has a learning item carrying translation_en (EN is now
+    // produced lesson-side per ADR 0012 and cached in learning-items.ts) and a
+    // STALE snapshot (contentUnits) whose payload_json.translationEn is empty
+    // (built before the staging item had EN). Without regeneration, the stale
+    // snapshot's empty translationEn would be upserted. The runner regenerates
+    // the snapshot from staging, so the upsert carries the staging value.
     const synth = makeSynthLesson({ stagingDir: tmpStagingDir })
     const lessonWithStaleSnapshot: LoadedLesson = {
       ...synth,
@@ -315,7 +308,7 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
             item_type: 'word',
             context_type: 'vocabulary_list',
             translation_nl: 'eten',
-            translation_en: '', // empty — enrichment should fill this
+            translation_en: 'to eat', // carried by staging (lesson-stage owns EN)
             pos: 'verb',
             level: 'A1',
             review_status: 'pending_review',
@@ -342,12 +335,6 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
       },
     }
 
-    // Mock the LLM enricher: fill translation_en for "makan" → "to eat".
-    enrichMissingEnTranslationsMock.mockResolvedValueOnce({
-      translationsByBaseText: new Map([['makan', 'to eat']]),
-      translatedCount: 1,
-    })
-
     const { client, recorder } = buildSupabaseMock({})
     const result = await runCapabilityStage(
       { lessonNumber: 1, lessonId: 'lesson-uuid' },
@@ -368,7 +355,8 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
       payload_json: { translationEn?: string }
     }
     // This is the centerpiece assertion: the regenerated snapshot picked up
-    // the enriched EN translation, so the DB upsert carries "to eat" — not "".
+    // the staging EN translation, so the DB upsert carries "to eat" — not the
+    // stale snapshot's "".
     expect(payload.payload_json.translationEn).toBe('to eat')
   })
 })

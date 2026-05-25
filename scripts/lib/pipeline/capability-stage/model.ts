@@ -9,8 +9,9 @@ export const CAPABILITY_GATES = [
   'CS1', // grammar topics (moved from lesson-stage GT1)
   // CS2 retired — its per-item-enrichment checks (pos/level/translation)
   // are now replaced by active enrichments (enrichPos / enrichLevel /
-  // enrichEnTranslations / enrichDialogueTranslations) that fill the
-  // fields rather than gating on their absence.
+  // enrichDialogueTranslations) that fill the fields rather than gating on
+  // their absence. EN-translation enrichment was relocated to lesson-stage
+  // (PR 6, ADR 0012).
   'CS3', // candidate payload (GRAMMAR_EXERCISE_TYPES + payload presence)
   'CS4', // per-item meaning (VALID_LANGUAGES + VALID_CONTEXT_TYPES)
   'CS5', // pos validation
