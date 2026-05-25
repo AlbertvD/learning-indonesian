@@ -80,3 +80,12 @@ export const bespokeLessonPreviews: BespokeLessonPreview[] = [
     description: m.description ?? null,
   }))
   .sort((a, b) => a.orderIndex - b.orderIndex)
+
+// UUIDs of lessons that have a bespoke page. A lesson is "prepared" (openable —
+// its tile links to /lesson/:id) iff it is in this set; the Lessons overview
+// derives preparedLessonIds from it. Replaces the retired lesson_page_blocks
+// `has_page_blocks` RPC signal — "openable" is a client fact (bespoke page
+// exists), not a DB one.
+export const bespokeLessonIdSet: ReadonlySet<string> = new Set(
+  Object.keys(bespokeLessonElements),
+)

@@ -66,7 +66,6 @@ export interface LessonOverviewRpcRow {
   is_published: boolean | null
   lesson_sections: LessonSection[]
   has_started_lesson: boolean
-  has_page_blocks: boolean
   ready_capability_count: number
   practiced_eligible_capability_count: number
 }

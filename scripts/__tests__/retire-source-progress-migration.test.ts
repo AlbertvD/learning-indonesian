@@ -37,17 +37,9 @@ describe('retirement #6 — source-progress → lesson-activation migration (mas
     expect(masterSql).toContain('create index if not exists learning_capabilities_lesson_idx')
   })
 
-  it('backfills lesson_id from page-block adjacency (idempotent via WHERE … IS NULL; wrapped in column-existence guard post-#61)', () => {
-    expect(masterSql).toContain('update indonesian.learning_capabilities c')
-    expect(masterSql).toContain('select distinct on (cap_key)')
-    expect(masterSql).toContain('unnest(pb.capability_key_refs) as cap_key')
-    expect(masterSql).toContain('and c.lesson_id is null')
-    // Post-#61: the backfill UPDATE is wrapped in a column-existence DO block so
-    // it becomes a no-op once capability_key_refs is dropped from the table.
-    // Keeps the file idempotent on fresh DBs AND on already-dropped live DBs.
-    expect(masterSql).toMatch(
-      /if exists \([\s\S]*?column_name = 'capability_key_refs'[\s\S]*?\) then[\s\S]*?unnest\(pb\.capability_key_refs\) as cap_key/i,
-    )
+  it('no longer backfills lesson_id from page-block adjacency (removed in PR 5 with lesson_page_blocks; lesson_id is pipeline-maintained per ADR 0006)', () => {
+    expect(masterSql).not.toContain('unnest(pb.capability_key_refs) as cap_key')
+    expect(masterSql).not.toMatch(/from indonesian\.lesson_page_blocks pb/)
   })
 
   it('auto-activates legacy lessons {1,2,3} for every existing user (idempotent)', () => {
@@ -73,10 +65,9 @@ describe('retirement #6 — source-progress → lesson-activation migration (mas
   it('drops has_meaningful_exposure from get_lessons_overview return shape', () => {
     // The cleanup-stage rewrite removes the field. Verify by counting occurrences:
     // the only surviving reference should be in narrative comments, not the
-    // RETURNS TABLE signature of the new function body. The anchor moved from
-    // `-- 6. REWRITE: get_lessons_overview` (retirement #6 cleanup) to the new
-    // Phase 1 rewrite block in 2026-05-20.
-    const newFnIndex = masterSql.indexOf('-- get_lessons_overview — 2026-05-20')
+    // RETURNS TABLE signature of the new function body. The anchor moved to the
+    // PR 5 capability-scoped rewrite header (has_page_blocks removed there too).
+    const newFnIndex = masterSql.indexOf('-- get_lessons_overview — capability-scoped (ADR 0006)')
     expect(newFnIndex).toBeGreaterThan(0)
     const newFnSlice = masterSql.slice(newFnIndex, newFnIndex + 3000)
     expect(newFnSlice).not.toContain('has_meaningful_exposure')
@@ -87,8 +78,8 @@ describe('retirement #6 — source-progress → lesson-activation migration (mas
     expect(masterSql).toContain('drop function if exists indonesian.record_source_progress_event(jsonb) cascade')
   })
 
-  it('drops the lesson_page_blocks.source_progress_event column conditionally', () => {
-    expect(masterSql).toContain('alter table indonesian.lesson_page_blocks drop column source_progress_event')
+  it('drops the lesson_page_blocks table (PR 5 — generic page-block render path retired)', () => {
+    expect(masterSql).toContain('drop table if exists indonesian.lesson_page_blocks cascade')
   })
 
   it('drops both source-progress tables with CASCADE', () => {

@@ -58,10 +58,9 @@ const RUNNER_INTERNALS = {
  *   2. Run validators GT1–GT7. Collect findings.
  *   3. Validation errors short-circuit before any DB writes.
  *   4. dryRun returns early (no DB / no audio).
- *   5. Run classifier on page-blocks (legacy block_kind → canonical 7-value).
- *   6. Adapter writes (lesson, sections, page-blocks).
- *   7. Audio synthesis (per-text TTS via audio.ts).
- *   8. Return typed report.
+ *   5. Adapter writes (lesson, sections).
+ *   6. Audio synthesis (per-text TTS via audio.ts).
+ *   7. Return typed report.
  */
 export async function runLessonStage(
   input: LessonStageInput,

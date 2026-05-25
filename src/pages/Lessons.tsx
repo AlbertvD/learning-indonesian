@@ -35,6 +35,7 @@ import {
   type LessonOverviewModel,
   type LessonOverviewStatus,
 } from '@/lib/lessons'
+import { bespokeLessonIdSet } from '@/pages/lessons/registry'
 import classes from './Lessons.module.css'
 
 const emptyModel: LessonOverviewModel = {
@@ -200,11 +201,11 @@ export function Lessons() {
             hasAuthoredEligiblePracticeContent: eligibleIntroducedItemCount > 0,
           })
 
-          // "Prepared" = lesson_page_blocks has rows for this lesson (the
-          // lesson reader can render content). Same semantic as the previous
-          // page-blocks-fanout fetch; the new SQL function returns the bool
-          // pre-aggregated.
-          if (row.has_page_blocks) {
+          // "Prepared" = the lesson has a bespoke page (its tile links to
+          // /lesson/:id and the reader can render it). This is a client fact —
+          // registry membership — not a DB one; it replaces the retired
+          // lesson_page_blocks `has_page_blocks` RPC signal.
+          if (bespokeLessonIdSet.has(row.lesson_id)) {
             preparedLessonIds.push(row.lesson_id)
           }
         }

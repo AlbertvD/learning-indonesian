@@ -27,6 +27,14 @@ vi.mock('@/lib/lessons/adapter', async (importOriginal) => {
   }
 })
 
+// "Prepared" (openable) now = the lesson has a bespoke page, i.e. registry
+// membership. Mock the registry id-set so tests control which lessons are
+// openable (replaces the retired has_page_blocks RPC signal).
+const { preparedLessonIdSet } = vi.hoisted(() => ({ preparedLessonIdSet: new Set<string>() }))
+vi.mock('@/pages/lessons/registry', () => ({
+  bespokeLessonIdSet: preparedLessonIdSet,
+}))
+
 const lesson1Sections = [
   {
     id: 'section-1',
@@ -54,7 +62,6 @@ function overviewRow(opts: {
   title: string
   hasStartedLesson?: boolean
   hasMeaningfulExposure?: boolean // accepted for back-compat, ignored after retirement #6
-  hasPageBlocks?: boolean
   readyCapabilityCount?: number
   practicedEligibleCapabilityCount?: number
   lessonSections?: any[]
@@ -71,7 +78,6 @@ function overviewRow(opts: {
     is_published: true,
     lesson_sections: opts.lessonSections ?? [],
     has_started_lesson: opts.hasStartedLesson ?? false,
-    has_page_blocks: opts.hasPageBlocks ?? true,
     ready_capability_count: opts.readyCapabilityCount ?? 0,
     practiced_eligible_capability_count: opts.practicedEligibleCapabilityCount ?? 0,
   }
@@ -96,6 +102,10 @@ function renderLessons() {
 describe('Lessons overview', () => {
   beforeEach(() => {
     sessionStorage.clear()
+    // Default: both fixture lessons have a bespoke page (openable).
+    preparedLessonIdSet.clear()
+    preparedLessonIdSet.add('lesson-1')
+    preparedLessonIdSet.add('lesson-2')
     vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue(defaultOverviewRows())
   })
 
@@ -132,10 +142,11 @@ describe('Lessons overview', () => {
     expect(container).not.toHaveTextContent(/source progress|fsrs|content health|eligible/i)
   })
 
-  it('shows lessons without page blocks as coming later instead of openable', async () => {
+  it('shows lessons without a bespoke page as coming later instead of openable', async () => {
+    preparedLessonIdSet.delete('lesson-2') // lesson-2 has no bespoke page
     vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
-      overviewRow({ lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)', lessonSections: lesson1Sections, hasPageBlocks: true }),
-      overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections, hasPageBlocks: false }),
+      overviewRow({ lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)', lessonSections: lesson1Sections }),
+      overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections }),
     ])
 
     renderLessons()
@@ -150,9 +161,10 @@ describe('Lessons overview', () => {
   })
 
   it('does not recommend an unprepared first lesson', async () => {
+    preparedLessonIdSet.delete('lesson-1') // lesson-1 has no bespoke page
     vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
-      overviewRow({ lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)', lessonSections: lesson1Sections, hasPageBlocks: false }),
-      overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections, hasPageBlocks: true }),
+      overviewRow({ lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)', lessonSections: lesson1Sections }),
+      overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections }),
     ])
 
     renderLessons()

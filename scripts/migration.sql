@@ -21,7 +21,7 @@
 --   These files are paper-trail audit logs and emergency rollback tools.
 --   Some predate the inversion of 2026-04-02 (when migrate.ts stopped
 --   regenerating migration.sql) and still hold load-bearing schema for the
---   capability + content-units subsystem (tracked: lesson_page_blocks,
+--   capability + content-units subsystem (tracked:
 --   content_units, capability_content_units, learning_capabilities,
 --   capability_aliases, capability_artifacts, learner_capability_state,
 --   capability_review_events, capability_resolution_failure_events).
@@ -1635,41 +1635,10 @@ alter table indonesian.learning_capabilities
 create index if not exists learning_capabilities_lesson_idx
   on indonesian.learning_capabilities(lesson_id) where lesson_id is not null;
 
--- Backfill from page-block adjacency. Each capability_key in
--- lesson_page_blocks.capability_key_refs[] is owned by the lowest-order_index
--- lesson that references it (the "introducing" lesson). NULL stays for
--- capabilities not referenced by any page block (e.g., podcast).
--- The cap_key matches learning_capabilities.canonical_key (verified against
--- capability_key_refs[] convention in the materialize pipeline).
--- Wrapped in a column-existence DO block: once issue #61's cleanup drops
--- capability_key_refs (see drop block below), the unnest reference would
--- fail at parse time. The guard makes the file idempotent for fresh DBs
--- (paper-trail file 2026-04-25-content-units-lesson-blocks.sql:36 still
--- creates the column on a fresh DB → backfill runs → drop block fires)
--- and a no-op on already-dropped live DBs.
-do $$
-begin
-  if exists (
-    select 1 from information_schema.columns
-    where table_schema = 'indonesian'
-      and table_name = 'lesson_page_blocks'
-      and column_name = 'capability_key_refs'
-  ) then
-    update indonesian.learning_capabilities c
-    set lesson_id = sub.lesson_id
-    from (
-      select distinct on (cap_key)
-        unnest(pb.capability_key_refs) as cap_key,
-        l.id as lesson_id
-      from indonesian.lesson_page_blocks pb
-      join indonesian.lessons l on pb.source_ref = 'lesson-' || l.order_index
-      where array_length(pb.capability_key_refs, 1) > 0
-      order by cap_key, l.order_index
-    ) sub
-    where c.canonical_key = sub.cap_key
-      and c.lesson_id is null;
-  end if;
-end $$;
+-- (Historical lesson_id backfill from lesson_page_blocks.capability_key_refs[]
+--  removed in PR 5 when lesson_page_blocks was dropped. lesson_id is now
+--  populated by the capability-stage pipeline on every publish per ADR 0006;
+--  the live DB was backfilled before the table was retired.)
 
 -- 5. BACKFILL — Step 1: auto-activate legacy lessons (1, 2, 3) for every existing user.
 -- Idempotent — safe to re-run.
@@ -1699,14 +1668,14 @@ on conflict (user_id, lesson_id) do nothing;
 -- field read during the deploy window between forward and code deploy.
 
 -- ============================================================================
--- get_lessons_overview — 2026-05-20 (Phase 1 of retiring lesson_page_blocks)
+-- get_lessons_overview — capability-scoped (ADR 0006)
 -- ============================================================================
 --
--- Reads capability counts from learning_capabilities.lesson_id (ADR 0006)
--- instead of unnesting lesson_page_blocks.source_refs[]. Return shape is
--- byte-identical to the previous version — has_page_blocks stays as a
--- narrow probe against lesson_page_blocks to drive the "openable" tile
--- signal in Lessons.tsx:207 (Phase 2 will replace it).
+-- Reads capability counts from learning_capabilities.lesson_id (ADR 0006).
+-- The legacy has_page_blocks signal was removed in PR 5 when lesson_page_blocks
+-- was dropped: a lesson is "openable" iff it has a bespoke page, which is a
+-- client-side fact (the bespoke-page registry), not a DB one. Lessons.tsx now
+-- derives preparedLessonIds from the registry.
 --
 -- Idempotent. DROP FUNCTION first because CREATE OR REPLACE cannot change
 -- a function's RETURNS TABLE shape (even when it doesn't, drop+create is
@@ -1725,7 +1694,6 @@ returns table (
   is_published boolean,
   lesson_sections jsonb,
   has_started_lesson boolean,
-  has_page_blocks boolean,
   ready_capability_count int,
   practiced_eligible_capability_count int
 )
@@ -1757,17 +1725,6 @@ language sql stable security invoker as $$
   lesson_sections_json as (
     select ls.lesson_id, jsonb_agg(to_jsonb(ls) order by ls.order_index) as sections
     from indonesian.lesson_sections ls group by ls.lesson_id
-  ),
-  lesson_block_presence as (
-    -- Phase 1: kept as a narrow probe against lesson_page_blocks to drive the
-    -- "openable lesson tile" signal in Lessons.tsx:207. Phase 2 will replace
-    -- this with a "has bespoke page" signal once every lesson has one.
-    select l.id as lesson_id, true as has_blocks
-    from indonesian.lessons l
-    where exists (
-      select 1 from indonesian.lesson_page_blocks pb
-      where pb.source_ref = 'lesson-' || l.order_index
-    )
   )
   select
     l.id,
@@ -1790,51 +1747,18 @@ language sql stable security invoker as $$
         where lp.user_id = p_user_id and lp.lesson_id = l.id
       )
     ) as has_started_lesson,
-    coalesce(lbp.has_blocks, false) as has_page_blocks,
     coalesce(cc.ready_count, 0) as ready_capability_count,
     coalesce(cc.practiced_count, 0) as practiced_eligible_capability_count
   from indonesian.lessons l
   left join capability_counts cc on cc.lesson_id = l.id
   left join lesson_sections_json lsj on lsj.lesson_id = l.id
-  left join lesson_block_presence lbp on lbp.lesson_id = l.id
   order by l.order_index;
 $$;
 
 grant execute on function indonesian.get_lessons_overview(uuid) to authenticated;
 
--- 7. D-R-O-P column lesson_page_blocks.source_progress_event (and its check constraint)
-do $$
-begin
-  if exists (
-    select 1 from information_schema.columns
-    where table_schema = 'indonesian'
-      and table_name = 'lesson_page_blocks'
-      and column_name = 'source_progress_event'
-  ) then
-    alter table indonesian.lesson_page_blocks drop column source_progress_event;
-  end if;
-exception when others then null;
-end $$;
-
--- 7b. D-R-O-P column lesson_page_blocks.capability_key_refs (issue #61 closeout)
--- Eliminates the dual-write divergence between Stage A (copies from a stale
--- on-disk staging file) and learning_capabilities.canonical_key (Stage B's
--- authoritative output). The promoter now scopes by
--- learning_capabilities.lesson_id (ADR 0006). Mirrors the source_progress_event
--- drop precedent above. The historical backfill block at lines ~1633-1666 is
--- guarded for the column's eventual absence on fresh DBs and re-runs.
-do $$
-begin
-  if exists (
-    select 1 from information_schema.columns
-    where table_schema = 'indonesian'
-      and table_name = 'lesson_page_blocks'
-      and column_name = 'capability_key_refs'
-  ) then
-    alter table indonesian.lesson_page_blocks drop column capability_key_refs;
-  end if;
-exception when others then null;
-end $$;
+-- (PR 5: the lesson_page_blocks column-drop DO blocks — source_progress_event
+--  and capability_key_refs — were removed; the whole table is dropped below.)
 
 -- 8. D-R-O-P dead SQL functions
 drop function if exists indonesian._capability_source_progress_met(uuid, jsonb, text, text) cascade;
@@ -1939,47 +1863,17 @@ begin
 end $$;
 
 -- ============================================================
--- Lesson-stage Phase 1 (2026-05-09) — block_kind widen-then-narrow (GT2)
+-- PR 5 (2026-05-25) — drop lesson_page_blocks
 -- ============================================================
--- Drop the legacy 5-value CHECK, migrate values to the canonical 7-value
--- reader kind using the same precedence rules as classifier.ts, then add the
--- new CHECK. Wrapped in BEGIN/COMMIT for transactional hygiene. Idempotent
--- via the `block_kind IN (legacy values)` UPDATE guard + the `do $$ if not
--- exists` constraint re-add.
-begin;
-
-alter table indonesian.lesson_page_blocks
-  drop constraint if exists lesson_page_blocks_block_kind_check;
-
-update indonesian.lesson_page_blocks
-   set block_kind = case
-     when block_kind = 'hero' then 'lesson_hero'
-     when block_kind = 'recap' then 'lesson_recap'
-     when block_kind = 'practice_bridge' then 'practice_bridge'
-     when block_kind in ('section', 'exposure') and (payload_json->>'type') = 'dialogue' then 'dialogue_card'
-     when block_kind in ('section', 'exposure') and (payload_json->>'type') in ('vocabulary','numbers','expressions') then 'vocab_strip'
-     when block_kind in ('section', 'exposure') and exists (
-       select 1 from unnest(content_unit_slugs) slug where slug like 'pattern-%'
-     ) then 'pattern_callout'
-     else 'reading_section'
-   end
- where block_kind in ('hero','section','exposure','practice_bridge','recap');
-
-do $$
-begin
-  if not exists (
-    select 1 from pg_constraint where conname = 'lesson_page_blocks_block_kind_check'
-  ) then
-    alter table indonesian.lesson_page_blocks
-      add constraint lesson_page_blocks_block_kind_check
-      check (block_kind in (
-        'lesson_hero','reading_section','vocab_strip','dialogue_card',
-        'pattern_callout','practice_bridge','lesson_recap'
-      ));
-  end if;
-end $$;
-
-commit;
+-- The generic page-block render path is retired: bespoke per-lesson pages
+-- (content.json) are the sole lesson renderer, and DB lesson content lives in
+-- lesson_sections (+ PR 6 typed children) as the capability contract only. All
+-- readers/writers were removed in the same PR (the runtime reader stack, the
+-- Stage A writer, get_lessons_overview's lesson_block_presence probe, HC2).
+-- The block_kind widen-then-narrow migration and the source_refs GIN index that
+-- lived in this file are gone with the table. CASCADE is a no-op (no FK points
+-- into this table).
+drop table if exists indonesian.lesson_page_blocks cascade;
 
 -- ============================================================
 -- Lesson-stage Phase 1 (2026-05-09) — content.type CHECK constraint (GT5)
@@ -2037,8 +1931,7 @@ drop table if exists indonesian.vocabulary       cascade;
 -- ON DELETE RESTRICT, converts the four child-table FKs from NO ACTION to
 -- CASCADE so future orphan-cap cleanup is a single DELETE on
 -- learning_capabilities (replacing the explicit child enumeration in
--- scripts/triage-residual-capabilities.ts), and adds a GIN index on
--- lesson_page_blocks.source_refs[] for the M:N exposure-aware queries.
+-- scripts/triage-residual-capabilities.ts).
 --
 -- Prereq: PR-3 leaves zero non-podcast rows with NULL lesson_id. The CHECK
 -- constraint refuses to apply otherwise. Verified 2026-05-17: 0 NULL rows.
@@ -2100,11 +1993,6 @@ alter table indonesian.capability_review_events
   add constraint capability_review_events_capability_id_fkey
     foreign key (capability_id) references indonesian.learning_capabilities(id)
     on delete cascade;
-
--- 4. GIN index on lesson_page_blocks.source_refs[] to speed up the M:N
---    exposure-aware queries that match by source_ref membership in the array.
-create index if not exists lesson_page_blocks_source_refs_gin
-  on indonesian.lesson_page_blocks using gin (source_refs);
 
 -- ============================================================================
 -- PR 0 (2026-05-22) — Data-model migration pre-work
