@@ -116,6 +116,16 @@ The *responsibility split* behind this contract — which work runs in which sta
 
 The `lesson_sections.content` JSON blob is **retained** alongside the typed tables (not dropped) — it is the complete authored snapshot of a section; the typed columns + child tables are its projection. Readers (the lesson page, the capability-stage contract) use the typed tables; the blob stays next to them as the round-trippable record.
 
+## Lesson Gate
+
+The quality gate that certifies the **Lesson Stage's output for a single lesson** is complete and correct — Stage A's definition-of-done. It validates the lesson stage's entire write-set: the typed capability-contract tables **and** the retained `content` blob, so both consumers are covered — the Capability Stage (which reads the typed tables) and the lesson reader (which reads the blob). Display-only sections that have no typed table are still gated on their blob shape (generic per-type structure; per-bespoke-page fields remain the lesson page's own concern).
+
+The Lesson Gate is **self-contained to the lesson being published**: it inspects only that lesson's own authored input and its own just-written rows — never cross-lesson vocabulary or any capability-side state. This makes it **fresh-lesson-safe by construction**: a brand-new lesson cannot fail the gate for reasons that only resolve *after* publication. "Is this word known across prior lessons?" is **not** a Lesson Gate question — it belongs to the Capability Stage, asked against the database after Stage A has written this lesson's content. (Contrast the legacy `lint-staging` gate, which validated whole-workflow concerns against post-publish DB state and so could not pass a net-new lesson — see ADR 0013.)
+
+Because the Lesson Stage is independently runnable (ADR 0011's regime split — lesson content is re-published freely; capability content is seeded once), the Lesson Gate certifies Stage A **on its own**; it never gates "readiness to hand off to the Capability Stage." Whether the Capability Stage runs next is a separate orchestration choice.
+
+Its layered mechanism (DB constraints + a single pre-write/pre-flight validator + post-write verification, partitioned by how each column is populated) and the untangling from the legacy whole-workflow `lint-staging` gate are recorded in **ADR 0013**. The Capability Stage has the symmetric, DB-state-aware gate of its own.
+
 ## Pipelines are per content origin
 
 The Lesson Stage and Capability Stage above describe the **textbook-lesson** pipeline (HEIC pages → lesson content → capabilities). They are not universal. Each content origin gets its **own separate pipeline**:
