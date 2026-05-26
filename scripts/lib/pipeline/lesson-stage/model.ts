@@ -40,10 +40,12 @@ export interface LessonStageOutput {
 
 export interface ValidationFinding {
   // GT1–GT9 (PR 6): pre-write lesson-content validators.
+  // GT10 (slice 3, ADR 0013): display-content blob structure — folded out of
+  // the monolithic lint-staging gate + generic shape for display-only sections.
   // LV1/LV2 (slice 1, ADR 0013): post-write verification — the lesson-stage
   // analogue of the capability stage's CS7–CS9. LV1 = per-lesson row-count
   // parity; LV2 = retained content blob non-empty per section.
-  gate: 'GT1' | 'GT2' | 'GT3' | 'GT4' | 'GT5' | 'GT6' | 'GT7' | 'GT8' | 'GT9' | 'LV1' | 'LV2'
+  gate: 'GT1' | 'GT2' | 'GT3' | 'GT4' | 'GT5' | 'GT6' | 'GT7' | 'GT8' | 'GT9' | 'GT10' | 'LV1' | 'LV2'
   severity: 'error' | 'warning'
   message: string
   context?: {

@@ -36,6 +36,7 @@ import { validateSectionType } from './validators/sectionType'
 import { validatePerItem } from './validators/perItem'
 import { validateDialogueLines } from './validators/dialogueLines'
 import { validateSectionShape } from './validators/sectionShape'
+import { validateDisplayContentShape } from './validators/displayContent'
 
 export type LessonGateMode = 'pre-flight' | 'publish'
 
@@ -62,6 +63,10 @@ export function runLessonGate(input: LessonGateInput): ValidationFinding[] {
     ),
     // GT5 — canonical section type + per-type sub-shape (structural).
     ...validateSectionType(sections),
+    // GT10 — display-content blob structure (folded from lint-staging) +
+    // generic shape for the display-only sections GT5 leaves permissive.
+    // Structural — CRITICAL in both modes.
+    ...validateDisplayContentShape(sections),
     // GT6 — per-item display fields the reader shows (structural).
     ...validatePerItem(sections),
     // GT8 — dialogue line shape: `text` (authored, always CRITICAL) + NL
