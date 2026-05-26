@@ -7,11 +7,7 @@ import type {
   LessonStageOutput,
   ValidationFinding,
 } from './model'
-import { validateLessonVoices } from './validators/lessonVoices'
-import { validateSectionType } from './validators/sectionType'
-import { validatePerItem } from './validators/perItem'
-import { validateGrammarTopics } from './validators/grammarTopics'
-import { validateDialogueLines } from './validators/dialogueLines'
+import { runLessonGate } from './gate'
 import {
   upsertLesson,
   upsertLessonSections,
@@ -40,7 +36,6 @@ import {
 } from './enrichDialogueTranslations'
 import { enrichMissingEnContent } from './enrichEnTranslations'
 import { projectSections, type AffixedPairInput } from './projectSections'
-import { validateSectionShape } from './validators/sectionShape'
 import { writeLessonWithEnrichedSections } from './stagingWriteback'
 import { runLessonCountParity } from './verify/countParity'
 import { runLessonContentNonEmpty } from './verify/contentNonEmpty'
@@ -159,40 +154,35 @@ export async function runLessonStage(
     }
   }
 
-  // GT1 (grammar_topics) runs AFTER enrichment so it sees populated values.
-  // GT3, GT5, GT6 walk every section. GT4 walks the lesson + sections.
-  // GT7 (grammar pattern shape) remains in capability-stage (CS6) since
-  // grammar_patterns is capability-stage's territory.
-  findings.push(...validateGrammarTopics(staging.lesson.sections))
-  // Pass through raw staging values (undefined when staging omits the field)
-  // so GT4 can distinguish "not configured in staging — orchestrator handles
-  // it" from "explicitly provided but null/empty — broken authoring".
-  findings.push(
-    ...validateLessonVoices(
-      {
-        primary_voice: staging.lesson.primary_voice,
-        dialogue_voices: staging.lesson.dialogue_voices,
-      },
-      staging.lesson.sections,
-    ),
-  )
-  findings.push(...validateSectionType(staging.lesson.sections))
-  findings.push(...validatePerItem(staging.lesson.sections))
-  // GT8 (PR 2): dialogue line shape gate. Runs after dialogue translation
-  // enrichment so populated translations are visible.
-  findings.push(...validateDialogueLines(staging.lesson.sections))
-
-  // GT9 (PR 6): typed lesson-section capability-contract row shape. Project the
-  // enriched sections (+ morphology pairs) into the typed rows, then assert each
-  // row's required fields (incl. EN). Pure projection — no DB needed — so it
-  // runs before the dry-run short-circuit. The projected rows are reused for the
-  // typed-table writes below.
+  // Project the enriched sections (+ morphology pairs) into the typed
+  // capability-contract rows. Pure — no DB needed — so it runs before the
+  // dry-run short-circuit, and the projected rows are reused for the
+  // typed-table writes below. GT9 (sectionShape) validates them inside the gate.
   const projected = projectSections({
     lessonNumber: input.lessonNumber,
     sections: staging.lesson.sections,
     affixedPairs: staging.affixedFormPairs,
   })
-  findings.push(...validateSectionShape(projected))
+
+  // The Lesson Gate — one consolidated pre-write validator over the GT* family
+  // (ADR 0013 §3). Runs AFTER enrichment so GT1/GT8/GT9 see populated values.
+  // `mode` is the only knob: a real publish runs post-enrichment with
+  // EN-completeness CRITICAL; a dry-run is the standalone pre-flight on the raw
+  // (LLM-un-enriched) lesson, relaxing EN-completeness to warnings (fixing the
+  // dry-run-fails-on-missing-EN wart). All structural checks stay CRITICAL in
+  // both modes. Raw staging voice values pass through as-is (undefined when
+  // staging omits them) so GT4 can tell "orchestrator fills it" from "broken".
+  findings.push(
+    ...runLessonGate({
+      lesson: {
+        primary_voice: staging.lesson.primary_voice,
+        dialogue_voices: staging.lesson.dialogue_voices,
+      },
+      sections: staging.lesson.sections,
+      projected,
+      mode: input.dryRun ? 'pre-flight' : 'publish',
+    }),
+  )
 
   const errors = findings.filter((f) => f.severity === 'error')
   if (errors.length > 0) {
