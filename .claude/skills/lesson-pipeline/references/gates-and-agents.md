@@ -145,9 +145,33 @@ Stage B / capability:
 ## Health & DB counts (phase 10)
 
 After a live publish: `make check-supabase-deep` (tables, RLS, grants,
-policies). For the "what was published" counts, query the live DB for this
-lesson — e.g. via the openbrain SQL MCP or a small read script — counting rows
-in `lessons`, `lesson_sections`, the typed lesson-content tables, `audio_clips`
-(Stage A) and `content_units`, `learning_capabilities`, `learning_items`,
-`exercise_variants`, `cloze_contexts` (Stage B) for `lesson_id = N`. Compare
-against the Stage A/B `counts` reports — divergence is a flag.
+policies). For the "what was published" counts, use
+`scripts/verify-published.ts <lessonId>` — it counts the six typed
+lesson-content tables by `lesson_id` (Stage A). For Stage B, query
+`content_units`, `learning_capabilities`, `learning_items`, `exercise_variants`,
+`cloze_contexts` for `lesson_id = N`. Compare against the Stage A/B `counts`
+reports — divergence is a flag. Do NOT count `audio_clips` per-lesson — it is
+keyed by (normalized_text, voice_id) and shared across lessons (no `lesson_id`).
+
+## Audio (phase 11) — how lessons actually get audio
+
+Stage A's inline audio (`ensureLessonAudio` → reads voices from the *staging*
+file) is effectively dead: staging never carries voices, so it reports
+`audioClipsSynthesised`/`Reused` = 0 for every lesson. The app's `audio_clips`
+are produced **post-publish** by `generate-exercise-audio.ts`:
+
+1. **Credential:** `~/.config/gcloud/tts-indonesian.json` (Google service
+   account; the client mints a JWT → access token → TTS REST API). NOT
+   `GOOGLE_TTS_API_KEY` — that var is only the legacy `generate-section-audio.ts`
+   narration path.
+2. `bun scripts/set-lesson-voices.ts` — writes `primary_voice` +
+   `dialogue_voices` to the DB `lessons` row (reads sections from DB → lesson
+   must be published first). Required: `generate-exercise-audio` errors if
+   `primary_voice` is unset.
+3. `bun scripts/generate-exercise-audio.ts N` — reads the lesson's DB texts
+   (`learning_items`, `exercise_variants`, `lesson_sections`), dedups by (text,
+   voice), synthesizes the missing, uploads to storage, inserts `audio_clips`.
+   Its printed clip count is the coverage signal. On a fresh lesson with Stage B
+   deferred (#98), only `lesson_sections` text is available to voice.
+
+Real, billable TTS calls + prod storage writes — confirm before running for real.
