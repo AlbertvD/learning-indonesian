@@ -317,6 +317,49 @@ export async function replaceLessonSectionAffixedPairs(
   return rows.length
 }
 
+// ───────────────── Post-write verification reads (slice 1, ADR 0013) ─────────
+//
+// The Lesson Gate's post-write layer reads back ONLY the just-published
+// lesson's own rows (by lesson_id) to confirm the writes landed. These helpers
+// are the lesson-stage analogue of the capability stage's countTableForLesson /
+// fetchRowsByIds; kept lesson-stage-local to respect the module boundary.
+
+/** Count rows in `indonesian.<table>` for one lesson (always keyed by lesson_id). */
+export async function countLessonTableRows(
+  supabase: SupabaseClient,
+  table: string,
+  lessonId: string,
+): Promise<number> {
+  const { count, error } = await supabase
+    .schema('indonesian')
+    .from(table)
+    .select('*', { count: 'exact', head: true })
+    .eq('lesson_id', lessonId)
+  if (error) throw error
+  return count ?? 0
+}
+
+export interface LessonSectionContentRow {
+  id: string
+  order_index: number
+  content: Record<string, unknown> | null
+}
+
+/** Read every section's retained content blob for one lesson, ordered. */
+export async function fetchLessonSectionContentRows(
+  supabase: SupabaseClient,
+  lessonId: string,
+): Promise<LessonSectionContentRow[]> {
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('lesson_sections')
+    .select('id, order_index, content')
+    .eq('lesson_id', lessonId)
+    .order('order_index')
+  if (error) throw error
+  return (data ?? []) as LessonSectionContentRow[]
+}
+
 /**
  * Read which (normalized_text, voice_id) pairs already exist in `audio_clips`.
  * Returns a Set of `${normalized_text}|${voice_id}` keys for O(1) membership

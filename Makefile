@@ -171,6 +171,11 @@ publish-content: ## Publish approved content to Supabase (requires LESSON)
 	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make publish-content LESSON=<N>"; exit 1; }
 	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/publish-approved-content.ts $(LESSON)
 
+.PHONY: publish-lesson-content
+publish-lesson-content: ## Stage-A-only publish: lesson content + Lesson Gate, no capability generation (requires LESSON)
+	@test -n "$(LESSON)" || { echo "Error: LESSON is required. Run: make publish-lesson-content LESSON=<N>"; exit 1; }
+	NODE_TLS_REJECT_UNAUTHORIZED=0 SUPABASE_SERVICE_KEY=$(SUPABASE_SERVICE_KEY) bun scripts/publish-lesson-content.ts $(LESSON)
+
 # ============================================================================
 # HEALTH CHECKS
 # ============================================================================
