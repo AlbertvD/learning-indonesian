@@ -126,6 +126,16 @@ describe('runLessonGate — aggregates every pre-write validator', () => {
     expect(findings.some((f) => f.gate === 'GT9' && f.severity === 'warning')).toBe(true)
   })
 
+  it('surfaces a GT10 display-content error (folded from lint-staging) through the gate', () => {
+    const findings = runLessonGate({
+      lesson: NO_LESSON,
+      sections: [{ title: 'G', order_index: 0, content: { type: 'grammar', body: 'prose', grammar_topics: ['x'] } }],
+      projected: emptyProjected(),
+      mode: 'publish',
+    })
+    expect(findings.some((f) => f.gate === 'GT10' && f.severity === 'error')).toBe(true)
+  })
+
   it('a fully-clean lesson produces no findings in either mode', () => {
     const cleanItem = { ...itemRowMissingEn(), l2_translation: 'hello' }
     for (const mode of ['pre-flight', 'publish'] as const) {

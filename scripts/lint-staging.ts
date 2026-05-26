@@ -70,7 +70,6 @@ interface LessonCtx {
   n: number
   dir: string
   exists: boolean
-  lesson?: any
   grammarPatterns?: any[]
   candidates?: any[]
   clozeContexts?: any[]
@@ -184,7 +183,8 @@ async function loadLesson(n: number): Promise<LessonCtx> {
     n,
     dir,
     exists: true,
-    lesson: await readTsExport(path.join(dir, 'lesson.ts')),
+    // lesson.ts is no longer read here — its checks moved to the Lesson Gate
+    // (slice 3). Only the capability-side staging files are loaded below.
     grammarPatterns: (await readTsExport(path.join(dir, 'grammar-patterns.ts'))) ?? [],
     candidates: (await readTsExport(path.join(dir, 'candidates.ts'))) ?? [],
     clozeContexts: (await readTsNamedExport(path.join(dir, 'cloze-contexts.ts'), 'clozeContexts'))
@@ -289,49 +289,11 @@ function mkFinding(severity: Severity, lesson: number, file: string, rule: strin
 
 // ---- Checks ----
 
-// §1 lesson.ts: grammar/exercises sections must be structured. Discriminator
-// is at content.type, NOT section.type — fixing earlier bug where the rule
-// was dead code.
-function checkLessonStructure(ctx: LessonCtx): Finding[] {
-  const out: Finding[] = []
-  if (!ctx.lesson) return out
-  const sections = ctx.lesson?.sections ?? ctx.lesson?.lesson_sections ?? []
-  for (const s of sections) {
-    const c = s?.content
-    if (c?.type === 'grammar') {
-      if (typeof c?.body === 'string' && !Array.isArray(c?.categories)) {
-        out.push(mkFinding('CRITICAL', ctx.n, 'lesson.ts', 'grammar-section-unstructured',
-          'grammar section still has body:string and no categories array', s?.title ?? '?'))
-      }
-      if (Array.isArray(c?.categories)) {
-        for (const cat of c.categories) {
-          const hasContent = Array.isArray(cat?.rules) || Array.isArray(cat?.examples) || cat?.table
-          if (!hasContent) {
-            out.push(mkFinding('WARNING', ctx.n, 'lesson.ts', 'grammar-category-empty',
-              'category has no rules, examples, or table', `${s?.title} > ${cat?.title ?? '?'}`))
-          }
-        }
-      }
-    }
-    if (c?.type === 'exercises') {
-      if (typeof c?.body === 'string' && !Array.isArray(c?.sections)) {
-        out.push(mkFinding('CRITICAL', ctx.n, 'lesson.ts', 'exercises-section-unstructured',
-          'exercises section still has body:string and no sections array', s?.title ?? '?'))
-      }
-      for (const sub of c?.sections ?? []) {
-        if (sub?.type === 'translation' || sub?.type === 'grammar_drill') {
-          (sub?.items ?? []).forEach((it: any, i: number) => {
-            if (it?.answer == null || it.answer === '') {
-              out.push(mkFinding('WARNING', ctx.n, 'lesson.ts', 'translation-drill-no-answer',
-                `${sub.type} item missing answer field`, `${s?.title} > ${sub?.title ?? '?'} #${i + 1}`))
-            }
-          })
-        }
-      }
-    }
-  }
-  return out
-}
+// §1 lesson.ts (lesson-content) checks were folded into the Lesson Stage's
+// Lesson Gate (validators/displayContent.ts = GT10, validators/sectionType.ts =
+// GT5) per ADR 0013 §6, slice 3. They no longer live here — the lesson stage is
+// the single owner of lesson-content validation, so the gate and lint-staging
+// cannot drift. lint-staging now starts at the capability-side checks (§2+).
 
 // §2 grammar-patterns.ts. slugToLessons maps slug → [lesson numbers it appears
 // in across all loaded staging dirs]. A slug present in >1 lesson is a
@@ -1130,7 +1092,11 @@ async function main() {
   for (const ctx of allCtxs) {
     if (onlyLesson != null && ctx.n !== onlyLesson) continue
     if (!ctx.exists) continue
-    findings.push(...checkLessonStructure(ctx))
+    // lesson.ts (lesson-content) checks moved to the Lesson Stage's Lesson Gate
+    // (ADR 0013 §6, slice 3): grammar/exercises section structure, empty grammar
+    // category, translation-drill answers, and display-only blob shape are now
+    // enforced inside runLessonStage. lint-staging keeps only the capability-side
+    // checks below until the capability-stage gate relocates them (epic #98).
     findings.push(...checkGrammarPatterns(ctx, slugToLessons))
     findings.push(...checkCandidatesStructural(ctx, db))
     findings.push(...checkClozeContextsFile(ctx))
