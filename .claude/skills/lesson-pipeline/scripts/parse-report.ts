@@ -74,11 +74,12 @@ function main() {
     if (o.lesson) console.log(`  lesson: ${JSON.stringify(o.lesson)}`)
     console.log(`  counts: ${JSON.stringify(o.counts)}`)
     console.log(`  findings: ${(o.findings ?? []).length}${Object.keys(by).length ? ` → ${JSON.stringify(by)}` : ''}`)
-    // Audio coverage flag — a lesson with dialogue/vocab but 0 clips needs the
-    // separate audio pipeline (see SKILL.md).
+    // Stage A inline audio is 0 for every real lesson (it reads voices from
+    // staging, which is never set) — that is NORMAL, not a defect. The app's
+    // audio_clips come from the post-publish phase 11 (generate-exercise-audio).
     if (o.counts && 'audioClipsSynthesised' in o.counts) {
       const total = (o.counts.audioClipsSynthesised ?? 0) + (o.counts.audioClipsReused ?? 0)
-      if (total === 0) console.log('  ⚠ audio: 0 clips — run the audio pipeline (needs GOOGLE_TTS_API_KEY + voices).')
+      if (total === 0) console.log('  · audio: Stage A inline audio 0 (normal) — audio_clips come from phase 11 (set-lesson-voices → generate-exercise-audio).')
     }
     for (const f of errors.slice(0, 8)) console.log(`    ✗ ${f.gate}: ${f.message}`)
   })
