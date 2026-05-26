@@ -25,8 +25,22 @@ function empty(value: unknown): boolean {
   return typeof value !== 'string' || value.trim().length === 0
 }
 
-export function validateSectionShape(projected: ProjectSectionsOutput): ValidationFinding[] {
+export interface SectionShapeOptions {
+  /**
+   * Severity for EN-completeness findings (l2_translation / title_en /
+   * rules_en / example.english). `error` in publish mode (post-enrichment),
+   * `warning` in pre-flight mode (the EN enricher has not run). All other
+   * (structural) findings stay `error` regardless. ADR 0013 §3.
+   */
+  enSeverity?: 'error' | 'warning'
+}
+
+export function validateSectionShape(
+  projected: ProjectSectionsOutput,
+  options: SectionShapeOptions = {},
+): ValidationFinding[] {
   const findings: ValidationFinding[] = []
+  const en = options.enSeverity ?? 'error'
 
   for (const row of projected.itemRows) {
     const ctx = { sectionOrderIndex: row.sourceSectionOrderIndex, sourceRef: row.source_item_ref }
@@ -34,14 +48,14 @@ export function validateSectionShape(projected: ProjectSectionsOutput): Validati
     if (empty(row.item_type)) findings.push({ gate: 'GT9', severity: 'error', message: `item row "${row.source_item_ref}" missing item_type`, context: ctx })
     if (empty(row.indonesian_text)) findings.push({ gate: 'GT9', severity: 'error', message: `item row "${row.source_item_ref}" missing indonesian_text`, context: ctx })
     if (empty(row.l1_translation)) findings.push({ gate: 'GT9', severity: 'error', message: `item row "${row.source_item_ref}" missing l1_translation (NL)`, context: ctx })
-    if (empty(row.l2_translation)) findings.push({ gate: 'GT9', severity: 'error', message: `item row "${row.source_item_ref}" missing l2_translation (EN) — the lesson-stage EN enricher did not fill it`, context: ctx })
+    if (empty(row.l2_translation)) findings.push({ gate: 'GT9', severity: en, message: `item row "${row.source_item_ref}" missing l2_translation (EN) — the lesson-stage EN enricher did not fill it`, context: ctx })
   }
 
   for (const cat of projected.grammarCategories) {
     const ctx = { sectionOrderIndex: cat.sourceSectionOrderIndex }
     const label = `grammar category [${cat.sourceSectionOrderIndex}/${cat.display_order}] "${cat.title}"`
     if (empty(cat.title)) findings.push({ gate: 'GT9', severity: 'error', message: `${label} missing title`, context: ctx })
-    if (empty(cat.title_en)) findings.push({ gate: 'GT9', severity: 'error', message: `${label} missing title_en (EN)`, context: ctx })
+    if (empty(cat.title_en)) findings.push({ gate: 'GT9', severity: en, message: `${label} missing title_en (EN)`, context: ctx })
     if (cat.rules.length === 0) {
       findings.push({ gate: 'GT9', severity: 'error', message: `${label} has no rules (a projected grammar category must be rule-bearing)`, context: ctx })
     }
@@ -49,11 +63,11 @@ export function validateSectionShape(projected: ProjectSectionsOutput): Validati
       findings.push({ gate: 'GT9', severity: 'error', message: `${label} rules_en length (${cat.rules_en.length}) != rules length (${cat.rules.length})`, context: ctx })
     }
     cat.rules_en.forEach((r, i) => {
-      if (empty(r)) findings.push({ gate: 'GT9', severity: 'error', message: `${label} rules_en[${i}] missing (EN) — the lesson-stage EN enricher did not fill it`, context: ctx })
+      if (empty(r)) findings.push({ gate: 'GT9', severity: en, message: `${label} rules_en[${i}] missing (EN) — the lesson-stage EN enricher did not fill it`, context: ctx })
     })
     ;(cat.examples ?? []).forEach((ex, i) => {
       if (empty(ex.indonesian)) findings.push({ gate: 'GT9', severity: 'error', message: `${label} example[${i}] missing indonesian`, context: ctx })
-      if (empty(ex.english)) findings.push({ gate: 'GT9', severity: 'error', message: `${label} example[${i}] missing english (EN)`, context: ctx })
+      if (empty(ex.english)) findings.push({ gate: 'GT9', severity: en, message: `${label} example[${i}] missing english (EN)`, context: ctx })
     })
   }
 

@@ -341,6 +341,66 @@ describe('runLessonStage — synthetic fixture', () => {
   })
 })
 
+describe('runLessonStage — pre-flight vs publish mode (Lesson Gate, slice 2)', () => {
+  /** Synthetic staging with the English stripped from vocab items — the raw,
+   *  not-yet-enriched authoring state. */
+  function stagingWithoutEn() {
+    const staging = buildSyntheticStaging()
+    for (const item of staging.lesson.sections[0].content.items as Array<Record<string, unknown>>) {
+      delete item.english
+    }
+    return staging
+  }
+
+  it('dry-run runs pre-flight mode: a not-yet-enriched lesson passes with EN as warnings (the wart fix)', async () => {
+    const { client } = buildSupabaseMock({})
+    const result = await runLessonStage(
+      { lessonNumber: 99, dryRun: true },
+      { loadStaging: async () => stagingWithoutEn(), createSupabaseClient: () => client },
+    )
+    expect(result.status).toBe('ok')
+    expect(result.findings.some((f) => f.gate === 'GT9' && f.severity === 'warning')).toBe(true)
+    expect(result.findings.some((f) => f.gate === 'GT9' && f.severity === 'error')).toBe(false)
+  })
+
+  it('dry-run pre-flight: a raw lesson with un-enriched dialogue NL passes with GT8 as a warning', async () => {
+    // The raw catalog state: dialogue lines carry {speaker, text} with no
+    // `translation` — the NL enricher (skipped in dry-run) fills it later.
+    const staging = stagingWithoutEn()
+    for (const line of staging.lesson.sections[1].content.lines as Array<Record<string, unknown>>) {
+      delete line.translation
+      delete line.translation_en
+    }
+    const { client } = buildSupabaseMock({})
+    const result = await runLessonStage(
+      { lessonNumber: 99, dryRun: true },
+      { loadStaging: async () => staging, createSupabaseClient: () => client },
+    )
+    expect(result.status).toBe('ok')
+    expect(result.findings.some((f) => f.gate === 'GT8' && f.severity === 'warning')).toBe(true)
+    expect(result.findings.some((f) => f.gate === 'GT8' && f.severity === 'error')).toBe(false)
+  })
+
+  it('publish mode enforces EN-completeness as CRITICAL (no-op EN enricher leaves EN missing)', async () => {
+    const { client, recorder } = buildSupabaseMock({})
+    const result = await runLessonStage(
+      { lessonNumber: 99 },
+      {
+        loadStaging: async () => stagingWithoutEn(),
+        createSupabaseClient: () => client,
+        synthesizer: async () => Buffer.from('audio-bytes'),
+        // EN enricher is a no-op (e.g. LLM returned nothing) — EN stays missing.
+        enrichEnContent: async () => ({ needed: 0, filled: { items: 0, dialogueLines: 0, grammarCategories: 0 } }),
+      },
+    )
+    expect(result.status).toBe('validation_failed')
+    expect(result.findings.some((f) => f.gate === 'GT9' && f.severity === 'error')).toBe(true)
+    // Pre-write failure → no DB writes.
+    expect(recorder.inserts).toEqual([])
+    expect(recorder.upserts).toEqual([])
+  })
+})
+
 describe('runLessonStage — post-write verification (Lesson Gate, ADR 0013)', () => {
   it('clean write passes post-write verification: ok, no LV findings', async () => {
     const staging = buildSyntheticStaging()
