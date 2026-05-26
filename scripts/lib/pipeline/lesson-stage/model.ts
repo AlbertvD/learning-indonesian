@@ -39,8 +39,11 @@ export interface LessonStageOutput {
 }
 
 export interface ValidationFinding {
-  // GT9 (PR 6): typed lesson-section capability-contract row shape.
-  gate: 'GT1' | 'GT2' | 'GT3' | 'GT4' | 'GT5' | 'GT6' | 'GT7' | 'GT8' | 'GT9'
+  // GT1–GT9 (PR 6): pre-write lesson-content validators.
+  // LV1/LV2 (slice 1, ADR 0013): post-write verification — the lesson-stage
+  // analogue of the capability stage's CS7–CS9. LV1 = per-lesson row-count
+  // parity; LV2 = retained content blob non-empty per section.
+  gate: 'GT1' | 'GT2' | 'GT3' | 'GT4' | 'GT5' | 'GT6' | 'GT7' | 'GT8' | 'GT9' | 'LV1' | 'LV2'
   severity: 'error' | 'warning'
   message: string
   context?: {
@@ -51,5 +54,8 @@ export interface ValidationFinding {
     itemSlug?: string
     lineIndex?: number
     sourceRef?: string
+    /** Post-write verification: the table / row the finding is about. */
+    table?: string
+    rowId?: string
   }
 }

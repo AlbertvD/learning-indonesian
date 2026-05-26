@@ -69,26 +69,64 @@ interface SupabaseRecorder {
   uploads: Array<{ path: string }>
 }
 
+/**
+ * Stateful Supabase mock. Records writes (recorder) AND stores the written
+ * rows per table so the Lesson Gate's post-write read-back (LV1 count parity,
+ * LV2 content non-empty) sees what the runner just wrote — exercising the real
+ * declared-vs-DB wiring rather than stubbing it. Mirrors the capability-stage
+ * runner test's count-aware mock.
+ *
+ * Overrides simulate failure modes without rollback:
+ *   - countOverrides[table]: force a count-head read to return < what was
+ *     written (a silent short write → LV1).
+ *   - sectionContentOverride: replace the lesson_sections content read with a
+ *     row carrying an empty blob (→ LV2).
+ */
 function buildSupabaseMock(opts: {
   existingClips?: Array<{ normalized_text: string; voice_id: string }>
+  countOverrides?: Record<string, number>
+  sectionContentOverride?: Array<{ id: string; order_index: number; content: unknown }>
 } = {}): { client: any; recorder: SupabaseRecorder } {
   const recorder: SupabaseRecorder = {
     upserts: [], inserts: [], updates: [], rpcCalls: [], uploads: [],
   }
+  // Written-row store, keyed by table. `lessons` is intentionally never stored
+  // (the find-or-insert path expects no existing row → insert).
+  const store: Record<string, Array<Record<string, any>>> = {}
+  const rowsOf = (table: string) => (store[table] ??= [])
 
   const tableBuilder = (table: string) => {
     return {
-      select: () => ({
-        eq: () => ({
-          eq: () => ({
-            maybeSingle: async () => ({ data: null, error: null }),
-          }),
-        }),
-        single: async () => ({ data: { id: 'new-lesson-id' }, error: null }),
-      }),
+      select: (_cols?: string, selectOpts?: { count?: 'exact'; head?: boolean }) => {
+        const isContentRead = table === 'lesson_sections' && opts.sectionContentOverride && !selectOpts?.count
+        let current: Array<Record<string, any>> = isContentRead
+          ? (opts.sectionContentOverride as Array<Record<string, any>>)
+          : [...rowsOf(table)]
+        const resolve = () => ({
+          data: current,
+          error: null,
+          count: selectOpts?.count
+            ? (opts.countOverrides?.[table] ?? current.length)
+            : undefined,
+        })
+        const chain: any = {
+          eq: (col: string, val: unknown) => {
+            if (!isContentRead) current = current.filter((r) => r[col] === val)
+            return chain
+          },
+          order: () => chain,
+          maybeSingle: async () => ({ data: current[0] ?? null, error: null }),
+          single: async () => ({ data: current[0] ?? null, error: null }),
+          then: (onResolve: (v: ReturnType<typeof resolve>) => unknown) => onResolve(resolve()),
+        }
+        return chain
+      },
       insert: (payload: any) => {
         recorder.inserts.push({ table, payload })
+        if (Array.isArray(payload)) rowsOf(table).push(...payload)
+        else rowsOf(table).push(payload)
         return {
+          then: (onResolve: (v: { error: null }) => unknown) => onResolve({ error: null }),
           select: () => ({
             single: async () => ({ data: { id: 'new-lesson-id' }, error: null }),
           }),
@@ -102,15 +140,27 @@ function buildSupabaseMock(opts: {
       }),
       // PR 6: typed-table writers + the dialogue writer use delete-then-insert.
       delete: () => ({
-        in: async () => ({ error: null }),
-        eq: async () => ({ error: null }),
+        in: async (col: string, vals: unknown[]) => {
+          store[table] = rowsOf(table).filter((r) => !vals.includes(r[col]))
+          return { error: null }
+        },
+        eq: async (col: string, val: unknown) => {
+          store[table] = rowsOf(table).filter((r) => r[col] !== val)
+          return { error: null }
+        },
       }),
       upsert: (payload: any, opts2?: { onConflict?: string }) => {
         recorder.upserts.push({ table, payload, onConflict: opts2?.onConflict })
+        // lesson_sections upserts one row per call, keyed by order_index.
+        const id = `sec-${payload?.order_index ?? rowsOf(table).length}`
+        const existingIdx = rowsOf(table).findIndex((r) => r.order_index === payload?.order_index)
+        const stored = { ...payload, id }
+        if (existingIdx >= 0) rowsOf(table)[existingIdx] = stored
+        else rowsOf(table).push(stored)
         return {
           then: (onResolve: (v: { error: null }) => unknown) => onResolve({ error: null }),
           select: () => ({
-            single: async () => ({ data: { id: 'upserted-id' }, error: null }),
+            single: async () => ({ data: { id, order_index: payload?.order_index }, error: null }),
           }),
         }
       },
@@ -288,6 +338,76 @@ describe('runLessonStage — synthetic fixture', () => {
     )
     expect(result.status).toBe('validation_failed')
     expect(result.findings.some((f) => f.gate === 'GT4' && f.severity === 'error')).toBe(true)
+  })
+})
+
+describe('runLessonStage — post-write verification (Lesson Gate, ADR 0013)', () => {
+  it('clean write passes post-write verification: ok, no LV findings', async () => {
+    const staging = buildSyntheticStaging()
+    const { client } = buildSupabaseMock({})
+    const result = await runLessonStage(
+      { lessonNumber: 99 },
+      {
+        loadStaging: async () => staging,
+        createSupabaseClient: () => client,
+        synthesizer: async () => Buffer.from('audio-bytes'),
+      },
+    )
+    expect(result.status).toBe('ok')
+    expect(result.findings.some((f) => f.gate === 'LV1' || f.gate === 'LV2')).toBe(false)
+  })
+
+  it('a short write (DB has fewer rows than written) returns partial with an LV1 finding and no rollback', async () => {
+    const staging = buildSyntheticStaging()
+    // Simulate item rows silently not landing: the runner writes 2, DB reads 0.
+    const { client, recorder } = buildSupabaseMock({
+      countOverrides: { lesson_section_item_rows: 0 },
+    })
+    const result = await runLessonStage(
+      { lessonNumber: 99 },
+      {
+        loadStaging: async () => staging,
+        createSupabaseClient: () => client,
+        synthesizer: async () => Buffer.from('audio-bytes'),
+      },
+    )
+    expect(result.status).toBe('partial')
+    const lv1 = result.findings.filter((f) => f.gate === 'LV1' && f.severity === 'error')
+    expect(lv1.length).toBe(1)
+    expect(lv1[0].context?.table).toBe('lesson_section_item_rows')
+    // No rollback: the writes still happened (the rows were inserted).
+    expect(recorder.inserts.some((i) => i.table === 'lesson_section_item_rows')).toBe(true)
+  })
+
+  it('an empty content blob in the DB returns partial with an LV2 finding', async () => {
+    const staging = buildSyntheticStaging()
+    const { client } = buildSupabaseMock({
+      sectionContentOverride: [{ id: 'sec-0', order_index: 0, content: {} }],
+    })
+    const result = await runLessonStage(
+      { lessonNumber: 99 },
+      {
+        loadStaging: async () => staging,
+        createSupabaseClient: () => client,
+        synthesizer: async () => Buffer.from('audio-bytes'),
+      },
+    )
+    expect(result.status).toBe('partial')
+    const lv2 = result.findings.filter((f) => f.gate === 'LV2' && f.severity === 'error')
+    expect(lv2.length).toBe(1)
+    expect(lv2[0].context?.rowId).toBe('sec-0')
+  })
+
+  it('does not run post-write verification in dry-run (no writes to verify)', async () => {
+    const staging = buildSyntheticStaging()
+    // Even if the read-back would fail, dry-run never writes, so verify is skipped.
+    const { client } = buildSupabaseMock({ countOverrides: { lesson_section_item_rows: 0 } })
+    const result = await runLessonStage(
+      { lessonNumber: 99, dryRun: true },
+      { loadStaging: async () => staging, createSupabaseClient: () => client },
+    )
+    expect(result.status).toBe('ok')
+    expect(result.findings.some((f) => f.gate === 'LV1' || f.gate === 'LV2')).toBe(false)
   })
 })
 

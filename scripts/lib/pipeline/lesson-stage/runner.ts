@@ -42,6 +42,8 @@ import { enrichMissingEnContent } from './enrichEnTranslations'
 import { projectSections, type AffixedPairInput } from './projectSections'
 import { validateSectionShape } from './validators/sectionShape'
 import { writeLessonWithEnrichedSections } from './stagingWriteback'
+import { runLessonCountParity } from './verify/countParity'
+import { runLessonContentNonEmpty } from './verify/contentNonEmpty'
 
 interface LessonStaging {
   title: string
@@ -368,8 +370,36 @@ export async function runLessonStage(
     synthesizer: hooks.synthesizer,
   })
 
+  // ---- Post-write verification (the Lesson Gate's "did the write land" layer,
+  // ADR 0013 §2/§5). Reads back ONLY this lesson's just-written rows and asserts
+  // per-table count parity (LV1) + content blob non-empty per section (LV2).
+  // Self-contained to the lesson → fresh-lesson-safe. On failure, Stage A
+  // returns `partial` (non-ok) with NO rollback — lesson content is a
+  // regenerable projection; re-publish is the fix.
+  const postWriteFindings: ValidationFinding[] = [
+    ...(await runLessonCountParity(supabase, {
+      lessonId: lesson.id,
+      declared: {
+        sections: sectionCount,
+        dialogueLines: dialogueLineCount,
+        itemRows: itemRowCount,
+        grammarCategories: grammarCategoryCount,
+        grammarTopics: grammarTopicCount,
+        affixedPairs: affixedPairCount,
+      },
+    })),
+    ...(await runLessonContentNonEmpty(supabase, { lessonId: lesson.id })),
+  ]
+  findings.push(...postWriteFindings)
+
+  // Classify on the post-write findings specifically — not the whole array.
+  // Pre-write errors already short-circuited above, but scoping here keeps the
+  // verdict correct once slice 2 adds warning-severity pre-write findings
+  // (ADR 0013 §3: pre-flight relaxes EN-completeness to warnings).
+  const postWriteFailed = postWriteFindings.some((f) => f.severity === 'error')
+
   return {
-    status: 'ok',
+    status: postWriteFailed ? 'partial' : 'ok',
     lesson,
     counts: {
       sections: sectionCount,
