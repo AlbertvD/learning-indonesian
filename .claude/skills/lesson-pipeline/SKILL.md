@@ -66,7 +66,7 @@ output comes back thin/wrong and needs richer re-authoring.
 | 7 | Review | **[agent]** dispatch **linguist-reviewer** | `review-report.json` | criticals == 0 (or triaged) |
 | 8 | Pre-flight (all gates, dry-run) | **[cmd]** `bun scripts/publish-approved-content.ts N --dry-run` (+ `lint-staging --lesson N`) | exit code + two JSON stage reports | 0 CRITICAL on the lesson-content side |
 | 9 | **Confirm**, then live publish | **[cmd]** `make publish-content LESSON=N` | Stage A + Stage B JSON reports, DB rows | Stage A `ok`, Stage B `ok`/`partial` |
-| 10 | Post-publish verify | **[cmd]** `make check-supabase-deep` + DB row-count query | health output + counts | green; counts match |
+| 10 | Post-publish verify | **[cmd]** `scripts/verify-published.ts <lessonId>` (+ optionally `make check-supabase-deep`) | row counts by lesson_id | counts match the Stage A report |
 
 **Deterministic shortcut:** `make full-pipeline LESSON=N` bundles catalog (3) →
 staging (4) → build-sections (5, structuring half) → generate-exercises (6a) in
@@ -99,6 +99,36 @@ Notes:
   scripts/publish-lesson-content.ts N` (Stage A + Lesson Gate only). Offer this
   when the user wants just the reader content, or when Stage B is blocked on a
   fresh-lesson bootstrapping issue.
+
+## Bundled helpers & gotchas
+
+Two scripts in this skill's `scripts/` save you from hand-rolling fragile parsing
+(every run otherwise re-invents them, and the brace-matching is easy to get
+wrong). Run them from the repo root:
+
+- **`bun .claude/skills/lesson-pipeline/scripts/parse-report.ts <file>`** —
+  extracts the Stage A/B JSON report(s) from a saved publish stdout and prints
+  status + counts + findings-by-gate/severity, and flags audio == 0. Capture the
+  publish output first: `bun scripts/publish-approved-content.ts N --dry-run > /tmp/pub.out 2>&1`, then pipe/pass `/tmp/pub.out`.
+- **`bun .claude/skills/lesson-pipeline/scripts/verify-published.ts <lessonId>`**
+  — phase-10 read-back: counts the six lesson-content tables by `lesson_id`
+  (the `lesson.id` is in the Stage A report). Corroborates LV1.
+
+Gotchas learned the hard way:
+- **No `timeout` on macOS.** Do NOT wrap commands in `timeout`/`gtimeout` — it's
+  not installed and the whole command silently fails with "command not found".
+  Just run the command; the publish scripts finish on their own.
+- **Audio is a separate pipeline, and it's easy to miss.** Stage A only
+  synthesizes per-word/line `audio_clips` when the lesson's **voices are set**
+  (`primary_voice`/`dialogue_voices` in staging — assigned by
+  `scripts/set-lesson-voices.ts`). A fresh lesson whose staging has no voices
+  publishes with **0 audio** (`audioClipsSynthesised`/`Reused` both 0) — flag
+  this. Real audio also needs **`GOOGLE_TTS_API_KEY`** (and the section-narration
+  files come from `make audio-pipeline LESSON=N`, which writes
+  `content/lessons/sections/` then `make seed-lesson-audio` uploads them).
+  `audio_clips` is keyed by (text, voice) and shared across lessons — it has no
+  `lesson_id`, so don't try to count it per-lesson. If TTS isn't configured, say
+  so plainly and treat audio as a separate follow-on, not a publish blocker.
 
 Read `references/gates-and-agents.md` before running phases 5–10 — it has the
 exact finding-code meanings, each agent's expected output, and the anomaly
@@ -192,9 +222,12 @@ produced (counts) · quality flags (e.g. "thin coverage: 2 candidates for 9
 patterns", "review-report clean"). Call out the weakest link.
 
 ## What was published
-DB write surface + counts: lessons, lesson_sections, the typed lesson-content
-tables, audio_clips (Stage A); content_units, learning_capabilities,
-learning_items + meanings, exercise_variants, cloze_contexts (Stage B). For a
+DB write surface + counts (verify with `verify-published.ts`): lessons,
+lesson_sections, the typed lesson-content tables (Stage A); content_units,
+learning_capabilities, learning_items + meanings, exercise_variants,
+cloze_contexts (Stage B). **Audio:** report `audioClipsSynthesised`/`Reused`
+from the Stage A report; if 0, say the lesson has no audio yet and name the
+follow-on (set voices + `make audio-pipeline` + `GOOGLE_TTS_API_KEY`). For a
 dry-run, report the *projected* counts instead and say "not written".
 
 ## Flags / things that seem off
