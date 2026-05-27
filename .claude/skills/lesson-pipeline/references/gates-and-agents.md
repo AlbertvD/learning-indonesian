@@ -164,13 +164,15 @@ are produced **post-publish** by `generate-exercise-audio.ts`:
    account; the client mints a JWT → access token → TTS REST API). NOT
    `GOOGLE_TTS_API_KEY` — that var is only the legacy `generate-section-audio.ts`
    narration path.
-2. `bun scripts/set-lesson-voices.ts` — writes `primary_voice` +
-   `dialogue_voices` to the DB `lessons` row (reads sections from DB → lesson
-   must be published first). Required: `generate-exercise-audio` errors if
-   `primary_voice` is unset.
+2. `bun scripts/set-lesson-voices.ts` — writes `primary_voice` to the `lessons`
+   row and the dialogue speaker→voice mapping to the typed `lesson_speakers`
+   table (migration §3.5 / decision J; `lessons.dialogue_voices` jsonb is
+   deprecated). Reads sections from DB → lesson must be published first.
+   Required: `generate-exercise-audio` errors if `primary_voice` is unset.
 3. `bun scripts/generate-exercise-audio.ts N` — reads the lesson's DB texts
-   (`learning_items`, `exercise_variants`, `lesson_sections`), dedups by (text,
-   voice), synthesizes the missing, uploads to storage, inserts `audio_clips`.
+   (`learning_items`, `exercise_variants`, `lesson_sections`) + the dialogue
+   voices from `lesson_speakers`, dedups by (text, voice), synthesizes the
+   missing, uploads to storage, inserts `audio_clips`.
    Its printed clip count is the coverage signal. On a fresh lesson with Stage B
    deferred (#98), only `lesson_sections` text is available to voice.
 
