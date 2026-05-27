@@ -208,9 +208,11 @@ Prerequisites and sequence:
 1. **Credential** — the TTS client reads `~/.config/gcloud/tts-indonesian.json`
    (a Google service account). If it's absent, audio can't run — say so; it's
    not a publish blocker.
-2. **Voices in the DB** — `bun scripts/set-lesson-voices.ts` assigns
-   `primary_voice` + `dialogue_voices` to the `lessons` row (it reads sections
-   from the DB, so the lesson must be published first). `generate-exercise-audio`
+2. **Voices in the DB** — `bun scripts/set-lesson-voices.ts` writes
+   `primary_voice` to the `lessons` row and the dialogue speaker→voice mapping to
+   the typed `lesson_speakers` table (migration §3.5 / decision J; the old
+   `lessons.dialogue_voices` jsonb column is deprecated). It reads sections from
+   the DB, so the lesson must be published first. `generate-exercise-audio`
    **errors** if `primary_voice` is unset, so this must run first. Preview with
    `--dry-run`.
 3. **Synthesize** — `bun scripts/generate-exercise-audio.ts N` reads the
