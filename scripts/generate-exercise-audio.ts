@@ -230,7 +230,7 @@ async function generateAudio(lessonNumber: number, dryRun: boolean) {
   const { data: lesson, error: lessonError } = await supabase
     .schema('indonesian')
     .from('lessons')
-    .select('id, title, primary_voice, dialogue_voices')
+    .select('id, title, primary_voice')
     .eq('order_index', lessonNumber)
     .maybeSingle()
 
@@ -241,7 +241,21 @@ async function generateAudio(lessonNumber: number, dryRun: boolean) {
   }
 
   const primaryVoice = lesson.primary_voice as string | null
-  const dialogueVoices = (lesson.dialogue_voices ?? {}) as Record<string, string>
+
+  // Dialogue speaker → voice mapping lives in the typed `lesson_speakers` table.
+  // Migration §3.5 / decision J replaced the deprecated `lessons.dialogue_voices`
+  // jsonb column with this table, and `set-lesson-voices.ts` now writes there —
+  // so reading the jsonb column (as this script used to) returns stale/empty
+  // data for any lesson voiced after the migration. Read the table instead.
+  const { data: speakerRows, error: speakersError } = await supabase
+    .schema('indonesian')
+    .from('lesson_speakers')
+    .select('speaker, voice_id')
+    .eq('lesson_id', lesson.id)
+  if (speakersError) throw speakersError
+  const dialogueVoices: Record<string, string> = Object.fromEntries(
+    (speakerRows ?? []).map((r: { speaker: string; voice_id: string }) => [r.speaker, r.voice_id]),
+  )
 
   console.log(`   Lesson: "${lesson.title}" (id: ${lesson.id})`)
   console.log(`   Primary voice: ${primaryVoice ?? '(none — will skip voice-dependent texts)'}`)
