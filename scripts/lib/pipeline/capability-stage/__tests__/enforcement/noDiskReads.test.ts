@@ -28,8 +28,15 @@
  * When the last entry is removed, the allowlist comment can be deleted.
  *
  * DISK-I/O MARKERS scanned: `readStagingFile`, `readFileSync`, `writeFileSync`,
- * `fs.existsSync`, `existsSync` (bare import). These match anywhere in the
- * source including comments — a comment describing disk I/O is a red flag too.
+ * `existsSync` (bare import, subsumes `fs.existsSync`), and `file://` (the
+ * dynamic-import disk idiom: `await import(\`file://${filePath}\`)` is the
+ * stage's canonical way to read a staging .ts file — see loader.ts:117). The
+ * `file://` marker closes the bypass hole: a future non-allowlisted file could
+ * read disk via `await import('file://...')` without using `readFileSync`, and
+ * the old marker list would miss it. A bare `import(` would false-positive on
+ * legitimate non-disk dynamic imports, so the narrower `file://` substring is
+ * used instead. All markers match anywhere in the source including comments —
+ * a comment describing disk I/O is a red flag too.
  */
 
 import fs from 'node:fs'
@@ -53,8 +60,8 @@ const DISK_IO_MARKERS = [
   'readStagingFile',
   'readFileSync',
   'writeFileSync',
-  'fs.existsSync',
   'existsSync',
+  'file://',
 ]
 
 // ---------------------------------------------------------------------------

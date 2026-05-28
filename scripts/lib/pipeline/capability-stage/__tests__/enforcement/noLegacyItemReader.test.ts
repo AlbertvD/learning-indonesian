@@ -19,6 +19,14 @@
  *   2. Verify that `fetchArtifacts` is still not called (add the curated-table
  *      fetch to `fetchForItemBlocks` without routing through `fetchArtifacts`).
  *   3. Run: bun run test scripts/lib/pipeline/capability-stage/__tests__/enforcement/noLegacyItemReader.test.ts
+ *
+ * CAUTION (Task 8): before relying on the spy, add a positive-control sibling
+ * test that calls `fetchArtifacts` through the same import path and asserts the
+ * spy WAS called — this confirms vi.spyOn on the namespace actually intercepts
+ * the named-import call site in item.ts (not guaranteed if item.ts uses a direct
+ * named import). Alternatively, assert against the observable effect instead of
+ * the spy: verify no query to `capability_artifacts` was issued on the mock
+ * client (check that `from('capability_artifacts')` was never called).
  */
 
 import { describe, it, expect, vi, afterEach } from 'vitest'
