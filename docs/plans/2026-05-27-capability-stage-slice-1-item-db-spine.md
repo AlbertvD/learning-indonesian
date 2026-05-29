@@ -210,6 +210,11 @@ Port `.claude/agents/vocab-exercise-creator.md`'s prompt + the four distractor-q
 
 `upsertItemDistractors(supabase, rows)` writes the three tables keyed by `capability_id`, **skip-if-exists** on `capability_id` (natural key makes this safe). The generation gate (Task 5 call site) skips items whose caps already have distractor rows → no LLM call, no write. `--regenerate` deletes that one item's distractor rows then re-generates + writes; it is the ONLY destructive path. TDD: seed twice → one row set; `--regenerate` → that item replaced, others untouched; assert a re-publish does NOT overwrite a hand-corrected `learning_items` row (idempotency contract). Commit.
 
+> **Cutover notes — carried from the Task 4 review (the runner switch from `projectVocab`'s staging path → `projectItemsFromTypedRows` happens HERE).** The Task-4 review traced data-equivalence field-by-field against the real cutover target (`src/lib/capabilities/capabilityCatalog.ts:38-118`): canonical_key, source_ref, learner_language, directions, prerequisite_keys, and the emitted cap COUNT are **byte-identical** for word/phrase items → the cutover does not orphan/duplicate caps and FSRS state (keyed on canonical_key) is preserved. Three deltas the writer must handle deliberately:
+> 1. **`required_artifacts` flips non-empty → `[]`** on the first post-cutover re-publish of existing item caps. This is **intended and runtime-inert** (item readiness reads `RENDER_CONTRACTS.requiredArtifacts.item = []` per Decision R, not the persisted column) — but it WILL show in a post-deploy DB diff on that column. Do not mistake it for a regression.
+> 2. **`pos` must be preserved, not nulled.** `projectItemsFromTypedRows` emits `pos: null` (typed rows carry no POS; enrichment is lesson-stage's job per ADR 0012). The item-path `upsertLearningItem` skip-if-exists / column-merge must NOT null an existing item's persisted `pos`. Verify in the skip-if-exists write logic + add a test.
+> 3. **`learner_language` is hardcoded `'nl'`** in the typed projector (safe: `l1_translation` is non-null for word/phrase rows, so the legacy `'none'` fallback is unreachable). No action, noted for completeness.
+
 ## Task 7: Capability Gate **item-kind layer** (relocate the lint-staging item checks)
 
 **Files:**
