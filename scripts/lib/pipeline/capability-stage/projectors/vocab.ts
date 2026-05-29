@@ -19,6 +19,8 @@ import {
   normalizeLessonSourceRef,
 } from '@/lib/capabilities'
 
+import { sourceRefForLearningItem } from '../../../content-pipeline-output'
+
 import type {
   CapabilityInput,
   LearningItemInput,
@@ -304,7 +306,7 @@ export function projectItemsFromTypedRows(
 ): TypedItemProjectionOutput {
   const perItemPlans: TypedItemPlan[] = input.rows.map((row) => {
     const normalizedText = itemSlug(row.indonesian_text)
-    const sourceRef = `learning_items/${normalizedText}`
+    const sourceRef = sourceRefForLearningItem(row.indonesian_text)
 
     // ----- learning_items upsert input -----
     const learningItemInput: LearningItemInput = {

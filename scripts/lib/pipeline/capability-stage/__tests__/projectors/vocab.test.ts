@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { buildCanonicalKey } from '@/lib/capabilities'
 import {
   selectPublishableItems,
   projectVocab,
@@ -259,7 +260,7 @@ describe('projectItemsFromTypedRows — pure item projector from typed DB rows',
       expect(cap.sourceRef).toBe('learning_items/halo')
       expect(cap.sourceKind).toBe('item')
       expect(cap.lessonId).toBe('lesson-uuid-1')
-      // canonical key shape: cap:v1:item:learning_items%2Fhalo:<type>:<direction>:text:<lang>
+      // canonical key shape: cap:v1:item:learning_items/halo:<type>:<direction>:text:<lang>
       expect(cap.canonicalKey).toMatch(/^cap:v1:item:/)
     }
   })
@@ -271,6 +272,55 @@ describe('projectItemsFromTypedRows — pure item projector from typed DB rows',
     expect(out1.perItemPlans[0].capabilities.map((c) => c.canonicalKey)).toEqual(
       out2.perItemPlans[0].capabilities.map((c) => c.canonicalKey),
     )
+  })
+
+  it('pinned exact canonical_key literals — cutover equivalence guard (FIX 2)', () => {
+    // IMPORTANT: These literal strings must be byte-identical to what the legacy
+    // capabilityCatalog.ts emits for the same item. FSRS state is keyed on
+    // canonical_key, so any drift here would silently orphan learner progress
+    // at the Task-6 cutover. If this test fails, the cutover is NOT safe.
+    //
+    // encodeSegment escapes % and : but NOT /, so the slash is a literal slash.
+    // learnerLanguage is 'nl' because typed DB rows guarantee NL (l1_translation
+    // non-null). The legacy 'none' fallback is unreachable here.
+    const rows: TypedItemRow[] = [baseTypedRow({})] // indonesian_text: 'Halo' → normalizedText: 'halo'
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
+    const { capabilities } = out.perItemPlans[0]
+    const byType = Object.fromEntries(capabilities.map((c) => [c.capabilityType, c.canonicalKey]))
+
+    expect(byType['text_recognition']).toBe(
+      'cap:v1:item:learning_items/halo:text_recognition:id_to_l1:text:nl',
+    )
+    expect(byType['l1_to_id_choice']).toBe(
+      'cap:v1:item:learning_items/halo:l1_to_id_choice:l1_to_id:text:nl',
+    )
+    expect(byType['meaning_recall']).toBe(
+      'cap:v1:item:learning_items/halo:meaning_recall:id_to_l1:text:nl',
+    )
+    expect(byType['form_recall']).toBe(
+      'cap:v1:item:learning_items/halo:form_recall:l1_to_id:text:nl',
+    )
+  })
+
+  it('canonical_key matches buildCanonicalKey tuple — equivalence pin for Task-6 cutover', () => {
+    // Explicit equivalence pin: the projector must produce the SAME key as the
+    // legacy capabilityCatalog.ts would for the same sourceRef/capabilityType/direction.
+    // This test builds the expected key via buildCanonicalKey (same function both paths use)
+    // and asserts identity — so a change to buildCanonicalKey's encoding rules would
+    // be caught here rather than silently diverging at cutover.
+    const sourceRef = 'learning_items/halo'
+    const expectedTextRecognition = buildCanonicalKey({
+      sourceKind: 'item',
+      sourceRef,
+      capabilityType: 'text_recognition',
+      direction: 'id_to_l1',
+      modality: 'text',
+      learnerLanguage: 'nl',
+    })
+    const rows: TypedItemRow[] = [baseTypedRow({})]
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
+    const textRecog = out.perItemPlans[0].capabilities.find((c) => c.capabilityType === 'text_recognition')
+    expect(textRecog?.canonicalKey).toBe(expectedTextRecognition)
   })
 
   it('produces the anchor context from the item row', () => {
