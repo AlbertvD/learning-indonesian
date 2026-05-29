@@ -93,7 +93,7 @@ const EXPECTED_ITEM_PATH_FILES: ExpectedFile[] = [
   // Task 4: pure item projector (already exists; must stay disk-free)
   { relPath: 'projectors/vocab.ts', task: 'Task 4', existsFails: false },
   // Task 5: in-stage curated-distractor generator
-  { relPath: 'generateItemDistractors.ts', task: 'Task 5', existsFails: true },
+  { relPath: 'generateItemDistractors.ts', task: 'Task 5', existsFails: false },
   // Task 7: Capability Gate item-kind validators
   { relPath: 'validators/itemDistractors.ts', task: 'Task 7', existsFails: true },
   { relPath: 'validators/itemCoverage.ts', task: 'Task 7', existsFails: true },
