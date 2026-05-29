@@ -203,6 +203,7 @@ Port `.claude/agents/vocab-exercise-creator.md`'s prompt + the four distractor-q
 
 **Files:**
 - Modify: `scripts/lib/pipeline/capability-stage/adapter.ts` (`upsertItemDistractors`)
+- Modify: `scripts/lib/pipeline/capability-stage/loadFromDb.ts` — **(Task-5 review forward-dependency)** the distractor generator's `pool` needs prior-lesson items with `item_type` + `indonesian_text` + `l1_translation`, but `loadFromDb` does NOT expose that today (`existingItemsByNormalizedText` carries only `{id, normalized_text}`; `fetchItemRowsFromDb` is current-lesson-scoped). Add a cross-lesson **full-field** prior-lesson pool fetch (the cumulative seen-pool) for the generator to consume.
 - Modify: `runner.ts` (call generator for items lacking distractor rows; write via adapter) + make the item-path `upsertLearningItem`/`upsertCapabilities`/`upsertItemAnchorContext` skip-if-exists per the **Idempotency contract** subsection above
 - Modify: `model.ts` (add `regenerate?: { kind: 'item'; normalizedText: string }` to `CapabilityStageInput`, currently `lessonNumber`/`lessonId`/`dryRun` only)
 - Modify: `scripts/publish-approved-content.ts` (parse `--regenerate <normalized_text>` argv → thread into `CapabilityStageInput`)
