@@ -81,11 +81,9 @@ import { loadLesson as defaultLoadLesson, type LoadedLesson } from './loader'
 // / enrichDialogueTranslations) that fill the fields rather than gating.
 // EN-translation enrichment was relocated to lesson-stage (PR 6, ADR 0012);
 // this stage no longer generates translations.
-import { validateCandidatePayload } from './validators/candidatePayload'
-import { validateGrammarExercises } from './validators/grammarExercises'
-import { validatePerItemMeaning } from './validators/perItemMeaning'
-import { validateGrammarPattern } from './validators/grammarPattern'
-import { validatePosTags } from './validators/pos'
+// Pre-write validators (CS3/CS4/CS4b/CS5/CS6) and post-write verifiers
+// (CS7/CS8/CS9) are now composed behind the gate entry points.
+import { runCapabilityGatePreWrite, runCapabilityGatePostWrite } from './gate'
 
 import { projectVocab } from './projectors/vocab'
 import { projectGrammar } from './projectors/grammar'
@@ -95,14 +93,9 @@ import { projectDialogueArtifacts } from './projectors/dialogueArtifacts'
 import { projectAffixedFormPairs, type AffixedPairSource } from './projectors/morphology'
 
 import { validateLessonIdPresence } from './validators/lessonId'
-import { validateItemTranslations } from './validators/itemTranslations'
 import { validateItemSourceRefResolvability } from './validators/itemSourceRefResolvability'
 import { validateDialogueClozes } from './validators/dialogueClozes'
 import { validateAffixedFormPairs } from './validators/affixedFormPairs'
-
-import { runCountParity } from './verify/countParity'
-import { runContentNonEmpty } from './verify/contentNonEmpty'
-import { runSeedIntegrity } from './verify/seedIntegrity'
 
 import {
   markCandidatesPublished,
@@ -282,16 +275,15 @@ export async function runCapabilityStage(
   // ---- 2. Validate (pre-write). ----------------------------------------
   // grammar_topics validation (GT1) is enforced by lesson-stage; by the time
   // Stage A's outputs land here, content.grammar_topics is already populated.
-  findings.push(...validateGrammarPattern(staging.grammarPatterns as Array<{ slug: string; pattern_name: string; complexity_score: number }>))
-  findings.push(...validateCandidatePayload(staging.candidates as Array<{ exercise_type?: string; payload?: Record<string, unknown> | null }>))
-  // CS13 (PR 4): grammar-exercise typed-row shape — per-table Zod over the
-  // projectable grammar candidates the writer will land in the 4 typed tables.
-  findings.push(...validateGrammarExercises(staging.candidates as Array<{ exercise_type?: string; payload?: Record<string, unknown> | null; review_status?: string }>))
-  findings.push(...validatePerItemMeaning(staging.learningItems as Array<{ base_text: string; context_type?: string; translation_nl?: string | null; translation_en?: string | null }>))
-  // CS4b — Decision R (PR 1): require translation_nl for non-dialogue_chunk items.
-  findings.push(...validateItemTranslations(staging.learningItems as Array<{ base_text: string; item_type: string; translation_nl?: string | null; translation_en?: string | null }>))
-  const posResult = validatePosTags(staging.learningItems as Array<{ base_text: string; item_type: string; pos?: string | null }>)
-  findings.push(...posResult.findings)
+  // CS3/CS4/CS4b/CS5/CS6 — composed behind the Capability Gate pre-write entry
+  // point (gate.ts). Same validators, same order, same findings — consolidated
+  // to eliminate scattered inline calls.
+  findings.push(...runCapabilityGatePreWrite({
+    grammarPatterns: staging.grammarPatterns as Array<{ slug: string; pattern_name: string; complexity_score: number }>,
+    candidates: staging.candidates as Array<{ exercise_type?: string; grammar_pattern_slug?: string | null; payload?: Record<string, unknown> | null; review_status?: string }>,
+    learningItems: staging.learningItems as Array<{ base_text: string; item_type: string; context_type?: string; translation_nl?: string | null; translation_en?: string | null; pos?: string | null }>,
+    mode: 'publish',
+  }))
 
   if (findings.some((f) => f.severity === 'error')) {
     return {
@@ -662,7 +654,10 @@ export async function runCapabilityStage(
   counts.clozeContexts = clozeLanded
 
   // ---- 12. Verify (CS7 → CS8 → CS9). -----------------------------------
-  findings.push(...await runCountParity(supabase, {
+  // Composed behind the Capability Gate post-write entry point (gate.ts).
+  // Same verifiers, same order, same findings — the cs9HasError check below
+  // filters by gate: 'CS9' instead of using the now-inlined integrityReport.
+  const postWriteFindings = await runCapabilityGatePostWrite(supabase, {
     lessonId: input.lessonId,
     declared: {
       contentUnits: stagedContentUnits.length,
@@ -675,26 +670,20 @@ export async function runCapabilityStage(
     },
     contentUnitIds,
     capabilityIds,
-  }))
-  findings.push(...await runContentNonEmpty(supabase, {
-    contentUnitIds,
-    capabilityIds,
     capabilityArtifactIds,
     learningItemIds: publishedItemIds,
     exerciseVariantIds,
     grammarPatternIds: [...grammarPatternUpsert.idsBySlug.values()],
-  }))
-  const integrityReport = await runSeedIntegrity(supabase, {
     publishedItemIds,
     dialogueItemIds,
   })
-  findings.push(...integrityReport.findings)
+  findings.push(...postWriteFindings)
 
   // Staging write-back #2 — mirror legacy 925–963. Only after seed-integrity
   // (CS9) passes do we mark learning-items.ts entries as published or
   // deferred_dialogue. Writing earlier would mark items published before
   // verifying the DB state, risking a permanent skip if the DB write failed.
-  const cs9HasError = integrityReport.findings.some((f) => f.severity === 'error')
+  const cs9HasError = postWriteFindings.some((f) => f.gate === 'CS9' && f.severity === 'error')
   if (publishedItemIds.length > 0 && !cs9HasError) {
     markLearningItemsPublishedOrDeferred(
       staging.stagingDir,

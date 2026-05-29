@@ -87,7 +87,7 @@ interface ExpectedFile {
 
 const EXPECTED_ITEM_PATH_FILES: ExpectedFile[] = [
   // Task 2: Capability Gate skeleton
-  { relPath: 'gate.ts', task: 'Task 2', existsFails: true },
+  { relPath: 'gate.ts', task: 'Task 2', existsFails: false },
   // Task 3: typed item import seam (loadFromDb)
   { relPath: 'loadFromDb.ts', task: 'Task 3', existsFails: true },
   // Task 4: pure item projector (already exists; must stay disk-free)
