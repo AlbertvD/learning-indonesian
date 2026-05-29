@@ -20,6 +20,7 @@
  */
 
 import type { CapabilitySupabaseClient } from './adapter'
+import type { DistractorInputItem } from './generateItemDistractors'
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -220,6 +221,72 @@ export async function fetchItemCapabilityState(
   }
 
   return { existingItemsByNormalizedText, existingItemCapsByCanonicalKey }
+}
+
+// ---------------------------------------------------------------------------
+// fetchDistractorPool
+// ---------------------------------------------------------------------------
+
+/**
+ * Read the cumulative distractor pool from `learning_items`.
+ *
+ * Pool definition: ALL active word/phrase `learning_items` across all lessons.
+ * Lessons publish in order, so the set of already-seeded items approximates
+ * the learner's seen-word vocabulary. The generator excludes the answer item
+ * itself, so including same-lesson items in the pool is safe.
+ *
+ * Field mapping:
+ *   base_text       → indonesian_text  (the Indonesian word/phrase)
+ *   translation_nl  → l1_translation   (Dutch translation shown in MCQ)
+ *   item_type       → item_type        (word|phrase, for same-word-class rule)
+ *   normalized_text → source_item_ref  (stable dedup key; pool entries are
+ *                                       candidates only — the generator never
+ *                                       keys output by pool source_item_ref)
+ *
+ * Exclusions: inactive items (`is_active = false`); non-word/phrase types
+ * (grammar patterns, morphology, etc. are seeded with different item_types).
+ *
+ * Pagination: mirrors fetchItemCapabilityState — reads all pages with .range()
+ * to avoid PostgREST's db-max-rows cap (~1000 rows per response).
+ */
+export async function fetchDistractorPool(
+  supabase: CapabilitySupabaseClient,
+): Promise<DistractorInputItem[]> {
+  const pool: DistractorInputItem[] = []
+  let offset = 0
+
+  while (true) {
+    const { data: page, error } = await supabase
+      .schema('indonesian')
+      .from('learning_items')
+      .select('normalized_text, base_text, translation_nl, item_type')
+      .eq('is_active', true)
+      .in('item_type', ['word', 'phrase'])
+      .range(offset, offset + PAGE_SIZE - 1)
+
+    if (error) {
+      throw new Error(`Failed to fetch distractor pool from learning_items: ${error.message}`)
+    }
+
+    for (const row of (page ?? []) as Array<{
+      normalized_text: string
+      base_text: string
+      translation_nl: string
+      item_type: 'word' | 'phrase'
+    }>) {
+      pool.push({
+        source_item_ref: row.normalized_text,
+        indonesian_text: row.base_text,
+        l1_translation: row.translation_nl,
+        item_type: row.item_type,
+      })
+    }
+
+    if (!page || page.length < PAGE_SIZE) break
+    offset += PAGE_SIZE
+  }
+
+  return pool
 }
 
 // ---------------------------------------------------------------------------

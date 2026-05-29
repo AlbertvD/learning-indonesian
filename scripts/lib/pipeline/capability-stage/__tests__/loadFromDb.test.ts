@@ -16,6 +16,7 @@ import { describe, it, expect } from 'vitest'
 import {
   fetchItemRowsFromDb,
   fetchItemCapabilityState,
+  fetchDistractorPool,
   loadFromDb,
   PAGE_SIZE,
   type TypedItemRow,
@@ -418,5 +419,201 @@ describe('loadFromDb', () => {
     // side-effect in test mode.
     const { loadFromDb: fn } = await import('../loadFromDb')
     expect(typeof fn).toBe('function')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// fetchDistractorPool fixtures
+// ---------------------------------------------------------------------------
+
+/**
+ * Fixture rows for learning_items — the pool source.
+ * Includes:
+ *   - 3 active word items (should be in pool)
+ *   - 1 active phrase item (should be in pool)
+ *   - 1 inactive word item (excluded — is_active=false)
+ *   - 1 active non-word/phrase item (excluded — item_type='grammar')
+ */
+const POOL_LEARNING_ITEMS = [
+  {
+    id: 'pool-li-1',
+    normalized_text: 'buku',
+    base_text: 'buku',
+    translation_nl: 'boek',
+    item_type: 'word',
+    is_active: true,
+  },
+  {
+    id: 'pool-li-2',
+    normalized_text: 'meja',
+    base_text: 'meja',
+    translation_nl: 'tafel',
+    item_type: 'word',
+    is_active: true,
+  },
+  {
+    id: 'pool-li-3',
+    normalized_text: 'murah',
+    base_text: 'murah',
+    translation_nl: 'goedkoop',
+    item_type: 'word',
+    is_active: true,
+  },
+  {
+    id: 'pool-li-4',
+    normalized_text: 'selamat pagi',
+    base_text: 'selamat pagi',
+    translation_nl: 'goedemorgen',
+    item_type: 'phrase',
+    is_active: true,
+  },
+  // Excluded: inactive
+  {
+    id: 'pool-li-5',
+    normalized_text: 'kursi',
+    base_text: 'kursi',
+    translation_nl: 'stoel',
+    item_type: 'word',
+    is_active: false,
+  },
+  // Excluded: non-word/phrase type
+  {
+    id: 'pool-li-6',
+    normalized_text: 'me-verb-pattern',
+    base_text: 'meN-',
+    translation_nl: 'actief prefix',
+    item_type: 'grammar',
+    is_active: true,
+  },
+]
+
+function buildPoolMock(rows = POOL_LEARNING_ITEMS) {
+  return buildMockSupabase({
+    learning_items: { rows },
+    learning_capabilities: { rows: [] },
+  })
+}
+
+// ---------------------------------------------------------------------------
+// fetchDistractorPool
+// ---------------------------------------------------------------------------
+
+describe('fetchDistractorPool', () => {
+  it('returns only active word/phrase items', async () => {
+    const supabase = buildPoolMock()
+    const pool = await fetchDistractorPool(supabase as never)
+    // 3 active words + 1 active phrase = 4; inactive word and grammar item excluded
+    expect(pool).toHaveLength(4)
+  })
+
+  it('maps base_text to indonesian_text', async () => {
+    const supabase = buildPoolMock()
+    const pool = await fetchDistractorPool(supabase as never)
+    const buku = pool.find((p) => p.indonesian_text === 'buku')
+    expect(buku).toBeDefined()
+  })
+
+  it('maps translation_nl to l1_translation', async () => {
+    const supabase = buildPoolMock()
+    const pool = await fetchDistractorPool(supabase as never)
+    const buku = pool.find((p) => p.indonesian_text === 'buku')
+    expect(buku!.l1_translation).toBe('boek')
+  })
+
+  it('maps normalized_text to source_item_ref', async () => {
+    const supabase = buildPoolMock()
+    const pool = await fetchDistractorPool(supabase as never)
+    const buku = pool.find((p) => p.indonesian_text === 'buku')
+    expect(buku!.source_item_ref).toBe('buku')
+    const greeting = pool.find((p) => p.indonesian_text === 'selamat pagi')
+    expect(greeting!.source_item_ref).toBe('selamat pagi')
+  })
+
+  it('preserves item_type for word items', async () => {
+    const supabase = buildPoolMock()
+    const pool = await fetchDistractorPool(supabase as never)
+    const murah = pool.find((p) => p.indonesian_text === 'murah')
+    expect(murah!.item_type).toBe('word')
+  })
+
+  it('preserves item_type for phrase items', async () => {
+    const supabase = buildPoolMock()
+    const pool = await fetchDistractorPool(supabase as never)
+    const pagi = pool.find((p) => p.indonesian_text === 'selamat pagi')
+    expect(pagi!.item_type).toBe('phrase')
+  })
+
+  it('excludes inactive items', async () => {
+    const supabase = buildPoolMock()
+    const pool = await fetchDistractorPool(supabase as never)
+    const inactive = pool.find((p) => p.indonesian_text === 'kursi')
+    expect(inactive).toBeUndefined()
+  })
+
+  it('excludes non-word/phrase item_types', async () => {
+    const supabase = buildPoolMock()
+    const pool = await fetchDistractorPool(supabase as never)
+    const grammar = pool.find((p) => p.source_item_ref === 'me-verb-pattern')
+    expect(grammar).toBeUndefined()
+  })
+
+  it('returns empty array when no active word/phrase items exist', async () => {
+    const emptyMock = buildMockSupabase({ learning_items: { rows: [] }, learning_capabilities: { rows: [] } })
+    const pool = await fetchDistractorPool(emptyMock as never)
+    expect(pool).toHaveLength(0)
+  })
+
+  it('throws when the query returns an error', async () => {
+    const errorMock = {
+      schema: () => ({
+        from: () => ({
+          select: () => ({
+            eq: () => ({
+              in: () => ({
+                range: () => ({
+                  then: (resolve: (v: { data: null; error: { message: string } }) => unknown) =>
+                    resolve({ data: null, error: { message: 'pool fetch failed' } }),
+                }),
+              }),
+            }),
+          }),
+        }),
+      }),
+    }
+    await expect(fetchDistractorPool(errorMock as never)).rejects.toThrow(
+      'Failed to fetch distractor pool from learning_items',
+    )
+  })
+
+  it('paginates across multiple pages', async () => {
+    // Build more than PAGE_SIZE active word items to exercise the pagination loop.
+    const manyItems = Array.from({ length: PAGE_SIZE + 7 }, (_, i) => ({
+      id: `pool-${i}`,
+      normalized_text: `kata-${i}`,
+      base_text: `kata-${i}`,
+      translation_nl: `woord-${i}`,
+      item_type: 'word',
+      is_active: true,
+    }))
+    const bigMock = buildMockSupabase({
+      learning_items: { rows: manyItems },
+      learning_capabilities: { rows: [] },
+    })
+    const pool = await fetchDistractorPool(bigMock as never)
+    // All rows across both pages must be returned.
+    expect(pool).toHaveLength(PAGE_SIZE + 7)
+    // Spot-check an item from the second page.
+    expect(pool.find((p) => p.source_item_ref === `kata-${PAGE_SIZE}`)).toBeDefined()
+  })
+
+  it('every pool item satisfies DistractorInputItem shape', async () => {
+    const supabase = buildPoolMock()
+    const pool = await fetchDistractorPool(supabase as never)
+    for (const item of pool) {
+      expect(typeof item.source_item_ref).toBe('string')
+      expect(typeof item.indonesian_text).toBe('string')
+      expect(typeof item.l1_translation).toBe('string')
+      expect(['word', 'phrase']).toContain(item.item_type)
+    }
   })
 })
