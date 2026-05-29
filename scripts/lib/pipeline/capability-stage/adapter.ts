@@ -878,26 +878,27 @@ export async function upsertItemDistractors(
 ): Promise<UpsertItemDistractorsResult> {
   if (rows.length === 0) return { written: 0, skipped: 0 }
 
-  // Insert recognition table first with .select() to get the count of
-  // actually-inserted rows (PostgREST returns only new rows for ignoreDuplicates).
+  // Upsert recognition table first with .select() to get the count of
+  // actually-inserted rows. ignoreDuplicates:true = INSERT ... ON CONFLICT DO NOTHING;
+  // PostgREST returns only the rows that were actually inserted.
   const recognitionPayload = distractorPayload('recognition_mcq_distractors', rows)
-  const { data: writtenRows, error: recErr } = await (supabase
+  const { data: writtenRows, error: recErr } = await supabase
     .schema('indonesian')
     .from('recognition_mcq_distractors')
-    .insert(recognitionPayload, { ignoreDuplicates: true }) as unknown as { select: () => Promise<{ data: Array<{ capability_id: string }>; error: unknown }> })
+    .upsert(recognitionPayload, { onConflict: 'capability_id', ignoreDuplicates: true })
     .select()
   if (recErr) throw recErr
 
   const written = (writtenRows ?? []).length
   const skipped = rows.length - written
 
-  // Insert the other two tables (also skip-if-exists; no count needed).
+  // Upsert the other two tables (also skip-if-exists; no count needed).
   for (const table of ['cued_recall_distractors', 'cloze_mcq_item_distractors'] as const) {
     const payload = distractorPayload(table, rows)
     const { error } = await supabase
       .schema('indonesian')
       .from(table)
-      .insert(payload, { ignoreDuplicates: true })
+      .upsert(payload, { onConflict: 'capability_id', ignoreDuplicates: true })
     if (error) throw error
   }
 
@@ -924,26 +925,56 @@ export async function deleteItemDistractors(
 }
 
 /**
- * Idempotent learning_items upsert for the item-source path.
+ * Idempotent learning_items write for the item-source path.
+ *
+ * Uses check-then-write because supabase-js `.upsert` has no `update` option
+ * to restrict which columns are refreshed on conflict — a plain `.upsert` with
+ * `onConflict` and without `ignoreDuplicates` issues a merge-duplicates UPDATE
+ * covering ALL payload columns, which would clobber DB-corrected `pos` with null.
  *
  * On INSERT (new normalized_text): writes the full payload including pos,
  * level, base_text, translations, is_active.
  *
- * On CONFLICT (normalized_text already exists): updates ONLY the
- * lesson-derived translation columns (translation_nl, translation_en).
+ * On conflict (normalized_text already exists): issues a targeted UPDATE of ONLY
+ * the lesson-derived translation columns (translation_nl, translation_en).
  * Capability-authored columns (pos, level, base_text, is_active) are
  * preserved — a DB-side correction or enrichment is never overwritten by
  * a routine re-publish.
  *
- * The `update` option on the upsert call restricts which columns are
- * refreshed on conflict, matching PostgREST's partial-update-on-conflict
- * semantics.
+ * Single-writer pipeline guarantees no race between the SELECT and the write.
  */
 export async function upsertLearningItemIdempotent(
   supabase: CapabilitySupabaseClient,
   item: LearningItemInput,
 ): Promise<{ id: string; normalized_text: string }> {
   const normalized_text = itemSlug(item.base_text)
+
+  // Check whether the row already exists.
+  const { data: existing, error: selectErr } = await supabase
+    .schema('indonesian')
+    .from('learning_items')
+    .select('id, normalized_text')
+    .eq('normalized_text', normalized_text)
+    .maybeSingle()
+  if (selectErr) throw selectErr
+
+  if (existing) {
+    // UPDATE only lesson-derived translation columns; pos/level/base_text/is_active preserved.
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('learning_items')
+      .update({
+        translation_nl: item.translation_nl ?? null,
+        translation_en: item.translation_en ?? null,
+      })
+      .eq('normalized_text', normalized_text)
+      .select('id, normalized_text')
+      .single()
+    if (error) throw error
+    return { id: data.id, normalized_text: data.normalized_text }
+  }
+
+  // INSERT full payload for a new item.
   const payload: Record<string, unknown> = {
     base_text: item.base_text,
     item_type: item.item_type,
@@ -962,12 +993,7 @@ export async function upsertLearningItemIdempotent(
   const { data, error } = await supabase
     .schema('indonesian')
     .from('learning_items')
-    .upsert(payload, {
-      onConflict: 'normalized_text',
-      // Restrict the ON CONFLICT UPDATE to lesson-derived columns only.
-      // pos, level, base_text, is_active are preserved (DB value wins).
-      update: 'translation_nl,translation_en',
-    })
+    .insert(payload)
     .select('id, normalized_text')
     .single()
   if (error) throw error
@@ -1016,7 +1042,7 @@ export async function upsertCapabilitiesSkipIfExists(
   const { data, error } = await supabase
     .schema('indonesian')
     .from('learning_capabilities')
-    .insert(rows, { onConflict: 'canonical_key', ignoreDuplicates: true })
+    .upsert(rows, { onConflict: 'canonical_key', ignoreDuplicates: true })
     .select('id, canonical_key')
   if (error) throw error
 
