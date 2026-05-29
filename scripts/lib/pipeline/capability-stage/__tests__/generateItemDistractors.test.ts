@@ -267,13 +267,13 @@ describe('generateItemDistractors', () => {
     const result = await generateItemDistractors([], [])
     expect(result.generatedCount).toBe(0)
     expect(result.skippedCount).toBe(0)
-    expect(result.distractorsBySouceItemRef.size).toBe(0)
+    expect(result.distractorsBySourceItemRef.size).toBe(0)
   })
 
   it('returns empty result (no-op) when no generateFn and no API key', async () => {
     const result = await generateItemDistractors([ITEM_MURAH], [POOL_ITEM_MAHAL])
     expect(result.generatedCount).toBe(0)
-    expect(result.distractorsBySouceItemRef.size).toBe(0)
+    expect(result.distractorsBySourceItemRef.size).toBe(0)
   })
 
   it('uses injected generateFn when provided, bypassing API key check', async () => {
@@ -283,7 +283,7 @@ describe('generateItemDistractors', () => {
     })
     expect(fakeFn).toHaveBeenCalledOnce()
     expect(result.generatedCount).toBe(1)
-    expect(result.distractorsBySouceItemRef.has('murah')).toBe(true)
+    expect(result.distractorsBySourceItemRef.has('murah')).toBe(true)
   })
 
   it('maps parsed distractor set to the correct output shape', async () => {
@@ -291,7 +291,7 @@ describe('generateItemDistractors', () => {
     const result = await generateItemDistractors([ITEM_MURAH], [POOL_ITEM_MAHAL], {
       generateFn: fakeFn,
     })
-    const set = result.distractorsBySouceItemRef.get('murah')
+    const set = result.distractorsBySourceItemRef.get('murah')
     expect(set).toBeDefined()
     expect(set!.recognition_distractors_nl).toEqual(['duur', 'gratis', 'betaalbaar'])
     expect(set!.cued_recall_distractors_id).toEqual(['mahal', 'murid', 'mudah'])
@@ -339,7 +339,7 @@ describe('generateItemDistractors', () => {
     expect(fakeFn).toHaveBeenCalledTimes(2) // 2 batches
     expect(result.generatedCount).toBe(25)
     expect(result.skippedCount).toBe(0)
-    expect(result.distractorsBySouceItemRef.size).toBe(25)
+    expect(result.distractorsBySourceItemRef.size).toBe(25)
   })
 
   it('passes both items and pool to the generateFn prompt', async () => {
@@ -369,7 +369,7 @@ describe('generateItemDistractors', () => {
 
   it('no-op returns empty Map (not undefined)', async () => {
     const result = await generateItemDistractors([ITEM_MURAH], [])
-    expect(result.distractorsBySouceItemRef).toBeInstanceOf(Map)
-    expect(result.distractorsBySouceItemRef.size).toBe(0)
+    expect(result.distractorsBySourceItemRef).toBeInstanceOf(Map)
+    expect(result.distractorsBySourceItemRef.size).toBe(0)
   })
 })

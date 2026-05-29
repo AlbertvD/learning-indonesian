@@ -22,6 +22,24 @@
  *
  * Disk-I/O contract: this file contains NO disk reads or writes. It is
  * enforced by the noDiskReads.test.ts gate (existsFails flipped to false).
+ *
+ * Deferred validation: Distractor-equals-answer, intra-array duplicates, and
+ * pool-membership are NOT validated in this generator — they are deferred to
+ * the Task-7 Capability Gate (`validators/itemDistractors.ts`).
+ *
+ * Morphology rule hardened intentionally: The ported prompt hardens the source
+ * agent's `cued_recall` morphology rule: the agent allowed "at most one
+ * morphological distractor if it represents a real Dutch-speaker error"; this
+ * port forbids morphological variants outright (stricter = safer for an
+ * unreviewed automated generator).
+ *
+ * Forward-dependency for Task 6 (pool sourcing): The `pool` parameter requires
+ * prior-lesson items with `item_type` + `indonesian_text` + `l1_translation`.
+ * `loadFromDb` does NOT currently expose a full-field prior-lesson pool — its
+ * `existingItemsByNormalizedText` map carries only `{id, normalized_text}`, and
+ * `fetchItemRowsFromDb` is scoped to the current lesson. Task 6 must extend
+ * `loadFromDb`/`fetchItemCapabilityState` (or add a dedicated cross-lesson
+ * full-field pool fetch) to supply this.
  */
 
 import Anthropic from '@anthropic-ai/sdk'
@@ -62,7 +80,7 @@ export interface ItemDistractorSet {
 /** Public result: only items that Claude returned valid distractor sets for. */
 export interface DistractorGenerationResult {
   /** Keyed by source_item_ref. */
-  distractorsBySouceItemRef: Map<string, ItemDistractorSet>
+  distractorsBySourceItemRef: Map<string, ItemDistractorSet>
   generatedCount: number
   skippedCount: number
 }
@@ -266,7 +284,7 @@ async function generateBatch(
  *
  * @param items     Current-lesson items to generate distractors for.
  * @param pool      Cumulative prior-lesson items (the distractor pool).
- * @param options   Optional `generateFn` for injection; `claude` for advanced callers.
+ * @param options   Optional `generateFn` for injection.
  */
 export async function generateItemDistractors(
   items: DistractorInputItem[],
@@ -280,7 +298,7 @@ export async function generateItemDistractors(
   },
 ): Promise<DistractorGenerationResult> {
   const empty: DistractorGenerationResult = {
-    distractorsBySouceItemRef: new Map(),
+    distractorsBySourceItemRef: new Map(),
     generatedCount: 0,
     skippedCount: 0,
   }
@@ -344,7 +362,7 @@ export async function generateItemDistractors(
   )
 
   return {
-    distractorsBySouceItemRef: resultMap,
+    distractorsBySourceItemRef: resultMap,
     generatedCount: resultMap.size,
     skippedCount,
   }
