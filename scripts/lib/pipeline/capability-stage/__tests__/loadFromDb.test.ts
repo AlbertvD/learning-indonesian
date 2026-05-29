@@ -17,6 +17,7 @@ import {
   fetchItemRowsFromDb,
   fetchItemCapabilityState,
   loadFromDb,
+  PAGE_SIZE,
   type TypedItemRow,
   type ExistingItemState,
 } from '../loadFromDb'
@@ -35,10 +36,15 @@ function buildMockSupabase(tables: Record<string, MockTable>) {
       from: (table: string) => {
         const t = tables[table] ?? { rows: [] }
         let current = [...t.rows]
+        // Track range calls so the paginated path returns the correct slice.
+        let rangeFrom: number | null = null
+        let rangeTo: number | null = null
         const chain: Record<string, unknown> = {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           select: (_cols: string) => {
             current = [...t.rows]
+            rangeFrom = null
+            rangeTo = null
             return chain
           },
           eq: (col: string, val: unknown) => {
@@ -49,12 +55,22 @@ function buildMockSupabase(tables: Record<string, MockTable>) {
             current = current.filter((r) => vals.includes(r[col]))
             return chain
           },
+          range: (from: number, to: number) => {
+            rangeFrom = from
+            rangeTo = to
+            return chain
+          },
           order: () => chain,
           limit: () => chain,
           maybeSingle: async () => ({ data: current[0] ?? null, error: null }),
           single: async () => ({ data: current[0] ?? null, error: null }),
-          then: (resolve: (v: { data: unknown[]; error: null }) => unknown) =>
-            resolve({ data: current, error: null }),
+          then: (resolve: (v: { data: unknown[]; error: null }) => unknown) => {
+            // If range was called, return only the requested slice.
+            if (rangeFrom !== null && rangeTo !== null) {
+              return resolve({ data: current.slice(rangeFrom, rangeTo + 1), error: null })
+            }
+            return resolve({ data: current, error: null })
+          },
         }
         return chain
       },
@@ -229,6 +245,65 @@ describe('fetchItemRowsFromDb', () => {
       fetchItemRowsFromDb(errorMock as never, LESSON_ID),
     ).rejects.toThrow('Failed to fetch lesson_section_item_rows')
   })
+
+  // FIX 1: section_kind join — PostgREST returns nested object, mapper must unwrap it.
+  it('maps section_kind from nested lesson_sections embed (PostgREST join shape)', async () => {
+    // PostgREST returns lesson_sections as a nested object, NOT a top-level field.
+    // This test verifies the mapper correctly unwraps it.
+    const nestedMock = buildMockSupabase({
+      lesson_section_item_rows: {
+        rows: [
+          {
+            id: 'item-row-nested',
+            section_id: SECTION_VOCAB_ID,
+            lesson_id: LESSON_ID,
+            display_order: 1,
+            source_item_ref: 'lesson-1/section-1/item-0',
+            item_type: 'word',
+            indonesian_text: 'apel',
+            l1_translation: 'appel',
+            l2_translation: 'apple',
+            // ↓ PostgREST join shape: section_kind nested under lesson_sections object
+            lesson_sections: { section_kind: 'vocabulary' },
+          },
+        ],
+      },
+      learning_items: { rows: [] },
+      learning_capabilities: { rows: [] },
+    })
+    const rows = await fetchItemRowsFromDb(nestedMock as never, LESSON_ID)
+    expect(rows).toHaveLength(1)
+    expect(rows[0].section_kind).toBe('vocabulary')
+  })
+
+  it('maps section_kind to empty string when lesson_sections embed is absent (pre-republish null section)', async () => {
+    // A row whose section FK resolves to null (pre-republish state) must map to ''
+    // rather than throwing — this is the intentional fallback for NULL section_id rows.
+    const nullSectionMock = buildMockSupabase({
+      lesson_section_item_rows: {
+        rows: [
+          {
+            id: 'item-row-null-section',
+            section_id: null,
+            lesson_id: LESSON_ID,
+            display_order: 1,
+            source_item_ref: 'lesson-1/section-1/item-0',
+            item_type: 'word',
+            indonesian_text: 'jeruk',
+            l1_translation: 'sinaasappel',
+            l2_translation: null,
+            // ↓ lesson_sections embed absent (null or missing key)
+            lesson_sections: null,
+          },
+        ],
+      },
+      learning_items: { rows: [] },
+      learning_capabilities: { rows: [] },
+    })
+    const rows = await fetchItemRowsFromDb(nullSectionMock as never, LESSON_ID)
+    expect(rows).toHaveLength(1)
+    expect(rows[0].section_kind).toBe('')
+  })
 })
 
 // ---------------------------------------------------------------------------
@@ -260,6 +335,32 @@ describe('fetchItemCapabilityState', () => {
     const state = await fetchItemCapabilityState(emptyMock as never)
     expect(state.existingItemsByNormalizedText.size).toBe(0)
     expect(state.existingItemCapsByCanonicalKey.size).toBe(0)
+  })
+
+  // FIX 2: Pagination — fetchItemCapabilityState must fetch ALL rows across pages.
+  it('paginates learning_items and learning_capabilities across multiple pages', async () => {
+    // Build a set of items and caps larger than PAGE_SIZE to force multiple rounds.
+    const manyItems = Array.from({ length: PAGE_SIZE + 3 }, (_, i) => ({
+      id: `li-${i}`,
+      normalized_text: `word-${i}`,
+      source_type: 'lesson',
+    }))
+    const manyCaps = Array.from({ length: PAGE_SIZE + 5 }, (_, i) => ({
+      id: `cap-${i}`,
+      canonical_key: `item:word-${i}:recognition:nl`,
+      source_kind: 'item',
+    }))
+    const bigMock = buildMockSupabase({
+      learning_items: { rows: manyItems },
+      learning_capabilities: { rows: manyCaps },
+    })
+    const state = await fetchItemCapabilityState(bigMock as never)
+    // Must contain ALL rows across pages, not just the first PAGE_SIZE.
+    expect(state.existingItemsByNormalizedText.size).toBe(PAGE_SIZE + 3)
+    expect(state.existingItemCapsByCanonicalKey.size).toBe(PAGE_SIZE + 5)
+    // Spot-check a row from the second page.
+    expect(state.existingItemsByNormalizedText.has(`word-${PAGE_SIZE}`)).toBe(true)
+    expect(state.existingItemCapsByCanonicalKey.has(`item:word-${PAGE_SIZE}:recognition:nl`)).toBe(true)
   })
 })
 

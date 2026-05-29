@@ -39,7 +39,11 @@ export interface TypedItemRow {
   indonesian_text: string
   l1_translation: string
   l2_translation: string | null
-  section_kind: string
+  section_kind:
+    | 'text' | 'grammar' | 'reference_table' | 'vocabulary'
+    | 'expressions' | 'numbers' | 'dialogue' | 'pronunciation'
+    | 'culture' | 'exercises'
+    | ''
 }
 
 /** Entry in the existing-items map (keyed by normalized_text). */
@@ -70,6 +74,19 @@ export interface ItemDbResult {
   items: TypedItemRow[]
   itemState: ExistingItemState
 }
+
+// ---------------------------------------------------------------------------
+// Pagination
+// ---------------------------------------------------------------------------
+
+/**
+ * PostgREST's `db-max-rows` (commonly 1000) silently caps single-response reads.
+ * For correctness, cross-lesson dedup reads must fetch the COMPLETE set —
+ * a truncated map would cause the projector to re-seed caps it wrongly thinks
+ * are missing, producing duplicate-key errors or duplicate caps.
+ * Loop with `.range()` until a page returns fewer rows than PAGE_SIZE.
+ */
+export const PAGE_SIZE = 1000
 
 // ---------------------------------------------------------------------------
 // fetchItemRowsFromDb
@@ -142,46 +159,64 @@ export async function fetchItemRowsFromDb(
 export async function fetchItemCapabilityState(
   supabase: CapabilitySupabaseClient,
 ): Promise<ExistingItemState> {
-  // Read all lesson-source learning_items (these are the already-seeded items).
-  const { data: itemData, error: itemError } = await supabase
-    .schema('indonesian')
-    .from('learning_items')
-    .select('id, normalized_text')
-    .eq('source_type', 'lesson')
+  // Cross-lesson dedup needs the COMPLETE set of already-seeded items and caps.
+  // PostgREST's db-max-rows cap silently truncates single-response reads, so we
+  // paginate with .range() until a page shorter than PAGE_SIZE signals the end.
 
-  if (itemError) {
-    throw new Error(
-      `Failed to fetch existing learning_items: ${itemError.message}`,
-    )
-  }
-
+  // --- Read all lesson-source learning_items ---
   const existingItemsByNormalizedText = new Map<string, ExistingLearningItem>()
-  for (const row of (itemData ?? []) as Array<{ id: string; normalized_text: string }>) {
-    existingItemsByNormalizedText.set(row.normalized_text, {
-      id: row.id,
-      normalized_text: row.normalized_text,
-    })
+  let itemOffset = 0
+  while (true) {
+    const { data: page, error: itemError } = await supabase
+      .schema('indonesian')
+      .from('learning_items')
+      .select('id, normalized_text')
+      .eq('source_type', 'lesson')
+      .range(itemOffset, itemOffset + PAGE_SIZE - 1)
+
+    if (itemError) {
+      throw new Error(
+        `Failed to fetch existing learning_items: ${itemError.message}`,
+      )
+    }
+
+    for (const row of (page ?? []) as Array<{ id: string; normalized_text: string }>) {
+      existingItemsByNormalizedText.set(row.normalized_text, {
+        id: row.id,
+        normalized_text: row.normalized_text,
+      })
+    }
+
+    if (!page || page.length < PAGE_SIZE) break
+    itemOffset += PAGE_SIZE
   }
 
-  // Read all item-kind learning_capabilities.
-  const { data: capData, error: capError } = await supabase
-    .schema('indonesian')
-    .from('learning_capabilities')
-    .select('id, canonical_key')
-    .eq('source_kind', 'item')
-
-  if (capError) {
-    throw new Error(
-      `Failed to fetch existing item learning_capabilities: ${capError.message}`,
-    )
-  }
-
+  // --- Read all item-kind learning_capabilities ---
   const existingItemCapsByCanonicalKey = new Map<string, ExistingItemCap>()
-  for (const row of (capData ?? []) as Array<{ id: string; canonical_key: string }>) {
-    existingItemCapsByCanonicalKey.set(row.canonical_key, {
-      id: row.id,
-      canonical_key: row.canonical_key,
-    })
+  let capOffset = 0
+  while (true) {
+    const { data: page, error: capError } = await supabase
+      .schema('indonesian')
+      .from('learning_capabilities')
+      .select('id, canonical_key')
+      .eq('source_kind', 'item')
+      .range(capOffset, capOffset + PAGE_SIZE - 1)
+
+    if (capError) {
+      throw new Error(
+        `Failed to fetch existing item learning_capabilities: ${capError.message}`,
+      )
+    }
+
+    for (const row of (page ?? []) as Array<{ id: string; canonical_key: string }>) {
+      existingItemCapsByCanonicalKey.set(row.canonical_key, {
+        id: row.id,
+        canonical_key: row.canonical_key,
+      })
+    }
+
+    if (!page || page.length < PAGE_SIZE) break
+    capOffset += PAGE_SIZE
   }
 
   return { existingItemsByNormalizedText, existingItemCapsByCanonicalKey }
