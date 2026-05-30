@@ -82,8 +82,10 @@ import {
 import { loadLesson as defaultLoadLesson, type LoadedLesson } from './loader'
 import { loadFromDb as defaultLoadFromDb, fetchDistractorPool as defaultFetchDistractorPool, type ItemDbResult } from './loadFromDb'
 import { projectItemsFromTypedRows } from './projectors/vocab'
-import { generateItemDistractors, type GenerateFn, type DistractorInputItem } from './generateItemDistractors'
+import { generateItemDistractors, type GenerateFn, type DistractorInputItem, type ItemDistractorSet } from './generateItemDistractors'
 import { itemSlug } from '@/lib/capabilities'
+import type { ItemCapForCoverageCheck } from './validators/itemCoverage'
+import type { DistractorSetRow } from './validators/itemDistractors'
 
 // CS1 (grammar_topics) moved back to lesson-stage (GT1) — lesson_sections
 // is Stage A's territory, and lesson-stage now owns the enricher that
@@ -546,11 +548,20 @@ export async function runCapabilityStage(
     l1_translation: plan.row.l1_translation,
   }))
 
+  // Accumulate generated distractor sets for CS16 gate input.
+  // Declared outside the if block so the post-write gate can consume it.
+  const generatedDistractorSets = new Map<string, ItemDistractorSet>()
+
   let itemDistractorSetsWritten = 0
   if (distractorItems.length > 0) {
     const generationResult = await generateItemDistractors(distractorItems, distractorPool, {
       generateFn: hooks.generateFn,
     })
+
+    // Capture generated sets for CS16 gate input (before writing to DB).
+    for (const [ref, distSet] of generationResult.distractorsBySourceItemRef) {
+      generatedDistractorSets.set(ref, distSet)
+    }
 
     // Build per-table distractor rows: ONE row per item per table, keyed by
     // the cap whose exercise the table serves.
@@ -899,10 +910,88 @@ export async function runCapabilityStage(
   }
   counts.clozeContexts = clozeLanded
 
-  // ---- 12. Verify (CS7 → CS8 → CS9). -----------------------------------
+  // ---- 12. Verify (CS7 → CS8 → CS9 → CS14 → CS15 → CS16 → CS17). -------
   // Composed behind the Capability Gate post-write entry point (gate.ts).
   // Same verifiers, same order, same findings — the cs9HasError check below
   // filters by gate: 'CS9' instead of using the now-inlined integrityReport.
+
+  // ---- CS14 (item POS) — writtenItems from the item projector. -----------
+  // projectItemsFromTypedRows emits pos=null for all items because
+  // lesson_section_item_rows has no pos column (POS is the Lesson Stage's job,
+  // per ADR 0012). CS14 will emit WARNINGs for null-pos word/phrase items. This
+  // is the gate correctly surfacing a real state: item POS is not yet populated
+  // on the new DB→DB path. A follow-up task (after Lesson Stage POS enrichment
+  // is proven) will propagate POS into the typed rows.
+  const writtenItems = itemProjection.perItemPlans.map((plan) => ({
+    normalized_text: plan.normalizedText,
+    item_type: plan.learningItemInput.item_type,
+    pos: plan.learningItemInput.pos ?? null,
+  }))
+
+  // ---- CS15 (item distractor coverage) — per-cap distractor presence flag. --
+  // An item cap is considered "covered" if its capId was in seededCapIds before
+  // generation (already seeded on a prior run) OR if the item appears in
+  // generatedDistractorSets (newly generated this run). All 4 caps per item
+  // share coverage status because distractors are written atomically per item.
+  const itemCapsWithDistractorFlag: ItemCapForCoverageCheck[] = allItemCaps.map((cap) => {
+    const capId = itemCapIdsByKey.get(cap.canonicalKey)
+    const isSeededAlready = capId !== undefined && seededCapIds.has(capId)
+    const isGeneratedThisRun = generatedDistractorSets.has(
+      // sourceRef is 'learning_items/<normalizedText>'
+      cap.sourceRef.replace(/^learning_items\//, ''),
+    )
+    return {
+      capabilityKey: cap.canonicalKey,
+      normalizedText: cap.sourceRef.replace(/^learning_items\//, ''),
+      hasDistractors: isSeededAlready || isGeneratedThisRun,
+    }
+  })
+
+  // ---- CS16 (item distractor quality) — build DistractorSetRow[] for each ----
+  // generated set. Uses the distractorPool's normalized_texts as the in-pool set.
+  // Only newly generated sets are validated here (pre-existing seeded sets were
+  // checked on their own publish run; re-checking on every idempotent re-run
+  // would produce redundant noise).
+  const poolNormalizedTexts = new Set<string>([
+    ...distractorPool.map((p) => p.source_item_ref.toLowerCase()),
+    // Also include items written this run (becak ordering: in pool post-write).
+    ...[...itemIdsByNormalizedText.keys()].map((k) => k.toLowerCase()),
+  ])
+  const distractorSetRows: DistractorSetRow[] = []
+  for (const [sourceItemRef, distSet] of generatedDistractorSets) {
+    const plan = itemProjection.perItemPlans.find((p) => p.normalizedText === sourceItemRef)
+    if (!plan) continue
+    const textRecCap = plan.capabilities.find((c) => c.capabilityType === 'text_recognition')
+    if (textRecCap) {
+      distractorSetRows.push({
+        capabilityKey: textRecCap.canonicalKey,
+        answerText: sourceItemRef,
+        arrayName: 'recognition_distractors_nl',
+        distractors: distSet.recognition_distractors_nl as unknown as string[],
+        isIndonesian: false, // NL Dutch — not Indonesian
+      })
+    }
+    const l1ToIdCap = plan.capabilities.find((c) => c.capabilityType === 'l1_to_id_choice')
+    if (l1ToIdCap) {
+      distractorSetRows.push({
+        capabilityKey: l1ToIdCap.canonicalKey,
+        answerText: sourceItemRef,
+        arrayName: 'cued_recall_distractors_id',
+        distractors: distSet.cued_recall_distractors_id as unknown as string[],
+        isIndonesian: true, // Indonesian filler words
+      })
+    }
+    // cloze_distractors_id: deferred — no cloze cap in base 4 item caps (Task 8).
+  }
+  const distractorSetsInput = { sets: distractorSetRows, poolNormalizedTexts }
+
+  // ---- CS17 (cross-lesson duplicates) — normalized texts written this run. ---
+  const itemDuplicatesInput = {
+    lessonId: input.lessonId,
+    lessonNumber: input.lessonNumber,
+    writtenNormalizedTexts: [...itemIdsByNormalizedText.keys()],
+  }
+
   const postWriteFindings = await runCapabilityGatePostWrite(supabase, {
     lessonId: input.lessonId,
     declared: {
@@ -922,6 +1011,11 @@ export async function runCapabilityStage(
     grammarPatternIds: [...grammarPatternUpsert.idsBySlug.values()],
     publishedItemIds,
     dialogueItemIds,
+    // CS14-17: item kind gate inputs (assembled above from the item path).
+    writtenItems,
+    itemCapsWithDistractorFlag,
+    distractorSets: distractorSetsInput,
+    itemDuplicatesInput,
   })
   findings.push(...postWriteFindings)
 

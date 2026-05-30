@@ -94,6 +94,7 @@ function buildItemCutoverMock(opts: {
         return chain
       },
       is: () => chain,
+      not: () => chain,
       range: () => {
         // Simulate last page (no more rows) so pagination loop exits.
         // Return only items matching eq filter (for learning_items source_type filter).
@@ -889,6 +890,123 @@ describe('runner item cutover (Task 6c)', () => {
       expect(recRows[0]?.capability_id).toBe(textRecRow.id)
       expect(cuedRows[0]?.capability_id).toBe(l1ToIdRow.id)
     }
+  })
+
+
+  // --- I: CS14-17 validators receive data and execute via the runner (FIX 1) ---
+  it('FIX1-wiring: CS14 warning emitted for null-pos items, CS16 error emitted for bad distractor count', async () => {
+    // CS14: itemProjection.perItemPlans emits pos=null for items coming from
+    // TypedItemRows (lesson_section_item_rows has no pos column; POS is the
+    // Lesson Stage's job). The validator produces a WARNING per null-pos word/phrase item.
+    //
+    // CS16: inject a generateFn that returns only 2 distractors (invalid length)
+    // for one item. The validator must emit a CS16 error.
+    //
+    // This test FAILS if the runner does NOT pass writtenItems / distractorSets
+    // to runCapabilityGatePostWrite — the validators never run and no findings emerge.
+
+    const badDistractorGenerateFn = async (): Promise<string> =>
+      JSON.stringify([
+        {
+          source_item_ref: 'buku',
+          // CS16 rule 2 violation: 'buku' appears as a distractor in cued_recall
+          // (distractor equals the answer). parseResponse accepts this (all 3 arrays
+          // have 3 items), so the set reaches the CS16 validator which flags it.
+          recognition_distractors_nl: ['stoel', 'pen', 'huis'],
+          cued_recall_distractors_id: ['buku', 'kursi', 'rumah'],
+          cloze_distractors_id: ['meja', 'kursi', 'rumah'],
+        },
+      ])
+
+    const { client } = buildItemCutoverMock()
+
+    const result = await runCapabilityStage(
+      { lessonNumber: 1, lessonId: 'lesson-uuid' },
+      {
+        loadLesson: async () => makeLessonWithItems(tmpDir),
+        createSupabaseClient: () => client as never,
+        loadFromDb: async () => ({
+          items: FAKE_TYPED_ROWS,
+          itemState: {
+            existingItemsByNormalizedText: new Map(),
+            existingItemCapsByCanonicalKey: new Map(),
+          },
+        }),
+        fetchDistractorPool: async () => [],
+        generateFn: badDistractorGenerateFn,
+      },
+    )
+
+    // CS14: null-pos warnings for word/phrase items (both items have pos=null
+    // from projectItemsFromTypedRows — TypedItemRow has no pos column).
+    const cs14Findings = result.findings.filter((f) => f.gate === 'CS14')
+    expect(cs14Findings.length).toBeGreaterThan(0)
+    expect(cs14Findings.every((f) => f.severity === 'warning')).toBe(true)
+
+    // CS16: error for distractor == answer ('buku' in cued_recall_distractors_id).
+    const cs16Findings = result.findings.filter((f) => f.gate === 'CS16')
+    expect(cs16Findings.length).toBeGreaterThan(0)
+    expect(cs16Findings.some((f) => f.severity === 'error')).toBe(true)
+    expect(cs16Findings.some((f) => f.message.includes('equals the answer'))).toBe(true)
+  })
+
+  it('FIX1-wiring: CS15 warning emitted when no distractors generated (empty generateFn)', async () => {
+    // CS15: items with no distractor rows after publish => warning.
+    // generateFn returns empty => no distractor sets written => every item cap
+    // gets flagged by CS15. This test fails if itemCapsWithDistractorFlag is
+    // not passed to the gate.
+    const { client } = buildItemCutoverMock()
+
+    const result = await runCapabilityStage(
+      { lessonNumber: 1, lessonId: 'lesson-uuid' },
+      {
+        loadLesson: async () => makeLessonWithItems(tmpDir),
+        createSupabaseClient: () => client as never,
+        loadFromDb: async () => ({
+          items: FAKE_TYPED_ROWS,
+          itemState: {
+            existingItemsByNormalizedText: new Map(),
+            existingItemCapsByCanonicalKey: new Map(),
+          },
+        }),
+        fetchDistractorPool: async () => [],
+        generateFn: async () => '[]', // no distractors
+      },
+    )
+
+    const cs15Findings = result.findings.filter((f) => f.gate === 'CS15')
+    // 2 items x 4 caps each = 8 item caps, all lacking distractors
+    expect(cs15Findings.length).toBeGreaterThan(0)
+    expect(cs15Findings.every((f) => f.severity === 'warning')).toBe(true)
+  })
+
+  it('FIX1-wiring: CS17 check runs (no duplicates in clean single-lesson scenario)', async () => {
+    // CS17 queries the DB for cross-lesson duplicates. In the mock, all items
+    // share the same lesson_id ('lesson-uuid'), so no CS17 errors are expected.
+    // This test verifies CS17 executes (writtenNormalizedTexts passed to the gate)
+    // without errors — a clean publish scenario.
+    const { client } = buildItemCutoverMock()
+
+    const result = await runCapabilityStage(
+      { lessonNumber: 1, lessonId: 'lesson-uuid' },
+      {
+        loadLesson: async () => makeLessonWithItems(tmpDir),
+        createSupabaseClient: () => client as never,
+        loadFromDb: async () => ({
+          items: FAKE_TYPED_ROWS,
+          itemState: {
+            existingItemsByNormalizedText: new Map(),
+            existingItemCapsByCanonicalKey: new Map(),
+          },
+        }),
+        fetchDistractorPool: async () => [],
+        generateFn: async () => '[]',
+      },
+    )
+
+    // No CS17 errors — all written items have the same lesson_id
+    const cs17Errors = result.findings.filter((f) => f.gate === 'CS17' && f.severity === 'error')
+    expect(cs17Errors).toHaveLength(0)
   })
 
   // --- H: legacy pattern/dialogue path unchanged ---

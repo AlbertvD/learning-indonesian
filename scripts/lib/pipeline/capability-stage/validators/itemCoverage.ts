@@ -19,9 +19,13 @@
  * Runs as a DB-aware check (takes the written item caps and queries the distractor
  * table counts) so it is correctly placed in the post-write gate layer.
  *
- * Severity: WARNING (not error) — the runtime falls back to pickDistractorCascade
- * when curated rows are absent, so the app does not break. But missing coverage
- * is always a content-quality issue and should be surfaced.
+ * Severity: WARNING (intentional downgrade from CRITICAL — ADR 0011).
+ * The original `checkVocabCoverage` in lint-staging.ts was publish-blocking
+ * (equivalent to CRITICAL). CS15 is warning-only because under ADR 0011 the
+ * runtime falls back to `pickDistractorCascade` when curated distractor rows are
+ * absent — the app continues to function, degraded but not broken. Missing
+ * coverage is still surfaced as a content-quality issue so the author can
+ * re-run with ANTHROPIC_API_KEY set to generate the missing sets.
  */
 
 import type { ValidationFinding } from '../model'

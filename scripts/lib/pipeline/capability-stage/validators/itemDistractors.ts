@@ -25,12 +25,21 @@
  * includes this lesson's just-written rows — the becak ordering guarantee from
  * ADR 0013).
  *
- * POS-class matching (same word-class check) is intentionally OMITTED here:
- * the validator is pure (no Supabase client needed). POS data lives in the DB;
- * the caller that invokes this validator should pre-build the posByNormalizedText
- * map and pass it in to enable POS checking, OR the POS check can be added as
- * a separate DB-aware call in the gate. For Slice 1 the pure distractor-shape
- * checks are the primary quality gate; POS cross-check is left as a follow-up.
+ * Checks intentionally DROPPED relative to the original lint-staging.ts:
+ *
+ *   enrichment-missing (CRITICAL in lint-staging):
+ *     The original check flagged every item missing a distractor set as
+ *     publish-blocking. This is now CS15's advisory job (WARNING-only, per
+ *     ADR 0011 — the runtime falls back to pickDistractorCascade). CS16 only
+ *     runs when a set EXISTS; it validates the shape, not the presence.
+ *
+ *   distractor-pos-mismatch (WARNING in lint-staging, rule 5 of checkVocabEnrichments):
+ *     The same-word-class check (distractor must share POS with answer) is
+ *     intentionally deferred. The new DB→DB item path emits pos=null for all
+ *     items (lesson_section_item_rows has no pos column; Lesson Stage owns POS
+ *     enrichment per ADR 0012). Checking POS against null would produce only
+ *     false negatives. This check will be re-enabled when the item path
+ *     propagates Lesson Stage POS data to the typed rows.
  */
 
 import type { ValidationFinding } from '../model'

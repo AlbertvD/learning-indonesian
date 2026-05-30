@@ -32,6 +32,14 @@
  * Severity: error — a duplicate across lessons means the FSRS ownership
  * invariant (ADR 0006: every capability has exactly one introducing lesson)
  * cannot be satisfied for both lessons simultaneously.
+ *
+ * WITHIN-lesson duplicates (the other class caught by the original
+ * `findDuplicateItems` in lint-staging.ts) are intentionally NOT a gate
+ * finding here. They are absorbed by the `canonical_key` upsert semantics:
+ * `upsertCapabilitiesSkipIfExists` uses ON CONFLICT DO NOTHING on
+ * `canonical_key`, so a second item declaration for the same normalized_text
+ * within the same lesson simply deduplicates to one row at write time.
+ * No gate check needed — the DB write already enforces uniqueness.
  */
 
 import type { ValidationFinding } from '../model'
@@ -109,7 +117,8 @@ export async function validateItemDuplicates(
           `Item "${row.normalized_text}" was written for lesson ${lessonNumber} ` +
           `but already belongs to a different lesson (lesson_id=${row.lesson_id}). ` +
           `An item may only be declared in one lesson's vocabulary. ` +
-          `Reference it via lesson-page-blocks source_refs[] from the other lesson instead.`,
+          `Remove the duplicate declaration from lesson ${lessonNumber}'s staging files ` +
+          `(the first-published lesson owns the capability; the second publish is a no-op).`,
         context: { itemSlug: row.normalized_text },
       })
     }

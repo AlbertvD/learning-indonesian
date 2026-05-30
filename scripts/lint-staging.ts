@@ -83,10 +83,12 @@ interface LessonCtx {
 }
 
 interface DbCtx {
+  /** Grammar pattern slugs already in the DB (for cross-lesson slug validation). */
   knownSlugs: Set<string>
-  poolIndoTokens: Set<string>
-  poolIndoExact: Set<string>
-  posByText: Map<string, string>
+  // poolIndoTokens, poolIndoExact, posByText removed (Task 7):
+  // checkVocabCoverage + checkVocabEnrichments + checkLearningItemsPos relocated to
+  // the Capability Gate post-write layer (CS15/CS16/CS14). Only knownSlugs is still
+  // consumed by checkCandidatesStructural (~:329) and checkGrammarPatterns (~:513).
 }
 
 const REQUIRED_TYPES = ['contrast_pair', 'sentence_transformation', 'constrained_translation', 'cloze_mcq'] as const
@@ -219,39 +221,16 @@ async function loadPriorLearningItems(n: number): Promise<any[]> {
 }
 
 async function loadDb(): Promise<DbCtx> {
+  // Only knownSlugs is consumed by the remaining checks after Task 7 surgery.
+  // The pool/POS construction (poolIndoTokens, poolIndoExact, posByText) and the
+  // associated learning_items + item_contexts queries were removed — those checks
+  // (checkVocabCoverage, checkVocabEnrichments, checkLearningItemsPos) relocated
+  // to the Capability Gate post-write layer as CS14/CS15/CS16.
   const knownSlugs = new Set<string>()
   const gps = await selectAll<{ slug: string }>(supabase.from('grammar_patterns').select('slug'))
   for (const g of gps) knownSlugs.add(g.slug)
 
-  const poolIndoTokens = new Set<string>()
-  const poolIndoExact = new Set<string>()
-  const posByText = new Map<string, string>()
-  const items = await selectAll<{ base_text: string; normalized_text: string; pos: string | null }>(
-    supabase.from('learning_items').select('base_text, normalized_text, pos').eq('is_active', true),
-  )
-  for (const it of items) {
-    if (it.normalized_text) {
-      poolIndoExact.add(it.normalized_text.toLowerCase())
-      for (const tok of tokenize(it.normalized_text)) {
-        poolIndoTokens.add(tok)
-        poolIndoTokens.add(stripAffixes(tok))
-      }
-    }
-    if (it.base_text && it.pos) posByText.set(it.base_text.toLowerCase(), it.pos)
-  }
-
-  const ctxs = await selectAll<{ source_text: string }>(
-    supabase.from('item_contexts').select('source_text'),
-  )
-  for (const c of ctxs) {
-    if (!c.source_text) continue
-    for (const tok of tokenize(c.source_text)) {
-      poolIndoTokens.add(tok)
-      poolIndoTokens.add(stripAffixes(tok))
-    }
-  }
-
-  return { knownSlugs, poolIndoTokens, poolIndoExact, posByText }
+  return { knownSlugs }
 }
 
 // ---- Check helpers ----
