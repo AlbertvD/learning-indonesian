@@ -272,6 +272,10 @@ Seed lesson-content fixtures → run the item path → assert expected `learning
 - [ ] `bun run test` + `bun run lint` green; `make migrate-idempotent-check` green (no-op); `make pre-deploy` before the operator's live publish.
 - [ ] Liveness: a real item capability renders curated distractors + a `capability_review_events` row lands.
 
+## Known limitation carried out of Slice 1 — item POS on the typed path
+
+The cutover's typed item path (`projectItemsFromTypedRows` over `lesson_section_item_rows`) emits `pos: null` — the typed lesson-content table has no `pos` column, and POS enrichment is the Lesson Stage's job per ADR 0012. The legacy path ran `enrichPos` on `staging.learningItems`; the new path bypasses that, so freshly-written items have null POS. CS14 (`itemPos`) correctly surfaces this as a **warning** per item (non-blocking). Distractor word-class matching uses `item_type` (not POS), so distractor quality is unaffected. **Follow-up (Lesson Stage / a later slice):** populate POS on `lesson_section_item_rows` (or re-enrich POS on the typed path) so CS14 goes quiet and item POS is restored. Not a Slice-1 blocker; recorded so it isn't lost.
+
 ## Deploy ordering
 
 No schema change (verified). The Task 8 runtime reader prefers curated rows with a `pickDistractorCascade` fallback, so the new frontend code is **safe in either order** relative to the first in-stage generation publish: before generation it renders the fallback, after it renders curated. Ship the pipeline change and the frontend change independently; no coordinated cutover.
