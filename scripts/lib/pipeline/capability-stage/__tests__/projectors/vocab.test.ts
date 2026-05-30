@@ -327,11 +327,32 @@ describe('projectItemsFromTypedRows — pure item projector from typed DB rows',
     const rows: TypedItemRow[] = [baseTypedRow({})]
     const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
     const plan = out.perItemPlans[0]
-    // anchorContext: source_text = indonesian_text, context_type from section_kind
     expect(plan.anchorContext.source_text).toBe('Halo')
     expect(plan.anchorContext.translation_text).toBe('Hallo')
-    // context_type derived from section_kind
-    expect(plan.anchorContext.context_type).toBeTruthy()
+    // context_type MUST be a value the item_contexts CHECK constraint allows.
+    // 'lesson_snippet' (NOT section_kind — 'vocabulary' etc. violate the CHECK,
+    // which is what broke the first live publish).
+    const VALID_ITEM_CONTEXT_TYPES = [
+      'example_sentence', 'dialogue', 'cloze', 'lesson_snippet',
+      'vocabulary_list', 'exercise_prompt',
+    ]
+    expect(plan.anchorContext.context_type).toBe('lesson_snippet')
+    expect(VALID_ITEM_CONTEXT_TYPES).toContain(plan.anchorContext.context_type)
+  })
+
+  it('anchor context_type is CHECK-valid regardless of section_kind (never leaks section_kind)', () => {
+    // Regression guard for the first-live-publish bug: section_kind values
+    // ('vocabulary'/'expressions'/'numbers') are NOT valid item_contexts.context_type.
+    const VALID_ITEM_CONTEXT_TYPES = [
+      'example_sentence', 'dialogue', 'cloze', 'lesson_snippet',
+      'vocabulary_list', 'exercise_prompt',
+    ]
+    for (const sk of ['vocabulary', 'expressions', 'numbers'] as const) {
+      const out = projectItemsFromTypedRows({
+        rows: [baseTypedRow({ section_kind: sk })], lessonId: 'lesson-uuid-1', level: 'A1',
+      })
+      expect(VALID_ITEM_CONTEXT_TYPES).toContain(out.perItemPlans[0].anchorContext.context_type)
+    }
   })
 
   it('handles multiple items from different sections', () => {
@@ -369,11 +390,15 @@ describe('projectItemsFromTypedRows — pure item projector from typed DB rows',
     }
   })
 
-  it('uses section_kind as context_type for anchor context', () => {
+  it('anchor context_type is always lesson_snippet, NOT section_kind', () => {
+    // section_kind ('dialogue'/'vocabulary'/…) must NOT leak into the anchor
+    // context_type — only the 6 item_contexts CHECK values are legal, and the
+    // anchor is the introducing lesson snippet. (Regression: the first live
+    // publish failed because section_kind='vocabulary' violated the CHECK.)
     const rows: TypedItemRow[] = [
       baseTypedRow({ section_kind: 'dialogue' }),
     ]
     const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
-    expect(out.perItemPlans[0].anchorContext.context_type).toBe('dialogue')
+    expect(out.perItemPlans[0].anchorContext.context_type).toBe('lesson_snippet')
   })
 })

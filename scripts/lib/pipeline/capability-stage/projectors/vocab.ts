@@ -287,7 +287,8 @@ export interface TypedItemProjectionOutput {
  *     used by capabilityCatalog.ts and runner.ts:442-446.
  *   - Canonical keys: built by `buildCanonicalKey` with
  *     `sourceKind='item'`, matching the upstream catalog.
- *   - `context_type` on the anchor context = `section_kind` of the typed row.
+ *   - `context_type` on the anchor context = `'lesson_snippet'` (a valid
+ *     item_contexts CHECK value; the anchor is the introducing lesson snippet).
  *
  * Each item emits 4 base capabilities (no audio — audio enrichment is a
  * separate pass that reads audio_clips from DB; not needed in this pure projector):
@@ -321,8 +322,14 @@ export function projectItemsFromTypedRows(
     }
 
     // ----- anchor context (item_contexts row, is_anchor_context=true) -----
+    // context_type MUST be one of the item_contexts CHECK values
+    // ('example_sentence','dialogue','cloze','lesson_snippet','vocabulary_list',
+    // 'exercise_prompt'). The anchor is the lesson snippet where the item is
+    // introduced → 'lesson_snippet' (matches the legacy projectVocab value +
+    // existing prod rows). NOT section_kind — 'vocabulary'/'expressions'/
+    // 'numbers' are NOT valid context_type values and violate the DB CHECK.
     const anchorContext = {
-      context_type: row.section_kind || 'vocabulary',
+      context_type: 'lesson_snippet',
       source_text: row.indonesian_text,
       translation_text: row.l1_translation || null,
     }
