@@ -65,35 +65,48 @@ describe('capability-stage item path: no legacy capability_artifacts reader', ()
     vi.restoreAllMocks()
   })
 
-  it.skip(
-    // TODO(Task 8, #99): unskip when curated reader lands.
-    // The full assertion body is written; remove `.skip` to activate.
+  it(
     'fetchForItemBlocks does not call fetchArtifacts (curated-distractor path is DB-direct)',
     async () => {
-      // Spy on fetchArtifacts in the adapter module. If the item path calls it,
-      // this assertion fails — guaranteeing the curated reader bypasses the
-      // legacy capability_artifacts table.
+      // Positive control: confirm the spy WOULD fire if fetchArtifacts were called.
+      // This verifies vi.spyOn correctly intercepts the named export. We call
+      // fetchArtifacts directly and assert the spy registered it, then restore
+      // before the actual gate assertion.
       const fetchArtifactsSpy = vi.spyOn(adapterModule, 'fetchArtifacts')
+      const positiveClient = makeMockClient()
+      await adapterModule.fetchArtifacts(positiveClient, ['cap-positive-control'])
+      expect(fetchArtifactsSpy, 'positive control: spy must intercept a direct fetchArtifacts call').toHaveBeenCalledOnce()
+      fetchArtifactsSpy.mockClear()
 
+      // Gate assertion: fetchForItemBlocks must NOT call fetchArtifacts.
+      // The curated-distractor tables are fetched via their own DB queries
+      // (recognition_mcq_distractors + cued_recall_distractors), not via
+      // the legacy capability_artifacts table.
       const client = makeMockClient()
       const result = new Map<string, BlockResolutionData>()
 
-      // A minimal item-only bucket: one block with an itemKey. The mock client
-      // returns empty at wave 1, so no further fanout happens — but the entry
-      // point `fetchForItemBlocks` must be entered (verifying the call path).
       const itemBlocks: ItemBucketEntry[] = [
         {
           block: {
             id: 'block-enforcement-test-1',
+            kind: 'due_review',
             capabilityId: 'cap-enforcement-test-1',
-            capabilityKey: 'cap:v1:item:learning_items/test-item:text_recognition:id_to_l1:text:nl',
-            sourceKind: 'item',
-            exerciseType: 'text_recognition',
-            direction: 'id_to_l1',
-            modality: 'text',
-            learnerLanguage: 'nl',
-            difficulty: null,
-            lessonId: 'lesson-enforcement-test',
+            canonicalKeySnapshot: 'cap:v1:item:learning_items/test-item:text_recognition:id_to_l1:text:nl',
+            renderPlan: {
+              capabilityKey: 'cap:v1:item:learning_items/test-item:text_recognition:id_to_l1:text:nl',
+              sourceRef: 'learning_items/test-item',
+              exerciseType: 'recognition_mcq',
+              capabilityType: 'text_recognition',
+              skillType: 'recognition',
+              requiredArtifacts: [],
+            },
+            reviewContext: {
+              schedulerSnapshot: {} as never,
+              currentStateVersion: 0,
+              artifactVersionSnapshot: {},
+              capabilityReadinessStatus: 'ready',
+              capabilityPublicationStatus: 'published',
+            },
           } as ItemBucketEntry['block'],
           itemKey: 'test-item',
         },
@@ -101,9 +114,6 @@ describe('capability-stage item path: no legacy capability_artifacts reader', ()
 
       await fetchForItemBlocks(client, itemBlocks, 'nl', result)
 
-      // Core assertion: the item path must not call fetchArtifacts at all.
-      // A call here means the item path is still routing through the legacy
-      // capability_artifacts table — which must be retired for the item kind.
       expect(
         fetchArtifactsSpy,
         'fetchArtifacts was called during item block resolution — the item path must use the curated distractor tables directly, not capability_artifacts',

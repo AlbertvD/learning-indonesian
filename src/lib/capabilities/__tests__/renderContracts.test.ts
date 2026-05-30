@@ -96,6 +96,8 @@ function makeRawInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorI
     poolItems: [],
     poolMeaningsByItem: new Map(),
     userLanguage: 'nl',
+    curatedRecognitionDistractors: new Map(),
+    curatedCuedRecallDistractors: new Map(),
     ...overrides,
   }
 }

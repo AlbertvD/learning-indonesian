@@ -158,6 +158,8 @@ export async function fetchForPatternBlocks(
           poolItems: [],
           poolMeaningsByItem: new Map(),
           userLanguage,
+          curatedRecognitionDistractors: new Map(),
+          curatedCuedRecallDistractors: new Map(),
         },
       })
     }
