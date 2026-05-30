@@ -276,6 +276,14 @@ Seed lesson-content fixtures → run the item path → assert expected `learning
 
 The cutover's typed item path (`projectItemsFromTypedRows` over `lesson_section_item_rows`) emits `pos: null` — the typed lesson-content table has no `pos` column, and POS enrichment is the Lesson Stage's job per ADR 0012. The legacy path ran `enrichPos` on `staging.learningItems`; the new path bypasses that, so freshly-written items have null POS. CS14 (`itemPos`) correctly surfaces this as a **warning** per item (non-blocking). Distractor word-class matching uses `item_type` (not POS), so distractor quality is unaffected. **Follow-up (Lesson Stage / a later slice):** populate POS on `lesson_section_item_rows` (or re-enrich POS on the typed path) so CS14 goes quiet and item POS is restored. Not a Slice-1 blocker; recorded so it isn't lost.
 
+## Deferred polish (non-blocking; Task 8 review, APPROVED commit e6f9c92)
+
+Address in an end-of-slice polish pass before the PR merges (or fold into Slice 3, which copies this pattern for cloze):
+- **Enforcement positive-control fidelity** (`noLegacyItemReader.test.ts`): replace the namespace-spy positive control with the observable-effect assertion (no `.from('capability_artifacts')` query on the item path) the test's own CAUTION note describes.
+- **Chunk the curated-distractor fetches** (`byKind/item.ts` `fetchRecognitionMcqDistractors`/`fetchCuedRecallDistractors`): route through `chunkedIn` like the sibling `fetchLearningItemsById` (Kong 8KB IN-clause overflow guard) — safe today at session scale, but inconsistent with the established defensive pattern.
+- **Resilience-branch tests** (`byType.test.ts`): cover curated row `length < 3` → pool fallback, and `length > 3` → `.slice(0,3)` (CS16 makes these unreachable in prod, but the runtime guards ship untested).
+- **Module spec**: update the `exercise-content` / `capabilities` module spec for the new `RawProjectorInput`/`BuilderBase` curated-distractor fields (CLAUDE.md same-commit-as-interface-change rule; deferred during the in-flight slice).
+
 ## Deploy ordering
 
 No schema change (verified). The Task 8 runtime reader prefers curated rows with a `pickDistractorCascade` fallback, so the new frontend code is **safe in either order** relative to the first in-stage generation publish: before generation it renders the fallback, after it renders curated. Ship the pipeline change and the frontend change independently; no coordinated cutover.
