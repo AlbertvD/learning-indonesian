@@ -23,6 +23,11 @@ export const CAPABILITY_GATES = [
   'CS11', // dialogue_clozes typed-row shape (PR 2 — sentence_with_blank/answer_text/translation_text)
   'CS12', // affixed_form_pairs typed-row shape (PR 3 — root_text/derived_text/allomorph_rule non-empty per cap)
   'CS13', // grammar-exercise typed-row shape (PR 4 — per-table Zod over the 4 grammar exercise tables, audit I2 options shapes)
+  // Task 7: item-kind Capability Gate layer (Slice 1, ADR 0013 §6)
+  'CS14', // item POS — word/phrase item must have a valid POS tag (relocated from lint-staging checkLearningItemsPos)
+  'CS15', // item distractor coverage — every item cap must have curated distractor rows post-write (relocated from lint-staging checkVocabCoverage intent)
+  'CS16', // item distractor quality — array length=3, no-answer, no-intra-dup, in-pool, no morphological variant (relocated from lint-staging checkVocabEnrichments §12)
+  'CS17', // cross-lesson item duplicates — same normalized_text must not appear in two lessons' learning_items (relocated from lint-staging findDuplicateItems)
 ] as const
 
 export type CapabilityGate = typeof CAPABILITY_GATES[number]

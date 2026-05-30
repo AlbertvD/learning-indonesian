@@ -28,15 +28,13 @@
 import fs from 'fs'
 import path from 'path'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
-import { stripAffixes, tokenize, FUNCTION_WORDS } from './lib/affix'
+import { stripAffixes, tokenize } from './lib/affix'
 import { normalizeForClozeCompare, normalizeForExemptLookup, normalizeDialogueToken } from './lib/normalize'
-import { VALID_POS } from './lib/validate-pos'
 import {
   validateCapabilityStaging,
   validateContentUnits,
   validateExerciseAssets,
 } from './lib/content-pipeline-output'
-import { findDuplicateItems } from './lib/pipeline/capability-stage/lint/duplicateItems'
 
 // Internal Step-CA on the homelab. Scoped: only this script's HTTPS calls
 // (all to the homelab supabase) bypass cert validation.
@@ -261,27 +259,6 @@ async function loadDb(): Promise<DbCtx> {
 function isKebabCase(s: string): boolean { return /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(s) }
 function wordCount(s: string): number { return s.trim().split(/\s+/).filter(Boolean).length }
 
-function indoFieldsFor(payload: any, exerciseType: string): string[] {
-  const out: string[] = []
-  switch (exerciseType) {
-    case 'constrained_translation':
-      for (const a of payload?.acceptableAnswers ?? []) if (typeof a === 'string') out.push(a)
-      if (typeof payload?.targetSentenceWithBlank === 'string') out.push(payload.targetSentenceWithBlank)
-      break
-    case 'sentence_transformation':
-      if (typeof payload?.sourceSentence === 'string') out.push(payload.sourceSentence)
-      for (const a of payload?.acceptableAnswers ?? []) if (typeof a === 'string') out.push(a)
-      break
-    case 'contrast_pair':
-      for (const opt of payload?.options ?? []) if (typeof opt?.text === 'string') out.push(opt.text)
-      break
-    case 'cloze_mcq':
-      if (typeof payload?.sentence === 'string') out.push(payload.sentence)
-      for (const opt of payload?.options ?? []) if (typeof opt === 'string') out.push(opt)
-      break
-  }
-  return out
-}
 
 function mkFinding(severity: Severity, lesson: number, file: string, rule: string, detail: string, ref?: string): Finding {
   return { source: 'linter', severity, lesson, file, rule, detail, ref }
@@ -833,31 +810,8 @@ function checkExerciseCoverage(ctx: LessonCtx): Finding[] {
   return out
 }
 
-function checkVocabCoverage(ctx: LessonCtx, db: DbCtx): Finding[] {
-  const out: Finding[] = []
-  for (let i = 0; i < (ctx.candidates ?? []).length; i++) {
-    const c = ctx.candidates![i]
-    if (!c?.payload || !c?.exercise_type) continue
-    const fields = indoFieldsFor(c.payload, c.exercise_type)
-    const unknown = new Set<string>()
-    for (const text of fields) {
-      for (const raw of tokenize(text)) {
-        if (raw.length < 3) continue
-        if (FUNCTION_WORDS.has(raw)) continue
-        const stripped = stripAffixes(raw)
-        if (db.poolIndoTokens.has(raw) || db.poolIndoTokens.has(stripped)) continue
-        if (FUNCTION_WORDS.has(stripped)) continue
-        unknown.add(raw)
-      }
-    }
-    if (unknown.size > 0) {
-      out.push(mkFinding('WARNING', ctx.n, 'candidates.ts', 'unknown-vocabulary',
-        [...unknown].sort().join(', '),
-        `${c.exercise_type} #${i + 1} (${c.grammar_pattern_slug ?? '?'})`))
-    }
-  }
-  return out
-}
+// checkVocabCoverage relocated to Capability Gate CS15 (validateItemCoverage).
+// ADR 0013 §6, Slice 1. Removed from lint-staging.
 
 function checkPatternBrief(ctx: LessonCtx): Finding[] {
   const out: Finding[] = []
@@ -922,98 +876,11 @@ function checkCapabilityPipelineOutput(ctx: LessonCtx): Finding[] {
   return out
 }
 
-function checkLearningItemsPos(ctx: LessonCtx): Finding[] {
-  const out: Finding[] = []
-  for (const it of ctx.learningItems ?? []) {
-    if (!['word', 'phrase'].includes(it?.item_type)) continue
-    const ref = it?.base_text?.slice(0, 40) ?? '?'
-    if (it?.pos == null) {
-      out.push(mkFinding('WARNING', ctx.n, 'learning-items.ts', 'pos-missing',
-        'word/phrase item without pos — distractor quality degrades for this item', ref))
-    } else if (!VALID_POS.has(it.pos)) {
-      out.push(mkFinding('CRITICAL', ctx.n, 'learning-items.ts', 'pos-invalid',
-        `pos="${it.pos}" not in 12-value taxonomy — DB CHECK constraint will reject publish`, ref))
-    }
-  }
-  return out
-}
+// checkLearningItemsPos relocated to Capability Gate CS14 (validateItemPos).
+// ADR 0013 §6, Slice 1. Removed from lint-staging.
 
-// §12 — vocab-enrichments. Coverage is word/phrase only; dialogue_chunks are
-// reviewed via cloze contexts (see §13), not distractor enrichments. The
-// runtime distractor cascade covers recognition_mcq for dialogue at
-// productive+ by drawing same-POS siblings from the lesson pool — enrichments
-// are authored for words where per-item-curated distractors outperform the
-// cascade, which isn't the case for full sentence items.
-function checkVocabEnrichments(ctx: LessonCtx, db: DbCtx): Finding[] {
-  const out: Finding[] = []
-  if (!ctx.vocabEnrichments) return out
-  const enrich = ctx.vocabEnrichments
-  const enrichBySlug = new Map<string, any>()
-  for (const e of enrich) if (e?.learning_item_slug) enrichBySlug.set(e.learning_item_slug, e)
-
-  for (const it of ctx.learningItems ?? []) {
-    if (!['word', 'phrase'].includes(it?.item_type)) continue
-    if (!enrichBySlug.has(it?.base_text)) {
-      out.push(mkFinding('CRITICAL', ctx.n, 'vocab-enrichments.ts', 'enrichment-missing',
-        'learning-items.ts entry has no vocab-enrichment row', it.base_text))
-    }
-  }
-
-  for (const e of enrich) {
-    const ref = e?.learning_item_slug ?? '?'
-    const correctPos = db.posByText.get(String(ref).toLowerCase())
-    for (const arr of ['recognition_distractors_nl', 'cued_recall_distractors_id', 'cloze_distractors_id']) {
-      const v = e[arr]
-      if (!Array.isArray(v) || v.length !== 3) {
-        out.push(mkFinding('CRITICAL', ctx.n, 'vocab-enrichments.ts', 'distractor-array-wrong-length',
-          `${arr}: expected 3, got ${Array.isArray(v) ? v.length : 'not-array'}`, ref))
-        continue
-      }
-      const seen = new Set<string>()
-      for (const d of v) {
-        const key = String(d).toLowerCase().trim()
-        if (seen.has(key)) {
-          out.push(mkFinding('WARNING', ctx.n, 'vocab-enrichments.ts', 'distractor-duplicate-in-array',
-            `${arr} contains duplicate "${d}"`, ref))
-        }
-        seen.add(key)
-        if (key === String(ref).toLowerCase().trim()) {
-          out.push(mkFinding('CRITICAL', ctx.n, 'vocab-enrichments.ts', 'distractor-equals-answer',
-            `${arr} contains the correct answer as a distractor`, ref))
-        }
-        if (arr.endsWith('_id') && !db.poolIndoExact.has(key)) {
-          if (key.split(/\s+/).length === 1 && key.length > 2) {
-            out.push(mkFinding('WARNING', ctx.n, 'vocab-enrichments.ts', 'distractor-not-in-id-pool',
-              `${arr} "${d}" not in learning_items pool`, ref))
-          }
-        }
-        // POS-class match (B/D8 — wires posByText into a real check). Only
-        // the Indonesian arrays carry a POS check; Dutch translations don't
-        // map cleanly to POS in our taxonomy.
-        if (correctPos && arr.endsWith('_id')) {
-          const distractorPos = db.posByText.get(key)
-          if (distractorPos && distractorPos !== correctPos) {
-            out.push(mkFinding('WARNING', ctx.n, 'vocab-enrichments.ts', 'distractor-pos-mismatch',
-              `${arr} "${d}" is ${distractorPos}; answer is ${correctPos}`, ref))
-          }
-        }
-      }
-      if (arr === 'cued_recall_distractors_id' || arr === 'cloze_distractors_id') {
-        const root = stripAffixes(String(ref).toLowerCase())
-        if (root.length >= 3) {
-          for (const d of v) {
-            const dr = stripAffixes(String(d).toLowerCase())
-            if (dr === root && dr.length >= 3) {
-              out.push(mkFinding('WARNING', ctx.n, 'vocab-enrichments.ts', 'distractor-morphological-variant',
-                `${arr} "${d}" shares root with answer "${ref}"`, ref))
-            }
-          }
-        }
-      }
-    }
-  }
-  return out
-}
+// checkVocabEnrichments (§12) relocated to Capability Gate CS16 (validateItemDistractors).
+// ADR 0013 §6, Slice 1. Removed from lint-staging.
 
 // ---- CLI parsing ----
 
@@ -1076,19 +943,11 @@ async function main() {
     }
   }
 
-  // Decision 3b (PR-2) duplicate-item lint. Runs over every loaded staging
-  // dir so the cross-lesson view is complete; per-lesson filter applies at
-  // emit time so `--lesson N` still surfaces N's collisions with other lessons
-  // attributed to N.
-  const duplicateItemFindings = findDuplicateItems(
-    allCtxs.map(c => ({ lesson: c.n, items: (c.learningItems ?? []) as Array<{ base_text?: unknown }> })),
-  )
+  // Cross-lesson duplicate-item check relocated to the Capability Gate (CS17),
+  // which runs post-write in-stage against the DB (becak ordering — includes
+  // this lesson's just-written rows). ADR 0013 §6, Slice 1.
 
   const findings: Finding[] = []
-  for (const d of duplicateItemFindings) {
-    if (onlyLesson != null && d.lesson !== onlyLesson) continue
-    findings.push(mkFinding(d.severity, d.lesson, 'learning-items.ts', d.rule, d.detail, d.base_text))
-  }
   for (const ctx of allCtxs) {
     if (onlyLesson != null && ctx.n !== onlyLesson) continue
     if (!ctx.exists) continue
@@ -1103,11 +962,10 @@ async function main() {
     findings.push(...checkClozeCoverage(ctx))
     findings.push(...checkDialogueClozes(ctx))
     findings.push(...checkExerciseCoverage(ctx))
-    findings.push(...checkVocabCoverage(ctx, db))
     findings.push(...checkPatternBrief(ctx))
     findings.push(...checkCapabilityPipelineOutput(ctx))
-    findings.push(...checkLearningItemsPos(ctx))
-    findings.push(...checkVocabEnrichments(ctx, db))
+    // checkVocabCoverage, checkLearningItemsPos, checkVocabEnrichments relocated
+    // to the Capability Gate (CS15/CS14/CS16) — see ADR 0013 §6, Slice 1.
   }
 
   // D3 fix: counts always reflect the true critical/warning state, regardless

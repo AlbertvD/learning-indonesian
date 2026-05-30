@@ -94,11 +94,11 @@ const EXPECTED_ITEM_PATH_FILES: ExpectedFile[] = [
   { relPath: 'projectors/vocab.ts', task: 'Task 4', existsFails: false },
   // Task 5: in-stage curated-distractor generator
   { relPath: 'generateItemDistractors.ts', task: 'Task 5', existsFails: false },
-  // Task 7: Capability Gate item-kind validators
-  { relPath: 'validators/itemDistractors.ts', task: 'Task 7', existsFails: true },
-  { relPath: 'validators/itemCoverage.ts', task: 'Task 7', existsFails: true },
-  { relPath: 'validators/itemPos.ts', task: 'Task 7', existsFails: true },
-  { relPath: 'validators/itemDuplicates.ts', task: 'Task 7', existsFails: true },
+  // Task 7: Capability Gate item-kind validators (files created, existsFails flipped to false)
+  { relPath: 'validators/itemDistractors.ts', task: 'Task 7', existsFails: false },
+  { relPath: 'validators/itemCoverage.ts', task: 'Task 7', existsFails: false },
+  { relPath: 'validators/itemPos.ts', task: 'Task 7', existsFails: false },
+  { relPath: 'validators/itemDuplicates.ts', task: 'Task 7', existsFails: false },
   // Note: adapter.ts (Task 6) exists today. The idempotent write additions must
   // not introduce disk I/O — covered by the "non-allowlisted existing files"
   // group below rather than a separate entry here.

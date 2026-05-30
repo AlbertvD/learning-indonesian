@@ -55,6 +55,10 @@ import { validatePosTags } from './validators/pos'
 import { runCountParity, type CountParityInput } from './verify/countParity'
 import { runContentNonEmpty, type ContentNonEmptyInput } from './verify/contentNonEmpty'
 import { runSeedIntegrity, type SeedIntegrityInput } from './verify/seedIntegrity'
+import { validateItemPos, type ItemForPosCheck } from './validators/itemPos'
+import { validateItemCoverage, type ItemCapForCoverageCheck } from './validators/itemCoverage'
+import { validateItemDistractors, type ValidateItemDistractorsInput } from './validators/itemDistractors'
+import { validateItemDuplicates, type ItemDuplicatesInput } from './validators/itemDuplicates'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -81,10 +85,22 @@ export interface CapabilityGatePreWriteInput {
   mode: CapabilityGateMode
 }
 
+export interface ItemKindPostWriteInput {
+  /** Item rows written for this lesson (for CS14 POS check). */
+  writtenItems?: ItemForPosCheck[]
+  /** Item capabilities with distractor presence flag (for CS15 coverage check). */
+  itemCapsWithDistractorFlag?: ItemCapForCoverageCheck[]
+  /** Distractor set shapes for quality check (for CS16). */
+  distractorSets?: ValidateItemDistractorsInput
+  /** Cross-lesson duplicate check input (for CS17). */
+  itemDuplicatesInput?: ItemDuplicatesInput
+}
+
 export interface CapabilityGatePostWriteInput
   extends CountParityInput,
     ContentNonEmptyInput,
-    SeedIntegrityInput {}
+    SeedIntegrityInput,
+    ItemKindPostWriteInput {}
 
 // ---------------------------------------------------------------------------
 // Pre-write gate — CS3/CS4/CS4b/CS5/CS6
@@ -164,6 +180,34 @@ export async function runCapabilityGatePostWrite(
     dialogueItemIds: input.dialogueItemIds,
   })
   findings.push(...integrityReport.findings)
+
+  // CS14 — item POS: word/phrase items must have a valid POS tag.
+  // Pure (no DB round-trip needed — items were just projected in memory and
+  // written; we pass the in-memory rows directly).
+  // writtenItems is optional until Task 4 item projector is wired into the runner.
+  if (input.writtenItems && input.writtenItems.length > 0) {
+    findings.push(...validateItemPos(input.writtenItems))
+  }
+
+  // CS15 — item distractor coverage: every item cap must have curated rows.
+  // itemCapsWithDistractorFlag is optional until Task 6c distractor write is wired.
+  if (input.itemCapsWithDistractorFlag && input.itemCapsWithDistractorFlag.length > 0) {
+    findings.push(...validateItemCoverage(input.itemCapsWithDistractorFlag))
+  }
+
+  // CS16 — item distractor quality: array shapes, no-answer, no-dup, in-pool,
+  // no morphological variant. Pure (caller built pool from DB post-write).
+  // distractorSets is optional until Task 6c distractor write is wired.
+  if (input.distractorSets && input.distractorSets.sets.length > 0) {
+    findings.push(...validateItemDistractors(input.distractorSets))
+  }
+
+  // CS17 — cross-lesson duplicates: same normalized_text in two lessons.
+  // DB-aware — queries learning_items post-write (becak ordering guaranteed).
+  // itemDuplicatesInput is optional until Task 4 item projector is wired.
+  if (input.itemDuplicatesInput && input.itemDuplicatesInput.writtenNormalizedTexts.length > 0) {
+    findings.push(...await validateItemDuplicates(supabase, input.itemDuplicatesInput))
+  }
 
   return findings
 }
