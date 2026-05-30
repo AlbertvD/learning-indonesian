@@ -242,6 +242,8 @@ Wire into `runCapabilityGate` post-write. TDD each validator with a passing + fa
 
 **First** confirm (don't assume) the item path reads nothing item-shaped from `capability_artifacts`. Add the curated-distractor fetch keyed on `capability_id`; the byType item MCQ builders prefer it and fall back to the pool when absent (so the change is **deploy-order-independent** — pre-generation it renders fallback, post-generation curated). Flip Task 1's no-legacy-item-reader test (`fetchArtifacts` not called on the item path) from skipped to active; it must go green. Add a renderer test: an item recognition exercise renders **curated** (not random) distractors when a curated row exists, fallback when absent. TDD per change. Commit.
 
+> **Cloze-distractor gap carried from Task 6c (must resolve here).** Task 6c writes `recognition_mcq_distractors` (← `text_recognition` cap) and `cued_recall_distractors` (← `l1_to_id_choice` cap) 1:1, but **defers `cloze_mcq_item_distractors`**: the generator produces `cloze_distractors_id` per item, yet the item's four base caps contain **no cloze-type capability** (`contextual_cloze` is a `dialogue_line`-sourced cap, not item-sourced). So item cloze distractors are generated but currently written nowhere. Task 8 must settle this: read `byType/clozeMcq.ts` to determine what capability an item-sourced cloze MCQ actually keys on; if there is a legitimate item cloze cap, wire 6c's write to it (a small follow-up to the 6c writer) AND the reader here; if item vocab cloze_mcq is not a real capability in the model, drop `cloze_distractors_id` from the generator (don't generate dead data). Decide with evidence from the runtime, not assumption.
+
 ## Task 9: `translation_nl` backfill (116 items)
 
 **Files:**
