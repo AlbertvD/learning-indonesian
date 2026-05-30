@@ -1,8 +1,12 @@
 ---
-status: approved
-implementation: null
+status: implementing
+implementation: PR #121
 epic: "#98"
 issue: "#99"
+implementation_paths:
+  - scripts/lib/pipeline/capability-stage/
+  - src/lib/exercise-content/
+  - src/lib/capabilities/renderContracts.ts
 supersedes: []
 grounded_against_code: 2026-05-28
 grounded_against_db: 2026-05-27
