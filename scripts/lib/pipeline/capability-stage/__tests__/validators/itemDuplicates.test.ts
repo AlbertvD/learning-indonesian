@@ -2,11 +2,22 @@ import { describe, it, expect, vi } from 'vitest'
 import { validateItemDuplicates } from '../../validators/itemDuplicates'
 import type { ItemDuplicatesInput } from '../../validators/itemDuplicates'
 
-function makeSupabaseMock(rows: Array<{ normalized_text: string; lesson_id: string }>) {
+/**
+ * Mock shape mirrors the actual DB query in validateItemDuplicates:
+ *   .schema('indonesian').from('learning_capabilities')
+ *   .select('source_ref, lesson_id')
+ *   .eq('source_kind', 'item')
+ *   .in('source_ref', sourceRefs)
+ *   .not('lesson_id', 'is', null)
+ *
+ * source_ref = 'learning_items/<normalized_text>'
+ */
+function makeSupabaseMock(rows: Array<{ source_ref: string; lesson_id: string }>) {
   const query = {
     schema: vi.fn().mockReturnThis(),
     from: vi.fn().mockReturnThis(),
     select: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
     in: vi.fn().mockReturnThis(),
     not: vi.fn().mockResolvedValue({ data: rows, error: null }),
   }
@@ -18,6 +29,7 @@ function makeErrorMock(message: string) {
     schema: vi.fn().mockReturnThis(),
     from: vi.fn().mockReturnThis(),
     select: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
     in: vi.fn().mockReturnThis(),
     not: vi.fn().mockResolvedValue({ data: null, error: { message } }),
   }
@@ -36,10 +48,10 @@ describe('validateItemDuplicates (CS17)', () => {
     expect(findings).toEqual([])
   })
 
-  it('returns empty findings when all items belong to this lesson', async () => {
+  it('returns empty findings when all item caps belong to this lesson', async () => {
     const supabase = makeSupabaseMock([
-      { normalized_text: 'makan', lesson_id: 'lesson-uuid-1' },
-      { normalized_text: 'minum', lesson_id: 'lesson-uuid-1' },
+      { source_ref: 'learning_items/makan', lesson_id: 'lesson-uuid-1' },
+      { source_ref: 'learning_items/minum', lesson_id: 'lesson-uuid-1' },
     ])
     const input: ItemDuplicatesInput = {
       lessonId: 'lesson-uuid-1',
@@ -50,10 +62,10 @@ describe('validateItemDuplicates (CS17)', () => {
     expect(findings).toEqual([])
   })
 
-  it('emits CS17 error when an item belongs to a different lesson', async () => {
-    // 'makan' was first written by lesson-uuid-0 (a prior lesson)
+  it('emits CS17 error when a cap was first claimed by a different lesson', async () => {
+    // 'makan' capability is owned by lesson-uuid-0 (a prior lesson)
     const supabase = makeSupabaseMock([
-      { normalized_text: 'makan', lesson_id: 'lesson-uuid-0' },
+      { source_ref: 'learning_items/makan', lesson_id: 'lesson-uuid-0' },
     ])
     const input: ItemDuplicatesInput = {
       lessonId: 'lesson-uuid-1',
@@ -71,7 +83,7 @@ describe('validateItemDuplicates (CS17)', () => {
 
   it('includes context.itemSlug in duplicate findings', async () => {
     const supabase = makeSupabaseMock([
-      { normalized_text: 'makan', lesson_id: 'lesson-uuid-0' },
+      { source_ref: 'learning_items/makan', lesson_id: 'lesson-uuid-0' },
     ])
     const input: ItemDuplicatesInput = {
       lessonId: 'lesson-uuid-1',
@@ -84,9 +96,9 @@ describe('validateItemDuplicates (CS17)', () => {
 
   it('emits one finding per cross-lesson duplicate item', async () => {
     const supabase = makeSupabaseMock([
-      { normalized_text: 'makan', lesson_id: 'lesson-uuid-0' },
-      { normalized_text: 'rumah', lesson_id: 'lesson-uuid-0' },
-      { normalized_text: 'cepat', lesson_id: 'lesson-uuid-1' }, // this lesson — ok
+      { source_ref: 'learning_items/makan', lesson_id: 'lesson-uuid-0' },
+      { source_ref: 'learning_items/rumah', lesson_id: 'lesson-uuid-0' },
+      { source_ref: 'learning_items/cepat', lesson_id: 'lesson-uuid-1' }, // this lesson — ok
     ])
     const input: ItemDuplicatesInput = {
       lessonId: 'lesson-uuid-1',
@@ -97,6 +109,33 @@ describe('validateItemDuplicates (CS17)', () => {
     expect(findings).toHaveLength(2) // only makan and rumah are cross-lesson
     expect(findings.map(f => f.context?.itemSlug)).toContain('makan')
     expect(findings.map(f => f.context?.itemSlug)).toContain('rumah')
+  })
+
+  it('queries learning_capabilities (not learning_items) — verified via mock from() call', async () => {
+    const supabase = makeSupabaseMock([])
+    const input: ItemDuplicatesInput = {
+      lessonId: 'lesson-uuid-1',
+      lessonNumber: 1,
+      writtenNormalizedTexts: ['makan'],
+    }
+    await validateItemDuplicates(supabase, input)
+    // The from() call must target learning_capabilities, not learning_items
+    expect(supabase.from).toHaveBeenCalledWith('learning_capabilities')
+  })
+
+  it('builds source_refs as learning_items/<normalized_text> for the IN query', async () => {
+    const supabase = makeSupabaseMock([])
+    const input: ItemDuplicatesInput = {
+      lessonId: 'lesson-uuid-1',
+      lessonNumber: 1,
+      writtenNormalizedTexts: ['makan', 'minum'],
+    }
+    await validateItemDuplicates(supabase, input)
+    // The .in() call should receive source_refs, not plain normalized_texts
+    expect(supabase.in).toHaveBeenCalledWith('source_ref', [
+      'learning_items/makan',
+      'learning_items/minum',
+    ])
   })
 
   it('emits a CS17 warning (non-fatal) when the DB query fails', async () => {
