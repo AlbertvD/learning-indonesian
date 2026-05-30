@@ -871,6 +871,12 @@ function distractorPayload(table: DistractorTable, rows: ItemDistractorRow[]): A
  *
  * written/skipped counts are derived from the recognition table insert with
  * RETURNING * (PostgREST returns only actually-inserted rows).
+ *
+ * @deprecated Use upsertRecognitionDistractors / upsertCuedRecallDistractors
+ * directly for per-cap-1:1 correctness. This function writes ALL 3 tables for
+ * every row — only valid when all rows carry all 3 distractor arrays and all
+ * cap ids are of matching types. Retained for the --regenerate delete+rewrite
+ * path and backward compat.
  */
 export async function upsertItemDistractors(
   supabase: CapabilitySupabaseClient,
@@ -903,6 +909,58 @@ export async function upsertItemDistractors(
   }
 
   return { written, skipped }
+}
+
+/**
+ * Per-cap-1:1 variant: write recognition_mcq_distractors rows.
+ *
+ * Only writes to `recognition_mcq_distractors`. Each row carries one
+ * capability_id (must be a text_recognition cap) and its `recognition`
+ * distractor array. The `cued_recall` and `cloze` fields on ItemDistractorRow
+ * are ignored by this function.
+ *
+ * Returns the count of newly-inserted rows (skipped = existing rows untouched).
+ */
+export async function upsertRecognitionDistractors(
+  supabase: CapabilitySupabaseClient,
+  rows: Array<{ capability_id: string; distractors: string[] }>,
+): Promise<UpsertItemDistractorsResult> {
+  if (rows.length === 0) return { written: 0, skipped: 0 }
+
+  const { data: writtenRows, error } = await supabase
+    .schema('indonesian')
+    .from('recognition_mcq_distractors')
+    .upsert(rows, { onConflict: 'capability_id', ignoreDuplicates: true })
+    .select()
+  if (error) throw error
+
+  const written = (writtenRows ?? []).length
+  const skipped = rows.length - written
+  return { written, skipped }
+}
+
+/**
+ * Per-cap-1:1 variant: write cued_recall_distractors rows.
+ *
+ * Only writes to `cued_recall_distractors`. Each row carries one capability_id
+ * (must be an l1_to_id_choice cap) and its `distractors` array. Returns the
+ * count of newly-inserted rows.
+ */
+export async function upsertCuedRecallDistractors(
+  supabase: CapabilitySupabaseClient,
+  rows: Array<{ capability_id: string; distractors: string[] }>,
+): Promise<UpsertItemDistractorsResult> {
+  if (rows.length === 0) return { written: 0, skipped: 0 }
+
+  const { error } = await supabase
+    .schema('indonesian')
+    .from('cued_recall_distractors')
+    .upsert(rows, { onConflict: 'capability_id', ignoreDuplicates: true })
+  if (error) throw error
+
+  // cued_recall_distractors does not need the written count for the runner's
+  // itemDistractorSets metric (that uses the recognition table as the signal).
+  return { written: rows.length, skipped: 0 }
 }
 
 /**

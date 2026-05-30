@@ -69,7 +69,8 @@ import {
   replaceDialogueClozes,
   replaceAffixedFormPairs,
   fetchSeededDistractorCapIds,
-  upsertItemDistractors,
+  upsertRecognitionDistractors,
+  upsertCuedRecallDistractors,
   deleteItemDistractors,
   type CapabilityArtifactInput,
   type CapabilityContentUnitInput,
@@ -374,6 +375,28 @@ export async function runCapabilityStage(
   // morphology-introducing lessons emit affixed_form_pair capabilities, so
   // those rows still get the rule-introducing lesson's id. Podcasts are not
   // projected here; they're carved out from the lesson_id invariant.
+
+  // ---- 5a. Pre-load DB→DB item state (needed for legacy-bundle filter). ---
+  // The item DB load is moved here (before the legacy-bundle filter) so we can
+  // build the key set that the new path will emit. This allows the filter to be
+  // key-set-based rather than source-kind-based, preserving audio caps
+  // (audio_recognition, dictation) and other item caps that the new path does
+  // NOT emit (only the 4 base text caps are projected by projectItemsFromTypedRows).
+  // The itemDbResult and itemProjection are consumed by step 5b below.
+  const itemDbResult = await loadFromDb(supabase, { lessonId: input.lessonId })
+  const distractorPool = await fetchDistractorPool(supabase)
+  const itemProjection = projectItemsFromTypedRows({
+    rows: itemDbResult.items,
+    lessonId: input.lessonId,
+    level: loaded.lesson.level,
+  })
+  // Keys that the new DB→DB path (upsertCapabilitiesSkipIfExists) will write.
+  // These are EXCLUDED from the legacy bundle to prevent double-writes.
+  // Everything else — audio caps (audio_recognition, dictation) and
+  // sentence/dialogue_chunk item caps — stays in the legacy bundle.
+  const allItemCaps = itemProjection.perItemPlans.flatMap((p) => p.capabilities)
+  const newPathEmittedKeys = new Set(allItemCaps.map((c) => c.canonicalKey))
+
   const stagedCapabilities = (staging.capabilities as Array<{
     canonicalKey: string
     sourceKind: string
@@ -386,10 +409,13 @@ export async function runCapabilityStage(
     requiredArtifacts: string[]
     prerequisiteKeys?: string[]
   }>)
-    // Constraint #1 (Task 6c): item-source-kind caps are written exclusively by
-    // the new upsertCapabilitiesSkipIfExists path (projectItemsFromTypedRows).
-    // Filter them out here so each item cap is written by EXACTLY ONE path.
-    .filter((capability) => capability.sourceKind !== 'item')
+    // Constraint #1 (Task 6c): item caps written by the new path are excluded from
+    // the legacy bundle to prevent double-writes. Only the EXACT canonical keys
+    // emitted by projectItemsFromTypedRows are excluded — audio caps
+    // (audio_recognition, dictation when item.hasAudio) and sentence/dialogue_chunk
+    // item caps flow through this legacy path unchanged, preserving them from
+    // the retireOrphanedCapabilities orphan sweep.
+    .filter((capability) => !newPathEmittedKeys.has(capability.canonicalKey))
     .map((capability): CapabilityInput => ({
     canonicalKey: capability.canonicalKey,
     sourceKind: capability.sourceKind,
@@ -424,6 +450,8 @@ export async function runCapabilityStage(
   // ---- 5b. Write — item capabilities via DB→DB path (Task 6c). -----------
   // Item-source-kind learning_items + caps are projected from typed DB rows
   // (lesson_section_item_rows) instead of staging files (ADR 0011/0012).
+  // itemDbResult, distractorPool, itemProjection, and allItemCaps were loaded in
+  // step 5a (before the legacy-bundle filter) so the key set was available.
   // This path runs after the staging vocab path (step 5) but before retire so
   // item cap keys are included in emittedKeys for the orphan sweep.
   //
@@ -433,13 +461,6 @@ export async function runCapabilityStage(
   //     pos/level/base_text/is_active are preserved (DB-authoritative per ADR 0011).
   // Item caps are written via upsertCapabilitiesSkipIfExists (INSERT ... ON CONFLICT
   // DO NOTHING): existing caps' FSRS state is never disturbed on re-publish.
-  const itemDbResult = await loadFromDb(supabase, { lessonId: input.lessonId })
-  const distractorPool = await fetchDistractorPool(supabase)
-  const itemProjection = projectItemsFromTypedRows({
-    rows: itemDbResult.items,
-    lessonId: input.lessonId,
-    level: loaded.lesson.level,
-  })
 
   // Resolve which normalized_text to force-regenerate (--regenerate flag).
   const regenerateNormalizedText = input.regenerate?.kind === 'item'
@@ -462,7 +483,7 @@ export async function runCapabilityStage(
 
   // Write item caps via skip-if-exists. Returns only newly-inserted rows;
   // existing rows (already seeded) are not in the returned map.
-  const allItemCaps = itemProjection.perItemPlans.flatMap((p) => p.capabilities)
+  // allItemCaps was declared in step 5a (before the legacy-bundle filter).
   const newItemCapIdsByKey = await upsertCapabilitiesSkipIfExists(supabase, allItemCaps)
 
   // Build a complete canonicalKey→id map for item caps by merging:
@@ -531,36 +552,81 @@ export async function runCapabilityStage(
       generateFn: hooks.generateFn,
     })
 
-    // Map source_item_ref (normalized_text) → capability_id for the 4 cap types.
-    // We write one row per distractor table per capability_id (4 rows per item).
-    // The distractor row shape carries all 3 arrays; we write once per item.
-    // Find the text_recognition cap for each item as the canonical cap to write
-    // (other cap types get the same distractor set — all 3 tables per item).
+    // Build per-table distractor rows: ONE row per item per table, keyed by
+    // the cap whose exercise the table serves.
+    //
+    //   recognition_mcq_distractors ← text_recognition cap
+    //     (recognition_mcq reads this table; text_recognition drives recognition_mcq)
+    //   cued_recall_distractors     ← l1_to_id_choice cap
+    //     (cued_recall builder reads this table; l1_to_id_choice is the primary
+    //     cued-recall cap — form_recall also serves cued_recall but l1_to_id_choice
+    //     is the direct cap, so we key on it per renderContracts.ts:70)
+    //   cloze_mcq_item_distractors  ← NOT written for items in this slice.
+    //     The 4 base item caps (text_recognition, l1_to_id_choice, meaning_recall,
+    //     form_recall) do NOT include a contextual_cloze cap, which is the cap
+    //     the cloze_mcq builder reads for item-sourced cloze. Deferred until the
+    //     item cloze cap is projected (likely Task 8 reader wiring).
+    //
+    // This satisfies the per-cap 1:1 schema invariant: capability_id is the PK
+    // in each distractor table; writing 4 rows per item keyed to non-matching
+    // cap types would create rows that the runtime builder can never resolve.
     const distractorRows: ItemDistractorRow[] = []
     for (const [sourceItemRef, distSet] of generationResult.distractorsBySourceItemRef) {
-      // Find any cap for this item to get the capability_id.
       const matchingPlan = itemProjection.perItemPlans.find(
         (p) => p.normalizedText === sourceItemRef,
       )
       if (!matchingPlan) continue
-      // Use text_recognition cap as the representative cap for distractors.
-      // The schema has one row per cap in each distractor table; the session
-      // builder reads by capability_id so we write one row per cap type.
-      for (const cap of matchingPlan.capabilities) {
-        const capId = itemCapIdsByKey.get(cap.canonicalKey)
-        if (!capId) continue
+
+      // recognition_mcq_distractors ← text_recognition cap
+      const textRecCap = matchingPlan.capabilities.find(
+        (cap) => cap.capabilityType === 'text_recognition',
+      )
+      const textRecCapId = textRecCap ? itemCapIdsByKey.get(textRecCap.canonicalKey) : undefined
+      if (textRecCapId) {
         distractorRows.push({
-          capability_id: capId,
+          capability_id: textRecCapId,
           recognition: distSet.recognition_distractors_nl,
-          cued_recall: distSet.cued_recall_distractors_id,
-          cloze: distSet.cloze_distractors_id,
+          cued_recall: [],    // not used for this table — adapter writes recognition array
+          cloze: [],          // not used for this table
         })
       }
+
+      // cued_recall_distractors ← l1_to_id_choice cap
+      const l1ToIdCap = matchingPlan.capabilities.find(
+        (cap) => cap.capabilityType === 'l1_to_id_choice',
+      )
+      const l1ToIdCapId = l1ToIdCap ? itemCapIdsByKey.get(l1ToIdCap.canonicalKey) : undefined
+      if (l1ToIdCapId) {
+        distractorRows.push({
+          capability_id: l1ToIdCapId,
+          recognition: [],    // not used for this table
+          cued_recall: distSet.cued_recall_distractors_id,
+          cloze: [],          // not used for this table
+        })
+      }
+
+      // cloze_mcq_item_distractors: deferred — no contextual_cloze cap in the
+      // 4 base item caps emitted by projectItemsFromTypedRows in this slice.
+      // When the item cloze cap is added (Task 8), this block writes it.
     }
 
     if (distractorRows.length > 0) {
-      const writeResult = await upsertItemDistractors(supabase, distractorRows)
-      itemDistractorSetsWritten = writeResult.written
+      // Per-cap-1:1 writes: route each row to its target table.
+      // recognition rows (text_recognition caps) → recognition_mcq_distractors
+      const recognitionRowsToWrite = distractorRows
+        .filter((r) => r.recognition.length > 0)
+        .map((r) => ({ capability_id: r.capability_id, distractors: r.recognition }))
+      // cued_recall rows (l1_to_id_choice caps) → cued_recall_distractors
+      const cuedRecallRowsToWrite = distractorRows
+        .filter((r) => r.cued_recall.length > 0)
+        .map((r) => ({ capability_id: r.capability_id, distractors: r.cued_recall }))
+      // cloze_mcq_item_distractors: no rows in this slice (deferred — see comment above).
+
+      const recResult = await upsertRecognitionDistractors(supabase, recognitionRowsToWrite)
+      await upsertCuedRecallDistractors(supabase, cuedRecallRowsToWrite)
+      // itemDistractorSets is keyed to recognition table written count
+      // (the canonical seeded-state signal — if recognition has a row, cued_recall was also written).
+      itemDistractorSetsWritten = recResult.written
     }
   }
   counts.itemDistractorSets = itemDistractorSetsWritten

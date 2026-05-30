@@ -727,6 +727,170 @@ describe('runner item cutover (Task 6c)', () => {
     expect(distractorUpserts.length).toBeGreaterThan(0)
   })
 
+  // --- FIX 1 regression: audio caps survive the legacy-bundle filter ---
+  it('FIX1: audio caps (audio_recognition, dictation) on items with audio are NOT dropped from legacy path', async () => {
+    // An item with audio has 6 caps in the legacy bundle (4 base + audio_recognition + dictation).
+    // The new path only emits 4 base caps.  Before the fix the blanket `sourceKind !== 'item'`
+    // filter dropped the 2 audio caps entirely → retireOrphanedCapabilities soft-retired them.
+    // After the fix the filter is key-set-based: only the 4 keys emitted by the new path are
+    // excluded; the 2 audio keys flow through the legacy upsertCapabilities path.
+    // The runner regenerates staging.capabilities from buildCapabilityStagingFromContent,
+    // so audio caps appear only when audioClipsByNormalizedText contains the item's
+    // normalized text. We seed buku's audio clip to trigger audio cap generation.
+    const AUDIO_RECOGNITION_KEY = 'cap:v1:item:learning_items/buku:audio_recognition:audio_to_l1:audio:nl'
+    const DICTATION_KEY = 'cap:v1:item:learning_items/buku:dictation:audio_to_id:audio:none'
+
+    const lessonWithAudio = makeLessonWithItems(tmpDir)
+    // Provide an audio clip for 'buku' so buildCapabilityStagingFromContent sets hasAudio=true,
+    // triggering audio_recognition + dictation cap generation in capabilityCatalog.ts.
+    lessonWithAudio.audioClipsByNormalizedText = new Map([
+      ['buku', { storage_path: 'lessons/buku.mp3', voice_id: 'Achird' }],
+    ])
+
+    const { client, ops } = buildItemCutoverMock()
+
+    await runCapabilityStage(
+      { lessonNumber: 1, lessonId: 'lesson-uuid' },
+      {
+        loadLesson: async () => lessonWithAudio,
+        createSupabaseClient: () => client as never,
+        loadFromDb: async () => ({
+          items: FAKE_TYPED_ROWS,
+          itemState: {
+            existingItemsByNormalizedText: new Map(),
+            existingItemCapsByCanonicalKey: new Map(),
+          },
+        }),
+        fetchDistractorPool: async () => [],
+        generateFn: async () => '[]',
+      },
+    )
+
+    // The audio caps must appear in the legacy upsertCapabilities writes
+    // (single-row upserts WITHOUT ignoreDuplicates).
+    const legacyCapUpserts = ops.filter(
+      (op) =>
+        op.table === 'learning_capabilities' &&
+        op.op === 'upsert' &&
+        !(op.opts as { ignoreDuplicates?: boolean })?.ignoreDuplicates,
+    )
+    const legacyKeys = legacyCapUpserts.flatMap((op) =>
+      (Array.isArray(op.payload) ? op.payload : [op.payload as Record<string, unknown>])
+        .map((r) => r?.canonical_key as string | undefined)
+        .filter(Boolean),
+    )
+    expect(legacyKeys).toContain(AUDIO_RECOGNITION_KEY)
+    expect(legacyKeys).toContain(DICTATION_KEY)
+
+    // They must NOT appear in the skip-if-exists (new-path) writes.
+    const newPathUpserts = ops.filter(
+      (op) =>
+        op.table === 'learning_capabilities' &&
+        op.op === 'upsert' &&
+        (op.opts as { ignoreDuplicates?: boolean })?.ignoreDuplicates === true,
+    )
+    const newPathKeys = newPathUpserts.flatMap((op) =>
+      (Array.isArray(op.payload) ? op.payload : [op.payload as Record<string, unknown>])
+        .map((r) => r?.canonical_key as string | undefined)
+        .filter(Boolean),
+    )
+    expect(newPathKeys).not.toContain(AUDIO_RECOGNITION_KEY)
+    expect(newPathKeys).not.toContain(DICTATION_KEY)
+  })
+
+  // --- FIX 2 regression: per-cap-1:1 distractor writes ---
+  it('FIX2: distractors written to exactly one cap per table (recognition→text_recognition, cued_recall→l1_to_id_choice, no cloze for items)', async () => {
+    // Before the fix: the loop pushed one row per cap (4 caps per item) × 3 tables = 12 rows/item.
+    // After the fix: recognition_mcq_distractors keyed by text_recognition cap id,
+    //                cued_recall_distractors keyed by l1_to_id_choice cap id,
+    //                cloze_mcq_item_distractors NOT written (no cloze cap for items in this slice).
+    const { client, ops } = buildItemCutoverMock()
+
+    const fakeGenerateFn = async (): Promise<string> =>
+      JSON.stringify([
+        {
+          source_item_ref: 'buku',
+          recognition_distractors_nl: ['stoel', 'pen', 'huis'],
+          cued_recall_distractors_id: ['meja', 'kursi', 'rumah'],
+          cloze_distractors_id: ['meja', 'kursi', 'rumah'],
+        },
+      ])
+
+    // Use single-item fixture (buku only) to keep cap-id tracking unambiguous.
+    const singleItemLesson = makeLessonWithItems(tmpDir)
+    singleItemLesson.staging.learningItems = [singleItemLesson.staging.learningItems[0]!]
+
+    await runCapabilityStage(
+      { lessonNumber: 1, lessonId: 'lesson-uuid' },
+      {
+        loadLesson: async () => singleItemLesson,
+        createSupabaseClient: () => client as never,
+        loadFromDb: async () => ({
+          items: [FAKE_TYPED_ROWS[0]!],
+          itemState: {
+            existingItemsByNormalizedText: new Map(),
+            existingItemCapsByCanonicalKey: new Map(),
+          },
+        }),
+        fetchDistractorPool: async () => [],
+        generateFn: fakeGenerateFn,
+      },
+    )
+
+    // recognition_mcq_distractors: exactly 1 row per item (not 4).
+    const recUpserts = ops.filter(
+      (op) => op.table === 'recognition_mcq_distractors' && op.op === 'upsert',
+    )
+    const recRows = recUpserts.flatMap((op) =>
+      Array.isArray(op.payload) ? op.payload : [op.payload as Record<string, unknown>],
+    )
+    // 1 item → 1 row, not 4.
+    expect(recRows.length).toBe(1)
+
+    // cued_recall_distractors: exactly 1 row per item (not 4).
+    const cuedUpserts = ops.filter(
+      (op) => op.table === 'cued_recall_distractors' && op.op === 'upsert',
+    )
+    const cuedRows = cuedUpserts.flatMap((op) =>
+      Array.isArray(op.payload) ? op.payload : [op.payload as Record<string, unknown>],
+    )
+    expect(cuedRows.length).toBe(1)
+
+    // cloze_mcq_item_distractors: NO writes (no cloze cap for items in this slice).
+    const clozeUpserts = ops.filter(
+      (op) => op.table === 'cloze_mcq_item_distractors' && op.op === 'upsert',
+    )
+    expect(clozeUpserts.length).toBe(0)
+
+    // Verify the recognition row is keyed by text_recognition cap id and
+    // the cued_recall row is keyed by l1_to_id_choice cap id.
+    // The canonical key uses '/' not '%2F': encodeSegment() only encodes % and : chars,
+    // not '/'. So learning_items/buku (with slash) is the correct format.
+    const TEXT_RECOGNITION_KEY = 'cap:v1:item:learning_items/buku:text_recognition:id_to_l1:text:nl'
+    const L1_TO_ID_CHOICE_KEY = 'cap:v1:item:learning_items/buku:l1_to_id_choice:l1_to_id:text:nl'
+
+    // Extract which ids the mock assigned to these canonical keys.
+    const newPathUpserts = ops.filter(
+      (op) =>
+        op.table === 'learning_capabilities' &&
+        op.op === 'upsert' &&
+        (op.opts as { ignoreDuplicates?: boolean })?.ignoreDuplicates === true,
+    )
+    const allItemCapRows = newPathUpserts.flatMap((op) =>
+      Array.isArray(op.payload) ? op.payload : [op.payload as Record<string, unknown>],
+    )
+    const textRecRow = allItemCapRows.find((r) => r.canonical_key === TEXT_RECOGNITION_KEY)
+    const l1ToIdRow = allItemCapRows.find((r) => r.canonical_key === L1_TO_ID_CHOICE_KEY)
+    expect(textRecRow).toBeDefined()
+    expect(l1ToIdRow).toBeDefined()
+
+    // recognition row capability_id must match text_recognition cap id
+    if (textRecRow?.id && l1ToIdRow?.id) {
+      expect(recRows[0]?.capability_id).toBe(textRecRow.id)
+      expect(cuedRows[0]?.capability_id).toBe(l1ToIdRow.id)
+    }
+  })
+
   // --- H: legacy pattern/dialogue path unchanged ---
   it('legacy pattern/dialogue/grammar path still calls upsertCapabilities', async () => {
     const { client, ops } = buildItemCutoverMock()
