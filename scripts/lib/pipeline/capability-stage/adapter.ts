@@ -906,6 +906,40 @@ export async function upsertItemDistractors(
 }
 
 /**
+ * Fetch the set of capability_ids that already have rows in
+ * `recognition_mcq_distractors`. Used as the generation gate: caps
+ * already in this set are skipped (no LLM call, no write). The
+ * recognition table is used as the canonical seeded-state signal — all
+ * three distractor tables are written atomically by `upsertItemDistractors`,
+ * so if recognition has a row the other two will too.
+ *
+ * @param capabilityIds  The item-capability IDs to check. May be empty.
+ * @returns A Set of capability_ids that are already seeded.
+ */
+export async function fetchSeededDistractorCapIds(
+  supabase: CapabilitySupabaseClient,
+  capabilityIds: string[],
+): Promise<Set<string>> {
+  if (capabilityIds.length === 0) return new Set()
+
+  const seeded = new Set<string>()
+  const CHUNK = 50
+  for (let i = 0; i < capabilityIds.length; i += CHUNK) {
+    const chunk = capabilityIds.slice(i, i + CHUNK)
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('recognition_mcq_distractors')
+      .select('capability_id')
+      .in('capability_id', chunk)
+    if (error) throw error
+    for (const row of (data ?? []) as Array<{ capability_id: string }>) {
+      seeded.add(row.capability_id)
+    }
+  }
+  return seeded
+}
+
+/**
  * Destructive removal of distractor rows for the given capabilityIds from all
  * three tables. Called by the --regenerate path before re-seeding.
  */

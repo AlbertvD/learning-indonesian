@@ -32,6 +32,13 @@ export interface CapabilityStageInput {
   /** Lesson row id from Stage A's runLessonStage output. */
   lessonId: string
   dryRun?: boolean
+  /**
+   * When set, the item path deletes + regenerates distractors for the given
+   * item (identified by normalized_text) before the skip-if-exists gate.
+   * This is the ONLY destructive path — routine re-runs never delete seeded
+   * distractor rows. OQ-3 / ADR 0011.
+   */
+  regenerate?: { kind: 'item'; normalizedText: string }
 }
 
 export interface CapabilityStageCounts {
@@ -48,6 +55,8 @@ export interface CapabilityStageCounts {
   affixedFormPairs: number
   /** PR 4: typed grammar-exercise rows written across the 4 tables. */
   grammarExerciseRows: number
+  /** Task 6c: item distractor sets written (by upsertItemDistractors). */
+  itemDistractorSets: number
 }
 
 export interface CapabilityStageOutput {
@@ -83,4 +92,5 @@ export const EMPTY_COUNTS: CapabilityStageCounts = {
   dialogueClozes: 0,
   affixedFormPairs: 0,
   grammarExerciseRows: 0,
+  itemDistractorSets: 0,
 }
