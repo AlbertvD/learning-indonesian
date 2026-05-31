@@ -62,8 +62,9 @@ describe('validateItemDuplicates (CS17)', () => {
     expect(findings).toEqual([])
   })
 
-  it('emits CS17 error when a cap was first claimed by a different lesson', async () => {
-    // 'makan' capability is owned by lesson-uuid-0 (a prior lesson)
+  it('emits a CS17 WARNING (not error) when a cap is owned by an earlier lesson (legitimate reuse)', async () => {
+    // 'makan' capability is owned by lesson-uuid-0 (a prior lesson). Under
+    // global item dedup this is legitimate reuse, not a publish-blocking error.
     const supabase = makeSupabaseMock([
       { source_ref: 'learning_items/makan', lesson_id: 'lesson-uuid-0' },
     ])
@@ -75,10 +76,10 @@ describe('validateItemDuplicates (CS17)', () => {
     const findings = await validateItemDuplicates(supabase, input)
     expect(findings).toHaveLength(1)
     expect(findings[0].gate).toBe('CS17')
-    expect(findings[0].severity).toBe('error')
+    expect(findings[0].severity).toBe('warning') // informational, never blocks publish
     expect(findings[0].message).toContain('makan')
     expect(findings[0].message).toContain('lesson 2')
-    expect(findings[0].message).toContain('different lesson')
+    expect(findings[0].message).toContain('owned by an earlier lesson')
   })
 
   it('includes context.itemSlug in duplicate findings', async () => {

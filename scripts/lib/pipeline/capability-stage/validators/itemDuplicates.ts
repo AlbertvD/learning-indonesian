@@ -10,8 +10,8 @@
  * by `source_ref`) that are linked to MORE THAN ONE `lesson_id`. When an item
  * exists in two lessons' vocabulary lists, the capability system's skip-if-exists
  * upsert preserves whichever lesson published it first. The second lesson's
- * publish silently leaves the capability owned by the first lesson, but the
- * author still has an authoring error that should be flagged.
+ * publish silently leaves the capability owned by the first lesson. This is
+ * surfaced as an informational WARNING (not an error — see Severity below).
  *
  * Query shape: for each item written by this lesson, build its source_ref
  * (`learning_items/<normalized_text>`) and query `learning_capabilities` where
@@ -38,9 +38,14 @@
  * reconciled — the lowest-lesson-number lesson is the canonical owner, per the
  * original rule.
  *
- * Severity: error — a duplicate across lessons means the FSRS ownership
- * invariant (ADR 0006: every capability has exactly one introducing lesson)
- * cannot be satisfied for both lessons simultaneously.
+ * Severity: WARNING — under ADR-0011 global item dedup, the SAME vocabulary
+ * word legitimately recurs across lessons (the live multi-lesson re-publish
+ * showed common words like "ada" appear in many lessons). The introducing
+ * lesson owns the capability (ADR 0006 satisfied: exactly one owner); later
+ * occurrences are correctly deduped/no-op. Flagging this as an ERROR would block
+ * re-publishing nearly every lesson, so it is informational only. (The original
+ * lint-staging check was CRITICAL under the pre-dedup model where a word lived in
+ * exactly one lesson's staging; that assumption no longer holds.)
  *
  * WITHIN-lesson duplicates (the other class caught by the original
  * `findDuplicateItems` in lint-staging.ts) are intentionally NOT a gate
@@ -118,15 +123,21 @@ export async function validateItemDuplicates(
     if (row.lesson_id !== lessonId) {
       // Map source_ref back to normalized_text for the finding message.
       const normalizedText = row.source_ref.replace(/^learning_items\//, '')
+      // WARNING, not error: under ADR-0011 global item dedup, the SAME vocabulary
+      // word legitimately recurs across lessons. The first lesson to publish it
+      // owns the capability; later lessons that reuse the word are correctly a
+      // no-op (skip-if-exists). This is informational (the author may want to know
+      // which lesson introduces a shared word), NOT a publish-blocking error —
+      // erroring here would block re-publishing any lesson that reuses earlier
+      // vocabulary, which is nearly all of them.
       findings.push({
         gate: 'CS17',
-        severity: 'error',
+        severity: 'warning',
         message:
-          `Item "${normalizedText}" was written for lesson ${lessonNumber} ` +
-          `but already belongs to a different lesson (lesson_id=${row.lesson_id}). ` +
-          `An item may only be declared in one lesson's vocabulary. ` +
-          `Remove the duplicate declaration from lesson ${lessonNumber}'s staging files ` +
-          `(the first-published lesson owns the capability; the second publish is a no-op).`,
+          `Item "${normalizedText}" is reused in lesson ${lessonNumber} but its ` +
+          `capability is owned by an earlier lesson (lesson_id=${row.lesson_id}). ` +
+          `Under global item dedup this is fine — the introducing lesson owns the ` +
+          `capability and this occurrence is deduped. Informational only.`,
         context: { itemSlug: normalizedText },
       })
     }
