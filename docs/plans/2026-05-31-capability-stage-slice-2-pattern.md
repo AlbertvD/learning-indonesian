@@ -34,6 +34,30 @@ data_prerequisite: "Live DB 2026-05-31: grammar exists for L1-L9 (47 grammar_pat
 
 ---
 
+## Implementation reconciliation (post architect re-review 2026-05-31 — BINDS over older body prose)
+
+The architect APPROVE-WITH-CHANGES round caught that several body passages predate the OQ2-4 (cut examples) and OQ2-5 (pattern model) resolutions. Where this section conflicts with Tasks 3/5/7/10, the Gates list, or the OQ2-2 body, **this section + the frontmatter `decisions_resolved` win.**
+
+**Pattern model — slug + NOT-NULL derivations (C2, N3 → Task 3):**
+- `slug = l{lessonNumber}-{stableSlug(category.title)}` — lesson-prefixed so it satisfies the **GLOBAL** `grammar_patterns.slug UNIQUE` (`migration.sql:548`) and cannot silently merge two lessons' patterns via the `onConflict:'slug'` upsert. Within a lesson, assert post-slugify uniqueness; on a tie (two categories slugify identically) append `-{display_order}`; the projector THROWS if a collision still survives (a content signal — never a silent merge).
+- `source_ref = lesson-{N}/pattern-{slug}` (formula unchanged; `byKind/pattern.ts` `slugFromSourceRef` strips `lesson-{N}/pattern-` → slug). `canonical_key = cap:v1:pattern:lesson-{N}/pattern-{slug}:{pattern_recognition|pattern_contrast}:none:text:none`.
+- `grammar_patterns` NOT-NULL columns (`migration.sql:549-551`) derive as: `name = category.title`; `short_explanation = category.rules joined`; `complexity_score = 1` (DEFAULT — no category-native source; legacy hand-authored field, not read by the runtime for pattern caps); `confusion_group = null`.
+- One category → one pattern. **L6 live-verified: 10 categories, all 10 rule-bearing, 7/10 with examples** (frontmatter "10" correct; any "8" in older prose is stale — PR 6 already excludes table-only reference grids). 3 categories are rules-only → the generator MUST work from rules when `examples` is empty/null (`examples` jsonb is nullable, `migration.sql:2620`).
+
+**Legacy retirement is NOT `retireOrphanedCapabilities` alone (C1, I2 → Task 6 cutover):**
+- `retireOrphanedCapabilities` (`adapter.ts:177`) is SOFT — sets `retired_at` on caps, deletes no rows, never touches `grammar_patterns`. A new slug just inserts a NEW row; the legacy 47 patterns + their `is_active` typed exercise rows would persist as dead data → "REPLACED" is false without an explicit delete. Add a cutover delete: for the lesson being published, `DELETE grammar_patterns WHERE introduced_by_lesson_id = thisLesson AND slug NOT IN (new category-derived slugs)`. FK `ON DELETE CASCADE` (`migration.sql:2373/2408/2442/2477` + `grammar_pattern_examples` + `item_context_grammar_patterns`) removes their typed exercise rows; soft-retire the now-capless legacy caps.
+- `exercise_review_comments` (FK → `exercise_variants(id)`, `migration.sql:818`, NOT the typed tables) will NOT cascade and could dangle. Before the delete, VERIFY live there are 0 grammar comment rows (comment-on-grammar is latent-broken: typed ids don't exist in `exercise_variants`). The FK fix stays OQ2-3 / Task 8 (re-dispatch architect for it).
+
+**Idempotency signal (C4, I4 → Task 5):** `grammar_pattern_examples` is CUT (OQ2-4) — NEVER written, NOT the seeded signal. The canonical seeded signal is frontmatter OQ2-2 option B: a pattern is seeded iff it has ≥1 active row for EVERY required exercise type (**count DISTINCT types, not rows**). The mandated partial-failure test MUST simulate a crash BETWEEN typed exercise tables (after table 2, before table 3) → re-run detects unseeded → delete-first + regenerate. Remove every `grammar_pattern_examples` write from Tasks 3/5/10 + the Gates list.
+
+**Byte-identical DROPPED (C3 → Task 3):** ignore the body's "byte-identical canonical_keys/source_refs … orphans caps + breaks FSRS" — superseded by OQ2-5 (0 progress). New slugs are NOT legacy-matched.
+
+**lint-staging (I3 → Task 7):** also relocate/retire the stale hardcoded `SLOT_PATTERNS` slug allowlist (`lint-staging.ts:100-104`) — once slugs become `l{N}-{stableSlug(title)}` it silently stops matching. Add to Task 7's removal set alongside the four checks (`257/292/795/827`).
+
+**masteryModel (N1 → Task 8e):** before cutting `capability_artifacts.pattern_example` reads, confirm `masteryModel.ts:448-455` doesn't score off `pattern_example` (low risk — 0 pattern review history).
+
+---
+
 ## Lessons from Slice 1 (REQUIREMENTS, not history)
 
 Slice 1 passed a green test suite but the **first live publish caught four bugs the mocks could not** (no mock enforces a DB CHECK, the real schema, real PostgREST semantics, or real LLM output). These are now standing requirements for Slice 2:
