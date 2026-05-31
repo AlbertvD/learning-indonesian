@@ -836,6 +836,315 @@ export function lookupAudioClip(
 }
 
 // ---------------------------------------------------------------------------
+// Item distractor tables (Task 6b — typed satellites for recognition/cued-recall/cloze MCQ)
+// ---------------------------------------------------------------------------
+
+export interface ItemDistractorRow {
+  capability_id: string
+  /** Distractor texts for recognition_mcq (L1→L2 MCQ wrong choices) */
+  recognition: string[]
+  /** Distractor texts for cued_recall (L2→L1 MCQ wrong choices) */
+  cued_recall: string[]
+  /** Distractor texts for cloze_mcq_item (in-sentence MCQ wrong choices) */
+  cloze: string[]
+}
+
+export interface UpsertItemDistractorsResult {
+  written: number
+  skipped: number
+}
+
+const DISTRACTOR_TABLES = ['recognition_mcq_distractors', 'cued_recall_distractors', 'cloze_mcq_item_distractors'] as const
+type DistractorTable = typeof DISTRACTOR_TABLES[number]
+
+function distractorPayload(table: DistractorTable, rows: ItemDistractorRow[]): Array<{ capability_id: string; distractors: string[] }> {
+  if (table === 'recognition_mcq_distractors') return rows.map((r) => ({ capability_id: r.capability_id, distractors: r.recognition }))
+  if (table === 'cued_recall_distractors') return rows.map((r) => ({ capability_id: r.capability_id, distractors: r.cued_recall }))
+  return rows.map((r) => ({ capability_id: r.capability_id, distractors: r.cloze }))
+}
+
+/**
+ * Skip-if-exists: inserts one row per table per capability_id, using
+ * INSERT ... ON CONFLICT DO NOTHING (ignoreDuplicates: true). Existing rows
+ * (i.e. from a previous publish or a DB-side correction) are never overwritten.
+ * The --regenerate path calls deleteItemDistractors first, then this.
+ *
+ * written/skipped counts are derived from the recognition table insert with
+ * RETURNING * (PostgREST returns only actually-inserted rows).
+ *
+ * @deprecated Use upsertRecognitionDistractors / upsertCuedRecallDistractors
+ * directly for per-cap-1:1 correctness. This function writes ALL 3 tables for
+ * every row — only valid when all rows carry all 3 distractor arrays and all
+ * cap ids are of matching types. Retained for the --regenerate delete+rewrite
+ * path and backward compat.
+ */
+export async function upsertItemDistractors(
+  supabase: CapabilitySupabaseClient,
+  rows: ItemDistractorRow[],
+): Promise<UpsertItemDistractorsResult> {
+  if (rows.length === 0) return { written: 0, skipped: 0 }
+
+  // Upsert recognition table first with .select() to get the count of
+  // actually-inserted rows. ignoreDuplicates:true = INSERT ... ON CONFLICT DO NOTHING;
+  // PostgREST returns only the rows that were actually inserted.
+  const recognitionPayload = distractorPayload('recognition_mcq_distractors', rows)
+  const { data: writtenRows, error: recErr } = await supabase
+    .schema('indonesian')
+    .from('recognition_mcq_distractors')
+    .upsert(recognitionPayload, { onConflict: 'capability_id', ignoreDuplicates: true })
+    .select()
+  if (recErr) throw recErr
+
+  const written = (writtenRows ?? []).length
+  const skipped = rows.length - written
+
+  // Upsert the other two tables (also skip-if-exists; no count needed).
+  for (const table of ['cued_recall_distractors', 'cloze_mcq_item_distractors'] as const) {
+    const payload = distractorPayload(table, rows)
+    const { error } = await supabase
+      .schema('indonesian')
+      .from(table)
+      .upsert(payload, { onConflict: 'capability_id', ignoreDuplicates: true })
+    if (error) throw error
+  }
+
+  return { written, skipped }
+}
+
+/**
+ * Per-cap-1:1 variant: write recognition_mcq_distractors rows.
+ *
+ * Only writes to `recognition_mcq_distractors`. Each row carries one
+ * capability_id (must be a text_recognition cap) and its `recognition`
+ * distractor array. The `cued_recall` and `cloze` fields on ItemDistractorRow
+ * are ignored by this function.
+ *
+ * Returns the count of newly-inserted rows (skipped = existing rows untouched).
+ */
+export async function upsertRecognitionDistractors(
+  supabase: CapabilitySupabaseClient,
+  rows: Array<{ capability_id: string; distractors: string[] }>,
+): Promise<UpsertItemDistractorsResult> {
+  if (rows.length === 0) return { written: 0, skipped: 0 }
+
+  const { data: writtenRows, error } = await supabase
+    .schema('indonesian')
+    .from('recognition_mcq_distractors')
+    .upsert(rows, { onConflict: 'capability_id', ignoreDuplicates: true })
+    .select()
+  if (error) throw error
+
+  const written = (writtenRows ?? []).length
+  const skipped = rows.length - written
+  return { written, skipped }
+}
+
+/**
+ * Per-cap-1:1 variant: write cued_recall_distractors rows.
+ *
+ * Only writes to `cued_recall_distractors`. Each row carries one capability_id
+ * (must be an l1_to_id_choice cap) and its `distractors` array. Returns the
+ * count of newly-inserted rows.
+ */
+export async function upsertCuedRecallDistractors(
+  supabase: CapabilitySupabaseClient,
+  rows: Array<{ capability_id: string; distractors: string[] }>,
+): Promise<UpsertItemDistractorsResult> {
+  if (rows.length === 0) return { written: 0, skipped: 0 }
+
+  const { error } = await supabase
+    .schema('indonesian')
+    .from('cued_recall_distractors')
+    .upsert(rows, { onConflict: 'capability_id', ignoreDuplicates: true })
+  if (error) throw error
+
+  // cued_recall_distractors does not need the written count for the runner's
+  // itemDistractorSets metric (that uses the recognition table as the signal).
+  return { written: rows.length, skipped: 0 }
+}
+
+/**
+ * Fetch the set of capability_ids that already have rows in
+ * `recognition_mcq_distractors`. Used as the generation gate: caps
+ * already in this set are skipped (no LLM call, no write). The
+ * recognition table is used as the canonical seeded-state signal — all
+ * three distractor tables are written atomically by `upsertItemDistractors`,
+ * so if recognition has a row the other two will too.
+ *
+ * @param capabilityIds  The item-capability IDs to check. May be empty.
+ * @returns A Set of capability_ids that are already seeded.
+ */
+export async function fetchSeededDistractorCapIds(
+  supabase: CapabilitySupabaseClient,
+  capabilityIds: string[],
+): Promise<Set<string>> {
+  if (capabilityIds.length === 0) return new Set()
+
+  const seeded = new Set<string>()
+  const CHUNK = 50
+  for (let i = 0; i < capabilityIds.length; i += CHUNK) {
+    const chunk = capabilityIds.slice(i, i + CHUNK)
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('recognition_mcq_distractors')
+      .select('capability_id')
+      .in('capability_id', chunk)
+    if (error) throw error
+    for (const row of (data ?? []) as Array<{ capability_id: string }>) {
+      seeded.add(row.capability_id)
+    }
+  }
+  return seeded
+}
+
+/**
+ * Destructive removal of distractor rows for the given capabilityIds from all
+ * three tables. Called by the --regenerate path before re-seeding.
+ */
+export async function deleteItemDistractors(
+  supabase: CapabilitySupabaseClient,
+  capabilityIds: string[],
+): Promise<void> {
+  if (capabilityIds.length === 0) return
+  for (const table of DISTRACTOR_TABLES) {
+    const { error } = await supabase
+      .schema('indonesian')
+      .from(table)
+      .delete()
+      .in('capability_id', capabilityIds)
+    if (error) throw error
+  }
+}
+
+/**
+ * Idempotent learning_items write for the item-source path.
+ *
+ * Uses check-then-write because supabase-js `.upsert` has no `update` option
+ * to restrict which columns are refreshed on conflict — a plain `.upsert` with
+ * `onConflict` and without `ignoreDuplicates` issues a merge-duplicates UPDATE
+ * covering ALL payload columns, which would clobber DB-corrected `pos` with null.
+ *
+ * On INSERT (new normalized_text): writes the full payload including pos,
+ * level, base_text, translations, is_active.
+ *
+ * On conflict (normalized_text already exists): issues a targeted UPDATE of ONLY
+ * the lesson-derived translation columns (translation_nl, translation_en).
+ * Capability-authored columns (pos, level, base_text, is_active) are
+ * preserved — a DB-side correction or enrichment is never overwritten by
+ * a routine re-publish.
+ *
+ * Single-writer pipeline guarantees no race between the SELECT and the write.
+ */
+export async function upsertLearningItemIdempotent(
+  supabase: CapabilitySupabaseClient,
+  item: LearningItemInput,
+): Promise<{ id: string; normalized_text: string }> {
+  const normalized_text = itemSlug(item.base_text)
+
+  // Check whether the row already exists.
+  const { data: existing, error: selectErr } = await supabase
+    .schema('indonesian')
+    .from('learning_items')
+    .select('id, normalized_text')
+    .eq('normalized_text', normalized_text)
+    .maybeSingle()
+  if (selectErr) throw selectErr
+
+  if (existing) {
+    // UPDATE only lesson-derived translation columns; pos/level/base_text/is_active preserved.
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('learning_items')
+      .update({
+        translation_nl: item.translation_nl ?? null,
+        translation_en: item.translation_en ?? null,
+      })
+      .eq('normalized_text', normalized_text)
+      .select('id, normalized_text')
+      .single()
+    if (error) throw error
+    return { id: data.id, normalized_text: data.normalized_text }
+  }
+
+  // INSERT full payload for a new item.
+  const payload: Record<string, unknown> = {
+    base_text: item.base_text,
+    item_type: item.item_type,
+    normalized_text,
+    language: item.language,
+    level: item.level,
+    source_type: item.source_type,
+    pos: item.pos ?? null,
+    is_active: true,
+    translation_nl: item.translation_nl ?? null,
+    translation_en: item.translation_en ?? null,
+  }
+  if (item.review_status) {
+    payload.review_status = item.review_status
+  }
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('learning_items')
+    .insert(payload)
+    .select('id, normalized_text')
+    .single()
+  if (error) throw error
+  return { id: data.id, normalized_text: data.normalized_text }
+}
+
+/**
+ * Skip-if-exists variant of upsertCapabilities for the item source_kind path.
+ *
+ * Uses INSERT ... ON CONFLICT DO NOTHING (ignoreDuplicates: true) so that:
+ * - FSRS state in learner_capability_state is never disturbed on re-publish
+ * - DB-side corrections (retired_at, readiness_status) are preserved
+ * - retired_at is NOT set in the payload (new rows get NULL from DB default;
+ *   existing rows keep whatever the DB says)
+ *
+ * Returns a Map<canonicalKey, id> for newly-inserted rows only.
+ * Skipped (existing) rows do not appear in the map — callers must handle
+ * the case where a capability_id is not in the returned map.
+ */
+export async function upsertCapabilitiesSkipIfExists(
+  supabase: CapabilitySupabaseClient,
+  capabilities: CapabilityInput[],
+): Promise<Map<string, string>> {
+  const idsByKey = new Map<string, string>()
+  if (capabilities.length === 0) return idsByKey
+
+  const rows = capabilities.map((cap) => ({
+    canonical_key: cap.canonicalKey,
+    source_kind: cap.sourceKind,
+    source_ref: cap.sourceRef,
+    capability_type: cap.capabilityType,
+    direction: cap.direction,
+    modality: cap.modality,
+    learner_language: cap.learnerLanguage,
+    projection_version: cap.projectionVersion,
+    readiness_status: 'unknown',
+    publication_status: 'draft',
+    lesson_id: cap.lessonId ?? null,
+    required_artifacts: cap.requiredArtifacts,
+    prerequisite_keys: cap.prerequisiteKeys,
+    // NOTE: retired_at is intentionally omitted — new rows get NULL from
+    // the DB default; existing rows preserve whatever value the DB has.
+    updated_at: new Date().toISOString(),
+  }))
+
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('learning_capabilities')
+    .upsert(rows, { onConflict: 'canonical_key', ignoreDuplicates: true })
+    .select('id, canonical_key')
+  if (error) throw error
+
+  for (const row of (data ?? []) as Array<{ id: string; canonical_key: string }>) {
+    idsByKey.set(row.canonical_key, row.id)
+  }
+  return idsByKey
+}
+
+// ---------------------------------------------------------------------------
 // Chunked reads (used by verify/seedIntegrity.ts — extracted from legacy 805–923)
 // ---------------------------------------------------------------------------
 

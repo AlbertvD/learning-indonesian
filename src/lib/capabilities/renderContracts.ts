@@ -327,6 +327,14 @@ export interface RawProjectorInput {
   poolItems: LearningItem[]
   poolMeaningsByItem: Map<string, ItemMeaning[]>
   userLanguage: 'nl' | 'en'
+  /** Curated NL wrong-option strings for recognition_mcq, keyed by capability_id.
+   *  Populated by the item fetcher from `recognition_mcq_distractors` (Task 8 / #99).
+   *  Absent (empty map) when no curated rows exist → builders fall back to pool. */
+  curatedRecognitionDistractors: Map<string, string[]>
+  /** Curated Indonesian wrong-option strings for cued_recall, keyed by capability_id.
+   *  Populated by the item fetcher from `cued_recall_distractors` (Task 8 / #99).
+   *  Absent (empty map) when no curated rows exist → builders fall back to pool. */
+  curatedCuedRecallDistractors: Map<string, string[]>
 }
 
 /** Common-base fields every builder receives. */
@@ -339,6 +347,10 @@ interface BuilderBase {
   poolItems: LearningItem[]
   poolMeaningsByItem: Map<string, ItemMeaning[]>
   userLanguage: 'nl' | 'en'
+  /** Curated NL wrong-option strings for recognition_mcq, keyed by capability_id. */
+  curatedRecognitionDistractors: Map<string, string[]>
+  /** Curated Indonesian wrong-option strings for cued_recall, keyed by capability_id. */
+  curatedCuedRecallDistractors: Map<string, string[]>
 }
 
 /**
@@ -556,6 +568,8 @@ export function projectBuilderInput<T extends ExerciseType>(
     poolItems: raw.poolItems,
     poolMeaningsByItem: raw.poolMeaningsByItem,
     userLanguage: raw.userLanguage,
+    curatedRecognitionDistractors: raw.curatedRecognitionDistractors,
+    curatedCuedRecallDistractors: raw.curatedCuedRecallDistractors,
   }
 
   // Per-exercise narrowing.

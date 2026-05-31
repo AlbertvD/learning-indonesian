@@ -126,7 +126,9 @@ function sourceRefForLesson(lessonNumber: number): string {
   return `lesson-${lessonNumber}`
 }
 
-function sourceRefForLearningItem(baseText: string): string {
+// Exported so projectors/vocab.ts (projectItemsFromTypedRows) can build the
+// same source_ref formula from the typed DB path — one home for the formula.
+export function sourceRefForLearningItem(baseText: string): string {
   // Per issue #59: must match learning_items.normalized_text exactly so the
   // runtime resolver (capabilityContentService.fetchLearningItemsByKey) can
   // resolve item-source-kind caps. stableSlug mangles spaces to hyphens.

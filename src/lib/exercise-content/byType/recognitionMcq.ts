@@ -10,38 +10,53 @@ export function buildRecognitionMCQ(input: BuilderInputFor<'recognition_mcq'>): 
   // learningItem and primaryMeaning are non-null by contract (projector narrows).
   const correctAnswer = input.primaryMeaning.translation_text
 
-  // Pool option = candidate's user-language translation.
-  const pool: DistractorCandidate[] = input.poolItems
-    .filter(i => i.id !== input.learningItem.id)
-    .flatMap(i => {
-      const ms = input.poolMeaningsByItem.get(i.id) ?? []
-      const t = (ms.find(m => m.translation_language === input.userLanguage && m.is_primary)
-        ?? ms.find(m => m.translation_language === input.userLanguage))?.translation_text
-      if (!t || t === correctAnswer) return []
-      return [{
-        id: i.id,
-        option: t,
-        itemType: i.item_type,
-        pos: i.pos ?? null,
-        level: i.level,
-        semanticGroup: getSemanticGroup(t, input.userLanguage),
-      }]
-    })
+  // Prefer curated distractors when the pipeline has seeded a row for this cap.
+  // Fall back to pickDistractorCascade over the pool when absent (deploy-order-
+  // independent: pre-seeding renders the same pool-based behaviour as before).
+  const capabilityId = input.block?.capabilityId
+  const curatedRow = capabilityId
+    ? (input.curatedRecognitionDistractors.get(capabilityId) ?? null)
+    : null
 
-  const target = {
-    itemType: input.learningItem.item_type,
-    pos: input.learningItem.pos ?? null,
-    level: input.learningItem.level,
-    semanticGroup: getSemanticGroup(correctAnswer, input.userLanguage),
-  }
-  const distractors = pickDistractorCascade(target, pool, 3, correctAnswer)
-  if (distractors.length < 3) {
-    return {
-      kind: 'fail',
-      reasonCode: 'no_distractor_candidates',
-      message: `cascade returned only ${distractors.length}/3 distractors for item ${input.learningItem.id}`,
-      payloadSnapshot: { learningItemId: input.learningItem.id, poolSize: pool.length, distractorsFound: distractors.length },
+  let distractors: string[]
+  if (curatedRow && curatedRow.length >= 3) {
+    // Curated path: use exactly 3 curated NL wrong-option strings.
+    distractors = curatedRow.slice(0, 3)
+  } else {
+    // Pool fallback path (unchanged behaviour from before Task 8).
+    const pool: DistractorCandidate[] = input.poolItems
+      .filter(i => i.id !== input.learningItem.id)
+      .flatMap(i => {
+        const ms = input.poolMeaningsByItem.get(i.id) ?? []
+        const t = (ms.find(m => m.translation_language === input.userLanguage && m.is_primary)
+          ?? ms.find(m => m.translation_language === input.userLanguage))?.translation_text
+        if (!t || t === correctAnswer) return []
+        return [{
+          id: i.id,
+          option: t,
+          itemType: i.item_type,
+          pos: i.pos ?? null,
+          level: i.level,
+          semanticGroup: getSemanticGroup(t, input.userLanguage),
+        }]
+      })
+
+    const target = {
+      itemType: input.learningItem.item_type,
+      pos: input.learningItem.pos ?? null,
+      level: input.learningItem.level,
+      semanticGroup: getSemanticGroup(correctAnswer, input.userLanguage),
     }
+    const poolDistractors = pickDistractorCascade(target, pool, 3, correctAnswer)
+    if (poolDistractors.length < 3) {
+      return {
+        kind: 'fail',
+        reasonCode: 'no_distractor_candidates',
+        message: `cascade returned only ${poolDistractors.length}/3 distractors for item ${input.learningItem.id}`,
+        payloadSnapshot: { learningItemId: input.learningItem.id, poolSize: pool.length, distractorsFound: poolDistractors.length },
+      }
+    }
+    distractors = poolDistractors
   }
   const exerciseItem = {
     learningItem: input.learningItem,

@@ -151,6 +151,8 @@ export async function fetchForDialogueLineBlocks(
         poolItems: [],
         poolMeaningsByItem: new Map(),
         userLanguage,
+        curatedRecognitionDistractors: new Map(),
+        curatedCuedRecallDistractors: new Map(),
       },
     })
   }

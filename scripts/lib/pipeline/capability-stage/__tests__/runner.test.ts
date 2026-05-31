@@ -61,6 +61,12 @@ function buildSupabaseMock(opts: {
             current = current.filter((r) => r[col] === val)
             return chain
           },
+          // Task 6c: loadFromDb uses .range() for paginated reads.
+          // The mock returns all current rows in one page (PAGE_SIZE > fixture rows),
+          // simulating the last page — loadFromDb breaks out of the pagination loop.
+          range: () => {
+            return Promise.resolve(buildResult())
+          },
           ilike: () => chain,
           limit: () => chain,
           order: () => chain,

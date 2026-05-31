@@ -96,6 +96,8 @@ function baseInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorInpu
     poolItems: pool.items,
     poolMeaningsByItem: pool.meaningsByItem,
     userLanguage: 'nl',
+    curatedRecognitionDistractors: new Map(),
+    curatedCuedRecallDistractors: new Map(),
     ...overrides,
   }
 }
@@ -250,6 +252,30 @@ describe('buildRecognitionMCQ', () => {
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('no_distractor_candidates')
   })
+
+  it('uses curated distractors when a row exists for this capability (Task 8 / #99)', () => {
+    const capabilityId = 'cap-1'  // matches makeBlock().capabilityId
+    const curated = ['wrong-nl-1', 'wrong-nl-2', 'wrong-nl-3']
+    const r = buildForExerciseType('recognition_mcq', baseInput({
+      curatedRecognitionDistractors: new Map([[capabilityId, curated]]),
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind === 'ok') {
+      expect(r.exerciseItem.distractors).toEqual(curated)
+    }
+  })
+
+  it('falls back to pool when no curated row exists (empty map)', () => {
+    // Pool path with sufficient items → succeeds; distractors come from pool
+    const r = buildForExerciseType('recognition_mcq', baseInput({
+      curatedRecognitionDistractors: new Map(),
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind === 'ok') {
+      // Pool distractors are pool-meaning-N strings, not curated strings
+      expect(r.exerciseItem.distractors?.every((d: string) => d.startsWith('pool-meaning-'))).toBe(true)
+    }
+  })
 })
 
 describe('buildCuedRecall', () => {
@@ -267,6 +293,35 @@ describe('buildCuedRecall', () => {
     const r = buildForExerciseType('cued_recall', baseInput({ poolItems: small.items, poolMeaningsByItem: small.meaningsByItem }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('no_distractor_candidates')
+  })
+
+  it('uses curated distractors when a row exists for this capability (Task 8 / #99)', () => {
+    const capabilityId = 'cap-1'  // matches makeBlock().capabilityId
+    const curated = ['salah-id-1', 'salah-id-2', 'salah-id-3']
+    const r = buildForExerciseType('cued_recall', baseInput({
+      curatedCuedRecallDistractors: new Map([[capabilityId, curated]]),
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind === 'ok') {
+      // All 4 options = correct (base_text) + 3 curated Indonesian wrong-options
+      expect(r.exerciseItem.cuedRecallData?.options).toHaveLength(4)
+      expect(r.exerciseItem.cuedRecallData?.options).toContain('akhir')
+      expect(r.exerciseItem.cuedRecallData?.options).toContain('salah-id-1')
+      expect(r.exerciseItem.cuedRecallData?.options).toContain('salah-id-2')
+      expect(r.exerciseItem.cuedRecallData?.options).toContain('salah-id-3')
+    }
+  })
+
+  it('falls back to pool when no curated row exists (empty map)', () => {
+    const r = buildForExerciseType('cued_recall', baseInput({
+      curatedCuedRecallDistractors: new Map(),
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind === 'ok') {
+      // Pool path: options include the correct answer + pool base_texts
+      expect(r.exerciseItem.cuedRecallData?.options).toHaveLength(4)
+      expect(r.exerciseItem.cuedRecallData?.correctOptionId).toBe('akhir')
+    }
   })
 })
 

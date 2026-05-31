@@ -108,6 +108,26 @@ export async function fetchForItemBlocks(
     return (data ?? []) as ItemAnswerVariant[]
   }
 
+  async function fetchRecognitionMcqDistractors(capabilityIds: string[]): Promise<Array<{capability_id: string; distractors: string[]}>> {
+    if (capabilityIds.length === 0) return []
+    const { data, error } = await db()
+      .from('recognition_mcq_distractors')
+      .select('capability_id, distractors')
+      .in('capability_id', capabilityIds)
+    if (error) throw error
+    return (data ?? []) as Array<{capability_id: string; distractors: string[]}>
+  }
+
+  async function fetchCuedRecallDistractors(capabilityIds: string[]): Promise<Array<{capability_id: string; distractors: string[]}>> {
+    if (capabilityIds.length === 0) return []
+    const { data, error } = await db()
+      .from('cued_recall_distractors')
+      .select('capability_id, distractors')
+      .in('capability_id', capabilityIds)
+    if (error) throw error
+    return (data ?? []) as Array<{capability_id: string; distractors: string[]}>
+  }
+
   async function fetchDistractorPool(lessonIds: string[]): Promise<LearningItem[]> {
     if (lessonIds.length === 0) return []
     // Items whose contexts anchor to any of the touched lessons.
@@ -129,10 +149,22 @@ export async function fetchForItemBlocks(
 
   // Wave 2: now that we have item uuids, fan out dependent reads.
   const itemIds = items.map(i => i.id)
-  const [contexts, answerVariants] = await Promise.all([
+  // Collect capability_ids from all item blocks for curated-distractor fetch.
+  const capabilityIds = [...new Set(itemBlocks.map(b => b.block.capabilityId))]
+  const [contexts, answerVariants, recognitionMcqRows, cuedRecallRows] = await Promise.all([
     fetchContexts(itemIds),
     fetchAnswerVariants(itemIds),
+    fetchRecognitionMcqDistractors(capabilityIds),
+    fetchCuedRecallDistractors(capabilityIds),
   ])
+
+  // Build curated-distractor maps: capability_id → string[].
+  const curatedRecognitionDistractors = new Map<string, string[]>(
+    recognitionMcqRows.map(r => [r.capability_id, r.distractors]),
+  )
+  const curatedCuedRecallDistractors = new Map<string, string[]>(
+    cuedRecallRows.map(r => [r.capability_id, r.distractors]),
+  )
 
   // Distractor pool: derived from the lessons the block items' contexts
   // anchor to. Run after wave 2 so lessonIds are known.
@@ -215,6 +247,11 @@ export async function fetchForItemBlocks(
         poolItems,
         poolMeaningsByItem,
         userLanguage,
+        // Task 8 / #99: curated-distractor maps. Non-empty when the pipeline
+        // has seeded the distractor tables for this item's caps. Builders
+        // prefer these and fall back to pickDistractorCascade when absent.
+        curatedRecognitionDistractors,
+        curatedCuedRecallDistractors,
       },
     })
   }

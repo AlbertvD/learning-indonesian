@@ -28,12 +28,20 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 async function main() {
   const lessonNumber = parseInt(process.argv[2], 10)
   if (isNaN(lessonNumber)) {
-    console.error('Usage: bun scripts/publish-approved-content.ts <N> [--dry-run] [--skip-lint]')
+    console.error('Usage: bun scripts/publish-approved-content.ts <N> [--dry-run] [--skip-lint] [--regenerate <normalized_text>]')
     process.exit(1)
   }
 
   const dryRun = process.argv.includes('--dry-run')
   const skipLint = process.argv.includes('--skip-lint')
+
+  // --regenerate <normalized_text>: destructive distractor regeneration for one item.
+  // Deletes existing distractor rows for the item (all 3 tables) then re-seeds.
+  // This is the ONLY destructive path — routine re-runs never delete seeded rows.
+  const regenIdx = process.argv.indexOf('--regenerate')
+  const regenerateArg = regenIdx !== -1 ? (process.argv[regenIdx + 1] ?? null) : null
+  const regenerate: { kind: 'item'; normalizedText: string } | undefined =
+    regenerateArg ? { kind: 'item', normalizedText: regenerateArg } : undefined
 
   // Pre-flight lint gate (CRITICAL findings only) — refuse to publish until
   // staging is clean. Skipped during dry-run when no service key is set.
@@ -66,6 +74,7 @@ async function main() {
     lessonNumber,
     lessonId: stageA.lesson.id,
     dryRun,
+    regenerate,
   })
   console.log(JSON.stringify(stageB, null, 2))
   if (stageB.status !== 'ok') {

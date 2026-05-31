@@ -56,6 +56,7 @@ import {
   insertGrammarExerciseTyped,
   retireOrphanedCapabilities,
   upsertCapabilities,
+  upsertCapabilitiesSkipIfExists,
   upsertCapabilityArtifacts,
   upsertCapabilityContentUnits,
   upsertClozeContext,
@@ -64,15 +65,27 @@ import {
   fetchGrammarPatternIdsBySlug,
   upsertItemAnchorContext,
   upsertLearningItem,
+  upsertLearningItemIdempotent,
   replaceDialogueClozes,
   replaceAffixedFormPairs,
+  fetchSeededDistractorCapIds,
+  upsertRecognitionDistractors,
+  upsertCuedRecallDistractors,
+  deleteItemDistractors,
   type CapabilityArtifactInput,
   type CapabilityContentUnitInput,
   type CapabilityInput,
   type CapabilitySupabaseClient,
   type ContentUnitInput,
+  type ItemDistractorRow,
 } from './adapter'
 import { loadLesson as defaultLoadLesson, type LoadedLesson } from './loader'
+import { loadFromDb as defaultLoadFromDb, fetchDistractorPool as defaultFetchDistractorPool, type ItemDbResult } from './loadFromDb'
+import { projectItemsFromTypedRows } from './projectors/vocab'
+import { generateItemDistractors, type GenerateFn, type DistractorInputItem, type ItemDistractorSet } from './generateItemDistractors'
+import { itemSlug } from '@/lib/capabilities'
+import type { ItemCapForCoverageCheck } from './validators/itemCoverage'
+import type { DistractorSetRow } from './validators/itemDistractors'
 
 // CS1 (grammar_topics) moved back to lesson-stage (GT1) — lesson_sections
 // is Stage A's territory, and lesson-stage now owns the enricher that
@@ -81,11 +94,9 @@ import { loadLesson as defaultLoadLesson, type LoadedLesson } from './loader'
 // / enrichDialogueTranslations) that fill the fields rather than gating.
 // EN-translation enrichment was relocated to lesson-stage (PR 6, ADR 0012);
 // this stage no longer generates translations.
-import { validateCandidatePayload } from './validators/candidatePayload'
-import { validateGrammarExercises } from './validators/grammarExercises'
-import { validatePerItemMeaning } from './validators/perItemMeaning'
-import { validateGrammarPattern } from './validators/grammarPattern'
-import { validatePosTags } from './validators/pos'
+// Pre-write validators (CS3/CS4/CS4b/CS5/CS6) and post-write verifiers
+// (CS7/CS8/CS9) are now composed behind the gate entry points.
+import { runCapabilityGatePreWrite, runCapabilityGatePostWrite } from './gate'
 
 import { projectVocab } from './projectors/vocab'
 import { projectGrammar } from './projectors/grammar'
@@ -95,14 +106,9 @@ import { projectDialogueArtifacts } from './projectors/dialogueArtifacts'
 import { projectAffixedFormPairs, type AffixedPairSource } from './projectors/morphology'
 
 import { validateLessonIdPresence } from './validators/lessonId'
-import { validateItemTranslations } from './validators/itemTranslations'
 import { validateItemSourceRefResolvability } from './validators/itemSourceRefResolvability'
 import { validateDialogueClozes } from './validators/dialogueClozes'
 import { validateAffixedFormPairs } from './validators/affixedFormPairs'
-
-import { runCountParity } from './verify/countParity'
-import { runContentNonEmpty } from './verify/contentNonEmpty'
-import { runSeedIntegrity } from './verify/seedIntegrity'
 
 import {
   markCandidatesPublished,
@@ -122,6 +128,24 @@ import { validatePOS } from '../../validate-pos'
 export interface CapabilityStageHooks {
   loadLesson?: typeof defaultLoadLesson
   createSupabaseClient?: () => CapabilitySupabaseClient
+  /**
+   * Injectable generate function for item distractors. When provided, bypasses
+   * the ANTHROPIC_API_KEY check in `generateItemDistractors` — used in tests to
+   * inject a fake response without network calls. In production this is omitted
+   * and the real Claude API is used (if ANTHROPIC_API_KEY is set).
+   */
+  generateFn?: GenerateFn
+  /**
+   * Injectable loadFromDb for tests. When provided, replaces the default DB load
+   * of typed lesson_section_item_rows + existing item state. Allows tests to supply
+   * known typed rows without mocking complex PostgREST join queries.
+   */
+  loadFromDb?: (supabase: CapabilitySupabaseClient, input: { lessonId: string }) => Promise<ItemDbResult>
+  /**
+   * Injectable fetchDistractorPool for tests. When provided, replaces the default
+   * DB read of all active word/phrase learning_items.
+   */
+  fetchDistractorPool?: (supabase: CapabilitySupabaseClient) => Promise<DistractorInputItem[]>
 }
 
 export async function runCapabilityStage(
@@ -141,6 +165,8 @@ export async function runCapabilityStage(
 
   const createClient = hooks.createSupabaseClient ?? defaultCreateSupabaseClient
   const loadLesson = hooks.loadLesson ?? defaultLoadLesson
+  const loadFromDb = hooks.loadFromDb ?? defaultLoadFromDb
+  const fetchDistractorPool = hooks.fetchDistractorPool ?? defaultFetchDistractorPool
 
   // ---- 1. Load (Stage A from DB + staging files from disk). ------------
   // Dry-run path: loader falls back to staging-only mode regardless of
@@ -282,16 +308,15 @@ export async function runCapabilityStage(
   // ---- 2. Validate (pre-write). ----------------------------------------
   // grammar_topics validation (GT1) is enforced by lesson-stage; by the time
   // Stage A's outputs land here, content.grammar_topics is already populated.
-  findings.push(...validateGrammarPattern(staging.grammarPatterns as Array<{ slug: string; pattern_name: string; complexity_score: number }>))
-  findings.push(...validateCandidatePayload(staging.candidates as Array<{ exercise_type?: string; payload?: Record<string, unknown> | null }>))
-  // CS13 (PR 4): grammar-exercise typed-row shape — per-table Zod over the
-  // projectable grammar candidates the writer will land in the 4 typed tables.
-  findings.push(...validateGrammarExercises(staging.candidates as Array<{ exercise_type?: string; payload?: Record<string, unknown> | null; review_status?: string }>))
-  findings.push(...validatePerItemMeaning(staging.learningItems as Array<{ base_text: string; context_type?: string; translation_nl?: string | null; translation_en?: string | null }>))
-  // CS4b — Decision R (PR 1): require translation_nl for non-dialogue_chunk items.
-  findings.push(...validateItemTranslations(staging.learningItems as Array<{ base_text: string; item_type: string; translation_nl?: string | null; translation_en?: string | null }>))
-  const posResult = validatePosTags(staging.learningItems as Array<{ base_text: string; item_type: string; pos?: string | null }>)
-  findings.push(...posResult.findings)
+  // CS3/CS4/CS4b/CS5/CS6 — composed behind the Capability Gate pre-write entry
+  // point (gate.ts). Same validators, same order, same findings — consolidated
+  // to eliminate scattered inline calls.
+  findings.push(...runCapabilityGatePreWrite({
+    grammarPatterns: staging.grammarPatterns as Array<{ slug: string; pattern_name: string; complexity_score: number }>,
+    candidates: staging.candidates as Array<{ exercise_type?: string; grammar_pattern_slug?: string | null; payload?: Record<string, unknown> | null; review_status?: string }>,
+    learningItems: staging.learningItems as Array<{ base_text: string; item_type: string; context_type?: string; translation_nl?: string | null; translation_en?: string | null; pos?: string | null }>,
+    mode: 'publish',
+  }))
 
   if (findings.some((f) => f.severity === 'error')) {
     return {
@@ -352,6 +377,28 @@ export async function runCapabilityStage(
   // morphology-introducing lessons emit affixed_form_pair capabilities, so
   // those rows still get the rule-introducing lesson's id. Podcasts are not
   // projected here; they're carved out from the lesson_id invariant.
+
+  // ---- 5a. Pre-load DB→DB item state (needed for legacy-bundle filter). ---
+  // The item DB load is moved here (before the legacy-bundle filter) so we can
+  // build the key set that the new path will emit. This allows the filter to be
+  // key-set-based rather than source-kind-based, preserving audio caps
+  // (audio_recognition, dictation) and other item caps that the new path does
+  // NOT emit (only the 4 base text caps are projected by projectItemsFromTypedRows).
+  // The itemDbResult and itemProjection are consumed by step 5b below.
+  const itemDbResult = await loadFromDb(supabase, { lessonId: input.lessonId })
+  const distractorPool = await fetchDistractorPool(supabase)
+  const itemProjection = projectItemsFromTypedRows({
+    rows: itemDbResult.items,
+    lessonId: input.lessonId,
+    level: loaded.lesson.level,
+  })
+  // Keys that the new DB→DB path (upsertCapabilitiesSkipIfExists) will write.
+  // These are EXCLUDED from the legacy bundle to prevent double-writes.
+  // Everything else — audio caps (audio_recognition, dictation) and
+  // sentence/dialogue_chunk item caps — stays in the legacy bundle.
+  const allItemCaps = itemProjection.perItemPlans.flatMap((p) => p.capabilities)
+  const newPathEmittedKeys = new Set(allItemCaps.map((c) => c.canonicalKey))
+
   const stagedCapabilities = (staging.capabilities as Array<{
     canonicalKey: string
     sourceKind: string
@@ -363,7 +410,15 @@ export async function runCapabilityStage(
     projectionVersion: string
     requiredArtifacts: string[]
     prerequisiteKeys?: string[]
-  }>).map((capability): CapabilityInput => ({
+  }>)
+    // Constraint #1 (Task 6c): item caps written by the new path are excluded from
+    // the legacy bundle to prevent double-writes. Only the EXACT canonical keys
+    // emitted by projectItemsFromTypedRows are excluded — audio caps
+    // (audio_recognition, dictation when item.hasAudio) and sentence/dialogue_chunk
+    // item caps flow through this legacy path unchanged, preserving them from
+    // the retireOrphanedCapabilities orphan sweep.
+    .filter((capability) => !newPathEmittedKeys.has(capability.canonicalKey))
+    .map((capability): CapabilityInput => ({
     canonicalKey: capability.canonicalKey,
     sourceKind: capability.sourceKind,
     sourceRef: capability.sourceRef,
@@ -393,6 +448,200 @@ export async function runCapabilityStage(
   )
   const capabilityIdsByKey = await upsertCapabilities(supabase, allCapabilities)
   counts.capabilities = capabilityIdsByKey.size
+
+  // ---- 5b. Write — item capabilities via DB→DB path (Task 6c). -----------
+  // Item-source-kind learning_items + caps are projected from typed DB rows
+  // (lesson_section_item_rows) instead of staging files (ADR 0011/0012).
+  // itemDbResult, distractorPool, itemProjection, and allItemCaps were loaded in
+  // step 5a (before the legacy-bundle filter) so the key set was available.
+  // This path runs after the staging vocab path (step 5) but before retire so
+  // item cap keys are included in emittedKeys for the orphan sweep.
+  //
+  // Item learning_items are written via upsertLearningItemIdempotent:
+  //   - On INSERT: full payload including pos, level, base_text, translations.
+  //   - On UPDATE (existing normalized_text): refreshes ONLY translation columns;
+  //     pos/level/base_text/is_active are preserved (DB-authoritative per ADR 0011).
+  // Item caps are written via upsertCapabilitiesSkipIfExists (INSERT ... ON CONFLICT
+  // DO NOTHING): existing caps' FSRS state is never disturbed on re-publish.
+
+  // Resolve which normalized_text to force-regenerate (--regenerate flag).
+  const regenerateNormalizedText = input.regenerate?.kind === 'item'
+    ? itemSlug(input.regenerate.normalizedText)
+    : null
+
+  // Write item learning_items + anchor contexts.
+  const itemIdsByNormalizedText = new Map<string, string>()
+  for (const plan of itemProjection.perItemPlans) {
+    const written = await upsertLearningItemIdempotent(supabase, plan.learningItemInput)
+    itemIdsByNormalizedText.set(plan.normalizedText, written.id)
+    await upsertItemAnchorContext(supabase, {
+      learning_item_id: written.id,
+      context_type: plan.anchorContext.context_type,
+      source_text: plan.anchorContext.source_text,
+      translation_text: plan.anchorContext.translation_text,
+      source_lesson_id: input.lessonId,
+    })
+  }
+
+  // Write item caps via skip-if-exists. Returns only newly-inserted rows;
+  // existing rows (already seeded) are not in the returned map.
+  // allItemCaps was declared in step 5a (before the legacy-bundle filter).
+  const newItemCapIdsByKey = await upsertCapabilitiesSkipIfExists(supabase, allItemCaps)
+
+  // Build a complete canonicalKey→id map for item caps by merging:
+  //   1. Newly inserted rows (from upsertCapabilitiesSkipIfExists return value)
+  //   2. Already-existing rows (from the pre-loaded itemState map)
+  // This is needed for the distractor cap ID lookup and for the orphan sweep.
+  const itemCapIdsByKey = new Map<string, string>()
+  for (const cap of allItemCaps) {
+    const existingCap = itemDbResult.itemState.existingItemCapsByCanonicalKey.get(cap.canonicalKey)
+    const newId = newItemCapIdsByKey.get(cap.canonicalKey)
+    const id = newId ?? existingCap?.id
+    if (id) itemCapIdsByKey.set(cap.canonicalKey, id)
+  }
+
+  // Merge item cap IDs into capabilityIdsByKey so retireOrphanedCapabilities
+  // includes them in emittedKeys (preventing them from being soft-retired).
+  for (const [key, id] of itemCapIdsByKey) {
+    capabilityIdsByKey.set(key, id)
+  }
+  counts.capabilities = capabilityIdsByKey.size
+
+  // ---- 5c. Item distractors — generation gate + write. -------------------
+  // recognition_mcq_distractors is the canonical seeded-state signal.
+  // Caps already in the table are skipped. The --regenerate path deletes
+  // existing distractors for the target item before this check runs.
+  const itemCapIds = [...itemCapIdsByKey.values()]
+  const seededCapIds = await fetchSeededDistractorCapIds(supabase, itemCapIds)
+
+  // --regenerate: delete existing distractors for the target item first.
+  if (regenerateNormalizedText !== null) {
+    // Find the caps for this normalized_text (4 caps per item).
+    const targetItemRef = `learning_items/${regenerateNormalizedText}`
+    const targetCapIds = allItemCaps
+      .filter((cap) => cap.sourceRef === targetItemRef)
+      .map((cap) => itemCapIdsByKey.get(cap.canonicalKey))
+      .filter((id): id is string => id !== undefined)
+    if (targetCapIds.length > 0) {
+      await deleteItemDistractors(supabase, targetCapIds)
+      // Remove from seeded set so generation runs.
+      for (const id of targetCapIds) seededCapIds.delete(id)
+    }
+  }
+
+  // Determine which items need distractor generation (cap not yet seeded).
+  const itemsNeedingDistractors = itemProjection.perItemPlans.filter((plan) => {
+    // An item needs generation if ANY of its caps is unseeded.
+    // (All 4 caps are written atomically by upsertItemDistractors, so
+    // we check the recognition cap — the seeded-state canonical signal.)
+    return plan.capabilities.some((cap) => {
+      const capId = itemCapIdsByKey.get(cap.canonicalKey)
+      return capId !== undefined && !seededCapIds.has(capId)
+    })
+  })
+
+  // Convert perItemPlans → DistractorInputItem format for the generator.
+  const distractorItems = itemsNeedingDistractors.map((plan) => ({
+    source_item_ref: plan.normalizedText,
+    item_type: plan.row.item_type,
+    indonesian_text: plan.row.indonesian_text,
+    l1_translation: plan.row.l1_translation,
+  }))
+
+  // Accumulate generated distractor sets for CS16 gate input.
+  // Declared outside the if block so the post-write gate can consume it.
+  const generatedDistractorSets = new Map<string, ItemDistractorSet>()
+
+  let itemDistractorSetsWritten = 0
+  if (distractorItems.length > 0) {
+    const generationResult = await generateItemDistractors(distractorItems, distractorPool, {
+      generateFn: hooks.generateFn,
+    })
+
+    // Capture generated sets for CS16 gate input (before writing to DB).
+    for (const [ref, distSet] of generationResult.distractorsBySourceItemRef) {
+      generatedDistractorSets.set(ref, distSet)
+    }
+
+    // Build per-table distractor rows: ONE row per item per table, keyed by
+    // the cap whose exercise the table serves.
+    //
+    //   recognition_mcq_distractors ← text_recognition cap
+    //     (recognition_mcq reads this table; text_recognition drives recognition_mcq)
+    //   cued_recall_distractors     ← l1_to_id_choice cap
+    //     (cued_recall builder reads this table; l1_to_id_choice is the primary
+    //     cued-recall cap — form_recall also serves cued_recall but l1_to_id_choice
+    //     is the direct cap, so we key on it per renderContracts.ts:70)
+    //   cloze_mcq_item_distractors  ← NOT written for items in this slice.
+    //     The 4 base item caps (text_recognition, l1_to_id_choice, meaning_recall,
+    //     form_recall) do NOT include a contextual_cloze cap, which is the cap
+    //     the cloze_mcq builder reads for item-sourced cloze. Deferred until the
+    //     item cloze cap is projected (likely Task 8 reader wiring).
+    //
+    // This satisfies the per-cap 1:1 schema invariant: capability_id is the PK
+    // in each distractor table; writing 4 rows per item keyed to non-matching
+    // cap types would create rows that the runtime builder can never resolve.
+    const distractorRows: ItemDistractorRow[] = []
+    for (const [sourceItemRef, distSet] of generationResult.distractorsBySourceItemRef) {
+      const matchingPlan = itemProjection.perItemPlans.find(
+        (p) => p.normalizedText === sourceItemRef,
+      )
+      if (!matchingPlan) continue
+
+      // recognition_mcq_distractors ← text_recognition cap
+      const textRecCap = matchingPlan.capabilities.find(
+        (cap) => cap.capabilityType === 'text_recognition',
+      )
+      const textRecCapId = textRecCap ? itemCapIdsByKey.get(textRecCap.canonicalKey) : undefined
+      if (textRecCapId) {
+        distractorRows.push({
+          capability_id: textRecCapId,
+          recognition: distSet.recognition_distractors_nl,
+          cued_recall: [],    // not used for this table — adapter writes recognition array
+          cloze: [],          // not used for this table
+        })
+      }
+
+      // cued_recall_distractors ← l1_to_id_choice cap
+      const l1ToIdCap = matchingPlan.capabilities.find(
+        (cap) => cap.capabilityType === 'l1_to_id_choice',
+      )
+      const l1ToIdCapId = l1ToIdCap ? itemCapIdsByKey.get(l1ToIdCap.canonicalKey) : undefined
+      if (l1ToIdCapId) {
+        distractorRows.push({
+          capability_id: l1ToIdCapId,
+          recognition: [],    // not used for this table
+          cued_recall: distSet.cued_recall_distractors_id,
+          cloze: [],          // not used for this table
+        })
+      }
+
+      // cloze_mcq_item_distractors: deferred — no contextual_cloze cap in the
+      // 4 base item caps emitted by projectItemsFromTypedRows in this slice.
+      // When the item cloze cap is added (Task 8), this block writes it.
+    }
+
+    if (distractorRows.length > 0) {
+      // Per-cap-1:1 writes: route each row to its target table.
+      // recognition rows (text_recognition caps) → recognition_mcq_distractors
+      const recognitionRowsToWrite = distractorRows
+        .filter((r) => r.recognition.length > 0)
+        .map((r) => ({ capability_id: r.capability_id, distractors: r.recognition }))
+      // cued_recall rows (l1_to_id_choice caps) → cued_recall_distractors
+      const cuedRecallRowsToWrite = distractorRows
+        .filter((r) => r.cued_recall.length > 0)
+        .map((r) => ({ capability_id: r.capability_id, distractors: r.cued_recall }))
+      // cloze_mcq_item_distractors: no rows in this slice (deferred — see comment above).
+
+      const recResult = await upsertRecognitionDistractors(supabase, recognitionRowsToWrite)
+      await upsertCuedRecallDistractors(supabase, cuedRecallRowsToWrite)
+      // itemDistractorSets is keyed to recognition table written count
+      // (the canonical seeded-state signal — if recognition has a row, cued_recall was also written).
+      itemDistractorSetsWritten = recResult.written
+    }
+  }
+  counts.itemDistractorSets = itemDistractorSetsWritten
+
   const capabilityIds = [...capabilityIdsByKey.values()]
 
   // PR 1.5: soft-retire any caps still attached to this lesson whose canonical_key
@@ -661,8 +910,89 @@ export async function runCapabilityStage(
   }
   counts.clozeContexts = clozeLanded
 
-  // ---- 12. Verify (CS7 → CS8 → CS9). -----------------------------------
-  findings.push(...await runCountParity(supabase, {
+  // ---- 12. Verify (CS7 → CS8 → CS9 → CS14 → CS15 → CS16 → CS17). -------
+  // Composed behind the Capability Gate post-write entry point (gate.ts).
+  // Same verifiers, same order, same findings — the cs9HasError check below
+  // filters by gate: 'CS9' instead of using the now-inlined integrityReport.
+
+  // ---- CS14 (item POS) — writtenItems from the item projector. -----------
+  // projectItemsFromTypedRows emits pos=null for all items because
+  // lesson_section_item_rows has no pos column (POS is the Lesson Stage's job,
+  // per ADR 0012). CS14 will emit WARNINGs for null-pos word/phrase items. This
+  // is the gate correctly surfacing a real state: item POS is not yet populated
+  // on the new DB→DB path. A follow-up task (after Lesson Stage POS enrichment
+  // is proven) will propagate POS into the typed rows.
+  const writtenItems = itemProjection.perItemPlans.map((plan) => ({
+    normalized_text: plan.normalizedText,
+    item_type: plan.learningItemInput.item_type,
+    pos: plan.learningItemInput.pos ?? null,
+  }))
+
+  // ---- CS15 (item distractor coverage) — per-cap distractor presence flag. --
+  // An item cap is considered "covered" if its capId was in seededCapIds before
+  // generation (already seeded on a prior run) OR if the item appears in
+  // generatedDistractorSets (newly generated this run). All 4 caps per item
+  // share coverage status because distractors are written atomically per item.
+  const itemCapsWithDistractorFlag: ItemCapForCoverageCheck[] = allItemCaps.map((cap) => {
+    const capId = itemCapIdsByKey.get(cap.canonicalKey)
+    const isSeededAlready = capId !== undefined && seededCapIds.has(capId)
+    const isGeneratedThisRun = generatedDistractorSets.has(
+      // sourceRef is 'learning_items/<normalizedText>'
+      cap.sourceRef.replace(/^learning_items\//, ''),
+    )
+    return {
+      capabilityKey: cap.canonicalKey,
+      normalizedText: cap.sourceRef.replace(/^learning_items\//, ''),
+      hasDistractors: isSeededAlready || isGeneratedThisRun,
+    }
+  })
+
+  // ---- CS16 (item distractor quality) — build DistractorSetRow[] for each ----
+  // generated set. Uses the distractorPool's normalized_texts as the in-pool set.
+  // Only newly generated sets are validated here (pre-existing seeded sets were
+  // checked on their own publish run; re-checking on every idempotent re-run
+  // would produce redundant noise).
+  const poolNormalizedTexts = new Set<string>([
+    ...distractorPool.map((p) => p.source_item_ref.toLowerCase()),
+    // Also include items written this run (becak ordering: in pool post-write).
+    ...[...itemIdsByNormalizedText.keys()].map((k) => k.toLowerCase()),
+  ])
+  const distractorSetRows: DistractorSetRow[] = []
+  for (const [sourceItemRef, distSet] of generatedDistractorSets) {
+    const plan = itemProjection.perItemPlans.find((p) => p.normalizedText === sourceItemRef)
+    if (!plan) continue
+    const textRecCap = plan.capabilities.find((c) => c.capabilityType === 'text_recognition')
+    if (textRecCap) {
+      distractorSetRows.push({
+        capabilityKey: textRecCap.canonicalKey,
+        answerText: sourceItemRef,
+        arrayName: 'recognition_distractors_nl',
+        distractors: distSet.recognition_distractors_nl as unknown as string[],
+        isIndonesian: false, // NL Dutch — not Indonesian
+      })
+    }
+    const l1ToIdCap = plan.capabilities.find((c) => c.capabilityType === 'l1_to_id_choice')
+    if (l1ToIdCap) {
+      distractorSetRows.push({
+        capabilityKey: l1ToIdCap.canonicalKey,
+        answerText: sourceItemRef,
+        arrayName: 'cued_recall_distractors_id',
+        distractors: distSet.cued_recall_distractors_id as unknown as string[],
+        isIndonesian: true, // Indonesian filler words
+      })
+    }
+    // cloze_distractors_id: deferred — no cloze cap in base 4 item caps (Task 8).
+  }
+  const distractorSetsInput = { sets: distractorSetRows, poolNormalizedTexts }
+
+  // ---- CS17 (cross-lesson duplicates) — normalized texts written this run. ---
+  const itemDuplicatesInput = {
+    lessonId: input.lessonId,
+    lessonNumber: input.lessonNumber,
+    writtenNormalizedTexts: [...itemIdsByNormalizedText.keys()],
+  }
+
+  const postWriteFindings = await runCapabilityGatePostWrite(supabase, {
     lessonId: input.lessonId,
     declared: {
       contentUnits: stagedContentUnits.length,
@@ -675,26 +1005,25 @@ export async function runCapabilityStage(
     },
     contentUnitIds,
     capabilityIds,
-  }))
-  findings.push(...await runContentNonEmpty(supabase, {
-    contentUnitIds,
-    capabilityIds,
     capabilityArtifactIds,
     learningItemIds: publishedItemIds,
     exerciseVariantIds,
     grammarPatternIds: [...grammarPatternUpsert.idsBySlug.values()],
-  }))
-  const integrityReport = await runSeedIntegrity(supabase, {
     publishedItemIds,
     dialogueItemIds,
+    // CS14-17: item kind gate inputs (assembled above from the item path).
+    writtenItems,
+    itemCapsWithDistractorFlag,
+    distractorSets: distractorSetsInput,
+    itemDuplicatesInput,
   })
-  findings.push(...integrityReport.findings)
+  findings.push(...postWriteFindings)
 
   // Staging write-back #2 — mirror legacy 925–963. Only after seed-integrity
   // (CS9) passes do we mark learning-items.ts entries as published or
   // deferred_dialogue. Writing earlier would mark items published before
   // verifying the DB state, risking a permanent skip if the DB write failed.
-  const cs9HasError = integrityReport.findings.some((f) => f.severity === 'error')
+  const cs9HasError = postWriteFindings.some((f) => f.gate === 'CS9' && f.severity === 'error')
   if (publishedItemIds.length > 0 && !cs9HasError) {
     markLearningItemsPublishedOrDeferred(
       staging.stagingDir,
