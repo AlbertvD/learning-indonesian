@@ -603,6 +603,7 @@ async function runStage(
   stagingDir: string,
   generateFn: () => Promise<string> = async () => '[]',
   singleItem = false,
+  pool: Array<{ source_item_ref: string; item_type: 'word' | 'phrase'; indonesian_text: string; l1_translation: string }> = [],
 ) {
   return runCapabilityStage(
     {
@@ -614,7 +615,7 @@ async function runStage(
       loadLesson: async () => makeLoadedLesson(stagingDir, { singleItem }),
       createSupabaseClient: () => client as never,
       loadFromDb: loadFromDbFn as never,
-      fetchDistractorPool: async () => [],
+      fetchDistractorPool: (async () => pool) as never,
       generateFn,
     },
   )
@@ -1095,8 +1096,11 @@ describe('item-spine integration — CS14–17 gate', () => {
     expect(cs15Findings.every((f) => f.severity === 'warning')).toBe(true)
   })
 
-  it('CS16 error emitted for distractor equal to the answer', async () => {
-    // 'buku' as a cued_recall distractor for 'buku' violates "no-answer" rule.
+  it('answer-equal distractor is sanitized end-to-end (no CS16 equals-answer error)', async () => {
+    // The LLM returns 'buku' as a cued_recall distractor for 'buku' (== answer).
+    // The generator's defensive sanitization filters it + pads from the pool
+    // BEFORE the gate, so CS16 sees clean data and emits no 'equals the answer'
+    // error. (CS16's own error path is unit-tested in validators/itemDistractors.test.ts.)
     const { client } = buildIntegrationMock()
 
     const result = await runStage(
@@ -1115,17 +1119,20 @@ describe('item-spine integration — CS14–17 gate', () => {
           {
             source_item_ref: 'buku',
             recognition_distractors_nl: ['stoel', 'pen', 'huis'],
-            cued_recall_distractors_id: ['buku', 'kursi', 'rumah'], // buku == answer
+            cued_recall_distractors_id: ['buku', 'kursi', 'rumah'], // buku == answer → sanitized
             cloze_distractors_id: ['meja', 'kursi', 'rumah'],
           },
         ]),
       /* singleItem */ true,
+      // same-word-class pool so the generator pads back to 3 after dropping 'buku'
+      [
+        { source_item_ref: 'pena', item_type: 'word', indonesian_text: 'pena', l1_translation: 'pen' },
+        { source_item_ref: 'tas', item_type: 'word', indonesian_text: 'tas', l1_translation: 'tas' },
+      ],
     )
 
     const cs16Findings = result.findings.filter((f) => f.gate === 'CS16')
-    expect(cs16Findings.length).toBeGreaterThan(0)
-    expect(cs16Findings.some((f) => f.severity === 'error')).toBe(true)
-    expect(cs16Findings.some((f) => f.message.includes('equals the answer'))).toBe(true)
+    expect(cs16Findings.some((f) => f.message.includes('equals the answer'))).toBe(false)
   })
 
   it('CS17 produces no errors in a clean single-lesson scenario (no cross-lesson duplicates)', async () => {

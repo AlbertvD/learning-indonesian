@@ -894,16 +894,19 @@ describe('runner item cutover (Task 6c)', () => {
 
 
   // --- I: CS14-17 validators receive data and execute via the runner (FIX 1) ---
-  it('FIX1-wiring: CS14 warning emitted for null-pos items, CS16 error emitted for bad distractor count', async () => {
+  it('FIX1-wiring: CS14 warning emitted for null-pos items; answer-equal distractor is sanitized (no CS16 equals-answer error)', async () => {
     // CS14: itemProjection.perItemPlans emits pos=null for items coming from
     // TypedItemRows (lesson_section_item_rows has no pos column; POS is the
     // Lesson Stage's job). The validator produces a WARNING per null-pos word/phrase item.
     //
-    // CS16: inject a generateFn that returns only 2 distractors (invalid length)
-    // for one item. The validator must emit a CS16 error.
+    // CS16 + generator sanitization: inject a generateFn that returns a distractor
+    // EQUAL TO THE ANSWER ('buku'). The generator's defensive sanitization
+    // (filter answer-equal + pad from pool) removes it BEFORE the gate, so CS16
+    // sees clean data and emits NO 'equals the answer' error. (CS16's own error
+    // path is unit-tested directly in validators/itemDistractors.test.ts.)
     //
     // This test FAILS if the runner does NOT pass writtenItems / distractorSets
-    // to runCapabilityGatePostWrite — the validators never run and no findings emerge.
+    // to runCapabilityGatePostWrite (CS14 never runs) — proving the FIX-1 wiring.
 
     const badDistractorGenerateFn = async (): Promise<string> =>
       JSON.stringify([
@@ -913,6 +916,7 @@ describe('runner item cutover (Task 6c)', () => {
           // (distractor equals the answer). parseResponse accepts this (all 3 arrays
           // have 3 items), so the set reaches the CS16 validator which flags it.
           recognition_distractors_nl: ['stoel', 'pen', 'huis'],
+          // 'buku' == the ID answer → the generator sanitizes it out + pads from pool.
           cued_recall_distractors_id: ['buku', 'kursi', 'rumah'],
           cloze_distractors_id: ['meja', 'kursi', 'rumah'],
         },
@@ -932,22 +936,28 @@ describe('runner item cutover (Task 6c)', () => {
             existingItemCapsByCanonicalKey: new Map(),
           },
         }),
-        fetchDistractorPool: async () => [],
+        // Same-word-class pool so the generator can pad to 3 after dropping
+        // the answer-equal distractor.
+        fetchDistractorPool: async () => [
+          { source_item_ref: 'pena', item_type: 'word', indonesian_text: 'pena', l1_translation: 'pen' },
+          { source_item_ref: 'tas', item_type: 'word', indonesian_text: 'tas', l1_translation: 'tas' },
+        ],
         generateFn: badDistractorGenerateFn,
       },
     )
 
     // CS14: null-pos warnings for word/phrase items (both items have pos=null
     // from projectItemsFromTypedRows — TypedItemRow has no pos column).
+    // This is the FIX-1 wiring proof: CS14 only emits if the runner passed
+    // writtenItems to the post-write gate.
     const cs14Findings = result.findings.filter((f) => f.gate === 'CS14')
     expect(cs14Findings.length).toBeGreaterThan(0)
     expect(cs14Findings.every((f) => f.severity === 'warning')).toBe(true)
 
-    // CS16: error for distractor == answer ('buku' in cued_recall_distractors_id).
+    // CS16: the answer-equal 'buku' was sanitized out + padded from pool BEFORE
+    // the gate, so NO 'equals the answer' error is emitted.
     const cs16Findings = result.findings.filter((f) => f.gate === 'CS16')
-    expect(cs16Findings.length).toBeGreaterThan(0)
-    expect(cs16Findings.some((f) => f.severity === 'error')).toBe(true)
-    expect(cs16Findings.some((f) => f.message.includes('equals the answer'))).toBe(true)
+    expect(cs16Findings.some((f) => f.message.includes('equals the answer'))).toBe(false)
   })
 
   it('FIX1-wiring: CS15 warning emitted when no distractors generated (empty generateFn)', async () => {

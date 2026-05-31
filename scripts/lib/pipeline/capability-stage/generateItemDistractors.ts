@@ -23,9 +23,11 @@
  * Disk-I/O contract: this file contains NO disk reads or writes. It is
  * enforced by the noDiskReads.test.ts gate (existsFails flipped to false).
  *
- * Deferred validation: Distractor-equals-answer, intra-array duplicates, and
- * pool-membership are NOT validated in this generator — they are deferred to
- * the Task-7 Capability Gate (`validators/itemDistractors.ts`).
+ * Defensive sanitization (added after the first live publish): the LLM does not
+ * reliably obey "never the answer / no duplicate", so `sanitizeDistractorSet`
+ * filters answer-equal + duplicate distractors and pads from the same-word-class
+ * pool to reach 3. The Task-7 Capability Gate (`validators/itemDistractors.ts`)
+ * remains the safety-net (CS16); pool-membership is still only gate-checked.
  *
  * Morphology rule hardened intentionally: The ported prompt hardens the source
  * agent's `cued_recall` morphology rule: the agent allowed "at most one
@@ -286,6 +288,71 @@ async function generateBatch(
  * @param pool      Cumulative prior-lesson items (the distractor pool).
  * @param options   Optional `generateFn` for injection.
  */
+/**
+ * Defensive sanitization of one array of LLM-produced distractors. The LLM does
+ * NOT reliably obey "never the answer / no duplicate / from pool" (the first
+ * live publish emitted distractors equal to the answer → CS16 error → no
+ * promotion). So we enforce it deterministically here:
+ *   1. drop any value equal (case-insensitive, trimmed) to the answer,
+ *   2. dedupe (case-insensitive),
+ *   3. pad from `poolCandidates` (same word-class, right language) to reach 3,
+ *      excluding the answer + already-chosen.
+ * If the pool can't supply enough, emit as many VALID values as possible — never
+ * the answer, never a dup (CS16 may then warn on length; that's acceptable,
+ * emitting the answer is not).
+ */
+function sanitizeDistractorArray(
+  raw: readonly string[],
+  answer: string,
+  poolCandidates: readonly string[],
+): string[] {
+  const ans = answer.trim().toLowerCase()
+  const seen = new Set<string>()
+  const out: string[] = []
+  const tryPush = (v: string): void => {
+    if (typeof v !== 'string') return
+    const key = v.trim().toLowerCase()
+    if (!key || key === ans || seen.has(key)) return
+    seen.add(key)
+    out.push(v)
+  }
+  for (const d of raw) tryPush(d)
+  for (const c of poolCandidates) {
+    if (out.length >= 3) break
+    tryPush(c)
+  }
+  return out.slice(0, 3)
+}
+
+/**
+ * Sanitize all three arrays of an LLM-produced set against the item's answer +
+ * the same-word-class pool. recognition answer = NL `l1_translation`;
+ * cued_recall + cloze answer = ID `indonesian_text`.
+ */
+function sanitizeDistractorSet(
+  set: ItemDistractorSet,
+  item: DistractorInputItem,
+  pool: readonly DistractorInputItem[],
+): ItemDistractorSet {
+  const sameClass = pool.filter(
+    (p) => p.item_type === item.item_type && p.source_item_ref !== item.source_item_ref,
+  )
+  const nlPool = sameClass.map((p) => p.l1_translation).filter((s): s is string => !!s)
+  const idPool = sameClass.map((p) => p.indonesian_text).filter((s): s is string => !!s)
+  return {
+    source_item_ref: set.source_item_ref,
+    recognition_distractors_nl: sanitizeDistractorArray(
+      set.recognition_distractors_nl, item.l1_translation, nlPool,
+    ) as [string, string, string],
+    cued_recall_distractors_id: sanitizeDistractorArray(
+      set.cued_recall_distractors_id, item.indonesian_text, idPool,
+    ) as [string, string, string],
+    cloze_distractors_id: sanitizeDistractorArray(
+      set.cloze_distractors_id, item.indonesian_text, idPool,
+    ) as [string, string, string],
+  }
+}
+
 export async function generateItemDistractors(
   items: DistractorInputItem[],
   pool: DistractorInputItem[],
@@ -345,7 +412,10 @@ export async function generateItemDistractors(
     const sets = await generateBatch(effectiveGenerateFn, batch, pool)
 
     for (const set of sets) {
-      resultMap.set(set.source_item_ref, set)
+      const item = batch.find((it) => it.source_item_ref === set.source_item_ref)
+      if (!item) continue // Claude returned a ref not in this batch — drop it.
+      // Defensive sanitization: filter answer-equal + dups, pad from pool.
+      resultMap.set(set.source_item_ref, sanitizeDistractorSet(set, item, pool))
     }
 
     // Any batch item not returned by Claude is skipped

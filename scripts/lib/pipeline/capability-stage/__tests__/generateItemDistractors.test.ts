@@ -298,6 +298,68 @@ describe('generateItemDistractors', () => {
     expect(set!.cloze_distractors_id).toEqual(['mahal', 'besar', 'jauh'])
   })
 
+  it('drops a distractor equal to the answer (cued_recall) and pads from pool', async () => {
+    // LLM returned 'murah' (the ID answer) as a cued_recall distractor — the
+    // exact failure mode from the first live publish. Must be filtered + padded.
+    const badResponse = JSON.stringify([{
+      source_item_ref: 'murah',
+      recognition_distractors_nl: ['duur', 'gratis', 'betaalbaar'],
+      cued_recall_distractors_id: ['murah', 'murid', 'mudah'], // 'murah' == answer
+      cloze_distractors_id: ['mahal', 'besar', 'jauh'],
+    }])
+    const fakeFn = vi.fn().mockResolvedValue(badResponse)
+    const result = await generateItemDistractors([ITEM_MURAH], [POOL_ITEM_MAHAL, POOL_ITEM_BELI], { generateFn: fakeFn })
+    const set = result.distractorsBySourceItemRef.get('murah')!
+    expect(set.cued_recall_distractors_id).toHaveLength(3)
+    expect(set.cued_recall_distractors_id.map((s) => s.toLowerCase())).not.toContain('murah')
+    // padded from the same-class pool (mahal) after dropping the answer
+    expect(set.cued_recall_distractors_id).toContain('mahal')
+  })
+
+  it('dedupes intra-array duplicates and pads from pool', async () => {
+    const dupResponse = JSON.stringify([{
+      source_item_ref: 'murah',
+      recognition_distractors_nl: ['duur', 'duur', 'gratis'], // dup 'duur'
+      cued_recall_distractors_id: ['mahal', 'murid', 'mudah'],
+      cloze_distractors_id: ['mahal', 'besar', 'jauh'],
+    }])
+    const fakeFn = vi.fn().mockResolvedValue(dupResponse)
+    const result = await generateItemDistractors([ITEM_MURAH], [POOL_ITEM_MAHAL, POOL_ITEM_BELI], { generateFn: fakeFn })
+    const rec = result.distractorsBySourceItemRef.get('murah')!.recognition_distractors_nl
+    expect(rec).toHaveLength(3)
+    expect(new Set(rec.map((s) => s.toLowerCase())).size).toBe(3) // no dups
+    expect(rec).toContain('kopen') // padded with a pool NL translation (beli→kopen)
+  })
+
+  it('never emits the answer in any array (recognition NL or ID arrays)', async () => {
+    const badResponse = JSON.stringify([{
+      source_item_ref: 'murah',
+      recognition_distractors_nl: ['goedkoop', 'gratis', 'betaalbaar'], // 'goedkoop' == NL answer
+      cued_recall_distractors_id: ['murah', 'mahal', 'beli'], // 'murah' == ID answer
+      cloze_distractors_id: ['murah', 'mahal', 'beli'],
+    }])
+    const fakeFn = vi.fn().mockResolvedValue(badResponse)
+    const result = await generateItemDistractors([ITEM_MURAH], [POOL_ITEM_MAHAL, POOL_ITEM_BELI], { generateFn: fakeFn })
+    const set = result.distractorsBySourceItemRef.get('murah')!
+    expect(set.recognition_distractors_nl.map((s) => s.toLowerCase())).not.toContain('goedkoop')
+    expect(set.cued_recall_distractors_id.map((s) => s.toLowerCase())).not.toContain('murah')
+    expect(set.cloze_distractors_id.map((s) => s.toLowerCase())).not.toContain('murah')
+  })
+
+  it('pool too small: emits fewer than 3 but never the answer', async () => {
+    const badResponse = JSON.stringify([{
+      source_item_ref: 'murah',
+      recognition_distractors_nl: ['goedkoop', 'goedkoop', 'goedkoop'], // all == NL answer
+      cued_recall_distractors_id: ['mahal', 'murid', 'mudah'],
+      cloze_distractors_id: ['mahal', 'besar', 'jauh'],
+    }])
+    const fakeFn = vi.fn().mockResolvedValue(badResponse)
+    const result = await generateItemDistractors([ITEM_MURAH], [], { generateFn: fakeFn }) // empty pool → can't pad
+    const rec = result.distractorsBySourceItemRef.get('murah')!.recognition_distractors_nl
+    expect(rec.length).toBeLessThan(3) // all dropped, nothing to pad with
+    expect(rec.map((s) => s.toLowerCase())).not.toContain('goedkoop')
+  })
+
   it('counts skipped items when Claude omits an item from the response', async () => {
     // Two items supplied, but response only contains one
     const fakeFn = vi.fn().mockResolvedValue(CANNED_VALID_RESPONSE)
