@@ -1,6 +1,7 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #121
+merged_at: 2026-05-31
 epic: "#98"
 issue: "#99"
 implementation_paths:
