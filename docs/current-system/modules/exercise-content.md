@@ -159,19 +159,27 @@ Exercise-type dispatch lives in `byType/`, on a different axis. The two-axis dis
 
 ### 3.3 Wave coupling inside `fetchForItemBlocks`
 
-The item fetcher runs two waves of parallel queries:
+The item fetcher (now in `byKind/item.ts:70`) runs two waves of parallel queries followed by a pool fetch:
 
 ```
-Wave 1 (parallel):  fetchLearningItemsByKey(slugs)   // learning_items keyed by normalized_text
-                    fetchArtifacts(capabilityIds)    // capability_artifacts
-Wave 2 (parallel):  fetchMeanings(itemIds)           // item_meanings
-                    fetchContexts(itemIds)           // item_contexts
-                    fetchAnswerVariants(itemIds)     // item_answer_variants
-                    fetchActiveVariants(itemIds)     // exercise_variants
-After Wave 2:       fetchDistractorPool(lessonIds)   // derived from contexts' lessons
+Wave 1 (serial):    fetchLearningItemsByKey(slugs)       // learning_items keyed by normalized_text (byKind/item.ts:83)
+Wave 2 (parallel):  fetchContexts(itemIds)               // item_contexts (byKind/item.ts:97)
+                    fetchAnswerVariants(itemIds)         // item_answer_variants (byKind/item.ts:104)
+                    fetchRecognitionMcqDistractors(capIds) // recognition_mcq_distractors via chunkedIn (byKind/item.ts:114)
+                    fetchCuedRecallDistractors(capIds)   // cued_recall_distractors via chunkedIn (byKind/item.ts:120)
+After Wave 2:       fetchDistractorPool(lessonIds)       // items whose item_contexts.source_lesson_id matches (byKind/item.ts:126)
 ```
 
-Wave 1 gathers item UUIDs from slug-shaped source refs (`learning_items/<slug>`); Wave 2 needs those UUIDs to join meanings + contexts + variants. The distractor pool is derived from the lessons those items' contexts anchor to — known only after Wave 2.
+Wave 1 gathers item UUIDs from slug-shaped source refs (`learning_items/<slug>`); Wave 2 needs those UUIDs to join contexts + variants. The curated-distractor tables are fetched concurrently with Wave 2 (keyed by `capability_id`, not item uuid). The distractor pool is derived from the lessons those items' contexts anchor to — known only after Wave 2.
+
+**No `capability_artifacts` query.** The item path never calls `fetchArtifacts` — `artifactsByKind` is always an empty `Map()` for item caps (Decision Q, PR 1; `byKind/item.ts:240-244`). Curated distractors come from the typed tables directly. The enforcement test at `scripts/lib/pipeline/capability-stage/__tests__/enforcement/noLegacyItemReader.test.ts` gates this invariant with both an observable-effect assert (tracks `.from('capability_artifacts')` on the mock client) and a spy-based secondary check.
+
+**Curated-distractor interface.** `RawProjectorInput` (`renderContracts.ts:310`) carries two fields populated by the item fetcher:
+
+- `curatedRecognitionDistractors: Map<string, string[]>` — NL wrong-option strings for `recognition_mcq`, keyed by `capability_id` (`renderContracts.ts:333`).
+- `curatedCuedRecallDistractors: Map<string, string[]>` — Indonesian wrong-option strings for `cued_recall`, keyed by `capability_id` (`renderContracts.ts:337`).
+
+Both also appear on `BuilderBase` (`renderContracts.ts:341`) so every builder receives them. The `recognition_mcq` and `cued_recall` builders prefer curated rows when `length >= 3`; fall back to `pickDistractorCascade` otherwise (`byType/recognitionMcq.ts:22`, `byType/cuedRecall.ts:24`). When a curated row has `length > 3`, it is sliced to exactly 3 (`byType/recognitionMcq.ts:24`, `byType/cuedRecall.ts:26`). Cloze curated distractors are deferred to Slice 3.
 
 ---
 
@@ -183,7 +191,7 @@ Wave 1 gathers item UUIDs from slug-shaped source refs (`learning_items/<slug>`)
 
 - **The projector is the sole runtime gate for builder input shape.** Mirrors capabilities spec §4 (`docs/current-system/modules/capabilities.md:176`). Builders trust their inputs; no per-builder `if (!input.X) return fail` guards for fields the contract guarantees. Content-quality guards (cloze-context `___` marker, payload shape validation, distractor cascade min count) stay in the builder bodies because they're not contract-provable.
 
-- **URL-budget invariant for chunked fetches.** Kong's request-line buffer is 8 KB. The adapter's distractor-pool path uses `chunkedIn` (in `src/lib/chunkedQuery.ts`) to keep each `.in(...)` URL under ~2 KB. The resolver test at `__tests__/resolver.test.ts` (post-fold) enforces this with `assertUrlBudget` per `.in()` call — every test call is checked against the 8 KB cap regardless of which caller emitted the request.
+- **URL-budget invariant for chunked fetches.** Kong's request-line buffer is 8 KB. The item fetcher routes all `.in()` clauses through `chunkedIn` (`src/lib/chunkedQuery.ts`): `fetchLearningItemsById` (pool path, `byKind/item.ts:93`), `fetchRecognitionMcqDistractors` (`byKind/item.ts:115`), and `fetchCuedRecallDistractors` (`byKind/item.ts:121`). Each URL is held under ~2 KB. The resolver test at `__tests__/resolver.test.ts` enforces this with `assertUrlBudget` per `.in()` call.
 
 - **Resolution failures are fire-and-forget.** `logResolutionFailure` swallows errors so a failed insert against `capability_resolution_failure_events` never disrupts the user's session. The dialog with the user is rendered from the fail context's `reasonCode`; the DB row is observability only.
 
@@ -196,8 +204,9 @@ Wave 1 gathers item UUIDs from slug-shaped source refs (`learning_items/<slug>`)
 ### Upstream (data feeds the module)
 
 - **`learning_capabilities` table** — capability rows the blocks point at (via `block.capabilityId`).
-- **`learning_items`, `item_meanings`, `item_contexts`, `item_answer_variants`, `exercise_variants` tables** — item-bucket data.
-- **`capability_artifacts` table** — per-capability content blobs, indexed by `(capability_id, artifact_kind)`.
+- **`learning_items`, `item_contexts`, `item_answer_variants` tables** — item-bucket data (`item_meanings` and `exercise_variants` are legacy-retained; item fetcher reads translations from inline columns per Decision R).
+- **`recognition_mcq_distractors`, `cued_recall_distractors` tables** — curated wrong-option strings, keyed by `capability_id` (Task 8 / #99). Populated by the capability-stage pipeline.
+- **`capability_artifacts` table** — per-capability content blobs, indexed by `(capability_id, artifact_kind)`. **Not queried by the item path** (Decision Q, PR 1). Still queried by `fetchForDialogueLineBlocks` for cloze artifacts.
 - **`capability_resolution_failure_events` table** — write-only audit log of fail contexts.
 
 ### Sibling (lib modules consumed)

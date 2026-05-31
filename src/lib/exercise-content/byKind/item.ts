@@ -108,24 +108,19 @@ export async function fetchForItemBlocks(
     return (data ?? []) as ItemAnswerVariant[]
   }
 
+  // Chunked: capability_ids grow with session size (one per block). Route through
+  // chunkedIn for consistency with fetchLearningItemsById and to guard against
+  // Kong's 8 KB request-line buffer ceiling on large sessions.
   async function fetchRecognitionMcqDistractors(capabilityIds: string[]): Promise<Array<{capability_id: string; distractors: string[]}>> {
-    if (capabilityIds.length === 0) return []
-    const { data, error } = await db()
-      .from('recognition_mcq_distractors')
-      .select('capability_id, distractors')
-      .in('capability_id', capabilityIds)
-    if (error) throw error
-    return (data ?? []) as Array<{capability_id: string; distractors: string[]}>
+    return chunkedIn<{capability_id: string; distractors: string[]}>(
+      'recognition_mcq_distractors', 'capability_id', capabilityIds, undefined, client,
+    )
   }
 
   async function fetchCuedRecallDistractors(capabilityIds: string[]): Promise<Array<{capability_id: string; distractors: string[]}>> {
-    if (capabilityIds.length === 0) return []
-    const { data, error } = await db()
-      .from('cued_recall_distractors')
-      .select('capability_id, distractors')
-      .in('capability_id', capabilityIds)
-    if (error) throw error
-    return (data ?? []) as Array<{capability_id: string; distractors: string[]}>
+    return chunkedIn<{capability_id: string; distractors: string[]}>(
+      'cued_recall_distractors', 'capability_id', capabilityIds, undefined, client,
+    )
   }
 
   async function fetchDistractorPool(lessonIds: string[]): Promise<LearningItem[]> {
