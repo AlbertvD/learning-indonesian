@@ -276,6 +276,36 @@ describe('buildRecognitionMCQ', () => {
       expect(r.exerciseItem.distractors?.every((d: string) => d.startsWith('pool-meaning-'))).toBe(true)
     }
   })
+  it('falls back to pool when curated row has fewer than 3 distractors (CS16 write-gate breach)', () => {
+    // A row with < 3 distractors bypasses the curated path (guard: length >= 3);
+    // the pool fallback must produce the full set. This guards CS16's runtime
+    // contract: even if a malformed row reaches the reader, behaviour is correct.
+    const capabilityId = 'cap-1'
+    const tooFew = ['only-one']  // length 1 < 3
+    const r = buildForExerciseType('recognition_mcq', baseInput({
+      curatedRecognitionDistractors: new Map([[capabilityId, tooFew]]),
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind === 'ok') {
+      // Pool path: distractors come from pool items, not the curated list
+      expect(r.exerciseItem.distractors).toHaveLength(3)
+      expect(r.exerciseItem.distractors?.every((d: string) => d.startsWith('pool-meaning-'))).toBe(true)
+    }
+  })
+
+  it('uses exactly 3 distractors when curated row has more than 3 (slice guard)', () => {
+    // A row with > 3 distractors must be sliced to exactly 3 (.slice(0,3)).
+    const capabilityId = 'cap-1'
+    const tooMany = ['d1', 'd2', 'd3', 'd4', 'd5']  // length 5 > 3
+    const r = buildForExerciseType('recognition_mcq', baseInput({
+      curatedRecognitionDistractors: new Map([[capabilityId, tooMany]]),
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind === 'ok') {
+      expect(r.exerciseItem.distractors).toHaveLength(3)
+      expect(r.exerciseItem.distractors).toEqual(['d1', 'd2', 'd3'])
+    }
+  })
 })
 
 describe('buildCuedRecall', () => {
@@ -321,6 +351,40 @@ describe('buildCuedRecall', () => {
       // Pool path: options include the correct answer + pool base_texts
       expect(r.exerciseItem.cuedRecallData?.options).toHaveLength(4)
       expect(r.exerciseItem.cuedRecallData?.correctOptionId).toBe('akhir')
+    }
+  })
+  it('falls back to pool when curated row has fewer than 3 distractors (CS16 write-gate breach)', () => {
+    // A row with < 3 distractors bypasses the curated path (guard: length >= 3);
+    // the pool fallback must produce the full set of 4 options (correct + 3).
+    const capabilityId = 'cap-1'
+    const tooFew = ['salah-id-1', 'salah-id-2']  // length 2 < 3
+    const r = buildForExerciseType('cued_recall', baseInput({
+      curatedCuedRecallDistractors: new Map([[capabilityId, tooFew]]),
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind === 'ok') {
+      expect(r.exerciseItem.cuedRecallData?.options).toHaveLength(4)
+      expect(r.exerciseItem.cuedRecallData?.correctOptionId).toBe('akhir')
+      // Pool path: none of the options are the curated strings
+      expect(r.exerciseItem.cuedRecallData?.options).not.toContain('salah-id-1')
+    }
+  })
+
+  it('uses exactly 3 distractors when curated row has more than 3 (slice guard)', () => {
+    // A row with > 3 distractors must be sliced to exactly 3 (.slice(0,3)).
+    const capabilityId = 'cap-1'
+    const tooMany = ['salah-1', 'salah-2', 'salah-3', 'salah-4', 'salah-5']  // length 5 > 3
+    const r = buildForExerciseType('cued_recall', baseInput({
+      curatedCuedRecallDistractors: new Map([[capabilityId, tooMany]]),
+    }))
+    expect(r.kind).toBe('ok')
+    if (r.kind === 'ok') {
+      expect(r.exerciseItem.cuedRecallData?.options).toHaveLength(4)  // 1 correct + 3 sliced
+      expect(r.exerciseItem.cuedRecallData?.options).toContain('akhir')     // correct
+      expect(r.exerciseItem.cuedRecallData?.options).toContain('salah-1')   // first 3
+      expect(r.exerciseItem.cuedRecallData?.options).toContain('salah-2')
+      expect(r.exerciseItem.cuedRecallData?.options).toContain('salah-3')
+      expect(r.exerciseItem.cuedRecallData?.options).not.toContain('salah-4')  // 4th excluded
     }
   })
 })
