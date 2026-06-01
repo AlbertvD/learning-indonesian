@@ -1,6 +1,7 @@
 ---
-status: implementing
+status: shipped
 implementation: "PR #124"
+merged_at: 2026-06-01
 implementation_paths:
   - scripts/lib/pipeline/capability-stage/
   - src/services/coverageService.ts
