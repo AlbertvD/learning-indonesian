@@ -37,16 +37,25 @@ interface RecordedOp {
   opts?: Record<string, unknown>
 }
 
+const TYPED_TABLES = ['contrast_pair_exercises', 'sentence_transformation_exercises', 'constrained_translation_exercises', 'cloze_mcq_exercises']
+
 function buildMock() {
   const ops: RecordedOp[] = []
   let seq = 0
   const nextId = (p: string) => `${p}-${++seq}`
+  // Track inserted typed-exercise rows so the CS18 coverage read reflects writes.
+  const typedRows: Record<string, Array<{ grammar_pattern_id: string }>> = {
+    contrast_pair_exercises: [], sentence_transformation_exercises: [],
+    constrained_translation_exercises: [], cloze_mcq_exercises: [],
+  }
 
   const fromBuilder = (table: string) => {
     let upsertOpts: Record<string, unknown> = {}
+    let inCol: string | undefined
+    let inVals: string[] = []
     const chain: any = {
       eq: () => chain,
-      in: () => chain,
+      in: (col: string, vals: string[]) => { inCol = col; inVals = vals; return chain },
       is: () => chain,
       not: () => chain,
       ilike: () => chain,
@@ -55,7 +64,14 @@ function buildMock() {
       range: () => Promise.resolve({ data: [], error: null, count: 0 }),
       maybeSingle: async () => ({ data: null, error: null }),
       single: async () => ({ data: { id: nextId(table), slug: 'slug', canonical_key: 'key', normalized_text: 'nt' }, error: null }),
-      then: (resolve: (v: { data: unknown; error: null }) => unknown) => resolve({ data: [], error: null }),
+      then: (resolve: (v: { data: unknown; error: null }) => unknown) => {
+        // CS18 coverage read: typed table .select('grammar_pattern_id').eq(is_active).in('grammar_pattern_id', ids)
+        if (TYPED_TABLES.includes(table) && inCol === 'grammar_pattern_id') {
+          const rows = typedRows[table].filter((r) => inVals.includes(r.grammar_pattern_id))
+          return resolve({ data: rows, error: null })
+        }
+        return resolve({ data: [], error: null })
+      },
     }
     return {
       select: () => chain,
@@ -79,7 +95,11 @@ function buildMock() {
         }
       },
       insert: (payload: Record<string, unknown> | Array<Record<string, unknown>>) => {
-        ops.push({ table, op: 'insert', payload: Array.isArray(payload) ? payload[0] : payload })
+        const row = (Array.isArray(payload) ? payload[0] : payload) as Record<string, unknown>
+        ops.push({ table, op: 'insert', payload: row })
+        if (TYPED_TABLES.includes(table) && typeof row.grammar_pattern_id === 'string') {
+          typedRows[table].push({ grammar_pattern_id: row.grammar_pattern_id })
+        }
         return {
           select: () => ({ single: async () => ({ data: { id: nextId(table) }, error: null }) }),
           then: (resolve: (v: unknown) => unknown) => resolve({ error: null, data: { id: nextId(table) } }),
@@ -152,7 +172,21 @@ const NO_ITEMS = {
   itemState: { existingItemsByNormalizedText: new Map(), existingItemCapsByCanonicalKey: new Map() },
 }
 
+/** Generator emitting one valid candidate of ALL 4 types → full CS18 coverage. */
 function fullGrammarGenerateFn(): (prompt: string) => Promise<string> {
+  return async (prompt: string) => {
+    const slug = prompt.match(/pattern slug: (\S+)/)?.[1] ?? 'unknown'
+    return JSON.stringify([
+      { exercise_type: 'contrast_pair', grammar_pattern_slug: slug, payload: { promptText: 'p', targetMeaning: 'm', options: [{ id: 'bukan', text: 'bukan' }, { id: 'tidak', text: 'tidak' }], correctOptionId: 'bukan', explanationText: 'e' } },
+      { exercise_type: 'sentence_transformation', grammar_pattern_slug: slug, payload: { sourceSentence: 's', transformationInstruction: 'i', hintText: null, acceptableAnswers: ['a'], explanationText: 'e' } },
+      { exercise_type: 'constrained_translation', grammar_pattern_slug: slug, payload: { sourceLanguageSentence: 's', requiredTargetPattern: slug, disallowedShortcutForms: [], acceptableAnswers: ['a'], explanationText: 'e' } },
+      { exercise_type: 'cloze_mcq', grammar_pattern_slug: slug, payload: { sentence: 'Ini ___ rumah.', translation: 't', options: ['bukan', 'tidak', 'belum', 'jangan'], correctOptionId: 'bukan', explanationText: 'e' } },
+    ])
+  }
+}
+
+/** Generator emitting only 2 of 4 types → CS18 pattern_typed_row_missing. */
+function partialGrammarGenerateFn(): (prompt: string) => Promise<string> {
   return async (prompt: string) => {
     const slug = prompt.match(/pattern slug: (\S+)/)?.[1] ?? 'unknown'
     return JSON.stringify([
@@ -224,11 +258,50 @@ describe('runner pattern cutover (Task 6)', () => {
       },
     )
     expect(ops.some((o) => o.table === 'grammar_patterns' && o.op === 'upsert')).toBe(true)
-    // The generator returned contrast_pair + cloze_mcq → both typed tables written.
-    expect(ops.some((o) => o.table === 'contrast_pair_exercises' && o.op === 'insert')).toBe(true)
-    expect(ops.some((o) => o.table === 'cloze_mcq_exercises' && o.op === 'insert')).toBe(true)
-    // exercise_variants dual-write (kept until Task 8).
-    expect(ops.filter((o) => o.table === 'exercise_variants' && o.op === 'insert').length).toBe(2)
+    // The generator returned all 4 types → all 4 typed tables written.
+    for (const t of TYPED_TABLES) expect(ops.some((o) => o.table === t && o.op === 'insert')).toBe(true)
+    // exercise_variants dual-write (kept until Task 8): 4 exercises × 1 pattern.
+    expect(ops.filter((o) => o.table === 'exercise_variants' && o.op === 'insert').length).toBe(4)
+  })
+
+  it('CS18 wiring: a partial-coverage pattern (2 of 4 types) yields a pattern_typed_row_missing finding', async () => {
+    const { client } = buildMock()
+    const result = await runCapabilityStage(
+      { lessonNumber: 1, lessonId: 'lesson-uuid' },
+      {
+        loadLesson: async () => makeLesson(tmpDir),
+        createSupabaseClient: () => client as never,
+        loadFromDb: async () => NO_ITEMS,
+        fetchDistractorPool: async () => [],
+        loadPatternFromDb: async () => emptyPatternDb([category('Bukan-negatie', 0)]),
+        generateGrammarFn: partialGrammarGenerateFn(), // only 2 of 4 types
+        generateFn: async () => '[]',
+      },
+    )
+    const cs18 = result.findings.filter((f) => f.gate === 'CS18')
+    expect(cs18.length).toBe(1)
+    expect(cs18[0].message).toContain('pattern_typed_row_missing')
+    // A CS18 error makes the run 'partial' (graceful — runtime renders what exists).
+    expect(result.status).toBe('partial')
+  })
+
+  it('CS18 wiring: a full-coverage pattern (all 4 types) yields NO CS18 finding (status ok)', async () => {
+    const { client } = buildMock()
+    const result = await runCapabilityStage(
+      { lessonNumber: 1, lessonId: 'lesson-uuid' },
+      {
+        loadLesson: async () => makeLesson(tmpDir),
+        createSupabaseClient: () => client as never,
+        loadFromDb: async () => NO_ITEMS,
+        fetchDistractorPool: async () => [],
+        loadPatternFromDb: async () => emptyPatternDb([category('Bukan-negatie', 0)]),
+        generateGrammarFn: fullGrammarGenerateFn(),
+        generateFn: async () => '[]',
+      },
+    )
+    // Full per-type coverage → CS18 emits nothing. (Status may still be 'partial'
+    // from CS7 count-parity, which this generic mock can't satisfy — not the point here.)
+    expect(result.findings.filter((f) => f.gate === 'CS18')).toHaveLength(0)
   })
 
   it('usePatternPath=false (no typed categories): legacy pattern caps flow through unchanged', async () => {

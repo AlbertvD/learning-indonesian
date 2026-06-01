@@ -1119,6 +1119,14 @@ export async function runCapabilityStage(
     itemCapsWithDistractorFlag,
     distractorSets: distractorSetsInput,
     itemDuplicatesInput,
+    // CS18: pattern coverage certification (Slice 2 Task 7) — only when the
+    // pattern path ran. Certifies every written pattern has full per-type coverage.
+    patternCoverageInput: usePatternPath && patternResult
+      ? {
+          patternIdsBySlug: patternResult.patternIdsBySlug,
+          skippedSlugs: patternResult.skippedPatternSlugs,
+        }
+      : undefined,
   })
   findings.push(...postWriteFindings)
 

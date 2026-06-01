@@ -59,6 +59,7 @@ import { validateItemPos, type ItemForPosCheck } from './validators/itemPos'
 import { validateItemCoverage, type ItemCapForCoverageCheck } from './validators/itemCoverage'
 import { validateItemDistractors, type ValidateItemDistractorsInput } from './validators/itemDistractors'
 import { validateItemDuplicates, type ItemDuplicatesInput } from './validators/itemDuplicates'
+import { validatePatternCoverage, type PatternCoverageInput } from './validators/patternCoverage'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -94,6 +95,8 @@ export interface ItemKindPostWriteInput {
   distractorSets?: ValidateItemDistractorsInput
   /** Cross-lesson duplicate check input (for CS17). */
   itemDuplicatesInput?: ItemDuplicatesInput
+  /** Pattern typed-exercise coverage check input (for CS18, Slice 2). */
+  patternCoverageInput?: PatternCoverageInput
 }
 
 export interface CapabilityGatePostWriteInput
@@ -207,6 +210,13 @@ export async function runCapabilityGatePostWrite(
   // itemDuplicatesInput is optional until Task 4 item projector is wired.
   if (input.itemDuplicatesInput && input.itemDuplicatesInput.writtenNormalizedTexts.length > 0) {
     findings.push(...await validateItemDuplicates(supabase, input.itemDuplicatesInput))
+  }
+
+  // CS18 — pattern typed-exercise coverage (Slice 2). DB-aware: re-reads the 4
+  // typed tables to certify every written pattern ended with full per-type
+  // coverage. Optional — only present when the pattern path ran (usePatternPath).
+  if (input.patternCoverageInput && input.patternCoverageInput.patternIdsBySlug.size > 0) {
+    findings.push(...await validatePatternCoverage(supabase, input.patternCoverageInput))
   }
 
   return findings

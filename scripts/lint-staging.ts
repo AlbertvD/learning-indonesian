@@ -935,6 +935,19 @@ async function main() {
     // category, translation-drill answers, and display-only blob shape are now
     // enforced inside runLessonStage. lint-staging keeps only the capability-side
     // checks below until the capability-stage gate relocates them (epic #98).
+    // SUPERSEDED (Slice 2 Task 7, #100): the pattern path now generates +
+    // validates grammar patterns/exercises IN-STAGE — the projector guarantees
+    // slug/NOT-NULL by construction, the generator defensively validates each
+    // candidate (SCHEMA_BY_TYPE), and CS18 (validators/patternCoverage.ts)
+    // certifies per-pattern typed-exercise coverage post-write. These 4 disk
+    // checks (checkGrammarPatterns/checkCandidatesStructural/checkPatternBrief/
+    // checkCapabilityPipelineOutput) + the stale SLOT_PATTERNS allowlist (which
+    // can no longer match the new l{N}-… slugs) are now redundant pre-flight.
+    // They are HARMLESS for the new path (they only see legacy staging slugs,
+    // all kebab-case, or empty), so their physical removal — which cascades to
+    // loadDb/knownSlugs/isSubstringContrastPattern + its test — is deferred to
+    // the lint-staging decomposition (epic #98, project_lint_staging_stage_specific_gates),
+    // per the shared-infra-teardown-may-defer rule. Do NOT add new pattern checks here.
     findings.push(...checkGrammarPatterns(ctx, slugToLessons))
     findings.push(...checkCandidatesStructural(ctx, db))
     findings.push(...checkClozeContextsFile(ctx))
