@@ -24,6 +24,7 @@
 
 import Anthropic from '@anthropic-ai/sdk'
 import { VALID_POS } from '../../validate-pos'
+import { ANTHROPIC_MAX_RETRIES } from '../generationThrottle'
 
 export interface PosEnrichmentItem {
   base_text: string
@@ -34,7 +35,11 @@ export interface PosEnrichmentItem {
 }
 
 const BATCH_SIZE = 40
-const MODEL = 'claude-sonnet-4-6'
+// POS tagging is a simple closed-set classification — Haiku is plenty (every
+// other enricher already uses it), and it moves these calls OFF the Sonnet
+// rate limit, which the in-stage exercise generators contend for. (Rate-limit
+// hardening 2026-06-01.)
+const MODEL = 'claude-haiku-4-5-20251001'
 
 function buildPrompt(items: PosEnrichmentItem[]): string {
   return `You are classifying Indonesian learning items by part of speech for an A1-B1 beginner curriculum.
@@ -133,7 +138,7 @@ export async function enrichMissingPos(
   }
 
   console.log(`   ► Classifying POS for ${needsClassification.length} items via Claude (${MODEL})...`)
-  const claude = new Anthropic({ apiKey })
+  const claude = new Anthropic({ apiKey, maxRetries: ANTHROPIC_MAX_RETRIES })
   const result = new Map<string, string>()
   let invalidCount = 0
 

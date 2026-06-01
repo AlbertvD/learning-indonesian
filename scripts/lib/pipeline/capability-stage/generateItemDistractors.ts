@@ -45,6 +45,7 @@
  */
 
 import Anthropic from '@anthropic-ai/sdk'
+import { ANTHROPIC_MAX_RETRIES, GENERATION_THROTTLE_MS, sleep } from '../generationThrottle'
 
 // ---------------------------------------------------------------------------
 // Input / output types
@@ -387,11 +388,13 @@ export async function generateItemDistractors(
       return empty
     }
 
-    const claude = new Anthropic({ apiKey })
+    const claude = new Anthropic({ apiKey, maxRetries: ANTHROPIC_MAX_RETRIES })
     effectiveGenerateFn = async (prompt: string): Promise<string> => {
+      // Anti-burst pacing — real-API path only (tests inject generateFn).
+      await sleep(GENERATION_THROTTLE_MS)
       const response = await claude.messages.create({
         model: MODEL,
-        max_tokens: 8000,
+        max_tokens: 6000,
         messages: [{ role: 'user', content: prompt }],
       })
       const block = response.content[0]
