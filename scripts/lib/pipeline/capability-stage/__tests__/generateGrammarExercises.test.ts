@@ -1,0 +1,341 @@
+/**
+ * generateGrammarExercises.test.ts — Unit tests for the in-stage grammar
+ * exercise generator (Slice 2, Task 4).
+ *
+ * Strategy: TDD the pure parts (buildPrompt, parseResponse, validateCandidate)
+ * and the injected-generator path without any network calls. The headline
+ * requirement (Lesson #2 + #4): a constraint-violating LLM candidate is DROPPED,
+ * never returned for write.
+ */
+
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import {
+  buildPrompt,
+  parseResponse,
+  validateCandidate,
+  generateGrammarExercises,
+  type GrammarPatternInput,
+  type GrammarVocabPoolItem,
+  type GrammarExerciseCandidate,
+} from '../generateGrammarExercises'
+
+// ---------------------------------------------------------------------------
+// Fixtures
+// ---------------------------------------------------------------------------
+
+const PATTERN_BUKAN: GrammarPatternInput = {
+  slug: 'l4-bukan-negatie',
+  title: 'Bukan-negatie',
+  rules: ['bukan ontkent zelfstandige naamwoorden', 'tidak ontkent werkwoorden en bijvoeglijke naamwoorden'],
+  examples: [
+    { indonesian: 'Ini bukan rumah.', dutch: 'Dit is geen huis.', english: null },
+  ],
+}
+
+const PATTERN_RULES_ONLY: GrammarPatternInput = {
+  slug: 'l4-duur',
+  title: 'Duur',
+  rules: ['gebruik "jam" voor tijdsduur'],
+  examples: [],
+}
+
+const POOL: GrammarVocabPoolItem[] = [
+  { indonesian_text: 'rumah', l1_translation: 'huis', item_type: 'word' },
+  { indonesian_text: 'beli', l1_translation: 'kopen', item_type: 'word' },
+  { indonesian_text: 'mahal', l1_translation: 'duur', item_type: 'word' },
+]
+
+// A valid contrast_pair candidate (passes buildGrammarExerciseRow + Zod).
+const VALID_CONTRAST: GrammarExerciseCandidate = {
+  exercise_type: 'contrast_pair',
+  grammar_pattern_slug: 'l4-bukan-negatie',
+  payload: {
+    promptText: 'Je wijst naar een gebouw en zegt dat het geen huis is.',
+    targetMeaning: 'bukan — geen (bij zelfstandig naamwoord)',
+    options: [
+      { id: 'bukan', text: 'bukan' },
+      { id: 'tidak', text: 'tidak' },
+    ],
+    correctOptionId: 'bukan',
+    explanationText: 'bukan ontkent zelfstandige naamwoorden; tidak ontkent werkwoorden.',
+  },
+}
+
+const VALID_CLOZE: GrammarExerciseCandidate = {
+  exercise_type: 'cloze_mcq',
+  grammar_pattern_slug: 'l4-bukan-negatie',
+  payload: {
+    sentence: 'Ini ___ rumah.',
+    translation: 'Dit is geen huis.',
+    options: ['bukan', 'tidak', 'belum', 'jangan'],
+    correctOptionId: 'bukan',
+    explanationText: 'bukan ontkent het zelfstandig naamwoord rumah.',
+  },
+}
+
+function candidateJson(...candidates: GrammarExerciseCandidate[]): string {
+  return JSON.stringify(candidates)
+}
+
+// ---------------------------------------------------------------------------
+// 1. buildPrompt — pure function tests
+// ---------------------------------------------------------------------------
+
+describe('buildPrompt', () => {
+  it('includes the pattern slug, title, and rules', () => {
+    const prompt = buildPrompt(PATTERN_BUKAN, POOL)
+    expect(prompt).toContain('l4-bukan-negatie')
+    expect(prompt).toContain('Bukan-negatie')
+    expect(prompt).toContain('bukan ontkent zelfstandige naamwoorden')
+  })
+
+  it('includes the pool words and their translations', () => {
+    const prompt = buildPrompt(PATTERN_BUKAN, POOL)
+    expect(prompt).toContain('rumah')
+    expect(prompt).toContain('huis')
+    expect(prompt).toContain('mahal')
+  })
+
+  it('includes worked examples when present', () => {
+    const prompt = buildPrompt(PATTERN_BUKAN, POOL)
+    expect(prompt).toContain('Ini bukan rumah.')
+  })
+
+  it('tolerates a rules-only pattern (no examples)', () => {
+    const prompt = buildPrompt(PATTERN_RULES_ONLY, POOL)
+    expect(prompt).toContain('l4-duur')
+    expect(prompt).toContain('work from the rules')
+  })
+
+  it('lists all four exercise types and the pool-only sentence rule', () => {
+    const prompt = buildPrompt(PATTERN_BUKAN, POOL)
+    expect(prompt).toContain('cloze_mcq')
+    expect(prompt).toContain('contrast_pair')
+    expect(prompt).toContain('sentence_transformation')
+    expect(prompt).toContain('constrained_translation')
+    expect(prompt).toContain('ONLY words from this pool')
+  })
+
+  it('instructs Claude to return only a JSON array, no fences', () => {
+    const prompt = buildPrompt(PATTERN_BUKAN, POOL)
+    expect(prompt).toContain('No prose, no markdown fences')
+  })
+
+  it('binds requiredTargetPattern to the pattern slug exactly', () => {
+    const prompt = buildPrompt(PATTERN_BUKAN, POOL)
+    expect(prompt).toContain('MUST equal the pattern slug "l4-bukan-negatie"')
+  })
+
+  it('handles an empty pool gracefully', () => {
+    const prompt = buildPrompt(PATTERN_BUKAN, [])
+    expect(prompt).toContain('l4-bukan-negatie')
+    expect(prompt).toContain('[]')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// 2. parseResponse — pure function tests
+// ---------------------------------------------------------------------------
+
+describe('parseResponse', () => {
+  it('parses a valid candidate array', () => {
+    const result = parseResponse(candidateJson(VALID_CONTRAST, VALID_CLOZE))
+    expect(result).toHaveLength(2)
+    expect(result[0].exercise_type).toBe('contrast_pair')
+    expect(result[1].exercise_type).toBe('cloze_mcq')
+  })
+
+  it('returns empty array for empty / malformed / non-array JSON', () => {
+    expect(parseResponse('[]')).toEqual([])
+    expect(parseResponse('not json')).toEqual([])
+    expect(parseResponse('')).toEqual([])
+    expect(parseResponse('{"k":"v"}')).toEqual([])
+  })
+
+  it('strips markdown fences before parsing', () => {
+    const wrapped = '```json\n' + candidateJson(VALID_CONTRAST) + '\n```'
+    expect(parseResponse(wrapped)).toHaveLength(1)
+  })
+
+  it('drops candidates with an unrecognized exercise_type (e.g. speaking)', () => {
+    const raw = JSON.stringify([
+      { exercise_type: 'speaking', grammar_pattern_slug: 'l4-bukan-negatie', payload: {} },
+      VALID_CONTRAST,
+    ])
+    const result = parseResponse(raw)
+    expect(result).toHaveLength(1)
+    expect(result[0].exercise_type).toBe('contrast_pair')
+  })
+
+  it('drops candidates with a missing slug or non-object payload', () => {
+    const raw = JSON.stringify([
+      { exercise_type: 'contrast_pair', payload: {} }, // no slug
+      { exercise_type: 'contrast_pair', grammar_pattern_slug: 'x', payload: 'nope' }, // payload not object
+      { exercise_type: 'contrast_pair', grammar_pattern_slug: 'x', payload: [] }, // payload array
+    ])
+    expect(parseResponse(raw)).toEqual([])
+  })
+
+  it('skips null entries', () => {
+    const raw = JSON.stringify([null, VALID_CONTRAST])
+    expect(parseResponse(raw)).toHaveLength(1)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// 3. validateCandidate — the constraint-validity binding (Lesson #2)
+// ---------------------------------------------------------------------------
+
+describe('validateCandidate', () => {
+  it('accepts a constraint-valid contrast_pair', () => {
+    expect(validateCandidate(VALID_CONTRAST)).toBe(true)
+  })
+
+  it('accepts a constraint-valid cloze_mcq', () => {
+    expect(validateCandidate(VALID_CLOZE)).toBe(true)
+  })
+
+  it('rejects contrast_pair whose correctOptionId matches no option', () => {
+    const bad: GrammarExerciseCandidate = {
+      ...VALID_CONTRAST,
+      payload: { ...VALID_CONTRAST.payload, correctOptionId: 'nonexistent' },
+    }
+    expect(validateCandidate(bad)).toBe(false)
+  })
+
+  it('rejects cloze_mcq whose correctOptionId is not among the options', () => {
+    const bad: GrammarExerciseCandidate = {
+      ...VALID_CLOZE,
+      payload: { ...VALID_CLOZE.payload, correctOptionId: 'sudah' },
+    }
+    expect(validateCandidate(bad)).toBe(false)
+  })
+
+  it('rejects a candidate missing a NOT-NULL field (explanationText empty)', () => {
+    const bad: GrammarExerciseCandidate = {
+      ...VALID_CONTRAST,
+      payload: { ...VALID_CONTRAST.payload, explanationText: '' },
+    }
+    expect(validateCandidate(bad)).toBe(false)
+  })
+
+  it('rejects sentence_transformation with empty acceptableAnswers', () => {
+    const bad: GrammarExerciseCandidate = {
+      exercise_type: 'sentence_transformation',
+      grammar_pattern_slug: 'l4-bukan-negatie',
+      payload: {
+        sourceSentence: 'Ini rumah.',
+        transformationInstruction: 'Maak de zin ontkennend.',
+        acceptableAnswers: [],
+        hintText: null,
+        explanationText: 'gebruik bukan.',
+      },
+    }
+    expect(validateCandidate(bad)).toBe(false)
+  })
+
+  it('accepts constrained_translation with empty disallowedShortcutForms', () => {
+    const ok: GrammarExerciseCandidate = {
+      exercise_type: 'constrained_translation',
+      grammar_pattern_slug: 'l4-bukan-negatie',
+      payload: {
+        sourceLanguageSentence: 'Dit is geen huis.',
+        requiredTargetPattern: 'l4-bukan-negatie',
+        acceptableAnswers: ['Ini bukan rumah.'],
+        disallowedShortcutForms: [],
+        explanationText: 'bukan ontkent het zelfstandig naamwoord.',
+      },
+    }
+    expect(validateCandidate(ok)).toBe(true)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// 4. generateGrammarExercises — injected fn path, no-op, drop-and-skip
+// ---------------------------------------------------------------------------
+
+describe('generateGrammarExercises', () => {
+  beforeEach(() => {
+    delete process.env.ANTHROPIC_API_KEY
+  })
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('returns an empty result for an empty patterns array', async () => {
+    const result = await generateGrammarExercises([], POOL)
+    expect(result.generatedCount).toBe(0)
+    expect(result.candidatesByPatternSlug.size).toBe(0)
+    expect(result.candidatesByPatternSlug).toBeInstanceOf(Map)
+  })
+
+  it('no-ops (empty result) when no generateFn and no API key', async () => {
+    const result = await generateGrammarExercises([PATTERN_BUKAN], POOL)
+    expect(result.generatedCount).toBe(0)
+    expect(result.candidatesByPatternSlug.size).toBe(0)
+  })
+
+  it('uses the injected generateFn, bypassing the API-key check', async () => {
+    const fakeFn = vi.fn().mockResolvedValue(candidateJson(VALID_CONTRAST, VALID_CLOZE))
+    const result = await generateGrammarExercises([PATTERN_BUKAN], POOL, { generateFn: fakeFn })
+    expect(fakeFn).toHaveBeenCalledOnce()
+    expect(result.generatedCount).toBe(2)
+    expect(result.candidatesByPatternSlug.get('l4-bukan-negatie')).toHaveLength(2)
+  })
+
+  it('DROPS a constraint-violating candidate, never returns it for write', async () => {
+    const badContrast: GrammarExerciseCandidate = {
+      ...VALID_CONTRAST,
+      payload: { ...VALID_CONTRAST.payload, correctOptionId: 'ghost' },
+    }
+    const fakeFn = vi.fn().mockResolvedValue(candidateJson(badContrast, VALID_CLOZE))
+    const result = await generateGrammarExercises([PATTERN_BUKAN], POOL, { generateFn: fakeFn })
+    expect(result.generatedCount).toBe(1)
+    expect(result.droppedCount).toBe(1)
+    const kept = result.candidatesByPatternSlug.get('l4-bukan-negatie')!
+    expect(kept).toHaveLength(1)
+    expect(kept[0].exercise_type).toBe('cloze_mcq')
+  })
+
+  it('warn-and-skips a pattern that yields zero valid candidates', async () => {
+    // Rules-only reference pattern → LLM returns [] (nothing drill-worthy).
+    const fakeFn = vi.fn().mockResolvedValue('[]')
+    const result = await generateGrammarExercises([PATTERN_RULES_ONLY], POOL, { generateFn: fakeFn })
+    expect(result.generatedCount).toBe(0)
+    expect(result.skippedPatternSlugs).toEqual(['l4-duur'])
+    expect(result.candidatesByPatternSlug.has('l4-duur')).toBe(false)
+  })
+
+  it('forces each candidate slug to the pattern being generated (anti-hallucination)', async () => {
+    const wrongSlug: GrammarExerciseCandidate = {
+      ...VALID_CLOZE,
+      grammar_pattern_slug: 'some-hallucinated-slug',
+    }
+    const fakeFn = vi.fn().mockResolvedValue(candidateJson(wrongSlug))
+    const result = await generateGrammarExercises([PATTERN_BUKAN], POOL, { generateFn: fakeFn })
+    const kept = result.candidatesByPatternSlug.get('l4-bukan-negatie')!
+    expect(kept).toHaveLength(1)
+    expect(kept[0].grammar_pattern_slug).toBe('l4-bukan-negatie')
+  })
+
+  it('generates per-pattern: one Claude call per pattern, accumulates results', async () => {
+    const fakeFn = vi.fn().mockImplementation(async (prompt: string) => {
+      // Echo a valid cloze for whichever pattern slug is in the prompt.
+      const slug = prompt.includes('l4-duur') ? 'l4-duur' : 'l4-bukan-negatie'
+      return candidateJson({ ...VALID_CLOZE, grammar_pattern_slug: slug })
+    })
+    const result = await generateGrammarExercises([PATTERN_BUKAN, PATTERN_RULES_ONLY], POOL, {
+      generateFn: fakeFn,
+    })
+    expect(fakeFn).toHaveBeenCalledTimes(2)
+    expect(result.generatedCount).toBe(2)
+    expect(result.candidatesByPatternSlug.size).toBe(2)
+  })
+
+  it('handles a malformed generateFn response as a skipped pattern', async () => {
+    const fakeFn = vi.fn().mockResolvedValue('not json')
+    const result = await generateGrammarExercises([PATTERN_BUKAN], POOL, { generateFn: fakeFn })
+    expect(result.generatedCount).toBe(0)
+    expect(result.skippedPatternSlugs).toEqual(['l4-bukan-negatie'])
+  })
+})

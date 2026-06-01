@@ -111,7 +111,7 @@ const EXPECTED_ITEM_PATH_FILES: ExpectedFile[] = [
   // contract + task label on top of that. Task 3/7 pattern projector + gate-
   // validator filenames are settled in their own tasks (names TBD); their
   // disk-free contract is already covered by the walk regardless.
-  { relPath: 'generateGrammarExercises.ts', task: 'Task 4 (Slice 2)', existsFails: true },
+  { relPath: 'generateGrammarExercises.ts', task: 'Task 4 (Slice 2)', existsFails: false },
 ]
 
 // ---------------------------------------------------------------------------
