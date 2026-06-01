@@ -108,10 +108,14 @@ export const exerciseReviewService = {
   /**
    * Upsert (create or update) a comment for an exercise.
    *
-   * The comment is keyed by `exercise_variant_id`, which FK-references
-   * exercise_variants.id. The typed-table id IS that uuid (PR 4 dual-write reuses
-   * one uuid), so comments saved against a typed row satisfy the FK until PR 7
-   * drops exercise_variants.
+   * The comment is keyed by `exercise_variant_id`, which holds the TYPED
+   * grammar-exercise row id (one of the 4 typed tables). Slice 2 Task 8 dropped
+   * the FK to exercise_variants (the typed id only coincidentally lived there for
+   * the PR-4 bridged rows; runner-minted typed rows have their own uuid). The
+   * column name is retained for compatibility; integrity is now enforced
+   * app-side (getOpenComments/getCommentsForVariants resolve the id across the 4
+   * typed tables) + a deep health check counts orphans. The `UNIQUE(user_id,
+   * exercise_variant_id)` still gives one comment per user per exercise.
    */
   async upsertComment(userId: string, variantId: string, comment: string): Promise<ReviewComment> {
     const { data, error } = await supabase

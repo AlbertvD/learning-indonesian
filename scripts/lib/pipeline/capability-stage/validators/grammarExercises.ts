@@ -61,7 +61,13 @@ const clozeMcqSchema = z.object({
   { message: 'correct_option_id must be one of options' },
 )
 
-const SCHEMA_BY_TYPE: Record<string, z.ZodTypeAny> = {
+/**
+ * Per-type Zod schema over the typed-table columns produced by
+ * buildGrammarExerciseRow. EXPORTED (Slice 2 Task 4) so the in-stage generator
+ * (`generateGrammarExercises.ts`) validates its LLM output against the exact
+ * same DDL-shadowing schemas the CS13 pre-write gate uses — one home, no drift.
+ */
+export const SCHEMA_BY_TYPE: Record<string, z.ZodTypeAny> = {
   contrast_pair: contrastPairSchema,
   sentence_transformation: sentenceTransformationSchema,
   constrained_translation: constrainedTranslationSchema,

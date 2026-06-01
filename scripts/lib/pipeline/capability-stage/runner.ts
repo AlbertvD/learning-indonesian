@@ -80,7 +80,8 @@ import {
   type ItemDistractorRow,
 } from './adapter'
 import { loadLesson as defaultLoadLesson, type LoadedLesson } from './loader'
-import { loadFromDb as defaultLoadFromDb, fetchDistractorPool as defaultFetchDistractorPool, type ItemDbResult } from './loadFromDb'
+import { loadFromDb as defaultLoadFromDb, fetchDistractorPool as defaultFetchDistractorPool, loadPatternFromDb as defaultLoadPatternFromDb, type ItemDbResult, type PatternDbResult } from './loadFromDb'
+import { writePatternPath } from './patternPath'
 import { projectItemsFromTypedRows } from './projectors/vocab'
 import { generateItemDistractors, type GenerateFn, type DistractorInputItem, type ItemDistractorSet } from './generateItemDistractors'
 import { itemSlug } from '@/lib/capabilities'
@@ -99,7 +100,7 @@ import type { DistractorSetRow } from './validators/itemDistractors'
 import { runCapabilityGatePreWrite, runCapabilityGatePostWrite } from './gate'
 
 import { projectVocab } from './projectors/vocab'
-import { projectGrammar } from './projectors/grammar'
+import { projectGrammar, projectPatternsFromCategories } from './projectors/grammar'
 import { buildGrammarExerciseRow } from './projectors/grammarExerciseRows'
 import { projectCloze } from './projectors/cloze'
 import { projectDialogueArtifacts } from './projectors/dialogueArtifacts'
@@ -146,6 +147,16 @@ export interface CapabilityStageHooks {
    * DB read of all active word/phrase learning_items.
    */
   fetchDistractorPool?: (supabase: CapabilitySupabaseClient) => Promise<DistractorInputItem[]>
+  /**
+   * Injectable loadPatternFromDb for tests (Slice 2). When provided, replaces the
+   * default DB read of typed grammar categories + pattern capability state.
+   */
+  loadPatternFromDb?: (supabase: CapabilitySupabaseClient, input: { lessonId: string }) => Promise<PatternDbResult>
+  /**
+   * Injectable generate function for grammar exercises (Slice 2). Separate from
+   * `generateFn` (item distractors) so tests can inject distinct fake responses.
+   */
+  generateGrammarFn?: GenerateFn
 }
 
 export async function runCapabilityStage(
@@ -167,6 +178,7 @@ export async function runCapabilityStage(
   const loadLesson = hooks.loadLesson ?? defaultLoadLesson
   const loadFromDb = hooks.loadFromDb ?? defaultLoadFromDb
   const fetchDistractorPool = hooks.fetchDistractorPool ?? defaultFetchDistractorPool
+  const loadPatternFromDb = hooks.loadPatternFromDb ?? defaultLoadPatternFromDb
 
   // ---- 1. Load (Stage A from DB + staging files from disk). ------------
   // Dry-run path: loader falls back to staging-only mode regardless of
@@ -399,6 +411,33 @@ export async function runCapabilityStage(
   const allItemCaps = itemProjection.perItemPlans.flatMap((p) => p.capabilities)
   const newPathEmittedKeys = new Set(allItemCaps.map((c) => c.canonicalKey))
 
+  // ---- 5a (pattern). Load typed grammar categories + project patterns. -----
+  // Slice 2: the pattern path activates ONLY for a lesson that HAS typed grammar
+  // categories in the DB (PR 6). L5/7/8 (and any not-yet-published lesson) have
+  // none → `usePatternPath` is false and the LEGACY grammar path (steps 8/10)
+  // runs unchanged, gated on their re-publish (the data_prerequisite).
+  const patternDb = await loadPatternFromDb(supabase, { lessonId: input.lessonId })
+  const usePatternPath = patternDb.categories.length > 0
+  const patternProjection = usePatternPath
+    ? projectPatternsFromCategories({
+        categories: patternDb.categories,
+        lessonNumber: input.lessonNumber,
+        lessonId: input.lessonId,
+      })
+    : { patternPlans: [] }
+  // NO-DOUBLE-WRITE for pattern caps. DEVIATION FROM THE PLAN, JUSTIFIED:
+  // the plan says "filter by exact canonical_key, NOT sourceKind". But OQ2-5
+  // gives new patterns NEW slugs (`l{N}-…`), so the new path's canonical keys are
+  // DISJOINT from the legacy bundle's pattern-cap keys (capabilityCatalog.ts:119
+  // builds them from staging grammar-patterns.ts with legacy slugs) — an exact-key
+  // filter would remove NOTHING and double-write every pattern cap. The new path
+  // owns 100% of pattern caps (there is no audio/other pattern sub-kind, unlike
+  // the item case the plan's warning is about), so excluding ALL `sourceKind ===
+  // 'pattern'` caps is correct and complete. The legacy pattern caps (old keys)
+  // then fall out of the emit set and are SOFT-RETIRED by retireOrphanedCapabilities
+  // — exactly what OQ2-5 prescribes ("safe: 0 progress; use retireOrphanedCapabilities").
+  // Gated on usePatternPath so L5/7/8 keep their legacy pattern caps.
+
   const stagedCapabilities = (staging.capabilities as Array<{
     canonicalKey: string
     sourceKind: string
@@ -417,7 +456,10 @@ export async function runCapabilityStage(
     // (audio_recognition, dictation when item.hasAudio) and sentence/dialogue_chunk
     // item caps flow through this legacy path unchanged, preserving them from
     // the retireOrphanedCapabilities orphan sweep.
+    // Slice 2 (Task 6): when usePatternPath, ALSO exclude every pattern-kind cap
+    // (the new path owns them all — see the sourceKind rationale in step 5a).
     .filter((capability) => !newPathEmittedKeys.has(capability.canonicalKey))
+    .filter((capability) => !(usePatternPath && capability.sourceKind === 'pattern'))
     .map((capability): CapabilityInput => ({
     canonicalKey: capability.canonicalKey,
     sourceKind: capability.sourceKind,
@@ -642,6 +684,38 @@ export async function runCapabilityStage(
   }
   counts.itemDistractorSets = itemDistractorSetsWritten
 
+  // ---- 5d. Pattern path (Slice 2 Task 6) — DB→DB grammar cutover. ----------
+  // Runs BEFORE retire so the new pattern caps are in the emit set (not swept)
+  // and the legacy pattern caps (excluded from the bundle in step 5a) ARE swept.
+  // Only active when the lesson has typed grammar categories (usePatternPath).
+  const regeneratePatternSlug = input.regenerate?.kind === 'pattern' ? input.regenerate.slug : null
+  let patternResult: Awaited<ReturnType<typeof writePatternPath>> | null = null
+  if (usePatternPath) {
+    patternResult = await writePatternPath(
+      supabase,
+      {
+        patternPlans: patternProjection.patternPlans,
+        lessonId: input.lessonId,
+        patternState: patternDb.patternState,
+        pool: distractorPool.map((p) => ({
+          indonesian_text: p.indonesian_text,
+          l1_translation: p.l1_translation,
+          item_type: p.item_type,
+        })),
+        regenerateSlug: regeneratePatternSlug,
+      },
+      { generateFn: hooks.generateGrammarFn },
+    )
+    // Merge new pattern cap ids into the emit set so retire preserves them.
+    for (const [key, id] of patternResult.capIdsByKey) capabilityIdsByKey.set(key, id)
+    counts.capabilities = capabilityIdsByKey.size
+    counts.grammarExerciseRows += patternResult.exercisesWritten
+    if (patternResult.retiredLegacySlugs.length > 0) {
+      console.log(`   ✓ Cutover-deleted ${patternResult.retiredLegacySlugs.length} legacy grammar pattern(s): ${patternResult.retiredLegacySlugs.join(', ')}`)
+    }
+    console.log(`   ✓ Pattern path: ${patternResult.patternsUpserted} patterns, ${patternResult.exercisesWritten} typed exercises (${patternResult.patternsSkippedSeeded} seeded-skip, ${patternResult.patternsRegenerated} regenerated, ${patternResult.skippedPatternSlugs.length} declined, ${patternResult.droppedCount} dropped)`)
+  }
+
   const capabilityIds = [...capabilityIdsByKey.values()]
 
   // PR 1.5: soft-retire any caps still attached to this lesson whose canonical_key
@@ -800,7 +874,14 @@ export async function runCapabilityStage(
   counts.affixedFormPairs = affixedFormPairsLanded
 
   // ---- 8. Write — grammar_patterns (PGRST205 fallback preserved). ------
-  const grammarPatternUpsert = await upsertGrammarPatterns(supabase, grammar.grammarPatterns)
+  // Slice 2 (Task 6): when usePatternPath, the pattern path (step 5d) already
+  // upserted the NEW patterns + cutover-deleted the legacy ones. Re-running the
+  // legacy upsert here would RE-CREATE the legacy-slug patterns the cutover just
+  // removed, so it is skipped; grammarPatternUpsert carries the new ids instead.
+  const grammarPatternUpsert =
+    usePatternPath && patternResult
+      ? { idsBySlug: patternResult.patternIdsBySlug, tableMissing: patternResult.tableMissing }
+      : await upsertGrammarPatterns(supabase, grammar.grammarPatterns)
 
   // ---- 9. Write — learning_items + anchor contexts. -----------------------
   // Decision R (PR 1): translations now written to learning_items.translation_{nl,en}
@@ -828,10 +909,18 @@ export async function runCapabilityStage(
   const patternIdsBySlug = grammarPatternUpsert.tableMissing
     ? new Map<string, string>()
     : await fetchGrammarPatternIdsBySlug(supabase)
+  // Slice 2 (Task 8): the pattern path is typed-only (no exercise_variants write),
+  // so nothing to seed from it. The legacy grammar branch below is skipped when
+  // usePatternPath; for !usePatternPath lessons it still pushes here (+ to
+  // legacyVariantsLanded, which gates the staging write-back over staging candidates).
   const exerciseVariantIds: string[] = []
+  let legacyVariantsLanded = 0
   let grammarExerciseRowsLanded = 0
   for (const variant of grammar.exerciseVariants) {
     if (variant.kind === 'grammar') {
+      // Pattern path owns grammar exercises when active — skip the legacy
+      // staging-candidate-driven grammar write entirely.
+      if (usePatternPath) continue
       const grammarPatternId = variant.grammarPatternSlug
         ? patternIdsBySlug.get(variant.grammarPatternSlug) ?? null
         : null
@@ -843,7 +932,7 @@ export async function runCapabilityStage(
         payload_json: variant.payload_json,
         answer_key_json: variant.answer_key_json,
       })
-      if (result.ok && result.id) exerciseVariantIds.push(result.id)
+      if (result.ok && result.id) { exerciseVariantIds.push(result.id); legacyVariantsLanded++ }
 
       // PR 4 dual-write: also land the typed grammar-exercise row. Keyed by
       // grammar_pattern_id (NOT capability_id). The shared mapper + CS13
@@ -875,22 +964,29 @@ export async function runCapabilityStage(
         payload_json: variant.payload_json,
         answer_key_json: variant.answer_key_json,
       })
-      if (result.ok && result.id) exerciseVariantIds.push(result.id)
+      if (result.ok && result.id) { exerciseVariantIds.push(result.id); legacyVariantsLanded++ }
     }
   }
   const exerciseVariantsLanded = exerciseVariantIds.length
   counts.exerciseVariants = exerciseVariantsLanded
-  counts.grammarExerciseRows = grammarExerciseRowsLanded
+  // Additive: 5d already counted the pattern path's typed rows; this adds the
+  // legacy loop's (0 when usePatternPath).
+  counts.grammarExerciseRows += grammarExerciseRowsLanded
 
   // Staging write-back #1 — mirror legacy 712–722. After exercise_variants
   // land + count verification, mark approved candidates as `published` in
   // candidates.ts so re-runs skip them. Only proceeds when the count check
-  // confirms rows are actually in DB.
-  if (exerciseVariantsLanded > 0 && exerciseVariantsLanded >= grammar.exerciseVariants.length) {
+  // confirms rows are actually in DB. Slice 2 (Task 6): the count is over the
+  // LEGACY loop only — the pattern path's grammar exercises come from the DB,
+  // not staging candidates.ts, so they are out of scope for this write-back.
+  const legacyVariantCount = usePatternPath
+    ? grammar.exerciseVariants.filter((v) => v.kind !== 'grammar').length
+    : grammar.exerciseVariants.length
+  if (legacyVariantsLanded > 0 && legacyVariantsLanded >= legacyVariantCount) {
     markCandidatesPublished(staging.stagingDir, staging.candidates as CandidateStagingRow[])
-    console.log(`   ✓ candidates.ts marked published in staging (${exerciseVariantsLanded} rows)`)
-  } else if (grammar.exerciseVariants.length > 0) {
-    console.warn(`   ⚠ Expected ${grammar.exerciseVariants.length} exercise_variants, landed ${exerciseVariantsLanded} — staging NOT marked published`)
+    console.log(`   ✓ candidates.ts marked published in staging (${legacyVariantsLanded} rows)`)
+  } else if (legacyVariantCount > 0) {
+    console.warn(`   ⚠ Expected ${legacyVariantCount} legacy exercise_variants, landed ${legacyVariantsLanded} — staging NOT marked published`)
   }
 
   // ---- 11. Write — cloze contexts. -------------------------------------
@@ -996,11 +1092,16 @@ export async function runCapabilityStage(
     lessonId: input.lessonId,
     declared: {
       contentUnits: stagedContentUnits.length,
-      grammarPatterns: grammar.grammarPatterns.length,
+      // Slice 2 (Task 6): when usePatternPath, the lesson's grammar_patterns are
+      // the NEW pattern set (legacy cutover-deleted); exercise_variants are what
+      // this run actually wrote (pattern path + legacy vocab).
+      grammarPatterns: usePatternPath && patternResult
+        ? patternResult.patternsUpserted
+        : grammar.grammarPatterns.length,
       capabilities: allCapabilities.length,
       capabilityArtifacts: artifactInputs.length,
       learningItems: publishedItemIds.length,
-      exerciseVariants: grammar.exerciseVariants.length,
+      exerciseVariants: usePatternPath ? exerciseVariantsLanded : grammar.exerciseVariants.length,
       clozeContexts: cloze.plans.length,
     },
     contentUnitIds,
@@ -1016,6 +1117,14 @@ export async function runCapabilityStage(
     itemCapsWithDistractorFlag,
     distractorSets: distractorSetsInput,
     itemDuplicatesInput,
+    // CS18: pattern coverage certification (Slice 2 Task 7) — only when the
+    // pattern path ran. Certifies every written pattern has full per-type coverage.
+    patternCoverageInput: usePatternPath && patternResult
+      ? {
+          patternIdsBySlug: patternResult.patternIdsBySlug,
+          skippedSlugs: patternResult.skippedPatternSlugs,
+        }
+      : undefined,
   })
   findings.push(...postWriteFindings)
 

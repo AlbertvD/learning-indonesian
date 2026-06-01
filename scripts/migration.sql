@@ -855,6 +855,34 @@ CREATE INDEX IF NOT EXISTS idx_exercise_review_comments_user_status
 CREATE INDEX IF NOT EXISTS idx_exercise_review_comments_variant
   ON indonesian.exercise_review_comments(exercise_variant_id);
 
+-- ── Slice 2 Task 8 (OQ2-3, architect-APPROVED 2026-06-01): decouple
+-- exercise_review_comments from exercise_variants. The review UI keys comments
+-- by the TYPED grammar-exercise row id (one of the 4 typed exercise tables), not
+-- by exercise_variants.id. That id only coincidentally lived in exercise_variants
+-- for the 716 legacy rows the PR-4 one-shot bridge migrated (it reused the uuid);
+-- runner-minted typed rows get their own gen_random_uuid (adapter.ts
+-- insertGrammarExerciseTyped), so once the grammar dual-write stops, the FK
+-- target no longer exists and commenting on a new grammar exercise would violate
+-- it. The "exercise" is a 4-table union with no shared parent — a single FK can't
+-- express it. Integrity moves app-side (exerciseReviewService resolves the id
+-- across the 4 typed tables) + a deep health check counts orphans
+-- (check-supabase-deep.ts). ON DELETE CASCADE is given up: --regenerate/cutover
+-- typed-row deletes may orphan comments; getOpenComments already filters
+-- unresolvable ids. FORWARD-ONLY: re-adding the FK is unsafe once a non-bridged
+-- comment exists. Name-agnostic drop (by confrelid) so it is idempotent + immune
+-- to the auto-generated constraint name.
+DO $$
+DECLARE cname text;
+BEGIN
+  SELECT conname INTO cname FROM pg_constraint
+  WHERE conrelid = 'indonesian.exercise_review_comments'::regclass
+    AND contype = 'f'
+    AND confrelid = 'indonesian.exercise_variants'::regclass;
+  IF cname IS NOT NULL THEN
+    EXECUTE format('ALTER TABLE indonesian.exercise_review_comments DROP CONSTRAINT %I', cname);
+  END IF;
+END $$;
+
 -- Exactly one source must be set (vocab review XOR grammar review)
 DO $$ BEGIN
   ALTER TABLE indonesian.review_events ADD CONSTRAINT review_events_source_check

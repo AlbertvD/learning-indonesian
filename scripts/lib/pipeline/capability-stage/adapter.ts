@@ -22,6 +22,9 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 import { candidateSlugs } from './projectors/slugs'
+import { buildGrammarExerciseRow } from './projectors/grammarExerciseRows'
+import { extractAnswerKey } from './validators/candidatePayload'
+import { GRAMMAR_EXERCISE_TABLES, type GrammarExerciseType } from './loadFromDb'
 import { normalizeTtsText } from '../../tts-normalize'
 import { itemSlug } from '@/lib/capabilities'
 
@@ -725,6 +728,167 @@ export async function insertGrammarExerciseTyped(
     .single()
   if (error) return { ok: false, error: error.message }
   return { ok: true, id: (data?.id as string | undefined) ?? undefined }
+}
+
+// ---------------------------------------------------------------------------
+// Slice 2 Task 5 — idempotent typed grammar-exercise writers (NO exercise_variants).
+//
+// The 4 typed exercise tables are keyless (surrogate id only), so idempotency is
+// enforced by the PATTERN-LEVEL gate (patternSeeding.ts), NOT per-row. The
+// runner decides skip / delete-first / generate; these helpers do the raw
+// write + the delete-by-pattern that the partial-rebuild + --regenerate paths
+// need. Physical DELETE is safe: the typed tables are leaf tables (no inbound
+// FKs — verified migration.sql:2371-2500), so nothing dangles.
+// ---------------------------------------------------------------------------
+
+/** A generated grammar-exercise candidate (camelCase payload shape). */
+export interface GrammarExerciseCandidateInput {
+  exercise_type: GrammarExerciseType
+  payload: Record<string, unknown>
+}
+
+export interface WriteGrammarExercisesResult {
+  written: number
+  /** Per-type count of rows written (the post-write coverage this run produced). */
+  byType: Record<GrammarExerciseType, number>
+}
+
+/**
+ * Insert the typed grammar-exercise rows for ONE pattern across the 4 tables.
+ * Each candidate is mapped via the SHARED buildGrammarExerciseRow (so the write
+ * path can never drift from the CS13 validator / the bridge) and written with
+ * the pattern + lesson keys. A DB error fails loud (the candidate already passed
+ * the generator's defensive validation, so a DB reject is a real schema/CHECK
+ * surprise worth surfacing — Lesson #2). The caller is responsible for the
+ * skip / delete-first decision (patternSeeding.ts).
+ */
+export async function writeGrammarExercisesForPattern(
+  supabase: CapabilitySupabaseClient,
+  grammarPatternId: string,
+  lessonId: string,
+  candidates: GrammarExerciseCandidateInput[],
+): Promise<WriteGrammarExercisesResult> {
+  const byType: Record<GrammarExerciseType, number> = {
+    contrast_pair: 0,
+    sentence_transformation: 0,
+    constrained_translation: 0,
+    cloze_mcq: 0,
+  }
+  let written = 0
+  for (const candidate of candidates) {
+    const answerKey = extractAnswerKey(candidate.exercise_type, candidate.payload)
+    const built = buildGrammarExerciseRow(candidate.exercise_type, candidate.payload, answerKey)
+    if (!built) continue
+    const result = await insertGrammarExerciseTyped(supabase, built.table, {
+      ...built.columns,
+      grammar_pattern_id: grammarPatternId,
+      lesson_id: lessonId,
+    })
+    if (!result.ok) {
+      throw new Error(
+        `Typed grammar-exercise write failed (${built.table}, ${candidate.exercise_type}, ` +
+        `pattern=${grammarPatternId}): ${result.error}`,
+      )
+    }
+    written += 1
+    byType[candidate.exercise_type] += 1
+  }
+  return { written, byType }
+}
+
+/**
+ * Delete ALL typed grammar-exercise rows for a pattern across the 4 tables (by
+ * grammar_pattern_id). Used by the partial-rebuild path (a pattern detected
+ * `partial` is wiped before regeneration so no stale type lingers) and by
+ * `--regenerate <pattern-slug>`. Physical delete — safe (leaf tables). Returns
+ * the total rows removed.
+ */
+export async function deleteGrammarExercisesForPattern(
+  supabase: CapabilitySupabaseClient,
+  grammarPatternId: string,
+): Promise<number> {
+  let deleted = 0
+  for (const table of Object.values(GRAMMAR_EXERCISE_TABLES)) {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from(table)
+      .delete()
+      .eq('grammar_pattern_id', grammarPatternId)
+      .select('id')
+    if (error) {
+      throw new Error(
+        `Failed to delete typed grammar exercises from ${table} for pattern=${grammarPatternId}: ${error.message}`,
+      )
+    }
+    deleted += (data ?? []).length
+  }
+  return deleted
+}
+
+/**
+ * The Task-6 cutover-DELETE (C1/I2): remove the lesson's legacy grammar_patterns
+ * whose slug is NOT in the new category-derived set. FK ON DELETE CASCADE
+ * (migration.sql:2373/2408/2442/2477 + grammar_pattern_examples +
+ * item_context_grammar_patterns) clears their typed exercise rows. This is the
+ * piece `retireOrphanedCapabilities` (SOFT, cap-only) cannot do — without it the
+ * legacy 47 patterns + their is_active typed rows persist as dead data and
+ * "REPLACED" would be a lie. Returns the deleted slugs (for logging).
+ *
+ * SAFETY: scoped to `introduced_by_lesson_id = lessonId` so it can only ever
+ * remove THIS lesson's patterns; `keepSlugs` is the new set to preserve.
+ *
+ * LEGACY review_events (live-trial finding 2026-06-01): `review_events`
+ * .grammar_pattern_id is `ON DELETE SET NULL` (migration.sql:812) but
+ * `review_events_source_check` (migration.sql:888) forbids a row with BOTH
+ * source columns null — so a grammar review_event blocks the pattern delete
+ * (the SET-NULL would violate the check). `review_events` is a DEAD legacy table
+ * (zero readers/writers in src/; the live app uses capability_review_events,
+ * which is 0 for patterns). So we first DELETE the legacy grammar review_events
+ * for the to-delete patterns (operator-approved 2026-06-01), then delete the
+ * patterns. This completes the clean hard-delete the cutover intends.
+ */
+export async function deleteLegacyPatternsForLesson(
+  supabase: CapabilitySupabaseClient,
+  lessonId: string,
+  keepSlugs: string[],
+): Promise<string[]> {
+  // Fetch this lesson's patterns first so we can compute + return the delete set
+  // (PostgREST has no "NOT IN (subquery)" — do the diff in code, delete by id).
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('grammar_patterns')
+    .select('id, slug')
+    .eq('introduced_by_lesson_id', lessonId)
+  if (error) {
+    throw new Error(`Failed to read grammar_patterns for lesson=${lessonId}: ${error.message}`)
+  }
+  const keep = new Set(keepSlugs)
+  const toDelete = ((data ?? []) as Array<{ id: string; slug: string }>).filter(
+    (p) => !keep.has(p.slug),
+  )
+  if (toDelete.length === 0) return []
+  const deleteIds = toDelete.map((p) => p.id)
+
+  // Clear the dead-legacy grammar review_events that would otherwise block the
+  // delete via the SET-NULL → source-check violation (see fn docstring).
+  const { error: reError } = await supabase
+    .schema('indonesian')
+    .from('review_events')
+    .delete()
+    .in('grammar_pattern_id', deleteIds)
+  if (reError) {
+    throw new Error(`Failed to clear legacy review_events for lesson=${lessonId}: ${reError.message}`)
+  }
+
+  const { error: delError } = await supabase
+    .schema('indonesian')
+    .from('grammar_patterns')
+    .delete()
+    .in('id', deleteIds)
+  if (delError) {
+    throw new Error(`Failed to delete legacy grammar_patterns for lesson=${lessonId}: ${delError.message}`)
+  }
+  return toDelete.map((p) => p.slug)
 }
 
 export interface VocabExerciseVariantInput {

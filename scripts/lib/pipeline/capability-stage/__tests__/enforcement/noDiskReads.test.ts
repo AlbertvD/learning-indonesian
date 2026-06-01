@@ -102,6 +102,16 @@ const EXPECTED_ITEM_PATH_FILES: ExpectedFile[] = [
   // Note: adapter.ts (Task 6) exists today. The idempotent write additions must
   // not introduce disk I/O — covered by the "non-allowlisted existing files"
   // group below rather than a separate entry here.
+
+  // --- Slice 2 (pattern path) — disk-free by construction. -----------------
+  // existsFails:true while unbuilt (it.fails keeps the suite green + documents
+  // the missing file); flip to false when the named task ships it. Disk-free is
+  // ALSO enforced automatically the moment any of these lands, via the
+  // "non-allowlisted existing files" walk below — this entry adds the existence
+  // contract + task label on top of that. Task 3/7 pattern projector + gate-
+  // validator filenames are settled in their own tasks (names TBD); their
+  // disk-free contract is already covered by the walk regardless.
+  { relPath: 'generateGrammarExercises.ts', task: 'Task 4 (Slice 2)', existsFails: false },
 ]
 
 // ---------------------------------------------------------------------------

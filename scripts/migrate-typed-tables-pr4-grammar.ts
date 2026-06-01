@@ -14,11 +14,12 @@
  * ----------
  * PR 4 switches the runtime reader (byKind/pattern.ts) to the typed tables and
  * the writer (capability-stage runner step 10) to dual-write them. But the
- * writer only fires for not-yet-published candidates, and all 716 live
- * candidates are already `published` — so neither a re-publish nor the standalone
- * publish-grammar-candidates.ts regenerates them. This bridge is the SOLE
- * population path for the existing rows; without it the new fail-loud reader
- * surfaces `pattern_typed_row_missing` for every pattern cap.
+ * writer only fired for not-yet-published candidates, and all 716 live
+ * candidates were already `published` — so a re-publish did not regenerate them
+ * (the standalone publish-grammar-candidates.ts publisher was later retired in
+ * Slice 2 Task 9). This bridge was the SOLE population path for the existing
+ * rows; without it the new fail-loud reader surfaces `pattern_typed_row_missing`
+ * for every pattern cap. (One-shot; already run.)
  *
  * MAPPING
  * -------

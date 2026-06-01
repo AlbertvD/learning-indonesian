@@ -1164,6 +1164,71 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   }
 }
 
+// ── HC23 (Slice 2 Task 8, OQ2-3): zero orphan exercise_review_comments ───────
+//      The FK exercise_review_comments.exercise_variant_id → exercise_variants(id)
+//      was DROPPED (the column now holds a TYPED grammar-exercise row id). This
+//      health check replaces the dropped referential integrity: every comment's
+//      exercise_variant_id must resolve in one of the 4 typed exercise tables
+//      (or, for legacy bridged comments, exercise_variants). An orphan means a
+//      --regenerate/cutover deleted the typed row out from under a comment —
+//      surfaced here for admin cleanup (getOpenComments already filters it from
+//      the UI, so it is invisible, not crashing). Expect 0.
+{
+  const RESOLVE_TABLES = [
+    'contrast_pair_exercises',
+    'sentence_transformation_exercises',
+    'constrained_translation_exercises',
+    'cloze_mcq_exercises',
+    'exercise_variants', // legacy bridged comments still resolve here
+  ]
+  try {
+    // 1. All comment exercise_variant_ids (paginate; small today).
+    const commentIds: string[] = []
+    for (let offset = 0; ; offset += 1000) {
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('exercise_review_comments')
+        .select('exercise_variant_id')
+        .range(offset, offset + 999)
+      if (error) throw error
+      const rows = (data ?? []) as Array<{ exercise_variant_id: string }>
+      for (const r of rows) commentIds.push(r.exercise_variant_id)
+      if (rows.length < 1000) break
+    }
+
+    if (commentIds.length === 0) {
+      pass('HC23 zero orphan exercise_review_comments (no comments)')
+    } else {
+      // 2. Resolve the comment ids across the 4 typed tables + exercise_variants.
+      const resolved = new Set<string>()
+      const chunk = 200
+      for (const table of RESOLVE_TABLES) {
+        for (let i = 0; i < commentIds.length; i += chunk) {
+          const slice = commentIds.slice(i, i + chunk)
+          const { data, error } = await supabase
+            .schema('indonesian')
+            .from(table)
+            .select('id')
+            .in('id', slice)
+          if (error) throw error
+          for (const r of (data ?? []) as Array<{ id: string }>) resolved.add(r.id)
+        }
+      }
+      const offenders = [...new Set(commentIds)].filter((id) => !resolved.has(id))
+      if (offenders.length === 0) {
+        pass(`HC23 zero orphan exercise_review_comments (${commentIds.length} comment(s) all resolve)`)
+      } else {
+        fail('HC23 zero orphan exercise_review_comments',
+          `${offenders.length} comment(s) whose exercise_variant_id resolves in no typed exercise table ` +
+          `nor exercise_variants: ${offenders.slice(0, 5).join(', ')}${offenders.length > 5 ? ' …' : ''}\n` +
+          `   → A --regenerate/cutover deleted the commented exercise. Admin: delete the stale comment(s).`)
+      }
+    }
+  } catch (err) {
+    fail('HC23 zero orphan exercise_review_comments', err instanceof Error ? err.message : String(err))
+  }
+}
+
 // ── Output ─────────────────────────────────────────────────────────────────
 console.log(`\nSupabase deep structural check — ${SUPABASE_URL}\n`)
 let failures = 0

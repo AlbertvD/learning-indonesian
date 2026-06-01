@@ -97,7 +97,10 @@ export interface CapabilityStagingPlan {
   exerciseAssets: StagingExerciseAsset[]
 }
 
-function stableSlug(value: string): string {
+// Exported so the capability-stage pattern projector (projectPatternsFromCategories)
+// derives grammar-pattern slugs from category titles with the SAME formula the
+// rest of the pipeline uses — one home for the slug formula.
+export function stableSlug(value: string): string {
   return value
     .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g, '')
