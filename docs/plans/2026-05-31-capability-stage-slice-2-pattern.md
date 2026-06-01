@@ -1,6 +1,10 @@
 ---
-status: approved
-implementation: null
+status: implementing
+implementation: "PR #124"
+implementation_paths:
+  - scripts/lib/pipeline/capability-stage/
+  - src/services/coverageService.ts
+  - scripts/migration.sql
 epic: "#98"
 issue: "#100"
 architect_review: "APPROVED 2026-05-31 (2 rounds; all 4 round-1 CRITICALs verified resolved against code; 3 implementation-time NOTES folded in). Forward-looking design — safe to implement; OQ2-1..4 resolved at implementation time."
