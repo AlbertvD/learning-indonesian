@@ -54,6 +54,14 @@ function makeFake(seed?: Partial<FakeDb>) {
   const client = {
     schema: () => ({
       from: (table: string) => {
+        if (table === 'review_events') {
+          // Cutover clears dead-legacy grammar review_events before deleting patterns.
+          return {
+            delete: () => ({
+              in: async () => ({ error: null }),
+            }),
+          }
+        }
         if (table === 'grammar_patterns') {
           return {
             upsert: (row: { slug: string; introduced_by_lesson_id: string }) => ({
