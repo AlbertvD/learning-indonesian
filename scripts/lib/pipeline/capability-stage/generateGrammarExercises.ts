@@ -45,6 +45,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { buildGrammarExerciseRow } from './projectors/grammarExerciseRows'
 import { extractAnswerKey } from './validators/candidatePayload'
 import { SCHEMA_BY_TYPE } from './validators/grammarExercises'
+import { ANTHROPIC_MAX_RETRIES, GENERATION_THROTTLE_MS, sleep } from '../generationThrottle'
 
 // ---------------------------------------------------------------------------
 // Input / output types
@@ -354,11 +355,14 @@ export async function generateGrammarExercises(
       return empty
     }
 
-    const claude = new Anthropic({ apiKey })
+    const claude = new Anthropic({ apiKey, maxRetries: ANTHROPIC_MAX_RETRIES })
     effectiveGenerateFn = async (prompt: string): Promise<string> => {
+      // Anti-burst pacing — one call per pattern; real-API path only (tests
+      // inject generateFn and never reach here, so they stay fast).
+      await sleep(GENERATION_THROTTLE_MS)
       const response = await claude.messages.create({
         model: MODEL,
-        max_tokens: 8000,
+        max_tokens: 6000,
         messages: [{ role: 'user', content: prompt }],
       })
       const block = response.content[0]
