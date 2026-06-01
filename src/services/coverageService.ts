@@ -164,6 +164,10 @@ export async function getExerciseCoverage(): Promise<LessonExerciseCoverage[]> {
   //   Path C: grammar_patterns.introduced_by_lesson_id (direct lesson link at publish time)
   const lessonGrammarPatterns = new Map<string, Set<string>>()
 
+  // Path A junction is LEGACY-ONLY after Slice 2 Task 9: publish-grammar-candidates.ts
+  // (its sole writer) was retired, so no new item_context_grammar_patterns rows are
+  // created. Surviving legacy rows still count here; new patterns are covered by
+  // Path C (introduced_by_lesson_id), the authoritative direct link.
   for (const link of grammarLinks ?? []) {
     const lessonId = contextToLesson.get(link.context_id)
     if (!lessonId) continue
