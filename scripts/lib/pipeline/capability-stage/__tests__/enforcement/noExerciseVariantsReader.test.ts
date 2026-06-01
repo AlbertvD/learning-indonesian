@@ -74,10 +74,10 @@ describe('Slice 2 enforcement: no runtime exercise_variants reader', () => {
     expect(fs.existsSync(path.join(SRC_ROOT, 'services')), `SRC_ROOT misresolved: ${SRC_ROOT}`).toBe(true)
   })
 
-  // STAGED (it.fails): passes today because coverageService.ts:78 still reads
-  // exercise_variants. When Task 8 repoints it, this assertion starts passing
-  // and it.fails turns RED → flip `it.fails` → `it` to make the gate permanent.
-  it.fails('no src/ runtime code reads exercise_variants (flip it.fails → it after Task 8)', () => {
+  // ACTIVE (Slice 2 Task 8): coverageService was repointed onto the 4 typed
+  // grammar-exercise tables, so src/ has zero runtime exercise_variants readers.
+  // This gate is now a hard, permanent enforcement — any new src/ reader fails it.
+  it('no src/ runtime code reads exercise_variants', () => {
     const offenders = findExerciseVariantsReaders()
     expect(
       offenders,

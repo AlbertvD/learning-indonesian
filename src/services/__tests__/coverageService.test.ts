@@ -54,7 +54,7 @@ describe('getSectionCoverage', () => {
 })
 
 describe('getExerciseCoverage', () => {
-  it('counts learning items via item_contexts and flags meanings presence', async () => {
+  it('counts learning items via item_contexts and grammar exercises via the typed tables', async () => {
     setTables({
       lessons: [{ id: 'l-1', order_index: 1, title: 'One' }],
       item_contexts: [
@@ -62,10 +62,10 @@ describe('getExerciseCoverage', () => {
         { id: 'ctx-2', source_lesson_id: 'l-1', learning_item_id: 'item-b', context_type: 'cloze' },
       ],
       item_meanings: [{ learning_item_id: 'item-a' }],
-      exercise_variants: [
-        { exercise_type: 'recognition_mcq', context_id: 'ctx-1', lesson_id: null, grammar_pattern_id: null },
-        { exercise_type: 'cloze_mcq', context_id: 'ctx-2', lesson_id: null, grammar_pattern_id: null },
-      ],
+      // Slice 2 Task 8: grammar exercises counted from the typed tables, NOT
+      // exercise_variants. (Vocab exercises are runtime-generated → not counted.)
+      contrast_pair_exercises: [{ lesson_id: 'l-1', grammar_pattern_id: 'gp-1' }],
+      cloze_mcq_exercises: [{ lesson_id: 'l-1', grammar_pattern_id: 'gp-1' }],
       item_context_grammar_patterns: [],
       grammar_patterns: [],
     })
@@ -74,20 +74,18 @@ describe('getExerciseCoverage', () => {
     expect(row?.learningItems).toBe(2)
     expect(row?.hasMeanings).toBe(true)
     expect(row?.clozeContexts).toBe(1)
-    expect(row?.exerciseVariants).toEqual({ recognition_mcq: 1, cloze_mcq: 1 })
+    expect(row?.exerciseVariants).toEqual({ contrast_pair: 1, cloze_mcq: 1 })
   })
 
-  it('counts grammar patterns via introduced_by_lesson_id, exercise_variants.lesson_id, and the item_context junction', async () => {
+  it('counts grammar patterns via introduced_by_lesson_id, the typed tables, and the item_context junction', async () => {
     setTables({
       lessons: [{ id: 'l-1', order_index: 1, title: 'One' }],
       item_contexts: [
         { id: 'ctx-1', source_lesson_id: 'l-1', learning_item_id: 'item-a', context_type: 'anchor' },
       ],
       item_meanings: [],
-      exercise_variants: [
-        // Path B: grammar exercise with explicit lesson_id + pattern_id
-        { exercise_type: 'sentence_transformation', context_id: null, lesson_id: 'l-1', grammar_pattern_id: 'gp-1' },
-      ],
+      // Path B: grammar exercise in a typed table with lesson_id + pattern_id
+      sentence_transformation_exercises: [{ lesson_id: 'l-1', grammar_pattern_id: 'gp-1' }],
       item_context_grammar_patterns: [
         // Path A: vocab-context link
         { context_id: 'ctx-1', grammar_pattern_id: 'gp-2' },

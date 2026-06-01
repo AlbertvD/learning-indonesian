@@ -909,13 +909,11 @@ export async function runCapabilityStage(
   const patternIdsBySlug = grammarPatternUpsert.tableMissing
     ? new Map<string, string>()
     : await fetchGrammarPatternIdsBySlug(supabase)
-  // Slice 2 (Task 6): seed with the pattern path's exercise_variants (the
-  // grammar dual-write moved there); the legacy grammar branch below is skipped
-  // when usePatternPath. `legacyVariantsLanded` tracks ONLY the legacy loop's
-  // landings (for the staging write-back gate, which concerns staging candidates).
-  const exerciseVariantIds: string[] = usePatternPath && patternResult
-    ? [...patternResult.exerciseVariantIds]
-    : []
+  // Slice 2 (Task 8): the pattern path is typed-only (no exercise_variants write),
+  // so nothing to seed from it. The legacy grammar branch below is skipped when
+  // usePatternPath; for !usePatternPath lessons it still pushes here (+ to
+  // legacyVariantsLanded, which gates the staging write-back over staging candidates).
+  const exerciseVariantIds: string[] = []
   let legacyVariantsLanded = 0
   let grammarExerciseRowsLanded = 0
   for (const variant of grammar.exerciseVariants) {

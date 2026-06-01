@@ -15,9 +15,10 @@
  *   4. Per pattern, consult the OQ2-2 seeded-check (patternSeeding) against the
  *      pre-loaded coverage: SEEDED → skip; PARTIAL/REGENERATE → delete-first;
  *      ABSENT/PARTIAL/REGENERATE → generate (in-stage) + write typed rows.
- *   5. Keep the exercise_variants GRAMMAR dual-write (removed in Task 8 once
- *      coverageService is repointed — Lesson #5; the delete-first path clears it
- *      too so it stays idempotent).
+ *   5. Typed-only — NO exercise_variants write. (Task 6 kept a transitional
+ *      dual-write until coverageService was repointed; Task 8 repointed it onto
+ *      the typed tables + dropped the exercise_review_comments FK, so the
+ *      separate-uuid dual-write is gone — the 4 typed tables are the sole store.)
  *
  * The caller (runner) is responsible for the no-double-write filter (excluding
  * `sourceKind === 'pattern'` caps from the legacy staging bundle) and for
@@ -34,12 +35,9 @@ import {
   upsertCapabilitiesSkipIfExists,
   deleteLegacyPatternsForLesson,
   deleteGrammarExercisesForPattern,
-  deleteExerciseVariantsForPattern,
   writeGrammarExercisesForPattern,
-  insertExerciseVariantGrammar,
   type CapabilitySupabaseClient,
 } from './adapter'
-import { extractAnswerKey } from './validators/candidatePayload'
 import {
   generateGrammarExercises,
   type GenerateFn,
@@ -85,8 +83,6 @@ export interface WritePatternPathResult {
   patternCapKeys: string[]
   /** Typed grammar-exercise rows written across the 4 tables. */
   exercisesWritten: number
-  /** exercise_variants rows written (dual-write, kept until Task 8). */
-  exerciseVariantIds: string[]
   /** Patterns skipped because already fully seeded. */
   patternsSkippedSeeded: number
   /** Patterns deleted-first then regenerated (partial or --regenerate). */
@@ -183,10 +179,8 @@ export async function writePatternPath(
       continue
     }
     if (state === 'partial' || isRegenerate) {
-      // Delete-first: clear the keyless typed rows (+ the kept-for-now
-      // exercise_variants) so regeneration cannot duplicate.
+      // Delete-first: clear the keyless typed rows so regeneration cannot duplicate.
       await deleteGrammarExercisesForPattern(supabase, patternId)
-      await deleteExerciseVariantsForPattern(supabase, patternId)
       patternsRegenerated += 1
     }
     toGenerate.push(plan)
@@ -211,9 +205,9 @@ export async function writePatternPath(
     { generateFn: hooks.generateFn },
   )
 
-  // 6. Write typed rows + the exercise_variants dual-write (kept until Task 8).
+  // 6. Write typed rows only (the 4 typed tables are the sole grammar-exercise
+  //    store — no exercise_variants write; Task 8 dropped that path).
   let exercisesWritten = 0
-  const exerciseVariantIds: string[] = []
   for (const plan of toGenerate) {
     const patternId = patternIdsBySlug.get(plan.slug)
     if (!patternId) continue
@@ -230,20 +224,6 @@ export async function writePatternPath(
       })),
     )
     exercisesWritten += writeResult.written
-
-    // exercise_variants dual-write (Lesson #5 — coverageService still reads it
-    // until Task 8). Idempotent because the delete-first path above already
-    // cleared a regenerated pattern's exercise_variants.
-    for (const candidate of candidates) {
-      const variant = await insertExerciseVariantGrammar(supabase, {
-        lesson_id: input.lessonId,
-        exercise_type: candidate.exercise_type,
-        grammar_pattern_id: patternId,
-        payload_json: candidate.payload,
-        answer_key_json: extractAnswerKey(candidate.exercise_type, candidate.payload),
-      })
-      if (variant.ok && variant.id) exerciseVariantIds.push(variant.id)
-    }
   }
 
   return {
@@ -253,7 +233,6 @@ export async function writePatternPath(
     capIdsByKey,
     patternCapKeys,
     exercisesWritten,
-    exerciseVariantIds,
     patternsSkippedSeeded,
     patternsRegenerated,
     skippedPatternSlugs: generation.skippedPatternSlugs,

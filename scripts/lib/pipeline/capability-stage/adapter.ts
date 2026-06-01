@@ -826,34 +826,6 @@ export async function deleteGrammarExercisesForPattern(
 }
 
 /**
- * Delete the `exercise_variants` GRAMMAR rows for a pattern (by
- * grammar_pattern_id). Paired with deleteGrammarExercisesForPattern in the
- * partial-rebuild + --regenerate paths so the kept-for-now exercise_variants
- * dual-write (removed in Task 8) stays idempotent — without this, a regenerate
- * would leave the old exercise_variants rows behind (grammar_pattern_id is
- * `ON DELETE SET NULL`, NOT cascade — migration.sql:606 — so they would NOT be
- * cleared by a pattern delete either). Returns rows removed. TEMPORARY: this
- * helper retires with the exercise_variants grammar write in Task 8.
- */
-export async function deleteExerciseVariantsForPattern(
-  supabase: CapabilitySupabaseClient,
-  grammarPatternId: string,
-): Promise<number> {
-  const { data, error } = await supabase
-    .schema('indonesian')
-    .from('exercise_variants')
-    .delete()
-    .eq('grammar_pattern_id', grammarPatternId)
-    .select('id')
-  if (error) {
-    throw new Error(
-      `Failed to delete exercise_variants for pattern=${grammarPatternId}: ${error.message}`,
-    )
-  }
-  return (data ?? []).length
-}
-
-/**
  * The Task-6 cutover-DELETE (C1/I2): remove the lesson's legacy grammar_patterns
  * whose slug is NOT in the new category-derived set. FK ON DELETE CASCADE
  * (migration.sql:2373/2408/2442/2477 + grammar_pattern_examples +

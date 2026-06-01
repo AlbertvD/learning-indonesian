@@ -260,8 +260,8 @@ describe('runner pattern cutover (Task 6)', () => {
     expect(ops.some((o) => o.table === 'grammar_patterns' && o.op === 'upsert')).toBe(true)
     // The generator returned all 4 types → all 4 typed tables written.
     for (const t of TYPED_TABLES) expect(ops.some((o) => o.table === t && o.op === 'insert')).toBe(true)
-    // exercise_variants dual-write (kept until Task 8): 4 exercises × 1 pattern.
-    expect(ops.filter((o) => o.table === 'exercise_variants' && o.op === 'insert').length).toBe(4)
+    // Task 8: typed-only — the pattern path writes NO exercise_variants.
+    expect(ops.filter((o) => o.table === 'exercise_variants' && o.op === 'insert').length).toBe(0)
   })
 
   it('CS18 wiring: a partial-coverage pattern (2 of 4 types) yields a pattern_typed_row_missing finding', async () => {

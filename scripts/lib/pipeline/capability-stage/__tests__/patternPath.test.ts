@@ -225,16 +225,16 @@ describe('writePatternPath', () => {
   beforeEach(() => { delete process.env.ANTHROPIC_API_KEY })
   afterEach(() => vi.restoreAllMocks())
 
-  it('fresh lesson: upserts patterns, writes typed rows for all 4 types + exercise_variants dual-write', async () => {
+  it('fresh lesson: upserts patterns, writes typed rows for all 4 types (typed-only, NO exercise_variants)', async () => {
     const { client, db } = makeFake()
     const result = await writePatternPath(client, baseInput(emptyPatternState()), { generateFn: fullGenerateFn() })
 
     expect(result.patternsUpserted).toBe(2)
     expect(result.exercisesWritten).toBe(8) // 4 types × 2 patterns
-    expect(result.exerciseVariantIds).toHaveLength(8) // dual-write
     // every typed table got 2 rows (one per pattern)
     for (const t of GRAMMAR_TABLES) expect(db.typedRows[t]).toHaveLength(2)
-    expect(db.exerciseVariants).toHaveLength(8)
+    // Task 8: the pattern path is typed-only — it writes NO exercise_variants.
+    expect(db.exerciseVariants).toHaveLength(0)
     expect(result.patternsSkippedSeeded).toBe(0)
   })
 
@@ -293,9 +293,10 @@ describe('writePatternPath', () => {
     expect(db.typedRows.sentence_transformation_exercises.filter((r) => r.grammar_pattern_id === 'pat-A')).toHaveLength(1)
     expect(db.typedRows.constrained_translation_exercises.filter((r) => r.grammar_pattern_id === 'pat-A')).toHaveLength(1)
     expect(db.typedRows.cloze_mcq_exercises.filter((r) => r.grammar_pattern_id === 'pat-A')).toHaveLength(1)
-    // the stale exercise_variant was deleted-first, replaced with 4 fresh
-    expect(db.exerciseVariants.find((v) => v.id === 'oldev')).toBeUndefined()
-    expect(db.exerciseVariants).toHaveLength(4)
+    // Task 8: the pattern path no longer touches exercise_variants at all — the
+    // pre-existing 'oldev' row is left untouched (it retires with #102), and no
+    // new exercise_variants are written.
+    expect(db.exerciseVariants).toEqual([{ id: 'oldev', grammar_pattern_id: 'pat-A' }])
   })
 
   it('--regenerate <slug>: force-rebuilds only the named pattern, leaves the seeded one alone', async () => {
