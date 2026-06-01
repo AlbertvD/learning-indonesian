@@ -28,7 +28,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 async function main() {
   const lessonNumber = parseInt(process.argv[2], 10)
   if (isNaN(lessonNumber)) {
-    console.error('Usage: bun scripts/publish-approved-content.ts <N> [--dry-run] [--skip-lint] [--regenerate <normalized_text>]')
+    console.error('Usage: bun scripts/publish-approved-content.ts <N> [--dry-run] [--skip-lint] [--regenerate <normalized_text> | --regenerate-pattern <pattern-slug>]')
     process.exit(1)
   }
 
@@ -36,12 +36,28 @@ async function main() {
   const skipLint = process.argv.includes('--skip-lint')
 
   // --regenerate <normalized_text>: destructive distractor regeneration for one item.
-  // Deletes existing distractor rows for the item (all 3 tables) then re-seeds.
-  // This is the ONLY destructive path — routine re-runs never delete seeded rows.
+  //   Deletes existing distractor rows for the item (all 3 tables) then re-seeds.
+  // --regenerate-pattern <pattern-slug>: destructive grammar-exercise regeneration
+  //   for one pattern (deletes its rows across the 4 typed exercise tables, then
+  //   regenerates — Slice 2 Task 5, OQ2-2).
+  // These are the ONLY destructive paths — routine re-runs never delete seeded
+  // rows — and are mutually exclusive (a single regenerate target).
   const regenIdx = process.argv.indexOf('--regenerate')
   const regenerateArg = regenIdx !== -1 ? (process.argv[regenIdx + 1] ?? null) : null
-  const regenerate: { kind: 'item'; normalizedText: string } | undefined =
-    regenerateArg ? { kind: 'item', normalizedText: regenerateArg } : undefined
+  const regenPatternIdx = process.argv.indexOf('--regenerate-pattern')
+  const regeneratePatternArg = regenPatternIdx !== -1 ? (process.argv[regenPatternIdx + 1] ?? null) : null
+  if (regenerateArg && regeneratePatternArg) {
+    console.error('Use only one of --regenerate <item> or --regenerate-pattern <slug>, not both.')
+    process.exit(1)
+  }
+  const regenerate:
+    | { kind: 'item'; normalizedText: string }
+    | { kind: 'pattern'; slug: string }
+    | undefined = regeneratePatternArg
+    ? { kind: 'pattern', slug: regeneratePatternArg }
+    : regenerateArg
+      ? { kind: 'item', normalizedText: regenerateArg }
+      : undefined
 
   // Pre-flight lint gate (CRITICAL findings only) — refuse to publish until
   // staging is clean. Skipped during dry-run when no service key is set.

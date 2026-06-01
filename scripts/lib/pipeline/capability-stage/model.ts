@@ -38,12 +38,17 @@ export interface CapabilityStageInput {
   lessonId: string
   dryRun?: boolean
   /**
-   * When set, the item path deletes + regenerates distractors for the given
-   * item (identified by normalized_text) before the skip-if-exists gate.
-   * This is the ONLY destructive path — routine re-runs never delete seeded
-   * distractor rows. OQ-3 / ADR 0011.
+   * When set, a destructive regeneration of ONE unit before the skip-if-exists /
+   * pattern-seeded gate. This is the ONLY destructive routine path — ordinary
+   * re-runs never delete seeded rows (ADR 0011). Discriminated by kind:
+   *   - `item`    — delete + regenerate distractors for the item (by normalized_text).
+   *   - `pattern` — delete (by grammar_pattern_id, across the 4 typed exercise
+   *                 tables) + regenerate grammar exercises for the pattern slug
+   *                 (Slice 2 Task 5, OQ2-2).
    */
-  regenerate?: { kind: 'item'; normalizedText: string }
+  regenerate?:
+    | { kind: 'item'; normalizedText: string }
+    | { kind: 'pattern'; slug: string }
 }
 
 export interface CapabilityStageCounts {
