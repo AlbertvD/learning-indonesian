@@ -1,5 +1,6 @@
 ---
-status: approved
+status: implementing
+implementation: PR #130 (Fix 2 — paraphrase acceptance); Fix 1 (productive ceiling) PR to follow
 adr: docs/adr/0014-productive-ceiling-item-harvest-is-word-phrase-only.md
 reviewed_by:
   - architect (PR #129, round 2 SIGN-OFF, 2026-06-02)
