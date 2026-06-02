@@ -19,7 +19,7 @@ ADR 0007 *sequences* the productive caps that exist (a productive cap unlocks on
 
 ## Decision
 
-**Item-harvest is restricted to lexical chunks.** Only `item_type` ∈ {`word`, `phrase`} is harvested as a `learning_item` and given the item capability suite. The `sentence` and `dialogue_chunk` types produce **no item capabilities**. **Kind is the gate**; a word-count guard (a `word`/`phrase` running ≥ ~6 words) is a secondary flag for a likely mis-tag, never a rule on its own.
+**Item-harvest is restricted to lexical chunks.** Only `item_type` ∈ {`word`, `phrase`} is harvested as a `learning_item` and given the item capability suite. The `sentence` and `dialogue_chunk` types produce **no item capabilities**. **Kind is the gate**; a word-count guard (a `word`/`phrase` running **≥ 6 words** — the single pinned threshold across this ADR, the plan, and CONTEXT.md) is a secondary flag for a likely mis-tag, never a rule on its own.
 
 Nothing learnable is lost when a sentence/line is dropped from item-harvest:
 
