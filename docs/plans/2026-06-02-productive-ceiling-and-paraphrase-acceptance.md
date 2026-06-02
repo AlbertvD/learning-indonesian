@@ -1,6 +1,7 @@
 ---
-status: draft
+status: approved
 adr: docs/adr/0014-productive-ceiling-item-harvest-is-word-phrase-only.md
+reviewed_by: architect (PR #129, round 2 SIGN-OFF, 2026-06-02)
 supersedes: []
 ---
 
@@ -135,7 +136,7 @@ recurrence — grader and authoring can no longer disagree.
 case (`"het is goedkoop; de prijs is laag"`); *separate* `item_meanings` rows
 already work today (`MeaningRecall.tsx:31-33` builds `acceptedVariants` from
 them). `form_recall`/`dictation`/typed-recall also route through `checkAnswer`
-(`TypedRecall.tsx:44`, `Dictation.tsx:29`), so they benefit too. **Ordering
+(`TypedRecall.tsx:44`, `Dictation.tsx:37`), so they benefit too. **Ordering
 invariant (N4):** the split MUST run before `normalizeAnswer` —
 `normalizeAnswer` (`answerNormalization.ts:13`) strips all non-word chars
 including `;`, so splitting after normalization would silently break the fix; the
