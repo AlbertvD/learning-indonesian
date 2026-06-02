@@ -52,6 +52,7 @@ import { validateGrammarExercises } from './validators/grammarExercises'
 import { validatePerItemMeaning } from './validators/perItemMeaning'
 import { validateItemTranslations } from './validators/itemTranslations'
 import { validateItemSeparatorConvention } from './validators/itemSeparatorConvention'
+import { validateItemLength } from './validators/itemLength'
 import { validatePosTags } from './validators/pos'
 import { runCountParity, type CountParityInput } from './verify/countParity'
 import { runContentNonEmpty, type ContentNonEmptyInput } from './verify/contentNonEmpty'
@@ -141,6 +142,9 @@ export function runCapabilityGatePreWrite(input: CapabilityGatePreWriteInput): V
     // must not use ";"/comma-as-OR (ERROR); Indonesian-side answers warn on ";".
     // Detection shared with the runtime grader + HC24 via @/lib/capabilities.
     ...validateItemSeparatorConvention(input.learningItems),
+    // CS20 — item length guard (productive ceiling, ADR 0014): a word/phrase
+    // running >= 6 tokens is a likely mis-tagged sentence (WARN-only).
+    ...validateItemLength(input.learningItems),
     // CS5 — POS: missing pos → warning; invalid pos value → error.
     ...validatePosTags(input.learningItems).findings,
   ]

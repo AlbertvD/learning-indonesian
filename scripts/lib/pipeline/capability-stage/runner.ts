@@ -85,6 +85,8 @@ import { writePatternPath } from './patternPath'
 import { projectItemsFromTypedRows } from './projectors/vocab'
 import { generateItemDistractors, type GenerateFn, type DistractorInputItem, type ItemDistractorSet } from './generateItemDistractors'
 import { itemSlug } from '@/lib/capabilities'
+import { isOverHarvestedItemCap } from './itemHarvest'
+import { runDeharvestedVisibility } from './verify/deharvestedVisibility'
 import type { ItemCapForCoverageCheck } from './validators/itemCoverage'
 import type { DistractorSetRow } from './validators/itemDistractors'
 
@@ -438,6 +440,18 @@ export async function runCapabilityStage(
   // — exactly what OQ2-5 prescribes ("safe: 0 progress; use retireOrphanedCapabilities").
   // Gated on usePatternPath so L5/7/8 keep their legacy pattern caps.
 
+  // Productive ceiling (ADR 0014 / Fix 1a): item-harvest is word/phrase only.
+  // The over-harvested sentence/dialogue_chunk item caps flow EXCLUSIVELY through
+  // this legacy bundle (the new DB→DB path reads lesson_section_item_rows, which
+  // is word/phrase only — loadFromDb.ts:135), so the cut is made here. Staged cap
+  // rows carry no item_type, so resolve each item cap's source_ref slug against a
+  // slug→item_type map built from staging.learningItems (slug = itemSlug(base_text)).
+  const itemTypeBySlug = new Map<string, string>(
+    (staging.learningItems as Array<{ base_text: string; item_type: string }>).map(
+      (it) => [itemSlug(it.base_text), it.item_type] as const,
+    ),
+  )
+
   const stagedCapabilities = (staging.capabilities as Array<{
     canonicalKey: string
     sourceKind: string
@@ -453,13 +467,18 @@ export async function runCapabilityStage(
     // Constraint #1 (Task 6c): item caps written by the new path are excluded from
     // the legacy bundle to prevent double-writes. Only the EXACT canonical keys
     // emitted by projectItemsFromTypedRows are excluded — audio caps
-    // (audio_recognition, dictation when item.hasAudio) and sentence/dialogue_chunk
-    // item caps flow through this legacy path unchanged, preserving them from
-    // the retireOrphanedCapabilities orphan sweep.
+    // (audio_recognition, dictation when item.hasAudio) flow through this legacy
+    // path unchanged, preserving them from the retireOrphanedCapabilities sweep.
     // Slice 2 (Task 6): when usePatternPath, ALSO exclude every pattern-kind cap
     // (the new path owns them all — see the sourceKind rationale in step 5a).
     .filter((capability) => !newPathEmittedKeys.has(capability.canonicalKey))
     .filter((capability) => !(usePatternPath && capability.sourceKind === 'pattern'))
+    // Fix 1a (ADR 0014): drop item caps whose source is a sentence/dialogue_chunk
+    // — they are no longer emitted, so retireOrphanedCapabilities soft-retires the
+    // already-published ones automatically on the next publish. A dialogue_line
+    // cloze cap is NOT an item cap and is unaffected (it is appended separately,
+    // below). A cap whose source resolves to no item row is kept (non-item cap).
+    .filter((capability) => !isOverHarvestedItemCap(capability, itemTypeBySlug))
     .map((capability): CapabilityInput => ({
     canonicalKey: capability.canonicalKey,
     sourceKind: capability.sourceKind,
@@ -477,6 +496,27 @@ export async function runCapabilityStage(
     ...stagedCapabilities,
     ...vocab.contextualClozeCapabilities,
   ]
+
+  // CS21 (ADR 0014 §M4) — reader-visibility net: every sentence/dialogue_chunk
+  // whose item caps were just de-harvested must still be VISIBLE to the learner
+  // in the lesson's typed content. Warn (never block) on any that vanished — a
+  // reader gap or a spurious harvest, surfaced rather than silently vaporised.
+  // DB-aware, so publish-only (the dry-run path short-circuits earlier).
+  const deharvestedItems = (staging.learningItems as Array<{ base_text: string; item_type: string }>)
+    .filter((it) => it.item_type === 'sentence' || it.item_type === 'dialogue_chunk')
+    .map((it) => ({ base_text: it.base_text, item_type: it.item_type }))
+  if (deharvestedItems.length > 0) {
+    const grammarExampleTexts = patternDb.categories.flatMap((c) =>
+      c.examples.map((e) => e.indonesian),
+    )
+    const itemRowTexts = itemDbResult.items.map((r) => r.indonesian_text)
+    findings.push(...await runDeharvestedVisibility(supabase, {
+      lessonId: input.lessonId,
+      deharvestedItems,
+      knownTypedTexts: [...grammarExampleTexts, ...itemRowTexts],
+    }))
+  }
+
   // Decision 3b (ADR 0006): refuse to write any lesson-derived capability with
   // null lesson_id. Podcast source kinds are exempt — see the validator.
   validateLessonIdPresence(allCapabilities)
