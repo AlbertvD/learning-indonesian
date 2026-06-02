@@ -1,7 +1,7 @@
 ---
 module: capabilities
 surface: src/lib/capabilities/
-last_verified_against_code: 2026-05-23
+last_verified_against_code: 2026-06-02
 inbound_port: src/lib/capabilities/index.ts
 status: stable
 ---
@@ -10,7 +10,7 @@ status: stable
 
 **Surface:** `src/lib/capabilities/`. Inbound port: `index.ts` — all `src/` production callers import from `@/lib/capabilities`. Internal files remain importable from their paths for tests and for sibling files inside the module.
 
-**Files (8):**
+**Files (9):**
 
 | File | LOC | Role |
 |---|---|---|
@@ -22,6 +22,7 @@ status: stable
 | `artifactRegistry.ts` | 49 | `hasApprovedArtifact(...)` — quality + scope check (capabilityKey OR sourceRef must match). The exhaustive `ARTIFACT_KINDS` array (`as const satisfies readonly ArtifactKind[]`). |
 | `canonicalKey.ts` | 40 | `buildCanonicalKey(input)` — encodes a `ProjectedCapability` into its stable canonical key. `normalizeLessonSourceRef` for legacy lesson-source-ref shapes. |
 | `itemSlug.ts` | 25 | `itemSlug(base_text)` — canonical slug derivation extracted in PR #59 to fix the silent slug-divergence bug class (~113 multi-word items unreachable). |
+| `separatorConvention.ts` | 86 | The single alternative-answer separator definition (CONTEXT.md → Typed Artifact). `splitAlternatives(value)` — split on canonical `/` + defensive `;`, never comma — consumed by the runtime grader (`src/lib/answerNormalization.checkAnswer`). `classifyDutchSeparator` / `classifyIndonesianSeparator` — the non-canonical-separator detector shared by the pipeline `CS19` gate + `HC24` health check. Tree-neutral so both the browser bundle and the `scripts/` pipeline import one definition (PR #129; anti-drift across the `src/`↔`scripts/` boundary). |
 
 **Consumers (production):** all `src/` callers import from `@/lib/capabilities` (the barrel). Scripts continue to use relative paths into specific files until they are migrated.
 
@@ -45,6 +46,8 @@ status: stable
 **Status (2026-05-22):** stable. PR #65 introduced `renderContracts.ts` and rewrote `validateCapability` to consume it. The contract surface that previously lived as three divergent declarations (validator's `exerciseByCapability`, resolver's `compatibleExercisesByCapability`, builders' inline guards) now lives in one table. Inbound-port barrel (`index.ts`) added 2026-05-18; all `src/` production callers now route through it.
 
 **2026-05-22 — typed-column projection (PR 0 of the data-model migration).** `ProjectedCapability` slimmed: `difficultyLevel`, `goalTags`, `sourceFingerprint`, `artifactFingerprint` dropped (no runtime consumers, or derivable, or destination-column-going-away). `skillType` retained but read-time-derived from `capability_type` via `deriveSkillTypeFromCapabilityType` instead of stored in metadata_json. `requiredArtifacts` and `prerequisiteKeys` are now backed by two typed `learning_capabilities` columns (`required_artifacts text[]`, `prerequisite_keys text[]`) added in scripts/migration.sql; the legacy `metadata_json` jsonb column survives until a follow-up cleanup PR drops it but is no longer read or written. `required_artifacts` stays as a column (not derivable from capability_type alone) because affixed_form_pair caps have conditional artifacts (±allomorph_rule per capabilityCatalog.ts:178-180).
+
+**2026-06-02 — shared separator convention (PR #129).** `separatorConvention.ts` added to the barrel: `splitAlternatives` (canonical `/`, defensive `;`, never comma) + `classifyDutchSeparator`/`classifyIndonesianSeparator`. New cross-boundary consumers: `src/lib/answerNormalization.ts` (the grader) imports `splitAlternatives`; `scripts/lib/pipeline/capability-stage/validators/itemSeparatorConvention.ts` (CS19) and `scripts/check-supabase-deep.ts` (HC24) import the classifiers. This is the one definition that prevents the runtime/pipeline drift that left legacy `;`/comma `translation_nl` values unmatchable (ADR-less fix; plan `docs/plans/2026-06-02-productive-ceiling-and-paraphrase-acceptance.md` §2).
 
 **2026-05-23 — dialogue_line readiness off artifacts; promoter de-staled (#92).** `renderContracts` now declares `dialogue_line` requires no artifacts (`[]`), mirroring `item`: dialogue_line caps render from the typed `dialogue_clozes` table, so `validateCapability` no longer gates them on `capability_artifacts`. `scripts/promote-capabilities.ts` was still projecting caps from `metadata_json` (contradicting the 2026-05-22 entry's "no longer read" claim); it now projects from the typed columns + `deriveSkillTypeFromCapabilityType`, matching the runtime adapter. That stale read had silently blocked promotion for *every* source_kind — it is why L9's dialogue caps sat `unknown`/`draft`. HC11 (legacy three-artifact check) retired in favour of HC15 (every dialogue_line cap has a `dialogue_clozes` row).
 
