@@ -30,6 +30,8 @@ export const CAPABILITY_GATES = [
   'CS17', // cross-lesson item duplicates — same normalized_text must not appear in two lessons' learning_items (relocated from lint-staging findDuplicateItems)
   // Slice 2 Task 7: pattern-kind Capability Gate layer (ADR 0013 §6).
   'CS18', // pattern typed-exercise coverage — every written grammar pattern must end with >=1 active row for EVERY required exercise type (OQ2-2 (2) certification; pattern_typed_row_missing class). Relocates the intent of lint-staging checkGrammarPatterns/checkCandidatesStructural to post-write DB state.
+  // PR #129 (paraphrase acceptance): alternative-answer separator convention.
+  'CS19', // separator convention — translation_nl (Dutch) must not use ";"/comma-as-OR as an alternatives separator (ERROR, learner-breaking once the grader drops comma); Indonesian-side answers warn-only on ";". Detection shared with the runtime grader + HC24 via @/lib/capabilities.
 ] as const
 
 export type CapabilityGate = typeof CAPABILITY_GATES[number]
