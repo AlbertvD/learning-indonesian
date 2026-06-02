@@ -51,6 +51,7 @@ import { validateCandidatePayload } from './validators/candidatePayload'
 import { validateGrammarExercises } from './validators/grammarExercises'
 import { validatePerItemMeaning } from './validators/perItemMeaning'
 import { validateItemTranslations } from './validators/itemTranslations'
+import { validateItemLength } from './validators/itemLength'
 import { validatePosTags } from './validators/pos'
 import { runCountParity, type CountParityInput } from './verify/countParity'
 import { runContentNonEmpty, type ContentNonEmptyInput } from './verify/contentNonEmpty'
@@ -136,6 +137,9 @@ export function runCapabilityGatePreWrite(input: CapabilityGatePreWriteInput): V
     // CS4b — item translation columns: translation_nl CRITICAL for non-dialogue;
     // translation_en WARNING.
     ...validateItemTranslations(input.learningItems),
+    // CS20 — item length guard (productive ceiling, ADR 0014): a word/phrase
+    // running >= 6 tokens is a likely mis-tagged sentence (WARN-only).
+    ...validateItemLength(input.learningItems),
     // CS5 — POS: missing pos → warning; invalid pos value → error.
     ...validatePosTags(input.learningItems).findings,
   ]

@@ -550,6 +550,103 @@ describe('runner item cutover (Task 6c)', () => {
     expect(legacyCapUpserts.length).toBeGreaterThan(0)
   })
 
+  // --- Fix 1a (ADR 0014): productive ceiling — sentence/dialogue_chunk items
+  //     produce NO item capabilities (neither the new DB→DB path nor the legacy
+  //     bundle), while word/phrase + non-item caps are unaffected. ---
+  it('Fix1a: a sentence/dialogue_chunk item produces zero item caps; word/phrase + grammar caps still emit', async () => {
+    const lesson = makeLessonWithItems(tmpDir)
+    // Add an over-harvested sentence and a dialogue_chunk to the item set. The
+    // new DB→DB path (loadFromDb → FAKE_TYPED_ROWS) is word/phrase only, so these
+    // flow exclusively through the regenerated legacy bundle — exactly the seam
+    // Fix 1a cuts.
+    lesson.staging.learningItems = [
+      ...(lesson.staging.learningItems as Array<Record<string, unknown>>),
+      {
+        base_text: 'Ada yang dari negeri Belanda dan ada yang dari negeri Jerman.',
+        item_type: 'sentence',
+        context_type: 'lesson_snippet',
+        translation_nl: 'Sommigen komen uit Nederland en sommigen uit Duitsland.',
+        translation_en: 'Some are from the Netherlands and some from Germany.',
+        pos: null,
+        level: 'A1',
+        review_status: 'published',
+      },
+      {
+        base_text: 'Selamat pagi, apa kabar?',
+        item_type: 'dialogue_chunk',
+        context_type: 'dialogue',
+        translation_nl: 'Goedemorgen, hoe gaat het?',
+        translation_en: 'Good morning, how are you?',
+        pos: null,
+        level: 'A1',
+        review_status: 'published',
+      },
+    ] as never
+
+    const { client, ops } = buildItemCutoverMock()
+    const result = await runCapabilityStage(
+      { lessonNumber: 1, lessonId: 'lesson-uuid' },
+      {
+        loadLesson: async () => lesson,
+        createSupabaseClient: () => client as never,
+        loadFromDb: async () => ({
+          items: FAKE_TYPED_ROWS,
+          itemState: {
+            existingItemsByNormalizedText: new Map(),
+            existingItemCapsByCanonicalKey: new Map(),
+          },
+        }),
+        fetchDistractorPool: async () => [],
+        generateFn: async () => '[]',
+      },
+    )
+    expect(['ok', 'partial']).toContain(result.status)
+
+    // Collect every capability row that reached ANY learning_capabilities upsert
+    // (legacy bundle AND the skip-if-exists new path).
+    const allCapRows = ops
+      .filter((op) => op.table === 'learning_capabilities' && op.op === 'upsert')
+      .flatMap((op) => (Array.isArray(op.payload) ? op.payload : [op.payload]) as Array<Record<string, unknown>>)
+    const sourceRefs = new Set(allCapRows.map((r) => r?.source_ref as string))
+
+    // The over-harvested item caps appear NOWHERE.
+    const sentenceSlug = 'ada yang dari negeri belanda dan ada yang dari negeri jerman.'
+    const dialogueSlug = 'selamat pagi, apa kabar?'
+    expect(sourceRefs.has(`learning_items/${sentenceSlug}`)).toBe(false)
+    expect(sourceRefs.has(`learning_items/${dialogueSlug}`)).toBe(false)
+    // No item cap whose source resolves to either over-harvested item.
+    for (const row of allCapRows) {
+      const ref = row?.source_ref as string | undefined
+      if (row?.source_kind === 'item' && ref) {
+        expect(ref).not.toContain('negeri belanda')
+        expect(ref).not.toContain('apa kabar')
+      }
+    }
+
+    // The grammar (non-item) cap still flows through the legacy bundle.
+    const legacyCapUpserts = ops.filter(
+      (op) =>
+        op.table === 'learning_capabilities' &&
+        op.op === 'upsert' &&
+        !(op.opts as { ignoreDuplicates?: boolean })?.ignoreDuplicates,
+    )
+    const legacySourceKinds = legacyCapUpserts
+      .flatMap((op) => (Array.isArray(op.payload) ? op.payload : [op.payload]) as Array<Record<string, unknown>>)
+      .map((r) => r?.source_kind)
+    // A non-item (grammar→pattern) cap still flows through the legacy bundle, and
+    // no item cap leaks into it.
+    expect(legacySourceKinds.some((k) => k !== 'item')).toBe(true)
+    expect(legacySourceKinds).not.toContain('item')
+    // And the word items still seed item caps via the new path (skip-if-exists).
+    const newPathItemCaps = ops.filter(
+      (op) =>
+        op.table === 'learning_capabilities' &&
+        op.op === 'upsert' &&
+        (op.opts as { ignoreDuplicates?: boolean })?.ignoreDuplicates === true,
+    )
+    expect(newPathItemCaps.length).toBeGreaterThan(0)
+  })
+
   // --- E: idempotent re-run writes nothing new ---
   it('idempotent re-run: second call writes no new items or caps when all already seeded', async () => {
     // Pre-populate existingItemCaps so skip-if-exists returns nothing new
