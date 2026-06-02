@@ -113,7 +113,7 @@ export const learningItems = [
   {
     "base_text": "hilang",
     "item_type": "word",
-    "translation_nl": "weg, verdwenen (kwijt)",
+    "translation_nl": "weg / verdwenen (kwijt)",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -146,7 +146,7 @@ export const learningItems = [
   {
     "base_text": "tersedia",
     "item_type": "word",
-    "translation_nl": "klaar staan, gereed",
+    "translation_nl": "klaar staan / gereed",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -168,7 +168,7 @@ export const learningItems = [
   {
     "base_text": "lantai",
     "item_type": "word",
-    "translation_nl": "vloer, verdieping",
+    "translation_nl": "vloer / verdieping",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -190,7 +190,7 @@ export const learningItems = [
   {
     "base_text": "kamar kecil",
     "item_type": "phrase",
-    "translation_nl": "toilet, w.c.",
+    "translation_nl": "toilet / w.c.",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -256,7 +256,7 @@ export const learningItems = [
   {
     "base_text": "goreng",
     "item_type": "word",
-    "translation_nl": "bakken, braden",
+    "translation_nl": "bakken / braden",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -278,7 +278,7 @@ export const learningItems = [
   {
     "base_text": "isi",
     "item_type": "word",
-    "translation_nl": "inhoud, (in)vullen",
+    "translation_nl": "inhoud / (in)vullen",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -448,7 +448,7 @@ export const learningItems = [
   {
     "base_text": "ingin",
     "item_type": "word",
-    "translation_nl": "verlangen, willen",
+    "translation_nl": "verlangen / willen",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -481,7 +481,7 @@ export const learningItems = [
   {
     "base_text": "Jerman",
     "item_type": "word",
-    "translation_nl": "Duitsland, Duits",
+    "translation_nl": "Duitsland / Duits",
     "context_type": "lesson_snippet",
     "source_page": 4,
     "review_status": "published",
@@ -514,7 +514,7 @@ export const learningItems = [
   {
     "base_text": "kenyang",
     "item_type": "word",
-    "translation_nl": "genoeg, voldaan",
+    "translation_nl": "genoeg / voldaan",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -825,7 +825,7 @@ export const learningItems = [
   {
     "base_text": "kurang",
     "item_type": "word",
-    "translation_nl": "tekort, minder",
+    "translation_nl": "tekort / minder",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -836,7 +836,7 @@ export const learningItems = [
   {
     "base_text": "turun",
     "item_type": "word",
-    "translation_nl": "afdalen, uitstappen",
+    "translation_nl": "afdalen / uitstappen",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -847,7 +847,7 @@ export const learningItems = [
   {
     "base_text": "yang",
     "item_type": "word",
-    "translation_nl": "die, dat",
+    "translation_nl": "die / dat",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -1162,7 +1162,7 @@ export const learningItems = [
   {
     "base_text": "setelah",
     "item_type": "word",
-    "translation_nl": "na(dat), vervolgens",
+    "translation_nl": "na(dat) / vervolgens",
     "context_type": "vocabulary_list",
     "source_page": 4,
     "review_status": "published",
@@ -1239,7 +1239,7 @@ export const learningItems = [
   {
     "base_text": "bibit padi",
     "item_type": "word",
-    "translation_nl": "zaailing, jong rijstplantje",
+    "translation_nl": "zaailing / jong rijstplantje",
     "context_type": "cloze",
     "source_page": 4,
     "review_status": "published",

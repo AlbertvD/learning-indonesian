@@ -41,9 +41,13 @@ function tokenCount(segment: string): number {
 }
 
 /** Known legitimate comma-bearing Dutch meanings that must never be flagged as
- *  comma-as-OR. Seeded empty; populated as the data re-author (plan §2e)
- *  surveys the legacy backlog HC24 reports. */
-export const DUTCH_COMMA_EXEMPTIONS: ReadonlySet<string> = new Set<string>()
+ *  comma-as-OR (trim + lowercase compared). Populated from the plan §2e survey:
+ *  these are set-phrase replies where the comma is punctuation, not an OR — e.g.
+ *  `baik-baik saja` = "Goed, dank u wel" ("Fine, thank you"), one reply, not the
+ *  two alternatives "goed" / "dank u wel". */
+export const DUTCH_COMMA_EXEMPTIONS: ReadonlySet<string> = new Set<string>([
+  'goed, dank u wel',
+])
 
 /**
  * Classify a Dutch (`learning_items.translation_nl`) answer value's separator.

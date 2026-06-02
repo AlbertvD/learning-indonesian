@@ -49,9 +49,14 @@ describe('classifyDutchSeparator', () => {
     expect(classifyDutchSeparator('weg / verdwenen, kwijt')).toBeNull()
   })
 
-  it('respects the exemption denylist', () => {
+  it('respects a caller-supplied exemption denylist', () => {
     const exempt = new Set(['ja, hoor'])
     expect(classifyDutchSeparator('ja, hoor', exempt)).toBeNull()
+  })
+
+  it('exempts the seeded set-phrase reply by default (comma = punctuation)', () => {
+    // "baik-baik saja" = "Goed, dank u wel" — one reply, not "goed" / "dank u wel".
+    expect(classifyDutchSeparator('Goed, dank u wel')).toBeNull()
   })
 })
 
