@@ -76,6 +76,16 @@ export type { CanonicalKeyInput } from './canonicalKey'
 // ─── Item slug derivation (PR #59) ─────────────────────────────────────────
 export { itemSlug } from './itemSlug'
 
+// ─── Alternative-answer separator convention (PR #129) — the single ─────────
+// definition shared by the runtime grader and the pipeline gate/health check.
+export {
+  splitAlternatives,
+  classifyDutchSeparator,
+  classifyIndonesianSeparator,
+  DUTCH_COMMA_EXEMPTIONS,
+} from './separatorConvention'
+export type { SeparatorViolation } from './separatorConvention'
+
 // ─── Render contract (PR #65) — sole source of truth for which exercise ───
 // types each cap_type is ready for, which builder receives what input, and
 // the runtime projector that narrows raw input to typed builder input.

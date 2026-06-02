@@ -86,43 +86,42 @@ describe('checkAnswer', () => {
     expect(result.isCorrect).toBe(false)
   })
 
-  it('accepts any comma-separated alternative in canonical', () => {
-    expect(checkAnswer('maar', 'maar, echter', []).isCorrect).toBe(true)
-    expect(checkAnswer('maar', 'maar, echter', []).isFuzzy).toBe(false)
-    expect(checkAnswer('echter', 'maar, echter', []).isCorrect).toBe(true)
-    expect(checkAnswer('echter', 'maar, echter', []).isFuzzy).toBe(false)
+  // ── Separator convention (PR #129): "/" canonical, ";" defensive, NEVER
+  //    comma. The grader delegates to the shared splitAlternatives in
+  //    @/lib/capabilities (the one definition the CS19 gate + HC24 also use).
+
+  it('accepts either clause of a multi-form translation joined by ";" (defensive split)', () => {
+    // The real legacy `translation_nl` shape the 2026-06 audit found unmatchable.
+    expect(checkAnswer('het is goedkoop', 'het is goedkoop; de prijs is laag', []).isCorrect).toBe(true)
+    expect(checkAnswer('de prijs is laag', 'het is goedkoop; de prijs is laag', []).isCorrect).toBe(true)
   })
 
-  it('accepts a comma-separated alternative that contains a parenthetical hint', () => {
-    expect(checkAnswer('weg', 'weg, verdwenen (kwijt)', []).isCorrect).toBe(true)
-    expect(checkAnswer('verdwenen', 'weg, verdwenen (kwijt)', []).isCorrect).toBe(true)
+  it('accepts either clause of a multi-form translation joined by "/" (canonical)', () => {
+    expect(checkAnswer('het is goedkoop', 'het is goedkoop / de prijs is laag', []).isCorrect).toBe(true)
+    expect(checkAnswer('de prijs is laag', 'het is goedkoop / de prijs is laag', []).isCorrect).toBe(true)
   })
 
-  it('accepts a comma-separated alternative even when the alternative itself has punctuation', () => {
-    expect(checkAnswer('wc', 'toilet, w.c.', []).isCorrect).toBe(true)
-    expect(checkAnswer('toilet', 'toilet, w.c.', []).isCorrect).toBe(true)
+  it('treats a comma as part of ONE answer — it is NOT an alternatives separator (M2)', () => {
+    // With comma-split removed, a meaning still authored with comma-as-OR is one
+    // unmatchable blob. This is the guard that 2e (re-author) + HC24 (confirm
+    // clean) MUST precede the grader change in deploy order.
+    expect(checkAnswer('maar', 'maar, echter', []).isCorrect).toBe(false)
+    expect(checkAnswer('echter', 'maar, echter', []).isCorrect).toBe(false)
   })
 
-  it('accepts both alternatives joined by slash even when canonical uses commas', () => {
-    const r = checkAnswer('maar/echter', 'maar, echter', [])
-    expect(r.isCorrect).toBe(true)
-    expect(r.isFuzzy).toBe(false)
-  })
-
-  it('accepts the full comma-joined form as a single answer', () => {
+  it('still accepts the full comma-joined string typed verbatim as a single answer', () => {
     const r = checkAnswer('maar, echter', 'maar, echter', [])
     expect(r.isCorrect).toBe(true)
     expect(r.isFuzzy).toBe(false)
   })
 
-  it('accepts three-way alternatives', () => {
-    expect(checkAnswer('happy', 'happy, pleased, nice', []).isCorrect).toBe(true)
-    expect(checkAnswer('pleased', 'happy, pleased, nice', []).isCorrect).toBe(true)
-    expect(checkAnswer('nice', 'happy, pleased, nice', []).isCorrect).toBe(true)
+  it('accepts ";"-separated alternatives supplied as an accepted variant', () => {
+    expect(checkAnswer('gaan', 'lopen', ['gaan; rijden']).isCorrect).toBe(true)
+    expect(checkAnswer('rijden', 'lopen', ['gaan; rijden']).isCorrect).toBe(true)
   })
 
-  it('still rejects a wrong answer when canonical has alternatives', () => {
-    expect(checkAnswer('banana', 'maar, echter', []).isCorrect).toBe(false)
+  it('still rejects a genuinely wrong answer when canonical has alternatives', () => {
+    expect(checkAnswer('banana', 'maar / echter', []).isCorrect).toBe(false)
   })
 })
 

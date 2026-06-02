@@ -30,6 +30,8 @@ export const CAPABILITY_GATES = [
   'CS17', // cross-lesson item duplicates — same normalized_text must not appear in two lessons' learning_items (relocated from lint-staging findDuplicateItems)
   // Slice 2 Task 7: pattern-kind Capability Gate layer (ADR 0013 §6).
   'CS18', // pattern typed-exercise coverage — every written grammar pattern must end with >=1 active row for EVERY required exercise type (OQ2-2 (2) certification; pattern_typed_row_missing class). Relocates the intent of lint-staging checkGrammarPatterns/checkCandidatesStructural to post-write DB state.
+  // PR #130 (paraphrase acceptance): alternative-answer separator convention.
+  'CS19', // separator convention — translation_nl (Dutch) must not use ";"/comma-as-OR as an alternatives separator (ERROR, learner-breaking once the grader drops comma); Indonesian-side answers warn-only on ";". Detection shared with the runtime grader + HC24 via @/lib/capabilities.
   // Fix 1 (ADR 0014, productive ceiling): item-harvest is word/phrase only.
   'CS20', // item length guard — a word/phrase running >= 6 tokens is a likely mis-tagged sentence (WARN-only; kind is the gate, length is the smell). Pre-write, pure.
   'CS21', // de-harvested reader visibility — a dropped sentence/dialogue_chunk's text must still appear in the lesson's typed content tables (lesson_dialogue_lines / grammar examples / item rows), else WARN ("item text not found in typed lesson content"). Never silently vaporise. DB-aware (mid-write).

@@ -1,5 +1,7 @@
 // src/lib/answerNormalization.ts
 
+import { splitAlternatives } from '@/lib/capabilities'
+
 /**
  * Normalize a typed answer for comparison:
  * - Trim whitespace
@@ -69,21 +71,18 @@ export interface AnswerCheckResult {
   isFuzzy: boolean
 }
 
-// Split a translation string on the alternative separators the staging
-// authoring convention uses: "/" and ",". "huis / woning" and
-// "maar, echter" are both authored forms of "two acceptable answers".
-function splitAlternatives(s: string): string[] {
-  return s.split(/[/,]/).map(t => t.trim()).filter(t => t.length > 0)
-}
-
 /**
  * Check a user's answer against the canonical answer and known variants.
  * Applies normalization, exact matching, then fuzzy matching:
  * - Distance 1 for insertions, deletions, and transpositions.
  * - Substitutions are EXCLUDED (prevent minimal pair errors like membeli/memberi).
  *
- * Slash- and comma-separated alternatives are split on BOTH sides: a target
- * "maar, echter" accepts "maar", "echter", "maar/echter", or "maar, echter".
+ * Alternatives are split on BOTH sides using the shared `splitAlternatives`
+ * (the single definition the CS19 gate + HC24 also consume): "/" is canonical,
+ * ";" is split defensively for legacy values, and a COMMA is NEVER a separator
+ * (it is part of one answer). N4 ordering: the split MUST run before
+ * `normalizeAnswer`, which strips ";"/"/" along with other non-word chars —
+ * splitting after would lose the boundaries.
  */
 export function checkAnswer(
   userAnswer: string,

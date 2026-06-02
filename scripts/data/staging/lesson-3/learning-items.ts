@@ -652,7 +652,7 @@ export const learningItems = [
   {
     "base_text": "'kan?",
     "item_type": "word",
-    "translation_nl": "nietwaar?, toch?",
+    "translation_nl": "nietwaar? / toch?",
     "context_type": "cloze",
     "source_page": 3,
     "review_status": "published",

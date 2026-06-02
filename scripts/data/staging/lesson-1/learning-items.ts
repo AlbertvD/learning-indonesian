@@ -25,7 +25,7 @@ export const learningItems = [
   {
     "base_text": "bapak",
     "item_type": "word",
-    "translation_nl": "meneer, vader, u",
+    "translation_nl": "meneer / vader / u",
     "context_type": "vocabulary_list",
     "source_page": 1,
     "review_status": "published",
@@ -47,7 +47,7 @@ export const learningItems = [
   {
     "base_text": "boleh",
     "item_type": "word",
-    "translation_nl": "mogen, kunnen",
+    "translation_nl": "mogen / kunnen",
     "context_type": "vocabulary_list",
     "source_page": 1,
     "review_status": "published",
@@ -69,7 +69,7 @@ export const learningItems = [
   {
     "base_text": "dari",
     "item_type": "word",
-    "translation_nl": "uit, van",
+    "translation_nl": "uit / van",
     "context_type": "vocabulary_list",
     "source_page": 1,
     "review_status": "published",
@@ -80,7 +80,7 @@ export const learningItems = [
   {
     "base_text": "di",
     "item_type": "word",
-    "translation_nl": "in, op, te",
+    "translation_nl": "in / op / te",
     "context_type": "cloze",
     "source_page": 1,
     "review_status": "published",
@@ -135,7 +135,7 @@ export const learningItems = [
   {
     "base_text": "tetapi",
     "item_type": "word",
-    "translation_nl": "maar, echter",
+    "translation_nl": "maar / echter",
     "context_type": "vocabulary_list",
     "source_page": 1,
     "review_status": "published",
@@ -201,7 +201,7 @@ export const learningItems = [
   {
     "base_text": "bisa",
     "item_type": "word",
-    "translation_nl": "kunnen, mogen",
+    "translation_nl": "kunnen / mogen",
     "context_type": "cloze",
     "source_page": 1,
     "review_status": "published",
@@ -223,7 +223,7 @@ export const learningItems = [
   {
     "base_text": "ibu",
     "item_type": "word",
-    "translation_nl": "mevrouw, moeder, u",
+    "translation_nl": "mevrouw / moeder / u",
     "context_type": "vocabulary_list",
     "source_page": 1,
     "review_status": "published",
@@ -289,7 +289,7 @@ export const learningItems = [
   {
     "base_text": "harganya murah",
     "item_type": "phrase",
-    "translation_nl": "Het is goedkoop; de prijs is laag",
+    "translation_nl": "Het is goedkoop / de prijs is laag",
     "context_type": "lesson_snippet",
     "source_page": 1,
     "review_status": "published",
@@ -388,7 +388,7 @@ export const learningItems = [
   {
     "base_text": "kasih",
     "item_type": "word",
-    "translation_nl": "gunst, genegenheid",
+    "translation_nl": "gunst / genegenheid",
     "context_type": "cloze",
     "source_page": 1,
     "review_status": "published",
@@ -410,7 +410,7 @@ export const learningItems = [
   {
     "base_text": "nyonya",
     "item_type": "word",
-    "translation_nl": "mevrouw, u",
+    "translation_nl": "mevrouw / u",
     "context_type": "vocabulary_list",
     "source_page": 1,
     "review_status": "published",
@@ -432,7 +432,7 @@ export const learningItems = [
   {
     "base_text": "selamat",
     "item_type": "word",
-    "translation_nl": "veilig, welzijn",
+    "translation_nl": "veilig / welzijn",
     "context_type": "cloze",
     "source_page": 1,
     "review_status": "published",
@@ -531,7 +531,7 @@ export const learningItems = [
   {
     "base_text": "itu",
     "item_type": "word",
-    "translation_nl": "dat, die",
+    "translation_nl": "dat / die",
     "context_type": "vocabulary_list",
     "source_page": 1,
     "review_status": "published",
@@ -542,7 +542,7 @@ export const learningItems = [
   {
     "base_text": "kalau",
     "item_type": "word",
-    "translation_nl": "indien, wanneer",
+    "translation_nl": "indien / wanneer",
     "context_type": "vocabulary_list",
     "source_page": 1,
     "review_status": "published",
@@ -564,7 +564,7 @@ export const learningItems = [
   {
     "base_text": "saya",
     "item_type": "word",
-    "translation_nl": "ik, mijn",
+    "translation_nl": "ik / mijn",
     "context_type": "cloze",
     "source_page": 1,
     "review_status": "published",
@@ -575,7 +575,7 @@ export const learningItems = [
   {
     "base_text": "tidak",
     "item_type": "word",
-    "translation_nl": "niet, nee",
+    "translation_nl": "niet / nee",
     "context_type": "cloze",
     "source_page": 1,
     "review_status": "published",
