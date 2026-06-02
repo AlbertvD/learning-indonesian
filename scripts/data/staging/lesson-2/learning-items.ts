@@ -366,7 +366,7 @@ export const learningItems = [
   {
     "base_text": "jalan",
     "item_type": "word",
-    "translation_nl": "rijden, gaan, lopen",
+    "translation_nl": "rijden / gaan / lopen",
     "context_type": "cloze",
     "source_page": 2,
     "review_status": "published",

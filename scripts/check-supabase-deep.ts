@@ -3,6 +3,7 @@
 // Run with: make check-supabase-deep SUPABASE_SERVICE_KEY=<key>
 // Requires: SUPABASE_SERVICE_KEY env var; VITE_SUPABASE_URL from .env.local
 import { createClient } from '@supabase/supabase-js'
+import { classifyDutchSeparator, classifyIndonesianSeparator } from '@/lib/capabilities'
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY
@@ -1226,6 +1227,81 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     }
   } catch (err) {
     fail('HC23 zero orphan exercise_review_comments', err instanceof Error ? err.message : String(err))
+  }
+}
+
+// ── HC24 (PR #129, paraphrase acceptance §2d): no live answer-bearing surface
+//      uses a non-canonical alternatives separator. The canonical separator is
+//      "/" (CONTEXT.md → Typed Artifact). Scans the TWO live answer paths:
+//        (1) learning_items.translation_nl (Dutch) — word/phrase items only; a
+//            sentence/dialogue_chunk "translation" is a full clause whose
+//            commas/semicolons are punctuation, not OR-separators (and after
+//            ADR 0014 those kinds are not harvested). Flags ";" or comma-as-OR.
+//        (2) item_answer_variants.variant_text (Indonesian, language='id') —
+//            flags ";" only (a comma is never an OR there: verbless equatives).
+//      Detection uses the SHARED classifiers from @/lib/capabilities — the same
+//      definition the runtime grader (splitAlternatives) + the CS19 gate use, so
+//      this audit can never drift from what the grader actually accepts.
+//      Deploy-ordering gate (plan §Deploy ordering M2): this must report ZERO
+//      offenders before the grader stops splitting on comma — otherwise a
+//      still-comma-authored meaning becomes one unmatchable target. The
+//      bapak-style legacy translation_nl values are the expected initial hits.
+{
+  try {
+    // (1) learning_items.translation_nl — word/phrase only.
+    const dutchOffenders: Array<{ base_text: string; translation_nl: string; kind: string }> = []
+    for (let offset = 0; ; offset += 1000) {
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('learning_items')
+        .select('base_text, item_type, translation_nl')
+        .in('item_type', ['word', 'phrase'])
+        .not('translation_nl', 'is', null)
+        .range(offset, offset + 999)
+      if (error) throw error
+      const rows = (data ?? []) as Array<{ base_text: string; item_type: string; translation_nl: string | null }>
+      for (const r of rows) {
+        const v = r.translation_nl
+        if (!v || v.trim().length === 0) continue
+        const violation = classifyDutchSeparator(v)
+        if (violation) dutchOffenders.push({ base_text: r.base_text, translation_nl: v, kind: violation })
+      }
+      if (rows.length < 1000) break
+    }
+
+    // (2) item_answer_variants.variant_text — Indonesian; ";" only.
+    const idOffenders: Array<{ variant_text: string }> = []
+    for (let offset = 0; ; offset += 1000) {
+      const { data, error } = await supabase
+        .schema('indonesian')
+        .from('item_answer_variants')
+        .select('variant_text, language')
+        .eq('language', 'id')
+        .range(offset, offset + 999)
+      if (error) throw error
+      const rows = (data ?? []) as Array<{ variant_text: string; language: string }>
+      for (const r of rows) {
+        if (classifyIndonesianSeparator(r.variant_text)) idOffenders.push({ variant_text: r.variant_text })
+      }
+      if (rows.length < 1000) break
+    }
+
+    const total = dutchOffenders.length + idOffenders.length
+    if (total === 0) {
+      pass('HC24 no live answer surface uses a non-canonical separator (translation_nl + item_answer_variants)')
+    } else {
+      const dSample = dutchOffenders.slice(0, 5).map((o) => `"${o.base_text}"→"${o.translation_nl}" (${o.kind})`).join('; ')
+      const iSample = idOffenders.slice(0, 5).map((o) => `"${o.variant_text}"`).join('; ')
+      fail('HC24 no live answer surface uses a non-canonical separator',
+        `${dutchOffenders.length} learning_items.translation_nl (Dutch) ` +
+        `+ ${idOffenders.length} item_answer_variants (id) offender(s). ` +
+        `The grader no longer splits on comma — re-author these to "/" (plan §2e) ` +
+        `BEFORE the grader change deploys.\n` +
+        (dutchOffenders.length ? `   translation_nl: ${dSample}${dutchOffenders.length > 5 ? ' …' : ''}\n` : '') +
+        (idOffenders.length ? `   item_answer_variants: ${iSample}${idOffenders.length > 5 ? ' …' : ''}` : ''))
+    }
+  } catch (err) {
+    fail('HC24 no live answer surface uses a non-canonical separator', err instanceof Error ? err.message : String(err))
   }
 }
 

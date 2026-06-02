@@ -315,6 +315,44 @@ describe('runCapabilityGatePreWrite', () => {
     })
   })
 
+  describe('CS19 -- separator convention validator', () => {
+    it('emits CS19 error when translation_nl uses ";" as an alternatives separator', () => {
+      const findings = runCapabilityGatePreWrite(
+        minimalPreWriteInput({
+          learningItems: [
+            {
+              base_text: 'bapak',
+              item_type: 'word',
+              context_type: 'vocabulary_list',
+              translation_nl: 'vader; meneer',
+              translation_en: 'father',
+              pos: 'noun',
+            },
+          ],
+        }),
+      )
+      expect(findings.some((f) => f.gate === 'CS19' && f.severity === 'error')).toBe(true)
+    })
+
+    it('does NOT emit CS19 for a canonical "/"-separated translation', () => {
+      const findings = runCapabilityGatePreWrite(
+        minimalPreWriteInput({
+          learningItems: [
+            {
+              base_text: 'huis',
+              item_type: 'word',
+              context_type: 'vocabulary_list',
+              translation_nl: 'huis / woning',
+              translation_en: 'house',
+              pos: 'noun',
+            },
+          ],
+        }),
+      )
+      expect(findings.filter((f) => f.gate === 'CS19')).toHaveLength(0)
+    })
+  })
+
   describe('CS5 -- POS validator', () => {
     it('emits CS5 warning for missing pos on word item', () => {
       const findings = runCapabilityGatePreWrite(

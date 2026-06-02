@@ -25,7 +25,7 @@ export const learningItems = [
   {
     "base_text": "aduh",
     "item_type": "word",
-    "translation_nl": "hemel, goh, jemig (uitroep)",
+    "translation_nl": "hemel / goh / jemig (uitroep)",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -91,7 +91,7 @@ export const learningItems = [
   {
     "base_text": "enak saja",
     "item_type": "word",
-    "translation_nl": "op z'n gemak, naar believen",
+    "translation_nl": "op z'n gemak / naar believen",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -113,7 +113,7 @@ export const learningItems = [
   {
     "base_text": "habis",
     "item_type": "word",
-    "translation_nl": "op, afgelopen",
+    "translation_nl": "op / afgelopen",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -157,7 +157,7 @@ export const learningItems = [
   {
     "base_text": "ikut",
     "item_type": "word",
-    "translation_nl": "meegaan, meedoen",
+    "translation_nl": "meegaan / meedoen",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -212,7 +212,7 @@ export const learningItems = [
   {
     "base_text": "kamu",
     "item_type": "word",
-    "translation_nl": "jij, jullie (informeel)",
+    "translation_nl": "jij / jullie (informeel)",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -267,7 +267,7 @@ export const learningItems = [
   {
     "base_text": "laki-laki",
     "item_type": "word",
-    "translation_nl": "man, mannelijk",
+    "translation_nl": "man / mannelijk",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -300,7 +300,7 @@ export const learningItems = [
   {
     "base_text": "mi",
     "item_type": "word",
-    "translation_nl": "bamie, noedels",
+    "translation_nl": "bamie / noedels",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -322,7 +322,7 @@ export const learningItems = [
   {
     "base_text": "nanti",
     "item_type": "word",
-    "translation_nl": "straks, zo meteen",
+    "translation_nl": "straks / zo meteen",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -355,7 +355,7 @@ export const learningItems = [
   {
     "base_text": "perempuan",
     "item_type": "word",
-    "translation_nl": "vrouw, vrouwelijk",
+    "translation_nl": "vrouw / vrouwelijk",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -377,7 +377,7 @@ export const learningItems = [
   {
     "base_text": "punya",
     "item_type": "word",
-    "translation_nl": "bezitten, hebben",
+    "translation_nl": "bezitten / hebben",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -388,7 +388,7 @@ export const learningItems = [
   {
     "base_text": "rusak",
     "item_type": "word",
-    "translation_nl": "kapot, stuk",
+    "translation_nl": "kapot / stuk",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -410,7 +410,7 @@ export const learningItems = [
   {
     "base_text": "sebentar",
     "item_type": "word",
-    "translation_nl": "een moment(je), even",
+    "translation_nl": "een moment(je) / even",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -421,7 +421,7 @@ export const learningItems = [
   {
     "base_text": "senang",
     "item_type": "word",
-    "translation_nl": "zich prettig voelen, blij, leuk",
+    "translation_nl": "zich prettig voelen / blij / leuk",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -454,7 +454,7 @@ export const learningItems = [
   {
     "base_text": "sore",
     "item_type": "word",
-    "translation_nl": "namiddag, avond",
+    "translation_nl": "namiddag / avond",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -476,7 +476,7 @@ export const learningItems = [
   {
     "base_text": "taman",
     "item_type": "word",
-    "translation_nl": "park, tuin",
+    "translation_nl": "park / tuin",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -498,7 +498,7 @@ export const learningItems = [
   {
     "base_text": "tapi / tetapi",
     "item_type": "word",
-    "translation_nl": "maar, echter",
+    "translation_nl": "maar / echter",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",
@@ -509,7 +509,7 @@ export const learningItems = [
   {
     "base_text": "terus",
     "item_type": "word",
-    "translation_nl": "voorts, steeds, maar door",
+    "translation_nl": "voorts / steeds / maar door",
     "context_type": "vocabulary_list",
     "source_page": 5,
     "review_status": "published",

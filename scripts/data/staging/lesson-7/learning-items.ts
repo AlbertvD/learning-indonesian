@@ -631,7 +631,7 @@ export const learningItems = [
     "base_text": "sebab",
     "item_type": "word",
     "context_type": "vocabulary_list",
-    "translation_nl": "omdat, de reden is",
+    "translation_nl": "omdat / de reden is",
     "translation_en": "because, the reason is",
     "source_page": 5,
     "review_status": "published",
