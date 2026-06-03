@@ -123,9 +123,12 @@ that gets built and any fix that gets shipped.
 
 ## OpenBrain wiring — recall by issue-class, capture by routing rule
 
-> The recall/capture **mechanics** (the shared helper + the exact tool wiring) are owned
-> by the OpenBrain-convention slice (issue #138). This section is the convention the
-> agents follow; #138 makes it a single reusable path instead of ad-hoc per caller.
+> The recall/capture **mechanics** — the exact tool calls, the valid parameter values, and
+> the capture routing — live in one canonical reference:
+> **`docs/process/openbrain-recall-capture.md`**. The four dev agents are granted the
+> recall + capture MCP tools in their `tools:` frontmatter and point at that doc, so the
+> convention is one shared path, not ad-hoc per caller (slice #138). The tables below are
+> the loop-level summary.
 
 **Recall (read) — target the classes that actually bite:**
 
