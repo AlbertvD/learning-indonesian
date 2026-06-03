@@ -313,16 +313,30 @@ export function sanitizeGeneratedCloze(
  * sent to the LLM, parsed, and defensively sanitized. A sanitization failure
  * DROPS the line (recorded in `failedLineRefs` for the gate, not masked as a skip).
  *
+ * Per-line seeded gate (R2 — the SOLE idempotency mechanism): a line whose id is
+ * in `seededLineIds` already has a reviewed `dialogue_clozes` row, so the stage
+ * runs NEITHER the generator NOR the writer for it (skipped silently — not a
+ * structural skip; the DB-state coverage gate sees it covered). `regenerate`
+ * bypasses the gate to force regeneration of even seeded lines.
+ *
  * No-op conditions (return empty): no `lines`, or no `generateFn` injected AND
  * `ANTHROPIC_API_KEY` absent (safe dry-run / CI seam — mirrors the grammar gen).
  */
 export async function generateDialogueClozes(
   lines: DialogueLineInput[],
   pool: ClozePoolItem[],
-  options?: { generateFn?: GenerateFn },
+  options?: { generateFn?: GenerateFn; seededLineIds?: Set<string>; regenerate?: boolean },
 ): Promise<DialogueClozeResult> {
   const result: DialogueClozeResult = { clozes: [], skips: [], failedLineRefs: [] }
   if (lines.length === 0) return result
+
+  // Per-line seeded gate (R2): drop already-seeded lines unless --regenerate.
+  // This is what preserves L6/L9's reviewed clozes — they are never touched.
+  const seededLineIds = options?.seededLineIds ?? new Set<string>()
+  const linesToProcess = options?.regenerate
+    ? lines
+    : lines.filter((line) => !seededLineIds.has(line.id))
+  if (linesToProcess.length === 0) return result
 
   let effectiveGenerateFn: GenerateFn
   if (options?.generateFn) {
@@ -349,7 +363,7 @@ export async function generateDialogueClozes(
     }
   }
 
-  for (const line of lines) {
+  for (const line of linesToProcess) {
     const eligibility = assessDialogueLineEligibility(line, pool)
     if (!eligibility.eligible) {
       result.skips.push({

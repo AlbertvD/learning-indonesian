@@ -372,6 +372,10 @@ export async function replaceDialogueClozes(
         sentence_with_blank: r.sentence_with_blank,
         answer_text: r.answer_text,
         translation_text: r.translation_text,
+        // R3 (data-arch m-1): persist the bilingual legs when supplied (DB→DB
+        // path). undefined → null so the legacy staging path (no nl/en) stays valid.
+        translation_nl: r.translation_nl ?? null,
+        translation_en: r.translation_en ?? null,
       })),
     )
   if (insertError) throw insertError

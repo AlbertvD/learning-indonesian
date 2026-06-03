@@ -304,3 +304,52 @@ describe('generateDialogueClozes', () => {
     expect(called).toBe(0)
   })
 })
+
+// ---------------------------------------------------------------------------
+// generateDialogueClozes — per-line seeded gate (R2: sole idempotency mechanism)
+// ---------------------------------------------------------------------------
+
+describe('generateDialogueClozes — per-line seeded gate', () => {
+  const eligibleLine = line('Saya benar benar jatuh dari sebuah pohon.', {
+    id: 'dl-seeded',
+    sourceLineRef: 'lesson-5/section-3/line-0',
+  })
+  const goodFn = async () =>
+    JSON.stringify({ answer: 'pohon', sentence_with_blank: 'Saya benar benar jatuh dari sebuah ___.' })
+
+  it('skips a seeded line entirely — no LLM call, no cloze, no skip, no failure', async () => {
+    let called = 0
+    const countingFn = async () => { called += 1; return goodFn() }
+    const result = await generateDialogueClozes([eligibleLine], POOL, {
+      generateFn: countingFn,
+      seededLineIds: new Set(['dl-seeded']),
+    })
+    expect(called).toBe(0)
+    expect(result.clozes).toHaveLength(0)
+    expect(result.skips).toHaveLength(0)
+    expect(result.failedLineRefs).toHaveLength(0)
+  })
+
+  it('regenerate=true bypasses the seeded gate and regenerates the line', async () => {
+    const result = await generateDialogueClozes([eligibleLine], POOL, {
+      generateFn: goodFn,
+      seededLineIds: new Set(['dl-seeded']),
+      regenerate: true,
+    })
+    expect(result.clozes).toHaveLength(1)
+    expect(result.clozes[0].dialogueLineId).toBe('dl-seeded')
+  })
+
+  it('generates an un-seeded line normally even when other lines are seeded', async () => {
+    // Same text as the seeded line so the static goodFn's sentence reconstructs;
+    // distinct id/ref so the gate treats it as a separate, un-seeded unit.
+    const unseeded = line('Saya benar benar jatuh dari sebuah pohon.', {
+      id: 'dl-new', sourceLineRef: 'lesson-5/section-3/line-9',
+    })
+    const result = await generateDialogueClozes([eligibleLine, unseeded], POOL, {
+      generateFn: goodFn,
+      seededLineIds: new Set(['dl-seeded']),
+    })
+    expect(result.clozes.map((c) => c.dialogueLineId)).toEqual(['dl-new'])
+  })
+})
