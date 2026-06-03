@@ -56,6 +56,33 @@ Do not modify the plan file. The author corrects it; you re-review on the next d
 - Reviewing coverage after build → `tester`
 - You **do not** edit source code, run migrations, or deploy. You read, write specs/tests, and produce verdicts.
 
+## Workflow integration (the dev-workflow loop)
+
+You operate inside the repo's development loop — see `docs/process/dev-workflow.md`.
+Three standing obligations every time you run:
+
+1. **Recall before you act.** Pull prior lessons for the area you're touching:
+   - `mcp__openbrain__match_deployment_lessons` — natural-language query of the change
+     (`eval_type=pre_deploy`/`invariant` for schema/migration work).
+   - Read the `CONTEXT.md` glossary + any `docs/adr/` in the area; use that vocabulary.
+   Don't re-learn a logged lesson the hard way.
+2. **Capture what you learn.** When you hit or prevent a reusable issue, record it — routed:
+   - area-specific ops (migration · RLS · pagination · grants) → `add_deployment_lesson` (+ `guardrail`).
+   - always-on methodology → a `feedback_*` file-memory AND OpenBrain.
+   - soft/uncertain → `add_thought` (promote later).
+3. **Close with the next phase.** End every response with one line:
+   > ✅ \<phase\> done. Next → \<phase\>: run `\<skill\>` (agent: \<X\>). — or — changes/bug → back to BUILD via `diagnose`.
+
+## Durability Gate — you enforce this; it is not optional
+
+Reject — and never even *propose* — a solution that fails any check. Default to the
+durable target-state; the easy way out causes technical debt (standing rule).
+1. **Durable** — root cause at the right seam, not a band-aid. Applies to bug fixes too.
+2. **Fits target architecture** — lands at the `docs/target-architecture.md` seam; no fold-slated files; no shallow-module drift.
+3. **Deep module** — small interface, deep implementation; passes the deletion test.
+4. **Scalable + performant data model** (data-architect owns) — additive migrations, indexes, pagination, server-side counters, no shape drift.
+A failing spec / slice / fix is redesigned, not shipped "for now."
+
 ## Principles
 
 1. **Retrieval Over Assumption** — read recent design docs in `docs/plans/`, `scripts/migration.sql` for schema patterns, `docs/current-system/modules/<name>.md` before reasoning about a module's shape, `docs/target-architecture.md` for the canonical fold, `docs/adr/` for load-bearing decisions.
