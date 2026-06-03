@@ -605,3 +605,341 @@ export async function loadPatternFromDb(
   ])
   return { categories: sections.categories, topics: sections.topics, patternState }
 }
+
+// ===========================================================================
+// Slice 3 — dialogue_line source kind (dialogue cloze)
+// ===========================================================================
+//
+// Mirrors the item/pattern reads: lesson-scoped typed content (the cloze
+// generator's Mode-2 input) + the idempotency-delta state. The seeded signal
+// here is per dialogue LINE (R2/R5): a line is seeded iff a `dialogue_clozes`
+// row exists for it — surfaced as `seededDialogueLineIds` (the set of
+// `dialogue_clozes.dialogue_line_id`). The projector/runner skips generation
+// for a seeded line (no LLM call, no write), preserving reviewed clozes.
+// NO disk I/O — same enforcement as the item/pattern paths.
+
+// ---------------------------------------------------------------------------
+// Public types (dialogue path)
+// ---------------------------------------------------------------------------
+
+/** A row from `lesson_dialogue_lines` (PR 6 typed dialogue table). */
+export interface TypedDialogueLine {
+  id: string
+  section_id: string
+  lesson_id: string
+  line_index: number
+  source_line_ref: string
+  text: string
+  speaker: string | null
+  /** The NOT NULL translation leg (the reader contract — byKind/dialogueLine.ts). */
+  translation: string
+  translation_nl: string | null
+  translation_en: string | null
+}
+
+/** Entry in the existing dialogue-caps map (keyed by canonical_key). */
+export interface ExistingDialogueCap {
+  id: string
+  canonical_key: string
+}
+
+/** The dialogue-path idempotency-delta state from the DB. */
+export interface ExistingDialogueState {
+  /** `dialogue_line`-kind `learning_capabilities`, keyed by canonical_key. */
+  existingDialogueCapsByCanonicalKey: Map<string, ExistingDialogueCap>
+  /**
+   * `dialogue_clozes.dialogue_line_id` values — the set of dialogue lines that
+   * already have a cloze (the per-line seeded signal, R2/R5). A line whose id
+   * is in this set is skipped by the generator (no LLM call, no write).
+   */
+  seededDialogueLineIds: Set<string>
+}
+
+/** The composite result returned by `loadDialogueFromDb`. */
+export interface DialogueDbResult {
+  dialogueLines: TypedDialogueLine[]
+  dialogueState: ExistingDialogueState
+}
+
+// ---------------------------------------------------------------------------
+// fetchDialogueLinesFromDb
+// ---------------------------------------------------------------------------
+
+/**
+ * Read the typed dialogue lines for ONE lesson — the Mode-2 cloze generator's
+ * raw material. Lesson-scoped and small (a handful of lines), so no pagination
+ * (mirrors fetchItemRowsFromDb / fetchGrammarSectionsFromDb).
+ */
+export async function fetchDialogueLinesFromDb(
+  supabase: CapabilitySupabaseClient,
+  lessonId: string,
+): Promise<TypedDialogueLine[]> {
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('lesson_dialogue_lines')
+    .select(
+      'id, section_id, lesson_id, line_index, source_line_ref, text, speaker, translation, translation_nl, translation_en',
+    )
+    .eq('lesson_id', lessonId)
+
+  if (error) {
+    throw new Error(
+      `Failed to fetch lesson_dialogue_lines for lesson_id=${lessonId}: ${error.message}`,
+    )
+  }
+
+  return ((data ?? []) as Array<Record<string, unknown>>).map((row) => ({
+    id: row['id'] as string,
+    section_id: row['section_id'] as string,
+    lesson_id: row['lesson_id'] as string,
+    line_index: row['line_index'] as number,
+    source_line_ref: row['source_line_ref'] as string,
+    text: row['text'] as string,
+    speaker: (row['speaker'] as string | null | undefined) ?? null,
+    translation: row['translation'] as string,
+    translation_nl: (row['translation_nl'] as string | null | undefined) ?? null,
+    translation_en: (row['translation_en'] as string | null | undefined) ?? null,
+  }))
+}
+
+// ---------------------------------------------------------------------------
+// fetchDialogueClozeState
+// ---------------------------------------------------------------------------
+
+/**
+ * Read the dialogue-path idempotency-delta state, GLOBALLY (paginated):
+ *   - `dialogue_line`-kind `learning_capabilities` by canonical_key
+ *   - `dialogue_clozes.dialogue_line_id` → the seeded-line set
+ *
+ * Both reads paginate with `.range()` — a truncated seeded set would re-seed a
+ * line whose reviewed cloze already exists (the ADR-0011 "preserve reviewed
+ * clozes" violation R2 guards against).
+ */
+export async function fetchDialogueClozeState(
+  supabase: CapabilitySupabaseClient,
+): Promise<ExistingDialogueState> {
+  // --- dialogue_line-kind learning_capabilities by canonical_key ---
+  const existingDialogueCapsByCanonicalKey = new Map<string, ExistingDialogueCap>()
+  let capOffset = 0
+  while (true) {
+    const { data: page, error } = await supabase
+      .schema('indonesian')
+      .from('learning_capabilities')
+      .select('id, canonical_key')
+      .eq('source_kind', 'dialogue_line')
+      .range(capOffset, capOffset + PAGE_SIZE - 1)
+    if (error) {
+      throw new Error(`Failed to fetch existing dialogue_line learning_capabilities: ${error.message}`)
+    }
+    for (const row of (page ?? []) as Array<{ id: string; canonical_key: string }>) {
+      existingDialogueCapsByCanonicalKey.set(row.canonical_key, {
+        id: row.id,
+        canonical_key: row.canonical_key,
+      })
+    }
+    if (!page || page.length < PAGE_SIZE) break
+    capOffset += PAGE_SIZE
+  }
+
+  // --- dialogue_clozes.dialogue_line_id → the seeded-line set ---
+  const seededDialogueLineIds = new Set<string>()
+  let clozeOffset = 0
+  while (true) {
+    const { data: page, error } = await supabase
+      .schema('indonesian')
+      .from('dialogue_clozes')
+      .select('dialogue_line_id')
+      .range(clozeOffset, clozeOffset + PAGE_SIZE - 1)
+    if (error) {
+      throw new Error(`Failed to fetch dialogue_clozes: ${error.message}`)
+    }
+    for (const row of (page ?? []) as Array<{ dialogue_line_id: string }>) {
+      seededDialogueLineIds.add(row.dialogue_line_id)
+    }
+    if (!page || page.length < PAGE_SIZE) break
+    clozeOffset += PAGE_SIZE
+  }
+
+  return { existingDialogueCapsByCanonicalKey, seededDialogueLineIds }
+}
+
+// ---------------------------------------------------------------------------
+// loadDialogueFromDb — composed dialogue entry point
+// ---------------------------------------------------------------------------
+
+/**
+ * Load all DB state the Capability Stage's dialogue-kind path needs. Runs the
+ * lesson-scoped dialogue-line read and the global dialogue-state read in
+ * parallel. NO disk I/O.
+ */
+export async function loadDialogueFromDb(
+  supabase: CapabilitySupabaseClient,
+  input: { lessonId: string },
+): Promise<DialogueDbResult> {
+  const [dialogueLines, dialogueState] = await Promise.all([
+    fetchDialogueLinesFromDb(supabase, input.lessonId),
+    fetchDialogueClozeState(supabase),
+  ])
+  return { dialogueLines, dialogueState }
+}
+
+// ===========================================================================
+// Slice 3 — affixed_form_pair source kind (morphology repoint)
+// ===========================================================================
+//
+// Affixed is a REPOINT (not a generation step): read lesson_section_affixed_pairs
+// from the DB instead of morphology-patterns.ts off disk. Lesson-scoped typed
+// content + the idempotency-delta. The seeded signal is per CAP: a cap is
+// seeded iff an `affixed_form_pairs` row exists for it (`seededAffixedCapIds` =
+// the set of `affixed_form_pairs.capability_id`). NO disk I/O.
+
+// ---------------------------------------------------------------------------
+// Public types (affixed path)
+// ---------------------------------------------------------------------------
+
+/** A row from `lesson_section_affixed_pairs` (PR 6 typed morphology table). */
+export interface TypedAffixedPair {
+  id: string
+  lesson_id: string
+  /** Nullable — morphology pairs may have no owning section. */
+  section_id: string | null
+  source_ref: string
+  affix: string
+  root_text: string
+  derived_text: string
+  /** NOT NULL (OQ3-7): "no allomorphy" is a content value, never null. */
+  allomorph_rule: string
+}
+
+/** Entry in the existing affixed-caps map (keyed by canonical_key). */
+export interface ExistingAffixedCap {
+  id: string
+  canonical_key: string
+}
+
+/** The affixed-path idempotency-delta state from the DB. */
+export interface ExistingAffixedState {
+  /** `affixed_form_pair`-kind `learning_capabilities`, keyed by canonical_key. */
+  existingAffixedCapsByCanonicalKey: Map<string, ExistingAffixedCap>
+  /** `affixed_form_pairs.capability_id` values — caps that already have a row. */
+  seededAffixedCapIds: Set<string>
+}
+
+/** The composite result returned by `loadAffixedFromDb`. */
+export interface AffixedDbResult {
+  affixedPairs: TypedAffixedPair[]
+  affixedState: ExistingAffixedState
+}
+
+// ---------------------------------------------------------------------------
+// fetchAffixedPairsFromDb
+// ---------------------------------------------------------------------------
+
+/**
+ * Read the typed affixed pairs for ONE lesson — replaces the morphology-patterns.ts
+ * staging read. Lesson-scoped and small, so no pagination.
+ */
+export async function fetchAffixedPairsFromDb(
+  supabase: CapabilitySupabaseClient,
+  lessonId: string,
+): Promise<TypedAffixedPair[]> {
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('lesson_section_affixed_pairs')
+    .select('id, lesson_id, section_id, source_ref, affix, root_text, derived_text, allomorph_rule')
+    .eq('lesson_id', lessonId)
+
+  if (error) {
+    throw new Error(
+      `Failed to fetch lesson_section_affixed_pairs for lesson_id=${lessonId}: ${error.message}`,
+    )
+  }
+
+  return ((data ?? []) as Array<Record<string, unknown>>).map((row) => ({
+    id: row['id'] as string,
+    lesson_id: row['lesson_id'] as string,
+    section_id: (row['section_id'] as string | null | undefined) ?? null,
+    source_ref: row['source_ref'] as string,
+    affix: row['affix'] as string,
+    root_text: row['root_text'] as string,
+    derived_text: row['derived_text'] as string,
+    allomorph_rule: row['allomorph_rule'] as string,
+  }))
+}
+
+// ---------------------------------------------------------------------------
+// fetchAffixedCapabilityState
+// ---------------------------------------------------------------------------
+
+/**
+ * Read the affixed-path idempotency-delta state, GLOBALLY (paginated):
+ *   - `affixed_form_pair`-kind `learning_capabilities` by canonical_key
+ *   - `affixed_form_pairs.capability_id` → the seeded-cap set
+ */
+export async function fetchAffixedCapabilityState(
+  supabase: CapabilitySupabaseClient,
+): Promise<ExistingAffixedState> {
+  // --- affixed_form_pair-kind learning_capabilities by canonical_key ---
+  const existingAffixedCapsByCanonicalKey = new Map<string, ExistingAffixedCap>()
+  let capOffset = 0
+  while (true) {
+    const { data: page, error } = await supabase
+      .schema('indonesian')
+      .from('learning_capabilities')
+      .select('id, canonical_key')
+      .eq('source_kind', 'affixed_form_pair')
+      .range(capOffset, capOffset + PAGE_SIZE - 1)
+    if (error) {
+      throw new Error(`Failed to fetch existing affixed_form_pair learning_capabilities: ${error.message}`)
+    }
+    for (const row of (page ?? []) as Array<{ id: string; canonical_key: string }>) {
+      existingAffixedCapsByCanonicalKey.set(row.canonical_key, {
+        id: row.id,
+        canonical_key: row.canonical_key,
+      })
+    }
+    if (!page || page.length < PAGE_SIZE) break
+    capOffset += PAGE_SIZE
+  }
+
+  // --- affixed_form_pairs.capability_id → the seeded-cap set ---
+  const seededAffixedCapIds = new Set<string>()
+  let pairOffset = 0
+  while (true) {
+    const { data: page, error } = await supabase
+      .schema('indonesian')
+      .from('affixed_form_pairs')
+      .select('capability_id')
+      .range(pairOffset, pairOffset + PAGE_SIZE - 1)
+    if (error) {
+      throw new Error(`Failed to fetch affixed_form_pairs: ${error.message}`)
+    }
+    for (const row of (page ?? []) as Array<{ capability_id: string }>) {
+      seededAffixedCapIds.add(row.capability_id)
+    }
+    if (!page || page.length < PAGE_SIZE) break
+    pairOffset += PAGE_SIZE
+  }
+
+  return { existingAffixedCapsByCanonicalKey, seededAffixedCapIds }
+}
+
+// ---------------------------------------------------------------------------
+// loadAffixedFromDb — composed affixed entry point
+// ---------------------------------------------------------------------------
+
+/**
+ * Load all DB state the Capability Stage's affixed-kind path needs. Runs the
+ * lesson-scoped affixed-pair read and the global affixed-state read in
+ * parallel. NO disk I/O.
+ */
+export async function loadAffixedFromDb(
+  supabase: CapabilitySupabaseClient,
+  input: { lessonId: string },
+): Promise<AffixedDbResult> {
+  const [affixedPairs, affixedState] = await Promise.all([
+    fetchAffixedPairsFromDb(supabase, input.lessonId),
+    fetchAffixedCapabilityState(supabase),
+  ])
+  return { affixedPairs, affixedState }
+}
