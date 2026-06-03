@@ -120,10 +120,9 @@ const EXPECTED_ITEM_PATH_FILES: ExpectedFile[] = [
   { relPath: 'generateGrammarExercises.ts', task: 'Task 4 (Slice 2)', existsFails: false },
 
   // --- Slice 3 (re-scoped) — dialogue cloze generator, disk-free. ----------
-  // existsFails:true until Task 4 ships it (it.fails keeps the suite green +
-  // documents the upcoming file); Task 4 flips it to false. Mode-2 (dialogue)
+  // Shipped in Task 4 (existsFails flipped true → false). Mode-2 (dialogue)
   // ONLY — the Mode-1 item carrier generator defers to the item-cloze slice.
-  { relPath: 'generateClozeContexts.ts', task: 'Task 4 (Slice 3)', existsFails: true },
+  { relPath: 'generateClozeContexts.ts', task: 'Task 4 (Slice 3)', existsFails: false },
 ]
 
 // ---------------------------------------------------------------------------
