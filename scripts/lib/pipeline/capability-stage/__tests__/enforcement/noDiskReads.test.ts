@@ -24,7 +24,13 @@
  * contain disk I/O today. These entries SHRINK as the redesign progresses:
  *   Slice 1  → item path is disk-free (existsFails flips to false for item modules)
  *   Slice 2  → pattern path is disk-free (loader.ts + runner.ts item refs removed)
- *   Slice 3  → dialogue path is disk-free (stagingWriteback.ts removed)
+ *   Slice 3 (re-scoped 2026-06-03) → dialogue + affixed paths disk-free. loader.ts
+ *            STAYS allowlisted (still reads cloze-contexts.ts for the DEFERRED
+ *            item-cloze path + the other staging files); only the affixed read
+ *            (morphology-patterns.ts) is removed — asserted by an explicit
+ *            positive-removal test, not by de-allowlisting loader.ts.
+ *   Item-cloze slice → removes cloze-contexts.ts read + de-allowlists loader.ts.
+ *   Slice 5  → stagingWriteback.ts retired + the GLOBAL no-file-I/O gate flips on.
  * When the last entry is removed, the allowlist comment can be deleted.
  *
  * DISK-I/O MARKERS scanned: `readStagingFile`, `readFileSync`, `writeFileSync`,
@@ -112,6 +118,12 @@ const EXPECTED_ITEM_PATH_FILES: ExpectedFile[] = [
   // validator filenames are settled in their own tasks (names TBD); their
   // disk-free contract is already covered by the walk regardless.
   { relPath: 'generateGrammarExercises.ts', task: 'Task 4 (Slice 2)', existsFails: false },
+
+  // --- Slice 3 (re-scoped) — dialogue cloze generator, disk-free. ----------
+  // existsFails:true until Task 4 ships it (it.fails keeps the suite green +
+  // documents the upcoming file); Task 4 flips it to false. Mode-2 (dialogue)
+  // ONLY — the Mode-1 item carrier generator defers to the item-cloze slice.
+  { relPath: 'generateClozeContexts.ts', task: 'Task 4 (Slice 3)', existsFails: true },
 ]
 
 // ---------------------------------------------------------------------------
@@ -182,6 +194,31 @@ describe('capability-stage item path: disk-I/O enforcement', () => {
     }
   })
 
+  // -------------------------------------------------------------------------
+  // Slice 3 (re-scoped 2026-06-03): dialogue + affixed paths are disk-free.
+  // loader.ts stays allowlisted (it still reads cloze-contexts.ts for the
+  // DEFERRED item-cloze path + the other staging files), so the allowlist walk
+  // below CANNOT observe the affixed read removal. This explicit positive-
+  // removal assertion proves the morphology-patterns.ts read is gone.
+  //   - RED now: loader.ts still reads it (removed in Task 9) → it.fails.
+  //   - Task 9 flips it.fails → it once loader.ts:141 is deleted.
+  // cloze-contexts.ts is NOT asserted here — it stays (deferred item path);
+  // its removal + loader.ts de-allowlisting move to the item-cloze slice.
+  // -------------------------------------------------------------------------
+  describe('Slice 3: dialogue + affixed paths read no staging file', () => {
+    const loaderPath = path.join(CAPABILITY_STAGE_ROOT, 'loader.ts')
+
+    // it.fails today (loader.ts still reads morphology-patterns.ts) — Task 9
+    // deletes loader.ts:141 and flips this it.fails → it.
+    it.fails('loader.ts no longer reads morphology-patterns.ts (affixed → DB; removed Task 9)', () => {
+      const source = fs.readFileSync(loaderPath, 'utf-8')
+      expect(
+        source.includes('morphology-patterns.ts'),
+        'loader.ts must stop reading morphology-patterns.ts — affixed_form_pairs are now sourced from lesson_section_affixed_pairs in the DB (Task 9)',
+      ).toBe(false)
+    })
+  })
+
   describe('non-allowlisted existing files must not acquire disk I/O', () => {
     // Walk all current capability-stage .ts files. Any that are NOT in the
     // allowlist must never have disk I/O — they are either already clean or
@@ -203,5 +240,18 @@ describe('capability-stage item path: disk-I/O enforcement', () => {
         ).toBe(false)
       })
     }
+  })
+
+  // -------------------------------------------------------------------------
+  // GLOBAL no-file-I/O placeholder (epic #98 User Story 10) — OWNED BY SLICE 5.
+  // The Capability Stage's scoped no-disk gate (above) covers item + pattern +
+  // dialogue + affixed. It CANNOT pass globally yet: loader.ts still reads
+  // learning-items.ts / grammar-patterns.ts / candidates.ts / cloze-contexts.ts,
+  // and stagingWriteback.ts still writes. Slice 5 (legacy-projection retirement)
+  // empties the allowlist and flips this it.skip → it. Kept visible so the
+  // residual disk coupling is documented, not silently forgotten.
+  // -------------------------------------------------------------------------
+  it.skip('globalNoFileIO: the entire capability-stage allowlist is empty (Slice 5)', () => {
+    expect(DISK_IO_ALLOWLIST.size).toBe(0)
   })
 })
