@@ -106,6 +106,7 @@ import { projectGrammar, projectPatternsFromCategories } from './projectors/gram
 import { buildGrammarExerciseRow } from './projectors/grammarExerciseRows'
 import { projectCloze } from './projectors/cloze'
 import { projectDialogueClozeCapabilities, projectDialogueClozeRows } from './projectors/dialogueCloze'
+import { validateDialogueClozeCoverage } from './validators/dialogueClozeCoverage'
 import { projectAffixedFormPairs, type AffixedPairSource } from './projectors/morphology'
 
 import { validateLessonIdPresence } from './validators/lessonId'
@@ -481,6 +482,13 @@ export async function runCapabilityStage(
     generatedDialogueClozes.clozes,
     input.lessonId,
   )
+  // CS22 (Task 8) — dialogue-cloze coverage gate, the DB-state successor of the
+  // relocated lint-staging checkDialogueClozes. Surfaces eligible lines whose
+  // in-stage generation failed (no row landed) as ERROR → run 'partial' (graceful;
+  // the gap is visible for re-publish/--regenerate, never silently dropped, m-2).
+  // Pushed after the pre-write gate, so it contributes to the final status, not a
+  // hard validation_failed (which would re-create a #126-style block).
+  findings.push(...validateDialogueClozeCoverage(generatedDialogueClozes.failedLineRefs))
 
   // NO-DOUBLE-WRITE for pattern caps. DEVIATION FROM THE PLAN, JUSTIFIED:
   // the plan says "filter by exact canonical_key, NOT sourceKind". But OQ2-5

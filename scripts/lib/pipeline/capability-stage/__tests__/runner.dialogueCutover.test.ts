@@ -224,6 +224,25 @@ describe('runner dialogue cutover (Task 7)', () => {
     expect(ops.filter((op) => op.table === 'dialogue_clozes' && op.op === 'insert')).toHaveLength(0)
   })
 
+  it('CS22: an eligible line whose generation fails sanitization surfaces a coverage finding → partial', async () => {
+    const { client } = buildMock()
+    // Eligible line, but the LLM returns a cloze that fails sanitization (answer
+    // not a viable candidate + reconstruction mismatch) → failedLineRefs → CS22.
+    const badFn = async () => JSON.stringify({ answer: 'kucing', sentence_with_blank: 'Aku suka ___.' })
+    const result = await runCapabilityStage(
+      { lessonNumber: 1, lessonId: 'lesson-uuid' },
+      baseHooks(client, { loadDialogueFromDb: async () => dialogueDb(false), generateClozeFn: badFn }),
+    )
+    const cs22 = result.findings.filter((f) => f.gate === 'CS22')
+    expect(cs22).toHaveLength(1)
+    expect(cs22[0].severity).toBe('error')
+    expect(cs22[0].context).toMatchObject({ sourceLineRef: LINE_REF })
+    // ERROR post-write → graceful 'partial' (NOT validation_failed — would re-block #126).
+    expect(result.status).toBe('partial')
+    // And no dialogue_clozes row was written for the failed line.
+    // (the generator produced no cloze → projectDialogueClozeRows had nothing to write)
+  })
+
   it('affixed_form_pairs ROW DATA comes from the DB, even though the cap is staging-derived', async () => {
     // The affixed CAP is emitted by the buildCapabilityStagingFromContent
     // regeneration from staging.affixedFormPairs (Slice-5 territory). The ROW
