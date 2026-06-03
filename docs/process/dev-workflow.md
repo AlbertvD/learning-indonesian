@@ -152,8 +152,29 @@ Capture points: **Design** (decisions→ADRs, insight→thought) · **Review**
 severity=bug, guardrail = the regression test) · **Finish** (mandatory sweep, routed per
 the table).
 
-The **Finish gate** encodes the PR-1 outage lesson directly: plan-vs-actual diff +
-live-DB completeness query before "done."
+### The Finish gate (enforced)
+
+The Finish phase is **enforced**, not hoped for — `evals/finish-gate-check.sh`, wired into
+`.husky/pre-push`, blocks the push (and therefore the PR) unless:
+
+1. **A lesson was captured for the branch** — a `Dev-Workflow-Lesson: <id|none>` commit
+   trailer (use `none` to explicitly mark "nothing worth keeping").
+2. **For data-model work** (the branch touches `scripts/migration.sql`) **the PR-1
+   verification was asserted** — a `Dev-Workflow-DB-Verified: <evidence>` trailer. This
+   encodes the PR-1 outage lesson directly: plan-vs-actual diff (`git show --stat`
+   cross-checked to the plan) + a live-DB completeness query (`make check-supabase-deep` +
+   the plan's invariant count, expect 0) before "done." The hook *asserts the verification
+   ran*; it cannot know each plan's invariants and CI cannot reach the homelab DB, so the
+   evidence is a trailer, not a query the hook runs itself.
+
+Non-data-model branches need only the lesson trailer (not over-gated). WIP / intermediate
+pushes bypass with `SKIP_FINISH_GATE=1 git push`, matching the `ALLOW_*_COMMIT` escape
+idiom in `.husky/pre-commit`.
+
+```
+git commit --amend --trailer "Dev-Workflow-Lesson: <openbrain-id|none>"
+git commit --amend --trailer "Dev-Workflow-DB-Verified: $(date +%F) <evidence>"   # schema branches
+```
 
 ## Phase-transition guidance (the navigational glue)
 

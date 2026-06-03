@@ -8,4 +8,12 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+# Finish gate — mandatory lesson sweep + PR-1 data-model verification.
+# (escape: SKIP_FINISH_GATE=1 git push  — for WIP/intermediate pushes)
+echo "→ Finish gate..."
+_repo_root="$(git rev-parse --show-toplevel)"
+if [ -f "$_repo_root/evals/finish-gate-check.sh" ]; then
+  bash "$_repo_root/evals/finish-gate-check.sh" || exit 1
+fi
+
 echo "✓ Pre-push checks passed."
