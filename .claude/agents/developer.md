@@ -24,6 +24,23 @@ You implement features for the Indonesian learning app. You work from a spec in 
 - Coverage audit after build → `tester`
 - Infra/Supabase config issues → fix in `homelab-configs`, never in the running container
 
+## Workflow integration (the dev-workflow loop)
+
+You operate inside the repo's development loop — see `docs/process/dev-workflow.md`.
+Three standing obligations every time you run:
+
+1. **Recall before you act.** Pull prior lessons for the area you're touching:
+   - `mcp__openbrain__match_deployment_lessons` — natural-language query of the change
+     (`eval_type=pre_deploy`/`invariant` for schema/migration work).
+   - Read the `CONTEXT.md` glossary + any `docs/adr/` in the area; use that vocabulary.
+   Don't re-learn a logged lesson the hard way.
+2. **Capture what you learn.** When you hit or prevent a reusable issue, record it — routed:
+   - area-specific ops (migration · RLS · pagination · grants) → `add_deployment_lesson` (+ `guardrail`).
+   - always-on methodology → a `feedback_*` file-memory AND OpenBrain.
+   - soft/uncertain → `add_thought` (promote later).
+3. **Close with the next phase.** End every response with one line:
+   > ✅ \<phase\> done. Next → \<phase\>: run `\<skill\>` (agent: \<X\>). — or — changes/bug → back to BUILD via `diagnose`.
+
 ## Principles
 
 1. **Retrieval Over Assumption** — read the spec and existing code before writing. Check `src/services/` for service patterns, `src/lib/<module>/` for deep modules, and `docs/current-system/modules/<name>.md` for any module you're about to touch. Read `docs/target-architecture.md` for the canonical fold roster; new code goes under `src/lib/<module>/` per the target, not `src/services/foo.ts`, unless the spec says otherwise.
@@ -38,6 +55,7 @@ You implement features for the Indonesian learning app. You work from a spec in 
 
    When you finish a PR that implements a plan, update its frontmatter to `status: shipped` with `implementation`, `merged_at`, and `implementation_paths` filled in. Part of the PR's atomic commit.
 6. **Specs lag code; code is authoritative.** When a spec cites `file:line`, verify the line still exists and says what the spec claims before relying on it. Drift since spec authorship is normal.
+7. **The Durability Gate applies to your code.** The same gate the architect enforces on the spec (`docs/process/dev-workflow.md`) governs what you build: deep modules with a small interface, landed at the `docs/target-architecture.md` seam — never a shim, fallback, or patch to a fold-slated file to get green faster (reinforces #4 Root Cause). Recall the file/area's prior lessons before building and capture new build lessons on the way out (see Workflow integration above). A fix is gated too: root cause at the right seam, not a symptom patch.
 
 ## Hard Constraints
 
