@@ -24,13 +24,15 @@
  * contain disk I/O today. These entries SHRINK as the redesign progresses:
  *   Slice 1  → item path is disk-free (existsFails flips to false for item modules)
  *   Slice 2  → pattern path is disk-free (loader.ts + runner.ts item refs removed)
- *   Slice 3 (re-scoped 2026-06-03) → dialogue + affixed paths disk-free. loader.ts
- *            STAYS allowlisted (still reads cloze-contexts.ts for the DEFERRED
- *            item-cloze path + the other staging files); only the affixed read
- *            (morphology-patterns.ts) is removed — asserted by an explicit
- *            positive-removal test, not by de-allowlisting loader.ts.
- *   Item-cloze slice → removes cloze-contexts.ts read + de-allowlists loader.ts.
- *   Slice 5  → stagingWriteback.ts retired + the GLOBAL no-file-I/O gate flips on.
+ *   Slice 3 (re-scoped 2026-06-03) → dialogue cloze + affixed ROW DATA move to the
+ *            DB, but Slice 3 removes NO staging reads (Option A, 2026-06-03):
+ *            loader.ts STAYS allowlisted because both cloze-contexts.ts and
+ *            morphology-patterns.ts still feed CAP emission through the
+ *            staging-derived regeneration retired in Slice 5. The new dialogue/
+ *            affixed code is disk-free (EXPECTED_ITEM_PATH_FILES + the walk).
+ *   Slice 5  → retire the regeneration + stagingWriteback, remove the residual
+ *            staging reads (cloze-contexts.ts, morphology-patterns.ts, …),
+ *            de-allowlist loader.ts, and flip the GLOBAL no-file-I/O gate on.
  * When the last entry is removed, the allowlist comment can be deleted.
  *
  * DISK-I/O MARKERS scanned: `readStagingFile`, `readFileSync`, `writeFileSync`,
@@ -194,29 +196,21 @@ describe('capability-stage item path: disk-I/O enforcement', () => {
   })
 
   // -------------------------------------------------------------------------
-  // Slice 3 (re-scoped 2026-06-03): dialogue + affixed paths are disk-free.
-  // loader.ts stays allowlisted (it still reads cloze-contexts.ts for the
-  // DEFERRED item-cloze path + the other staging files), so the allowlist walk
-  // below CANNOT observe the affixed read removal. This explicit positive-
-  // removal assertion proves the morphology-patterns.ts read is gone.
-  //   - RED now: loader.ts still reads it (removed in Task 9) → it.fails.
-  //   - Task 9 flips it.fails → it once loader.ts:141 is deleted.
-  // cloze-contexts.ts is NOT asserted here — it stays (deferred item path);
-  // its removal + loader.ts de-allowlisting move to the item-cloze slice.
+  // Slice 3 (re-scoped 2026-06-03; morphology read deferral 2026-06-03 — Option A):
+  // Slice 3 removes NO staging reads. The dialogue cloze + affixed ROW DATA now
+  // come from the DB, but BOTH source files stay read by loader.ts because their
+  // CAPABILITY emission still flows through the staging-derived
+  // buildCapabilityStagingFromContent regeneration (projectCapabilities), which
+  // is retired in SLICE 5:
+  //   - cloze-contexts.ts → still feeds the deferred item-cloze path (projectCloze).
+  //   - morphology-patterns.ts → still feeds affixed CAP emission via the
+  //     regeneration (removing it would emit zero affixed caps → soft-retired).
+  // So loader.ts stays allowlisted and there is NO read-removal to assert in
+  // Slice 3. The NEW dialogue/affixed code (generateClozeContexts.ts,
+  // projectors/dialogueCloze.ts) is disk-free — enforced by the EXPECTED_ITEM_PATH_FILES
+  // entries above + the non-allowlisted walk below. The global read-removal lands
+  // in Slice 5 (the skipped globalNoFileIO placeholder at the end).
   // -------------------------------------------------------------------------
-  describe('Slice 3: dialogue + affixed paths read no staging file', () => {
-    const loaderPath = path.join(CAPABILITY_STAGE_ROOT, 'loader.ts')
-
-    // it.fails today (loader.ts still reads morphology-patterns.ts) — Task 9
-    // deletes loader.ts:141 and flips this it.fails → it.
-    it.fails('loader.ts no longer reads morphology-patterns.ts (affixed → DB; removed Task 9)', () => {
-      const source = fs.readFileSync(loaderPath, 'utf-8')
-      expect(
-        source.includes('morphology-patterns.ts'),
-        'loader.ts must stop reading morphology-patterns.ts — affixed_form_pairs are now sourced from lesson_section_affixed_pairs in the DB (Task 9)',
-      ).toBe(false)
-    })
-  })
 
   describe('non-allowlisted existing files must not acquire disk I/O', () => {
     // Walk all current capability-stage .ts files. Any that are NOT in the
