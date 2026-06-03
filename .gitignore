@@ -19,12 +19,15 @@ content/extracted/
 .worktrees/
 
 # Local tool config — not committed.
-# EXCEPTION: .claude/agents/ holds shared project agent definitions (architect,
-# data-architect, the linguist/content pipeline, …) — they are tracked assets, not
-# local config. Ignoring the whole .claude/ dir is why data-architect.md silently
-# never landed on main despite being mandated by CLAUDE.md's dual-review rule.
+# EXCEPTIONS: .claude/agents/ and .claude/skills/ hold shared project assets — the
+# dev agents (architect, data-architect, the linguist/content pipeline, …) and the
+# project skills (lesson-pipeline, capability-stage, forge-id, …). They are tracked
+# assets, not local config. Ignoring the whole .claude/ dir is why data-architect.md
+# silently never landed on main despite being mandated by CLAUDE.md's dual-review
+# rule — and would do the same to any new skill under .claude/skills/.
 .claude/*
 !.claude/agents/
+!.claude/skills/
 .playwright-mcp/
 
 # Forge state — per-task ephemeral, not committed

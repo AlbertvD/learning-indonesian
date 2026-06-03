@@ -202,8 +202,10 @@ The transition map:
 | TEST | FINISH | `finishing-a-development-branch` | bug → `diagnose` → BUILD |
 | FINISH | (next slice / queue) | `triage` "what's ready" | after the capture sweep |
 
-This footer is baked into the **agent preambles** and surfaced by the optional thin
-`/forge-id` launcher ("you are here → next").
+This footer is baked into the **agent preambles** and surfaced by the thin
+**`/forge-id`** launcher (`.claude/skills/forge-id/SKILL.md`) — phase-0 context-load +
+"you are here → next". The launcher orients and hands off; it deliberately does **not**
+drive phases (no monolithic orchestrator).
 
 ## Skill roster — every Matt skill, placed
 
