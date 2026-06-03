@@ -116,6 +116,31 @@ The **Finish gate** encodes the PR-1 outage lesson directly: plan-vs-actual diff
 
 ---
 
+## Phase-transition guidance (the navigational glue)
+
+Because the workflow is **composable, not a monolith** (nothing auto-advances), each phase **ends by suggesting the next** — this is what keeps you guided through the loop while *you* stay in control of when to advance. It's the glue that replaces the process-owner we deliberately rejected.
+
+Every agent and skill closes with a standard footer:
+
+> ✅ **\<phase\> complete.** Next → **\<next phase\>**: run `\<skill\>` (agent: \<X\>; recall: \<query\>; the Durability Gate applies). *Or:* changes/bug → back to BUILD via `diagnose`.
+
+The transition map:
+
+| Just finished | Suggest next | Run | Note |
+|---|---|---|---|
+| DESIGN (`grill-with-docs`) | PRD | `to-prd` | gate must have passed |
+| PRD (`to-prd`) | SLICE | `to-issues` | issue is `needs-triage` |
+| SLICE (`to-issues`) | TRIAGE | `triage` | → `ready-for-agent` |
+| TRIAGE | BUILD | `tdd` (engineer) | only `ready-for-agent` slices |
+| BUILD (`tdd`) | REVIEW | `requesting-code-review` (architect + data-architect\*) | |
+| REVIEW | TEST | coverage (tester) | changes → back to BUILD |
+| TEST | FINISH | `finishing-a-development-branch` | bug → `diagnose` → BUILD |
+| FINISH | (next slice / queue) | `triage` "what's ready" | after the capture sweep |
+
+This footer is baked into the **agent preambles** (slice 1) and surfaced by the **thin `/forge-id` launcher** ("you are here → next").
+
+---
+
 ## Skill roster — every Matt skill, placed
 
 | Matt skill | Grounded role | Phase | Agent(s) | OpenBrain | Writes |
