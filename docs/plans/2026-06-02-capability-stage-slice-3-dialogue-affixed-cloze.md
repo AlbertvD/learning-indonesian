@@ -1,6 +1,16 @@
 ---
-status: implementing   # was approved (2026-06-02 for A+B+C); re-scoped 2026-06-03 to (A)+(B) (item cloze DEFERRED, OQ3-3) + re-approved after fresh dual review; implementation pushed + live-trialled on L5 2026-06-03.
+status: shipped   # re-scoped 2026-06-03 to (A)+(B) (item cloze DEFERRED, OQ3-3) + dual re-review; live-trialled on L5; merged via PR #133. This plan is now a CHANGELOG — verify claims against the code at implementation_paths, not this prose.
 implementation: PR #133
+merged_at: 2026-06-03
+implementation_paths:
+  - scripts/lib/pipeline/capability-stage/loadFromDb.ts            # dialogue + affixed + cloze-pool DB reads
+  - scripts/lib/pipeline/capability-stage/generateClozeContexts.ts # in-stage Mode-2 dialogue cloze generator
+  - scripts/lib/pipeline/capability-stage/projectors/dialogueCloze.ts # DB→DB dialogue cap + row projector
+  - scripts/lib/pipeline/capability-stage/validators/dialogueClozeCoverage.ts # CS22 coverage gate
+  - scripts/lib/pipeline/capability-stage/runner.ts                # cutover (dialogue DB→DB + affixed row repoint + CS22 wiring)
+  - scripts/lib/pipeline/capability-stage/adapter.ts               # DialogueClozeInput translation_nl/en (R3)
+  - scripts/lib/pipeline/capability-stage/model.ts                 # CS22 gate code
+  - scripts/lint-staging.ts                                        # checkDialogueClozes RELOCATED (#126)
 epic: "#98"
 issue: "#101"
 depends_on: "#99 (PR #121, shipped) + #100 (PR #124, shipped) — the DB→DB spine, the in-stage generator pattern, the Capability Gate, and the idempotent writers"
