@@ -297,7 +297,15 @@ export interface DialogueClozeInput {
   source_line_ref: string
   sentence_with_blank: string
   answer_text: string
+  /** The NOT NULL translation leg (the reader contract — byKind/dialogueLine.ts). */
   translation_text: string
+  /**
+   * R3 (data-arch m-1): the bilingual legs from lesson_dialogue_lines (PR 6).
+   * Optional on the input shape so the legacy staging path stays valid; the
+   * DB→DB projector populates them and replaceDialogueClozes persists them.
+   */
+  translation_nl?: string | null
+  translation_en?: string | null
 }
 
 /**
