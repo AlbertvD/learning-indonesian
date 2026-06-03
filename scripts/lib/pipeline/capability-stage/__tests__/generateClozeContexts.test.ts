@@ -17,8 +17,13 @@ import { describe, it, expect } from 'vitest'
 import {
   normalizeClozeToken,
   assessDialogueLineEligibility,
+  buildDialogueClozePrompt,
+  parseDialogueClozeResponse,
+  sanitizeGeneratedCloze,
+  generateDialogueClozes,
   type ClozePoolItem,
   type DialogueLineInput,
+  type ClozeCandidate,
 } from '../generateClozeContexts'
 
 // ---------------------------------------------------------------------------
@@ -137,5 +142,165 @@ describe('assessDialogueLineEligibility', () => {
     )
     expect(result.eligible).toBe(false)
     expect(result.reason).toBe('no_same_pos_distractors_in_pool')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// buildDialogueClozePrompt
+// ---------------------------------------------------------------------------
+
+describe('buildDialogueClozePrompt', () => {
+  const candidates: ClozeCandidate[] = [
+    { token: 'pohon', normalized: 'pohon', pos: 'noun' },
+    { token: 'kaki', normalized: 'kaki', pos: 'noun' },
+  ]
+
+  it('includes the dialogue line text verbatim', () => {
+    const prompt = buildDialogueClozePrompt(line('Saya benar benar jatuh dari sebuah pohon.'), candidates)
+    expect(prompt).toContain('Saya benar benar jatuh dari sebuah pohon.')
+  })
+
+  it('lists the candidate words the blank must be chosen from', () => {
+    const prompt = buildDialogueClozePrompt(line('Saya benar benar jatuh dari sebuah pohon.'), candidates)
+    expect(prompt).toContain('pohon')
+    expect(prompt).toContain('kaki')
+  })
+
+  it('instructs a single ___ blank and JSON-only output', () => {
+    const prompt = buildDialogueClozePrompt(line('Saya benar benar jatuh dari sebuah pohon.'), candidates)
+    expect(prompt).toContain('___')
+    expect(prompt.toLowerCase()).toContain('json')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// parseDialogueClozeResponse
+// ---------------------------------------------------------------------------
+
+describe('parseDialogueClozeResponse', () => {
+  it('parses a well-formed JSON object', () => {
+    const parsed = parseDialogueClozeResponse(
+      '{"answer":"pohon","sentence_with_blank":"Saya jatuh dari ___."}',
+    )
+    expect(parsed).toEqual({ answer: 'pohon', sentence_with_blank: 'Saya jatuh dari ___.' })
+  })
+
+  it('strips ```json fences', () => {
+    const parsed = parseDialogueClozeResponse(
+      '```json\n{"answer":"kaki","sentence_with_blank":"___ saya sakit."}\n```',
+    )
+    expect(parsed).toEqual({ answer: 'kaki', sentence_with_blank: '___ saya sakit.' })
+  })
+
+  it('returns null for malformed JSON', () => {
+    expect(parseDialogueClozeResponse('not json at all')).toBeNull()
+  })
+
+  it('returns null when required fields are missing or non-string', () => {
+    expect(parseDialogueClozeResponse('{"answer":"pohon"}')).toBeNull()
+    expect(parseDialogueClozeResponse('{"answer":1,"sentence_with_blank":"___"}')).toBeNull()
+    expect(parseDialogueClozeResponse('[]')).toBeNull()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// sanitizeGeneratedCloze (defensive — Slice-1 Lesson #4)
+// ---------------------------------------------------------------------------
+
+describe('sanitizeGeneratedCloze', () => {
+  const dialogueLine = line('Saya benar benar jatuh dari sebuah pohon.')
+  const candidates: ClozeCandidate[] = [{ token: 'pohon', normalized: 'pohon', pos: 'noun' }]
+
+  it('accepts a faithful cloze (one blank; reconstructs the line; answer is a candidate)', () => {
+    const ok = sanitizeGeneratedCloze(
+      { answer: 'pohon', sentence_with_blank: 'Saya benar benar jatuh dari sebuah ___.' },
+      dialogueLine,
+      candidates,
+    )
+    expect(ok).toEqual({ sentenceWithBlank: 'Saya benar benar jatuh dari sebuah ___.', answerText: 'pohon' })
+  })
+
+  it('rejects when sentence_with_blank does not contain exactly one ___', () => {
+    expect(sanitizeGeneratedCloze(
+      { answer: 'pohon', sentence_with_blank: 'Saya jatuh dari ___ ___.' }, dialogueLine, candidates,
+    )).toBeNull()
+    expect(sanitizeGeneratedCloze(
+      { answer: 'pohon', sentence_with_blank: 'Saya jatuh dari pohon.' }, dialogueLine, candidates,
+    )).toBeNull()
+  })
+
+  it('rejects when the blanked answer is not one of the viable candidates', () => {
+    // 'jatuh' is not in candidates (e.g. lone-verb, filtered out by eligibility)
+    expect(sanitizeGeneratedCloze(
+      { answer: 'jatuh', sentence_with_blank: 'Saya benar benar ___ dari sebuah pohon.' },
+      dialogueLine, candidates,
+    )).toBeNull()
+  })
+
+  it('rejects when filling the blank does not reconstruct the original line (LLM altered the line)', () => {
+    expect(sanitizeGeneratedCloze(
+      { answer: 'pohon', sentence_with_blank: 'Aku jatuh dari ___.' }, dialogueLine, candidates,
+    )).toBeNull()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// generateDialogueClozes (orchestrator)
+// ---------------------------------------------------------------------------
+
+describe('generateDialogueClozes', () => {
+  const eligibleLine = line('Saya benar benar jatuh dari sebuah pohon.', {
+    id: 'dl-eligible',
+    sourceLineRef: 'lesson-5/section-3/line-0',
+    translation: 'Ik ben echt uit een boom gevallen.',
+    translationNl: 'Ik ben echt uit een boom gevallen.',
+    translationEn: 'I really fell out of a tree.',
+  })
+  const shortLine = line('Sudah.', { id: 'dl-short', sourceLineRef: 'lesson-5/section-3/line-1' })
+
+  const goodFn = async () =>
+    JSON.stringify({ answer: 'pohon', sentence_with_blank: 'Saya benar benar jatuh dari sebuah ___.' })
+
+  it('emits a cloze for an eligible line, with translations sourced from the DB line (not the LLM)', async () => {
+    const result = await generateDialogueClozes([eligibleLine], POOL, { generateFn: goodFn })
+    expect(result.clozes).toHaveLength(1)
+    expect(result.clozes[0]).toMatchObject({
+      dialogueLineId: 'dl-eligible',
+      sourceLineRef: 'lesson-5/section-3/line-0',
+      sentenceWithBlank: 'Saya benar benar jatuh dari sebuah ___.',
+      answerText: 'pohon',
+      translationText: 'Ik ben echt uit een boom gevallen.',
+      translationNl: 'Ik ben echt uit een boom gevallen.',
+      translationEn: 'I really fell out of a tree.',
+    })
+    expect(result.skips).toHaveLength(0)
+  })
+
+  it('emits a structural skip for an ineligible line and never calls the LLM for it', async () => {
+    let called = 0
+    const countingFn = async () => { called += 1; return goodFn() }
+    const result = await generateDialogueClozes([shortLine], POOL, { generateFn: countingFn })
+    expect(result.clozes).toHaveLength(0)
+    expect(result.skips).toEqual([
+      { dialogueLineId: 'dl-short', sourceLineRef: 'lesson-5/section-3/line-1', reason: 'below_6_token_threshold' },
+    ])
+    expect(called).toBe(0)
+  })
+
+  it('drops an eligible line whose LLM output fails sanitization (no cloze, no structural skip)', async () => {
+    const badFn = async () => JSON.stringify({ answer: 'kucing', sentence_with_blank: 'Aku suka ___.' })
+    const result = await generateDialogueClozes([eligibleLine], POOL, { generateFn: badFn })
+    expect(result.clozes).toHaveLength(0)
+    // not a structural skip — it was eligible; the gate (Task 8) catches the coverage gap
+    expect(result.skips).toHaveLength(0)
+    expect(result.failedLineRefs).toEqual(['lesson-5/section-3/line-0'])
+  })
+
+  it('returns empty for an empty line list without calling the LLM', async () => {
+    let called = 0
+    const result = await generateDialogueClozes([], POOL, { generateFn: async () => { called += 1; return '{}' } })
+    expect(result.clozes).toHaveLength(0)
+    expect(result.skips).toHaveLength(0)
+    expect(called).toBe(0)
   })
 })
