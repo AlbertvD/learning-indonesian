@@ -1,5 +1,6 @@
 ---
-status: approved   # was approved (2026-06-02 for A+B+C); reverted to draft 2026-06-03 after live-DB grounding triggered the OQ3-3 off-ramp (item cloze DEFERRED); re-scoped to (A)+(B) and re-approved 2026-06-03 after fresh dual review.
+status: implementing   # was approved (2026-06-02 for A+B+C); re-scoped 2026-06-03 to (A)+(B) (item cloze DEFERRED, OQ3-3) + re-approved after fresh dual review; implementation pushed + live-trialled on L5 2026-06-03.
+implementation: PR #133
 epic: "#98"
 issue: "#101"
 depends_on: "#99 (PR #121, shipped) + #100 (PR #124, shipped) — the DB→DB spine, the in-stage generator pattern, the Capability Gate, and the idempotent writers"
