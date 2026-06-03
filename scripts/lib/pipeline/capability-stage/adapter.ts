@@ -297,7 +297,15 @@ export interface DialogueClozeInput {
   source_line_ref: string
   sentence_with_blank: string
   answer_text: string
+  /** The NOT NULL translation leg (the reader contract — byKind/dialogueLine.ts). */
   translation_text: string
+  /**
+   * R3 (data-arch m-1): the bilingual legs from lesson_dialogue_lines (PR 6).
+   * Optional on the input shape so the legacy staging path stays valid; the
+   * DB→DB projector populates them and replaceDialogueClozes persists them.
+   */
+  translation_nl?: string | null
+  translation_en?: string | null
 }
 
 /**
@@ -364,6 +372,10 @@ export async function replaceDialogueClozes(
         sentence_with_blank: r.sentence_with_blank,
         answer_text: r.answer_text,
         translation_text: r.translation_text,
+        // R3 (data-arch m-1): persist the bilingual legs when supplied (DB→DB
+        // path). undefined → null so the legacy staging path (no nl/en) stays valid.
+        translation_nl: r.translation_nl ?? null,
+        translation_en: r.translation_en ?? null,
       })),
     )
   if (insertError) throw insertError

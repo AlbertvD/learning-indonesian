@@ -44,7 +44,6 @@ import {
 import {
   buildContentUnitsFromStaging,
   buildCapabilityStagingFromContent,
-  affixedFormPairSourceRef,
   type StagingLessonInput,
 } from '../../content-pipeline-output'
 import {
@@ -80,7 +79,8 @@ import {
   type ItemDistractorRow,
 } from './adapter'
 import { loadLesson as defaultLoadLesson, type LoadedLesson } from './loader'
-import { loadFromDb as defaultLoadFromDb, fetchDistractorPool as defaultFetchDistractorPool, loadPatternFromDb as defaultLoadPatternFromDb, type ItemDbResult, type PatternDbResult } from './loadFromDb'
+import { loadFromDb as defaultLoadFromDb, fetchDistractorPool as defaultFetchDistractorPool, loadPatternFromDb as defaultLoadPatternFromDb, loadDialogueFromDb as defaultLoadDialogueFromDb, fetchClozePool as defaultFetchClozePool, fetchAffixedPairsFromDb as defaultFetchAffixedPairsFromDb, type ItemDbResult, type PatternDbResult, type DialogueDbResult, type TypedAffixedPair } from './loadFromDb'
+import { generateDialogueClozes, type ClozePoolItem } from './generateClozeContexts'
 import { writePatternPath } from './patternPath'
 import { projectItemsFromTypedRows } from './projectors/vocab'
 import { generateItemDistractors, type GenerateFn, type DistractorInputItem, type ItemDistractorSet } from './generateItemDistractors'
@@ -105,7 +105,8 @@ import { projectVocab } from './projectors/vocab'
 import { projectGrammar, projectPatternsFromCategories } from './projectors/grammar'
 import { buildGrammarExerciseRow } from './projectors/grammarExerciseRows'
 import { projectCloze } from './projectors/cloze'
-import { projectDialogueArtifacts } from './projectors/dialogueArtifacts'
+import { projectDialogueClozeCapabilities, projectDialogueClozeRows } from './projectors/dialogueCloze'
+import { validateDialogueClozeCoverage } from './validators/dialogueClozeCoverage'
 import { projectAffixedFormPairs, type AffixedPairSource } from './projectors/morphology'
 
 import { validateLessonIdPresence } from './validators/lessonId'
@@ -159,6 +160,26 @@ export interface CapabilityStageHooks {
    * `generateFn` (item distractors) so tests can inject distinct fake responses.
    */
   generateGrammarFn?: GenerateFn
+  /**
+   * Injectable loadDialogueFromDb for tests (Slice 3). Replaces the default DB
+   * read of lesson_dialogue_lines + dialogue-cloze seeded state.
+   */
+  loadDialogueFromDb?: (supabase: CapabilitySupabaseClient, input: { lessonId: string }) => Promise<DialogueDbResult>
+  /**
+   * Injectable fetchClozePool for tests (Slice 3). Replaces the default DB read
+   * of the active word/phrase vocab pool (with POS) for cloze eligibility.
+   */
+  fetchClozePool?: (supabase: CapabilitySupabaseClient) => Promise<ClozePoolItem[]>
+  /**
+   * Injectable fetchAffixedPairsFromDb for tests (Slice 3). Replaces the default
+   * DB read of lesson_section_affixed_pairs (the affixed repoint source).
+   */
+  fetchAffixedPairsFromDb?: (supabase: CapabilitySupabaseClient, lessonId: string) => Promise<TypedAffixedPair[]>
+  /**
+   * Injectable generate function for dialogue clozes (Slice 3). Separate from
+   * `generateFn` / `generateGrammarFn` so tests inject distinct fake responses.
+   */
+  generateClozeFn?: GenerateFn
 }
 
 export async function runCapabilityStage(
@@ -181,6 +202,9 @@ export async function runCapabilityStage(
   const loadFromDb = hooks.loadFromDb ?? defaultLoadFromDb
   const fetchDistractorPool = hooks.fetchDistractorPool ?? defaultFetchDistractorPool
   const loadPatternFromDb = hooks.loadPatternFromDb ?? defaultLoadPatternFromDb
+  const loadDialogueFromDb = hooks.loadDialogueFromDb ?? defaultLoadDialogueFromDb
+  const fetchClozePool = hooks.fetchClozePool ?? defaultFetchClozePool
+  const fetchAffixedPairsFromDb = hooks.fetchAffixedPairsFromDb ?? defaultFetchAffixedPairsFromDb
 
   // ---- 1. Load (Stage A from DB + staging files from disk). ------------
   // Dry-run path: loader falls back to staging-only mode regardless of
@@ -427,6 +451,45 @@ export async function runCapabilityStage(
         lessonId: input.lessonId,
       })
     : { patternPlans: [] }
+
+  // ---- 5a (dialogue). DB→DB dialogue cloze path (Slice 3). ----------------
+  // Read lesson_dialogue_lines + the seeded-line set + the vocab pool (with POS),
+  // then GENERATE clozes in-stage (Mode 2) for un-seeded eligible lines. The
+  // per-line seeded gate is the SOLE idempotency mechanism (R2): seeded lines run
+  // neither the generator nor the writer, so L6/L9's reviewed clozes are untouched.
+  // The caps are appended to allCapabilities below (replacing the legacy
+  // staging-derived vocab.contextualClozeCapabilities); the dialogue_clozes rows
+  // are projected post-upsert (step 7b). No LLM in dry-run (short-circuited at 2b)
+  // nor without ANTHROPIC_API_KEY/generateClozeFn (generateDialogueClozes no-ops).
+  // NOTE: dialogue --regenerate CLI wiring is deferred (input.regenerate is the
+  // item-only union today); the seeded gate covers routine idempotency.
+  const dialogueDb = await loadDialogueFromDb(supabase, { lessonId: input.lessonId })
+  const clozePool = await fetchClozePool(supabase)
+  const dialogueLineInputs = dialogueDb.dialogueLines.map((l) => ({
+    id: l.id,
+    sourceLineRef: l.source_line_ref,
+    text: l.text,
+    translation: l.translation,
+    translationNl: l.translation_nl,
+    translationEn: l.translation_en,
+    speaker: l.speaker,
+  }))
+  const generatedDialogueClozes = await generateDialogueClozes(dialogueLineInputs, clozePool, {
+    generateFn: hooks.generateClozeFn,
+    seededLineIds: dialogueDb.dialogueState.seededDialogueLineIds,
+  })
+  const dialogueClozeCaps = projectDialogueClozeCapabilities(
+    generatedDialogueClozes.clozes,
+    input.lessonId,
+  )
+  // CS22 (Task 8) — dialogue-cloze coverage gate, the DB-state successor of the
+  // relocated lint-staging checkDialogueClozes. Surfaces eligible lines whose
+  // in-stage generation failed (no row landed) as ERROR → run 'partial' (graceful;
+  // the gap is visible for re-publish/--regenerate, never silently dropped, m-2).
+  // Pushed after the pre-write gate, so it contributes to the final status, not a
+  // hard validation_failed (which would re-create a #126-style block).
+  findings.push(...validateDialogueClozeCoverage(generatedDialogueClozes.failedLineRefs))
+
   // NO-DOUBLE-WRITE for pattern caps. DEVIATION FROM THE PLAN, JUSTIFIED:
   // the plan says "filter by exact canonical_key, NOT sourceKind". But OQ2-5
   // gives new patterns NEW slugs (`l{N}-…`), so the new path's canonical keys are
@@ -494,7 +557,9 @@ export async function runCapabilityStage(
   }))
   const allCapabilities: CapabilityInput[] = [
     ...stagedCapabilities,
-    ...vocab.contextualClozeCapabilities,
+    // Slice 3: dialogue_line:contextual_cloze caps now come from the DB→DB
+    // generator output (above), NOT the staging-derived vocab.contextualClozeCapabilities.
+    ...dialogueClozeCaps,
   ]
 
   // CS21 (ADR 0014 §M4) — reader-visibility net: every sentence/dialogue_chunk
@@ -825,25 +890,22 @@ export async function runCapabilityStage(
     })
   }
 
-  // ---- 7b. Dialogue-line typed rows (Decision 5b / PR 2 slice). ---------
-  // Dialogue-line caps are appended downstream by projectVocab
-  // (vocab.ts:163-203). Their renderable data is the typed `dialogue_clozes`
-  // row, written via `replaceDialogueClozes` below — the SOLE persisted
-  // representation. No capability_artifacts are emitted for dialogue_line
-  // (renderContracts: dialogue_line → []); structure is guaranteed by the typed
-  // table + validateDialogueClozes + HC15. See projectors/dialogueArtifacts.ts.
-  const dialogueArtifactsResult = projectDialogueArtifacts({
-    contextualClozeCapabilities: vocab.contextualClozeCapabilities,
+  // ---- 7b. Dialogue-line typed rows (Slice 3 — DB→DB). -----------------
+  // The dialogue_clozes rows are projected from the in-stage generator output
+  // (step 5a) onto the upserted cap ids; translations carried from the DB line
+  // (R3). The SOLE persisted representation (renderContracts: dialogue_line → []);
+  // structure is guaranteed by the typed table + validateDialogueClozes + HC15.
+  // Replaces the legacy staging-driven projectDialogueArtifacts.
+  const dialogueClozeRows = projectDialogueClozeRows(
+    generatedDialogueClozes.clozes,
     capabilityIdsByKey,
-    clozeContexts: staging.clozeContexts as never,
-    sections: loaded.sections,
-  })
-  findings.push(...dialogueArtifactsResult.findings)
+  )
+  findings.push(...dialogueClozeRows.findings)
 
   // Pre-write validator (PR 2) — fails CRITICAL on missing/malformed cloze
   // shape so the typed-table reader never has to defend against it at
   // runtime.
-  const dialogueClozeFindings = validateDialogueClozes(dialogueArtifactsResult.dialogueClozes)
+  const dialogueClozeFindings = validateDialogueClozes(dialogueClozeRows.dialogueClozes)
   findings.push(...dialogueClozeFindings)
   if (dialogueClozeFindings.some((f) => f.severity === 'error')) {
     return {
@@ -860,12 +922,16 @@ export async function runCapabilityStage(
   // (capabilityCatalog sets requiredArtifacts: [] → buildArtifactsForCapability
   // produces none); structure is guaranteed by the typed table's NOT NULL
   // columns + validateAffixedFormPairs + HC17. See projectors/morphology.ts.
-  // The pairs are keyed by the SAME affixedFormPairSourceRef the caps were
-  // emitted with, so cap.sourceRef ↔ pair join is exact.
+  // Slice 3 (affixed repoint): the pairs come from the DB
+  // (lesson_section_affixed_pairs) instead of staging morphology-patterns.ts. The
+  // DB row's source_ref is byte-identical to the staging-derived
+  // affixedFormPairSourceRef the caps were emitted with (verified against the live
+  // DB — M-3), so cap.sourceRef ↔ pair join stays exact and canonical_keys are stable.
+  const affixedPairsFromDb = await fetchAffixedPairsFromDb(supabase, input.lessonId)
   const affixedPairsBySourceRef = new Map<string, AffixedPairSource>(
-    (pipelineInput.affixedFormPairs ?? []).map((p) => [
-      affixedFormPairSourceRef(input.lessonNumber, p),
-      { root: p.root, derived: p.derived, allomorphRule: p.allomorphRule },
+    affixedPairsFromDb.map((p) => [
+      p.source_ref,
+      { root: p.root_text, derived: p.derived_text, allomorphRule: p.allomorph_rule },
     ]),
   )
   const affixedFormPairsResult = projectAffixedFormPairs({
@@ -900,7 +966,7 @@ export async function runCapabilityStage(
   // capability_artifacts rows the reader used to read.
   const dialogueClozesLanded = await replaceDialogueClozes(
     supabase,
-    dialogueArtifactsResult.dialogueClozes,
+    dialogueClozeRows.dialogueClozes,
   )
   counts.dialogueClozes = dialogueClozesLanded
 
