@@ -25,6 +25,7 @@ import {
   fetchAffixedPairsFromDb,
   fetchAffixedCapabilityState,
   loadAffixedFromDb,
+  fetchClozePool,
   PAGE_SIZE,
 } from '../loadFromDb'
 
@@ -441,5 +442,67 @@ describe('loadAffixedFromDb', () => {
     expect(result.affixedPairs).toHaveLength(2)
     expect(result.affixedState.existingAffixedCapsByCanonicalKey.size).toBe(2)
     expect(result.affixedState.seededAffixedCapIds.has('acap-1')).toBe(true)
+  })
+})
+
+// ===========================================================================
+// fetchClozePool (dialogue cloze generator input — pool WITH pos)
+// ===========================================================================
+
+describe('fetchClozePool', () => {
+  it('returns active word/phrase items as ClozePoolItem (normalized_text, base_text, pos)', async () => {
+    const mock = buildMockSupabase({
+      learning_items: {
+        rows: [
+          { normalized_text: 'pohon', base_text: 'pohon', pos: 'noun', item_type: 'word', is_active: true },
+          { normalized_text: 'kaki', base_text: 'kaki', pos: 'noun', item_type: 'phrase', is_active: true },
+        ],
+      },
+    })
+    const pool = await fetchClozePool(mock as never)
+    expect(pool).toHaveLength(2)
+    expect(pool[0]).toEqual({ normalized_text: 'pohon', base_text: 'pohon', pos: 'noun' })
+  })
+
+  it('coerces a missing pos to null', async () => {
+    const mock = buildMockSupabase({
+      learning_items: {
+        rows: [{ normalized_text: 'x', base_text: 'x', pos: null, item_type: 'word', is_active: true }],
+      },
+    })
+    const pool = await fetchClozePool(mock as never)
+    expect(pool[0].pos).toBeNull()
+  })
+
+  it('paginates beyond one page', async () => {
+    const many = [
+      ...Array.from({ length: PAGE_SIZE }, (_, i) => ({
+        normalized_text: `w${i}`, base_text: `w${i}`, pos: 'noun', item_type: 'word', is_active: true,
+      })),
+      { normalized_text: 'tail', base_text: 'tail', pos: 'verb', item_type: 'word', is_active: true },
+    ]
+    const mock = buildMockSupabase({ learning_items: { rows: many } })
+    const pool = await fetchClozePool(mock as never)
+    expect(pool.some((p) => p.normalized_text === 'tail')).toBe(true)
+  })
+
+  it('throws when the query errors', async () => {
+    const errorMock = {
+      schema: () => ({
+        from: () => ({
+          select: () => ({
+            eq: () => ({
+              in: () => ({
+                range: () => ({
+                  then: (resolve: (v: { data: null; error: { message: string } }) => unknown) =>
+                    resolve({ data: null, error: { message: 'pool boom' } }),
+                }),
+              }),
+            }),
+          }),
+        }),
+      }),
+    }
+    await expect(fetchClozePool(errorMock as never)).rejects.toThrow('Failed to fetch cloze pool')
   })
 })

@@ -21,6 +21,7 @@
 
 import type { CapabilitySupabaseClient } from './adapter'
 import type { DistractorInputItem } from './generateItemDistractors'
+import type { ClozePoolItem } from './generateClozeContexts'
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -942,4 +943,55 @@ export async function loadAffixedFromDb(
     fetchAffixedCapabilityState(supabase),
   ])
   return { affixedPairs, affixedState }
+}
+
+// ---------------------------------------------------------------------------
+// fetchClozePool (Slice 3 — dialogue cloze generator input)
+// ---------------------------------------------------------------------------
+
+/**
+ * Read the cumulative vocab pool WITH part-of-speech for the dialogue cloze
+ * generator's eligibility gates (the same-POS-distractor rule needs `pos`).
+ *
+ * Mirrors fetchDistractorPool (all active word/phrase learning_items, paginated)
+ * but selects `pos` and returns the ClozePoolItem shape
+ * (normalized_text / base_text / pos). fetchDistractorPool can't be reused — it
+ * omits `pos` and maps to a different (DistractorInputItem) shape.
+ */
+export async function fetchClozePool(
+  supabase: CapabilitySupabaseClient,
+): Promise<ClozePoolItem[]> {
+  const pool: ClozePoolItem[] = []
+  let offset = 0
+
+  while (true) {
+    const { data: page, error } = await supabase
+      .schema('indonesian')
+      .from('learning_items')
+      .select('normalized_text, base_text, pos')
+      .eq('is_active', true)
+      .in('item_type', ['word', 'phrase'])
+      .range(offset, offset + PAGE_SIZE - 1)
+
+    if (error) {
+      throw new Error(`Failed to fetch cloze pool from learning_items: ${error.message}`)
+    }
+
+    for (const row of (page ?? []) as Array<{
+      normalized_text: string
+      base_text: string
+      pos: string | null
+    }>) {
+      pool.push({
+        normalized_text: row.normalized_text,
+        base_text: row.base_text,
+        pos: row.pos ?? null,
+      })
+    }
+
+    if (!page || page.length < PAGE_SIZE) break
+    offset += PAGE_SIZE
+  }
+
+  return pool
 }
