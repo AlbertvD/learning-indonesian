@@ -53,12 +53,14 @@ const IP_ALLOWED_FILES = [
 
 const LOG_FILE = `${process.cwd()}/.claude/logs/pre_tool_use.jsonl`;
 
+/** Branches whose deletion is blocked — these track GitOps deploys. */
+const PROTECTED_BRANCHES: readonly string[] = ["main", "master"];
+
 export function checkDangerousGit(command: string): CheckResult {
 	const patterns = [
 		String.raw`git\s+push\s+.*--force`,
 		String.raw`git\s+reset\s+--hard`,
 		String.raw`git\s+clean\s+-[df]`,
-		String.raw`git\s+branch\s+-D`,
 	];
 	for (const pattern of patterns) {
 		if (new RegExp(pattern, "i").test(command)) {
@@ -70,6 +72,26 @@ export function checkDangerousGit(command: string): CheckResult {
 			};
 		}
 	}
+
+	// Branch deletion (`-D`, `-d`, `--delete`) is blocked ONLY when it targets a
+	// protected branch. Local force-deletion of merged/feature branches is safe
+	// housekeeping and does not touch GitOps sync.
+	const isBranchDelete =
+		/git\s+branch\b/i.test(command) && /(\s-D\b|\s-d\b|--delete\b)/i.test(command);
+	if (isBranchDelete) {
+		const targetsProtected = PROTECTED_BRANCHES.some((b) =>
+			new RegExp(String.raw`(^|\s)${b}(\s|$)`).test(command),
+		);
+		if (targetsProtected) {
+			return {
+				blocked: true,
+				message:
+					`Deleting a protected branch (${PROTECTED_BRANCHES.join(", ")}) is blocked — ` +
+					"these track GitOps deploys. Local deletion of feature/merged branches is allowed.",
+			};
+		}
+	}
+
 	return ALLOWED;
 }
 
