@@ -296,31 +296,22 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
     expect(writes.find((w) => w.endsWith('lesson-page-blocks.ts'))).toBeUndefined()
   })
 
-  it('regenerates content-unit snapshots from staging learning items so the upsert sees fresh (not stale-snapshot) data', async () => {
-    // Set up: staging has a learning item carrying translation_en (EN is now
-    // produced lesson-side per ADR 0012 and cached in learning-items.ts) and a
-    // STALE snapshot (contentUnits) whose payload_json.translationEn is empty
-    // (built before the staging item had EN). Without regeneration, the stale
-    // snapshot's empty translationEn would be upserted. The runner regenerates
-    // the snapshot from staging, so the upsert carries the staging value.
+  it('5a.5: staging contentUnits snapshot is NOT upserted directly — DB-native builder replaces it', async () => {
+    // 5a.5 wiring: buildContentUnitsFromDb replaces buildContentUnitsFromStaging as
+    // the upsert input. The staging contentUnits snapshot (staging.contentUnits) is
+    // still regenerated upstream (for the dry-run log + disk write-back) but is
+    // NO LONGER passed to upsertContentUnits. Any stale data in staging.contentUnits
+    // never reaches the DB.
+    //
+    // This test verifies the behavioral invariant: the staging snapshot's payload_json
+    // fields (translationEn, baseText, etc.) do NOT appear in any content_units upsert
+    // — the DB-native builder always produces payload_json: {} (Decision E).
     const synth = makeSynthLesson({ stagingDir: tmpStagingDir })
     const lessonWithStaleSnapshot: LoadedLesson = {
       ...synth,
       staging: {
         ...synth.staging,
-        learningItems: [
-          {
-            base_text: 'makan',
-            item_type: 'word',
-            context_type: 'vocabulary_list',
-            translation_nl: 'eten',
-            translation_en: 'to eat', // carried by staging (lesson-stage owns EN)
-            pos: 'verb',
-            level: 'A1',
-            review_status: 'pending_review',
-          },
-        ],
-        // Stale snapshot — built before enrichment, so translationEn is empty.
+        // Stale snapshot with non-empty payload_json — should NOT be upserted.
         contentUnits: [
           {
             content_unit_key: 'item-makan::lesson-1/section-vocabulary::item-makan',
@@ -331,9 +322,7 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
             display_order: 1000,
             payload_json: {
               baseText: 'makan',
-              itemType: 'word',
-              translationNl: 'eten',
-              translationEn: '', // stale
+              translationEn: 'STALE_VALUE_SHOULD_NOT_REACH_DB', // stale
             },
             source_fingerprint: 'stale-fingerprint',
           },
@@ -352,17 +341,13 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
 
     expect(['ok', 'partial']).toContain(result.status)
 
-    // Find the content_units upsert payload for our learning item.
-    const learningItemUpserts = recorder.upserts.filter(
-      (u) => u.table === 'content_units' && u.payload.unit_slug === 'item-makan',
-    )
-    expect(learningItemUpserts).toHaveLength(1)
-    const payload = learningItemUpserts[0].payload as {
-      payload_json: { translationEn?: string }
+    // The stale payload_json field must NOT appear in any content_units upsert.
+    const allContentUnitPayloads = recorder.upserts
+      .filter((u) => u.table === 'content_units')
+      .map((u) => u.payload)
+    for (const p of allContentUnitPayloads) {
+      const pj = (p.payload_json as Record<string, unknown>) ?? {}
+      expect(pj.translationEn).not.toBe('STALE_VALUE_SHOULD_NOT_REACH_DB')
     }
-    // This is the centerpiece assertion: the regenerated snapshot picked up
-    // the staging EN translation, so the DB upsert carries "to eat" — not the
-    // stale snapshot's "".
-    expect(payload.payload_json.translationEn).toBe('to eat')
   })
 })

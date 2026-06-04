@@ -825,22 +825,28 @@ describe('runner item cutover (Task 6c)', () => {
     expect(distractorUpserts.length).toBeGreaterThan(0)
   })
 
-  // --- FIX 1 regression: audio caps survive the legacy-bundle filter ---
-  it('FIX1: audio caps (audio_recognition, dictation) on items with audio are NOT dropped from legacy path', async () => {
-    // An item with audio has 6 caps in the legacy bundle (4 base + audio_recognition + dictation).
-    // The new path only emits 4 base caps.  Before the fix the blanket `sourceKind !== 'item'`
-    // filter dropped the 2 audio caps entirely → retireOrphanedCapabilities soft-retired them.
-    // After the fix the filter is key-set-based: only the 4 keys emitted by the new path are
-    // excluded; the 2 audio keys flow through the legacy upsertCapabilities path.
-    // The runner regenerates staging.capabilities from buildCapabilityStagingFromContent,
-    // so audio caps appear only when audioClipsByNormalizedText contains the item's
-    // normalized text. We seed buku's audio clip to trigger audio cap generation.
+  // --- FIX1→5a.5: audio caps move to the new DB→DB path ---
+  it('FIX1→5a.5: audio caps move to the new DB→DB path (skip-if-exists) and are excluded from the legacy bundle', async () => {
+    // NEW CONTRACT (5a.5 / #147):
+    // projectItemsFromTypedRows now receives the audioClipsByNormalizedText map
+    // (runner.ts step 5: audioClipsByNormalizedText passed to projectItemsFromTypedRows).
+    // When the map contains the item's normalized_text, the projector emits
+    // audio_recognition + dictation caps alongside the 4 base caps — so those 6 keys
+    // ALL enter newPathEmittedKeys, and ALL are excluded from the legacy bundle.
+    //
+    // OLD CONTRACT (Slice 1, before 5a.5):
+    // The audio map was NOT passed to projectItemsFromTypedRows, so audio caps
+    // were absent from newPathEmittedKeys and flowed through the legacy
+    // upsertCapabilities path (to avoid being dropped entirely).
+    //
+    // FIXTURE: FAKE_TYPED_ROWS contains 'buku' (word, item_type='word') so the
+    // projector can look up normalizeTtsText('buku') == 'buku' in the audio map.
     const AUDIO_RECOGNITION_KEY = 'cap:v1:item:learning_items/buku:audio_recognition:audio_to_l1:audio:nl'
     const DICTATION_KEY = 'cap:v1:item:learning_items/buku:dictation:audio_to_id:audio:none'
 
     const lessonWithAudio = makeLessonWithItems(tmpDir)
-    // Provide an audio clip for 'buku' so buildCapabilityStagingFromContent sets hasAudio=true,
-    // triggering audio_recognition + dictation cap generation in capabilityCatalog.ts.
+    // Provide an audio clip for 'buku' so projectItemsFromTypedRows emits
+    // audio_recognition + dictation caps on the new skip-if-exists path.
     lessonWithAudio.audioClipsByNormalizedText = new Map([
       ['buku', { storage_path: 'lessons/buku.mp3', voice_id: 'Achird' }],
     ])
@@ -864,8 +870,8 @@ describe('runner item cutover (Task 6c)', () => {
       },
     )
 
-    // The audio caps must appear in the legacy upsertCapabilities writes
-    // (single-row upserts WITHOUT ignoreDuplicates).
+    // Audio caps must NOT appear in the legacy upsertCapabilities bundle
+    // (they are now in newPathEmittedKeys → excluded from the filter).
     const legacyCapUpserts = ops.filter(
       (op) =>
         op.table === 'learning_capabilities' &&
@@ -877,10 +883,10 @@ describe('runner item cutover (Task 6c)', () => {
         .map((r) => r?.canonical_key as string | undefined)
         .filter(Boolean),
     )
-    expect(legacyKeys).toContain(AUDIO_RECOGNITION_KEY)
-    expect(legacyKeys).toContain(DICTATION_KEY)
+    expect(legacyKeys).not.toContain(AUDIO_RECOGNITION_KEY)
+    expect(legacyKeys).not.toContain(DICTATION_KEY)
 
-    // They must NOT appear in the skip-if-exists (new-path) writes.
+    // Audio caps MUST appear in the skip-if-exists (new DB→DB path) writes.
     const newPathUpserts = ops.filter(
       (op) =>
         op.table === 'learning_capabilities' &&
@@ -892,8 +898,8 @@ describe('runner item cutover (Task 6c)', () => {
         .map((r) => r?.canonical_key as string | undefined)
         .filter(Boolean),
     )
-    expect(newPathKeys).not.toContain(AUDIO_RECOGNITION_KEY)
-    expect(newPathKeys).not.toContain(DICTATION_KEY)
+    expect(newPathKeys).toContain(AUDIO_RECOGNITION_KEY)
+    expect(newPathKeys).toContain(DICTATION_KEY)
   })
 
   // --- FIX 2 regression: per-cap-1:1 distractor writes ---

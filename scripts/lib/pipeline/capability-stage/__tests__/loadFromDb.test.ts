@@ -235,8 +235,13 @@ describe('fetchItemRowsFromDb', () => {
         from: () => ({
           select: () => ({
             eq: () => ({
-              then: (resolve: (v: { data: null; error: { message: string } }) => unknown) =>
-                resolve({ data: null, error: { message: 'DB error' } }),
+              // fetchItemRowsFromDb chains .order() after .eq() (5a.5 deterministic ordering)
+              order: () => ({
+                order: () => ({
+                  then: (resolve: (v: { data: null; error: { message: string } }) => unknown) =>
+                    resolve({ data: null, error: { message: 'DB error' } }),
+                }),
+              }),
             }),
           }),
         }),
