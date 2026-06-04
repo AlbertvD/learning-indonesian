@@ -1,7 +1,7 @@
 ---
 module: capabilities
 surface: src/lib/capabilities/
-last_verified_against_code: 2026-06-02
+last_verified_against_code: 2026-06-04
 inbound_port: src/lib/capabilities/index.ts
 status: stable
 ---
@@ -17,9 +17,9 @@ status: stable
 | `index.ts` | — | Barrel — re-exports the public surface (every externally-consumed symbol). The inbound port per target-architecture.md §2. |
 | `capabilityTypes.ts` | 251 | Types only — `CapabilityType`, `CapabilitySourceKind`, `ArtifactKind`, `ProjectedCapability`, `CapabilityProjection`, `CurrentContentSnapshot`, the `CAPABILITY_PROJECTION_VERSION` stamp, and the closed-mapping helper `deriveSkillTypeFromCapabilityType(capabilityType): SkillType` used at read-time after metadata_json retirement. |
 | `capabilityCatalog.ts` | 196 | `projectCapabilities(snapshot)` — derives every `ProjectedCapability` from raw catalog content (learning items, grammar patterns, affixed-form pairs). Source-of-truth for which cap_types each content kind emits + what each cap_type's `requiredArtifacts` is. Podcast caps are emitted by a separate projector at `scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts` per Decision 4; contextual_cloze caps live in `scripts/lib/pipeline/capability-stage/projectors/vocab.ts` per Decision 5b. |
-| `capabilityContracts.ts` | 159 | `validateCapability(input)` — derives `CapabilityReadiness` from `RENDER_CONTRACTS` + the cap's projected `requiredArtifacts` + the artifact index. `isExposureOnly(cap)` for podcast caps. `validateCapabilities` for aggregate health. |
+| `capabilityContracts.ts` | 107 | `validateCapability(input)` — derives `CapabilityReadiness` purely from `RENDER_CONTRACTS` routing (which exercise types serve this cap_type AND support its source kind). Slice 4b (#102) removed the artifact-bag dependency — readiness no longer reads `required_artifacts` or `capability_artifacts`. `isExposureOnly(cap)` for podcast caps. `validateCapabilities` for aggregate health. |
 | **`renderContracts.ts`** | 333 | **The shared render contract** — `RENDER_CONTRACTS`, `ContractInputShapes`, `BuilderInputFor<T>`, `projectBuilderInput<T>()`, plus inverted-lookup helpers (`exerciseTypesForCapability`, `requiredArtifactsFor`, `supportsSourceKind`). Sole source of truth for (a) which exercise types each cap_type is ready for, (b) which builder the resolver dispatches to, (c) what inputs each builder is guaranteed to receive. |
-| `artifactRegistry.ts` | 49 | `hasApprovedArtifact(...)` — quality + scope check (capabilityKey OR sourceRef must match). The exhaustive `ARTIFACT_KINDS` array (`as const satisfies readonly ArtifactKind[]`). |
+| `artifactRegistry.ts` | 26 | The exhaustive `ARTIFACT_KINDS` array (`as const satisfies readonly ArtifactKind[]`) — retained only for the Slice-5-owned (#147) legacy staging regeneration. Slice 4b (#102) removed `hasApprovedArtifact` / `ArtifactIndex` / `CapabilityArtifact` (the readiness machinery) when the `capability_artifacts` table was dropped. |
 | `canonicalKey.ts` | 40 | `buildCanonicalKey(input)` — encodes a `ProjectedCapability` into its stable canonical key. `normalizeLessonSourceRef` for legacy lesson-source-ref shapes. |
 | `itemSlug.ts` | 25 | `itemSlug(base_text)` — canonical slug derivation extracted in PR #59 to fix the silent slug-divergence bug class (~113 multi-word items unreachable). |
 | `separatorConvention.ts` | 86 | The single alternative-answer separator definition (CONTEXT.md → Typed Artifact). `splitAlternatives(value)` — split on canonical `/` + defensive `;`, never comma — consumed by the runtime grader (`src/lib/answerNormalization.checkAnswer`). `classifyDutchSeparator` / `classifyIndonesianSeparator` — the non-canonical-separator detector shared by the pipeline `CS19` gate + `HC24` health check. Tree-neutral so both the browser bundle and the `scripts/` pipeline import one definition (PR #129; anti-drift across the `src/`↔`scripts/` boundary). |
@@ -29,13 +29,13 @@ status: stable
 - `src/lib/session-builder/adapter.ts` — calls `validateCapability` per row to project readiness; pulls most projection types.
 - `src/lib/session-builder/builder.ts` — pulls `CapabilityReadiness`, `ProjectedCapability`.
 - `src/lib/session-builder/pedagogy.ts`, `labels.ts` — pull `CapabilityType` / `CapabilitySourceKind` for planner + display labels.
-- `src/lib/mastery/masteryModel.ts` — pulls cap_type / source_kind / artifact types for the mastery-labelling rules.
+- `src/lib/mastery/masteryModel.ts` — pulls cap_type / source_kind for the mastery-labelling rules (the artifact-completeness arm was retired in Slice 4b, #102).
 - `src/lib/exercise-content/byType/index.ts` — calls `projectBuilderInput` to narrow raw input before dispatching to typed builders. (Was `src/lib/exercises/builders/index.ts` pre-2026-05-21 fold.)
 - `src/lib/exercise-content/byType/types.ts` — re-exports `BuilderInputFor<T>` + `RawProjectorInput` for the 12 per-type packagers.
-- `src/lib/exercises/exerciseResolver.ts` — calls `exerciseTypesForCapability` for compatibility lookup; consumes `CapabilityReadiness`, `ArtifactIndex`, `hasApprovedArtifact`.
-- `src/lib/exercises/exerciseRenderPlan.ts` — consumes `ArtifactKind`, `ProjectedCapability` for the render-plan shape.
+- `src/lib/exercises/exerciseResolver.ts` — calls `exerciseTypesForCapability` for compatibility lookup; consumes `CapabilityReadiness`, `ProjectedCapability`. (The `ArtifactIndex`/`hasApprovedArtifact` re-check was removed in Slice 4b, #102.)
+- `src/lib/exercises/exerciseRenderPlan.ts` — consumes `ProjectedCapability` for the render-plan shape.
 - `src/lib/exercise-content/resolver.ts` — orchestrates the per-block dispatch; imports `CapabilityRenderContext`, `ResolutionDiagnostic`. (Was `src/services/capabilityContentService.ts` pre-2026-05-21 fold.)
-- `src/lib/exercise-content/adapter.ts` — imports `ArtifactKind`, `CapabilityArtifact`, `CapabilitySourceKind`, `CAPABILITY_SOURCE_KINDS` for the source-kind bucketing + canonical-key decoding + per-bucket fetchers. (Absorbed the former `capabilityContentService.internal.ts`.)
+- `src/lib/exercise-content/adapter.ts` — imports `CapabilitySourceKind`, `CAPABILITY_SOURCE_KINDS` for the source-kind bucketing + canonical-key decoding + per-bucket fetchers. (Absorbed the former `capabilityContentService.internal.ts`.)
 - `src/services/capabilityService.ts` — consumes the cap_type / direction / modality / language enums for the DB row shape.
 - `scripts/promote-capabilities.ts` — calls `validateCapability` for promotion decisions.
 - `scripts/check-capability-health.ts` — calls `validateCapability` + `validateCapabilities` for health-report generation; also pulls `CapabilityHealthReport`, `ExerciseAvailabilityIndex`.
@@ -59,7 +59,7 @@ Three responsibilities:
 
 1. **Project the catalog into capabilities.** `projectCapabilities(snapshot)` turns raw content (learning items, grammar patterns, affixed-form pairs) into the full set of `ProjectedCapability` rows, each with a canonical key, source kind, capability type, and declared `requiredArtifacts`.
 
-2. **Decide readiness.** `validateCapability` consults `RENDER_CONTRACTS` (which exercise types serve this cap_type AND support its source kind) plus the artifact index (are all required artifacts approved?) and returns a `CapabilityReadiness` — `ready` | `blocked` | `exposure_only` | `deprecated` | `unknown`.
+2. **Decide readiness.** `validateCapability` consults `RENDER_CONTRACTS` (which exercise types serve this cap_type AND support its source kind) and returns a `CapabilityReadiness` — `ready` | `blocked` | `exposure_only` | `deprecated` | `unknown`. Slice 4b (#102): `blocked` now means only "no compatible exercise for this cap_type × source_kind"; the artifact-bag check is gone.
 
 3. **Govern rendering.** `RENDER_CONTRACTS` declares per-exercise: which cap_types it serves, which source kinds it accepts, what artifacts it needs. `projectBuilderInput<T>()` narrows a `RawProjectorInput` into the per-builder typed input, performing every runtime guard the 12 builders used to re-implement. After projection, each builder is statically guaranteed every field its contract requires is non-null.
 
@@ -72,7 +72,7 @@ Three responsibilities:
 
 **Readiness:**
 - `validateCapability(input: CapabilityValidationInput): CapabilityReadiness` — `capabilityContracts.ts:52`.
-- `validateCapabilities(input: { projection, artifacts }): CapabilityHealthReport` — `capabilityContracts.ts:141`.
+- `validateCapabilities(input: { projection }): CapabilityHealthReport` — `capabilityContracts.ts`.
 - `isExposureOnly(capability: Pick<ProjectedCapability, 'sourceKind'>): boolean` — `capabilityContracts.ts:17`. True for `podcast_segment` / `podcast_phrase`.
 - Types: `CapabilityReadiness`, `CapabilityHealthReport`, `CapabilityValidationInput`.
 
@@ -86,10 +86,8 @@ Three responsibilities:
 - `requiredArtifactsFor(exerciseType): readonly ArtifactKind[]` — `renderContracts.ts:113`.
 - `supportsSourceKind(exerciseType, sourceKind): boolean` — `renderContracts.ts:117`.
 
-**Artifact registry:**
-- `hasApprovedArtifact({ index, kind, capabilityKey, sourceRef }): boolean` — `artifactRegistry.ts:39`.
-- `ARTIFACT_KINDS` — `artifactRegistry.ts:14`. Exhaustive constant array.
-- Types: `CapabilityArtifact`, `ArtifactIndex`, `ArtifactQualityStatus`.
+**Artifact registry (Slice 4b: reduced to the kind vocabulary):**
+- `ARTIFACT_KINDS` — `artifactRegistry.ts`. Exhaustive constant array, retained only for the Slice-5-owned (#147) legacy staging regeneration. `hasApprovedArtifact` + the `CapabilityArtifact`/`ArtifactIndex`/`ArtifactQualityStatus` types were removed when `capability_artifacts` was dropped.
 
 **Canonical key + slug:**
 - `buildCanonicalKey(input: CanonicalKeyInput): string` — `canonicalKey.ts:29`.

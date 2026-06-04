@@ -405,7 +405,7 @@ When adding a new page, prefer composing `PageContainer` / `PageBody` / `PageHea
 |-------|-----------|-----------|
 | `lessons`, `lesson_sections`, `podcasts` | Admin via scripts | All authenticated users |
 | `learning_items`, `item_meanings`, `item_contexts`, `grammar_patterns`, `exercise_variants` | Pipeline (capability-stage) | All authenticated users |
-| `learning_capabilities`, `capability_artifacts`, `content_units` | Pipeline | All authenticated users |
+| `learning_capabilities`, `content_units` | Pipeline | All authenticated users |
 | `learner_capability_state`, `capability_review_events` | Capability review processor (server RPC) | Row owner |
 | `learner_lesson_activation` | `set_lesson_activation` RPC | Row owner |
 | `lesson_progress`, `learning_sessions` | Row owner / lazy materialiser | All (for leaderboard) |

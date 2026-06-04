@@ -2,6 +2,11 @@
 /**
  * migrate-typed-tables-pr2-dialogue.ts
  *
+ * ⚠️ ALREADY EXECUTED — DO NOT RE-RUN. This one-shot bridge reads the legacy
+ * `capability_artifacts` table, which was DROPPED in Slice 4b (#102). Re-running
+ * it post-drop returns a PGRST205 "table not found" runtime error. Retained as a
+ * paper-trail record of the PR 2 migration only.
+ *
  * One-shot bridge for PR 2 — moves dialogue_line content from the legacy
  * 3-artifact shape (`capability_artifacts` rows for `cloze_context`,
  * `cloze_answer`, `translation:l1`) plus the in-content dialogue lines on

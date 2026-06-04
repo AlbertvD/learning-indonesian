@@ -59,7 +59,7 @@ Concretely, that means hiding:
 1. **Canonical-key decoding.** Every `SessionBlock.canonicalKeySnapshot` is a string of shape `cap:v1:<sourceKind>:<encodedSourceRef>:...`. The adapter decodes it.
 2. **Source-kind-specific DB fetching.** Item blocks need `learning_items` + `item_meanings` + `item_contexts` + `item_answer_variants` + `exercise_variants` + a distractor pool. Future buckets (dialogue_line, affixed_form_pair, podcast_*) need different table joins.
 3. **Distractor pool composition.** The pool is derived from items whose contexts anchor to the same lessons as the target item.
-4. **Artifact lookup.** Per-capability `capability_artifacts` rows are joined by `capability_id` and indexed by `artifact_kind`.
+4. **Typed-table content lookup.** Per-source-kind structure is read from the typed satellite tables (`dialogue_clozes`, `affixed_form_pairs`, the 4 grammar-exercise tables) — the legacy `capability_artifacts` bag was dropped in Slice 4b (#102).
 5. **Per-exercise-type packaging.** 12 different `ExerciseItem` shapes; one packager per type.
 6. **Resolution-failure logging.** Fail contexts fire-and-forget to `capability_resolution_failure_events` so admin queries can find regressions.
 
@@ -153,7 +153,7 @@ Fire-and-forget: for each ctx.diagnostic, logResolutionFailure(...)
 
 ### 3.2 Why source-kind bucketing is in the adapter, not the resolver
 
-Source kind determines which DB tables the adapter joins. Item blocks need 8 tables joined; dialogue_line blocks need 1 (capability_artifacts); affixed_form_pair blocks need a different shape again. Putting per-kind fetchers in the adapter and exposing one `loadBlockData(buckets)` keeps the resolver agnostic to schema details — the resolver knows about source kinds only as routing labels.
+Source kind determines which DB tables the adapter joins. Item blocks need 8 tables joined; dialogue_line blocks read the typed `dialogue_clozes` JOIN `lesson_dialogue_lines`; affixed_form_pair blocks read `affixed_form_pairs`. Putting per-kind fetchers in the adapter and exposing one `loadBlockData(buckets)` keeps the resolver agnostic to schema details — the resolver knows about source kinds only as routing labels.
 
 Exercise-type dispatch lives in `byType/`, on a different axis. The two-axis dispatch (source kind in adapter, exercise type in byType) means adding a new source kind is a one-file addition to `adapter/byKind/` (when split) or a single new fetcher inside `adapter.ts` (when single-file). Adding a new exercise type is a one-file addition to `byType/` + one `BUILDERS` registry entry + one `RENDER_CONTRACTS` entry in capabilities.
 
@@ -172,7 +172,7 @@ After Wave 2:       fetchDistractorPool(lessonIds)       // items whose item_con
 
 Wave 1 gathers item UUIDs from slug-shaped source refs (`learning_items/<slug>`); Wave 2 needs those UUIDs to join contexts + variants. The curated-distractor tables are fetched concurrently with Wave 2 (keyed by `capability_id`, not item uuid). The distractor pool is derived from the lessons those items' contexts anchor to — known only after Wave 2.
 
-**No `capability_artifacts` query.** The item path never calls `fetchArtifacts` — `artifactsByKind` is always an empty `Map()` for item caps (Decision Q, PR 1; `byKind/item.ts:240-244`). Curated distractors come from the typed tables directly. The enforcement test at `scripts/lib/pipeline/capability-stage/__tests__/enforcement/noLegacyItemReader.test.ts` gates this invariant with both an observable-effect assert (tracks `.from('capability_artifacts')` on the mock client) and a spy-based secondary check.
+**No `capability_artifacts` query.** The `capability_artifacts` table was dropped in Slice 4b (#102); no source-kind fetcher reads it (the always-empty `artifactsByKind` plumbing was removed too). Curated distractors come from the typed tables directly. The enforcement test at `scripts/lib/pipeline/capability-stage/__tests__/enforcement/noLegacyItemReader.test.ts` gates against re-introduction with an observable-effect assert (tracks `.from('capability_artifacts')` on the mock client); the former `fetchArtifacts` spy/positive-control was removed with the function.
 
 **Curated-distractor interface.** `RawProjectorInput` (`renderContracts.ts:310`) carries two fields populated by the item fetcher:
 
@@ -206,7 +206,7 @@ Both also appear on `BuilderBase` (`renderContracts.ts:341`) so every builder re
 - **`learning_capabilities` table** — capability rows the blocks point at (via `block.capabilityId`).
 - **`learning_items`, `item_contexts`, `item_answer_variants` tables** — item-bucket data (`item_meanings` and `exercise_variants` are legacy-retained; item fetcher reads translations from inline columns per Decision R).
 - **`recognition_mcq_distractors`, `cued_recall_distractors` tables** — curated wrong-option strings, keyed by `capability_id` (Task 8 / #99). Populated by the capability-stage pipeline.
-- **`capability_artifacts` table** — per-capability content blobs, indexed by `(capability_id, artifact_kind)`. **Not queried by the item path** (Decision Q, PR 1). Still queried by `fetchForDialogueLineBlocks` for cloze artifacts.
+- **`dialogue_clozes` + `lesson_dialogue_lines` tables** — dialogue_line cloze structure (read by `fetchForDialogueLineBlocks`); **`affixed_form_pairs` table** — morphology pair structure. These typed satellites replaced the dropped `capability_artifacts` bag (Slice 4b, #102).
 - **`capability_resolution_failure_events` table** — write-only audit log of fail contexts.
 
 ### Sibling (lib modules consumed)
