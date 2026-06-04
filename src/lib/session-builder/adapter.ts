@@ -1,13 +1,9 @@
 import { supabase } from '@/lib/supabase'
-import { chunkedIn } from '@/lib/chunkedQuery'
 import { listActivatedLessons } from '@/lib/lessons'
 import {
   CAPABILITY_PROJECTION_VERSION,
   deriveSkillTypeFromCapabilityType,
   validateCapability,
-  type ArtifactIndex,
-  type ArtifactKind,
-  type ArtifactQualityStatus,
   type CapabilityDirection,
   type CapabilityModality,
   type CapabilityReadiness,
@@ -47,7 +43,6 @@ const CAPABILITY_COLUMNS = [
   'publication_status',
   'lesson_id',
   'prerequisite_keys',
-  'required_artifacts',
 ].join(',')
 
 interface LearningCapabilityDbRow {
@@ -64,7 +59,6 @@ interface LearningCapabilityDbRow {
   publication_status: CapabilityPublicationStatus
   lesson_id: string | null
   prerequisite_keys: string[] | null
-  required_artifacts: string[] | null
 }
 
 interface LearnerCapabilityStateDbRow {
@@ -82,13 +76,6 @@ interface LearnerCapabilityStateDbRow {
   consecutive_failure_count: number
   state_after_json?: Record<string, unknown> | null
   state_version: number
-}
-
-interface CapabilityArtifactDbRow {
-  capability_id: string
-  artifact_kind: ArtifactKind
-  quality_status: ArtifactQualityStatus
-  artifact_json: unknown
 }
 
 interface LessonOrderDbRow {
@@ -122,9 +109,9 @@ function deriveLessonProgression(input: {
 }
 
 function toProjectedCapability(row: LearningCapabilityDbRow): ProjectedCapability {
-  // After Decision F (revised 2026-05-22), the typed columns prerequisite_keys
-  // and required_artifacts are the source of truth; skill_type is derived from
-  // capability_type via the closed mapping in capabilityTypes.ts.
+  // After Decision F (revised 2026-05-22), the typed column prerequisite_keys
+  // is the source of truth; skill_type is derived from capability_type via the
+  // closed mapping in capabilityTypes.ts.
   return {
     canonicalKey: row.canonical_key,
     sourceKind: row.source_kind,
@@ -134,7 +121,11 @@ function toProjectedCapability(row: LearningCapabilityDbRow): ProjectedCapabilit
     direction: row.direction,
     modality: row.modality,
     learnerLanguage: row.learner_language,
-    requiredArtifacts: (row.required_artifacts ?? []) as ArtifactKind[],
+    // Slice 4b: required_artifacts column dropped; runtime readiness no longer
+    // reads it. The in-memory field is retained on ProjectedCapability for the
+    // (Slice-5-owned) legacy staging regeneration only, so the DB→projection
+    // read defaults it to [].
+    requiredArtifacts: [],
     prerequisiteKeys: row.prerequisite_keys ?? [],
     lessonId: row.lesson_id,
     projectionVersion: CAPABILITY_PROJECTION_VERSION,
@@ -180,25 +171,6 @@ function toLearnerRow(
   }
 }
 
-function buildArtifactIndex(
-  rows: CapabilityArtifactDbRow[],
-  capabilityById: Map<string, LearningCapabilityDbRow>,
-): ArtifactIndex {
-  const index: ArtifactIndex = {}
-  for (const row of rows) {
-    const capability = capabilityById.get(row.capability_id)
-    if (!capability) continue
-    index[row.artifact_kind] ??= []
-    index[row.artifact_kind]!.push({
-      qualityStatus: row.quality_status,
-      capabilityKey: capability.canonical_key,
-      sourceRef: capability.source_ref,
-      value: row.artifact_json,
-    })
-  }
-  return index
-}
-
 function toPlannerState(row: LearnerCapabilityStateRow): PlannerLearnerCapabilityState {
   return {
     canonicalKey: row.canonicalKeySnapshot,
@@ -223,7 +195,6 @@ export interface ForceCapabilitySnapshot {
   capabilityRow: LearningCapabilityDbRow
   capability: ProjectedCapability
   readiness: CapabilityReadiness
-  artifactIndex: ArtifactIndex
   learnerState: LearnerCapabilityStateRow
 }
 
@@ -278,15 +249,6 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
 
       const capabilityRows = (capabilitiesResult.data ?? []) as LearningCapabilityDbRow[]
       const capabilityById = new Map(capabilityRows.map(row => [row.id, row]))
-      const capabilityIds = capabilityRows.map(row => row.id)
-      const artifactRows = await chunkedIn<CapabilityArtifactDbRow>(
-        'capability_artifacts',
-        'capability_id',
-        capabilityIds,
-        undefined,
-        client,
-      )
-      const artifactIndex = buildArtifactIndex(artifactRows, capabilityById)
 
       const capabilitiesByKey = new Map<string, ProjectedCapability>()
       const readinessByKey = new Map<string, CapabilityReadiness>()
@@ -296,7 +258,7 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         const projection = toProjectedCapability(row)
         capabilitiesByKey.set(row.canonical_key, projection)
         const readiness = row.readiness_status === 'ready'
-          ? validateCapability({ capability: projection, artifacts: artifactIndex })
+          ? validateCapability({ capability: projection })
           : { status: row.readiness_status, reason: `Capability readiness is ${row.readiness_status}` } as CapabilityReadiness
         readinessByKey.set(row.canonical_key, readiness)
         readyCapabilities.push(toPlannerCapability(row, projection))
@@ -337,7 +299,6 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         },
         capabilitiesByKey,
         readinessByKey,
-        artifactIndex,
         currentLessonId,
         nextLessonNeedsExposure,
       }
@@ -361,16 +322,8 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
 
       const capability = toProjectedCapability(capabilityRow)
 
-      const artifactRows = await chunkedIn<CapabilityArtifactDbRow>(
-        'capability_artifacts',
-        'capability_id',
-        [capabilityRow.id],
-        undefined,
-        client,
-      )
-      const artifactIndex = buildArtifactIndex(artifactRows, new Map([[capabilityRow.id, capabilityRow]]))
       const readiness = capabilityRow.readiness_status === 'ready'
-        ? validateCapability({ capability, artifacts: artifactIndex })
+        ? validateCapability({ capability })
         : { status: capabilityRow.readiness_status, reason: `Capability readiness is ${capabilityRow.readiness_status}` } as CapabilityReadiness
 
       // Read any existing learner_capability_state row for this cap.
@@ -412,7 +365,6 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         capabilityRow,
         capability,
         readiness,
-        artifactIndex,
         learnerState,
       }
     },

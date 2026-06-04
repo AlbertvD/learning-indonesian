@@ -92,7 +92,6 @@ function makeRawInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorI
     meanings: [],
     contexts: [],
     answerVariants: [],
-    artifactsByKind: new Map(),
     poolItems: [],
     poolMeaningsByItem: new Map(),
     userLanguage: 'nl',

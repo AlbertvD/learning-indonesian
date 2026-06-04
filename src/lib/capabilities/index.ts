@@ -56,14 +56,10 @@ export type {
 } from './capabilityContracts'
 
 // ─── Artifacts ─────────────────────────────────────────────────────────────
+// Slice 4b retired capability_artifacts + its readiness types. ARTIFACT_KINDS
+// survives only for the Slice-5-owned legacy staging regeneration.
 export {
   ARTIFACT_KINDS,
-  hasApprovedArtifact,
-} from './artifactRegistry'
-export type {
-  ArtifactIndex,
-  ArtifactQualityStatus,
-  CapabilityArtifact,
 } from './artifactRegistry'
 
 // ─── Canonical keying ──────────────────────────────────────────────────────

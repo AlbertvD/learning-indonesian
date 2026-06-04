@@ -69,7 +69,6 @@ function makeDialogueBlock(capabilityId: string, sourceRef: string): SessionBloc
       exerciseType: 'cloze',
       capabilityType: 'contextual_cloze',
       skillType: 'form_recall',
-      requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
     },
     reviewContext: {
       schedulerSnapshot: {} as never,

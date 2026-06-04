@@ -11,7 +11,6 @@ const renderPlan = (sourceRef: string, capabilityKey: string): ExerciseRenderPla
   exerciseType: 'recognition_mcq',
   capabilityType: 'text_recognition',
   skillType: 'recognition',
-  requiredArtifacts: ['base_text', 'meaning:l1'],
 })
 
 const reviewContext: CapabilityReviewSessionContext = {

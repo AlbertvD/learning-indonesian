@@ -108,7 +108,6 @@ function makeBlock(id: string, kind: 'due_review' | 'new_introduction', exercise
       exerciseType: exerciseType as ExerciseItem['exerciseType'],
       capabilityType: 'meaning_recall',
       skillType: 'meaning_recall',
-      requiredArtifacts: ['meaning:l1'],
     },
   }
 }

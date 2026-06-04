@@ -3,12 +3,9 @@ import { pathToFileURL } from 'node:url'
 import {
   deriveSkillTypeFromCapabilityType,
   validateCapability,
-  type ArtifactIndex,
-  type ArtifactKind,
   type CapabilityReadiness,
   type ProjectedCapability,
 } from '@/lib/capabilities'
-import { hasConcreteArtifactPayload } from './lib/content-pipeline-output'
 
 interface CapabilityRow {
   id: string
@@ -24,14 +21,7 @@ interface CapabilityRow {
   // Decision F (2026-05-22): typed columns replace metadata_json as the source
   // of truth. The promoter projects from these, matching the runtime adapter
   // (src/lib/session-builder/adapter.ts), so the two never diverge.
-  required_artifacts?: string[] | null
   prerequisite_keys?: string[] | null
-}
-
-export interface CapabilityArtifactRow {
-  artifact_kind: ArtifactKind
-  quality_status: 'draft' | 'approved' | 'blocked' | 'deprecated'
-  artifact_json: unknown
 }
 
 interface PromotionHealthResult {
@@ -205,31 +195,12 @@ function toProjectedCapability(row: CapabilityRow): ProjectedCapability | null {
     direction: row.direction,
     modality: row.modality,
     learnerLanguage: row.learner_language,
-    requiredArtifacts: (row.required_artifacts ?? []) as ArtifactKind[],
+    // Slice 4b: required_artifacts retired; readiness derives from typed-contract routing.
+    requiredArtifacts: [],
     prerequisiteKeys: row.prerequisite_keys ?? [],
     lessonId: row.lesson_id ?? null,
     projectionVersion: row.projection_version,
   }
-}
-
-export function buildPromotionArtifactIndex(input: {
-  capability: Pick<ProjectedCapability, 'canonicalKey' | 'sourceRef'>
-  artifacts: CapabilityArtifactRow[]
-}): ArtifactIndex {
-  const index: ArtifactIndex = {}
-  for (const artifact of input.artifacts) {
-    if (artifact.quality_status !== 'approved') continue
-    const value = artifact.artifact_json
-    if (!hasConcreteArtifactPayload(artifact.artifact_kind, value)) continue
-    index[artifact.artifact_kind] ??= []
-    index[artifact.artifact_kind]!.push({
-      qualityStatus: artifact.quality_status,
-      capabilityKey: input.capability.canonicalKey,
-      sourceRef: input.capability.sourceRef,
-      value,
-    })
-  }
-  return index
 }
 
 export async function loadPromotionPlan(args: PromoteCapabilitiesArgs): Promise<CapabilityPromotionPlan> {
@@ -274,20 +245,9 @@ export async function loadPromotionPlan(args: PromoteCapabilitiesArgs): Promise<
       })
       continue
     }
-    const { data: artifacts, error: artifactsError } = await db()
-      .from('capability_artifacts')
-      .select('artifact_kind, quality_status, artifact_json')
-      .eq('capability_id', capabilityRow.id)
-    if (artifactsError) throw artifactsError
     healthResults.push({
       canonicalKey: capability.canonicalKey,
-      readiness: validateCapability({
-        capability,
-        artifacts: buildPromotionArtifactIndex({
-          capability,
-          artifacts: (artifacts ?? []) as CapabilityArtifactRow[],
-        }),
-      }),
+      readiness: validateCapability({ capability }),
     })
   }
 

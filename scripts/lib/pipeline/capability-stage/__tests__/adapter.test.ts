@@ -5,9 +5,7 @@ import {
   insertExerciseVariantVocab,
   retireOrphanedCapabilities,
   upsertCapabilities,
-  upsertCapabilityArtifacts,
   upsertLearningItem,
-  type CapabilityArtifactInput,
   type CapabilityInput,
   type LearningItemInput,
 } from '../adapter'
@@ -35,20 +33,6 @@ function buildClient(idByTable: Record<string, string>) {
 }
 
 describe('capability-stage adapter — writer return contracts (F6-1 wiring)', () => {
-  it('upsertCapabilityArtifacts returns one id per artifact so CS8 can validate them', async () => {
-    const client = buildClient({ capability_artifacts: 'artifact-uuid-1' })
-    const input: CapabilityArtifactInput = {
-      capability_id: 'cap-1',
-      artifact_kind: 'meaning:l1',
-      quality_status: 'approved',
-      artifact_ref: 'ref',
-      artifact_json: { value: 'eten' },
-      artifact_fingerprint: 'fp-1',
-    }
-    const ids = await upsertCapabilityArtifacts(client, [input, input])
-    expect(ids).toEqual(['artifact-uuid-1', 'artifact-uuid-1'])
-  })
-
   it('insertExerciseVariantGrammar returns the inserted id for CS8 wiring', async () => {
     const client = buildClient({ exercise_variants: 'variant-uuid-1' })
     const result = await insertExerciseVariantGrammar(client, {

@@ -61,7 +61,7 @@ describe('morphology capability projection', () => {
 
   it('marks morphology root_derived_recall ready via typed_recall with NO capability_artifacts (PR 3 slice: structure lives in the typed affixed_form_pairs table + validateAffixedFormPairs + HC17)', () => {
     const recall = projectCapabilities(snapshot).capabilities.find(capability => capability.capabilityType === 'root_derived_recall')!
-    const readiness = validateCapability({ capability: recall, artifacts: {} })
+    const readiness = validateCapability({ capability: recall })
     expect(readiness.status).toBe('ready')
     if (readiness.status === 'ready') {
       expect(readiness.allowedExercises).toEqual(['typed_recall'])
@@ -70,7 +70,7 @@ describe('morphology capability projection', () => {
 
   it('marks morphology root_derived_recognition ready via typed_recall with NO capability_artifacts (PR 3 slice)', () => {
     const recognition = projectCapabilities(snapshot).capabilities.find(capability => capability.capabilityType === 'root_derived_recognition')!
-    const readiness = validateCapability({ capability: recognition, artifacts: {} })
+    const readiness = validateCapability({ capability: recognition })
     expect(readiness.status).toBe('ready')
     if (readiness.status === 'ready') {
       expect(readiness.allowedExercises).toEqual(['typed_recall'])

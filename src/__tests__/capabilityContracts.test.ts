@@ -2,6 +2,11 @@ import { describe, expect, it } from 'vitest'
 import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
 import { validateCapabilities, validateCapability } from '@/lib/capabilities/capabilityContracts'
 
+// Slice 4b: readiness no longer reads the capability_artifacts bag. A capability
+// is `ready` iff some exercise type serves its capability_type AND supports its
+// source_kind (RENDER_CONTRACTS routing); `blocked` only when no compatible
+// exercise exists. `requiredArtifacts` on the projection is retained in memory
+// for the (Slice-5-owned) legacy staging regeneration but is NOT consulted here.
 const baseCapability: ProjectedCapability = {
   canonicalKey: 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl',
   sourceKind: 'item',
@@ -16,75 +21,51 @@ const baseCapability: ProjectedCapability = {
   projectionVersion: 'capability-v3',
 }
 
-describe('capability contract validation', () => {
-  it('allows ready capability only when required artifacts are approved', () => {
-    expect(validateCapability({
-      capability: baseCapability,
-      artifacts: {
-        'meaning:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-        'accepted_answers:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-      },
-    })).toEqual({
+describe('capability contract validation (post-4b: readiness off the typed contract, not artifacts)', () => {
+  it('readies a cap with a compatible exercise', () => {
+    expect(validateCapability({ capability: baseCapability })).toEqual({
       status: 'ready',
       allowedExercises: ['meaning_recall'],
     })
   })
 
-  it('maps Dutch-to-Indonesian choice to cued recall when bridge artifacts are approved', () => {
+  it('maps Dutch-to-Indonesian choice to cued recall', () => {
     const bridgeCapability = {
       ...baseCapability,
       canonicalKey: 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl',
-      capabilityType: 'l1_to_id_choice' as any,
+      capabilityType: 'l1_to_id_choice' as const,
       direction: 'l1_to_id' as const,
-      requiredArtifacts: ['meaning:l1', 'base_text'] as ProjectedCapability['requiredArtifacts'],
     }
 
-    expect(validateCapability({
-      capability: bridgeCapability,
-      artifacts: {
-        'meaning:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-        base_text: [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-      },
-    })).toEqual({
+    expect(validateCapability({ capability: bridgeCapability })).toEqual({
       status: 'ready',
       allowedExercises: ['cued_recall'],
     })
   })
 
-  it.each(['draft', 'blocked', 'deprecated'] as const)('fails closed for %s artifacts', qualityStatus => {
-    const result = validateCapability({
-      capability: baseCapability,
-      artifacts: {
-        'meaning:l1': [{ qualityStatus, sourceRef: 'learning_items/item-1' }],
-        'accepted_answers:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-      },
-    })
-
-    expect(result.status).toBe('blocked')
-  })
-
-  it('requires translation for contextual cloze feedback', () => {
-    const result = validateCapability({
+  // PARITY GUARD (4b.4 layer 1): a cap that historically carried a non-empty
+  // required_artifacts list readies WITHOUT any artifact bag — proving the
+  // readiness decision no longer depends on capability_artifacts. This is the
+  // unit-level half of the inert-change proof (the other two layers are the
+  // Capability Gate assertion + the check-supabase-deep ready-count parity).
+  it('readies an audio cap that historically required [audio_clip, meaning:l1] with no artifacts present', () => {
+    expect(validateCapability({
       capability: {
         ...baseCapability,
-        capabilityType: 'contextual_cloze',
-        requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
+        canonicalKey: 'cap:v1:item:learning_items/item-1:audio_recognition:audio_to_l1:audio:nl',
+        capabilityType: 'audio_recognition',
+        direction: 'audio_to_l1',
+        modality: 'audio',
+        requiredArtifacts: ['audio_clip', 'meaning:l1'],
       },
-      artifacts: {
-        cloze_context: [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-        cloze_answer: [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-      },
-    })
-
-    expect(result).toEqual({
-      status: 'blocked',
-      missingArtifacts: ['translation:l1'],
-      reason: 'Missing approved artifacts: translation:l1',
+    })).toEqual({
+      status: 'ready',
+      allowedExercises: ['listening_mcq'],
     })
   })
 
-  it('readies a dialogue_line contextual_cloze cap with no capability_artifacts (PR 2 slice: structure lives in the typed dialogue_clozes table)', () => {
-    const result = validateCapability({
+  it('readies a dialogue_line contextual_cloze cap (structure lives in the typed dialogue_clozes table)', () => {
+    expect(validateCapability({
       capability: {
         ...baseCapability,
         canonicalKey: 'cap:v1:dialogue_line:lesson-9/section-1/line-3:contextual_cloze:id_to_l1:text:none',
@@ -93,38 +74,39 @@ describe('capability contract validation', () => {
         capabilityType: 'contextual_cloze',
         requiredArtifacts: [],
       },
-      artifacts: {},
-    })
-
-    expect(result).toEqual({
+    })).toEqual({
       status: 'ready',
       allowedExercises: ['cloze'],
     })
   })
 
-  it('requires typed pattern examples for pattern recognition', () => {
+  it('blocks a cap whose capability_type has no exercise for its source_kind', () => {
+    // meaning_recall is served only by the item-only `meaning_recall` exercise;
+    // a meaning_recall cap on a non-item source kind has no compatible exercise.
     const result = validateCapability({
-      capability: {
-        ...baseCapability,
-        capabilityType: 'pattern_recognition',
-        requiredArtifacts: ['pattern_explanation:l1', 'pattern_example'],
-      },
-      artifacts: {
-        'pattern_explanation:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-      },
+      capability: { ...baseCapability, sourceKind: 'pattern' },
     })
 
-    expect(result.status).toBe('blocked')
+    expect(result).toEqual({
+      status: 'blocked',
+      missingArtifacts: [],
+      reason: 'no_compatible_exercise_for_capability_type',
+    })
+  })
+
+  it('treats podcast source kinds as exposure-only', () => {
+    expect(validateCapability({
+      capability: { ...baseCapability, sourceKind: 'podcast_segment', capabilityType: 'podcast_gist' },
+    }).status).toBe('exposure_only')
   })
 
   it.each([
     ['exposure_only', 'exposure_only'],
     ['deprecated', 'deprecated'],
     ['unknown', 'unknown'],
-  ] as const)('can return %s readiness', (readinessOverride, expected) => {
+  ] as const)('honours the %s readiness override', (readinessOverride, expected) => {
     expect(validateCapability({
       capability: baseCapability,
-      artifacts: {},
       readinessOverride,
     }).status).toBe(expected)
   })
@@ -133,25 +115,12 @@ describe('capability contract validation', () => {
     const report = validateCapabilities({
       projection: {
         projectionVersion: 'capability-v3',
-        capabilities: [baseCapability],
+        capabilities: [{ ...baseCapability, sourceKind: 'pattern' }],
         aliases: [],
         diagnostics: [],
       },
-      artifacts: {},
     })
 
     expect(report.criticalCount).toBe(1)
-  })
-
-  it('does not let artifacts from one source satisfy another capability', () => {
-    const result = validateCapability({
-      capability: baseCapability,
-      artifacts: {
-        'meaning:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/other-item' }],
-        'accepted_answers:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/other-item' }],
-      },
-    })
-
-    expect(result.status).toBe('blocked')
   })
 })

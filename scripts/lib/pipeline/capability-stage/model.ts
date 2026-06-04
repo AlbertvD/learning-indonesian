@@ -62,7 +62,6 @@ export interface CapabilityStageInput {
 export interface CapabilityStageCounts {
   contentUnits: number
   capabilities: number
-  capabilityArtifacts: number
   learningItems: number
   exerciseVariants: number
   clozeContexts: number
@@ -102,7 +101,6 @@ export interface ValidationFinding {
 export const EMPTY_COUNTS: CapabilityStageCounts = {
   contentUnits: 0,
   capabilities: 0,
-  capabilityArtifacts: 0,
   learningItems: 0,
   exerciseVariants: 0,
   clozeContexts: 0,

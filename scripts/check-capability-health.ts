@@ -7,8 +7,6 @@ import {
   projectCapabilities,
   validateCapabilities,
   validateCapability,
-  type ArtifactIndex,
-  type ArtifactKind,
   type CapabilityHealthReport,
   type CurrentContentSnapshot,
   type CurrentLearningItem,
@@ -16,7 +14,6 @@ import {
 } from '@/lib/capabilities'
 import { projectPodcastCapabilities } from './lib/pipeline/podcast-stage/podcastProjectionRules'
 import { resolveExercise } from '../src/lib/exercises/exerciseResolver'
-import { hasConcreteArtifactPayload } from './lib/content-pipeline-output'
 
 export interface CapabilityHealthExitCodeInput {
   strict: boolean
@@ -60,25 +57,14 @@ export interface RuntimeHealthCapability {
   projectionVersion?: ProjectedCapability['projectionVersion']
   readinessStatus: 'ready' | 'unknown' | 'blocked' | 'deprecated'
   publicationStatus: 'published' | 'draft' | 'archived'
-  requiredArtifacts: ArtifactKind[]
   prerequisiteKeys?: string[]
   difficultyLevel?: number
   goalTags?: string[]
   sourceFingerprint?: string
-  artifactFingerprint?: string
-}
-
-export interface RuntimeHealthArtifact {
-  capabilityKey: string
-  sourceRef?: string
-  artifactKind: ArtifactKind
-  qualityStatus: 'draft' | 'approved' | 'blocked' | 'deprecated'
-  artifactJson: unknown
 }
 
 export interface CapabilityHealthSnapshot {
   capabilities: RuntimeHealthCapability[]
-  artifacts: RuntimeHealthArtifact[]
 }
 
 export interface CapabilityRuntimeHealthReport {
@@ -145,39 +131,19 @@ function toProjectedCapability(capability: RuntimeHealthCapability): ProjectedCa
     direction: capability.direction ?? 'id_to_l1',
     modality: capability.modality ?? 'text',
     learnerLanguage: capability.learnerLanguage ?? 'nl',
-    requiredArtifacts: capability.requiredArtifacts,
+    // Slice 4b: required_artifacts retired; readiness no longer reads it.
+    requiredArtifacts: [],
     prerequisiteKeys: capability.prerequisiteKeys ?? [],
     difficultyLevel: capability.difficultyLevel ?? 1,
     goalTags: capability.goalTags ?? [],
     projectionVersion: capability.projectionVersion ?? 'v1',
     sourceFingerprint: capability.sourceFingerprint ?? capability.sourceRef,
-    artifactFingerprint: capability.artifactFingerprint ?? capability.canonicalKey,
   }
-}
-
-function buildRuntimeArtifactIndex(artifacts: RuntimeHealthArtifact[]): ArtifactIndex {
-  const index: ArtifactIndex = {}
-  for (const artifact of artifacts) {
-    if (!hasConcreteArtifactPayload(artifact.artifactKind, artifact.artifactJson)) continue
-    const value = artifact.artifactJson
-    if (value && typeof value === 'object' && !Array.isArray(value) && (value as Record<string, unknown>).placeholder === true) {
-      continue
-    }
-    index[artifact.artifactKind] ??= []
-    index[artifact.artifactKind]!.push({
-      qualityStatus: artifact.qualityStatus,
-      capabilityKey: artifact.capabilityKey,
-      sourceRef: artifact.sourceRef,
-      value,
-    })
-  }
-  return index
 }
 
 export function checkCapabilityHealthSnapshot(snapshot: CapabilityHealthSnapshot): CapabilityRuntimeHealthReport {
   const critical: CapabilityHealthFinding[] = []
   const warnings: CapabilityHealthFinding[] = []
-  const artifactIndex = buildRuntimeArtifactIndex(snapshot.artifacts)
 
   for (const capability of snapshot.capabilities) {
     const isRuntimeSchedulable = capability.readinessStatus === 'ready' && capability.publicationStatus === 'published'
@@ -192,40 +158,11 @@ export function checkCapabilityHealthSnapshot(snapshot: CapabilityHealthSnapshot
     }
 
     const projected = toProjectedCapability(capability)
-    const approvedInvalidArtifacts = snapshot.artifacts.filter(artifact => (
-      artifact.capabilityKey === capability.canonicalKey
-      && artifact.qualityStatus === 'approved'
-      && !hasConcreteArtifactPayload(artifact.artifactKind, artifact.artifactJson)
-    ))
-    for (const artifact of approvedInvalidArtifacts) {
-      critical.push(runtimeFinding(
-        'critical',
-        'ready_capability_invalid_approved_artifact_payload',
-        `Approved artifact "${artifact.artifactKind}" does not satisfy its payload contract.`,
-        capability.canonicalKey,
-      ))
-    }
 
-    // Phase 1 of retiring lesson_page_blocks (2026-05-20): the
-    // `ready_capability_unreachable_source_ref` warning was retired. The check
-    // derived knownSourceRefs from page_blocks + content_units that themselves
-    // were derived from the same caps it was validating, so the check had no
-    // orthogonal source to be inconsistent with. See ADR 0006 for the new
-    // scoping invariant (capability.lesson_id NOT NULL for lesson caps).
-
-    const readiness = validateCapability({
-      capability: projected,
-      artifacts: artifactIndex,
-    })
-    if (readiness.status === 'blocked' && readiness.missingArtifacts.length > 0) {
-      critical.push(runtimeFinding(
-        'critical',
-        'ready_capability_missing_approved_artifact',
-        readiness.reason,
-        capability.canonicalKey,
-      ))
-      continue
-    }
+    // Slice 4b: readiness + exercise resolution are decided purely by the typed
+    // RENDER_CONTRACTS routing (no capability_artifacts bag). A ready/published
+    // cap that resolves to no exercise is the remaining failure mode.
+    const readiness = validateCapability({ capability: projected })
     if (readiness.status !== 'ready') {
       critical.push(runtimeFinding(
         'critical',
@@ -239,7 +176,6 @@ export function checkCapabilityHealthSnapshot(snapshot: CapabilityHealthSnapshot
     const resolution = resolveExercise({
       capability: projected,
       readiness,
-      artifactIndex,
     })
     if (resolution.status === 'failed') {
       critical.push(runtimeFinding(
@@ -289,7 +225,6 @@ function examplesFromPattern(pattern: Record<string, unknown>): string[] {
 
 export async function loadStagedContentSnapshot(stagingPath: string): Promise<{
   snapshot: CurrentContentSnapshot
-  artifacts: ArtifactIndex
 }> {
   const absolutePath = path.resolve(stagingPath)
   if (!existsSync(absolutePath)) {
@@ -377,45 +312,6 @@ export async function loadStagedContentSnapshot(stagingPath: string): Promise<{
       : undefined,
   }))
 
-  const artifacts: ArtifactIndex = {}
-  const addArtifact = (kind: ArtifactKind, sourceRef: string, approved: boolean): void => {
-    artifacts[kind] = [
-      ...(artifacts[kind] ?? []),
-      { qualityStatus: approved ? 'approved' : 'blocked', sourceRef },
-    ]
-  }
-
-  for (const item of learningItems) {
-    const sourceRef = `learning_items/${item.id}`
-    addArtifact('base_text', sourceRef, item.baseText.length > 0)
-    addArtifact('meaning:l1', sourceRef, item.meanings.length > 0)
-    addArtifact('accepted_answers:l1', sourceRef, (item.acceptedAnswers?.l1?.length ?? 0) > 0)
-    addArtifact('accepted_answers:id', sourceRef, (item.acceptedAnswers?.id?.length ?? 0) > 0)
-  }
-
-  for (const pattern of grammarPatterns) {
-    addArtifact('pattern_explanation:l1', pattern.sourceRef, pattern.name.length > 0)
-    addArtifact('pattern_example', pattern.sourceRef, pattern.examples.length > 0)
-  }
-
-  for (const segment of podcastSegments) {
-    addArtifact('audio_segment', segment.sourceRef, segment.hasAudio)
-    addArtifact('transcript_segment', segment.sourceRef, segment.transcript.length > 0)
-    addArtifact('podcast_gist_prompt', segment.sourceRef, segment.gistPrompt.length > 0)
-  }
-
-  for (const phrase of podcastPhrases) {
-    addArtifact('timecoded_phrase', phrase.sourceRef, phrase.text.length > 0)
-    addArtifact('translation:l1', phrase.sourceRef, (phrase.translation?.length ?? 0) > 0)
-  }
-
-  for (const pair of affixedFormPairs) {
-    addArtifact('root_derived_pair', pair.sourceRef, pair.root.length > 0 && pair.derived.length > 0)
-    if (pair.allomorphRule) {
-      addArtifact('allomorph_rule', pair.sourceRef, pair.allomorphRule.length > 0)
-    }
-  }
-
   return {
     snapshot: {
       learningItems,
@@ -425,18 +321,16 @@ export async function loadStagedContentSnapshot(stagingPath: string): Promise<{
       affixedFormPairs,
       stagedLessons: [],
     },
-    artifacts,
   }
 }
 
 export async function buildCapabilityHealthReport(stagingPath: string): Promise<CapabilityHealthReport> {
-  const { snapshot, artifacts } = await loadStagedContentSnapshot(stagingPath)
+  const { snapshot } = await loadStagedContentSnapshot(stagingPath)
   // Decision 4: concatenate shared catalog + podcast rules.
   const projection = projectCapabilities(snapshot)
   const allCapabilities = [...projection.capabilities, ...projectPodcastCapabilities(snapshot)]
   return validateCapabilities({
     projection: { ...projection, capabilities: allCapabilities },
-    artifacts,
   })
 }
 
@@ -469,12 +363,10 @@ function toRuntimeCapability(row: Record<string, unknown>): RuntimeHealthCapabil
     projectionVersion: row.projection_version as RuntimeHealthCapability['projectionVersion'],
     readinessStatus: row.readiness_status as RuntimeHealthCapability['readinessStatus'],
     publicationStatus: row.publication_status as RuntimeHealthCapability['publicationStatus'],
-    requiredArtifacts: metadataStringArray(metadata, 'requiredArtifacts') as ArtifactKind[],
     prerequisiteKeys: metadataStringArray(metadata, 'prerequisiteKeys'),
     difficultyLevel: typeof metadata.difficultyLevel === 'number' ? metadata.difficultyLevel : 1,
     goalTags: metadataStringArray(metadata, 'goalTags'),
     sourceFingerprint: String(row.source_fingerprint ?? ''),
-    artifactFingerprint: String(row.artifact_fingerprint ?? ''),
   }
 }
 
@@ -511,36 +403,8 @@ export async function loadDbCapabilityHealthSnapshot(args: Extract<CapabilityHea
       capabilityRows.push(...((data ?? []) as Array<Record<string, unknown>>))
     }
   }
-  const capabilityIdByKey = new Map(capabilityRows.map(row => [String(row.canonical_key ?? ''), String(row.id ?? '')]))
-  const capabilityKeyById = new Map([...capabilityIdByKey.entries()].map(([key, id]) => [id, key]))
-
-  const artifactRows: Array<Record<string, unknown>> = []
-  const artifactChunkSize = 50
-  const capabilityIds = capabilityRows.map(row => String(row.id ?? ''))
-  for (let i = 0; i < capabilityIds.length; i += artifactChunkSize) {
-    const chunk = capabilityIds.slice(i, i + artifactChunkSize)
-    const { data, error } = await db()
-      .from('capability_artifacts')
-      .select('capability_id, artifact_kind, quality_status, artifact_json')
-      .in('capability_id', chunk)
-    if (error) throw error
-    artifactRows.push(...((data ?? []) as Array<Record<string, unknown>>))
-  }
-
   return {
     capabilities: capabilityRows.map(toRuntimeCapability),
-    artifacts: artifactRows.map(artifact => {
-      const capabilityId = String(artifact.capability_id ?? '')
-      const capabilityKey = capabilityKeyById.get(capabilityId) ?? ''
-      const capability = capabilityRows.find(row => String(row.id ?? '') === capabilityId)
-      return {
-        capabilityKey,
-        sourceRef: typeof capability?.source_ref === 'string' ? capability.source_ref : undefined,
-        artifactKind: artifact.artifact_kind as ArtifactKind,
-        qualityStatus: artifact.quality_status as RuntimeHealthArtifact['qualityStatus'],
-        artifactJson: artifact.artifact_json,
-      }
-    }),
   }
 }
 

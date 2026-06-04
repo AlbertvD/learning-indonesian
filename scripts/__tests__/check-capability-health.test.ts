@@ -54,32 +54,7 @@ describe('capability health exit code planning', () => {
     })
   })
 
-  it('fails ready/published capabilities that have no approved artifact path', () => {
-    const report = checkCapabilityHealthSnapshot({
-      capabilities: [{
-        canonicalKey: 'cap:v1:item:learning_items/makan:meaning_recall:id_to_l1:text:nl',
-        sourceRef: 'learning_items/makan',
-        capabilityType: 'meaning_recall',
-        skillType: 'meaning_recall',
-        readinessStatus: 'ready',
-        publicationStatus: 'published',
-        requiredArtifacts: ['meaning:l1'],
-      }],
-      artifacts: [],
-    })
-
-    expect(report.critical).toContainEqual(expect.objectContaining({
-      rule: 'ready_capability_missing_approved_artifact',
-    }))
-  })
-
-  it('keeps valid accepted-answer values payloads eligible for runtime health', () => {
-    // Post-PR #65: form_recall routes to cued_recall + typed_recall in the
-    // RENDER_CONTRACTS table. typed_recall's contract requires
-    // ['base_text', 'meaning:l1', 'accepted_answers:id']. The cap also
-    // declares its own requiredArtifacts which validateCapability unions
-    // with the contract's; this fixture provides every artifact in that
-    // union so the cap remains ready.
+  it('keeps a ready form_recall capability eligible for runtime health (resolves via typed_recall)', () => {
     const capabilityKey = 'cap:v1:item:learning_items/makan:form_recall:l1_to_id:text:nl'
     const report = checkCapabilityHealthSnapshot({
       capabilities: [{
@@ -89,26 +64,6 @@ describe('capability health exit code planning', () => {
         skillType: 'form_recall',
         readinessStatus: 'ready',
         publicationStatus: 'published',
-        requiredArtifacts: ['meaning:l1', 'base_text', 'accepted_answers:id'],
-      }],
-      artifacts: [{
-        capabilityKey,
-        sourceRef: 'learning_items/makan',
-        artifactKind: 'accepted_answers:id',
-        qualityStatus: 'approved',
-        artifactJson: { values: ['makan'] },
-      }, {
-        capabilityKey,
-        sourceRef: 'learning_items/makan',
-        artifactKind: 'meaning:l1',
-        qualityStatus: 'approved',
-        artifactJson: { value: 'eten' },
-      }, {
-        capabilityKey,
-        sourceRef: 'learning_items/makan',
-        artifactKind: 'base_text',
-        qualityStatus: 'approved',
-        artifactJson: { value: 'makan' },
       }],
     })
 
@@ -125,50 +80,10 @@ describe('capability health exit code planning', () => {
         skillType: 'meaning_recall',
         readinessStatus: 'ready',
         publicationStatus: 'published',
-        requiredArtifacts: ['meaning:l1', 'base_text'],
-      }],
-      artifacts: [{
-        capabilityKey,
-        sourceRef: 'learning_items/makan',
-        artifactKind: 'meaning:l1',
-        qualityStatus: 'approved',
-        artifactJson: { value: 'eten' },
-      }, {
-        capabilityKey,
-        sourceRef: 'learning_items/makan',
-        artifactKind: 'base_text',
-        qualityStatus: 'approved',
-        artifactJson: { value: 'makan' },
       }],
     })
 
     expect(report.critical).toEqual([])
-  })
-
-  it('fails approved artifacts with invalid artifact-kind payload shapes', () => {
-    const capabilityKey = 'cap:v1:item:learning_items/makan:form_recall:l1_to_id:text:nl'
-    const report = checkCapabilityHealthSnapshot({
-      capabilities: [{
-        canonicalKey: capabilityKey,
-        sourceRef: 'learning_items/makan',
-        capabilityType: 'form_recall',
-        skillType: 'form_recall',
-        readinessStatus: 'ready',
-        publicationStatus: 'published',
-        requiredArtifacts: ['accepted_answers:id'],
-      }],
-      artifacts: [{
-        capabilityKey,
-        sourceRef: 'learning_items/makan',
-        artifactKind: 'accepted_answers:id',
-        qualityStatus: 'approved',
-        artifactJson: { value: 'makan' },
-      }],
-    })
-
-    expect(report.critical).toContainEqual(expect.objectContaining({
-      rule: 'ready_capability_invalid_approved_artifact_payload',
-    }))
   })
 
   it('does NOT emit ready_capability_unreachable_source_ref (retired in Phase 1 of retiring lesson_page_blocks, 2026-05-20)', () => {
@@ -187,14 +102,6 @@ describe('capability health exit code planning', () => {
         skillType: 'recognition',
         readinessStatus: 'ready',
         publicationStatus: 'published',
-        requiredArtifacts: ['base_text'],
-      }],
-      artifacts: [{
-        capabilityKey: 'cap:v1:item:learning_items/minum:text_recognition:id_to_l1:text:nl',
-        sourceRef: 'learning_items/minum',
-        artifactKind: 'base_text',
-        qualityStatus: 'approved',
-        artifactJson: { value: 'minum' },
       }],
     })
 
@@ -212,9 +119,7 @@ describe('capability health exit code planning', () => {
         skillType: 'meaning_recall',
         readinessStatus: 'unknown',
         publicationStatus: 'draft',
-        requiredArtifacts: ['meaning:l1'],
       }],
-      artifacts: [],
     })
 
     expect(report.critical).toEqual([])

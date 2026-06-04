@@ -4,8 +4,7 @@
 // - Decision R: translations from learning_items.translation_{nl,en} directly
 //   instead of joining item_meanings. item_meanings table stays (dropped in PR 7).
 // - Decision Q: audio refs from capability_audio_refs table (not capability_artifacts).
-//   The byType builders don't read artifactsByKind for audio (audio is resolved via
-//   SessionAudioContext upstream); this table is populated for future use.
+//   Audio is resolved via SessionAudioContext upstream.
 // - Decision G2 Group B: curated distractor tables populated but not yet wired
 //   to builders (builders use poolMeaningsByItem fallback — same behaviour as today).
 //
@@ -20,7 +19,6 @@ import {
   type ItemBucketEntry,
   type BlockResolutionData,
   type SupabaseSchemaClient,
-  type CapabilityArtifactRow,
   makeFailContext,
 } from '../adapter'
 
@@ -232,13 +230,9 @@ export async function fetchForItemBlocks(
         meanings,
         contexts: contextsByItem.get(itemUuid) ?? [],
         answerVariants: answerVariantsByItem.get(itemUuid) ?? [],
-        // Decision Q + G2: artifactsByKind is always empty for item caps after
-        // PR 1. The byType builders never read artifactsByKind (verified by
-        // grep); audio is resolved via SessionAudioContext upstream. The session-
-        // builder/adapter.ts reads capability_audio_refs for planner readiness
-        // instead. renderContracts.ts requiredArtifacts.item = [] so validateCapability
-        // passes without artifact checks.
-        artifactsByKind: new Map(),
+        // Slice 4b: the capability_artifacts bag is gone. Audio is resolved via
+        // SessionAudioContext upstream; readiness is decided by renderContracts
+        // routing (requiredArtifacts collapsed to []), not an artifact bag.
         poolItems,
         poolMeaningsByItem,
         userLanguage,
@@ -251,8 +245,3 @@ export async function fetchForItemBlocks(
     })
   }
 }
-
-// Re-export the row type so siblings inside byKind/ that need it can pull it
-// from this file's import surface if they later land. Today only adapter.ts
-// owns the type; this is a forward-compatible re-export.
-export type { CapabilityArtifactRow }

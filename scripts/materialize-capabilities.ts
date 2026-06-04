@@ -1,9 +1,6 @@
 import {
-  hasApprovedArtifact,
   projectCapabilities,
   validateCapabilities,
-  type ArtifactIndex,
-  type ArtifactKind,
   type CapabilityAlias,
   type CapabilityDirection,
   type CapabilityModality,
@@ -53,14 +50,6 @@ export interface CapabilityInsertPlan {
   metadataJson: Record<string, unknown>
 }
 
-export interface ArtifactUpsertPlan {
-  capabilityKey: string
-  sourceRef: string
-  artifactKind: ArtifactKind
-  qualityStatus: 'approved'
-  artifactFingerprint: string
-}
-
 export interface AliasUpsertPlan {
   oldCanonicalKey: string
   newCanonicalKey: string
@@ -87,7 +76,6 @@ export interface BlockedBackfillPlan {
 
 export interface CapabilityMaterializationPlan {
   capabilityInserts: CapabilityInsertPlan[]
-  artifactUpserts: ArtifactUpsertPlan[]
   aliasUpserts: AliasUpsertPlan[]
   backfillWrites: BackfillWritePlan[]
   blockedBackfills: BlockedBackfillPlan[]
@@ -100,7 +88,6 @@ export interface PlanCapabilityMaterializationInput {
   applyBackfill: boolean
   learnerBackfillCandidates?: LearnerBackfillCandidate[]
   readinessByCanonicalKey?: Map<string, ReadinessStatus>
-  approvedArtifactsByCapabilityKey?: Map<string, ArtifactKind[]>
 }
 
 export interface MaterializeArgs {
@@ -175,16 +162,6 @@ export function planCapabilityMaterialization(input: PlanCapabilityMaterializati
       },
     }))
 
-  const artifactUpserts = input.capabilities.flatMap(capability => (
-    (input.approvedArtifactsByCapabilityKey?.get(capability.canonicalKey) ?? []).map((artifactKind): ArtifactUpsertPlan => ({
-      capabilityKey: capability.canonicalKey,
-      sourceRef: capability.sourceRef,
-      artifactKind,
-      qualityStatus: 'approved',
-      artifactFingerprint: `${capability.artifactFingerprint}:${artifactKind}`,
-    }))
-  ))
-
   const aliasUpserts = input.aliases.map((alias): AliasUpsertPlan => ({
     oldCanonicalKey: alias.oldCanonicalKey,
     newCanonicalKey: alias.newCanonicalKey,
@@ -235,7 +212,6 @@ export function planCapabilityMaterialization(input: PlanCapabilityMaterializati
 
   return {
     capabilityInserts,
-    artifactUpserts,
     aliasUpserts,
     backfillWrites,
     blockedBackfills,
@@ -246,35 +222,19 @@ function readinessMapFromReport(input: ReturnType<typeof validateCapabilities>):
   return new Map(input.results.map(result => [result.canonicalKey, result.readiness.status]))
 }
 
-function approvedArtifactMap(input: {
-  capabilities: ProjectedCapability[]
-  artifacts: ArtifactIndex
-}): Map<string, ArtifactKind[]> {
-  return new Map(input.capabilities.map(capability => [
-    capability.canonicalKey,
-    capability.requiredArtifacts.filter(artifactKind => hasApprovedArtifact({
-      index: input.artifacts,
-      kind: artifactKind,
-      capabilityKey: capability.canonicalKey,
-      sourceRef: capability.sourceRef,
-    })),
-  ]))
-}
-
 export async function buildMaterializationPlanFromStaging(input: {
   stagingPath: string
   applyBackfill: boolean
   existingCanonicalKeys?: Set<string>
   learnerBackfillCandidates?: LearnerBackfillCandidate[]
 }): Promise<CapabilityMaterializationPlan> {
-  const { snapshot, artifacts } = await loadStagedContentSnapshot(input.stagingPath)
+  const { snapshot } = await loadStagedContentSnapshot(input.stagingPath)
   const projection = projectCapabilities(snapshot)
   // Decision 4: podcast capability emission moved to podcast-stage. Concatenate
   // shared + podcast rules so callers see one combined capability list.
   const allCapabilities = [...projection.capabilities, ...projectPodcastCapabilities(snapshot)]
   const health = validateCapabilities({
     projection: { ...projection, capabilities: allCapabilities },
-    artifacts,
   })
 
   return planCapabilityMaterialization({
@@ -284,10 +244,6 @@ export async function buildMaterializationPlanFromStaging(input: {
     applyBackfill: input.applyBackfill,
     learnerBackfillCandidates: input.learnerBackfillCandidates,
     readinessByCanonicalKey: readinessMapFromReport(health),
-    approvedArtifactsByCapabilityKey: approvedArtifactMap({
-      capabilities: allCapabilities,
-      artifacts,
-    }),
   })
 }
 

@@ -10,15 +10,14 @@
 import { describe, expect, it } from 'vitest'
 import type { ProjectedCapability, CapabilityType, CapabilitySourceKind, ArtifactKind } from '@/lib/capabilities/capabilityTypes'
 import { validateCapability } from '@/lib/capabilities/capabilityContracts'
-import type { ArtifactIndex } from '@/lib/capabilities/artifactRegistry'
 
+// Slice 4b: readiness is decided purely by cap_type × source_kind routing
+// (RENDER_CONTRACTS), not the retired capability_artifacts bag. `requiredArtifacts`
+// on the rows below documents the historical (now-inert) per-cap artifact list.
 interface MatrixRow {
   capabilityType: CapabilityType
   sourceKind: CapabilitySourceKind
   requiredArtifacts: readonly ArtifactKind[]
-  // Artifacts to mark approved in the fixture (subset of requiredArtifacts
-  // means we expect partial-blocked; superset is fine too).
-  approvedArtifacts: readonly ArtifactKind[]
   expected:
     | { status: 'ready'; allowedExercises: readonly string[] }
     | { status: 'blocked'; reasonMatch: RegExp }
@@ -31,28 +30,24 @@ const matrix: MatrixRow[] = [
     capabilityType: 'text_recognition',
     sourceKind: 'item',
     requiredArtifacts: ['base_text', 'meaning:l1'],
-    approvedArtifacts: ['base_text', 'meaning:l1'],
     expected: { status: 'ready', allowedExercises: ['recognition_mcq'] },
   },
   {
     capabilityType: 'l1_to_id_choice',
     sourceKind: 'item',
     requiredArtifacts: ['meaning:l1', 'base_text'],
-    approvedArtifacts: ['meaning:l1', 'base_text'],
     expected: { status: 'ready', allowedExercises: ['cued_recall'] },
   },
   {
     capabilityType: 'meaning_recall',
     sourceKind: 'item',
     requiredArtifacts: ['meaning:l1', 'accepted_answers:l1'],
-    approvedArtifacts: ['meaning:l1', 'accepted_answers:l1'],
     expected: { status: 'ready', allowedExercises: ['meaning_recall'] },
   },
   {
     capabilityType: 'form_recall',
     sourceKind: 'item',
     requiredArtifacts: ['meaning:l1', 'base_text', 'accepted_answers:id'],
-    approvedArtifacts: ['meaning:l1', 'base_text', 'accepted_answers:id'],
     // form_recall is served by BOTH cued_recall AND typed_recall — both pass.
     expected: { status: 'ready', allowedExercises: ['cued_recall', 'typed_recall'] },
   },
@@ -60,14 +55,12 @@ const matrix: MatrixRow[] = [
     capabilityType: 'audio_recognition',
     sourceKind: 'item',
     requiredArtifacts: ['audio_clip', 'meaning:l1'],
-    approvedArtifacts: ['audio_clip', 'meaning:l1'],
     expected: { status: 'ready', allowedExercises: ['listening_mcq'] },
   },
   {
     capabilityType: 'dictation',
     sourceKind: 'item',
     requiredArtifacts: ['audio_clip', 'base_text', 'accepted_answers:id'],
-    approvedArtifacts: ['audio_clip', 'base_text', 'accepted_answers:id'],
     expected: { status: 'ready', allowedExercises: ['dictation'] },
   },
   // ─── Pattern source kind (PR 4 Decision G + R): routes to typed grammar
@@ -77,14 +70,12 @@ const matrix: MatrixRow[] = [
     capabilityType: 'pattern_recognition',
     sourceKind: 'pattern',
     requiredArtifacts: [],
-    approvedArtifacts: [],
     expected: { status: 'ready', allowedExercises: ['cloze_mcq', 'sentence_transformation', 'constrained_translation'] },
   },
   {
     capabilityType: 'pattern_contrast',
     sourceKind: 'pattern',
     requiredArtifacts: [],
-    approvedArtifacts: [],
     expected: { status: 'ready', allowedExercises: ['contrast_pair'] },
   },
   {
@@ -94,7 +85,6 @@ const matrix: MatrixRow[] = [
     capabilityType: 'contextual_cloze',
     sourceKind: 'dialogue_line',
     requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
-    approvedArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
     expected: { status: 'ready', allowedExercises: ['cloze'] },
   },
   {
@@ -106,14 +96,12 @@ const matrix: MatrixRow[] = [
     capabilityType: 'root_derived_recognition',
     sourceKind: 'affixed_form_pair',
     requiredArtifacts: ['root_derived_pair', 'allomorph_rule'],
-    approvedArtifacts: ['root_derived_pair', 'allomorph_rule'],
     expected: { status: 'ready', allowedExercises: ['typed_recall'] },
   },
   {
     capabilityType: 'root_derived_recall',
     sourceKind: 'affixed_form_pair',
     requiredArtifacts: ['root_derived_pair', 'allomorph_rule'],
-    approvedArtifacts: ['root_derived_pair', 'allomorph_rule'],
     expected: { status: 'ready', allowedExercises: ['typed_recall'] },
   },
   // ─── Exposure-only (short-circuits before source-kind check) ─────────
@@ -121,7 +109,6 @@ const matrix: MatrixRow[] = [
     capabilityType: 'podcast_gist',
     sourceKind: 'podcast_segment',
     requiredArtifacts: ['audio_segment', 'transcript_segment'],
-    approvedArtifacts: ['audio_segment', 'transcript_segment'],
     expected: { status: 'exposure_only' },
   },
 ]
@@ -142,20 +129,11 @@ function fakeCapability(row: MatrixRow): ProjectedCapability {
   }
 }
 
-function fakeArtifacts(row: MatrixRow, sourceRef: string): ArtifactIndex {
-  const index: ArtifactIndex = {}
-  for (const kind of row.approvedArtifacts) {
-    index[kind] = [{ qualityStatus: 'approved', sourceRef }]
-  }
-  return index
-}
-
 describe('validateCapability matrix (post-PR #65 expected readiness)', () => {
   for (const row of matrix) {
     it(`returns expected readiness for ${row.capabilityType} (sourceKind=${row.sourceKind})`, () => {
       const capability = fakeCapability(row)
-      const artifacts = fakeArtifacts(row, capability.sourceRef)
-      const result = validateCapability({ capability, artifacts })
+      const result = validateCapability({ capability })
 
       if (row.expected.status === 'ready') {
         expect(result.status).toBe('ready')

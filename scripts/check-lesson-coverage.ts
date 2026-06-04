@@ -62,10 +62,6 @@ await cnt('  …source_kind = affixed_form_pair:', sb.schema('indonesian')
   .from('learning_capabilities').select('*', { count: 'exact', head: true }).eq('source_kind', 'affixed_form_pair'))
 
 console.log('─'.repeat(70))
-// capability_artifacts
-await cnt('capability_artifacts (all rows):', sb.schema('indonesian')
-  .from('capability_artifacts').select('*', { count: 'exact', head: true }))
-
 // capability_content_units
 await cnt('capability_content_units (junction):', sb.schema('indonesian')
   .from('capability_content_units').select('*', { count: 'exact', head: true }))

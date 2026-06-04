@@ -180,7 +180,6 @@ export async function runCapabilityGatePostWrite(
   findings.push(...await runContentNonEmpty(supabase, {
     contentUnitIds: input.contentUnitIds,
     capabilityIds: input.capabilityIds,
-    capabilityArtifactIds: input.capabilityArtifactIds,
     learningItemIds: input.learningItemIds,
     exerciseVariantIds: input.exerciseVariantIds,
     grammarPatternIds: input.grammarPatternIds,

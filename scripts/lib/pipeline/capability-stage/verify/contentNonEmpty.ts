@@ -7,7 +7,6 @@
  *
  * Required fields by table:
  *   learning_capabilities       canonical_key, capability_type, source_ref non-empty
- *   capability_artifacts        artifact_kind, artifact_ref non-empty + artifact_json != {}
  *   learning_items              base_text, normalized_text, item_type non-empty
  *   item_meanings               translation_text non-empty
  *   item_contexts               source_text non-empty
@@ -24,7 +23,6 @@ import type { ValidationFinding } from '../model'
 export interface ContentNonEmptyInput {
   contentUnitIds: string[]
   capabilityIds: string[]
-  capabilityArtifactIds: string[]
   learningItemIds: string[]
   exerciseVariantIds: string[]
   grammarPatternIds: string[]
@@ -43,13 +41,6 @@ interface CapabilityRow {
   canonical_key: string | null
   capability_type: string | null
   source_ref: string | null
-}
-
-interface CapabilityArtifactRow {
-  id: string
-  artifact_kind: string | null
-  artifact_ref: string | null
-  artifact_json: Record<string, unknown> | null
 }
 
 interface LearningItemRow {
@@ -110,20 +101,6 @@ export async function runContentNonEmpty(
     for (const row of rows) {
       if (!nonEmptyString(row.canonical_key) || !nonEmptyString(row.capability_type) || !nonEmptyString(row.source_ref)) {
         findings.push(presenceFinding('learning_capabilities', row.id, 'canonical_key/capability_type/source_ref non-empty'))
-      }
-    }
-  }
-
-  if (input.capabilityArtifactIds.length > 0) {
-    const rows = await fetchRowsByIds<CapabilityArtifactRow>(
-      supabase,
-      'capability_artifacts',
-      'id, artifact_kind, artifact_ref, artifact_json',
-      input.capabilityArtifactIds,
-    )
-    for (const row of rows) {
-      if (!nonEmptyString(row.artifact_kind) || !nonEmptyString(row.artifact_ref) || !objectIsNonEmpty(row.artifact_json)) {
-        findings.push(presenceFinding('capability_artifacts', row.id, 'artifact_kind/artifact_ref/artifact_json non-empty'))
       }
     }
   }

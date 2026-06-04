@@ -56,7 +56,6 @@ import {
   retireOrphanedCapabilities,
   upsertCapabilities,
   upsertCapabilitiesSkipIfExists,
-  upsertCapabilityArtifacts,
   upsertCapabilityContentUnits,
   upsertClozeContext,
   upsertContentUnits,
@@ -71,7 +70,6 @@ import {
   upsertRecognitionDistractors,
   upsertCuedRecallDistractors,
   deleteItemDistractors,
-  type CapabilityArtifactInput,
   type CapabilityContentUnitInput,
   type CapabilityInput,
   type CapabilitySupabaseClient,
@@ -863,32 +861,12 @@ export async function runCapabilityStage(
   }
   await upsertCapabilityContentUnits(supabase, junctionInputs)
 
-  // ---- 7. Write — capability_artifacts (from staging exerciseAssets). --
-  const stagedAssets = staging.exerciseAssets as Array<{
-    asset_key: string
-    capability_key: string
-    artifact_kind: string
-    quality_status: 'draft' | 'approved' | 'blocked'
-    payload_json?: Record<string, unknown>
-  }>
-  const artifactInputs: CapabilityArtifactInput[] = []
-  for (const asset of stagedAssets) {
-    const capId = capabilityIdsByKey.get(asset.capability_key)
-    if (!capId) continue
-    // Decision R/Q (PR 1): item-sourced caps no longer use capability_artifacts.
-    // Translations come from learning_items.translation_{nl,en} (Decision R) and
-    // audio from capability_audio_refs (Decision Q). Skipping here stops writing
-    // stale artifact rows; the reader (byKind/item.ts) does not read them.
-    if (asset.capability_key.startsWith("item:")) continue
-    artifactInputs.push({
-      capability_id: capId,
-      artifact_kind: asset.artifact_kind,
-      quality_status: asset.quality_status,
-      artifact_ref: asset.asset_key,
-      artifact_json: asset.payload_json ?? {},
-      artifact_fingerprint: asset.asset_key,
-    })
-  }
+  // ---- 7. (removed in Slice 4b) capability_artifacts write. ------------
+  // The capability_artifacts table is dropped; non-item structure now lives in
+  // the typed satellite tables (dialogue_clozes / affixed_form_pairs / the 4
+  // grammar-exercise tables), written in steps 7b/7c/8 below. The legacy
+  // staging.exerciseAssets array is still regenerated upstream (Slice-5-owned
+  // legacy projection) but is no longer persisted anywhere.
 
   // ---- 7b. Dialogue-line typed rows (Slice 3 — DB→DB). -----------------
   // The dialogue_clozes rows are projected from the in-stage generator output
@@ -958,9 +936,6 @@ export async function runCapabilityStage(
       durationMs: Date.now() - start,
     }
   }
-
-  const capabilityArtifactIds = await upsertCapabilityArtifacts(supabase, artifactInputs)
-  counts.capabilityArtifacts = capabilityArtifactIds.length
 
   // PR 2 — typed dialogue_clozes table write. Replaces the trio of
   // capability_artifacts rows the reader used to read.
@@ -1205,14 +1180,12 @@ export async function runCapabilityStage(
         ? patternResult.patternsUpserted
         : grammar.grammarPatterns.length,
       capabilities: allCapabilities.length,
-      capabilityArtifacts: artifactInputs.length,
       learningItems: publishedItemIds.length,
       exerciseVariants: usePatternPath ? exerciseVariantsLanded : grammar.exerciseVariants.length,
       clozeContexts: cloze.plans.length,
     },
     contentUnitIds,
     capabilityIds,
-    capabilityArtifactIds,
     learningItemIds: publishedItemIds,
     exerciseVariantIds,
     grammarPatternIds: [...grammarPatternUpsert.idsBySlug.values()],

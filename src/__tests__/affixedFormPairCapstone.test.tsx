@@ -78,8 +78,6 @@ function makeAffixedBlock(opts: {
       exerciseType: 'typed_recall',
       capabilityType: opts.capabilityType,
       skillType: opts.direction === 'root_to_derived' ? 'form_recall' : 'recognition',
-      // PR 3 slice: affixed_form_pair caps require no artifacts (renderContracts: []).
-      requiredArtifacts: [],
     },
     reviewContext: {
       schedulerSnapshot: {} as never,

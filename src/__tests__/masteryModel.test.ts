@@ -20,8 +20,6 @@ function evidence(overrides: Partial<CapabilityMasteryEvidence>): CapabilityMast
     modality: 'text',
     readinessStatus: 'ready',
     publicationStatus: 'published',
-    requiredArtifacts: ['base_text', 'meaning:l1'],
-    approvedArtifacts: ['base_text', 'meaning:l1'],
     lessonActivated: true,
     reviewCount: 0,
     lapseCount: 0,
@@ -135,8 +133,6 @@ describe('mastery model derivation', () => {
           reviewCount: 5,
           stability: 18,
           lastReviewedAt: '2026-04-21T12:00:00.000Z',
-          requiredArtifacts: ['pattern_explanation:l1', 'pattern_example'],
-          approvedArtifacts: ['pattern_explanation:l1', 'pattern_example'],
         }),
         evidence({
           capabilityId: 'cap-pattern-use',
@@ -148,8 +144,6 @@ describe('mastery model derivation', () => {
           lapseCount: 1,
           stability: 4,
           lastReviewedAt: '2026-04-21T12:00:00.000Z',
-          requiredArtifacts: ['minimal_pair'],
-          approvedArtifacts: ['minimal_pair'],
         }),
       ],
     })
@@ -203,8 +197,6 @@ describe('mastery model derivation', () => {
           reviewCount: 6,
           stability: 30,
           lastReviewedAt: '2026-04-24T12:00:00.000Z',
-          requiredArtifacts: ['pattern_explanation:l1', 'pattern_example'],
-          approvedArtifacts: ['pattern_explanation:l1', 'pattern_example'],
         }),
       ],
     })
@@ -258,10 +250,6 @@ describe('mastery model data access', () => {
           stability: 20,
           last_reviewed_at: new Date().toISOString(),
         },
-      ],
-      capability_artifacts: [
-        { capability_id: 'cap-1', artifact_kind: 'base_text', quality_status: 'approved' },
-        { capability_id: 'cap-1', artifact_kind: 'meaning:l1', quality_status: 'approved' },
       ],
       learner_lesson_activation: [
         { user_id: 'user-1', lesson_id: 'lesson-uuid' },

@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest'
 import { resolveExercise } from '@/lib/exercises/exerciseResolver'
 import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
 
+// Slice 4b: the resolver no longer re-checks capability_artifacts — readiness
+// (decided by validateCapability's typed-contract routing) is the sole gate.
+// `requiredArtifacts` is retained on ProjectedCapability for the Slice-5-owned
+// staging regeneration but plays no part in resolution.
 function capability(overrides: Partial<ProjectedCapability> = {}): ProjectedCapability {
   return {
     canonicalKey: 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl',
@@ -23,23 +27,10 @@ describe('exercise resolver', () => {
   it('refuses blocked readiness', () => {
     expect(resolveExercise({
       capability: capability(),
-      readiness: { status: 'blocked', missingArtifacts: ['meaning:l1'], reason: 'missing' },
-      artifactIndex: {},
+      readiness: { status: 'blocked', missingArtifacts: [], reason: 'no_compatible_exercise_for_capability_type' },
     })).toEqual(expect.objectContaining({
       status: 'failed',
       reason: 'capability_not_ready',
-    }))
-  })
-
-  it('returns missing artifact failures explicitly', () => {
-    expect(resolveExercise({
-      capability: capability(),
-      readiness: { status: 'ready', allowedExercises: ['meaning_recall'] },
-      artifactIndex: { 'meaning:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }] },
-    })).toEqual(expect.objectContaining({
-      status: 'failed',
-      reason: 'missing_required_artifact',
-      missingArtifacts: ['accepted_answers:l1'],
     }))
   })
 
@@ -47,10 +38,6 @@ describe('exercise resolver', () => {
     expect(resolveExercise({
       capability: capability(),
       readiness: { status: 'ready', allowedExercises: ['meaning_recall'] },
-      artifactIndex: {
-        'meaning:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-        'accepted_answers:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-      },
     })).toEqual({
       status: 'resolved',
       plan: expect.objectContaining({
@@ -67,13 +54,8 @@ describe('exercise resolver', () => {
         capabilityType: 'l1_to_id_choice' as any,
         skillType: 'meaning_recall',
         direction: 'l1_to_id',
-        requiredArtifacts: ['meaning:l1', 'base_text'],
       }),
       readiness: { status: 'ready', allowedExercises: ['cued_recall'] },
-      artifactIndex: {
-        'meaning:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-        base_text: [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-      },
     })).toEqual({
       status: 'resolved',
       plan: expect.objectContaining({
@@ -88,7 +70,6 @@ describe('exercise resolver', () => {
     expect(resolveExercise({
       capability: capability({ capabilityType: 'pattern_contrast', requiredArtifacts: [] }),
       readiness: { status: 'ready', allowedExercises: [] },
-      artifactIndex: {},
     })).toEqual(expect.objectContaining({
       status: 'failed',
       reason: 'no_supported_exercise_family',
@@ -102,13 +83,8 @@ describe('exercise resolver', () => {
         skillType: 'recognition',
         direction: 'audio_to_l1',
         modality: 'audio',
-        requiredArtifacts: ['audio_clip', 'meaning:l1'],
       }),
       readiness: { status: 'ready', allowedExercises: ['meaning_recall'] },
-      artifactIndex: {
-        audio_clip: [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-        'meaning:l1': [{ qualityStatus: 'approved', sourceRef: 'learning_items/item-1' }],
-      },
     })).toEqual(expect.objectContaining({
       status: 'failed',
       reason: 'no_supported_exercise_family',
@@ -125,7 +101,6 @@ describe('exercise resolver', () => {
       direction: 'audio_to_l1',
       modality: 'audio',
       learnerLanguage: 'none',
-      requiredArtifacts: ['audio_segment', 'transcript_segment', 'podcast_gist_prompt'],
     })
     const morphology = capability({
       canonicalKey: 'cap:v1:affixed_form_pair:lesson-9/morphology/men-baca:root_derived_recall:root_to_derived:text:none',
@@ -136,17 +111,11 @@ describe('exercise resolver', () => {
       direction: 'root_to_derived',
       modality: 'text',
       learnerLanguage: 'none',
-      requiredArtifacts: ['root_derived_pair', 'allomorph_rule'],
     })
 
     expect(resolveExercise({
       capability: podcast,
       readiness: { status: 'ready', allowedExercises: ['listening_mcq'] },
-      artifactIndex: {
-        audio_segment: [{ qualityStatus: 'approved', sourceRef: podcast.sourceRef }],
-        transcript_segment: [{ qualityStatus: 'approved', sourceRef: podcast.sourceRef }],
-        podcast_gist_prompt: [{ qualityStatus: 'approved', sourceRef: podcast.sourceRef }],
-      },
     })).toEqual(expect.objectContaining({
       status: 'resolved',
       plan: expect.objectContaining({ exerciseType: 'listening_mcq' }),
@@ -154,10 +123,6 @@ describe('exercise resolver', () => {
     expect(resolveExercise({
       capability: morphology,
       readiness: { status: 'ready', allowedExercises: ['typed_recall'] },
-      artifactIndex: {
-        root_derived_pair: [{ qualityStatus: 'approved', sourceRef: morphology.sourceRef }],
-        allomorph_rule: [{ qualityStatus: 'approved', sourceRef: morphology.sourceRef }],
-      },
     })).toEqual(expect.objectContaining({
       status: 'resolved',
       plan: expect.objectContaining({ exerciseType: 'typed_recall' }),
