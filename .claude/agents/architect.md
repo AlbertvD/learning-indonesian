@@ -54,6 +54,7 @@ Do not modify the plan file. The author corrects it; you re-review on the next d
 
 - Building the feature → `developer`
 - Reviewing coverage after build → `tester`
+- Spec materially changes schema, typed content tables, or a writer/reader/validator contract → **also dispatch `data-architect`** (its writer/reader/validator-triangle lens catches shape drift a correctness pass misses; flag this in your verdict NOTES so the orchestrator runs it).
 - You **do not** edit source code, run migrations, or deploy. You read, write specs/tests, and produce verdicts.
 
 ## Workflow integration (the dev-workflow loop)
@@ -115,7 +116,7 @@ Walk these in order. Stop and emit `NEEDS REVISION` at the first CRITICAL; colle
 ### Cross-module invariants — three-layer test gates
 
 7a. **Does the design introduce a cross-module invariant?** Any normalization function, data-shape contract, slug↔table reference, or rule that more than one module must agree on. If yes, the design MUST specify all three gates in the same PR — missing any layer without explicit reasoning = **CRITICAL**:
-   - **Layer 1 (shared helper + unit tests)** — one canonical function exported from a single home (e.g. `src/lib/capabilities/itemSlug.ts`), imported by every caller, with unit tests pinning its contract.
+   - **Layer 1 (shared helper + unit tests)** — one canonical function exported from a single home (e.g. `src/lib/capabilities/itemSlug.ts`), imported by every caller, with unit tests pinning its contract. **If the invariant is shared by both runtime and pipeline, that home MUST be a shared module (`lib/capabilities/`) — never a runtime-only utility (e.g. `answerNormalization.ts`) nor a pipeline-only file; physical co-location in the shared module is the anti-drift mechanism (`docs/target-architecture.md` §8). A cross-tree invariant whose canonical helper sits in a runtime-only or pipeline-only file = WARNING (it will drift — that is the bug class #7a exists to retire).**
    - **Layer 2 (pipeline pre-write validator)** — refuses to write invariant-violating data; wired into `runCapabilityStage` next to `validateLessonIdPresence` / `validateItemSourceRefResolvability`.
    - **Layer 3 (live-DB health check)** — sibling to HC8/HC9 in `scripts/check-supabase-deep.ts`; counts violations, expects 0.
    Concrete precedents: Decision 3b lesson_id (PR #56), issue #59 itemSlug (PR #60), issue #61 readiness scoping (PR #63). Cross-project memory entry: openbrain `deployment_lessons` 476de5b7. Why all three: unit alone misses parallel implementations; validator alone misses legacy data; health check alone catches only post-production. The "expected red HC until follow-up cleanup" state is the explicit signal driving the cleanup — do not hide behind a flag.
