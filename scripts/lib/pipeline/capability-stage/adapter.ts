@@ -1200,6 +1200,61 @@ export async function upsertLearningItemIdempotent(
   return { id: data.id, normalized_text: data.normalized_text }
 }
 
+// ---------------------------------------------------------------------------
+// DB-native POS read + write (Task 5a.4)
+// ---------------------------------------------------------------------------
+
+/**
+ * Read `pos` for a set of `normalized_text` values from `learning_items`.
+ * Returns a Map<normalized_text, pos|null>.  Items not found in the DB are
+ * absent from the map (not the same as pos=null).
+ *
+ * Used by the DB-native POS pass (runner step 5b+) to determine which items
+ * already have a valid pos and can skip the LLM classification.
+ */
+export async function fetchLearningItemPosByNormalizedText(
+  supabase: CapabilitySupabaseClient,
+  normalizedTexts: string[],
+): Promise<Map<string, string | null>> {
+  const result = new Map<string, string | null>()
+  if (normalizedTexts.length === 0) return result
+
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .from('learning_items')
+    .select('normalized_text, pos')
+    .in('normalized_text', normalizedTexts)
+  if (error) throw error
+
+  for (const row of (data ?? []) as Array<{ normalized_text: string; pos: string | null }>) {
+    result.set(row.normalized_text, row.pos ?? null)
+  }
+  return result
+}
+
+/**
+ * Write `pos` for a single `learning_items` row identified by `normalized_text`.
+ * This is the sole pos writer on the DB-native path (Task 5a.4).  Called once
+ * per item whose pos was null after insert and was classified by
+ * `enrichMissingPos`.
+ *
+ * The idempotent upsert in `upsertLearningItemIdempotent` preserves pos on
+ * UPDATE (never touches it), so this writer is the only thing that fills pos
+ * for newly-inserted items on the DB-native path.
+ */
+export async function updateLearningItemPos(
+  supabase: CapabilitySupabaseClient,
+  normalizedText: string,
+  pos: string,
+): Promise<void> {
+  const { error } = await supabase
+    .schema('indonesian')
+    .from('learning_items')
+    .update({ pos })
+    .eq('normalized_text', normalizedText)
+  if (error) throw error
+}
+
 /**
  * Skip-if-exists variant of upsertCapabilities for the item source_kind path.
  *

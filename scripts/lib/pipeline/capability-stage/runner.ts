@@ -70,6 +70,8 @@ import {
   upsertRecognitionDistractors,
   upsertCuedRecallDistractors,
   deleteItemDistractors,
+  fetchLearningItemPosByNormalizedText,
+  updateLearningItemPos,
   type CapabilityContentUnitInput,
   type CapabilityInput,
   type CapabilitySupabaseClient,
@@ -626,6 +628,64 @@ export async function runCapabilityStage(
       translation_text: plan.anchorContext.translation_text,
       source_lesson_id: input.lessonId,
     })
+  }
+
+  // ---- 5b+. DB-native POS backfill (Task 5a.4). -------------------------
+  // New items were just inserted with pos=null (projectItemsFromTypedRows
+  // hardcodes pos: null because TypedItemRow has no pos column).  This pass
+  // reads the current pos from the DB for each word/phrase item, classifies
+  // the null-pos subset via Claude (Haiku), and writes pos back with
+  // updateLearningItemPos — the sole pos writer on the DB-native path.
+  //
+  // Runs AFTER the item-insert loop (rows now exist) and gated by !dryRun
+  // (this whole write phase is past the dry-run early-return), mirroring the
+  // step-1b staging enrichPos block above.  The staging block still runs in 5a
+  // (removed in 5b) → both paths write the same pos value to the same rows →
+  // inert double write acceptable during the additive phase.
+  {
+    const wordPhrasePlans = itemProjection.perItemPlans.filter(
+      (p) => p.learningItemInput.item_type === 'word' || p.learningItemInput.item_type === 'phrase',
+    )
+    if (wordPhrasePlans.length > 0) {
+      const normalizedTexts = wordPhrasePlans.map((p) => p.normalizedText)
+      const posMap = await fetchLearningItemPosByNormalizedText(supabase, normalizedTexts)
+
+      // Build PosEnrichmentItem[] feeding the existing pure enrichMissingPos.
+      // Items with a valid DB pos are passed with that pos → enrichMissingPos
+      // skips them (no LLM reclassification).  Items with null pos → classified.
+      const enrichmentItems = wordPhrasePlans.map((p) => ({
+        base_text: p.learningItemInput.base_text,
+        item_type: p.learningItemInput.item_type as 'word' | 'phrase',
+        translation_nl: p.learningItemInput.translation_nl ?? null,
+        translation_en: p.learningItemInput.translation_en ?? null,
+        pos: posMap.get(p.normalizedText) ?? null,
+      }))
+
+      // Count what was ALREADY populated up front (valid DB pos) so the log can
+      // separate it from a classification gap — never fold a failed/invalid
+      // classification into "already populated".  This log line is the
+      // human-readable signal the 5a.7 parity gate + the B2 handoff lock lean
+      // on to confirm new word/phrase items land non-null pos.
+      const alreadyPopulated = enrichmentItems.filter(
+        (i) => typeof i.pos === 'string' && i.pos.trim() !== '',
+      ).length
+
+      const dbPosResult = await enrichMissingPos(enrichmentItems)
+      let dbPosWritten = 0
+      for (const [baseText, pos] of dbPosResult.posByBaseText) {
+        const normalizedText = itemSlug(baseText)
+        await updateLearningItemPos(supabase, normalizedText, pos)
+        dbPosWritten++
+      }
+      // Items that needed classification but got no valid POS (LLM gap / invalid
+      // tag / skipped-because-no-API-key) — these publish with pos still null.
+      const stillNull = wordPhrasePlans.length - alreadyPopulated - dbPosWritten
+      console.log(
+        `   ✓ DB-native POS: classified ${dbPosWritten}, already populated ${alreadyPopulated}` +
+          (dbPosResult.invalidCount > 0 ? `, ${dbPosResult.invalidCount} invalid` : '') +
+          (stillNull > 0 ? `, ⚠ ${stillNull} still null` : ''),
+      )
+    }
   }
 
   // Write item caps via skip-if-exists. Returns only newly-inserted rows;
