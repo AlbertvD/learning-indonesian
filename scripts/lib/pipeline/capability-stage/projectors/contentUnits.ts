@@ -8,8 +8,8 @@
  *   The six identity fields (content_unit_key, unit_slug, source_ref,
  *   source_section_ref, unit_kind, display_order) MUST be byte-identical to
  *   `buildContentUnitsFromStaging`'s output for equivalent word/phrase items,
- *   lesson sections, grammar categories, and affixed pairs. A later parity gate
- *   (5b) asserts set-equality against the staging builder.
+ *   lesson sections, and affixed pairs. A later parity gate (5b) asserts
+ *   set-equality against the staging builder.
  *
  * INTENTIONAL DIVERGENCES from staging builder:
  *   (a) Inputs come from DB shapes, not staging file shapes.
@@ -18,6 +18,14 @@
  *   (c) payload_json is always {} — Decision E retires this column (it is
  *       unread; the column drop is deferred to a later migration). The staging
  *       builder populated payload_json with title/baseText/etc.
+ *   (d) Grammar units are keyed from PatternPlan output (NOT re-derived from
+ *       category titles). The pattern path's collision tie-break and
+ *       normalizeLessonSourceRef wrap are applied by projectPatternsFromCategories;
+ *       this builder consumes the final .slug / .sourceRef verbatim so that
+ *       content_unit.source_ref == capability.source_ref by construction.
+ *       This is the Decision E amendment (2026-06-04, data-architect-validated):
+ *       an intended re-key (curated-slug → pattern-path l{N}-… slug); the old
+ *       curated-slug grammar units are swept in 5b.10.
  *
  * Key-formula parity with staging builder
  * (content-pipeline-output.ts:103-314):
@@ -26,43 +34,33 @@
  *   - item source_ref  = `learning_items/{itemSlug(indonesian_text)}`
  *   - item unit_slug   = `item-{stableSlug(indonesian_text)}`
  *   - item section_ref = `{lessonRef}/section-{dialogue|vocabulary}` (section_kind)
- *   - grammar slug     = `pattern-{stableSlug(category.title)}`
- *   - grammar ref      = `{lessonRef}/pattern-{stableSlug(category.title)}`
+ *   - grammar slug     = `pattern-${plan.slug}` (plan from projectPatternsFromCategories)
+ *   - grammar ref      = plan.sourceRef (== capability.source_ref, collision-disambiguated)
  *   - affixed slug     = `morphology-{stableSlug(lastSegment(source_ref))}` where
  *                        lastSegment = the part after `/morphology/`
  *
  * Exported: `buildContentUnitsFromDb`, `ContentUnitsDbInput`
- * * No disk I/O — no fs import, no staging-file reads.
+ * No disk I/O — no fs import, no staging-file reads.
  */
 
 import {
   stableSlug,
   sourceRefForLearningItem,
+  contentUnitKey,
+  sourceRefForLesson,
   type StagingContentUnit,
 } from '../../../content-pipeline-output'
 
 import type { LoadedLessonSection } from '../loader'
-import type { TypedItemRow, TypedGrammarCategory, TypedAffixedPair } from '../loadFromDb'
+import type { TypedItemRow, TypedAffixedPair } from '../loadFromDb'
+import type { PatternPlan } from './grammar'
 
 // ---------------------------------------------------------------------------
-// Internal helpers (mirrors content-pipeline-output.ts private helpers)
+// Internal helpers
 // ---------------------------------------------------------------------------
 
-function sourceRefForLesson(lessonNumber: number): string {
-  return `lesson-${lessonNumber}`
-}
-
-function grammarSourceRef(lessonNumber: number, slug: string): string {
-  return `${sourceRefForLesson(lessonNumber)}/pattern-${slug}`
-}
-
-function contentUnitKey(input: {
-  sourceRef: string
-  sourceSectionRef: string
-  unitSlug: string
-}): string {
-  return `${input.sourceRef}::${input.sourceSectionRef}::${input.unitSlug}`
-}
+// contentUnitKey + sourceRefForLesson are imported from content-pipeline-output.ts
+// (one home for the key formula — byte-identity with the staging builder).
 
 /**
  * Derive the slug segment for an affixed pair from its source_ref.
@@ -101,8 +99,17 @@ export interface ContentUnitsDbInput {
   sections: LoadedLessonSection[]
   /** From loadFromDb — TypedItemRow[]; word/phrase only will be emitted */
   itemRows: TypedItemRow[]
-  /** From loadPatternFromDb — TypedGrammarCategory[] */
-  grammarCategories: TypedGrammarCategory[]
+  /**
+   * From projectPatternsFromCategories — PatternPlan[].
+   *
+   * Grammar units consume the plan's final .slug and .sourceRef verbatim so
+   * content_unit.source_ref == capability.source_ref by construction, including
+   * the collision tie-break (-{display_order} suffix) and normalizeLessonSourceRef
+   * wrap that projectPatternsFromCategories applies. Do NOT pass raw
+   * TypedGrammarCategory[] here — that would re-derive the slug naively and
+   * diverge on any collision.
+   */
+  patternPlans: PatternPlan[]
   /** From loadAffixedFromDb — TypedAffixedPair[] */
   affixedPairs: TypedAffixedPair[]
 }
@@ -116,7 +123,7 @@ export interface ContentUnitsDbInput {
 export function buildContentUnitsFromDb(
   input: ContentUnitsDbInput,
 ): StagingContentUnit[] {
-  const { lessonNumber, sections, itemRows, grammarCategories, affixedPairs } = input
+  const { lessonNumber, sections, itemRows, patternPlans, affixedPairs } = input
   const lessonSourceRef = sourceRefForLesson(lessonNumber)
   const units: StagingContentUnit[] = []
 
@@ -167,20 +174,25 @@ export function buildContentUnitsFromDb(
     itemIndex++
   }
 
-  // --- Grammar patterns ---
-  grammarCategories.forEach((category, index) => {
-    const slug = stableSlug(category.title)
-    const sourceRef = grammarSourceRef(lessonNumber, slug)
+  // --- Grammar patterns (Decision E amendment: consume PatternPlan, not re-derived slug) ---
+  //
+  // plan.slug is collision-disambiguated (e.g. 'l3-ontkenning-0' when two
+  // categories share stableSlug(title)) and plan.sourceRef is
+  // normalizeLessonSourceRef-wrapped — both match the capability's source_ref
+  // exactly. Using stableSlug(category.title) directly would diverge on any
+  // collision, producing a unit whose source_ref does NOT match the capability.
+  patternPlans.forEach((plan, index) => {
+    const unitSlug = `pattern-${plan.slug}`
     units.push({
       content_unit_key: contentUnitKey({
-        sourceRef,
+        sourceRef: plan.sourceRef,
         sourceSectionRef: `${lessonSourceRef}/section-grammar`,
-        unitSlug: `pattern-${slug}`,
+        unitSlug,
       }),
-      source_ref: sourceRef,
+      source_ref: plan.sourceRef,
       source_section_ref: `${lessonSourceRef}/section-grammar`,
       unit_kind: 'grammar_pattern',
-      unit_slug: `pattern-${slug}`,
+      unit_slug: unitSlug,
       display_order: 2000 + index,
       payload_json: {},
       source_fingerprint: '',
