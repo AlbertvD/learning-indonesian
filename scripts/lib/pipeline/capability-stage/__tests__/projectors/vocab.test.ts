@@ -8,6 +8,7 @@ import {
   type VocabStagingClozeContext,
 } from '../../projectors/vocab'
 import type { TypedItemRow } from '../../loadFromDb'
+import type { AudioClipMeta } from '../../adapter'
 
 const baseItem = (overrides: Partial<VocabStagingItem>): VocabStagingItem => ({
   base_text: 'halo',
@@ -400,5 +401,137 @@ describe('projectItemsFromTypedRows — pure item projector from typed DB rows',
     ]
     const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
     expect(out.perItemPlans[0].anchorContext.context_type).toBe('lesson_snippet')
+  })
+})
+
+
+// ---------------------------------------------------------------------------
+// Task 5a.1: projectItemsFromTypedRows — audio cap emission
+// ---------------------------------------------------------------------------
+
+describe('projectItemsFromTypedRows — audio cap emission (Task 5a.1)', () => {
+  const audioMap = new Map<string, AudioClipMeta>([
+    ['halo', { storage_path: 'lesson-4/halo.mp3', voice_id: 'Achird' }],
+  ])
+
+  it('emits 4 caps when item normalized_text is NOT in audioClipsByNormalizedText', () => {
+    const rows: TypedItemRow[] = [baseTypedRow({})] // 'Halo' → normalizeTtsText → 'halo'
+    const noAudioMap = new Map<string, AudioClipMeta>() // empty — no audio
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: noAudioMap })
+    expect(out.perItemPlans[0].capabilities).toHaveLength(4)
+    const capTypes = out.perItemPlans[0].capabilities.map((c) => c.capabilityType).sort()
+    expect(capTypes).toEqual(['form_recall', 'l1_to_id_choice', 'meaning_recall', 'text_recognition'])
+  })
+
+  it('emits 4 caps when audioClipsByNormalizedText is not provided (backward compat)', () => {
+    const rows: TypedItemRow[] = [baseTypedRow({})]
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
+    expect(out.perItemPlans[0].capabilities).toHaveLength(4)
+  })
+
+  it('emits 6 caps (4 base + audio_recognition + dictation) when item IS in audio map', () => {
+    const rows: TypedItemRow[] = [baseTypedRow({})] // indonesian_text: 'Halo' → normalizeTtsText → 'halo'
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: audioMap })
+    expect(out.perItemPlans[0].capabilities).toHaveLength(6)
+    const capTypes = out.perItemPlans[0].capabilities.map((c) => c.capabilityType).sort()
+    expect(capTypes).toContain('audio_recognition')
+    expect(capTypes).toContain('dictation')
+  })
+
+  it('audio caps have correct sourceKind, sourceRef, and lessonId', () => {
+    const rows: TypedItemRow[] = [baseTypedRow({})] // 'Halo' → normalized 'halo'
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: audioMap })
+    const caps = out.perItemPlans[0].capabilities
+    const audioCaps = caps.filter((c) => c.capabilityType === 'audio_recognition' || c.capabilityType === 'dictation')
+    expect(audioCaps).toHaveLength(2)
+    for (const cap of audioCaps) {
+      expect(cap.sourceKind).toBe('item')
+      expect(cap.sourceRef).toBe('learning_items/halo')
+      expect(cap.lessonId).toBe('lesson-uuid-1')
+      expect(cap.modality).toBe('audio')
+    }
+  })
+
+  it('audio_recognition has direction=audio_to_l1 and learnerLanguage=nl (first meaning)', () => {
+    // Staging path (capabilityCatalog.ts:98): learnerLanguage = item.meanings[0].language
+    // Typed-row path: l1_translation is always NL → learnerLanguage = 'nl'
+    const rows: TypedItemRow[] = [baseTypedRow({})]
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: audioMap })
+    const audioCap = out.perItemPlans[0].capabilities.find((c) => c.capabilityType === 'audio_recognition')!
+    expect(audioCap.direction).toBe('audio_to_l1')
+    expect(audioCap.modality).toBe('audio')
+    expect(audioCap.learnerLanguage).toBe('nl')
+  })
+
+  it('dictation has direction=audio_to_id and learnerLanguage=none', () => {
+    // Staging path (capabilityCatalog.ts:106): learnerLanguage hardcoded 'none' for dictation
+    const rows: TypedItemRow[] = [baseTypedRow({})]
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: audioMap })
+    const dictCap = out.perItemPlans[0].capabilities.find((c) => c.capabilityType === 'dictation')!
+    expect(dictCap.direction).toBe('audio_to_id')
+    expect(dictCap.modality).toBe('audio')
+    expect(dictCap.learnerLanguage).toBe('none')
+  })
+
+  it('pinned exact canonical_key literals for audio caps — parity gate with staging path', () => {
+    // CRITICAL: These keys must be byte-identical to what capabilityCatalog.ts
+    // emits for the same item. retireOrphanedCapabilities keys on canonical_key;
+    // any drift here would double-write/orphan caps at the 5b cutover.
+    // capabilityCatalog.ts:96 — audio_recognition sourceRef = learning_items/<itemSlug(base_text)>
+    // where the snapshot id = itemSlug(item.base_text) = 'halo' (from 'Halo')
+    const rows: TypedItemRow[] = [baseTypedRow({})] // indonesian_text: 'Halo' → sourceRef: 'learning_items/halo'
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: audioMap })
+    const caps = out.perItemPlans[0].capabilities
+    const byType = Object.fromEntries(caps.map((c) => [c.capabilityType, c.canonicalKey]))
+
+    // Build expected keys via buildCanonicalKey (same function staging path uses)
+    const sourceRef = 'learning_items/halo'
+    const expectedAudioRecognition = buildCanonicalKey({
+      sourceKind: 'item',
+      sourceRef,
+      capabilityType: 'audio_recognition',
+      direction: 'audio_to_l1',
+      modality: 'audio',
+      learnerLanguage: 'nl',
+    })
+    const expectedDictation = buildCanonicalKey({
+      sourceKind: 'item',
+      sourceRef,
+      capabilityType: 'dictation',
+      direction: 'audio_to_id',
+      modality: 'audio',
+      learnerLanguage: 'none',
+    })
+
+    expect(byType['audio_recognition']).toBe(expectedAudioRecognition)
+    expect(byType['dictation']).toBe(expectedDictation)
+    // Literal pin (belt + suspenders)
+    expect(byType['audio_recognition']).toBe('cap:v1:item:learning_items/halo:audio_recognition:audio_to_l1:audio:nl')
+    expect(byType['dictation']).toBe('cap:v1:item:learning_items/halo:dictation:audio_to_id:audio:none')
+  })
+
+  it('item NOT in audio map gets 4 caps; item IN audio map gets 6 caps — mixed batch', () => {
+    const rows: TypedItemRow[] = [
+      baseTypedRow({ id: 'r1', indonesian_text: 'Halo', l1_translation: 'Hallo' }), // in map
+      baseTypedRow({ id: 'r2', source_item_ref: 'lesson-4/section-1/item-1', indonesian_text: 'Makan', l1_translation: 'Eten' }), // NOT in map
+    ]
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: audioMap })
+    const halo = out.perItemPlans.find((p) => p.normalizedText === 'halo')!
+    const makan = out.perItemPlans.find((p) => p.normalizedText === 'makan')!
+    expect(halo.capabilities).toHaveLength(6)
+    expect(makan.capabilities).toHaveLength(4)
+  })
+
+  it('audio cap lookup uses normalizeTtsText (lower + trim + collapse whitespace) on indonesian_text', () => {
+    // The audio_clips table is keyed by normalizeTtsText(text) (see tts-normalize.ts).
+    // An item with mixed-case indonesian_text must match the lowercase key.
+    const mapWithLowercaseKey = new Map<string, AudioClipMeta>([
+      ['selamat pagi', { storage_path: 'lesson-4/selamat-pagi.mp3', voice_id: 'Orus' }],
+    ])
+    const rows: TypedItemRow[] = [
+      baseTypedRow({ indonesian_text: 'Selamat pagi', l1_translation: 'Goedemorgen' }),
+    ]
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: mapWithLowercaseKey })
+    expect(out.perItemPlans[0].capabilities).toHaveLength(6)
   })
 })
