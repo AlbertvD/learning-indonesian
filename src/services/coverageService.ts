@@ -5,12 +5,12 @@
 // the table renderers in SectionCoverage.tsx + ExerciseCoverage.tsx consume —
 // keep it stable when refactoring.
 //
-// Reads internal pipeline tables (item_contexts, item_meanings, lesson_sections,
-// grammar_patterns, item_context_grammar_patterns, and the 4 typed
-// grammar-exercise tables). exercise_variants is NO LONGER read here (Slice 2
-// Task 8 — grammar exercises moved to the typed tables; the
-// noExerciseVariantsReader enforcement test guards this). RLS gates this for
-// non-admins, and the pages additionally wrap themselves in <AdminGuard>.
+// Reads internal pipeline tables (item_contexts, learning_items, lesson_sections,
+// grammar_patterns, and the 4 typed grammar-exercise tables). exercise_variants is
+// NO LONGER read here (Slice 2 Task 8). Slice 4a: item_meanings (→ learning_items.
+// translation_nl, Decision R) and item_context_grammar_patterns (→ grammar_patterns.
+// introduced_by_lesson_id) are no longer read — both tables are dropped this slice.
+// RLS gates this for non-admins, and the pages additionally wrap themselves in <AdminGuard>.
 
 import { supabase } from '@/lib/supabase'
 
@@ -79,15 +79,15 @@ export async function getExerciseCoverage(): Promise<LessonExerciseCoverage[]> {
   const [
     { data: lessons, error: lessonsError },
     { data: contexts, error: ctxError },
-    { data: meanings, error: meaningsError },
-    { data: grammarLinks, error: grammarError },
+    { data: translatedItems, error: translatedError },
     { data: grammarPatternsByLesson, error: gpLessonError },
     ...typedResults
   ] = await Promise.all([
     supabase.schema('indonesian').from('lessons').select('id, order_index, title').order('order_index'),
     supabase.schema('indonesian').from('item_contexts').select('id, source_lesson_id, learning_item_id, context_type'),
-    supabase.schema('indonesian').from('item_meanings').select('learning_item_id'),
-    supabase.schema('indonesian').from('item_context_grammar_patterns').select('context_id, grammar_pattern_id'),
+    // Slice 4a (Decision R): hasMeanings is sourced from learning_items.translation_nl,
+    // not the retired item_meanings table. An item "has a meaning" iff it carries a translation.
+    supabase.schema('indonesian').from('learning_items').select('id').not('translation_nl', 'is', null),
     supabase.schema('indonesian').from('grammar_patterns').select('id, introduced_by_lesson_id').not('introduced_by_lesson_id', 'is', null),
     // Grammar exercises now live in the 4 typed tables (each carries lesson_id +
     // grammar_pattern_id), NOT exercise_variants. Vocab exercises are
@@ -99,8 +99,7 @@ export async function getExerciseCoverage(): Promise<LessonExerciseCoverage[]> {
 
   if (lessonsError) throw lessonsError
   if (ctxError) throw ctxError
-  if (meaningsError) throw meaningsError
-  if (grammarError) throw grammarError
+  if (translatedError) throw translatedError
   if (gpLessonError) throw gpLessonError
   // Typed grammar-exercise rows, paired with their exercise_type.
   const typedExercises: Array<{ lesson_id: string; grammar_pattern_id: string; type: string }> = []
@@ -112,14 +111,8 @@ export async function getExerciseCoverage(): Promise<LessonExerciseCoverage[]> {
     }
   })
 
-  // Build lookup: context_id → source_lesson_id
-  const contextToLesson = new Map<string, string>()
-  for (const ctx of contexts ?? []) {
-    if (ctx.source_lesson_id) contextToLesson.set(ctx.id, ctx.source_lesson_id)
-  }
-
-  // Build lookup: learning_item_id → has meaning
-  const meaningItemIds = new Set((meanings ?? []).map(m => m.learning_item_id))
+  // Build lookup: learning_item_id → has a translation (Decision R)
+  const translatedItemIds = new Set((translatedItems ?? []).map(it => it.id))
 
   // Initialise coverage map
   const coverageMap = new Map<string, LessonExerciseCoverage>()
@@ -155,25 +148,16 @@ export async function getExerciseCoverage(): Promise<LessonExerciseCoverage[]> {
     const cov = coverageMap.get(lessonId)
     if (!cov) continue
     cov.learningItems = itemIds.size
-    cov.hasMeanings = [...itemIds].some(id => meaningItemIds.has(id))
+    cov.hasMeanings = [...itemIds].some(id => translatedItemIds.has(id))
   }
 
   // Grammar patterns per lesson:
-  //   Path A (vocab lessons): item_context_grammar_patterns → item_contexts.source_lesson_id
   //   Path B (grammar exercises): the 4 typed exercise tables' lesson_id + grammar_pattern_id
   //   Path C: grammar_patterns.introduced_by_lesson_id (direct lesson link at publish time)
+  // Slice 4a: the legacy Path A (item_context_grammar_patterns junction) was removed —
+  // the table is dropped this slice; it had 0 live rows and was fully subsumed by Path C
+  // (introduced_by_lesson_id), the authoritative direct link, once its writer retired (Slice 2).
   const lessonGrammarPatterns = new Map<string, Set<string>>()
-
-  // Path A junction is LEGACY-ONLY after Slice 2 Task 9: publish-grammar-candidates.ts
-  // (its sole writer) was retired, so no new item_context_grammar_patterns rows are
-  // created. Surviving legacy rows still count here; new patterns are covered by
-  // Path C (introduced_by_lesson_id), the authoritative direct link.
-  for (const link of grammarLinks ?? []) {
-    const lessonId = contextToLesson.get(link.context_id)
-    if (!lessonId) continue
-    if (!lessonGrammarPatterns.has(lessonId)) lessonGrammarPatterns.set(lessonId, new Set())
-    lessonGrammarPatterns.get(lessonId)!.add(link.grammar_pattern_id)
-  }
 
   for (const ex of typedExercises) {
     if (ex.lesson_id && ex.grammar_pattern_id) {

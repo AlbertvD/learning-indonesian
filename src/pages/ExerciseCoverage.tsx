@@ -32,7 +32,7 @@ const ROWS: RowDef[] = [
     getValue: c => ({ ok: c.learningItems > 0, count: c.learningItems }),
   },
   {
-    label: 'item_meanings in DB',
+    label: 'items with translations (learning_items.translation_nl)',
     getValue: c => ({ ok: c.hasMeanings }),
   },
   {
