@@ -1937,6 +1937,32 @@ drop table if exists indonesian.lesson_block_reading_section cascade;
 drop table if exists indonesian.lesson_blocks cascade;
 
 -- ============================================================
+-- Slice 4b (#102, 2026-06-04) — drop capability_artifacts (Decision A)
+-- ============================================================
+-- The generic capability_artifacts bag is retired: per-content-concept structure
+-- now lives in the typed satellite tables (dialogue_clozes / affixed_form_pairs /
+-- the 4 grammar-exercise tables / capability_audio_refs), and readiness derives
+-- from RENDER_CONTRACTS routing instead of an artifact bag. All readers/writers
+-- were retired code-first (PR #152 first commit); deploy ordering is code-first
+-- (recreate container BEFORE `make migrate`) — the live session-builder path read
+-- this table until the new code ships.
+--
+-- W1 wrinkle: capability_artifacts' CREATE TABLE lives only in the standalone
+-- paper-trail file scripts/migrations/2026-04-25-capability-core.sql (not applied
+-- by `make migrate`); migration.sql held only the FK ALTER (block "3b" below,
+-- removed in this PR). The DROP is authored here; CASCADE is belt-and-braces (the
+-- only FK was capability_artifacts.capability_id -> learning_capabilities; the
+-- exercise_review_comments FK was already resolved in Slice 2).
+drop table if exists indonesian.capability_artifacts cascade;
+
+-- learning_capabilities.required_artifacts: the readiness dependency is retired
+-- (validateCapability is now artifact-free). The additive add-column block (PR 0
+-- §3.2-extension) is removed in this PR; this drop clears the column from the
+-- live DB. Idempotent: drop-if-exists no-ops on rerun / fresh rebuild.
+alter table indonesian.learning_capabilities
+  drop column if exists required_artifacts;
+
+-- ============================================================
 -- Lesson-stage Phase 1 (2026-05-09) — content.type CHECK constraint (GT5)
 -- ============================================================
 -- Source-of-truth column for lesson_sections.content.type. Validator GT5
@@ -2031,13 +2057,8 @@ alter table indonesian.capability_aliases
     foreign key (new_capability_id) references indonesian.learning_capabilities(id)
     on delete cascade;
 
--- 3b. capability_artifacts.capability_id
-alter table indonesian.capability_artifacts
-  drop constraint if exists capability_artifacts_capability_id_fkey;
-alter table indonesian.capability_artifacts
-  add constraint capability_artifacts_capability_id_fkey
-    foreign key (capability_id) references indonesian.learning_capabilities(id)
-    on delete cascade;
+-- 3b. capability_artifacts.capability_id — removed in Slice 4b (#102); the
+--     table is dropped in the teardown section above.
 
 -- 3c. learner_capability_state.capability_id
 alter table indonesian.learner_capability_state
@@ -2098,39 +2119,10 @@ end $$;
 comment on column indonesian.learning_capabilities.prerequisite_keys is
   'Canonical-key array of capabilities that must be active before this one can be introduced. Replaces metadata_json.prerequisiteKeys (decision A).';
 
--- §3.2-extension — Add learning_capabilities.required_artifacts (additive).
--- Decision F (target-arch) said drop+derive, but affixed_form_pair caps have
--- conditional artifacts (±allomorph_rule) that aren't derivable from
--- capability_type alone — the writer at capabilityCatalog.ts:178-180 branches
--- on pair.allomorphRule, and the DB row is the only place that knowledge
--- survives. Promoting to a typed column preserves the writer/reader/validator
--- triangle cleanly (CLAUDE.md content-pipeline discipline). Backfill mirrors
--- the prerequisite_keys pattern above. Drop of metadata_json (Step 6) happens
--- AFTER all writers + readers switch to this column.
-alter table indonesian.learning_capabilities
-  add column if not exists required_artifacts text[] not null default '{}';
-
-do $$
-begin
-  if exists (
-    select 1 from information_schema.columns
-    where table_schema = 'indonesian'
-      and table_name = 'learning_capabilities'
-      and column_name = 'metadata_json'
-  ) then
-    update indonesian.learning_capabilities
-       set required_artifacts = coalesce(
-         array(select jsonb_array_elements_text(metadata_json->'requiredArtifacts')),
-         '{}'::text[]
-       )
-     where required_artifacts = '{}'
-       and metadata_json is not null
-       and metadata_json ? 'requiredArtifacts';
-  end if;
-end $$;
-
-comment on column indonesian.learning_capabilities.required_artifacts is
-  'ArtifactKind[] this cap_type needs beyond what the exercise contract declares. Replaces metadata_json.requiredArtifacts. Decision F (revised 2026-05-22): kept as a column because affixed_form_pair caps have conditional requirements (±allomorph_rule) that are not derivable from capability_type alone.';
+-- §3.2-extension — learning_capabilities.required_artifacts was added here in
+-- PR 0 (Decision F revised), then RETIRED in Slice 4b (#102): readiness no longer
+-- reads an artifact bag. The add-column + backfill blocks are removed; the column
+-- is dropped in the Slice 4b teardown section above.
 
 -- §3.5 — lesson_speakers table (replaces lessons.dialogue_voices jsonb).
 -- Decision J: per-lesson speaker→voice mapping, flattened from the bag-of-keys

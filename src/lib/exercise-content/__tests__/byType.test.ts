@@ -58,7 +58,6 @@ function makeBlock(): SessionBlock {
       exerciseType: 'recognition_mcq',
       capabilityType: 'text_recognition',
       skillType: 'recognition',
-      requiredArtifacts: [],
     },
     reviewContext: {
       schedulerSnapshot: {} as never,
@@ -92,7 +91,6 @@ function baseInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorInpu
     meanings: [makeMeaning('einde')],
     contexts: [],
     answerVariants: [],
-    artifactsByKind: new Map(),
     poolItems: pool.items,
     poolMeaningsByItem: pool.meaningsByItem,
     userLanguage: 'nl',

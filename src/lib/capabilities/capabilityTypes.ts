@@ -221,7 +221,7 @@ export interface LearningCapabilityRow {
   publication_status: CapabilityPublicationStatus
   lesson_id: string | null
   prerequisite_keys: string[]
-  required_artifacts: ArtifactKind[]
+  // required_artifacts dropped in Slice 4b (#102) — readiness is artifact-free.
   created_at?: string
   updated_at?: string
 }

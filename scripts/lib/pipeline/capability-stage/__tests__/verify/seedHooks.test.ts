@@ -57,7 +57,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
         contentUnits: 10,
         grammarPatterns: 5,
         capabilities: 0,
-        capabilityArtifacts: 0,
         learningItems: 0,
         exerciseVariants: 3,
         clozeContexts: 0,
@@ -80,7 +79,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
         contentUnits: 10,
         grammarPatterns: 5,
         capabilities: 0,
-        capabilityArtifacts: 0,
         learningItems: 0,
         exerciseVariants: 3,
         clozeContexts: 0,
@@ -104,7 +102,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
         contentUnits: 10,
         grammarPatterns: 5,
         capabilities: 0,
-        capabilityArtifacts: 0,
         learningItems: 0,
         exerciseVariants: 3,
         clozeContexts: 0,
@@ -139,7 +136,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
         contentUnits: 112,
         grammarPatterns: 0,
         capabilities: 0,
-        capabilityArtifacts: 0,
         learningItems: 0,
         exerciseVariants: 0,
         clozeContexts: 0,
@@ -164,7 +160,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
         contentUnits: 0,
         grammarPatterns: 0,
         capabilities: 10,
-        capabilityArtifacts: 0,
         learningItems: 0,
         exerciseVariants: 0,
         clozeContexts: 0,
@@ -176,59 +171,6 @@ describe('CS7 countParity — db_count >= declaredCount per #21', () => {
     expect(findings[0].context?.table).toBe('learning_capabilities')
   })
 
-  it('verifies capability_artifacts via capability_id membership', async () => {
-    const capabilityIds = Array.from({ length: 5 }, (_, i) => `cap-${i}`)
-    // 25 artifacts, all attached to one of our capabilities.
-    const artifacts = Array.from({ length: 25 }, (_, i) => ({
-      capability_id: capabilityIds[i % capabilityIds.length],
-    }))
-    const supabase = buildMockSupabase({
-      // Capabilities all present, so that check passes too.
-      learning_capabilities: { rows: capabilityIds.map((id) => ({ id })) },
-      capability_artifacts: { rows: artifacts },
-    })
-    const findings = await runCountParity(supabase, {
-      lessonId: 'lesson-9-uuid',
-      declared: {
-        contentUnits: 0,
-        grammarPatterns: 0,
-        capabilities: 5,
-        capabilityArtifacts: 25,
-        learningItems: 0,
-        exerciseVariants: 0,
-        clozeContexts: 0,
-      },
-      contentUnitIds: [],
-      capabilityIds,
-    })
-    expect(findings).toEqual([])
-  })
-
-  it('flags capability_artifacts when DB has fewer than declared', async () => {
-    const capabilityIds = ['cap-0', 'cap-1']
-    const supabase = buildMockSupabase({
-      learning_capabilities: { rows: capabilityIds.map((id) => ({ id })) },
-      // Only 3 artifacts in DB but 10 were declared.
-      capability_artifacts: {
-        rows: Array.from({ length: 3 }, (_, i) => ({ capability_id: capabilityIds[i % 2] })),
-      },
-    })
-    const findings = await runCountParity(supabase, {
-      lessonId: 'lesson-9-uuid',
-      declared: {
-        contentUnits: 0,
-        grammarPatterns: 0,
-        capabilities: 2,
-        capabilityArtifacts: 10,
-        learningItems: 0,
-        exerciseVariants: 0,
-        clozeContexts: 0,
-      },
-      contentUnitIds: [],
-      capabilityIds,
-    })
-    expect(findings.some((f) => f.context?.table === 'capability_artifacts')).toBe(true)
-  })
 })
 
 describe('CS8 contentNonEmpty — required field presence checks per #22', () => {
@@ -237,7 +179,6 @@ describe('CS8 contentNonEmpty — required field presence checks per #22', () =>
     const findings = await runContentNonEmpty(supabase, {
       contentUnitIds: [],
       capabilityIds: [],
-      capabilityArtifactIds: [],
       learningItemIds: [],
       exerciseVariantIds: [],
       grammarPatternIds: [],
@@ -256,7 +197,6 @@ describe('CS8 contentNonEmpty — required field presence checks per #22', () =>
     const findings = await runContentNonEmpty(supabase, {
       contentUnitIds: [],
       capabilityIds: ['cap-1'],
-      capabilityArtifactIds: [],
       learningItemIds: [],
       exerciseVariantIds: [],
       grammarPatternIds: [],

@@ -2,6 +2,11 @@
 /**
  * migrate-typed-tables-pr3-affixed-form-pair.ts
  *
+ * ⚠️ ALREADY EXECUTED — DO NOT RE-RUN. This one-shot bridge reads the legacy
+ * `capability_artifacts` table, which was DROPPED in Slice 4b (#102). Re-running
+ * it post-drop returns a PGRST205 "table not found" runtime error. Retained as a
+ * paper-trail record of the PR 3 migration only.
+ *
  * One-shot bridge for PR 3 — moves affixed_form_pair content from the legacy
  * 2-artifact shape (`capability_artifacts` rows for `root_derived_pair` +
  * `allomorph_rule`) into the typed satellite table `affixed_form_pairs`.

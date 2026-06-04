@@ -12,10 +12,6 @@
  *     The runner has the UUIDs returned by the upsert calls, so the
  *     check is "are these N IDs present?" — no need to filter by
  *     source_ref or walk a junction.
- *   - `capability_artifacts`: verify by `capability_id` membership.
- *     The upsert doesn't return artifact IDs today, but every artifact
- *     references one of the capabilities we just wrote — so counting
- *     `artifacts where capability_id in (capabilityIds)` is correct.
  *   - `grammar_patterns`: keep the column-keyed query — patterns are
  *     genuinely lesson-scoped via `introduced_by_lesson_id`.
  *   - `exercise_variants`: keep the existing lesson_id-keyed check.
@@ -42,7 +38,6 @@ export interface CountParityInput {
     contentUnits: number
     grammarPatterns: number
     capabilities: number
-    capabilityArtifacts: number
     learningItems: number
     exerciseVariants: number
     clozeContexts: number
@@ -71,14 +66,6 @@ export async function runCountParity(
   const capabilitiesCount = await countRowsByIds(supabase, 'learning_capabilities', 'id', input.capabilityIds)
   if (capabilitiesCount < input.declared.capabilities) {
     findings.push(parityFinding('learning_capabilities', input.declared.capabilities, capabilitiesCount))
-  }
-
-  // capability_artifacts: count rows whose capability_id is one we just
-  // upserted. Artifacts have no lesson column; capability membership is the
-  // proxy. >= declared catches missing rows; passes on re-runs.
-  const artifactsCount = await countRowsByIds(supabase, 'capability_artifacts', 'capability_id', input.capabilityIds)
-  if (artifactsCount < input.declared.capabilityArtifacts) {
-    findings.push(parityFinding('capability_artifacts', input.declared.capabilityArtifacts, artifactsCount))
   }
 
   // grammar_patterns: keyed by introduced_by_lesson_id.

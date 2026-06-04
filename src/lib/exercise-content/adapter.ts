@@ -16,7 +16,6 @@
 import type { SessionBlock } from '@/lib/session-builder'
 import {
   CAPABILITY_SOURCE_KINDS,
-  type ArtifactKind,
   type CapabilitySourceKind,
   type CapabilityRenderContext,
   type ResolutionDiagnostic,
@@ -302,31 +301,6 @@ export interface SupabaseSchemaClient {
   schema(schema: 'indonesian'): {
     from(table: string): any
   }
-}
-
-export interface CapabilityArtifactRow {
-  capability_id: string
-  artifact_kind: ArtifactKind
-  quality_status: string
-  artifact_json: unknown
-}
-
-// ─── Shared artifact fetch (used by every per-kind fetcher) ─────────────────
-
-/** Fetch approved capability_artifacts for a set of capability ids. Shared
- *  by every per-source-kind fetcher in ./byKind. */
-export async function fetchArtifacts(
-  client: SupabaseSchemaClient,
-  capabilityIds: string[],
-): Promise<CapabilityArtifactRow[]> {
-  if (capabilityIds.length === 0) return []
-  const { data, error } = await client.schema('indonesian')
-    .from('capability_artifacts')
-    .select('capability_id, artifact_kind, quality_status, artifact_json')
-    .in('capability_id', capabilityIds)
-    .eq('quality_status', 'approved')
-  if (error) throw error
-  return (data ?? []) as CapabilityArtifactRow[]
 }
 
 // ─── Adapter interface ──────────────────────────────────────────────────────

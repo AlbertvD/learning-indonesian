@@ -27,7 +27,6 @@ function makeBlock(exerciseType: ExerciseType, capabilityType = 'meaning_recall'
       exerciseType,
       capabilityType: capabilityType as never,
       skillType: 'meaning_recall',
-      requiredArtifacts: ['meaning:l1'],
     },
   }
 }

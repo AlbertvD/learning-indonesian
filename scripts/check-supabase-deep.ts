@@ -1303,6 +1303,50 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   }
 }
 
+// ── HC25 (Slice 4b, #102): capability_artifacts dropped + readiness survives.
+//      Layer-3 of the inert-change parity guard (memory/project_three_layer_invariant_gates).
+//      (1) The capability_artifacts table must NOT exist — confirms the drop landed
+//      and catches an accidental re-creation. A real SELECT returns PGRST205 for a
+//      dropped table; a head-count would misleadingly return null/no-error, so we
+//      probe with .select('*').limit(1) (see the 4a false-scare note).
+//      (2) learning_capabilities must still carry ready+published caps — readiness
+//      no longer reads an artifact bag, so a collapse to zero would mean the
+//      routing-only derivation regressed. The one-time "no decrease vs the 4,057
+//      apply baseline" is the operator's apply-time pre/post probe; this is the
+//      durable steady-state guard that runs on every deploy.
+{
+  try {
+    const { error: artErr } = await supabase
+      .schema('indonesian')
+      .from('capability_artifacts')
+      .select('*')
+      .limit(1)
+    const tableGone = !!artErr && /PGRST205|could not find the table|does not exist/i.test(artErr.message ?? '')
+
+    const { count: readyCount, error: readyErr } = await supabase
+      .schema('indonesian')
+      .from('learning_capabilities')
+      .select('*', { count: 'exact', head: true })
+      .eq('readiness_status', 'ready')
+      .eq('publication_status', 'published')
+      .is('retired_at', null)
+    if (readyErr) throw readyErr
+
+    if (!tableGone) {
+      fail('HC25 capability_artifacts dropped',
+        artErr ? `unexpected error probing capability_artifacts: ${artErr.message}`
+               : 'capability_artifacts still exists — the Slice 4b drop did not land (or the table was re-created)')
+    } else if ((readyCount ?? 0) <= 0) {
+      fail('HC25 readiness survives capability_artifacts drop',
+        '0 ready+published capabilities — the routing-only readiness derivation regressed')
+    } else {
+      pass(`HC25 capability_artifacts dropped + readiness intact (${readyCount} ready+published caps)`)
+    }
+  } catch (err) {
+    fail('HC25 capability_artifacts dropped + readiness intact', err instanceof Error ? err.message : String(err))
+  }
+}
+
 // ── Output ─────────────────────────────────────────────────────────────────
 console.log(`\nSupabase deep structural check — ${SUPABASE_URL}\n`)
 let failures = 0

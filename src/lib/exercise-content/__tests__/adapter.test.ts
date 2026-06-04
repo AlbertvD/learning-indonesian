@@ -114,7 +114,6 @@ function makeBlockWithSourceRef(opts: { sourceKind: 'item' | 'dialogue_line' | '
       exerciseType: 'cloze',
       capabilityType: 'contextual_cloze',
       skillType: 'form_recall',
-      requiredArtifacts: [],
     },
     reviewContext: {
       schedulerSnapshot: {} as never,

@@ -1,8 +1,5 @@
 import {
   exerciseTypesForCapability,
-  hasApprovedArtifact,
-  type ArtifactIndex,
-  type ArtifactKind,
   type CapabilityReadiness,
   type ProjectedCapability,
 } from '@/lib/capabilities'
@@ -11,7 +8,6 @@ import type { ExerciseType } from '../../types/learning'
 
 export type ExerciseResolutionFailureReason =
   | 'capability_not_ready'
-  | 'missing_required_artifact'
   | 'no_supported_exercise_family'
   | 'fallback_blocked'
   | 'device_constraints_blocked'
@@ -22,13 +18,11 @@ export type ExerciseResolutionResult =
       status: 'failed'
       reason: ExerciseResolutionFailureReason
       details: string
-      missingArtifacts?: ArtifactKind[]
     }
 
 export interface ExerciseResolutionInput {
   capability: ProjectedCapability
   readiness: CapabilityReadiness
-  artifactIndex: ArtifactIndex
 }
 
 function firstCompatibleExercise(input: {
@@ -66,27 +60,10 @@ export function resolveExercise(input: ExerciseResolutionInput): ExerciseResolut
     }
   }
 
-  // Re-verify required artifacts as defence-in-depth (validateCapability
-  // already gates the union of contract + capability artifacts upstream).
-  // Use the capability's declared requiredArtifacts here — preserves
-  // existing exerciseResolver.test.ts:146-168 assertions that pass
-  // synthetic readiness objects with cap-specific artifacts. The contract
-  // requirements are caught upstream by the validator.
-  const missingArtifacts = input.capability.requiredArtifacts.filter(artifactKind => !hasApprovedArtifact({
-    index: input.artifactIndex,
-    kind: artifactKind,
-    capabilityKey: input.capability.canonicalKey,
-    sourceRef: input.capability.sourceRef,
-  }))
-  if (missingArtifacts.length > 0) {
-    return {
-      status: 'failed',
-      reason: 'missing_required_artifact',
-      details: `Missing approved artifacts: ${missingArtifacts.join(', ')}`,
-      missingArtifacts,
-    }
-  }
-
+  // Slice 4b: the legacy artifact re-check is gone — readiness is decided
+  // solely by validateCapability's typed-contract routing upstream, and the
+  // capability_artifacts bag no longer exists. The resolver trusts the
+  // readiness.allowedExercises it received.
   return {
     status: 'resolved',
     plan: {
@@ -95,7 +72,6 @@ export function resolveExercise(input: ExerciseResolutionInput): ExerciseResolut
       exerciseType,
       capabilityType: input.capability.capabilityType,
       skillType: input.capability.skillType,
-      requiredArtifacts: input.capability.requiredArtifacts,
     },
   }
 }

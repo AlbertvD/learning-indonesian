@@ -34,28 +34,15 @@ describe('capability materialization planning', () => {
         'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl',
         'ready',
       ]]),
-      approvedArtifactsByCapabilityKey: new Map([[
-        'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl',
-        ['meaning:l1'],
-      ]]),
     })
 
     expect(plan.capabilityInserts).toHaveLength(1)
-    expect(plan.capabilityInserts[0]?.metadataJson.requiredArtifacts).toEqual(['meaning:l1', 'accepted_answers:l1'])
     expect(plan.capabilityInserts[0]?.metadataJson.difficultyLevel).toBe(2)
     expect(plan.capabilityInserts[0]?.metadataJson.goalTags).toEqual([])
-    expect(plan.artifactUpserts).toEqual(expect.arrayContaining([
-      expect.objectContaining({
-        capabilityKey: 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl',
-        sourceRef: 'learning_items/item-1',
-        artifactKind: 'meaning:l1',
-        qualityStatus: 'approved',
-      }),
-    ]))
     expect(plan.backfillWrites).toEqual([])
   })
 
-  it('does not invent readiness or artifact approval outside the capability contract', () => {
+  it('does not invent readiness outside the capability contract', () => {
     const plan = planCapabilityMaterialization({
       capabilities: [capability()],
       existingCanonicalKeys: new Set(),
@@ -64,7 +51,6 @@ describe('capability materialization planning', () => {
     })
 
     expect(plan.capabilityInserts[0]?.readinessStatus).toBe('unknown')
-    expect(plan.artifactUpserts).toEqual([])
   })
 
   it('materializes Dutch-to-Indonesian choice metadata without rewriting learner state', () => {

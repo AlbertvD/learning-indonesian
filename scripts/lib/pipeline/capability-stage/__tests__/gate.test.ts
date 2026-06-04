@@ -130,7 +130,6 @@ function minimalPostWriteInput(
       contentUnits: 0,
       grammarPatterns: 0,
       capabilities: 0,
-      capabilityArtifacts: 0,
       learningItems: 0,
       exerciseVariants: 0,
       clozeContexts: 0,
@@ -413,7 +412,6 @@ describe('runCapabilityGatePostWrite', () => {
     const supabase = buildMockSupabase({
       content_units: { rows: [], countOverride: 0 },
       learning_capabilities: { rows: [], countOverride: 0 },
-      capability_artifacts: { rows: [], countOverride: 0 },
       grammar_patterns: { rows: [], countOverride: 0 },
       exercise_variants: { rows: [], countOverride: 0 },
       learning_items: { rows: [], countOverride: 0 },
@@ -432,7 +430,6 @@ describe('runCapabilityGatePostWrite', () => {
     const supabase = buildMockSupabase({
       content_units: { rows: [], countOverride: 3 },
       learning_capabilities: { rows: [], countOverride: 0 },
-      capability_artifacts: { rows: [], countOverride: 0 },
       grammar_patterns: { rows: [], countOverride: 0 },
       exercise_variants: { rows: [], countOverride: 0 },
       learning_items: { rows: [] },
@@ -448,7 +445,6 @@ describe('runCapabilityGatePostWrite', () => {
           contentUnits: 5,
           grammarPatterns: 0,
           capabilities: 0,
-          capabilityArtifacts: 0,
           learningItems: 0,
           exerciseVariants: 0,
           clozeContexts: 0,

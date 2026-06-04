@@ -3,7 +3,6 @@ import { loadCapabilitySessionPlan, buildSession, type CapabilitySessionDataAdap
 import type { LearnerCapabilityStateRow } from '@/lib/session-builder/dueFilter'
 import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
 import { planLearningPath, type PlannerCapability, type PlannerLearnerCapabilityState } from '@/lib/session-builder/pedagogy'
-import type { ArtifactIndex } from '@/lib/capabilities/artifactRegistry'
 
 const now = new Date('2026-04-25T10:00:00.000Z')
 const sourceRef = 'learning_items/item-1'
@@ -63,13 +62,6 @@ function activeState(overrides: Partial<LearnerCapabilityStateRow> = {}): Learne
   }
 }
 
-function approvedArtifacts(): ArtifactIndex {
-  return {
-    'meaning:l1': [{ qualityStatus: 'approved', sourceRef }],
-    'accepted_answers:l1': [{ qualityStatus: 'approved', sourceRef }],
-  }
-}
-
 function baseInput(overrides: Partial<Parameters<typeof loadCapabilitySessionPlan>[0]> = {}): Parameters<typeof loadCapabilitySessionPlan>[0] {
   const projection = projectedCapability()
   return {
@@ -89,7 +81,6 @@ function baseInput(overrides: Partial<Parameters<typeof loadCapabilitySessionPla
     },
     capabilitiesByKey: new Map([[projection.canonicalKey, projection]]),
     readinessByKey: new Map([[projection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }]]),
-    artifactIndex: approvedArtifacts(),
     ...overrides,
   }
 }
@@ -188,15 +179,24 @@ describe('capability session loader', () => {
   })
 
   it('emits diagnostics instead of scheduling unresolved capabilities', async () => {
+    // Post-4b an "unresolved" capability is one whose readiness is not `ready`
+    // (e.g. no compatible exercise for its cap_type) — the retired artifact-bag
+    // path no longer exists. The resolver fails it as capability_not_ready and
+    // the composer surfaces a diagnostic instead of scheduling a block.
+    const projection = projectedCapability()
     const plan = await loadCapabilitySessionPlan(baseInput({
       schedulerRows: [activeState()],
-      artifactIndex: { 'meaning:l1': [{ qualityStatus: 'approved', sourceRef }] },
+      readinessByKey: new Map([[projection.canonicalKey, {
+        status: 'blocked',
+        missingArtifacts: [],
+        reason: 'no_compatible_exercise_for_capability_type',
+      }]]),
     }))
 
     expect(plan.blocks).toEqual([])
     expect(plan.diagnostics).toContainEqual(expect.objectContaining({
       severity: 'warn',
-      reason: 'missing_required_artifact',
+      reason: 'capability_not_ready',
     }))
   })
 
@@ -222,7 +222,6 @@ describe('capability session loader', () => {
           plannerInput: base.plannerInput,
           capabilitiesByKey: base.capabilitiesByKey,
           readinessByKey: base.readinessByKey,
-          artifactIndex: base.artifactIndex,
           currentLessonId: null,
           nextLessonNeedsExposure: false,
         }
@@ -282,7 +281,6 @@ describe('capability session loader', () => {
       },
       capabilitiesByKey: new Map(projections.map(projection => [projection.canonicalKey, projection])),
       readinessByKey: new Map(projections.map(projection => [projection.canonicalKey, { status: 'ready' as const, allowedExercises: ['meaning_recall' as const] }])),
-      artifactIndex: {},
       selectedLessonId: 'lesson-4',
       selectedSourceRefs: selectedRefs,
     }))
@@ -328,7 +326,6 @@ describe('capability session loader', () => {
       },
       capabilitiesByKey: new Map(projections.map(projection => [projection.canonicalKey, projection])),
       readinessByKey: new Map(projections.map(projection => [projection.canonicalKey, { status: 'ready' as const, allowedExercises: ['meaning_recall' as const] }])),
-      artifactIndex: {},
       selectedLessonId: 'lesson-4',
       selectedSourceRefs: selectedRefs,
     }))
@@ -416,7 +413,6 @@ describe('capability session loader', () => {
           [lesson1Projection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }],
           [lesson2Projection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }],
         ]),
-        artifactIndex: {},
       }))
 
       expect(plan.blocks).toHaveLength(1)
@@ -500,7 +496,6 @@ describe('capability session loader', () => {
         },
         capabilitiesByKey: new Map([[otherLessonProjection.canonicalKey, otherLessonProjection]]),
         readinessByKey: new Map([[otherLessonProjection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }]]),
-        artifactIndex: {},
         currentLessonId: currentLessonUuid,
         nextLessonNeedsExposure: true,
       })
@@ -568,7 +563,6 @@ describe('capability session loader', () => {
         },
         capabilitiesByKey: new Map([[currentLessonProjection.canonicalKey, currentLessonProjection]]),
         readinessByKey: new Map([[currentLessonProjection.canonicalKey, { status: 'ready', allowedExercises: ['meaning_recall'] }]]),
-        artifactIndex: {},
         currentLessonId: currentLessonUuid,
         nextLessonNeedsExposure: true,
       }))

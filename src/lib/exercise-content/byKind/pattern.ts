@@ -154,7 +154,6 @@ export async function fetchForPatternBlocks(
           answerVariants: [],
           // No artifacts in the typed-table path — the byType grammar packagers
           // read input.exercise; the empty map is a no-op for them.
-          artifactsByKind: new Map(),
           poolItems: [],
           poolMeaningsByItem: new Map(),
           userLanguage,

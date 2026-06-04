@@ -44,11 +44,6 @@ describe('podcast capability projection', () => {
     expect(isExposureOnly(segment!)).toBe(true)
     expect(validateCapability({
       capability: segment!,
-      artifacts: {
-        audio_segment: [{ qualityStatus: 'approved', sourceRef: segmentSourceRef }],
-        transcript_segment: [{ qualityStatus: 'approved', sourceRef: segmentSourceRef }],
-        podcast_gist_prompt: [{ qualityStatus: 'approved', sourceRef: segmentSourceRef }],
-      },
     }).status).toBe('exposure_only')
   })
 
@@ -68,10 +63,6 @@ describe('podcast capability projection', () => {
 
     const readiness = validateCapability({
       capability: phrase,
-      artifacts: {
-        timecoded_phrase: [{ qualityStatus: 'approved', sourceRef: phraseSourceRef }],
-        'translation:l1': [{ qualityStatus: 'approved', sourceRef: phraseSourceRef }],
-      },
     })
     expect(readiness.status).toBe('exposure_only')
   })

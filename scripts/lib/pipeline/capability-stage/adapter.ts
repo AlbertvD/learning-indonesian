@@ -137,7 +137,6 @@ export async function upsertCapabilities(
         readiness_status: 'unknown',
         publication_status: 'draft',
         lesson_id: capability.lessonId ?? null,
-        required_artifacts: capability.requiredArtifacts,
         prerequisite_keys: capability.prerequisiteKeys,
         // PR 1.5: re-emission un-retires. If the canonical_key fell out of an
         // earlier emit set and got soft-retired (see retireOrphanedCapabilities),
@@ -240,45 +239,6 @@ export async function upsertCapabilityContentUnits(
     count++
   }
   return count
-}
-
-// ---------------------------------------------------------------------------
-// Capability artifacts
-// ---------------------------------------------------------------------------
-
-export interface CapabilityArtifactInput {
-  capability_id: string
-  artifact_kind: string
-  quality_status: 'draft' | 'approved' | 'blocked' | 'deprecated'
-  artifact_ref: string
-  artifact_json: Record<string, unknown>
-  artifact_fingerprint: string
-}
-
-export async function upsertCapabilityArtifacts(
-  supabase: CapabilitySupabaseClient,
-  artifacts: CapabilityArtifactInput[],
-): Promise<string[]> {
-  const ids: string[] = []
-  for (const artifact of artifacts) {
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('capability_artifacts')
-      .upsert({
-        capability_id: artifact.capability_id,
-        artifact_kind: artifact.artifact_kind,
-        quality_status: artifact.quality_status,
-        artifact_ref: artifact.artifact_ref,
-        artifact_json: artifact.artifact_json ?? {},
-        artifact_fingerprint: artifact.artifact_fingerprint,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'capability_id,artifact_kind,artifact_fingerprint' })
-      .select('id')
-      .single()
-    if (error) throw error
-    if (data?.id) ids.push(data.id as string)
-  }
-  return ids
 }
 
 // ---------------------------------------------------------------------------
@@ -1300,7 +1260,6 @@ export async function upsertCapabilitiesSkipIfExists(
     readiness_status: 'unknown',
     publication_status: 'draft',
     lesson_id: cap.lessonId ?? null,
-    required_artifacts: cap.requiredArtifacts,
     prerequisite_keys: cap.prerequisiteKeys,
     // NOTE: retired_at is intentionally omitted — new rows get NULL from
     // the DB default; existing rows preserve whatever value the DB has.

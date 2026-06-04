@@ -19,7 +19,7 @@ For the *why* behind the capability schema, see `docs/adr/0001-capability-based-
 
 | Group | Tables | Lives in |
 |---|---|---|
-| **Capability layer** | `learning_capabilities`, `capability_aliases`, `capability_artifacts`, `capability_content_units`, `content_units`, `lesson_page_blocks`, `learner_capability_state`, `capability_review_events`, `capability_resolution_failure_events` | standalone `scripts/migrations/2026-04-25-*.sql` + `2026-05-02-capability-resolution-failures.sql` |
+| **Capability layer** | `learning_capabilities`, `capability_aliases`, `capability_content_units`, `content_units`, `learner_capability_state`, `capability_review_events`, `capability_resolution_failure_events` | standalone `scripts/migrations/2026-04-25-*.sql` + `2026-05-02-capability-resolution-failures.sql` |
 | **Lesson activation** | `learner_lesson_activation` | `scripts/migration.sql:1561` (post-retirement #6) |
 | **Content (vocab + sentences)** | `learning_items`, `item_meanings`, `item_answer_variants`, `item_contexts`, `item_context_grammar_patterns`, `grammar_patterns`, `exercise_variants` | `scripts/migration.sql` |
 | **Lesson content** | `lessons`, `lesson_sections` (+ `section_kind`/`source_section_ref`), `lesson_dialogue_lines`, `audio_clips`, `podcasts`, `vocabulary` (legacy) | `scripts/migration.sql` |
@@ -62,11 +62,9 @@ A capability is only schedulable when both `readiness_status='ready'` AND `publi
 
 Alias keys that resolve to the same canonical capability. Lets the pipeline rename a capability without breaking FSRS history.
 
-### `capability_artifacts` (`capability-core.sql:43`)
+### `capability_artifacts` — RETIRED (dropped in Slice 4b, #102, 2026-06-04)
 
-The content artifacts a capability needs to render. Artifact kinds include `base_text`, `meaning:l1`, `meaning:nl`, `meaning:en`, `accepted_answers:id`, `accepted_answers:l1`, `cloze_context`, `cloze_answer`, `audio_clip`, `transcript_segment`, `root_derived_pair`, `allomorph_rule`, `pattern_explanation:l1`, `pattern_example`, `minimal_pair`, `dialogue_speaker_context`, `podcast_gist_prompt`, `timecoded_phrase`, `production_rubric`.
-
-Quality status is one of `draft`, `approved`, `blocked`, `deprecated`. As of the deterministic-snapshot-regen change (2026-05-12, status: implementing), the pipeline always emits `quality_status: 'approved'` — there is no manual approval gate.
+The generic per-capability content bag. **Dropped** — readiness no longer reads it (it derives from `RENDER_CONTRACTS` routing), and per-content-concept structure moved to the typed satellite tables: `dialogue_clozes` (cloze_context/cloze_answer/translation:l1), `affixed_form_pairs` (root_derived_pair/allomorph_rule), the 4 grammar-exercise tables (pattern_example/explanation), and `capability_audio_refs` (audio_clip). The `learning_capabilities.required_artifacts` column was dropped with it. See `docs/adr/0008-retire-generic-capability-artifacts-abstraction.md` + data-model-target Decision A.
 
 ### `capability_content_units` (`content-units-lesson-blocks.sql:45`)
 

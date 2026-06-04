@@ -35,7 +35,7 @@ status: stable
 
 **Status (2026-05-22):** stable. Spec rewritten 2026-05-16 as the after-spec of PR-A of the session-builder fold (commit `55edbf5`). PR-A consolidated nine files from `src/lib/session/`, `src/lib/pedagogy/`, and `src/services/capabilitySessionDataService.ts` into this module; deleted three orphaned modules + the entire posture system + two dead planner inputs; rewrote `labels.ts` to a per-capability map with `satisfies` exhaustiveness. PR-B (queue-drying wiring) and PR-C/D (recency badge, capability descriptions) ride in separate follow-on PRs — see fold plan §5.
 
-**2026-05-22 — force-capability dev bypass (PR 0 §3.8).** `buildSession` now accepts an optional `forceCapabilityKey` arg; when set, it routes through `buildForceCapabilitySession` instead of the planner. `adapter.ts` resolves the canonical_key → capability + readiness + artifact subset, and seeds a dormant `learner_capability_state` row idempotently on first hit. Used by `src/pages/Session.tsx` (admin-gated via `profile.isAdmin` + `import.meta.env.DEV || VITE_ALLOW_FORCE_CAPABILITY`) and by `scripts/force-capability-answer.ts` (per-PR post-deploy gate). Plus `toProjectedCapability` now reads the new typed columns `prerequisite_keys` + `required_artifacts` instead of `metadata_json`; `skillType` is derived via `deriveSkillTypeFromCapabilityType` from `capabilityTypes.ts`.
+**2026-05-22 — force-capability dev bypass (PR 0 §3.8).** `buildSession` now accepts an optional `forceCapabilityKey` arg; when set, it routes through `buildForceCapabilitySession` instead of the planner. `adapter.ts` resolves the canonical_key → capability + readiness, and seeds a dormant `learner_capability_state` row idempotently on first hit. Used by `src/pages/Session.tsx` (admin-gated via `profile.isAdmin` + `import.meta.env.DEV || VITE_ALLOW_FORCE_CAPABILITY`) and by `scripts/force-capability-answer.ts` (per-PR post-deploy gate). Plus `toProjectedCapability` reads the typed column `prerequisite_keys` (the `required_artifacts` column it also read was dropped in Slice 4b, #102; `requiredArtifacts` now defaults to `[]`); `skillType` is derived via `deriveSkillTypeFromCapabilityType` from `capabilityTypes.ts`.
 
 ---
 
@@ -134,7 +134,7 @@ The production implementation lives at `adapter.ts:201-310`.
 3. **Lesson activation** — every `learner_lesson_activation` row for the user (single-boolean per lesson, added by retirement #6).
 4. **Lessons** — every `lessons` row (`id`, `order_index`). Used by `deriveLessonProgression` to compute `currentLessonId` + `nextLessonNeedsExposure` for the queue-drying detector. The query is unfiltered because the lesson catalog is small (~tens of rows).
 
-After those resolve, a fifth chunked query fetches `capability_artifacts` for the capability ids in batches (via `chunkedIn` to avoid PostgREST URL-length limits).
+(Slice 4b, #102: the former fifth chunked query against `capability_artifacts` was removed — the table is dropped and readiness no longer reads an artifact bag.)
 
 The adapter then:
 - Builds `capabilitiesByKey: Map<string, ProjectedCapability>` and `readinessByKey: Map<string, CapabilityReadiness>` via `validateCapability`. Capabilities with incomplete metadata are recorded with `readinessByKey.set(key, { status: 'unknown', ... })` and skipped from `readyCapabilities`.
@@ -142,7 +142,7 @@ The adapter then:
 - Computes `recentFailures` from rows with `consecutiveFailureCount ≥ 2`.
 - Derives `currentLessonId` (the activated lesson with the highest `order_index`, or `null` if no activations) and `nextLessonNeedsExposure` (true iff a lesson with `order_index = current.order_index + 1` exists and is not activated). Both feed the drying detector in §3.8.
 
-Output is a `CapabilitySessionDataSnapshot` carrying `schedulerRows`, `capabilitiesByKey`, `readinessByKey`, `artifactIndex`, `currentLessonId`, `nextLessonNeedsExposure`, and `plannerInput` (typed `Omit<PedagogyInput, 'mode' | 'now'>`).
+Output is a `CapabilitySessionDataSnapshot` carrying `schedulerRows`, `capabilitiesByKey`, `readinessByKey`, `currentLessonId`, `nextLessonNeedsExposure`, and `plannerInput` (typed `Omit<PedagogyInput, 'mode' | 'now'>`). (Slice 4b removed the `artifactIndex` field.)
 
 ### 3.2 Orchestrator — three selection passes through one resolver
 
@@ -305,7 +305,7 @@ The diagnostic surfaces in the UI via `Session.tsx`, which reads `plan.diagnosti
 - `learning_capabilities` table — capability catalog (one row per capability, ~thousands when projected).
 - `learner_capability_state` table — per-learner FSRS state (ADR 0001). Written by the server-side review processor (`supabase/functions/commit-capability-answer-report/index.ts`, invoked via the `commit-capability-answer-report` Edge Function).
 - `learner_lesson_activation` table — single-boolean per (user, lesson). Written by `set_lesson_activation` RPC (`migration.sql:1584`); all callers route through `setLessonActivated` in `lib/lessons/activation.ts` (used by the lesson-page checkbox and the `authStore.activateStarterLessons` first-sign-in hook).
-- `capability_artifacts` table — per-capability content blobs (meanings, contexts, items, etc.). Validated by `validateCapability` (`lib/capabilities/capabilityContracts.ts`).
+- (Slice 4b, #102: the `capability_artifacts` table was dropped — the adapter no longer reads it. Readiness is decided by `validateCapability` via `RENDER_CONTRACTS` routing alone.)
 
 ### Downstream (the builder feeds these)
 
@@ -315,7 +315,7 @@ The diagnostic surfaces in the UI via `Session.tsx`, which reads `plan.diagnosti
 
 ### Sibling (consumed alongside)
 
-- `lib/exercises/exerciseResolver.ts` — `resolveExercise(capability, readiness, artifactIndex)` is called inline during each pass to inflate the `renderPlan`. Currently lives outside the builder; the exercise-content fold will absorb the resolver into a new `lib/exercise-content/` module.
+- `lib/exercises/exerciseResolver.ts` — `resolveExercise(capability, readiness)` is called inline during each pass to inflate the `renderPlan` (the `artifactIndex` arg was removed in Slice 4b, #102). Currently lives outside the builder; the exercise-content fold will absorb the resolver into a new `lib/exercise-content/` module.
 - `lib/exercises/builders/*` — 12 builders that consume `audibleTextFieldsOf` from the barrel to populate per-block `audibleTexts`.
 - `lib/capabilities/capabilityContracts.ts` — provides `validateCapability` for readiness. Post-PR #65, readiness derives from the shared `RENDER_CONTRACTS` table in `lib/capabilities/renderContracts.ts`; see `docs/current-system/modules/capabilities.md`.
 - `services/audioService.ts` — `fetchSessionAudioMap` consumes the aggregator's deduped audible-text list.

@@ -1,16 +1,10 @@
 import type { ArtifactKind } from './capabilityTypes'
 
-export type ArtifactQualityStatus = 'draft' | 'approved' | 'blocked' | 'deprecated'
-
-export interface CapabilityArtifact {
-  qualityStatus: ArtifactQualityStatus
-  capabilityKey?: string
-  sourceRef?: string
-  value?: unknown
-}
-
-export type ArtifactIndex = Partial<Record<ArtifactKind, CapabilityArtifact[]>>
-
+// Slice 4b retired the `capability_artifacts` table and its readiness machinery
+// (ArtifactIndex / CapabilityArtifact / hasApprovedArtifact). `ARTIFACT_KINDS`
+// is retained because the legacy staging regeneration (buildArtifactsForCapability
+// in scripts/lib/content-pipeline-output.ts) still references it; that whole
+// regeneration — and this const with it — is retired by Slice 5 (#147).
 export const ARTIFACT_KINDS = [
   'meaning:l1',
   'meaning:nl',
@@ -35,15 +29,3 @@ export const ARTIFACT_KINDS = [
   'timecoded_phrase',
   'production_rubric',
 ] as const satisfies readonly ArtifactKind[]
-
-export function hasApprovedArtifact(input: {
-  index: ArtifactIndex
-  kind: ArtifactKind
-  capabilityKey: string
-  sourceRef: string
-}): boolean {
-  return input.index[input.kind]?.some(artifact => (
-    artifact.qualityStatus === 'approved'
-    && (artifact.capabilityKey === input.capabilityKey || artifact.sourceRef === input.sourceRef)
-  )) ?? false
-}

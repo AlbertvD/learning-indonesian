@@ -1,6 +1,4 @@
 import type {
-  ArtifactKind,
-  ArtifactQualityStatus,
   CapabilityModality,
   CapabilitySourceKind,
   CapabilityType,
@@ -40,8 +38,6 @@ export interface CapabilityMasteryEvidence {
   modality: CapabilityModality
   readinessStatus: string
   publicationStatus: string
-  requiredArtifacts: ArtifactKind[]
-  approvedArtifacts: ArtifactKind[]
   // After retirement #6: 'introduced' if the lesson is activated, else
   // 'not_assessed'. NULL lessonId (cross-lesson capability, e.g. podcast)
   // counts as activated for the purposes of this signal.
@@ -120,7 +116,6 @@ interface LearningCapabilityRow {
   readiness_status: string
   publication_status: string
   lesson_id: string | null
-  required_artifacts: string[] | null
 }
 
 interface LearnerCapabilityStateRow {
@@ -132,22 +127,8 @@ interface LearnerCapabilityStateRow {
   last_reviewed_at: string | null
 }
 
-interface CapabilityArtifactRow {
-  capability_id: string
-  artifact_kind: ArtifactKind
-  quality_status: ArtifactQualityStatus
-  artifact_json?: unknown
-}
-
 function uniq<T>(values: T[]): T[] {
   return [...new Set(values)]
-}
-
-function requiredArtifacts(row: LearningCapabilityRow): ArtifactKind[] {
-  const raw = row.required_artifacts
-  return Array.isArray(raw) && raw.every(item => typeof item === 'string')
-    ? raw as ArtifactKind[]
-    : []
 }
 
 function dimensionForCapability(type: CapabilityType): MasteryDimension {
@@ -190,17 +171,11 @@ function isRecent(iso: string | null | undefined, now: Date): boolean {
   return ageMs >= 0 && ageMs <= 30 * 24 * 60 * 60 * 1000
 }
 
-function hasCompatibleArtifacts(evidence: CapabilityMasteryEvidence): boolean {
-  if (evidence.requiredArtifacts.length === 0) return true
-  return evidence.requiredArtifacts.every(kind => evidence.approvedArtifacts.includes(kind))
-}
-
 function labelForCapability(evidence: CapabilityMasteryEvidence, now: Date): MasteryLabel {
   if (evidence.consecutiveFailureCount > 0 || evidence.lapseCount > 0) return 'at_risk'
   if (evidence.reviewCount === 0) {
     return evidence.lessonActivated ? 'introduced' : 'not_assessed'
   }
-  if (!hasCompatibleArtifacts(evidence)) return 'learning'
   if (evidence.reviewCount >= 4 && (evidence.stability ?? 0) >= 14 && isRecent(evidence.lastReviewedAt, now)) return 'mastered'
   if (evidence.reviewCount >= 3 || (evidence.stability ?? 0) >= 5) return 'strengthening'
   return 'learning'
@@ -210,7 +185,6 @@ function confidenceForDimension(input: {
   sampleSize: number
   recentReviewCount: number
   modalities: CapabilityModality[]
-  compatibleArtifactCount: number
   capabilityCount: number
 }): MasteryConfidence {
   if (input.sampleSize === 0) return 'none'
@@ -219,7 +193,11 @@ function confidenceForDimension(input: {
   if (input.sampleSize >= 5) score += 1
   if (input.recentReviewCount > 0) score += 1
   if (input.modalities.length > 1) score += 1
-  if (input.capabilityCount > 0 && input.compatibleArtifactCount === input.capabilityCount) score += 1
+  // Slice 4b: the artifact-completeness factor (compatibleArtifactCount ===
+  // capabilityCount) is gone — every ready cap renders from its typed table,
+  // so this collapses to "the dimension has any capabilities". Inert: live
+  // data had all caps artifact-complete, so this awarded the same +1.
+  if (input.capabilityCount > 0) score += 1
   if (score >= 4) return 'high'
   if (score >= 2) return 'medium'
   return 'low'
@@ -292,7 +270,6 @@ export function deriveMasteryDimensions(
       const labels = items.map(item => labelForCapability(item, now))
       const sampleSize = items.reduce((sum, item) => sum + item.reviewCount, 0)
       const recentReviewCount = items.filter(item => isRecent(item.lastReviewedAt, now)).length
-      const compatibleArtifactCount = items.filter(hasCompatibleArtifacts).length
       const modalities = uniq(items.map(item => item.modality)).sort()
       const sourceKinds = uniq(items.map(item => item.sourceKind)).sort()
       const reviewedCapabilityCount = items.filter(item => item.reviewCount > 0).length
@@ -304,7 +281,6 @@ export function deriveMasteryDimensions(
           sampleSize,
           recentReviewCount,
           modalities,
-          compatibleArtifactCount,
           capabilityCount: items.length,
         }),
         capabilityCount: items.length,
@@ -382,16 +358,12 @@ export function deriveMasteryOverview(input: {
 function toEvidence(input: {
   capabilities: LearningCapabilityRow[]
   states: LearnerCapabilityStateRow[]
-  artifacts: CapabilityArtifactRow[]
   activatedLessons: Set<string>
 }): CapabilityMasteryEvidence[] {
   const stateByCapabilityId = new Map(input.states.map(state => [state.capability_id, state]))
 
   return input.capabilities.map(capability => {
     const state = stateByCapabilityId.get(capability.id)
-    const approvedArtifacts = input.artifacts
-      .filter(artifact => artifact.capability_id === capability.id && artifact.quality_status === 'approved')
-      .map(artifact => artifact.artifact_kind)
     // Per ADR 0006 (Decision 3b), the only capabilities with NULL lesson_id
     // are podcast source kinds (`podcast_segment`, `podcast_phrase`); they
     // are always treated as activated because they are not lesson-scoped.
@@ -409,8 +381,6 @@ function toEvidence(input: {
       modality: capability.modality,
       readinessStatus: capability.readiness_status,
       publicationStatus: capability.publication_status,
-      requiredArtifacts: requiredArtifacts(capability),
-      approvedArtifacts: uniq(approvedArtifacts),
       lessonActivated,
       reviewCount: state?.review_count ?? 0,
       lapseCount: state?.lapse_count ?? 0,
@@ -428,7 +398,7 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
     if (ids.length === 0) return []
     const { data, error } = await db()
       .from('learning_capabilities')
-      .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id, required_artifacts')
+      .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id')
       .in('id', ids)
       .is('retired_at', null)
     if (error) throw error
@@ -445,24 +415,13 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
     )
   }
 
-  async function artifacts(capabilityIds: string[]): Promise<CapabilityArtifactRow[]> {
-    return chunkedIn<CapabilityArtifactRow>(
-      'capability_artifacts',
-      'capability_id',
-      capabilityIds,
-      (b) => b.select('capability_id, artifact_kind, quality_status, artifact_json'),
-      client,
-    )
-  }
-
   async function evidenceForCapabilities(userId: string, capabilities: LearningCapabilityRow[]): Promise<CapabilityMasteryEvidence[]> {
     const capabilityIds = capabilities.map(capability => capability.id)
-    const [states, artifactRows, activatedLessonsSet] = await Promise.all([
+    const [states, activatedLessonsSet] = await Promise.all([
       learnerStates(userId, capabilityIds),
-      artifacts(capabilityIds),
       listActivatedLessons(userId, client),
     ])
-    return toEvidence({ capabilities, states, artifacts: artifactRows, activatedLessons: activatedLessonsSet })
+    return toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
   }
 
   return {
@@ -481,7 +440,7 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
     async getPatternMastery(patternId: string, userId: string): Promise<PatternMastery> {
       const { data, error } = await db()
         .from('learning_capabilities')
-        .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id, required_artifacts')
+        .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id')
         .eq('source_kind', 'pattern')
         .eq('source_ref', patternId)
         .is('retired_at', null)
@@ -499,11 +458,8 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
       if (stateError) throw stateError
       const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
       const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
-      const [artifactRows, activatedLessonsSet] = await Promise.all([
-        artifacts(capabilities.map(capability => capability.id)),
-        listActivatedLessons(userId, client),
-      ])
-      const evidence = toEvidence({ capabilities, states, artifacts: artifactRows, activatedLessons: activatedLessonsSet })
+      const activatedLessonsSet = await listActivatedLessons(userId, client)
+      const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
       return deriveMasteryOverview({ userId, evidence })
     },
   }

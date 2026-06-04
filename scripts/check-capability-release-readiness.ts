@@ -18,7 +18,6 @@ export interface CapabilityReleaseReadinessInput {
   readyPublishedCapabilityCount: number
   scopedCapabilityKeys: string[]
   capabilities: CapabilityStatusRow[]
-  capabilityArtifacts: number
   capabilityContentUnitRelationships: number
 }
 
@@ -32,7 +31,6 @@ export interface CapabilityReleaseReadinessReport {
     scopedCapabilityKeys: number
     readyPublishedCapabilities: number
     draftOrUnknownCapabilities: number
-    capabilityArtifacts: number
     capabilityContentUnitRelationships: number
   }
 }
@@ -92,7 +90,6 @@ export function summarizeCapabilityReleaseReadiness(
   if (input.scopedCapabilityKeys.length === 0) blockers.push(`No capability keys are linked to ${input.sourceRef}.`)
   if (missingCapabilityKeys.length > 0) blockers.push(`Missing capability rows for lesson-scoped keys: ${missingCapabilityKeys.join(', ')}`)
   if (readyPublishedCapabilities === 0) blockers.push('No ready/published capabilities are available for capability sessions.')
-  if (input.capabilityArtifacts === 0) blockers.push('No capability artifacts are published for scoped capabilities.')
   if (input.capabilityContentUnitRelationships === 0) warnings.push('No capability/content-unit relationships are published for this lesson.')
 
   return {
@@ -105,7 +102,6 @@ export function summarizeCapabilityReleaseReadiness(
       scopedCapabilityKeys: input.scopedCapabilityKeys.length,
       readyPublishedCapabilities,
       draftOrUnknownCapabilities,
-      capabilityArtifacts: input.capabilityArtifacts,
       capabilityContentUnitRelationships: input.capabilityContentUnitRelationships,
     },
   }
@@ -187,12 +183,6 @@ async function loadReadinessInput(args: CapabilityReleaseReadinessArgs): Promise
   }
   const capabilityIds = capabilityRows.map(row => row.id)
 
-  const capabilityArtifacts = capabilityIds.length > 0
-    ? await countRows(db()
-        .from('capability_artifacts')
-        .select('id', { count: 'exact', head: true })
-        .in('capability_id', capabilityIds))
-    : 0
   const capabilityContentUnitRelationships = contentUnitIds.length > 0 && capabilityIds.length > 0
     ? await countRows(db()
         .from('capability_content_units')
@@ -206,7 +196,6 @@ async function loadReadinessInput(args: CapabilityReleaseReadinessArgs): Promise
     readyPublishedCapabilityCount,
     scopedCapabilityKeys,
     capabilities: capabilityRows,
-    capabilityArtifacts,
     capabilityContentUnitRelationships,
   }
 }

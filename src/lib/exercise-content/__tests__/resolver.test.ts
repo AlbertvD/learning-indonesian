@@ -89,7 +89,6 @@ function makeBlock(opts: { itemId?: string; exerciseType?: SessionBlock['renderP
       exerciseType,
       capabilityType: 'text_recognition',
       skillType: 'recognition',
-      requiredArtifacts: [],
     },
     reviewContext: {
       schedulerSnapshot: {} as never,
@@ -404,7 +403,6 @@ function makeDialogueBlock(opts: { sourceRef?: string; capabilityId?: string; ex
       exerciseType,
       capabilityType: 'contextual_cloze',
       skillType: 'form_recall',
-      requiredArtifacts: ['cloze_context', 'cloze_answer', 'translation:l1'],
     },
     reviewContext: {
       schedulerSnapshot: {} as never,

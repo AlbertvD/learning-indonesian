@@ -34,7 +34,6 @@ describe('capability session data service', () => {
               publication_status: 'published',
               lesson_id: 'lesson-uuid-1',
               prerequisite_keys: [],
-              required_artifacts: [],
             }, {
               id: 'capability-2',
               canonical_key: 'blocked-key',
@@ -49,7 +48,6 @@ describe('capability session data service', () => {
               publication_status: 'published',
               lesson_id: 'lesson-uuid-1',
               prerequisite_keys: [],
-              required_artifacts: [],
             }])
           }
           if (table === 'learner_capability_state') {
@@ -97,7 +95,6 @@ describe('capability session data service', () => {
               state_version: 1,
             }])
           }
-          if (table === 'capability_artifacts') return query([])
           if (table === 'learner_lesson_activation') return query([])
           return query([])
         },
@@ -134,7 +131,6 @@ describe('capability session data service', () => {
               publication_status: 'published',
               lesson_id: 'lesson-uuid-1',
               prerequisite_keys: [],
-              required_artifacts: [],
             }])
           }
           if (table === 'learner_capability_state') {
@@ -154,7 +150,6 @@ describe('capability session data service', () => {
               state_version: 1,
             }])
           }
-          if (table === 'capability_artifacts') return query([])
           if (table === 'learner_lesson_activation') {
             return query([{ lesson_id: 'lesson-uuid-1' }])
           }
@@ -202,20 +197,6 @@ describe('capability session data service', () => {
               publication_status: 'published',
               lesson_id: 'lesson-uuid-1',
               prerequisite_keys: ['text-recognition-key'],
-              required_artifacts: ['meaning:l1', 'base_text'],
-            }])
-          }
-          if (table === 'capability_artifacts') {
-            return query([{
-              capability_id: 'choice-capability',
-              artifact_kind: 'meaning:l1',
-              quality_status: 'approved',
-              artifact_json: { value: 'eten' },
-            }, {
-              capability_id: 'choice-capability',
-              artifact_kind: 'base_text',
-              quality_status: 'approved',
-              artifact_json: { value: 'makan' },
             }])
           }
           if (table === 'learner_capability_state') return query([])

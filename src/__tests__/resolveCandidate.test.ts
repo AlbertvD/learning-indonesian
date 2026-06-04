@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import { resolveCandidate } from '@/lib/session-builder/builder'
 import type { CapabilityReadiness } from '@/lib/capabilities/capabilityContracts'
 import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
-import type { ArtifactIndex } from '@/lib/capabilities/artifactRegistry'
 import type { CapabilityReviewSessionContext } from '@/lib/session-builder/model'
 
 const canonicalKey = 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl'
@@ -28,13 +27,6 @@ function readiness(): CapabilityReadiness {
   return { status: 'ready', allowedExercises: ['meaning_recall'] }
 }
 
-function artifacts(): ArtifactIndex {
-  return {
-    'meaning:l1': [{ qualityStatus: 'approved', sourceRef }],
-    'accepted_answers:l1': [{ qualityStatus: 'approved', sourceRef }],
-  }
-}
-
 function context(): CapabilityReviewSessionContext {
   return {
     schedulerSnapshot: {
@@ -52,11 +44,10 @@ function context(): CapabilityReviewSessionContext {
 }
 
 describe('resolveCandidate', () => {
-  it('returns a resolved candidate with renderPlan when projection, readiness, and artifacts are present', () => {
+  it('returns a resolved candidate with renderPlan when projection and readiness are present', () => {
     const outcome = resolveCandidate({ canonicalKey, context: context() }, {
       capabilitiesByKey: new Map([[canonicalKey, projection()]]),
       readinessByKey: new Map([[canonicalKey, readiness()]]),
-      artifactIndex: artifacts(),
     })
 
     expect('renderPlan' in outcome).toBe(true)
@@ -72,25 +63,11 @@ describe('resolveCandidate', () => {
     const outcome = resolveCandidate({ canonicalKey, context: context() }, {
       capabilitiesByKey: new Map(),
       readinessByKey: new Map(),
-      artifactIndex: {},
     })
 
     expect('resolutionFailure' in outcome).toBe(true)
     if ('resolutionFailure' in outcome) {
       expect(outcome.resolutionFailure.reason).toBe('missing_capability_projection')
-    }
-  })
-
-  it('returns a failed candidate carrying the resolver reason when artifacts are missing', () => {
-    const outcome = resolveCandidate({ canonicalKey, context: context() }, {
-      capabilitiesByKey: new Map([[canonicalKey, projection()]]),
-      readinessByKey: new Map([[canonicalKey, readiness()]]),
-      artifactIndex: { 'meaning:l1': [{ qualityStatus: 'approved', sourceRef }] },
-    })
-
-    expect('resolutionFailure' in outcome).toBe(true)
-    if ('resolutionFailure' in outcome) {
-      expect(outcome.resolutionFailure.reason).toBe('missing_required_artifact')
     }
   })
 
@@ -103,7 +80,6 @@ describe('resolveCandidate', () => {
     }, {
       capabilitiesByKey: new Map([[canonicalKey, projection()]]),
       readinessByKey: new Map([[canonicalKey, readiness()]]),
-      artifactIndex: artifacts(),
     })
 
     expect(outcome.meta.canonicalKey).toBe(canonicalKey)

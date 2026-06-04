@@ -147,7 +147,6 @@ export async function fetchForDialogueLineBlocks(
         // No artifacts in the typed-table path — the byType/cloze.ts packager
         // reads input.dialogueLine for the dialogue path; the empty map is
         // a no-op for it.
-        artifactsByKind: new Map(),
         poolItems: [],
         poolMeaningsByItem: new Map(),
         userLanguage,

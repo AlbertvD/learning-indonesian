@@ -1,5 +1,4 @@
 import {
-  type ArtifactIndex,
   type CapabilityReadiness,
   type ProjectedCapability,
 } from '@/lib/capabilities'
@@ -25,7 +24,6 @@ export interface CapabilitySessionLoaderInput {
   plannerInput: Omit<PedagogyInput, 'mode' | 'now'>
   capabilitiesByKey: Map<string, ProjectedCapability>
   readinessByKey: Map<string, CapabilityReadiness>
-  artifactIndex: ArtifactIndex
   selectedLessonId?: string
   selectedSourceRefs?: string[]
   // Lesson-activation derivations fed to the queue-drying detector. Both
@@ -41,7 +39,6 @@ export interface CapabilitySessionDataSnapshot {
   plannerInput: Omit<PedagogyInput, 'mode' | 'now'>
   capabilitiesByKey: Map<string, ProjectedCapability>
   readinessByKey: Map<string, CapabilityReadiness>
-  artifactIndex: ArtifactIndex
   currentLessonId: string | null
   nextLessonNeedsExposure: boolean
 }
@@ -183,7 +180,6 @@ function resolveCandidate<T extends CandidateBase>(
   ctx: {
     capabilitiesByKey: Map<string, ProjectedCapability>
     readinessByKey: Map<string, CapabilityReadiness>
-    artifactIndex: ArtifactIndex
   },
 ): CandidateOutcome<T> {
   const capability = ctx.capabilitiesByKey.get(meta.canonicalKey)
@@ -198,7 +194,7 @@ function resolveCandidate<T extends CandidateBase>(
       },
     }
   }
-  const resolution = resolveExercise({ capability, readiness, artifactIndex: ctx.artifactIndex })
+  const resolution = resolveExercise({ capability, readiness })
   if (resolution.status === 'resolved') {
     return { meta, reviewContext: meta.context, renderPlan: resolution.plan }
   }
@@ -243,7 +239,6 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
   const resolveCtx = {
     capabilitiesByKey: input.capabilitiesByKey,
     readinessByKey: input.readinessByKey,
-    artifactIndex: input.artifactIndex,
   }
 
   const dueCapabilities = scopedDueList.map(due => {
@@ -377,7 +372,6 @@ export interface ForceCapabilityAdapter {
     capabilityRow: { id: string; canonical_key: string }
     capability: ProjectedCapability
     readiness: CapabilityReadiness
-    artifactIndex: ArtifactIndex
     learnerState: LearnerCapabilityStateRow
   }>
 }
@@ -405,7 +399,6 @@ export async function buildForceCapabilitySession(input: {
   }, {
     capabilitiesByKey: new Map([[snapshot.capability.canonicalKey, snapshot.capability]]),
     readinessByKey: new Map([[snapshot.capability.canonicalKey, snapshot.readiness]]),
-    artifactIndex: snapshot.artifactIndex,
   })
   const dueCapability = {
     capabilityId: outcome.meta.capabilityId,
@@ -472,7 +465,6 @@ export async function buildSession(input: {
     plannerInput: snapshot.plannerInput,
     capabilitiesByKey: snapshot.capabilitiesByKey,
     readinessByKey: snapshot.readinessByKey,
-    artifactIndex: snapshot.artifactIndex,
     selectedLessonId: input.selectedLessonId,
     selectedSourceRefs: input.selectedSourceRefs,
     currentLessonId: snapshot.currentLessonId,

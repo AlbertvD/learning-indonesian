@@ -1,9 +1,7 @@
 import type { ExerciseType } from '../../types/learning'
 import type { ArtifactKind, CapabilityProjection, ProjectedCapability } from './capabilityTypes'
-import { type ArtifactIndex, hasApprovedArtifact } from './artifactRegistry'
 import {
   exerciseTypesForCapability,
-  requiredArtifactsFor as artifactsForExercise,
   supportsSourceKind,
 } from './renderContracts'
 
@@ -43,7 +41,6 @@ export interface CapabilityHealthReport {
 
 export interface CapabilityValidationInput {
   capability: ProjectedCapability
-  artifacts: ArtifactIndex
   readinessOverride?: 'exposure_only' | 'deprecated' | 'unknown'
   replacementKey?: string
 }
@@ -64,12 +61,14 @@ export function validateCapability(input: CapabilityValidationInput): Capability
 
   // Inverted lookup against RENDER_CONTRACTS: which exercise types name this
   // cap_type AND support its source kind? Cap_types that no exercise serves
-  // — pattern_recognition, pattern_contrast — return [] here. The 2026-05-21
-  // lib/exercise-content fold widened `cloze` (typed) to accept dialogue_line,
-  // so contextual_cloze caps with sourceKind=dialogue_line resolve here via
-  // cloze only. `cloze_mcq` stays item-only (its distractor pool is lesson-
-  // anchored; follow-up). root_derived_* (affixed_form_pair) still returns []
-  // until the affixed_form_pair fetcher lands in lib/exercise-content/adapter.
+  // for this source kind return [] here. Slice 4b: readiness is decided purely
+  // by this typed-contract routing — the legacy `capability_artifacts` bag and
+  // the `required_artifacts` column are gone, and every render contract's
+  // per-source-kind artifact list collapsed to []. Structure for each rendered
+  // exercise is now guaranteed by the typed satellite tables + their pre-write
+  // validators + the live health checks (HC15/HC17/HC19/HC20), not an artifact
+  // bag. `cloze` accepts item + dialogue_line; `typed_recall` accepts item +
+  // affixed_form_pair; the 4 grammar exercises + cloze_mcq accept pattern.
   const candidateExercises = exerciseTypesForCapability(input.capability.capabilityType)
     .filter(et => supportsSourceKind(et, input.capability.sourceKind))
 
@@ -81,67 +80,18 @@ export function validateCapability(input: CapabilityValidationInput): Capability
     }
   }
 
-  // An exercise is render-ready if the union of (a) its contract-declared
-  // required artifacts and (b) the capability's catalog-declared required
-  // artifacts are all approved.
-  //
-  // Why both: the contract declares what the BUILDER reads; the catalog
-  // declares what the CAP_TYPE needs (which may be stricter for certain
-  // cap_types served by a looser builder — e.g. typed_recall serves both
-  // form_recall (needs accepted_answers:id) and root_derived_recall (needs
-  // root_derived_pair). The contract holds the builder's strict minimum;
-  // capability.requiredArtifacts holds the cap-type's additional asks.
-  const checkArtifact = (kind: ArtifactKind) => hasApprovedArtifact({
-    index: input.artifacts,
-    kind,
-    capabilityKey: input.capability.canonicalKey,
-    sourceRef: input.capability.sourceRef,
-  })
-
-  // The contract's per-source-kind artifact list (post-affixed-form-pair PR)
-  // declares what the BUILDER reads for this exercise under this source kind.
-  // The cap's catalog-declared `requiredArtifacts` is the source of truth for
-  // what the CAP_TYPE needs. The union catches builder/cap drift either
-  // direction.
-  const sourceKind = input.capability.sourceKind
-  const readyExercises = candidateExercises.filter(et => {
-    const required = new Set<ArtifactKind>([
-      ...artifactsForExercise(et, sourceKind),
-      ...input.capability.requiredArtifacts,
-    ])
-    return [...required].every(checkArtifact)
-  })
-
-  if (readyExercises.length === 0) {
-    // Report the union of missing artifacts across all candidate exercises.
-    const missing = new Set<ArtifactKind>()
-    for (const et of candidateExercises) {
-      const required = new Set<ArtifactKind>([
-        ...artifactsForExercise(et, sourceKind),
-        ...input.capability.requiredArtifacts,
-      ])
-      for (const kind of required) if (!checkArtifact(kind)) missing.add(kind)
-    }
-    return {
-      status: 'blocked',
-      missingArtifacts: Array.from(missing),
-      reason: `Missing approved artifacts: ${Array.from(missing).join(', ')}`,
-    }
-  }
-
   return {
     status: 'ready',
-    allowedExercises: readyExercises,
+    allowedExercises: [...candidateExercises],
   }
 }
 
 export function validateCapabilities(input: {
   projection: CapabilityProjection
-  artifacts: ArtifactIndex
 }): CapabilityHealthReport {
   const results = input.projection.capabilities.map(capability => ({
     canonicalKey: capability.canonicalKey,
-    readiness: validateCapability({ capability, artifacts: input.artifacts }),
+    readiness: validateCapability({ capability }),
   }))
 
   return {

@@ -13,7 +13,6 @@ import type {
   ConstrainedTranslationExercisesRow, ClozeMcqExercisesRow,
 } from '@/types/learning'
 import type { ArtifactKind, CapabilityType, CapabilitySourceKind } from './capabilityTypes'
-import type { CapabilityArtifact } from './artifactRegistry'
 // ResolutionReasonCode lives in the leaf module (created alongside this file)
 // to break what would otherwise be a circular dependency between this file
 // and src/services/capabilityContentService.ts — the service will import
@@ -323,7 +322,6 @@ export interface RawProjectorInput {
   meanings: ItemMeaning[]
   contexts: ItemContext[]
   answerVariants: ItemAnswerVariant[]
-  artifactsByKind: Map<ArtifactKind, CapabilityArtifact>
   poolItems: LearningItem[]
   poolMeaningsByItem: Map<string, ItemMeaning[]>
   userLanguage: 'nl' | 'en'
@@ -343,7 +341,6 @@ interface BuilderBase {
   meanings: ItemMeaning[]
   contexts: ItemContext[]
   answerVariants: ItemAnswerVariant[]
-  artifactsByKind: Map<ArtifactKind, CapabilityArtifact>
   poolItems: LearningItem[]
   poolMeaningsByItem: Map<string, ItemMeaning[]>
   userLanguage: 'nl' | 'en'
@@ -564,7 +561,6 @@ export function projectBuilderInput<T extends ExerciseType>(
     meanings: raw.meanings,
     contexts: raw.contexts,
     answerVariants: raw.answerVariants,
-    artifactsByKind: raw.artifactsByKind,
     poolItems: raw.poolItems,
     poolMeaningsByItem: raw.poolMeaningsByItem,
     userLanguage: raw.userLanguage,
