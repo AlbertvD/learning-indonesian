@@ -1904,6 +1904,39 @@ end $$;
 drop table if exists indonesian.lesson_page_blocks cascade;
 
 -- ============================================================
+-- Slice 4a (#102, 2026-06-04) — capability-layer safe-set teardown
+-- ============================================================
+-- Drops the retired content/capability-layer tables (data-model-target Decisions
+-- A/B/K). All readers were retired code-first: coverageService now sources
+-- hasMeanings from learning_items.translation_nl and grammar coverage from
+-- grammar_patterns.introduced_by_lesson_id (Path C), so item_meanings and
+-- item_context_grammar_patterns are unread; the textbook_* + generated_exercise_*
+-- tables are empty authoring-pipeline relics; lesson_blocks/_reading_section are
+-- orphan empties from the dead Decision-C path.
+--
+-- The CREATE blocks for these tables are intentionally RETAINED above and dropped
+-- here with CASCADE: two KEPT tables carry FKs INTO this set
+-- (grammar_patterns.introduced_by_source_id -> textbook_sources;
+-- exercise_variants.source_candidate_id -> generated_exercise_candidates), so
+-- deleting the CREATEs would make the kept tables' own definitions reference
+-- missing tables on a fresh rebuild. CASCADE removes those two FK constraints
+-- cleanly (the columns remain, unconstrained). Removing the now-dead CREATE blocks
+-- + those orphaned columns is a deferred follow-up cleanup (larger, separately
+-- reviewable; exercise_variants.source_candidate_id retires with the table in 4c).
+--
+-- content_review_queue is a dead view (zero consumers) over generated_exercise_candidates.
+-- lesson_blocks / lesson_block_reading_section have no other migration.sql blocks
+-- (DDL lives only in a standalone paper-trail file); these drops are their teardown.
+drop view if exists indonesian.content_review_queue;
+drop table if exists indonesian.generated_exercise_candidates cascade;
+drop table if exists indonesian.textbook_pages cascade;
+drop table if exists indonesian.textbook_sources cascade;
+drop table if exists indonesian.item_context_grammar_patterns cascade;
+drop table if exists indonesian.item_meanings cascade;
+drop table if exists indonesian.lesson_block_reading_section cascade;
+drop table if exists indonesian.lesson_blocks cascade;
+
+-- ============================================================
 -- Lesson-stage Phase 1 (2026-05-09) — content.type CHECK constraint (GT5)
 -- ============================================================
 -- Source-of-truth column for lesson_sections.content.type. Validator GT5
