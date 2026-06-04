@@ -1,7 +1,11 @@
 ---
-status: draft
+status: approved
+approved_at: 2026-06-04
 doc_type: data-model-target-proposal
-last_verified_against_code: 2026-05-21
+last_verified_against_code: 2026-06-04
+reviewed_by:
+  - "architect: decisions ratified as ADRs 0009–0013; additive half shipped via Slices 1–3 + PR 6"
+  - "data-architect: PASS — triangle pass 2026-06-04; learning_items.lesson_id has no writer/reader/validator (capability row is the sole lesson-ownership carrier, itemDuplicates.ts:22+96, pedagogy.ts:308, adapter.ts:48+155); lesson_blocks + lesson_block_reading_section have zero src/ or scripts/lib/ references, no FK dependants in migration.sql, drop in dependency order is unblocked."
 depends_on:
   - 2026-05-21-data-model-investigation.md
 ---
@@ -19,6 +23,12 @@ depends_on:
 > - **ADR 0012 (stage responsibilities + no-disk Capability Stage):** learner-facing translations are **Lesson-Stage** content (canonical on `lesson_section_item_rows.l1/l2`); `learning_items.translation_*` is at most a *derived* dedup copy (see the Decision R note). The Capability Stage reads lesson content **only from the DB**.
 > - **Decision D refined (ADR 0012):** the typed `lesson_sections` satellites are the **capability-stage contract** — one typed table per *capability-feeding* section so the Capability Stage reads structured rows, not prose: `lesson_section_item_rows` (item), `lesson_section_grammar_categories` + `grammar_topics` (pattern), `lesson_section_affixed_pairs` (morphology, new). *Display-only* sections (pronunciation, book exercises, reading/culture) + the 8 parent display columns stay in the retained `content.json` blob. See migration plan §9 + the Decision D note.
 > - **Decision C dead (PR 5):** the page-block render path was **retired, not migrated** — there is **no** typed `lesson_blocks` / `lesson_block_reading_section`. Bespoke per-lesson pages reading `content.json` are the sole renderer. Disregard the `lesson_block*` rows in §3.4.
+
+> **✅ STATUS REALITY NOTE (2026-06-04 — verified against the live DB).** This target is **approved and mid-execution**, not forward-looking. The **additive half is shipped and live**; only the **subtractive "final-cleanup" half (the drops) is pending** — that is the Slice 4/5 teardown (`docs/audits/2026-06-04-slice4-census-refresh.md`, issue #102). Treat this doc as a **changelog for the additive decisions** and a **forward spec for the drops only**.
+>
+> - **Additive — DONE & live** (live row counts 2026-06-04): the 4 typed grammar-exercise tables (`contrast_pair_exercises` 202 / `sentence_transformation_exercises` 264 / `constrained_translation_exercises` 330 / `cloze_mcq_exercises` 205), `recognition_mcq_distractors`/`cued_recall_distractors` (606/606), `dialogue_clozes` (47), `affixed_form_pairs` (4), `lesson_section_item_rows` (633) + `_grammar_categories` (63) + `_grammar_topics` (56) + `lesson_dialogue_lines` (120), `lesson_speakers` (29), `learner_lesson_activation` (37); columns `learning_items.{translation_nl,translation_en,usage_note}`, `learning_capabilities.lesson_id`, `lesson_sections.{section_kind,source_section_ref}`. Decisions A (typed-row content), B+G (exercise split + routing), D (typed satellites), G2-B (distractors), J (speakers), R (item translations) — all realised additively. (`cloze_mcq_item_distractors`, `grammar_pattern_examples`, `capability_audio_refs` exist but are 0-row — wired by the item-cloze slice / Decision Q, deferred.)
+> - **Subtractive — PENDING** (still live 2026-06-04, awaiting Slice 4/5): `capability_artifacts` (10,222 rows), `exercise_variants` (716), `item_meanings` (1,248), `learner_skill_state` (763), `review_events` (2,896), `learner_item_state` (649), `lesson_progress` (14), plus the empties `textbook_pages`/`textbook_sources`/`generated_exercise_candidates`/`item_context_grammar_patterns`/`lesson_page_blocks`. Owned by Decisions A/B/K/L/M and executed by Slice 4/5.
+> - **Two drifts reconciled 2026-06-04** (see Decision K + §3.3): (1) `learning_items.lesson_id` was listed as "Add" but is **NOT** in the live DB and is **not needed** — every reader uses `learning_capabilities.lesson_id` (which is live); the target now **drops** it from §3.3. (2) `lesson_blocks` + `lesson_block_reading_section` were created as empty shells before Decision C was killed; they exist (0 rows) in the live DB and are now **drop targets in Decision K**.
 
 ---
 
@@ -729,7 +739,7 @@ alter table indonesian.lessons
 
 ### Decision K — Drop empty tables (aspirational)
 
-**Decision: Drop 5 of 6 empty tables. KEEP `capability_aliases`.**
+**Decision: Drop 7 of 8 empty tables. KEEP `capability_aliases`.** *(Amended 2026-06-04: added `lesson_blocks` + `lesson_block_reading_section` — orphan empties created before Decision C was killed in PR 5; confirmed 0 rows in the live DB 2026-06-04.)*
 
 | Table | Drop / Keep | Reason |
 |---|---|---|
@@ -739,6 +749,8 @@ alter table indonesian.lessons
 | `textbook_pages` | Drop | Same — staging stays in TS files. |
 | `textbook_sources` | Drop | Same. |
 | `podcasts` | Drop | Feature not built; build with the podcast schema design when needed. |
+| `lesson_blocks` | **Drop** *(added 2026-06-04)* | Decision C dead (PR 5) — the typed page-block path was retired, not migrated. The table was created as an empty shell before C was killed and never dropped (0 rows, live 2026-06-04). Bespoke per-lesson pages reading `content.json` are the sole renderer. Drop with the Slice 4a safe-set. |
+| `lesson_block_reading_section` | **Drop** *(added 2026-06-04)* | Same — orphan empty satellite of the dead Decision-C path (0 rows, live 2026-06-04). |
 
 If any of the dropped tables become needed, design them then with concrete requirements rather than carrying empty aspirational shells.
 
@@ -866,7 +878,7 @@ This section names every table in the target schema. For brevity, only changes f
 
 | Table | Status | Change |
 |---|---|---|
-| `learning_items` | survives + columns added | Add `lesson_id`; add `translation_nl text` + `translation_en text` + `usage_note text` (replacing `item_meanings`, per Decision R). |
+| `learning_items` | survives + columns added | Add `translation_nl text` + `translation_en text` + `usage_note text` (replacing `item_meanings`, per Decision R) — **all three live 2026-06-04**. ~~Add `lesson_id`~~ **DROPPED from target 2026-06-04**: not in the live DB (verified absent) and not needed — lesson ownership/eligibility is carried by `learning_capabilities.lesson_id` (live), which every reader uses; a parallel `learning_items.lesson_id` would be an unread second source of truth (violates target-architecture Rule #6). |
 | `item_meanings` | **RETIRED** | Collapsed into columns on `learning_items` (Decision R). 1,248 rows → 3 columns. |
 | `item_answer_variants` | survives | No change. Different concept (alternates for grading); intrinsically many-per-(item, language). |
 | `item_contexts` | survives | Add `lesson_id` if not already present (already has `source_lesson_id`). Audit context_type values — drop `vocabulary_list` if confirmed unused. |
@@ -894,8 +906,8 @@ This section names every table in the target schema. For brevity, only changes f
 | **NEW** `capability_audio_refs` | new | Decision Q — binds caps to TTS clips (replaces `audio_clip` artifact rows). |
 | `podcasts` | **RETIRED** | Empty + feature not built. |
 | **NEW** `lesson_speakers` | new | Decision J |
-| **NEW** `lesson_blocks` | new | Decision C — parent with `title`/`content_unit_slugs`/`intro`/`setup`/`closing`/`source_section_ref` columns populated per block_kind |
-| **NEW** `lesson_block_reading_section` | new | Decision C — the only block satellite (sub-discriminator + 4 mutually-exclusive jsonb shapes) |
+| ~~`lesson_blocks`~~ | **DEAD — DROP (Decision K)** | Decision C was retired in PR 5 (page-block path killed, not migrated). The table was created empty before C died; it exists at 0 rows in the live DB (2026-06-04) and is now a Decision-K drop target. Bespoke pages reading `content.json` are the sole renderer. |
+| ~~`lesson_block_reading_section`~~ | **DEAD — DROP (Decision K)** | Orphan empty satellite of the dead Decision-C path (0 rows, live 2026-06-04). |
 | ~~`lesson_block_hero`~~ | **DROPPED from proposal** | Decision C audit — title/level read from `lessons` row |
 | ~~`lesson_block_recap`~~ | **DROPPED from proposal** | Decision C audit — copy hardcoded in renderer |
 | ~~`lesson_block_practice_bridge`~~ | **DROPPED from proposal** | Decision C audit — label hardcoded in renderer |
