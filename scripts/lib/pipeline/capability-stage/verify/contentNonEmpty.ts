@@ -8,7 +8,6 @@
  * Required fields by table:
  *   learning_capabilities       canonical_key, capability_type, source_ref non-empty
  *   learning_items              base_text, normalized_text, item_type non-empty
- *   item_meanings               translation_text non-empty
  *   item_contexts               source_text non-empty
  *   exercise_variants           payload_json + answer_key_json not {}
  *   grammar_patterns            slug, name non-empty
@@ -26,7 +25,7 @@ export interface ContentNonEmptyInput {
   learningItemIds: string[]
   exerciseVariantIds: string[]
   grammarPatternIds: string[]
-  /** item_meanings + item_contexts get walked via learning_item_id. */
+  /** item_contexts get walked via learning_item_id. */
 }
 
 interface ContentUnitRow {
@@ -118,8 +117,8 @@ export async function runContentNonEmpty(
       }
     }
 
-    // item_meanings + item_contexts walked via learning_item_id.
-    findings.push(...(await checkItemMeanings(supabase, input.learningItemIds)))
+    // item_contexts walked via learning_item_id.
+    // (item_meanings was dropped in Slice 4a — translation invariant is enforced by CS9.)
     findings.push(...(await checkItemContexts(supabase, input.learningItemIds)))
   }
 
@@ -161,29 +160,6 @@ function presenceFinding(table: string, rowId: string, what: string): Validation
     message: `Row ${table}.${rowId} fails presence check (${what})`,
     context: { table, rowId },
   }
-}
-
-async function checkItemMeanings(
-  supabase: CapabilitySupabaseClient,
-  itemIds: string[],
-): Promise<ValidationFinding[]> {
-  const findings: ValidationFinding[] = []
-  const CHUNK = 50
-  for (let i = 0; i < itemIds.length; i += CHUNK) {
-    const chunk = itemIds.slice(i, i + CHUNK)
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('item_meanings')
-      .select('id, learning_item_id, translation_text')
-      .in('learning_item_id', chunk)
-    if (error) throw error
-    for (const r of (data ?? []) as Array<{ id: string; translation_text: string | null }>) {
-      if (!nonEmptyString(r.translation_text)) {
-        findings.push(presenceFinding('item_meanings', r.id, 'translation_text non-empty'))
-      }
-    }
-  }
-  return findings
 }
 
 async function checkItemContexts(

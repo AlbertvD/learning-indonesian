@@ -24,7 +24,6 @@ import { sourceRefForLearningItem } from '../../../content-pipeline-output'
 import type {
   CapabilityInput,
   LearningItemInput,
-  MeaningInput,
 } from '../adapter'
 
 export interface VocabStagingItem {
@@ -68,7 +67,6 @@ export interface PerItemPlan {
   index: number
   item: VocabStagingItem
   learningItemInput: LearningItemInput
-  meanings: MeaningInput[]
   anchorContext: {
     context_type: string
     source_text: string
@@ -130,23 +128,6 @@ export function projectVocab(input: VocabProjectionInput): VocabProjectionOutput
   })
 
   const perItemPlans: PerItemPlan[] = publishable.map((item, index) => {
-    const meanings: MeaningInput[] = []
-    if ((item.translation_nl ?? '').trim()) {
-      meanings.push({
-        learning_item_id: '',
-        translation_language: 'nl',
-        translation_text: (item.translation_nl ?? '').trim(),
-        is_primary: true,
-      })
-    }
-    if ((item.translation_en ?? '').trim()) {
-      meanings.push({
-        learning_item_id: '',
-        translation_language: 'en',
-        translation_text: (item.translation_en ?? '').trim(),
-        is_primary: true,
-      })
-    }
     return {
       index,
       item,
@@ -157,11 +138,10 @@ export function projectVocab(input: VocabProjectionInput): VocabProjectionOutput
         level: input.level,
         source_type: 'lesson',
         pos: item.pos ?? null,
-        // Decision R (PR 1): write translations directly to learning_items columns.
+        // Decision R (PR 1): translations live in learning_items inline columns.
         translation_nl: (item.translation_nl ?? '').trim() || null,
         translation_en: (item.translation_en ?? '').trim() || null,
       },
-      meanings,
       anchorContext: {
         context_type: item.context_type ?? '',
         source_text: item.base_text,

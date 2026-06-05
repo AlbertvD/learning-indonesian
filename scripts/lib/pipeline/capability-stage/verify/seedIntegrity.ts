@@ -8,8 +8,12 @@
  * skipped here because they're already AND-gated pre-write by the
  * deferredDialogueChunks gate (vocab projector).
  *
+ * "NL meaning" = learning_items.translation_nl non-empty (Decision R, PR 1).
+ * item_meanings was dropped in Slice 4a; readMeaningCoverage now reads
+ * learning_items.translation_nl / translation_en directly.
+ *
  * Catches the 2026-04-24 incident's non-dialogue orphan pattern (sentences
- * that landed without meanings or variants).
+ * that landed without translations or variants).
  */
 
 import type { CapabilitySupabaseClient } from '../adapter'
@@ -70,7 +74,7 @@ export async function runSeedIntegrity(
       message:
         `${missingNl.length}/${nonDialogueIds.length} non-dialogue items missing NL meaning ` +
         `(IDs: ${missingNl.slice(0, 5).join(', ')}${missingNl.length > 5 ? `, +${missingNl.length - 5} more` : ''})`,
-      context: { table: 'item_meanings' },
+      context: { table: 'learning_items' },
     })
   }
 

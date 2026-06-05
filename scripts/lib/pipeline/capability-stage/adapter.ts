@@ -11,7 +11,6 @@
  *   legacy 299–316 upsertCapabilityArtifacts
  *   legacy 386–420 upsertGrammarPatterns (PGRST205 fallback preserved)
  *   legacy 491–504 upsertLearningItem (gains review_status per §11 #15)
- *   legacy 515–545 replaceItemMeanings (delete + insert)
  *   legacy 549–560 upsertItemAnchorContext
  *   legacy 638–648 insertExerciseVariantGrammar (duplicate-row bug preserved per §11 #2)
  *   legacy 679–689 insertExerciseVariantVocab (duplicate-row bug preserved per §11 #2)
@@ -515,33 +514,6 @@ export async function upsertLearningItem(
   return { id: data.id, normalized_text: data.normalized_text }
 }
 
-export interface MeaningInput {
-  learning_item_id: string
-  translation_language: 'nl' | 'en'
-  translation_text: string
-  is_primary: boolean
-}
-
-export async function replaceItemMeanings(
-  supabase: CapabilitySupabaseClient,
-  learningItemId: string,
-  meanings: MeaningInput[],
-): Promise<number> {
-  const { error: deleteError } = await supabase
-    .schema('indonesian')
-    .from('item_meanings')
-    .delete()
-    .eq('learning_item_id', learningItemId)
-  if (deleteError) throw deleteError
-
-  if (meanings.length === 0) return 0
-  const { error: insertError } = await supabase
-    .schema('indonesian')
-    .from('item_meanings')
-    .insert(meanings)
-  if (insertError) throw insertError
-  return meanings.length
-}
 
 export interface AnchorContextInput {
   learning_item_id: string
@@ -1298,20 +1270,19 @@ export async function readMeaningCoverage(
   const enCovered = new Set<string>()
   for (let i = 0; i < itemIds.length; i += CHUNK_SIZE) {
     const chunk = itemIds.slice(i, i + CHUNK_SIZE)
-    const { data: nlData, error: nlErr } = await supabase
-      .schema('indonesian').from('item_meanings').select('learning_item_id')
-      .in('learning_item_id', chunk).eq('translation_language', 'nl')
-    if (nlErr) throw nlErr
-    for (const row of (nlData ?? []) as Array<{ learning_item_id: string }>) {
-      nlCovered.add(row.learning_item_id)
-    }
-
-    const { data: enData, error: enErr } = await supabase
-      .schema('indonesian').from('item_meanings').select('learning_item_id')
-      .in('learning_item_id', chunk).eq('translation_language', 'en')
-    if (enErr) throw enErr
-    for (const row of (enData ?? []) as Array<{ learning_item_id: string }>) {
-      enCovered.add(row.learning_item_id)
+    // Decision R (PR 1): translations moved to inline columns on learning_items.
+    // A single query per chunk replaces the prior two item_meanings queries.
+    const { data, error } = await supabase
+      .schema('indonesian').from('learning_items').select('id, translation_nl, translation_en')
+      .in('id', chunk)
+    if (error) throw error
+    for (const row of (data ?? []) as Array<{ id: string; translation_nl: string | null; translation_en: string | null }>) {
+      if (typeof row.translation_nl === 'string' && row.translation_nl.trim() !== '') {
+        nlCovered.add(row.id)
+      }
+      if (typeof row.translation_en === 'string' && row.translation_en.trim() !== '') {
+        enCovered.add(row.id)
+      }
     }
   }
   return { nlCovered, enCovered }

@@ -965,10 +965,9 @@ export async function runCapabilityStage(
       : await upsertGrammarPatterns(supabase, grammar.grammarPatterns)
 
   // ---- 9. Write — learning_items + anchor contexts. -----------------------
-  // Decision R (PR 1): translations now written to learning_items.translation_{nl,en}
+  // Decision R (PR 1): translations written to learning_items.translation_{nl,en}
   // directly via upsertLearningItem (the learningItemInput carries the fields).
-  // replaceItemMeanings is NO LONGER called for item caps — item_meanings rows
-  // become stale and will be dropped in the final cleanup PR (PR 7).
+  // item_meanings was dropped in Slice 4a; no meaning rows are written here.
   const publishedItemIds: string[] = []
   const dialogueItemIds = new Set<string>()
   for (const plan of vocab.perItemPlans) {
