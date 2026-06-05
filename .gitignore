@@ -48,3 +48,8 @@ scripts/data/staging/lesson-*/content-units.ts
 scripts/data/staging/lesson-*/capabilities.ts
 scripts/data/staging/lesson-*/exercise-assets.ts
 scripts/data/staging/lesson-*/lesson-page-blocks.ts
+
+# Grammar audio-recording scripts — regenerated verbatim from the live DB's
+# grammar lesson_sections (scripts/generate-grammar-audio-script.ts). The DB
+# is the source of truth; these are throwaway recording aids.
+audio-scripts/
