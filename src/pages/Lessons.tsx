@@ -70,6 +70,23 @@ const LESSON_PALETTE_FALLBACK = {
   glyph: <IconBook2 size={64} />,
 }
 
+// The same hero photo shown at the top of each bespoke lesson page
+// (public/lesson-<N>-hero.<ext>). Used as the overview tile background so the
+// tile matches the lesson it opens. The gradient + glyph above remain the
+// fallback for any lesson whose hero image isn't in place yet.
+const LESSON_HERO: Record<number, string> = {
+  1: '/lesson-1-hero.webp',
+  2: '/lesson-2-hero.jpg',
+  3: '/lesson-3-hero.jpg',
+  4: '/lesson-4-hero.webp',
+  5: '/lesson-5-hero.webp',
+  6: '/lesson-6-hero.webp',
+  7: '/lesson-7-hero.webp',
+  8: '/lesson-8-hero.webp',
+  9: '/lesson-9-hero.webp',
+  10: '/lesson-10-hero.webp',
+}
+
 function paletteFor(orderIndex: number, featured = false) {
   const palette = LESSON_PALETTES[orderIndex] ?? LESSON_PALETTE_FALLBACK
   const glyphSize = featured ? 96 : 64
@@ -84,13 +101,21 @@ function paletteFor(orderIndex: number, featured = false) {
 
 function LessonBanner({ orderIndex, featured }: { orderIndex: number; featured?: boolean }) {
   const { gradient, glyph } = paletteFor(orderIndex, featured)
+  const hero = LESSON_HERO[orderIndex]
   return (
     <div
       className={classes.banner}
       style={{ background: gradient }}
       aria-hidden="true"
     >
-      <span className={classes.bannerGlyph}>{glyph}</span>
+      {hero ? (
+        <>
+          <img src={hero} alt="" className={classes.bannerImage} loading="lazy" />
+          <span className={classes.bannerScrim} />
+        </>
+      ) : (
+        <span className={classes.bannerGlyph}>{glyph}</span>
+      )}
       <span className={classes.bannerNumber}>{orderIndex}</span>
     </div>
   )
