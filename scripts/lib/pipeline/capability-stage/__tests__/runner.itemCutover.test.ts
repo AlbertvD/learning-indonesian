@@ -763,6 +763,65 @@ describe('runner item cutover (Task 6c)', () => {
     expect(result.counts.itemDistractorSets).toBeGreaterThanOrEqual(0)
   })
 
+  // --- F2: SEEDED items skip distractor generation entirely (cost-skip regression) ---
+  it('skips distractor generation when recognition caps are already seeded (no LLM call)', async () => {
+    // Both items' 4 caps already exist with known ids; their text_recognition caps
+    // already have recognition_mcq_distractors rows (seeded). The fix checks ONLY the
+    // recognition cap (the canonical seeded signal), so both items skip and the
+    // generator is NEVER invoked. Pre-fix, the `.some()`-over-all-caps filter was
+    // ALWAYS true (meaning_recall/form_recall/l1_to_id_choice never seed
+    // recognition_mcq_distractors) → every item regenerated on every publish.
+    const existingItemCaps = new Map<string, string>([
+      ['cap:v1:item:learning_items/buku:text_recognition:id_to_l1:text:nl', 'cap-buku-rec'],
+      ['cap:v1:item:learning_items/buku:l1_to_id_choice:l1_to_id:text:nl', 'cap-buku-cue'],
+      ['cap:v1:item:learning_items/buku:meaning_recall:id_to_l1:text:nl', 'cap-buku-mr'],
+      ['cap:v1:item:learning_items/buku:form_recall:l1_to_id:text:nl', 'cap-buku-fr'],
+      ['cap:v1:item:learning_items/meja:text_recognition:id_to_l1:text:nl', 'cap-meja-rec'],
+      ['cap:v1:item:learning_items/meja:l1_to_id_choice:l1_to_id:text:nl', 'cap-meja-cue'],
+      ['cap:v1:item:learning_items/meja:meaning_recall:id_to_l1:text:nl', 'cap-meja-mr'],
+      ['cap:v1:item:learning_items/meja:form_recall:l1_to_id:text:nl', 'cap-meja-fr'],
+    ])
+    // Seed ONLY the recognition caps (mirrors fetchSeededDistractorCapIds reading
+    // recognition_mcq_distractors). The other caps are intentionally NOT seeded —
+    // pre-fix that alone forced full regeneration.
+    const seededDistractorCapIds = new Set(['cap-buku-rec', 'cap-meja-rec'])
+
+    const { client } = buildItemCutoverMock({ existingItemCaps, seededDistractorCapIds })
+
+    let generateCalls = 0
+    const spyGenerateFn = async (): Promise<string> => {
+      generateCalls++
+      return '[]'
+    }
+
+    const result = await runCapabilityStage(
+      { lessonNumber: 1, lessonId: 'lesson-uuid' },
+      {
+        loadLesson: async () => makeLessonWithItems(tmpDir),
+        createSupabaseClient: () => client as never,
+        loadFromDb: async () => ({
+          items: FAKE_TYPED_ROWS,
+          itemState: {
+            existingItemsByNormalizedText: new Map([
+              ['buku', { id: 'item-buku', normalized_text: 'buku' }],
+              ['meja', { id: 'item-meja', normalized_text: 'meja' }],
+            ]),
+            existingItemCapsByCanonicalKey: new Map(
+              [...existingItemCaps].map(([key, id]) => [key, { id, canonical_key: key }]),
+            ),
+          },
+        }),
+        fetchDistractorPool: async () => [],
+        generateFn: spyGenerateFn,
+      },
+    )
+
+    expect(['ok', 'partial']).toContain(result.status)
+    // The fix: both recognition caps seeded → distractorItems empty → generator never
+    // called. Pre-fix this was 1 (full regeneration of all items every publish).
+    expect(generateCalls).toBe(0)
+  })
+
   // --- G: --regenerate deletes + rewrites only that item's distractors ---
   it('--regenerate deletes existing distractors for only the target item then rewrites', async () => {
     const existingItemCaps = new Map<string, string>([

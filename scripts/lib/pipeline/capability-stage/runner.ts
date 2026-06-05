@@ -784,14 +784,19 @@ export async function runCapabilityStage(
   }
 
   // Determine which items need distractor generation (cap not yet seeded).
+  // Check ONLY the text_recognition cap — it is the canonical seeded signal:
+  // `fetchSeededDistractorCapIds` reads exclusively `recognition_mcq_distractors`,
+  // and cued_recall is written in lockstep, so a seeded recognition cap means the
+  // whole item is seeded. The other caps an item emits (l1_to_id_choice,
+  // meaning_recall, form_recall, and the audio caps) NEVER appear in
+  // recognition_mcq_distractors, so a `.some(unseeded)` over all caps was ALWAYS
+  // true → every item regenerated on every publish and never skipped (cost bug).
   const itemsNeedingDistractors = itemProjection.perItemPlans.filter((plan) => {
-    // An item needs generation if ANY of its caps is unseeded.
-    // (All 4 caps are written atomically by upsertItemDistractors, so
-    // we check the recognition cap — the seeded-state canonical signal.)
-    return plan.capabilities.some((cap) => {
-      const capId = itemCapIdsByKey.get(cap.canonicalKey)
-      return capId !== undefined && !seededCapIds.has(capId)
-    })
+    const recognitionCap = plan.capabilities.find((c) => c.capabilityType === 'text_recognition')
+    if (!recognitionCap) return false
+    const capId = itemCapIdsByKey.get(recognitionCap.canonicalKey)
+    // Generate iff the recognition cap is brand-new (no id yet) or not yet seeded.
+    return capId === undefined || !seededCapIds.has(capId)
   })
 
   // Convert perItemPlans → DistractorInputItem format for the generator.
