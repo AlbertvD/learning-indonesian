@@ -96,11 +96,7 @@ import { validateItemSourceRefResolvability } from './validators/itemSourceRefRe
 import { validateDialogueClozes } from './validators/dialogueClozes'
 import { validateAffixedFormPairs } from './validators/affixedFormPairs'
 
-import {
-  writeLearningItemsWithEnrichedPos,
-} from './stagingWriteback'
 import { enrichMissingPos } from './enrichPos'
-import { enrichMissingLevel } from './enrichLevel'
 import { loadPromotionPlan, applyPromotionPlan } from '../../../promote-capabilities'
 
 import { validatePOS } from '../../validate-pos'
@@ -194,64 +190,16 @@ export async function runCapabilityStage(
   })
   const staging = loaded.staging
 
-  // ---- 1b. Enrichment (pre-validation). --------------------------------
-  // Backfill empty pos / level / translation_en / dialogue translations in-
-  // process. The updated staging files are written back immediately so
-  // (a) validation sees populated values, (b) the DB upsert writes them,
-  // (c) subsequent runs skip the LLM calls. Skipped during dry-run.
-  if (!input.dryRun) {
-    const items = staging.learningItems as LearningItemStagingRow[]
-    let learningItemsDirty = false
-
-    // POS (LLM via Claude)
-    const posResult = await enrichMissingPos(items.map((i) => ({
-      base_text: i.base_text,
-      item_type: i.item_type as 'word' | 'phrase' | 'sentence' | 'dialogue_chunk',
-      translation_nl: i.translation_nl,
-      translation_en: i.translation_en,
-      pos: i.pos,
-    })))
-    if (posResult.posByBaseText.size > 0) {
-      for (const item of items) {
-        const pos = posResult.posByBaseText.get(item.base_text)
-        if (pos) item.pos = pos
-      }
-      learningItemsDirty = true
-    }
-
-    // Level (deterministic — every item inherits lesson level)
-    const levelResult = enrichMissingLevel(items, loaded.lesson.level)
-    if (levelResult.filledCount > 0) {
-      for (const item of items) {
-        const level = levelResult.levelByBaseText.get(item.base_text)
-        if (level) item.level = level
-      }
-      learningItemsDirty = true
-      console.log(`   ✓ Level enrichment: ${levelResult.filledCount} items set to ${loaded.lesson.level}`)
-    }
-
-    // EN translations: NO LONGER generated here. Per ADR 0012 the Lesson Stage
-    // owns all learner-facing translations — the EN enricher was relocated to
-    // `lesson-stage/enrichEnTranslations.ts` (PR 6), widened to cover items +
-    // dialogue + grammar. The Capability Stage still PROJECTS
-    // learning_items.translation_en from staging `learning-items.ts` (which
-    // already carries EN); it just stops filling missing EN. The eventual
-    // capability-stage redesign (#98/#99) will read EN from the typed
-    // lesson-content tables instead.
-
-    if (learningItemsDirty) {
-      writeLearningItemsWithEnrichedPos(staging.stagingDir, items)
-    }
-  }
-
-  // ---- 1b. (retired Slice 5b #147) staging snapshot regeneration. --------
-  // The deterministic buildContentUnitsFromStaging / buildCapabilityStagingFromContent
-  // regeneration + the 3 writeFileSync snapshots (content-units.ts / capabilities.ts /
-  // exercise-assets.ts) are gone. content_units are now built DB-natively
-  // (buildContentUnitsFromDb, step 4b); capabilities come from the typed emitters
-  // (item / audio / affixed / pattern / dialogue cloze); no staging file is written.
-  // This removes the runner's 3 direct writeFileSync snapshots; the remaining
-  // stagingWriteback writes go in 5b.5, clearing the path for the no-disk gate (5b.9).
+  // ---- 1b. (retired Slice 5b #147) staging enrichment, regeneration + snapshots. --
+  // Gone: the staging pos/level enrichment + its disk write-back, AND the
+  // buildContentUnitsFromStaging / buildCapabilityStagingFromContent regeneration
+  // + the 3 derived-snapshot disk writes (content-units / capabilities / exercise-
+  // assets). content_units are built DB-natively (buildContentUnitsFromDb, step 4b);
+  // capabilities come from the typed emitters (item / audio / affixed / pattern /
+  // dialogue cloze); POS is enriched DB-natively (updateLearningItemPos, step 5b+);
+  // level is set in projectItemsFromTypedRows; EN translations are the Lesson Stage's
+  // job (ADR 0012). The runner now performs zero disk writes — the last coupling
+  // cleared for the no-disk gate (5b.9).
 
   // ---- 2. Validate (pre-write). ----------------------------------------
   // grammar_topics validation (GT1) is enforced by lesson-stage; by the time

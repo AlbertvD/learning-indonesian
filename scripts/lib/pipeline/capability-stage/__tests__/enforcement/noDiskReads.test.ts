@@ -56,9 +56,10 @@ import { describe, it, expect } from 'vitest'
 // These shrink as the redesign progresses; the item path must NEVER appear here.
 // ---------------------------------------------------------------------------
 const DISK_IO_ALLOWLIST = new Set([
-  'loader.ts',           // still reads all staging files; item read removed in Task 3
-  'stagingWriteback.ts', // still writes candidates.ts + learning-items.ts; retired in Slice 3
-  'runner.ts',           // still calls writeLearningItemsWithEnrichedPos + writeFileSync snapshots; item writes removed in Tasks 4-6
+  'loader.ts',           // still reads all staging files; removed in Slice 5b Task 6
+  // stagingWriteback.ts — DELETED in Slice 5b Task 5 (no longer exists).
+  // runner.ts — disk-free as of Slice 5b Tasks 4–5 (regeneration + enrichment
+  //   write-back + snapshots removed); off the allowlist now.
 ])
 
 // ---------------------------------------------------------------------------
