@@ -62,7 +62,6 @@ import {
   upsertGrammarPatterns,
   fetchGrammarPatternIdsBySlug,
   upsertItemAnchorContext,
-  upsertLearningItem,
   upsertLearningItemIdempotent,
   replaceDialogueClozes,
   replaceAffixedFormPairs,
@@ -102,7 +101,6 @@ import type { DistractorSetRow } from './validators/itemDistractors'
 // (CS7/CS8/CS9) are now composed behind the gate entry points.
 import { runCapabilityGatePreWrite, runCapabilityGatePostWrite } from './gate'
 
-import { projectVocab } from './projectors/vocab'
 import { projectGrammar, projectPatternsFromCategories } from './projectors/grammar'
 import { buildGrammarExerciseRow } from './projectors/grammarExerciseRows'
 import { projectCloze } from './projectors/cloze'
@@ -117,15 +115,11 @@ import { validateAffixedFormPairs } from './validators/affixedFormPairs'
 
 import {
   markCandidatesPublished,
-  markLearningItemsPublishedOrDeferred,
-  markLearningItemsDeferralsOnly,
   writeLearningItemsWithEnrichedPos,
   type CandidateStagingRow,
-  type LearningItemStagingRow,
 } from './stagingWriteback'
 import { enrichMissingPos } from './enrichPos'
 import { enrichMissingLevel } from './enrichLevel'
-import { propagateDialogueTranslationsToLearningItems } from './propagateDialogueTranslations'
 import { loadPromotionPlan, applyPromotionPlan } from '../../../promote-capabilities'
 
 import { validatePOS } from '../../validate-pos'
@@ -264,23 +258,6 @@ export async function runCapabilityStage(
     // capability-stage redesign (#98/#99) will read EN from the typed
     // lesson-content tables instead.
 
-    // Dialogue translation propagation (deterministic — no LLM call here).
-    // The LLM-driven enrichment of `lesson_sections.content.lines[].translation`
-    // lives in lesson-stage. By the time we reach this code, Stage A has
-    // already filled those translations, so `loaded.sections` carries them.
-    // Our job: copy each populated dialogue line's translation across to the
-    // matching `dialogue_chunk` learning_item's `translation_nl` (keyed by
-    // base_text === line.text), so the deferred-dialogue gate in projectVocab
-    // stops deferring otherwise-publishable dialogue chunks.
-    const propagated = propagateDialogueTranslationsToLearningItems({
-      sections: loaded.sections,
-      learningItems: items,
-    })
-    if (propagated > 0) {
-      learningItemsDirty = true
-      console.log(`   ✓ Dialogue translation propagation: filled translation_nl on ${propagated} dialogue_chunk item(s) from lesson_sections`)
-    }
-
     if (learningItemsDirty) {
       writeLearningItemsWithEnrichedPos(staging.stagingDir, items)
     }
@@ -380,14 +357,10 @@ export async function runCapabilityStage(
   }
 
   // ---- 3. Project (pure). ----------------------------------------------
-  const vocab = projectVocab({
-    lessonNumber: input.lessonNumber,
-    lessonId: input.lessonId,
-    level: loaded.lesson.level,
-    sections: loaded.sections,
-    learningItems: staging.learningItems as never,
-    clozeContexts: staging.clozeContexts as never,
-  })
+  // projectVocab (staging item path) retired in Slice 5b (#147): word/phrase
+  // learning_items + anchor contexts are written DB-natively by the typed path
+  // (step 5b, projectItemsFromTypedRows); sentence/dialogue items are no longer
+  // emitted (deleted by the 5b.10 cleanup migration).
   const grammar = projectGrammar({
     lessonNumber: input.lessonNumber,
     lessonId: input.lessonId,
@@ -1127,26 +1100,15 @@ export async function runCapabilityStage(
       ? { idsBySlug: patternResult.patternIdsBySlug, tableMissing: patternResult.tableMissing }
       : await upsertGrammarPatterns(supabase, grammar.grammarPatterns)
 
-  // ---- 9. Write — learning_items + anchor contexts. -----------------------
-  // Decision R (PR 1): translations written to learning_items.translation_{nl,en}
-  // directly via upsertLearningItem (the learningItemInput carries the fields).
-  // item_meanings was dropped in Slice 4a; no meaning rows are written here.
-  const publishedItemIds: string[] = []
+  // ---- 9. (retired Slice 5b #147) learning_items + anchor contexts. --------
+  // The staging projectVocab write loop is gone. word/phrase learning_items +
+  // anchor contexts are written DB-natively by the typed path (step 5b,
+  // projectItemsFromTypedRows) into itemIdsByNormalizedText. sentence/dialogue
+  // items are no longer emitted (deleted by the 5b.10 cleanup migration), so
+  // dialogueItemIds is always empty here.
+  const publishedItemIds: string[] = [...itemIdsByNormalizedText.values()]
   const dialogueItemIds = new Set<string>()
-  for (const plan of vocab.perItemPlans) {
-    const item = await upsertLearningItem(supabase, plan.learningItemInput)
-    publishedItemIds.push(item.id)
-    if (plan.item.item_type === 'dialogue_chunk') dialogueItemIds.add(item.id)
-    await upsertItemAnchorContext(supabase, {
-      learning_item_id: item.id,
-      context_type: plan.anchorContext.context_type,
-      source_text: plan.anchorContext.source_text,
-      translation_text: plan.anchorContext.translation_text,
-      source_lesson_id: input.lessonId,
-    })
-  }
   counts.learningItems = publishedItemIds.length
-  counts.deferredDialogueChunks = vocab.deferredDialogueKeys.size
 
   // ---- 10. Write — exercise_variants. -----------------------------------
   const patternIdsBySlug = grammarPatternUpsert.tableMissing
@@ -1373,30 +1335,10 @@ export async function runCapabilityStage(
   })
   findings.push(...postWriteFindings)
 
-  // Staging write-back #2 — mirror legacy 925–963. Only after seed-integrity
-  // (CS9) passes do we mark learning-items.ts entries as published or
-  // deferred_dialogue. Writing earlier would mark items published before
-  // verifying the DB state, risking a permanent skip if the DB write failed.
-  const cs9HasError = postWriteFindings.some((f) => f.gate === 'CS9' && f.severity === 'error')
-  if (publishedItemIds.length > 0 && !cs9HasError) {
-    markLearningItemsPublishedOrDeferred(
-      staging.stagingDir,
-      staging.learningItems as LearningItemStagingRow[],
-      vocab.deferredDialogueKeys,
-    )
-    console.log(`   ✓ learning-items.ts marked published/deferred in staging (${publishedItemIds.length} items, ${vocab.deferredDialogueKeys.size} deferred)`)
-  } else if (publishedItemIds.length === 0 && vocab.deferredDialogueKeys.size > 0) {
-    // Edge case: only deferrals, nothing published — still persist the
-    // deferred markers so subsequent runs see the intent.
-    markLearningItemsDeferralsOnly(
-      staging.stagingDir,
-      staging.learningItems as LearningItemStagingRow[],
-      vocab.deferredDialogueKeys,
-    )
-    console.log(`   ✓ learning-items.ts marked deferral-only in staging (${vocab.deferredDialogueKeys.size} dialogue chunks)`)
-  } else if (cs9HasError) {
-    console.warn('   ⚠ Seed-integrity (CS9) failed — staging NOT marked published')
-  }
+  // Staging write-back #2 (learning-items.ts published/deferred markers) retired
+  // in Slice 5b (#147): learning_items are DB-authoritative (ADR 0011); the typed
+  // path's idempotent upsert is the source of truth, so there is no staging file
+  // to mark. The deferred-dialogue concept is gone with projectVocab.
 
   const status: CapabilityStageOutput['status'] =
     findings.some((f) => f.severity === 'error') ? 'partial' : 'ok'
@@ -1435,11 +1377,13 @@ export async function runCapabilityStage(
     console.log(`\n   Skipping capability promotion (status=${status})`)
   }
 
-  // POS coverage (informational; mirrors legacy 968–976).
-  if (vocab.perItemPlans.length > 0) {
-    const coverageItems = vocab.perItemPlans.map((p) => ({
-      base_text: p.item.base_text,
-      item_type: p.item.item_type,
+  // POS coverage (informational; mirrors legacy 968–976). Repointed to the
+  // typed DB-native item path (Slice 5b #147) — word/phrase plans only, which
+  // is exactly the set this coverage report covers.
+  if (itemProjection.perItemPlans.length > 0) {
+    const coverageItems = itemProjection.perItemPlans.map((p) => ({
+      base_text: p.learningItemInput.base_text,
+      item_type: p.learningItemInput.item_type,
       pos: p.learningItemInput.pos ?? undefined,
     }))
     const coverage = validatePOS(coverageItems).coverage

@@ -224,7 +224,11 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
     )
     expect(['ok', 'partial']).toContain(result.status)
     expect(result.findings.every((f) => f.gate.startsWith('CS'))).toBe(true)
-    expect(result.counts.learningItems).toBe(1)
+    // Slice 5b (#147): learning_items are written by the typed DB-native path
+    // (projectItemsFromTypedRows), no longer from staging. This fixture injects
+    // no lesson_section_item_rows, so 0 items are written — the DB-native item
+    // write path (count > 0) is covered by runner.itemCutover.test.ts.
+    expect(result.counts.learningItems).toBe(0)
   })
 
   it('short-circuits with status:validation_failed when CS6 (grammar pattern) fails', async () => {
