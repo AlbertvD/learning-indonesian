@@ -1,0 +1,1236 @@
+{
+  "meta": {
+    "id": "0122e8d6-b673-4963-91f8-142361ab91a7",
+    "order_index": 10,
+    "title": "Les 10 - Ke Kantor Pos",
+    "level": "A1",
+    "description": "",
+    "primary_voice": "id-ID-Chirp3-HD-Achird",
+    "duration_seconds": null,
+    "lesson_audio_url": null
+  },
+  "sections": [
+    {
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Majapahit en de legendarische Gajah Mada",
+          "Het op Java gelegen rijk Majapahit (1293 - 1520) kende als eerste vorst Kertarajasa die regeerde van 1293 tot 1309. Op Java is hij beter bekend onder de naam Brawijaya.",
+          "Hij werd opgevolgd door zijn zoon Jayanagara (1309 - 1328) tijdens wiens regeringsperiode het niet altijd even rustig was. Een opstand tegen zijn gezag in 1319 dwong hem zijn kraton (paleis) 's nachts met slechts 15 man te ontvluchten en zich schuil te houden. Onder zijn getrouwen bevond zich Gajah Mada. Het verhaal gaat dat Gajah Mada na enige tijd onder de bevolking het gerucht verspreidde dat Jayanagara dood was. Toen hij zag dat velen bedroefd waren, wist hij dat de koning nog gezag had, beraamde vervolgens een contra-coup en slaagde erin het gezag van de koning weer te herstellen. Jayanagara kwam in 1328 door moord om het leven. Na 22 jaar strijd om de troonopvolging kwam de roemruchte Hayam Wuruk aan de macht.",
+          "Onder Hayam Wuruk (1350 - 1389) groeide Majapahit uit tot het machtigste rijk in de Indonesische archipel wat vooral te danken zou zijn aan het krachtig optreden van de in 1331 tot rijksbestuurder en opperbevelhebber benoemde Gajah Mada. Volgens de overlevering deed Gajah Mada in de audiëntiezaal van de kraton de gelofte dat hij geen rust zou nemen voordat hij alle eilanden aan zijn vorst zou hebben onderworpen.",
+          "Op Java verzette de vorst van Sunda zich nog, maar via een huwelijk met diens jonge dochter probeerde Hayam Wuruk hieraan een eind te maken. Voor de grote huwelijksplechtigheid trok de vorst van Sunda met zijn gevolg naar de hoofdstad van Majapahit en sloeg een kamp op ten noorden van de stad. Toen begon de onenigheid. Gajah Mada eiste onderwerping van de vorst voordat hij hem de stad zou binnen laten. De vorst wenste echter als schoonvader van de koning van Majapahit ontvangen te worden. Het geschil eindigde tenslotte in een bloedige strijd. Alle Sundanese edelen kwamen om het leven en de jonge bruid pleegde zelfmoord met een kris. Na deze dramatische gebeurtenis was heel Java de facto in handen van Majapahit.",
+          "Bali werd in 1343 na hevige strijd veroverd, terwijl op Sumatra een onderkoning, Adityawarman, werd aangesteld die onderhorig was aan Majapahit. De Javanen beschikten in die periode kennelijk over een goede vloot waarmee ze de vele eilanden in de archipel bezochten. Over onderwerping van vorsten op andere eilanden aan het gezag van Majapahit is niet veel bekend, maar bijna overal in de archipel waren in de loop der eeuwen Javaanse handelskoloniën gevestigd. Het is niet ondenkbaar dat - na een bezoek van een zwaar bewapende vloot - deze nederzettingen het gezag van Java erkenden en bereid waren schatting te betalen."
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "dialogue",
+        "lines": [
+          {
+            "text": "Pak! Pak!",
+            "speaker": "Narti",
+            "translation": "Meneer! Meneer!",
+            "translation_en": "Sir! Sir!",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pak-pak-b2e6f311.mp3"
+          },
+          {
+            "text": "Ya, ada apa?",
+            "speaker": "Pak",
+            "translation": "Ja, wat is er?",
+            "translation_en": "Yes, what is it?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/ya-ada-apa-b06fe3cb.mp3"
+          },
+          {
+            "text": "Saya mau ke kantor pos, tapi di mana kantor pos, ya Pak?",
+            "speaker": "Narti",
+            "translation": "Ik wil naar het postkantoor, maar waar is het postkantoor, meneer?",
+            "translation_en": "I want to go to the post office, but where is it, sir?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/saya-mau-ke-kantor-d48397f6.mp3"
+          },
+          {
+            "text": "O, kantor pos jauh sekali dari sini, Narti. Kamu naik becak dulu sampai ke Jalan Antara. Dari situ terus kamu jalan kaki. Di jalan pertama belok kiri sampai jembatan di ujung jalan itu. Dari jembatan itu kamu belok kanan dan menyeberang Jalan Kantor Pos. Tapi, awas lho!",
+            "speaker": "Pak",
+            "translation": "O, het postkantoor is heel ver van hier, Narti. Neem eerst een fietstaxi tot aan de Jalan Antara. Vanaf daar ga je verder te voet. Sla bij de eerste straat linksaf, tot aan de brug aan het eind van die straat. Vanaf die brug sla je rechtsaf en steek je de Jalan Kantor Pos over. Maar kijk uit, hoor!",
+            "translation_en": "Oh, the post office is very far from here, Narti. First take a bicycle taxi to Jalan Antara. From there continue on foot. At the first street turn left until the bridge at the end of that street. From that bridge turn right and cross Jalan Kantor Pos. But watch out!",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/o-kantor-pos-jauh-bc81fdf6.mp3"
+          },
+          {
+            "text": "Awas kenapa, Pak?",
+            "speaker": "Narti",
+            "translation": "Uitkijken waarvoor, meneer?",
+            "translation_en": "Watch out for what, sir?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/awas-kenapa-pak-9cb6acf6.mp3"
+          },
+          {
+            "text": "Jalan Kantor Pos itu ramai sekali, terlalu banyak lalu-lintas. Nah, sebaiknya kamu lewat jembatan penyeberangan saja. Itu lebih aman. Jembatan penyeberangan itu ada di dekat Gedung Kesenian.",
+            "speaker": "Pak",
+            "translation": "Die Jalan Kantor Pos is heel druk, te veel verkeer. Nou, je kunt beter gewoon via de voetgangersbrug gaan. Dat is veiliger. Die voetgangersbrug is dichtbij het Gedung Kesenian (Kunstgebouw).",
+            "translation_en": "That Jalan Kantor Pos is very busy, too much traffic. Well, you'd better just use the pedestrian bridge instead. That's safer. That pedestrian bridge is near the Gedung Kesenian.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jalan-kantor-pos-itu-b1b28e52.mp3"
+          },
+          {
+            "text": "O, ya Pak, sekarang saya ingat.",
+            "speaker": "Narti",
+            "translation": "O ja meneer, nu weet ik het weer.",
+            "translation_en": "Oh yes sir, I remember now.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/o-ya-pak-sekarang-1d11ad7e.mp3"
+          },
+          {
+            "text": "Kalau kamu sudah turun dari jembatan itu kemudian belok kiri. Kantor pos terletak di muka Pasar Baru. Tetapi mengapa mau ke sana?",
+            "speaker": "Pak",
+            "translation": "Als je eenmaal van die brug bent, sla je daarna linksaf. Het postkantoor ligt tegenover de Pasar Baru. Maar waarom wil je daarheen?",
+            "translation_en": "Once you've come down from that bridge, then turn left. The post office is located opposite Pasar Baru. But why do you want to go there?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kalau-kamu-sudah-turun-7782442c.mp3"
+          },
+          {
+            "text": "Saya mau beli prangko untuk kirim surat dan paket pos kepada kakak saya di Mesir. Dia baru diterima sebagai mahasiswa di Universitas Islam yang termasyhur namanya 'Al-Azhar' di Cairo.",
+            "speaker": "Narti",
+            "translation": "Ik wil postzegels kopen om een brief en een postpakket te sturen naar mijn oudere broer/zus in Egypte. Hij/zij is net aangenomen als student aan de beroemde Islamitische Universiteit genaamd 'Al-Azhar' in Caïro.",
+            "translation_en": "I want to buy stamps to send a letter and a package to my older sibling in Egypt. He/she was just accepted as a student at the famous Islamic University called 'Al-Azhar' in Cairo.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/saya-mau-beli-prangko-497241c2.mp3"
+          },
+          {
+            "text": "Alhamdulillah! Pandai dia ya! Dia senang di sana?",
+            "speaker": "Pak",
+            "translation": "God zij geprezen! Wat knap van hem/haar! Heeft hij/zij het daar naar zijn/haar zin?",
+            "translation_en": "God be praised! How clever of him/her! Is he/she happy there?",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/alhamdulillah-pandai-dia-ya-12245b60.mp3"
+          },
+          {
+            "text": "Dia amat senang belajar di sana tapi kadang-kadang rindu. Dia minta kiriman rokok kretek, ikan asin dan krupuk udang! Permisi dulu, Pak...., saya ke kantor pos, ya.",
+            "speaker": "Narti",
+            "translation": "Hij/zij studeert daar heel graag, maar heeft soms heimwee. Hij/zij vraagt om een zending kretek-sigaretten, gezouten vis en garnalenkroepoek! Staat u mij toe, meneer..., ik ga naar het postkantoor, hè.",
+            "translation_en": "He/she really enjoys studying there but sometimes gets homesick. He/she is asking for a shipment of kretek cigarettes, salted fish and prawn crackers! Excuse me, sir..., I'm going to the post office, okay.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dia-amat-senang-belajar-28644f46.mp3"
+          },
+          {
+            "text": "Iya, mari. Kalau sudah selesai di kantor pos mampir saja ke rumah Paman Susman. Dia tinggal di Jalan Gajah Mada nomor 46.",
+            "speaker": "Pak",
+            "translation": "Ja, ga maar. Als je klaar bent op het postkantoor, ga dan gewoon even langs bij het huis van oom Susman. Hij woont in de Jalan Gajah Mada nummer 46.",
+            "translation_en": "Yes, go ahead. Once you're done at the post office, just stop by Uncle Susman's house. He lives at Jalan Gajah Mada number 46.",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/iya-mari-kalau-sudah-ef879be4.mp3"
+          },
+          {
+            "text": "O ya, itu saran baik!",
+            "speaker": "Narti",
+            "translation": "O ja, dat is een goed voorstel!",
+            "translation_en": "Oh yes, that's a good idea!",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/o-ya-itu-saran-3134472e.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "God zij geprezen",
+            "english": "God be praised",
+            "indonesian": "Alhamdulillah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/alhamdulillah-7e1619ba.mp3"
+          },
+          {
+            "dutch": "veilig",
+            "english": "safe",
+            "indonesian": "aman",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/aman-b001961c.mp3"
+          },
+          {
+            "dutch": "tillen",
+            "english": "lift",
+            "indonesian": "angkat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/angkat-ad18b459.mp3"
+          },
+          {
+            "dutch": "tussen, middenin",
+            "english": "between, in the middle of",
+            "indonesian": "antara",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/antara-2c07e056.mp3"
+          },
+          {
+            "dutch": "zout / gezouten",
+            "english": "salt / salted",
+            "indonesian": "asin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/asin-0aaa3f53.mp3"
+          },
+          {
+            "dutch": "opstaan",
+            "english": "get up / rise",
+            "indonesian": "bangun",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bangun-82d300fa.mp3"
+          },
+          {
+            "dutch": "betalen",
+            "english": "pay",
+            "indonesian": "bayar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bayar-2b9f1e66.mp3"
+          },
+          {
+            "dutch": "fietstaxi",
+            "english": "bicycle taxi",
+            "indonesian": "becak (bècak)",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/becak-bcak-2890202b.mp3"
+          },
+          {
+            "dutch": "afbuigen / afslaan",
+            "english": "turn / turn off",
+            "indonesian": "belok (bèlok)",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/belok-blok-ffbd3b44.mp3"
+          },
+          {
+            "dutch": "dichtbij",
+            "english": "near",
+            "indonesian": "dekat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dekat-9770bed7.mp3"
+          },
+          {
+            "dutch": "aangenomen / ontvangen",
+            "english": "accepted / received",
+            "indonesian": "diterima",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/diterima-18b68f0a.mp3"
+          },
+          {
+            "dutch": "gebouw",
+            "english": "building",
+            "indonesian": "gedung",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/gedung-914aabdc.mp3"
+          },
+          {
+            "dutch": "vis",
+            "english": "fish",
+            "indonesian": "ikan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ikan-6f80ae5c.mp3"
+          },
+          {
+            "dutch": "(zich) herinneren",
+            "english": "remember / recall",
+            "indonesian": "ingat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ingat-126cf95d.mp3"
+          },
+          {
+            "dutch": "islam",
+            "english": "Islam",
+            "indonesian": "islam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/islam-aeddea86.mp3"
+          },
+          {
+            "dutch": "te voet gaan / lopen",
+            "english": "walk / go on foot",
+            "indonesian": "jalan kaki",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/jalan-kaki-170d47c7.mp3"
+          },
+          {
+            "dutch": "brug",
+            "english": "bridge",
+            "indonesian": "jembatan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/jembatan-c7e2fa03.mp3"
+          },
+          {
+            "dutch": "soms",
+            "english": "sometimes",
+            "indonesian": "kadang-kadang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kadangkadang-4877cc7f.mp3"
+          },
+          {
+            "dutch": "postkantoor",
+            "english": "post office",
+            "indonesian": "kantor pos",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kantor-pos-dc761b36.mp3"
+          },
+          {
+            "dutch": "tweede",
+            "english": "second",
+            "indonesian": "kedua",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kedua-71e70e45.mp3"
+          },
+          {
+            "dutch": "kunst / cultuur",
+            "english": "art / culture",
+            "indonesian": "kesenian",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kesenian-f5ad2376.mp3"
+          },
+          {
+            "dutch": "sturen / zenden",
+            "english": "send",
+            "indonesian": "kirim",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kirim-375108f5.mp3"
+          },
+          {
+            "dutch": "zending",
+            "english": "shipment",
+            "indonesian": "kiriman",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kiriman-64590757.mp3"
+          },
+          {
+            "dutch": "kat",
+            "english": "cat",
+            "indonesian": "kucing",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kucing-dab44728.mp3"
+          },
+          {
+            "dutch": "verkeer",
+            "english": "traffic",
+            "indonesian": "lalu-lintas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/lalulintas-3e75d4f0.mp3"
+          },
+          {
+            "dutch": "hoor! (stopwoord)",
+            "english": "hey! (filler word)",
+            "indonesian": "lho!",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/lho-2432c446.mp3"
+          },
+          {
+            "dutch": "student",
+            "english": "student",
+            "indonesian": "mahasiswa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/mahasiswa-53e7326b.mp3"
+          },
+          {
+            "dutch": "kort bezoek brengen",
+            "english": "drop by",
+            "indonesian": "mampir",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/mampir-363b6bc4.mp3"
+          },
+          {
+            "dutch": "oversteken",
+            "english": "cross",
+            "indonesian": "menyeberang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/menyeberang-373b6c21.mp3"
+          },
+          {
+            "dutch": "Egypte",
+            "english": "Egypt",
+            "indonesian": "Mesir",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/mesir-51d3a215.mp3"
+          },
+          {
+            "dutch": "museum",
+            "english": "museum",
+            "indonesian": "museum",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/museum-466f3a9d.mp3"
+          },
+          {
+            "dutch": "pakket",
+            "english": "package",
+            "indonesian": "paket (pakèt)",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/paket-pakt-e8e83f15.mp3"
+          },
+          {
+            "dutch": "oom",
+            "english": "uncle",
+            "indonesian": "paman",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/paman-7822993d.mp3"
+          },
+          {
+            "dutch": "knap / intelligent",
+            "english": "clever / intelligent",
+            "indonesian": "pandai",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pandai-a5f3d1a0.mp3"
+          },
+          {
+            "dutch": "oversteekplaats",
+            "english": "crossing",
+            "indonesian": "penyeberangan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/penyeberangan-77eca885.mp3"
+          },
+          {
+            "dutch": "toestemming",
+            "english": "permission",
+            "indonesian": "permisi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/permisi-fe8b01fc.mp3"
+          },
+          {
+            "dutch": "eerste",
+            "english": "first",
+            "indonesian": "pertama",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pertama-16a805ca.mp3"
+          },
+          {
+            "dutch": "post",
+            "english": "mail",
+            "indonesian": "pos",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/pos-11d1f6a4.mp3"
+          },
+          {
+            "dutch": "postzegel",
+            "english": "stamp",
+            "indonesian": "prangko",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/prangko-b6ab9f67.mp3"
+          },
+          {
+            "dutch": "druk",
+            "english": "busy",
+            "indonesian": "ramai",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ramai-5cb9325b.mp3"
+          },
+          {
+            "dutch": "heimwee",
+            "english": "homesickness",
+            "indonesian": "rindu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rindu-bc56b70c.mp3"
+          },
+          {
+            "dutch": "sigaret",
+            "english": "cigarette",
+            "indonesian": "rokok",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rokok-5a538a20.mp3"
+          },
+          {
+            "dutch": "sigaret met kruidnagel",
+            "english": "clove cigarette",
+            "indonesian": "rokok kretek (krètèk)",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rokok-kretek-krtk-a7c54f98.mp3"
+          },
+          {
+            "dutch": "suggestie / voorstel",
+            "english": "suggestion / proposal",
+            "indonesian": "saran",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/saran-133ec86a.mp3"
+          },
+          {
+            "dutch": "als / zoals",
+            "english": "as / like",
+            "indonesian": "sebagai",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sebagai-886b5148.mp3"
+          },
+          {
+            "dutch": "'t is beter dat",
+            "english": "it's better that",
+            "indonesian": "sebaiknya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/sebaiknya-f25bd0ad.mp3"
+          },
+          {
+            "dutch": "brief",
+            "english": "letter",
+            "indonesian": "surat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/surat-c9c5d52b.mp3"
+          },
+          {
+            "dutch": "gesitueerd / liggen",
+            "english": "situated / located",
+            "indonesian": "terletak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/terletak-511ae12c.mp3"
+          },
+          {
+            "dutch": "beroemdste / bekendste",
+            "english": "most famous / most well-known",
+            "indonesian": "termasyhur",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/termasyhur-06d696e0.mp3"
+          },
+          {
+            "dutch": "garnaal",
+            "english": "shrimp",
+            "indonesian": "udang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/udang-83f7ee90.mp3"
+          },
+          {
+            "dutch": "top / eind",
+            "english": "top / end",
+            "indonesian": "ujung",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/ujung-4480b571.mp3"
+          },
+          {
+            "dutch": "universiteit",
+            "english": "university",
+            "indonesian": "universitas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/universitas-4357790b.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
+        "type": "expressions",
+        "items": [
+          {
+            "dutch": "Staat u mij toe? (vaak bij afscheid; het antwoord luidt: Mari!)",
+            "english": "Excuse me / May I take my leave? (often at parting; the response is: Go ahead!)",
+            "indonesian": "Permisi dulu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/permisi-dulu-af61f72d.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 4,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "Het achtervoegsel -AN vormt zelfstandige naamwoorden uit een grondwoord.",
+              "Het combineert met werkwoorden (algemeen), zelfstandige naamwoorden, en beperkt met bijvoeglijke naamwoorden en telwoorden.",
+              "Bij een werkwoord betekent het resultaat vaak 'wat ge-...-d wordt' (makan -> makanan = wat gegeten wordt = voedsel).",
+              "Let op: achtervoeging van -AN kan niet altijd. Raadpleeg bij twijfel een goed woordenboek Indonesisch."
+            ],
+            "title": "Achtervoegsel -AN — naamwoordvorming",
+            "rules_en": [
+              "The suffix -AN forms nouns from a root word.",
+              "It combines with verbs (general), nouns, and limitedly with adjectives and numerals.",
+              "With a verb, it often means 'that which is ge-...-d' (makan → makanan = that which is eaten = food).",
+              "Note: suffixing -AN is not always possible. Consult a good Indonesian dictionary if in doubt."
+            ],
+            "title_en": "Suffix -AN — noun formation"
+          },
+          {
+            "table": [
+              [
+                "Grondwoord",
+                "Betekenis",
+                "Afleiding",
+                "Betekenis"
+              ],
+              [
+                "minum",
+                "drinken",
+                "minuman",
+                "drank"
+              ],
+              [
+                "makan",
+                "eten",
+                "makanan",
+                "eten, voedsel"
+              ],
+              [
+                "pikir",
+                "denken",
+                "pikiran",
+                "gedachte"
+              ]
+            ],
+            "title": "1. Werkwoord + -AN — zelfstandig naamwoord"
+          },
+          {
+            "table": [
+              [
+                "Grondwoord",
+                "Betekenis",
+                "Afleiding",
+                "Betekenis"
+              ],
+              [
+                "pasar",
+                "markt (plaats)",
+                "pasaran",
+                "de markt (begrip)"
+              ]
+            ],
+            "title": "2a. Zelfstandig naamwoord + -AN — abstrakte betekenis"
+          },
+          {
+            "table": [
+              [
+                "Grondwoord",
+                "Afleiding",
+                "Betekenis",
+                "Toepassing"
+              ],
+              [
+                "hari",
+                "harian",
+                "dagelijks",
+                "majalah harian = dagblad"
+              ],
+              [
+                "minggu",
+                "mingguan",
+                "wekelijks",
+                "majalah mingguan = weekblad"
+              ],
+              [
+                "bulan",
+                "bulanan",
+                "maandelijks",
+                "majalah bulanan = maandblad"
+              ]
+            ],
+            "title": "2b. Tijdsaanduiding + -AN — periodiciteit"
+          },
+          {
+            "table": [
+              [
+                "Grondwoord",
+                "Betekenis",
+                "Afleiding",
+                "Betekenis"
+              ],
+              [
+                "asin",
+                "zout",
+                "asinan",
+                "(ge)zoute(n) etenswaar"
+              ],
+              [
+                "manis",
+                "zoet",
+                "manisan",
+                "zoetigheid"
+              ],
+              [
+                "terus",
+                "vervolgens",
+                "terusan",
+                "kanaal"
+              ]
+            ],
+            "title": "3. Bijvoeglijk naamwoord + -AN — zelfstandig naamwoord"
+          },
+          {
+            "table": [
+              [
+                "Grondwoord",
+                "Betekenis",
+                "Afleiding",
+                "Betekenis"
+              ],
+              [
+                "satu",
+                "een",
+                "satuan",
+                "eenheid"
+              ],
+              [
+                "(se)puluh",
+                "tien",
+                "puluhan",
+                "tiental"
+              ],
+              [
+                "(se)belas",
+                "elf",
+                "belasan",
+                "teenager (tussen 10 en 20 jaar)"
+              ]
+            ],
+            "title": "4. Telwoord + -AN — zelfstandig naamwoord"
+          }
+        ],
+        "grammar_topics": [
+          "Affixderivatie",
+          "Naamwoordvorming"
+        ]
+      }
+    },
+    {
+      "order_index": 5,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "In het Indonesisch komt het verschil tussen het geestelijke en het lichamelijke tot uitdrukking in diverse woorden. Voor gevoelsmatige zaken, wordt een ander woord gebruikt dan voor het 'koele denken, beredeneren' van de geest. Voorbeeld:",
+          "rasa    voelen, vinden (met zintuigen, in het hart, de ziel)\nkira    denken, vinden (van mening zijn), menen\npikir   denken (verstandelijk), nadenken over iets, menen",
+          "Saya rasa buah ini kurang manis    Ik vind deze vrucht niet zoet (gevoelsmatig, persoonlijk)\nSaya kira batik yang ini lebih halus    Ik vind deze batik fijner van kwaliteit\nJangan pikir-pikir tentang hal itu    Zit niet zo te tobben over die kwestie"
+        ]
+      }
+    },
+    {
+      "order_index": 6,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "Het rangtelwoord ('...de/...ste') wordt gevormd met het voorvoegsel KE- vóór het telwoord.",
+              "Uitzondering: 'eerste' is pertama (niet kesatu).",
+              "Het rangtelwoord staat áchter het zelfstandig naamwoord (kamar kedua = de tweede kamer).",
+              "Let op het verschil: kamar kedua (de tweede kamer, rangorde) versus kamar dua (kamer nummer 2, label) versus kedua kamar (beide kamers)."
+            ],
+            "title": "Vorming van het rangtelwoord",
+            "examples": [
+              {
+                "dutch": "De eerste kamer is mijn kamer.",
+                "english": "The first room is my room.",
+                "indonesian": "Kamar pertama adalah kamar saya."
+              },
+              {
+                "dutch": "De tweede kamer is nog niet schoon.",
+                "english": "The second room is not yet clean.",
+                "indonesian": "Kamar kedua belum bersih."
+              },
+              {
+                "dutch": "De deur van kamer (nr.) 2 is kapot.",
+                "english": "The door of room (no.) 2 is broken.",
+                "indonesian": "Kamar dua pintunya rusak."
+              },
+              {
+                "dutch": "Die twee kamers zijn klein.",
+                "english": "Those two rooms are small.",
+                "indonesian": "Dua kamar itu kecil."
+              },
+              {
+                "dutch": "Beide kamers staan leeg.",
+                "english": "Both rooms are empty.",
+                "indonesian": "Kedua kamar itu kosong."
+              }
+            ],
+            "rules_en": [
+              "The ordinal number ('...th') is formed with the prefix KE- before the numeral.",
+              "Exception: 'first' is pertama (not kesatu).",
+              "The ordinal number comes after the noun (kamar kedua = the second room).",
+              "Note the difference: kamar kedua (the second room, ordinal) versus kamar dua (room number 2, label) versus kedua kamar (both rooms)."
+            ],
+            "title_en": "Formation of the ordinal number"
+          },
+          {
+            "table": [
+              [
+                "Telwoord",
+                "Rangtelwoord",
+                "Betekenis"
+              ],
+              [
+                "satu",
+                "pertama",
+                "eerste"
+              ],
+              [
+                "dua",
+                "kedua (ke-2)",
+                "tweede"
+              ],
+              [
+                "tiga",
+                "ketiga (ke-3)",
+                "derde"
+              ],
+              [
+                "sebelas",
+                "kesebelas (ke-11)",
+                "elfde"
+              ],
+              [
+                "seratus",
+                "keseratus (ke-100)",
+                "honderdste"
+              ]
+            ],
+            "title": "Rangtelwoorden"
+          },
+          {
+            "rules": [
+              "yang pertama = de eerste; yang tengah = de middelste; yang terakhir = de laatste."
+            ],
+            "title": "Bijzondere vormen",
+            "examples": [
+              {
+                "dutch": "Wie is de eerste?",
+                "english": "Who is first?",
+                "indonesian": "Siapa yang pertama?"
+              },
+              {
+                "dutch": "Ik wil de middelste.",
+                "english": "I want the middle one.",
+                "indonesian": "Saya mau yang tengah."
+              },
+              {
+                "dutch": "Hij is altijd de laatste.",
+                "english": "He is always last.",
+                "indonesian": "Dia selalu yang terakhir."
+              }
+            ],
+            "rules_en": [
+              "yang pertama = the first; yang tengah = the middle one; yang terakhir = the last."
+            ],
+            "title_en": "Special forms"
+          }
+        ],
+        "grammar_topics": [
+          "Telwoorden",
+          "Rangtelwoorden"
+        ]
+      }
+    },
+    {
+      "order_index": 7,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "De uitkomst van een berekening wordt ingeleid met 'sama dengan' (= is gelijk aan).",
+              "Let op de homoniemen: tambah betekent ook 'toevoegen/erbij', kurang ook 'tekort/minder'.",
+              "Een breuk wordt gevormd met [teller] + per[noemer]: 5/6 = lima perenam."
+            ],
+            "table": [
+              [
+                "Bewerking",
+                "Woord",
+                "Voorbeeld"
+              ],
+              [
+                "optellen",
+                "tambah (+)",
+                "delapan tambah dua sama dengan sepuluh"
+              ],
+              [
+                "aftrekken",
+                "kurang (-)",
+                "sepuluh kurang dua sama dengan delapan"
+              ],
+              [
+                "vermenigvuldigen",
+                "kali (x)",
+                "sepuluh kali dua sama dengan dua puluh"
+              ],
+              [
+                "delen",
+                "dibagi (:)",
+                "sepuluh dibagi dua sama dengan lima"
+              ],
+              [
+                "breuk",
+                "... per ... (/)",
+                "5/6 = lima perenam"
+              ]
+            ],
+            "title": "Rekenkundige bewerkingen",
+            "rules_en": [
+              "The result of a calculation is introduced with 'sama dengan' (= equals).",
+              "Note the homophones: tambah also means 'add/include', kurang also means 'shortage/less'.",
+              "A fraction is formed with [numerator] + per[denominator]: 5/6 = lima perenam."
+            ],
+            "title_en": "Arithmetic operations"
+          }
+        ],
+        "grammar_topics": [
+          "Telwoorden",
+          "Rekenen"
+        ]
+      }
+    },
+    {
+      "order_index": 8,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "karena en sebab (omdat, want) leiden een reden in; karena itu / sebab itu (daarom) leiden een gevolg in.",
+              "supaya en agar geven een doel aan (opdat); sehingga geeft een gevolg/resultaat aan (zodat).",
+              "kalau / jikalau (indien) is een neutrale voorwaarde; asal / asal saja (mits) is een noodzakelijke voorwaarde.",
+              "meskipun / walaupun (ofschoon) geven een toegeving; tidak saja ..., tetapi juga ... is correlatief (niet alleen ..., maar ook ...)."
+            ],
+            "table": [
+              [
+                "Nederlands",
+                "Indonesisch"
+              ],
+              [
+                "bijvoorbeeld",
+                "misalnya"
+              ],
+              [
+                "daarom, daardoor, om die reden",
+                "karena itu, sebab itu"
+              ],
+              [
+                "doordat, want, omdat",
+                "karena, sebab"
+              ],
+              [
+                "hierdoor",
+                "karena ini, sebab ini"
+              ],
+              [
+                "indien",
+                "kalau, jikalau"
+              ],
+              [
+                "mits, op voorwaarde dat",
+                "asal, asal saja"
+              ],
+              [
+                "niet alleen ..., maar ook ...",
+                "tidak saja ..., tetapi juga ..."
+              ],
+              [
+                "ofschoon",
+                "meskipun, walaupun"
+              ],
+              [
+                "op 't moment dat",
+                "bilamana, apabila"
+              ],
+              [
+                "opdat",
+                "supaya, agar"
+              ],
+              [
+                "terwijl",
+                "sementara"
+              ],
+              [
+                "tevoren",
+                "sebelumnya"
+              ],
+              [
+                "voordat",
+                "sebelum"
+              ],
+              [
+                "zodat",
+                "sehingga"
+              ]
+            ],
+            "title": "Voegwoorden — overzicht",
+            "rules_en": [
+              "karena and sebab (because, for) introduce a reason; karena itu / sebab itu (therefore) introduce a consequence.",
+              "supaya and agar express a purpose (so that); sehingga expresses a consequence/result (so that).",
+              "kalau / jikalau (if) is a neutral condition; asal / asal saja (provided that) is a necessary condition.",
+              "meskipun / walaupun (although) express a concession; tidak saja ..., tetapi juga ... is correlative (not only ..., but also ...)."
+            ],
+            "title_en": "Conjunctions — overview"
+          }
+        ],
+        "grammar_topics": [
+          "Voegwoorden"
+        ]
+      }
+    },
+    {
+      "order_index": 9,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "mereka (de overige zijn voorwerpen/dingen; mereka is een persoonlijk voornaamwoord)",
+                "prompt": "rumah - sabun - kursi - mereka"
+              },
+              {
+                "answer": "tangan (de overige zijn werkwoorden; tangan is een lichaamsdeel/zelfstandig naamwoord)",
+                "prompt": "mandi - tidur - tangan - duduk"
+              },
+              {
+                "answer": "maksud (de overige zijn bijvoeglijke naamwoorden; maksud is een zelfstandig naamwoord)",
+                "prompt": "maksud - baik - bersih - panjang"
+              },
+              {
+                "answer": "minta (de overige zijn kleuren; minta is een werkwoord)",
+                "prompt": "coklat - minta - putih - biru"
+              },
+              {
+                "answer": "lekas (de overige zijn werkwoorden; lekas is een bijwoord 'snel')",
+                "prompt": "coba - lihat - cari - lekas"
+              },
+              {
+                "answer": "lapar (de overige zijn vraagwoorden; lapar betekent 'honger')",
+                "prompt": "berapa - lapar - apa - kenapa"
+              },
+              {
+                "answer": "air (de overige zijn eetgerei; air is water/drank)",
+                "prompt": "garpu - piring - air - sendok"
+              },
+              {
+                "answer": "meja (de overige zijn bijvoeglijke naamwoorden; meja is een zelfstandig naamwoord)",
+                "prompt": "enak - rapi - meja - mahal"
+              },
+              {
+                "answer": "mandi (de overige zijn -AN-afleidingen/zelfstandige naamwoorden; mandi is een werkwoord)",
+                "prompt": "makanan - pikiran - mandi - belian"
+              },
+              {
+                "answer": "mas (de overige zijn voorzetsels; mas is een aanspreektitel)",
+                "prompt": "di - dengan - dari - mas"
+              }
+            ],
+            "title": "Oefening I — Welk woord hoort niet in de rij?",
+            "instruction": "Welk woord hoort niet in de rij? Geef een reden."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "makanan = voedsel, eten",
+                "prompt": "makan"
+              },
+              {
+                "answer": "pikiran = gedachte",
+                "prompt": "pikir"
+              },
+              {
+                "answer": "pesanan = bestelling",
+                "prompt": "pesan"
+              },
+              {
+                "answer": "tahunan = jaarlijks",
+                "prompt": "tahun"
+              },
+              {
+                "answer": "cobaan = beproeving",
+                "prompt": "coba"
+              },
+              {
+                "answer": "ulangan = herhaling, overhoring/toets",
+                "prompt": "ulang"
+              },
+              {
+                "answer": "ribuan = duizendtal(len)",
+                "prompt": "seribu"
+              },
+              {
+                "answer": "ingatan = herinnering, geheugen",
+                "prompt": "ingat"
+              },
+              {
+                "answer": "minuman = drank",
+                "prompt": "minum"
+              },
+              {
+                "answer": "kiriman = zending",
+                "prompt": "kirim"
+              },
+              {
+                "answer": "bayaran = betaling",
+                "prompt": "bayar"
+              },
+              {
+                "answer": "loncatan = sprong",
+                "prompt": "loncat"
+              },
+              {
+                "answer": "kumpulan = verzameling, groep",
+                "prompt": "kumpul"
+              },
+              {
+                "answer": "gorengan = gefrituurde snacks",
+                "prompt": "goreng"
+              },
+              {
+                "answer": "angkatan = lichting, generatie",
+                "prompt": "angkat"
+              },
+              {
+                "answer": "periksaan / pemeriksaan = onderzoek",
+                "prompt": "periksa"
+              },
+              {
+                "answer": "terusan = kanaal",
+                "prompt": "terus"
+              },
+              {
+                "answer": "harian = dagelijks",
+                "prompt": "hari"
+              }
+            ],
+            "title": "Oefening II — Voeg -AN toe",
+            "instruction": "Voeg -AN toe aan de onderstaande woorden. Wat is de betekenis van de op deze manier gevormde woorden?"
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "Kamar makan lantainya bersih. / Kamar makan bersih lantainya.",
+                "prompt": "Lantai kamar makan bersih"
+              },
+              {
+                "answer": "Hotel itu handuknya putih. / Hotel itu putih handuknya.",
+                "prompt": "Handuk hotel itu putih"
+              },
+              {
+                "answer": "Ayahmu sayurnya enak. / Ayahmu enak sayurnya.",
+                "prompt": "Sayur ayahmu enak"
+              },
+              {
+                "answer": "Teman saya namanya Ali. / Teman saya Ali namanya.",
+                "prompt": "Nama teman saya Ali"
+              },
+              {
+                "answer": "Bapak itu kopornya berat. / Bapak itu berat kopornya.",
+                "prompt": "Kopor bapak itu berat"
+              },
+              {
+                "answer": "Paman saya hadiahnya bagus. / Paman saya bagus hadiahnya.",
+                "prompt": "Hadiah paman saya bagus"
+              },
+              {
+                "answer": "Kucing ini warnanya hitam. / Kucing ini hitam warnanya.",
+                "prompt": "Warna kucing ini hitam"
+              },
+              {
+                "answer": "Pardi mobilnya rusak. / Pardi rusak mobilnya.",
+                "prompt": "Mobil Pardi rusak"
+              },
+              {
+                "answer": "Toto kakinya patah. / Toto patah kakinya.",
+                "prompt": "Kaki Toto patah"
+              },
+              {
+                "answer": "Lemari ini kuncinya besar. / Lemari ini besar kuncinya.",
+                "prompt": "Kunci lemari ini besar"
+              }
+            ],
+            "title": "Oefening III — Bezit met -nya",
+            "instruction": "Maak van elke zin twee varianten volgens het voorbeeld. Contoh: 'Nama anak ini Susi' -> 'Anak ini namanya Susi' / 'Anak ini Susi namanya'."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Jangan naik bus!",
+                "prompt": "Stap de bus niet in!"
+              },
+              {
+                "answer": "Beli saja mobil!",
+                "prompt": "Koop toch een auto!"
+              },
+              {
+                "answer": "Ayo, mari kita kembali!",
+                "prompt": "Kom aan, laten we teruggaan!"
+              },
+              {
+                "answer": "Jangan mandi sekarang!",
+                "prompt": "Ga nu niet baden!"
+              },
+              {
+                "answer": "Mari kita beli kain batik ini?",
+                "prompt": "Kom, zullen we deze batikdoek kopen?"
+              },
+              {
+                "answer": "Duduk di sini!",
+                "prompt": "Ga hier zitten!"
+              },
+              {
+                "answer": "Jangan minum air di sini!",
+                "prompt": "Drink geen water hier!"
+              },
+              {
+                "answer": "Mari kita mampir ke rumah Yati.",
+                "prompt": "Kom, laten we langsgaan bij Yati"
+              },
+              {
+                "answer": "Makan saja pisang ini!",
+                "prompt": "Eet deze banaan toch!"
+              },
+              {
+                "answer": "Turunlah! / Silakan turun!",
+                "prompt": "Stapt u uit!"
+              }
+            ],
+            "title": "Oefening IV — Vertaal (gebiedende wijs)",
+            "instruction": "Vertaal de volgende Nederlandse zinnen in het Indonesisch."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Overmorgen wil Adi naar zijn oom die al twee weken in het ziekenhuis ligt.",
+                "prompt": "Lusa Adi mau ke paman yang sudah dua minggu di rumah sakit"
+              },
+              {
+                "answer": "Gisteren was meneer Hasan ziek, hij had erge hoofdpijn.",
+                "prompt": "Kemarin Bapak Hasan sakit, kepalanya sakit sekali"
+              },
+              {
+                "answer": "Gaat jouw kind morgen naar school of niet?",
+                "prompt": "Besok anakmu ke sekolah apa?"
+              },
+              {
+                "answer": "Wij gaan eerst naar de markt om kip, vis en groente te kopen.",
+                "prompt": "Kami ke pasar dulu beli ayam, ikan dan sayuran"
+              },
+              {
+                "answer": "Volgend jaar gaat mevrouw Jansen met het vliegtuig naar Jakarta.",
+                "prompt": "Tahun depan Ibu Jansen naik kapal terbang ke Jakarta"
+              },
+              {
+                "answer": "Gisteravond vertrok Lisa naar het huis van haar moeder.",
+                "prompt": "Tadi malam Lisa berangkat ke rumah ibunya"
+              },
+              {
+                "answer": "Vanmiddag blijven de hulp en de kinderen thuis, de kinderen moeten leren!",
+                "prompt": "Nanti siang pembantu dan anak-anak tinggal di rumah, anak-anak harus belajar!"
+              },
+              {
+                "answer": "Drie maanden geleden kwamen zij uit Sumatra.",
+                "prompt": "Tiga bulan yang lalu mereka datang dari Sumatera"
+              },
+              {
+                "answer": "Op woensdag willen veel mensen naar Taman Mini.",
+                "prompt": "Hari Rabu banyak orang mau ke Taman Mini"
+              },
+              {
+                "answer": "Op zondag gaan in de steden in Nederland de musea pas om 13.00 uur open.",
+                "prompt": "Pada hari Minggu di kota-kota di Belanda museum baru buka jam 13.00"
+              }
+            ],
+            "title": "Oefening V — Vertaal (Indonesisch -> Nederlands)",
+            "instruction": "Vertaal de volgende Indonesische zinnen in het Nederlands."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Dia yang pertama duduk di sini.",
+                "prompt": "Zij was de eerste die hier ging zitten"
+              },
+              {
+                "answer": "Karena itu dia mendapat minuman yang enak.",
+                "prompt": "Daarom kreeg ze een lekker drankje"
+              },
+              {
+                "answer": "Yang terakhir baru tiba jam sembilan lewat seperempat pagi.",
+                "prompt": "De laatsten kwamen pas om kwart over negen 's ochtends aan"
+              },
+              {
+                "answer": "Bilamana sekolah di Indonesia mulai jam setengah delapan pagi, sudah panas.",
+                "prompt": "Op het moment dat de scholen in Indonesië om half acht in de ochtend beginnen, is het al warm"
+              },
+              {
+                "answer": "Ada orang yang bangun pagi-pagi jam lima.",
+                "prompt": "Er zijn mensen die 's ochtends vroeg om vijf uur opstaan"
+              },
+              {
+                "answer": "Mereka menyiapkan sarapan, misalnya nasi goreng dengan ikan asin dan lauk.",
+                "prompt": "Ze maken het ontbijt klaar, bijvoorbeeld gebakken rijst met zoute vis en een bijgerecht"
+              },
+              {
+                "answer": "Sebagai makan siang dan makan malam orang di Indonesia selalu makan nasi.",
+                "prompt": "Als middagmaal en avondmaal eten de mensen in Indonesië altijd rijst"
+              },
+              {
+                "answer": "Waktu yang paling panas adalah antara jam dua belas dan jam dua.",
+                "prompt": "Het warmste tijdstip is tussen twaalf en twee uur"
+              },
+              {
+                "answer": "Karena itu banyak orang tidur setelah makan siang sampai kira-kira jam empat sore.",
+                "prompt": "Daarom gaan veel mensen na het middagmaal slapen tot ongeveer vier uur in de namiddag"
+              },
+              {
+                "answer": "Pada waktu seperti itu tidak banyak lalu-lintas.",
+                "prompt": "Op zo'n tijdstip is er niet veel verkeer"
+              }
+            ],
+            "title": "Oefening VI — Vertaal (Nederlands -> Indonesisch)",
+            "instruction": "Vertaal de volgende Nederlandse zinnen in het Indonesisch."
+          }
+        ]
+      }
+    }
+  ],
+  "runtime_components": {
+    "ActivationGate": {
+      "import": "import { ActivationGate } from '@/components/lessons/ActivationGate'",
+      "usage": "<ActivationGate lessonId=\"0122e8d6-b673-4963-91f8-142361ab91a7\" />",
+      "purpose": "The user-controlled checkbox that adds this lesson's capabilities to spaced review.",
+      "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
+    },
+    "LessonAudioPlayer": {
+      "note": "No lesson-level audio published for this lesson yet."
+    },
+    "PracticeActions": {
+      "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
+      "usage": "<PracticeActions lessonId=\"0122e8d6-b673-4963-91f8-142361ab91a7\" />",
+      "purpose": "Wired to runtime capability counts; renders \"Practice this lesson · N ready\" and \"Review this lesson\" CTAs.",
+      "placement": "Anywhere on the page. Conventionally pinned to a sidebar or near the bottom as a conclusion CTA."
+    }
+  }
+}

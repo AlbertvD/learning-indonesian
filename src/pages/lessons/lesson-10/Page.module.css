@@ -1,0 +1,767 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Page.module.css — Lesson 10: Ke Kantor Pos (Naar het postkantoor)
+
+   A wayfinding lesson. The dialogue is a route — directions to the post office —
+   so the page is built around journeying: a step-marked dialogue, a lexicon of
+   the road, table-driven grammar, and a Majapahit history spread that the
+   dialogue's closing line ("Jalan Gajah Mada") opens onto. Indigo/teal spine,
+   warm amber for the human voice, slate for the historical past.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ─── Page root ──────────────────────────────────────────────────────────── */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
+}
+
+.band { width: 100%; padding: 56px 0; }
+@media (max-width: 720px) { .band { padding: 40px 0; } }
+
+/* ─── Hero — a Yogyakarta street, becak under teal→navy ──────────────────── */
+
+.heroBand {
+  composes: band;
+  background-color: #0c4a6e;
+  background-image:
+    linear-gradient(115deg, rgba(12, 74, 110, 0.86) 0%, rgba(20, 30, 48, 0.80) 52%, rgba(0, 199, 190, 0.22) 100%),
+    url('/lesson-10-hero.webp');
+  background-size: cover;
+  background-position: center 38%;
+  border-bottom: 1px solid var(--hero-border);
+  padding: 84px 0 96px;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroBand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 82% 18%, rgba(0, 199, 190, 0.20), transparent 42%),
+    radial-gradient(circle at 12% 88%, rgba(0, 229, 255, 0.14), transparent 38%);
+  pointer-events: none;
+}
+
+.heroInner {
+  composes: container;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 720px) { .heroBand { padding: 56px 0 64px; } }
+
+.heroLeft { display: flex; flex-direction: column; gap: 16px; max-width: 720px; }
+
+.heroBadgeRow { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.heroBadge {
+  align-self: flex-start;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 199, 190, 0.18);
+  color: var(--teal);
+  border: 1px solid rgba(0, 199, 190, 0.32);
+}
+
+.heroBadgeAlt {
+  composes: heroBadge;
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary-border);
+}
+
+.heroTitle { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+
+.heroTitleId {
+  font-size: clamp(40px, 5.5vw, 60px);
+  font-weight: var(--fw-black);
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.heroTitleNl {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: rgba(255, 255, 255, 0.66);
+  font-style: italic;
+}
+
+.heroDescription {
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.90);
+  line-height: 1.62;
+  max-width: 600px;
+}
+
+/* ─── Editorial lede ─────────────────────────────────────────────────────── */
+
+.ledeBand { composes: band; padding: 64px 0 32px; }
+.ledeInner { composes: container; max-width: 920px; }
+
+.ledeQuote {
+  font-size: clamp(17px, 1.8vw, 21px);
+  font-weight: var(--fw-medium);
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.ledeQuote em {
+  font-style: italic;
+  color: var(--teal);
+  font-weight: var(--fw-semibold);
+}
+
+.ledeMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.ledeMeta::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  background: var(--teal);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ─── Main shell ─────────────────────────────────────────────────────────── */
+
+.shellBand { composes: band; padding-top: 24px; padding-bottom: 24px; }
+
+.shell {
+  composes: container;
+  max-width: 1120px;
+  display: flex;
+  flex-direction: column;
+  gap: 84px;
+  min-width: 0;
+}
+
+@media (max-width: 720px) { .shell { gap: 56px; } }
+
+.section { display: flex; flex-direction: column; }
+
+/* ─── Shared section header ──────────────────────────────────────────────── */
+
+.sectionEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  margin: 0 0 18px;
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+  font-style: italic;
+}
+
+/* ─── 1. Dialogue as a route ─────────────────────────────────────────────── */
+
+.routeBand {
+  background: linear-gradient(135deg, rgba(0,199,190,0.08) 0%, rgba(0,229,255,0.04) 60%, rgba(255,149,0,0.05) 100%);
+  border-radius: var(--r-xl);
+  padding: 48px 40px;
+  margin: 0 -40px;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 720px) { .routeBand { padding: 32px 20px; margin: 0; } }
+
+.routeBand::before {
+  content: '';
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(0,199,190,0.16), transparent 70%);
+  pointer-events: none;
+}
+
+.routeEyebrow {
+  composes: sectionEyebrow;
+  color: var(--teal);
+}
+.routeEyebrow::before { background: var(--teal); }
+
+.routeSetup {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 32px;
+  max-width: 72ch;
+}
+
+.dialogueLines {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.dialogueLine {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 16px 20px;
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--r-md);
+}
+
+@media (max-width: 720px) {
+  .dialogueLine { grid-template-columns: 1fr; gap: 6px; padding: 14px 16px; }
+}
+
+.dialogueSpeaker {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding-top: 4px;
+}
+
+.dialogueLine[data-speaker-tone='narti'] .dialogueSpeaker { color: var(--accent-primary); }
+.dialogueLine[data-speaker-tone='pak']   .dialogueSpeaker { color: var(--warning); }
+
+.dialogueBody { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+
+.dialogueIdRow { display: flex; align-items: flex-start; gap: 12px; }
+
+.dialogueId {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  line-height: 1.5;
+  flex: 1;
+  min-width: 0;
+}
+
+.dialogueNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.55;
+}
+
+/* The long directions line gets a "steps" highlight strip */
+.dialogueLine[data-key-step='true'] {
+  background: rgba(0,199,190,0.07);
+  border: 1px solid rgba(0,199,190,0.20);
+}
+
+/* ─── 2. Lexicon of the road (vocabulary) ────────────────────────────────── */
+
+.vocabEyebrow {
+  composes: sectionEyebrow;
+  color: var(--success);
+}
+.vocabEyebrow::before { background: var(--success); }
+
+.vocabIntro {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 24px;
+  max-width: 68ch;
+}
+
+.vocabGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  gap: 8px;
+}
+
+.vocabChip {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 11px 14px;
+  background: rgba(50,215,75,0.04);
+  border: 1px solid rgba(50,215,75,0.16);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.vocabChip:hover { border-color: var(--success); transform: translateY(-1px); }
+
+.vocabId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.vocabSep {
+  width: 4px; height: 4px;
+  border-radius: 999px;
+  background: var(--text-tertiary);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.vocabNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── 3. Expression — the parting formula ────────────────────────────────── */
+
+.partingEyebrow {
+  composes: sectionEyebrow;
+  color: var(--warning);
+}
+.partingEyebrow::before { background: var(--warning); }
+
+.partingCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 28px 32px;
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, rgba(255,149,0,0.07) 0%, transparent 100%);
+  border: 1px solid rgba(255,149,0,0.22);
+  max-width: 640px;
+}
+
+.partingExchange { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+
+.partingId {
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.partingNote {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* ─── 4. Grammar — prose rules + reference table per topic ────────────────── */
+
+/* One accent source per grammar section — the header eyebrow and every
+   accented element inside (number, → bullets, table headers) all read the
+   same --block-accent so the header colour always matches the body colour. */
+.section[data-accent='purple'] { --block-accent: var(--mix-recall); }
+.section[data-accent='cyan']   { --block-accent: var(--accent-primary); }
+.section[data-accent='teal']   { --block-accent: var(--teal); }
+.section[data-accent='amber']  { --block-accent: var(--warning); }
+
+.grammarEyebrow {
+  composes: sectionEyebrow;
+  color: var(--block-accent, var(--mix-recall));
+}
+.grammarEyebrow::before { background: var(--block-accent, var(--mix-recall)); }
+
+.grammarStack {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.grammarBlock {
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  overflow: hidden;
+}
+
+.grammarHead {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 22px 28px 0 30px;
+}
+
+.grammarNumber {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--block-accent, var(--mix-recall));
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.12em;
+}
+
+.grammarBlockTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.grammarRules {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0 28px 0 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.grammarRules li {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.55;
+  padding-left: 22px;
+  position: relative;
+}
+
+.grammarRules li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--block-accent, var(--mix-recall));
+  font-weight: var(--fw-bold);
+}
+
+/* Inline examples (ordinals / special forms) */
+.grammarExamples {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0 28px 0 30px;
+}
+
+.grammarExample {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--card-border);
+}
+
+.grammarExample:last-child { border-bottom: none; }
+
+@media (max-width: 720px) {
+  .grammarExample { grid-template-columns: 1fr; gap: 2px; }
+}
+
+.grammarExampleId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.grammarExampleNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Reference table */
+.gtableWrap {
+  margin: 18px 0 0;
+  padding: 0 22px 22px;
+  overflow-x: auto;
+}
+
+.gtableTitle {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 4px 8px 10px;
+}
+
+.gtable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-md);
+}
+
+.gtable thead th {
+  text-align: left;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--block-accent, var(--mix-recall));
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--card-border);
+  white-space: nowrap;
+}
+
+.gtable tbody td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--card-border);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+.gtable tbody tr:last-child td { border-bottom: none; }
+
+/* first column of each table = the Indonesian / root form, emphasised */
+.gtable tbody td:first-child {
+  color: var(--text-primary);
+  font-weight: var(--fw-semibold);
+}
+
+.gtable tbody tr:hover td { background: var(--bg-hover); }
+
+/* ─── 5. Nuance panel — rasa / kira / pikir ──────────────────────────────── */
+
+.nuanceEyebrow {
+  composes: sectionEyebrow;
+  color: var(--accent-primary);
+}
+.nuanceEyebrow::before { background: var(--accent-primary); }
+
+.nuanceIntro {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0 0 24px;
+  max-width: 74ch;
+}
+
+.nuanceTriple {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.nuanceWord {
+  padding: 18px 20px;
+  border-radius: var(--r-md);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.nuanceWord:nth-child(1) { background: rgba(0,229,255,0.05);  border-color: rgba(0,229,255,0.20); }
+.nuanceWord:nth-child(2) { background: rgba(156,54,181,0.05); border-color: rgba(156,54,181,0.20); }
+.nuanceWord:nth-child(3) { background: rgba(0,199,190,0.05);  border-color: rgba(0,199,190,0.20); }
+
+.nuanceWordId {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-black);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.nuanceWordGloss {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.nuanceExamples {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-left: 2px solid var(--accent-primary-glow);
+  padding-left: 22px;
+}
+
+.nuanceExampleRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: baseline;
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--card-border);
+}
+
+.nuanceExampleRow:last-child { border-bottom: none; }
+
+@media (max-width: 720px) {
+  .nuanceExampleRow { grid-template-columns: 1fr; gap: 2px; }
+}
+
+.nuanceExampleId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  line-height: 1.45;
+}
+
+.nuanceExampleNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ─── 6. Majapahit — history spread ──────────────────────────────────────── */
+
+.historyBand {
+  background: linear-gradient(180deg, rgba(99,102,141,0.10) 0%, transparent 65%);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--card-border);
+  padding: 48px 44px;
+  margin: 0 -44px;
+}
+
+@media (max-width: 720px) { .historyBand { padding: 32px 22px; margin: 0; } }
+
+.historyEyebrow {
+  composes: sectionEyebrow;
+  color: var(--ring-target);
+}
+.historyEyebrow::before { background: var(--ring-target); }
+
+.historyKicker {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+  margin: 0 0 26px;
+  line-height: 1.6;
+  max-width: 64ch;
+}
+
+.historyKicker em { color: var(--ring-target); font-style: normal; font-weight: var(--fw-semibold); }
+
+.historyTitle {
+  font-size: clamp(28px, 3.4vw, 42px);
+  font-weight: var(--fw-black);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0 0 24px;
+}
+
+.historyProse {
+  max-width: 80ch;
+}
+
+.historyProse p {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.72;
+  margin: 0 0 18px;
+}
+
+.historyProse p:first-of-type::first-letter {
+  font-size: 3.1em;
+  font-weight: var(--fw-black);
+  color: var(--ring-target);
+  float: left;
+  line-height: 0.82;
+  padding: 6px 12px 0 0;
+}
+
+/* ─── Inline play button ─────────────────────────────────────────────────── */
+
+.playButton {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition-base);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.playButton:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+}
+
+.playButton[data-playing='true'] {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-glow);
+}
+
+.playButton svg { width: 10px; height: 10px; }
+
+/* ─── Closing band ───────────────────────────────────────────────────────── */
+
+.closingBand {
+  composes: band;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,229,255,0.04) 100%);
+  padding: 64px 0 96px;
+}
+
+.closingInner {
+  composes: container;
+  max-width: 720px;
+  text-align: center;
+}
+
+.closingTitle {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  letter-spacing: -0.015em;
+}
+
+.closingLede {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+  line-height: 1.65;
+}
+
+.closingActivation { display: flex; justify-content: center; margin: 0 0 28px; }
+
+.closingActivation > * {
+  width: 100%;
+  max-width: 660px;
+  text-align: left;
+  padding: 18px 22px;
+  background: var(--accent-primary-subtle);
+  border: 1px solid var(--accent-primary-border);
+  border-radius: var(--r-lg);
+}
+
+.closingActions { display: flex; justify-content: center; }
+.closingActions > * { width: 100%; max-width: 660px; }

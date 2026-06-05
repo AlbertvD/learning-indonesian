@@ -92,6 +92,8 @@ The user invokes you with a lesson identifier — usually an `order_index` like 
 - A hero metadata sidebar ("9 secties / 32 oefeningen klaar"). Removed in lesson 1; don't bring it back.
 - A "Stem: voice-id" attribution under the lesson audio player. Removed; don't bring it back.
 - A left-border stripe per dialogue line. Use coloured speaker labels instead.
+- A vertical coloured left-edge stripe on grammar tiles/blocks (a `::before` accent bar down the card's left edge). Lesson 1 carries a legacy one — **do not replicate it.** Convey the per-section grammar accent the way lessons 2–8 do: the eyebrow tick, the accent-coloured tile number (`01`/`02`), and the `→` rule bullets. Neutral card border only.
+- A grammar section whose header accent and body accent disagree. Drive both the eyebrow (colour + tick) and every accented body element (tile number, `→` bullets, table-header text) from a **single** accent variable set once on the section, so the header colour always matches the colour used inside. Never hardcode the eyebrow colour to a fixed hex.
 
 ## Iteration protocol
 
