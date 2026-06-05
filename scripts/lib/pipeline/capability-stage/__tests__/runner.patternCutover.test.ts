@@ -304,7 +304,7 @@ describe('runner pattern cutover (Task 6)', () => {
     expect(result.findings.filter((f) => f.gate === 'CS18')).toHaveLength(0)
   })
 
-  it('usePatternPath=false (no typed categories): legacy pattern caps flow through unchanged', async () => {
+  it('usePatternPath=false (no typed categories): zero pattern caps (staging fallback retired, #147 5b)', async () => {
     const { client, ops } = buildMock()
     await runCapabilityStage(
       { lessonNumber: 1, lessonId: 'lesson-uuid' },
@@ -318,14 +318,16 @@ describe('runner pattern cutover (Task 6)', () => {
         generateFn: async () => '[]',
       },
     )
-    // No pattern path: no typed exercise inserts, and the legacy bundle's pattern
-    // caps go through the normal upsert (some sourceKind:'pattern' present).
+    // Slice 5b (#147): the staging-derived capability bundle is retired, so a
+    // lesson with no typed grammar categories emits NO pattern caps at all — there
+    // is no legacy fallback to carry them. (D1: every production lesson is
+    // usePatternPath, so this branch is unreachable in prod anyway.)
     expect(ops.some((o) => o.table === 'contrast_pair_exercises')).toBe(false)
     const legacyCapUpserts = ops.filter(
       (op) => op.table === 'learning_capabilities' && op.op === 'upsert' && !(op.opts as { ignoreDuplicates?: boolean })?.ignoreDuplicates,
     )
     const anyPattern = legacyCapUpserts.flatMap((op) => (Array.isArray(op.payload) ? op.payload : [op.payload as Record<string, unknown>]))
       .some((r) => r?.source_kind === 'pattern')
-    expect(anyPattern).toBe(true)
+    expect(anyPattern).toBe(false)
   })
 })

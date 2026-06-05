@@ -538,16 +538,18 @@ describe('runner item cutover (Task 6c)', () => {
         !(op.opts as { ignoreDuplicates?: boolean })?.ignoreDuplicates,
     )
 
-    // Assert that no item-source-kind row appears in the legacy upserts
+    // Assert that no item-source-kind row appears in the legacy (non-skip) upsert.
+    // Slice 5b (#147): item caps ride upsertCapabilitiesSkipIfExists exclusively;
+    // the legacy bundle is gone, so this invariant now holds by construction (the
+    // legacy upsert only ever receives dialogue-cloze + affixed typed caps, never
+    // item caps). The prior ">0 legacy upsert" assertion is dropped — it relied on
+    // a staging-derived grammar cap that no longer flows through this path.
     for (const upsertOp of legacyCapUpserts) {
       const rows = Array.isArray(upsertOp.payload) ? upsertOp.payload : [upsertOp.payload as Record<string, unknown>]
       for (const row of rows) {
         expect(row?.source_kind).not.toBe('item')
       }
     }
-
-    // Also assert: there IS at least one legacy upsert (for the grammar cap)
-    expect(legacyCapUpserts.length).toBeGreaterThan(0)
   })
 
   // --- Fix 1a (ADR 0014): productive ceiling — sentence/dialogue_chunk items
@@ -623,7 +625,10 @@ describe('runner item cutover (Task 6c)', () => {
       }
     }
 
-    // The grammar (non-item) cap still flows through the legacy bundle.
+    // Slice 5b (#147): the legacy (non-skip) upsert bundle no longer carries
+    // staging-derived caps — only typed dialogue-cloze + affixed caps reach it,
+    // and never an item cap. (The prior "a grammar cap flows through the legacy
+    // bundle" assertion is dropped: grammar is written by the pattern path now.)
     const legacyCapUpserts = ops.filter(
       (op) =>
         op.table === 'learning_capabilities' &&
@@ -633,9 +638,6 @@ describe('runner item cutover (Task 6c)', () => {
     const legacySourceKinds = legacyCapUpserts
       .flatMap((op) => (Array.isArray(op.payload) ? op.payload : [op.payload]) as Array<Record<string, unknown>>)
       .map((r) => r?.source_kind)
-    // A non-item (grammar→pattern) cap still flows through the legacy bundle, and
-    // no item cap leaks into it.
-    expect(legacySourceKinds.some((k) => k !== 'item')).toBe(true)
     expect(legacySourceKinds).not.toContain('item')
     // And the word items still seed item caps via the new path (skip-if-exists).
     const newPathItemCaps = ops.filter(
@@ -1182,43 +1184,9 @@ describe('runner item cutover (Task 6c)', () => {
   })
 
   // --- H: legacy pattern/dialogue path unchanged ---
-  it('legacy pattern/dialogue/grammar path still calls upsertCapabilities', async () => {
-    const { client, ops } = buildItemCutoverMock()
-
-    await runCapabilityStage(
-      { lessonNumber: 1, lessonId: 'lesson-uuid' },
-      {
-        loadLesson: async () => makeLessonWithItems(tmpDir),
-        createSupabaseClient: () => client as never,
-        loadFromDb: async () => ({
-          items: FAKE_TYPED_ROWS,
-          itemState: {
-            existingItemsByNormalizedText: new Map(),
-            existingItemCapsByCanonicalKey: new Map(),
-          },
-        }),
-        fetchDistractorPool: async () => [],
-        generateFn: async () => '[]',
-      },
-    )
-
-    // The legacy upsertCapabilities loop is called for non-item caps
-    // (single-row upsert without ignoreDuplicates)
-    const legacyCaps = ops.filter(
-      (op) =>
-        op.table === 'learning_capabilities' &&
-        op.op === 'upsert' &&
-        !(op.opts as { ignoreDuplicates?: boolean })?.ignoreDuplicates,
-    )
-    expect(legacyCaps.length).toBeGreaterThan(0)
-
-    // Caps from the regenerated staging (grammar patterns use sourceKind='pattern')
-    // should appear in the legacy path. Any non-item cap (pattern, dialogue_line,
-    // affixed_form_pair) would qualify.
-    const nonItemCapRows = legacyCaps.filter((op) => {
-      const payload = Array.isArray(op.payload) ? op.payload : [op.payload as Record<string, unknown>]
-      return payload.some((r) => r?.source_kind !== 'item')
-    })
-    expect(nonItemCapRows.length).toBeGreaterThan(0)
-  })
+  // REMOVED (Slice 5b #147): 'legacy pattern/dialogue/grammar path still calls
+  // upsertCapabilities' validated the staging-derived capability bundle flowing
+  // non-item caps through upsertCapabilities. That bundle is retired — grammar is
+  // written by the pattern path, and only typed dialogue-cloze + affixed caps reach
+  // upsertCapabilities now (covered by runner.residualCutover + dialogueCutover).
 })
