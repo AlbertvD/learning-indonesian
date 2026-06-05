@@ -1,17 +1,18 @@
 /**
  * capability-stage/runner.ts — Stage B entry point.
  *
- * Input boundary (the fold's only behavioural change vs legacy):
+ * Input boundary (DB-only as of Slice 5b #147 — the no-disk cutover):
  *   { lessonNumber, lessonId, dryRun }
- *   → DB load for Stage A's outputs (lessons + sections + page-blocks + audio_clips)
- *   → staging-file load for everything downstream (learning-items / grammar-
- *      patterns / candidates / cloze-contexts / content-units / capabilities /
- *      exercise-assets / lesson-page-blocks — mirrors legacy 67–101 minus the
- *      `lesson.ts` read).
+ *   → DB load for Stage A's outputs (lessons + sections + audio_clips) via the
+ *      loader, then typed DB reads for everything downstream (loadFromDb /
+ *      loadPatternFromDb / loadDialogueFromDb / fetchAffixedPairsFromDb).
+ *   No staging file is read or written — the global no-disk gate (5b.9) enforces
+ *   this. Dry-run loads from the same DB Stage A wrote (Stage A must have run
+ *   live first; ADR 0011/0012).
  *
  * Sequence (mirrors lesson-stage/runner.ts shape):
- *   1. Load Stage A outputs from DB + staging files from disk.
- *   2. Run pre-write validators (CS1–CS6). Errors short-circuit before writes.
+ *   1. Load Stage A outputs from the DB + typed item rows (for the pre-write gate).
+ *   2. Run pre-write validators (CS3–CS6). Errors short-circuit before writes.
  *   3. dryRun returns early before any DB writes.
  *   4. Project (pure): produce per-item / grammar / cloze write plans.
  *   5. Adapter writes in dependency order:
@@ -71,7 +72,6 @@ import { projectAffixedCapabilities } from './projectors/affixedCapabilities'
 import { buildContentUnitsFromDb } from './projectors/contentUnits'
 import { generateItemDistractors, type GenerateFn, type DistractorInputItem, type ItemDistractorSet } from './generateItemDistractors'
 import { itemSlug } from '@/lib/capabilities'
-import { runDeharvestedVisibility } from './verify/deharvestedVisibility'
 import type { ItemCapForCoverageCheck } from './validators/itemCoverage'
 import type { DistractorSetRow } from './validators/itemDistractors'
 
@@ -162,10 +162,12 @@ export async function runCapabilityStage(
   const findings: ValidationFinding[] = []
   const counts = { ...EMPTY_COUNTS }
 
-  if (!input.lessonId && !input.dryRun) {
+  if (!input.lessonId) {
     throw new Error(
       'runCapabilityStage requires lessonId from runLessonStage output. ' +
-      'CLI shim must short-circuit if Stage A status !== "ok".',
+      'CLI shim must short-circuit if Stage A status !== "ok". ' +
+      'Slice 5b (#147): dry-run is DB-only and ALSO requires a real lessonId — ' +
+      'Stage A must have run live first.',
     )
   }
 
@@ -178,17 +180,15 @@ export async function runCapabilityStage(
   const fetchClozePool = hooks.fetchClozePool ?? defaultFetchClozePool
   const fetchAffixedPairsFromDb = hooks.fetchAffixedPairsFromDb ?? defaultFetchAffixedPairsFromDb
 
-  // ---- 1. Load (Stage A from DB + staging files from disk). ------------
-  // Dry-run path: loader falls back to staging-only mode regardless of
-  // service key — Stage A's dryRun returns an empty lessonId so we cannot
-  // do the DB load anyway, and validation runs fine against the
-  // equivalent `staging/lesson.ts` sections.
-  const supabase: CapabilitySupabaseClient | null = input.dryRun ? null : createClient()
+  // ---- 1. Load (Stage A from DB — DB-only, Slice 5b #147). -------------
+  // The loader no longer reads staging files; dry-run loads from the same DB
+  // Stage A wrote (Stage A must have run live first — the CLI shim handles this).
+  // The Supabase client is created unconditionally (dry-run is DB-backed now).
+  const supabase: CapabilitySupabaseClient = createClient()
   const loaded: LoadedLesson = await loadLesson(supabase, {
     lessonNumber: input.lessonNumber,
     lessonId: input.lessonId,
   })
-  const staging = loaded.staging
 
   // ---- 1b. (retired Slice 5b #147) staging enrichment, regeneration + snapshots. --
   // Gone: the staging pos/level enrichment + its disk write-back, AND the
@@ -198,19 +198,51 @@ export async function runCapabilityStage(
   // capabilities come from the typed emitters (item / audio / affixed / pattern /
   // dialogue cloze); POS is enriched DB-natively (updateLearningItemPos, step 5b+);
   // level is set in projectItemsFromTypedRows; EN translations are the Lesson Stage's
-  // job (ADR 0012). The runner now performs zero disk writes — the last coupling
-  // cleared for the no-disk gate (5b.9).
+  // job (ADR 0012). The runner now performs zero disk reads/writes (no-disk gate, 5b.9).
+
+  // ---- 1c. Pre-load typed item rows (DB) for the pre-write gate. -------
+  // Slice 5b (#147): the pre-write gate's item checks (CS4/CS4b/CS19/CS20/CS5)
+  // were fed by staging.learningItems; with staging gone they read the typed
+  // item projection instead. The item DB load is hoisted up here (ahead of the
+  // gate) so itemProjection is available; it is reused unchanged by the write
+  // phase below (steps 5a/5b). distractorPool is loaded alongside (one read).
+  const itemDbResult = await loadFromDb(supabase, { lessonId: input.lessonId })
+  const distractorPool = await fetchDistractorPool(supabase)
+  const itemProjection = projectItemsFromTypedRows({
+    rows: itemDbResult.items,
+    lessonId: input.lessonId,
+    level: loaded.lesson.level,
+    // Pass the audio map so audio_recognition + dictation caps are emitted by the
+    // DB→DB item path (they ride upsertCapabilitiesSkipIfExists, FSRS-safe).
+    audioClipsByNormalizedText: loaded.audioClipsByNormalizedText,
+  })
+  // Item caps (4 base + audio when present) — written via upsertCapabilitiesSkipIfExists
+  // (step 5b; FSRS-safe). NOT routed through upsertCapabilities (which would re-write
+  // existing rows and disturb FSRS state).
+  const allItemCaps = itemProjection.perItemPlans.flatMap((p) => p.capabilities)
 
   // ---- 2. Validate (pre-write). ----------------------------------------
   // grammar_topics validation (GT1) is enforced by lesson-stage; by the time
   // Stage A's outputs land here, content.grammar_topics is already populated.
   // CS3/CS4/CS4b/CS5/CS6 — composed behind the Capability Gate pre-write entry
-  // point (gate.ts). Same validators, same order, same findings — consolidated
-  // to eliminate scattered inline calls.
+  // point (gate.ts). Same validators, same order, same findings.
+  //
+  // Slice 5b (#147): the item checks read the typed item projection (NOT a stub —
+  // data-arch N1: an empty array would make CS4/CS4b/CS19/CS20/CS5 pass vacuously).
+  // grammarPatterns + candidates pass [] deliberately: grammar is DB-native via the
+  // pattern path (projectPatternsFromCategories + CS18 post-write coverage); staging
+  // candidates remain validated by lint-staging's structural checks (Q4, kept).
   findings.push(...runCapabilityGatePreWrite({
-    grammarPatterns: staging.grammarPatterns as Array<{ slug: string; pattern_name: string; complexity_score: number }>,
-    candidates: staging.candidates as Array<{ exercise_type?: string; grammar_pattern_slug?: string | null; payload?: Record<string, unknown> | null; review_status?: string }>,
-    learningItems: staging.learningItems as Array<{ base_text: string; item_type: string; context_type?: string; translation_nl?: string | null; translation_en?: string | null; pos?: string | null }>,
+    grammarPatterns: [],
+    candidates: [],
+    learningItems: itemProjection.perItemPlans.map((p) => ({
+      base_text: p.learningItemInput.base_text,
+      item_type: p.learningItemInput.item_type,
+      context_type: p.anchorContext.context_type,
+      translation_nl: p.learningItemInput.translation_nl ?? null,
+      translation_en: p.learningItemInput.translation_en ?? null,
+      pos: p.learningItemInput.pos ?? null,
+    })),
     mode: 'publish',
   }))
 
@@ -224,10 +256,12 @@ export async function runCapabilityStage(
   }
 
   // ---- 2b. Dry-run short-circuit after validation, before writes. -------
+  // DB-only (Slice 5b #147): counts reflect what was loaded from the DB, not a
+  // staging snapshot. The detailed per-surface "would publish" log is dropped —
+  // the authoritative counts come from the live re-publish, not a dry-run guess.
   if (input.dryRun) {
-    console.log(`\n[DRY RUN] Lesson ${input.lessonNumber} validation passed.`)
-    console.log(`   Would publish: ${staging.contentUnits.length} content units, ${staging.capabilities.length} capabilities, ${staging.exerciseAssets.length} artifacts,`)
-    console.log(`                  ${staging.grammarPatterns.length} grammar patterns, ${staging.learningItems.length} learning items, ${staging.candidates.length} exercise candidates, ${staging.clozeContexts.length} cloze contexts.`)
+    console.log(`\n[DRY RUN] Lesson ${input.lessonNumber} pre-write validation passed.`)
+    console.log(`   Loaded from DB: ${loaded.sections.length} sections, ${itemDbResult.items.length} typed item rows.`)
     return {
       status: 'ok',
       counts,
@@ -248,50 +282,24 @@ export async function runCapabilityStage(
   // cloze item_contexts are DB-authoritative (seed-once); #148 owns their
   // item-cloze caps. No cloze is projected or re-seeded here.
 
-  // Past this point we MUST have a Supabase client — writes happen below.
-  if (!supabase) {
-    throw new Error('runCapabilityStage reached the write phase without a Supabase client (dry-run paths must short-circuit earlier)')
-  }
   // ---- 4. Write — content_units. ---------------------------------------
-  // The content_units write moved to step 4b (after pattern projection), where
+  // The content_units write happens in step 4b (after pattern projection), where
   // buildContentUnitsFromDb needs patternProjection.patternPlans. contentUnitIdsBySlug
-  // and contentUnitIds are declared there. The staging.contentUnits regeneration still
-  // runs (for the dry-run log) but is NO LONGER the upsert input (Slice 5a).
+  // and contentUnitIds are declared there. Built DB-natively (Slice 5a/5b), never
+  // from a staging snapshot.
 
   // ---- 5. Write — learning_capabilities. -------------------------------
-  // Capabilities come pre-built from staging (capabilities.ts produced upstream
-  // by materialize-capabilities.ts). Decision 5b appends contextual_cloze rows
-  // for dialogue lines that have cloze contexts. Decision 3b (ADR 0006) stamps
-  // lesson_id on every lesson-derived capability — the runner is invoked per
-  // lesson, so the projecting lesson IS the introducing lesson by construction.
-  // Decision 3's morphology tie-break is preserved as a special case: only
-  // morphology-introducing lessons emit affixed_form_pair capabilities, so
-  // those rows still get the rule-introducing lesson's id. Podcasts are not
-  // projected here; they're carved out from the lesson_id invariant.
-
-  // ---- 5a. Pre-load DB→DB item state (needed for legacy-bundle filter). ---
-  // The item DB load is moved here (before the legacy-bundle filter) so we can
-  // build the key set that the new path will emit. This allows the filter to be
-  // key-set-based rather than source-kind-based, preserving audio caps
-  // (audio_recognition, dictation) and other item caps that the new path does
-  // NOT emit (only the 4 base text caps are projected by projectItemsFromTypedRows).
-  // The itemDbResult and itemProjection are consumed by step 5b below.
-  const itemDbResult = await loadFromDb(supabase, { lessonId: input.lessonId })
-  const distractorPool = await fetchDistractorPool(supabase)
-  const itemProjection = projectItemsFromTypedRows({
-    rows: itemDbResult.items,
-    lessonId: input.lessonId,
-    level: loaded.lesson.level,
-    // 5a.5: pass the audio map so audio_recognition + dictation caps are emitted
-    // by the new DB→DB path (enter newPathEmittedKeys, excluded from legacy bundle).
-    // Before 5a.5 this was omitted → audio caps stayed in the legacy bundle;
-    // after 5a.5 they ride the item path (skip-if-exists, FSRS-safe).
-    audioClipsByNormalizedText: loaded.audioClipsByNormalizedText,
-  })
-  // Item caps (4 base + audio when present) written via upsertCapabilitiesSkipIfExists
-  // (step 5b; FSRS-safe). The staging-bundle exclusion key set (newPathEmittedKeys)
-  // is retired in Slice 5b — there is no staging bundle to exclude from anymore.
-  const allItemCaps = itemProjection.perItemPlans.flatMap((p) => p.capabilities)
+  // Every cap kind is produced by a typed DB-native emitter (item / audio /
+  // affixed / pattern / dialogue cloze). Decision 3b (ADR 0006) stamps lesson_id
+  // on every lesson-derived capability — the runner is invoked per lesson, so the
+  // projecting lesson IS the introducing lesson by construction. Decision 3's
+  // morphology tie-break is preserved: only morphology-introducing lessons emit
+  // affixed_form_pair capabilities, so those rows get the rule-introducing
+  // lesson's id. Podcasts are not projected here; they're carved out from the
+  // lesson_id invariant.
+  //
+  // itemDbResult / distractorPool / itemProjection / allItemCaps were loaded in
+  // step 1c (hoisted ahead of the pre-write gate, which reads itemProjection).
 
   // ---- 5a (pattern). Load typed grammar categories + project patterns. -----
   // Slice 2: the pattern path activates ONLY for a lesson that HAS typed grammar
@@ -407,25 +415,13 @@ export async function runCapabilityStage(
     ...newAffixedCaps,
   ]
 
-  // CS21 (ADR 0014 §M4) — reader-visibility net: every sentence/dialogue_chunk
-  // whose item caps were just de-harvested must still be VISIBLE to the learner
-  // in the lesson's typed content. Warn (never block) on any that vanished — a
-  // reader gap or a spurious harvest, surfaced rather than silently vaporised.
-  // DB-aware, so publish-only (the dry-run path short-circuits earlier).
-  const deharvestedItems = (staging.learningItems as Array<{ base_text: string; item_type: string }>)
-    .filter((it) => it.item_type === 'sentence' || it.item_type === 'dialogue_chunk')
-    .map((it) => ({ base_text: it.base_text, item_type: it.item_type }))
-  if (deharvestedItems.length > 0) {
-    const grammarExampleTexts = patternDb.categories.flatMap((c) =>
-      c.examples.map((e) => e.indonesian),
-    )
-    const itemRowTexts = itemDbResult.items.map((r) => r.indonesian_text)
-    findings.push(...await runDeharvestedVisibility(supabase, {
-      lessonId: input.lessonId,
-      deharvestedItems,
-      knownTypedTexts: [...grammarExampleTexts, ...itemRowTexts],
-    }))
-  }
+  // CS21 (ADR 0014 §M4) reader-visibility net — RETIRED in Slice 5b (#147).
+  // It read the staging sentence/dialogue_chunk items (now gone) to warn if a
+  // de-harvested item vanished from the typed content. With staging removed its
+  // only input source disappears; and the de-harvested sentence/dialogue
+  // learning_items are themselves being DELETED by the 5b.10 cleanup migration
+  // (cap-less dead-weight; reader-visibility comes from lesson_sections per
+  // ADR 0014 §M4 / D2), so the transition safety net is moot. No replacement.
 
   // Decision 3b (ADR 0006): refuse to write any lesson-derived capability with
   // null lesson_id. Podcast source kinds are exempt — see the validator.
@@ -804,8 +800,7 @@ export async function runCapabilityStage(
   // The capability_artifacts table is dropped; non-item structure now lives in
   // the typed satellite tables (dialogue_clozes / affixed_form_pairs / the 4
   // grammar-exercise tables), written in steps 7b/7c/8 below. The legacy
-  // staging.exerciseAssets array is still regenerated upstream (Slice-5-owned
-  // legacy projection) but is no longer persisted anywhere.
+  // staging-derived exercise-asset projection is fully retired (Slice 5b #147).
 
   // ---- 7b. Dialogue-line typed rows (Slice 3 — DB→DB). -----------------
   // The dialogue_clozes rows are projected from the in-stage generator output
@@ -1018,10 +1013,9 @@ export async function runCapabilityStage(
   const postWriteFindings = await runCapabilityGatePostWrite(supabase, {
     lessonId: input.lessonId,
     declared: {
-      // Slice 5a: count parity must check what the DB-native builder ACTUALLY wrote
-      // (step 4b → contentUnitIds), NOT the staging count. The staging builder still
-      // emits sentence/dialogue_chunk learning_item units that the DB-native builder
-      // omits (Decision D2), so staging.contentUnits.length over-declares by those rows.
+      // Count parity checks what the DB-native builder ACTUALLY wrote (step 4b →
+      // contentUnitIds). The builder omits sentence/dialogue_chunk learning_item
+      // units (Decision D2 — those items are de-harvested + deleted in 5b.10).
       contentUnits: contentUnitIds.length,
       // Slice 5b (#147): grammar_patterns come solely from the pattern path; the
       // exercise_variants writer is retired (0 rows written by any source kind).

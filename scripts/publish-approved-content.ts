@@ -59,9 +59,25 @@ async function main() {
       ? { kind: 'item', normalizedText: regenerateArg }
       : undefined
 
+  // Slice 5b (#147): the Capability Stage (Stage B) is DB-only. A meaningful
+  // Stage B dry-run must read DB state that ONLY a live Stage A produces, so:
+  //   - dry-run runs Stage A LIVE (lesson content is the DB projection of staging
+  //     — idempotent + FSRS-safe to re-write) and runs Stage B in DRY-RUN
+  //     (pre-write validation only; no capability/distractor/grammar writes).
+  //   - dry-run therefore REQUIRES SUPABASE_SERVICE_KEY (DB access). The old
+  //     "staging-only dry-run without a service key" mode is gone (loadLessonForDryRun
+  //     deleted). Validate staging shape offline with `lint-staging.ts` instead.
+  if (dryRun && !process.env.SUPABASE_SERVICE_KEY) {
+    console.error(
+      '\n--dry-run is DB-only (Slice 5b #147) and requires SUPABASE_SERVICE_KEY in .env.local.\n' +
+      'Run scripts/lint-staging.ts directly for an offline staging-shape check.',
+    )
+    process.exit(1)
+  }
+
   // Pre-flight lint gate (CRITICAL findings only) — refuse to publish until
-  // staging is clean. Skipped during dry-run when no service key is set.
-  if (!skipLint && !(dryRun && !process.env.SUPABASE_SERVICE_KEY)) {
+  // staging is clean.
+  if (!skipLint) {
     const lintCommand = buildLintStagingCommand(lessonNumber)
     const lint = spawnSync(lintCommand.command, lintCommand.args, { stdio: 'inherit' })
     if (lint.status !== 0) {
@@ -70,12 +86,19 @@ async function main() {
       )
       process.exit(1)
     }
-  } else if (dryRun && !process.env.SUPABASE_SERVICE_KEY) {
-    console.log('Skipping DB-backed lint during dry-run because SUPABASE_SERVICE_KEY is not set.')
+  }
+
+  if (dryRun) {
+    console.log(
+      '\n[DRY RUN] Stage A runs LIVE (lesson content = DB projection, idempotent); ' +
+      'Stage B previews capability seeding only (no capability writes).',
+    )
   }
 
   // Stage A — runLessonStage owns lesson + sections + page-blocks + audio_clips.
-  const stageA = await runLessonStage({ lessonNumber, dryRun })
+  // Always live: dry-run previews Stage B only (see the contract note above), and
+  // Stage B reads the DB Stage A wrote.
+  const stageA = await runLessonStage({ lessonNumber, dryRun: false })
   console.log(JSON.stringify(stageA, null, 2))
   if (stageA.status !== 'ok') {
     console.error(`\nStage A failed for lesson ${lessonNumber}.`)
@@ -85,7 +108,7 @@ async function main() {
   // Stage B — capability-stage (Phase 2 deep module).
   // Stage A returns lesson.id = '' on validation failure (lesson-stage
   // runner.ts:134). We already short-circuit above on stageA.status !== 'ok',
-  // so a non-empty lessonId is guaranteed here.
+  // so a non-empty lessonId is guaranteed here (required by Stage B dry-run too).
   const stageB = await runCapabilityStage({
     lessonNumber,
     lessonId: stageA.lesson.id,

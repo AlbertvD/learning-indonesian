@@ -128,12 +128,14 @@ function buildSupabaseMock(opts: {
   return { client, recorder }
 }
 
-// Each test gets its own tmpdir so the in-runner snapshot writes
-// (content-units.ts, capabilities.ts, exercise-assets.ts, lesson-page-blocks.ts,
-// learning-items.ts) don't collide across tests or leak between runs.
+// Each test gets its own tmpdir (kept as a leak-free scratch dir; the runner no
+// longer writes any staging snapshots after the Slice 5b no-disk cutover).
 let tmpStagingDir: string
 
-function makeSynthLesson(overrides: { stagingDir: string }): LoadedLesson {
+// Slice 5b (#147): the loader is DB-only — LoadedLesson no longer carries a
+// staging field. Item data reaches the runner via the injected loadFromDb hook
+// (the pre-write gate reads itemProjection, not staging).
+function makeSynthLesson(): LoadedLesson {
   return {
     lesson: {
       id: 'lesson-uuid',
@@ -165,40 +167,10 @@ function makeSynthLesson(overrides: { stagingDir: string }): LoadedLesson {
     audioClipsByNormalizedText: new Map([
       ['halo', { storage_path: 'lesson-1/halo-Achird.mp3', voice_id: 'Achird' }],
     ]),
-    staging: {
-      stagingDir: overrides.stagingDir,
-      learningItems: [
-        {
-          base_text: 'halo',
-          item_type: 'word',
-          context_type: 'vocabulary_list',
-          translation_nl: 'hallo',
-          translation_en: 'hello',
-          pos: 'greeting',
-          level: 'A1',
-          review_status: 'pending_review',
-        },
-      ],
-      grammarPatterns: [
-        {
-          slug: 'ada-existential',
-          pattern_name: 'ADA existential',
-          description: 'Indonesian uses *ada* to mark existence.',
-          example: 'Ada buku — er is een boek',
-          complexity_score: 2,
-        },
-      ],
-      candidates: [],
-      clozeContexts: [],
-      contentUnits: [],
-      capabilities: [],
-      exerciseAssets: [],
-      affixedFormPairs: [],
-    },
   }
 }
 
-describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
+describe('runCapabilityStage — synthetic fixture (DB-only loader)', () => {
   beforeEach(() => {
     tmpStagingDir = fs.mkdtempSync(path.join(os.tmpdir(), 'capability-stage-test-'))
     enrichMissingPosMock.mockResolvedValue({
@@ -218,7 +190,7 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
     const result = await runCapabilityStage(
       { lessonNumber: 1, lessonId: 'lesson-uuid' },
       {
-        loadLesson: async () => makeSynthLesson({ stagingDir: tmpStagingDir }),
+        loadLesson: async () => makeSynthLesson(),
         createSupabaseClient: () => client as never,
       },
     )
@@ -231,26 +203,47 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
     expect(result.counts.learningItems).toBe(0)
   })
 
-  it('short-circuits with status:validation_failed when CS6 (grammar pattern) fails', async () => {
-    const synth = makeSynthLesson({ stagingDir: tmpStagingDir })
-    const lessonWithBadPattern: LoadedLesson = {
-      ...synth,
-      staging: {
-        ...synth.staging,
-        grammarPatterns: [{ slug: 'BAD_SLUG', pattern_name: 'X', description: 'irrelevant', example: 'irrelevant example', complexity_score: 1 }],
-      },
-    }
+  // Slice 5b (#147): the pre-write gate's item checks read the typed item
+  // projection (itemProjection.perItemPlans), NOT staging — and grammar/candidate
+  // checks pass [] (grammar is DB-native via the pattern path + CS18). So the
+  // short-circuit is now exercised through a REAL item failure (CS4b), proving the
+  // repointed gate fires on actual item data and is not vacuous (data-arch N1).
+  // (The old CS6-on-staging-grammar short-circuit is gone with the staging read.)
+  it('short-circuits with status:validation_failed when CS4b (item translation_nl) fails on the typed item projection', async () => {
     const { client } = buildSupabaseMock({})
 
     const result = await runCapabilityStage(
       { lessonNumber: 1, lessonId: 'lesson-uuid' },
       {
-        loadLesson: async () => lessonWithBadPattern,
+        loadLesson: async () => makeSynthLesson(),
         createSupabaseClient: () => client as never,
+        // A word item with an empty l1_translation → projectItemsFromTypedRows maps
+        // translation_nl → null → CS4b error → hard validation_failed before writes.
+        loadFromDb: async () => ({
+          items: [
+            {
+              id: 'row-bad',
+              section_id: 'section-vocab',
+              lesson_id: 'lesson-uuid',
+              display_order: 0,
+              source_item_ref: 'rumah',
+              item_type: 'word' as const,
+              indonesian_text: 'rumah',
+              l1_translation: '',
+              l2_translation: null,
+              section_kind: 'vocabulary' as const,
+            },
+          ],
+          itemState: {
+            existingItemsByNormalizedText: new Map(),
+            existingItemCapsByCanonicalKey: new Map(),
+          },
+        }),
+        fetchDistractorPool: async () => [],
       },
     )
     expect(result.status).toBe('validation_failed')
-    expect(result.findings.some((f) => f.gate === 'CS6' && f.severity === 'error')).toBe(true)
+    expect(result.findings.some((f) => f.gate === 'CS4b' && f.severity === 'error')).toBe(true)
   })
 
   // CS1 (grammar_topics) moved back to lesson-stage as GT1 — see
@@ -261,7 +254,7 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
     await expect(
       runCapabilityStage(
         { lessonNumber: 1, lessonId: '' },
-        { loadLesson: async () => makeSynthLesson({ stagingDir: tmpStagingDir }) },
+        { loadLesson: async () => makeSynthLesson() },
       ),
     ).rejects.toThrow(/lessonId/)
   })
@@ -271,7 +264,7 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
     const result = await runCapabilityStage(
       { lessonNumber: 1, lessonId: 'lesson-uuid', dryRun: true },
       {
-        loadLesson: async () => makeSynthLesson({ stagingDir: tmpStagingDir }),
+        loadLesson: async () => makeSynthLesson(),
         createSupabaseClient: () => client as never,
       },
     )
@@ -290,7 +283,7 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
       await runCapabilityStage(
         { lessonNumber: 1, lessonId: 'lesson-uuid' },
         {
-          loadLesson: async () => makeSynthLesson({ stagingDir: tmpStagingDir }),
+          loadLesson: async () => makeSynthLesson(),
           createSupabaseClient: () => client as never,
         },
       )
@@ -300,58 +293,10 @@ describe('runCapabilityStage — synthetic fixture (staging-aware)', () => {
     expect(writes.find((w) => w.endsWith('lesson-page-blocks.ts'))).toBeUndefined()
   })
 
-  it('5a.5: staging contentUnits snapshot is NOT upserted directly — DB-native builder replaces it', async () => {
-    // 5a.5 wiring: buildContentUnitsFromDb replaces buildContentUnitsFromStaging as
-    // the upsert input. The staging contentUnits snapshot (staging.contentUnits) is
-    // still regenerated upstream (for the dry-run log + disk write-back) but is
-    // NO LONGER passed to upsertContentUnits. Any stale data in staging.contentUnits
-    // never reaches the DB.
-    //
-    // This test verifies the behavioral invariant: the staging snapshot's payload_json
-    // fields (translationEn, baseText, etc.) do NOT appear in any content_units upsert
-    // — the DB-native builder always produces payload_json: {} (Decision E).
-    const synth = makeSynthLesson({ stagingDir: tmpStagingDir })
-    const lessonWithStaleSnapshot: LoadedLesson = {
-      ...synth,
-      staging: {
-        ...synth.staging,
-        // Stale snapshot with non-empty payload_json — should NOT be upserted.
-        contentUnits: [
-          {
-            content_unit_key: 'item-makan::lesson-1/section-vocabulary::item-makan',
-            source_ref: 'item-makan',
-            source_section_ref: 'lesson-1/section-vocabulary',
-            unit_kind: 'learning_item',
-            unit_slug: 'item-makan',
-            display_order: 1000,
-            payload_json: {
-              baseText: 'makan',
-              translationEn: 'STALE_VALUE_SHOULD_NOT_REACH_DB', // stale
-            },
-            source_fingerprint: 'stale-fingerprint',
-          },
-        ],
-      },
-    }
-
-    const { client, recorder } = buildSupabaseMock({})
-    const result = await runCapabilityStage(
-      { lessonNumber: 1, lessonId: 'lesson-uuid' },
-      {
-        loadLesson: async () => lessonWithStaleSnapshot,
-        createSupabaseClient: () => client as never,
-      },
-    )
-
-    expect(['ok', 'partial']).toContain(result.status)
-
-    // The stale payload_json field must NOT appear in any content_units upsert.
-    const allContentUnitPayloads = recorder.upserts
-      .filter((u) => u.table === 'content_units')
-      .map((u) => u.payload)
-    for (const p of allContentUnitPayloads) {
-      const pj = (p.payload_json as Record<string, unknown>) ?? {}
-      expect(pj.translationEn).not.toBe('STALE_VALUE_SHOULD_NOT_REACH_DB')
-    }
-  })
+  // REMOVED (Slice 5b #147): '5a.5: staging contentUnits snapshot is NOT upserted
+  // directly'. Its premise was a stale staging.contentUnits snapshot that the
+  // DB-native builder must ignore; with the loader's staging field deleted there is
+  // no snapshot to ignore — content_units are built purely DB-natively. The
+  // DB-native builder + payload_json:{} (Decision E) are covered by
+  // projectors/__tests__/contentUnits.test.ts and verify/residualParity.test.ts.
 })
