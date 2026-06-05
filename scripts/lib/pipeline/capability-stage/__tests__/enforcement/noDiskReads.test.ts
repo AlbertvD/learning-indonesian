@@ -55,11 +55,11 @@ import { describe, it, expect } from 'vitest'
 // Allowlist — currently-permitted disk-coupled files.
 // These shrink as the redesign progresses; the item path must NEVER appear here.
 // ---------------------------------------------------------------------------
-const DISK_IO_ALLOWLIST = new Set([
-  'loader.ts',           // still reads all staging files; removed in Slice 5b Task 6
-  // stagingWriteback.ts — DELETED in Slice 5b Task 5 (no longer exists).
-  // runner.ts — disk-free as of Slice 5b Tasks 4–5 (regeneration + enrichment
-  //   write-back + snapshots removed); off the allowlist now.
+const DISK_IO_ALLOWLIST = new Set<string>([
+  // EMPTY as of Slice 5b (#147 5b.9) — the whole capability stage is disk-free.
+  // History: stagingWriteback.ts deleted (5b.5); runner.ts de-allowlisted (5b.4–5b.5);
+  // loader.ts went DB-only + de-allowlisted (5b.6). The globalNoFileIO gate below
+  // (now `it`, no longer `it.skip`) asserts this set stays empty.
 ])
 
 // ---------------------------------------------------------------------------
@@ -237,15 +237,14 @@ describe('capability-stage item path: disk-I/O enforcement', () => {
   })
 
   // -------------------------------------------------------------------------
-  // GLOBAL no-file-I/O placeholder (epic #98 User Story 10) — OWNED BY SLICE 5.
-  // The Capability Stage's scoped no-disk gate (above) covers item + pattern +
-  // dialogue + affixed. It CANNOT pass globally yet: loader.ts still reads
-  // learning-items.ts / grammar-patterns.ts / candidates.ts / cloze-contexts.ts,
-  // and stagingWriteback.ts still writes. Slice 5 (legacy-projection retirement)
-  // empties the allowlist and flips this it.skip → it. Kept visible so the
-  // residual disk coupling is documented, not silently forgotten.
+  // GLOBAL no-file-I/O gate (epic #98 User Story 10) — ACTIVE as of Slice 5b
+  // (#147 5b.9). The whole legacy-projection retirement landed: the staging
+  // regeneration + stagingWriteback + all loader staging reads are gone, so the
+  // allowlist is empty and EVERY capability-stage source file is disk-free
+  // (enforced by the non-allowlisted walk above). This assertion locks the
+  // allowlist at zero — re-allowlisting a file to sneak in a disk read fails here.
   // -------------------------------------------------------------------------
-  it.skip('globalNoFileIO: the entire capability-stage allowlist is empty (Slice 5)', () => {
+  it('globalNoFileIO: the entire capability-stage allowlist is empty (Slice 5)', () => {
     expect(DISK_IO_ALLOWLIST.size).toBe(0)
   })
 })
