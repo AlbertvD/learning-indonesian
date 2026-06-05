@@ -11,7 +11,9 @@
  *   item_contexts               source_text non-empty
  *   exercise_variants           payload_json + answer_key_json not {}
  *   grammar_patterns            slug, name non-empty
- *   content_units               content_unit_key, unit_kind non-empty + payload_json != {}
+ *   content_units               content_unit_key, unit_kind non-empty
+ *                               (payload_json is intentionally {} since Decision E —
+ *                                the column is unread + being retired; NOT checked)
  *   capability_content_units    junction — both FKs non-null
  */
 
@@ -32,7 +34,6 @@ interface ContentUnitRow {
   id: string
   content_unit_key: string | null
   unit_kind: string | null
-  payload_json: Record<string, unknown> | null
 }
 
 interface CapabilityRow {
@@ -80,12 +81,14 @@ export async function runContentNonEmpty(
     const rows = await fetchRowsByIds<ContentUnitRow>(
       supabase,
       'content_units',
-      'id, content_unit_key, unit_kind, payload_json',
+      'id, content_unit_key, unit_kind',
       input.contentUnitIds,
     )
     for (const row of rows) {
-      if (!nonEmptyString(row.content_unit_key) || !nonEmptyString(row.unit_kind) || !objectIsNonEmpty(row.payload_json)) {
-        findings.push(presenceFinding('content_units', row.id, 'content_unit_key/unit_kind/payload_json non-empty'))
+      // payload_json is NOT checked: Decision E makes it intentionally {} on the
+      // DB-native builder path (unread column, being retired in a later migration).
+      if (!nonEmptyString(row.content_unit_key) || !nonEmptyString(row.unit_kind)) {
+        findings.push(presenceFinding('content_units', row.id, 'content_unit_key/unit_kind non-empty'))
       }
     }
   }

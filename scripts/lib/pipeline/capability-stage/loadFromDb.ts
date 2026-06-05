@@ -115,6 +115,11 @@ export async function fetchItemRowsFromDb(
       'id, section_id, lesson_id, display_order, source_item_ref, item_type, indonesian_text, l1_translation, l2_translation, lesson_sections!inner(section_kind)',
     )
     .eq('lesson_id', lessonId)
+    // Deterministic ordering: display_order is the primary sort key (matches
+    // the staging builder's deduped order → content_units display_order parity).
+    // id as tiebreaker for any same-display_order rows.
+    .order('display_order', { ascending: true })
+    .order('id', { ascending: true })
 
   if (error) {
     throw new Error(

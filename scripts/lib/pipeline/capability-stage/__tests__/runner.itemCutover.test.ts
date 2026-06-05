@@ -763,6 +763,65 @@ describe('runner item cutover (Task 6c)', () => {
     expect(result.counts.itemDistractorSets).toBeGreaterThanOrEqual(0)
   })
 
+  // --- F2: SEEDED items skip distractor generation entirely (cost-skip regression) ---
+  it('skips distractor generation when recognition caps are already seeded (no LLM call)', async () => {
+    // Both items' 4 caps already exist with known ids; their text_recognition caps
+    // already have recognition_mcq_distractors rows (seeded). The fix checks ONLY the
+    // recognition cap (the canonical seeded signal), so both items skip and the
+    // generator is NEVER invoked. Pre-fix, the `.some()`-over-all-caps filter was
+    // ALWAYS true (meaning_recall/form_recall/l1_to_id_choice never seed
+    // recognition_mcq_distractors) → every item regenerated on every publish.
+    const existingItemCaps = new Map<string, string>([
+      ['cap:v1:item:learning_items/buku:text_recognition:id_to_l1:text:nl', 'cap-buku-rec'],
+      ['cap:v1:item:learning_items/buku:l1_to_id_choice:l1_to_id:text:nl', 'cap-buku-cue'],
+      ['cap:v1:item:learning_items/buku:meaning_recall:id_to_l1:text:nl', 'cap-buku-mr'],
+      ['cap:v1:item:learning_items/buku:form_recall:l1_to_id:text:nl', 'cap-buku-fr'],
+      ['cap:v1:item:learning_items/meja:text_recognition:id_to_l1:text:nl', 'cap-meja-rec'],
+      ['cap:v1:item:learning_items/meja:l1_to_id_choice:l1_to_id:text:nl', 'cap-meja-cue'],
+      ['cap:v1:item:learning_items/meja:meaning_recall:id_to_l1:text:nl', 'cap-meja-mr'],
+      ['cap:v1:item:learning_items/meja:form_recall:l1_to_id:text:nl', 'cap-meja-fr'],
+    ])
+    // Seed ONLY the recognition caps (mirrors fetchSeededDistractorCapIds reading
+    // recognition_mcq_distractors). The other caps are intentionally NOT seeded —
+    // pre-fix that alone forced full regeneration.
+    const seededDistractorCapIds = new Set(['cap-buku-rec', 'cap-meja-rec'])
+
+    const { client } = buildItemCutoverMock({ existingItemCaps, seededDistractorCapIds })
+
+    let generateCalls = 0
+    const spyGenerateFn = async (): Promise<string> => {
+      generateCalls++
+      return '[]'
+    }
+
+    const result = await runCapabilityStage(
+      { lessonNumber: 1, lessonId: 'lesson-uuid' },
+      {
+        loadLesson: async () => makeLessonWithItems(tmpDir),
+        createSupabaseClient: () => client as never,
+        loadFromDb: async () => ({
+          items: FAKE_TYPED_ROWS,
+          itemState: {
+            existingItemsByNormalizedText: new Map([
+              ['buku', { id: 'item-buku', normalized_text: 'buku' }],
+              ['meja', { id: 'item-meja', normalized_text: 'meja' }],
+            ]),
+            existingItemCapsByCanonicalKey: new Map(
+              [...existingItemCaps].map(([key, id]) => [key, { id, canonical_key: key }]),
+            ),
+          },
+        }),
+        fetchDistractorPool: async () => [],
+        generateFn: spyGenerateFn,
+      },
+    )
+
+    expect(['ok', 'partial']).toContain(result.status)
+    // The fix: both recognition caps seeded → distractorItems empty → generator never
+    // called. Pre-fix this was 1 (full regeneration of all items every publish).
+    expect(generateCalls).toBe(0)
+  })
+
   // --- G: --regenerate deletes + rewrites only that item's distractors ---
   it('--regenerate deletes existing distractors for only the target item then rewrites', async () => {
     const existingItemCaps = new Map<string, string>([
@@ -825,22 +884,28 @@ describe('runner item cutover (Task 6c)', () => {
     expect(distractorUpserts.length).toBeGreaterThan(0)
   })
 
-  // --- FIX 1 regression: audio caps survive the legacy-bundle filter ---
-  it('FIX1: audio caps (audio_recognition, dictation) on items with audio are NOT dropped from legacy path', async () => {
-    // An item with audio has 6 caps in the legacy bundle (4 base + audio_recognition + dictation).
-    // The new path only emits 4 base caps.  Before the fix the blanket `sourceKind !== 'item'`
-    // filter dropped the 2 audio caps entirely → retireOrphanedCapabilities soft-retired them.
-    // After the fix the filter is key-set-based: only the 4 keys emitted by the new path are
-    // excluded; the 2 audio keys flow through the legacy upsertCapabilities path.
-    // The runner regenerates staging.capabilities from buildCapabilityStagingFromContent,
-    // so audio caps appear only when audioClipsByNormalizedText contains the item's
-    // normalized text. We seed buku's audio clip to trigger audio cap generation.
+  // --- FIX1→5a.5: audio caps move to the new DB→DB path ---
+  it('FIX1→5a.5: audio caps move to the new DB→DB path (skip-if-exists) and are excluded from the legacy bundle', async () => {
+    // NEW CONTRACT (5a.5 / #147):
+    // projectItemsFromTypedRows now receives the audioClipsByNormalizedText map
+    // (runner.ts step 5: audioClipsByNormalizedText passed to projectItemsFromTypedRows).
+    // When the map contains the item's normalized_text, the projector emits
+    // audio_recognition + dictation caps alongside the 4 base caps — so those 6 keys
+    // ALL enter newPathEmittedKeys, and ALL are excluded from the legacy bundle.
+    //
+    // OLD CONTRACT (Slice 1, before 5a.5):
+    // The audio map was NOT passed to projectItemsFromTypedRows, so audio caps
+    // were absent from newPathEmittedKeys and flowed through the legacy
+    // upsertCapabilities path (to avoid being dropped entirely).
+    //
+    // FIXTURE: FAKE_TYPED_ROWS contains 'buku' (word, item_type='word') so the
+    // projector can look up normalizeTtsText('buku') == 'buku' in the audio map.
     const AUDIO_RECOGNITION_KEY = 'cap:v1:item:learning_items/buku:audio_recognition:audio_to_l1:audio:nl'
     const DICTATION_KEY = 'cap:v1:item:learning_items/buku:dictation:audio_to_id:audio:none'
 
     const lessonWithAudio = makeLessonWithItems(tmpDir)
-    // Provide an audio clip for 'buku' so buildCapabilityStagingFromContent sets hasAudio=true,
-    // triggering audio_recognition + dictation cap generation in capabilityCatalog.ts.
+    // Provide an audio clip for 'buku' so projectItemsFromTypedRows emits
+    // audio_recognition + dictation caps on the new skip-if-exists path.
     lessonWithAudio.audioClipsByNormalizedText = new Map([
       ['buku', { storage_path: 'lessons/buku.mp3', voice_id: 'Achird' }],
     ])
@@ -864,8 +929,8 @@ describe('runner item cutover (Task 6c)', () => {
       },
     )
 
-    // The audio caps must appear in the legacy upsertCapabilities writes
-    // (single-row upserts WITHOUT ignoreDuplicates).
+    // Audio caps must NOT appear in the legacy upsertCapabilities bundle
+    // (they are now in newPathEmittedKeys → excluded from the filter).
     const legacyCapUpserts = ops.filter(
       (op) =>
         op.table === 'learning_capabilities' &&
@@ -877,10 +942,10 @@ describe('runner item cutover (Task 6c)', () => {
         .map((r) => r?.canonical_key as string | undefined)
         .filter(Boolean),
     )
-    expect(legacyKeys).toContain(AUDIO_RECOGNITION_KEY)
-    expect(legacyKeys).toContain(DICTATION_KEY)
+    expect(legacyKeys).not.toContain(AUDIO_RECOGNITION_KEY)
+    expect(legacyKeys).not.toContain(DICTATION_KEY)
 
-    // They must NOT appear in the skip-if-exists (new-path) writes.
+    // Audio caps MUST appear in the skip-if-exists (new DB→DB path) writes.
     const newPathUpserts = ops.filter(
       (op) =>
         op.table === 'learning_capabilities' &&
@@ -892,8 +957,8 @@ describe('runner item cutover (Task 6c)', () => {
         .map((r) => r?.canonical_key as string | undefined)
         .filter(Boolean),
     )
-    expect(newPathKeys).not.toContain(AUDIO_RECOGNITION_KEY)
-    expect(newPathKeys).not.toContain(DICTATION_KEY)
+    expect(newPathKeys).toContain(AUDIO_RECOGNITION_KEY)
+    expect(newPathKeys).toContain(DICTATION_KEY)
   })
 
   // --- FIX 2 regression: per-cap-1:1 distractor writes ---

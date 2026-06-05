@@ -70,10 +70,11 @@ import {
   upsertRecognitionDistractors,
   upsertCuedRecallDistractors,
   deleteItemDistractors,
+  fetchLearningItemPosByNormalizedText,
+  updateLearningItemPos,
   type CapabilityContentUnitInput,
   type CapabilityInput,
   type CapabilitySupabaseClient,
-  type ContentUnitInput,
   type ItemDistractorRow,
 } from './adapter'
 import { loadLesson as defaultLoadLesson, type LoadedLesson } from './loader'
@@ -81,6 +82,8 @@ import { loadFromDb as defaultLoadFromDb, fetchDistractorPool as defaultFetchDis
 import { generateDialogueClozes, type ClozePoolItem } from './generateClozeContexts'
 import { writePatternPath } from './patternPath'
 import { projectItemsFromTypedRows } from './projectors/vocab'
+import { projectAffixedCapabilities } from './projectors/affixedCapabilities'
+import { buildContentUnitsFromDb } from './projectors/contentUnits'
 import { generateItemDistractors, type GenerateFn, type DistractorInputItem, type ItemDistractorSet } from './generateItemDistractors'
 import { itemSlug } from '@/lib/capabilities'
 import { isOverHarvestedItemCap } from './itemHarvest'
@@ -398,10 +401,10 @@ export async function runCapabilityStage(
     throw new Error('runCapabilityStage reached the write phase without a Supabase client (dry-run paths must short-circuit earlier)')
   }
   // ---- 4. Write — content_units. ---------------------------------------
-  const stagedContentUnits = staging.contentUnits as Array<ContentUnitInput>
-  const contentUnitIdsBySlug = await upsertContentUnits(supabase, stagedContentUnits)
-  counts.contentUnits = contentUnitIdsBySlug.size
-  const contentUnitIds = [...contentUnitIdsBySlug.values()]
+  // The content_units write moved to step 4b (after pattern projection), where
+  // buildContentUnitsFromDb needs patternProjection.patternPlans. contentUnitIdsBySlug
+  // and contentUnitIds are declared there. The staging.contentUnits regeneration still
+  // runs (for the dry-run log) but is NO LONGER the upsert input (Slice 5a).
 
   // ---- 5. Write — learning_capabilities. -------------------------------
   // Capabilities come pre-built from staging (capabilities.ts produced upstream
@@ -427,11 +430,17 @@ export async function runCapabilityStage(
     rows: itemDbResult.items,
     lessonId: input.lessonId,
     level: loaded.lesson.level,
+    // 5a.5: pass the audio map so audio_recognition + dictation caps are emitted
+    // by the new DB→DB path (enter newPathEmittedKeys, excluded from legacy bundle).
+    // Before 5a.5 this was omitted → audio caps stayed in the legacy bundle;
+    // after 5a.5 they ride the item path (skip-if-exists, FSRS-safe).
+    audioClipsByNormalizedText: loaded.audioClipsByNormalizedText,
   })
   // Keys that the new DB→DB path (upsertCapabilitiesSkipIfExists) will write.
   // These are EXCLUDED from the legacy bundle to prevent double-writes.
-  // Everything else — audio caps (audio_recognition, dictation) and
-  // sentence/dialogue_chunk item caps — stays in the legacy bundle.
+  // After 5a.5 this includes audio caps (audio_recognition, dictation when present)
+  // — they are now emitted by projectItemsFromTypedRows (with the audio map)
+  // and excluded from the legacy bundle along with the 4 base item caps.
   const allItemCaps = itemProjection.perItemPlans.flatMap((p) => p.capabilities)
   const newPathEmittedKeys = new Set(allItemCaps.map((c) => c.canonicalKey))
 
@@ -449,6 +458,26 @@ export async function runCapabilityStage(
         lessonId: input.lessonId,
       })
     : { patternPlans: [] }
+
+  // ---- 5a (affixed). Early-load affixed pairs + emit DB-native affixed caps. --
+  // Loaded HERE (before the legacy-bundle filter at line ~552) so the new affixed caps'
+  // canonical keys enter newPathEmittedKeys before the filter runs — preventing the
+  // staging affixed caps from double-writing to learning_capabilities.
+  //
+  // SECOND-CONSUMER TRAP (landmine #1): these same affixedPairsFromDb are appended
+  // to allCapabilities below AND reused in step 7c (projectAffixedFormPairs) so that
+  // step 7c can find affixed caps to join on. Emitting without appending = zero
+  // affixed_form_pairs rows. Loading once here avoids a second DB round-trip at 7c.
+  const affixedPairsFromDb = await fetchAffixedPairsFromDb(supabase, input.lessonId)
+  const newAffixedCaps = projectAffixedCapabilities({
+    pairs: affixedPairsFromDb,
+    lessonId: input.lessonId,
+  })
+  // Extend newPathEmittedKeys with affixed cap keys so staging affixed caps are
+  // excluded from the legacy bundle by the .filter() below.
+  for (const cap of newAffixedCaps) {
+    newPathEmittedKeys.add(cap.canonicalKey)
+  }
 
   // ---- 5a (dialogue). DB→DB dialogue cloze path (Slice 3). ----------------
   // Read lesson_dialogue_lines + the seeded-line set + the vocab pool (with POS),
@@ -487,6 +516,22 @@ export async function runCapabilityStage(
   // Pushed after the pre-write gate, so it contributes to the final status, not a
   // hard validation_failed (which would re-create a #126-style block).
   findings.push(...validateDialogueClozeCoverage(generatedDialogueClozes.failedLineRefs))
+
+  // ---- 4b. Write — content_units (DB-native, moved from step 4). --------------
+  // Build from DB inputs so grammar units consume plan.slug/plan.sourceRef verbatim
+  // (collision-disambiguated) — see Decision E amendment (2026-06-04).
+  // affixedPairsFromDb loaded in step 5a (affixed) above (early-load for key-set).
+  // itemDbResult.items already ordered deterministically (loadFromDb.ts .order() added in 5a.5).
+  const dbContentUnits = buildContentUnitsFromDb({
+    lessonNumber: input.lessonNumber,
+    sections: loaded.sections,
+    itemRows: itemDbResult.items,
+    patternPlans: patternProjection.patternPlans,
+    affixedPairs: affixedPairsFromDb,
+  })
+  const contentUnitIdsBySlug = await upsertContentUnits(supabase, dbContentUnits)
+  counts.contentUnits = contentUnitIdsBySlug.size
+  const contentUnitIds = [...contentUnitIdsBySlug.values()]
 
   // NO-DOUBLE-WRITE for pattern caps. DEVIATION FROM THE PLAN, JUSTIFIED:
   // the plan says "filter by exact canonical_key, NOT sourceKind". But OQ2-5
@@ -558,6 +603,12 @@ export async function runCapabilityStage(
     // Slice 3: dialogue_line:contextual_cloze caps now come from the DB→DB
     // generator output (above), NOT the staging-derived vocab.contextualClozeCapabilities.
     ...dialogueClozeCaps,
+    // 5a.5: DB-native affixed caps appended here so step 7c (projectAffixedFormPairs)
+    // can filter allCapabilities for sourceKind==='affixed_form_pair' and find them.
+    // LOAD-BEARING: without this append, step 7c emits zero affixed_form_pairs rows.
+    // The staging affixed caps are excluded above via newPathEmittedKeys, so there
+    // is no double-write; these are the ONLY affixed caps in the bundle (landmine #1).
+    ...newAffixedCaps,
   ]
 
   // CS21 (ADR 0014 §M4) — reader-visibility net: every sentence/dialogue_chunk
@@ -628,6 +679,64 @@ export async function runCapabilityStage(
     })
   }
 
+  // ---- 5b+. DB-native POS backfill (Task 5a.4). -------------------------
+  // New items were just inserted with pos=null (projectItemsFromTypedRows
+  // hardcodes pos: null because TypedItemRow has no pos column).  This pass
+  // reads the current pos from the DB for each word/phrase item, classifies
+  // the null-pos subset via Claude (Haiku), and writes pos back with
+  // updateLearningItemPos — the sole pos writer on the DB-native path.
+  //
+  // Runs AFTER the item-insert loop (rows now exist) and gated by !dryRun
+  // (this whole write phase is past the dry-run early-return), mirroring the
+  // step-1b staging enrichPos block above.  The staging block still runs in 5a
+  // (removed in 5b) → both paths write the same pos value to the same rows →
+  // inert double write acceptable during the additive phase.
+  {
+    const wordPhrasePlans = itemProjection.perItemPlans.filter(
+      (p) => p.learningItemInput.item_type === 'word' || p.learningItemInput.item_type === 'phrase',
+    )
+    if (wordPhrasePlans.length > 0) {
+      const normalizedTexts = wordPhrasePlans.map((p) => p.normalizedText)
+      const posMap = await fetchLearningItemPosByNormalizedText(supabase, normalizedTexts)
+
+      // Build PosEnrichmentItem[] feeding the existing pure enrichMissingPos.
+      // Items with a valid DB pos are passed with that pos → enrichMissingPos
+      // skips them (no LLM reclassification).  Items with null pos → classified.
+      const enrichmentItems = wordPhrasePlans.map((p) => ({
+        base_text: p.learningItemInput.base_text,
+        item_type: p.learningItemInput.item_type as 'word' | 'phrase',
+        translation_nl: p.learningItemInput.translation_nl ?? null,
+        translation_en: p.learningItemInput.translation_en ?? null,
+        pos: posMap.get(p.normalizedText) ?? null,
+      }))
+
+      // Count what was ALREADY populated up front (valid DB pos) so the log can
+      // separate it from a classification gap — never fold a failed/invalid
+      // classification into "already populated".  This log line is the
+      // human-readable signal the 5a.7 parity gate + the B2 handoff lock lean
+      // on to confirm new word/phrase items land non-null pos.
+      const alreadyPopulated = enrichmentItems.filter(
+        (i) => typeof i.pos === 'string' && i.pos.trim() !== '',
+      ).length
+
+      const dbPosResult = await enrichMissingPos(enrichmentItems)
+      let dbPosWritten = 0
+      for (const [baseText, pos] of dbPosResult.posByBaseText) {
+        const normalizedText = itemSlug(baseText)
+        await updateLearningItemPos(supabase, normalizedText, pos)
+        dbPosWritten++
+      }
+      // Items that needed classification but got no valid POS (LLM gap / invalid
+      // tag / skipped-because-no-API-key) — these publish with pos still null.
+      const stillNull = wordPhrasePlans.length - alreadyPopulated - dbPosWritten
+      console.log(
+        `   ✓ DB-native POS: classified ${dbPosWritten}, already populated ${alreadyPopulated}` +
+          (dbPosResult.invalidCount > 0 ? `, ${dbPosResult.invalidCount} invalid` : '') +
+          (stillNull > 0 ? `, ⚠ ${stillNull} still null` : ''),
+      )
+    }
+  }
+
   // Write item caps via skip-if-exists. Returns only newly-inserted rows;
   // existing rows (already seeded) are not in the returned map.
   // allItemCaps was declared in step 5a (before the legacy-bundle filter).
@@ -675,14 +784,19 @@ export async function runCapabilityStage(
   }
 
   // Determine which items need distractor generation (cap not yet seeded).
+  // Check ONLY the text_recognition cap — it is the canonical seeded signal:
+  // `fetchSeededDistractorCapIds` reads exclusively `recognition_mcq_distractors`,
+  // and cued_recall is written in lockstep, so a seeded recognition cap means the
+  // whole item is seeded. The other caps an item emits (l1_to_id_choice,
+  // meaning_recall, form_recall, and the audio caps) NEVER appear in
+  // recognition_mcq_distractors, so a `.some(unseeded)` over all caps was ALWAYS
+  // true → every item regenerated on every publish and never skipped (cost bug).
   const itemsNeedingDistractors = itemProjection.perItemPlans.filter((plan) => {
-    // An item needs generation if ANY of its caps is unseeded.
-    // (All 4 caps are written atomically by upsertItemDistractors, so
-    // we check the recognition cap — the seeded-state canonical signal.)
-    return plan.capabilities.some((cap) => {
-      const capId = itemCapIdsByKey.get(cap.canonicalKey)
-      return capId !== undefined && !seededCapIds.has(capId)
-    })
+    const recognitionCap = plan.capabilities.find((c) => c.capabilityType === 'text_recognition')
+    if (!recognitionCap) return false
+    const capId = itemCapIdsByKey.get(recognitionCap.canonicalKey)
+    // Generate iff the recognition cap is brand-new (no id yet) or not yet seeded.
+    return capId === undefined || !seededCapIds.has(capId)
   })
 
   // Convert perItemPlans → DistractorInputItem format for the generator.
@@ -859,6 +973,55 @@ export async function runCapabilityStage(
       })
     }
   }
+  // ---- 6b. Grammar junction — source_ref match (5a.5). -------------------
+  // The live grammar caps are from the pattern path (patternProjection.patternPlans
+  // .flatMap(p => p.capabilities)); each CapabilityInput has sourceRef == plan.sourceRef
+  // == the DB-native grammar content_unit's source_ref by construction (Decision E).
+  // Non-grammar kinds use the staging contentUnitSlugs loop above (UNCHANGED — their
+  // unit_slug is byte-identical between staging and DB-native builders).
+  //
+  // relationshipKind rule (content-pipeline-output.ts:578-581):
+  //   capabilityType === 'l1_to_id_choice'       → 'introduced_by'
+  //   capabilityType.includes('recognition')      → 'introduced_by'
+  //   else                                        → 'practiced_by'
+  // For grammar: pattern_recognition → 'introduced_by'; pattern_contrast → 'practiced_by'.
+  if (usePatternPath && patternResult) {
+    // Build source_ref → content_unit_id map for grammar units.
+    const grammarUnitIdBySourceRef = new Map<string, string>()
+    for (const unit of dbContentUnits) {
+      if (unit.unit_kind !== 'grammar_pattern') continue
+      const unitId = contentUnitIdsBySlug.get(unit.unit_slug)
+      if (unitId) grammarUnitIdBySourceRef.set(unit.source_ref, unitId)
+    }
+
+    const patternCaps = patternProjection.patternPlans.flatMap((p) => p.capabilities)
+    let grammarJunctionsMissing = 0
+    for (const cap of patternCaps) {
+      const capId = capabilityIdsByKey.get(cap.canonicalKey)
+      const unitId = grammarUnitIdBySourceRef.get(cap.sourceRef)
+      if (!capId || !unitId) {
+        // Orphan — counted and surfaced once via the aggregated CS9 finding below
+        // (no per-cap console.warn: on a systematic source_ref break that would be
+        // 2×N noise duplicating the count the finding already carries).
+        grammarJunctionsMissing++
+        continue
+      }
+      // Inline relationshipKind rule (mirrors content-pipeline-output.ts:578-581)
+      const relationshipKind: CapabilityContentUnitInput['relationship_kind'] =
+        cap.capabilityType === 'l1_to_id_choice' ? 'introduced_by'
+        : cap.capabilityType.includes('recognition') ? 'introduced_by'
+        : 'practiced_by'
+      junctionInputs.push({ capability_id: capId, content_unit_id: unitId, relationship_kind: relationshipKind })
+    }
+    if (grammarJunctionsMissing > 0) {
+      findings.push({
+        gate: 'CS9',
+        severity: 'warning',
+        message: `Grammar content_unit junction: ${grammarJunctionsMissing} cap(s) could not resolve a content_unit by source_ref (orphan caps)`,
+      })
+    }
+  }
+
   await upsertCapabilityContentUnits(supabase, junctionInputs)
 
   // ---- 7. (removed in Slice 4b) capability_artifacts write. ------------
@@ -905,7 +1068,7 @@ export async function runCapabilityStage(
   // DB row's source_ref is byte-identical to the staging-derived
   // affixedFormPairSourceRef the caps were emitted with (verified against the live
   // DB — M-3), so cap.sourceRef ↔ pair join stays exact and canonical_keys are stable.
-  const affixedPairsFromDb = await fetchAffixedPairsFromDb(supabase, input.lessonId)
+  // affixedPairsFromDb loaded in step 5a (affixed) — no second DB fetch needed.
   const affixedPairsBySourceRef = new Map<string, AffixedPairSource>(
     affixedPairsFromDb.map((p) => [
       p.source_ref,
@@ -1171,7 +1334,11 @@ export async function runCapabilityStage(
   const postWriteFindings = await runCapabilityGatePostWrite(supabase, {
     lessonId: input.lessonId,
     declared: {
-      contentUnits: stagedContentUnits.length,
+      // Slice 5a: count parity must check what the DB-native builder ACTUALLY wrote
+      // (step 4b → contentUnitIds), NOT the staging count. The staging builder still
+      // emits sentence/dialogue_chunk learning_item units that the DB-native builder
+      // omits (Decision D2), so staging.contentUnits.length over-declares by those rows.
+      contentUnits: contentUnitIds.length,
       // Slice 2 (Task 6): when usePatternPath, the lesson's grammar_patterns are
       // the NEW pattern set (legacy cutover-deleted); exercise_variants are what
       // this run actually wrote (pattern path + legacy vocab).

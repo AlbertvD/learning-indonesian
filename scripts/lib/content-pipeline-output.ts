@@ -117,7 +117,9 @@ function fingerprint(value: unknown): string {
   return JSON.stringify(value)
 }
 
-function contentUnitKey(input: {
+// Exported so the DB-native content_units builder (capability-stage/projectors/
+// contentUnits.ts) reuses the EXACT key formula — one home, no byte-identity drift.
+export function contentUnitKey(input: {
   sourceRef: string
   sourceSectionRef: string
   unitSlug: string
@@ -125,7 +127,7 @@ function contentUnitKey(input: {
   return `${input.sourceRef}::${input.sourceSectionRef}::${input.unitSlug}`
 }
 
-function sourceRefForLesson(lessonNumber: number): string {
+export function sourceRefForLesson(lessonNumber: number): string {
   return `lesson-${lessonNumber}`
 }
 
