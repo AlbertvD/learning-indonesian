@@ -12,15 +12,16 @@
  *   legacy 386–420 upsertGrammarPatterns (PGRST205 fallback preserved)
  *   legacy 491–504 upsertLearningItem (gains review_status per §11 #15)
  *   legacy 549–560 upsertItemAnchorContext
- *   (Slice 5b #147) insertExerciseVariantGrammar / insertExerciseVariantVocab /
- *     the cloze writer (upsertClozeContext) are RETIRED — see the retirement
- *     notes below; findLearningItemBySlug's ilike fallback is preserved.
+ *   (Slice 5b #147) the legacy exercise_variants writers (insertExerciseVariantGrammar
+ *     / insertExerciseVariantVocab), the cloze writer (upsertClozeContext), and the
+ *     dead lookup helpers (findLearningItemBySlug / fetchGrammarPatternIdsBySlug /
+ *     findContextIdBySourceText) are RETIRED — the runner is DB-only and writes
+ *     grammar exercises through the typed pattern path (insertGrammarExerciseTyped).
  *   legacy 805–923 supplies the chunked-read helpers used by verify/seedIntegrity.ts
  */
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
-import { candidateSlugs } from './projectors/slugs'
 import { buildGrammarExerciseRow } from './projectors/grammarExerciseRows'
 import { extractAnswerKey } from './validators/candidatePayload'
 import { GRAMMAR_EXERCISE_TABLES, type GrammarExerciseType } from './loadFromDb'
@@ -442,21 +443,6 @@ export async function upsertGrammarPatterns(
   return { idsBySlug, tableMissing: false }
 }
 
-export async function fetchGrammarPatternIdsBySlug(
-  supabase: CapabilitySupabaseClient,
-): Promise<Map<string, string>> {
-  const { data, error } = await supabase
-    .schema('indonesian')
-    .from('grammar_patterns')
-    .select('id, slug')
-  if (error) throw error
-  const map = new Map<string, string>()
-  for (const row of data ?? []) {
-    map.set((row as { slug: string }).slug, (row as { id: string }).id)
-  }
-  return map
-}
-
 // ---------------------------------------------------------------------------
 // Learning items + meanings + anchor contexts
 // ---------------------------------------------------------------------------
@@ -551,88 +537,11 @@ export async function upsertItemAnchorContext(
 // them. The noClozeWriter enforcement test guards against reintroduction.
 
 /**
- * Find the learning_items.id for a cloze slug. Tries each candidate variant
- * (exact, no-asterisk, no-parens, fully stripped) and falls back to an
- * ilike prefix match on the most-stripped variant. Mirrors legacy 738–773.
- */
-export async function findLearningItemBySlug(
-  supabase: CapabilitySupabaseClient,
-  slug: string,
-): Promise<{ id: string; matchedSlug: string | null } | null> {
-  const variants = candidateSlugs(slug)
-
-  for (const candidate of variants) {
-    const { data, error } = await supabase
-      .schema('indonesian')
-      .from('learning_items')
-      .select('id')
-      .eq('normalized_text', candidate)
-      .limit(1)
-      .maybeSingle()
-    if (!error && data) {
-      return { id: (data as { id: string }).id, matchedSlug: candidate }
-    }
-  }
-
-  // Last resort: prefix match (e.g. "beres" → "beres (bèrès)")
-  const prefix = variants[variants.length - 1]
-  const { data } = await supabase
-    .schema('indonesian')
-    .from('learning_items')
-    .select('id, normalized_text')
-    .ilike('normalized_text', `${prefix}%`)
-    .limit(1)
-    .maybeSingle()
-  if (data) {
-    return {
-      id: (data as { id: string }).id,
-      matchedSlug: (data as { normalized_text: string }).normalized_text,
-    }
-  }
-
-  return null
-}
-
-// ---------------------------------------------------------------------------
-// Exercise variants (no upsert key — duplicate-row bug preserved per §11 #2)
-// ---------------------------------------------------------------------------
-
-export interface GrammarExerciseVariantInput {
-  lesson_id: string
-  exercise_type: string
-  grammar_pattern_id: string | null
-  payload_json: Record<string, unknown>
-  answer_key_json: Record<string, unknown>
-}
-
-export async function insertExerciseVariantGrammar(
-  supabase: CapabilitySupabaseClient,
-  variant: GrammarExerciseVariantInput,
-): Promise<{ ok: boolean; id?: string; error?: string }> {
-  const { data, error } = await supabase
-    .schema('indonesian')
-    .from('exercise_variants')
-    .insert({
-      lesson_id: variant.lesson_id,
-      exercise_type: variant.exercise_type,
-      grammar_pattern_id: variant.grammar_pattern_id,
-      payload_json: variant.payload_json,
-      answer_key_json: variant.answer_key_json,
-      is_active: true,
-    })
-    .select('id')
-    .single()
-  if (error) return { ok: false, error: error.message }
-  return { ok: true, id: (data?.id as string | undefined) ?? undefined }
-}
-
-/**
- * PR 4: dual-write a typed grammar-exercise row alongside the exercise_variants
- * insert. `table` is one of the 4 grammar exercise tables (from
- * GRAMMAR_EXERCISE_TABLE); `row` carries grammar_pattern_id + lesson_id + the
- * typed columns built by buildGrammarExerciseRow. exercise_variants writes stay
- * until PR 4a/PR 7 (admin still reads them). Idempotency for re-publish is not
- * needed here — projectGrammar only emits not-yet-published candidates.
+ * Insert a typed grammar-exercise row into one of the 4 typed grammar exercise
+ * tables (from GRAMMAR_EXERCISE_TABLES). `row` carries grammar_pattern_id +
+ * lesson_id + the typed columns built by buildGrammarExerciseRow. This is the
+ * SOLE grammar-exercise writer now (Slice 5b #147): the legacy exercise_variants
+ * dual-write is retired, and the pattern path (writePatternPath) calls this.
  */
 export async function insertGrammarExerciseTyped(
   supabase: CapabilitySupabaseClient,
@@ -808,50 +717,6 @@ export async function deleteLegacyPatternsForLesson(
     throw new Error(`Failed to delete legacy grammar_patterns for lesson=${lessonId}: ${delError.message}`)
   }
   return toDelete.map((p) => p.slug)
-}
-
-export interface VocabExerciseVariantInput {
-  context_id: string
-  exercise_type: string
-  grammar_pattern_id: string | null
-  payload_json: Record<string, unknown>
-  answer_key_json: Record<string, unknown>
-}
-
-export async function insertExerciseVariantVocab(
-  supabase: CapabilitySupabaseClient,
-  variant: VocabExerciseVariantInput,
-): Promise<{ ok: boolean; id?: string; error?: string }> {
-  const { data, error } = await supabase
-    .schema('indonesian')
-    .from('exercise_variants')
-    .insert({
-      context_id: variant.context_id,
-      exercise_type: variant.exercise_type,
-      grammar_pattern_id: variant.grammar_pattern_id,
-      payload_json: variant.payload_json,
-      answer_key_json: variant.answer_key_json,
-      is_active: true,
-    })
-    .select('id')
-    .single()
-  if (error) return { ok: false, error: error.message }
-  return { ok: true, id: (data?.id as string | undefined) ?? undefined }
-}
-
-export async function findContextIdBySourceText(
-  supabase: CapabilitySupabaseClient,
-  sourceText: string,
-): Promise<string | null> {
-  const { data, error } = await supabase
-    .schema('indonesian')
-    .from('item_contexts')
-    .select('id')
-    .eq('source_text', sourceText)
-    .limit(1)
-    .maybeSingle()
-  if (error || !data) return null
-  return (data as { id: string }).id
 }
 
 export async function countExerciseVariantsForLesson(

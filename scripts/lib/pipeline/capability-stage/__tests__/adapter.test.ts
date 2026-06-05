@@ -1,62 +1,12 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-  insertExerciseVariantGrammar,
-  insertExerciseVariantVocab,
   retireOrphanedCapabilities,
   upsertCapabilities,
   upsertLearningItem,
   type CapabilityInput,
   type LearningItemInput,
 } from '../adapter'
-
-// Minimal Supabase mock that records upserts/inserts and returns the supplied
-// id when the caller chains `.select('id').single()`. Mirrors the structure of
-// the runner.test.ts mock so the two stay aligned.
-function buildClient(idByTable: Record<string, string>) {
-  return {
-    schema: () => ({
-      from: (table: string) => ({
-        upsert: () => ({
-          select: () => ({
-            single: async () => ({ data: { id: idByTable[table] ?? null }, error: null }),
-          }),
-        }),
-        insert: () => ({
-          select: () => ({
-            single: async () => ({ data: { id: idByTable[table] ?? null }, error: null }),
-          }),
-        }),
-      }),
-    }),
-  } as never
-}
-
-describe('capability-stage adapter — writer return contracts (F6-1 wiring)', () => {
-  it('insertExerciseVariantGrammar returns the inserted id for CS8 wiring', async () => {
-    const client = buildClient({ exercise_variants: 'variant-uuid-1' })
-    const result = await insertExerciseVariantGrammar(client, {
-      lesson_id: 'lesson-1',
-      exercise_type: 'sentence_transformation',
-      grammar_pattern_id: 'gp-1',
-      payload_json: { prompt: 'x' },
-      answer_key_json: { answer: 'y' },
-    })
-    expect(result).toEqual({ ok: true, id: 'variant-uuid-1' })
-  })
-
-  it('insertExerciseVariantVocab returns the inserted id for CS8 wiring', async () => {
-    const client = buildClient({ exercise_variants: 'variant-uuid-2' })
-    const result = await insertExerciseVariantVocab(client, {
-      context_id: 'ctx-1',
-      exercise_type: 'cloze_mcq',
-      grammar_pattern_id: null,
-      payload_json: { stem: 'x' },
-      answer_key_json: { answer: 'y' },
-    })
-    expect(result).toEqual({ ok: true, id: 'variant-uuid-2' })
-  })
-})
 
 // Captures the upsert payload so we can assert on its shape. Returns a Supabase
 // stub whose .upsert(payload) call records the payload before resolving.

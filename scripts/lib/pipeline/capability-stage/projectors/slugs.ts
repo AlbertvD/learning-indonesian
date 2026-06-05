@@ -21,8 +21,9 @@
  *   3. strip parenthetical: "beres (bèrès)" → "beres"
  *   4. both: "disetrika* (foo)" → "disetrika"
  * When the slug from the upstream agent lacks parentheticals/asterisks,
- * variant 1 is tried first; if not found the DB is queried with a LIKE
- * prefix match (see adapter.findLearningItemBySlug).
+ * variant 1 is tried first; callers fall back through the remaining variants.
+ * (The legacy adapter.findLearningItemBySlug ilike-prefix consumer was retired
+ * in Slice 5b #147; this pure helper is kept for #148's item-cloze resolution.)
  */
 export function candidateSlugs(slug: string): string[] {
   const exact = slug.toLowerCase().trim()
