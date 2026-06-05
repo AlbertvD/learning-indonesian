@@ -25,6 +25,16 @@ describe('isSubstringContrastPattern', () => {
     expect(isSubstringContrastPattern('ada-existential')).toBe(true)
   })
 
+  it('exempts morphological-derivation + conjunction-contrast patterns (L10 affix pairs)', () => {
+    // The root↔derived (or short↔compound) substring overlap IS the lesson.
+    expect(isSubstringContrastPattern('an-suffix-nominalization')).toBe(true)   // makan↔makanan
+    expect(isSubstringContrastPattern('ke-ordinal-numbers')).toBe(true)         // satu↔kesatu
+    expect(isSubstringContrastPattern('subordinating-conjunctions')).toBe(true) // karena↔karena itu
+    // regex generalisation so sibling slugs in future lessons are covered too.
+    expect(isSubstringContrastPattern('me-nominalization')).toBe(true)
+    expect(isSubstringContrastPattern('ke-ordinal-ranking')).toBe(true)
+  })
+
   it('does NOT exempt patterns where substring overlap would be a real bug', () => {
     expect(isSubstringContrastPattern('time-place-word-order')).toBe(false)
     expect(isSubstringContrastPattern('verb-no-conjugation')).toBe(false)

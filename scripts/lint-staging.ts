@@ -119,8 +119,15 @@ const CLOZE_EXEMPT_BASE_TEXTS = new Set([
 const SUBSTRING_OK_PATTERN_SLUGS = new Set([
   'no-singular-plural',
   'ada-existential',
+  // Morphological derivation: the root↔derived substring overlap IS the lesson.
+  'an-suffix-nominalization',   // makan↔makanan, kirim↔kiriman, minum↔minuman, pikir↔pikiran
+  'ke-ordinal-numbers',         // satu↔kesatu, dua↔kedua
+  // Conjunction contrast: karena (because) vs karena itu (therefore) — the
+  // shorter form is a substring of the compound, and distinguishing them is the
+  // pedagogical point (same family as sebab / oleh sebab itu).
+  'subordinating-conjunctions',
 ])
-const SUBSTRING_OK_PATTERN_REGEX = /^reduplication-|-comparative$|-superlative$|-comparison$/
+const SUBSTRING_OK_PATTERN_REGEX = /^reduplication-|-comparative$|-superlative$|-comparison$|-nominalization$|^ke-ordinal/
 
 export function isSubstringContrastPattern(slug: string | undefined | null): boolean {
   if (!slug) return false
