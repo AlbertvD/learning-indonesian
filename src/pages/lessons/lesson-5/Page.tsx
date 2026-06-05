@@ -12,6 +12,7 @@
 
 import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
+import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import content from './content.json'
 import classes from './Page.module.css'
@@ -346,6 +347,7 @@ function TussendoorSpread({
 // ─── Page composition ──────────────────────────────────────────────────────
 
 export default function Lesson5Page() {
+  const activation = useLessonActivation(meta.id)
   // Section indices in DB order:
   //   0 = text (rice cookery)
   //   1 = dialogue (Titin + Nanang + Pembantu)
@@ -413,10 +415,10 @@ export default function Lesson5Page() {
             verschijnen daarna gedoseerd in je oefensessies.
           </p>
           <div className={classes.closingActivation}>
-            <ActivationGate lessonId={meta.id} />
+            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
           </div>
           <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} />
+            <PracticeActions lessonId={meta.id} activated={activation.activated} />
           </div>
         </div>
       </section>

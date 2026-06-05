@@ -4,36 +4,30 @@ import { Link } from 'react-router-dom'
 import { IconPlayerPlay, IconRotateClockwise } from '@tabler/icons-react'
 import { useAuthStore } from '@/stores/authStore'
 import {
-  isLessonActivated,
   buildLessonPracticeActions,
   getLessonCapabilityPracticeSummaryByLessonId,
 } from '@/lib/lessons'
 import { logError } from '@/lib/logger'
 
 // Renders the two practice CTAs ("Practice this lesson · N ready" + "Review")
-// wired to the capability runtime. The host page composes the frame.
-export function PracticeActions({ lessonId }: { lessonId: string }) {
+// wired to the capability runtime. The host page composes the frame and owns
+// activation state (via useLessonActivation), passing `activated` in so the CTA
+// reacts the instant the activation control is toggled — no second source of
+// truth, no manual reload. See docs/target-architecture.md:59-61.
+export function PracticeActions({ lessonId, activated }: { lessonId: string; activated: boolean }) {
   const userId = useAuthStore(s => s.user?.id)
   const [readyCount, setReadyCount] = useState(0)
   const [practicedCount, setPracticedCount] = useState(0)
-  const [activated, setActivated] = useState(false)
 
   useEffect(() => {
     if (!userId) return
     let cancelled = false
     async function load() {
       try {
-        const [summary, isActive] = await Promise.all([
-          getLessonCapabilityPracticeSummaryByLessonId(userId!, lessonId).catch(() => ({
-            readyCapabilityCount: 0,
-            activePracticedCapabilityCount: 0,
-          })),
-          isLessonActivated(userId!, lessonId).catch(() => false),
-        ])
+        const summary = await getLessonCapabilityPracticeSummaryByLessonId(userId!, lessonId)
         if (cancelled) return
         setReadyCount(summary.readyCapabilityCount)
         setPracticedCount(summary.activePracticedCapabilityCount)
-        setActivated(isActive)
       } catch (err) {
         logError({ page: 'lesson-page', action: 'load-practice-counts', error: err })
       }

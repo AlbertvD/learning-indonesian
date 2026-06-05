@@ -10,6 +10,7 @@
 
 import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
+import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import content from './content.json'
@@ -443,6 +444,7 @@ function CultureSpread({ section }: { section: typeof sections[number] }) {
 // ─── Page composition ──────────────────────────────────────────────────────
 
 export default function Lesson2Page() {
+  const activation = useLessonActivation(meta.id)
   // Section index map (DB order)
   // 0: dialogue · 1: vocabulary · 2: expressions · 3: numbers
   // 4: grammar SE-/classifiers · 5: grammar woordgroepen
@@ -512,10 +514,10 @@ export default function Lesson2Page() {
             Activeer de les en deze woordgroepen, getallen en patronen verschijnen automatisch in je oefensessies.
           </p>
           <div className={classes.closingActivation}>
-            <ActivationGate lessonId={meta.id} />
+            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
           </div>
           <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} />
+            <PracticeActions lessonId={meta.id} activated={activation.activated} />
           </div>
         </div>
       </section>

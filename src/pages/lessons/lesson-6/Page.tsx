@@ -20,6 +20,7 @@
 
 import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
+import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import content from './content.json'
 import classes from './Page.module.css'
@@ -476,6 +477,7 @@ function TimeMovement() {
 // ─── Page composition ──────────────────────────────────────────────────────
 
 export default function Lesson6Page() {
+  const activation = useLessonActivation(meta.id)
   return (
     <article className={classes.page}>
       {/* Hero band — Jakarta panorama under teal/navy/amber gradient */}
@@ -531,10 +533,10 @@ export default function Lesson6Page() {
             automatisch in je oefensessies.
           </p>
           <div className={classes.closingActivation}>
-            <ActivationGate lessonId={meta.id} />
+            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
           </div>
           <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} />
+            <PracticeActions lessonId={meta.id} activated={activation.activated} />
           </div>
         </div>
       </section>

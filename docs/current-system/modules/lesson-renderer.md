@@ -1,7 +1,7 @@
 ---
 module: lesson-renderer
 surface: src/components/lessons/
-last_verified_against_code: 2026-05-25
+last_verified_against_code: 2026-06-05
 status: retired
 ---
 
@@ -26,9 +26,20 @@ is no generic fallback).
 
 Shared, still-live components under `src/components/lessons/` that the bespoke
 pages compose:
-- `ActivationGate.tsx` — the lesson-activation checkbox (wraps `lib/lessons/activation`).
-- `PracticeActions.tsx` — the practice/review CTAs (capability counts via `getLessonCapabilityPracticeSummaryByLessonId`).
+- `ActivationGate.tsx` — the lesson-activation checkbox. **Controlled/presentational** (`{ activated, saving, onToggle }`); holds no state and does no I/O (`ActivationGate.tsx:9-26`).
+- `PracticeActions.tsx` — the practice/review CTAs. Takes `{ lessonId, activated }`; fetches capability counts via `getLessonCapabilityPracticeSummaryByLessonId` but reads activation from its `activated` prop, not its own fetch (`PracticeActions.tsx:15-43`).
 - `LessonAudioPlayer.tsx` — whole-lesson audio playback.
+
+**Activation state has one owner per page.** Each bespoke page calls
+`useLessonActivation(meta.id)` (`src/hooks/useLessonActivation.ts`) once and passes
+the result to both `ActivationGate` (as `activated`/`saving`/`onToggle`) and
+`PracticeActions` (as `activated`). The hook owns the single client-side copy and
+the runtime wiring (read via `isLessonActivated`, optimistic write via
+`setLessonActivated`, error notification); the canonical source of truth remains
+`lib/lessons/` + the `learner_lesson_activation` table. This lift-to-the-host
+design (added 2026-06-05) replaced two independent per-component activation
+fetches that did not re-sync — toggling the gate left the practice CTA stale
+until a manual reload. No second store; see `docs/target-architecture.md:59-61`.
 
 `src/pages/LocalPreview.tsx` (`/preview`, gated by `VITE_LOCAL_CONTENT_PREVIEW`)
 now renders the real bespoke pages from `content.json` instead of the old

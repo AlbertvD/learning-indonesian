@@ -35,6 +35,7 @@
 
 import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
+import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import content from './content.json'
 import classes from './Page.module.css'
@@ -579,6 +580,7 @@ function GarudaMyth({ section }: { section: typeof sections[number] }) {
 // ─── Page composition ──────────────────────────────────────────────────────
 
 export default function Lesson7Page() {
+  const activation = useLessonActivation(meta.id)
   // Section index map (DB order):
   //   0: text — Garuda myth (15 paragraphs)
   //   1: dialogue — Ninik & Ibu packing for Denpasar (14 lines)
@@ -647,10 +649,10 @@ export default function Lesson7Page() {
             oefensessies langs.
           </p>
           <div className={classes.closingActivation}>
-            <ActivationGate lessonId={meta.id} />
+            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
           </div>
           <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} />
+            <PracticeActions lessonId={meta.id} activated={activation.activated} />
           </div>
         </div>
       </section>

@@ -15,15 +15,14 @@ vi.mock('@/stores/authStore', () => ({
 
 import {
   getLessonCapabilityPracticeSummaryByLessonId,
-  isLessonActivated,
   buildLessonPracticeActions,
 } from '@/lib/lessons'
 
-function renderPracticeActions(lessonId: string) {
+function renderPracticeActions(lessonId: string, activated: boolean) {
   return render(
     <MantineProvider>
       <MemoryRouter>
-        <PracticeActions lessonId={lessonId} />
+        <PracticeActions lessonId={lessonId} activated={activated} />
       </MemoryRouter>
     </MantineProvider>,
   )
@@ -31,7 +30,6 @@ function renderPracticeActions(lessonId: string) {
 
 beforeEach(() => {
   vi.clearAllMocks()
-  vi.mocked(isLessonActivated).mockResolvedValue(true)
   vi.mocked(buildLessonPracticeActions).mockReturnValue([])
   vi.mocked(getLessonCapabilityPracticeSummaryByLessonId).mockResolvedValue({
     readyCapabilityCount: 0,
@@ -46,21 +44,20 @@ describe('PracticeActions', () => {
       activePracticedCapabilityCount: 2,
     })
 
-    renderPracticeActions('lesson-abc')
+    renderPracticeActions('lesson-abc', true)
 
     await waitFor(() => {
       expect(getLessonCapabilityPracticeSummaryByLessonId).toHaveBeenCalledWith('user-uuid', 'lesson-abc')
     })
   })
 
-  it('passes correct practiceReadyCount to buildLessonPracticeActions (ready minus practiced when activated)', async () => {
+  it('passes practiceReadyCount = ready − practiced when activated', async () => {
     vi.mocked(getLessonCapabilityPracticeSummaryByLessonId).mockResolvedValue({
       readyCapabilityCount: 7,
       activePracticedCapabilityCount: 3,
     })
-    vi.mocked(isLessonActivated).mockResolvedValue(true)
 
-    renderPracticeActions('lesson-abc')
+    renderPracticeActions('lesson-abc', true)
 
     await waitFor(() => {
       const calls = vi.mocked(buildLessonPracticeActions).mock.calls
@@ -71,8 +68,24 @@ describe('PracticeActions', () => {
     })
   })
 
+  it('forces practiceReadyCount to 0 when the lesson is not activated', async () => {
+    vi.mocked(getLessonCapabilityPracticeSummaryByLessonId).mockResolvedValue({
+      readyCapabilityCount: 7,
+      activePracticedCapabilityCount: 3,
+    })
+
+    renderPracticeActions('lesson-abc', false)
+
+    await waitFor(() => {
+      expect(getLessonCapabilityPracticeSummaryByLessonId).toHaveBeenCalled()
+    })
+    const calls = vi.mocked(buildLessonPracticeActions).mock.calls
+    expect(calls.length).toBeGreaterThan(0)
+    expect(calls.every(([arg]) => arg.state.practiceReadyCount === 0)).toBe(true)
+  })
+
   it('renders empty-state button when no practice actions are available', async () => {
-    renderPracticeActions('lesson-abc')
+    renderPracticeActions('lesson-abc', true)
     expect(await screen.findByText(/Geen oefeningen beschikbaar/i)).toBeInTheDocument()
   })
 })

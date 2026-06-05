@@ -28,6 +28,7 @@
 
 import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
+import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import content from './content.json'
 import classes from './Page.module.css'
@@ -614,6 +615,7 @@ function ExpressionsRow({ section }: { section: typeof sections[number] }) {
 // ─── Page composition ──────────────────────────────────────────────────────
 
 export default function Lesson9Page() {
+  const activation = useLessonActivation(meta.id)
   // Section index map (DB order):
   //   0: text — culture (13-paragraph dukun + semangat essay)
   //   1: dialogue (PUSKESMAS visit, 13 lines incl. 2 narrator setups)
@@ -690,10 +692,10 @@ export default function Lesson9Page() {
             werkwoorden en de intensiveerders komen vanzelf in je oefensessies langs.
           </p>
           <div className={classes.closingActivation}>
-            <ActivationGate lessonId={meta.id} />
+            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
           </div>
           <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} />
+            <PracticeActions lessonId={meta.id} activated={activation.activated} />
           </div>
         </div>
       </section>

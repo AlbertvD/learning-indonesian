@@ -8,6 +8,7 @@
 
 import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
+import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
 import content from './content.json'
@@ -286,6 +287,7 @@ function AlphabetGuide({ section }: { section: typeof sections[number] }) {
 // ─── Page composition ──────────────────────────────────────────────────────
 
 export default function Lesson1Page() {
+  const activation = useLessonActivation(meta.id)
   return (
     <article className={classes.page}>
       {/* Hero band — full-bleed, decorated */}
@@ -360,10 +362,10 @@ export default function Lesson1Page() {
             Activeer de les en de woorden, zinnen en patronen verschijnen automatisch in je oefensessies.
           </p>
           <div className={classes.closingActivation}>
-            <ActivationGate lessonId={meta.id} />
+            <ActivationGate activated={activation.activated} saving={activation.saving} onToggle={activation.toggle} />
           </div>
           <div className={classes.closingActions}>
-            <PracticeActions lessonId={meta.id} />
+            <PracticeActions lessonId={meta.id} activated={activation.activated} />
           </div>
         </div>
       </section>
