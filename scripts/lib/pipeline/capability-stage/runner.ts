@@ -803,74 +803,51 @@ export async function runCapabilityStage(
   }
 
   // ---- 6. Write — capability_content_units (junction). -----------------
-  // Junction rows come from staging capabilities[].contentUnitSlugs +
-  // capabilities[].relationshipKind (legacy 281–297).
-  const stagedJunctions = staging.capabilities as Array<{
-    canonicalKey: string
-    contentUnitSlugs?: string[]
-    relationshipKind?: 'introduced_by' | 'practiced_by' | 'assessed_by' | 'referenced_by'
-  }>
-  const junctionInputs: CapabilityContentUnitInput[] = []
-  for (const cap of stagedJunctions) {
-    const capId = capabilityIdsByKey.get(cap.canonicalKey)
-    if (!capId) continue
-    for (const slug of cap.contentUnitSlugs ?? []) {
-      const unitId = contentUnitIdsBySlug.get(slug)
-      if (!unitId) continue
-      junctionInputs.push({
-        capability_id: capId,
-        content_unit_id: unitId,
-        relationship_kind: cap.relationshipKind ?? 'referenced_by',
-      })
-    }
+  // Slice 5b (#147): re-derived DB-natively off content_unit `source_ref` — the
+  // staging `capabilities[].contentUnitSlugs` metadata is retired. Each cap links
+  // to the content_unit that shares its `source_ref`:
+  //   item  cap (incl. audio) → learning_item    unit (learning_items/<nt>)
+  //   affixed cap             → affixed_form_pair unit
+  //   pattern cap             → grammar_pattern   unit (Decision E source_ref align)
+  // dialogue_line cloze caps have NO content_unit (none shares their line source_ref)
+  // and produce no junction — matching the live DB (0 dialogue_line junctions).
+  // relationship_kind rule (content-pipeline-output.ts:578-581):
+  //   capabilityType === 'l1_to_id_choice'   → 'introduced_by'
+  //   capabilityType.includes('recognition') → 'introduced_by'  (incl. audio_recognition)
+  //   else                                   → 'practiced_by'
+  const unitIdBySourceRef = new Map<string, string>()
+  for (const unit of dbContentUnits) {
+    const unitId = contentUnitIdsBySlug.get(unit.unit_slug)
+    if (unitId) unitIdBySourceRef.set(unit.source_ref, unitId)
   }
-  // ---- 6b. Grammar junction — source_ref match (5a.5). -------------------
-  // The live grammar caps are from the pattern path (patternProjection.patternPlans
-  // .flatMap(p => p.capabilities)); each CapabilityInput has sourceRef == plan.sourceRef
-  // == the DB-native grammar content_unit's source_ref by construction (Decision E).
-  // Non-grammar kinds use the staging contentUnitSlugs loop above (UNCHANGED — their
-  // unit_slug is byte-identical between staging and DB-native builders).
-  //
-  // relationshipKind rule (content-pipeline-output.ts:578-581):
-  //   capabilityType === 'l1_to_id_choice'       → 'introduced_by'
-  //   capabilityType.includes('recognition')      → 'introduced_by'
-  //   else                                        → 'practiced_by'
-  // For grammar: pattern_recognition → 'introduced_by'; pattern_contrast → 'practiced_by'.
-  if (usePatternPath && patternResult) {
-    // Build source_ref → content_unit_id map for grammar units.
-    const grammarUnitIdBySourceRef = new Map<string, string>()
-    for (const unit of dbContentUnits) {
-      if (unit.unit_kind !== 'grammar_pattern') continue
-      const unitId = contentUnitIdsBySlug.get(unit.unit_slug)
-      if (unitId) grammarUnitIdBySourceRef.set(unit.source_ref, unitId)
+  const junctionCaps: CapabilityInput[] = [
+    ...allItemCaps,
+    ...newAffixedCaps,
+    ...(usePatternPath ? patternProjection.patternPlans.flatMap((p) => p.capabilities) : []),
+  ]
+  const junctionInputs: CapabilityContentUnitInput[] = []
+  let junctionsMissing = 0
+  for (const cap of junctionCaps) {
+    const capId = capabilityIdsByKey.get(cap.canonicalKey)
+    const unitId = unitIdBySourceRef.get(cap.sourceRef)
+    if (!capId || !unitId) {
+      // Orphan — aggregated into one CS9 finding (no per-cap noise on a
+      // systematic source_ref break).
+      junctionsMissing++
+      continue
     }
-
-    const patternCaps = patternProjection.patternPlans.flatMap((p) => p.capabilities)
-    let grammarJunctionsMissing = 0
-    for (const cap of patternCaps) {
-      const capId = capabilityIdsByKey.get(cap.canonicalKey)
-      const unitId = grammarUnitIdBySourceRef.get(cap.sourceRef)
-      if (!capId || !unitId) {
-        // Orphan — counted and surfaced once via the aggregated CS9 finding below
-        // (no per-cap console.warn: on a systematic source_ref break that would be
-        // 2×N noise duplicating the count the finding already carries).
-        grammarJunctionsMissing++
-        continue
-      }
-      // Inline relationshipKind rule (mirrors content-pipeline-output.ts:578-581)
-      const relationshipKind: CapabilityContentUnitInput['relationship_kind'] =
-        cap.capabilityType === 'l1_to_id_choice' ? 'introduced_by'
-        : cap.capabilityType.includes('recognition') ? 'introduced_by'
-        : 'practiced_by'
-      junctionInputs.push({ capability_id: capId, content_unit_id: unitId, relationship_kind: relationshipKind })
-    }
-    if (grammarJunctionsMissing > 0) {
-      findings.push({
-        gate: 'CS9',
-        severity: 'warning',
-        message: `Grammar content_unit junction: ${grammarJunctionsMissing} cap(s) could not resolve a content_unit by source_ref (orphan caps)`,
-      })
-    }
+    const relationship_kind: CapabilityContentUnitInput['relationship_kind'] =
+      cap.capabilityType === 'l1_to_id_choice' ? 'introduced_by'
+      : cap.capabilityType.includes('recognition') ? 'introduced_by'
+      : 'practiced_by'
+    junctionInputs.push({ capability_id: capId, content_unit_id: unitId, relationship_kind })
+  }
+  if (junctionsMissing > 0) {
+    findings.push({
+      gate: 'CS9',
+      severity: 'warning',
+      message: `capability_content_units: ${junctionsMissing} cap(s) could not resolve a content_unit by source_ref (orphan caps)`,
+    })
   }
 
   await upsertCapabilityContentUnits(supabase, junctionInputs)
