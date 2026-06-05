@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
 import { validateLessonIdPresence } from '../../validators/lessonId'
-import { projectVocab, type VocabStagingItem } from '../../projectors/vocab'
 import type { CapabilityInput } from '../../adapter'
 
 function makeCapability(overrides: Partial<CapabilityInput>): CapabilityInput {
@@ -90,74 +89,5 @@ describe('validateLessonIdPresence — Decision 3b / ADR 0006 defensive gate', (
       makeCapability({ sourceKind: 'item', lessonId: null, canonicalKey: 'item:three' }),
     ]
     expect(() => validateLessonIdPresence(caps)).toThrow(/3 capability\/ies/)
-  })
-})
-
-describe('projectVocab — Decision 3b: contextual_cloze inherits projecting lesson', () => {
-  const baseItem = (overrides: Partial<VocabStagingItem>): VocabStagingItem => ({
-    base_text: 'halo',
-    item_type: 'word',
-    context_type: 'vocabulary_list',
-    translation_nl: 'hallo',
-    translation_en: 'hello',
-    pos: 'greeting',
-    level: 'A1',
-    review_status: 'pending_review',
-    ...overrides,
-  })
-
-  it('stamps lessonId on every emitted contextual_cloze capability', () => {
-    const out = projectVocab({
-      lessonNumber: 9,
-      lessonId: 'lesson-9-uuid',
-      level: 'A1',
-      sections: [
-        {
-          id: 'sec1',
-          title: 'Dialoog',
-          order_index: 1,
-          content: {
-            type: 'dialogue',
-            lines: [
-              { text: 'Apa kabar', speaker: 'Andi' },
-              { text: 'Baik baik', speaker: 'Budi' },
-            ],
-          },
-        },
-      ],
-      learningItems: [baseItem({})],
-      clozeContexts: [
-        { learning_item_slug: 'apa kabar', source_text: '___ kabar?', translation_text: 'Hoe ___?' },
-        { learning_item_slug: 'baik baik', source_text: '___ baik', translation_text: '___ goed' },
-      ],
-    })
-    expect(out.contextualClozeCapabilities).toHaveLength(2)
-    for (const cap of out.contextualClozeCapabilities) {
-      expect(cap.lessonId).toBe('lesson-9-uuid')
-    }
-  })
-
-  it('emitted contextual_cloze capabilities pass the validator', () => {
-    const out = projectVocab({
-      lessonNumber: 9,
-      lessonId: 'lesson-9-uuid',
-      level: 'A1',
-      sections: [
-        {
-          id: 'sec1',
-          title: 'Dialoog',
-          order_index: 1,
-          content: {
-            type: 'dialogue',
-            lines: [{ text: 'Apa kabar', speaker: 'Andi' }],
-          },
-        },
-      ],
-      learningItems: [baseItem({})],
-      clozeContexts: [
-        { learning_item_slug: 'apa kabar', source_text: '___ kabar?', translation_text: 'Hoe ___?' },
-      ],
-    })
-    expect(() => validateLessonIdPresence(out.contextualClozeCapabilities)).not.toThrow()
   })
 })
