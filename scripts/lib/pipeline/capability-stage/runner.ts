@@ -75,7 +75,6 @@ import {
   type CapabilityContentUnitInput,
   type CapabilityInput,
   type CapabilitySupabaseClient,
-  type ContentUnitInput,
   type ItemDistractorRow,
 } from './adapter'
 import { loadLesson as defaultLoadLesson, type LoadedLesson } from './loader'
@@ -402,9 +401,10 @@ export async function runCapabilityStage(
     throw new Error('runCapabilityStage reached the write phase without a Supabase client (dry-run paths must short-circuit earlier)')
   }
   // ---- 4. Write — content_units. ---------------------------------------
-  const stagedContentUnits = staging.contentUnits as Array<ContentUnitInput>
-  // contentUnitIdsBySlug and contentUnitIds are declared in step 4b (after pattern projection)
-  // where buildContentUnitsFromDb needs patternProjection.patternPlans.
+  // The content_units write moved to step 4b (after pattern projection), where
+  // buildContentUnitsFromDb needs patternProjection.patternPlans. contentUnitIdsBySlug
+  // and contentUnitIds are declared there. The staging.contentUnits regeneration still
+  // runs (for the dry-run log) but is NO LONGER the upsert input (Slice 5a).
 
   // ---- 5. Write — learning_capabilities. -------------------------------
   // Capabilities come pre-built from staging (capabilities.ts produced upstream
@@ -1329,7 +1329,11 @@ export async function runCapabilityStage(
   const postWriteFindings = await runCapabilityGatePostWrite(supabase, {
     lessonId: input.lessonId,
     declared: {
-      contentUnits: stagedContentUnits.length,
+      // Slice 5a: count parity must check what the DB-native builder ACTUALLY wrote
+      // (step 4b → contentUnitIds), NOT the staging count. The staging builder still
+      // emits sentence/dialogue_chunk learning_item units that the DB-native builder
+      // omits (Decision D2), so staging.contentUnits.length over-declares by those rows.
+      contentUnits: contentUnitIds.length,
       // Slice 2 (Task 6): when usePatternPath, the lesson's grammar_patterns are
       // the NEW pattern set (legacy cutover-deleted); exercise_variants are what
       // this run actually wrote (pattern path + legacy vocab).

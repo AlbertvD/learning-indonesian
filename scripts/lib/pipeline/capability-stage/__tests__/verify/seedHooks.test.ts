@@ -205,6 +205,46 @@ describe('CS8 contentNonEmpty — required field presence checks per #22', () =>
     expect(findings[0].gate).toBe('CS8')
     expect(findings[0].context?.table).toBe('learning_capabilities')
   })
+
+  it('does NOT flag content_units with empty payload_json (Decision E — {} is intentional on the DB-native builder)', async () => {
+    const supabase = buildMockSupabase({
+      content_units: {
+        rows: [
+          { id: 'cu-1', content_unit_key: 'lesson-1::sec::item-halo', unit_kind: 'learning_item', payload_json: {} },
+          { id: 'cu-2', content_unit_key: 'lesson-1::grammar::pattern-l1-x', unit_kind: 'grammar_pattern', payload_json: {} },
+        ],
+      },
+    })
+    const findings = await runContentNonEmpty(supabase, {
+      contentUnitIds: ['cu-1', 'cu-2'],
+      capabilityIds: [],
+      learningItemIds: [],
+      exerciseVariantIds: [],
+      grammarPatternIds: [],
+    })
+    // payload_json={} must NOT trip CS8 — the column is unread + being retired (Decision E).
+    expect(findings).toEqual([])
+  })
+
+  it('still flags content_units missing content_unit_key or unit_kind', async () => {
+    const supabase = buildMockSupabase({
+      content_units: {
+        rows: [
+          { id: 'cu-bad-key', content_unit_key: '', unit_kind: 'learning_item', payload_json: {} },
+          { id: 'cu-bad-kind', content_unit_key: 'k', unit_kind: '', payload_json: {} },
+        ],
+      },
+    })
+    const findings = await runContentNonEmpty(supabase, {
+      contentUnitIds: ['cu-bad-key', 'cu-bad-kind'],
+      capabilityIds: [],
+      learningItemIds: [],
+      exerciseVariantIds: [],
+      grammarPatternIds: [],
+    })
+    expect(findings.length).toBe(2)
+    expect(findings.every((f) => f.gate === 'CS8' && f.context?.table === 'content_units')).toBe(true)
+  })
 })
 
 describe('CS9 seedIntegrity — non-dialogue reviewability cross-check (legacy 805–923)', () => {
