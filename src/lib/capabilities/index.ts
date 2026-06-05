@@ -56,11 +56,11 @@ export type {
 } from './capabilityContracts'
 
 // ─── Artifacts ─────────────────────────────────────────────────────────────
-// Slice 4b retired capability_artifacts + its readiness types. ARTIFACT_KINDS
-// survives only for the Slice-5-owned legacy staging regeneration.
-export {
-  ARTIFACT_KINDS,
-} from './artifactRegistry'
+// Slice 4b retired capability_artifacts; Slice 5b (#147 5b.7) retired the last
+// consumer of ARTIFACT_KINDS (the legacy staging regeneration) and deleted
+// artifactRegistry.ts. The `ArtifactKind` *type* survives in capabilityTypes.ts
+// (it still types capability.requiredArtifacts + the render contracts); only the
+// runtime ARTIFACT_KINDS array is gone.
 
 // ─── Canonical keying ──────────────────────────────────────────────────────
 export {

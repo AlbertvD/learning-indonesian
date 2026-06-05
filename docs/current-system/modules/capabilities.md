@@ -1,7 +1,7 @@
 ---
 module: capabilities
 surface: src/lib/capabilities/
-last_verified_against_code: 2026-06-04
+last_verified_against_code: 2026-06-05
 inbound_port: src/lib/capabilities/index.ts
 status: stable
 ---
@@ -19,7 +19,6 @@ status: stable
 | `capabilityCatalog.ts` | 196 | `projectCapabilities(snapshot)` — derives every `ProjectedCapability` from raw catalog content (learning items, grammar patterns, affixed-form pairs). Source-of-truth for which cap_types each content kind emits + what each cap_type's `requiredArtifacts` is. Podcast caps are emitted by a separate projector at `scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts` per Decision 4; contextual_cloze caps live in `scripts/lib/pipeline/capability-stage/projectors/vocab.ts` per Decision 5b. |
 | `capabilityContracts.ts` | 107 | `validateCapability(input)` — derives `CapabilityReadiness` purely from `RENDER_CONTRACTS` routing (which exercise types serve this cap_type AND support its source kind). Slice 4b (#102) removed the artifact-bag dependency — readiness no longer reads `required_artifacts` or `capability_artifacts`. `isExposureOnly(cap)` for podcast caps. `validateCapabilities` for aggregate health. |
 | **`renderContracts.ts`** | 333 | **The shared render contract** — `RENDER_CONTRACTS`, `ContractInputShapes`, `BuilderInputFor<T>`, `projectBuilderInput<T>()`, plus inverted-lookup helpers (`exerciseTypesForCapability`, `requiredArtifactsFor`, `supportsSourceKind`). Sole source of truth for (a) which exercise types each cap_type is ready for, (b) which builder the resolver dispatches to, (c) what inputs each builder is guaranteed to receive. |
-| `artifactRegistry.ts` | 26 | The exhaustive `ARTIFACT_KINDS` array (`as const satisfies readonly ArtifactKind[]`) — retained only for the Slice-5-owned (#147) legacy staging regeneration. Slice 4b (#102) removed `hasApprovedArtifact` / `ArtifactIndex` / `CapabilityArtifact` (the readiness machinery) when the `capability_artifacts` table was dropped. |
 | `canonicalKey.ts` | 40 | `buildCanonicalKey(input)` — encodes a `ProjectedCapability` into its stable canonical key. `normalizeLessonSourceRef` for legacy lesson-source-ref shapes. |
 | `itemSlug.ts` | 25 | `itemSlug(base_text)` — canonical slug derivation extracted in PR #59 to fix the silent slug-divergence bug class (~113 multi-word items unreachable). |
 | `separatorConvention.ts` | 86 | The single alternative-answer separator definition (CONTEXT.md → Typed Artifact). `splitAlternatives(value)` — split on canonical `/` + defensive `;`, never comma — consumed by the runtime grader (`src/lib/answerNormalization.checkAnswer`). `classifyDutchSeparator` / `classifyIndonesianSeparator` — the non-canonical-separator detector shared by the pipeline `CS19` gate + `HC24` health check. Tree-neutral so both the browser bundle and the `scripts/` pipeline import one definition (PR #129; anti-drift across the `src/`↔`scripts/` boundary). |
@@ -86,8 +85,7 @@ Three responsibilities:
 - `requiredArtifactsFor(exerciseType): readonly ArtifactKind[]` — `renderContracts.ts:113`.
 - `supportsSourceKind(exerciseType, sourceKind): boolean` — `renderContracts.ts:117`.
 
-**Artifact registry (Slice 4b: reduced to the kind vocabulary):**
-- `ARTIFACT_KINDS` — `artifactRegistry.ts`. Exhaustive constant array, retained only for the Slice-5-owned (#147) legacy staging regeneration. `hasApprovedArtifact` + the `CapabilityArtifact`/`ArtifactIndex`/`ArtifactQualityStatus` types were removed when `capability_artifacts` was dropped.
+**Artifact registry — RETIRED (Slice 5b #147 5b.7).** `artifactRegistry.ts` + `ARTIFACT_KINDS` are deleted: their last consumer was the legacy staging regeneration (`buildArtifactsForCapability` / `validateExerciseAssets`), retired in the no-disk cutover. The `ArtifactKind` *type* survives in `capabilityTypes.ts` (it still types `capability.requiredArtifacts` + the render contracts); only the runtime constant array is gone. (Slice 4b had already removed `hasApprovedArtifact` / `CapabilityArtifact` / `ArtifactIndex` when `capability_artifacts` was dropped.)
 
 **Canonical key + slug:**
 - `buildCanonicalKey(input: CanonicalKeyInput): string` — `canonicalKey.ts:29`.
