@@ -48,19 +48,13 @@ import {
 } from '../../content-pipeline-output'
 import {
   createSupabaseClient as defaultCreateSupabaseClient,
-  findContextIdBySourceText,
   findLearningItemBySlug,
-  insertExerciseVariantGrammar,
-  insertExerciseVariantVocab,
-  insertGrammarExerciseTyped,
   retireOrphanedCapabilities,
   upsertCapabilities,
   upsertCapabilitiesSkipIfExists,
   upsertCapabilityContentUnits,
   upsertClozeContext,
   upsertContentUnits,
-  upsertGrammarPatterns,
-  fetchGrammarPatternIdsBySlug,
   upsertItemAnchorContext,
   upsertLearningItemIdempotent,
   replaceDialogueClozes,
@@ -101,8 +95,7 @@ import type { DistractorSetRow } from './validators/itemDistractors'
 // (CS7/CS8/CS9) are now composed behind the gate entry points.
 import { runCapabilityGatePreWrite, runCapabilityGatePostWrite } from './gate'
 
-import { projectGrammar, projectPatternsFromCategories } from './projectors/grammar'
-import { buildGrammarExerciseRow } from './projectors/grammarExerciseRows'
+import { projectPatternsFromCategories } from './projectors/grammar'
 import { projectCloze } from './projectors/cloze'
 import { projectDialogueClozeCapabilities, projectDialogueClozeRows } from './projectors/dialogueCloze'
 import { validateDialogueClozeCoverage } from './validators/dialogueClozeCoverage'
@@ -114,9 +107,7 @@ import { validateDialogueClozes } from './validators/dialogueClozes'
 import { validateAffixedFormPairs } from './validators/affixedFormPairs'
 
 import {
-  markCandidatesPublished,
   writeLearningItemsWithEnrichedPos,
-  type CandidateStagingRow,
 } from './stagingWriteback'
 import { enrichMissingPos } from './enrichPos'
 import { enrichMissingLevel } from './enrichLevel'
@@ -361,12 +352,9 @@ export async function runCapabilityStage(
   // learning_items + anchor contexts are written DB-natively by the typed path
   // (step 5b, projectItemsFromTypedRows); sentence/dialogue items are no longer
   // emitted (deleted by the 5b.10 cleanup migration).
-  const grammar = projectGrammar({
-    lessonNumber: input.lessonNumber,
-    lessonId: input.lessonId,
-    grammarPatterns: staging.grammarPatterns as never,
-    candidates: staging.candidates as never,
-  })
+  // projectGrammar (staging grammar path) retired in Slice 5b (#147): grammar
+  // patterns + typed grammar exercises are projected from typed DB rows by the
+  // pattern path (projectPatternsFromCategories, step 5d).
   const cloze = projectCloze({ clozeContexts: staging.clozeContexts as never })
 
   // Past this point we MUST have a Supabase client — writes happen below.
@@ -1095,10 +1083,13 @@ export async function runCapabilityStage(
   // upserted the NEW patterns + cutover-deleted the legacy ones. Re-running the
   // legacy upsert here would RE-CREATE the legacy-slug patterns the cutover just
   // removed, so it is skipped; grammarPatternUpsert carries the new ids instead.
+  // Slice 5b (#147): projectGrammar (staging grammar path) is retired. The
+  // pattern path (step 5d) is the sole grammar writer for usePatternPath lessons
+  // (all lessons, per D1); a !usePatternPath lesson simply has no grammar patterns.
   const grammarPatternUpsert =
     usePatternPath && patternResult
       ? { idsBySlug: patternResult.patternIdsBySlug, tableMissing: patternResult.tableMissing }
-      : await upsertGrammarPatterns(supabase, grammar.grammarPatterns)
+      : { idsBySlug: new Map<string, string>(), tableMissing: false }
 
   // ---- 9. (retired Slice 5b #147) learning_items + anchor contexts. --------
   // The staging projectVocab write loop is gone. word/phrase learning_items +
@@ -1110,89 +1101,14 @@ export async function runCapabilityStage(
   const dialogueItemIds = new Set<string>()
   counts.learningItems = publishedItemIds.length
 
-  // ---- 10. Write — exercise_variants. -----------------------------------
-  const patternIdsBySlug = grammarPatternUpsert.tableMissing
-    ? new Map<string, string>()
-    : await fetchGrammarPatternIdsBySlug(supabase)
-  // Slice 2 (Task 8): the pattern path is typed-only (no exercise_variants write),
-  // so nothing to seed from it. The legacy grammar branch below is skipped when
-  // usePatternPath; for !usePatternPath lessons it still pushes here (+ to
-  // legacyVariantsLanded, which gates the staging write-back over staging candidates).
+  // ---- 10. (retired Slice 5b #147) exercise_variants writer. -------------
+  // The legacy staging-candidate-driven exercise_variants writer (both the
+  // grammar and vocab branches) is gone. The pattern path (step 5d) writes the
+  // typed grammar-exercise rows directly; NO source kind writes exercise_variants
+  // anymore — this unblocks the #102/4c exercise_variants table drop. Staging
+  // write-back #1 (candidates.ts published markers) is retired with it.
   const exerciseVariantIds: string[] = []
-  let legacyVariantsLanded = 0
-  let grammarExerciseRowsLanded = 0
-  for (const variant of grammar.exerciseVariants) {
-    if (variant.kind === 'grammar') {
-      // Pattern path owns grammar exercises when active — skip the legacy
-      // staging-candidate-driven grammar write entirely.
-      if (usePatternPath) continue
-      const grammarPatternId = variant.grammarPatternSlug
-        ? patternIdsBySlug.get(variant.grammarPatternSlug) ?? null
-        : null
-      if (variant.grammarPatternSlug && !grammarPatternId) continue
-      const result = await insertExerciseVariantGrammar(supabase, {
-        lesson_id: variant.lessonId,
-        exercise_type: variant.exercise_type,
-        grammar_pattern_id: grammarPatternId,
-        payload_json: variant.payload_json,
-        answer_key_json: variant.answer_key_json,
-      })
-      if (result.ok && result.id) { exerciseVariantIds.push(result.id); legacyVariantsLanded++ }
-
-      // PR 4 dual-write: also land the typed grammar-exercise row. Keyed by
-      // grammar_pattern_id (NOT capability_id). The shared mapper + CS13
-      // validator + DB NOT NULL guard the shape; a DB error fails loud.
-      if (grammarPatternId) {
-        const built = buildGrammarExerciseRow(variant.exercise_type, variant.payload_json, variant.answer_key_json)
-        if (built) {
-          const typedResult = await insertGrammarExerciseTyped(supabase, built.table, {
-            ...built.columns,
-            grammar_pattern_id: grammarPatternId,
-            lesson_id: variant.lessonId,
-          })
-          if (!typedResult.ok) {
-            throw new Error(`PR4 typed grammar-exercise write failed (${built.table}, ${variant.exercise_type}): ${typedResult.error}`)
-          }
-          grammarExerciseRowsLanded++
-        }
-      }
-    } else {
-      const contextId = await findContextIdBySourceText(supabase, variant.sourceText)
-      if (!contextId) continue
-      const grammarPatternId = variant.grammarPatternSlug
-        ? patternIdsBySlug.get(variant.grammarPatternSlug) ?? null
-        : null
-      const result = await insertExerciseVariantVocab(supabase, {
-        context_id: contextId,
-        exercise_type: variant.exercise_type,
-        grammar_pattern_id: grammarPatternId,
-        payload_json: variant.payload_json,
-        answer_key_json: variant.answer_key_json,
-      })
-      if (result.ok && result.id) { exerciseVariantIds.push(result.id); legacyVariantsLanded++ }
-    }
-  }
-  const exerciseVariantsLanded = exerciseVariantIds.length
-  counts.exerciseVariants = exerciseVariantsLanded
-  // Additive: 5d already counted the pattern path's typed rows; this adds the
-  // legacy loop's (0 when usePatternPath).
-  counts.grammarExerciseRows += grammarExerciseRowsLanded
-
-  // Staging write-back #1 — mirror legacy 712–722. After exercise_variants
-  // land + count verification, mark approved candidates as `published` in
-  // candidates.ts so re-runs skip them. Only proceeds when the count check
-  // confirms rows are actually in DB. Slice 2 (Task 6): the count is over the
-  // LEGACY loop only — the pattern path's grammar exercises come from the DB,
-  // not staging candidates.ts, so they are out of scope for this write-back.
-  const legacyVariantCount = usePatternPath
-    ? grammar.exerciseVariants.filter((v) => v.kind !== 'grammar').length
-    : grammar.exerciseVariants.length
-  if (legacyVariantsLanded > 0 && legacyVariantsLanded >= legacyVariantCount) {
-    markCandidatesPublished(staging.stagingDir, staging.candidates as CandidateStagingRow[])
-    console.log(`   ✓ candidates.ts marked published in staging (${legacyVariantsLanded} rows)`)
-  } else if (legacyVariantCount > 0) {
-    console.warn(`   ⚠ Expected ${legacyVariantCount} legacy exercise_variants, landed ${legacyVariantsLanded} — staging NOT marked published`)
-  }
+  counts.exerciseVariants = 0
 
   // ---- 11. Write — cloze contexts. -------------------------------------
   let clozeLanded = 0
@@ -1301,15 +1217,12 @@ export async function runCapabilityStage(
       // emits sentence/dialogue_chunk learning_item units that the DB-native builder
       // omits (Decision D2), so staging.contentUnits.length over-declares by those rows.
       contentUnits: contentUnitIds.length,
-      // Slice 2 (Task 6): when usePatternPath, the lesson's grammar_patterns are
-      // the NEW pattern set (legacy cutover-deleted); exercise_variants are what
-      // this run actually wrote (pattern path + legacy vocab).
-      grammarPatterns: usePatternPath && patternResult
-        ? patternResult.patternsUpserted
-        : grammar.grammarPatterns.length,
+      // Slice 5b (#147): grammar_patterns come solely from the pattern path; the
+      // exercise_variants writer is retired (0 rows written by any source kind).
+      grammarPatterns: patternResult?.patternsUpserted ?? 0,
       capabilities: allCapabilities.length,
       learningItems: publishedItemIds.length,
-      exerciseVariants: usePatternPath ? exerciseVariantsLanded : grammar.exerciseVariants.length,
+      exerciseVariants: exerciseVariantIds.length,
       clozeContexts: cloze.plans.length,
     },
     contentUnitIds,
