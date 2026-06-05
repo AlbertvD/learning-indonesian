@@ -48,12 +48,10 @@ import {
 } from '../../content-pipeline-output'
 import {
   createSupabaseClient as defaultCreateSupabaseClient,
-  findLearningItemBySlug,
   retireOrphanedCapabilities,
   upsertCapabilities,
   upsertCapabilitiesSkipIfExists,
   upsertCapabilityContentUnits,
-  upsertClozeContext,
   upsertContentUnits,
   upsertItemAnchorContext,
   upsertLearningItemIdempotent,
@@ -96,7 +94,6 @@ import type { DistractorSetRow } from './validators/itemDistractors'
 import { runCapabilityGatePreWrite, runCapabilityGatePostWrite } from './gate'
 
 import { projectPatternsFromCategories } from './projectors/grammar'
-import { projectCloze } from './projectors/cloze'
 import { projectDialogueClozeCapabilities, projectDialogueClozeRows } from './projectors/dialogueCloze'
 import { validateDialogueClozeCoverage } from './validators/dialogueClozeCoverage'
 import { projectAffixedFormPairs, type AffixedPairSource } from './projectors/morphology'
@@ -355,7 +352,9 @@ export async function runCapabilityStage(
   // projectGrammar (staging grammar path) retired in Slice 5b (#147): grammar
   // patterns + typed grammar exercises are projected from typed DB rows by the
   // pattern path (projectPatternsFromCategories, step 5d).
-  const cloze = projectCloze({ clozeContexts: staging.clozeContexts as never })
+  // projectCloze (staging cloze path) retired in Slice 5b (#147): the authored
+  // cloze item_contexts are DB-authoritative (seed-once); #148 owns their
+  // item-cloze caps. No cloze is projected or re-seeded here.
 
   // Past this point we MUST have a Supabase client — writes happen below.
   if (!supabase) {
@@ -1110,22 +1109,13 @@ export async function runCapabilityStage(
   const exerciseVariantIds: string[] = []
   counts.exerciseVariants = 0
 
-  // ---- 11. Write — cloze contexts. -------------------------------------
-  let clozeLanded = 0
-  for (const plan of cloze.plans) {
-    const item = await findLearningItemBySlug(supabase, plan.learning_item_slug)
-    if (!item) continue
-    const result = await upsertClozeContext(supabase, {
-      learning_item_id: item.id,
-      source_text: plan.source_text,
-      translation_text: plan.translation_text,
-      difficulty: plan.difficulty,
-      topic_tag: plan.topic_tag,
-      source_lesson_id: input.lessonId,
-    })
-    if (!result.skipped) clozeLanded++
-  }
-  counts.clozeContexts = clozeLanded
+  // ---- 11. (retired Slice 5b #147) cloze contexts writer. ----------------
+  // projectCloze + the cloze item_contexts writer (upsertClozeContext) are gone.
+  // The existing authored cloze item_contexts rows are LEFT IN THE DB (ADR 0011
+  // seed-once) as #148's item-cloze substrate; this stage only stops re-seeding
+  // them. No item-cloze caps are emitted here — #148 emits them DB-natively.
+  // (The noClozeWriter enforcement test guards against accidental re-seed.)
+  counts.clozeContexts = 0
 
   // ---- 12. Verify (CS7 → CS8 → CS9 → CS14 → CS15 → CS16 → CS17). -------
   // Composed behind the Capability Gate post-write entry point (gate.ts).
@@ -1223,7 +1213,7 @@ export async function runCapabilityStage(
       capabilities: allCapabilities.length,
       learningItems: publishedItemIds.length,
       exerciseVariants: exerciseVariantIds.length,
-      clozeContexts: cloze.plans.length,
+      clozeContexts: 0,
     },
     contentUnitIds,
     capabilityIds,

@@ -12,9 +12,9 @@
  *   legacy 386–420 upsertGrammarPatterns (PGRST205 fallback preserved)
  *   legacy 491–504 upsertLearningItem (gains review_status per §11 #15)
  *   legacy 549–560 upsertItemAnchorContext
- *   legacy 638–648 insertExerciseVariantGrammar (duplicate-row bug preserved per §11 #2)
- *   legacy 679–689 insertExerciseVariantVocab (duplicate-row bug preserved per §11 #2)
- *   legacy 727–803 cloze: upsertClozeContext + findLearningItemBySlug (ilike fallback preserved)
+ *   (Slice 5b #147) insertExerciseVariantGrammar / insertExerciseVariantVocab /
+ *     the cloze writer (upsertClozeContext) are RETIRED — see the retirement
+ *     notes below; findLearningItemBySlug's ilike fallback is preserved.
  *   legacy 805–923 supplies the chunked-read helpers used by verify/seedIntegrity.ts
  */
 
@@ -545,35 +545,10 @@ export async function upsertItemAnchorContext(
 // Cloze contexts (item_contexts type='cloze')
 // ---------------------------------------------------------------------------
 
-export interface ClozeContextInput {
-  learning_item_id: string
-  source_text: string
-  translation_text: string
-  difficulty?: number | null
-  topic_tag?: string | null
-  source_lesson_id: string
-}
-
-export async function upsertClozeContext(
-  supabase: CapabilitySupabaseClient,
-  ctx: ClozeContextInput,
-): Promise<{ skipped: boolean; error?: string }> {
-  const { error } = await supabase
-    .schema('indonesian')
-    .from('item_contexts')
-    .upsert({
-      learning_item_id: ctx.learning_item_id,
-      context_type: 'cloze',
-      source_text: ctx.source_text,
-      translation_text: ctx.translation_text,
-      is_anchor_context: false,
-      difficulty: ctx.difficulty ?? null,
-      topic_tag: ctx.topic_tag ?? null,
-      source_lesson_id: ctx.source_lesson_id,
-    }, { onConflict: 'learning_item_id,source_text' })
-  if (error) return { skipped: true, error: error.message }
-  return { skipped: false }
-}
+// upsertClozeContext + ClozeContextInput retired in Slice 5b (#147): the
+// authored cloze item_contexts are DB-authoritative (ADR 0011 seed-once) and
+// are #148's item-cloze substrate; the capability stage no longer (re-)seeds
+// them. The noClozeWriter enforcement test guards against reintroduction.
 
 /**
  * Find the learning_items.id for a cloze slug. Tries each candidate variant
