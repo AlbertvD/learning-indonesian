@@ -1,0 +1,456 @@
+{
+  "lesson": 10,
+  "generatedAt": "2026-05-20T11:17:46.824Z",
+  "sourcePages": 8,
+  "lessonMeta": {
+    "title": "Les 10 - Ke Kantor Pos",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 10
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Cultuur - Majapahit en de legendarische Gajah Mada",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Majapahit en de legendarische Gajah Mada",
+        "Het op Java gelegen rijk Majapahit (1293 - 1520) kende als eerste vorst Kertarajasa die regeerde van 1293 tot 1309. Op Java is hij beter bekend onder de naam Brawijaya.",
+        "Hij werd opgevolgd door zijn zoon Jayanagara (1309 - 1328) tijdens wiens regeringsperiode het niet altijd even rustig was. Een opstand tegen zijn gezag in 1319 dwong hem zijn kraton (paleis) 's nachts met slechts 15 man te ontvluchten en zich schuil te houden. Onder zijn getrouwen bevond zich Gajah Mada. Het verhaal gaat dat Gajah Mada na enige tijd onder de bevolking het gerucht verspreidde dat Jayanagara dood was. Toen hij zag dat velen bedroefd waren, wist hij dat de koning nog gezag had, beraamde vervolgens een contra-coup en slaagde erin het gezag van de koning weer te herstellen. Jayanagara kwam in 1328 door moord om het leven. Na 22 jaar strijd om de troonopvolging kwam de roemruchte Hayam Wuruk aan de macht.",
+        "Onder Hayam Wuruk (1350 - 1389) groeide Majapahit uit tot het machtigste rijk in de Indonesische archipel wat vooral te danken zou zijn aan het krachtig optreden van de in 1331 tot rijksbestuurder en opperbevelhebber benoemde Gajah Mada. Volgens de overlevering deed Gajah Mada in de audiëntiezaal van de kraton de gelofte dat hij geen rust zou nemen voordat hij alle eilanden aan zijn vorst zou hebben onderworpen.",
+        "Op Java verzette de vorst van Sunda zich nog, maar via een huwelijk met diens jonge dochter probeerde Hayam Wuruk hieraan een eind te maken. Voor de grote huwelijksplechtigheid trok de vorst van Sunda met zijn gevolg naar de hoofdstad van Majapahit en sloeg een kamp op ten noorden van de stad. Toen begon de onenigheid. Gajah Mada eiste onderwerping van de vorst voordat hij hem de stad zou binnen laten. De vorst wenste echter als schoonvader van de koning van Majapahit ontvangen te worden. Het geschil eindigde tenslotte in een bloedige strijd. Alle Sundanese edelen kwamen om het leven en de jonge bruid pleegde zelfmoord met een kris. Na deze dramatische gebeurtenis was heel Java de facto in handen van Majapahit.",
+        "Bali werd in 1343 na hevige strijd veroverd, terwijl op Sumatra een onderkoning, Adityawarman, werd aangesteld die onderhorig was aan Majapahit. De Javanen beschikten in die periode kennelijk over een goede vloot waarmee ze de vele eilanden in de archipel bezochten. Over onderwerping van vorsten op andere eilanden aan het gezag van Majapahit is niet veel bekend, maar bijna overal in de archipel waren in de loop der eeuwen Javaanse handelskoloniën gevestigd. Het is niet ondenkbaar dat - na een bezoek van een zwaar bewapende vloot - deze nederzettingen het gezag van Java erkenden en bereid waren schatting te betalen."
+      ]
+    },
+    {
+      "id": 1,
+      "type": "dialogue",
+      "title": "Ke Kantor Pos",
+      "source_pages": [
+        3
+      ],
+      "confidence": "high",
+      "lines": [
+        {
+          "speaker": "Narti",
+          "text": "Pak! Pak!"
+        },
+        {
+          "speaker": "Pak",
+          "text": "Ya, ada apa?"
+        },
+        {
+          "speaker": "Narti",
+          "text": "Saya mau ke kantor pos, tapi di mana kantor pos, ya Pak?"
+        },
+        {
+          "speaker": "Pak",
+          "text": "O, kantor pos jauh sekali dari sini, Narti. Kamu naik becak dulu sampai ke Jalan Antara. Dari situ terus kamu jalan kaki. Di jalan pertama belok kiri sampai jembatan di ujung jalan itu. Dari jembatan itu kamu belok kanan dan menyeberang Jalan Kantor Pos. Tapi, awas lho!"
+        },
+        {
+          "speaker": "Narti",
+          "text": "Awas kenapa, Pak?"
+        },
+        {
+          "speaker": "Pak",
+          "text": "Jalan Kantor Pos itu ramai sekali, terlalu banyak lalu-lintas. Nah, sebaiknya kamu lewat jembatan penyeberangan saja. Itu lebih aman. Jembatan penyeberangan itu ada di dekat Gedung Kesenian."
+        },
+        {
+          "speaker": "Narti",
+          "text": "O, ya Pak, sekarang saya ingat."
+        },
+        {
+          "speaker": "Pak",
+          "text": "Kalau kamu sudah turun dari jembatan itu kemudian belok kiri. Kantor pos terletak di muka Pasar Baru. Tetapi mengapa mau ke sana?"
+        },
+        {
+          "speaker": "Narti",
+          "text": "Saya mau beli prangko untuk kirim surat dan paket pos kepada kakak saya di Mesir. Dia baru diterima sebagai mahasiswa di Universitas Islam yang termasyhur namanya 'Al-Azhar' di Cairo."
+        },
+        {
+          "speaker": "Pak",
+          "text": "Alhamdulillah! Pandai dia ya! Dia senang di sana?"
+        },
+        {
+          "speaker": "Narti",
+          "text": "Dia amat senang belajar di sana tapi kadang-kadang rindu. Dia minta kiriman rokok kretek, ikan asin dan krupuk udang! Permisi dulu, Pak...., saya ke kantor pos, ya."
+        },
+        {
+          "speaker": "Pak",
+          "text": "Iya, mari. Kalau sudah selesai di kantor pos mampir saja ke rumah Paman Susman. Dia tinggal di Jalan Gajah Mada nomor 46."
+        },
+        {
+          "speaker": "Narti",
+          "text": "O ya, itu saran baik!"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "vocabulary",
+      "title": "Woordenlijst",
+      "source_pages": [
+        4
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "Alhamdulillah",
+          "dutch": "God zij geprezen",
+          "pos": "greeting"
+        },
+        {
+          "indonesian": "aman",
+          "dutch": "veilig",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "angkat",
+          "dutch": "tillen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "antara",
+          "dutch": "tussen, middenin",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "asin",
+          "dutch": "zout / gezouten",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "bangun",
+          "dutch": "opstaan",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "bayar",
+          "dutch": "betalen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "becak (bècak)",
+          "dutch": "fietstaxi",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "belok (bèlok)",
+          "dutch": "afbuigen / afslaan",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "dekat",
+          "dutch": "dichtbij",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "diterima",
+          "dutch": "aangenomen / ontvangen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "gedung",
+          "dutch": "gebouw",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ikan",
+          "dutch": "vis",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ingat",
+          "dutch": "(zich) herinneren",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "islam",
+          "dutch": "islam",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jalan kaki",
+          "dutch": "te voet gaan / lopen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "jembatan",
+          "dutch": "brug",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kadang-kadang",
+          "dutch": "soms",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "kantor pos",
+          "dutch": "postkantoor",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kedua",
+          "dutch": "tweede",
+          "pos": "numeral"
+        },
+        {
+          "indonesian": "kesenian",
+          "dutch": "kunst / cultuur",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kirim",
+          "dutch": "sturen / zenden",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "kiriman",
+          "dutch": "zending",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kucing",
+          "dutch": "kat",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lalu-lintas",
+          "dutch": "verkeer",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lho!",
+          "dutch": "hoor! (stopwoord)",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "mahasiswa",
+          "dutch": "student",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "mampir",
+          "dutch": "kort bezoek brengen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "menyeberang",
+          "dutch": "oversteken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "Mesir",
+          "dutch": "Egypte",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "museum",
+          "dutch": "museum",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "paket (pakèt)",
+          "dutch": "pakket",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "paman",
+          "dutch": "oom",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pandai",
+          "dutch": "knap / intelligent",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "penyeberangan",
+          "dutch": "oversteekplaats",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "permisi",
+          "dutch": "toestemming",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pertama",
+          "dutch": "eerste",
+          "pos": "numeral"
+        },
+        {
+          "indonesian": "pos",
+          "dutch": "post",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "prangko",
+          "dutch": "postzegel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ramai",
+          "dutch": "druk",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "rindu",
+          "dutch": "heimwee",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "rokok",
+          "dutch": "sigaret",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "rokok kretek (krètèk)",
+          "dutch": "sigaret met kruidnagel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "saran",
+          "dutch": "suggestie / voorstel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sebagai",
+          "dutch": "als / zoals",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "sebaiknya",
+          "dutch": "'t is beter dat",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "surat",
+          "dutch": "brief",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "terletak",
+          "dutch": "gesitueerd / liggen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "termasyhur",
+          "dutch": "beroemdste / bekendste",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "udang",
+          "dutch": "garnaal",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ujung",
+          "dutch": "top / eind",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "universitas",
+          "dutch": "universiteit",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "expressions",
+      "title": "Uitdrukkingen",
+      "source_pages": [
+        4
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "Permisi dulu",
+          "dutch": "Staat u mij toe? (vaak bij afscheid; het antwoord luidt: Mari!)",
+          "pos": "greeting"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "grammar",
+      "title": "Grammatica - Achtervoeging met -AN",
+      "source_pages": [
+        4,
+        5
+      ],
+      "confidence": "high",
+      "raw_text": "GRAMMATICA\n\nACHTERVOEGING MET -AN\n\nHet achtervoegsel -AN combineert met:\n\n                          Gebruik:\n1. werkwoord             algemeen\n2. zelfstandig naamwoord\n3. bijvoeglijk naamwoord beperkt\n4. telwoord              beperkt\n\n1. Werkwoord + -AN geeft een zelfstandig naamwoord\n\nminum    drinken       minuman   drank\nmakan    eten          makanan   eten, voedsel\npikir    denken        pikiran   gedachte\n\n2a. Zelfstandig naamwoord + -AN geeft een zelfstandig naamwoord met een abstrakte betekenis\n\npasar    markt (plaats)    pasaran    de markt (begrip)\n\n2b. Zelfstandig naamwoord, met name bij een aantal tijdsaanduidingen, + -AN, krijgen de volgende betekenissen:\n\nhari     harian    dagelijks     majalah harian    dagblad\nminggu   mingguan  wekelijks     majalah mingguan  weekblad\nbulan    bulanan   maandelijks   majalah bulanan   maandblad\n\n3. Bijvoeglijk naamwoord + -AN geeft een zelfstandig naamwoord\n\nasin     zout        asinan    (ge)zoute(n) etenswaar\nmanis    zoet        manisan   zoetigheid\nterus    vervolgens  terusan   kanaal\n\n4. Telwoord + -AN geeft een zelfstandig naamwoord\n\nsatu         een       satuan    eenheid\n(se)puluh    tien      puluhan   tiental\n(se)belas    elf       belasan   teenager (tussen 10 en 20 jaar)\n\nOpmerking: Achtervoeging van -AN kan niet altijd geschieden.\nRaadpleeg bij twijfel een goed woordenboek Indonesisch."
+    },
+    {
+      "id": 5,
+      "type": "text",
+      "title": "Denken en voelen",
+      "source_pages": [
+        5
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "In het Indonesisch komt het verschil tussen het geestelijke en het lichamelijke tot uitdrukking in diverse woorden. Voor gevoelsmatige zaken, wordt een ander woord gebruikt dan voor het 'koele denken, beredeneren' van de geest. Voorbeeld:",
+        "rasa    voelen, vinden (met zintuigen, in het hart, de ziel)\nkira    denken, vinden (van mening zijn), menen\npikir   denken (verstandelijk), nadenken over iets, menen",
+        "Saya rasa buah ini kurang manis    Ik vind deze vrucht niet zoet (gevoelsmatig, persoonlijk)\nSaya kira batik yang ini lebih halus    Ik vind deze batik fijner van kwaliteit\nJangan pikir-pikir tentang hal itu    Zit niet zo te tobben over die kwestie"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "grammar",
+      "title": "Grammatica - Rangtelwoord: KE- + telwoord",
+      "source_pages": [
+        6
+      ],
+      "confidence": "high",
+      "raw_text": "Rangtelwoord: KE- + telwoord\n\nDe '...de/....ste' wordt aangegeven door KE- voor te voegen aan het telwoord (met uitzondering van het woord satu) en deze combinatie áchter het zelfstandig naamwoord te plaatsen. Voorbeelden:\n\npertama          eerste         kesebelas (ke-11)    elfde\nkedua (ke-2)     tweede         keseratus (ke-100)   honderdste\nketiga (ke-3)    derde          (enzovoorts)\n\nLet op de volgende zinnen:\nKamar pertama adalah kamar saya         De eerste kamer is mijn kamer\nKamar kedua belum bersih                De tweede kamer is nog niet schoon\nKamar dua pintunya rusak                De deur van kamer (no) 2 is kapot\nDua kamar itu kecil                     Die twee kamers zijn klein\nKedua kamar itu kosong                  Beide kamers zijn (staan) leeg\n\nSiapa yang pertama?                     Wie is de eerste?\nSaya mau yang tengah                    Ik wil de middelste\nDia selalu yang terakhir                Hij is altijd de laatste"
+    },
+    {
+      "id": 7,
+      "type": "grammar",
+      "title": "Grammatica - Rekenen",
+      "source_pages": [
+        6
+      ],
+      "confidence": "high",
+      "raw_text": "Rekenen\n\noptellen          tambah (+)      delapan tambah dua sama dengan sepuluh\naftrekken         kurang (-)      sepuluh kurang dua sama dengan delapan\nvermenigvuldigen  kali (x)        sepuluh kali dua sama dengan dua puluh\ndelen             dibagi (:)      sepuluh dibagi dua sama dengan lima\nbreuk             ... per ... (/) 5/6 = lima perenam"
+    },
+    {
+      "id": 8,
+      "type": "grammar",
+      "title": "Grammatica - Enkele voegwoorden",
+      "source_pages": [
+        6
+      ],
+      "confidence": "high",
+      "raw_text": "Enkele voegwoorden\n\nbijvoorbeeld                          misalnya\ndaarom, daardoor, om die reden        karena itu, sebab itu\ndoordat, want, omdat                  karena, sebab\nhierdoor                              karena ini, sebab ini\nindien                                kalau, jikalau\nmits, op voorwaarde dat               asal, asal saja\nniet alleen ..., maar ook ...         tidak saja ..., tetapi juga ...\nofschoon                              meskipun, walaupun\nop 't moment dat                      bilamana, apabila\nopdat                                 supaya, agar\nterwijl                               sementara\ntevoren                               sebelumnya\nvoordat                               sebelum\nzodat                                 sehingga"
+    },
+    {
+      "id": 9,
+      "type": "exercises",
+      "title": "Oefeningen",
+      "source_pages": [
+        7,
+        8
+      ],
+      "confidence": "high",
+      "raw_text": "OEFENINGEN\n\nOefening I. Welk woord hoort niet in de rij? Geef een reden.\n\n1.  rumah    - sabun    - kursi    - mereka\n2.  mandi    - tidur    - tangan   - duduk\n3.  maksud   - baik     - bersih   - panjang\n4.  coklat   - minta    - putih    - biru\n5.  coba     - lihat    - cari     - lekas\n6.  berapa   - lapar    - apa      - kenapa\n7.  garpu    - piring   - air      - sendok\n8.  enak     - rapi     - meja     - mahal\n9.  makanan  - pikiran  - mandi    - belian\n10. di       - dengan   - dari     - mas\n\nOefening II. Voeg -AN toe aan de onderstaande woorden.\nWat is de betekenis van de op deze manier gevormde woorden?\n\n1.  makan       10. kirim\n2.  pikir       11. bayar\n3.  pesan       12. loncat\n4.  tahun       13. kumpul\n5.  coba        14. goreng\n6.  ulang       15. angkat\n7.  seribu      16. periksa\n8.  ingat       17. terus\n9.  minum       18. hari\n\nOefening III. Contoh:\n    Nama anak ini Susi\n    Anak ini namanya Susi\n    Anak ini Susi namanya\n\n1.  Lantai kamar makan bersih\n2.  Handuk hotel itu putih\n3.  Sayur ayahmu enak\n4.  Nama teman saya Ali\n5.  Kopor bapak itu berat\n6.  Hadiah paman saya bagus\n7.  Warna kucing ini hitam\n8.  Mobil Pardi rusak\n9.  Kaki Toto patah\n10. Kunci lemari ini besar\n\nOefening IV. Vertaal.\n\n1.  Stap de bus niet in!\n2.  Koop toch een auto!\n3.  Kom aan, laten we teruggaan!\n4.  Ga nu niet baden!\n5.  Kom, zullen we deze batikdoek kopen?\n6.  Ga hier zitten!\n7.  Drink geen water hier!\n8.  Kom, laten we langsgaan bij Yati\n9.  Eet deze banaan toch!\n10. Stapt u uit!\n\nOefening V. Vertaal.\n\n1.  Lusa Adi mau ke paman yang sudah dua minggu di rumah sakit\n2.  Kemarin Bapak Hasan sakit, kepalanya sakit sekali\n3.  Besok anakmu ke sekolah apa?\n4.  Kami ke pasar dulu beli ayam, ikan dan sayuran\n5.  Tahun depan Ibu Jansen naik kapal terbang ke Jakarta\n6.  Tadi malam Lisa berangkat ke rumah ibunya\n7.  Nanti siang pembantu dan anak-anak tinggal di rumah, anak-anak harus belajar!\n8.  Tiga bulan yang lalu mereka datang dari Sumatera\n9.  Hari Rabu banyak orang mau ke Taman Mini\n10. Pada hari Minggu di kota-kota di Belanda museum baru buka jam 13.00\n\nOefening VI. Vertaal.\n\n1.  Zij was de eerste die hier ging zitten\n2.  Daarom kreeg ze een lekker drankje\n3.  De laatsten kwamen pas om kwart over negen 's ochtends aan\n4.  Op het moment dat de scholen in Indonesië om half acht in de ochtend beginnen, is het al warm\n5.  Er zijn mensen die 's ochtends vroeg om vijf uur opstaan\n6.  Ze maken het ontbijt klaar, bijvoorbeeld gebakken rijst met zoute vis en een bijgerecht\n7.  Als middagmaal en avondmaal eten de mensen in Indonesië altijd rijst\n8.  Het warmste tijdstip is tussen twaalf en twee uur\n9.  Daarom gaan veel mensen na het middagmaal slapen tot ongeveer vier uur in de namiddag\n10. Op zo'n tijdstip is er niet veel verkeer"
+    }
+  ],
+  "flags": [
+    "OCR page 1 is a passport scan (not part of the coursebook) and has been ignored.",
+    "Image IMG_1363.jpg confirms the full Cultuur text including a paragraph about Jayanagara's son that was partially missing from OCR page 2; full text recovered from image.",
+    "Image IMG_1365.jpg confirms complete dialogue including opening lines 'Pak! Pak!' / 'Ya, ada apa?' and the final two exchanges (Pak's last line about Paman Susman and Narti's response 'O ya, itu saran baik!') which were cut off in OCR page 3.",
+    "Image IMG_1366.jpg confirms full Woordenlijst with two-column layout; all items recovered.",
+    "Image IMG_1368.jpg confirms 'Enkele voegwoorden' has additional entries (indien, mits/op voorwaarde dat, niet alleen.../maar ook..., ofschoon, op 't moment dat, opdat, terwijl, tevoren, voordat, zodat) not present in OCR page 6.",
+    "Image IMG_1369.jpg confirms full Oefening III items 1-10 not present in OCR page 7.",
+    "Image IMG_1370.jpg confirms full Oefening VI items 5-10 not present in OCR page 8."
+  ],
+  "sourceImages": 8
+}

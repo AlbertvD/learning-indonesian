@@ -1,0 +1,108 @@
+{
+  "lesson": 10,
+  "revision": 1,
+  "reviewedAt": "2026-05-25T00:00:00Z",
+  "status": "needs_revision",
+  "issues": [
+    {
+      "severity": "CRITICAL",
+      "file": "candidates.ts",
+      "item": "an-suffix-nominalization cloze_mcq #1 (options Makanan/Makan), cloze_mcq #2 (kiriman/kirim), cloze_mcq #3 (minuman/minum); contrast_pair #1 (makanan/makan), #2 (kiriman/kirim), #3 (pikiran/pikir)",
+      "rule": "options-substring-duplicate",
+      "issue": "Linter flagged 11 cloze_mcq/contrast_pair option arrays where one option is a whole-word prefix of another (root vs -AN derivation: makan/makanan, kirim/kiriman, minum/minuman; ordinal: dua/kedua, satu/kesatu; conjunction: karena/karena itu). The root-vs-derived contrast IS the pedagogical point, so the CONTENT is correct, but the mechanical substring-duplicate rule fires and the publish gate (publish-approved-content.ts:40-48) treats any lint CRITICAL as a hard exit-non-zero block. VERDICT: these candidates must be regenerated with non-substring distractors OR the affix/ordinal contrast must be moved exclusively into contrast_pair/sentence_transformation/constrained_translation forms (which are not subject to the 4-option substring rule the same way). As wired today, they block publish.",
+      "fix": "For each flagged cloze_mcq, replace the substring-overlapping distractor with a non-overlapping content word of the same class from the cumulative pool that is still a plausible Dutch-speaker error (e.g. for the makanan blank keep Minuman + Pikiran and swap the bare-stem Makan distractor for an unrelated noun like Sayuran or Pesanan). Keep the root-vs-derived teaching contrast in the contrast_pair candidates, which the linter's substring rule still flags — so for those, confirm with the orchestrator whether the substring rule should special-case morphological minimal pairs; otherwise rephrase the two options so neither is a literal whole-word prefix of the other (not feasible for a true minimal pair, so regeneration to a different exercise type or a linter carve-out is required)."
+    },
+    {
+      "severity": "CRITICAL",
+      "file": "learning-items.ts + lesson.ts dialogue",
+      "item": "dialogue_chunk items (13 lines), translation_nl is empty string",
+      "rule": "dialogue-translation-missing",
+      "issue": "All 13 dialogue_chunk items carry translation_nl: \"\". The task notes this is propagated from lesson.ts dialogue lines at publish (propagateDialogueTranslations.ts, Stage B). HOWEVER the lint gate in publish-approved-content.ts runs BEFORE Stage B (lines 40-48), and lint flags the empty translation as CRITICAL, exiting non-zero — so propagation never gets the chance to run. As the pipeline is wired today this is a true pre-publish blocker, not a benign deferred fill.",
+      "fix": "Populate translation_nl on each dialogue_chunk in learning-items.ts directly from the matching lesson.ts dialogue line translations (they are all present and correct in lesson.ts lines 31-94). This makes lint pass; the Stage B propagation then becomes a no-op/confirmation."
+    },
+    {
+      "severity": "CRITICAL",
+      "file": "cloze-contexts.ts",
+      "item": "dialogue cloze for the long directions line, cloze_answer 'becak'",
+      "rule": "dialogue-cloze-blank-not-in-pool",
+      "issue": "The blanked token normalises to 'becak' but the only matching learning_item is base_text 'becak (bècak)' (normalized_text 'becak (bècak)'). The blank word must resolve to a learning_item normalized_text in the current or a prior lesson; 'becak' (without the parenthetical pronunciation gloss) does not match, so the runtime distractor cascade has no anchor item. Confirmed: SELECT on learning_items shows no row with normalized_text 'becak'.",
+      "fix": "Either (a) change the item base_text in learning-items.ts to a clean 'becak' and move the '(bècak)' pronunciation gloss to a pronunciation/notes field so the cloze answer matches, or (b) re-target this dialogue cloze to a different token whose normalized form is in the pool (e.g. blank 'jembatan' or 'kiri'). Option (a) is preferred because the same gloss-in-base_text pattern affects belok (bèlok), paket (pakèt), rokok kretek (krètèk) — any dialogue/vocab cloze whose answer is one of those will hit the same mismatch."
+    },
+    {
+      "severity": "CRITICAL",
+      "file": "learning-items.ts",
+      "item": "'lho!' (word, particle)",
+      "rule": "duplicate-item-cross-lesson",
+      "issue": "'lho!' is already declared in lesson-7/learning-items.ts AND published to the DB (confirmed: indonesian.learning_items has base_text 'lho!', pos 'particle'). findDuplicateItems (capability-stage/lint/duplicateItems.ts) emits a CRITICAL duplicate-item-cross-lesson finding because two lessons declare the same itemSlug; Decision 3b requires exactly one introducing lesson per capability. The publish gate blocks on this.",
+      "fix": "Remove 'lho!' from lesson-10/learning-items.ts. If lesson 10's dialogue/material needs to surface it, reference it via lesson-page-blocks.ts source_refs[] (the M:N exposure bridge) pointing at the lesson-7 item. Also remove its cloze-contexts.ts entry and vocab-enrichments.ts entry, since the item will no longer be introduced here."
+    },
+    {
+      "severity": "WARNING",
+      "file": "vocab-enrichments.ts",
+      "item": "Multiple distractors not in the cumulative pool",
+      "rule": "distractor-not-in-pool",
+      "issue": "Several distractors are not present in indonesian.learning_items nor in the L1-L10 cumulative pool: 'sepi' (aman cloze; ramai cloze), 'manis' (asin cloze), 'bangkit' (bangun cued_recall), 'terakhir' (pertama cloze), 'selalu' (kadang-kadang cloze), 'terkenal' (termasyhur cued_recall), 'ramah' (ramai cued_recall), 'rindang' (rindu cued_recall), 'musim' (museum cued_recall), 'mampu' (mampir cued_recall), 'mesin' (Mesir cued_recall), 'universal' (universitas cued_recall), 'ujian' (ujung cued_recall), 'pandang' (pandai cued_recall), 'penyebrang' (penyeberangan cued_recall), 'pertanyaan' (pertama cued_recall), 'kebersihan'/'kesehatan' (kesenian cued_recall), 'jembrana' (jembatan cued_recall), 'termasuk' (termasyhur cued_recall), 'sehat'. These appear in MCQ distractor slots; runtime renders them as wrong options. Per §12 this is WARNING (does not block publish). Many are deliberately near-miss confusables (mesin~Mesir, musim~museum, ujian~ujung) which is good distractor craft, but the learner will see Indonesian words never taught. Admin should review whether near-miss-by-form distractors outside the pool are acceptable for this lesson.",
+      "fix": "Where the intent is a same-meaning confusable, prefer an in-pool word (e.g. for 'aman' use in-pool 'kosong'/'bersih' rather than 'sepi'). Where the intent is a deliberate orthographic near-miss (mesin/musim/ujian), keep only if the admin accepts out-of-pool distractors; otherwise replace with in-pool members of the same word class."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "rasa-kira-pikir-mental-verbs constrained_translation #5 (sourceLanguageSentence 'Ik denk dat het ongeveer tien kilometer is')",
+      "rule": "explanation-and-answer-naturalness",
+      "issue": "acceptableAnswers[0] 'Saya kira kira-kira sepuluh kilometer.' stacks 'kira' (mental verb) directly with 'kira-kira' (approximately) — grammatical but stylistically awkward/repetitive; a learner producing 'Saya kira sekitar sepuluh kilometer' is more natural. 'sekitar' is not in the cumulative pool though, so the natural variant relies on out-of-pool vocab. Minor; admin may prefer to swap the source sentence to avoid the kira/kira-kira clash.",
+      "fix": "Consider changing the source sentence to avoid the double-kira, e.g. 'Ik denk dat de batik fijner is' (reuses in-pool halus) so the answer is a clean single mental-verb construction."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "rasa-kira-pikir-mental-verbs contrast_pair #3 (Jangan pikir-pikir vs Jangan rasa-rasa)",
+      "rule": "contrast-pair-distractor-plausibility",
+      "issue": "The distractor 'Jangan rasa-rasa tentang hal itu' is, as the explanationText itself admits, an 'ongebruikelijke' (non-existent/ungrammatical) form. A reduplicated 'rasa-rasa' in this slot is not a real Dutch-speaker error the way a wrong-but-attested word would be; it is closer to an obviously-wrong option. The contrast still teaches pikir vs rasa, but the wrong option is not a genuine attested competitor. Non-blocking.",
+      "fix": "Consider a distractor that is an attested but wrong choice, e.g. 'Jangan kira-kira tentang hal itu' (kira-kira is a real lesson item), which forces the pikir-vs-kira discrimination rather than offering a non-word."
+    },
+    {
+      "severity": "WARNING",
+      "file": "grammar-patterns.ts",
+      "item": "subordinating-conjunctions (confusion_group: null)",
+      "rule": "confusion-group-missing",
+      "issue": "subordinating-conjunctions is the most confusable pattern in the lesson (the description and key_contrast both name supaya/agar-vs-sehingga and karena-vs-karena-itu as the core learner confusions) yet confusion_group is null. The other six patterns all carry a confusion_group. Setting one would let the runtime cluster confusable conjunction exercises.",
+      "fix": "Set confusion_group to e.g. 'conjunctions' or 'subordinators' on this pattern."
+    }
+  ],
+  "summary": {
+    "total": 8,
+    "critical": 4,
+    "warning": 4
+  },
+  "counts": {
+    "grammar_patterns": 7,
+    "learning_items_total": 66,
+    "learning_items_dialogue_chunks": 13,
+    "learning_items_vocab_and_phrase": 53,
+    "cloze_contexts_vocab": 105,
+    "cloze_contexts_dialogue": 9,
+    "cloze_skips_dialogue": 4,
+    "candidates_total": 99,
+    "candidates_by_type": {
+      "cloze_mcq": 21,
+      "contrast_pair": 21,
+      "sentence_transformation": 25,
+      "constrained_translation": 32
+    },
+    "vocab_enrichments": 66
+  },
+  "checks": {
+    "lesson_ts_structure": "PASS -- all 4 grammar sections use categories[] with rules/table/examples; exercises section uses sections[] (6 Oefeningen); 'Denken en voelen' is a text section (not grammar) which is acceptable. All translation/grammar_drill items (Oefening I-VI) have answer populated.",
+    "grammar_patterns_fields": "PASS -- all 7 patterns have pattern_name, description, slug (kebab-case), complexity_score in 1-10. Complexity scores (3-6) match actual complexity; rasa-kira-pikir at 6 and an-suffix at 5 are appropriately the hardest.",
+    "slug_uniqueness_staging": "PASS -- all 7 slugs (an-suffix-nominalization, ke-ordinal-numbers, arithmetic-operators, subordinating-conjunctions, direction-route-instructions, bare-imperative-and-invitation, rasa-kira-pikir-mental-verbs) are absent from lessons 1-9 staging files; the header comment confirms the verification.",
+    "slug_uniqueness_db": "PASS -- queried SELECT slug FROM indonesian.grammar_patterns (47 rows); none of the 7 lesson-10 slugs collide.",
+    "candidate_payloads": "PASS (structural) -- every candidate nests content under payload; all required fields present per type; cloze_mcq has exactly 4 options and a correctOptionId present in options; contrast_pair has exactly 2 options with id == text (Indonesian word/phrase, never a/b); sentence_transformation and constrained_translation have non-empty acceptableAnswers and a requiredTargetPattern matching a lesson slug; no speaking candidates. correctOptionId matches an option in every case checked.",
+    "contrast_pair_option_ids": "PASS -- every contrast_pair option.id equals option.text and correctOptionId matches one of them.",
+    "exercise_type_coverage": "PASS -- every one of the 7 patterns has >=1 of each of cloze_mcq, contrast_pair, sentence_transformation, constrained_translation, and >=12 total candidates (each has ~14-15). Production-heavy split (4 sent-transform, 5 constrained-translation) per pattern is on target.",
+    "dialogue_cloze_quality": "FAIL -- 9 dialogue clozes; 8 are well-formed with unique-fit blanks (pos, ramai, ingat, terletak, prangko, Pandai, rindu, mampir), but the 'becak' blank in the long directions line fails blank-not-in-pool (cloze_answer 'becak' vs item 'becak (bècak)') -- see CRITICAL above. Semantic uniqueness (13d) otherwise holds: each blanked token is the unique natural fit given the surrounding line.",
+    "cloze_skips_validity": "PASS -- all 4 clozeSkips ('Pak! Pak!', 'Ya, ada apa?', 'Awas kenapa, Pak?', 'O ya, itu saran baik!') carry reason 'below_6_token_threshold' and each is indeed under 6 whitespace tokens. 13 dialogue chunks = 9 authored clozes + 4 skips, exact partition.",
+    "cloze_context_coverage": "PASS -- every word/phrase vocab item has >=1 cloze whose learning_item_slug matches its normalized_text, including museum and kucing (vocab-list-only, not in dialogue). 'lho!' has one cloze (discourse particle, exempt but provided) -- moot once 'lho!' is removed per the duplicate-item CRITICAL.",
+    "pattern_brief_integrity": "PASS -- all 7 brief slugs match grammar-patterns.ts; vocabulary_pool is non-empty and every entry has item_type; research_notes present for all 7; each pattern has 4 example_sentences (>=3).",
+    "vocab_enrichments_coverage": "PASS (coverage) / WARNING (distractor pool) -- all 66 learning items have an entry; each has all 3 distractor arrays of exactly 3 items; no distractor equals its correct answer; no within-array duplicates found. WARNING: ~20 distractors are out-of-pool (see distractor-not-in-pool WARNING). cued_recall arrays do not contain morphological variants of the answer."
+  }
+}
