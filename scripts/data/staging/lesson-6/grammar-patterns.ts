@@ -1,6 +1,8 @@
 // Grammar patterns for Lesson 6 -- Jakarta
 // Focus: negation (belum/bukan/tidak/jangan), imperative -lah, question -kah, day parts, clock time
-// Existing DB slugs referenced but NOT re-added: belum-vs-tidak, tidak-negation
+// Belum/tidak practice candidates reference the live DB pattern slugs (Slice-2 re-keyed
+// l{N}- form): l6-belum-nog-niet, l6-tidak-ontkenning-van-werkwoorden-en-bijvoeglijke-naamwoorden.
+// These patterns are introduced by lesson 6's typed grammar categories (lesson.ts), not re-added here.
 // Slugs verified unique across lessons 1-7 staging files and indonesian.grammar_patterns DB table (24 rows)
 export const grammarPatterns = [
   {

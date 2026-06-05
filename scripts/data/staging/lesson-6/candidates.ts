@@ -1983,7 +1983,7 @@ export const candidates = [
   },
   {
     "exercise_type": "cloze_mcq",
-    "grammar_pattern_slug": "belum-vs-tidak",
+    "grammar_pattern_slug": "l6-belum-nog-niet",
     "source_page": 4,
     "review_status": "published",
     "payload": {
@@ -2001,7 +2001,7 @@ export const candidates = [
   },
   {
     "exercise_type": "cloze_mcq",
-    "grammar_pattern_slug": "belum-vs-tidak",
+    "grammar_pattern_slug": "l6-belum-nog-niet",
     "source_page": 4,
     "review_status": "published",
     "payload": {
@@ -2019,7 +2019,7 @@ export const candidates = [
   },
   {
     "exercise_type": "cloze_mcq",
-    "grammar_pattern_slug": "tidak-negation",
+    "grammar_pattern_slug": "l6-tidak-ontkenning-van-werkwoorden-en-bijvoeglijke-naamwoorden",
     "source_page": 5,
     "review_status": "published",
     "payload": {
@@ -2037,7 +2037,7 @@ export const candidates = [
   },
   {
     "exercise_type": "cloze_mcq",
-    "grammar_pattern_slug": "tidak-negation",
+    "grammar_pattern_slug": "l6-tidak-ontkenning-van-werkwoorden-en-bijvoeglijke-naamwoorden",
     "source_page": 5,
     "review_status": "published",
     "payload": {
@@ -2055,7 +2055,7 @@ export const candidates = [
   },
   {
     "exercise_type": "contrast_pair",
-    "grammar_pattern_slug": "tidak-negation",
+    "grammar_pattern_slug": "l6-tidak-ontkenning-van-werkwoorden-en-bijvoeglijke-naamwoorden",
     "source_page": 5,
     "review_status": "published",
     "payload": {
