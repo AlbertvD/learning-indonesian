@@ -10,6 +10,7 @@ import {
   IconUmbrella,
   IconShirt,
   IconStethoscope,
+  IconMailbox,
   IconBook2,
 } from '@tabler/icons-react'
 import {
@@ -61,6 +62,7 @@ const LESSON_PALETTES: Record<number, { gradient: string; glyph: ReactNode }> = 
   7: { gradient: 'linear-gradient(135deg, #fb7185 0%, #e11d48 100%)', glyph: <IconUmbrella size={64} /> },
   8: { gradient: 'linear-gradient(135deg, #ec4899 0%, #a21caf 100%)', glyph: <IconShirt size={64} /> },
   9: { gradient: 'linear-gradient(135deg, #06b6d4 0%, #0e7490 100%)', glyph: <IconStethoscope size={64} /> },
+  10: { gradient: 'linear-gradient(135deg, #0c4a6e 0%, #00c7be 100%)', glyph: <IconMailbox size={64} /> },
 }
 
 const LESSON_PALETTE_FALLBACK = {
