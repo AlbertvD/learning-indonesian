@@ -1,7 +1,7 @@
 ---
 module: capabilities
 surface: src/lib/capabilities/
-last_verified_against_code: 2026-06-04
+last_verified_against_code: 2026-06-05
 inbound_port: src/lib/capabilities/index.ts
 status: stable
 ---
@@ -19,7 +19,6 @@ status: stable
 | `capabilityCatalog.ts` | 196 | `projectCapabilities(snapshot)` — derives every `ProjectedCapability` from raw catalog content (learning items, grammar patterns, affixed-form pairs). Source-of-truth for which cap_types each content kind emits + what each cap_type's `requiredArtifacts` is. Podcast caps are emitted by a separate projector at `scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts` per Decision 4; contextual_cloze caps live in `scripts/lib/pipeline/capability-stage/projectors/vocab.ts` per Decision 5b. |
 | `capabilityContracts.ts` | 107 | `validateCapability(input)` — derives `CapabilityReadiness` purely from `RENDER_CONTRACTS` routing (which exercise types serve this cap_type AND support its source kind). Slice 4b (#102) removed the artifact-bag dependency — readiness no longer reads `required_artifacts` or `capability_artifacts`. `isExposureOnly(cap)` for podcast caps. `validateCapabilities` for aggregate health. |
 | **`renderContracts.ts`** | 333 | **The shared render contract** — `RENDER_CONTRACTS`, `ContractInputShapes`, `BuilderInputFor<T>`, `projectBuilderInput<T>()`, plus inverted-lookup helpers (`exerciseTypesForCapability`, `requiredArtifactsFor`, `supportsSourceKind`). Sole source of truth for (a) which exercise types each cap_type is ready for, (b) which builder the resolver dispatches to, (c) what inputs each builder is guaranteed to receive. |
-| `artifactRegistry.ts` | 26 | The exhaustive `ARTIFACT_KINDS` array (`as const satisfies readonly ArtifactKind[]`) — retained only for the Slice-5-owned (#147) legacy staging regeneration. Slice 4b (#102) removed `hasApprovedArtifact` / `ArtifactIndex` / `CapabilityArtifact` (the readiness machinery) when the `capability_artifacts` table was dropped. |
 | `canonicalKey.ts` | 40 | `buildCanonicalKey(input)` — encodes a `ProjectedCapability` into its stable canonical key. `normalizeLessonSourceRef` for legacy lesson-source-ref shapes. |
 | `itemSlug.ts` | 25 | `itemSlug(base_text)` — canonical slug derivation extracted in PR #59 to fix the silent slug-divergence bug class (~113 multi-word items unreachable). |
 | `separatorConvention.ts` | 86 | The single alternative-answer separator definition (CONTEXT.md → Typed Artifact). `splitAlternatives(value)` — split on canonical `/` + defensive `;`, never comma — consumed by the runtime grader (`src/lib/answerNormalization.checkAnswer`). `classifyDutchSeparator` / `classifyIndonesianSeparator` — the non-canonical-separator detector shared by the pipeline `CS19` gate + `HC24` health check. Tree-neutral so both the browser bundle and the `scripts/` pipeline import one definition (PR #129; anti-drift across the `src/`↔`scripts/` boundary). |
@@ -39,11 +38,13 @@ status: stable
 - `src/services/capabilityService.ts` — consumes the cap_type / direction / modality / language enums for the DB row shape.
 - `scripts/promote-capabilities.ts` — calls `validateCapability` for promotion decisions.
 - `scripts/check-capability-health.ts` — calls `validateCapability` + `validateCapabilities` for health-report generation; also pulls `CapabilityHealthReport`, `ExerciseAvailabilityIndex`.
-- `scripts/materialize-capabilities.ts`, `scripts/lib/content-pipeline-output.ts`, `scripts/data/staging/podcast-warung-market/capabilities.ts` — call `projectCapabilities`.
+- `scripts/materialize-capabilities.ts`, `scripts/data/staging/podcast-warung-market/capabilities.ts` — call `projectCapabilities`. (`content-pipeline-output.ts` stopped calling it in Slice 5b #147 — `buildCapabilityStagingFromContent` was retired; that file now exports only the shared slug/source_ref formula homes + the `StagingLessonInput`/`StagingContentUnit` types.)
 - `scripts/lib/pipeline/podcast-stage/podcastProjectionRules.ts`, `scripts/lib/pipeline/capability-stage/projectors/vocab.ts` — call `buildCanonicalKey` + the `CAPABILITY_PROJECTION_VERSION` stamp.
 - `scripts/lib/pipeline/capability-stage/{adapter,lint/duplicateItems,projectors/vocab,validators/itemSourceRefResolvability}.ts`, plus `scripts/seed-cloze-contexts.ts`, `scripts/repair-item-meanings.ts`, `scripts/reactivate-dialogue-chunks.ts`, `scripts/cleanup-annotations.ts` — call `itemSlug` for canonical slug derivation. (`scripts/publish-grammar-candidates.ts` was retired in Slice 2 Task 9 — grammar exercises are generated in-stage to the 4 typed tables; it was the sole writer of `item_context_grammar_patterns`, now a legacy-only junction read by coverageService Path A.)
 
 **Status (2026-05-22):** stable. PR #65 introduced `renderContracts.ts` and rewrote `validateCapability` to consume it. The contract surface that previously lived as three divergent declarations (validator's `exerciseByCapability`, resolver's `compatibleExercisesByCapability`, builders' inline guards) now lives in one table. Inbound-port barrel (`index.ts`) added 2026-05-18; all `src/` production callers now route through it.
+
+**Slice 5b update (2026-06-05, #147):** `artifactRegistry.ts` (`ARTIFACT_KINDS`) deleted with the no-disk capability-stage cutover; the `ArtifactKind` *type* in `capabilityTypes.ts` is retained (types `requiredArtifacts` + the render contracts). `projectCapabilities` is unchanged and still the projection source-of-truth; its caller set shrank by one (`content-pipeline-output.ts`).
 
 **2026-05-22 — typed-column projection (PR 0 of the data-model migration).** `ProjectedCapability` slimmed: `difficultyLevel`, `goalTags`, `sourceFingerprint`, `artifactFingerprint` dropped (no runtime consumers, or derivable, or destination-column-going-away). `skillType` retained but read-time-derived from `capability_type` via `deriveSkillTypeFromCapabilityType` instead of stored in metadata_json. `requiredArtifacts` and `prerequisiteKeys` are now backed by two typed `learning_capabilities` columns (`required_artifacts text[]`, `prerequisite_keys text[]`) added in scripts/migration.sql; the legacy `metadata_json` jsonb column survives until a follow-up cleanup PR drops it but is no longer read or written. `required_artifacts` stays as a column (not derivable from capability_type alone) because affixed_form_pair caps have conditional artifacts (±allomorph_rule per capabilityCatalog.ts:178-180).
 
@@ -86,8 +87,7 @@ Three responsibilities:
 - `requiredArtifactsFor(exerciseType): readonly ArtifactKind[]` — `renderContracts.ts:113`.
 - `supportsSourceKind(exerciseType, sourceKind): boolean` — `renderContracts.ts:117`.
 
-**Artifact registry (Slice 4b: reduced to the kind vocabulary):**
-- `ARTIFACT_KINDS` — `artifactRegistry.ts`. Exhaustive constant array, retained only for the Slice-5-owned (#147) legacy staging regeneration. `hasApprovedArtifact` + the `CapabilityArtifact`/`ArtifactIndex`/`ArtifactQualityStatus` types were removed when `capability_artifacts` was dropped.
+**Artifact registry — RETIRED (Slice 5b #147 5b.7).** `artifactRegistry.ts` + `ARTIFACT_KINDS` are deleted: their last consumer was the legacy staging regeneration (`buildArtifactsForCapability` / `validateExerciseAssets`), retired in the no-disk cutover. The `ArtifactKind` *type* survives in `capabilityTypes.ts` (it still types `capability.requiredArtifacts` + the render contracts); only the runtime constant array is gone. (Slice 4b had already removed `hasApprovedArtifact` / `CapabilityArtifact` / `ArtifactIndex` when `capability_artifacts` was dropped.)
 
 **Canonical key + slug:**
 - `buildCanonicalKey(input: CanonicalKeyInput): string` — `canonicalKey.ts:29`.

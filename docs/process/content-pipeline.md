@@ -110,41 +110,34 @@ For new lessons (4 and above). Each step writes outputs into `content/` or `scri
 
 ## 4. Stage B — `capability-stage`
 
-**Owns:** Everything capability + learning-item: `content_units`, `learning_capabilities`, `capability_content_units`, `capability_artifacts`, `grammar_patterns`, `learning_items` + meanings + anchor_contexts, `exercise_variants`, `cloze_contexts`.
+**Owns:** Everything capability + learning-item: `content_units`, `learning_capabilities`, `capability_content_units`, `grammar_patterns` + the 4 typed grammar-exercise tables, `learning_items` + anchor_contexts, the typed `dialogue_clozes` / `affixed_form_pairs` tables, and item distractor tables (`recognition_mcq_distractors` / `cued_recall_distractors`).
 
-**Inputs:**
-- Stage A's DB outputs (loaded via `loader.ts`)
-- Staging files from disk: `learning-items.ts`, `grammar-patterns.ts`, `morphology-patterns.ts`, `candidates.ts`, `cloze-contexts.ts`, `vocab-enrichments.ts`
+**Inputs — DB-only (Slice 5b #147, ADR 0011/0012):**
+- Stage A's DB outputs (lessons + sections + audio_clips), loaded via `loader.ts`.
+- The typed DB content tables Stage A / prior runs wrote: `lesson_section_item_rows` (`loadFromDb.ts`), typed grammar categories (`loadPatternFromDb`), `lesson_dialogue_lines` (`loadDialogueFromDb`), `lesson_section_affixed_pairs` (`fetchAffixedPairsFromDb`).
+- **No staging files are read.** The loader performs zero disk I/O — enforced by the global no-disk gate (`__tests__/enforcement/noDiskReads.test.ts`).
 
-**Sequence** (per `runner.ts:12-33`):
+**Sequence** (per `runner.ts`):
 
-1. Load Stage A outputs from DB + staging files from disk (`loader.ts`).
-2. **Enrich** (pre-validation, in-process, skipped in dry-run):
-   - `pos` — LLM via Claude. `enrichPos.ts`.
-   - `level` — deterministic; every item inherits the lesson level. `enrichLevel.ts`.
-   - `en_translations` — LLM. `enrichEnTranslations.ts`.
-   - `dialogue_translation_propagation` — deterministic. Copies dialogue-line NL translations to matching learning items. `propagateDialogueTranslations.ts`.
-   - Writes enriched `learning-items.ts` back to disk.
-3. **Validate** (`validators/`):
-   - `candidatePayload` — every exercise candidate has a renderable payload shape.
-   - `perItemMeaning` — every learning item has at least one meaning artifact.
-   - `grammarPattern` — pattern slug + complexity well-formed.
-   - `pos` — POS tags are within the 12-value taxonomy.
-4. **Short-circuit** on CRITICAL findings.
-5. **Dry-run returns early** — no DB writes.
-6. **Project** (pure functions, `projectors/`):
-   - `projectVocab` — vocab → capabilities + artifacts.
-   - `projectGrammar` — grammar patterns → capabilities + artifacts.
-   - `projectCloze` — cloze contexts → cloze capabilities.
-   - `morphology.lessonIntroducesMorphology` — flags lessons that introduce morphology patterns; capability rows get `lesson_id` stamped.
-7. **Adapter writes** in dependency order:
-   - `content_units` → `learning_capabilities` → `capability_content_units` → `capability_artifacts` → `grammar_patterns` → `learning_items` + meanings + anchor_contexts → `exercise_variants` → `cloze_contexts`.
-8. **Verify hooks** (post-write, `verify/`):
-   - CS7 `countParity` — DB row counts match staging counts.
-   - CS8 `contentNonEmpty` — no empty content was written.
-   - CS9 `seedIntegrity` — referential integrity of written rows.
-9. **Promote capabilities** — `applyPromotionPlan` runs (see `promote-capabilities.ts`) to flip newly-published capabilities from draft to ready/published.
-10. **Return** `CapabilityStageOutput`.
+1. Load Stage A outputs from the DB (`loader.ts`), then pre-load the typed item rows + project them (`projectItemsFromTypedRows`) so the pre-write gate can validate real item data.
+2. **Validate (pre-write gate, `gate.ts` → `validators/`):** item checks (`perItemMeaning` / `itemTranslations` / `itemSeparatorConvention` / `itemLength` / `pos`) run against the typed item projection. Grammar/candidate structural checks are covered DB-natively (the pattern path + CS18) and by `lint-staging`, so the gate is passed `[]` for those.
+3. **Short-circuit** on CRITICAL findings.
+4. **Dry-run returns early** — DB-only: loads from the DB, runs the pre-write gate, and returns before any write. Requires a real `lessonId` (Stage A must have run live first).
+5. **Project + write (DB-native emitters), in dependency order:**
+   - `content_units` (DB-native builder; grammar units aligned to the pattern path's slugs) → junction `capability_content_units`.
+   - item caps via `upsertCapabilitiesSkipIfExists` (FSRS-safe), item `learning_items` + anchor contexts via idempotent upsert, item distractors via the in-stage generator.
+   - DB-native POS backfill: `enrichPos` classifies null-pos word/phrase items, written via `updateLearningItemPos` (the sole POS writer; ADR 0012 tracked exception — POS stays in this stage).
+   - pattern path (`writePatternPath`) — grammar_patterns + the 4 typed grammar-exercise tables.
+   - dialogue-line clozes (in-stage generator → typed `dialogue_clozes`), affixed pairs (typed `affixed_form_pairs`).
+   - `retireOrphanedCapabilities` soft-retires caps whose canonical_key dropped out of the emit set.
+6. **Verify hooks (post-write gate, `verify/` + item/pattern validators):**
+   - CS7 `countParity` — DB row counts ≥ declared counts.
+   - CS8 `contentNonEmpty` / CS9 `seedIntegrity` — written rows are non-empty + referentially sound.
+   - CS14–CS17 item-kind checks (POS / distractor coverage + quality / cross-lesson dup); CS18 pattern coverage; CS22 dialogue-cloze coverage.
+7. **Promote capabilities** — `applyPromotionPlan` flips newly-published capabilities draft → ready/published (only when `status === 'ok'`).
+8. **Return** `CapabilityStageOutput`.
+
+> **Retired (Slice 5b #147):** the staging-derived projectors (`projectVocab` / `projectGrammar` / `projectCloze`), the staging regeneration + disk snapshots, `stagingWriteback`, the legacy `exercise_variants` writer, and the cloze `item_contexts` re-seed. `capability_artifacts` was dropped in Slice 4b. The authored cloze `item_contexts` rows are preserved in the DB (ADR 0011 seed-once) as #148's item-cloze substrate.
 
 Per-hook failure produces `status: 'partial'` with aggregated findings — the run is not aborted, but the CLI exits non-zero so CI catches it.
 
@@ -180,27 +173,32 @@ Inside `scripts/data/staging/lesson-<N>/`:
 | `review-report.json` | `linguist-reviewer` agent |
 | `index.ts` | `generate-staging-files.ts` (barrel export) |
 
-**Derived (regenerated on every publish — hand-edits are overwritten):**
-
-| File | Built by | Built from |
-|---|---|---|
-| `content-units.ts` | `content-pipeline-output.ts` | `learning-items.ts` + `grammar-patterns.ts` |
-| `capabilities.ts` | `content-pipeline-output.ts` | canonical inputs + projectors |
-| `exercise-assets.ts` | `content-pipeline-output.ts` | canonical inputs |
-| `lesson-page-blocks.ts` | `content-pipeline-output.ts` | `lesson.ts` |
-
-As of 2026-05-12 (plan `deterministic-snapshot-regen`, status: implementing), the derived files are regenerated **inside the capability-stage runner, after enrichment runs**, so they reflect the enriched POS / level / EN translations / propagated dialogue translations. Before that, they were built up-front by `generate-staging-files.ts` and went stale.
+**Derived capability snapshots — RETIRED (Slice 5b #147).** The capability stage
+used to regenerate `content-units.ts` / `capabilities.ts` / `exercise-assets.ts`
+inside the runner and write them back to disk. The stage is now DB-only: it
+projects `content_units` + capabilities directly into the DB from the typed
+content tables and writes no snapshot files. (`lesson-page-blocks.ts` was already
+retired with the `lesson_page_blocks` table in PR 5.) The canonical authoring
+files above (`learning-items.ts`, `grammar-patterns.ts`, …) are still read by
+**Stage A** and the linguist agents; only the Capability Stage stopped reading
+disk.
 
 ---
 
 ## 6. Dry-run vs apply
 
-`--dry-run` mode:
-- Stage A: skips DB writes, audio synthesis, dialogue-translation LLM enrichment, and staging writeback. Forces deterministic-only path on `grammar_topics` enrichment so validators have populated values.
-- Stage B: skips DB writes, all four enrichments (POS / level / EN translations / dialogue propagation), and verify hooks.
-- Validators still run in both stages — that's the whole point of dry-run.
+`--dry-run` is **DB-only** as of Slice 5b (#147). The Capability Stage reads only
+the database, so a meaningful Stage B dry-run needs DB state that only a live
+Stage A produces. The CLI therefore:
+- Runs **Stage A LIVE** (lesson content is the DB projection of staging —
+  idempotent + FSRS-safe to re-write), producing the `lessonId`.
+- Runs **Stage B in dry-run**: loads from the DB, runs the pre-write gate, and
+  returns **before any capability/distractor/grammar write**.
+- **Requires `SUPABASE_SERVICE_KEY`** (DB access). The old "staging-only dry-run
+  without a service key" mode is gone (`loadLessonForDryRun` deleted). For an
+  offline staging-shape check, run `scripts/lint-staging.ts` directly.
 
-`--skip-lint` skips the pre-flight `lint-staging` gate. The gate is also auto-skipped when `--dry-run` is set without `SUPABASE_SERVICE_KEY` (the gate is DB-backed).
+`--skip-lint` skips the pre-flight `lint-staging` gate.
 
 ---
 

@@ -30,11 +30,12 @@ import path from 'path'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { stripAffixes, tokenize } from './lib/affix'
 import { normalizeForClozeCompare, normalizeForExemptLookup } from './lib/normalize'
-import {
-  validateCapabilityStaging,
-  validateContentUnits,
-  validateExerciseAssets,
-} from './lib/content-pipeline-output'
+// Slice 5b (#147 5b.6b): the capability-side pre-flight (checkCapabilityPipelineOutput)
+// is retired — its validators (validateContentUnits / validateCapabilityStaging /
+// validateExerciseAssets) read the derived staging snapshots the Capability Stage
+// stopped writing (5b.4), and the Capability Gate (CS14–CS22) now owns those checks
+// DB-natively. The imports are removed with it; 5b.7 deletes validateExerciseAssets +
+// ARTIFACT_KINDS from content-pipeline-output.ts.
 
 // Internal Step-CA on the homelab. Scoped: only this script's HTTPS calls
 // (all to the homelab supabase) bypass cert validation.
@@ -74,9 +75,6 @@ interface LessonCtx {
   clozeSkips?: any[]
   patternBrief?: any
   learningItems?: any[]
-  contentUnits?: any[]
-  capabilities?: any[]
-  exerciseAssets?: any[]
   vocabEnrichments?: any[] | null
   sectionsCatalog?: any
   priorLearningItems?: any[]   // vocabulary from lessons with lower order_index (flattened)
@@ -198,9 +196,9 @@ async function loadLesson(n: number): Promise<LessonCtx> {
       ?? (await readTsExport(path.join(dir, 'cloze-contexts.ts'))) ?? [],
     clozeSkips: (await readTsNamedExport(path.join(dir, 'cloze-contexts.ts'), 'clozeSkips')) ?? [],
     learningItems: (await readTsExport(path.join(dir, 'learning-items.ts'))) ?? [],
-    contentUnits: (await readTsExport(path.join(dir, 'content-units.ts'))) ?? [],
-    capabilities: (await readTsExport(path.join(dir, 'capabilities.ts'))) ?? [],
-    exerciseAssets: (await readTsExport(path.join(dir, 'exercise-assets.ts'))) ?? [],
+    // contentUnits / capabilities / exerciseAssets loads removed in 5b.6b — the
+    // derived snapshots they read are no longer produced (5b.4) and the
+    // capability-side checks moved to the Capability Gate.
     vocabEnrichments: (await readTsExport(path.join(dir, 'vocab-enrichments.ts'))) ?? null,
     patternBrief: readJson(path.join(dir, 'pattern-brief.json')),
     sectionsCatalog: readJson(path.join(dir, 'sections-catalog.json')),
@@ -648,36 +646,15 @@ function checkPatternBrief(ctx: LessonCtx): Finding[] {
   return out
 }
 
-function checkCapabilityPipelineOutput(ctx: LessonCtx): Finding[] {
-  // The four derived files (content-units.ts, capabilities.ts,
-  // exercise-assets.ts, lesson-page-blocks.ts) are produced by the
-  // capability-stage runner at publish time from the enriched learning-items
-  // (POS, EN translations, dialogue NL propagation). They are NOT authoring
-  // artifacts and are not present after `bun scripts/generate-staging-files.ts`.
-  // Validators that examine their contents only run if the files already
-  // exist (from a prior publish); the previous CRITICAL "missing or empty"
-  // gates are removed because they fire against this expected pre-publish state.
-  const out: Finding[] = []
-  const contentUnits = ctx.contentUnits ?? []
-  const capabilities = ctx.capabilities ?? []
-
-  if (contentUnits.length > 0) {
-    for (const item of validateContentUnits(contentUnits)) {
-      out.push(mkFinding(item.severity, ctx.n, 'content-units.ts', item.rule, item.detail, item.ref))
-    }
-  }
-  if (capabilities.length > 0) {
-    for (const item of validateCapabilityStaging({ capabilities, contentUnits })) {
-      out.push(mkFinding(item.severity, ctx.n, 'capabilities.ts', item.rule, item.detail, item.ref))
-    }
-  }
-  if ((ctx.exerciseAssets?.length ?? 0) > 0) {
-    for (const item of validateExerciseAssets({ exerciseAssets: ctx.exerciseAssets ?? [], capabilities })) {
-      out.push(mkFinding(item.severity, ctx.n, 'exercise-assets.ts', item.rule, item.detail, item.ref))
-    }
-  }
-  return out
-}
+// checkCapabilityPipelineOutput RETIRED in Slice 5b (#147 5b.6b). It validated the
+// derived staging snapshots (content-units.ts / capabilities.ts / exercise-assets.ts)
+// via validateContentUnits / validateCapabilityStaging / validateExerciseAssets. Those
+// snapshots are no longer written (the Capability Stage is DB-only, 5b.4) and the
+// equivalent checks live in the Capability Gate (content_units/junction integrity →
+// CS7/CS8/CS9; exercise/distractor shape → CS14–CS18/CS22), DB-state-aware. Removing it
+// here unblocks 5b.7's deletion of validateExerciseAssets + ARTIFACT_KINDS. The rest of
+// lint-staging (lesson-content + grammar/cloze structural checks) + buildLintStagingCommand
+// stay — their decomposition is #109's job (project_lint_staging_stage_specific_gates).
 
 // checkLearningItemsPos relocated to Capability Gate CS14 (validateItemPos).
 // ADR 0013 §6, Slice 1. Removed from lint-staging.
@@ -763,15 +740,16 @@ async function main() {
     // validates grammar patterns/exercises IN-STAGE — the projector guarantees
     // slug/NOT-NULL by construction, the generator defensively validates each
     // candidate (SCHEMA_BY_TYPE), and CS18 (validators/patternCoverage.ts)
-    // certifies per-pattern typed-exercise coverage post-write. These 4 disk
-    // checks (checkGrammarPatterns/checkCandidatesStructural/checkPatternBrief/
-    // checkCapabilityPipelineOutput) + the stale SLOT_PATTERNS allowlist (which
-    // can no longer match the new l{N}-… slugs) are now redundant pre-flight.
-    // They are HARMLESS for the new path (they only see legacy staging slugs,
-    // all kebab-case, or empty), so their physical removal — which cascades to
-    // loadDb/knownSlugs/isSubstringContrastPattern + its test — is deferred to
-    // the lint-staging decomposition (epic #98, project_lint_staging_stage_specific_gates),
-    // per the shared-infra-teardown-may-defer rule. Do NOT add new pattern checks here.
+    // certifies per-pattern typed-exercise coverage post-write. checkCapabilityPipelineOutput
+    // was physically removed in 5b.6b (its derived snapshots are no longer written).
+    // The remaining 3 disk checks (checkGrammarPatterns/checkCandidatesStructural/
+    // checkPatternBrief) + the stale SLOT_PATTERNS allowlist (which can no longer match
+    // the new l{N}-… slugs) are now redundant pre-flight. They are HARMLESS for the new
+    // path (they only see legacy staging slugs, all kebab-case, or empty), so their
+    // physical removal — which cascades to loadDb/knownSlugs/isSubstringContrastPattern
+    // + its test — is deferred to the lint-staging decomposition (epic #98,
+    // project_lint_staging_stage_specific_gates), per shared-infra-teardown-may-defer.
+    // Do NOT add new pattern checks here.
     findings.push(...checkGrammarPatterns(ctx, slugToLessons))
     findings.push(...checkCandidatesStructural(ctx, db))
     findings.push(...checkClozeContextsFile(ctx))
@@ -784,7 +762,7 @@ async function main() {
     // (item path; their removal + the lint-staging shell deletion are Slice 5 / #109).
     findings.push(...checkExerciseCoverage(ctx))
     findings.push(...checkPatternBrief(ctx))
-    findings.push(...checkCapabilityPipelineOutput(ctx))
+    // checkCapabilityPipelineOutput call removed in 5b.6b (function retired above).
     // checkVocabCoverage, checkLearningItemsPos, checkVocabEnrichments relocated
     // to the Capability Gate (CS15/CS14/CS16) — see ADR 0013 §6, Slice 1.
   }

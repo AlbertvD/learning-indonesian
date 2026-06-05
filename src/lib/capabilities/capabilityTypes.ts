@@ -13,8 +13,8 @@ export type CapabilitySourceKind =
 /**
  * Runtime list of every CapabilitySourceKind. The `as const satisfies` clause
  * keeps this array type-locked to the union — when a new source kind is added
- * to the union, TS flags this array as incomplete. Mirrors the ARTIFACT_KINDS
- * pattern in artifactRegistry.ts.
+ * to the union, TS flags this array as incomplete. (The same `as const satisfies`
+ * pattern formerly backed ARTIFACT_KINDS in artifactRegistry.ts, retired in 5b.7.)
  *
  * Used by capabilityContentService's canonical-key decoder so that the
  * whitelist of accepted source kinds widens automatically when the catalog
