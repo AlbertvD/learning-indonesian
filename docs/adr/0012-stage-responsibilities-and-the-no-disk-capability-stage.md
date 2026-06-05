@@ -44,6 +44,23 @@ The dividing line is **what the learner reads vs. what is needed to generate or 
 - **Future allocation questions resolve without re-grilling.** New enrichment defaults to: shown to the learner → Lesson Stage; only feeds generation/scheduling → Capability Stage.
 - **This does not change ADR 0011's source-of-truth split.** Lesson content stays pipeline-is-writer / staging-canonical; capability content stays DB-authoritative after seeding. This ADR governs *where work runs*, not *what is canonical*. (A consequence worth stating because the two are easy to conflate: a stage boundary is not a source-of-truth boundary.)
 
+## Amendment (2026-06-05 — Slice 5b #147, the no-disk cutover)
+
+Slice 5b implemented the §Consequences disk-reads → DB-reads consequence in full:
+the Capability Stage now reads **only** the database (loader is DB-only; the
+staging regeneration, `stagingWriteback`, and every staging-file read are removed),
+and the global no-file-I/O gate (`noDiskReads.test.ts` `globalNoFileIO`) is ON and
+green — the contract this ADR set is now enforced in code.
+
+**POS enrichment clarification (corrects a stray "deviation" framing in the Slice-5
+plan).** POS staying capability-side is **not** a deviation — it is exactly what the
+§Decision prescribes (line 37: "POS and level stay capability-side"). The only thing
+Slice 5b changed is the *substrate*: POS enrichment went from staging-file-coupled to
+**DB-native** — it reads existing `learning_items.pos` from the DB and writes back via
+`updateLearningItemPos` (the sole POS writer), inside the capability stage, with no
+disk access. This is consistent with both this ADR (POS is practice-generation
+metadata, capability-side) and the no-disk rule. There is no tracked debt here.
+
 ## Related
 
 - [ADR 0011: capability content is DB-authoritative after seeding](./0011-capability-content-is-db-authoritative-after-seeding.md) — deferred this split (line 32); this ADR completes it for the lesson-content side.

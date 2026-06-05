@@ -176,36 +176,6 @@ for (const table of EXPECTED_TABLES) {
   }
 }
 
-// ── Check: exercise_variants exist for every lesson that has candidates ────
-{
-  const { data: lessons, error: lessonErr } = await supabase
-    .schema('indonesian')
-    .from('lessons')
-    .select('id, title, order_index')
-    .order('order_index')
-  if (lessonErr) {
-    fail('Exercise variants seeded per lesson', lessonErr.message)
-  } else {
-    for (const lesson of lessons ?? []) {
-      const { count, error } = await supabase
-        .schema('indonesian')
-        .from('exercise_variants')
-        .select('*', { count: 'exact', head: true })
-        .eq('lesson_id', lesson.id)
-      if (error) {
-        fail(`Exercise variants: lesson ${lesson.order_index}`, error.message)
-      } else if ((count ?? 0) === 0) {
-        fail(
-          `Exercise variants: lesson ${lesson.order_index}`,
-          `0 exercise_variants for "${lesson.title}" — run: bun scripts/publish-approved-content.ts ${lesson.order_index}`
-        )
-      } else {
-        pass(`Exercise variants: lesson ${lesson.order_index} (${count} variants)`)
-      }
-    }
-  }
-}
-
 // ── Check: profiles have preferred_session_size ───────────────────────────
 {
   const { error } = await supabase

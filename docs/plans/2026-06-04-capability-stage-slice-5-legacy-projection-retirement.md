@@ -2,6 +2,8 @@
 status: approved
 implementation: TBD                          # PR # assigned when 5a opens
 reviewed_by: [architect, data-architect]     # both round-2 APPROVE, 2026-06-04
+grill_amendments: 2026-06-05                  # see "Grill amendments" — Q1 changed the migration cascade/preserve shape
+data_architect_resign: 2026-06-05             # APPROVE-WITH-CHANGES; M1 (exercise_variants 0-cascade label) + I1/I2 (orphan count ~277 not 72) applied. Cleared for the 5b.10 migration commit. #148 sign-off on the 46 cloze contexts still outstanding.
 supersedes: []
 parent_epic: "#98"
 issue: "#147"
@@ -33,19 +35,33 @@ issue: "#147"
 | D1 | step-10 `exercise_variants` writer + the supposed L5/7/8 `!usePatternPath` gap | **Retire the writer outright, no precursor.** Live DB: **all 10 lessons are `usePatternPath`**; the grammar branch is already skipped everywhere; 716 `exercise_variants` rows are stale + app-unread (`coverageService.ts:69`). Zero runtime regression. |
 | D2 | cap-less `sentence`/`dialogue_chunk` `learning_items` (157) | **Stop writing + actively delete.** Cap-less, pool-excluded (`loadFromDb.ts:265`), reader-visibility comes from `lesson_sections` (ADR 0014 §M4). One-shot SQL delete (cascade satellites + 70 orphan `content_units`). |
 | D3 | `content_units` re-source | **Identity-only from the DB, stop writing `payload_json`.** Sections/items/affixed are byte-identical (inert). **Grammar units re-key** curated-slug → pattern-path `l{N}-${stableSlug(title)}` so `content_unit.source_ref == capability.source_ref` (Decision E amendment 2026-06-04) — an intended delta, not inert; old grammar units swept in 5b.10, bridge re-derived by `source_ref` match. |
-| D4 | `cloze-contexts.ts` ownership vs #148 | **Slice 5 removes the read + retires `projectCloze`.** **Preserve** the 1167 authored cloze `item_contexts` (ADR 0011 seed-once) as #148's DB substrate — #148 emits the activating caps DB-natively → no double-remove. |
+| D4 | `cloze-contexts.ts` ownership vs #148 | **Slice 5 removes the read + retires `projectCloze`.** **Preserve the 1125 word/phrase-backed** cloze `item_contexts` (ADR 0011 seed-once) as #148's DB substrate — #148 emits the activating caps DB-natively → no double-remove. **The 46 cloze contexts anchored to the 157 deleted items cascade away (Q1)** — dead-weight, not part of #148's substrate (#148 sign-off pending). Live count is **1171** cloze contexts (spec's 1167 was pre-5a.7-reseed). |
 | D5a | POS after `projectVocab` dies | **DB-native `enrichPos` stays in the capability stage.** Load-bearing (663/671 carry POS; runtime `cascade.ts` tiers on it; Lesson Stage has no POS enricher). |
 | D5b | slicing + dry-run | **PR 5a (additive + parity) → PR 5b (subtractive cutover + migration).** **Dry-run reworked to DB-only** (`loadLessonForDryRun` is staging-coupled → deleted). |
 
-**Deletion asymmetry (ADR 0011/0014 sub-decision):** `sentence`/`dialogue_chunk` `learning_items` = de-harvest dead-weight → **DELETE**. Cloze `item_contexts` = authored carrier sentences, currently unreachable (0 item-cloze caps) → **PRESERVE** for #148.
+**Deletion asymmetry (ADR 0011/0014 sub-decision):** `sentence`/`dialogue_chunk` `learning_items` = de-harvest dead-weight → **DELETE**. Cloze `item_contexts` **on word/phrase items** (1125) = authored carrier sentences, currently unreachable (0 item-cloze caps) → **PRESERVE** for #148. **The 46 cloze contexts whose `learning_item_id` IS one of the 157 deleted sentence/dialogue items are NOT preservable** — they cascade with their parent (Q1 below). They are themselves dead-weight: an item-cloze cap blanks a *word* in a carrier; a cloze context anchored to a sentence/dialogue item can never drive one.
+
+## Grill amendments (2026-06-05 — `grill-with-docs`, live-DB grounded)
+
+Six branches stress-tested against the live DB + code before starting 5b. Three verified the spec sound; three changed it. **Q1 changes the migration's cascade/preserve shape → this section is PENDING data-architect re-sign before the 5b.10 migration commit.**
+
+| Q | Branch | Verdict |
+|---|---|---|
+| **Q1** | DELETE (157 items) vs D4 "preserve all cloze `item_contexts`" | **🔴 SPEC BUG — FIXED.** The sets are NOT disjoint. The DELETE cascades **186 `item_contexts`** off the 157 items: `cloze`=46, `dialogue`=68, `example_sentence`=27, `exercise_prompt`=45 (137/157 targets carry contexts). The 46 cloze are 46 of the live **1171** (spec said 1167 — stale by +4 from 5a.7 re-seed) → D4's "preserve 1167" is self-contradicted. **Resolution (user-agreed):** let the 46 cascade as dead-weight (can't drive an item-cloze cap); restate D4's substrate as the **1125 word/phrase-backed** cloze contexts; **archive the 186 cascading contexts** in 5b.10 Step 0 (recoverable if #148 disagrees); **#148 owner to sign off**. `item_answer_variants` cascade = **0** (cap-less); `item_meanings` already dropped (4a) — the SQL comment's cascade list was stale. |
+| **Q2** | grammar sweep precondition | **✅ SOUND.** 5a's re-publish persisted to live: 63 new `pattern-l{N}-` grammar `content_units` already exist; sweep won't strand a lesson. |
+| **Q3** | grammar sweep regex + join safety | **✅ SOUND.** 54 old curated units swept; zero false-spares (all 63 spared are strictly `lesson-{N}/pattern-l{N}-`). The 54 old units back **only retired caps** (all 94 old-form pattern caps `retired_at!=null`; all 126 live caps are new-form, 63/63 backed) → no live cap orphaned. (Cruft note: 94 retired + 26 draft pattern caps persist post-sweep — next teardown's job.) |
+| **Q4** | 5b.6b lint-staging removal scope | **🟡 TIGHTENED.** Spec floated "remove the pre-flight call entirely" — over-broad. `checkCapabilityPipelineOutput` is the **only** non-test caller of the 3 snapshot validators → remove **only** it + its snapshot reads (unblocks 5b.7). KEEP the other capability-side checks + `buildLintStagingCommand` call; their removal is **#109's decomposition** (teardown-may-defer, per `lint-staging.ts:757-771`). The no-disk gate is **directory-scoped to `capability-stage/`**, so lint-staging's staging reads are gate-clean. |
+| **Q5** | non-cloze `item_contexts` orphaned by 5b.1 | **✅ SOUND.** The typed path (`runner.ts:673`, `for plan of itemProjection.perItemPlans`) already writes the anchor contexts (`vocabulary_list`/`lesson_snippet` w/ `source_lesson_id`). 5b.1 deletes only the redundant step-9 duplicate (`:1140`). Fresh-lesson `fetchDistractorPool` lesson-anchoring survives. |
+| **Q6** | gate-noise false-halts in the cutover | **🟡 DOCUMENTED.** (a) 5b.13's pre-delete republish reports `status: partial` from the **92** null-`translation_nl` cap-less items (71 sentence + 21 dialogue) it's about to delete — expected, not a halt; final probe runs **after** `make migrate`. (b) `make migrate-idempotent-check` can't go green (6 pre-existing unrelated reds) — verify 5b's idempotency via probes (second-apply zero-delete + orphan-existence=0 + targeted SELECT), **not** the `make` exit code. |
 
 ## Supabase Requirements
 
 ### Schema changes
 - **No new tables/columns.** PR 5b ships a **one-shot cleanup** (not DDL) in `scripts/migration.sql`. **⚠ The cascade blast radius is larger than "cap-less dead weight" — see the live-probe results below; an archive pre-flight is mandatory.**
 - **Live-probe results (service-key, 2026-06-04 — record in the PR per `feedback_post_pr_verification`):**
-  - The 157 target items (`source_type='lesson'`, `item_type IN ('sentence','dialogue_chunk')`) carry cascading rows: **`learner_item_state`=37, `learner_skill_state`=37, `review_events`=113, `content_flags`=7** — all `learning_item_id … ON DELETE CASCADE` (migration.sql:176/194/215/726). These are **legacy SM-2 scheduler rows** (#150's retirement target; NOT read by the capability runtime — the runtime uses `learner_capability_state`/`capability_review_events`). `review_events.learning_item_id` was made *nullable* (migration.sql:809) but its **FK action is still CASCADE** — deleting the items destroys 113 review records. → **Archive all four tables' affected rows to a timestamped dump before `make migrate`** (Task 5b.10). No `capability_review_events` rows reference these items (cap-less).
-  - `content_units` orphans: **70** match `'learning_items/' || normalized_text`, **72** match `'learning_items/' || lower(trim(base_text))`, **2 are MISSED by the `normalized_text` predicate** (empirical: for these legacy de-harvested rows `normalized_text="saya ke pasar"` lacks the trailing punctuation that `lower(trim(base_text))="saya ke pasar."` retains — the historical normalizer that wrote these old rows' `normalized_text` differs from the current `itemSlug`=`toLowerCase().trim()`, so which key form `content_units.source_ref` used is uncertain). **The spec's original `normalized_text` predicate undercounts.** → use the form-agnostic orphan-existence sweep in Task 5b.10 (covers both forms regardless of the historical key).
+  - The 157 target items (`source_type='lesson'`, `item_type IN ('sentence','dialogue_chunk')`; live = 89 sentence + 68 dialogue_chunk) carry cascading rows: **`learner_item_state`=37, `learner_skill_state`=37, `review_events`=113, `content_flags`=7** — all `learning_item_id … ON DELETE CASCADE` (migration.sql:176/194/215/726). These are **legacy SM-2 scheduler rows** (#150's retirement target; NOT read by the capability runtime — the runtime uses `learner_capability_state`/`capability_review_events`). `review_events.learning_item_id` was made *nullable* (migration.sql:809) but its **FK action is still CASCADE** — deleting the items destroys 113 review records. → **Archive all four tables' affected rows to a timestamped dump before `make migrate`** (Task 5b.10). No `capability_review_events` rows reference these items (cap-less).
+  - **(Q1, re-probed 2026-06-05) The DELETE ALSO cascades 186 `item_contexts`** off the 157 items (`item_contexts.learning_item_id … ON DELETE CASCADE`): **`cloze`=46, `dialogue`=68, `example_sentence`=27, `exercise_prompt`=45** (137 of 157 targets carry contexts). **The 46 cloze contexts are 46 of the live 1171** — so D4's "preserve all cloze contexts as #148's substrate" is only true for the **1125 word/phrase-backed** ones; the 46 anchored to deleted items are dead-weight (can't drive an item-cloze cap) and cascade. → **Archive the 186 contexts too** (Task 5b.10 Step 0) + **#148 owner sign-off** on dropping the 46. `item_answer_variants` cascade = **0** (cap-less); `item_meanings` no longer exists (4a).
+  - `content_units` orphans (re-probed 2026-06-05, data-architect I1/I2): **70** of the 157-item set match `'learning_items/' || normalized_text`, **0 additional** via `'learning_items/' || lower(trim(base_text))` (the earlier "2 missed by normalized_text" self-healed when later pipeline runs rewrote those rows). **BUT the form-agnostic orphan-existence sweep deletes ~277 rows total: ~70 from this DELETE + ~207 PRE-EXISTING stranded `learning_item` content_units** (former items from prior operations, no backing item — the sweep is designed to catch them: "bulletproof + idempotent"). Keep the form-agnostic sweep (covers both key forms regardless of the historical normalizer); just expect ~277, not 72, on the first apply.
 - The two DELETEs (exact SQL in Task 5b.10):
   - `learning_items` (157) — cascades `item_contexts`/`item_answer_variants`/`item_meanings` (+ the 4 legacy scheduler tables above) via FK.
   - `content_units` orphan sweep — `content_units` has **no FK** to `learning_items`, so delete every `unit_kind='learning_item'` row whose `source_ref` no longer resolves to a live item (bulletproof + idempotent; catches all 72 + any pre-existing orphans).
@@ -223,15 +239,17 @@ A pure comparator asserting the DB-native residual output (audio caps, affixed c
 **Test:** `loadFromDb.test.ts` + a new `loader` test asserting no `fs` import remains; runner dry-run test reworked to inject `loadFromDb`.
 **Commit:** `refactor(capability): DB-only loader + dry-run, remove staging reads (#147 5b)`.
 
-### Task 5b.6b: Retire the `lint-staging.ts` capability pre-flight (BLOCKER — staging-snapshot + `validateExerciseAssets` consumer)
+### Task 5b.6b: Remove `lint-staging`'s `checkCapabilityPipelineOutput` (BLOCKER for 5b.7 — sole `validateExerciseAssets` consumer; scope TIGHTENED per Q4)
 **Files:** `scripts/lint-staging.ts:654–671`, `scripts/publish-approved-content.ts:63–73`, `runner.ts` (`buildLintStagingCommand`)
 
 `publish-approved-content.ts:65` runs `buildLintStagingCommand` → `scripts/lint-staging.ts` as the publish **pre-flight**, which reads `ctx.contentUnits`/`ctx.capabilities`/`ctx.exerciseAssets` (the 3 staging snapshots Task 5b.4 stops writing) and calls `validateContentUnits`/`validateCapabilityStaging`/`validateExerciseAssets` (`content-pipeline-output.ts:720` → `ARTIFACT_KINDS`). It is the **only** non-test runtime caller of `validateExerciseAssets`/`ARTIFACT_KINDS-const`, so Task 5b.7's deletion *requires* this first, and 5b.4 leaves lint reading empty/stale snapshots. This is the known `lint-staging` decomposition gap (`memory/project_lint_staging_stage_specific_gates`, noted on #98/#109).
-- Remove the `validateContentUnits`/`validateCapabilityStaging`/`validateExerciseAssets` calls (`lint-staging.ts:657–670`) and the staging-snapshot reads that feed them. These capability-side checks are already relocated to the Capability Gate (CS14–CS22, `gate.ts`/`model.ts`).
-- State explicitly what remains of the pre-flight after the snapshots stop being written. **Decision: the capability-side pre-flight is fully subsumed by the Capability Gate (runner pre-write + post-write), so the capability portion of `lint-staging` + `buildLintStagingCommand`'s call from `publish-approved-content.ts` is removed.** Keep any *lesson-stage* checks `lint-staging` still owns, if any (grep — most moved to the Lesson Gate per ADR 0013); if none remain, remove the pre-flight call entirely and note the Capability Gate is now the sole gate.
-- Update `docs/process/content-pipeline.md` (the pre-flight is gone).
-**Test:** `bun run test` green; a publish dry-run no longer invokes `lint-staging`.
-**Commit:** `refactor(pipeline): retire lint-staging capability pre-flight, Capability Gate is sole gate (#147 5b)`.
+**Decision (Q4 — TIGHTENED 2026-06-05, grounded in `lint-staging.ts:651-682,757-771`): remove ONLY `checkCapabilityPipelineOutput`, NOT the whole pre-flight.**
+- Remove `checkCapabilityPipelineOutput` (`lint-staging.ts:651-682`) — its `validateContentUnits`/`validateCapabilityStaging`/`validateExerciseAssets` calls (`:665/:670/:675`) + the `ctx.contentUnits`/`capabilities`/`exerciseAssets` snapshot reads that feed them. **Verified: this is the ONLY non-test caller of all three validators** (`grep` confirms — `content-pipeline-output.ts` is the definition site), so removing it cleanly unblocks Task 5b.7's `validateExerciseAssets`/`ARTIFACT_KINDS` deletion. Also drop the `main()` call site (`:769`) + the three imports (`:34-36`).
+- **KEEP** the other capability-side checks (`checkGrammarPatterns`, `checkCandidatesStructural`, `checkClozeContextsFile`, `checkClozeCoverage`, `checkExerciseCoverage`, `checkPatternBrief`) **and** `buildLintStagingCommand`'s call from `publish-approved-content.ts`. The in-code comment (`lint-staging.ts:757-771`, `:766`) explicitly defers their removal + the lint-staging shell deletion to the **#109 decomposition** under the documented *shared-infra-teardown-may-defer* rule. These validate authored linguist staging (candidates/cloze/pattern-brief) with **no proven Capability-Gate equivalent** (CS18 certifies typed-exercise *coverage* post-write, not candidate *structural validity* pre-gen). Out of Slice-5 scope.
+- **Gate-cleanliness note:** the no-disk gate (5b.9) is **directory-scoped to `scripts/lib/pipeline/capability-stage/`**; `scripts/lint-staging.ts` is outside it, so its remaining staging reads do NOT block the headline gate. No need to make lint-staging disk-free here.
+- Update `docs/process/content-pipeline.md` (only `checkCapabilityPipelineOutput` is gone; the rest of the pre-flight stands until #109).
+**Test:** `bun run test` green; a publish still invokes `lint-staging` but no longer reads the 3 staging snapshots.
+**Commit:** `refactor(pipeline): retire lint-staging snapshot validators (checkCapabilityPipelineOutput) (#147 5b)`.
 
 ### Task 5b.7: Retire `artifactRegistry.ts` `ARTIFACT_KINDS` + the 4b Option-A leftovers
 **Files:** `src/lib/capabilities/artifactRegistry.ts`, `content-pipeline-output.ts` (`buildArtifactsForCapability`, `ArtifactKind`, `hasConcreteArtifactPayload`, `validateExerciseAssets`, `StagingExerciseAsset`)
@@ -254,22 +272,32 @@ Re-run the 5a.7 probe after 5b.1–5b.7 to confirm caps/content_units counts unc
 ### Task 5b.10: One-shot cleanup migration (sentence/dialogue items + orphan content_units)
 **Files:** `scripts/migration.sql` (teardown section, near the existing drops ~line 1905); a one-off archive script.
 
-**Step 0 — MANDATORY pre-flight archive (the cascade destroys legacy learner state + review history).** Before authoring the DELETE, dump the rows that will cascade away via a SQL `COPY ... TO` (or `pg_dump --table`) to a timestamped file *outside* `docs/` (e.g. a `.sql`/`.csv` next to the migration paper trail): the 37 `learner_item_state` + 37 `learner_skill_state` + 113 `review_events` + 7 `content_flags` rows whose `learning_item_id` is one of the 157 targets. These are legacy SM-2 scheduler rows (#150's target, not read by the capability runtime), but `review_events` is nominally immutable — archive satisfies that. Extend the Rollback note to reference the archive.
+**Step 0 — MANDATORY pre-flight archive (the cascade destroys legacy learner state + review history + authored contexts).** Before authoring the DELETE, dump the rows that will cascade away via a SQL `COPY ... TO` (or `pg_dump --table`) to a timestamped file *outside* `docs/` (e.g. a `.sql`/`.csv` next to the migration paper trail). The full cascade set for the 157 targets (live-probed 2026-06-05):
+- **Legacy SM-2 scheduler rows:** 37 `learner_item_state` + 37 `learner_skill_state` + 113 `review_events` + 7 `content_flags` (#150's target, not read by the capability runtime; `review_events` is nominally immutable — archive satisfies that).
+- **Authored `item_contexts` (Q1 — 186 rows):** 46 `cloze` + 68 `dialogue` + 27 `example_sentence` + 45 `exercise_prompt`. The 46 cloze are dead-weight (anchored to sentence/dialogue items, can't drive an item-cloze cap) but D4 names the cloze set as #148's substrate, so archive them for recoverability + get #148 sign-off before applying.
+- `item_answer_variants` cascade = **0** (the 157 are cap-less). `exercise_variants` cascade = **0** (also `ON DELETE CASCADE` off `learning_items`, `migration.sql:604` — all 716 rows point to word/phrase items; **checked, nothing to archive**, data-architect M1). `item_meanings` no longer exists (dropped 4a) — ignore the stale cascade mention.
+
+Extend the Rollback note to reference the archive.
 
 **Step 1 — author the cleanup SQL** (idempotent — re-running is a no-op once rows are gone). Use an **orphan-existence sweep** for `content_units`, NOT a `normalized_text` predicate (the live probe found that predicate misses 2 of 72 orphans — punctuated bases where `normalized_text` ≠ `itemSlug(base_text)`):
   ```sql
   -- Slice 5 (#147): de-harvested sentence/dialogue learning_items are cap-less
-  -- (ADR 0014). DELETE them — cascades item_contexts/item_answer_variants/
-  -- item_meanings + the legacy SM-2 scheduler rows (learner_item_state ×37,
-  -- learner_skill_state ×37, review_events ×113, content_flags ×7), all
-  -- ON DELETE CASCADE (migration.sql:139–215/726). ARCHIVE those first (Step 0).
+  -- (ADR 0014). DELETE them — cascades (live-probed 2026-06-05): 186 item_contexts
+  -- (46 cloze + 68 dialogue + 27 example_sentence + 45 exercise_prompt; 0
+  -- item_answer_variants AND 0 exercise_variants — both cap-less/word-phrase-only,
+  -- checked not forgotten (data-architect M1); item_meanings dropped in 4a) + the legacy
+  -- SM-2 scheduler rows (learner_item_state ×37, learner_skill_state ×37,
+  -- review_events ×113, content_flags ×7), all ON DELETE CASCADE
+  -- (migration.sql:139–215/726). ARCHIVE all of them first (Step 0). The 46
+  -- cloze contexts are dead-weight (Q1) — NOT the 1125-row #148 substrate.
   delete from indonesian.learning_items
    where source_type = 'lesson' and item_type in ('sentence','dialogue_chunk');
 
   -- content_units has NO FK to learning_items (string source_ref). Sweep every
   -- learning_item unit whose source_ref no longer resolves to a live item — this
   -- is form-agnostic (catches both 'learning_items/'||normalized_text and
-  -- ||itemSlug(base_text)) and idempotent. Removes the 72 orphans + any pre-existing.
+  -- ||itemSlug(base_text)) and idempotent. Deletes ~277: ~70 from this DELETE +
+  -- ~207 PRE-EXISTING stranded learning_item units (data-architect I1, live-probed).
   delete from indonesian.content_units cu
    where cu.unit_kind = 'learning_item'
      and not exists (
@@ -291,7 +319,7 @@ Re-run the 5a.7 probe after 5b.1–5b.7 to confirm caps/content_units counts unc
      and cu.source_ref !~ '/pattern-l[0-9]';
   ```
   > The second clause's `lower(btrim(base_text))` mirrors `itemSlug` (`src/lib/capabilities/itemSlug.ts` = `toLowerCase().trim()`). Both forms are covered so no orphan is stranded regardless of which key `content_units.source_ref` used. Verify on the live DB after apply: zero `content_units` with `unit_kind='learning_item'` and no backing item.
-**Step 2:** `make migrate-idempotent-check` → green (applies twice, second run is a no-op).
+**Step 2 (Q6):** `make migrate-idempotent-check` **exits non-zero on 6 pre-existing 5b-unrelated health reds** — it cannot go green (program-status 4b note). Do NOT chase the `make` exit code. Verify 5b's correctness directly: (1) the second migrate apply produces **zero** new deletes (idempotent); (2) the orphan-existence probe returns **0** `content_units` with `unit_kind='learning_item'` and no backing item *after* apply — note the first apply deletes **~277** such rows (~70 from the DELETE + ~207 pre-existing stranded; data-architect I1), not 72, so don't be alarmed by the larger count; (3) a targeted SELECT confirms the 157 `sentence`/`dialogue_chunk` items are gone and 0 old-curated grammar units remain.
 **Step 3:** Operator runs `make migrate` from the **main checkout** (worktrees lack `.env.local` — `project_capability_stage_program_status` 4b gotcha). The Step-0 archive must already exist.
 **Commit:** `feat(migration): Slice 5 cleanup — drop cap-less sentence/dialogue items + orphan content_units (#147 5b)`.
 
@@ -307,8 +335,8 @@ Re-run the 5a.7 probe after 5b.1–5b.7 to confirm caps/content_units counts unc
 **Commit:** `docs: ADR 0012 POS exception + capabilities spec sync (#147 5b)`.
 
 ### Task 5b.13: Live verification + finish
-**Step 1:** Re-publish all 10 lessons (per-lesson loop). Confirm zero disk reads at runtime (the gate test is the static proof; spot-check the publish logs show no staging-file access).
-**Step 2:** Probe: caps by source_kind/type identical to 5a.7 minus the deleted sentence/dialogue items; `content_units` down by 70; `learning_items` down by 157; `exercise_variants` writer produced 0 new rows.
+**Step 1:** Re-publish all 10 lessons (per-lesson loop). Confirm zero disk reads at runtime (the gate test is the static proof; spot-check the publish logs show no staging-file access). **(Q6) This republish runs BEFORE the 5b.10 DELETE (see Deploy ordering), so the 157 cap-less items still exist and CS9 will flag the 92 null-`translation_nl` ones (71 sentence + 21 dialogue) → the report returns `status: partial`. This is EXPECTED — those exact 92 are deleted in 5b.10. Do NOT treat the partial as a halt or a regression.**
+**Step 2 (runs AFTER `make migrate`, not after Step 1's republish):** Probe: caps by source_kind/type identical to 5a.7 minus the deleted sentence/dialogue items; `content_units` down by 70; `learning_items` down by 157; `exercise_variants` writer produced 0 new rows. The `status: partial` from Step 1 clears here (the flagged items are gone).
 **Step 3:** Verify a live capability still renders via `capability_review_events` for a re-published lesson (per `memory/feedback_answer_log_check` — data existence ≠ feature works).
 **Step 4:** `make pre-deploy` → green. Open PR 5b. **Reviewers: architect + data-architect** (delete migration + writer/reader-shape). Add the `Dev-Workflow-DB-Verified:` trailer only AFTER the live apply + probe.
 
@@ -335,7 +363,7 @@ PR 5b is **code-first, then migration** (4a/4b shape). The read-shape deduction:
 ## Coordination
 
 - **#102 / 4c (#153):** Slice 5b retires the last `exercise_variants` writer → 4c may then drop the table. Sequence 5b before 4c.
-- **#148 (item-cloze):** Slice 5 removes the `cloze-contexts.ts` read but **preserves** the 1167 cloze `item_contexts`. #148 emits item-cloze caps DB-natively over those rows. No file is double-removed.
+- **#148 (item-cloze):** Slice 5 removes the `cloze-contexts.ts` read but **preserves the 1125 word/phrase-backed** cloze `item_contexts` (#148's substrate). #148 emits item-cloze caps DB-natively over those rows. No file is double-removed. **(Q1) The 46 cloze contexts anchored to the deleted sentence/dialogue items DO cascade away** — they can't drive an item-cloze cap (the item is the sentence, not a blankable word). **Action: #148 owner confirms these 46 are out of scope before the 5b.10 migration applies** (they're in the Step-0 archive if recovery is needed).
 - **#150 (legacy SM-2 retirement):** the 157-item DELETE (5b.10) cascades 37 `learner_item_state` + 37 `learner_skill_state` + 113 `review_events` + 7 `content_flags` — all legacy-scheduler rows #150 retires wholesale. Slice 5 archives them; if #150 ships first, these counts shrink. Not read by the capability runtime either way.
 
 ## Non-goals / scope notes

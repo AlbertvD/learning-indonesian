@@ -1,21 +1,21 @@
 /**
  * capability-stage/loader.ts — input boundary for the deep module.
  *
- * Two read sources:
- *   1. DB (Stage A's outputs): `lessons`, `lesson_sections`, `audio_clips`.
- *      Replaces the legacy `lesson.ts` staging-file read.
- *   2. Staging files (everything downstream of `lesson.ts`):
- *      learning-items / grammar-patterns / candidates / cloze-contexts /
- *      content-units / capabilities / exercise-assets.
- *      Mirrors capability-stage-legacy.ts:67–101 minus the `lesson.ts` read.
+ * Single read source (Slice 5b #147 — the no-disk cutover):
+ *   DB (Stage A's outputs): `lessons`, `lesson_sections`, `audio_clips`.
+ *   Every downstream input the legacy loader read off staging files
+ *   (learning-items / grammar-patterns / candidates / cloze-contexts /
+ *   content-units / capabilities / exercise-assets) is now read from the typed
+ *   DB tables further down the stage (loadFromDb / loadPatternFromDb /
+ *   loadDialogueFromDb / fetchAffixedPairsFromDb). The loader performs ZERO
+ *   disk reads — it held the last staging coupling, retired here so the global
+ *   no-disk gate (5b.9) can de-allowlist it and pass clean.
  *
  * The deep module's external interface remains
  *   { lessonNumber, lessonId, dryRun }
- * and Stage A's runLessonStage must have run first so the DB rows exist.
+ * and Stage A's runLessonStage must have run first so the DB rows exist —
+ * including in dry-run (dry-run loads from the DB Stage A wrote, ADR 0011/0012).
  */
-
-import fs from 'node:fs'
-import path from 'node:path'
 
 import {
   fetchLessonAudioCoverage,
@@ -39,18 +39,6 @@ export interface LoadedLessonSection {
   order_index: number
 }
 
-export interface LoadedStaging {
-  learningItems: Array<Record<string, unknown>>
-  grammarPatterns: Array<Record<string, unknown>>
-  candidates: Array<Record<string, unknown>>
-  clozeContexts: Array<Record<string, unknown>>
-  contentUnits: Array<Record<string, unknown>>
-  capabilities: Array<Record<string, unknown>>
-  exerciseAssets: Array<Record<string, unknown>>
-  affixedFormPairs: Array<Record<string, unknown>>
-  stagingDir: string
-}
-
 export interface LoadedLesson {
   lesson: LoadedLessonRow
   sections: LoadedLessonSection[]
@@ -59,11 +47,9 @@ export interface LoadedLesson {
    * every audio_clips row attached to this lesson, primary-voice preferred.
    * Replaces the older `audioNormalizedTexts: Set<string>` so the projector
    * can both flag `hasAudio` AND build a concrete `audio_clip` artifact
-   * payload from the same source. Empty when the loader runs without a
-   * Supabase client (dry-run / offline staging generator).
+   * payload from the same source.
    */
   audioClipsByNormalizedText: Map<string, AudioClipMeta>
-  staging: LoadedStaging
 }
 
 // ---------------------------------------------------------------------------
@@ -73,7 +59,7 @@ export interface LoadedLesson {
 export async function loadStageAOutputsFromDb(
   supabase: CapabilitySupabaseClient,
   input: { lessonNumber: number; lessonId: string },
-): Promise<Omit<LoadedLesson, 'staging'>> {
+): Promise<LoadedLesson> {
   const { lessonId } = input
 
   const { data: lessonRow, error: lessonError } = await supabase
@@ -108,106 +94,18 @@ export async function loadStageAOutputsFromDb(
 }
 
 // ---------------------------------------------------------------------------
-// Staging-file reads (mirrors capability-stage-legacy.ts:52–101 minus lesson.ts)
+// Combined load: Stage A outputs (DB only — Slice 5b #147)
 // ---------------------------------------------------------------------------
-
-async function readStagingFile<T>(filePath: string): Promise<T | null> {
-  if (!fs.existsSync(filePath)) return null
-  // Bun resolves absolute file paths directly; file:// prefix handles cross-platform.
-  const module = await import(`file://${filePath}`)
-  const values = Object.values(module)
-  return values.length > 0 ? (values[0] as T) : null
-}
-
-export async function loadStagingFiles(lessonNumber: number): Promise<LoadedStaging> {
-  const stagingDir = path.join(
-    process.cwd(),
-    'scripts', 'data', 'staging', `lesson-${lessonNumber}`,
-  )
-  if (!fs.existsSync(stagingDir)) {
-    throw new Error(`Staging directory not found: ${stagingDir}`)
-  }
-
-  const [learningItems, grammarPatterns, candidates, clozeContexts] = await Promise.all([
-    readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'learning-items.ts')),
-    readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'grammar-patterns.ts')),
-    readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'candidates.ts')),
-    readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'cloze-contexts.ts')),
-  ])
-  const [contentUnits, capabilities, exerciseAssets, affixedFormPairs] = await Promise.all([
-    readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'content-units.ts')),
-    readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'capabilities.ts')),
-    readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'exercise-assets.ts')),
-    readStagingFile<Array<Record<string, unknown>>>(path.join(stagingDir, 'morphology-patterns.ts')),
-  ])
-
-  return {
-    learningItems: learningItems ?? [],
-    grammarPatterns: grammarPatterns ?? [],
-    candidates: candidates ?? [],
-    clozeContexts: clozeContexts ?? [],
-    contentUnits: contentUnits ?? [],
-    capabilities: capabilities ?? [],
-    exerciseAssets: exerciseAssets ?? [],
-    affixedFormPairs: affixedFormPairs ?? [],
-    stagingDir,
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Combined load: Stage A outputs (DB) + staging files (disk)
-// ---------------------------------------------------------------------------
-
-export async function loadLesson(
-  supabase: CapabilitySupabaseClient | null,
-  input: { lessonNumber: number; lessonId: string },
-): Promise<LoadedLesson> {
-  // When supabase is null (dry-run-without-service-key), fall back to
-  // staging-only mode: sections come from `staging/lesson.ts` which
-  // mirrors what Stage A writes to lesson_sections.
-  if (!supabase) return loadLessonForDryRun(input)
-  const [stageA, staging] = await Promise.all([
-    loadStageAOutputsFromDb(supabase, input),
-    loadStagingFiles(input.lessonNumber),
-  ])
-  return { ...stageA, staging }
-}
 
 /**
- * Dry-run loader: reads staging files only, no DB access. Sections are
- * sourced from staging `lesson.ts` (equivalent to what Stage A would write
- * to `lesson_sections`). Used by runCapabilityStage when dryRun is set
- * AND no Supabase client is available — preserves the legacy "dry-run
- * without SUPABASE_SERVICE_KEY" UX.
+ * Loads the lesson's Stage-A outputs (lesson row + sections + audio coverage)
+ * from the database. DB-only as of Slice 5b (#147): there is no staging-file
+ * fallback, and dry-run uses this same path (Stage A must have run live first
+ * so the rows exist — see runner.ts dry-run handling).
  */
-export async function loadLessonForDryRun(
+export async function loadLesson(
+  supabase: CapabilitySupabaseClient,
   input: { lessonNumber: number; lessonId: string },
 ): Promise<LoadedLesson> {
-  const staging = await loadStagingFiles(input.lessonNumber)
-  const stagedLesson = await readStagingFile<{
-    title?: string
-    level?: string
-    module_id?: string
-    order_index?: number
-    sections?: Array<{ title: string; content: Record<string, unknown>; order_index: number }>
-  }>(path.join(staging.stagingDir, 'lesson.ts'))
-
-  return {
-    lesson: {
-      id: input.lessonId,
-      module_id: stagedLesson?.module_id ?? '',
-      order_index: stagedLesson?.order_index ?? input.lessonNumber,
-      title: stagedLesson?.title ?? `Lesson ${input.lessonNumber}`,
-      level: stagedLesson?.level ?? 'A1',
-      primary_voice: null,
-    },
-    sections: (stagedLesson?.sections ?? []).map((s, idx) => ({
-      id: `staging-section-${idx}`,
-      title: s.title,
-      content: s.content,
-      order_index: s.order_index,
-    })),
-    audioClipsByNormalizedText: new Map(),
-    staging,
-  }
+  return loadStageAOutputsFromDb(supabase, input)
 }

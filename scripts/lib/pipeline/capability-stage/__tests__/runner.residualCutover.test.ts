@@ -481,15 +481,18 @@ describe('runner residual cutover (5a.5 / #147)', () => {
 
     expect(['ok', 'partial']).toContain(result.status)
 
-    // No CS9 warning (all grammar caps resolved their content_unit by source_ref).
+    // No CS9 warning (all caps resolved their content_unit by source_ref). Slice 5b
+    // (#147) unified the junction into step 6 with a single source_ref map; the
+    // orphan finding message changed from "Grammar content_unit junction" to the
+    // generic "capability_content_units: …".
     const cs9Findings = result.findings.filter((f) => f.gate === 'CS9')
-    expect(cs9Findings.filter((f) => f.message.includes('Grammar content_unit junction'))).toHaveLength(0)
+    expect(cs9Findings.filter((f) => f.message.includes('capability_content_units:'))).toHaveLength(0)
 
-    // Isolate STEP-6b's grammar junction specifically — NOT just any junction.
-    // (The pre-existing non-grammar staging loop also writes item/section/affixed
-    // junction rows, so "junctionRows.length > 0" would pass even if step 6b were
-    // deleted. Resolve the grammar content_unit ids and assert a junction row links
-    // to one with a grammar relationship_kind — this fails iff step 6b regresses.)
+    // Isolate the grammar junction specifically — NOT just any junction. (The
+    // unified step-6 source_ref loop also writes item/affixed junction rows, so
+    // "junctionRows.length > 0" would pass even if grammar junctions regressed.
+    // Resolve the grammar content_unit ids and assert a junction row links to one
+    // with a grammar relationship_kind — this fails iff the grammar junction breaks.)
     const grammarUnitSlugs = ops
       .filter((op) => op.table === 'content_units' && op.op === 'upsert')
       .flatMap((op) => (Array.isArray(op.payload) ? op.payload : [op.payload as Record<string, unknown>]))
