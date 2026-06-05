@@ -208,12 +208,13 @@ describe('CS8 contentNonEmpty — required field presence checks per #22', () =>
 })
 
 describe('CS9 seedIntegrity — non-dialogue reviewability cross-check (legacy 805–923)', () => {
-  it('passes when every non-dialogue item has an NL meaning', async () => {
+  it('passes when every non-dialogue item has translation_nl in learning_items', async () => {
     const supabase = buildMockSupabase({
-      item_meanings: {
+      // Decision R (PR 1): NL coverage read from learning_items.translation_nl.
+      learning_items: {
         rows: [
-          { learning_item_id: 'item-1', translation_language: 'nl' },
-          { learning_item_id: 'item-2', translation_language: 'nl' },
+          { id: 'item-1', translation_nl: 'boek', translation_en: 'book' },
+          { id: 'item-2', translation_nl: 'pen', translation_en: 'pen' },
         ],
       },
       item_contexts: {
@@ -232,10 +233,15 @@ describe('CS9 seedIntegrity — non-dialogue reviewability cross-check (legacy 8
     expect(report.totals.nonDialogueCount).toBe(2)
   })
 
-  it('flags non-dialogue items missing both NL meaning AND active variant (the 2026-04-24 incident)', async () => {
+  it('flags non-dialogue items missing both translation_nl AND active variant (the 2026-04-24 incident)', async () => {
     const supabase = buildMockSupabase({
-      // item-2 has no NL meaning row.
-      item_meanings: { rows: [{ learning_item_id: 'item-1', translation_language: 'nl' }] },
+      // item-2 has no translation_nl (null) — no NL coverage.
+      learning_items: {
+        rows: [
+          { id: 'item-1', translation_nl: 'boek', translation_en: 'book' },
+          { id: 'item-2', translation_nl: null, translation_en: 'pen' },
+        ],
+      },
       item_contexts: {
         rows: [
           { id: 'ctx-1', learning_item_id: 'item-1' },
@@ -255,8 +261,13 @@ describe('CS9 seedIntegrity — non-dialogue reviewability cross-check (legacy 8
 
   it('skips dialogue_chunk items from the non-dialogue reviewability check', async () => {
     const supabase = buildMockSupabase({
-      // No NL meanings for item-2 (a dialogue chunk).
-      item_meanings: { rows: [{ learning_item_id: 'item-1', translation_language: 'nl' }] },
+      // item-2 (dialogue chunk) has no translation_nl but is exempt from the check.
+      learning_items: {
+        rows: [
+          { id: 'item-1', translation_nl: 'boek', translation_en: 'book' },
+          { id: 'item-2', translation_nl: null, translation_en: 'hello' },
+        ],
+      },
       item_contexts: {
         rows: [
           { id: 'ctx-1', learning_item_id: 'item-1' },
@@ -269,7 +280,7 @@ describe('CS9 seedIntegrity — non-dialogue reviewability cross-check (legacy 8
       publishedItemIds: ['item-1', 'item-2'],
       dialogueItemIds: new Set(['item-2']),
     })
-    // item-2 (dialogue) is exempt; item-1 (non-dialogue) has NL → green.
+    // item-2 (dialogue) is exempt; item-1 (non-dialogue) has translation_nl → green.
     expect(report.findings).toEqual([])
   })
 })

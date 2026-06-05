@@ -415,7 +415,6 @@ describe('runCapabilityGatePostWrite', () => {
       grammar_patterns: { rows: [], countOverride: 0 },
       exercise_variants: { rows: [], countOverride: 0 },
       learning_items: { rows: [], countOverride: 0 },
-      item_meanings: { rows: [], countOverride: 0 },
       item_contexts: { rows: [], countOverride: 0 },
     })
     const findings = await runCapabilityGatePostWrite(
@@ -433,7 +432,6 @@ describe('runCapabilityGatePostWrite', () => {
       grammar_patterns: { rows: [], countOverride: 0 },
       exercise_variants: { rows: [], countOverride: 0 },
       learning_items: { rows: [] },
-      item_meanings: { rows: [] },
       item_contexts: { rows: [] },
     })
 
