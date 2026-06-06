@@ -29,6 +29,13 @@ const MEANING_DISTRACTOR_TYPES = new Set(['text_recognition', 'audio_recognition
 /** Capability types whose MCQ options are Indonesian forms (ranked orthographically). */
 const FORM_DISTRACTOR_TYPES = new Set(['l1_to_id_choice'])
 
+/** Whether a capability type carries curated MCQ distractors (vs typed/recall).
+ *  The single source of the seam — coverage validation reuses it so the two
+ *  never drift. */
+export function capWantsDistractors(capabilityType: string): boolean {
+  return MEANING_DISTRACTOR_TYPES.has(capabilityType) || FORM_DISTRACTOR_TYPES.has(capabilityType)
+}
+
 /** An item as it appears in the cumulative Pool(N), carrying both surfaces. */
 export interface PoolItem {
   itemId: string
@@ -77,9 +84,8 @@ export function planDistractorWrites(
   const rows: DistractorPointerRow[] = []
 
   for (const cap of caps) {
+    if (!capWantsDistractors(cap.capabilityType)) continue
     const wantsMeaning = MEANING_DISTRACTOR_TYPES.has(cap.capabilityType)
-    const wantsForm = FORM_DISTRACTOR_TYPES.has(cap.capabilityType)
-    if (!wantsMeaning && !wantsForm) continue
 
     // Candidates: the whole pool except the answer item, with the POS rung.
     const others = pool.filter((p) => p.itemId !== cap.item.itemId)
