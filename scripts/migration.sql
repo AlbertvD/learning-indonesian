@@ -2463,64 +2463,16 @@ grant all on indonesian.capability_audio_refs to service_role;
 comment on table indonesian.capability_audio_refs is
   'Capability to audio_clip binding. Replaces capability_artifacts(kind=audio_clip). Decision Q.';
 
--- §PR1.3 — Curated distractor tables (Decision G2 Group B).
--- Wires the orphaned vocab-enrichments.ts agent output into the DB.
--- Each table is keyed by capability_id (1:1). When absent, byKind/item.ts
--- falls back to random pool sampling (existing behaviour).
-
-create table if not exists indonesian.recognition_mcq_distractors (
-  capability_id uuid primary key references indonesian.learning_capabilities(id) on delete cascade,
-  distractors   text[] not null,
-  created_at    timestamptz not null default now(),
-  updated_at    timestamptz not null default now()
-);
-
-alter table indonesian.recognition_mcq_distractors enable row level security;
-drop policy if exists "recognition_mcq_distractors_authenticated_read" on indonesian.recognition_mcq_distractors;
-create policy "recognition_mcq_distractors_authenticated_read"
-  on indonesian.recognition_mcq_distractors for select to authenticated using (true);
-grant select on indonesian.recognition_mcq_distractors to authenticated;
-revoke insert, update, delete on indonesian.recognition_mcq_distractors from authenticated;
-grant all on indonesian.recognition_mcq_distractors to service_role;
-
-comment on table indonesian.recognition_mcq_distractors is
-  'Curated NL wrong-option strings for recognition_mcq. Per-cap 1:1. Decision G2 Group B.';
-
-create table if not exists indonesian.cued_recall_distractors (
-  capability_id uuid primary key references indonesian.learning_capabilities(id) on delete cascade,
-  distractors   text[] not null,
-  created_at    timestamptz not null default now(),
-  updated_at    timestamptz not null default now()
-);
-
-alter table indonesian.cued_recall_distractors enable row level security;
-drop policy if exists "cued_recall_distractors_authenticated_read" on indonesian.cued_recall_distractors;
-create policy "cued_recall_distractors_authenticated_read"
-  on indonesian.cued_recall_distractors for select to authenticated using (true);
-grant select on indonesian.cued_recall_distractors to authenticated;
-revoke insert, update, delete on indonesian.cued_recall_distractors from authenticated;
-grant all on indonesian.cued_recall_distractors to service_role;
-
-comment on table indonesian.cued_recall_distractors is
-  'Curated Indonesian wrong-option strings for cued_recall. Per-cap 1:1. Decision G2 Group B.';
-
-create table if not exists indonesian.cloze_mcq_item_distractors (
-  capability_id uuid primary key references indonesian.learning_capabilities(id) on delete cascade,
-  distractors   text[] not null,
-  created_at    timestamptz not null default now(),
-  updated_at    timestamptz not null default now()
-);
-
-alter table indonesian.cloze_mcq_item_distractors enable row level security;
-drop policy if exists "cloze_mcq_item_distractors_authenticated_read" on indonesian.cloze_mcq_item_distractors;
-create policy "cloze_mcq_item_distractors_authenticated_read"
-  on indonesian.cloze_mcq_item_distractors for select to authenticated using (true);
-grant select on indonesian.cloze_mcq_item_distractors to authenticated;
-revoke insert, update, delete on indonesian.cloze_mcq_item_distractors from authenticated;
-grant all on indonesian.cloze_mcq_item_distractors to service_role;
-
-comment on table indonesian.cloze_mcq_item_distractors is
-  'Curated Indonesian filler-word strings for cloze_mcq. Per-cap 1:1. Decision G2 Group B.';
+-- §PR1.3 — Curated distractor tables — RETIRED (cap-v2 vocabulary cutover #161).
+-- Replaced by the `distractors` pointer table (curated MCQ wrong-option pointers
+-- resolved at runtime in byKind/item.ts → resolveDistractorMaps). The runner's
+-- distractor writers were removed in the same change, so these text-array tables
+-- have no remaining writer or reader. Dropped here: safe because the new runtime
+-- reader no longer reads them and the publish path no longer writes them
+-- (runtime-before-or-with the drop; the write-amputation makes it PGRST205-safe).
+drop table if exists indonesian.recognition_mcq_distractors cascade;
+drop table if exists indonesian.cued_recall_distractors cascade;
+drop table if exists indonesian.cloze_mcq_item_distractors cascade;
 -- ============================================================================
 -- PR 1 addendum — 7 typed satellite tables for PRs 2–4 (Decision A + B §3.9)
 -- These tables are empty until the per-PR re-publish populates them.

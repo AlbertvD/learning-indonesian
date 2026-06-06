@@ -49,6 +49,26 @@ export async function populateDistractors(
   return out
 }
 
+/**
+ * Seed curated distractors for ONE lesson (the publish-flow entry, Stage C after
+ * the capability stage). Pool(N) reads all lessons ≤ N from the DB, so seeding a
+ * single lesson is correct without re-seeding earlier lessons. Idempotent.
+ */
+export async function populateLessonDistractors(
+  supabase: CapabilitySupabaseClient,
+  lesson: LessonRef,
+  opts: SeedOptions & { embedder?: Embedder } = {},
+): Promise<LessonSeedResult> {
+  const { embedder, ...seedOpts } = opts
+  const [result] = await populateDistractors(
+    [lesson],
+    createDistractorStore(supabase),
+    embedder ?? createLocalEmbedder(),
+    seedOpts,
+  )
+  return result
+}
+
 /** List the published lessons as ascending `LessonRef`s (order_index = number). */
 export async function listLessons(supabase: CapabilitySupabaseClient): Promise<LessonRef[]> {
   const { data, error } = await supabase

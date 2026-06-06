@@ -19,6 +19,8 @@ import {
   runCapabilityStage,
   buildLintStagingCommand,
 } from './lib/pipeline/capability-stage'
+import { populateLessonDistractors } from './lib/pipeline/capability-stage/orchestrate'
+import { createSupabaseClient } from './lib/pipeline/capability-stage/adapter'
 
 export { buildLintStagingCommand }
 
@@ -119,6 +121,20 @@ async function main() {
   if (stageB.status !== 'ok') {
     console.error(`\nStage B did not complete cleanly for lesson ${lessonNumber} (status=${stageB.status}).`)
     process.exit(1)
+  }
+
+  // Stage C — vocabulary distractors (cap-v2): curated MCQ distractor pointers
+  // for this lesson's item caps. Reads the item caps Stage B wrote + Pool(N) from
+  // the DB, computes meaning embeddings (cached), and seeds the `distractors`
+  // pointer table. Idempotent (seed-once). Skipped on dry-run (loads the local
+  // embedding model + writes). Replaces the runner's retired distractor step.
+  if (!dryRun) {
+    const supabase = createSupabaseClient()
+    const stageC = await populateLessonDistractors(supabase, {
+      lessonId: stageA.lesson.id,
+      lessonNumber,
+    })
+    console.log('Stage C (distractors):', JSON.stringify(stageC.result))
   }
 }
 

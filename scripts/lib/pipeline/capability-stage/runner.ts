@@ -52,16 +52,11 @@ import {
   upsertLearningItemIdempotent,
   replaceDialogueClozes,
   replaceAffixedFormPairs,
-  fetchSeededDistractorCapIds,
-  upsertRecognitionDistractors,
-  upsertCuedRecallDistractors,
-  deleteItemDistractors,
   fetchLearningItemPosByNormalizedText,
   updateLearningItemPos,
   type CapabilityContentUnitInput,
   type CapabilityInput,
   type CapabilitySupabaseClient,
-  type ItemDistractorRow,
 } from './adapter'
 import { loadLesson as defaultLoadLesson, type LoadedLesson } from './loader'
 import { loadFromDb as defaultLoadFromDb, fetchDistractorPool as defaultFetchDistractorPool, loadPatternFromDb as defaultLoadPatternFromDb, loadDialogueFromDb as defaultLoadDialogueFromDb, fetchClozePool as defaultFetchClozePool, fetchAffixedPairsFromDb as defaultFetchAffixedPairsFromDb, type ItemDbResult, type PatternDbResult, type DialogueDbResult, type TypedAffixedPair } from './loadFromDb'
@@ -70,10 +65,8 @@ import { writePatternPath } from './patternPath'
 import { projectItemsFromTypedRows } from './projectors/vocab'
 import { projectAffixedCapabilities } from './projectors/affixedCapabilities'
 import { buildContentUnitsFromDb } from './projectors/contentUnits'
-import { generateItemDistractors, type GenerateFn, type DistractorInputItem, type ItemDistractorSet } from './generateItemDistractors'
+import { type GenerateFn, type DistractorInputItem } from './generateItemDistractors'
 import { itemSlug } from '@/lib/capabilities'
-import type { ItemCapForCoverageCheck } from './validators/itemCoverage'
-import type { DistractorSetRow } from './validators/itemDistractors'
 
 // CS1 (grammar_topics) moved back to lesson-stage (GT1) — lesson_sections
 // is Stage A's territory, and lesson-stage now owns the enricher that
@@ -455,10 +448,6 @@ export async function runCapabilityStage(
   // Item caps are written via upsertCapabilitiesSkipIfExists (INSERT ... ON CONFLICT
   // DO NOTHING): existing caps' FSRS state is never disturbed on re-publish.
 
-  // Resolve which normalized_text to force-regenerate (--regenerate flag).
-  const regenerateNormalizedText = input.regenerate?.kind === 'item'
-    ? itemSlug(input.regenerate.normalizedText)
-    : null
 
   // Write item learning_items + anchor contexts.
   const itemIdsByNormalizedText = new Map<string, string>()
@@ -556,145 +545,6 @@ export async function runCapabilityStage(
   }
   counts.capabilities = capabilityIdsByKey.size
 
-  // ---- 5c. Item distractors — generation gate + write. -------------------
-  // recognition_mcq_distractors is the canonical seeded-state signal.
-  // Caps already in the table are skipped. The --regenerate path deletes
-  // existing distractors for the target item before this check runs.
-  const itemCapIds = [...itemCapIdsByKey.values()]
-  const seededCapIds = await fetchSeededDistractorCapIds(supabase, itemCapIds)
-
-  // --regenerate: delete existing distractors for the target item first.
-  if (regenerateNormalizedText !== null) {
-    // Find the caps for this normalized_text (4 caps per item).
-    const targetItemRef = `learning_items/${regenerateNormalizedText}`
-    const targetCapIds = allItemCaps
-      .filter((cap) => cap.sourceRef === targetItemRef)
-      .map((cap) => itemCapIdsByKey.get(cap.canonicalKey))
-      .filter((id): id is string => id !== undefined)
-    if (targetCapIds.length > 0) {
-      await deleteItemDistractors(supabase, targetCapIds)
-      // Remove from seeded set so generation runs.
-      for (const id of targetCapIds) seededCapIds.delete(id)
-    }
-  }
-
-  // Determine which items need distractor generation (cap not yet seeded).
-  // Check ONLY the text_recognition cap — it is the canonical seeded signal:
-  // `fetchSeededDistractorCapIds` reads exclusively `recognition_mcq_distractors`,
-  // and cued_recall is written in lockstep, so a seeded recognition cap means the
-  // whole item is seeded. The other caps an item emits (l1_to_id_choice,
-  // meaning_recall, form_recall, and the audio caps) NEVER appear in
-  // recognition_mcq_distractors, so a `.some(unseeded)` over all caps was ALWAYS
-  // true → every item regenerated on every publish and never skipped (cost bug).
-  const itemsNeedingDistractors = itemProjection.perItemPlans.filter((plan) => {
-    const recognitionCap = plan.capabilities.find((c) => c.capabilityType === 'text_recognition')
-    if (!recognitionCap) return false
-    const capId = itemCapIdsByKey.get(recognitionCap.canonicalKey)
-    // Generate iff the recognition cap is brand-new (no id yet) or not yet seeded.
-    return capId === undefined || !seededCapIds.has(capId)
-  })
-
-  // Convert perItemPlans → DistractorInputItem format for the generator.
-  const distractorItems = itemsNeedingDistractors.map((plan) => ({
-    source_item_ref: plan.normalizedText,
-    item_type: plan.row.item_type,
-    indonesian_text: plan.row.indonesian_text,
-    l1_translation: plan.row.l1_translation,
-  }))
-
-  // Accumulate generated distractor sets for CS16 gate input.
-  // Declared outside the if block so the post-write gate can consume it.
-  const generatedDistractorSets = new Map<string, ItemDistractorSet>()
-
-  let itemDistractorSetsWritten = 0
-  if (distractorItems.length > 0) {
-    const generationResult = await generateItemDistractors(distractorItems, distractorPool, {
-      generateFn: hooks.generateFn,
-    })
-
-    // Capture generated sets for CS16 gate input (before writing to DB).
-    for (const [ref, distSet] of generationResult.distractorsBySourceItemRef) {
-      generatedDistractorSets.set(ref, distSet)
-    }
-
-    // Build per-table distractor rows: ONE row per item per table, keyed by
-    // the cap whose exercise the table serves.
-    //
-    //   recognition_mcq_distractors ← text_recognition cap
-    //     (recognition_mcq reads this table; text_recognition drives recognition_mcq)
-    //   cued_recall_distractors     ← l1_to_id_choice cap
-    //     (cued_recall builder reads this table; l1_to_id_choice is the primary
-    //     cued-recall cap — form_recall also serves cued_recall but l1_to_id_choice
-    //     is the direct cap, so we key on it per renderContracts.ts:70)
-    //   cloze_mcq_item_distractors  ← NOT written for items in this slice.
-    //     The 4 base item caps (text_recognition, l1_to_id_choice, meaning_recall,
-    //     form_recall) do NOT include a contextual_cloze cap, which is the cap
-    //     the cloze_mcq builder reads for item-sourced cloze. Deferred until the
-    //     item cloze cap is projected (likely Task 8 reader wiring).
-    //
-    // This satisfies the per-cap 1:1 schema invariant: capability_id is the PK
-    // in each distractor table; writing 4 rows per item keyed to non-matching
-    // cap types would create rows that the runtime builder can never resolve.
-    const distractorRows: ItemDistractorRow[] = []
-    for (const [sourceItemRef, distSet] of generationResult.distractorsBySourceItemRef) {
-      const matchingPlan = itemProjection.perItemPlans.find(
-        (p) => p.normalizedText === sourceItemRef,
-      )
-      if (!matchingPlan) continue
-
-      // recognition_mcq_distractors ← text_recognition cap
-      const textRecCap = matchingPlan.capabilities.find(
-        (cap) => cap.capabilityType === 'text_recognition',
-      )
-      const textRecCapId = textRecCap ? itemCapIdsByKey.get(textRecCap.canonicalKey) : undefined
-      if (textRecCapId) {
-        distractorRows.push({
-          capability_id: textRecCapId,
-          recognition: distSet.recognition_distractors_nl,
-          cued_recall: [],    // not used for this table — adapter writes recognition array
-          cloze: [],          // not used for this table
-        })
-      }
-
-      // cued_recall_distractors ← l1_to_id_choice cap
-      const l1ToIdCap = matchingPlan.capabilities.find(
-        (cap) => cap.capabilityType === 'l1_to_id_choice',
-      )
-      const l1ToIdCapId = l1ToIdCap ? itemCapIdsByKey.get(l1ToIdCap.canonicalKey) : undefined
-      if (l1ToIdCapId) {
-        distractorRows.push({
-          capability_id: l1ToIdCapId,
-          recognition: [],    // not used for this table
-          cued_recall: distSet.cued_recall_distractors_id,
-          cloze: [],          // not used for this table
-        })
-      }
-
-      // cloze_mcq_item_distractors: deferred — no contextual_cloze cap in the
-      // 4 base item caps emitted by projectItemsFromTypedRows in this slice.
-      // When the item cloze cap is added (Task 8), this block writes it.
-    }
-
-    if (distractorRows.length > 0) {
-      // Per-cap-1:1 writes: route each row to its target table.
-      // recognition rows (text_recognition caps) → recognition_mcq_distractors
-      const recognitionRowsToWrite = distractorRows
-        .filter((r) => r.recognition.length > 0)
-        .map((r) => ({ capability_id: r.capability_id, distractors: r.recognition }))
-      // cued_recall rows (l1_to_id_choice caps) → cued_recall_distractors
-      const cuedRecallRowsToWrite = distractorRows
-        .filter((r) => r.cued_recall.length > 0)
-        .map((r) => ({ capability_id: r.capability_id, distractors: r.cued_recall }))
-      // cloze_mcq_item_distractors: no rows in this slice (deferred — see comment above).
-
-      const recResult = await upsertRecognitionDistractors(supabase, recognitionRowsToWrite)
-      await upsertCuedRecallDistractors(supabase, cuedRecallRowsToWrite)
-      // itemDistractorSets is keyed to recognition table written count
-      // (the canonical seeded-state signal — if recognition has a row, cued_recall was also written).
-      itemDistractorSetsWritten = recResult.written
-    }
-  }
-  counts.itemDistractorSets = itemDistractorSetsWritten
 
   // ---- 5d. Pattern path (Slice 2 Task 6) — DB→DB grammar cutover. ----------
   // Runs BEFORE retire so the new pattern caps are in the emit set (not swept)
@@ -946,62 +796,6 @@ export async function runCapabilityStage(
     pos: plan.learningItemInput.pos ?? null,
   }))
 
-  // ---- CS15 (item distractor coverage) — per-cap distractor presence flag. --
-  // An item cap is considered "covered" if its capId was in seededCapIds before
-  // generation (already seeded on a prior run) OR if the item appears in
-  // generatedDistractorSets (newly generated this run). All 4 caps per item
-  // share coverage status because distractors are written atomically per item.
-  const itemCapsWithDistractorFlag: ItemCapForCoverageCheck[] = allItemCaps.map((cap) => {
-    const capId = itemCapIdsByKey.get(cap.canonicalKey)
-    const isSeededAlready = capId !== undefined && seededCapIds.has(capId)
-    const isGeneratedThisRun = generatedDistractorSets.has(
-      // sourceRef is 'learning_items/<normalizedText>'
-      cap.sourceRef.replace(/^learning_items\//, ''),
-    )
-    return {
-      capabilityKey: cap.canonicalKey,
-      normalizedText: cap.sourceRef.replace(/^learning_items\//, ''),
-      hasDistractors: isSeededAlready || isGeneratedThisRun,
-    }
-  })
-
-  // ---- CS16 (item distractor quality) — build DistractorSetRow[] for each ----
-  // generated set. Uses the distractorPool's normalized_texts as the in-pool set.
-  // Only newly generated sets are validated here (pre-existing seeded sets were
-  // checked on their own publish run; re-checking on every idempotent re-run
-  // would produce redundant noise).
-  const poolNormalizedTexts = new Set<string>([
-    ...distractorPool.map((p) => p.source_item_ref.toLowerCase()),
-    // Also include items written this run (becak ordering: in pool post-write).
-    ...[...itemIdsByNormalizedText.keys()].map((k) => k.toLowerCase()),
-  ])
-  const distractorSetRows: DistractorSetRow[] = []
-  for (const [sourceItemRef, distSet] of generatedDistractorSets) {
-    const plan = itemProjection.perItemPlans.find((p) => p.normalizedText === sourceItemRef)
-    if (!plan) continue
-    const textRecCap = plan.capabilities.find((c) => c.capabilityType === 'text_recognition')
-    if (textRecCap) {
-      distractorSetRows.push({
-        capabilityKey: textRecCap.canonicalKey,
-        answerText: sourceItemRef,
-        arrayName: 'recognition_distractors_nl',
-        distractors: distSet.recognition_distractors_nl as unknown as string[],
-        isIndonesian: false, // NL Dutch — not Indonesian
-      })
-    }
-    const l1ToIdCap = plan.capabilities.find((c) => c.capabilityType === 'l1_to_id_choice')
-    if (l1ToIdCap) {
-      distractorSetRows.push({
-        capabilityKey: l1ToIdCap.canonicalKey,
-        answerText: sourceItemRef,
-        arrayName: 'cued_recall_distractors_id',
-        distractors: distSet.cued_recall_distractors_id as unknown as string[],
-        isIndonesian: true, // Indonesian filler words
-      })
-    }
-    // cloze_distractors_id: deferred — no cloze cap in base 4 item caps (Task 8).
-  }
-  const distractorSetsInput = { sets: distractorSetRows, poolNormalizedTexts }
 
   // ---- CS17 (cross-lesson duplicates) — normalized texts written this run. ---
   const itemDuplicatesInput = {
@@ -1034,8 +828,6 @@ export async function runCapabilityStage(
     dialogueItemIds,
     // CS14-17: item kind gate inputs (assembled above from the item path).
     writtenItems,
-    itemCapsWithDistractorFlag,
-    distractorSets: distractorSetsInput,
     itemDuplicatesInput,
     // CS18: pattern coverage certification (Slice 2 Task 7) — only when the
     // pattern path ran. Certifies every written pattern has full per-type coverage.
