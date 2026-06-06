@@ -126,6 +126,16 @@ const EXPECTED_ITEM_PATH_FILES: ExpectedFile[] = [
   // Shipped in Task 4 (existsFails flipped true → false). Mode-2 (dialogue)
   // ONLY — the Mode-1 item carrier generator defers to the item-cloze slice.
   { relPath: 'generateClozeContexts.ts', task: 'Task 4 (Slice 3)', existsFails: false },
+
+  // --- cap-v2 Slice 1 (vocabulary strangler) — DB-native from line 1. ------
+  // The new vocabulary module + shared embeddings service. Disk-free by
+  // construction (the model cache lives inside transformers.js, not our code);
+  // existsFails:true while a file is unbuilt so the suite stays green until it
+  // lands. The non-allowlisted walk below enforces disk-freeness regardless.
+  { relPath: 'vocabulary/selectDistractors.ts', task: 'cap-v2 Slice 1', existsFails: false },
+  { relPath: 'shared/embeddings.ts', task: 'cap-v2 Slice 1', existsFails: false },
+  { relPath: 'vocabulary/selectDistractors.writer.ts', task: 'cap-v2 Slice 1 (writer)', existsFails: true },
+  { relPath: 'orchestrate.ts', task: 'cap-v2 Slice 1 (publish seam)', existsFails: true },
 ]
 
 // ---------------------------------------------------------------------------
