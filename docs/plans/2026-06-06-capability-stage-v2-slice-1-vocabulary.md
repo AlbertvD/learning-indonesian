@@ -1,20 +1,20 @@
 ---
 status: approved
 parent: docs/plans/2026-06-06-capability-stage-v2.md   # umbrella (approved)
-reviewed_by: [architect, data-architect]   # architect APPROVED (round 2); data-architect READY (round 3) — 2026-06-06
+reviewed_by: [architect, data-architect]   # design APPROVED both; strangler-to-prod go-live seam ruled + framing corrected 2026-06-06 (round 4)
 implementation: null
 ---
 
 # Capability Stage v2 — Slice 1: `vocabulary_src`
 
-The first vertical slice of the v2 redesign (umbrella §9). Delivers the vocabulary capabilities end-to-end **and** the shared substrate the later slices reuse. Built **redesign-in-place**: a clean DB-native capability-stage generator on top of the untouched runtime + Lesson Stage.
+The first vertical slice of the v2 redesign (umbrella §9). Delivers the vocabulary capabilities **end-to-end, to production**, **and** the shared substrate the later slices reuse. Built as a **strangler**: a clean DB-native vocabulary pipeline becomes the **live writer** for all `source_kind=item` capabilities, replacing the existing runner's item branch in one cutover commit; the existing `runCapabilityStage` runner keeps emitting the other source kinds (dialogue_line, pattern, affixed_form_pair) until each later slice peels its kind off. The **Lesson Stage is untouched**; the **runtime reader** (`byKind/item.ts`) and the **runner's item branch** are both cut over in this slice (§7). This is the target per CONTEXT.md ("each content origin gets its own separate pipeline … separation stops at the shared capability table") — not the inherit-the-runner anti-pattern: the new module is built clean DB-native from the first line and the runner *loses* its item branch to it.
 
 > **Operating context (CLAUDE.md):** build-stage, single learner, disposable data. No live-system safety machinery — truncate and rebuild freely. Decisions below are sized for *simplicity first* (CLAUDE.md "Minimum Mechanism"); this spec deliberately strips the umbrella's live-system apparatus.
 
 ## 1. Scope
 
 **In:** vocabulary capabilities (7 types), their MCQ/typed/dictation/cloze exercises + distractors, the cumulative-pool selection model, the local embedding service, the per-content-type module skeleton, and the shared identity/key/level layer.
-**Out (later slices):** dialogue_line, grammar_pattern, word_form_pair generation. Those capabilities simply don't exist in the catalog until their slices land (fine — nobody's using the app).
+**Out (later slices):** dialogue_line, grammar_pattern, word_form_pair generation. Under the strangler, those capabilities **keep being emitted by the existing runner** during this slice — they remain in the catalog, unchanged; this slice does not touch them. Each later slice migrates its kind off the runner into its own clean pipeline.
 
 ## 2. Capability identity — RESOLVED (band-aid-checked)
 
@@ -113,16 +113,34 @@ The runtime cascade is fully enumerable and **all its callers are vocab MCQs Sli
 
 ## 5. Module structure — RESOLVED
 
-Per-content-type vertical sub-pipelines in one deep module; the slicing falls out of the structure (umbrella §9). Built **clean / DB-native from the first line** (no staging reads — the no-disk property is true by construction, not retrofitted); do **not** inherit the mid-cutover #98 runner.
+Per-content-type vertical sub-pipelines in one deep module; the slicing falls out of the structure (umbrella §9). Built **clean / DB-native from the first line** (no staging reads); the existing `runner.ts` is already the shipped no-disk Slice-5b runner, so "don't inherit" governs **module shape** (build the new tree clean), not cutover ordering. Stays under `scripts/lib/pipeline/capability-stage/` for this slice — `shared/` is reused by later slices that still live beside the runner; any top-level per-origin dir rename is end-of-program cleanup, not now.
 
 ```
 scripts/lib/pipeline/capability-stage/
 ├── orchestrate.ts        # thin: publish(contentType) | publishLesson(lessonId)
 ├── shared/               # db · canonicalKey+level map · idempotent upsert · embeddings · gate framework
-└── vocabulary/           # read → project → select-distractors → select-cloze → write → verify
+└── vocabulary/           # read → project → select-distractors → select-cloze → audio-gate → write → verify
 ```
 
 `publish('vocabulary')` walks lessons ascending so Pool(N) is complete; `publishLesson(N)` selects against the live ≤N pool.
+
+**no-disk enforcement:** the new module is no-disk **by gate, not by assertion** — extend `scripts/lib/pipeline/capability-stage/__tests__/enforcement/noDiskReads.test.ts` to cover the new `vocabulary/` + `shared/` paths in this slice (§5 "no-disk by construction" is otherwise an unenforced claim — architect WARNING).
+
+**Module spec:** create `docs/current-system/modules/capability-stage-vocabulary.md` (or update the capability-stage spec) in the landing PR. §5 Seams = upstream lesson-content tables (Stage Contract); sibling = the shrunk `runCapabilityStage` (non-vocab kinds) sharing only `learning_capabilities`; downstream = the runtime reader `byKind/item.ts`.
+
+### 5a. Writer seam / publish invocation — RESOLVED (architect round 4)
+
+The runner's **item branch is scattered**, not one call: item projection (`projectItemsFromTypedRows`, `runner.ts:211`), item-cap write (`upsertCapabilitiesSkipIfExists`, `:538`), learning_items+anchor (`:464-475`), DB-native POS backfill (`:489-533`), item distractor gen+write (`:559-697`, incl. `fetchSeededDistractorCapIds:564`, `deleteItemDistractors:575`, `upsertRecognitionDistractors`/`upsertCuedRecallDistractors:690-691`), item junction rows (`:767-797`), CS14-17 gate inputs (`:943-1011`). The strangler **amputates the whole item branch** out of `runner.ts` into the new `vocabulary/` module — it is *removed*, not filtered (a `source_kind` runtime filter would leave the item code resident = shallow-module drift, contra CONTEXT.md). What remains in `runner.ts` is exactly the non-item branch (pattern, dialogue cloze, affixed).
+
+**Publish call shape** (`publish-approved-content.ts`, replacing the single Stage B call):
+```ts
+const stageA   = await runLessonStage({ lessonNumber, dryRun: false })
+const stageB   = await runCapabilityStage({ lessonNumber, lessonId: stageA.lesson.id, dryRun, regenerate }) // non-vocab kinds (runner shrunk of its item branch)
+const stageVoc = await orchestrate.publishLesson(stageA.lesson.id, { lessonNumber, dryRun, regenerate })     // vocabulary (new module)
+```
+Order **runner-first, vocab-second** (item rows are independent today; keeps a stable direction for any future cross-kind reference). `runCapabilityStage` stays the entry for non-vocab kinds and is deleted only at the program endpoint when its last kind peels off.
+
+**No coexistence window for item caps.** The runner's item-branch removal and the new pipeline's first live run **ride the same commit** — `UNIQUE(source_ref, capability_type)` is the writer-bug backstop, **not** a license for both writers to emit item caps in one publish (they disagree on satellite rows — the runner writes the old text-array distractor tables, the new pipeline writes the `distractors` pointer table). Safe because vocab keeps its live `cap:v1:` keys + live type strings (the cosmetic rename stays deferred, §3).
 
 ## 6. Supabase Requirements
 
@@ -157,15 +175,18 @@ scripts/lib/pipeline/capability-stage/
 
 ## 7. Rollout / testing
 - One branch, build clean each commit; intermediate states may break the deployed app (nobody's there) but tests stay green.
-- **Cutover commit (one commit — the order-sensitive step).** These ride together so there is no intermediate broken state: (1) the new `fetchDistractors` reader (§4a); (2) `recognitionMcq` + `cuedRecall` + `listeningMcq` rewired to it, their `pickDistractorCascade` calls removed; (2b) the `BuilderInputFor` curated-distractor input type updated — the two old `Map<string,string[]>` keys (`curatedRecognitionDistractors`/`curatedCuedRecallDistractors`) → the unified resolved shape (DA round-3 I-1); (3) the `renderContracts.ts` `cloze_mcq` edit (remove the item leg) + `clozeMcq.ts` item-path deletion + dropping its `@/lib/distractors` import (`clozeMcq.ts:17`); (4) delete `src/lib/distractors/` + the `semanticGroups.ts` shim + its test; (5) drop `recognition_mcq_distractors` / `cued_recall_distractors` / `cloze_mcq_item_distractors`. Deploy **runtime-before-or-with** the table drops — never drop-first (PGRST205 / silent pool fallback, the Slice-4a lesson). The additive DDL (table fold, `distractors`, `item_embeddings`) is migrate-anytime.
-- **Pre-merge gate:** `make migrate-idempotent-check` (migration.sql applied twice = green) + `make pre-deploy`.
-- Acceptance gate **must include a real publish** (health-checks + idempotent-check never exercise the publish path — the Slice-4a lesson), down to a `capability_review_events` row landing after answering — **for each exercise family**, explicitly including `recognise_meaning_from_audio` (exercises the new listening-MCQ curated leg, §4a / DA M1) and item `contextual_cloze` (the never-yet-run render path, §4b) — per `feedback_answer_log_check`.
-- Tests: identity boot-assertion fires on a missing contract/level; pool-relative coverage on L1 function words; orthographic form-distractors; meaning-distractor synonym exclusion; idempotent re-publish = zero delta.
+- **Additive-first (migrate-anytime, no ordering constraint):** the schema fold + `distractors` + `item_embeddings` + `UNIQUE(source_ref, capability_type)` (all already committed), the embedding service + `item_embeddings` population, and the `vocabulary/select-distractors` writer. The writer must complete a **full ascending publish pass populating `distractors` BEFORE the cutover commit** — else a switched reader hits empty curated rows.
+- **Writer go-live commit (the strangler — §5a).** Amputate the runner's entire **item branch** (incl. its distractor writers `upsertRecognitionDistractors`/`upsertCuedRecallDistractors` `runner.ts:690-691`, `fetchSeededDistractorCapIds:564`, `deleteItemDistractors:575`) and bring the new `vocabulary/` module live as the item-cap writer, **same commit**. No publish exists where both emit item caps.
+- **Cutover commit (one commit — the order-sensitive step).** These ride together so there is no intermediate broken state: (1) the new `fetchDistractors` reader — queries `distractors(capability_id,item_id)`, batch-loads items, **resolves pointers → strings** and populates the *same* `curatedRecognitionDistractors`/`curatedCuedRecallDistractors` `Map<string,string[]>` keys (so builders are unchanged; §4a); replaces `fetchRecognitionMcqDistractors`+`fetchCuedRecallDistractors` (`byKind/item.ts:112-121`, callsite `:150-151`); (2) `recognitionMcq` + `cuedRecall` rewired to the resolved maps, their `pickDistractorCascade` calls removed; **`listeningMcq` newly given a curated read** — today `byType/listeningMcq.ts` has **no** curated path at all (the whole function is cascade-only; the earlier `:37` cite was wrong), so mirror `recognitionMcq.ts:16-25`; (2b) the `BuilderInputFor` note is a **comment fix only** — the two map keys + their `Map<string,string[]>` types do **not** change (DA round-4: the reader resolves before populating); (3) the `renderContracts.ts` `cloze_mcq` edit (remove the item leg, `:126`) + `clozeMcq.ts` item-path deletion + dropping its `@/lib/distractors` import (`clozeMcq.ts:17`); (4) delete `src/lib/distractors/` + the `semanticGroups.ts` shim + its test; (5) `drop table if exists … recognition_mcq_distractors / cued_recall_distractors / cloze_mcq_item_distractors cascade;` in `migration.sql`. Deploy **runtime-before-or-with** the table drops — never drop-first (PGRST205 / silent pool fallback, the Slice-4a lesson).
+  - _(The writer go-live and the reader cutover MAY be the same commit if the `distractors` populate pass has already run; the invariant is: populate → reader+writer swap together → drops, never a window where a live writer/reader references a dropped table.)_
+- **Pre-merge gate:** `make migrate-idempotent-check` (migration.sql applied twice = green; the new `drop table if exists` keeps it idempotent) + `make pre-deploy`.
+- **Acceptance — fresh lesson (lesson 11).** Acceptance is a **real end-to-end publish of a brand-new lesson** (photos → OCR → catalog → staging → Lesson Stage → the new vocab pipeline), then open a session and confirm a `capability_review_events` row lands **for each vocab exercise family** — explicitly including `recognise_meaning_from_audio` (the new listening-MCQ curated leg) and item `contextual_cloze` (the never-yet-run render path) — per `feedback_answer_log_check`. A fresh lesson also proves the **fresh-lesson-safe** path (no prior capability/learner state for its words). Health-checks + idempotent-check never exercise the publish path (the Slice-4a lesson), so this real publish is mandatory, not optional.
+- Tests: identity boot-assertion fires on a missing contract/level; pool-relative coverage on L1 function words; orthographic form-distractors; meaning-distractor synonym exclusion; idempotent re-publish = zero delta; the extended `noDiskReads` gate covers the new module.
 
 ## 8. Open questions
-**All resolved.** distractors triangle → §4a · vocab cloze → §4b · audio → §4c · `lib/distractors` retirement → §4d · gate set → §6a. _Tracked end-of-v2 (not Slice 1):_ split the cloze rows out of `item_contexts` into a precise typed table (ADR 0009) once the pool + audio jobs move off it.
+**All resolved.** distractors triangle → §4a · vocab cloze → §4b · audio → §4c · `lib/distractors` retirement → §4d · gate set → §6a · writer seam / publish invocation → §5a. _Tracked end-of-v2 (not Slice 1):_ split the cloze rows out of `item_contexts` into a precise typed table (ADR 0009) once the pool + audio jobs move off it.
 
-Spec is **design-complete** → ready for `architect` + `data-architect` review (data-model spec ⇒ both required, CLAUDE.md) before `status: approved`.
+Spec is **approved** (architect + data-architect, round 4 — see §9). Acceptance is a fresh-lesson (lesson 11) end-to-end publish (§7).
 
 ## 9. Review history
 - 2026-06-06: identity layer (§2) designed via grill, then band-aid-checked — `staff-engineer` **SOUND**, `data-architect` **no blocker** (C1/M1/M2/M3 guardrails folded into §2). Full spec unreviewed → `status: draft`. Before `approved`: resolve §8, then dispatch `architect` + `data-architect` (data-model spec ⇒ both required, CLAUDE.md).
@@ -175,3 +196,10 @@ Spec is **design-complete** → ready for `architect` + `data-architect` review 
 - 2026-06-06 **full-spec dual review round 1** — `architect` NEEDS REVISION, `data-architect` NEEDS REVISION; both confirmed the **design is sound + correctly sized** (passes gate #5 both ways) and **type-as-source reversal re-confirmed sound** (DA). All findings were spec-accuracy / explicit-scope, now fixed: cloze keeps `contextual_cloze` + defers the rename (DA C1); RLS-fold rationale corrected (the bulk-DROP loop was removed 2026-05-08 — both CRITICAL/M1); `semanticGroups.ts` has a test importer, added to the delete set (architect CRITICAL); reader cites repointed to `byKind/item.ts` (architect mis-stated the file length — verified, lines exist); `lib/distractors` retirement strikes its target-arch entry; §7 gained cutover order + `migrate-idempotent-check`/`pre-deploy` + audio/cloze liveness checks; `dialogue_clozes` Slice-2 note. → round 2.
 - 2026-06-06 **dual review round 2** — `architect` **APPROVED** (round-1 fixes verified against code; 2 non-blocking impl-PR warnings folded into §4d: strike ALL target-arch `lib/distractors` refs + drop the `clozeMcq.ts:17` import). `data-architect` **NEEDS REVISION** (round 3) on two items, now fixed: §4a names the concrete `fetchDistractors` reader + the `listeningMcq` curated wiring; §7 enumerates the full one-commit cutover bound set. → data-architect round 3.
 - 2026-06-06 **data-architect round 3 — READY / approved.** Both round-2 items verified resolved against code, no new drift, gate set holds; one non-blocking INFO (the `BuilderInputFor` type update rides in the cutover commit — folded into §7). With the architect's round-2 APPROVED, the spec is now **`status: approved`, `reviewed_by: [architect, data-architect]`.** Next phase: BUILD.
+- 2026-06-06 **round 4 — go-live seam (strangler-to-prod).** Operator decision: ship vocabulary as ONE vertical slice **to production** (not the earlier "build unwired, repoint at Slice 4" — that ruling is superseded). `architect` + `data-architect` ruled on the writer go-live seam; **DESIGN APPROVED**, framing corrected here:
+  - **Stale-premise correction:** `runner.ts` is already the shipped no-disk Slice-5b runner — "don't inherit" governs module *shape*, not cutover ordering (§5).
+  - **§5a added** — the writer seam: the runner's scattered **item branch is amputated** (not filtered) into the new `vocabulary/` module; concrete `publish-approved-content.ts` call shape (runner-first, vocab-second); one-commit go-live, no coexistence window.
+  - **§7 CRITICAL fix** — the cutover must also strike the **runner's distractor writers** (`upsertRecognitionDistractors`/`upsertCuedRecallDistractors`, `runner.ts:690-691` + `fetchSeededDistractorCapIds:564`/`deleteItemDistractors:575`) in the same commit as the table drops, else a surviving writer → PGRST205 → all publishing blocked.
+  - **Triangle confirmed** (DA): `fetchDistractors` resolves pointers→strings into the *unchanged* `Map<string,string[]>` builder interface (the `BuilderInputFor` change is a comment fix, not a type rename); `listeningMcq` has **no** curated path today (whole function, not `:37`) — wire it. RESTRICT/`--regenerate` no deadlock; item-cloze-via-`item_contexts` sound; no committed-migration defect.
+  - **§1 framing reconciled** (Lesson Stage untouched; runtime reader + runner item branch cut over; non-vocab kinds stay on the runner — not absent). **no-disk gate** extended to the new module (§5); **module spec** to be created in the landing PR (§5).
+  - **Acceptance = fresh lesson 11** end-to-end publish (§7). Next phase: BUILD.

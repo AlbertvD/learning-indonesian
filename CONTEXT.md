@@ -42,7 +42,7 @@ The **mode** column is the pedagogically meaningful axis (receptive → producti
 | `text_recognition` | item | recognise | See the written Indonesian word → know its meaning in the learner's language. (`makan` seen → "eten".) |
 | `audio_recognition` | item | recognise | Hear the spoken Indonesian word → know its meaning. (hear `makan` → "eten".) |
 | `meaning_recall` | item | recall meaning | Given the Indonesian word, recall its meaning *unaided* (state it, not choose from options). |
-| `l1_to_id_choice` | item | recall meaning | Given the meaning in the learner's language, **choose** the correct Indonesian word from options. (Keeps legacy `skillType: meaning_recall`.) |
+| `l1_to_id_choice` | item | recognise | Given the meaning in the learner's language, **choose** the correct Indonesian word from options — a receptive multiple-choice recognition. (cap-v2 #161: corrected from the legacy `meaning_recall` mis-level; `deriveSkillTypeFromCapabilityType` now returns `recognition`, the receptive-before-productive sequencing key per ADR 0007.) |
 | `form_recall` | item | produce form | Given the meaning in the learner's language, **type** the Indonesian written form unaided. ("eten" → type `makan`.) |
 | `dictation` | item | produce form | Hear the spoken Indonesian word → **type** its written form. (hear `makan` → type `makan`.) |
 | `contextual_cloze` | item + dialogue_line | produce form | Fill the blanked word in a sentence or dialogue line — produce the correct form from context. |
