@@ -11,37 +11,51 @@ export function buildListeningMCQ(input: BuilderInputFor<'listening_mcq'>): Buil
   // learningItem and primaryMeaning are non-null by contract (projector narrows).
   const correctAnswer = input.primaryMeaning.translation_text
 
-  const pool: DistractorCandidate[] = input.poolItems
-    .filter(i => i.id !== input.learningItem.id)
-    .flatMap(i => {
-      const ms = input.poolMeaningsByItem.get(i.id) ?? []
-      const t = (ms.find(m => m.translation_language === input.userLanguage && m.is_primary)
-        ?? ms.find(m => m.translation_language === input.userLanguage))?.translation_text
-      if (!t || t === correctAnswer) return []
-      return [{
-        id: i.id,
-        option: t,
-        itemType: i.item_type,
-        pos: i.pos ?? null,
-        level: i.level,
-        semanticGroup: getSemanticGroup(t, input.userLanguage),
-      }]
-    })
+  // Prefer curated distractors (cap-v2): audio_recognition caps carry meaning
+  // distractors in the same map as recognition_mcq. Fall back to the pool
+  // cascade when a cap has no curated row (rare — undersupplied Pool(N)).
+  const capabilityId = input.block?.capabilityId
+  const curatedRow = capabilityId
+    ? (input.curatedRecognitionDistractors.get(capabilityId) ?? null)
+    : null
 
-  const target = {
-    itemType: input.learningItem.item_type,
-    pos: input.learningItem.pos ?? null,
-    level: input.learningItem.level,
-    semanticGroup: getSemanticGroup(correctAnswer, input.userLanguage),
-  }
-  const distractors = pickDistractorCascade(target, pool, 3, correctAnswer)
-  if (distractors.length < 3) {
-    return {
-      kind: 'fail',
-      reasonCode: 'no_distractor_candidates',
-      message: `cascade returned only ${distractors.length}/3 distractors for item ${input.learningItem.id}`,
-      payloadSnapshot: { learningItemId: input.learningItem.id, poolSize: pool.length, distractorsFound: distractors.length },
+  let distractors: string[]
+  if (curatedRow && curatedRow.length >= 3) {
+    distractors = curatedRow.slice(0, 3)
+  } else {
+    const pool: DistractorCandidate[] = input.poolItems
+      .filter(i => i.id !== input.learningItem.id)
+      .flatMap(i => {
+        const ms = input.poolMeaningsByItem.get(i.id) ?? []
+        const t = (ms.find(m => m.translation_language === input.userLanguage && m.is_primary)
+          ?? ms.find(m => m.translation_language === input.userLanguage))?.translation_text
+        if (!t || t === correctAnswer) return []
+        return [{
+          id: i.id,
+          option: t,
+          itemType: i.item_type,
+          pos: i.pos ?? null,
+          level: i.level,
+          semanticGroup: getSemanticGroup(t, input.userLanguage),
+        }]
+      })
+
+    const target = {
+      itemType: input.learningItem.item_type,
+      pos: input.learningItem.pos ?? null,
+      level: input.learningItem.level,
+      semanticGroup: getSemanticGroup(correctAnswer, input.userLanguage),
     }
+    const poolDistractors = pickDistractorCascade(target, pool, 3, correctAnswer)
+    if (poolDistractors.length < 3) {
+      return {
+        kind: 'fail',
+        reasonCode: 'no_distractor_candidates',
+        message: `cascade returned only ${poolDistractors.length}/3 distractors for item ${input.learningItem.id}`,
+        payloadSnapshot: { learningItemId: input.learningItem.id, poolSize: pool.length, distractorsFound: poolDistractors.length },
+      }
+    }
+    distractors = poolDistractors
   }
   const exerciseItem = {
     learningItem: input.learningItem,

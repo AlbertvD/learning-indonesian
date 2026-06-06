@@ -61,6 +61,42 @@ function meaningsFromItem(item: LearningItem): ItemMeaning[] {
 }
 
 /**
+ * Resolve curated distractor pointer rows into the two `capability_id → string[]`
+ * maps the builders consume (cap-v2). A pointer's string form depends on the
+ * capability type: meaning MCQs (text_recognition, audio_recognition) render the
+ * distractor item's L1 gloss (userLanguage); cued_recall (l1_to_id_choice)
+ * renders its Indonesian form. Pure — no I/O; the fetcher supplies the looked-up
+ * rows so this stays unit-testable.
+ */
+export function resolveDistractorMaps(
+  rows: ReadonlyArray<{ capability_id: string; item_id: string }>,
+  capTypeById: ReadonlyMap<string, string>,
+  itemById: ReadonlyMap<string, { base_text: string; translation_nl: string | null; translation_en: string | null }>,
+  userLanguage: 'nl' | 'en',
+): { curatedRecognitionDistractors: Map<string, string[]>; curatedCuedRecallDistractors: Map<string, string[]> } {
+  const curatedRecognitionDistractors = new Map<string, string[]>()
+  const curatedCuedRecallDistractors = new Map<string, string[]>()
+  const push = (m: Map<string, string[]>, key: string, val: string): void => {
+    const list = m.get(key) ?? []
+    list.push(val)
+    m.set(key, list)
+  }
+  for (const { capability_id, item_id } of rows) {
+    const type = capTypeById.get(capability_id)
+    const item = itemById.get(item_id)
+    if (!type || !item) continue
+    if (type === 'text_recognition' || type === 'audio_recognition') {
+      const meaning = (userLanguage === 'nl' ? item.translation_nl : item.translation_en)?.trim()
+      if (meaning) push(curatedRecognitionDistractors, capability_id, meaning)
+    } else if (type === 'l1_to_id_choice') {
+      const form = item.base_text?.trim()
+      if (form) push(curatedCuedRecallDistractors, capability_id, form)
+    }
+  }
+  return { curatedRecognitionDistractors, curatedCuedRecallDistractors }
+}
+
+/**
  * Item bucket: wave-1 + wave-2 + distractor-pool pipeline. Item-not-found and
  * item-inactive failure cases are item-specific so they live inside this
  * fetcher. Mutates `result` so the per-block ordering matches the input bucket.
@@ -106,18 +142,22 @@ export async function fetchForItemBlocks(
     return (data ?? []) as ItemAnswerVariant[]
   }
 
-  // Chunked: capability_ids grow with session size (one per block). Route through
-  // chunkedIn for consistency with fetchLearningItemsById and to guard against
-  // Kong's 8 KB request-line buffer ceiling on large sessions.
-  async function fetchRecognitionMcqDistractors(capabilityIds: string[]): Promise<Array<{capability_id: string; distractors: string[]}>> {
-    return chunkedIn<{capability_id: string; distractors: string[]}>(
-      'recognition_mcq_distractors', 'capability_id', capabilityIds, undefined, client,
+  // Curated distractors (cap-v2): read the `distractors` pointer table and the
+  // capability types, then resolve each item_id pointer to the wrong-option
+  // string the builder renders — the L1 gloss for meaning MCQs
+  // (text_recognition + audio_recognition) or the Indonesian form for cued_recall
+  // (l1_to_id_choice). Replaces the old text-array tables
+  // (recognition_mcq_distractors / cued_recall_distractors), dropped in the
+  // vocabulary cutover. Chunked through chunkedIn (Kong 8 KB request-line guard).
+  async function fetchDistractorPointerRows(capabilityIds: string[]): Promise<Array<{capability_id: string; item_id: string}>> {
+    return chunkedIn<{capability_id: string; item_id: string}>(
+      'distractors', 'capability_id', capabilityIds, q => q.select('capability_id, item_id'), client,
     )
   }
 
-  async function fetchCuedRecallDistractors(capabilityIds: string[]): Promise<Array<{capability_id: string; distractors: string[]}>> {
-    return chunkedIn<{capability_id: string; distractors: string[]}>(
-      'cued_recall_distractors', 'capability_id', capabilityIds, undefined, client,
+  async function fetchCapabilityTypes(capabilityIds: string[]): Promise<Array<{id: string; capability_type: string}>> {
+    return chunkedIn<{id: string; capability_type: string}>(
+      'learning_capabilities', 'id', capabilityIds, q => q.select('id, capability_type'), client,
     )
   }
 
@@ -144,19 +184,21 @@ export async function fetchForItemBlocks(
   const itemIds = items.map(i => i.id)
   // Collect capability_ids from all item blocks for curated-distractor fetch.
   const capabilityIds = [...new Set(itemBlocks.map(b => b.block.capabilityId))]
-  const [contexts, answerVariants, recognitionMcqRows, cuedRecallRows] = await Promise.all([
+  const [contexts, answerVariants, distractorRows, capTypeRows] = await Promise.all([
     fetchContexts(itemIds),
     fetchAnswerVariants(itemIds),
-    fetchRecognitionMcqDistractors(capabilityIds),
-    fetchCuedRecallDistractors(capabilityIds),
+    fetchDistractorPointerRows(capabilityIds),
+    fetchCapabilityTypes(capabilityIds),
   ])
 
-  // Build curated-distractor maps: capability_id → string[].
-  const curatedRecognitionDistractors = new Map<string, string[]>(
-    recognitionMcqRows.map(r => [r.capability_id, r.distractors]),
-  )
-  const curatedCuedRecallDistractors = new Map<string, string[]>(
-    cuedRecallRows.map(r => [r.capability_id, r.distractors]),
+  // Resolve distractor pointers → wrong-option strings (cap-v2). Fetch the
+  // pointed-at items, then map each pointer to the gloss or form per cap type.
+  const distractorItemIds = [...new Set(distractorRows.map(r => r.item_id))]
+  const distractorItems = await fetchLearningItemsById(distractorItemIds)
+  const capTypeById = new Map(capTypeRows.map(r => [r.id, r.capability_type]))
+  const distractorItemById = new Map(distractorItems.map(i => [i.id, i]))
+  const { curatedRecognitionDistractors, curatedCuedRecallDistractors } = resolveDistractorMaps(
+    distractorRows, capTypeById, distractorItemById, userLanguage,
   )
 
   // Distractor pool: derived from the lessons the block items' contexts
