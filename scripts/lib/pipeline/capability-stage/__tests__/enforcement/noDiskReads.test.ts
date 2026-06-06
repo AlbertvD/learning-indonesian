@@ -133,8 +133,11 @@ const EXPECTED_ITEM_PATH_FILES: ExpectedFile[] = [
   // existsFails:true while a file is unbuilt so the suite stays green until it
   // lands. The non-allowlisted walk below enforces disk-freeness regardless.
   { relPath: 'vocabulary/selectDistractors.ts', task: 'cap-v2 Slice 1', existsFails: false },
+  { relPath: 'vocabulary/planDistractors.ts', task: 'cap-v2 Slice 1', existsFails: false },
+  { relPath: 'vocabulary/seedDistractors.ts', task: 'cap-v2 Slice 1 (writer)', existsFails: false },
   { relPath: 'shared/embeddings.ts', task: 'cap-v2 Slice 1', existsFails: false },
-  { relPath: 'vocabulary/selectDistractors.writer.ts', task: 'cap-v2 Slice 1 (writer)', existsFails: true },
+  // Built next: the supabase-backed store (DB-only, no disk) + the publish seam.
+  { relPath: 'vocabulary/store.ts', task: 'cap-v2 Slice 1 (store impl)', existsFails: true },
   { relPath: 'orchestrate.ts', task: 'cap-v2 Slice 1 (publish seam)', existsFails: true },
 ]
 
