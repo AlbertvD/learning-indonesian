@@ -10,6 +10,7 @@ import { describe, it, expect } from 'vitest'
 import {
   selectFormDistractors,
   selectMeaningDistractors,
+  withPosFallback,
 } from '../../vocabulary/selectDistractors'
 
 describe('selectFormDistractors', () => {
@@ -90,5 +91,35 @@ describe('selectMeaningDistractors', () => {
     const chosen = selectMeaningDistractors(answer, candidates, 3, { synonymThreshold: 0.85 })
 
     expect(chosen.map((c) => c.itemId)).toEqual(['i-fiets'])
+  })
+})
+
+describe('withPosFallback', () => {
+  const pool = [
+    { itemId: 'n1', pos: 'noun' },
+    { itemId: 'n2', pos: 'noun' },
+    { itemId: 'n3', pos: 'noun' },
+    { itemId: 'v1', pos: 'verb' },
+    { itemId: 'a1', pos: 'adjective' },
+  ]
+
+  it('returns only same-POS candidates when they suffice (no relaxation)', () => {
+    // answer is a noun; 3 same-POS candidates ≥ needed=3 → never widen to verbs/adjs.
+    const set = withPosFallback('noun', pool, 3)
+    expect(set.map((c) => c.itemId).sort()).toEqual(['n1', 'n2', 'n3'])
+  })
+
+  it('relaxes to the full pool when same-POS candidates are undersupplied', () => {
+    // answer is a verb; only 1 verb candidate < needed=3 → relax POS, hand the
+    // whole pool to the ranker (closed-class function words need this rung).
+    const set = withPosFallback('verb', pool, 3)
+    expect(set.map((c) => c.itemId).sort()).toEqual(['a1', 'n1', 'n2', 'n3', 'v1'])
+  })
+
+  it('treats a null answer POS as already-relaxed (returns the full pool)', () => {
+    // An item whose POS the Haiku backfill could not classify can't anchor a
+    // same-POS filter — fall straight through to the full pool.
+    const set = withPosFallback(null, pool, 3)
+    expect(set.length).toBe(5)
   })
 })

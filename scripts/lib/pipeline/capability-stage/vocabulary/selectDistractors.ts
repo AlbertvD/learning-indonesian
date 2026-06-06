@@ -60,6 +60,30 @@ export function selectFormDistractors(
     .map((ranked) => ranked.c)
 }
 
+/**
+ * The POS rung of the degradation ladder (spec §4): prefer same-POS candidates,
+ * but relax to the full pool when they are undersupplied. A mixed-POS distractor
+ * set is trivially easy (a noun answer with verb options), so same-POS is kept
+ * whenever it can supply `needed`; only closed-class function words (which have
+ * few same-POS peers in Pool(N)) fall through to the relax-POS rung.
+ *
+ * The "relax band" (frequency) rung named in the spec is omitted — there is no
+ * frequency data source (see `selectFormDistractors`). So the ladder is
+ * same-POS → relax-POS → (the ranker then takes min(k, available)).
+ *
+ * A null `answerPos` (the Haiku backfill could not classify the answer) cannot
+ * anchor a same-POS filter, so it falls straight through to the full pool.
+ */
+export function withPosFallback<T extends { pos: string | null }>(
+  answerPos: string | null,
+  pool: T[],
+  needed: number,
+): T[] {
+  if (answerPos == null) return pool
+  const samePos = pool.filter((c) => c.pos === answerPos)
+  return samePos.length >= needed ? samePos : pool
+}
+
 /** Default cosine above which a candidate gloss is treated as a synonym of the
  *  answer (≈ a correct answer, not a distractor). Spec §4 start point ~0.85;
  *  tuned on real L1 cases. */
