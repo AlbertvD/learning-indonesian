@@ -46,9 +46,10 @@ export interface DialogueLineInput {
   speaker: string | null
 }
 
-/** The valid skip reasons (must match lint-staging's VALID_SKIP_REASONS). */
+/** The valid structural skip reasons (the generator's own closed set). */
 export type DialogueClozeSkipReason =
   | 'below_6_token_threshold'
+  | 'above_max_token_threshold'
   | 'no_current_or_prior_vocab_in_line'
   | 'no_same_pos_distractors_in_pool'
 
@@ -78,6 +79,23 @@ export interface EligibilityResult {
 export const DIALOGUE_CLOZE_MIN_TOKENS = 6
 
 /**
+ * Maximum whitespace-token count for a dialogue line to be cloze-eligible.
+ *
+ * Cloze item-writing best practice: the gap belongs in ONE self-contained
+ * sentence with enough local context to recover the answer, but not so much that
+ * the learner is overwhelmed — lower-ability learners rely on the words
+ * immediately around the gap (ICAL TEFL; Wikipedia "Cloze test"). A multi-sentence
+ * dialogue *turn* (e.g. a 5-sentence directions paragraph) buries the target word
+ * and reads as an unfocused translation, not a cloze. This restores the
+ * cloze-creator's original rule — "do NOT blank full dialogue turns; they are
+ * unnatural to blank" — which was dropped when only the ≥6-token floor was kept.
+ *
+ * 16 tokens comfortably fits a single sentence; the over-long lesson-10 carriers
+ * that triggered this were 18–40 tokens, while the good ones were 6–8. Tunable.
+ */
+export const DIALOGUE_CLOZE_MAX_TOKENS = 16
+
+/**
  * The same-POS rule needs ≥2 OTHER pool items sharing the candidate's POS, i.e.
  * ≥3 total pool items with that POS (the candidate is itself one of them).
  */
@@ -102,8 +120,9 @@ export function normalizeClozeToken(token: string): string {
 // ---------------------------------------------------------------------------
 
 /**
- * The three structural gates from the cloze-creator dialogue contract, in order:
+ * The structural gates from the cloze-creator dialogue contract, in order:
  *   1. ≥6 whitespace tokens                       → else below_6_token_threshold
+ *   1b. ≤16 whitespace tokens (single sentence)   → else above_max_token_threshold
  *   2. ≥1 token matches a pool word (normalized)  → else no_current_or_prior_vocab_in_line
  *   3. ≥1 such word's POS has ≥2 OTHER pool items  → else no_same_pos_distractors_in_pool
  *
@@ -115,10 +134,18 @@ export function assessDialogueLineEligibility(
   line: DialogueLineInput,
   pool: ClozePoolItem[],
 ): EligibilityResult {
-  // Gate 1 — token threshold.
+  // Gate 1 — minimum token threshold (enough context to solve the gap).
   const tokens = line.text.split(/\s+/u).filter((t) => t.length > 0)
   if (tokens.length < DIALOGUE_CLOZE_MIN_TOKENS) {
     return { eligible: false, reason: 'below_6_token_threshold' }
+  }
+
+  // Gate 1b — single-sentence ceiling (cloze item-writing best practice). A
+  // multi-sentence dialogue turn buries the target and overwhelms the learner;
+  // skip it rather than blank one word in a whole paragraph. See
+  // DIALOGUE_CLOZE_MAX_TOKENS.
+  if (tokens.length > DIALOGUE_CLOZE_MAX_TOKENS) {
+    return { eligible: false, reason: 'above_max_token_threshold' }
   }
 
   // Build pool lookups: normalized_text → pos, and pos → count of pool items.

@@ -84,6 +84,23 @@ describe('assessDialogueLineEligibility', () => {
     expect(result.reason).toBe('below_6_token_threshold')
   })
 
+  it('skips lines longer than the single-sentence ceiling (multi-sentence turn)', () => {
+    // 19 tokens, contains the pool noun "pohon" (so gates 2/3 would otherwise pass) —
+    // but it is over the single-sentence carrier ceiling, so it is skipped. This is
+    // the long-paragraph dialogue-cloze defect the gate prevents.
+    const long = 'Saya mau pergi ke pasar dulu lalu saya akan kembali ke rumah dekat pohon yang besar itu nanti sekali.'
+    const result = assessDialogueLineEligibility(line(long), POOL)
+    expect(result.eligible).toBe(false)
+    expect(result.reason).toBe('above_max_token_threshold')
+  })
+
+  it('accepts a single sentence at the upper boundary that has a viable candidate', () => {
+    // 8 tokens, well within the ceiling, with the noun "pohon" (3 same-POS siblings).
+    const result = assessDialogueLineEligibility(line('Dia jatuh dari pohon di dekat rumah.'), POOL)
+    expect(result.eligible).toBe(true)
+    expect(result.candidates?.some((c) => c.normalized === 'pohon')).toBe(true)
+  })
+
   it('skips lines with no current/prior vocab word', () => {
     // 6 tokens, none of which are in the pool
     const result = assessDialogueLineEligibility(line('Xxx yyy zzz aaa bbb ccc.'), POOL)
