@@ -6,6 +6,19 @@ This context defines the domain language for the capability-based learning archi
 
 A source of learning material, such as a textbook lesson, dialogue line, podcast segment, story, grammar pattern, or morphology pattern. A content source is provenance and sequencing context; it is not itself the thing scheduled by FSRS.
 
+### Content Source kinds
+
+The fixed set of `source_kind` discriminators a capability carries (the type union in `src/lib/capabilities/capabilityTypes.ts`; the `source_kind` column on `learning_capabilities`). Each names *what kind* of content source a capability reaches via `source_ref`, and resolves to one typed table (ADR 0009). A capability's learned content is frequently *not* a **Learning Item** — only the `item` kind is lexical.
+
+- **`item`** — A single lexical unit: a word or short reusable phrase being learned. Source table: `learning_items`. (See **Learning Item**.)
+- **`dialogue_line`** — One complete utterance from a lesson dialogue, used as the carrier for a contextual cloze. Source table: `lesson_dialogue_lines`.
+- **`pattern`** — A metalinguistic grammar or number-formation rule drilled as a skill (e.g. the `meN-` prefix, the `belas`-numbers rule). Source table: `grammar_patterns`.
+- **`affixed_form_pair`** — A root↔derived morphology pair (e.g. `baca` ↔ `membaca`). Source table: `affixed_form_pairs`.
+- **`podcast_segment`** — A bounded audio span of a podcast, consumed by listening for gist. Source table: `podcasts` (segment rows). Not yet live (0 capabilities).
+- **`podcast_phrase`** — A timecoded phrase *within* a podcast segment (finer-grained than a segment).
+
+_Flagged ambiguity: `podcast_phrase` is latent — no capability type maps to it and it has 0 rows. It is a candidate for removal from the union unless a phrase-level podcast capability is planned. `podcast_segment` is likewise defined but not live (only `podcast_gist` would consume it)._
+
 ## Content Unit
 
 A stable, publishable unit derived from a content source. Content units preserve source refs, section refs, ordering, and relationships to lesson page blocks and learning capabilities.
@@ -40,6 +53,8 @@ The **mode** column is the pedagogically meaningful axis (receptive → producti
 | `podcast_gist` | podcast_segment | recognise | Listen to a podcast segment and grasp its overall gist (exposure-oriented; feature not yet live — 0 rows). |
 
 One vocabulary item typically produces ~6 capabilities (the `item`-source rows above that its content supports — e.g. an item with audio gets `audio_recognition` + `dictation`, one without does not). See **Learning Capability** for the (source × type) pairing this enumerates the *type* half of.
+
+For the full model — the (source × capability × exercise) map, live counts, the known naming debt, and the **target readable naming convention** (four layers `_src`/`_mode`/`_cap`/`_ex` + typed content concepts, no "artifact" umbrella) — see [`docs/current-system/capability-and-exercise-model.md`](docs/current-system/capability-and-exercise-model.md). The convention there is a documented *target*; the live enum names in the table above are still authoritative until an architect + data-architect migration adopts it (it rewrites `canonical_key`).
 
 ## Learning Capability
 

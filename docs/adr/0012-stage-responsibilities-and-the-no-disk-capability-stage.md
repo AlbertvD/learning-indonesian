@@ -61,6 +61,23 @@ Slice 5b changed is the *substrate*: POS enrichment went from staging-file-coupl
 disk access. This is consistent with both this ADR (POS is practice-generation
 metadata, capability-side) and the no-disk rule. There is no tracked debt here.
 
+## Proposed refinement (2026-06-06 — audio splits across both stages; capability-stage gap-fill)
+
+*Status: **proposed**, pending the capability-stage v2 redesign spec + architect / data-architect approval. Not yet built — recorded here so the redesign has a fixed target.*
+
+The §Decision dividing line ("what the learner reads vs. what generates/schedules practice") is **unchanged**. This refinement applies it to **audio**, which the original ADR did not enumerate — and audio turns out to split, not sit on one side:
+
+- **Lesson / dialogue audio** (whole-lesson narration, spoken dialogue lines) is **learner-facing lesson content** — the learner hears it while consuming the lesson. → **Lesson Stage**, alongside translations.
+- **Per-item word-level audio** (the clips `recognise_meaning_from_audio` and dictation capabilities need) is **practice-generation media** — encountered only inside an exercise, never in the lesson reader, exactly like a distractor or cloze. → **Capability Stage**.
+
+So **audio is not single-owner.** The Capability Stage produces its share by **reuse-then-gap-fill**: a deterministic coverage check reuses any Lesson-Stage clip at matching granularity (sentence/discourse audio reuses directly; word-level reuses only where word-segmented clips exist) and **generates (TTS) only the remainder**, driven by the set of items that warrant an audio capability. No parallel audio pipeline — an extension of the existing one.
+
+**Why this still fits the principle:** the per-item clip "feeds generation/scheduling" (it enables a capability's exercise), so by line 37's own test it is capability-side. The learner *hears* it, but *in an exercise* — the same status as a distractor they *see* in an exercise. The "read by the learner [in the lesson]" test is about the **lesson reader**, not "any sensory contact."
+
+**No-disk rule scope clarified.** The no-disk rule (§Amendment 2026-06-05, `globalNoFileIO`) forbids the **staging-file dual-read** the Stage Contract was about. It does **not** forbid the Capability Stage from generating audio to the storage bucket — a TTS network call + bucket upload is not a staging-file disk read. The gate must distinguish "no staging-file I/O" (forbidden) from "no media generation" (permitted); capability-stage audio gap-fill is allowed under the former.
+
+**Open placement detail for the spec:** whether the gap-fill runs as a *shared audio service* the Capability Stage calls, or the Lesson Stage *pre-generates* word audio once it knows the capability requirements — same outcome, different seam — is left to the v2 spec's architect/data-architect review.
+
 ## Related
 
 - [ADR 0011: capability content is DB-authoritative after seeding](./0011-capability-content-is-db-authoritative-after-seeding.md) — deferred this split (line 32); this ADR completes it for the lesson-content side.
