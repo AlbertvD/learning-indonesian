@@ -80,6 +80,7 @@ durable target-state; the easy way out causes technical debt (standing rule).
 2. **Fits target architecture** — lands at the `docs/target-architecture.md` seam; no fold-slated files; no shallow-module drift.
 3. **Deep module** — small interface, deep implementation; passes the deletion test.
 4. **Scalable + performant data model** (data-architect owns) — additive migrations, indexes, pagination, server-side counters, no shape drift.
+5. **Minimum mechanism** — the design uses the fewest moving parts that meet the goal (CLAUDE.md "Minimum Mechanism"). For every table/column/function/generated-column/trigger/gate/enum value/abstraction, the spec states what breaks if omitted; cut anything whose only justification is a problem another part of the *same* design created (cut both). Prefer a pre-write validator or a module-load assertion over DB generated columns/triggers + a sync check unless a non-pipeline writer needs DB enforcement. Re-derive an `approved` spec against CLAUDE.md "Operating Context" and strip live-system safety machinery (coexistence layers, maintenance-window ordering, additive-then-subtractive parity rollouts) in this build-stage single-learner app. **Over-engineering fails this gate exactly as under-engineering does** — durable target-state ≠ maximal.
 A failing spec / slice / fix is redesigned, not shipped "for now."
 
 ## Principles
@@ -137,6 +138,7 @@ Walk these in order. Stop and emit `NEEDS REVISION` at the first CRITICAL; colle
 16. **Edge cases.** Is there an `Edge cases` / `Open questions` / equivalent section, and does it cover the obvious ones for the feature? Vague "handles all errors" without enumeration = **WARNING**.
 17. **Tests.** Does the plan name concrete test scenarios? "We'll add tests" without scenarios = **WARNING**.
 18. **YAGNI flags.** Are there features / abstractions / refactors that exceed the stated goal? Each one = **WARNING** unless the author has reasoning.
+18b. **Minimum mechanism (CRITICAL when self-created).** Demand the spec's one-line "what breaks if omitted" for each new table/column/function/generated-column/trigger/gate/enum value/abstraction. A mechanism whose only justification is a problem another part of the same design introduced = **CRITICAL** (cut both — e.g. a generated column that forces a key change that forces a uniqueness workaround that forces a new enum value). A heavier enforcement (DB generated column/trigger + sync health-check) where a single pre-write validator or module-load assertion suffices and no non-pipeline writer needs DB enforcement = **WARNING**. Live-system safety machinery (coexistence layers, maintenance-window ordering, additive-then-subtractive parity rollouts, key-version guards) in a build-stage single-learner change = **WARNING** — strip it (CLAUDE.md "Operating Context").
 19. **Rollout.** Does the plan say how this ships (branch, single PR vs multi, rollback)? Missing for a non-trivial change = **WARNING**.
 
 ### Final pass

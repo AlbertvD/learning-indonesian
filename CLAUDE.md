@@ -1,5 +1,37 @@
 # Learning Indonesian
 
+## Operating Context (read first — it changes what "good" means)
+
+This app is **pre-launch / build-stage: a single learner (the author), and disposable data** — no production users, no FSRS history worth preserving (it is test data), lesson content re-derives from staging. This is load-bearing:
+
+- **Do not add machinery whose only purpose is keeping a live system safe during change** — no maintenance-window choreography, no mixed-version coexistence layers, no additive-then-subtractive "provably inert" parity rollouts, no backfill-then-cleanup dances. Truncate and rebuild freely; an intermediate state may break the deployed app (nobody is there) as long as the code is coherent and tests pass.
+- **What "good" means here, in order: simple, high-quality, maintainable code; fewer tokens in the build/generation pipeline; then runtime polish.** Correctness is assumed throughout. When a design trades simplicity for runtime safety that only matters with live users, drop the safety.
+- A spec written under a live-system lens (most of `docs/plans/`) must be **re-derived against this context before implementing** — see Minimum Mechanism.
+
+> Revisit this section at launch. Once there are real users with real history, the live-system safety machinery it tells you to skip becomes mandatory again.
+
+## Minimum Mechanism (counterweight to "Quality Over Speed")
+
+Everything below "Quality Over Speed", every `feedback_*` memory, and every gate punishes *under*-engineering — drift, missed edge cases, shallow modules. Almost nothing punishes *over*-engineering. The result is a standing bias toward convoluted, token-heavy solutions and toward implementing approved specs verbatim. Correct it: **unnecessary mechanism is a defect of the same severity as drift.**
+
+- **The omission test** — for every new table, column, function, generated column, trigger, gate, enum value, abstraction, or layer, state in one line what breaks if it is omitted. If the honest answer is "a problem another part of *this same design* introduced," delete both the mechanism and the part that created the need. (Lived example, 2026-06-06: a generated `capability_type` column → forced dropping the type from the key → forced an axis-only uniqueness rule → forced a new `context_to_id` direction → plus a SQL-function↔enum sync health-check: five parts enforcing one consistency a single pre-write validator already gives. The whole chain was the defect; storing the type — as the live system already does — deletes all five.)
+- **Cheapest mechanism that gives the guarantee.** A pre-write validator (the existing three-layer-gate habit) beats a DB generated column / trigger / + sync check unless a non-pipeline writer genuinely needs DB-level enforcement.
+- **Approved ≠ immune.** `status: approved` means "passed review under its day's assumptions," not "implement verbatim." Re-derive it against Operating Context and strip what no longer earns its keep. Flagging over-engineering in an approved spec is expected, not insubordinate.
+- **Tokens are complexity.** Re-running generation, re-publishing all lessons to diff for parity, or an LLM call a deterministic rule could replace — failing the bar even if correct.
+- **"Durable target-state" ≠ maximal.** `feedback_target_state_over_minimal_diff` bans the band-aid that creates debt; it does **not** license extra parts. The durable choice is usually the *simpler* one.
+
+### Preferred solutions (defaults; deviate only with a one-line reason)
+
+| Fork | Default |
+|---|---|
+| Orchestration | thin composition of pure functions > stateful multi-file "runner" |
+| Generation | deterministic selection from existing data > LLM generation (LLM only for genuinely creative work, e.g. grammar authoring) |
+| Consistency enforcement | pre-write validator > DB generated column / trigger (+ sync check) |
+| Identity | store it explicitly and keep it in the key > derive-and-drop |
+| Changing a data shape (build-stage) | build the target and delete the old in one move > additive-then-subtractive parity rollout |
+| Storage | typed column the DB + type-checker enforce > JSON blob |
+| Touching an existing module | extend a composing primitive > a new parallel per-case branch; but rebuild clean > inherit a mid-cutover accreted module |
+
 ## Quality Over Speed
 
 Prefer depth and accuracy over fast answers. These rules are non-negotiable:
