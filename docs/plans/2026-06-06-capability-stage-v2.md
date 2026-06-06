@@ -10,6 +10,13 @@ supersedes:
 
 **This is the overarching (umbrella) spec.** Each `source_kind` is built as an independent vertical slice (§9) carrying its own sub-spec through design → review → build → test → deploy. This document fixes the target every slice lands on.
 
+> **⚠ Slice 1 amendments (2026-06-06) — this umbrella is superseded on several mechanisms; see `2026-06-06-capability-stage-v2-slice-1-vocabulary.md`.** Grilling under the new CLAUDE.md "Minimum Mechanism" rule (staff-engineer SOUND + data-architect audited) cut machinery this umbrella specified. **Where they differ, the slice sub-spec wins.** These are shared-infra decisions — carry them to later slices:
+> - **Identity is type-as-source, not a generated column** (§2/§3 D1a/D1b superseded): `capability_type` stays stored and in the `cap:v1:` key; **no** `derive_capability_type` generated column, **no** SQL↔enum sync check, **no** `context_to_id`, **no** `cap:v2:` bump/guards. Guaranteed instead by `UNIQUE(source_ref, capability_type)` + one boot-time contract/level assertion.
+> - **Distractors are item pointers, not copied text** (§3b superseded): `distractors(capability_id, item_id)`, FK-enforced; **no** `distractor_kind`/`options[]`/`position`.
+> - **No new `cloze` table** (§3b superseded): vocab cloze reads the existing `item_contexts`; the unified-cloze / `dialogue_line_id` CHECK is a per-slice question.
+> - **No capability-stage audio service** (§5 amendment NOT accepted for vocab): word audio stays Lesson-Stage; the capability stage reads `audio_clips` and gates caps on clip existence.
+> - **No live-system rollout machinery** (§7 `cap:v1` guard, §9a maintenance window superseded): build-stage ⇒ truncate + rebuild.
+
 ## 1. Why
 
 A grilling session (2026-06-06) established that the capability/exercise model's debt is **structural, not cosmetic**: capability types conflate `(source × direction × modality × level)` on inconsistent naming axes, format leaks into capability identity, and the level/format mismatches (a produce capability rendered as an MCQ; `pattern_recognition` rendering production drills) are the live bug class. Per `feedback_target_state_over_minimal_diff`, we take the durable target.
