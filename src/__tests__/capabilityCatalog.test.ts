@@ -74,7 +74,8 @@ describe('capability catalog projection', () => {
     expect(choiceBridge).toEqual(expect.objectContaining({
       direction: 'l1_to_id',
       modality: 'text',
-      skillType: 'meaning_recall',
+      // cap-v2 Slice 1 mis-level fix: l1_to_id_choice is recognition, not recall.
+      skillType: 'recognition',
       requiredArtifacts: expect.arrayContaining(['meaning:l1', 'base_text']),
       prerequisiteKeys: [textRecognition?.canonicalKey],
     }))

@@ -10,9 +10,10 @@
 import type {
   ExerciseType, LearningItem, ItemMeaning, ItemContext, ItemAnswerVariant,
   ContrastPairExercisesRow, SentenceTransformationExercisesRow,
-  ConstrainedTranslationExercisesRow, ClozeMcqExercisesRow,
+  ConstrainedTranslationExercisesRow, ClozeMcqExercisesRow, SkillType,
 } from '@/types/learning'
 import type { ArtifactKind, CapabilityType, CapabilitySourceKind } from './capabilityTypes'
+import { CAPABILITY_TYPES, deriveSkillTypeFromCapabilityType } from './capabilityTypes'
 // ResolutionReasonCode lives in the leaf module (created alongside this file)
 // to break what would otherwise be a circular dependency between this file
 // and src/services/capabilityContentService.ts — the service will import
@@ -175,6 +176,47 @@ export const RENDER_CONTRACTS = {
       }
     }
   }
+})()
+
+// Capability identity guardrail (cap-v2 Slice 1 §2, guardrail 1). Every
+// capability_type the catalog can emit must have BOTH (a) at least one
+// RENDER_CONTRACTS entry that serves it — a render path, so it can never
+// "schedule but render nothing" — and (b) a level (a non-throwing
+// deriveSkillTypeFromCapabilityType branch). The IIFE below runs this against
+// the real CAPABILITY_TYPES at module load so the app refuses to start if a
+// new/renamed type lands without its render contract + level in the same
+// commit. Exported (and parameterised) so the check is unit-testable without a
+// real module re-import.
+export function assertCapabilityTypesRenderable(
+  capabilityTypes: readonly CapabilityType[],
+  deriveSkillType: (capabilityType: CapabilityType) => SkillType,
+): void {
+  const served = new Set<CapabilityType>()
+  for (const contract of Object.values(RENDER_CONTRACTS) as RenderContract[]) {
+    for (const capabilityType of contract.capabilityTypes) served.add(capabilityType)
+  }
+  for (const capabilityType of capabilityTypes) {
+    if (!served.has(capabilityType)) {
+      throw new Error(
+        `Capability identity guardrail: capability_type '${capabilityType}' has no render path ` +
+        `— it is absent from every RENDER_CONTRACTS entry's capabilityTypes, so it would schedule ` +
+        `but render nothing. Add it to a render contract in the same commit that introduces the type.`,
+      )
+    }
+    // (b) level — deriveSkillType must produce a non-nullish SkillType for it.
+    // A missing switch branch either throws (exhaustiveness) or returns nullish;
+    // both surface here.
+    if (deriveSkillType(capabilityType) == null) {
+      throw new Error(
+        `Capability identity guardrail: capability_type '${capabilityType}' has no level ` +
+        `(deriveSkillTypeFromCapabilityType returned nullish). Add its level branch in the same commit.`,
+      )
+    }
+  }
+}
+
+;(function assertCapabilityTypesRenderableAtLoad() {
+  assertCapabilityTypesRenderable(CAPABILITY_TYPES, deriveSkillTypeFromCapabilityType)
 })()
 
 // ─── Inverted-lookup helpers (consumed by validateCapability + resolver) ───

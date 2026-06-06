@@ -231,6 +231,10 @@ export interface LearningCapabilityRow {
 // derived at read-time per Decision F. Closed mapping — TS exhaustiveness
 // catches any new capability_type that needs a skill assignment.
 export function deriveSkillTypeFromCapabilityType(capabilityType: CapabilityType): SkillType {
+  // Slice 1 (cap-v2) mis-level fix: l1_to_id_choice ("pick the Indonesian word
+  // from the L1 meaning") is a receptive multiple-choice RECOGNITION, not a
+  // recall. It was mis-grouped under meaning_recall. Receptive-before-productive
+  // sequencing (ADR 0007) keys off this derived level.
   switch (capabilityType) {
     case 'text_recognition':
     case 'audio_recognition':
@@ -238,9 +242,9 @@ export function deriveSkillTypeFromCapabilityType(capabilityType: CapabilityType
     case 'pattern_contrast':
     case 'root_derived_recognition':
     case 'podcast_gist':
+    case 'l1_to_id_choice':
       return 'recognition'
     case 'meaning_recall':
-    case 'l1_to_id_choice':
       return 'meaning_recall'
     case 'form_recall':
     case 'dictation':

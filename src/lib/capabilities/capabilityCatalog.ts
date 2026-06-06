@@ -59,7 +59,11 @@ export function projectCapabilities(input: CurrentContentSnapshot): CapabilityPr
       sourceKind: 'item',
       sourceRef,
       capabilityType: 'l1_to_id_choice',
-      skillType: 'meaning_recall',
+      // cap-v2 Slice 1 mis-level fix: l1_to_id_choice ("pick the Indonesian
+      // word from the L1 meaning") is a receptive recognition, not a recall.
+      // Kept in lock-step with deriveSkillTypeFromCapabilityType (the read-time
+      // authority at session-builder/adapter.ts) so both surfaces agree.
+      skillType: 'recognition',
       direction: 'l1_to_id',
       modality: 'text',
       learnerLanguage: item.meanings[0]?.language ?? 'none',

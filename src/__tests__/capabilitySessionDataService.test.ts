@@ -222,7 +222,8 @@ describe('capability session data service', () => {
       expect.objectContaining({
         canonicalKey: 'cap:v1:item:learning_items/item-1:l1_to_id_choice:l1_to_id:text:nl',
         capabilityType: 'l1_to_id_choice',
-        skillType: 'meaning_recall',
+        // cap-v2 Slice 1 mis-level fix: l1_to_id_choice is recognition, not recall.
+        skillType: 'recognition',
       }),
     ]))
   })
