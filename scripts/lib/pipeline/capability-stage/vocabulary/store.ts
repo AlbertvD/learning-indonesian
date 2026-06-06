@@ -27,11 +27,13 @@ import type {
 } from './seedDistractors'
 
 const PAGE_SIZE = 1000
-/** Bound `.in(uuid,...)` list length so the request URL stays well under gateway
- *  limits. Used only for UUID lists (embeddings/distractors); item lookups by
- *  normalized_text use a paginate-all-then-filter read instead, because those
- *  values carry spaces/punctuation that break a long `.in(...)` filter. */
-const IN_CHUNK = 100
+/** Bound list length for the remaining `.in(uuid,...)` URL filter
+ *  (deleteDistractors) and the insert payload chunks. The homelab gateway
+ *  rejects request URLs past ~2.5 KB (≈65 UUIDs worked, 100 failed), so 50 keeps
+ *  a safe margin. Reads that would need a large `.in()` (pool items by
+ *  normalized_text, embedding/distractor lookups) use paginate-all-then-filter
+ *  instead. */
+const IN_CHUNK = 50
 const ITEM_REF_PREFIX = 'learning_items/'
 
 function chunk<T>(xs: T[], size: number): T[][] {
@@ -156,18 +158,27 @@ export function createDistractorStore(
     },
 
     async fetchEmbeddings(itemIds: string[]): Promise<Map<string, number[]>> {
+      // Paginate the whole (small) cache and filter in memory rather than
+      // .in(uuid, [...]) — the homelab gateway rejects long request URLs (same
+      // failure mode as the normalized_text .in()). item_embeddings has ≤1 row
+      // per item.
+      const want = new Set(itemIds)
       const out = new Map<string, number[]>()
-      for (const part of chunk(itemIds, IN_CHUNK)) {
+      let offset = 0
+      while (true) {
         const { data, error } = await idn()
           .from('item_embeddings')
           .select('learning_item_id, embedding')
-          .in('learning_item_id', part)
+          .range(offset, offset + PAGE_SIZE - 1)
         if (error) throw new Error(`store.fetchEmbeddings: ${error.message}`)
-        for (const r of (data ?? []) as Array<{ learning_item_id: string; embedding: string | number[] }>) {
+        const page = (data ?? []) as Array<{ learning_item_id: string; embedding: string | number[] }>
+        for (const r of page) {
+          if (!want.has(r.learning_item_id)) continue
           // pgvector serialises to the text form "[f1,f2,...]"; parse to number[].
-          const vec = typeof r.embedding === 'string' ? (JSON.parse(r.embedding) as number[]) : r.embedding
-          out.set(r.learning_item_id, vec)
+          out.set(r.learning_item_id, typeof r.embedding === 'string' ? (JSON.parse(r.embedding) as number[]) : r.embedding)
         }
+        if (page.length < PAGE_SIZE) break
+        offset += PAGE_SIZE
       }
       return out
     },
@@ -187,14 +198,22 @@ export function createDistractorStore(
     },
 
     async fetchCapsWithDistractors(capabilityIds: string[]): Promise<Set<string>> {
+      // Paginate all seeded capability_ids and intersect in memory (same
+      // gateway-URL-length avoidance as fetchEmbeddings). Returning a superset
+      // of `capabilityIds` is harmless — the caller only does membership checks.
+      const want = new Set(capabilityIds)
       const seeded = new Set<string>()
-      for (const part of chunk(capabilityIds, IN_CHUNK)) {
+      let offset = 0
+      while (true) {
         const { data, error } = await idn()
           .from('distractors')
           .select('capability_id')
-          .in('capability_id', part)
+          .range(offset, offset + PAGE_SIZE - 1)
         if (error) throw new Error(`store.fetchCapsWithDistractors: ${error.message}`)
-        for (const r of (data ?? []) as Array<{ capability_id: string }>) seeded.add(r.capability_id)
+        const page = (data ?? []) as Array<{ capability_id: string }>
+        for (const r of page) if (want.has(r.capability_id)) seeded.add(r.capability_id)
+        if (page.length < PAGE_SIZE) break
+        offset += PAGE_SIZE
       }
       return seeded
     },

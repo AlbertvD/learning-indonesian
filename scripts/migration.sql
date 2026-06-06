@@ -1408,6 +1408,13 @@ grant select on indonesian.capability_resolution_issues to authenticated;
 
 create extension if not exists vector with schema extensions;
 
+-- The vector type lives in the `extensions` schema; the API roles need USAGE on
+-- that schema to reference `extensions.vector` when reading/writing the column,
+-- else inserts fail with "permission denied for schema extensions" (caught at
+-- the cap-v2 populate pass — the self-hosted instance doesn't pre-grant this the
+-- way hosted Supabase does). Idempotent.
+grant usage on schema extensions to service_role, authenticated, anon;
+
 create table if not exists indonesian.item_embeddings (
   learning_item_id uuid primary key references indonesian.learning_items(id) on delete cascade,
   embedding extensions.vector(384) not null,
