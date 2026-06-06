@@ -1206,6 +1206,245 @@ drop table if exists indonesian.learner_weekly_goal_sets cascade;
 drop table if exists indonesian.learner_analytics_events cascade;
 
 -- ============================================================================
+-- Capability subsystem — base tables (cap-v2 Slice 1 fold, issue #161)
+-- ----------------------------------------------------------------------------
+-- Folded here from scripts/migrations/2026-04-25-capability-core.sql and
+-- 2026-05-02-capability-resolution-failures.sql so a migration.sql-only fresh
+-- rebuild creates them WITH their RLS (previously they existed only in the
+-- standalone files — see the header note at the top of this file). Only the 4
+-- LIVE tables + the resolution-failure log are folded; capability_artifacts and
+-- the two learner_source_progress_* tables are RETIRED (dropped later in this
+-- file at the #102 / source-progress retirements) and deliberately NOT folded.
+-- These CREATEs must precede the capability RPCs (commit_capability_answer_report
+-- below) and the learning_capabilities ALTER (add lesson_id) further down.
+-- ============================================================================
+
+create table if not exists indonesian.learning_capabilities (
+  id uuid primary key default gen_random_uuid(),
+  canonical_key text unique not null,
+  source_kind text not null check (source_kind in ('item','pattern','dialogue_line','podcast_segment','podcast_phrase','affixed_form_pair')),
+  source_ref text not null,
+  capability_type text not null,
+  direction text not null,
+  modality text not null,
+  learner_language text not null,
+  projection_version text not null,
+  readiness_status text not null check (readiness_status in ('ready','blocked','exposure_only','deprecated','unknown')),
+  publication_status text not null check (publication_status in ('draft','published','retired')),
+  source_fingerprint text,
+  artifact_fingerprint text,
+  metadata_json jsonb not null default '{}',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists learning_capabilities_source_idx
+  on indonesian.learning_capabilities(source_kind, source_ref);
+create index if not exists learning_capabilities_readiness_publication_idx
+  on indonesian.learning_capabilities(readiness_status, publication_status);
+
+-- cap-v2 Slice 1 §2 guardrail 2: semantic identity = (source_ref, capability_type).
+-- The UNIQUE(canonical_key) above is the FSRS/dedup guard; this is the
+-- writer-bug guard a malformed canonical_key can't slip past.
+create unique index if not exists learning_capabilities_source_ref_type_uidx
+  on indonesian.learning_capabilities(source_ref, capability_type);
+
+create table if not exists indonesian.capability_aliases (
+  id uuid primary key default gen_random_uuid(),
+  old_canonical_key text not null,
+  new_canonical_key text not null,
+  new_capability_id uuid references indonesian.learning_capabilities(id),
+  alias_reason text not null,
+  mapping_kind text not null check (mapping_kind in ('rename','split','merge','grammar_inference','manual')),
+  migration_confidence text not null check (migration_confidence in ('exact','high','medium','low','inferred','manual_required')),
+  split_group_id text,
+  weight numeric,
+  created_at timestamptz not null default now(),
+  unique(old_canonical_key, new_canonical_key, mapping_kind)
+);
+
+create table if not exists indonesian.learner_capability_state (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  capability_id uuid not null references indonesian.learning_capabilities(id),
+  canonical_key_snapshot text not null,
+  activation_state text not null check (activation_state in ('dormant','active','suspended','retired')),
+  activation_source text check (activation_source in ('review_processor','admin_backfill','legacy_migration')),
+  activation_event_id uuid,
+  fsrs_state_json jsonb,
+  stability double precision,
+  difficulty double precision,
+  next_due_at timestamptz,
+  last_reviewed_at timestamptz,
+  review_count integer not null default 0,
+  lapse_count integer not null default 0,
+  consecutive_failure_count integer not null default 0,
+  state_version integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique(user_id, capability_id)
+);
+
+create index if not exists learner_capability_state_due_idx
+  on indonesian.learner_capability_state(user_id, activation_state, next_due_at);
+create index if not exists learner_capability_state_capability_idx
+  on indonesian.learner_capability_state(capability_id);
+
+create table if not exists indonesian.capability_review_events (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  capability_id uuid not null references indonesian.learning_capabilities(id),
+  learner_capability_state_id uuid not null references indonesian.learner_capability_state(id),
+  idempotency_key text not null,
+  session_id text not null,
+  session_item_id text not null,
+  attempt_number integer not null,
+  rating integer not null check (rating between 1 and 4),
+  answer_report_json jsonb not null,
+  scheduler_snapshot_json jsonb not null,
+  state_before_json jsonb not null,
+  state_after_json jsonb not null,
+  artifact_version_snapshot_json jsonb not null,
+  created_at timestamptz not null default now(),
+  unique(user_id, idempotency_key),
+  unique(session_id, session_item_id, attempt_number)
+);
+
+create table if not exists indonesian.capability_resolution_failure_events (
+  id uuid primary key default gen_random_uuid(),
+  capability_id uuid not null references indonesian.learning_capabilities(id) on delete cascade,
+  capability_key text not null,
+  reason_code text not null,
+  exercise_type text not null,
+  user_id uuid references auth.users(id) on delete set null,
+  session_id uuid,
+  block_id text not null,
+  payload_json jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_crfe_capability_reason
+  on indonesian.capability_resolution_failure_events (capability_id, reason_code);
+create index if not exists idx_crfe_created_at
+  on indonesian.capability_resolution_failure_events (created_at desc);
+
+-- RLS
+alter table indonesian.learning_capabilities enable row level security;
+alter table indonesian.capability_aliases enable row level security;
+alter table indonesian.learner_capability_state enable row level security;
+alter table indonesian.capability_review_events enable row level security;
+alter table indonesian.capability_resolution_failure_events enable row level security;
+
+drop policy if exists "capability catalog authenticated read" on indonesian.learning_capabilities;
+create policy "capability catalog authenticated read"
+  on indonesian.learning_capabilities for select to authenticated using (true);
+
+drop policy if exists "capability aliases authenticated read" on indonesian.capability_aliases;
+create policy "capability aliases authenticated read"
+  on indonesian.capability_aliases for select to authenticated using (true);
+
+drop policy if exists "learner capability state owner read" on indonesian.learner_capability_state;
+create policy "learner capability state owner read"
+  on indonesian.learner_capability_state for select to authenticated using (user_id = auth.uid());
+
+drop policy if exists "capability review events owner read" on indonesian.capability_review_events;
+create policy "capability review events owner read"
+  on indonesian.capability_review_events for select to authenticated using (user_id = auth.uid());
+
+-- Authenticated users write their own resolution-failure rows (write-only side).
+drop policy if exists "crfe_insert_own" on indonesian.capability_resolution_failure_events;
+create policy "crfe_insert_own" on indonesian.capability_resolution_failure_events
+  for insert to authenticated with check (user_id = auth.uid());
+drop policy if exists "crfe_admin_read" on indonesian.capability_resolution_failure_events;
+create policy "crfe_admin_read" on indonesian.capability_resolution_failure_events
+  for select to authenticated using (
+    exists (select 1 from indonesian.user_roles where user_id = auth.uid() and role = 'admin')
+  );
+
+-- Grants. Writes to learner state + review events + capability rows happen via
+-- the service_role-backed RPCs / pipeline only — authenticated is read-only
+-- (resolution-failure events are the one authenticated INSERT).
+grant usage on schema indonesian to service_role;
+grant select on indonesian.learning_capabilities to authenticated;
+grant select on indonesian.capability_aliases to authenticated;
+grant select on indonesian.learner_capability_state to authenticated;
+grant select on indonesian.capability_review_events to authenticated;
+grant select, insert on indonesian.capability_resolution_failure_events to authenticated;
+revoke insert, update, delete on indonesian.learner_capability_state from authenticated;
+revoke insert, update, delete on indonesian.capability_review_events from authenticated;
+grant all on indonesian.learning_capabilities to service_role;
+grant all on indonesian.capability_aliases to service_role;
+grant all on indonesian.learner_capability_state to service_role;
+grant all on indonesian.capability_review_events to service_role;
+grant all on indonesian.capability_resolution_failure_events to service_role;
+
+-- Aggregated failure view (security_invoker so the admin-read RLS applies to
+-- the querying user; without it the view would bypass crfe_admin_read).
+create or replace view indonesian.capability_resolution_issues
+with (security_invoker = true) as
+select
+  capability_id,
+  capability_key,
+  reason_code,
+  exercise_type,
+  count(*)            as occurrence_count,
+  min(created_at)     as first_seen_at,
+  max(created_at)     as last_seen_at,
+  (array_agg(user_id    order by created_at desc))[1] as last_user_id,
+  (array_agg(session_id order by created_at desc))[1] as last_session_id
+from indonesian.capability_resolution_failure_events
+group by capability_id, capability_key, reason_code, exercise_type;
+
+grant select on indonesian.capability_resolution_issues to authenticated;
+
+-- ============================================================================
+-- cap-v2 Slice 1 — embeddings + curated distractors (issue #161; §4a/§6)
+-- ----------------------------------------------------------------------------
+-- item_embeddings caches one local-model embedding per learning item (meaning
+-- distractors only); distractors stores curated WRONG-option pointers to items.
+-- Created here; item_embeddings + distractors are POPULATED by the
+-- select-distractors writer (#163) and READ by the runtime fetcher (#164).
+-- ============================================================================
+
+create extension if not exists vector with schema extensions;
+
+create table if not exists indonesian.item_embeddings (
+  learning_item_id uuid primary key references indonesian.learning_items(id) on delete cascade,
+  embedding extensions.vector(384) not null,
+  created_at timestamptz not null default now()
+);
+
+alter table indonesian.item_embeddings enable row level security;
+drop policy if exists "item_embeddings_authenticated_read" on indonesian.item_embeddings;
+create policy "item_embeddings_authenticated_read"
+  on indonesian.item_embeddings for select to authenticated using (true);
+grant select on indonesian.item_embeddings to authenticated;
+revoke insert, update, delete on indonesian.item_embeddings from authenticated;
+grant all on indonesian.item_embeddings to service_role;
+comment on table indonesian.item_embeddings is
+  'Local-model (paraphrase-multilingual-MiniLM-L12-v2, 384d) embedding of each item''s translation_nl gloss; cached once per item, used for meaning-distractor ranking. cap-v2 Slice 1.';
+
+create table if not exists indonesian.distractors (
+  capability_id uuid not null references indonesian.learning_capabilities(id) on delete cascade,
+  item_id       uuid not null references indonesian.learning_items(id)        on delete restrict,
+  primary key (capability_id, item_id)
+);
+
+create index if not exists distractors_item_id_idx on indonesian.distractors(item_id);
+
+alter table indonesian.distractors enable row level security;
+drop policy if exists "distractors_authenticated_read" on indonesian.distractors;
+create policy "distractors_authenticated_read"
+  on indonesian.distractors for select to authenticated using (true);
+grant select on indonesian.distractors to authenticated;
+revoke insert, update, delete on indonesian.distractors from authenticated;
+grant all on indonesian.distractors to service_role;
+comment on table indonesian.distractors is
+  'Curated MCQ wrong-option pointers, one row per (capability, wrong-option item). cap-v2 Slice 1; populated by select-distractors (#163), read by the runtime distractor fetcher (#164).';
+comment on column indonesian.distractors.item_id is
+  'A WRONG-option pointer (never the answer item). on delete restrict so a deduped item used as a distractor can''t be silently deleted out from under a capability.';
+
+-- ============================================================================
 -- Retirement #5 (session lifecycle module) — 2026-05-07
 -- See docs/plans/2026-05-07-retire-session-lifecycle.md for context.
 -- Replaces the explicit startSession/endSession lifecycle with an RPC-side
