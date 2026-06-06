@@ -137,8 +137,7 @@ const EXPECTED_ITEM_PATH_FILES: ExpectedFile[] = [
   { relPath: 'vocabulary/seedDistractors.ts', task: 'cap-v2 Slice 1 (writer)', existsFails: false },
   { relPath: 'shared/embeddings.ts', task: 'cap-v2 Slice 1', existsFails: false },
   { relPath: 'vocabulary/store.ts', task: 'cap-v2 Slice 1 (store impl)', existsFails: false },
-  // Built next: the publish seam.
-  { relPath: 'orchestrate.ts', task: 'cap-v2 Slice 1 (publish seam)', existsFails: true },
+  { relPath: 'orchestrate.ts', task: 'cap-v2 Slice 1 (populate seam)', existsFails: false },
 ]
 
 // ---------------------------------------------------------------------------
