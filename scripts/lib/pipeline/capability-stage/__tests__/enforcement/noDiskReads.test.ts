@@ -136,8 +136,8 @@ const EXPECTED_ITEM_PATH_FILES: ExpectedFile[] = [
   { relPath: 'vocabulary/planDistractors.ts', task: 'cap-v2 Slice 1', existsFails: false },
   { relPath: 'vocabulary/seedDistractors.ts', task: 'cap-v2 Slice 1 (writer)', existsFails: false },
   { relPath: 'shared/embeddings.ts', task: 'cap-v2 Slice 1', existsFails: false },
-  // Built next: the supabase-backed store (DB-only, no disk) + the publish seam.
-  { relPath: 'vocabulary/store.ts', task: 'cap-v2 Slice 1 (store impl)', existsFails: true },
+  { relPath: 'vocabulary/store.ts', task: 'cap-v2 Slice 1 (store impl)', existsFails: false },
+  // Built next: the publish seam.
   { relPath: 'orchestrate.ts', task: 'cap-v2 Slice 1 (publish seam)', existsFails: true },
 ]
 
