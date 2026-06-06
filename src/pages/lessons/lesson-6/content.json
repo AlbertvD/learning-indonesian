@@ -7,7 +7,7 @@
     "description": "History of Jakarta (Batavia). Grammar focus: negation system (belum/bukan/tidak/jangan), imperative with -lah, question suffix -kah, Indonesian day parts and clock time.",
     "primary_voice": "id-ID-Chirp3-HD-Orus",
     "duration_seconds": null,
-    "lesson_audio_url": null
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-6.m4a"
   },
   "sections": [
     {
@@ -39,246 +39,295 @@
         "items": [
           {
             "dutch": "nemen, pakken",
+            "english": "take, grab",
             "indonesian": "ambil",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ambil-a2677616.mp3"
           },
           {
             "dutch": "horloge",
+            "english": "watch",
             "indonesian": "arloji",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/arloji-8330d060.mp3"
           },
           {
             "dutch": "vertrekken",
+            "english": "depart",
             "indonesian": "berangkat",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/berangkat-86223835.mp3"
           },
           {
             "dutch": "nog nooit",
+            "english": "never before",
             "indonesian": "belum pernah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/belum-pernah-a5a12886.mp3"
           },
           {
             "dutch": "echt, echt waar",
+            "english": "really, truly",
             "indonesian": "betul",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/betul-73239bd7.mp3"
           },
           {
             "dutch": "laat maar",
+            "english": "never mind",
             "indonesian": "biarlah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/biarlah-56f78052.mp3"
           },
           {
             "dutch": "zeggen",
+            "english": "say",
             "indonesian": "bilang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bilang-0dcd9b8b.mp3"
           },
           {
             "dutch": "bier",
+            "english": "beer",
             "indonesian": "bir",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bir-c2bb7a74.mp3"
           },
           {
             "dutch": "blauw",
+            "english": "blue",
             "indonesian": "biru",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/biru-6e9a6309.mp3"
           },
           {
             "dutch": "1. niet, geen; 2. is 't niet?",
+            "english": "not, no; isn't it?",
             "indonesian": "bukan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bukan-9b0cfb37.mp3"
           },
           {
             "dutch": "snel",
+            "english": "fast",
             "indonesian": "cepat",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cepat-161a773f.mp3"
           },
           {
             "dutch": "proberen",
+            "english": "try",
             "indonesian": "coba",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/coba-2b50c502.mp3"
           },
           {
             "dutch": "zeg! (stopwoord)",
+            "english": "say! (filler word)",
             "indonesian": "deh! (deh)",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/deh-deh-87c53c2e.mp3"
           },
           {
             "dutch": "koud",
+            "english": "cold",
             "indonesian": "dingin",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/dingin-8c5b1573.mp3"
           },
           {
             "dutch": "economie",
+            "english": "economy",
             "indonesian": "ekonomi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ekonomi-566cadde.mp3"
           },
           {
             "dutch": "voorzien van 'air conditioning'",
+            "english": "equipped with air conditioning",
             "indonesian": "'full AC'",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/full-ac-c296594c.mp3"
           },
           {
             "dutch": "makkelijk",
+            "english": "easy",
             "indonesian": "gampang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/gampang-f09df200.mp3"
           },
           {
             "dutch": "slechts",
+            "english": "only",
             "indonesian": "hanya",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hanya-6fd41a04.mp3"
           },
           {
             "dutch": "vandaag",
+            "english": "today",
             "indonesian": "hari ini",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hari-ini-f9737ef2.mp3"
           },
           {
             "dutch": "zwart",
+            "english": "black",
             "indonesian": "hitam",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hitam-99d4312f.mp3"
           },
           {
             "dutch": "paleis",
+            "english": "palace",
             "indonesian": "istana",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/istana-adb4424f.mp3"
           },
           {
             "dutch": "rijden, gaan, lopen",
+            "english": "drive, go, walk",
             "indonesian": "jalan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jalan-707c33b1.mp3"
           },
           {
             "dutch": "uur; klok",
+            "english": "hour; clock",
             "indonesian": "jam",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-ca7066d3.mp3"
           },
           {
             "dutch": "doe niet!",
+            "english": "don't!",
             "indonesian": "jangan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jangan-aaf7dd30.mp3"
           },
           {
             "dutch": "afspraak, belofte",
+            "english": "appointment, promise",
             "indonesian": "janji",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/janji-995080a6.mp3"
           },
           {
             "dutch": "ver",
+            "english": "far",
             "indonesian": "jauh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jauh-fb041926.mp3"
           },
           {
             "dutch": "Japan(s)",
+            "english": "Japan(ese)",
             "indonesian": "Jepang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jepang-92953976.mp3"
           },
           {
             "dutch": "ik weet het niet (zo goed)",
+            "english": "I don't know (so well)",
             "indonesian": "kurang tahu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kurang-tahu-f1d9b396.mp3"
           },
           {
             "dutch": "ongeveer",
+            "english": "approximately",
             "indonesian": "kira-kira",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kirakira-af175e8c.mp3"
           },
           {
             "dutch": "laat, lang (tijd)",
+            "english": "late, long (time)",
             "indonesian": "larut",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/larut-8ed4c689.mp3"
           },
           {
             "dutch": "laat op de avond",
+            "english": "late evening",
             "indonesian": "larut malam",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/larut-malam-ffc5f251.mp3"
           },
           {
             "dutch": "meer",
+            "english": "more",
             "indonesian": "lebih",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/lebih-ce3b70c3.mp3"
           },
           {
             "dutch": "voorbij (zijn/gaan)",
+            "english": "past (be/go)",
             "indonesian": "lewat (lewat)",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/lewat-lewat-3eda0da4.mp3"
           },
           {
             "dutch": "binnengaan",
+            "english": "enter",
             "indonesian": "masuk",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/masuk-49742a88.mp3"
           },
           {
             "dutch": "minuut",
+            "english": "minute",
             "indonesian": "menit",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/menit-75f1c3b2.mp3"
           },
           {
             "dutch": "rood",
+            "english": "red",
             "indonesian": "merah (merah)",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/merah-merah-eb37f9c1.mp3"
           },
           {
             "dutch": "Nationaal Monument",
+            "english": "National Monument",
             "indonesian": "Monas = Monumen Nasional",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/monas-monumen-nasional-ac64a7e2.mp3"
           },
           {
             "dutch": "(on)kosten",
+            "english": "cost(s)",
             "indonesian": "ongkos",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ongkos-e6e7106a.mp3"
           },
           {
             "dutch": "ooit",
+            "english": "ever",
             "indonesian": "pernah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pernah-c6c25510.mp3"
           },
           {
             "dutch": "verlies lijden",
+            "english": "suffer a loss",
             "indonesian": "rugi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/rugi-7151191e.mp3"
           },
           {
             "dutch": "een kwart",
+            "english": "a quarter",
             "indonesian": "seperempat",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/seperempat-611eec17.mp3"
           },
           {
             "dutch": "een kwartier",
+            "english": "a quarter hour",
             "indonesian": "seperempat jam",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/seperempat-jam-7abe8037.mp3"
           },
           {
             "dutch": "de helft, het midden",
+            "english": "half, middle",
             "indonesian": "setengah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/setengah-283839c0.mp3"
           },
           {
             "dutch": "zeg! (stopwoord)",
+            "english": "hey! (filler word)",
             "indonesian": "sih!",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sih-022807a6.mp3"
           },
           {
             "dutch": "chauffeur",
+            "english": "driver",
             "indonesian": "sopir",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sopir-3702aa39.mp3"
           },
           {
             "dutch": "hand, (onder)arm",
+            "english": "hand, (fore)arm",
             "indonesian": "tangan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tangan-81840941.mp3"
           },
           {
             "dutch": "al, reeds",
+            "english": "already",
             "indonesian": "telah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/telah-450e446f.mp3"
           },
           {
             "dutch": "televisie",
+            "english": "television",
             "indonesian": "tv (tivi)",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tv-tivi-93a8f546.mp3"
           },
           {
             "dutch": "kleur",
+            "english": "color",
             "indonesian": "warna",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/warna-88d6b119.mp3"
           }
@@ -298,23 +347,31 @@
             "examples": [
               {
                 "dutch": "Heb je al koffie gedronken? -- Nog niet, ik heb nog geen koffie gedronken.",
+                "english": "Have you already had coffee? -- Not yet, I haven't had coffee yet.",
                 "indonesian": "Mas sudah minum kopi? -- Belum, saya belum minum kopi.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/mas-sudah-minum-kopi-e4c04d14.mp3"
               },
               {
                 "dutch": "Heb je al een horloge? -- Nee, ik heb geen geld.",
+                "english": "Do you already have a watch? -- No, I don't have money.",
                 "indonesian": "Kamu sudah punya arloji? -- Belum, tidak punya uang."
               },
               {
                 "dutch": "Ik heb honger, ik heb nog niet gegeten.",
+                "english": "I'm hungry, I haven't eaten yet.",
                 "indonesian": "Saya lapar, belum makan."
               },
               {
                 "dutch": "Ik ben nog nooit naar het Nationaal Monument geweest.",
+                "english": "I have never been to the National Monument.",
                 "indonesian": "Saya belum pernah ke Monas.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/saya-belum-pernah-ke-468344d0.mp3"
               }
-            ]
+            ],
+            "rules_en": [
+              "After a question with sudah, telah (= already) or pernah (= ever), the negative answer is always belum, never tidak."
+            ],
+            "title_en": "Not yet"
           }
         ],
         "grammar_topics": [
@@ -337,30 +394,40 @@
             "examples": [
               {
                 "dutch": "Dit is geen huis, maar een kantoor.",
+                "english": "This is not a house, but an office.",
                 "indonesian": "Ini bukan rumah, tetapi kantor.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ini-bukan-rumah-tetapi-f2aff8be.mp3"
               },
               {
                 "dutch": "Niet de blauwe koffer, maar de zwarte.",
+                "english": "Not the blue suitcase, but the black one.",
                 "indonesian": "Bukan koper biru, tetapi yang hitam.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bukan-koper-biru-tetapi-3711fd25.mp3"
               },
               {
                 "dutch": "Niet de zware, de lichte is verdwenen.",
+                "english": "Not the heavy one, the light one is gone.",
                 "indonesian": "Bukan yang berat, yang ringan hilang.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bukan-yang-berat-yang-ca94b329.mp3"
               },
               {
                 "dutch": "Ik ben het niet die dat gezegd heeft, maar Yono!",
+                "english": "It's not me who said that, but Yono!",
                 "indonesian": "Bukan saya yang bilang itu, tetapi Yono!",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bukan-saya-yang-bilang-ba91fa30.mp3"
               },
               {
                 "dutch": "Niet Tiro is ziek, maar Parman.",
+                "english": "It's not Tiro who is sick, but Parman.",
                 "indonesian": "Bukan mas Tiro yang sakit, tetapi mas Parman.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bukan-mas-tiro-yang-bcd1e49e.mp3"
               }
-            ]
+            ],
+            "rules_en": [
+              "Bukan negates nouns, words made into nouns with yang, personal pronouns, and proper nouns.",
+              "Bukan is often combined with tetapi (= but) to express a contrast: 'not that..., but...'."
+            ],
+            "title_en": "Bukan (1) -- negation of nouns"
           },
           {
             "rules": [
@@ -371,20 +438,28 @@
             "examples": [
               {
                 "dutch": "De tv in Indonesie is nog nieuw, nietwaar?",
+                "english": "TV in Indonesia is still new, isn't it?",
                 "indonesian": "TV di Indonesia masih baru bukan?",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tv-di-indonesia-masih-f6ffa5e2.mp3"
               },
               {
                 "dutch": "De economie van Japan is erg goed, is 't niet?",
+                "english": "Japan's economy is very good, isn't it?",
                 "indonesian": "Ekonomi Jepang baik sekali, 'kan?",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ekonomi-jepang-baik-sekali-4bd355d6.mp3"
               },
               {
                 "dutch": "Vandaag komt hij terug, nietwaar?",
+                "english": "He's coming back today, right?",
                 "indonesian": "Hari ini dia pulang, 'kan?",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hari-ini-dia-pulang-a5cbd006.mp3"
               }
-            ]
+            ],
+            "rules_en": [
+              "Bukan at the end of a sentence means 'isn't it?, right?'.",
+              "The shortened form 'kan? is widely used in spoken language."
+            ],
+            "title_en": "Bukan / 'kan (2) -- tag question (isn't it?)"
           }
         ],
         "grammar_topics": [
@@ -408,32 +483,44 @@
             "examples": [
               {
                 "dutch": "Ik wil daar niet naar toe.",
+                "english": "I don't want to go there.",
                 "indonesian": "Saya tidak mau ke sana."
               },
               {
                 "dutch": "Zij mag niet binnenkomen.",
+                "english": "She is not allowed to come in.",
                 "indonesian": "Dia tidak boleh masuk."
               },
               {
                 "dutch": "Ze kunnen niet komen.",
+                "english": "They cannot come.",
                 "indonesian": "Mereka tidak bisa datang.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/mereka-tidak-bisa-datang-8d65c909.mp3"
               },
               {
                 "dutch": "Het water is niet koud.",
+                "english": "The water is not cold.",
                 "indonesian": "Air tidak dingin.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/air-tidak-dingin-9d1cda71.mp3"
               },
               {
                 "dutch": "De grote stoel is niet mooi.",
+                "english": "The big chair is not nice.",
                 "indonesian": "Kursi besar tidak bagus.",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kursi-besar-tidak-bagus-3891bc31.mp3"
               },
               {
                 "dutch": "Dit huis is niet netjes.",
+                "english": "This house is not tidy.",
                 "indonesian": "Rumah ini tidak rapi."
               }
-            ]
+            ],
+            "rules_en": [
+              "Tidak (shortened form: tak) precedes a verb or adjective.",
+              "Tidak pernah = never.",
+              "Tak is used in formal language (literature, songs)."
+            ],
+            "title_en": "Tidak -- negation of verbs and adjectives"
           }
         ],
         "grammar_topics": [
@@ -455,24 +542,32 @@
             "examples": [
               {
                 "dutch": "Doe het niet!",
+                "english": "Don't!",
                 "indonesian": "Jangan!"
               },
               {
                 "dutch": "Drink niet teveel bier!",
+                "english": "Don't drink too much beer!",
                 "indonesian": "Jangan minum bir terlalu banyak!",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jangan-minum-bir-terlalu-7d9901dc.mp3"
               },
               {
                 "dutch": "Zeg dat niet!",
+                "english": "Don't say that!",
                 "indonesian": "Jangan bilang itu!",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jangan-bilang-itu-4317aaa2.mp3"
               },
               {
                 "dutch": "Ga niet zitten!",
+                "english": "Don't sit down!",
                 "indonesian": "Jangan duduk!",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jangan-duduk-e9ed58af.mp3"
               }
-            ]
+            ],
+            "rules_en": [
+              "Jangan expresses a prohibition. It can be used independently or precede a verb."
+            ],
+            "title_en": "Jangan -- prohibition (negative imperative)"
           }
         ],
         "grammar_topics": [
@@ -524,7 +619,13 @@
                 "help me (toch)!"
               ]
             ],
-            "title": "Gebiedende wijs met -lah (beleefde imperatief)"
+            "title": "Gebiedende wijs met -lah (beleefde imperatief)",
+            "rules_en": [
+              "The imperative = base verb + exclamation mark.",
+              "With the suffix -lah the imperative becomes polite (softened).",
+              "Invitations begin with silakan or mari. Exhortations with ayo, coba, cepat or tolong."
+            ],
+            "title_en": "Imperative with -lah (polite imperative)"
           },
           {
             "rules": [],
@@ -575,25 +676,33 @@
             "examples": [
               {
                 "dutch": "Zijn er bananen?",
+                "english": "Are there bananas?",
                 "indonesian": "Adakah pisang?",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/adakah-pisang-23655beb.mp3"
               },
               {
                 "dutch": "Wat is dat?",
+                "english": "What is that?",
                 "indonesian": "Apakah itu?",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/apakah-itu-6a2d3bdf.mp3"
               },
               {
                 "dutch": "Mag ik meegaan?",
+                "english": "May I come along?",
                 "indonesian": "Bolehkah saya ikut?",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bolehkah-saya-ikut-8279d472.mp3"
               },
               {
                 "dutch": "Kunt u mij helpen?",
+                "english": "Can you help me?",
                 "indonesian": "Bisakah tolong saya?",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bisakah-tolong-saya-e4a10228.mp3"
               }
-            ]
+            ],
+            "rules_en": [
+              "The suffix -kah turns a word into an emphatic question. It gives more emphasis than a regular question."
+            ],
+            "title_en": "-kah -- question suffix for emphasis"
           }
         ],
         "grammar_topics": [
@@ -648,7 +757,11 @@
                 "namiddag"
               ]
             ],
-            "title": "Dagdelen in het Indonesisch"
+            "title": "Dagdelen in het Indonesisch",
+            "rules_en": [
+              "In Indonesia a new day begins after sunset (around 6 PM). What we call 'Monday evening' is 'Tuesday evening' in Indonesia (malam Selasa)."
+            ],
+            "title_en": "Parts of the day in Indonesian"
           }
         ],
         "grammar_topics": [
@@ -670,21 +783,29 @@
             "examples": [
               {
                 "dutch": "35 seconden",
+                "english": "35 seconds",
                 "indonesian": "tiga puluh lima detik"
               },
               {
                 "dutch": "22 minuten",
+                "english": "22 minutes",
                 "indonesian": "dua puluh dua menit"
               },
               {
                 "dutch": "9 uur",
+                "english": "9 hours",
                 "indonesian": "sembilan jam"
               },
               {
                 "dutch": "Ik heb anderhalf uur gestudeerd.",
+                "english": "I studied for one and a half hours.",
                 "indonesian": "Saya belajar satu setengah jam."
               }
-            ]
+            ],
+            "rules_en": [
+              "A duration = numeral + time unit (detik / menit / jam)."
+            ],
+            "title_en": "Duration"
           },
           {
             "rules": [
@@ -726,7 +847,15 @@
                 "uurwerk, klok"
               ]
             ],
-            "title": "Kloktijd -- tijdswoorden"
+            "title": "Kloktijd -- tijdswoorden",
+            "rules_en": [
+              "What time is it now?",
+              "Time = jam / pukul + numeral. Part of day (pagi, siang, sore, malam) is optional but common.",
+              "lewat = past (after the hour); kurang = to (before the hour); setengah = half (before the next hour).",
+              "In spoken language lewat and menit are often omitted.",
+              "Pronunciation: lewat, sore."
+            ],
+            "title_en": "Clock time — time expressions"
           },
           {
             "rules": [],
@@ -1061,7 +1190,10 @@
       "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
     },
     "LessonAudioPlayer": {
-      "note": "No lesson-level audio published for this lesson yet."
+      "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
+      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-6.m4a\" voice=\"id-ID-Chirp3-HD-Orus\" />",
+      "purpose": "The lesson-level explanation/overview audio player.",
+      "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },
     "PracticeActions": {
       "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",

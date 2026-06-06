@@ -1339,6 +1339,7 @@ export const lessons: LessonData[] = [
     title: 'Les 5 - Belajar',
     description: 'Family dialogue about studying at home. Grammar focus: personal pronouns (persoonlijk voornaamwoord) and possessive pronouns (bezittelijk voornaamwoord), including kami vs kita distinction.',
     order_index: 5,
+    audio_filename: 'lesson-5.m4a',
     sections: [
       {
         title: 'Nasi gerechten',

@@ -1137,3 +1137,12 @@
   width: 100%;
   max-width: 660px;
 }
+
+.audioBand {
+  composes: band;
+  padding: 0 0 8px;
+}
+.audioInner {
+  composes: container;
+  max-width: 920px;
+}

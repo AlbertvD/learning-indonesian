@@ -7,7 +7,7 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Despina",
     "duration_seconds": null,
-    "lesson_audio_url": null
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-7.m4a"
   },
   "sections": [
     {
@@ -42,84 +42,98 @@
             "text": "Ninik dan ibunya akan pergi ke Denpasar. Mereka mau tinggal di sana satu minggu karena Ninik libur sekolah.",
             "speaker": "narrator",
             "translation": "Ninik en haar moeder gaan naar Denpasar. Ze willen daar een week blijven omdat Ninik schoolvakantie heeft.",
+            "translation_en": "Ninik and her mother are going to Denpasar. They want to stay there for a week because Ninik has school holidays.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/ninik-dan-ibunya-akan-9aa74ddc.mp3"
           },
           {
             "text": "Pada hari Kamis mereka mau berangkat. Tetapi barang yang perlu dibawa belum beres. Mereka mau bawa barang yang betul-betul perlu.",
             "speaker": "narrator",
             "translation": "Op donderdag willen ze vertrekken. Maar de spullen die ze nodig hebben zijn nog niet ingepakt. Ze willen alleen echt noodzakelijke spullen meenemen.",
+            "translation_en": "On Thursday they want to leave. But the things they need to bring aren't packed yet. They want to bring only really necessary things.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/pada-hari-kamis-mereka-b3a15bdf.mp3"
           },
           {
             "text": "Ninik, di mana kopernya? Kita perlu koper sekarang, 'kan? Tas pasti terlalu kecil untuk semua barang kita.",
             "speaker": "Ibu",
             "translation": "Moeder: 'Ninik, waar is de koffer? We hebben nu toch een koffer nodig, hè? Een tas is vast te klein voor al onze spullen.'",
+            "translation_en": "Ninik, where is the suitcase? We need a suitcase now, don't we? A bag is definitely too small for all our things.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ninik-di-mana-kopernya-07b10360.mp3"
           },
           {
             "text": "Masih di gudang bu, nanti saya ambil. Barang ibu sudah beres? Barang saya sudah banyak, bu.",
             "speaker": "Ninik",
             "translation": "Ninik: 'Hij staat nog in de schuur, moeder, ik haal hem zo. Zijn uw spullen al ingepakt? Mijn spullen zijn al behoorlijk veel, moeder.'",
+            "translation_en": "It's still in the shed, mother, I'll get it in a moment. Are your things packed? I already have a lot of things, mother.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/masih-di-gudang-bu-74bfd329.mp3"
           },
           {
             "text": "Jangan bawa pakaian banyak ya, nanti kita beli saja di Bali. Di Kuta dan di Denpasar ada toko pakaian yang bagus. Bawa saja jean dan kemeja. Jangan lupa rokmu yang merah muda, sebab cocok sekali kalau kamu mau ke disko.",
             "speaker": "Ibu",
             "translation": "Moeder: 'Neem niet zoveel kleding mee, hoor. We kopen wel wat in Bali. In Kuta en in Denpasar zijn mooie kledingwinkels. Neem alleen maar jeans en een blouse mee. Vergeet je roze rok niet, want die staat je echt super als je naar de discotheek gaat.'",
+            "translation_en": "Don't bring a lot of clothes, okay. We'll just buy some in Bali. In Kuta and in Denpasar there are nice clothing stores. Just bring jeans and a blouse. Don't forget your pink skirt, because it looks really great on you when you want to go to the disco.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jangan-bawa-pakaian-banyak-2d03f2c8.mp3"
           },
           {
             "text": "Bu, jangan lupa kacamata hitam, ya bu. Eeh ... apa perlu saya bawa hiasan seperti cincin, gelang dan kalung? Soalnya saya harus keren, 'kan?",
             "speaker": "Ninik",
             "translation": "Ninik: 'Moeder, vergeet de donkere zonnebril niet, alstublieft. Eh... moet ik sieraad meenemen zoals ringen, armbanden en kettingen? Want ik moet er stoer uitzien, toch?'",
+            "translation_en": "Mother, don't forget the dark sunglasses, please. Um... do I need to bring jewelry like rings, bracelets and necklaces? Because I need to look cool, right?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/bu-jangan-lupa-kacamata-a4fbe91b.mp3"
           },
           {
             "text": "Boleh, Nin, tapi jangan bawa semuanya. Kalau hilang bagaimana?",
             "speaker": "Ibu",
             "translation": "Moeder: 'Best hoor, Nin, maar neem niet alles mee. Stel je voor dat je iets kwijtraakt?'",
+            "translation_en": "Okay, Nin, but don't bring everything. What if you lose something?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/boleh-nin-tapi-jangan-81e8afca.mp3"
           },
           {
             "text": "Ibu juga mau bawa celana panjang dengan kantong yang merah? Malam hari pasti dingin lho!",
             "speaker": "Ninik",
             "translation": "Ninik: 'Wil u ook een lange broek met rode zakken meenemen? 's Avonds wordt het vast koud!'",
+            "translation_en": "Do you also want to bring long pants with red pockets? It must get cold at night!",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ibu-juga-mau-bawa-322f11a9.mp3"
           },
           {
             "text": "Benar, tapi belum disetrika. Tapi tidak apa-apa, di hotel pasti bisa.",
             "speaker": "Ibu",
             "translation": "Moeder: 'Klopt, maar hij is nog niet gestreken. Maar dat geeft niet, in het hotel kunnen ze dat doen.'",
+            "translation_en": "That's right, but it's not ironed yet. But that's okay, they can do it at the hotel.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/benar-tapi-belum-disetrika-68d72066.mp3"
           },
           {
             "text": "Aduh, koper sudah berat sekali bu. Bagus kalau bapak mau mengantar kita ke lapangan terbang. Kalau kita harus pikul sendiri bagaimana?",
             "speaker": "Ninik",
             "translation": "Ninik: 'Oeee, de koffer wordt al erg zwaar, moeder. Gelukkig dat vader ons naar het vliegveld wil brengen. Hoe zouden we het redden als we hem zelf moeten dragen?'",
+            "translation_en": "Ooh, the suitcase is already very heavy, mother. Good that father wants to take us to the airport. How would we manage if we had to carry it ourselves?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/aduh-koper-sudah-berat-3045cd8a.mp3"
           },
           {
             "text": "Eh, pakaian renang dan topi sudah ada ya?",
             "speaker": "Ibu",
             "translation": "Moeder: 'Hé, het badpak en de hoed zijn toch meegenomen?'",
+            "translation_en": "Hey, the swimming suit and the hat are packed, right?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/eh-pakaian-renang-dan-702f84b1.mp3"
           },
           {
             "text": "Sudah. Tapi di mana kaus oblong saya yang kuning? Sudah masuk ya?",
             "speaker": "Ninik",
             "translation": "Ninik: 'Ja. Maar waar is mijn gele T-shirt? Zit het erin?'",
+            "translation_en": "Yes. But where is my yellow T-shirt? Is it in there?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sudah-tapi-di-mana-c3b774ec.mp3"
           },
           {
             "text": "Sudah.",
             "speaker": "Ibu",
             "translation": "Moeder: 'Ja.'",
+            "translation_en": "Yes.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sudah-9ad577e5.mp3"
           },
           {
             "text": "Tentu masuk barang ke koper makan waktu lama. Ini ke luar, itu masuk, itu ke luar lagi. Tapi, akhirnya selesai. Mereka ke bandar udara dengan bapak dan setelah terbang satu setengah jam mereka tiba di bandara Ngurah Rai, Denpasar, Bali. Tapi, ada yang lupa. Sandal dan jepit rambut. Syukur, di Bali banyak toko yang jual barang itu. Jadi, tidak apa-apa.",
             "speaker": "narrator",
             "translation": "Uiteraard kost het inpakken van spullen in een koffer veel tijd. Dit gaat erin, dat gaat eruit, en dat gaat weer erin. Maar uiteindelijk was het af. Ze gingen met vader naar het vliegveld en na anderhalf uur vliegen landen ze op Ngurah Rai-luchthaven in Denpasar, Bali. Maar ze waren iets vergeten. Slippers en haarclips. Gelukkig zijn er veel winkels in Bali waar ze dat kunnen kopen. Dus het geeft niet.",
+            "translation_en": "Of course, packing things into a suitcase takes a long time. This goes in, that comes out, that goes in again. But finally it was done. They went to the airport with father and after flying for an hour and a half they arrived at Ngurah Rai airport in Denpasar, Bali. But they had forgotten something. Slippers and hair clips. Fortunately, there are many shops in Bali that sell those things. So it doesn't matter.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tentu-masuk-barang-ke-2f2e49de.mp3"
           }
         ]
@@ -132,301 +146,361 @@
         "items": [
           {
             "dutch": "zullen",
+            "english": "will, shall",
             "indonesian": "akan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/akan-5e8b2890.mp3"
           },
           {
             "dutch": "tenslotte",
+            "english": "finally, in the end",
             "indonesian": "akhirnya",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/akhirnya-6b6b50f9.mp3"
           },
           {
             "dutch": "meebrengen, meenemen",
+            "english": "bring, take along",
             "indonesian": "bawa",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bawa-22a591b8.mp3"
           },
           {
             "dutch": "klaar",
+            "english": "ready, done",
             "indonesian": "beres (bèrès)",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/beres-brs-adf2e505.mp3"
           },
           {
             "dutch": "écht",
+            "english": "really, truly",
             "indonesian": "betul-betul",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/betulbetul-f079b84e.mp3"
           },
           {
             "dutch": "broek",
+            "english": "trousers, pants",
             "indonesian": "celana",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/celana-befd4721.mp3"
           },
           {
             "dutch": "ring",
+            "english": "ring",
             "indonesian": "cincin",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/cincin-ba94f8e0.mp3"
           },
           {
             "dutch": "passen bij",
+            "english": "suit, match, fit",
             "indonesian": "cocok",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/cocok-b06c875d.mp3"
           },
           {
             "dutch": "voorbeeld",
+            "english": "example",
             "indonesian": "contoh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/contoh-71e7eaec.mp3"
           },
           {
             "dutch": "meegenomen",
+            "english": "taken along",
             "indonesian": "dibawa*",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dibawa-cf3814d9.mp3"
           },
           {
             "dutch": "gestreken",
+            "english": "ironed",
             "indonesian": "disetrika*",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/disetrika-d7861839.mp3"
           },
           {
             "dutch": "disco",
+            "english": "disco, discotheque",
             "indonesian": "disko",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/disko-39de385e.mp3"
           },
           {
             "dutch": "armband",
+            "english": "bracelet",
             "indonesian": "gelang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/gelang-1ea08efc.mp3"
           },
           {
             "dutch": "opslagplaats",
+            "english": "shed, storage room",
             "indonesian": "gudang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/gudang-d74ecca0.mp3"
           },
           {
             "dutch": "versiering, sieraad",
+            "english": "decoration, jewelry, ornament",
             "indonesian": "hiasan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hiasan-c7e1e818.mp3"
           },
           {
             "dutch": "jeans, spijkerbroek",
+            "english": "jeans",
             "indonesian": "jean",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jean-13e6362f.mp3"
           },
           {
             "dutch": "klemmen, knellen",
+            "english": "clamp, pinch",
             "indonesian": "jepit",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jepit-d4660781.mp3"
           },
           {
             "dutch": "haarpin(-speld)",
+            "english": "hair clip",
             "indonesian": "jepit rambut",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jepit-rambut-30c1c569.mp3"
           },
           {
             "dutch": "verkopen",
+            "english": "sell",
             "indonesian": "jual",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jual-861095fe.mp3"
           },
           {
             "dutch": "bril",
+            "english": "glasses",
             "indonesian": "kacamata",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kacamata-81d7e272.mp3"
           },
           {
             "dutch": "zonnebril",
+            "english": "sunglasses",
             "indonesian": "kacamata hitam",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kacamata-hitam-cbc69125.mp3"
           },
           {
             "dutch": "halsketting",
+            "english": "necklace",
             "indonesian": "kalung",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kalung-2763b669.mp3"
           },
           {
             "dutch": "donderdag",
+            "english": "Thursday",
             "indonesian": "hari Kamis",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hari-kamis-3550930e.mp3"
           },
           {
             "dutch": "zak",
+            "english": "pocket",
             "indonesian": "kantong",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kantong-820c2ae7.mp3"
           },
           {
             "dutch": "omdat",
+            "english": "because",
             "indonesian": "karena",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/karena-154da924.mp3"
           },
           {
             "dutch": "(onder)hemd",
+            "english": "shirt, undershirt",
             "indonesian": "kaus",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kaus-1e384527.mp3"
           },
           {
             "dutch": "T-shirt",
+            "english": "T-shirt",
             "indonesian": "kaus oblong",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kaus-oblong-730214c4.mp3"
           },
           {
             "dutch": "overhemd, hemd",
+            "english": "shirt",
             "indonesian": "kemeja (keméja)",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kemeja-kemja-65274093.mp3"
           },
           {
             "dutch": "sjiek",
+            "english": "smart, stylish",
             "indonesian": "keren (kerèn)",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/keren-kern-ac9da135.mp3"
           },
           {
             "dutch": "kilometer",
+            "english": "kilometer",
             "indonesian": "kilometer",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kilometer-9a2297ce.mp3"
           },
           {
             "dutch": "goh! (stopwoord)",
+            "english": "hey! (filler word)",
             "indonesian": "lho!",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lho-d15dec1b.mp3"
           },
           {
             "dutch": "vrij (vakantie) hebben",
+            "english": "have time off, be on vacation",
             "indonesian": "libur",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/libur-053c8531.mp3"
           },
           {
             "dutch": "schoolvakantie",
+            "english": "school vacation",
             "indonesian": "libur sekolah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/libur-sekolah-fa433039.mp3"
           },
           {
             "dutch": "vergeten",
+            "english": "forget",
             "indonesian": "lupa",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lupa-2914a5b7.mp3"
           },
           {
             "dutch": "wegbrengen, begeleiden",
+            "english": "take, accompany",
             "indonesian": "mengantar*",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mengantar-48666264.mp3"
           },
           {
             "dutch": "lichtrood, roze",
+            "english": "light red, pink",
             "indonesian": "merah muda",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/merah-muda-c76fedd9.mp3"
           },
           {
             "dutch": "meter",
+            "english": "meter",
             "indonesian": "meter (mèter)",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/meter-mter-4d0f783d.mp3"
           },
           {
             "dutch": "week",
+            "english": "week",
             "indonesian": "minggu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/minggu-035ec37a.mp3"
           },
           {
             "dutch": "jong, licht (kleur)",
+            "english": "young, light (color)",
             "indonesian": "muda",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/muda-2cffa874.mp3"
           },
           {
             "dutch": "op, bij, in",
+            "english": "on, at, in",
             "indonesian": "pada",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pada-62a1f5bc.mp3"
           },
           {
             "dutch": "strand, kust",
+            "english": "beach, coast",
             "indonesian": "pantai",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pantai-5fcd966d.mp3"
           },
           {
             "dutch": "zeker",
+            "english": "certain, sure",
             "indonesian": "pasti",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pasti-c7e61e53.mp3"
           },
           {
             "dutch": "nodig, noodzakelijk",
+            "english": "necessary, needed",
             "indonesian": "perlu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/perlu-d5d3a7da.mp3"
           },
           {
             "dutch": "dragen",
+            "english": "carry",
             "indonesian": "pikul",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pikul-c07659ae.mp3"
           },
           {
             "dutch": "hoofdhaar",
+            "english": "hair",
             "indonesian": "rambut",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/rambut-dba7d643.mp3"
           },
           {
             "dutch": "zwemmen",
+            "english": "swim",
             "indonesian": "renang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/renang-52960df3.mp3"
           },
           {
             "dutch": "rok",
+            "english": "skirt",
             "indonesian": "rok",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/rok-3da1176b.mp3"
           },
           {
             "dutch": "sandaal",
+            "english": "sandal",
             "indonesian": "sandal",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sandal-38507270.mp3"
           },
           {
             "dutch": "omdat, de reden is",
+            "english": "because, the reason is",
             "indonesian": "sebab",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sebab-3acb8c95.mp3"
           },
           {
             "dutch": "alle(n)",
+            "english": "all, everyone",
             "indonesian": "semua",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/semua-86e29ef0.mp3"
           },
           {
             "dutch": "zelf, eigen",
+            "english": "self, own",
             "indonesian": "sendiri",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sendiri-fdcba41f.mp3"
           },
           {
             "dutch": "zoals",
+            "english": "like, as",
             "indonesian": "seperti",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/seperti-7f4cad7c.mp3"
           },
           {
             "dutch": "probleem, kwestie",
+            "english": "problem, issue",
             "indonesian": "soal",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/soal-a9526f04.mp3"
           },
           {
             "dutch": "gelukkig",
+            "english": "fortunately",
             "indonesian": "syukur",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/syukur-361d6460.mp3"
           },
           {
             "dutch": "zeker, stellig",
+            "english": "certainly, definitely",
             "indonesian": "tentu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tentu-b0cd4ff8.mp3"
           },
           {
             "dutch": "arriveren",
+            "english": "arrive",
             "indonesian": "tiba",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tiba-ce82dd3a.mp3"
           },
           {
             "dutch": "hoog",
+            "english": "high, tall",
             "indonesian": "tinggi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tinggi-554eaa87.mp3"
           },
           {
             "dutch": "hoed",
+            "english": "hat",
             "indonesian": "topi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/topi-d2a2d3d4.mp3"
           },
           {
             "dutch": "tijd",
+            "english": "time",
             "indonesian": "waktu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/waktu-fcf9a37b.mp3"
           },
           {
             "dutch": "kleur",
+            "english": "color",
             "indonesian": "warna",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/warna-2cb0f89f.mp3"
           }
@@ -440,11 +514,13 @@
         "items": [
           {
             "dutch": "schoolvakantie",
+            "english": "school vacation",
             "indonesian": "libur sekolah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/libur-sekolah-fa433039.mp3"
           },
           {
             "dutch": "het geeft niets",
+            "english": "never mind, it doesn't matter",
             "indonesian": "tidak apa-apa",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tidak-apaapa-4ca89819.mp3"
           }
@@ -465,14 +541,21 @@
             "examples": [
               {
                 "dutch": "Zijn/haar fiets is zwart",
+                "english": "His/her bicycle is black",
                 "indonesian": "Sepedanya hitam",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sepedanya-hitam-e1d41089.mp3"
               },
               {
                 "dutch": "Die auto van hem is duur",
+                "english": "That car of his is expensive",
                 "indonesian": "Mobilnya itu mahal"
               }
-            ]
+            ],
+            "rules_en": [
+              "-nya after a noun = possessive pronoun: his/her/their",
+              "-nya is never attached to a proper name: 'Rumah Tuti', not 'Tutinya rumah'"
+            ],
+            "title_en": "Noun + -nya (possessive)"
           },
           {
             "rules": [
@@ -485,33 +568,46 @@
             "examples": [
               {
                 "dutch": "De naam van dit kind is Ali",
+                "english": "This child's name is Ali",
                 "indonesian": "Nama anak ini Ali"
               },
               {
                 "dutch": "Dit kind, zijn naam is Ali",
+                "english": "This child, his name is Ali",
                 "indonesian": "Anak ini namanya Ali",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/anak-ini-namanya-ali-4051d62f.mp3"
               },
               {
                 "dutch": "Dit kind, Ali is zijn naam",
+                "english": "This child, Ali is his name",
                 "indonesian": "Anak ini Ali namanya",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/anak-ini-ali-namanya-21071f25.mp3"
               },
               {
                 "dutch": "Hoeveel kost die rok?",
+                "english": "How much does that skirt cost?",
                 "indonesian": "Berapa harga rok itu?",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/berapa-harga-rok-itu-5834f801.mp3"
               },
               {
                 "dutch": "Die rok, hoeveel is de prijs?",
+                "english": "How much is that skirt?",
                 "indonesian": "Rok itu harganya berapa?",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/rok-itu-harganya-berapa-e10c0b33.mp3"
               },
               {
                 "dutch": "Die rok, hoeveel kost 'ie?",
+                "english": "That skirt, how much does it cost?",
                 "indonesian": "Rok itu berapa harganya?"
               }
-            ]
+            ],
+            "rules_en": [
+              "Construction 1 (A B C): The color of that car is white",
+              "Construction 2 (B A-nya C): That car, its color is white",
+              "Construction 3 (B C A-nya): That car is white, its color",
+              "All three constructions are correct. The phrase that comes first receives the most emphasis"
+            ],
+            "title_en": "Topicalization with -nya: three sentence constructions"
           },
           {
             "rules": [
@@ -522,19 +618,27 @@
             "examples": [
               {
                 "dutch": "De hoogte van die boom is 18 meter",
+                "english": "That tree is 18 meters tall",
                 "indonesian": "Pohon itu tingginya 18 meter",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pohon-itu-tingginya-18-6c617d32.mp3"
               },
               {
                 "dutch": "De afstand tot Jakarta is 350 km",
+                "english": "The distance to Jakarta is 350 kilometers",
                 "indonesian": "Jakarta jauhnya 350 kilometer",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jakarta-jauhnya-350-kilometer-f9508527.mp3"
               },
               {
                 "dutch": "Deze rok heeft een lengte van 1 meter",
+                "english": "This skirt is 1 meter long",
                 "indonesian": "Rok ini panjangnya 1 meter"
               }
-            ]
+            ],
+            "rules_en": [
+              "-nya after an adjective turns it into a noun: the quality/property",
+              "Common with measurements and distances"
+            ],
+            "title_en": "Adjective + -nya (nominalization)"
           }
         ],
         "grammar_topics": [
@@ -672,7 +776,11 @@
                 "zondagavond"
               ]
             ],
-            "title": "Dagen van de week (hari)"
+            "title": "Dagen van de week (hari)",
+            "rules_en": [
+              "Months and days are capitalized in Indonesian"
+            ],
+            "title_en": "Days of the week (hari)"
           },
           {
             "rules": [
@@ -685,21 +793,32 @@
             "examples": [
               {
                 "dutch": "Gisteren wandelde hij op de markt",
+                "english": "Yesterday he walked around the market",
                 "indonesian": "Kemarin dia jalan-jalan di pasar"
               },
               {
                 "dutch": "Morgen om elf uur zullen we elkaar ontmoeten",
+                "english": "Tomorrow at eleven o'clock we will meet",
                 "indonesian": "Besok pukul 11.00 kita bertemu"
               },
               {
                 "dutch": "Twee dagen geleden",
+                "english": "Two days ago",
                 "indonesian": "Dua hari yang lalu"
               },
               {
                 "dutch": "Over een week",
+                "english": "In a week",
                 "indonesian": "Seminggu lagi"
               }
-            ]
+            ],
+            "rules_en": [
+              "kemarin dulu = day before yesterday, kemarin = yesterday, hari ini = today, besok = tomorrow, lusa = day after tomorrow",
+              "tadi = just now, nanti = later",
+              "dulu / tempo dulu = formerly, depan = coming/future",
+              "lalu = ago (dua hari yang lalu = two days ago), lagi = in (lima hari lagi = in five days)"
+            ],
+            "title_en": "Time expressions"
           },
           {
             "rules": [
@@ -712,24 +831,35 @@
             "examples": [
               {
                 "dutch": "Nu wil ik eten",
+                "english": "Now I want to eat",
                 "indonesian": "Sekarang saya mau makan",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sekarang-saya-mau-makan-2b415bde.mp3"
               },
               {
                 "dutch": "Ik wil nu eten",
+                "english": "I want to eat now",
                 "indonesian": "Saya mau makan sekarang"
               },
               {
                 "dutch": "Morgen zal Rudi naar Bogor komen",
+                "english": "Tomorrow Rudi will come to Bogor",
                 "indonesian": "Besok Rudi mau datang ke Bogor",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/besok-rudi-mau-datang-fdffc0a5.mp3"
               },
               {
                 "dutch": "In Bogor zal Rudi twee dagen blijven",
+                "english": "In Bogor Rudi will stay two days",
                 "indonesian": "Di Bogor Rudi tinggal dua hari",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/di-bogor-rudi-tinggal-87cb4e60.mp3"
               }
-            ]
+            ],
+            "rules_en": [
+              "Time and place expressions come at the beginning or end of the sentence",
+              "When both expressions appear: start with place, then time at the end (or vice versa)",
+              "The expression at the beginning receives the most emphasis",
+              "Never between subject and verb: 'Saya sekarang makan' is WRONG"
+            ],
+            "title_en": "Sentence structure: time and place expressions"
           }
         ],
         "grammar_topics": [
@@ -983,7 +1113,10 @@
       "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
     },
     "LessonAudioPlayer": {
-      "note": "No lesson-level audio published for this lesson yet."
+      "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
+      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-7.m4a\" voice=\"id-ID-Chirp3-HD-Despina\" />",
+      "purpose": "The lesson-level explanation/overview audio player.",
+      "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },
     "PracticeActions": {
       "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
