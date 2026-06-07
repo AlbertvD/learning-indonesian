@@ -144,6 +144,36 @@ export async function fetchItemsWithClozeCarrier(
   return [...withCarrier].map((id) => ({ indonesianText: idToText.get(id) as string }))
 }
 
+/**
+ * Distractor row counts per capability, for the CS15 coverage gate (which needs
+ * counts, not just presence). Paginate-all-then-filter (gateway URL-length rule).
+ * Returns 0 for caps with no rows (callers default-fill via `?? 0`).
+ */
+export async function fetchDistractorCountsByCapability(
+  supabase: CapabilitySupabaseClient,
+  capabilityIds: string[],
+): Promise<Map<string, number>> {
+  const want = new Set(capabilityIds)
+  const counts = new Map<string, number>()
+  if (capabilityIds.length === 0) return counts
+  let offset = 0
+  while (true) {
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .from('distractors')
+      .select('capability_id')
+      .range(offset, offset + PAGE_SIZE - 1)
+    if (error) throw new Error(`store.fetchDistractorCountsByCapability: ${error.message}`)
+    const page = (data ?? []) as Array<{ capability_id: string }>
+    for (const r of page) {
+      if (want.has(r.capability_id)) counts.set(r.capability_id, (counts.get(r.capability_id) ?? 0) + 1)
+    }
+    if (page.length < PAGE_SIZE) break
+    offset += PAGE_SIZE
+  }
+  return counts
+}
+
 export function createDistractorStore(
   supabase: CapabilitySupabaseClient,
 ): DistractorStore {

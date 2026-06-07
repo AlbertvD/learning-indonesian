@@ -175,17 +175,29 @@ export interface RetireOrphanedCapabilitiesResult {
  *
  * Scoped to `lessonId` so a re-publish of lesson N never touches lesson M's
  * capabilities, even if their canonical_keys happen to differ.
+ *
+ * `sourceKinds` (cap-v2 #161): OPTIONAL source_kind scope. The vocab module and
+ * the runner each own DISJOINT source_kinds for one lesson (item vs
+ * dialogue_line/pattern/affixed) and call this independently — without the scope,
+ * one stage's sweep (its emittedKeys lack the other's keys) would retire the
+ * OTHER stage's live caps. Omitted = sweep all kinds (the pre-cutover behavior;
+ * backward-compatible — the runner's existing call is unchanged until the cutover
+ * narrows it to the non-item kinds, Task 8a).
  */
 export async function retireOrphanedCapabilities(
   supabase: CapabilitySupabaseClient,
-  input: { lessonId: string; emittedKeys: ReadonlyArray<string> },
+  input: { lessonId: string; emittedKeys: ReadonlyArray<string>; sourceKinds?: ReadonlyArray<string> },
 ): Promise<RetireOrphanedCapabilitiesResult> {
-  const { data: active, error: fetchError } = await supabase
+  let query = supabase
     .schema('indonesian')
     .from('learning_capabilities')
     .select('id, canonical_key')
     .eq('lesson_id', input.lessonId)
     .is('retired_at', null)
+  if (input.sourceKinds && input.sourceKinds.length > 0) {
+    query = query.in('source_kind', input.sourceKinds)
+  }
+  const { data: active, error: fetchError } = await query
   if (fetchError) throw fetchError
 
   const emittedSet = new Set(input.emittedKeys)
