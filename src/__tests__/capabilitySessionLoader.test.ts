@@ -462,6 +462,56 @@ describe('capability session loader', () => {
     })
   })
 
+  describe('lesson-priority candidate ordering (issue #166/#125)', () => {
+    // Asserts on the FINAL composed SessionBlock[] (post planner → compose →
+    // interleave → slice), not just the planner output — this is what the
+    // learner sees and closes the composer swap+slice interaction.
+    const lesson1Id = 'lesson-1-uuid'
+    const lesson2Id = 'lesson-2-uuid'
+
+    function lessonCap(key: string, lessonId: string, lessonOrder: number): PlannerCapability {
+      return {
+        ...plannerCapability({ id: key, canonicalKey: key, sourceRef: `learning_items/${key}`, lessonId }),
+        lessonOrder,
+      }
+    }
+
+    it('fills the budget with lower-lesson caps first; later-lesson caps wait', async () => {
+      // 3 L1 caps + 2 L2 caps, budget = 3 → the composed session is all L1.
+      const caps = [
+        lessonCap('l2-a', lesson2Id, 2),
+        lessonCap('l1-a', lesson1Id, 1),
+        lessonCap('l2-b', lesson2Id, 2),
+        lessonCap('l1-b', lesson1Id, 1),
+        lessonCap('l1-c', lesson1Id, 1),
+      ]
+      const projections = caps.map(c => projectedCapability({
+        canonicalKey: c.canonicalKey,
+        sourceRef: c.sourceRef,
+        lessonId: c.lessonId,
+        requiredArtifacts: [],
+      }))
+
+      const plan = await loadCapabilitySessionPlan(baseInput({
+        limit: 3,
+        plannerInput: {
+          userId: 'user-1',
+          preferredSessionSize: 3,
+          dueCount: 0,
+          readyCapabilities: caps,
+          learnerCapabilityStates: [],
+          activatedLessons: new Set<string>([lesson1Id, lesson2Id]),
+        },
+        capabilitiesByKey: new Map(projections.map(p => [p.canonicalKey, p])),
+        readinessByKey: new Map(projections.map(p => [p.canonicalKey, { status: 'ready' as const, allowedExercises: ['meaning_recall' as const] }])),
+      }))
+
+      const served = plan.blocks.map(b => b.canonicalKeySnapshot).sort()
+      expect(served).toEqual(['l1-a', 'l1-b', 'l1-c'])
+      expect(plan.blocks.some(b => b.canonicalKeySnapshot.startsWith('l2'))).toBe(false)
+    })
+  })
+
   describe('queue drying diagnostic', () => {
     const currentLessonUuid = 'lesson-current-uuid'
 

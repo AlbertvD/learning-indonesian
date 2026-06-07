@@ -132,7 +132,11 @@ function toProjectedCapability(row: LearningCapabilityDbRow): ProjectedCapabilit
   }
 }
 
-function toPlannerCapability(row: LearningCapabilityDbRow, projection: ProjectedCapability): PlannerCapability {
+function toPlannerCapability(
+  row: LearningCapabilityDbRow,
+  projection: ProjectedCapability,
+  lessonOrderById: ReadonlyMap<string, number>,
+): PlannerCapability {
   return {
     id: row.id,
     canonicalKey: projection.canonicalKey,
@@ -144,6 +148,10 @@ function toPlannerCapability(row: LearningCapabilityDbRow, projection: Projected
     publicationStatus: row.publication_status,
     prerequisiteKeys: projection.prerequisiteKeys,
     lessonId: row.lesson_id,
+    // Lesson order for the planner's prioritize stage. Null for podcast/null-lesson
+    // caps (sort last). Derived from the lessons rows already loaded below — no
+    // extra query. See docs/plans/2026-06-07-lesson-priority-candidate-ordering-design.md.
+    lessonOrder: row.lesson_id != null ? lessonOrderById.get(row.lesson_id) ?? null : null,
   }
 }
 
@@ -250,6 +258,11 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
       const capabilityRows = (capabilitiesResult.data ?? []) as LearningCapabilityDbRow[]
       const capabilityById = new Map(capabilityRows.map(row => [row.id, row]))
 
+      // lessonId → order_index, reused from the lessons rows already loaded above
+      // for deriveLessonProgression. Feeds the planner's lesson-priority ordering.
+      const lessonRows = (lessonsResult.data ?? []) as LessonOrderDbRow[]
+      const lessonOrderById = new Map(lessonRows.map(lesson => [lesson.id, lesson.order_index]))
+
       const capabilitiesByKey = new Map<string, ProjectedCapability>()
       const readinessByKey = new Map<string, CapabilityReadiness>()
       const readyCapabilities: PlannerCapability[] = []
@@ -261,7 +274,7 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
           ? validateCapability({ capability: projection })
           : { status: row.readiness_status, reason: `Capability readiness is ${row.readiness_status}` } as CapabilityReadiness
         readinessByKey.set(row.canonical_key, readiness)
-        readyCapabilities.push(toPlannerCapability(row, projection))
+        readyCapabilities.push(toPlannerCapability(row, projection, lessonOrderById))
       }
 
       const schedulerRows = ((statesResult.data ?? []) as LearnerCapabilityStateDbRow[])
@@ -281,7 +294,7 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         }))
       const { currentLessonId, nextLessonNeedsExposure } = deriveLessonProgression({
         activatedLessonIds: activatedLessons,
-        lessons: (lessonsResult.data ?? []) as LessonOrderDbRow[],
+        lessons: lessonRows,
       })
 
       return {

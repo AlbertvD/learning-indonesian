@@ -22,6 +22,46 @@ export interface PlannerCapability {
   // `learning_capabilities_lesson_id_required_for_lessons`; those caps are
   // gated by `activatedLessons` in PedagogyInput.
   lessonId?: string | null
+  // The owning lesson's `order_index` (`lessons.order_index`, NOT NULL DEFAULT 0).
+  // Primary key of the new-introduction ordering policy (the `prioritize` stage):
+  // candidates sort lesson-major so lower lessons are introduced first. Null only
+  // for podcast/null-lesson caps, which sort last. Populated by the adapter from
+  // the lessons rows it already loads — no new query. See
+  // docs/plans/2026-06-07-lesson-priority-candidate-ordering-design.md.
+  lessonOrder?: number | null
+}
+
+// Family axis for the within-lesson round-robin in `prioritizeCandidates`. Keyed
+// on source_kind ALONE — capability_type is the wrong axis because
+// `contextual_cloze` attaches to both `item` and `dialogue_line` (different
+// content sources, same type). Exhaustive over CapabilitySourceKind: a new
+// source kind fails compilation here.
+export type CapabilityFamily = 'vocab' | 'cloze' | 'grammar' | 'morphology' | 'podcast'
+
+export function capabilityFamily(sourceKind: CapabilitySourceKind): CapabilityFamily {
+  switch (sourceKind) {
+    case 'item':
+      return 'vocab'
+    case 'dialogue_line':
+      return 'cloze'
+    case 'pattern':
+      return 'grammar'
+    case 'affixed_form_pair':
+      return 'morphology'
+    case 'podcast_segment':
+    case 'podcast_phrase':
+      return 'podcast'
+  }
+}
+
+// Stable final tiebreak between families when lessonOrder + within-family rank
+// are equal. Order is cosmetic (determinism only), not pedagogic.
+const FAMILY_TIEBREAK: Record<CapabilityFamily, number> = {
+  vocab: 0,
+  cloze: 1,
+  grammar: 2,
+  morphology: 3,
+  podcast: 4,
 }
 
 export interface PlannerLearnerCapabilityState {
@@ -204,29 +244,34 @@ function isInSelectedLessonScope(input: {
     && input.selectedSourceRefs!.includes(input.capability.sourceRef)
 }
 
-export function planLearningPath(input: PedagogyInput): LearningPlan {
-  const loadBudget = decideLoadBudget({
-    mode: input.mode,
-    preferredSessionSize: input.preferredSessionSize,
-    dueCount: input.dueCount,
-  })
-  const stateByKey = new Map(input.learnerCapabilityStates.map(state => [state.canonicalKey, state]))
-  const satisfiedKeys = new Set(input.learnerCapabilityStates
-    .filter(state => state.activationState === 'active' && state.successfulReviewCount > 0)
-    .map(state => state.canonicalKey))
-  const unlockedSourceRefs = buildUnlockedSourceRefs({
-    readyCapabilities: input.readyCapabilities,
-    learnerCapabilityStates: input.learnerCapabilityStates,
-  })
-  const eligibleNewCapabilities: EligibleCapability[] = []
-  const suppressedCapabilities: SuppressedCapability[] = []
-  let patternCount = 0
-  let productionTaskCount = 0
-  let hiddenAudioTaskCount = 0
+// Shared context the gate stage reads. Derived once per plan from PedagogyInput.
+interface GateContext {
+  mode: SessionMode
+  now: Date
+  recentFailures?: PedagogyInput['recentFailures']
+  activatedLessons: ReadonlySet<string>
+  selectedLessonId?: string
+  selectedSourceRefs?: string[]
+  satisfiedKeys: ReadonlySet<string>
+  unlockedSourceRefs: ReadonlySet<string>
+  stateByKey: ReadonlyMap<string, PlannerLearnerCapabilityState>
+}
 
-  for (const capability of input.readyCapabilities) {
+// ── Stage 1: gate ──────────────────────────────────────────────────────────
+// The suppression-rule engine. Partitions ready capabilities into those that
+// could be introduced (gate-passing) and those suppressed-with-reason. Does NOT
+// decide order or budget — those are the prioritize + allocate stages. Walks in
+// input order; suppression reasons are emitted in that order.
+function gateCandidates(
+  readyCapabilities: readonly PlannerCapability[],
+  ctx: GateContext,
+): { gatePassing: PlannerCapability[]; suppressed: SuppressedCapability[] } {
+  const gatePassing: PlannerCapability[] = []
+  const suppressed: SuppressedCapability[] = []
+
+  for (const capability of readyCapabilities) {
     const suppress = (reason: PlannerReason): void => {
-      suppressedCapabilities.push({ canonicalKey: capability.canonicalKey, reason })
+      suppressed.push({ canonicalKey: capability.canonicalKey, reason })
     }
 
     if (capability.readinessStatus !== 'ready') {
@@ -238,26 +283,26 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
       continue
     }
     if (
-      isLessonScopedMode(input.mode)
+      isLessonScopedMode(ctx.mode)
       && !isInSelectedLessonScope({
         capability,
-        selectedLessonId: input.selectedLessonId,
-        selectedSourceRefs: input.selectedSourceRefs,
+        selectedLessonId: ctx.selectedLessonId,
+        selectedSourceRefs: ctx.selectedSourceRefs,
       })
     ) {
       suppress('wrong_session_mode')
       continue
     }
-    const state = stateByKey.get(capability.canonicalKey)
+    const state = ctx.stateByKey.get(capability.canonicalKey)
     if (state && state.activationState !== 'dormant') {
       suppress('already_active_or_retired')
       continue
     }
-    if (capability.prerequisiteKeys.some(key => !satisfiedKeys.has(key))) {
+    if (capability.prerequisiteKeys.some(key => !ctx.satisfiedKeys.has(key))) {
       suppress('missing_prerequisite')
       continue
     }
-    if (hasRecentFailureFatigue({ capability, now: input.now, recentFailures: input.recentFailures })) {
+    if (hasRecentFailureFatigue({ capability, now: ctx.now, recentFailures: ctx.recentFailures })) {
       suppress('recent_failure_fatigue')
       continue
     }
@@ -298,7 +343,7 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
       && capability.sourceKind !== 'dialogue_line'
       && capability.sourceKind !== 'pattern'
       && capabilityPhase(capability.capabilityType) >= 3
-      && !unlockedSourceRefs.has(capability.sourceRef)
+      && !ctx.unlockedSourceRefs.has(capability.sourceRef)
     ) {
       suppress('productive_capability_not_unlocked')
       continue
@@ -316,31 +361,101 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
     // rely on `isAllowedInSessionMode` above to gate them by mode. For every
     // other source kind, the schema guarantees lessonId is non-null and the
     // gate fires whenever the learner has not activated that lesson.
-    if (capability.lessonId != null && !input.activatedLessons.has(capability.lessonId)) {
+    if (capability.lessonId != null && !ctx.activatedLessons.has(capability.lessonId)) {
       suppress('lesson_not_activated')
       continue
     }
-    if (!loadBudget.allowNewCapabilities || eligibleNewCapabilities.length >= loadBudget.maxNewCapabilities) {
-      suppress('load_budget_exhausted')
+
+    gatePassing.push(capability)
+  }
+
+  return { gatePassing, suppressed }
+}
+
+// ── Stage 2: prioritize ────────────────────────────────────────────────────
+// The new-introduction ordering policy (the restored `orderedReadyCapabilities`
+// concept). Pure + deterministic — same set in, same order out, independent of
+// input array order. Sort key, in priority order:
+//   1. lessonOrder ASC      → soft lesson priority (L1 before L2). Soft-spill
+//      falls out: a lesson with no gate-passing candidate contributes nothing,
+//      so the next lesson becomes the lowest available.
+//   2. rankWithinLessonFamily ASC → within-lesson family round-robin so scarce
+//      families (grammar/cloze/morphology) interleave with the ~50:1 vocab
+//      majority instead of trailing all of it. Rank is assigned deterministically
+//      (by canonicalKey within each (lessonOrder, family) group) so the result
+//      does not depend on DB row order.
+//   3. FAMILY_TIEBREAK, then canonicalKey → stable, total deterministic order.
+// Scoped to new introductions in non-single-lesson candidate sets; a no-op when
+// the gate already narrowed to one lesson (lesson_practice/lesson_review).
+export function prioritizeCandidates(candidates: readonly PlannerCapability[]): PlannerCapability[] {
+  const groups = new Map<string, PlannerCapability[]>()
+  for (const cap of candidates) {
+    const key = `${cap.lessonOrder ?? Infinity}::${capabilityFamily(cap.sourceKind)}`
+    const group = groups.get(key)
+    if (group) group.push(cap)
+    else groups.set(key, [cap])
+  }
+  const rankByKey = new Map<string, number>()
+  for (const group of groups.values()) {
+    group.sort((a, b) => compareCanonicalKey(a, b))
+    group.forEach((cap, index) => rankByKey.set(cap.canonicalKey, index))
+  }
+
+  return [...candidates].sort((a, b) => {
+    const lessonDelta = (a.lessonOrder ?? Infinity) - (b.lessonOrder ?? Infinity)
+    if (lessonDelta !== 0) return lessonDelta
+    const rankDelta = rankByKey.get(a.canonicalKey)! - rankByKey.get(b.canonicalKey)!
+    if (rankDelta !== 0) return rankDelta
+    const familyDelta = FAMILY_TIEBREAK[capabilityFamily(a.sourceKind)] - FAMILY_TIEBREAK[capabilityFamily(b.sourceKind)]
+    if (familyDelta !== 0) return familyDelta
+    return compareCanonicalKey(a, b)
+  })
+}
+
+function compareCanonicalKey(a: PlannerCapability, b: PlannerCapability): number {
+  return a.canonicalKey < b.canonicalKey ? -1 : a.canonicalKey > b.canonicalKey ? 1 : 0
+}
+
+// ── Stage 3: allocate ──────────────────────────────────────────────────────
+// Fills the load budget from the prioritized list, applying the per-type
+// ceilings. The budget math is unchanged from the pre-decomposition loop; the
+// only difference is it now consumes an explicitly-ordered list. Overflow is
+// suppressed as load_budget_exhausted in prioritized order.
+function allocateBudget(
+  prioritized: readonly PlannerCapability[],
+  loadBudget: LoadBudgetDecision,
+): { eligible: EligibleCapability[]; suppressed: SuppressedCapability[] } {
+  const eligible: EligibleCapability[] = []
+  const suppressed: SuppressedCapability[] = []
+  let patternCount = 0
+  let productionTaskCount = 0
+  let hiddenAudioTaskCount = 0
+
+  for (const capability of prioritized) {
+    const suppress = (): void => {
+      suppressed.push({ canonicalKey: capability.canonicalKey, reason: 'load_budget_exhausted' })
+    }
+    if (!loadBudget.allowNewCapabilities || eligible.length >= loadBudget.maxNewCapabilities) {
+      suppress()
       continue
     }
     if (isPattern(capability) && patternCount >= loadBudget.maxNewPatterns) {
-      suppress('load_budget_exhausted')
+      suppress()
       continue
     }
     if (isNewProductionTask(capability) && productionTaskCount >= loadBudget.maxNewProductionTasks) {
-      suppress('load_budget_exhausted')
+      suppress()
       continue
     }
     if (isHiddenAudioTask(capability) && hiddenAudioTaskCount >= loadBudget.maxHiddenAudioTasks) {
-      suppress('load_budget_exhausted')
+      suppress()
       continue
     }
 
     if (isPattern(capability)) patternCount += 1
     if (isNewProductionTask(capability)) productionTaskCount += 1
     if (isHiddenAudioTask(capability)) hiddenAudioTaskCount += 1
-    eligibleNewCapabilities.push({
+    eligible.push({
       capability,
       activationRecommendation: {
         recommended: true,
@@ -350,12 +465,45 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
     })
   }
 
+  return { eligible, suppressed }
+}
+
+// Orchestrator: gate → prioritize → allocate. Each stage is a pure function;
+// this composes them and merges the two suppression lists.
+export function planLearningPath(input: PedagogyInput): LearningPlan {
+  const loadBudget = decideLoadBudget({
+    mode: input.mode,
+    preferredSessionSize: input.preferredSessionSize,
+    dueCount: input.dueCount,
+  })
+  const ctx: GateContext = {
+    mode: input.mode,
+    now: input.now,
+    recentFailures: input.recentFailures,
+    activatedLessons: input.activatedLessons,
+    selectedLessonId: input.selectedLessonId,
+    selectedSourceRefs: input.selectedSourceRefs,
+    stateByKey: new Map(input.learnerCapabilityStates.map(state => [state.canonicalKey, state])),
+    satisfiedKeys: new Set(input.learnerCapabilityStates
+      .filter(state => state.activationState === 'active' && state.successfulReviewCount > 0)
+      .map(state => state.canonicalKey)),
+    unlockedSourceRefs: buildUnlockedSourceRefs({
+      readyCapabilities: input.readyCapabilities,
+      learnerCapabilityStates: input.learnerCapabilityStates,
+    }),
+  }
+
+  const { gatePassing, suppressed: gateSuppressed } = gateCandidates(input.readyCapabilities, ctx)
+  const prioritized = prioritizeCandidates(gatePassing)
+  const { eligible, suppressed: budgetSuppressed } = allocateBudget(prioritized, loadBudget)
+
+  const suppressedCapabilities = [...gateSuppressed, ...budgetSuppressed]
   return {
-    eligibleNewCapabilities,
+    eligibleNewCapabilities: eligible,
     suppressedCapabilities,
     loadBudget,
     reasons: Array.from(new Set([
-      ...eligibleNewCapabilities.map(item => item.activationRecommendation.reason),
+      ...eligible.map(item => item.activationRecommendation.reason),
       ...suppressedCapabilities.map(item => item.reason),
     ])),
   }
