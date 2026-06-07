@@ -149,10 +149,8 @@ describe('exerciseTypesForCapability', () => {
     expect(exerciseTypesForCapability('pattern_contrast')).toEqual(['contrast_pair'])
   })
 
-  it('returns both cloze and cloze_mcq for contextual_cloze', () => {
-    expect(exerciseTypesForCapability('contextual_cloze')).toEqual(
-      expect.arrayContaining(['cloze', 'cloze_mcq']),
-    )
+  it('returns only cloze for contextual_cloze (cap-v2 #161: item cloze is typed-only, not cloze_mcq)', () => {
+    expect(exerciseTypesForCapability('contextual_cloze')).toEqual(['cloze'])
   })
 
   it('returns listening_mcq for audio_recognition AND podcast_gist', () => {
@@ -162,10 +160,11 @@ describe('exerciseTypesForCapability', () => {
 })
 
 describe('supportsSourceKind', () => {
-  it('every exercise supports source kind item except the 3 pattern-only grammar exercises (PR 4)', () => {
-    // contrast_pair / sentence_transformation / constrained_translation route
-    // exclusively to pattern caps now. cloze_mcq is dual (item + pattern).
-    const patternOnly = new Set(['contrast_pair', 'sentence_transformation', 'constrained_translation'])
+  it('every exercise supports source kind item except the 4 pattern-only grammar exercises (cap-v2 #161)', () => {
+    // contrast_pair / sentence_transformation / constrained_translation AND now
+    // cloze_mcq route exclusively to pattern caps — item cloze is typed-only (the
+    // `cloze` builder), so cloze_mcq dropped 'item' from supportedSourceKinds.
+    const patternOnly = new Set(['contrast_pair', 'sentence_transformation', 'constrained_translation', 'cloze_mcq'])
     for (const et of Object.keys(RENDER_CONTRACTS) as Array<keyof typeof RENDER_CONTRACTS>) {
       expect(supportsSourceKind(et, 'item')).toBe(!patternOnly.has(et))
     }
@@ -359,34 +358,21 @@ describe('projectBuilderInput — cloze', () => {
   })
 })
 
-describe('projectBuilderInput — cloze_mcq', () => {
-  it('fails when neither cloze context (item) nor pattern exercise present', () => {
-    const raw = makeRawInput({
-      learningItem: makeLearningItem(),
-      contexts: [],
-    })
-    const result = projectBuilderInput('cloze_mcq', raw)
-    expect(result.ok).toBe(false)
-    if (!result.ok) {
-      expect(result.reasonCode).toBe('malformed_cloze')
-    }
-  })
-
-  it('succeeds with cloze context and exercise is null (item runtime path)', () => {
+describe('projectBuilderInput — cloze_mcq (pattern-only since cap-v2 #161)', () => {
+  it('fails (pattern_typed_row_missing) when no pattern cloze_mcq row is present, even with a cloze context', () => {
+    // Item cloze no longer routes to cloze_mcq — a cloze context does not satisfy it.
     const raw = makeRawInput({
       learningItem: makeLearningItem(),
       contexts: [makeClozeContext()],
     })
     const result = projectBuilderInput('cloze_mcq', raw)
-    expect(result.ok).toBe(true)
-    if (result.ok) {
-      const input = result.input as { clozeContext: ItemContext | null; exercise: unknown }
-      expect(input.clozeContext).not.toBeNull()
-      expect(input.exercise).toBeNull()
+    expect(result.ok).toBe(false)
+    if (!result.ok) {
+      expect(result.reasonCode).toBe('pattern_typed_row_missing')
     }
   })
 
-  it('succeeds with a pattern cloze_mcq row, learningItem + clozeContext null (pattern path)', () => {
+  it('succeeds with a pattern cloze_mcq row, learningItem null (pattern path)', () => {
     const raw = makeRawInput({
       learningItem: null,
       contexts: [],
@@ -395,9 +381,7 @@ describe('projectBuilderInput — cloze_mcq', () => {
     const result = projectBuilderInput('cloze_mcq', raw)
     expect(result.ok).toBe(true)
     if (result.ok) {
-      const input = result.input as { learningItem: LearningItem | null; clozeContext: ItemContext | null; exercise: unknown }
-      expect(input.learningItem).toBeNull()
-      expect(input.clozeContext).toBeNull()
+      const input = result.input as { exercise: unknown }
       expect(input.exercise).not.toBeNull()
     }
   })

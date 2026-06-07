@@ -16,7 +16,6 @@ import {
   itemSlug,
 } from '@/lib/capabilities'
 
-import { normalizeTtsText } from '../../../tts-normalize'
 import type { AudioClipMeta } from '../adapter'
 
 import { sourceRefForLearningItem } from '../../../content-pipeline-output'
@@ -230,57 +229,54 @@ export function projectItemsFromTypedRows(
     ]
 
     // ----- audio capability rows -----
-    // Emit audio_recognition + dictation if an audio_clip exists for this item.
-    // The lookup uses normalizeTtsText (toLowerCase + trim + collapse internal
-    // whitespace — see tts-normalize.ts; NOT lower+trim only) to match the key
-    // used by Stage A when writing audio_clips.normalized_text (adapter.ts:fetchLessonAudioCoverage).
-    // This mirrors capabilityCatalog.ts:93–116 exactly:
-    //   audio_recognition: direction=audio_to_l1, learnerLanguage=<first meaning lang>
-    //   dictation:         direction=audio_to_id, learnerLanguage='none' (hardcoded)
-    const audioKey = normalizeTtsText(row.indonesian_text)
-    const audioMap = input.audioClipsByNormalizedText ?? new Map()
-    if (audioMap.has(audioKey)) {
-      capabilities.push({
-        canonicalKey: buildCanonicalKey({
-          sourceKind: 'item',
-          sourceRef,
-          capabilityType: 'audio_recognition',
-          direction: 'audio_to_l1',
-          modality: 'audio',
-          learnerLanguage,
-        }),
+    // cap-v2 #161 (§0.8): audio caps are emitted for EVERY word/phrase item —
+    // audio is ASSUMED to exist (the Lesson Stage's ensureLessonAudio voices every
+    // vocab/expressions/numbers word). A missing audio_clip is NOT silently skipped
+    // here; it is flagged by the vocab gate's CS23 audio-coverage check, and the
+    // hard Stage-A enforcement is #165. (The clip-existence gate that used to wrap
+    // this block is removed.)
+    //   audio_recognition: direction=audio_to_l1, learnerLanguage=<meaning lang>
+    //   dictation:         direction=audio_to_id, learnerLanguage='none'
+    capabilities.push({
+      canonicalKey: buildCanonicalKey({
         sourceKind: 'item',
         sourceRef,
         capabilityType: 'audio_recognition',
         direction: 'audio_to_l1',
         modality: 'audio',
         learnerLanguage,
-        projectionVersion: CAPABILITY_PROJECTION_VERSION,
-        lessonId: input.lessonId,
-        requiredArtifacts: [],
-        prerequisiteKeys: [textRecognitionKey],
-      })
-      capabilities.push({
-        canonicalKey: buildCanonicalKey({
-          sourceKind: 'item',
-          sourceRef,
-          capabilityType: 'dictation',
-          direction: 'audio_to_id',
-          modality: 'audio',
-          learnerLanguage: 'none',
-        }),
+      }),
+      sourceKind: 'item',
+      sourceRef,
+      capabilityType: 'audio_recognition',
+      direction: 'audio_to_l1',
+      modality: 'audio',
+      learnerLanguage,
+      projectionVersion: CAPABILITY_PROJECTION_VERSION,
+      lessonId: input.lessonId,
+      requiredArtifacts: [],
+      prerequisiteKeys: [textRecognitionKey],
+    })
+    capabilities.push({
+      canonicalKey: buildCanonicalKey({
         sourceKind: 'item',
         sourceRef,
         capabilityType: 'dictation',
         direction: 'audio_to_id',
         modality: 'audio',
         learnerLanguage: 'none',
-        projectionVersion: CAPABILITY_PROJECTION_VERSION,
-        lessonId: input.lessonId,
-        requiredArtifacts: [],
-        prerequisiteKeys: [textRecognitionKey],
-      })
-    }
+      }),
+      sourceKind: 'item',
+      sourceRef,
+      capabilityType: 'dictation',
+      direction: 'audio_to_id',
+      modality: 'audio',
+      learnerLanguage: 'none',
+      projectionVersion: CAPABILITY_PROJECTION_VERSION,
+      lessonId: input.lessonId,
+      requiredArtifacts: [],
+      prerequisiteKeys: [textRecognitionKey],
+    })
 
     return {
       row,

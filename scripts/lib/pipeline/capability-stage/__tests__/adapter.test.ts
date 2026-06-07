@@ -218,3 +218,74 @@ describe('capability-stage adapter — retireOrphanedCapabilities', () => {
     expect(updateCalls[0].ids.sort()).toEqual(['cap-a', 'cap-b'])
   })
 })
+
+// cap-v2 #161 (landmine 8a): with the item branch in the vocab module, the runner
+// and publishVocabulary BOTH call retireOrphanedCapabilities for the same lesson
+// with DISJOINT source-kind scopes + their own emit sets. The `.in('source_kind',…)`
+// filter must keep each sweep from retiring the OTHER stage's live caps. This mock
+// is scope-aware: `.in('source_kind', kinds)` filters the active set server-side.
+function buildScopedRetireClient(
+  allActive: Array<{ id: string; canonical_key: string; source_kind: string }>,
+) {
+  const updateCalls: Array<{ ids: string[] }> = []
+  const result = (rows: typeof allActive) => {
+    const thenable = Promise.resolve({ data: rows, error: null }) as Promise<{ data: typeof allActive; error: null }> & {
+      in: (col: string, kinds: string[]) => Promise<{ data: typeof allActive; error: null }>
+    }
+    thenable.in = (_col: string, kinds: string[]) =>
+      Promise.resolve({ data: rows.filter((r) => kinds.includes(r.source_kind)), error: null })
+    return thenable
+  }
+  const client = {
+    schema: () => ({
+      from: () => ({
+        select: () => ({ eq: () => ({ is: () => result(allActive) }) }),
+        update: () => ({
+          in: async (_col: string, ids: string[]) => {
+            updateCalls.push({ ids })
+            return { error: null }
+          },
+        }),
+      }),
+    }),
+  } as never
+  return { client, updateCalls }
+}
+
+describe('retireOrphanedCapabilities — source-kind scoping (cap-v2 #161 landmine 8a)', () => {
+  // One lesson with both item caps (vocab module's) and non-item caps (runner's).
+  const allActive = [
+    { id: 'item-keep', canonical_key: 'item:halo:recognition', source_kind: 'item' },
+    { id: 'item-orphan', canonical_key: 'item:gone:recognition', source_kind: 'item' },
+    { id: 'pat-keep', canonical_key: 'pattern:meN:recognition', source_kind: 'pattern' },
+    { id: 'dlg-orphan', canonical_key: 'dialogue_line:old:cl', source_kind: 'dialogue_line' },
+  ]
+
+  it("the runner's non-item sweep never retires item caps", async () => {
+    const { client, updateCalls } = buildScopedRetireClient(allActive)
+    const result = await retireOrphanedCapabilities(client, {
+      lessonId: 'L',
+      emittedKeys: ['pattern:meN:recognition'], // runner re-emitted the pattern; dialogue is an orphan
+      sourceKinds: ['dialogue_line', 'pattern', 'affixed_form_pair'],
+    })
+    // Only the dialogue orphan is retired; NEITHER item cap is touched.
+    expect(result.retiredKeys).toEqual(['dialogue_line:old:cl'])
+    expect(updateCalls[0].ids).toEqual(['dlg-orphan'])
+    expect(updateCalls[0].ids).not.toContain('item-keep')
+    expect(updateCalls[0].ids).not.toContain('item-orphan')
+  })
+
+  it("the vocab module's item sweep never retires non-item caps", async () => {
+    const { client, updateCalls } = buildScopedRetireClient(allActive)
+    const result = await retireOrphanedCapabilities(client, {
+      lessonId: 'L',
+      emittedKeys: ['item:halo:recognition'], // vocab re-emitted halo; gone is an orphan
+      sourceKinds: ['item'],
+    })
+    // Only the item orphan is retired; NEITHER non-item cap is touched.
+    expect(result.retiredKeys).toEqual(['item:gone:recognition'])
+    expect(updateCalls[0].ids).toEqual(['item-orphan'])
+    expect(updateCalls[0].ids).not.toContain('pat-keep')
+    expect(updateCalls[0].ids).not.toContain('dlg-orphan')
+  })
+})

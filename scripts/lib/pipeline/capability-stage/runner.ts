@@ -45,28 +45,21 @@ import {
   createSupabaseClient as defaultCreateSupabaseClient,
   retireOrphanedCapabilities,
   upsertCapabilities,
-  upsertCapabilitiesSkipIfExists,
   upsertCapabilityContentUnits,
   upsertContentUnits,
-  upsertItemAnchorContext,
-  upsertLearningItemIdempotent,
   replaceDialogueClozes,
   replaceAffixedFormPairs,
-  fetchLearningItemPosByNormalizedText,
-  updateLearningItemPos,
   type CapabilityContentUnitInput,
   type CapabilityInput,
   type CapabilitySupabaseClient,
 } from './adapter'
 import { loadLesson as defaultLoadLesson, type LoadedLesson } from './loader'
-import { loadFromDb as defaultLoadFromDb, fetchDistractorPool as defaultFetchDistractorPool, loadPatternFromDb as defaultLoadPatternFromDb, loadDialogueFromDb as defaultLoadDialogueFromDb, fetchClozePool as defaultFetchClozePool, fetchAffixedPairsFromDb as defaultFetchAffixedPairsFromDb, type ItemDbResult, type PatternDbResult, type DialogueDbResult, type TypedAffixedPair } from './loadFromDb'
+import { fetchDistractorPool as defaultFetchDistractorPool, loadPatternFromDb as defaultLoadPatternFromDb, loadDialogueFromDb as defaultLoadDialogueFromDb, fetchClozePool as defaultFetchClozePool, fetchAffixedPairsFromDb as defaultFetchAffixedPairsFromDb, type PatternDbResult, type DialogueDbResult, type TypedAffixedPair } from './loadFromDb'
 import { generateDialogueClozes, type ClozePoolItem } from './generateClozeContexts'
 import { writePatternPath } from './patternPath'
-import { projectItemsFromTypedRows } from './projectors/vocab'
 import { projectAffixedCapabilities } from './projectors/affixedCapabilities'
 import { buildContentUnitsFromDb } from './projectors/contentUnits'
 import { type GenerateFn, type DistractorInputItem } from './generateItemDistractors'
-import { itemSlug } from '@/lib/capabilities'
 
 // CS1 (grammar_topics) moved back to lesson-stage (GT1) — lesson_sections
 // is Stage A's territory, and lesson-stage now owns the enricher that
@@ -85,14 +78,10 @@ import { validateDialogueClozeCoverage } from './validators/dialogueClozeCoverag
 import { projectAffixedFormPairs, type AffixedPairSource } from './projectors/morphology'
 
 import { validateLessonIdPresence } from './validators/lessonId'
-import { validateItemSourceRefResolvability } from './validators/itemSourceRefResolvability'
 import { validateDialogueClozes } from './validators/dialogueClozes'
 import { validateAffixedFormPairs } from './validators/affixedFormPairs'
 
-import { enrichMissingPos } from './enrichPos'
 import { loadPromotionPlan, applyPromotionPlan } from '../../../promote-capabilities'
-
-import { validatePOS } from '../../validate-pos'
 
 export interface CapabilityStageHooks {
   loadLesson?: typeof defaultLoadLesson
@@ -104,12 +93,6 @@ export interface CapabilityStageHooks {
    * and the real Claude API is used (if ANTHROPIC_API_KEY is set).
    */
   generateFn?: GenerateFn
-  /**
-   * Injectable loadFromDb for tests. When provided, replaces the default DB load
-   * of typed lesson_section_item_rows + existing item state. Allows tests to supply
-   * known typed rows without mocking complex PostgREST join queries.
-   */
-  loadFromDb?: (supabase: CapabilitySupabaseClient, input: { lessonId: string }) => Promise<ItemDbResult>
   /**
    * Injectable fetchDistractorPool for tests. When provided, replaces the default
    * DB read of all active word/phrase learning_items.
@@ -166,7 +149,6 @@ export async function runCapabilityStage(
 
   const createClient = hooks.createSupabaseClient ?? defaultCreateSupabaseClient
   const loadLesson = hooks.loadLesson ?? defaultLoadLesson
-  const loadFromDb = hooks.loadFromDb ?? defaultLoadFromDb
   const fetchDistractorPool = hooks.fetchDistractorPool ?? defaultFetchDistractorPool
   const loadPatternFromDb = hooks.loadPatternFromDb ?? defaultLoadPatternFromDb
   const loadDialogueFromDb = hooks.loadDialogueFromDb ?? defaultLoadDialogueFromDb
@@ -193,49 +175,24 @@ export async function runCapabilityStage(
   // level is set in projectItemsFromTypedRows; EN translations are the Lesson Stage's
   // job (ADR 0012). The runner now performs zero disk reads/writes (no-disk gate, 5b.9).
 
-  // ---- 1c. Pre-load typed item rows (DB) for the pre-write gate. -------
-  // Slice 5b (#147): the pre-write gate's item checks (CS4/CS4b/CS19/CS20/CS5)
-  // were fed by staging.learningItems; with staging gone they read the typed
-  // item projection instead. The item DB load is hoisted up here (ahead of the
-  // gate) so itemProjection is available; it is reused unchanged by the write
-  // phase below (steps 5a/5b). distractorPool is loaded alongside (one read).
-  const itemDbResult = await loadFromDb(supabase, { lessonId: input.lessonId })
+  // ---- 1c. Pre-load the distractor pool (DB). --------------------------
+  // cap-v2 #161 cutover: the runner's ITEM branch is amputated — the new
+  // `vocabulary/` module (publishVocabulary) owns item projection, item caps,
+  // learning_items, POS, item content_units, item junction, and item distractors.
+  // The runner keeps only the non-item kinds (pattern, dialogue_line, affixed).
+  // distractorPool stays — the pattern path (writePatternPath, step 5d) uses it.
   const distractorPool = await fetchDistractorPool(supabase)
-  const itemProjection = projectItemsFromTypedRows({
-    rows: itemDbResult.items,
-    lessonId: input.lessonId,
-    level: loaded.lesson.level,
-    // Pass the audio map so audio_recognition + dictation caps are emitted by the
-    // DB→DB item path (they ride upsertCapabilitiesSkipIfExists, FSRS-safe).
-    audioClipsByNormalizedText: loaded.audioClipsByNormalizedText,
-  })
-  // Item caps (4 base + audio when present) — written via upsertCapabilitiesSkipIfExists
-  // (step 5b; FSRS-safe). NOT routed through upsertCapabilities (which would re-write
-  // existing rows and disturb FSRS state).
-  const allItemCaps = itemProjection.perItemPlans.flatMap((p) => p.capabilities)
 
   // ---- 2. Validate (pre-write). ----------------------------------------
   // grammar_topics validation (GT1) is enforced by lesson-stage; by the time
   // Stage A's outputs land here, content.grammar_topics is already populated.
-  // CS3/CS4/CS4b/CS5/CS6 — composed behind the Capability Gate pre-write entry
-  // point (gate.ts). Same validators, same order, same findings.
-  //
-  // Slice 5b (#147): the item checks read the typed item projection (NOT a stub —
-  // data-arch N1: an empty array would make CS4/CS4b/CS19/CS20/CS5 pass vacuously).
-  // grammarPatterns + candidates pass [] deliberately: grammar is DB-native via the
-  // pattern path (projectPatternsFromCategories + CS18 post-write coverage); staging
-  // candidates remain validated by lint-staging's structural checks (Q4, kept).
+  // Item checks (CS4/CS4b/CS19/CS20/CS5) moved to the vocab gate (the runner no
+  // longer projects items); grammarPatterns + candidates pass [] (grammar is
+  // DB-native via the pattern path + CS18 post-write coverage).
   findings.push(...runCapabilityGatePreWrite({
     grammarPatterns: [],
     candidates: [],
-    learningItems: itemProjection.perItemPlans.map((p) => ({
-      base_text: p.learningItemInput.base_text,
-      item_type: p.learningItemInput.item_type,
-      context_type: p.anchorContext.context_type,
-      translation_nl: p.learningItemInput.translation_nl ?? null,
-      translation_en: p.learningItemInput.translation_en ?? null,
-      pos: p.learningItemInput.pos ?? null,
-    })),
+    learningItems: [],
     mode: 'publish',
   }))
 
@@ -249,12 +206,9 @@ export async function runCapabilityStage(
   }
 
   // ---- 2b. Dry-run short-circuit after validation, before writes. -------
-  // DB-only (Slice 5b #147): counts reflect what was loaded from the DB, not a
-  // staging snapshot. The detailed per-surface "would publish" log is dropped —
-  // the authoritative counts come from the live re-publish, not a dry-run guess.
   if (input.dryRun) {
-    console.log(`\n[DRY RUN] Lesson ${input.lessonNumber} pre-write validation passed.`)
-    console.log(`   Loaded from DB: ${loaded.sections.length} sections, ${itemDbResult.items.length} typed item rows.`)
+    console.log(`\n[DRY RUN] Lesson ${input.lessonNumber} (non-item kinds) pre-write validation passed.`)
+    console.log(`   Loaded from DB: ${loaded.sections.length} sections.`)
     return {
       status: 'ok',
       counts,
@@ -366,7 +320,6 @@ export async function runCapabilityStage(
   const dbContentUnits = buildContentUnitsFromDb({
     lessonNumber: input.lessonNumber,
     sections: loaded.sections,
-    itemRows: itemDbResult.items,
     patternPlans: patternProjection.patternPlans,
     affixedPairs: affixedPairsFromDb,
   })
@@ -419,132 +372,17 @@ export async function runCapabilityStage(
   // Decision 3b (ADR 0006): refuse to write any lesson-derived capability with
   // null lesson_id. Podcast source kinds are exempt — see the validator.
   validateLessonIdPresence(allCapabilities)
-  // Issue #59: refuse to write any item-source-kind capability whose source_ref
-  // slug does not match a learning_item in this snapshot. The validator
-  // accepts a minimal structural type ({ base_text: string }) so no cast from
-  // LearningItemStagingRow → LearningItemInput is needed.
-  // Slice 5b (#147): repointed off staging.learningItems (retired) to the typed
-  // DB item rows. allCapabilities no longer contains item caps (they ride the
-  // skip-if-exists path), so this now guards the affixed/dialogue-cloze source_refs.
-  validateItemSourceRefResolvability(
-    allCapabilities,
-    itemDbResult.items.map((r) => ({ base_text: r.indonesian_text })),
-  )
+  // cap-v2 #161 cutover: validateItemSourceRefResolvability moved to the vocab
+  // module (publishVocabulary) — the runner no longer emits item-source caps, so
+  // it would be vacuous here (allCapabilities is dialogue_line + affixed only).
   const capabilityIdsByKey = await upsertCapabilities(supabase, allCapabilities)
   counts.capabilities = capabilityIdsByKey.size
 
-  // ---- 5b. Write — item capabilities via DB→DB path (Task 6c). -----------
-  // Item-source-kind learning_items + caps are projected from typed DB rows
-  // (lesson_section_item_rows) instead of staging files (ADR 0011/0012).
-  // itemDbResult, distractorPool, itemProjection, and allItemCaps were loaded in
-  // step 5a (before the legacy-bundle filter) so the key set was available.
-  // This path runs after the staging vocab path (step 5) but before retire so
-  // item cap keys are included in emittedKeys for the orphan sweep.
-  //
-  // Item learning_items are written via upsertLearningItemIdempotent:
-  //   - On INSERT: full payload including pos, level, base_text, translations.
-  //   - On UPDATE (existing normalized_text): refreshes ONLY translation columns;
-  //     pos/level/base_text/is_active are preserved (DB-authoritative per ADR 0011).
-  // Item caps are written via upsertCapabilitiesSkipIfExists (INSERT ... ON CONFLICT
-  // DO NOTHING): existing caps' FSRS state is never disturbed on re-publish.
-
-
-  // Write item learning_items + anchor contexts.
-  const itemIdsByNormalizedText = new Map<string, string>()
-  for (const plan of itemProjection.perItemPlans) {
-    const written = await upsertLearningItemIdempotent(supabase, plan.learningItemInput)
-    itemIdsByNormalizedText.set(plan.normalizedText, written.id)
-    await upsertItemAnchorContext(supabase, {
-      learning_item_id: written.id,
-      context_type: plan.anchorContext.context_type,
-      source_text: plan.anchorContext.source_text,
-      translation_text: plan.anchorContext.translation_text,
-      source_lesson_id: input.lessonId,
-    })
-  }
-
-  // ---- 5b+. DB-native POS backfill (Task 5a.4). -------------------------
-  // New items were just inserted with pos=null (projectItemsFromTypedRows
-  // hardcodes pos: null because TypedItemRow has no pos column).  This pass
-  // reads the current pos from the DB for each word/phrase item, classifies
-  // the null-pos subset via Claude (Haiku), and writes pos back with
-  // updateLearningItemPos — the sole pos writer on the DB-native path.
-  //
-  // Runs AFTER the item-insert loop (rows now exist) and gated by !dryRun
-  // (this whole write phase is past the dry-run early-return), mirroring the
-  // step-1b staging enrichPos block above.  The staging block still runs in 5a
-  // (removed in 5b) → both paths write the same pos value to the same rows →
-  // inert double write acceptable during the additive phase.
-  {
-    const wordPhrasePlans = itemProjection.perItemPlans.filter(
-      (p) => p.learningItemInput.item_type === 'word' || p.learningItemInput.item_type === 'phrase',
-    )
-    if (wordPhrasePlans.length > 0) {
-      const normalizedTexts = wordPhrasePlans.map((p) => p.normalizedText)
-      const posMap = await fetchLearningItemPosByNormalizedText(supabase, normalizedTexts)
-
-      // Build PosEnrichmentItem[] feeding the existing pure enrichMissingPos.
-      // Items with a valid DB pos are passed with that pos → enrichMissingPos
-      // skips them (no LLM reclassification).  Items with null pos → classified.
-      const enrichmentItems = wordPhrasePlans.map((p) => ({
-        base_text: p.learningItemInput.base_text,
-        item_type: p.learningItemInput.item_type as 'word' | 'phrase',
-        translation_nl: p.learningItemInput.translation_nl ?? null,
-        translation_en: p.learningItemInput.translation_en ?? null,
-        pos: posMap.get(p.normalizedText) ?? null,
-      }))
-
-      // Count what was ALREADY populated up front (valid DB pos) so the log can
-      // separate it from a classification gap — never fold a failed/invalid
-      // classification into "already populated".  This log line is the
-      // human-readable signal the 5a.7 parity gate + the B2 handoff lock lean
-      // on to confirm new word/phrase items land non-null pos.
-      const alreadyPopulated = enrichmentItems.filter(
-        (i) => typeof i.pos === 'string' && i.pos.trim() !== '',
-      ).length
-
-      const dbPosResult = await enrichMissingPos(enrichmentItems)
-      let dbPosWritten = 0
-      for (const [baseText, pos] of dbPosResult.posByBaseText) {
-        const normalizedText = itemSlug(baseText)
-        await updateLearningItemPos(supabase, normalizedText, pos)
-        dbPosWritten++
-      }
-      // Items that needed classification but got no valid POS (LLM gap / invalid
-      // tag / skipped-because-no-API-key) — these publish with pos still null.
-      const stillNull = wordPhrasePlans.length - alreadyPopulated - dbPosWritten
-      console.log(
-        `   ✓ DB-native POS: classified ${dbPosWritten}, already populated ${alreadyPopulated}` +
-          (dbPosResult.invalidCount > 0 ? `, ${dbPosResult.invalidCount} invalid` : '') +
-          (stillNull > 0 ? `, ⚠ ${stillNull} still null` : ''),
-      )
-    }
-  }
-
-  // Write item caps via skip-if-exists. Returns only newly-inserted rows;
-  // existing rows (already seeded) are not in the returned map.
-  // allItemCaps was declared in step 5a (before the legacy-bundle filter).
-  const newItemCapIdsByKey = await upsertCapabilitiesSkipIfExists(supabase, allItemCaps)
-
-  // Build a complete canonicalKey→id map for item caps by merging:
-  //   1. Newly inserted rows (from upsertCapabilitiesSkipIfExists return value)
-  //   2. Already-existing rows (from the pre-loaded itemState map)
-  // This is needed for the distractor cap ID lookup and for the orphan sweep.
-  const itemCapIdsByKey = new Map<string, string>()
-  for (const cap of allItemCaps) {
-    const existingCap = itemDbResult.itemState.existingItemCapsByCanonicalKey.get(cap.canonicalKey)
-    const newId = newItemCapIdsByKey.get(cap.canonicalKey)
-    const id = newId ?? existingCap?.id
-    if (id) itemCapIdsByKey.set(cap.canonicalKey, id)
-  }
-
-  // Merge item cap IDs into capabilityIdsByKey so retireOrphanedCapabilities
-  // includes them in emittedKeys (preventing them from being soft-retired).
-  for (const [key, id] of itemCapIdsByKey) {
-    capabilityIdsByKey.set(key, id)
-  }
-  counts.capabilities = capabilityIdsByKey.size
-
+  // ---- 5b. (removed, cap-v2 #161 cutover) item learning_items + caps + POS. --
+  // The entire item branch — learning_items + anchor contexts, the DB-native POS
+  // backfill, and item-cap writes (upsertCapabilitiesSkipIfExists) — moved to the
+  // vocab module (publishVocabulary), which runs after this runner. The runner no
+  // longer touches item rows/caps/POS, so there is no double-write.
 
   // ---- 5d. Pattern path (Slice 2 Task 6) — DB→DB grammar cutover. ----------
   // Runs BEFORE retire so the new pattern caps are in the emit set (not swept)
@@ -586,9 +424,14 @@ export async function runCapabilityStage(
   // sweep only catches genuine orphans. FSRS state + review history are
   // preserved (no DELETE); a future re-emission of the same canonical_key
   // reanimates the cap with state intact.
+  // cap-v2 #161 cutover (landmine 8a): scope the sweep to the runner's OWN source
+  // kinds. The vocab module (publishVocabulary) sweeps source_kind='item' for this
+  // same lesson with its own emit set; an unscoped sweep here would retire all the
+  // vocab module's live item caps (their keys are not in this emit set).
   const retired = await retireOrphanedCapabilities(supabase, {
     lessonId: input.lessonId,
     emittedKeys: [...capabilityIdsByKey.keys()],
+    sourceKinds: ['dialogue_line', 'pattern', 'affixed_form_pair'],
   })
   if (retired.retiredCount > 0) {
     const previewKeys = retired.retiredKeys.slice(0, 5).join(', ')
@@ -614,8 +457,8 @@ export async function runCapabilityStage(
     const unitId = contentUnitIdsBySlug.get(unit.unit_slug)
     if (unitId) unitIdBySourceRef.set(unit.source_ref, unitId)
   }
+  // cap-v2 #161 cutover: item caps + their junctions moved to the vocab module.
   const junctionCaps: CapabilityInput[] = [
-    ...allItemCaps,
     ...newAffixedCaps,
     ...(usePatternPath ? patternProjection.patternPlans.flatMap((p) => p.capabilities) : []),
   ]
@@ -751,15 +594,13 @@ export async function runCapabilityStage(
       ? { idsBySlug: patternResult.patternIdsBySlug, tableMissing: patternResult.tableMissing }
       : { idsBySlug: new Map<string, string>(), tableMissing: false }
 
-  // ---- 9. (retired Slice 5b #147) learning_items + anchor contexts. --------
-  // The staging projectVocab write loop is gone. word/phrase learning_items +
-  // anchor contexts are written DB-natively by the typed path (step 5b,
-  // projectItemsFromTypedRows) into itemIdsByNormalizedText. sentence/dialogue
-  // items are no longer emitted (deleted by the 5b.10 cleanup migration), so
-  // dialogueItemIds is always empty here.
-  const publishedItemIds: string[] = [...itemIdsByNormalizedText.values()]
+  // ---- 9. (cap-v2 #161 cutover) learning_items moved to the vocab module. ---
+  // The runner no longer writes item rows; the vocab module (publishVocabulary)
+  // owns them. publishedItemIds is empty here, so CS8/CS9's item arms are no-ops
+  // (the vocab gate covers the item layer — CS14/CS15/CS17).
+  const publishedItemIds: string[] = []
   const dialogueItemIds = new Set<string>()
-  counts.learningItems = publishedItemIds.length
+  counts.learningItems = 0
 
   // ---- 10. (retired Slice 5b #147) exercise_variants writer. -------------
   // The legacy staging-candidate-driven exercise_variants writer (both the
@@ -778,41 +619,15 @@ export async function runCapabilityStage(
   // (The noClozeWriter enforcement test guards against accidental re-seed.)
   counts.clozeContexts = 0
 
-  // ---- 12. Verify (CS7 → CS8 → CS9 → CS14 → CS15 → CS16 → CS17). -------
+  // ---- 12. Verify (CS7 → CS8 → CS9 → CS18). ---------------------------
   // Composed behind the Capability Gate post-write entry point (gate.ts).
-  // Same verifiers, same order, same findings — the cs9HasError check below
-  // filters by gate: 'CS9' instead of using the now-inlined integrityReport.
-
-  // ---- CS14 (item POS) — writtenItems from the item projector. -----------
-  // projectItemsFromTypedRows emits pos=null for all items because
-  // lesson_section_item_rows has no pos column (POS is the Lesson Stage's job,
-  // per ADR 0012). CS14 will emit WARNINGs for null-pos word/phrase items. This
-  // is the gate correctly surfacing a real state: item POS is not yet populated
-  // on the new DB→DB path. A follow-up task (after Lesson Stage POS enrichment
-  // is proven) will propagate POS into the typed rows.
-  const writtenItems = itemProjection.perItemPlans.map((plan) => ({
-    normalized_text: plan.normalizedText,
-    item_type: plan.learningItemInput.item_type,
-    pos: plan.learningItemInput.pos ?? null,
-  }))
-
-
-  // ---- CS17 (cross-lesson duplicates) — normalized texts written this run. ---
-  const itemDuplicatesInput = {
-    lessonId: input.lessonId,
-    lessonNumber: input.lessonNumber,
-    writtenNormalizedTexts: [...itemIdsByNormalizedText.keys()],
-  }
-
+  // cap-v2 #161 cutover: the item-kind verifiers (CS14 POS / CS15 coverage /
+  // CS17 duplicates) moved to the vocab gate (publishVocabulary) — the runner no
+  // longer writes item rows, so it passes no item gate inputs here.
   const postWriteFindings = await runCapabilityGatePostWrite(supabase, {
     lessonId: input.lessonId,
     declared: {
-      // Count parity checks what the DB-native builder ACTUALLY wrote (step 4b →
-      // contentUnitIds). The builder omits sentence/dialogue_chunk learning_item
-      // units (Decision D2 — those items are de-harvested + deleted in 5b.10).
       contentUnits: contentUnitIds.length,
-      // Slice 5b (#147): grammar_patterns come solely from the pattern path; the
-      // exercise_variants writer is retired (0 rows written by any source kind).
       grammarPatterns: patternResult?.patternsUpserted ?? 0,
       capabilities: allCapabilities.length,
       learningItems: publishedItemIds.length,
@@ -826,9 +641,6 @@ export async function runCapabilityStage(
     grammarPatternIds: [...grammarPatternUpsert.idsBySlug.values()],
     publishedItemIds,
     dialogueItemIds,
-    // CS14-17: item kind gate inputs (assembled above from the item path).
-    writtenItems,
-    itemDuplicatesInput,
     // CS18: pattern coverage certification (Slice 2 Task 7) — only when the
     // pattern path ran. Certifies every written pattern has full per-type coverage.
     patternCoverageInput: usePatternPath && patternResult
@@ -882,21 +694,8 @@ export async function runCapabilityStage(
     console.log(`\n   Skipping capability promotion (status=${status})`)
   }
 
-  // POS coverage (informational; mirrors legacy 968–976). Repointed to the
-  // typed DB-native item path (Slice 5b #147) — word/phrase plans only, which
-  // is exactly the set this coverage report covers.
-  if (itemProjection.perItemPlans.length > 0) {
-    const coverageItems = itemProjection.perItemPlans.map((p) => ({
-      base_text: p.learningItemInput.base_text,
-      item_type: p.learningItemInput.item_type,
-      pos: p.learningItemInput.pos ?? undefined,
-    }))
-    const coverage = validatePOS(coverageItems).coverage
-    console.log(`\n[POS-coverage] Lesson ${input.lessonNumber} word/phrase items by POS:`)
-    for (const [pos, count] of Object.entries(coverage).sort()) {
-      console.log(`  ${pos}: ${count}`)
-    }
-  }
+  // cap-v2 #161 cutover: the item POS-coverage log moved to the vocab module
+  // (the runner no longer projects items).
 
   return {
     status,

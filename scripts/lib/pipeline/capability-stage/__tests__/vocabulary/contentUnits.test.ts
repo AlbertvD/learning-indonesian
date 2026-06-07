@@ -10,7 +10,7 @@
 
 import { describe, it, expect } from 'vitest'
 import { buildItemContentUnits } from '../../vocabulary/contentUnits'
-import { buildContentUnitsFromDb } from '../../projectors/contentUnits'
+import { stableSlug, sourceRefForLearningItem, contentUnitKey, sourceRefForLesson } from '../../../../content-pipeline-output'
 import type { TypedItemRow } from '../../loadFromDb'
 
 function row(
@@ -31,20 +31,40 @@ function row(
 }
 
 describe('buildItemContentUnits', () => {
-  it("reproduces the shared builder's learning_item rows exactly", () => {
-    const rows: TypedItemRow[] = [
-      row({ indonesian_text: 'makan', item_type: 'word', section_kind: 'vocabulary' }),
-      row({ indonesian_text: 'apa kabar', item_type: 'phrase', section_kind: 'dialogue' }),
-    ]
-    const mine = buildItemContentUnits(rows, 11)
-    const legacyItemUnits = buildContentUnitsFromDb({
-      lessonNumber: 11,
-      sections: [],
-      itemRows: rows,
-      patternPlans: [],
-      affixedPairs: [],
-    }).filter((u) => u.unit_kind === 'learning_item')
-    expect(mine).toEqual(legacyItemUnits)
+  it('emits the canonical learning_item unit shape (key formula matches content-pipeline-output)', () => {
+    const [unit] = buildItemContentUnits(
+      [row({ indonesian_text: 'makan', item_type: 'word', section_kind: 'vocabulary' })],
+      11,
+    )
+    const lessonRef = sourceRefForLesson(11)
+    const sectionRef = `${lessonRef}/section-vocabulary`
+    const unitSlug = `item-${stableSlug('makan')}`
+    expect(unit).toEqual({
+      content_unit_key: contentUnitKey({
+        sourceRef: sourceRefForLearningItem('makan'),
+        sourceSectionRef: sectionRef,
+        unitSlug,
+      }),
+      source_ref: sourceRefForLearningItem('makan'),
+      source_section_ref: sectionRef,
+      unit_kind: 'learning_item',
+      unit_slug: unitSlug,
+      display_order: 1000,
+      payload_json: {},
+      source_fingerprint: '',
+    })
+  })
+
+  it('emits a unit for word and phrase items', () => {
+    const units = buildItemContentUnits(
+      [
+        row({ indonesian_text: 'makan', item_type: 'word' }),
+        row({ indonesian_text: 'apa kabar', item_type: 'phrase' }),
+      ],
+      11,
+    )
+    expect(units).toHaveLength(2)
+    expect(units.map((u) => u.unit_kind)).toEqual(['learning_item', 'learning_item'])
   })
 
   it('keys items by section_kind (dialogue vs vocabulary)', () => {

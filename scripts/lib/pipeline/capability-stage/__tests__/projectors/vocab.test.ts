@@ -248,19 +248,21 @@ describe('projectItemsFromTypedRows — audio cap emission (Task 5a.1)', () => {
     ['halo', { storage_path: 'lesson-4/halo.mp3', voice_id: 'Achird' }],
   ])
 
-  it('emits 4 caps when item normalized_text is NOT in audioClipsByNormalizedText', () => {
-    const rows: TypedItemRow[] = [baseTypedRow({})] // 'Halo' → normalizeTtsText → 'halo'
-    const noAudioMap = new Map<string, AudioClipMeta>() // empty — no audio
+  // cap-v2 #161 (§0.8): audio caps emit UNCONDITIONALLY — audio is assumed to
+  // exist; a missing clip is flagged by the vocab gate (CS23), not skipped here.
+  it('emits 6 caps even when item is NOT in audioClipsByNormalizedText (audio assumed)', () => {
+    const rows: TypedItemRow[] = [baseTypedRow({})]
+    const noAudioMap = new Map<string, AudioClipMeta>() // empty — no audio clip
     const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: noAudioMap })
-    expect(out.perItemPlans[0].capabilities).toHaveLength(4)
+    expect(out.perItemPlans[0].capabilities).toHaveLength(6)
     const capTypes = out.perItemPlans[0].capabilities.map((c) => c.capabilityType).sort()
-    expect(capTypes).toEqual(['form_recall', 'l1_to_id_choice', 'meaning_recall', 'text_recognition'])
+    expect(capTypes).toEqual(['audio_recognition', 'dictation', 'form_recall', 'l1_to_id_choice', 'meaning_recall', 'text_recognition'])
   })
 
-  it('emits 4 caps when audioClipsByNormalizedText is not provided (backward compat)', () => {
+  it('emits 6 caps when audioClipsByNormalizedText is not provided (audio assumed)', () => {
     const rows: TypedItemRow[] = [baseTypedRow({})]
     const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
-    expect(out.perItemPlans[0].capabilities).toHaveLength(4)
+    expect(out.perItemPlans[0].capabilities).toHaveLength(6)
   })
 
   it('emits 6 caps (4 base + audio_recognition + dictation) when item IS in audio map', () => {
@@ -344,7 +346,7 @@ describe('projectItemsFromTypedRows — audio cap emission (Task 5a.1)', () => {
     expect(byType['dictation']).toBe('cap:v1:item:learning_items/halo:dictation:audio_to_id:audio:none')
   })
 
-  it('item NOT in audio map gets 4 caps; item IN audio map gets 6 caps — mixed batch', () => {
+  it('every word/phrase item gets 6 caps regardless of audio-map membership (audio assumed, §0.8)', () => {
     const rows: TypedItemRow[] = [
       baseTypedRow({ id: 'r1', indonesian_text: 'Halo', l1_translation: 'Hallo' }), // in map
       baseTypedRow({ id: 'r2', source_item_ref: 'lesson-4/section-1/item-1', indonesian_text: 'Makan', l1_translation: 'Eten' }), // NOT in map
@@ -353,19 +355,7 @@ describe('projectItemsFromTypedRows — audio cap emission (Task 5a.1)', () => {
     const halo = out.perItemPlans.find((p) => p.normalizedText === 'halo')!
     const makan = out.perItemPlans.find((p) => p.normalizedText === 'makan')!
     expect(halo.capabilities).toHaveLength(6)
-    expect(makan.capabilities).toHaveLength(4)
+    expect(makan.capabilities).toHaveLength(6)
   })
 
-  it('audio cap lookup uses normalizeTtsText (lower + trim + collapse whitespace) on indonesian_text', () => {
-    // The audio_clips table is keyed by normalizeTtsText(text) (see tts-normalize.ts).
-    // An item with mixed-case indonesian_text must match the lowercase key.
-    const mapWithLowercaseKey = new Map<string, AudioClipMeta>([
-      ['selamat pagi', { storage_path: 'lesson-4/selamat-pagi.mp3', voice_id: 'Orus' }],
-    ])
-    const rows: TypedItemRow[] = [
-      baseTypedRow({ indonesian_text: 'Selamat pagi', l1_translation: 'Goedemorgen' }),
-    ]
-    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1', audioClipsByNormalizedText: mapWithLowercaseKey })
-    expect(out.perItemPlans[0].capabilities).toHaveLength(6)
-  })
 })
