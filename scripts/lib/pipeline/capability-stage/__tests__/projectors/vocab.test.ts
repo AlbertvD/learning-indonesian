@@ -46,6 +46,19 @@ describe('projectItemsFromTypedRows — pure item projector from typed DB rows',
     expect(plan.learningItemInput.source_type).toBe('lesson')
   })
 
+  it('canonicalises a legacy comma/";" l1_translation to the "/" answer convention (#161)', () => {
+    // lesson_section_item_rows carries display glosses with comma/";" OR-lists;
+    // the projector must rewrite them before they become learning_items.translation_nl
+    // (the graded answer surface + the CS19 gate input).
+    const rows: TypedItemRow[] = [
+      baseTypedRow({ indonesian_text: 'ada', l1_translation: 'er is, er zijn; hebben' }),
+      baseTypedRow({ id: 'row-uuid-3', indonesian_text: 'dokter', l1_translation: 'dokter, arts' }),
+    ]
+    const out = projectItemsFromTypedRows({ rows, lessonId: 'lesson-uuid-1', level: 'A1' })
+    expect(out.perItemPlans[0].learningItemInput.translation_nl).toBe('er is / er zijn / hebben')
+    expect(out.perItemPlans[1].learningItemInput.translation_nl).toBe('dokter / arts')
+  })
+
   it('projects a phrase item with word+phrase distinction preserved', () => {
     const rows: TypedItemRow[] = [
       baseTypedRow({

@@ -13,6 +13,7 @@
 import {
   buildCanonicalKey,
   CAPABILITY_PROJECTION_VERSION,
+  canonicaliseDutchSeparator,
   itemSlug,
 } from '@/lib/capabilities'
 
@@ -116,7 +117,15 @@ export function projectItemsFromTypedRows(
       level: input.level,
       source_type: 'lesson',
       pos: null,
-      translation_nl: row.l1_translation.trim() || null,
+      // Canonicalise the separator HERE: l1_translation comes from the
+      // lesson-section display source (lesson_section_item_rows), which the
+      // cutover left with legacy comma/";" OR-lists. This projector is the seam
+      // where that display gloss becomes the graded answer surface
+      // (learning_items.translation_nl), so the "/" convention must be applied
+      // before it reaches CS19 + the runtime grader (#161 follow-up).
+      translation_nl: row.l1_translation.trim()
+        ? canonicaliseDutchSeparator(row.l1_translation.trim())
+        : null,
       translation_en: row.l2_translation != null ? (row.l2_translation.trim() || null) : null,
     }
 
