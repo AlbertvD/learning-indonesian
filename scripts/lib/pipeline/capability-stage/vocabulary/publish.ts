@@ -50,6 +50,7 @@ import { loadLesson as defaultLoadLesson, type LoadedLesson } from '../loader'
 import { loadFromDb as defaultLoadFromDb, type ItemDbResult } from '../loadFromDb'
 import { projectItemsFromTypedRows } from '../projectors/vocab'
 import { enrichMissingPos } from '../enrichPos'
+import { loadPromotionPlan, applyPromotionPlan } from '../../../../promote-capabilities'
 import { itemSlug } from '@/lib/capabilities'
 import { normalizeTtsText } from '../../../tts-normalize'
 
@@ -281,5 +282,31 @@ export async function publishVocabulary(
 
   const status: CapabilityStageOutput['status'] =
     findings.some((f) => f.severity === 'error') ? 'partial' : 'ok'
+
+  // ---- 10. Promote (make the item caps live). ---------------------------
+  // The runner's promotion (step 13) runs BEFORE publishVocabulary, so it never
+  // sees the item caps this module just created — they would stay
+  // unknown/draft (dead) without this. publishVocabulary owns the item slice
+  // "to the end", which includes promotion to ready/published. Lesson-scoped +
+  // idempotent; only on a clean (non-error) run, mirroring the runner.
+  if (status === 'ok') {
+    try {
+      const plan = await loadPromotionPlan({
+        lesson: input.lessonNumber,
+        sourceRef: `lesson-${input.lessonNumber}`,
+        apply: true,
+      })
+      if (plan.promotions.length > 0) {
+        await applyPromotionPlan(plan)
+        console.log(`   ✓ Promoted ${plan.promotions.length} capabilities → ready/published (${plan.blocked.length} blocked)`)
+      } else {
+        console.log(`   No capabilities eligible for promotion (${plan.blocked.length} blocked)`)
+      }
+    } catch (err) {
+      console.warn(`   ⚠ Capability promotion failed: ${(err as Error).message}`)
+      findings.push({ gate: 'CS9', severity: 'warning', message: `Capability promotion failed: ${(err as Error).message}` })
+    }
+  }
+
   return { status, counts, findings, durationMs: Date.now() - start }
 }
