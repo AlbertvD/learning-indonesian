@@ -35,16 +35,16 @@ branch, which is amputated at the cutover (Task 8). The two stages share only DB
    `validation_failed`, no writes. (CS5 POS is NOT run here — the projection's pos is null by
    construction; POS is validated post-backfill by CS14.)
 4. **dryRun** → return `ok` before writes.
-5. **Cloze caps** (deferred past the gate): `fetchItemsWithClozeCarrier` (`store.ts`) → `projectItemClozeCaps`
-   (`projectItemCloze.ts`) → one `contextual_cloze` cap per item with an authored `item_contexts(cloze)` carrier.
-6. **Write** (dependency order): `upsertLearningItemIdempotent` + `upsertItemAnchorContext` per item →
+5. **Write** (dependency order): `upsertLearningItemIdempotent` + `upsertItemAnchorContext` per item →
    DB-native POS backfill (`fetchLearningItemPosByNormalizedText` + `enrichMissingPos` +
-   `updateLearningItemPos`) → `upsertCapabilitiesSkipIfExists` (item + cloze caps) →
+   `updateLearningItemPos`) → `upsertCapabilitiesSkipIfExists` (item caps only) →
    `buildItemContentUnits` (`contentUnits.ts`) + `upsertContentUnits` → junction
    (`upsertCapabilityContentUnits`) → `retireOrphanedCapabilities({ sourceKinds: ['item'] })`.
-7. **Seed distractors** (absorbs the old Stage C): `seedDistractors` over `createDistractorStore` +
+   - **Item `contextual_cloze` is NOT emitted** — see §4. The emitter (`projectItemCloze.ts`) +
+     reader (`store.fetchItemsWithClozeCarrier`) are present as scaffolding but unwired.
+6. **Seed distractors** (absorbs the old Stage C): `seedDistractors` over `createDistractorStore` +
    `createLocalEmbedder` (the done distractor slice — `selectDistractors`/`planDistractors`/`seedDistractors`).
-8. **Gate post-write** (`gate.ts:runVocabGatePostWrite`) — MUST run after step 7 so CS15 reads seeded
+7. **Gate post-write** (`gate.ts:runVocabGatePostWrite`) — MUST run after step 6 so CS15 reads seeded
    counts: CS14 (POS post-backfill), CS15 (distractor coverage), CS23 (audio coverage WARN), CS17
    (cross-lesson dupes). Aggregates into `status` (`ok`|`partial`).
 
@@ -67,13 +67,20 @@ branch, which is amputated at the cutover (Task 8). The two stages share only DB
 
 ## 4. Known limitations / not yet landed
 
-- **Cutover (Task 8) not landed:** until then the runner still co-writes item caps; `publishVocabulary`
-  is not yet wired into `publish-approved-content.ts`, and `projectItemsFromTypedRows` still gates audio
-  on clip existence (the unconditional-emit change rides the cutover). `status: in-flight` reflects this.
-- **Cloze out-of-pool gate (spec §6a)** not yet implemented — a quality flag on seed-once authored
-  carriers, off the render-acceptance path; follow-up.
+- **Item `contextual_cloze` — planned FIRST-CLASS capability, not yet wired.** The cap emitter
+  (`projectItemCloze.ts`) + carrier reader (`store.fetchItemsWithClozeCarrier`) are present + tested but
+  `publishVocabulary` does not call them. Two blockers must clear before wiring:
+  1. **Real-sentence carriers.** Today's item carriers (from `cloze-creator` / `extract-cloze-items.ts`)
+     are *fabricated* sentences that don't serve the lesson content. First-class item cloze must blank the
+     item in a sentence the learner actually read (a real lesson sentence), the way dialogue cloze blanks
+     a real dialogue line. The ~1,171 existing fabricated carriers are retirement candidates.
+  2. **The activation gap.** No cloze of any kind currently reaches a learner — the 85 `dialogue_line`
+     contextual_cloze caps are `ready`/`published` but have **0** review events and **0**
+     `learner_capability_state` rows. Only the 6 core item vocab types ever activate. This is a runtime
+     activation-path defect (separate issue), and it blocks *all* cloze/grammar/morphology — fix it first.
 - **Live write-path verification** is at the lesson-11 acceptance publish (HOW plan Task 10), per the
-  store-glue convention (orchestration logic unit-tested; DB glue live-verified).
+  store-glue convention (orchestration logic unit-tested; DB glue live-verified). Acceptance scope =
+  the 6 core families + distractors (the proven path); cloze render is deferred to the activation fix.
 
 ## 5. Seams
 

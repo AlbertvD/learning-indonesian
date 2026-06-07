@@ -317,6 +317,11 @@ CS14 warns on null post-backfill pos; coverage asserts `min(3,|eligible|)`). **S
 **Files:** Create `vocabulary/publish.ts`; Modify `orchestrate.ts` (export the entry); Test
 `…/__tests__/vocabulary/publish.test.ts` (hermetic, fake supabase + injected embedder/generateFn).
 
+> **DESCOPED per §9a:** steps 3–4's item-cloze emission (`fetchItemsWithClozeCarrier` →
+> `projectItemClozeCaps` → `clozeCaps`) is **NOT wired** — the emitter/reader are built + tested but kept
+> as unwired scaffolding for #167. `capsToWrite = allItemCaps` only. The steps below are left as the
+> original design record; the as-built `publish.ts` omits cloze.
+
 **`publishVocabulary(supabase, { lessonId, lessonNumber, dryRun, regenerate }, hooks) → VocabStageOutput`**
 — thin composition (mirror the proven runner sequence, item-only):
 1. `loadLesson` (audio map) + `loadFromDb` (items + itemState).
@@ -424,16 +429,39 @@ behavior — doing it earlier would red the suite between commits.
 
 ### Task 9: Lesson 11 prerequisites (data)
 
-1. **Grammar structuring** (GOTCHA 3): lesson 11's `lesson.ts` grammar/exercise sections are raw
-   `body` blobs; run the **linguist-structurer main-thread** (it's hook-blocked in a subagent) so
-   Stage A's Lesson Gate accepts them. Inputs: `pattern-brief.json` (BER- pattern + 8 affixed pairs).
-2. **CS19/CS4b data fix:** grep lesson 11 `staging/lesson-11/learning-items.ts` for comma/`;`-separated
-   and empty `translation_nl`; rewrite alternatives to `/`-form. (Pure data; the gate validates the
-   published lesson's own items.)
-3. **Cloze carriers (0.6):** confirm lesson 11's `item_contexts` `context_type='cloze'` rows are seeded
-   into the DB (via `extract-cloze-items.ts`/`seed-cloze-contexts.ts` from `staging/lesson-11/
-   cloze-contexts.ts`). Without them, `projectItemClozeCaps` emits nothing and the cloze render path
-   can't fire at acceptance.
+Task 9 is **not "manual prep for a Lesson-Stage deficiency"** — it is *completing lesson 11's
+authoring*, which the Lesson Stage's upstream authoring pipeline (the linguist agents +
+`generate-staging-files`) normally owns. Lesson 11 was only ingested through phase 4; the authoring
+steps below were never run for it.
+
+1. **Complete grammar authoring** (GOTCHA 3): lesson 11's `lesson.ts` grammar/exercise sections are
+   raw `body` blobs because the `linguist-structurer` step was never run. Run it **main-thread** (it's
+   hook-blocked in a subagent) so Stage A's Lesson Gate accepts the structured sections. Inputs:
+   `pattern-brief.json` (BER- pattern + 8 affixed pairs). This is the standard pipeline, not a patch.
+2. **CS19/CS4b data fix — DROPPED (verified non-issue 2026-06-07).** Grepped `staging/lesson-11/
+   learning-items.ts`: zero comma-as-OR translations, zero empty `translation_nl`.
+   `normaliseDutchTranslation` (in `generate-staging-files.ts`, the authoring side) already emitted
+   `/`-form. The CS19/CS4b errors were a stale carryover from the lesson-2 acceptance attempt; they do
+   not apply to lesson 11.
+3. **Cloze carriers — RESOLVED: item cloze deferred to #167; not needed for L11.** See §9a. Item
+   `contextual_cloze` is NOT wired into `publishVocabulary` (the emitter/reader are preserved
+   scaffolding). So L11 needs no cloze carriers, and the empty `cloze-contexts.ts` is a non-issue here.
+
+## 9a. Cloze provisioning — RESOLVED (2026-06-07, operator-decided)
+
+Ground-truth from the live DB reframed the cloze scope:
+- **No cloze has ever been practised.** `dialogue_line:contextual_cloze` has 85 `ready`/`published` caps
+  but **0** review events and **0** `learner_capability_state` — and item cloze has 0 caps. Only the 6
+  core item vocab types ever activate. The blocker is a **runtime activation gap (#166)**, not content.
+- **Fabricated carriers don't serve the lesson.** Item carriers (hardcoded `extract-cloze-items.ts` /
+  `cloze-creator`) are invented sentences the learner never read — a pedagogical defect. First-class item
+  cloze must use **real lesson-sentence carriers** (#167).
+
+**Decision:** item `contextual_cloze` is **not emitted by this slice**. The emitter (`projectItemCloze.ts`)
++ reader (`store.fetchItemsWithClozeCarrier`) are **kept as unwired scaffolding** (item cloze is a planned
+first-class capability — operator's call, do NOT delete). Cloze stays a `dialogue_line` feature
+(runner-owned). Two issues capture the path: **#166** (activation gap — prerequisite for *any* cloze) and
+**#167** (item cloze first-class, real-sentence carriers, blocked by #166).
 
 ### Task 10: Lesson 11 end-to-end publish + render verification
 
@@ -441,12 +469,13 @@ behavior — doing it earlier would red the suite between commits.
 2. Publish lesson 11 e2e (Stage A → runner non-vocab → `publishVocabulary`). Expect `ok`/`partial`
    (POS warnings acceptable), **no `validation_failed`**, no PGRST205.
 3. **Ground-truth DB report** (`feedback_answer_log_check` — data existence ≠ feature works): query
-   `learning_capabilities` for lesson 11 (item caps incl. `audio_recognition` + `contextual_cloze`),
-   `distractors` (≥3 per eligible item cap), `content_units` + junction.
+   `learning_capabilities` for lesson 11 (item caps incl. `audio_recognition`),
+   `distractors` (≥3 per eligible item cap), `content_units` + junction. (No item `contextual_cloze` — §9a.)
 4. **Render + review-event check:** open a session at `indonesian.duin.home` (test user,
-   `reference_test_user`), exercise each vocab family, confirm a `capability_review_events` row lands
-   **per family** — explicitly `recognise_meaning_from_audio` (listening-MCQ curated leg) and item
-   `contextual_cloze` (never-yet-run path). (Requires deploy first — Task 11.)
+   `reference_test_user`), exercise each of the **6 core vocab families** + curated distractors, confirm a
+   `capability_review_events` row lands per family — explicitly `recognise_meaning_from_audio` (the
+   listening-MCQ curated leg). **Cloze render is out of scope** (deferred to #166/#167). (Requires deploy
+   first — Task 11.)
 
 ### Task 11: Deploy
 
