@@ -277,14 +277,15 @@ export interface DialogueLineInput {
   /** The cap's source_ref of shape `lesson-N/section-M/line-K`. Carried for
    *  audit/debug; the builder does not parse it. */
   sourceRef: string
-  /** The blanked word — the answer the learner types into `___`. Persisted
-   *  in `cloze_answer.payload_json.value`. */
+  /** The blanked word — the answer the learner types into `___`. Persisted in
+   *  the typed `dialogue_clozes.answer_text`. */
   targetWord: string
-  /** L1 (NL) translation of the full line. Persisted in
-   *  `translation:l1.payload_json.value`. */
+  /** L1 (NL) translation of the full line (comprehension aid; F2 keeps the
+   *  whole-line translation even when the carrier is a narrowed sentence).
+   *  Persisted in `dialogue_clozes.translation_text`/`translation_nl`. */
   translation: string
-  /** The cloze sentence with the `___` placeholder. Persisted in
-   *  `cloze_context.payload_json.source_text`. The builder uses this as the
+  /** The cloze carrier with the `___` placeholder. Persisted in
+   *  `dialogue_clozes.sentence_with_blank`. The builder uses this as the
    *  `sentence` it shows to the learner. */
   sourceText: string
 }
