@@ -1,9 +1,13 @@
 ---
-status: approved
+status: shipped
 reviewed_by: [architect]       # round 2 APPROVED 2026-06-07; data-architect N/A (no schema — in-memory lessonOrder from already-read lessons.order_index)
-implementation: null
+implementation: PR #172
+merged_at: 2026-06-07
+implementation_paths:
+  - src/lib/session-builder/pedagogy.ts
+  - src/lib/session-builder/adapter.ts
 related_issues: ["#166", "#125"]
-related_commits: ["1e5be88"]   # pattern staging-gate carve-out (precondition)
+related_commits: ["1e5be88", "ff0a2e3"]   # pattern staging-gate carve-out (precondition) + implementation
 ---
 
 # Lesson-priority candidate ordering — restoring the planner's prioritization stage
