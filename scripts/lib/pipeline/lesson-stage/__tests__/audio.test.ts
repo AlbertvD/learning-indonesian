@@ -169,34 +169,12 @@ describe('ensureLessonAudio', () => {
     expect(synth).not.toHaveBeenCalled()
   })
 
-  it('voice configuration is applied via setLessonVoicesForLesson before synthesis', async () => {
-    const { client } = buildSupabaseMock({ existingClips: [] })
-    const synth = vi.fn(async () => Buffer.from('x'))
-    let voiceCalled = false
-    let synthCalledFirst = false
-    setLessonVoicesForLessonMock.mockImplementationOnce(async () => {
-      voiceCalled = true
-      return { primaryVoice: 'V1', dialogueVoices: {} }
-    })
-    synth.mockImplementationOnce(async () => {
-      if (!voiceCalled) synthCalledFirst = true
-      return Buffer.from('x')
-    })
-    await ensureLessonAudio({
-      lessonId: 'l1',
-      orderIndex: 1,
-      texts: [{ text: 'halo', voiceId: 'V1' }],
-      audioBudget: 5,
-      supabase: client,
-      synthesizer: synth,
-    })
-    expect(setLessonVoicesForLessonMock).toHaveBeenCalledWith(
-      expect.objectContaining({ lessonId: 'l1', orderIndex: 1 }),
-    )
-    expect(synthCalledFirst).toBe(false)
-  })
+  // (removed) "voice configuration is applied via setLessonVoicesForLesson" —
+  // bug fix #168 moved voice config to the runner (it must run BEFORE the runner
+  // collects the texts to voice); ensureLessonAudio no longer sets voices. The
+  // runner.test covers voice-config ordering now.
 
-  it('dryRun: no synthesis, no inserts, only dedup query (and voice config in dry-run mode)', async () => {
+  it('dryRun: no synthesis, no inserts, only dedup query', async () => {
     const { client, inserts, uploads, rpcCalls } = buildSupabaseMock({ existingClips: [] })
     const synth = vi.fn(async () => Buffer.from('x'))
     const result = await ensureLessonAudio({
@@ -216,9 +194,6 @@ describe('ensureLessonAudio', () => {
     expect(inserts).toEqual([])
     expect(uploads).toEqual([])
     expect(rpcCalls).toHaveLength(1)
-    expect(setLessonVoicesForLessonMock).toHaveBeenCalledWith(
-      expect.objectContaining({ dryRun: true }),
-    )
   })
 
   it('text dedup is keyed on (normalized_text, voiceId) — same text + different voice = 2 syntheses', async () => {

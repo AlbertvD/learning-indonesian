@@ -23,6 +23,7 @@ import {
   type AffixedPairRowInput,
 } from './adapter'
 import { ensureLessonAudio } from './audio'
+import { setLessonVoicesForLesson } from '../../../set-lesson-voices'
 import {
   enrichMissingGrammarTopics,
   type GrammarTopicsEnrichmentResult,
@@ -347,8 +348,22 @@ export async function runLessonStage(
     affixedPairInputs,
   )
 
-  // Collect audio texts AFTER the lesson row + voices are persisted, since
-  // ensureLessonAudio re-runs setLessonVoicesForLesson which reads the row.
+  // Voice config must be applied to the lesson BEFORE collecting audio texts.
+  // collectLessonPageTexts reads primary_voice / dialogue_voices to decide which
+  // vocab + dialogue strings to voice — but staging files DON'T carry voices
+  // (they're computed deterministically from order_index + dialogue speakers).
+  // setLessonVoicesForLesson persists them (lessons.primary_voice + lesson_speakers)
+  // AND returns them; apply onto staging.lesson so the collector actually voices
+  // the page. (Bug fix #168: previously this read the null staging voices →
+  // 0 texts → 0 audio synthesised on every fresh publish.)
+  const voiceAssignment = await setLessonVoicesForLesson({
+    lessonId: lesson.id,
+    orderIndex: lesson.orderIndex,
+    supabase,
+    dryRun: input.dryRun ?? false,
+  })
+  staging.lesson.primary_voice = voiceAssignment.primaryVoice
+  staging.lesson.dialogue_voices = voiceAssignment.dialogueVoices
   const audioTexts = collectLessonPageTexts(staging.lesson)
   const audioBudget = input.audioBudget?.maxNewSyntheses ?? 500
   const audio = await ensureLessonAudio({
