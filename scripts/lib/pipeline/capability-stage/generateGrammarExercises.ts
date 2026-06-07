@@ -198,7 +198,8 @@ At least 8 total, ideally 15. If the pattern is a reference list (e.g. a duratio
 2. contrast_pair: the wrong option must be the mistake a Dutch speaker would actually make — not a random word. options ids MUST equal their text (never "a"/"b").
 3. cloze_mcq: choose the blank deliberately; distractors are same-category words, never morphological variants of the answer; correctOptionId MUST be one of the 4 options.
 4. explanationText must teach the rule + contrast (the primary teaching moment shown after a wrong answer), not just confirm the answer.
-5. CEFR consistency — simple vocabulary + short sentences for A1.
+5. explanationText must be CONCISE — one or two short sentences (aim ≤160 characters). Teach the ONE rule at stake; do not lecture or restate the whole pattern.
+6. CEFR consistency — simple vocabulary + short sentences for A1.
 
 ## Output format
 

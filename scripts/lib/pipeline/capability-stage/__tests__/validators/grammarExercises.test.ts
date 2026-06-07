@@ -106,4 +106,21 @@ describe('validateGrammarExercises (CS13)', () => {
     ])
     expect(findings).toEqual([])
   })
+
+  it('warns (severity warning, not error) when explanation_text is verbose (F4 conciseness)', () => {
+    const verbose = 'A'.repeat(221) // > the 220-char soft cap
+    const findings = validateGrammarExercises([
+      candidate('contrast_pair', { promptText: 'p', targetMeaning: 'm', options: [{ id: 'a', text: 'x' }, { id: 'b', text: 'y' }], correctOptionId: 'a', explanationText: verbose }),
+    ])
+    expect(findings).toHaveLength(1)
+    expect(findings[0].gate).toBe('CS13')
+    expect(findings[0].severity).toBe('warning')
+  })
+
+  it('does not warn for a concise explanation (F4)', () => {
+    const findings = validateGrammarExercises([
+      candidate('contrast_pair', { promptText: 'p', targetMeaning: 'm', options: [{ id: 'a', text: 'x' }, { id: 'b', text: 'y' }], correctOptionId: 'a', explanationText: 'kort en bondig' }),
+    ])
+    expect(findings).toEqual([])
+  })
 })
