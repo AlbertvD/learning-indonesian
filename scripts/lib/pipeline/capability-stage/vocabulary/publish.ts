@@ -73,7 +73,11 @@ export interface PublishVocabularyInput {
   lessonId: string
   lessonNumber: number
   dryRun?: boolean
-  regenerate?: { kind: 'item'; normalizedText: string } | { kind: 'pattern'; slug: string }
+  regenerate?:
+    | { kind: 'item'; normalizedText: string }
+    | { kind: 'pattern'; slug: string }
+    | { kind: 'dialogue' }
+    | { kind: 'distractors' }
 }
 
 export interface PublishVocabularyHooks {
@@ -243,7 +247,9 @@ export async function publishVocabulary(
     embedder,
     input.regenerate?.kind === 'item'
       ? { regenerateNormalizedText: input.regenerate.normalizedText }
-      : {},
+      : input.regenerate?.kind === 'distractors'
+        ? { regenerateAll: true } // F5: delete + re-seed every item cap's distractors for the lesson
+        : {},
   )
   counts.itemDistractorSets = seedResult.capsSeeded
 

@@ -56,6 +56,10 @@ export interface SeedOptions {
   synonymThreshold?: number
   /** Re-seed this item's capabilities (delete-then-reselect) instead of skipping. */
   regenerateNormalizedText?: string
+  /** F5 (--regenerate-distractors): delete-then-reselect EVERY item cap's
+   *  distractors for the lesson — the lesson-scoped fix path for existing lessons
+   *  after the F1 dedup landed (a plain re-publish skips seeded caps, ADR 0011). */
+  regenerateAll?: boolean
 }
 
 export interface SeedResult {
@@ -103,7 +107,13 @@ export async function seedDistractors(
   // --- Idempotency: skip seeded caps; --regenerate deletes then re-selects. -
   const capIds = capsWithEmb.map((c) => c.capabilityId)
   const seeded = await store.fetchCapsWithDistractors(capIds)
-  if (opts.regenerateNormalizedText) {
+  if (opts.regenerateAll) {
+    // F5: lesson-scoped — delete every cap's distractors, then re-seed all.
+    if (capIds.length > 0) {
+      await store.deleteDistractors(capIds)
+      seeded.clear()
+    }
+  } else if (opts.regenerateNormalizedText) {
     const targetCapIds = capsWithEmb
       .filter((c) => c.item.form === opts.regenerateNormalizedText)
       .map((c) => c.capabilityId)

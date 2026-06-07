@@ -298,6 +298,10 @@ export async function runCapabilityStage(
   const generatedDialogueClozes = await generateDialogueClozes(dialogueLineInputs, clozePool, {
     generateFn: hooks.generateClozeFn,
     seededLineIds: dialogueDb.dialogueState.seededDialogueLineIds,
+    // F5: --regenerate-dialogue bypasses the per-line seeded gate so existing
+    // lessons re-evaluate every line against the F2 narrower (old over-long
+    // clozes whose line now drops fall out of the emit set → retire sweep).
+    regenerate: input.regenerate?.kind === 'dialogue',
   })
   const dialogueClozeCaps = projectDialogueClozeCapabilities(
     generatedDialogueClozes.clozes,

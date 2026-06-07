@@ -29,36 +29,40 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 async function main() {
   const lessonNumber = parseInt(process.argv[2], 10)
   if (isNaN(lessonNumber)) {
-    console.error('Usage: bun scripts/publish-approved-content.ts <N> [--dry-run] [--skip-lint] [--regenerate <normalized_text> | --regenerate-pattern <pattern-slug>]')
+    console.error('Usage: bun scripts/publish-approved-content.ts <N> [--dry-run] [--skip-lint] [--regenerate <normalized_text> | --regenerate-pattern <slug> | --regenerate-dialogue | --regenerate-distractors]')
     process.exit(1)
   }
 
   const dryRun = process.argv.includes('--dry-run')
   const skipLint = process.argv.includes('--skip-lint')
 
-  // --regenerate <normalized_text>: destructive distractor regeneration for one item.
-  //   Deletes existing distractor rows for the item (all 3 tables) then re-seeds.
-  // --regenerate-pattern <pattern-slug>: destructive grammar-exercise regeneration
-  //   for one pattern (deletes its rows across the 4 typed exercise tables, then
-  //   regenerates — Slice 2 Task 5, OQ2-2).
-  // These are the ONLY destructive paths — routine re-runs never delete seeded
-  // rows — and are mutually exclusive (a single regenerate target).
+  // Destructive regeneration flags — the ONLY paths that delete seeded rows
+  // (routine re-runs never do — ADR 0011). Mutually exclusive (one target):
+  //   --regenerate <normalized_text>   one item's distractors (delete + re-seed)
+  //   --regenerate-pattern <slug>      one grammar pattern's exercises (4 tables)
+  //   --regenerate-dialogue            ALL dialogue clozes for the lesson (F5)
+  //   --regenerate-distractors         ALL item distractors for the lesson (F5)
+  // F5: the two lesson-scoped flags fix EXISTING lessons after the F1/F2 generator
+  // fixes — a plain re-publish skips seeded clozes/distractors (ADR 0011 seed-once).
   const regenIdx = process.argv.indexOf('--regenerate')
   const regenerateArg = regenIdx !== -1 ? (process.argv[regenIdx + 1] ?? null) : null
   const regenPatternIdx = process.argv.indexOf('--regenerate-pattern')
   const regeneratePatternArg = regenPatternIdx !== -1 ? (process.argv[regenPatternIdx + 1] ?? null) : null
-  if (regenerateArg && regeneratePatternArg) {
-    console.error('Use only one of --regenerate <item> or --regenerate-pattern <slug>, not both.')
-    process.exit(1)
-  }
-  const regenerate:
+  type RegenTarget =
     | { kind: 'item'; normalizedText: string }
     | { kind: 'pattern'; slug: string }
-    | undefined = regeneratePatternArg
-    ? { kind: 'pattern', slug: regeneratePatternArg }
-    : regenerateArg
-      ? { kind: 'item', normalizedText: regenerateArg }
-      : undefined
+    | { kind: 'dialogue' }
+    | { kind: 'distractors' }
+  const regenTargets: RegenTarget[] = []
+  if (regeneratePatternArg) regenTargets.push({ kind: 'pattern', slug: regeneratePatternArg })
+  if (regenerateArg) regenTargets.push({ kind: 'item', normalizedText: regenerateArg })
+  if (process.argv.includes('--regenerate-dialogue')) regenTargets.push({ kind: 'dialogue' })
+  if (process.argv.includes('--regenerate-distractors')) regenTargets.push({ kind: 'distractors' })
+  if (regenTargets.length > 1) {
+    console.error('Use only ONE regenerate flag (--regenerate / --regenerate-pattern / --regenerate-dialogue / --regenerate-distractors).')
+    process.exit(1)
+  }
+  const regenerate: RegenTarget | undefined = regenTargets[0]
 
   // Slice 5b (#147): the Capability Stage (Stage B) is DB-only. A meaningful
   // Stage B dry-run must read DB state that ONLY a live Stage A produces, so:
