@@ -367,6 +367,24 @@ describe('generateDialogueClozes', () => {
     expect(result.clozes[0].sentenceWithBlank).toBe('Dia jatuh dari sebuah ___ di rumah.')
     expect(result.clozes[0].answerText).toBe('pohon')
   })
+
+  it('SKIPS (not fails) an over-ceiling line whose only carrier sentence is out of band (F2)', async () => {
+    // 17 tokens; the blank "pohon" sits in a 3-token sentence → no in-band carrier.
+    // This is a structural skip (no good cloze exists), NOT a generation failure —
+    // so it must not push to failedLineRefs (which would make the publish partial
+    // and block publishVocabulary via the CLI's status!=ok exit).
+    const longUnder = line('Dia lihat pohon. Mereka mau pergi ke pasar dulu lalu kembali ke rumah besar nanti sekali ya.', {
+      id: 'dl-under', sourceLineRef: 'lesson-5/section-3/line-8',
+    })
+    const wholeFn = async () =>
+      JSON.stringify({ answer: 'pohon', sentence_with_blank: 'Dia lihat ___. Mereka mau pergi ke pasar dulu lalu kembali ke rumah besar nanti sekali ya.' })
+    const result = await generateDialogueClozes([longUnder], POOL, { generateFn: wholeFn })
+    expect(result.clozes).toHaveLength(0)
+    expect(result.failedLineRefs).toHaveLength(0)
+    expect(result.skips).toEqual([
+      { dialogueLineId: 'dl-under', sourceLineRef: 'lesson-5/section-3/line-8', reason: 'no_viable_carrier_sentence' },
+    ])
+  })
 })
 
 // ---------------------------------------------------------------------------

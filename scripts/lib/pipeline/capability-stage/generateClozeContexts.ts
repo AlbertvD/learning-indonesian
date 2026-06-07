@@ -48,11 +48,15 @@ export interface DialogueLineInput {
 
 /** The valid structural skip reasons (the generator's own closed set).
  *  F2: `above_max_token_threshold` retired — a long line is no longer rejected;
- *  its carrier is narrowed to the blank's sentence by `narrowClozeCarrier`. */
+ *  its carrier is narrowed to the blank's sentence by `narrowClozeCarrier`.
+ *  `no_viable_carrier_sentence` (F2): the line was eligible but no single-sentence
+ *  carrier fits the [MIN,MAX] band — a structural skip (no GOOD cloze exists), not
+ *  a generation failure, so it does NOT fail the publish (status stays ok). */
 export type DialogueClozeSkipReason =
   | 'below_6_token_threshold'
   | 'no_current_or_prior_vocab_in_line'
   | 'no_same_pos_distractors_in_pool'
+  | 'no_viable_carrier_sentence'
 
 /** A vocab word found in a dialogue line that is a candidate blank. */
 export interface ClozeCandidate {
@@ -444,11 +448,21 @@ export async function generateDialogueClozes(
     }
 
     // F2: narrow the faithful whole-line carrier to the blank's sentence when the
-    // line is an over-ceiling multi-sentence turn; drop (coverage gap) if even the
-    // narrowed carrier is out of the [MIN, MAX] band.
+    // line is an over-ceiling multi-sentence turn. If no single-sentence carrier
+    // fits the [MIN, MAX] band, record a structural SKIP — not a failedLineRef.
+    // Rationale: this is a property of the line (no GOOD cloze exists), like
+    // ineligibility, NOT an LLM generation failure. Routing it to failedLineRefs
+    // would make CS22 ERROR → status 'partial' → the publish CLI aborts before
+    // publishVocabulary (distractor seed). A skip keeps status 'ok'; the line's
+    // cap still falls out of the emit set, so the runner's retire sweep stops any
+    // pre-existing over-long cloze from rendering.
     const narrowedCarrier = narrowClozeCarrier(sanitized.sentenceWithBlank)
     if (!narrowedCarrier) {
-      result.failedLineRefs.push(line.sourceLineRef)
+      result.skips.push({
+        dialogueLineId: line.id,
+        sourceLineRef: line.sourceLineRef,
+        reason: 'no_viable_carrier_sentence',
+      })
       continue
     }
 
