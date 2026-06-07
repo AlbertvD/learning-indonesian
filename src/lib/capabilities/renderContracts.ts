@@ -117,18 +117,17 @@ export const RENDER_CONTRACTS = {
     },
   },
   cloze_mcq: {
-    // PR 4 (Decision G): cloze_mcq now serves BOTH item-sourced contextual_cloze
-    // (distractor pool from item_contexts.source_lesson_id — see byKind/item.ts)
-    // AND pattern-sourced pattern_recognition (authored typed row from
-    // cloze_mcq_exercises — see byKind/pattern.ts). The byType packager branches
-    // on which input slot is populated. dialogue_line stays absent (needs a
-    // lesson-anchored pool fetcher that doesn't exist yet — follow-up).
-    capabilityTypes: ['contextual_cloze', 'pattern_recognition'],
-    supportedSourceKinds: ['item', 'pattern'],
+    // cap-v2 #161: cloze_mcq is now PATTERN-ONLY. Item cloze is typed-only — an
+    // item contextual_cloze cap routes solely to the `cloze` builder (the typed
+    // item_contexts carrier), never to an MCQ. The former item-sourced
+    // contextual_cloze leg (runtime cascade pool from item_contexts.source_lesson_id)
+    // is removed with the runner item-branch amputation. cloze_mcq serves only
+    // pattern_recognition (authored typed row from cloze_mcq_exercises — byKind/pattern.ts).
+    capabilityTypes: ['pattern_recognition'],
+    supportedSourceKinds: ['pattern'],
     // pattern: [] — readiness is guaranteed by the cloze_mcq_exercises NOT NULL
-    // columns + validateGrammarExercises + HC20, not capability_artifacts
-    // (Decision R mirror). item: [] unchanged.
-    requiredArtifacts: { item: [], pattern: [] },
+    // columns + validateGrammarExercises + HC20, not capability_artifacts.
+    requiredArtifacts: { pattern: [] },
   },
   contrast_pair: {
     // PR 4 (Decision G): pattern_contrast routes here, rendering from the typed
@@ -419,7 +418,7 @@ export interface ContractInputShapes {
   listening_mcq:   BuilderBase & { learningItem: LearningItem; primaryMeaning: ItemMeaning }
   dictation:       BuilderBase & { learningItem: LearningItem }
   cloze:           BuilderBase & { learningItem: LearningItem | null; clozeContext: ItemContext | null; dialogueLine: DialogueLineInput | null }
-  cloze_mcq:       BuilderBase & { learningItem: LearningItem | null; clozeContext: ItemContext | null; exercise: ClozeMcqExercisesRow | null }
+  cloze_mcq:       BuilderBase & { exercise: ClozeMcqExercisesRow }
   contrast_pair:   BuilderBase & { exercise: ContrastPairExercisesRow }
   sentence_transformation: BuilderBase & { exercise: SentenceTransformationExercisesRow }
   constrained_translation: BuilderBase & { exercise: ConstrainedTranslationExercisesRow }
@@ -561,33 +560,18 @@ export function projectBuilderInput<T extends ExerciseType>(
       }
     }
   }
-  if (exerciseType === 'cloze_mcq') {
-    // PR 4: pattern path renders from the typed cloze_mcq_exercises row; no
-    // clozeContext required (or available). Item path needs a cloze context
-    // (the runtime distractor-pool path reads clozeContext.source_text).
-    if (!patternExercise) {
-      clozeContext = raw.contexts.find(c => c.context_type === 'cloze') ?? null
-      if (!clozeContext) {
-        return {
-          ok: false,
-          reasonCode: 'malformed_cloze',
-          message: `no cloze context and no pattern cloze_mcq row for item ${learningItem!.id}`,
-          payloadSnapshot: {
-            learningItemId: learningItem!.id,
-            contextCount: raw.contexts.length,
-          },
-        }
-      }
-    }
-  }
+  // cap-v2 #161: cloze_mcq is pattern-only — the former item path (cloze context
+  // → runtime cascade) is removed (item cloze is typed-only, via the `cloze`
+  // builder). It now requires a typed cloze_mcq_exercises row like the other
+  // grammar exercises (handled by needsPatternExercise below).
 
-  // The 3 pure-grammar exercises render exclusively from a typed pattern row
-  // (PR 4). The reader (byKind/pattern.ts) already fails loud when the typed
-  // table has no row for a ready pattern cap; this is the projector-side
-  // belt-and-braces guard (e.g. resolver picked an exercise_type with no row
-  // for this pattern).
+  // The pure-grammar exercises render exclusively from a typed pattern row
+  // (PR 4 + cap-v2 #161 cloze_mcq). The reader (byKind/pattern.ts) already fails
+  // loud when the typed table has no row for a ready pattern cap; this is the
+  // projector-side belt-and-braces guard (e.g. resolver picked an exercise_type
+  // with no row for this pattern).
   const needsPatternExercise: ReadonlySet<ExerciseType> = new Set([
-    'contrast_pair', 'sentence_transformation', 'constrained_translation',
+    'contrast_pair', 'sentence_transformation', 'constrained_translation', 'cloze_mcq',
   ])
   if (needsPatternExercise.has(exerciseType) && !patternExercise) {
     return {
@@ -619,21 +603,12 @@ export function projectBuilderInput<T extends ExerciseType>(
       // branches on which is present.
       return { ok: true, input: { ...base, learningItem, clozeContext, dialogueLine: raw.dialogueLine } as BuilderInputFor<T> }
     case 'cloze_mcq':
-      // Dual-path (PR 4): item path has learningItem + clozeContext; pattern
-      // path has a typed cloze_mcq_exercises row and null learningItem. All
-      // honestly nullable here — the projector proved exactly one path holds.
-      // The byType packager branches on which is present.
-      return { ok: true, input: {
-        ...base,
-        learningItem,
-        clozeContext,
-        exercise: patternExercise?.exerciseType === 'cloze_mcq' ? patternExercise.row : null,
-      } as BuilderInputFor<T> }
     case 'contrast_pair':
     case 'sentence_transformation':
     case 'constrained_translation':
-      // Pattern-only (PR 4): the typed grammar-exercise row IS the contract.
-      // patternExercise is non-null + type-matched by the guard above.
+      // Pattern-only (PR 4 + cap-v2 #161 cloze_mcq): the typed grammar-exercise
+      // row IS the contract. patternExercise is non-null + type-matched by the
+      // needsPatternExercise guard above.
       return { ok: true, input: { ...base, exercise: patternExercise!.row } as BuilderInputFor<T> }
     case 'speaking':
       return { ok: true, input: { ...base, learningItem: learningItem! } as BuilderInputFor<T> }

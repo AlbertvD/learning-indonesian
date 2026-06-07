@@ -209,42 +209,9 @@ describe('runCapabilityStage — synthetic fixture (DB-only loader)', () => {
   // short-circuit is now exercised through a REAL item failure (CS4b), proving the
   // repointed gate fires on actual item data and is not vacuous (data-arch N1).
   // (The old CS6-on-staging-grammar short-circuit is gone with the staging read.)
-  it('short-circuits with status:validation_failed when CS4b (item translation_nl) fails on the typed item projection', async () => {
-    const { client } = buildSupabaseMock({})
-
-    const result = await runCapabilityStage(
-      { lessonNumber: 1, lessonId: 'lesson-uuid' },
-      {
-        loadLesson: async () => makeSynthLesson(),
-        createSupabaseClient: () => client as never,
-        // A word item with an empty l1_translation → projectItemsFromTypedRows maps
-        // translation_nl → null → CS4b error → hard validation_failed before writes.
-        loadFromDb: async () => ({
-          items: [
-            {
-              id: 'row-bad',
-              section_id: 'section-vocab',
-              lesson_id: 'lesson-uuid',
-              display_order: 0,
-              source_item_ref: 'rumah',
-              item_type: 'word' as const,
-              indonesian_text: 'rumah',
-              l1_translation: '',
-              l2_translation: null,
-              section_kind: 'vocabulary' as const,
-            },
-          ],
-          itemState: {
-            existingItemsByNormalizedText: new Map(),
-            existingItemCapsByCanonicalKey: new Map(),
-          },
-        }),
-        fetchDistractorPool: async () => [],
-      },
-    )
-    expect(result.status).toBe('validation_failed')
-    expect(result.findings.some((f) => f.gate === 'CS4b' && f.severity === 'error')).toBe(true)
-  })
+  // cap-v2 #161 cutover: the item CS4b short-circuit test moved with the item
+  // branch to the vocab module — see __tests__/vocabulary/gate.test.ts (CS4b unit)
+  // and __tests__/vocabulary/publish.test.ts (validation_failed control flow).
 
   // CS1 (grammar_topics) moved back to lesson-stage as GT1 — see
   // lesson-stage/__tests__/runner.test.ts for the integration coverage.

@@ -19,8 +19,7 @@ import {
   runCapabilityStage,
   buildLintStagingCommand,
 } from './lib/pipeline/capability-stage'
-import { populateLessonDistractors } from './lib/pipeline/capability-stage/orchestrate'
-import { createSupabaseClient } from './lib/pipeline/capability-stage/adapter'
+import { publishVocabulary } from './lib/pipeline/capability-stage/vocabulary/publish'
 
 export { buildLintStagingCommand }
 
@@ -111,6 +110,8 @@ async function main() {
   // Stage A returns lesson.id = '' on validation failure (lesson-stage
   // runner.ts:134). We already short-circuit above on stageA.status !== 'ok',
   // so a non-empty lessonId is guaranteed here (required by Stage B dry-run too).
+  // Stage B — capability-stage runner: the NON-ITEM kinds (dialogue_line, pattern,
+  // affixed_form_pair). cap-v2 #161 amputated its item branch into the vocab module.
   const stageB = await runCapabilityStage({
     lessonNumber,
     lessonId: stageA.lesson.id,
@@ -123,18 +124,21 @@ async function main() {
     process.exit(1)
   }
 
-  // Stage C — vocabulary distractors (cap-v2): curated MCQ distractor pointers
-  // for this lesson's item caps. Reads the item caps Stage B wrote + Pool(N) from
-  // the DB, computes meaning embeddings (cached), and seeds the `distractors`
-  // pointer table. Idempotent (seed-once). Skipped on dry-run (loads the local
-  // embedding model + writes). Replaces the runner's retired distractor step.
-  if (!dryRun) {
-    const supabase = createSupabaseClient()
-    const stageC = await populateLessonDistractors(supabase, {
-      lessonId: stageA.lesson.id,
-      lessonNumber,
-    })
-    console.log('Stage C (distractors):', JSON.stringify(stageC.result))
+  // Stage Vocabulary (cap-v2 #161) — the new vocab module owns the item slice
+  // end-to-end: item caps + learning_items + POS + anchor contexts + item
+  // content_units + junction + item contextual_cloze + curated distractors.
+  // Runs AFTER the runner (runner-first, §5a). Handles dryRun internally (returns
+  // before writes). Idempotent (seed-once, ADR 0011).
+  const stageVoc = await publishVocabulary({
+    lessonId: stageA.lesson.id,
+    lessonNumber,
+    dryRun,
+    regenerate,
+  })
+  console.log('Stage Vocabulary:', JSON.stringify({ status: stageVoc.status, counts: stageVoc.counts }, null, 2))
+  if (stageVoc.status === 'validation_failed') {
+    console.error(`\nStage Vocabulary failed validation for lesson ${lessonNumber}.`)
+    process.exit(1)
   }
 }
 

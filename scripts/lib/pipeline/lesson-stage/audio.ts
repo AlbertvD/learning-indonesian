@@ -2,7 +2,6 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { normalizeTtsText } from '../../tts-normalize'
 import { synthesizeSpeech } from '../../tts-client'
 import { buildStoragePath } from '../../tts-storage'
-import { setLessonVoicesForLesson } from '../../../set-lesson-voices'
 
 export interface EnsureLessonAudioInput {
   lessonId: string
@@ -40,15 +39,10 @@ export interface EnsureLessonAudioResult {
 export async function ensureLessonAudio(
   input: EnsureLessonAudioInput,
 ): Promise<EnsureLessonAudioResult> {
-  // 1. Voice configuration first — `dialogue_voices` must be set BEFORE the
-  //    runner asks for per-line audio so the (text, voice) keys are valid.
-  await setLessonVoicesForLesson({
-    lessonId: input.lessonId,
-    orderIndex: input.orderIndex,
-    supabase: input.supabase,
-    dryRun: input.dryRun ?? false,
-  })
-
+  // Voice configuration (primary_voice + dialogue_voices) is applied by the
+  // runner BEFORE it collects the texts to voice (bug fix #168) — the collector
+  // needs the voices, so they must be set first. ensureLessonAudio is handed the
+  // already-voiced `texts` and only synthesises them.
   return synthesiseLessonPageTexts(input)
 }
 

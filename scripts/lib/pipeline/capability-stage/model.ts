@@ -36,6 +36,11 @@ export const CAPABILITY_GATES = [
   'CS20', // item length guard — a word/phrase running >= 6 tokens is a likely mis-tagged sentence (WARN-only; kind is the gate, length is the smell). Pre-write, pure.
   'CS21', // de-harvested reader visibility — a dropped sentence/dialogue_chunk's text must still appear in the lesson's typed content tables (lesson_dialogue_lines / grammar examples / item rows), else WARN ("item text not found in typed lesson content"). Never silently vaporise. DB-aware (mid-write).
   'CS22', // dialogue-cloze coverage (Slice 3 — DB-state successor of lint-staging checkDialogueClozes): an ELIGIBLE dialogue line whose in-stage Mode-2 generation failed sanitization (generator failedLineRefs) produced no dialogue_clozes row. ERROR → run 'partial' (graceful — runtime renders the clozes that DID land; the gap is surfaced for re-publish/--regenerate, never silently dropped — m-2). Ineligible lines are validly skipped by the generator and not flagged.
+  // cap-v2 vocab rebuild (#161): audio caps (audio_recognition/dictation) are
+  // emitted for every word/phrase item assuming audio exists; a missing audio_clip
+  // is flagged WARN here (not blocked). The hard Stage-A error (halt the publish
+  // when a vocab word is unvoiced) is deferred to #165.
+  'CS23', // item audio coverage (WARN — missing audio_clip for a word/phrase item)
 ] as const
 
 export type CapabilityGate = typeof CAPABILITY_GATES[number]

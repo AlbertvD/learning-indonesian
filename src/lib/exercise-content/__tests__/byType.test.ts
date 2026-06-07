@@ -398,7 +398,7 @@ describe('buildListeningMCQ', () => {
   })
 })
 
-// ─── cloze_mcq dual path ───
+// ─── cloze_mcq (pattern-only since cap-v2 #161; item cloze is typed-only) ───
 
 describe('buildClozeMcq', () => {
   it('pattern path — typed cloze_mcq_exercises row', () => {
@@ -411,21 +411,10 @@ describe('buildClozeMcq', () => {
     }
   })
 
-  it('runtime (item) path with cloze context + sufficient pool', () => {
-    const ctx = makeContext('Saya ___ nasi', 'cloze')
-    const r = buildForExerciseType('cloze_mcq', baseInput({ contexts: [ctx] }))
-    expect(r.kind).toBe('ok')
-    if (r.kind === 'ok') {
-      expect(r.exerciseItem.clozeMcqData?.sentence).toBe('Saya ___ nasi')
-      expect(r.exerciseItem.clozeMcqData?.options).toHaveLength(4)
-      expect(r.exerciseItem.clozeMcqData?.correctOptionId).toBe('akhir')
-    }
-  })
-
-  it('item path fails when no cloze context AND no pattern exercise', () => {
+  it('fails when no typed pattern exercise is supplied (item cloze no longer routes here)', () => {
     const r = buildForExerciseType('cloze_mcq', baseInput({ contexts: [] }))
     expect(r.kind).toBe('fail')
-    if (r.kind === 'fail') expect(r.reasonCode).toBe('malformed_cloze')
+    if (r.kind === 'fail') expect(r.reasonCode).toBe('pattern_typed_row_missing')
   })
 
   it('pattern path fails on malformed typed row', () => {
@@ -538,9 +527,9 @@ describe('buildForExerciseType', () => {
 // ─── dialogue_line cloze ───
 //
 // PR-B of the lib/exercise-content fold adds a parallel input shape: cloze
-// (typed only — cloze_mcq still item-only) accepts a dialogueLine instead
-// of a learningItem. The adapter assembles dialogueLine from artifact rows
-// the publish pipeline writes; the byType packager reads it directly.
+// (typed only — cloze_mcq is pattern-only since cap-v2 #161) accepts a
+// dialogueLine instead of a learningItem. The adapter assembles dialogueLine
+// from artifact rows the publish pipeline writes; the byType packager reads it directly.
 
 describe('buildCloze — dialogue_line source kind', () => {
   function dialogueInput(overrides: Partial<RawProjectorInput> = {}): RawProjectorInput {
@@ -600,10 +589,10 @@ describe('buildCloze — dialogue_line source kind', () => {
     if (r.kind === 'ok') expect(r.exerciseItem.clozeContext?.speaker).toBeNull()
   })
 
-  it('cloze_mcq still requires learningItem (the dialogue_line widening did not extend to it)', () => {
+  it('cloze_mcq does not accept dialogue_line (pattern-only since cap-v2 #161)', () => {
     const r = buildForExerciseType('cloze_mcq', dialogueInput({
-      // Even with a dialogueLine populated, cloze_mcq's contract still
-      // requires a learningItem. The projector emits item_not_found.
+      // cloze_mcq is pattern-only: a dialogueLine (no learningItem, no pattern
+      // exercise) is not an accepted source → the projector emits item_not_found.
     }))
     expect(r.kind).toBe('fail')
     if (r.kind === 'fail') expect(r.reasonCode).toBe('item_not_found')

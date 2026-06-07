@@ -18,7 +18,7 @@ import {
   projectPatternsFromCategories,
 } from '../../projectors/grammar'
 import type { LoadedLessonSection } from '../../loader'
-import type { TypedItemRow, TypedGrammarCategory } from '../../loadFromDb'
+import type { TypedGrammarCategory } from '../../loadFromDb'
 import type { TypedAffixedPair } from '../../loadFromDb'
 
 // ---------------------------------------------------------------------------
@@ -44,47 +44,8 @@ const SECTIONS: LoadedLessonSection[] = [
   },
 ]
 
-/** Word item in a vocabulary section */
-const WORD_ROW: TypedItemRow = {
-  id: 'item-uuid-1',
-  section_id: 'section-uuid-0',
-  lesson_id: LESSON_ID,
-  display_order: 0,
-  source_item_ref: 'makan',
-  item_type: 'word',
-  indonesian_text: 'makan',
-  l1_translation: 'eten',
-  l2_translation: 'to eat',
-  section_kind: 'vocabulary',
-}
-
-/** Phrase item in a dialogue section */
-const PHRASE_ROW: TypedItemRow = {
-  id: 'item-uuid-2',
-  section_id: 'section-uuid-dialogue',
-  lesson_id: LESSON_ID,
-  display_order: 1,
-  source_item_ref: 'apa kabar',
-  item_type: 'phrase',
-  indonesian_text: 'apa kabar',
-  l1_translation: 'hoe gaat het',
-  l2_translation: null,
-  section_kind: 'dialogue',
-}
-
-/** Sentence item — must NOT produce a content unit */
-const SENTENCE_ROW: TypedItemRow = {
-  id: 'item-uuid-3',
-  section_id: 'section-uuid-0',
-  lesson_id: LESSON_ID,
-  display_order: 2,
-  source_item_ref: 'saya mau makan nasi',
-  item_type: 'sentence' as unknown as 'word' | 'phrase', // cast to test the filter
-  indonesian_text: 'saya mau makan nasi',
-  l1_translation: 'ik wil rijst eten',
-  l2_translation: null,
-  section_kind: 'vocabulary',
-}
+// cap-v2 #161: WORD_ROW / PHRASE_ROW / SENTENCE_ROW removed — learning_item units
+// moved to the vocab module (__tests__/vocabulary/contentUnits.test.ts).
 
 /**
  * Grammar category with a verbose, non-pre-slugified title.
@@ -145,7 +106,6 @@ describe('buildContentUnitsFromDb', () => {
       const units = buildContentUnitsFromDb({
         lessonNumber: LESSON_NUMBER,
         sections: SECTIONS,
-        itemRows: [],
         patternPlans: [],
         affixedPairs: [],
       })
@@ -170,7 +130,6 @@ describe('buildContentUnitsFromDb', () => {
       const units = buildContentUnitsFromDb({
         lessonNumber: LESSON_NUMBER,
         sections: SECTIONS,
-        itemRows: [],
         patternPlans: [],
         affixedPairs: [],
       })
@@ -180,73 +139,9 @@ describe('buildContentUnitsFromDb', () => {
     })
   })
 
-  describe('word/phrase items', () => {
-    it('emits a unit for a word item with correct identity', () => {
-      const units = buildContentUnitsFromDb({
-        lessonNumber: LESSON_NUMBER,
-        sections: SECTIONS,
-        itemRows: [WORD_ROW],
-        patternPlans: [],
-        affixedPairs: [],
-      })
-
-      const item = units.find((u) => u.unit_kind === 'learning_item')
-      expect(item).toBeDefined()
-      expect(item?.unit_slug).toBe('item-makan')
-      expect(item?.source_ref).toBe('learning_items/makan')
-      // vocabulary section_kind → 'section-vocabulary'
-      expect(item?.source_section_ref).toBe('lesson-3/section-vocabulary')
-      expect(item?.content_unit_key).toBe(
-        'learning_items/makan::lesson-3/section-vocabulary::item-makan',
-      )
-      expect(item?.display_order).toBe(1000)
-    })
-
-    it('uses section-dialogue for dialogue section_kind', () => {
-      const units = buildContentUnitsFromDb({
-        lessonNumber: LESSON_NUMBER,
-        sections: SECTIONS,
-        itemRows: [PHRASE_ROW],
-        patternPlans: [],
-        affixedPairs: [],
-      })
-
-      const item = units.find((u) => u.unit_kind === 'learning_item')
-      expect(item).toBeDefined()
-      expect(item?.source_section_ref).toBe('lesson-3/section-dialogue')
-      expect(item?.content_unit_key).toBe(
-        'learning_items/apa kabar::lesson-3/section-dialogue::item-apa-kabar',
-      )
-    })
-
-    it('does NOT emit a unit for sentence items', () => {
-      const units = buildContentUnitsFromDb({
-        lessonNumber: LESSON_NUMBER,
-        sections: SECTIONS,
-        itemRows: [SENTENCE_ROW],
-        patternPlans: [],
-        affixedPairs: [],
-      })
-
-      expect(units.filter((u) => u.unit_kind === 'learning_item')).toHaveLength(0)
-    })
-
-    it('display_order increments per item position', () => {
-      const units = buildContentUnitsFromDb({
-        lessonNumber: LESSON_NUMBER,
-        sections: SECTIONS,
-        itemRows: [WORD_ROW, PHRASE_ROW],
-        patternPlans: [],
-        affixedPairs: [],
-      })
-
-      const items = units.filter((u) => u.unit_kind === 'learning_item')
-      expect(items).toHaveLength(2)
-      const orders = items.map((u) => u.display_order).sort((a, b) => a - b)
-      expect(orders[0]).toBe(1000)
-      expect(orders[1]).toBe(1001)
-    })
-  })
+  // cap-v2 #161: learning_item content units moved to the vocab module
+  // (buildItemContentUnits) — covered by __tests__/vocabulary/contentUnits.test.ts.
+  // buildContentUnitsFromDb now owns only sections / grammar / affixed.
 
   describe('grammar patterns', () => {
     it('emits a unit for a verbose-title grammar category with pattern-path-aligned identity', () => {
@@ -264,7 +159,6 @@ describe('buildContentUnitsFromDb', () => {
       const units = buildContentUnitsFromDb({
         lessonNumber: LESSON_NUMBER,
         sections: SECTIONS,
-        itemRows: [],
         patternPlans: plans,
         affixedPairs: [],
       })
@@ -330,7 +224,6 @@ describe('buildContentUnitsFromDb', () => {
       const units = buildContentUnitsFromDb({
         lessonNumber: LESSON_NUMBER,
         sections: SECTIONS,
-        itemRows: [],
         patternPlans: plans,
         affixedPairs: [],
       })
@@ -357,7 +250,6 @@ describe('buildContentUnitsFromDb', () => {
       const units = buildContentUnitsFromDb({
         lessonNumber: LESSON_NUMBER,
         sections: SECTIONS,
-        itemRows: [],
         patternPlans: plans,
         affixedPairs: [],
       })
@@ -386,7 +278,6 @@ describe('buildContentUnitsFromDb', () => {
       const units = buildContentUnitsFromDb({
         lessonNumber: LESSON_NUMBER,
         sections: SECTIONS,
-        itemRows: [],
         patternPlans: plans,
         affixedPairs: [],
       })
@@ -404,7 +295,6 @@ describe('buildContentUnitsFromDb', () => {
       const units = buildContentUnitsFromDb({
         lessonNumber: LESSON_NUMBER,
         sections: SECTIONS,
-        itemRows: [],
         patternPlans: [],
         affixedPairs: [AFFIXED_PAIR],
       })
@@ -429,7 +319,6 @@ describe('buildContentUnitsFromDb', () => {
       const units = buildContentUnitsFromDb({
         lessonNumber: LESSON_NUMBER,
         sections: SECTIONS,
-        itemRows: [],
         patternPlans: [],
         affixedPairs: [AFFIXED_PAIR],
       })
@@ -448,7 +337,6 @@ describe('buildContentUnitsFromDb', () => {
       const units = buildContentUnitsFromDb({
         lessonNumber: LESSON_NUMBER,
         sections: SECTIONS,
-        itemRows: [],
         patternPlans: [],
         affixedPairs: [AFFIXED_PAIR, pair2],
       })
@@ -467,7 +355,6 @@ describe('buildContentUnitsFromDb', () => {
       const units = buildContentUnitsFromDb({
         lessonNumber: LESSON_NUMBER,
         sections: SECTIONS,
-        itemRows: [WORD_ROW],
         patternPlans: plans,
         affixedPairs: [AFFIXED_PAIR],
       })
@@ -479,24 +366,20 @@ describe('buildContentUnitsFromDb', () => {
   })
 
   describe('all unit kinds together', () => {
-    it('emits sections, word items, grammar, affixed — but NOT sentence items', () => {
+    it('emits sections, grammar, affixed — but NO learning_item units (cap-v2 #161: vocab owns items)', () => {
       const plans = makePlans([GRAMMAR_CATEGORY_VERBOSE])
       const units = buildContentUnitsFromDb({
         lessonNumber: LESSON_NUMBER,
         sections: SECTIONS,
-        itemRows: [WORD_ROW, PHRASE_ROW, SENTENCE_ROW],
         patternPlans: plans,
         affixedPairs: [AFFIXED_PAIR],
       })
 
       const byKind = (kind: string) => units.filter((u) => u.unit_kind === kind)
       expect(byKind('lesson_section')).toHaveLength(2)
-      expect(byKind('learning_item')).toHaveLength(2) // word + phrase, NOT sentence
+      expect(byKind('learning_item')).toHaveLength(0) // moved to the vocab module
       expect(byKind('grammar_pattern')).toHaveLength(1)
       expect(byKind('affixed_form_pair')).toHaveLength(1)
-
-      // Confirm no unit has the sentence's indonesian_text
-      expect(units.some((u) => u.unit_slug === 'item-saya-mau-makan-nasi')).toBe(false)
     })
   })
 })

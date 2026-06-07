@@ -138,6 +138,11 @@ const EXPECTED_ITEM_PATH_FILES: ExpectedFile[] = [
   { relPath: 'shared/embeddings.ts', task: 'cap-v2 Slice 1', existsFails: false },
   { relPath: 'vocabulary/store.ts', task: 'cap-v2 Slice 1 (store impl)', existsFails: false },
   { relPath: 'orchestrate.ts', task: 'cap-v2 Slice 1 (populate seam)', existsFails: false },
+  // cap-v2 vocabulary REBUILD (#161): the module that owns the item slice.
+  { relPath: 'vocabulary/contentUnits.ts', task: 'cap-v2 rebuild (item content_units)', existsFails: false },
+  { relPath: 'vocabulary/projectItemCloze.ts', task: 'cap-v2 rebuild (item cloze caps)', existsFails: false },
+  { relPath: 'vocabulary/gate.ts', task: 'cap-v2 rebuild (vocab gate)', existsFails: false },
+  { relPath: 'vocabulary/publish.ts', task: 'cap-v2 rebuild (module entry)', existsFails: false },
 ]
 
 // ---------------------------------------------------------------------------

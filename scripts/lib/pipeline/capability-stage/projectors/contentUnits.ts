@@ -45,14 +45,13 @@
 
 import {
   stableSlug,
-  sourceRefForLearningItem,
   contentUnitKey,
   sourceRefForLesson,
   type StagingContentUnit,
 } from '../../../content-pipeline-output'
 
 import type { LoadedLessonSection } from '../loader'
-import type { TypedItemRow, TypedAffixedPair } from '../loadFromDb'
+import type { TypedAffixedPair } from '../loadFromDb'
 import type { PatternPlan } from './grammar'
 
 // ---------------------------------------------------------------------------
@@ -97,8 +96,6 @@ export interface ContentUnitsDbInput {
   lessonNumber: number
   /** From loadStageAOutputsFromDb — loader.ts LoadedLessonSection[] */
   sections: LoadedLessonSection[]
-  /** From loadFromDb — TypedItemRow[]; word/phrase only will be emitted */
-  itemRows: TypedItemRow[]
   /**
    * From projectPatternsFromCategories — PatternPlan[].
    *
@@ -123,7 +120,7 @@ export interface ContentUnitsDbInput {
 export function buildContentUnitsFromDb(
   input: ContentUnitsDbInput,
 ): StagingContentUnit[] {
-  const { lessonNumber, sections, itemRows, patternPlans, affixedPairs } = input
+  const { lessonNumber, sections, patternPlans, affixedPairs } = input
   const lessonSourceRef = sourceRefForLesson(lessonNumber)
   const units: StagingContentUnit[] = []
 
@@ -148,31 +145,11 @@ export function buildContentUnitsFromDb(
     })
   }
 
-  // --- Word / phrase learning items (sentence + dialogue_chunk excluded) ---
-  let itemIndex = 0
-  for (const row of itemRows) {
-    if (row.item_type !== 'word' && row.item_type !== 'phrase') continue
-
-    const slug = stableSlug(row.indonesian_text)
-    const isDialogue = row.section_kind === 'dialogue'
-    const sourceSectionRef = `${lessonSourceRef}/section-${isDialogue ? 'dialogue' : 'vocabulary'}`
-
-    units.push({
-      content_unit_key: contentUnitKey({
-        sourceRef: sourceRefForLearningItem(row.indonesian_text),
-        sourceSectionRef,
-        unitSlug: `item-${slug}`,
-      }),
-      source_ref: sourceRefForLearningItem(row.indonesian_text),
-      source_section_ref: sourceSectionRef,
-      unit_kind: 'learning_item',
-      unit_slug: `item-${slug}`,
-      display_order: 1000 + itemIndex,
-      payload_json: {},
-      source_fingerprint: '',
-    })
-    itemIndex++
-  }
+  // --- Learning-item content units: cap-v2 #161 cutover. ------------------
+  // The learning_item content units are now built by the vocab module
+  // (vocabulary/contentUnits.ts:buildItemContentUnits) — disjoint key set +
+  // display_order 1000+ range, written to the same content_units table. This
+  // builder owns only sections / grammar / affixed.
 
   // --- Grammar patterns (Decision E amendment: consume PatternPlan, not re-derived slug) ---
   //
