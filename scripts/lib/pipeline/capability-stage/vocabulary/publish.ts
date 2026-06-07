@@ -2,12 +2,20 @@
  * vocabulary/publish.ts — the vocab module entry: the item slice, end-to-end.
  *
  * Thin composition over reused pure primitives (the item projector, the adapter
- * write fns, the done distractor slice) + the three new pieces (item content-units
- * builder, item contextual_cloze emitter, the vocab gate). The vocab module OWNS
- * the item slice; the runner loses it (cutover, Task 8). They share only DB tables.
+ * write fns, the done distractor slice) + the new pieces (item content-units builder,
+ * the vocab gate). The vocab module OWNS the item slice; the runner loses it
+ * (cutover, Task 8). They share only DB tables.
+ *
+ * Item contextual_cloze is NOT wired in yet (cap-v2 #161). It is a planned
+ * FIRST-CLASS capability — the emitter (projectItemCloze.ts) + reader
+ * (store.fetchItemsWithClozeCarrier) are kept as scaffolding — but it is not
+ * emitted until two things are fixed: (1) carriers must be REAL lesson sentences
+ * (today's carriers are fabricated and don't serve the lesson content), and
+ * (2) the activation gap (no cloze of any kind currently reaches a learner).
+ * Until then, cloze is served only by the runner's dialogue_line path.
  *
  * Flow (mirrors the proven runner item sequence, item-only):
- *   load (DB) → project items (+ cloze caps) → gate PRE-write → [dryRun stop]
+ *   load (DB) → project items → gate PRE-write → [dryRun stop]
  *   → write items+anchors → POS backfill → write caps → content_units → junction
  *   → retire item orphans → seed distractors → gate POST-write → return.
  *
@@ -46,10 +54,8 @@ import { itemSlug } from '@/lib/capabilities'
 import { normalizeTtsText } from '../../../tts-normalize'
 
 import { buildItemContentUnits } from './contentUnits'
-import { projectItemClozeCaps } from './projectItemCloze'
 import {
   createDistractorStore,
-  fetchItemsWithClozeCarrier,
   fetchDistractorCountsByCapability,
 } from './store'
 import { seedDistractors } from './seedDistractors'
@@ -136,16 +142,6 @@ export async function publishVocabulary(
     return { status: 'ok', counts, findings, durationMs: Date.now() - start }
   }
 
-  // ---- 3c. Item cloze caps (DB read deferred past the gate/dry-run). -----
-  // The carriers are pre-authored item_contexts(cloze) rows (seed-once); we only
-  // emit the contextual_cloze cap for items that have one. Read after the
-  // short-circuits so a failed/dry publish does no DB work.
-  const clozeCarriers = await fetchItemsWithClozeCarrier(supabase, input.lessonId)
-  const clozeCaps = projectItemClozeCaps({
-    itemsWithCloze: clozeCarriers,
-    lessonId: input.lessonId,
-  })
-
   // ---- 4. Write learning_items + anchor contexts. ------------------------
   const itemIdsByNormalizedText = new Map<string, string>()
   for (const plan of itemProjection.perItemPlans) {
@@ -186,8 +182,15 @@ export async function publishVocabulary(
     }
   }
 
-  // ---- 5. Write item caps + cloze caps (skip-if-exists; FSRS-safe). ------
-  const capsToWrite: CapabilityInput[] = [...allItemCaps, ...clozeCaps]
+  // ---- 5. Write item caps (skip-if-exists; FSRS-safe). ------------------
+  // Item contextual_cloze is NOT wired in yet (cap-v2 #161). The cap emitter
+  // (projectItemClozeCaps) + carrier reader (fetchItemsWithClozeCarrier) are kept
+  // as scaffolding for item cloze as a planned FIRST-CLASS capability — but it is
+  // not emitted here because: (1) the existing carriers are fabricated sentences
+  // that don't serve the lesson content (first-class item cloze needs real-sentence
+  // carriers), and (2) no cloze renders until the activation gap is fixed. Wire it
+  // here once both are addressed. See the module spec §4 + the cloze issue.
+  const capsToWrite: CapabilityInput[] = allItemCaps
   const newCapIdsByKey = await upsertCapabilitiesSkipIfExists(supabase, capsToWrite)
   // Complete key→id map: newly inserted ∪ already-existing (idempotent re-runs).
   const capIdsByKey = new Map<string, string>()

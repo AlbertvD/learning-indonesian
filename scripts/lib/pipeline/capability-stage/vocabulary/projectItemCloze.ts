@@ -1,13 +1,23 @@
 /**
  * vocabulary/projectItemCloze.ts — item-source contextual_cloze cap emitter.
  *
- * The net-new piece of the cap-v2 rebuild (Mode-1 item cloze, deferred until now —
- * generateClozeContexts.ts:13). For each item that has an authored cloze carrier in
- * item_contexts (context_type='cloze', seed-once / DB-authoritative, ADR 0011), emit
- * ONE `contextual_cloze` capability. The carrier sentences themselves are authored
- * separately (extract-cloze-items.ts); this only emits the schedulable cap. The
- * runtime `cloze` builder (renderContracts.ts:107-118 → byType/cloze.ts) reads the
- * carrier from item_contexts at render time — no new typed table, no exercise row.
+ * ⚠️ NOT WIRED IN (cap-v2 #161). Kept as scaffolding for item cloze as a planned
+ * FIRST-CLASS capability. publishVocabulary does NOT call this yet, because two
+ * things must land first:
+ *   1. REAL-SENTENCE carriers — today's item carriers (extract-cloze-items.ts /
+ *      cloze-creator) are FABRICATED sentences that don't serve the lesson content.
+ *      First-class item cloze must blank the item in a sentence the learner actually
+ *      read (a lesson sentence), the way dialogue cloze blanks a real dialogue line.
+ *   2. The activation gap — no cloze of any kind currently reaches a learner
+ *      (the 85 dialogue cloze caps have 0 review events). Fix that first.
+ * This EMITTER is carrier-source-agnostic (it takes items-with-a-carrier and emits
+ * the cap), so it is reusable once the carrier source is corrected. The identity
+ * contract below is the load-bearing part and is verified + tested.
+ *
+ * For each item with a cloze carrier in item_contexts (context_type='cloze'), emit
+ * ONE `contextual_cloze` capability; the runtime `cloze` builder
+ * (renderContracts.ts → byType/cloze.ts) reads the carrier at render time — no new
+ * typed table, no exercise row.
  *
  * Identity contract (VERIFIED — projectors/dialogueCloze.ts:47-54, the only live
  * contextual_cloze emitter): direction='id_to_l1', modality='text',
