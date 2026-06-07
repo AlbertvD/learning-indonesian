@@ -17,6 +17,7 @@ import { describe, it, expect } from 'vitest'
 import {
   normalizeClozeToken,
   assessDialogueLineEligibility,
+  narrowClozeCarrier,
   buildDialogueClozePrompt,
   parseDialogueClozeResponse,
   sanitizeGeneratedCloze,
@@ -84,14 +85,14 @@ describe('assessDialogueLineEligibility', () => {
     expect(result.reason).toBe('below_6_token_threshold')
   })
 
-  it('skips lines longer than the single-sentence ceiling (multi-sentence turn)', () => {
-    // 19 tokens, contains the pool noun "pohon" (so gates 2/3 would otherwise pass) —
-    // but it is over the single-sentence carrier ceiling, so it is skipped. This is
-    // the long-paragraph dialogue-cloze defect the gate prevents.
-    const long = 'Saya mau pergi ke pasar dulu lalu saya akan kembali ke rumah dekat pohon yang besar itu nanti sekali.'
+  it('no longer rejects a long multi-sentence line on length (F2: the carrier is narrowed downstream)', () => {
+    // 20 tokens across two sentences, "pohon" (noun) in the 2nd. Pre-F2 this was
+    // rejected as above_max_token_threshold; now it is eligible and the over-long
+    // carrier is narrowed to the blank's sentence by narrowClozeCarrier downstream.
+    const long = 'Saya mau pergi ke pasar dulu lalu saya akan kembali ke rumah. Dia jatuh dari sebuah pohon di dekat rumah.'
     const result = assessDialogueLineEligibility(line(long), POOL)
-    expect(result.eligible).toBe(false)
-    expect(result.reason).toBe('above_max_token_threshold')
+    expect(result.eligible).toBe(true)
+    expect(result.candidates?.some((c) => c.normalized === 'pohon')).toBe(true)
   })
 
   it('accepts a single sentence at the upper boundary that has a viable candidate', () => {
@@ -159,6 +160,38 @@ describe('assessDialogueLineEligibility', () => {
     )
     expect(result.eligible).toBe(false)
     expect(result.reason).toBe('no_same_pos_distractors_in_pool')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// narrowClozeCarrier (F2: single-sentence carrier extraction)
+// ---------------------------------------------------------------------------
+
+describe('narrowClozeCarrier', () => {
+  it('returns a within-ceiling carrier unchanged (a short line keeps its whole carrier)', () => {
+    // 6 tokens, two short sentences — a good carrier; not narrowed.
+    expect(narrowClozeCarrier('Itu ___ ya! Empat rupiah boleh?')).toBe('Itu ___ ya! Empat rupiah boleh?')
+  })
+
+  it('narrows an over-ceiling line to the single sentence containing the blank', () => {
+    const whole = 'Saya mau pergi ke pasar dulu lalu saya akan kembali ke rumah. Dia jatuh dari sebuah ___ di dekat rumah.'
+    expect(narrowClozeCarrier(whole)).toBe('Dia jatuh dari sebuah ___ di dekat rumah.')
+  })
+
+  it('drops (null) when the blank sentence is under the floor (under-context)', () => {
+    // over-ceiling line; the ___ sentence is only 5 tokens → too little context.
+    const whole = 'Saya juga tidak punya ___. Jadi tinggal di rumah saja besok pagi sekali ya kawan dekat sana.'
+    expect(narrowClozeCarrier(whole)).toBeNull()
+  })
+
+  it('drops (null) when the blank sentence itself exceeds the ceiling', () => {
+    const whole = 'Awal cerita biasa. Mereka ke bandar udara dengan bapak dan setelah terbang satu setengah jam mereka ___ di bandara Ngurah Rai Denpasar Bali pagi tadi. Lalu pulang.'
+    expect(narrowClozeCarrier(whole)).toBeNull()
+  })
+
+  it('returns null for an over-ceiling line with no blank (defensive)', () => {
+    const whole = 'Tidak ada blank di sini sama sekali ya pak. Teman saya dekat rumah pasar pagi tadi sekali lagi ya bu.'
+    expect(narrowClozeCarrier(whole)).toBeNull()
   })
 })
 
@@ -319,6 +352,20 @@ describe('generateDialogueClozes', () => {
     expect(result.clozes).toHaveLength(0)
     expect(result.skips).toHaveLength(0)
     expect(called).toBe(0)
+  })
+
+  it('narrows an over-ceiling eligible line to the blank sentence (F2)', async () => {
+    // 18 tokens across two sentences; "pohon" (noun) in the 2nd. The LLM returns
+    // the faithful whole-line carrier; the stored cloze is the narrowed sentence.
+    const longLine = line('Mereka mau pergi ke pasar pagi tadi bersama teman teman dekat. Dia jatuh dari sebuah pohon di rumah.', {
+      id: 'dl-long', sourceLineRef: 'lesson-5/section-3/line-7',
+    })
+    const wholeBlankFn = async () =>
+      JSON.stringify({ answer: 'pohon', sentence_with_blank: 'Mereka mau pergi ke pasar pagi tadi bersama teman teman dekat. Dia jatuh dari sebuah ___ di rumah.' })
+    const result = await generateDialogueClozes([longLine], POOL, { generateFn: wholeBlankFn })
+    expect(result.clozes).toHaveLength(1)
+    expect(result.clozes[0].sentenceWithBlank).toBe('Dia jatuh dari sebuah ___ di rumah.')
+    expect(result.clozes[0].answerText).toBe('pohon')
   })
 })
 

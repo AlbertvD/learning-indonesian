@@ -54,12 +54,11 @@ import {
   type CapabilitySupabaseClient,
 } from './adapter'
 import { loadLesson as defaultLoadLesson, type LoadedLesson } from './loader'
-import { fetchDistractorPool as defaultFetchDistractorPool, loadPatternFromDb as defaultLoadPatternFromDb, loadDialogueFromDb as defaultLoadDialogueFromDb, fetchClozePool as defaultFetchClozePool, fetchAffixedPairsFromDb as defaultFetchAffixedPairsFromDb, type PatternDbResult, type DialogueDbResult, type TypedAffixedPair } from './loadFromDb'
-import { generateDialogueClozes, type ClozePoolItem } from './generateClozeContexts'
+import { fetchDistractorPool as defaultFetchDistractorPool, loadPatternFromDb as defaultLoadPatternFromDb, loadDialogueFromDb as defaultLoadDialogueFromDb, fetchClozePool as defaultFetchClozePool, fetchAffixedPairsFromDb as defaultFetchAffixedPairsFromDb, type PatternDbResult, type DialogueDbResult, type TypedAffixedPair, type DistractorInputItem } from './loadFromDb'
+import { generateDialogueClozes, type ClozePoolItem, type GenerateFn } from './generateClozeContexts'
 import { writePatternPath } from './patternPath'
 import { projectAffixedCapabilities } from './projectors/affixedCapabilities'
 import { buildContentUnitsFromDb } from './projectors/contentUnits'
-import { type GenerateFn, type DistractorInputItem } from './generateItemDistractors'
 
 // CS1 (grammar_topics) moved back to lesson-stage (GT1) — lesson_sections
 // is Stage A's territory, and lesson-stage now owns the enricher that
@@ -299,6 +298,10 @@ export async function runCapabilityStage(
   const generatedDialogueClozes = await generateDialogueClozes(dialogueLineInputs, clozePool, {
     generateFn: hooks.generateClozeFn,
     seededLineIds: dialogueDb.dialogueState.seededDialogueLineIds,
+    // F5: --regenerate-dialogue bypasses the per-line seeded gate so existing
+    // lessons re-evaluate every line against the F2 narrower (old over-long
+    // clozes whose line now drops fall out of the emit set → retire sweep).
+    regenerate: input.regenerate?.kind === 'dialogue',
   })
   const dialogueClozeCaps = projectDialogueClozeCapabilities(
     generatedDialogueClozes.clozes,

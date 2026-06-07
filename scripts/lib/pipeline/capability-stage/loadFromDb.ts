@@ -20,7 +20,6 @@
  */
 
 import type { CapabilitySupabaseClient } from './adapter'
-import type { DistractorInputItem } from './generateItemDistractors'
 import type { ClozePoolItem } from './generateClozeContexts'
 
 // ---------------------------------------------------------------------------
@@ -232,6 +231,22 @@ export async function fetchItemCapabilityState(
 // ---------------------------------------------------------------------------
 // fetchDistractorPool
 // ---------------------------------------------------------------------------
+
+/**
+ * One row of the cumulative distractor pool (the grammar/pattern path's distractor
+ * source). Relocated here from the retired `generateItemDistractors.ts` (cap-v2
+ * F1) — it is the return shape of `fetchDistractorPool`. DB-sourced fields:
+ */
+export interface DistractorInputItem {
+  /** `normalized_text` — stable dedup key (candidate-only). */
+  source_item_ref: string
+  /** 'word' or 'phrase' — used for the same-word-class rule. */
+  item_type: 'word' | 'phrase'
+  /** `base_text` — the Indonesian word/phrase. */
+  indonesian_text: string
+  /** `translation_nl` — Dutch translation (L1) shown in recognition_mcq. */
+  l1_translation: string
+}
 
 /**
  * Read the cumulative distractor pool from `learning_items`.

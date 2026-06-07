@@ -101,10 +101,8 @@ const EXPECTED_ITEM_PATH_FILES: ExpectedFile[] = [
   { relPath: 'loadFromDb.ts', task: 'Task 3', existsFails: false },
   // Task 4: pure item projector (already exists; must stay disk-free)
   { relPath: 'projectors/vocab.ts', task: 'Task 4', existsFails: false },
-  // Task 5: in-stage curated-distractor generator
-  { relPath: 'generateItemDistractors.ts', task: 'Task 5', existsFails: false },
   // Task 7: Capability Gate item-kind validators (files created, existsFails flipped to false)
-  { relPath: 'validators/itemDistractors.ts', task: 'Task 7', existsFails: false },
+  // (generateItemDistractors.ts + validators/itemDistractors.ts retired in cap-v2 F1.)
   { relPath: 'validators/itemCoverage.ts', task: 'Task 7', existsFails: false },
   { relPath: 'validators/itemPos.ts', task: 'Task 7', existsFails: false },
   { relPath: 'validators/itemDuplicates.ts', task: 'Task 7', existsFails: false },

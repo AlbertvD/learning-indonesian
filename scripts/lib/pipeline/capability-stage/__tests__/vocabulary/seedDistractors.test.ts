@@ -149,4 +149,19 @@ describe('seedDistractors', () => {
       { capabilityId: 'cap-a-text', itemId: 'i-c' },
     ])
   })
+
+  it('--regenerate-distractors (regenerateAll) deletes ALL seeded caps for the lesson, then re-selects (F5)', async () => {
+    // cap-a-text is seeded; without regen it is skipped. regenerateAll deletes
+    // every cap's rows for the lesson (not just one item) and re-seeds — the
+    // lesson-scoped fix path for existing lessons after F1's dedup landed.
+    const { store, embedder, state } = makeFakes({ seededCaps: new Set(['cap-a-text']) })
+
+    await seedDistractors({ lessonId: 'L', lessonNumber: 1 }, store, embedder, { k: 2, regenerateAll: true })
+
+    expect(state.deleted).toEqual(['cap-a-text'])
+    expect(state.inserted).toEqual([
+      { capabilityId: 'cap-a-text', itemId: 'i-b' },
+      { capabilityId: 'cap-a-text', itemId: 'i-c' },
+    ])
+  })
 })

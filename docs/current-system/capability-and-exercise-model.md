@@ -14,6 +14,8 @@ related:
 
 # Capability & exercise model — the clear overview
 
+> **Status note (2026-06-07): §8 is a DESIRED TARGET, not current state.** The improved 4-layer naming convention (`_src`/`_mode`/`_cap`/`_ex`) is **not implemented** — code + live DB still use the old overloaded `CapabilityType` names (`text_recognition`, `l1_to_id_choice`, `contextual_cloze`, `pattern_contrast`, …). The rename rewrites `canonical_key` (FSRS identity) + 6 consumer surfaces and must first answer the §7 structural questions, so it is a migration, not a doc edit. **Decision (2026-06-07): postpone until the need is high enough** — the confusion is real but causes no user-facing/quality regression, and build-stage state-truncation keeps the rename cheap to execute whenever we choose. Revisit when the naming actively blocks work or a forcing function (e.g. another key-touching change) appears. See `memory/project_capability_model_and_naming.md` and `memory/project_capability_quality_salvage_not_rebuild.md`.
+
 This is the **conceptual** map of the learning model: content sources, the capabilities (skills) derived from them, the exercise types those capabilities render as, and the artifacts an exercise consumes. It is the map you read before designing anything in this area.
 
 It is **not** a code-structure spec — those are [`modules/capabilities.md`](./modules/capabilities.md), [`modules/exercises.md`](./modules/exercises.md), [`modules/exercise-content.md`](./modules/exercise-content.md). This doc answers *"what is the model and how do its pieces connect?"*.

@@ -23,6 +23,12 @@ import { buildGrammarExerciseRow } from '../projectors/grammarExerciseRows'
 const nonEmpty = z.string().min(1)
 const nonEmptyArray = z.array(nonEmpty).min(1)
 
+/** F4: soft conciseness cap for grammar explanation_text. Over this, a WARNING
+ *  (never an error/drop) surfaces a verbose explanation for review — the A/B
+ *  showed explanations drifting to 260–304 chars; a terse one or two sentences
+ *  (~≤160) teaches better. Tunable. */
+export const GRAMMAR_EXPLANATION_SOFT_MAX = 220
+
 const contrastPairSchema = z.object({
   prompt_text: nonEmpty,
   target_meaning: nonEmpty,
@@ -97,6 +103,19 @@ export function validateGrammarExercises(candidates: CandidateLike[]): Validatio
         gate: 'CS13',
         severity: 'error',
         message: `Grammar exercise ${exerciseType} fails typed-row shape (${built.table}): ${issues}`,
+        context: { itemSlug: slug, table: built.table },
+      })
+      continue
+    }
+
+    // F4 (soft, warning-only): flag a verbose explanation for review. Never an
+    // error — a long explanation is suboptimal pedagogy, not invalid data.
+    const explanation = (built.columns as Record<string, unknown>).explanation_text
+    if (typeof explanation === 'string' && explanation.length > GRAMMAR_EXPLANATION_SOFT_MAX) {
+      findings.push({
+        gate: 'CS13',
+        severity: 'warning',
+        message: `Grammar exercise ${exerciseType} explanation_text is verbose (${explanation.length} chars > ${GRAMMAR_EXPLANATION_SOFT_MAX}); aim for one or two short sentences (F4).`,
         context: { itemSlug: slug, table: built.table },
       })
     }

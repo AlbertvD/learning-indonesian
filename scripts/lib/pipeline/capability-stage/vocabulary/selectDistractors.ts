@@ -21,6 +21,28 @@
 import { levenshteinDistance } from '../../../text-similarity'
 import { stripAffixes } from '../../../affix'
 
+/**
+ * Dedup a pre-ranked candidate list by the string that will RENDER to the learner
+ * (the L1 gloss for meaning MCQ, the Indonesian form for form MCQ), keeping the
+ * first (best-ranked) of each. Distractors are stored as item-id pointers, so two
+ * DISTINCT learning_items can share a rendered string (e.g. two items glossed
+ * "rood") and both survive selection — producing an unfair "rood | rood" MCQ
+ * (F1, verified live: 5/43 L7 text_recognition caps). Dedup must run BEFORE the
+ * top-k slice so a collision is replaced by the next distinct option, not dropped
+ * to under-k.
+ */
+function dedupeByRendered<T>(ranked: T[], rendered: (t: T) => string): T[] {
+  const seen = new Set<string>()
+  const out: T[] = []
+  for (const r of ranked) {
+    const key = rendered(r).toLowerCase().trim()
+    if (seen.has(key)) continue
+    seen.add(key)
+    out.push(r)
+  }
+  return out
+}
+
 /** A learning item eligible to be a wrong MCQ option. */
 export interface DistractorCandidate {
   /** `learning_items.id` — the pointer stored in the `distractors` table. */
@@ -52,12 +74,13 @@ export function selectFormDistractors(
     return aRoot.length >= 3 && stripAffixes(t) === aRoot
   }
 
-  return candidates
+  const ranked = candidates
     .filter((c) => !isExcluded(c.text))
     .map((c) => ({ c, dist: levenshteinDistance(a, c.text.toLowerCase().trim()) }))
     .sort((x, y) => x.dist - y.dist || x.c.text.localeCompare(y.c.text))
+  return dedupeByRendered(ranked, (r) => r.c.text)
     .slice(0, k)
-    .map((ranked) => ranked.c)
+    .map((r) => r.c)
 }
 
 /**
@@ -144,10 +167,11 @@ export function selectMeaningDistractors(
   const threshold = opts?.synonymThreshold ?? DEFAULT_SYNONYM_THRESHOLD
   const forms = answerForms(answer.meaning)
 
-  return candidates
+  const ranked = candidates
     .map((c) => ({ c, sim: cosine(answer.embedding, c.embedding) }))
     .filter(({ c, sim }) => !forms.has(c.meaning.toLowerCase().trim()) && sim < threshold)
     .sort((x, y) => y.sim - x.sim || x.c.meaning.localeCompare(y.c.meaning))
+  return dedupeByRendered(ranked, (r) => r.c.meaning)
     .slice(0, k)
-    .map((ranked) => ranked.c)
+    .map((r) => r.c)
 }

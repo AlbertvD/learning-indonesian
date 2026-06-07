@@ -54,14 +54,20 @@ export interface CapabilityStageInput {
    * When set, a destructive regeneration of ONE unit before the skip-if-exists /
    * pattern-seeded gate. This is the ONLY destructive routine path — ordinary
    * re-runs never delete seeded rows (ADR 0011). Discriminated by kind:
-   *   - `item`    — delete + regenerate distractors for the item (by normalized_text).
-   *   - `pattern` — delete (by grammar_pattern_id, across the 4 typed exercise
-   *                 tables) + regenerate grammar exercises for the pattern slug
-   *                 (Slice 2 Task 5, OQ2-2).
+   *   - `item`        — delete + regenerate distractors for the item (by normalized_text).
+   *   - `pattern`     — delete (by grammar_pattern_id, across the 4 typed exercise
+   *                     tables) + regenerate grammar exercises for the pattern slug.
+   *   - `dialogue`    — (F5) regenerate ALL dialogue clozes for the lesson (bypass
+   *                     the per-line seeded gate); drops/retire handle the rest.
+   *   - `distractors` — (F5) delete + re-seed ALL item distractors for the lesson.
+   * The CLI passes one shared object to both Stage B and publishVocabulary; each
+   * consumer handles the kinds it owns and ignores the others.
    */
   regenerate?:
     | { kind: 'item'; normalizedText: string }
     | { kind: 'pattern'; slug: string }
+    | { kind: 'dialogue' }
+    | { kind: 'distractors' }
 }
 
 export interface CapabilityStageCounts {

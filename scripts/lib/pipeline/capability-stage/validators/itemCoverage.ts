@@ -55,8 +55,8 @@ export function validateItemCoverage(itemCaps: ItemCapForCoverageCheck[]): Valid
         severity: 'warning',
         message:
           `Item "${cap.normalizedText}" has no curated distractor rows after publish. ` +
-          `The runtime will fall back to pickDistractorCascade. ` +
-          `Re-run with ANTHROPIC_API_KEY set, or check generateItemDistractors logs.`,
+          `There is no runtime fallback, so the MCQ cannot render with full options. ` +
+          `Re-seed distractors for this lesson (check the seed step / Pool(N) coverage for this item's POS).`,
         context: { capabilityKey: cap.capabilityKey, itemSlug: cap.normalizedText },
       })
     }

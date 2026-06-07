@@ -46,10 +46,11 @@ export interface DialogueLineInput {
   speaker: string | null
 }
 
-/** The valid structural skip reasons (the generator's own closed set). */
+/** The valid structural skip reasons (the generator's own closed set).
+ *  F2: `above_max_token_threshold` retired — a long line is no longer rejected;
+ *  its carrier is narrowed to the blank's sentence by `narrowClozeCarrier`. */
 export type DialogueClozeSkipReason =
   | 'below_6_token_threshold'
-  | 'above_max_token_threshold'
   | 'no_current_or_prior_vocab_in_line'
   | 'no_same_pos_distractors_in_pool'
 
@@ -79,19 +80,20 @@ export interface EligibilityResult {
 export const DIALOGUE_CLOZE_MIN_TOKENS = 6
 
 /**
- * Maximum whitespace-token count for a dialogue line to be cloze-eligible.
+ * Maximum whitespace-token count for a cloze CARRIER (F2).
  *
  * Cloze item-writing best practice: the gap belongs in ONE self-contained
  * sentence with enough local context to recover the answer, but not so much that
  * the learner is overwhelmed — lower-ability learners rely on the words
- * immediately around the gap (ICAL TEFL; Wikipedia "Cloze test"). A multi-sentence
- * dialogue *turn* (e.g. a 5-sentence directions paragraph) buries the target word
- * and reads as an unfocused translation, not a cloze. This restores the
- * cloze-creator's original rule — "do NOT blank full dialogue turns; they are
- * unnatural to blank" — which was dropped when only the ≥6-token floor was kept.
+ * immediately around the gap (ICAL TEFL; Wikipedia "Cloze test").
  *
- * 16 tokens comfortably fits a single sentence; the over-long lesson-10 carriers
- * that triggered this were 18–40 tokens, while the good ones were 6–8. Tunable.
+ * F2 change: this is no longer an eligibility gate that REJECTS long dialogue
+ * lines (that dropped good clozes trapped inside long turns). It is now the
+ * carrier ceiling applied by `narrowClozeCarrier`: a within-ceiling line keeps
+ * its whole carrier; an over-ceiling multi-sentence turn is narrowed to the one
+ * sentence containing the blank. A carrier still over the ceiling after
+ * narrowing (a single genuinely long sentence) is dropped. 16 tokens comfortably
+ * fits a single sentence; tunable.
  */
 export const DIALOGUE_CLOZE_MAX_TOKENS = 16
 
@@ -122,9 +124,12 @@ export function normalizeClozeToken(token: string): string {
 /**
  * The structural gates from the cloze-creator dialogue contract, in order:
  *   1. ≥6 whitespace tokens                       → else below_6_token_threshold
- *   1b. ≤16 whitespace tokens (single sentence)   → else above_max_token_threshold
  *   2. ≥1 token matches a pool word (normalized)  → else no_current_or_prior_vocab_in_line
  *   3. ≥1 such word's POS has ≥2 OTHER pool items  → else no_same_pos_distractors_in_pool
+ *
+ * F2: the old ≤16-token ceiling gate is removed — long multi-sentence lines are
+ * eligible; the over-long carrier is narrowed to the blank's sentence downstream
+ * (narrowClozeCarrier), instead of dropping the whole line.
  *
  * Pure — no I/O. The pool is injected (loaded from learning_items at wiring).
  * Returns the viable candidate blanks so the prompt builder can constrain the
@@ -140,13 +145,7 @@ export function assessDialogueLineEligibility(
     return { eligible: false, reason: 'below_6_token_threshold' }
   }
 
-  // Gate 1b — single-sentence ceiling (cloze item-writing best practice). A
-  // multi-sentence dialogue turn buries the target and overwhelms the learner;
-  // skip it rather than blank one word in a whole paragraph. See
-  // DIALOGUE_CLOZE_MAX_TOKENS.
-  if (tokens.length > DIALOGUE_CLOZE_MAX_TOKENS) {
-    return { eligible: false, reason: 'above_max_token_threshold' }
-  }
+  // (F2: the ≤16-token ceiling gate was removed here — see narrowClozeCarrier.)
 
   // Build pool lookups: normalized_text → pos, and pos → count of pool items.
   const posByNormalized = new Map<string, string | null>()
@@ -183,6 +182,40 @@ export function assessDialogueLineEligibility(
   }
 
   return { eligible: true, candidates: viable }
+}
+
+// ---------------------------------------------------------------------------
+// narrowClozeCarrier (F2 — single-sentence carrier extraction)
+// ---------------------------------------------------------------------------
+
+/**
+ * Narrow a faithful whole-line carrier to a single-sentence carrier when the
+ * line is a multi-sentence turn over the ceiling — the long-paragraph cloze
+ * defect (verified live: a 60-token narrator paragraph with the blank buried in
+ * the middle). A within-ceiling line keeps its (already-good) whole carrier
+ * unchanged; an over-ceiling line is narrowed to the one sentence containing the
+ * blank, which is a CONTIGUOUS SPAN of the line (the answer still reconstructs in
+ * place), so we keep the LLM-faithfulness guard (sanitizeGeneratedCloze still
+ * checks the whole-line output reconstructs line.text exactly) and add this
+ * deterministic span decision on top — the LLM never has to get the span right.
+ *
+ * Returns null (→ drop, recorded as a coverage gap) when even the narrowed
+ * sentence is out of the [MIN, MAX] band: under the floor (too little context to
+ * recover the answer) or still over the ceiling (a single genuinely long sentence).
+ */
+export function narrowClozeCarrier(sentenceWithBlank: string): string | null {
+  const count = (s: string): number => s.split(/\s+/u).filter((t) => t.length > 0).length
+  if (count(sentenceWithBlank) <= DIALOGUE_CLOZE_MAX_TOKENS) {
+    return sentenceWithBlank
+  }
+  // Over the ceiling: split into sentences (keeping terminal punctuation) and
+  // take the one carrying the blank.
+  const sentences = (sentenceWithBlank.match(/[^.!?]+[.!?]*/gu) ?? []).map((s) => s.trim())
+  const target = sentences.find((s) => s.includes('___'))
+  if (!target) return null
+  const t = count(target)
+  if (t < DIALOGUE_CLOZE_MIN_TOKENS || t > DIALOGUE_CLOZE_MAX_TOKENS) return null
+  return target
 }
 
 // ===========================================================================
@@ -410,10 +443,19 @@ export async function generateDialogueClozes(
       continue
     }
 
+    // F2: narrow the faithful whole-line carrier to the blank's sentence when the
+    // line is an over-ceiling multi-sentence turn; drop (coverage gap) if even the
+    // narrowed carrier is out of the [MIN, MAX] band.
+    const narrowedCarrier = narrowClozeCarrier(sanitized.sentenceWithBlank)
+    if (!narrowedCarrier) {
+      result.failedLineRefs.push(line.sourceLineRef)
+      continue
+    }
+
     result.clozes.push({
       dialogueLineId: line.id,
       sourceLineRef: line.sourceLineRef,
-      sentenceWithBlank: sanitized.sentenceWithBlank,
+      sentenceWithBlank: narrowedCarrier,
       answerText: sanitized.answerText,
       translationText: line.translation,
       translationNl: line.translationNl,

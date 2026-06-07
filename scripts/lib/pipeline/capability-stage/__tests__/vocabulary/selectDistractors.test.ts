@@ -57,6 +57,21 @@ describe('selectFormDistractors', () => {
 
     expect(chosen.map((c) => c.itemId)).toEqual(['i-beri'])
   })
+
+  it('dedups distinct items that render the same form, keeping the best-ranked and filling k from the rest', () => {
+    // F1: two distinct learning_items share the rendered form "beri"; rendered as
+    // an MCQ they would show "beri | beri" — an unfair duplicate. The dedup keeps
+    // the first (best-ranked) and pulls the next distinct form so k is still met.
+    const candidates = [
+      { itemId: 'i-beri-a', text: 'beri' },
+      { itemId: 'i-beri-b', text: 'beri' }, // distinct item, same rendered form
+      { itemId: 'i-biru', text: 'biru' },
+    ]
+
+    const chosen = selectFormDistractors('beli', candidates, 2)
+
+    expect(chosen.map((c) => c.itemId)).toEqual(['i-beri-a', 'i-biru'])
+  })
 })
 
 describe('selectMeaningDistractors', () => {
@@ -91,6 +106,22 @@ describe('selectMeaningDistractors', () => {
     const chosen = selectMeaningDistractors(answer, candidates, 3, { synonymThreshold: 0.85 })
 
     expect(chosen.map((c) => c.itemId)).toEqual(['i-fiets'])
+  })
+
+  it('dedups distinct items that render the same gloss, keeping the best-ranked and filling k from the rest', () => {
+    // F1 — the verified live defect (5/43 L7 caps): two distinct learning_items
+    // share the gloss "rood"; rendered as an MCQ they would show "rood | rood".
+    // The dedup keeps the higher-cosine "rood" and pulls the next distinct gloss.
+    const answer = { meaning: 'duur', embedding: [1, 0, 0, 0] }
+    const candidates = [
+      { itemId: 'i-rood-a', meaning: 'rood', embedding: [0.8, 0.6, 0, 0] }, // cos 0.80
+      { itemId: 'i-rood-b', meaning: 'rood', embedding: [0.78, 0.62, 0, 0] }, // cos ≈0.78, same gloss
+      { itemId: 'i-groen', meaning: 'groen', embedding: [0.5, 0.866, 0, 0] }, // cos 0.50
+    ]
+
+    const chosen = selectMeaningDistractors(answer, candidates, 2, { synonymThreshold: 0.85 })
+
+    expect(chosen.map((c) => c.itemId)).toEqual(['i-rood-a', 'i-groen'])
   })
 })
 

@@ -59,7 +59,6 @@ import { runContentNonEmpty, type ContentNonEmptyInput } from './verify/contentN
 import { runSeedIntegrity, type SeedIntegrityInput } from './verify/seedIntegrity'
 import { validateItemPos, type ItemForPosCheck } from './validators/itemPos'
 import { validateItemCoverage, type ItemCapForCoverageCheck } from './validators/itemCoverage'
-import { validateItemDistractors, type ValidateItemDistractorsInput } from './validators/itemDistractors'
 import { validateItemDuplicates, type ItemDuplicatesInput } from './validators/itemDuplicates'
 import { validatePatternCoverage, type PatternCoverageInput } from './validators/patternCoverage'
 
@@ -93,8 +92,6 @@ export interface ItemKindPostWriteInput {
   writtenItems?: ItemForPosCheck[]
   /** Item capabilities with distractor presence flag (for CS15 coverage check). */
   itemCapsWithDistractorFlag?: ItemCapForCoverageCheck[]
-  /** Distractor set shapes for quality check (for CS16). */
-  distractorSets?: ValidateItemDistractorsInput
   /** Cross-lesson duplicate check input (for CS17). */
   itemDuplicatesInput?: ItemDuplicatesInput
   /** Pattern typed-exercise coverage check input (for CS18, Slice 2). */
@@ -206,12 +203,9 @@ export async function runCapabilityGatePostWrite(
     findings.push(...validateItemCoverage(input.itemCapsWithDistractorFlag))
   }
 
-  // CS16 — item distractor quality: array shapes, no-answer, no-dup, in-pool,
-  // no morphological variant. Pure (caller built pool from DB post-write).
-  // distractorSets is optional until Task 6c distractor write is wired.
-  if (input.distractorSets && input.distractorSets.sets.length > 0) {
-    findings.push(...validateItemDistractors(input.distractorSets))
-  }
+  // CS16 (item distractor quality, old text-array path) retired with cap-v2 F1:
+  // the deterministic pointer selector excludes the answer/variants/synonyms and
+  // dedups rendered options by construction; the live-DB backstop is F1c.
 
   // CS17 — cross-lesson duplicates: same normalized_text in two lessons.
   // DB-aware — queries learning_items post-write (becak ordering guaranteed).

@@ -1317,6 +1317,80 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
   }
 }
 
+// ── HC26 (cap-v2 F1): no MCQ capability renders a DUPLICATE distractor option,
+//        nor a distractor equal to the answer. Distractors are item-id pointers
+//        (distractors.item_id) RENDERED as the item's gloss (text/audio_recognition
+//        → translation_nl) or form (l1_to_id_choice → base_text). Two DISTINCT
+//        item_ids can share a rendered string (e.g. two items glossed "rood"), so
+//        the deterministic dedup (selectDistractors.dedupeByRendered) is the
+//        writer-side guarantee and HC26 is the independent live-DB backstop — the
+//        C8 enforcement seam (no separate pre-write validator; that would be
+//        vacuous given the single deterministic writer).
+//        EXPECTED RED until affected lessons are re-seeded (F5): a routine
+//        re-publish skips seeded distractors (ADR 0011 seed-once), so the
+//        legacy duplicates (5/43 L7 text_recognition caps at build time) persist
+//        until an explicit `--regenerate-distractors <lesson>`.
+{
+  type DeepItem = { id: string; normalized_text: string; base_text: string; translation_nl: string | null }
+  type DeepCap = { id: string; capability_type: string; source_ref: string; retired_at: string | null }
+  const MEANING_CAPS = new Set(['text_recognition', 'audio_recognition'])
+  const FORM_CAPS = new Set(['l1_to_id_choice'])
+  async function fetchAllDeep<T>(table: string, select: string): Promise<T[]> {
+    const out: T[] = []
+    for (let from = 0; ; from += 1000) {
+      const { data, error } = await supabase.schema('indonesian').from(table).select(select).range(from, from + 999)
+      if (error) throw new Error(`${table}: ${error.message}`)
+      out.push(...((data ?? []) as T[]))
+      if (!data || data.length < 1000) break
+    }
+    return out
+  }
+  try {
+    const items = await fetchAllDeep<DeepItem>('learning_items', 'id, normalized_text, base_text, translation_nl')
+    const itemById = new Map(items.map((i) => [i.id, i]))
+    const itemByNt = new Map(items.map((i) => [i.normalized_text, i]))
+    const caps = (await fetchAllDeep<DeepCap>('learning_capabilities', 'id, capability_type, source_ref, retired_at'))
+      .filter((c) => !c.retired_at && (MEANING_CAPS.has(c.capability_type) || FORM_CAPS.has(c.capability_type)))
+    const capById = new Map(caps.map((c) => [c.id, c]))
+    const distractors = await fetchAllDeep<{ capability_id: string; item_id: string }>('distractors', 'capability_id, item_id')
+    const byCap = new Map<string, string[]>()
+    for (const d of distractors) {
+      if (!capById.has(d.capability_id)) continue
+      if (!byCap.has(d.capability_id)) byCap.set(d.capability_id, [])
+      byCap.get(d.capability_id)!.push(d.item_id)
+    }
+    const renderItem = (cap: DeepCap, it: DeepItem): string =>
+      (MEANING_CAPS.has(cap.capability_type) ? (it.translation_nl ?? '') : it.base_text).toLowerCase().trim()
+    const offenders: { type: string; strs: string[]; hasAnswer: boolean }[] = []
+    for (const [capId, itemIds] of byCap) {
+      const cap = capById.get(capId)!
+      const strs = itemIds
+        .map((id) => itemById.get(id))
+        .filter((it): it is DeepItem => it != null)
+        .map((it) => renderItem(cap, it))
+        .filter((s) => s.length > 0)
+      const answerItem = itemByNt.get(cap.source_ref.replace('learning_items/', ''))
+      const answerStr = answerItem ? renderItem(cap, answerItem) : null
+      const hasDup = new Set(strs).size < strs.length
+      const hasAnswer = answerStr != null && answerStr.length > 0 && strs.includes(answerStr)
+      if (hasDup || hasAnswer) offenders.push({ type: cap.capability_type, strs, hasAnswer })
+    }
+    if (offenders.length === 0) {
+      pass(`HC26 no MCQ cap renders duplicate/answer distractors (cap-v2 F1) (${byCap.size} distractor-bearing caps checked)`)
+    } else {
+      const sample = offenders.slice(0, 5).map((o) => `${o.type} [${o.strs.join(' | ')}]${o.hasAnswer ? ' (==answer)' : ''}`).join('; ')
+      fail(
+        'HC26 no MCQ cap renders duplicate/answer distractors (cap-v2 F1) — EXPECTED RED until lessons re-seeded (F5)',
+        `${offenders.length} cap(s) with a duplicate rendered distractor or a distractor == the answer. ` +
+        `Sample: ${sample}${offenders.length > 5 ? ' …' : ''}\n` +
+        `   → Re-seed distractors (--regenerate-distractors <lesson>); the selector now dedups by rendered string, so a fresh seed clears these.`,
+      )
+    }
+  } catch (err) {
+    fail('HC26 no MCQ cap renders duplicate/answer distractors (cap-v2 F1)', err instanceof Error ? err.message : String(err))
+  }
+}
+
 // ── Output ─────────────────────────────────────────────────────────────────
 console.log(`\nSupabase deep structural check — ${SUPABASE_URL}\n`)
 let failures = 0
