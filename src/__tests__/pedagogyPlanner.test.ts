@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { planLearningPath, type PlannerCapability } from '@/lib/session-builder/pedagogy'
+import { planLearningPath, prioritizeCandidates, capabilityFamily, type PlannerCapability } from '@/lib/session-builder/pedagogy'
 
 function capability(overrides: Partial<PlannerCapability> = {}): PlannerCapability {
   return {
@@ -499,15 +499,16 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     expect(plan.eligibleNewCapabilities[0]?.capability.canonicalKey).toBe('cap:new-meaning')
   })
 
-  it('suppresses orphan productive caps (no receptive sibling in the catalog)', () => {
-    // pattern_recognition has no receptive sibling at the moment (per §3.2 the
-    // pattern types are inert at runtime, but the planner contract is still
-    // safe: orphan productive caps stay locked until a sibling lands).
+  it('suppresses orphan productive caps of source kinds that DO have a Phase 1/2 ladder', () => {
+    // An `item` productive cap (form_recall, Phase 4) at a source_ref whose
+    // receptive sibling has not stabilised stays locked — this is the staging
+    // gate's intended behaviour for source kinds that have a receptive ladder.
     const orphan = capability({
       id: 'orphan-cap',
       canonicalKey: 'cap:orphan',
-      capabilityType: 'pattern_recognition',
-      sourceRef: 'patterns/orphan-pattern',
+      sourceKind: 'item',
+      capabilityType: 'form_recall',
+      sourceRef: 'learning_items/orphan-item',
     })
     const plan = planLearningPath({
       ...baseInput,
@@ -516,6 +517,28 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     })
     expect(plan.eligibleNewCapabilities).toEqual([])
     expect(plan.suppressedCapabilities[0]?.reason).toBe('productive_capability_not_unlocked')
+  })
+
+  it('exempts pattern (grammar) from the staging gate', () => {
+    // Grammar has no Phase 1/2 ladder — its only two types (pattern_contrast,
+    // pattern_recognition) are both productive and share the pattern's own
+    // source_ref, so `unlockedSourceRefs` never contains it. The staging gate
+    // used to orphan-suppress pattern on the now-expired premise that pattern
+    // types were inert at runtime; Slice 2 (#100) made them renderable. The
+    // carve-out unlocks the ~194 published pattern caps (issue #166).
+    const patternRecognition = capability({
+      id: 'pattern-recognition',
+      canonicalKey: 'cap:pattern:recognition',
+      sourceKind: 'pattern',
+      capabilityType: 'pattern_recognition',
+      sourceRef: 'patterns/test-pattern',
+    })
+    const plan = planLearningPath({
+      ...baseInput,
+      readyCapabilities: [patternRecognition],
+      learnerCapabilityStates: [],
+    })
+    expect(plan.eligibleNewCapabilities.map(e => e.capability.canonicalKey)).toContain('cap:pattern:recognition')
   })
 
   it('exempts affixed_form_pair (morphology) from the staging gate', () => {
@@ -562,5 +585,77 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
       activatedLessons: new Set(['lesson-9-uuid']),
     })
     expect(plan.eligibleNewCapabilities.map(e => e.capability.canonicalKey)).toContain('cap:dialogue:l9-s1-l10')
+  })
+})
+
+// NET-NEW (issue #166/#125): the prioritize stage's ordering contract. The
+// existing suites above assert eligible *membership* only (order-insensitive
+// .toContain / single-element .toEqual), so none of them would catch a broken
+// or no-op `prioritize`. These are the load-bearing ordering tests.
+describe('capabilityFamily — source-kind-keyed taxonomy', () => {
+  it('maps every source kind to exactly one family', () => {
+    expect(capabilityFamily('item')).toBe('vocab')
+    expect(capabilityFamily('dialogue_line')).toBe('cloze')
+    expect(capabilityFamily('pattern')).toBe('grammar')
+    expect(capabilityFamily('affixed_form_pair')).toBe('morphology')
+    expect(capabilityFamily('podcast_segment')).toBe('podcast')
+    expect(capabilityFamily('podcast_phrase')).toBe('podcast')
+  })
+})
+
+describe('prioritizeCandidates — lesson-major + within-lesson family round-robin', () => {
+  const cap = (overrides: Partial<PlannerCapability>): PlannerCapability =>
+    capability({ ...overrides })
+  const keys = (caps: PlannerCapability[]) => caps.map(c => c.canonicalKey)
+
+  it('orders lesson-major (lower lessonOrder first)', () => {
+    const out = prioritizeCandidates([
+      cap({ canonicalKey: 'l3', lessonOrder: 3 }),
+      cap({ canonicalKey: 'l1', lessonOrder: 1 }),
+      cap({ canonicalKey: 'l2', lessonOrder: 2 }),
+    ])
+    expect(keys(out)).toEqual(['l1', 'l2', 'l3'])
+  })
+
+  it('round-robins families within a lesson so scarce families interleave with vocab', () => {
+    // L1: 3 vocab (item) + 2 grammar (pattern). Rank within each family is by
+    // canonicalKey; the sort then emits rank0 of each family, then rank1, …
+    const out = prioritizeCandidates([
+      cap({ canonicalKey: 'cap:vocab:3', lessonOrder: 1, sourceKind: 'item' }),
+      cap({ canonicalKey: 'cap:gram:2', lessonOrder: 1, sourceKind: 'pattern', capabilityType: 'pattern_contrast' }),
+      cap({ canonicalKey: 'cap:vocab:1', lessonOrder: 1, sourceKind: 'item' }),
+      cap({ canonicalKey: 'cap:gram:1', lessonOrder: 1, sourceKind: 'pattern', capabilityType: 'pattern_contrast' }),
+      cap({ canonicalKey: 'cap:vocab:2', lessonOrder: 1, sourceKind: 'item' }),
+    ])
+    expect(keys(out)).toEqual(['cap:vocab:1', 'cap:gram:1', 'cap:vocab:2', 'cap:gram:2', 'cap:vocab:3'])
+  })
+
+  it('keeps lesson priority above family interleave (all L1 before any L2)', () => {
+    const out = prioritizeCandidates([
+      cap({ canonicalKey: 'l2:gram', lessonOrder: 2, sourceKind: 'pattern', capabilityType: 'pattern_contrast' }),
+      cap({ canonicalKey: 'l1:vocab', lessonOrder: 1, sourceKind: 'item' }),
+      cap({ canonicalKey: 'l1:gram', lessonOrder: 1, sourceKind: 'pattern', capabilityType: 'pattern_contrast' }),
+    ])
+    expect(keys(out)).toEqual(['l1:vocab', 'l1:gram', 'l2:gram'])
+  })
+
+  it('sorts null-lessonOrder caps last', () => {
+    const out = prioritizeCandidates([
+      cap({ canonicalKey: 'no-lesson', lessonOrder: null, sourceKind: 'podcast_segment', capabilityType: 'audio_recognition' }),
+      cap({ canonicalKey: 'l1', lessonOrder: 1 }),
+    ])
+    expect(keys(out)).toEqual(['l1', 'no-lesson'])
+  })
+
+  it('is deterministic — output is independent of input array order', () => {
+    const input = [
+      cap({ canonicalKey: 'cap:vocab:1', lessonOrder: 1, sourceKind: 'item' }),
+      cap({ canonicalKey: 'cap:gram:1', lessonOrder: 1, sourceKind: 'pattern', capabilityType: 'pattern_contrast' }),
+      cap({ canonicalKey: 'cap:vocab:2', lessonOrder: 1, sourceKind: 'item' }),
+      cap({ canonicalKey: 'l2', lessonOrder: 2, sourceKind: 'item' }),
+    ]
+    const forward = keys(prioritizeCandidates(input))
+    const reversed = keys(prioritizeCandidates([...input].reverse()))
+    expect(reversed).toEqual(forward)
   })
 })

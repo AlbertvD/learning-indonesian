@@ -1,7 +1,7 @@
 ---
 module: session-builder
 surface: src/lib/session-builder/
-last_verified_against_code: 2026-05-22
+last_verified_against_code: 2026-06-07
 status: stable
 ---
 
@@ -17,7 +17,7 @@ status: stable
 | `builder.ts` | 486 | Orchestrator. Runs three selection passes, calls `resolveCandidate`, builds the queue-drying diagnostic, composes the plan. Exports `buildSession` + the test-only `loadCapabilitySessionPlan`. Since 2026-05-22 also exports `buildForceCapabilitySession({...})` — invoked by `buildSession` when `forceCapabilityKey` is set; bypasses the planner and emits a one-card session against the named capability. |
 | `compose.ts` | 115 | Packs candidate triples into `SessionBlock`s; emits diagnostics on resolution failure. Exports `compose`. |
 | `model.ts` | 46 | Types only — `SessionMode`, `SessionPlan`, `SessionBlock`, `SessionDiagnostic`, `CapabilityReviewSessionContext`. |
-| `pedagogy.ts` | 252 | Suppression-rule engine that picks new capabilities to introduce. Exports `planLearningPath`. |
+| `pedagogy.ts` | ~470 | New-introduction planner: `gate` (suppression-rule engine) → `prioritize` (lesson-major + within-lesson family round-robin) → `allocate` (budget fill). Exports `planLearningPath` + the pure, test-exposed `prioritizeCandidates` and `capabilityFamily`. |
 | `loadBudget.ts` | 53 | Per-mode budget rules. Three branches (`lesson_review`, `lesson_practice`, default `standard`). Exports `decideLoadBudget`. |
 | `labels.ts` | 66 | Per-capability display copy + exercise/skill helpers. Exports `capabilityDisplay`, `exerciseLabel`, `skillLabel`, `CAPABILITY_DISPLAY`. |
 | `audibleTexts.ts` | 104 | Audible-text harvest — `audibleTextFieldsOf` (per builder) + `collectAudibleTexts` (aggregator). |
@@ -162,11 +162,20 @@ Output is a `CapabilitySessionDataSnapshot` carrying `schedulerRows`, `capabilit
 
 The three passes share the resolver loop via `resolveCandidate`. It accepts the caller's `meta` object verbatim and returns either `{ meta, reviewContext, renderPlan }` (resolved) or `{ meta, reviewContext, resolutionFailure }` (failed). The dedup is the load-bearing detail of the §3.1 fold cleanup — see `__tests__/resolveCandidate.test.ts` for the contract.
 
-### 3.3 Planner — suppression-rule engine
+### 3.3 Planner — gate → prioritize → allocate
 
-`pedagogy.ts:149-252`. Walks candidates in **input order** (the prior `orderedReadyCapabilities` priority sort was deleted in the fold — it was unreachable in production, and promoting it would have been a new opinionated ordering decision).
+`pedagogy.ts:planLearningPath`. A thin orchestrator composing three module-internal pure stages
+(restored 2026-06-07, issue #166/#125 — see `docs/plans/2026-06-07-lesson-priority-candidate-ordering-design.md`):
 
-For each candidate, applies suppression rules in this exact order (`pedagogy.ts:159-242`):
+```
+gate(readyCapabilities, ctx)      → { gatePassing, suppressed }   // suppression-rule engine
+→ prioritize(gatePassing)         → ordered candidates           // the restored ordering policy
+→ allocate(prioritized, budget)   → { eligible, suppressed }     // budget fill
+```
+
+**Stage 1 — `gate`** (`pedagogy.ts:gateCandidates`). The suppression-rule engine. Walks candidates
+in input order and partitions them into gate-passing vs suppressed-with-reason. It decides
+*eligibility only* — not order, not budget. Rules, in exact order:
 
 | Rule | Reason emitted | Effect |
 |---|---|---|
@@ -176,13 +185,37 @@ For each candidate, applies suppression rules in this exact order (`pedagogy.ts:
 | State exists and not dormant | `already_active_or_retired` | Skip |
 | Any prerequisite key not in `satisfiedKeys` | `missing_prerequisite` | Skip |
 | Recent failure fatigue (≥2 consec failures, ≤1h ago) | `recent_failure_fatigue` | Skip |
-| Phase ≥ 3 capability with no stable receptive sibling for the same `source_ref` (except `affixed_form_pair` morphology — exempt) | `productive_capability_not_unlocked` | Skip |
+| Phase ≥ 3 capability with no stable receptive sibling for the same `source_ref` (except `affixed_form_pair`, `dialogue_line`, `pattern` — exempt; see staging-gate carve-outs) | `productive_capability_not_unlocked` | Skip |
 | Source kind = `podcast_phrase` | `wrong_session_mode` | Skip (no live podcast mode) |
 | Lesson not activated | `lesson_not_activated` | Skip |
-| Over `maxNewCapabilities` budget | `load_budget_exhausted` | Skip |
-| Over `maxNewPatterns` (pattern caps) | `load_budget_exhausted` | Skip |
-| Over `maxNewProductionTasks` | `load_budget_exhausted` | Skip |
-| Over `maxHiddenAudioTasks` | `load_budget_exhausted` | Skip |
+
+(The `pattern` carve-out was added 2026-06-07, commit `1e5be88` — its "inert at runtime" premise
+expired when Slice 2 made grammar renderable; #166.)
+
+**Stage 2 — `prioritize`** (`pedagogy.ts:prioritizeCandidates`, exported pure). Orders gate-passing
+candidates by `(lessonOrder ASC, rankWithinLessonFamily ASC, FAMILY_TIEBREAK, canonicalKey)`.
+Lesson-major delivers **soft lesson priority** (lower lessons introduced first; a lesson with no
+gate-passing candidate simply contributes nothing, so the next lesson becomes lowest available —
+soft-spill, no stall). The within-lesson **family round-robin** (family keyed on `source_kind`
+via `capabilityFamily`: item→vocab, dialogue_line→cloze, pattern→grammar, affixed_form_pair→
+morphology, podcast→podcast) interleaves the scarce grammar/cloze families with the ~50:1 vocab
+majority instead of trailing it. Deterministic — rank is assigned by `canonicalKey` within each
+`(lessonOrder, family)` group, so output is independent of DB row order. Distinct from the
+composer's `interleaveBySourceRef` (§3.5): `prioritize` governs *which* caps win budget slots;
+the composer spaces the *already-selected* blocks.
+
+**Stage 3 — `allocate`** (`pedagogy.ts:allocateBudget`). Fills the load budget from the prioritized
+list, applying the per-type ceilings (unchanged math). Overflow → `load_budget_exhausted`, in
+prioritized order:
+
+| Budget rule | Reason emitted |
+|---|---|
+| Over `maxNewCapabilities` (or `!allowNewCapabilities`) | `load_budget_exhausted` |
+| Over `maxNewPatterns` (pattern caps) | `load_budget_exhausted` |
+| Over `maxNewProductionTasks` | `load_budget_exhausted` |
+| Over `maxHiddenAudioTasks` | `load_budget_exhausted` |
+
+`planLearningPath` merges the gate + allocate suppression lists and returns the `LearningPlan`.
 
 **Removed in the fold** (deleted suppression rules + their inputs, per §2.3 of the fold plan):
 - `difficulty_jump` rule + `maxNewDifficultyLevel` input.
@@ -199,7 +232,9 @@ For each candidate, applies suppression rules in this exact order (`pedagogy.ts:
 
 Conservative-classification rationale (types that can render as both MCQ and free-recall are placed at Phase 4): see `docs/plans/2026-05-18-capability-staging-gate.md` §3.1. The `affixed_form_pair` carve-out (§4.5 of that plan) exempts morphology from this gate; the prerequisite chain remains the within-pattern sequencing mechanism for morphology.
 
-Passed candidates are accumulated into `eligibleNewCapabilities[]` with `activationRecommendation`. Suppressed ones are tracked in `suppressedCapabilities[]` for diagnostics. Return shape — `pedagogy.ts:59-64`:
+Allocated candidates become `eligibleNewCapabilities[]` (in prioritized order) with
+`activationRecommendation`; everything suppressed by either `gate` or `allocate` is merged into
+`suppressedCapabilities[]` for diagnostics. Return shape — `LearningPlan`:
 
 ```typescript
 interface LearningPlan {
@@ -290,9 +325,9 @@ The diagnostic surfaces in the UI via `Session.tsx`, which reads `plan.diagnosti
 - **Lesson activation is the eligibility gate for lesson-derived capabilities.** Per ADR 0006 (Decision 3b), every lesson-derived capability has a non-null `lessonId`; the schema CHECK constraint `learning_capabilities_lesson_id_required_for_lessons` enforces this. Capabilities with `lessonId != null` are suppressed unless the lesson is in the learner's `activatedLessons` set (`pedagogy.ts:209`). Podcast source kinds (`podcast_segment`, `podcast_phrase`) are the documented null-lesson carve-out and bypass the gate; they are otherwise filtered as exposure-only (`capabilityContracts.ts:13`) before reaching it.
 - **Mode `lesson_review` never introduces new material.** Enforced twice — by `loadBudget.ts:26-32` (budget = 0 of everything) and by `compose.ts:68` (skips the new-introductions pass entirely).
 - **Resolution failures degrade the session, not error it.** All three passes pipe through `resolveCandidate` which returns either `{ ..., renderPlan }` or `{ ..., resolutionFailure }`; the composer turns failures into diagnostics and skips the block, never throws.
-- **The planner walks candidates in input order.** The prior `orderedReadyCapabilities` priority sort was deleted; any future re-ordering should be a deliberate change with a product motivation.
+- **New-introduction candidate ordering (pass 3 only) is deterministic, lesson-major, with within-lesson family round-robin** (`prioritizeCandidates`, `ORDERING_POLICY`). It applies only when the candidate set spans more than one lesson — i.e. `standard` mode; it is a no-op in `lesson_practice`/`lesson_review` (single-lesson sets) and never affects the due (pass 1) or practice-review (pass 2) passes. This is the `orderedReadyCapabilities` concept deliberately restored 2026-06-07 under product motivation #166/#125 — the explicit, motivated re-ordering the prior "walks in input order" invariant required before any reintroduction.
 - **The `CAPABILITY_DISPLAY` map is exhaustive at the type level.** Adding a `CapabilityType` without an entry is a compile error.
-- **Receptive-before-productive staging gate is enforced for new introductions.** Phase 3+4 capabilities (`l1_to_id_choice`, `form_recall`, `contextual_cloze`, `dictation`, `root_derived_recognition`, `root_derived_recall`, `pattern_contrast`, `pattern_recognition`) are suppressed unless a sibling capability sharing the same `source_ref` has `activationState='active'` AND `stability >= 1` AND `successfulReviewCount >= 1`. `affixed_form_pair` (morphology) is exempt from this gate because it has no Phase 1+2 siblings; the prerequisite chain enforces sequencing instead. See ADR 0007 and `docs/plans/2026-05-18-capability-staging-gate.md`.
+- **Receptive-before-productive staging gate is enforced for new introductions.** Phase 3+4 capabilities (`l1_to_id_choice`, `form_recall`, `contextual_cloze`, `dictation`, `root_derived_recognition`, `root_derived_recall`, `pattern_contrast`, `pattern_recognition`) are suppressed unless a sibling capability sharing the same `source_ref` has `activationState='active'` AND `stability >= 1` AND `successfulReviewCount >= 1`. **Three source kinds are exempt** because they have no Phase 1+2 sibling at the same `source_ref`: `affixed_form_pair` (morphology — prerequisite chain sequences instead), `dialogue_line` (lesson_activation is the lever), and `pattern` (grammar — added 2026-06-07, commit `1e5be88`; the prior "inert at runtime" premise expired when Slice 2 made grammar renderable, #166). See ADR 0007 and `docs/plans/2026-05-18-capability-staging-gate.md`.
 - **The composer interleaves blocks by `source_ref`.** Post-pass after the three append loops; greedy single-pass; window = 3 preceding blocks. Prevents back-to-back retrievals of the same word that don't count as real spaced practice (Karpicke 2009). Macro three-pass order (due → new → practice-review) preserved.
 - **`capabilityPhase` is exhaustive over `CapabilityType`.** Adding a new type without a phase arm fails compilation.
 
