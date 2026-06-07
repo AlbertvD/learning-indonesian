@@ -123,9 +123,17 @@ async function main() {
     regenerate,
   })
   console.log(JSON.stringify(stageB, null, 2))
-  if (stageB.status !== 'ok') {
-    console.error(`\nStage B did not complete cleanly for lesson ${lessonNumber} (status=${stageB.status}).`)
+  // 'validation_failed' = a HARD pre-write gate failure → abort. 'partial' is
+  // GRACEFUL (e.g. a CS22 dialogue-cloze coverage gap: some lines produced no
+  // cloze) — it must NOT block publishVocabulary, whose item/distractor slice is
+  // independent of Stage B's dialogue/pattern/affixed output. (Before this, a
+  // single un-clozeable line blocked the whole lesson's distractor reseed.)
+  if (stageB.status === 'validation_failed') {
+    console.error(`\nStage B validation FAILED for lesson ${lessonNumber} (hard pre-write gate) — aborting before publishVocabulary.`)
     process.exit(1)
+  }
+  if (stageB.status !== 'ok') {
+    console.warn(`\n⚠ Stage B for lesson ${lessonNumber} completed with status=${stageB.status} (graceful — e.g. CS22 cloze coverage gaps). Continuing to publishVocabulary (item/distractor slice is independent).`)
   }
 
   // Stage Vocabulary (cap-v2 #161) — the new vocab module owns the item slice
