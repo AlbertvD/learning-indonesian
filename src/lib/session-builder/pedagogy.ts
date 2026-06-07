@@ -281,11 +281,22 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
     //     vocabulary has been seen. The lesson_activation gate below
     //     (Decision 3b / ADR 0006) is the actual readiness lever for
     //     dialogue lines.
+    //   - pattern: grammar has no Phase 1/2 ladder — its only two types
+    //     (pattern_contrast = Phase 3, pattern_recognition = Phase 4) are both
+    //     productive and share the pattern's own source_ref, so nothing ever
+    //     populates `unlockedSourceRefs` for it. The staging gate originally
+    //     excluded pattern on the premise that "pattern types are inert at
+    //     runtime" (staging-gate plan 2026-05-18 §3.2); that premise expired
+    //     when Slice 2 (#100) + PR 4 made pattern caps renderable. Without
+    //     this carve-out all ~194 published pattern caps are permanently
+    //     orphan-suppressed (live DB 2026-06-07: 0 activated / 0 practiced —
+    //     issue #166). lesson_activation below is the readiness lever.
     //   Without these carve-outs, every cap of these kinds is permanently
     //   orphan-suppressed.
     if (
       capability.sourceKind !== 'affixed_form_pair'
       && capability.sourceKind !== 'dialogue_line'
+      && capability.sourceKind !== 'pattern'
       && capabilityPhase(capability.capabilityType) >= 3
       && !unlockedSourceRefs.has(capability.sourceRef)
     ) {

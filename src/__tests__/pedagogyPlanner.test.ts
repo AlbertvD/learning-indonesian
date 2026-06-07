@@ -499,15 +499,16 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     expect(plan.eligibleNewCapabilities[0]?.capability.canonicalKey).toBe('cap:new-meaning')
   })
 
-  it('suppresses orphan productive caps (no receptive sibling in the catalog)', () => {
-    // pattern_recognition has no receptive sibling at the moment (per §3.2 the
-    // pattern types are inert at runtime, but the planner contract is still
-    // safe: orphan productive caps stay locked until a sibling lands).
+  it('suppresses orphan productive caps of source kinds that DO have a Phase 1/2 ladder', () => {
+    // An `item` productive cap (form_recall, Phase 4) at a source_ref whose
+    // receptive sibling has not stabilised stays locked — this is the staging
+    // gate's intended behaviour for source kinds that have a receptive ladder.
     const orphan = capability({
       id: 'orphan-cap',
       canonicalKey: 'cap:orphan',
-      capabilityType: 'pattern_recognition',
-      sourceRef: 'patterns/orphan-pattern',
+      sourceKind: 'item',
+      capabilityType: 'form_recall',
+      sourceRef: 'learning_items/orphan-item',
     })
     const plan = planLearningPath({
       ...baseInput,
@@ -516,6 +517,28 @@ describe('pedagogy planner — receptive-before-productive staging gate', () => 
     })
     expect(plan.eligibleNewCapabilities).toEqual([])
     expect(plan.suppressedCapabilities[0]?.reason).toBe('productive_capability_not_unlocked')
+  })
+
+  it('exempts pattern (grammar) from the staging gate', () => {
+    // Grammar has no Phase 1/2 ladder — its only two types (pattern_contrast,
+    // pattern_recognition) are both productive and share the pattern's own
+    // source_ref, so `unlockedSourceRefs` never contains it. The staging gate
+    // used to orphan-suppress pattern on the now-expired premise that pattern
+    // types were inert at runtime; Slice 2 (#100) made them renderable. The
+    // carve-out unlocks the ~194 published pattern caps (issue #166).
+    const patternRecognition = capability({
+      id: 'pattern-recognition',
+      canonicalKey: 'cap:pattern:recognition',
+      sourceKind: 'pattern',
+      capabilityType: 'pattern_recognition',
+      sourceRef: 'patterns/test-pattern',
+    })
+    const plan = planLearningPath({
+      ...baseInput,
+      readyCapabilities: [patternRecognition],
+      learnerCapabilityStates: [],
+    })
+    expect(plan.eligibleNewCapabilities.map(e => e.capability.canonicalKey)).toContain('cap:pattern:recognition')
   })
 
   it('exempts affixed_form_pair (morphology) from the staging gate', () => {
