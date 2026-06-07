@@ -79,6 +79,47 @@ export function classifyDutchSeparator(
 }
 
 /**
+ * Rewrite a Dutch answer value to the canonical "/" separator — the inverse of
+ * classifyDutchSeparator. A value classify accepts (canonical "/", a single
+ * clause, or an exempt set-phrase) is returned unchanged; a value classify flags
+ * is split into its intended alternatives and re-joined with " / " so the grader
+ * (splitAlternatives) accepts each one. Co-located with classify/split so the
+ * three can never drift.
+ *
+ * Used by the vocab projector to canonicalise legacy lesson-section translations
+ * (`lesson_section_item_rows.l1_translation`) before they reach the answer
+ * surface (`learning_items.translation_nl`): the cutover canonicalised
+ * `learning-items.ts` but not the lesson-section source, so the projector is the
+ * seam where the display gloss becomes a graded answer (#161 follow-up).
+ *
+ * A ";" list may also use commas as OR ("er is, er zijn; hebben"); each ";"
+ * chunk is then comma-split with the SAME short-segment heuristic classify uses,
+ * so a chunk that is one clause with an internal comma is left intact. Targets
+ * short vocab glosses — the only values on this path.
+ */
+export function canonicaliseDutchSeparator(
+  value: string,
+  exempt: ReadonlySet<string> = DUTCH_COMMA_EXEMPTIONS,
+): string {
+  const t = value.trim()
+  if (classifyDutchSeparator(t, exempt) === null) return t // already canonical / single clause / exempt
+
+  const splitCommaAsOr = (chunk: string): string[] => {
+    const segments = chunk.split(',').map((s) => s.trim()).filter(Boolean)
+    const isCommaList =
+      segments.length >= 2 && segments.every((s) => tokenCount(s) <= MAX_COMMA_SEGMENT_TOKENS)
+    return isCommaList ? segments : [chunk.trim()]
+  }
+
+  return t
+    .split(';')
+    .flatMap(splitCommaAsOr)
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .join(' / ')
+}
+
+/**
  * Classify an Indonesian-side answer value's separator
  * (`item_answer_variants` / `accepted_answers:id`). Only ";" is flagged — a
  * comma in Indonesian is NEVER a separator (verbless equative clauses like

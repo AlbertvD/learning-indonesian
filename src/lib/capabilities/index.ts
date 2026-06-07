@@ -78,6 +78,7 @@ export {
   splitAlternatives,
   classifyDutchSeparator,
   classifyIndonesianSeparator,
+  canonicaliseDutchSeparator,
   DUTCH_COMMA_EXEMPTIONS,
 } from './separatorConvention'
 export type { SeparatorViolation } from './separatorConvention'

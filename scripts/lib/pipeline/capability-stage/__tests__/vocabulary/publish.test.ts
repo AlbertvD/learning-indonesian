@@ -5,9 +5,13 @@
  * elsewhere; publishVocabulary is composition glue whose write correctness is
  * live-verified at the acceptance publish (plan Task 10), like store.ts / the
  * runner. These tests pin the load-bearing CONTROL FLOW: the pre-write gate
- * short-circuits BEFORE any DB write (a comma-separator item → validation_failed),
- * and dry-run stops before writes. The supabase client is a throwing stub, so any
- * adapter write on these paths fails the test.
+ * short-circuits BEFORE any DB write (a missing-translation item → CS4b
+ * validation_failed), and dry-run stops before writes. The supabase client is a
+ * throwing stub, so any adapter write on these paths fails the test.
+ *
+ * NOTE: a comma-as-OR / ";" translation is NOT a short-circuit trigger here —
+ * the projector canonicalises it to the "/" convention before the gate runs
+ * (#161 follow-up; see projectors/vocab.test.ts + separatorConvention.test.ts).
  */
 
 import { describe, it, expect } from 'vitest'
@@ -58,17 +62,20 @@ const throwingSupabase = new Proxy(
 ) as never
 
 describe('publishVocabulary control flow', () => {
-  it('returns validation_failed on a comma-as-OR translation_nl, before any write', async () => {
+  it('returns validation_failed on a missing translation_nl, before any write', async () => {
+    // A missing translation is an error the projector canonicaliser CANNOT fix
+    // (it stays null) — so CS4b fires and the gate short-circuits before writes.
+    // (A comma-as-OR value, by contrast, is canonicalised and would NOT fail.)
     const out = await publishVocabulary(
       { lessonId: 'L11', lessonNumber: 11 },
       {
         createSupabaseClient: () => throwingSupabase,
         loadLesson: fakeLoadLesson,
-        loadFromDb: fakeLoadFromDb([itemRow('maar echter', 'maar, echter')]),
+        loadFromDb: fakeLoadFromDb([itemRow('maar echter', '   ')]),
       },
     )
     expect(out.status).toBe('validation_failed')
-    expect(out.findings.some((f) => f.gate === 'CS19' && f.severity === 'error')).toBe(true)
+    expect(out.findings.some((f) => f.gate === 'CS4b' && f.severity === 'error')).toBe(true)
   })
 
   it('dry-run returns ok before any write', async () => {

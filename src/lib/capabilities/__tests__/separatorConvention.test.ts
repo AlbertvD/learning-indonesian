@@ -3,6 +3,7 @@ import {
   splitAlternatives,
   classifyDutchSeparator,
   classifyIndonesianSeparator,
+  canonicaliseDutchSeparator,
 } from '@/lib/capabilities/separatorConvention'
 
 describe('splitAlternatives', () => {
@@ -57,6 +58,45 @@ describe('classifyDutchSeparator', () => {
   it('exempts the seeded set-phrase reply by default (comma = punctuation)', () => {
     // "baik-baik saja" = "Goed, dank u wel" — one reply, not "goed" / "dank u wel".
     expect(classifyDutchSeparator('Goed, dank u wel')).toBeNull()
+  })
+})
+
+describe('canonicaliseDutchSeparator', () => {
+  it('rewrites a comma-as-OR list to "/"', () => {
+    expect(canonicaliseDutchSeparator('maar, echter')).toBe('maar / echter')
+    expect(canonicaliseDutchSeparator('rijden, gaan, lopen')).toBe('rijden / gaan / lopen')
+  })
+
+  it('rewrites a ";"-separated list to "/"', () => {
+    expect(canonicaliseDutchSeparator('nieuw; pas')).toBe('nieuw / pas')
+  })
+
+  it('rewrites a mixed ";" + comma-as-OR list to a single "/" list', () => {
+    expect(canonicaliseDutchSeparator('er is, er zijn; hebben')).toBe('er is / er zijn / hebben')
+  })
+
+  it('leaves an already-canonical "/" value unchanged', () => {
+    expect(canonicaliseDutchSeparator('huis / woning')).toBe('huis / woning')
+  })
+
+  it('leaves a single meaning unchanged', () => {
+    expect(canonicaliseDutchSeparator('rumah')).toBe('rumah')
+  })
+
+  it('leaves a single clause with a legitimate internal comma unchanged', () => {
+    // A long segment is not a comma-as-OR list — classify accepts it, so do we.
+    const clause = 'een man die altijd lacht, vooral in de ochtend'
+    expect(canonicaliseDutchSeparator(clause)).toBe(clause)
+  })
+
+  it('respects the comma exemption denylist (comma = punctuation)', () => {
+    expect(canonicaliseDutchSeparator('Goed, dank u wel')).toBe('Goed, dank u wel')
+  })
+
+  it('produces a value that classifyDutchSeparator no longer flags', () => {
+    for (const v of ['maar, echter', 'nieuw; pas', 'er is, er zijn; hebben', 'dokter, arts']) {
+      expect(classifyDutchSeparator(canonicaliseDutchSeparator(v))).toBeNull()
+    }
   })
 })
 
