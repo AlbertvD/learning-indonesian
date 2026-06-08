@@ -385,32 +385,38 @@
               {
                 "dutch": "centrum + gezondheid + samenleving = gezondheidscentrum",
                 "english": "center + health + community = health center",
-                "indonesian": "PUSKESMAS = PUSat + KESehatan + MASyarakat"
+                "indonesian": "PUSKESMAS = PUSat + KESehatan + MASyarakat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/puskesmas-pusat-kesehatan-masyarakat-b969750d.mp3"
               },
               {
                 "dutch": "situatie en omstandigheden",
                 "english": "situation and circumstances",
-                "indonesian": "SIKON = SItuasi + KONdisi"
+                "indonesian": "SIKON = SItuasi + KONdisi",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sikon-situasi-kondisi-f96469de.mp3"
               },
               {
                 "dutch": "de gewapende strijdkrachten van de Republiek Indonesië",
                 "english": "ABRI = Armed + Forces + Republic + Indonesia",
-                "indonesian": "ABRI = Angkatan + Bersenjata + Republik + Indonesia"
+                "indonesian": "ABRI = Angkatan + Bersenjata + Republik + Indonesia",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/abri-angkatan-bersenjata-republik-d41ab7a3.mp3"
               },
               {
                 "dutch": "West-Java",
                 "english": "JABAR = JAva + WARat",
-                "indonesian": "JABAR = JAwa + BARat"
+                "indonesian": "JABAR = JAwa + BARat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/jabar-jawa-barat-2efcc536.mp3"
               },
               {
                 "dutch": "Zuid-Sumatra",
                 "english": "SUMSEL = SUMatera + SELatan",
-                "indonesian": "SUMSEL = SUMatera + SELatan"
+                "indonesian": "SUMSEL = SUMatera + SELatan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/sumsel-sumatera-selatan-b58e433d.mp3"
               },
               {
                 "dutch": "Nusa Tenggara Oost (nusa = eiland, tenggara = zuidoost, timur = oost)",
                 "english": "NUSTENGTIM = NUSa + TENGgara + TIMur",
-                "indonesian": "NUSTENGTIM = NUSa + TENGgara + TIMur"
+                "indonesian": "NUSTENGTIM = NUSa + TENGgara + TIMur",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nustengtim-nusa-tenggara-timur-bd572361.mp3"
               }
             ],
             "rules_en": [
@@ -536,11 +542,13 @@
             "examples": [
               {
                 "dutch": "Ze keken elkaar aan.",
-                "indonesian": "Mereka berpandang-pandangan."
+                "indonesian": "Mereka berpandang-pandangan.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/mereka-berpandangpandangan-5ea40956.mp3"
               },
               {
                 "dutch": "De soldaten doden elkaar.",
-                "indonesian": "Serdadu berbunuh-bunuhan."
+                "indonesian": "Serdadu berbunuh-bunuhan.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/serdadu-berbunuhbunuhan-8b4f2a0f.mp3"
               }
             ]
           },
@@ -549,7 +557,8 @@
             "examples": [
               {
                 "dutch": "tegenover elkaar staan",
-                "indonesian": "depan -> berdepan-depan"
+                "indonesian": "depan -> berdepan-depan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/depan-berdepandepan-163f7abc.mp3"
               }
             ]
           },
@@ -558,11 +567,13 @@
             "examples": [
               {
                 "dutch": "Telkens viel hij van de fiets.",
-                "indonesian": "Berkali-kali dia jatuh dari sepeda."
+                "indonesian": "Berkali-kali dia jatuh dari sepeda.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/berkalikali-dia-jatuh-dari-1bd26114.mp3"
               },
               {
                 "dutch": "Jarenlang werkte hij daar.",
-                "indonesian": "Bertahun-tahun dia bekerja di sana."
+                "indonesian": "Bertahun-tahun dia bekerja di sana.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/bertahuntahun-dia-bekerja-di-01cdabe2.mp3"
               }
             ]
           },
@@ -571,7 +582,8 @@
             "examples": [
               {
                 "dutch": "Hij ging hals over kop naar kantoor.",
-                "indonesian": "Dia bergegas-gegas ke kantornya."
+                "indonesian": "Dia bergegas-gegas ke kantornya.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/dia-bergegasgegas-ke-kantornya-07f77ee8.mp3"
               }
             ]
           },
@@ -580,15 +592,18 @@
             "examples": [
               {
                 "dutch": "in groepjes van twee",
-                "indonesian": "berdua-dua"
+                "indonesian": "berdua-dua",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/berduadua-3bac2746.mp3"
               },
               {
                 "dutch": "met z'n tweetjes",
-                "indonesian": "berdua-duaan = berduaan"
+                "indonesian": "berdua-duaan = berduaan",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/berduaduaan-berduaan-924dae4c.mp3"
               },
               {
                 "dutch": "in groepjes van tien / bij tientallen",
-                "indonesian": "berpuluh-puluh"
+                "indonesian": "berpuluh-puluh",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/berpuluhpuluh-09db42c4.mp3"
               }
             ]
           }

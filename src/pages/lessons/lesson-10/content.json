@@ -646,27 +646,32 @@
               {
                 "dutch": "De eerste kamer is mijn kamer.",
                 "english": "The first room is my room.",
-                "indonesian": "Kamar pertama adalah kamar saya."
+                "indonesian": "Kamar pertama adalah kamar saya.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kamar-pertama-adalah-kamar-43004fc7.mp3"
               },
               {
                 "dutch": "De tweede kamer is nog niet schoon.",
                 "english": "The second room is not yet clean.",
-                "indonesian": "Kamar kedua belum bersih."
+                "indonesian": "Kamar kedua belum bersih.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kamar-kedua-belum-bersih-0b8ee946.mp3"
               },
               {
                 "dutch": "De deur van kamer (nr.) 2 is kapot.",
                 "english": "The door of room (no.) 2 is broken.",
-                "indonesian": "Kamar dua pintunya rusak."
+                "indonesian": "Kamar dua pintunya rusak.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kamar-dua-pintunya-rusak-a23d841d.mp3"
               },
               {
                 "dutch": "Die twee kamers zijn klein.",
                 "english": "Those two rooms are small.",
-                "indonesian": "Dua kamar itu kecil."
+                "indonesian": "Dua kamar itu kecil.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dua-kamar-itu-kecil-effb96bd.mp3"
               },
               {
                 "dutch": "Beide kamers staan leeg.",
                 "english": "Both rooms are empty.",
-                "indonesian": "Kedua kamar itu kosong."
+                "indonesian": "Kedua kamar itu kosong.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/kedua-kamar-itu-kosong-62ad650d.mp3"
               }
             ],
             "rules_en": [
@@ -721,17 +726,20 @@
               {
                 "dutch": "Wie is de eerste?",
                 "english": "Who is first?",
-                "indonesian": "Siapa yang pertama?"
+                "indonesian": "Siapa yang pertama?",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/siapa-yang-pertama-7abdcb2c.mp3"
               },
               {
                 "dutch": "Ik wil de middelste.",
                 "english": "I want the middle one.",
-                "indonesian": "Saya mau yang tengah."
+                "indonesian": "Saya mau yang tengah.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/saya-mau-yang-tengah-6cc042f3.mp3"
               },
               {
                 "dutch": "Hij is altijd de laatste.",
                 "english": "He is always last.",
-                "indonesian": "Dia selalu yang terakhir."
+                "indonesian": "Dia selalu yang terakhir.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/dia-selalu-yang-terakhir-575e125b.mp3"
               }
             ],
             "rules_en": [
@@ -1224,7 +1232,10 @@
       "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
     },
     "LessonAudioPlayer": {
-      "note": "No lesson-level audio published for this lesson yet."
+      "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
+      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-10.m4a\" voice=\"id-ID-Chirp3-HD-Achird\" />",
+      "purpose": "The lesson-level explanation/overview audio player.",
+      "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },
     "PracticeActions": {
       "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",

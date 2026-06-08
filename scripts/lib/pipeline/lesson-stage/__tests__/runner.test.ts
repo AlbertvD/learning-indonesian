@@ -510,4 +510,59 @@ describe('collectLessonPageTexts', () => {
     }
     expect(collectLessonPageTexts(lesson)).toEqual([])
   })
+
+  it('voices grammar category example sentences (indonesian) via primary_voice, never the Dutch rules', () => {
+    const lesson = {
+      sections: [
+        {
+          title: 'Grammatica - BER-',
+          order_index: 0,
+          content: {
+            type: 'grammar',
+            grammar_topics: ['ber- prefix'],
+            categories: [
+              {
+                title: 'BER- werkwoorden',
+                // Dutch explanatory rules — must NOT be voiced (Indonesian-only).
+                rules: ['Het voorvoegsel BER- maakt van een grondwoord een werkwoord.'],
+                examples: [
+                  { indonesian: 'Bus merah berangkat sekarang.', dutch: 'De rode bus vertrekt nu.' },
+                  { indonesian: 'Candi Borobudur bertingkat delapan.', dutch: 'De Borobudur heeft acht niveaus.' },
+                ],
+              },
+              {
+                // Category with only Dutch rules and no examples → emits nothing.
+                title: 'Alleen regels',
+                rules: ['Een afgeleid werkwoord ontstaat door affixen.'],
+              },
+            ],
+          },
+        },
+      ],
+      primary_voice: 'V1',
+      dialogue_voices: null,
+    }
+    expect(collectLessonPageTexts(lesson)).toEqual([
+      { text: 'Bus merah berangkat sekarang.', voiceId: 'V1' },
+      { text: 'Candi Borobudur bertingkat delapan.', voiceId: 'V1' },
+    ])
+  })
+
+  it('skips grammar examples when there is no primary_voice', () => {
+    const lesson = {
+      sections: [
+        {
+          title: 'Grammatica',
+          order_index: 0,
+          content: {
+            type: 'grammar',
+            categories: [{ title: 't', examples: [{ indonesian: 'berangkat', dutch: 'vertrekken' }] }],
+          },
+        },
+      ],
+      primary_voice: null,
+      dialogue_voices: null,
+    }
+    expect(collectLessonPageTexts(lesson)).toEqual([])
+  })
 })
