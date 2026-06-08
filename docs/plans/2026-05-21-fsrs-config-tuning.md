@@ -1,6 +1,7 @@
 ---
-status: implementing
+status: shipped
 implementation: PR #184
+merged_at: 2026-06-08
 implementation_paths:
   - supabase/functions/commit-capability-answer-report/index.ts
 ---
