@@ -33,6 +33,7 @@ vi.mock('@/lib/lessons/adapter', async (importOriginal) => {
 const { preparedLessonIdSet } = vi.hoisted(() => ({ preparedLessonIdSet: new Set<string>() }))
 vi.mock('@/pages/lessons/registry', () => ({
   bespokeLessonIdSet: preparedLessonIdSet,
+  bespokeLessonHeroByOrderIndex: new Map<number, string>(),
 }))
 
 const lesson1Sections = [

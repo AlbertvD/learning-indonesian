@@ -99,3 +99,18 @@ export const bespokeLessonPreviews: BespokeLessonPreview[] = [
 export const bespokeLessonIdSet: ReadonlySet<string> = new Set(
   Object.keys(bespokeLessonElements),
 )
+
+// Hero image path for each bespoke lesson, keyed by order_index — the SAME
+// asset the bespoke page shows at its top (its Page.module.css references
+// `/lesson-<orderIndex>-hero.<ext>`). The Lessons overview reads this so a tile
+// shows its lesson's hero photo, and a newly-published lesson's hero appears on
+// the overview automatically with no per-lesson edit. Convention is `.webp`;
+// the two legacy heroes (lessons 2 & 3) shipped as `.jpg`.
+const HERO_EXT_OVERRIDES: Record<number, string> = { 2: 'jpg', 3: 'jpg' }
+
+export const bespokeLessonHeroByOrderIndex: ReadonlyMap<number, string> = new Map(
+  bespokeLessonPreviews.map((p) => [
+    p.orderIndex,
+    `/lesson-${p.orderIndex}-hero.${HERO_EXT_OVERRIDES[p.orderIndex] ?? 'webp'}`,
+  ]),
+)
