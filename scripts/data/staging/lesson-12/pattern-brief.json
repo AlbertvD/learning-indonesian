@@ -1,0 +1,69 @@
+{
+  "lesson_number": 12,
+  "cefr_level": "A1",
+  "lesson_topic": "Di Stasiun Gambir di Jakarta — acroniemen, windrichtingen en BER- verdubbeling",
+  "grammar_patterns": [
+    {
+      "slug": "l12-acroniemen-en-afkortingen",
+      "name": "Acroniemen en afkortingen — akronim en singkatan",
+      "description": "Het Indonesisch vormt zeer productief nieuwe woorden uit (begin)letters of lettergrepen van bestaande woorden. Twee types: akronim (lettergrepen samengevoegd tot één uitspreekbaar woord: PUSKESMAS, SIKON, JABAR, SUMSEL, NUSTENGTIM) en singkatan (losse beginletters, los gespeld: KTP, SIM, KB, KIK, ONH).",
+      "confusion_group": null,
+      "key_contrast": "akronim (uitgesproken als woord: Jabar, Sumsel) vs. singkatan (letter-voor-letter gespeld: K-T-P, S-I-M). Veel acroniemen verwerken windrichtingen + eilandnamen (Jawa Barat -> Jabar).",
+      "research_notes": "Officieel onderscheid: 'singkatan' = initiële contracties die per letter gespeld worden, 'akronim' = uitspreekbare lettergreep-combinaties. Uiterst productief in bestuur, leger en plaatsnamen. Veelgemaakte fout door Nederlandstaligen: akronim per letter willen uitspreken en de twee types verwarren. Pedagogisch: koppel elk acroniem aan de windrichtingen-set, want JABAR/SUMSEL/NUSTENGTIM zijn alleen te ontleden als de leerling die windrichtingen kent. KTP en SIM zijn de hoogst-frequente singkatan in het dagelijks leven.",
+      "example_sentences": [
+        { "id": "Saya tinggal di Jabar, di kota Bandung.", "nl": "Ik woon in West-Java, in de stad Bandung." },
+        { "id": "Jangan lupa membawa KTP dan SIM Anda.", "nl": "Vergeet uw identiteitsbewijs en rijbewijs niet mee te nemen." },
+        { "id": "Di Puskesmas itu ada dokter setiap hari.", "nl": "In dat gezondheidscentrum is elke dag een dokter." },
+        { "id": "Dia lahir di Sumsel, dekat Palembang.", "nl": "Hij is geboren in Zuid-Sumatra, vlak bij Palembang." },
+        { "id": "Untuk bekerja di sini Anda perlu KIK.", "nl": "Om hier te werken hebt u een werkvergunning nodig." }
+      ]
+    },
+    {
+      "slug": "l12-windrichtingen",
+      "name": "Windrichtingen — de acht kompasrichtingen",
+      "description": "Vier hoofdrichtingen (utara, timur, selatan, barat) en vier samengestelde tussenrichtingen (barat laut, timur laut, tenggara, barat daya). Windrichtingen komen terug in plaatsnamen en acroniemen, en in de culturele context van de kiblat (bidrichting naar Mekka).",
+      "confusion_group": "direction-words",
+      "key_contrast": "hoofdrichting (één woord: utara, barat) vs. tussenrichting (samengesteld: barat laut, barat daya); let op dat tenggara onregelmatig is (niet *timur daya). 'sebelah barat' = aan de westkant.",
+      "research_notes": "Closed vocabulary set van acht items. Hoofdrichtingen makkelijk los te leren; tussenrichtingen deels onvoorspelbaar: barat laut (NW) en timur laut (NO) gebruiken 'laut' (= zee), terwijl barat daya (ZW) en tenggara (ZO) een ander tweede element hebben — tenggara is geen *timur daya. Dit asymmetrische paar is het kernpunt om te drillen. Cultureel anker: de kiblat verschilt per eiland. Koppel direct aan het acroniemen-patroon (JABAR/SUMSEL/NUSTENGTIM).",
+      "example_sentences": [
+        { "id": "Mekah ada di sebelah barat.", "nl": "Mekka ligt in het westen." },
+        { "id": "Pulau Bali terletak di sebelah timur Jawa.", "nl": "Het eiland Bali ligt ten oosten van Java." },
+        { "id": "Sumatera ada di sebelah barat laut Jawa.", "nl": "Sumatra ligt ten noordwesten van Java." },
+        { "id": "Kota itu di bagian tenggara pulau.", "nl": "Die stad ligt in het zuidoosten van het eiland." },
+        { "id": "Matahari terbit di timur dan terbenam di barat.", "nl": "De zon komt op in het oosten en gaat onder in het westen." }
+      ]
+    },
+    {
+      "slug": "l12-ber-verdubbeling",
+      "name": "BER- verdubbeling (met of zonder -an) — wederkerigheid, intensiteit, collectiviteit",
+      "description": "Ber- gecombineerd met verdubbeling van het basiswoord (met of zonder -an) drukt drie betekenissen uit, afhankelijk van de woordklasse: wederkerigheid (elkaar) bij werkwoorden/plaatswoorden, intensiteit/herhaling bij zelfstandige en bijvoeglijke naamwoorden, en collectiviteit (een x-tal samen) bij telwoorden.",
+      "confusion_group": "reduplication",
+      "key_contrast": "Eén vorm (ber- + verdubbeling) -> DRIE betekenissen, bepaald door de woordklasse: werkwoord/plaatswoord = elkaar (berpandang-pandangan), zelfst./bijv.nw. = intensiteit (berkali-kali, bertahun-tahun), telwoord = collectief (berdua-dua). Bouwt voort op het kale BER- voorvoegsel van Les 11.",
+      "research_notes": "Drie semantische functies: (1) WEDERKERIGHEID — ber-...-an op een werkwoord = 'elkaar V-en' (berpandang-pandangan, berbunuh-bunuhan). (2) INTENSITEIT/DUUR — ber- + verdubbeld tijds-/aantals-zelfstandig naamwoord = bijwoorden van duur/herhaling (berbulan-bulan, bertahun-tahun, berkali-kali). (3) COLLECTIVITEIT bij telwoorden — berdua-dua, berpuluh-puluh; berduaan = met z'n tweetjes. Bouwt voort op het kale BER- van Les 11. Veelgemaakte fout door Nederlandstaligen: één betekenis overgeneraliseren zonder op de woordklasse te letten; de -an weglaten waar wederkerigheid hem vereist. De vocabulaire-items pandang, bunuh, serdadu en gegas zijn opgenomen om deze BER-verdubbelingsvoorbeelden te ondersteunen.",
+      "example_sentences": [
+        { "id": "Berkali-kali dia jatuh dari sepeda.", "nl": "Telkens viel hij van de fiets." },
+        { "id": "Bertahun-tahun dia bekerja di sana.", "nl": "Jarenlang werkte hij daar." },
+        { "id": "Mereka berpandang-pandangan tanpa berbicara.", "nl": "Ze keken elkaar aan zonder te praten." },
+        { "id": "Anak-anak masuk berdua-dua.", "nl": "De kinderen kwamen in groepjes van twee binnen." },
+        { "id": "Dia bergegas-gegas ke kantornya.", "nl": "Hij ging hals over kop naar zijn kantoor." },
+        { "id": "Berbulan-bulan dia tinggal di Yogya.", "nl": "Maandenlang woonde hij in Yogya." }
+      ]
+    }
+  ],
+  "vocabulary_pool": [
+    { "base_text": "kereta api", "translation_nl": "trein", "item_type": "word", "lesson": 12 },
+    { "base_text": "stasiun", "translation_nl": "station", "item_type": "word", "lesson": 12 },
+    { "base_text": "peron (pèron)", "translation_nl": "perron", "item_type": "word", "lesson": 12 },
+    { "base_text": "karcis", "translation_nl": "kaartje", "item_type": "word", "lesson": 12 },
+    { "base_text": "terlambat", "translation_nl": "te laat", "item_type": "word", "lesson": 12 },
+    { "base_text": "tunggu", "translation_nl": "wachten", "item_type": "word", "lesson": 12 },
+    { "base_text": "sampai", "translation_nl": "aankomen", "item_type": "word", "lesson": 12 },
+    { "base_text": "senja", "translation_nl": "avondschemering", "item_type": "word", "lesson": 12 },
+    { "base_text": "selalu", "translation_nl": "altijd", "item_type": "word", "lesson": 12 },
+    { "base_text": "barat", "translation_nl": "westen", "item_type": "word", "lesson": 12 },
+    { "base_text": "selatan", "translation_nl": "zuiden", "item_type": "word", "lesson": 12 },
+    { "base_text": "timur", "translation_nl": "oosten", "item_type": "word", "lesson": 12 },
+    { "base_text": "utara", "translation_nl": "noorden", "item_type": "word", "lesson": 12 }
+  ],
+  "note": "vocabulary_pool here is a representative subset of the current-lesson items; the full 42-item set is in learning-items.ts. The downstream in-stage generators read items + grammar patterns from the DB, not this brief."
+}
