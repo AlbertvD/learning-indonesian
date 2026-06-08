@@ -33,37 +33,44 @@ export const lesson = {
           {
             "text": "Ibu dan bapak enak saja ke Taman Mini. Kita harus belajar di rumah. Aku juga mau ke Taman Mini, dan kamu Nanang?",
             "speaker": "Titin",
-            "translation": "Mama en papa gaan maar naar Taman Mini. Wij moeten thuis studeren. Ik wil ook naar Taman Mini, en jij Nanang?"
+            "translation": "Mama en papa gaan maar naar Taman Mini. Wij moeten thuis studeren. Ik wil ook naar Taman Mini, en jij Nanang?",
+            "translation_en": "Mom and dad are just going to Taman Mini. We have to study at home. I also want to go to Taman Mini, and you Nanang?"
           },
           {
             "text": "Aku tidak senang tinggal di rumah terus. Mari! Kita juga pergi saja, Tin.",
             "speaker": "Nanang",
-            "translation": "Ik hou er niet van om maar thuis te blijven. Kom mee! Wij gaan toch gewoon weg, Tin."
+            "translation": "Ik hou er niet van om maar thuis te blijven. Kom mee! Wij gaan toch gewoon weg, Tin.",
+            "translation_en": "I don't like just staying home. Come on! Let's go anyway, Tin."
           },
           {
             "text": "Kita harus kerja dulu sebentar. Nanti kita pergi.",
             "speaker": "Titin",
-            "translation": "Wij moeten eerst nog even werken. Daarna gaan we weg."
+            "translation": "Wij moeten eerst nog even werken. Daarna gaan we weg.",
+            "translation_en": "We have to work first for a bit. Then we'll go."
           },
           {
             "text": "Ayo, kerja dulu anak-anak!",
             "speaker": "Pembantu",
-            "translation": "Kom op, eerst werken kinderen!"
+            "translation": "Kom op, eerst werken kinderen!",
+            "translation_en": "Come on, work first children!"
           },
           {
             "text": "Aduh, kami mau ke luar, jalan-jalan dan makan di restoran \"Mi Enak\" tetapi tidak ada uang.",
             "speaker": "Titin",
-            "translation": "O jee, wij willen graag naar buiten, een wandelingetje maken en eten in het restaurant 'Mi Enak', maar we hebben geen geld."
+            "translation": "O jee, wij willen graag naar buiten, een wandelingetje maken en eten in het restaurant 'Mi Enak', maar we hebben geen geld.",
+            "translation_en": "Oh no, we want to go out, take a walk and eat at the restaurant 'Mi Enak' but we don't have any money."
           },
           {
             "text": "Saya juga tidak punya uang. Jadi, tinggal di rumah saja Tin. Besok saja jalan-jalan dengan ayahmu. Mari! Sekarang kerja. Besok harus ke sekolah 'kan?",
             "speaker": "Pembantu",
-            "translation": "Ik heb ook geen geld. Dus blijf je maar thuis, Tin. Morgen ga je wandelen met je vader. Kom op! Nu werken. Morgen moet je naar school, hè?"
+            "translation": "Ik heb ook geen geld. Dus blijf je maar thuis, Tin. Morgen ga je wandelen met je vader. Kom op! Nu werken. Morgen moet je naar school, hè?",
+            "translation_en": "I don't have money either. So just stay home, Tin. Tomorrow you can walk with your father. Come on! Now work. Tomorrow you have to go to school, right?"
           },
           {
             "text": "Baiklah, tapi boleh minta setrop susu ya?",
             "speaker": "Titin",
-            "translation": "Oké, maar mag ik een glas melk krijgen?"
+            "translation": "Oké, maar mag ik een glas melk krijgen?",
+            "translation_en": "Okay, but can I have a glass of milk?"
           }
         ]
       }
@@ -84,16 +91,25 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "Mijn vriend en ik",
-                "indonesian": "Saya dan teman saya"
+                "indonesian": "Saya dan teman saya",
+                "english": "My friend and I"
               },
               {
                 "dutch": "Ik wil ook naar Taman Mini (informeel)",
-                "indonesian": "Aku juga mau ke Taman Mini"
+                "indonesian": "Aku juga mau ke Taman Mini",
+                "english": "I also want to go to Taman Mini (informal)"
               },
               {
                 "dutch": "Ik (Awan) wil naar de stad (eigennaam als 'ik')",
-                "indonesian": "Awan mau ke kota"
+                "indonesian": "Awan mau ke kota",
+                "english": "I (Awan) want to go to the city (proper name as 'I')"
               }
+            ],
+            "title_en": "I — saya, aku and proper name",
+            "rules_en": [
+              "Use saya as the neutral-formal form of 'I' when meeting and in formal situations.",
+              "Aku is the informal form of 'I', used in the home and among friends.",
+              "Indonesians often refer to themselves by their own name instead of saya or aku."
             ]
           },
           {
@@ -106,12 +122,20 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "Wat wil jij (Awan) in de stad kopen?",
-                "indonesian": "Awan mau beli apa di kota?"
+                "indonesian": "Awan mau beli apa di kota?",
+                "english": "What do you (Awan) want to buy in the city?"
               },
               {
                 "dutch": "Ga jij (Siti) met de auto naar de markt?",
-                "indonesian": "Siti naik mobil ke pasar?"
+                "indonesian": "Siti naik mobil ke pasar?",
+                "english": "Are you (Siti) going to the market by car?"
               }
+            ],
+            "title_en": "You — politely via name or kamu/engkau",
+            "rules_en": [
+              "The most polite way to say 'you' is to use the other person's own name or first name.",
+              "Kamu and engkau are informal forms of address, limited to the home and among friends.",
+              "Never use kamu to an adult guest or stranger — that is perceived as rude."
             ]
           },
           {
@@ -125,16 +149,26 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "Waar komt u (meneer Sahid) vandaan?",
-                "indonesian": "Bapak Sahid dari mana?"
+                "indonesian": "Bapak Sahid dari mana?",
+                "english": "Where are you (Mr. Sahid) from?"
               },
               {
                 "dutch": "Houdt u (mevrouw Sutrisno) van thee?",
-                "indonesian": "Ibu Sutrisno suka teh?"
+                "indonesian": "Ibu Sutrisno suka teh?",
+                "english": "Do you (Mrs. Sutrisno) like tea?"
               },
               {
                 "dutch": "Wat wilt u eten?",
-                "indonesian": "Anda ingin makan apa?"
+                "indonesian": "Anda ingin makan apa?",
+                "english": "What would you like to eat?"
               }
+            ],
+            "title_en": "You — Tuan/Nyonya, Bapak/Ibu, Anda, Saudara",
+            "rules_en": [
+              "Formal: Tuan (mister) and Nyonya (madam) for Westerners and official situations.",
+              "Neutral everyday use: Bapak (mister) and Ibu (madam), also with name: Bapak Sahid.",
+              "Anda is gender- and socially-neutral 'you', popular in advertising and formal texts.",
+              "Saudara (friend/equal) for colleagues and peers in neutral situations."
             ]
           },
           {
@@ -147,20 +181,30 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "oudere broer",
-                "indonesian": "kakak laki-laki (of: abang)"
+                "indonesian": "kakak laki-laki (of: abang)",
+                "english": "older brother"
               },
               {
                 "dutch": "oudere zus",
-                "indonesian": "kakak perempuan"
+                "indonesian": "kakak perempuan",
+                "english": "older sister"
               },
               {
                 "dutch": "jongere broer",
-                "indonesian": "adik laki-laki"
+                "indonesian": "adik laki-laki",
+                "english": "younger brother"
               },
               {
                 "dutch": "jongere zus",
-                "indonesian": "adik perempuan"
+                "indonesian": "adik perempuan",
+                "english": "younger sister"
               }
+            ],
+            "title_en": "Brothers and sisters — kakak, adik, abang",
+            "rules_en": [
+              "Distinction: kakak (older brother/sister), adik (younger brother/sister) — gender is secondary.",
+              "Abang (informally: bang) = older brother; kakak perempuan = older sister.",
+              "These family terms are also used informally for acquaintances and neighbors."
             ]
           },
           {
@@ -172,12 +216,19 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "hij of zij (beide correct)",
-                "indonesian": "Dia atau ia"
+                "indonesian": "Dia atau ia",
+                "english": "he or she (both correct)"
               },
               {
                 "dutch": "Zij is mijn lerares (respectvol)",
-                "indonesian": "Beliau adalah guru saya"
+                "indonesian": "Beliau adalah guru saya",
+                "english": "She is my teacher (respectful)"
               }
+            ],
+            "title_en": "He/she — dia, ia, beliau",
+            "rules_en": [
+              "Dia and ia are both correct for 'he' and 'she' — there is no gender distinction.",
+              "Beliau is the respectful form: used to speak about someone with reverence."
             ]
           },
           {
@@ -190,20 +241,30 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "Wij moeten thuis studeren (jij ook — Titin tegen Nanang)",
-                "indonesian": "Kita harus belajar di rumah"
+                "indonesian": "Kita harus belajar di rumah",
+                "english": "We must study at home (you too — Titin to Nanang)"
               },
               {
                 "dutch": "Wij willen naar buiten (jij niet — Titin tegen pembantu)",
-                "indonesian": "Aduh, kami mau ke luar"
+                "indonesian": "Aduh, kami mau ke luar",
+                "english": "We want to go out (you don't — Titin to maid)"
               },
               {
                 "dutch": "Ma, wij gaan alvast naar school! (jij gaat niet mee)",
-                "indonesian": "Bu, kami ke sekolah dulu ya!"
+                "indonesian": "Bu, kami ke sekolah dulu ya!",
+                "english": "Ma, we're going to school first! (you're not coming)"
               },
               {
                 "dutch": "Pa, laten wij gaan wandelen (kom mee)",
-                "indonesian": "Bapak, mari kita jalan-jalan"
+                "indonesian": "Bapak, mari kita jalan-jalan",
+                "english": "Pa, let's go for a walk (come with us)"
               }
+            ],
+            "title_en": "We — kita (inclusive) versus kami (exclusive)",
+            "rules_en": [
+              "Kita = 'we' including the person addressed (the person you're speaking to is included).",
+              "Kami = 'we' excluding the person addressed (the person you're speaking to is not included).",
+              "This distinction does not exist in Dutch — context determines the choice."
             ]
           },
           {
@@ -216,16 +277,25 @@ export const lesson = {
             "examples": [
               {
                 "dutch": "Waar gaan jullie naartoe?",
-                "indonesian": "Kalian mau ke mana?"
+                "indonesian": "Kalian mau ke mana?",
+                "english": "Where are you all going?"
               },
               {
                 "dutch": "Dames en heren (formele aanspreekvorm)",
-                "indonesian": "Saudara-Saudari yang terhormat"
+                "indonesian": "Saudara-Saudari yang terhormat",
+                "english": "Ladies and gentlemen (formal form of address)"
               },
               {
                 "dutch": "Zij hebben een net restaurant",
-                "indonesian": "Mereka punya restoran yang rapi"
+                "indonesian": "Mereka punya restoran yang rapi",
+                "english": "They have a neat restaurant"
               }
+            ],
+            "title_en": "You all, You (plural) and They (plural)",
+            "rules_en": [
+              "Kalian = 'you all' (neutral plural second person).",
+              "You plural: Bapak-Bapak / Ibu-Ibu / Saudara-Saudari / Anda (all).",
+              "They plural: mereka (one word, no gender distinction)."
             ]
           }
         ],
@@ -651,215 +721,268 @@ export const lesson = {
         "items": [
           {
             "dutch": "oudere broer",
-            "indonesian": "abang"
+            "indonesian": "abang",
+            "english": "older brother"
           },
           {
             "dutch": "jongere broer/zus",
-            "indonesian": "adik"
+            "indonesian": "adik",
+            "english": "younger brother/sister"
           },
           {
             "dutch": "hemel, goh, jemig (uitroep)",
-            "indonesian": "aduh"
+            "indonesian": "aduh",
+            "english": "goodness, gosh, my (exclamation)"
           },
           {
             "dutch": "ik (informeel)",
-            "indonesian": "aku"
+            "indonesian": "aku",
+            "english": "I (informal)"
           },
           {
             "dutch": "vader",
-            "indonesian": "ayah"
+            "indonesian": "ayah",
+            "english": "father"
           },
           {
             "dutch": "komaan!",
-            "indonesian": "ayo!"
+            "indonesian": "ayo!",
+            "english": "come on!"
           },
           {
             "dutch": "goed dan (maar)",
-            "indonesian": "baiklah"
+            "indonesian": "baiklah",
+            "english": "all right then"
           },
           {
             "dutch": "leren (zie ook Les 11)",
-            "indonesian": "belajar"
+            "indonesian": "belajar",
+            "english": "to learn"
           },
           {
             "dutch": "zaailing, jong rijstplantje",
-            "indonesian": "bibit padi"
+            "indonesian": "bibit padi",
+            "english": "rice seedling"
           },
           {
             "dutch": "op z'n gemak, naar believen",
-            "indonesian": "enak saja"
+            "indonesian": "enak saja",
+            "english": "at ease, as you like"
           },
           {
             "dutch": "ongepelde rijst (rijst/vliesje)",
-            "indonesian": "gabah"
+            "indonesian": "gabah",
+            "english": "unhulled rice"
           },
           {
             "dutch": "vol van smaak",
-            "indonesian": "gurih"
+            "indonesian": "gurih",
+            "english": "flavorful"
           },
           {
             "dutch": "op, afgelopen",
-            "indonesian": "habis"
+            "indonesian": "habis",
+            "english": "finished, gone"
           },
           {
             "dutch": "hallo",
-            "indonesian": "halo"
+            "indonesian": "halo",
+            "english": "hello"
           },
           {
             "dutch": "dag",
-            "indonesian": "hari"
+            "indonesian": "hari",
+            "english": "day"
           },
           {
             "dutch": "woensdag",
-            "indonesian": "hari Rabu"
+            "indonesian": "hari Rabu",
+            "english": "Wednesday"
           },
           {
             "dutch": "meegaan, meedoen",
-            "indonesian": "ikut"
+            "indonesian": "ikut",
+            "english": "to go along, to join in"
           },
           {
             "dutch": "dus",
-            "indonesian": "jadi"
+            "indonesian": "jadi",
+            "english": "so"
           },
           {
             "dutch": "een wandeling maken",
-            "indonesian": "jalan-jalan"
+            "indonesian": "jalan-jalan",
+            "english": "to take a walk"
           },
           {
             "dutch": "oudere broer/zus",
-            "indonesian": "kakak"
+            "indonesian": "kakak",
+            "english": "older sibling"
           },
           {
             "dutch": "wij (exclusief aangesprokene)",
-            "indonesian": "kami"
+            "indonesian": "kami",
+            "english": "we (exclusive)"
           },
           {
             "dutch": "jij, jullie (informeel)",
-            "indonesian": "kamu"
+            "indonesian": "kamu",
+            "english": "you (informal)"
           },
           {
             "dutch": "droog",
-            "indonesian": "kering"
+            "indonesian": "kering",
+            "english": "dry"
           },
           {
             "dutch": "werken",
-            "indonesian": "kerja"
+            "indonesian": "kerja",
+            "english": "to work"
           },
           {
             "dutch": "wij (inclusief aangesprokene)",
-            "indonesian": "kita"
+            "indonesian": "kita",
+            "english": "we (inclusive)"
           },
           {
             "dutch": "rijstveld (droog)",
-            "indonesian": "ladang"
+            "indonesian": "ladang",
+            "english": "dry rice field"
           },
           {
             "dutch": "man, mannelijk",
-            "indonesian": "laki-laki"
+            "indonesian": "laki-laki",
+            "english": "man, male"
           },
           {
             "dutch": "kom!",
-            "indonesian": "mari!"
+            "indonesian": "mari!",
+            "english": "come!"
           },
           {
             "dutch": "zij (meervoud)",
-            "indonesian": "mereka"
+            "indonesian": "mereka",
+            "english": "they"
           },
           {
             "dutch": "bamie, noedels",
-            "indonesian": "mi"
+            "indonesian": "mi",
+            "english": "noodles"
           },
           {
             "dutch": "beginnen",
-            "indonesian": "mulai"
+            "indonesian": "mulai",
+            "english": "to begin"
           },
           {
             "dutch": "straks, zo meteen",
-            "indonesian": "nanti"
+            "indonesian": "nanti",
+            "english": "presently, in a moment"
           },
           {
             "dutch": "rijstgerecht (met kokosmelk)",
-            "indonesian": "nasi gurih"
+            "indonesian": "nasi gurih",
+            "english": "rice dish with coconut milk"
           },
           {
             "dutch": "rijstplant",
-            "indonesian": "padi"
+            "indonesian": "padi",
+            "english": "rice plant"
           },
           {
             "dutch": "hulp in de huishouding",
-            "indonesian": "pembantu"
+            "indonesian": "pembantu",
+            "english": "household helper"
           },
           {
             "dutch": "vrouw, vrouwelijk",
-            "indonesian": "perempuan"
+            "indonesian": "perempuan",
+            "english": "woman, female"
           },
           {
             "dutch": "(weg)gaan",
-            "indonesian": "pergi"
+            "indonesian": "pergi",
+            "english": "go, leave"
           },
           {
             "dutch": "bezitten, hebben",
-            "indonesian": "punya"
+            "indonesian": "punya",
+            "english": "own, have"
           },
           {
             "dutch": "kapot, stuk",
-            "indonesian": "rusak"
+            "indonesian": "rusak",
+            "english": "broken, damaged"
           },
           {
             "dutch": "rijstveld (nat)",
-            "indonesian": "sawah"
+            "indonesian": "sawah",
+            "english": "rice field (wet)"
           },
           {
             "dutch": "een moment(je), even",
-            "indonesian": "sebentar"
+            "indonesian": "sebentar",
+            "english": "a moment, just a second"
           },
           {
             "dutch": "zich prettig voelen, blij, leuk",
-            "indonesian": "senang"
+            "indonesian": "senang",
+            "english": "feel pleased, happy, nice"
           },
           {
             "dutch": "siroop",
-            "indonesian": "setrop"
+            "indonesian": "setrop",
+            "english": "syrup"
           },
           {
             "dutch": "zoet drankje (melk met siroop)",
-            "indonesian": "setrop susu"
+            "indonesian": "setrop susu",
+            "english": "sweet drink (milk with syrup)"
           },
           {
             "dutch": "namiddag, avond",
-            "indonesian": "sore"
+            "indonesian": "sore",
+            "english": "afternoon, evening"
           },
           {
             "dutch": "melk",
-            "indonesian": "susu"
+            "indonesian": "susu",
+            "english": "milk"
           },
           {
             "dutch": "park, tuin",
-            "indonesian": "taman"
+            "indonesian": "taman",
+            "english": "park, garden"
           },
           {
             "dutch": "Klein Indonesie - park met traditionele gebouwen in Jakarta",
-            "indonesian": "Taman Mini"
+            "indonesian": "Taman Mini",
+            "english": "Taman Mini - park with traditional Indonesian buildings in Jakarta"
           },
           {
             "dutch": "maar, echter",
-            "indonesian": "tapi / tetapi"
+            "indonesian": "tapi / tetapi",
+            "english": "but, however"
           },
           {
             "dutch": "vliegen",
-            "indonesian": "terbang"
+            "indonesian": "terbang",
+            "english": "fly"
           },
           {
             "dutch": "voorts, steeds, maar door",
-            "indonesian": "terus"
+            "indonesian": "terus",
+            "english": "further, keep on, continuously"
           },
           {
             "dutch": "geld",
-            "indonesian": "uang"
+            "indonesian": "uang",
+            "english": "money"
           },
           {
             "dutch": "goh! nou! (stopwoord/uitroep)",
-            "indonesian": "wah!"
+            "indonesian": "wah!",
+            "english": "wow! goodness! (exclamation)"
           }
         ]
       }

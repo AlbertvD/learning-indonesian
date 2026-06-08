@@ -39,72 +39,86 @@ export const lesson = {
           {
             "speaker": "narrator",
             "text": "Ninik dan ibunya akan pergi ke Denpasar. Mereka mau tinggal di sana satu minggu karena Ninik libur sekolah.",
-            "translation": "Ninik en haar moeder gaan naar Denpasar. Ze willen daar een week blijven omdat Ninik schoolvakantie heeft."
+            "translation": "Ninik en haar moeder gaan naar Denpasar. Ze willen daar een week blijven omdat Ninik schoolvakantie heeft.",
+            "translation_en": "Ninik and her mother are going to Denpasar. They want to stay there for a week because Ninik has school vacation."
           },
           {
             "speaker": "narrator",
             "text": "Pada hari Kamis mereka mau berangkat. Tetapi barang yang perlu dibawa belum beres. Mereka mau bawa barang yang betul-betul perlu.",
-            "translation": "Op donderdag willen ze vertrekken. Maar de spullen die ze nodig hebben zijn nog niet ingepakt. Ze willen alleen echt noodzakelijke spullen meenemen."
+            "translation": "Op donderdag willen ze vertrekken. Maar de spullen die ze nodig hebben zijn nog niet ingepakt. Ze willen alleen echt noodzakelijke spullen meenemen.",
+            "translation_en": "On Thursday they want to leave. But the things they need to bring aren't packed yet. They want to take only really necessary things."
           },
           {
             "speaker": "Ibu",
             "text": "Ninik, di mana kopernya? Kita perlu koper sekarang, 'kan? Tas pasti terlalu kecil untuk semua barang kita.",
-            "translation": "Moeder: 'Ninik, waar is de koffer? We hebben nu toch een koffer nodig, hè? Een tas is vast te klein voor al onze spullen.'"
+            "translation": "Moeder: 'Ninik, waar is de koffer? We hebben nu toch een koffer nodig, hè? Een tas is vast te klein voor al onze spullen.'",
+            "translation_en": "Ninik, where is the suitcase? We need a suitcase now, right? A bag is surely too small for all our things."
           },
           {
             "speaker": "Ninik",
             "text": "Masih di gudang bu, nanti saya ambil. Barang ibu sudah beres? Barang saya sudah banyak, bu.",
-            "translation": "Ninik: 'Hij staat nog in de schuur, moeder, ik haal hem zo. Zijn uw spullen al ingepakt? Mijn spullen zijn al behoorlijk veel, moeder.'"
+            "translation": "Ninik: 'Hij staat nog in de schuur, moeder, ik haal hem zo. Zijn uw spullen al ingepakt? Mijn spullen zijn al behoorlijk veel, moeder.'",
+            "translation_en": "It's still in the shed, mother, I'll get it in a moment. Are your things packed? I already have a lot of things, mother."
           },
           {
             "speaker": "Ibu",
             "text": "Jangan bawa pakaian banyak ya, nanti kita beli saja di Bali. Di Kuta dan di Denpasar ada toko pakaian yang bagus. Bawa saja jean dan kemeja. Jangan lupa rokmu yang merah muda, sebab cocok sekali kalau kamu mau ke disko.",
-            "translation": "Moeder: 'Neem niet zoveel kleding mee, hoor. We kopen wel wat in Bali. In Kuta en in Denpasar zijn mooie kledingwinkels. Neem alleen maar jeans en een blouse mee. Vergeet je roze rok niet, want die staat je echt super als je naar de discotheek gaat.'"
+            "translation": "Moeder: 'Neem niet zoveel kleding mee, hoor. We kopen wel wat in Bali. In Kuta en in Denpasar zijn mooie kledingwinkels. Neem alleen maar jeans en een blouse mee. Vergeet je roze rok niet, want die staat je echt super als je naar de discotheek gaat.'",
+            "translation_en": "Don't take a lot of clothes, okay, we'll just buy some in Bali. In Kuta and in Denpasar there are nice clothing stores. Just take jeans and a blouse. Don't forget your pink skirt, because it really suits you when you want to go to the disco."
           },
           {
             "speaker": "Ninik",
             "text": "Bu, jangan lupa kacamata hitam, ya bu. Eeh ... apa perlu saya bawa hiasan seperti cincin, gelang dan kalung? Soalnya saya harus keren, 'kan?",
-            "translation": "Ninik: 'Moeder, vergeet de donkere zonnebril niet, alstublieft. Eh... moet ik sieraad meenemen zoals ringen, armbanden en kettingen? Want ik moet er stoer uitzien, toch?'"
+            "translation": "Ninik: 'Moeder, vergeet de donkere zonnebril niet, alstublieft. Eh... moet ik sieraad meenemen zoals ringen, armbanden en kettingen? Want ik moet er stoer uitzien, toch?'",
+            "translation_en": "Mother, don't forget the dark sunglasses, please. Um... do I need to bring jewelry like rings, bracelets and necklaces? Because I need to look cool, right?"
           },
           {
             "speaker": "Ibu",
             "text": "Boleh, Nin, tapi jangan bawa semuanya. Kalau hilang bagaimana?",
-            "translation": "Moeder: 'Best hoor, Nin, maar neem niet alles mee. Stel je voor dat je iets kwijtraakt?'"
+            "translation": "Moeder: 'Best hoor, Nin, maar neem niet alles mee. Stel je voor dat je iets kwijtraakt?'",
+            "translation_en": "Okay, Nin, but don't take everything. What if you lose something?"
           },
           {
             "speaker": "Ninik",
             "text": "Ibu juga mau bawa celana panjang dengan kantong yang merah? Malam hari pasti dingin lho!",
-            "translation": "Ninik: 'Wil u ook een lange broek met rode zakken meenemen? 's Avonds wordt het vast koud!'"
+            "translation": "Ninik: 'Wil u ook een lange broek met rode zakken meenemen? 's Avonds wordt het vast koud!'",
+            "translation_en": "Do you also want to bring a long pants with red pockets? It will surely be cold in the evening!"
           },
           {
             "speaker": "Ibu",
             "text": "Benar, tapi belum disetrika. Tapi tidak apa-apa, di hotel pasti bisa.",
-            "translation": "Moeder: 'Klopt, maar hij is nog niet gestreken. Maar dat geeft niet, in het hotel kunnen ze dat doen.'"
+            "translation": "Moeder: 'Klopt, maar hij is nog niet gestreken. Maar dat geeft niet, in het hotel kunnen ze dat doen.'",
+            "translation_en": "That's right, but it's not ironed yet. But that's okay, they can do it at the hotel."
           },
           {
             "speaker": "Ninik",
             "text": "Aduh, koper sudah berat sekali bu. Bagus kalau bapak mau mengantar kita ke lapangan terbang. Kalau kita harus pikul sendiri bagaimana?",
-            "translation": "Ninik: 'Oeee, de koffer wordt al erg zwaar, moeder. Gelukkig dat vader ons naar het vliegveld wil brengen. Hoe zouden we het redden als we hem zelf moeten dragen?'"
+            "translation": "Ninik: 'Oeee, de koffer wordt al erg zwaar, moeder. Gelukkig dat vader ons naar het vliegveld wil brengen. Hoe zouden we het redden als we hem zelf moeten dragen?'",
+            "translation_en": "Oh no, the suitcase is already very heavy, mother. It's good that father wants to take us to the airport. How would we manage if we had to carry it ourselves?"
           },
           {
             "speaker": "Ibu",
             "text": "Eh, pakaian renang dan topi sudah ada ya?",
-            "translation": "Moeder: 'Hé, het badpak en de hoed zijn toch meegenomen?'"
+            "translation": "Moeder: 'Hé, het badpak en de hoed zijn toch meegenomen?'",
+            "translation_en": "Hey, the swimsuit and hat are packed, right?"
           },
           {
             "speaker": "Ninik",
             "text": "Sudah. Tapi di mana kaus oblong saya yang kuning? Sudah masuk ya?",
-            "translation": "Ninik: 'Ja. Maar waar is mijn gele T-shirt? Zit het erin?'"
+            "translation": "Ninik: 'Ja. Maar waar is mijn gele T-shirt? Zit het erin?'",
+            "translation_en": "Yes. But where is my yellow T-shirt? Is it in there?"
           },
           {
             "speaker": "Ibu",
             "text": "Sudah.",
-            "translation": "Moeder: 'Ja.'"
+            "translation": "Moeder: 'Ja.'",
+            "translation_en": "Yes."
           },
           {
             "speaker": "narrator",
             "text": "Tentu masuk barang ke koper makan waktu lama. Ini ke luar, itu masuk, itu ke luar lagi. Tapi, akhirnya selesai. Mereka ke bandar udara dengan bapak dan setelah terbang satu setengah jam mereka tiba di bandara Ngurah Rai, Denpasar, Bali. Tapi, ada yang lupa. Sandal dan jepit rambut. Syukur, di Bali banyak toko yang jual barang itu. Jadi, tidak apa-apa.",
-            "translation": "Uiteraard kost het inpakken van spullen in een koffer veel tijd. Dit gaat erin, dat gaat eruit, en dat gaat weer erin. Maar uiteindelijk was het af. Ze gingen met vader naar het vliegveld en na anderhalf uur vliegen landen ze op Ngurah Rai-luchthaven in Denpasar, Bali. Maar ze waren iets vergeten. Slippers en haarclips. Gelukkig zijn er veel winkels in Bali waar ze dat kunnen kopen. Dus het geeft niet."
+            "translation": "Uiteraard kost het inpakken van spullen in een koffer veel tijd. Dit gaat erin, dat gaat eruit, en dat gaat weer erin. Maar uiteindelijk was het af. Ze gingen met vader naar het vliegveld en na anderhalf uur vliegen landen ze op Ngurah Rai-luchthaven in Denpasar, Bali. Maar ze waren iets vergeten. Slippers en haarclips. Gelukkig zijn er veel winkels in Bali waar ze dat kunnen kopen. Dus het geeft niet.",
+            "translation_en": "Of course packing things into a suitcase takes a long time. This goes in, that comes out, that goes in again. But finally it was done. They went to the airport with father and after flying for an hour and a half they arrived at Ngurah Rai airport in Denpasar, Bali. But they had forgotten something. Slippers and hair clips. Fortunately there are many shops in Bali that sell those things. So it doesn't matter."
           }
         ]
       }
@@ -117,243 +131,303 @@ export const lesson = {
         "items": [
           {
             "indonesian": "akan",
-            "dutch": "zullen"
+            "dutch": "zullen",
+            "english": "will, shall"
           },
           {
             "indonesian": "akhirnya",
-            "dutch": "tenslotte"
+            "dutch": "tenslotte",
+            "english": "finally, eventually"
           },
           {
             "indonesian": "bawa",
-            "dutch": "meebrengen, meenemen"
+            "dutch": "meebrengen, meenemen",
+            "english": "bring, take (along)"
           },
           {
             "indonesian": "beres (bèrès)",
-            "dutch": "klaar"
+            "dutch": "klaar",
+            "english": "ready, done"
           },
           {
             "indonesian": "betul-betul",
-            "dutch": "écht"
+            "dutch": "écht",
+            "english": "really, truly"
           },
           {
             "indonesian": "celana",
-            "dutch": "broek"
+            "dutch": "broek",
+            "english": "trousers, pants"
           },
           {
             "indonesian": "cincin",
-            "dutch": "ring"
+            "dutch": "ring",
+            "english": "ring"
           },
           {
             "indonesian": "cocok",
-            "dutch": "passen bij"
+            "dutch": "passen bij",
+            "english": "suit, match"
           },
           {
             "indonesian": "contoh",
-            "dutch": "voorbeeld"
+            "dutch": "voorbeeld",
+            "english": "example"
           },
           {
             "indonesian": "dibawa*",
-            "dutch": "meegenomen"
+            "dutch": "meegenomen",
+            "english": "taken (along)"
           },
           {
             "indonesian": "disetrika*",
-            "dutch": "gestreken"
+            "dutch": "gestreken",
+            "english": "ironed"
           },
           {
             "indonesian": "disko",
-            "dutch": "disco"
+            "dutch": "disco",
+            "english": "disco, discotheque"
           },
           {
             "indonesian": "gelang",
-            "dutch": "armband"
+            "dutch": "armband",
+            "english": "bracelet"
           },
           {
             "indonesian": "gudang",
-            "dutch": "opslagplaats"
+            "dutch": "opslagplaats",
+            "english": "shed, storage"
           },
           {
             "indonesian": "hiasan",
-            "dutch": "versiering, sieraad"
+            "dutch": "versiering, sieraad",
+            "english": "jewelry, ornament"
           },
           {
             "indonesian": "jean",
-            "dutch": "jeans, spijkerbroek"
+            "dutch": "jeans, spijkerbroek",
+            "english": "jeans"
           },
           {
             "indonesian": "jepit",
-            "dutch": "klemmen, knellen"
+            "dutch": "klemmen, knellen",
+            "english": "clamp, squeeze"
           },
           {
             "indonesian": "jepit rambut",
-            "dutch": "haarpin(-speld)"
+            "dutch": "haarpin(-speld)",
+            "english": "hair clip"
           },
           {
             "indonesian": "jual",
-            "dutch": "verkopen"
+            "dutch": "verkopen",
+            "english": "sell"
           },
           {
             "indonesian": "kacamata",
-            "dutch": "bril"
+            "dutch": "bril",
+            "english": "glasses, spectacles"
           },
           {
             "indonesian": "kacamata hitam",
-            "dutch": "zonnebril"
+            "dutch": "zonnebril",
+            "english": "sunglasses"
           },
           {
             "indonesian": "kalung",
-            "dutch": "halsketting"
+            "dutch": "halsketting",
+            "english": "necklace"
           },
           {
             "indonesian": "hari Kamis",
-            "dutch": "donderdag"
+            "dutch": "donderdag",
+            "english": "Thursday"
           },
           {
             "indonesian": "kantong",
-            "dutch": "zak"
+            "dutch": "zak",
+            "english": "pocket, bag"
           },
           {
             "indonesian": "karena",
-            "dutch": "omdat"
+            "dutch": "omdat",
+            "english": "because"
           },
           {
             "indonesian": "kaus",
-            "dutch": "(onder)hemd"
+            "dutch": "(onder)hemd",
+            "english": "shirt, undershirt"
           },
           {
             "indonesian": "kaus oblong",
-            "dutch": "T-shirt"
+            "dutch": "T-shirt",
+            "english": "T-shirt"
           },
           {
             "indonesian": "kemeja (keméja)",
-            "dutch": "overhemd, hemd"
+            "dutch": "overhemd, hemd",
+            "english": "shirt"
           },
           {
             "indonesian": "keren (kerèn)",
-            "dutch": "sjiek"
+            "dutch": "sjiek",
+            "english": "stylish, smart"
           },
           {
             "indonesian": "kilometer",
-            "dutch": "kilometer"
+            "dutch": "kilometer",
+            "english": "kilometer"
           },
           {
             "indonesian": "lho!",
-            "dutch": "goh! (stopwoord)"
+            "dutch": "goh! (stopwoord)",
+            "english": "hey! (interjection)"
           },
           {
             "indonesian": "libur",
-            "dutch": "vrij (vakantie) hebben"
+            "dutch": "vrij (vakantie) hebben",
+            "english": "have time off, vacation"
           },
           {
             "indonesian": "libur sekolah",
-            "dutch": "schoolvakantie"
+            "dutch": "schoolvakantie",
+            "english": "school vacation"
           },
           {
             "indonesian": "lupa",
-            "dutch": "vergeten"
+            "dutch": "vergeten",
+            "english": "forget"
           },
           {
             "indonesian": "mengantar*",
-            "dutch": "wegbrengen, begeleiden"
+            "dutch": "wegbrengen, begeleiden",
+            "english": "take, accompany"
           },
           {
             "indonesian": "merah muda",
-            "dutch": "lichtrood, roze"
+            "dutch": "lichtrood, roze",
+            "english": "light red, pink"
           },
           {
             "indonesian": "meter (mèter)",
-            "dutch": "meter"
+            "dutch": "meter",
+            "english": "meter"
           },
           {
             "indonesian": "minggu",
-            "dutch": "week"
+            "dutch": "week",
+            "english": "week"
           },
           {
             "indonesian": "muda",
-            "dutch": "jong, licht (kleur)"
+            "dutch": "jong, licht (kleur)",
+            "english": "young, light (color)"
           },
           {
             "indonesian": "pada",
-            "dutch": "op, bij, in"
+            "dutch": "op, bij, in",
+            "english": "on, at, in"
           },
           {
             "indonesian": "pantai",
-            "dutch": "strand, kust"
+            "dutch": "strand, kust",
+            "english": "beach, coast"
           },
           {
             "indonesian": "pasti",
-            "dutch": "zeker"
+            "dutch": "zeker",
+            "english": "certain, sure"
           },
           {
             "indonesian": "perlu",
-            "dutch": "nodig, noodzakelijk"
+            "dutch": "nodig, noodzakelijk",
+            "english": "necessary, needed"
           },
           {
             "indonesian": "pikul",
-            "dutch": "dragen"
+            "dutch": "dragen",
+            "english": "carry"
           },
           {
             "indonesian": "rambut",
-            "dutch": "hoofdhaar"
+            "dutch": "hoofdhaar",
+            "english": "hair"
           },
           {
             "indonesian": "renang",
-            "dutch": "zwemmen"
+            "dutch": "zwemmen",
+            "english": "swim"
           },
           {
             "indonesian": "rok",
-            "dutch": "rok"
+            "dutch": "rok",
+            "english": "skirt"
           },
           {
             "indonesian": "sandal",
-            "dutch": "sandaal"
+            "dutch": "sandaal",
+            "english": "sandal"
           },
           {
             "indonesian": "sebab",
-            "dutch": "omdat, de reden is"
+            "dutch": "omdat, de reden is",
+            "english": "because, the reason is"
           },
           {
             "indonesian": "semua",
-            "dutch": "alle(n)"
+            "dutch": "alle(n)",
+            "english": "all"
           },
           {
             "indonesian": "sendiri",
-            "dutch": "zelf, eigen"
+            "dutch": "zelf, eigen",
+            "english": "self, own"
           },
           {
             "indonesian": "seperti",
-            "dutch": "zoals"
+            "dutch": "zoals",
+            "english": "like, as"
           },
           {
             "indonesian": "soal",
-            "dutch": "probleem, kwestie"
+            "dutch": "probleem, kwestie",
+            "english": "problem, issue"
           },
           {
             "indonesian": "syukur",
-            "dutch": "gelukkig"
+            "dutch": "gelukkig",
+            "english": "fortunately"
           },
           {
             "indonesian": "tentu",
-            "dutch": "zeker, stellig"
+            "dutch": "zeker, stellig",
+            "english": "certainly, surely"
           },
           {
             "indonesian": "tiba",
-            "dutch": "arriveren"
+            "dutch": "arriveren",
+            "english": "arrive"
           },
           {
             "indonesian": "tinggi",
-            "dutch": "hoog"
+            "dutch": "hoog",
+            "english": "high, tall"
           },
           {
             "indonesian": "topi",
-            "dutch": "hoed"
+            "dutch": "hoed",
+            "english": "hat"
           },
           {
             "indonesian": "waktu",
-            "dutch": "tijd"
+            "dutch": "tijd",
+            "english": "time"
           },
           {
             "indonesian": "warna",
-            "dutch": "kleur"
+            "dutch": "kleur",
+            "english": "color"
           }
         ]
       }
@@ -366,11 +440,13 @@ export const lesson = {
         "items": [
           {
             "indonesian": "libur sekolah",
-            "dutch": "schoolvakantie"
+            "dutch": "schoolvakantie",
+            "english": "school holiday"
           },
           {
             "indonesian": "tidak apa-apa",
-            "dutch": "het geeft niets"
+            "dutch": "het geeft niets",
+            "english": "it doesn't matter"
           }
         ]
       }
@@ -390,12 +466,19 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Sepedanya hitam",
-                "dutch": "Zijn/haar fiets is zwart"
+                "dutch": "Zijn/haar fiets is zwart",
+                "english": "His/her bicycle is black"
               },
               {
                 "indonesian": "Mobilnya itu mahal",
-                "dutch": "Die auto van hem is duur"
+                "dutch": "Die auto van hem is duur",
+                "english": "That car of his is expensive"
               }
+            ],
+            "title_en": "Noun + -nya (possessive)",
+            "rules_en": [
+              "-nya after a noun = possessive pronoun: his/her/their",
+              "-nya is never attached to a proper name: 'Rumah Tuti', not 'Tutinya rumah'"
             ]
           },
           {
@@ -409,28 +492,41 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Nama anak ini Ali",
-                "dutch": "De naam van dit kind is Ali"
+                "dutch": "De naam van dit kind is Ali",
+                "english": "The name of this child is Ali"
               },
               {
                 "indonesian": "Anak ini namanya Ali",
-                "dutch": "Dit kind, zijn naam is Ali"
+                "dutch": "Dit kind, zijn naam is Ali",
+                "english": "This child, his name is Ali"
               },
               {
                 "indonesian": "Anak ini Ali namanya",
-                "dutch": "Dit kind, Ali is zijn naam"
+                "dutch": "Dit kind, Ali is zijn naam",
+                "english": "This child, Ali is his name"
               },
               {
                 "indonesian": "Berapa harga rok itu?",
-                "dutch": "Hoeveel kost die rok?"
+                "dutch": "Hoeveel kost die rok?",
+                "english": "How much does that skirt cost?"
               },
               {
                 "indonesian": "Rok itu harganya berapa?",
-                "dutch": "Die rok, hoeveel is de prijs?"
+                "dutch": "Die rok, hoeveel is de prijs?",
+                "english": "That skirt, what is the price?"
               },
               {
                 "indonesian": "Rok itu berapa harganya?",
-                "dutch": "Die rok, hoeveel kost 'ie?"
+                "dutch": "Die rok, hoeveel kost 'ie?",
+                "english": "That skirt, how much does it cost?"
               }
+            ],
+            "title_en": "Topicalization with -nya: three sentence constructions",
+            "rules_en": [
+              "Construction 1 (A B C): The color of that car is white",
+              "Construction 2 (B A-nya C): That car, its color is white",
+              "Construction 3 (B C A-nya): That car is white, its color",
+              "All three constructions are correct. The phrase at the front receives the most emphasis"
             ]
           },
           {
@@ -442,16 +538,24 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Pohon itu tingginya 18 meter",
-                "dutch": "De hoogte van die boom is 18 meter"
+                "dutch": "De hoogte van die boom is 18 meter",
+                "english": "That tree is 18 meters tall"
               },
               {
                 "indonesian": "Jakarta jauhnya 350 kilometer",
-                "dutch": "De afstand tot Jakarta is 350 km"
+                "dutch": "De afstand tot Jakarta is 350 km",
+                "english": "Jakarta is 350 kilometers away"
               },
               {
                 "indonesian": "Rok ini panjangnya 1 meter",
-                "dutch": "Deze rok heeft een lengte van 1 meter"
+                "dutch": "Deze rok heeft een lengte van 1 meter",
+                "english": "This skirt is 1 meter long"
               }
+            ],
+            "title_en": "Adjective + -nya (nominalization)",
+            "rules_en": [
+              "-nya after an adjective turns it into a noun: the property/quality.",
+              "Common with measurements and distances."
             ]
           }
         ],
@@ -591,6 +695,10 @@ export const lesson = {
                 "Minggu malam",
                 "zondagavond"
               ]
+            ],
+            "title_en": "Days of the week (hari)",
+            "rules_en": [
+              "Months and days are capitalized in Indonesian."
             ]
           },
           {
@@ -604,20 +712,31 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Kemarin dia jalan-jalan di pasar",
-                "dutch": "Gisteren wandelde hij op de markt"
+                "dutch": "Gisteren wandelde hij op de markt",
+                "english": "Yesterday he walked around at the market"
               },
               {
                 "indonesian": "Besok pukul 11.00 kita bertemu",
-                "dutch": "Morgen om elf uur zullen we elkaar ontmoeten"
+                "dutch": "Morgen om elf uur zullen we elkaar ontmoeten",
+                "english": "Tomorrow at eleven o'clock we will meet"
               },
               {
                 "indonesian": "Dua hari yang lalu",
-                "dutch": "Twee dagen geleden"
+                "dutch": "Twee dagen geleden",
+                "english": "Two days ago"
               },
               {
                 "indonesian": "Seminggu lagi",
-                "dutch": "Over een week"
+                "dutch": "Over een week",
+                "english": "In a week"
               }
+            ],
+            "title_en": "Time expressions",
+            "rules_en": [
+              "kemarin dulu = day before yesterday, kemarin = yesterday, hari ini = today, besok = tomorrow, lusa = day after tomorrow",
+              "tadi = just now, nanti = later",
+              "dulu / tempo dulu = formerly, depan = coming/future",
+              "lalu = ago (dua hari yang lalu = two days ago), lagi = in (lima hari lagi = in five days)"
             ]
           },
           {
@@ -631,20 +750,31 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Sekarang saya mau makan",
-                "dutch": "Nu wil ik eten"
+                "dutch": "Nu wil ik eten",
+                "english": "Now I want to eat"
               },
               {
                 "indonesian": "Saya mau makan sekarang",
-                "dutch": "Ik wil nu eten"
+                "dutch": "Ik wil nu eten",
+                "english": "I want to eat now"
               },
               {
                 "indonesian": "Besok Rudi mau datang ke Bogor",
-                "dutch": "Morgen zal Rudi naar Bogor komen"
+                "dutch": "Morgen zal Rudi naar Bogor komen",
+                "english": "Tomorrow Rudi will come to Bogor"
               },
               {
                 "indonesian": "Di Bogor Rudi tinggal dua hari",
-                "dutch": "In Bogor zal Rudi twee dagen blijven"
+                "dutch": "In Bogor zal Rudi twee dagen blijven",
+                "english": "In Bogor Rudi will stay two days"
               }
+            ],
+            "title_en": "Sentence structure: time and place expressions",
+            "rules_en": [
+              "Time and place expressions come at the beginning or end of the sentence.",
+              "When both expressions occur: start with place, then time comes at the end (and vice versa).",
+              "The expression that comes first receives the most emphasis.",
+              "Never between subject and verb: 'Saya sekarang makan' is WRONG."
             ]
           }
         ],
