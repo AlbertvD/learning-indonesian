@@ -78,6 +78,17 @@ So **audio is not single-owner.** The Capability Stage produces its share by **r
 
 **Open placement detail for the spec:** whether the gap-fill runs as a *shared audio service* the Capability Stage calls, or the Lesson Stage *pre-generates* word audio once it knows the capability requirements — same outcome, different seam — is left to the v2 spec's architect/data-architect review.
 
+## Deferral (2026-06-08 — Capability-Stage audio gap-fill not built; Lesson Stage stays the sole synthesiser)
+
+The 2026-06-06 refinement above is **deferred, not adopted.** Investigating an exercise-audio gap (some exercises showed no play icon) surfaced the underlying product question: *should machine-generated drill sentences be voiced at all?* The decision (build-stage, minimum-mechanism) was **no — voice only authored content** ("Option 2"):
+
+- The **Lesson Stage remains the only audio synthesiser.** It voices everything a human authored in the textbook: dialogue, vocabulary/expressions/numbers, **and grammar example sentences** (`collectLessonPageTexts` gained a `grammar` branch — `categories[].examples[].indonesian`, voiced at `primary_voice`; the Dutch `rules` are never voiced).
+- The **Capability Stage stays a pure reader** — no TTS, no bucket writes, no `audio_clips` inserts (only the `adapter.ts` coverage read + the `CS23` WARN). The reuse-then-gap-fill synthesiser the refinement describes is **not built**.
+- Machine-generated exercise text (sentence-transformation sources, constrained-translation answers, untaught distractors) is **intentionally not voiced.** Reasons: it is exactly where the content-quality bugs live (e.g. Dutch leakage `"Saya mau een tas."`), and the exercise renderer hides the play button gracefully when no clip resolves.
+- Exercise/feedback audio is therefore **reuse-only**: the feedback screen plays the *already-synthesised* vocab/dialogue clip for the displayed Indonesian text (`attachFeedbackAudio`), and resolves to nothing for generated sentences.
+
+Revisit only if a product need emerges to voice generated drill sentences; that would re-open the §refinement and require the architect/data-architect seam decision before any Capability-Stage synthesiser is introduced.
+
 ## Related
 
 - [ADR 0011: capability content is DB-authoritative after seeding](./0011-capability-content-is-db-authoritative-after-seeding.md) — deferred this split (line 32); this ADR completes it for the lesson-content side.

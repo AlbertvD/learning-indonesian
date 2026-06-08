@@ -426,6 +426,8 @@ export async function runLessonStage(
  * expects audio for:
  *   - dialogue lines: voice via lesson.dialogue_voices[speaker]
  *   - vocabulary / expressions / numbers items: voice via primary_voice
+ *   - grammar category example sentences (categories[].examples[].indonesian):
+ *     voice via primary_voice. The Dutch `rules` are explanation text, never voiced.
  *
  * Reading-section paragraphs use long-form lesson narration (separate path,
  * §1.5 E) and are out of scope here.
@@ -455,6 +457,20 @@ export function collectLessonPageTexts(
       for (const item of items as Array<{ indonesian?: unknown }>) {
         if (typeof item.indonesian !== 'string' || !item.indonesian.trim()) continue
         out.push({ text: item.indonesian.trim(), voiceId: primaryVoice })
+      }
+    } else if (type === 'grammar') {
+      // Grammar example sentences are authored, learner-facing Indonesian shown
+      // (and played) in the lesson reader's grammar cards. The Dutch `rules` are
+      // explanation text and are never voiced.
+      if (!primaryVoice) continue
+      const categories = section.content.categories
+      if (!Array.isArray(categories)) continue
+      for (const cat of categories as Array<{ examples?: unknown }>) {
+        if (!Array.isArray(cat.examples)) continue
+        for (const ex of cat.examples as Array<{ indonesian?: unknown }>) {
+          if (typeof ex.indonesian !== 'string' || !ex.indonesian.trim()) continue
+          out.push({ text: ex.indonesian.trim(), voiceId: primaryVoice })
+        }
       }
     }
   }

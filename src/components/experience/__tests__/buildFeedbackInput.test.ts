@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { buildFeedbackInput } from '../buildFeedbackInput'
+import { buildFeedbackInput, attachFeedbackAudio } from '../buildFeedbackInput'
 import type { SessionBlock } from '@/lib/session-builder'
 import type { CapabilityRenderContext } from '@/lib/capabilities'
 import type { ExerciseItem, ExerciseType } from '@/types/learning'
+import type { FeedbackProps } from '@/components/exercises/feedbackMapping'
 
 function makeBlock(exerciseType: ExerciseType, capabilityType = 'meaning_recall'): SessionBlock {
   return {
@@ -193,5 +194,47 @@ describe('16. buildFeedbackInput adapter', () => {
       expect(result, `should produce result for ${type}`).toBeDefined()
       expect(result.item, `item should be defined for ${type}`).toBeDefined()
     }
+  })
+})
+
+describe('attachFeedbackAudio', () => {
+  // audioMap keyed by `${normalizedText}|__default__` → storage path.
+  const map = new Map([['makan|__default__', 'tts/x/makan.mp3']])
+
+  function props(over: Partial<FeedbackProps>): FeedbackProps {
+    return {
+      outcome: 'wrong',
+      layout: 'vocab-pair',
+      direction: 'L1→ID',
+      promptShown: { text: 'eten', lang: 'NL', role: 'shown' },
+      correctAnswer: { text: 'makan', lang: 'ID', role: 'target' },
+      ...over,
+    } as FeedbackProps
+  }
+
+  it('adds answerAudio when the correct answer is Indonesian and has a clip', () => {
+    const out = attachFeedbackAudio(props({}), map)
+    expect(out.answerAudio?.url).toContain('makan.mp3')
+  })
+
+  it('no answerAudio when the correct answer is the L1 (Dutch) text', () => {
+    const out = attachFeedbackAudio(
+      props({ promptShown: { text: 'makan', lang: 'ID', role: 'shown' }, correctAnswer: { text: 'eten', lang: 'NL', role: 'target' } }),
+      map,
+    )
+    expect(out.answerAudio).toBeUndefined()
+  })
+
+  it('no answerAudio when no clip exists for the Indonesian answer', () => {
+    const out = attachFeedbackAudio(props({ correctAnswer: { text: 'belum ada', lang: 'ID', role: 'target' } }), map)
+    expect(out.answerAudio).toBeUndefined()
+  })
+
+  it('dedups: no answerAudio when the correct answer equals the prompt (e.g. dictation)', () => {
+    const out = attachFeedbackAudio(
+      props({ direction: 'audio→ID', promptShown: { text: 'makan', lang: 'ID', role: 'heard' }, correctAnswer: { text: 'makan', lang: 'ID', role: 'target' } }),
+      map,
+    )
+    expect(out.answerAudio).toBeUndefined()
   })
 })

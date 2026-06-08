@@ -4,7 +4,7 @@ import { Progress, Text, Group, Stack } from '@mantine/core'
 import { PageContainer, PageBody } from '@/components/page/primitives'
 import { ExerciseFeedback } from '@/components/exercises/primitives'
 import { feedbackPropsFor } from '@/components/exercises/feedbackMapping'
-import { buildFeedbackInput } from './buildFeedbackInput'
+import { buildFeedbackInput, attachFeedbackAudio } from './buildFeedbackInput'
 import { resolveExerciseComponent } from '@/components/exercises/registry'
 import { SessionAudioProvider } from '@/contexts/SessionAudioContext'
 import { logError } from '@/lib/logger'
@@ -270,7 +270,7 @@ export function ExperiencePlayer(props: ExperiencePlayerProps) {
           {feedbackInput
             ? (
                 <ExerciseFeedback
-                  {...feedbackPropsFor(feedbackInput)}
+                  {...attachFeedbackAudio(feedbackPropsFor(feedbackInput), audioMap)}
                   copy={feedbackCopy}
                   continueLabel={continueLabel}
                   onContinue={handleContinue}

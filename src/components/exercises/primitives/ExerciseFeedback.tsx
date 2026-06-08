@@ -49,6 +49,9 @@ export interface ExerciseFeedbackProps {
   explanation?: string
   /** audio→ID direction — replay button inside promptShown card. */
   audio?: { url: string }
+  /** Play button inside the correctAnswer card — the Indonesian answer the
+   *  learner could not safely hear on the prompt (recall/production types). */
+  answerAudio?: { url: string }
   /** Rendered above the outcome badge when processReview threw. */
   commitFailed?: boolean
   onContinue: () => void
@@ -117,7 +120,7 @@ export function ExerciseFeedback(props: ExerciseFeedbackProps) {
   const {
     outcome, layout, direction,
     promptShown, correctAnswer, userAnswer,
-    acceptedVariants, meaning, explanation, audio,
+    acceptedVariants, meaning, explanation, audio, answerAudio,
     commitFailed = false,
     onContinue, onEvent, continueLabel, copy,
   } = props
@@ -219,7 +222,17 @@ export function ExerciseFeedback(props: ExerciseFeedbackProps) {
               <span className={classes.cardLabelSeparator} aria-hidden="true">·</span>
               <span>{correctLabel}</span>
             </dt>
-            <dd className={classes.diffPairValue}>{correctAnswer.text}</dd>
+            <dd className={classes.diffPairValue}>
+              {correctAnswer.text}
+              {answerAudio && (
+                <ExerciseAudioButton
+                  variant="decorative"
+                  audioUrl={answerAudio.url}
+                  aria-label={copy.replayAudio}
+                  onReplay={() => onEvent?.({ type: 'audio_replayed' })}
+                />
+              )}
+            </dd>
           </div>
         </dl>
       ) : (
@@ -253,7 +266,17 @@ export function ExerciseFeedback(props: ExerciseFeedbackProps) {
               <span className={classes.cardLabelSeparator} aria-hidden="true">·</span>
               <span>{correctLabel}</span>
             </div>
-            <div className={`${classes.cardValue} ${classes.correctValue}`}>{correctAnswer.text}</div>
+            <div className={classes.cardRow}>
+              <div className={`${classes.cardValue} ${classes.correctValue}`}>{correctAnswer.text}</div>
+              {answerAudio && (
+                <ExerciseAudioButton
+                  variant="primary"
+                  audioUrl={answerAudio.url}
+                  aria-label={copy.replayAudio}
+                  onReplay={() => onEvent?.({ type: 'audio_replayed' })}
+                />
+              )}
+            </div>
             {acceptedVariants && acceptedVariants.length > 0 && (
               <div className={classes.alsoAccepted}>
                 {copy.alsoAccepted}: {acceptedVariants.slice(0, 3).join(', ')}

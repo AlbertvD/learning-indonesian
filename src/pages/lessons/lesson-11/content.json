@@ -377,12 +377,14 @@
               {
                 "dutch": "De rode bus vertrekt nu.",
                 "english": "The red bus departs now.",
-                "indonesian": "Bus merah berangkat sekarang."
+                "indonesian": "Bus merah berangkat sekarang.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bus-merah-berangkat-sekarang-077bb648.mp3"
               },
               {
                 "dutch": "Candi Borobudur heeft acht niveaus.",
                 "english": "Borobudur Temple has eight levels.",
-                "indonesian": "Candi Borobudur bertingkat delapan."
+                "indonesian": "Candi Borobudur bertingkat delapan.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/candi-borobudur-bertingkat-delapan-9451f77a.mp3"
               }
             ],
             "rules_en": [
@@ -459,27 +461,32 @@
               {
                 "dutch": "De mensen verzamelen zich in dit huis.",
                 "english": "The people gather in this house.",
-                "indonesian": "Orang berkumpul di rumah ini."
+                "indonesian": "Orang berkumpul di rumah ini.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/orang-berkumpul-di-rumah-b7799fca.mp3"
               },
               {
                 "dutch": "Ik overnacht in Hotel Bali.",
                 "english": "I am staying overnight at Hotel Bali.",
-                "indonesian": "Saya bermalam di Hotel Bali."
+                "indonesian": "Saya bermalam di Hotel Bali.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/saya-bermalam-di-hotel-d642e480.mp3"
               },
               {
                 "dutch": "Dat huis heeft drie verdiepingen.",
                 "english": "That house has three floors.",
-                "indonesian": "Rumah itu bertingkat tiga."
+                "indonesian": "Rumah itu bertingkat tiga.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/rumah-itu-bertingkat-tiga-976341e9.mp3"
               },
               {
                 "dutch": "Zich uitsloven om werk te vinden.",
                 "english": "To exert oneself to find work.",
-                "indonesian": "Bersusah cari kerja."
+                "indonesian": "Bersusah cari kerja.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/bersusah-cari-kerja-f5a86361.mp3"
               },
               {
                 "dutch": "Zij gaan met zijn tweeën met de becak.",
                 "english": "They take the becak together (the two of them).",
-                "indonesian": "Mereka naik becak berdua."
+                "indonesian": "Mereka naik becak berdua.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/mereka-naik-becak-berdua-dee288f0.mp3"
               }
             ],
             "rules_en": [
@@ -504,17 +511,20 @@
               {
                 "dutch": "Candi Borobudur heeft acht niveaus. (zonder werkwoord)",
                 "english": "Borobudur Temple has eight levels. (no verb)",
-                "indonesian": "Tingkat candi Borobudur delapan."
+                "indonesian": "Tingkat candi Borobudur delapan.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/tingkat-candi-borobudur-delapan-2ef4346e.mp3"
               },
               {
                 "dutch": "Candi Borobudur heeft acht niveaus. (-nya-constructie)",
                 "english": "Borobudur Temple, its levels are eight. (-nya construction)",
-                "indonesian": "Candi Borobudur tingkatnya delapan."
+                "indonesian": "Candi Borobudur tingkatnya delapan.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/candi-borobudur-tingkatnya-delapan-6c98053f.mp3"
               },
               {
                 "dutch": "Candi Borobudur heeft acht niveaus. (BER-werkwoord)",
                 "english": "Borobudur Temple has eight levels. (BER- verb)",
-                "indonesian": "Candi Borobudur bertingkat delapan."
+                "indonesian": "Candi Borobudur bertingkat delapan.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/candi-borobudur-bertingkat-delapan-9451f77a.mp3"
               }
             ],
             "rules_en": [
