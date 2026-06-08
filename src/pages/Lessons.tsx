@@ -36,7 +36,7 @@ import {
   type LessonOverviewModel,
   type LessonOverviewStatus,
 } from '@/lib/lessons'
-import { bespokeLessonIdSet } from '@/pages/lessons/registry'
+import { bespokeLessonIdSet, bespokeLessonHeroByOrderIndex } from '@/pages/lessons/registry'
 import classes from './Lessons.module.css'
 
 const emptyModel: LessonOverviewModel = {
@@ -70,22 +70,12 @@ const LESSON_PALETTE_FALLBACK = {
   glyph: <IconBook2 size={64} />,
 }
 
-// The same hero photo shown at the top of each bespoke lesson page
-// (public/lesson-<N>-hero.<ext>). Used as the overview tile background so the
-// tile matches the lesson it opens. The gradient + glyph above remain the
-// fallback for any lesson whose hero image isn't in place yet.
-const LESSON_HERO: Record<number, string> = {
-  1: '/lesson-1-hero.webp',
-  2: '/lesson-2-hero.jpg',
-  3: '/lesson-3-hero.jpg',
-  4: '/lesson-4-hero.webp',
-  5: '/lesson-5-hero.webp',
-  6: '/lesson-6-hero.webp',
-  7: '/lesson-7-hero.webp',
-  8: '/lesson-8-hero.webp',
-  9: '/lesson-9-hero.webp',
-  10: '/lesson-10-hero.webp',
-}
+// The overview tile shows the same hero photo as the top of the lesson's
+// bespoke page. The hero path is derived once, in the lesson registry
+// (bespokeLessonHeroByOrderIndex), from the set of published bespoke lessons —
+// so a newly-published lesson's hero appears here automatically. The gradient +
+// glyph below remain the fallback for any lesson without a bespoke page (hence
+// no hero).
 
 function paletteFor(orderIndex: number, featured = false) {
   const palette = LESSON_PALETTES[orderIndex] ?? LESSON_PALETTE_FALLBACK
@@ -101,7 +91,7 @@ function paletteFor(orderIndex: number, featured = false) {
 
 function LessonBanner({ orderIndex, featured }: { orderIndex: number; featured?: boolean }) {
   const { gradient, glyph } = paletteFor(orderIndex, featured)
-  const hero = LESSON_HERO[orderIndex]
+  const hero = bespokeLessonHeroByOrderIndex.get(orderIndex)
   return (
     <div
       className={classes.banner}
