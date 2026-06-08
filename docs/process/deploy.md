@@ -1,7 +1,7 @@
 ---
 doc_type: process
 surface: .github/workflows/, homelab container management
-last_verified_against_code: 2026-05-14
+last_verified_against_code: 2026-06-08
 status: stable
 ---
 
@@ -62,6 +62,7 @@ Sequence of `dockerProxy` calls:
 POST /containers/learning-indonesian/stop  (queryParams: t=10)
 DELETE /containers/learning-indonesian
 POST /containers/create  (queryParams: name=learning-indonesian)
+  headers: [{ key: "Content-Type", value: "application/json" }]   # REQUIRED — see note
   body:
     {
       "Image": "ghcr.io/albertvd/learning-indonesian:latest",
@@ -73,6 +74,8 @@ POST /containers/create  (queryParams: name=learning-indonesian)
     }
 POST /containers/learning-indonesian/start
 ```
+
+> **`/containers/create` MUST send `Content-Type: application/json`** via the `dockerProxy` `headers` param. Without it the Docker engine rejects the body with `malformed Content-Type header (): mime: no media type` and no container is created — leaving the site **down** since you already stopped + removed the old one. The other calls (`/images/create` pull, `/stop`, `DELETE`, `/start`) carry no body and don't need it. Only pass the **Traefik** labels in the body; the `org.opencontainers.*` + `maintainer` labels are inherited from the image (so the new revision shows up automatically). **Pull the image *first*** (step 2) so the down-window between `DELETE` and `start` stays short, and confirm the pulled image actually contains your change — its `org.opencontainers.image.revision` is the `main` HEAD at *build* time, which can be newer than your merge if other PRs landed in between (`git merge-base --is-ancestor <your-commit> <revision>`).
 
 ### Via SSH — single command, full label set baked in
 
