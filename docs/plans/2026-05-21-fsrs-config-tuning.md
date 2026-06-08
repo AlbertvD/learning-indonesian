@@ -1,5 +1,8 @@
 ---
-status: approved
+status: implementing
+implementation: PR #184
+implementation_paths:
+  - supabase/functions/commit-capability-answer-report/index.ts
 ---
 
 # FSRS config tuning — switch from Anki-style steps to stability-driven scheduling
