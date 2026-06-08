@@ -153,7 +153,7 @@ The lede is hand-written per lesson — it's where the page declares its editori
 
 The lesson-level audio sits in its own narrow band **between the lede and the main content** — never in a sidebar. Just the native `<audio controls>` element wrapped in a small `<Paper>` frame, no header text, no voice attribution. Stretches the full content width.
 
-If `meta.lesson_audio_url` is null for this lesson, omit the band entirely.
+**Always author the band, gated by a runtime guard** — `{meta.lesson_audio_url && (…)}` — even when `meta.lesson_audio_url` is currently `null`. Lesson-explanation audio is often attached *after* the page is designed; the guard keeps the band invisible until the URL is set and then lights it up automatically. This makes "add audio to an existing lesson" an *upload + set `audio_path` only* operation, never a page edit. Do **not** delete the band or leave a "no audio, omitted" comment when the URL is null — the `{… && …}` guard is the whole point.
 
 ---
 
@@ -239,7 +239,7 @@ Three must appear on every lesson page. Their **placement is the designer's call
 | `<ActivationGate lessonId />` | "Activeer deze les …" checkbox; writes `learner_lesson_activation` via RPC | `lessonId: string` | Closing band, inside a cyan-tinted frame, above PracticeActions |
 | `<PracticeActions lessonId />` | "Practice this lesson · N ready" + "Review this lesson" CTAs, wired to capability counts | `lessonId: string` | Closing band, beneath the activation gate |
 
-If `meta.lesson_audio_url` is null, omit `<LessonAudioPlayer>`. The other two always appear.
+`<LessonAudioPlayer>` is always authored inside a `{meta.lesson_audio_url && …}` runtime guard (so it stays invisible until audio is attached, then appears with no page edit). The other two always appear unconditionally.
 
 The closing band groups Title → Lede → ActivationGate → PracticeActions as one editorial unit:
 
