@@ -146,6 +146,18 @@
 
 .ledeInner { composes: container; max-width: 920px; }
 
+/* Lesson-level audio band — guarded by meta.lesson_audio_url at runtime. */
+.audioBand { composes: band; padding-top: 24px; padding-bottom: 24px; }
+.audioInner { composes: container; max-width: 920px; }
+.audioLabel {
+  margin: 0 0 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.62;
+}
+
 .ledeQuote {
   font-size: clamp(17px, 1.8vw, 21px);
   font-weight: var(--fw-medium);

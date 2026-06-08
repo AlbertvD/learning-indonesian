@@ -1,13 +1,15 @@
-// Lesson 10 — Ke Kantor Pos (Naar het postkantoor) — bespoke reader page.
+// Lesson 12 — Di Stasiun Gambir di Jakarta (Op station Gambir in Jakarta) — bespoke reader page.
 //
-// A wayfinding lesson: Narti asks Pak the way to the post office and gets a
-// turn-by-turn route. The page is built around the journey — the dialogue is
-// the spine, the 52-word vocabulary is the lexicon of the road, the grammar is
-// rendered from its reference tables, and the lesson closes on the Majapahit
-// history spread that the dialogue's final line ("Jalan Gajah Mada") opens onto.
+// A station lesson, and a lesson about waiting. The whole dialogue runs on the
+// clock — 14.30, 15.06, 19.00, 19.35 — and on one word: terlambat, te laat.
+// Ibu stands on the perron in the dusk light watching for the Senja Utama and
+// her daughter's train from Yogya. The page is built around the timetable: an
+// amber departure-board accent over an indigo-at-dusk hero, the dialogue staged
+// as a platform reunion, the grammar read from its acronym / direction tables,
+// and a closing economics spread on the country those rails were meant to build.
 //
 // Re-roll by re-running:
-//   bun scripts/fetch-lesson-content.ts 10 --pretty > src/pages/lessons/lesson-10/content.json
+//   bun scripts/fetch-lesson-content.ts 12 --pretty > src/pages/lessons/lesson-12/content.json
 
 import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
@@ -48,38 +50,54 @@ function PlayButton({ src }: { src?: string }) {
   )
 }
 
-// ─── 1. Dialogue rendered as a route ───────────────────────────────────────
+// ─── 1. Dialogue — the platform reunion ────────────────────────────────────
 
 type DialogueLine = { text: string; speaker: string; translation: string; audioUrl?: string }
 
-function speakerTone(speaker: string): 'narti' | 'pak' {
-  return speaker.toLowerCase().includes('narti') ? 'narti' : 'pak'
+function speakerTone(speaker: string): 'ibu' | 'pak' | 'jumilah' | 'narrator' {
+  const s = speaker.toLowerCase()
+  if (s.includes('narrator')) return 'narrator'
+  if (s.includes('jumilah') || s.includes('jum')) return 'jumilah'
+  if (s.includes('pak')) return 'pak'
+  return 'ibu'
 }
 
-function RouteScene({ section }: { section: typeof sections[number] }) {
+const SPEAKER_LABEL: Record<string, string> = {
+  narrator: 'Verteller',
+  ibu: 'Ibu',
+  pak: 'Penjaga',
+  jumilah: 'Jumilah',
+}
+
+function PlatformScene({ section }: { section: typeof sections[number] }) {
   const c = section.content as { lines: DialogueLine[] }
   return (
-    <section className={classes.section} aria-labelledby="s-route">
-      <div className={classes.routeBand}>
-        <p className={classes.routeEyebrow}>Dialoog · De weg vragen</p>
-        <h2 id="s-route" className={classes.sectionTitle}>Ke Kantor Pos</h2>
-        <p className={classes.routeSetup}>
-          Narti wil postzegels kopen om een brief naar haar familie in Caïro te sturen — maar ze weet
-          de weg niet. Een oudere man wijst haar de route: eerst met de becak, dan te voet, linksaf bij
-          de eerste straat, over de brug, en oversteken bij de voetgangersbrug.
+    <section className={classes.section} aria-labelledby="s-dialogue">
+      <div className={classes.sceneBand}>
+        <p className={classes.sceneEyebrow}>Dialoog · Op het perron</p>
+        <h2 id="s-dialogue" className={classes.sectionTitle}>Di Stasiun Gambir</h2>
+        <p className={classes.sceneSetup}>
+          Ibu staat al sinds kwart voor twee op het perron. De trein uit Yogya — met haar dochter
+          Jumilah, studente in Gadjah Mada — had om 14.30 moeten aankomen, maar het is al voorbij
+          drieën. <em>Selalu terlambat.</em> Altijd te laat. Tot de trein eindelijk binnenrijdt en
+          moeder en dochter elkaar terugzien.
         </p>
 
         <div className={classes.dialogueLines}>
           {c.lines.map((line, i) => {
-            const isRoute = line.text.length > 120
+            const tone = speakerTone(line.speaker)
+            if (tone === 'narrator') {
+              return (
+                <div key={i} className={classes.narratorLine}>
+                  <span className={classes.narratorId}>{line.text}</span>
+                  <PlayButton src={line.audioUrl} />
+                  <span className={classes.narratorNl}>{line.translation}</span>
+                </div>
+              )
+            }
             return (
-              <div
-                key={i}
-                className={classes.dialogueLine}
-                data-speaker-tone={speakerTone(line.speaker)}
-                data-key-step={isRoute || undefined}
-              >
-                <div className={classes.dialogueSpeaker}>{line.speaker}</div>
+              <div key={i} className={classes.dialogueLine} data-speaker-tone={tone}>
+                <div className={classes.dialogueSpeaker}>{SPEAKER_LABEL[tone]}</div>
                 <div className={classes.dialogueBody}>
                   <div className={classes.dialogueIdRow}>
                     <span className={classes.dialogueId}>{line.text}</span>
@@ -96,7 +114,7 @@ function RouteScene({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── 2. Vocabulary — lexicon of the road ───────────────────────────────────
+// ─── 2. Vocabulary — lexicon of the rails ──────────────────────────────────
 
 type Item = { dutch: string; indonesian: string; audioUrl?: string }
 
@@ -105,10 +123,11 @@ function Lexicon({ section }: { section: typeof sections[number] }) {
   return (
     <section className={classes.section} aria-labelledby="s-vocab">
       <p className={classes.vocabEyebrow}>Woordenschat</p>
-      <h2 id="s-vocab" className={classes.sectionTitle}>De woorden van de route</h2>
+      <h2 id="s-vocab" className={classes.sectionTitle}>De woorden van het spoor</h2>
       <p className={classes.vocabIntro}>
-        Alles wat je onderweg tegenkomt — van <em>becak</em> en <em>jembatan</em> tot{' '}
-        <em>prangko</em> en <em>paket</em>. {c.items.length} woorden, alfabetisch geordend.
+        Van <em>kereta api</em> en <em>peron</em> tot <em>karcis</em> en <em>terlambat</em> — de taal
+        van het station, plus de bouwstenen van de grammatica die volgt. {c.items.length} woorden,
+        alfabetisch geordend.
       </p>
 
       <div className={classes.vocabGrid}>
@@ -125,23 +144,25 @@ function Lexicon({ section }: { section: typeof sections[number] }) {
   )
 }
 
-// ─── 3. Expression — the parting formula ───────────────────────────────────
+// ─── 3. Expressions — fixed phrases from the platform ──────────────────────
 
-function PartingFormula({ section }: { section: typeof sections[number] }) {
+function Expressions({ section }: { section: typeof sections[number] }) {
   const c = section.content as { items: Item[] }
-  const item = c.items[0]
-  if (!item) return null
   return (
-    <section className={classes.section} aria-labelledby="s-parting">
-      <p className={classes.partingEyebrow}>Uitdrukking · Afscheid nemen</p>
-      <h2 id="s-parting" className={classes.sectionTitle}>De afscheidsformule</h2>
+    <section className={classes.section} aria-labelledby="s-expr">
+      <p className={classes.exprEyebrow}>Uitdrukkingen · Vaste verbindingen</p>
+      <h2 id="s-expr" className={classes.sectionTitle}>Op tijd, hoofdzaak, en de Senja Utama</h2>
 
-      <div className={classes.partingCard}>
-        <div className={classes.partingExchange}>
-          <span className={classes.partingId}>{item.indonesian}</span>
-          <PlayButton src={item.audioUrl} />
-        </div>
-        <p className={classes.partingNote}>{item.dutch}</p>
+      <div className={classes.exprGrid}>
+        {c.items.map((item, i) => (
+          <div key={i} className={classes.exprChip}>
+            <div className={classes.exprTop}>
+              <span className={classes.exprId}>{item.indonesian}</span>
+              <PlayButton src={item.audioUrl} />
+            </div>
+            <span className={classes.exprNl}>{item.dutch}</span>
+          </div>
+        ))}
       </div>
     </section>
   )
@@ -220,63 +241,37 @@ function GrammarSection({
   )
 }
 
-// ─── 5. Nuance panel — rasa / kira / pikir ─────────────────────────────────
+// ─── 5. Culture — the economics spread ─────────────────────────────────────
 
-function NuancePanel({ section }: { section: typeof sections[number] }) {
+function EconomySpread({ section }: { section: typeof sections[number] }) {
   const c = section.content as { paragraphs: string[] }
-  const intro = c.paragraphs[0]
-  // paragraphs[1] = the three glosses, paragraphs[2] = the three example sentences,
-  // both as newline-separated "indonesian<spaces>dutch" rows.
-  const splitRow = (line: string) => {
-    const m = line.match(/^(\S+)\s{2,}(.+)$/)
-    return m ? { id: m[1], gloss: m[2].trim() } : { id: line, gloss: '' }
-  }
-  const words = (c.paragraphs[1] ?? '').split('\n').filter(Boolean).map(splitRow)
-  const examples = (c.paragraphs[2] ?? '').split('\n').filter(Boolean).map(splitRow)
-
+  // Some paragraphs lead with a bold sub-heading on their own line ("Protectionisme\n…").
+  // Split those into a kicker + body so the long read gets internal structure.
+  const blocks = c.paragraphs.map((p) => {
+    const nl = p.indexOf('\n')
+    if (nl > 0 && nl < 40) {
+      return { head: p.slice(0, nl).trim(), body: p.slice(nl + 1).trim() }
+    }
+    return { head: null as string | null, body: p }
+  })
   return (
-    <section className={classes.section} aria-labelledby="s-nuance">
-      <p className={classes.nuanceEyebrow}>Taalgevoel · Hart en hoofd</p>
-      <h2 id="s-nuance" className={classes.sectionTitle}>Voelen, vinden, denken</h2>
-      <p className={classes.nuanceIntro}>{intro}</p>
-
-      <div className={classes.nuanceTriple}>
-        {words.map((w, i) => (
-          <div key={i} className={classes.nuanceWord}>
-            <div className={classes.nuanceWordId}>{w.id}</div>
-            <div className={classes.nuanceWordGloss}>{w.gloss}</div>
-          </div>
-        ))}
-      </div>
-
-      <div className={classes.nuanceExamples}>
-        {examples.map((ex, i) => (
-          <div key={i} className={classes.nuanceExampleRow}>
-            <span className={classes.nuanceExampleId}>{ex.id}</span>
-            <span className={classes.nuanceExampleNl}>{ex.gloss}</span>
-          </div>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-// ─── 6. Majapahit — history spread ─────────────────────────────────────────
-
-function HistorySpread({ section }: { section: typeof sections[number] }) {
-  const c = section.content as { paragraphs: string[] }
-  const [headline, ...body] = c.paragraphs
-  return (
-    <section className={classes.section} aria-labelledby="s-history">
-      <div className={classes.historyBand}>
-        <p className={classes.historyEyebrow}>Cultuur · Sejarah</p>
-        <h2 id="s-history" className={classes.historyTitle}>{headline}</h2>
-        <p className={classes.historyKicker}>
-          De man wees Narti naar de <em>Jalan Gajah Mada</em>. Achter die straatnaam schuilt de
-          machtigste rijksbestuurder die Java ooit kende — en de gelofte waarmee hij een archipel onderwierp.
+    <section className={classes.section} aria-labelledby="s-econ">
+      <div className={classes.econBand}>
+        <p className={classes.econEyebrow}>Cultuur · Ekonomi</p>
+        <h2 id="s-econ" className={classes.econTitle}>De economie van Indonesië</h2>
+        <p className={classes.econKicker}>
+          De spoorlijn waar Ibu op wacht is meer dan een verbinding tussen Jakarta en Yogya — ze is
+          een draad in een land dat zich met olie, industrie en <em>diversifikasi</em> opnieuw probeerde
+          uit te vinden. Een langere lezing over de Indonesische economie van de oliecrisis tot de
+          deregulering van de jaren negentig.
         </p>
-        <div className={classes.historyProse}>
-          {body.map((p, i) => <p key={i}>{p}</p>)}
+        <div className={classes.econProse}>
+          {blocks.map((b, i) => (
+            <div key={i} className={classes.econPara}>
+              {b.head && <h3 className={classes.econSubhead}>{b.head}</h3>}
+              <p>{b.body}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -285,11 +280,11 @@ function HistorySpread({ section }: { section: typeof sections[number] }) {
 
 // ─── Page composition ──────────────────────────────────────────────────────
 
-export default function Lesson10Page() {
+export default function Lesson12Page() {
   const activation = useLessonActivation(meta.id)
   return (
     <article className={classes.page}>
-      {/* Hero — full-bleed Yogyakarta street */}
+      {/* Hero — the platform at Gambir, indigo at dusk */}
       <header className={classes.heroBand}>
         <div className={classes.heroInner}>
           <div className={classes.heroLeft}>
@@ -298,13 +293,13 @@ export default function Lesson10Page() {
               <span className={classes.heroBadgeAlt}>Les {meta.order_index}</span>
             </div>
             <h1 className={classes.heroTitle}>
-              <span className={classes.heroTitleId}>Ke Kantor Pos</span>
-              <span className={classes.heroTitleNl}>Naar het postkantoor</span>
+              <span className={classes.heroTitleId}>Di Stasiun Gambir di Jakarta</span>
+              <span className={classes.heroTitleNl}>Op station Gambir in Jakarta</span>
             </h1>
             <p className={classes.heroDescription}>
-              Narti is de weg kwijt. Ze wil postzegels kopen, maar het postkantoor ligt ver — eerst met
-              de becak, dan te voet, over de brug. Een les over de weg vragen, de woorden van de straat,
-              en de geschiedenis die in één straatnaam meereist.
+              Een moeder wacht op het perron. De trein uit Yogya is te laat — alweer — en het is al
+              voorbij drieën. Een les over kloktijden, wachten en te laat komen, met de woorden van
+              het spoor en de acroniemen waarmee Indonesië zijn kaart benoemt.
             </p>
           </div>
         </div>
@@ -314,15 +309,17 @@ export default function Lesson10Page() {
       <section className={classes.ledeBand}>
         <div className={classes.ledeInner}>
           <p className={classes.ledeQuote}>
-            Een route uitleggen is taal in beweging: <em>belok kiri</em>, <em>terus</em>,{' '}
-            <em>menyeberang</em>. Wie de weg vraagt, leert vanzelf richtingen, plaatsen en het ritme van
-            een Indonesische stad — en eindigt, zoals Narti, bij een straat die naar een keizerrijk is vernoemd.
+            Een station is een les in tijd: <em>jam berapa</em>, <em>pada waktunya</em>,{' '}
+            <em>terlambat</em>. Wie leert wachten op een Indonesische trein, leert vanzelf de klok
+            lezen, de schemering benoemen, en geduld hebben met een land dat groot is en treinen die
+            soms te laat komen.
           </p>
-          <p className={classes.ledeMeta}>Les 10 · A1 · Bahasa Indonesia</p>
+          <p className={classes.ledeMeta}>Les 12 · A1 · Bahasa Indonesia</p>
         </div>
       </section>
 
-      {/* Lesson-level grammar-explanation audio */}
+      {/* Lesson-level grammar-explanation audio — band wired in; appears once
+          audio is uploaded and meta.lesson_audio_url is set */}
       {meta.lesson_audio_url && (
         <section className={classes.audioBand}>
           <div className={classes.audioInner}>
@@ -335,35 +332,22 @@ export default function Lesson10Page() {
       {/* Main content */}
       <section className={classes.shellBand}>
         <main className={classes.shell}>
-          <RouteScene section={sections[1]} />
-          <PartingFormula section={sections[3]} />
+          <PlatformScene section={sections[0]} />
+          <Expressions section={sections[2]} />
           <GrammarSection
-            section={sections[4]}
-            eyebrow="Grammatica · Achtervoegsel -AN"
-            title="Van grondwoord naar naamwoord"
+            section={sections[3]}
+            eyebrow="Grammatica · Acroniemen & afkortingen"
+            title="Hoe Indonesië zijn kaart benoemt"
             accent="purple"
           />
           <GrammarSection
-            section={sections[6]}
-            eyebrow="Grammatica · Rangtelwoorden"
-            title="Eerste, tweede, derde — met KE-"
+            section={sections[4]}
+            eyebrow="Grammatica · BER- + verdubbeling"
+            title="Elkaar, telkens, met z'n tweetjes"
             accent="cyan"
           />
-          <GrammarSection
-            section={sections[7]}
-            eyebrow="Grammatica · Rekenen"
-            title="Optellen, aftrekken, delen"
-            accent="teal"
-          />
-          <GrammarSection
-            section={sections[8]}
-            eyebrow="Grammatica · Voegwoorden"
-            title="Omdat, opdat, mits, ofschoon"
-            accent="amber"
-          />
-          <NuancePanel section={sections[5]} />
-          <Lexicon section={sections[2]} />
-          <HistorySpread section={sections[0]} />
+          <Lexicon section={sections[1]} />
+          <EconomySpread section={sections[6]} />
         </main>
       </section>
 

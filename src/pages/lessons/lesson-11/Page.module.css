@@ -1,11 +1,11 @@
 /* ─────────────────────────────────────────────────────────────────────────────
-   Page.module.css — Lesson 10: Ke Kantor Pos (Naar het postkantoor)
+   Page.module.css — Lesson 11: Candi Borobudur
 
-   A wayfinding lesson. The dialogue is a route — directions to the post office —
-   so the page is built around journeying: a step-marked dialogue, a lexicon of
-   the road, table-driven grammar, and a Majapahit history spread that the
-   dialogue's closing line ("Jalan Gajah Mada") opens onto. Indigo/teal spine,
-   warm amber for the human voice, slate for the historical past.
+   A reading-and-history lesson about one monument. The palette is andesite
+   stone (slate) lifted by Buddhist gold (amber) and a teal dawn — the
+   Indonesian reading passage is the centerpiece, the BER- grammar rotates
+   per-block accents, the lexicon is the green stone-glossary, and the page
+   closes on a gold-lit cultural essay with a drop cap.
 ───────────────────────────────────────────────────────────────────────────── */
 
 /* ─── Page root ──────────────────────────────────────────────────────────── */
@@ -27,16 +27,16 @@
 .band { width: 100%; padding: 56px 0; }
 @media (max-width: 720px) { .band { padding: 40px 0; } }
 
-/* ─── Hero — a Yogyakarta street, becak under teal→navy ──────────────────── */
+/* ─── Hero — Borobudur stupa under stone, gold and teal ──────────────────── */
 
 .heroBand {
   composes: band;
-  background-color: #0c4a6e;
+  background-color: #2a2622;
   background-image:
-    linear-gradient(115deg, rgba(12, 74, 110, 0.86) 0%, rgba(20, 30, 48, 0.80) 52%, rgba(0, 199, 190, 0.22) 100%),
-    url('/lesson-10-hero.webp');
+    linear-gradient(118deg, rgba(28, 36, 44, 0.88) 0%, rgba(42, 38, 34, 0.78) 50%, rgba(252, 196, 25, 0.26) 100%),
+    url('/lesson-11-hero.webp');
   background-size: cover;
-  background-position: center 38%;
+  background-position: center 42%;
   border-bottom: 1px solid var(--hero-border);
   padding: 84px 0 96px;
   position: relative;
@@ -48,8 +48,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(circle at 82% 18%, rgba(0, 199, 190, 0.20), transparent 42%),
-    radial-gradient(circle at 12% 88%, rgba(0, 229, 255, 0.14), transparent 38%);
+    radial-gradient(circle at 84% 16%, rgba(252, 196, 25, 0.18), transparent 44%),
+    radial-gradient(circle at 10% 90%, rgba(0, 199, 190, 0.14), transparent 40%);
   pointer-events: none;
 }
 
@@ -73,9 +73,9 @@
   font-size: var(--fs-xs);
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(0, 199, 190, 0.18);
-  color: var(--teal);
-  border: 1px solid rgba(0, 199, 190, 0.32);
+  background: rgba(252, 196, 25, 0.18);
+  color: var(--ring-target);
+  border: 1px solid rgba(252, 196, 25, 0.32);
 }
 
 .heroBadgeAlt {
@@ -109,6 +109,8 @@
   max-width: 600px;
 }
 
+.heroDescription em { font-style: italic; color: var(--ring-target); font-weight: var(--fw-semibold); }
+
 /* ─── Editorial lede ─────────────────────────────────────────────────────── */
 
 .ledeBand { composes: band; padding: 64px 0 32px; }
@@ -137,7 +139,7 @@
 
 .ledeQuote em {
   font-style: italic;
-  color: var(--teal);
+  color: var(--ring-target);
   font-weight: var(--fw-semibold);
 }
 
@@ -154,7 +156,7 @@
   content: '';
   width: 32px;
   height: 2px;
-  background: var(--teal);
+  background: var(--ring-target);
   border-radius: 999px;
   flex-shrink: 0;
 }
@@ -165,7 +167,7 @@
 
 .shell {
   composes: container;
-  max-width: 1120px;
+  max-width: 920px;
   display: flex;
   flex-direction: column;
   gap: 84px;
@@ -207,216 +209,97 @@
   font-style: italic;
 }
 
-/* ─── 1. Dialogue as a route ─────────────────────────────────────────────── */
+/* ─── 1. Indonesian reading passage — the ascent ─────────────────────────── */
 
-.routeBand {
-  background: linear-gradient(135deg, rgba(0,199,190,0.08) 0%, rgba(0,229,255,0.04) 60%, rgba(255,149,0,0.05) 100%);
+.readingBand {
+  background: linear-gradient(160deg, rgba(0,199,190,0.07) 0%, rgba(99,102,141,0.06) 55%, rgba(252,196,25,0.05) 100%);
   border-radius: var(--r-xl);
-  padding: 48px 40px;
-  margin: 0 -40px;
+  border: 1px solid var(--card-border);
+  padding: 48px 44px;
+  margin: 0 -44px;
   position: relative;
   overflow: hidden;
 }
 
-@media (max-width: 720px) { .routeBand { padding: 32px 20px; margin: 0; } }
+@media (max-width: 720px) { .readingBand { padding: 32px 22px; margin: 0; } }
 
-.routeBand::before {
+.readingBand::before {
   content: '';
   position: absolute;
-  top: -50px; right: -50px;
-  width: 220px; height: 220px;
-  background: radial-gradient(circle, rgba(0,199,190,0.16), transparent 70%);
+  top: -60px; right: -60px;
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, rgba(0,199,190,0.14), transparent 70%);
   pointer-events: none;
 }
 
-.routeEyebrow {
+.readingEyebrow {
   composes: sectionEyebrow;
   color: var(--teal);
 }
-.routeEyebrow::before { background: var(--teal); }
+.readingEyebrow::before { background: var(--teal); }
 
-.routeSetup {
+.readingKicker {
   font-size: var(--fs-md);
   font-weight: var(--fw-medium);
   font-style: italic;
   color: var(--text-secondary);
   line-height: 1.6;
-  margin: 0 0 32px;
-  max-width: 72ch;
-}
-
-.dialogueLines {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  margin: 0 0 30px;
+  max-width: 70ch;
   position: relative;
   z-index: 1;
 }
 
-.dialogueLine {
-  display: grid;
-  grid-template-columns: 96px minmax(0, 1fr);
-  gap: 18px;
-  align-items: start;
-  padding: 16px 20px;
-  background: rgba(255,255,255,0.04);
-  border-radius: var(--r-md);
-}
+.readingKicker em { color: var(--teal); font-style: normal; font-weight: var(--fw-semibold); }
 
-@media (max-width: 720px) {
-  .dialogueLine { grid-template-columns: 1fr; gap: 6px; padding: 14px 16px; }
-}
+.readingProse { max-width: 74ch; position: relative; z-index: 1; }
 
-.dialogueSpeaker {
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  padding-top: 4px;
-}
-
-.dialogueLine[data-speaker-tone='narti'] .dialogueSpeaker { color: var(--accent-primary); }
-.dialogueLine[data-speaker-tone='pak']   .dialogueSpeaker { color: var(--warning); }
-
-.dialogueBody { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-
-.dialogueIdRow { display: flex; align-items: flex-start; gap: 12px; }
-
-.dialogueId {
+.readingProse p {
   font-size: var(--fs-lg);
+  color: var(--text-primary);
+  line-height: 1.72;
+  margin: 0 0 18px;
+}
+
+.readingProse p:first-of-type {
+  font-size: clamp(19px, 1.9vw, 22px);
   font-weight: var(--fw-medium);
   color: var(--text-primary);
-  line-height: 1.5;
-  flex: 1;
-  min-width: 0;
-}
-
-.dialogueNl {
-  font-size: var(--fs-md);
-  color: var(--text-secondary);
-  font-style: italic;
   line-height: 1.55;
 }
 
-/* The long directions line gets a "steps" highlight strip */
-.dialogueLine[data-key-step='true'] {
-  background: rgba(0,199,190,0.07);
-  border: 1px solid rgba(0,199,190,0.20);
-}
+.readingProse p:last-child { margin-bottom: 0; }
 
-/* ─── 2. Lexicon of the road (vocabulary) ────────────────────────────────── */
-
-.vocabEyebrow {
-  composes: sectionEyebrow;
-  color: var(--success);
-}
-.vocabEyebrow::before { background: var(--success); }
-
-.vocabIntro {
-  font-size: var(--fs-md);
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin: 0 0 24px;
-  max-width: 68ch;
-}
-
-.vocabGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
-  gap: 8px;
-}
-
-.vocabChip {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding: 11px 14px;
-  background: rgba(50,215,75,0.04);
-  border: 1px solid rgba(50,215,75,0.16);
-  border-radius: var(--r-md);
-  transition: var(--transition-base);
-}
-
-.vocabChip:hover { border-color: var(--success); transform: translateY(-1px); }
-
-.vocabId {
-  font-size: var(--fs-md);
-  font-weight: var(--fw-bold);
-  color: var(--text-primary);
-}
-
-.vocabSep {
-  width: 4px; height: 4px;
-  border-radius: 999px;
-  background: var(--text-tertiary);
-  flex-shrink: 0;
-  align-self: center;
-}
-
-.vocabNl {
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-  flex: 1;
-  min-width: 0;
-}
-
-/* ─── 3. Expression — the parting formula ────────────────────────────────── */
-
-.partingEyebrow {
-  composes: sectionEyebrow;
-  color: var(--warning);
-}
-.partingEyebrow::before { background: var(--warning); }
-
-.partingCard {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 28px 32px;
-  border-radius: var(--r-lg);
-  background: linear-gradient(135deg, rgba(255,149,0,0.07) 0%, transparent 100%);
-  border: 1px solid rgba(255,149,0,0.22);
-  max-width: 640px;
-}
-
-.partingExchange { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-
-.partingId {
-  font-size: clamp(22px, 2.4vw, 28px);
-  font-weight: var(--fw-bold);
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
-}
-
-.partingNote {
-  font-size: var(--fs-md);
-  color: var(--text-secondary);
-  line-height: 1.6;
-  font-style: italic;
-}
-
-/* ─── 4. Grammar — prose rules + reference table per topic ────────────────── */
-
-/* One accent source per grammar section — the header eyebrow and every
-   accented element inside (number, → bullets, table headers) all read the
-   same --block-accent so the header colour always matches the body colour. */
-.section[data-accent='purple'] { --block-accent: var(--mix-recall); }
-.section[data-accent='cyan']   { --block-accent: var(--accent-primary); }
-.section[data-accent='teal']   { --block-accent: var(--teal); }
-.section[data-accent='amber']  { --block-accent: var(--warning); }
+/* ─── 2. Grammar — the BER- prefix, per-block accent ─────────────────────── */
 
 .grammarEyebrow {
   composes: sectionEyebrow;
-  color: var(--block-accent, var(--mix-recall));
+  color: var(--mix-recall);
 }
-.grammarEyebrow::before { background: var(--block-accent, var(--mix-recall)); }
+.grammarEyebrow::before { background: var(--mix-recall); }
+
+.grammarIntro {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0 0 28px;
+  max-width: 74ch;
+}
+
+.grammarIntro em { color: var(--text-primary); font-style: italic; font-weight: var(--fw-semibold); }
 
 .grammarStack {
   display: flex;
   flex-direction: column;
   gap: 28px;
 }
+
+/* One accent source per grammar block — the block number, → bullets and
+   table headers all read the same --block-accent. */
+.grammarBlock[data-accent='purple'] { --block-accent: var(--mix-recall); }
+.grammarBlock[data-accent='cyan']   { --block-accent: var(--accent-primary); }
+.grammarBlock[data-accent='teal']   { --block-accent: var(--teal); }
+.grammarBlock[data-accent='amber']  { --block-accent: var(--ring-target); }
 
 .grammarBlock {
   border-radius: var(--r-lg);
@@ -473,13 +356,13 @@
   font-weight: var(--fw-bold);
 }
 
-/* Inline examples (ordinals / special forms) */
+/* Inline examples */
 .grammarExamples {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin: 18px 0 0;
-  padding: 0 28px 0 30px;
+  padding: 0 28px 22px 30px;
 }
 
 .grammarExample {
@@ -487,7 +370,7 @@
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   gap: 20px;
   align-items: baseline;
-  padding: 8px 0;
+  padding: 10px 0;
   border-bottom: 1px dashed var(--card-border);
 }
 
@@ -496,6 +379,8 @@
 @media (max-width: 720px) {
   .grammarExample { grid-template-columns: 1fr; gap: 2px; }
 }
+
+.grammarExampleIdRow { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
 
 .grammarExampleId {
   font-size: var(--fs-md);
@@ -514,15 +399,6 @@
   margin: 18px 0 0;
   padding: 0 22px 22px;
   overflow-x: auto;
-}
-
-.gtableTitle {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin: 4px 8px 10px;
 }
 
 .gtable {
@@ -552,7 +428,6 @@
 
 .gtable tbody tr:last-child td { border-bottom: none; }
 
-/* first column of each table = the Indonesian / root form, emphasised */
 .gtable tbody td:first-child {
   color: var(--text-primary);
   font-weight: var(--fw-semibold);
@@ -560,120 +435,83 @@
 
 .gtable tbody tr:hover td { background: var(--bg-hover); }
 
-/* ─── 5. Nuance panel — rasa / kira / pikir ──────────────────────────────── */
+/* ─── 3. Lexicon of the temple (vocabulary) ──────────────────────────────── */
 
-.nuanceEyebrow {
+.vocabEyebrow {
   composes: sectionEyebrow;
-  color: var(--accent-primary);
+  color: var(--success);
 }
-.nuanceEyebrow::before { background: var(--accent-primary); }
+.vocabEyebrow::before { background: var(--success); }
 
-.nuanceIntro {
+.vocabIntro {
   font-size: var(--fs-md);
   color: var(--text-secondary);
-  line-height: 1.65;
+  line-height: 1.6;
   margin: 0 0 24px;
-  max-width: 74ch;
+  max-width: 70ch;
 }
 
-.nuanceTriple {
+.vocabIntro em { color: var(--text-primary); font-style: italic; font-weight: var(--fw-medium); }
+
+.vocabGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  gap: 8px;
 }
 
-.nuanceWord {
-  padding: 18px 20px;
-  border-radius: var(--r-md);
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-}
-
-.nuanceWord:nth-child(1) { background: rgba(0,229,255,0.05);  border-color: rgba(0,229,255,0.20); }
-.nuanceWord:nth-child(2) { background: rgba(156,54,181,0.05); border-color: rgba(156,54,181,0.20); }
-.nuanceWord:nth-child(3) { background: rgba(0,199,190,0.05);  border-color: rgba(0,199,190,0.20); }
-
-.nuanceWordId {
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-black);
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
-}
-
-.nuanceWordGloss {
-  font-size: var(--fs-md);
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin-top: 4px;
-}
-
-.nuanceExamples {
+.vocabChip {
   display: flex;
-  flex-direction: column;
-  gap: 0;
-  border-left: 2px solid var(--accent-primary-glow);
-  padding-left: 22px;
-}
-
-.nuanceExampleRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  gap: 24px;
   align-items: baseline;
-  padding: 12px 0;
-  border-bottom: 1px dashed var(--card-border);
+  gap: 10px;
+  padding: 11px 14px;
+  background: rgba(50,215,75,0.04);
+  border: 1px solid rgba(50,215,75,0.16);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
 }
 
-.nuanceExampleRow:last-child { border-bottom: none; }
+.vocabChip:hover { border-color: var(--success); transform: translateY(-1px); }
 
-@media (max-width: 720px) {
-  .nuanceExampleRow { grid-template-columns: 1fr; gap: 2px; }
-}
-
-.nuanceExampleId {
+.vocabId {
   font-size: var(--fs-md);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-bold);
   color: var(--text-primary);
-  line-height: 1.45;
 }
 
-.nuanceExampleNl {
-  font-size: var(--fs-md);
+.vocabSep {
+  width: 4px; height: 4px;
+  border-radius: 999px;
+  background: var(--text-tertiary);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.vocabNl {
+  font-size: var(--fs-sm);
   color: var(--text-secondary);
-  font-style: italic;
+  flex: 1;
+  min-width: 0;
 }
 
-/* ─── 6. Majapahit — history spread ──────────────────────────────────────── */
+/* ─── 4. Culture — Borobudur, Pawon and Mendut spread ────────────────────── */
 
-.historyBand {
-  background: linear-gradient(180deg, rgba(99,102,141,0.10) 0%, transparent 65%);
+.cultureBand {
+  background: linear-gradient(180deg, rgba(252,196,25,0.09) 0%, transparent 62%);
   border-radius: var(--r-xl);
   border: 1px solid var(--card-border);
   padding: 48px 44px;
   margin: 0 -44px;
 }
 
-@media (max-width: 720px) { .historyBand { padding: 32px 22px; margin: 0; } }
+@media (max-width: 720px) { .cultureBand { padding: 32px 22px; margin: 0; } }
 
-.historyEyebrow {
+.cultureEyebrow {
   composes: sectionEyebrow;
   color: var(--ring-target);
 }
-.historyEyebrow::before { background: var(--ring-target); }
+.cultureEyebrow::before { background: var(--ring-target); }
 
-.historyKicker {
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-  font-style: italic;
-  margin: 0 0 26px;
-  line-height: 1.6;
-  max-width: 64ch;
-}
-
-.historyKicker em { color: var(--ring-target); font-style: normal; font-weight: var(--fw-semibold); }
-
-.historyTitle {
+.cultureTitle {
   font-size: clamp(28px, 3.4vw, 42px);
   font-weight: var(--fw-black);
   color: var(--text-primary);
@@ -682,18 +520,27 @@
   margin: 0 0 24px;
 }
 
-.historyProse {
-  max-width: 80ch;
+.cultureKicker {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+  margin: 0 0 26px;
+  line-height: 1.6;
+  max-width: 66ch;
 }
 
-.historyProse p {
+.cultureProse { max-width: 80ch; }
+
+.cultureProse p {
   font-size: var(--fs-md);
   color: var(--text-secondary);
   line-height: 1.72;
   margin: 0 0 18px;
 }
 
-.historyProse p:first-of-type::first-letter {
+.cultureProse p:last-child { margin-bottom: 0; }
+
+.cultureProse p:first-of-type::first-letter {
   font-size: 3.1em;
   font-weight: var(--fw-black);
   color: var(--ring-target);
