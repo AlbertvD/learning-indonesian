@@ -33,7 +33,8 @@ The user invokes you with a lesson identifier — usually an `order_index` like 
 6. **Compose the page.** Write `src/pages/lessons/lesson-<N>/Page.tsx` plus its `Page.module.css`. The TSX:
    - Default-exported React component (`export default function Lesson<N>Page() { … }`)
    - `import content from './content.json'` and `const meta = content.meta; const sections = content.sections`
-   - Imports the three required runtime components (`ActivationGate`, `LessonAudioPlayer` only when `meta.lesson_audio_url`, `PracticeActions`)
+   - Imports the three required runtime components (`ActivationGate`, `LessonAudioPlayer`, `PracticeActions`)
+   - **ALWAYS author the lesson-audio band, gated by a runtime guard** — `{meta.lesson_audio_url && (<section className={classes.audioBand}>…<LessonAudioPlayer src={meta.lesson_audio_url} />…</section>)}`. Author it **even when `meta.lesson_audio_url` is currently `null`**: lesson-explanation audio is frequently attached *after* the page is designed, and the runtime guard means the band stays invisible until then and lights up automatically the moment the URL is set — no page edit required. Do **not** omit the band (and do **not** leave a "no audio for this lesson, band omitted" comment) just because the URL is null at design time. The `.audioBand`/`.audioInner` CSS classes must exist in the module too, so the band is fully wired from the start.
    - **Reads `section.content` blobs directly** — no entity inventory, no pre-typed interfaces, no taxonomy. The shape of the blob tells you what to render. Read the creative direction's §8 for the patterns lesson 1 settled on per content shape.
    - Reference CSS variables via `var(--token)`. **No hardcoded hex. No hardcoded font sizes.**
    - Use `<Paper>` from Mantine or plain `<section>` / `<article>` with CSS module classes. **Never `<Card>`** (pre-commit rejects it).
@@ -91,6 +92,7 @@ The user invokes you with a lesson identifier — usually an `order_index` like 
 - Bullet-pointed walls of `{indonesian, dutch}` pairs with no editorial framing.
 - A hero metadata sidebar ("9 secties / 32 oefeningen klaar"). Removed in lesson 1; don't bring it back.
 - A "Stem: voice-id" attribution under the lesson audio player. Removed; don't bring it back.
+- **Omitting the lesson-audio band because `meta.lesson_audio_url` is null at design time.** The guarded band must always be authored so that attaching audio later is *upload + set `audio_path` only* — never a page edit. A page that has no `{meta.lesson_audio_url && …}` band, or carries a "no audio, band omitted" comment, is a rejection.
 - A left-border stripe per dialogue line. Use coloured speaker labels instead.
 - A vertical coloured left-edge stripe on grammar tiles/blocks (a `::before` accent bar down the card's left edge). Lesson 1 carries a legacy one — **do not replicate it.** Convey the per-section grammar accent the way lessons 2–8 do: the eyebrow tick, the accent-coloured tile number (`01`/`02`), and the `→` rule bullets. Neutral card border only.
 - A grammar section whose header accent and body accent disagree. Drive both the eyebrow (colour + tick) and every accented body element (tile number, `→` bullets, table-header text) from a **single** accent variable set once on the section, so the header colour always matches the colour used inside. Never hardcode the eyebrow colour to a fixed hex.

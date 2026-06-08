@@ -37,6 +37,8 @@ const Lesson7Bespoke = lazy(() => import('@/pages/lessons/lesson-7/Page'))
 const Lesson8Bespoke = lazy(() => import('@/pages/lessons/lesson-8/Page'))
 const Lesson9Bespoke = lazy(() => import('@/pages/lessons/lesson-9/Page'))
 const Lesson10Bespoke = lazy(() => import('@/pages/lessons/lesson-10/Page'))
+const Lesson11Bespoke = lazy(() => import('@/pages/lessons/lesson-11/Page'))
+const Lesson12Bespoke = lazy(() => import('@/pages/lessons/lesson-12/Page'))
 
 function LazyPage({ children }: { children: React.ReactNode }) {
   return (
@@ -166,6 +168,22 @@ function App() {
           element={
             <ProtectedRoute>
               <LazyPage><Lesson10Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/11"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson11Bespoke /></LazyPage>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lesson-preview/12"
+          element={
+            <ProtectedRoute>
+              <LazyPage><Lesson12Bespoke /></LazyPage>
             </ProtectedRoute>
           }
         />

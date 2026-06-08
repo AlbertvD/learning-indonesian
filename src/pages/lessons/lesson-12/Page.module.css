@@ -1,11 +1,11 @@
 /* ─────────────────────────────────────────────────────────────────────────────
-   Page.module.css — Lesson 10: Ke Kantor Pos (Naar het postkantoor)
+   Page.module.css — Lesson 12: Di Stasiun Gambir di Jakarta
 
-   A wayfinding lesson. The dialogue is a route — directions to the post office —
-   so the page is built around journeying: a step-marked dialogue, a lexicon of
-   the road, table-driven grammar, and a Majapahit history spread that the
-   dialogue's closing line ("Jalan Gajah Mada") opens onto. Indigo/teal spine,
-   warm amber for the human voice, slate for the historical past.
+   A station lesson, and a lesson about waiting. The dialogue runs on the clock;
+   the recurring word is terlambat (te laat). The palette is an indigo platform
+   at dusk (senja), lit by departure-board amber for the human voice. The reading
+   column matches the lesson-10 system: full-bleed hero, then everything aligned
+   at the shared content width, sections set off by per-section accents.
 ───────────────────────────────────────────────────────────────────────────── */
 
 /* ─── Page root ──────────────────────────────────────────────────────────── */
@@ -19,7 +19,7 @@
 }
 
 .container {
-  max-width: 1180px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 0 var(--page-pad-x);
 }
@@ -27,16 +27,16 @@
 .band { width: 100%; padding: 56px 0; }
 @media (max-width: 720px) { .band { padding: 40px 0; } }
 
-/* ─── Hero — a Yogyakarta street, becak under teal→navy ──────────────────── */
+/* ─── Hero — the Gambir platform, amber lamps under indigo dusk ───────────── */
 
 .heroBand {
   composes: band;
-  background-color: #0c4a6e;
+  background-color: #1e2747;
   background-image:
-    linear-gradient(115deg, rgba(12, 74, 110, 0.86) 0%, rgba(20, 30, 48, 0.80) 52%, rgba(0, 199, 190, 0.22) 100%),
-    url('/lesson-10-hero.webp');
+    linear-gradient(115deg, rgba(20, 26, 52, 0.90) 0%, rgba(30, 39, 71, 0.80) 50%, rgba(255, 149, 0, 0.22) 100%),
+    url('/lesson-12-hero.webp');
   background-size: cover;
-  background-position: center 38%;
+  background-position: center 46%;
   border-bottom: 1px solid var(--hero-border);
   padding: 84px 0 96px;
   position: relative;
@@ -48,8 +48,8 @@
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(circle at 82% 18%, rgba(0, 199, 190, 0.20), transparent 42%),
-    radial-gradient(circle at 12% 88%, rgba(0, 229, 255, 0.14), transparent 38%);
+    radial-gradient(circle at 84% 22%, rgba(255, 149, 0, 0.20), transparent 44%),
+    radial-gradient(circle at 10% 86%, rgba(0, 229, 255, 0.12), transparent 40%);
   pointer-events: none;
 }
 
@@ -61,7 +61,7 @@
 
 @media (max-width: 720px) { .heroBand { padding: 56px 0 64px; } }
 
-.heroLeft { display: flex; flex-direction: column; gap: 16px; max-width: 720px; }
+.heroLeft { display: flex; flex-direction: column; gap: 16px; max-width: 760px; }
 
 .heroBadgeRow { display: flex; gap: 8px; flex-wrap: wrap; }
 
@@ -73,9 +73,9 @@
   font-size: var(--fs-xs);
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(0, 199, 190, 0.18);
-  color: var(--teal);
-  border: 1px solid rgba(0, 199, 190, 0.32);
+  background: rgba(255, 149, 0, 0.18);
+  color: var(--warning);
+  border: 1px solid rgba(255, 149, 0, 0.34);
 }
 
 .heroBadgeAlt {
@@ -88,10 +88,10 @@
 .heroTitle { display: flex; flex-direction: column; gap: 6px; margin: 0; }
 
 .heroTitleId {
-  font-size: clamp(40px, 5.5vw, 60px);
+  font-size: clamp(34px, 4.8vw, 54px);
   font-weight: var(--fw-black);
   color: #ffffff;
-  line-height: 1;
+  line-height: 1.02;
   letter-spacing: -0.03em;
 }
 
@@ -106,7 +106,7 @@
   font-size: var(--fs-md);
   color: rgba(255, 255, 255, 0.90);
   line-height: 1.62;
-  max-width: 600px;
+  max-width: 620px;
 }
 
 /* ─── Editorial lede ─────────────────────────────────────────────────────── */
@@ -137,7 +137,7 @@
 
 .ledeQuote em {
   font-style: italic;
-  color: var(--teal);
+  color: var(--warning);
   font-weight: var(--fw-semibold);
 }
 
@@ -154,7 +154,7 @@
   content: '';
   width: 32px;
   height: 2px;
-  background: var(--teal);
+  background: var(--warning);
   border-radius: 999px;
   flex-shrink: 0;
 }
@@ -165,7 +165,7 @@
 
 .shell {
   composes: container;
-  max-width: 1120px;
+  max-width: 1020px;
   display: flex;
   flex-direction: column;
   gap: 84px;
@@ -207,10 +207,10 @@
   font-style: italic;
 }
 
-/* ─── 1. Dialogue as a route ─────────────────────────────────────────────── */
+/* ─── 1. Dialogue — the platform reunion ─────────────────────────────────── */
 
-.routeBand {
-  background: linear-gradient(135deg, rgba(0,199,190,0.08) 0%, rgba(0,229,255,0.04) 60%, rgba(255,149,0,0.05) 100%);
+.sceneBand {
+  background: linear-gradient(135deg, rgba(255,149,0,0.07) 0%, rgba(0,229,255,0.04) 55%, rgba(99,102,141,0.07) 100%);
   border-radius: var(--r-xl);
   padding: 48px 40px;
   margin: 0 -40px;
@@ -218,44 +218,69 @@
   overflow: hidden;
 }
 
-@media (max-width: 720px) { .routeBand { padding: 32px 20px; margin: 0; } }
+@media (max-width: 720px) { .sceneBand { padding: 32px 20px; margin: 0; } }
 
-.routeBand::before {
+.sceneBand::before {
   content: '';
   position: absolute;
   top: -50px; right: -50px;
   width: 220px; height: 220px;
-  background: radial-gradient(circle, rgba(0,199,190,0.16), transparent 70%);
+  background: radial-gradient(circle, rgba(255,149,0,0.14), transparent 70%);
   pointer-events: none;
 }
 
-.routeEyebrow {
+.sceneEyebrow {
   composes: sectionEyebrow;
-  color: var(--teal);
+  color: var(--warning);
 }
-.routeEyebrow::before { background: var(--teal); }
+.sceneEyebrow::before { background: var(--warning); }
 
-.routeSetup {
+.sceneSetup {
   font-size: var(--fs-md);
   font-weight: var(--fw-medium);
   font-style: italic;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.62;
   margin: 0 0 32px;
-  max-width: 72ch;
+  max-width: 74ch;
 }
+
+.sceneSetup em { color: var(--warning); font-style: normal; font-weight: var(--fw-semibold); }
 
 .dialogueLines {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   position: relative;
   z-index: 1;
 }
 
+/* Narrator: a stage direction, centred and quiet — no card */
+.narratorLine {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 0 10px;
+}
+
+.narratorId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.narratorNl {
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
 .dialogueLine {
   display: grid;
-  grid-template-columns: 96px minmax(0, 1fr);
+  grid-template-columns: 104px minmax(0, 1fr);
   gap: 18px;
   align-items: start;
   padding: 16px 20px;
@@ -276,8 +301,9 @@
   padding-top: 4px;
 }
 
-.dialogueLine[data-speaker-tone='narti'] .dialogueSpeaker { color: var(--accent-primary); }
-.dialogueLine[data-speaker-tone='pak']   .dialogueSpeaker { color: var(--warning); }
+.dialogueLine[data-speaker-tone='ibu']     .dialogueSpeaker { color: var(--warning); }
+.dialogueLine[data-speaker-tone='pak']     .dialogueSpeaker { color: var(--accent-primary); }
+.dialogueLine[data-speaker-tone='jumilah'] .dialogueSpeaker { color: var(--teal); }
 
 .dialogueBody { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 
@@ -299,13 +325,7 @@
   line-height: 1.55;
 }
 
-/* The long directions line gets a "steps" highlight strip */
-.dialogueLine[data-key-step='true'] {
-  background: rgba(0,199,190,0.07);
-  border: 1px solid rgba(0,199,190,0.20);
-}
-
-/* ─── 2. Lexicon of the road (vocabulary) ────────────────────────────────── */
+/* ─── 2. Vocabulary — lexicon of the rails ───────────────────────────────── */
 
 .vocabEyebrow {
   composes: sectionEyebrow;
@@ -318,8 +338,10 @@
   color: var(--text-secondary);
   line-height: 1.6;
   margin: 0 0 24px;
-  max-width: 68ch;
+  max-width: 70ch;
 }
+
+.vocabIntro em { font-style: italic; color: var(--text-primary); font-weight: var(--fw-semibold); }
 
 .vocabGrid {
   display: grid;
@@ -361,46 +383,50 @@
   min-width: 0;
 }
 
-/* ─── 3. Expression — the parting formula ────────────────────────────────── */
+/* ─── 3. Expressions — fixed phrases ──────────────────────────────────────── */
 
-.partingEyebrow {
+.exprEyebrow {
   composes: sectionEyebrow;
-  color: var(--warning);
+  color: var(--ring-target);
 }
-.partingEyebrow::before { background: var(--warning); }
+.exprEyebrow::before { background: var(--ring-target); }
 
-.partingCard {
+.exprGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.exprChip {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 28px 32px;
+  gap: 8px;
+  padding: 20px 22px;
   border-radius: var(--r-lg);
-  background: linear-gradient(135deg, rgba(255,149,0,0.07) 0%, transparent 100%);
-  border: 1px solid rgba(255,149,0,0.22);
-  max-width: 640px;
+  background: linear-gradient(135deg, rgba(255,204,0,0.07) 0%, transparent 100%);
+  border: 1px solid rgba(255,204,0,0.22);
 }
 
-.partingExchange { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.exprTop { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
-.partingId {
-  font-size: clamp(22px, 2.4vw, 28px);
+.exprId {
+  font-size: var(--fs-lg);
   font-weight: var(--fw-bold);
   color: var(--text-primary);
   letter-spacing: -0.01em;
 }
 
-.partingNote {
+.exprNl {
   font-size: var(--fs-md);
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.55;
   font-style: italic;
 }
 
-/* ─── 4. Grammar — prose rules + reference table per topic ────────────────── */
+/* ─── 4. Grammar — prose rules + reference tables ─────────────────────────── */
 
-/* One accent source per grammar section — the header eyebrow and every
-   accented element inside (number, → bullets, table headers) all read the
-   same --block-accent so the header colour always matches the body colour. */
+/* One accent source per grammar section — the eyebrow and every accented
+   element inside (number, → bullets, table headers) read the same accent. */
 .section[data-accent='purple'] { --block-accent: var(--mix-recall); }
 .section[data-accent='cyan']   { --block-accent: var(--accent-primary); }
 .section[data-accent='teal']   { --block-accent: var(--teal); }
@@ -446,6 +472,7 @@
   color: var(--text-primary);
   margin: 0;
   letter-spacing: -0.01em;
+  line-height: 1.3;
 }
 
 .grammarRules {
@@ -473,18 +500,18 @@
   font-weight: var(--fw-bold);
 }
 
-/* Inline examples (ordinals / special forms) */
+/* Inline examples (acronyms / reduplications) */
 .grammarExamples {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin: 18px 0 0;
+  margin: 18px 0 22px;
   padding: 0 28px 0 30px;
 }
 
 .grammarExample {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   gap: 20px;
   align-items: baseline;
   padding: 8px 0;
@@ -516,15 +543,6 @@
   overflow-x: auto;
 }
 
-.gtableTitle {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin: 4px 8px 10px;
-}
-
 .gtable {
   width: 100%;
   border-collapse: collapse;
@@ -552,7 +570,7 @@
 
 .gtable tbody tr:last-child td { border-bottom: none; }
 
-/* first column of each table = the Indonesian / root form, emphasised */
+/* first column of each table = the Indonesian / abbreviation form, emphasised */
 .gtable tbody td:first-child {
   color: var(--text-primary);
   font-weight: var(--fw-semibold);
@@ -560,140 +578,65 @@
 
 .gtable tbody tr:hover td { background: var(--bg-hover); }
 
-/* ─── 5. Nuance panel — rasa / kira / pikir ──────────────────────────────── */
+/* ─── 5. Culture — the economics spread ──────────────────────────────────── */
 
-.nuanceEyebrow {
-  composes: sectionEyebrow;
-  color: var(--accent-primary);
-}
-.nuanceEyebrow::before { background: var(--accent-primary); }
-
-.nuanceIntro {
-  font-size: var(--fs-md);
-  color: var(--text-secondary);
-  line-height: 1.65;
-  margin: 0 0 24px;
-  max-width: 74ch;
-}
-
-.nuanceTriple {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.nuanceWord {
-  padding: 18px 20px;
-  border-radius: var(--r-md);
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-}
-
-.nuanceWord:nth-child(1) { background: rgba(0,229,255,0.05);  border-color: rgba(0,229,255,0.20); }
-.nuanceWord:nth-child(2) { background: rgba(156,54,181,0.05); border-color: rgba(156,54,181,0.20); }
-.nuanceWord:nth-child(3) { background: rgba(0,199,190,0.05);  border-color: rgba(0,199,190,0.20); }
-
-.nuanceWordId {
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-black);
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
-}
-
-.nuanceWordGloss {
-  font-size: var(--fs-md);
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin-top: 4px;
-}
-
-.nuanceExamples {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  border-left: 2px solid var(--accent-primary-glow);
-  padding-left: 22px;
-}
-
-.nuanceExampleRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  gap: 24px;
-  align-items: baseline;
-  padding: 12px 0;
-  border-bottom: 1px dashed var(--card-border);
-}
-
-.nuanceExampleRow:last-child { border-bottom: none; }
-
-@media (max-width: 720px) {
-  .nuanceExampleRow { grid-template-columns: 1fr; gap: 2px; }
-}
-
-.nuanceExampleId {
-  font-size: var(--fs-md);
-  font-weight: var(--fw-semibold);
-  color: var(--text-primary);
-  line-height: 1.45;
-}
-
-.nuanceExampleNl {
-  font-size: var(--fs-md);
-  color: var(--text-secondary);
-  font-style: italic;
-}
-
-/* ─── 6. Majapahit — history spread ──────────────────────────────────────── */
-
-.historyBand {
-  background: linear-gradient(180deg, rgba(99,102,141,0.10) 0%, transparent 65%);
+.econBand {
+  background: linear-gradient(180deg, rgba(99,102,141,0.10) 0%, transparent 62%);
   border-radius: var(--r-xl);
   border: 1px solid var(--card-border);
   padding: 48px 44px;
   margin: 0 -44px;
 }
 
-@media (max-width: 720px) { .historyBand { padding: 32px 22px; margin: 0; } }
+@media (max-width: 720px) { .econBand { padding: 32px 22px; margin: 0; } }
 
-.historyEyebrow {
+.econEyebrow {
   composes: sectionEyebrow;
   color: var(--ring-target);
 }
-.historyEyebrow::before { background: var(--ring-target); }
+.econEyebrow::before { background: var(--ring-target); }
 
-.historyKicker {
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-  font-style: italic;
-  margin: 0 0 26px;
-  line-height: 1.6;
-  max-width: 64ch;
-}
-
-.historyKicker em { color: var(--ring-target); font-style: normal; font-weight: var(--fw-semibold); }
-
-.historyTitle {
+.econTitle {
   font-size: clamp(28px, 3.4vw, 42px);
   font-weight: var(--fw-black);
   color: var(--text-primary);
   letter-spacing: -0.02em;
   line-height: 1.1;
-  margin: 0 0 24px;
+  margin: 0 0 22px;
 }
 
-.historyProse {
-  max-width: 80ch;
+.econKicker {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-style: italic;
+  margin: 0 0 30px;
+  line-height: 1.62;
+  max-width: 70ch;
 }
 
-.historyProse p {
+.econKicker em { color: var(--ring-target); font-style: normal; font-weight: var(--fw-semibold); }
+
+.econProse { max-width: 78ch; }
+
+.econPara { margin: 0 0 20px; }
+
+.econPara p {
   font-size: var(--fs-md);
   color: var(--text-secondary);
   line-height: 1.72;
-  margin: 0 0 18px;
+  margin: 0;
 }
 
-.historyProse p:first-of-type::first-letter {
+.econSubhead {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 8px;
+}
+
+.econPara:first-of-type p::first-letter {
   font-size: 3.1em;
   font-weight: var(--fw-black);
   color: var(--ring-target);

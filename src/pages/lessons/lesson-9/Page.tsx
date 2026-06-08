@@ -30,6 +30,7 @@ import { useRef, useState } from 'react'
 import { ActivationGate } from '@/components/lessons/ActivationGate'
 import { useLessonActivation } from '@/hooks/useLessonActivation'
 import { PracticeActions } from '@/components/lessons/PracticeActions'
+import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'
 import content from './content.json'
 import classes from './Page.module.css'
 
@@ -626,8 +627,6 @@ export default function Lesson9Page() {
   //   6: exercises (skipped)
   //   7: vocabulary — body parts (31 items)
   //   8: vocabulary — symptoms & remedies (22 items)
-  //
-  // No lesson_audio_url for lesson 9 — we omit the audio band entirely.
   return (
     <article className={classes.page}>
       {/* Hero — jamu gendong vendor at Kebumen */}
@@ -665,6 +664,16 @@ export default function Lesson9Page() {
           <p className={classes.ledeMeta}>Les 9 · A1 · Bahasa Indonesia</p>
         </div>
       </section>
+
+      {/* Lesson-level grammar-explanation audio */}
+      {meta.lesson_audio_url && (
+        <section className={classes.audioBand}>
+          <div className={classes.audioInner}>
+            <p className={classes.audioLabel}>Uitleg bij de grammatica · audio</p>
+            <LessonAudioPlayer src={meta.lesson_audio_url} />
+          </div>
+        </section>
+      )}
 
       {/* Main content — culture spread sets the worldview, then the modern
           encounter (puskesmas), then the lesson's grammatical spine (A·B·C),
