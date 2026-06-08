@@ -3,7 +3,10 @@ import type { Card, FSRSParameters, Grade } from 'npm:ts-fsrs@5.3.2'
 
 const fsrsParams: FSRSParameters = {
   ...generatorParameters(),
-  request_retention: 0.85,
+  request_retention: 0.80,                    // was 0.85 — ~46% longer stability-driven intervals
+  enable_short_term: false,                   // use LongTermScheduler: no same-session learning/relearning recycles
+  learning_steps: [],                         // inert under enable_short_term:false; documents intent at the seam
+  relearning_steps: [],                       // inert under enable_short_term:false; documents intent at the seam
   w: [0.4, 0.6, 2.4, 5.8, 4.93, 0.94, 0.86, 0.01, 1.49, 0.14, 0.94, 2.52, 0.62, 0.4, 1.26, 0.29, 2.52],
 }
 const scheduler = fsrs(fsrsParams)

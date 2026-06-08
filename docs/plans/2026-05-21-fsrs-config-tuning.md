@@ -1,5 +1,8 @@
 ---
-status: approved
+status: implementing
+implementation: branch fix/fsrs-disable-short-term-steps
+implementation_paths:
+  - supabase/functions/commit-capability-answer-report/index.ts
 ---
 
 # FSRS config tuning — switch from Anki-style steps to stability-driven scheduling
