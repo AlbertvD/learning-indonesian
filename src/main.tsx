@@ -206,7 +206,7 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--ex-option-bg-hover':  'rgba(255,255,255,0.08)',
     '--ex-option-border':    'rgba(255,255,255,0.10)',
     '--ex-card-border':      'rgba(255,255,255,0.10)',
-    '--ex-focus-ring':       'rgba(0,229,255,0.80)',
+    '--ex-focus-ring':       'rgba(255,255,255,0.55)', /* neutral — no cyan focus rings */
     '--ex-fg':               '#FFFFFF',
     '--ex-fg-muted':         '#8E8E93',
   },
@@ -276,7 +276,7 @@ const cssVariablesResolver: CSSVariablesResolver = () => ({
     '--ex-option-bg-hover':  'rgba(0,0,0,0.06)',
     '--ex-option-border':    'rgba(0,0,0,0.08)',
     '--ex-card-border':      'rgba(0,0,0,0.08)',
-    '--ex-focus-ring':       'rgba(0,153,184,0.80)',
+    '--ex-focus-ring':       'rgba(0,0,0,0.45)', /* neutral — no cyan focus rings */
     '--ex-fg':               '#000000',
     '--ex-fg-muted':         '#86868B',
   },
