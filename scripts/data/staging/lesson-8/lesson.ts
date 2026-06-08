@@ -36,102 +36,122 @@ export const lesson = {
           {
             "speaker": "narrator",
             "text": "Ibu Yati dan anaknya, Tin, mau beli batik di Sarinah Jaya. Sarinah Jaya kurang lebih V&D Indonesia.",
-            "translation": "Mevrouw Yati en haar dochter Tin willen batik kopen in Sarinah Jaya. Sarinah Jaya is min of meer het Indonesische V&D."
+            "translation": "Mevrouw Yati en haar dochter Tin willen batik kopen in Sarinah Jaya. Sarinah Jaya is min of meer het Indonesische V&D.",
+            "translation_en": "Mrs. Yati and her daughter Tin want to buy batik at Sarinah Jaya. Sarinah Jaya is more or less the Indonesian V&D."
           },
           {
             "speaker": "Ibu Yati",
             "text": "Mas, batik di lantai berapa, ya Mas?",
-            "translation": "Meneer, op welke verdieping is de batik, meneer?"
+            "translation": "Meneer, op welke verdieping is de batik, meneer?",
+            "translation_en": "Sir, which floor is the batik on?"
           },
           {
             "speaker": "Mas Sarto",
             "text": "Di lantai empat, Bu.",
-            "translation": "Op de vierde verdieping, mevrouw."
+            "translation": "Op de vierde verdieping, mevrouw.",
+            "translation_en": "On the fourth floor, madam."
           },
           {
             "speaker": "Ibu Yati",
             "text": "Aduh, kalau begitu, di mana lift?",
-            "translation": "Och, waar is dan de lift?"
+            "translation": "Och, waar is dan de lift?",
+            "translation_en": "Oh, so where is the elevator?"
           },
           {
             "speaker": "Mas Sarto",
             "text": "Lift di situ, Bu, di sebelah kiri tangga.",
-            "translation": "De lift is daar, mevrouw, links naast de trap."
+            "translation": "De lift is daar, mevrouw, links naast de trap.",
+            "translation_en": "The elevator is there, madam, to the left next to the stairs."
           },
           {
             "speaker": "Ibu Yati",
             "text": "Terima kasih, Mas.",
-            "translation": "Dank u wel, meneer."
+            "translation": "Dank u wel, meneer.",
+            "translation_en": "Thank you, sir."
           },
           {
             "speaker": "narrator",
             "text": "Di lantai empat ada batik cap 'Batik Keris' dari Solo.",
-            "translation": "Op de vierde verdieping is er batik met de merk 'Batik Keris' uit Solo."
+            "translation": "Op de vierde verdieping is er batik met de merk 'Batik Keris' uit Solo.",
+            "translation_en": "On the fourth floor there is batik with the brand 'Batik Keris' from Solo."
           },
           {
             "speaker": "Ibu Yati",
             "text": "Tin, coba kita cari kain panjang yang bagus, ya. Kain itu hadiah hari ulang tahun nenek, umurnya sudah hampir 76 tahun!",
-            "translation": "Tin, laten we een mooie sarong zoeken, goed? Die sarong is een verjaardagscadeau voor oma, ze wordt bijna 76 jaar oud!"
+            "translation": "Tin, laten we een mooie sarong zoeken, goed? Die sarong is een verjaardagscadeau voor oma, ze wordt bijna 76 jaar oud!",
+            "translation_en": "Tin, let's look for a nice sarong, yes? That sarong is a birthday gift for grandma, she's almost 76 years old!"
           },
           {
             "speaker": "narrator",
             "text": "Ibu Yati kepada ibu penjual:",
-            "translation": "Mevrouw Yati tegen de verkoopster:"
+            "translation": "Mevrouw Yati tegen de verkoopster:",
+            "translation_en": "Mrs. Yati to the saleswoman:"
           },
           {
             "speaker": "Ibu Yati",
             "text": "Bu, kami cari kain panjang tetapi yang tidak terlalu modern. Kalau ada, kami ingin yang sedikit tradisional. Maksud saya harganya kira-kira Rp 25.000. Batik yang pakai warna banyak barangkali juga tidak cocok.",
-            "translation": "Mevrouw, we zoeken een sarong die niet al te modern is. Als u er een hebt, graag iets wat traditioneler is. Ik bedoel ongeveer Rp 25.000. Batik met veel kleuren zal waarschijnlijk ook niet goed uitkomen."
+            "translation": "Mevrouw, we zoeken een sarong die niet al te modern is. Als u er een hebt, graag iets wat traditioneler is. Ik bedoel ongeveer Rp 25.000. Batik met veel kleuren zal waarschijnlijk ook niet goed uitkomen.",
+            "translation_en": "Madam, we're looking for a sarong that isn't too modern. If you have one, we'd like something a bit more traditional. I mean around Rp 25,000. Batik with many colors probably wouldn't work either."
           },
           {
             "speaker": "Ibu penjual",
             "text": "Silakan, Bu, di sini banyak kain batik yang halus.",
-            "translation": "Alstublieft, mevrouw, hier zijn veel mooie batikstoften."
+            "translation": "Alstublieft, mevrouw, hier zijn veel mooie batikstoften.",
+            "translation_en": "Here you are, madam, there are many fine batik fabrics here."
           },
           {
             "speaker": "Ibu Yati",
             "text": "Ini, Tin, yang ini bagus sekali.",
-            "translation": "Deze, Tin, deze is echt prachtig."
+            "translation": "Deze, Tin, deze is echt prachtig.",
+            "translation_en": "This one, Tin, this one is really beautiful."
           },
           {
             "speaker": "Tin",
             "text": "O, iya, bagus sekali, tetapi yang ini lebih bagus dong!",
-            "translation": "Ja, die is echt mooi, maar deze is nog mooier!"
+            "translation": "Ja, die is echt mooi, maar deze is nog mooier!",
+            "translation_en": "Yes, that is really beautiful, but this one is even prettier!"
           },
           {
             "speaker": "Ibu Yati",
             "text": "Betul, tetapi saya rasa warnanya terlalu banyak. Yang ini lebih bagus atau kamu kurang setuju?",
-            "translation": "Ja, dat klopt, maar volgens mij zijn de kleuren te veel. Is deze beter of ben je het niet eens?"
+            "translation": "Ja, dat klopt, maar volgens mij zijn de kleuren te veel. Is deze beter of ben je het niet eens?",
+            "translation_en": "Right, but I think the colors are too many. Is this one better or don't you agree?"
           },
           {
             "speaker": "Tin",
             "text": "Bu, bagus betul, tetapi lihat dong! Harganya, kok, Rp 46.500. Jadi, amat mahal.",
-            "translation": "Mevrouw, deze is echt prachtig, maar kijk dan! De prijs is Rp 46.500. Dus erg duur."
+            "translation": "Mevrouw, deze is echt prachtig, maar kijk dan! De prijs is Rp 46.500. Dus erg duur.",
+            "translation_en": "Madam, this is really beautiful, but look! The price is Rp 46,500. So it's very expensive."
           },
           {
             "speaker": "Ibu Yati",
             "text": "Tin, Tin, coba yang kuning coklat, yang ini paling bagus dan harganya pas Rp 25.000.",
-            "translation": "Tin, Tin, probeer deze geel-bruine. Deze is het mooiste en de prijs is precies Rp 25.000."
+            "translation": "Tin, Tin, probeer deze geel-bruine. Deze is het mooiste en de prijs is precies Rp 25.000.",
+            "translation_en": "Tin, Tin, try this yellow-brown one, this is the most beautiful and the price is exactly Rp 25,000."
           },
           {
             "speaker": "Tin",
             "text": "Benar, bu. Kain ini warnanya paling bagus!",
-            "translation": "Ja, mevrouw. De kleuren van deze stof zijn het mooiste!"
+            "translation": "Ja, mevrouw. De kleuren van deze stof zijn het mooiste!",
+            "translation_en": "Yes, madam. The colors of this fabric are the most beautiful!"
           },
           {
             "speaker": "Ibu Yati",
             "text": "Coba kita beli yang ini saja. Bu, kami mau beli kain ini. Di mana bisa membayar?",
-            "translation": "Laten we deze maar kopen. Mevrouw, we willen deze stof kopen. Waar kunnen we betalen?"
+            "translation": "Laten we deze maar kopen. Mevrouw, we willen deze stof kopen. Waar kunnen we betalen?",
+            "translation_en": "Let's just buy this one. Madam, we want to buy this fabric. Where can we pay?"
           },
           {
             "speaker": "Ibu penjual",
             "text": "Di sana, Bu. Ini bon untuk kasir.",
-            "translation": "Daar, mevrouw. Dit is een bon voor de kassa."
+            "translation": "Daar, mevrouw. Dit is een bon voor de kassa.",
+            "translation_en": "Over there, madam. This is a receipt for the cashier."
           },
           {
             "speaker": "Ibu Yati",
             "text": "Terima kasih. Wah, saya senang, kita sudah dapat batik yang bagus sekali!",
-            "translation": "Dank u wel. Wat ben ik blij, we hebben echt een prachtige batik gekregen!"
+            "translation": "Dank u wel. Wat ben ik blij, we hebben echt een prachtige batik gekregen!",
+            "translation_en": "Thank you. What a pleasure, we've gotten a really beautiful batik!"
           }
         ]
       }
@@ -144,199 +164,248 @@ export const lesson = {
         "items": [
           {
             "indonesian": "adat",
-            "dutch": "zeden en gewoonten"
+            "dutch": "zeden en gewoonten",
+            "english": "customs and traditions"
           },
           {
             "indonesian": "amat",
-            "dutch": "zeer"
+            "dutch": "zeer",
+            "english": "very"
           },
           {
             "indonesian": "atau",
-            "dutch": "of"
+            "dutch": "of",
+            "english": "or"
           },
           {
             "indonesian": "barangkali",
-            "dutch": "misschien"
+            "dutch": "misschien",
+            "english": "perhaps"
           },
           {
             "indonesian": "batik",
-            "dutch": "kleurtechniek voor stof / batik"
+            "dutch": "kleurtechniek voor stof / batik",
+            "english": "batik (dyeing technique for fabric)"
           },
           {
             "indonesian": "begitu",
-            "dutch": "zoals dat"
+            "dutch": "zoals dat",
+            "english": "like that"
           },
           {
             "indonesian": "bon",
-            "dutch": "bon / rekening"
+            "dutch": "bon / rekening",
+            "english": "receipt"
           },
           {
             "indonesian": "cap",
-            "dutch": "stempel / merk"
+            "dutch": "stempel / merk",
+            "english": "stamp / brand"
           },
           {
             "indonesian": "coklat",
-            "dutch": "bruin"
+            "dutch": "bruin",
+            "english": "brown"
           },
           {
             "indonesian": "daripada",
-            "dutch": "... dan ... (vergelijking)"
+            "dutch": "... dan ... (vergelijking)",
+            "english": "than (comparison)"
           },
           {
             "indonesian": "dong",
-            "dutch": "hoor! (interjectie)"
+            "dutch": "hoor! (interjectie)",
+            "english": "hey! (interjection)"
           },
           {
             "indonesian": "hadiah",
-            "dutch": "cadeau"
+            "dutch": "cadeau",
+            "english": "gift"
           },
           {
             "indonesian": "hal",
-            "dutch": "kwestie / zaak"
+            "dutch": "kwestie / zaak",
+            "english": "matter / issue"
           },
           {
             "indonesian": "halus",
-            "dutch": "fijn / mooi (kwaliteit)"
+            "dutch": "fijn / mooi (kwaliteit)",
+            "english": "fine / beautiful (quality)"
           },
           {
             "indonesian": "hampir",
-            "dutch": "bijna"
+            "dutch": "bijna",
+            "english": "almost"
           },
           {
             "indonesian": "hijau",
-            "dutch": "groen"
+            "dutch": "groen",
+            "english": "green"
           },
           {
             "indonesian": "iya (ya)",
-            "dutch": "ja"
+            "dutch": "ja",
+            "english": "yes"
           },
           {
             "indonesian": "kain",
-            "dutch": "doek / kleed"
+            "dutch": "doek / kleed",
+            "english": "cloth / fabric"
           },
           {
             "indonesian": "kasir",
-            "dutch": "kassier"
+            "dutch": "kassier",
+            "english": "cashier"
           },
           {
             "indonesian": "kepada",
-            "dutch": "aan / tegen"
+            "dutch": "aan / tegen",
+            "english": "to / against"
           },
           {
             "indonesian": "keris",
-            "dutch": "Javaans steekwapen"
+            "dutch": "Javaans steekwapen",
+            "english": "Javanese dagger"
           },
           {
             "indonesian": "kira",
-            "dutch": "denken / vinden"
+            "dutch": "denken / vinden",
+            "english": "think / find"
           },
           {
             "indonesian": "kok",
-            "dutch": "warempel / goh (interjectie)"
+            "dutch": "warempel / goh (interjectie)",
+            "english": "gosh / goodness (interjection)"
           },
           {
             "indonesian": "kurang lebih",
-            "dutch": "plusminus"
+            "dutch": "plusminus",
+            "english": "approximately"
           },
           {
             "indonesian": "lantai",
-            "dutch": "verdieping / vloer"
+            "dutch": "verdieping / vloer",
+            "english": "floor / level"
           },
           {
             "indonesian": "lebih bagus",
-            "dutch": "mooier"
+            "dutch": "mooier",
+            "english": "prettier"
           },
           {
             "indonesian": "lebih banyak",
-            "dutch": "meer"
+            "dutch": "meer",
+            "english": "more"
           },
           {
             "indonesian": "lift",
-            "dutch": "lift"
+            "dutch": "lift",
+            "english": "elevator"
           },
           {
             "indonesian": "lihat",
-            "dutch": "zien"
+            "dutch": "zien",
+            "english": "see"
           },
           {
             "indonesian": "maksud",
-            "dutch": "bedoeling"
+            "dutch": "bedoeling",
+            "english": "intention"
           },
           {
             "indonesian": "membayar*",
-            "dutch": "betalen"
+            "dutch": "betalen",
+            "english": "pay"
           },
           {
             "indonesian": "modern (modèrn)",
-            "dutch": "modern"
+            "dutch": "modern",
+            "english": "modern"
           },
           {
             "indonesian": "nenek (nènèk)",
-            "dutch": "oma / grootmoeder"
+            "dutch": "oma / grootmoeder",
+            "english": "grandmother"
           },
           {
             "indonesian": "pakai",
-            "dutch": "gebruiken / bevatten"
+            "dutch": "gebruiken / bevatten",
+            "english": "use / contain"
           },
           {
             "indonesian": "paling",
-            "dutch": "het meeste (overtreffende trap)"
+            "dutch": "het meeste (overtreffende trap)",
+            "english": "most (superlative)"
           },
           {
             "indonesian": "pikir",
-            "dutch": "denken / vinden"
+            "dutch": "denken / vinden",
+            "english": "think / find"
           },
           {
             "indonesian": "pikiran",
-            "dutch": "gedachten"
+            "dutch": "gedachten",
+            "english": "thoughts"
           },
           {
             "indonesian": "pohon",
-            "dutch": "boom"
+            "dutch": "boom",
+            "english": "tree"
           },
           {
             "indonesian": "rasa",
-            "dutch": "voelen / gevoelen"
+            "dutch": "voelen / gevoelen",
+            "english": "feel / feeling"
           },
           {
             "indonesian": "Sarinah Jaya",
-            "dutch": "staatswarenhuis"
+            "dutch": "staatswarenhuis",
+            "english": "state department store"
           },
           {
             "indonesian": "setuju",
-            "dutch": "het ermee eens zijn"
+            "dutch": "het ermee eens zijn",
+            "english": "agree"
           },
           {
             "indonesian": "tangga",
-            "dutch": "trap"
+            "dutch": "trap",
+            "english": "staircase"
           },
           {
             "indonesian": "tentang",
-            "dutch": "over / betreffende"
+            "dutch": "over / betreffende",
+            "english": "about / concerning"
           },
           {
             "indonesian": "tradisional",
-            "dutch": "traditioneel"
+            "dutch": "traditioneel",
+            "english": "traditional"
           },
           {
             "indonesian": "Tuhan",
-            "dutch": "God (christ.,moslim)"
+            "dutch": "God (christ.,moslim)",
+            "english": "God (Christian, Muslim)"
           },
           {
             "indonesian": "tulis",
-            "dutch": "schrijven"
+            "dutch": "schrijven",
+            "english": "write"
           },
           {
             "indonesian": "ulang",
-            "dutch": "herhalen"
+            "dutch": "herhalen",
+            "english": "repeat"
           },
           {
             "indonesian": "umur",
-            "dutch": "leeftijd"
+            "dutch": "leeftijd",
+            "english": "age"
           },
           {
             "indonesian": "warung",
-            "dutch": "eethuisje"
+            "dutch": "eethuisje",
+            "english": "small eating house"
           }
         ]
       }
@@ -349,19 +418,23 @@ export const lesson = {
         "items": [
           {
             "indonesian": "harga pas",
-            "dutch": "vaste prijs"
+            "dutch": "vaste prijs",
+            "english": "fixed price"
           },
           {
             "indonesian": "hari ulang tahun (H.U.T.)",
-            "dutch": "verjaardag"
+            "dutch": "verjaardag",
+            "english": "birthday"
           },
           {
             "indonesian": "kain panjang",
-            "dutch": "gebatikte doek van speciaal formaat"
+            "dutch": "gebatikte doek van speciaal formaat",
+            "english": "batik cloth of special format"
           },
           {
             "indonesian": "kalau begitu",
-            "dutch": "indien dat zo is"
+            "dutch": "indien dat zo is",
+            "english": "if that is the case"
           }
         ]
       }
@@ -379,6 +452,13 @@ export const lesson = {
               "Ze geven uiting aan speciale gevoelens (vergelijk in het Nederlands: goh, ooh, eh, he, nou ja).",
               "Ze verlenen nadruk aan het woord waar ze bij staan (mahal dong!).",
               "Ze markeren grenzen tussen woordgroepen, vaak met een korte pauze, en dragen bij aan het staccato-effect van gesproken Indonesisch."
+            ],
+            "title_en": "Interjections",
+            "rules_en": [
+              "Indonesian has many short words (interjections) that appear mainly in spoken language.",
+              "They express special feelings (compare in Dutch: goh, ooh, eh, he, nou ja).",
+              "They emphasize the word they accompany (mahal dong!).",
+              "They mark boundaries between word groups, often with a short pause, and contribute to the staccato effect of spoken Indonesian."
             ]
           },
           {
@@ -461,16 +541,23 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Kain ini bagus",
-                "dutch": "Deze doek is mooi"
+                "dutch": "Deze doek is mooi",
+                "english": "This cloth is beautiful"
               },
               {
                 "indonesian": "Susi punya mobil yang besar",
-                "dutch": "Susi heeft een grote auto"
+                "dutch": "Susi heeft een grote auto",
+                "english": "Susi has a big car"
               },
               {
                 "indonesian": "Rinaldi lari cepat",
-                "dutch": "Rinaldi rent snel"
+                "dutch": "Rinaldi rent snel",
+                "english": "Rinaldi runs fast"
               }
+            ],
+            "title_en": "Positive degree (positive)",
+            "rules_en": [
+              "The ordinary form of the adjective, without comparison."
             ]
           },
           {
@@ -481,16 +568,23 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Kain ini lebih bagus",
-                "dutch": "Deze doek is mooier"
+                "dutch": "Deze doek is mooier",
+                "english": "This cloth is more beautiful"
               },
               {
                 "indonesian": "Tuti punya mobil yang lebih besar",
-                "dutch": "Tuti heeft een grotere auto"
+                "dutch": "Tuti heeft een grotere auto",
+                "english": "Tuti has a bigger car"
               },
               {
                 "indonesian": "Rinaldi lari lebih cepat",
-                "dutch": "Rinaldi rent sneller"
+                "dutch": "Rinaldi rent sneller",
+                "english": "Rinaldi runs faster"
               }
+            ],
+            "title_en": "Comparative degree: lebih ...",
+            "rules_en": [
+              "Place 'lebih' before the adjective or adverb."
             ]
           },
           {
@@ -502,20 +596,29 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Kain ini paling bagus",
-                "dutch": "Deze doek is de mooiste"
+                "dutch": "Deze doek is de mooiste",
+                "english": "This cloth is the most beautiful"
               },
               {
                 "indonesian": "Kain ini terbagus",
-                "dutch": "Deze doek is de mooiste"
+                "dutch": "Deze doek is de mooiste",
+                "english": "This cloth is the most beautiful"
               },
               {
                 "indonesian": "Yati punya mobil yang paling besar",
-                "dutch": "Yati heeft de grootste auto"
+                "dutch": "Yati heeft de grootste auto",
+                "english": "Yati has the largest car"
               },
               {
                 "indonesian": "Yati punya mobil yang terbesar",
-                "dutch": "Yati heeft de grootste auto"
+                "dutch": "Yati heeft de grootste auto",
+                "english": "Yati has the largest car"
               }
+            ],
+            "title_en": "Superlative degree: paling / ter-",
+            "rules_en": [
+              "Place 'paling' before the adjective, or add the prefix 'ter-'.",
+              "Both forms are equivalent: paling bagus = terbagus."
             ]
           },
           {
@@ -527,24 +630,34 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Tuhan yang Mahakuasa",
-                "dutch": "God de Almachtige"
+                "dutch": "God de Almachtige",
+                "english": "God the Almighty"
               },
               {
                 "indonesian": "Maharaja Hayam Wuruk",
-                "dutch": "De vorst Hayam Wuruk"
+                "dutch": "De vorst Hayam Wuruk",
+                "english": "The ruler Hayam Wuruk"
               },
               {
                 "indonesian": "Dia kerja sebaik-baiknya",
-                "dutch": "Hij deed z'n uiterste best"
+                "dutch": "Hij deed z'n uiterste best",
+                "english": "He did his very best"
               },
               {
                 "indonesian": "Mereka loncat setinggi-tingginya",
-                "dutch": "Zij sprong zo hoog mogelijk"
+                "dutch": "Zij sprong zo hoog mogelijk",
+                "english": "They jumped as high as possible"
               },
               {
                 "indonesian": "Rinaldi lari secepat-cepatnya",
-                "dutch": "Rinaldi rende zo hard als hij kon"
+                "dutch": "Rinaldi rende zo hard als hij kon",
+                "english": "Rinaldi ran as fast as he could"
               }
+            ],
+            "title_en": "Special superlative forms",
+            "rules_en": [
+              "MAHA-: expresses the highest degree ('most supreme, most exalted'). Limited use.",
+              "SE-...-...-NYA: reduplication with se- and -nya expresses 'as ... as possible'."
             ]
           },
           {
@@ -556,12 +669,19 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Rumah sebesar kantor",
-                "dutch": "Een huis zo groot als een kantoor"
+                "dutch": "Een huis zo groot als een kantoor",
+                "english": "A house as large as an office"
               },
               {
                 "indonesian": "Lemariku sama kecil dengan lemarimu",
-                "dutch": "Mijn kast is even klein als jouw kast"
+                "dutch": "Mijn kast is even klein als jouw kast",
+                "english": "My cabinet is as small as yours"
               }
+            ],
+            "title_en": "Comparisons: equality (se- / sama ... dengan)",
+            "rules_en": [
+              "se- + adjective = 'as ... as'.",
+              "sama + adjective + dengan = 'as ... as'."
             ]
           },
           {
@@ -574,12 +694,20 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Meja itu lebih besar daripada kursi ini",
-                "dutch": "Die tafel is groter dan deze stoel"
+                "dutch": "Die tafel is groter dan deze stoel",
+                "english": "That table is larger than this chair"
               },
               {
                 "indonesian": "Buku ini jauh lebih mahal daripada buku itu",
-                "dutch": "Dit boek is veel duurder dan dat boek"
+                "dutch": "Dit boek is veel duurder dan dat boek",
+                "english": "This book is much more expensive than that book"
               }
+            ],
+            "title_en": "Comparisons: inequality, increasing (lebih ... daripada)",
+            "rules_en": [
+              "lebih + adjective + daripada = 'more ... than'.",
+              "jauh lebih + adjective + daripada = 'much more ... than'.",
+              "In colloquial speech 'daripada' is often shortened to 'dari'."
             ]
           },
           {
@@ -593,16 +721,26 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Meja ini kurang bagus",
-                "dutch": "Deze tafel is niet zo mooi"
+                "dutch": "Deze tafel is niet zo mooi",
+                "english": "This table is not so beautiful"
               },
               {
                 "indonesian": "Meja ini kurang bagus daripada meja itu",
-                "dutch": "Deze tafel is minder mooi dan die tafel"
+                "dutch": "Deze tafel is minder mooi dan die tafel",
+                "english": "This table is less beautiful than that table"
               },
               {
                 "indonesian": "Meja ini tidak begitu bagus",
-                "dutch": "Deze tafel is niet zo mooi"
+                "dutch": "Deze tafel is niet zo mooi",
+                "english": "This table is not so beautiful"
               }
+            ],
+            "title_en": "Comparisons: inequality, decreasing (kurang / tidak begitu)",
+            "rules_en": [
+              "kurang + adjective = 'not so ...' or 'less ...'.",
+              "kurang + adjective + daripada = 'less ... than'.",
+              "tidak begitu + adjective = 'not so ...'.",
+              "Note: kurang also means 'not ... enough': kurang besar = not large enough (= too small)."
             ]
           },
           {
@@ -614,12 +752,19 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Pesawat terbang makin tinggi",
-                "dutch": "Het vliegtuig vloog steeds hoger"
+                "dutch": "Het vliegtuig vloog steeds hoger",
+                "english": "The airplane flew increasingly higher"
               },
               {
                 "indonesian": "Ayahnya makin lama makin kaya",
-                "dutch": "Zijn vader werd hoe langer hoe rijker"
+                "dutch": "Zijn vader werd hoe langer hoe rijker",
+                "english": "His father became richer and richer"
               }
+            ],
+            "title_en": "MAKIN: intensity (increasingly)",
+            "rules_en": [
+              "makin + adjective = 'increasingly ...'",
+              "makin lama makin + adjective = 'the longer the ...'"
             ]
           },
           {
@@ -630,24 +775,33 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Sebaiknya kita berangkat",
-                "dutch": "Het is het beste dat we vertrekken"
+                "dutch": "Het is het beste dat we vertrekken",
+                "english": "We'd better leave"
               },
               {
                 "indonesian": "Sebenarnya saya harus pulang",
-                "dutch": "Eigenlijk moet ik naar huis"
+                "dutch": "Eigenlijk moet ik naar huis",
+                "english": "Actually I should go home"
               },
               {
                 "indonesian": "Sebetulnya saya sudah lapar",
-                "dutch": "Eigenlijk heb ik al honger"
+                "dutch": "Eigenlijk heb ik al honger",
+                "english": "Actually I'm already hungry"
               },
               {
                 "indonesian": "Setiap hari dia duduk seenaknya di bawah pohon itu",
-                "dutch": "Elke dag zit hij op z'n dooie gemak onder die boom"
+                "dutch": "Elke dag zit hij op z'n dooie gemak onder die boom",
+                "english": "Every day he sits at his leisure under that tree"
               },
               {
                 "indonesian": "Setidak-tidaknya ia menjadi letnan",
-                "dutch": "Op z'n minst wordt hij luitenant"
+                "dutch": "Op z'n minst wordt hij luitenant",
+                "english": "At least he becomes a lieutenant"
               }
+            ],
+            "title_en": "Fixed expressions with SE-...-NYA",
+            "rules_en": [
+              "se- + adjective + -nya forms fixed expressions such as 'actually', 'best'"
             ]
           },
           {
@@ -658,12 +812,18 @@ export const lesson = {
             "examples": [
               {
                 "indonesian": "Burung bersiul tak henti-hentinya",
-                "dutch": "De vogels fluiten onophoudelijk"
+                "dutch": "De vogels fluiten onophoudelijk",
+                "english": "The birds whistle incessantly"
               },
               {
                 "indonesian": "Kumpul uang tak puas-puasnya",
-                "dutch": "Onverzadigbaar geld verzamelen"
+                "dutch": "Onverzadigbaar geld verzamelen",
+                "english": "Insatiably collect money"
               }
+            ],
+            "title_en": "Fixed expressions with TAK ...-...-NYA",
+            "rules_en": [
+              "tak + reduplicated verb + -nya = 'in-...-ly' or 'in-...-able'"
             ]
           }
         ],
