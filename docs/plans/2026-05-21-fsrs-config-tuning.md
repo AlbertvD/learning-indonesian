@@ -1,6 +1,6 @@
 ---
 status: implementing
-implementation: branch fix/fsrs-disable-short-term-steps
+implementation: PR #184
 implementation_paths:
   - supabase/functions/commit-capability-answer-report/index.ts
 ---
