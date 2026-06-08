@@ -26,7 +26,11 @@
   }
 
   .contentWithFooter {
-    padding-bottom: var(--ex-footer-h);
+    /* The footer (Controleer button) now flows inline directly below the
+       content; the footer's own margin-top provides the gap. No reserved
+       sticky-footer height (the old 76px reserve mismatched the real footer
+       height, so the sticky solid-bg footer overlapped the input cell). */
+    padding-bottom: 0;
   }
 
   .adminOverlay {
@@ -37,25 +41,21 @@
   }
 
   .footer {
-    position: sticky;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 12px var(--ex-pad-x) max(16px, env(safe-area-inset-bottom));
-    background: var(--bg-main);
-    z-index: 1;
+    /* Inline flow — the button sits directly below the content with a clean
+       gap, instead of a sticky solid-bg overlay pinned to the bottom (which
+       floated in front of / overlapped the answer-input cell). Exercise
+       content is short enough to always fit, so no sticky reach-ability is lost.
+       margin-top !important defeats the unlayered `* { margin: 0 }` reset, which
+       otherwise beats @layer rules and collapsed the gap to 0 (same pattern as
+       ExerciseOption's padding !important). */
+    position: relative;
+    margin-top: var(--ex-zone-gap) !important;
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
   }
 
-  /* Fade from transparent to solid bg above the footer so content scrolling
-     behind it doesn't abut the button sharply. */
+  /* No longer needed — the footer is in normal flow, not a scroll overlay. */
   .footerFade {
-    position: absolute;
-    top: -12px;
-    left: 0;
-    right: 0;
-    height: 12px;
-    background: linear-gradient(to bottom, transparent, var(--bg-main));
-    pointer-events: none;
+    display: none;
   }
 
   /* Preview mode — admin-facing. Question + answer halves laid out side-by-side
@@ -82,12 +82,10 @@
       gap: 40px;
     }
     .footer {
-      position: relative;
-      background: transparent;
-      padding: 0;
-    }
-    .footerFade {
-      display: none;
+      /* Match the wider desktop zone gap; no safe-area inset on desktop.
+         !important defeats the unlayered `* { margin: 0 }` reset (see base rule). */
+      margin-top: 40px !important;
+      padding-bottom: 0;
     }
   }
 }

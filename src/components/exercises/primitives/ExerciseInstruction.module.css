@@ -13,14 +13,13 @@
        only for keyboard focus. Auto-focus on exercise mount doesn't flash. */
   }
 
-  .root:focus:not(:focus-visible) {
-    outline: none;
-  }
-
+  /* No visible focus ring on the instruction. It's tabIndex=-1 and focused
+     only programmatically (to announce the new exercise to screen readers) —
+     keyboard users never Tab to it, so a visible ring serves no nav purpose
+     and only showed as a cyan halo around the question after advancing. */
+  .root:focus,
   .root:focus-visible {
-    outline: 2px solid var(--ex-focus-ring);
-    outline-offset: 2px;
-    border-radius: var(--r-sm);
+    outline: none;
   }
 
   .icon {

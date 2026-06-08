@@ -11,7 +11,10 @@
   }
 
   .root:focus-visible {
-    outline: 2px solid var(--ex-focus-ring);
+    /* Neutral focus ring — no cyan on the answer box (the auto-focused input
+       otherwise showed a bright cyan --ex-focus-ring halo). Buttons/options
+       keep their own focus ring; this override is scoped to the input. */
+    outline: 2px solid var(--ex-fg-muted);
     outline-offset: 2px;
   }
 
@@ -23,17 +26,38 @@
     background: transparent;
     border: 1px solid var(--ex-card-border);
     border-radius: var(--r-md);
+    /* Centre the typed answer (and placeholder) — flush-left in a full-width
+       field looked unbalanced under the centred prompt. */
+    text-align: center;
   }
 
+  /* Match the typed answer to the multiple-choice (word) option text: same
+     size (--fs-xl), family (inherit) and colour (--ex-fg, set on .root above).
+     The compound selector + !important beats the global rule
+     `.exerciseInput { font-size: max(16px, --fs-lg) }` within the same layer.
+     max(16px, …) keeps iOS Safari from focus-zooming. */
+  .root.block {
+    font-size: max(16px, var(--fs-xl)) !important;
+  }
+
+  /* Cloze "slot" — a boxed, baseline-aligned, single-line fillable field that
+     reads unmistakably as "the word goes here" (UI research: bordered box beats
+     the Material underline for affordance; keep it one line tall + subordinate
+     to the sentence). white-space:nowrap keeps it a cohesive token so it never
+     detaches at the start of a wrapped line like the bare underline did. The
+     matching select-variant slot lives in ClozeMcq.tsx. */
   .inline {
     display: inline-block;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid var(--ex-card-border);
-    padding: 0 4px;
-    text-align: center;
     vertical-align: baseline;
+    white-space: nowrap;
+    background: var(--ex-option-bg);
+    /* Clearly-visible neutral border so the slot reads as a real empty field
+       (affordance). --ex-card-border was too faint to locate. */
+    border: 1.5px solid var(--ex-fg-muted);
+    border-radius: var(--r-sm);
+    padding: 2px 8px;
     margin: 0 4px;
+    text-align: center;
   }
 
   /* State variants — border + text color. No shake (reserved for options). */
@@ -61,15 +85,15 @@
     cursor: not-allowed;
   }
 
-  /* Inline variant overrides — border-bottom carries the state color */
+  /* Inline slot — the full box border carries the committed-state colour. */
   .inline.correct {
-    border-bottom-color: var(--ex-correct-fg);
+    border-color: var(--ex-correct-fg);
   }
   .inline.wrong {
-    border-bottom-color: var(--ex-wrong-fg);
+    border-color: var(--ex-wrong-fg);
   }
   .inline.fuzzy {
-    border-bottom-color: var(--warning);
+    border-color: var(--warning);
   }
 
   .srOnly {

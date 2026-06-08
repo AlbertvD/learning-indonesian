@@ -42,18 +42,30 @@ export default function ClozeMcq({
   }
 
   const parts = data.sentence.split('___')
-  // Show the sentence with the blank rendered as an inline underline. The
-  // blank fills with the selected option text post-commit.
-  const blankText = scoring.isAnswered ? (scoring.result?.response ?? '') : '___'
+  // Render the blank as a boxed "slot" — identical to the type-variant cloze
+  // input (ExerciseTextInput `.inline`): a neutral, baseline-aligned, single-
+  // line fillable box that clearly marks where the word goes. Sized to the
+  // longest option so it doesn't jump when filled. Fills with the selected
+  // word post-commit; empty (just the box) while unanswered.
+  const slotCh = Math.max(4, ...data.options.map((o) => o.length)) + 1
+  // Non-breaking space while empty so the inline-block box keeps a full one-line
+  // height (an empty span collapses to ~6px and reads as a sliver, not a field).
+  const blankText = scoring.isAnswered ? (scoring.result?.response ?? ' ') : ' '
   const sentenceWithBlank = (
-    <span style={{ lineHeight: 1.6 }}>
+    <span style={{ lineHeight: 1.9 }}>
       {parts[0]}
       <span style={{
         display: 'inline-block',
-        minWidth: '4ch',
-        borderBottom: '2px solid var(--accent-primary)',
+        verticalAlign: 'baseline',
+        whiteSpace: 'nowrap',
+        minWidth: `${slotCh}ch`,
         margin: '0 4px',
+        padding: '4px 10px',
         textAlign: 'center',
+        background: 'var(--ex-option-bg)',
+        border: '1.5px solid var(--ex-fg-muted)',
+        borderRadius: 'var(--r-sm)',
+        color: 'var(--ex-fg)',
       }}>{blankText}</span>
       {parts[1] ?? ''}
     </span>

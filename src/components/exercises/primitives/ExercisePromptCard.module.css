@@ -1,10 +1,11 @@
 @layer exercises {
   .root {
+    /* The prompt/question blends into the background — no boxed "cell".
+       position:relative is retained for the absolutely-positioned children
+       (audio corner, transform constraint chip, audio reveal slot). */
     position: relative;
     padding: var(--ex-card-pad);
-    border: 1px solid var(--ex-card-border);
-    border-radius: var(--r-md);
-    background: var(--bg-surface);
+    background: transparent;
   }
 
   .audioCorner {
@@ -90,7 +91,10 @@
 
   /* ── variant: audio ────────────────────────────────────────────────────── */
   .audio {
-    min-height: 140px;
+    /* Snug around the 56px play button — was 140px, which left a lot of empty
+       vertical space (more so now the prompt card has no box). The reveal slot
+       (post-answer transcript) grows the cell naturally when it appears. */
+    min-height: 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
