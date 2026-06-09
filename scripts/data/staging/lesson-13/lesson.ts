@@ -1,0 +1,715 @@
+// Enriched by lesson-stage
+export const lesson = {
+  "title": "Les 13 - Tukar Uang",
+  "description": "",
+  "level": "A1",
+  "module_id": "module-1",
+  "order_index": 13,
+  "sections": [
+    {
+      "title": "Cultuur - Economie van Indonesië",
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "In de jaren zeventig en het begin van de jaren tachtig ontwikkelde Indonesië zich tot een grote leverancier van olie. Doordat de olieproducerende landen, waaronder Indonesië, hun belangen bundelden in de OPEC waren ze in staat om gedurende een bepaalde periode de prijzen hoog te houden. De westerse landen hadden een dergelijke eensgezindheid van deze groep landen niet verwacht en evenmin rekening gehouden met een sterke stijging van de olieprijzen. Deze onverwachte ontwikkelingen staan bij ons bekend als de 'oliecrisis'.",
+          "Voor Indonesië evenwel betekende het een financiële meevaller van de eerste orde. Toen de olieprijzen zich op het hoge niveau schenen te handhaven werden ambitieuze plannen opgesteld voor de ontwikkeling en de opbouw van het land.",
+          "De technocratisch ingestelde militaire leiders investeerden grote sommen geld in wegen, havens, leger, industrie en communicatiemiddelen. Hierbij kwam de nadruk te liggen op de ontwikkeling van de industrie ten einde de economische en technologische achterstand ten opzichte van de moderne industriële landen te verminderen. Doel van deze investeringen is onder andere om de dure import van buitenlandse produkten te verminderen of er zelf zoveel van te produceren dat export mogelijk wordt.",
+          "Investering in de hiertoe gekozen 'high tech'-produktiesystemen is echter altijd kapitaalintensief. Deze systemen moeten voor veel geld in het buitenland worden gekocht. Bovendien is de overdracht van technologische kennis (waar de Indonesische overheid nauwlettend op toe ziet) vaak een langdurig en moeizaam proces. Er dient immers voldoende geschoold personeel beschikbaar te zijn om de kennis aan over te dragen. De invoering van geautomatiseerde produktiesystemen levert daarbij over het algemeen weinig extra arbeidsplaatsen op.",
+          "Protectionisme\nTot in het midden van de jaren '80 was er een sterk overheidsprotectionisme op de import van grondstoffen, waaronder papier, textiel en chemicaliën. Importvergunningen werden slechts mondjesmaat verstrekt, zodat een paar grote Indonesische concerns in feite een monopolie op de binnenlandse markt verkregen. Het gevolg was dat de grondstofprijzen voor de binnenlandse industrie te hoog opliepen om internationaal te kunnen concurreren, waardoor de export stagneerde en de produkten op de eigen markt onnodig duur werden.",
+          "De daling van de olieprijs, de teruggang van de nationale economische groei - in de jaren '70 nog 9% en in 1982 slechts 2% - en een groot gat in de begroting dwong de regering tot het nemen van een uitgebreid pakket maatregelen. Om het hoofd te bieden aan het oplopende financieringstekort werd in het buitenland geld geleend. De geldschieters, waaronder de Wereldbank en het Internationaal Monetair Fonds, stelden echter voorwaarden en de regering zag zich gedwongen subsidies op onder meer het openbaar vervoer, primaire levensbehoeften, gezondheidszorg en onderwijs te verminderen. Er kwam een loonstop, de faciliteiten voor buitenlandse investeerders werden uitgebreid en een devaluatie van de rupiah werd doorgevoerd ter verbetering van de concurrentiepositie van Indonesische produkten op de internationale markt. Het effect van dit noodpakket was vooral merkbaar in de beurs van de 'gewone' Indonesische burger. Terwijl de lonen op hetzelfde peil gehouden werden, stegen de kosten van levensonderhoud.",
+          "Diversificatie\nOm het gevaar van al te grote afhankelijkheid van een bepaalde sector in de toekomst te voorkomen, besteedde de regering vanaf 1986 meer aandacht aan de economische ontwikkeling van andere sectoren. De op export gerichte diversificatie, zoals dit beleid wordt aangeduid, werd bij de nieuwe plannen een kernbegrip. Zo kregen onder meer de volgende sectoren en produkten speciale aandacht: toerisme, vloeibaar gas, hout en houtverwerking, textiel en vooral confectiekleding, produktie van cement, kunstmest, staal en staalproducten, handelsgewassen waaronder palmolie, koffie, thee en specerijen en de visserij, waarbij vooral de garnalenexport binnen enkele jaren spectaculair groeide. In het begin van de 90-er jaren kwam aan deze groei echter een voorlopige stilstand door overbevissing en protesten van lokale vissers die hun vangsten zagen slinken vanwege de inzet van - veelal Japanse - moderne boten, voorzien van radar, grote sleepnetten en volautomatische invriesinstallaties.",
+          "De 90-er jaren: deregulering\nOm zowel de binnenlandse als buitenlandse investeringen te stimuleren, werd een begin gemaakt met deregulering van de financiële sector. Het aandeel van de regering in de financiering van de publieke sector daalde van 70% tot 33% in 1988. In januari 1990 werden de subsidies op credietprogramma's verder afgebouwd. Er kwam meer ruimte voor privaatondernemingen en het stelsel van wetten en vergunningen werd vereenvoudigd.",
+          "Om een deel van de groeiende internationale belangstelling voor de opkomende Aziatische markten naar zich toe te trekken, werd aan de buitenlandse maatschappijen een participatie van 49% eigendom in de oprichting van een onderneming gegund. Deze maatregel had een groot effect op de beurs in Jakarta, die vanaf de oprichting in 1985 tot in 1991 een kwijnend bestaan leed. Het aantal op de beurs genoteerde fondsen nam nu fors toe van 24 tot 125 fondsen waarvan de totale waarde in 1993 meer dan 12 miljard gulden bedroeg. Mede door deze maatregelen steeg de economische groei tot 7% (1990).",
+          "Geschat wordt dat in 1990 zo'n 6,5 miljoen mensen, dit is 9% van de totale arbeidspopulatie, in de industriële sektor werkten, circa 41 miljoen mensen (55%) in de agrarische sektor en ongeveer 26 miljoen personen (35%) in de dienstensektor. Volgens officiële berekeningen bedroeg het werkloosheidspercentage 3%. Hierbij wordt evenwel ervan uit gegaan dat iemand die meer dan 1 dag per week werkt, niet werkloos is. Een groot structureel probleem voor Indonesië is de steeds maar aanzwellende massa mensen die werk zoeken. Met een geschatte bevolkingsgroei van 2,7% komen er per jaar 2,4 miljoen werkzoekenden, meest jongeren, bij. In het officiële werkloosheidscijfer is nog geen rekening gehouden met het effect van dit aantal aankomende werkzoekenden."
+        ]
+      }
+    },
+    {
+      "title": "Tekst - Tukar Uang",
+      "order_index": 1,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Kalau baru tiba di Indonesia Anda pasti belum punya uang rupiah. Dengan uang euro Anda tidak bisa membeli apa-apa, jadi mau tidak mau orang asing harus menukar uang. Di Indonesia ada uang rupiah dengan jenis begini:\nuang logam*: 100, 200, 500 dan 1.000 rupiah,\ndan uang kertas*: 1.000, 2.000, 5.000, 10.000, 20.000, 50.000 dan 100.000 rupiah.",
+          "Di kota besar di Indonesia terdapat banyak kantor tukar uang yang memakai nama Inggris 'money changer'. Tentu saja, orang bisa juga menukar uang di bank.",
+          "* De vroegere kleine munten (Rp 1 t/m 50) en de biljetten van Rp 100 en Rp 500 zijn niet meer in omloop."
+        ]
+      }
+    },
+    {
+      "title": "Dialoog - Tukar Uang",
+      "order_index": 2,
+      "content": {
+        "type": "dialogue",
+        "lines": [
+          {
+            "speaker": "Ibu Barends",
+            "text": "Pak, saya ingin menukar uang saya.",
+            "translation": "Meneer, ik wil mijn geld graag wisselen.",
+            "translation_en": "Sir, I would like to exchange my money."
+          },
+          {
+            "speaker": "Pak Rachmat",
+            "text": "Uang apa, Bu?",
+            "translation": "Welk geld, mevrouw?",
+            "translation_en": "What money, madam?"
+          },
+          {
+            "speaker": "Ibu Barends",
+            "text": "Ini Pak, 200 euro dan cek dolar. Kalau mungkin uang kecil juga, Pak, karena saya selalu kekurangan uang kecil kalau mau membeli rokok.",
+            "translation": "Dit meneer, 200 euro en een dollarcheque. En als het kan ook wat kleinere biljetten, meneer, want ik heb altijd gebrek aan kleingeld wanneer ik sigaretten wil kopen.",
+            "translation_en": "This sir, 200 euros and a dollar cheque. And if possible also some smaller notes, sir, because I always lack small change when I want to buy cigarettes."
+          },
+          {
+            "speaker": "Pak Rachmat",
+            "text": "Bisa, Bu. Ibu sudah lama di Indonesia? Ibu sudah bisa berbicara bahasa Indonesia baik sekali.",
+            "translation": "Prima, mevrouw. Bent u al lang in Indonesië? U spreekt Indonesisch al heel goed.",
+            "translation_en": "Fine, madam. Have you been in Indonesia long? You speak Indonesian very well already."
+          },
+          {
+            "speaker": "Ibu Barends",
+            "text": "Belum, Pak, saya baru tiba di Indonesia kemarin dulu. Jadi bahasa Indonesia saya masih kurang.",
+            "translation": "Nee meneer, ik ben gisteren pas in Indonesië aangekomen. Dus mijn Indonesisch is nog niet erg goed.",
+            "translation_en": "No sir, I only arrived in Indonesia yesterday. So my Indonesian is still not very good."
+          },
+          {
+            "speaker": "Pak Rachmat",
+            "text": "Nah, ini uangnya, Bu. Awas, nanti di jalanan banyak pencopet, Bu!",
+            "translation": "Alstublieft, hier is uw geld, mevrouw. Pas op, op straat zijn veel zakkenrollers, mevrouw!",
+            "translation_en": "Here is your money, madam. Be careful, there are many pickpockets on the street, madam!"
+          },
+          {
+            "speaker": "Ibu Barends",
+            "text": "Jangan takut, Pak, saya sudah tahu sikon.",
+            "translation": "Geen zorgen, meneer, ik ben al op de hoogte van de situatie.",
+            "translation_en": "Don't worry, sir, I'm already aware of the situation."
+          }
+        ]
+      }
+    },
+    {
+      "title": "Woordenlijst",
+      "order_index": 3,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "indonesian": "apa-apa",
+            "dutch": "wat (dan) ook",
+            "english": "anything"
+          },
+          {
+            "indonesian": "arti",
+            "dutch": "betekenis",
+            "english": "meaning"
+          },
+          {
+            "indonesian": "asing",
+            "dutch": "vreemd",
+            "english": "strange"
+          },
+          {
+            "indonesian": "bahaya",
+            "dutch": "gevaar",
+            "english": "danger"
+          },
+          {
+            "indonesian": "bank",
+            "dutch": "bank",
+            "english": "bank"
+          },
+          {
+            "indonesian": "bicara",
+            "dutch": "spreken",
+            "english": "speak"
+          },
+          {
+            "indonesian": "cek (cèk)",
+            "dutch": "cheque",
+            "english": "cheque"
+          },
+          {
+            "indonesian": "copet (copèt)",
+            "dutch": "zakkenrollen",
+            "english": "pickpocket"
+          },
+          {
+            "indonesian": "curi",
+            "dutch": "stelen",
+            "english": "steal"
+          },
+          {
+            "indonesian": "dolar",
+            "dutch": "dollar",
+            "english": "dollar"
+          },
+          {
+            "indonesian": "Inggeris",
+            "dutch": "Engeland (Engels)",
+            "english": "England (English)"
+          },
+          {
+            "indonesian": "insinyur",
+            "dutch": "ingenieur",
+            "english": "engineer"
+          },
+          {
+            "indonesian": "jenis",
+            "dutch": "soort",
+            "english": "kind"
+          },
+          {
+            "indonesian": "jumlah",
+            "dutch": "aantal",
+            "english": "number"
+          },
+          {
+            "indonesian": "k(e)ran",
+            "dutch": "kraan",
+            "english": "tap"
+          },
+          {
+            "indonesian": "karena",
+            "dutch": "omdat",
+            "english": "because"
+          },
+          {
+            "indonesian": "kekurangan",
+            "dutch": "tekort / gebrek",
+            "english": "shortage"
+          },
+          {
+            "indonesian": "kertas",
+            "dutch": "papier",
+            "english": "paper"
+          },
+          {
+            "indonesian": "kondisi",
+            "dutch": "konditie",
+            "english": "condition"
+          },
+          {
+            "indonesian": "logam",
+            "dutch": "metaal",
+            "english": "metal"
+          },
+          {
+            "indonesian": "memakai",
+            "dutch": "gebruiken",
+            "english": "use"
+          },
+          {
+            "indonesian": "menukar",
+            "dutch": "wisselen",
+            "english": "exchange"
+          },
+          {
+            "indonesian": "mungkin",
+            "dutch": "mogelijk",
+            "english": "possible"
+          },
+          {
+            "indonesian": "orang asing",
+            "dutch": "buitenlander / vreemdeling",
+            "english": "foreigner"
+          },
+          {
+            "indonesian": "pencopet",
+            "dutch": "zakkenroller",
+            "english": "pickpocket"
+          },
+          {
+            "indonesian": "sebut",
+            "dutch": "noemen",
+            "english": "call / name"
+          },
+          {
+            "indonesian": "sikon",
+            "dutch": "situatie en omstandigheden",
+            "english": "situation and circumstances"
+          },
+          {
+            "indonesian": "situasi",
+            "dutch": "situatie",
+            "english": "situation"
+          },
+          {
+            "indonesian": "tentu saja",
+            "dutch": "natuurlijk",
+            "english": "of course"
+          },
+          {
+            "indonesian": "tukar",
+            "dutch": "wisselen",
+            "english": "exchange"
+          },
+          {
+            "indonesian": "tukang",
+            "dutch": "handwerksman",
+            "english": "craftsman"
+          },
+          {
+            "indonesian": "uang kecil",
+            "dutch": "kleingeld",
+            "english": "small change"
+          },
+          {
+            "indonesian": "uang kertas",
+            "dutch": "papiergeld",
+            "english": "paper money"
+          },
+          {
+            "indonesian": "uang logam",
+            "dutch": "munt",
+            "english": "coin"
+          }
+        ]
+      }
+    },
+    {
+      "title": "Uitdrukkingen",
+      "order_index": 4,
+      "content": {
+        "type": "expressions",
+        "items": [
+          {
+            "indonesian": "mau tidak mau",
+            "dutch": "of je wilt of niet",
+            "english": "whether you like it or not"
+          }
+        ]
+      }
+    },
+    {
+      "title": "Grammatica - De Werkwoordsvorm met ME-",
+      "order_index": 5,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "title": "De ME-vorm: de bedrijvende werkwoordsvorm",
+            "rules": [
+              "Voorvoeging van ME- levert een werkwoordsvorm op; de ME-vorm is de bedrijvende (actieve) vorm.",
+              "Bij de ME-vorm staat de handeling centraal, bekeken vanuit de persoon of zaak die de handeling verricht (de agens).",
+              "ME- kan met basiswoorden uit verschillende woordklassen worden gecombineerd (werkwoord en zelfstandig naamwoord algemeen; voornaamwoord, bijvoeglijk naamwoord, telwoord en woord van plaats beperkt). In dit hoofdstuk wordt alleen ME- + werkwoord besproken."
+            ],
+            "title_en": "The ME-form: the active verb form",
+            "rules_en": [
+              "Prefixing ME- produces a verb form; the ME-form is the active form.",
+              "In the ME-form, the action is central, viewed from the perspective of the person or thing performing the action (the agent).",
+              "ME- can be combined with base words from various word classes (verb and noun common; pronoun, adjective, numeral and adverb limited). This chapter discusses only ME- + verb."
+            ]
+          },
+          {
+            "title": "A1. ME- zonder verandering (me-)",
+            "rules": [
+              "Begint het basiswoord met L, M, N, NG, NY, R, W of Y, dan wordt ME- ongewijzigd toegevoegd: het wordt me-.",
+              "Het basiswoord verandert niet en het voorvoegsel blijft me-."
+            ],
+            "examples": [
+              {
+                "indonesian": "lihat → melihat",
+                "dutch": "zien",
+                "english": "see"
+              },
+              {
+                "indonesian": "minta → meminta",
+                "dutch": "vragen om iets",
+                "english": "ask for something"
+              },
+              {
+                "indonesian": "nanti → menanti",
+                "dutch": "wachten",
+                "english": "wait"
+              },
+              {
+                "indonesian": "nyanyi → menyanyi",
+                "dutch": "zingen",
+                "english": "sing"
+              },
+              {
+                "indonesian": "rasa → merasa",
+                "dutch": "voelen",
+                "english": "feel"
+              }
+            ],
+            "title_en": "A1. ME- without change (me-)",
+            "rules_en": [
+              "If the base word begins with L, M, N, NG, NY, R, W or Y, then ME- is added unchanged: it becomes me-.",
+              "The base word does not change and the prefix remains me-."
+            ]
+          },
+          {
+            "title": "A2. ME- met aangepast voorvoegsel (mem-, men-, meng-)",
+            "rules": [
+              "Het basiswoord blijft onveranderd, maar het voorvoegsel past zich aan de beginklank aan.",
+              "MEM- bij basiswoorden die beginnen met B of F.",
+              "MEN- bij basiswoorden die beginnen met C, D of J.",
+              "MENG- bij basiswoorden die beginnen met een klinker (A, E, I, O, U) en bij G of H."
+            ],
+            "examples": [
+              {
+                "indonesian": "baca → membaca",
+                "dutch": "lezen",
+                "english": "read"
+              },
+              {
+                "indonesian": "cari → mencari",
+                "dutch": "zoeken",
+                "english": "search → search"
+              },
+              {
+                "indonesian": "dengar → mendengar",
+                "dutch": "horen",
+                "english": "hear → hear"
+              },
+              {
+                "indonesian": "jual → menjual",
+                "dutch": "verkopen",
+                "english": "sell → sell"
+              },
+              {
+                "indonesian": "ambil → mengambil",
+                "dutch": "pakken, nemen",
+                "english": "take → take"
+              },
+              {
+                "indonesian": "obrol → mengobrol",
+                "dutch": "kletsen",
+                "english": "chat → chat"
+              },
+              {
+                "indonesian": "urus → mengurus",
+                "dutch": "regelen",
+                "english": "handle → handle"
+              },
+              {
+                "indonesian": "goreng → menggoreng",
+                "dutch": "bakken",
+                "english": "fry → fry"
+              },
+              {
+                "indonesian": "hitung → menghitung",
+                "dutch": "tellen",
+                "english": "count → count"
+              }
+            ],
+            "title_en": "A2. ME- with adapted prefix (mem-, men-, meng-)",
+            "rules_en": [
+              "The base word remains unchanged, but the prefix adapts to the initial sound.",
+              "MEM- for base words beginning with B or F.",
+              "MEN- for base words beginning with C, D or J.",
+              "MENG- for base words beginning with a vowel (A, E, I, O, U) and with G or H."
+            ]
+          },
+          {
+            "title": "B. ME- met verandering van de eerste klank (K, P, S, T)",
+            "rules": [
+              "Begint het basiswoord met K, P, S of T, dan verdwijnt die beginklank en versmelt hij met de neusklank van het voorvoegsel.",
+              "K → meng- (de k valt weg): kirim → mengirim.",
+              "P → mem- (de p valt weg): potong → memotong.",
+              "S → meny- (de s valt weg): simpan → menyimpan.",
+              "T → men- (de t valt weg): tukar → menukar."
+            ],
+            "examples": [
+              {
+                "indonesian": "kirim → mengirim",
+                "dutch": "versturen",
+                "english": "send → send"
+              },
+              {
+                "indonesian": "potong → memotong",
+                "dutch": "snijden",
+                "english": "cut → cut"
+              },
+              {
+                "indonesian": "simpan → menyimpan",
+                "dutch": "bewaren",
+                "english": "keep → keep"
+              },
+              {
+                "indonesian": "tukar → menukar",
+                "dutch": "wisselen",
+                "english": "exchange → exchange"
+              }
+            ],
+            "title_en": "B. ME- with initial consonant changes (K, P, S, T)",
+            "rules_en": [
+              "When the base word begins with K, P, S or T, that initial consonant drops and merges with the nasal of the prefix.",
+              "K → meng- (k drops): kirim → mengirim",
+              "P → mem- (p drops): potong → memotong",
+              "S → meny- (s drops): simpan → menyimpan",
+              "T → men- (t drops): tukar → menukar"
+            ]
+          },
+          {
+            "title": "De handeling staat centraal",
+            "rules": [
+              "Een zin met een ME-vorm geeft antwoord op de vraag 'Wat ben je aan het doen?' — de handeling staat centraal.",
+              "ME-werkwoorden hebben soms wel en soms geen patiens (lijdend voorwerp) bij zich."
+            ],
+            "examples": [
+              {
+                "indonesian": "Jan membeli sepeda.",
+                "dutch": "Jan koopt een fiets. (met patiens)",
+                "english": "Jan buys a bicycle. (with object)"
+              },
+              {
+                "indonesian": "Ibu menulis surat.",
+                "dutch": "Moeder schrijft een brief. (met patiens)",
+                "english": "Mother writes a letter. (with object)"
+              },
+              {
+                "indonesian": "Siapa mencari kamar?",
+                "dutch": "Wie zoekt een kamer? (met patiens)",
+                "english": "Who is looking for a room? (with object)"
+              },
+              {
+                "indonesian": "Anak meloncat.",
+                "dutch": "Het kind springt. (zonder patiens)",
+                "english": "The child jumps. (without object)"
+              },
+              {
+                "indonesian": "Kucing mengeong.",
+                "dutch": "De kat miauwt. (zonder patiens)",
+                "english": "The cat meows. (without object)"
+              }
+            ],
+            "title_en": "The action is central",
+            "rules_en": [
+              "A sentence with a ME-form answers the question 'What are you doing?' — the action is central.",
+              "ME-verbs sometimes have and sometimes lack a direct object."
+            ]
+          },
+          {
+            "title": "Nota bene: werkwoorden zonder ME-",
+            "rules": [
+              "Bij de meeste werkwoorden wordt ME- gebruikt, maar een groep gebruikt in hun basisbetekenis vrijwel nooit ME-.",
+              "Tot deze groep horen onder andere: bangun (opstaan), bisa (kunnen), boleh (mogen), datang (komen), duduk (zitten), hadir (aanwezig zijn), hidup (leven), hilang (verdwijnen), ingat (herinneren), ingin (willen), jatuh (vallen), lari (rennen), lupa (vergeten), makan (eten), mandi (baden), masuk (binnengaan), minum (drinken), mohon (verzoeken), mulai (beginnen), naik (stijgen), pergi (weggaan), pulang (thuiskomen), punya (bezitten), tahu (weten), terbang (vliegen), tiba (aankomen), tidur (slapen), tinggal (wonen), turun (dalen)."
+            ],
+            "title_en": "Note: verbs without ME-",
+            "rules_en": [
+              "Most verbs use ME-, but a group rarely or never uses ME- in their base meaning.",
+              "This group includes among others: bangun (wake up), bisa (can), boleh (may), datang (come), duduk (sit), hadir (be present), hidup (live), hilang (disappear), ingat (remember), ingin (want), jatuh (fall), lari (run), lupa (forget), makan (eat), mandi (bathe), masuk (enter), minum (drink), mohon (request), mulai (begin), naik (rise), pergi (go), pulang (return home), punya (have), tahu (know), terbang (fly), tiba (arrive), tidur (sleep), tinggal (live/stay), turun (descend)"
+            ]
+          }
+        ],
+        "grammar_topics": [
+          "ME-werkwoorden"
+        ]
+      }
+    },
+    {
+      "title": "Oefeningen",
+      "order_index": 6,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "title": "Oefening I",
+            "instruction": "Vervoeg de volgende basiswoorden met ME- en vertaal.",
+            "type": "grammar_drill",
+            "items": [
+              {
+                "prompt": "beli",
+                "answer": "membeli — kopen"
+              },
+              {
+                "prompt": "jual",
+                "answer": "menjual — verkopen"
+              },
+              {
+                "prompt": "tukar",
+                "answer": "menukar — wisselen"
+              },
+              {
+                "prompt": "lihat",
+                "answer": "melihat — zien"
+              },
+              {
+                "prompt": "simpan",
+                "answer": "menyimpan — bewaren"
+              },
+              {
+                "prompt": "dengar",
+                "answer": "mendengar — horen"
+              },
+              {
+                "prompt": "pakai",
+                "answer": "memakai — gebruiken"
+              },
+              {
+                "prompt": "sambung",
+                "answer": "menyambung — verbinden / voortzetten"
+              },
+              {
+                "prompt": "ulang",
+                "answer": "mengulang — herhalen"
+              },
+              {
+                "prompt": "kirim",
+                "answer": "mengirim — versturen"
+              },
+              {
+                "prompt": "angkat",
+                "answer": "mengangkat — optillen"
+              },
+              {
+                "prompt": "tolong",
+                "answer": "menolong — helpen"
+              },
+              {
+                "prompt": "bayar",
+                "answer": "membayar — betalen"
+              },
+              {
+                "prompt": "loncat",
+                "answer": "meloncat — springen"
+              },
+              {
+                "prompt": "curi",
+                "answer": "mencuri — stelen"
+              },
+              {
+                "prompt": "goreng",
+                "answer": "menggoreng — bakken"
+              }
+            ]
+          },
+          {
+            "title": "Oefening II",
+            "instruction": "Vertaal in het Indonesisch en gebruik ME-vormen.",
+            "type": "translation",
+            "items": [
+              {
+                "prompt": "Lisa opent de voordeur",
+                "answer": "Lisa membuka pintu depan."
+              },
+              {
+                "prompt": "Wie helpt moeder in de keuken?",
+                "answer": "Siapa menolong ibu di dapur?"
+              },
+              {
+                "prompt": "De chauffeur brengt onze koffers naar de taxi",
+                "answer": "Sopir membawa koper kami ke taksi."
+              },
+              {
+                "prompt": "De kinderen schrijven een brief",
+                "answer": "Anak-anak menulis surat."
+              },
+              {
+                "prompt": "Mardi betaalt de tukang becak",
+                "answer": "Mardi membayar tukang becak."
+              },
+              {
+                "prompt": "De leraar neemt het kind mee naar school",
+                "answer": "Guru membawa anak itu ke sekolah."
+              },
+              {
+                "prompt": "De bedienden wassen de kleren met koud water",
+                "answer": "Para pembantu mencuci pakaian dengan air dingin."
+              },
+              {
+                "prompt": "Wij gebruiken alleen de nationale kleuren rood en wit",
+                "answer": "Kami hanya memakai warna nasional merah dan putih."
+              },
+              {
+                "prompt": "De schoolkinderen hebben bananen gekocht",
+                "answer": "Anak-anak sekolah sudah membeli pisang."
+              },
+              {
+                "prompt": "De onderwijzer geeft de kinderen les",
+                "answer": "Guru mengajar anak-anak."
+              }
+            ]
+          },
+          {
+            "title": "Oefening III",
+            "instruction": "Beantwoord de volgende vragen met een volledige Indonesische zin.",
+            "type": "conversation",
+            "items": [
+              {
+                "prompt": "Apa nama candi yang termasyhur di Indonesia?"
+              },
+              {
+                "prompt": "Di mana bisa menukar uang di Indonesia?"
+              },
+              {
+                "prompt": "Apa artinya 'Puskesmas'?"
+              },
+              {
+                "prompt": "Sebutlah lima belas nama pulau Indonesia"
+              },
+              {
+                "prompt": "Siapa Insinyur Soekarno?"
+              },
+              {
+                "prompt": "Di mana orang bisa membeli batik halus?"
+              },
+              {
+                "prompt": "Siapa Gajah Mada?"
+              },
+              {
+                "prompt": "Garuda mencuri apa dan untuk siapa?"
+              },
+              {
+                "prompt": "Anda suka bermalam di mana di Indonesia?"
+              },
+              {
+                "prompt": "Mengapa berbahaya kalau minum air k(e)ran di Indonesia?"
+              }
+            ]
+          },
+          {
+            "title": "Oefening IV",
+            "instruction": "Wat ben je aan het doen? Schrijf het op in het Indonesisch.",
+            "type": "grammar_drill",
+            "items": [
+              {
+                "prompt": "Saya ... (lezen)",
+                "answer": "Saya membaca."
+              },
+              {
+                "prompt": "Saya ... (een brief schrijven)",
+                "answer": "Saya menulis surat."
+              },
+              {
+                "prompt": "Saya ... (brood snijden)",
+                "answer": "Saya memotong roti."
+              },
+              {
+                "prompt": "Saya ... (fiets kopen)",
+                "answer": "Saya membeli sepeda."
+              },
+              {
+                "prompt": "Aku ... (geld wisselen)",
+                "answer": "Aku menukar uang."
+              },
+              {
+                "prompt": "Aku ... (geld stelen)",
+                "answer": "Aku mencuri uang."
+              },
+              {
+                "prompt": "Saya ... (vader zoeken)",
+                "answer": "Saya mencari ayah."
+              },
+              {
+                "prompt": "Saya ... (kleren wassen)",
+                "answer": "Saya mencuci pakaian."
+              },
+              {
+                "prompt": "Saya ... (een brief sturen)",
+                "answer": "Saya mengirim surat."
+              },
+              {
+                "prompt": "Aku ... (Tono helpen)",
+                "answer": "Aku menolong Tono."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
