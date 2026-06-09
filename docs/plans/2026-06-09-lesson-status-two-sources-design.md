@@ -1,7 +1,18 @@
 ---
-status: draft
-implementation: null
-reviewed_by: [architect, data-architect]   # both APPROVED 2026-06-09; status held at draft per author instruction (promote to `approved` when greenlit for build)
+status: shipped
+implementation: feat/lesson-status-two-sources (merged to main 2026-06-09)
+merged_at: 2026-06-09
+reviewed_by: [architect, data-architect]   # both APPROVED 2026-06-09
+implementation_paths:
+  - src/lib/analytics/mastery/            # relocated module + mastered.ts predicate
+  - src/lib/lessons/overview.ts           # simplified model (overviewStatus.ts deleted)
+  - src/lib/lessons/adapter.ts            # RPC row shape + formatGrammarTopicTag
+  - src/pages/Lessons.tsx                 # two-status tiles, no hero
+  - scripts/migration.sql                 # get_lessons_overview (is_activated + mastered_capability_count)
+  - scripts/__tests__/lessons-overview-mastery-parity.test.ts
+  - scripts/check-supabase.ts             # authenticated-role RPC check
+  - scripts/check-supabase-deep.ts        # HC27 % mastered parity
+  - docs/adr/0015-read-model-aggregation-server-side-parity-tested-mirror.md
 supersedes: []
 grounded_against:
   - docs/target-architecture.md (lib/analytics LOCKED incl. mastery sub-module — :179; analytics bimodal TS+Postgres — :644; lib/lessons consumed-by analytics.mastery — :573; mastery decomposition deferred — :682-719)
