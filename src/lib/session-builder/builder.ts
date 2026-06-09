@@ -333,6 +333,12 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
         })
     : []
 
+  // At this point `usedRefs` has been accumulated through the due (above) and
+  // practice (above) passes — it is reviewedTodayRefs ∪ due-picks ∪ practice-picks.
+  // Pass it to the planner so new-introduction burying (now done INSIDE
+  // planLearningPath, before budget allocation) honours the same one-cap-per-word-
+  // per-day rule across all three passes: a word reviewed-as-due this build won't
+  // also be introduced. See docs/plans/2026-06-09-sibling-bury-before-allocate-fix.md.
   const learningPlan = planLearningPath({
     ...input.plannerInput,
     mode: input.mode,
@@ -340,12 +346,12 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
     dueCount: dueCapabilities.length,
     selectedLessonId: scope.selectedLessonId,
     selectedSourceRefs: scope.selectedSourceRefs,
+    usedSourceRefs: usedRefs,
   })
-  const eligibleNewCapabilities = input.mode === 'lesson_review' ? [] : buryThinSiblings(
-    learningPlan.eligibleNewCapabilities,
-    eligible => sourceRefOfKey(eligible.capability.canonicalKey),
-    usedRefs,
-  ).map(eligible => {
+  // No post-hoc bury here anymore — the planner already buried siblings BEFORE
+  // budget allocation (seeded with usedRefs above), so eligibleNewCapabilities is
+  // both bury-filtered and budgeted. (lesson_review surfaces no new caps.)
+  const eligibleNewCapabilities = (input.mode === 'lesson_review' ? [] : learningPlan.eligibleNewCapabilities).map(eligible => {
     const capability = input.capabilitiesByKey.get(eligible.capability.canonicalKey)
     const context = reviewContext({ capability: capability ?? null, schedulerSnapshot: dormantSnapshot() })
     const outcome = resolveCandidate({

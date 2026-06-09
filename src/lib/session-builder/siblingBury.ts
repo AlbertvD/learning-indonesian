@@ -22,16 +22,35 @@ export function buryThinSiblings<T>(
   sourceRefOf: (candidate: T) => string | undefined,
   usedRefs: Set<string>,
 ): T[] {
+  return partitionBuried(candidates, sourceRefOf, usedRefs).kept
+}
+
+/**
+ * Like {@link buryThinSiblings} but returns BOTH halves: `kept` (the survivors,
+ * first-per-source_ref in input order) and `buried` (the rest). Used by the
+ * planner so buried candidates can be recorded as `suppressedCapabilities`
+ * (reason `sibling_buried`) instead of silently dropped. Same `usedRefs`
+ * mutation + fail-open-on-undefined semantics as `buryThinSiblings`.
+ */
+export function partitionBuried<T>(
+  candidates: readonly T[],
+  sourceRefOf: (candidate: T) => string | undefined,
+  usedRefs: Set<string>,
+): { kept: T[]; buried: T[] } {
   const kept: T[] = []
+  const buried: T[] = []
   for (const candidate of candidates) {
     const ref = sourceRefOf(candidate)
     if (ref === undefined) {
       kept.push(candidate)
       continue
     }
-    if (usedRefs.has(ref)) continue
+    if (usedRefs.has(ref)) {
+      buried.push(candidate)
+      continue
+    }
     usedRefs.add(ref)
     kept.push(candidate)
   }
-  return kept
+  return { kept, buried }
 }
