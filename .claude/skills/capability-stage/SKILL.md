@@ -70,11 +70,17 @@ hand off rather than half-authoring here.
 ## Non-negotiables
 
 1. **Dry-run, then confirm, then live.** The live run writes to prod Supabase
-   (`api.supabase.duin.home`) and makes **billable Sonnet calls** (distractor +
-   grammar generation). Always run `--dry-run` first — it validates the
-   pre-write gates and projects counts **without any DB write or LLM call**
-   (the runner short-circuits at phase 2b). Show the preview, then get an
-   explicit go-ahead before the real run. Never publish to prod unprompted.
+   (`api.supabase.duin.home`) and makes **billable Sonnet calls** —
+   grammar-exercise + dialogue-cloze generation. (Item distractors are
+   **deterministic** selection, not an LLM call — see writer 3 above.) Always run
+   `--dry-run` first. **Caveat — the dry-run is NOT write- or LLM-free:**
+   `publish-approved-content.ts --dry-run` runs **Stage A LIVE** (an idempotent
+   lesson-content reprojection + the Haiku enrichers: grammar topics, dialogue
+   translation, EN). Only the Stage B *runner* and Stage Vocabulary short-circuit
+   before any capability write or Sonnet call (phase 2b). So the dry-run is free
+   of *capability* writes/LLM — not free overall; never tell the user "nothing
+   was written." Show the preview, then get an explicit go-ahead before the real
+   run. Never publish to prod unprompted.
 2. **Monitor live, don't just wait for the exit code.** Run the live publish in
    the **background**, tee its output to a logfile, and tail it so you can report
    progress as it happens and catch a stall in the slow LLM phases (5c/5d). The
@@ -146,8 +152,15 @@ run the post-write gates or the generators (those are live-only). Present:
 - lint-staging: `C` CRITICAL / `W` WARNING, with the `file`/`rule` of each, and
   whether any are fresh-lesson bootstrapping (→ #98, expected).
 - Stage B pre-write findings by gate/severity. EN/POS warnings are expected.
-- Projected counts (content units, capabilities, items, candidates, cloze).
-- Your read of it: anything that looks off (e.g. 2 candidates for 9 patterns).
+- The **only projected count** is the vocab item-cap line
+  (`[DRY RUN] Vocab lesson N: I items, C item caps — pre-write gate passed`).
+  **Grammar-exercise and dialogue-cloze counts are NOT projectable** — they're
+  generated live, so the dry-run *cannot* catch under-generation (the old
+  "2 candidates for 9 patterns" check no longer applies — candidates aren't read
+  from staging). That signal is the post-live per-pattern `N valid (M dropped)`
+  line (step 2), not here.
+- Your read of it: pre-write findings that look off (an invalid POS, a missing
+  item meaning) — coverage of exercises/cloze is invisible to the dry-run.
 
 ## Step 2 — confirm, then run live in the background
 
@@ -164,12 +177,20 @@ Use `run_in_background: true` on the Bash call, then poll the logfile (read
 tail to the 13-phase table in the reference and narrate where it is:
 
 - `✓ Level enrichment` / `✓ Dialogue translation propagation` → phase 1b done.
-- **Phase 5c (item distractors)** and **5d (`✓ Pattern path: …`)** are the slow,
-  billable, rate-limit-prone LLM phases. A long gap with no new line here is
-  normal (throttled 1500ms/call + SDK backoff), NOT a hang — but watch for an
-  actual `429`/throw. If it throws, that's the auto-fix path (step 3).
-- `✓ Promoted N capabilities` (phase 13) → success; `Skipping capability
-  promotion (status=partial)` → a post-write gate failed.
+- **The slow, billable, rate-limit-prone work is the runner's two Sonnet
+  generators** — **grammar exercises** (`► Generating grammar exercises for P
+  patterns…`, then one **`<slug>: N valid (M dropped)`** line per pattern) and
+  **dialogue cloze**. The per-pattern `N valid (M dropped)` line is the single
+  best live quality signal — `0 dropped` is healthy; a high drop count or a
+  pattern that yields few/none is the thing to flag. **Item distractors are
+  deterministic (instant), NOT a slow phase.** A long gap during the Sonnet calls
+  is normal (throttled 1500ms/call + SDK backoff), not a hang — but watch for an
+  actual `429`/throw → auto-fix path (step 3).
+- **Two promotion lines, not one.** `✓ Promoted N capabilities` from the runner
+  (dialogue + pattern caps), then a second `✓ Promoted M capabilities → ready/
+  published` from **Stage Vocabulary** (item caps), and the run closes with the
+  `Stage Vocabulary: { … }` report block. `Skipping capability promotion
+  (status=partial)` on *either* writer → a post-write gate failed (surface it).
 
 Report each phase as it lands; don't go silent for the whole run.
 
@@ -246,10 +267,12 @@ The phases that ran, with the ✓/⚠ markers. Time in 5c/5d (the LLM phases).
 Anything that stalled or retried.
 
 ## Gates
-- Pre-write (CS3/4/4b/5/6/13): <verdict + findings>.
-- Post-write (CS7/8/9/14/15/16/17/18): <verdict + findings>.
+- Pre-write (CS3/6/13 runner; CS4/4b/5 item): <verdict + findings>.
+- Runner post-write (CS7/8/9/18): <verdict + findings>.
+- Vocab post-write (CS14/15/16/17/19/20/23): <verdict + findings>.
 - Mark any fresh-lesson bootstrapping findings as "expected until #98".
-- The decisive one: did CS9 pass? Did promotion run (phase 13)?
+- The decisive ones: did CS9 pass (runner)? Did BOTH promotions run (no
+  `status: partial` on the runner OR Stage Vocabulary)?
 
 ## Corrections applied
 What you auto-fixed (retry / --regenerate) and the outcome. "none" if clean.
@@ -274,8 +297,11 @@ step via the lesson-pipeline skill").
 - **No `timeout` on macOS.** Don't wrap commands in `timeout`/`gtimeout` — not
   installed; the command silently fails with "command not found". Just run it;
   the publish finishes on its own.
-- **Dry-run is free.** It writes nothing and calls no LLM (short-circuits at
-  phase 2b) — use it freely.
+- **The dry-run is free of *capability* work, not free overall.** Stage B + Stage
+  Vocabulary short-circuit at phase 2b (no capability write, no Sonnet) — but
+  **Stage A still runs LIVE** in a dry-run (idempotent content reprojection +
+  Haiku enrichers on a fresh lesson). Safe to run freely, but don't claim
+  "nothing was written" — the *capability* side is what's previewed.
 - **Re-runs are idempotent (ADR 0011).** Skip-if-exists on seeded rows, so
   re-publishing to recover from a transient/partial only regenerates the
   un-seeded surfaces. Recovery is "fix cause → re-invoke".
