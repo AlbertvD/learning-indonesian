@@ -67,7 +67,7 @@ output comes back thin/wrong and needs richer re-authoring.
 | 8 | Pre-flight (all gates, dry-run) | **[cmd]** `bun scripts/publish-approved-content.ts N --dry-run` (+ `lint-staging --lesson N`) | exit code + two JSON stage reports | 0 CRITICAL on the lesson-content side |
 | 9 | **Confirm**, then live publish | **[cmd]** `make publish-content LESSON=N` | Stage A + Stage B JSON reports, DB rows | Stage A `ok`, Stage B `ok`/`partial` |
 | 10 | Post-publish verify | **[cmd]** `scripts/verify-published.ts <lessonId>` (+ optionally `make check-supabase-deep`) | row counts by lesson_id | counts match the Stage A report |
-| 11 | Audio (post-publish, optional) | **[cmd]** `bun scripts/set-lesson-voices.ts` → `bun scripts/generate-exercise-audio.ts N` | `audio_clips` rows + storage uploads | generate-exercise-audio reports clips created/reused |
+| 11 | Audio top-up (usually a no-op) | reader audio is already done by Stage A (#168); **[cmd]** `bun scripts/generate-exercise-audio.ts N` only to backfill a gap (TTS cred absent at publish, or `exercise_variants` text) | `audio_clips` rows + storage uploads | check `audio_clips` by `generated_for_lesson_id`; top-up reports created/reused |
 
 **Deterministic shortcut:** `make full-pipeline LESSON=N` bundles catalog (3) →
 staging (4) → build-sections (5, structuring half) → generate-exercises (6a) in
@@ -155,19 +155,28 @@ Gotchas learned the hard way:
 - **No `timeout` on macOS.** Do NOT wrap commands in `timeout`/`gtimeout` — it's
   not installed and the whole command silently fails with "command not found".
   Just run the command; the publish scripts finish on their own.
-- **Audio is a separate POST-publish step (phase 11), not part of the publish.**
-  Stage A's inline audio is effectively unused for real lessons — it reads
-  voices from the *staging* file, which is never populated, so it reports
-  `audioClipsSynthesised`/`Reused` = 0 for every lesson. **That 0 is normal**,
-  not a defect — don't alarm on it. The app's per-text `audio_clips` are
-  produced post-publish by `generate-exercise-audio.ts` (see phase 11). TTS
-  authenticates via the **service-account file `~/.config/gcloud/tts-indonesian.json`**
-  (the main client does NOT use `GOOGLE_TTS_API_KEY` — that var is only the
-  legacy `generate-section-audio.ts` path). `audio_clips` is keyed by
-  (normalized_text, voice_id) and shared across lessons — it has no `lesson_id`,
-  so don't count it per-lesson; use `generate-exercise-audio`'s own reported
-  counts. If the key file is missing, say so plainly and treat audio as a
-  deferred follow-on, not a publish blocker.
+- **Per-text audio is synthesized INSIDE Stage A, not as a separate step.** Bug
+  fix #168: the Lesson Stage runner self-assigns voices
+  (`setLessonVoicesForLesson` → persists `lessons.primary_voice` + `lesson_speakers`)
+  and then `ensureLessonAudio` synthesizes the lesson's reader-page texts (vocab
+  items + dialogue lines) into `audio_clips` via Cloud TTS — deduped against
+  existing clips, budget-capped at 500. So a fresh lesson's Stage A reports
+  `audioClipsSynthesised: N` (the new clips) and a re-publish reports
+  `Reused: M, Synthesised: 0` (all already present). **A `Synthesised: 0` on a
+  re-run is "nothing new," NOT "audio is missing"** — check `audio_clips` by
+  `generated_for_lesson_id` to see the real coverage. (The old "Stage A audio is
+  always 0 / it's a post-publish step" claim predates #168 — it is wrong now.)
+  TTS authenticates via the **service-account file
+  `~/.config/gcloud/tts-indonesian.json`** (NOT `GOOGLE_TTS_API_KEY` — that's the
+  legacy `generate-section-audio.ts` path); if it's missing, Stage A's synthesis
+  fails (non-fatal — the publish continues), and you backfill later. `audio_clips`
+  is keyed by (normalized_text, voice_id) and **shared across lessons**, but it
+  DOES carry `generated_for_lesson_id` — use that to count a lesson's coverage.
+  The Capability Stage synthesizes **no** audio (pure reader, ADR 0012).
+  `generate-exercise-audio.ts` (phase 11) is now a **top-up / backfill** tool, not
+  the primary path — reach for it only when Stage A couldn't voice something
+  (TTS credential absent at publish time, or `exercise_variants` text that exists
+  only after Stage B). When Stage A already covered the content, phase 11 is a no-op.
 
 Read `references/gates-and-agents.md` before running phases 5–10 — it has the
 exact finding-code meanings, each agent's expected output, and the anomaly
@@ -233,38 +242,36 @@ publish to prod. Only on an explicit yes do you run phase 9. If the
 lesson-content side has unresolved CRITICALs, recommend against publishing and
 say what to fix.
 
-## Audio (phase 11 — post-publish, optional, makes real TTS calls)
+## Audio (mostly done by Stage A; phase 11 is a top-up)
 
-The app's per-text audio lives in `audio_clips` and is produced **after** the
-publish by `generate-exercise-audio.ts`, NOT by Stage A. This is how every
-existing lesson got its audio. It is optional and separate — a lesson is
-"published" without it; offer it as a follow-on.
+The app's per-text audio lives in `audio_clips` and is **primarily synthesized
+inside Stage A** (bug fix #168): the Lesson Stage runner self-assigns voices
+(`setLessonVoicesForLesson` → `lessons.primary_voice` + `lesson_speakers`), then
+`ensureLessonAudio` voices the lesson's reader-page texts (vocab items + dialogue
+lines) — deduped, budget 500, via Cloud TTS. So a normally-published lesson
+**already has its reader audio** when Stage A finishes; the Capability Stage adds
+**none** (pure reader, ADR 0012). Confirm coverage by querying `audio_clips` by
+`generated_for_lesson_id = <lessonId>`.
 
-Prerequisites and sequence:
-1. **Credential** — the TTS client reads `~/.config/gcloud/tts-indonesian.json`
-   (a Google service account). If it's absent, audio can't run — say so; it's
-   not a publish blocker.
-2. **Voices in the DB** — `bun scripts/set-lesson-voices.ts` writes
-   `primary_voice` to the `lessons` row and the dialogue speaker→voice mapping to
-   the typed `lesson_speakers` table (migration §3.5 / decision J; the old
-   `lessons.dialogue_voices` jsonb column is deprecated). It reads sections from
-   the DB, so the lesson must be published first. `generate-exercise-audio`
-   **errors** if `primary_voice` is unset, so this must run first. Preview with
-   `--dry-run`.
-3. **Synthesize** — `bun scripts/generate-exercise-audio.ts N` reads the
-   lesson's texts from the DB (`learning_items`, `exercise_variants`,
-   `lesson_sections`), dedups by (text, voice), synthesizes the missing ones,
-   uploads to storage, and inserts `audio_clips`. It prints how many clips it
-   created/reused — that count is the coverage signal (you can't count
-   `audio_clips` per-lesson; it has no `lesson_id`). Preview with `--dry-run`.
+**Phase 11 (`generate-exercise-audio.ts`) is therefore a TOP-UP, not the primary
+path** — and is frequently a no-op. Run it only when there's a genuine gap:
+- the TTS credential `~/.config/gcloud/tts-indonesian.json` was absent at publish
+  time (so Stage A's synthesis failed — it's non-fatal, the publish still
+  succeeds), or
+- there are `exercise_variants` text rows that only exist after Stage B and want
+  audio (note: typed grammar-exercise rows are NOT in `exercise_variants`, so a
+  grammar-only lesson like L13 has nothing extra here).
 
-This makes **real, billable TTS calls** and writes to prod storage — treat it
-like the publish: confirm before running it for real. Note: item/exercise audio
-needs Stage B published too; on a fresh lesson where Stage B is deferred (#98),
-`generate-exercise-audio` will only have `lesson_sections` text to voice. The
-separate `make audio-pipeline LESSON=N` path produces full-section *narration
-files* (different output, legacy `GOOGLE_TTS_API_KEY` path) — usually not what
-you want for the per-text app audio.
+If you do run it: `bun scripts/generate-exercise-audio.ts N` reads the lesson's
+DB texts (`learning_items`, `exercise_variants`, `lesson_sections`), dedups by
+(text, voice), synthesizes the missing ones, uploads, inserts `audio_clips`. Its
+`--dry-run` **skips the existing-check** so it lists the whole surface as if new
+— don't read its dry-run count as "clips needed"; the real new-count only shows
+on a live run. It makes **real billable TTS calls** — confirm before running for
+real. (Voices are already set by Stage A, so `set-lesson-voices.ts` is only
+needed to re-assign them. The separate `make audio-pipeline LESSON=N` path
+produces full-section *narration files* — different output, legacy
+`GOOGLE_TTS_API_KEY` — usually not what you want.)
 
 ## Final report (the deliverable)
 
@@ -297,11 +304,14 @@ patterns", "review-report clean"). Call out the weakest link.
 DB write surface + counts (verify with `verify-published.ts`): lessons,
 lesson_sections, the typed lesson-content tables (Stage A); content_units,
 learning_capabilities, learning_items + meanings, exercise_variants,
-cloze_contexts (Stage B). **Audio:** Stage A inline audio is always 0 (normal) —
-report whether phase 11 ran and `generate-exercise-audio`'s clip count; if audio
-hasn't run, say so and name the follow-on (`set-lesson-voices` →
-`generate-exercise-audio N`, TTS via `~/.config/gcloud/tts-indonesian.json`). For
-a dry-run, report the *projected* counts instead and say "not written".
+cloze_contexts (Stage B). **Audio:** report Stage A's `audioClipsSynthesised` /
+`Reused` counts — Stage A is the synthesizer (#168), so a fresh lesson shows
+`Synthesised: N` and a re-publish shows `Reused: M, Synthesised: 0` (both mean
+audio is present). Confirm with `audio_clips` by `generated_for_lesson_id`. Only
+flag an audio gap if that count is 0 (e.g. TTS credential was absent at publish)
+→ then name the top-up (`generate-exercise-audio N`, TTS via
+`~/.config/gcloud/tts-indonesian.json`). For a dry-run, report projected counts
+and say "not written".
 
 ## Flags / things that seem off
 The consolidated list of anomalies across all steps, most severe first. Empty =
