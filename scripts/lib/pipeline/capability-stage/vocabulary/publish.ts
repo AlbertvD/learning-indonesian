@@ -6,13 +6,16 @@
  * the vocab gate). The vocab module OWNS the item slice; the runner loses it
  * (cutover, Task 8). They share only DB tables.
  *
- * Item contextual_cloze is NOT wired in yet (cap-v2 #161). It is a planned
- * FIRST-CLASS capability — the emitter (projectItemCloze.ts) + reader
- * (store.fetchItemsWithClozeCarrier) are kept as scaffolding — but it is not
- * emitted until two things are fixed: (1) carriers must be REAL lesson sentences
- * (today's carriers are fabricated and don't serve the lesson content), and
- * (2) the activation gap (no cloze of any kind currently reaches a learner).
- * Until then, cloze is served only by the runner's dialogue_line path.
+ * Item contextual_cloze is intentionally NOT emitted — WON'T-BUILD (decided
+ * 2026-06-09). It would have to be a full first-class capability (one exercise
+ * per capability type; renderContracts binds `cloze` to `contextual_cloze` only,
+ * so there is no lightweight render-variant), and the literature makes it low
+ * yield: contextual cloze is no better than decontextualised recall for
+ * form-meaning (Webb/Nation), and the real lever — number of retrievals
+ * (Folse 2006) — is already covered by the word's other caps. The emitter
+ * (projectItemCloze.ts) + carrier reader (fetchItemsWithClozeCarrier) were
+ * deleted. Cloze is served only by the runner's dialogue_line path. The runtime
+ * item-cloze render leg remains, flagged for the #109 teardown. See module spec §4.
  *
  * Flow (mirrors the proven runner item sequence, item-only):
  *   load (DB) → project items → gate PRE-write → [dryRun stop]
@@ -188,13 +191,8 @@ export async function publishVocabulary(
   }
 
   // ---- 5. Write item caps (skip-if-exists; FSRS-safe). ------------------
-  // Item contextual_cloze is NOT wired in yet (cap-v2 #161). The cap emitter
-  // (projectItemClozeCaps) + carrier reader (fetchItemsWithClozeCarrier) are kept
-  // as scaffolding for item cloze as a planned FIRST-CLASS capability — but it is
-  // not emitted here because: (1) the existing carriers are fabricated sentences
-  // that don't serve the lesson content (first-class item cloze needs real-sentence
-  // carriers), and (2) no cloze renders until the activation gap is fixed. Wire it
-  // here once both are addressed. See the module spec §4 + the cloze issue.
+  // Item contextual_cloze is intentionally NOT emitted — won't-build (2026-06-09,
+  // low yield; see header comment + module spec §4). Cloze stays dialogue-only.
   const capsToWrite: CapabilityInput[] = allItemCaps
   const newCapIdsByKey = await upsertCapabilitiesSkipIfExists(supabase, capsToWrite)
   // Complete key→id map: newly inserted ∪ already-existing (idempotent re-runs).

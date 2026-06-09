@@ -40,8 +40,7 @@ branch, which is amputated at the cutover (Task 8). The two stages share only DB
    `updateLearningItemPos`) → `upsertCapabilitiesSkipIfExists` (item caps only) →
    `buildItemContentUnits` (`contentUnits.ts`) + `upsertContentUnits` → junction
    (`upsertCapabilityContentUnits`) → `retireOrphanedCapabilities({ sourceKinds: ['item'] })`.
-   - **Item `contextual_cloze` is NOT emitted** — see §4. The emitter (`projectItemCloze.ts`) +
-     reader (`store.fetchItemsWithClozeCarrier`) are present as scaffolding but unwired.
+   - **Item `contextual_cloze` is NOT emitted** — won't-build (see §4); cloze stays dialogue-only.
 6. **Seed distractors** (absorbs the old Stage C): `seedDistractors` over `createDistractorStore` +
    `createLocalEmbedder` (the done distractor slice — `selectDistractors`/`planDistractors`/`seedDistractors`).
 7. **Gate post-write** (`gate.ts:runVocabGatePostWrite`) — MUST run after step 6 so CS15 reads seeded
@@ -50,9 +49,7 @@ branch, which is amputated at the cutover (Task 8). The two stages share only DB
 
 ## 3. Invariants
 
-- **Identity (load-bearing).** Item caps' `canonical_key` is opaque/deterministic; the item
-  `contextual_cloze` cap uses `direction:'id_to_l1', modality:'text', learnerLanguage:'none'` — verified
-  against the live dialogue precedent (`projectors/dialogueCloze.ts:47-54`). `UNIQUE(source_ref,
+- **Identity (load-bearing).** Item caps' `canonical_key` is opaque/deterministic. `UNIQUE(source_ref,
   capability_type)` is the writer-bug backstop.
 - **Idempotent / seed-once (ADR 0011).** A re-publish is zero-delta: idempotent item upsert
   (translations-only update), `upsertCapabilitiesSkipIfExists` (ON CONFLICT DO NOTHING), `upsertContentUnits`
@@ -67,17 +64,19 @@ branch, which is amputated at the cutover (Task 8). The two stages share only DB
 
 ## 4. Known limitations / not yet landed
 
-- **Item `contextual_cloze` — planned FIRST-CLASS capability, not yet wired.** The cap emitter
-  (`projectItemCloze.ts`) + carrier reader (`store.fetchItemsWithClozeCarrier`) are present + tested but
-  `publishVocabulary` does not call them. Two blockers must clear before wiring:
-  1. **Real-sentence carriers.** Today's item carriers (from `cloze-creator` / `extract-cloze-items.ts`)
-     are *fabricated* sentences that don't serve the lesson content. First-class item cloze must blank the
-     item in a sentence the learner actually read (a real lesson sentence), the way dialogue cloze blanks
-     a real dialogue line. The ~1,171 existing fabricated carriers are retirement candidates.
-  2. **The activation gap.** No cloze of any kind currently reaches a learner — the 85 `dialogue_line`
-     contextual_cloze caps are `ready`/`published` but have **0** review events and **0**
-     `learner_capability_state` rows. Only the 6 core item vocab types ever activate. This is a runtime
-     activation-path defect (separate issue), and it blocks *all* cloze/grammar/morphology — fix it first.
+- **Item `contextual_cloze` — WON'T BUILD (decided 2026-06-09).** A deliberate won't-build, not a TODO —
+  do not re-investigate. The architecture forces first-class-or-nothing (a capability is the SR unit;
+  `renderContracts` binds the `cloze` exercise to `capabilityTypes:['contextual_cloze']` only — there is no
+  lightweight render-variant), so item cloze would mean **+1 FSRS card on every word/phrase item**. The
+  literature makes that low-yield: decontextualised recall is equal-or-better than contextual cloze for
+  form-meaning (Webb/Nation), and the real lever — *number of retrievals* (Folse 2006, TESOL Q) — is already
+  covered by the word's other caps. The cap emitter (`projectItemCloze.ts`) + carrier reader
+  (`store.fetchItemsWithClozeCarrier`) + their tests were **deleted**.
+  - **One line for the next reader:** the runtime item-cloze render leg (`byType/cloze.ts` item path,
+    `renderContracts` `'item'` in the `cloze` contract, `byKind/item.ts`) and the empty
+    `cloze_mcq_item_distractors` table are the *entangled remainder* — they sit alongside the LIVE
+    `dialogue_line` cloze, so their removal is folded into the **#109** lint-staging/teardown, not a
+    drive-by. Authored `item_contexts(cloze)` rows stay in the DB (ADR 0011 seed-once); harmless.
 - **Live write-path verification** is at the lesson-11 acceptance publish (HOW plan Task 10), per the
   store-glue convention (orchestration logic unit-tested; DB glue live-verified). Acceptance scope =
   the 6 core families + distractors (the proven path); cloze render is deferred to the activation fix.
@@ -90,7 +89,7 @@ branch, which is amputated at the cutover (Task 8). The two stages share only DB
 - **Sibling:** the shrunk `runCapabilityStage` runner (non-item kinds — dialogue_line, pattern,
   affixed), sharing only `learning_capabilities` / `content_units`. `runner.ts`.
 - **Downstream:** the runtime reader `src/lib/exercise-content/byKind/item.ts` (reads the `distractors`
-  pointer table + `item_contexts` carrier) and `byType/cloze.ts` (renders the item cloze).
+  pointer table). `byType/cloze.ts`'s item leg is unreachable (item cloze won't-build — §4), flagged for #109.
 
 ## What this spec does NOT cover
 
