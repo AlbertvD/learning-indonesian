@@ -5,7 +5,7 @@ import {
   deriveMasteryDimensions,
   derivePatternMastery,
   type CapabilityMasteryEvidence,
-} from '@/lib/mastery/masteryModel'
+} from '@/lib/analytics/mastery/masteryModel'
 import { CAPABILITY_TYPES } from '@/lib/capabilities'
 
 const now = new Date('2026-04-25T12:00:00.000Z')
