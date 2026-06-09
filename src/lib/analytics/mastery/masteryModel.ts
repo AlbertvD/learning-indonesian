@@ -5,6 +5,7 @@ import type {
 } from '@/lib/capabilities'
 import { listActivatedLessons } from '@/lib/lessons'
 import { chunkedIn } from '@/lib/chunkedQuery'
+import { isCapabilityMastered, isRecent } from './mastered'
 
 export type MasteryLabel =
   | 'not_assessed'
@@ -165,18 +166,12 @@ function dimensionForCapability(type: CapabilityType): MasteryDimension {
   }
 }
 
-function isRecent(iso: string | null | undefined, now: Date): boolean {
-  if (!iso) return false
-  const ageMs = now.getTime() - new Date(iso).getTime()
-  return ageMs >= 0 && ageMs <= 30 * 24 * 60 * 60 * 1000
-}
-
 function labelForCapability(evidence: CapabilityMasteryEvidence, now: Date): MasteryLabel {
   if (evidence.consecutiveFailureCount > 0 || evidence.lapseCount > 0) return 'at_risk'
   if (evidence.reviewCount === 0) {
     return evidence.lessonActivated ? 'introduced' : 'not_assessed'
   }
-  if (evidence.reviewCount >= 4 && (evidence.stability ?? 0) >= 14 && isRecent(evidence.lastReviewedAt, now)) return 'mastered'
+  if (isCapabilityMastered(evidence, now)) return 'mastered'
   if (evidence.reviewCount >= 3 || (evidence.stability ?? 0) >= 5) return 'strengthening'
   return 'learning'
 }

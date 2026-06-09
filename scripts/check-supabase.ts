@@ -177,6 +177,42 @@ if (authed) {
     }
   }
 
+  // get_lessons_overview, called as the AUTHENTICATED test user (not
+  // service_role). The lesson tile's % mastered numerator runs through an
+  // RLS-gated join into learner_capability_state (owner-only). Calling under the
+  // invoker path proves the join returns the owner's rows and the two-sources
+  // return shape is live. A silent RLS-deny would surface here as an error or a
+  // wrong shape. See ADR 0015 / lesson-status two-sources spec §Testing 5.
+  {
+    const { data: authUser } = await supabase.auth.getUser()
+    const uid = authUser.user?.id
+    const { data: rows, error } = await supabase.schema('indonesian').rpc('get_lessons_overview', { p_user_id: uid })
+    const arr = (rows ?? []) as Array<Record<string, unknown>>
+    if (error) {
+      fail('get_lessons_overview (authenticated invoker path)', `${error.message} — RLS/grant regression on learner_capability_state or the RPC; run: make migrate SUPABASE_SERVICE_KEY=<key>`)
+    } else if (arr.length === 0) {
+      fail('get_lessons_overview (authenticated invoker path)', 'returned no rows — expected one per published lesson')
+    } else {
+      const r0 = arr[0]
+      const shapeOk = 'is_activated' in r0 && 'mastered_capability_count' in r0 && 'ready_capability_count' in r0
+        && !('has_started_lesson' in r0) && !('practiced_eligible_capability_count' in r0)
+      const coherent = arr.every(r =>
+        Number(r.mastered_capability_count) >= 0
+        && Number(r.mastered_capability_count) <= Number(r.ready_capability_count))
+      if (!shapeOk) {
+        fail('get_lessons_overview return shape (two-sources)', 'expected is_activated + mastered_capability_count, no has_started_lesson/practiced_eligible_capability_count — run: make migrate SUPABASE_SERVICE_KEY=<key>')
+      } else if (!coherent) {
+        fail('get_lessons_overview coherence', 'mastered_capability_count outside [0, ready_capability_count] for some lesson')
+      } else {
+        const mastered = arr.reduce((s, r) => s + Number(r.mastered_capability_count), 0)
+        const ready = arr.reduce((s, r) => s + Number(r.ready_capability_count), 0)
+        // The mastered/ready totals are printed so a human can confirm the
+        // authenticated invoker path returns non-zero mastery (the RLS-zeroing signal).
+        pass(`get_lessons_overview (authenticated two-sources shape; ${mastered}/${ready} mastered across ${arr.length} lessons)`)
+      }
+    }
+  }
+
   // Check lesson audio URLs are accessible
   const { data: lessons, error: lessonErr } = await supabase
     .schema('indonesian')

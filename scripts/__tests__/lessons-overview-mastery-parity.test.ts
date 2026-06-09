@@ -11,13 +11,13 @@ import { describe, expect, it } from 'vitest'
 // check-supabase-deep.ts — catches any behavioural divergence this can't.
 
 const masterySrc = readFileSync(
-  path.resolve('src/lib/analytics/mastery/masteryModel.ts'),
+  path.resolve('src/lib/analytics/mastery/mastered.ts'),
   'utf8',
 )
 const migrationSql = readFileSync(path.resolve('scripts/migration.sql'), 'utf8')
 
-// The TS canonical predicate (masteryModel.ts:179 + isRecent:171).
-const tsMastered = /reviewCount >= (\d+) && \(evidence\.stability \?\? 0\) >= (\d+) && isRecent/.exec(masterySrc)
+// The TS canonical predicate (isCapabilityMastered + isRecent).
+const tsMastered = /reviewCount >= (\d+) && \(input\.stability \?\? 0\) >= (\d+) && isRecent/.exec(masterySrc)
 const tsRecency = /ageMs <= (\d+) \* 24 \* 60 \* 60 \* 1000/.exec(masterySrc)
 
 // The SQL `mastered_count` filter block (between `count(*) filter (` and `as mastered_count`).

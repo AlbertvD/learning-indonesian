@@ -4,6 +4,7 @@
 // Requires: SUPABASE_SERVICE_KEY env var; VITE_SUPABASE_URL from .env.local
 import { createClient } from '@supabase/supabase-js'
 import { classifyDutchSeparator, classifyIndonesianSeparator } from '@/lib/capabilities'
+import { isCapabilityMastered } from '@/lib/analytics/mastery/mastered'
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY
@@ -1388,6 +1389,72 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     }
   } catch (err) {
     fail('HC26 no MCQ cap renders duplicate/answer distractors (cap-v2 F1)', err instanceof Error ? err.message : String(err))
+  }
+}
+
+// HC27 — % mastered parity (ADR 0015 layer b). get_lessons_overview's
+// mastered_capability_count (SQL mirror) must equal an independent recompute via
+// the canonical TS predicate (isCapabilityMastered) for the test user, per
+// lesson. Both run under service_role (RLS bypassed) so they see the same rows —
+// this validates the SQL predicate == the TS predicate on live data, catching
+// any behavioural divergence the structural literal test (layer a) can't.
+{
+  const TEST_USER_ID = '55023eba-0885-4999-9e46-41274e6b21ff'
+  try {
+    async function pageAll<T>(table: string, select: string, apply?: (q: any) => any): Promise<T[]> {
+      const out: T[] = []
+      for (let from = 0; ; from += 1000) {
+        let q: any = supabase.schema('indonesian').from(table).select(select).range(from, from + 999)
+        if (apply) q = apply(q)
+        const { data, error } = await q
+        if (error) throw new Error(`${table}: ${error.message}`)
+        out.push(...((data ?? []) as T[]))
+        if (!data || data.length < 1000) break
+      }
+      return out
+    }
+    type CapRow = { id: string; lesson_id: string | null; readiness_status: string; publication_status: string; retired_at: string | null }
+    type StateRow = { capability_id: string; review_count: number | null; stability: number | null; last_reviewed_at: string | null; lapse_count: number | null; consecutive_failure_count: number | null }
+    const caps = await pageAll<CapRow>('learning_capabilities', 'id, lesson_id, readiness_status, publication_status, retired_at')
+    const states = await pageAll<StateRow>(
+      'learner_capability_state',
+      'capability_id, review_count, stability, last_reviewed_at, lapse_count, consecutive_failure_count',
+      (q) => q.eq('user_id', TEST_USER_ID),
+    )
+    const stateByCap = new Map(states.map((s) => [s.capability_id, s]))
+    const now = new Date()
+    const expected = new Map<string, number>()
+    for (const c of caps) {
+      if (!c.lesson_id || c.retired_at || c.readiness_status !== 'ready' || c.publication_status !== 'published') continue
+      const s = stateByCap.get(c.id)
+      if (!s) continue
+      if (isCapabilityMastered({
+        reviewCount: s.review_count ?? 0,
+        stability: s.stability,
+        lastReviewedAt: s.last_reviewed_at,
+        lapseCount: s.lapse_count ?? 0,
+        consecutiveFailureCount: s.consecutive_failure_count ?? 0,
+      }, now)) {
+        expected.set(c.lesson_id, (expected.get(c.lesson_id) ?? 0) + 1)
+      }
+    }
+    const { data: rpcRows, error: rpcErr } = await supabase.schema('indonesian').rpc('get_lessons_overview', { p_user_id: TEST_USER_ID })
+    if (rpcErr) throw new Error(rpcErr.message)
+    const mism: string[] = []
+    for (const r of (rpcRows ?? []) as Array<{ lesson_id: string; mastered_capability_count: number }>) {
+      const exp = expected.get(r.lesson_id) ?? 0
+      if (Number(r.mastered_capability_count) !== exp) {
+        mism.push(`${r.lesson_id}: rpc=${r.mastered_capability_count} ts=${exp}`)
+      }
+    }
+    if (mism.length === 0) {
+      const total = [...expected.values()].reduce((a, b) => a + b, 0)
+      pass(`HC27 % mastered parity (RPC == TS predicate) — ${total} mastered cap(s) across ${expected.size} lesson(s) (ADR 0015)`)
+    } else {
+      fail('HC27 % mastered parity (RPC vs TS predicate)', `SQL/TS mastered predicate diverged for: ${mism.slice(0, 5).join('; ')}${mism.length > 5 ? ' …' : ''}`)
+    }
+  } catch (err) {
+    fail('HC27 % mastered parity (RPC vs TS predicate)', err instanceof Error ? err.message : String(err))
   }
 }
 
