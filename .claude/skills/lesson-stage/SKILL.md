@@ -15,9 +15,11 @@ description: >-
   design: a single orchestrator script runs the publish, asserts every gate,
   reads the DB back for parity, generates + coverage-checks the grammar txt, and
   writes a machine-readable capture that a Stop hook enforces — so no
-  data-quality gap reaches "done". For the capability side (Stage B / vocab) use
-  `capability-stage`; for the FULL authoring pipeline (photos → OCR → agents →
-  both stages) use `lesson-pipeline`.
+  data-quality gap reaches "done". On a successful live run it then HANDS OVER
+  to the `lesson-page-designer` agent to create a DRAFT reader page (preview
+  route) from the content Stage A just wrote. For the capability side (Stage B /
+  vocab) use `capability-stage`; for the FULL authoring pipeline (photos → OCR →
+  agents → both stages) use `lesson-pipeline`.
 ---
 
 # Lesson Stage runner (Stage A) + grammar audio script
@@ -156,7 +158,51 @@ Classify and act:
 Re-runs are idempotent — recovery is always "fix the cause → re-invoke the
 orchestrator". Never hand-edit the DB to make a check pass.
 
-## Step 4 — final report (the deliverable)
+## Step 4 — hand over to the lesson page designer (draft page)
+
+**Trigger: only after a LIVE run whose capture is `ok:true`.** Stage A has now
+written the lesson's content to the DB, which is exactly what the page designer
+fetches — so the reader page can be drafted. Skip this on a dry-run, on a failed
+capture, or if the user only wanted the content/grammar-script refreshed.
+
+Decide whether to draft:
+- **No page yet** (`src/pages/lessons/lesson-<N>/` does not exist) → auto-hand
+  over: a fresh lesson should get its draft page.
+- **Page already exists** → **ask first.** Re-running the designer overwrites a
+  possibly hand-tuned page; don't clobber it without an explicit yes.
+
+Dispatch the **`lesson-page-designer`** agent (via the Agent tool) for lesson N.
+It reads the creative direction + the lesson-1 reference, runs
+`fetch-lesson-content.ts N` into `content.json`, and composes
+`src/pages/lessons/lesson-<N>/Page.tsx` + `Page.module.css`. Two constraints the
+handover must impose on the agent:
+
+1. **Draft = preview only.** Tell it to do its workflow through the page files +
+   `bun run build` verify, and to **stop before the production registry**
+   (`registry.tsx`, its step 8). The draft lives at `/lesson-preview/<N>`; the
+   user flips it to the canonical `/lesson/<id>` later, by hand.
+2. **Don't let the agent edit `src/App.tsx` itself.** Writing the *new* page
+   files succeeds, but the one *existing-file* edit — the `/lesson-preview/<N>`
+   route in `App.tsx` (its step 7) — will be blocked by the read-before-edit
+   pre-tool-use hook inside a subagent (the documented transcript-fault,
+   `memory/project_subagent_edit_hook_transcript_fault`). So instruct the agent
+   to **skip step 7 and report the exact route snippet instead**; you (the main
+   thread) apply it.
+
+When the agent returns, in the **main thread**:
+- Wire the preview route in `src/App.tsx` — the `lazy(() => import(...))` + the
+  `<Route path="/lesson-preview/<N>" …>` (mirror the existing `/lesson-preview/1`).
+- `bun run build` to confirm the page + route compile.
+- Point the user at `http://localhost:5173/lesson-preview/<N>` to review the
+  draft. Iterating on the design is the agent's job (re-dispatch with focused
+  feedback); flipping to production (`registry.tsx`) is a separate, user-driven
+  step — not part of this handover.
+
+If the agent reports it couldn't write a new file (a rare edit-fault on a
+*re-run* where the files already exist), fall back to having it emit the file
+contents and write them from the main thread — same pattern as the route edit.
+
+## Step 5 — final report (the deliverable)
 
 ALWAYS end with this, even on abort. Write "n/a — did not reach this" rather than
 dropping a section.
@@ -202,3 +248,9 @@ One line: reader content state + the grammar script's readiness + the next step
   `lesson-pipeline` phase 11), not here.
 - **`SD L<N>.txt` is DB-sourced** — it reflects what Stage A wrote, so always
   regenerate it (the orchestrator does) after re-publishing the lesson content.
+- **The page handover needs DB content, so it can't precede a live run** — the
+  designer fetches from the DB. On a dry-run there's nothing to draft from; skip
+  the handover.
+- **"Draft" means preview, never production.** The handover stops at
+  `/lesson-preview/<N>`; it must not touch `src/pages/lessons/registry.tsx`.
+  Going live on the canonical lesson URL is a deliberate, separate user step.
