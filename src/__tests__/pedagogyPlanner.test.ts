@@ -263,7 +263,9 @@ describe('pedagogy planner', () => {
     // Only the first cap in input order fits; the second is suppressed.
     // Both caps use receptive types (Phase ≤ 2) so the staging gate at
     // pedagogy.ts (added 2026-05-18) does not interfere with the budget rule
-    // this test exercises.
+    // this test exercises. They are DIFFERENT words (distinct source_refs) so
+    // sibling-burying (2026-06-09, runs before allocate) doesn't dedupe them —
+    // this isolates the budget rule, not the bury rule.
     const plan = planLearningPath({
       userId: 'user-1',
       mode: 'standard',
@@ -280,6 +282,7 @@ describe('pedagogy planner', () => {
         capability({
           id: 'recognition-cap',
           canonicalKey: 'recognition-cap',
+          sourceRef: 'learning_items/item-2',
           capabilityType: 'text_recognition',
           skillType: 'recognition',
         }),
@@ -657,5 +660,53 @@ describe('prioritizeCandidates — lesson-major + within-lesson family round-rob
     const forward = keys(prioritizeCandidates(input))
     const reversed = keys(prioritizeCandidates([...input].reverse()))
     expect(reversed).toEqual(forward)
+  })
+})
+
+describe('sibling-burying before budget allocation (fill-to-size)', () => {
+  const now = new Date('2026-06-09T00:00:00.000Z')
+
+  // The direct regression for the 2026-06-09 "no cards" bug: when the
+  // top-ranked candidates are all siblings of words already spoken-for today,
+  // burying must run BEFORE allocateBudget so the freed slots fill with fresh
+  // words — the session reaches preferredSessionSize instead of collapsing.
+  it('fills preferredSessionSize from fresh words when the top-ranked candidates are all buried', () => {
+    const todaysWords = ['a', 'b', 'c'].map((r, i) => capability({
+      id: `today-${i}`, canonicalKey: `cap:today:${r}`, sourceRef: `learning_items/${r}`,
+    }))
+    const freshWords = ['d', 'e', 'f', 'g', 'h'].map((r, i) => capability({
+      id: `fresh-${i}`, canonicalKey: `cap:fresh:${r}`, sourceRef: `learning_items/${r}`,
+    }))
+    const plan = planLearningPath({
+      userId: 'u', mode: 'standard', now, preferredSessionSize: 3, dueCount: 0,
+      readyCapabilities: [...todaysWords, ...freshWords],
+      learnerCapabilityStates: [], activatedLessons: new Set(),
+      usedSourceRefs: new Set(['learning_items/a', 'learning_items/b', 'learning_items/c']),
+    })
+
+    expect(plan.eligibleNewCapabilities).toHaveLength(3)
+    const eligibleRefs = plan.eligibleNewCapabilities.map(e => e.capability.sourceRef)
+    expect(eligibleRefs).not.toContain('learning_items/a')
+    expect(eligibleRefs).not.toContain('learning_items/b')
+    expect(eligibleRefs).not.toContain('learning_items/c')
+    expect(plan.suppressedCapabilities).toEqual(expect.arrayContaining([
+      expect.objectContaining({ canonicalKey: 'cap:today:a', reason: 'sibling_buried' }),
+      expect.objectContaining({ canonicalKey: 'cap:today:b', reason: 'sibling_buried' }),
+      expect.objectContaining({ canonicalKey: 'cap:today:c', reason: 'sibling_buried' }),
+    ]))
+  })
+
+  it('buries within-batch siblings: at most one eligible per source_ref', () => {
+    const siblings = [1, 2, 3].map(n => capability({
+      id: `sib-${n}`, canonicalKey: `cap:same:${n}`, sourceRef: 'learning_items/word',
+    }))
+    const plan = planLearningPath({
+      userId: 'u', mode: 'standard', now, preferredSessionSize: 15, dueCount: 0,
+      readyCapabilities: siblings, learnerCapabilityStates: [], activatedLessons: new Set(),
+    })
+
+    const eligibleRefs = plan.eligibleNewCapabilities.map(e => e.capability.sourceRef)
+    expect(eligibleRefs.filter(r => r === 'learning_items/word')).toHaveLength(1)
+    expect(plan.suppressedCapabilities.filter(s => s.reason === 'sibling_buried')).toHaveLength(2)
   })
 })

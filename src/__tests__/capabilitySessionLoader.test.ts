@@ -657,5 +657,42 @@ describe('capability session loader', () => {
       }))
       expect(plan.blocks.filter(b => b.kind === 'due_review')).toHaveLength(0)
     })
+
+    // Cross-pass regression for the 2026-06-09 bury-before-allocate move: the
+    // due pass's claimed refs must still reach the planner (via usedSourceRefs),
+    // so a word served as a due review this build is NOT also introduced.
+    // keyB (text_recognition) is a DORMANT new-intro candidate for the SAME word.
+    const newIntroPlannerInput = {
+      userId: 'user-1',
+      preferredSessionSize: 15,
+      dueCount: 0,
+      readyCapabilities: [plannerCapability({
+        id: 'capability-2', canonicalKey: keyB, sourceRef: ref, capabilityType: 'text_recognition', lessonId: null,
+      })],
+      learnerCapabilityStates: [],
+      activatedLessons: new Set<string>(),
+    }
+
+    it('introduces the dormant sibling when the word is NOT served as a due review', async () => {
+      const plan = await loadCapabilitySessionPlan(baseInput({
+        schedulerRows: [], // no due → word is free this build
+        capabilitiesByKey,
+        readinessByKey,
+        plannerInput: newIntroPlannerInput,
+      }))
+      expect(plan.blocks.some(b => b.kind === 'new_introduction' && b.capabilityId === 'capability-2')).toBe(true)
+    })
+
+    it('does NOT introduce the dormant sibling when the word IS served as a due review this build', async () => {
+      const plan = await loadCapabilitySessionPlan(baseInput({
+        schedulerRows: [stateA], // keyA (meaning_recall) is active/due → served
+        capabilitiesByKey,
+        readinessByKey,
+        plannerInput: newIntroPlannerInput,
+      }))
+      expect(plan.blocks.filter(b => b.kind === 'due_review')).toHaveLength(1)
+      expect(plan.blocks.some(b => b.capabilityId === 'capability-2')).toBe(false)
+      expect(plan.blocks.filter(b => b.kind === 'new_introduction')).toHaveLength(0)
+    })
   })
 })

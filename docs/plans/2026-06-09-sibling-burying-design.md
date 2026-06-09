@@ -8,7 +8,16 @@ implementation_paths:
   - src/lib/session-builder/siblingBury.ts
   - src/lib/session-builder/builder.ts
   - src/lib/session-builder/adapter.ts
+amended_by: docs/plans/2026-06-09-sibling-bury-before-allocate-fix.md
 ---
+
+> **Amendment (2026-06-09):** the **new-introduction** bury position shipped here
+> was wrong — it trimmed the *post-budget* eligible list, so when the top-ranked
+> candidates were all today's-word siblings the session collapsed to zero instead
+> of filling from the next-ranked new words. Corrected to run **inside
+> `planLearningPath`, before `allocateBudget`** (session-size is the hard
+> contract). The due/practice bury described below is unchanged. See
+> `docs/plans/2026-06-09-sibling-bury-before-allocate-fix.md`.
 
 # Sibling burying — one capability per word per day
 

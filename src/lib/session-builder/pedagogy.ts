@@ -4,6 +4,7 @@ import type {
 } from '@/lib/capabilities'
 import type { SkillType } from '@/types/learning'
 import { decideLoadBudget, type LoadBudgetDecision } from '@/lib/session-builder/loadBudget'
+import { partitionBuried } from '@/lib/session-builder/siblingBury'
 import type { SessionMode } from '@/lib/session-builder/model'
 import type { CapabilityPublicationStatus, CapabilityReadinessStatus } from '@/lib/capabilities'
 
@@ -88,6 +89,7 @@ export type PlannerReason =
   | 'wrong_session_mode'
   | 'load_budget_exhausted'
   | 'productive_capability_not_unlocked'
+  | 'sibling_buried'
 
 export interface EligibleCapability {
   capability: PlannerCapability
@@ -131,6 +133,13 @@ export interface PedagogyInput {
   }>
   selectedLessonId?: string
   selectedSourceRefs?: string[]
+  // Sibling-bury seed: source_refs already spoken-for today — prior-session
+  // reviews UNION the due + practice capabilities selected earlier in THIS build
+  // (the builder accumulates both into one set and passes it here). A candidate
+  // whose source_ref is in this set is buried (deferred to a later day) before
+  // budget allocation, so the freed slots fill with other words. See
+  // docs/plans/2026-06-09-sibling-bury-before-allocate-fix.md.
+  usedSourceRefs?: ReadonlySet<string>
 }
 
 function isPattern(capability: PlannerCapability): boolean {
@@ -495,9 +504,23 @@ export function planLearningPath(input: PedagogyInput): LearningPlan {
 
   const { gatePassing, suppressed: gateSuppressed } = gateCandidates(input.readyCapabilities, ctx)
   const prioritized = prioritizeCandidates(gatePassing)
-  const { eligible, suppressed: budgetSuppressed } = allocateBudget(prioritized, loadBudget)
 
-  const suppressedCapabilities = [...gateSuppressed, ...budgetSuppressed]
+  // Sibling-bury BEFORE budget allocation (not after): at most one cap per
+  // source_ref per day. Walking the prioritized order keeps the highest-priority
+  // sibling of a not-today word; siblings of words already spoken-for today
+  // (input.usedSourceRefs) are buried. Burying here — rather than trimming the
+  // post-budget eligible list — lets allocateBudget fill the freed slots from the
+  // next-ranked NEW words, so the session reaches preferredSessionSize instead of
+  // collapsing. See docs/plans/2026-06-09-sibling-bury-before-allocate-fix.md.
+  const usedRefs = new Set(input.usedSourceRefs ?? [])
+  const { kept: nonBuried, buried } = partitionBuried(prioritized, cap => cap.sourceRef, usedRefs)
+  const buriedSuppressed: SuppressedCapability[] = buried.map(cap => ({
+    canonicalKey: cap.canonicalKey, reason: 'sibling_buried',
+  }))
+
+  const { eligible, suppressed: budgetSuppressed } = allocateBudget(nonBuried, loadBudget)
+
+  const suppressedCapabilities = [...gateSuppressed, ...buriedSuppressed, ...budgetSuppressed]
   return {
     eligibleNewCapabilities: eligible,
     suppressedCapabilities,
