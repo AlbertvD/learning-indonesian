@@ -77,9 +77,10 @@ passed. The checks:
 | `grammar-audio-file` | `SD L<N>.txt` exists and is non-empty (when the lesson has grammar) |
 | `grammar-section-coverage` | the txt emitted exactly as many grammar sections as the DB holds |
 | `grammar-no-silent-drops` | the generator printed **no** `content NOT emitted` warnings (a silent content drop is the DQ failure we refuse) |
+| `audio-coverage` | every voiced text — **word/phrase items + dialogue lines** — has an `audio_clip` (by `normalized_text`). This is the aggregate gate **CS23 lacks** (CS23 is item-only + WARN-only). Outcomes: full coverage → pass; **partial while audio ran → FAIL** (a real defect — budget cap or mid-run synth failure); **zero while Stage A voiced nothing → DEFERRED, non-blocking** (TTS credential absent; the hard "halt on unvoiced" gate is #165, unbuilt — so it's surfaced loudly, not trapped) |
 
 In `--dry-run` it runs the pre-write gate preview only (no DB write, no readback,
-no grammar txt) and writes a `mode:"dry-run"` capture.
+no grammar txt, no audio check) and writes a `mode:"dry-run"` capture.
 
 ## Non-negotiables
 
@@ -154,6 +155,8 @@ Classify and act:
 | GT5/GT6/GT8/GT10 | malformed section shape / missing item field / unstructured grammar body | fix the staging `lesson.ts` row named in the finding |
 | `db-readback-parity` | a write didn't land | re-publish (idempotent); inspect the named table |
 | `grammar-section-coverage` / `grammar-no-silent-drops` | the grammar generator hit an unhandled content field and dropped it | add the field to the script's known-keys, or fix the section's shape in `lesson.ts`, then re-run |
+| `audio-coverage` FAIL (partial) | Stage A's per-text synthesis was capped (budget 500) or a mid-run TTS failure left some texts unvoiced | re-run the orchestrator (idempotent — Stage A resynthesizes only the missing clips); if it persists, raise the audio budget or check TTS quota |
+| `audio-coverage` DEFERRED (zero) | the TTS credential `~/.config/gcloud/tts-indonesian.json` was absent at publish time, so Stage A voiced nothing (non-fatal) | not a blocker (the capture stays `ok`); add the credential and re-run, or backfill later with `generate-exercise-audio N` |
 
 Re-runs are idempotent — recovery is always "fix the cause → re-invoke the
 orchestrator". Never hand-edit the DB to make a check pass.
@@ -223,6 +226,10 @@ The 6 lesson-content tables: <table: db/declared …>. Parity <ok | divergence>.
 ## Grammar audio script
 SD L<N>.txt — <generated: G sections, L lines | not generated (no grammar | did
 not reach)>. Silent drops: <none | the warnings>. Ready to record: <yes/no>.
+
+## Per-text audio coverage
+<C/T item+dialogue texts voiced by Stage A>. <full | PARTIAL — list missing |
+DEFERRED — no TTS credential>.
 
 ## Capture
 audio-scripts/SD L<N>.report.json — ok=<true|false>. <one line>.

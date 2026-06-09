@@ -42,6 +42,11 @@ import { createClient } from '@supabase/supabase-js'
 import { spawnSync } from 'node:child_process'
 import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 
+// Canonical TTS normalizer — the key audio_clips is stored under (Stage A +
+// CS23 both use it). Importing it (not reimplementing) keeps coverage matching
+// correct if the normalizer ever changes.
+import { normalizeTtsText } from '../../../../scripts/lib/tts-normalize'
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0' // homelab Step-CA cert
 
 // ---------------------------------------------------------------------------
@@ -129,6 +134,49 @@ async function grammarSectionCount(lessonId: string): Promise<number> {
   return data.filter((r) => (r.content as { type?: string } | null)?.type === 'grammar').length
 }
 
+/**
+ * Aggregate per-text audio coverage for the lesson's voiced surfaces — the gap
+ * CS23 leaves (CS23 is item-only + WARN-only; this covers items AND dialogue
+ * lines and feeds the hard gate). Stage A is the synthesizer; this confirms it
+ * actually voiced everything. Coverage is by `normalized_text` (the audio_clips
+ * key), so shared clips from earlier lessons count as covered.
+ */
+async function audioCoverage(lessonId: string): Promise<{
+  total: number
+  covered: number
+  missing: string[]
+}> {
+  const [{ data: dl }, { data: ir }] = await Promise.all([
+    sb.from('lesson_dialogue_lines').select('text').eq('lesson_id', lessonId),
+    sb.from('lesson_section_item_rows').select('indonesian_text, item_type').eq('lesson_id', lessonId),
+  ])
+  // The voiced surface: every dialogue line + every word/phrase item (matches
+  // what Stage A collects and what CS23 checks).
+  const texts = [
+    ...((dl ?? []) as Array<{ text: string }>).map((r) => r.text),
+    ...((ir ?? []) as Array<{ indonesian_text: string; item_type: string }>)
+      .filter((r) => r.item_type === 'word' || r.item_type === 'phrase')
+      .map((r) => r.indonesian_text),
+  ]
+  const byNorm = new Map<string, string>() // normalized -> a representative raw text
+  for (const t of texts) {
+    const trimmed = (t ?? '').trim()
+    if (trimmed) byNorm.set(normalizeTtsText(trimmed), trimmed)
+  }
+  const wanted = [...byNorm.keys()]
+  if (wanted.length === 0) return { total: 0, covered: 0, missing: [] }
+
+  // One chunked .in() lookup of which normalized_texts have a clip (any voice).
+  const present = new Set<string>()
+  for (let i = 0; i < wanted.length; i += 50) {
+    const chunk = wanted.slice(i, i + 50)
+    const { data } = await sb.from('audio_clips').select('normalized_text').in('normalized_text', chunk)
+    for (const r of (data ?? []) as Array<{ normalized_text: string }>) present.add(r.normalized_text)
+  }
+  const missing = wanted.filter((n) => !present.has(n)).map((n) => byNorm.get(n) ?? n)
+  return { total: wanted.length, covered: wanted.length - missing.length, missing }
+}
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
@@ -139,7 +187,12 @@ async function main(): Promise<void> {
   // 1) Stage A + Lesson Gate via the canonical entry point.
   const args = ['scripts/publish-lesson-content.ts', String(N)]
   if (dryRun) args.push('--dry-run')
-  const pub = spawnSync('bun', args, { encoding: 'utf8', env: process.env, maxBuffer: 64 * 1024 * 1024 })
+  // Force the Step-CA TLS bypass into the child env explicitly — `env: process.env`
+  // does not reliably propagate a runtime-set var to a bun spawnSync child, and
+  // generate-grammar-audio-script.ts (unlike publish-lesson-content.ts) does not
+  // self-set it, so it fails with "unable to get local issuer certificate".
+  const childEnv = { ...process.env, NODE_TLS_REJECT_UNAUTHORIZED: '0' }
+  const pub = spawnSync('bun', args, { encoding: 'utf8', env: childEnv, maxBuffer: 64 * 1024 * 1024 })
   const pubOut = `${pub.stdout ?? ''}${pub.stderr ?? ''}`
   if (pub.stdout) process.stdout.write(pub.stdout)
   if (pub.stderr) process.stderr.write(pub.stderr)
@@ -188,7 +241,7 @@ async function main(): Promise<void> {
   // 3) Grammar audio-recording script — generate + verify coverage.
   const gram = spawnSync('bun', ['scripts/generate-grammar-audio-script.ts', String(N)], {
     encoding: 'utf8',
-    env: process.env,
+    env: childEnv,
     maxBuffer: 32 * 1024 * 1024,
   })
   const gramOut = `${gram.stdout ?? ''}`
@@ -215,8 +268,31 @@ async function main(): Promise<void> {
     record('grammar-no-silent-drops', noDrops, noDrops ? 'no "content NOT emitted" warnings' : `${dropWarnings.length} drop(s): ${dropWarnings.join(' | ')}`)
   }
 
+  // 4) Per-text audio coverage (items + dialogue) — the gap CS23 leaves.
+  // Stage A is the synthesizer, so after a live run every voiced text should have
+  // a clip. Outcomes:
+  //   - full coverage          → pass
+  //   - PARTIAL (audio ran)    → FAIL — a real defect (budget cap / mid-run synth
+  //                              failure left some texts unvoiced)
+  //   - ZERO (audio never ran) → DEFERRED, non-blocking — Stage A synthesised+reused
+  //                              = 0 means the TTS credential was absent; #165 (the
+  //                              hard "halt on unvoiced word" gate) is not built, so
+  //                              don't trap the session — surface it loudly instead.
+  const audio = await audioCoverage(lessonId)
+  const audioRan = (Number(counts.audioClipsSynthesised ?? 0) + Number(counts.audioClipsReused ?? 0)) > 0
+  if (audio.total === 0) {
+    record('audio-coverage', true, 'no voiced texts in this lesson')
+  } else if (audio.covered === audio.total) {
+    record('audio-coverage', true, `${audio.covered}/${audio.total} item+dialogue texts voiced`)
+  } else if (!audioRan) {
+    // Don't fail the capture — audio was deferred (no TTS credential). Loud note.
+    record('audio-coverage', true, `DEFERRED — Stage A voiced nothing (synth+reused=0; TTS credential absent?); ${audio.total - audio.covered}/${audio.total} texts unvoiced → backfill: generate-exercise-audio ${N} (hard gate is #165, unbuilt)`)
+  } else {
+    record('audio-coverage', false, `PARTIAL — ${audio.covered}/${audio.total} voiced; ${audio.missing.length} missing: ${audio.missing.slice(0, 8).join(', ')}${audio.missing.length > 8 ? ' …' : ''}`)
+  }
+
   const ok = checks.every((c) => c.ok)
-  await finish(ok, { lessonId, counts, findings, readback, grammar: { dbGrammarSections, emittedSections, dropWarnings, file: GRAMMAR_TXT_PATH } })
+  await finish(ok, { lessonId, counts, findings, readback, grammar: { dbGrammarSections, emittedSections, dropWarnings, file: GRAMMAR_TXT_PATH }, audio })
 }
 
 async function finish(ok: boolean, payload: Record<string, unknown> | null): Promise<void> {
