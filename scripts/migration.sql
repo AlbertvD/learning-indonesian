@@ -1951,6 +1951,13 @@ on conflict (user_id, lesson_id) do nothing;
 -- client-side fact (the bespoke-page registry), not a DB one. Lessons.tsx now
 -- derives preparedLessonIds from the registry.
 --
+-- 2026-06-09 (lesson-status two-sources): the per-lesson learner status is now
+-- `% mastered = mastered_capability_count / ready_capability_count`. The two
+-- surfaced facts are `is_activated` (Status-1, pure activation EXISTS) and that
+-- percentage. Retired: `practiced_eligible_capability_count`, the
+-- `has_started_lesson` lesson_progress union. The `mastered` filter mirrors
+-- masteryModel.ts (ADR 0015), guarded by a TS<->SQL parity test.
+--
 -- Idempotent. DROP FUNCTION first because CREATE OR REPLACE cannot change
 -- a function's RETURNS TABLE shape (even when it doesn't, drop+create is
 -- a strictly safer idiom).
@@ -1967,9 +1974,9 @@ returns table (
   publication_status text,
   is_published boolean,
   lesson_sections jsonb,
-  has_started_lesson boolean,
+  is_activated boolean,
   ready_capability_count int,
-  practiced_eligible_capability_count int
+  mastered_capability_count int
 )
 language sql stable security invoker as $$
   with lesson_capabilities as (
@@ -1977,23 +1984,41 @@ language sql stable security invoker as $$
     -- joins learning_capabilities directly on lesson_id (ADR 0006) instead
     -- of unnesting lesson_page_blocks.source_refs[]. Excludes podcast caps
     -- (lesson_id is null) which were never in scope of this RPC.
+    -- 2026-06-09 (lesson-status two-sources): projects the 5 columns the
+    -- `mastered` predicate needs (was activation_state, review_count); adds
+    -- `retired_at is null` so the introducible denominator excludes retired caps.
     select c.lesson_id, c.id as capability_id,
            c.readiness_status, c.publication_status,
-           s.activation_state, s.review_count
+           s.review_count, s.stability, s.last_reviewed_at,
+           s.lapse_count, s.consecutive_failure_count
     from indonesian.learning_capabilities c
     left join indonesian.learner_capability_state s
       on s.capability_id = c.id and s.user_id = p_user_id
     where c.lesson_id is not null
+      and c.retired_at is null
   ),
   capability_counts as (
     select lesson_id,
+           -- introducible denominator
            count(*) filter (
              where readiness_status = 'ready' and publication_status = 'published'
            )::int as ready_count,
+           -- mastered numerator: SQL mirror of labelForCapability
+           -- (src/lib/analytics/mastery/masteryModel.ts:174-182). review_count>=4
+           -- subsumes the TS reviewCount===0 short-circuit; coalesce mirrors TS
+           -- `?? 0` (load-bearing — stability is nullable); a NULL last_reviewed_at
+           -- yields a NULL predicate so the row is not counted, matching isRecent's
+           -- `if (!iso) return false`; lapse=0 ∧ consec=0 mirrors the at_risk
+           -- override. Kept in lockstep by the TS<->SQL parity test
+           -- (scripts/__tests__/lessons-overview-mastery-parity.test.ts).
            count(*) filter (
              where readiness_status = 'ready' and publication_status = 'published'
-               and activation_state = 'active' and coalesce(review_count, 0) > 0
-           )::int as practiced_count
+               and review_count >= 4
+               and coalesce(stability, 0) >= 14
+               and last_reviewed_at >= now() - interval '30 days'
+               and coalesce(lapse_count, 0) = 0
+               and coalesce(consecutive_failure_count, 0) = 0
+           )::int as mastered_count
     from lesson_capabilities group by lesson_id
   ),
   lesson_sections_json as (
@@ -2011,18 +2036,16 @@ language sql stable security invoker as $$
     'published'::text as publication_status,
     true as is_published,
     coalesce(lsj.sections, '[]'::jsonb) as lesson_sections,
-    (
-      exists (
-        select 1 from indonesian.learner_lesson_activation lla
-        where lla.user_id = p_user_id and lla.lesson_id = l.id
-      )
-      or exists (
-        select 1 from indonesian.lesson_progress lp
-        where lp.user_id = p_user_id and lp.lesson_id = l.id
-      )
-    ) as has_started_lesson,
+    -- 2026-06-09: Status-1 single source = pure activation EXISTS. The legacy
+    -- lesson_progress union was dropped (its write path is dead-but-compiled —
+    -- progressService.markLessonComplete has no production caller; see
+    -- docs/current-system/data-model.md:186).
+    exists (
+      select 1 from indonesian.learner_lesson_activation lla
+      where lla.user_id = p_user_id and lla.lesson_id = l.id
+    ) as is_activated,
     coalesce(cc.ready_count, 0) as ready_capability_count,
-    coalesce(cc.practiced_count, 0) as practiced_eligible_capability_count
+    coalesce(cc.mastered_count, 0) as mastered_capability_count
   from indonesian.lessons l
   left join capability_counts cc on cc.lesson_id = l.id
   left join lesson_sections_json lsj on lsj.lesson_id = l.id

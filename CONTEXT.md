@@ -110,7 +110,19 @@ The module that renders lesson page blocks and bridges to practice. It is fully 
 
 ## Mastery Model
 
-A read-only model that derives learner-facing mastery from capability state, review evidence, modality spread, recency, and confidence. It does not schedule content or overclaim production ability from recognition evidence.
+A read-only model that derives learner-facing mastery from capability state, review evidence, modality spread, recency, and confidence. It does not schedule content or overclaim production ability from recognition evidence. Lives at `src/lib/analytics/mastery/` (its target seam). Its first wired consumer is the lesson tile's **% mastered** (see Lesson learner status).
+
+## Mastered (capability)
+
+The **one strict, level-independent** definition of mastery for a single capability: `reviewCount ≥ 4` AND FSRS `stability ≥ 14 days` AND reviewed within the last 30 days AND no lapse / consecutive-failure (a lapse or consecutive failure makes it `at_risk` instead). It is the canonical definition (`masteryModel.ts` `labelForCapability`) mirrored into the `get_lessons_overview` SQL to compute per-lesson `% mastered`; the two are kept in lockstep by a parity test (**ADR 0015**). If a more forgiving "good enough" signal is ever wanted, it gets a **different word** (e.g. "proficient") — never a diluted `mastered`. The full cap-level ladder is `at_risk / not_assessed / introduced / learning / strengthening / mastered`; only the `mastered` rung is load-bearing outside the analytics surfaces.
+
+## Introducible (capability of a lesson)
+
+A lesson capability that is `ready` AND `published` AND not retired — the lesson's full **schedulable** content. It is the **denominator** for a lesson's `% mastered`. Caps that are staged-locked *right now* (receptive-before-productive) are still introducible — they unlock over time. A capability that is *permanently* unreachable (orphan-suppressed) is a **gate/content defect to fix at the source**, never subtracted from the denominator.
+
+## Lesson learner status
+
+How much of a lesson a learner has mastered, expressed as **`% mastered = mastered / introducible`** — a single percentage, **no lesson-level label**. It is one of the **two single-sourced facts** a lesson tile shows; the other is **Activation status** (presence of a `learner_lesson_activation` row). There is **no sequential locking** between lessons and **no recommended-lesson** on the catalog — activation is the learner-controlled gate, and the Today/Session flow is the call-to-action. (Retired 2026-06-09: the `overviewStatus` order-gate, the `in_practice/practiced/later` enum, and the recommender. See `docs/plans/2026-06-09-lesson-status-two-sources-design.md`.)
 
 ## Lesson Stage
 

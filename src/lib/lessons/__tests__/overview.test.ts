@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   buildLessonOverviewModel,
-  buildLessonOverviewSignals,
+  lessonMasteredPercent,
   type LessonOverviewCapabilityCounts,
-  type LessonOverviewExposure,
   type LessonOverviewModelLesson,
 } from '@/lib/lessons'
 
@@ -16,133 +15,100 @@ function lesson(overrides: Partial<LessonOverviewModelLesson>): LessonOverviewMo
   }
 }
 
-function exposure(overrides: Partial<LessonOverviewExposure>): LessonOverviewExposure {
-  return {
-    lessonId: 'lesson-1',
-    exposureKind: 'grammar',
-    started: true,
-    ...overrides,
-  }
-}
-
 function counts(overrides: Partial<LessonOverviewCapabilityCounts>): LessonOverviewCapabilityCounts {
   return {
     lessonId: 'lesson-1',
-    readyItemCount: 0,
-    practicedEligibleItemCount: 0,
-    eligibleIntroducedItemCount: 0,
-    hasAuthoredEligiblePracticeContent: true,
+    isActivated: false,
+    masteredCount: 0,
+    introducibleCount: 0,
     ...overrides,
   }
 }
 
+describe('lessonMasteredPercent', () => {
+  it('returns null when not activated or no introducible caps', () => {
+    expect(lessonMasteredPercent({ isActivated: false, masteredCount: 5, introducibleCount: 10 })).toBeNull()
+    expect(lessonMasteredPercent({ isActivated: true, masteredCount: 0, introducibleCount: 0 })).toBeNull()
+  })
+
+  it('rounds mastered/introducible to a percentage', () => {
+    expect(lessonMasteredPercent({ isActivated: true, masteredCount: 7, introducibleCount: 9 })).toBe(78)
+    expect(lessonMasteredPercent({ isActivated: true, masteredCount: 10, introducibleCount: 10 })).toBe(100)
+    expect(lessonMasteredPercent({ isActivated: true, masteredCount: 0, introducibleCount: 10 })).toBe(0)
+  })
+
+  it('clamps a transient count skew to 100%', () => {
+    expect(lessonMasteredPercent({ isActivated: true, masteredCount: 12, introducibleCount: 10 })).toBe(100)
+  })
+})
+
 describe('lesson overview model', () => {
-  it('combines lessons, exposure, capability counts, and grammar topics into sorted rows', () => {
+  it('maps lessons + counts + grammar topics into order-sorted tile rows', () => {
     const lessons = [
       lesson({ id: 'lesson-2', title: 'Lesson 2', order_index: 2 }),
       lesson({ id: 'lesson-1', title: 'Lesson 1', order_index: 1 }),
     ]
-    const signals = buildLessonOverviewSignals({
-      lessons,
-      exposures: [exposure({ lessonId: 'lesson-1' })],
-      capabilityCounts: [counts({
-        lessonId: 'lesson-1',
-        readyItemCount: 4,
-        eligibleIntroducedItemCount: 4,
-      })],
-    })
-
     const model = buildLessonOverviewModel({
       lessons,
-      signals,
+      counts: [counts({ lessonId: 'lesson-1', isActivated: true, masteredCount: 7, introducibleCount: 9 })],
       grammarTopics: [{ lessonId: 'lesson-1', label: 'word order' }],
+      preparedLessonIds: ['lesson-1', 'lesson-2'],
     })
 
     expect(model.rows.map(row => row.lessonId)).toEqual(['lesson-1', 'lesson-2'])
-    expect(model.recommendedLessonId).toBe('lesson-1')
-    expect(model.recommendedRow?.lessonId).toBe('lesson-1')
-    expect(model.rows.some(row => row.lessonId === model.recommendedLessonId)).toBe(true)
     expect(model.rows[0]).toMatchObject({
       lessonId: 'lesson-1',
-      // After retirement #6: activated lessons are 'in_progress' until the
-      // user has practiced at least one capability — the old
-      // 'ready_to_practice' state collapses into 'in_progress' since the
-      // lesson is now activated explicitly.
-      status: 'in_progress',
-      actionLabel: 'Continue',
+      isActivated: true,
+      masteredCount: 7,
+      introducibleCount: 9,
+      masteredPercent: 78,
+      isPrepared: true,
       href: '/lesson/lesson-1',
       grammarTopicTag: 'Grammar: word order',
     })
+    // No recommended-lesson hero in the model anymore.
+    expect('recommendedLessonId' in model).toBe(false)
   })
 
-  it('falls back to openable rows and recommends Lesson 1 for new learners', () => {
+  it('a not-activated lesson has masteredPercent null and a default not-started shape', () => {
     const model = buildLessonOverviewModel({
-      lessons: [
-        lesson({ id: 'lesson-1', title: 'Lesson 1', order_index: 1 }),
-        lesson({ id: 'lesson-2', title: 'Lesson 2', order_index: 2 }),
-      ],
-      signals: [],
+      lessons: [lesson({ id: 'lesson-1', order_index: 1 })],
+      counts: [counts({ lessonId: 'lesson-1', isActivated: false, masteredCount: 0, introducibleCount: 12 })],
       grammarTopics: [],
+      preparedLessonIds: ['lesson-1'],
     })
-
-    expect(model.recommendedLessonId).toBe('lesson-1')
-    expect(model.recommendedRow).toMatchObject({
-      lessonId: 'lesson-1',
-      status: 'not_started',
-      actionLabel: 'Open lesson',
-      grammarTopicTag: null,
-    })
-    expect(model.rows.map(row => row.actionLabel)).toEqual(['Open lesson', 'Open lesson'])
-  })
-
-  it('keeps an activated lesson with no practice yet in progress, and gates later lessons', () => {
-    const lessons = [
-      lesson({ id: 'lesson-1', title: 'Lesson 1', order_index: 1 }),
-      lesson({ id: 'lesson-2', title: 'Lesson 2', order_index: 2 }),
-    ]
-    const model = buildLessonOverviewModel({
-      lessons,
-      signals: buildLessonOverviewSignals({
-        lessons,
-        exposures: [exposure({ lessonId: 'lesson-1' })],
-        capabilityCounts: [counts({
-          lessonId: 'lesson-1',
-          hasAuthoredEligiblePracticeContent: false,
-        })],
-      }),
-      grammarTopics: [],
-    })
-
     expect(model.rows[0]).toMatchObject({
       lessonId: 'lesson-1',
-      status: 'in_progress',
+      isActivated: false,
+      masteredPercent: null,
+      href: '/lesson/lesson-1',
     })
-    // After retirement #6, an activated-but-not-practiced lesson does not
-    // satisfy the earlier-lessons gate — Lesson 2 stays 'later'.
-    expect(model.rows[1]).toMatchObject({
-      lessonId: 'lesson-2',
-      status: 'later',
-    })
-    expect(model.recommendedLessonId).toBe('lesson-1')
   })
 
-  it('ignores culture and pronunciation-only exposure for status and recommendation', () => {
+  it('NO sequential locking: a later lesson is openable regardless of earlier-lesson state', () => {
     const lessons = [
       lesson({ id: 'lesson-1', title: 'Lesson 1', order_index: 1 }),
       lesson({ id: 'lesson-2', title: 'Lesson 2', order_index: 2 }),
     ]
-    const signals = buildLessonOverviewSignals({
+    const model = buildLessonOverviewModel({
       lessons,
-      exposures: [
-        exposure({ lessonId: 'lesson-1', exposureKind: 'culture' }),
-        exposure({ lessonId: 'lesson-1', exposureKind: 'pronunciation' }),
-      ],
-      capabilityCounts: [counts({ lessonId: 'lesson-1', readyItemCount: 6 })],
+      // lesson-1 barely started; under the old order-gate this would have
+      // forced lesson-2 to 'later' with no href. It must not anymore.
+      counts: [counts({ lessonId: 'lesson-1', isActivated: true, masteredCount: 0, introducibleCount: 20 })],
+      grammarTopics: [],
+      preparedLessonIds: ['lesson-1', 'lesson-2'],
     })
-    const model = buildLessonOverviewModel({ lessons, signals, grammarTopics: [] })
+    expect(model.rows[1]).toMatchObject({ lessonId: 'lesson-2', href: '/lesson/lesson-2' })
+  })
 
-    expect(model.rows[0]?.status).toBe('not_started')
-    expect(model.recommendedLessonId).toBe('lesson-1')
+  it('a non-prepared lesson has no href (not-available tile)', () => {
+    const model = buildLessonOverviewModel({
+      lessons: [lesson({ id: 'lesson-1', order_index: 1 })],
+      counts: [counts({ lessonId: 'lesson-1', isActivated: true, masteredCount: 3, introducibleCount: 10 })],
+      grammarTopics: [],
+      preparedLessonIds: [], // not prepared
+    })
+    expect(model.rows[0]).toMatchObject({ lessonId: 'lesson-1', isPrepared: false, href: null })
   })
 
   it('includes only published lessons and omits the grammar tag when metadata is missing', () => {
@@ -152,8 +118,9 @@ describe('lesson overview model', () => {
         lesson({ id: 'lesson-2', title: 'Lesson 2', order_index: 2, publication_status: 'draft' }),
         lesson({ id: 'lesson-3', title: 'Lesson 3', order_index: 3, is_published: false }),
       ],
-      signals: [],
+      counts: [],
       grammarTopics: [],
+      preparedLessonIds: ['lesson-1'],
     })
 
     expect(model.rows).toHaveLength(1)
