@@ -31,6 +31,7 @@ Everything below "Quality Over Speed", every `feedback_*` memory, and every gate
 | Identity | store it explicitly and keep it in the key > derive-and-drop |
 | Changing a data shape (build-stage) | build the target and delete the old in one move > additive-then-subtractive parity rollout |
 | Storage | typed column the DB + type-checker enforce > JSON blob |
+| Read aggregation | server-side RPC aggregation (small result) > ship rows to crunch client-side; a mirrored predicate is OK if parity-tested (ADR 0015) |
 | Touching an existing module | extend a composing primitive > a new parallel per-case branch; but rebuild clean > inherit a mid-cutover accreted module |
 
 ## Quality Over Speed
