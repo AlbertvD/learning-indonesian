@@ -37,6 +37,7 @@ import {
 } from './enrichDialogueTranslations'
 import { enrichMissingEnContent } from './enrichEnTranslations'
 import { projectSections, type AffixedPairInput } from './projectSections'
+import { cleanItemText } from '../../clean-item-text'
 import { writeLessonWithEnrichedSections } from './stagingWriteback'
 import { runLessonCountParity } from './verify/countParity'
 import { runLessonContentNonEmpty } from './verify/contentNonEmpty'
@@ -456,7 +457,9 @@ export function collectLessonPageTexts(
       if (!Array.isArray(items)) continue
       for (const item of items as Array<{ indonesian?: unknown }>) {
         if (typeof item.indonesian !== 'string' || !item.indonesian.trim()) continue
-        out.push({ text: item.indonesian.trim(), voiceId: primaryVoice })
+        // Strip orthographic parentheticals so TTS voices the clean word, not the
+        // bracketed gloss — same rule projectSections applies to the item rows.
+        out.push({ text: cleanItemText(item.indonesian.trim()), voiceId: primaryVoice })
       }
     } else if (type === 'grammar') {
       // Grammar example sentences are authored, learner-facing Indonesian shown
