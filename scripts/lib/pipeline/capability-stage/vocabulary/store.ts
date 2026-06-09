@@ -88,63 +88,6 @@ async function fetchAllActiveItems(
 }
 
 /**
- * Items introduced by `lessonId` that have an authored cloze carrier in
- * item_contexts (context_type='cloze'). Feeds projectItemClozeCaps. Standalone
- * (NOT part of the DistractorStore interface — cloze emission is a separate
- * concern from distractor seeding). Returns the item base_text so the caller's
- * sourceRefForLearningItem matches the other item caps' sourceRef exactly.
- *
- * Membership = the lesson's item caps' source_refs (same resolution as
- * fetchItemCapsForLesson). item_contexts is paginated + intersected in memory
- * (gateway-URL-length rule — no .in(uuid,[...]) over a large set).
- */
-export async function fetchItemsWithClozeCarrier(
-  supabase: CapabilitySupabaseClient,
-  lessonId: string,
-): Promise<{ indonesianText: string }[]> {
-  const idn = supabase.schema('indonesian')
-
-  // 1. This lesson's item caps → the set of item normalized_texts it introduces.
-  const { data: caps, error: capErr } = await idn
-    .from('learning_capabilities')
-    .select('source_ref')
-    .eq('source_kind', 'item')
-    .eq('lesson_id', lessonId)
-  if (capErr) throw new Error(`store.fetchItemsWithClozeCarrier/caps: ${capErr.message}`)
-  const normalizedTexts = new Set(
-    (caps ?? []).map((c) => normalizedTextFromRef((c as { source_ref: string }).source_ref)),
-  )
-  if (normalizedTexts.size === 0) return []
-
-  // 2. Resolve to learning_item id → base_text for this lesson's items.
-  const items = await fetchAllActiveItems(supabase)
-  const idToText = new Map<string, string>()
-  for (const i of items.values()) {
-    if (normalizedTexts.has(i.normalized_text)) idToText.set(i.id, i.base_text)
-  }
-  if (idToText.size === 0) return []
-
-  // 3. Which of those items have a cloze carrier? Paginate item_contexts(cloze)
-  //    and intersect in memory.
-  const withCarrier = new Set<string>()
-  let offset = 0
-  while (true) {
-    const { data, error } = await idn
-      .from('item_contexts')
-      .select('learning_item_id')
-      .eq('context_type', 'cloze')
-      .range(offset, offset + PAGE_SIZE - 1)
-    if (error) throw new Error(`store.fetchItemsWithClozeCarrier/contexts: ${error.message}`)
-    const page = (data ?? []) as Array<{ learning_item_id: string }>
-    for (const r of page) if (idToText.has(r.learning_item_id)) withCarrier.add(r.learning_item_id)
-    if (page.length < PAGE_SIZE) break
-    offset += PAGE_SIZE
-  }
-
-  return [...withCarrier].map((id) => ({ indonesianText: idToText.get(id) as string }))
-}
-
-/**
  * Distractor row counts per capability, for the CS15 coverage gate (which needs
  * counts, not just presence). Paginate-all-then-filter (gateway URL-length rule).
  * Returns 0 for caps with no rows (callers default-fill via `?? 0`).
