@@ -55,11 +55,24 @@ describe('retirement #6 — source-progress → lesson-activation migration (mas
     expect(masterSql).not.toContain('lp.last_accessed_at')
   })
 
-  it('rewrites get_lessons_overview to use activation + lesson_progress union (cleanup stage)', () => {
+  it('get_lessons_overview Status-1 is pure activation EXISTS (lesson_progress union retired 2026-06-09)', () => {
+    // Retirement #6 (this file) introduced a `learner_lesson_activation OR
+    // lesson_progress` union under `has_started_lesson`. The 2026-06-09
+    // lesson-status two-sources change SUPERSEDES that: Status-1 is now pure
+    // activation EXISTS exposed as `is_activated`, and the lesson_progress union
+    // is gone (its write path is dead-but-compiled).
     expect(masterSql).toContain('create or replace function indonesian.get_lessons_overview(p_user_id uuid)')
     expect(masterSql).toContain('from indonesian.learner_lesson_activation lla')
-    expect(masterSql).toContain('from indonesian.lesson_progress lp')
-    expect(masterSql).toContain('as has_started_lesson')
+    expect(masterSql).toContain('as is_activated')
+    expect(masterSql).toContain('as mastered_capability_count')
+    // the per-lesson learner status is now % mastered; the old binary counts are
+    // gone from the function BODY (anchor past the header comment, which names
+    // the retired fields narratively).
+    const fnIndex = masterSql.indexOf('create or replace function indonesian.get_lessons_overview(p_user_id uuid)')
+    const fnSlice = masterSql.slice(fnIndex, fnIndex + 3500)
+    expect(fnSlice).not.toContain('practiced_eligible_capability_count')
+    expect(fnSlice).not.toContain('as has_started_lesson')
+    expect(fnSlice).not.toContain('from indonesian.lesson_progress lp')
   })
 
   it('drops has_meaningful_exposure from get_lessons_overview return shape', () => {
