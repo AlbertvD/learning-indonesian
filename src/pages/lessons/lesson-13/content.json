@@ -7,7 +7,7 @@
     "description": "",
     "primary_voice": "id-ID-Chirp3-HD-Gacrux",
     "duration_seconds": null,
-    "lesson_audio_url": null
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-13.m4a"
   },
   "sections": [
     {
@@ -782,7 +782,10 @@
       "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
     },
     "LessonAudioPlayer": {
-      "note": "No lesson-level audio published for this lesson yet."
+      "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
+      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-13.m4a\" voice=\"id-ID-Chirp3-HD-Gacrux\" />",
+      "purpose": "The lesson-level explanation/overview audio player.",
+      "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
     },
     "PracticeActions": {
       "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
