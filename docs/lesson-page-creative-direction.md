@@ -163,6 +163,16 @@ The fetcher gives the agent `lesson_sections.content` blobs with varying shapes 
 
 Below are the patterns lesson 1 settled on. Treat them as starting points, adapted to whatever's actually in the content.
 
+### Structured list layout — even columns, aligned (standing preference)
+
+For **any list-like content** — grammar transform examples (`base → derived`), vocabulary, expressions, verb lists (e.g. the nota-bene "verbs without ME-") — lay it out as an **even multi-column grid that fills the full width**, with **no empty right-hand gutter**. **Three columns at desktop** is the default, collapsing to one on mobile.
+
+Within the grid, **align the columns into a table, not a ragged flex-wrap**: give the **leading term a fixed-width column** — the base/root verb, the Indonesian headword — so the separators (`·`), the translations, and the derived (meng-) forms **line up vertically down each column**. In CSS that's a fixed `min-width` (often right-aligned for a `base → derived` pair) on the leading element; a few outliers that overflow (e.g. a word carrying its pronunciation) are acceptable.
+
+**Grammar examples sit *below* the explanation, never beside it** — rules first, then the example grid under a dashed top rule.
+
+(Established on lesson 13, 2026-06 — supersedes any "examples in a right-hand column" guidance below.)
+
 ### Pronunciation showcase — `type: "text"` with `examples[] + spelling[]`
 
 Used for lesson 1 section 0. Amber accent. Two visual blocks:
@@ -184,11 +194,11 @@ Purple eyebrow, full-section title in italic, **no intro lede** (the DB intro te
 
 Inside each band:
 - **Header** — small mono accent number ("01") + bold title ("Werkwoord")
-- **Body** — 2-column grid (`1.1fr 1fr`) with a 48 px gap:
-  - Left: rules as a bulleted list with accent-coloured `→` glyphs
-  - Right: examples (`indonesian` + `dutch` translation pairs) separated by a dashed vertical rule
+- **Body** — stacked, NOT side-by-side (see "Structured list layout" above):
+  - **Rules first** — the explanation as a bulleted list with accent-coloured `→` glyphs.
+  - **Examples below**, under a dashed top rule — an **even 2-column grid** of `base → derived` rows that fills the band width, with the **base in a fixed right-aligned column** so every `→` and meng-form lines up vertically.
 
-This is the single most-iterated section. The breakthrough was: stop treating the three sub-patterns as one section's repeated cards — treat each as its own horizontal "spread" with two columns of content.
+This is the single most-iterated section. The original lesson-1 layout put examples in a right-hand column beside the rules; lesson 13 moved them **below** the rules in an aligned 2-column grid (the right-hand column left dead space and the meng-forms read raggedly). Still: treat each of the three sub-patterns as its own horizontal "spread", not one section's repeated cards.
 
 ### Dialogue — `type: "dialogue"` with `setup + lines[]`
 
@@ -199,7 +209,7 @@ Teal eyebrow, dialogue scene rendered inside a `--r-xl` band with a soft tinted 
 
 ### Vocabulary — `type: "vocabulary"` with `items[]`
 
-Green-tinted (`tone="lush"`) chip grid. Each chip is a single horizontal row: `[play] [indonesian bold] · [dutch secondary]`. Three columns at desktop, single column on mobile.
+Green-tinted (`tone="lush"`) chip grid. Each chip is a single horizontal row: `[play] [indonesian bold] · [dutch secondary]`. **Three columns at desktop**, single column on mobile. Per "Structured list layout" above, give the Indonesian headword a **fixed `min-width` (~6em)** so the `·` and the Dutch translations align down each column (a few entries carrying pronunciation, e.g. `cek (cèk)`, will overflow — acceptable).
 
 ### Expressions — `type: "expressions"` with `items[]`
 
