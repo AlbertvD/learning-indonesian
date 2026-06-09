@@ -1,7 +1,12 @@
 ---
-status: approved
+status: implementing
 reviewed_by: [architect]
 data_architect: N/A — read-only; no schema/migration/grant/writer-reader-validator change (one SELECT on existing owner-readable capability_review_events, resolved in memory)
+implementation: PR (branch feat/sibling-burying)
+implementation_paths:
+  - src/lib/session-builder/siblingBury.ts
+  - src/lib/session-builder/builder.ts
+  - src/lib/session-builder/adapter.ts
 ---
 
 # Sibling burying — one capability per word per day

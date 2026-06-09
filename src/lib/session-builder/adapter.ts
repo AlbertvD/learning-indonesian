@@ -234,11 +234,19 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
     },
 
     async loadCapabilitySessionData(request: CapabilitySessionDataRequest): Promise<CapabilitySessionDataSnapshot> {
+      // Local-midnight boundary for sibling burying. request.now is constructed
+      // browser-side (Session.tsx), so its local date is the learner's wall-clock
+      // day; toISOString() gives the UTC instant to compare against created_at
+      // (timestamptz). See docs/plans/2026-06-09-sibling-burying-design.md.
+      const dayStart = new Date(request.now)
+      dayStart.setHours(0, 0, 0, 0)
+
       const [
         capabilitiesResult,
         statesResult,
         activatedLessons,
         lessonsResult,
+        reviewEventsResult,
       ] = await Promise.all([
         db()
           .from('learning_capabilities')
@@ -249,14 +257,30 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         db().from('learner_capability_state').select('*').eq('user_id', request.userId),
         listActivatedLessons(request.userId, client),
         db().from('lessons').select('id, order_index'),
+        db()
+          .from('capability_review_events')
+          .select('capability_id')
+          .eq('user_id', request.userId)
+          .gte('created_at', dayStart.toISOString()),
       ])
 
       if (capabilitiesResult.error) throw capabilitiesResult.error
       if (statesResult.error) throw statesResult.error
       if (lessonsResult.error) throw lessonsResult.error
+      if (reviewEventsResult.error) throw reviewEventsResult.error
 
       const capabilityRows = (capabilitiesResult.data ?? []) as LearningCapabilityDbRow[]
       const capabilityById = new Map(capabilityRows.map(row => [row.id, row]))
+
+      // Sibling burying seed: the distinct source_refs reviewed earlier today.
+      // capability_id → source_ref resolved in memory from capabilityById — no
+      // JOIN, no embed, no new index. A reviewed cap that is no longer
+      // ready/published won't be in the map; skip it (it can't be a candidate).
+      const reviewedTodayRefs = new Set<string>()
+      for (const row of (reviewEventsResult.data ?? []) as { capability_id: string }[]) {
+        const ref = capabilityById.get(row.capability_id)?.source_ref
+        if (ref) reviewedTodayRefs.add(ref)
+      }
 
       // lessonId → order_index, reused from the lessons rows already loaded above
       // for deriveLessonProgression. Feeds the planner's lesson-priority ordering.
@@ -314,6 +338,7 @@ export function createSessionBuilderAdapter(client: SupabaseSchemaClient = supab
         readinessByKey,
         currentLessonId,
         nextLessonNeedsExposure,
+        reviewedTodayRefs,
       }
     },
 
