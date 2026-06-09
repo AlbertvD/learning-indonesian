@@ -6,6 +6,8 @@
  * - make check-compose was not run after the modification
  */
 
+import { existsSync, readFileSync, statSync } from "node:fs";
+
 import { appendLog, clearSessionState, readSessionState, readStdinJson } from "./hook-utils";
 
 const LOG_FILE = `${process.cwd()}/.claude/logs/stop.jsonl`;
@@ -45,6 +47,44 @@ async function main(): Promise<void> {
 			`Run: make check-compose\n`,
 		);
 		process.exit(2);
+	}
+
+	// Stage-A capture enforcement (lesson-stage skill): if a LIVE Stage-A publish
+	// ran this session, a complete + passing capture must exist for that lesson
+	// so no data-quality gap reaches "done". No-op for every other session.
+	if (state.stage_a_ran === true && typeof state.stage_a_lesson === "string") {
+		const n = state.stage_a_lesson;
+		const capturePath = `${process.cwd()}/audio-scripts/SD L${n}.report.json`;
+		const grammarPath = `${process.cwd()}/audio-scripts/SD L${n}.txt`;
+		let captureOk = false;
+		let reason = "no capture report found";
+		if (existsSync(capturePath)) {
+			try {
+				const cap = JSON.parse(readFileSync(capturePath, "utf8")) as Record<string, unknown>;
+				if (cap.ok !== true) reason = `capture ok=${String(cap.ok)} (a check failed)`;
+				else if (cap.mode !== "live") reason = `capture mode=${String(cap.mode)} (not a live run)`;
+				else if (!(existsSync(grammarPath) && statSync(grammarPath).size > 0)) reason = "grammar audio script missing or empty";
+				else captureOk = true;
+			} catch {
+				reason = "capture report is unreadable";
+			}
+		}
+
+		if (!captureOk) {
+			await appendLog(LOG_FILE, {
+				session_id: sessionId,
+				blocked: true,
+				reason: `stage A lesson ${n} ran without a complete capture: ${reason}`,
+			});
+			process.stderr.write(
+				`Stage A for lesson ${n} ran live, but its capture is incomplete (${reason}).\n` +
+				`A data-quality gap must not slip through. Run the lesson-stage orchestrator to completion:\n` +
+				`  bun .claude/skills/lesson-stage/scripts/run-stage-a.ts ${n}\n` +
+				`It asserts every Lesson Gate, reads the DB back for parity, and generates + coverage-checks\n` +
+				`the grammar audio script — writing audio-scripts/SD L${n}.report.json with ok=true on success.\n`,
+			);
+			process.exit(2);
+		}
 	}
 
 	await clearSessionState(STATE_FILE);
