@@ -28,6 +28,31 @@ export function detectCheckComposeRun(toolName: string, toolInput: Record<string
 	return command.includes("check-compose") || command.includes("make check-compose");
 }
 
+/**
+ * Detects a LIVE Stage-A publish (the lesson-stage skill orchestrator, or the
+ * bare canonical entry point used to bypass it). Returns the lesson number so
+ * the stop hook can enforce that a complete Stage-A capture exists for it.
+ *
+ * Matches ONLY a genuine invocation: a `;`/`&&`/`|`-separated segment that
+ * STARTS with (optional env-var assignments +) `bun [run] <…>/<script>.ts <N>`,
+ * where `<N>` is a standalone lesson number. This deliberately rejects mere
+ * MENTIONS of the script — a typecheck (`tsc … run-stage-a.ts 2>&1`), grep, cat,
+ * echo, or `bun -e '…run-stage-a.ts…'` — and rejects a stderr-redirect `2>&1`
+ * being misread as lesson 2 (the false positive this guards against).
+ * A `--dry-run` writes nothing → no capture is required → not detected.
+ */
+export function detectStageARun(toolName: string, toolInput: Record<string, unknown>): number | null {
+	if (toolName !== "Bash") return null;
+	const command = typeof toolInput.command === "string" ? toolInput.command : "";
+	if (command.includes("--dry-run")) return null;
+	const INVOCATION = /^(?:\w+=\S+\s+)*bun(?:\s+run)?\s+\S*(?:run-stage-a|publish-lesson-content)\.ts\s+(\d+)(?=\s|$)/;
+	for (const segment of command.split(/&&|\|\||[;|\n]/)) {
+		const m = segment.trim().match(INVOCATION);
+		if (m) return parseInt(m[1], 10);
+	}
+	return null;
+}
+
 async function updateState(key: string, value: string | boolean): Promise<void> {
 	const state = await readSessionState(STATE_FILE);
 	state[key] = value;
@@ -47,6 +72,7 @@ async function main(): Promise<void> {
 
 	const composeFile = detectComposeModification(toolName, toolInput);
 	const checkComposeRan = detectCheckComposeRun(toolName, toolInput);
+	const stageALesson = detectStageARun(toolName, toolInput);
 
 	if (composeFile) {
 		await updateState("compose_modified", true);
@@ -59,11 +85,19 @@ async function main(): Promise<void> {
 		await updateState("compose_modified", false); // validated — no longer dirty
 	}
 
+	if (stageALesson !== null) {
+		// A live Stage-A publish ran — the stop hook will require a complete,
+		// passing capture (audio-scripts/SD L<N>.report.json) for this lesson.
+		await updateState("stage_a_ran", true);
+		await updateState("stage_a_lesson", String(stageALesson));
+	}
+
 	await appendLog(LOG_FILE, {
 		session_id: sessionId,
 		tool_name: toolName,
 		compose_modified: !!composeFile,
 		check_compose_ran: checkComposeRan,
+		stage_a_lesson: stageALesson,
 	});
 
 	await rotateIfNeeded(LOG_FILE);
