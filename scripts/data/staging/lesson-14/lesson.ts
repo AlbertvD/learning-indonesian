@@ -1,8 +1,8 @@
 // Enriched by lesson-stage
 export const lesson = {
-  "title": "Les 14 - De islam in Indonesië / Werkwoordsvorm met ME- Vervolg",
+  "title": "Les 14 - De islam in Indonesië",
   "description": "",
-  "level": "A1",
+  "level": "B1",
   "module_id": "module-1",
   "order_index": 14,
   "sections": [

@@ -2,7 +2,7 @@
 export const lesson = {
   "title": "Les - Batik",
   "description": "",
-  "level": "A1",
+  "level": "A2",
   "module_id": "module-1",
   "order_index": 8,
   "sections": [

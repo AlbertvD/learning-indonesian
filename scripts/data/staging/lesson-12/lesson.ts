@@ -2,7 +2,7 @@
 export const lesson = {
   "title": "Les 12 - Di Stasiun Gambir di Jakarta",
   "description": "",
-  "level": "A1",
+  "level": "A2",
   "module_id": "module-1",
   "order_index": 12,
   "sections": [

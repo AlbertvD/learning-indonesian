@@ -2,7 +2,7 @@
 export const lesson = {
   "title": "Les - Ke Puskesmas / Dukun en Jamu",
   "description": "",
-  "level": "A1",
+  "level": "A2",
   "module_id": "module-1",
   "order_index": 9,
   "sections": [

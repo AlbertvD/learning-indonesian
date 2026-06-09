@@ -126,6 +126,26 @@ A lesson capability that is `ready` AND `published` AND not retired — the less
 
 How much of a lesson a learner has mastered, expressed as **`% mastered = mastered / introducible`** — a single percentage, **no lesson-level label**. It is one of the **two single-sourced facts** a lesson tile shows; the other is **Activation status** (presence of a `learner_lesson_activation` row). There is **no sequential locking** between lessons and **no recommended-lesson** on the catalog — activation is the learner-controlled gate, and the Today/Session flow is the call-to-action. (Retired 2026-06-09: the `overviewStatus` order-gate, the `in_practice/practiced/later` enum, and the recommender. See `docs/plans/2026-06-09-lesson-status-two-sources-design.md`.)
 
+## CEFR Level
+
+The CEFR band a lesson teaches at — the `level` field on `lessons` (`A1`–`C2`),
+sourced from staging `lesson.ts` `"level"` and projected by the Lesson Stage
+adapter. We adopt **CEFR** as the scale because the national Indonesian-for-foreign-speakers
+curriculum (**BIPA**, *Bahasa Indonesia bagi Penutur Asing*) is CEFR-based
+(Permendikbud 27/2017); the bands carry official Indonesian names (A1/A2 = *Pemula 1/2*,
+B1/B2 = *Madya 1/2*, C1/C2 = *Mahir 1/2*). `level` reflects **Indonesian-language
+demand only** — the Dutch culture essays never raise it.
+
+The diagnostic signal is **affix sequencing**, not topic difficulty: **A1** teaches
+only `ber-` productively (all other affixed words are whole-word vocabulary); **A2**
+broadens topic/discourse at the *same* structural ceiling (no new productive affix);
+**B1** is the morphology threshold where the learner must *productively form* `meN-`/`ber-`
+verbs, passive `di-`/`ter-`, and `ke-an`. So a lesson is B1 only when it asks the
+learner to *build* `meN-` verbs — not merely for *containing* them. Ties break
+downward. The 14 textbook-1 lessons span **A1–B1**; **B2/C1/C2** are reserved for the
+second textbook. Full ladder, per-band descriptors, and the change procedure:
+`docs/current-system/cefr-level-rubric.md`.
+
 ## Lesson Stage
 
 The deep module that ingests raw source material (e.g. HEIC page photos) and processes it — OCR, cataloguing, lesson-content assembly — until it is publishable, then writes the **lesson content** to the database. Lesson content is the material a learner reads: dialogue, vocabulary list, grammar explanations, the book's own exercises, and audio. The Lesson Stage owns everything from raw input to lesson content in the database; it produces no capabilities.
