@@ -27,21 +27,17 @@ import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
 import {
   buildLessonOverviewModel,
-  buildLessonOverviewSignals,
   extractLessonGrammarTopics,
   getLessonsOverview,
   type Lesson,
   type LessonOverviewCapabilityCounts,
-  type LessonOverviewExposure,
   type LessonOverviewModel,
-  type LessonOverviewStatus,
+  type LessonOverviewRow,
 } from '@/lib/lessons'
 import { bespokeLessonIdSet, bespokeLessonHeroByOrderIndex } from '@/pages/lessons/registry'
 import classes from './Lessons.module.css'
 
 const emptyModel: LessonOverviewModel = {
-  recommendedLessonId: null,
-  recommendedRow: null,
   rows: [],
 }
 
@@ -111,13 +107,13 @@ function LessonBanner({ orderIndex, featured }: { orderIndex: number; featured?:
   )
 }
 
-const STATUS_TONE: Record<string, 'success' | 'warning' | 'accent' | 'neutral'> = {
-  not_started: 'neutral',
-  in_progress: 'accent',
-  in_practice: 'accent',
-  practiced: 'success',
-  later: 'neutral',
-  coming_later: 'neutral',
+// The lesson tile surfaces two single-sourced facts: activation (the pill) and
+// % mastered (the subtitle). Tone tracks activation + mastery: a fully-mastered
+// activated lesson reads success, an in-progress activated lesson reads accent,
+// everything else neutral.
+function activationTone(row: LessonOverviewRow): 'success' | 'accent' | 'neutral' {
+  if (!row.isPrepared || !row.isActivated) return 'neutral'
+  return row.masteredPercent === 100 ? 'success' : 'accent'
 }
 
 const LESSONS_OVERVIEW_SCROLL_KEY = 'lessons:overview-scroll-y'
@@ -188,34 +184,19 @@ export function Lessons() {
           lesson_sections: row.lesson_sections,
         }))
 
-        const exposures: LessonOverviewExposure[] = []
-        const capabilityCounts: LessonOverviewCapabilityCounts[] = []
+        const counts: LessonOverviewCapabilityCounts[] = []
         const preparedLessonIds: string[] = []
 
         for (const row of overviewRows) {
-          // After retirement #6, has_started_lesson is the union of
-          // learner_lesson_activation + legacy lesson_progress (per the
-          // get_lessons_overview rewrite). The "meaningful exposure"
-          // distinction retired with the source-progress state machine.
-          if (row.has_started_lesson) {
-            exposures.push({
-              lessonId: row.lesson_id,
-              exposureKind: 'lesson',
-              started: true,
-            })
-          }
-
-          const eligibleIntroducedItemCount = Math.max(0, row.ready_capability_count)
-          const practicedEligibleItemCount = Math.min(
-            eligibleIntroducedItemCount,
-            Math.max(0, row.practiced_eligible_capability_count),
-          )
-          capabilityCounts.push({
+          // Two single-sourced facts per lesson: activation (pure
+          // learner_lesson_activation EXISTS) and the introducible/mastered
+          // counts that yield % mastered. See
+          // docs/plans/2026-06-09-lesson-status-two-sources-design.md.
+          counts.push({
             lessonId: row.lesson_id,
-            readyItemCount: Math.max(0, eligibleIntroducedItemCount - practicedEligibleItemCount),
-            practicedEligibleItemCount,
-            eligibleIntroducedItemCount,
-            hasAuthoredEligiblePracticeContent: eligibleIntroducedItemCount > 0,
+            isActivated: row.is_activated,
+            masteredCount: Math.max(0, row.mastered_capability_count),
+            introducibleCount: Math.max(0, row.ready_capability_count),
           })
 
           // "Prepared" = the lesson has a bespoke page (its tile links to
@@ -227,14 +208,9 @@ export function Lessons() {
           }
         }
 
-        const signals = buildLessonOverviewSignals({
-          lessons: lessonsData,
-          exposures,
-          capabilityCounts,
-        })
         const nextModel = buildLessonOverviewModel({
           lessons: lessonsData,
-          signals,
+          counts,
           grammarTopics: extractLessonGrammarTopics(lessonsData),
           preparedLessonIds,
         })
@@ -279,29 +255,18 @@ export function Lessons() {
     )
   }
 
-  const statusLabels: Record<LessonOverviewStatus, string> = {
-    not_started: T.lessons.statusNotStarted,
-    in_progress: T.lessons.statusInProgress,
-    in_practice: T.lessons.statusInPractice,
-    practiced: T.lessons.statusPracticed,
-    later: T.lessons.statusLater,
-    coming_later: T.lessons.statusComingLater,
+  const activationLabel = (row: LessonOverviewRow): string => {
+    if (!row.isPrepared) return T.lessons.statusComingLater
+    return row.isActivated ? T.lessons.statusActive : T.lessons.statusNotStarted
   }
 
-  const actionLabel = (action: LessonOverviewModel['rows'][number]['actionLabel']) => {
-    if (action === 'Continue') return T.lessons.actionContinue
-    if (action === 'Not available yet') return T.lessons.actionNotAvailableYet
-    return T.lessons.actionOpenLesson
+  const actionLabel = (row: LessonOverviewRow): string => {
+    if (!row.isPrepared) return T.lessons.actionNotAvailableYet
+    return row.isActivated ? T.lessons.actionContinue : T.lessons.actionOpenLesson
   }
 
-  const recommendedRow = model.recommendedRow
-  const recommendedHref = recommendedRow?.href
-  const isNewLearnerStart = recommendedRow?.orderIndex === 1 && recommendedRow.status === 'not_started'
-
-  // Show the recommended lesson as the hero AND keep it in the ordered list
-  // below — matches the original behaviour and what the existing tests
-  // assert (every lesson must appear in the labelled list).
-  const gridRows = model.rows
+  const masterySubtitle = (row: LessonOverviewRow): string | undefined =>
+    row.masteredPercent != null ? `${row.masteredPercent}% ${T.lessons.mastered}` : undefined
 
   return (
     <PageContainer size="lg">
@@ -320,30 +285,10 @@ export function Lessons() {
           </div>
         )}
 
-        {recommendedRow && recommendedHref && (
-          <section aria-labelledby="recommended-lesson-heading">
-            <MediaShowcaseCard
-              featured
-              banner={<LessonBanner orderIndex={recommendedRow.orderIndex} featured />}
-              eyebrow={T.lessons.recommendedLesson}
-              title={isNewLearnerStart ? T.lessons.startWithLesson1 : lessonTitle(recommendedRow.title)}
-              subtitle={isNewLearnerStart ? T.lessons.startWithLesson1Copy : T.lessons.recommendedLessonCopy}
-              cta={actionLabel(recommendedRow.actionLabel)}
-              to={recommendedHref}
-              status={
-                <StatusPill tone={STATUS_TONE[recommendedRow.status] ?? 'neutral'}>
-                  {statusLabels[recommendedRow.status]}
-                </StatusPill>
-              }
-            />
-          </section>
-        )}
-
         <SectionHeading>{T.lessons.title}</SectionHeading>
 
         <ol className={classes.lessonGrid} aria-label={T.lessons.title}>
-          {gridRows.map((row) => {
-            const tone = STATUS_TONE[row.status] ?? 'neutral'
+          {model.rows.map((row) => {
             const isAvailable = Boolean(row.href)
             return (
               <li
@@ -356,11 +301,12 @@ export function Lessons() {
                   banner={<LessonBanner orderIndex={row.orderIndex} />}
                   eyebrow={`LES ${row.orderIndex}`}
                   title={lessonTitle(row.title)}
+                  subtitle={masterySubtitle(row)}
                   tags={row.grammarTopicTag ? (
                     <span className={classes.grammarTag}>{row.grammarTopicTag}</span>
                   ) : undefined}
-                  status={<StatusPill tone={tone}>{statusLabels[row.status]}</StatusPill>}
-                  cta={actionLabel(row.actionLabel)}
+                  status={<StatusPill tone={activationTone(row)}>{activationLabel(row)}</StatusPill>}
+                  cta={actionLabel(row)}
                   to={row.href ?? undefined}
                   disabled={!isAvailable}
                 />

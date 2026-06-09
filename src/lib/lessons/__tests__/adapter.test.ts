@@ -10,6 +10,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import {
   extractLessonGrammarTopics,
+  formatGrammarTopicTag,
   getLesson,
   getLessons,
   getLessonCapabilityPracticeSummaryByLessonId,
@@ -184,5 +185,19 @@ describe('lessons adapter', () => {
       { lessonId: 'lesson-1', label: 'adjective order' },
       { lessonId: 'lesson-2', label: 'word order' },
     ])
+  })
+
+  // Relocated from the retired overviewStatus.test.ts (2026-06-09).
+  it('formats grammar topic tags without non-grammar lesson metadata', () => {
+    expect(formatGrammarTopicTag([], 'lesson-1')).toBeNull()
+    expect(formatGrammarTopicTag([
+      { lessonId: 'lesson-1', label: 'possessive pronouns' },
+    ], 'lesson-1')).toBe('Grammar: possessive pronouns')
+    expect(formatGrammarTopicTag([
+      { lessonId: 'lesson-1', label: 'word order' },
+      { lessonId: 'lesson-1', label: 'negation' },
+      { lessonId: 'lesson-1', label: 'questions' },
+      { lessonId: 'lesson-2', label: 'numbers' },
+    ], 'lesson-1')).toBe('Grammar: word order, negation +1 more')
   })
 })

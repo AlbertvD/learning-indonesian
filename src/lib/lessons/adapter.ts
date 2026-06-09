@@ -14,7 +14,14 @@
 
 import { supabase } from '@/lib/supabase'
 import { chunkedIn } from '@/lib/chunkedQuery'
-import type { LessonGrammarTopic } from './overviewStatus'
+
+// A grammar topic tag shown on a lesson tile. Moved here (with
+// formatGrammarTopicTag, below) from the retired overviewStatus.ts — this is the
+// seam where extractLessonGrammarTopics already produces LessonGrammarTopic[].
+export interface LessonGrammarTopic {
+  lessonId: string
+  label: string
+}
 
 export interface Lesson {
   id: string
@@ -65,9 +72,9 @@ export interface LessonOverviewRpcRow {
   publication_status: string | null
   is_published: boolean | null
   lesson_sections: LessonSection[]
-  has_started_lesson: boolean
+  is_activated: boolean
   ready_capability_count: number
-  practiced_eligible_capability_count: number
+  mastered_capability_count: number
 }
 
 export function lessonSourceRefForOverview(lesson: Pick<Lesson, 'order_index'>): string {
@@ -159,6 +166,25 @@ export function extractLessonGrammarTopics(lessons: Array<Pick<Lesson, 'id' | 'l
   }
 
   return topics
+}
+
+// Renders up to two grammar topics for a lesson into a tile tag, e.g.
+// "Grammar: negation, possessives +1 more". Returns null when the lesson has no
+// grammar topics. Moved from overviewStatus.ts (retired 2026-06-09).
+export function formatGrammarTopicTag(topics: LessonGrammarTopic[], lessonId: string): string | null {
+  const lessonTopics = topics
+    .filter(topic => topic.lessonId === lessonId)
+    .map(topic => topic.label.trim())
+    .filter(Boolean)
+
+  if (lessonTopics.length === 0) {
+    return null
+  }
+
+  const visibleTopics = lessonTopics.slice(0, 2)
+  const remainingCount = lessonTopics.length - visibleTopics.length
+  const suffix = remainingCount > 0 ? ` +${remainingCount} more` : ''
+  return `Grammar: ${visibleTopics.join(', ')}${suffix}`
 }
 
 export async function getLessons(): Promise<Lesson[]> {

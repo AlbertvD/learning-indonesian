@@ -27,7 +27,7 @@ vi.mock('@/lib/lessons/adapter', async (importOriginal) => {
   }
 })
 
-// "Prepared" (openable) now = the lesson has a bespoke page, i.e. registry
+// "Prepared" (openable) = the lesson has a bespoke page, i.e. registry
 // membership. Mock the registry id-set so tests control which lessons are
 // openable (replaces the retired has_page_blocks RPC signal).
 const { preparedLessonIdSet } = vi.hoisted(() => ({ preparedLessonIdSet: new Set<string>() }))
@@ -56,15 +56,16 @@ const lesson2Sections = [
   },
 ]
 
-// Helper: synthesize a row matching indonesian.get_lessons_overview's RETURNS TABLE shape.
+// Helper: synthesize a row matching indonesian.get_lessons_overview's
+// RETURNS TABLE shape (2026-06-09 two-sources: is_activated +
+// mastered_capability_count; no has_started_lesson / practiced count).
 function overviewRow(opts: {
   lessonId: string
   orderIndex: number
   title: string
-  hasStartedLesson?: boolean
-  hasMeaningfulExposure?: boolean // accepted for back-compat, ignored after retirement #6
+  isActivated?: boolean
   readyCapabilityCount?: number
-  practicedEligibleCapabilityCount?: number
+  masteredCapabilityCount?: number
   lessonSections?: any[]
 }): any {
   return {
@@ -78,9 +79,9 @@ function overviewRow(opts: {
     publication_status: 'published',
     is_published: true,
     lesson_sections: opts.lessonSections ?? [],
-    has_started_lesson: opts.hasStartedLesson ?? false,
+    is_activated: opts.isActivated ?? false,
     ready_capability_count: opts.readyCapabilityCount ?? 0,
-    practiced_eligible_capability_count: opts.practicedEligibleCapabilityCount ?? 0,
+    mastered_capability_count: opts.masteredCapabilityCount ?? 0,
   }
 }
 
@@ -110,20 +111,19 @@ describe('Lessons overview', () => {
     vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue(defaultOverviewRows())
   })
 
-  it('renders a recommended lesson card and keeps that lesson in the ordered list', async () => {
+  it('renders a flat catalog with every lesson and no recommended-lesson hero', async () => {
     const { container } = renderLessons()
 
-    expect(await screen.findByText('Recommended lesson')).toBeInTheDocument()
-    expect(screen.getByText('Start with Lesson 1')).toBeInTheDocument()
-    expect(screen.getByText('Listen to the explanation and read the first examples to prepare your first practice.')).toBeInTheDocument()
-
-    const list = screen.getByRole('list', { name: 'Lessons' })
+    const list = await screen.findByRole('list', { name: 'Lessons' })
     expect(within(list).getByText('Lesson 1')).toBeInTheDocument()
     expect(within(list).getByText('Lesson 2')).toBeInTheDocument()
+    // The recommended-lesson hero was retired.
+    expect(screen.queryByText('Recommended lesson')).not.toBeInTheDocument()
+    expect(screen.queryByText('Start with Lesson 1')).not.toBeInTheDocument()
     expect(container).not.toHaveTextContent(/no lessons completed/i)
   })
 
-  it('shows title, status, action, and grammar tag without overview practice clutter', async () => {
+  it('shows title, activation status, action, and grammar tag for a not-activated lesson', async () => {
     const { container } = renderLessons()
 
     const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
@@ -131,25 +131,59 @@ describe('Lessons overview', () => {
     expect(lessonOne).toHaveTextContent('Not started')
     expect(lessonOne).toHaveTextContent('Open lesson')
     expect(lessonOne).toHaveTextContent('Grammar: word order')
-
-    const lessonTwo = screen.getByTestId('lesson-overview-row-lesson-2')
-    expect(lessonTwo).toHaveTextContent('Later')
-    expect(lessonTwo).toHaveTextContent('Open lesson')
+    // Not activated → no % mastered.
+    expect(lessonOne).not.toHaveTextContent(/% mastered/i)
 
     expect(container.querySelector('[class*="progressBar"]')).toBeNull()
-    expect(screen.queryByRole('link', { name: /^Practice$/i })).not.toBeInTheDocument()
     expect(screen.queryByText(/\d+\s+ready/i)).not.toBeInTheDocument()
-    expect(screen.queryByText(/\d+\s+min/i)).not.toBeInTheDocument()
-    expect(container).not.toHaveTextContent(/source progress|fsrs|content health|eligible/i)
+    expect(container).not.toHaveTextContent(/source progress|fsrs|content health|eligible|in practice|practiced|later/i)
+  })
+
+  it('shows an activated lesson as Active with a % mastered and Continue', async () => {
+    vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
+      overviewRow({
+        lessonId: 'lesson-1',
+        orderIndex: 1,
+        title: 'Lesson 1 (Di pasar)',
+        lessonSections: lesson1Sections,
+        isActivated: true,
+        readyCapabilityCount: 9,
+        masteredCapabilityCount: 7,
+      }),
+      overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections }),
+    ])
+
+    renderLessons()
+
+    const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
+    expect(lessonOne).toHaveTextContent('Active')
+    expect(lessonOne).toHaveTextContent('78% mastered')
+    expect(lessonOne).toHaveTextContent('Continue')
+  })
+
+  it('suppresses % mastered for an activated lesson with no introducible caps', async () => {
+    vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
+      overviewRow({
+        lessonId: 'lesson-1',
+        orderIndex: 1,
+        title: 'Lesson 1 (Di pasar)',
+        lessonSections: lesson1Sections,
+        isActivated: true,
+        readyCapabilityCount: 0,
+        masteredCapabilityCount: 0,
+      }),
+      overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections }),
+    ])
+
+    renderLessons()
+
+    const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
+    expect(lessonOne).toHaveTextContent('Active')
+    expect(lessonOne).not.toHaveTextContent(/% mastered/i)
   })
 
   it('shows lessons without a bespoke page as coming later instead of openable', async () => {
     preparedLessonIdSet.delete('lesson-2') // lesson-2 has no bespoke page
-    vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
-      overviewRow({ lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)', lessonSections: lesson1Sections }),
-      overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections }),
-    ])
-
     renderLessons()
 
     const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
@@ -161,40 +195,26 @@ describe('Lessons overview', () => {
     expect(within(lessonTwo).queryByRole('link')).not.toBeInTheDocument()
   })
 
-  it('does not recommend an unprepared first lesson', async () => {
-    preparedLessonIdSet.delete('lesson-1') // lesson-1 has no bespoke page
+  it('does not sequentially lock later lessons (no order-gate)', async () => {
+    // lesson-1 barely started; under the old order-gate lesson-2 would have been
+    // forced to "Later" with no link. It must stay openable.
     vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
-      overviewRow({ lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)', lessonSections: lesson1Sections }),
+      overviewRow({
+        lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)',
+        lessonSections: lesson1Sections, isActivated: true,
+        readyCapabilityCount: 20, masteredCapabilityCount: 0,
+      }),
       overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections }),
     ])
 
     renderLessons()
 
-    expect(await screen.findByTestId('lesson-overview-row-lesson-1')).toHaveTextContent('Coming later')
-    expect(screen.queryByText('Recommended lesson')).not.toBeInTheDocument()
-    expect(screen.queryByText('Start with Lesson 1')).not.toBeInTheDocument()
+    const lessonTwo = await screen.findByTestId('lesson-overview-row-lesson-2')
+    expect(within(lessonTwo).getByRole('link')).toHaveAttribute('href', '/lesson/lesson-2')
+    expect(lessonTwo).not.toHaveTextContent('Later')
   })
 
-  it('uses Continue for in-progress lessons', async () => {
-    vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
-      overviewRow({ lessonId: 'lesson-1', orderIndex: 1, title: 'Lesson 1 (Di pasar)', lessonSections: lesson1Sections, hasStartedLesson: true }),
-      overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections }),
-    ])
-
-    renderLessons()
-
-    const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
-    expect(lessonOne).toHaveTextContent('In progress')
-    expect(lessonOne).toHaveTextContent('Continue')
-  })
-
-  it('keeps lessons openable when overview load works', async () => {
-    // The legacy partial-failure case (progress unavailable but lessons still
-    // load) collapses with a single SQL function: either it succeeds end-to-end
-    // or the page falls into the loadFailed empty-model state. The "openable
-    // when partial fails" guarantee is now the responsibility of the SQL
-    // function staying robust against missing per-user data (LEFT JOINs do
-    // this correctly — verified by the function definition).
+  it('keeps lessons openable when the overview load works', async () => {
     renderLessons()
 
     expect(await screen.findByTestId('lesson-overview-row-lesson-1')).toHaveTextContent('Open lesson')
@@ -221,64 +241,5 @@ describe('Lessons overview', () => {
     await screen.findByTestId('lesson-overview-row-lesson-1')
     expect(screen.queryByRole('searchbox')).not.toBeInTheDocument()
     expect(screen.queryByPlaceholderText(/search|filter/i)).not.toBeInTheDocument()
-  })
-
-  it('shows an activated lesson with ready capabilities as in progress', async () => {
-    vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
-      overviewRow({
-        lessonId: 'lesson-1',
-        orderIndex: 1,
-        title: 'Lesson 1 (Di pasar)',
-        lessonSections: lesson1Sections,
-        hasStartedLesson: true,
-        readyCapabilityCount: 2,
-        practicedEligibleCapabilityCount: 0,
-      }),
-      overviewRow({
-        lessonId: 'lesson-2',
-        orderIndex: 2,
-        title: 'Lesson 2',
-        lessonSections: lesson2Sections,
-      }),
-    ])
-
-    renderLessons()
-
-    const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
-    // After retirement #6, "ready_to_practice" collapses into "in_progress" —
-    // activation IS the readiness signal.
-    expect(lessonOne).toHaveTextContent('In progress')
-    expect(lessonOne).toHaveTextContent('Continue')
-    expect(lessonOne).not.toHaveTextContent(/Ready to practice/i)
-    expect(lessonOne).not.toHaveTextContent(/Herhaal deze les|Oefen deze les|\d+\s+klaar/i)
-  })
-
-  it('uses practiced capability counts to show in-practice and practiced lesson statuses', async () => {
-    vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
-      overviewRow({
-        lessonId: 'lesson-1',
-        orderIndex: 1,
-        title: 'Lesson 1 (Di pasar)',
-        lessonSections: lesson1Sections,
-        hasStartedLesson: true,
-        readyCapabilityCount: 2,
-        practicedEligibleCapabilityCount: 2,
-      }),
-      overviewRow({
-        lessonId: 'lesson-2',
-        orderIndex: 2,
-        title: 'Lesson 2',
-        lessonSections: lesson2Sections,
-        hasStartedLesson: true,
-        readyCapabilityCount: 4,
-        practicedEligibleCapabilityCount: 1,
-      }),
-    ])
-
-    renderLessons()
-
-    expect(await screen.findByTestId('lesson-overview-row-lesson-1')).toHaveTextContent('Practiced')
-    expect(screen.getByTestId('lesson-overview-row-lesson-2')).toHaveTextContent('In practice')
-    expect(screen.queryByRole('link', { name: /Herhaal deze les|Oefen deze les/i })).not.toBeInTheDocument()
   })
 })

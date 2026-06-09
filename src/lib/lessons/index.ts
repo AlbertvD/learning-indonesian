@@ -9,34 +9,20 @@
 //   - Commit 2: re-exports from overview / overviewStatus / experience / actionModel / activation (this commit)
 //   - Commit 6: re-exports from adapter (folded lesson-domain methods from services/lessonService.ts)
 
-// Overview
+// Overview — two single-sourced facts per tile (activation + % mastered).
+// The status enum, order-gate, and recommender retired with overviewStatus.ts
+// (docs/plans/2026-06-09-lesson-status-two-sources-design.md).
 export {
   buildLessonOverviewModel,
-  buildLessonOverviewSignals,
+  lessonMasteredPercent,
   isPublishedOverviewLesson,
 } from './overview'
 export type {
   LessonOverviewModel,
   LessonOverviewModelLesson,
-  LessonOverviewExposure,
-  LessonOverviewExposureKind,
   LessonOverviewCapabilityCounts,
   LessonOverviewRow,
 } from './overview'
-
-// Overview status helpers (still public until the status-tree retirement PR)
-export {
-  decideLessonOverviewStatus,
-  formatGrammarTopicTag,
-  isLessonSatisfiedForRecommendation,
-  overviewActionLabel,
-  recommendLesson,
-} from './overviewStatus'
-export type {
-  LessonOverviewStatus,
-  LessonOverviewSignal,
-  LessonGrammarTopic,
-} from './overviewStatus'
 
 // Practice actions
 export { buildLessonPracticeActions } from './actionModel'
@@ -64,6 +50,7 @@ export {
   lessonSourceRefForOverview,
   lessonSourceRefsByLesson,
   extractLessonGrammarTopics,
+  formatGrammarTopicTag,
 } from './adapter'
 export type {
   Lesson,
@@ -71,4 +58,5 @@ export type {
   LessonCapabilityPracticeSummary,
   LessonOverviewSourceBlock,
   LessonOverviewRpcRow,
+  LessonGrammarTopic,
 } from './adapter'

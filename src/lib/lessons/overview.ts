@@ -1,13 +1,10 @@
-import {
-  decideLessonOverviewStatus,
-  formatGrammarTopicTag,
-  isLessonSatisfiedForRecommendation,
-  overviewActionLabel,
-  recommendLesson,
-  type LessonGrammarTopic,
-  type LessonOverviewSignal,
-  type LessonOverviewStatus,
-} from './overviewStatus'
+import { formatGrammarTopicTag, type LessonGrammarTopic } from './adapter'
+
+// The Lessons overview model. Two single-sourced facts per lesson tile —
+// activation (learner_lesson_activation EXISTS) and % mastered
+// (mastered / introducible). No status enum, no sequential order-gate, no
+// recommended-lesson hero: those retired with overviewStatus.ts (see
+// docs/plans/2026-06-09-lesson-status-two-sources-design.md).
 
 export interface LessonOverviewModelLesson {
   id: string
@@ -17,45 +14,32 @@ export interface LessonOverviewModelLesson {
   is_published?: boolean | null
 }
 
-export type LessonOverviewExposureKind =
-  | 'lesson'
-  | 'grammar'
-  | 'dialogue'
-  | 'culture'
-  | 'pronunciation'
-
-export interface LessonOverviewExposure {
-  lessonId: string
-  exposureKind: LessonOverviewExposureKind
-  started: boolean
-}
-
+// Per-lesson learner facts, sourced from get_lessons_overview.
 export interface LessonOverviewCapabilityCounts {
   lessonId: string
-  readyItemCount: number
-  practicedEligibleItemCount: number
-  eligibleIntroducedItemCount: number
-  hasAuthoredEligiblePracticeContent: boolean
+  isActivated: boolean
+  masteredCount: number
+  introducibleCount: number
 }
 
 export interface LessonOverviewRow {
   lessonId: string
   orderIndex: number
   title: string
-  status: LessonOverviewStatus
-  actionLabel: 'Open lesson' | 'Continue' | 'Not available yet'
+  isActivated: boolean
+  masteredCount: number
+  introducibleCount: number
+  // null when the lesson is not activated or has no introducible caps — the
+  // tile then shows activation only, never "0/0".
+  masteredPercent: number | null
+  isPrepared: boolean
   href: string | null
   grammarTopicTag: string | null
-  isPrepared: boolean
 }
 
 export interface LessonOverviewModel {
-  recommendedLessonId: string | null
-  recommendedRow: LessonOverviewRow | null
   rows: LessonOverviewRow[]
 }
-
-const STARTED_EXPOSURE_KINDS = new Set<LessonOverviewExposureKind>(['lesson', 'grammar', 'dialogue'])
 
 export function isPublishedOverviewLesson(lesson: LessonOverviewModelLesson): boolean {
   if (lesson.is_published === false) return false
@@ -73,108 +57,48 @@ function publishedLessons(lessons: LessonOverviewModelLesson[]): LessonOverviewM
   return lessons.filter(isPublishedOverviewLesson).sort(byLessonOrder)
 }
 
-function defaultSignal(lesson: LessonOverviewModelLesson): LessonOverviewSignal {
-  return {
-    lessonId: lesson.id,
-    orderIndex: lesson.order_index,
-    readyItemCount: 0,
-    practicedEligibleItemCount: 0,
-    eligibleIntroducedItemCount: 0,
-    hasAuthoredEligiblePracticeContent: true,
-    hasStartedLesson: false,
-    earlierLessonsSatisfied: true,
-  }
-}
-
-function normalizeSignalsForLessons(
-  lessons: LessonOverviewModelLesson[],
-  signals: LessonOverviewSignal[],
-): LessonOverviewSignal[] {
-  const signalByLessonId = new Map(signals.map(signal => [signal.lessonId, signal]))
-  let earlierLessonsSatisfied = true
-
-  return publishedLessons(lessons).map(lesson => {
-    const rawSignal = signalByLessonId.get(lesson.id)
-    const normalizedSignal: LessonOverviewSignal = {
-      ...defaultSignal(lesson),
-      ...rawSignal,
-      lessonId: lesson.id,
-      orderIndex: lesson.order_index,
-      earlierLessonsSatisfied: earlierLessonsSatisfied && rawSignal?.earlierLessonsSatisfied !== false,
-    }
-    earlierLessonsSatisfied = earlierLessonsSatisfied && isLessonSatisfiedForRecommendation(normalizedSignal)
-    return normalizedSignal
-  })
-}
-
-export function buildLessonOverviewSignals(input: {
-  lessons: LessonOverviewModelLesson[]
-  exposures: LessonOverviewExposure[]
-  capabilityCounts: LessonOverviewCapabilityCounts[]
-}): LessonOverviewSignal[] {
-  const exposuresByLessonId = new Map<string, LessonOverviewExposure[]>()
-  for (const exposure of input.exposures) {
-    exposuresByLessonId.set(
-      exposure.lessonId,
-      [...(exposuresByLessonId.get(exposure.lessonId) ?? []), exposure],
-    )
-  }
-  const countsByLessonId = new Map(input.capabilityCounts.map(count => [count.lessonId, count]))
-
-  const signals = publishedLessons(input.lessons).map(lesson => {
-    const lessonExposures = exposuresByLessonId.get(lesson.id) ?? []
-    const counts = countsByLessonId.get(lesson.id)
-    const hasStartedLesson = lessonExposures.some(exposure =>
-      exposure.started && STARTED_EXPOSURE_KINDS.has(exposure.exposureKind),
-    )
-
-    return {
-      ...defaultSignal(lesson),
-      ...counts,
-      hasStartedLesson,
-    }
-  })
-
-  return normalizeSignalsForLessons(input.lessons, signals)
+// % mastered = mastered / introducible, or null when there's nothing to show
+// (not activated, or no introducible caps). Clamped so a transient count skew
+// can't exceed 100%.
+export function lessonMasteredPercent(input: {
+  isActivated: boolean
+  masteredCount: number
+  introducibleCount: number
+}): number | null {
+  if (!input.isActivated || input.introducibleCount <= 0) return null
+  const mastered = Math.max(0, Math.min(input.masteredCount, input.introducibleCount))
+  return Math.round((mastered / input.introducibleCount) * 100)
 }
 
 export function buildLessonOverviewModel(input: {
   lessons: LessonOverviewModelLesson[]
-  signals: LessonOverviewSignal[]
+  counts: LessonOverviewCapabilityCounts[]
   grammarTopics: LessonGrammarTopic[]
-  preparedLessonIds?: string[]
+  preparedLessonIds: string[]
 }): LessonOverviewModel {
   const lessons = publishedLessons(input.lessons)
-  const normalizedSignals = normalizeSignalsForLessons(lessons, input.signals)
-  const signalByLessonId = new Map(normalizedSignals.map(signal => [signal.lessonId, signal]))
-  const preparedLessonIds = input.preparedLessonIds
-    ? new Set(input.preparedLessonIds)
-    : new Set(lessons.map(lesson => lesson.id))
+  const countsByLessonId = new Map(input.counts.map(count => [count.lessonId, count]))
+  const preparedLessonIds = new Set(input.preparedLessonIds)
 
   const rows = lessons.map((lesson): LessonOverviewRow => {
-    const signal = signalByLessonId.get(lesson.id) ?? defaultSignal(lesson)
+    const counts = countsByLessonId.get(lesson.id)
+    const isActivated = counts?.isActivated ?? false
+    const masteredCount = Math.max(0, counts?.masteredCount ?? 0)
+    const introducibleCount = Math.max(0, counts?.introducibleCount ?? 0)
     const isPrepared = preparedLessonIds.has(lesson.id)
-    const status = isPrepared ? decideLessonOverviewStatus(signal) : 'coming_later'
     return {
       lessonId: lesson.id,
       orderIndex: lesson.order_index,
       title: lesson.title,
-      status,
-      actionLabel: isPrepared ? overviewActionLabel(status) : 'Not available yet',
+      isActivated,
+      masteredCount,
+      introducibleCount,
+      masteredPercent: lessonMasteredPercent({ isActivated, masteredCount, introducibleCount }),
+      isPrepared,
       href: isPrepared ? `/lesson/${lesson.id}` : null,
       grammarTopicTag: formatGrammarTopicTag(input.grammarTopics, lesson.id),
-      isPrepared,
     }
   })
 
-  const recommendedLessonId = recommendLesson(
-    normalizedSignals.filter(signal => preparedLessonIds.has(signal.lessonId)),
-  )
-  const recommendedRow = rows.find(row => row.lessonId === recommendedLessonId) ?? null
-
-  return {
-    recommendedLessonId,
-    recommendedRow,
-    rows,
-  }
+  return { rows }
 }
