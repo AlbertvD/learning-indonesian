@@ -307,12 +307,18 @@ step via the lesson-pipeline skill").
   un-seeded surfaces. Recovery is "fix cause → re-invoke".
 - **`status: partial` ≠ done.** Rows exist but promotion was skipped → not
   schedulable. Treat as a failure to fix, not a soft success.
-- **This stage synthesizes NO audio — it only reads it.** The Capability Stage
-  is a pure audio reader (ADR 0012): `adapter.ts` reads `audio_clips` to attach
-  refs, never synthesizes. The app's per-text `audio_clips` are made by **Stage A**
-  (`ensureLessonAudio`, #168), not here and not by a mandatory post-publish step.
-  So don't recommend "run audio next" by default — for a normally-published
-  lesson it's already done by Stage A. `generate-exercise-audio.ts` is only a
-  top-up for a real gap (TTS credential absent at Stage-A time, or
-  `exercise_variants` text); verify a gap exists (`audio_clips` by
-  `generated_for_lesson_id` = 0) before naming it.
+- **This stage synthesizes NO audio — it only reads it (and warns on item gaps).**
+  The Capability Stage is a pure audio *reader* (ADR 0012): `adapter.ts` reads
+  `audio_clips` to attach refs, never synthesizes. The app's per-text `audio_clips`
+  are made by **Stage A** (`ensureLessonAudio`, #168), not here. It DOES surface a
+  coverage signal: **CS23** (`vocabulary/gate.ts`) emits a **WARNING** for any
+  **word/phrase item** whose text has no `audio_clip` — visible in the
+  `Stage Vocabulary:` report `findings`. So the in-stage audio signal is CS23, not
+  a manual query. **Caveats:** CS23 is **items only** (it does NOT check dialogue
+  lines or grammar text), it is **WARN-only** (never blocks), and the intended
+  HARD "halt on an unvoiced vocab word" enforcement lives in Stage A and is **not
+  built yet (#165)**. So a lesson can publish with missing audio and stay green.
+  For a real gap, `generate-exercise-audio.ts` is the top-up — but for a
+  normally-published lesson Stage A already covered it; don't recommend it by
+  default. (The lesson-stage skill's `run-stage-a.ts` adds the aggregate
+  items+dialogue audio-coverage gate that CS23 lacks.)
