@@ -55,7 +55,7 @@ output comes back thin/wrong and needs richer re-authoring.
 
 | # | Phase | How to run | Completion artifact | Gate / review |
 |---|-------|-----------|---------------------|---------------|
-| 1 | Photos present | (precondition — verify only) | `content/raw/lesson-N/*.{heic,jpg}` | exists & non-empty |
+| 1 | Ingest photos | **[cmd]** move lesson N's raw HEIC from `~/Downloads` → `content/raw/lesson-N/` (see "Phase 1" below), then verify | `content/raw/lesson-N/*.{heic,jpg}` | exists & non-empty |
 | 2 | Convert + OCR | **[cmd]** `make convert-heic LESSON=N` then `make ocr-pages LESSON=N` (OCR needs `tesseract`) | `content/extracted/lesson-N/page-*.txt` | one .txt per page, non-empty |
 | 3 | Section catalog | **[cmd]** `make catalog-sections LESSON=N` (needs `ANTHROPIC_API_KEY`) | `sections-catalog.json` | valid JSON, sections tagged |
 | 4 | Generate staging | **[cmd]** `make staging-files LESSON=N` | `lesson.ts`, `learning-items.ts` + **stubs** for grammar-patterns/candidates/cloze | files written |
@@ -100,6 +100,42 @@ Notes:
   scripts/publish-lesson-content.ts N` (Stage A + Lesson Gate only). Offer this
   when the user wants just the reader content, or when Stage B is blocked on a
   fresh-lesson bootstrapping issue.
+
+## Phase 1 — ingest raw photos from Downloads
+
+The lesson's source photos usually arrive as HEICs dropped in `~/Downloads`. The
+first thing the pipeline does is move **this lesson's** HEICs into
+`content/raw/lesson-N/` (phase 2's `convert-heic` reads from there).
+
+**The catch: HEIC filenames carry no lesson number** (they're `IMG_####.heic`),
+and Downloads usually holds unrelated/older HEICs too. So you must *identify* the
+lesson's set before moving — never blindly `mv ~/Downloads/*.heic`.
+
+1. List candidates with timestamps:
+   ```bash
+   ls -lt ~/Downloads/*.heic ~/Downloads/*.HEIC 2>/dev/null
+   ```
+2. Pick the lesson's batch by **recency + contiguity** — a fresh lesson's photos
+   are a contiguous `IMG_####` run captured together (same day/minute cluster).
+   Old one-off HEICs with unrelated dates are NOT part of it.
+3. **Confirm the file list with the user before moving — by default.** Unless the
+   user *explicitly named the files or the source* when they invoked the skill
+   (e.g. "lesson 13's photos are IMG_1514–1521 in Downloads"), do NOT move on your
+   own inference: show the batch you identified (filenames + count + timestamps)
+   and ask them to verify it's the right set before moving. Always ask when
+   there's any ambiguity (more than one recent cluster, a non-contiguous run, or
+   stray files in range). A wrong move pollutes the lesson's OCR input — a silent
+   misfire is worse than a one-line confirmation.
+4. Move the confirmed set (don't glob the whole folder):
+   ```bash
+   mkdir -p content/raw/lesson-N
+   mv ~/Downloads/IMG_1514.heic ~/Downloads/IMG_1515.heic … content/raw/lesson-N/
+   ```
+5. Verify: `ls content/raw/lesson-N/` shows the expected page count, non-empty.
+
+If `content/raw/lesson-N/` is already populated (resume), there's nothing in
+Downloads to ingest — skip straight to the phase-2 check. If neither Downloads
+nor `content/raw` has the photos, stop and ask the user for the source images.
 
 ## Bundled helpers & gotchas
 
