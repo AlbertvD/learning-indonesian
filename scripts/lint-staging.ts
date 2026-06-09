@@ -519,7 +519,7 @@ function checkConstrainedTranslation(
   }
 }
 
-function checkClozeContextsFile(ctx: LessonCtx): Finding[] {
+export function checkClozeContextsFile(ctx: LessonCtx): Finding[] {
   const out: Finding[] = []
   for (let i = 0; i < (ctx.clozeContexts ?? []).length; i++) {
     const c = ctx.clozeContexts![i]
@@ -547,12 +547,21 @@ function checkClozeContextsFile(ctx: LessonCtx): Finding[] {
   return out
 }
 
-// New §4 check (B12): every word/phrase/expression/numbers vocab item in
-// learning-items.ts must have at least one cloze context (or be in the
-// discourse-particle exemption set, or be a metalinguistic single-token).
-// Items with `=` in base_text must always have a cloze (the short form is
-// blanked); flagged CRITICAL.
-function checkClozeCoverage(ctx: LessonCtx): Finding[] {
+// §4 check (B12): every word/phrase vocab item in learning-items.ts SHOULD have a
+// cloze context (unless discourse-particle-exempt or a metalinguistic single-token).
+//
+// VESTIGIAL → WARNING (not CRITICAL): the producer this gate guarded — the vocab
+// cloze item_contexts writer (projectCloze / upsertClozeContext) — was retired in
+// Slice 5b (#147); runner.ts:617-623 now hardcodes clozeContexts=0, so authoring
+// these contexts writes ZERO to the DB. As a CRITICAL it only ever blocked FRESH
+// lessons (becak bootstrapping: L5/7/8/11/12) on a requirement nothing consumes —
+// every operator who hit it reached for --skip-lint, which suppressed the signal.
+// Kept as a WARNING breadcrumb until first-class item cloze is wired
+// (vocabulary/projectItemCloze.ts, pending real-sentence carriers) and the
+// lint-staging decomposition (#109) deletes this function + the shell.
+// The fresh-lesson canary (__tests__/fresh-lesson-canary.test.ts) pins "no CRITICAL
+// for a fresh lesson" so a future edit can't silently re-block bootstrapping.
+export function checkClozeCoverage(ctx: LessonCtx): Finding[] {
   const out: Finding[] = []
   if (!ctx.learningItems?.length) return out
   // Both sides go through normalizeForClozeCompare so case, trailing
@@ -574,11 +583,11 @@ function checkClozeCoverage(ctx: LessonCtx): Finding[] {
     const isExempt = CLOZE_EXEMPT_BASE_TEXTS.has(normalizeForExemptLookup(slug))
     const hasEqualsExpansion = slug.includes('=')
     if (hasEqualsExpansion) {
-      out.push(mkFinding('CRITICAL', ctx.n, 'cloze-contexts.ts', 'cloze-coverage-missing-equals',
-        'item with "=" expansion must have a cloze context (blank the short form)', slug))
+      out.push(mkFinding('WARNING', ctx.n, 'cloze-contexts.ts', 'cloze-coverage-missing-equals',
+        'item with "=" expansion has no cloze context (vestigial — writer retired Slice 5b #147)', slug))
     } else if (!isExempt) {
-      out.push(mkFinding('CRITICAL', ctx.n, 'cloze-contexts.ts', 'cloze-coverage-missing',
-        'word/phrase item has no cloze context', slug))
+      out.push(mkFinding('WARNING', ctx.n, 'cloze-contexts.ts', 'cloze-coverage-missing',
+        'word/phrase item has no cloze context (vestigial — writer retired Slice 5b #147)', slug))
     }
   }
   return out
@@ -758,8 +767,11 @@ async function main() {
     // dialogue cloze + its eligibility/skip logic are now generated in-stage from
     // lesson_dialogue_lines, so the staging pre-flight no longer gates it. This is
     // the #126 unblock: L5/7/8 publish lesson content freely; the stage generates
-    // their dialogue clozes. checkClozeContextsFile + checkClozeCoverage STAY
-    // (item path; their removal + the lint-staging shell deletion are Slice 5 / #109).
+    // their dialogue clozes. checkClozeContextsFile STAYS (it only validates the
+    // structure of AUTHORED entries, so it's inert on a fresh/empty lesson).
+    // checkClozeCoverage is DEMOTED to WARNING — it was a vestigial CRITICAL that
+    // blocked fresh lessons on a producer retired in Slice 5b (see its doc comment).
+    // Full removal of both + the lint-staging shell is Slice 5 / #109.
     findings.push(...checkExerciseCoverage(ctx))
     findings.push(...checkPatternBrief(ctx))
     // checkCapabilityPipelineOutput call removed in 5b.6b (function retired above).
