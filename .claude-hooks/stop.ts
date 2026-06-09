@@ -87,6 +87,43 @@ async function main(): Promise<void> {
 		}
 	}
 
+	// Capability gate enforcement (capability-stage skill): if a LIVE capability
+	// publish ran this session, a passing capability gate must exist for that
+	// lesson — the central DQ risk is status=partial (rows written but caps stuck
+	// draft = not schedulable). No-op for every other session.
+	if (state.capability_ran === true && typeof state.capability_lesson === "string") {
+		const n = state.capability_lesson;
+		const capturePath = `${process.cwd()}/.claude/data/capability-report-${n}.json`;
+		let captureOk = false;
+		let reason = "capability gate not run";
+		if (existsSync(capturePath)) {
+			try {
+				const cap = JSON.parse(readFileSync(capturePath, "utf8")) as Record<string, unknown>;
+				if (cap.ok !== true) reason = `capability gate ok=${String(cap.ok)} (a check failed — likely stuck-draft caps)`;
+				else captureOk = true;
+			} catch {
+				reason = "capability gate report is unreadable";
+			}
+		}
+
+		if (!captureOk) {
+			await appendLog(LOG_FILE, {
+				session_id: sessionId,
+				blocked: true,
+				reason: `capability lesson ${n} ran without a passing gate: ${reason}`,
+			});
+			process.stderr.write(
+				`A capability publish for lesson ${n} ran live, but the capability gate has not passed (${reason}).\n` +
+				`A data-quality gap must not slip through. Run the capability gate to completion:\n` +
+				`  bun .claude/skills/capability-stage/scripts/capability-readback.ts ${n} --gate\n` +
+				`It asserts the capability surface is schedulable (caps exist, ZERO stuck-draft caps, read-back complete)\n` +
+				`and writes .claude/data/capability-report-${n}.json with ok=true on success.\n` +
+				`If caps are stuck draft (status=partial), re-publish to promote them, then re-run the gate.\n`,
+			);
+			process.exit(2);
+		}
+	}
+
 	await clearSessionState(STATE_FILE);
 	await appendLog(LOG_FILE, {
 		session_id: sessionId,

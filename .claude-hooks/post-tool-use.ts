@@ -53,6 +53,35 @@ export function detectStageARun(toolName: string, toolInput: Record<string, unkn
 	return null;
 }
 
+/**
+ * Detects a LIVE capability publish (Stage B + Stage Vocabulary), which seeds
+ * the schedulable capability surface. Returns the lesson number so the stop hook
+ * can enforce a passing capability gate (no stuck-draft caps) for it.
+ *
+ * Two real invocation forms, each anchored per-segment to reject mere mentions
+ * (see detectStageARun's rationale — same `2>&1`/grep/echo guards):
+ *   - `bun [run] <…>/publish-approved-content.ts <N>`   (the CLI; Stage A+B+Vocab)
+ *   - `make publish-content LESSON=<N>`                  (the Makefile wrapper)
+ * A `--dry-run` writes no capability rows → no gate required → not detected.
+ */
+export function detectCapabilityRun(toolName: string, toolInput: Record<string, unknown>): number | null {
+	if (toolName !== "Bash") return null;
+	const command = typeof toolInput.command === "string" ? toolInput.command : "";
+	if (command.includes("--dry-run")) return null;
+	const BUN_FORM = /^(?:\w+=\S+\s+)*bun(?:\s+run)?\s+\S*publish-approved-content\.ts\s+(\d+)(?=\s|$)/;
+	const MAKE_FORM = /^(?:\w+=\S+\s+)*make\s+publish-content\b/;
+	for (const segment of command.split(/&&|\|\||[;|\n]/)) {
+		const seg = segment.trim();
+		const bun = seg.match(BUN_FORM);
+		if (bun) return parseInt(bun[1], 10);
+		if (MAKE_FORM.test(seg)) {
+			const lesson = seg.match(/\bLESSON=(\d+)\b/);
+			if (lesson) return parseInt(lesson[1], 10);
+		}
+	}
+	return null;
+}
+
 async function updateState(key: string, value: string | boolean): Promise<void> {
 	const state = await readSessionState(STATE_FILE);
 	state[key] = value;
@@ -73,6 +102,7 @@ async function main(): Promise<void> {
 	const composeFile = detectComposeModification(toolName, toolInput);
 	const checkComposeRan = detectCheckComposeRun(toolName, toolInput);
 	const stageALesson = detectStageARun(toolName, toolInput);
+	const capabilityLesson = detectCapabilityRun(toolName, toolInput);
 
 	if (composeFile) {
 		await updateState("compose_modified", true);
@@ -92,12 +122,20 @@ async function main(): Promise<void> {
 		await updateState("stage_a_lesson", String(stageALesson));
 	}
 
+	if (capabilityLesson !== null) {
+		// A live capability publish ran — the stop hook will require a passing
+		// capability gate (.claude/data/capability-report-<N>.json) for this lesson.
+		await updateState("capability_ran", true);
+		await updateState("capability_lesson", String(capabilityLesson));
+	}
+
 	await appendLog(LOG_FILE, {
 		session_id: sessionId,
 		tool_name: toolName,
 		compose_modified: !!composeFile,
 		check_compose_ran: checkComposeRan,
 		stage_a_lesson: stageALesson,
+		capability_lesson: capabilityLesson,
 	});
 
 	await rotateIfNeeded(LOG_FILE);
