@@ -1,7 +1,7 @@
 ---
 module: session-builder
 surface: src/lib/session-builder/
-last_verified_against_code: 2026-06-07
+last_verified_against_code: 2026-06-09
 status: stable
 ---
 
@@ -9,7 +9,7 @@ status: stable
 
 **Surface:** `src/lib/session-builder/`
 
-**Files (12):**
+**Files (13):**
 
 | File | LOC | Role |
 |---|---|---|
@@ -23,6 +23,7 @@ status: stable
 | `audibleTexts.ts` | 104 | Audible-text harvest — `audibleTextFieldsOf` (per builder) + `collectAudibleTexts` (aggregator). |
 | `drying.ts` | 42 | Queue-drying detector. Wired into the builder in PR-B (2026-05-16). Suppresses when the due backlog exceeds preferred size or the mode is lesson-scoped; otherwise fires when the current lesson has no eligible introductions, the next lesson is still inactive, and the candidate pool is below 70% of preferred size. |
 | `dueFilter.ts` | 76 | Date+flag filter over `LearnerCapabilityStateRow[]` — `getDueCapabilitiesFromRows` (pure) + `getDueCapabilities` (async wrapper over `CapabilitySchedulerReadAdapter`). FSRS math lives server-side per ADR 0003; this file just reads the persisted `next_due_at` plus the activation / readiness / publication flags. Folded out of `lib/capabilities/` 2026-05-20 — the file's only consumer is this module (`builder.ts`, `adapter.ts`). |
+| `siblingBury.ts` | ~35 | Pure `buryThinSiblings(candidates, sourceRefOf, usedRefs)` — keeps the first candidate per `source_ref` and drops the rest, mutating/threading `usedRefs` across passes. The in-memory enforcement of one-capability-per-word-per-day. Added 2026-06-09 (`docs/plans/2026-06-09-sibling-burying-design.md`). |
 | `knownWordCoverage.ts` | 95 | Sentence-comprehensibility gate. **Not yet wired** — survives as documentation per fold plan §10. |
 | `index.ts` | 19 | Public-API barrel. |
 
@@ -125,7 +126,7 @@ The production implementation lives at `adapter.ts:201-310`.
 
 ## 3. Internal flow
 
-### 3.1 Adapter — four parallel Supabase reads
+### 3.1 Adapter — five parallel Supabase reads
 
 `adapter.ts`. On each invocation:
 
@@ -133,6 +134,7 @@ The production implementation lives at `adapter.ts:201-310`.
 2. **Learner state** — every `learner_capability_state` row for the user. Includes FSRS schedule data + activation state.
 3. **Lesson activation** — every `learner_lesson_activation` row for the user (single-boolean per lesson, added by retirement #6).
 4. **Lessons** — every `lessons` row (`id`, `order_index`). Used by `deriveLessonProgression` to compute `currentLessonId` + `nextLessonNeedsExposure` for the queue-drying detector. The query is unfiltered because the lesson catalog is small (~tens of rows).
+5. **Today's review events** — `capability_review_events.capability_id` for the user where `created_at >= localMidnight` (derived from `request.now`, browser-local). Each `capability_id` is resolved to its `source_ref` in memory via `capabilityById` (no JOIN/embed/index), producing `reviewedTodayRefs: Set<string>` — the seed for sibling burying (§3.2). Added 2026-06-09.
 
 (Slice 4b, #102: the former fifth chunked query against `capability_artifacts` was removed — the table is dropped and readiness no longer reads an artifact bag.)
 
@@ -159,6 +161,8 @@ Output is a `CapabilitySessionDataSnapshot` carrying `schedulerRows`, `capabilit
 **Step E — queue-drying check** (`builder.ts`, post-PR-B). Once due + new pass outputs are known, the builder calls `buildQueueDryingDiagnostic` with `dueCount + eligibleNewCapabilities.length` as the candidate pool and the snapshot's `currentLessonId` / `nextLessonNeedsExposure`. `currentLessonHasEligibleIntroductions` is computed precisely from `learningPlan.eligibleNewCapabilities.some(e => e.capability.lessonId === currentLessonId)`. If the detector returns a diagnostic, the builder appends it to the `compose` input as `diagnostics: [dryingDiagnostic]`.
 
 **Step F — compose**. All three pass outputs + the drying diagnostic (if any) hand to `compose`.
+
+**Sibling burying (2026-06-09).** Before each pass resolves its candidates, `buryThinSiblings` (`siblingBury.ts`) thins them to one capability per `source_ref`. A single `usedRefs` set, seeded with the adapter's `reviewedTodayRefs`, threads through the passes in priority order (due → practice → new): the first candidate of each `source_ref` is kept and its ref recorded, later siblings are dropped. So the most-overdue due sibling wins a word's single daily slot; the lowest-phase new sibling wins it among introductions; and a word already reviewed earlier today is fully suppressed. The due bury runs **before** `dueCount` feeds the planner (pass D, `builder.ts:317`), so a buried due sibling lowers `dueCount`, raising `openSlots`, which the planner fills with a *different* word — sessions stay full but vary by word. See `docs/plans/2026-06-09-sibling-burying-design.md`.
 
 The three passes share the resolver loop via `resolveCandidate`. It accepts the caller's `meta` object verbatim and returns either `{ meta, reviewContext, renderPlan }` (resolved) or `{ meta, reviewContext, resolutionFailure }` (failed). The dedup is the load-bearing detail of the §3.1 fold cleanup — see `__tests__/resolveCandidate.test.ts` for the contract.
 
@@ -329,6 +333,7 @@ The diagnostic surfaces in the UI via `Session.tsx`, which reads `plan.diagnosti
 - **The `CAPABILITY_DISPLAY` map is exhaustive at the type level.** Adding a `CapabilityType` without an entry is a compile error.
 - **Receptive-before-productive staging gate is enforced for new introductions.** Phase 3+4 capabilities (`l1_to_id_choice`, `form_recall`, `contextual_cloze`, `dictation`, `root_derived_recognition`, `root_derived_recall`, `pattern_contrast`, `pattern_recognition`) are suppressed unless a sibling capability sharing the same `source_ref` has `activationState='active'` AND `stability >= 1` AND `successfulReviewCount >= 1`. **Three source kinds are exempt** because they have no Phase 1+2 sibling at the same `source_ref`: `affixed_form_pair` (morphology — prerequisite chain sequences instead), `dialogue_line` (lesson_activation is the lever), and `pattern` (grammar — added 2026-06-07, commit `1e5be88`; the prior "inert at runtime" premise expired when Slice 2 made grammar renderable, #166). See ADR 0007 and `docs/plans/2026-05-18-capability-staging-gate.md`.
 - **The composer interleaves blocks by `source_ref`.** Post-pass after the three append loops; greedy single-pass; window = 3 preceding blocks. Prevents back-to-back retrievals of the same word that don't count as real spaced practice (Karpicke 2009). Macro three-pass order (due → new → practice-review) preserved.
+- **Sibling burying: at most one capability per `source_ref` per learner per calendar day.** Enforced in the selection passes via `buryThinSiblings` threading a `usedRefs` set seeded with `reviewedTodayRefs` (§3.2). Pure read — no write, no reschedule; a buried sibling stays overdue/dormant for a later day. Deterministic (the seed is a function of DB state + `now`; passes run in fixed order over already-sorted lists). Operates one level above the composer's `interleaveBySourceRef`: burying governs day-level *membership*, the interleave spaces *already-selected* blocks. Podcast caps never reach it (filtered upstream as `exposure_only`). See ADR 0007-adjacent rationale + `docs/plans/2026-06-09-sibling-burying-design.md`.
 - **`capabilityPhase` is exhaustive over `CapabilityType`.** Adding a new type without a phase arm fails compilation.
 
 ---

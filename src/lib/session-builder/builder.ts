@@ -11,6 +11,7 @@ import { resolveExercise } from '@/lib/exercises/exerciseResolver'
 import { planLearningPath, type PedagogyInput, type PlannerCapability } from '@/lib/session-builder/pedagogy'
 import { compose } from '@/lib/session-builder/compose'
 import { buildQueueDryingDiagnostic } from '@/lib/session-builder/drying'
+import { buryThinSiblings } from '@/lib/session-builder/siblingBury'
 import type { CapabilityReviewSessionContext, SessionMode, SessionDiagnostic, SessionPlan } from '@/lib/session-builder/model'
 import type { CapabilityScheduleSnapshot } from '@/lib/reviews/capabilityReviewProcessor'
 
@@ -26,6 +27,10 @@ export interface CapabilitySessionLoaderInput {
   readinessByKey: Map<string, CapabilityReadiness>
   selectedLessonId?: string
   selectedSourceRefs?: string[]
+  // Sibling burying: the source_refs the learner already reviewed today. Seeds
+  // the one-cap-per-word-per-day suppression. Defaults to empty (no burying)
+  // when absent. See siblingBury.ts and docs/plans/2026-06-09-sibling-burying-design.md.
+  reviewedTodayRefs?: ReadonlySet<string>
   // Lesson-activation derivations fed to the queue-drying detector. Both
   // default to null/false when the learner has no activations or has reached
   // the final lesson — drying then stays suppressed by the detector's own
@@ -41,6 +46,7 @@ export interface CapabilitySessionDataSnapshot {
   readinessByKey: Map<string, CapabilityReadiness>
   currentLessonId: string | null
   nextLessonNeedsExposure: boolean
+  reviewedTodayRefs: Set<string>
 }
 
 export interface CapabilitySessionDataRequest {
@@ -241,7 +247,22 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
     readinessByKey: input.readinessByKey,
   }
 
-  const dueCapabilities = scopedDueList.map(due => {
+  // Sibling burying: one capability per source_ref per day, across all of
+  // today's sessions. `usedRefs` is seeded with what was reviewed earlier today
+  // and threaded through the three passes in priority order (due → practice →
+  // new), so the most-overdue due sibling wins its word's single daily slot and
+  // the rest are buried (stay overdue for a later day). Burying the due list
+  // *before* dueCount feeds the planner frees the slot for a different word.
+  // See docs/plans/2026-06-09-sibling-burying-design.md.
+  const usedRefs = new Set<string>(input.reviewedTodayRefs ?? [])
+  const sourceRefOfKey = (canonicalKey: string): string | undefined =>
+    input.capabilitiesByKey.get(canonicalKey)?.sourceRef
+
+  const dueCapabilities = buryThinSiblings(
+    scopedDueList,
+    due => sourceRefOfKey(due.canonicalKeySnapshot),
+    usedRefs,
+  ).map(due => {
     const stateRow = stateById.get(due.stateId)
     const capability = input.capabilitiesByKey.get(due.canonicalKeySnapshot)
     const context = reviewContext({
@@ -270,7 +291,7 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
   })
 
   const activePracticeReviewCapabilities = isLessonScopedMode(input.mode)
-    ? input.schedulerRows
+    ? buryThinSiblings(input.schedulerRows
         .filter(row => (
           row.activationState === 'active'
           && row.readinessStatus === 'ready'
@@ -287,8 +308,10 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
           const aDue = a.nextDueAt ? new Date(a.nextDueAt).getTime() : Number.MAX_SAFE_INTEGER
           const bDue = b.nextDueAt ? new Date(b.nextDueAt).getTime() : Number.MAX_SAFE_INTEGER
           return aDue - bDue || b.consecutiveFailureCount - a.consecutiveFailureCount
-        })
-        .map(row => {
+        }),
+        row => sourceRefOfKey(row.canonicalKeySnapshot),
+        usedRefs,
+      ).map(row => {
           const capability = input.capabilitiesByKey.get(row.canonicalKeySnapshot)
           const context = reviewContext({
             capability: capability ?? null,
@@ -318,7 +341,11 @@ export async function loadCapabilitySessionPlan(input: CapabilitySessionLoaderIn
     selectedLessonId: scope.selectedLessonId,
     selectedSourceRefs: scope.selectedSourceRefs,
   })
-  const eligibleNewCapabilities = input.mode === 'lesson_review' ? [] : learningPlan.eligibleNewCapabilities.map(eligible => {
+  const eligibleNewCapabilities = input.mode === 'lesson_review' ? [] : buryThinSiblings(
+    learningPlan.eligibleNewCapabilities,
+    eligible => sourceRefOfKey(eligible.capability.canonicalKey),
+    usedRefs,
+  ).map(eligible => {
     const capability = input.capabilitiesByKey.get(eligible.capability.canonicalKey)
     const context = reviewContext({ capability: capability ?? null, schedulerSnapshot: dormantSnapshot() })
     const outcome = resolveCandidate({
@@ -467,6 +494,7 @@ export async function buildSession(input: {
     readinessByKey: snapshot.readinessByKey,
     selectedLessonId: input.selectedLessonId,
     selectedSourceRefs: input.selectedSourceRefs,
+    reviewedTodayRefs: snapshot.reviewedTodayRefs,
     currentLessonId: snapshot.currentLessonId,
     nextLessonNeedsExposure: snapshot.nextLessonNeedsExposure,
   })

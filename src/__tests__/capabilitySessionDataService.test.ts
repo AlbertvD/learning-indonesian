@@ -9,6 +9,7 @@ function query(data: unknown[] = []) {
     eq: () => chain,
     in: () => chain,
     is: () => chain,
+    gte: () => chain,
     then: (resolve: (value: { data: unknown[]; error: null }) => void) => resolve({ data, error: null }),
   }
   return chain
@@ -273,6 +274,47 @@ describe('capability session data service', () => {
     })
 
     expect(snapshot.plannerInput.activatedLessons).toEqual(new Set(['lesson-a', 'lesson-b']))
+  })
+
+  it('resolves reviewedTodayRefs from today\'s review events via capability_id → source_ref', async () => {
+    const service = createSessionBuilderAdapter({
+      schema: () => ({
+        from: (table: string) => {
+          if (table === 'learning_capabilities') {
+            return query([{
+              id: 'capability-1',
+              canonical_key: 'capability-key',
+              source_kind: 'item',
+              source_ref: 'learning_items/paman',
+              capability_type: 'text_recognition',
+              direction: 'id_to_l1',
+              modality: 'text',
+              learner_language: 'nl',
+              projection_version: 'capability-v3',
+              readiness_status: 'ready',
+              publication_status: 'published',
+              lesson_id: 'lesson-uuid-1',
+              prerequisite_keys: [],
+            }])
+          }
+          if (table === 'capability_review_events') {
+            // Two events for the same word today → one distinct source_ref.
+            return query([{ capability_id: 'capability-1' }, { capability_id: 'capability-1' }])
+          }
+          return query([])
+        },
+      }),
+    })
+
+    const snapshot = await service.loadCapabilitySessionData({
+      userId: 'user-1',
+      mode: 'standard',
+      now: new Date('2026-04-25T12:00:00.000Z'),
+      limit: 15,
+      preferredSessionSize: 15,
+    })
+
+    expect(snapshot.reviewedTodayRefs).toEqual(new Set(['learning_items/paman']))
   })
 
   describe('lesson progression (drying inputs)', () => {

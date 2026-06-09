@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { loadCapabilitySessionPlan, buildSession, type CapabilitySessionDataAdapter } from '@/lib/session-builder/builder'
 import type { LearnerCapabilityStateRow } from '@/lib/session-builder/dueFilter'
 import type { ProjectedCapability } from '@/lib/capabilities/capabilityTypes'
+import type { CapabilityReadiness } from '@/lib/capabilities'
 import { planLearningPath, type PlannerCapability, type PlannerLearnerCapabilityState } from '@/lib/session-builder/pedagogy'
 
 const now = new Date('2026-04-25T10:00:00.000Z')
@@ -224,6 +225,7 @@ describe('capability session loader', () => {
           readinessByKey: base.readinessByKey,
           currentLessonId: null,
           nextLessonNeedsExposure: false,
+          reviewedTodayRefs: new Set<string>(),
         }
       },
     }
@@ -617,6 +619,43 @@ describe('capability session loader', () => {
         nextLessonNeedsExposure: true,
       }))
       expect(plan.diagnostics.find(d => d.reason === 'learning_pipeline_drying_up')).toBeUndefined()
+    })
+  })
+
+  describe('sibling burying — one capability per source_ref per build', () => {
+    const ref = 'learning_items/item-1' // the shared default sourceRef
+    const keyA = 'cap:v1:item:learning_items/item-1:meaning_recall:id_to_l1:text:nl'
+    const keyB = 'cap:v1:item:learning_items/item-1:text_recognition:id_to_l1:text:nl'
+    const projA = projectedCapability({ canonicalKey: keyA, capabilityType: 'meaning_recall', skillType: 'meaning_recall' })
+    const projB = projectedCapability({ canonicalKey: keyB, capabilityType: 'text_recognition', skillType: 'recognition' })
+    const capabilitiesByKey = new Map([[keyA, projA], [keyB, projB]])
+    const readinessByKey: Map<string, CapabilityReadiness> = new Map([
+      [keyA, { status: 'ready', allowedExercises: ['meaning_recall'] }],
+      [keyB, { status: 'ready', allowedExercises: ['recognition_mcq'] }],
+    ])
+    // A is more overdue than B, so A wins the word's single slot.
+    const stateA = activeState({ id: 'state-1', capabilityId: 'capability-1', canonicalKeySnapshot: keyA, nextDueAt: '2026-04-25T08:00:00.000Z' })
+    const stateB = activeState({ id: 'state-2', capabilityId: 'capability-2', canonicalKeySnapshot: keyB, nextDueAt: '2026-04-25T09:00:00.000Z' })
+
+    it('serves at most one due sibling of a word, keeping the most-overdue', async () => {
+      const plan = await loadCapabilitySessionPlan(baseInput({
+        schedulerRows: [stateA, stateB],
+        capabilitiesByKey,
+        readinessByKey,
+      }))
+      const due = plan.blocks.filter(b => b.kind === 'due_review')
+      expect(due).toHaveLength(1)
+      expect(due[0].capabilityId).toBe('capability-1')
+    })
+
+    it('buries every sibling of a word already reviewed today', async () => {
+      const plan = await loadCapabilitySessionPlan(baseInput({
+        schedulerRows: [stateA, stateB],
+        capabilitiesByKey,
+        readinessByKey,
+        reviewedTodayRefs: new Set([ref]),
+      }))
+      expect(plan.blocks.filter(b => b.kind === 'due_review')).toHaveLength(0)
     })
   })
 })
