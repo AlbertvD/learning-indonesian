@@ -1,0 +1,923 @@
+{
+  "meta": {
+    "id": "3d97571d-2bae-448c-b1fe-6fed15b618a7",
+    "order_index": 14,
+    "title": "Les 14 - De islam in Indonesië / Werkwoordsvorm met ME- Vervolg",
+    "level": "A1",
+    "description": "",
+    "primary_voice": "id-ID-Chirp3-HD-Orus",
+    "duration_seconds": null,
+    "lesson_audio_url": null
+  },
+  "sections": [
+    {
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Indien we iets willen zeggen over de islam in Indonesië, moeten we de voorafgaande historisch-religieuze perioden erbij betrekken.",
+          "Het oorspronkelijke religieuze denken in Indonesië was gericht op de natuur, waarin het voortbrengen van nieuw leven (geboorte; rijstbouw) en de 'mannelijke-vrouwelijke' elementen een belangrijke rol speelden. Daarnaast hebben, over een periode van circa 1500 jaar, hindoeïstische en boeddhistische religieuze levensopvattingen een grote invloed gehad op het doen en denken van de diverse Indonesische volkeren.",
+          "Vanaf de 13e eeuw werd de islam langzaam maar zeker als godsdienst aanvaard, om tenslotte in de 20ste eeuw een hoogtepunt te bereiken, waardoor Indonesië momenteel één van de grootste islamitische gemeenschappen ter wereld kent. Geschat wordt, dat 80 tot 85% van de bevolking, dit is tussen de 144 en 153 miljoen mensen, belijders zijn van de islam.",
+          "De islam werd in de 13e eeuw op Sumatra door kooplieden uit Noord-India in Indonesië geïntroduceerd. Door de eeuwen heen ontstonden, vooral aan de kustplaatsen, islamitische gemeenschappen. De islamitische leer die de Indiase kooplieden meebrachten was niet de strenge leer uit het Midden Oosten, maar een leer die in Perzië en Noord-India mystieke trekjes had meegekregen en meer open stond voor lokale cultuurelementen. Zowel de mystiek - die vanouds in de traditionele Indonesische gemeenschap verankerd lag - als het feit dat de gelovige niet alle oude tradities over boord hoefde te gooien, droegen bij tot de acceptatie van de islam.",
+          "Binnen de huidige islamitische gemeenschap kan men constateren dat er verschillende opvattingen zijn over de manier waarop de islamitische leer en de daarbij horende levenshouding moeten worden uitgevoerd. Dit hangt ondermeer af van de aard van de overtuiging van de gelovige, de historische ontwikkeling van de religie op het eiland, en hoe langer hoe meer van de genoten opleiding en de toegang tot moderne communicatiemiddelen.",
+          "Vroeger en zelfs tot in de eerste helft van de 20ste eeuw was het een voorrecht om op haj - bedevaart - naar Mekka te gaan. Nu maakt de jaarlijkse trek van tienduizenden Indonesische pelgrims naar Saoedi Arabië het noodzakelijk dat het 'Ministerie van Godsdienstzaken' van de Indonesische overheid ingrijpt om het reizen per vliegtuig en schip ordelijk te laten verlopen.",
+          "De toegenomen mogelijkheden om snel en op afstand met elkaar te communiceren hebben er toe geleid dat, in principe, elke islamiet contact kan opnemen met zowel 'orthodoxe' als 'verlichte' islamitische gemeenschappen overal ter wereld.",
+          "Mede door het verbeterde onderwijs, heeft dit geleid tot een intensivering van het denken en discussiëren over de islam en bijgedragen tot het 'zich moslim voelen'. Momenteel worden bijna wekelijks nieuwe gebedsruimten en moskeeën gebouwd."
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "nogal / enigzins",
+            "english": "rather / somewhat",
+            "indonesian": "agak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/agak-1f90d788.mp3"
+          },
+          {
+            "dutch": "wind",
+            "english": "wind",
+            "indonesian": "angin",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/angin-e16e8fcd.mp3"
+          },
+          {
+            "dutch": "hulp",
+            "english": "help",
+            "indonesian": "bantu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bantu-2221abab.mp3"
+          },
+          {
+            "dutch": "inkopen",
+            "english": "shopping",
+            "indonesian": "belanja",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/belanja-c8c59cdc.mp3"
+          },
+          {
+            "dutch": "verveeld",
+            "english": "bored",
+            "indonesian": "bosan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bosan-95b1a0bb.mp3"
+          },
+          {
+            "dutch": "fles",
+            "english": "bottle",
+            "indonesian": "botol",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/botol-f04bf56a.mp3"
+          },
+          {
+            "dutch": "babbelen / kletsen",
+            "english": "chat / gossip",
+            "indonesian": "cakap",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cakap-3a0c6411.mp3"
+          },
+          {
+            "dutch": "wassen",
+            "english": "wash",
+            "indonesian": "cuci",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/cuci-3dc3c96d.mp3"
+          },
+          {
+            "dutch": "horen",
+            "english": "hear",
+            "indonesian": "dengar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/dengar-6e9f3d91.mp3"
+          },
+          {
+            "dutch": "zelf",
+            "english": "self",
+            "indonesian": "diri",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/diri-d336bcbc.mp3"
+          },
+          {
+            "dutch": "(ver)wisselen",
+            "english": "exchange / swap",
+            "indonesian": "ganti",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ganti-ca9b4361.mp3"
+          },
+          {
+            "dutch": "hoi!",
+            "english": "hi!",
+            "indonesian": "hai!",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hai-180e532c.mp3"
+          },
+          {
+            "dutch": "Kerstmis",
+            "english": "Christmas",
+            "indonesian": "Hari Natal",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hari-natal-6dd6b649.mp3"
+          },
+          {
+            "dutch": "bloem",
+            "english": "flower",
+            "indonesian": "kembang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kembang-0debbf0e.mp3"
+          },
+          {
+            "dutch": "kennen",
+            "english": "know",
+            "indonesian": "kenal",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kenal-a12f3f7d.mp3"
+          },
+          {
+            "dutch": "hard",
+            "english": "hard",
+            "indonesian": "keras",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/keras-9028f3ca.mp3"
+          },
+          {
+            "dutch": "college",
+            "english": "lecture",
+            "indonesian": "kuliah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kuliah-1f646157.mp3"
+          },
+          {
+            "dutch": "vlieger",
+            "english": "kite",
+            "indonesian": "layang-layang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/layanglayang-92d87ab1.mp3"
+          },
+          {
+            "dutch": "feestdag aan einde van de vasten",
+            "english": "festival at the end of fasting",
+            "indonesian": "Lebaran",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/lebaran-943aa504.mp3"
+          },
+          {
+            "dutch": "los",
+            "english": "loose",
+            "indonesian": "lepas",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/lepas-be7a72f2.mp3"
+          },
+          {
+            "dutch": "koken / gerecht maken",
+            "english": "cook / prepare a dish",
+            "indonesian": "masak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/masak-554e12c7.mp3"
+          },
+          {
+            "dutch": "over",
+            "english": "about",
+            "indonesian": "mengenai",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/mengenai-cd396d83.mp3"
+          },
+          {
+            "dutch": "olie",
+            "english": "oil",
+            "indonesian": "minyak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/minyak-cfb8ce51.mp3"
+          },
+          {
+            "dutch": "leerlingen",
+            "english": "students",
+            "indonesian": "murid",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/murid-8a6dbe16.mp3"
+          },
+          {
+            "dutch": "staat",
+            "english": "state",
+            "indonesian": "negara",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/negara-fea29cac.mp3"
+          },
+          {
+            "dutch": "kletsen",
+            "english": "chat",
+            "indonesian": "ngobrol",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ngobrol-912fe81e.mp3"
+          },
+          {
+            "dutch": "kletsen",
+            "english": "chat",
+            "indonesian": "ngomong",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ngomong-a5c66803.mp3"
+          },
+          {
+            "dutch": "kant",
+            "english": "edge",
+            "indonesian": "pinggir",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pinggir-69d072b1.mp3"
+          },
+          {
+            "dutch": "vastenmaand",
+            "english": "fasting month",
+            "indonesian": "puasa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/puasa-37a15b1a.mp3"
+          },
+          {
+            "dutch": "ronddraaien",
+            "english": "spin / turn around",
+            "indonesian": "putar",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/putar-cba01e91.mp3"
+          },
+          {
+            "dutch": "groet",
+            "english": "greeting",
+            "indonesian": "salam",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/salam-0a0783c4.mp3"
+          },
+          {
+            "dutch": "elkaar (wederzijds)",
+            "english": "each other (mutual)",
+            "indonesian": "saling",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/saling-e3b5a5da.mp3"
+          },
+          {
+            "dutch": "overbrengen",
+            "english": "convey",
+            "indonesian": "sampaikan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sampaikan-2a2724e5.mp3"
+          },
+          {
+            "dutch": "bezem / veger",
+            "english": "broom / sweep",
+            "indonesian": "sapu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sapu-c158584f.mp3"
+          },
+          {
+            "dutch": "sinds",
+            "english": "since",
+            "indonesian": "sejak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sejak-5f162d74.mp3"
+          },
+          {
+            "dutch": "glimlach",
+            "english": "smile",
+            "indonesian": "senyum",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/senyum-f3378a4f.mp3"
+          },
+          {
+            "dutch": "strijkijzer",
+            "english": "iron",
+            "indonesian": "setrika",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/setrika-3e4c43b3.mp3"
+          },
+          {
+            "dutch": "druk (bezig)",
+            "english": "busy",
+            "indonesian": "sibuk",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sibuk-cc9b47d8.mp3"
+          },
+          {
+            "dutch": "bewaren",
+            "english": "keep",
+            "indonesian": "simpan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/simpan-be0d3aa3.mp3"
+          },
+          {
+            "dutch": "Nieuwjaar",
+            "english": "New Year",
+            "indonesian": "Tahun Baru",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tahun-baru-49fc697b.mp3"
+          },
+          {
+            "dutch": "aarde / grond",
+            "english": "earth / ground",
+            "indonesian": "tanah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tanah-e85d3794.mp3"
+          },
+          {
+            "dutch": "datum",
+            "english": "date",
+            "indonesian": "tanggal",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tanggal-4ec1de86.mp3"
+          },
+          {
+            "dutch": "huilen",
+            "english": "cry",
+            "indonesian": "tangis",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tangis-fbd71de7.mp3"
+          },
+          {
+            "dutch": "telefoon",
+            "english": "telephone",
+            "indonesian": "telepon",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/telepon-540410df.mp3"
+          },
+          {
+            "dutch": "'t voornaamste",
+            "english": "mainly",
+            "indonesian": "terutama",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/terutama-1c7658b5.mp3"
+          },
+          {
+            "dutch": "sluiten",
+            "english": "close",
+            "indonesian": "tutup",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tutup-14bc4f10.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "Voorvoeging van ME- levert een werkwoordsvorm op.",
+              "Zoals in Les 13: bij de ME-vorm staat de handeling, gezien vanuit de agens, centraal.",
+              "De zo gevormde werkwoorden kunnen al dan niet een lijdend voorwerp (patiens) bij zich hebben.",
+              "ME- kan worden gecombineerd met zes woordklassen: werkwoord (Les 13, algemeen), zelfstandig naamwoord (algemeen), persoonlijk voornaamwoord (zeldzaam), bijvoeglijk naamwoord (beperkt), telwoord (beperkt) en woord van plaats (beperkt)."
+            ],
+            "title": "ME- vormt een bedrijvende werkwoordsvorm",
+            "rules_en": [
+              "The prefix ME- produces a verb form",
+              "As in Lesson 13: in the ME-form, the action is centered on the agent",
+              "The verbs formed this way may or may not have a direct object",
+              "ME- can be combined with six word classes: verb (Lesson 13, general), noun (general), personal pronoun (rare), adjective (limited), numeral (limited), and locative word (limited)"
+            ],
+            "title_en": "ME- forms an active verb form"
+          },
+          {
+            "table": [
+              [
+                "Woordklasse",
+                "Zie",
+                "Gebruik"
+              ],
+              [
+                "1. werkwoord",
+                "Les 13",
+                "algemeen"
+              ],
+              [
+                "2. zelfstandig naamwoord",
+                "Les 14",
+                "algemeen"
+              ],
+              [
+                "3. persoonlijk voornaamwoord",
+                "Les 14",
+                "zeldzaam"
+              ],
+              [
+                "4. bijvoeglijk naamwoord",
+                "Les 14",
+                "beperkt"
+              ],
+              [
+                "5. telwoord",
+                "Les 14",
+                "beperkt"
+              ],
+              [
+                "6. woord van plaats",
+                "Les 14",
+                "beperkt"
+              ]
+            ],
+            "title": "Combinaties van ME- met woordklassen"
+          },
+          {
+            "rules": [
+              "Met een zelfstandig naamwoord als basiswoord kan de ME-vorm een lijdend voorwerp bij zich hebben."
+            ],
+            "title": "2a. ME- + zelfstandig naamwoord, met patiens (lijdend voorwerp)",
+            "examples": [
+              {
+                "dutch": "hulp → helpen",
+                "english": "help → help",
+                "indonesian": "bantu → membantu",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/bantu-membantu-a6fc9e6d.mp3"
+              },
+              {
+                "dutch": "De moeder helpt haar kind.",
+                "english": "The mother helps her child",
+                "indonesian": "Ibu membantu anaknya.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ibu-membantu-anaknya-836398e7.mp3"
+              },
+              {
+                "dutch": "veger, bezem → vegen",
+                "english": "sweep → sweep",
+                "indonesian": "sapu → menyapu",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sapu-menyapu-12dba224.mp3"
+              },
+              {
+                "dutch": "De bediende veegt de vloer.",
+                "english": "The servant sweeps the floor",
+                "indonesian": "Pembantu menyapu lantai.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pembantu-menyapu-lantai-a1e51a1c.mp3"
+              },
+              {
+                "dutch": "telefoon → telefoneren",
+                "english": "telephone → telephone",
+                "indonesian": "telepon → menelepon",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/telepon-menelepon-9654a480.mp3"
+              },
+              {
+                "dutch": "Resti belt haar vriendin op.",
+                "english": "Resti calls her girlfriend",
+                "indonesian": "Resti menelepon temannya.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/resti-menelepon-temannya-3ff5338b.mp3"
+              }
+            ],
+            "rules_en": [
+              "When a noun is the base word, the ME-form can have a direct object"
+            ],
+            "title_en": "2a. ME- + noun, with direct object"
+          },
+          {
+            "rules": [
+              "Andere ME-vormen uit een zelfstandig naamwoord zijn onovergankelijk: zij hebben geen lijdend voorwerp."
+            ],
+            "title": "2b. ME- + zelfstandig naamwoord, zonder patiens (lijdend voorwerp)",
+            "examples": [
+              {
+                "dutch": "schrede → schrijden",
+                "english": "step → to step",
+                "indonesian": "langkah → melangkah",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/langkah-melangkah-02c51df1.mp3"
+              },
+              {
+                "dutch": "De vorst schrijdt.",
+                "english": "The king steps.",
+                "indonesian": "Raja melangkah.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/raja-melangkah-88a26bd9.mp3"
+              },
+              {
+                "dutch": "vaste grond → landen",
+                "english": "land → to land",
+                "indonesian": "darat → mendarat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/darat-mendarat-a2a4b07b.mp3"
+              },
+              {
+                "dutch": "Het vliegtuig landde op Cengkareng.",
+                "english": "The airplane landed at Cengkareng.",
+                "indonesian": "Kapal terbang mendarat di Cengkareng.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kapal-terbang-mendarat-di-394ddb9c.mp3"
+              },
+              {
+                "dutch": "kant → naar de kant gaan, uitwijken",
+                "english": "edge → to move aside, to swerve",
+                "indonesian": "pinggir → meminggir",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pinggir-meminggir-8b2b5d22.mp3"
+              },
+              {
+                "dutch": "Sutrisno gaat naar de linkerkant.",
+                "english": "Sutrisno moves to the left.",
+                "indonesian": "Sutrisno meminggir ke kiri.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sutrisno-meminggir-ke-kiri-c5f767cc.mp3"
+              }
+            ],
+            "rules_en": [
+              "Other ME-forms derived from a noun are intransitive: they do not have a direct object."
+            ],
+            "title_en": "2b. ME- + noun, without direct object"
+          },
+          {
+            "rules": [
+              "Er komt maar één vorm voor: aku → mengaku."
+            ],
+            "title": "3. ME- + persoonlijk voornaamwoord",
+            "examples": [
+              {
+                "dutch": "ik → toegeven",
+                "english": "I → to confess/admit",
+                "indonesian": "aku → mengaku",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/aku-mengaku-dd5e1a92.mp3"
+              },
+              {
+                "dutch": "Hij gaf toe de brief ontvangen te hebben.",
+                "english": "He confessed to receiving the letter.",
+                "indonesian": "Dia mengaku menerima surat itu.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/dia-mengaku-menerima-surat-c4b68a5a.mp3"
+              }
+            ],
+            "rules_en": [
+              "Only one form occurs: I → to confess/admit."
+            ],
+            "title_en": "3. ME- + personal pronoun"
+          },
+          {
+            "rules": [
+              "Voorvoeging van ME- aan een bijvoeglijk naamwoord of telwoord levert meestal een werkwoordsvorm zonder lijdend voorwerp op.",
+              "Het geeft aan dat de agens bezig is terecht te komen in de eigenschap die het bijvoeglijk naamwoord uitdrukt."
+            ],
+            "title": "4a. ME- + bijvoeglijk naamwoord, zonder patiens (lijdend voorwerp)",
+            "examples": [
+              {
+                "dutch": "lang → zich uitstrekken",
+                "english": "long → to extend",
+                "indonesian": "panjang → memanjang",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/panjang-memanjang-aba846cd.mp3"
+              },
+              {
+                "dutch": "De kust strekte zich uit.",
+                "english": "The coast extended.",
+                "indonesian": "Pantai memanjang.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/pantai-memanjang-8b5747b9.mp3"
+              },
+              {
+                "dutch": "geel → geel worden",
+                "english": "yellow → to turn yellow",
+                "indonesian": "kuning → menguning",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kuning-menguning-363c4a5e.mp3"
+              },
+              {
+                "dutch": "De rijst wordt geel.",
+                "english": "The rice turns yellow.",
+                "indonesian": "Padi menguning.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/padi-menguning-c47ea009.mp3"
+              }
+            ],
+            "rules_en": [
+              "Prefixing ME- to an adjective or numeral usually produces a verb form without a direct object.",
+              "It indicates that the agent is in the process of becoming the quality expressed by the adjective."
+            ],
+            "title_en": "4a. ME- + adjective, without patient (direct object)"
+          },
+          {
+            "rules": [
+              "Een ME-vorm uit een bijvoeglijk naamwoord mét lijdend voorwerp is zeldzaam."
+            ],
+            "title": "4b. ME- + bijvoeglijk naamwoord, met patiens (lijdend voorwerp): zeldzaam",
+            "examples": [
+              {
+                "dutch": "los → loslaten",
+                "english": "loose → to release, to let go",
+                "indonesian": "lepas → melepas",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/lepas-melepas-af13f177.mp3"
+              },
+              {
+                "dutch": "Yono laat een vlieger op.",
+                "english": "Yono releases a kite.",
+                "indonesian": "Yono melepas layang-layang.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/yono-melepas-layanglayang-89fc9dea.mp3"
+              }
+            ],
+            "rules_en": [
+              "A ME-form derived from an adjective with a direct object is rare."
+            ],
+            "title_en": "4b. ME- + adjective, with patient (direct object): rare"
+          },
+          {
+            "rules": [
+              "ME- + telwoord komt nooit voor met een lijdend voorwerp."
+            ],
+            "title": "5. ME- + telwoord",
+            "examples": [
+              {
+                "dutch": "twee → zich in tweeën splitsen",
+                "english": "two → to split in two",
+                "indonesian": "dua → mendua",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/dua-mendua-3b0e9006.mp3"
+              },
+              {
+                "dutch": "De wolk splitst zich in tweeën.",
+                "english": "The cloud splits in two.",
+                "indonesian": "Awan itu mendua.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/awan-itu-mendua-7bec1366.mp3"
+              }
+            ],
+            "rules_en": [
+              "ME- + numeral never occurs with a direct object."
+            ],
+            "title_en": "5. ME- + numeral"
+          },
+          {
+            "rules": [
+              "ME- + woord van plaats komt nooit voor met een lijdend voorwerp."
+            ],
+            "title": "6. ME- + woord van plaats",
+            "examples": [
+              {
+                "dutch": "boven, bovenkant → omhoog gaan, het hogerop zoeken",
+                "english": "above, top → to go up, to seek higher",
+                "indonesian": "atas → mengatas",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/atas-mengatas-54794ad7.mp3"
+              },
+              {
+                "dutch": "Het stof ging omhoog vanwege de wind.",
+                "english": "The dust went up because of the wind.",
+                "indonesian": "Debu mengatas karena angin.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/debu-mengatas-karena-angin-2073cd98.mp3"
+              }
+            ],
+            "rules_en": [
+              "ME- + locative word never occurs with a direct object."
+            ],
+            "title_en": "6. ME- + locative word"
+          },
+          {
+            "rules": [
+              "De BER- en de ME-vorm komen naast elkaar voor en vullen elkaar aan.",
+              "BER- geeft voornamelijk een toestand aan.",
+              "ME- geeft hoofdzakelijk een directe, dynamische handeling aan: dit is de bedrijvende vorm — hier en nu vindt de handeling plaats.",
+              "Vertaling uit het Indonesisch naar het Nederlands levert soms weinig betekenisverschil op, omdat het Nederlands dit verschil niet altijd kan uitdrukken."
+            ],
+            "title": "Relatie tussen BER-vorm en ME-vorm",
+            "rules_en": [
+              "The BER- and ME-forms occur side by side and complement each other.",
+              "BER- mainly indicates a state.",
+              "ME- mainly indicates a direct, dynamic action: this is the active form — the action takes place here and now.",
+              "Translation from Indonesian to Dutch sometimes yields little difference in meaning, because Dutch cannot always express this distinction."
+            ],
+            "title_en": "Relationship between BER-form and ME-form"
+          },
+          {
+            "rules": [
+              "Als het basiswoord zowel met BER- als met ME- kan worden gecombineerd, is de BER-vorm vaak wederkerend ('zich'): de handeling is op de agens gericht.",
+              "Er bestaat verschil tussen een BER-vorm met een complement en een ME-vorm met een lijdend voorwerp: in 'Saya berjual mobil' (ik handel in auto's) wordt op dat moment niets verkocht — mobil is complement, geen lijdend voorwerp. In 'Saya menjual mobil' (ik verkoop een auto) is mobil wél lijdend voorwerp."
+            ],
+            "title": "Relatie BER-/ME- bij werkwoord en zelfstandig naamwoord",
+            "examples": [
+              {
+                "dutch": "Dewi vertrekt naar Taman Mini.",
+                "english": "Dewi departs to Taman Mini.",
+                "indonesian": "Dewi berangkat ke Taman Mini.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/dewi-berangkat-ke-taman-51e0b202.mp3"
+              },
+              {
+                "dutch": "Supomo tilt de zware koffer op.",
+                "english": "Supomo lifts the heavy suitcase.",
+                "indonesian": "Supomo mengangkat koper yang berat.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/supomo-mengangkat-koper-yang-3afe303d.mp3"
+              },
+              {
+                "dutch": "Het kind leert.",
+                "english": "The child learns.",
+                "indonesian": "Anak belajar.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/anak-belajar-78bdd7f4.mp3"
+              },
+              {
+                "dutch": "De leraar onderwijst / geeft les.",
+                "english": "The teacher teaches.",
+                "indonesian": "Guru mengajar.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/guru-mengajar-f0ff6c0a.mp3"
+              },
+              {
+                "dutch": "In die fles zit water / Die fles bevat water.",
+                "english": "That bottle contains water.",
+                "indonesian": "Botol itu berisi air.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/botol-itu-berisi-air-32a8e803.mp3"
+              },
+              {
+                "dutch": "Moeder vult de fles met water.",
+                "english": "Mother fills the bottle with water.",
+                "indonesian": "Ibu mengisi botol dengan air.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ibu-mengisi-botol-dengan-166df287.mp3"
+              },
+              {
+                "dutch": "Ik 'handel in auto's'.",
+                "english": "I deal in cars.",
+                "indonesian": "Saya berjual mobil.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/saya-berjual-mobil-0e28fb22.mp3"
+              },
+              {
+                "dutch": "Ik verkoop een auto.",
+                "english": "I sell a car.",
+                "indonesian": "Saya menjual mobil.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/saya-menjual-mobil-bb04d3f8.mp3"
+              }
+            ],
+            "rules_en": [
+              "If the base word can be combined with both BER- and ME-, the BER-form is often reflexive ('oneself'): the action is directed at the agent.",
+              "There is a difference between a BER-form with a complement and an ME-form with a direct object: in 'Saya berjual mobil' (I deal in cars) nothing is being sold at that moment — mobil is a complement, not a direct object. In 'Saya menjual mobil' (I sell a car) mobil is indeed the direct object."
+            ],
+            "title_en": "Relationship BER-/ME- with verb and noun"
+          },
+          {
+            "rules": [
+              "Bij deze groep is de verhouding in betekenis van BER- en ME- enigszins afwijkend: BER- is statisch, ME- is dynamisch."
+            ],
+            "title": "Relatie BER-/ME- bij bijvoeglijk naamwoord en telwoord",
+            "examples": [
+              {
+                "dutch": "nabij → in de nabijheid van (statisch) / naderen (dynamisch)",
+                "english": "near → be near / draw near (static) / approach (dynamic)",
+                "indonesian": "dekat → berdekat / mendekat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/dekat-berdekat-mendekat-b4e824ec.mp3"
+              },
+              {
+                "dutch": "Kerstmis ligt dicht bij Nieuwjaar.",
+                "english": "Christmas is close to New Year.",
+                "indonesian": "Hari Natal berdekat(-dekat) dengan Tahun Baru.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hari-natal-berdekatdekat-dengan-d61bac55.mp3"
+              },
+              {
+                "dutch": "Kerst nadert.",
+                "english": "Christmas is approaching.",
+                "indonesian": "Hari Natal mendekat.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/hari-natal-mendekat-1c5a62d0.mp3"
+              },
+              {
+                "dutch": "twee → met z'n tweeën zijn / zich tweeslachtig gedragen",
+                "english": "two → be two together / be two-faced",
+                "indonesian": "dua → berdua / mendua",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/dua-berdua-mendua-b743f4d1.mp3"
+              },
+              {
+                "dutch": "Zij wandelen met z'n tweetjes.",
+                "english": "They walk together in pairs.",
+                "indonesian": "Mereka berjalan-jalan berdua.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/mereka-berjalanjalan-berdua-b1ebdb41.mp3"
+              },
+              {
+                "dutch": "Hij is tweeslachtig in zijn gedrag.",
+                "english": "His character is two-faced.",
+                "indonesian": "Sifat orang itu mendua.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sifat-orang-itu-mendua-6a17cfe8.mp3"
+              }
+            ],
+            "rules_en": [
+              "With this group the relationship in meaning of BER- and ME- is somewhat different: BER- is static, ME- is dynamic."
+            ],
+            "title_en": "Relationship BER-/ME- with adjective and numeral"
+          }
+        ],
+        "grammar_topics": [
+          "ME-constructies"
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "Anak-anak berkumpul di belakang sekolah. (De kinderen verzamelen zich achter de school.)",
+                "prompt": "kumpul — Anak-anak ............... di belakang sekolah."
+              },
+              {
+                "answer": "Siapa membeli karcis masuk? (Wie koopt het toegangskaartje?)",
+                "prompt": "beli — Siapa ............... karcis masuk?"
+              },
+              {
+                "answer": "Dia berbaik hati kepada saya. (Hij is goedhartig tegen mij.)",
+                "prompt": "baik — Dia ............... hati kepada saya."
+              },
+              {
+                "answer": "Saudara sudah melihat kereta api ke Solo? (Heeft u de trein naar Solo al gezien?)",
+                "prompt": "lihat — Saudara sudah ............... kereta api ke Solo?"
+              },
+              {
+                "answer": "Candi ini berbentuk stupa. (Deze tempel heeft de vorm van een stupa.)",
+                "prompt": "bentuk — Candi ini ............... stupa."
+              },
+              {
+                "answer": "Orang tua itu mengangkat koper yang betul-betul berat. (Die oude man tilt de echt zware koffer op.)",
+                "prompt": "angkat — Orang tua itu ............... koper yang betul-betul berat."
+              },
+              {
+                "answer": "Susi menelepon temannya tadi siang. (Susi belde vanmiddag haar vriendin op.)",
+                "prompt": "telepon — Susi ............... temannya tadi siang."
+              },
+              {
+                "answer": "Bis ke Tanah Abang berangkat jam berapa? (Hoe laat vertrekt de bus naar Tanah Abang?)",
+                "prompt": "angkat — Bis ke Tanah Abang ............... jam berapa?"
+              },
+              {
+                "answer": "Hasan mencari buku sekolah yang baru. (Hasan zoekt het nieuwe schoolboek.)",
+                "prompt": "cari — Hasan ............... buku sekolah yang baru."
+              },
+              {
+                "answer": "Dewi menyapu lantai. (Dewi veegt de vloer.)",
+                "prompt": "sapu — Dewi ............... lantai."
+              }
+            ],
+            "title": "Oefening I",
+            "instruction": "Vul een BER- of een ME-vorm in en vertaal in het Nederlands."
+          },
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "membuka",
+                "prompt": "buka"
+              },
+              {
+                "answer": "menyimpan",
+                "prompt": "simpan"
+              },
+              {
+                "answer": "mengecil",
+                "prompt": "kecil"
+              },
+              {
+                "answer": "memukul",
+                "prompt": "pukul"
+              },
+              {
+                "answer": "mengawasi",
+                "prompt": "awas"
+              },
+              {
+                "answer": "mengunci",
+                "prompt": "kunci"
+              },
+              {
+                "answer": "mendekat",
+                "prompt": "dekat"
+              },
+              {
+                "answer": "mencuci",
+                "prompt": "cuci"
+              },
+              {
+                "answer": "menutup",
+                "prompt": "tutup"
+              },
+              {
+                "answer": "mengganti",
+                "prompt": "ganti"
+              },
+              {
+                "answer": "menjual",
+                "prompt": "jual"
+              },
+              {
+                "answer": "menangis",
+                "prompt": "tangis"
+              },
+              {
+                "answer": "mengambil",
+                "prompt": "ambil"
+              },
+              {
+                "answer": "mengirim",
+                "prompt": "kirim"
+              },
+              {
+                "answer": "memeriksa",
+                "prompt": "periksa"
+              }
+            ],
+            "title": "Oefening II",
+            "instruction": "Vervoeg de volgende basiswoorden met een ME-vorm."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Hai, bisa saya bicara dengan Bapak Slamet?",
+                "prompt": "Hallo, mag ik meneer Slamet spreken?"
+              },
+              {
+                "answer": "Tidak bisa, Pak, dia belum datang.",
+                "prompt": "Dat kan niet meneer, hij is nog niet gekomen."
+              },
+              {
+                "answer": "Jam berapa saya bisa menelepon kembali?",
+                "prompt": "Hoe laat kan ik terug bellen?"
+              },
+              {
+                "answer": "Nah, coba telepon kembali sekitar waktu makan siang antara jam 12.00 dan 13.00.",
+                "prompt": "Nou, probeert u maar rond het middageten tussen 12.00 en 13.00 uur terug te bellen."
+              },
+              {
+                "answer": "Bisa Anda sampaikan bahwa Bapak Harry dari Belanda sekarang menginap di hotel 'Gajah Putih'?",
+                "prompt": "Kunt u zeggen dat meneer Harry uit Nederland momenteel in hotel 'De Witte Olifant' zit?"
+              },
+              {
+                "answer": "Boleh saya minta alamat hotel, nomor telepon dan nomor kamar Anda, supaya Bapak Slamet bisa menelepon Anda kembali?",
+                "prompt": "Mag ik het adres van het hotel, het telefoonnummer en uw kamernummer, zodat meneer Slamet u kan terugbellen?"
+              },
+              {
+                "answer": "Hotel itu terletak di 'Jalan Kembang Kuning' nomor empat ratus sembilan puluh enam, nomor telepon 8904760. Saya di kamar empat puluh enam dan ada di hotel sore jam lima.",
+                "prompt": "Het hotel ligt in de 'Gele Bloemenstraat', nummer vierhonderd zesennegentig, telefoonnummer: 8904760. Ik zit op kamer zesenveertig en ben 's middags om vijf uur in het hotel."
+              },
+              {
+                "answer": "Sampai tanggal berapa Anda tinggal di kota?",
+                "prompt": "Tot welke datum blijft u in de stad?"
+              },
+              {
+                "answer": "Saya masih tinggal sampai lusa, sesudah itu saya berangkat dengan mobil ke pantai.",
+                "prompt": "Ik blijf nog tot overmorgen, daarna vertrek ik per auto naar de kust."
+              },
+              {
+                "answer": "Saya akan menyampaikan kepada Bapak Slamet, selamat pagi Bapak Harry!",
+                "prompt": "Ik zal het aan meneer Slamet zeggen, goedemorgen meneer Harry!"
+              }
+            ],
+            "title": "Oefening III",
+            "instruction": "Vertaal in het Indonesisch."
+          }
+        ]
+      }
+    }
+  ],
+  "runtime_components": {
+    "ActivationGate": {
+      "import": "import { ActivationGate } from '@/components/lessons/ActivationGate'",
+      "usage": "<ActivationGate lessonId=\"3d97571d-2bae-448c-b1fe-6fed15b618a7\" />",
+      "purpose": "The user-controlled checkbox that adds this lesson's capabilities to spaced review.",
+      "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
+    },
+    "LessonAudioPlayer": {
+      "note": "No lesson-level audio published for this lesson yet."
+    },
+    "PracticeActions": {
+      "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
+      "usage": "<PracticeActions lessonId=\"3d97571d-2bae-448c-b1fe-6fed15b618a7\" />",
+      "purpose": "Wired to runtime capability counts; renders \"Practice this lesson · N ready\" and \"Review this lesson\" CTAs.",
+      "placement": "Anywhere on the page. Conventionally pinned to a sidebar or near the bottom as a conclusion CTA."
+    }
+  }
+}

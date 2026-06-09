@@ -1,0 +1,810 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Page.module.css — Lesson 14: ME- vervolg (De islam in Indonesië)
+
+   Continuation of lesson 13's ME- prefix. The grammar is the whole page: a
+   word-class INDEX table is the spine, six word-class transform groups fan out
+   below it in an even aligned grid, and a dedicated BER-/ME- "state | action"
+   contrast track is the climax (it replaces the dialogue this lesson lacks).
+   The Islam reading opens collapsed as a culture spread. A cooler indigo→teal
+   hero distinguishes it from lesson 13's green-amber money scene.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ─── Page root ──────────────────────────────────────────────────────────── */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
+}
+
+.band {
+  width: 100%;
+  padding: 56px 0;
+}
+
+@media (max-width: 720px) { .band { padding: 40px 0; } }
+
+/* ─── Hero ───────────────────────────────────────────────────────────────── */
+
+.heroBand {
+  composes: band;
+  background-color: #1c3b63;
+  background-image:
+    linear-gradient(135deg, rgba(20, 44, 78, 0.86) 0%, rgba(18, 30, 48, 0.82) 50%, rgba(0, 199, 190, 0.30) 100%),
+    url('/lesson-14-hero.webp');
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid var(--hero-border);
+  padding: 80px 0 96px;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroBand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 84% 24%, rgba(0, 199, 190, 0.22), transparent 42%),
+    radial-gradient(circle at 10% 86%, rgba(160, 130, 255, 0.16), transparent 40%);
+  pointer-events: none;
+}
+
+.heroBand::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 26px 26px;
+  pointer-events: none;
+}
+
+.heroInner { composes: container; position: relative; z-index: 1; }
+
+@media (max-width: 720px) { .heroBand { padding: 56px 0 64px; } }
+
+.heroLeft { display: flex; flex-direction: column; gap: 16px; max-width: 720px; }
+
+.heroBadgeRow { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.heroBadge {
+  align-self: flex-start;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 199, 190, 0.18);
+  color: var(--teal);
+  border: 1px solid rgba(0, 199, 190, 0.32);
+}
+
+.heroBadgeAlt {
+  composes: heroBadge;
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary-border);
+}
+
+.heroTitle { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+
+.heroTitleId {
+  font-size: clamp(40px, 5.5vw, 60px);
+  font-weight: var(--fw-black);
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.heroTitleNl {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: rgba(255, 255, 255, 0.65);
+  font-style: italic;
+}
+
+.heroDescription {
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+  max-width: 620px;
+  font-weight: var(--fw-normal);
+}
+
+.heroDescription em { font-style: italic; color: #ffffff; font-weight: var(--fw-semibold); }
+
+/* ─── Editorial lede ─────────────────────────────────────────────────────── */
+
+.ledeBand { composes: band; padding: 64px 0 32px; }
+
+.ledeInner { composes: container; max-width: 920px; }
+
+.ledeQuote {
+  font-size: clamp(17px, 1.8vw, 21px);
+  font-weight: var(--fw-medium);
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.ledeQuote em {
+  font-style: italic;
+  color: var(--accent-primary);
+  font-weight: var(--fw-semibold);
+}
+
+.ledeMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.ledeMeta::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  background: var(--accent-primary);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ─── Audio band ─────────────────────────────────────────────────────────── */
+
+.audioBand { composes: band; padding: 0 0 8px; }
+.audioInner { composes: container; max-width: 920px; }
+
+/* ─── Main shell ─────────────────────────────────────────────────────────── */
+
+.shellBand { composes: band; padding-top: 24px; padding-bottom: 24px; }
+
+.shell {
+  composes: container;
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  min-width: 0;
+}
+
+@media (max-width: 720px) { .shell { gap: 56px; } }
+
+/* ─── Shared section header ──────────────────────────────────────────────── */
+
+.section { display: flex; flex-direction: column; }
+
+.sectionEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  margin: 0 0 18px;
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+  font-style: italic;
+}
+
+/* ─── Grammar — the lesson's whole spine ─────────────────────────────────── */
+
+.grammarEyebrow { composes: sectionEyebrow; color: var(--mix-recall); }
+.grammarEyebrow::before { background: var(--mix-recall); }
+
+/* Concept block — prose intro framing the section */
+.conceptBlock {
+  padding: 24px 26px;
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  margin-bottom: 28px;
+}
+
+.conceptTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 14px;
+  letter-spacing: -0.01em;
+}
+
+/* Shared rules list — accent-coloured → bullets, accent set per context */
+.classRules {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.classRules li {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.55;
+  padding-left: 22px;
+  position: relative;
+}
+
+.classRules li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--tile-accent, var(--mix-recall));
+  font-weight: var(--fw-bold);
+}
+
+/* ─── Movement 1: the word-class index table ─────────────────────────────── */
+
+.indexBlock { margin-bottom: 36px; }
+
+.indexCaption {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.indexCaption::before {
+  content: '';
+  width: 24px;
+  height: 2px;
+  background: var(--mix-recall);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.indexTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-md);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+.indexTable th {
+  text-align: left;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--mix-recall);
+  padding: 14px 18px;
+  background: rgba(160, 130, 255, 0.06);
+  border-bottom: 1px solid var(--card-border);
+}
+
+.indexTable td {
+  padding: 13px 18px;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--card-border);
+  vertical-align: middle;
+}
+
+.indexTable tbody tr:last-child td { border-bottom: none; }
+
+.indexTable td[data-col='0'] { font-weight: var(--fw-semibold); }
+.indexTable td[data-col='1'] { color: var(--text-secondary); font-size: var(--fs-sm); white-space: nowrap; }
+
+/* The rows introduced in THIS lesson get a faint highlight + accent edge */
+.indexTable tbody tr[data-active='true'] td[data-col='0'] { color: var(--text-primary); }
+.indexTable tbody tr[data-active='true'] { background: rgba(160, 130, 255, 0.05); }
+
+.indexTag {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}
+
+.indexTag[data-use='algemeen'] { background: rgba(50,215,75,0.10); color: var(--success); }
+.indexTag[data-use='zeldzaam'] { background: rgba(255,99,99,0.10); color: var(--danger); }
+.indexTag[data-use='beperkt']  { background: rgba(255,149,0,0.10); color: var(--warning); }
+
+@media (max-width: 560px) {
+  .indexTable, .indexTable thead, .indexTable tbody, .indexTable th, .indexTable td, .indexTable tr { display: block; }
+  .indexTable thead { display: none; }
+  .indexTable tr { padding: 10px 14px; border-bottom: 1px solid var(--card-border); }
+  .indexTable td { padding: 2px 0; border: none; }
+}
+
+/* ─── Movement 2: word-class transform groups ────────────────────────────── */
+
+.movementCaption {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.movementCaption::before {
+  content: '';
+  width: 24px;
+  height: 2px;
+  background: var(--mix-recall);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.classGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 44px;
+}
+
+.classTile {
+  padding: 22px 26px;
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.classTile[data-accent='cyan']   { --tile-accent: var(--accent-primary); }
+.classTile[data-accent='purple'] { --tile-accent: var(--mix-recall); }
+.classTile[data-accent='teal']   { --tile-accent: var(--teal); }
+.classTile[data-accent='amber']  { --tile-accent: var(--ring-target); }
+.classTile[data-accent='green']  { --tile-accent: var(--success); }
+.classTile[data-accent='rose']   { --tile-accent: var(--danger); }
+
+.classHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.classLabel {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--tile-accent, var(--mix-recall));
+  flex-shrink: 0;
+}
+
+.classTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.classExamples {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--card-border);
+}
+
+/* The base → derived rows — even grid, fixed base column for vertical alignment */
+.transformGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 28px;
+}
+
+@media (max-width: 560px) { .transformGrid { grid-template-columns: 1fr; } }
+
+.transform {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.transformBase {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  font-weight: var(--fw-medium);
+  min-width: 4.5em;
+  text-align: right;
+}
+
+.transformArrow {
+  color: var(--tile-accent, var(--mix-recall));
+  font-weight: var(--fw-bold);
+}
+
+.transformDerived {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.transformNl {
+  flex: 1 0 100%;
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* The illustrative sentences for a group — even two-column grid */
+.sentenceGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 28px;
+}
+
+@media (max-width: 560px) { .sentenceGrid { grid-template-columns: 1fr; } }
+
+.sentenceExample { display: flex; flex-direction: column; gap: 2px; }
+
+.sentenceExampleId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  line-height: 1.45;
+}
+
+.sentenceExampleNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* ─── Movement 3: the BER-/ME- contrast track ────────────────────────────── */
+
+.contrastIntro {
+  padding: 24px 26px;
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, rgba(0,199,190,0.06) 0%, rgba(160,130,255,0.05) 100%);
+  border: 1px solid var(--card-border);
+  margin-bottom: 20px;
+  --tile-accent: var(--teal);
+}
+
+.contrastEyebrow {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin: 0 0 4px;
+}
+
+.contrastSectionTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 14px;
+  letter-spacing: -0.01em;
+}
+
+.contrastStack { display: flex; flex-direction: column; gap: 16px; }
+
+.contrastTile {
+  padding: 24px 26px;
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  --tile-accent: var(--teal);
+}
+
+.contrastTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 14px;
+  letter-spacing: -0.005em;
+}
+
+/* head pairs (dekat → berdekat / mendekat) sit above the contrast grid */
+.transformGrid[data-contrast='true'] {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--card-border);
+}
+
+.contrastLegend {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 20px 0 12px;
+}
+
+.contrastChip {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+.contrastChip[data-form='ber'] { background: rgba(160,130,255,0.10); color: var(--mix-recall); border: 1px solid rgba(160,130,255,0.26); }
+.contrastChip[data-form='me']  { background: rgba(0,199,190,0.10); color: var(--teal); border: 1px solid rgba(0,199,190,0.26); }
+
+.contrastGrid { display: flex; flex-direction: column; gap: 10px; }
+
+.contrastRow {
+  display: grid;
+  grid-template-columns: 1fr 28px 1fr;
+  gap: 8px;
+  align-items: stretch;
+}
+
+@media (max-width: 620px) {
+  .contrastRow { grid-template-columns: 1fr; gap: 6px; }
+  .contrastVs { display: none; }
+}
+
+.contrastCell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 16px;
+  border-radius: var(--r-md);
+  min-width: 0;
+}
+
+.contrastCell[data-form='ber'] { background: rgba(160,130,255,0.06); border: 1px solid rgba(160,130,255,0.18); }
+.contrastCell[data-form='me']  { background: rgba(0,199,190,0.06); border: 1px solid rgba(0,199,190,0.18); }
+
+.contrastVs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+}
+
+.contrastId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  line-height: 1.45;
+}
+
+.contrastNl {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.contrastEmpty { color: var(--text-tertiary); }
+
+/* ─── Vocabulary ─────────────────────────────────────────────────────────── */
+
+.vocabEyebrow { composes: sectionEyebrow; color: var(--success); }
+.vocabEyebrow::before { background: var(--success); }
+
+.itemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+
+@media (min-width: 720px) { .itemGrid { grid-template-columns: repeat(3, 1fr); } }
+
+.itemChip {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 11px 15px;
+  background: rgba(50,215,75,0.05);
+  border: 1px solid rgba(50,215,75,0.18);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.itemChip:hover { border-color: var(--success); transform: translateY(-1px); }
+
+.itemId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  /* Fixed Indonesian column → dots + translations line up down each column */
+  min-width: 6em;
+}
+
+.itemSep {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--text-tertiary);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.itemNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Culture essay — Islam in Indonesië (collapsible) ────────────────────── */
+
+.cultureEyebrow { composes: sectionEyebrow; color: var(--warning); }
+.cultureEyebrow::before { background: var(--warning); }
+
+.cultureDek {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 24px;
+  max-width: 70ch;
+  font-style: italic;
+}
+
+.cultureBody {
+  position: relative;
+  max-height: 360px;
+  overflow: hidden;
+  transition: max-height var(--transition-base);
+}
+
+.cultureBody[data-open='true'] { max-height: none; }
+
+.culturePara {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.72;
+  margin: 0 0 18px;
+  max-width: 68ch;
+}
+
+.culturePara:last-child { margin-bottom: 0; }
+
+.culturePara[data-lead='true']::first-letter {
+  float: left;
+  font-size: 3.1em;
+  line-height: 0.82;
+  font-weight: var(--fw-black);
+  color: var(--warning);
+  padding: 4px 10px 0 0;
+}
+
+.cultureFade {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 120px;
+  background: linear-gradient(180deg, transparent 0%, var(--bg-main) 92%);
+  pointer-events: none;
+}
+
+.cultureToggle {
+  align-self: flex-start;
+  margin-top: 20px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: rgba(255,149,0,0.08);
+  border: 1px solid rgba(255,149,0,0.28);
+  color: var(--warning);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.cultureToggle:hover { background: rgba(255,149,0,0.14); }
+
+/* ─── Inline play button ─────────────────────────────────────────────────── */
+
+.playButton {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition-base);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.playButton:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+}
+
+.playButton[data-playing='true'] {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-glow);
+}
+
+.playButton svg { width: 10px; height: 10px; }
+
+/* ─── Closing band ───────────────────────────────────────────────────────── */
+
+.closingBand {
+  composes: band;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,229,255,0.04) 100%);
+  padding: 64px 0 96px;
+}
+
+.closingInner { composes: container; max-width: 720px; text-align: center; }
+
+.closingTitle {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  letter-spacing: -0.015em;
+}
+
+.closingLede {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+  line-height: 1.65;
+}
+
+.closingActivation { display: flex; justify-content: center; margin: 0 0 28px; }
+
+.closingActivation > * {
+  width: 100%;
+  max-width: 660px;
+  text-align: left;
+  padding: 18px 22px;
+  background: var(--accent-primary-subtle);
+  border: 1px solid var(--accent-primary-border);
+  border-radius: var(--r-lg);
+}
+
+.closingActions { display: flex; justify-content: center; }
+
+.closingActions > * { width: 100%; max-width: 660px; }

@@ -1,0 +1,304 @@
+{
+  "lesson": 14,
+  "generatedAt": "2026-06-09T18:36:45.293Z",
+  "sourcePages": 7,
+  "lessonMeta": {
+    "title": "Les 14 - De islam in Indonesië / Werkwoordsvorm met ME- Vervolg",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 14
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Cultuur - De islam in Indonesië",
+      "source_pages": [
+        1
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Indien we iets willen zeggen over de islam in Indonesië, moeten we de voorafgaande historisch-religieuze perioden erbij betrekken.",
+        "Het oorspronkelijke religieuze denken in Indonesië was gericht op de natuur, waarin het voortbrengen van nieuw leven (geboorte; rijstbouw) en de 'mannelijke-vrouwelijke' elementen een belangrijke rol speelden. Daarnaast hebben, over een periode van circa 1500 jaar, hindoeïstische en boeddhistische religieuze levensopvattingen een grote invloed gehad op het doen en denken van de diverse Indonesische volkeren.",
+        "Vanaf de 13e eeuw werd de islam langzaam maar zeker als godsdienst aanvaard, om tenslotte in de 20ste eeuw een hoogtepunt te bereiken, waardoor Indonesië momenteel één van de grootste islamitische gemeenschappen ter wereld kent. Geschat wordt, dat 80 tot 85% van de bevolking, dit is tussen de 144 en 153 miljoen mensen, belijders zijn van de islam.",
+        "De islam werd in de 13e eeuw op Sumatra door kooplieden uit Noord-India in Indonesië geïntroduceerd. Door de eeuwen heen ontstonden, vooral aan de kustplaatsen, islamitische gemeenschappen. De islamitische leer die de Indiase kooplieden meebrachten was niet de strenge leer uit het Midden Oosten, maar een leer die in Perzië en Noord-India mystieke trekjes had meegekregen en meer open stond voor lokale cultuurelementen. Zowel de mystiek - die vanouds in de traditionele Indonesische gemeenschap verankerd lag - als het feit dat de gelovige niet alle oude tradities over boord hoefde te gooien, droegen bij tot de acceptatie van de islam.",
+        "Binnen de huidige islamitische gemeenschap kan men constateren dat er verschillende opvattingen zijn over de manier waarop de islamitische leer en de daarbij horende levenshouding moeten worden uitgevoerd. Dit hangt ondermeer af van de aard van de overtuiging van de gelovige, de historische ontwikkeling van de religie op het eiland, en hoe langer hoe meer van de genoten opleiding en de toegang tot moderne communicatiemiddelen.",
+        "Vroeger en zelfs tot in de eerste helft van de 20ste eeuw was het een voorrecht om op haj - bedevaart - naar Mekka te gaan. Nu maakt de jaarlijkse trek van tienduizenden Indonesische pelgrims naar Saoedi Arabië het noodzakelijk dat het 'Ministerie van Godsdienstzaken' van de Indonesische overheid ingrijpt om het reizen per vliegtuig en schip ordelijk te laten verlopen.",
+        "De toegenomen mogelijkheden om snel en op afstand met elkaar te communiceren hebben er toe geleid dat, in principe, elke islamiet contact kan opnemen met zowel 'orthodoxe' als 'verlichte' islamitische gemeenschappen overal ter wereld.",
+        "Mede door het verbeterde onderwijs, heeft dit geleid tot een intensivering van het denken en discussiëren over de islam en bijgedragen tot het 'zich moslim voelen'. Momenteel worden bijna wekelijks nieuwe gebedsruimten en moskeeën gebouwd."
+      ]
+    },
+    {
+      "id": 1,
+      "type": "vocabulary",
+      "title": "Woordenlijst",
+      "source_pages": [
+        2
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "agak",
+          "dutch": "nogal / enigzins",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "angin",
+          "dutch": "wind",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "bantu",
+          "dutch": "hulp",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "belanja",
+          "dutch": "inkopen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "bosan",
+          "dutch": "verveeld",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "botol",
+          "dutch": "fles",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "cakap",
+          "dutch": "babbelen / kletsen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "cuci",
+          "dutch": "wassen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "dengar",
+          "dutch": "horen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "diri",
+          "dutch": "zelf",
+          "pos": "pronoun"
+        },
+        {
+          "indonesian": "ganti",
+          "dutch": "(ver)wisselen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "hai!",
+          "dutch": "hoi!",
+          "pos": "greeting"
+        },
+        {
+          "indonesian": "Hari Natal",
+          "dutch": "Kerstmis",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kembang",
+          "dutch": "bloem",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kenal",
+          "dutch": "kennen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "keras",
+          "dutch": "hard",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kuliah",
+          "dutch": "college",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "layang-layang",
+          "dutch": "vlieger",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "Lebaran",
+          "dutch": "feestdag aan einde van de vasten",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lepas",
+          "dutch": "los",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "masak",
+          "dutch": "koken / gerecht maken",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "mengenai",
+          "dutch": "over",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "minyak",
+          "dutch": "olie",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "murid",
+          "dutch": "leerlingen",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "negara",
+          "dutch": "staat",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "ngobrol",
+          "dutch": "kletsen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "ngomong",
+          "dutch": "kletsen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "pinggir",
+          "dutch": "kant",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "puasa",
+          "dutch": "vastenmaand",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "putar",
+          "dutch": "ronddraaien",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "salam",
+          "dutch": "groet",
+          "pos": "greeting"
+        },
+        {
+          "indonesian": "saling",
+          "dutch": "elkaar (wederzijds)",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "sampaikan",
+          "dutch": "overbrengen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "sapu",
+          "dutch": "bezem / veger",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sejak",
+          "dutch": "sinds",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "senyum",
+          "dutch": "glimlach",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "setrika",
+          "dutch": "strijkijzer",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sibuk",
+          "dutch": "druk (bezig)",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "simpan",
+          "dutch": "bewaren",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "Tahun Baru",
+          "dutch": "Nieuwjaar",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tanah",
+          "dutch": "aarde / grond",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tanggal",
+          "dutch": "datum",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "tangis",
+          "dutch": "huilen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "telepon",
+          "dutch": "telefoon",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "terutama",
+          "dutch": "'t voornaamste",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "tutup",
+          "dutch": "sluiten",
+          "pos": "verb"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "grammar",
+      "title": "Grammatica - WERKWOORDSVORM MET ME-: Vervolg",
+      "source_pages": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "confidence": "high",
+      "raw_text": "GRAMMATICA\n\nWERKWOORDSVORM MET ME- : Vervolg\n\nΔ Voorvoeging van ME- levert een werkwoordsvorm op.\n\nΔ Zoals we in Les 13 hebben gezien staat bij de ME-vorm de handeling gezien vanuit de agens centraal.\n\nΔ De op deze wijze gevormde werkwoorden kunnen al dan niet een lijdend voorwerp bij zich hebben.\n\nME- kan worden gecombineerd met de volgende woordklassen:\n\n         Zie        Gebruik\n1. werkwoord          Les 13     algemeen\n2. zelfstandig naamwoord  Les 14     algemeen\n3. persoonlijk voornaamwoord Les 14    zeldzaam\n4. bijvoeglijk naamwoord  Les 14     beperkt\n5. telwoord           Les 14     beperkt\n6. woord van plaats      Les 14     beperkt\n\n2. ME- + zelfstandig naamwoord\n\n2a. ME- + zelfstandig naamwoord, met patiens (lijdend voorwerp)\n\nbantu - membantu          hulp - helpen\nIbu membantu anaknya        De moeder helpt haar kind\n\nsapu - menyapu           veger, bezem - vegen\nPembantu menyapu lantai      De bediende veegt de vloer\n\ntelepon - menelepon         telefoon - telefoneren\nResti menelepon temannya      Resti belt haar vriendin op\n\n2b. ME- + zelfstandig naamwoord, zonder patiens (lijdend voorwerp)\n\nlangkah - melangkah         schrede - schrijden\nRaja melangkah           De vorst schrijdt\n\ndarat - mendarat           vaste grond - landen\nKapal terbang mendarat di Cengkareng  Het vliegtuig landde op Cengkareng\n\npinggir - meminggir         kant - naar de kant gaan, uitwijken\nSutrisno meminggir ke kiri     Sutrisno gaat naar de linkerkant\n\n3. ME- + persoonlijk voornaamwoord\n\nEr komt maar één vorm voor:\n\naku - mengaku            ik - toegeven\nDia mengaku menerima surat itu   Hij gaf toe de brief ontvangen te hebben\n\n4. ME- + bijvoeglijk naamwoord\n\nVoorvoeging van ME- aan een bijvoeglijk naamwoord of telwoord heeft meestal een werkwoordsvorm zonder patiens (lijdend voorwerp) tot resultaat.\nHet geeft aan dat de agens bezig is terecht te komen in de eigenschap die het bijvoeglijk naamwoord uitdrukt.\n\n4a. ME- + bijvoeglijk naamwoord, zonder patiens (lijdend voorwerp)\n\npanjang - memanjang         lang - uitstrekken\nPantai memanjang           De kust strekte zich uit\n\nkuning - menguning          geel - geel worden\nPadi menguning            De rijst wordt geel\n\n4b. ME- + bijvoeglijk naamwoord, met patiens (lijdend voorwerp): zeldzaam\n\nlepas - melepas           los - loslaten\nYono melepas layang-layang      Yono laat een vlieger op\n\n5. ME- + telwoord\n\nME- + telwoord komt nooit voor met patiens (lijdend voorwerp)\n\ndua - mendua             twee - zich in tweeën splitsen\nAwan itu mendua            De wolk splitst zich in tweeën\n\n6. ME- + woord van plaats\n\nME- + woord van plaats komt nooit voor met patiens (lijdend voorwerp)\n\natas                  boven, op, over; bovenkant\nmengatas               omhoog gaan; het hogerop zoeken\nDebu mengatas karena angin      Het stof ging omhoog vanwege de wind\n\nRelatie tussen BER-vorm en ME-vorm\n\nΔ De BER- en de ME-vorm komen naast elkaar voor en vullen elkaar aan.\nΔ BER- geeft voornamelijk een toestand aan.\nΔ ME- geeft hoofdzakelijk een directe handeling aan (dynamisch). Dit is de bedrijvende vorm: hier en nu vindt de handeling plaats.\n\nVertaling van deze werkwoordsvormen uit het Indonesisch in het Nederlands levert in het Nederlands soms weinig verschil in betekenis op. Dit heeft onder meer te maken met het feit dat wij in het Nederlands een dergelijk verschil niet altijd kunnen uitdrukken.\n\nRelatie BER-/ME- bij werkwoord en zelfstandig naamwoord\n\nAls het basiswoord kan worden gecombineerd met zowel BER- als ME- is de werkwoordsvorm met BER- vaak wederkerend (zich) : het duidt aan dat de handeling gericht is op de agens.\n\nangkat                 tillen\nDewi berangkat ke Taman Mini     Dewi vertrekt naar Taman Mini\nSupomo mengangkat koper yang berat  Supomo tilt de zware koffer op\n\najar                  onderricht\nAnak belajar              Het kind leert\nGuru mengajar             De leraar onderwijst/geeft les\n\nisi                   inhoud\nBotol itu berisi air          In die fles zit water / Die fles bevat water\nIbu mengisi botol dengan air     Moeder vult de fles met water\n\nEr bestaat een verschil tussen een BER-vorm met een complement en een ME-vorm met een lijdend voorwerp.\nVoorbeeld:\nSaya /berjual mobil/         Ik \"handel in auto's\"\nSaya /menjual/ mobil/         Ik verkoop een auto\n\nIn de eerste zin wordt op het moment dat de zin wordt uitgesproken niets verkocht. De speker geeft aan, dat hij als normale bezigheid \"in auto's handelt\". Mobil is in deze zin dan ook geen lijdend voorwerp, maar een complement bij het werkwoord berjual.\n\nIn de tweede zin is mobil lijdend voorwerp bij menjual. Er is sprake van een handeling en een daarbij horend lijdend voorwerp.\n\nRelatie BER-/ME- bij bijvoeglijk naamwoord en telwoord\n\nBij deze groep is de verhouding in betekenis van BER- en ME- enigszins afwijkend. Voorbeelden:\n\ndekat                  nabij\nberdekat               in de nabijheid van (statisch)\nmendekat               naderen (dynamisch)\nHari Natal berdekat(-dekat) dengan Tahun Baru   Kerstmis ligt dicht bij Nieuwjaar\nHari Natal mendekat          Kerst nadert\n\ndua                   twee\nberdua                 met z'n tweeën zijn\nmendua                 zich tweeslachtig gedragen\nMereka berjalan-jalan berdua     Zij wandelen met z'n tweetjes\nSifat orang itu mendua        Hij is tweeslachtig in zijn gedrag"
+    },
+    {
+      "id": 3,
+      "type": "exercises",
+      "title": "OEFENINGEN",
+      "source_pages": [
+        7
+      ],
+      "confidence": "high",
+      "raw_text": "OEFENINGEN\n\nOefening I. Vul een BER- of een ME-vorm in en vertaal in het Nederlands.\n\n1. kumpul   Anak-anak ............... di belakang sekolah\n2. beli    Siapa ............... karcis masuk?\n3. baik    Dia ............... hati kepada saya\n4. lihat   Saudara sudah ............... kereta api ke Solo?\n5. bentuk   Candi ini ............... stupa\n6. angkat   Orang tua itu ............... koper yang betul-betul berat\n7. telepon  Susi ............... temannya tadi siang\n8. angkat   Bis ke Tanah Abang ............... jam berapa?\n9. cari    Hasan ............... buku sekolah yang baru\n10. sapu   Dewi ............... lantai\n\nOefening II. Vervoeg de volgende basiswoorden met een ME-vorm.\n\n1. buka    6. kunci   11. jual\n2. simpan   7. dekat   12. tangis\n3. kecil   8. cuci    13. ambil\n4. pukul   9. tutup   14. kirim\n5. awas    10. ganti   15. periksa\n\nOefening III. Vertaal in het Indonesisch\n\n1. Hallo, mag ik meneer Slamet spreken?\n2. Dat kan niet meneer, hij is nog niet gekomen\n3. Hoe laat kan ik terug bellen?\n4. Nou, probeert u maar rond het middageten tussen 12.00 en 13.00 uur terug te bellen\n5. Kunt u zeggen dat meneer Harry uit Nederland momenteel in hotel 'De Witte Olifant' zit\n6. Mag ik het adres van het hotel, het telefoonnummer en uw kamernummer, zodat meneer Slamet u kan terugbellen?\n7. Het hotel ligt in de 'Gele Bloemenstraat', nummer vierhonderd zesennegentig, telefoonnummer: 8904760. Ik zit op kamer zesenveertig en ben 's middags om vijf uur in het hotel\n8. Tot welke datum blijft u in de stad?\n9. Ik blijf nog tot overmorgen, daarna vertrek ik per auto naar de kust\n10. Ik zal het aan meneer Slamet zeggen, goedemorgen meneer Harry!"
+    }
+  ],
+  "flags": [
+    "OCR page 1 cut off the final paragraph of the Cultuur text; full text recovered from image IMG_1522.jpg including the paragraph beginning 'Mede door het verbeterde onderwijs...'",
+    "Vocabulary page (IMG_1523.jpg) shows full two-column layout; several items in the right column (murid, negara, ngobrol, ngomong, pinggir, puasa, putar) were missing or incomplete in OCR and recovered from image",
+    "Grammar section spans multiple OCR pages (2-6) and images (IMG_1523.jpg through IMG_1527.jpg); section on 'ME- + persoonlijk voornaamwoord' (aku - mengaku) was present in image IMG_1524.jpg but missing from OCR text",
+    "Exercise III items 4, 7, 8, 9, 10 were partially garbled in OCR; full text recovered from image IMG_1528.jpg"
+  ],
+  "sourceImages": 7
+}
