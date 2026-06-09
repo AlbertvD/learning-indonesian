@@ -20,6 +20,8 @@
  * reads those fields. Validation (required fields) is sectionShape.ts.
  */
 
+import { cleanItemText } from '../../clean-item-text'
+
 export interface ProjectedItemRow {
   sourceSectionOrderIndex: number
   display_order: number
@@ -157,8 +159,11 @@ export function projectSections(input: ProjectSectionsInput): ProjectSectionsOut
       const items = Array.isArray(content.items) ? content.items : []
       items.forEach((raw, ii) => {
         const item = raw as Record<string, unknown>
-        const indonesian = nonEmpty(item.indonesian) ? (item.indonesian as string).trim() : ''
-        if (!indonesian) return
+        const indonesianRaw = nonEmpty(item.indonesian) ? (item.indonesian as string).trim() : ''
+        if (!indonesianRaw) return
+        // Strip orthographic parentheticals (pronunciation gloss / optional letter)
+        // so they don't leak into the reader, the TTS audio, or the MCQ answers.
+        const indonesian = cleanItemText(indonesianRaw)
         if (type === 'numbers' && !isNamedNumber(indonesian, item.dutch as string | undefined)) return
         itemRows.push({
           sourceSectionOrderIndex: orderIndex,
