@@ -63,15 +63,18 @@ function overviewRow(opts: {
   lessonId: string
   orderIndex: number
   title: string
+  level?: string | null
   isActivated?: boolean
   readyCapabilityCount?: number
   masteredCapabilityCount?: number
+  practicedCapabilityCount?: number
   lessonSections?: any[]
 }): any {
   return {
     lesson_id: opts.lessonId,
     order_index: opts.orderIndex,
     title: opts.title,
+    level: opts.level ?? 'A1',
     description: null,
     audio_path: null,
     duration_seconds: null,
@@ -82,6 +85,7 @@ function overviewRow(opts: {
     is_activated: opts.isActivated ?? false,
     ready_capability_count: opts.readyCapabilityCount ?? 0,
     mastered_capability_count: opts.masteredCapabilityCount ?? 0,
+    practiced_capability_count: opts.practicedCapabilityCount ?? 0,
   }
 }
 
@@ -123,23 +127,26 @@ describe('Lessons overview', () => {
     expect(container).not.toHaveTextContent(/no lessons completed/i)
   })
 
-  it('shows title, activation status, action, and grammar tag for a not-activated lesson', async () => {
+  it('shows the title, level badge, status, and full grammar row for a not-activated lesson (no CTA, bars hidden)', async () => {
     const { container } = renderLessons()
 
     const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
     expect(lessonOne).toHaveTextContent('Lesson 1')
     expect(lessonOne).toHaveTextContent('Not started')
-    expect(lessonOne).toHaveTextContent('Open lesson')
-    expect(lessonOne).toHaveTextContent('Grammar: word order')
-    // Not activated → no % mastered.
-    expect(lessonOne).not.toHaveTextContent(/% mastered/i)
+    expect(lessonOne).toHaveTextContent('A1') // CEFR level badge
+    expect(lessonOne).toHaveTextContent('word order') // grammar row
+    // The redundant CTA label is gone (the card itself is the link).
+    expect(lessonOne).not.toHaveTextContent(/Open lesson|Continue/i)
+    // Not activated → bars hidden → no progress labels.
+    expect(lessonOne).not.toHaveTextContent(/geoefend|practiced|beheerst|mastered/i)
+    // The number appears once (in the banner), not also as an eyebrow "LES 1".
+    expect(lessonOne).not.toHaveTextContent(/LES 1/i)
 
     expect(container.querySelector('[class*="progressBar"]')).toBeNull()
-    expect(screen.queryByText(/\d+\s+ready/i)).not.toBeInTheDocument()
-    expect(container).not.toHaveTextContent(/source progress|fsrs|content health|eligible|in practice|practiced|later/i)
+    expect(container).not.toHaveTextContent(/source progress|fsrs|content health|eligible|in practice|later/i)
   })
 
-  it('shows an activated lesson as Active with a % mastered and Continue', async () => {
+  it('shows an activated lesson as Active with both nested progress bars and no CTA', async () => {
     vi.mocked(lessonsAdapter.getLessonsOverview).mockResolvedValue([
       overviewRow({
         lessonId: 'lesson-1',
@@ -149,6 +156,7 @@ describe('Lessons overview', () => {
         isActivated: true,
         readyCapabilityCount: 9,
         masteredCapabilityCount: 7,
+        practicedCapabilityCount: 9,
       }),
       overviewRow({ lessonId: 'lesson-2', orderIndex: 2, title: 'Lesson 2', lessonSections: lesson2Sections }),
     ])
@@ -157,8 +165,11 @@ describe('Lessons overview', () => {
 
     const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
     expect(lessonOne).toHaveTextContent('Active')
-    expect(lessonOne).toHaveTextContent('78% mastered')
-    expect(lessonOne).toHaveTextContent('Continue')
+    expect(lessonOne).toHaveTextContent('mastered') // beheerst bar label (en)
+    expect(lessonOne).toHaveTextContent('78%')      // 7/9 mastered
+    expect(lessonOne).toHaveTextContent('practiced') // geoefend bar label
+    expect(lessonOne).toHaveTextContent('100%')     // 9/9 practiced
+    expect(lessonOne).not.toHaveTextContent(/Continue|Doorgaan/i)
   })
 
   it('suppresses % mastered for an activated lesson with no introducible caps', async () => {
@@ -179,7 +190,8 @@ describe('Lessons overview', () => {
 
     const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
     expect(lessonOne).toHaveTextContent('Active')
-    expect(lessonOne).not.toHaveTextContent(/% mastered/i)
+    // No introducible caps → both bars hidden → no progress labels.
+    expect(lessonOne).not.toHaveTextContent(/beheerst|mastered|geoefend|practiced/i)
   })
 
   it('shows lessons without a bespoke page as coming later instead of openable', async () => {
@@ -191,7 +203,6 @@ describe('Lessons overview', () => {
 
     const lessonTwo = screen.getByTestId('lesson-overview-row-lesson-2')
     expect(lessonTwo).toHaveTextContent('Coming later')
-    expect(lessonTwo).toHaveTextContent('Not available yet')
     expect(within(lessonTwo).queryByRole('link')).not.toBeInTheDocument()
   })
 
@@ -214,11 +225,13 @@ describe('Lessons overview', () => {
     expect(lessonTwo).not.toHaveTextContent('Later')
   })
 
-  it('keeps lessons openable when the overview load works', async () => {
+  it('keeps lessons openable (whole card links) when the overview load works', async () => {
     renderLessons()
 
-    expect(await screen.findByTestId('lesson-overview-row-lesson-1')).toHaveTextContent('Open lesson')
-    expect(screen.getByTestId('lesson-overview-row-lesson-2')).toHaveTextContent('Open lesson')
+    const lessonOne = await screen.findByTestId('lesson-overview-row-lesson-1')
+    expect(within(lessonOne).getByRole('link')).toHaveAttribute('href', '/lesson/lesson-1')
+    const lessonTwo = screen.getByTestId('lesson-overview-row-lesson-2')
+    expect(within(lessonTwo).getByRole('link')).toHaveAttribute('href', '/lesson/lesson-2')
   })
 
   it('restores the overview scroll position when returning from a lesson', async () => {

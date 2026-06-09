@@ -62,44 +62,24 @@
   pointer-events: none;
 }
 
-.bannerNumber {
-  position: absolute;
-  bottom: 8px;
-  left: 16px;
-  z-index: 1;
-  font-family: var(--font-display, var(--font-sans));
-  font-size: clamp(48px, 7vw, 88px);
-  font-weight: 800;
-  line-height: 1;
-  color: rgba(255, 255, 255, 0.32);
-  letter-spacing: -0.04em;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
-  pointer-events: none;
-  user-select: none;
-}
-
-/* ─── Grammar tag chip (rendered inside the tags slot) ────────────────── */
-
-.grammarTag {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  border-radius: 12px;
-  background: var(--accent-primary-subtle);
-  color: var(--text-secondary);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-}
 
 /* ─── Lesson grid: mobile single-column → tablet 2-col → desktop async 12-col ── */
 
 .lessonGrid {
   display: grid;
   grid-template-columns: 1fr;
+  /* Every row is sized to the tallest tile in it, so tiles with longer grammar
+   * rows don't break the grid. The card fills its cell via height: 100%. */
+  grid-auto-rows: 1fr;
   gap: 18px;
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+/* Stretch the <li> so the LessonCard's height: 100% resolves to the row height. */
+.lessonGridItem {
+  display: flex;
 }
 
 /* Tablet: two equal columns. */

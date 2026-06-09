@@ -192,12 +192,12 @@ describe('lessons adapter', () => {
     expect(formatGrammarTopicTag([], 'lesson-1')).toBeNull()
     expect(formatGrammarTopicTag([
       { lessonId: 'lesson-1', label: 'possessive pronouns' },
-    ], 'lesson-1')).toBe('Grammar: possessive pronouns')
+    ], 'lesson-1')).toBe('possessive pronouns')
     expect(formatGrammarTopicTag([
       { lessonId: 'lesson-1', label: 'word order' },
       { lessonId: 'lesson-1', label: 'negation' },
       { lessonId: 'lesson-1', label: 'questions' },
       { lessonId: 'lesson-2', label: 'numbers' },
-    ], 'lesson-1')).toBe('Grammar: word order, negation +1 more')
+    ], 'lesson-1')).toBe('word order, negation, questions')
   })
 })

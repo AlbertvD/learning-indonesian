@@ -15,6 +15,8 @@
 export {
   buildLessonOverviewModel,
   lessonMasteredPercent,
+  lessonPracticedPercent,
+  PRACTICED_MIN_REVIEWS,
   isPublishedOverviewLesson,
 } from './overview'
 export type {

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   buildLessonOverviewModel,
   lessonMasteredPercent,
+  lessonPracticedPercent,
   type LessonOverviewCapabilityCounts,
   type LessonOverviewModelLesson,
 } from '@/lib/lessons'
@@ -20,6 +21,7 @@ function counts(overrides: Partial<LessonOverviewCapabilityCounts>): LessonOverv
     lessonId: 'lesson-1',
     isActivated: false,
     masteredCount: 0,
+    practicedCount: 0,
     introducibleCount: 0,
     ...overrides,
   }
@@ -42,6 +44,29 @@ describe('lessonMasteredPercent', () => {
   })
 })
 
+describe('lessonPracticedPercent', () => {
+  it('returns null when not activated or no introducible caps (same rule as mastered)', () => {
+    expect(lessonPracticedPercent({ isActivated: false, practicedCount: 5, introducibleCount: 10 })).toBeNull()
+    expect(lessonPracticedPercent({ isActivated: true, practicedCount: 0, introducibleCount: 0 })).toBeNull()
+  })
+
+  it('returns a visible 0% (not null) when activated with nothing practiced yet', () => {
+    expect(lessonPracticedPercent({ isActivated: true, practicedCount: 0, introducibleCount: 10 })).toBe(0)
+  })
+
+  it('rounds practiced/introducible to a percentage and clamps skew', () => {
+    expect(lessonPracticedPercent({ isActivated: true, practicedCount: 7, introducibleCount: 10 })).toBe(70)
+    expect(lessonPracticedPercent({ isActivated: true, practicedCount: 12, introducibleCount: 10 })).toBe(100)
+  })
+
+  it('is always ≥ mastered for the same row (mastered ⊆ practiced)', () => {
+    const input = { isActivated: true, introducibleCount: 10 }
+    const practiced = lessonPracticedPercent({ ...input, practicedCount: 7 })!
+    const mastered = lessonMasteredPercent({ ...input, masteredCount: 4 })!
+    expect(practiced).toBeGreaterThanOrEqual(mastered)
+  })
+})
+
 describe('lesson overview model', () => {
   it('maps lessons + counts + grammar topics into order-sorted tile rows', () => {
     const lessons = [
@@ -50,7 +75,7 @@ describe('lesson overview model', () => {
     ]
     const model = buildLessonOverviewModel({
       lessons,
-      counts: [counts({ lessonId: 'lesson-1', isActivated: true, masteredCount: 7, introducibleCount: 9 })],
+      counts: [counts({ lessonId: 'lesson-1', isActivated: true, masteredCount: 7, practicedCount: 9, introducibleCount: 9 })],
       grammarTopics: [{ lessonId: 'lesson-1', label: 'word order' }],
       preparedLessonIds: ['lesson-1', 'lesson-2'],
     })
@@ -60,11 +85,13 @@ describe('lesson overview model', () => {
       lessonId: 'lesson-1',
       isActivated: true,
       masteredCount: 7,
+      practicedCount: 9,
       introducibleCount: 9,
       masteredPercent: 78,
+      practicedPercent: 100,
       isPrepared: true,
       href: '/lesson/lesson-1',
-      grammarTopicTag: 'Grammar: word order',
+      grammarTopicTag: 'word order',
     })
     // No recommended-lesson hero in the model anymore.
     expect('recommendedLessonId' in model).toBe(false)
@@ -81,6 +108,7 @@ describe('lesson overview model', () => {
       lessonId: 'lesson-1',
       isActivated: false,
       masteredPercent: null,
+      practicedPercent: null,
       href: '/lesson/lesson-1',
     })
   })

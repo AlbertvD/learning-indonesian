@@ -14,6 +14,12 @@ const masterySrc = readFileSync(
   path.resolve('src/lib/analytics/mastery/mastered.ts'),
   'utf8',
 )
+// The practiced threshold is canonically owned by overview.ts (PRACTICED_MIN_REVIEWS),
+// NOT masteryModel.ts — that file's `reviewedCapabilityCount` is an unrelated
+// per-dimension breakdown field never surfaced through this RPC. Anchoring here
+// keeps the SQL `practiced_count` filter in lockstep with the value the Lessons
+// page actually uses.
+const overviewSrc = readFileSync(path.resolve('src/lib/lessons/overview.ts'), 'utf8')
 const migrationSql = readFileSync(path.resolve('scripts/migration.sql'), 'utf8')
 
 // The TS canonical predicate (isCapabilityMastered + isRecent).
@@ -23,6 +29,17 @@ const tsRecency = /ageMs <= (\d+) \* 24 \* 60 \* 60 \* 1000/.exec(masterySrc)
 // The SQL `mastered_count` filter block (between `count(*) filter (` and `as mastered_count`).
 function masteredSqlFilter(): string {
   const end = migrationSql.indexOf(')::int as mastered_count')
+  expect(end).toBeGreaterThan(-1)
+  const start = migrationSql.lastIndexOf('count(*) filter (', end)
+  return migrationSql.slice(start, end)
+}
+
+// The TS canonical practiced threshold (overview.ts:PRACTICED_MIN_REVIEWS).
+const tsPracticedMin = /export const PRACTICED_MIN_REVIEWS = (\d+)/.exec(overviewSrc)
+
+// The SQL `practiced_count` filter block (between `count(*) filter (` and `as practiced_count`).
+function practicedSqlFilter(): string {
+  const end = migrationSql.indexOf(')::int as practiced_count')
   expect(end).toBeGreaterThan(-1)
   const start = migrationSql.lastIndexOf('count(*) filter (', end)
   return migrationSql.slice(start, end)
@@ -67,5 +84,27 @@ describe('get_lessons_overview mastered predicate ↔ masteryModel parity (ADR 0
     // a NULL last_reviewed_at yields a NULL predicate → row not counted,
     // matching isRecent's `if (!iso) return false`.
     expect(sql).toContain(`last_reviewed_at >= now() - interval '30 days'`)
+  })
+})
+
+describe('get_lessons_overview practiced predicate ↔ overview.ts parity', () => {
+  it('extracts the canonical PRACTICED_MIN_REVIEWS threshold from overview.ts', () => {
+    expect(tsPracticedMin).not.toBeNull()
+    expect(tsPracticedMin![1]).toBe('1')
+  })
+
+  it('SQL practiced filter uses the SAME threshold as PRACTICED_MIN_REVIEWS', () => {
+    const sql = practicedSqlFilter()
+    const [, practicedMin] = tsPracticedMin!
+    // coalesce mirrors the mastered filter's NULL-handling (a NULL review_count is
+    // excluded from both), so mastered (>=4) ⊆ practiced (>=1) holds incl. NULL.
+    expect(sql).toContain(`coalesce(review_count, 0) >= ${practicedMin}`)
+    expect(sql).not.toMatch(/[^(]\breview_count >= [0-3]\b/) // no bare practiced threshold
+  })
+
+  it('practiced uses the same introducible filter as the denominator', () => {
+    const sql = practicedSqlFilter()
+    expect(sql).toContain("readiness_status = 'ready'")
+    expect(sql).toContain("publication_status = 'published'")
   })
 })

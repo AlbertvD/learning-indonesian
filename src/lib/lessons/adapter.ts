@@ -65,6 +65,7 @@ export interface LessonOverviewRpcRow {
   lesson_id: string
   order_index: number
   title: string
+  level: string | null
   description: string | null
   audio_path: string | null
   duration_seconds: number | null
@@ -75,6 +76,7 @@ export interface LessonOverviewRpcRow {
   is_activated: boolean
   ready_capability_count: number
   mastered_capability_count: number
+  practiced_capability_count: number
 }
 
 export function lessonSourceRefForOverview(lesson: Pick<Lesson, 'order_index'>): string {
@@ -168,9 +170,11 @@ export function extractLessonGrammarTopics(lessons: Array<Pick<Lesson, 'id' | 'l
   return topics
 }
 
-// Renders up to two grammar topics for a lesson into a tile tag, e.g.
-// "Grammar: negation, possessives +1 more". Returns null when the lesson has no
-// grammar topics. Moved from overviewStatus.ts (retired 2026-06-09).
+// Renders ALL of a lesson's grammar topics into a tile tag, comma-joined, e.g.
+// "negation, possessives, questions". No cap / "+N more" — the tile shows the
+// full list and the page grid equalises tile heights (see the lesson-tile
+// redesign). Returns null when the lesson has no grammar topics. Moved from
+// overviewStatus.ts (retired 2026-06-09).
 export function formatGrammarTopicTag(topics: LessonGrammarTopic[], lessonId: string): string | null {
   const lessonTopics = topics
     .filter(topic => topic.lessonId === lessonId)
@@ -181,10 +185,7 @@ export function formatGrammarTopicTag(topics: LessonGrammarTopic[], lessonId: st
     return null
   }
 
-  const visibleTopics = lessonTopics.slice(0, 2)
-  const remainingCount = lessonTopics.length - visibleTopics.length
-  const suffix = remainingCount > 0 ? ` +${remainingCount} more` : ''
-  return `Grammar: ${visibleTopics.join(', ')}${suffix}`
+  return lessonTopics.join(', ')
 }
 
 export async function getLessons(): Promise<Lesson[]> {
