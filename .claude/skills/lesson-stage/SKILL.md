@@ -242,10 +242,17 @@ One line: reader content state + the grammar script's readiness + the next step
 - **The capture file is load-bearing** — the Stop hook reads
   `audio-scripts/SD L<N>.report.json`. Don't delete it mid-session or the hook
   will (correctly) consider the capture incomplete.
-- **Audio recording is downstream** — this skill produces the *text* the human
-  records from (`SD L<N>.txt`). The app's per-text `audio_clips` are a different
-  surface, produced by `generate-exercise-audio.ts` after Stage B (see
-  `lesson-pipeline` phase 11), not here.
+- **Two distinct audio surfaces — don't conflate them.** (1) The *grammar
+  narration script* `SD L<N>.txt` is plain text a human records from — that's
+  what the orchestrator emits. (2) The app's per-text `audio_clips` (the inline ▶
+  on each vocab word + dialogue line) are **synthesized by Stage A itself**
+  during the live run — the runner self-assigns voices (`setLessonVoicesForLesson`)
+  and `ensureLessonAudio` voices the page texts via Cloud TTS (bug #168). So a
+  live `run-stage-a.ts` already produces the reader audio (its report's
+  `audioClipsSynthesised`/`Reused` is real, not always-0). The Capability Stage
+  adds no audio; `generate-exercise-audio.ts` is only a top-up for gaps. Stage A
+  needs the TTS credential `~/.config/gcloud/tts-indonesian.json`; if absent, its
+  synthesis fails non-fatally (publish still ok) and you backfill later.
 - **`SD L<N>.txt` is DB-sourced** — it reflects what Stage A wrote, so always
   regenerate it (the orchestrator does) after re-publishing the lesson content.
 - **The page handover needs DB content, so it can't precede a live run** — the

@@ -307,6 +307,12 @@ step via the lesson-pipeline skill").
   un-seeded surfaces. Recovery is "fix cause → re-invoke".
 - **`status: partial` ≠ done.** Rows exist but promotion was skipped → not
   schedulable. Treat as a failure to fix, not a soft success.
-- **Audio is not part of this stage.** The app's `audio_clips` are a separate
-  post-publish step (`set-lesson-voices` → `generate-exercise-audio N`); name it
-  as a follow-on, don't run it here.
+- **This stage synthesizes NO audio — it only reads it.** The Capability Stage
+  is a pure audio reader (ADR 0012): `adapter.ts` reads `audio_clips` to attach
+  refs, never synthesizes. The app's per-text `audio_clips` are made by **Stage A**
+  (`ensureLessonAudio`, #168), not here and not by a mandatory post-publish step.
+  So don't recommend "run audio next" by default — for a normally-published
+  lesson it's already done by Stage A. `generate-exercise-audio.ts` is only a
+  top-up for a real gap (TTS credential absent at Stage-A time, or
+  `exercise_variants` text); verify a gap exists (`audio_clips` by
+  `generated_for_lesson_id` = 0) before naming it.
