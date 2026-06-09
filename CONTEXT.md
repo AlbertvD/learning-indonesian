@@ -96,6 +96,14 @@ The module that maps a ready capability plus approved artifacts to an exercise r
 
 The module that composes a learning session from due active capabilities, Pedagogy Planner recommendations, and Exercise Resolver results. It is composition-only and does not write activation, FSRS, or review state.
 
+## Sibling Capabilities
+
+Two or more **Learning Capabilities** that share the same `source_ref` — i.e. different **capability types** of the *same* content source. A typical vocabulary word has ~6 siblings (`text_recognition`, `audio_recognition`, `meaning_recall`, `l1_to_id_choice`, `form_recall`, `dictation`, all under one `learning_items/<slug>` ref); a `pattern` or `affixed_form_pair` has 2; a `dialogue_line` has 1 (it is its own only sibling). The sibling key is `source_ref` (non-null on every projected capability). Siblings share meaning, so practising two of them close together lets one **prime** the other (interference) — making recall artificially easy rather than a genuine retrieval.
+
+## Sibling Burying
+
+The session-builder rule that offers **at most one sibling per `source_ref` per learner per calendar day**, across all of that day's sessions, for both due reviews and new introductions. It is a pure read-side *suppression* — a buried sibling is **not** rescheduled (no FSRS/state write); it simply isn't offered today and stays overdue/dormant until a later day. Enforced by seeding a `usedRefs` set from the `source_ref`s already reviewed today (read from `capability_review_events`) and threading it through the builder's selection passes. The most-overdue sibling wins a due slot; the lowest-phase (most foundational, recognition-before-recall) sibling wins a new-introduction slot. Distinct from the composer's `interleaveBySourceRef`, which spaces *already-selected* blocks within a session — burying governs day-level *membership*, not in-session order. Rationale: spacing effect (Cepeda 2006) + sibling interference (Anki's across-day bury default). See `docs/plans/2026-06-09-sibling-burying-design.md`.
+
 ## Lesson Experience Module
 
 The module that renders lesson page blocks and bridges to practice. It is fully passive: it does not emit progress events and does not directly activate FSRS review. Source-progress emission was removed in retirement #6 (2026-05-07).
