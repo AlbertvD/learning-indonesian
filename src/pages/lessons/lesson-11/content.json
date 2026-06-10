@@ -164,8 +164,8 @@
           {
             "dutch": "complex",
             "english": "complex",
-            "indonesian": "kompleks (komplèks)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kompleks-komplks-82bb2dc2.mp3"
+            "indonesian": "kompleks",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/kompleks-9ee76900.mp3"
           },
           {
             "dutch": "andere",
@@ -218,8 +218,8 @@
           {
             "dutch": "president",
             "english": "president",
-            "indonesian": "presiden (présidèn)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/presiden-prsidn-c0e94306.mp3"
+            "indonesian": "presiden",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/presiden-63362b0c.mp3"
           },
           {
             "dutch": "retour",
@@ -242,8 +242,8 @@
           {
             "dutch": "restauratie",
             "english": "restoration",
-            "indonesian": "restorasi (rèstorasi)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/restorasi-rstorasi-e242bd32.mp3"
+            "indonesian": "restorasi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/restorasi-cfd62d6d.mp3"
           },
           {
             "dutch": "vorm",

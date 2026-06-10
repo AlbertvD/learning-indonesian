@@ -173,14 +173,14 @@
           {
             "dutch": "fietstaxi",
             "english": "bicycle taxi",
-            "indonesian": "becak (bècak)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/becak-bcak-2890202b.mp3"
+            "indonesian": "becak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/becak-b558fa67.mp3"
           },
           {
             "dutch": "afbuigen / afslaan",
             "english": "turn / turn off",
-            "indonesian": "belok (bèlok)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/belok-blok-ffbd3b44.mp3"
+            "indonesian": "belok",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/belok-e923d45d.mp3"
           },
           {
             "dutch": "dichtbij",
@@ -317,8 +317,8 @@
           {
             "dutch": "pakket",
             "english": "package",
-            "indonesian": "paket (pakèt)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/paket-pakt-e8e83f15.mp3"
+            "indonesian": "paket",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/paket-16eacfee.mp3"
           },
           {
             "dutch": "oom",
@@ -383,8 +383,8 @@
           {
             "dutch": "sigaret met kruidnagel",
             "english": "clove cigarette",
-            "indonesian": "rokok kretek (krètèk)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rokok-kretek-krtk-a7c54f98.mp3"
+            "indonesian": "rokok kretek",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/rokok-kretek-f5bcc127.mp3"
           },
           {
             "dutch": "suggestie / voorstel",

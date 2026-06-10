@@ -122,20 +122,30 @@
             "examples": [
               {
                 "dutch": "Dat [is] duur (geen koppelwerkwoord)",
+                "english": "That [is] expensive (no copula)",
                 "indonesian": "Itu mahal",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/itu-mahal-ab8bea54.mp3"
               },
               {
                 "dutch": "Ik koop een vrucht (geen vervoeging)",
+                "english": "I buy a fruit (no inflection)",
                 "indonesian": "Saya beli buah",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/saya-beli-buah-3729b610.mp3"
               },
               {
                 "dutch": "Ik wil een groot huis kopen (werkwoorden bij elkaar)",
+                "english": "I want to buy a big house (verbs together)",
                 "indonesian": "Saya mau beli rumah besar",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/saya-mau-beli-rumah-b2460a89.mp3"
               }
-            ]
+            ],
+            "rules_en": [
+              "Sentences without a verb are very common.",
+              "Verbs are not inflected for singular or plural.",
+              "Verbs are not inflected for present or past tense. Unless the context indicates otherwise, the verb is translated in the present tense.",
+              "Verbs are placed together."
+            ],
+            "title_en": "Verb"
           },
           {
             "rules": [
@@ -148,18 +158,30 @@
             "examples": [
               {
                 "dutch": "Ik koop een/het huis (geen lidwoord)",
-                "indonesian": "Saya beli rumah"
+                "english": "I buy a/the house (no article)",
+                "indonesian": "Saya beli rumah",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/saya-beli-rumah-7908c0bd.mp3"
               },
               {
                 "dutch": "Twee huizen (geen meervoud bij telwoord)",
-                "indonesian": "Dua rumah"
+                "english": "Two houses (no plural with numeral)",
+                "indonesian": "Dua rumah",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dua-rumah-1e34915a.mp3"
               },
               {
                 "dutch": "Allerlei fruit (reduplicatie = verscheidenheid)",
+                "english": "All kinds of fruit (reduplication = variety)",
                 "indonesian": "Buah-buahan",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/buahbuahan-c45d9c10.mp3"
               }
-            ]
+            ],
+            "rules_en": [
+              "Nouns have no articles (the, a).",
+              "No distinction is made between singular and plural in nouns.",
+              "Repetition of a noun indicates plurality or variety.",
+              "If context shows plurality or variety, a noun is not doubled (2 houses = dua rumah not dua rumah-rumah)."
+            ],
+            "title_en": "Noun"
           },
           {
             "rules": [
@@ -169,10 +191,15 @@
             "examples": [
               {
                 "dutch": "Een groot huis (bijv.nw. na znw.)",
+                "english": "A big house (adj. after noun)",
                 "indonesian": "Rumah besar",
                 "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/rumah-besar-98669f44.mp3"
               }
-            ]
+            ],
+            "rules_en": [
+              "The adjective is placed after the noun."
+            ],
+            "title_en": "Adjective"
           }
         ],
         "grammar_topics": [
@@ -189,24 +216,28 @@
             "text": "Pak, saya mau beli tiga buah pisang. Berapa harganya?",
             "speaker": "Ibu",
             "translation": "Meneer, ik wil graag drie bananen kopen. Hoeveel kosten ze?",
+            "translation_en": "Sir, I would like to buy three bananas. How much are they?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/pak-saya-mau-beli-f725b1ff.mp3"
           },
           {
             "text": "Harganya murah Bu, delapan rupiah.",
             "speaker": "Penjual",
             "translation": "Ze zijn goedkoop mevrouw, acht roepiah.",
+            "translation_en": "They are cheap madam, eight rupiah.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/harganya-murah-bu-delapan-7e12296e.mp3"
           },
           {
             "text": "Itu mahal ya! Empat rupiah boleh?",
             "speaker": "Ibu",
             "translation": "Dat is duur! Vier roepiah mogelijk?",
+            "translation_en": "That is expensive! Four rupiah possible?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/sulafat/itu-mahal-ya-empat-42f9f436.mp3"
           },
           {
             "text": "Belum bisa Bu. Tetapi kalau mau lima buah, bisa sembilan rupiah.",
             "speaker": "Penjual",
             "translation": "Dat kan niet mevrouw. Maar als u vijf stuks wilt, kan het voor negen roepiah.",
+            "translation_en": "That won't work madam. But if you want five pieces, it can be nine rupiah.",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/belum-bisa-bu-tetapi-3d486b00.mp3"
           }
         ],
@@ -220,221 +251,265 @@
         "items": [
           {
             "dutch": "einde",
+            "english": "end",
             "indonesian": "akhir",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/akhir-a379c80a.mp3"
           },
           {
             "dutch": "wat?",
+            "english": "what?",
             "indonesian": "apa?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/apa-39612e2f.mp3"
           },
           {
             "dutch": "taal",
+            "english": "language",
             "indonesian": "bahasa",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bahasa-e9be75af.mp3"
           },
           {
             "dutch": "goed",
+            "english": "good",
             "indonesian": "baik",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/baik-593599a7.mp3"
           },
           {
             "dutch": "meneer, vader, u",
+            "english": "sir, father, you",
             "indonesian": "bapak",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bapak-13619f63.mp3"
           },
           {
             "dutch": "kopen",
+            "english": "buy",
             "indonesian": "beli",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/beli-b7fe2d14.mp3"
           },
           {
             "dutch": "nog niet",
+            "english": "not yet",
             "indonesian": "belum",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/belum-229316db.mp3"
           },
           {
             "dutch": "hoeveel?",
+            "english": "how much?",
             "indonesian": "berapa?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/berapa-ba194872.mp3"
           },
           {
             "dutch": "groot",
+            "english": "big",
             "indonesian": "besar",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/besar-ccb6de20.mp3"
           },
           {
             "dutch": "kunnen, mogen",
+            "english": "can, may",
             "indonesian": "bisa",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/bisa-f8ed2b5e.mp3"
           },
           {
             "dutch": "mogen, kunnen",
+            "english": "may, can",
             "indonesian": "boleh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/boleh-61406141.mp3"
           },
           {
             "dutch": "vrucht",
+            "english": "fruit",
             "indonesian": "buah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/buah-ad2989e4.mp3"
           },
           {
             "dutch": "voldoende",
+            "english": "enough",
             "indonesian": "cukup",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/cukup-dd335355.mp3"
           },
           {
             "dutch": "en",
+            "english": "and",
             "indonesian": "dan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dan-b568ccd1.mp3"
           },
           {
             "dutch": "uit, van",
+            "english": "from, of",
             "indonesian": "dari",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dari-9dc1d36b.mp3"
           },
           {
             "dutch": "komen",
+            "english": "come",
             "indonesian": "datang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/datang-e7a8f681.mp3"
           },
           {
             "dutch": "in, op, te",
+            "english": "in, on, at",
             "indonesian": "di",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/di-7b01f7a4.mp3"
           },
           {
             "dutch": "prijs",
+            "english": "price",
             "indonesian": "harga",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/harga-2ee76c25.mp3"
           },
           {
             "dutch": "hotel",
+            "english": "hotel",
             "indonesian": "hotel",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hotel-1d14a163.mp3"
           },
           {
             "dutch": "mevrouw, moeder, u",
+            "english": "madam, mother, you",
             "indonesian": "ibu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ibu-e94fd077.mp3"
           },
           {
             "dutch": "indonesië",
+            "english": "Indonesia",
             "indonesian": "indonesia",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/indonesia-3d830d97.mp3"
           },
           {
             "dutch": "dat, die",
+            "english": "that, those",
             "indonesian": "itu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/itu-00ec8483.mp3"
           },
           {
             "dutch": "bericht",
+            "english": "news",
             "indonesian": "kabar",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kabar-3bf455f9.mp3"
           },
           {
             "dutch": "indien, wanneer",
+            "english": "if, when",
             "indonesian": "kalau",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kalau-0f3c1a8a.mp3"
           },
           {
             "dutch": "gunst, genegenheid",
+            "english": "favor, affection",
             "indonesian": "kasih",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kasih-9a31d6b6.mp3"
           },
           {
             "dutch": "naar",
+            "english": "to",
             "indonesian": "ke",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ke-1a9e7e2c.mp3"
           },
           {
             "dutch": "leeg",
+            "english": "empty",
             "indonesian": "kosong",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kosong-c6525167.mp3"
           },
           {
             "dutch": "duur",
+            "english": "expensive",
             "indonesian": "mahal",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mahal-59096b51.mp3"
           },
           {
             "dutch": "eten",
+            "english": "eat",
             "indonesian": "makan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/makan-aeb27f80.mp3"
           },
           {
             "dutch": "willen",
+            "english": "want",
             "indonesian": "mau",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/mau-9463d8a5.mp3"
           },
           {
             "dutch": "goedkoop",
+            "english": "cheap",
             "indonesian": "murah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/murah-55b9148f.mp3"
           },
           {
             "dutch": "ananas",
+            "english": "pineapple",
             "indonesian": "nanas",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/nanas-b63149bb.mp3"
           },
           {
             "dutch": "mevrouw, u",
+            "english": "madam, you",
             "indonesian": "nyonya",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/nyonya-80467b2a.mp3"
           },
           {
             "dutch": "mens",
+            "english": "person",
             "indonesian": "orang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/orang-b77dfb07.mp3"
           },
           {
             "dutch": "markt",
+            "english": "market",
             "indonesian": "pasar",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pasar-30e9a349.mp3"
           },
           {
             "dutch": "verkoper",
+            "english": "seller",
             "indonesian": "penjual",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/penjual-4e3b020b.mp3"
           },
           {
             "dutch": "banaan",
+            "english": "banana",
             "indonesian": "pisang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pisang-5de724c3.mp3"
           },
           {
             "dutch": "huis",
+            "english": "house",
             "indonesian": "rumah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/rumah-25b8a581.mp3"
           },
           {
             "dutch": "munteenheid",
-            "indonesian": "rupiah (Rp)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/rupiah-rp-3c8583a1.mp3"
+            "english": "rupiah (Rp)",
+            "indonesian": "rupiah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/rupiah-c055fe6c.mp3"
           },
           {
             "dutch": "ik, mijn",
+            "english": "I, my",
             "indonesian": "saya",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/saya-00f12deb.mp3"
           },
           {
             "dutch": "veilig, welzijn",
+            "english": "safe, well-being",
             "indonesian": "selamat",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/selamat-7f395818.mp3"
           },
           {
             "dutch": "ontvangen",
+            "english": "receive",
             "indonesian": "terima",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/terima-5145e489.mp3"
           },
           {
             "dutch": "maar, echter",
+            "english": "but, however",
             "indonesian": "tetapi",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tetapi-9422f99a.mp3"
           },
           {
             "dutch": "niet, nee",
+            "english": "not, no",
             "indonesian": "tidak",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tidak-40bb4679.mp3"
           }
@@ -448,31 +523,37 @@
         "items": [
           {
             "dutch": "Hoe gaat het ermee?",
+            "english": "How are you?",
             "indonesian": "Apa kabar?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/apa-kabar-820ae655.mp3"
           },
           {
             "dutch": "Goed, dank u wel",
+            "english": "Fine, thank you",
             "indonesian": "Baik-baik saja",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/baikbaik-saja-6e4c87a8.mp3"
           },
           {
             "dutch": "Wat kost het?",
+            "english": "How much does it cost?",
             "indonesian": "Berapa harganya?",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/berapa-harganya-ef692cc9.mp3"
           },
           {
             "dutch": "Het is goedkoop; de prijs is laag",
+            "english": "It's cheap; the price is low",
             "indonesian": "Harganya murah",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/harganya-murah-76842ab5.mp3"
           },
           {
             "dutch": "Welkom",
+            "english": "Welcome",
             "indonesian": "Selamat datang",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/selamat-datang-696a227b.mp3"
           },
           {
             "dutch": "Dank u wel",
+            "english": "Thank you",
             "indonesian": "Terima kasih",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/terima-kasih-db7c82e0.mp3"
           }
@@ -486,56 +567,67 @@
         "items": [
           {
             "dutch": "0",
+            "english": "zero, empty",
             "indonesian": "nol, kosong",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/nol-kosong-3486c2df.mp3"
           },
           {
             "dutch": "1",
+            "english": "one",
             "indonesian": "satu",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/satu-cc21d748.mp3"
           },
           {
             "dutch": "2",
+            "english": "two",
             "indonesian": "dua",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dua-2493df87.mp3"
           },
           {
             "dutch": "3",
+            "english": "three",
             "indonesian": "tiga",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tiga-4e738dbf.mp3"
           },
           {
             "dutch": "4",
+            "english": "four",
             "indonesian": "empat",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/empat-950ec13e.mp3"
           },
           {
             "dutch": "5",
+            "english": "five",
             "indonesian": "lima",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lima-d4f51dd7.mp3"
           },
           {
             "dutch": "6",
+            "english": "six",
             "indonesian": "enam",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/enam-a91f23b3.mp3"
           },
           {
             "dutch": "7",
+            "english": "seven",
             "indonesian": "tujuh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tujuh-a5f51f01.mp3"
           },
           {
             "dutch": "8",
+            "english": "eight",
             "indonesian": "delapan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/delapan-d59e38fb.mp3"
           },
           {
             "dutch": "9",
+            "english": "nine",
             "indonesian": "sembilan",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sembilan-3bdaa9f2.mp3"
           },
           {
             "dutch": "10",
+            "english": "ten",
             "indonesian": "sepuluh",
             "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sepuluh-2945d9a0.mp3"
           }

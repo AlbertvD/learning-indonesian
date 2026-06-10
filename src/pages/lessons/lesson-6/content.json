@@ -112,8 +112,8 @@
           {
             "dutch": "zeg! (stopwoord)",
             "english": "say! (filler word)",
-            "indonesian": "deh! (deh)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/deh-deh-87c53c2e.mp3"
+            "indonesian": "deh!",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/deh-aff392e6.mp3"
           },
           {
             "dutch": "koud",
@@ -232,8 +232,8 @@
           {
             "dutch": "voorbij (zijn/gaan)",
             "english": "past (be/go)",
-            "indonesian": "lewat (lewat)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/lewat-lewat-3eda0da4.mp3"
+            "indonesian": "lewat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/lewat-f68bacd0.mp3"
           },
           {
             "dutch": "binnengaan",
@@ -250,8 +250,8 @@
           {
             "dutch": "rood",
             "english": "red",
-            "indonesian": "merah (merah)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/merah-merah-eb37f9c1.mp3"
+            "indonesian": "merah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/merah-06d35697.mp3"
           },
           {
             "dutch": "Nationaal Monument",
@@ -322,8 +322,8 @@
           {
             "dutch": "televisie",
             "english": "television",
-            "indonesian": "tv (tivi)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tv-tivi-93a8f546.mp3"
+            "indonesian": "tv",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tv-07bcecec.mp3"
           },
           {
             "dutch": "kleur",
@@ -354,12 +354,14 @@
               {
                 "dutch": "Heb je al een horloge? -- Nee, ik heb geen geld.",
                 "english": "Do you already have a watch? -- No, I don't have money.",
-                "indonesian": "Kamu sudah punya arloji? -- Belum, tidak punya uang."
+                "indonesian": "Kamu sudah punya arloji? -- Belum, tidak punya uang.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kamu-sudah-punya-arloji-9ff2323a.mp3"
               },
               {
                 "dutch": "Ik heb honger, ik heb nog niet gegeten.",
                 "english": "I'm hungry, I haven't eaten yet.",
-                "indonesian": "Saya lapar, belum makan."
+                "indonesian": "Saya lapar, belum makan.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/saya-lapar-belum-makan-c764c7dd.mp3"
               },
               {
                 "dutch": "Ik ben nog nooit naar het Nationaal Monument geweest.",
@@ -484,12 +486,14 @@
               {
                 "dutch": "Ik wil daar niet naar toe.",
                 "english": "I don't want to go there.",
-                "indonesian": "Saya tidak mau ke sana."
+                "indonesian": "Saya tidak mau ke sana.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/saya-tidak-mau-ke-1ad4c9d5.mp3"
               },
               {
                 "dutch": "Zij mag niet binnenkomen.",
                 "english": "She is not allowed to come in.",
-                "indonesian": "Dia tidak boleh masuk."
+                "indonesian": "Dia tidak boleh masuk.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/dia-tidak-boleh-masuk-7d5955d7.mp3"
               },
               {
                 "dutch": "Ze kunnen niet komen.",
@@ -512,7 +516,8 @@
               {
                 "dutch": "Dit huis is niet netjes.",
                 "english": "This house is not tidy.",
-                "indonesian": "Rumah ini tidak rapi."
+                "indonesian": "Rumah ini tidak rapi.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/rumah-ini-tidak-rapi-15f3f366.mp3"
               }
             ],
             "rules_en": [
@@ -543,7 +548,8 @@
               {
                 "dutch": "Doe het niet!",
                 "english": "Don't!",
-                "indonesian": "Jangan!"
+                "indonesian": "Jangan!",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jangan-5a7f7a61.mp3"
               },
               {
                 "dutch": "Drink niet teveel bier!",
@@ -648,11 +654,13 @@
               },
               {
                 "dutch": "Kom, drink iets.",
-                "indonesian": "Mari minum!"
+                "indonesian": "Mari minum!",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/mari-minum-e298465d.mp3"
               },
               {
                 "dutch": "Kom, drink wat!",
-                "indonesian": "Ayo minum!"
+                "indonesian": "Ayo minum!",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/ayo-minum-f4a23efb.mp3"
               }
             ]
           }
@@ -784,22 +792,26 @@
               {
                 "dutch": "35 seconden",
                 "english": "35 seconds",
-                "indonesian": "tiga puluh lima detik"
+                "indonesian": "tiga puluh lima detik",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/tiga-puluh-lima-detik-17a9de7f.mp3"
               },
               {
                 "dutch": "22 minuten",
                 "english": "22 minutes",
-                "indonesian": "dua puluh dua menit"
+                "indonesian": "dua puluh dua menit",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/dua-puluh-dua-menit-4daabd7d.mp3"
               },
               {
                 "dutch": "9 uur",
                 "english": "9 hours",
-                "indonesian": "sembilan jam"
+                "indonesian": "sembilan jam",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/sembilan-jam-95ed8c16.mp3"
               },
               {
                 "dutch": "Ik heb anderhalf uur gestudeerd.",
                 "english": "I studied for one and a half hours.",
-                "indonesian": "Saya belajar satu setengah jam."
+                "indonesian": "Saya belajar satu setengah jam.",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/saya-belajar-satu-setengah-43d142d0.mp3"
               }
             ],
             "rules_en": [
@@ -863,43 +875,53 @@
             "examples": [
               {
                 "dutch": "06.15 uur",
-                "indonesian": "jam enam (pagi) lewat seperempat"
+                "indonesian": "jam enam (pagi) lewat seperempat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-enam-pagi-lewat-fdba764b.mp3"
               },
               {
                 "dutch": "06.25 uur",
-                "indonesian": "jam setengah tujuh (pagi) kurang lima"
+                "indonesian": "jam setengah tujuh (pagi) kurang lima",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-setengah-tujuh-pagi-0ca6a2cf.mp3"
               },
               {
                 "dutch": "08.50 uur",
-                "indonesian": "jam sembilan (pagi) kurang sepuluh"
+                "indonesian": "jam sembilan (pagi) kurang sepuluh",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-sembilan-pagi-kurang-19ef57a9.mp3"
               },
               {
                 "dutch": "09.30 uur",
-                "indonesian": "jam setengah sepuluh (pagi)"
+                "indonesian": "jam setengah sepuluh (pagi)",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-setengah-sepuluh-pagi-2b2d2667.mp3"
               },
               {
                 "dutch": "11.35 uur",
-                "indonesian": "jam setengah dua belas (siang) lewat lima"
+                "indonesian": "jam setengah dua belas (siang) lewat lima",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-setengah-dua-belas-aef4b550.mp3"
               },
               {
                 "dutch": "16.10 uur",
-                "indonesian": "jam empat (sore) lewat sepuluh"
+                "indonesian": "jam empat (sore) lewat sepuluh",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-empat-sore-lewat-4acc71e0.mp3"
               },
               {
                 "dutch": "18.55 uur",
-                "indonesian": "jam tujuh (malam) kurang lima"
+                "indonesian": "jam tujuh (malam) kurang lima",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-tujuh-malam-kurang-e1340f2e.mp3"
               },
               {
                 "dutch": "19.05 uur",
-                "indonesian": "jam tujuh (malam) lewat lima"
+                "indonesian": "jam tujuh (malam) lewat lima",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-tujuh-malam-lewat-2ad5c709.mp3"
               },
               {
                 "dutch": "precies 19.00 uur",
-                "indonesian": "jam tujuh (malam) pas/tepat"
+                "indonesian": "jam tujuh (malam) pas/tepat",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/jam-tujuh-malam-pastepat-779ac4da.mp3"
               },
               {
                 "dutch": "ongeveer 20.00 uur",
-                "indonesian": "kira-kira jam delapan (malam)"
+                "indonesian": "kira-kira jam delapan (malam)",
+                "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/orus/kirakira-jam-delapan-malam-82df5dc2.mp3"
               }
             ]
           }

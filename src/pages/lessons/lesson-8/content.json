@@ -282,8 +282,8 @@
           {
             "dutch": "ja",
             "english": "yes",
-            "indonesian": "iya (ya)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/iya-ya-4e85575e.mp3"
+            "indonesian": "iya",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/iya-49ae578d.mp3"
           },
           {
             "dutch": "doek / kleed",
@@ -372,14 +372,14 @@
           {
             "dutch": "modern",
             "english": "modern",
-            "indonesian": "modern (modèrn)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/modern-modrn-469472fd.mp3"
+            "indonesian": "modern",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/modern-d84dc247.mp3"
           },
           {
             "dutch": "oma / grootmoeder",
             "english": "grandmother",
-            "indonesian": "nenek (nènèk)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/nenek-nnk-b3b0dc2b.mp3"
+            "indonesian": "nenek",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/nenek-a394f56e.mp3"
           },
           {
             "dutch": "gebruiken / bevatten",
@@ -494,8 +494,8 @@
           {
             "dutch": "verjaardag",
             "english": "birthday",
-            "indonesian": "hari ulang tahun (H.U.T.)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/hari-ulang-tahun-hut-0b0beeb7.mp3"
+            "indonesian": "hari ulang tahun",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/achird/hari-ulang-tahun-cdb6da5e.mp3"
           },
           {
             "dutch": "gebatikte doek van speciaal formaat",
