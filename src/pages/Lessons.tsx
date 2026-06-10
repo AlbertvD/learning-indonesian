@@ -18,10 +18,9 @@ import {
   PageBody,
   PageHeader,
   SectionHeading,
-  MediaShowcaseCard,
-  StatusPill,
   LoadingState,
 } from '@/components/page/primitives'
+import { LessonCard } from '@/components/lessons/LessonCard'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
@@ -102,7 +101,6 @@ function LessonBanner({ orderIndex, featured }: { orderIndex: number; featured?:
       ) : (
         <span className={classes.bannerGlyph}>{glyph}</span>
       )}
-      <span className={classes.bannerNumber}>{orderIndex}</span>
     </div>
   )
 }
@@ -118,8 +116,26 @@ function activationTone(row: LessonOverviewRow): 'success' | 'accent' | 'neutral
 
 const LESSONS_OVERVIEW_SCROLL_KEY = 'lessons:overview-scroll-y'
 
+// Per-tile short titles for lessons whose canonical title is too long to sit
+// over the banner. This is a TILE-SCOPED display override — it does NOT mutate
+// lessons.title (the reader header and other surfaces still use the full one).
+// Keyed by order_index.
+const SHORT_TITLE_BY_ORDER: Record<number, string> = {
+  14: 'De islam in Indonesië',
+}
+
+// Display title for a tile: strip the "Les N -" prefix and any "(parenthetical)"
+// from the canonical title. The card shows the topic only — the number is shown
+// separately in the banner.
 function lessonTitle(title: string): string {
-  return title.replace(/\s*\([^)]*\)/g, '').trim() || title
+  return title
+    .replace(/^\s*les\s*\d*\s*[-—–]\s*/i, '')
+    .replace(/\s*\([^)]*\)/g, '')
+    .trim() || title
+}
+
+function displayTitle(orderIndex: number, title: string): string {
+  return SHORT_TITLE_BY_ORDER[orderIndex] ?? lessonTitle(title)
 }
 
 function readStoredOverviewScrollY(): number | null {
@@ -169,7 +185,7 @@ export function Lessons() {
         const lessonsData: Lesson[] = overviewRows.map(row => ({
           id: row.lesson_id,
           module_id: '',
-          level: '',
+          level: row.level ?? '',
           title: row.title,
           description: row.description,
           order_index: row.order_index,
@@ -196,6 +212,7 @@ export function Lessons() {
             lessonId: row.lesson_id,
             isActivated: row.is_activated,
             masteredCount: Math.max(0, row.mastered_capability_count),
+            practicedCount: Math.max(0, row.practiced_capability_count),
             introducibleCount: Math.max(0, row.ready_capability_count),
           })
 
@@ -260,14 +277,6 @@ export function Lessons() {
     return row.isActivated ? T.lessons.statusActive : T.lessons.statusNotStarted
   }
 
-  const actionLabel = (row: LessonOverviewRow): string => {
-    if (!row.isPrepared) return T.lessons.actionNotAvailableYet
-    return row.isActivated ? T.lessons.actionContinue : T.lessons.actionOpenLesson
-  }
-
-  const masterySubtitle = (row: LessonOverviewRow): string | undefined =>
-    row.masteredPercent != null ? `${row.masteredPercent}% ${T.lessons.mastered}` : undefined
-
   return (
     <PageContainer size="lg">
       <PageBody>
@@ -297,16 +306,15 @@ export function Lessons() {
                 data-testid={`lesson-overview-row-${row.lessonId}`}
                 onClick={isAvailable ? rememberOverviewScrollPosition : undefined}
               >
-                <MediaShowcaseCard
+                <LessonCard
                   banner={<LessonBanner orderIndex={row.orderIndex} />}
-                  eyebrow={`LES ${row.orderIndex}`}
-                  title={lessonTitle(row.title)}
-                  subtitle={masterySubtitle(row)}
-                  tags={row.grammarTopicTag ? (
-                    <span className={classes.grammarTag}>{row.grammarTopicTag}</span>
-                  ) : undefined}
-                  status={<StatusPill tone={activationTone(row)}>{activationLabel(row)}</StatusPill>}
-                  cta={actionLabel(row)}
+                  orderIndex={row.orderIndex}
+                  title={displayTitle(row.orderIndex, row.title)}
+                  level={row.level}
+                  grammarTopics={row.grammarTopicTag}
+                  practiced={{ label: T.lessons.practiced, percent: row.practicedPercent }}
+                  mastered={{ label: T.lessons.mastered, percent: row.masteredPercent }}
+                  status={{ tone: activationTone(row), label: activationLabel(row) }}
                   to={row.href ?? undefined}
                   disabled={!isAvailable}
                 />

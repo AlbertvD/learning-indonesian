@@ -32,6 +32,8 @@ import lesson9Content from '@/pages/lessons/lesson-9/content.json'
 import lesson10Content from '@/pages/lessons/lesson-10/content.json'
 import lesson11Content from '@/pages/lessons/lesson-11/content.json'
 import lesson12Content from '@/pages/lessons/lesson-12/content.json'
+import lesson13Content from '@/pages/lessons/lesson-13/content.json'
+import lesson14Content from '@/pages/lessons/lesson-14/content.json'
 
 const Lesson1Bespoke = lazy(() => import('@/pages/lessons/lesson-1/Page'))
 const Lesson2Bespoke = lazy(() => import('@/pages/lessons/lesson-2/Page'))
@@ -45,6 +47,8 @@ const Lesson9Bespoke = lazy(() => import('@/pages/lessons/lesson-9/Page'))
 const Lesson10Bespoke = lazy(() => import('@/pages/lessons/lesson-10/Page'))
 const Lesson11Bespoke = lazy(() => import('@/pages/lessons/lesson-11/Page'))
 const Lesson12Bespoke = lazy(() => import('@/pages/lessons/lesson-12/Page'))
+const Lesson13Bespoke = lazy(() => import('@/pages/lessons/lesson-13/Page'))
+const Lesson14Bespoke = lazy(() => import('@/pages/lessons/lesson-14/Page'))
 
 const fallback = <Center h="60vh"><Loader size="lg" /></Center>
 
@@ -61,6 +65,8 @@ export const bespokeLessonElements: Record<string, ReactElement> = {
   [lesson10Content.meta.id]: <Suspense fallback={fallback}><Lesson10Bespoke /></Suspense>,
   [lesson11Content.meta.id]: <Suspense fallback={fallback}><Lesson11Bespoke /></Suspense>,
   [lesson12Content.meta.id]: <Suspense fallback={fallback}><Lesson12Bespoke /></Suspense>,
+  [lesson13Content.meta.id]: <Suspense fallback={fallback}><Lesson13Bespoke /></Suspense>,
+  [lesson14Content.meta.id]: <Suspense fallback={fallback}><Lesson14Bespoke /></Suspense>,
 }
 
 // Ordered index of the bespoke lessons, derived from the same content.json
@@ -81,6 +87,7 @@ export const bespokeLessonPreviews: BespokeLessonPreview[] = [
   lesson4Content.meta, lesson5Content.meta, lesson6Content.meta,
   lesson7Content.meta, lesson8Content.meta, lesson9Content.meta,
   lesson10Content.meta, lesson11Content.meta, lesson12Content.meta,
+  lesson13Content.meta, lesson14Content.meta,
 ]
   .map(m => ({
     id: m.id,

@@ -1967,6 +1967,7 @@ returns table (
   lesson_id uuid,
   order_index int,
   title text,
+  level text,
   description text,
   audio_path text,
   duration_seconds int,
@@ -1976,7 +1977,8 @@ returns table (
   lesson_sections jsonb,
   is_activated boolean,
   ready_capability_count int,
-  mastered_capability_count int
+  mastered_capability_count int,
+  practiced_capability_count int
 )
 language sql stable security invoker as $$
   with lesson_capabilities as (
@@ -2018,7 +2020,17 @@ language sql stable security invoker as $$
                and last_reviewed_at >= now() - interval '30 days'
                and coalesce(lapse_count, 0) = 0
                and coalesce(consecutive_failure_count, 0) = 0
-           )::int as mastered_count
+           )::int as mastered_count,
+           -- practiced numerator: any review at all (review_count >= 1), over the
+           -- SAME introducible filter as the denominator and the mastered numerator.
+           -- TS canonical: PRACTICED_MIN_REVIEWS in src/lib/lessons/overview.ts
+           -- (kept in lockstep by lessons-overview-mastery-parity.test.ts).
+           -- mastered (review_count>=4) ⊆ practiced (>=1); coalesce mirrors the
+           -- mastered filter's NULL-handling so a NULL review_count is excluded.
+           count(*) filter (
+             where readiness_status = 'ready' and publication_status = 'published'
+               and coalesce(review_count, 0) >= 1
+           )::int as practiced_count
     from lesson_capabilities group by lesson_id
   ),
   lesson_sections_json as (
@@ -2029,6 +2041,7 @@ language sql stable security invoker as $$
     l.id,
     l.order_index,
     l.title,
+    l.level,
     l.description,
     l.audio_path,
     l.duration_seconds,
@@ -2045,7 +2058,8 @@ language sql stable security invoker as $$
       where lla.user_id = p_user_id and lla.lesson_id = l.id
     ) as is_activated,
     coalesce(cc.ready_count, 0) as ready_capability_count,
-    coalesce(cc.mastered_count, 0) as mastered_capability_count
+    coalesce(cc.mastered_count, 0) as mastered_capability_count,
+    coalesce(cc.practiced_count, 0) as practiced_capability_count
   from indonesian.lessons l
   left join capability_counts cc on cc.lesson_id = l.id
   left join lesson_sections_json lsj on lsj.lesson_id = l.id

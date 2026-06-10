@@ -2,7 +2,7 @@
 export const lesson = {
   "title": "Les 11 - Candi Borobudur",
   "description": "",
-  "level": "A1",
+  "level": "A2",
   "module_id": "module-1",
   "order_index": 11,
   "sections": [
