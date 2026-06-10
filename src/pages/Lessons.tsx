@@ -17,7 +17,6 @@ import {
   PageContainer,
   PageBody,
   PageHeader,
-  SectionHeading,
   LoadingState,
 } from '@/components/page/primitives'
 import { LessonCard } from '@/components/lessons/LessonCard'
@@ -293,8 +292,6 @@ export function Lessons() {
             {T.lessons.progressRefreshFailed}
           </div>
         )}
-
-        <SectionHeading>{T.lessons.title}</SectionHeading>
 
         <ol className={classes.lessonGrid} aria-label={T.lessons.title}>
           {model.rows.map((row) => {

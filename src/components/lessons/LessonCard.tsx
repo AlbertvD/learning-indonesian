@@ -100,15 +100,14 @@ export function LessonCard({
         {grammarTopics && <p className={classes.grammar}>{grammarTopics}</p>}
 
         {showBars ? (
+          // 2-col grid: both bars sit in the same 1fr column so their tracks are
+          // identical length (comparable side by side); the meta column (auto)
+          // holds the level badge over the status pill.
           <div className={classes.metrics}>
-            <div className={classes.metricRow}>
-              <Bar label={practiced.label} percent={practiced.percent} />
-              <LevelBadge level={level} />
-            </div>
-            <div className={classes.metricRow}>
-              <Bar label={mastered.label} percent={mastered.percent} />
-              <StatusPill tone={status.tone}>{status.label}</StatusPill>
-            </div>
+            <Bar label={practiced.label} percent={practiced.percent} />
+            <div className={classes.metaCell}><LevelBadge level={level} /></div>
+            <Bar label={mastered.label} percent={mastered.percent} />
+            <div className={classes.metaCell}><StatusPill tone={status.tone}>{status.label}</StatusPill></div>
           </div>
         ) : (
           <div className={classes.metaOnly}>

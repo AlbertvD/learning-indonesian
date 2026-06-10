@@ -67,7 +67,11 @@
 
 .lessonGrid {
   display: grid;
-  grid-template-columns: 1fr;
+  /* minmax(0, 1fr) — NOT 1fr — so a long grammar row wraps inside the fixed
+   * column instead of widening it (1fr = minmax(auto,1fr) lets content min-width
+   * blow the track out). Tile width is full-width on mobile, fixed on desktop;
+   * it never depends on the grammar text. */
+  grid-template-columns: minmax(0, 1fr);
   /* Every row is sized to the tallest tile in it, so tiles with longer grammar
    * rows don't break the grid. The card fills its cell via height: 100%. */
   grid-auto-rows: 1fr;
@@ -77,15 +81,17 @@
   padding: 0;
 }
 
-/* Stretch the <li> so the LessonCard's height: 100% resolves to the row height. */
+/* Stretch the <li> so the LessonCard's height: 100% resolves to the row height;
+ * min-width: 0 lets the card shrink to its grid track so its text wraps. */
 .lessonGridItem {
   display: flex;
+  min-width: 0;
 }
 
 /* Tablet: two equal columns. */
 @media (min-width: 640px) and (max-width: 1023px) {
   .lessonGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -93,7 +99,7 @@
  * diagonally through the list instead of scanning a uniform table. */
 @media (min-width: 1024px) {
   .lessonGrid {
-    grid-template-columns: repeat(12, 1fr);
+    grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 24px;
   }
 
