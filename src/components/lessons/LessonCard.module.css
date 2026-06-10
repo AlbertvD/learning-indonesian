@@ -9,6 +9,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-width: 0;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: var(--r-md);
@@ -98,23 +99,26 @@ a.root:hover {
   overflow-wrap: anywhere;
 }
 
+/* 2 columns: a 1fr bar column (so BOTH bars are the same width, comparable side
+ * by side) + an auto meta column (level badge over status pill). 2 rows. */
 .metrics {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 12px;
+  row-gap: 8px;
+  align-items: center;
   margin-top: auto;
 }
 
-/* one progress bar (left, grows) + one meta item (right), per row. The bar's
- * flex:1 pushes the meta to a shared right edge so level/status form a column. */
-.metricRow {
+/* meta column cell — right-aligned so the level badge + status pill stack as a
+ * column flush to the right edge, each baseline-aligned to its bar. */
+.metaCell {
+  justify-self: end;
   display: flex;
   align-items: center;
-  gap: 12px;
 }
 
 .bar {
-  flex: 1 1 auto;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -131,7 +135,7 @@ a.root:hover {
 
 .barTrack {
   flex: 1 1 auto;
-  height: 6px;
+  height: 10px;
   border-radius: 999px;
   background: var(--accent-primary-subtle);
   overflow: hidden;
