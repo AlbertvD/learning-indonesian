@@ -8,7 +8,10 @@
 .root {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  /* The card is stretched to fill its grid cell by the grid item (.lessonGridItem
+   * is display: grid). min-width: 0 lets it shrink to the cell so the grammar
+   * text wraps rather than widening the tile; the tile width is the grid cell's,
+   * never the content's. */
   min-width: 0;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
