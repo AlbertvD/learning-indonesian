@@ -23,6 +23,9 @@ for (const line of readFileSync('.env.local', 'utf8').split('\n')) {
   if (m) process.env[m[1]] = m[2]
 }
 
+// Homelab uses an internal Step-CA certificate that Node/Bun does not trust by default.
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+
 const url = process.env.VITE_SUPABASE_URL
 const key = process.env.SUPABASE_SERVICE_KEY
 if (!url || !key) throw new Error('VITE_SUPABASE_URL and SUPABASE_SERVICE_KEY must be set in .env.local')
