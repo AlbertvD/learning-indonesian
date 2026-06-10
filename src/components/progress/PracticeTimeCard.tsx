@@ -1,16 +1,16 @@
 // src/components/progress/PracticeTimeCard.tsx
 //
-// Practice Time (Axis 1) on the voortgang page — the tracer-bullet surface for
-// the analytics redesign (#206). Exercises-only weekly minutes, read from the
-// new read-only `analytics.engagement` module (CONTEXT.md → Practice Time).
-// Slice 2 (#207) thickens this into the full card (streak / min-per-day /
-// time-per-session).
+// Practice Time (Axis 1) on the voortgang page — the "are you showing up?" axis
+// of the analytics redesign (#207). Exercises-only, read from the read-only
+// `analytics.engagement` module (CONTEXT.md → Practice Time): streak, minutes
+// today, minutes this week, and average time per session.
 import { useEffect, useState } from 'react'
 import { notifications } from '@mantine/notifications'
 import { StatCard } from '@/components/page/primitives'
 import { useT } from '@/hooks/useT'
-import { engagement } from '@/lib/analytics/engagement'
+import { engagement, type PracticeTime } from '@/lib/analytics/engagement'
 import { logError } from '@/lib/logger'
+import classes from './PracticeTimeCard.module.css'
 
 export interface PracticeTimeCardProps {
   userId: string
@@ -19,21 +19,17 @@ export interface PracticeTimeCardProps {
 
 export function PracticeTimeCard({ userId, timezone }: PracticeTimeCardProps) {
   const T = useT()
-  const [minutes, setMinutes] = useState<number | null>(null)
+  const [pt, setPt] = useState<PracticeTime | null>(null)
 
   useEffect(() => {
     let active = true
     engagement
-      .practiceMinutesThisWeek(userId, timezone)
+      .practiceTime(userId, timezone)
       .then((value) => {
-        if (active) setMinutes(value)
+        if (active) setPt(value)
       })
       .catch((err) => {
-        logError({
-          page: 'progress',
-          action: 'practiceMinutesThisWeek',
-          error: err,
-        })
+        logError({ page: 'progress', action: 'practiceTime', error: err })
         notifications.show({
           color: 'red',
           title: T.common.error,
@@ -45,11 +41,33 @@ export function PracticeTimeCard({ userId, timezone }: PracticeTimeCardProps) {
     }
   }, [userId, timezone, T.common.error, T.common.somethingWentWrong])
 
+  const value = (n: number | undefined) => (pt ? (n ?? 0) : '—')
+
   return (
-    <StatCard
-      label={T.progress.practiceThisWeek}
-      value={minutes ?? '—'}
-      trailing={T.progress.minutesShort}
-    />
+    <div>
+      <h2 className={classes.heading}>{T.progress.practiceTimeTitle}</h2>
+      <div className={classes.grid}>
+        <StatCard
+          label={T.progress.practiceStreak}
+          value={value(pt?.streakDays)}
+          trailing={T.progress.daysShort}
+        />
+        <StatCard
+          label={T.progress.practiceToday}
+          value={value(pt?.minutesToday)}
+          trailing={T.progress.minutesShort}
+        />
+        <StatCard
+          label={T.progress.practiceThisWeek}
+          value={value(pt?.minutesThisWeek)}
+          trailing={T.progress.minutesShort}
+        />
+        <StatCard
+          label={T.progress.practicePerSession}
+          value={value(pt?.avgSessionMinutes)}
+          trailing={T.progress.minutesShort}
+        />
+      </div>
+    </div>
   )
 }

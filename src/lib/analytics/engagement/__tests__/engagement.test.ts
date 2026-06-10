@@ -1,47 +1,60 @@
 import { describe, it, expect, vi } from 'vitest'
 import { createEngagement } from '../index'
 
-describe('engagement.practiceMinutesThisWeek', () => {
-  it('returns the minutes the get_practice_time RPC reports for the week', async () => {
-    const rpc = vi
-      .fn()
-      .mockResolvedValue({ data: { minutes_this_week: 45 }, error: null })
+const fullRow = {
+  streak_days: 4,
+  minutes_today: 12,
+  minutes_this_week: 45,
+  avg_session_minutes: 8,
+  active_days_this_week: 3,
+  last_practice_age_days: 0,
+}
+
+describe('engagement.practiceTime', () => {
+  it('maps the get_practice_time RPC row into the camelCase PracticeTime shape', async () => {
+    const rpc = vi.fn().mockResolvedValue({ data: fullRow, error: null })
     const client = { schema: () => ({ rpc }) }
 
     const engagement = createEngagement(client as never)
-    const minutes = await engagement.practiceMinutesThisWeek(
-      'user-1',
-      'Europe/Amsterdam',
-    )
+    const pt = await engagement.practiceTime('user-1', 'Europe/Amsterdam')
 
-    expect(minutes).toBe(45)
+    expect(pt).toEqual({
+      streakDays: 4,
+      minutesToday: 12,
+      minutesThisWeek: 45,
+      avgSessionMinutes: 8,
+      activeDaysThisWeek: 3,
+      lastPracticeAgeDays: 0,
+    })
     expect(rpc).toHaveBeenCalledWith('get_practice_time', {
       p_user_id: 'user-1',
       p_timezone: 'Europe/Amsterdam',
     })
   })
 
-  it('treats a null RPC result as zero minutes', async () => {
+  it('treats a null RPC result as an all-zero practice week', async () => {
     const rpc = vi.fn().mockResolvedValue({ data: null, error: null })
     const client = { schema: () => ({ rpc }) }
 
     const engagement = createEngagement(client as never)
+    const pt = await engagement.practiceTime('user-1', 'UTC')
 
-    expect(
-      await engagement.practiceMinutesThisWeek('user-1', 'UTC'),
-    ).toBe(0)
+    expect(pt).toEqual({
+      streakDays: 0,
+      minutesToday: 0,
+      minutesThisWeek: 0,
+      avgSessionMinutes: 0,
+      activeDaysThisWeek: 0,
+      lastPracticeAgeDays: null,
+    })
   })
 
   it('throws when the RPC returns an error', async () => {
-    const rpc = vi
-      .fn()
-      .mockResolvedValue({ data: null, error: { message: 'boom' } })
+    const rpc = vi.fn().mockResolvedValue({ data: null, error: { message: 'boom' } })
     const client = { schema: () => ({ rpc }) }
 
     const engagement = createEngagement(client as never)
 
-    await expect(
-      engagement.practiceMinutesThisWeek('user-1', 'UTC'),
-    ).rejects.toThrow('boom')
+    await expect(engagement.practiceTime('user-1', 'UTC')).rejects.toThrow('boom')
   })
 })

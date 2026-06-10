@@ -2074,34 +2074,82 @@ $$;
 grant execute on function indonesian.get_lessons_overview(uuid) to authenticated;
 
 -- ============================================================
--- Practice Time (#206) — Learner Progress Axis 1, analytics.engagement
+-- Practice Time (#206/#207) — Learner Progress Axis 1, analytics.engagement
 -- ============================================================
--- Exercises-only weekly practice minutes (CONTEXT.md → Practice Time): only the
+-- Exercises-only practice time (CONTEXT.md → Practice Time): only the
 -- capability/review path writes learning_sessions, so reading/podcast time is
--- excluded by construction. duration_seconds = first→last answer elapsed.
--- Calendar week resets Monday (date_trunc('week') is Monday-based). Returns json
--- so Slice 2 (#207) can add streak / minutes-per-day fields without changing the
--- RPC signature. SECURITY INVOKER + RLS owner-scoping, matching the existing
--- learner analytics functions (get_current_streak_days).
+-- excluded by construction. duration_seconds = first→last answer elapsed
+-- (single-answer session = 0s). Calendar week resets Monday (date_trunc('week')
+-- is Monday-based). Returns json so the shape can grow without a signature
+-- change. SECURITY INVOKER + RLS owner-scoping, matching the existing learner
+-- analytics functions.
+--
+-- get_current_streak_days is promoted here from the paper-trail file
+-- scripts/migrations/2026-05-01-learner-progress-functions.sql (#207 folds the
+-- streak read into analytics.engagement): get_practice_time depends on it, so
+-- the canonical migration.sql must define it for a fresh provision.
+create or replace function indonesian.get_current_streak_days(
+  p_user_id uuid,
+  p_timezone text
+)
+returns int language plpgsql stable security invoker as $$
+declare
+  v_check_date date := (now() at time zone p_timezone)::date;
+  v_streak int := 0;
+  v_has_review boolean;
+begin
+  loop
+    select exists (
+      select 1
+      from indonesian.capability_review_events
+      where user_id = p_user_id
+        and (created_at at time zone p_timezone)::date = v_check_date
+    ) into v_has_review;
+    if not v_has_review then exit; end if;
+    v_streak := v_streak + 1;
+    v_check_date := v_check_date - 1;
+    if v_streak >= 365 then exit; end if;
+  end loop;
+  return v_streak;
+end;
+$$;
+
+grant execute on function indonesian.get_current_streak_days(uuid, text) to authenticated;
+
 create or replace function indonesian.get_practice_time(
   p_user_id uuid,
   p_timezone text
 )
 returns json language sql stable security invoker as $$
-  select json_build_object(
-    'minutes_this_week',
-    coalesce(
-      round(
-        sum(ls.duration_seconds) filter (where ls.duration_seconds is not null)
-        / 60.0
-      ),
-      0
-    )::int
+  with sess as (
+    select
+      ls.duration_seconds as dur,
+      (ls.started_at at time zone p_timezone)::date as local_date
+    from indonesian.learning_sessions ls
+    where ls.user_id = p_user_id
+  ),
+  b as (
+    select
+      (now() at time zone p_timezone)::date as today,
+      date_trunc('week', now() at time zone p_timezone)::date as week_start
   )
-  from indonesian.learning_sessions ls
-  where ls.user_id = p_user_id
-    and (ls.started_at at time zone p_timezone)
-        >= date_trunc('week', now() at time zone p_timezone);
+  select json_build_object(
+    'streak_days', indonesian.get_current_streak_days(p_user_id, p_timezone),
+    'minutes_today', coalesce(round(
+      sum(s.dur) filter (where s.dur is not null and s.local_date = b.today) / 60.0
+    ), 0)::int,
+    'minutes_this_week', coalesce(round(
+      sum(s.dur) filter (where s.dur is not null and s.local_date >= b.week_start) / 60.0
+    ), 0)::int,
+    'avg_session_minutes', coalesce(round(
+      avg(s.dur) filter (where s.dur is not null) / 60.0
+    ), 0)::int,
+    'active_days_this_week', count(distinct s.local_date)
+      filter (where s.local_date >= b.week_start)::int,
+    'last_practice_age_days', (b.today - max(s.local_date))::int
+  )
+  from b left join sess s on true
+  group by b.today, b.week_start;
 $$;
 
 grant execute on function indonesian.get_practice_time(uuid, text) to authenticated;

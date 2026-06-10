@@ -21,7 +21,7 @@ import { RecencyBadge } from '@/components/dashboard/RecencyBadge'
 import { lessonService } from '@/services/lessonService'
 import { getLessonsBasic } from '@/lib/lessons'
 import { learnerStateService } from '@/services/learnerStateService'
-import { learnerProgressService } from '@/services/learnerProgressService'
+import { engagement } from '@/lib/analytics/engagement'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
@@ -62,18 +62,9 @@ export function Dashboard() {
         }
 
         const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-        const [streak, ageDays] = await Promise.all([
-          learnerProgressService.getCurrentStreakDays({
-            userId: user.id,
-            timezone: userTimezone,
-          }),
-          learnerProgressService.getLastPracticeAgeDays({
-            userId: user.id,
-            timezone: userTimezone,
-          }),
-        ])
-        setCurrentStreak(streak)
-        setLastPracticeAgeDays(ageDays)
+        const pt = await engagement.practiceTime(user.id, userTimezone)
+        setCurrentStreak(pt.streakDays)
+        setLastPracticeAgeDays(pt.lastPracticeAgeDays)
       } catch (err) {
         logError({ page: 'dashboard', action: 'fetchData', error: err })
         notifications.show({
