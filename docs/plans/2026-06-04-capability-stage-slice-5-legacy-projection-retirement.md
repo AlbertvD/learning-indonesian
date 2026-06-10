@@ -1,12 +1,23 @@
 ---
-status: approved
-implementation: TBD                          # PR # assigned when 5a opens
+status: shipped
+implementation: PR #158 (Slice 5a) + PR #159 (Slice 5b)
+merged_at: 2026-06-05
+implementation_paths:
+  - scripts/lib/pipeline/capability-stage/runner.ts
+  - scripts/lib/pipeline/capability-stage/projectors/
+  - scripts/lib/pipeline/capability-stage/__tests__/enforcement/noDiskReads.test.ts
 reviewed_by: [architect, data-architect]     # both round-2 APPROVE, 2026-06-04
 grill_amendments: 2026-06-05                  # see "Grill amendments" — Q1 changed the migration cascade/preserve shape
 data_architect_resign: 2026-06-05             # APPROVE-WITH-CHANGES; M1 (exercise_variants 0-cascade label) + I1/I2 (orphan count ~277 not 72) applied. Cleared for the 5b.10 migration commit. #148 sign-off on the 46 cloze contexts still outstanding.
 supersedes: []
 parent_epic: "#98"
 issue: "#147"
+# Shipped 2026-06-05 (#147 closed 2026-06-10 after ground-truth verification): the
+# Capability Stage is no-disk (globalNoFileIO gate green, allowlist empty); the legacy
+# exercise_variants WRITER is retired (runner.ts step 10) — 0 source kinds write it now,
+# which unblocks its DROP (#153, ready-for-human). The table itself still holds 716 stale
+# rows until #153 runs `make migrate`. capability_artifacts + required_artifacts were
+# already dropped (Slice 4b / #152 / PR #155).
 ---
 
 # Capability Stage — Slice 5: Legacy-Projection Retirement + Global No-Disk Gate

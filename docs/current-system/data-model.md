@@ -21,7 +21,7 @@ For the *why* behind the capability schema, see `docs/adr/0001-capability-based-
 |---|---|---|
 | **Capability layer** | `learning_capabilities`, `capability_aliases`, `capability_content_units`, `content_units`, `learner_capability_state`, `capability_review_events`, `capability_resolution_failure_events` | standalone `scripts/migrations/2026-04-25-*.sql` + `2026-05-02-capability-resolution-failures.sql` |
 | **Lesson activation** | `learner_lesson_activation` | `scripts/migration.sql:1561` (post-retirement #6) |
-| **Content (vocab + sentences)** | `learning_items`, `item_meanings`, `item_answer_variants`, `item_contexts`, `item_context_grammar_patterns`, `grammar_patterns`, `exercise_variants` | `scripts/migration.sql` |
+| **Content (vocab + sentences)** | `learning_items`, `item_meanings`, `item_answer_variants`, `item_contexts`, `item_context_grammar_patterns`, `grammar_patterns`, `exercise_variants` (legacy, writer retired — pending drop #153) | `scripts/migration.sql` |
 | **Lesson content** | `lessons`, `lesson_sections` (+ `section_kind`/`source_section_ref`), `lesson_dialogue_lines`, `audio_clips`, `podcasts`, `vocabulary` (legacy) | `scripts/migration.sql` |
 | **Lesson-section typed contract (PR 6)** | `lesson_section_item_rows`, `lesson_section_grammar_categories`, `lesson_section_grammar_topics`, `lesson_section_affixed_pairs` | `scripts/migration.sql` (lesson-stage writer; capability-stage reader is #98/#99) |
 | **Authoring pipeline** | `textbook_sources`, `textbook_pages`, `generated_exercise_candidates`, `exercise_review_comments`, `content_flags` | `scripts/migration.sql` |
@@ -156,9 +156,9 @@ Detail tables for translations, accepted answer variants, example sentences / cl
 
 Reusable grammar patterns with stable `slug`, `complexity_score`, and `confusion_group` (read by interleaving policy to keep confusable forms apart).
 
-### `exercise_variants`
+### `exercise_variants` — LEGACY, write path retired (pending drop, #153)
 
-Published grammar exercises authored by the pipeline. Carries `payload_json` (display-safe) and `answer_key_json` (correctness data, server-only read).
+The pre-typed-table grammar-exercise store: `payload_json` (display-safe) + `answer_key_json` (correctness, server-only). **No longer written by any pipeline path** — the legacy writer (`capability-stage/runner.ts` step 10) was retired in **Slice 5b / #147** (PR #159, 2026-06-05); grammar exercises now land in the 4 typed grammar-exercise tables, and the admin read switched off it in PR 4a. The table still holds **716 stale rows** from old publishes (every typed-table-era lesson, L11+, reads 0 here) and is the **last** legacy table awaiting teardown — its drop is unblocked and `ready-for-human` at **#153** (gated on the now-shipped Slice 5; runs via `make migrate`). `capability_artifacts` + `required_artifacts` were already dropped (Slice 4b / #152 / PR #155, verified gone from the live DB).
 
 ### Lesson-section typed contract (PR 6 — `migration.sql`)
 
