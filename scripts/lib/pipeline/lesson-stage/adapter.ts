@@ -1,4 +1,26 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { cleanItemText } from '../../clean-item-text'
+
+// Item-bearing section types whose display items carry an Indonesian headword
+// (mirrors projectSections.ts ITEM_SECTION_TYPES).
+const DISPLAY_ITEM_SECTION_TYPES = new Set(['vocabulary', 'expressions', 'numbers'])
+
+// Strip orthographic parentheticals from a section's DISPLAY items too — not just
+// the typed rows (projectSections.ts) and the TTS text (runner.ts) — so the gloss
+// ("boneka (bonéka)") doesn't leak into the reader's on-page word list. #196 tail.
+export function cleanSectionDisplayContent(content: Record<string, unknown>): Record<string, unknown> {
+  const type = (content as { type?: unknown })?.type
+  if (typeof type !== 'string' || !DISPLAY_ITEM_SECTION_TYPES.has(type)) return content
+  if (!Array.isArray(content.items)) return content
+  return {
+    ...content,
+    items: content.items.map((raw) => {
+      const item = raw as Record<string, unknown>
+      if (typeof item.indonesian !== 'string') return item
+      return { ...item, indonesian: cleanItemText(item.indonesian.trim()) }
+    }),
+  }
+}
 
 export interface LessonInput {
   module_id: string
@@ -101,7 +123,7 @@ export async function upsertLessonSections(
         {
           lesson_id: lessonId,
           title: section.title,
-          content: section.content,
+          content: cleanSectionDisplayContent(section.content),
           order_index: section.order_index,
           section_kind: sectionKind,
           source_section_ref: `lesson-${lessonNumber}/section-${section.order_index}`,
