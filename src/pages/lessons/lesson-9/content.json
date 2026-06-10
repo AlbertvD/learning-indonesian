@@ -210,8 +210,8 @@
           {
             "dutch": "schrikken",
             "english": "be startled / get a fright",
-            "indonesian": "kaget (kagèt)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kaget-kagt-2d10fdf3.mp3"
+            "indonesian": "kaget",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kaget-40f5d3aa.mp3"
           },
           {
             "dutch": "voet",
@@ -234,8 +234,8 @@
           {
             "dutch": "gezondheid",
             "english": "health",
-            "indonesian": "kesehatan (keséhatan)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kesehatan-keshatan-0c5ac6db.mp3"
+            "indonesian": "kesehatan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kesehatan-634498b4.mp3"
           },
           {
             "dutch": "verzamelen",
@@ -252,8 +252,8 @@
           {
             "dutch": "luitenant",
             "english": "lieutenant",
-            "indonesian": "letnan (lètnan)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/letnan-ltnan-f207f79c.mp3"
+            "indonesian": "letnan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/letnan-dd55a87b.mp3"
           },
           {
             "dutch": "springen",
@@ -336,8 +336,8 @@
           {
             "dutch": "niet",
             "english": "not",
-            "indonesian": "tak (tidak)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tak-tidak-7eaf652d.mp3"
+            "indonesian": "tak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tak-9be7f6dd.mp3"
           },
           {
             "dutch": "bang (zijn)",
@@ -374,8 +374,8 @@
           {
             "dutch": "er is niets / 't geeft niet / er is niets aan de hand",
             "english": "there is nothing / it's nothing / there is no problem",
-            "indonesian": "tidak (ada) apa-apa",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tidak-ada-apaapa-3aabd4b3.mp3"
+            "indonesian": "tidak ada apa-apa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tidak-ada-apaapa-b818071f.mp3"
           },
           {
             "dutch": "niet lukken / niet doorgaan",
@@ -1214,8 +1214,8 @@
           {
             "dutch": "moe",
             "english": "tired (after exertion)",
-            "indonesian": "capèk (na inspanning)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/capk-na-inspanning-bd0432d6.mp3"
+            "indonesian": "capèk",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/capk-17ebd1f1.mp3"
           },
           {
             "dutch": "medicijn",

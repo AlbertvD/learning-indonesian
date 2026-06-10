@@ -140,14 +140,14 @@
           {
             "dutch": "cheque",
             "english": "cheque",
-            "indonesian": "cek (cèk)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/cek-ck-f68bf485.mp3"
+            "indonesian": "cek",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/cek-ddda3c20.mp3"
           },
           {
             "dutch": "zakkenrollen",
             "english": "pickpocket",
-            "indonesian": "copet (copèt)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/copet-copt-33d938bf.mp3"
+            "indonesian": "copet",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/copet-bef67e86.mp3"
           },
           {
             "dutch": "stelen",
@@ -188,8 +188,8 @@
           {
             "dutch": "kraan",
             "english": "tap",
-            "indonesian": "k(e)ran",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/keran-a4716fd7.mp3"
+            "indonesian": "keran",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/gacrux/keran-cc4e588e.mp3"
           },
           {
             "dutch": "omdat",

@@ -145,14 +145,14 @@
           {
             "dutch": "gebied",
             "english": "region",
-            "indonesian": "daerah (da'èrah)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/daerah-darah-abe2152a.mp3"
+            "indonesian": "daerah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/daerah-c521ffc9.mp3"
           },
           {
             "dutch": "gekoppeld",
             "english": "coupled",
-            "indonesian": "digandeng (digandèng)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/digandeng-digandng-83bd5680.mp3"
+            "indonesian": "digandeng",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/digandeng-226b35fe.mp3"
           },
           {
             "dutch": "hoofdstad",
@@ -163,8 +163,8 @@
           {
             "dutch": "speciaal, uitmuntend",
             "english": "special, excellent",
-            "indonesian": "istimewa (istiméwa)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/istimewa-istimwa-cd9a71b9.mp3"
+            "indonesian": "istimewa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/istimewa-66898cc3.mp3"
           },
           {
             "dutch": "kaartje",
@@ -193,8 +193,8 @@
           {
             "dutch": "wagen",
             "english": "carriage",
-            "indonesian": "kereta (kerèta)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kereta-kerta-f18de80b.mp3"
+            "indonesian": "kereta",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/kereta-2d19be25.mp3"
           },
           {
             "dutch": "trein",
@@ -217,8 +217,8 @@
           {
             "dutch": "neem me niet kwalijk, sorry",
             "english": "excuse me, sorry",
-            "indonesian": "maaf (ma'af)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/maaf-maaf-39d3f5be.mp3"
+            "indonesian": "maaf",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/maaf-dcdbe812.mp3"
           },
           {
             "dutch": "studente",
@@ -229,8 +229,8 @@
           {
             "dutch": "niet, nee",
             "english": "not, no",
-            "indonesian": "nggak (Jakarta)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nggak-jakarta-f843127c.mp3"
+            "indonesian": "nggak",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/nggak-c8320e7b.mp3"
           },
           {
             "dutch": "heet, warm",
@@ -253,8 +253,8 @@
           {
             "dutch": "perron",
             "english": "platform",
-            "indonesian": "peron (pèron)",
-            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/peron-pron-8458dd82.mp3"
+            "indonesian": "peron",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/algenib/peron-ac689cd1.mp3"
           },
           {
             "dutch": "hoofdzaak",
