@@ -1,0 +1,805 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Page.module.css — Lesson 15: Wayang di Indonesia (ME- terugdraaien)
+
+   The reverse of lessons 13–14: given a ME-form, recover the root. The grammar
+   is a "decode machine" — a prefix→sound table is the spine, and the K·P·S·T
+   drop-sound cards are the heart (the four letters that vanish under the prefix
+   and must be restored). No dialogue; instead a theatrical Indonesian narrative
+   of Ki Dalang Sastro's nightlong wayang kulit, plus a collapsed CULTUUR essay.
+   Warm gold-on-night palette: a lamp behind the kelir screen, lit amber against
+   deep indigo — distinct from lesson 14's cool indigo-teal.
+
+   Mobile-safe throughout: every grid collapses to one column and every chip row
+   uses flex-wrap, so the page can never overflow horizontally.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ─── Page root ──────────────────────────────────────────────────────────── */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad-x);
+}
+
+.band {
+  width: 100%;
+  padding: 56px 0;
+}
+
+@media (max-width: 720px) { .band { padding: 40px 0; } }
+
+/* ─── Hero — lamp-lit gold on indigo night ───────────────────────────────── */
+
+.heroBand {
+  composes: band;
+  background-color: #1a1430;
+  background-image:
+    linear-gradient(135deg, rgba(26, 20, 48, 0.90) 0%, rgba(40, 22, 30, 0.80) 52%, rgba(255, 176, 32, 0.32) 100%),
+    url('/lesson-15-hero.webp');
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid var(--hero-border);
+  padding: 80px 0 96px;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroBand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 86% 30%, rgba(255, 176, 32, 0.26), transparent 44%),
+    radial-gradient(circle at 8% 84%, rgba(160, 130, 255, 0.14), transparent 42%);
+  pointer-events: none;
+}
+
+.heroBand::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 26px 26px;
+  pointer-events: none;
+}
+
+.heroInner { composes: container; position: relative; z-index: 1; }
+
+@media (max-width: 720px) { .heroBand { padding: 56px 0 64px; } }
+
+.heroLeft { display: flex; flex-direction: column; gap: 16px; max-width: 740px; }
+
+.heroBadgeRow { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.heroBadge {
+  align-self: flex-start;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 176, 32, 0.18);
+  color: var(--ring-target);
+  border: 1px solid rgba(255, 176, 32, 0.34);
+}
+
+.heroBadgeAlt {
+  composes: heroBadge;
+  background: var(--accent-primary-subtle);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary-border);
+}
+
+.heroTitle { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+
+.heroTitleId {
+  font-size: clamp(40px, 5.5vw, 60px);
+  font-weight: var(--fw-black);
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.heroTitleNl {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  color: rgba(255, 255, 255, 0.65);
+  font-style: italic;
+}
+
+.heroDescription {
+  font-size: var(--fs-md);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+  max-width: 640px;
+  font-weight: var(--fw-normal);
+}
+
+.heroDescription em { font-style: italic; color: #ffffff; font-weight: var(--fw-semibold); }
+
+/* ─── Editorial lede ─────────────────────────────────────────────────────── */
+
+.ledeBand { composes: band; padding: 64px 0 32px; }
+
+.ledeInner { composes: container; max-width: 920px; }
+
+.ledeQuote {
+  font-size: clamp(17px, 1.8vw, 21px);
+  font-weight: var(--fw-medium);
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.ledeQuote em {
+  font-style: italic;
+  color: var(--ring-target);
+  font-weight: var(--fw-semibold);
+}
+
+.ledeMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.ledeMeta::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  background: var(--ring-target);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ─── Audio band ─────────────────────────────────────────────────────────── */
+
+.audioBand { composes: band; padding: 0 0 8px; }
+.audioInner { composes: container; max-width: 920px; }
+
+/* ─── Main shell ─────────────────────────────────────────────────────────── */
+
+.shellBand { composes: band; padding-top: 24px; padding-bottom: 24px; }
+
+.shell {
+  composes: container;
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  min-width: 0;
+}
+
+@media (max-width: 720px) { .shell { gap: 56px; } }
+
+/* ─── Shared section header ──────────────────────────────────────────────── */
+
+.section { display: flex; flex-direction: column; }
+
+.sectionEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+  flex-wrap: wrap;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: clamp(17px, 1.5vw, 20px);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  margin: 0 0 18px;
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+  font-style: italic;
+}
+
+/* ─── Grammar — the decode machine (the spine) ───────────────────────────── */
+
+.grammarEyebrow { composes: sectionEyebrow; color: var(--mix-recall); }
+.grammarEyebrow::before { background: var(--mix-recall); }
+
+/* Concept block — the reverse method as numbered steps */
+.conceptBlock {
+  padding: 24px 26px;
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  margin-bottom: 32px;
+}
+
+.conceptTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 14px;
+  letter-spacing: -0.01em;
+}
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.steps li {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.55;
+  padding-left: 38px;
+  position: relative;
+  counter-increment: step;
+}
+
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(160, 130, 255, 0.12);
+  color: var(--mix-recall);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Plain variant (loanword note) — → bullets instead of numbers */
+.steps[data-plain='true'] { counter-reset: none; }
+.steps[data-plain='true'] li { padding-left: 22px; counter-increment: none; }
+.steps[data-plain='true'] li::before {
+  content: '→';
+  width: auto;
+  height: auto;
+  background: transparent;
+  color: var(--ring-target);
+  font-weight: var(--fw-bold);
+  top: 0;
+}
+
+/* ─── Movement caption (shared) ──────────────────────────────────────────── */
+
+.movementCaption {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.movementCaption::before {
+  content: '';
+  width: 24px;
+  height: 2px;
+  background: var(--mix-recall);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ─── Movement 1: the prefix → root-sound decode table ───────────────────── */
+
+.decodeBlock { margin-bottom: 40px; }
+
+.decodeTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-md);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+.decodeTable th {
+  text-align: left;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--mix-recall);
+  padding: 14px 18px;
+  background: rgba(160, 130, 255, 0.06);
+  border-bottom: 1px solid var(--card-border);
+}
+
+.decodeTable td {
+  padding: 14px 18px;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--card-border);
+  vertical-align: top;
+}
+
+.decodeTable tbody tr:last-child td { border-bottom: none; }
+
+.decodeTable td[data-col='1'] { color: var(--text-secondary); font-size: var(--fs-sm); line-height: 1.5; }
+
+.prefixTag {
+  display: inline-block;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.02em;
+  padding: 4px 12px;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* decode example chips — "form → root" with the root emphasised.
+ * In the TABLE column the pairs stack vertically and align in 3 columns
+ * (form | → | root) so they read cleanly top-to-bottom. */
+.decodeExamples {
+  display: grid;
+  /* fixed form column (right-aligned) so the arrows + roots land on the SAME
+   * vertical line across every row of the table, not just within one cell. */
+  grid-template-columns: 7.5em max-content max-content;
+  gap: 4px 10px;
+  align-items: baseline;
+  justify-content: start;
+}
+
+.decodeExamples .decodeChip { display: contents; }
+.decodeExamples .decodeForm { justify-self: end; text-align: right; }
+
+.decodeChip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.decodeForm {
+  font-size: var(--fs-sm);
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.decodeArrow {
+  color: var(--ring-target);
+  font-weight: var(--fw-bold);
+  flex-shrink: 0;
+}
+
+.decodeRoot {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.005em;
+}
+
+/* table → stacked cards on narrow screens */
+@media (max-width: 620px) {
+  .decodeTable, .decodeTable thead, .decodeTable tbody, .decodeTable th, .decodeTable td, .decodeTable tr { display: block; }
+  .decodeTable thead { display: none; }
+  .decodeTable tr { padding: 14px 16px; border-bottom: 1px solid var(--card-border); }
+  .decodeTable td { padding: 4px 0; border: none; }
+  .decodeTable td[data-col='0'] { margin-bottom: 4px; }
+}
+
+/* ─── Movement 2: the K·P·S·T drop-sound cards (the heart) ────────────────── */
+
+.dropBlock {
+  padding: 28px 28px 24px;
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(circle at 90% 0%, rgba(255, 176, 32, 0.10), transparent 50%),
+    var(--card-bg);
+  border: 1px solid var(--card-border);
+  margin-bottom: 40px;
+}
+
+.dropDek {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0 0 24px;
+  max-width: 66ch;
+}
+
+.dropDek strong { color: var(--text-primary); font-weight: var(--fw-bold); }
+
+.dropGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.dropCard {
+  padding: 18px 20px;
+  border-radius: var(--r-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* Single accent (gold/amber, the page theme) for all four K·P·S·T cards —
+ * the big dropped-letter glyph already distinguishes them. */
+.dropCard { --drop-accent: var(--ring-target); }
+
+.dropHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dropLetter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--drop-accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--drop-accent) 38%, transparent);
+  color: var(--drop-accent);
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-black);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.dropPrefix {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--drop-accent);
+  letter-spacing: 0.02em;
+}
+
+.dropBody {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.dropExamples {
+  display: grid;
+  /* same aligned-pair layout as the decode table: forms right-aligned, arrows
+   * and roots each on a shared vertical line (within the card). */
+  grid-template-columns: max-content max-content max-content;
+  gap: 6px 8px;
+  align-items: baseline;
+  justify-content: start;
+  padding-top: 12px;
+  border-top: 1px dashed var(--card-border);
+}
+
+.dropExamples .decodeChip { display: contents; }
+.dropExamples .decodeForm { justify-self: end; }
+
+.dropExamples .decodeArrow { color: var(--drop-accent); }
+
+.dropCaveat {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-style: italic;
+  margin: 22px 0 0;
+  padding: 14px 18px;
+  border-radius: var(--r-md);
+  background: rgba(255, 176, 32, 0.07);
+  border: 1px solid rgba(255, 176, 32, 0.20);
+}
+
+/* ─── Movement 3: loanword N.B. ──────────────────────────────────────────── */
+
+.loanNote {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 22px 24px;
+  border-radius: var(--r-lg);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.loanBadge {
+  flex-shrink: 0;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-black);
+  letter-spacing: 0.08em;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 176, 32, 0.12);
+  color: var(--ring-target);
+  border: 1px solid rgba(255, 176, 32, 0.30);
+}
+
+.loanBody { flex: 1; min-width: 0; }
+
+.loanTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  letter-spacing: -0.005em;
+}
+
+/* ─── The Indonesian narrative — the theatrical stage ────────────────────── */
+
+.narrEyebrow { composes: sectionEyebrow; color: var(--ring-target); }
+.narrEyebrow::before { background: var(--ring-target); }
+
+.narrDek {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 24px;
+  max-width: 70ch;
+  font-style: italic;
+}
+
+.narrStage {
+  position: relative;
+  padding: 32px 34px;
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(255, 176, 32, 0.14), transparent 60%),
+    linear-gradient(180deg, rgba(26, 20, 48, 0.40) 0%, var(--card-bg) 70%);
+  border: 1px solid var(--card-border);
+  overflow: hidden;
+}
+
+.narrStage::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(255, 176, 32, 0.55), transparent);
+}
+
+.narrPara {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.78;
+  margin: 0 0 18px;
+  max-width: 68ch;
+}
+
+.narrPara:last-child { margin-bottom: 0; }
+
+.narrPara[data-lead='true']::first-letter {
+  float: left;
+  font-size: 3.2em;
+  line-height: 0.82;
+  font-weight: var(--fw-black);
+  color: var(--ring-target);
+  padding: 4px 12px 0 0;
+}
+
+@media (max-width: 560px) { .narrStage { padding: 24px 20px; } }
+
+/* ─── Vocabulary ─────────────────────────────────────────────────────────── */
+
+.vocabEyebrow { composes: sectionEyebrow; color: var(--success); }
+.vocabEyebrow::before { background: var(--success); }
+
+.itemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+
+@media (min-width: 720px) { .itemGrid { grid-template-columns: repeat(3, 1fr); } }
+
+.itemChip {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 11px 15px;
+  background: rgba(50,215,75,0.05);
+  border: 1px solid rgba(50,215,75,0.18);
+  border-radius: var(--r-md);
+  transition: var(--transition-base);
+}
+
+.itemChip:hover { border-color: var(--success); transform: translateY(-1px); }
+
+.itemId {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  /* Fixed Indonesian column → dots + translations line up down each column */
+  min-width: 6em;
+}
+
+.itemSep {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--text-tertiary);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.itemNl {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Culture essay — wayang & the dalang (collapsible) ───────────────────── */
+
+.cultureEyebrow { composes: sectionEyebrow; color: var(--warning); }
+.cultureEyebrow::before { background: var(--warning); }
+
+.cultureDek {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 24px;
+  max-width: 70ch;
+  font-style: italic;
+}
+
+.cultureBody {
+  position: relative;
+  max-height: 360px;
+  overflow: hidden;
+  transition: max-height var(--transition-base);
+}
+
+.cultureBody[data-open='true'] { max-height: none; }
+
+.culturePara {
+  font-size: var(--fs-md);
+  color: var(--text-primary);
+  line-height: 1.72;
+  margin: 0 0 18px;
+  max-width: 68ch;
+}
+
+.culturePara:last-child { margin-bottom: 0; }
+
+.culturePara[data-lead='true']::first-letter {
+  float: left;
+  font-size: 3.1em;
+  line-height: 0.82;
+  font-weight: var(--fw-black);
+  color: var(--warning);
+  padding: 4px 10px 0 0;
+}
+
+.cultureFade {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 120px;
+  background: linear-gradient(180deg, transparent 0%, var(--bg-main) 92%);
+  pointer-events: none;
+}
+
+.cultureToggle {
+  align-self: flex-start;
+  margin-top: 20px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: rgba(255,149,0,0.08);
+  border: 1px solid rgba(255,149,0,0.28);
+  color: var(--warning);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.cultureToggle:hover { background: rgba(255,149,0,0.14); }
+
+/* ─── Inline play button ─────────────────────────────────────────────────── */
+
+.playButton {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition-base);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.playButton:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+}
+
+.playButton[data-playing='true'] {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-primary-glow);
+}
+
+.playButton svg { width: 10px; height: 10px; }
+
+/* ─── Closing band ───────────────────────────────────────────────────────── */
+
+.closingBand {
+  composes: band;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,229,255,0.04) 100%);
+  padding: 64px 0 96px;
+}
+
+.closingInner { composes: container; max-width: 720px; text-align: center; }
+
+.closingTitle {
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin: 0 0 12px;
+  letter-spacing: -0.015em;
+}
+
+.closingLede {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+  margin: 0 0 28px;
+  line-height: 1.65;
+}
+
+.closingActivation { display: flex; justify-content: center; margin: 0 0 28px; }
+
+.closingActivation > * {
+  width: 100%;
+  max-width: 660px;
+  text-align: left;
+  padding: 18px 22px;
+  background: var(--accent-primary-subtle);
+  border: 1px solid var(--accent-primary-border);
+  border-radius: var(--r-lg);
+}
+
+.closingActions { display: flex; justify-content: center; }
+
+.closingActions > * { width: 100%; max-width: 660px; }

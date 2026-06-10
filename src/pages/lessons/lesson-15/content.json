@@ -1,0 +1,705 @@
+{
+  "meta": {
+    "id": "1a7e6903-0d78-4eb5-b0a5-9f1c41044499",
+    "order_index": 15,
+    "title": "Les 15 - Wayang di Indonesia",
+    "level": "B1",
+    "description": "",
+    "primary_voice": "id-ID-Chirp3-HD-Despina",
+    "duration_seconds": null,
+    "lesson_audio_url": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-15.m4a"
+  },
+  "sections": [
+    {
+      "order_index": 0,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Het woord wayang is, naast de in Nederland algemeen bekende betekenis van schimmenspel, een ruimer begrip. Wayang duidt samenspel aan tussen verschillende kunsten waaronder literatuur, zang, muziek, dans en theater.",
+          "De oorsprong van het 'wayangspel' is moeilijk te traceren, maar de laatste tijd zijn er aanwijzingen dat de wayang zijn wortels heeft in Zuid-India, waar ondermeer een poppenspel wordt opgevoerd met een vergelijkbaar repertoire waarbij eveneens het rituele karakter van belang is.",
+          "Nemen we daarbij in beschouwing dat in Indonesië vele episoden uit de oorspronkelijk Indiase heldendichten \"Ramayana\" en \"Mahabharata\" een belangrijke rol spelen, dan is het waarschijnlijk dat de wayang inderdaad uit India afkomstig is.",
+          "In Indonesië heeft de wayang zich echter zelfstandig ontwikkeld, waarbij zowel het verhalenrepertoire als de uiterlijke vorm veranderingen ondergingen. De vele veranderingen hebben zich in de loop der eeuwen voornamelijk voltrokken aan de Javaanse vorstenhoven waar de oorspronkelijk in het Sanskriet geschreven teksten werden vertaald in Oud-Javaans (vanaf de 10e eeuw). Door de Javaanse hofdichters werden bovendien dikwijls delen toegevoegd waardoor de verhalen een eigen karakter kregen.",
+          "De in versmaten geschreven teksten behoren, vaak onder begeleiding van muziek (o.a. gamelan), gezongen te worden. De verhalen werden ook uitgebeeld met behulp van op doek geschilderde voorstellingen (wayang beber), opgevoerd met poppen (wayang klitik, wayang kulit, wayang golek) of uitgevoerd door mensen in dansen (wayang wong, wayang topeng).",
+          "De man die als poppenspeler optreedt tijdens een wayang kulit voorstelling heet dalang. De dalang draagt het verhaal geheel uit het hoofd voor, zorgt voor de wisseling van de scènes, geeft aanwijzingen aan de muzieksectie, manipuleert de honderden poppen, spreekt de verschillende stemmen van de wayangfiguren en is verantwoordelijk voor de inhoud en opvoering van het spel, dat vaak de hele nacht duurt.",
+          "Voor een (complete) wayangopvoering is er altijd een aanleiding: een geboorte, een besnijdenis, een bruiloft, een heuglijk feit en dergelijke. Het verhaal wordt nauwkeurig gekozen, evenals plaats en datum. Familie, vrienden en kennissen worden uitgenodigd en krijgen meer dan genoeg eten en drinken gedurende de lange sessie. Aangetrokken door de gamelanmuziek en het feestgedruis komen passanten en nieuwsgierigen kijken zodat zich al snel een menigte vormt.",
+          "Gezien de niet geringe kosten die een dergelijke vertoning met zich meebrengt bedienen enkele dalang zich tegenwoordig van cassettes in plaats van een volledig gamelanorkest van zo'n dertig tot vijftig muzikanten.",
+          "Voor toeristen zijn verkorte versies bedacht met een meer toneelmatig karakter. Op de Indonesische kunstacademies tenslotte wordt getracht de wayangvormen als 'aparte' kunstuitingen te verzelfstandigen, waarbij het sociaal-religieuze element gedeeltelijk verdwijnt."
+        ]
+      }
+    },
+    {
+      "order_index": 1,
+      "content": {
+        "type": "text",
+        "paragraphs": [
+          "Sebelum Ki Dalang Sastro mulai, panggung harus siap dulu. Dalang juga sudah memasang kelir dan lampu. Semua alat-alat lain sudah beres. Boneka wayangnya sudah ke luar dari peti dan gamelan juga sudah ada di tempatnya. Pertunjukan wayang mau mulai.",
+          "(Prak......Terotok-tok-tok. Tok! Prak-prak-prak.) \"Bumi gonjang-ganjing, langit kelap-kelap katon. Ooooo.....\" , Ki Dalang Sastro berkata dalam bahasa Jawa. Banyak penonton sudah berkumpul untuk menonton pertunjukan wayang ini.",
+          "Tetapi penonton tidak melihat terus. Kadang-kadang mereka jalan-jalan sebentar untuk membeli makanan di warung atau di pinggir jalan. Banyak tukang yang jual makanan sudah siap. Pasti laris malam ini.",
+          "\"Oooooo....\" , Ki Dalang Sastro berkata lagi.",
+          "Penonton semua datang lari-lari. Sekarang pertunjukan baru jadi bagus. Pasti Bima akan berperang dengan raksasa. Pasti perang bagus sekali karena Ki Dalang Sastro ini betul-betul baik.",
+          "\"Plak-plek.\" Bima memukul raksasa dan raksasa menendang Bima! Ramai sekali. Boneka seolah-olah melayang di depan kelir. Penyanyi wanita, 'pesinden' namanya, menyanyi lagunya dan pemain gamelan memukul alatnya. Tentu saja Bima menang dan raksasa pulang ke dalam hutan. Bima menari dan tertawa karena menang lagi dari raksasa yang jelek itu.",
+          "Penonton kembali makan dan ngobrol di warung. \"Aduh, dalang ini, baik sekali. Main wayang tidak gampang, lho! Ayo, kasih teh dan kue kepada dalang. Kasihan, selama main tidak boleh berjalan, 'kan? Jadi, bagaimana dia bisa membeli makanan? Jangan lupa rokok juga!\"",
+          "Pagi-pagi hampir semua penonton sudah pulang. Mereka harus bekerja lagi dan sebelumnya mau coba tidur dulu sebentar."
+        ]
+      }
+    },
+    {
+      "order_index": 2,
+      "content": {
+        "type": "vocabulary",
+        "items": [
+          {
+            "dutch": "materiaal / instrument",
+            "english": "tool / instrument",
+            "indonesian": "alat",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/alat-bf4e836f.mp3"
+          },
+          {
+            "dutch": "pop",
+            "english": "doll",
+            "indonesian": "boneka",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/boneka-2a4234b8.mp3"
+          },
+          {
+            "dutch": "vertoner (van wayang)",
+            "english": "wayang performer",
+            "indonesian": "dalang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/dalang-95b5f55e.mp3"
+          },
+          {
+            "dutch": "Javaans orkest",
+            "english": "Javanese orchestra",
+            "indonesian": "gamelan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/gamelan-a6862cb0.mp3"
+          },
+          {
+            "dutch": "tellen",
+            "english": "count",
+            "indonesian": "hitung",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hitung-2492b094.mp3"
+          },
+          {
+            "dutch": "bos",
+            "english": "forest",
+            "indonesian": "hutan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/hutan-4f8bbed7.mp3"
+          },
+          {
+            "dutch": "zijn / worden / dus",
+            "english": "be / become / so",
+            "indonesian": "jadi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jadi-d00e1b1f.mp3"
+          },
+          {
+            "dutch": "slecht / lelijk",
+            "english": "bad / ugly",
+            "indonesian": "jelek",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/jelek-7547ca8d.mp3"
+          },
+          {
+            "dutch": "woord",
+            "english": "word",
+            "indonesian": "kata",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kata-f3012038.mp3"
+          },
+          {
+            "dutch": "zielig",
+            "english": "pitiful",
+            "indonesian": "kasihan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kasihan-a992f4b3.mp3"
+          },
+          {
+            "dutch": "scherm voor wayangspel",
+            "english": "wayang screen",
+            "indonesian": "kelir",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kelir-ac9ea824.mp3"
+          },
+          {
+            "dutch": "titel voor wijze man",
+            "english": "title for wise man",
+            "indonesian": "Ki",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/ki-9b23e078.mp3"
+          },
+          {
+            "dutch": "koekje / taartje",
+            "english": "cookie / cake",
+            "indonesian": "kue",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kue-69aa3d69.mp3"
+          },
+          {
+            "dutch": "huid / leer",
+            "english": "skin / leather",
+            "indonesian": "kulit",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/kulit-65c0d2f9.mp3"
+          },
+          {
+            "dutch": "lied",
+            "english": "song",
+            "indonesian": "lagu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lagu-61bb62f3.mp3"
+          },
+          {
+            "dutch": "lamp",
+            "english": "lamp",
+            "indonesian": "lampu",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lampu-d51fc225.mp3"
+          },
+          {
+            "dutch": "rennen",
+            "english": "run",
+            "indonesian": "lari",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/lari-c554b68e.mp3"
+          },
+          {
+            "dutch": "gewild",
+            "english": "popular / in demand",
+            "indonesian": "laris",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/laris-b61aeb08.mp3"
+          },
+          {
+            "dutch": "zweven / vliegen",
+            "english": "float / fly",
+            "indonesian": "layang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/layang-f9074bb6.mp3"
+          },
+          {
+            "dutch": "spelen",
+            "english": "play",
+            "indonesian": "main",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/main-7a175fd1.mp3"
+          },
+          {
+            "dutch": "winnen",
+            "english": "win",
+            "indonesian": "menang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/menang-40b8afb7.mp3"
+          },
+          {
+            "dutch": "zingen",
+            "english": "sing",
+            "indonesian": "nyanyi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/nyanyi-8c823fe6.mp3"
+          },
+          {
+            "dutch": "podium",
+            "english": "stage",
+            "indonesian": "panggung",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/panggung-78762602.mp3"
+          },
+          {
+            "dutch": "de (meervoud)",
+            "english": "the (plural)",
+            "indonesian": "para",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/para-16abdc81.mp3"
+          },
+          {
+            "dutch": "aansluiten",
+            "english": "connect",
+            "indonesian": "pasang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pasang-86ce464a.mp3"
+          },
+          {
+            "dutch": "ambtenaar",
+            "english": "civil servant",
+            "indonesian": "pegawai",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pegawai-26b8ca42.mp3"
+          },
+          {
+            "dutch": "speler",
+            "english": "player",
+            "indonesian": "pemain",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pemain-71a95644.mp3"
+          },
+          {
+            "dutch": "toeschouwer",
+            "english": "spectator",
+            "indonesian": "penonton",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/penonton-afdc2e1c.mp3"
+          },
+          {
+            "dutch": "zanger / zangeres",
+            "english": "singer",
+            "indonesian": "penyanyi",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/penyanyi-7d131f9b.mp3"
+          },
+          {
+            "dutch": "strijden / oorlog",
+            "english": "fight / war",
+            "indonesian": "perang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/perang-335188fe.mp3"
+          },
+          {
+            "dutch": "vertoning",
+            "english": "performance",
+            "indonesian": "pertunjukan",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pertunjukan-08c3eeac.mp3"
+          },
+          {
+            "dutch": "Javaanse zangeres",
+            "english": "Javanese singer",
+            "indonesian": "pesinden",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/pesinden-9b8a267d.mp3"
+          },
+          {
+            "dutch": "kist",
+            "english": "chest",
+            "indonesian": "peti",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/peti-dc9fddff.mp3"
+          },
+          {
+            "dutch": "klanknabootsend woord",
+            "english": "onomatopoeia",
+            "indonesian": "plak-plek",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/plakplek-0da57cae.mp3"
+          },
+          {
+            "dutch": "snijden",
+            "english": "cut",
+            "indonesian": "potong",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/potong-8218f99b.mp3"
+          },
+          {
+            "dutch": "demon / reus",
+            "english": "demon / giant",
+            "indonesian": "raksasa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/raksasa-8fa5f069.mp3"
+          },
+          {
+            "dutch": "verlengen",
+            "english": "extend",
+            "indonesian": "sambung",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/sambung-29279670.mp3"
+          },
+          {
+            "dutch": "gedurende / zolang als",
+            "english": "during / as long as",
+            "indonesian": "selama",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/selama-9b7009ca.mp3"
+          },
+          {
+            "dutch": "net als",
+            "english": "just like",
+            "indonesian": "seolah-olah",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/seolaholah-4702539e.mp3"
+          },
+          {
+            "dutch": "gereed / klaar",
+            "english": "ready",
+            "indonesian": "siap",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/siap-2f92600f.mp3"
+          },
+          {
+            "dutch": "dansen",
+            "english": "dance",
+            "indonesian": "tari",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tari-1e70f550.mp3"
+          },
+          {
+            "dutch": "schoppen",
+            "english": "kick",
+            "indonesian": "tendang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tendang-38028421.mp3"
+          },
+          {
+            "dutch": "lachen",
+            "english": "laugh",
+            "indonesian": "tertawa",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tertawa-82f82cee.mp3"
+          },
+          {
+            "dutch": "(gaan) kijken naar",
+            "english": "watch",
+            "indonesian": "tonton",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/tonton-b1b44a61.mp3"
+          },
+          {
+            "dutch": "toneel / o.a. schimmenspel",
+            "english": "theater / shadow puppet play",
+            "indonesian": "wayang",
+            "audioUrl": "https://api.supabase.duin.home/storage/v1/object/public/indonesian-tts/tts/despina/wayang-7d4cd1a2.mp3"
+          }
+        ]
+      }
+    },
+    {
+      "order_index": 3,
+      "content": {
+        "type": "grammar",
+        "categories": [
+          {
+            "rules": [
+              "In hoofdstuk 13 zijn de regels gegeven om van een basiswoord een ME-vorm te maken. Hier doen we het omgekeerde: van een ME-vorm het basiswoord terugvinden.",
+              "Bepaal eerst welke variant van het voorvoegsel is gebruikt (me-, mem-, men-, meny- of meng-); die variant verraadt met welke klank het basiswoord begint.",
+              "Verwijder daarna het voorvoegsel en herstel zo nodig de weggevallen beginklank (K, P, S, T)."
+            ],
+            "title": "Het basiswoord terugvinden",
+            "rules_en": [
+              "Chapter 13 gave the rules for forming a ME-form from a base word. Here we do the opposite: finding the base word from a ME-form.",
+              "First determine which variant of the prefix is used (me-, mem-, men-, meny- or meng-); that variant reveals which sound the base word begins with.",
+              "Then remove the prefix and restore the dropped initial sound (K, P, S, T) if necessary."
+            ],
+            "title_en": "Finding the base word"
+          },
+          {
+            "table": [
+              [
+                "Voorvoegsel",
+                "Beginklank basiswoord",
+                "Voorbeeld → basiswoord"
+              ],
+              [
+                "me-",
+                "l, m, n, ng, ny, r, w, y (geen verandering)",
+                "melayang → layang; merasa → rasa"
+              ],
+              [
+                "mem-",
+                "b, f (blijven staan) — of p (valt weg, herstel p)",
+                "membeli → beli; memukul → pukul"
+              ],
+              [
+                "men-",
+                "c, d, j (blijven staan) — of t (valt weg, herstel t)",
+                "mencuci → cuci; menari → tari"
+              ],
+              [
+                "meny-",
+                "s (valt weg, herstel s)",
+                "menyanyi → nyanyi; menyambung → sambung"
+              ],
+              [
+                "meng-",
+                "a, e, i, o, u, g, h (blijven staan) — of k (valt weg, herstel k)",
+                "mengisi → isi; mengirim → kirim"
+              ]
+            ],
+            "title": "Schema: van voorvoegsel terug naar de beginklank"
+          },
+          {
+            "rules": [
+              "Bij mem- kan het basiswoord met b of f beginnen (blijft staan), of met p (de p is weggevallen): membayar → bayar, maar memikir → pikir.",
+              "Bij men- kan het basiswoord met c, d of j beginnen (blijft staan), of met t (de t is weggevallen): mencari → cari, maar menari → tari.",
+              "Bij meny- is de s altijd weggevallen: menyanyi → nyanyi.",
+              "Bij meng- kan het basiswoord met een klinker of g/h beginnen (blijft staan), of met k (de k is weggevallen): menggoreng → goreng, maar mengirim → kirim.",
+              "Een ME-vorm met een weggevallen klank is dus dubbelzinnig op het eerste gezicht (memasak kan van masak komen); het basiswoord en de context bepalen de juiste keuze."
+            ],
+            "title": "Let op: de wegvallende beginklank (K, P, S, T)",
+            "rules_en": [
+              "With mem- the base word can begin with b or f (unchanged), or with p (the p has been dropped): membayar → bayar, but memikir → pikir.",
+              "With men- the base word can begin with c, d or j (unchanged), or with t (the t has been dropped): mencari → cari, but menari → tari.",
+              "With meny- the s is always dropped: menyanyi → nyanyi.",
+              "With meng- the base word can begin with a vowel or g/h (unchanged), or with k (the k has been dropped): menggoreng → goreng, but mengirim → kirim.",
+              "A ME-form with a dropped sound is thus ambiguous at first glance (memasak can come from masak); the base word and context determine the correct choice."
+            ],
+            "title_en": "Note: the dropped initial sound (K, P, S, T)"
+          },
+          {
+            "rules": [
+              "Voorvoeging van ME- bij woorden die uit een andere taal zijn overgenomen (leenwoorden) geschiedt dikwijls zonder klankverandering aan het begin van het woord.",
+              "Vooral bij nieuwe technische termen moeten we met dit verschijnsel rekening houden: de beginklank valt dan niet weg, ook al zou de regel dat normaal voorschrijven."
+            ],
+            "title": "N.B.: leenwoorden",
+            "rules_en": [
+              "Addition of ME- to words borrowed from another language (loanwords) often occurs without sound changes at the beginning of the word.",
+              "Especially with new technical terms we must account for this phenomenon: the initial sound does not drop even if the rule would normally require it."
+            ],
+            "title_en": "N.B.: loanwords"
+          }
+        ],
+        "grammar_topics": [
+          "ME-vormen en basiswoorden"
+        ]
+      }
+    },
+    {
+      "order_index": 4,
+      "content": {
+        "type": "exercises",
+        "sections": [
+          {
+            "type": "grammar_drill",
+            "items": [
+              {
+                "answer": "kirim — sturen / zenden",
+                "prompt": "mengirim"
+              },
+              {
+                "answer": "beli — kopen",
+                "prompt": "membeli"
+              },
+              {
+                "answer": "tari — dansen",
+                "prompt": "menari"
+              },
+              {
+                "answer": "cuci — wassen",
+                "prompt": "mencuci"
+              },
+              {
+                "answer": "ganti — (ver)wisselen",
+                "prompt": "mengganti"
+              },
+              {
+                "answer": "pikir — denken",
+                "prompt": "memikir"
+              },
+              {
+                "answer": "tunggu — wachten",
+                "prompt": "menunggu"
+              },
+              {
+                "answer": "hitung — tellen",
+                "prompt": "menghitung"
+              },
+              {
+                "answer": "pukul — slaan",
+                "prompt": "memukul"
+              },
+              {
+                "answer": "ukir — graveren / kerven",
+                "prompt": "mengukir"
+              },
+              {
+                "answer": "potong — snijden",
+                "prompt": "memotong"
+              },
+              {
+                "answer": "tambah — toevoegen / optellen",
+                "prompt": "menambah"
+              },
+              {
+                "answer": "cari — zoeken",
+                "prompt": "mencari"
+              },
+              {
+                "answer": "minta — vragen om / verzoeken",
+                "prompt": "meminta"
+              },
+              {
+                "answer": "turun — afdalen / dalen",
+                "prompt": "menurun"
+              },
+              {
+                "answer": "sambung — verlengen / verbinden",
+                "prompt": "menyambung"
+              },
+              {
+                "answer": "ambil — nemen / pakken",
+                "prompt": "mengambil"
+              },
+              {
+                "answer": "coba — proberen",
+                "prompt": "mencoba"
+              },
+              {
+                "answer": "isi — vullen",
+                "prompt": "mengisi"
+              },
+              {
+                "answer": "loncat — springen",
+                "prompt": "meloncat"
+              },
+              {
+                "answer": "ulang — herhalen",
+                "prompt": "mengulang"
+              },
+              {
+                "answer": "buat — maken",
+                "prompt": "membuat"
+              },
+              {
+                "answer": "goreng — bakken / braden",
+                "prompt": "menggoreng"
+              },
+              {
+                "answer": "bayar — betalen",
+                "prompt": "membayar"
+              },
+              {
+                "answer": "rasa — voelen / gevoelen",
+                "prompt": "merasa"
+              },
+              {
+                "answer": "mulai — beginnen",
+                "prompt": "memulai"
+              },
+              {
+                "answer": "pesan — bestellen",
+                "prompt": "memesan"
+              },
+              {
+                "answer": "tolong — helpen",
+                "prompt": "menolong"
+              },
+              {
+                "answer": "urus — regelen / verzorgen",
+                "prompt": "mengurus"
+              },
+              {
+                "answer": "nyanyi — zingen",
+                "prompt": "menyanyi"
+              }
+            ],
+            "title": "Oefening I",
+            "instruction": "Zoek het basiswoord en vertaal."
+          },
+          {
+            "type": "conversation",
+            "title": "Oefening II",
+            "instruction": "Maak van 10 ME-vormen uit oefening I een Indonesische zin en geef de vertaling."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Hari ini saya menelepon Tina.",
+                "prompt": "1a. Vandaag heb ik Tina gebeld."
+              },
+              {
+                "answer": "Minggu ini Tina tidak ada di kantor, karena dia sakit.",
+                "prompt": "1b. Tina was deze week niet op kantoor, want ze was ziek."
+              },
+              {
+                "answer": "Dia bilang bahwa dia sakit kepala.",
+                "prompt": "1c. Ze zei dat ze hoofdpijn had."
+              },
+              {
+                "answer": "Besok dia pergi ke kantor lagi.",
+                "prompt": "1d. Morgen gaat ze weer naar kantoor."
+              },
+              {
+                "answer": "Lusa hari Lebaran.",
+                "prompt": "2a. Overmorgen is het Lebaran."
+              },
+              {
+                "answer": "Semua orang sekarang pergi ke keluarganya.",
+                "prompt": "2b. Alle mensen gaan nu naar hun familie."
+              },
+              {
+                "answer": "Sebagian naik kereta api, yang lain naik mobil atau naik bus.",
+                "prompt": "2c. Sommigen gaan met de trein, anderen gaan met de auto of met de bus."
+              },
+              {
+                "answer": "Bus dan kereta api penuh.",
+                "prompt": "2d. De bussen en treinen zijn vol."
+              },
+              {
+                "answer": "Semua orang membawa oleh-oleh.",
+                "prompt": "2e. Iedereen neemt kadootjes mee."
+              },
+              {
+                "answer": "Di belakang rumah ada pohon yang bagus yang sekarang sedang berbunga.",
+                "prompt": "3a. Achter het huis staat een mooie boom die nu in bloei staat."
+              },
+              {
+                "answer": "Bunganya merah.",
+                "prompt": "3b. De bloemen zijn rood."
+              },
+              {
+                "answer": "Apa Anda suka bunga merah?",
+                "prompt": "3c. Houdt U van rode bloemen?"
+              },
+              {
+                "answer": "Ya, tetapi di kebun saya, bunga kuning lebih bagus daripada bunga merah.",
+                "prompt": "3d. Ja, maar ik vind gele in mijn tuin mooier dan rode."
+              },
+              {
+                "answer": "Siapa yang mengunci pintu?",
+                "prompt": "4a. Wie doet de deur op slot?"
+              },
+              {
+                "answer": "Oh, saya lupa kunci saya.",
+                "prompt": "4b. Oh, ik heb mijn sleutel vergeten."
+              },
+              {
+                "answer": "Tidak apa-apa, Jan punya kunci adik saya.",
+                "prompt": "4c. Dat geeft niet, Jan heeft mijn broertjes sleutel."
+              },
+              {
+                "answer": "Jan, tutup pintunya!",
+                "prompt": "4d. Jan, doe de deur dicht!"
+              },
+              {
+                "answer": "Ayo, kita naik mobil saja.",
+                "prompt": "4e. Komaan, laten we in de auto stappen."
+              },
+              {
+                "answer": "Kita sudah terlambat setengah jam.",
+                "prompt": "4f. We zijn al een half uur te laat."
+              }
+            ],
+            "title": "Oefening III",
+            "instruction": "Vertaal in het Indonesisch."
+          },
+          {
+            "type": "translation",
+            "items": [
+              {
+                "answer": "Waar ga je heen?",
+                "prompt": "Mau ke mana?"
+              },
+              {
+                "answer": "Wil je naar de stad?",
+                "prompt": "Apa kamu mau ke kota?"
+              },
+              {
+                "answer": "Als dat zo is, wil ik mee.",
+                "prompt": "Kalau begitu, saya mau ikut."
+              },
+              {
+                "answer": "Ik moet ook boodschappen doen.",
+                "prompt": "Saya juga harus berbelanja."
+              },
+              {
+                "answer": "Alle spullen zijn al op.",
+                "prompt": "Semua barang sudah habis."
+              },
+              {
+                "answer": "Net zocht ik een tas, maar die was er niet.",
+                "prompt": "Tadi saya mencari tas, tetapi tidak ada."
+              },
+              {
+                "answer": "Misschien heeft Tina hem meegenomen naar Bogor.",
+                "prompt": "Mungkin Tina membawanya ke Bogor."
+              },
+              {
+                "answer": "Vanmorgen is ze voor twee dagen vertrokken, toch?",
+                "prompt": "Tadi pagi dia berangkat untuk dua hari, 'kan?"
+              },
+              {
+                "answer": "Kom, laten we gewoon met de fiets gaan.",
+                "prompt": "Mari, kita naik sepeda saja."
+              },
+              {
+                "answer": "Kom, laten we nu maar vertrekken, zodat we straks vóór het avondeten thuis zijn.",
+                "prompt": "Ayo, kita berangkat sekarang saja, biar kita pulang nanti sebelum makan malam."
+              }
+            ],
+            "title": "Oefening IV",
+            "instruction": "Vertaal in het Nederlands."
+          }
+        ]
+      }
+    }
+  ],
+  "runtime_components": {
+    "ActivationGate": {
+      "import": "import { ActivationGate } from '@/components/lessons/ActivationGate'",
+      "usage": "<ActivationGate lessonId=\"1a7e6903-0d78-4eb5-b0a5-9f1c41044499\" />",
+      "purpose": "The user-controlled checkbox that adds this lesson's capabilities to spaced review.",
+      "placement": "Anywhere on the page. Conventionally near the top so it's visible before scrolling."
+    },
+    "LessonAudioPlayer": {
+      "import": "import { LessonAudioPlayer } from '@/components/lessons/LessonAudioPlayer'",
+      "usage": "<LessonAudioPlayer src=\"https://api.supabase.duin.home/storage/v1/object/public/indonesian-lessons/lessons/lesson-15.m4a\" voice=\"id-ID-Chirp3-HD-Despina\" />",
+      "purpose": "The lesson-level explanation/overview audio player.",
+      "placement": "Anywhere on the page. Conventionally near the top or in a sidebar."
+    },
+    "PracticeActions": {
+      "import": "import { PracticeActions } from '@/components/lessons/PracticeActions'",
+      "usage": "<PracticeActions lessonId=\"1a7e6903-0d78-4eb5-b0a5-9f1c41044499\" />",
+      "purpose": "Wired to runtime capability counts; renders \"Practice this lesson · N ready\" and \"Review this lesson\" CTAs.",
+      "placement": "Anywhere on the page. Conventionally pinned to a sidebar or near the bottom as a conclusion CTA."
+    }
+  }
+}

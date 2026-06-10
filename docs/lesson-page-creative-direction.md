@@ -171,7 +171,9 @@ Within the grid, **align the columns into a table, not a ragged flex-wrap**: giv
 
 **Grammar examples sit *below* the explanation, never beside it** — rules first, then the example grid under a dashed top rule.
 
-(Established on lesson 13, 2026-06 — supersedes any "examples in a right-hand column" guidance below.)
+**Every `X → Y` example pair must align — EVERYWHERE it appears (standing preference, non-negotiable).** Wherever an arrow pair shows up — the grammar example grid, a decode/schema **table column**, a per-card example list (e.g. K·P·S·T sound cards), a nota-bene aside, anywhere — render it as a **3-track grid (`left  →  right`)** with the **left term right-aligned** so that **all the `→` arrows sit on one vertical line and all the right-hand terms (roots/derived forms) sit on another.** Implementation: `display:grid` on the pair container, `display:contents` on each pair wrapper so its `left / arrow / right` spans become grid items, and `justify-self:end` on the left term. **Watch the cross-row case:** when each row/cell is its *own* grid (e.g. one per table row), give the left column a **fixed width** (not `max-content`) so the arrows line up across the whole column, not just within a single cell. Ragged, per-line-varying arrow positions are a visual defect, not an acceptable outlier.
+
+(Established on lesson 13, 2026-06; the align-everywhere rule added on lesson 15, 2026-06 after the decode table + drop cards shipped with ragged, per-row arrow positions. Supersedes any "examples in a right-hand column" guidance below.)
 
 ### Pronunciation showcase — `type: "text"` with `examples[] + spelling[]`
 

@@ -1,0 +1,125 @@
+{
+  "lesson": 15,
+  "revision": 1,
+  "reviewedAt": "2026-06-10T00:00:00Z",
+  "status": "needs_revision",
+  "issues": [
+    {
+      "severity": "CRITICAL",
+      "file": "candidates.ts",
+      "item": "cloze_mcq #4 (l15-me-prefix-root-recovery)",
+      "issue": "options-substring-duplicate (lint-staging rule): option 'menonton' is a whole-word prefix of option 'menontonkan' — \"menontonkan\".includes(\"menonton\") is true. The slug is not in the substring-contrast allowlist, so the linter flags this CRITICAL and exits non-zero, blocking publish.",
+      "fix": "Replace 'menontonkan' with a distractor that is not a substring of the answer. For a verb-form ME- contrast, a non-prefix wrong form such as 'ditonton' is already present; swap 'menontonkan' for a different real distractor (e.g. another lesson verb form like 'menari' or the bare alternative 'ditonton' kept and 'menontonkan' replaced by 'nonton')."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "cloze_mcq #4 (l15-me-prefix-root-recovery)",
+      "issue": "distractors-all-morphological-variants (lint-staging rule): all three distractors (menontonkan, tonton, ditonton) strip to the same root 'tonton' as the answer 'menonton'. For a content-word slot this is a thin distractor set; for a form-recognition blank it is the intended design, but combined with the substring CRITICAL above the set needs rework anyway.",
+      "fix": "When fixing the substring CRITICAL, introduce at least one distractor built on a different root (another lesson verb) so the set isn't entirely tonton-forms."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "contrast_pair #1 (l15-me-prefix-root-recovery) — explanationText",
+      "issue": "The explanation teaches a factually WRONG rule. 'menyanyi' is me- + nyanyi (base already begins with 'ny'); there is NO elided 's'. The text claims 'de prefix meny- wijst erop dat het basiswoord begint met s' and invents a non-word 'sanyi' to negate — exactly the trap the pattern-brief itself warns about (menyanyi is the coincidental case where the base IS nyanyi). This will mis-teach the meny-/s-elision rule.",
+      "fix": "Rewrite: 'menyanyi' = me- + 'nyanyi' (base begins with ny, no elision). Pick a genuine meny-/s-elision item for this slot instead (e.g. menyapu -> sapu, menyambung -> sambung) so the elided-s point is actually demonstrated."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "contrast_pair #1 (l15-me-prefix-root-recovery) — distractor quality",
+      "issue": "Distractor 'sanyi' is a non-word, trivially distinguishable from 'nyanyi'. It is not the error a Dutch learner would actually make when recovering the base of menyanyi.",
+      "fix": "Use a plausible wrong base a learner would over-restore (the whole point of meny-): e.g. for a real elision item menyapu, contrast base 'sapu' (correct) vs 'nyapu' (the naive mis-read)."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "contrast_pair #1 and #5 — option ids",
+      "issue": "option-id-not-text (lint-staging rule, WARNING): option ids are 'cp-a'/'cp-b' instead of equalling option.text. Runtime tolerates this (options normalise to text), so it does not block publish, but the convention is id === text.",
+      "fix": "Set each option.id to its own Indonesian text (e.g. id 'nyanyi' / 'sanyi')."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "cloze_mcq #4 and #8 — explanationText",
+      "issue": "Both explanations contain unedited thinking-out-loud artifacts ('...wacht: men- wordt gebruikt...' in #4; 'Wacht — hier valt de P inderdaad weg...' in #8). These are draft self-corrections, not clean teaching text, and read as authoring errors to the learner.",
+      "fix": "Remove the 'wacht/Wacht' interjections and state the rule cleanly in one pass (e.g. #4: 'men- + tonton -> menonton; de t valt weg.')."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "sentence_transformation #6 (l15-me-prefix-loanword-no-nasalization)",
+      "issue": "Two problems. (1) The candidate is filed under the LOANWORD pattern but its own instruction and explanation state 'tonton' is a gewoon (native) woord and apply the native Les-13 rule — it tests the native rule, not the loanword exception it is attached to. (2) The sourceSentence presents 'men-tonton', a hyphenated non-word, as if it were Indonesian.",
+      "fix": "Either re-file this under l15-me-prefix-root-recovery (where the native rule belongs), or rebuild it around an actual loanword (memproses/memprogram/mensponsori) to genuinely exercise the no-nasalization pattern. Replace the 'men-tonton' pseudo-form with a clean prompt."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "contrast_pair #5 (l15-me-prefix-loanword-no-nasalization) — prompt + distractor",
+      "issue": "promptText quotes the full Dutch meaning ('De dalang speelt (bespeelt) de gamelan.') and the only wrong option 'memaingkan' is a non-word (an invented extra -g-). The choice is trivially distinguishable and is not a real Dutch-speaker error. It also does not exercise the loanword no-nasalization point at all ('main' is native; the explanation admits 'hier is geen leenwoord in het spel').",
+      "fix": "Rebuild around a real loanword contrast that the pattern is about, e.g. 'memproses' (correct) vs 'memroses' (the over-applied native elision) — that IS the error and IS the pattern. Keep targetMeaning a short gloss, not a restatement of the prompt."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "loanword-pattern candidates #5–#8 — unknown vocabulary",
+      "issue": "The loanword pattern necessarily uses words present in NO lesson pool (current or prior): 'teknisi', 'program'/'memprogram', 'komputer', 'proses'/'memproses', 'sponsor'/'mensponsori', 'musik', 'parkir', 'transfer', 'test', plus 'gembira', 'semalam', 'indah', 'dimulai', 'keputusan', 'perusahaan', 'data', 'sebelum'. Verified against the live published learning_items pool. The capability gate does not hard-block grammar-payload tokens, so these will publish, but the learner meets the loanword exercises with no vocabulary backing.",
+      "fix": "Constrain the loanword examples to the handful of loanwords the lesson actually introduces, or add the core technical loanwords (proses, program, komputer) to the lesson vocabulary so the exercises rest on known words. At minimum keep the surrounding sentence frame within known vocab (avoid gembira/semalam/indah/dimulai/keputusan/perusahaan when a known word exists)."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "both grammar patterns — candidate count",
+      "issue": "too-few-candidates (lint-staging rule): each pattern has exactly 4 candidates (one per required type); the linter target is 10, minimum 8, so both patterns flag '4 candidates (target: 10, minimum: 8)'. Production-heavy types (sentence_transformation, constrained_translation) are under-supplied for FSRS productive-promotion.",
+      "fix": "Expand each pattern toward ~10 candidates, weighted to production (more sentence_transformation + constrained_translation)."
+    },
+    {
+      "severity": "WARNING",
+      "file": "candidates.ts",
+      "item": "grammar explanationText length (CS13 verbose, applies at publish)",
+      "issue": "Several explanationText fields exceed the CS13 soft cap (220 chars) and will surface verbose-explanation WARNINGs at publish: contrast_pair #1 (~600 chars), contrast_pair #5 (~380), sentence_transformation #6 (~330), cloze_mcq #4 (~470), constrained_translation #7 (~330), cloze_mcq #8 (~360). Long explanations teach worse than one or two terse sentences.",
+      "fix": "Trim each to one or two sentences stating the rule and the contrast; drop the meta-commentary."
+    },
+    {
+      "severity": "WARNING",
+      "file": "index.ts / vocab-enrichments.ts",
+      "item": "vocab-enrichments wiring (informational)",
+      "issue": "vocab-enrichments.ts is well-formed (45 entries, 3 distractor arrays each, no distractor equals its answer after the in-file .filter() guards, lengths correct). However the live distractor system selects deterministically from the cumulative pool (capability-stage/vocabulary/selectDistractors.ts), and index.ts does not export vocabEnrichments. The curated arrays appear to be unconsumed by the publish path — this is a pipeline-wiring question outside review scope, flagged so the admin is aware the curated sets may not reach the DB.",
+      "fix": "Confirm whether vocab-enrichments.ts is read by the capability stage; if not, either wire it or treat it as documentation only. No content change required for publish."
+    }
+  ],
+  "summary": {
+    "total": 12,
+    "critical": 1,
+    "warning": 11
+  },
+  "counts": {
+    "grammar_patterns": 2,
+    "learning_items_total": 45,
+    "cloze_contexts_vocab": 0,
+    "cloze_contexts_dialogue": 0,
+    "cloze_skips_dialogue": 0,
+    "candidates_total": 8,
+    "candidates_by_type": {
+      "contrast_pair": 2,
+      "sentence_transformation": 2,
+      "constrained_translation": 2,
+      "cloze_mcq": 2
+    },
+    "vocab_enrichments": 45
+  },
+  "checks": {
+    "lesson_ts_structure": "PASS — grammar section has 4 categories (rules + a decode table, none empty); exercises section has 4 sub-sections; Oef I (grammar_drill) and Oef III/IV (translation) items all have populated answer fields; Oef II is type 'conversation' (open, answer not required).",
+    "grammar_patterns_fields": "PASS — both patterns have pattern_name, description, slug (kebab-case), complexity_score in range (7, 6), confusion_group 'me-di-voice'.",
+    "slug_uniqueness_staging": "PASS — l15-me-prefix-root-recovery and l15-me-prefix-loanword-no-nasalization appear only in lesson-15; no collision with L13/L14 me- slugs.",
+    "slug_uniqueness_db": "PASS — neither L15 slug exists in indonesian.grammar_patterns (queried live; L13/L14 me- slugs are all distinct prefixes).",
+    "candidate_payloads": "PASS on required-field presence and array lengths (contrast_pair=2, cloze_mcq=4) for all 8 candidates; all grammar_pattern_slug / requiredTargetPattern references resolve to the two local patterns; no speaking candidates. FAIL on one cloze_mcq substring-duplicate (CRITICAL above).",
+    "contrast_pair_option_ids": "WARNING — ids are cp-a/cp-b (convention id===text violated; runtime tolerant). correctOptionId matches an option.id in both contrast_pairs, so answers register.",
+    "dialogue_cloze_quality": "N/A — lesson 15 has no dialogue section; cloze-contexts.ts is correctly empty (clozeContexts = []). Not flagged.",
+    "cloze_skips_validity": "N/A — no clozeSkips (no dialogue).",
+    "cloze_context_coverage": "N/A — vocab cloze is dialogue-only / writer retired (Slice 5b); the empty cloze file is correct for a no-dialogue lesson and is not a defect.",
+    "pattern_brief_integrity": "PASS — both brief slugs match grammar-patterns.ts; vocabulary_pool non-empty and every entry has item_type; each pattern has research_notes and >=3 example_sentences.",
+    "vocab_enrichments_coverage": "PASS (content) — all 45 learning items have an entry; each has 3 recognition_distractors_nl, 3 cued_recall_distractors_id, 3 cloze_distractors_id (in-file .filter() guards keep the answer out of its own set); no distractor equals its answer; no in-array duplicates. Wiring-into-publish noted as a separate WARNING (likely unconsumed)."
+  }
+}

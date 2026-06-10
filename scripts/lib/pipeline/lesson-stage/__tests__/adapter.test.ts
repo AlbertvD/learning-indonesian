@@ -3,7 +3,41 @@ import {
   upsertLesson,
   upsertLessonSections,
   fetchExistingAudioClips,
+  cleanSectionDisplayContent,
 } from '../adapter'
+
+describe('cleanSectionDisplayContent', () => {
+  it('strips orthographic parentheticals from display vocab items (so they do not leak into the reader)', () => {
+    const out = cleanSectionDisplayContent({
+      type: 'vocabulary',
+      items: [
+        { indonesian: 'boneka (bonéka)', dutch: 'pop' },
+        { indonesian: 'kue (kué)', dutch: 'koekje' },
+        { indonesian: 'rupiah (Rp)', dutch: 'rupiah' },
+        { indonesian: 'dalang', dutch: 'vertoner' },
+      ],
+    })
+    expect((out.items as Array<{ indonesian: string }>).map((i) => i.indonesian)).toEqual([
+      'boneka',
+      'kue',
+      'rupiah',
+      'dalang',
+    ])
+  })
+
+  it('leaves non-item section content untouched (referential identity)', () => {
+    const grammar = { type: 'grammar', categories: [{ title: 'X', rules: ['a'] }] }
+    expect(cleanSectionDisplayContent(grammar)).toBe(grammar)
+    const text = { type: 'text', paragraphs: ['Boneka (bonéka) ...'] }
+    expect(cleanSectionDisplayContent(text)).toBe(text)
+  })
+
+  it('also cleans expressions sections, and tolerates a section with no items', () => {
+    expect(cleanSectionDisplayContent({ type: 'expressions', items: [{ indonesian: 'cek (cèk)' }] }))
+      .toEqual({ type: 'expressions', items: [{ indonesian: 'cek' }] })
+    expect(cleanSectionDisplayContent({ type: 'vocabulary' })).toEqual({ type: 'vocabulary' })
+  })
+})
 
 interface UpsertCall {
   table: string
