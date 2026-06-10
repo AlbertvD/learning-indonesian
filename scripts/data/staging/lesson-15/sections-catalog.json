@@ -1,0 +1,320 @@
+{
+  "lesson": 15,
+  "generatedAt": "2026-06-10T12:22:52.170Z",
+  "sourcePages": 5,
+  "lessonMeta": {
+    "title": "Les 15 - Wayang di Indonesia",
+    "level": "A1",
+    "module_id": "module-1",
+    "order_index": 15
+  },
+  "sections": [
+    {
+      "id": 0,
+      "type": "text",
+      "title": "Cultuur - Wayang",
+      "source_pages": [
+        1,
+        2
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Het woord wayang is, naast de in Nederland algemeen bekende betekenis van schimmenspel, een ruimer begrip. Wayang duidt samenspel aan tussen verschillende kunsten waaronder literatuur, zang, muziek, dans en theater.",
+        "De oorsprong van het 'wayangspel' is moeilijk te traceren, maar de laatste tijd zijn er aanwijzingen dat de wayang zijn wortels heeft in Zuid-India, waar ondermeer een poppenspel wordt opgevoerd met een vergelijkbaar repertoire waarbij eveneens het rituele karakter van belang is.",
+        "Nemen we daarbij in beschouwing dat in Indonesië vele episoden uit de oorspronkelijk Indiase heldendichten \"Ramayana\" en \"Mahabharata\" een belangrijke rol spelen, dan is het waarschijnlijk dat de wayang inderdaad uit India afkomstig is.",
+        "In Indonesië heeft de wayang zich echter zelfstandig ontwikkeld, waarbij zowel het verhalenrepertoire als de uiterlijke vorm veranderingen ondergingen. De vele veranderingen hebben zich in de loop der eeuwen voornamelijk voltrokken aan de Javaanse vorstenhoven waar de oorspronkelijk in het Sanskriet geschreven teksten werden vertaald in Oud-Javaans (vanaf de 10e eeuw). Door de Javaanse hofdichters werden bovendien dikwijls delen toegevoegd waardoor de verhalen een eigen karakter kregen.",
+        "De in versmaten geschreven teksten behoren, vaak onder begeleiding van muziek (o.a. gamelan), gezongen te worden. De verhalen werden ook uitgebeeld met behulp van op doek geschilderde voorstellingen (wayang beber), opgevoerd met poppen (wayang klitik, wayang kulit, wayang golek) of uitgevoerd door mensen in dansen (wayang wong, wayang topeng).",
+        "De man die als poppenspeler optreedt tijdens een wayang kulit voorstelling heet dalang. De dalang draagt het verhaal geheel uit het hoofd voor, zorgt voor de wisseling van de scènes, geeft aanwijzingen aan de muzieksectie, manipuleert de honderden poppen, spreekt de verschillende stemmen van de wayangfiguren en is verantwoordelijk voor de inhoud en opvoering van het spel, dat vaak de hele nacht duurt.",
+        "Voor een (complete) wayangopvoering is er altijd een aanleiding: een geboorte, een besnijdenis, een bruiloft, een heuglijk feit en dergelijke. Het verhaal wordt nauwkeurig gekozen, evenals plaats en datum. Familie, vrienden en kennissen worden uitgenodigd en krijgen meer dan genoeg eten en drinken gedurende de lange sessie. Aangetrokken door de gamelanmuziek en het feestgedruis komen passanten en nieuwsgierigen kijken zodat zich al snel een menigte vormt.",
+        "Gezien de niet geringe kosten die een dergelijke vertoning met zich meebrengt bedienen enkele dalang zich tegenwoordig van cassettes in plaats van een volledig gamelanorkest van zo'n dertig tot vijftig muzikanten.",
+        "Voor toeristen zijn verkorte versies bedacht met een meer toneelmatig karakter. Op de Indonesische kunstacademies tenslotte wordt getracht de wayangvormen als 'aparte' kunstuitingen te verzelfstandigen, waarbij het sociaal-religieuze element gedeeltelijk verdwijnt."
+      ]
+    },
+    {
+      "id": 1,
+      "type": "text",
+      "title": "Wayang di Indonesia",
+      "source_pages": [
+        3
+      ],
+      "confidence": "high",
+      "paragraphs": [
+        "Sebelum Ki Dalang Sastro mulai, panggung harus siap dulu. Dalang juga sudah memasang kelir dan lampu. Semua alat-alat lain sudah beres. Boneka wayangnya sudah ke luar dari peti dan gamelan juga sudah ada di tempatnya. Pertunjukan wayang mau mulai.",
+        "(Prak......Terotok-tok-tok. Tok! Prak-prak-prak.) \"Bumi gonjang-ganjing, langit kelap-kelap katon. Ooooo.....\" , Ki Dalang Sastro berkata dalam bahasa Jawa. Banyak penonton sudah berkumpul untuk menonton pertunjukan wayang ini.",
+        "Tetapi penonton tidak melihat terus. Kadang-kadang mereka jalan-jalan sebentar untuk membeli makanan di warung atau di pinggir jalan. Banyak tukang yang jual makanan sudah siap. Pasti laris malam ini.",
+        "\"Oooooo....\" , Ki Dalang Sastro berkata lagi.",
+        "Penonton semua datang lari-lari. Sekarang pertunjukan baru jadi bagus. Pasti Bima akan berperang dengan raksasa. Pasti perang bagus sekali karena Ki Dalang Sastro ini betul-betul baik.",
+        "\"Plak-plek.\" Bima memukul raksasa dan raksasa menendang Bima! Ramai sekali. Boneka seolah-olah melayang di depan kelir. Penyanyi wanita, 'pesinden' namanya, menyanyi lagunya dan pemain gamelan memukul alatnya. Tentu saja Bima menang dan raksasa pulang ke dalam hutan. Bima menari dan tertawa karena menang lagi dari raksasa yang jelek itu.",
+        "Penonton kembali makan dan ngobrol di warung. \"Aduh, dalang ini, baik sekali. Main wayang tidak gampang, lho! Ayo, kasih teh dan kue kepada dalang. Kasihan, selama main tidak boleh berjalan, 'kan? Jadi, bagaimana dia bisa membeli makanan? Jangan lupa rokok juga!\"",
+        "Pagi-pagi hampir semua penonton sudah pulang. Mereka harus bekerja lagi dan sebelumnya mau coba tidur dulu sebentar."
+      ]
+    },
+    {
+      "id": 2,
+      "type": "vocabulary",
+      "title": "Woordenlijst",
+      "source_pages": [
+        4
+      ],
+      "confidence": "high",
+      "items": [
+        {
+          "indonesian": "alat",
+          "dutch": "materiaal / instrument",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "boneka (bonéka)",
+          "dutch": "pop",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "dalang",
+          "dutch": "vertoner (van wayang)",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "gamelan",
+          "dutch": "Javaans orkest",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "hitung",
+          "dutch": "tellen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "hutan",
+          "dutch": "bos",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "jadi",
+          "dutch": "zijn / worden / dus",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "jelek (jelèk)",
+          "dutch": "slecht / lelijk",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kata",
+          "dutch": "woord",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kasihan",
+          "dutch": "zielig",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "kelir",
+          "dutch": "scherm voor wayangspel",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "Ki",
+          "dutch": "titel voor wijze man",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kue (kué)",
+          "dutch": "koekje / taartje",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "kulit",
+          "dutch": "huid / leer",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lagu",
+          "dutch": "lied",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lampu",
+          "dutch": "lamp",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "lari",
+          "dutch": "rennen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "laris",
+          "dutch": "gewild",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "layang",
+          "dutch": "zweven / vliegen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "main",
+          "dutch": "spelen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "menang",
+          "dutch": "winnen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "nyanyi",
+          "dutch": "zingen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "panggung",
+          "dutch": "podium",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "para",
+          "dutch": "de (meervoud)",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "pasang",
+          "dutch": "aansluiten",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "pegawai",
+          "dutch": "ambtenaar",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pemain",
+          "dutch": "speler",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "penonton",
+          "dutch": "toeschouwer",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "penyanyi",
+          "dutch": "zanger / zangeres",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "perang",
+          "dutch": "strijden / oorlog",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "pertunjukan",
+          "dutch": "vertoning",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "pesinden (pesindèn)",
+          "dutch": "Javaanse zangeres",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "peti",
+          "dutch": "kist",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "plak-plek",
+          "dutch": "klanknabootsend woord",
+          "pos": "particle"
+        },
+        {
+          "indonesian": "potong",
+          "dutch": "snijden",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "raksasa",
+          "dutch": "demon / reus",
+          "pos": "noun"
+        },
+        {
+          "indonesian": "sambung",
+          "dutch": "verlengen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "selama",
+          "dutch": "gedurende / zolang als",
+          "pos": "preposition"
+        },
+        {
+          "indonesian": "seolah-olah",
+          "dutch": "net als",
+          "pos": "adverb"
+        },
+        {
+          "indonesian": "siap",
+          "dutch": "gereed / klaar",
+          "pos": "adjective"
+        },
+        {
+          "indonesian": "tari",
+          "dutch": "dansen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "tendang",
+          "dutch": "schoppen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "tertawa",
+          "dutch": "lachen",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "tonton",
+          "dutch": "(gaan) kijken naar",
+          "pos": "verb"
+        },
+        {
+          "indonesian": "wayang",
+          "dutch": "toneel / o.a. schimmenspel",
+          "pos": "noun"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "grammar",
+      "title": "Grammatica - Het terugvinden van het basiswoord bij ME- vorm",
+      "source_pages": [
+        4
+      ],
+      "confidence": "high",
+      "raw_text": "Het terugvinden van het basiswoord bij ME- vorm\n\nIn hoofdstuk 13 zijn de regels gegeven om van een basiswoord een ME- vorm te maken. Op de volgende pagina is een schema weergegeven dat kan dienen als hulpmiddel bij het terugvinden van een basiswoord dat met ME- is voorgevoegd.\n\nN.B.: leenwoorden\nVoorvoeging van ME- bij woorden die uit een andere taal zijn overgenomen (leenwoorden) geschiedt dikwijls zonder klankverandering aan het begin van het woord. Vooral bij nieuwe technische termen moeten we met dit verschijnsel rekening houden."
+    },
+    {
+      "id": 4,
+      "type": "exercises",
+      "title": "OEFENINGEN",
+      "source_pages": [
+        5
+      ],
+      "confidence": "high",
+      "raw_text": "Oefening I. Zoek het basiswoord en vertaal.\n\n1. mengirim\t11. memotong\t21. mengulang\n2. membeli\t12. menambah\t22. membuat\n3. menari\t13. mencari\t23. menggoreng\n4. mencuci\t14. meminta\t24. membayar\n5. mengganti\t15. menurun\t25. merasa\n6. memikir\t16. menyambung\t26. memulai\n7. menunggu\t17. mengambil\t27. memesan\n8. menghitung\t18. mencoba\t28. menolong\n9. memukul\t19. mengisi\t29. mengurus\n10. mengukir\t20. meloncat\t30. menyanyi\n\nOefening II. Maak van 10 ME- vormen uit oefening I een Indonesische zin en geef de vertaling.\n\nOefening III. Vertaal in het Indonesisch.\n\n1a. Vandaag heb ik Tina gebeld. b. Tina was deze week niet op kantoor, want ze was ziek. c. Ze zei dat ze hoofdpijn had. d. Morgen gaat ze weer naar kantoor.\n\n2a. Overmorgen is het Lebaran. b. Alle mensen gaan nu naar hun familie. c. Sommigen gaan met de trein, anderen gaan met de auto of met de bus. d. De bussen en treinen zijn vol. e. Iedereen neemt kadootjes mee.\n\n3a. Achter het huis staat een mooie boom die nu in bloei staat. b. De bloemen zijn rood. c. Houdt U van rode bloemen? d. Ja, maar ik vind gele in mijn tuin mooier dan rode.\n\n4a. Wie doet de deur op slot? b. Oh, ik heb mijn sleutel vergeten. c. Dat geeft niet, Jan heeft mijn broertjes sleutel. d. Jan, doe de deur dicht! e. Komaan laten we in de auto stappen. f. We zijn al een half uur te laat.\n\nOefening IV. Vertaal in het Nederlands.\n\n1. Mau ke mana?\n2. Apa kamu mau ke kota?\n3. Kalau begitu, saya mau ikut\n4. Saya juga harus berbelanja\n5. Semua barang sudah habis\n6. Tadi saya mencari tas, tetapi tidak ada\n7. Mungkin Tina membawanya ke Bogor\n8. Tadi pagi dia berangkat untuk dua hari, 'kan?\n9. Mari, kita naik sepeda saja\n10. Ayo, kita berangkat sekarang saja, biar kita pulang nanti sebelum makan malam"
+    }
+  ],
+  "flags": [
+    "OCR page 1 was missing the introductory sentence of the Cultuur section; recovered from image IMG_1533.jpg: 'Het woord wayang is, naast de in Nederland algemeen bekende betekenis van schimmenspel, een ruimer begrip.'",
+    "OCR page 1 was missing the full list of wayang types at the end; recovered from image IMG_1533.jpg: '(wayang beber), opgevoerd met poppen (wayang klitik, wayang kulit, wayang golek) of uitgevoerd door mensen in dansen (wayang wong, wayang topeng).'",
+    "OCR page 2 last paragraph was truncated; recovered from image IMG_1534.jpg: full ending 'waarbij het sociaal-religieuze element gedeeltelijk verdwijnt.'",
+    "OCR page 3 was missing the opening sentence detail; recovered from image IMG_1535.jpg: 'Dalang juga sudah memasang kelir dan lampu. Semua alat-alat lain sudah beres. Boneka wayangnya sudah ke luar dari peti...'",
+    "OCR page 3 was missing the final paragraph; recovered from image IMG_1535.jpg: 'Pagi-pagi hampir semua penonton sudah pulang. Mereka harus bekerja lagi dan sebelumnya mau coba tidur dulu sebentar.'",
+    "OCR page 4 vocabulary was partially garbled; vocabulary items corrected and completed from image IMG_1536.jpg including: 'para = de (meervoud)', 'pegawai = ambtenaar', 'pemain = speler', 'penonton = toeschouwer', 'penyanyi = zanger, zangeres', 'perang = strijden; oorlog', 'sambung = verlengen'",
+    "Grammar section note (N.B.: leenwoorden) recovered from image IMG_1536.jpg, not present in OCR text",
+    "OCR page 5 exercise I items 21-30 were partially missing; completed from image IMG_1537.jpg"
+  ],
+  "sourceImages": 5
+}
