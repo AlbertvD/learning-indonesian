@@ -7,6 +7,8 @@ import {
 } from '@/components/page/primitives'
 import { useProgressData } from '@/hooks/useProgressData'
 import { useT } from '@/hooks/useT'
+import { useAuthStore } from '@/stores/authStore'
+import { PracticeTimeCard } from '@/components/progress/PracticeTimeCard'
 import { MemoryHealthHero } from '@/components/progress/MemoryHealthHero'
 import { MasteryFunnel } from '@/components/progress/MasteryFunnel'
 import { VulnerableItemsList } from '@/components/progress/VulnerableItemsList'
@@ -17,6 +19,7 @@ import classes from './Progress.module.css'
 export function Progress() {
   const data = useProgressData()
   const T = useT()
+  const user = useAuthStore((state) => state.user)
 
   if (data.wave1Loading) {
     return (
@@ -35,6 +38,15 @@ export function Progress() {
           title={T.progress.pageTitle}
           subtitle={T.progress.pageSubtitle}
         />
+
+        {user && (
+          <section className={classes.section}>
+            <PracticeTimeCard
+              userId={user.id}
+              timezone={Intl.DateTimeFormat().resolvedOptions().timeZone}
+            />
+          </section>
+        )}
 
         <section className={classes.section}>
           <MemoryHealthHero

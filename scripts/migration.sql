@@ -254,6 +254,11 @@ ALTER TABLE indonesian.learning_sessions DROP CONSTRAINT IF EXISTS learning_sess
 ALTER TABLE indonesian.learning_sessions ADD CONSTRAINT learning_sessions_session_type_check
   CHECK (session_type IN ('lesson', 'learning', 'podcast', 'practice'));
 
+-- Practice Time analytics (#206): get_practice_time aggregates learning_sessions
+-- by (user_id, started_at) on the request path. Only the PK existed before.
+CREATE INDEX IF NOT EXISTS ls_user_started_idx
+  ON indonesian.learning_sessions(user_id, started_at);
+
 -- Drop stale exercise_type CHECK constraint from review_events (constraint name from original migration)
 ALTER TABLE indonesian.review_events DROP CONSTRAINT IF EXISTS review_events_exercise_type_check;
 
@@ -2067,6 +2072,39 @@ language sql stable security invoker as $$
 $$;
 
 grant execute on function indonesian.get_lessons_overview(uuid) to authenticated;
+
+-- ============================================================
+-- Practice Time (#206) — Learner Progress Axis 1, analytics.engagement
+-- ============================================================
+-- Exercises-only weekly practice minutes (CONTEXT.md → Practice Time): only the
+-- capability/review path writes learning_sessions, so reading/podcast time is
+-- excluded by construction. duration_seconds = first→last answer elapsed.
+-- Calendar week resets Monday (date_trunc('week') is Monday-based). Returns json
+-- so Slice 2 (#207) can add streak / minutes-per-day fields without changing the
+-- RPC signature. SECURITY INVOKER + RLS owner-scoping, matching the existing
+-- learner analytics functions (get_current_streak_days).
+create or replace function indonesian.get_practice_time(
+  p_user_id uuid,
+  p_timezone text
+)
+returns json language sql stable security invoker as $$
+  select json_build_object(
+    'minutes_this_week',
+    coalesce(
+      round(
+        sum(ls.duration_seconds) filter (where ls.duration_seconds is not null)
+        / 60.0
+      ),
+      0
+    )::int
+  )
+  from indonesian.learning_sessions ls
+  where ls.user_id = p_user_id
+    and (ls.started_at at time zone p_timezone)
+        >= date_trunc('week', now() at time zone p_timezone);
+$$;
+
+grant execute on function indonesian.get_practice_time(uuid, text) to authenticated;
 
 -- (PR 5: the lesson_page_blocks column-drop DO blocks — source_progress_event
 --  and capability_key_refs — were removed; the whole table is dropped below.)

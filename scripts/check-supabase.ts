@@ -213,6 +213,25 @@ if (authed) {
     }
   }
 
+  // get_practice_time (#206), authenticated invoker path. Proves the Practice
+  // Time RPC is live, grant-correct, and returns the { minutes_this_week } shape
+  // the analytics.engagement module reads.
+  {
+    const { data: authUser } = await supabase.auth.getUser()
+    const uid = authUser.user?.id
+    const { data, error } = await supabase
+      .schema('indonesian')
+      .rpc('get_practice_time', { p_user_id: uid, p_timezone: 'Europe/Amsterdam' })
+    const row = (data ?? {}) as Record<string, unknown>
+    if (error) {
+      fail('get_practice_time (authenticated invoker path)', `${error.message} — missing function/grant; run: make migrate SUPABASE_SERVICE_KEY=<key>`)
+    } else if (!('minutes_this_week' in row) || typeof row.minutes_this_week !== 'number') {
+      fail('get_practice_time return shape', 'expected { minutes_this_week: number } — run: make migrate SUPABASE_SERVICE_KEY=<key>')
+    } else {
+      pass(`get_practice_time (authenticated; ${row.minutes_this_week} min this week)`)
+    }
+  }
+
   // Check lesson audio URLs are accessible
   const { data: lessons, error: lessonErr } = await supabase
     .schema('indonesian')

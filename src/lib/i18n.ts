@@ -116,6 +116,8 @@ export const nl = {
   },
   progress: {
     title: 'Voortgang',
+    practiceThisWeek: 'Geoefend deze week',
+    minutesShort: 'min',
     itemsByStage: 'Items per stadium',
     memoryStrength: 'Geheugensterkte',
     lessonCompletion: 'Lesvoortgang',
@@ -364,6 +366,8 @@ export const en: typeof nl = {
   },
   progress: {
     title: 'Progress',
+    practiceThisWeek: 'Practised this week',
+    minutesShort: 'min',
     itemsByStage: 'Items by stage',
     memoryStrength: 'Memory strength',
     lessonCompletion: 'Lesson completion',
