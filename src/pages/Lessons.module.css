@@ -81,10 +81,13 @@
   padding: 0;
 }
 
-/* Stretch the <li> so the LessonCard's height: 100% resolves to the row height;
- * min-width: 0 lets the card shrink to its grid track so its text wraps. */
+/* The grid item wraps the single LessonCard. display: grid makes the card
+ * stretch to fill the cell in BOTH axes (CSS grid's default align/justify:
+ * stretch) — full-width on mobile, the fixed column span on desktop, full row
+ * height for the even grid — with no per-card flex/height plumbing. min-width: 0
+ * lets it shrink to the track so the grammar text wraps instead of widening it. */
 .lessonGridItem {
-  display: flex;
+  display: grid;
   min-width: 0;
 }
 
