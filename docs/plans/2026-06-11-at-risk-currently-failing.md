@@ -1,5 +1,12 @@
 ---
-status: approved
+status: shipped
+implementation: PR #223
+merged_at: 2026-06-11
+implementation_paths:
+  - src/lib/analytics/mastery/mastered.ts
+  - src/lib/analytics/mastery/masteryModel.ts
+  - scripts/migration.sql                    # get_lessons_overview mastered clause; _mastery_label
+  - scripts/check-supabase-deep.ts           # HC27/HC28 mirrors
 reviewed_by: [architect, data-architect]   # architect APPROVE-WITH-CHANGES; data-architect REQUEST-CHANGES — all findings applied below
 review_notes: |
   data-architect M1 (blocking): two more unit tests key on lapseCount and would fail —
