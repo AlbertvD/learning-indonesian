@@ -24,6 +24,9 @@ interface PracticeTimeRow {
   streak_days?: number | null
   minutes_today?: number | null
   minutes_this_week?: number | null
+  minutes_last_week?: number | null
+  minutes_this_month?: number | null
+  minutes_last_month?: number | null
   avg_session_minutes?: number | null
   active_days_this_week?: number | null
   last_practice_age_days?: number | null
@@ -36,6 +39,12 @@ export interface PracticeTime {
   minutesToday: number
   /** Exercise minutes in the current (timezone-local) week, Monday-based. */
   minutesThisWeek: number
+  /** Exercise minutes in the prior week (for the week-over-week delta). */
+  minutesLastWeek: number
+  /** Exercise minutes in the current calendar month. */
+  minutesThisMonth: number
+  /** Exercise minutes in the prior calendar month (month-over-month delta). */
+  minutesLastMonth: number
   /** Average exercise minutes per session (sessions with non-null duration). */
   avgSessionMinutes: number
   /** Distinct days with exercise practice in the current week. */
@@ -52,6 +61,9 @@ const EMPTY: PracticeTime = {
   streakDays: 0,
   minutesToday: 0,
   minutesThisWeek: 0,
+  minutesLastWeek: 0,
+  minutesThisMonth: 0,
+  minutesLastMonth: 0,
   avgSessionMinutes: 0,
   activeDaysThisWeek: 0,
   lastPracticeAgeDays: null,
@@ -73,6 +85,9 @@ export function createEngagement(client: SchemaClient): Engagement {
         streakDays: row.streak_days ?? 0,
         minutesToday: row.minutes_today ?? 0,
         minutesThisWeek: row.minutes_this_week ?? 0,
+        minutesLastWeek: row.minutes_last_week ?? 0,
+        minutesThisMonth: row.minutes_this_month ?? 0,
+        minutesLastMonth: row.minutes_last_month ?? 0,
         avgSessionMinutes: row.avg_session_minutes ?? 0,
         activeDaysThisWeek: row.active_days_this_week ?? 0,
         lastPracticeAgeDays: row.last_practice_age_days ?? null,

@@ -1,0 +1,137 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Headline */
+.headline {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.headlineNum {
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--success, #2f9e44), #12b886);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.headlineLabel {
+  font-size: 0.95rem;
+  color: var(--text-secondary, #868e96);
+}
+
+.headlineSub {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #868e96);
+}
+
+/* The journey: left → right rung segments */
+.journey {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+}
+
+.seg {
+  position: relative;
+  border-radius: 12px;
+  padding: 0.7rem 0.6rem 0.6rem;
+  color: #fff;
+  overflow: hidden;
+  isolation: isolate;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.seg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--seg-grad);
+  /* a soft sheen sweeping across on entrance */
+}
+
+.seg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.25) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: sheen 1.1s ease 0.3s 1;
+}
+
+.seg:nth-child(1) { animation-delay: 0.02s; --seg-grad: linear-gradient(135deg, #4dabf7, #74c0fc); }
+.seg:nth-child(2) { animation-delay: 0.10s; --seg-grad: linear-gradient(135deg, #3bc9db, #66d9e8); }
+.seg:nth-child(3) { animation-delay: 0.18s; --seg-grad: linear-gradient(135deg, #20c997, #38d9a9); }
+.seg:nth-child(4) { animation-delay: 0.26s; --seg-grad: linear-gradient(135deg, #2f9e44, #51cf66); }
+
+.segCount {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.segLabel {
+  margin-top: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  opacity: 0.92;
+  letter-spacing: 0.01em;
+}
+
+/* proportional fill bar at the bottom of each segment */
+.segBar {
+  margin-top: 0.5rem;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.3);
+  overflow: hidden;
+}
+
+.segBarFill {
+  height: 100%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  width: 0;
+  animation: fill 0.7s ease 0.35s forwards;
+}
+
+/* at-risk callout */
+.atRisk {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--warning, #e8590c);
+  background: color-mix(in srgb, var(--warning, #e8590c) 12%, transparent);
+  border-radius: 10px;
+  padding: 0.5rem 0.7rem;
+}
+
+@keyframes rise {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sheen {
+  to { transform: translateX(120%); }
+}
+
+@keyframes fill {
+  to { width: var(--fill, 0%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seg, .segBarFill, .seg::after { animation: none; opacity: 1; transform: none; }
+  .segBarFill { width: var(--fill, 0%); }
+}
