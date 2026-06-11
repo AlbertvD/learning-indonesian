@@ -1469,7 +1469,7 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     stability?: number | null; lastReviewedAt?: string | null
   }
   const rankOf = (s: StateJson, now: Date): number => {
-    if ((s.consecutiveFailureCount ?? 0) > 0 || (s.lapseCount ?? 0) > 0) return 2 // at_risk
+    if ((s.consecutiveFailureCount ?? 0) > 0) return 2 // at_risk (currently failing)
     if ((s.reviewCount ?? 0) === 0) return 1 // introduced
     if (isCapabilityMastered({
       reviewCount: s.reviewCount ?? 0, stability: s.stability,
@@ -1479,8 +1479,8 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     if ((s.reviewCount ?? 0) >= 3 || (s.stability ?? 0) >= 5) return 3 // strengthening
     return 2 // learning
   }
-  const isMastered = (s: StateJson, now: Date) => rankOf(s, now) === 4 && (s.consecutiveFailureCount ?? 0) === 0 && (s.lapseCount ?? 0) === 0
-  const isAtRisk = (s: StateJson) => (s.consecutiveFailureCount ?? 0) > 0 || (s.lapseCount ?? 0) > 0
+  const isMastered = (s: StateJson, now: Date) => rankOf(s, now) === 4 && (s.consecutiveFailureCount ?? 0) === 0
+  const isAtRisk = (s: StateJson) => (s.consecutiveFailureCount ?? 0) > 0
   const TEST_USER_ID = '55023eba-0885-4999-9e46-41274e6b21ff'
   try {
     const now = new Date()

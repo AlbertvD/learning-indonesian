@@ -42,8 +42,11 @@ describe('weekly movement: SQL _mastery_label ⟷ TS labelForCapability parity',
     expect(/p_review_count >= 3 or coalesce\(p_stability, 0\) >= 5/.test(sqlLabel)).toBe(true)
   })
 
-  it('SQL mirror short-circuits at_risk on lapse/consecutive-failure, matching TS', () => {
-    expect(/p_consec > 0 or p_lapse > 0 then 'at_risk'/.test(sqlLabel)).toBe(true)
-    expect(/consecutiveFailureCount > 0 \|\| evidence\.lapseCount > 0|consecutiveFailureCount > 0/.test(masterySrc)).toBe(true)
+  it('SQL mirror short-circuits at_risk on a CURRENT failure only (self-healing), matching TS', () => {
+    // 2026-06-11: at_risk = consecutiveFailureCount > 0; the cumulative lapse clause is gone.
+    expect(/p_consec > 0 then 'at_risk'/.test(sqlLabel)).toBe(true)
+    expect(/p_lapse > 0 then 'at_risk'/.test(sqlLabel)).toBe(false)
+    expect(/evidence\.consecutiveFailureCount > 0\) return 'at_risk'/.test(masterySrc)).toBe(true)
+    expect(/lapseCount > 0\) return 'at_risk'/.test(masterySrc)).toBe(false)
   })
 })

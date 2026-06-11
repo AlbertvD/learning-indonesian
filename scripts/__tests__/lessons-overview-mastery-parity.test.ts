@@ -71,12 +71,12 @@ describe('get_lessons_overview mastered predicate ↔ masteryModel parity (ADR 0
     expect(sql).not.toMatch(/[^(]\bstability >= /) // no bare `stability >=`
   })
 
-  it('SQL mirrors the TS at_risk override (lapse=0 ∧ consec-failure=0)', () => {
+  it('SQL mirrors the TS at_risk override (currently-failing only; a past lapse does NOT block mastery)', () => {
     const sql = masteredSqlFilter()
-    // TS returns at_risk *before* mastered when lapse>0 || consec>0
-    // (masteryModel.ts:175), so a mastered row must have both at 0.
-    expect(sql).toContain('coalesce(lapse_count, 0) = 0')
+    // at_risk is self-healing: consecutiveFailureCount > 0 only (2026-06-11). A
+    // mastered row needs no current failure — but a past lapse no longer excludes it.
     expect(sql).toContain('coalesce(consecutive_failure_count, 0) = 0')
+    expect(sql).not.toContain('coalesce(lapse_count, 0) = 0')
   })
 
   it('SQL applies the recency clause (mirror of isRecent on last_reviewed_at)', () => {
