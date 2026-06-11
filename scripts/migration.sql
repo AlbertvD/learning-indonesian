@@ -254,6 +254,11 @@ ALTER TABLE indonesian.learning_sessions DROP CONSTRAINT IF EXISTS learning_sess
 ALTER TABLE indonesian.learning_sessions ADD CONSTRAINT learning_sessions_session_type_check
   CHECK (session_type IN ('lesson', 'learning', 'podcast', 'practice'));
 
+-- Practice Time analytics (#206): get_practice_time aggregates learning_sessions
+-- by (user_id, started_at) on the request path. Only the PK existed before.
+CREATE INDEX IF NOT EXISTS ls_user_started_idx
+  ON indonesian.learning_sessions(user_id, started_at);
+
 -- Drop stale exercise_type CHECK constraint from review_events (constraint name from original migration)
 ALTER TABLE indonesian.review_events DROP CONSTRAINT IF EXISTS review_events_exercise_type_check;
 
@@ -2068,6 +2073,166 @@ $$;
 
 grant execute on function indonesian.get_lessons_overview(uuid) to authenticated;
 
+-- ============================================================
+-- Practice Time (#206/#207) — Learner Progress Axis 1, analytics.engagement
+-- ============================================================
+-- Exercises-only practice time (CONTEXT.md → Practice Time): only the
+-- capability/review path writes learning_sessions, so reading/podcast time is
+-- excluded by construction. duration_seconds = first→last answer elapsed
+-- (single-answer session = 0s). Calendar week resets Monday (date_trunc('week')
+-- is Monday-based). Returns json so the shape can grow without a signature
+-- change. SECURITY INVOKER + RLS owner-scoping, matching the existing learner
+-- analytics functions.
+--
+-- get_current_streak_days is promoted here from the paper-trail file
+-- scripts/migrations/2026-05-01-learner-progress-functions.sql (#207 folds the
+-- streak read into analytics.engagement): get_practice_time depends on it, so
+-- the canonical migration.sql must define it for a fresh provision.
+create or replace function indonesian.get_current_streak_days(
+  p_user_id uuid,
+  p_timezone text
+)
+returns int language plpgsql stable security invoker as $$
+declare
+  v_check_date date := (now() at time zone p_timezone)::date;
+  v_streak int := 0;
+  v_has_review boolean;
+begin
+  loop
+    select exists (
+      select 1
+      from indonesian.capability_review_events
+      where user_id = p_user_id
+        and (created_at at time zone p_timezone)::date = v_check_date
+    ) into v_has_review;
+    if not v_has_review then exit; end if;
+    v_streak := v_streak + 1;
+    v_check_date := v_check_date - 1;
+    if v_streak >= 365 then exit; end if;
+  end loop;
+  return v_streak;
+end;
+$$;
+
+grant execute on function indonesian.get_current_streak_days(uuid, text) to authenticated;
+
+create or replace function indonesian.get_practice_time(
+  p_user_id uuid,
+  p_timezone text
+)
+returns json language sql stable security invoker as $$
+  with sess as (
+    select
+      ls.duration_seconds as dur,
+      (ls.started_at at time zone p_timezone)::date as local_date
+    from indonesian.learning_sessions ls
+    where ls.user_id = p_user_id
+  ),
+  b as (
+    select
+      (now() at time zone p_timezone)::date as today,
+      date_trunc('week', now() at time zone p_timezone)::date as week_start
+  )
+  select json_build_object(
+    'streak_days', indonesian.get_current_streak_days(p_user_id, p_timezone),
+    'minutes_today', coalesce(round(
+      sum(s.dur) filter (where s.dur is not null and s.local_date = b.today) / 60.0
+    ), 0)::int,
+    'minutes_this_week', coalesce(round(
+      sum(s.dur) filter (where s.dur is not null and s.local_date >= b.week_start) / 60.0
+    ), 0)::int,
+    'avg_session_minutes', coalesce(round(
+      avg(s.dur) filter (where s.dur is not null) / 60.0
+    ), 0)::int,
+    'active_days_this_week', count(distinct s.local_date)
+      filter (where s.local_date >= b.week_start)::int,
+    'last_practice_age_days', (b.today - max(s.local_date))::int
+  )
+  from b left join sess s on true
+  group by b.today, b.week_start;
+$$;
+
+grant execute on function indonesian.get_practice_time(uuid, text) to authenticated;
+
+-- ============================================================
+-- Weekly movement (#210) — the fast pulse on the slow Mastery axis
+-- ============================================================
+-- Rung transitions recomputed from the FSRS state snapshots already stored on
+-- each review event (ADR 0016 — no label_history table). _mastery_label mirrors
+-- labelForCapability (src/lib/analytics/mastery/masteryModel.ts); the two are
+-- kept in lockstep by an ADR-0015 parity check in check-supabase-deep.ts.
+-- A review event's capability is by definition lesson-activated, so reviewCount=0
+-- maps to 'introduced' (the activation distinction is irrelevant here).
+-- Indexes promoted from the paper-trail file so migration.sql is self-contained.
+CREATE INDEX IF NOT EXISTS cre_user_created_idx
+  ON indonesian.capability_review_events(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS cre_user_capability_created_idx
+  ON indonesian.capability_review_events(user_id, capability_id, created_at);
+
+create or replace function indonesian._mastery_label(
+  p_review_count int,
+  p_lapse int,
+  p_consec int,
+  p_stability double precision,
+  p_last_reviewed timestamptz,
+  p_now timestamptz
+)
+returns text language sql immutable as $$
+  select case
+    when p_consec > 0 or p_lapse > 0 then 'at_risk'
+    when coalesce(p_review_count, 0) = 0 then 'introduced'
+    when p_review_count >= 4 and coalesce(p_stability, 0) >= 14
+         and p_last_reviewed is not null and p_last_reviewed > p_now - interval '30 days' then 'mastered'
+    when p_review_count >= 3 or coalesce(p_stability, 0) >= 5 then 'strengthening'
+    else 'learning'
+  end;
+$$;
+
+create or replace function indonesian.get_weekly_movement(
+  p_user_id uuid,
+  p_timezone text
+)
+returns json language sql stable security invoker as $$
+  with ev as (
+    select
+      capability_id,
+      indonesian._mastery_label(
+        coalesce((state_before_json->>'reviewCount')::int, 0),
+        coalesce((state_before_json->>'lapseCount')::int, 0),
+        coalesce((state_before_json->>'consecutiveFailureCount')::int, 0),
+        nullif(state_before_json->>'stability', '')::double precision,
+        nullif(state_before_json->>'lastReviewedAt', '')::timestamptz,
+        now()
+      ) as before_label,
+      indonesian._mastery_label(
+        coalesce((state_after_json->>'reviewCount')::int, 0),
+        coalesce((state_after_json->>'lapseCount')::int, 0),
+        coalesce((state_after_json->>'consecutiveFailureCount')::int, 0),
+        nullif(state_after_json->>'stability', '')::double precision,
+        nullif(state_after_json->>'lastReviewedAt', '')::timestamptz,
+        now()
+      ) as after_label
+    from indonesian.capability_review_events
+    where user_id = p_user_id
+      and created_at >= (date_trunc('week', now() at time zone p_timezone) at time zone p_timezone)
+  ),
+  ranked as (
+    select
+      capability_id, before_label, after_label,
+      (case before_label when 'not_assessed' then 0 when 'introduced' then 1 when 'learning' then 2 when 'at_risk' then 2 when 'strengthening' then 3 when 'mastered' then 4 end) as rb,
+      (case after_label  when 'not_assessed' then 0 when 'introduced' then 1 when 'learning' then 2 when 'at_risk' then 2 when 'strengthening' then 3 when 'mastered' then 4 end) as ra
+    from ev
+  )
+  select json_build_object(
+    'advanced', count(distinct capability_id) filter (where ra > rb),
+    'reached_mastered', count(distinct capability_id) filter (where after_label = 'mastered' and before_label <> 'mastered'),
+    'slipped', count(distinct capability_id) filter (where after_label = 'at_risk' and before_label <> 'at_risk')
+  ) from ranked;
+$$;
+
+grant execute on function indonesian._mastery_label(int, int, int, double precision, timestamptz, timestamptz) to authenticated;
+grant execute on function indonesian.get_weekly_movement(uuid, text) to authenticated;
+
 -- (PR 5: the lesson_page_blocks column-drop DO blocks — source_progress_event
 --  and capability_key_refs — were removed; the whole table is dropped below.)
 
@@ -3074,3 +3239,18 @@ comment on column indonesian.dialogue_clozes.translation_nl is
   'Dutch translation (NL). Added PR 6 (shape settled here). Populated by the Capability Stage in the capability-stage redesign (#98/#99), not PR 6. NULL until then.';
 comment on column indonesian.dialogue_clozes.translation_en is
   'English translation (EN). Added PR 6 (shape settled here). Populated by the Capability Stage in the capability-stage redesign (#98/#99). NULL until then.';
+
+-- ============================================================
+-- Analytics redesign teardown (#212) — retire legacy item-state + leaderboard
+-- ============================================================
+-- learner_item_state (the legacy 5-stage item model) and the leaderboard view
+-- are retired by the two-axis learner-progress analytics redesign (#206-#212).
+-- Data-architect verified the drop is safe: no trigger/scheduler/pipeline writes
+-- the table; its only app writer (learnerStateService.upsertItemState) is removed
+-- in the same change. Build-stage: disposable data (CLAUDE.md Operating Context).
+-- The leaderboard view reads learner_item_state, so it drops first (CASCADE on the
+-- table covers its index/grant/RLS/policy). The CREATE blocks above are left as
+-- create-then-dropped here rather than excised inline — a follow-up can remove
+-- them; the end state (both gone) is idempotent.
+drop view if exists indonesian.leaderboard;
+drop table if exists indonesian.learner_item_state cascade;

@@ -32,7 +32,7 @@ const EXPECTED_TABLES = [
   'learning_items',
   'item_contexts',
   'item_answer_variants',
-  'learner_item_state',
+  // learner_item_state: dropped in the analytics redesign teardown (#212)
   'learner_skill_state',
   'review_events',
   'lesson_progress',
@@ -51,7 +51,7 @@ const EXPECTED_GRANTS: Record<string, Record<string, string[]>> = {
   learning_items:       { authenticated: ['SELECT'] },
   item_contexts:        { authenticated: ['SELECT'] },
   item_answer_variants: { authenticated: ['SELECT'] },
-  learner_item_state:   { authenticated: ['SELECT', 'INSERT', 'UPDATE'] },
+  // learner_item_state: dropped in the analytics redesign teardown (#212)
   learner_skill_state:  { authenticated: ['SELECT', 'INSERT', 'UPDATE'] },
   review_events:        { authenticated: ['SELECT', 'INSERT'] },
   lesson_progress:      { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },
@@ -1455,6 +1455,62 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     }
   } catch (err) {
     fail('HC27 % mastered parity (RPC vs TS predicate)', err instanceof Error ? err.message : String(err))
+  }
+}
+
+// HC28 — weekly movement parity (ADR 0015 layer b, #210). get_weekly_movement's
+// SQL _mastery_label mirror must agree with a TS recompute over the same events.
+// The canonical `mastered` rung reuses isCapabilityMastered; the surrounding rungs
+// mirror labelForCapability. Vacuously green when the test user has no events this
+// week (both sides 0) — still proves the RPC runs + shape.
+{
+  type StateJson = {
+    reviewCount?: number; lapseCount?: number; consecutiveFailureCount?: number
+    stability?: number | null; lastReviewedAt?: string | null
+  }
+  const rankOf = (s: StateJson, now: Date): number => {
+    if ((s.consecutiveFailureCount ?? 0) > 0 || (s.lapseCount ?? 0) > 0) return 2 // at_risk
+    if ((s.reviewCount ?? 0) === 0) return 1 // introduced
+    if (isCapabilityMastered({
+      reviewCount: s.reviewCount ?? 0, stability: s.stability,
+      lastReviewedAt: s.lastReviewedAt, lapseCount: s.lapseCount ?? 0,
+      consecutiveFailureCount: s.consecutiveFailureCount ?? 0,
+    }, now)) return 4 // mastered
+    if ((s.reviewCount ?? 0) >= 3 || (s.stability ?? 0) >= 5) return 3 // strengthening
+    return 2 // learning
+  }
+  const isMastered = (s: StateJson, now: Date) => rankOf(s, now) === 4 && (s.consecutiveFailureCount ?? 0) === 0 && (s.lapseCount ?? 0) === 0
+  const isAtRisk = (s: StateJson) => (s.consecutiveFailureCount ?? 0) > 0 || (s.lapseCount ?? 0) > 0
+  const TEST_USER_ID = '55023eba-0885-4999-9e46-41274e6b21ff'
+  try {
+    const now = new Date()
+    const mondayOffset = (now.getUTCDay() + 6) % 7
+    const weekStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - mondayOffset))
+    const { data: events, error: evErr } = await supabase.schema('indonesian')
+      .from('capability_review_events')
+      .select('capability_id, state_before_json, state_after_json')
+      .eq('user_id', TEST_USER_ID)
+      .gte('created_at', weekStart.toISOString())
+    if (evErr) throw new Error(evErr.message)
+    const adv = new Set<string>(), reached = new Set<string>(), slip = new Set<string>()
+    for (const e of (events ?? []) as Array<{ capability_id: string; state_before_json: StateJson; state_after_json: StateJson }>) {
+      const b = e.state_before_json, a = e.state_after_json
+      if (rankOf(a, now) > rankOf(b, now)) adv.add(e.capability_id)
+      if (isMastered(a, now) && !isMastered(b, now)) reached.add(e.capability_id)
+      if (isAtRisk(a) && !isAtRisk(b)) slip.add(e.capability_id)
+    }
+    const { data: rpc, error: rpcErr } = await supabase.schema('indonesian')
+      .rpc('get_weekly_movement', { p_user_id: TEST_USER_ID, p_timezone: 'UTC' })
+    if (rpcErr) throw new Error(rpcErr.message)
+    const r = (rpc ?? {}) as { advanced?: number; reached_mastered?: number; slipped?: number }
+    const ok = (r.advanced ?? 0) === adv.size && (r.reached_mastered ?? 0) === reached.size && (r.slipped ?? 0) === slip.size
+    if (ok) {
+      pass(`HC28 weekly movement parity (RPC == TS) — advanced=${adv.size} mastered=${reached.size} slipped=${slip.size} (ADR 0015)`)
+    } else {
+      fail('HC28 weekly movement parity (RPC vs TS)', `RPC {${r.advanced},${r.reached_mastered},${r.slipped}} vs TS {${adv.size},${reached.size},${slip.size}} — _mastery_label diverged`)
+    }
+  } catch (err) {
+    fail('HC28 weekly movement parity', err instanceof Error ? err.message : String(err))
   }
 }
 

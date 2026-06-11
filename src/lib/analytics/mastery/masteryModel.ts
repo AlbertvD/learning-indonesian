@@ -350,6 +350,226 @@ export function deriveMasteryOverview(input: {
   }
 }
 
+// ---- Mastery progression funnels (Learner Progress Axis 2, #208/#209) ----
+//
+// The ladder shown as a distribution: each learnable unit (a vocab word or a
+// grammar topic — keyed by source_ref) is rolled up weakest-wins to one rung,
+// then counted per rung. Split by content type so vocab and grammar (which grow
+// at different rates) read separately. Derived client-side over the evidence
+// getMasteryOverview already fetches (data-architect Q-C) — no RPC.
+
+export type MasteryFunnel = Record<MasteryLabel, number>
+
+export interface MasteryFunnels {
+  vocabulary: MasteryFunnel
+  grammar: MasteryFunnel
+}
+
+const GRAMMAR_SOURCE_KINDS = new Set(['pattern', 'affixed_form_pair'])
+
+function emptyFunnel(): MasteryFunnel {
+  return {
+    not_assessed: 0,
+    introduced: 0,
+    learning: 0,
+    strengthening: 0,
+    mastered: 0,
+    at_risk: 0,
+  }
+}
+
+export function deriveMasteryFunnel(input: {
+  evidence: CapabilityMasteryEvidence[]
+  now?: Date
+}): MasteryFunnels {
+  const now = input.now ?? new Date()
+  const vocab = new Map<string, CapabilityMasteryEvidence[]>()
+  const grammar = new Map<string, CapabilityMasteryEvidence[]>()
+  for (const e of input.evidence) {
+    const bucket = e.sourceKind === 'item'
+      ? vocab
+      : GRAMMAR_SOURCE_KINDS.has(e.sourceKind)
+        ? grammar
+        : null
+    if (!bucket) continue
+    bucket.set(e.sourceRef, [...(bucket.get(e.sourceRef) ?? []), e])
+  }
+  const tally = (units: Map<string, CapabilityMasteryEvidence[]>): MasteryFunnel => {
+    const funnel = emptyFunnel()
+    for (const caps of units.values()) {
+      funnel[weakestLabel(caps.map(cap => labelForCapability(cap, now)))] += 1
+    }
+    return funnel
+  }
+  return { vocabulary: tally(vocab), grammar: tally(grammar) }
+}
+
+export interface GrammarTopicLabel {
+  slug: string
+  label: MasteryLabel
+}
+
+export interface GrammarTopic extends GrammarTopicLabel {
+  name: string
+  shortExplanation: string
+}
+
+// Named grammar topics (source_kind 'pattern' only — affixed_form_pairs are not
+// named grammar_patterns), each rolled up weakest-wins to one ladder label.
+// Used by the voortgang grammar-topics drill-down (#209).
+export function deriveGrammarTopics(input: {
+  evidence: CapabilityMasteryEvidence[]
+  now?: Date
+}): GrammarTopicLabel[] {
+  const now = input.now ?? new Date()
+  const bySlug = new Map<string, CapabilityMasteryEvidence[]>()
+  for (const e of input.evidence) {
+    if (e.sourceKind !== 'pattern') continue
+    bySlug.set(e.sourceRef, [...(bySlug.get(e.sourceRef) ?? []), e])
+  }
+  return [...bySlug.entries()]
+    .map(([slug, caps]) => ({
+      slug,
+      label: weakestLabel(caps.map((cap) => labelForCapability(cap, now))),
+    }))
+    .sort((a, b) => a.slug.localeCompare(b.slug))
+}
+
+// ---- Skill-mode gap axes (orthogonal "where's my gap" map, #211) ----
+//
+// The 11 internal MasteryDimensions collapse weakest-wins into 3 learner-facing
+// modes. Orthogonal to the content funnel (which splits vocab/grammar): this
+// splits by HOW you practise. Q-A resolved against CONTEXT.md → Capability Type:
+// l1_to_id_choice is a receptive multiple-choice (recognise), contextual_cloze
+// is production (produce). `exposure` is excluded. Confidence-gated: a mode with
+// no evidence reads 'none' (not a false-amber gap).
+
+export type SkillMode = 'recognise' | 'produce' | 'listen'
+
+export interface SkillModeGap {
+  mode: SkillMode
+  label: MasteryLabel
+  confidence: MasteryConfidence
+}
+
+const DIMENSION_MODE: Partial<Record<MasteryDimension, SkillMode>> = {
+  text_recognition: 'recognise',
+  meaning_recall: 'recognise',
+  l1_to_id_choice: 'recognise',
+  pattern_recognition: 'recognise',
+  form_recall: 'produce',
+  contextual_cloze: 'produce',
+  pattern_use: 'produce',
+  morphology: 'produce',
+  listening: 'listen',
+  dictation: 'listen',
+  // exposure (podcast_gist) is excluded — ambient, not a drilled skill mode.
+}
+
+const SKILL_MODES: SkillMode[] = ['recognise', 'produce', 'listen']
+
+export function deriveSkillModeGaps(input: {
+  evidence: CapabilityMasteryEvidence[]
+  now?: Date
+}): SkillModeGap[] {
+  const now = input.now ?? new Date()
+  const dimensions = deriveMasteryDimensions(input.evidence, now)
+  return SKILL_MODES.map((mode) => {
+    const inMode = dimensions.filter((d) => DIMENSION_MODE[d.dimension] === mode)
+    if (inMode.length === 0) {
+      return { mode, label: 'not_assessed' as MasteryLabel, confidence: 'none' as MasteryConfidence }
+    }
+    return {
+      mode,
+      label: weakestLabel(inMode.map((d) => d.label)),
+      confidence: aggregateConfidence(inMode),
+    }
+  })
+}
+
+// ---- Weekly movement (the fast pulse on the slow axis, #210) ----
+//
+// Rung transitions recomputed from the FSRS state snapshots on each review event
+// (ADR 0016 — no label_history table). A capability "advanced" if any review in
+// the window moved it up the ladder; counts are distinct-capability so multiple
+// reviews of one word in a week count once. The server-side get_weekly_movement
+// RPC mirrors this in SQL; this pure function is the ADR-0015 parity reference.
+
+export interface MovementState {
+  reviewCount: number
+  lapseCount: number
+  consecutiveFailureCount: number
+  stability: number | null
+  lastReviewedAt: string | null
+}
+
+export interface WeeklyReviewEvent {
+  capabilityId: string
+  before: MovementState
+  after: MovementState
+}
+
+export interface WeeklyMovement {
+  advanced: number
+  reachedMastered: number
+  slipped: number
+}
+
+const LABEL_RANK: Record<MasteryLabel, number> = {
+  not_assessed: 0,
+  introduced: 1,
+  learning: 2,
+  at_risk: 2,
+  strengthening: 3,
+  mastered: 4,
+}
+
+// A review event's capability is, by definition, lesson-activated (it is being
+// reviewed); the other evidence fields don't affect labelForCapability.
+function labelFromState(state: MovementState, now: Date): MasteryLabel {
+  return labelForCapability(
+    {
+      capabilityId: '',
+      canonicalKey: '',
+      sourceKind: 'item',
+      sourceRef: '',
+      capabilityType: 'text_recognition',
+      modality: 'text',
+      readinessStatus: 'ready',
+      publicationStatus: 'published',
+      lessonActivated: true,
+      reviewCount: state.reviewCount,
+      lapseCount: state.lapseCount,
+      consecutiveFailureCount: state.consecutiveFailureCount,
+      stability: state.stability,
+      lastReviewedAt: state.lastReviewedAt,
+    },
+    now,
+  )
+}
+
+export function deriveWeeklyMovement(input: {
+  events: WeeklyReviewEvent[]
+  now?: Date
+}): WeeklyMovement {
+  const now = input.now ?? new Date()
+  const advanced = new Set<string>()
+  const reachedMastered = new Set<string>()
+  const slipped = new Set<string>()
+  for (const event of input.events) {
+    const before = labelFromState(event.before, now)
+    const after = labelFromState(event.after, now)
+    if (LABEL_RANK[after] > LABEL_RANK[before]) advanced.add(event.capabilityId)
+    if (after === 'mastered' && before !== 'mastered') reachedMastered.add(event.capabilityId)
+    if (after === 'at_risk' && before !== 'at_risk') slipped.add(event.capabilityId)
+  }
+  return {
+    advanced: advanced.size,
+    reachedMastered: reachedMastered.size,
+    slipped: slipped.size,
+  }
+}
+
 function toEvidence(input: {
   capabilities: LearningCapabilityRow[]
   states: LearnerCapabilityStateRow[]
@@ -457,6 +677,59 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
       const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
       return deriveMasteryOverview({ userId, evidence })
     },
+
+    async getMasteryFunnel(userId: string): Promise<MasteryFunnels> {
+      const { data: stateRows, error: stateError } = await db()
+        .from('learner_capability_state')
+        .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
+        .eq('user_id', userId)
+      if (stateError) throw stateError
+      const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
+      const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
+      const activatedLessonsSet = await listActivatedLessons(userId, client)
+      const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
+      return deriveMasteryFunnel({ evidence })
+    },
+
+    async getSkillModeGaps(userId: string): Promise<SkillModeGap[]> {
+      const { data: stateRows, error: stateError } = await db()
+        .from('learner_capability_state')
+        .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
+        .eq('user_id', userId)
+      if (stateError) throw stateError
+      const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
+      const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
+      const activatedLessonsSet = await listActivatedLessons(userId, client)
+      const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
+      return deriveSkillModeGaps({ evidence })
+    },
+
+    async getGrammarTopics(userId: string): Promise<GrammarTopic[]> {
+      const { data: stateRows, error: stateError } = await db()
+        .from('learner_capability_state')
+        .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
+        .eq('user_id', userId)
+      if (stateError) throw stateError
+      const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
+      const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
+      const activatedLessonsSet = await listActivatedLessons(userId, client)
+      const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
+      const topics = deriveGrammarTopics({ evidence })
+      if (topics.length === 0) return []
+      const { data: patternRows, error: patternError } = await db()
+        .from('grammar_patterns')
+        .select('slug, name, short_explanation')
+        .in('slug', topics.map(topic => topic.slug))
+      if (patternError) throw patternError
+      const rows = (patternRows ?? []) as Array<{ slug: string; name: string; short_explanation: string }>
+      const bySlug = new Map(rows.map(p => [p.slug, p] as const))
+      return topics.map(topic => ({
+        slug: topic.slug,
+        name: bySlug.get(topic.slug)?.name ?? topic.slug,
+        shortExplanation: bySlug.get(topic.slug)?.short_explanation ?? '',
+        label: topic.label,
+      }))
+    },
   }
 }
 
@@ -471,6 +744,34 @@ export async function getContentUnitMastery(contentUnitId: string, userId: strin
 
 export async function getPatternMastery(patternId: string, userId: string): Promise<PatternMastery> {
   return (await defaultModel()).getPatternMastery(patternId, userId)
+}
+
+export async function getMasteryFunnel(userId: string): Promise<MasteryFunnels> {
+  return (await defaultModel()).getMasteryFunnel(userId)
+}
+
+export async function getGrammarTopics(userId: string): Promise<GrammarTopic[]> {
+  return (await defaultModel()).getGrammarTopics(userId)
+}
+
+export async function getSkillModeGaps(userId: string): Promise<SkillModeGap[]> {
+  return (await defaultModel()).getSkillModeGaps(userId)
+}
+
+// Server-side aggregation (ADR 0015 — small result, bounded window): the SQL
+// get_weekly_movement mirrors labelForCapability over the event JSON snapshots.
+export async function getWeeklyMovement(userId: string, timezone: string): Promise<WeeklyMovement> {
+  const { supabase } = await import('@/lib/supabase')
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .rpc('get_weekly_movement', { p_user_id: userId, p_timezone: timezone })
+  if (error) throw error
+  const row = (data ?? {}) as { advanced?: number; reached_mastered?: number; slipped?: number }
+  return {
+    advanced: row.advanced ?? 0,
+    reachedMastered: row.reached_mastered ?? 0,
+    slipped: row.slipped ?? 0,
+  }
 }
 
 export async function getMasteryOverview(userId: string): Promise<MasteryOverview> {

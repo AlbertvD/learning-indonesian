@@ -8,7 +8,7 @@ import {
   Group,
 } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconFlame, IconAlertTriangle, IconBook } from '@tabler/icons-react'
+import { IconFlame, IconAlertTriangle, IconBook, IconTrendingUp } from '@tabler/icons-react'
 import {
   PageContainer,
   PageBody,
@@ -21,7 +21,8 @@ import { RecencyBadge } from '@/components/dashboard/RecencyBadge'
 import { lessonService } from '@/services/lessonService'
 import { getLessonsBasic } from '@/lib/lessons'
 import { learnerStateService } from '@/services/learnerStateService'
-import { learnerProgressService } from '@/services/learnerProgressService'
+import { engagement } from '@/lib/analytics/engagement'
+import { getWeeklyMovement } from '@/lib/analytics/mastery/masteryModel'
 import { useAuthStore } from '@/stores/authStore'
 import { useT } from '@/hooks/useT'
 import { logError } from '@/lib/logger'
@@ -37,6 +38,8 @@ export function Dashboard() {
   const [currentStreak, setCurrentStreak] = useState(0)
   const [lapsingCount, setLapsingCount] = useState(0)
   const [lastPracticeAgeDays, setLastPracticeAgeDays] = useState<number | null>(null)
+  const [minutesThisWeek, setMinutesThisWeek] = useState(0)
+  const [advancedThisWeek, setAdvancedThisWeek] = useState(0)
 
   useEffect(() => {
     async function fetchData() {
@@ -62,18 +65,14 @@ export function Dashboard() {
         }
 
         const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-        const [streak, ageDays] = await Promise.all([
-          learnerProgressService.getCurrentStreakDays({
-            userId: user.id,
-            timezone: userTimezone,
-          }),
-          learnerProgressService.getLastPracticeAgeDays({
-            userId: user.id,
-            timezone: userTimezone,
-          }),
+        const [pt, movement] = await Promise.all([
+          engagement.practiceTime(user.id, userTimezone),
+          getWeeklyMovement(user.id, userTimezone),
         ])
-        setCurrentStreak(streak)
-        setLastPracticeAgeDays(ageDays)
+        setCurrentStreak(pt.streakDays)
+        setLastPracticeAgeDays(pt.lastPracticeAgeDays)
+        setMinutesThisWeek(pt.minutesThisWeek)
+        setAdvancedThisWeek(movement.advanced)
       } catch (err) {
         logError({ page: 'dashboard', action: 'fetchData', error: err })
         notifications.show({
@@ -132,6 +131,13 @@ export function Dashboard() {
             icon={<IconBook size={18} color="var(--accent-primary)" />}
             title={T.dashboard.continueLesson}
             subtitle={T.dashboard.nextLesson}
+          />
+
+          <ListCard
+            to="/progress"
+            icon={<IconTrendingUp size={18} color="var(--accent-primary)" />}
+            title={`${minutesThisWeek} ${T.progress.minutesShort} · ↑${advancedThisWeek}`}
+            subtitle={T.progress.pulseThisWeek}
           />
 
           <Button onClick={() => navigate('/session')} size="lg" fullWidth>

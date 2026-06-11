@@ -1,72 +1,54 @@
 // src/pages/Progress.tsx
-import {
-  PageContainer,
-  PageBody,
-  PageHeader,
-  LoadingState,
-} from '@/components/page/primitives'
-import { useProgressData } from '@/hooks/useProgressData'
+//
+// Voortgang — the learner's "reflect" surface, on two capability/mastery-aligned
+// axes (CONTEXT.md → Learner Progress Axes): Practice Time (engagement) and
+// Mastery progression (the ladder funnels + weekly movement + skill-mode gaps).
+// The legacy FSRS-machinery surfaces (memory-health hero, 5-stage funnel,
+// accuracy-by-skill, stability, latency, forecast) were retired in the analytics
+// redesign (#206–#212).
+import { PageContainer, PageBody, PageHeader } from '@/components/page/primitives'
 import { useT } from '@/hooks/useT'
-import { MemoryHealthHero } from '@/components/progress/MemoryHealthHero'
-import { MasteryFunnel } from '@/components/progress/MasteryFunnel'
-import { VulnerableItemsList } from '@/components/progress/VulnerableItemsList'
-import { ReviewForecastChart } from '@/components/progress/ReviewForecastChart'
-import { DetailedMetrics } from '@/components/progress/DetailedMetrics'
+import { useAuthStore } from '@/stores/authStore'
+import { PracticeTimeCard } from '@/components/progress/PracticeTimeCard'
+import { WeeklyRecapCard } from '@/components/progress/WeeklyRecapCard'
+import { MasteryFunnelCard } from '@/components/progress/MasteryFunnelCard'
+import { SkillModeGapsCard } from '@/components/progress/SkillModeGapsCard'
+import { GrammarTopicsList } from '@/components/progress/GrammarTopicsList'
 import classes from './Progress.module.css'
 
 export function Progress() {
-  const data = useProgressData()
   const T = useT()
-
-  if (data.wave1Loading) {
-    return (
-      <PageContainer size="lg">
-        <PageBody>
-          <LoadingState />
-        </PageBody>
-      </PageContainer>
-    )
-  }
+  const user = useAuthStore((state) => state.user)
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   return (
     <PageContainer size="lg">
       <PageBody>
-        <PageHeader
-          title={T.progress.pageTitle}
-          subtitle={T.progress.pageSubtitle}
-        />
+        <PageHeader title={T.progress.pageTitle} subtitle={T.progress.pageSubtitle} />
 
-        <section className={classes.section}>
-          <MemoryHealthHero
-            avgRecognitionDays={data.skillStats.avgRecognition}
-            avgRecallDays={data.skillStats.avgRecall}
-          />
-        </section>
+        {user && (
+          <>
+            <section className={classes.section}>
+              <PracticeTimeCard userId={user.id} timezone={timezone} />
+            </section>
 
-        <section className={classes.section}>
-          <MasteryFunnel itemsByStage={data.itemsByStage} />
-        </section>
+            <section className={classes.section}>
+              <WeeklyRecapCard userId={user.id} timezone={timezone} />
+            </section>
 
-        <section className={classes.section}>
-          <VulnerableItemsList
-            items={data.vulnerableItems}
-            loading={data.wave2Loading}
-          />
-        </section>
+            <section className={classes.section}>
+              <MasteryFunnelCard userId={user.id} />
+            </section>
 
-        <section className={classes.section}>
-          <ReviewForecastChart forecast={data.forecast} />
-        </section>
+            <section className={classes.section}>
+              <SkillModeGapsCard userId={user.id} />
+            </section>
 
-        <section className={classes.section}>
-          <DetailedMetrics
-            avgStability={data.skillStats.avgStability}
-            accuracyBySkillType={data.accuracyBySkillType}
-            lapsePrevention={data.lapsePrevention}
-            avgLatencyMs={data.avgLatencyMs}
-            wave2Loading={data.wave2Loading}
-          />
-        </section>
+            <section className={classes.section}>
+              <GrammarTopicsList userId={user.id} />
+            </section>
+          </>
+        )}
       </PageBody>
     </PageContainer>
   )
