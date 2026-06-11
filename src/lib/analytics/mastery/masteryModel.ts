@@ -435,35 +435,39 @@ export function deriveGrammarTopics(input: {
     .sort((a, b) => a.slug.localeCompare(b.slug))
 }
 
-// ---- Skill-mode gap axes (orthogonal "where's my gap" map, #211) ----
+// ---- Vocabulary skill profile (receptive / productive / aural, #211) ----
 //
-// The 11 internal MasteryDimensions collapse weakest-wins into 3 learner-facing
-// modes. Orthogonal to the content funnel (which splits vocab/grammar): this
-// splits by HOW you practise. Q-A resolved against CONTEXT.md → Capability Type:
-// l1_to_id_choice is a receptive multiple-choice (recognise), contextual_cloze
-// is production (produce). `exposure` is excluded. Confidence-gated: a mode with
-// no evidence reads 'none' (not a false-amber gap).
+// The literature's receptive-vs-productive vocabulary distinction (Webb 2008;
+// Nation): you recognise far more words than you can produce, and closing that
+// "receptive-productive gap" is a core goal. So this is scoped to VOCABULARY
+// (item capabilities) and reports, per mode, the SHARE of your words you know
+// solidly (mastered or strengthening) — a proportion, NOT weakest-wins. The old
+// weakest-wins made every mode permanently red (one weak word pinned the whole
+// mode). Grammar has its own funnel/topics and is excluded here.
 
 export type SkillMode = 'recognise' | 'produce' | 'listen'
 
 export interface SkillModeGap {
   mode: SkillMode
-  label: MasteryLabel
+  /** Words known solidly (mastered + strengthening) in this mode. */
+  strong: number
+  /** Words with any state in this mode (the denominator). */
+  total: number
+  /** strong / total as a 0–100 percentage. */
+  strongPct: number
   confidence: MasteryConfidence
 }
 
-const DIMENSION_MODE: Partial<Record<MasteryDimension, SkillMode>> = {
+// Item (vocabulary) capability types → skill mode. Grammar/morphology types are
+// not item-sourced and never reach here.
+const ITEM_TYPE_MODE: Partial<Record<CapabilityType, SkillMode>> = {
   text_recognition: 'recognise',
   meaning_recall: 'recognise',
   l1_to_id_choice: 'recognise',
-  pattern_recognition: 'recognise',
   form_recall: 'produce',
   contextual_cloze: 'produce',
-  pattern_use: 'produce',
-  morphology: 'produce',
-  listening: 'listen',
+  audio_recognition: 'listen',
   dictation: 'listen',
-  // exposure (podcast_gist) is excluded — ambient, not a drilled skill mode.
 }
 
 const SKILL_MODES: SkillMode[] = ['recognise', 'produce', 'listen']
@@ -473,16 +477,27 @@ export function deriveSkillModeGaps(input: {
   now?: Date
 }): SkillModeGap[] {
   const now = input.now ?? new Date()
-  const dimensions = deriveMasteryDimensions(input.evidence, now)
+  const byMode = new Map<SkillMode, { strong: number; total: number }>(
+    SKILL_MODES.map((m) => [m, { strong: 0, total: 0 }]),
+  )
+  for (const cap of input.evidence) {
+    if (cap.sourceKind !== 'item') continue
+    const mode = ITEM_TYPE_MODE[cap.capabilityType]
+    if (!mode) continue
+    const bucket = byMode.get(mode)!
+    bucket.total += 1
+    const label = labelForCapability(cap, now)
+    if (label === 'mastered' || label === 'strengthening') bucket.strong += 1
+  }
   return SKILL_MODES.map((mode) => {
-    const inMode = dimensions.filter((d) => DIMENSION_MODE[d.dimension] === mode)
-    if (inMode.length === 0) {
-      return { mode, label: 'not_assessed' as MasteryLabel, confidence: 'none' as MasteryConfidence }
-    }
+    const { strong, total } = byMode.get(mode)!
     return {
       mode,
-      label: weakestLabel(inMode.map((d) => d.label)),
-      confidence: aggregateConfidence(inMode),
+      strong,
+      total,
+      strongPct: total === 0 ? 0 : Math.round((strong / total) * 100),
+      // Confidence gates the surface: <5 words in a mode = "not enough data yet".
+      confidence: total === 0 ? 'none' : total < 5 ? 'low' : total < 20 ? 'medium' : 'high',
     }
   })
 }
