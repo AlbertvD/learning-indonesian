@@ -3,6 +3,7 @@ import { deriveSkillModeGaps } from '../masteryModel'
 import type { CapabilityMasteryEvidence } from '../masteryModel'
 
 const NOW = new Date('2026-06-11T12:00:00Z')
+const RECENT = '2026-06-10T12:00:00Z'
 
 function ev(p: Partial<CapabilityMasteryEvidence>): CapabilityMasteryEvidence {
   return {
@@ -23,44 +24,43 @@ function ev(p: Partial<CapabilityMasteryEvidence>): CapabilityMasteryEvidence {
   }
 }
 
-describe('deriveSkillModeGaps', () => {
-  it('groups the 11 dimensions into recognise / produce / listen and labels each weakest-wins', () => {
+const mastered = { reviewCount: 5, stability: 20, lastReviewedAt: RECENT }
+const learning = { reviewCount: 1, stability: 1 }
+
+describe('deriveSkillModeGaps (vocabulary skill profile)', () => {
+  it('reports a per-mode proportion of solidly-known words (receptive-productive gap), never weakest-wins', () => {
     const evidence = [
-      // recognise: text_recognition mastered
-      ev({ capabilityType: 'text_recognition', sourceRef: 'a', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-10T12:00:00Z' }),
-      // produce: form_recall at_risk
-      ev({ capabilityType: 'form_recall', sourceRef: 'b', reviewCount: 3, lapseCount: 1 }),
-      // listen: audio_recognition (→ listening dimension) learning
-      ev({ capabilityType: 'audio_recognition', sourceRef: 'c', reviewCount: 1, stability: 1 }),
+      // recognise: 2 of 2 strong → 100%
+      ev({ capabilityType: 'text_recognition', ...mastered }),
+      ev({ capabilityType: 'meaning_recall', ...mastered }),
+      // produce: 1 of 2 strong → 50% (NOT pinned to the weak one)
+      ev({ capabilityType: 'form_recall', ...mastered }),
+      ev({ capabilityType: 'form_recall', ...learning }),
+      // listen: 0 of 1 strong → 0%
+      ev({ capabilityType: 'audio_recognition', ...learning }),
     ]
 
     const gaps = deriveSkillModeGaps({ evidence, now: NOW })
     const byMode = Object.fromEntries(gaps.map((g) => [g.mode, g]))
 
-    expect(byMode.recognise.label).toBe('mastered')
-    expect(byMode.produce.label).toBe('at_risk')
-    expect(byMode.listen.label).toBe('learning')
+    expect(byMode.recognise.strongPct).toBe(100)
+    expect(byMode.produce.strongPct).toBe(50)
+    expect(byMode.listen.strongPct).toBe(0)
   })
 
-  it('marks a mode with no evidence as confidence none (not a false gap)', () => {
+  it('only counts vocabulary (item) capabilities — grammar/pattern caps are excluded', () => {
     const evidence = [
-      ev({ capabilityType: 'text_recognition', sourceRef: 'a', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-10T12:00:00Z' }),
+      ev({ capabilityType: 'text_recognition', ...mastered }),
+      ev({ sourceKind: 'pattern', capabilityType: 'pattern_recognition', ...mastered }),
     ]
+    const recognise = deriveSkillModeGaps({ evidence, now: NOW }).find((g) => g.mode === 'recognise')!
+    expect(recognise.total).toBe(1)
+  })
 
-    const gaps = deriveSkillModeGaps({ evidence, now: NOW })
-    const listen = gaps.find((g) => g.mode === 'listen')!
-
+  it('gates a mode with no words as confidence none', () => {
+    const evidence = [ev({ capabilityType: 'text_recognition', ...mastered })]
+    const listen = deriveSkillModeGaps({ evidence, now: NOW }).find((g) => g.mode === 'listen')!
     expect(listen.confidence).toBe('none')
-  })
-
-  it('classifies l1_to_id_choice as recognise (receptive), not produce (Q-A)', () => {
-    const evidence = [
-      ev({ capabilityType: 'l1_to_id_choice', sourceRef: 'a', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-10T12:00:00Z' }),
-    ]
-    const gaps = deriveSkillModeGaps({ evidence, now: NOW })
-    const byMode = Object.fromEntries(gaps.map((g) => [g.mode, g]))
-
-    expect(byMode.recognise.label).toBe('mastered')
-    expect(byMode.produce.confidence).toBe('none')
+    expect(listen.total).toBe(0)
   })
 })

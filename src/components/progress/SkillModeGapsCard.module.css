@@ -1,23 +1,24 @@
 .card {
-  border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.2));
-  border-radius: 12px;
-  padding: 1rem;
-  background: var(--surface-1, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .title {
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-primary);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #868e96);
   margin: 0 0 0.5rem;
 }
 
 .row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.45rem 0;
+  padding: 0.6rem 0;
   border-top: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.12));
 }
 
@@ -25,35 +26,66 @@
   border-top: none;
 }
 
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
 .mode {
-  font-size: 0.88rem;
+  font-size: 0.9rem;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
-.badge {
+.desc {
+  font-size: 0.72rem;
+  color: var(--text-secondary, #868e96);
+  margin-left: 0.4rem;
+  font-weight: 400;
+}
+
+.pct {
+  font-size: 1.05rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.count {
   font-size: 0.74rem;
-  font-weight: 600;
-  padding: 0.15rem 0.55rem;
+  color: var(--text-secondary, #868e96);
+  margin-left: 0.35rem;
+  font-weight: 500;
+}
+
+.track {
+  height: 10px;
   border-radius: 999px;
-  white-space: nowrap;
+  background: var(--surface-2, rgba(128, 128, 128, 0.14));
+  overflow: hidden;
 }
 
-.strong {
-  background: color-mix(in srgb, var(--success, #2f9e44) 18%, transparent);
-  color: var(--success, #2f9e44);
-}
-
-.developing {
-  background: color-mix(in srgb, var(--warning, #e8590c) 16%, transparent);
-  color: var(--warning, #e8590c);
-}
-
-.weak {
-  background: color-mix(in srgb, var(--danger, #e03131) 16%, transparent);
-  color: var(--danger, #e03131);
+.fill {
+  height: 100%;
+  border-radius: 999px;
+  width: 0;
+  /* cool → green gradient, like the journey funnel */
+  background: linear-gradient(90deg, #4dabf7, #3bc9db 40%, #20c997 75%, #2f9e44);
+  animation: grow 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .none {
-  background: var(--surface-2, rgba(128, 128, 128, 0.14));
-  color: var(--text-secondary, #888);
+  font-size: 0.8rem;
+  color: var(--text-secondary, #868e96);
+  font-style: italic;
+}
+
+@keyframes grow {
+  to { width: var(--pct, 0%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill { animation: none; width: var(--pct, 0%); }
 }

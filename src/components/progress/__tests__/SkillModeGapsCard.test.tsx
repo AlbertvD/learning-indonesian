@@ -10,11 +10,11 @@ vi.mock('@/lib/analytics/mastery/masteryModel', () => ({
 describe('SkillModeGapsCard', () => {
   beforeEach(() => vi.clearAllMocks())
 
-  it('renders the three skill modes with a coarse strength, gating low-data modes', async () => {
+  it('renders a per-mode proportion gauge (receptive-productive gap), gating low-data modes', async () => {
     vi.mocked(getSkillModeGaps).mockResolvedValue([
-      { mode: 'recognise', label: 'mastered', confidence: 'high' },
-      { mode: 'produce', label: 'at_risk', confidence: 'medium' },
-      { mode: 'listen', label: 'not_assessed', confidence: 'none' },
+      { mode: 'recognise', strong: 90, total: 100, strongPct: 90, confidence: 'high' },
+      { mode: 'produce', strong: 30, total: 100, strongPct: 30, confidence: 'high' },
+      { mode: 'listen', strong: 0, total: 0, strongPct: 0, confidence: 'none' },
     ])
 
     render(<SkillModeGapsCard userId="user-1" />)
@@ -22,9 +22,10 @@ describe('SkillModeGapsCard', () => {
     expect(await screen.findByText('Herkennen')).toBeInTheDocument()
     expect(screen.getByText('Produceren')).toBeInTheDocument()
     expect(screen.getByText('Luisteren')).toBeInTheDocument()
-    // recognise = strong, produce = review, listen = insufficient data
-    expect(screen.getByText('Sterk')).toBeInTheDocument()
-    expect(screen.getByText('Herhalen')).toBeInTheDocument()
+    // proportions, not a fuzzy "weak" word — and the receptive (90%) vs productive (30%) gap
+    expect(screen.getByText('90%')).toBeInTheDocument()
+    expect(screen.getByText('30%')).toBeInTheDocument()
+    // a mode with no words is gated, not shown as a red 0%
     expect(screen.getByText('Nog te weinig data')).toBeInTheDocument()
     expect(getSkillModeGaps).toHaveBeenCalledWith('user-1')
   })
