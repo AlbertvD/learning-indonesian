@@ -59,7 +59,13 @@ export function MasteryJourney({ funnel, unitLabel }: MasteryJourneyProps) {
       {funnel.at_risk > 0 && (
         <>
           <div className={classes.atRisk}>
-            ⚠ {funnel.at_risk} {unitLabel} {T.progress.rungAtRisk.toLowerCase()}
+            <span className={classes.atRiskIcon}>⚠</span>
+            <div className={classes.atRiskBody}>
+              <span className={classes.atRiskTitle}>
+                {funnel.at_risk} {unitLabel} {T.progress.rungAtRisk.toLowerCase()}
+              </span>
+              <span className={classes.atRiskExplain}>{T.progress.atRiskExplain}</span>
+            </div>
           </div>
           <InsightTips area="at_risk" defaultOpen={false} />
         </>
