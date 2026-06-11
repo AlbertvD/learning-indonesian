@@ -167,7 +167,7 @@ function dimensionForCapability(type: CapabilityType): MasteryDimension {
 }
 
 function labelForCapability(evidence: CapabilityMasteryEvidence, now: Date): MasteryLabel {
-  if (evidence.consecutiveFailureCount > 0 || evidence.lapseCount > 0) return 'at_risk'
+  if (evidence.consecutiveFailureCount > 0) return 'at_risk'
   if (evidence.reviewCount === 0) {
     return evidence.lessonActivated ? 'introduced' : 'not_assessed'
   }

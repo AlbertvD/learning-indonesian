@@ -2023,7 +2023,6 @@ language sql stable security invoker as $$
                and review_count >= 4
                and coalesce(stability, 0) >= 14
                and last_reviewed_at >= now() - interval '30 days'
-               and coalesce(lapse_count, 0) = 0
                and coalesce(consecutive_failure_count, 0) = 0
            )::int as mastered_count,
            -- practiced numerator: any review at all (review_count >= 1), over the
@@ -2191,7 +2190,7 @@ create or replace function indonesian._mastery_label(
 )
 returns text language sql immutable as $$
   select case
-    when p_consec > 0 or p_lapse > 0 then 'at_risk'
+    when p_consec > 0 then 'at_risk'
     when coalesce(p_review_count, 0) = 0 then 'introduced'
     when p_review_count >= 4 and coalesce(p_stability, 0) >= 14
          and p_last_reviewed is not null and p_last_reviewed > p_now - interval '30 days' then 'mastered'

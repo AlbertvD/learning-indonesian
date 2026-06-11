@@ -36,9 +36,9 @@ describe('deriveWeeklyMovement', () => {
     expect(m.advanced).toBe(1) // distinct capability, counted once
   })
 
-  it('counts a slip to at_risk (a lapsed review)', () => {
+  it('counts a slip to at_risk (a failed review → currently failing)', () => {
     const events = [
-      evt('cap-2', { reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-10T12:00:00Z' }, { reviewCount: 6, lapseCount: 1 }),
+      evt('cap-2', { reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-10T12:00:00Z' }, { reviewCount: 6, lapseCount: 1, consecutiveFailureCount: 1 }),
     ]
     expect(deriveWeeklyMovement({ events, now: NOW })).toEqual({
       advanced: 0,

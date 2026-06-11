@@ -16,9 +16,11 @@ export function isRecent(iso: string | null | undefined, now: Date): boolean {
 }
 
 // The one strict, level-independent `mastered` rule (CONTEXT.md → Mastered).
-// Excludes the at_risk override — a lapse / consecutive failure makes a cap
-// at_risk, never mastered — so callers that need the full label apply that
-// check first.
+// Excludes the at_risk override — a *current* failure (consecutiveFailureCount)
+// makes a cap at_risk, never mastered — so callers that need the full label
+// apply that check first. A past lapse does NOT block mastery: once relearned to
+// the bar, a previously-lapsed word counts as mastered again (the at_risk signal
+// is self-healing — docs/plans/2026-06-11-at-risk-currently-failing.md).
 export function isCapabilityMastered(input: {
   reviewCount: number
   stability?: number | null
@@ -26,6 +28,6 @@ export function isCapabilityMastered(input: {
   lapseCount: number
   consecutiveFailureCount: number
 }, now: Date = new Date()): boolean {
-  if (input.consecutiveFailureCount > 0 || input.lapseCount > 0) return false
+  if (input.consecutiveFailureCount > 0) return false
   return input.reviewCount >= 4 && (input.stability ?? 0) >= 14 && isRecent(input.lastReviewedAt, now)
 }

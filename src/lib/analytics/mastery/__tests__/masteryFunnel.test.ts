@@ -54,10 +54,10 @@ describe('deriveMasteryFunnel', () => {
     expect(funnel.vocabulary.learning).toBe(0)
   })
 
-  it('marks a word at_risk when any of its caps has lapsed', () => {
+  it('marks a word at_risk when any of its caps is currently failing', () => {
     const evidence = [
       ev({ sourceKind: 'item', sourceRef: 'pergi', reviewCount: 5, stability: 20, lastReviewedAt: '2026-06-09T12:00:00Z' }),
-      ev({ sourceKind: 'item', sourceRef: 'pergi', reviewCount: 2, lapseCount: 1 }),
+      ev({ sourceKind: 'item', sourceRef: 'pergi', reviewCount: 2, consecutiveFailureCount: 1 }),
     ]
 
     const funnel = deriveMasteryFunnel({ evidence, now: NOW })
