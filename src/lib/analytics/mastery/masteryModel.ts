@@ -610,14 +610,18 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
   const db = () => client.schema('indonesian')
 
   async function capabilityRowsByIds(ids: string[]): Promise<LearningCapabilityRow[]> {
-    if (ids.length === 0) return []
-    const { data, error } = await db()
-      .from('learning_capabilities')
-      .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id')
-      .in('id', ids)
-      .is('retired_at', null)
-    if (error) throw error
-    return (data ?? []) as LearningCapabilityRow[]
+    // Chunk the .in() — a learner can have thousands of capabilities, and an
+    // un-chunked .in('id', [thousands]) blows the request-URL length limit
+    // ("TypeError: Load failed" in the browser). Mirrors learnerStates below.
+    return chunkedIn<LearningCapabilityRow>(
+      'learning_capabilities',
+      'id',
+      ids,
+      (b) => b
+        .select('id, canonical_key, source_kind, source_ref, capability_type, modality, readiness_status, publication_status, lesson_id')
+        .is('retired_at', null),
+      client,
+    )
   }
 
   async function learnerStates(userId: string, capabilityIds: string[]): Promise<LearnerCapabilityStateRow[]> {
