@@ -519,7 +519,10 @@ export interface MovementState {
 }
 
 export interface WeeklyReviewEvent {
-  capabilityId: string
+  // The learnable unit (word / grammar topic). Counts dedup on this — NOT on
+  // capability_id — so movement stays in the same unit as the funnel (a word has
+  // several capabilities; per-cap counts overstate and can exceed words in play).
+  sourceRef: string
   before: MovementState
   after: MovementState
 }
@@ -574,9 +577,9 @@ export function deriveWeeklyMovement(input: {
   for (const event of input.events) {
     const before = labelFromState(event.before, now)
     const after = labelFromState(event.after, now)
-    if (LABEL_RANK[after] > LABEL_RANK[before]) advanced.add(event.capabilityId)
-    if (after === 'mastered' && before !== 'mastered') reachedMastered.add(event.capabilityId)
-    if (after === 'at_risk' && before !== 'at_risk') slipped.add(event.capabilityId)
+    if (LABEL_RANK[after] > LABEL_RANK[before]) advanced.add(event.sourceRef)
+    if (after === 'mastered' && before !== 'mastered') reachedMastered.add(event.sourceRef)
+    if (after === 'at_risk' && before !== 'at_risk') slipped.add(event.sourceRef)
   }
   return {
     advanced: advanced.size,
