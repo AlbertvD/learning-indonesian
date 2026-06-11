@@ -350,6 +350,60 @@ export function deriveMasteryOverview(input: {
   }
 }
 
+// ---- Mastery progression funnels (Learner Progress Axis 2, #208/#209) ----
+//
+// The ladder shown as a distribution: each learnable unit (a vocab word or a
+// grammar topic — keyed by source_ref) is rolled up weakest-wins to one rung,
+// then counted per rung. Split by content type so vocab and grammar (which grow
+// at different rates) read separately. Derived client-side over the evidence
+// getMasteryOverview already fetches (data-architect Q-C) — no RPC.
+
+export type MasteryFunnel = Record<MasteryLabel, number>
+
+export interface MasteryFunnels {
+  vocabulary: MasteryFunnel
+  grammar: MasteryFunnel
+}
+
+const GRAMMAR_SOURCE_KINDS = new Set(['pattern', 'affixed_form_pair'])
+
+function emptyFunnel(): MasteryFunnel {
+  return {
+    not_assessed: 0,
+    introduced: 0,
+    learning: 0,
+    strengthening: 0,
+    mastered: 0,
+    at_risk: 0,
+  }
+}
+
+export function deriveMasteryFunnel(input: {
+  evidence: CapabilityMasteryEvidence[]
+  now?: Date
+}): MasteryFunnels {
+  const now = input.now ?? new Date()
+  const vocab = new Map<string, CapabilityMasteryEvidence[]>()
+  const grammar = new Map<string, CapabilityMasteryEvidence[]>()
+  for (const e of input.evidence) {
+    const bucket = e.sourceKind === 'item'
+      ? vocab
+      : GRAMMAR_SOURCE_KINDS.has(e.sourceKind)
+        ? grammar
+        : null
+    if (!bucket) continue
+    bucket.set(e.sourceRef, [...(bucket.get(e.sourceRef) ?? []), e])
+  }
+  const tally = (units: Map<string, CapabilityMasteryEvidence[]>): MasteryFunnel => {
+    const funnel = emptyFunnel()
+    for (const caps of units.values()) {
+      funnel[weakestLabel(caps.map(cap => labelForCapability(cap, now)))] += 1
+    }
+    return funnel
+  }
+  return { vocabulary: tally(vocab), grammar: tally(grammar) }
+}
+
 function toEvidence(input: {
   capabilities: LearningCapabilityRow[]
   states: LearnerCapabilityStateRow[]
@@ -457,6 +511,19 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
       const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
       return deriveMasteryOverview({ userId, evidence })
     },
+
+    async getMasteryFunnel(userId: string): Promise<MasteryFunnels> {
+      const { data: stateRows, error: stateError } = await db()
+        .from('learner_capability_state')
+        .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
+        .eq('user_id', userId)
+      if (stateError) throw stateError
+      const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
+      const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
+      const activatedLessonsSet = await listActivatedLessons(userId, client)
+      const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
+      return deriveMasteryFunnel({ evidence })
+    },
   }
 }
 
@@ -471,6 +538,10 @@ export async function getContentUnitMastery(contentUnitId: string, userId: strin
 
 export async function getPatternMastery(patternId: string, userId: string): Promise<PatternMastery> {
   return (await defaultModel()).getPatternMastery(patternId, userId)
+}
+
+export async function getMasteryFunnel(userId: string): Promise<MasteryFunnels> {
+  return (await defaultModel()).getMasteryFunnel(userId)
 }
 
 export async function getMasteryOverview(userId: string): Promise<MasteryOverview> {

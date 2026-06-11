@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 import { notifications } from '@mantine/notifications'
 import { useAuthStore } from '@/stores/authStore'
-import { learnerStateService } from '@/services/learnerStateService'
 import { learnerProgressService } from '@/services/learnerProgressService'
 import { lessonService } from '@/services/lessonService'
 import { getLessonsBasic } from '@/lib/lessons'
@@ -13,7 +12,6 @@ export interface ProgressData {
   // Wave 1 — required, blocks primary render
   wave1Loading: boolean
   wave1Error: Error | null
-  itemsByStage: { new: number; anchoring: number; retrieving: number; productive: number; maintenance: number }
   skillStats: { avgRecognition: number; avgRecall: number; avgStability: number }
   lessonsCompleted: { completed: number; total: number }
   forecast: { date: Date; count: number }[]
@@ -32,13 +30,12 @@ export interface ProgressData {
   avgLatencyMs: { currentWeekMs: number | null; priorWeekMs: number | null } | null
 }
 
-type Wave1State = Pick<ProgressData, 'wave1Loading' | 'wave1Error' | 'itemsByStage' | 'skillStats' | 'lessonsCompleted' | 'forecast'>
+type Wave1State = Pick<ProgressData, 'wave1Loading' | 'wave1Error' | 'skillStats' | 'lessonsCompleted' | 'forecast'>
 type Wave2State = Pick<ProgressData, 'wave2Loading' | 'wave2Error' | 'accuracyBySkillType' | 'lapsePrevention' | 'vulnerableItems' | 'avgLatencyMs'>
 
 const defaultWave1: Wave1State = {
   wave1Loading: true,
   wave1Error: null,
-  itemsByStage: { new: 0, anchoring: 0, retrieving: 0, productive: 0, maintenance: 0 },
   skillStats: { avgRecognition: 0, avgRecall: 0, avgStability: 0 },
   lessonsCompleted: { completed: 0, total: 0 },
   forecast: [],
@@ -84,8 +81,7 @@ export function useProgressData(): ProgressData {
       // --- Wave 1 ---
       try {
         const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-        const [itemStates, memoryHealth, forecastSparse, lessonProgressData, lessonsData] = await Promise.all([
-          learnerStateService.getItemStates(user!.id),
+        const [memoryHealth, forecastSparse, lessonProgressData, lessonsData] = await Promise.all([
           // Replaces the legacy learner_skill_state batch fetch + JS aggregation.
           // getMemoryHealth returns 2-decimal-rounded stabilities (architect NIT-3 v4).
           learnerProgressService.getMemoryHealth({ userId: user!.id }),
@@ -93,11 +89,6 @@ export function useProgressData(): ProgressData {
           lessonService.getUserLessonProgress(user!.id),
           getLessonsBasic(),
         ])
-
-        const itemsByStage = { new: 0, anchoring: 0, retrieving: 0, productive: 0, maintenance: 0 }
-        for (const state of itemStates) {
-          itemsByStage[state.stage]++
-        }
 
         const skillStats = {
           avgRecognition: memoryHealth.avgRecognitionStability,
@@ -112,7 +103,6 @@ export function useProgressData(): ProgressData {
         setWave1State({
           wave1Loading: false,
           wave1Error: null,
-          itemsByStage,
           skillStats,
           lessonsCompleted,
           forecast,

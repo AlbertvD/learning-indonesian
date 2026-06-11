@@ -9,8 +9,8 @@ import { useProgressData } from '@/hooks/useProgressData'
 import { useT } from '@/hooks/useT'
 import { useAuthStore } from '@/stores/authStore'
 import { PracticeTimeCard } from '@/components/progress/PracticeTimeCard'
+import { MasteryFunnelCard } from '@/components/progress/MasteryFunnelCard'
 import { MemoryHealthHero } from '@/components/progress/MemoryHealthHero'
-import { MasteryFunnel } from '@/components/progress/MasteryFunnel'
 import { VulnerableItemsList } from '@/components/progress/VulnerableItemsList'
 import { ReviewForecastChart } from '@/components/progress/ReviewForecastChart'
 import { DetailedMetrics } from '@/components/progress/DetailedMetrics'
@@ -55,9 +55,11 @@ export function Progress() {
           />
         </section>
 
-        <section className={classes.section}>
-          <MasteryFunnel itemsByStage={data.itemsByStage} />
-        </section>
+        {user && (
+          <section className={classes.section}>
+            <MasteryFunnelCard userId={user.id} />
+          </section>
+        )}
 
         <section className={classes.section}>
           <VulnerableItemsList
