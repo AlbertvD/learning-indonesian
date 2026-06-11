@@ -1,0 +1,88 @@
+.card {
+  margin-top: 0.75rem;
+  border-radius: 12px;
+  background: var(--surface-1, rgba(128, 128, 128, 0.05));
+  /* thin gradient spine — the same cool→green language as the gauges/funnel */
+  border-left: 3px solid transparent;
+  border-image: linear-gradient(180deg, #4dabf7, #20c997, #2f9e44) 1;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.bulb {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.chevron {
+  transition: transform 0.2s ease;
+  color: var(--text-secondary, #868e96);
+  font-size: 0.7rem;
+}
+
+.chevron.open {
+  transform: rotate(90deg);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0.75rem 0.7rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tip {
+  display: flex;
+  gap: 0.55rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--text-secondary, #495057);
+  opacity: 0;
+  transform: translateY(4px);
+  animation: tipIn 0.35s ease forwards;
+}
+
+.tip::before {
+  content: '';
+  flex: none;
+  margin-top: 0.45rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #20c997, #2f9e44);
+}
+
+.tip:nth-child(1) { animation-delay: 0.02s; }
+.tip:nth-child(2) { animation-delay: 0.08s; }
+.tip:nth-child(3) { animation-delay: 0.14s; }
+.tip:nth-child(4) { animation-delay: 0.20s; }
+
+@keyframes tipIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tip { animation: none; opacity: 1; transform: none; }
+  .chevron { transition: none; }
+}

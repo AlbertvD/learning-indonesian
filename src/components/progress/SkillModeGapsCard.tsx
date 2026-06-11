@@ -14,6 +14,7 @@ import {
   type SkillMode,
 } from '@/lib/analytics/mastery/masteryModel'
 import { logError } from '@/lib/logger'
+import { InsightTips } from './InsightTips'
 import classes from './SkillModeGapsCard.module.css'
 
 export interface SkillModeGapsCardProps {
@@ -48,6 +49,11 @@ export function SkillModeGapsCard({ userId }: SkillModeGapsCardProps) {
     listen: T.progress.modeListenDesc,
   }
 
+  // The weakest mode with enough data → where study tips are most relevant.
+  const weakest = gaps
+    .filter((g) => g.confidence !== 'none')
+    .sort((a, b) => a.strongPct - b.strongPct)[0]
+
   return (
     <div className={classes.card}>
       <h3 className={classes.title}>{T.progress.skillGapsTitle}</h3>
@@ -80,6 +86,8 @@ export function SkillModeGapsCard({ userId }: SkillModeGapsCardProps) {
           )}
         </div>
       ))}
+
+      {weakest && <InsightTips area={weakest.mode} />}
     </div>
   )
 }
