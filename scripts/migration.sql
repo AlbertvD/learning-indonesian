@@ -2204,9 +2204,14 @@ create or replace function indonesian.get_weekly_movement(
   p_timezone text
 )
 returns json language sql stable security invoker as $$
+  -- Counts are distinct SOURCE_REF (the learnable unit — a word / grammar topic),
+  -- NOT distinct capability_id: one word has several capabilities (recognise /
+  -- recall / produce / listen), so per-cap counts overstate and can EXCEED the
+  -- word count the voortgang funnel shows. A word counts as advanced if any of
+  -- its caps advanced this week. Keeps the home pulse in the funnel's unit.
   with ev as (
     select
-      capability_id,
+      c.source_ref,
       indonesian._mastery_label(
         coalesce((state_before_json->>'reviewCount')::int, 0),
         coalesce((state_before_json->>'lapseCount')::int, 0),
@@ -2223,21 +2228,22 @@ returns json language sql stable security invoker as $$
         nullif(state_after_json->>'lastReviewedAt', '')::timestamptz,
         now()
       ) as after_label
-    from indonesian.capability_review_events
-    where user_id = p_user_id
-      and created_at >= (date_trunc('week', now() at time zone p_timezone) at time zone p_timezone)
+    from indonesian.capability_review_events e
+    join indonesian.learning_capabilities c on c.id = e.capability_id
+    where e.user_id = p_user_id
+      and e.created_at >= (date_trunc('week', now() at time zone p_timezone) at time zone p_timezone)
   ),
   ranked as (
     select
-      capability_id, before_label, after_label,
+      source_ref, before_label, after_label,
       (case before_label when 'not_assessed' then 0 when 'introduced' then 1 when 'learning' then 2 when 'at_risk' then 2 when 'strengthening' then 3 when 'mastered' then 4 end) as rb,
       (case after_label  when 'not_assessed' then 0 when 'introduced' then 1 when 'learning' then 2 when 'at_risk' then 2 when 'strengthening' then 3 when 'mastered' then 4 end) as ra
     from ev
   )
   select json_build_object(
-    'advanced', count(distinct capability_id) filter (where ra > rb),
-    'reached_mastered', count(distinct capability_id) filter (where after_label = 'mastered' and before_label <> 'mastered'),
-    'slipped', count(distinct capability_id) filter (where after_label = 'at_risk' and before_label <> 'at_risk')
+    'advanced', count(distinct source_ref) filter (where ra > rb),
+    'reached_mastered', count(distinct source_ref) filter (where after_label = 'mastered' and before_label <> 'mastered'),
+    'slipped', count(distinct source_ref) filter (where after_label = 'at_risk' and before_label <> 'at_risk')
   ) from ranked;
 $$;
 

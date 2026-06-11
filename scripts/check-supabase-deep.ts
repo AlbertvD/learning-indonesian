@@ -1486,18 +1486,22 @@ for (const exerciseType of ['listening_mcq', 'dictation']) {
     const now = new Date()
     const mondayOffset = (now.getUTCDay() + 6) % 7
     const weekStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - mondayOffset))
+    // Dedup on SOURCE_REF (the word / grammar topic), NOT capability_id — one word
+    // has several caps, so per-cap counts overstate vs the voortgang funnel's word
+    // unit. Mirrors get_weekly_movement's `count(distinct source_ref)` (the join).
     const { data: events, error: evErr } = await supabase.schema('indonesian')
       .from('capability_review_events')
-      .select('capability_id, state_before_json, state_after_json')
+      .select('state_before_json, state_after_json, learning_capabilities!inner(source_ref)')
       .eq('user_id', TEST_USER_ID)
       .gte('created_at', weekStart.toISOString())
     if (evErr) throw new Error(evErr.message)
     const adv = new Set<string>(), reached = new Set<string>(), slip = new Set<string>()
-    for (const e of (events ?? []) as Array<{ capability_id: string; state_before_json: StateJson; state_after_json: StateJson }>) {
+    for (const e of (events ?? []) as Array<{ state_before_json: StateJson; state_after_json: StateJson; learning_capabilities: { source_ref: string } }>) {
       const b = e.state_before_json, a = e.state_after_json
-      if (rankOf(a, now) > rankOf(b, now)) adv.add(e.capability_id)
-      if (isMastered(a, now) && !isMastered(b, now)) reached.add(e.capability_id)
-      if (isAtRisk(a) && !isAtRisk(b)) slip.add(e.capability_id)
+      const ref = e.learning_capabilities.source_ref
+      if (rankOf(a, now) > rankOf(b, now)) adv.add(ref)
+      if (isMastered(a, now) && !isMastered(b, now)) reached.add(ref)
+      if (isAtRisk(a) && !isAtRisk(b)) slip.add(ref)
     }
     const { data: rpc, error: rpcErr } = await supabase.schema('indonesian')
       .rpc('get_weekly_movement', { p_user_id: TEST_USER_ID, p_timezone: 'UTC' })
