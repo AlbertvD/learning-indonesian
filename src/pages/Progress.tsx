@@ -9,6 +9,7 @@ import { useProgressData } from '@/hooks/useProgressData'
 import { useT } from '@/hooks/useT'
 import { useAuthStore } from '@/stores/authStore'
 import { PracticeTimeCard } from '@/components/progress/PracticeTimeCard'
+import { WeeklyRecapCard } from '@/components/progress/WeeklyRecapCard'
 import { MasteryFunnelCard } from '@/components/progress/MasteryFunnelCard'
 import { GrammarTopicsList } from '@/components/progress/GrammarTopicsList'
 import { MemoryHealthHero } from '@/components/progress/MemoryHealthHero'
@@ -43,6 +44,15 @@ export function Progress() {
         {user && (
           <section className={classes.section}>
             <PracticeTimeCard
+              userId={user.id}
+              timezone={Intl.DateTimeFormat().resolvedOptions().timeZone}
+            />
+          </section>
+        )}
+
+        {user && (
+          <section className={classes.section}>
+            <WeeklyRecapCard
               userId={user.id}
               timezone={Intl.DateTimeFormat().resolvedOptions().timeZone}
             />

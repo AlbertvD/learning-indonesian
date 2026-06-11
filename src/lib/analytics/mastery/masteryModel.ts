@@ -435,6 +435,89 @@ export function deriveGrammarTopics(input: {
     .sort((a, b) => a.slug.localeCompare(b.slug))
 }
 
+// ---- Weekly movement (the fast pulse on the slow axis, #210) ----
+//
+// Rung transitions recomputed from the FSRS state snapshots on each review event
+// (ADR 0016 — no label_history table). A capability "advanced" if any review in
+// the window moved it up the ladder; counts are distinct-capability so multiple
+// reviews of one word in a week count once. The server-side get_weekly_movement
+// RPC mirrors this in SQL; this pure function is the ADR-0015 parity reference.
+
+export interface MovementState {
+  reviewCount: number
+  lapseCount: number
+  consecutiveFailureCount: number
+  stability: number | null
+  lastReviewedAt: string | null
+}
+
+export interface WeeklyReviewEvent {
+  capabilityId: string
+  before: MovementState
+  after: MovementState
+}
+
+export interface WeeklyMovement {
+  advanced: number
+  reachedMastered: number
+  slipped: number
+}
+
+const LABEL_RANK: Record<MasteryLabel, number> = {
+  not_assessed: 0,
+  introduced: 1,
+  learning: 2,
+  at_risk: 2,
+  strengthening: 3,
+  mastered: 4,
+}
+
+// A review event's capability is, by definition, lesson-activated (it is being
+// reviewed); the other evidence fields don't affect labelForCapability.
+function labelFromState(state: MovementState, now: Date): MasteryLabel {
+  return labelForCapability(
+    {
+      capabilityId: '',
+      canonicalKey: '',
+      sourceKind: 'item',
+      sourceRef: '',
+      capabilityType: 'text_recognition',
+      modality: 'text',
+      readinessStatus: 'ready',
+      publicationStatus: 'published',
+      lessonActivated: true,
+      reviewCount: state.reviewCount,
+      lapseCount: state.lapseCount,
+      consecutiveFailureCount: state.consecutiveFailureCount,
+      stability: state.stability,
+      lastReviewedAt: state.lastReviewedAt,
+    },
+    now,
+  )
+}
+
+export function deriveWeeklyMovement(input: {
+  events: WeeklyReviewEvent[]
+  now?: Date
+}): WeeklyMovement {
+  const now = input.now ?? new Date()
+  const advanced = new Set<string>()
+  const reachedMastered = new Set<string>()
+  const slipped = new Set<string>()
+  for (const event of input.events) {
+    const before = labelFromState(event.before, now)
+    const after = labelFromState(event.after, now)
+    if (LABEL_RANK[after] > LABEL_RANK[before]) advanced.add(event.capabilityId)
+    if (after === 'mastered' && before !== 'mastered') reachedMastered.add(event.capabilityId)
+    if (after === 'at_risk' && before !== 'at_risk') slipped.add(event.capabilityId)
+  }
+  return {
+    advanced: advanced.size,
+    reachedMastered: reachedMastered.size,
+    slipped: slipped.size,
+  }
+}
+
 function toEvidence(input: {
   capabilities: LearningCapabilityRow[]
   states: LearnerCapabilityStateRow[]
@@ -604,6 +687,22 @@ export async function getMasteryFunnel(userId: string): Promise<MasteryFunnels> 
 
 export async function getGrammarTopics(userId: string): Promise<GrammarTopic[]> {
   return (await defaultModel()).getGrammarTopics(userId)
+}
+
+// Server-side aggregation (ADR 0015 — small result, bounded window): the SQL
+// get_weekly_movement mirrors labelForCapability over the event JSON snapshots.
+export async function getWeeklyMovement(userId: string, timezone: string): Promise<WeeklyMovement> {
+  const { supabase } = await import('@/lib/supabase')
+  const { data, error } = await supabase
+    .schema('indonesian')
+    .rpc('get_weekly_movement', { p_user_id: userId, p_timezone: timezone })
+  if (error) throw error
+  const row = (data ?? {}) as { advanced?: number; reached_mastered?: number; slipped?: number }
+  return {
+    advanced: row.advanced ?? 0,
+    reachedMastered: row.reached_mastered ?? 0,
+    slipped: row.slipped ?? 0,
+  }
 }
 
 export async function getMasteryOverview(userId: string): Promise<MasteryOverview> {

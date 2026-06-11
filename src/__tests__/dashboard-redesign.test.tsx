@@ -23,12 +23,14 @@ import { vi, describe, it, expect, beforeEach } from 'vitest'
 // Mock services at the module level
 vi.mock('@/services/learnerStateService')
 vi.mock('@/lib/analytics/engagement')
+vi.mock('@/lib/analytics/mastery/masteryModel')
 vi.mock('@/services/lessonService')
 vi.mock('@/lib/lessons/adapter')
 vi.mock('@/lib/supabase')
 
 import { learnerStateService } from '@/services/learnerStateService'
 import { engagement } from '@/lib/analytics/engagement'
+import { getWeeklyMovement } from '@/lib/analytics/mastery/masteryModel'
 import { lessonService } from '@/services/lessonService'
 import * as lessonsAdapter from '@/lib/lessons/adapter'
 import { Dashboard } from '@/pages/Dashboard'
@@ -63,6 +65,7 @@ beforeEach(() => {
   vi.clearAllMocks()
   vi.mocked(learnerStateService.getLapsingItems).mockResolvedValue({ count: 0 })
   vi.mocked(engagement.practiceTime).mockResolvedValue(practiceWith(0))
+  vi.mocked(getWeeklyMovement).mockResolvedValue({ advanced: 0, reachedMastered: 0, slipped: 0 })
   vi.mocked(lessonService.getUserLessonProgress).mockResolvedValue([])
   vi.mocked(lessonsAdapter.getLessonsBasic).mockResolvedValue([])
 })

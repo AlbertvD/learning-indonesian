@@ -2154,6 +2154,85 @@ $$;
 
 grant execute on function indonesian.get_practice_time(uuid, text) to authenticated;
 
+-- ============================================================
+-- Weekly movement (#210) — the fast pulse on the slow Mastery axis
+-- ============================================================
+-- Rung transitions recomputed from the FSRS state snapshots already stored on
+-- each review event (ADR 0016 — no label_history table). _mastery_label mirrors
+-- labelForCapability (src/lib/analytics/mastery/masteryModel.ts); the two are
+-- kept in lockstep by an ADR-0015 parity check in check-supabase-deep.ts.
+-- A review event's capability is by definition lesson-activated, so reviewCount=0
+-- maps to 'introduced' (the activation distinction is irrelevant here).
+-- Indexes promoted from the paper-trail file so migration.sql is self-contained.
+CREATE INDEX IF NOT EXISTS cre_user_created_idx
+  ON indonesian.capability_review_events(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS cre_user_capability_created_idx
+  ON indonesian.capability_review_events(user_id, capability_id, created_at);
+
+create or replace function indonesian._mastery_label(
+  p_review_count int,
+  p_lapse int,
+  p_consec int,
+  p_stability double precision,
+  p_last_reviewed timestamptz,
+  p_now timestamptz
+)
+returns text language sql immutable as $$
+  select case
+    when p_consec > 0 or p_lapse > 0 then 'at_risk'
+    when coalesce(p_review_count, 0) = 0 then 'introduced'
+    when p_review_count >= 4 and coalesce(p_stability, 0) >= 14
+         and p_last_reviewed is not null and p_last_reviewed > p_now - interval '30 days' then 'mastered'
+    when p_review_count >= 3 or coalesce(p_stability, 0) >= 5 then 'strengthening'
+    else 'learning'
+  end;
+$$;
+
+create or replace function indonesian.get_weekly_movement(
+  p_user_id uuid,
+  p_timezone text
+)
+returns json language sql stable security invoker as $$
+  with ev as (
+    select
+      capability_id,
+      indonesian._mastery_label(
+        coalesce((state_before_json->>'reviewCount')::int, 0),
+        coalesce((state_before_json->>'lapseCount')::int, 0),
+        coalesce((state_before_json->>'consecutiveFailureCount')::int, 0),
+        nullif(state_before_json->>'stability', '')::double precision,
+        nullif(state_before_json->>'lastReviewedAt', '')::timestamptz,
+        now()
+      ) as before_label,
+      indonesian._mastery_label(
+        coalesce((state_after_json->>'reviewCount')::int, 0),
+        coalesce((state_after_json->>'lapseCount')::int, 0),
+        coalesce((state_after_json->>'consecutiveFailureCount')::int, 0),
+        nullif(state_after_json->>'stability', '')::double precision,
+        nullif(state_after_json->>'lastReviewedAt', '')::timestamptz,
+        now()
+      ) as after_label
+    from indonesian.capability_review_events
+    where user_id = p_user_id
+      and created_at >= (date_trunc('week', now() at time zone p_timezone) at time zone p_timezone)
+  ),
+  ranked as (
+    select
+      capability_id, before_label, after_label,
+      (case before_label when 'not_assessed' then 0 when 'introduced' then 1 when 'learning' then 2 when 'at_risk' then 2 when 'strengthening' then 3 when 'mastered' then 4 end) as rb,
+      (case after_label  when 'not_assessed' then 0 when 'introduced' then 1 when 'learning' then 2 when 'at_risk' then 2 when 'strengthening' then 3 when 'mastered' then 4 end) as ra
+    from ev
+  )
+  select json_build_object(
+    'advanced', count(distinct capability_id) filter (where ra > rb),
+    'reached_mastered', count(distinct capability_id) filter (where after_label = 'mastered' and before_label <> 'mastered'),
+    'slipped', count(distinct capability_id) filter (where after_label = 'at_risk' and before_label <> 'at_risk')
+  ) from ranked;
+$$;
+
+grant execute on function indonesian._mastery_label(int, int, int, double precision, timestamptz, timestamptz) to authenticated;
+grant execute on function indonesian.get_weekly_movement(uuid, text) to authenticated;
+
 -- (PR 5: the lesson_page_blocks column-drop DO blocks — source_progress_event
 --  and capability_key_refs — were removed; the whole table is dropped below.)
 
