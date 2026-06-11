@@ -1,10 +1,9 @@
 // src/components/page/primitives/EmptyState.tsx
 // Centered icon + message + optional CTA for blank slates — the primitive
-// shape behind empty leaderboards, zero-review queues, empty card-set
-// lists, etc. Absorbs the `<Center h="20vh"><Text c="dimmed">…</Text>
-// </Center>` pattern used ad-hoc across pages (see Leaderboard.tsx:119-123)
-// and adds an icon affordance plus an optional CTA so the empty state
-// isn't just a dimmed line of text.
+// shape behind zero-review queues, empty card-set lists, empty podcast
+// libraries, etc. Absorbs the `<Center h="20vh"><Text c="dimmed">…</Text>
+// </Center>` pattern used ad-hoc across pages and adds an icon affordance
+// plus an optional CTA so the empty state isn't just a dimmed line of text.
 //
 // Structure is a vertical stack: icon → message → optional CTA. All three
 // slots are centered; the parent controls outer height (typical callers
@@ -15,7 +14,7 @@
 // the app carries a Tabler icon above the copy; making it optional would
 // invite callers to drop a bare line of dimmed text and lose the visual
 // anchor. `cta` is optional because some blank slates have nothing to do
-// (e.g. "no entries on this leaderboard tab yet" — the user can't add one).
+// (e.g. "no reviews due right now" — the user can't add one).
 //
 // No @container / @media / @layer — the stack looks the same on every
 // viewport. See docs/plans/2026-04-24-page-framework-design.md §3 (item 11).

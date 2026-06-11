@@ -3239,3 +3239,18 @@ comment on column indonesian.dialogue_clozes.translation_nl is
   'Dutch translation (NL). Added PR 6 (shape settled here). Populated by the Capability Stage in the capability-stage redesign (#98/#99), not PR 6. NULL until then.';
 comment on column indonesian.dialogue_clozes.translation_en is
   'English translation (EN). Added PR 6 (shape settled here). Populated by the Capability Stage in the capability-stage redesign (#98/#99). NULL until then.';
+
+-- ============================================================
+-- Analytics redesign teardown (#212) — retire legacy item-state + leaderboard
+-- ============================================================
+-- learner_item_state (the legacy 5-stage item model) and the leaderboard view
+-- are retired by the two-axis learner-progress analytics redesign (#206-#212).
+-- Data-architect verified the drop is safe: no trigger/scheduler/pipeline writes
+-- the table; its only app writer (learnerStateService.upsertItemState) is removed
+-- in the same change. Build-stage: disposable data (CLAUDE.md Operating Context).
+-- The leaderboard view reads learner_item_state, so it drops first (CASCADE on the
+-- table covers its index/grant/RLS/policy). The CREATE blocks above are left as
+-- create-then-dropped here rather than excised inline — a follow-up can remove
+-- them; the end state (both gone) is idempotent.
+drop view if exists indonesian.leaderboard;
+drop table if exists indonesian.learner_item_state cascade;

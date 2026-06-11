@@ -32,7 +32,7 @@ const EXPECTED_TABLES = [
   'learning_items',
   'item_contexts',
   'item_answer_variants',
-  'learner_item_state',
+  // learner_item_state: dropped in the analytics redesign teardown (#212)
   'learner_skill_state',
   'review_events',
   'lesson_progress',
@@ -51,7 +51,7 @@ const EXPECTED_GRANTS: Record<string, Record<string, string[]>> = {
   learning_items:       { authenticated: ['SELECT'] },
   item_contexts:        { authenticated: ['SELECT'] },
   item_answer_variants: { authenticated: ['SELECT'] },
-  learner_item_state:   { authenticated: ['SELECT', 'INSERT', 'UPDATE'] },
+  // learner_item_state: dropped in the analytics redesign teardown (#212)
   learner_skill_state:  { authenticated: ['SELECT', 'INSERT', 'UPDATE'] },
   review_events:        { authenticated: ['SELECT', 'INSERT'] },
   lesson_progress:      { authenticated: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'] },

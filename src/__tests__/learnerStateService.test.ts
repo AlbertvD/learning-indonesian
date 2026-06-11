@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { learnerStateService } from '@/services/learnerStateService'
-import { supabase } from '@/lib/supabase'
 
 vi.mock('@/lib/supabase', () => {
   const mockQueryBuilder: any = {
@@ -33,14 +32,6 @@ const { __mockQueryBuilder: mockQB, __mockFrom: mockFrom } = await import('@/lib
 describe('learnerStateService', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-  })
-
-  it('getItemStates queries indonesian schema with correct user filter', async () => {
-    const states = await learnerStateService.getItemStates('user1')
-    expect(Array.isArray(states)).toBe(true)
-    expect(supabase.schema).toHaveBeenCalledWith('indonesian')
-    expect(mockFrom).toHaveBeenCalledWith('learner_item_state')
-    expect(mockQB.eq).toHaveBeenCalledWith('user_id', 'user1')
   })
 
   it('getSkillStates filters by user_id and learning_item_id', async () => {
