@@ -12,6 +12,7 @@ import { PracticeTimeCard } from '@/components/progress/PracticeTimeCard'
 import { WeeklyRecapCard } from '@/components/progress/WeeklyRecapCard'
 import { MasteryFunnelCard } from '@/components/progress/MasteryFunnelCard'
 import { GrammarTopicsList } from '@/components/progress/GrammarTopicsList'
+import { SkillModeGapsCard } from '@/components/progress/SkillModeGapsCard'
 import { MemoryHealthHero } from '@/components/progress/MemoryHealthHero'
 import { VulnerableItemsList } from '@/components/progress/VulnerableItemsList'
 import { ReviewForecastChart } from '@/components/progress/ReviewForecastChart'
@@ -69,6 +70,12 @@ export function Progress() {
         {user && (
           <section className={classes.section}>
             <MasteryFunnelCard userId={user.id} />
+          </section>
+        )}
+
+        {user && (
+          <section className={classes.section}>
+            <SkillModeGapsCard userId={user.id} />
           </section>
         )}
 

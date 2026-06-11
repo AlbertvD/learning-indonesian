@@ -435,6 +435,58 @@ export function deriveGrammarTopics(input: {
     .sort((a, b) => a.slug.localeCompare(b.slug))
 }
 
+// ---- Skill-mode gap axes (orthogonal "where's my gap" map, #211) ----
+//
+// The 11 internal MasteryDimensions collapse weakest-wins into 3 learner-facing
+// modes. Orthogonal to the content funnel (which splits vocab/grammar): this
+// splits by HOW you practise. Q-A resolved against CONTEXT.md → Capability Type:
+// l1_to_id_choice is a receptive multiple-choice (recognise), contextual_cloze
+// is production (produce). `exposure` is excluded. Confidence-gated: a mode with
+// no evidence reads 'none' (not a false-amber gap).
+
+export type SkillMode = 'recognise' | 'produce' | 'listen'
+
+export interface SkillModeGap {
+  mode: SkillMode
+  label: MasteryLabel
+  confidence: MasteryConfidence
+}
+
+const DIMENSION_MODE: Partial<Record<MasteryDimension, SkillMode>> = {
+  text_recognition: 'recognise',
+  meaning_recall: 'recognise',
+  l1_to_id_choice: 'recognise',
+  pattern_recognition: 'recognise',
+  form_recall: 'produce',
+  contextual_cloze: 'produce',
+  pattern_use: 'produce',
+  morphology: 'produce',
+  listening: 'listen',
+  dictation: 'listen',
+  // exposure (podcast_gist) is excluded — ambient, not a drilled skill mode.
+}
+
+const SKILL_MODES: SkillMode[] = ['recognise', 'produce', 'listen']
+
+export function deriveSkillModeGaps(input: {
+  evidence: CapabilityMasteryEvidence[]
+  now?: Date
+}): SkillModeGap[] {
+  const now = input.now ?? new Date()
+  const dimensions = deriveMasteryDimensions(input.evidence, now)
+  return SKILL_MODES.map((mode) => {
+    const inMode = dimensions.filter((d) => DIMENSION_MODE[d.dimension] === mode)
+    if (inMode.length === 0) {
+      return { mode, label: 'not_assessed' as MasteryLabel, confidence: 'none' as MasteryConfidence }
+    }
+    return {
+      mode,
+      label: weakestLabel(inMode.map((d) => d.label)),
+      confidence: aggregateConfidence(inMode),
+    }
+  })
+}
+
 // ---- Weekly movement (the fast pulse on the slow axis, #210) ----
 //
 // Rung transitions recomputed from the FSRS state snapshots on each review event
@@ -639,6 +691,19 @@ export function createMasteryModel(client: SupabaseSchemaClient) {
       return deriveMasteryFunnel({ evidence })
     },
 
+    async getSkillModeGaps(userId: string): Promise<SkillModeGap[]> {
+      const { data: stateRows, error: stateError } = await db()
+        .from('learner_capability_state')
+        .select('capability_id, review_count, lapse_count, consecutive_failure_count, stability, last_reviewed_at')
+        .eq('user_id', userId)
+      if (stateError) throw stateError
+      const states = (stateRows ?? []) as LearnerCapabilityStateRow[]
+      const capabilities = await capabilityRowsByIds(uniq(states.map(state => state.capability_id)))
+      const activatedLessonsSet = await listActivatedLessons(userId, client)
+      const evidence = toEvidence({ capabilities, states, activatedLessons: activatedLessonsSet })
+      return deriveSkillModeGaps({ evidence })
+    },
+
     async getGrammarTopics(userId: string): Promise<GrammarTopic[]> {
       const { data: stateRows, error: stateError } = await db()
         .from('learner_capability_state')
@@ -687,6 +752,10 @@ export async function getMasteryFunnel(userId: string): Promise<MasteryFunnels> 
 
 export async function getGrammarTopics(userId: string): Promise<GrammarTopic[]> {
   return (await defaultModel()).getGrammarTopics(userId)
+}
+
+export async function getSkillModeGaps(userId: string): Promise<SkillModeGap[]> {
+  return (await defaultModel()).getSkillModeGaps(userId)
 }
 
 // Server-side aggregation (ADR 0015 — small result, bounded window): the SQL
